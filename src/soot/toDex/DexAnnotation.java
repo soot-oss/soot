@@ -180,7 +180,8 @@ public class DexAnnotation {
         if (c.hasTag("EnclosingMethodTag")){
           EnclosingMethodTag eMethTag = (EnclosingMethodTag)c.getTag("EnclosingMethodTag");
           AnnotationItem enclosingMethodItem = makeEnclosingMethod(eMethTag);
-          classAnnotationItems.add(enclosingMethodItem);
+          if (enclosingMethodItem != null)
+        	  classAnnotationItems.add(enclosingMethodItem);
         }
         
         // handle deprecated tag
@@ -659,17 +660,23 @@ public class DexAnnotation {
     }
     
     private AnnotationItem makeInnerClassAnnotation(InnerClassTag tag) {
-        IntEncodedValue flags = new IntEncodedValue(tag.getAccessFlags()); 
-        StringIdItem nameId = StringIdItem.internStringIdItem(dexFile, tag.getShortName());
-        StringEncodedValue nameV = new StringEncodedValue(nameId);
+        IntEncodedValue flags = new IntEncodedValue(tag.getAccessFlags());
         TypeIdItem annotationType = TypeIdItem.internTypeIdItem(
                 dexFile, "Ldalvik/annotation/InnerClass;");           
+        
         List<StringIdItem> namesList = new ArrayList<StringIdItem>();
+        
         List<EncodedValue> encodedValueList = new ArrayList<EncodedValue>();
         namesList.add(StringIdItem.internStringIdItem(dexFile, "accessFlags"));
-        namesList.add(StringIdItem.internStringIdItem(dexFile, "name"));
         encodedValueList.add(flags);
-        encodedValueList.add(nameV);
+
+        if (tag.getShortName() != null) {
+	        StringIdItem nameId = StringIdItem.internStringIdItem(dexFile, tag.getShortName());
+	        StringEncodedValue nameV = new StringEncodedValue(nameId);
+	        namesList.add(StringIdItem.internStringIdItem(dexFile, "name"));
+	        encodedValueList.add(nameV);
+        }
+        
         StringIdItem[] names = namesList.toArray(
                 new StringIdItem[namesList.size()]);
         EncodedValue[] values = encodedValueList.toArray(
@@ -713,15 +720,22 @@ public class DexAnnotation {
     private AnnotationItem makeEnclosingMethod(EnclosingMethodTag tag) {
         TypeIdItem annotationType = TypeIdItem.internTypeIdItem(
                 dexFile, "Ldalvik/annotation/EnclosingMethod;");
+        
         String enclosingClass = DexType.toDalvikICAT(tag.getEnclosingClass());
+        TypeIdItem classType = TypeIdItem.internTypeIdItem(dexFile, enclosingClass);
+
         String enclosingMethod = tag.getEnclosingMethod();
         String methodSig = tag.getEnclosingMethodSig();
+        
+        // Sometimes we don't have an enclosing method
+        if (methodSig == null || methodSig.isEmpty())
+        	return null;
+        
         String[] split1 = methodSig.split("\\)");
-        String parametersS = split1[0].replaceAll("\\(", "");
-        String returnTypeS = split1[1];
+	    String parametersS = split1[0].replaceAll("\\(", "");
+	    String returnTypeS = split1[1];
         
         TypeIdItem returnType = TypeIdItem.internTypeIdItem(dexFile, returnTypeS);
-        TypeIdItem classType = TypeIdItem.internTypeIdItem(dexFile, enclosingClass);
         List<TypeIdItem> typeList = new ArrayList<TypeIdItem>();
         Debug.printDbg("parameters:", parametersS);
         if (!parametersS.equals("")) {
