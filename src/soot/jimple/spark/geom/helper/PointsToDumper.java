@@ -276,6 +276,8 @@ public class PointsToDumper
 		finally {
 			objs_1cfa = null;
 		}
+		
+		System.gc(); System.gc(); System.gc();
 	}
 	
 	/**
@@ -416,5 +418,7 @@ public class PointsToDumper
 			objs_full = null;
 			endPointsList = null;
 		}
+		
+		System.gc(); System.gc(); System.gc();
 	}
 }

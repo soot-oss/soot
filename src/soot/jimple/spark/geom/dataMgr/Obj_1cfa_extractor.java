@@ -22,13 +22,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import javax.print.attribute.standard.Finishings;
-
-import soot.Scene;
 import soot.jimple.spark.geom.dataRep.CallsiteContextVar;
 import soot.jimple.spark.geom.dataRep.CgEdge;
-import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.helper.ContextTranslator;
 import soot.jimple.spark.geom.utils.ZArrayNumberer;
 import soot.jimple.spark.pag.Node;
