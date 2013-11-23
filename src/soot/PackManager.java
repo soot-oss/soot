@@ -1044,8 +1044,10 @@ public class PackManager {
 
         try {
             writerOut.flush();
-            streamOut.close();
-            writerOut.close();
+            if( jarFile == null ) {            	
+	            streamOut.close();
+	            writerOut.close();
+            }
         } catch (IOException e) {
             throw new CompilationDeathException("Cannot close output file " + fileName);
         }
