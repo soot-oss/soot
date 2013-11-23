@@ -186,11 +186,18 @@ public class RegisterAllocator {
 		// the correct register number.
 		int paramRegNum = 0;
 		boolean found = false;
-		if (!sm.isStatic() && sm.getActiveBody().getThisLocal() == l) {
-			paramRegNum = 0;
-			found = true;
+		if (!sm.isStatic()) {
+			//there might be bodies that do not have a this-local; ignore these gracefully
+			try {
+				if(sm.getActiveBody().getThisLocal() == l) { 
+					paramRegNum = 0;
+					found = true;
+				}
+			} catch(RuntimeException e) {
+				//ignore
+			}
 		}
-		else
+		if(!found)
 			for (int i = 0; i < sm.getParameterCount(); i++) {
 				if (sm.getActiveBody().getParameterLocal(i) == l) {
 					// For a non-static method, p0 is <this>.
@@ -204,7 +211,7 @@ public class RegisterAllocator {
 				Type paramType = sm.getParameterType(i);
 				paramRegNum += SootToDexUtils.getDexWords(paramType);
 			}
-		if (!found)
+		if(!found)
 			throw new RuntimeException("Parameter local not found");
 		
 		localToLastRegNum.put(l.getName(), paramRegNum);
