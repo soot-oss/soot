@@ -50,7 +50,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
         side for side effects. 
     */
     
-    protected void internalTransform(Body b, String phaseName, Map options)
+    protected void internalTransform(Body b, String phaseName, Map<String, String> options)
     {
         boolean eliminateOnlyStackLocals = PhaseOptions.getBoolean(options, "only-stack-locals");
 
@@ -162,12 +162,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
             while(!toVisit.isEmpty())
             {
                 Stmt s = toVisit.removeFirst();
-                Iterator boxIt = s.getUseBoxes().iterator();
-                                
-                while(boxIt.hasNext())
-                {
-                    ValueBox box = (ValueBox) boxIt.next();
-                    
+                for (ValueBox box : s.getUseBoxes()) {
                     if(box.getValue() instanceof Local)
                     {
                         Iterator<Unit> defIt = defs.getDefsOfAt(
@@ -189,7 +184,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
         
         // Remove the dead statements
         {
-            Iterator stmtIt = units.iterator();
+            Iterator<Unit> stmtIt = units.iterator();
             
             while(stmtIt.hasNext())
             {
@@ -214,7 +209,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
         // Eliminate dead assignments from invokes such as x = f(), where
         //    x is no longer used
         {
-            Iterator stmtIt = units.snapshotIterator();
+            Iterator<Unit> stmtIt = units.snapshotIterator();
             
             while(stmtIt.hasNext())
             {
@@ -223,19 +218,12 @@ public class DeadAssignmentEliminator extends BodyTransformer
                 if(s instanceof AssignStmt &&
                     s.containsInvokeExpr())
                 {
-                    Local l = (Local) ((AssignStmt) s).getLeftOp();
                     InvokeExpr e = s.getInvokeExpr();
                     
                     // Just find one use of l which is essential 
                     {   
-                        Iterator useIt = uses.getUsesOf(s).iterator();
                         boolean isEssential = false;
-                        
-                        while(useIt.hasNext())
-                        {   
-                            UnitValueBoxPair pair = (UnitValueBoxPair)
-                                useIt.next();
-                                
+                        for (UnitValueBoxPair pair : uses.getUsesOf(s)) {
                             if(essentialStmts.contains(pair.unit))
                             {
                                 isEssential = true;
