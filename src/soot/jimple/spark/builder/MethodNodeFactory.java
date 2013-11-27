@@ -139,7 +139,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 
     final public Node caseThis() {
 	VarNode ret = pag.makeLocalVarNode(
-		    new Pair( method, PointsToAnalysis.THIS_NODE ),
+		    new Pair<SootMethod, String>( method, PointsToAnalysis.THIS_NODE ),
 		    method.getDeclaringClass().getType(), method );
         ret.setInterProcTarget();
         return ret;
@@ -147,14 +147,14 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 
     final public Node caseParm( int index ) {
         VarNode ret = pag.makeLocalVarNode(
-                    new Pair( method, new Integer( index ) ),
+                    new Pair<SootMethod, Integer>( method, new Integer( index ) ),
                     method.getParameterType( index ), method );
         ret.setInterProcTarget();
         return ret;
     }
 
     final public void casePhiExpr(PhiExpr e) {
-        Pair phiPair = new Pair( e, PointsToAnalysis.PHI_NODE );
+        Pair<Expr, String> phiPair = new Pair<Expr, String>( e, PointsToAnalysis.PHI_NODE );
         Node phiNode = pag.makeLocalVarNode( phiPair, e.getType(), method );
         for (Value op : e.getValues()) {
             op.apply( MethodNodeFactory.this );
@@ -186,7 +186,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 	setResult( caseArray( (VarNode) getNode() ) );
     }
     final public void caseCastExpr( CastExpr ce ) {
-	Pair castPair = new Pair( ce, PointsToAnalysis.CAST_NODE );
+	Pair<Expr, String> castPair = new Pair<Expr, String>( ce, PointsToAnalysis.CAST_NODE );
 	ce.getOp().apply( this );
 	Node opNode = getNode();
 	Node castNode = pag.makeLocalVarNode( castPair, ce.getCastType(), method );
@@ -247,7 +247,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     final public void caseNewMultiArrayExpr( NewMultiArrayExpr nmae ) {
         ArrayType type = (ArrayType) nmae.getType();
         AllocNode prevAn = pag.makeAllocNode(
-            new Pair( nmae, new Integer( type.numDimensions ) ), type, method );
+            new Pair<Expr, Integer>( nmae, new Integer( type.numDimensions ) ), type, method );
         VarNode prevVn = pag.makeLocalVarNode( prevAn, prevAn.getType(), method );
         mpag.addInternalEdge( prevAn, prevVn );
         setResult( prevAn );
@@ -256,7 +256,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
             if( !( t instanceof ArrayType ) ) break;
             type = (ArrayType) t;
             AllocNode an = pag.makeAllocNode(
-                new Pair( nmae, new Integer( type.numDimensions ) ), type, method );
+                new Pair<Expr, Integer>( nmae, new Integer( type.numDimensions ) ), type, method );
             VarNode vn = pag.makeLocalVarNode( an, an.getType(), method );
             mpag.addInternalEdge( an, vn );
             mpag.addInternalEdge( vn, pag.makeFieldRefNode( prevVn, ArrayElement.v() ) );

@@ -54,7 +54,6 @@ import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationConstants;
-import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationDoubleElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationEnumElem;
@@ -291,19 +290,18 @@ public class DexAnnotation {
 
     }
     
+    private Set<SootMethod> alreadyDoneMethods = new HashSet<SootMethod>();
 
     /**
      * Handles Method and Parameter Annotations
      * @param sm SootMethod
      * @param mid Dexlib Method Item
      */
-    private Set<String> alreadyDoneMethods = new HashSet<String>();
     public void handleMethod(SootMethod sm, MethodIdItem mid) {
         if (!sm.getDeclaringClass().getName().equals(currentClass.getName()))
             return;
-        if (alreadyDoneMethods.contains(sm.getSignature()))
+        if (!alreadyDoneMethods.add(sm))
             return;
-        alreadyDoneMethods.add(sm.getSignature());
         Debug.printDbg("handle annotations for method: '", sm ,"' current class: ", currentClass);
         
         List<AnnotationItem> aList = new ArrayList<AnnotationItem>();
@@ -324,7 +322,7 @@ public class DexAnnotation {
         }
         
         if (sm.hasTag("AnnotationDefaultTag")){
-            AnnotationDefaultTag tag = (AnnotationDefaultTag)sm.getTag("AnnotationDefaultTag");
+//            AnnotationDefaultTag tag = (AnnotationDefaultTag)sm.getTag("AnnotationDefaultTag");
             Debug.printDbg("TODO");
         }
         
@@ -656,9 +654,6 @@ public class DexAnnotation {
     
     
     private AnnotationItem makeEnclosingClassAnnotation(InnerClassTag tag) {
-        int accessFlags = tag.getAccessFlags();
-        String innerClassS = tag.getInnerClass();
-        String name = tag.getName();
         String outerClass = tag.getOuterClass();
         TypeIdItem string = TypeIdItem.internTypeIdItem(dexFile,
                 "L" + outerClass + ";");

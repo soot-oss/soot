@@ -547,6 +547,7 @@ public class SootMethod
     public String getSignature() {
         return getSignature(getDeclaringClass(), getName(), getParameterTypes(), getReturnType());
     }
+    
     public static String getSignature(SootClass cl, String name, List<Type> params, Type returnType) {
         StringBuffer buffer = new StringBuffer();
         buffer.append(

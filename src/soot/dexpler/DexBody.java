@@ -615,7 +615,7 @@ public class DexBody  {
             List<Local> toRemove = new ArrayList<Local>();
             for (Local l: jBody.getLocals()) {
                 
-                if (l.getType().toString().equals("null_type")) {
+                if (l.getType() instanceof NullType) {
                     toRemove.add(l);
                     for (ValueBox vb: uses) {
                         Value v = vb.getValue();
@@ -691,7 +691,7 @@ public class DexBody  {
         Debug.printDbg("\nafter jb pack");
         Debug.printDbg("",(Body)jBody);
 
-        // Leplace local type null_type by java.lang.Object.
+        // Replace local type null_type by java.lang.Object.
         //
         // The typing engine cannot find correct type for such code:
         //
