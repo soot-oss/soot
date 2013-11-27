@@ -82,7 +82,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
 
     /** Returns a list of Boxes pointing to this Unit. */
     @Override
-    public List getBoxesPointingToThis()
+    public List<UnitBox> getBoxesPointingToThis()
     {
         if( boxesPointingToThis == null ) return emptyList;
         return Collections.unmodifiableList( boxesPointingToThis );
