@@ -279,7 +279,7 @@ public class SootClass extends AbstractHost implements Numberable
     public SootMethod getMethod(NumberedString subsignature)
     {
         checkLevel(SIGNATURES);
-        SootMethod ret = (SootMethod) subSigToMethods.get( subsignature );
+        SootMethod ret = subSigToMethods.get( subsignature );
         if(ret == null)
             throw new RuntimeException("No method " + subsignature + " in class " + getName());
         else
@@ -293,7 +293,7 @@ public class SootClass extends AbstractHost implements Numberable
     public boolean declaresMethod(NumberedString subsignature)
     {
         checkLevel(SIGNATURES);
-        SootMethod ret = (SootMethod) subSigToMethods.get( subsignature );
+        SootMethod ret = subSigToMethods.get( subsignature );
         return ret != null;
     }
     
