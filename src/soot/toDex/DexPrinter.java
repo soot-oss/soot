@@ -18,8 +18,6 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.jf.dexlib.AnnotationDirectoryItem;
-import org.jf.dexlib.AnnotationDirectoryItem.FieldAnnotation;
-import org.jf.dexlib.AnnotationDirectoryItem.MethodAnnotation;
 import org.jf.dexlib.ClassDataItem;
 import org.jf.dexlib.ClassDataItem.EncodedField;
 import org.jf.dexlib.ClassDataItem.EncodedMethod;
@@ -28,7 +26,6 @@ import org.jf.dexlib.CodeItem;
 import org.jf.dexlib.CodeItem.EncodedCatchHandler;
 import org.jf.dexlib.CodeItem.EncodedTypeAddrPair;
 import org.jf.dexlib.CodeItem.TryItem;
-import org.jf.dexlib.AnnotationItem;
 import org.jf.dexlib.DexFile;
 import org.jf.dexlib.FieldIdItem;
 import org.jf.dexlib.MethodIdItem;
@@ -284,7 +281,6 @@ public class DexPrinter {
 	
 	private static ProtoIdItem toProtoIdItem(SootMethodRef m, DexFile belongingDexFile) {
 		TypeIdItem returnType = toTypeIdItem(m.returnType(), belongingDexFile);
-		@SuppressWarnings("unchecked")
 		List<Type> parameterTypes = m.parameterTypes();
 		TypeListItem parameters = toTypeListItem(parameterTypes, belongingDexFile);
 		return ProtoIdItem.internProtoIdItem(belongingDexFile, returnType, parameters);
