@@ -46,7 +46,9 @@ import org.jf.dexlib2.immutable.debug.ImmutableLineNumber;
 import org.jf.dexlib2.util.MethodUtil;
 
 import soot.Body;
+import soot.DoubleType;
 import soot.Local;
+import soot.LongType;
 import soot.Modifier;
 import soot.NullType;
 import soot.PrimType;
@@ -429,7 +431,7 @@ public class DexBody  {
 	            // as the corresponding Jimple Local name. However, we also add
 	            // the second register to the registerLocals array since it could be
 	            // used later in the Dalvik bytecode
-	            if (t.toString().equals("long") || t.toString().equals("double")) {
+	            if (t instanceof LongType || t instanceof DoubleType) {
 	              parameterRegister++;
 	              Local g = Jimple.v().newLocal("$u"+ parameterRegister, UnknownType.v()); //may only use UnknownType here because the local may be reused with a different type later (before splitting)
 	              jBody.getLocals().add (g);
