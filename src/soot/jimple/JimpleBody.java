@@ -75,6 +75,22 @@ public class JimpleBody extends StmtBody
         
         // A jimple body must contain a return statement
         validateReturnStatement();
+        
+        validateSelfLoops();
+    }
+    
+    private void validateSelfLoops() {
+    	for (Unit u : this.getUnits())
+    		if (u instanceof GotoStmt) {
+    			GotoStmt gstmt = (GotoStmt) u;
+    			if (gstmt.getTarget() == u)
+    				throw new RuntimeException("Jumps to self are not allowed");
+    		}
+    		else if (u instanceof IfStmt) {
+    			IfStmt istmt = (IfStmt) u;
+    			if (istmt.getTarget() == u)
+    				throw new RuntimeException("Jumps to self are not allowed");
+    		}
     }
     
     private void validateTypes() {
