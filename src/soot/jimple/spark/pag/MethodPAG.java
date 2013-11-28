@@ -68,7 +68,7 @@ public final class MethodPAG {
             if( addedContexts == null ) addedContexts = new HashSet<Context>();
             if( !addedContexts.add( varNodeParameter ) ) return;
         }
-        QueueReader<Node> reader = internalEdges.reader();
+        QueueReader<Node> reader = internalReader.clone();
         while(reader.hasNext()) {
             Node src = (Node) reader.next();
             src = parameterize( src, varNodeParameter );
@@ -76,14 +76,14 @@ public final class MethodPAG {
             dst = parameterize( dst, varNodeParameter );
             pag.addEdge( src, dst );
         }
-        reader = inEdges.reader();
+        reader = inReader.clone();
         while(reader.hasNext()) {
             Node src = (Node) reader.next();
             Node dst = (Node) reader.next();
             dst = parameterize( dst, varNodeParameter );
             pag.addEdge( src, dst );
         }
-        reader = outEdges.reader();
+        reader = outReader.clone();
         while(reader.hasNext()) {
             Node src = (Node) reader.next();
             src = parameterize( src, varNodeParameter );
@@ -118,6 +118,9 @@ public final class MethodPAG {
     private final ChunkedQueue<Node> internalEdges = new ChunkedQueue<Node>();
     private final ChunkedQueue<Node> inEdges = new ChunkedQueue<Node>();
     private final ChunkedQueue<Node> outEdges = new ChunkedQueue<Node>();
+    private final QueueReader<Node> internalReader = internalEdges.reader();
+    private final QueueReader<Node> inReader = inEdges.reader();
+    private final QueueReader<Node> outReader = outEdges.reader();
     
     SootMethod method;
     public SootMethod getMethod() { return method; }
