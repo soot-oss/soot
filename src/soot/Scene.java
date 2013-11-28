@@ -30,12 +30,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -45,6 +46,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.ContextSensitiveCallGraph;
@@ -61,12 +64,9 @@ import soot.util.Chain;
 import soot.util.HashChain;
 import soot.util.MapNumberer;
 import soot.util.Numberer;
-import soot.util.SingletonList;
 import soot.util.StringNumberer;
-
-import org.xmlpull.v1.XmlPullParser;
-import android.content.res.AXmlResourceParser;
 import test.AXMLPrinter;
+import android.content.res.AXmlResourceParser;
 
 /** Manages the SootClasses of the application being analyzed. */
 public class Scene  //extends AbstractHost
@@ -198,10 +198,10 @@ public class Scene  //extends AbstractHost
         if(mainClass==null) {
             throw new RuntimeException("There is no main class set!");
         } 
-        if (!mainClass.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v())) {
+        if (!mainClass.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v())) {
             throw new RuntimeException("Main class declares no main method!");
         }
-        return mainClass.getMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v());   
+        return mainClass.getMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v());   
     }
     
     
@@ -257,6 +257,10 @@ public class Scene  //extends AbstractHost
      */
     private int getMaxAPIAvailable(String dir) {
         File d = new File(dir);
+        if (!d.exists())
+        	throw new RuntimeException("The Android platform directory you have"
+        			+ "specified (" + dir + ") does not exist. Please check.");
+        
         File[] files = d.listFiles();
         int maxApi = -1;
         for (File f: files) {
@@ -287,8 +291,10 @@ public class Scene  //extends AbstractHost
 
 		// get AndroidManifest
 		InputStream manifestIS = null;
+		ZipFile archive = null;
 		try {
-			ZipFile archive = new ZipFile(apkF);
+		try {
+			archive = new ZipFile(apkF);
 			for (@SuppressWarnings("rawtypes") Enumeration entries = archive.entries(); entries.hasMoreElements();) {
 				ZipEntry entry = (ZipEntry) entries.nextElement();
 				String entryName = entry.getName();
@@ -382,7 +388,15 @@ public class Scene  //extends AbstractHost
 		    throw new RuntimeException("error: target android.jar ("+ jarPath +") does not exist.");
 
 		return jarPath;
-
+		}
+		finally {
+			if (archive != null)
+				try {
+					archive.close();
+				} catch (IOException e) {
+					throw new RuntimeException("Error when looking for manifest in apk: " + e);
+				}
+		}
 	}
 
 	public String defaultClassPath() {
@@ -1443,7 +1457,7 @@ public class Scene  //extends AbstractHost
         	// try to infer a main class from the command line if none is given 
         	for (Iterator<String> classIter = Options.v().classes().iterator(); classIter.hasNext();) {
                     SootClass c = getSootClass(classIter.next());
-                    if (c.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
+                    if (c.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
                     {
                         G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
                         setMainClass(c);
@@ -1454,7 +1468,7 @@ public class Scene  //extends AbstractHost
         	// try to infer a main class from the usual classpath if none is given 
         	for (Iterator<SootClass> classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
                     SootClass c = (SootClass) classIter.next();
-                    if (c.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
+                    if (c.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
                     {
                         G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
                         setMainClass(c);
