@@ -68,23 +68,17 @@ public class FixedMethods {
 	 * must be instantiable as well.
 	 */
 	private static boolean clientCanInstantiate(SootClass cPrime) {
-		//interface types can always be instantiated,
-		//as their constructors cannot be hidden and they
-		//are also always implicitly static, i.e.,
-		//one requires no enclosing instance to access them
+		//subtypes of interface types can always be instantiated
 		if(cPrime.isInterface()) return true;
 		
-		boolean hasVisibleConstructor = false;
 		for(SootMethod m: cPrime.getMethods()) {
 			if(m.getName().equals(SootMethod.constructorName)) {
 				if(visible(m)) {
-					hasVisibleConstructor = true;
-					break;
+					return true;
 				}
 			}
 		}
-		return hasVisibleConstructor && (cPrime.isStatic() ||
-				!cPrime.isInnerClass() || clientCanInstantiate(cPrime.getOuterClass()));
+		return false;
 	}
 
 	/**

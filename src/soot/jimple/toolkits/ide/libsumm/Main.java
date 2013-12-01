@@ -38,6 +38,8 @@ public class Main {
 			
 		}));
 		soot.Main.main(args);
+		System.err.println("+++ "+yes);
+		System.err.println(" -  "+no);
 	}
 
 }
