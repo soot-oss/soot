@@ -50,7 +50,10 @@ public class JimpleClassSource extends ClassSource
           }
 
           Dependencies deps = new Dependencies();
-          deps.typesToSignature.addAll(jimpAST.getCstPool());
+          //The method documentation states it returns RefTypes only, so this is a transformation safe
+          for (String t : jimpAST.getCstPool()){
+              deps.typesToSignature.add(RefType.v(t));
+          }
 
           classFile.close();
           return deps;
