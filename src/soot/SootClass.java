@@ -762,7 +762,7 @@ public class SootClass extends AbstractHost implements Numberable
 
     public void setName(String name)
     {
-        this.name = name;
+        this.name = name.intern();
 	
 	shortName = name;
 	packageName = "";
