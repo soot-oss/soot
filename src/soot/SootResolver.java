@@ -28,7 +28,12 @@
 package soot;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
 import soot.JastAddJ.BytecodeParser;
 import soot.JastAddJ.CompilationUnit;
@@ -48,14 +53,15 @@ public class SootResolver
     private final Map<SootClass, Collection<Type>> classToTypesHierarchy = new HashMap<SootClass, Collection<Type>>();
 
     /** SootClasses waiting to be resolved. */
-    private final LinkedList/*SootClass*/[] worklist = new LinkedList[4];
+    @SuppressWarnings("unchecked")
+	private final LinkedList<SootClass>[] worklist = new LinkedList[4];
 
 	protected Program program;
 
     public SootResolver (Singletons.Global g) {
-        worklist[SootClass.HIERARCHY] = new LinkedList();
-        worklist[SootClass.SIGNATURES] = new LinkedList();
-        worklist[SootClass.BODIES] = new LinkedList();
+        worklist[SootClass.HIERARCHY] = new LinkedList<SootClass>();
+        worklist[SootClass.SIGNATURES] = new LinkedList<SootClass>();
+        worklist[SootClass.BODIES] = new LinkedList<SootClass>();
         
         
         program = new Program();
@@ -174,6 +180,7 @@ public class SootResolver
             addToResolveWorklist(((ArrayType) type).baseType, level);
         //Other types ignored
     }
+    
     private void addToResolveWorklist(SootClass sc, int desiredLevel) {
         if( sc.resolvingLevel() >= desiredLevel ) return;
         worklist[desiredLevel].add(sc);
@@ -282,14 +289,31 @@ public class SootResolver
             G.v().out.println("bringing to BODIES: "+sc);
         sc.setResolvingLevel(SootClass.BODIES);
 
-        for (Type t: classToTypesHierarchy.get(sc)){
-            addToResolveWorklist(t, SootClass.HIERARCHY);
-        }
+        {
+        	Collection<Type> references = classToTypesHierarchy.get(sc);
+            if( references == null ) return;
 
-        for (Type t : classToTypesSignature.get(sc)){
-            addToResolveWorklist(t, SootClass.SIGNATURES);
+            // This must be an interator, not a for-all since the underlying
+            // collection may change as we go
+            Iterator<Type> it = references.iterator();
+            while( it.hasNext() ) {
+                final Type t = it.next();
+                addToResolveWorklist(t, SootClass.HIERARCHY);
+            }
         }
+        
+        {
+        	Collection<Type> references = classToTypesSignature.get(sc);
+            if( references == null ) return;
 
+            // This must be an interator, not a for-all since the underlying
+            // collection may change as we go
+            Iterator<Type> it = references.iterator();
+            while( it.hasNext() ) {
+                final Type t = it.next();
+                addToResolveWorklist(t, SootClass.SIGNATURES);
+            }
+        }
     }
 
     public void reResolve(SootClass cl) {
