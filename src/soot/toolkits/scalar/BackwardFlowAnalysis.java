@@ -28,7 +28,7 @@ package soot.toolkits.scalar;
 
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -62,135 +62,117 @@ public abstract class BackwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
 
     protected void doAnalysis()
     {
-        final Map<N, Integer> numbers = new HashMap<N, Integer>();
-        List<N> orderedUnits = constructOrderer().newList(graph,true);
-        int i = 1;
-        for( Iterator<N> uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
-            final N u = uIt.next();
-            numbers.put(u, new Integer(i));
-            i++;
-        }
+        List<N> orderedUnits = constructOrderer().newList(graph, true);
+        
+        final int n = orderedUnits.size();
+        
+        final Map<N, Integer> numbers = new IdentityHashMap<N, Integer>(n*2+1);
+        int i = 0;
+                    
+        for ( N s :orderedUnits ) {
+        	numbers.put(u, i++);        
 
+        	// Set initial Flows.
+            unitToBeforeFlow.put(s, newInitialFlow());
+            unitToAfterFlow.put(s, newInitialFlow());
+        }
+        
         Collection<N> changedUnits = constructWorklist(numbers);
-
-
-        // Set initial Flows and nodes to visit.
-        {
-            Iterator<N> it = graph.iterator();
-
-            while(it.hasNext())
-            {
-                N s = it.next();
-
-                changedUnits.add(s);
-
-                unitToBeforeFlow.put(s, newInitialFlow());
-                unitToAfterFlow.put(s, newInitialFlow());
-            }
-        }
+        changedUnits.addAll(orderedUnits);
+        
 
         List<N> tails = graph.getTails();
         
         // Feng Qian: March 07, 2002
         // init entry points
-        {
-            Iterator<N> it = tails.iterator();
-            
-            while (it.hasNext()) {
-                N s = it.next();
-                // this is a backward flow analysis
-                unitToAfterFlow.put(s, entryInitialFlow());
-            }
+        for ( N s : tails ) {
+			// this is a backward flow analysis	
+        	unitToAfterFlow.put(s, entryInitialFlow());
         }
-
+        
+        
+        //int numComputations = 0;
+        
         // Perform fixed point flow analysis
         {
-            A previousBeforeFlow = newInitialFlow();
+            A previousFlow = newInitialFlow();
 
             while(!changedUnits.isEmpty())
             {
-                A beforeFlow;
-                A afterFlow;
-
                 //get the first object
                 N s = changedUnits.iterator().next();
                 changedUnits.remove(s);
-                boolean isTail = tails.contains(s);
 
-                copy(unitToBeforeFlow.get(s), previousBeforeFlow);
+                A beforeFlow = unitToBeforeFlow.get(s);
+                A afterFlow = unitToAfterFlow.get(s);
+                
+                copy(unitToBeforeFlow.get(s), previousFlow);
 
                 // Compute and store afterFlow
                 {
-                    List<N> succs = graph.getSuccsOf(s);
+                    final Iterator<N> it = graph.getSuccsOf(s).iterator();
 
-                    afterFlow =  unitToAfterFlow.get(s);
-
-                    if(succs.size() == 1)
-                        copy(unitToBeforeFlow.get(succs.get(0)), afterFlow);
-                    else if(succs.size() != 0)
-                    {
-                        Iterator<N> succIt = succs.iterator();
-
-                        copy(unitToBeforeFlow.get(succIt.next()), afterFlow);
-
-                        while(succIt.hasNext())
-                        {
-                            A otherBranchFlow = unitToBeforeFlow.get(succIt.next());
-                            mergeInto(s, afterFlow, otherBranchFlow);
-                        }
-
-                        if(isTail && succs.size() != 0)
-                            mergeInto(s, afterFlow, entryInitialFlow());
-                    }
+					if ( it.hasNext() ) {
+                    	copy(unitToBeforeFlow.get(it.next()), afterFlow);
+                    	
+		                while ( it.hasNext() ) {
+		                    mergeInto(s, afterFlow, unitToBeforeFlow.get(it.next()));
+		                }
+                    
+		                if ( tails.contains(s) ) {
+		                    mergeInto(s, afterFlow, entryInitialFlow());
+	                    }
+                	}
                 }
 
                 // Compute beforeFlow and store it.
-                {
-                    beforeFlow = unitToBeforeFlow.get(s);
-                    if (Options.v().interactive_mode()){
-                        A savedFlow = newInitialFlow();
-                        if (filterUnitToAfterFlow != null){
-                            savedFlow = filterUnitToAfterFlow.get(s);
-                            copy(filterUnitToAfterFlow.get(s), savedFlow);
-                        }
-                        else {
-                            copy(afterFlow, savedFlow);
-                        }
-                        FlowInfo fi = new FlowInfo(savedFlow, s, false);
-                        if (InteractionHandler.v().getStopUnitList() != null && InteractionHandler.v().getStopUnitList().contains(s)){
-                            InteractionHandler.v().handleStopAtNodeEvent(s);
-                        }
-                        InteractionHandler.v().handleAfterAnalysisEvent(fi);
+                if ( Options.v().interactive_mode() ) {
+					InteractionHandler h = InteractionHandler.v();
+					
+                    A savedFlow;
+                    if ( filterUnitToAfterFlow != null ) {
+                        savedFlow = filterUnitToAfterFlow.get(s);
+                        copy(filterUnitToAfterFlow.get(s), savedFlow);
                     }
-                    flowThrough(afterFlow, s, beforeFlow);
-                    if (Options.v().interactive_mode()){
-                        A bSavedFlow = newInitialFlow();
-                        if (filterUnitToBeforeFlow != null){
-                            bSavedFlow = filterUnitToBeforeFlow.get(s);
-                            copy(filterUnitToBeforeFlow.get(s), bSavedFlow);
-                        }
-                        else {
-                            copy(beforeFlow, bSavedFlow);
-                        }
-                        FlowInfo fi = new FlowInfo(bSavedFlow, s, true);
-                        InteractionHandler.v().handleBeforeAnalysisEvent(fi);
+                    else {
+                    	savedFlow = newInitialFlow();
+                        copy(afterFlow, savedFlow);
                     }
+                    FlowInfo fi = new FlowInfo(savedFlow, s, false);
+                    if ( h.getStopUnitList() != null && h.getStopUnitList().contains(s) ) {
+                        h.handleStopAtNodeEvent(s);
+                    }
+                    h.handleAfterAnalysisEvent(fi);
                 }
+                flowThrough(afterFlow, s, beforeFlow);
+                if ( Options.v().interactive_mode() ) {
+                    A bSavedFlow;
+                    if ( filterUnitToBeforeFlow != null ) {
+                        bSavedFlow = filterUnitToBeforeFlow.get(s);
+                        copy(filterUnitToBeforeFlow.get(s), bSavedFlow);
+                    }
+                    else {
+                    	bSavedFlow = newInitialFlow();
+                        copy(beforeFlow, bSavedFlow);
+                    }
+                    FlowInfo fi = new FlowInfo(bSavedFlow, s, true);
+                    InteractionHandler.v().handleBeforeAnalysisEvent(fi);
+                }
+            
 
                 // Update queue appropriately
-                    if(!beforeFlow.equals(previousBeforeFlow))
-                    {
-                        Iterator<N> predIt = graph.getPredsOf(s).iterator();
-
-                        while(predIt.hasNext())
-                        {
-                            N pred = predIt.next();
-                            
-                            changedUnits.add(pred);
-                        }
-                    }
+                if ( !previousFlow.equals(beforeFlow) ) {
+                	for ( N v : graph.getPredsOf(s) ) {
+                		changedUnits.add(v);
+                	}
+                }
+                
+                //numComputations++;
             }
-        }
+        }        
+        
+        //Timers.v().totalFlowNodes += n;
+        //Timers.v().totalFlowComputations += numComputations;
     }
     
 	protected Collection<N> constructWorklist(final Map<N, Integer> numbers) {
