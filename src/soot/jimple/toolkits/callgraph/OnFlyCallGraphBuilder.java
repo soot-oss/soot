@@ -428,12 +428,13 @@ public final class OnFlyCallGraphBuilder
         for( Iterator siteIt = ((Collection) receiverToSites.get( receiver )).iterator(); siteIt.hasNext(); ) {
             final VirtualCallSite site = (VirtualCallSite) siteIt.next();
             InstanceInvokeExpr iie = site.iie();
-            if( site.kind() == Kind.THREAD &&
-            		!(fh.canStoreType( type, clRunnable )
-            				|| fh.canStoreType( type, clAsyncTask )))
+            if( site.kind() == Kind.THREAD && !fh.canStoreType( type, clRunnable))
+                continue;
+            if( site.kind() == Kind.ASYNCTASK && !fh.canStoreType( type, clAsyncTask ))
                 continue;
 
-            if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD ) {
+            if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD
+            		&& site.kind != Kind.ASYNCTASK ) {
             	SootMethod target = VirtualCalls.v().resolveSpecial( 
                             (SpecialInvokeExpr) site.iie(),
                             site.subSig(),
@@ -545,7 +546,7 @@ public final class OnFlyCallGraphBuilder
                     }
                     if( subSig == sigExecute  ) {
                         addVirtualCallSite( s, m, receiver, iie, sigDoInBackground,
-                                Kind.THREAD );
+                                Kind.ASYNCTASK );
                     }
                 } else {
                 	SootMethod tgt = ie.getMethod();
