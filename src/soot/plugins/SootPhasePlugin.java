@@ -60,9 +60,5 @@ public interface SootPhasePlugin {
 	 */
 	public abstract Transformer getTransformer();
 	
-	/**‚s
-	 * 
-	 * @param pluginDescription
-	 */
 	public abstract void setDescription(final PhasePluginDescription pluginDescription);
 }
