@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -387,7 +386,7 @@ public abstract class ReferenceType extends TypeDecl implements Cloneable {
   /* It is a compile-time error if the return type of a method declared in an
   annotation type is any type other than one of the following: one of the
   primitive types, String, Class and any invocation of Class, an enum type
-  (\u00df8.9), an annotation type, or an array (\u00df10) of one of the preceding types.* @attribute syn
+  (\ufffd8.9), an annotation type, or an array (\ufffd10) of one of the preceding types.* @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:121
    */

@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -59,14 +58,16 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public CompilationUnit copy() {
-      try {
-        CompilationUnit node = (CompilationUnit)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      CompilationUnit node = (CompilationUnit) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -76,25 +77,17 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public CompilationUnit fullCopy() {
-    try {
-      CompilationUnit tree = (CompilationUnit) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    CompilationUnit tree = (CompilationUnit) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -925,10 +918,10 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
-    if(caller == getTypeDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getTypeDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_isIncOrDec(this, caller);
     }
   }
@@ -937,16 +930,16 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
-    if(caller == getImportDeclListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    if(caller == getImportDeclListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     return !exceptionType.isUncheckedException();
   }
-}
-    else if(caller == getTypeDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return !exceptionType.isUncheckedException();
-    }
+  }
+    else if(caller == getTypeDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return !exceptionType.isUncheckedException();
+  }
     else {      return getParent().Define_boolean_handlesException(this, caller, exceptionType);
     }
   }
@@ -955,10 +948,10 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-    if(caller == getImportDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return lookupType(name);
-    }
+    if(caller == getImportDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return lookupType(name);
+  }
     else  { 
    int childIndex = this.getIndexOfChild(caller);
 {
@@ -979,10 +972,10 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_allImportedTypes(ASTNode caller, ASTNode child, String name) {
-    if(caller == getImportDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return importedTypes(name);
-    }
+    if(caller == getImportDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return importedTypes(name);
+  }
     else {      return getParent().Define_SimpleSet_allImportedTypes(this, caller, name);
     }
   }
@@ -1001,10 +994,10 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-    if(caller == getImportDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return NameType.PACKAGE_NAME;
-    }
+    if(caller == getImportDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return NameType.PACKAGE_NAME;
+  }
     else {      return getParent().Define_NameType_nameType(this, caller);
     }
   }
@@ -1033,10 +1026,10 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_isMemberType(ASTNode caller, ASTNode child) {
-    if(caller == getTypeDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getTypeDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_isMemberType(this, caller);
     }
   }
@@ -1065,10 +1058,10 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_hostType(ASTNode caller, ASTNode child) {
-    if(caller == getImportDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return null;
-    }
+    if(caller == getImportDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return null;
+  }
     else {      return getParent().Define_TypeDecl_hostType(this, caller);
     }
   }
@@ -1077,16 +1070,16 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-    if(caller == getTypeDeclListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    if(caller == getTypeDeclListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     SimpleSet set = importedFields(name);
     if(!set.isEmpty()) return set;
     set = importedFieldsOnDemand(name);
     if(!set.isEmpty()) return set;
     return lookupVariable(name);
   }
-}
+  }
     else {      return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
   }
@@ -1095,16 +1088,16 @@ public class CompilationUnit extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
-    if(caller == getTypeDeclListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    if(caller == getTypeDeclListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     Collection list = importedMethods(name);
     if(!list.isEmpty()) return list;
     list = importedMethodsOnDemand(name);
     if(!list.isEmpty()) return list;
     return lookupMethod(name);
   }
-}
+  }
     else {      return getParent().Define_Collection_lookupMethod(this, caller, name);
     }
   }

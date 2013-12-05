@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -60,14 +59,16 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public EnumInstanceExpr copy() {
-      try {
-        EnumInstanceExpr node = (EnumInstanceExpr)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      EnumInstanceExpr node = (EnumInstanceExpr) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -77,12 +78,9 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public EnumInstanceExpr fullCopy() {
-    try {
-      EnumInstanceExpr tree = (EnumInstanceExpr) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
+    EnumInstanceExpr tree = (EnumInstanceExpr) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
           switch (i) {
           case 1:
             tree.children[i] = null;
@@ -91,19 +89,14 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
             tree.children[i] = new List();
             continue;
           }
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -192,8 +185,6 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
     getTypeDeclOpt().setChild(node, 0);
   }
   /**
-   * Retrieves the optional node for the TypeDecl child. This is the {@code Opt} node containing the child TypeDecl, not the actual child!
-   * @return The optional node for child the TypeDecl child.
    * @apilevel low-level
    * @ast method 
    * 
@@ -374,7 +365,7 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
     3) An enum constant may be followed by arguments, which are passed to the
     constructor of the enum type when the constant is created during class
     initialization as described later in this section. The constructor to be
-    invoked is chosen using the normal overloading rules (\u00d4\u00f8\u03a915.12.2). If the
+    invoked is chosen using the normal overloading rules (\ufffd\ufffd\ufffd15.12.2). If the
     arguments are omitted, an empty argument list is assumed. 
   * @attribute syn nta
    * @aspect Enums
@@ -383,7 +374,7 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public Access getAccess() {
     if(getAccess_computed) {
-      return (Access)ASTNode.getChild(this, getAccessChildPosition());
+      return (Access) getChild(getAccessChildPosition());
     }
     ASTNode$State state = state();
   int num = state.boundariesCrossed;
@@ -391,7 +382,7 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
     getAccess_value = getAccess_compute();
       setAccess(getAccess_value);
       if(isFinal && num == state().boundariesCrossed) getAccess_computed = true;
-    return (Access)ASTNode.getChild(this, getAccessChildPosition());
+    return (Access) getChild(getAccessChildPosition());
   }
   /**
    * @apilevel internal
@@ -415,7 +406,7 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public List<Expr> getArgList() {
     if(getArgList_computed) {
-      return (List<Expr>)ASTNode.getChild(this, getArgListChildPosition());
+      return (List<Expr>) getChild(getArgListChildPosition());
     }
     ASTNode$State state = state();
   int num = state.boundariesCrossed;
@@ -423,7 +414,7 @@ public class EnumInstanceExpr extends ClassInstanceExpr implements Cloneable {
     getArgList_value = getArgList_compute();
     setArgList(getArgList_value);
       if(isFinal && num == state().boundariesCrossed) getArgList_computed = true;
-    return (List<Expr>)ASTNode.getChild(this, getArgListChildPosition());
+    return (List<Expr>) getChild(getArgListChildPosition());
   }
   /**
    * @apilevel internal

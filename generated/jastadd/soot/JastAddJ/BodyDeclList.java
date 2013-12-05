@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -32,11 +31,11 @@ public class BodyDeclList extends List implements Cloneable {
   public void flushCache() {
     super.flushCache();
     localMethodSignatureCopy_MethodDecl_MemberSubstitutor_values = null;
-    localFieldCopy_FieldDeclaration_MemberSubstitutor_values = null;
-    localClassDeclCopy_ClassDecl_MemberSubstitutor_values = null;
-    localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_values = null;
-    constructorCopy_ConstructorDecl_MemberSubstitutor_values = null;
-  }
+    localMethodSignatureCopy_MethodDecl_MemberSubstitutor_list = null;    localFieldCopy_FieldDeclaration_MemberSubstitutor_values = null;
+    localFieldCopy_FieldDeclaration_MemberSubstitutor_list = null;    localClassDeclCopy_ClassDecl_MemberSubstitutor_values = null;
+    localClassDeclCopy_ClassDecl_MemberSubstitutor_list = null;    localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_values = null;
+    localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_list = null;    constructorCopy_ConstructorDecl_MemberSubstitutor_values = null;
+    constructorCopy_ConstructorDecl_MemberSubstitutor_list = null;  }
   /**
    * @apilevel internal
    */
@@ -50,11 +49,11 @@ public class BodyDeclList extends List implements Cloneable {
   public BodyDeclList clone() throws CloneNotSupportedException {
     BodyDeclList node = (BodyDeclList)super.clone();
     node.localMethodSignatureCopy_MethodDecl_MemberSubstitutor_values = null;
-    node.localFieldCopy_FieldDeclaration_MemberSubstitutor_values = null;
-    node.localClassDeclCopy_ClassDecl_MemberSubstitutor_values = null;
-    node.localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_values = null;
-    node.constructorCopy_ConstructorDecl_MemberSubstitutor_values = null;
-    node.in$Circle(false);
+    node.localMethodSignatureCopy_MethodDecl_MemberSubstitutor_list = null;    node.localFieldCopy_FieldDeclaration_MemberSubstitutor_values = null;
+    node.localFieldCopy_FieldDeclaration_MemberSubstitutor_list = null;    node.localClassDeclCopy_ClassDecl_MemberSubstitutor_values = null;
+    node.localClassDeclCopy_ClassDecl_MemberSubstitutor_list = null;    node.localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_values = null;
+    node.localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_list = null;    node.constructorCopy_ConstructorDecl_MemberSubstitutor_values = null;
+    node.constructorCopy_ConstructorDecl_MemberSubstitutor_list = null;    node.in$Circle(false);
     node.is$Final(false);
     return node;
   }
@@ -63,14 +62,16 @@ public class BodyDeclList extends List implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDeclList copy() {
-      try {
-        BodyDeclList node = (BodyDeclList)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      BodyDeclList node = (BodyDeclList) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -80,25 +81,17 @@ public class BodyDeclList extends List implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDeclList fullCopy() {
-    try {
-      BodyDeclList tree = (BodyDeclList) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    BodyDeclList tree = (BodyDeclList) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -167,8 +160,8 @@ public class BodyDeclList extends List implements Cloneable {
       localMethodSignatureCopy_MethodDecl_MemberSubstitutor_list.is$Final = true;
       localMethodSignatureCopy_MethodDecl_MemberSubstitutor_list.setParent(this);
     }
+    localMethodSignatureCopy_MethodDecl_MemberSubstitutor_list.add(localMethodSignatureCopy_MethodDecl_MemberSubstitutor_value);
     if(localMethodSignatureCopy_MethodDecl_MemberSubstitutor_value != null) {
-      localMethodSignatureCopy_MethodDecl_MemberSubstitutor_list.add(localMethodSignatureCopy_MethodDecl_MemberSubstitutor_value);
       localMethodSignatureCopy_MethodDecl_MemberSubstitutor_value.is$Final = true;
     }
       if(true) localMethodSignatureCopy_MethodDecl_MemberSubstitutor_values.put(_parameters, localMethodSignatureCopy_MethodDecl_MemberSubstitutor_value);
@@ -211,8 +204,8 @@ public class BodyDeclList extends List implements Cloneable {
       localFieldCopy_FieldDeclaration_MemberSubstitutor_list.is$Final = true;
       localFieldCopy_FieldDeclaration_MemberSubstitutor_list.setParent(this);
     }
+    localFieldCopy_FieldDeclaration_MemberSubstitutor_list.add(localFieldCopy_FieldDeclaration_MemberSubstitutor_value);
     if(localFieldCopy_FieldDeclaration_MemberSubstitutor_value != null) {
-      localFieldCopy_FieldDeclaration_MemberSubstitutor_list.add(localFieldCopy_FieldDeclaration_MemberSubstitutor_value);
       localFieldCopy_FieldDeclaration_MemberSubstitutor_value.is$Final = true;
     }
       if(true) localFieldCopy_FieldDeclaration_MemberSubstitutor_values.put(_parameters, localFieldCopy_FieldDeclaration_MemberSubstitutor_value);
@@ -255,8 +248,8 @@ public class BodyDeclList extends List implements Cloneable {
       localClassDeclCopy_ClassDecl_MemberSubstitutor_list.is$Final = true;
       localClassDeclCopy_ClassDecl_MemberSubstitutor_list.setParent(this);
     }
+    localClassDeclCopy_ClassDecl_MemberSubstitutor_list.add(localClassDeclCopy_ClassDecl_MemberSubstitutor_value);
     if(localClassDeclCopy_ClassDecl_MemberSubstitutor_value != null) {
-      localClassDeclCopy_ClassDecl_MemberSubstitutor_list.add(localClassDeclCopy_ClassDecl_MemberSubstitutor_value);
       localClassDeclCopy_ClassDecl_MemberSubstitutor_value.is$Final = true;
     }
       if(true) localClassDeclCopy_ClassDecl_MemberSubstitutor_values.put(_parameters, localClassDeclCopy_ClassDecl_MemberSubstitutor_value);
@@ -300,8 +293,8 @@ public class BodyDeclList extends List implements Cloneable {
       localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_list.is$Final = true;
       localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_list.setParent(this);
     }
+    localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_list.add(localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_value);
     if(localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_value != null) {
-      localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_list.add(localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_value);
       localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_value.is$Final = true;
     }
       if(true) localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_values.put(_parameters, localInterfaceDeclCopy_InterfaceDecl_MemberSubstitutor_value);
@@ -345,8 +338,8 @@ public class BodyDeclList extends List implements Cloneable {
       constructorCopy_ConstructorDecl_MemberSubstitutor_list.is$Final = true;
       constructorCopy_ConstructorDecl_MemberSubstitutor_list.setParent(this);
     }
+    constructorCopy_ConstructorDecl_MemberSubstitutor_list.add(constructorCopy_ConstructorDecl_MemberSubstitutor_value);
     if(constructorCopy_ConstructorDecl_MemberSubstitutor_value != null) {
-      constructorCopy_ConstructorDecl_MemberSubstitutor_list.add(constructorCopy_ConstructorDecl_MemberSubstitutor_value);
       constructorCopy_ConstructorDecl_MemberSubstitutor_value.is$Final = true;
     }
       if(true) constructorCopy_ConstructorDecl_MemberSubstitutor_values.put(_parameters, constructorCopy_ConstructorDecl_MemberSubstitutor_value);

@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -66,14 +65,16 @@ public class EnumDecl extends ClassDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public EnumDecl copy() {
-      try {
-        EnumDecl node = (EnumDecl)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      EnumDecl node = (EnumDecl) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -83,30 +84,22 @@ public class EnumDecl extends ClassDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public EnumDecl fullCopy() {
-    try {
-      EnumDecl tree = (EnumDecl) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
+    EnumDecl tree = (EnumDecl) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
           switch (i) {
           case 4:
             tree.children[i] = new Opt();
             continue;
           }
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -793,7 +786,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
   /* It is a compile-time error if the return type of a method declared in an
   annotation type is any type other than one of the following: one of the
   primitive types, String, Class and any invocation of Class, an enum type
-  (\u00df8.9), an annotation type, or an array (\u00df10) of one of the preceding types.* @attribute syn
+  (\ufffd8.9), an annotation type, or an array (\ufffd10) of one of the preceding types.* @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:121
    */
@@ -805,7 +798,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
   }
   /* 
      1) It is a compile-time error to attempt to explicitly instantiate an enum type
-     (\u00d4\u00f8\u03a915.9.1).
+     (\ufffd\ufffd\ufffd15.9.1).
   * @attribute syn
    * @aspect Enums
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:16
@@ -864,7 +857,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public Opt getSuperClassAccessOpt() {
     if(getSuperClassAccessOpt_computed) {
-      return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
+      return (Opt) getChild(getSuperClassAccessOptChildPosition());
     }
     ASTNode$State state = state();
   int num = state.boundariesCrossed;
@@ -872,7 +865,7 @@ public class EnumDecl extends ClassDecl implements Cloneable {
     getSuperClassAccessOpt_value = getSuperClassAccessOpt_compute();
     setSuperClassAccessOpt(getSuperClassAccessOpt_value);
       if(isFinal && num == state().boundariesCrossed) getSuperClassAccessOpt_computed = true;
-    return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
+    return (Opt) getChild(getSuperClassAccessOptChildPosition());
   }
   /**
    * @apilevel internal

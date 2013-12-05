@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -53,14 +52,16 @@ public class ResourceDeclaration extends VariableDeclaration implements Cloneabl
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ResourceDeclaration copy() {
-      try {
-        ResourceDeclaration node = (ResourceDeclaration)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      ResourceDeclaration node = (ResourceDeclaration) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -70,25 +71,17 @@ public class ResourceDeclaration extends VariableDeclaration implements Cloneabl
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ResourceDeclaration fullCopy() {
-    try {
-      ResourceDeclaration tree = (ResourceDeclaration) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    ResourceDeclaration tree = (ResourceDeclaration) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
 	 * Type checking for TWR.
@@ -311,8 +304,6 @@ public class ResourceDeclaration extends VariableDeclaration implements Cloneabl
     getInitOpt().setChild(node, 0);
   }
   /**
-   * Retrieves the optional node for the Init child. This is the {@code Opt} node containing the child Init, not the actual child!
-   * @return The optional node for child the Init child.
    * @apilevel low-level
    * @ast method 
    * 

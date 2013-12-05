@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -86,14 +85,16 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ForStmt copy() {
-      try {
-        ForStmt node = (ForStmt)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      ForStmt node = (ForStmt) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -103,25 +104,17 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ForStmt fullCopy() {
-    try {
-      ForStmt tree = (ForStmt) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    ForStmt tree = (ForStmt) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -439,8 +432,6 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
     getConditionOpt().setChild(node, 0);
   }
   /**
-   * Retrieves the optional node for the Condition child. This is the {@code Opt} node containing the child Condition, not the actual child!
-   * @return The optional node for child the Condition child.
    * @apilevel low-level
    * @ast method 
    * 
@@ -617,7 +608,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:72
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:71
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean targetOf(ContinueStmt stmt) {
@@ -641,7 +632,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:80
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:79
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean targetOf(BreakStmt stmt) {
@@ -1144,9 +1135,9 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
    * @apilevel internal
    */
   public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(caller == getUpdateStmtListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    if(caller == getUpdateStmtListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     if(!getStmt().isDAafter(v))
       return false;
     for(Iterator iter = targetContinues().iterator(); iter.hasNext(); ) {
@@ -1156,7 +1147,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
     }
     return true;
   }
-}
+  }
     else if(caller == getStmtNoTransform()){
     if(hasCondition() && getCondition().isDAafterTrue(v))
       return true;
@@ -1167,10 +1158,10 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
     else if(caller == getConditionOptNoTransform()) {
       return isDAafterInitialization(v);
     }
-    else if(caller == getInitStmtListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-      return i == 0 ? isDAbefore(v) : getInitStmt(i-1).isDAafter(v);
-    }
+    else if(caller == getInitStmtListNoTransform())  {
+    int i = caller.getIndexOfChild(child);
+    return i == 0 ? isDAbefore(v) : getInitStmt(i-1).isDAafter(v);
+  }
     else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
   }
@@ -1179,9 +1170,9 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
    * @apilevel internal
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(caller == getUpdateStmtListNoTransform()) { 
-   int i = caller.getIndexOfChild(child);
-{
+    if(caller == getUpdateStmtListNoTransform())  { 
+    int i = caller.getIndexOfChild(child);
+    {
     if(!isDUbeforeCondition(v)) // start a circular evaluation here
       return false;
     if(i == 0) {
@@ -1197,7 +1188,7 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
     else
       return getUpdateStmt(i-1).isDUafter(v);
   }
-}
+  }
     else if(caller == getStmtNoTransform()) {
       return isDUbeforeCondition(v) && (hasCondition() ?
     getCondition().isDUafterTrue(v) : isDUafterInit(v));
@@ -1205,10 +1196,10 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
     else if(caller == getConditionOptNoTransform()) {
       return isDUbeforeCondition(v);
     }
-    else if(caller == getInitStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return childIndex == 0 ? isDUbefore(v) : getInitStmt(childIndex-1).isDUafter(v);
-    }
+    else if(caller == getInitStmtListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return childIndex == 0 ? isDUbefore(v) : getInitStmt(childIndex-1).isDUafter(v);
+  }
     else {      return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
   }
@@ -1220,17 +1211,17 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
     if(caller == getStmtNoTransform()) {
       return localLookup(name);
     }
-    else if(caller == getUpdateStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return localLookup(name);
-    }
+    else if(caller == getUpdateStmtListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return localLookup(name);
+  }
     else if(caller == getConditionOptNoTransform()) {
       return localLookup(name);
     }
-    else if(caller == getInitStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return localLookup(name);
-    }
+    else if(caller == getInitStmtListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return localLookup(name);
+  }
     else {      return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
   }
@@ -1242,10 +1233,10 @@ public class ForStmt extends BranchTargetStmt implements Cloneable, VariableScop
     if(caller == getStmtNoTransform()) {
       return this;
     }
-    else if(caller == getInitStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return this;
-    }
+    else if(caller == getInitStmtListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return this;
+  }
     else {      return getParent().Define_VariableScope_outerScope(this, caller);
     }
   }

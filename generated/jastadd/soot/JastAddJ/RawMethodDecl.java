@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -52,14 +51,16 @@ public class RawMethodDecl extends ParMethodDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public RawMethodDecl copy() {
-      try {
-        RawMethodDecl node = (RawMethodDecl)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      RawMethodDecl node = (RawMethodDecl) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -69,25 +70,17 @@ public class RawMethodDecl extends ParMethodDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public RawMethodDecl fullCopy() {
-    try {
-      RawMethodDecl tree = (RawMethodDecl) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    RawMethodDecl tree = (RawMethodDecl) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -544,8 +537,6 @@ public class RawMethodDecl extends ParMethodDecl implements Cloneable {
     getBlockOpt().setChild(node, 0);
   }
   /**
-   * Retrieves the optional node for the Block child. This is the {@code Opt} node containing the child Block, not the actual child!
-   * @return The optional node for child the Block child.
    * @apilevel low-level
    * @ast method 
    * 

@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -59,14 +58,16 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AnnotationDecl copy() {
-      try {
-        AnnotationDecl node = (AnnotationDecl)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      AnnotationDecl node = (AnnotationDecl) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -76,30 +77,22 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AnnotationDecl fullCopy() {
-    try {
-      AnnotationDecl tree = (AnnotationDecl) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
+    AnnotationDecl tree = (AnnotationDecl) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
           switch (i) {
           case 3:
             tree.children[i] = new List();
             continue;
           }
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -508,7 +501,7 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public List getSuperInterfaceIdList() {
     if(getSuperInterfaceIdList_computed) {
-      return (List)ASTNode.getChild(this, getSuperInterfaceIdListChildPosition());
+      return (List) getChild(getSuperInterfaceIdListChildPosition());
     }
     ASTNode$State state = state();
   int num = state.boundariesCrossed;
@@ -516,7 +509,7 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
     getSuperInterfaceIdList_value = getSuperInterfaceIdList_compute();
     setSuperInterfaceIdList(getSuperInterfaceIdList_value);
       if(isFinal && num == state().boundariesCrossed) getSuperInterfaceIdList_computed = true;
-    return (List)ASTNode.getChild(this, getSuperInterfaceIdListChildPosition());
+    return (List) getChild(getSuperInterfaceIdListChildPosition());
   }
   /**
    * @apilevel internal
@@ -527,7 +520,7 @@ public class AnnotationDecl extends InterfaceDecl implements Cloneable {
   /* It is a compile-time error if the return type of a method declared in an
   annotation type is any type other than one of the following: one of the
   primitive types, String, Class and any invocation of Class, an enum type
-  (\u00df8.9), an annotation type, or an array (\u00df10) of one of the preceding types.* @attribute syn
+  (\ufffd8.9), an annotation type, or an array (\ufffd10) of one of the preceding types.* @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:121
    */

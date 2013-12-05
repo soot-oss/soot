@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -76,14 +75,16 @@ public class InterfaceDeclSubstituted extends InterfaceDecl implements Cloneable
    */
   @SuppressWarnings({"unchecked", "cast"})
   public InterfaceDeclSubstituted copy() {
-      try {
-        InterfaceDeclSubstituted node = (InterfaceDeclSubstituted)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      InterfaceDeclSubstituted node = (InterfaceDeclSubstituted) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -93,30 +94,22 @@ public class InterfaceDeclSubstituted extends InterfaceDecl implements Cloneable
    */
   @SuppressWarnings({"unchecked", "cast"})
   public InterfaceDeclSubstituted fullCopy() {
-    try {
-      InterfaceDeclSubstituted tree = (InterfaceDeclSubstituted) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
+    InterfaceDeclSubstituted tree = (InterfaceDeclSubstituted) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
           switch (i) {
           case 4:
             tree.children[i] = new List();
             continue;
           }
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -535,7 +528,7 @@ public class InterfaceDeclSubstituted extends InterfaceDecl implements Cloneable
   @SuppressWarnings({"unchecked", "cast"})
   public List getBodyDeclList() {
     if(getBodyDeclList_computed) {
-      return (List)ASTNode.getChild(this, getBodyDeclListChildPosition());
+      return (List) getChild(getBodyDeclListChildPosition());
     }
     ASTNode$State state = state();
   int num = state.boundariesCrossed;
@@ -543,7 +536,7 @@ public class InterfaceDeclSubstituted extends InterfaceDecl implements Cloneable
     getBodyDeclList_value = getBodyDeclList_compute();
     setBodyDeclList(getBodyDeclList_value);
       if(isFinal && num == state().boundariesCrossed) getBodyDeclList_computed = true;
-    return (List)ASTNode.getChild(this, getBodyDeclListChildPosition());
+    return (List) getChild(getBodyDeclListChildPosition());
   }
   /**
    * @apilevel internal

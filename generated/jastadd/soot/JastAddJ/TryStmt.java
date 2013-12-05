@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -120,14 +119,16 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TryStmt copy() {
-      try {
-        TryStmt node = (TryStmt)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      TryStmt node = (TryStmt) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -137,30 +138,22 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TryStmt fullCopy() {
-    try {
-      TryStmt tree = (TryStmt) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    TryStmt tree = (TryStmt) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:61
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:60
    */
   public void collectBranches(Collection c) {
     c.addAll(escapedBranches());
@@ -168,7 +161,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:162
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:161
    */
   public Stmt branchTarget(Stmt branchStmt) {
     if(targetBranches().contains(branchStmt))
@@ -178,7 +171,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:200
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:199
    */
   public void collectFinally(Stmt branchStmt, ArrayList list) {
     if(hasFinally() && !branchesFromFinally().contains(branchStmt))
@@ -606,8 +599,6 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
     getFinallyOpt().setChild(node, 0);
   }
   /**
-   * Retrieves the optional node for the Finally child. This is the {@code Opt} node containing the child Finally, not the actual child!
-   * @return The optional node for child the Finally child.
    * @apilevel low-level
    * @ast method 
    * 
@@ -639,7 +630,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:116
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:115
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection branches() {
@@ -674,7 +665,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:124
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:123
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection branchesFromFinally() {
@@ -708,7 +699,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:132
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:131
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection targetBranches() {
@@ -742,7 +733,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:140
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:139
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection escapedBranches() {
@@ -1384,10 +1375,10 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
     if(caller == getFinallyOptNoTransform()) {
       return isDAbefore(v);
     }
-    else if(caller == getCatchClauseListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return getBlock().isDAbefore(v);
-    }
+    else if(caller == getCatchClauseListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return getBlock().isDAbefore(v);
+  }
     else if(caller == getBlockNoTransform()) {
       return isDAbefore(v);
     }
@@ -1407,16 +1398,16 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
         return false;
     return true;
   }
-    else if(caller == getCatchClauseListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    else if(caller == getCatchClauseListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     if(!getBlock().isDUafter(v))
       return false;
     if(!getBlock().isDUeverywhere(v))
       return false;
     return true;
   }
-}
+  }
     else if(caller == getBlockNoTransform()) {
       return isDUbefore(v);
     }
@@ -1436,14 +1427,14 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
       return true;
     return handlesException(exceptionType);
   }
-    else if(caller == getCatchClauseListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    else if(caller == getCatchClauseListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     if(hasFinally() && !getFinally().canCompleteNormally())
       return true;
     return handlesException(exceptionType);
   }
-}
+  }
     else {      return getParent().Define_boolean_handlesException(this, caller, exceptionType);
     }
   }
@@ -1466,9 +1457,9 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
    * @apilevel internal
    */
   public boolean Define_boolean_reachableCatchClause(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
-    if(caller == getCatchClauseListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    if(caller == getCatchClauseListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     for(int i = 0; i < childIndex; i++)
       if(getCatchClause(i).handles(exceptionType))
         return false;
@@ -1478,7 +1469,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
       return true;
     return false;
   }
-}
+  }
     else {      return getParent().Define_boolean_reachableCatchClause(this, caller, exceptionType);
     }
   }
@@ -1490,10 +1481,10 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
     if(caller == getFinallyOptNoTransform()) {
       return reachable();
     }
-    else if(caller == getCatchClauseListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return reachable();
-    }
+    else if(caller == getCatchClauseListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return reachable();
+  }
     else if(caller == getBlockNoTransform()) {
       return reachable();
     }
@@ -1516,10 +1507,10 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
    * @apilevel internal
    */
   public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
-    if(caller == getCatchClauseListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return exceptionRanges();
-    }
+    if(caller == getCatchClauseListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return exceptionRanges();
+  }
     else if(caller == getBlockNoTransform()) {
       return exceptionRanges();
     }
@@ -1531,9 +1522,9 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
    * @apilevel internal
    */
   public Collection<TypeDecl> Define_Collection_TypeDecl__caughtExceptions(ASTNode caller, ASTNode child) {
-    if(caller == getCatchClauseListNoTransform()) { 
-   int index = caller.getIndexOfChild(child);
-{
+    if(caller == getCatchClauseListNoTransform())  { 
+    int index = caller.getIndexOfChild(child);
+    {
 		Collection<TypeDecl> excp = new HashSet<TypeDecl>();
 		getBlock().collectExceptions(excp, this);
 		Collection<TypeDecl> caught = new LinkedList<TypeDecl>();
@@ -1557,7 +1548,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
 		}
 		return caught;
 	}
-}
+  }
     else {      return getParent().Define_Collection_TypeDecl__caughtExceptions(this, caller);
     }
   }
