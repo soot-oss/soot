@@ -1,7 +1,6 @@
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -25,10 +24,20 @@ import soot.coffi.CoffiMethodSource;
  */
 public class FolderPart extends PathPart {
 
-    private HashMap map = new HashMap();
+
+    /**
+     * Maps package names to a collection of the names of files in
+     * the corresponding package directory.
+     */
+    private Map<String, Collection<String>> packageMap =
+      new HashMap<String, Collection<String>>();
 
 
-    private File folder;
+
+    /**
+     * The root folder of this path part.
+     */
+    private final File folder;
 
 
 
@@ -38,8 +47,13 @@ public class FolderPart extends PathPart {
 
 
 
+    /**
+     * @param name The qualified package name
+     * @return <code>true</code> if the given package exists in this source
+     * folder
+     */
     public boolean hasPackage(String name) {
-      return filesInPackage(name) != null;
+      return !filesInPackage(name).isEmpty();
     }
 
 
@@ -48,38 +62,61 @@ public class FolderPart extends PathPart {
       int index = canonicalName.lastIndexOf('.');
       String packageName = index == -1 ? "" : canonicalName.substring(0, index);
       String typeName = canonicalName.substring(index + 1, canonicalName.length());
-      Collection c = filesInPackage(packageName);
-      boolean result = c != null && c.contains(typeName + fileSuffix());
-      return result;
+      String fileName = typeName + fileSuffix();
+      return filesInPackage(packageName).contains(fileName);
     }
 
 
     
-    private Collection filesInPackage(String packageName) {
-      if(!map.containsKey(packageName)) {
-        File f = new File(folder, packageName.replace('.', File.separatorChar));
-        Collection c = Collections.EMPTY_LIST;
-        if(f.exists() && f.isDirectory()) {
-          String[] files = f.list();
-          if(files.length > 0) {
-            c = new HashSet();
-            for(int i = 0; i < files.length; i++)
-              c.add(files[i]);
+    /**
+     * We need to use getCanonicalFile in order to get the case-sensitive
+     * package name on case-insensitive file systems or we might incorrectly
+     * report a package name conflict.
+     *
+     * NB: This does not work well with symlinks!
+     *
+     * @param packageName The qualified name of the package
+     * @return The names of the files and folders in the package
+     */
+    private Collection<String> filesInPackage(String packageName) {
+      if (!packageMap.containsKey(packageName)) {
+        int index = packageName.lastIndexOf('.');
+        String name = packageName.substring(index == -1 ? 0 : index+1);
+        String folderName = packageName.replace('.', File.separatorChar);
+        File pkgFolder = new File(folder, folderName);
+        Collection<String> fileSet = Collections.emptyList();
+        try {
+          // Make sure that there exists a directory with the same name
+          // (case-sensitive) as the requested package
+          File canonical = pkgFolder.getCanonicalFile();
+          if (canonical.isDirectory() && (packageName.isEmpty() ||
+                canonical.getName().equals(name))) {
+            String[] files = canonical.list();
+            if (files.length > 0) {
+              fileSet = new HashSet<String>();
+              for (String file: files) {
+                fileSet.add(file);
+              }
+            }
           }
+        } catch (Exception e) {
+          // Catch IOExceptions etc.
+          // if the exception was thrown by getCanonicalFile we will put
+          // the empty list in the packageMap, indicating that the package
+          // does not exist
         }
-        else
-          c = null;
-        map.put(packageName, c);
+        packageMap.put(packageName, fileSet);
       }
-      return (Collection)map.get(packageName);
+      return packageMap.get(packageName);
     }
 
 
     
     public boolean selectCompilationUnit(String canonicalName) throws IOException {
       if(hasCompilationUnit(canonicalName)) {
-        String fileName = canonicalName.replace('.', File.separatorChar);
-        File classFile = new File(folder, fileName + fileSuffix());
+        String typeName = canonicalName.replace('.', File.separatorChar);
+        String fileName = typeName + fileSuffix();
+        File classFile = new File(folder, fileName);
         if(classFile.isFile()) {
           is = new FileInputStream(classFile);
           age = classFile.lastModified();
@@ -90,6 +127,13 @@ public class FolderPart extends PathPart {
         }
       }
       return false;
+    }
+
+
+
+    @Override
+    public String toString() {
+      return folder.toString();
     }
 
 

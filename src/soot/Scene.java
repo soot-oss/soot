@@ -88,6 +88,7 @@ public class Scene  //extends AbstractHost
         kindNumberer.add( Kind.SPECIAL );
         kindNumberer.add( Kind.CLINIT );
         kindNumberer.add( Kind.THREAD );
+        kindNumberer.add( Kind.ASYNCTASK );
         kindNumberer.add( Kind.FINALIZE );
         kindNumberer.add( Kind.INVOKE_FINALIZE );
         kindNumberer.add( Kind.PRIVILEGED );

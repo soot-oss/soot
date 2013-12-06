@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -117,14 +116,16 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParInterfaceDecl copy() {
-      try {
-        ParInterfaceDecl node = (ParInterfaceDecl)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      ParInterfaceDecl node = (ParInterfaceDecl) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -134,31 +135,23 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParInterfaceDecl fullCopy() {
-    try {
-      ParInterfaceDecl tree = (ParInterfaceDecl) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
+    ParInterfaceDecl tree = (ParInterfaceDecl) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
           switch (i) {
           case 3:
           case 4:
             tree.children[i] = new List();
             continue;
           }
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -874,7 +867,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
   @SuppressWarnings({"unchecked", "cast"})
   public List getSuperInterfaceIdList() {
     if(getSuperInterfaceIdList_computed) {
-      return (List)ASTNode.getChild(this, getSuperInterfaceIdListChildPosition());
+      return (List) getChild(getSuperInterfaceIdListChildPosition());
     }
     ASTNode$State state = state();
   int num = state.boundariesCrossed;
@@ -882,7 +875,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
     getSuperInterfaceIdList_value = getSuperInterfaceIdList_compute();
     setSuperInterfaceIdList(getSuperInterfaceIdList_value);
       if(isFinal && num == state().boundariesCrossed) getSuperInterfaceIdList_computed = true;
-    return (List)ASTNode.getChild(this, getSuperInterfaceIdListChildPosition());
+    return (List) getChild(getSuperInterfaceIdListChildPosition());
   }
   /**
    * @apilevel internal
@@ -910,7 +903,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
   @SuppressWarnings({"unchecked", "cast"})
   public List getBodyDeclList() {
     if(getBodyDeclList_computed) {
-      return (List)ASTNode.getChild(this, getBodyDeclListChildPosition());
+      return (List) getChild(getBodyDeclListChildPosition());
     }
     ASTNode$State state = state();
   int num = state.boundariesCrossed;
@@ -918,7 +911,7 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
     getBodyDeclList_value = getBodyDeclList_compute();
     setBodyDeclList(getBodyDeclList_value);
       if(isFinal && num == state().boundariesCrossed) getBodyDeclList_computed = true;
-    return (List)ASTNode.getChild(this, getBodyDeclListChildPosition());
+    return (List) getChild(getBodyDeclListChildPosition());
   }
   /**
    * @apilevel internal
@@ -1926,10 +1919,10 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-    if(caller == getArgumentListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return NameType.TYPE_NAME;
-    }
+    if(caller == getArgumentListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return NameType.TYPE_NAME;
+  }
     else {      return super.Define_NameType_nameType(caller, child);
     }
   }
@@ -1938,16 +1931,16 @@ public class ParInterfaceDecl extends InterfaceDecl implements Cloneable, ParTyp
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_genericDecl(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) { 
-   int index = caller.getIndexOfChild(child);
-{
+    if(caller == getBodyDeclListNoTransform())  { 
+    int index = caller.getIndexOfChild(child);
+    {
     if(getBodyDecl(index) instanceof MemberTypeDecl) {
       MemberTypeDecl m = (MemberTypeDecl)getBodyDecl(index);
       return extractSingleType(genericDecl().memberTypes(m.typeDecl().name()));
     }
     return genericDecl();
   }
-}
+  }
     else {      return getParent().Define_TypeDecl_genericDecl(this, caller);
     }
   }

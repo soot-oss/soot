@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -34,7 +33,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     rawType_computed = false;
     rawType_value = null;
     lookupParTypeDecl_ArrayList_values = null;
-    usesTypeVariable_visited = -1;
+    lookupParTypeDecl_ArrayList_list = null;    usesTypeVariable_visited = -1;
     usesTypeVariable_computed = false;
     usesTypeVariable_initialized = false;
     subtype_TypeDecl_values = null;
@@ -56,7 +55,7 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     node.rawType_computed = false;
     node.rawType_value = null;
     node.lookupParTypeDecl_ArrayList_values = null;
-    node.usesTypeVariable_visited = -1;
+    node.lookupParTypeDecl_ArrayList_list = null;    node.usesTypeVariable_visited = -1;
     node.usesTypeVariable_computed = false;
     node.usesTypeVariable_initialized = false;
     node.subtype_TypeDecl_values = null;
@@ -71,14 +70,16 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GenericInterfaceDecl copy() {
-      try {
-        GenericInterfaceDecl node = (GenericInterfaceDecl)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      GenericInterfaceDecl node = (GenericInterfaceDecl) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -88,25 +89,17 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GenericInterfaceDecl fullCopy() {
-    try {
-      GenericInterfaceDecl tree = (GenericInterfaceDecl) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    GenericInterfaceDecl tree = (GenericInterfaceDecl) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -772,8 +765,8 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
       lookupParTypeDecl_ArrayList_list.is$Final = true;
       lookupParTypeDecl_ArrayList_list.setParent(this);
     }
+    lookupParTypeDecl_ArrayList_list.add(lookupParTypeDecl_ArrayList_value);
     if(lookupParTypeDecl_ArrayList_value != null) {
-      lookupParTypeDecl_ArrayList_list.add(lookupParTypeDecl_ArrayList_value);
       lookupParTypeDecl_ArrayList_value.is$Final = true;
     }
       if(true) lookupParTypeDecl_ArrayList_values.put(_parameters, lookupParTypeDecl_ArrayList_value);
@@ -1050,10 +1043,10 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @apilevel internal
    */
   public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
-    if(caller == getTypeParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return true;
-    }
+    if(caller == getTypeParameterListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return true;
+  }
     else {      return super.Define_boolean_isNestedType(caller, child);
     }
   }
@@ -1062,10 +1055,10 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
-    if(caller == getTypeParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return this;
-    }
+    if(caller == getTypeParameterListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return this;
+  }
     else {      return super.Define_TypeDecl_enclosingType(caller, child);
     }
   }
@@ -1074,9 +1067,9 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-    if(caller == getBodyDeclListNoTransform()) { 
-   int index = caller.getIndexOfChild(child);
-{
+    if(caller == getBodyDeclListNoTransform())  { 
+    int index = caller.getIndexOfChild(child);
+    {
     SimpleSet c = memberTypes(name);
     if(getBodyDecl(index).visibleTypeParameters())
       c = addTypeVariables(c, name);
@@ -1098,10 +1091,10 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
     return topLevelType().lookupType(name); // Fix to search imports
     // include type parameters if not static
   }
-}
-    else if(caller == getTypeParameterListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+  }
+    else if(caller == getTypeParameterListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     SimpleSet c = memberTypes(name);
     c = addTypeVariables(c, name);
     if(!c.isEmpty()) return c;
@@ -1120,14 +1113,14 @@ public class GenericInterfaceDecl extends InterfaceDecl implements Cloneable, Ge
       return c;
     return topLevelType().lookupType(name); // Fix to search imports
   }
-}
-    else if(caller == getSuperInterfaceIdListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+  }
+    else if(caller == getSuperInterfaceIdListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     SimpleSet c = addTypeVariables(SimpleSet.emptySet, name);
     return !c.isEmpty() ? c : lookupType(name);
   }
-}
+  }
     else {      return super.Define_SimpleSet_lookupType(caller, child, name);
     }
   }

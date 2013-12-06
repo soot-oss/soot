@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -68,14 +67,16 @@ public class ReturnStmt extends Stmt implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ReturnStmt copy() {
-      try {
-        ReturnStmt node = (ReturnStmt)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      ReturnStmt node = (ReturnStmt) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -85,30 +86,22 @@ public class ReturnStmt extends Stmt implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ReturnStmt fullCopy() {
-    try {
-      ReturnStmt tree = (ReturnStmt) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    ReturnStmt tree = (ReturnStmt) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:55
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:54
    */
   public void collectBranches(Collection c) {
     c.add(this);
@@ -287,8 +280,6 @@ public class ReturnStmt extends Stmt implements Cloneable {
     getResultOpt().setChild(node, 0);
   }
   /**
-   * Retrieves the optional node for the Result child. This is the {@code Opt} node containing the child Result, not the actual child!
-   * @return The optional node for child the Result child.
    * @apilevel low-level
    * @ast method 
    * 
@@ -320,7 +311,7 @@ public class ReturnStmt extends Stmt implements Cloneable {
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:186
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:185
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayList finallyList() {

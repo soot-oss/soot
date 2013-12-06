@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -211,8 +210,6 @@ public abstract class IntegralType extends NumericType implements Cloneable {
     getSuperClassAccessOpt().setChild(node, 0);
   }
   /**
-   * Retrieves the optional node for the SuperClassAccess child. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
-   * @return The optional node for child the SuperClassAccess child.
    * @apilevel low-level
    * @ast method 
    * 

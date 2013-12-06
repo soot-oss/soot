@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -34,6 +33,8 @@ public class LongLiteral extends NumericLiteral implements Cloneable {
     super.flushCache();
     type_computed = false;
     type_value = null;
+    constant_computed = false;
+    constant_value = null;
   }
   /**
    * @apilevel internal
@@ -49,6 +50,8 @@ public class LongLiteral extends NumericLiteral implements Cloneable {
     LongLiteral node = (LongLiteral)super.clone();
     node.type_computed = false;
     node.type_value = null;
+    node.constant_computed = false;
+    node.constant_value = null;
     node.in$Circle(false);
     node.is$Final(false);
     return node;
@@ -58,14 +61,16 @@ public class LongLiteral extends NumericLiteral implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public LongLiteral copy() {
-      try {
-        LongLiteral node = (LongLiteral)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      LongLiteral node = (LongLiteral) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -75,25 +80,17 @@ public class LongLiteral extends NumericLiteral implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public LongLiteral fullCopy() {
-    try {
-      LongLiteral tree = (LongLiteral) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    LongLiteral tree = (LongLiteral) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -268,13 +265,36 @@ public class LongLiteral extends NumericLiteral implements Cloneable {
    */
   private TypeDecl type_compute() {  return typeLong();  }
   /**
-   * @attribute syn
-   * @aspect ConstantExpression
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/ConstantExpression.jrag:91
+   * @apilevel internal
    */
+  protected boolean constant_computed = false;
+  /**
+   * @apilevel internal
+   */
+  protected Constant constant_value;
+  /**
+	 * Parse this literal and return a fresh Constant.
+	 * @return a fresh Constant representing this LongLiteral
+	 * @attribute syn
+   * @aspect Literals
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Literals.jrag:161
+   */
+  @SuppressWarnings({"unchecked", "cast"})
   public Constant constant() {
+    if(constant_computed) {
+      return constant_value;
+    }
     ASTNode$State state = state();
-    try {
+  int num = state.boundariesCrossed;
+  boolean isFinal = this.is$Final();
+    constant_value = constant_compute();
+      if(isFinal && num == state().boundariesCrossed) constant_computed = true;
+    return constant_value;
+  }
+  /**
+   * @apilevel internal
+   */
+  private Constant constant_compute() {
 		try {
 			return Constant.create(parseLong());
 		} catch (NumberFormatException e) {
@@ -283,9 +303,6 @@ public class LongLiteral extends NumericLiteral implements Cloneable {
 			return c;
 		}
 	}
-    finally {
-    }
-  }
   /**
 	 * Utility attribute for literal rewriting.
 	 * Any of the NumericLiteral subclasses have already

@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -76,14 +75,16 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GenericClassDeclSubstituted copy() {
-      try {
-        GenericClassDeclSubstituted node = (GenericClassDeclSubstituted)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      GenericClassDeclSubstituted node = (GenericClassDeclSubstituted) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -93,30 +94,22 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
    */
   @SuppressWarnings({"unchecked", "cast"})
   public GenericClassDeclSubstituted fullCopy() {
-    try {
-      GenericClassDeclSubstituted tree = (GenericClassDeclSubstituted) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
+    GenericClassDeclSubstituted tree = (GenericClassDeclSubstituted) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
           switch (i) {
           case 6:
             tree.children[i] = new List();
             continue;
           }
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -288,8 +281,6 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
     getSuperClassAccessOpt().setChild(node, 0);
   }
   /**
-   * Retrieves the optional node for the SuperClassAccess child. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
-   * @return The optional node for child the SuperClassAccess child.
    * @apilevel low-level
    * @ast method 
    * 
@@ -726,7 +717,7 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
   @SuppressWarnings({"unchecked", "cast"})
   public List getBodyDeclList() {
     if(getBodyDeclList_computed) {
-      return (List)ASTNode.getChild(this, getBodyDeclListChildPosition());
+      return (List) getChild(getBodyDeclListChildPosition());
     }
     ASTNode$State state = state();
   int num = state.boundariesCrossed;
@@ -734,7 +725,7 @@ public class GenericClassDeclSubstituted extends GenericClassDecl implements Clo
     getBodyDeclList_value = getBodyDeclList_compute();
     setBodyDeclList(getBodyDeclList_value);
       if(isFinal && num == state().boundariesCrossed) getBodyDeclList_computed = true;
-    return (List)ASTNode.getChild(this, getBodyDeclListChildPosition());
+    return (List) getChild(getBodyDeclListChildPosition());
   }
   /**
    * @apilevel internal

@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -64,14 +63,16 @@ public class ArrayInit extends Expr implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayInit copy() {
-      try {
-        ArrayInit node = (ArrayInit)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      ArrayInit node = (ArrayInit) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -81,25 +82,17 @@ public class ArrayInit extends Expr implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayInit fullCopy() {
-    try {
-      ArrayInit tree = (ArrayInit) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    ArrayInit tree = (ArrayInit) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -498,10 +491,10 @@ public class ArrayInit extends Expr implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
-    if(caller == getInitListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return true;
-    }
+    if(caller == getInitListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return true;
+  }
     else {      return getParent().Define_boolean_isSource(this, caller);
     }
   }
@@ -510,10 +503,10 @@ public class ArrayInit extends Expr implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(caller == getInitListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return computeDABefore(childIndex, v);
-    }
+    if(caller == getInitListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return computeDABefore(childIndex, v);
+  }
     else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
   }
@@ -522,10 +515,10 @@ public class ArrayInit extends Expr implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(caller == getInitListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return computeDUbefore(childIndex, v);
-    }
+    if(caller == getInitListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return computeDUbefore(childIndex, v);
+  }
     else {      return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
   }
@@ -534,10 +527,10 @@ public class ArrayInit extends Expr implements Cloneable {
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_declType(ASTNode caller, ASTNode child) {
-    if(caller == getInitListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return declType().componentType();
-    }
+    if(caller == getInitListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return declType().componentType();
+  }
     else {      return getParent().Define_TypeDecl_declType(this, caller);
     }
   }
@@ -546,10 +539,10 @@ public class ArrayInit extends Expr implements Cloneable {
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_assignConvertedType(ASTNode caller, ASTNode child) {
-    if(caller == getInitListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return declType().componentType();
-    }
+    if(caller == getInitListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return declType().componentType();
+  }
     else {      return getParent().Define_TypeDecl_assignConvertedType(this, caller);
     }
   }
@@ -558,10 +551,10 @@ public class ArrayInit extends Expr implements Cloneable {
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_expectedType(ASTNode caller, ASTNode child) {
-    if(caller == getInitListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return expectedType().componentType();
-    }
+    if(caller == getInitListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return expectedType().componentType();
+  }
     else {      return getParent().Define_TypeDecl_expectedType(this, caller);
     }
   }

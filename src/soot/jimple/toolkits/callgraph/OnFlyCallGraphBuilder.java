@@ -18,17 +18,11 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -77,8 +71,6 @@ import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.options.CGOptions;
 import soot.options.Options;
-import soot.tagkit.Host;
-import soot.tagkit.SourceLnPosTag;
 import soot.util.LargeNumberedMap;
 import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
@@ -436,11 +428,13 @@ public final class OnFlyCallGraphBuilder
         for( Iterator siteIt = ((Collection) receiverToSites.get( receiver )).iterator(); siteIt.hasNext(); ) {
             final VirtualCallSite site = (VirtualCallSite) siteIt.next();
             InstanceInvokeExpr iie = site.iie();
-            if( site.kind() == Kind.THREAD 
-            && !fh.canStoreType( type, clRunnable ) )
+            if( site.kind() == Kind.THREAD && !fh.canStoreType( type, clRunnable))
+                continue;
+            if( site.kind() == Kind.ASYNCTASK && !fh.canStoreType( type, clAsyncTask ))
                 continue;
 
-            if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD ) {
+            if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD
+            		&& site.kind != Kind.ASYNCTASK ) {
             	SootMethod target = VirtualCalls.v().resolveSpecial( 
                             (SpecialInvokeExpr) site.iie(),
                             site.subSig(),
@@ -549,6 +543,10 @@ public final class OnFlyCallGraphBuilder
                     if( subSig == sigStart ) {
                         addVirtualCallSite( s, m, receiver, iie, sigRun,
                                 Kind.THREAD );
+                    }
+                    if( subSig == sigExecute  ) {
+                        addVirtualCallSite( s, m, receiver, iie, sigDoInBackground,
+                                Kind.ASYNCTASK );
                     }
                 } else {
                 	SootMethod tgt = ie.getMethod();
@@ -700,11 +698,16 @@ public final class OnFlyCallGraphBuilder
         findOrAdd( "void start()" );
     protected final NumberedString sigRun = Scene.v().getSubSigNumberer().
         findOrAdd( "void run()" );
+    protected final NumberedString sigExecute = Scene.v().getSubSigNumberer().
+            findOrAdd( "android.os.AsyncTask execute(java.lang.Object[])" );
     protected final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Object run()" );
+    protected final NumberedString sigDoInBackground = Scene.v().getSubSigNumberer().
+            findOrAdd( "java.lang.Object doInBackground(java.lang.Object[])" );
     protected final NumberedString sigForName = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Class forName(java.lang.String)" );
     protected final RefType clRunnable = RefType.v("java.lang.Runnable");
+    protected final RefType clAsyncTask = RefType.v("android.os.AsyncTask");
     
 }
 
