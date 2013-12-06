@@ -256,7 +256,7 @@ public abstract class DexTransformer extends BodyTransformer {
 							++depth, newVisitedDefs);
 					if (depth == 0) {
 						aType = t;
-						// break;
+						//break;
 					} else {
 						// return t;
 						aType = t;
@@ -282,6 +282,9 @@ public abstract class DexTransformer extends BodyTransformer {
 						"ERROR: base local def must be AssignStmt or IdentityStmt! "
 								+ baseDef);
 			}
+
+			if (aType != null)
+			    break;
 
 		} // loop
 
