@@ -19,10 +19,10 @@
 
 package soot.toolkits.scalar;
 import java.util.ArrayList;
+import java.util.BitSet;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,7 +49,31 @@ public class SmartLocalDefs implements LocalDefs
                                    // where it's defined
     private final UnitGraph graph;
     private final LocalDefsAnalysis analysis;
-    private final Map<Unit, Set<?>> unitToMask;
+    private final Map<Unit, BitSet> liveLocalsAfter;
+    
+
+    /**
+     * Intersects 2 sets and returns the result as a list
+     * @param a
+     * @param b
+     * @return
+     */
+	private static <T> List<T> asList( Set<T> a, Set<T> b ) {			
+		if ( a == null || b == null || a.isEmpty() || b.isEmpty() ) {
+			return Collections.<T>emptyList();
+		}
+
+		if ( a.size() < b.size() ) {
+			List<T> c = new ArrayList<T>(a);
+			c.retainAll(b);
+			return c;
+		} else {
+			List<T> c = new ArrayList<T>(b);
+			c.retainAll(a);		
+			return c;	
+		}
+	}
+	
     public SmartLocalDefs(UnitGraph g, LiveLocals live) {
         this.graph = g;
 
@@ -59,11 +83,29 @@ public class SmartLocalDefs implements LocalDefs
         if(Options.v().verbose())
             G.v().out.println("[" + g.getBody().getMethod().getName() +
                                "]     Constructing SmartLocalDefs...");
-
+        
+        // reassign local numbers for compact bitsets
+		int n = graph.getBody().getLocalCount();
+		Local[] locals = new Local[n];
+		int[] oldNumbers = new int[n];
+		n = 0;
+		for (Local local : graph.getBody().getLocals() ) {
+			locals[n] = local;
+			oldNumbers[n] = local.getNumber();
+			local.setNumber(n++);
+		}
+        
+        
         localToDefs = new HashMap<Local, Set<Unit>>();
-        unitToMask = new HashMap<Unit, Set<?>>();
+        liveLocalsAfter = new HashMap<Unit, BitSet>();
         for( Unit u : graph ) {  
-            unitToMask.put(u, new HashSet(live.getLiveLocalsAfter(u)));
+        	// translate locals to bits
+			BitSet set = new BitSet(n);
+			for ( Object o : live.getLiveLocalsAfter(u) ) {
+				set.set(((Local)o).getNumber());
+			}
+			liveLocalsAfter.put(u, set);
+			
             
             Local l = localDef(u);
             if( l == null ) continue;
@@ -85,15 +127,18 @@ public class SmartLocalDefs implements LocalDefs
         for( Unit u : graph ) {            
             for( ValueBox vb : u.getUseBoxes() ) {
                 Value v = vb.getValue();
-                if( !(v instanceof Local) ) continue;
-                Set<Unit> analysisResult = analysis.getFlowBefore(u);
-                ArrayList<Unit> al = new ArrayList<Unit>();
-                for (Unit unit : defsOf((Local)v)) {
-                    if(analysisResult.contains(unit)) al.add(unit);
+                if( v instanceof Local ) {
+                	answer.put(new Cons(u, v), asList(defsOf((Local)v), analysis.getFlowBefore(u)));
                 }
-                answer.put(new Cons(u, v), al);
             }
         }
+        
+
+		// restore local numbering
+		for (int i = 0; i < locals.length; i++ ) {
+			locals[i].setNumber(oldNumbers[i]);
+		}
+        
         if(Options.v().time())
             Timers.v().defsTimer.end();
 
@@ -138,35 +183,34 @@ public class SmartLocalDefs implements LocalDefs
         @Override
         protected void flowThrough(Set<Unit> in, Unit u, Set<Unit> out) {
             out.clear();
-            
-            Set<?> mask = unitToMask.get(u);
+
+			BitSet liveLocals = liveLocalsAfter.get(u);		
+			
             Local l = localDef(u);
-            Set<Unit> allDefUnits = null;
+            
 			if (l == null)
 			{//add all units contained in mask
-	            for( Unit inU : in )
-	                if( mask.contains(localDef(inU)) )
-					{
+	            for( Unit inU : in ) {
+	                if( liveLocals.get(localDef(inU).getNumber()) ) {
 						out.add(inU);
 					}
+	            }
 			}
 			else
 			{//check unit whether contained in allDefUnits before add into out set.
-				allDefUnits = defsOf(l);
+				Set<Unit> allDefUnits = defsOf(l);
 				
-	            for( Unit inU : in )
-    	            if( mask.contains(localDef(inU)) )
-					{//only add unit not contained in allDefUnits
-						if ( allDefUnits.contains(inU)){
-							out.remove(inU);
-						} else {
-							out.add(inU);
-						}
+	            for( Unit inU : in ) {
+    	            if( liveLocals.get(localDef(inU).getNumber()) && !allDefUnits.contains(inU) ) {		
+						out.add(inU);
 					}
-   	            out.removeAll(allDefUnits);
+				}
+	            
+   	            assert false == out.removeAll(allDefUnits);
    	            
-   	            if(mask.contains(l)) 
+   	            if ( liveLocals.get(l.getNumber()) ) {
    	            	out.add(u);
+   	            }
 			}
         }
 
