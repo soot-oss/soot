@@ -127,7 +127,6 @@ public class GeomQueries
 		contextsForMethods = new ContextsCollector[n_func];
 		for ( int i = 0; i < n_func; ++i ) {
 			ContextsCollector cc = new ContextsCollector();
-			cc.setBudget(defaultBudgetSize);
 			contextsForMethods[i] = cc;
 		}
 	}
@@ -194,20 +193,27 @@ public class GeomQueries
 		}
 	}
 	
-	protected boolean propagateIntervals(CgEdge ctxt, int target, IVarAbstraction pn, PtSensVisitor visitor)
+	/**
+	 * Compute the mapping from interval [L, R) of method start to the intervals of method target.
+	 * Return true if the mapping is feasible.
+	 * 
+	 * @param start
+	 * @param L
+	 * @param R
+	 * @param target
+	 * @return
+	 */
+	protected boolean propagateIntervals(int start, long L, long R, int target)
 	{
 		// We start traversal from the callee, because the caller->callee mapping is straightforward
-		int start = ctxt.t;
 		if ( !dfsScanSubgraph(start, target) ) return false;
 		
 		// Now we prepare for iteration
 		int rep_start = rep_cg[start];
 		int rep_target = rep_cg[target];
-		long L = ctxt.map_offset;
-		long R = L + max_context_size_block[ctxt.s];
+		
 		ContextsCollector targetContexts = contextsForMethods[target];
 		targetContexts.setBudget(targetBudgetSize);
-		
 		
 		if ( rep_start == rep_target ) {
 			// Fast path for special case
@@ -223,7 +229,10 @@ public class GeomQueries
 			while ( !topQ.isEmpty() ) {
 				int s = topQ.poll();
 				int rep_s = rep_cg[s];
+				
+				// We reset the container parameters every time before use
 				ContextsCollector sContexts = contextsForMethods[rep_s];
+				sContexts.setBudget(defaultBudgetSize);
 				
 				// Loop over the edges
 				CgEdge p = call_graph[s];
@@ -271,14 +280,6 @@ public class GeomQueries
 			}
 		}
 		
-		// Finally, we calculate the points-to results
-		for ( SimpleInterval si : targetContexts.bars ) {
-			pn.get_all_context_sensitive_objects(si.L, si.R, visitor);
-		}
-		
-		// Reset
-		targetContexts.clear();
-		targetContexts.setBudget(defaultBudgetSize);
 		return true;
 	}
 	
@@ -310,10 +311,26 @@ public class GeomQueries
 		
 		// Obtain the internal representation of the method that encloses the querying pointer
 		SootMethod sm = vn.getMethod();
-		int targetID = geomPts.getIDFromSootMethod(sm);
-		if ( targetID == -1 ) return false;
+		int target = geomPts.getIDFromSootMethod(sm);
+		if ( target == -1 ) return false;
 		
-		return propagateIntervals(ctxt, targetID, pn, visitor);
+		long L = ctxt.map_offset;
+		long R = L + max_context_size_block[ctxt.s];
+		
+		if ( propagateIntervals(ctxt.t, L, R, target) ) {
+			// We calculate the points-to results
+			ContextsCollector targetContexts = contextsForMethods[target];
+			
+			for ( SimpleInterval si : targetContexts.bars ) {
+				pn.get_all_context_sensitive_objects(si.L, si.R, visitor);
+			}
+			
+			// Reset
+			targetContexts.clear();
+			return true;
+		}
+		
+		return false;
 	}
 	
 	/**

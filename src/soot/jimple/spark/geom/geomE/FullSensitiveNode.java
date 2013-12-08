@@ -38,6 +38,7 @@ import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.IWorklist;
 import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ClassConstantNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.StringConstantNode;
@@ -453,11 +454,14 @@ public class FullSensitiveNode extends IVarAbstraction
 		int i, j;
 		FullSensitiveNode qn;
 		SegmentNode p, q, pt[], qt[];
+		boolean localToSameMethod;
 		
 		qn = (FullSensitiveNode)qv;
+		localToSameMethod = (enclosingMethod() == qv.enclosingMethod());
 		
 		for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext();) {
 			AllocNode an = it.next();
+			if ( an instanceof ClassConstantNode ) continue;
 			if ( an instanceof StringConstantNode ) continue;
 			qt = qn.find_points_to(an);
 			if (qt == null) continue;
@@ -469,13 +473,12 @@ public class FullSensitiveNode extends IVarAbstraction
 					for (j = 0; j < GeometricManager.Divisions; ++j) {
 						q = qt[j];
 						while (q != null) {
-							if ( i <= j ) {
-								if ( quick_intersecting_test(p, q, (i<<8) | j ) )
-									return true;
+							if ( localToSameMethod ) {
+								// We can use a more precise alias testing
+								if ( p.intersect(q) ) return true;
 							}
 							else {
-								if ( quick_intersecting_test(q, p, (j<<8) | i ) )
-									return true;
+								if ( p.projYIntersect(q) ) return true;
 							}
 							q = q.next;
 						}
@@ -485,98 +488,6 @@ public class FullSensitiveNode extends IVarAbstraction
 			}
 		}
 
-		return false;
-	}
-
-	/**
-	 * We check if the figures p and q have intersection.
-	 */
-	private boolean quick_intersecting_test(SegmentNode p, SegmentNode q, int code) 
-	{
-		RectangleNode rect_q, rect_p;
-		
-		switch (code>>8) {
-		case GeometricManager.ONE_TO_ONE:
-			switch (code&255) {
-			case GeometricManager.ONE_TO_ONE:
-				if ( (p.I2 - p.I1) == (q.I2 - q.I1) ) {
-					if ( p.I1 < (q.I1 + q.L) && q.I1 < (p.I1 + p.L) )
-						return true;
-				}
-				break;
-				
-			case GeometricManager.MANY_TO_MANY:
-				rect_q = (RectangleNode)q;
-				
-				// If one of the end point is in the body of the rectangle
-				if ( point_within_rectangle(p.I1, p.I2, rect_q) ||
-						point_within_rectangle(p.I1 + p.L - 1, p.I2 + p.L - 1, rect_q) )
-					return true;
-				
-				// Otherwise, the diagonal line must intersect with one of the boundary lines
-				if ( diagonal_line_intersect_horizontal(p, rect_q.I1, rect_q.I2, rect_q.L) ||
-						diagonal_line_intersect_horizontal(p, rect_q.I1, rect_q.I2 + rect_q.L_prime - 1, rect_q.L) ||
-						diagonal_line_intersect_vertical(p, rect_q.I1, rect_q.I2 , rect_q.L_prime) ||
-						diagonal_line_intersect_vertical(p, rect_q.I1 + rect_q.L - 1, rect_q.I2, rect_q.L_prime) )
-					return true;
-				break;
-			}
-			
-			break;
-			
-		case GeometricManager.MANY_TO_MANY:
-			rect_p = (RectangleNode)p;
-			rect_q = (RectangleNode)q;
-			
-			// If p is not entirely above, below, to the left, to the right of q
-			// then, p and q must intersect
-			
-			if ( rect_p.I2 >= rect_q.I2 + rect_q.L_prime )
-				return false;
-			
-			if ( rect_p.I2 + rect_p.L_prime <= rect_q.I2 )
-				return false;
-			
-			if ( rect_p.I1 + rect_p.L <= rect_q.I1 )
-				return false;
-			
-			if ( rect_p.I1 >= rect_q.I1 + rect_q.L )
-				return false;
-			
-			return true;
-		}
-		
-		return false;
-	}
-	
-	private boolean point_within_rectangle( long x, long y, RectangleNode rect )
-	{
-		if ( x >= rect.I1 && x < rect.I1 + rect.L )
-			if ( y >= rect.I2 && y < rect.I2 + rect.L_prime )
-				return true;
-		
-		return false;
-	}
-	
-	private boolean diagonal_line_intersect_vertical( SegmentNode p, long x, long y, long L)
-	{
-		if ( x >= p.I1 && x < (p.I1 + p.L) ) {
-			long y_cross = x - p.I1 + p.I2;
-			if ( y_cross >= y && y_cross < y + L )
-				return true;
-		}
-		
-		return false;
-	}
-	
-	private boolean diagonal_line_intersect_horizontal( SegmentNode p, long x, long y, long L)
-	{
-		if ( y >= p.I2 && y < (p.I2 + p.L) ) {
-			long x_cross = y - p.I2 + p.I1;
-			if ( x_cross >= x && x_cross < x + L )
-				return true;
-		}
-		
 		return false;
 	}
 	

@@ -22,11 +22,13 @@ import java.io.PrintStream;
 import java.util.Set;
 
 import soot.Scene;
+import soot.SootMethod;
 import soot.Type;
 import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
 import soot.jimple.spark.geom.dataRep.PlainConstraint;
 import soot.jimple.spark.geom.dataRep.RectangleNode;
 import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.util.Numberable;
 
@@ -72,16 +74,6 @@ public abstract class IVarAbstraction implements Numberable
 	public IVarAbstraction()
 	{
 		parent = this;
-	}
-	
-	public Node getWrappedNode()
-	{
-		return me;
-	}
-	
-	public Type getType()
-	{
-		return me.getType();
 	}
 	
 	public boolean lessThan( IVarAbstraction other )
@@ -130,6 +122,30 @@ public abstract class IVarAbstraction implements Numberable
 		return super.toString();
 	}
 	
+	/*
+	 * Processing the wrapped node.
+	 */
+	public Node getWrappedNode()
+	{
+		return me;
+	}
+	
+	public Type getType()
+	{
+		return me.getType();
+	}
+	
+	public boolean isLocalPointer()
+	{
+		return me instanceof LocalVarNode;
+	}
+	
+	public SootMethod enclosingMethod()
+	{
+		if ( me instanceof LocalVarNode )
+			return ((LocalVarNode) me).getMethod();
+		return null;
+	}
 	
 	// Initiation
 	public abstract boolean add_points_to_3( AllocNode obj, long I1, long I2, long L );

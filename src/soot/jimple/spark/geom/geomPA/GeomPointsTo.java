@@ -1430,6 +1430,9 @@ public class GeomPointsTo extends PAG
 	
 	private PointsToSetInternal field_p2set( PointsToSet s, final SparkField f )
 	{
+		if ( !(s instanceof PointsToSetInternal) )
+			throw new RuntimeException( "Base pointers must be stored in *PointsToSetInternal*." );
+		
 		PointsToSetInternal bases = (PointsToSetInternal) s;
 		final PointsToSetInternal ret = getSetFactory().newSet(f.getType(), this);
 		
@@ -1496,14 +1499,14 @@ public class GeomPointsTo extends PAG
 		
 		if ( hasTransformed ||
 				!(c instanceof Unit) )
-			return G.v().soot_jimple_toolkits_pointer_FullObjectSet();
+			return reachingObjects(l);
 		
 		LocalVarNode vn = findLocalVarNode(l);
 		if ( vn == null ) return EmptyPointsToSet.v();
 		
 		// Lookup the context sensitive points-to information for this pointer
 		IVarAbstraction pn = consG.get(vn);
-		if ( pn == null ) return vn.getP2Set();
+		if ( pn == null ) return reachingObjects(l);
 		pn = pn.getRepresentative();
 		
 		// Lookup the cache
@@ -1512,16 +1515,17 @@ public class GeomPointsTo extends PAG
 			PointsToSet ans = cvn.getP2Set();
 			if ( ans != EmptyPointsToSet.v() ) return ans;
 		}
-		
-		// Create a new context sensitive variable
-		// The points-to vector is set to empty at start
-		cvn = makeContextVarNode(vn, c);			
+		else {
+			// Create a new context sensitive variable
+			// The points-to vector is set to empty at start
+			cvn = makeContextVarNode(vn, c);
+		}
 		
 		// Obtain the context sensitive points-to result
 		SootMethod callee = vn.getMethod();
 		Edge e = Scene.v().getCallGraph().findEdge((Unit)c, callee);
-		if ( e == null ) return vn.getP2Set();
-		CgEdge myEdge = edgeMapping.get(e);
+		if ( e == null ) return reachingObjects(l);
+		CgEdge myEdge = getInternalEdgeFromSootEdge(e);
 		
 		long low = myEdge.map_offset;
 		long high = low + max_context_size_block[myEdge.s];

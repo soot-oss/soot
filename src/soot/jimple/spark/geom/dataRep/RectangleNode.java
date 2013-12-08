@@ -18,8 +18,6 @@
  */
 package soot.jimple.spark.geom.dataRep;
 
-import soot.jimple.spark.geom.dataRep.SegmentNode;
-
 /**
  * The rectangle figure for encoding the many-to-many relation.
  * 
@@ -62,6 +60,85 @@ public class RectangleNode extends SegmentNode {
 				L == other.L &&
 				L_prime == other.L_prime )
 			return true;
+		
+		return false;
+	}
+	
+	@Override
+	public long yEnd() 
+	{ 
+		return I2 + L_prime;
+	}
+	
+	@Override
+	public boolean intersect(SegmentNode q)
+	{
+		RectangleNode p = this;
+		
+		if ( q instanceof SegmentNode ) {
+			// If one of the end point is in the body of the rectangle
+			if ( point_within_rectangle(q.I1, q.I2, p) ||
+					point_within_rectangle(q.I1 + q.L - 1, q.I2 + q.L - 1, p) )
+				return true;
+			
+			// Otherwise, the diagonal line must intersect with one of the boundary lines
+			if ( diagonal_line_intersect_horizontal(q, p.I1, p.I2, p.L) ||
+					diagonal_line_intersect_horizontal(q, p.I1, p.I2 + p.L_prime - 1, p.L) ||
+					diagonal_line_intersect_vertical(q, p.I1, p.I2 , p.L_prime) ||
+					diagonal_line_intersect_vertical(q, p.I1 + p.L - 1, p.I2, p.L_prime) )
+				return true;
+		}
+		else {
+			RectangleNode rect_q = (RectangleNode)q;
+			
+			// If the segment is not entirely above, below, to the left, to the right of this rectangle
+			// then, they must intersect
+			
+			if ( p.I2 >= rect_q.I2 + rect_q.L_prime )
+				return false;
+			
+			if ( p.I2 + p.L_prime <= rect_q.I2 )
+				return false;
+			
+			if ( p.I1 + p.L <= rect_q.I1 )
+				return false;
+			
+			if ( p.I1 >= rect_q.I1 + rect_q.L )
+				return false;
+			
+			return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean point_within_rectangle( long x, long y, RectangleNode rect )
+	{
+		if ( x >= rect.I1 && x < rect.I1 + rect.L )
+			if ( y >= rect.I2 && y < rect.I2 + rect.L_prime )
+				return true;
+		
+		return false;
+	}
+	
+	private boolean diagonal_line_intersect_vertical( SegmentNode p, long x, long y, long L)
+	{
+		if ( x >= p.I1 && x < (p.I1 + p.L) ) {
+			long y_cross = x - p.I1 + p.I2;
+			if ( y_cross >= y && y_cross < y + L )
+				return true;
+		}
+		
+		return false;
+	}
+	
+	private boolean diagonal_line_intersect_horizontal( SegmentNode p, long x, long y, long L)
+	{
+		if ( y >= p.I2 && y < (p.I2 + p.L) ) {
+			long x_cross = y - p.I2 + p.I1;
+			if ( x_cross >= x && x_cross < x + L )
+				return true;
+		}
 		
 		return false;
 	}

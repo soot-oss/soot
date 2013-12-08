@@ -27,6 +27,7 @@ import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.IWorklist;
 import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ClassConstantNode;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.StringConstantNode;
@@ -409,6 +410,7 @@ public class HeapInsNode extends IVarAbstraction
 		
 		for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext();) {
 			AllocNode an = it.next();
+			if ( an instanceof ClassConstantNode ) continue;
 			if ( an instanceof StringConstantNode ) continue;
 			qt = qn.find_points_to(an);
 			if (qt == null) continue;

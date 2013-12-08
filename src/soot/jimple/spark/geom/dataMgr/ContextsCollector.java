@@ -37,11 +37,10 @@ public class ContextsCollector
 	
 	/*
 	 * We are creating a performance-precision tunable container.
-	 * When there are more than nBudget in the container, we merge them to create a larger approximation.
-	 * This is similar to the fractional parameter.
-	 * The difference is that the budget can be varying for ContextsCollector instances.
+	 * When there are more than nBudget in the container, we merge them and create a super containing interval.
+	 * nBudget = -1 means the intervals are never merged.
 	 */
-	protected int nBudget = 7;
+	protected int nBudget = -1;
 	
 	public ContextsCollector() 
 	{ 
@@ -66,7 +65,7 @@ public class ContextsCollector
 	{
 		backupList.clear();
 		
-		// We search the list and merge the context sensitive objects
+		// We search the list and merge the intersected intervals
 		tmp_si.L = L;
 		tmp_si.R = R;
 		long minL = L;
@@ -92,7 +91,7 @@ public class ContextsCollector
 		bars.add( new_si );
 		
 		// Merge the intervals
-		if ( bars.size() > nBudget ) {
+		if ( nBudget != -1 && bars.size() > nBudget ) {
 			bars.clear();
 			new_si.L = minL;
 			new_si.R = maxR;
