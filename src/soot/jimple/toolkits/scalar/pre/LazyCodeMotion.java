@@ -40,7 +40,7 @@ import soot.options.LCMOptions;
 /** 
  * Performs a partial redundancy elimination (= code motion). This is done, by
  * introducing helper-vars, that store an already computed value, or if a
- * compuation only arrives partially (not from all predecessors) inserts a new
+ * computation only arrives partially (not from all predecessors) inserts a new
  * computation on these paths afterwards).<p>
  *
  * In order to catch every redundant expression, this transformation must be

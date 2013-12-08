@@ -1,8 +1,9 @@
 package soot.toDex;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -42,10 +43,10 @@ import org.jf.dexlib.EncodedValue.StringEncodedValue;
 import org.jf.dexlib.EncodedValue.TypeEncodedValue;
 
 import soot.G;
-import soot.Modifier;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
+import soot.dexpler.DexType;
 import soot.dexpler.Util;
 import soot.options.Options;
 import soot.tagkit.AnnotationAnnotationElem;
@@ -53,7 +54,6 @@ import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationConstants;
-import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationDoubleElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationEnumElem;
@@ -62,7 +62,6 @@ import soot.tagkit.AnnotationIntElem;
 import soot.tagkit.AnnotationLongElem;
 import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
-import soot.tagkit.ConstantValueTag;
 import soot.tagkit.EnclosingMethodTag;
 import soot.tagkit.InnerClassAttribute;
 import soot.tagkit.InnerClassTag;
@@ -179,7 +178,8 @@ public class DexAnnotation {
         if (c.hasTag("EnclosingMethodTag")){
           EnclosingMethodTag eMethTag = (EnclosingMethodTag)c.getTag("EnclosingMethodTag");
           AnnotationItem enclosingMethodItem = makeEnclosingMethod(eMethTag);
-          classAnnotationItems.add(enclosingMethodItem);
+          if (enclosingMethodItem != null)
+        	  classAnnotationItems.add(enclosingMethodItem);
         }
         
         // handle deprecated tag
@@ -290,44 +290,47 @@ public class DexAnnotation {
 
     }
     
+    private Set<SootMethod> alreadyDoneMethods = new HashSet<SootMethod>();
 
     /**
      * Handles Method and Parameter Annotations
      * @param sm SootMethod
      * @param mid Dexlib Method Item
      */
-    private Set<String> alreadyDoneMethods = new HashSet<String>();
     public void handleMethod(SootMethod sm, MethodIdItem mid) {
         if (!sm.getDeclaringClass().getName().equals(currentClass.getName()))
             return;
-        if (alreadyDoneMethods.contains(sm.getSignature()))
+        if (!alreadyDoneMethods.add(sm))
             return;
-        alreadyDoneMethods.add(sm.getSignature());
         Debug.printDbg("handle annotations for method: '", sm ,"' current class: ", currentClass);
         
         List<AnnotationItem> aList = new ArrayList<AnnotationItem>();
         List<AnnotationSetItem> setList = new ArrayList<AnnotationSetItem>();
+        List<String> skipList = new ArrayList<String>();
         
         if (sm.hasTag("DeprecatedTag")){
             AnnotationItem deprecatedItem = makeDeprecatedItem();
             aList.add(deprecatedItem);
+            skipList.add("Ljava/lang/Deprecated;");
         }
         
         if (sm.hasTag("SignatureTag")){
             SignatureTag tag = (SignatureTag)sm.getTag("SignatureTag");
-            AnnotationItem deprecatedItem = makeSignatureItem(tag);
-            aList.add(deprecatedItem);
+            AnnotationItem signatureItem = makeSignatureItem(tag);
+            aList.add(signatureItem);
+            skipList.add("Ldalvik/annotation/Signature;");
         }
         
         if (sm.hasTag("AnnotationDefaultTag")){
-            AnnotationDefaultTag tag = (AnnotationDefaultTag)sm.getTag("AnnotationDefaultTag");
+//            AnnotationDefaultTag tag = (AnnotationDefaultTag)sm.getTag("AnnotationDefaultTag");
             Debug.printDbg("TODO");
         }
         
         for (Tag t : sm.getTags()) {
+        	// TODO: FIX
             if (t.getName().equals("VisibilityAnnotationTag")){
               VisibilityAnnotationTag vat = (VisibilityAnnotationTag)t;
-              aList.addAll(handleMethodTag(vat, mid));
+              aList.addAll(handleMethodTag(vat, mid, skipList));
             }
             if (t.getName().equals("VisibilityParameterAnnotationTag")){
               VisibilityParameterAnnotationTag vat = (VisibilityParameterAnnotationTag)t;
@@ -336,6 +339,20 @@ public class DexAnnotation {
         }
         
         
+        // Sort the annotation list
+        Collections.sort(aList, new Comparator<AnnotationItem>() {
+
+			@Override
+			public int compare(AnnotationItem o1, AnnotationItem o2) {
+				int res = o1.getEncodedAnnotation().annotationType.getIndex()
+						- o2.getEncodedAnnotation().annotationType.getIndex();
+				if (res == 0)
+					throw new RuntimeException("Duplicate annotation type:" + o1);
+				return res;
+			}
+        	
+        });
+
         AnnotationSetItem set = AnnotationSetItem.internAnnotationSetItem(dexFile, aList);
         MethodAnnotation ma = new MethodAnnotation(mid, set);
         methodAnnotations.add(ma);
@@ -351,12 +368,18 @@ public class DexAnnotation {
      * @param mid
      * @return 
      */
-    private List<AnnotationItem> handleMethodTag(VisibilityAnnotationTag vat, MethodIdItem mid) {
+    private List<AnnotationItem> handleMethodTag(VisibilityAnnotationTag vat, MethodIdItem mid,
+    		List<String> skipList) {
         List<AnnotationTag> atList = vat.getAnnotations();
         
         List<AnnotationItem> aList = new ArrayList<AnnotationItem>();
-        for (AnnotationTag at: atList) {         
-            List<EncodedValue> encodedValueList = new ArrayList<EncodedValue>();
+        for (AnnotationTag at: atList) {
+            //String type = soot2DalvikType(at.getType());
+            String type = at.getType();
+            if (skipList.contains(type))
+            	continue;
+
+        	List<EncodedValue> encodedValueList = new ArrayList<EncodedValue>();
             List<StringIdItem> namesList = new ArrayList<StringIdItem>();
             for (AnnotationElem ae : at.getElems()) {
                 EncodedValue value = getAnnotationElement(ae);
@@ -365,8 +388,6 @@ public class DexAnnotation {
                 Debug.printDbg("new method annotation: ", value ," ", ae.getName());
             }
 
-            //String type = soot2DalvikType(at.getType());
-            String type = at.getType();
             TypeIdItem annotationType = TypeIdItem.internTypeIdItem(dexFile, type);
             StringIdItem[] names = namesList.toArray(new StringIdItem[namesList.size()]);
             EncodedValue[] values = encodedValueList.toArray(new EncodedValue[encodedValueList.size()]);
@@ -633,9 +654,6 @@ public class DexAnnotation {
     
     
     private AnnotationItem makeEnclosingClassAnnotation(InnerClassTag tag) {
-        int accessFlags = tag.getAccessFlags();
-        String innerClassS = tag.getInnerClass();
-        String name = tag.getName();
         String outerClass = tag.getOuterClass();
         TypeIdItem string = TypeIdItem.internTypeIdItem(dexFile,
                 "L" + outerClass + ";");
@@ -658,17 +676,23 @@ public class DexAnnotation {
     }
     
     private AnnotationItem makeInnerClassAnnotation(InnerClassTag tag) {
-        IntEncodedValue flags = new IntEncodedValue(tag.getAccessFlags()); 
-        StringIdItem nameId = StringIdItem.internStringIdItem(dexFile, tag.getShortName());
-        StringEncodedValue nameV = new StringEncodedValue(nameId);
+        IntEncodedValue flags = new IntEncodedValue(tag.getAccessFlags());
         TypeIdItem annotationType = TypeIdItem.internTypeIdItem(
                 dexFile, "Ldalvik/annotation/InnerClass;");           
+        
         List<StringIdItem> namesList = new ArrayList<StringIdItem>();
+        
         List<EncodedValue> encodedValueList = new ArrayList<EncodedValue>();
         namesList.add(StringIdItem.internStringIdItem(dexFile, "accessFlags"));
-        namesList.add(StringIdItem.internStringIdItem(dexFile, "name"));
         encodedValueList.add(flags);
-        encodedValueList.add(nameV);
+
+        if (tag.getShortName() != null) {
+	        StringIdItem nameId = StringIdItem.internStringIdItem(dexFile, tag.getShortName());
+	        StringEncodedValue nameV = new StringEncodedValue(nameId);
+	        namesList.add(StringIdItem.internStringIdItem(dexFile, "name"));
+	        encodedValueList.add(nameV);
+        }
+        
         StringIdItem[] names = namesList.toArray(
                 new StringIdItem[namesList.size()]);
         EncodedValue[] values = encodedValueList.toArray(
@@ -712,15 +736,22 @@ public class DexAnnotation {
     private AnnotationItem makeEnclosingMethod(EnclosingMethodTag tag) {
         TypeIdItem annotationType = TypeIdItem.internTypeIdItem(
                 dexFile, "Ldalvik/annotation/EnclosingMethod;");
-        String enclosingClass = tag.getEnclosingClass();
+        
+        String enclosingClass = DexType.toDalvikICAT(tag.getEnclosingClass());
+        TypeIdItem classType = TypeIdItem.internTypeIdItem(dexFile, enclosingClass);
+
         String enclosingMethod = tag.getEnclosingMethod();
         String methodSig = tag.getEnclosingMethodSig();
+        
+        // Sometimes we don't have an enclosing method
+        if (methodSig == null || methodSig.isEmpty())
+        	return null;
+        
         String[] split1 = methodSig.split("\\)");
-        String parametersS = split1[0].replaceAll("\\(", "");
-        String returnTypeS = split1[1];
+	    String parametersS = split1[0].replaceAll("\\(", "");
+	    String returnTypeS = split1[1];
         
         TypeIdItem returnType = TypeIdItem.internTypeIdItem(dexFile, returnTypeS);
-        TypeIdItem classType = TypeIdItem.internTypeIdItem(dexFile, enclosingClass);
         List<TypeIdItem> typeList = new ArrayList<TypeIdItem>();
         Debug.printDbg("parameters:", parametersS);
         if (!parametersS.equals("")) {
@@ -755,7 +786,7 @@ public class DexAnnotation {
     
     private AnnotationItem makeDeprecatedItem() {
         TypeIdItem annotationType = TypeIdItem.internTypeIdItem(
-                dexFile, "Ljava/lang/Deprecated;"); 
+                dexFile, "Ljava/lang/Deprecated;");
         List<StringIdItem> namesList = new ArrayList<StringIdItem>();
         List<EncodedValue> encodedValueList = new ArrayList<EncodedValue>();;            
         StringIdItem[] names = namesList.toArray(
@@ -770,7 +801,7 @@ public class DexAnnotation {
     }
     
     
-    private AnnotationItem makeSignatureItem(SignatureTag t) {           
+    private AnnotationItem makeSignatureItem(SignatureTag t) {
         TypeIdItem annotationType = TypeIdItem.internTypeIdItem(
                 dexFile, "Ldalvik/annotation/Signature;");           
         List<StringIdItem> namesList = new ArrayList<StringIdItem>();

@@ -35,7 +35,10 @@ public abstract class InsnWithOffset extends AbstractInsn {
 	
 	public int getRelativeOffset() {
 		int ourOffset = getInsnOffset();
-		return offsetAddress - ourOffset;
+		int relOffset = offsetAddress - ourOffset;
+		if (relOffset == 0)
+			throw new RuntimeException("Jump offset may not be 0");
+		return relOffset;
 	}
 	
 	public abstract boolean offsetFit();

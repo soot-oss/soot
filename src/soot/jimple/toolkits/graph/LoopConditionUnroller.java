@@ -50,7 +50,7 @@ import soot.toolkits.graph.*;
 public class LoopConditionUnroller extends BodyTransformer {
   /**
    * contained blocks are currently visiting successors. We need this to find
-   * back-edges. The "visitedBlocks" is not enough, as Java Bytecodes migth not
+   * back-edges. The "visitedBlocks" is not enough, as Java Bytecodes might not
    * be in tree-form.
    */
   private Set<Block> visitingSuccs;

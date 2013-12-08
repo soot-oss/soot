@@ -30,8 +30,8 @@ import java.io.UnsupportedEncodingException;
 
 public class SourceFileTag implements Tag
 {
-    String sourceFile;
-    String absolutePath;
+    private String sourceFile;
+    private String absolutePath;
     
     public SourceFileTag(String sourceFile) {
     	this(sourceFile,null);
@@ -39,7 +39,7 @@ public class SourceFileTag implements Tag
 
     public SourceFileTag(String sourceFile, String path)
     {
-	    this.sourceFile = sourceFile;
+	    this.sourceFile = sourceFile.intern();
         this.absolutePath = path;
     }
 
@@ -61,7 +61,7 @@ public class SourceFileTag implements Tag
     }
 
     public void setSourceFile(String srcFile){
-        sourceFile = srcFile;
+        sourceFile = srcFile.intern();
     }
     public String getSourceFile()
     {

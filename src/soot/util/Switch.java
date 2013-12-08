@@ -26,7 +26,7 @@
 
 package soot.util;
 
-/** Basic interface used in the implementation of the Visitor design patterm. */
+/** Basic interface used in the implementation of the Visitor design pattern. */
 public interface Switch
 {
 }

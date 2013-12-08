@@ -4,10 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.jf.dexlib2.AnnotationVisibility;
-import org.jf.dexlib2.iface.reference.FieldReference;
-import org.jf.dexlib2.iface.reference.MethodReference;
-import org.jf.dexlib2.iface.value.MethodEncodedValue;
 import org.jf.dexlib2.iface.Annotation;
 import org.jf.dexlib2.iface.AnnotationElement;
 import org.jf.dexlib2.iface.ClassDef;
@@ -15,32 +11,31 @@ import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Field;
 import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.MethodParameter;
+import org.jf.dexlib2.iface.reference.FieldReference;
+import org.jf.dexlib2.iface.reference.MethodReference;
 import org.jf.dexlib2.iface.value.AnnotationEncodedValue;
 import org.jf.dexlib2.iface.value.ArrayEncodedValue;
-import org.jf.dexlib2.iface.value.EncodedValue;
-import org.jf.dexlib2.iface.value.NullEncodedValue;
-import org.jf.dexlib2.iface.value.StringEncodedValue;
 import org.jf.dexlib2.iface.value.BooleanEncodedValue;
 import org.jf.dexlib2.iface.value.ByteEncodedValue;
 import org.jf.dexlib2.iface.value.CharEncodedValue;
 import org.jf.dexlib2.iface.value.DoubleEncodedValue;
+import org.jf.dexlib2.iface.value.EncodedValue;
 import org.jf.dexlib2.iface.value.EnumEncodedValue;
 import org.jf.dexlib2.iface.value.FieldEncodedValue;
 import org.jf.dexlib2.iface.value.FloatEncodedValue;
 import org.jf.dexlib2.iface.value.IntEncodedValue;
 import org.jf.dexlib2.iface.value.LongEncodedValue;
+import org.jf.dexlib2.iface.value.MethodEncodedValue;
 import org.jf.dexlib2.iface.value.ShortEncodedValue;
 import org.jf.dexlib2.iface.value.StringEncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
 
-import soot.RefType;
 import soot.Type;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationConstants;
-import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationDoubleElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationEnumElem;
@@ -58,7 +53,6 @@ import soot.tagkit.SignatureTag;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
-import soot.dexpler.Debug;
 
 /**
  * Converts annotations from Dexlib to Jimple.
@@ -302,7 +296,7 @@ public class DexAnnotation {
                 t = new DeprecatedTag(); 
                 
             } else {
-                Debug.printDbg("read visibiility tag: ");
+                Debug.printDbg("read visibility tag: ");
                 AnnotationTag at = new AnnotationTag(a.getType());
                 for (AnnotationElem e: getElements(a.getElements()))
                     at.addElem(e);              
@@ -428,8 +422,6 @@ public class DexAnnotation {
                 String returnType = DexType.toSootAT(mr.getReturnType());
                 String methodName = mr.getName();
                 String parameters = "";
-                int i = 0;
-                int params = mr.getParameterTypes().size();
                 for (CharSequence p : mr.getParameterTypes()) {
                     parameters += DexType.toSootAT(p.toString());
                 }

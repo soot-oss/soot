@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -69,14 +68,16 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Block copy() {
-      try {
-        Block node = (Block)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      Block node = (Block) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -86,25 +87,17 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Block fullCopy() {
-    try {
-      Block tree = (Block) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    Block tree = (Block) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -597,10 +590,10 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    * @apilevel internal
    */
   public boolean Define_boolean_isIncOrDec(ASTNode caller, ASTNode child) {
-    if(caller == getStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getStmtListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_isIncOrDec(this, caller);
     }
   }
@@ -609,10 +602,10 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    * @apilevel internal
    */
   public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(caller == getStmtListNoTransform()) {
-      int index = caller.getIndexOfChild(child);
-      return index == 0 ? isDAbefore(v) : getStmt(index - 1).isDAafter(v);
-    }
+    if(caller == getStmtListNoTransform())  {
+    int index = caller.getIndexOfChild(child);
+    return index == 0 ? isDAbefore(v) : getStmt(index - 1).isDAafter(v);
+  }
     else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
   }
@@ -621,10 +614,10 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    * @apilevel internal
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(caller == getStmtListNoTransform()) {
-      int index = caller.getIndexOfChild(child);
-      return index == 0 ? isDUbefore(v) : getStmt(index - 1).isDUafter(v);
-    }
+    if(caller == getStmtListNoTransform())  {
+    int index = caller.getIndexOfChild(child);
+    return index == 0 ? isDUbefore(v) : getStmt(index - 1).isDUafter(v);
+  }
     else {      return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
   }
@@ -633,9 +626,9 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-    if(caller == getStmtListNoTransform()) { 
-   int index = caller.getIndexOfChild(child);
-{
+    if(caller == getStmtListNoTransform())  { 
+    int index = caller.getIndexOfChild(child);
+    {
     SimpleSet c = SimpleSet.emptySet;
     for(int i = index; i >= 0 && !(getStmt(i) instanceof Case); i--) {
       if(getStmt(i) instanceof LocalClassDeclStmt) {
@@ -649,7 +642,7 @@ public class Block extends Stmt implements Cloneable, VariableScope {
       return c;
     return lookupType(name);
   }
-}
+  }
     else {      return getParent().Define_SimpleSet_lookupType(this, caller, name);
     }
   }
@@ -658,16 +651,16 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-    if(caller == getStmtListNoTransform()) { 
-   int index = caller.getIndexOfChild(child);
-{
+    if(caller == getStmtListNoTransform())  { 
+    int index = caller.getIndexOfChild(child);
+    {
     VariableDeclaration v = localVariableDeclaration(name);
     // declare before use and shadowing
     if(v != null && declaredBeforeUse(v, index))
       return v;
     return lookupVariable(name);
   }
-}
+  }
     else {      return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
   }
@@ -676,10 +669,10 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    * @apilevel internal
    */
   public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-    if(caller == getStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return this;
-    }
+    if(caller == getStmtListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return this;
+  }
     else {      return getParent().Define_VariableScope_outerScope(this, caller);
     }
   }
@@ -688,10 +681,10 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-    if(caller == getStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return NameType.EXPRESSION_NAME;
-    }
+    if(caller == getStmtListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return NameType.EXPRESSION_NAME;
+  }
     else {      return getParent().Define_NameType_nameType(this, caller);
     }
   }
@@ -700,10 +693,10 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    * @apilevel internal
    */
   public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
-    if(caller == getStmtListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return childIndex == 0 ? reachable() : getStmt(childIndex-1).canCompleteNormally();
-    }
+    if(caller == getStmtListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return childIndex == 0 ? reachable() : getStmt(childIndex-1).canCompleteNormally();
+  }
     else {      return getParent().Define_boolean_reachable(this, caller);
     }
   }
@@ -712,10 +705,10 @@ public class Block extends Stmt implements Cloneable, VariableScope {
    * @apilevel internal
    */
   public boolean Define_boolean_reportUnreachable(ASTNode caller, ASTNode child) {
-    if(caller == getStmtListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-      return i == 0 ? reachable() : getStmt(i-1).reachable();
-    }
+    if(caller == getStmtListNoTransform())  {
+    int i = caller.getIndexOfChild(child);
+    return i == 0 ? reachable() : getStmt(i-1).reachable();
+  }
     else {      return getParent().Define_boolean_reportUnreachable(this, caller);
     }
   }

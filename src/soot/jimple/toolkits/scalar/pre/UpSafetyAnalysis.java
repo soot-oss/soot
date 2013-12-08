@@ -45,7 +45,7 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
   private BoundedFlowSet set;
 
   /**
-   * this constructor should not be used, and will throw a runtime-exception!
+   * This constructor should not be used, and will throw a runtime-exception!
    */
   public UpSafetyAnalysis(DirectedGraph dg) {
     /* we have to add super(dg). otherwise Javac complains. */
@@ -54,7 +54,7 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
   }
 
   /**
-   * this constructor automaticly performs the UpSafety-analysis.<br>
+   * This constructor automatically performs the UpSafety-analysis.<br>
    * the result of the analysis is as usual in FlowBefore (getFlowBefore())
    * and FlowAfter (getFlowAfter()).<br>
    *
@@ -69,7 +69,7 @@ public class UpSafetyAnalysis extends ForwardFlowAnalysis {
   }
 
   /**
-   * this constructor automaticly performs the UpSafety-analysis.<br>
+   * This constructor automatically performs the UpSafety-analysis.<br>
    * the result of the analysis is as usual in FlowBefore (getFlowBefore())
    * and FlowAfter (getFlowAfter()).<br>
    * As usually flowset-operations are more efficient if shared, this allows to

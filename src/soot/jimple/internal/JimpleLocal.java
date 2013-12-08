@@ -44,7 +44,7 @@ public class JimpleLocal implements Local, ConvertToBaf
     /** Constructs a JimpleLocal of the given name and type. */
     public JimpleLocal(String name, Type t)
     {
-        this.name = name;
+        this.name = name.intern();
         this.type = t;
         Scene.v().getLocalNumberer().add( this );
     }
@@ -76,7 +76,7 @@ public class JimpleLocal implements Local, ConvertToBaf
     /** Sets the name of this object as given. */
     public void setName(String name)
     {
-        this.name = name;
+        this.name = name.intern();
     }
 
     /** Returns a hashCode consistent with object equality. */

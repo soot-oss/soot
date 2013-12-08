@@ -96,7 +96,7 @@ public class JimpleAST
      *   Extracts the reference constant pool for this JimpleAST. 
      *   @return the Set of RefTypes for the reference types contained this AST.
      */
-    public Set getCstPool() 
+    public Set<String> getCstPool()
     {  
         CstPoolExtractor cpe = new CstPoolExtractor(mTree);
         return cpe.getCstPool();        

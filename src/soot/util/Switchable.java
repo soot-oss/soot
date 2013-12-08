@@ -26,7 +26,7 @@
 
 package soot.util;
 
-/** Basic interface used for visited objects in the Visitor design patterm. */
+/** Basic interface used for visited objects in the Visitor design pattern. */
 public interface Switchable
 {
     /** Called when this object is visited. */

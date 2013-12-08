@@ -43,7 +43,7 @@ public abstract class NativeHelper {
    * " a = new A()", which is considered to add a target in a's 
    * points-to set.
    *
-   * This method is used to fomulate the effect of getting
+   * This method is used to formulate the effect of getting
    * an environmental constant object such as 'getClass'.
    */
   public void assignObjectTo(ReferenceVariable lhs, AbstractObject obj){

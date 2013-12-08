@@ -34,12 +34,13 @@ import soot.options.Options;
  * transformation. */
 public class Transform implements HasPhaseOptions
 {
-    final private boolean DEBUG = true;
-    String phaseName;
-    Transformer t;
+    final private boolean DEBUG;
+    final String phaseName;
+    final Transformer t;
     
     public Transform(String phaseName, Transformer t)
     {
+    	this.DEBUG = Options.v().dump_body().contains(phaseName);
         this.phaseName = phaseName;
         this.t = t;
     }

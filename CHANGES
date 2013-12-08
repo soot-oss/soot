@@ -41,6 +41,10 @@ Improvements and API changes in HEAD
 10. Added support for plugins. This way it is possible to integrate new
     analysis without modifying Soot.
 
+11. Host now supports two new convenience methods getJavaSourceStartLineNumber() and
+    getJavaSourceStartColumnNumber() which return line/column info on a
+    best-effort basis.
+
 Improvements and API changes in version 2.5.0
 
 1. Modified SourceLocator so that it will automatically load a SootClass

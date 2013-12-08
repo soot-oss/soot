@@ -18,17 +18,11 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -77,8 +71,6 @@ import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.options.CGOptions;
 import soot.options.Options;
-import soot.tagkit.Host;
-import soot.tagkit.SourceLnPosTag;
 import soot.util.LargeNumberedMap;
 import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
@@ -321,7 +313,7 @@ public final class OnFlyCallGraphBuilder
 				PackManager.v().getPack("wjap").add(new Transform("wjap.guards",new SceneTransformer() {
 					
 					@Override
-					protected void internalTransform(String phaseName, Map options) {
+					protected void internalTransform(String phaseName, Map<String, String> options) {
 						for (Guard g : guards) {
 							insertGuard(g);
 						}
@@ -436,11 +428,13 @@ public final class OnFlyCallGraphBuilder
         for( Iterator siteIt = ((Collection) receiverToSites.get( receiver )).iterator(); siteIt.hasNext(); ) {
             final VirtualCallSite site = (VirtualCallSite) siteIt.next();
             InstanceInvokeExpr iie = site.iie();
-            if( site.kind() == Kind.THREAD 
-            && !fh.canStoreType( type, clRunnable ) )
+            if( site.kind() == Kind.THREAD && !fh.canStoreType( type, clRunnable))
+                continue;
+            if( site.kind() == Kind.ASYNCTASK && !fh.canStoreType( type, clAsyncTask ))
                 continue;
 
-            if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD ) {
+            if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD
+            		&& site.kind != Kind.ASYNCTASK ) {
             	SootMethod target = VirtualCalls.v().resolveSpecial( 
                             (SpecialInvokeExpr) site.iie(),
                             site.subSig(),
@@ -534,7 +528,7 @@ public final class OnFlyCallGraphBuilder
         findReceivers(m, b);
     }
     private void findReceivers(SootMethod m, Body b) {
-        for( Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
+        for( Iterator<Unit> sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if (s.containsInvokeExpr()) {
                 InvokeExpr ie = s.getInvokeExpr();
@@ -550,14 +544,19 @@ public final class OnFlyCallGraphBuilder
                         addVirtualCallSite( s, m, receiver, iie, sigRun,
                                 Kind.THREAD );
                     }
+                    if( subSig == sigExecute  ) {
+                        addVirtualCallSite( s, m, receiver, iie, sigDoInBackground,
+                                Kind.ASYNCTASK );
+                    }
                 } else {
                 	SootMethod tgt = ie.getMethod();
                 	if(tgt!=null) {
 	                	addEdge(m, s, tgt);
-	                	if( tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
-	                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
-	                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>" )
-	                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>" ) ) {
+	                	String signature = tgt.getSignature();
+	                	if( signature.equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
+	                			||  signature.equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
+	                			||  signature.equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>" )
+	                			||  signature.equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>" ) ) {
 	                		
 	                		Local receiver = (Local) ie.getArg(0);
 	                		addVirtualCallSite( s, m, receiver, null, sigObjRun,
@@ -582,7 +581,7 @@ public final class OnFlyCallGraphBuilder
             handleInit(source, scl);
         }
         Body b = source.retrieveActiveBody();
-        for( Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
+        for( Iterator<Unit> sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = s.getInvokeExpr();
@@ -638,8 +637,7 @@ public final class OnFlyCallGraphBuilder
 
     private void processNewMethodContext( MethodOrMethodContext momc ) {
         SootMethod m = momc.method();
-        Object ctxt = momc.context();
-        Iterator it = cicg.edgesOutOf(m);
+        Iterator<Edge> it = cicg.edgesOutOf(m);
         while( it.hasNext() ) {
             Edge e = (Edge) it.next();
             cm.addStaticEdge( momc, e.srcUnit(), e.tgt(), e.kind() );
@@ -700,11 +698,16 @@ public final class OnFlyCallGraphBuilder
         findOrAdd( "void start()" );
     protected final NumberedString sigRun = Scene.v().getSubSigNumberer().
         findOrAdd( "void run()" );
+    protected final NumberedString sigExecute = Scene.v().getSubSigNumberer().
+            findOrAdd( "android.os.AsyncTask execute(java.lang.Object[])" );
     protected final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Object run()" );
+    protected final NumberedString sigDoInBackground = Scene.v().getSubSigNumberer().
+            findOrAdd( "java.lang.Object doInBackground(java.lang.Object[])" );
     protected final NumberedString sigForName = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Class forName(java.lang.String)" );
     protected final RefType clRunnable = RefType.v("java.lang.Runnable");
+    protected final RefType clAsyncTask = RefType.v("android.os.AsyncTask");
     
 }
 

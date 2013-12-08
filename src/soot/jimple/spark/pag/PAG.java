@@ -777,7 +777,7 @@ public class PAG implements PointsToAnalysis {
         MethodPAG tgtmpag = MethodPAG.v( this, e.tgt() );
         Pair<Node, Node> pval;
         
-        if( e.isExplicit() || e.kind() == Kind.THREAD ) {
+        if( e.isExplicit() || e.kind() == Kind.THREAD || e.kind() == Kind.ASYNCTASK ) {
             addCallTarget( srcmpag, tgtmpag, (Stmt) e.srcUnit(),
                            e.srcCtxt(), e.tgtCtxt(), e );
         } else {

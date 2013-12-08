@@ -29,7 +29,10 @@ public class Debug {
     DEXPLER_DEBUG = Options.v().verbose();
     if (DEXPLER_DEBUG) {
       for (Object o: objects) {
-        s += o.toString();
+          if (o == null)
+              s += "null";
+          else
+              s += o.toString();
       }
       System.out.println (s);
     }

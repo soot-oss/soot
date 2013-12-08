@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -50,14 +49,16 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ASTNode<T> copy() {
-      try {
-        ASTNode node = (ASTNode)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      ASTNode node = (ASTNode) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -67,25 +68,17 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ASTNode<T> fullCopy() {
-    try {
-      ASTNode tree = (ASTNode) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    ASTNode tree = (ASTNode) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -106,7 +99,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:45
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:44
    */
   public void collectBranches(Collection c) {
     for(int i = 0; i < getNumChild(); i++)
@@ -115,7 +108,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:151
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:150
    */
   public Stmt branchTarget(Stmt branchStmt) {
     if(getParent() != null)
@@ -126,7 +119,7 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:191
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:190
    */
   public void collectFinally(Stmt branchStmt, ArrayList list) {
     if(getParent() != null)
@@ -877,40 +870,36 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
    * 
    */
   @SuppressWarnings("cast") public T getChild(int i) {
-    return (T)ASTNode.getChild(this, i);
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * 
-   */
-  public static ASTNode getChild(ASTNode that, int i) {
-    ASTNode node = that.getChildNoTransform(i);
-    if(node.is$Final()) return node;
+    ASTNode node = this.getChildNoTransform(i);
+    if(node == null) return null;
+    if(node.is$Final()) {
+      return (T) node;
+    }
     if(!node.mayHaveRewrite()) {
-      node.is$Final(that.is$Final());
-      return node;
+      node.is$Final(this.is$Final());
+      return (T) node;
     }
     if(!node.in$Circle()) {
       int rewriteState;
-      int num = that.state().boundariesCrossed;
+      int num = this.state().boundariesCrossed;
       do {
-        that.state().push(ASTNode$State.REWRITE_CHANGE);
+        this.state().push(ASTNode$State.REWRITE_CHANGE);
         ASTNode oldNode = node;
         oldNode.in$Circle(true);
         node = node.rewriteTo();
-        if(node != oldNode)
-          that.setChild(node, i);
+        if(node != oldNode) {
+          this.setChild(node, i);
+        }
         oldNode.in$Circle(false);
-        rewriteState = that.state().pop();
+        rewriteState = this.state().pop();
       } while(rewriteState == ASTNode$State.REWRITE_CHANGE);
-      if(rewriteState == ASTNode$State.REWRITE_NOCHANGE && that.is$Final()) {
+      if(rewriteState == ASTNode$State.REWRITE_NOCHANGE && this.is$Final()) {
         node.is$Final(true);
-        that.state().boundariesCrossed = num;
+        this.state().boundariesCrossed = num;
       }
     }
-    else if(that.is$Final() != node.is$Final()) that.state().boundariesCrossed++;
-    return node;
+    else if(this.is$Final() != node.is$Final()) this.state().boundariesCrossed++;
+    return (T) node;
   }
   /**
    * @apilevel internal
@@ -1041,16 +1030,21 @@ public class ASTNode<T extends ASTNode> extends beaver.Symbol  implements Clonea
     if(children != null) {
       ASTNode child = (ASTNode)children[i];
       if(child != null) {
-        child.setParent(null);
+        child.parent = null;
         child.childIndex = -1;
       }
-      System.arraycopy(children, i+1, children, i, children.length-i-1);
-      numChildren--;
-      for(int j = i; j < numChildren; ++j) {
-        if(children[j] != null) {
-          child = (ASTNode) children[j];
-          child.childIndex = j;
+      if (this instanceof List || this instanceof Opt) {
+        System.arraycopy(children, i+1, children, i, children.length-i-1);
+        children[children.length-1] = null;
+        numChildren--;
+        for(int j = i; j < numChildren; ++j) {
+          if(children[j] != null) {
+            child = (ASTNode) children[j];
+            child.childIndex = j;
+          }
         }
+      } else {
+        children[i] = null;
       }
     }
   }

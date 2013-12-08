@@ -40,9 +40,11 @@ public class Hierarchy
     // These two maps are not filled in the constructor.
     HashMap<SootClass, List<SootClass>> classToSubclasses;
     HashMap<SootClass, List<SootClass>> interfaceToSubinterfaces;
+    HashMap<SootClass, List<SootClass>> interfaceToSuperinterfaces;
 
     HashMap<SootClass, List<SootClass>> classToDirSubclasses;
     HashMap<SootClass, List<SootClass>> interfaceToDirSubinterfaces;
+    HashMap<SootClass, List<SootClass>> interfaceToDirSuperinterfaces;
 
     // This holds the direct implementers.
     HashMap<SootClass, List<SootClass>> interfaceToDirImplementers;
@@ -63,11 +65,14 @@ public class Hierarchy
 
             classToSubclasses = new HashMap<SootClass, List<SootClass>>(allClasses.size() * 2 + 1, 0.7f);
             interfaceToSubinterfaces = new HashMap<SootClass, List<SootClass>>(allClasses.size() * 2 + 1, 0.7f);
-
+            interfaceToSuperinterfaces = new HashMap<SootClass, List<SootClass>>(allClasses.size() * 2 + 1, 0.7f);
+            
             classToDirSubclasses = new HashMap<SootClass, List<SootClass>>
                 (allClasses.size() * 2 + 1, 0.7f);
             interfaceToDirSubinterfaces = new HashMap<SootClass, List<SootClass>>
                 (allClasses.size() * 2 + 1, 0.7f);
+            interfaceToDirSuperinterfaces = new HashMap<SootClass, List<SootClass>>
+            	(allClasses.size() * 2 + 1, 0.7f);
             interfaceToDirImplementers = new HashMap<SootClass, List<SootClass>>
                 (allClasses.size() * 2 + 1, 0.7f);
 
@@ -80,6 +85,7 @@ public class Hierarchy
                 if (c.isInterface())
                 {
                     interfaceToDirSubinterfaces.put(c, new ArrayList<SootClass>());
+                    interfaceToDirSuperinterfaces.put(c, new ArrayList<SootClass>());
                     interfaceToDirImplementers.put(c, new ArrayList<SootClass>());
                 }
                 else
@@ -92,18 +98,17 @@ public class Hierarchy
                 SootClass c = classesIt.next();
                 if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
 
+                List<SootClass> l2 = interfaceToDirSuperinterfaces.get(c);
+
                 if (c.hasSuperclass())
                 {
                     if (c.isInterface())
                     {
-                        Iterator<SootClass> subIt = c.getInterfaces().iterator();
-
-                        while (subIt.hasNext())
-                        {
-                            SootClass i = subIt.next();
+                        for (SootClass i : c.getInterfaces()) {
                             if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
                             List<SootClass> l = interfaceToDirSubinterfaces.get(i);
                             if (l != null) l.add(c);
+                            if (l2 != null) l2.add(i);
                         }
                     }
                     else
@@ -159,9 +164,11 @@ public class Hierarchy
                 if (c.isInterface())
                 {
                     interfaceToDirSubinterfaces.put(c, Collections.unmodifiableList
-                                          (interfaceToDirSubinterfaces.get(c)));
+                    		(interfaceToDirSubinterfaces.get(c)));
+                    interfaceToDirSuperinterfaces.put(c, Collections.unmodifiableList
+                    		(interfaceToDirSuperinterfaces.get(c)));
                     interfaceToDirImplementers.put(c, Collections.unmodifiableList
-                                                (interfaceToDirImplementers.get(c)));
+                    		(interfaceToDirImplementers.get(c)));
                 }
                 else
                     classToDirSubclasses.put(c, Collections.unmodifiableList
@@ -292,10 +299,45 @@ public class Hierarchy
         return Collections.unmodifiableList(l);
     }
 
+    /** Returns a list of superinterfaces of c, including itself. */
+    public List<SootClass> getSuperinterfacesOfIncluding(SootClass c)
+    {
+        c.checkLevel(SootClass.HIERARCHY);
+        if (!c.isInterface())
+            throw new RuntimeException("interface needed!");
+
+        List<SootClass> l = new ArrayList<SootClass>();
+        l.addAll(getSuperinterfacesOf(c));
+        l.add(c);
+
+        return Collections.unmodifiableList(l);
+    }
+
     /** Returns a list of superinterfaces of c, excluding itself. */
     public List<SootClass> getSuperinterfacesOf(SootClass c)
     {
-        throw new RuntimeException("Not implemented yet!");
+        c.checkLevel(SootClass.HIERARCHY);
+        if (!c.isInterface())
+            throw new RuntimeException("interface needed!");
+
+        checkState();
+
+        // If already cached, return the value.
+        if (interfaceToSuperinterfaces.get(c) != null)
+            return interfaceToSuperinterfaces.get(c);
+
+        // Otherwise, build up the hashmap.
+        List<SootClass> l = new ArrayList<SootClass>();
+
+        ListIterator<SootClass> it = interfaceToDirSuperinterfaces.get(c).listIterator();
+        while (it.hasNext())
+        {
+            l.addAll(getSuperinterfacesOfIncluding((SootClass)it.next()));
+        }
+        
+        interfaceToSuperinterfaces.put(c, Collections.unmodifiableList(l));
+
+        return Collections.unmodifiableList(l);
     }
 
     /** Returns a list of direct superclasses of c, excluding c. */
@@ -457,6 +499,23 @@ public class Hierarchy
         child.checkLevel(SootClass.HIERARCHY);
         possibleParent.checkLevel(SootClass.HIERARCHY);
         return getDirectSubinterfacesOf(possibleParent).contains(child);
+    }
+
+    /** Returns true if parent is a superinterface of possibleChild. */
+    public boolean isInterfaceSuperinterfaceOf(SootClass parent, SootClass possibleChild)
+    {
+        parent.checkLevel(SootClass.HIERARCHY);
+        possibleChild.checkLevel(SootClass.HIERARCHY);
+        return getSuperinterfacesOf(possibleChild).contains(parent);
+    }
+
+    /** Returns true if parent is a direct superinterface of possibleChild. */
+    public boolean isInterfaceDirectSuperinterfaceOf(SootClass parent,
+                                                   SootClass possibleChild)
+    {
+        parent.checkLevel(SootClass.HIERARCHY);
+        possibleChild.checkLevel(SootClass.HIERARCHY);
+        return getDirectSuperinterfacesOf(possibleChild).contains(parent);
     }
 
     /** Returns the most specific type which is an ancestor of both c1 and c2. */
