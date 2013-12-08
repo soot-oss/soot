@@ -161,18 +161,17 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
             
         buffer.append("{" + endOfLine);
         
+        // In this for-loop, we cannot use "<=" since 'i' would wrap around.
+        // The case for "i == highIndex" is handled separately after the loop.
         for(int i = lowIndex; i < highIndex; i++)
         {
-            buffer.append("    case " + i + ": goto " + 
-                getTarget(i - lowIndex) + ";" 
+            buffer.append("    case " + i + ": goto " +
+                getTarget(i - lowIndex) + ";"
                           + endOfLine);
         }
-        // in the for loop above, we cannot use "<=" since 'i' would wrap around
-        if (highIndex == Integer.MAX_VALUE) {
-        	buffer.append("    case " + highIndex + ": goto " + 
-                    getTarget(highIndex - lowIndex) + ";" 
-                              + endOfLine);
-        }
+        buffer.append("    case " + highIndex + ": goto " +
+                  getTarget(highIndex - lowIndex) + ";"
+                            + endOfLine);
 
         buffer.append("    default: goto " + getDefaultTarget() + ";" + endOfLine);
         buffer.append("}");
@@ -186,14 +185,13 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
         up.literal("{");
         up.newline();
         
-        for(int i = lowIndex; i <= highIndex; i++)
+        // In this for-loop, we cannot use "<=" since 'i' would wrap around.
+        // The case for "i == highIndex" is handled separately after the loop.
+        for(int i = lowIndex; i < highIndex; i++)
         {
             printCaseTarget(up, i);
         }
-        // in the for loop above, we cannot use "<=" since 'i' would wrap around
-        if (highIndex == Integer.MAX_VALUE) {
-        	printCaseTarget(up, highIndex);
-        }
+        printCaseTarget(up, highIndex);
 
         up.literal("    default: goto ");
         defaultTargetBox.toString(up);
