@@ -230,7 +230,6 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 	}
 
 	@Override
-	//TODO do we need to replace call by return for backwards analysis?
 	public Set<Unit> allNonCallStartNodes() {
 		Set<Unit> res = new LinkedHashSet<Unit>(unitToOwner.keySet());
 		for (Iterator<Unit> iter = res.iterator(); iter.hasNext();) {
