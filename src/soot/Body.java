@@ -34,6 +34,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -410,6 +411,31 @@ public abstract class Body extends AbstractHost implements Serializable
 
         throw new RuntimeException("couldn't find parameterref!"+" in "+getMethod());
     }
+    
+    /**
+     * Returns the list of parameter references used in this body. The list is as long as
+     * the number of parameters declared in the associated method's signature.
+     * The list may have <code>null</code> entries for parameters not referenced in the body.
+     * The returned list is of fixed size.
+     */
+    public List<ParameterRef> getParameterRefs()
+    {
+    	ParameterRef[] res = new ParameterRef[getMethod().getParameterCount()];
+        Iterator<Unit> unitsIt = getUnits().iterator();
+        while (unitsIt.hasNext())
+        {
+            Unit s = unitsIt.next();
+            if (s instanceof IdentityStmt) {
+				Value rightOp = ((IdentityStmt)s).getRightOp();
+				if (rightOp instanceof ParameterRef) {
+					ParameterRef parameterRef = (ParameterRef) rightOp;
+					res[parameterRef.getIndex()] = parameterRef;
+				}
+			}
+        }
+        return Arrays.asList(res);
+    }
+
 
     /**
      *  Returns the Chain of Units that make up this body. The units are
