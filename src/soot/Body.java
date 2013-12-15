@@ -409,7 +409,32 @@ public abstract class Body extends AbstractHost implements Serializable
             }
         }
 
-        throw new RuntimeException("couldn't find parameterref!"+" in "+getMethod());
+        throw new RuntimeException("couldn't find parameterref" + i +"! in "+getMethod());
+    }
+
+    /**
+     * Get all the LHS of the identity statements assigning from parameter references.
+     *
+     * @return a list of size as per <code>getMethod().getParameterCount()</code> with all elements ordered as per the parameter index.
+     * @throws RuntimeException if a parameterref is missing
+     */
+    public List<Local> getParameterLocals(){
+        final int numParams = getMethod().getParameterCount();
+        final List<Local> retVal = new ArrayList<Local>(numParams);
+
+        //Parameters are zero-indexed, so the keeping of the index is safe
+        for (Unit u : getUnits()){
+            if (u instanceof IdentityStmt){
+                IdentityStmt is = ((IdentityStmt)u);
+                if (is.getRightOp() instanceof ParameterRef){
+                    ParameterRef pr = (ParameterRef) is.getRightOp();
+                    retVal.add(pr.getIndex(), (Local) is.getLeftOp());
+                }
+            }
+        }
+        if (retVal.size() != numParams)
+            throw new RuntimeException("couldn't find parameterref! in " + getMethod());
+        return retVal;
     }
     
     /**
