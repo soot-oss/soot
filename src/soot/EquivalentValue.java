@@ -62,6 +62,14 @@ public class EquivalentValue implements Value {
     public boolean equalsToValue(Value v) {
       return e.equals(v);
     }
+    
+    /**
+     * @deprecated
+     * @see #getValue()
+     **/
+    public Value getDeepestValue() {
+    	return getValue();
+    }
 
     public int hashCode() { return e.equivHashCode(); }
     public String toString() { return e.toString(); }
