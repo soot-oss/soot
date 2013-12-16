@@ -35,7 +35,7 @@ import soot.util.*;
 public class EquivalentValue implements Value {
     Value e;
     public EquivalentValue(Value e) {
-    	while (e instanceof EquivalentValue)
+    	if (e instanceof EquivalentValue)
     		e = ((EquivalentValue) e).e;
     	this.e = e;
     }
