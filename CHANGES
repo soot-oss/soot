@@ -45,6 +45,9 @@ Improvements and API changes in HEAD
     getJavaSourceStartColumnNumber() which return line/column info on a
     best-effort basis.
 
+12. EquivalentValue is never nested now. This eliminates the need of
+    getDeepestValue().
+
 Improvements and API changes in version 2.5.0
 
 1. Modified SourceLocator so that it will automatically load a SootClass
