@@ -306,7 +306,7 @@ public class DexAnnotation {
         
         List<AnnotationItem> aList = new ArrayList<AnnotationItem>();
         List<AnnotationSetItem> setList = new ArrayList<AnnotationSetItem>();
-        List<String> skipList = new ArrayList<String>();
+        Set<String> skipList = new HashSet<String>();
         
         if (sm.hasTag("DeprecatedTag")){
             AnnotationItem deprecatedItem = makeDeprecatedItem();
@@ -327,14 +327,13 @@ public class DexAnnotation {
         }
         
         for (Tag t : sm.getTags()) {
-        	// TODO: FIX
             if (t.getName().equals("VisibilityAnnotationTag")){
               VisibilityAnnotationTag vat = (VisibilityAnnotationTag)t;
               aList.addAll(handleMethodTag(vat, mid, skipList));
             }
             if (t.getName().equals("VisibilityParameterAnnotationTag")){
               VisibilityParameterAnnotationTag vat = (VisibilityParameterAnnotationTag)t;
-              setList.addAll(handleMethodParamTag(vat, mid));
+              setList.addAll(handleMethodParamTag(vat, mid, Collections.<String>emptySet()));
             }
         }
         
@@ -344,10 +343,17 @@ public class DexAnnotation {
 
 			@Override
 			public int compare(AnnotationItem o1, AnnotationItem o2) {
-				int res = o1.getEncodedAnnotation().annotationType.getIndex()
-						- o2.getEncodedAnnotation().annotationType.getIndex();
-				if (res == 0)
+				int idx1 = o1.getEncodedAnnotation().annotationType.getIndex();
+				int idx2 = o2.getEncodedAnnotation().annotationType.getIndex();
+				int res = idx1 - idx2;
+				
+				// Check that our generated APK file will not be broken
+				if (res == 0 && !(idx1 == -1 && idx2 == -1))
 					throw new RuntimeException("Duplicate annotation type:" + o1);
+				if (o1.getEncodedAnnotation().annotationType.getTypeDescriptor().equals
+						(o2.getEncodedAnnotation().annotationType.getTypeDescriptor()))
+					throw new RuntimeException("Duplicate annotation type:" + o1);
+
 				return res;
 			}
         	
@@ -369,7 +375,7 @@ public class DexAnnotation {
      * @return 
      */
     private List<AnnotationItem> handleMethodTag(VisibilityAnnotationTag vat, MethodIdItem mid,
-    		List<String> skipList) {
+    		Set<String> skipList) {
         List<AnnotationTag> atList = vat.getAnnotations();
         
         List<AnnotationItem> aList = new ArrayList<AnnotationItem>();
@@ -387,12 +393,12 @@ public class DexAnnotation {
                 namesList.add(StringIdItem.internStringIdItem(dexFile, ae.getName()));
                 Debug.printDbg("new method annotation: ", value ," ", ae.getName());
             }
-
+            
             TypeIdItem annotationType = TypeIdItem.internTypeIdItem(dexFile, type);
             StringIdItem[] names = namesList.toArray(new StringIdItem[namesList.size()]);
             EncodedValue[] values = encodedValueList.toArray(new EncodedValue[encodedValueList.size()]);
             AnnotationEncodedSubValue annotationValue = new AnnotationEncodedSubValue(annotationType, names, values);
-                      
+            
             AnnotationItem a = AnnotationItem.internAnnotationItem(dexFile, 
                     getVisibility(vat.getVisibility()), annotationValue);
             aList.add(a);
@@ -408,45 +414,47 @@ public class DexAnnotation {
      * @param mid
      * @return 
      */
-    private List<AnnotationSetItem> handleMethodParamTag(VisibilityParameterAnnotationTag vat1, MethodIdItem mid) {
+    private List<AnnotationSetItem> handleMethodParamTag(VisibilityParameterAnnotationTag vat1,
+    		MethodIdItem mid, Set<String> skipList) {
       List<VisibilityAnnotationTag> vatList = vat1.getVisibilityAnnotations();
+      if (vatList == null)
+    	  return Collections.emptyList();
       
       List<AnnotationSetItem> setList = new ArrayList<AnnotationSetItem>();
-      if (vatList != null)
-          for (VisibilityAnnotationTag vat: vatList) {
-              if (vat == null)
-                  continue;
+      for (VisibilityAnnotationTag vat: vatList) {
+    	  if (vat == null)
+    		  continue;
               
-              List<AnnotationItem> aList = new ArrayList<AnnotationItem>();
-              if (vat.getAnnotations() != null)
-                  for (AnnotationTag at: vat.getAnnotations()) {
-                      List<EncodedValue> encodedValueList = new ArrayList<EncodedValue>();
-                      List<StringIdItem> namesList = new ArrayList<StringIdItem>();
-                      for (AnnotationElem ae : at.getElems()) {
-                          EncodedValue value = getAnnotationElement(ae);
-                          encodedValueList.add(value);
-                          namesList.add(StringIdItem.internStringIdItem(dexFile, ae.getName()));
-                          Debug.printDbg("new annotation: ", value ," ", ae.getName());
-                      }  
+    	  List<AnnotationItem> aList = new ArrayList<AnnotationItem>();
+    	  if (vat.getAnnotations() != null)
+    		  for (AnnotationTag at: vat.getAnnotations()) {
+    			  List<EncodedValue> encodedValueList = new ArrayList<EncodedValue>();
+    			  List<StringIdItem> namesList = new ArrayList<StringIdItem>();
+    			  for (AnnotationElem ae : at.getElems()) {
+    				  EncodedValue value = getAnnotationElement(ae);
+    				  encodedValueList.add(value);
+    				  namesList.add(StringIdItem.internStringIdItem(dexFile, ae.getName()));
+    				  Debug.printDbg("new annotation: ", value ," ", ae.getName());
+    			  }
                   
-                      //String type = soot2DalvikType(at.getType());
-                      String type = at.getType();
-                      TypeIdItem annotationType = TypeIdItem.internTypeIdItem(dexFile, type);
-                      StringIdItem[] names = namesList.toArray(new StringIdItem[namesList.size()]);
-                      EncodedValue[] values = encodedValueList.toArray(new EncodedValue[encodedValueList.size()]);
-                      AnnotationEncodedSubValue annotationValue = new AnnotationEncodedSubValue(annotationType, names, values);            
+    			  //String type = soot2DalvikType(at.getType());
+    			  String type = at.getType();
+    			  if (skipList.contains(type))
+    				  continue;
+                  
+    			  TypeIdItem annotationType = TypeIdItem.internTypeIdItem(dexFile, type);
+    			  StringIdItem[] names = namesList.toArray(new StringIdItem[namesList.size()]);
+    			  EncodedValue[] values = encodedValueList.toArray(new EncodedValue[encodedValueList.size()]);
+    			  AnnotationEncodedSubValue annotationValue = new AnnotationEncodedSubValue(annotationType, names, values);            
         
-                      AnnotationItem a = AnnotationItem.internAnnotationItem(dexFile, getVisibility(vat.getVisibility()), annotationValue);
-                      aList.add(a);
-                             
-                  }
+    			  AnnotationItem a = AnnotationItem.internAnnotationItem(dexFile, getVisibility(vat.getVisibility()), annotationValue);
+    			  aList.add(a);           
+    		  }
               
               AnnotationSetItem annotationSets = AnnotationSetItem.internAnnotationSetItem(dexFile, aList);
               setList.add(annotationSets);
-              
-           }
-      
-          return setList;
+      }
+      return setList;
     }
 
     /**
