@@ -38,7 +38,7 @@ import soot.Scene;
 import soot.SootMethod;
 import soot.Unit;
 import soot.UnitBox;
-import soot.jimple.ParameterRef;
+import soot.Value;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
@@ -142,10 +142,10 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 			});
 	
 	@SynchronizedBy("by use of synchronized LoadingCache class")
-	protected final LoadingCache<SootMethod,List<ParameterRef>> methodToParameterRefs =
-			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,List<ParameterRef>>() {
+	protected final LoadingCache<SootMethod,List<Value>> methodToParameterRefs =
+			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,List<Value>>() {
 				@Override
-				public List<ParameterRef> load(SootMethod m) throws Exception {
+				public List<Value> load(SootMethod m) throws Exception {
 					return m.getActiveBody().getParameterRefs();
 				}
 			});
@@ -267,7 +267,7 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 		return false;
 	}
 	
-	public List<ParameterRef> getParameterRefs(SootMethod m) {
+	public List<Value> getParameterRefs(SootMethod m) {
 		return methodToParameterRefs.getUnchecked(m);
 	}
 }

@@ -443,9 +443,9 @@ public abstract class Body extends AbstractHost implements Serializable
      * The list may have <code>null</code> entries for parameters not referenced in the body.
      * The returned list is of fixed size.
      */
-    public List<ParameterRef> getParameterRefs()
+    public List<Value> getParameterRefs()
     {
-    	ParameterRef[] res = new ParameterRef[getMethod().getParameterCount()];
+    	Value[] res = new Value[getMethod().getParameterCount()];
         Iterator<Unit> unitsIt = getUnits().iterator();
         while (unitsIt.hasNext())
         {
