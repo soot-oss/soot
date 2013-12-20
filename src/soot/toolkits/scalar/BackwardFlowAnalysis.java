@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+
 //import soot.Timers;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
@@ -89,14 +90,11 @@ public abstract class BackwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 		{
 			A previousFlow = newInitialFlow();
 
-			for (int i = 0; i >= 0; i = work.nextSetBit(i + 1)) {
+			for (int i = work.nextSetBit(0); i >= 0; i = work.nextSetBit(i + 1)) {
 				work.clear(i);
 				N s = orderedUnits.get(i);
 
-				A beforeFlow = unitToBeforeFlow.get(s);
-				A afterFlow = unitToAfterFlow.get(s);
-
-				copy(unitToBeforeFlow.get(s), previousFlow);
+				A afterFlow = unitToAfterFlow.get(s);				
 
 				// Compute and store afterFlow
 				{
@@ -114,7 +112,10 @@ public abstract class BackwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 						}
 					}
 				}
-
+				
+				A beforeFlow = unitToBeforeFlow.get(s);
+				copy(beforeFlow, previousFlow);
+				
 				// Compute beforeFlow and store it.
 				if (interactiveMode) {
 					afterFlowThrough(s, afterFlow, true);
@@ -123,13 +124,16 @@ public abstract class BackwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 				} else {
 					flowThrough(afterFlow, s, beforeFlow);
 				}
+				
+				boolean hasChanged = !previousFlow.equals(beforeFlow);
 
 				// Update queue appropriately
-				if (!previousFlow.equals(beforeFlow)) {
+				if ( hasChanged ) {
 					for (N v : graph.getPredsOf(s)) {
-						work.set(index.get(v));
+						int j = index.get(v);
+						work.set(j);
+						i = Math.min(i, j-1);
 					}
-					i = -1;
 				}
 
 				// numComputations++;

@@ -57,7 +57,6 @@ public abstract class ForwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 		List<N> orderedUnits = constructOrderer().newList(graph, false);
 
 		final int n = orderedUnits.size();
-
 		BitSet head = new BitSet();
 		BitSet work = new BitSet(n);
 		work.set(0, n);
@@ -89,14 +88,11 @@ public abstract class ForwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 		{
 			A previousFlow = newInitialFlow();
 
-			for (int i = 0; i >= 0; i = work.nextSetBit(i + 1)) {
+			for (int i = work.nextSetBit(0); i >= 0; i = work.nextSetBit(i + 1)) {
 				work.clear(i);
 				N s = orderedUnits.get(i);
 
 				A beforeFlow = unitToBeforeFlow.get(s);
-				A afterFlow = unitToAfterFlow.get(s);
-
-				copy(unitToAfterFlow.get(s), previousFlow);
 
 				// Compute and store beforeFlow
 				{
@@ -115,6 +111,9 @@ public abstract class ForwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 					}
 				}
 
+				A afterFlow = unitToAfterFlow.get(s);
+				copy(afterFlow, previousFlow);
+				
 				// Compute afterFlow and store it.
 				if (interactiveMode) {
 					beforeFlowThrough(s, beforeFlow, true);
@@ -124,12 +123,15 @@ public abstract class ForwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 					flowThrough(beforeFlow, s, afterFlow);
 				}
 
+				boolean hasChanged = !previousFlow.equals(afterFlow);
+				
 				// Update queue appropriately
-				if (!previousFlow.equals(afterFlow)) {
+				if ( hasChanged ) {
 					for (N v : graph.getSuccsOf(s)) {
-						work.set(index.get(v));
+						int j = index.get(v);
+						work.set(j);
+						i = Math.min(i, j-1);
 					}
-					i = -1;
 				}
 
 				numComputations++;
