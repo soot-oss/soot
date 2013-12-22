@@ -22,6 +22,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
+import soot.Body;
 import soot.Local;
 import soot.RefLikeType;
 import soot.Type;
@@ -31,6 +32,7 @@ import soot.jimple.DefinitionStmt;
 import soot.jimple.NewExpr;
 import soot.jimple.Stmt;
 import soot.jimple.internal.AbstractNewExpr;
+import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
 
@@ -65,10 +67,15 @@ public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap
 
     public LocalMustNotAliasAnalysis(UnitGraph g)
     {
-        super(g);
-        locals = new HashSet<Local>(); locals.addAll(g.getBody().getLocals());
+    	this(g, g.getBody());
+    }
+    
+    public LocalMustNotAliasAnalysis(DirectedGraph<Unit> directedGraph, Body b)
+    {
+        super(directedGraph);
+        locals = new HashSet<Local>(); locals.addAll(b.getLocals());
 
-        for (Local l : (Collection<Local>) g.getBody().getLocals()) {
+        for (Local l : b.getLocals()) {
             if (l.getType() instanceof RefLikeType)
                 locals.add(l);
         }
