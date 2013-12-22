@@ -106,20 +106,6 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 				}
 			});
 
-	@SynchronizedBy("by use of synchronized LoadingCache class")
-	protected final LoadingCache<SootMethod,Set<Unit>> methodToCallsFromWithin =
-			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,Set<Unit>>() {
-				@Override
-				public Set<Unit> load(SootMethod m) throws Exception {
-					Set<Unit> res = new LinkedHashSet<Unit>();
-					for(Unit u: m.getActiveBody().getUnits()) {
-						if(isCallStmt(u))
-							res.add(u);
-					}
-					return res;
-				}
-			});
-	
 	public JimpleBasedInterproceduralCFG() {
 		cg = Scene.v().getCallGraph();		
 		initializeUnitToOwner();
@@ -146,10 +132,5 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 	@Override
 	public Set<Unit> getCallersOf(SootMethod m) {
 		return methodToCallers.getUnchecked(m);
-	}
-	
-	@Override
-	public Set<Unit> getCallsFromWithin(SootMethod m) {
-		return methodToCallsFromWithin.getUnchecked(m);		
 	}
 }

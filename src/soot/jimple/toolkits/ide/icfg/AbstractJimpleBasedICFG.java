@@ -28,6 +28,7 @@ public abstract class AbstractJimpleBasedICFG implements InterproceduralCFG<Unit
 
 	@DontSynchronize("written by single thread; read afterwards")
 	protected final Map<Unit,Body> unitToOwner = new HashMap<Unit,Body>();
+	
 	@SynchronizedBy("by use of synchronized LoadingCache class")
 	protected final LoadingCache<Body,DirectedGraph<Unit>> bodyToUnitGraph = IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Body,DirectedGraph<Unit>>() {
 					@Override
@@ -35,11 +36,25 @@ public abstract class AbstractJimpleBasedICFG implements InterproceduralCFG<Unit
 						return makeGraph(body);
 					}
 				});
+	
 	@SynchronizedBy("by use of synchronized LoadingCache class")
 	protected final LoadingCache<SootMethod,List<Value>> methodToParameterRefs = IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,List<Value>>() {
 					@Override
 					public List<Value> load(SootMethod m) throws Exception {
 						return m.getActiveBody().getParameterRefs();
+					}
+				});
+
+	@SynchronizedBy("by use of synchronized LoadingCache class")
+	protected final LoadingCache<SootMethod,Set<Unit>> methodToCallsFromWithin = IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,Set<Unit>>() {
+					@Override
+					public Set<Unit> load(SootMethod m) throws Exception {
+						Set<Unit> res = new LinkedHashSet<Unit>();
+						for(Unit u: m.getActiveBody().getUnits()) {
+							if(isCallStmt(u))
+								res.add(u);
+						}
+						return res;
 					}
 				});
 
@@ -128,6 +143,11 @@ public abstract class AbstractJimpleBasedICFG implements InterproceduralCFG<Unit
 	@Override
 	public List<Unit> getReturnSitesOfCallAt(Unit u) {
 		return getSuccsOf(u);
+	}
+
+	@Override
+	public Set<Unit> getCallsFromWithin(SootMethod m) {
+		return methodToCallsFromWithin.getUnchecked(m);		
 	}
 
 }
