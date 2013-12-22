@@ -24,6 +24,7 @@ import java.util.Set;
 
 import soot.Local;
 import soot.RefLikeType;
+import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.DefinitionStmt;
@@ -172,6 +173,21 @@ public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap
 
         Set<NewExpr> n = new HashSet<NewExpr>(); n.addAll(l1n); n.retainAll(l2n);
         return n.isEmpty();
+    }
+    
+    /**
+     * If the given local at the given statement was initialized with a single, concrete new-expression
+     * then the type of this expression is returned. Otherwise this method returns null.
+     */
+    public Type concreteType(Local l, Stmt s) {
+    	HashMap<Local,Set<NewExpr>> flowBefore = getFlowBefore(s);
+
+    	Set<NewExpr> set = flowBefore.get(l);
+    	if(set.size()!=1) return null;
+    	else {
+    		NewExpr singleNewExpr = set.iterator().next();
+    		return singleNewExpr.getType();
+    	}
     }
         
 }
