@@ -31,7 +31,7 @@ public interface MultiMap<K,V> {
     public boolean containsKey( K key );
     public boolean containsValue( V value );
     public boolean put( K key, V value );
-    public boolean putAll( K key, Set<V> values );
+    public boolean putAll( K key, Collection<V> values );
     public void putAll( MultiMap<K,V> m );
 //    public boolean putAll( Map m );
     public boolean remove( K key, V value );

@@ -79,7 +79,7 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
     }
 
     @Override
-    public boolean putAll( K key, Set<V> values ) {
+    public boolean putAll( K key, Collection<V> values ) {
         if (values.isEmpty()) return false;
         return findSet( key ).addAll( values );
     }
