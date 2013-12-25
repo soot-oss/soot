@@ -156,6 +156,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-whole-shimple");
         }
   
+        public void seton_the_fly(boolean arg) {
+            if(arg) addArg("-on-the-fly");
+        }
+  
         public void setvalidate(boolean arg) {
             if(arg) addArg("-validate");
         }
