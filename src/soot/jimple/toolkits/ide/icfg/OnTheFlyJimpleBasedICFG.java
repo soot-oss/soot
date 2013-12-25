@@ -3,6 +3,8 @@ package soot.jimple.toolkits.ide.icfg;
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -47,10 +49,6 @@ import com.google.common.cache.LoadingCache;
  * all classes on the classpath be loaded at least to signatures. This must be done before the FastHierarchy is computed such
  * that the hierarchy is intact. Clients should call {@link #loadAllClassesOnClassPathToSignatures()} to load all required classes
  * to this level.
- * 
- * Then, when using the ICFG, clients must call {@link #initForMethod(SootMethod)} to initialize the ICFG for this method.
- * This call will load the method body if necessary, and will initialize the mapping from units to bodies for all
- * units in this body.
  * 
  * @see FastHierarchy#resolveConcreteDispatch(SootClass, SootMethod)
  * @see FastHierarchy#resolveAbstractDispatch(SootClass, SootMethod)
@@ -109,7 +107,17 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 				}
 			});
 	
-	public Body initForMethod(SootMethod m) {
+	public OnTheFlyJimpleBasedICFG(SootMethod... entryPoints) {
+		this(Arrays.asList(entryPoints));
+	}
+
+	public OnTheFlyJimpleBasedICFG(Collection<SootMethod> entryPoints) {
+		for (SootMethod m : entryPoints) {
+			initForMethod(m);
+		}
+	}
+	
+	protected Body initForMethod(SootMethod m) {
 		Body b = null;
 		if(m.isConcrete()) {
 			SootClass declaringClass = m.getDeclaringClass();
@@ -117,7 +125,11 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 			b = m.retrieveActiveBody();
 			if(b!=null) {
 				for(Unit u: b.getUnits()) {
-					unitToOwner.put(u,b);
+					if(unitToOwner.put(u,b)!=null) {
+						//if the unit was registered already then so were all units;
+						//simply skip the rest
+						break;
+					}
 				}
 			}
 		}
@@ -131,7 +143,11 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 	
 	@Override
 	public Set<SootMethod> getCalleesOfCallAt(Unit u) {
-		return unitToCallees.getUnchecked(u);
+		Set<SootMethod> targets = unitToCallees.getUnchecked(u);
+		for (SootMethod m : targets) {
+			initForMethod(m);
+		}
+		return targets;
 	}
 
 	@Override
@@ -156,8 +172,8 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 				
 				loadAllClassesOnClassPathToSignatures();
 				
-				OnTheFlyJimpleBasedICFG icfg = new OnTheFlyJimpleBasedICFG();
 				SootMethod mainMethod = Scene.v().getMainMethod();
+				OnTheFlyJimpleBasedICFG icfg = new OnTheFlyJimpleBasedICFG(mainMethod);
 				Set<SootMethod> worklist = new LinkedHashSet<SootMethod>();
 				Set<SootMethod> visited = new HashSet<SootMethod>();
 				worklist.add(mainMethod);
@@ -169,7 +185,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 					visited.add(currMethod);
 					System.err.println(currMethod);
 					//MUST call this method to initialize ICFG for every method 
-					Body body = icfg.initForMethod(currMethod);
+					Body body = currMethod.getActiveBody();
 					if(body==null) continue;
 					for(Unit u: body.getUnits()) {
 						Stmt s = (Stmt)u;
