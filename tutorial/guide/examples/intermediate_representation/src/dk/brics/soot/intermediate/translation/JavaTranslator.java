@@ -141,7 +141,7 @@ public class JavaTranslator {
 		} else {
 			rc = ((RefType)v.getType()).getSootClass();
 		}
-		List<SootMethod> targets = h.resolveAbstractDispatch(rc, m);
+		Collection<SootMethod> targets = h.resolveAbstractDispatch(rc, m);
 		return targets;
 	}
 	

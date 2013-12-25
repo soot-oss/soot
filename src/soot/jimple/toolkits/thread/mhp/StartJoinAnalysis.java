@@ -1,12 +1,6 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 import soot.Hierarchy;
 import soot.Local;
@@ -110,7 +104,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 				// and add run from it and all subclasses
 				if(runMethodsList.isEmpty() && ((RefType) startObject.getType()).getSootClass().isApplicationClass())
 				{
-					List<SootClass> threadClasses = hierarchy.getSubclassesOfIncluding( ((RefType) startObject.getType()).getSootClass() );
+					Collection<SootClass> threadClasses = hierarchy.getSubclassesOfIncluding( ((RefType) startObject.getType()).getSootClass() );
 					Iterator<SootClass> threadClassesIt = threadClasses.iterator();
 					while(threadClassesIt.hasNext())
 					{
@@ -279,7 +273,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 					RefType baseType = (RefType) iie.getBase().getType();
 					if(!baseType.getSootClass().isInterface()) // the start method we're looking for is NOT an interface method
 					{
-						List<SootClass> superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
+						Collection<SootClass> superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
 						Iterator<SootClass> it = superClasses.iterator();
 						while (it.hasNext())
 						{
@@ -302,7 +296,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 					RefType baseType = (RefType) iie.getBase().getType();
 					if(!baseType.getSootClass().isInterface())
 					{
-						List<SootClass> superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
+						Collection<SootClass> superClasses = hierarchy.getSuperclassesOfIncluding(baseType.getSootClass());
 						Iterator<SootClass> it = superClasses.iterator();
 						while (it.hasNext())
 						{

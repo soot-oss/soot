@@ -291,7 +291,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
 						SootClass baseTypeClass = ((RefType) pType).getSootClass();
 						if(!baseTypeClass.isInterface())
 						{
-							List<SootClass> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
+							Collection<SootClass> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
 							if(!baseClasses.contains(RefType.v("java.lang.Exception").getSootClass()))
 							{
 								for(SootClass baseClass : baseClasses)
@@ -546,7 +546,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
 						SootClass baseTypeClass = ((RefType) pType).getSootClass();
 						if(!baseTypeClass.isInterface())
 						{
-							List<SootClass> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
+							Collection<SootClass> baseClasses = Scene.v().getActiveHierarchy().getSuperclassesOfIncluding(baseTypeClass);
 							if(!baseClasses.contains(RefType.v("java.lang.Exception").getSootClass()))
 							{
 								for(SootClass baseClass : baseClasses)

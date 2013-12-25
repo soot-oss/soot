@@ -38,19 +38,19 @@ import java.util.*;
 public class Hierarchy
 {
 // These two maps are not filled in the constructor.
-    MultiMap<SootClass, SootClass> classToSubclasses;
-    MultiMap<SootClass, SootClass> interfaceToSubinterfaces;
-    MultiMap<SootClass, SootClass> interfaceToSuperinterfaces;
+    private MultiMap<SootClass, SootClass> classToSubclasses;
+    private MultiMap<SootClass, SootClass> interfaceToSubinterfaces;
+    private MultiMap<SootClass, SootClass> interfaceToSuperinterfaces;
 
-    MultiMap<SootClass, SootClass> classToDirSubclasses;
-    MultiMap<SootClass, SootClass> interfaceToDirSubinterfaces;
-    MultiMap<SootClass, SootClass> interfaceToDirSuperinterfaces;
+    private MultiMap<SootClass, SootClass> classToDirSubclasses;
+    private MultiMap<SootClass, SootClass> interfaceToDirSubinterfaces;
+    private MultiMap<SootClass, SootClass> interfaceToDirSuperinterfaces;
 
     // This holds the direct implementers.
-    MultiMap<SootClass, SootClass> interfaceToDirImplementers;
+    private MultiMap<SootClass, SootClass> interfaceToDirImplementers;
     
-    int state;
-    Scene sc;
+    private int state;
+    private final Scene sc;
 
     /** Constructs a hierarchy from the current scene. */
     public Hierarchy()
@@ -67,7 +67,7 @@ public class Hierarchy
             interfaceToSubinterfaces = new HashMultiMap<SootClass, SootClass>();
             interfaceToSuperinterfaces = new HashMultiMap<SootClass, SootClass>();
             
-            classToDirSubclasses =new HashMultiMap<SootClass, SootClass>();// new HashMap<SootClass, List<SootClass>>(allClasses.size() * 2 + 1, 0.7f);
+            classToDirSubclasses =new HashMultiMap<SootClass, SootClass>();
             interfaceToDirSubinterfaces = new HashMultiMap<SootClass, SootClass>();
             interfaceToDirSuperinterfaces = new HashMultiMap<SootClass, SootClass>();
             interfaceToDirImplementers = new HashMultiMap<SootClass, SootClass>();
@@ -127,9 +127,12 @@ public class Hierarchy
             throw new ConcurrentModificationException("Scene changed for Hierarchy!");
     }
 
-    // This includes c in the list of subclasses.
-    /** Returns a list of subclasses of c, including itself. */
-    public List<SootClass> getSubclassesOfIncluding(SootClass c)
+    /**
+     * Returns a list of subclasses of c, including itself.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getSubclassesOfIncluding(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (c.isInterface())
@@ -142,8 +145,12 @@ public class Hierarchy
         return Collections.unmodifiableList(l);
     }
 
-    /** Returns a list of subclasses of c, excluding itself. */
-    public List<SootClass> getSubclassesOf(SootClass c)
+    /**
+     * Returns a list of subclasses of c, excluding itself.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getSubclassesOf(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (c.isInterface())
@@ -164,20 +171,29 @@ public class Hierarchy
         }
         classToSubclasses.putAll(c, l);
 
-        return new ArrayList<SootClass>(l);
+        return Collections.unmodifiableSet(l);
     }
 
-    /** Returns a list of superclasses of c, including itself. */
-    public List<SootClass> getSuperclassesOfIncluding(SootClass c)
+    /**
+     * Returns a list of superclasses of c, including itself.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getSuperclassesOfIncluding(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
-        List<SootClass> l = getSuperclassesOf(c);
-        ArrayList<SootClass> al = new ArrayList<SootClass>(); al.add(c); al.addAll(l);
-        return Collections.unmodifiableList(al);
+
+        Set<SootClass> l = new HashSet<SootClass>(getSuperclassesOf(c));
+        l.add(c);
+        return Collections.unmodifiableSet(l);
     }
 
-    /** Returns a list of strict superclasses of c, starting with c's parent. */
-    public List<SootClass> getSuperclassesOf(SootClass c)
+    /**
+     * Returns a list of superclasses of c, starting with c's parent.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getSuperclassesOf(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (c.isInterface())
@@ -185,31 +201,37 @@ public class Hierarchy
 
         checkState();
 
-        ArrayList<SootClass> l = new ArrayList<SootClass>();
+        Set<SootClass> l = new HashSet<SootClass>();
         for(SootClass cl = c; cl.hasSuperclass(); cl = cl.getSuperclass())
         {
             l.add(cl.getSuperclass());
         }
 
-        return Collections.unmodifiableList(l);
+        return Collections.unmodifiableSet(l);
     }
 
-    /** Returns a list of subinterfaces of c, including itself. */
-    public List<SootClass> getSubinterfacesOfIncluding(SootClass c)
+    /**
+     * Returns a list of subinterfaces of c, including itself.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getSubinterfacesOfIncluding(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (!c.isInterface())
             throw new RuntimeException("interface needed!");
 
-        List<SootClass> l = new ArrayList<SootClass>();
-        l.addAll(getSubinterfacesOf(c));
+        Set<SootClass> l = new HashSet<SootClass>(getSubinterfacesOf(c));
         l.add(c);
-
-        return Collections.unmodifiableList(l);
+        return Collections.unmodifiableSet(l);
     }
 
-    /** Returns a list of subinterfaces of c, excluding itself. */
-    public List<SootClass> getSubinterfacesOf(SootClass c)
+    /**
+     * Returns a list of subinterfaces of c, excluding itself.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getSubinterfacesOf(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (!c.isInterface())
@@ -217,39 +239,45 @@ public class Hierarchy
 
         checkState();
 
-        // If already cached, return the value.
-        if (interfaceToSubinterfaces.get(c) != null)
-            return new ArrayList<SootClass>(interfaceToSubinterfaces.get(c));
+        if (!interfaceToSubinterfaces.containsKey(c)){
+            // If not cached, build up the cache.
+            Set<SootClass> l = new HashSet<SootClass>();
 
-        // Otherwise, build up the hashmap.
-        List<SootClass> l = new ArrayList<SootClass>();
+            for (SootClass n : interfaceToDirSubinterfaces.get(c))
+            {
+                l.addAll(getSubinterfacesOfIncluding(n));
+            }
 
-        for (SootClass n : interfaceToDirSubinterfaces.get(c))
-        {
-            l.addAll(getSubinterfacesOfIncluding(n));
+            interfaceToSubinterfaces.putAll(c, l);
         }
-        
-        interfaceToSubinterfaces.putAll(c, new HashSet<SootClass>(l));
 
-        return Collections.unmodifiableList(l);
+        //Multimap results are alaways immutable
+        return interfaceToSubinterfaces.get(c);
     }
 
-    /** Returns a list of superinterfaces of c, including itself. */
-    public List<SootClass> getSuperinterfacesOfIncluding(SootClass c)
+    /**
+     * Returns a list of superinterfaces of c, including itself.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getSuperinterfacesOfIncluding(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (!c.isInterface())
             throw new RuntimeException("interface needed!");
 
-        List<SootClass> l = new ArrayList<SootClass>();
-        l.addAll(getSuperinterfacesOf(c));
+        Set<SootClass> l = new HashSet<SootClass>(getSuperinterfacesOf(c));
         l.add(c);
 
-        return Collections.unmodifiableList(l);
+        return Collections.unmodifiableSet(l);
     }
 
-    /** Returns a list of superinterfaces of c, excluding itself. */
-    public List<SootClass> getSuperinterfacesOf(SootClass c)
+    /**
+     * Returns a list of superinterfaces of c, excluding itself.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getSuperinterfacesOf(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (!c.isInterface())
@@ -257,30 +285,34 @@ public class Hierarchy
 
         checkState();
 
-        // If already cached, return the value.
-        if (interfaceToSuperinterfaces.get(c) != null)
-            return new ArrayList<SootClass>(interfaceToSuperinterfaces.get(c));
-
-        // Otherwise, build up the hashmap.
-        List<SootClass> l = new ArrayList<SootClass>();
-        for (SootClass n : interfaceToDirSuperinterfaces.get(c))
-        {
-            l.addAll(getSuperinterfacesOfIncluding(n));
+        if (!interfaceToSuperinterfaces.containsKey(c)){
+            Set<SootClass> l = new HashSet<SootClass>();
+            for (SootClass n : interfaceToDirSuperinterfaces.get(c)){
+                l.addAll(getSuperinterfacesOfIncluding(n));
+            }
+            interfaceToSuperinterfaces.putAll(c, l);
         }
-        
-        interfaceToSuperinterfaces.putAll(c, new HashSet<SootClass>(l));
 
-        return Collections.unmodifiableList(l);
+        //Multimap results are alaways immutable
+        return interfaceToSuperinterfaces.get(c);
     }
 
-    /** Returns a list of direct superclasses of c, excluding c. */
-    public List<SootClass> getDirectSuperclassesOf(SootClass c)
+    /**
+     * Returns a list of direct superclasses of c, excluding itself.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getDirectSuperclassesOf(SootClass c)
     {
         throw new RuntimeException("Not implemented yet!");
     }
 
-    /** Returns a list of direct subclasses of c, excluding c. */
-    public List<SootClass> getDirectSubclassesOf(SootClass c)
+    /**
+     * Returns a list of direct subclasses of c, excluding itself.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getDirectSubclassesOf(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (c.isInterface())
@@ -288,12 +320,15 @@ public class Hierarchy
 
         checkState();
 
-        return Collections.unmodifiableList(new ArrayList<SootClass>(classToDirSubclasses.get(c)));
+        return classToDirSubclasses.get(c);
     }
 
-    // This includes c in the list of subclasses.
-    /** Returns a list of direct subclasses of c, including c. */
-    public List<SootClass> getDirectSubclassesOfIncluding(SootClass c)
+    /**
+     * Returns a list of direct subclasses of c, including itself.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getDirectSubclassesOfIncluding(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (c.isInterface())
@@ -301,21 +336,29 @@ public class Hierarchy
 
         checkState();
 
-        List<SootClass> l = new ArrayList<SootClass>();
-        l.addAll(classToDirSubclasses.get(c));
+        Set<SootClass> l = new HashSet<SootClass>(classToDirSubclasses.get(c));
         l.add(c);
 
-        return Collections.unmodifiableList(l);
+        return Collections.unmodifiableSet(l);
     }
 
-    /** Returns a list of direct superinterfaces of c. */
-    public List<SootClass> getDirectSuperinterfacesOf(SootClass c)
+    /**
+     * Returns a list of direct superinterfaces of c.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getDirectSuperinterfacesOf(SootClass c)
     {
         throw new RuntimeException("Not implemented yet!");
     }
 
-    /** Returns a list of direct subinterfaces of c. */
-    public List<SootClass> getDirectSubinterfacesOf(SootClass c)
+
+    /**
+     * Returns a list of direct subinterfaces of c, excluding itself.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getDirectSubinterfacesOf(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (!c.isInterface())
@@ -323,11 +366,15 @@ public class Hierarchy
 
         checkState();
 
-        return new ArrayList<SootClass>(interfaceToDirSubinterfaces.get(c));
+        return interfaceToDirSubinterfaces.get(c);
     }
 
-    /** Returns a list of direct subinterfaces of c, including itself. */
-    public List<SootClass> getDirectSubinterfacesOfIncluding(SootClass c)
+    /**
+     * Returns a list of direct subinterfaces of c, including itself.
+     * @param c the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getDirectSubinterfacesOfIncluding(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
         if (!c.isInterface())
@@ -335,15 +382,18 @@ public class Hierarchy
 
         checkState();
 
-        List<SootClass> l = new ArrayList<SootClass>();
-        l.addAll(interfaceToDirSubinterfaces.get(c));
+        Set<SootClass> l = new HashSet<SootClass>(interfaceToDirSubinterfaces.get(c));
         l.add(c);
 
-        return Collections.unmodifiableList(l);
+        return Collections.unmodifiableSet(l);
     }
 
-    /** Returns a list of direct implementers of c, excluding itself. */
-    public List<SootClass> getDirectImplementersOf(SootClass i)
+    /**
+     * Returns a list of direct implementers of c, excluding itself.
+     * @param i the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getDirectImplementersOf(SootClass i)
     {
         i.checkLevel(SootClass.HIERARCHY);
         if (!i.isInterface())
@@ -351,11 +401,15 @@ public class Hierarchy
 
         checkState();
 
-        return Collections.unmodifiableList(new ArrayList<SootClass>(interfaceToDirImplementers.get(i)));
+        return interfaceToDirImplementers.get(i);
     }
 
-    /** Returns a list of implementers of c, excluding itself. */
-    public List<SootClass> getImplementersOf(SootClass i)
+    /**
+     * Returns a list of implementers of c, excluding itself.
+     * @param i the class for which we need to look up
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootClass> getImplementersOf(SootClass i)
     {
         i.checkLevel(SootClass.HIERARCHY);
         if (!i.isInterface())
@@ -370,10 +424,7 @@ public class Hierarchy
             set.addAll(getDirectImplementersOf(c));
         }
 
-        ArrayList<SootClass> l = new ArrayList<SootClass>();
-        l.addAll(set);
-
-        return Collections.unmodifiableList(l);
+        return Collections.unmodifiableSet(set);
     }
 
     /** Returns true if child is a subclass of possibleParent. */
@@ -498,13 +549,18 @@ public class Hierarchy
         throw new RuntimeException("could not resolve concrete dispatch!\nType: "+concreteType+"\nMethod: "+m);
     }
 
-    /** Given a set of definite receiver types, returns a list of possible targets. */
-    public List<SootMethod> resolveConcreteDispatch(List<Type> classes, SootMethod m)
+    /**
+     * Given a set of definite receiver types, returns a list of possible targets.
+     * @param classes possible receiver types
+     * @param m the method to rewsolve
+     * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
+     * */
+    public Collection<SootMethod> resolveConcreteDispatch(Collection<Type> classes, SootMethod m)
     {
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
         checkState();
 
-        ArraySet<SootMethod> s = new ArraySet<SootMethod>();
+        HashSet<SootMethod> s = new HashSet<SootMethod>();
 
         for (Type cls : classes){
             if (cls instanceof RefType)
@@ -514,13 +570,13 @@ public class Hierarchy
             }
             else throw new RuntimeException("Unable to resolve concrete dispatch of type "+ cls);
         }
-        return Collections.unmodifiableList(new ArrayList(s));
+        return Collections.unmodifiableSet(s);
     }
 
     // what can get called for c & all its subclasses
     /** Given an abstract dispatch to an object of type c and a method m, gives
      * a list of possible receiver methods. */
-    public List<SootMethod> resolveAbstractDispatch(SootClass c, SootMethod m)
+    public Collection<SootMethod> resolveAbstractDispatch(SootClass c, SootMethod m)
     {
         c.checkLevel(SootClass.HIERARCHY);
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
@@ -542,19 +598,19 @@ public class Hierarchy
             if( Modifier.isAbstract( cl.getModifiers() ) ) continue;
             s.add(resolveConcreteDispatch(cl, m));
         }
-        return Collections.unmodifiableList(new ArrayList<SootMethod>(s));
+        return Collections.unmodifiableSet(s);
     }
 
     // what can get called if you have a set of possible receiver types
     /** Returns a list of possible targets for the given method and set of receiver types. */
-    public List<SootClass> resolveAbstractDispatch(List<SootClass> classes, SootMethod m)
+    public Collection<SootClass> resolveAbstractDispatch(List<SootClass> classes, SootMethod m)
     {
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
         ArraySet s = new ArraySet();
         for (SootClass sc : classes)
             s.addAll(resolveAbstractDispatch(sc, m));
 
-        return Collections.unmodifiableList(new ArrayList(s));
+        return Collections.unmodifiableSet(s);
     }
 
     /** Returns the target for the given SpecialInvokeExpr. */

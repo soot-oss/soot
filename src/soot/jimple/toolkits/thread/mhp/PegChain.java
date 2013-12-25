@@ -243,7 +243,7 @@ public class PegChain extends HashChain{
 			{
 				//System.out.println("Test method is: "+method);
 				//System.out.println("DeclaringClass: "+method.getDeclaringClass());
-				List<SootClass> superClasses = hierarchy.getSuperclassesOfIncluding(method.getDeclaringClass());
+				Collection<SootClass> superClasses = hierarchy.getSuperclassesOfIncluding(method.getDeclaringClass());
 				Iterator<SootClass> it = superClasses.iterator();
 				
 				while (it.hasNext())

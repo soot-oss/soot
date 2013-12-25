@@ -19,15 +19,8 @@
 package soot.jimple.spark.geom.helper;
 
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.Local;
@@ -198,7 +191,7 @@ public class GeomEvaluator {
 			for (AllocNode obj : obj_set ) {
 				if ( obj.getType() instanceof AnySubType ) {
 					SootClass rc = ((AnySubType)obj.getType()).getBase().getSootClass();
-					List<SootClass> list = null;
+					Collection<SootClass> list = null;
 					if ( rc.isInterface() )
 						list = Scene.v().getActiveHierarchy().getImplementersOf(rc);
 					else
@@ -222,7 +215,7 @@ public class GeomEvaluator {
 					
 					if ( an.getType() instanceof AnySubType ) {
 						SootClass rc = ((AnySubType)an.getType()).getBase().getSootClass();
-						List<SootClass> list = null;
+						Collection<SootClass> list = null;
 						if ( rc.isInterface() )
 							list = Scene.v().getActiveHierarchy().getImplementersOf(rc);
 						else
