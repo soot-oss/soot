@@ -4,6 +4,10 @@ import heros.SynchronizedBy;
 import heros.solver.IDESolver;
 
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedHashSet;
+import java.util.Map;
 import java.util.Set;
 
 import soot.ArrayType;
@@ -11,24 +15,47 @@ import soot.Body;
 import soot.FastHierarchy;
 import soot.Local;
 import soot.NullType;
+import soot.PackManager;
 import soot.RefType;
 import soot.Scene;
+import soot.SceneTransformer;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.SourceLocator;
+import soot.Transform;
 import soot.Unit;
 import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
+import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.toolkits.pointer.LocalMustNotAliasAnalysis;
+import soot.options.Options;
 
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
-
+/**
+ * This is an implementation of AbstractJimpleBasedICFG that computes the ICFG on-the-fly. In other words,
+ * it can be used without pre-computing a call graph. Instead this implementation resolves calls through Class
+ * Hierarchy Analysis (CHA), as implemented through FastHierarchy. The CHA is supported by LocalMustNotAliasAnalysis, which
+ * is used to determine cases where the concrete type of an object at an InvokeVirtual or InvokeInterface callsite is known.
+ * In these cases the call can be resolved concretely, i.e., to a single target.
+ * 
+ * To be sound, for InvokeInterface calls that cannot be resolved concretely, OnTheFlyJimpleBasedICFG requires that
+ * all classes on the classpath be loaded at least to signatures. This must be done before the FastHierarchy is computed such
+ * that the hierarchy is intact. Clients should call {@link #loadAllClassesOnClassPathToSignatures()} to load all required classes
+ * to this level.
+ * 
+ * Then, when using the ICFG, clients must call {@link #initForMethod(SootMethod)} to initialize the ICFG for this method.
+ * This call will load the method body if necessary, and will initialize the mapping from units to bodies for all
+ * units in this body.
+ * 
+ * @see FastHierarchy#resolveConcreteDispatch(SootClass, SootMethod)
+ * @see FastHierarchy#resolveAbstractDispatch(SootClass, SootMethod)
+ */
 public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
-
-	private static final SootClass OBJECT = Scene.v().getSootClass("java.lang.Object");
 
 	@SynchronizedBy("by use of synchronized LoadingCache class")
 	protected final LoadingCache<Body,LocalMustNotAliasAnalysis> bodyToLMNAA = IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Body,LocalMustNotAliasAnalysis>() {
@@ -65,7 +92,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 									RefType refType = (RefType) base.getType();
 									baseTypeClass = refType.getSootClass();
 								} else if(base.getType() instanceof ArrayType) {
-									baseTypeClass = OBJECT;
+									baseTypeClass = Scene.v().getSootClass("java.lang.Object");
 								} else if(base.getType() instanceof NullType) {
 									//if the base is definitely null then there is no call target
 									return Collections.emptySet();
@@ -82,6 +109,26 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 				}
 			});
 	
+	public Body initForMethod(SootMethod m) {
+		Body b = null;
+		if(m.isConcrete()) {
+			SootClass declaringClass = m.getDeclaringClass();
+			ensureClassHasBodies(declaringClass);
+			b = m.retrieveActiveBody();
+			if(b!=null) {
+				for(Unit u: b.getUnits()) {
+					unitToOwner.put(u,b);
+				}
+			}
+		}
+		return b;
+	}
+
+	private void ensureClassHasBodies(SootClass cl) {
+		if(cl.resolvingLevel()<SootClass.BODIES)
+			Scene.v().forceResolve(cl.getName(), SootClass.BODIES);
+	}
+	
 	@Override
 	public Set<SootMethod> getCalleesOfCallAt(Unit u) {
 		return unitToCallees.getUnchecked(u);
@@ -89,7 +136,63 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 
 	@Override
 	public Set<Unit> getCallersOf(SootMethod m) {
-		return null;
+		throw new UnsupportedOperationException("This class is not suited for unbalanced problems");
+	}
+	
+	public static void loadAllClassesOnClassPathToSignatures() {
+		for(String path: SourceLocator.explodeClassPath(Scene.v().getSootClassPath())) {
+			for (String cl : SourceLocator.v().getClassesUnder(path)) {
+				Scene.v().forceResolve(cl, SootClass.SIGNATURES);
+			}			
+		}
+    }
+	
+	public static void main(String[] args) {
+		PackManager.v().getPack("wjtp").add(new Transform("wjtp.onflyicfg", new SceneTransformer() {
+			
+			@Override
+			protected void internalTransform(String phaseName, Map<String, String> options) {
+				if(Scene.v().hasCallGraph()) throw new RuntimeException("call graph present!");
+				
+				loadAllClassesOnClassPathToSignatures();
+				
+				OnTheFlyJimpleBasedICFG icfg = new OnTheFlyJimpleBasedICFG();
+				SootMethod mainMethod = Scene.v().getMainMethod();
+				Set<SootMethod> worklist = new LinkedHashSet<SootMethod>();
+				Set<SootMethod> visited = new HashSet<SootMethod>();
+				worklist.add(mainMethod);
+				int monomorphic = 0, polymorphic = 0;
+				while(!worklist.isEmpty()) {
+					Iterator<SootMethod> iter = worklist.iterator();
+					SootMethod currMethod = iter.next();
+					iter.remove();
+					visited.add(currMethod);
+					System.err.println(currMethod);
+					//MUST call this method to initialize ICFG for every method 
+					Body body = icfg.initForMethod(currMethod);
+					if(body==null) continue;
+					for(Unit u: body.getUnits()) {
+						Stmt s = (Stmt)u;
+						if(s.containsInvokeExpr()) {
+							Set<SootMethod> calleesOfCallAt = icfg.getCalleesOfCallAt(s);
+							if(s.getInvokeExpr() instanceof VirtualInvokeExpr || s.getInvokeExpr() instanceof InterfaceInvokeExpr) {
+								if(calleesOfCallAt.size()<=1) monomorphic++; else polymorphic++;
+								System.err.println("mono: "+monomorphic+"   poly: "+polymorphic);
+							}
+							for (SootMethod callee : calleesOfCallAt) {
+								if(!visited.contains(callee)) {
+									System.err.println(callee);
+									//worklist.add(callee);
+								}
+							}
+						}
+					}
+				}
+			}
+
+		}));
+		Options.v().set_on_the_fly(true);
+		soot.Main.main(args);
 	}
 	
 }
