@@ -193,6 +193,7 @@ public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap
     	if(set.size()!=1) return null;
     	else {
     		NewExpr singleNewExpr = set.iterator().next();
+    		if(singleNewExpr==UNKNOWN) return null;
     		return (RefType) singleNewExpr.getType();
     	}
     }
