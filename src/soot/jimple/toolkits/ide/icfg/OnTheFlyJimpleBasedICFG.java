@@ -71,6 +71,7 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 					Stmt stmt = (Stmt)u;
 					InvokeExpr ie = stmt.getInvokeExpr();
 					FastHierarchy fastHierarchy = Scene.v().getFastHierarchy();
+					//FIXME Handle Thread.start etc.
 					if(ie instanceof InstanceInvokeExpr) {
 						if(ie instanceof SpecialInvokeExpr) {
 							//special
