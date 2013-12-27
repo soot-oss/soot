@@ -18,12 +18,10 @@
  */
 
 package soot.toolkits.scalar;
-
 import java.util.ArrayList;
-import java.util.BitSet;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -38,205 +36,183 @@ import soot.options.Options;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Cons;
 
+
 /**
- * Analysis that provides an implementation of the LocalDefs interface.
+ *   Analysis that provides an implementation of the LocalDefs interface.
  */
-public class SmartLocalDefs implements LocalDefs {
-	private final Map<Cons, List<Unit>> answer;
+public class SmartLocalDefs implements LocalDefs
+{
+    private final Map<Cons, ArrayList<Unit>> answer;
 
-	private final Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined
-	private final UnitGraph graph;
-	private final LocalDefsAnalysis analysis;
-	private final Map<Unit, BitSet> liveLocalsAfter;
+    private final Map<Local, HashSet<Unit>> localToDefs; // for each local, set of units
+                                   // where it's defined
+    private final UnitGraph graph;
+    private final LocalDefsAnalysis analysis;
+    private final Map<Unit, HashSet> unitToMask;
+    public SmartLocalDefs(UnitGraph g, LiveLocals live) {
+        this.graph = g;
 
-	/**
-	 * Intersects 2 sets and returns the result as a list
-	 * 
-	 * @param a
-	 * @param b
-	 * @return
-	 */
-	private static <T> List<T> asList(Set<T> a, Set<T> b) {
-		if (a == null || b == null || a.isEmpty() || b.isEmpty()) {
-			return Collections.<T> emptyList();
-		}
+        if(Options.v().time())
+            Timers.v().defsTimer.start();
+        
+        if(Options.v().verbose())
+            G.v().out.println("[" + g.getBody().getMethod().getName() +
+                               "]     Constructing SmartLocalDefs...");
 
-		if (a.size() < b.size()) {
-			List<T> c = new ArrayList<T>(a);
-			c.retainAll(b);
-			return c;
-		} else {
-			List<T> c = new ArrayList<T>(b);
-			c.retainAll(a);
-			return c;
-		}
-	}
+        localToDefs = new HashMap<Local, HashSet<Unit>>();
+        unitToMask = new HashMap<Unit, HashSet>();
+        for( Iterator uIt = g.iterator(); uIt.hasNext(); ) {
+            final Unit u = (Unit) uIt.next();
+            Local l = localDef(u);
+            if( l == null ) continue;
+            HashSet<Unit> s = defsOf(l);
+            s.add(u);
+        }
 
-	public SmartLocalDefs(UnitGraph g, LiveLocals live) {
-		this.graph = g;
+        if(Options.v().verbose())
+            G.v().out.println("[" + g.getBody().getMethod().getName() +
+                               "]        done localToDefs map..." );
 
-		if (Options.v().time())
-			Timers.v().defsTimer.start();
+        for( Iterator uIt = g.iterator(); uIt.hasNext(); ) {
+            final Unit u = (Unit) uIt.next();
+            unitToMask.put(u, new HashSet(live.getLiveLocalsAfter(u)));
+        }
 
-		if (Options.v().verbose())
-			G.v().out.println("[" + g.getBody().getMethod().getName()
-					+ "]     Constructing SmartLocalDefs...");
+        if(Options.v().verbose())
+            G.v().out.println("[" + g.getBody().getMethod().getName() +
+                               "]        done unitToMask map..." );
 
-		// reassign local numbers for compact bitsets
-		int n = graph.getBody().getLocalCount();
-		Local[] locals = new Local[n];
-		int[] oldNumbers = new int[n];
-		n = 0;
-		for (Local local : graph.getBody().getLocals()) {
-			locals[n] = local;
-			oldNumbers[n] = local.getNumber();
-			local.setNumber(n++);
-		}
+        analysis = new LocalDefsAnalysis(graph);
 
-		localToDefs = new HashMap<Local, Set<Unit>>();
-		liveLocalsAfter = new HashMap<Unit, BitSet>();
-		for (Unit u : graph) {
-			// translate locals to bits
-			BitSet set = new BitSet(n);
-			for (Object o : live.getLiveLocalsAfter(u)) {
-				set.set(((Local) o).getNumber());
-			}
-			liveLocalsAfter.put(u, set);
+        answer = new HashMap<Cons, ArrayList<Unit>>();
+        for( Iterator uIt = graph.iterator(); uIt.hasNext(); ) {
+            final Unit u = (Unit) uIt.next();
+            for( Iterator vbIt = u.getUseBoxes().iterator(); vbIt.hasNext(); ) {
+                final ValueBox vb = (ValueBox) vbIt.next();
+                Value v = vb.getValue();
+                if( !(v instanceof Local) ) continue;
+                HashSet analysisResult = (HashSet) analysis.getFlowBefore(u);
+                ArrayList<Unit> al = new ArrayList<Unit>();
+                for (Unit unit : defsOf((Local)v)) {
+                    if(analysisResult.contains(unit)) al.add(unit);
+                }
+                answer.put(new Cons(u, v), al);
+            }
+        }
+        if(Options.v().time())
+            Timers.v().defsTimer.end();
 
-			Local l = localDef(u);
-			if (l == null)
-				continue;
-			Set<Unit> s = defsOf(l);
-			s.add(u);
-		}
-
-		if (Options.v().verbose())
-			G.v().out.println("[" + g.getBody().getMethod().getName()
-					+ "]        done localToDefs map...");
-
-		if (Options.v().verbose())
-			G.v().out.println("[" + g.getBody().getMethod().getName()
-					+ "]        done unitToMask map...");
-
-		analysis = new LocalDefsAnalysis(graph);
-
-		answer = new HashMap<Cons, List<Unit>>();
-		for (Unit u : graph) {
-			for (ValueBox vb : u.getUseBoxes()) {
-				Value v = vb.getValue();
-				if (v instanceof Local) {
-					Cons key = new Cons(u, v);
-					if ( !answer.containsKey(key) ) {					
-						List<Unit> lst = asList(defsOf((Local) v), analysis.getFlowBefore(u));					
-						answer.put(key, lst);
-					}
-				}
-			}
-		}
-
-		// restore local numbering
-		for (int i = 0; i < locals.length; i++) {
-			locals[i].setNumber(oldNumbers[i]);
-		}
-
-		if (Options.v().time())
-			Timers.v().defsTimer.end();
-
-		if (Options.v().verbose())
-			G.v().out.println("[" + g.getBody().getMethod().getName()
-					+ "]     SmartLocalDefs finished.");
-	}
-
-	private Local localDef(Unit u) {
-		List<ValueBox> defBoxes = u.getDefBoxes();
+	if(Options.v().verbose())
+	    G.v().out.println("[" + g.getBody().getMethod().getName() +
+                               "]     SmartLocalDefs finished.");
+    }
+    private Local localDef(Unit u) {
+        List defBoxes = u.getDefBoxes();
 		int size = defBoxes.size();
-		if (size == 0)
-			return null;
-		if (size != 1)
-			throw new RuntimeException();
-		ValueBox vb = (ValueBox) defBoxes.get(0);
-		Value v = vb.getValue();
-		if (!(v instanceof Local))
-			return null;
-		return (Local) v;
-	}
+        if( size == 0 ) return null;
+        if( size != 1 ) throw new RuntimeException();
+        ValueBox vb = (ValueBox) defBoxes.get(0);
+        Value v = vb.getValue();
+        if( !(v instanceof Local) ) return null;
+        return (Local) v;
+    }
+    private HashSet<Unit> defsOf( Local l ) {
+        HashSet<Unit> ret = localToDefs.get(l);
+        if( ret == null ) localToDefs.put( l, ret = new HashSet<Unit>() );
+        return ret;
+    }
 
-	private Set<Unit> defsOf(Local l) {
-		Set<Unit> ret = localToDefs.get(l);
-		if (ret == null)
-			localToDefs.put(l, ret = new HashSet<Unit>());
-		return ret;
-	}
+    class LocalDefsAnalysis extends ForwardFlowAnalysis {
+        LocalDefsAnalysis(UnitGraph g) {
+            super(g);
+            doAnalysis();
+        }
+        protected void merge(Object inoutO, Object inO) {
+            HashSet inout = (HashSet) inoutO;
+            HashSet in = (HashSet) inO;
 
-	class LocalDefsAnalysis extends ForwardFlowAnalysis<Unit, Set<Unit>> {
-		LocalDefsAnalysis(UnitGraph g) {
-			super(g);
-			doAnalysis();
-		}
+            inout.addAll(in);
+        }
+        protected void merge(Object in1, Object in2, Object out) {
+            HashSet inSet1 = (HashSet) in1;
+            HashSet inSet2 = (HashSet) in2;
+            HashSet outSet = (HashSet) out;
 
-		@Override
-		protected void mergeInto(Unit succNode, Set<Unit> inout, Set<Unit> in) {
-			inout.addAll(in);
-		}
-
-		@Override
-		protected void merge(Set<Unit> in1, Set<Unit> in2, Set<Unit> out) {
-			// mergeInto should be called
-			throw new RuntimeException("should never be called");
-		}
-
-		@Override
-		protected void flowThrough(Set<Unit> in, Unit u, Set<Unit> out) {
-			out.clear();
-
-			BitSet liveLocals = liveLocalsAfter.get(u);
-
-			Local l = localDef(u);
-
-			if (l == null) {// add all units contained in mask
-				for (Unit inU : in) {
-					if (liveLocals.get(localDef(inU).getNumber())) {
+            outSet.clear();
+            outSet.addAll(inSet1);
+            outSet.addAll(inSet2);
+        }
+		
+        protected void flowThrough(Object inValue, Object unit, Object outValue) {
+            Unit u = (Unit) unit;
+            HashSet<Unit> in = (HashSet<Unit>) inValue;
+            HashSet<Unit> out = (HashSet<Unit>) outValue;
+            out.clear();
+            Set mask = unitToMask.get(u);
+            Local l = localDef(u);
+			HashSet<Unit> allDefUnits = null;
+			if (l == null)
+			{//add all units contained in mask
+	            for( Unit inU : in )
+	                if( mask.contains(localDef(inU)) )
+					{
 						out.add(inU);
 					}
-				}
-			} else {// check unit whether contained in allDefUnits before add
-					// into out set.
-				Set<Unit> allDefUnits = defsOf(l);
-
-				for (Unit inU : in) {
-					if (liveLocals.get(localDef(inU).getNumber())
-							&& !allDefUnits.contains(inU)) {
-						out.add(inU);
+			}
+			else
+			{//check unit whether contained in allDefUnits before add into out set.
+				allDefUnits = defsOf(l);
+				
+	            for( Unit inU : in )
+    	            if( mask.contains(localDef(inU)) )
+					{//only add unit not contained in allDefUnits
+						if ( allDefUnits.contains(inU)){
+							out.remove(inU);
+						} else {
+							out.add(inU);
+						}
 					}
-				}
+   	            out.removeAll(allDefUnits);
+   	            if(mask.contains(l)) out.add(u);
+			}
+        }
 
-				assert false == out.removeAll(allDefUnits);
-
-				if (liveLocals.get(l.getNumber())) {
-					out.add(u);
+    
+        protected void copy(Object source, Object dest) {
+            HashSet sourceSet = (HashSet) source;
+            HashSet<Object> destSet   = (HashSet<Object>) dest;
+              
+			//retain all the elements contained by sourceSet
+			if (destSet.size() > 0)
+				destSet.retainAll(sourceSet);
+			
+			//add the elements not contained by destSet
+			if (sourceSet.size() > 0)
+			{
+				for( Iterator its = sourceSet.iterator(); its.hasNext(); ) {
+					Object o = its.next();
+					if (!destSet.contains(o))
+					{//need add this element.
+						destSet.add(o);
+					}
 				}
 			}
-		}
 
-		@Override
-		protected void copy(Set<Unit> sourceSet, Set<Unit> destSet) {
-			destSet.clear();
-			destSet.addAll(sourceSet);
-		}
+        }
 
-		@Override
-		protected Set<Unit> newInitialFlow() {
-			return new HashSet<Unit>();
-		}
+        protected Object newInitialFlow() {
+            return new HashSet();
+        }
 
-		@Override
-		protected Set<Unit> entryInitialFlow() {
-			return Collections.emptySet();
-		}
-	}
+        protected Object entryInitialFlow() {
+            return new HashSet();
+        }
+    }
 
-	public List<Unit> getDefsOfAt(Local l, Unit s) {
-		return answer.get(new Cons(s, l));
-	}
+    public List<Unit> getDefsOfAt(Local l, Unit s)
+    {
+        return answer.get(new Cons(s, l));
+    }
 
 }
+
