@@ -91,6 +91,7 @@ public class Hierarchy
                         interfaceToDirSubinterfaces.put(i,c);
                         interfaceToDirSuperinterfaces.put(c,i);
                     }
+                    classToDirSubclasses.put(object,c);
                 }
                 else
                 {

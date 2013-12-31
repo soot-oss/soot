@@ -1,7 +1,29 @@
-/**
- * (c) 2013 Tata Consultancy Services & Ecole Polytechnique de Montreal
- * All rights reserved
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 1997-1999 Raja Vallee-Rai
+ * Copyright (C) 2013 Tata Consultancy Services & Ecole Polytechnique de Montreal
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
  */
+
+/*
+ * Modified by the Sable Research Group and others 1997-1999.
+ * See the 'credits' file distributed with Soot for the complete list of
+ * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ */
+
 package soot;
 
 import com.google.common.collect.Sets;
@@ -11,12 +33,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+
 import soot.jimple.*;
 import soot.options.Options;
 import soot.util.*;
 import java.util.*;
 
-public class HierarchyRegressionTests{
+public class HierarchyTests {
     private static class OldHierarchy
     {
         // These two maps are not filled in the constructor.
@@ -991,8 +1015,85 @@ public class HierarchyRegressionTests{
             }
         }
 
+    }
 
+    public static class GeneralTests {
 
+        private static Hierarchy hierarchy;
+
+        @BeforeClass
+        static public void init(){
+            G.reset();
+            Options.v().set_prepend_classpath(true);
+            Options.v().set_time(false);
+
+            Scene.v().loadNecessaryClasses();
+            //the array list wrapping is to avoid a concurrent modification exception
+            for (SootClass sc : new ArrayList<SootClass>(Scene.v().getClasses())){
+                if (sc.resolvingLevel() < SootClass.HIERARCHY)
+                    Scene.v().forceResolve(sc.getName(), SootClass.HIERARCHY);
+            }
+            hierarchy = new Hierarchy();
+        }
+
+        @Test
+        public void testObjectDescendents1(){
+            SootClass object = Scene.v().getObjectType().getSootClass();
+            Collection<SootClass> subClasses = hierarchy.getSubclassesOfIncluding(object);
+            performTest(subClasses,Scene.v().getClasses());
+        }
+
+        @Test
+        public void testObjectDescendents2(){
+            SootClass object = Scene.v().getObjectType().getSootClass();
+            Collection<SootClass> subClasses = hierarchy.getSubclassesOf(object);
+            Set<SootClass> almostAll = new HashSet<SootClass>(Scene.v().getClasses());
+            almostAll.remove(object);
+            performTest(subClasses,almostAll);
+        }
+
+        @Test
+        public void testObjectDescendentsHasAllInterfaces(){
+            SootClass object = Scene.v().getObjectType().getSootClass();
+            Collection<SootClass> subClasses = hierarchy.getSubclassesOf(object);
+            Set<SootClass> allInterfaces = new HashSet<SootClass>();
+            for (SootClass sc : Scene.v().getClasses())
+                if (sc.isInterface())
+                    allInterfaces.add(sc);
+
+            assertTrue(subClasses.containsAll(allInterfaces));
+        }
+
+        @Test
+        public void testObjectDirectDescendentsHasAllInterfaces(){
+            //This is a debatable interpretation of "all interfaces are subclasses of Object",
+            //Here, we consider that the keyword 'extends' is cheating the hierarchy information, so we check that they are
+            //directly descending from Object.
+            SootClass object = Scene.v().getObjectType().getSootClass();
+            Collection<SootClass> subClasses = hierarchy.getDirectSubclassesOf(object);
+            Set<SootClass> allInterfaces = new HashSet<SootClass>();
+            for (SootClass sc : Scene.v().getClasses())
+                if (sc.isInterface())
+                    allInterfaces.add(sc);
+
+            assertTrue(subClasses.containsAll(allInterfaces));
+        }
+
+        /**
+         * Performs a test against two collections of results.
+         * The test is unordered collection equality
+         * @param result the result to check
+         * @param expected the result which we are comparing against
+         * @param <T> the type of the collection
+         */
+        private <T> void performTest(Collection<T> result, Collection<T> expected){
+            //Convert to sets to make sure that order doesn't matter in the check
+            Set<T> resultAsSet = new HashSet<T>(result); //this is redundant, but paranoia is OK here
+            Set<T> expectedAsSet = new HashSet<T>(expected);
+
+            assertEquals(expectedAsSet,resultAsSet);
+
+        }
 
     }
 
