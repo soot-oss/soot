@@ -25,7 +25,6 @@
 
 package soot;
 
-import com.google.common.collect.Sets;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
@@ -74,71 +73,56 @@ public class Hierarchy
 
         // Well, this used to be describable by 'Duh'.
         // Construct the subclasses hierarchy and the subinterfaces hierarchy.
+        for (SootClass c : allClasses)
         {
-
-            for (SootClass c : allClasses)
+            if( c.resolvingLevel() < SootClass.HIERARCHY ){
+                //She should not add to classToSubclasses because that is a cached result?
+                classToDirSubclasses.put(object,c);
+                continue;
+            }
+            if (c.hasSuperclass())
             {
-                if( c.resolvingLevel() < SootClass.HIERARCHY ){
-                    //She should not add to classToSubclasses because that is a cached result?
-                    classToDirSubclasses.put(object,c);
-                    continue;
-                }
-                if (c.hasSuperclass())
+                if (c.isInterface())
                 {
-                    if (c.isInterface())
-                    {
-                        for (SootClass i : c.getInterfaces()) {
-                            if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
-                            interfaceToDirSubinterfaces.put(i,c);
-                            interfaceToDirSuperinterfaces.put(c,i);
-                        }
-                    }
-                    else
-                    {
-                        classToDirSubclasses.put(c.getSuperclass(),c);
-                        for (SootClass i : c.getInterfaces())
-                        {
-                            if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
-                            interfaceToDirImplementers.put(i,c);
-                        }
-                    }
-                } else {
-                    classToDirSubclasses.put(object,c);
-                }
-            }
+                    for (SootClass i : c.getInterfaces()) {
+                        if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
 
-            // Fill the directImplementers lists with subclasses.
-            {                              //This looks buggy to me - MAL
-                for (SootClass c : allClasses)
+                        //Get the direct sub- and super- interfaces
+                        interfaceToDirSubinterfaces.put(i,c);
+                        interfaceToDirSuperinterfaces.put(c,i);
+                    }
+                }
+                else
                 {
-                    if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
-                    if (c.isInterface())
+                    classToDirSubclasses.put(c.getSuperclass(),c);
+                    for (SootClass i : c.getInterfaces())
                     {
-                        Set<SootClass> s = new LinkedHashSet<SootClass>();
-                        
-                        for (SootClass c0 : interfaceToDirImplementers.get(c))
-                        {
-                            if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
-                            s.addAll(getSubclassesOfIncluding(c0));
-                        }
-                        interfaceToDirImplementers.remove(c); //is this really needed?
-                        interfaceToDirImplementers.putAll(c, s);
+                        if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
+                        interfaceToDirImplementers.put(i,c);
                     }
                 }
+            } else {
+                classToDirSubclasses.put(object,c);
             }
+        }
 
-            //Deleted one chunk that made the associated collection immutable
+        //Fills in the blanks left in the previous pass
+        for (SootClass c : allClasses)
+        {
+            if( c.resolvingLevel() >= SootClass.HIERARCHY && c.isInterface()){
+                Set<SootClass> s = new LinkedHashSet<SootClass>();
+                for(SootClass imp : interfaceToDirImplementers.get(c))
+                {
+                    if( imp.resolvingLevel() < SootClass.HIERARCHY ) continue;
+                    s.addAll(getSubclassesOfIncluding(imp));
+                }
+                interfaceToDirImplementers.putAll(c,s);
+            }
         }
 
         final Set<SootClass> almostAllClasses = new LinkedHashSet<SootClass>(allClasses);
         almostAllClasses.remove(object);
         classToSubclasses.putAll(object, almostAllClasses);
-    }
-
-    private void checkState()
-    {
-        if (state != sc.getState())
-            throw new ConcurrentModificationException("Scene changed for Hierarchy!");
     }
 
     /**
@@ -148,9 +132,7 @@ public class Hierarchy
      * */
     public Collection<SootClass> getSubclassesOfIncluding(SootClass c)
     {
-        c.checkLevel(SootClass.HIERARCHY);
-        if (c.isInterface())
-            throw new RuntimeException("class needed!");
+        checkHierarchyNotInterfaceAndState(c);
         return createImmutableLinkedHashSet(c, getSubclassesOf(c));
     }
 
@@ -161,11 +143,7 @@ public class Hierarchy
      * */
     public Collection<SootClass> getSubclassesOf(SootClass c)
     {
-        c.checkLevel(SootClass.HIERARCHY);
-        if (c.isInterface())
-            throw new RuntimeException("class needed!");
-
-        checkState();
+        checkHierarchyNotInterfaceAndState(c);
 
         // If already cached, return the value.
         if (classToSubclasses.containsKey(c))
@@ -203,11 +181,7 @@ public class Hierarchy
      * */
     public Collection<SootClass> getSuperclassesOf(SootClass c)
     {
-        c.checkLevel(SootClass.HIERARCHY);
-        if (c.isInterface())
-            throw new RuntimeException("class needed!");
-
-        checkState();
+        checkHierarchyNotInterfaceAndState(c);
 
         Set<SootClass> l = new LinkedHashSet<SootClass>();
         for(SootClass cl = c; cl.hasSuperclass(); cl = cl.getSuperclass())
@@ -225,9 +199,7 @@ public class Hierarchy
      * */
     public Collection<SootClass> getSubinterfacesOfIncluding(SootClass c)
     {
-        c.checkLevel(SootClass.HIERARCHY);
-        if (!c.isInterface())
-            throw new RuntimeException("interface needed!");
+        checkHierarchyInterfaceAndState(c);
         return createImmutableLinkedHashSet(c, getSubinterfacesOf(c));
     }
 
@@ -238,11 +210,7 @@ public class Hierarchy
      * */
     public Collection<SootClass> getSubinterfacesOf(SootClass c)
     {
-        c.checkLevel(SootClass.HIERARCHY);
-        if (!c.isInterface())
-            throw new RuntimeException("interface needed!");
-
-        checkState();
+        checkHierarchyInterfaceAndState(c);
 
         if (!interfaceToSubinterfaces.containsKey(c)){
             // If not cached, build up the cache.
@@ -267,10 +235,7 @@ public class Hierarchy
      * */
     public Collection<SootClass> getSuperinterfacesOfIncluding(SootClass c)
     {
-        c.checkLevel(SootClass.HIERARCHY);
-        if (!c.isInterface())
-            throw new RuntimeException("interface needed!");
-
+        checkHierarchyInterfaceAndState(c);
         return createImmutableLinkedHashSet(c, getSuperinterfacesOf(c));
     }
 
@@ -281,11 +246,7 @@ public class Hierarchy
      * */
     public Collection<SootClass> getSuperinterfacesOf(SootClass c)
     {
-        c.checkLevel(SootClass.HIERARCHY);
-        if (!c.isInterface())
-            throw new RuntimeException("interface needed!");
-
-        checkState();
+        checkHierarchyInterfaceAndState(c);
 
         if (!interfaceToSuperinterfaces.containsKey(c)){
             Set<SootClass> l = new LinkedHashSet<SootClass>();
@@ -316,12 +277,7 @@ public class Hierarchy
      * */
     public Collection<SootClass> getDirectSubclassesOf(SootClass c)
     {
-        c.checkLevel(SootClass.HIERARCHY);
-        if (c.isInterface())
-            throw new RuntimeException("class needed!");
-
-        checkState();
-
+        checkHierarchyNotInterfaceAndState(c);
         return classToDirSubclasses.get(c);
     }
 
@@ -332,19 +288,8 @@ public class Hierarchy
      * */
     public Collection<SootClass> getDirectSubclassesOfIncluding(SootClass c)
     {
-        c.checkLevel(SootClass.HIERARCHY);
-        if (c.isInterface())
-            throw new RuntimeException("class needed!");
-
-        checkState();
+        checkHierarchyNotInterfaceAndState(c);
         return createImmutableLinkedHashSet(c, classToDirSubclasses.get(c));
-    }
-
-    private Set<SootClass> createImmutableLinkedHashSet(SootClass firstElement, Collection<SootClass> otherElements){
-        Set<SootClass> s = new LinkedHashSet<SootClass>();
-        s.add(firstElement);
-        s.addAll(otherElements);
-        return Collections.unmodifiableSet(s);
     }
 
     /**
@@ -365,12 +310,7 @@ public class Hierarchy
      * */
     public Collection<SootClass> getDirectSubinterfacesOf(SootClass c)
     {
-        c.checkLevel(SootClass.HIERARCHY);
-        if (!c.isInterface())
-            throw new RuntimeException("interface needed!");
-
-        checkState();
-
+        checkHierarchyInterfaceAndState(c);
         return interfaceToDirSubinterfaces.get(c);
     }
 
@@ -381,14 +321,11 @@ public class Hierarchy
      * */
     public Collection<SootClass> getDirectSubinterfacesOfIncluding(SootClass c)
     {
-        c.checkLevel(SootClass.HIERARCHY);
-        if (!c.isInterface())
-            throw new RuntimeException("interface needed!");
-
-        checkState();
-
+        checkHierarchyInterfaceAndState(c);
         return createImmutableLinkedHashSet(c,interfaceToDirSubinterfaces.get(c));
     }
+
+
 
     /**
      * Returns a list of direct implementers of c, excluding itself.
@@ -397,12 +334,7 @@ public class Hierarchy
      * */
     public Collection<SootClass> getDirectImplementersOf(SootClass i)
     {
-        i.checkLevel(SootClass.HIERARCHY);
-        if (!i.isInterface())
-            throw new RuntimeException("interface needed; got "+i);
-
-        checkState();
-
+        checkHierarchyInterfaceAndState(i);
         return interfaceToDirImplementers.get(i);
     }
 
@@ -413,18 +345,11 @@ public class Hierarchy
      * */
     public Collection<SootClass> getImplementersOf(SootClass i)
     {
-        i.checkLevel(SootClass.HIERARCHY);
-        if (!i.isInterface())
-            throw new RuntimeException("interface needed; got "+i);
-
-        checkState();
+        checkHierarchyInterfaceAndState(i);
 
         Set<SootClass> set = new LinkedHashSet<SootClass>();
-
         for (SootClass c : getSubinterfacesOfIncluding(i))
-        {
             set.addAll(getDirectImplementersOf(c));
-        }
 
         return Collections.unmodifiableSet(set);
     }
@@ -533,15 +458,10 @@ public class Hierarchy
         on an o.f() invocation. */
     public SootMethod resolveConcreteDispatch(SootClass concreteType, SootMethod m)
     {
-        concreteType.checkLevel(SootClass.HIERARCHY);
+        checkHierarchyNotInterfaceAndState(concreteType);
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
-        checkState();
-
-        if (concreteType.isInterface())
-            throw new RuntimeException("class needed!");
 
         String methodSig = m.getSubSignature();
-
         for(SootClass c : getSuperclassesOfIncluding(concreteType))
         {
             if (c.declaresMethod(methodSig) && isVisible( c, m )) {
@@ -563,12 +483,11 @@ public class Hierarchy
         checkState();
 
         Set<SootMethod> s = new LinkedHashSet<SootMethod>();
-
         for (Type cls : classes){
             if (cls instanceof RefType)
                 s.add(resolveConcreteDispatch(((RefType)cls).getSootClass(), m));
             else if (cls instanceof ArrayType) {
-                s.add(resolveConcreteDispatch((RefType.v("java.lang.Object")).getSootClass(), m));
+                s.add(resolveConcreteDispatch(sc.getObjectType().getSootClass(), m));
             }
             else throw new RuntimeException("Unable to resolve concrete dispatch of type "+ cls);
         }
@@ -631,4 +550,56 @@ public class Hierarchy
         else
             return target;
     }
+
+
+    /**
+     * Shortcut for checkLevel(HIERARCY), isInterface and checkState. It checks that the class is an interface
+     * @param i the interface
+     * @throws java.lang.RuntimeException if not an interface or the level is not OK
+     * @throws java.util.ConcurrentModificationException if the state is toggled
+     */
+    private void checkHierarchyInterfaceAndState(SootClass i){
+        i.checkLevel(SootClass.HIERARCHY);
+        if (!i.isInterface())
+            throw new RuntimeException("interface needed!");
+        checkState();
+    }
+
+    /**
+     * Shortcut for checkLevel(HIERARCHY), isInterface and checkState. It checks that the class
+     * is not an interface
+     * @param c the class
+     * @throws java.lang.RuntimeException if not an interface or the level is not OK
+     * @throws java.util.ConcurrentModificationException if the state is toggled
+     */
+    private void checkHierarchyNotInterfaceAndState(SootClass c){
+        c.checkLevel(SootClass.HIERARCHY);
+        if (c.isInterface())
+            throw new RuntimeException("class needed!");
+        checkState();
+    }
+
+    /**
+     * Checks that the Scene hasn't been changed since this Hierarcy object was created
+     * @throws java.util.ConcurrentModificationException if the Scene has been changed
+     */
+    private void checkState()
+    {
+        if (state != sc.getState())
+            throw new ConcurrentModificationException("Scene changed for Hierarchy!");
+    }
+
+    /**
+     * Creates an immutable LinkedHashSet with the following order: firstElement followed by otherElements
+     * @param firstElement the first element in the traversal order
+     * @param otherElements the other elements after that
+     * @return and immutable set
+     */
+    private Set<SootClass> createImmutableLinkedHashSet(SootClass firstElement, Collection<SootClass> otherElements){
+        Set<SootClass> s = new LinkedHashSet<SootClass>();
+        s.add(firstElement);
+        s.addAll(otherElements);
+        return Collections.unmodifiableSet(s);
+    }
+
 }
