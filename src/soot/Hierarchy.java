@@ -25,6 +25,7 @@
 
 package soot;
 
+import com.google.common.collect.Sets;
 import soot.jimple.*;
 import soot.util.*;
 import java.util.*;
@@ -38,16 +39,16 @@ import java.util.*;
 public class Hierarchy
 {
 // These two maps are not filled in the constructor.
-    private MultiMap<SootClass, SootClass> classToSubclasses;
-    private MultiMap<SootClass, SootClass> interfaceToSubinterfaces;
-    private MultiMap<SootClass, SootClass> interfaceToSuperinterfaces;
+    private final MultiMap<SootClass, SootClass> classToSubclasses;
+    private final MultiMap<SootClass, SootClass> interfaceToSubinterfaces;
+    private final MultiMap<SootClass, SootClass> interfaceToSuperinterfaces;
 
-    private MultiMap<SootClass, SootClass> classToDirSubclasses;
-    private MultiMap<SootClass, SootClass> interfaceToDirSubinterfaces;
-    private MultiMap<SootClass, SootClass> interfaceToDirSuperinterfaces;
+    private final MultiMap<SootClass, SootClass> classToDirSubclasses;
+    private final MultiMap<SootClass, SootClass> interfaceToDirSubinterfaces;
+    private final MultiMap<SootClass, SootClass> interfaceToDirSuperinterfaces;
 
     // This holds the direct implementers.
-    private MultiMap<SootClass, SootClass> interfaceToDirImplementers;
+    private final MultiMap<SootClass, SootClass> interfaceToDirImplementers;
     
     private int state;
     private final Scene sc;
@@ -58,23 +59,30 @@ public class Hierarchy
         this.sc = Scene.v();
         state = sc.getState();
 
+        classToSubclasses = new HashMultiMap<SootClass, SootClass>();
+        interfaceToSubinterfaces = new HashMultiMap<SootClass, SootClass>();
+        interfaceToSuperinterfaces = new HashMultiMap<SootClass, SootClass>();
+
+        classToDirSubclasses =new HashMultiMap<SootClass, SootClass>();
+        interfaceToDirSubinterfaces = new HashMultiMap<SootClass, SootClass>();
+        interfaceToDirSuperinterfaces = new HashMultiMap<SootClass, SootClass>();
+        interfaceToDirImplementers = new HashMultiMap<SootClass, SootClass>();
+
+
+        final Chain<SootClass> allClasses = sc.getClasses();
+        final SootClass object = sc.getObjectType().getSootClass();
+
         // Well, this used to be describable by 'Duh'.
         // Construct the subclasses hierarchy and the subinterfaces hierarchy.
         {
-            Chain<SootClass> allClasses = sc.getClasses();
-
-            classToSubclasses = new HashMultiMap<SootClass, SootClass>();
-            interfaceToSubinterfaces = new HashMultiMap<SootClass, SootClass>();
-            interfaceToSuperinterfaces = new HashMultiMap<SootClass, SootClass>();
-            
-            classToDirSubclasses =new HashMultiMap<SootClass, SootClass>();
-            interfaceToDirSubinterfaces = new HashMultiMap<SootClass, SootClass>();
-            interfaceToDirSuperinterfaces = new HashMultiMap<SootClass, SootClass>();
-            interfaceToDirImplementers = new HashMultiMap<SootClass, SootClass>();
 
             for (SootClass c : allClasses)
             {
-                if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
+                if( c.resolvingLevel() < SootClass.HIERARCHY ){
+                    //She should not add to classToSubclasses because that is a cached result?
+                    classToDirSubclasses.put(object,c);
+                    continue;
+                }
                 if (c.hasSuperclass())
                 {
                     if (c.isInterface())
@@ -94,6 +102,8 @@ public class Hierarchy
                             interfaceToDirImplementers.put(i,c);
                         }
                     }
+                } else {
+                    classToDirSubclasses.put(object,c);
                 }
             }
 
@@ -104,7 +114,7 @@ public class Hierarchy
                     if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
                     if (c.isInterface())
                     {
-                        Set<SootClass> s = new ArraySet<SootClass>();
+                        Set<SootClass> s = new LinkedHashSet<SootClass>();
                         
                         for (SootClass c0 : interfaceToDirImplementers.get(c))
                         {
@@ -119,6 +129,10 @@ public class Hierarchy
 
             //Deleted one chunk that made the associated collection immutable
         }
+
+        final Set<SootClass> almostAllClasses = new LinkedHashSet<SootClass>(allClasses);
+        almostAllClasses.remove(object);
+        classToSubclasses.putAll(object, almostAllClasses);
     }
 
     private void checkState()
@@ -137,12 +151,7 @@ public class Hierarchy
         c.checkLevel(SootClass.HIERARCHY);
         if (c.isInterface())
             throw new RuntimeException("class needed!");
-
-        List<SootClass> l = new ArrayList<SootClass>();
-        l.addAll(getSubclassesOf(c));
-        l.add(c);
-
-        return Collections.unmodifiableList(l);
+        return createImmutableLinkedHashSet(c, getSubclassesOf(c));
     }
 
     /**
@@ -159,15 +168,17 @@ public class Hierarchy
         checkState();
 
         // If already cached, return the value.
-        if (classToSubclasses.get(c) != null)
-            return new ArrayList<SootClass>(classToSubclasses.get(c));
+        if (classToSubclasses.containsKey(c))
+            return classToSubclasses.get(c); //immutable result
 
         // Otherwise, build up the hashmap.
-        Set<SootClass> l = new HashSet<SootClass>();
+        Set<SootClass> l = new LinkedHashSet<SootClass>();
 
         for (SootClass cls : classToDirSubclasses.get(c)) {
             if( cls.resolvingLevel() < SootClass.HIERARCHY ) continue;
-            l.addAll(getSubclassesOfIncluding(cls));
+            l.add(cls); //replicate the behavior of getSucClassesOfIncluding, to lessen the risk of stack overflow
+            l.addAll(getSubclassesOf(cls));
+
         }
         classToSubclasses.putAll(c, l);
 
@@ -182,10 +193,7 @@ public class Hierarchy
     public Collection<SootClass> getSuperclassesOfIncluding(SootClass c)
     {
         c.checkLevel(SootClass.HIERARCHY);
-
-        Set<SootClass> l = new HashSet<SootClass>(getSuperclassesOf(c));
-        l.add(c);
-        return Collections.unmodifiableSet(l);
+        return createImmutableLinkedHashSet(c, getSuperclassesOf(c));
     }
 
     /**
@@ -201,7 +209,7 @@ public class Hierarchy
 
         checkState();
 
-        Set<SootClass> l = new HashSet<SootClass>();
+        Set<SootClass> l = new LinkedHashSet<SootClass>();
         for(SootClass cl = c; cl.hasSuperclass(); cl = cl.getSuperclass())
         {
             l.add(cl.getSuperclass());
@@ -220,10 +228,7 @@ public class Hierarchy
         c.checkLevel(SootClass.HIERARCHY);
         if (!c.isInterface())
             throw new RuntimeException("interface needed!");
-
-        Set<SootClass> l = new HashSet<SootClass>(getSubinterfacesOf(c));
-        l.add(c);
-        return Collections.unmodifiableSet(l);
+        return createImmutableLinkedHashSet(c, getSubinterfacesOf(c));
     }
 
     /**
@@ -241,7 +246,7 @@ public class Hierarchy
 
         if (!interfaceToSubinterfaces.containsKey(c)){
             // If not cached, build up the cache.
-            Set<SootClass> l = new HashSet<SootClass>();
+            Set<SootClass> l = new LinkedHashSet<SootClass>();
 
             for (SootClass n : interfaceToDirSubinterfaces.get(c))
             {
@@ -266,10 +271,7 @@ public class Hierarchy
         if (!c.isInterface())
             throw new RuntimeException("interface needed!");
 
-        Set<SootClass> l = new HashSet<SootClass>(getSuperinterfacesOf(c));
-        l.add(c);
-
-        return Collections.unmodifiableSet(l);
+        return createImmutableLinkedHashSet(c, getSuperinterfacesOf(c));
     }
 
     /**
@@ -286,7 +288,7 @@ public class Hierarchy
         checkState();
 
         if (!interfaceToSuperinterfaces.containsKey(c)){
-            Set<SootClass> l = new HashSet<SootClass>();
+            Set<SootClass> l = new LinkedHashSet<SootClass>();
             for (SootClass n : interfaceToDirSuperinterfaces.get(c)){
                 l.addAll(getSuperinterfacesOfIncluding(n));
             }
@@ -335,11 +337,14 @@ public class Hierarchy
             throw new RuntimeException("class needed!");
 
         checkState();
+        return createImmutableLinkedHashSet(c, classToDirSubclasses.get(c));
+    }
 
-        Set<SootClass> l = new HashSet<SootClass>(classToDirSubclasses.get(c));
-        l.add(c);
-
-        return Collections.unmodifiableSet(l);
+    private Set<SootClass> createImmutableLinkedHashSet(SootClass firstElement, Collection<SootClass> otherElements){
+        Set<SootClass> s = new LinkedHashSet<SootClass>();
+        s.add(firstElement);
+        s.addAll(otherElements);
+        return Collections.unmodifiableSet(s);
     }
 
     /**
@@ -382,10 +387,7 @@ public class Hierarchy
 
         checkState();
 
-        Set<SootClass> l = new HashSet<SootClass>(interfaceToDirSubinterfaces.get(c));
-        l.add(c);
-
-        return Collections.unmodifiableSet(l);
+        return createImmutableLinkedHashSet(c,interfaceToDirSubinterfaces.get(c));
     }
 
     /**
@@ -417,7 +419,7 @@ public class Hierarchy
 
         checkState();
 
-        ArraySet<SootClass> set = new ArraySet<SootClass>();
+        Set<SootClass> set = new LinkedHashSet<SootClass>();
 
         for (SootClass c : getSubinterfacesOfIncluding(i))
         {
@@ -552,7 +554,7 @@ public class Hierarchy
     /**
      * Given a set of definite receiver types, returns a list of possible targets.
      * @param classes possible receiver types
-     * @param m the method to rewsolve
+     * @param m the method to resolve
      * @return an immutable <code>Collection</code>, which practically is a <code>Set</code> for fast lookups
      * */
     public Collection<SootMethod> resolveConcreteDispatch(Collection<Type> classes, SootMethod m)
@@ -560,7 +562,7 @@ public class Hierarchy
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
         checkState();
 
-        HashSet<SootMethod> s = new HashSet<SootMethod>();
+        Set<SootMethod> s = new LinkedHashSet<SootMethod>();
 
         for (Type cls : classes){
             if (cls instanceof RefType)
@@ -584,7 +586,7 @@ public class Hierarchy
 
         Collection<SootClass> toProcess;
         if (c.isInterface()) {
-            HashSet<SootClass> classes = new HashSet<SootClass>();
+            Set<SootClass> classes = new LinkedHashSet<SootClass>();
             for (SootClass sc : getImplementersOf(c))
                 classes.addAll(getSubclassesOfIncluding(sc));
             toProcess = classes;
@@ -592,10 +594,10 @@ public class Hierarchy
         else
             toProcess = getSubclassesOfIncluding(c);
 
-        ArraySet s = new ArraySet();
+        Set<SootMethod> s = new LinkedHashSet<SootMethod>();
         
         for (SootClass cl : toProcess) {
-            if( Modifier.isAbstract( cl.getModifiers() ) ) continue;
+            if(cl.isAbstract()) continue;
             s.add(resolveConcreteDispatch(cl, m));
         }
         return Collections.unmodifiableSet(s);
@@ -603,10 +605,10 @@ public class Hierarchy
 
     // what can get called if you have a set of possible receiver types
     /** Returns a list of possible targets for the given method and set of receiver types. */
-    public Collection<SootClass> resolveAbstractDispatch(List<SootClass> classes, SootMethod m)
+    public Collection<SootMethod> resolveAbstractDispatch(Collection<SootClass> classes, SootMethod m)
     {
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
-        ArraySet s = new ArraySet();
+        Set<SootMethod> s = new LinkedHashSet<SootMethod>();
         for (SootClass sc : classes)
             s.addAll(resolveAbstractDispatch(sc, m));
 
