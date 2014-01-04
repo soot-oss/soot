@@ -26,6 +26,7 @@ import soot.Body;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
+import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
@@ -52,27 +53,46 @@ public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Val
 			DefinitionStmt def = (DefinitionStmt) unit;
 			Value left = def.getLeftOp();
 			Value right = def.getRightOp();
-			//find the sets containing the left and right hand sides
-			Set<Value> leftSet = null, rightSet = null;
-			for(Set<Value> s: source) {
-				if(s.contains(left)) {
-					leftSet = s;
-					break;
-				}				
+			if(right instanceof Constant) {
+				//find the sets containing the left 
+				Set<Value> leftSet = null;
+				for(Set<Value> s: source) {
+					if(s.contains(left)) {
+						leftSet = s;
+						break;
+					}				
+				}
+				if(leftSet==null) throw new RuntimeException("internal error");
+				//remove left from this set
+				target.remove(leftSet);
+				HashSet<Value> setWithoutLeft = new HashSet<Value>(leftSet);
+				setWithoutLeft.remove(left);
+				target.add(setWithoutLeft);
+				//add left on its own				
+				target.add(Collections.singleton(left));
+			} else {			
+				//find the sets containing the left and right hand sides
+				Set<Value> leftSet = null, rightSet = null;
+				for(Set<Value> s: source) {
+					if(s.contains(left)) {
+						leftSet = s;
+						break;
+					}				
+				}
+				for(Set<Value> s: source) {
+					if(s.contains(right)) {
+						rightSet = s;
+						break;
+					}				
+				}
+				if(leftSet==null || rightSet==null) throw new RuntimeException("internal error");
+				//replace the sets by their union
+				target.remove(leftSet);
+				target.remove(rightSet);
+				HashSet<Value> union = new HashSet<Value>(leftSet);
+				union.addAll(rightSet);
+				target.add(union);
 			}
-			for(Set<Value> s: source) {
-				if(s.contains(right)) {
-					rightSet = s;
-					break;
-				}				
-			}
-			if(leftSet==null || rightSet==null) throw new RuntimeException("internal error");
-			//replace the sets by their union
-			target.remove(leftSet);
-			target.remove(rightSet);
-			HashSet<Value> union = new HashSet<Value>(leftSet);
-			union.addAll(rightSet);
-			target.add(union);
 		}
 	}
 
