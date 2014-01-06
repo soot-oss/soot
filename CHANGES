@@ -48,6 +48,10 @@ Improvements and API changes in HEAD
 12. EquivalentValue is never nested now. This eliminates the need of
     getDeepestValue().
 
+13. Hierarchy's internals have been revamped. Now, all cases where a List was returned
+    now have a Collection<SootClass> or Collection<SootMethod> returned. Those collections
+    are immutable and the clients should not expect any specific iteration order.
+
 Improvements and API changes in version 2.5.0
 
 1. Modified SourceLocator so that it will automatically load a SootClass
