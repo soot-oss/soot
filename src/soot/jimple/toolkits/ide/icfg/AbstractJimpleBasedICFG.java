@@ -1,5 +1,9 @@
 package soot.jimple.toolkits.ide.icfg;
 
+import heros.DontSynchronize;
+import heros.SynchronizedBy;
+import heros.solver.IDESolver;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -7,13 +11,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-
-import heros.DontSynchronize;
-import heros.InterproceduralCFG;
-import heros.SynchronizedBy;
-import heros.solver.IDESolver;
 import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
@@ -24,7 +21,10 @@ import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 
-public abstract class AbstractJimpleBasedICFG implements InterproceduralCFG<Unit,SootMethod> {
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+
+public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<Unit,SootMethod> {
 
 	@DontSynchronize("written by single thread; read afterwards")
 	protected final Map<Unit,Body> unitToOwner = new HashMap<Unit,Body>();
@@ -148,6 +148,14 @@ public abstract class AbstractJimpleBasedICFG implements InterproceduralCFG<Unit
 	@Override
 	public Set<Unit> getCallsFromWithin(SootMethod m) {
 		return methodToCallsFromWithin.getUnchecked(m);		
+	}
+	
+	@Override
+	public List<Unit> getPredsOf(Unit u) {
+		assert u != null;
+		Body body = unitToOwner.get(u);
+		DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
+		return unitGraph.getPredsOf(u);
 	}
 
 }
