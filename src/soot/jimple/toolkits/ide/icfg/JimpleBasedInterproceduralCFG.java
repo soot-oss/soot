@@ -107,6 +107,11 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 			});
 
 	public JimpleBasedInterproceduralCFG() {
+		this(DEFAULT_UNIT_GRAPH_CREATOR);
+	}
+	
+	public JimpleBasedInterproceduralCFG(UnitGraphCreator ugc) {
+		super(ugc);
 		cg = Scene.v().getCallGraph();		
 		initializeUnitToOwner();
 	}

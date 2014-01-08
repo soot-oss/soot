@@ -18,25 +18,23 @@
  */
 package soot.jimple.toolkits.ide.icfg;
 
-import soot.Body;
-import soot.Unit;
-import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.InverseGraph;
+import static soot.jimple.toolkits.ide.icfg.BackwardsInterproceduralCFG.BACKWARDS_UNIT_GRAPH_CREATOR;
+
+import java.util.Collection;
+
+import soot.SootMethod;
 
 /**
  * Same as {@link JimpleBasedInterproceduralCFG} but based on inverted unit graphs.
  * This should be used for backward analyses.
  */
-public class BackwardsInterproceduralCFG extends JimpleBasedInterproceduralCFG {
+public class BackwardsOnTheFlyInterproceduralCFG extends OnTheFlyJimpleBasedICFG {
 
-	public static final UnitGraphCreator BACKWARDS_UNIT_GRAPH_CREATOR = new UnitGraphCreator() {
-		public DirectedGraph<Unit> makeGraph(Body body) {
-			return new InverseGraph<Unit>(DEFAULT_UNIT_GRAPH_CREATOR.makeGraph(body));
-		}
-	};
-
-	public BackwardsInterproceduralCFG() {
-		super(BACKWARDS_UNIT_GRAPH_CREATOR);
+	public BackwardsOnTheFlyInterproceduralCFG(SootMethod... entryPoints) {
+		super(BACKWARDS_UNIT_GRAPH_CREATOR, entryPoints);
 	}
 	
+	public BackwardsOnTheFlyInterproceduralCFG(Collection<SootMethod> entryPoints) {
+		super(BACKWARDS_UNIT_GRAPH_CREATOR, entryPoints);
+	}
 }

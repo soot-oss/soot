@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2013 Eric Bodden and others
+ * Copyright (C) 1997-2014 Eric Bodden and others
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,22 +21,13 @@ package soot.jimple.toolkits.ide.icfg;
 import soot.Body;
 import soot.Unit;
 import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.InverseGraph;
 
 /**
- * Same as {@link JimpleBasedInterproceduralCFG} but based on inverted unit graphs.
- * This should be used for backward analyses.
+ * A simple callback that creates unit graphs for bodies.
+ * @author Eric Bodden
  */
-public class BackwardsInterproceduralCFG extends JimpleBasedInterproceduralCFG {
-
-	public static final UnitGraphCreator BACKWARDS_UNIT_GRAPH_CREATOR = new UnitGraphCreator() {
-		public DirectedGraph<Unit> makeGraph(Body body) {
-			return new InverseGraph<Unit>(DEFAULT_UNIT_GRAPH_CREATOR.makeGraph(body));
-		}
-	};
-
-	public BackwardsInterproceduralCFG() {
-		super(BACKWARDS_UNIT_GRAPH_CREATOR);
-	}
+public interface UnitGraphCreator {
+	
+	public DirectedGraph<Unit> makeGraph(Body body);
 	
 }
