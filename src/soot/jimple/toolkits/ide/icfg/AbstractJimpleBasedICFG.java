@@ -25,12 +25,6 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 
 public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<Unit,SootMethod> {
-	
-	public static final UnitGraphCreator DEFAULT_UNIT_GRAPH_CREATOR = new UnitGraphCreator() {
-		public DirectedGraph<Unit> makeGraph(Body body) {
-			return new ExceptionalUnitGraph(body, UnitThrowAnalysis.v() ,true);
-		}
-	};
 
 	@DontSynchronize("written by single thread; read afterwards")
 	protected final Map<Unit,Body> unitToOwner = new HashMap<Unit,Body>();
@@ -64,16 +58,6 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 					}
 				});
 
-	protected final UnitGraphCreator ugc;
-
-	public AbstractJimpleBasedICFG() {
-		this(DEFAULT_UNIT_GRAPH_CREATOR);
-	}
-	
-	public AbstractJimpleBasedICFG(UnitGraphCreator ugc) {
-		this.ugc = ugc;		
-	}
-	
 	@Override
 	public SootMethod getMethodOf(Unit u) {
 		assert unitToOwner.containsKey(u);
@@ -87,12 +71,12 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 		return unitGraph.getSuccsOf(u);
 	}
 
-	public DirectedGraph<Unit> getOrCreateUnitGraph(Body body) {
+	protected DirectedGraph<Unit> getOrCreateUnitGraph(Body body) {
 		return bodyToUnitGraph.getUnchecked(body);
 	}
 
-	protected final synchronized DirectedGraph<Unit> makeGraph(Body body) {
-		return ugc.makeGraph(body);
+	protected synchronized DirectedGraph<Unit> makeGraph(Body body) {
+		return new ExceptionalUnitGraph(body, UnitThrowAnalysis.v() ,true);
 	}
 
 	@Override
