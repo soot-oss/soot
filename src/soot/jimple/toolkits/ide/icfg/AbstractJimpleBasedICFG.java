@@ -4,6 +4,7 @@ import heros.DontSynchronize;
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -122,7 +123,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 			DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
 			return new LinkedHashSet<Unit>(unitGraph.getHeads());
 		}
-		return null;
+		return Collections.emptySet();
 	}
 
 	@Override
