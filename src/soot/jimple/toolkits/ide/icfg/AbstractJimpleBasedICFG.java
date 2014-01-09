@@ -72,7 +72,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 		return unitGraph.getSuccsOf(u);
 	}
 
-	protected DirectedGraph<Unit> getOrCreateUnitGraph(Body body) {
+	public DirectedGraph<Unit> getOrCreateUnitGraph(Body body) {
 		return bodyToUnitGraph.getUnchecked(body);
 	}
 
@@ -140,6 +140,16 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 		}
 		return res;
 	}
+	
+	@Override
+	public Set<Unit> allNonCallEndNodes() {
+		Set<Unit> res = new LinkedHashSet<Unit>(unitToOwner.keySet());
+		for (Iterator<Unit> iter = res.iterator(); iter.hasNext();) {
+			Unit u = iter.next();
+			if(isExitStmt(u) || isCallStmt(u)) iter.remove();
+		}
+		return res;
+	}
 
 	@Override
 	public List<Unit> getReturnSitesOfCallAt(Unit u) {
@@ -159,4 +169,18 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 		return unitGraph.getPredsOf(u);
 	}
 
+	@Override
+	public Set<Unit> getEndPointsOf(SootMethod m) {
+		if(m.hasActiveBody()) {
+			Body body = m.getActiveBody();
+			DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
+			return new LinkedHashSet<Unit>(unitGraph.getTails());
+		}
+		return Collections.emptySet();
+	}
+	
+	@Override
+	public List<Unit> getPredsOfCallAt(Unit u) {
+		return getPredsOf(u);
+	}
 }

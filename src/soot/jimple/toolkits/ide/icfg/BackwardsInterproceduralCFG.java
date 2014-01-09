@@ -18,20 +18,119 @@
  */
 package soot.jimple.toolkits.ide.icfg;
 
+import java.util.List;
+import java.util.Set;
+
 import soot.Body;
+import soot.SootMethod;
 import soot.Unit;
+import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.InverseGraph;
+
 
 /**
  * Same as {@link JimpleBasedInterproceduralCFG} but based on inverted unit graphs.
  * This should be used for backward analyses.
  */
-public class BackwardsInterproceduralCFG extends JimpleBasedBiDiICFG {
+public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,SootMethod> {
+	
+	protected final BiDiInterproceduralCFG<Unit,SootMethod> delegate;
+	
+	public BackwardsInterproceduralCFG(BiDiInterproceduralCFG<Unit,SootMethod> fwICFG) {
+		delegate = fwICFG;		
+	}
 
-	@Override
-	protected DirectedGraph<Unit> makeGraph(Body body) {
-		return new InverseGraph<Unit>(super.makeGraph(body));
+	//swapped
+	public List<Unit> getSuccsOf(Unit n) {
+		return delegate.getPredsOf(n);
+	}
+
+	//swapped
+	public Set<Unit> getStartPointsOf(SootMethod m) {
+		return delegate.getEndPointsOf(m);
 	}
 	
+	//swapped
+	public List<Unit> getReturnSitesOfCallAt(Unit n) {
+		return delegate.getPredsOfCallAt(n);
+	}
+
+	//swapped
+	public boolean isExitStmt(Unit stmt) {
+		return delegate.isStartPoint(stmt);
+	}
+
+	//swapped
+	public boolean isStartPoint(Unit stmt) {
+		return delegate.isExitStmt(stmt);
+	}
+	
+	//swapped
+	public Set<Unit> allNonCallStartNodes() {
+		return delegate.allNonCallEndNodes();
+	}
+	
+	//swapped
+	public List<Unit> getPredsOf(Unit u) {
+		return delegate.getSuccsOf(u);
+	}
+
+	//swapped
+	public Set<Unit> getEndPointsOf(SootMethod m) {
+		return delegate.getStartPointsOf(m);
+	}
+
+	//swapped
+	public List<Unit> getPredsOfCallAt(Unit u) {
+		return delegate.getSuccsOf(u);
+	}
+
+	//swapped
+	public Set<Unit> allNonCallEndNodes() {
+		return delegate.allNonCallStartNodes();
+	}
+
+	//same
+	public SootMethod getMethodOf(Unit n) {
+		return delegate.getMethodOf(n);
+	}
+
+	//same
+	public Set<SootMethod> getCalleesOfCallAt(Unit n) {
+		return delegate.getCalleesOfCallAt(n);
+	}
+
+	//same
+	public Set<Unit> getCallersOf(SootMethod m) {
+		return delegate.getCallersOf(m);
+	}
+
+	//same
+	public Set<Unit> getCallsFromWithin(SootMethod m) {
+		return delegate.getCallsFromWithin(m);
+	}
+
+	//same
+	public boolean isCallStmt(Unit stmt) {
+		return delegate.isCallStmt(stmt);
+	}
+
+	//same
+	public DirectedGraph<Unit> getOrCreateUnitGraph(Body body) {
+		return delegate.getOrCreateUnitGraph(body);
+	}
+
+	//same
+	public List<Value> getParameterRefs(SootMethod m) {
+		return delegate.getParameterRefs(m);
+	}
+
+	public boolean isFallThroughSuccessor(Unit stmt, Unit succ) {
+		throw new UnsupportedOperationException("not implemented because semantics unclear");
+	}
+
+	public boolean isBranchTarget(Unit stmt, Unit succ) {
+		throw new UnsupportedOperationException("not implemented because semantics unclear");
+	}
+
 }
