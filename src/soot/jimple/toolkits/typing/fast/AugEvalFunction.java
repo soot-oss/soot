@@ -146,10 +146,8 @@ public class AugEvalFunction implements IEvalFunction
 		{
 			RefType r = null;
 			
-			for ( Iterator i = TrapManager.getExceptionTypesOf(
-				stmt, jb).iterator(); i.hasNext(); )
+			for (RefType t : TrapManager.getExceptionTypesOf(stmt, jb))
 			{
-				RefType t = (RefType)i.next();
 				if ( r == null )
 					r = t;
 				else
