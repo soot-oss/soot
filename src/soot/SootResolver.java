@@ -317,13 +317,17 @@ public class SootResolver
         }
     }
 
-    public void reResolve(SootClass cl) {
+    public void reResolve(SootClass cl, int newResolvingLevel) {
         int resolvingLevel = cl.resolvingLevel();
-        if( resolvingLevel < SootClass.HIERARCHY ) return;
+        if( resolvingLevel >= newResolvingLevel ) return;
         reResolveHierarchy(cl);
-        cl.setResolvingLevel(SootClass.HIERARCHY);
+        cl.setResolvingLevel(newResolvingLevel);
         addToResolveWorklist(cl, resolvingLevel);
         processResolveWorklist();
+    }
+
+    public void reResolve(SootClass cl) {
+        reResolve(cl, SootClass.HIERARCHY);
     }
 
 	public Program getProgram() {
