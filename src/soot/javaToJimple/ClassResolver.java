@@ -18,16 +18,23 @@
  */
 
 package soot.javaToJimple;
-import soot.*;
-import soot.options.Options;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
 import polyglot.ast.Node;
 import polyglot.types.Type;
 import polyglot.util.IdentityKey;
+import soot.G;
+import soot.RefType;
+import soot.SootClass;
+import soot.SootField;
+import soot.options.Options;
 
 public class ClassResolver {
 
@@ -492,7 +499,7 @@ public class ClassResolver {
             Util.addInnerClassTag(addToClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
             Util.addInnerClassTag(specialClass, specialClass.getName(), addToClass.getName(), null, soot.Modifier.STATIC);
             InitialResolver.v().addNameToAST(specialClassName);
-            references.add(specialClassName);    
+            references.add(RefType.v(specialClassName));    
             if (InitialResolver.v().specialAnonMap() == null){
                 InitialResolver.v().setSpecialAnonMap(new HashMap<SootClass, SootClass>());
             }
@@ -912,7 +919,7 @@ public class ClassResolver {
         this.references = set;
     }
     private final SootClass sootClass;
-    private final Collection references;
+    private final Collection<soot.Type> references;
 
     
     /**

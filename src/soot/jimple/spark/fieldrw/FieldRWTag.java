@@ -25,11 +25,11 @@ import soot.*;
 /** Implements a tag that holds a list of fields read or written by a call. */
 public abstract class FieldRWTag implements Tag {
     String fieldNames = new String();
-    FieldRWTag( Set fields ) {
+    
+    FieldRWTag( Set<SootField> fields ) {
         StringBuffer sb = new StringBuffer();
         boolean first = true;
-        for( Iterator fieldIt = fields.iterator(); fieldIt.hasNext(); ) {
-            final SootField field = (SootField) fieldIt.next();
+        for( SootField field : fields ) {
             if( !first ) sb.append( "%" );
             first = false;
             sb.append( field.getDeclaringClass().getName() );
@@ -38,6 +38,7 @@ public abstract class FieldRWTag implements Tag {
         }
         fieldNames = sb.toString();
     }
+    
     public abstract String getName();
     public byte[] getValue() {
         byte[] bytes = fieldNames.getBytes();

@@ -19,18 +19,20 @@
 
 package soot.toolkits.exceptions;
 
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
 import soot.Singletons;
 import soot.Trap;
 import soot.Unit;
+import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.options.Options;
-import soot.util.Chain;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
+import soot.util.Chain;
 
 /**
  * A {@link BodyTransformer} that shrinks the protected area covered
@@ -58,12 +60,12 @@ public final class TrapTightener extends BodyTransformer {
         if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Tightening trap boundaries...");
 
-	Chain trapChain = body.getTraps();
-	Chain unitChain = body.getUnits();
+	Chain<Trap> trapChain = body.getTraps();
+	Chain<Unit> unitChain = body.getUnits();
 	if (trapChain.size() > 0) {
 	    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
 
-	    for (Iterator trapIt = trapChain.iterator(); trapIt.hasNext(); ) {
+	    for (Iterator<Trap> trapIt = trapChain.iterator(); trapIt.hasNext(); ) {
 		Trap trap = (Trap) trapIt.next();
 		Unit firstTrappedUnit = trap.getBeginUnit();
 		Unit firstTrappedThrower = null;
@@ -88,15 +90,21 @@ public final class TrapTightener extends BodyTransformer {
 			}
 		    }
 		}
-		if (firstTrappedThrower != null &&
-		    firstTrappedUnit != firstTrappedThrower) {
-		    trap.setBeginUnit(firstTrappedThrower);
-		}
-		if (lastTrappedThrower == null) {
-		    lastTrappedThrower = firstTrappedUnit;
-		}
-		if (lastTrappedUnit != lastTrappedThrower) {
-		    trap.setEndUnit((Unit) unitChain.getSuccOf(lastTrappedThrower));
+		// If no statement inside the trap can throw an exception, we remove the
+		// complete trap.
+		if (firstTrappedThrower == null)
+			trapIt.remove();
+		else {
+			if (firstTrappedThrower != null &&
+					firstTrappedUnit != firstTrappedThrower) {
+			    trap.setBeginUnit(firstTrappedThrower);
+			}
+			if (lastTrappedThrower == null) {
+			    lastTrappedThrower = firstTrappedUnit;
+			}
+			if (lastTrappedUnit != lastTrappedThrower) {
+			    trap.setEndUnit((Unit) unitChain.getSuccOf(lastTrappedThrower));
+			}
 		}
 	    }
 	}
@@ -114,10 +122,7 @@ public final class TrapTightener extends BodyTransformer {
      * by <tt>t</tt>, according to <tt>g</tt.
      */
     protected boolean mightThrowTo(ExceptionalUnitGraph g, Unit u, Trap t) {
-	Collection dests = g.getExceptionDests(u);
-	for (Iterator destIt = dests.iterator(); destIt.hasNext(); ) {
-	    ExceptionalUnitGraph.ExceptionDest dest = 
-		(ExceptionalUnitGraph.ExceptionDest) destIt.next();
+	for (ExceptionDest dest : g.getExceptionDests(u)) {
 	    if (dest.getTrap() == t) {
 		return true;
 	    }

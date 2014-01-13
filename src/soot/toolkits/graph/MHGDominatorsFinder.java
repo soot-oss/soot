@@ -165,7 +165,9 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N>
                 immediateDominator = dominator;
         }
 
-        assert immediateDominator!=null;
+        // This can indeed happen with postdominators on methods that have
+        // multiple points of return
+//        assert immediateDominator!=null;
         
         return immediateDominator;
     }

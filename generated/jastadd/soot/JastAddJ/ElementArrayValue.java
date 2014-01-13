@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production ElementArrayValue : {@link ElementValue} ::= <span class="component">{@link ElementValue}*</span>;
  * @ast node
- * @declaredat Annotations.ast:13
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.ast:13
  */
 public class ElementArrayValue extends ElementValue implements Cloneable {
   /**
@@ -51,32 +51,41 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ElementArrayValue copy() {
-      try {
-        ElementArrayValue node = (ElementArrayValue)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      ElementArrayValue node = (ElementArrayValue) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ElementArrayValue fullCopy() {
-    ElementArrayValue res = (ElementArrayValue)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    ElementArrayValue tree = (ElementArrayValue) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:599
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:603
    */
   public void toString(StringBuffer s) {
     s.append("{");
@@ -99,17 +108,28 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat Annotations.ast:1
+   * 
    */
   public ElementArrayValue() {
     super();
 
-    setChild(new List(), 0);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat Annotations.ast:8
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+    setChild(new List(), 0);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public ElementArrayValue(List<ElementValue> p0) {
     setChild(p0, 0);
@@ -117,7 +137,7 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:14
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -125,44 +145,60 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Annotations.ast:20
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for ElementValueList
+   * Replaces the ElementValue list.
+   * @param list The new list node to be used as the ElementValue list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:5
+   * 
    */
   public void setElementValueList(List<ElementValue> list) {
     setChild(list, 0);
   }
   /**
-   * @return number of children in ElementValueList
+   * Retrieves the number of children in the ElementValue list.
+   * @return Number of children in the ElementValue list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:12
+   * 
    */
   public int getNumElementValue() {
     return getElementValueList().getNumChild();
   }
   /**
-   * Getter for child in list ElementValueList
+   * Retrieves the number of children in the ElementValue list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the ElementValue list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumElementValueNoTransform() {
+    return getElementValueListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the ElementValue list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the ElementValue list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ElementValue getElementValue(int i) {
     return (ElementValue)getElementValueList().getChild(i);
   }
   /**
-   * Add element to list ElementValueList
+   * Append an element to the ElementValue list.
+   * @param node The element to append to the ElementValue list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:27
+   * 
    */
   public void addElementValue(ElementValue node) {
     List<ElementValue> list = (parent == null || state == null) ? getElementValueListNoTransform() : getElementValueList();
@@ -171,44 +207,51 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:34
+   * 
    */
   public void addElementValueNoTransform(ElementValue node) {
     List<ElementValue> list = getElementValueListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ElementValueList
+   * Replaces the ElementValue list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:42
+   * 
    */
   public void setElementValue(ElementValue node, int i) {
     List<ElementValue> list = getElementValueList();
     list.setChild(node, i);
   }
   /**
-   * Getter for ElementValue list.
+   * Retrieves the ElementValue list.
+   * @return The node representing the ElementValue list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:50
+   * 
    */
   public List<ElementValue> getElementValues() {
     return getElementValueList();
   }
   /**
+   * Retrieves the ElementValue list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the ElementValue list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:56
+   * 
    */
   public List<ElementValue> getElementValuesNoTransform() {
     return getElementValueListNoTransform();
   }
   /**
-   * Getter for list ElementValueList
+   * Retrieves the ElementValue list.
+   * @return The node representing the ElementValue list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ElementValue> getElementValueList() {
@@ -217,9 +260,12 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the ElementValue list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the ElementValue list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ElementValue> getElementValueListNoTransform() {
@@ -228,93 +274,78 @@ public class ElementArrayValue extends ElementValue implements Cloneable {
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:63
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:57
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean validTarget(Annotation a) {
-      ASTNode$State state = state();
-    boolean validTarget_Annotation_value = validTarget_compute(a);
-    return validTarget_Annotation_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean validTarget_compute(Annotation a) {
+    ASTNode$State state = state();
+    try {
     for(int i = 0;  i < getNumElementValue(); i++)
       if(getElementValue(i).validTarget(a))
         return true;
     return false;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:188
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:181
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public ElementValue definesElementTypeValue(String name) {
-      ASTNode$State state = state();
-    ElementValue definesElementTypeValue_String_value = definesElementTypeValue_compute(name);
-    return definesElementTypeValue_String_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private ElementValue definesElementTypeValue_compute(String name) {
+    ASTNode$State state = state();
+    try {
     for(int i = 0; i < getNumElementValue(); i++)
       if(getElementValue(i).definesElementTypeValue(name) != null)
         return getElementValue(i).definesElementTypeValue(name);
     return null;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:300
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:295
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean hasValue(String s) {
-      ASTNode$State state = state();
-    boolean hasValue_String_value = hasValue_compute(s);
-    return hasValue_String_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean hasValue_compute(String s) {
+    ASTNode$State state = state();
+    try {
     for(int i = 0;  i < getNumElementValue(); i++)
       if(getElementValue(i).hasValue(s))
         return true;
     return false;
+  }
+    finally {
+    }
   }
   /**
    * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:495
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean commensurateWithArrayDecl(ArrayDecl type) {
-      ASTNode$State state = state();
-    boolean commensurateWithArrayDecl_ArrayDecl_value = commensurateWithArrayDecl_compute(type);
-    return commensurateWithArrayDecl_ArrayDecl_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean commensurateWithArrayDecl_compute(ArrayDecl type) {
+    ASTNode$State state = state();
+    try {
     for(int i = 0; i < getNumElementValue(); i++)
       if(!type.componentType().commensurateWith(getElementValue(i)))
         return false;
     return true;
+  }
+    finally {
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:178
    * @apilevel internal
    */
   public ElementValue Define_ElementValue_lookupElementTypeValue(ASTNode caller, ASTNode child, String name) {
-    if(caller == getElementValueListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return definesElementTypeValue(name);
+    if(caller == getElementValueListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return definesElementTypeValue(name);
+  }
+    else {      return getParent().Define_ElementValue_lookupElementTypeValue(this, caller, name);
     }
-    return getParent().Define_ElementValue_lookupElementTypeValue(this, caller, name);
   }
   /**
    * @apilevel internal

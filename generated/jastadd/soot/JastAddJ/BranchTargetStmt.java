@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production BranchTargetStmt : {@link Stmt};
  * @ast node
- * @declaredat java.ast:193
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:196
  */
 public abstract class BranchTargetStmt extends Stmt implements Cloneable, BranchPropagation {
   /**
@@ -72,33 +72,8 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
-   */
-  public BranchTargetStmt() {
-    super();
-
-
-  }
-  /**
-   * @apilevel low-level
-   * @ast method 
-   * @declaredat java.ast:10
-   */
-  protected int numChildren() {
-    return 0;
-  }
-  /**
-   * @apilevel internal
-   * @ast method 
-   * @declaredat java.ast:16
-   */
-  public boolean mayHaveRewrite() {
-    return false;
-  }
-  /**
-   * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:58
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:57
    */
   public void collectBranches(Collection c) {
     c.addAll(escapedBranches());
@@ -106,7 +81,7 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:157
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:156
    */
   public Stmt branchTarget(Stmt branchStmt) {
     if(targetBranches().contains(branchStmt))
@@ -116,7 +91,7 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:195
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:194
    */
   public void collectFinally(Stmt branchStmt, ArrayList list) {
     if(targetBranches().contains(branchStmt))
@@ -124,16 +99,51 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
     super.collectFinally(branchStmt, list);
   }
   /**
+   * @ast method 
+   * 
+   */
+  public BranchTargetStmt() {
+    super();
+
+
+  }
+  /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
+   * @ast method 
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  protected int numChildren() {
+    return 0;
+  }
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
+   */
+  public boolean mayHaveRewrite() {
+    return false;
+  }
+  /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:40
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:39
    */
   @SuppressWarnings({"unchecked", "cast"})
   public abstract boolean targetOf(ContinueStmt stmt);
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:41
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:40
    */
   @SuppressWarnings({"unchecked", "cast"})
   public abstract boolean targetOf(BreakStmt stmt);
@@ -155,11 +165,11 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
     if(reachableBreak_computed) {
       return reachableBreak_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     reachableBreak_value = reachableBreak_compute();
-if(isFinal && num == state().boundariesCrossed) reachableBreak_computed = true;
+      if(isFinal && num == state().boundariesCrossed) reachableBreak_computed = true;
     return reachableBreak_value;
   }
   /**
@@ -191,11 +201,11 @@ if(isFinal && num == state().boundariesCrossed) reachableBreak_computed = true;
     if(reachableContinue_computed) {
       return reachableContinue_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     reachableContinue_value = reachableContinue_compute();
-if(isFinal && num == state().boundariesCrossed) reachableContinue_computed = true;
+      if(isFinal && num == state().boundariesCrossed) reachableContinue_computed = true;
     return reachableContinue_value;
   }
   /**
@@ -220,18 +230,18 @@ if(isFinal && num == state().boundariesCrossed) reachableContinue_computed = tru
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:83
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:82
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection targetBranches() {
     if(targetBranches_computed) {
       return targetBranches_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     targetBranches_value = targetBranches_compute();
-if(isFinal && num == state().boundariesCrossed) targetBranches_computed = true;
+      if(isFinal && num == state().boundariesCrossed) targetBranches_computed = true;
     return targetBranches_value;
   }
   /**
@@ -259,18 +269,18 @@ if(isFinal && num == state().boundariesCrossed) targetBranches_computed = true;
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:95
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:94
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection escapedBranches() {
     if(escapedBranches_computed) {
       return escapedBranches_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     escapedBranches_value = escapedBranches_compute();
-if(isFinal && num == state().boundariesCrossed) escapedBranches_computed = true;
+      if(isFinal && num == state().boundariesCrossed) escapedBranches_computed = true;
     return escapedBranches_value;
   }
   /**
@@ -300,18 +310,18 @@ if(isFinal && num == state().boundariesCrossed) escapedBranches_computed = true;
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:109
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:108
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection branches() {
     if(branches_computed) {
       return branches_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     branches_value = branches_compute();
-if(isFinal && num == state().boundariesCrossed) branches_computed = true;
+      if(isFinal && num == state().boundariesCrossed) branches_computed = true;
     return branches_value;
   }
   /**
@@ -333,18 +343,18 @@ if(isFinal && num == state().boundariesCrossed) branches_computed = true;
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:216
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:215
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection targetContinues() {
     if(targetContinues_computed) {
       return targetContinues_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     targetContinues_value = targetContinues_compute();
-if(isFinal && num == state().boundariesCrossed) targetContinues_computed = true;
+      if(isFinal && num == state().boundariesCrossed) targetContinues_computed = true;
     return targetContinues_value;
   }
   /**
@@ -377,18 +387,18 @@ if(isFinal && num == state().boundariesCrossed) targetContinues_computed = true;
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:233
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:232
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection targetBreaks() {
     if(targetBreaks_computed) {
       return targetBreaks_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     targetBreaks_value = targetBreaks_compute();
-if(isFinal && num == state().boundariesCrossed) targetBreaks_computed = true;
+      if(isFinal && num == state().boundariesCrossed) targetBreaks_computed = true;
     return targetBreaks_value;
   }
   /**

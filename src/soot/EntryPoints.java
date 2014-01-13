@@ -62,11 +62,12 @@ public class EntryPoints
      * invoked implicitly by the VM. */
     public List<SootMethod> application() {
         List<SootMethod> ret = new ArrayList<SootMethod>();
-        if(Scene.v().hasMainClass() || !Scene.v().hasCustomEntryPoints())
-        	addMethod( ret, Scene.v().getMainClass(), sigMain );
-        for (SootMethod clinit : clinitsOf(Scene.v().getMainClass() )) {
-            ret.add(clinit);
-        }
+        if(Scene.v().hasMainClass()) {
+			addMethod( ret, Scene.v().getMainClass(), sigMain );
+			for (SootMethod clinit : clinitsOf(Scene.v().getMainClass() )) {
+				ret.add(clinit);
+			}
+		}
         return ret;
     }
     /** Returns only the entry points invoked implicitly by the VM. */
@@ -100,8 +101,8 @@ public class EntryPoints
     /** Returns a list of all static initializers. */
     public List<SootMethod> clinits() {
         List<SootMethod> ret = new ArrayList<SootMethod>();
-        for( Iterator clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
-            final SootClass cl = (SootClass) clIt.next();
+        for( Iterator<SootClass> clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = clIt.next();
             addMethod( ret, cl, sigClinit );
         }
         return ret;
@@ -109,8 +110,8 @@ public class EntryPoints
     /** Returns a list of all constructors taking no arguments. */
     public List<SootMethod> inits() {
         List<SootMethod> ret = new ArrayList<SootMethod>();
-        for( Iterator clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
-            final SootClass cl = (SootClass) clIt.next();
+        for( Iterator<SootClass> clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = clIt.next();
             addMethod( ret, cl, sigInit );
         }
         return ret;
@@ -119,8 +120,8 @@ public class EntryPoints
     /** Returns a list of all constructors. */
     public List<SootMethod> allInits() {
         List<SootMethod> ret = new ArrayList<SootMethod>();
-        for( Iterator clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
-            final SootClass cl = (SootClass) clIt.next();
+        for( Iterator<SootClass> clIt = Scene.v().getClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = clIt.next();
             for(SootMethod m: cl.getMethods()) {
             	if(m.getName().equals("<init>")) {
             		ret.add(m);
@@ -133,10 +134,10 @@ public class EntryPoints
     /** Returns a list of all concrete methods of all application classes. */
     public List<SootMethod> methodsOfApplicationClasses() {
         List<SootMethod> ret = new ArrayList<SootMethod>();
-        for( Iterator clIt = Scene.v().getApplicationClasses().iterator(); clIt.hasNext(); ) {
-            final SootClass cl = (SootClass) clIt.next();
-            for( Iterator mIt = cl.getMethods().iterator(); mIt.hasNext(); ) {
-                final SootMethod m = (SootMethod) mIt.next();
+        for( Iterator<SootClass> clIt = Scene.v().getApplicationClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl =  clIt.next();
+            for( Iterator<SootMethod> mIt = cl.getMethods().iterator(); mIt.hasNext(); ) {
+                final SootMethod m = mIt.next();
                 if( m.isConcrete() ) ret.add( m );
             }
         }
@@ -147,8 +148,8 @@ public class EntryPoints
      * application classes. */
     public List<SootMethod> mainsOfApplicationClasses() {
         List<SootMethod> ret = new ArrayList<SootMethod>();
-        for( Iterator clIt = Scene.v().getApplicationClasses().iterator(); clIt.hasNext(); ) {
-            final SootClass cl = (SootClass) clIt.next();
+        for( Iterator<SootClass> clIt = Scene.v().getApplicationClasses().iterator(); clIt.hasNext(); ) {
+            final SootClass cl = clIt.next();
             if( cl.declaresMethod( "void main(java.lang.String[])" ) ) {
                 SootMethod m = cl.getMethod("void main(java.lang.String[])" );
                 if( m.isConcrete() ) ret.add( m );

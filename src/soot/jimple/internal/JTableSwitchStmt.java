@@ -128,12 +128,17 @@ public class JTableSwitchStmt extends AbstractStmt
             
         buffer.append("{" + endOfLine);
         
-        for(int i = lowIndex; i <= highIndex; i++)
+        // In this for-loop, we cannot use "<=" since 'i' would wrap around.
+        // The case for "i == highIndex" is handled separately after the loop.
+        for(int i = lowIndex; i < highIndex; i++)
         {
             buffer.append(
-                          "    " + Jimple.CASE + " " + i + ": " + Jimple.GOTO + 
+                          "    " + Jimple.CASE + " " + i + ": " + Jimple.GOTO +
                           " " + getTarget(i - lowIndex) + ";" + endOfLine);
         }
+        buffer.append(
+                  "    " + Jimple.CASE + " " + highIndex + ": " + Jimple.GOTO +
+                  " " + getTarget(highIndex - lowIndex) + ";" + endOfLine);
 
         buffer.append("    " +  Jimple.DEFAULT + 
                       ": " +  Jimple.GOTO + " " 
@@ -153,19 +158,13 @@ public class JTableSwitchStmt extends AbstractStmt
         up.newline();
         up.literal("{");
         up.newline();
-        for(int i = lowIndex; i <= highIndex; i++) {
-            up.literal("    ");
-            up.literal(Jimple.CASE);
-            up.literal(" ");
-            up.literal(new Integer(i).toString());
-            up.literal(": ");
-            up.literal(Jimple.GOTO);
-            up.literal(" ");
-            targetBoxes[i-lowIndex].toString(up);
-            up.literal(";");
-            up.newline();
+        // In this for-loop, we cannot use "<=" since 'i' would wrap around.
+        // The case for "i == highIndex" is handled separately after the loop.
+        for(int i = lowIndex; i < highIndex; i++) {
+            printCaseTarget(up, i);
         }
-        
+        printCaseTarget(up, highIndex);
+
         up.literal("    ");
         up.literal(Jimple.DEFAULT);
         up.literal(": ");
@@ -176,6 +175,20 @@ public class JTableSwitchStmt extends AbstractStmt
         up.newline();
         up.literal("}");
     }
+
+
+	private void printCaseTarget(UnitPrinter up, int targetIndex) {
+		up.literal("    ");
+		up.literal(Jimple.CASE);
+		up.literal(" ");
+		up.literal(new Integer(targetIndex).toString());
+		up.literal(": ");
+		up.literal(Jimple.GOTO);
+		up.literal(" ");
+		targetBoxes[targetIndex-lowIndex].toString(up);
+		up.literal(";");
+		up.newline();
+	}
 
 
     public Unit getDefaultTarget()

@@ -69,8 +69,7 @@ public class InitAnalysis extends ForwardFlowAnalysis {
 
         inSet.copy(outSet);
 
-        List<ValueBox> defBoxes = s.getDefBoxes();
-        for (ValueBox defBox : defBoxes) {
+        for (ValueBox defBox : s.getDefBoxes()) {
             Value lhs = defBox.getValue();
             if (lhs instanceof Local) {
                 outSet.add(lhs);

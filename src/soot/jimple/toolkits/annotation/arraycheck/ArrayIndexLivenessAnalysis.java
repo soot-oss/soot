@@ -24,16 +24,45 @@
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
-import soot.options.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.internal.*;
-import soot.util.*;
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-
-import java.util.*;
+import soot.ArrayType;
+import soot.Body;
+import soot.G;
+import soot.IntType;
+import soot.Local;
+import soot.SootField;
+import soot.Type;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.AddExpr;
+import soot.jimple.ArrayRef;
+import soot.jimple.BinopExpr;
+import soot.jimple.ConditionExpr;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.FieldRef;
+import soot.jimple.IfStmt;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.IntConstant;
+import soot.jimple.LengthExpr;
+import soot.jimple.MulExpr;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+import soot.jimple.SubExpr;
+import soot.jimple.internal.JAddExpr;
+import soot.jimple.internal.JSubExpr;
+import soot.options.Options;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.BackwardFlowAnalysis;
 
 class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
 {
@@ -256,11 +285,9 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
                 }
             }
             
-            List vboxes = stmt.getUseAndDefBoxes();
-            Iterator vboxIt = vboxes.iterator();
-            while (vboxIt.hasNext())
+            for (ValueBox vbox : stmt.getUseAndDefBoxes())
             {
-                Value v = ((ValueBox)vboxIt.next()).getValue();
+                Value v = vbox.getValue();
                 
                 if (fieldin)
                 {
@@ -333,14 +360,8 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
     
     private void retrieveAllArrayLocals(Body body, Set<Local> container)
     {
-        Chain locals = body.getLocals();
-
-        Iterator localIt = locals.iterator();
-
-        while (localIt.hasNext())
+        for (Local local : body.getLocals())
         {
-            Local local = (Local)localIt.next();
-            
             Type type = local.getType();
             
             if (type instanceof IntType
@@ -351,14 +372,8 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
     
     private void retrieveMultiArrayLocals(Body body, Set<Local> container)
     {
-        Chain locals = body.getLocals();
-        
-        Iterator localIt = locals.iterator();
-        
-        while (localIt.hasNext())
+        for (Local local : body.getLocals())
         {
-            Local local = (Local)localIt.next();
-
             Type type = local.getType();
             
             if (type instanceof ArrayType)
@@ -387,7 +402,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
         {
             if (lhs instanceof Local)
             {
-                HashSet related = localToFieldRef.get(lhs);
+                HashSet<Value> related = localToFieldRef.get(lhs);
                 if (related != null)
                     killset.addAll(related);
             }
@@ -401,7 +416,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
                     if (lhs instanceof InstanceFieldRef)
                     {
                         SootField field = ((InstanceFieldRef)lhs).getField();
-                        HashSet related = fieldToFieldRef.get(field);
+                        HashSet<Value> related = fieldToFieldRef.get(field);
                         if (related != null)
                             killset.addAll(related);
                         condset.add(lhs);
@@ -464,7 +479,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
         
         if (csin)
         {
-            HashSet exprs = localToExpr.get(lhs);
+            HashSet<Value> exprs = localToExpr.get(lhs);
             if (exprs != null)
                 killset.addAll(exprs);
 
@@ -508,8 +523,6 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
             Value base = ((ArrayRef)lhs).getBase();
             Value index = ((ArrayRef)lhs).getIndex();
 
-            ArrayList genList = new ArrayList();
-            
             absgenset.add(base);
             
             if (index instanceof Local)
@@ -628,11 +641,9 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
 
     private void getGenAndKillSet(Body body, HashMap<Stmt, HashSet<Value>> absgen, HashMap<Stmt, HashSet<Object>> gen, HashMap<Stmt, HashSet<Value>> kill, HashMap<Stmt, HashSet<Value>> condition)
     {
-        Iterator unitIt = body.getUnits().iterator();
-
-        while (unitIt.hasNext())
+        for (Unit u : body.getUnits())
         {
-            Stmt stmt = (Stmt)unitIt.next();
+            Stmt stmt = (Stmt)u;
 
             HashSet<Object> genset = new HashSet<Object>();
             HashSet<Value> absgenset = new HashSet<Value>();
@@ -702,10 +713,10 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
         outset.clear();
         outset.addAll(inset);
         
-        HashSet genset = genOfUnit.get(unit);
-        HashSet absgenset = absGenOfUnit.get(unit);
-        HashSet killset = killOfUnit.get(unit);
-        HashSet condset = conditionOfGen.get(unit);
+        HashSet<Object> genset = genOfUnit.get(unit);
+        HashSet<Value> absgenset = absGenOfUnit.get(unit);
+        HashSet<Value> killset = killOfUnit.get(unit);
+        HashSet<Value> condset = conditionOfGen.get(unit);
         
         if (killset != null)
             outset.removeAll(killset);

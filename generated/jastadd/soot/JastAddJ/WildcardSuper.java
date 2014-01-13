@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production WildcardSuper : {@link AbstractWildcard} ::= <span class="component">{@link Access}</span>;
  * @ast node
- * @declaredat Generics.ast:20
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.ast:23
  */
 public class WildcardSuper extends AbstractWildcard implements Cloneable {
   /**
@@ -55,28 +55,37 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public WildcardSuper copy() {
-      try {
-        WildcardSuper node = (WildcardSuper)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      WildcardSuper node = (WildcardSuper) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public WildcardSuper fullCopy() {
-    WildcardSuper res = (WildcardSuper)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    WildcardSuper tree = (WildcardSuper) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
    * @aspect GenericsPrettyPrint
@@ -88,7 +97,7 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat Generics.ast:1
+   * 
    */
   public WildcardSuper() {
     super();
@@ -96,8 +105,19 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat Generics.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public WildcardSuper(Access p0) {
     setChild(p0, 0);
@@ -105,7 +125,7 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:13
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -113,33 +133,38 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Generics.ast:19
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Access
+   * Replaces the Access child.
+   * @param node The new node to replace the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:5
+   * 
    */
   public void setAccess(Access node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Access
+   * Retrieves the Access child.
+   * @return The current node used as the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:12
+   * 
    */
   public Access getAccess() {
     return (Access)getChild(0);
   }
   /**
+   * Retrieves the Access child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Access child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:18
+   * 
    */
   public Access getAccessNoTransform() {
     return (Access)getChildNoTransform(0);
@@ -155,18 +180,18 @@ public class WildcardSuper extends AbstractWildcard implements Cloneable {
   /**
    * @attribute syn
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1134
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1371
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
     if(type_computed) {
       return type_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     type_value = type_compute();
-if(isFinal && num == state().boundariesCrossed) type_computed = true;
+      if(isFinal && num == state().boundariesCrossed) type_computed = true;
     return type_value;
   }
   /**
@@ -176,11 +201,11 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
   /**
    * @attribute inh
    * @aspect LookupParTypeDecl
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1135
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1372
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupWildcardSuper(TypeDecl typeDecl) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl lookupWildcardSuper_TypeDecl_value = getParent().Define_TypeDecl_lookupWildcardSuper(this, null, typeDecl);
     return lookupWildcardSuper_TypeDecl_value;
   }

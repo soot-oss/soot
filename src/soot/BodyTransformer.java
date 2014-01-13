@@ -43,7 +43,7 @@ public abstract class BodyTransformer extends Transformer
      *  @param b the body on which to apply the transformation
      *  @param phaseName phaseName for the transform. Used to retrieve options from the Scene.
      */
-    public final void transform(Body b, String phaseName, Map options)
+    public final void transform(Body b, String phaseName, Map<String, String> options)
     {
         if(!PhaseOptions.getBoolean(options, "enabled"))
             return;
@@ -53,7 +53,7 @@ public abstract class BodyTransformer extends Transformer
 
     public final void transform(Body b, String phaseName)
     {
-        HashMap dummyOptions = new HashMap();
+        HashMap<String, String> dummyOptions = new HashMap<String, String>();
         dummyOptions.put( "enabled", "true" );
         transform(b, phaseName, dummyOptions);
     }
@@ -71,7 +71,7 @@ public abstract class BodyTransformer extends Transformer
      *  @param phaseName the phasename for this transform; not typically used by implementations.
      *  @param options  the actual computed options; a combination of default options and Scene specified options.
      */
-    protected abstract void internalTransform(Body b, String phaseName, Map options);
+    protected abstract void internalTransform(Body b, String phaseName, Map<String, String> options);
 
 }
 

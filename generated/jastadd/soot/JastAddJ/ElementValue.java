@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production ElementValue : {@link ASTNode};
  * @ast node
- * @declaredat Annotations.ast:10
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.ast:10
  */
 public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable {
   /**
@@ -56,7 +56,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
   }
   /**
    * @ast method 
-   * @declaredat Annotations.ast:1
+   * 
    */
   public ElementValue() {
     super();
@@ -64,9 +64,19 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
+   * @ast method 
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:10
+   * 
    */
   protected int numChildren() {
     return 0;
@@ -74,7 +84,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Annotations.ast:16
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
@@ -84,110 +94,86 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:57
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean validTarget(Annotation a) {
-      ASTNode$State state = state();
-    boolean validTarget_Annotation_value = validTarget_compute(a);
-    return validTarget_Annotation_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean validTarget_compute(Annotation a) {  return false;  }
   /**
    * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:181
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public ElementValue definesElementTypeValue(String name) {
-      ASTNode$State state = state();
-    ElementValue definesElementTypeValue_String_value = definesElementTypeValue_compute(name);
-    return definesElementTypeValue_String_value;
+    ASTNode$State state = state();
+    try {  return null;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private ElementValue definesElementTypeValue_compute(String name) {  return null;  }
   /**
    * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:295
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean hasValue(String s) {
-      ASTNode$State state = state();
-    boolean hasValue_String_value = hasValue_compute(s);
-    return hasValue_String_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean hasValue_compute(String s) {  return false;  }
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:473
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:475
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean commensurateWithTypeDecl(TypeDecl type) {
-      ASTNode$State state = state();
-    boolean commensurateWithTypeDecl_TypeDecl_value = commensurateWithTypeDecl_compute(type);
-    return commensurateWithTypeDecl_TypeDecl_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean commensurateWithTypeDecl_compute(TypeDecl type) {  return false;  }
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:493
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:495
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean commensurateWithArrayDecl(ArrayDecl type) {
-      ASTNode$State state = state();
-    boolean commensurateWithArrayDecl_ArrayDecl_value = commensurateWithArrayDecl_compute(type);
-    return commensurateWithArrayDecl_ArrayDecl_value;
+    ASTNode$State state = state();
+    try {  return type.componentType().commensurateWith(this);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean commensurateWithArrayDecl_compute(ArrayDecl type) {  return type.componentType().commensurateWith(this);  }
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:506
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:510
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
-      ASTNode$State state = state();
-    TypeDecl type_value = type_compute();
-    return type_value;
+    ASTNode$State state = state();
+    try {  return unknownType();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl type_compute() {  return unknownType();  }
   /**
    * @attribute inh
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:459
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:461
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl enclosingAnnotationDecl() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl enclosingAnnotationDecl_value = getParent().Define_TypeDecl_enclosingAnnotationDecl(this, null);
     return enclosingAnnotationDecl_value;
   }
   /**
    * @attribute inh
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:511
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:515
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl unknownType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
     return unknownType_value;
   }
@@ -198,7 +184,7 @@ public abstract class ElementValue extends ASTNode<ASTNode> implements Cloneable
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl hostType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
     return hostType_value;
   }

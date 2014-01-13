@@ -405,4 +405,27 @@ public abstract class SETNode
 		((SETNode) cit.next()).verify();
 	}
     }
+
+    @Override
+    public boolean equals(Object other){
+      if(other instanceof SETNode == false){
+        return false;
+      }
+      SETNode typed_other = (SETNode) other;
+      if(body.equals(typed_other.body) == false){
+        return false;
+      }
+      if(subBodies.equals(typed_other.subBodies) == false){
+        return false;
+      }
+      if(body2childChain.equals(typed_other.body2childChain) == false){
+        return false;
+      }
+      return true;
+    }
+
+    @Override
+    public int hashCode(){
+      return 1;
+    }
 }

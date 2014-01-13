@@ -62,6 +62,8 @@ public class AntTask extends MatchingTask {
   
         private Path dump_cfg = null;
   
+        private Path plugin = null;
+  
         private Path include = null;
   
         private Path exclude = null;
@@ -81,6 +83,8 @@ public class AntTask extends MatchingTask {
         if( dump_body != null ) addPath("-dump-body", dump_body);
   
         if( dump_cfg != null ) addPath("-dump-cfg", dump_cfg);
+  
+        if( plugin != null ) addPath("-plugin", plugin);
   
         if( include != null ) addPath("-include", include);
   
@@ -156,6 +160,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-whole-shimple");
         }
   
+        public void seton_the_fly(boolean arg) {
+            if(arg) addArg("-on-the-fly");
+        }
+  
         public void setvalidate(boolean arg) {
             if(arg) addArg("-validate");
         }
@@ -191,6 +199,16 @@ public class AntTask extends MatchingTask {
   
         public void setoaat(boolean arg) {
             if(arg) addArg("-oaat");
+        }
+  
+        public void setandroid_jars(String arg) {
+            addArg("-android-jars");
+            addArg(arg);
+        }
+  
+        public void setforce_android_jar(String arg) {
+            addArg("-force-android-jar");
+            addArg(arg);
         }
   
         public void setast_metrics(boolean arg) {
@@ -265,6 +283,7 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "grimp" )
                 || arg.equals( "X" )
                 || arg.equals( "xml" )
+                || arg.equals( "dex" )
                 || arg.equals( "n" )
                 || arg.equals( "none" )
                 || arg.equals( "jasmin" )
@@ -334,6 +353,18 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-gzip");
         }
   
+        public void setplugin(Path arg) {
+            if(plugin == null )
+                plugin = new Path(getProject());
+            plugin = appendToPath(plugin, arg);
+        }
+
+        public Path createplugin() {
+            if(plugin == null )
+                plugin = new Path(getProject());
+            return plugin.createPath();
+        }
+  
         public void setoptimize(boolean arg) {
             if(arg) addArg("-optimize");
         }
@@ -369,6 +400,10 @@ public class AntTask extends MatchingTask {
   
         public void settrim_cfgs(boolean arg) {
             if(arg) addArg("-trim-cfgs");
+        }
+  
+        public void setignore_resolution_errors(boolean arg) {
+            if(arg) addArg("-ignore-resolution-errors");
         }
   
         public void setinclude(Path arg) {

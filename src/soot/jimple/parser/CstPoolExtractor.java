@@ -42,7 +42,7 @@ import java.util.*;
 class CstPoolExtractor
 {
 
-    private  Set mRefTypes = null;
+    private Set<String> mRefTypes = null;
     private Start mParseTree;
 
     public CstPoolExtractor(Start parseTree) 
@@ -50,10 +50,10 @@ class CstPoolExtractor
         mParseTree = parseTree;
     }
 
-    public Set getCstPool()
+    public Set<String> getCstPool()
     {
         if(mRefTypes == null) {            
-            mRefTypes = new HashSet();
+            mRefTypes = new HashSet<String>();
             CstPoolExtractorWalker  walker = new CstPoolExtractorWalker();         
             mParseTree.apply(walker);          
             mParseTree = null; // allow garbage collection

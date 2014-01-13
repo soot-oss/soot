@@ -149,7 +149,6 @@ class StmtTemplatePrinter implements StmtSwitch {
 		printStmt(stmt);
 	}
 
-	@SuppressWarnings("unchecked")
 	public void caseLookupSwitchStmt(LookupSwitchStmt stmt) {
 		p.openBlock();
 
@@ -166,8 +165,8 @@ class StmtTemplatePrinter implements StmtSwitch {
 		}
 		
 		p.println("List<Unit> targets = new LinkedList<Unit>();");
-		for(Stmt s: (List<Stmt>)stmt.getTargets()) {
-			String nameOfJumpTarget = nameOfJumpTarget(s);
+		for(Unit u : stmt.getTargets()) {
+			String nameOfJumpTarget = nameOfJumpTarget(u);
 			p.println("targets.add("+nameOfJumpTarget+")");
 		}
 		

@@ -221,6 +221,20 @@ specify the Whole Program Optimize option.</p>
       </long_desc>
     </boolopt>
                 <boolopt>
+			<name>On-the-fly Mode</name>
+			<alias>fly</alias>
+			<alias>on-the-fly</alias>
+			<default>false</default>
+			<short_desc>Run in on-the-fly mode</short_desc> 
+			<long_desc>
+<p>
+This enables whole-program mode but uses a less agressive class loading.
+By default, classes will be loaded without bodies unless otherwise requested.
+The cg pack is disabled in this mode. 
+</p>
+</long_desc>
+                </boolopt>
+    	<boolopt>
 			<name>Validate</name>
 			<alias>validate</alias>
 			<short_desc>Run internal validation on bodies</short_desc>
@@ -325,6 +339,35 @@ will process one class at a time. Only body packs are run,
 no whole-program packs. 			
 </long_desc>
 		</boolopt>
+		<stropt>
+			<name>Path to Android jar files</name>
+			<alias>android-jars</alias>
+			<set_arg_label>path</set_arg_label>
+			<short_desc>Use <use_arg_label/> as the path for finding the android.jar file</short_desc>
+			<long_desc>
+Use <use_arg_label/> as the directory in which Soot should search for the appropriate 
+android.jar file to use.
+The directory must contain subdirectories named after the Android SDK version. Those
+subdirectories must each contain one android.jar file.
+For instance if the target directory is /home/user/androidSDK/platforms/ subdirectories 
+containing android.jar for Android SDK 8 and 13 must be named android-8/ and android-13/ 
+respectively.
+
+Note, that this options requires that only one Android application is analyzed at a time.
+The Android application must contain the AndroidManifest.xml file.
+			</long_desc>
+		</stropt>
+		<stropt>
+			<name>Force specific Android jar file</name>
+			<alias>force-android-jar</alias>
+			<set_arg_label>path</set_arg_label>
+			<short_desc>Force Soot to use <use_arg_label/> as the path for the android.jar file.</short_desc>
+			<long_desc>
+Use <use_arg_label/> as the path to the android.jar file Soot should use.
+This option overrides the 'android-jars' option.
+			</long_desc>
+		</stropt>
+
 		<boolopt>
 			<name>Compute AST Metrics</name>
 			<alias>ast-metrics</alias>
@@ -589,6 +632,14 @@ version of the Soot's Jimple internal representation.
 </long_desc>
 			</value>
 			<value>
+			<name>Dalvik Executable File</name>
+			<alias>dex</alias>
+			<short_desc>Produce Dalvik Virtual Machine files</short_desc>
+			<long_desc>Produce Dalvik Virtual Machine files. If input was an Android
+			Package (APK), a new APK is generated with it's classes.dex replaced. If
+			no input APK is found, only a classes.dex is generated.</long_desc>
+			</value>
+				<value>
 				<name>No Output File</name>
 				<alias>n</alias>
 				<alias>none</alias>
@@ -760,6 +811,19 @@ with GZip. It does not apply to class files output by Soot.
 	</section>
 	<section>
 		<name>Processing Options</name>
+	    <listopt>
+			<name>Plugin Configuration</name>
+			<alias>plugin</alias>
+			<set_arg_label>file</set_arg_label>
+			<short_desc>Load all plugins found in <use_arg_label/></short_desc>
+			<long_desc>
+<p>
+Loads the plugin configuration <use_arg_label/> and registers
+all plugins. Make sure that the option is specified before you
+try to pass options to the loaded plugins.</p>
+</long_desc>
+		</listopt>
+		
 		<phaseopt>
 			<name>Phase Options</name>
 			<alias>p</alias>
@@ -5656,7 +5720,6 @@ may throw when constructing exceptional CFGs.
 							<value>
 								<name>Pedantic</name>
 								<alias>pedantic</alias>
-								<default/>
 								<short_desc>Pedantically conservative throw analysis</short_desc>
 								<long_desc>
 Says that any instruction may throw any
@@ -5671,6 +5734,7 @@ to occur at arbitrary points in the execution of a victim thread.
 								<name>Unit</name>
 								<alias>unit</alias>
 								<short_desc>Unit Throw Analysis</short_desc>
+								<default/>																
 								<long_desc>
 Says that each statement in the intermediate representation
 may throw those exception types associated with the corresponding
@@ -5734,7 +5798,21 @@ catches.
 unit -omit-excepting-unit-edges -p jb.tt enabled:true</code>.</p>
 </long_desc>
 		</macroopt>
-	</section>
+		<boolopt>
+			<name>Ignore reolution errors</name>
+			<alias>ire</alias>
+			<alias>ignore-resolution-errors</alias>
+			<default>false</default>
+									<short_desc>Does not throw an exception when a program references an undeclared field or method.</short_desc>
+			<long_desc>
+<p>
+Some programs may contain dead code that references fields or methods that do not exist.
+By default, Soot exists with an exception when this happens. If this option is enabled,
+Soot only prints a warning but does not exit. 
+</p>
+</long_desc>
+		</boolopt>
+			</section>
 	<section>
 		<name>Application Mode Options</name>
 		<listopt>

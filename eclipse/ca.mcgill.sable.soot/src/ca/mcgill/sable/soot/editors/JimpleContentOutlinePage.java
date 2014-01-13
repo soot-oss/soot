@@ -64,25 +64,8 @@ public class JimpleContentOutlinePage extends ContentOutlinePage implements ISel
 	}
 	
 	public JimpleOutlineObject getContentOutline(){
-	
-		try {
-			BufferedReader br = new BufferedReader(new InputStreamReader(getInput().getContents()));
-			ArrayList text = new ArrayList();
-			while (true) {
-				String nextLine = br.readLine();
-				if (nextLine == null) break;// || (nextLine.length() == 0)) break;
-				text.add(nextLine);
-			}
-            getViewer().getLabelProvider().dispose();
-			setJimpleFileParser(new JimpleFile(text));
-			return getJimpleFileParser().getOutline();
-		}
-		catch (IOException e) {
-			return null;
-		}
-		catch (CoreException e) {
-			return null;
-		}
+		setJimpleFileParser(new JimpleFile(getInput()));
+		return getJimpleFileParser().getOutline();
 	}
 	
 	public void selectionChanged(SelectionChangedEvent event) {

@@ -63,10 +63,8 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
     
     Scene scene = G.v().soot_Scene();
     // iterate through application classes, rename classes with junk
-    Iterator it = scene.getApplicationClasses().iterator();
-    while (it.hasNext())
+    for (SootClass c : scene.getApplicationClasses())
     {
-      SootClass c = (SootClass)it.next();
       if (scene.getMainClass() == c || oldToNewClassNames.containsValue(c.getName()) || 
           soot.jbco.Main.getWeight(phaseName, c.getName()) == 0) {
         continue;
@@ -101,14 +99,10 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
     if (output)
       out.println("\r\tUpdating bytecode class references");
     
-    it = scene.getApplicationClasses().iterator();
-    while (it.hasNext())
+    for (SootClass c : scene.getApplicationClasses())
     {
-      SootClass c = (SootClass)it.next();
-      Iterator mIt = c.getMethods().iterator();
-      while (mIt.hasNext())
+      for (SootMethod m : c.getMethods())
       {
-        SootMethod m = (SootMethod)mIt.next();
         if (!m.isConcrete()) continue;
         
         if (output)
@@ -119,13 +113,12 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
         } catch (Exception exc) {
           continue;
         }
-        Iterator uIt = aBody.getUnits().iterator();
-        while (uIt.hasNext())
+        for (Unit u : aBody.getUnits())
         {
-         Iterator udbIt = ((Unit)uIt.next()).getUseAndDefBoxes().iterator();
+         Iterator<ValueBox> udbIt = u.getUseAndDefBoxes().iterator();
           while (udbIt.hasNext())
           {
-            Value v = ((ValueBox)udbIt.next()).getValue();
+            Value v = udbIt.next().getValue();
             if (v instanceof soot.jimple.Ref)
             {
               if (v.getType() instanceof soot.RefType)

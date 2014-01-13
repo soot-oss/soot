@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production ThrowStmt : {@link Stmt} ::= <span class="component">{@link Expr}</span>;
  * @ast node
- * @declaredat java.ast:212
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:215
  */
 public class ThrowStmt extends Stmt implements Cloneable {
   /**
@@ -71,32 +71,41 @@ public class ThrowStmt extends Stmt implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ThrowStmt copy() {
-      try {
-        ThrowStmt node = (ThrowStmt)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      ThrowStmt node = (ThrowStmt) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ThrowStmt fullCopy() {
-    ThrowStmt res = (ThrowStmt)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    ThrowStmt tree = (ThrowStmt) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
    * @aspect AnonymousClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:197
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:207
    */
   protected void collectExceptions(Collection c, ASTNode target) {
     super.collectExceptions(c, target);
@@ -104,32 +113,6 @@ public class ThrowStmt extends Stmt implements Cloneable {
     if(exceptionType == typeNull())
       exceptionType = typeNullPointerException();
     c.add(exceptionType);
-  }
-  /**
-   * @ast method 
-   * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:114
-   */
-  public void exceptionHandling() {
-    TypeDecl exceptionType = getExpr().type();
-    if(exceptionType == typeNull())
-      exceptionType = typeNullPointerException();
-    // 8.4.4
-    if(!handlesException(exceptionType))
-      error("" + this + " throws uncaught exception " + exceptionType.fullName());
-  }
-  /**
-   * @ast method 
-   * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:248
-   */
-  protected boolean reachedException(TypeDecl catchType) {
-    TypeDecl exceptionType = getExpr().type();
-    if(exceptionType == typeNull())
-      exceptionType = typeNullPointerException();
-    if(catchType.mayCatch(exceptionType))
-      return true;
-    return super.reachedException(catchType);
   }
   /**
    * @ast method 
@@ -165,7 +148,7 @@ public class ThrowStmt extends Stmt implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public ThrowStmt() {
     super();
@@ -173,8 +156,19 @@ public class ThrowStmt extends Stmt implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public ThrowStmt(Expr p0) {
     setChild(p0, 0);
@@ -182,7 +176,7 @@ public class ThrowStmt extends Stmt implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:13
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -190,42 +184,87 @@ public class ThrowStmt extends Stmt implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Expr
+   * Replaces the Expr child.
+   * @param node The new node to replace the Expr child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setExpr(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Expr
+   * Retrieves the Expr child.
+   * @return The current node used as the Expr child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getExpr() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the Expr child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Expr child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getExprNoTransform() {
     return (Expr)getChildNoTransform(0);
   }
+  /**
+   * @ast method 
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:163
+   */
+   
+	public void exceptionHandling() {
+		Collection<TypeDecl> exceptionTypes = getExpr().throwTypes();
+		for (TypeDecl exceptionType : exceptionTypes) {
+			if (exceptionType == typeNull())
+				exceptionType = typeNullPointerException();
+			// 8.4.4
+			if (!handlesException(exceptionType))
+				error(""+this+" throws uncaught exception "+
+						exceptionType.fullName());
+		}
+	}
+  /**
+   * @ast method 
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:176
+   */
+   
+	protected boolean reachedException(TypeDecl catchType) {
+		Collection<TypeDecl> exceptionTypes = getExpr().throwTypes();
+		boolean reached = false;
+		for (TypeDecl exceptionType : exceptionTypes) {
+			if(exceptionType == typeNull())
+				exceptionType = typeNullPointerException();
+			if(catchType.mayCatch(exceptionType)) {
+				reached = true;
+				break;
+			}
+			if (super.reachedException(catchType)) {
+				reached = true;
+				break;
+			}
+		}
+		return reached;
+	}
   protected java.util.Map isDAafter_Variable_values;
   /**
    * @attribute syn
    * @aspect DA
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:649
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:650
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDAafter(Variable v) {
@@ -234,11 +273,11 @@ public class ThrowStmt extends Stmt implements Cloneable {
     if(isDAafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafter_Variable_value = isDAafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
     return isDAafter_Variable_value;
   }
   /**
@@ -249,7 +288,7 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1172
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1173
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafter(Variable v) {
@@ -258,11 +297,11 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
     if(isDUafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUafter_Variable_value = isDUafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
     return isDUafter_Variable_value;
   }
   /**
@@ -287,17 +326,28 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
     if(canCompleteNormally_computed) {
       return canCompleteNormally_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     canCompleteNormally_value = canCompleteNormally_compute();
-if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
+      if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
     return canCompleteNormally_value;
   }
   /**
    * @apilevel internal
    */
   private boolean canCompleteNormally_compute() {  return false;  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
   /**
    * @apilevel internal
    */
@@ -316,18 +366,18 @@ if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = t
     if(typeNullPointerException_computed) {
       return typeNullPointerException_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeNullPointerException_value = getParent().Define_TypeDecl_typeNullPointerException(this, null);
-if(isFinal && num == state().boundariesCrossed) typeNullPointerException_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeNullPointerException_computed = true;
     return typeNullPointerException_value;
   }
   protected java.util.Map handlesException_TypeDecl_values;
   /**
    * @attribute inh
    * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:31
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:45
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean handlesException(TypeDecl exceptionType) {
@@ -336,11 +386,11 @@ if(isFinal && num == state().boundariesCrossed) typeNullPointerException_compute
     if(handlesException_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)handlesException_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
-if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values.put(_parameters, Boolean.valueOf(handlesException_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values.put(_parameters, Boolean.valueOf(handlesException_TypeDecl_value));
     return handlesException_TypeDecl_value;
   }
   /**
@@ -361,11 +411,11 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(typeThrowable_computed) {
       return typeThrowable_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
-if(isFinal && num == state().boundariesCrossed) typeThrowable_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeThrowable_computed = true;
     return typeThrowable_value;
   }
   /**
@@ -386,32 +436,34 @@ if(isFinal && num == state().boundariesCrossed) typeThrowable_computed = true;
     if(typeNull_computed) {
       return typeNull_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeNull_value = getParent().Define_TypeDecl_typeNull(this, null);
-if(isFinal && num == state().boundariesCrossed) typeNull_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeNull_computed = true;
     return typeNull_value;
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:652
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:653
    * @apilevel internal
    */
   public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
     if(caller == getExprNoTransform()) {
       return isDAbefore(v);
     }
-    return getParent().Define_boolean_isDAbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1175
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1176
    * @apilevel internal
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
     if(caller == getExprNoTransform()) {
       return isDUbefore(v);
     }
-    return getParent().Define_boolean_isDUbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
   }
   /**
    * @apilevel internal

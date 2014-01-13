@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production ParameterDeclarationSubstituted : {@link ParameterDeclaration} ::= <span class="component">&lt;Original:ParameterDeclaration&gt;</span>;
  * @ast node
- * @declaredat Generics.ast:30
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.ast:33
  */
 public class ParameterDeclarationSubstituted extends ParameterDeclaration implements Cloneable {
   /**
@@ -55,31 +55,40 @@ public class ParameterDeclarationSubstituted extends ParameterDeclaration implem
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParameterDeclarationSubstituted copy() {
-      try {
-        ParameterDeclarationSubstituted node = (ParameterDeclarationSubstituted)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      ParameterDeclarationSubstituted node = (ParameterDeclarationSubstituted) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParameterDeclarationSubstituted fullCopy() {
-    ParameterDeclarationSubstituted res = (ParameterDeclarationSubstituted)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    ParameterDeclarationSubstituted tree = (ParameterDeclarationSubstituted) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
-   * @declaredat Generics.ast:1
+   * 
    */
   public ParameterDeclarationSubstituted() {
     super();
@@ -87,8 +96,19 @@ public class ParameterDeclarationSubstituted extends ParameterDeclaration implem
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat Generics.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[2];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public ParameterDeclarationSubstituted(Modifiers p0, Access p1, String p2, ParameterDeclaration p3) {
     setChild(p0, 0);
@@ -98,7 +118,7 @@ public class ParameterDeclarationSubstituted extends ParameterDeclaration implem
   }
   /**
    * @ast method 
-   * @declaredat Generics.ast:13
+   * 
    */
   public ParameterDeclarationSubstituted(Modifiers p0, Access p1, beaver.Symbol p2, ParameterDeclaration p3) {
     setChild(p0, 0);
@@ -109,7 +129,7 @@ public class ParameterDeclarationSubstituted extends ParameterDeclaration implem
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:22
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -117,75 +137,88 @@ public class ParameterDeclarationSubstituted extends ParameterDeclaration implem
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Generics.ast:28
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for TypeAccess
+   * Replaces the TypeAccess child.
+   * @param node The new node to replace the TypeAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setTypeAccess(Access node) {
     setChild(node, 1);
   }
   /**
-   * Getter for TypeAccess
+   * Retrieves the TypeAccess child.
+   * @return The current node used as the TypeAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Access getTypeAccess() {
     return (Access)getChild(1);
   }
   /**
+   * Retrieves the TypeAccess child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the TypeAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Access getTypeAccessNoTransform() {
     return (Access)getChildNoTransform(1);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -195,33 +228,41 @@ public class ParameterDeclarationSubstituted extends ParameterDeclaration implem
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for lexeme Original
+   * Replaces the lexeme Original.
+   * @param value The new value for the lexeme Original.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:5
+   * 
    */
   public void setOriginal(ParameterDeclaration value) {
     tokenParameterDeclaration_Original = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat Generics.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected ParameterDeclaration tokenParameterDeclaration_Original;
   /**
-   * Getter for lexeme Original
+   * @apilevel internal
+   */
+  protected ParameterDeclaration tokenParameterDeclaration_Original;
+  /**
+   * Retrieves the value for the lexeme Original.
+   * @return The value for the lexeme Original.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Generics.ast:13
+   * 
    */
   public ParameterDeclaration getOriginal() {
     return tokenParameterDeclaration_Original;
@@ -237,18 +278,18 @@ public class ParameterDeclarationSubstituted extends ParameterDeclaration implem
   /**
    * @attribute syn
    * @aspect SourceDeclarations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1287
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1524
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Variable sourceVariableDecl() {
     if(sourceVariableDecl_computed) {
       return sourceVariableDecl_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     sourceVariableDecl_value = sourceVariableDecl_compute();
-if(isFinal && num == state().boundariesCrossed) sourceVariableDecl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) sourceVariableDecl_computed = true;
     return sourceVariableDecl_value;
   }
   /**

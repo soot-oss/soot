@@ -119,6 +119,11 @@ public class Main {
             printVersion();
             throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
         }
+        
+        if(Options.v().on_the_fly()) {
+        	Options.v().set_whole_program(true);
+    		PhaseOptions.v().setPhaseOption("cg", "off");
+        }
 
         postCmdLineCheck();
     }
@@ -196,7 +201,8 @@ public class Main {
             
             
             PackManager.v().runPacks();
-            PackManager.v().writeOutput();
+            if(!Options.v().oaat())
+            	PackManager.v().writeOutput();
 
             Timers.v().totalTimer.end();
 

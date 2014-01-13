@@ -146,10 +146,8 @@ public class AugEvalFunction implements IEvalFunction
 		{
 			RefType r = null;
 			
-			for ( Iterator i = TrapManager.getExceptionTypesOf(
-				stmt, jb).iterator(); i.hasNext(); )
+			for (RefType t : TrapManager.getExceptionTypesOf(stmt, jb))
 			{
-				RefType t = (RefType)i.next();
 				if ( r == null )
 					r = t;
 				else
@@ -172,10 +170,8 @@ public class AugEvalFunction implements IEvalFunction
 			
 			if ( at instanceof ArrayType )
 				return ((ArrayType)at).getElementType();
-			else if ( at instanceof BottomType || at instanceof NullType )
+			else
 				return BottomType.v();
-			else throw new RuntimeException(
-				"Base of array reference is not an array!");
 		}
 		else if ( expr instanceof NewArrayExpr )
 			return ((NewArrayExpr)expr).getBaseType().makeArrayType();
@@ -192,7 +188,7 @@ public class AugEvalFunction implements IEvalFunction
 		else if ( expr instanceof NewExpr )
 			return ((NewExpr)expr).getBaseType();
 		else if ( expr instanceof FieldRef )
-			return ((FieldRef)expr).getField().getType();
+			return ((FieldRef)expr).getType();
 		else if ( expr instanceof DoubleConstant )
 			return DoubleType.v();
 		else if ( expr instanceof FloatConstant )

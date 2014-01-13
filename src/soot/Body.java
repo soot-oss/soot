@@ -34,6 +34,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -52,6 +53,7 @@ import soot.tagkit.AbstractHost;
 import soot.tagkit.CodeAttribute;
 import soot.tagkit.Tag;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.FlowSet;
@@ -238,7 +240,7 @@ public abstract class Body extends AbstractHost implements Serializable
         }
     }
 
-    /** Verifies that a ValueBox is not used in more than one place. */
+	/** Verifies that a ValueBox is not used in more than one place. */
     public void validateValueBoxes()
     {
         List<ValueBox> l = getUseAndDefBoxes();
@@ -311,8 +313,36 @@ public abstract class Body extends AbstractHost implements Serializable
 
     /** Verifies that each use in this Body has a def. */
     public void validateUses()
-    {
-        UnitGraph g = new ExceptionalUnitGraph(this);
+    {      
+        // Conservative validation of uses: add edges to exception handlers 
+        // even if they are not reachable.
+        //
+        // class C {
+        //   int a;
+        //   public void m() {
+        //     try {
+        //      a = 2;
+        //     } catch (Exception e) {
+        //      System.out.println("a: "+ a);
+        //     }
+        //   }
+        // }
+        //
+        // In a graph generated from the Jimple representation there would 
+        // be no edge from "a = 2;" to "catch..." because "a = 2" can only 
+        // generate an Error, a subclass of Throwable and not of Exception. 
+        // Use of 'a' in "System.out.println" would thus trigger a 'no defs 
+        // for value' RuntimeException. 
+        // To avoid this  we create an ExceptionalUnitGraph that considers all 
+        // exception handlers (even unreachable ones as the one in the code 
+        // snippet above) by using a PedanticThrowAnalysis and setting the 
+        // parameter 'omitExceptingUnitEdges' to false.
+        // 
+        // Note that unreachable traps can be removed by setting jb.uce's 
+        // "remove-unreachable-traps" option to true.
+        ThrowAnalysis throwAnalysis = PedanticThrowAnalysis.v();
+        UnitGraph g = new ExceptionalUnitGraph(this, throwAnalysis, false);
+        
         LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
         Iterator<Unit> unitsIt = getUnits().iterator();
@@ -333,7 +363,7 @@ public abstract class Body extends AbstractHost implements Serializable
                             final Unit uu = uuIt.next();
                             System.err.println(""+uu);
                         }
-                        throw new RuntimeException("no defs for value: "+v+"!"+" in "+getMethod());
+                        throw new RuntimeException("("+ getMethod() +") no defs for value: " + v + "!\n" + this);
                     }
                 }
             }
@@ -379,8 +409,58 @@ public abstract class Body extends AbstractHost implements Serializable
             }
         }
 
-        throw new RuntimeException("couldn't find parameterref!"+" in "+getMethod());
+        throw new RuntimeException("couldn't find parameterref" + i +"! in "+getMethod());
     }
+
+    /**
+     * Get all the LHS of the identity statements assigning from parameter references.
+     *
+     * @return a list of size as per <code>getMethod().getParameterCount()</code> with all elements ordered as per the parameter index.
+     * @throws RuntimeException if a parameterref is missing
+     */
+    public List<Local> getParameterLocals(){
+        final int numParams = getMethod().getParameterCount();
+        final List<Local> retVal = new ArrayList<Local>(numParams);
+
+        //Parameters are zero-indexed, so the keeping of the index is safe
+        for (Unit u : getUnits()){
+            if (u instanceof IdentityStmt){
+                IdentityStmt is = ((IdentityStmt)u);
+                if (is.getRightOp() instanceof ParameterRef){
+                    ParameterRef pr = (ParameterRef) is.getRightOp();
+                    retVal.add(pr.getIndex(), (Local) is.getLeftOp());
+                }
+            }
+        }
+        if (retVal.size() != numParams)
+            throw new RuntimeException("couldn't find parameterref! in " + getMethod());
+        return retVal;
+    }
+    
+    /**
+     * Returns the list of parameter references used in this body. The list is as long as
+     * the number of parameters declared in the associated method's signature.
+     * The list may have <code>null</code> entries for parameters not referenced in the body.
+     * The returned list is of fixed size.
+     */
+    public List<Value> getParameterRefs()
+    {
+    	Value[] res = new Value[getMethod().getParameterCount()];
+        Iterator<Unit> unitsIt = getUnits().iterator();
+        while (unitsIt.hasNext())
+        {
+            Unit s = unitsIt.next();
+            if (s instanceof IdentityStmt) {
+				Value rightOp = ((IdentityStmt)s).getRightOp();
+				if (rightOp instanceof ParameterRef) {
+					ParameterRef parameterRef = (ParameterRef) rightOp;
+					res[parameterRef.getIndex()] = parameterRef;
+				}
+			}
+        }
+        return Arrays.asList(res);
+    }
+
 
     /**
      *  Returns the Chain of Units that make up this body. The units are
@@ -693,31 +773,23 @@ public abstract class Body extends AbstractHost implements Serializable
 
     @SuppressWarnings("unchecked")
 	public void checkInit() {
-	Chain<Unit> units=getUnits();
         ExceptionalUnitGraph g = new ExceptionalUnitGraph
 	    (this, PedanticThrowAnalysis.v(), false);
 
-	// FIXME: Work around for bug in soot
-	Scene.v().releaseActiveHierarchy();
-
-        InitAnalysis analysis=new InitAnalysis(g);
-	Iterator<Unit> it=units.iterator();
-	while(it.hasNext()) {
-	    Unit s=(it.next());
-	    FlowSet init=(FlowSet) analysis.getFlowBefore(s);
-	    List<ValueBox> uses=s.getUseBoxes();
-	    Iterator<ValueBox> usesIt=uses.iterator();
-	    while(usesIt.hasNext()) {
-		Value v=((usesIt.next())).getValue();
-		if(v instanceof Local) {
-		    Local l=(Local) v;
-		    if(!init.contains(l))
-			throw new RuntimeException("Warning: Local variable "+l
-					   +" not definitely defined at "+s
-					   +" in "+method);
+		InitAnalysis analysis=new InitAnalysis(g);
+		for (Unit s : getUnits()) {
+			FlowSet init=(FlowSet) analysis.getFlowBefore(s);
+		    for (ValueBox vBox : s.getUseBoxes()) {
+				Value v=vBox.getValue();
+				if(v instanceof Local) {
+				    Local l=(Local) v;
+				    if(!init.contains(l))
+						throw new RuntimeException("Warning: Local variable "+l
+								   +" not definitely defined at "+s
+								   +" in "+method);
+				}
+		    }
 		}
-	    }
-	}
     }
     
     /**

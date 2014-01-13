@@ -30,7 +30,7 @@ import soot.util.*;
 public interface SootMethodRef {
     public SootClass declaringClass();
     public String name();
-    public List parameterTypes();
+    public List<Type> parameterTypes();
     public Type returnType();
     public boolean isStatic();
 

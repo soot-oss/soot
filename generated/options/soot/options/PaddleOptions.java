@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Paddle. */
 public class PaddleOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public PaddleOptions( Map options ) {
+    public PaddleOptions( Map<String, String> options ) {
         this.options = options;
     }
     
@@ -251,7 +251,7 @@ public class PaddleOptions
      * analysis, Paddle normally propagates only those receivers that 
      * cause a method to be invoked to the this pointer of the method. 
      * When this option is set to true, however, Paddle instead models 
-     * flow of receivers as an assignnment edge from the receiver at 
+     * flow of receivers as an assignment edge from the receiver at 
      * the call site to the this pointer of the method, reducing 
      * precision. 
      */

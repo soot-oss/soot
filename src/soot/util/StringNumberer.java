@@ -25,7 +25,7 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 
-public class StringNumberer extends ArrayNumberer {
+public class StringNumberer extends ArrayNumberer<NumberedString> {
     HashMap<String, NumberedString> stringToNumbered = new HashMap<String, NumberedString>(1024);
 
     public NumberedString find( String s ) {

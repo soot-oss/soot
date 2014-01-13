@@ -103,7 +103,7 @@ public class Histogram {
         		output.printf("%d < x <= %d: %d (%d)", limits[i-1], limits[i], results[i], other.results[i] );
         	}
         	
-        	output.printf( ", percentage = %.2f (%.2f) \n", 
+        	output.printf( ", percentage = %.2f%% (%.2f%%) \n", 
         			(double)results[i] * 100/count, (double)other.results[i] * 100/other.count );
         }
         

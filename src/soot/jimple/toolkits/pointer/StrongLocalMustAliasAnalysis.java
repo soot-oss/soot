@@ -29,7 +29,6 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.Stmt;
-import soot.toolkits.graph.StronglyConnectedComponents;
 import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.toolkits.graph.UnitGraph;
 
@@ -68,6 +67,12 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
 						Local defLocal = (Local) defValue;
 						if(defLocal.getType() instanceof RefLikeType) {
 							Object instanceKey = getFlowBefore(unit).get(defLocal);
+							//if key is not already UNKNOWN
+							if(instanceKey instanceof Integer) {
+								Integer intKey = (Integer) instanceKey;
+								invalidInstanceKeys.add(intKey);
+							}
+							instanceKey = getFlowAfter(unit).get(defLocal);
 							//if key is not already UNKNOWN
 							if(instanceKey instanceof Integer) {
 								Integer intKey = (Integer) instanceKey;

@@ -34,12 +34,13 @@ import soot.options.Options;
  * transformation. */
 public class Transform implements HasPhaseOptions
 {
-    final private boolean DEBUG = true;
-    String phaseName;
-    Transformer t;
+    final private boolean DEBUG;
+    final String phaseName;
+    final Transformer t;
     
     public Transform(String phaseName, Transformer t)
     {
+    	this.DEBUG = Options.v().dump_body().contains(phaseName);
         this.phaseName = phaseName;
         this.t = t;
     }
@@ -77,7 +78,7 @@ public class Transform implements HasPhaseOptions
     }
 
     public void apply() {
-        Map options = PhaseOptions.v().getPhaseOptions( phaseName );
+        Map<String, String> options = PhaseOptions.v().getPhaseOptions( phaseName );
         if( PhaseOptions.getBoolean( options, "enabled" ) ) {
             if( Options.v().verbose()  ) {
                 G.v().out.println( "Applying phase "+phaseName+" to the scene." );
@@ -92,7 +93,7 @@ public class Transform implements HasPhaseOptions
 	    PhaseDumper.v().dumpAfter(getPhaseName());
     }
     public void apply(Body b) {
-        Map options = PhaseOptions.v().getPhaseOptions( phaseName );
+        Map<String, String> options = PhaseOptions.v().getPhaseOptions( phaseName );
         if( PhaseOptions.getBoolean( options, "enabled" ) ) {
             if( Options.v().verbose() ) {
                 G.v().out.println( "Applying phase "+phaseName+" to "+b.getMethod()+"." );

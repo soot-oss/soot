@@ -18,6 +18,8 @@
  */
 
 package soot;
+import soot.jimple.parser.lexer.LexerException;
+import soot.jimple.parser.parser.ParserException;
 import soot.options.*;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.jimple.*;
@@ -35,25 +37,29 @@ public class JimpleClassSource extends ClassSource
     public Dependencies resolve( SootClass sc ) {
         if(Options.v().verbose())
             G.v().out.println("resolving [from .jimple]: " + className );
-        
-        soot.jimple.parser.JimpleAST jimpAST =
-            new soot.jimple.parser.JimpleAST(classFile);                
-        jimpAST.getSkeleton(sc);
-        JimpleMethodSource mtdSrc = new JimpleMethodSource(jimpAST);
-
-        Iterator mtdIt = sc.methodIterator();
-        while(mtdIt.hasNext()) {
-            SootMethod sm = (SootMethod) mtdIt.next();
-            sm.setSource(mtdSrc);
-        }
-        
-        Dependencies deps = new Dependencies();
-        deps.typesToSignature.addAll(jimpAST.getCstPool());
 
         try {
-            classFile.close();
-        } catch (IOException e) { throw new RuntimeException("!?"); }
-        return deps;
+          soot.jimple.parser.JimpleAST jimpAST = new soot.jimple.parser.JimpleAST(classFile);
+          jimpAST.getSkeleton(sc);
+          JimpleMethodSource mtdSrc = new JimpleMethodSource(jimpAST);
+
+          Iterator mtdIt = sc.methodIterator();
+          while(mtdIt.hasNext()) {
+              SootMethod sm = (SootMethod) mtdIt.next();
+              sm.setSource(mtdSrc);
+          }
+
+          Dependencies deps = new Dependencies();
+          //The method documentation states it returns RefTypes only, so this is a transformation safe
+          for (String t : jimpAST.getCstPool()){
+              deps.typesToSignature.add(RefType.v(t));
+          }
+
+          classFile.close();
+          return deps;
+        } catch (IOException e) { throw new RuntimeException("!?", e); }
+          catch (ParserException e){throw new RuntimeException("Error parsing class " + className + " " + e.getMessage(),e);}
+          catch (LexerException e){throw new RuntimeException("Error lexing class " + className + " " + e.getMessage(), e);}
     }
     protected InputStream classFile;
 }

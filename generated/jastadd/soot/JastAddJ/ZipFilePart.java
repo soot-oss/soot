@@ -1,7 +1,6 @@
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,11 +17,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
-
 /**
- * @ast class
- * @declaredat :0
+   * Loads class files from a zip file (Jar file)
+    * @ast class
+ * 
  */
 public class ZipFilePart extends PathPart {
 
@@ -32,6 +30,9 @@ public class ZipFilePart extends PathPart {
     private ZipFile file;
 
 
+    private String zipPath;
+
+
 
     public boolean hasPackage(String name) {
       return set.contains(name);
@@ -39,7 +40,8 @@ public class ZipFilePart extends PathPart {
 
 
 
-    public ZipFilePart(ZipFile file) {
+    public ZipFilePart(ZipFile file, String path) {
+      zipPath = path;
       this.file = file;
       // process all entries in the zip file
       for (Enumeration e = file.entries() ; e.hasMoreElements() ;) {
@@ -63,15 +65,21 @@ public class ZipFilePart extends PathPart {
 
 
 
+    public ZipFilePart(ZipFile file) {
+      this(file, file.getName());
+    }
+
+
+
     public boolean selectCompilationUnit(String canonicalName) throws IOException {
-      String name = canonicalName.replace('.', '/'); // ZipFiles do always use '/' as separator
+      String name = canonicalName.replace('.', '/'); // ZipFiles always use '/' as separator
       name = name + fileSuffix();
       if(set.contains(name)) {
         ZipEntry zipEntry = file.getEntry(name);
         if(zipEntry != null && !zipEntry.isDirectory()) {
           is = file.getInputStream(zipEntry);
           age = zipEntry.getTime();
-          pathName = file.getName();
+          pathName = zipPath;
           relativeName = name + fileSuffix();
           fullName = canonicalName;
           return true;

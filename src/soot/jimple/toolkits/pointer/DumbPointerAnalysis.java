@@ -35,7 +35,7 @@ public class DumbPointerAnalysis implements PointsToAnalysis {
 
     /** Returns the set of objects pointed to by variable l in context c. */
     public PointsToSet reachingObjects( Context c, Local l ) {
-        return reachingObjects(null, l);
+        return reachingObjects(l);
     }
 
     /** Returns the set of objects pointed to by static field f. */

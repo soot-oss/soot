@@ -50,7 +50,13 @@ public abstract class AbstractBranchInst extends AbstractInst
 
     public String toString()
     {
-        return getName() + " " + getTarget();
+		String target = ""; 
+		Unit targetUnit = getTarget();
+		if (this == targetUnit)
+		  target = getName();
+		else
+		  target = getTarget().toString();
+		return getName() + " " + target;	    	
     }
 
     public void toString( UnitPrinter up ) {

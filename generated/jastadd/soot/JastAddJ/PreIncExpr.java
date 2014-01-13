@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production PreIncExpr : {@link Unary};
  * @ast node
- * @declaredat java.ast:134
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:137
  */
 public class PreIncExpr extends Unary implements Cloneable {
   /**
@@ -51,28 +51,37 @@ public class PreIncExpr extends Unary implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public PreIncExpr copy() {
-      try {
-        PreIncExpr node = (PreIncExpr)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      PreIncExpr node = (PreIncExpr) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public PreIncExpr fullCopy() {
-    PreIncExpr res = (PreIncExpr)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    PreIncExpr tree = (PreIncExpr) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
    * @aspect DefiniteAssignment
@@ -89,7 +98,7 @@ public class PreIncExpr extends Unary implements Cloneable {
   /**
    * @ast method 
    * @aspect DA
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:476
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:477
    */
   protected boolean checkDUeverywhere(Variable v) {
     if(getOperand().isVariable() && getOperand().varDecl() == v)
@@ -116,7 +125,7 @@ public class PreIncExpr extends Unary implements Cloneable {
   public soot.Value eval(Body b) { return emitPrefix(b, 1); }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public PreIncExpr() {
     super();
@@ -124,8 +133,19 @@ public class PreIncExpr extends Unary implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public PreIncExpr(Expr p0) {
     setChild(p0, 0);
@@ -133,7 +153,7 @@ public class PreIncExpr extends Unary implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:13
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -141,33 +161,38 @@ public class PreIncExpr extends Unary implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Operand
+   * Replaces the Operand child.
+   * @param node The new node to replace the Operand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setOperand(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Operand
+   * Retrieves the Operand child.
+   * @return The current node used as the Operand child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getOperand() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the Operand child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Operand child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getOperandNoTransform() {
     return (Expr)getChildNoTransform(0);
@@ -175,18 +200,14 @@ public class PreIncExpr extends Unary implements Cloneable {
   /**
    * @attribute syn
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:377
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:376
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String printPreOp() {
-      ASTNode$State state = state();
-    String printPreOp_value = printPreOp_compute();
-    return printPreOp_value;
+    ASTNode$State state = state();
+    try {  return "++";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String printPreOp_compute() {  return "++";  }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:46
    * @apilevel internal
@@ -195,7 +216,8 @@ public class PreIncExpr extends Unary implements Cloneable {
     if(caller == getOperandNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_isDest(this, caller);
+    else {      return getParent().Define_boolean_isDest(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:54
@@ -205,7 +227,8 @@ public class PreIncExpr extends Unary implements Cloneable {
     if(caller == getOperandNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_isIncOrDec(this, caller);
+    else {      return getParent().Define_boolean_isIncOrDec(this, caller);
+    }
   }
   /**
    * @apilevel internal

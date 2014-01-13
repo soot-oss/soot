@@ -121,24 +121,23 @@ public abstract class ForwardFlowAnalysis<N,A> extends FlowAnalysis<N,A>
 
                     beforeFlow = unitToBeforeFlow.get(s);
                     
-                    if(preds.size() == 1)
-                        copy(unitToAfterFlow.get(preds.get(0)), beforeFlow);
-                    else if(preds.size() != 0)
-                    {
-                        Iterator<N> predIt = preds.iterator();
+                    if(!preds.isEmpty()) {
+	                    if(preds.size() == 1)
+	                        copy(unitToAfterFlow.get(preds.get(0)), beforeFlow);
+	                    else
+	                    {
+	                        copy(unitToAfterFlow.get(preds.get(0)), beforeFlow);
+	
+	                        for (N pred : preds) {
+	                            A otherBranchFlow = unitToAfterFlow.get(pred);
+	                            mergeInto(s, beforeFlow, otherBranchFlow);
+	                        }
+	                    }
 
-                        copy(unitToAfterFlow.get(predIt.next()), beforeFlow);
-
-                        while(predIt.hasNext())
-                        {
-                            A otherBranchFlow = unitToAfterFlow.get(predIt.next());
-                            mergeInto(s, beforeFlow, otherBranchFlow);
-                        }
-                    }
-
-                    if(isHead && preds.size() != 0)
+	                    if(isHead)
                     		mergeInto(s, beforeFlow, entryInitialFlow());
-                    	}
+                    }
+                }
                 
                 {
                     // Compute afterFlow and store it.

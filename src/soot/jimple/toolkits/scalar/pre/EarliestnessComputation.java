@@ -33,7 +33,7 @@ import java.util.*;
 
 /** 
  * Computes the earliest points for the given expressions.<br>
- * This basicly finds the highest point in the flow-graph where we can put each
+ * This basically finds the highest point in the flow-graph where we can put each
  * computation, without introducing new computations on any path.<br>
  * More technically: A computation is earliest, if at the current point the
  * computation is down-safe, and if either:

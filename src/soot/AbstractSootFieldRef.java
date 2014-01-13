@@ -21,6 +21,7 @@ package soot;
 import java.util.*;
 
 import soot.jimple.toolkits.typing.TypeAssigner;
+import soot.options.Options;
 
 /** Representation of a reference to a field as it appears in a class file.
  * Note that the field directly referred to may not actually exist; the
@@ -91,7 +92,7 @@ class AbstractSootFieldRef implements SootFieldRef {
                 return checkStatic(cl.getField(name, type));
             }
 
-            if(Scene.v().allowsPhantomRefs() && cl.isPhantom())
+            if(Scene.v().allowsPhantomRefs() && (cl.isPhantom() || Options.v().ignore_resolution_errors()))
             {
                 SootField f = new SootField(name, type, isStatic()?Modifier.STATIC:0);
                 f.setPhantom(true);
@@ -113,7 +114,13 @@ class AbstractSootFieldRef implements SootFieldRef {
                 else break;
             }
         }
-        if( trace == null ) throw new FieldResolutionFailedException();
+        if( trace == null ) {
+        	FieldResolutionFailedException e = new FieldResolutionFailedException();
+        	if(Options.v().ignore_resolution_errors())
+        		G.v().out.println(e.getMessage());
+        	else
+        		throw e;
+        }
         return null;
     }
     public String toString() {

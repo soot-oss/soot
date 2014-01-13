@@ -26,15 +26,58 @@
 
 package soot.jimple.parser;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import soot.jimple.internal.JDynamicInvokeExpr;
+import soot.ArrayType;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.G;
+import soot.IntType;
+import soot.Local;
+import soot.LongType;
+import soot.Modifier;
+import soot.NullType;
+import soot.RefType;
+import soot.Scene;
+import soot.ShortType;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootFieldRef;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.SootResolver;
+import soot.Trap;
+import soot.Type;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnknownType;
+import soot.Value;
+import soot.VoidType;
+import soot.jimple.BinopExpr;
+import soot.jimple.ClassConstant;
+import soot.jimple.DoubleConstant;
+import soot.jimple.Expr;
+import soot.jimple.FloatConstant;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.jimple.LongConstant;
+import soot.jimple.NullConstant;
+import soot.jimple.Stmt;
+import soot.jimple.StringConstant;
+import soot.jimple.UnopExpr;
+import soot.jimple.parser.analysis.DepthFirstAdapter;
 import soot.jimple.parser.node.*;
-import soot.jimple.parser.analysis.*;
-
-import java.util.*;
+import soot.util.StringTools;
 
 /*Modified By Marc Berndl 17th May */
 
@@ -51,11 +94,11 @@ public class Walker extends DepthFirstAdapter
 
 
                
-    protected SootResolver mResolver;
+    protected final SootResolver mResolver;
 
 
     public Walker(SootResolver resolver) 
-    {        
+    {
         mResolver = resolver;
         if(debug) {
             mProductions = new LinkedList(){

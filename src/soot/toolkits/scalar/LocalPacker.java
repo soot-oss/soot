@@ -82,11 +82,8 @@ public class LocalPacker extends BodyTransformer
         
         // Assign each local to a group, and set that group's color count to 0.
         {
-            Iterator localIt = body.getLocals().iterator();
-
-            while(localIt.hasNext())
+            for (Local l : body.getLocals())
             {
-                Local l = (Local) localIt.next();
                 Object g = l.getType();
                 
                 localToGroup.put(l, g);
@@ -100,12 +97,8 @@ public class LocalPacker extends BodyTransformer
 
         // Assign colors to the parameter locals.
         {
-            Iterator codeIt = body.getUnits().iterator();
-
-            while(codeIt.hasNext())
+            for (Unit s : body.getUnits())
             {
-                Unit s = (Unit) codeIt.next();
-
                 if(s instanceof IdentityUnit &&
                     ((IdentityUnit) s).getLeftOp() instanceof Local)
                 {
@@ -134,20 +127,15 @@ public class LocalPacker extends BodyTransformer
                                     
         // Map each local to a new local.
         {
-            List originalLocals = new ArrayList();
+            List<Local> originalLocals = new ArrayList<Local>(body.getLocals());
             localToNewLocal = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
             Map groupIntToLocal = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-            
-            originalLocals.addAll(body.getLocals());
+
             body.getLocals().clear();
 
-            Iterator localIt = originalLocals.iterator();
-
-            while(localIt.hasNext())
+            for (Local original : originalLocals)
             {
-                Local original = (Local) localIt.next();
-                
-                Object group = localToGroup.get(original);
+        		Object group = localToGroup.get(original);
                 int color = localToColor.get(original).intValue();
                 GroupIntPair pair = new GroupIntPair(group, color);
                 
@@ -181,29 +169,16 @@ public class LocalPacker extends BodyTransformer
         
         // Go through all valueBoxes of this method and perform changes
         {
-            Iterator codeIt = body.getUnits().iterator();
-
-            while(codeIt.hasNext())
+            for (Unit s : body.getUnits())
             {
-                Unit s = (Unit) codeIt.next();
-
-                Iterator boxIt;
-                boxIt = s.getUseBoxes().iterator();
-                while(boxIt.hasNext())
-                {
-                    ValueBox box = (ValueBox) boxIt.next();
-
+                for (ValueBox box : s.getUseBoxes()) {
                     if(box.getValue() instanceof Local)
                     {
                         Local l = (Local) box.getValue();
                         box.setValue((Local) localToNewLocal.get(l));
                     }
                 }
-                boxIt = s.getDefBoxes().iterator();
-                while(boxIt.hasNext())
-                {
-                    ValueBox box = (ValueBox) boxIt.next();
-
+                for (ValueBox box : s.getDefBoxes()) {
                     if(box.getValue() instanceof Local)
                     {
                         Local l = (Local) box.getValue();

@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production BridgeMethodDecl : {@link MethodDecl};
  * @ast node
- * @declaredat Generics.ast:43
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.ast:51
  */
 public class BridgeMethodDecl extends MethodDecl implements Cloneable {
   /**
@@ -51,28 +51,37 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BridgeMethodDecl copy() {
-      try {
-        BridgeMethodDecl node = (BridgeMethodDecl)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      BridgeMethodDecl node = (BridgeMethodDecl) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BridgeMethodDecl fullCopy() {
-    BridgeMethodDecl res = (BridgeMethodDecl)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    BridgeMethodDecl tree = (BridgeMethodDecl) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
    * @aspect GenericsCodegen
@@ -81,19 +90,30 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
   public void transformation() { }
   /**
    * @ast method 
-   * @declaredat Generics.ast:1
+   * 
    */
   public BridgeMethodDecl() {
     super();
 
-    setChild(new List(), 2);
-    setChild(new List(), 3);
-    setChild(new Opt(), 4);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat Generics.ast:10
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[5];
+    setChild(new List(), 2);
+    setChild(new List(), 3);
+    setChild(new Opt(), 4);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public BridgeMethodDecl(Modifiers p0, Access p1, String p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5) {
     setChild(p0, 0);
@@ -105,7 +125,7 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat Generics.ast:18
+   * 
    */
   public BridgeMethodDecl(Modifiers p0, Access p1, beaver.Symbol p2, List<ParameterDeclaration> p3, List<Access> p4, Opt<Block> p5) {
     setChild(p0, 0);
@@ -118,7 +138,7 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Generics.ast:29
+   * 
    */
   protected int numChildren() {
     return 5;
@@ -126,75 +146,88 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Generics.ast:35
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for TypeAccess
+   * Replaces the TypeAccess child.
+   * @param node The new node to replace the TypeAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setTypeAccess(Access node) {
     setChild(node, 1);
   }
   /**
-   * Getter for TypeAccess
+   * Retrieves the TypeAccess child.
+   * @return The current node used as the TypeAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Access getTypeAccess() {
     return (Access)getChild(1);
   }
   /**
+   * Retrieves the TypeAccess child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the TypeAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Access getTypeAccessNoTransform() {
     return (Access)getChildNoTransform(1);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -204,47 +237,64 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for ParameterList
+   * Replaces the Parameter list.
+   * @param list The new list node to be used as the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setParameterList(List<ParameterDeclaration> list) {
     setChild(list, 2);
   }
   /**
-   * @return number of children in ParameterList
+   * Retrieves the number of children in the Parameter list.
+   * @return Number of children in the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumParameter() {
     return getParameterList().getNumChild();
   }
   /**
-   * Getter for child in list ParameterList
+   * Retrieves the number of children in the Parameter list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Parameter list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumParameterNoTransform() {
+    return getParameterListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Parameter list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ParameterDeclaration getParameter(int i) {
     return (ParameterDeclaration)getParameterList().getChild(i);
   }
   /**
-   * Add element to list ParameterList
+   * Append an element to the Parameter list.
+   * @param node The element to append to the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addParameter(ParameterDeclaration node) {
     List<ParameterDeclaration> list = (parent == null || state == null) ? getParameterListNoTransform() : getParameterList();
@@ -253,44 +303,51 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addParameterNoTransform(ParameterDeclaration node) {
     List<ParameterDeclaration> list = getParameterListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ParameterList
+   * Replaces the Parameter list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setParameter(ParameterDeclaration node, int i) {
     List<ParameterDeclaration> list = getParameterList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Parameter list.
+   * Retrieves the Parameter list.
+   * @return The node representing the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<ParameterDeclaration> getParameters() {
     return getParameterList();
   }
   /**
+   * Retrieves the Parameter list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Parameter list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<ParameterDeclaration> getParametersNoTransform() {
     return getParameterListNoTransform();
   }
   /**
-   * Getter for list ParameterList
+   * Retrieves the Parameter list.
+   * @return The node representing the Parameter list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ParameterDeclaration> getParameterList() {
@@ -299,47 +356,66 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the Parameter list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Parameter list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ParameterDeclaration> getParameterListNoTransform() {
     return (List<ParameterDeclaration>)getChildNoTransform(2);
   }
   /**
-   * Setter for ExceptionList
+   * Replaces the Exception list.
+   * @param list The new list node to be used as the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setExceptionList(List<Access> list) {
     setChild(list, 3);
   }
   /**
-   * @return number of children in ExceptionList
+   * Retrieves the number of children in the Exception list.
+   * @return Number of children in the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumException() {
     return getExceptionList().getNumChild();
   }
   /**
-   * Getter for child in list ExceptionList
+   * Retrieves the number of children in the Exception list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Exception list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumExceptionNoTransform() {
+    return getExceptionListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Exception list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getException(int i) {
     return (Access)getExceptionList().getChild(i);
   }
   /**
-   * Add element to list ExceptionList
+   * Append an element to the Exception list.
+   * @param node The element to append to the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addException(Access node) {
     List<Access> list = (parent == null || state == null) ? getExceptionListNoTransform() : getExceptionList();
@@ -348,44 +424,51 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addExceptionNoTransform(Access node) {
     List<Access> list = getExceptionListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ExceptionList
+   * Replaces the Exception list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setException(Access node, int i) {
     List<Access> list = getExceptionList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Exception list.
+   * Retrieves the Exception list.
+   * @return The node representing the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<Access> getExceptions() {
     return getExceptionList();
   }
   /**
+   * Retrieves the Exception list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Exception list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<Access> getExceptionsNoTransform() {
     return getExceptionListNoTransform();
   }
   /**
-   * Getter for list ExceptionList
+   * Retrieves the Exception list.
+   * @return The node representing the Exception list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getExceptionList() {
@@ -394,47 +477,54 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the Exception list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Exception list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<Access> getExceptionListNoTransform() {
     return (List<Access>)getChildNoTransform(3);
   }
   /**
-   * Setter for BlockOpt
+   * Replaces the optional node for the Block child. This is the {@code Opt} node containing the child Block, not the actual child!
+   * @param opt The new node to be used as the optional node for the Block child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setBlockOpt(Opt<Block> opt) {
     setChild(opt, 4);
   }
   /**
-   * Does this node have a Block child?
+   * Check whether the optional Block child exists.
+   * @return {@code true} if the optional Block child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public boolean hasBlock() {
     return getBlockOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child Block
-   * @apilevel high-level
+   * Retrieves the (optional) Block child.
+   * @return The Block child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Block getBlock() {
     return (Block)getBlockOpt().getChild(0);
   }
   /**
-   * Setter for optional child Block
+   * Replaces the (optional) Block child.
+   * @param node The new node to be used as the Block child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void setBlock(Block node) {
     getBlockOpt().setChild(node, 0);
@@ -442,16 +532,19 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Block> getBlockOpt() {
     return (Opt<Block>)getChild(4);
   }
   /**
+   * Retrieves the optional node for child Block. This is the {@code Opt} node containing the child Block, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child Block.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Block> getBlockOptNoTransform() {
@@ -459,23 +552,19 @@ public class BridgeMethodDecl extends MethodDecl implements Cloneable {
   }
   /**
    * @attribute syn
-   * @aspect GenericsCodegen
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:326
+   * @aspect EmitJimple
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:107
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public int sootTypeModifiers() {
-      ASTNode$State state = state();
-    int sootTypeModifiers_value = sootTypeModifiers_compute();
-    return sootTypeModifiers_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private int sootTypeModifiers_compute() {
+    ASTNode$State state = state();
+    try {
     int res = super.sootTypeModifiers();
     res |= Modifiers.ACC_BRIDGE;
     res |= Flags.ACC_SYNTHETIC;
     return res;
+  }
+    finally {
+    }
   }
   /**
    * @apilevel internal

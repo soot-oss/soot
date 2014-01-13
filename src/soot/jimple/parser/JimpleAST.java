@@ -46,23 +46,15 @@ public class JimpleAST
 
     /** Constructs a JimpleAST and generates its parse tree from the given InputStream.
      *
-     * @param aInputStream The InputStream to parse.
+     * @param aJIS The InputStream to parse.
      */
-    public JimpleAST(InputStream aJIS)
+    public JimpleAST(InputStream aJIS) throws ParserException, LexerException, IOException
     {
         Parser p =
             new Parser(new Lexer(
                     new PushbackReader(new BufferedReader(
                     new InputStreamReader(aJIS)), 1024)));
-        try {
-            mTree = p.parse();
-        } catch(ParserException e) {
-            throw new RuntimeException("Parser exception occurred: " + e);
-        } catch(LexerException e) {
-            throw new RuntimeException("Lexer exception occurred: " + e);
-        } catch(IOException e) {
-            throw new RuntimeException("IOException occurred: " + e);
-        }
+        mTree = p.parse();
     }
 
     /** Reads an entire class from jimple, creates the Soot objects & 
@@ -79,7 +71,6 @@ public class JimpleAST
      *   the reference types it contains. The given SootClass instance will be filled to contain 
      *   a class skeleton: that is no  Body instances will be created for the class' methods.
      *   @param sc a SootClass to fill in.
-     *   @param resolver used to resolve the reference types found the given SootClass instance.
      */
     public void getSkeleton(SootClass sc)
     {
@@ -105,7 +96,7 @@ public class JimpleAST
      *   Extracts the reference constant pool for this JimpleAST. 
      *   @return the Set of RefTypes for the reference types contained this AST.
      */
-    public Set getCstPool() 
+    public Set<String> getCstPool()
     {  
         CstPoolExtractor cpe = new CstPoolExtractor(mTree);
         return cpe.getCstPool();        

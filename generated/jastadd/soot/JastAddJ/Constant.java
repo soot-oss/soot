@@ -1,7 +1,6 @@
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +17,9 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
- * @ast class
- * @declaredat :0
+  * @ast class
+ * 
  */
 public class Constant extends java.lang.Object {
 
@@ -33,7 +31,6 @@ public class Constant extends java.lang.Object {
       float floatValue() { return value; }
       double doubleValue() { return value; }
       String stringValue() { return new Integer(value).toString(); }
-      Literal buildLiteral() { return new IntegerLiteral(stringValue()); }
     }
 
 
@@ -45,7 +42,6 @@ public class Constant extends java.lang.Object {
       float floatValue() { return value; }
       double doubleValue() { return value; }
       String stringValue() { return new Long(value).toString(); }
-      Literal buildLiteral() { return new LongLiteral(stringValue()); }
     }
 
 
@@ -57,7 +53,6 @@ public class Constant extends java.lang.Object {
       float floatValue() { return value; }
       double doubleValue() { return value; }
       String stringValue() { return new Float(value).toString(); }
-      Literal buildLiteral() { return new FloatingPointLiteral(stringValue()); }
     }
 
 
@@ -69,7 +64,6 @@ public class Constant extends java.lang.Object {
       float floatValue() { return (float)value; }
       double doubleValue() { return value; }
       String stringValue() { return new Double(value).toString(); }
-      Literal buildLiteral() { return new DoubleLiteral(stringValue()); }
     }
 
 
@@ -81,7 +75,6 @@ public class Constant extends java.lang.Object {
       float floatValue() { return value; }
       double doubleValue() { return value; }
       String stringValue() { return new Character(value).toString(); }
-      Literal buildLiteral() { return new CharacterLiteral(stringValue()); }
     }
 
 
@@ -90,7 +83,6 @@ public class Constant extends java.lang.Object {
       public ConstantBoolean(boolean b) { this.value = b; }
       boolean booleanValue() { return value; }
       String stringValue() { return new Boolean(value).toString(); }
-      Literal buildLiteral() { return new BooleanLiteral(stringValue()); }
     }
 
 
@@ -98,7 +90,6 @@ public class Constant extends java.lang.Object {
       private String value;
       public ConstantString(String s) { this.value = s; }
       String stringValue() { return value; }
-      Literal buildLiteral() { return new StringLiteral(stringValue()); }
     }
 
 
@@ -119,9 +110,6 @@ public class Constant extends java.lang.Object {
 
 
     String stringValue() { throw new UnsupportedOperationException(); }
-
-
-    Literal buildLiteral() { throw new UnsupportedOperationException(); }
 
 
       

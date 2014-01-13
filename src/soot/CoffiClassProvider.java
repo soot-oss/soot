@@ -31,7 +31,8 @@ public class CoffiClassProvider implements ClassProvider
         SourceLocator.FoundFile file = 
             SourceLocator.v().lookupInClassPath(fileName);
         if( file == null ) return null;
-        return new CoffiClassSource(className, file.inputStream());
+        return new CoffiClassSource(className, file.inputStream(), file.inputFile().getAbsolutePath(),
+        		file.zipFile == null ? null : file.zipFile.getName());
     }
 }
 

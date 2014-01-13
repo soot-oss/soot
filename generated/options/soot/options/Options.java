@@ -58,20 +58,22 @@ public class Options extends OptionsBase {
     public static final int output_format_grimp = 8;
     public static final int output_format_X = 9;
     public static final int output_format_xml = 9;
-    public static final int output_format_n = 10;
-    public static final int output_format_none = 10;
-    public static final int output_format_jasmin = 11;
-    public static final int output_format_c = 12;
-    public static final int output_format_class = 12;
-    public static final int output_format_d = 13;
-    public static final int output_format_dava = 13;
-    public static final int output_format_t = 14;
-    public static final int output_format_template = 14;
+    public static final int output_format_dex = 10;
+    public static final int output_format_n = 11;
+    public static final int output_format_none = 11;
+    public static final int output_format_jasmin = 12;
+    public static final int output_format_c = 13;
+    public static final int output_format_class = 13;
+    public static final int output_format_d = 14;
+    public static final int output_format_dava = 14;
+    public static final int output_format_t = 15;
+    public static final int output_format_template = 15;
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
 
+    @SuppressWarnings("unused")
     public boolean parse( String[] argv ) {
-        LinkedList phaseOptions = new LinkedList();
+        LinkedList<String> phaseOptions = new LinkedList<String>();
 
         for( int i = argv.length; i > 0; i-- ) {
             pushOptions( argv[i-1] );
@@ -115,9 +117,10 @@ public class Options extends OptionsBase {
                 String value = nextOption();
     
                 if( phase_help == null )
-                    phase_help = new LinkedList();
+                    phase_help = new LinkedList<String>();
 
                 phase_help.add( value );
+                
             }
   
             else if( false 
@@ -157,6 +160,12 @@ public class Options extends OptionsBase {
             || option.equals( "whole-shimple" )
             )
                 whole_shimple = true;
+  
+            else if( false 
+            || option.equals( "fly" )
+            || option.equals( "on-the-fly" )
+            )
+                on_the_fly = true;
   
             else if( false 
             || option.equals( "validate" )
@@ -209,15 +218,50 @@ public class Options extends OptionsBase {
                 String value = nextOption();
     
                 if( process_dir == null )
-                    process_dir = new LinkedList();
+                    process_dir = new LinkedList<String>();
 
                 process_dir.add( value );
+                
             }
   
             else if( false 
             || option.equals( "oaat" )
             )
                 oaat = true;
+  
+            else if( false
+            || option.equals( "android-jars" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( android_jars.length() == 0 )
+                    android_jars = value;
+                else {
+                    G.v().out.println( "Duplicate values "+android_jars+" and "+value+" for option -"+option );
+                    return false;
+                }
+            }
+  
+            else if( false
+            || option.equals( "force-android-jar" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( force_android_jar.length() == 0 )
+                    force_android_jar = value;
+                else {
+                    G.v().out.println( "Duplicate values "+force_android_jar+" and "+value+" for option -"+option );
+                    return false;
+                }
+            }
   
             else if( false 
             || option.equals( "ast-metrics" )
@@ -478,6 +522,17 @@ public class Options extends OptionsBase {
                 }
     
                 else if( false
+                || value.equals( "dex" )
+                ) {
+                    if( output_format != 0
+                    && output_format != output_format_dex ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    output_format = output_format_dex;
+                }
+    
+                else if( false
                 || value.equals( "n" )
                 || value.equals( "none" )
                 ) {
@@ -579,9 +634,10 @@ public class Options extends OptionsBase {
                 String value = nextOption();
     
                 if( dump_body == null )
-                    dump_body = new LinkedList();
+                    dump_body = new LinkedList<String>();
 
                 dump_body.add( value );
+                
             }
   
             else if( false
@@ -594,9 +650,10 @@ public class Options extends OptionsBase {
                 String value = nextOption();
     
                 if( dump_cfg == null )
-                    dump_cfg = new LinkedList();
+                    dump_cfg = new LinkedList<String>();
 
                 dump_cfg.add( value );
+                
             }
   
             else if( false 
@@ -608,6 +665,27 @@ public class Options extends OptionsBase {
             || option.equals( "gzip" )
             )
                 gzip = true;
+  
+            else if( false
+            || option.equals( "plugin" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( plugin == null )
+                    plugin = new LinkedList<String>();
+
+                plugin.add( value );
+                
+                if(!loadPluginConfiguration(value)) {
+                    G.v().out.println( "Failed to load plugin" +value );
+                    return false;
+                }
+                
+            }
   
             else if( false
             || option.equals( "p" )
@@ -734,6 +812,12 @@ public class Options extends OptionsBase {
                 pushOptions( "-throw-analysis" );
             }
   
+            else if( false 
+            || option.equals( "ire" )
+            || option.equals( "ignore-resolution-errors" )
+            )
+                ignore_resolution_errors = true;
+  
             else if( false
             || option.equals( "i" )
             || option.equals( "include" )
@@ -745,9 +829,10 @@ public class Options extends OptionsBase {
                 String value = nextOption();
     
                 if( include == null )
-                    include = new LinkedList();
+                    include = new LinkedList<String>();
 
                 include.add( value );
+                
             }
   
             else if( false
@@ -761,9 +846,10 @@ public class Options extends OptionsBase {
                 String value = nextOption();
     
                 if( exclude == null )
-                    exclude = new LinkedList();
+                    exclude = new LinkedList<String>();
 
                 exclude.add( value );
+                
             }
   
             else if( false 
@@ -781,9 +867,10 @@ public class Options extends OptionsBase {
                 String value = nextOption();
     
                 if( dynamic_class == null )
-                    dynamic_class = new LinkedList();
+                    dynamic_class = new LinkedList<String>();
 
                 dynamic_class.add( value );
+                
             }
   
             else if( false
@@ -796,9 +883,10 @@ public class Options extends OptionsBase {
                 String value = nextOption();
     
                 if( dynamic_dir == null )
-                    dynamic_dir = new LinkedList();
+                    dynamic_dir = new LinkedList<String>();
 
                 dynamic_dir.add( value );
+                
             }
   
             else if( false
@@ -811,9 +899,10 @@ public class Options extends OptionsBase {
                 String value = nextOption();
     
                 if( dynamic_package == null )
-                    dynamic_package = new LinkedList();
+                    dynamic_package = new LinkedList<String>();
 
                 dynamic_package.add( value );
+                
             }
   
             else if( false 
@@ -909,17 +998,17 @@ public class Options extends OptionsBase {
             }
         }
 
-        Iterator it = phaseOptions.iterator();
+        Iterator<String> it = phaseOptions.iterator();
         while( it.hasNext() ) {
-            String phaseName = (String) it.next();
-            String phaseOption = (String) it.next();
+            String phaseName = it.next();
+            String phaseOption = it.next();
             if( !setPhaseOption( phaseName, "enabled:true" ) ) return false;
         }
 
         it = phaseOptions.iterator();
         while( it.hasNext() ) {
-            String phaseName = (String) it.next();
-            String phaseOption = (String) it.next();
+            String phaseName = it.next();
+            String phaseOption = it.next();
             if( !setPhaseOption( phaseName, phaseOption ) ) return false;
         }
 
@@ -939,14 +1028,14 @@ public class Options extends OptionsBase {
     private boolean phase_list = false;
     public void set_phase_list( boolean setting ) { phase_list = setting; }
   
-    public List phase_help() { 
+    public List<String> phase_help() { 
         if( phase_help == null )
-            return java.util.Collections.EMPTY_LIST;
+            return java.util.Collections.emptyList();
         else
             return phase_help;
     }
-    public void set_phase_help( List setting ) { phase_help = setting; }
-    private List phase_help = null;
+    public void set_phase_help( List<String> setting ) { phase_help = setting; }
+    private List<String> phase_help = null;
     public boolean version() { return version; }
     private boolean version = false;
     public void set_version( boolean setting ) { version = setting; }
@@ -975,6 +1064,10 @@ public class Options extends OptionsBase {
     private boolean whole_shimple = false;
     public void set_whole_shimple( boolean setting ) { whole_shimple = setting; }
   
+    public boolean on_the_fly() { return on_the_fly; }
+    private boolean on_the_fly = false;
+    public void set_on_the_fly( boolean setting ) { on_the_fly = setting; }
+  
     public boolean validate() { return validate; }
     private boolean validate = false;
     public void set_validate( boolean setting ) { validate = setting; }
@@ -994,18 +1087,24 @@ public class Options extends OptionsBase {
     private boolean prepend_classpath = false;
     public void set_prepend_classpath( boolean setting ) { prepend_classpath = setting; }
   
-    public List process_dir() { 
+    public List<String> process_dir() { 
         if( process_dir == null )
-            return java.util.Collections.EMPTY_LIST;
+            return java.util.Collections.emptyList();
         else
             return process_dir;
     }
-    public void set_process_dir( List setting ) { process_dir = setting; }
-    private List process_dir = null;
+    public void set_process_dir( List<String> setting ) { process_dir = setting; }
+    private List<String> process_dir = null;
     public boolean oaat() { return oaat; }
     private boolean oaat = false;
     public void set_oaat( boolean setting ) { oaat = setting; }
   
+    public String android_jars() { return android_jars; }
+    public void set_android_jars( String setting ) { android_jars = setting; }
+    private String android_jars = "";
+    public String force_android_jar() { return force_android_jar; }
+    public void set_force_android_jar( String setting ) { force_android_jar = setting; }
+    private String force_android_jar = "";
     public boolean ast_metrics() { return ast_metrics; }
     private boolean ast_metrics = false;
     public void set_ast_metrics( boolean setting ) { ast_metrics = setting; }
@@ -1068,22 +1167,22 @@ public class Options extends OptionsBase {
     private boolean no_output_inner_classes_attribute = false;
     public void set_no_output_inner_classes_attribute( boolean setting ) { no_output_inner_classes_attribute = setting; }
   
-    public List dump_body() { 
+    public List<String> dump_body() { 
         if( dump_body == null )
-            return java.util.Collections.EMPTY_LIST;
+            return java.util.Collections.emptyList();
         else
             return dump_body;
     }
-    public void set_dump_body( List setting ) { dump_body = setting; }
-    private List dump_body = null;
-    public List dump_cfg() { 
+    public void set_dump_body( List<String> setting ) { dump_body = setting; }
+    private List<String> dump_body = null;
+    public List<String> dump_cfg() { 
         if( dump_cfg == null )
-            return java.util.Collections.EMPTY_LIST;
+            return java.util.Collections.emptyList();
         else
             return dump_cfg;
     }
-    public void set_dump_cfg( List setting ) { dump_cfg = setting; }
-    private List dump_cfg = null;
+    public void set_dump_cfg( List<String> setting ) { dump_cfg = setting; }
+    private List<String> dump_cfg = null;
     public boolean show_exception_dests() { return show_exception_dests; }
     private boolean show_exception_dests = false;
     public void set_show_exception_dests( boolean setting ) { show_exception_dests = setting; }
@@ -1092,6 +1191,14 @@ public class Options extends OptionsBase {
     private boolean gzip = false;
     public void set_gzip( boolean setting ) { gzip = setting; }
   
+    public List<String> plugin() { 
+        if( plugin == null )
+            return java.util.Collections.emptyList();
+        else
+            return plugin;
+    }
+    public void set_plugin( List<String> setting ) { plugin = setting; }
+    private List<String> plugin = null;
     public boolean via_grimp() { return via_grimp; }
     private boolean via_grimp = false;
     public void set_via_grimp( boolean setting ) { via_grimp = setting; }
@@ -1101,7 +1208,7 @@ public class Options extends OptionsBase {
     public void set_via_shimple( boolean setting ) { via_shimple = setting; }
   
     public int throw_analysis() {
-        if( throw_analysis == 0 ) return throw_analysis_pedantic;
+        if( throw_analysis == 0 ) return throw_analysis_unit;
         return throw_analysis; 
     }
     public void set_throw_analysis( int setting ) { throw_analysis = setting; }
@@ -1110,50 +1217,54 @@ public class Options extends OptionsBase {
     private boolean omit_excepting_unit_edges = false;
     public void set_omit_excepting_unit_edges( boolean setting ) { omit_excepting_unit_edges = setting; }
   
-    public List include() { 
+    public boolean ignore_resolution_errors() { return ignore_resolution_errors; }
+    private boolean ignore_resolution_errors = false;
+    public void set_ignore_resolution_errors( boolean setting ) { ignore_resolution_errors = setting; }
+  
+    public List<String> include() { 
         if( include == null )
-            return java.util.Collections.EMPTY_LIST;
+            return java.util.Collections.emptyList();
         else
             return include;
     }
-    public void set_include( List setting ) { include = setting; }
-    private List include = null;
-    public List exclude() { 
+    public void set_include( List<String> setting ) { include = setting; }
+    private List<String> include = null;
+    public List<String> exclude() { 
         if( exclude == null )
-            return java.util.Collections.EMPTY_LIST;
+            return java.util.Collections.emptyList();
         else
             return exclude;
     }
-    public void set_exclude( List setting ) { exclude = setting; }
-    private List exclude = null;
+    public void set_exclude( List<String> setting ) { exclude = setting; }
+    private List<String> exclude = null;
     public boolean include_all() { return include_all; }
     private boolean include_all = false;
     public void set_include_all( boolean setting ) { include_all = setting; }
   
-    public List dynamic_class() { 
+    public List<String> dynamic_class() { 
         if( dynamic_class == null )
-            return java.util.Collections.EMPTY_LIST;
+            return java.util.Collections.emptyList();
         else
             return dynamic_class;
     }
-    public void set_dynamic_class( List setting ) { dynamic_class = setting; }
-    private List dynamic_class = null;
-    public List dynamic_dir() { 
+    public void set_dynamic_class( List<String> setting ) { dynamic_class = setting; }
+    private List<String> dynamic_class = null;
+    public List<String> dynamic_dir() { 
         if( dynamic_dir == null )
-            return java.util.Collections.EMPTY_LIST;
+            return java.util.Collections.emptyList();
         else
             return dynamic_dir;
     }
-    public void set_dynamic_dir( List setting ) { dynamic_dir = setting; }
-    private List dynamic_dir = null;
-    public List dynamic_package() { 
+    public void set_dynamic_dir( List<String> setting ) { dynamic_dir = setting; }
+    private List<String> dynamic_dir = null;
+    public List<String> dynamic_package() { 
         if( dynamic_package == null )
-            return java.util.Collections.EMPTY_LIST;
+            return java.util.Collections.emptyList();
         else
             return dynamic_package;
     }
-    public void set_dynamic_package( List setting ) { dynamic_package = setting; }
-    private List dynamic_package = null;
+    public void set_dynamic_package( List<String> setting ) { dynamic_package = setting; }
+    private List<String> dynamic_package = null;
     public boolean keep_line_number() { return keep_line_number; }
     private boolean keep_line_number = false;
     public void set_keep_line_number( boolean setting ) { keep_line_number = setting; }
@@ -1187,6 +1298,7 @@ public class Options extends OptionsBase {
 +padOpt(" -app", "Run in application mode" )
 +padOpt(" -w -whole-program", "Run in whole-program mode" )
 +padOpt(" -ws -whole-shimple", "Run in whole-shimple mode" )
++padOpt(" -fly -on-the-fly", "Run in on-the-fly mode" )
 +padOpt(" -validate", "Run internal validation on bodies" )
 +padOpt(" -debug", "Print various Soot debugging info" )
 +padOpt(" -debug-resolver", "Print debugging info from SootResolver" )
@@ -1196,6 +1308,8 @@ public class Options extends OptionsBase {
 +padOpt(" -pp -prepend-classpath", "Prepend the given soot classpath to the default classpath." )
 +padOpt(" -process-path DIR -process-dir DIR", "Process all classes found in DIR" )
 +padOpt(" -oaat", "From the process-dir, processes one class at a time." )
++padOpt(" -android-jars PATH", "Use PATH as the path for finding the android.jar file" )
++padOpt(" -force-android-jar PATH", "Force Soot to use PATH as the path for the android.jar file." )
 +padOpt(" -ast-metrics", "Compute AST Metrics if performing java to jimple" )
 +padOpt(" -src-prec FORMAT", "Sets source precedence to FORMAT files" )
 +padVal(" c class (default)", "Favour class files as Soot source" )
@@ -1222,6 +1336,7 @@ public class Options extends OptionsBase {
 +padVal(" G grimple", "Produce .grimple files" )
 +padVal(" g grimp", "Produce .grimp (abbreviated Grimp) files" )
 +padVal(" X xml", "Produce .xml Files" )
++padVal(" dex", "Produce Dalvik Virtual Machine files" )
 +padVal(" n none", "Produce no output" )
 +padVal(" jasmin", "Produce .jasmin files" )
 +padVal(" c class (default)", "Produce .class Files" )
@@ -1238,16 +1353,18 @@ public class Options extends OptionsBase {
 +padOpt(" -gzip", "GZip IR output files" )
 +"\nProcessing Options:\n"
       
++padOpt(" -plugin FILE", "Load all plugins found in FILE" )
 +padOpt(" -p PHASE OPT:VAL -phase-option PHASE OPT:VAL", "Set PHASE's OPT option to VALUE" )
 +padOpt(" -O -optimize", "Perform intraprocedural optimizations" )
 +padOpt(" -W -whole-optimize", "Perform whole program optimizations" )
 +padOpt(" -via-grimp", "Convert to bytecode via Grimp instead of via Baf" )
 +padOpt(" -via-shimple", "Enable Shimple SSA representation" )
 +padOpt(" -throw-analysis ARG", "" )
-+padVal(" pedantic (default)", "Pedantically conservative throw analysis" )
-+padVal(" unit", "Unit Throw Analysis" )
++padVal(" pedantic", "Pedantically conservative throw analysis" )
++padVal(" unit (default)", "Unit Throw Analysis" )
 +padOpt(" -omit-excepting-unit-edges", "Omit CFG edges to handlers from excepting units which lack side effects" )
 +padOpt(" -trim-cfgs", "Trim unrealizable exceptional edges from CFGs" )
++padOpt(" -ire -ignore-resolution-errors", "Does not throw an exception when a program references an undeclared field or method." )
 +"\nApplication Mode Options:\n"
       
 +padOpt(" -i PKG -include PKG", "Include classes in PKG as application classes" )

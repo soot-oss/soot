@@ -33,7 +33,7 @@ import soot.Type;
  * Making TypeManager faster by making type masks during a
  * depth-first-traversal on the class hierarchy. First, type-masks of the
  * leaves of Class Hierarchy are created and then the type mask of each
- * type T is obtained by ORing type maks of T’s sub-types and setting the
+ * type T is obtained by ORing type maks of Types sub-types and setting the
  * bit-numbers associated with Allocation Nodes of type T. The type-mask
  * of each interface is achieved by ORing the type-masks of its top-level
  * concrete implementers. In fact, Reference types are visited in
@@ -48,6 +48,10 @@ public final class TypeManager {
         this.pag = pag;
     }
     public static boolean isUnresolved(Type type) {
+    	if(type instanceof ArrayType) {
+			ArrayType at = (ArrayType) type;
+    		type = at.getArrayElementType();
+    	}
         if( !(type instanceof RefType) ) return false;
         RefType rt = (RefType) type;
         if( !rt.hasSootClass() ) return true;
@@ -80,7 +84,7 @@ public final class TypeManager {
             }
         }
         BitVector ret = (BitVector) typeMask.get( type );
-        if( ret == null && fh != null ) throw new RuntimeException( "oops"+type );
+        if( ret == null && fh != null ) throw new RuntimeException( "Type mask not found for type "+type );
         return ret;
     }
     final public void clearTypeMask() {
@@ -214,7 +218,7 @@ public final class TypeManager {
             
         for (SootClass impl : implementers) {
             BitVector other = (BitVector)typeMask.get(impl.getType());
-            if (other == null) throw new RuntimeException(impl.toString());
+            if (other == null) other = makeClassTypeMask(impl);
             ret.or(other);          
         }
         // I think, the following can be eliminated. It is added to make

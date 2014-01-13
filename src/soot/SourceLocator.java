@@ -85,7 +85,7 @@ public class SourceLocator
 				        String fileName = className.replace('.', '/') + ".class";
 						InputStream stream = cl.getResourceAsStream(fileName);
 						if(stream==null) return null;
-						return new CoffiClassSource(className, stream);
+						return new CoffiClassSource(className, stream, fileName, null);
 					}
 
             	}.find(className);
@@ -99,7 +99,7 @@ public class SourceLocator
 	        String fileName = className.replace('.', '/') + ".class";
         	InputStream stream = getClass().getClassLoader().getResourceAsStream(fileName);
         	if(stream!=null) {
-				return new CoffiClassSource(className, stream);
+				return new CoffiClassSource(className, stream, fileName, null);
         	}
         }
         return null;
@@ -132,7 +132,7 @@ public class SourceLocator
                 classProviders.add(new JavaClassProvider());
                 break;
             case Options.src_prec_apk:
-                classProviders.add(dexClassProvider());
+                classProviders.add(new DexClassProvider());
 				classProviders.add(classFileClassProvider);
 				classProviders.add(new JavaClassProvider());
 				classProviders.add(new JimpleClassProvider());
@@ -141,18 +141,6 @@ public class SourceLocator
                 throw new RuntimeException("Other source precedences are not currently supported.");
         }
     }
-
-    private IDexClassProvider dexClassProvider() {
-    	if(dexCP==null) {
-			try {
-				dexCP = (IDexClassProvider) Class.forName("soot.DexClassProvider").newInstance();
-	            return dexCP;
-			} catch (Exception e) {
-				throw new Error("Tried to load input from DEX but class soot.DexClassProvider is not present on the classpath." +
-						" Did you forget to include the DEX plugin?",e);
-			}
-    	} else return dexCP;
-	}
 
 	private List<ClassProvider> classProviders;
     public void setClassProviders( List<ClassProvider> classProviders ) {
@@ -188,85 +176,95 @@ public class SourceLocator
         return false;
     }
 
-    public List<String> getClassesUnder(String aPath) {
-        List<String> classes = new ArrayList<String>();
+	public List<String> getClassesUnder(String aPath) {
+		List<String> classes = new ArrayList<String>();
 
-	if (isArchive(aPath)) {
-	    List inputExtensions = new ArrayList(2);
-            inputExtensions.add(".class");
-            inputExtensions.add(".jimple");
-            inputExtensions.add(".java");
+		if (isArchive(aPath)) {
+			List<String> inputExtensions = new ArrayList<String>(3);
+			inputExtensions.add(".class");
+			inputExtensions.add(".jimple");
 
-	    try {
-		ZipFile archive = new ZipFile(aPath);
-		for (Enumeration entries = archive.entries(); 
-		     entries.hasMoreElements(); ) {
-		    ZipEntry entry = (ZipEntry) entries.nextElement();
-		    String entryName = entry.getName();
-		    int extensionIndex = entryName.lastIndexOf('.');
-		    if (extensionIndex >= 0) {
-			String entryExtension = entryName.substring(extensionIndex);
-			if (inputExtensions.contains(entryExtension)) {
-			    entryName = entryName.substring(0, extensionIndex);
-			    entryName = entryName.replace('/', '.');
-			    classes.add(entryName);
+			try {
+				ZipFile archive = new ZipFile(aPath);
+
+				boolean hasClassesDotDex = false;
+				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
+					ZipEntry entry = entries.nextElement();
+					String entryName = entry.getName();
+					// We are dealing with an apk file
+					if (entryName.equals("classes.dex")) {
+						hasClassesDotDex = true;
+						classes.addAll(DexClassProvider.classesOfDex(new File(aPath)));
+					}
+				}
+
+				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
+					ZipEntry entry = entries.nextElement();
+					String entryName = entry.getName();
+					int extensionIndex = entryName.lastIndexOf('.');
+					if (extensionIndex >= 0) {
+						String entryExtension = entryName.substring(extensionIndex);
+						if (inputExtensions.contains(entryExtension)) {
+							entryName = entryName.substring(0, extensionIndex);
+							entryName = entryName.replace('/', '.');
+							if (!hasClassesDotDex) {
+								classes.add(entryName);
+							} else {
+								G.v().out.println("Warning: Since archive contains 'classes.dex', the following entry is not loaded: "
+												+ entry.getName());
+							}
+						}
+					}
+				}
+			} catch (IOException e) {
+				G.v().out.println("Error reading " + aPath + ": " + e.toString());
+				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
 			}
-            // We are dealing with an apk file
-            if (entryName.equals("classes.dex"))
-                classes.addAll(dexClassProvider().classesOfDex(new File(aPath)));
-		    }
-		}
-	    } catch(IOException e) {
-		G.v().out.println("Error reading " + aPath + ": " 
-				  + e.toString());
-		throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
-	    }
-	} else {
-	    File file = new File(aPath);
-
-	    File[] files = file.listFiles();
-	    if (files == null) {
-		files = new File[1];
-		files[0] = file;
-	    }
-
-	    for (File element : files) {
-		if (element.isDirectory()) {
-		    List<String> l =
-			getClassesUnder(
-					aPath + File.separatorChar + element.getName());
-		    Iterator<String> it = l.iterator();
-		    while (it.hasNext()) {
-			String s = it.next();
-			classes.add(element.getName() + "." + s);
-		    }
 		} else {
-		    String fileName = element.getName();
+			File file = new File(aPath);
 
-		    if (fileName.endsWith(".class")) {
-			int index = fileName.lastIndexOf(".class");
-			classes.add(fileName.substring(0, index));
-		    }
+			File[] files = file.listFiles();
+			if (files == null) {
+				files = new File[1];
+				files[0] = file;
+			}
 
-		    if (fileName.endsWith(".jimple")) {
-			int index = fileName.lastIndexOf(".jimple");
-			classes.add(fileName.substring(0, index));
-		    }
+			for (File element : files) {
+				if (element.isDirectory()) {
+					List<String> l = getClassesUnder(aPath + File.separatorChar + element.getName());
+					Iterator<String> it = l.iterator();
+					while (it.hasNext()) {
+						String s = it.next();
+						classes.add(element.getName() + "." + s);
+					}
+				} else {
+					String fileName = element.getName();
 
-		    if (fileName.endsWith(".java")) {
-			int index = fileName.lastIndexOf(".java");
-			classes.add(fileName.substring(0, index));
-		    }
-		    if (fileName.endsWith(".dex")) {
-                try {
-					classes.addAll(dexClassProvider().classesOfDex(element));
-				} catch (IOException e) { /* Ignore unreadable files */}
-		    }
+					if (fileName.endsWith(".class")) {
+						int index = fileName.lastIndexOf(".class");
+						classes.add(fileName.substring(0, index));
+					}
+
+					if (fileName.endsWith(".jimple")) {
+						int index = fileName.lastIndexOf(".jimple");
+						classes.add(fileName.substring(0, index));
+					}
+
+					if (fileName.endsWith(".java")) {
+						int index = fileName.lastIndexOf(".java");
+						classes.add(fileName.substring(0, index));
+					}
+					if (fileName.endsWith(".dex")) {
+						try {
+							classes.addAll(DexClassProvider.classesOfDex(element));
+						} catch (IOException e) { /* Ignore unreadable files */
+						}
+					}
+				}
+			}
 		}
-	    }
+		return classes;
 	}
-        return classes;
-    }
 
     public String getFileNameFor(SootClass c, int rep) {
         if (rep == Options.output_format_none)
@@ -394,7 +392,11 @@ public class SourceLocator
 
     public String getOutputDir() {
         String ret = Options.v().output_dir();
-        if( ret.length() == 0 ) ret = "sootOutput";
+        if( ret.length() == 0 ) {
+        	ret = "sootOutput";
+	        if (Options.v().output_jar())
+	        	ret += File.separatorChar + "out.jar";
+        }
         File dir = new File(ret);
 
         if (!dir.exists()) {
@@ -411,7 +413,7 @@ public class SourceLocator
     }
 
     /** Explodes a class path into a list of individual class path entries. */
-    protected List<String> explodeClassPath( String classPath ) {
+    public static List<String> explodeClassPath( String classPath ) {
         List<String> ret = new ArrayList<String>();
 
         StringTokenizer tokenizer = 
@@ -447,6 +449,12 @@ public class SourceLocator
             } catch( IOException e ) {
                 throw new RuntimeException( "Caught IOException "+e );
             }
+        }
+        public File inputFile(){
+            if (file != null)
+                return file;
+            else
+                return new File(zipFile.getName());
         }
     }
 
@@ -537,11 +545,6 @@ public class SourceLocator
     private Map<String, File> dexClassIndex;
 
     /**
-     * Handle to the class provider for Dalvik DEX files (if present).
-     */
-    private IDexClassProvider dexCP;
-
-    /**
      * Return the dex class index that maps class names to files
      *
      * @return the index
@@ -557,10 +560,6 @@ public class SourceLocator
      */
     public void setDexClassIndex(Map<String, File> index) {
     	dexClassIndex = index;
-    }
-    
-    interface IDexClassProvider extends ClassProvider {
-    	public Set<String> classesOfDex(File file) throws IOException;    	
     }
 }
 

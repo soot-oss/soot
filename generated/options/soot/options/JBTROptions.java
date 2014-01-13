@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Type Assigner. */
 public class JBTROptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public JBTROptions( Map options ) {
+    public JBTROptions( Map<String, String> options ) {
         this.options = options;
     }
     
@@ -51,7 +51,7 @@ public class JBTROptions
      * the other way around. The VM's bytecode verifier will reject 
      * such bytecode when loaded into the VM. This option, when 
      * enabled, causes to create Jimple bodies in such cases 
-     * nontheless, ignoring the error. 
+     * nonetheless, ignoring the error. 
      */
     public boolean ignore_wrong_staticness() {
         return soot.PhaseOptions.getBoolean( options, "ignore-wrong-staticness" );

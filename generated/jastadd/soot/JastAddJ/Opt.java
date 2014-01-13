@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production Opt : {@link ASTNode};
  * @ast node
- * @declaredat Opt.ast:0
+ * 
  */
 public class Opt<T extends ASTNode> extends ASTNode<T> implements Cloneable {
   /**
@@ -51,31 +51,40 @@ public class Opt<T extends ASTNode> extends ASTNode<T> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<T> copy() {
-      try {
-        Opt node = (Opt)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      Opt node = (Opt) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<T> fullCopy() {
-    Opt res = (Opt)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    Opt tree = (Opt) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
-   * @declaredat Opt.ast:1
+   * 
    */
   public Opt() {
     super();
@@ -83,8 +92,18 @@ public class Opt<T extends ASTNode> extends ASTNode<T> implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat Opt.ast:7
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
+   * @ast method 
+   * 
    */
   public Opt(T opt) {
     setChild(opt, 0);
@@ -92,7 +111,7 @@ public class Opt<T extends ASTNode> extends ASTNode<T> implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Opt.ast:14
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
@@ -100,18 +119,14 @@ public class Opt<T extends ASTNode> extends ASTNode<T> implements Cloneable {
   /**
    * @attribute syn
    * @aspect BooleanExpressions
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:22
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/BooleanExpressions.jrag:21
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean definesLabel() {
-      ASTNode$State state = state();
-    boolean definesLabel_value = definesLabel_compute();
-    return definesLabel_value;
+    ASTNode$State state = state();
+    try {  return getParent().definesLabel();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean definesLabel_compute() {  return getParent().definesLabel();  }
   /**
    * @apilevel internal
    */

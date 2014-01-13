@@ -1429,8 +1429,9 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     		if(left instanceof Local){
     			if(uniqueLocals.contains(left)){
     				//a def for this local already encountered
-    				uniqueLocals.remove(left);
-    				uniqueLocalDefs.remove(s);
+            int index = uniqueLocals.indexOf(left);
+    				uniqueLocals.remove(index);
+    				uniqueLocalDefs.remove(index);
     			}
     			else{
     				//no def for this local yet
@@ -1472,10 +1473,10 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     		uniqueLocals.remove(index);
     		uniqueLocalDefs.remove(index);
     	}
-    	
-    	
-    	//the uniqueLocalDefs contains all those definitions to unique locals which are not deeply nested in the X body
 
+
+
+    	//the uniqueLocalDefs contains all those definitions to unique locals which are not deeply nested in the X body
     	
     	//find all the uses of these definitions in the original method body
     	toRemoveDefs = new ArrayList<DefinitionStmt>();
@@ -1531,10 +1532,10 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     	//the remaining uniquelocals are the ones which are needed for body Y
     	return uniqueLocals;    	
     }
-    
-    
-    
-    
+
+
+
+
 
     private AugmentedStmt createAugmentedStmtToAdd(Local newLocal,SootMethodRef getMethodRef,  Value tempVal){
     	ArrayList tempArgList = new ArrayList();
@@ -1553,5 +1554,4 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
 		if(DEBUG)
 			System.out.println(methodName+ "    DEBUG: "+debug);
 	}
-
 }

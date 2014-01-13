@@ -70,31 +70,23 @@ public class CopyPropagator extends BodyTransformer
         if(Options.v().time())
             Timers.v().propagatorTimer.start();                
                 
-        Chain units = stmtBody.getUnits();
+        Chain<Unit> units = stmtBody.getUnits();
 
         Map<Local, Integer> localToDefCount = new HashMap<Local, Integer>();
         
         // Count number of definitions for each local.
-        {
-            Iterator stmtIt = units.iterator();
-        
-            while(stmtIt.hasNext())
-            {
-                Stmt s = (Stmt) stmtIt.next();
-                
-                if(s instanceof DefinitionStmt &&
-                    ((DefinitionStmt) s).getLeftOp() instanceof Local)
-                {
-                    Local l = (Local) ((DefinitionStmt) s).getLeftOp();
+       	for (Unit u : units) {
+       		Stmt s = (Stmt) u;
+       		if(s instanceof DefinitionStmt &&
+       				((DefinitionStmt) s).getLeftOp() instanceof Local) {
+       			Local l = (Local) ((DefinitionStmt) s).getLeftOp();
                      
-                    if(!localToDefCount.containsKey(l))
-                        localToDefCount.put(l, new Integer(1));
-                    else 
-                        localToDefCount.put(l, new Integer(localToDefCount.get(l).intValue() + 1));
-                }
-                
-            }
-        }
+       			if(!localToDefCount.containsKey(l))
+                	localToDefCount.put(l, new Integer(1));
+                else 
+                	localToDefCount.put(l, new Integer(localToDefCount.get(l).intValue() + 1));
+       		}
+       	}
         
 //            ((JimpleBody) stmtBody).printDebugTo(new java.io.PrintWriter(G.v().out, true));
             
@@ -106,34 +98,62 @@ public class CopyPropagator extends BodyTransformer
 
         // Perform a local propagation pass.
         {
-            Iterator stmtIt = (new PseudoTopologicalOrderer()).newList(graph,false).iterator();
-
+            Iterator<Unit> stmtIt = (new PseudoTopologicalOrderer<Unit>()).newList(graph,false).iterator();
             while(stmtIt.hasNext())
             {
                 Stmt stmt = (Stmt) stmtIt.next();
-                Iterator useBoxIt = stmt.getUseBoxes().iterator();
-
-                while(useBoxIt.hasNext())
+                for (ValueBox useBox : stmt.getUseBoxes())
                 {
-                    ValueBox useBox = (ValueBox) useBoxIt.next();
-
-                    if(useBox.getValue() instanceof Local)
+                	if(useBox.getValue() instanceof Local)
                     {
                         Local l = (Local) useBox.getValue();
 
-                        if(options.only_regular_locals() && l.getName().startsWith("$"))
-                            continue;
-       
-                        if(options.only_stack_locals() && !l.getName().startsWith("$"))
-                            continue;
+                        // We force propagating nulls. If a target can only be null due to
+                        // typing, we always inline that constant.
+                        if (!(l.getType() instanceof NullType)) {
+	                        if(options.only_regular_locals() && l.getName().startsWith("$"))
+	                            continue;
+	       
+	                        if(options.only_stack_locals() && !l.getName().startsWith("$"))
+	                            continue;
+                        }
                             
                         List<Unit> defsOfUse = localDefs.getDefsOfAt(l, stmt);
 
-                        if(defsOfUse.size() == 1)
+                        // We can propagate the definition if we either only have
+                        // one definition or all definitions are side-effect free
+                        // and equal. For starters, we only support costants in
+                        // the case of multiple definitions.
+                        boolean propagateDef = defsOfUse.size() == 1;
+                        if (!propagateDef && defsOfUse.size() > 0) {
+                        	boolean agrees = true;
+                        	Constant constVal = null;
+                        	for (Unit defUnit : defsOfUse) {
+                        		boolean defAgrees = false;
+                        		if (defUnit instanceof AssignStmt) {
+                        			AssignStmt assign = (AssignStmt) defUnit;
+                        			if (assign.getRightOp() instanceof Constant) {
+                        				if (constVal == null) {
+                        					constVal = (Constant) assign.getRightOp();
+                        					defAgrees = true;
+                        				}
+                        				else if (constVal.equals(assign.getRightOp()))
+                        					defAgrees = true;
+                        			}
+                        		}
+                        		agrees &= defAgrees;
+                        	}
+                        	propagateDef = agrees;
+                        }
+                        
+                        if(propagateDef)
                         {
                             DefinitionStmt def = (DefinitionStmt) defsOfUse.get(0);
 
-                            if(def.getRightOp() instanceof Local)
+                            if (def.getRightOp() instanceof Constant)
+                            	if (useBox.canContainValue(def.getRightOp()))
+                            		useBox.setValue(def.getRightOp());
+                            else if(def.getRightOp() instanceof Local)
                             {
                                 Local m = (Local) def.getRightOp();
 

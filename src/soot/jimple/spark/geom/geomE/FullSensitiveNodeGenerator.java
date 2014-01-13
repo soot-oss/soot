@@ -21,31 +21,34 @@ package soot.jimple.spark.geom.geomE;
 import java.util.Iterator;
 
 import soot.jimple.spark.geom.geomPA.CgEdge;
+import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.DummyNode;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IEncodingBroker;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.PlainConstraint;
-import soot.jimple.spark.geom.geomE.FullSensitiveNode;
-import soot.jimple.spark.geom.geomE.GeometricManager;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.toolkits.callgraph.Edge;
-import soot.options.SparkOptions;
 
 /**
- * Build the initial encoding with the geometric encoding.
+ * Build the initial encoding of the assignment graph in full geometric encoding.
  * 
  * @author xiao
  *
  */
 public class FullSensitiveNodeGenerator extends IEncodingBroker 
 {
+	private static final int full_convertor[] = { 
+		GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY, 
+		GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY 
+	};
+	
 	@Override
 	public void initFlowGraph( GeomPointsTo ptAnalyzer ) 
 	{
-		int i, k;
+		int k;
 		int n_legal_cons;
 		int nf1, nf2;
 		int code;
@@ -64,11 +67,11 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 			nf2 = ptAnalyzer.getMappedMethodID(my_rhs.getWrappedNode());
 			
 			// Test how many globals are in this constraint
-			code = ((nf1==GeomPointsTo.SUPER_MAIN ? 1 : 0) << 1) |
-						(nf2==GeomPointsTo.SUPER_MAIN ? 1 : 0);
+			code = ((nf1==Constants.SUPER_MAIN ? 1 : 0) << 1) |
+						(nf2==Constants.SUPER_MAIN ? 1 : 0);
 			
 			switch (cons.type) {
-			case GeomPointsTo.NEW_CONS:
+			case Constants.NEW_CONS:
 				// We directly add the objects to the points-to set
 				
 				if ( code == 0 ) {
@@ -90,7 +93,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 				ptAnalyzer.getWorklist().push(my_rhs);
 				break;
 
-			case GeomPointsTo.ASSIGN_CONS:
+			case Constants.ASSIGN_CONS:
 				// Assigning between two pointers
 				if ( cons.interCallEdges != null ) {
 					// Inter-procedural assignment (parameter passing, function return)
@@ -109,7 +112,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 							
 							// Handle the special case first
 							// In that case, nf1 is SUPER_MAIN.
-							if ( nf1 == GeomPointsTo.SUPER_MAIN ) {
+							if ( nf1 == Constants.SUPER_MAIN ) {
 								my_lhs.add_simple_constraint_4( 
 										my_rhs,
 										1,
@@ -183,7 +186,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 				}
 				break;
 
-			case GeomPointsTo.LOAD_CONS:
+			case Constants.LOAD_CONS:
 				// lhs is always a local
 				// rhs = lhs.f
 				cons.code = full_convertor[code];
@@ -191,7 +194,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 				my_lhs.put_complex_constraint( cons );
 				break;
 
-			case GeomPointsTo.STORE_CONS:
+			case Constants.STORE_CONS:
 				// rhs is always a local
 				// rhs.f = lhs
 				cons.code = full_convertor[code];
@@ -212,8 +215,8 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 	}
 
 	@Override
-	public int getEncodingType() {
-		return SparkOptions.geom_encoding_Geom;
+	public String getSignature() {
+		return Constants.geomE;
 	}
 
 	@Override

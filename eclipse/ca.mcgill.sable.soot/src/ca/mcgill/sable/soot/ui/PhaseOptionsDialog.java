@@ -1966,6 +1966,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getGeneral_Optionswhole_shimple_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getGeneral_Optionson_the_fly_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionson_the_fly_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getGeneral_Optionsvalidate_widget().getButton().getSelection();
 		
 		
@@ -2101,6 +2111,24 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionsprocess_dir_widget().getAlias(), stringRes);
+		}
+		
+		stringRes = getInput_Optionsandroid_jars_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsandroid_jars_widget().getAlias(), stringRes);
+		}
+		
+		stringRes = getInput_Optionsforce_android_jar_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsforce_android_jar_widget().getAlias(), stringRes);
 		}
 		
 		stringRes = getInput_Optionsmain_class_widget().getText().getText();
@@ -2288,11 +2316,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionstrim_cfgs_widget().getAlias(), new Boolean(boolRes));
 		}
+		
+		boolRes = getProcessing_Optionsignore_resolution_errors_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getProcessing_Optionsignore_resolution_errors_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		stringRes = getProcessing_Optionsplugin_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getProcessing_Optionsplugin_widget().getAlias(), stringRes);
+		}
 		 
 		stringRes = getProcessing_Optionsthrow_analysis_widget().getSelectedAlias();
 
 		
-		defStringRes = "pedantic";
+		defStringRes = "unit";
 		
 
 		if (!stringRes.equals(defStringRes)) {
@@ -6445,6 +6492,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return General_Optionswhole_shimple_widget;
 	}	
 	
+	private BooleanOptionWidget General_Optionson_the_fly_widget;
+	
+	private void setGeneral_Optionson_the_fly_widget(BooleanOptionWidget widget) {
+		General_Optionson_the_fly_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionson_the_fly_widget() {
+		return General_Optionson_the_fly_widget;
+	}	
+	
 	private BooleanOptionWidget General_Optionsvalidate_widget;
 	
 	private void setGeneral_Optionsvalidate_widget(BooleanOptionWidget widget) {
@@ -6588,6 +6645,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public StringOptionWidget getInput_Optionssoot_classpath_widget() {
 		return Input_Optionssoot_classpath_widget;
+	}
+	
+	
+	
+	private StringOptionWidget Input_Optionsandroid_jars_widget;
+	
+	private void setInput_Optionsandroid_jars_widget(StringOptionWidget widget) {
+		Input_Optionsandroid_jars_widget = widget;
+	}
+	
+	public StringOptionWidget getInput_Optionsandroid_jars_widget() {
+		return Input_Optionsandroid_jars_widget;
+	}
+	
+	
+	
+	private StringOptionWidget Input_Optionsforce_android_jar_widget;
+	
+	private void setInput_Optionsforce_android_jar_widget(StringOptionWidget widget) {
+		Input_Optionsforce_android_jar_widget = widget;
+	}
+	
+	public StringOptionWidget getInput_Optionsforce_android_jar_widget() {
+		return Input_Optionsforce_android_jar_widget;
 	}
 	
 	
@@ -6792,6 +6873,28 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	public BooleanOptionWidget getProcessing_Optionstrim_cfgs_widget() {
 		return Processing_Optionstrim_cfgs_widget;
 	}	
+	
+	private BooleanOptionWidget Processing_Optionsignore_resolution_errors_widget;
+	
+	private void setProcessing_Optionsignore_resolution_errors_widget(BooleanOptionWidget widget) {
+		Processing_Optionsignore_resolution_errors_widget = widget;
+	}
+	
+	public BooleanOptionWidget getProcessing_Optionsignore_resolution_errors_widget() {
+		return Processing_Optionsignore_resolution_errors_widget;
+	}	
+	
+
+	private ListOptionWidget Processing_Optionsplugin_widget;
+	
+	private void setProcessing_Optionsplugin_widget(ListOptionWidget widget) {
+		Processing_Optionsplugin_widget = widget;
+	}
+	
+	public ListOptionWidget getProcessing_Optionsplugin_widget() {
+		return Processing_Optionsplugin_widget;
+	}	
+	
 	
 	
 	private MultiOptionWidget Processing_Optionsthrow_analysis_widget;
@@ -10022,6 +10125,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
+		defKey = ""+" "+""+" "+"fly";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionson_the_fly_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("On-the-fly Mode", "", "","fly", "\nThis enables whole-program mode but uses a less agressive class \nloading. By default, classes will be loaded without bodies \nunless otherwise requested. ", defaultBool)));
+		
+		
+		
 		defKey = ""+" "+""+" "+"validate";
 		defKey = defKey.trim();
 
@@ -10321,6 +10440,36 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "\nUse PATH as the list of directories in which Soot should search \nfor classes. PATH should be a series of directories, separated \nby the path separator character for your system. If no classpath \nis set on the command line, but the system property \nsoot.class.path has been set, Soot uses its value as the \nclasspath. If neither the command line nor the system properties \nspecify a Soot classpath, Soot falls back on a default classpath \nconsisting of the value of the system property java.class.path \nfollowed java.home/lib/rt.jar, where java.home stands for the \ncontents of the system property java.home and / stands for the \nsystem file separator.", defaultString)));
 		
 		
+		defKey = ""+" "+""+" "+"android-jars";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setInput_Optionsandroid_jars_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Path to Android jar files",  "", "","android-jars", "\nUse PATH as the directory in which Soot should search for the \nappropriate android.jar file to use. The directory must contain \nsubdirectories named after the Android SDK version. Those \nsubdirectories must each contain one android.jar file. For \ninstance if the target directory is \n/home/user/androidSDK/platforms/ subdirectories containing \nandroid.jar for Android SDK 8 and 13 must be named android-8/ \nand android-13/ respectively. Note, that this options requires \nthat only one Android application is analyzed at a time. The \nAndroid application must contain the AndroidManifest.xml file. \n			", defaultString)));
+		
+		
+		defKey = ""+" "+""+" "+"force-android-jar";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setInput_Optionsforce_android_jar_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android jar file",  "", "","force-android-jar", "\nUse PATH as the path to the android.jar file Soot should use. \nThis option overrides the 'android-jars' option. 			", defaultString)));
+		
+		
 		defKey = ""+" "+""+" "+"main-class";
 		defKey = defKey.trim();
 		
@@ -10531,6 +10680,12 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		new OptionData("Xml File",
 		"X",
 		"\nProduce .xml files containing an annotated version of the \nSoot's Jimple internal representation. ",
+		
+		false),
+		
+		new OptionData("Dalvik Executable File",
+		"dex",
+		"\nProduce Dalvik Virtual Machine files. If input was an Android \n			Package (APK), a new APK is generated with it's classes.dex \nreplaced. If 			no input APK is found, only a classes.dex is \ngenerated.",
 		
 		false),
 		
@@ -10751,19 +10906,35 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
+		defKey = ""+" "+""+" "+"ire";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setProcessing_Optionsignore_resolution_errors_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Ignore reolution errors", "", "","ire", "\nSome programs may contain dead code that references fields or \nmethods that do not exist. By default, Soot exists with an \nexception when this happens. If this option is enabled, Soot \nonly prints a warning but does not exit. ", defaultBool)));
+		
+		
+		
 		data = new OptionData [] {
 		
 		new OptionData("Pedantic",
 		"pedantic",
 		"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, since the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread. ",
 		
-		true),
+		false),
 		
 		new OptionData("Unit",
 		"unit",
 		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. ",
 		
-		false),
+		true),
 		
 		};
 		
@@ -10779,6 +10950,21 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getProcessing_Optionsthrow_analysis_widget().setDef(defaultString);
 		}
 		
+		
+
+		defKey = ""+" "+""+" "+"plugin";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultString = getArrayDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setProcessing_Optionsplugin_widget(new ListOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Plugin Configuration",  "", "","plugin", "\nLoads the plugin configuration FILE and registers all plugins. \nMake sure that the option is specified before you try to pass \noptions to the loaded plugins.", defaultString)));
 		
 
 		

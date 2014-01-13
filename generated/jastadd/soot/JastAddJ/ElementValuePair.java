@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production ElementValuePair : {@link ASTNode} ::= <span class="component">&lt;Name:String&gt;</span> <span class="component">{@link ElementValue}</span>;
  * @ast node
- * @declaredat Annotations.ast:8
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.ast:8
  */
 public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
   /**
@@ -55,41 +55,52 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ElementValuePair copy() {
-      try {
-        ElementValuePair node = (ElementValuePair)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      ElementValuePair node = (ElementValuePair) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ElementValuePair fullCopy() {
-    ElementValuePair res = (ElementValuePair)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    ElementValuePair tree = (ElementValuePair) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
-  /**
-   * @ast method 
-   * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:502
-   */
-  public void typeCheck() {
-    if(!type().commensurateWith(getElementValue()))
-      error(type().typeName() + " is not commensurate with " + getElementValue().type().typeName());
+    return tree;
   }
   /**
    * @ast method 
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:589
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:504
+   */
+  public void typeCheck() {
+    if(!type().commensurateWith(getElementValue()))
+      error("can not construct annotation with " + getName() +
+          " = " + getElementValue().toString() + "; " + type().typeName() +
+          " is not commensurate with " + getElementValue().type().typeName());
+  }
+  /**
+   * @ast method 
+   * @aspect Annotations
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:593
    */
   public void toString(StringBuffer s) {
     s.append(getName() + " = ");
@@ -97,7 +108,7 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat Annotations.ast:1
+   * 
    */
   public ElementValuePair() {
     super();
@@ -105,8 +116,19 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat Annotations.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public ElementValuePair(String p0, ElementValue p1) {
     setName(p0);
@@ -114,7 +136,7 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat Annotations.ast:11
+   * 
    */
   public ElementValuePair(beaver.Symbol p0, ElementValue p1) {
     setName(p0);
@@ -123,7 +145,7 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:18
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -131,40 +153,48 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Annotations.ast:24
+   * 
    */
   public boolean mayHaveRewrite() {
     return true;
   }
   /**
-   * Setter for lexeme Name
+   * Replaces the lexeme Name.
+   * @param value The new value for the lexeme Name.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:5
+   * 
    */
   public void setName(String value) {
     tokenString_Name = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat Annotations.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected String tokenString_Name;
+  /**
+   * @apilevel internal
+   */
+  protected String tokenString_Name;
   /**
    * @ast method 
-   * @declaredat Annotations.ast:9
+   * 
    */
   
   public int Namestart;
   /**
    * @ast method 
-   * @declaredat Annotations.ast:10
+   * 
    */
   
   public int Nameend;
   /**
+   * JastAdd-internal setter for lexeme Name using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat Annotations.ast:11
+   * 
    */
   public void setName(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -174,36 +204,42 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
     Nameend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme Name
+   * Retrieves the value for the lexeme Name.
+   * @return The value for the lexeme Name.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:22
+   * 
    */
   public String getName() {
     return tokenString_Name != null ? tokenString_Name : "";
   }
   /**
-   * Setter for ElementValue
+   * Replaces the ElementValue child.
+   * @param node The new node to replace the ElementValue child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:5
+   * 
    */
   public void setElementValue(ElementValue node) {
     setChild(node, 0);
   }
   /**
-   * Getter for ElementValue
+   * Retrieves the ElementValue child.
+   * @return The current node used as the ElementValue child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:12
+   * 
    */
   public ElementValue getElementValue() {
     return (ElementValue)getChild(0);
   }
   /**
+   * Retrieves the ElementValue child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the ElementValue child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:18
+   * 
    */
   public ElementValue getElementValueNoTransform() {
     return (ElementValue)getChildNoTransform(0);
@@ -216,45 +252,34 @@ public class ElementValuePair extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   protected TypeDecl type_value;
-  /* The annotation type named by an annotation must be accessible (\u00df6.6) at the
+  /* The annotation type named by an annotation must be accessible (\ufffd6.6) at the
   point where the annotation is used, or a compile-time error occurs.
   Comment: This is done by the access control framework* @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:448
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:450
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
     if(type_computed) {
       return type_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     type_value = type_compute();
-if(isFinal && num == state().boundariesCrossed) type_computed = true;
+      if(isFinal && num == state().boundariesCrossed) type_computed = true;
     return type_value;
   }
   /**
    * @apilevel internal
    */
   private TypeDecl type_compute() {
-    Iterator iter = enclosingAnnotationDecl().memberMethods(getName()).iterator();
-    if(iter.hasNext()) {
-      MethodDecl m = (MethodDecl)iter.next();
-      return m.type();
-    }
-    return unknownType();
-  }
-  /**
-   * @attribute inh
-   * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:456
-   */
-  @SuppressWarnings({"unchecked", "cast"})
-  public TypeDecl unknownType() {
-      ASTNode$State state = state();
-    TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
-    return unknownType_value;
+    Map methodMap = enclosingAnnotationDecl().localMethodsSignatureMap();
+    MethodDecl method = (MethodDecl) methodMap.get(getName()+"()");
+    if (method != null)
+      return method.type();
+    else
+      return unknownType();
   }
   /**
    * @attribute inh
@@ -262,8 +287,19 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:458
    */
   @SuppressWarnings({"unchecked", "cast"})
+  public TypeDecl unknownType() {
+    ASTNode$State state = state();
+    TypeDecl unknownType_value = getParent().Define_TypeDecl_unknownType(this, null);
+    return unknownType_value;
+  }
+  /**
+   * @attribute inh
+   * @aspect Annotations
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:460
+   */
+  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl enclosingAnnotationDecl() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl enclosingAnnotationDecl_value = getParent().Define_TypeDecl_enclosingAnnotationDecl(this, null);
     return enclosingAnnotationDecl_value;
   }
@@ -271,7 +307,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
    * @apilevel internal
    */
   public ASTNode rewriteTo() {
-    // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag at line 523
+    // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag at line 527
     if(type().isArrayDecl() && getElementValue() instanceof ElementConstantValue) {
       state().duringAnnotations++;
       ASTNode result = rewriteRule0();
@@ -282,7 +318,7 @@ if(isFinal && num == state().boundariesCrossed) type_computed = true;
     return super.rewriteTo();
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:523
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:527
    * @apilevel internal
    */  private ElementValuePair rewriteRule0() {
 {

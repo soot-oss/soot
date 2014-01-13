@@ -29,7 +29,7 @@ package soot.jimple.toolkits.annotation.purity;
 
 /** 
  * An edge in a purity graph.
- * Each edge has a soruce PurityNode, a taget PurityNode, and a field label
+ * Each edge has a source PurityNode, a target PurityNode, and a field label
  * (we use a String here).
  * To represent an array element, the convention is to use the [] field label.
  * Edges are mmuable and hashable. They compare equal only if they link

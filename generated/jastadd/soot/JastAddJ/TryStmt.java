@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production TryStmt : {@link Stmt} ::= <span class="component">{@link Block}</span> <span class="component">{@link CatchClause}*</span> <span class="component">[Finally:{@link Block}]</span>;
  * @ast node
- * @declaredat java.ast:216
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:219
  */
 public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
@@ -119,32 +119,41 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TryStmt copy() {
-      try {
-        TryStmt node = (TryStmt)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      TryStmt node = (TryStmt) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TryStmt fullCopy() {
-    TryStmt res = (TryStmt)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    TryStmt tree = (TryStmt) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:61
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:60
    */
   public void collectBranches(Collection c) {
     c.addAll(escapedBranches());
@@ -152,7 +161,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:162
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:161
    */
   public Stmt branchTarget(Stmt branchStmt) {
     if(targetBranches().contains(branchStmt))
@@ -162,7 +171,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:200
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:199
    */
   public void collectFinally(Stmt branchStmt, ArrayList list) {
     if(hasFinally() && !branchesFromFinally().contains(branchStmt))
@@ -174,7 +183,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @ast method 
    * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:217
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:231
    */
   protected boolean reachedException(TypeDecl type) {
     boolean found = false;
@@ -189,7 +198,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
         return true;
     // even if the exception is caught by the catch clauses they may 
     // throw new exceptions
-    for(int i = 0; i < getNumCatchClause() && found; i++)
+    for(int i = 0; i < getNumCatchClause(); i++)
       if(getCatchClause(i).reachedException(type))
         return true;
     return hasFinally() && getFinally().reachedException(type);
@@ -282,12 +291,14 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
         soot.jimple.Stmt stmtBegin = (soot.jimple.Stmt)iter.next();
         soot.jimple.Stmt stmtEnd = (soot.jimple.Stmt)iter.next();
         if(stmtBegin != stmtEnd) {
-          b.addTrap(
-              ((BasicCatch)getCatchClause(i)).getParameter().type(),
-              stmtBegin,
-              stmtEnd,
-              ((BasicCatch)getCatchClause(i)).label()
-          );
+        	soot.jimple.Stmt lbl = ((BasicCatch)getCatchClause(i)).label();
+			b.addTrap(
+	              ((BasicCatch)getCatchClause(i)).getParameter().type(),
+	              stmtBegin,
+	              stmtEnd,
+	              lbl
+	          );
+			addFallThroughLabelTag(b, lbl, label_end);
         }
         if(stmtEnd == label_block_end)
           break;
@@ -301,8 +312,11 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
           stmtEnd = (soot.jimple.Stmt)iter.next();
         else
           stmtEnd = label_exception_handler();
-        if(stmtBegin != stmtEnd)
-          b.addTrap(typeThrowable(), stmtBegin, stmtEnd, label_exception_handler());
+        if(stmtBegin != stmtEnd) {
+          soot.jimple.Stmt lbl = label_exception_handler();
+		  b.addTrap(typeThrowable(), stmtBegin, stmtEnd, lbl);
+  		  addFallThroughLabelTag(b, lbl, label_end);
+        }
       }
       /*
       b.addTrap(
@@ -317,7 +331,21 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @ast method 
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:467
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:448
+   */
+  protected void addFallThroughLabelTag(Body b, soot.jimple.Stmt handler, soot.jimple.Stmt fallThrough) {
+	soot.Body body = b.body;
+	soot.tagkit.TryCatchTag tag = (soot.tagkit.TryCatchTag) body.getTag(soot.tagkit.TryCatchTag.NAME);
+	if(tag == null) {
+		tag = new soot.tagkit.TryCatchTag();
+		body.addTag(tag);
+	}
+	tag.register(handler, fallThrough);
+  }
+  /**
+   * @ast method 
+   * @aspect Statements
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:482
    */
   public void emitExceptionHandler(Body b) {
     Local l = b.newTemp(typeThrowable().getSootType());
@@ -332,18 +360,29 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public TryStmt() {
     super();
 
-    setChild(new List(), 1);
-    setChild(new Opt(), 2);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:9
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[3];
+    setChild(new List(), 1);
+    setChild(new Opt(), 2);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public TryStmt(Block p0, List<CatchClause> p1, Opt<Block> p2) {
     setChild(p0, 0);
@@ -353,7 +392,7 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:17
+   * 
    */
   protected int numChildren() {
     return 3;
@@ -361,70 +400,91 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:23
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Block
+   * Replaces the Block child.
+   * @param node The new node to replace the Block child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setBlock(Block node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Block
+   * Retrieves the Block child.
+   * @return The current node used as the Block child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Block getBlock() {
     return (Block)getChild(0);
   }
   /**
+   * Retrieves the Block child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Block child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Block getBlockNoTransform() {
     return (Block)getChildNoTransform(0);
   }
   /**
-   * Setter for CatchClauseList
+   * Replaces the CatchClause list.
+   * @param list The new list node to be used as the CatchClause list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setCatchClauseList(List<CatchClause> list) {
     setChild(list, 1);
   }
   /**
-   * @return number of children in CatchClauseList
+   * Retrieves the number of children in the CatchClause list.
+   * @return Number of children in the CatchClause list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumCatchClause() {
     return getCatchClauseList().getNumChild();
   }
   /**
-   * Getter for child in list CatchClauseList
+   * Retrieves the number of children in the CatchClause list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the CatchClause list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumCatchClauseNoTransform() {
+    return getCatchClauseListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the CatchClause list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the CatchClause list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public CatchClause getCatchClause(int i) {
     return (CatchClause)getCatchClauseList().getChild(i);
   }
   /**
-   * Add element to list CatchClauseList
+   * Append an element to the CatchClause list.
+   * @param node The element to append to the CatchClause list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addCatchClause(CatchClause node) {
     List<CatchClause> list = (parent == null || state == null) ? getCatchClauseListNoTransform() : getCatchClauseList();
@@ -433,44 +493,51 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addCatchClauseNoTransform(CatchClause node) {
     List<CatchClause> list = getCatchClauseListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list CatchClauseList
+   * Replaces the CatchClause list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setCatchClause(CatchClause node, int i) {
     List<CatchClause> list = getCatchClauseList();
     list.setChild(node, i);
   }
   /**
-   * Getter for CatchClause list.
+   * Retrieves the CatchClause list.
+   * @return The node representing the CatchClause list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<CatchClause> getCatchClauses() {
     return getCatchClauseList();
   }
   /**
+   * Retrieves the CatchClause list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the CatchClause list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<CatchClause> getCatchClausesNoTransform() {
     return getCatchClauseListNoTransform();
   }
   /**
-   * Getter for list CatchClauseList
+   * Retrieves the CatchClause list.
+   * @return The node representing the CatchClause list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<CatchClause> getCatchClauseList() {
@@ -479,47 +546,54 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
     return list;
   }
   /**
+   * Retrieves the CatchClause list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the CatchClause list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<CatchClause> getCatchClauseListNoTransform() {
     return (List<CatchClause>)getChildNoTransform(1);
   }
   /**
-   * Setter for FinallyOpt
+   * Replaces the optional node for the Finally child. This is the {@code Opt} node containing the child Finally, not the actual child!
+   * @param opt The new node to be used as the optional node for the Finally child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setFinallyOpt(Opt<Block> opt) {
     setChild(opt, 2);
   }
   /**
-   * Does this node have a Finally child?
+   * Check whether the optional Finally child exists.
+   * @return {@code true} if the optional Finally child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public boolean hasFinally() {
     return getFinallyOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child Finally
-   * @apilevel high-level
+   * Retrieves the (optional) Finally child.
+   * @return The Finally child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Block getFinally() {
     return (Block)getFinallyOpt().getChild(0);
   }
   /**
-   * Setter for optional child Finally
+   * Replaces the (optional) Finally child.
+   * @param node The new node to be used as the Finally child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void setFinally(Block node) {
     getFinallyOpt().setChild(node, 0);
@@ -527,16 +601,19 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:37
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Block> getFinallyOpt() {
     return (Opt<Block>)getChild(2);
   }
   /**
+   * Retrieves the optional node for child Finally. This is the {@code Opt} node containing the child Finally, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child Finally.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:44
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Block> getFinallyOptNoTransform() {
@@ -553,18 +630,18 @@ public class TryStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:116
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:115
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection branches() {
     if(branches_computed) {
       return branches_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     branches_value = branches_compute();
-if(isFinal && num == state().boundariesCrossed) branches_computed = true;
+      if(isFinal && num == state().boundariesCrossed) branches_computed = true;
     return branches_value;
   }
   /**
@@ -588,18 +665,18 @@ if(isFinal && num == state().boundariesCrossed) branches_computed = true;
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:124
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:123
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection branchesFromFinally() {
     if(branchesFromFinally_computed) {
       return branchesFromFinally_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     branchesFromFinally_value = branchesFromFinally_compute();
-if(isFinal && num == state().boundariesCrossed) branchesFromFinally_computed = true;
+      if(isFinal && num == state().boundariesCrossed) branchesFromFinally_computed = true;
     return branchesFromFinally_value;
   }
   /**
@@ -622,18 +699,18 @@ if(isFinal && num == state().boundariesCrossed) branchesFromFinally_computed = t
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:132
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:131
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection targetBranches() {
     if(targetBranches_computed) {
       return targetBranches_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     targetBranches_value = targetBranches_compute();
-if(isFinal && num == state().boundariesCrossed) targetBranches_computed = true;
+      if(isFinal && num == state().boundariesCrossed) targetBranches_computed = true;
     return targetBranches_value;
   }
   /**
@@ -656,18 +733,18 @@ if(isFinal && num == state().boundariesCrossed) targetBranches_computed = true;
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:140
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:139
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection escapedBranches() {
     if(escapedBranches_computed) {
       return escapedBranches_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     escapedBranches_value = escapedBranches_compute();
-if(isFinal && num == state().boundariesCrossed) escapedBranches_computed = true;
+      if(isFinal && num == state().boundariesCrossed) escapedBranches_computed = true;
     return escapedBranches_value;
   }
   /**
@@ -685,7 +762,7 @@ if(isFinal && num == state().boundariesCrossed) escapedBranches_computed = true;
   /**
    * @attribute syn
    * @aspect DA
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:665
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:666
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDAafter(Variable v) {
@@ -694,11 +771,11 @@ if(isFinal && num == state().boundariesCrossed) escapedBranches_computed = true;
     if(isDAafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafter_Variable_value = isDAafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
     return isDAafter_Variable_value;
   }
   /**
@@ -729,38 +806,30 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:913
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:914
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafterFinally(Variable v) {
-      ASTNode$State state = state();
-    boolean isDUafterFinally_Variable_value = isDUafterFinally_compute(v);
-    return isDUafterFinally_Variable_value;
+    ASTNode$State state = state();
+    try {  return getFinally().isDUafter(v);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDUafterFinally_compute(Variable v) {  return getFinally().isDUafter(v);  }
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:916
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:917
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDAafterFinally(Variable v) {
-      ASTNode$State state = state();
-    boolean isDAafterFinally_Variable_value = isDAafterFinally_compute(v);
-    return isDAafterFinally_Variable_value;
+    ASTNode$State state = state();
+    try {  return getFinally().isDAafter(v);  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDAafterFinally_compute(Variable v) {  return getFinally().isDAafter(v);  }
   protected java.util.Map isDUbefore_Variable_values;
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1184
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1185
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUbefore(Variable v) {
@@ -796,7 +865,7 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
         }
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
         isDUbefore_Variable_values.put(_parameters, new_isDUbefore_Variable_value);
       }
       else {
@@ -830,7 +899,7 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1220
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1221
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafter(Variable v) {
@@ -839,11 +908,11 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
     if(isDUafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUafter_Variable_value = isDUafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
     return isDUafter_Variable_value;
   }
   /**
@@ -868,7 +937,7 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
    * a type assignable to the given type.
    * @attribute syn
    * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:207
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:221
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean catchableException(TypeDecl type) {
@@ -877,11 +946,11 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
     if(catchableException_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)catchableException_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean catchableException_TypeDecl_value = catchableException_compute(type);
-if(isFinal && num == state().boundariesCrossed) catchableException_TypeDecl_values.put(_parameters, Boolean.valueOf(catchableException_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) catchableException_TypeDecl_values.put(_parameters, Boolean.valueOf(catchableException_TypeDecl_value));
     return catchableException_TypeDecl_value;
   }
   /**
@@ -906,11 +975,11 @@ if(isFinal && num == state().boundariesCrossed) catchableException_TypeDecl_valu
     if(canCompleteNormally_computed) {
       return canCompleteNormally_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     canCompleteNormally_value = canCompleteNormally_compute();
-if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
+      if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
     return canCompleteNormally_value;
   }
   /**
@@ -926,33 +995,25 @@ if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = t
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:208
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:200
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt break_label() {
-      ASTNode$State state = state();
-    soot.jimple.Stmt break_label_value = break_label_compute();
-    return break_label_value;
+    ASTNode$State state = state();
+    try {  return label_finally();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private soot.jimple.Stmt break_label_compute() {  return label_finally();  }
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:232
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:225
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt continue_label() {
-      ASTNode$State state = state();
-    soot.jimple.Stmt continue_label_value = continue_label_compute();
-    return continue_label_value;
+    ASTNode$State state = state();
+    try {  return label_finally();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private soot.jimple.Stmt continue_label_compute() {  return label_finally();  }
   /**
    * @apilevel internal
    */
@@ -971,11 +1032,11 @@ if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = t
     if(label_begin_computed) {
       return label_begin_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_begin_value = label_begin_compute();
-if(isFinal && num == state().boundariesCrossed) label_begin_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_begin_computed = true;
     return label_begin_value;
   }
   /**
@@ -1000,11 +1061,11 @@ if(isFinal && num == state().boundariesCrossed) label_begin_computed = true;
     if(label_block_end_computed) {
       return label_block_end_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_block_end_value = label_block_end_compute();
-if(isFinal && num == state().boundariesCrossed) label_block_end_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_block_end_computed = true;
     return label_block_end_value;
   }
   /**
@@ -1029,11 +1090,11 @@ if(isFinal && num == state().boundariesCrossed) label_block_end_computed = true;
     if(label_end_computed) {
       return label_end_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_end_value = label_end_compute();
-if(isFinal && num == state().boundariesCrossed) label_end_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_end_computed = true;
     return label_end_value;
   }
   /**
@@ -1058,11 +1119,11 @@ if(isFinal && num == state().boundariesCrossed) label_end_computed = true;
     if(label_finally_computed) {
       return label_finally_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_finally_value = label_finally_compute();
-if(isFinal && num == state().boundariesCrossed) label_finally_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_finally_computed = true;
     return label_finally_value;
   }
   /**
@@ -1087,11 +1148,11 @@ if(isFinal && num == state().boundariesCrossed) label_finally_computed = true;
     if(label_finally_block_computed) {
       return label_finally_block_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_finally_block_value = label_finally_block_compute();
-if(isFinal && num == state().boundariesCrossed) label_finally_block_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_finally_block_computed = true;
     return label_finally_block_value;
   }
   /**
@@ -1116,11 +1177,11 @@ if(isFinal && num == state().boundariesCrossed) label_finally_block_computed = t
     if(label_exception_handler_computed) {
       return label_exception_handler_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_exception_handler_value = label_exception_handler_compute();
-if(isFinal && num == state().boundariesCrossed) label_exception_handler_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_exception_handler_computed = true;
     return label_exception_handler_value;
   }
   /**
@@ -1145,11 +1206,11 @@ if(isFinal && num == state().boundariesCrossed) label_exception_handler_computed
     if(label_catch_end_computed) {
       return label_catch_end_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_catch_end_value = label_catch_end_compute();
-if(isFinal && num == state().boundariesCrossed) label_catch_end_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_catch_end_computed = true;
     return label_catch_end_value;
   }
   /**
@@ -1161,16 +1222,12 @@ if(isFinal && num == state().boundariesCrossed) label_catch_end_computed = true;
    * @aspect Statements
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:347
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean needsFinallyTrap() {
-      ASTNode$State state = state();
-    boolean needsFinallyTrap_value = needsFinallyTrap_compute();
-    return needsFinallyTrap_value;
+    ASTNode$State state = state();
+    try {  return getNumCatchClause() != 0 || enclosedByExceptionHandler();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean needsFinallyTrap_compute() {  return getNumCatchClause() != 0 || enclosedByExceptionHandler();  }
   /**
    * @apilevel internal
    */
@@ -1182,29 +1239,47 @@ if(isFinal && num == state().boundariesCrossed) label_catch_end_computed = true;
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:451
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:466
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayList exceptionRanges() {
     if(exceptionRanges_computed) {
       return exceptionRanges_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     exceptionRanges_value = exceptionRanges_compute();
-if(isFinal && num == state().boundariesCrossed) exceptionRanges_computed = true;
+      if(isFinal && num == state().boundariesCrossed) exceptionRanges_computed = true;
     return exceptionRanges_value;
   }
   /**
    * @apilevel internal
    */
   private ArrayList exceptionRanges_compute() {  return new ArrayList();  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {
+		if (getBlock().modifiedInScope(var))
+			return true;
+		for (CatchClause cc : getCatchClauseList())
+			if (cc.modifiedInScope(var))
+				return true;
+		return hasFinally() && getFinally().modifiedInScope(var);
+	}
+    finally {
+    }
+  }
   protected java.util.Map handlesException_TypeDecl_values;
   /**
    * @attribute inh
    * @aspect ExceptionHandling
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:35
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:49
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean handlesException(TypeDecl exceptionType) {
@@ -1213,11 +1288,11 @@ if(isFinal && num == state().boundariesCrossed) exceptionRanges_computed = true;
     if(handlesException_TypeDecl_values.containsKey(_parameters)) {
       return ((Boolean)handlesException_TypeDecl_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean handlesException_TypeDecl_value = getParent().Define_boolean_handlesException(this, null, exceptionType);
-if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values.put(_parameters, Boolean.valueOf(handlesException_TypeDecl_value));
+      if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values.put(_parameters, Boolean.valueOf(handlesException_TypeDecl_value));
     return handlesException_TypeDecl_value;
   }
   /**
@@ -1238,11 +1313,11 @@ if(isFinal && num == state().boundariesCrossed) handlesException_TypeDecl_values
     if(typeError_computed) {
       return typeError_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeError_value = getParent().Define_TypeDecl_typeError(this, null);
-if(isFinal && num == state().boundariesCrossed) typeError_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeError_computed = true;
     return typeError_value;
   }
   /**
@@ -1263,11 +1338,11 @@ if(isFinal && num == state().boundariesCrossed) typeError_computed = true;
     if(typeRuntimeException_computed) {
       return typeRuntimeException_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     typeRuntimeException_value = getParent().Define_TypeDecl_typeRuntimeException(this, null);
-if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = true;
+      if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = true;
     return typeRuntimeException_value;
   }
   /**
@@ -1277,40 +1352,41 @@ if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean enclosedByExceptionHandler() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean enclosedByExceptionHandler_value = getParent().Define_boolean_enclosedByExceptionHandler(this, null);
     return enclosedByExceptionHandler_value;
   }
   /**
    * @attribute inh
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:464
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:479
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeThrowable() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
     return typeThrowable_value;
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:664
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:665
    * @apilevel internal
    */
   public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
     if(caller == getFinallyOptNoTransform()) {
       return isDAbefore(v);
     }
-    if(caller == getCatchClauseListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return getBlock().isDAbefore(v);
-    }
-    if(caller == getBlockNoTransform()) {
+    else if(caller == getCatchClauseListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return getBlock().isDAbefore(v);
+  }
+    else if(caller == getBlockNoTransform()) {
       return isDAbefore(v);
     }
-    return getParent().Define_boolean_isDAbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1211
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1212
    * @apilevel internal
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
@@ -1322,23 +1398,24 @@ if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = 
         return false;
     return true;
   }
-    if(caller == getCatchClauseListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    else if(caller == getCatchClauseListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     if(!getBlock().isDUafter(v))
       return false;
     if(!getBlock().isDUeverywhere(v))
       return false;
     return true;
   }
-}
-    if(caller == getBlockNoTransform()) {
+  }
+    else if(caller == getBlockNoTransform()) {
       return isDUbefore(v);
     }
-    return getParent().Define_boolean_isDUbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:188
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:202
    * @apilevel internal
    */
   public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
@@ -1350,15 +1427,16 @@ if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = 
       return true;
     return handlesException(exceptionType);
   }
-    if(caller == getCatchClauseListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    else if(caller == getCatchClauseListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     if(hasFinally() && !getFinally().canCompleteNormally())
       return true;
     return handlesException(exceptionType);
   }
-}
-    return getParent().Define_boolean_handlesException(this, caller, exceptionType);
+  }
+    else {      return getParent().Define_boolean_handlesException(this, caller, exceptionType);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:121
@@ -1368,19 +1446,20 @@ if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = 
     if(caller == getFinallyOptNoTransform()) {
       return reachable();
     }
-    if(caller == getBlockNoTransform()) {
+    else if(caller == getBlockNoTransform()) {
       return reachable();
     }
-    return getParent().Define_boolean_reachable(this, caller);
+    else {      return getParent().Define_boolean_reachable(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:128
    * @apilevel internal
    */
   public boolean Define_boolean_reachableCatchClause(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
-    if(caller == getCatchClauseListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    if(caller == getCatchClauseListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     for(int i = 0; i < childIndex; i++)
       if(getCatchClause(i).handles(exceptionType))
         return false;
@@ -1390,8 +1469,9 @@ if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = 
       return true;
     return false;
   }
-}
-    return getParent().Define_boolean_reachableCatchClause(this, caller, exceptionType);
+  }
+    else {      return getParent().Define_boolean_reachableCatchClause(this, caller, exceptionType);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:156
@@ -1401,14 +1481,15 @@ if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = 
     if(caller == getFinallyOptNoTransform()) {
       return reachable();
     }
-    if(caller == getCatchClauseListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
+    else if(caller == getCatchClauseListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return reachable();
+  }
+    else if(caller == getBlockNoTransform()) {
       return reachable();
     }
-    if(caller == getBlockNoTransform()) {
-      return reachable();
+    else {      return getParent().Define_boolean_reportUnreachable(this, caller);
     }
-    return getParent().Define_boolean_reportUnreachable(this, caller);
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:353
@@ -1418,21 +1499,58 @@ if(isFinal && num == state().boundariesCrossed) typeRuntimeException_computed = 
     if(caller == getBlockNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    else {      return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:447
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:462
    * @apilevel internal
    */
   public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
-    if(caller == getCatchClauseListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
+    if(caller == getCatchClauseListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return exceptionRanges();
+  }
+    else if(caller == getBlockNoTransform()) {
       return exceptionRanges();
     }
-    if(caller == getBlockNoTransform()) {
-      return exceptionRanges();
+    else {      return getParent().Define_ArrayList_exceptionRanges(this, caller);
     }
-    return getParent().Define_ArrayList_exceptionRanges(this, caller);
+  }
+  /**
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:138
+   * @apilevel internal
+   */
+  public Collection<TypeDecl> Define_Collection_TypeDecl__caughtExceptions(ASTNode caller, ASTNode child) {
+    if(caller == getCatchClauseListNoTransform())  { 
+    int index = caller.getIndexOfChild(child);
+    {
+		Collection<TypeDecl> excp = new HashSet<TypeDecl>();
+		getBlock().collectExceptions(excp, this);
+		Collection<TypeDecl> caught = new LinkedList<TypeDecl>();
+		Iterator<TypeDecl> iter = excp.iterator();
+		while (iter.hasNext()) {
+			TypeDecl exception = iter.next();
+			// this catch clause handles the exception
+			if (!getCatchClause(index).handles(exception))
+				continue;
+			// no previous catch clause handles the exception
+			boolean already = false;
+			for (int i = 0; i < index; ++i) {
+				if (getCatchClause(i).handles(exception)) {
+					already = true;
+					break;
+				}
+			}
+			if (!already) {
+				caught.add(exception);
+			}
+		}
+		return caught;
+	}
+  }
+    else {      return getParent().Define_Collection_TypeDecl__caughtExceptions(this, caller);
+    }
   }
   /**
    * @apilevel internal

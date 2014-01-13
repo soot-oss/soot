@@ -1,3 +1,53 @@
+Improvements and API changes in HEAD
+
+1. Added support for Android. There is a new experimental module called 
+   Dexpler which converts Dalvik bytecode to Jimple. This enables Soot
+   to directly read bytecode from Android applications. 
+   TODO Further comments...
+
+2. Changed default throw analysis from "pedantic" to "unit based". This
+   changes the default the assumptions that Soot makes about which
+   statements can throw what kinds of exceptions. "unit based" is more
+   optimistic than "pedantic" but should also be more realistic in
+   most settings. (see the documentation on command line options
+   for details)  
+   
+3. Added option -ire to ignore field and method resolution errors.
+   Missing methods and fields will unsoundly be ignored. 
+   
+4. Added option -oaat which will instruct Soot to process one class
+   at a time. Soot will load only one class at a time from the
+   -process-dir and then run the jtp pack over all bodies in that class.
+   This is repeated until all classes are processed. 
+
+5. Ben Bellamy modified the fast type assigner to handle variables that
+   during their lifetime both point to array and non-array typed objects.
+   This is necessary for dalvik-to-Jimple code generation.
+   
+6. Soot now requires Java 1.6 to build and run. 
+
+7. Changed the definition of EntryPoints.application() to just return
+   the empty set if no main class is present.
+   
+8. Soot now support Java 7 source-code syntax. 
+
+9. Improves the geometric encoding points-to solver. 
+   Bug fixes for processing the functions with more than 2^63 contexts.
+   New querying interface is added specially for retrieving context-sensitive points-to information.
+   Performance is significantly improved. Now it can analyze DaCapo-2006 with JDK1.6. 
+   Precision is slightly better due to new fake information filtering algorithm. 
+   Code is refactored to be more readable.
+
+10. Added support for plugins. This way it is possible to integrate new
+    analysis without modifying Soot.
+
+11. Host now supports two new convenience methods getJavaSourceStartLineNumber() and
+    getJavaSourceStartColumnNumber() which return line/column info on a
+    best-effort basis.
+
+12. EquivalentValue is never nested now. This eliminates the need of
+    getDeepestValue().
+
 Improvements and API changes in version 2.5.0
 
 1. Modified SourceLocator so that it will automatically load a SootClass

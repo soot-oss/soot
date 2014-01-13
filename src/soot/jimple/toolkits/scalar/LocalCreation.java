@@ -32,7 +32,7 @@ import soot.util.*;
 import java.util.*;
 
 /**
- * provides an easy interface to handle new var-names. New names are automaticly
+ * provides an easy interface to handle new var-names. New names are automatically
  * added to the chain, and the provided locals are guaranteed to have a unique name.
  */
 public class LocalCreation {
@@ -75,7 +75,7 @@ public class LocalCreation {
   /**
    * returns a new local with the prefix given to the constructor (or the
    * default-prefix if none has been given) and the given type.<br>
-   * The returned local will automaticly added to the locals-chain.<br>
+   * The returned local will automatically added to the locals-chain.<br>
    * The local will be of the form: <tt>prefix</tt><i>X</i> (where the last
    * <i>X</i> is a number, so the localname is unique).
    *
@@ -88,7 +88,7 @@ public class LocalCreation {
 
   /**
    * returns a new local with the given prefix and the given type.<br>
-   * the returned local will automaticly added to the locals-chain.
+   * the returned local will automatically added to the locals-chain.
    * The local will be of the form: <tt>prefix</tt><i>X</i> (where the last
    * <i>X</i> is a number, so the localname is unique).
    *

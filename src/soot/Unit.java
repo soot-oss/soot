@@ -60,7 +60,7 @@ public interface Unit extends Switchable, Host, Serializable, Context
     
     /** Returns a list of Boxes containing any Value either used or defined
      * in this Unit. */
-    public List getUseAndDefBoxes();
+    public List<ValueBox> getUseAndDefBoxes();
 
     public Object clone();
 

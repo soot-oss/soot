@@ -18,17 +18,11 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -76,8 +70,7 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.options.CGOptions;
-import soot.tagkit.Host;
-import soot.tagkit.SourceLnPosTag;
+import soot.options.Options;
 import soot.util.LargeNumberedMap;
 import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
@@ -117,7 +110,7 @@ public final class OnFlyCallGraphBuilder
 	                    }
 	                }
 	                VirtualCallSite site = new VirtualCallSite( s, source, null, null, Kind.CLINIT );
-	                List<VirtualCallSite> sites = (List<VirtualCallSite>) stringConstToSites.get(constant);
+	                List<VirtualCallSite> sites = stringConstToSites.get(constant);
 	                if (sites == null) {
 	                    stringConstToSites.put(constant, sites = new ArrayList<VirtualCallSite>());
 	                    stringConstants.add(constant);
@@ -320,7 +313,7 @@ public final class OnFlyCallGraphBuilder
 				PackManager.v().getPack("wjap").add(new Transform("wjap.guards",new SceneTransformer() {
 					
 					@Override
-					protected void internalTransform(String phaseName, Map options) {
+					protected void internalTransform(String phaseName, Map<String, String> options) {
 						for (Guard g : guards) {
 							insertGuard(g);
 						}
@@ -349,14 +342,14 @@ public final class OnFlyCallGraphBuilder
 				body.getUnits().insertBefore(assignStmt, insertionPoint);
 				
 				//exc.<init>(message)
-				SootMethodRef cref = runtimeExceptionType.getSootClass().getMethod("<init>", Collections.singletonList(RefType.v("java.lang.String"))).makeRef();
+				SootMethodRef cref = runtimeExceptionType.getSootClass().getMethod("<init>", Collections.<Type>singletonList(RefType.v("java.lang.String"))).makeRef();
 				SpecialInvokeExpr constructorInvokeExpr = Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref, StringConstant.v(guard.message));
 				InvokeStmt initStmt = Jimple.v().newInvokeStmt(constructorInvokeExpr);
 				body.getUnits().insertAfter(initStmt, assignStmt);
 				
 				if(options.guards().equals("print")) {
 					//exc.printStackTrace();
-					VirtualInvokeExpr printStackTraceExpr = Jimple.v().newVirtualInvokeExpr(exceptionLocal, Scene.v().getSootClass("java.lang.Throwable").getMethod("printStackTrace", Collections.emptyList()).makeRef());
+					VirtualInvokeExpr printStackTraceExpr = Jimple.v().newVirtualInvokeExpr(exceptionLocal, Scene.v().getSootClass("java.lang.Throwable").getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
 					InvokeStmt printStackTraceStmt = Jimple.v().newInvokeStmt(printStackTraceExpr);
 					body.getUnits().insertAfter(printStackTraceStmt, initStmt);
 				} else if(options.guards().equals("throw")) {
@@ -377,7 +370,7 @@ public final class OnFlyCallGraphBuilder
     private final LargeNumberedMap methodToReceivers = new LargeNumberedMap( Scene.v().getMethodNumberer() ); // SootMethod -> List(Local)
     public LargeNumberedMap methodToReceivers() { return methodToReceivers; }
 
-    private final SmallNumberedMap stringConstToSites = new SmallNumberedMap( Scene.v().getLocalNumberer() ); // Local -> List(VirtualCallSite)
+    private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites = new SmallNumberedMap<List<VirtualCallSite>>( Scene.v().getLocalNumberer() ); // Local -> List(VirtualCallSite)
     private final LargeNumberedMap methodToStringConstants = new LargeNumberedMap( Scene.v().getMethodNumberer() ); // SootMethod -> List(Local)
     public LargeNumberedMap methodToStringConstants() { return methodToStringConstants; }
 
@@ -435,11 +428,13 @@ public final class OnFlyCallGraphBuilder
         for( Iterator siteIt = ((Collection) receiverToSites.get( receiver )).iterator(); siteIt.hasNext(); ) {
             final VirtualCallSite site = (VirtualCallSite) siteIt.next();
             InstanceInvokeExpr iie = site.iie();
-            if( site.kind() == Kind.THREAD 
-            && !fh.canStoreType( type, clRunnable ) )
+            if( site.kind() == Kind.THREAD && !fh.canStoreType( type, clRunnable))
+                continue;
+            if( site.kind() == Kind.ASYNCTASK && !fh.canStoreType( type, clAsyncTask ))
                 continue;
 
-            if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD ) {
+            if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD
+            		&& site.kind != Kind.ASYNCTASK ) {
             	SootMethod target = VirtualCalls.v().resolveSpecial( 
                             (SpecialInvokeExpr) site.iie(),
                             site.subSig(),
@@ -471,7 +466,7 @@ public final class OnFlyCallGraphBuilder
         return stringConstToSites.get(stringConst) != null;
     }
     public void addStringConstant( Local l, Context srcContext, String constant ) {
-        for( Iterator siteIt = ((Collection) stringConstToSites.get( l )).iterator(); siteIt.hasNext(); ) {
+        for( Iterator siteIt = (stringConstToSites.get( l )).iterator(); siteIt.hasNext(); ) {
             final VirtualCallSite site = (VirtualCallSite) siteIt.next();
             if( constant == null ) {
                 if( options.verbose() ) {
@@ -533,7 +528,7 @@ public final class OnFlyCallGraphBuilder
         findReceivers(m, b);
     }
     private void findReceivers(SootMethod m, Body b) {
-        for( Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
+        for( Iterator<Unit> sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if (s.containsInvokeExpr()) {
                 InvokeExpr ie = s.getInvokeExpr();
@@ -549,18 +544,29 @@ public final class OnFlyCallGraphBuilder
                         addVirtualCallSite( s, m, receiver, iie, sigRun,
                                 Kind.THREAD );
                     }
+                    if( subSig == sigExecute  ) {
+                        addVirtualCallSite( s, m, receiver, iie, sigDoInBackground,
+                                Kind.ASYNCTASK );
+                    }
                 } else {
                 	SootMethod tgt = ie.getMethod();
-                	addEdge(m, s, tgt);
-                	if( tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
-                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
-                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>" )
-                			||  tgt.getSignature().equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>" ) ) {
-                		
-                		Local receiver = (Local) ie.getArg(0);
-                		addVirtualCallSite( s, m, receiver, null, sigObjRun,
-                				Kind.PRIVILEGED );
-                	}                    	
+                	if(tgt!=null) {
+	                	addEdge(m, s, tgt);
+	                	String signature = tgt.getSignature();
+	                	if( signature.equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction)>" )
+	                			||  signature.equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction)>" )
+	                			||  signature.equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedAction,java.security.AccessControlContext)>" )
+	                			||  signature.equals( "<java.security.AccessController: java.lang.Object doPrivileged(java.security.PrivilegedExceptionAction,java.security.AccessControlContext)>" ) ) {
+	                		
+	                		Local receiver = (Local) ie.getArg(0);
+	                		addVirtualCallSite( s, m, receiver, null, sigObjRun,
+	                				Kind.PRIVILEGED );
+	                	}
+                	} else {
+                		if(!Options.v().ignore_resolution_errors()) {
+                			throw new InternalError("Unresolved target "+ie.getMethod()+". Resolution error should have occured earlier.");
+                		}
+                	}
                 }
             }
         }
@@ -575,7 +581,7 @@ public final class OnFlyCallGraphBuilder
             handleInit(source, scl);
         }
         Body b = source.retrieveActiveBody();
-        for( Iterator sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
+        for( Iterator<Unit> sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = s.getInvokeExpr();
@@ -631,8 +637,7 @@ public final class OnFlyCallGraphBuilder
 
     private void processNewMethodContext( MethodOrMethodContext momc ) {
         SootMethod m = momc.method();
-        Object ctxt = momc.context();
-        Iterator it = cicg.edgesOutOf(m);
+        Iterator<Edge> it = cicg.edgesOutOf(m);
         while( it.hasNext() ) {
             Edge e = (Edge) it.next();
             cm.addStaticEdge( momc, e.srcUnit(), e.tgt(), e.kind() );
@@ -657,11 +662,13 @@ public final class OnFlyCallGraphBuilder
                 }
             } else {
                 SootClass sootcls = Scene.v().getSootClass( cls );
-                if( !sootcls.isApplicationClass() ) {
-                    sootcls.setLibraryClass();
-                }
-                for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
-                    addEdge( src, srcUnit, clinit, Kind.CLINIT );
+                if (!sootcls.isPhantomClass()) {
+	                if( !sootcls.isApplicationClass() ) {
+	                    sootcls.setLibraryClass();
+	                }
+	                for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
+	                    addEdge( src, srcUnit, clinit, Kind.CLINIT );
+	                }
                 }
 
             }
@@ -691,11 +698,16 @@ public final class OnFlyCallGraphBuilder
         findOrAdd( "void start()" );
     protected final NumberedString sigRun = Scene.v().getSubSigNumberer().
         findOrAdd( "void run()" );
+    protected final NumberedString sigExecute = Scene.v().getSubSigNumberer().
+            findOrAdd( "android.os.AsyncTask execute(java.lang.Object[])" );
     protected final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Object run()" );
+    protected final NumberedString sigDoInBackground = Scene.v().getSubSigNumberer().
+            findOrAdd( "java.lang.Object doInBackground(java.lang.Object[])" );
     protected final NumberedString sigForName = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Class forName(java.lang.String)" );
     protected final RefType clRunnable = RefType.v("java.lang.Runnable");
+    protected final RefType clAsyncTask = RefType.v("android.os.AsyncTask");
     
 }
 

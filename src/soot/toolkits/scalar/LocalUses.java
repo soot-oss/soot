@@ -48,7 +48,7 @@ public interface LocalUses
      *             it defines.
      *   @return  a list of the Local's uses.
      */    
-    public List getUsesOf(Unit s);
+    public List<UnitValueBoxPair> getUsesOf(Unit s);
 }
 
 

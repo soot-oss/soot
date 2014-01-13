@@ -25,10 +25,16 @@
 
 package soot.jimple;
 
-import soot.*;
-import soot.util.Chain;
+import java.util.Iterator;
 
-import java.util.*;
+import soot.Body;
+import soot.Local;
+import soot.RefType;
+import soot.SootMethod;
+import soot.Type;
+import soot.Unit;
+import soot.VoidType;
+import soot.util.Chain;
 
 /** Implementation of the Body class for the Jimple IR. */
 public class JimpleBody extends StmtBody
@@ -65,9 +71,81 @@ public class JimpleBody extends StmtBody
     {
         super.validate();
         validateIdentityStatements();
+        validateTypes();
+        
+        // A jimple body must contain a return statement
+        validateReturnStatement();
+        
+        validateSelfLoops();
     }
     
+    private void validateSelfLoops() {
+    	for (Unit u : this.getUnits())
+    		if (u instanceof GotoStmt) {
+    			GotoStmt gstmt = (GotoStmt) u;
+    			if (gstmt.getTarget() == u)
+    				throw new RuntimeException("Jumps to self are not allowed");
+    		}
+    		else if (u instanceof IfStmt) {
+    			IfStmt istmt = (IfStmt) u;
+    			if (istmt.getTarget() == u)
+    				throw new RuntimeException("Jumps to self are not allowed");
+    		}
+    }
+    
+    private void validateTypes() {
+		if(method!=null) {
+			if(!method.getReturnType().isAllowedInFinalCode()) {
+				throw new RuntimeException("return type not allowed in final code:"+method.getReturnType()
+				        +"\n method: "+ method
+				        +"\n body: \n" + this);
+			}
+			for(Type t: method.getParameterTypes()) {
+				if(!t.isAllowedInFinalCode()) {
+					throw new RuntimeException("parameter type not allowed in final code:"+t
+					        +"\n method: "+ method
+					        +"\n body: \n" + this);
+				}
+			}
+		}
+		for(Local l: localChain) {
+			Type t = l.getType();
+			if(!t.isAllowedInFinalCode()) {
+				throw new RuntimeException("(" + this.getMethod()+ ") local type not allowed in final code: " + t +" local: "+l +" body: \n"+ this);
+			}
+		}
+	}
+
     /**
+     * Checks that this Jimple body actually contains a return statement
+     */
+    private void validateReturnStatement() {
+		for (Unit u : this.getUnits())
+			if ((u instanceof ReturnStmt) || (u instanceof ReturnVoidStmt)
+					|| (u instanceof RetStmt)
+					|| (u instanceof ThrowStmt))
+				return;
+
+
+        // A method with return type 'void' can have an infinite loop 
+		// and no return statement:
+		//
+        //  public class Infinite {
+        //  public static void main(String[] args) {
+        //  int i = 0; while (true) {i += 1;}      } }
+        //
+        // Only check that the execution cannot fall off the code.
+        if (method.getReturnType() instanceof VoidType) {
+            Unit last = this.getUnits().getLast();
+            if (last instanceof GotoStmt || last instanceof ThrowStmt)
+                return;
+        }
+
+		throw new RuntimeException("Body of method " + this.getMethod().getSignature()
+				+ " does not contain a return statement");
+	}
+
+	/**
      * Checks the following invariants on this Jimple body:
      * <ol>
      * <li> this-references may only occur in instance methods
@@ -94,11 +172,15 @@ public class JimpleBody extends StmtBody
 						throw new RuntimeException("@this-assignment in a static method!");
 					}					
 					if(!firstStatement) {
-						throw new RuntimeException("@this-assignment statement should precede all other statements");
+						throw new RuntimeException("@this-assignment statement should precede all other statements"
+						        +"\n method: "+ method
+						        +"\n body: \n" + this);
 					}
 				} else if(identityStmt.getRightOp() instanceof ParameterRef) {
 					if(foundNonThisOrParamIdentityStatement) {
-						throw new RuntimeException("@param-assignment statements should precede all non-identity statements");
+						throw new RuntimeException("@param-assignment statements should precede all non-identity statements"
+						        +"\n method: "+ method
+						        +"\n body: \n" + this);
 					}
 				} else {
 					//@caughtexception statement					
@@ -117,7 +199,7 @@ public class JimpleBody extends StmtBody
     {
         int i = 0;
 
-        Iterator parIt = getMethod().getParameterTypes().iterator();
+        Iterator<Type> parIt = getMethod().getParameterTypes().iterator();
         while (parIt.hasNext())
         {
             Type t = (Type)parIt.next();
@@ -140,7 +222,7 @@ public class JimpleBody extends StmtBody
     /** Returns the first non-identity stmt in this body. */
     public Stmt getFirstNonIdentityStmt()
     {
-        Iterator it = getUnits().iterator();
+        Iterator<Unit> it = getUnits().iterator();
         Object o = null;
         while (it.hasNext())
             if (!((o = it.next()) instanceof IdentityStmt))

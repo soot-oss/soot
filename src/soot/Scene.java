@@ -29,9 +29,14 @@ package soot;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,6 +44,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
+import org.xmlpull.v1.XmlPullParser;
 
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.ContextSensitiveCallGraph;
@@ -55,8 +64,9 @@ import soot.util.Chain;
 import soot.util.HashChain;
 import soot.util.MapNumberer;
 import soot.util.Numberer;
-import soot.util.SingletonList;
 import soot.util.StringNumberer;
+import test.AXMLPrinter;
+import android.content.res.AXmlResourceParser;
 
 /** Manages the SootClasses of the application being analyzed. */
 public class Scene  //extends AbstractHost
@@ -78,6 +88,7 @@ public class Scene  //extends AbstractHost
         kindNumberer.add( Kind.SPECIAL );
         kindNumberer.add( Kind.CLINIT );
         kindNumberer.add( Kind.THREAD );
+        kindNumberer.add( Kind.ASYNCTASK );
         kindNumberer.add( Kind.FINALIZE );
         kindNumberer.add( Kind.INVOKE_FINALIZE );
         kindNumberer.add( Kind.PRIVILEGED );
@@ -113,15 +124,15 @@ public class Scene  //extends AbstractHost
     
     private final Map<String,Type> nameToClass = new HashMap<String,Type>();
 
-    ArrayNumberer kindNumberer = new ArrayNumberer();
-    ArrayNumberer typeNumberer = new ArrayNumberer();
-    ArrayNumberer methodNumberer = new ArrayNumberer();
+    ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<Kind>();
+    ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
+    ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
     Numberer unitNumberer = new MapNumberer();
     Numberer contextNumberer = null;
-    ArrayNumberer fieldNumberer = new ArrayNumberer();
-    ArrayNumberer classNumberer = new ArrayNumberer();
+    ArrayNumberer fieldNumberer = new ArrayNumberer<SootField>();
+    ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
     StringNumberer subSigNumberer = new StringNumberer();
-    ArrayNumberer localNumberer = new ArrayNumberer();
+    ArrayNumberer<Local> localNumberer = new ArrayNumberer<Local>();
 
     private Hierarchy activeHierarchy;
     private FastHierarchy activeFastHierarchy;
@@ -185,13 +196,13 @@ public class Scene  //extends AbstractHost
         return mainClass;
     }
     public SootMethod getMainMethod() {
-        if(mainClass==null) {
+        if(!hasMainClass()) {
             throw new RuntimeException("There is no main class set!");
         } 
-        if (!mainClass.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v())) {
+        if (!mainClass.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v())) {
             throw new RuntimeException("Main class declares no main method!");
         }
-        return mainClass.getMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v());   
+        return mainClass.getMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v());   
     }
     
     
@@ -220,18 +231,179 @@ public class Scene  //extends AbstractHost
 	            	sootClassPath += File.pathSeparator + defaultSootClassPath;
 	            } 
 	            //else, leave it as it is
-	        }        
+	        }   
+	        
+	        //add process-dirs
+	        List<String> process_dir = Options.v().process_dir();
+	        StringBuffer pds = new StringBuffer();
+	        for (String path : process_dir) {
+	        	if(!sootClassPath.contains(path)) {
+		        	pds.append(path);
+		        	pds.append(File.pathSeparator);
+	        	}
+			}
+	        sootClassPath = pds + sootClassPath;
         }
+
+
 
         return sootClassPath;
     }
-    
+
+    /**
+     * Returns the max Android API version number available
+     * in directory 'dir'
+     * @param dir
+     * @return
+     */
+    private int getMaxAPIAvailable(String dir) {
+        File d = new File(dir);
+        if (!d.exists())
+        	throw new RuntimeException("The Android platform directory you have"
+        			+ "specified (" + dir + ") does not exist. Please check.");
+        
+        File[] files = d.listFiles();
+        int maxApi = -1;
+        for (File f: files) {
+            String name = f.getName();
+            if (f.isDirectory() && name.startsWith("android-")) {
+                int v = Integer.decode(name.split("android-")[1]);
+                if (v > maxApi)
+                    maxApi = v;
+            }
+        }
+        return maxApi;
+    }
+
+	public String getAndroidJarPath(String jars, String apk) {
+		File jarsF = new File(jars);
+		File apkF = new File(apk);
+
+		int APIVersion = -1;
+		String jarPath = "";
+
+		int maxAPI = getMaxAPIAvailable(jars);
+
+		if (!jarsF.exists())
+			throw new RuntimeException("file '" + jars + "' does not exist!");
+
+		if (!apkF.exists())
+			throw new RuntimeException("file '" + apk + "' does not exist!");
+
+		// get AndroidManifest
+		InputStream manifestIS = null;
+		ZipFile archive = null;
+		try {
+		try {
+			archive = new ZipFile(apkF);
+			for (@SuppressWarnings("rawtypes") Enumeration entries = archive.entries(); entries.hasMoreElements();) {
+				ZipEntry entry = (ZipEntry) entries.nextElement();
+				String entryName = entry.getName();
+				// We are dealing with the Android manifest
+				if (entryName.equals("AndroidManifest.xml")) {
+					manifestIS = archive.getInputStream(entry);
+					break;
+				}
+			}
+		} catch (Exception e) {
+			throw new RuntimeException("Error when looking for manifest in apk: " + e);
+		}
+		final int defaultSdkVersion = 15;
+		if (manifestIS == null) {
+			G.v().out.println("Could not find sdk version in Android manifest! Using default: "+defaultSdkVersion);
+			APIVersion = defaultSdkVersion;
+		} else {
+
+			// process AndroidManifest.xml
+			int sdkTargetVersion = -1;
+			int minSdkVersion = -1;
+			try {
+				AXmlResourceParser parser = new AXmlResourceParser();
+				parser.open(manifestIS);
+				int depth = 0;
+				while (true) {
+					int type = parser.next();
+					if (type == XmlPullParser.END_DOCUMENT) {
+						// throw new RuntimeException
+						// ("target sdk version not found in Android manifest ("+
+						// apkF +")");
+						break;
+					}
+					switch (type) {
+					case XmlPullParser.START_DOCUMENT: {
+						break;
+					}
+					case XmlPullParser.START_TAG: {
+						depth++;
+						String tagName = parser.getName();
+						if (depth == 2 && tagName.equals("uses-sdk")) {
+							for (int i = 0; i != parser.getAttributeCount(); ++i) {
+								String attributeName = parser.getAttributeName(i);
+								String attributeValue = AXMLPrinter.getAttributeValue(parser, i);
+								if (attributeName.equals("targetSdkVersion")) {
+									sdkTargetVersion = Integer.parseInt(attributeValue);
+								} else if (attributeName.equals("minSdkVersion")) {
+									minSdkVersion = Integer.parseInt(attributeValue);
+								}
+							}
+						}
+						break;
+					}
+					case XmlPullParser.END_TAG:
+						depth--;
+						break;
+					case XmlPullParser.TEXT:
+						break;
+					}
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			if (sdkTargetVersion != -1) {
+			    if (sdkTargetVersion > maxAPI
+			            && minSdkVersion != -1
+			            && minSdkVersion <= maxAPI) {
+			        G.v().out.println("warning: Android API version '"+ sdkTargetVersion +"' not available, using minApkVersion '"+ minSdkVersion +"' instead");
+			        APIVersion = minSdkVersion;
+			    } else {
+			        APIVersion = sdkTargetVersion;
+			    }
+			} else if (minSdkVersion != -1) {
+				APIVersion = minSdkVersion;
+			} else {
+				G.v().out.println("Could not find sdk version in Android manifest! Using default: "+defaultSdkVersion);
+				APIVersion = defaultSdkVersion;
+			}
+			
+			if (APIVersion <= 2)
+					APIVersion = 3;
+		}
+
+		// get path to appropriate android.jar
+		jarPath = jars + File.separator + "android-" + APIVersion + File.separator + "android.jar";
+
+		// check that jar exists
+		File f = new File(jarPath);
+		if (!f.isFile())
+		    throw new RuntimeException("error: target android.jar ("+ jarPath +") does not exist.");
+
+		return jarPath;
+		}
+		finally {
+			if (archive != null)
+				try {
+					archive.close();
+				} catch (IOException e) {
+					throw new RuntimeException("Error when looking for manifest in apk: " + e);
+				}
+		}
+	}
+
 	public String defaultClassPath() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(System.getProperty("java.class.path")+File.pathSeparator);
         if(System.getProperty("os.name").equals("Mac OS X")) {
-	        //in Mac OS X, rt.jar is split into classes.jar and ui.jar
-	        sb.append(File.pathSeparator);
+	        //in older Mac OS X versions, rt.jar was split into classes.jar and ui.jar
 	        sb.append(System.getProperty("java.home"));
 	        sb.append(File.separator);
 	        sb.append("..");
@@ -248,16 +420,14 @@ public class Scene  //extends AbstractHost
 	        sb.append("Classes");
 	        sb.append(File.separator);
 	        sb.append("ui.jar");
-
-
-        } else {
-            sb.append(File.pathSeparator);
-            sb.append(System.getProperty("java.home"));
-            sb.append(File.separator);
-            sb.append("lib");
-            sb.append(File.separator);
-            sb.append("rt.jar");
+	        sb.append(File.pathSeparator);
         }
+        
+        sb.append(System.getProperty("java.home"));
+        sb.append(File.separator);
+        sb.append("lib");
+        sb.append(File.separator);
+        sb.append("rt.jar");
         
 		if(Options.v().whole_program() || Options.v().output_format()==Options.output_format_dava) {
 			//add jce.jar, which is necessary for whole program mode
@@ -265,8 +435,50 @@ public class Scene  //extends AbstractHost
 			sb.append(File.pathSeparator+
 				System.getProperty("java.home")+File.separator+"lib"+File.separator+"jce.jar");
 		}
+
+		String defaultClassPath = sb.toString();
 		
-		return sb.toString();
+		if (Options.v().src_prec() == Options.src_prec_apk) {
+			// check that android.jar is not in classpath
+			if (!defaultClassPath.contains ("android.jar")) {
+				String androidJars = Options.v().android_jars();
+				String forceAndroidJar = Options.v().force_android_jar();
+				if (androidJars.equals("") && forceAndroidJar.equals("")) {
+					throw new RuntimeException("You are analyzing an Android application but did not define android.jar. Options -android-jars or -force-android-jar should be used.");
+				}
+
+				String jarPath = "";
+				if (!forceAndroidJar.equals("")) {
+					jarPath = forceAndroidJar;
+				} else if (!androidJars.equals("")) {
+					List<String> classPathEntries = new LinkedList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
+					classPathEntries.addAll(Options.v().process_dir());
+					Set<String> targetApks = new HashSet<String>();
+					for (String entry : classPathEntries) {
+						if(entry.toLowerCase().endsWith(".apk"))	// on Windows, file names are case-insensitive
+							targetApks.add(entry);
+					}					
+					if (targetApks.size() == 0)
+						throw new RuntimeException("no apk file given");
+					else if (targetApks.size() > 1)
+						throw new RuntimeException("only one Android application can be analyzed when using option -android-jars.");
+					jarPath = getAndroidJarPath (androidJars, (String)targetApks.toArray()[0]);
+				}
+				if (jarPath.equals(""))
+					throw new RuntimeException("android.jar not found.");
+				File f = new File (jarPath);
+				if (!f.exists())
+					throw new RuntimeException("file '"+ jarPath +"' does not exist!");
+				else
+					G.v().out.println("Using '"+ jarPath +"' as android.jar");
+				defaultClassPath = jarPath + File.pathSeparator + defaultClassPath;
+
+			} else {
+				G.v().out.println("warning: defaultClassPath contains android.jar! Options -android-jars and -force-android-jar are ignored!");
+			}
+		}
+
+		return defaultClassPath;
 	}
 
 
@@ -501,8 +713,8 @@ public class Scene  //extends AbstractHost
 		} else if (allowsPhantomRefs() ||
 				   className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
 			SootClass c = new SootClass(className);
-			c.setPhantom(true);
 			addClass(c);
+            c.setPhantom(true);
 			return c;
 		} else {
 			throw new RuntimeException(System.getProperty("line.separator")
@@ -788,14 +1000,14 @@ public class Scene  //extends AbstractHost
         return getPhantomRefs();
     }
     public Numberer kindNumberer() { return kindNumberer; }
-    public ArrayNumberer getTypeNumberer() { return typeNumberer; }
-    public ArrayNumberer getMethodNumberer() { return methodNumberer; }
+    public ArrayNumberer<Type> getTypeNumberer() { return typeNumberer; }
+    public ArrayNumberer<SootMethod> getMethodNumberer() { return methodNumberer; }
     public Numberer getContextNumberer() { return contextNumberer; }
     public Numberer getUnitNumberer() { return unitNumberer; }
     public ArrayNumberer getFieldNumberer() { return fieldNumberer; }
-    public ArrayNumberer getClassNumberer() { return classNumberer; }
+    public ArrayNumberer<SootClass> getClassNumberer() { return classNumberer; }
     public StringNumberer getSubSigNumberer() { return subSigNumberer; }
-    public ArrayNumberer getLocalNumberer() { return localNumberer; }
+    public ArrayNumberer<Local> getLocalNumberer() { return localNumberer; }
 
     public void setContextNumberer( Numberer n ) {
         if( contextNumberer != null )
@@ -833,7 +1045,7 @@ public class Scene  //extends AbstractHost
      * Sets the {@link ThrowAnalysis} to be used by default when
      * constructing CFGs which include exceptional control flow.
      *
-     * @param the default {@link ThrowAnalysis}.
+     * @param ta the default {@link ThrowAnalysis}.
      */
     public void setDefaultThrowAnalysis(ThrowAnalysis ta) 
     {
@@ -966,8 +1178,6 @@ public class Scene  //extends AbstractHost
 
 	addBasicClass("java.lang.ref.Finalizer");
 	
-	addBasicClass("java.dyn.InvokeDynamic");
-
     }
 
     public void addBasicClass(String name) {
@@ -1008,7 +1218,7 @@ public class Scene  //extends AbstractHost
     	
     	Set<String> classNames = new HashSet<String>();
     	if(log!=null && log.length()>0) {
-			BufferedReader reader;
+			BufferedReader reader = null;
 			String line="";
 			try {
 				reader = new BufferedReader(new InputStreamReader(new FileInputStream(log)));
@@ -1032,6 +1242,14 @@ public class Scene  //extends AbstractHost
 				}
 			} catch (Exception e) {
 				throw new RuntimeException("Line: '"+line+"'", e);
+			}
+			finally {
+				if (reader != null)
+					try {
+						reader.close();
+					} catch (IOException e) {
+						throw new RuntimeException(e);
+					}
 			}
     	}
     	
@@ -1162,23 +1380,28 @@ public class Scene  //extends AbstractHost
         }
     }
 
-    public boolean isExcluded(SootClass sc) {
-    	String name = sc.getName();
-    	for(String pkg: excludedPackages){
-			if(name.startsWith(pkg)) {
-    			return true;
-    		}
-    	}
+	public boolean isExcluded(SootClass sc) {
+		String name = sc.getName();
+		for (String pkg : excludedPackages) {
+			if (name.startsWith(pkg)) {
+				for (String inc : (List<String>) Options.v().include()) {
+					if (name.startsWith(inc)) {
+						return false;
+					}
+				}
+				return true;
+			}
+		}
 		return false;
 	}
 
-	ArrayList<String> pkgList;
+	List<String> pkgList;
 
-    public void setPkgList(ArrayList<String> list){
+    public void setPkgList(List<String> list){
         pkgList = list;
     }
 
-    public ArrayList<String> getPkgList(){
+    public List<String> getPkgList(){
         return pkgList;
     }
 
@@ -1213,7 +1436,7 @@ public class Scene  //extends AbstractHost
     }
     /** Returns the list of SootClasses that have been resolved at least to 
      * the level specified. */
-    public List/*SootClass*/<SootClass> getClasses(int desiredLevel) {
+    public List<SootClass> getClasses(int desiredLevel) {
         List<SootClass> ret = new ArrayList<SootClass>();
         for( Iterator<SootClass> clIt = getClasses().iterator(); clIt.hasNext(); ) {
             final SootClass cl = (SootClass) clIt.next();
@@ -1235,7 +1458,7 @@ public class Scene  //extends AbstractHost
         	// try to infer a main class from the command line if none is given 
         	for (Iterator<String> classIter = Options.v().classes().iterator(); classIter.hasNext();) {
                     SootClass c = getSootClass(classIter.next());
-                    if (c.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
+                    if (c.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
                     {
                         G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
                         setMainClass(c);
@@ -1246,7 +1469,7 @@ public class Scene  //extends AbstractHost
         	// try to infer a main class from the usual classpath if none is given 
         	for (Iterator<SootClass> classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
                     SootClass c = (SootClass) classIter.next();
-                    if (c.declaresMethod ("main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
+                    if (c.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
                     {
                         G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
                         setMainClass(c);

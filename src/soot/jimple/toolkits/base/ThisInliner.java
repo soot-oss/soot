@@ -19,11 +19,28 @@
 
 package soot.jimple.toolkits.base;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
-import soot.jimple.toolkits.scalar.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import soot.Body;
+import soot.BodyTransformer;
+import soot.Local;
+import soot.Trap;
+import soot.Unit;
+import soot.ValueBox;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.GotoStmt;
+import soot.jimple.IdentityStmt;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.Jimple;
+import soot.jimple.ParameterRef;
+import soot.jimple.ReturnVoidStmt;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.Stmt;
+import soot.jimple.ThisRef;
+import soot.jimple.toolkits.scalar.LocalNameStandardizer;
+import soot.util.Chain;
 
 public class ThisInliner extends BodyTransformer{
 
@@ -43,11 +60,9 @@ public class ThisInliner extends BodyTransformer{
                 specInvokeExpr.getMethod().retrieveActiveBody();
             }
 
-            HashMap oldLocalsToNew = new HashMap();
+            HashMap<Local, Local> oldLocalsToNew = new HashMap<Local, Local>();
             
-            Iterator localsIt = specInvokeExpr.getMethod().getActiveBody().getLocals().iterator();
-            while (localsIt.hasNext()){
-                Local l = (Local)localsIt.next();
+            for (Local l : specInvokeExpr.getMethod().getActiveBody().getLocals()) {
                 Local newLocal = (Local)l.clone();
                 b.getLocals().add(newLocal);
                 oldLocalsToNew.put(l, newLocal);
@@ -59,10 +74,9 @@ public class ThisInliner extends BodyTransformer{
             HashMap<Stmt, Stmt> oldStmtsToNew = new HashMap<Stmt, Stmt>();
             
             //System.out.println("locals: "+b.getLocals());
-            Chain containerUnits = b.getUnits();
-            Iterator inlineeIt = specInvokeExpr.getMethod().getActiveBody().getUnits().iterator();
-            while (inlineeIt.hasNext()){
-                Stmt inlineeStmt = (Stmt)inlineeIt.next();
+            Chain<Unit> containerUnits = b.getUnits();
+            for (Unit u : specInvokeExpr.getMethod().getActiveBody().getUnits()) {
+                Stmt inlineeStmt = (Stmt)u;
                
                 // handle identity stmts
                 if (inlineeStmt instanceof IdentityStmt){
@@ -76,9 +90,7 @@ public class ThisInliner extends BodyTransformer{
                     
                     else if (idStmt.getRightOp() instanceof CaughtExceptionRef){
                         Stmt newInlinee = (Stmt)inlineeStmt.clone();
-                        Iterator localsToPatch = newInlinee.getUseAndDefBoxes().iterator();
-                        while (localsToPatch.hasNext()){
-                            ValueBox next = (ValueBox)localsToPatch.next();
+                        for (ValueBox next : newInlinee.getUseAndDefBoxes()) {
                             if (next.getValue() instanceof Local){
                                 next.setValue((Local)oldLocalsToNew.get(next.getValue()));
                             }
@@ -106,9 +118,7 @@ public class ThisInliner extends BodyTransformer{
 
                 else {
                     Stmt newInlinee = (Stmt)inlineeStmt.clone();
-                    Iterator localsToPatch = newInlinee.getUseAndDefBoxes().iterator();
-                    while (localsToPatch.hasNext()){
-                        ValueBox next = (ValueBox)localsToPatch.next();
+                    for (ValueBox next : newInlinee.getUseAndDefBoxes()) {
                         if (next.getValue() instanceof Local){
                             next.setValue((Local)oldLocalsToNew.get(next.getValue()));
                         }
@@ -122,9 +132,7 @@ public class ThisInliner extends BodyTransformer{
             }
                 
             // handleTraps
-            Iterator trapsIt = specInvokeExpr.getMethod().getActiveBody().getTraps().iterator();
-            while (trapsIt.hasNext()){
-                Trap t = (Trap)trapsIt.next();
+            for (Trap t : specInvokeExpr.getMethod().getActiveBody().getTraps()) {
                 System.out.println("begin: "+t.getBeginUnit());
                 Stmt newBegin = oldStmtsToNew.get(t.getBeginUnit());
                 System.out.println("end: "+t.getEndUnit());
@@ -139,9 +147,8 @@ public class ThisInliner extends BodyTransformer{
             }
 
             // patch gotos
-            inlineeIt = specInvokeExpr.getMethod().getActiveBody().getUnits().iterator();
-            while (inlineeIt.hasNext()){
-                Stmt inlineeStmt = (Stmt)inlineeIt.next();
+            for (Unit u : specInvokeExpr.getMethod().getActiveBody().getUnits()) {
+                Stmt inlineeStmt = (Stmt)u;
                 if (inlineeStmt instanceof GotoStmt){
                     System.out.println("inlinee goto target: "+((GotoStmt)inlineeStmt).getTarget());
                     ((GotoStmt)oldStmtsToNew.get(inlineeStmt)).setTarget(oldStmtsToNew.get(((GotoStmt)inlineeStmt).getTarget()));
@@ -162,9 +169,8 @@ public class ThisInliner extends BodyTransformer{
     }
 
     private InvokeStmt getFirstSpecialInvoke(Body b){
-        Iterator it = b.getUnits().iterator();
-        while (it.hasNext()){
-            Stmt s = (Stmt)it.next();
+        for (Unit u : b.getUnits()) {
+            Stmt s = (Stmt)u;
             if (!(s instanceof InvokeStmt)) continue;
 
             InvokeExpr invokeExpr = ((InvokeStmt)s).getInvokeExpr();
@@ -178,9 +184,8 @@ public class ThisInliner extends BodyTransformer{
     }
 
     private IdentityStmt findIdentityStmt(Body b){
-        Iterator it = b.getUnits().iterator();
-        while (it.hasNext()){
-            Stmt s = (Stmt)it.next();
+        for (Unit u : b.getUnits()) {
+            Stmt s = (Stmt)u;
             if ((s instanceof IdentityStmt) && (((IdentityStmt)s).getRightOp() instanceof ThisRef)){
                 return (IdentityStmt)s;
             }

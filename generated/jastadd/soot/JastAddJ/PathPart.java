@@ -1,7 +1,6 @@
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +17,9 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
- * @ast class
- * @declaredat :0
+  * @ast class
+ * 
  */
 public class PathPart extends java.lang.Object {
 

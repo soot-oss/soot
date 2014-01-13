@@ -161,12 +161,17 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
             
         buffer.append("{" + endOfLine);
         
-        for(int i = lowIndex; i <= highIndex; i++)
+        // In this for-loop, we cannot use "<=" since 'i' would wrap around.
+        // The case for "i == highIndex" is handled separately after the loop.
+        for(int i = lowIndex; i < highIndex; i++)
         {
-            buffer.append("    case " + i + ": goto " + 
-                getTarget(i - lowIndex) + ";" 
+            buffer.append("    case " + i + ": goto " +
+                getTarget(i - lowIndex) + ";"
                           + endOfLine);
         }
+        buffer.append("    case " + highIndex + ": goto " +
+                  getTarget(highIndex - lowIndex) + ";"
+                            + endOfLine);
 
         buffer.append("    default: goto " + getDefaultTarget() + ";" + endOfLine);
         buffer.append("}");
@@ -180,15 +185,13 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
         up.literal("{");
         up.newline();
         
-        for(int i = lowIndex; i <= highIndex; i++)
+        // In this for-loop, we cannot use "<=" since 'i' would wrap around.
+        // The case for "i == highIndex" is handled separately after the loop.
+        for(int i = lowIndex; i < highIndex; i++)
         {
-            up.literal("    case ");
-            up.literal(new Integer(i).toString());
-            up.literal(": goto ");
-            targetBoxes[i-lowIndex].toString(up);
-            up.literal(";");
-            up.newline();
+            printCaseTarget(up, i);
         }
+        printCaseTarget(up, highIndex);
 
         up.literal("    default: goto ");
         defaultTargetBox.toString(up);
@@ -196,6 +199,15 @@ public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
         up.newline();
         up.literal("}");
     }
+
+	private void printCaseTarget(UnitPrinter up, int targetIndex) {
+		up.literal("    case ");
+		up.literal(new Integer(targetIndex).toString());
+		up.literal(": goto ");
+		targetBoxes[targetIndex-lowIndex].toString(up);
+		up.literal(";");
+		up.newline();
+	}
 
     public List getUnitBoxes()
     {

@@ -56,8 +56,8 @@ import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 
 /**
  * An intraprocedural nullness analysis that computes for each location and each value
- * in a method if the value is (before or after that location) definetely null,
- * definetely non-null or neither.
+ * in a method if the value is (before or after that location) definitely null,
+ * definitely non-null or neither.
  * This class replaces {@link BranchedRefVarsAnalysis} which is known to have bugs.
  *
  * @author Eric Bodden

@@ -38,6 +38,8 @@ public final class Kind implements Numberable
     public static final Kind CLINIT = new Kind( "CLINIT" );
     /** Implicit call to Thread.run() due to Thread.start() call. */
     public static final Kind THREAD = new Kind( "THREAD" );
+    /** Implicit call to AsyncTask.doInBackground() due to AsyncTask.execute() call. */
+    public static final Kind ASYNCTASK = new Kind( "ASYNCTASK" );
     /** Implicit call to java.lang.ref.Finalizer.register from new bytecode. */
     public static final Kind FINALIZE = new Kind( "FINALIZE" );
     /** Implicit call to finalize() from java.lang.ref.Finalizer.invokeFinalizeMethod(). */
@@ -66,7 +68,7 @@ public final class Kind implements Numberable
     public String toString() { return name(); }
 
     public boolean passesParameters() {
-        return isExplicit() || this == THREAD || this == FINALIZE ||
+        return isExplicit() || this == THREAD || this == ASYNCTASK || this == FINALIZE ||
             this == PRIVILEGED || this == NEWINSTANCE || this == INVOKE_FINALIZE ||
             this == REFL_INVOKE || this == REFL_CONSTR_NEWINSTANCE || this == REFL_CLASS_NEWINSTANCE;
     }
@@ -104,6 +106,10 @@ public final class Kind implements Numberable
 
     public boolean isThread() {
     	return this == THREAD;
+    }
+
+    public boolean isAsyncTask() {
+    	return this == ASYNCTASK;
     }
 }
 

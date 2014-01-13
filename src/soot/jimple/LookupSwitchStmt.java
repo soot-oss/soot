@@ -40,14 +40,14 @@ public interface LookupSwitchStmt extends Stmt
     public Value getKey();
     public void setKey(Value key);
     public ValueBox getKeyBox();
-    public void setLookupValues(List lookupValues);
+    public void setLookupValues(List<IntConstant> lookupValues);
     public void setLookupValue(int index, int value);
     public int getLookupValue(int index);
-    public List getLookupValues();
+    public List<IntConstant> getLookupValues();
     public int getTargetCount();
     public Unit getTarget(int index);
     public UnitBox getTargetBox(int index);
     public void setTarget(int index, Unit target);
-    public List getTargets();
+    public List<Unit> getTargets();
     public void setTargets(Unit[] targets);
 }

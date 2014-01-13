@@ -114,10 +114,9 @@ public class Evaluator {
                         return ((NumericConstant)c1).notEqual
                             ((NumericConstant)c2);
                 }
-                else if (c1 instanceof StringConstant)
+                else if (c1 instanceof StringConstant || c1 instanceof NullConstant || c1 instanceof ClassConstant)
                 {
-                    boolean equality = ((StringConstant)c1).equals
-                        (c2);
+                    boolean equality = c1.equals(c2);
 
                     boolean truth = (op instanceof EqExpr) ? equality :
                         !equality;
@@ -126,9 +125,6 @@ public class Evaluator {
                     IntConstant beauty = IntConstant.v(truth ? 1 : 0);
                     return beauty;
                 }
-                else if (c1 instanceof NullConstant)
-                    return IntConstant.v
-                        (((NullConstant)c1).equals(c2) ? 1 : 0);
                 throw new RuntimeException
                     ("constant neither numeric nor string");
             }

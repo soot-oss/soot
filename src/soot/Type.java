@@ -73,6 +73,15 @@ public abstract class Type implements Switchable, Serializable, Numberable
     public ArrayType makeArrayType() {
         return ArrayType.v( this, 1 );
     }
+    
+    /**
+     * Returns <code>true</code> if this type is allowed to appear in
+     * final (clean) Jimple code.
+     * @return 
+     */
+    public boolean isAllowedInFinalCode() {
+    	return false;
+    }
 
     public final int getNumber() { return number; }
     public final void setNumber( int number ) { this.number = number; }

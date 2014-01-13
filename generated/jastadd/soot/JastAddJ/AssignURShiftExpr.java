@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production AssignURShiftExpr : {@link AssignShiftExpr};
  * @ast node
- * @declaredat java.ast:119
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:122
  */
 public class AssignURShiftExpr extends AssignShiftExpr implements Cloneable {
   /**
@@ -51,28 +51,37 @@ public class AssignURShiftExpr extends AssignShiftExpr implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AssignURShiftExpr copy() {
-      try {
-        AssignURShiftExpr node = (AssignURShiftExpr)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      AssignURShiftExpr node = (AssignURShiftExpr) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AssignURShiftExpr fullCopy() {
-    AssignURShiftExpr res = (AssignURShiftExpr)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    AssignURShiftExpr tree = (AssignURShiftExpr) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
    * @aspect Expressions
@@ -89,7 +98,7 @@ public class AssignURShiftExpr extends AssignShiftExpr implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public AssignURShiftExpr() {
     super();
@@ -97,8 +106,19 @@ public class AssignURShiftExpr extends AssignShiftExpr implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[2];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public AssignURShiftExpr(Expr p0, Expr p1) {
     setChild(p0, 0);
@@ -107,7 +127,7 @@ public class AssignURShiftExpr extends AssignShiftExpr implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:14
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -115,59 +135,69 @@ public class AssignURShiftExpr extends AssignShiftExpr implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:20
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Dest
+   * Replaces the Dest child.
+   * @param node The new node to replace the Dest child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setDest(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Dest
+   * Retrieves the Dest child.
+   * @return The current node used as the Dest child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getDest() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the Dest child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Dest child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getDestNoTransform() {
     return (Expr)getChildNoTransform(0);
   }
   /**
-   * Setter for Source
+   * Replaces the Source child.
+   * @param node The new node to replace the Source child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setSource(Expr node) {
     setChild(node, 1);
   }
   /**
-   * Getter for Source
+   * Retrieves the Source child.
+   * @return The current node used as the Source child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getSource() {
     return (Expr)getChild(1);
   }
   /**
+   * Retrieves the Source child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Source child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getSourceNoTransform() {
     return (Expr)getChildNoTransform(1);
@@ -175,18 +205,14 @@ public class AssignURShiftExpr extends AssignShiftExpr implements Cloneable {
   /**
    * @attribute syn
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:256
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:247
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public String printOp() {
-      ASTNode$State state = state();
-    String printOp_value = printOp_compute();
-    return printOp_value;
+    ASTNode$State state = state();
+    try {  return " >>>= ";  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private String printOp_compute() {  return " >>>= ";  }
   /**
    * @apilevel internal
    */

@@ -168,7 +168,7 @@ public class ClassHierarchy
   {
     if(type == null || !(type instanceof PrimType || type instanceof RefType))
       {
-	throw new InternalTypingException();
+	throw new InternalTypingException(type);
       }
     
     TypeNode typeNode = typeNodeMap.get(type);

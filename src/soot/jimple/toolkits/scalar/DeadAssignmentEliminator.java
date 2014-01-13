@@ -50,7 +50,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
         side for side effects. 
     */
     
-    protected void internalTransform(Body b, String phaseName, Map options)
+    protected void internalTransform(Body b, String phaseName, Map<String, String> options)
     {
         boolean eliminateOnlyStackLocals = PhaseOptions.getBoolean(options, "only-stack-locals");
 
@@ -63,28 +63,27 @@ public class DeadAssignmentEliminator extends BodyTransformer
 
         Set<Stmt> essentialStmts = new HashSet<Stmt>();
         LinkedList<Stmt> toVisit = new LinkedList<Stmt>();
-        Chain units = b.getUnits();
+        Chain<Unit> units = b.getUnits();
         
         // Make a first pass through the statements, noting 
         // the statements we must absolutely keep. 
         {
-            Iterator stmtIt = units.iterator();
-            
-            while(stmtIt.hasNext()) 
+            for (Unit u : units) 
             {
-                Stmt s = (Stmt) stmtIt.next();
+                Stmt s = (Stmt) u;
                 boolean isEssential = true;
-                 
+
                 if(s instanceof NopStmt)
                     isEssential = false;
-                 
-                if(s instanceof AssignStmt)
+                
+                else if(s instanceof AssignStmt)
                 {
                     AssignStmt as = (AssignStmt) s;
                     
                     if(as.getLeftOp() instanceof Local &&
                         (!eliminateOnlyStackLocals || 
-                            ((Local) as.getLeftOp()).getName().startsWith("$")))
+                            ((Local) as.getLeftOp()).getName().startsWith("$")
+                            || as.getLeftOp().getType() instanceof NullType))
                     {
                         Value rhs = as.getRightOp();
                     
@@ -95,7 +94,6 @@ public class DeadAssignmentEliminator extends BodyTransformer
                         {
                            // Note that ArrayRef and InvokeExpr all can
                            // have side effects (like throwing a null pointer exception)
-                    
                             isEssential = true;
                         }
 
@@ -157,19 +155,14 @@ public class DeadAssignmentEliminator extends BodyTransformer
         LocalDefs defs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
         LocalUses uses = new SimpleLocalUses(graph, defs);
         
-        // Add all the statements which are used to compute values
+    	// Add all the statements which are used to compute values
         // for the essential statements, recursively
         {
             
             while(!toVisit.isEmpty())
             {
                 Stmt s = toVisit.removeFirst();
-                Iterator boxIt = s.getUseBoxes().iterator();
-                                
-                while(boxIt.hasNext())
-                {
-                    ValueBox box = (ValueBox) boxIt.next();
-                    
+                for (ValueBox box : s.getUseBoxes()) {
                     if(box.getValue() instanceof Local)
                     {
                         Iterator<Unit> defIt = defs.getDefsOfAt(
@@ -181,11 +174,8 @@ public class DeadAssignmentEliminator extends BodyTransformer
                             
                             Stmt def = (Stmt) defIt.next();
                             
-                            if(!essentialStmts.contains(def))
-                            {
-                                essentialStmts.add(def);
-                                toVisit.addLast(def);
-                            }    
+                            if(essentialStmts.add(def))
+                            	toVisit.addLast(def);
                         }         
                     }
                 }
@@ -194,7 +184,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
         
         // Remove the dead statements
         {
-            Iterator stmtIt = units.iterator();
+            Iterator<Unit> stmtIt = units.iterator();
             
             while(stmtIt.hasNext())
             {
@@ -219,7 +209,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
         // Eliminate dead assignments from invokes such as x = f(), where
         //    x is no longer used
         {
-            Iterator stmtIt = units.snapshotIterator();
+            Iterator<Unit> stmtIt = units.snapshotIterator();
             
             while(stmtIt.hasNext())
             {
@@ -228,19 +218,12 @@ public class DeadAssignmentEliminator extends BodyTransformer
                 if(s instanceof AssignStmt &&
                     s.containsInvokeExpr())
                 {
-                    Local l = (Local) ((AssignStmt) s).getLeftOp();
                     InvokeExpr e = s.getInvokeExpr();
                     
                     // Just find one use of l which is essential 
                     {   
-                        Iterator useIt = uses.getUsesOf(s).iterator();
                         boolean isEssential = false;
-                        
-                        while(useIt.hasNext())
-                        {   
-                            UnitValueBoxPair pair = (UnitValueBoxPair)
-                                useIt.next();
-                                
+                        for (UnitValueBoxPair pair : uses.getUsesOf(s)) {
                             if(essentialStmts.contains(pair.unit))
                             {
                                 isEssential = true;

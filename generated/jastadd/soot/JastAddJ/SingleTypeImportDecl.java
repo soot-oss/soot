@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production SingleTypeImportDecl : {@link ImportDecl};
  * @ast node
- * @declaredat java.ast:8
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:11
  */
 public class SingleTypeImportDecl extends ImportDecl implements Cloneable {
   /**
@@ -53,28 +53,37 @@ public class SingleTypeImportDecl extends ImportDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SingleTypeImportDecl copy() {
-      try {
-        SingleTypeImportDecl node = (SingleTypeImportDecl)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      SingleTypeImportDecl node = (SingleTypeImportDecl) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SingleTypeImportDecl fullCopy() {
-    SingleTypeImportDecl res = (SingleTypeImportDecl)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    SingleTypeImportDecl tree = (SingleTypeImportDecl) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
    * @aspect NameCheck
@@ -98,7 +107,7 @@ public class SingleTypeImportDecl extends ImportDecl implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public SingleTypeImportDecl() {
     super();
@@ -106,8 +115,19 @@ public class SingleTypeImportDecl extends ImportDecl implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[1];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public SingleTypeImportDecl(Access p0) {
     setChild(p0, 0);
@@ -115,7 +135,7 @@ public class SingleTypeImportDecl extends ImportDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:13
+   * 
    */
   protected int numChildren() {
     return 1;
@@ -123,33 +143,38 @@ public class SingleTypeImportDecl extends ImportDecl implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Access
+   * Replaces the Access child.
+   * @param node The new node to replace the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setAccess(Access node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Access
+   * Retrieves the Access child.
+   * @return The current node used as the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Access getAccess() {
     return (Access)getChild(0);
   }
   /**
+   * Retrieves the Access child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Access child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Access getAccessNoTransform() {
     return (Access)getChildNoTransform(0);
@@ -158,7 +183,7 @@ public class SingleTypeImportDecl extends ImportDecl implements Cloneable {
   /**
    * @attribute syn
    * @aspect TypeScopePropagation
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:235
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupType.jrag:323
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet importedTypes(String name) {
@@ -167,11 +192,11 @@ public class SingleTypeImportDecl extends ImportDecl implements Cloneable {
     if(importedTypes_String_values.containsKey(_parameters)) {
       return (SimpleSet)importedTypes_String_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     SimpleSet importedTypes_String_value = importedTypes_compute(name);
-if(isFinal && num == state().boundariesCrossed) importedTypes_String_values.put(_parameters, importedTypes_String_value);
+      if(isFinal && num == state().boundariesCrossed) importedTypes_String_values.put(_parameters, importedTypes_String_value);
     return importedTypes_String_value;
   }
   /**
@@ -190,7 +215,7 @@ if(isFinal && num == state().boundariesCrossed) importedTypes_String_values.put(
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SimpleSet allImportedTypes(String name) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     SimpleSet allImportedTypes_String_value = getParent().Define_SimpleSet_allImportedTypes(this, null, name);
     return allImportedTypes_String_value;
   }
@@ -202,7 +227,8 @@ if(isFinal && num == state().boundariesCrossed) importedTypes_String_values.put(
     if(caller == getAccessNoTransform()) {
       return NameType.TYPE_NAME;
     }
-    return getParent().Define_NameType_nameType(this, caller);
+    else {      return getParent().Define_NameType_nameType(this, caller);
+    }
   }
   /**
    * @apilevel internal

@@ -51,7 +51,7 @@ public class UnknownType extends Type
 
     public String toString()
     {
-        return ".unknown";
+        return "unknown";
     }
     
     public void apply(Switch sw)

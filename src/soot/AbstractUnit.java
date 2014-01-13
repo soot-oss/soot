@@ -45,6 +45,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
      * Note that they are returned in usual evaluation order.
      * (this is important for aggregation)
      */
+    @Override
     public List getUseBoxes()
     {
         return emptyList;
@@ -53,6 +54,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     /** Returns a list of Boxes containing Values defined in this Unit.
      * The list of boxes is dynamically updated as the structure changes.
      */
+    @Override
     public List getDefBoxes()
     {
         return emptyList;
@@ -63,44 +65,48 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
      * branch targets.
      * The list of boxes is dynamically updated as the structure changes.
      */
-    public List getUnitBoxes()
+    @Override
+    public List<UnitBox> getUnitBoxes()
     {
-        return emptyList;
+        return Collections.emptyList();
     }
 
     /** Canonical AbstractUnit.emptyList list. */
     static final public List emptyList = Collections.EMPTY_LIST;
 
     /** List of UnitBoxes pointing to this Unit. */
-    List boxesPointingToThis = null;
+    List<UnitBox> boxesPointingToThis = null;
 
     /** List of ValueBoxes contained in this Unit. */
     List valueBoxes = null;
 
     /** Returns a list of Boxes pointing to this Unit. */
-    public List getBoxesPointingToThis()
+    @Override
+    public List<UnitBox> getBoxesPointingToThis()
     {
         if( boxesPointingToThis == null ) return emptyList;
         return Collections.unmodifiableList( boxesPointingToThis );
     }
 
+    @Override
     public void addBoxPointingToThis( UnitBox b ) {
-        if( boxesPointingToThis == null ) boxesPointingToThis = new ArrayList();
+        if( boxesPointingToThis == null ) boxesPointingToThis = new ArrayList<UnitBox>();
         boxesPointingToThis.add( b );
     }
 
+    @Override
     public void removeBoxPointingToThis( UnitBox b ) {
         if( boxesPointingToThis != null ) boxesPointingToThis.remove( b );
     }
 
+    @Override
     public void clearUnitBoxes() {
-        for( Iterator it = getUnitBoxes().iterator(); it.hasNext(); ) {
-            UnitBox ub = (UnitBox) it.next();
-            ub.setUnit(null);
-        }
+    	for (UnitBox ub : getUnitBoxes())
+    		ub.setUnit(null);
     }
     
     /** Returns a list of ValueBoxes, either used or defined in this Unit. */
+    @Override
     public List getUseAndDefBoxes()
     {
         List useBoxes = getUseBoxes();
@@ -128,10 +134,12 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     }
 
     /** Used to implement the Switchable construct. */
+    @Override
     public void apply(Switch sw)
     {
     }
 
+    @Override
     public void redirectJumpsToThisTo(Unit newLocation)
     {
         List boxesPointing = this.getBoxesPointingToThis();

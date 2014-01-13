@@ -24,8 +24,8 @@ import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -52,7 +52,7 @@ public class SootClasspath {
 		IClasspathEntry[] cp;
 		try {
 			cp = javaProject.getResolvedClasspath(true);
-			Set<URL> urls = new HashSet<URL>();
+			List<URL> urls = new ArrayList<URL>();
 			String uriString = workspace.getRoot().getFile(
 					javaProject.getOutputLocation()).getLocationURI().toString()
 					+ "/";

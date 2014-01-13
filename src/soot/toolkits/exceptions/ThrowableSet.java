@@ -146,16 +146,16 @@ public final class ThrowableSet {
 	 */
 	final ThrowableSet INITIALIZATION_ERRORS;
 
-	final RefType RUNTIME_EXCEPTION;
-	final RefType ARITHMETIC_EXCEPTION;
-	final RefType ARRAY_STORE_EXCEPTION;
-	final RefType CLASS_CAST_EXCEPTION;
-	final RefType ILLEGAL_MONITOR_STATE_EXCEPTION;
-	final RefType INDEX_OUT_OF_BOUNDS_EXCEPTION;
-	final RefType ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION;
-	final RefType NEGATIVE_ARRAY_SIZE_EXCEPTION;
-	final RefType NULL_POINTER_EXCEPTION;
-	final RefType INSTANTIATION_ERROR;
+	public final RefType RUNTIME_EXCEPTION;
+	public final RefType ARITHMETIC_EXCEPTION;
+	public final RefType ARRAY_STORE_EXCEPTION;
+	public final RefType CLASS_CAST_EXCEPTION;
+	public final RefType ILLEGAL_MONITOR_STATE_EXCEPTION;
+	public final RefType INDEX_OUT_OF_BOUNDS_EXCEPTION;
+	public final RefType ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION;
+	public final RefType NEGATIVE_ARRAY_SIZE_EXCEPTION;
+	public final RefType NULL_POINTER_EXCEPTION;
+	public final RefType INSTANTIATION_ERROR;
 
 	// counts for instrumenting:
 	private int registeredSets = 0;
@@ -1373,4 +1373,37 @@ public final class ThrowableSet {
 	    return Collections.unmodifiableMap(memoizedAdds);
 	}
     }
+
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((exceptionsExcluded == null) ? 0 : exceptionsExcluded.hashCode());
+		result = prime * result + ((exceptionsIncluded == null) ? 0 : exceptionsIncluded.hashCode());
+		return result;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ThrowableSet other = (ThrowableSet) obj;
+		if (exceptionsExcluded == null) {
+			if (other.exceptionsExcluded != null)
+				return false;
+		} else if (!exceptionsExcluded.equals(other.exceptionsExcluded))
+			return false;
+		if (exceptionsIncluded == null) {
+			if (other.exceptionsIncluded != null)
+				return false;
+		} else if (!exceptionsIncluded.equals(other.exceptionsIncluded))
+			return false;
+		return true;
+	}
 }

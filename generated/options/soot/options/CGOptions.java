@@ -26,9 +26,9 @@ import java.util.*;
 /** Option parser for Call Graph Constructor. */
 public class CGOptions
 {
-    private Map options;
+    private Map<String, String> options;
 
-    public CGOptions( Map options ) {
+    public CGOptions( Map<String, String> options ) {
         this.options = options;
     }
     
@@ -177,10 +177,10 @@ public class CGOptions
      * Soot can insert guards at program points for which the 
      * reflection log contains no information. When these points are 
      * reached (because the program is executed differently) then the 
-     * follwing will happen, depending on the value of this flag. 
+     * follwoing will happen, depending on the value of this flag. 
      * ignore: no guard is inserted, the program executes normally but 
      * under unsound assumptions. print: the program prints a stack 
-     * trace when reaching a porgram location that was not traced but 
+     * trace when reaching a program location that was not traced but 
      * continues to run. throw (default): the program throws an Error 
      * instead. 
      * 
@@ -190,4 +190,3 @@ public class CGOptions
     }
     
 }
-        

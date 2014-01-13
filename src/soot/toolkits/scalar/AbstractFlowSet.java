@@ -167,7 +167,7 @@ public abstract class AbstractFlowSet implements FlowSet, Iterable {
   public abstract List toList();
 
   public boolean equals(Object o) {
-    if (!(o instanceof FlowSet)) return false;
+    if (o.getClass()!=getClass()) return false;
     FlowSet other = (FlowSet)o;
     if (size() != other.size()) return false;
     Iterator it = toList().iterator();
@@ -177,12 +177,11 @@ public abstract class AbstractFlowSet implements FlowSet, Iterable {
   }
   
 	public int hashCode() {
-		final int PRIME = 31;
 		int result = 1;
 		Iterator iter = iterator();
-		while(iter.hasNext()) {
+		while (iter.hasNext()) {
 			Object o = iter.next();
-			result = PRIME * result + o.hashCode();
+			result += o.hashCode();
 		}
 		return result;
 	}

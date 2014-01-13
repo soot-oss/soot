@@ -21,6 +21,7 @@ package soot.options;
 import java.util.*;
 
 import soot.*;
+import soot.plugins.internal.PluginLoader;
 
 /** Soot command-line options parser base class.
  * @author Ondrej Lhotak
@@ -70,7 +71,7 @@ abstract class OptionsBase {
         b.append( "\nPhases and phase options:\n" );
         for (Pack p : PackManager.v().allPacks()) {
             b.append( padOpt( p.getPhaseName(), p.getDeclaredOptions() ) );
-            for( Iterator phIt = p.iterator(); phIt.hasNext(); ) {
+            for( Iterator<Transform> phIt = p.iterator(); phIt.hasNext(); ) {
                 final HasPhaseOptions ph = (HasPhaseOptions) phIt.next();
                 b.append( padVal( ph.getPhaseName(), ph.getDeclaredOptions() ) );
             }
@@ -86,12 +87,21 @@ abstract class OptionsBase {
     protected boolean hasMoreOptions() { return !options.isEmpty(); }
     protected String nextOption() { return options.removeFirst(); }
 
-    protected LinkedList classes = new LinkedList();
-    public LinkedList classes() { return classes; }
+    protected LinkedList<String> classes = new LinkedList<String>();
+    public LinkedList<String> classes() { return classes; }
 
     public boolean setPhaseOption( String phase, String option ) {
         return PhaseOptions.v().processPhaseOptions( phase, option );
     }
 
+    /**
+     * Handles the value of a plugin parameter. 
+     * 
+     * @param file the plugin parameter value.
+     * @return {@code true} on success.
+     */
+    protected boolean loadPluginConfiguration(final String file) {
+    	return PluginLoader.load(file);
+    }
 }
   

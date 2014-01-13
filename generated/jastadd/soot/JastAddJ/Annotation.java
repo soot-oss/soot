@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -19,10 +19,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
-
 /**
+ * @production Annotation : {@link Modifier} ::= <span class="component">&lt;ID:String&gt;</span> <span class="component">{@link Access}</span> <span class="component">{@link ElementValuePair}*</span>;
  * @ast node
- * @declaredat Annotations.ast:6
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.ast:6
  */
 public class Annotation extends Modifier implements Cloneable {
   /**
@@ -56,28 +56,37 @@ public class Annotation extends Modifier implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Annotation copy() {
-      try {
-        Annotation node = (Annotation)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      Annotation node = (Annotation) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Annotation fullCopy() {
-    Annotation res = (Annotation)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    Annotation tree = (Annotation) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
    * @aspect Annotations
@@ -94,28 +103,6 @@ public class Annotation extends Modifier implements Cloneable {
         //System.out.println("Annotation: \n" + dumpTree());
         if(!v.validTarget(this))
           error("annotation type " + T.typeName() + " is not applicable to this kind of declaration");
-      }
-    }
-  }
-  /**
-   * @ast method 
-   * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:241
-   */
-  public void checkOverride() {
-    if(decl().fullName().equals("java.lang.Override") && enclosingBodyDecl() instanceof MethodDecl) {
-      MethodDecl m = (MethodDecl)enclosingBodyDecl();
-      if(!m.hostType().isClassDecl())
-        error("override annotation not valid for interface methods");
-      else {
-        boolean found = false;
-        for(Iterator iter = m.hostType().ancestorMethods(m.signature()).iterator(); iter.hasNext(); ) {
-          MethodDecl decl = (MethodDecl)iter.next();
-          if(m.overrides(decl) && decl.hostType().isClassDecl())
-            found = true;
-        }
-        if(!found)
-          error("method does not override a method from its superclass");
       }
     }
   }
@@ -163,7 +150,7 @@ public class Annotation extends Modifier implements Cloneable {
   /**
    * @ast method 
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:578
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:582
    */
   public void toString(StringBuffer s) {
     s.append("@");
@@ -194,17 +181,28 @@ public class Annotation extends Modifier implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat Annotations.ast:1
+   * 
    */
   public Annotation() {
     super();
 
-    setChild(new List(), 1);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat Annotations.ast:8
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[2];
+    setChild(new List(), 1);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public Annotation(String p0, Access p1, List<ElementValuePair> p2) {
     setID(p0);
@@ -213,7 +211,7 @@ public class Annotation extends Modifier implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat Annotations.ast:13
+   * 
    */
   public Annotation(beaver.Symbol p0, Access p1, List<ElementValuePair> p2) {
     setID(p0);
@@ -223,7 +221,7 @@ public class Annotation extends Modifier implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:21
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -231,23 +229,26 @@ public class Annotation extends Modifier implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat Annotations.ast:27
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat Annotations.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -257,73 +258,95 @@ public class Annotation extends Modifier implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for Access
+   * Replaces the Access child.
+   * @param node The new node to replace the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:5
+   * 
    */
   public void setAccess(Access node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Access
+   * Retrieves the Access child.
+   * @return The current node used as the Access child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:12
+   * 
    */
   public Access getAccess() {
     return (Access)getChild(0);
   }
   /**
+   * Retrieves the Access child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Access child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:18
+   * 
    */
   public Access getAccessNoTransform() {
     return (Access)getChildNoTransform(0);
   }
   /**
-   * Setter for ElementValuePairList
+   * Replaces the ElementValuePair list.
+   * @param list The new list node to be used as the ElementValuePair list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:5
+   * 
    */
   public void setElementValuePairList(List<ElementValuePair> list) {
     setChild(list, 1);
   }
   /**
-   * @return number of children in ElementValuePairList
+   * Retrieves the number of children in the ElementValuePair list.
+   * @return Number of children in the ElementValuePair list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:12
+   * 
    */
   public int getNumElementValuePair() {
     return getElementValuePairList().getNumChild();
   }
   /**
-   * Getter for child in list ElementValuePairList
+   * Retrieves the number of children in the ElementValuePair list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the ElementValuePair list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumElementValuePairNoTransform() {
+    return getElementValuePairListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the ElementValuePair list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the ElementValuePair list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ElementValuePair getElementValuePair(int i) {
     return (ElementValuePair)getElementValuePairList().getChild(i);
   }
   /**
-   * Add element to list ElementValuePairList
+   * Append an element to the ElementValuePair list.
+   * @param node The element to append to the ElementValuePair list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:27
+   * 
    */
   public void addElementValuePair(ElementValuePair node) {
     List<ElementValuePair> list = (parent == null || state == null) ? getElementValuePairListNoTransform() : getElementValuePairList();
@@ -332,44 +355,51 @@ public class Annotation extends Modifier implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:34
+   * 
    */
   public void addElementValuePairNoTransform(ElementValuePair node) {
     List<ElementValuePair> list = getElementValuePairListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ElementValuePairList
+   * Replaces the ElementValuePair list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:42
+   * 
    */
   public void setElementValuePair(ElementValuePair node, int i) {
     List<ElementValuePair> list = getElementValuePairList();
     list.setChild(node, i);
   }
   /**
-   * Getter for ElementValuePair list.
+   * Retrieves the ElementValuePair list.
+   * @return The node representing the ElementValuePair list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:50
+   * 
    */
   public List<ElementValuePair> getElementValuePairs() {
     return getElementValuePairList();
   }
   /**
+   * Retrieves the ElementValuePair list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the ElementValuePair list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:56
+   * 
    */
   public List<ElementValuePair> getElementValuePairsNoTransform() {
     return getElementValuePairListNoTransform();
   }
   /**
-   * Getter for list ElementValuePairList
+   * Retrieves the ElementValuePair list.
+   * @return The node representing the ElementValuePair list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat Annotations.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ElementValuePair> getElementValuePairList() {
@@ -378,14 +408,48 @@ public class Annotation extends Modifier implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the ElementValuePair list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the ElementValuePair list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat Annotations.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<ElementValuePair> getElementValuePairListNoTransform() {
     return (List<ElementValuePair>)getChildNoTransform(1);
   }
+  /**
+   * @ast method 
+   * @aspect Annotations
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/Override.jrag:20
+   */
+   
+	public void checkOverride() {
+		if (decl().fullName().equals("java.lang.Override") &&
+				enclosingBodyDecl() instanceof MethodDecl) {
+
+			MethodDecl method = (MethodDecl)enclosingBodyDecl();
+			TypeDecl host = method.hostType();
+			SimpleSet ancestors = host.ancestorMethods(method.signature());
+			boolean found = false;
+			for (Iterator iter = ancestors.iterator(); iter.hasNext(); ) {
+				MethodDecl decl = (MethodDecl)iter.next();
+				if (method.overrides(decl)) {
+					found = true;
+					break;
+				}
+			}
+			if (!found) {
+				TypeDecl typeObject = lookupType("java.lang", "Object");
+				SimpleSet overrides =
+					typeObject.localMethodsSignature(method.signature());
+				if (overrides.isEmpty() ||
+						!((MethodDecl) overrides.iterator().next()).isPublic())
+					error("method does not override a method from a supertype");
+			}
+		}
+	}
   /**
    * @apilevel internal
    */
@@ -404,11 +468,11 @@ public class Annotation extends Modifier implements Cloneable {
     if(decl_computed) {
       return decl_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     decl_value = decl_compute();
-if(isFinal && num == state().boundariesCrossed) decl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) decl_computed = true;
     return decl_value;
   }
   /**
@@ -420,16 +484,9 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:432
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public ElementValue elementValueFor(String name) {
-      ASTNode$State state = state();
-    ElementValue elementValueFor_String_value = elementValueFor_compute(name);
-    return elementValueFor_String_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private ElementValue elementValueFor_compute(String name) {
+    ASTNode$State state = state();
+    try {
     for(int i = 0; i < getNumElementValuePair(); i++) {
       ElementValuePair pair = getElementValuePair(i);
       if(pair.getName().equals(name))
@@ -437,21 +494,20 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
     }
     return null;
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:510
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:514
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl type() {
-      ASTNode$State state = state();
-    TypeDecl type_value = type_compute();
-    return type_value;
+    ASTNode$State state = state();
+    try {  return getAccess().type();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private TypeDecl type_compute() {  return getAccess().type();  }
   /* An annotation on an annotation type declaration is known as a meta-annotation.
   An annotation type may be used to annotate its own declaration. More generally,
   circularities in the transitive closure of the "annotates" relation are
@@ -462,59 +518,47 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
   Comment: no problems with reference attributes.
   * @attribute syn
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:539
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:543
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isMetaAnnotation() {
-      ASTNode$State state = state();
-    boolean isMetaAnnotation_value = isMetaAnnotation_compute();
-    return isMetaAnnotation_value;
+    ASTNode$State state = state();
+    try {  return hostType().isAnnotationDecl();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isMetaAnnotation_compute() {  return hostType().isAnnotationDecl();  }
   /**
    * @attribute syn
    * @aspect AnnotationsCodegen
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:144
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:143
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isRuntimeVisible() {
-      ASTNode$State state = state();
-    boolean isRuntimeVisible_value = isRuntimeVisible_compute();
-    return isRuntimeVisible_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean isRuntimeVisible_compute() {
+    ASTNode$State state = state();
+    try {
     Annotation a = decl().annotation(lookupType("java.lang.annotation", "Retention"));
     if(a == null) return false;
     ElementConstantValue value = (ElementConstantValue)a.getElementValuePair(0).getElementValue();
     Variable v = value.getExpr().varDecl();
     return v != null && v.name().equals("RUNTIME");
   }
+    finally {
+    }
+  }
   /**
    * @attribute syn
    * @aspect AnnotationsCodegen
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:154
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:153
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isRuntimeInvisible() {
-      ASTNode$State state = state();
-    boolean isRuntimeInvisible_value = isRuntimeInvisible_compute();
-    return isRuntimeInvisible_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean isRuntimeInvisible_compute() {
+    ASTNode$State state = state();
+    try {
     Annotation a = decl().annotation(lookupType("java.lang.annotation", "Retention"));
     if(a == null) return true; // default bahavior if not annotated
     ElementConstantValue value = (ElementConstantValue)a.getElementValuePair(0).getElementValue();
     Variable v = value.getExpr().varDecl();
     return v != null &&  v.name().equals("CLASS");
+  }
+    finally {
+    }
   }
   /**
    * @attribute inh
@@ -523,7 +567,7 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl lookupType(String packageName, String typeName) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl lookupType_String_String_value = getParent().Define_TypeDecl_lookupType(this, null, packageName, typeName);
     return lookupType_String_String_value;
   }
@@ -534,7 +578,7 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean mayUseAnnotationTarget(String name) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean mayUseAnnotationTarget_String_value = getParent().Define_boolean_mayUseAnnotationTarget(this, null, name);
     return mayUseAnnotationTarget_String_value;
   }
@@ -545,7 +589,7 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl enclosingBodyDecl() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     BodyDecl enclosingBodyDecl_value = getParent().Define_BodyDecl_enclosingBodyDecl(this, null);
     return enclosingBodyDecl_value;
   }
@@ -556,41 +600,43 @@ if(isFinal && num == state().boundariesCrossed) decl_computed = true;
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Annotation lookupAnnotation(TypeDecl typeDecl) {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     Annotation lookupAnnotation_TypeDecl_value = getParent().Define_Annotation_lookupAnnotation(this, null, typeDecl);
     return lookupAnnotation_TypeDecl_value;
   }
   /**
    * @attribute inh
    * @aspect Annotations
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:540
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:544
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl hostType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl hostType_value = getParent().Define_TypeDecl_hostType(this, null);
     return hostType_value;
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:460
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:462
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_enclosingAnnotationDecl(ASTNode caller, ASTNode child) {
-    if(caller == getElementValuePairListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return decl();
+    if(caller == getElementValuePairListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return decl();
+  }
+    else {      return getParent().Define_TypeDecl_enclosingAnnotationDecl(this, caller);
     }
-    return getParent().Define_TypeDecl_enclosingAnnotationDecl(this, caller);
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:545
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:549
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
     if(caller == getAccessNoTransform()) {
       return NameType.TYPE_NAME;
     }
-    return getParent().Define_NameType_nameType(this, caller);
+    else {      return getParent().Define_NameType_nameType(this, caller);
+    }
   }
   /**
    * @apilevel internal

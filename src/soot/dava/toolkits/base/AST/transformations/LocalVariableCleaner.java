@@ -46,7 +46,7 @@ import soot.dava.toolkits.base.AST.traversals.*;
  * The class is aimed to target cleaning up of unused local variables.
  * Should be invoked after executing CopyPropagation
  *
- * Another thing that this class does which perhaps should have been implemented separatly
+ * Another thing that this class does which perhaps should have been implemented separately
  * is to check whether there is an assignment which never gets used later on.
  * If there exists such an assignment this assignment is removed first and then all the useless
  * locals checks should be reapplied (until a fixed point)

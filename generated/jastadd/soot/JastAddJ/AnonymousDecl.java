@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production AnonymousDecl : {@link ClassDecl} ::= <span class="component">{@link Modifiers}</span> <span class="component">&lt;ID:String&gt;</span> <span class="component">[SuperClassAccess:{@link Access}]</span> <span class="component">Implements:{@link Access}*</span> <span class="component">{@link BodyDecl}*</span>;
  * @ast node
- * @declaredat java.ast:67
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:70
  */
 public class AnonymousDecl extends ClassDecl implements Cloneable {
   /**
@@ -65,66 +65,90 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AnonymousDecl copy() {
-      try {
-        AnonymousDecl node = (AnonymousDecl)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      AnonymousDecl node = (AnonymousDecl) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AnonymousDecl fullCopy() {
-    AnonymousDecl res = (AnonymousDecl)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    AnonymousDecl tree = (AnonymousDecl) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+          switch (i) {
+          case 3:
+            tree.children[i] = new Opt();
+            continue;
+          case 4:
+            tree.children[i] = new List();
+            continue;
+          }
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public AnonymousDecl() {
     super();
 
-    setChild(new List(), 1);
-    setChild(new Opt(), 2);
-    setChild(new List(), 3);
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:10
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[4];
+    setChild(new List(), 1);
+    setChild(new Opt(), 2);
+    setChild(new List(), 3);
+  }
+  /**
+   * @ast method 
+   * 
    */
   public AnonymousDecl(Modifiers p0, String p1, List<BodyDecl> p2) {
     setChild(p0, 0);
     setID(p1);
     setChild(p2, 1);
-    setChild(new Opt(), 2);
-    setChild(new List(), 3);
   }
   /**
    * @ast method 
-   * @declaredat java.ast:17
+   * 
    */
   public AnonymousDecl(Modifiers p0, beaver.Symbol p1, List<BodyDecl> p2) {
     setChild(p0, 0);
     setID(p1);
     setChild(p2, 1);
-    setChild(new Opt(), 2);
-    setChild(new List(), 3);
   }
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -132,49 +156,57 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:33
+   * 
    */
   public boolean mayHaveRewrite() {
     return true;
   }
   /**
-   * Setter for Modifiers
+   * Replaces the Modifiers child.
+   * @param node The new node to replace the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setModifiers(Modifiers node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Modifiers
+   * Retrieves the Modifiers child.
+   * @return The current node used as the Modifiers child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Modifiers getModifiers() {
     return (Modifiers)getChild(0);
   }
   /**
+   * Retrieves the Modifiers child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Modifiers child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Modifiers getModifiersNoTransform() {
     return (Modifiers)getChildNoTransform(0);
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -184,47 +216,64 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for BodyDeclList
+   * Replaces the BodyDecl list.
+   * @param list The new list node to be used as the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setBodyDeclList(List<BodyDecl> list) {
     setChild(list, 1);
   }
   /**
-   * @return number of children in BodyDeclList
+   * Retrieves the number of children in the BodyDecl list.
+   * @return Number of children in the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumBodyDecl() {
     return getBodyDeclList().getNumChild();
   }
   /**
-   * Getter for child in list BodyDeclList
+   * Retrieves the number of children in the BodyDecl list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the BodyDecl list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumBodyDeclNoTransform() {
+    return getBodyDeclListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the BodyDecl list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BodyDecl getBodyDecl(int i) {
     return (BodyDecl)getBodyDeclList().getChild(i);
   }
   /**
-   * Add element to list BodyDeclList
+   * Append an element to the BodyDecl list.
+   * @param node The element to append to the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addBodyDecl(BodyDecl node) {
     List<BodyDecl> list = (parent == null || state == null) ? getBodyDeclListNoTransform() : getBodyDeclList();
@@ -233,44 +282,51 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addBodyDeclNoTransform(BodyDecl node) {
     List<BodyDecl> list = getBodyDeclListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list BodyDeclList
+   * Replaces the BodyDecl list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setBodyDecl(BodyDecl node, int i) {
     List<BodyDecl> list = getBodyDeclList();
     list.setChild(node, i);
   }
   /**
-   * Getter for BodyDecl list.
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<BodyDecl> getBodyDecls() {
     return getBodyDeclList();
   }
   /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<BodyDecl> getBodyDeclsNoTransform() {
     return getBodyDeclListNoTransform();
   }
   /**
-   * Getter for list BodyDeclList
+   * Retrieves the BodyDecl list.
+   * @return The node representing the BodyDecl list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:63
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclList() {
@@ -279,101 +335,129 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
     return list;
   }
   /**
+   * Retrieves the BodyDecl list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the BodyDecl list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:72
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public List<BodyDecl> getBodyDeclListNoTransform() {
     return (List<BodyDecl>)getChildNoTransform(1);
   }
   /**
-   * Setter for SuperClassAccessOpt
+   * Replaces the optional node for the SuperClassAccess child. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * @param opt The new node to be used as the optional node for the SuperClassAccess child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setSuperClassAccessOpt(Opt<Access> opt) {
     setChild(opt, 2);
   }
   /**
-   * Does this node have a SuperClassAccess child?
+   * Check whether the optional SuperClassAccess child exists.
+   * @return {@code true} if the optional SuperClassAccess child exists, {@code false} if it does not.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public boolean hasSuperClassAccess() {
     return getSuperClassAccessOpt().getNumChild() != 0;
   }
   /**
-   * Getter for optional child SuperClassAccess
-   * @apilevel high-level
+   * Retrieves the (optional) SuperClassAccess child.
+   * @return The SuperClassAccess child, if it exists. Returns {@code null} otherwise.
+   * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getSuperClassAccess() {
     return (Access)getSuperClassAccessOpt().getChild(0);
   }
   /**
-   * Setter for optional child SuperClassAccess
+   * Replaces the (optional) SuperClassAccess child.
+   * @param node The new node to be used as the SuperClassAccess child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void setSuperClassAccess(Access node) {
     getSuperClassAccessOpt().setChild(node, 0);
   }
   /**
+   * Retrieves the optional node for child SuperClassAccess. This is the {@code Opt} node containing the child SuperClassAccess, not the actual child!
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The optional node for child SuperClassAccess.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:33
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Opt<Access> getSuperClassAccessOptNoTransform() {
     return (Opt<Access>)getChildNoTransform(2);
   }
   /**
+   * Retrieves the child position of the optional child SuperClassAccess.
+   * @return The the child position of the optional child SuperClassAccess.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:40
+   * 
    */
   protected int getSuperClassAccessOptChildPosition() {
     return 2;
   }
   /**
-   * Setter for ImplementsList
+   * Replaces the Implements list.
+   * @param list The new list node to be used as the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setImplementsList(List<Access> list) {
     setChild(list, 3);
   }
   /**
-   * @return number of children in ImplementsList
+   * Retrieves the number of children in the Implements list.
+   * @return Number of children in the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public int getNumImplements() {
     return getImplementsList().getNumChild();
   }
   /**
-   * Getter for child in list ImplementsList
+   * Retrieves the number of children in the Implements list.
+   * Calling this method will not trigger rewrites..
+   * @return Number of children in the Implements list.
+   * @apilevel low-level
+   * @ast method 
+   * 
+   */
+  public int getNumImplementsNoTransform() {
+    return getImplementsListNoTransform().getNumChildNoTransform();
+  }
+  /**
+   * Retrieves the element at index {@code i} in the Implements list..
+   * @param i Index of the element to return.
+   * @return The element at position {@code i} in the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Access getImplements(int i) {
     return (Access)getImplementsList().getChild(i);
   }
   /**
-   * Add element to list ImplementsList
+   * Append an element to the Implements list.
+   * @param node The element to append to the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:27
+   * 
    */
   public void addImplements(Access node) {
     List<Access> list = (parent == null || state == null) ? getImplementsListNoTransform() : getImplementsList();
@@ -382,54 +466,93 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:34
+   * 
    */
   public void addImplementsNoTransform(Access node) {
     List<Access> list = getImplementsListNoTransform();
     list.addChild(node);
   }
   /**
-   * Setter for child in list ImplementsList
+   * Replaces the Implements list element at index {@code i} with the new node {@code node}.
+   * @param node The new node to replace the old list element.
+   * @param i The list index of the node to be replaced.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:42
+   * 
    */
   public void setImplements(Access node, int i) {
     List<Access> list = getImplementsList();
     list.setChild(node, i);
   }
   /**
-   * Getter for Implements list.
+   * Retrieves the Implements list.
+   * @return The node representing the Implements list.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:50
+   * 
    */
   public List<Access> getImplementss() {
     return getImplementsList();
   }
   /**
+   * Retrieves the Implements list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Implements list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:56
+   * 
    */
   public List<Access> getImplementssNoTransform() {
     return getImplementsListNoTransform();
   }
   /**
+   * Retrieves the Implements list.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The node representing the Implements list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:62
+   * 
    */
   public List<Access> getImplementsListNoTransform() {
     return (List<Access>)getChildNoTransform(3);
   }
   /**
+   * Retrieves the child position of the Implements list.
+   * @return The the child position of the Implements list.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:68
+   * 
    */
   protected int getImplementsListChildPosition() {
     return 3;
+  }
+  /**
+   * @ast method 
+   * @aspect VariableArityParameters
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.jrag:107
+   */
+   
+  protected List constructorParameterList(ConstructorDecl decl) {
+    List parameterList = new List();
+    for(int i = 0; i < decl.getNumParameter(); i++) {
+      ParameterDeclaration param = decl.getParameter(i);
+      if (param instanceof VariableArityParameterDeclaration) {
+        parameterList.add(
+            new VariableArityParameterDeclaration(
+              new Modifiers(new List()),
+              ((ArrayDecl) param.type()).componentType().createBoundAccess(),
+              param.name()
+              ));
+      } else {
+        parameterList.add(
+            new ParameterDeclaration(
+              param.type().createBoundAccess(),
+              param.name()
+              ));
+      }
+    }
+
+    return parameterList;
   }
   /**
    * @apilevel internal
@@ -475,7 +598,7 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
         isCircular_value = new_isCircular_value; 
         state.CIRCLE_INDEX++;
       } while (state.CHANGE);
-      if(isFinal && num == state().boundariesCrossed) {
+        if(isFinal && num == state().boundariesCrossed) {
       isCircular_computed = true;
       }
       else {
@@ -524,15 +647,15 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public Opt getSuperClassAccessOpt() {
     if(getSuperClassAccessOpt_computed) {
-      return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
+      return (Opt) getChild(getSuperClassAccessOptChildPosition());
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getSuperClassAccessOpt_value = getSuperClassAccessOpt_compute();
     setSuperClassAccessOpt(getSuperClassAccessOpt_value);
-if(isFinal && num == state().boundariesCrossed) getSuperClassAccessOpt_computed = true;
-    return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
+      if(isFinal && num == state().boundariesCrossed) getSuperClassAccessOpt_computed = true;
+    return (Opt) getChild(getSuperClassAccessOptChildPosition());
   }
   /**
    * @apilevel internal
@@ -559,15 +682,15 @@ if(isFinal && num == state().boundariesCrossed) getSuperClassAccessOpt_computed 
   @SuppressWarnings({"unchecked", "cast"})
   public List getImplementsList() {
     if(getImplementsList_computed) {
-      return (List)ASTNode.getChild(this, getImplementsListChildPosition());
+      return (List) getChild(getImplementsListChildPosition());
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     getImplementsList_value = getImplementsList_compute();
     setImplementsList(getImplementsList_value);
-if(isFinal && num == state().boundariesCrossed) getImplementsList_computed = true;
-    return (List)ASTNode.getChild(this, getImplementsListChildPosition());
+      if(isFinal && num == state().boundariesCrossed) getImplementsList_computed = true;
+    return (List) getChild(getImplementsListChildPosition());
   }
   /**
    * @apilevel internal
@@ -585,7 +708,7 @@ if(isFinal && num == state().boundariesCrossed) getImplementsList_computed = tru
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl superType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl superType_value = getParent().Define_TypeDecl_superType(this, null);
     return superType_value;
   }
@@ -596,18 +719,18 @@ if(isFinal && num == state().boundariesCrossed) getImplementsList_computed = tru
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ConstructorDecl constructorDecl() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     ConstructorDecl constructorDecl_value = getParent().Define_ConstructorDecl_constructorDecl(this, null);
     return constructorDecl_value;
   }
   /**
    * @attribute inh
    * @aspect AnonymousClasses
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:165
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:175
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeNullPointerException() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl typeNullPointerException_value = getParent().Define_TypeDecl_typeNullPointerException(this, null);
     return typeNullPointerException_value;
   }
@@ -615,7 +738,7 @@ if(isFinal && num == state().boundariesCrossed) getImplementsList_computed = tru
    * @apilevel internal
    */
   public ASTNode rewriteTo() {
-    // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag at line 52
+    // Declared in /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag at line 70
     if(noConstructor()) {
       state().duringAnonymousClasses++;
       ASTNode result = rewriteRule0();
@@ -626,36 +749,28 @@ if(isFinal && num == state().boundariesCrossed) getImplementsList_computed = tru
     return super.rewriteTo();
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:52
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/AnonymousClasses.jrag:70
    * @apilevel internal
    */  private AnonymousDecl rewriteRule0() {
 {
-            setModifiers(new Modifiers(new List().add(new Modifier("final"))));
-      
+      setModifiers(new Modifiers(new List().add(new Modifier("final"))));
+
       ConstructorDecl decl = constructorDecl();
       Modifiers modifiers = (Modifiers)decl.getModifiers().fullCopy();
-      String name = "Anonymous" + nextAnonymousIndex();
+      String anonName = "Anonymous" + nextAnonymousIndex();
 
-      List parameterList = new List();
-      for(int i = 0; i < decl.getNumParameter(); i++) {
-        parameterList.add(
-          new ParameterDeclaration(
-            decl.getParameter(i).type().createBoundAccess(),
-            decl.getParameter(i).name()
-          )
-        );
-      }
-      
-      ConstructorDecl constructor = new ConstructorDecl(modifiers, name,
-		      parameterList, new List(), new Opt(), new Block());  
+      ConstructorDecl constructor = new ConstructorDecl(modifiers, anonName,
+          constructorParameterList(decl), new List(), new Opt(), new Block());
       constructor.setDefaultConstructor();
       addBodyDecl(constructor);
 
-      setID(name);
-      
+      setID(anonName);
+
       List argList = new List();
-      for(int i = 0; i < constructor.getNumParameter(); i++)
+      for(int i = 0; i < constructor.getNumParameter(); i++) {
         argList.add(new VarAccess(constructor.getParameter(i).name()));
+      }
+
       constructor.setConstructorInvocation(
         new ExprStmt(
           new SuperConstructorAccess("super", argList)

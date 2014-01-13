@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -19,10 +19,10 @@ import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
 
-
 /**
+ * @production BoundFieldAccess : {@link VarAccess} ::= <span class="component">&lt;FieldDeclaration:FieldDeclaration&gt;</span>;
  * @ast node
- * @declaredat BoundNames.ast:6
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BoundNames.ast:6
  */
 public class BoundFieldAccess extends VarAccess implements Cloneable {
   /**
@@ -56,28 +56,37 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BoundFieldAccess copy() {
-      try {
-        BoundFieldAccess node = (BoundFieldAccess)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      BoundFieldAccess node = (BoundFieldAccess) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public BoundFieldAccess fullCopy() {
-    BoundFieldAccess res = (BoundFieldAccess)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    BoundFieldAccess tree = (BoundFieldAccess) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
    * @aspect BoundNames
@@ -96,7 +105,7 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat BoundNames.ast:1
+   * 
    */
   public BoundFieldAccess() {
     super();
@@ -104,8 +113,18 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat BoundNames.ast:7
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
+   * @ast method 
+   * 
    */
   public BoundFieldAccess(String p0, FieldDeclaration p1) {
     setID(p0);
@@ -113,7 +132,7 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat BoundNames.ast:11
+   * 
    */
   public BoundFieldAccess(beaver.Symbol p0, FieldDeclaration p1) {
     setID(p0);
@@ -122,7 +141,7 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat BoundNames.ast:18
+   * 
    */
   protected int numChildren() {
     return 0;
@@ -130,23 +149,26 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat BoundNames.ast:24
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for lexeme ID
+   * Replaces the lexeme ID.
+   * @param value The new value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setID(String value) {
     tokenString_ID = value;
   }
   /**
+   * JastAdd-internal setter for lexeme ID using the Beaver parser.
+   * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:8
+   * 
    */
   public void setID(beaver.Symbol symbol) {
     if(symbol.value != null && !(symbol.value instanceof String))
@@ -156,33 +178,41 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
     IDend = symbol.getEnd();
   }
   /**
-   * Getter for lexeme ID
+   * Retrieves the value for the lexeme ID.
+   * @return The value for the lexeme ID.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:19
+   * 
    */
   public String getID() {
     return tokenString_ID != null ? tokenString_ID : "";
   }
   /**
-   * Setter for lexeme FieldDeclaration
+   * Replaces the lexeme FieldDeclaration.
+   * @param value The new value for the lexeme FieldDeclaration.
    * @apilevel high-level
    * @ast method 
-   * @declaredat BoundNames.ast:5
+   * 
    */
   public void setFieldDeclaration(FieldDeclaration value) {
     tokenFieldDeclaration_FieldDeclaration = value;
   }
-  /**   * @apilevel internal   * @ast method 
-   * @declaredat BoundNames.ast:8
+  /**
+   * @apilevel internal
+   * @ast method 
+   * 
    */
   
-  /**   * @apilevel internal   */  protected FieldDeclaration tokenFieldDeclaration_FieldDeclaration;
   /**
-   * Getter for lexeme FieldDeclaration
+   * @apilevel internal
+   */
+  protected FieldDeclaration tokenFieldDeclaration_FieldDeclaration;
+  /**
+   * Retrieves the value for the lexeme FieldDeclaration.
+   * @return The value for the lexeme FieldDeclaration.
    * @apilevel high-level
    * @ast method 
-   * @declaredat BoundNames.ast:13
+   * 
    */
   public FieldDeclaration getFieldDeclaration() {
     return tokenFieldDeclaration_FieldDeclaration;
@@ -205,11 +235,11 @@ public class BoundFieldAccess extends VarAccess implements Cloneable {
     if(decl_computed) {
       return decl_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     decl_value = decl_compute();
-if(isFinal && num == state().boundariesCrossed) decl_computed = true;
+      if(isFinal && num == state().boundariesCrossed) decl_computed = true;
     return decl_value;
   }
   /**

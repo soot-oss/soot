@@ -125,4 +125,14 @@ class UnitContainer implements Unit {
 	public void redirectJumpsToThisTo(Unit newLocation) {
 		throw new UnsupportedOperationException();
 	}
+
+	@Override
+	public int getJavaSourceStartLineNumber() {
+		throw new UnsupportedOperationException();
+	}
+
+	@Override
+	public int getJavaSourceStartColumnNumber() {
+		throw new UnsupportedOperationException();
+	}
 }

@@ -28,24 +28,51 @@ import java.util.*;
  */
 public class CoffiClassSource extends ClassSource
 {
-    public CoffiClassSource( String className, InputStream classFile ) {
+    protected final InputStream classFile;
+	private final String fileName;
+	private final String zipFileName;
+	
+    public CoffiClassSource( String className, InputStream classFile, String fileName, String zipFileName ) {
         super( className );
         this.classFile = classFile;
+        this.fileName = fileName;
+        this.zipFileName = zipFileName;
     }
     public Dependencies resolve( SootClass sc ) {
         if(Options.v().verbose())
             G.v().out.println("resolving [from .class]: " + className );
-        List references = new ArrayList();
-        soot.coffi.Util.v().resolveFromClassFile(sc, classFile, references);
+        List<Type> references = new ArrayList<Type>();
+        soot.coffi.Util.v().resolveFromClassFile(sc, classFile, fileName, references);
 
         try {
             classFile.close();
         } catch (IOException e) { throw new RuntimeException("!?"); }
         
+        addSourceFileTag(sc);
+        
         IInitialResolver.Dependencies deps = new IInitialResolver.Dependencies();
         deps.typesToSignature.addAll(references);
         return deps;
     }
-    protected InputStream classFile;
+    
+    protected void addSourceFileTag(soot.SootClass sc){
+    	if (fileName == null && zipFileName == null)
+    		return;
+    	
+        soot.tagkit.SourceFileTag tag = null;
+        if (sc.hasTag("SourceFileTag")) {
+            tag = (soot.tagkit.SourceFileTag)sc.getTag("SourceFileTag");
+        }
+        else {
+            tag = new soot.tagkit.SourceFileTag();
+            sc.addTag(tag);
+        }
+        
+        // Sets sourceFile only when it hasn't been set before
+        if (tag.getSourceFile() == null) {
+            String name = zipFileName == null ? new File(fileName).getName() : new File(zipFileName).getName();
+            tag.setSourceFile(name); 
+        }
+    }
 }
 

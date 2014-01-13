@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production SynchronizedStmt : {@link Stmt} ::= <span class="component">{@link Expr}</span> <span class="component">{@link Block}</span>;
  * @ast node
- * @declaredat java.ast:214
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:217
  */
 public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
   /**
@@ -83,32 +83,41 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SynchronizedStmt copy() {
-      try {
-        SynchronizedStmt node = (SynchronizedStmt)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      SynchronizedStmt node = (SynchronizedStmt) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
+   * Create a deep copy of the AST subtree at this node.
+   * The copy is dangling, i.e. has no parent.
+   * @return dangling copy of the subtree at this node
    * @apilevel low-level
    */
   @SuppressWarnings({"unchecked", "cast"})
   public SynchronizedStmt fullCopy() {
-    SynchronizedStmt res = (SynchronizedStmt)copy();
-    for(int i = 0; i < getNumChildNoTransform(); i++) {
-      ASTNode node = getChildNoTransform(i);
-      if(node != null) node = node.fullCopy();
-      res.setChild(node, i);
+    SynchronizedStmt tree = (SynchronizedStmt) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
+        }
+      }
     }
-    return res;
-    }
+    return tree;
+  }
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:207
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:206
    */
   public void collectFinally(Stmt branchStmt, ArrayList list) {
     list.add(this);
@@ -148,7 +157,7 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @ast method 
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:485
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:500
    */
   public void jimplify2(Body b) {
     b.setLine(this);
@@ -185,7 +194,7 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public SynchronizedStmt() {
     super();
@@ -193,8 +202,19 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
    * @ast method 
-   * @declaredat java.ast:7
+   * 
+   */
+  public void init$Children() {
+    children = new ASTNode[2];
+  }
+  /**
+   * @ast method 
+   * 
    */
   public SynchronizedStmt(Expr p0, Block p1) {
     setChild(p0, 0);
@@ -203,7 +223,7 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:14
+   * 
    */
   protected int numChildren() {
     return 2;
@@ -211,59 +231,69 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:20
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
   }
   /**
-   * Setter for Expr
+   * Replaces the Expr child.
+   * @param node The new node to replace the Expr child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setExpr(Expr node) {
     setChild(node, 0);
   }
   /**
-   * Getter for Expr
+   * Retrieves the Expr child.
+   * @return The current node used as the Expr child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Expr getExpr() {
     return (Expr)getChild(0);
   }
   /**
+   * Retrieves the Expr child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Expr child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Expr getExprNoTransform() {
     return (Expr)getChildNoTransform(0);
   }
   /**
-   * Setter for Block
+   * Replaces the Block child.
+   * @param node The new node to replace the Block child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:5
+   * 
    */
   public void setBlock(Block node) {
     setChild(node, 1);
   }
   /**
-   * Getter for Block
+   * Retrieves the Block child.
+   * @return The current node used as the Block child.
    * @apilevel high-level
    * @ast method 
-   * @declaredat java.ast:12
+   * 
    */
   public Block getBlock() {
     return (Block)getChild(1);
   }
   /**
+   * Retrieves the Block child.
+   * <p><em>This method does not invoke AST transformations.</em></p>
+   * @return The current node used as the Block child.
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:18
+   * 
    */
   public Block getBlockNoTransform() {
     return (Block)getChildNoTransform(1);
@@ -272,7 +302,7 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
   /**
    * @attribute syn
    * @aspect DA
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:654
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:655
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDAafter(Variable v) {
@@ -281,11 +311,11 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
     if(isDAafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafter_Variable_value = isDAafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
     return isDAafter_Variable_value;
   }
   /**
@@ -295,38 +325,30 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:914
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:915
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafterFinally(Variable v) {
-      ASTNode$State state = state();
-    boolean isDUafterFinally_Variable_value = isDUafterFinally_compute(v);
-    return isDUafterFinally_Variable_value;
+    ASTNode$State state = state();
+    try {  return true;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDUafterFinally_compute(Variable v) {  return true;  }
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:917
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:918
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDAafterFinally(Variable v) {
-      ASTNode$State state = state();
-    boolean isDAafterFinally_Variable_value = isDAafterFinally_compute(v);
-    return isDAafterFinally_Variable_value;
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDAafterFinally_compute(Variable v) {  return false;  }
   protected java.util.Map isDUafter_Variable_values;
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1177
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1178
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafter(Variable v) {
@@ -335,11 +357,11 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
     if(isDUafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUafter_Variable_value = isDUafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
     return isDUafter_Variable_value;
   }
   /**
@@ -364,11 +386,11 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
     if(canCompleteNormally_computed) {
       return canCompleteNormally_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     canCompleteNormally_value = canCompleteNormally_compute();
-if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
+      if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = true;
     return canCompleteNormally_value;
   }
   /**
@@ -388,11 +410,11 @@ if(isFinal && num == state().boundariesCrossed) canCompleteNormally_computed = t
     if(monitor_Body_values.containsKey(_parameters)) {
       return (soot.Local)monitor_Body_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     soot.Local monitor_Body_value = monitor_compute(b);
-if(isFinal && num == state().boundariesCrossed) monitor_Body_values.put(_parameters, monitor_Body_value);
+      if(isFinal && num == state().boundariesCrossed) monitor_Body_values.put(_parameters, monitor_Body_value);
     return monitor_Body_value;
   }
   /**
@@ -406,16 +428,12 @@ if(isFinal && num == state().boundariesCrossed) monitor_Body_values.put(_paramet
    * @aspect Statements
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:355
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean needsFinallyTrap() {
-      ASTNode$State state = state();
-    boolean needsFinallyTrap_value = needsFinallyTrap_compute();
-    return needsFinallyTrap_value;
+    ASTNode$State state = state();
+    try {  return enclosedByExceptionHandler();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean needsFinallyTrap_compute() {  return enclosedByExceptionHandler();  }
   /**
    * @apilevel internal
    */
@@ -427,18 +445,18 @@ if(isFinal && num == state().boundariesCrossed) monitor_Body_values.put(_paramet
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:452
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:467
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ArrayList exceptionRanges() {
     if(exceptionRanges_computed) {
       return exceptionRanges_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     exceptionRanges_value = exceptionRanges_compute();
-if(isFinal && num == state().boundariesCrossed) exceptionRanges_computed = true;
+      if(isFinal && num == state().boundariesCrossed) exceptionRanges_computed = true;
     return exceptionRanges_value;
   }
   /**
@@ -456,18 +474,18 @@ if(isFinal && num == state().boundariesCrossed) exceptionRanges_computed = true;
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:479
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:494
    */
   @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt label_begin() {
     if(label_begin_computed) {
       return label_begin_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_begin_value = label_begin_compute();
-if(isFinal && num == state().boundariesCrossed) label_begin_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_begin_computed = true;
     return label_begin_value;
   }
   /**
@@ -485,18 +503,18 @@ if(isFinal && num == state().boundariesCrossed) label_begin_computed = true;
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:480
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:495
    */
   @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt label_end() {
     if(label_end_computed) {
       return label_end_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_end_value = label_end_compute();
-if(isFinal && num == state().boundariesCrossed) label_end_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_end_computed = true;
     return label_end_value;
   }
   /**
@@ -514,18 +532,18 @@ if(isFinal && num == state().boundariesCrossed) label_end_computed = true;
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:481
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:496
    */
   @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt label_finally() {
     if(label_finally_computed) {
       return label_finally_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_finally_value = label_finally_compute();
-if(isFinal && num == state().boundariesCrossed) label_finally_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_finally_computed = true;
     return label_finally_value;
   }
   /**
@@ -543,18 +561,18 @@ if(isFinal && num == state().boundariesCrossed) label_finally_computed = true;
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:482
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:497
    */
   @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt label_finally_block() {
     if(label_finally_block_computed) {
       return label_finally_block_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_finally_block_value = label_finally_block_compute();
-if(isFinal && num == state().boundariesCrossed) label_finally_block_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_finally_block_computed = true;
     return label_finally_block_value;
   }
   /**
@@ -572,18 +590,18 @@ if(isFinal && num == state().boundariesCrossed) label_finally_block_computed = t
   /**
    * @attribute syn
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:483
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:498
    */
   @SuppressWarnings({"unchecked", "cast"})
   public soot.jimple.Stmt label_exception_handler() {
     if(label_exception_handler_computed) {
       return label_exception_handler_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_exception_handler_value = label_exception_handler_compute();
-if(isFinal && num == state().boundariesCrossed) label_exception_handler_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_exception_handler_computed = true;
     return label_exception_handler_value;
   }
   /**
@@ -591,52 +609,65 @@ if(isFinal && num == state().boundariesCrossed) label_exception_handler_computed
    */
   private soot.jimple.Stmt label_exception_handler_compute() {  return newLabel();  }
   /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {  return getBlock().modifiedInScope(var);  }
+    finally {
+    }
+  }
+  /**
    * @attribute inh
    * @aspect Statements
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:356
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean enclosedByExceptionHandler() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     boolean enclosedByExceptionHandler_value = getParent().Define_boolean_enclosedByExceptionHandler(this, null);
     return enclosedByExceptionHandler_value;
   }
   /**
    * @attribute inh
    * @aspect Statements
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:465
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:480
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl typeThrowable() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl typeThrowable_value = getParent().Define_TypeDecl_typeThrowable(this, null);
     return typeThrowable_value;
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:656
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:657
    * @apilevel internal
    */
   public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
     if(caller == getBlockNoTransform()) {
       return getExpr().isDAafter(v);
     }
-    if(caller == getExprNoTransform()) {
+    else if(caller == getExprNoTransform()) {
       return isDAbefore(v);
     }
-    return getParent().Define_boolean_isDAbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1179
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1180
    * @apilevel internal
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
     if(caller == getBlockNoTransform()) {
       return getExpr().isDUafter(v);
     }
-    if(caller == getExprNoTransform()) {
+    else if(caller == getExprNoTransform()) {
       return isDUbefore(v);
     }
-    return getParent().Define_boolean_isDUbefore(this, caller, v);
+    else {      return getParent().Define_boolean_isDUbefore(this, caller, v);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:111
@@ -646,7 +677,8 @@ if(isFinal && num == state().boundariesCrossed) label_exception_handler_computed
     if(caller == getBlockNoTransform()) {
       return reachable();
     }
-    return getParent().Define_boolean_reachable(this, caller);
+    else {      return getParent().Define_boolean_reachable(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:157
@@ -656,7 +688,8 @@ if(isFinal && num == state().boundariesCrossed) label_exception_handler_computed
     if(caller == getBlockNoTransform()) {
       return reachable();
     }
-    return getParent().Define_boolean_reportUnreachable(this, caller);
+    else {      return getParent().Define_boolean_reportUnreachable(this, caller);
+    }
   }
   /**
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:354
@@ -666,17 +699,19 @@ if(isFinal && num == state().boundariesCrossed) label_exception_handler_computed
     if(caller == getBlockNoTransform()) {
       return true;
     }
-    return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    else {      return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
+    }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:448
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:463
    * @apilevel internal
    */
   public ArrayList Define_ArrayList_exceptionRanges(ASTNode caller, ASTNode child) {
     if(caller == getBlockNoTransform()) {
       return exceptionRanges();
     }
-    return getParent().Define_ArrayList_exceptionRanges(this, caller);
+    else {      return getParent().Define_ArrayList_exceptionRanges(this, caller);
+    }
   }
   /**
    * @apilevel internal

@@ -34,7 +34,7 @@ import soot.toolkits.graph.*;
  **/
 public class SPhiExpr implements PhiExpr
 {
-    protected List argPairs = new ArrayList();
+    protected List<UnitBox> argPairs = new ArrayList<UnitBox>();
     protected Map predToPair = new HashMap();  // cache
     protected Type type;
     
@@ -387,7 +387,7 @@ public class SPhiExpr implements PhiExpr
         return hashcode;
     }
 
-    public List getUnitBoxes()
+    public List<UnitBox> getUnitBoxes()
     {
         return argPairs;
     }

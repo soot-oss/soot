@@ -1,7 +1,7 @@
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -18,10 +18,10 @@ import soot.coffi.method_info;
 import soot.coffi.CONSTANT_Utf8_info;
 import soot.tagkit.SourceFileTag;
 import soot.coffi.CoffiMethodSource;
-
 /**
+ * @production Case : {@link Stmt};
  * @ast node
- * @declaredat java.ast:200
+ * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/java.ast:203
  */
 public abstract class Case extends Stmt implements Cloneable {
   /**
@@ -68,7 +68,7 @@ public abstract class Case extends Stmt implements Cloneable {
   }
   /**
    * @ast method 
-   * @declaredat java.ast:1
+   * 
    */
   public Case() {
     super();
@@ -76,9 +76,19 @@ public abstract class Case extends Stmt implements Cloneable {
 
   }
   /**
+   * Initializes the child array to the correct size.
+   * Initializes List and Opt nta children.
+   * @apilevel internal
+   * @ast method
+   * @ast method 
+   * 
+   */
+  public void init$Children() {
+  }
+  /**
    * @apilevel low-level
    * @ast method 
-   * @declaredat java.ast:10
+   * 
    */
   protected int numChildren() {
     return 0;
@@ -86,7 +96,7 @@ public abstract class Case extends Stmt implements Cloneable {
   /**
    * @apilevel internal
    * @ast method 
-   * @declaredat java.ast:16
+   * 
    */
   public boolean mayHaveRewrite() {
     return false;
@@ -94,7 +104,7 @@ public abstract class Case extends Stmt implements Cloneable {
   /**
    * @attribute syn
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:426
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:431
    */
   @SuppressWarnings({"unchecked", "cast"})
   public abstract boolean constValue(Case c);
@@ -102,7 +112,7 @@ public abstract class Case extends Stmt implements Cloneable {
   /**
    * @attribute syn
    * @aspect DA
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:569
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:570
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDAbefore(Variable v) {
@@ -111,11 +121,11 @@ public abstract class Case extends Stmt implements Cloneable {
     if(isDAbefore_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAbefore_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAbefore_Variable_value = isDAbefore_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAbefore_Variable_values.put(_parameters, Boolean.valueOf(isDAbefore_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAbefore_Variable_values.put(_parameters, Boolean.valueOf(isDAbefore_Variable_value));
     return isDAbefore_Variable_value;
   }
   /**
@@ -127,7 +137,7 @@ if(isFinal && num == state().boundariesCrossed) isDAbefore_Variable_values.put(_
   /**
    * @attribute syn
    * @aspect DA
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:573
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:574
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDAafter(Variable v) {
@@ -136,11 +146,11 @@ if(isFinal && num == state().boundariesCrossed) isDAbefore_Variable_values.put(_
     if(isDAafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDAafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDAafter_Variable_value = isDAafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_parameters, Boolean.valueOf(isDAafter_Variable_value));
     return isDAafter_Variable_value;
   }
   /**
@@ -150,24 +160,20 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1024
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1025
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUbefore(Variable v) {
-      ASTNode$State state = state();
-    boolean isDUbefore_Variable_value = isDUbefore_compute(v);
-    return isDUbefore_Variable_value;
-  }
-  /**
-   * @apilevel internal
-   */
-  private boolean isDUbefore_compute(Variable v) {  return getParent().getParent() instanceof Block && ((Block)getParent().getParent()).isDUbefore(v)
+    ASTNode$State state = state();
+    try {  return getParent().getParent() instanceof Block && ((Block)getParent().getParent()).isDUbefore(v)
     && super.isDUbefore(v);  }
+    finally {
+    }
+  }
   protected java.util.Map isDUafter_Variable_values;
   /**
    * @attribute syn
    * @aspect DU
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1028
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:1029
    */
   @SuppressWarnings({"unchecked", "cast"})
   public boolean isDUafter(Variable v) {
@@ -176,11 +182,11 @@ if(isFinal && num == state().boundariesCrossed) isDAafter_Variable_values.put(_p
     if(isDUafter_Variable_values.containsKey(_parameters)) {
       return ((Boolean)isDUafter_Variable_values.get(_parameters)).booleanValue();
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     boolean isDUafter_Variable_value = isDUafter_compute(v);
-if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
+      if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_parameters, Boolean.valueOf(isDUafter_Variable_value));
     return isDUafter_Variable_value;
   }
   /**
@@ -192,16 +198,12 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
    * @aspect UnreachableStatements
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:83
    */
-  @SuppressWarnings({"unchecked", "cast"})
   public boolean reachable() {
-      ASTNode$State state = state();
-    boolean reachable_value = reachable_compute();
-    return reachable_value;
+    ASTNode$State state = state();
+    try {  return getParent().getParent() instanceof Block && ((Block)getParent().getParent()).reachable();  }
+    finally {
+    }
   }
-  /**
-   * @apilevel internal
-   */
-  private boolean reachable_compute() {  return getParent().getParent() instanceof Block && ((Block)getParent().getParent()).reachable();  }
   /**
    * @apilevel internal
    */
@@ -220,22 +222,46 @@ if(isFinal && num == state().boundariesCrossed) isDUafter_Variable_values.put(_p
     if(label_computed) {
       return label_value;
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     label_value = label_compute();
-if(isFinal && num == state().boundariesCrossed) label_computed = true;
+      if(isFinal && num == state().boundariesCrossed) label_computed = true;
     return label_value;
   }
   /**
    * @apilevel internal
    */
   private soot.jimple.Stmt label_compute() {  return newLabel();  }
+  /**
+   * @attribute syn
+   * @aspect PreciseRethrow
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:55
+   */
+  public boolean modifiedInScope(Variable var) {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
+  /* Type checking for case labels need not be changed as it
+	 * already tests if the case labels have expressions which are
+	 * assignable to the switch expression
+	 * @attribute syn
+   * @aspect StringsInSwitch
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/StringsInSwitch.jrag:38
+   */
+  public boolean isDefaultCase() {
+    ASTNode$State state = state();
+    try {  return false;  }
+    finally {
+    }
+  }
   protected java.util.Map bind_Case_values;
   /**
    * @attribute inh
    * @aspect NameCheck
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:412
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:417
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Case bind(Case c) {
@@ -244,11 +270,11 @@ if(isFinal && num == state().boundariesCrossed) label_computed = true;
     if(bind_Case_values.containsKey(_parameters)) {
       return (Case)bind_Case_values.get(_parameters);
     }
-      ASTNode$State state = state();
+    ASTNode$State state = state();
   int num = state.boundariesCrossed;
   boolean isFinal = this.is$Final();
     Case bind_Case_value = getParent().Define_Case_bind(this, null, c);
-if(isFinal && num == state().boundariesCrossed) bind_Case_values.put(_parameters, bind_Case_value);
+      if(isFinal && num == state().boundariesCrossed) bind_Case_values.put(_parameters, bind_Case_value);
     return bind_Case_value;
   }
   /**
@@ -258,7 +284,7 @@ if(isFinal && num == state().boundariesCrossed) bind_Case_values.put(_parameters
    */
   @SuppressWarnings({"unchecked", "cast"})
   public TypeDecl switchType() {
-      ASTNode$State state = state();
+    ASTNode$State state = state();
     TypeDecl switchType_value = getParent().Define_TypeDecl_switchType(this, null);
     return switchType_value;
   }
