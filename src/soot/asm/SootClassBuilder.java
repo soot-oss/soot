@@ -24,14 +24,28 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.objectweb.asm.*;
+import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
 
+import soot.RefType;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.SootResolver;
-import soot.tagkit.*;
+import soot.tagkit.DoubleConstantValueTag;
+import soot.tagkit.EnclosingMethodTag;
+import soot.tagkit.FloatConstantValueTag;
+import soot.tagkit.InnerClassTag;
+import soot.tagkit.IntegerConstantValueTag;
+import soot.tagkit.LongConstantValueTag;
+import soot.tagkit.SignatureTag;
+import soot.tagkit.SourceFileTag;
+import soot.tagkit.StringConstantValueTag;
+import soot.tagkit.Tag;
 
 /**
  * Constructs a Soot class from a visited class.
@@ -43,7 +57,7 @@ class SootClassBuilder extends ClassVisitor {
 
 	private TagBuilder tb;
 	private final SootClass klass;
-	final Set deps;
+	final Set<soot.Type> deps;
 	
 	/**
 	 * Constructs a new Soot class builder.
@@ -67,7 +81,7 @@ class SootClassBuilder extends ClassVisitor {
 	 * Adds a dependency of the target class.
 	 * @param s name, or type of class.
 	 */
-	void addDep(Object s) {
+	void addDep(soot.Type s) {
 		deps.add(s);
 	}
 	
@@ -80,13 +94,13 @@ class SootClassBuilder extends ClassVisitor {
 			throw new RuntimeException("Class names not equal!");
 		klass.setModifiers(access & ~Opcodes.ACC_SUPER);
 		if (superName != null) {
-			superName = AsmUtil.toQualifiedName(superName);
-			addDep(superName);
+			superName = AsmUtil.toQualifiedName(superName);			
+			addDep(RefType.v(superName));
 			klass.setSuperclass(SootResolver.v().makeClassRef(superName));
 		}
 		for (String intrf : interfaces) {
 			intrf = AsmUtil.toQualifiedName(intrf);
-			addDep(intrf);
+			addDep(RefType.v(intrf));
 			klass.addInterface(SootResolver.v().makeClassRef(intrf));
 		}
 		if (signature != null)
@@ -131,7 +145,7 @@ class SootClassBuilder extends ClassVisitor {
 			thrownExceptions = new ArrayList<SootClass>(len);
 			for (int i = 0; i != len; i++) {
 				String ex = AsmUtil.toQualifiedName(exceptions[i]);
-				addDep(ex);
+				addDep(RefType.v(ex));
 				thrownExceptions.add(SootResolver.v().makeClassRef(ex));
 			}
 		}
@@ -162,7 +176,7 @@ class SootClassBuilder extends ClassVisitor {
 	public void visitOuterClass(String owner, String name, String desc) {
 		if (name == null) {
 			owner = AsmUtil.toQualifiedName(owner);
-			deps.add(owner);
+			deps.add(RefType.v(owner));
 			klass.setOuterClass(SootResolver.v().makeClassRef(owner));
 		} else {
 			klass.addTag(new EnclosingMethodTag(owner, name, desc));

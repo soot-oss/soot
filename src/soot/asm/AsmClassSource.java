@@ -58,7 +58,6 @@ class AsmClassSource extends ClassSource {
 		}
 	}
 	
-	@SuppressWarnings("unchecked")
 	@Override
 	public Dependencies resolve(SootClass sc) {
 		ClassReader clsr;
