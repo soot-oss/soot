@@ -18,6 +18,21 @@
  */
 package soot.asm;
 
+import static org.objectweb.asm.Opcodes.*;
+import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.INT_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.JUMP_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.LABEL;
+import static org.objectweb.asm.tree.AbstractInsnNode.LDC_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.LOOKUPSWITCH_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.METHOD_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.MULTIANEWARRAY_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.TABLESWITCH_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
+
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -46,9 +61,6 @@ import org.objectweb.asm.tree.TableSwitchInsnNode;
 import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
-
-import static org.objectweb.asm.tree.AbstractInsnNode.*;
-import static org.objectweb.asm.Opcodes.*;
 
 import soot.ArrayType;
 import soot.Body;
@@ -109,11 +121,12 @@ import soot.jimple.StringConstant;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UnopExpr;
-import soot.util.ArrayListMultiMap;
 import soot.util.Chain;
-import soot.util.HashTable;
-import soot.util.MultiMap;
-import soot.util.Table;
+
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Table;
 
 /**
  * Generates Jimple bodies from bytecode.
@@ -127,11 +140,11 @@ final class JimpleSource implements MethodSource {
 	/* -state fields- */
 	private int nextLocal;
 	private Map<Integer, Local> locals;
-	private MultiMap<LabelNode, UnitBox> labels;
+	private Multimap<LabelNode, UnitBox> labels;
 	private Map<AbstractInsnNode, Unit> units;
 	private ArrayList<Operand> stack;
 	private Map<AbstractInsnNode, StackFrame> frames;
-	private MultiMap<LabelNode, UnitBox> trapHandlers;
+	private Multimap<LabelNode, UnitBox> trapHandlers;
 	private JimpleBody body;
 	/* -const fields- */
 	private final int maxLocals;
@@ -1427,7 +1440,7 @@ final class JimpleSource implements MethodSource {
 			worklist.add(new Edge(ln, new ArrayList<Operand>()));
 		worklist.add(new Edge(instructions.getFirst(), new ArrayList<Operand>()));
 		conversionWorklist = worklist;
-		edges = new HashTable<AbstractInsnNode, AbstractInsnNode, Edge>(1);
+		edges = HashBasedTable.create(1,1);
 		do {
 			Edge edge = worklist.pollLast();
 			AbstractInsnNode insn = edge.insn;
@@ -1608,10 +1621,10 @@ final class JimpleSource implements MethodSource {
 		int nrInsn = instructions.size();
 		nextLocal = maxLocals;
 		locals = new HashMap<Integer, Local>(maxLocals + (maxLocals / 2));
-		labels = new ArrayListMultiMap<LabelNode, UnitBox>(4, 1);
+		labels = ArrayListMultimap.create(4, 1);
 		units = new HashMap<AbstractInsnNode, Unit>(nrInsn);
 		frames = new HashMap<AbstractInsnNode, StackFrame>(nrInsn);
-		trapHandlers = new ArrayListMultiMap<LabelNode, UnitBox>(tryCatchBlocks.size());
+		trapHandlers = ArrayListMultimap.create(tryCatchBlocks.size(),1);
 		body = jb;
 		/* retrieve all trap handlers */
 		for (TryCatchBlockNode tc : tryCatchBlocks)
