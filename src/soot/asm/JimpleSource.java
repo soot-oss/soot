@@ -1575,7 +1575,8 @@ final class JimpleSource implements MethodSource {
 				emitUnits(u);
 				if (u instanceof IdentityStmt &&
 						((IdentityStmt) u).getRightOp() instanceof CaughtExceptionRef) {
-					for (UnitBox ub : trapHandlers.get(insn))
+					//FIXME not sure if this cast is always correct...
+					for (UnitBox ub : trapHandlers.get((LabelNode) insn))
 						ub.setUnit(u);
 				} else {
 					while (!labls.isEmpty()) {
