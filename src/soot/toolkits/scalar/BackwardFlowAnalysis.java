@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 
 
-//import soot.Timers;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
 
@@ -135,13 +134,8 @@ public abstract class BackwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 						i = Math.min(i, j-1);
 					}
 				}
-
-				// numComputations++;
 			}
 		}
-
-		// Timers.v().totalFlowNodes += n;
-		// Timers.v().totalFlowComputations += numComputations;
 	}
 }
 
