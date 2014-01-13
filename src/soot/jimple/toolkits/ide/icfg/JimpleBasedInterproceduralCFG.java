@@ -38,6 +38,7 @@ import soot.Scene;
 import soot.SootMethod;
 import soot.Unit;
 import soot.UnitBox;
+import soot.Value;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
@@ -139,6 +140,15 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 					return res;
 				}
 			});
+	
+	@SynchronizedBy("by use of synchronized LoadingCache class")
+	protected final LoadingCache<SootMethod,List<Value>> methodToParameterRefs =
+			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,List<Value>>() {
+				@Override
+				public List<Value> load(SootMethod m) throws Exception {
+					return m.getActiveBody().getParameterRefs();
+				}
+			});
 
 	
 	public JimpleBasedInterproceduralCFG() {
@@ -230,7 +240,6 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 	}
 
 	@Override
-	//TODO do we need to replace call by return for backwards analysis?
 	public Set<Unit> allNonCallStartNodes() {
 		Set<Unit> res = new LinkedHashSet<Unit>(unitToOwner.keySet());
 		for (Iterator<Unit> iter = res.iterator(); iter.hasNext();) {
@@ -256,5 +265,9 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 			if(ub.getUnit()==succ) return true;
 		}
 		return false;
+	}
+	
+	public List<Value> getParameterRefs(SootMethod m) {
+		return methodToParameterRefs.getUnchecked(m);
 	}
 }
