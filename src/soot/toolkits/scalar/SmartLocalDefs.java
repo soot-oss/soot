@@ -97,11 +97,11 @@ public class SmartLocalDefs implements LocalDefs {
 		liveLocalsAfter = new HashMap<Unit, BitSet>();
 		for (Unit u : graph) {
 			// translate locals to bits
-			BitSet set = new BitSet(n);
+			BitSet bitSet = new BitSet(n);
 			for (Object o : live.getLiveLocalsAfter(u)) {
-				set.set(((Local) o).getNumber());
+				bitSet.set(((Local) o).getNumber());
 			}
-			liveLocalsAfter.put(u, set);
+			liveLocalsAfter.put(u, bitSet);
 
 			Local l = localDef(u);
 			if (l == null)
@@ -231,7 +231,7 @@ public class SmartLocalDefs implements LocalDefs {
 
 		@Override
 		protected Set<Unit> entryInitialFlow() {
-			return Collections.emptySet();
+			return new HashSet<Unit>();
 		}
 	}
 
