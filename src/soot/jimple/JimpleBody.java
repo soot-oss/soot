@@ -111,7 +111,7 @@ public class JimpleBody extends StmtBody
 				return;
 
 
-        // A method with return type 'void' can have an infinite loop 
+        // A method can have an infinite loop 
 		// and no return statement:
 		//
         //  public class Infinite {
@@ -119,11 +119,9 @@ public class JimpleBody extends StmtBody
         //  int i = 0; while (true) {i += 1;}      } }
         //
         // Only check that the execution cannot fall off the code.
-        if (method.getReturnType() instanceof VoidType) {
-            Unit last = this.getUnits().getLast();
-            if (last instanceof GotoStmt || last instanceof ThrowStmt)
-                return;
-        }
+        Unit last = this.getUnits().getLast();
+        if (last instanceof GotoStmt || last instanceof ThrowStmt)
+            return;
 
 		throw new RuntimeException("Body of method " + this.getMethod().getSignature()
 				+ " does not contain a return statement");
