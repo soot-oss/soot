@@ -9,5 +9,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jasmin"/>
 	<classpathentry kind="lib" path="libs/polyglot.jar"/>
 	<classpathentry kind="lib" path="libs/asm-debug-all-4.0.jar"/>
+	<classpathentry kind="src" path="/heros"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
