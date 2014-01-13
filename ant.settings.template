@@ -1,3 +1,5 @@
+asm.jar=libs/asm-debug-all-4.0.jar
+
 xmlprinter.jar=libs/AXMLPrinter2.jar
 
 ## Location of Polyglot classes jar file to link Soot against

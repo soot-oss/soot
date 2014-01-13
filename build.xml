@@ -37,6 +37,7 @@
            		<pathelement location="${baksmali2.jar}"/>
            		<pathelement location="${slf4j-api.jar}"/>
            		<pathelement location="${slf4j-simple.jar}"/>
+           		<pathelement location="${asm.jar}"/>
         	</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
@@ -320,6 +321,7 @@
             <zipfileset src="${xmlprinter.jar}"/>
             <zipfileset src="${baksmali.jar}"/>
             <zipfileset src="${baksmali2.jar}"/>
+            <zipfileset src="${asm.jar}"/>
         </jar>
 		<delete dir="META-INF"/>
     </target>
