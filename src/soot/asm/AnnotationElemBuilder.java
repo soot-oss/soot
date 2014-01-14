@@ -104,8 +104,7 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
 		return new AnnotationElemBuilder() {
 			@Override
 			public void visitEnd() {
-				AnnotationTag tag = new AnnotationTag(desc, this.elems.size());
-				tag.setElems(this.elems);
+				AnnotationTag tag = new AnnotationTag(desc, elems);
 				AnnotationElemBuilder.this.elems.add(new AnnotationAnnotationElem(tag, '@', name));
 			}
 		};
