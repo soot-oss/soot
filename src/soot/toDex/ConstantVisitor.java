@@ -11,6 +11,7 @@ import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
+import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.toDex.instructions.Insn;
 import soot.toDex.instructions.Insn11n;
@@ -35,6 +36,8 @@ public class ConstantVisitor implements ConstantSwitch {
 	
 	private Register destinationReg;
 	
+    private Stmt origStmt;
+
 	public ConstantVisitor(StmtVisitor stmtV) {
 		this.stmtV = stmtV;
 	}
@@ -42,6 +45,10 @@ public class ConstantVisitor implements ConstantSwitch {
 	public void setDestination(Register destinationReg) {
 		this.destinationReg = destinationReg;
 	}
+
+    public void setOrigStmt(Stmt stmt) {
+        this.origStmt = stmt;
+    }
 
 	public void defaultCase(Object o) {
 		// const* opcodes not used since there seems to be no point in doing so:
@@ -51,7 +58,7 @@ public class ConstantVisitor implements ConstantSwitch {
 	
 	public void caseStringConstant(StringConstant s) {
 		StringIdItem referencedString = StringIdItem.internStringIdItem(stmtV.getBelongingFile(), s.value);
-		stmtV.addInsn(new Insn21c(Opcode.CONST_STRING, destinationReg, referencedString));
+        stmtV.addInsn(new Insn21c(Opcode.CONST_STRING, destinationReg, referencedString), origStmt);
 	}
 	
 	public void caseClassConstant(ClassConstant c) {
@@ -59,12 +66,12 @@ public class ConstantVisitor implements ConstantSwitch {
 		boolean classIsArray = c.value.startsWith("[");
 		String className = classIsArray ? c.value : SootToDexUtils.getDexClassName(c.value);
 		TypeIdItem referencedClass = TypeIdItem.internTypeIdItem(stmtV.getBelongingFile(), className);
-		stmtV.addInsn(new Insn21c(Opcode.CONST_CLASS, destinationReg, referencedClass));
+        stmtV.addInsn(new Insn21c(Opcode.CONST_CLASS, destinationReg, referencedClass), origStmt);
 	}
 	
 	public void caseLongConstant(LongConstant l) {
 		long constant = l.value;
-		stmtV.addInsn(buildConstWideInsn(constant));
+        stmtV.addInsn(buildConstWideInsn(constant), origStmt);
 	}
 	
 	private Insn buildConstWideInsn(long literal) {
@@ -79,12 +86,12 @@ public class ConstantVisitor implements ConstantSwitch {
 	
 	public void caseDoubleConstant(DoubleConstant d) {
 		long longBits = Double.doubleToLongBits(d.value);
-		stmtV.addInsn(buildConstWideInsn(longBits));
+        stmtV.addInsn(buildConstWideInsn(longBits), origStmt);
 	}
 	
 	public void caseFloatConstant(FloatConstant f) {
 		int intBits = Float.floatToIntBits(f.value);
-		stmtV.addInsn(buildConstInsn(intBits));
+        stmtV.addInsn(buildConstInsn(intBits), origStmt);
 	}
 	
 	private Insn buildConstInsn(int literal) {
@@ -98,12 +105,12 @@ public class ConstantVisitor implements ConstantSwitch {
 	}
 
 	public void caseIntConstant(IntConstant i) {
-		stmtV.addInsn(buildConstInsn(i.value));
+        stmtV.addInsn(buildConstInsn(i.value), origStmt);
 	}
 	
 	public void caseNullConstant(NullConstant v) {
 		// dex bytecode spec says: "In terms of bitwise representation, (Object) null == (int) 0."
-		stmtV.addInsn(buildConstInsn(0));
+        stmtV.addInsn(buildConstInsn(0), origStmt);
 	}
 
 }

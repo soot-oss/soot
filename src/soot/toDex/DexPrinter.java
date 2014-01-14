@@ -26,6 +26,7 @@ import org.jf.dexlib.CodeItem;
 import org.jf.dexlib.CodeItem.EncodedCatchHandler;
 import org.jf.dexlib.CodeItem.EncodedTypeAddrPair;
 import org.jf.dexlib.CodeItem.TryItem;
+import org.jf.dexlib.DebugInfoItem;
 import org.jf.dexlib.DexFile;
 import org.jf.dexlib.FieldIdItem;
 import org.jf.dexlib.MethodIdItem;
@@ -35,6 +36,7 @@ import org.jf.dexlib.TypeIdItem;
 import org.jf.dexlib.TypeListItem;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Util.ByteArrayAnnotatedOutput;
+import org.jf.dexlib.Util.DebugInfoBuilder;
 import org.jf.dexlib.Util.Pair;
 
 import soot.Body;
@@ -52,6 +54,8 @@ import soot.Unit;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.scalar.EmptySwitchEliminator;
 import soot.options.Options;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.Tag;
 
 /**
  * Main entry point for the "dex" output format.<br>
@@ -333,9 +337,33 @@ public class DexPrinter {
 		// Split the tries since Dalvik does not supported nested try/catch blocks
 		TrapSplitter.v().transform(activeBody);
 
+        DebugInfoBuilder diBuilder = new DebugInfoBuilder();
+        Map<Instruction, List<Tag>> instructionTagMap = stmtV.getInstructionTagMap();
+        // get line numbers
+        int codeAddress = 0;
+        for (Instruction i : instructions) {
+            if (instructionTagMap.containsKey(i)) {
+                List<Tag> tags = instructionTagMap.get(i);
+                for (Tag t : tags) {
+                    if (t instanceof LineNumberTag) {
+                        LineNumberTag lnt = (LineNumberTag) t;
+                        int lineNumber = lnt.getLineNumber();
+                        diBuilder.addLine(codeAddress, lineNumber);
+                        Debug.printDbg(" [toDex] add line " + lineNumber + " at code offset: "
+                                + codeAddress + " (" + i + ")");
+                    }
+                }
+            }
+
+            codeAddress += i.getSize(codeAddress);
+        }
+
 		List<EncodedCatchHandler> encodedCatchHandlers = new ArrayList<CodeItem.EncodedCatchHandler>();
 		List<TryItem> tries = toTries(activeBody.getTraps(), encodedCatchHandlers, stmtV, belongingDexFile);
-		return CodeItem.internCodeItem(belongingDexFile, registerCount, inWords, outWords, null, instructions, tries, encodedCatchHandlers);
+        DebugInfoItem debugInfo = diBuilder.encodeDebugInfo(belongingDexFile);
+
+        return CodeItem.internCodeItem(belongingDexFile, registerCount, inWords, outWords,
+                debugInfo, instructions, tries, encodedCatchHandlers);
 	}
 
 	private static List<Instruction> toInstructions(Collection<Unit> units, StmtVisitor stmtV) {
