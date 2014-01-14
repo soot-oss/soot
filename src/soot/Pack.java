@@ -59,10 +59,7 @@ public abstract class Pack implements HasPhaseOptions
     public void insertAfter(Transform t, String phaseName) 
     {
         PhaseOptions.v().getPM().notifyAddPack();
-        Iterator<Transform> it = opts.iterator();
-        while (it.hasNext())
-        {
-            Transform tr = (Transform)it.next();
+        for (Transform tr : opts) {
             if (tr.getPhaseName().equals(phaseName))
             {
                 opts.insertAfter(t, tr);
@@ -75,10 +72,7 @@ public abstract class Pack implements HasPhaseOptions
     public void insertBefore(Transform t, String phaseName)
     {
         PhaseOptions.v().getPM().notifyAddPack();
-        Iterator<Transform> it = opts.iterator();
-        while (it.hasNext())
-        {
-            Transform tr = (Transform)it.next();
+        for (Transform tr : opts) {
             if (tr.getPhaseName().equals(phaseName))
             {
                 opts.insertBefore(t, tr);
@@ -89,13 +83,21 @@ public abstract class Pack implements HasPhaseOptions
     }
 
     public Transform get( String phaseName ) {
-        for( Iterator<Transform> trIt = opts.iterator(); trIt.hasNext(); ) {
-            final Transform tr = (Transform) trIt.next();
+        for (Transform tr : opts) {
             if( tr.getPhaseName().equals(phaseName) ) {
                 return tr;
             }
         }
         return null;
+    }
+    
+    public boolean remove(String phaseName) {
+    	for (Transform tr : opts)
+    		if (tr.getPhaseName().equals(phaseName)) {
+    			opts.remove(tr);
+    			return true;
+    		}
+    	return false;
     }
 
     protected void internalApply() {
