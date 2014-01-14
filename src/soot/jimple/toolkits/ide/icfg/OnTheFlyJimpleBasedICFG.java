@@ -6,6 +6,7 @@ import heros.solver.IDESolver;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -108,6 +109,9 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 				}
 			});
 	
+	@SynchronizedBy("explicit lock on data structure")
+	protected Map<SootMethod, Set<Unit>> methodToCallers = new HashMap<SootMethod, Set<Unit>>();
+	
 	public OnTheFlyJimpleBasedICFG(SootMethod... entryPoints) {
 		this(Arrays.asList(entryPoints));
 	}
@@ -119,11 +123,14 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 	}
 	
 	protected Body initForMethod(SootMethod m) {
+		assert Scene.v().hasFastHierarchy();
 		Body b = null;
 		if(m.isConcrete()) {
 			SootClass declaringClass = m.getDeclaringClass();
 			ensureClassHasBodies(declaringClass);
-			b = m.retrieveActiveBody();
+			synchronized(Scene.v()) {
+				b = m.retrieveActiveBody();
+			}
 			if(b!=null) {
 				for(Unit u: b.getUnits()) {
 					if(unitToOwner.put(u,b)!=null) {
@@ -134,26 +141,48 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 				}
 			}
 		}
+		assert Scene.v().hasFastHierarchy();
 		return b;
 	}
 
-	private void ensureClassHasBodies(SootClass cl) {
-		if(cl.resolvingLevel()<SootClass.BODIES)
+	private synchronized void ensureClassHasBodies(SootClass cl) {
+		assert Scene.v().hasFastHierarchy();
+		if(cl.resolvingLevel()<SootClass.BODIES) {
 			Scene.v().forceResolve(cl.getName(), SootClass.BODIES);
+			Scene.v().getOrMakeFastHierarchy();
+		}
+		assert Scene.v().hasFastHierarchy();
 	}
 	
 	@Override
 	public Set<SootMethod> getCalleesOfCallAt(Unit u) {
+		assert Scene.v().hasFastHierarchy();
 		Set<SootMethod> targets = unitToCallees.getUnchecked(u);
+		assert Scene.v().hasFastHierarchy();
 		for (SootMethod m : targets) {
+			addCallerForMethod(u, m);
 			initForMethod(m);
 		}
 		return targets;
 	}
 
+	private void addCallerForMethod(Unit callSite, SootMethod target) {
+		synchronized (methodToCallers) {
+			Set<Unit> callers = methodToCallers.get(target);
+			if (callers == null) {
+				callers = new HashSet<Unit>();
+				methodToCallers.put(target, callers);
+			}
+			callers.add(callSite);
+		}
+	}
+
 	@Override
 	public Set<Unit> getCallersOf(SootMethod m) {
-		throw new UnsupportedOperationException("This class is not suited for unbalanced problems");
+		Set<Unit> callers = methodToCallers.get(m);
+		return callers == null ? Collections.<Unit>emptySet() : callers;
+		
+//		throw new UnsupportedOperationException("This class is not suited for unbalanced problems");
 	}
 	
 	public static void loadAllClassesOnClassPathToSignatures() {
