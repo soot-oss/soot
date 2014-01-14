@@ -156,16 +156,14 @@ public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
 	
 	@Override
 	public Set<SootMethod> getCalleesOfCallAt(Unit u) {
-		assert Scene.v().hasFastHierarchy();
 		Set<SootMethod> targets = unitToCallees.getUnchecked(u);
-		assert Scene.v().hasFastHierarchy();
 		for (SootMethod m : targets) {
 			addCallerForMethod(u, m);
 			initForMethod(m);
 		}
 		return targets;
 	}
-
+	
 	private void addCallerForMethod(Unit callSite, SootMethod target) {
 		synchronized (methodToCallers) {
 			Set<Unit> callers = methodToCallers.get(target);
