@@ -77,7 +77,9 @@ public class DexClass {
 
         // source file
         String sourceFile = defItem.getSourceFile();
-        sc.addTag(new SourceFileTag(sourceFile));
+        if (sourceFile != null) {
+            sc.addTag(new SourceFileTag(sourceFile));
+        }
 
         // super class for hierarchy level
         String superClassName = Util.dottedClassName(superClass);
