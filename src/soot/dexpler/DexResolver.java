@@ -69,7 +69,8 @@ public class DexResolver {
     protected static void addSourceFileTag(SootClass sc, String fileName){
         soot.tagkit.SourceFileTag tag = null;
         if (sc.hasTag("SourceFileTag")) {
-            tag = (soot.tagkit.SourceFileTag)sc.getTag("SourceFileTag");
+            return; // do not add tag if original class already has debug
+                    // information
         }
         else {
             tag = new soot.tagkit.SourceFileTag();
