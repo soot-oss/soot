@@ -50,7 +50,7 @@ import soot.tagkit.Tag;
 /**
  * Constructs a Soot class from a visited class.
  * 
- * @author amiftah
+ * @author Aaloan Miftah
  */
 @SuppressWarnings({"unchecked","rawtypes"})
 class SootClassBuilder extends ClassVisitor {
@@ -75,6 +75,10 @@ class SootClassBuilder extends ClassVisitor {
 		if (t == null)
 			t = tb = new TagBuilder(klass, this);
 		return t;
+	}
+	
+	void addDep(String s) {
+		addDep(RefType.v(AsmUtil.baseTypeName(s)));
 	}
 	
 	/**

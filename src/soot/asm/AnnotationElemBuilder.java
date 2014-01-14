@@ -39,7 +39,7 @@ import soot.tagkit.AnnotationTag;
 /**
  * Annotation element builder.
  * 
- * @author amiftah
+ * @author Aaloan Miftah
  */
 abstract class AnnotationElemBuilder extends AnnotationVisitor {
 

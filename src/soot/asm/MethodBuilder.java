@@ -34,7 +34,7 @@ import soot.tagkit.VisibilityParameterAnnotationTag;
 /**
  * Soot method builder.
  * 
- * @author amiftah
+ * @author Aaloan Miftah
  */
 class MethodBuilder extends JSRInlinerAdapter {
 
@@ -110,8 +110,7 @@ class MethodBuilder extends JSRInlinerAdapter {
 		return new AnnotationElemBuilder() {
 			@Override
 			public void visitEnd() {
-				AnnotationTag annotTag = new AnnotationTag(desc, elems.size());
-				annotTag.setElems(elems);
+				AnnotationTag annotTag = new AnnotationTag(desc, elems);
 				_vat.addAnnotation(annotTag);
 			}
 		};

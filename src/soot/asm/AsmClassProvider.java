@@ -25,7 +25,7 @@ import soot.SourceLocator;
 /**
  * Objectweb ASM class provider.
  * 
- * @author amiftah
+ * @author Aaloan Miftah
  */
 public class AsmClassProvider implements ClassProvider {
 

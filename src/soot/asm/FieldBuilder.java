@@ -29,7 +29,7 @@ import soot.SootField;
 /**
  * Soot field builder.
  * 
- * @author amiftah
+ * @author Aaloan Miftah
  */
 final class FieldBuilder extends FieldVisitor {
 

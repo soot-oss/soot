@@ -32,7 +32,7 @@ import soot.tagkit.VisibilityAnnotationTag;
 /**
  * Tag builder.
  * 
- * @author amiftah
+ * @author Aaloan Miftah
  */
 final class TagBuilder {
 
@@ -70,8 +70,7 @@ final class TagBuilder {
 		return new AnnotationElemBuilder() {
 			@Override
 			public void visitEnd() {
-				AnnotationTag annotTag = new AnnotationTag(desc, elems.size());
-				annotTag.setElems(elems);
+				AnnotationTag annotTag = new AnnotationTag(desc, elems);
 				_tag.addAnnotation(annotTag);
 			}
 		};

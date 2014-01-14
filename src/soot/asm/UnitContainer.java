@@ -31,7 +31,7 @@ import soot.util.Switch;
 /**
  * A psuedo unit containing different units.
  * 
- * @author amiftah
+ * @author Aaloan Miftah
  */
 @SuppressWarnings("serial")
 class UnitContainer implements Unit {

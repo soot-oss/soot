@@ -30,7 +30,7 @@ import soot.javaToJimple.IInitialResolver.Dependencies;
 /**
  * ASM class source implementation.
  * 
- * @author amiftah
+ * @author Aaloan Miftah
  */
 class AsmClassSource extends ClassSource {
 

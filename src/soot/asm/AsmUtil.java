@@ -26,7 +26,11 @@ import soot.*;
 /**
  * Contains static utility methods.
  * 
- * @author amiftah
+ * @author Aaloan Miftah
+ */
+/**
+ * @author eric
+ *
  */
 class AsmUtil {
 	
@@ -212,6 +216,19 @@ class AsmUtil {
 		return types;
 	}
 
+	/**
+	 * strips suffix for indicating an array type
+	 */
+	public static String baseTypeName(String s) {
+		int index = s.indexOf("[");
+		if(index<0) {
+			return s;
+		} else {
+			return s.substring(0,index);
+		}
+	}
+
 	private AsmUtil() {
 	}
+
 }

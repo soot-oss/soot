@@ -30,7 +30,7 @@ import soot.ValueBox;
 /**
  * Stack operand.
  * 
- * @author amiftah
+ * @author Aaloan Miftah
  */
 final class Operand {
 

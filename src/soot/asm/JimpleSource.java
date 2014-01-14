@@ -131,7 +131,7 @@ import com.google.common.collect.Table;
 /**
  * Generates Jimple bodies from bytecode.
  * 
- * @author amiftah
+ * @author Aaloan Miftah
  */
 final class JimpleSource implements MethodSource {
 	
@@ -339,7 +339,6 @@ final class JimpleSource implements MethodSource {
 					(l == null && opr.value instanceof Local))
 				continue;
 			if (l != null && !opr.value.equivTo(l)) {
-				@SuppressWarnings("unchecked")
 				List<ValueBox> uses = opr.value.getUseBoxes();
 				boolean noref = true;
 				for (ValueBox use : uses) {
@@ -1171,7 +1170,6 @@ final class JimpleSource implements MethodSource {
 		} else {
 			opr = out[0];
 			InvokeExpr expr = (InvokeExpr) opr.value;
-			@SuppressWarnings("unchecked")
 			List<Type> types = expr.getMethodRef().parameterTypes();
 			Operand[] oprs;
 			int nrArgs = types.size();

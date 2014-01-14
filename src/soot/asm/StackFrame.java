@@ -28,7 +28,7 @@ import soot.jimple.Jimple;
 /**
  * Frame of stack for an instruction.
  * 
- * @author amiftah
+ * @author Aaloan Miftah
  */
 final class StackFrame {
 
