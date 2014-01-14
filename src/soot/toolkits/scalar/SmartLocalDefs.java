@@ -231,7 +231,7 @@ public class SmartLocalDefs implements LocalDefs {
 
 		@Override
 		protected Set<Unit> entryInitialFlow() {
-			return Collections.emptySet();
+			return new HashSet<Unit>();
 		}
 	}
 
