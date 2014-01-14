@@ -111,7 +111,7 @@ public class SourceLocator
 
     private void setupClassProviders() {
         classProviders = new LinkedList<ClassProvider>();
-        ClassProvider classFileClassProvider = Options.v().asm() ? new AsmClassProvider() : new CoffiClassProvider();
+        ClassProvider classFileClassProvider = Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
 		switch( Options.v().src_prec() ) {
             case Options.src_prec_class:
                 classProviders.add(classFileClassProvider);

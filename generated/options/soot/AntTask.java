@@ -108,8 +108,8 @@ public class AntTask extends MatchingTask {
 
 
 
-        public void setasm(boolean arg) {
-            if(arg) addArg("-asm");
+        public void setcoffi(boolean arg) {
+            if(arg) addArg("-coffi");
         }
   
         public void sethelp(boolean arg) {

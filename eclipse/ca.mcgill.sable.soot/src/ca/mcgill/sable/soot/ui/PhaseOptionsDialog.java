@@ -1866,14 +1866,14 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		String nextListToken;
 	
 		
-		boolRes = getGeneral_Optionsasm_widget().getButton().getSelection();
+		boolRes = getGeneral_Optionscoffi_widget().getButton().getSelection();
 		
 		
 		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getGeneral_Optionsasm_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getGeneral_Optionscoffi_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getGeneral_Optionshelp_widget().getButton().getSelection();
@@ -6392,14 +6392,14 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		
-	private BooleanOptionWidget General_Optionsasm_widget;
+	private BooleanOptionWidget General_Optionscoffi_widget;
 	
-	private void setGeneral_Optionsasm_widget(BooleanOptionWidget widget) {
-		General_Optionsasm_widget = widget;
+	private void setGeneral_Optionscoffi_widget(BooleanOptionWidget widget) {
+		General_Optionscoffi_widget = widget;
 	}
 	
-	public BooleanOptionWidget getGeneral_Optionsasm_widget() {
-		return General_Optionsasm_widget;
+	public BooleanOptionWidget getGeneral_Optionscoffi_widget() {
+		return General_Optionscoffi_widget;
 	}	
 	
 	private BooleanOptionWidget General_Optionshelp_widget;
@@ -9965,7 +9965,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		defKey = ""+" "+""+" "+"asm";
+		defKey = ""+" "+""+" "+"coffi";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -9977,7 +9977,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionsasm_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("asm-front", "", "","asm", "\n", defaultBool)));
+		setGeneral_Optionscoffi_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Coffi Frontend", "", "","coffi", "\n", defaultBool)));
 		
 		
 		
@@ -10137,7 +10137,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionson_the_fly_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("On-the-fly Mode", "", "","fly", "\nThis enables whole-program mode but uses a less agressive class \nloading. By default, classes will be loaded without bodies \nunless otherwise requested. ", defaultBool)));
+		setGeneral_Optionson_the_fly_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("On-the-fly Mode", "", "","fly", "\nThis enables whole-program mode but uses a less agressive class \nloading. By default, classes will be loaded without bodies \nunless otherwise requested. The cg pack is disabled in this \nmode. ", defaultBool)));
 		
 		
 		

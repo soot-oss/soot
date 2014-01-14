@@ -102,9 +102,9 @@ packages in the Java runtime.</p>
 	<section>
 		<name>General Options</name>
 		<boolopt>
-		<name>asm-front</name>
-		<alias>asm</alias>
-		<short_desc>Use the ASM front end for parsing Java bytecode (instead of using Coffi).</short_desc>		
+		<name>Coffi Frontend</name>
+		<alias>coffi</alias>
+		<short_desc>Use the good old Coffi front end for parsing Java bytecode (instead of using ASM).</short_desc>		
 		</boolopt>
 		<boolopt>
 			<name>Help</name>
