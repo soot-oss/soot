@@ -39,6 +39,7 @@ import soot.SootResolver;
 import soot.Type;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
+import soot.tagkit.SourceFileTag;
 
 /**
  * DexClass is a container for all relevant information of that class
@@ -73,6 +74,12 @@ public class DexClass {
 
         String superClass = defItem.getSuperclass();
         Dependencies deps = new Dependencies();
+
+        // source file
+        String sourceFile = defItem.getSourceFile();
+        if (sourceFile != null) {
+            sc.addTag(new SourceFileTag(sourceFile));
+        }
 
         // super class for hierarchy level
         String superClassName = Util.dottedClassName(superClass);

@@ -65,6 +65,9 @@ John Jorgensen (jjorge1@sable.mcgill.ca)
        
 Felix Kwok (wkwok@sable.mcgill.ca)
     - VTA re-implementation
+
+Steven Lambeth
+	- BitSet based implementation of FlowAnalysis and other performance improvements
     
 Patrick Lam (plam@sable.mcgill.ca)
     - general Soot hacker

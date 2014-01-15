@@ -55,6 +55,7 @@ import soot.jimple.Stmt;
 import soot.jimple.toolkits.scalar.EmptySwitchEliminator;
 import soot.options.Options;
 import soot.tagkit.LineNumberTag;
+import soot.tagkit.SourceFileTag;
 import soot.tagkit.Tag;
 
 /**
@@ -203,7 +204,15 @@ public class DexPrinter {
 		ClassDataItem classData = toClassDataItem(c, dexFile);
 		AnnotationDirectoryItem di= dexAnnotation.finish();
 		// staticFieldInitializers is not used since the <clinit> method should be enough
-		ClassDefItem.internClassDefItem(dexFile, classType, accessFlags, superType, implementedInterfaces, null, di, classData, null);
+        // add source file tag if any
+        StringIdItem sourceFileItem = null;
+        if (c.hasTag("SourceFileTag")) {
+            SourceFileTag sft = (SourceFileTag) c.getTag("SourceFileTag");
+            String sourceFile = sft.getSourceFile();
+            sourceFileItem = StringIdItem.internStringIdItem(dexFile, sourceFile);
+        }
+        ClassDefItem.internClassDefItem(dexFile, classType, accessFlags, superType,
+                implementedInterfaces, sourceFileItem, di, classData, null);
 		dexAnnotation = null;
 	}
 	

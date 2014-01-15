@@ -47,6 +47,8 @@ Improvements and API changes in HEAD
 
 12. EquivalentValue is never nested now. This eliminates the need of
     getDeepestValue().
+    
+13. Multiple performance improvements for intra-procedural analyses and class loading 
 
 Improvements and API changes in version 2.5.0
 
