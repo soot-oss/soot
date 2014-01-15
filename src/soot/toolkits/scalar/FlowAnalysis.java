@@ -23,20 +23,23 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.toolkits.scalar;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.Orderer;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
+import soot.toolkits.graph.interaction.FlowInfo;
+import soot.toolkits.graph.interaction.InteractionHandler;
 
-/** An abstract class providing a framework for carrying out dataflow analysis.
+/** 
+ * An abstract class providing a framework for carrying out dataflow analysis.
  * Subclassing either BackwardFlowAnalysis or ForwardFlowAnalysis and providing
  * implementations for the abstract methods will allow Soot to compute the
- * corresponding flow analysis. */
+ * corresponding flow analysis. 
+ */
 public abstract class FlowAnalysis<N,A> extends AbstractFlowAnalysis<N,A>
 {
     /** Maps graph nodes to OUT sets. */
@@ -49,10 +52,12 @@ public abstract class FlowAnalysis<N,A> extends AbstractFlowAnalysis<N,A>
     public FlowAnalysis(DirectedGraph<N> graph)
     {
         super(graph);
-        unitToAfterFlow = new HashMap<N, A>(graph.size() * 2 + 1, 0.7f);
+        unitToAfterFlow = new IdentityHashMap<N, A>(graph.size() * 2 + 1);
     }
 
-    /** Given the merge of the <code>out</code> sets, compute the <code>in</code> set for <code>s</code> (or in to out, depending on direction).
+    /** 
+     * Given the merge of the <code>out</code> sets, compute the <code>in</code> set for 
+     * <code>s</code> (or in to out, depending on direction).
      *
      * This function often causes confusion, because the same interface
      * is used for both forward and backward flow analyses. The first
@@ -75,7 +80,41 @@ public abstract class FlowAnalysis<N,A> extends AbstractFlowAnalysis<N,A>
 	 * @return an Orderer to order the nodes for the fixed-point iteration 
 	 */
 	protected Orderer<N> constructOrderer() {
-		return new PseudoTopologicalOrderer();
+		return new PseudoTopologicalOrderer<N>();
+	}
+	
+	
+	protected FlowInfo getFlowInfo(N s, A flow, Map<?,A> filterFlow, boolean b) {
+		A savedFlow;
+		if (filterFlow != null) {
+			savedFlow = filterFlow.get(s);
+			copy(filterFlow.get(s), savedFlow);
+		} else {
+			savedFlow = newInitialFlow();
+			copy(flow, savedFlow);
+		}
+		return new FlowInfo(savedFlow, s, b);
+	}	
+
+	protected void afterFlowThrough(N s, A flow, boolean handleStop) {
+		final InteractionHandler h = InteractionHandler.v();
+
+		FlowInfo fi = getFlowInfo(s, flow, filterUnitToAfterFlow, false);
+
+		if (handleStop && h.getStopUnitList() != null && h.getStopUnitList().contains(s)) {
+			h.handleStopAtNodeEvent(s);
+		}
+		h.handleAfterAnalysisEvent(fi);
 	}
 
+	protected void beforeFlowThrough(N s, A flow, boolean handleStop) {
+    	final InteractionHandler h = InteractionHandler.v();
+    	
+		FlowInfo fi = getFlowInfo(s, flow, filterUnitToBeforeFlow, true);
+    	
+        if (handleStop && h.getStopUnitList() != null && h.getStopUnitList().contains(s)){
+            h.handleStopAtNodeEvent(s);
+        }
+        h.handleBeforeAnalysisEvent(fi);
+    }
 }
