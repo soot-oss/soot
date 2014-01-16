@@ -96,7 +96,7 @@ public class FillArrayDataInstruction extends PseudoInstruction {
       if (element == null) //array was not defined -> element type can not be found (obfuscated bytecode?)
         break;
       AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, element);
-      tagWithLineNumber(assign);
+      addTags(assign);
       body.add(assign);
       if (i == 0) {
         firstAssign = assign;

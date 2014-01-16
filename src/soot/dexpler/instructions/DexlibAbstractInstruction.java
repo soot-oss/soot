@@ -148,16 +148,18 @@ public abstract class DexlibAbstractInstruction {
     }
 
     /**
-     * Tag the passed host with this instructions linenumber (if one is set).
-     *
-     * @param host the host to tag
+     * Tag the passed host with: - this instructions line number (if one is set)
+     * - the original bytecode offset
+     * 
+     * @param host
+     *            the host to tag
      */
-    protected void tagWithLineNumber(Host host) {
+    protected void addTags(Host host) {
         if (lineNumber != -1) {
             host.addTag(new LineNumberTag(lineNumber));
             host.addTag(new SourceLineNumberTag(lineNumber));
-            host.addTag(new BytecodeOffsetTag(codeAddress));
         }
+        host.addTag(new BytecodeOffsetTag(codeAddress));
     }
 
 //    /**

@@ -59,7 +59,7 @@ public class ConstInstruction extends DexlibAbstractInstruction {
         Constant cst = getConstant(dest, body);
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cst);
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
 
         if (IDalvikTyper.ENABLE_DVKTYPER) {
