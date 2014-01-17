@@ -18,6 +18,7 @@
  */
 package soot.jimple.toolkits.ide.icfg;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -41,94 +42,113 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
 	}
 
 	//swapped
+	@Override
 	public List<Unit> getSuccsOf(Unit n) {
 		return delegate.getPredsOf(n);
 	}
 
 	//swapped
-	public Set<Unit> getStartPointsOf(SootMethod m) {
+	@Override
+	public Collection<Unit> getStartPointsOf(SootMethod m) {
 		return delegate.getEndPointsOf(m);
 	}
 	
 	//swapped
+	@Override
 	public List<Unit> getReturnSitesOfCallAt(Unit n) {
 		return delegate.getPredsOfCallAt(n);
 	}
 
 	//swapped
+	@Override
 	public boolean isExitStmt(Unit stmt) {
 		return delegate.isStartPoint(stmt);
 	}
 
 	//swapped
+	@Override
 	public boolean isStartPoint(Unit stmt) {
 		return delegate.isExitStmt(stmt);
 	}
 	
 	//swapped
+	@Override
 	public Set<Unit> allNonCallStartNodes() {
 		return delegate.allNonCallEndNodes();
 	}
 	
 	//swapped
+	@Override
 	public List<Unit> getPredsOf(Unit u) {
 		return delegate.getSuccsOf(u);
 	}
 
 	//swapped
-	public Set<Unit> getEndPointsOf(SootMethod m) {
+	@Override
+	public Collection<Unit> getEndPointsOf(SootMethod m) {
 		return delegate.getStartPointsOf(m);
 	}
 
 	//swapped
+	@Override
 	public List<Unit> getPredsOfCallAt(Unit u) {
 		return delegate.getSuccsOf(u);
 	}
 
 	//swapped
+	@Override
 	public Set<Unit> allNonCallEndNodes() {
 		return delegate.allNonCallStartNodes();
 	}
 
 	//same
+	@Override
 	public SootMethod getMethodOf(Unit n) {
 		return delegate.getMethodOf(n);
 	}
 
 	//same
+	@Override
 	public Set<SootMethod> getCalleesOfCallAt(Unit n) {
 		return delegate.getCalleesOfCallAt(n);
 	}
 
 	//same
+	@Override
 	public Set<Unit> getCallersOf(SootMethod m) {
 		return delegate.getCallersOf(m);
 	}
 
 	//same
+	@Override
 	public Set<Unit> getCallsFromWithin(SootMethod m) {
 		return delegate.getCallsFromWithin(m);
 	}
 
 	//same
+	@Override
 	public boolean isCallStmt(Unit stmt) {
 		return delegate.isCallStmt(stmt);
 	}
 
 	//same
+	@Override
 	public DirectedGraph<Unit> getOrCreateUnitGraph(Body body) {
 		return delegate.getOrCreateUnitGraph(body);
 	}
 
 	//same
+	@Override
 	public List<Value> getParameterRefs(SootMethod m) {
 		return delegate.getParameterRefs(m);
 	}
 
+	@Override
 	public boolean isFallThroughSuccessor(Unit stmt, Unit succ) {
 		throw new UnsupportedOperationException("not implemented because semantics unclear");
 	}
 
+	@Override
 	public boolean isBranchTarget(Unit stmt, Unit succ) {
 		throw new UnsupportedOperationException("not implemented because semantics unclear");
 	}

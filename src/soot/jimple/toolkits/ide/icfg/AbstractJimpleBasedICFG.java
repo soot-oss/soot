@@ -4,6 +4,7 @@ import heros.DontSynchronize;
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -117,11 +118,11 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 	}
 
 	@Override
-	public Set<Unit> getStartPointsOf(SootMethod m) {
+	public Collection<Unit> getStartPointsOf(SootMethod m) {
 		if(m.hasActiveBody()) {
 			Body body = m.getActiveBody();
 			DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
-			return new LinkedHashSet<Unit>(unitGraph.getHeads());
+			return unitGraph.getHeads();
 		}
 		return Collections.emptySet();
 	}
@@ -152,7 +153,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 	}
 
 	@Override
-	public List<Unit> getReturnSitesOfCallAt(Unit u) {
+	public Collection<Unit> getReturnSitesOfCallAt(Unit u) {
 		return getSuccsOf(u);
 	}
 
@@ -170,11 +171,11 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 	}
 
 	@Override
-	public Set<Unit> getEndPointsOf(SootMethod m) {
+	public Collection<Unit> getEndPointsOf(SootMethod m) {
 		if(m.hasActiveBody()) {
 			Body body = m.getActiveBody();
 			DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
-			return new LinkedHashSet<Unit>(unitGraph.getTails());
+			return unitGraph.getTails();
 		}
 		return Collections.emptySet();
 	}
