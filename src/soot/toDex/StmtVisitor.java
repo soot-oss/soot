@@ -156,10 +156,6 @@ public class StmtVisitor implements StmtSwitch {
 		addInsn(highestIndex, insn);
         if (s != null && s.getTags().size() > 0) { // get tags
             insnTagMap.put(insn, s.getTags());
-            System.out.println("add tags for instruction " + insn + " tags: ");
-            for (Tag t : s.getTags()) {
-                System.out.println("   -- " + t);
-            }
         }
 	}
 	
