@@ -22,7 +22,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import soot.Body;
 import soot.SootMethod;
 import soot.Unit;
 import soot.Value;
@@ -133,8 +132,8 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
 
 	//same
 	@Override
-	public DirectedGraph<Unit> getOrCreateUnitGraph(Body body) {
-		return delegate.getOrCreateUnitGraph(body);
+	public DirectedGraph<Unit> getOrCreateUnitGraph(SootMethod m) {
+		return delegate.getOrCreateUnitGraph(m);
 	}
 
 	//same
