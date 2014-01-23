@@ -152,4 +152,13 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
 		throw new UnsupportedOperationException("not implemented because semantics unclear");
 	}
 
+	//swapped
+	@Override
+	public boolean isReturnSite(Unit n) {
+		for (Unit pred : getSuccsOf(n))
+			if (isCallStmt(pred))
+				return true;
+		return false;
+	}
+
 }

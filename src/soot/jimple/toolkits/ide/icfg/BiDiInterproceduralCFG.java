@@ -27,5 +27,12 @@ public interface BiDiInterproceduralCFG<N, M> extends InterproceduralCFG<N, M> {
 	public DirectedGraph<Unit> getOrCreateUnitGraph(M body);
 
 	public List<Value> getParameterRefs(M m);
+	
+	/**
+	 * Gets whether the given statement is a return site of at least one call
+	 * @param n The statement to check
+	 * @return True if the given statement is a return site, otherwise false
+	 */
+	public boolean isReturnSite(N n);
 
 }

@@ -189,4 +189,13 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 	public List<Unit> getPredsOfCallAt(Unit u) {
 		return getPredsOf(u);
 	}
+	
+	@Override
+	public boolean isReturnSite(Unit n) {
+		for (Unit pred : getPredsOf(n))
+			if (isCallStmt(pred))
+				return true;
+		return false;
+	}
+	
 }
