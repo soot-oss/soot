@@ -82,7 +82,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 		return bodyToUnitGraph.getUnchecked(body);
 	}
 
-	protected synchronized DirectedGraph<Unit> makeGraph(Body body) {
+	protected DirectedGraph<Unit> makeGraph(Body body) {
 		return new ExceptionalUnitGraph(body, UnitThrowAnalysis.v() ,true);
 	}
 
