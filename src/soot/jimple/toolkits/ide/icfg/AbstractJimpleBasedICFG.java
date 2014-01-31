@@ -4,6 +4,7 @@ import heros.DontSynchronize;
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -72,11 +73,16 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 		return unitGraph.getSuccsOf(u);
 	}
 
+	@Override
+	public DirectedGraph<Unit> getOrCreateUnitGraph(SootMethod m) {
+		return getOrCreateUnitGraph(m.getActiveBody());
+	}
+
 	public DirectedGraph<Unit> getOrCreateUnitGraph(Body body) {
 		return bodyToUnitGraph.getUnchecked(body);
 	}
 
-	protected synchronized DirectedGraph<Unit> makeGraph(Body body) {
+	protected DirectedGraph<Unit> makeGraph(Body body) {
 		return new ExceptionalUnitGraph(body, UnitThrowAnalysis.v() ,true);
 	}
 
@@ -117,11 +123,11 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 	}
 
 	@Override
-	public Set<Unit> getStartPointsOf(SootMethod m) {
+	public Collection<Unit> getStartPointsOf(SootMethod m) {
 		if(m.hasActiveBody()) {
 			Body body = m.getActiveBody();
 			DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
-			return new LinkedHashSet<Unit>(unitGraph.getHeads());
+			return unitGraph.getHeads();
 		}
 		return Collections.emptySet();
 	}
@@ -152,7 +158,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 	}
 
 	@Override
-	public List<Unit> getReturnSitesOfCallAt(Unit u) {
+	public Collection<Unit> getReturnSitesOfCallAt(Unit u) {
 		return getSuccsOf(u);
 	}
 
@@ -170,11 +176,11 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 	}
 
 	@Override
-	public Set<Unit> getEndPointsOf(SootMethod m) {
+	public Collection<Unit> getEndPointsOf(SootMethod m) {
 		if(m.hasActiveBody()) {
 			Body body = m.getActiveBody();
 			DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
-			return new LinkedHashSet<Unit>(unitGraph.getTails());
+			return unitGraph.getTails();
 		}
 		return Collections.emptySet();
 	}
@@ -183,4 +189,13 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 	public List<Unit> getPredsOfCallAt(Unit u) {
 		return getPredsOf(u);
 	}
+	
+	@Override
+	public boolean isReturnSite(Unit n) {
+		for (Unit pred : getPredsOf(n))
+			if (isCallStmt(pred))
+				return true;
+		return false;
+	}
+	
 }

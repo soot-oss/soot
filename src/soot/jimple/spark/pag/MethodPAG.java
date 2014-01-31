@@ -194,12 +194,15 @@ public final class MethodPAG {
         }
         pag.nativeMethodDriver.process( method, thisNode, retNode, args );
     }
+    
+    private final static String mainSubSignature =
+    		SootMethod.getSubSignature( "main", new SingletonList<Type>
+    			( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v() );
 
     protected void addMiscEdges() {
         // Add node for parameter (String[]) in main method
         final String signature = method.getSignature(); 
-        if( method.getSubSignature().equals( SootMethod.getSubSignature( "main", new SingletonList<Type>
-        		( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v() ) ) ) {
+        if( method.getSubSignature().equals( mainSubSignature )) {
             addInEdge( pag().nodeFactory().caseArgv(), nodeFactory.caseParm(0) );
         } else
 

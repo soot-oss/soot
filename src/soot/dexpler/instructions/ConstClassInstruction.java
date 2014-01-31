@@ -67,7 +67,7 @@ public class ConstClassInstruction extends DexlibAbstractInstruction {
         Constant cst = ClassConstant.v(type);
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cst);
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {

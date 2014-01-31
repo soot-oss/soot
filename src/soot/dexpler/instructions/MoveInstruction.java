@@ -52,7 +52,7 @@ public class MoveInstruction extends DexlibAbstractInstruction {
         int source = i.getRegisterB();
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), body.getRegisterLocal(source));
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {

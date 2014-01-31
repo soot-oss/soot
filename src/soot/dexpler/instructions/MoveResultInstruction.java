@@ -61,7 +61,7 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
 //            throw new RuntimeException("Neither local and expr are set to move.");
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), body.getStoreResultLocal());
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         if (tag != null)
             assign.addTag(tag);
         body.add(assign);

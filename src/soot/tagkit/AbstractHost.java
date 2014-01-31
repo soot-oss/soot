@@ -44,12 +44,13 @@ public  class AbstractHost implements Host
 
     // avoid creating an empty list for each element, when it is not used
     // use lazy instantiation (in addTag) instead
-    private final static List<Tag> emptyList = Collections.emptyList();
-    private List<Tag> mTagList = emptyList;
+    private List<Tag> mTagList = null;
     
     /** get the list of tags. This list should not be modified! */
     public List<Tag> getTags()
     {
+    	if (mTagList == null)
+    		return Collections.emptyList();
         return mTagList;
     }
 
@@ -65,6 +66,9 @@ public  class AbstractHost implements Host
     /** search for tag named <code>aName</code> */
     private int searchForTag(String aName) 
     {
+    	if (mTagList == null)
+    		return -1;
+    	
         int i = 0;
         Iterator<Tag> it = mTagList.iterator();
         while(it.hasNext()) {
@@ -96,14 +100,14 @@ public  class AbstractHost implements Host
     /** add tag <code>t</code> to this host */
     public void addTag(Tag t)
     {
-        if (mTagList == emptyList) 
+        if (mTagList == null) 
             mTagList = new ArrayList<Tag>(1);
         mTagList.add(t);
     }
 
     /** Removes all the tags from this host. */
     public void removeAllTags() {
-        mTagList = emptyList;
+        mTagList = null;
     }
 
     /** Adds all the tags from h to this host. */

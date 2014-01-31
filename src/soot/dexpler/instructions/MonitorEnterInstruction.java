@@ -49,7 +49,7 @@ public class MonitorEnterInstruction extends DexlibAbstractInstruction {
         Local object = body.getRegisterLocal(reg);
         enterMonitorStmt = Jimple.v().newEnterMonitorStmt(object);
         setUnit(enterMonitorStmt);
-        tagWithLineNumber(enterMonitorStmt);
+        addTags(enterMonitorStmt);
         body.add(enterMonitorStmt);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {

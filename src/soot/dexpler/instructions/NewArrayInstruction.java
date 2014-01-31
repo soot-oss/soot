@@ -76,7 +76,7 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         assign = Jimple.v().newAssignStmt(l, newArrayExpr);
 
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {

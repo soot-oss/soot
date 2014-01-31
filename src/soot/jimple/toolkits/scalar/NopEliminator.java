@@ -42,7 +42,7 @@ public class NopEliminator extends BodyTransformer
         with respect to the statements.
     */
     
-    protected void internalTransform(Body b, String phaseName, Map options)
+    protected void internalTransform(Body b, String phaseName, Map<String, String> options)
     {
         JimpleBody body = (JimpleBody)b;
         

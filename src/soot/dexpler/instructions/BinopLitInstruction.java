@@ -71,7 +71,7 @@ public class BinopLitInstruction extends TaggedInstruction {
         assign.addTag(getTag());
 
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {

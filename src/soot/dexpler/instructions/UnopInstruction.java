@@ -64,7 +64,7 @@ public class UnopInstruction extends DexlibAbstractInstruction {
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
 
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {

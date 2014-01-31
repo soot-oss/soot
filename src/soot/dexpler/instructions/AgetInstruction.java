@@ -66,7 +66,7 @@ public class AgetInstruction extends DexlibAbstractInstruction {
           assign.addTag(new ObjectOpTag());
 
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {

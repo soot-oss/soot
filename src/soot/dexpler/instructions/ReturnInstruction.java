@@ -48,7 +48,7 @@ public class ReturnInstruction extends DexlibAbstractInstruction {
         Local l = body.getRegisterLocal(returnInstruction.getRegisterA());
         returnStmt = Jimple.v().newReturnStmt(l);
         setUnit(returnStmt);
-        tagWithLineNumber(returnStmt);
+        addTags(returnStmt);
         body.add(returnStmt);
         this.body = body;
 		

@@ -241,6 +241,8 @@ public class FastHierarchy
                 || parent.equals( RefType.v( "java.io.Serializable" ) )
                 || parent.equals( RefType.v( "java.lang.Cloneable" ) );
             }
+            if (!(parent instanceof ArrayType))
+            	return false;
             ArrayType aparent = (ArrayType) parent;
                                                 
             // You can store a int[][] in a Object[]. Yuck!

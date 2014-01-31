@@ -55,7 +55,7 @@ public class GotoInstruction extends JumpInstruction implements DeferableInstruc
     private GotoStmt gotoStatement() {
         GotoStmt go = Jimple.v().newGotoStmt(targetInstruction.getUnit());
         setUnit(go);
-        tagWithLineNumber(go);
+        addTags(go);
         return go;
     }
 
