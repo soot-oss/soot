@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import soot.Unit;
 import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
 
@@ -15,16 +14,16 @@ import soot.toolkits.graph.DirectedGraph;
  */
 public interface BiDiInterproceduralCFG<N, M> extends InterproceduralCFG<N, M> {
 
-	public List<Unit> getPredsOf(N u);
+	public List<N> getPredsOf(N u);
 	
-	public Collection<Unit> getEndPointsOf(M m);
+	public Collection<N> getEndPointsOf(M m);
 
-	public List<Unit> getPredsOfCallAt(N u);
+	public List<N> getPredsOfCallAt(N u);
 
-	public Set<Unit> allNonCallEndNodes();
+	public Set<N> allNonCallEndNodes();
 		
 	//also exposed to some clients who need it
-	public DirectedGraph<Unit> getOrCreateUnitGraph(M body);
+	public DirectedGraph<N> getOrCreateUnitGraph(M body);
 
 	public List<Value> getParameterRefs(M m);
 	
