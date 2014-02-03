@@ -38,7 +38,7 @@ public class AugEvalFunction implements IEvalFunction
 	
 	public Collection<Type> eval(Typing tg, Value expr, Stmt stmt)
 	{
-		return new SingletonList<Type>(eval_(tg, expr, stmt, this.jb));
+		return Collections.<Type>singletonList(eval_(tg, expr, stmt, this.jb));
 	}
 
 	public static Type eval_(Typing tg, Value expr, Stmt stmt, JimpleBody jb)

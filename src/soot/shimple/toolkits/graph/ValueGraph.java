@@ -58,12 +58,12 @@ public class ValueGraph
         nodeToLocal = new HashMap<Node, Value>();
         nodeList = new ArrayList<Node>();
         currentNodeNumber = 0;
-        Orderer pto = new PseudoTopologicalOrderer();
-        List blocks = pto.newList(cfg,false);
+        Orderer<Block> pto = new PseudoTopologicalOrderer<Block>();
+        List<Block> blocks = pto.newList(cfg,false);
 
-        for(Iterator blocksIt = blocks.iterator(); blocksIt.hasNext();){
+        for(Iterator<Block> blocksIt = blocks.iterator(); blocksIt.hasNext();){
             Block block = (Block) blocksIt.next();
-            for(Iterator blockIt = block.iterator(); blockIt.hasNext();)
+            for(Iterator<Unit> blockIt = block.iterator(); blockIt.hasNext();)
                 handleStmt((Stmt) blockIt.next());
         }
 
@@ -176,7 +176,7 @@ public class ValueGraph
             public void handleUnop(UnopExpr unop)
             {
                 Node nop = fetchNode(unop.getOp());
-                List<Node> child = new SingletonList(nop);
+                List<Node> child = Collections.<Node>singletonList(nop);
                 setResult(new Node(unop, true, child));
             }
             
@@ -514,7 +514,7 @@ public class ValueGraph
 
         protected Node(Value node)
         {
-            this(node, true, Collections.EMPTY_LIST);
+            this(node, true, Collections.<Node>emptyList());
         }
 
         protected Node(Value node, boolean ordered, List<Node> children)
@@ -649,9 +649,9 @@ public class ValueGraph
             this.type = type;
         }
 
-        public List getUseBoxes()
+        public List<ValueBox> getUseBoxes()
         {
-            return Collections.EMPTY_LIST;
+            return Collections.<ValueBox>emptyList();
         }
 
         public Type getType()

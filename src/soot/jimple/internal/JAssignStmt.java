@@ -35,6 +35,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
+
 import java.util.*;
 
 public class JAssignStmt extends AbstractDefinitionStmt
@@ -93,7 +94,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
             throw new RuntimeException("Illegal assignment statement.  Make sure that either left side or right hand side has a local or constant.");
                     
         
-        defBoxes = new SingletonList(leftBox);
+        defBoxes = Collections.<ValueBox>singletonList(leftBox);
     }
 
     protected JAssignStmt(ValueBox variableBox, ValueBox rvalueBox)
@@ -101,7 +102,7 @@ public class JAssignStmt extends AbstractDefinitionStmt
         this.leftBox = variableBox;
         this.rightBox = rvalueBox;
 
-        defBoxes = new SingletonList(leftBox);
+        defBoxes = Collections.<ValueBox>singletonList(leftBox);
     }
 
     public boolean containsInvokeExpr()
@@ -261,10 +262,11 @@ public class JAssignStmt extends AbstractDefinitionStmt
 			Unit u = Baf.v().newIncInst(context.getBafLocalOfJimpleLocal(l), 
                                                     IntConstant.v((expr instanceof AddExpr) ? x : -x));
                         out.add(u);
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
+
+			for ( Tag tag : getTags() ) {
+				u.addTag(tag);
 			}
+			
 			return;
                     }        
                 }
@@ -281,10 +283,9 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     ((ConvertToBaf) rvalue).convertToBaf(context, out);
                     
 		    Unit u = Baf.v().newArrayWriteInst(v.getType());
-		    Iterator it = getTags().iterator();
-		    while(it.hasNext()) {
-			u.addTag((Tag) it.next());
-		    }
+			for ( Tag tag : getTags() ) {
+				u.addTag(tag);
+			}
 		    
                     out.add(u);
                 }
@@ -297,10 +298,9 @@ public class JAssignStmt extends AbstractDefinitionStmt
 
 		    
 		    Unit u = Baf.v().newFieldPutInst(v.getFieldRef());
-		    Iterator it = getTags().iterator();
-		    while(it.hasNext()) {
-			u.addTag((Tag) it.next());
-		    }
+			for ( Tag tag : getTags() ) {
+				u.addTag(tag);
+			}
 
                     out.add(u);
                 }
@@ -321,10 +321,9 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     Unit u = Baf.v().newStoreInst(v.getType(), 
                                         context.getBafLocalOfJimpleLocal(v));
 
-		    Iterator it = getTags().iterator();
-		    while(it.hasNext()) {
-			u.addTag((Tag) it.next());
-		    }
+        			for ( Tag tag : getTags() ) {
+        				u.addTag(tag);
+        			}
 
                     out.add(u);
 
@@ -335,10 +334,9 @@ public class JAssignStmt extends AbstractDefinitionStmt
                     ((ConvertToBaf) rvalue).convertToBaf(context, out);
 
 		    Unit u = Baf.v().newStaticPutInst(v.getFieldRef());
-		    Iterator it = getTags().iterator();
-		    while(it.hasNext()) {
-			u.addTag((Tag) it.next());
-		    }
+			for ( Tag tag : getTags() ) {
+				u.addTag(tag);
+			}
 
                     out.add(u);
                 }
