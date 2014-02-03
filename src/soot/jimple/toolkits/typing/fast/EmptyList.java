@@ -25,6 +25,7 @@ import java.util.*;
 /**
  * @author Ben Bellamy
  */
+@Deprecated
 public class EmptyList<E> extends AbstractList<E>
 {
 	public E get(int index)

@@ -36,32 +36,32 @@ public class AugHierarchy implements IHierarchy
 	public static Collection<Type> lcas_(Type a, Type b)
 	{
 		if ( TypeResolver.typesEqual(a, b) )
-			return new SingletonList<Type>(a);
+			return Collections.<Type>singletonList(a);
 		else if ( a instanceof BottomType )
-			return new SingletonList<Type>(b);
+			return Collections.<Type>singletonList(b);
 		else if ( b instanceof BottomType )
-			return new SingletonList<Type>(a);
+			return Collections.<Type>singletonList(a);
 		else if ( a instanceof IntegerType && b instanceof IntegerType )
 		{
 			if ( a instanceof Integer1Type )
-				return new SingletonList<Type>(b);
+				return Collections.<Type>singletonList(b);
 			else if ( b instanceof Integer1Type )
-				return new SingletonList<Type>(a);
+				return Collections.<Type>singletonList(a);
 			else if ( a instanceof BooleanType || b instanceof BooleanType )
-				return new EmptyList<Type>();
+				return Collections.<Type>emptyList();
 			else if ( (a instanceof ByteType && b instanceof Integer32767Type)
 				|| (b instanceof ByteType && a instanceof Integer32767Type) )
-				return new SingletonList<Type>(ShortType.v());
+				return Collections.<Type>singletonList(ShortType.v());
 			else if ( (a instanceof CharType && (b instanceof ShortType
 				|| b instanceof ByteType)) || (b instanceof CharType
 				&& (a instanceof ShortType || a instanceof ByteType)) )
-				return new SingletonList<Type>(IntType.v());
+				return Collections.<Type>singletonList(IntType.v());
 			else if ( ancestor_(a, b) )
-				return new SingletonList<Type>(a);
-			else return new SingletonList<Type>(b);
+				return Collections.<Type>singletonList(a);
+			else return Collections.<Type>singletonList(b);
 		}
 		else if ( a instanceof IntegerType || b instanceof IntegerType )
-			return new EmptyList<Type>();
+			return Collections.<Type>emptyList();
 		else return BytecodeHierarchy.lcas_(a, b);
 	}
 	
