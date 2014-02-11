@@ -68,14 +68,14 @@ public class UnusedLocalEliminator extends BodyTransformer {
 		for (Unit s : body.getUnits()) {
 			for (ValueBox vb : s.getDefBoxes()) {
 				Value v = vb.getValue();
-				if (value instanceof Local) {
+				if (v instanceof Local) {
 					Local l = (Local) v;
 					usedLocals.set(l.getNumber());
 				}
 			}
 			for (ValueBox vb : s.getUseBoxes()) {
 				Value v = vb.getValue();
-				if (value instanceof Local) {
+				if (v instanceof Local) {
 					Local l = (Local) v;
 					usedLocals.set(l.getNumber());
 				}
