@@ -74,8 +74,8 @@ public class DeadAssignmentEliminator extends BodyTransformer
 		boolean isStatic = b.getMethod().isStatic();
 		boolean allEssential = true;
 		boolean checkInvoke = false;
-		
-		Local thisLocal = isStatic ? null : b.getThisLocal();
+				
+		Local thisLocal = null;
 
 		for (Iterator<Unit> it = units.iterator(); it.hasNext(); ) {
 			Unit s = it.next();
@@ -126,11 +126,15 @@ public class DeadAssignmentEliminator extends BodyTransformer
 						isEssential = true;
 					
 						if (rhs instanceof InstanceFieldRef) {
-							InstanceFieldRef ifr = (InstanceFieldRef) rhs;
-						
+							InstanceFieldRef ifr = (InstanceFieldRef) rhs;						
+			
+							if ( !isStatic && thisLocal == null ) {
+								thisLocal = b.getThisLocal();
+							}
+												
 							// Any InstanceFieldRef may have side effects,
 							// unless the base is reading from 'this'
-							// in a non-static method																
+							// in a non-static method		
 							isEssential = (isStatic || thisLocal != ifr.getBase());			
 						} 
 					}
