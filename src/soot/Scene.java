@@ -841,18 +841,21 @@ public class Scene  //extends AbstractHost
     }
 
     /****************************************************************************/
-    /** Makes a new fast hierarchy is none is active, and returns the active
-     * fast hierarchy. */
-    public FastHierarchy getOrMakeFastHierarchy() {
-	if(!hasFastHierarchy() ) {
-	    setFastHierarchy( new FastHierarchy() );
-	}
-	return getFastHierarchy();
-    }
     /**
-        Retrieves the active fast hierarchy
-     */
+     * Makes a new fast hierarchy is none is active, and returns the active
+     * fast hierarchy.
+     * @return the current FastHierarchy
+     * */
+    public FastHierarchy getOrMakeFastHierarchy() {
+        if(!hasFastHierarchy() ) {
+            setFastHierarchy( new FastHierarchy() );
+        }
+        return getFastHierarchy();
+    }
 
+    /**
+     *  Retrieves the active fast hierarchy
+     */
     public FastHierarchy getFastHierarchy() 
     {
         if(!hasFastHierarchy())
@@ -862,14 +865,17 @@ public class Scene  //extends AbstractHost
     }
     
     /**
-        Sets the active hierarchy
+     *  Sets the active hierarchy
      */
-     
     public void setFastHierarchy(FastHierarchy hierarchy)
     {
         activeFastHierarchy = hierarchy;
     }
 
+    /**
+     * Checks if the fast hierarchy was created
+     * @return <code>true</code> if the FastHierarchy object is created/initialized.
+     */
     public boolean hasFastHierarchy()
     {
         return activeFastHierarchy != null;
@@ -882,32 +888,46 @@ public class Scene  //extends AbstractHost
 
     /****************************************************************************/
     /**
-        Retrieves the active hierarchy
+     * @return the old (deprecated) hierarchy
      */
-
     public Hierarchy getActiveHierarchy() 
     {
         if(!hasActiveHierarchy())
-            //throw new RuntimeException("no active Hierarchy present for scene");
             setActiveHierarchy( new Hierarchy() );
             
         return activeHierarchy;
     }
+
+
+    /**
+     * @return the updated hierarchy API
+     */
+    public Hierarchy2 getHierarchy2(){
+        return getActiveHierarchy().getWrapped();
+    }
     
     /**
-        Sets the active hierarchy
+     *   Sets the active hierarchy
      */
-     
     public void setActiveHierarchy(Hierarchy hierarchy)
     {
         activeHierarchy = hierarchy;
     }
 
+    /**
+     * Checks if the hierarchy has been initialized
+     * @return <code>true</code> if the hierarchy object has been initialized
+     */
     public boolean hasActiveHierarchy()
     {
         return activeHierarchy != null;
     }
-    
+
+    /**
+     * Releases the Hierarchy from the Scene. Future calls to
+     * getActiveHierarchy and getHierarchy2 will force the creation of
+     * a new instance.
+     */
     public void releaseActiveHierarchy()
     {
         activeHierarchy = null;

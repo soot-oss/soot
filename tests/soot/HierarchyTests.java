@@ -28,17 +28,18 @@ package soot;
 
 import com.google.common.collect.Sets;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
-
-import soot.jimple.*;
+import soot.jimple.SpecialInvokeExpr;
 import soot.options.Options;
-import soot.util.*;
+import soot.util.ArraySet;
+import soot.util.Chain;
+
 import java.util.*;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class HierarchyTests {
     private static class OldHierarchy
@@ -687,7 +688,7 @@ public class HierarchyTests {
     public static class HierarchyRegressionTestSingleArg {
 
 
-        static Hierarchy hierarchy;
+        static Hierarchy2 hierarchy;
         static OldHierarchy oldHierarchy;
         final SootClass classUnderTest;
 
@@ -710,7 +711,7 @@ public class HierarchyTests {
                         Scene.v().forceResolve(sc.getName(), SootClass.SIGNATURES);
                 }
             } while (numClasses < Scene.v().getClasses().size());
-            hierarchy = new Hierarchy();
+            hierarchy = new Hierarchy2();
             oldHierarchy = new OldHierarchy();
         }
 
@@ -718,7 +719,7 @@ public class HierarchyTests {
         public static Collection<Object[]> data(){
             init();
             Chain<SootClass> classes = Scene.v().getClasses();
-            List<Object[]> list = new ArrayList<Object[]>(classes.size());
+            List<Object[]> list = new ArrayList<>(classes.size());
             SootClass object = Scene.v().getObjectType().getSootClass();
             for (SootClass sc : classes){
                 if (sc != object)
@@ -884,8 +885,8 @@ public class HierarchyTests {
          */
         private <T> void performTest(Collection<T> newResult, Collection<T> oldResult){
             //Convert to sets to make sure that order doesn't matter in the check
-            Set<T> newAsSet = new HashSet<T>(newResult); //this is redundant, but paranoia is OK here
-            Set<T> oldAsSet = new HashSet<T>(oldResult);
+            Set<T> newAsSet = new HashSet<>(newResult); //this is redundant, but paranoia is OK here
+            Set<T> oldAsSet = new HashSet<>(oldResult);
 
             assertEquals("Failed test for "+ classUnderTest.getName(), oldAsSet,newAsSet);
 
@@ -909,7 +910,7 @@ public class HierarchyTests {
     public static class HierarchyRegressionTestDoubleArg {
 
 
-        static Hierarchy hierarchy;
+        static Hierarchy2 hierarchy;
         static OldHierarchy oldHierarchy;
         final SootClass classUnderTest1;
         final SootClass classUnderTest2;
@@ -926,11 +927,11 @@ public class HierarchyTests {
 
             Scene.v().loadNecessaryClasses();
             //the array list wrapping is to avoid a concurrent modification exception
-            for (SootClass sc : new ArrayList<SootClass>(Scene.v().getClasses())){
+            for (SootClass sc : new ArrayList<>(Scene.v().getClasses())){
                 if (sc.resolvingLevel() < SootClass.HIERARCHY)
                     Scene.v().forceResolve(sc.getName(), SootClass.HIERARCHY);
             }
-            hierarchy = new Hierarchy();
+            hierarchy = new Hierarchy2();
             oldHierarchy = new OldHierarchy();
         }
 
@@ -944,7 +945,7 @@ public class HierarchyTests {
             almostAllClasses.remove(object);
 
 
-            Set<List<SootClass>> allPairs = Sets.cartesianProduct(almostAllClasses,almostAllClasses);
+            Set<List<SootClass>> allPairs = Sets.cartesianProduct(almostAllClasses, almostAllClasses);
 
             for (List<SootClass> tuple : allPairs){
                 list.add(tuple.toArray());
@@ -1019,7 +1020,7 @@ public class HierarchyTests {
 
     public static class GeneralTests {
 
-        private static Hierarchy hierarchy;
+        private static Hierarchy2 hierarchy;
 
         @BeforeClass
         static public void init(){
@@ -1033,7 +1034,7 @@ public class HierarchyTests {
                 if (sc.resolvingLevel() < SootClass.HIERARCHY)
                     Scene.v().forceResolve(sc.getName(), SootClass.HIERARCHY);
             }
-            hierarchy = new Hierarchy();
+            hierarchy = new Hierarchy2();
         }
 
         @Test
@@ -1088,8 +1089,8 @@ public class HierarchyTests {
          */
         private <T> void performTest(Collection<T> result, Collection<T> expected){
             //Convert to sets to make sure that order doesn't matter in the check
-            Set<T> resultAsSet = new HashSet<T>(result); //this is redundant, but paranoia is OK here
-            Set<T> expectedAsSet = new HashSet<T>(expected);
+            Set<T> resultAsSet = new HashSet<>(result); //this is redundant, but paranoia is OK here
+            Set<T> expectedAsSet = new HashSet<>(expected);
 
             assertEquals(expectedAsSet,resultAsSet);
 

@@ -52,6 +52,9 @@ Improvements and API changes in HEAD
     now have a Collection<SootClass> or Collection<SootMethod> returned. Those collections
     are immutable and the clients should not expect any specific iteration order.
 
+14. The old Hierarchy is now wrapper to Hierarchy2. Hierarchy2 is a port of Hierarchy using Sets
+    with a change in the API.
+
 Improvements and API changes in version 2.5.0
 
 1. Modified SourceLocator so that it will automatically load a SootClass
