@@ -18,6 +18,7 @@
  */
 package soot.jimple.toolkits.ide.icfg;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -46,7 +47,7 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
 	}
 
 	//swapped
-	public Set<Unit> getStartPointsOf(SootMethod m) {
+	public Collection<Unit> getStartPointsOf(SootMethod m) {
 		return delegate.getEndPointsOf(m);
 	}
 	
@@ -76,7 +77,7 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
 	}
 
 	//swapped
-	public Set<Unit> getEndPointsOf(SootMethod m) {
+	public Collection<Unit> getEndPointsOf(SootMethod m) {
 		return delegate.getStartPointsOf(m);
 	}
 
