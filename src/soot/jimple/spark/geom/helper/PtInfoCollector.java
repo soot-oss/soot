@@ -39,6 +39,7 @@ import soot.jimple.spark.pag.LocalVarNode;
 
 /**
  * Dump the pointers appear as the base pointers in store/load statements.
+ * The pointers are transformed to 1CFA form.
  * It is used for evaluating the points-to result outside soot.
  * 
  * @author xiao

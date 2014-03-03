@@ -170,8 +170,8 @@ public class SideEffectAnalyzer
 		Obj_1cfa_extractor objs_1cfa = new Obj_1cfa_extractor();
 		
 		/*
-		 * We only collect the side effects for each function individually.
-		 * The side effects for callsites are not processed.
+		 * We only collect the side effects for load and store statements.
+		 * The side effects for call instructions are ignored.
 		 * 
 		 * Prerequisite:
 		 * ContextTranslator.build_1cfa_map().
@@ -246,8 +246,10 @@ public class SideEffectAnalyzer
 					if (pn.willUpdate == false) {
 						// We make only one mod/ref set
 						modRefSet modOrRef = generateModRefSet(null, st, type);
+						
 						objs_1cfa.prepare();
 						pn.get_all_context_sensitive_objects(1, Constants.MAX_CONTEXTS, objs_1cfa);
+						objs_1cfa.finish();
 						
 						for (CallsiteContextVar can : objs_1cfa.outList) {
 							AllocNode an = (AllocNode) can.var;
@@ -266,11 +268,12 @@ public class SideEffectAnalyzer
 						// We are going to obtain a set of 1CFA objects that
 						// are modified under the context
 						long l = cxtEdge.map_offset;
-						long r = l
-								+ ptsProvider.max_context_size_block[cxtEdge.s];
+						long r = l + ptsProvider.max_context_size_block[cxtEdge.s];
+						
 						objs_1cfa.prepare();
 						pn.get_all_context_sensitive_objects(l, r, objs_1cfa);
-
+						objs_1cfa.finish();
+						
 						for (CallsiteContextVar can : objs_1cfa.outList) {
 							AllocNode an = (AllocNode) can.var;
 							AllocDotField adf = ptsProvider.makeAllocDotField(an, fld);
@@ -282,6 +285,8 @@ public class SideEffectAnalyzer
 				}
 			}
 		}
+		
+		objs_1cfa = null;
 	}
 	
 	public void evaluateSideEffectMatrix()

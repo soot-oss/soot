@@ -71,9 +71,16 @@ public class PointsToDumper
 			file.println( ptsProvider.getNumberOfPointers() + " " + ptsProvider.getNumberOfObjects() );
 			
 			for (IVarAbstraction pn : ptsProvider.pointers) {
+				// TODO: eliminate the identical rows
+//				IVarAbstraction rep = pn.getRepresentative();
+//				if ( rep != pn ) {
+//					// We only print the negation of the ID of its representative
+//					file.print( -rep.getNumber() );
+//					continue;
+//				}
 				pn = pn.getRepresentative();
-				Set<AllocNode> objSet = pn.get_all_points_to_objects();
 				
+				Set<AllocNode> objSet = pn.get_all_points_to_objects();
 				file.print( objSet.size() );
 				
 				for ( AllocNode obj : objSet ) {
@@ -186,33 +193,6 @@ public class PointsToDumper
 				file.println();
 			}
 			
-			// The context objects-to-callsites mapping table
-//			obj_num = ptsProvider.getNumberOfObjects();
-//			file.println( obj_num );
-//			int i = 1, j = 0;
-//			
-//			while ( true ) {
-//				// We first identify all the objects that are mapped to the same callsite
-//				CallsiteContextVar first_obj = ContextTranslator.objs_1cfa_map.get(j);
-//				while ( i < obj_num ) {
-//					CallsiteContextVar cobj = ContextTranslator.objs_1cfa_map.get(i);
-//					if ( cobj.var != first_obj.var )
-//						break;
-//					++i;
-//				}
-//				
-//				// output
-//				file.print( (i-j) );
-//				while ( j < i ) {
-//					file.print(" " + j);
-//					++j;
-//				}
-//				file.println();
-//				
-//				if ( i == obj_num )
-//					break;
-//			}
-			
 			file.close();
         } catch( IOException e ) {
             throw new RuntimeException( "Couldn't dump solution."+e );
@@ -225,7 +205,7 @@ public class PointsToDumper
 	/**
 	 * Dump both the pointer and object 1-CFA context sensitive points-to result.
 	 */
-	public void dump_pointer_object_1cfa_mapped_result( )
+	public void dump_pointer_object_1cfa_mapped_result()
 	{
 		int var_num, obj_num;
 		long l, r;
