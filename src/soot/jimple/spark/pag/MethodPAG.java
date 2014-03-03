@@ -18,6 +18,7 @@
  */
 
 package soot.jimple.spark.pag;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -37,7 +38,6 @@ import soot.VoidType;
 import soot.jimple.Stmt;
 import soot.jimple.spark.builder.MethodNodeFactory;
 import soot.util.NumberedString;
-import soot.util.SingletonList;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
@@ -194,12 +194,14 @@ public final class MethodPAG {
         }
         pag.nativeMethodDriver.process( method, thisNode, retNode, args );
     }
+    
+    private final static String mainSubSignature =
+    		SootMethod.getSubSignature( "main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v() );
 
     protected void addMiscEdges() {
         // Add node for parameter (String[]) in main method
         final String signature = method.getSignature(); 
-        if( method.getSubSignature().equals( SootMethod.getSubSignature( "main", new SingletonList<Type>
-        		( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v() ) ) ) {
+        if( method.getSubSignature().equals( mainSubSignature )) {
             addInEdge( pag().nodeFactory().caseArgv(), nodeFactory.caseParm(0) );
         } else
 

@@ -52,7 +52,7 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction implemen
         Local l = body.getRegisterLocal(dest);
         stmtToRetype = Jimple.v().newIdentityStmt(l, Jimple.v().newCaughtExceptionRef());
         setUnit(stmtToRetype);
-        tagWithLineNumber(stmtToRetype);
+        addTags(stmtToRetype);
         body.add(stmtToRetype);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {

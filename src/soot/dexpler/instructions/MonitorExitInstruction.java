@@ -49,7 +49,7 @@ public class MonitorExitInstruction extends DexlibAbstractInstruction {
         Local object = body.getRegisterLocal(reg);
         exitMonitorStmt = Jimple.v().newExitMonitorStmt(object);
         setUnit(exitMonitorStmt);
-        tagWithLineNumber(exitMonitorStmt);
+        addTags(exitMonitorStmt);
         body.add(exitMonitorStmt);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {

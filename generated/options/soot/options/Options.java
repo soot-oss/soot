@@ -157,6 +157,12 @@ public class Options extends OptionsBase {
                 whole_shimple = true;
   
             else if( false 
+            || option.equals( "fly" )
+            || option.equals( "on-the-fly" )
+            )
+                on_the_fly = true;
+  
+            else if( false 
             || option.equals( "validate" )
             )
                 validate = true;
@@ -1049,6 +1055,10 @@ public class Options extends OptionsBase {
     private boolean whole_shimple = false;
     public void set_whole_shimple( boolean setting ) { whole_shimple = setting; }
   
+    public boolean on_the_fly() { return on_the_fly; }
+    private boolean on_the_fly = false;
+    public void set_on_the_fly( boolean setting ) { on_the_fly = setting; }
+  
     public boolean validate() { return validate; }
     private boolean validate = false;
     public void set_validate( boolean setting ) { validate = setting; }
@@ -1278,6 +1288,7 @@ public class Options extends OptionsBase {
 +padOpt(" -app", "Run in application mode" )
 +padOpt(" -w -whole-program", "Run in whole-program mode" )
 +padOpt(" -ws -whole-shimple", "Run in whole-shimple mode" )
++padOpt(" -fly -on-the-fly", "Run in on-the-fly mode" )
 +padOpt(" -validate", "Run internal validation on bodies" )
 +padOpt(" -debug", "Print various Soot debugging info" )
 +padOpt(" -debug-resolver", "Print debugging info from SootResolver" )

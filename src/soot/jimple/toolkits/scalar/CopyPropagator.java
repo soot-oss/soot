@@ -150,10 +150,14 @@ public class CopyPropagator extends BodyTransformer
                         {
                             DefinitionStmt def = (DefinitionStmt) defsOfUse.get(0);
 
-                            if (def.getRightOp() instanceof Constant)
-                            	if (useBox.canContainValue(def.getRightOp()))
+                            if (def.getRightOp() instanceof Constant) {
+                            	if (useBox.canContainValue(def.getRightOp())) {
                             		useBox.setValue(def.getRightOp());
-                            else if(def.getRightOp() instanceof Local)
+                            	}
+                            	continue;
+                            }
+                            
+                            if(def.getRightOp() instanceof Local)
                             {
                                 Local m = (Local) def.getRightOp();
 

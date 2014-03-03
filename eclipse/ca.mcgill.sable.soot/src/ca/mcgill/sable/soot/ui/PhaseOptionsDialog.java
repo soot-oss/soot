@@ -1956,6 +1956,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getGeneral_Optionswhole_shimple_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getGeneral_Optionson_the_fly_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionson_the_fly_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getGeneral_Optionsvalidate_widget().getButton().getSelection();
 		
 		
@@ -6462,6 +6472,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return General_Optionswhole_shimple_widget;
 	}	
 	
+	private BooleanOptionWidget General_Optionson_the_fly_widget;
+	
+	private void setGeneral_Optionson_the_fly_widget(BooleanOptionWidget widget) {
+		General_Optionson_the_fly_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionson_the_fly_widget() {
+		return General_Optionson_the_fly_widget;
+	}	
+	
 	private BooleanOptionWidget General_Optionsvalidate_widget;
 	
 	private void setGeneral_Optionsvalidate_widget(BooleanOptionWidget widget) {
@@ -10066,6 +10086,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setGeneral_Optionswhole_shimple_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Shimple Mode", "", "","ws", "\nRun in whole shimple mode, taking into consideration the whole \nprogram when performing Shimple analyses and transformations. \nSoot uses the Call Graph Constructor to build a call graph for \nthe program, then applies enabled transformations in the \nWhole-Shimple Transformation and Whole-Shimple Optimization \nbefore applying enabled intraprocedural transformations. Note \nthat the Whole-Shimple Optimization pack is normally disabled \n(and thus not applied by whole shimple mode), unless you also \nspecify the Whole Program Optimize option.", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"fly";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionson_the_fly_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("On-the-fly Mode", "", "","fly", "\nThis enables whole-program mode but uses a less agressive class \nloading. By default, classes will be loaded without bodies \nunless otherwise requested. ", defaultBool)));
 		
 		
 		

@@ -62,7 +62,7 @@ public class NewInstanceInstruction extends DexlibAbstractInstruction {
         NewExpr n = Jimple.v().newNewExpr(type);
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), n);
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {

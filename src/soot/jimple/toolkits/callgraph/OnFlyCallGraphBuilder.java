@@ -89,7 +89,7 @@ public final class OnFlyCallGraphBuilder
 	    protected HashSet<SootMethod> warnedAlready = new HashSet<SootMethod>();
 
 		public void classForName(SootMethod source, Stmt s) {
-	        List<Local> stringConstants = (List<Local>) methodToStringConstants.get(source);
+	        List<Local> stringConstants = methodToStringConstants.get(source);
 	        if( stringConstants == null )
 	            methodToStringConstants.put(source, stringConstants = new ArrayList<Local>());
 			InvokeExpr ie = s.getInvokeExpr();
@@ -366,13 +366,13 @@ public final class OnFlyCallGraphBuilder
     private final CallGraph cicg = new CallGraph();
     private final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
 
-    private final LargeNumberedMap receiverToSites = new LargeNumberedMap( Scene.v().getLocalNumberer() ); // Local -> List(VirtualCallSite)
-    private final LargeNumberedMap methodToReceivers = new LargeNumberedMap( Scene.v().getMethodNumberer() ); // SootMethod -> List(Local)
-    public LargeNumberedMap methodToReceivers() { return methodToReceivers; }
+    private final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites = new LargeNumberedMap<Local, List<VirtualCallSite>>( Scene.v().getLocalNumberer() ); // Local -> List(VirtualCallSite)
+    private final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers = new LargeNumberedMap<SootMethod, List<Local>>( Scene.v().getMethodNumberer() ); // SootMethod -> List(Local)
+    public LargeNumberedMap<SootMethod, List<Local>> methodToReceivers() { return methodToReceivers; }
 
     private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites = new SmallNumberedMap<List<VirtualCallSite>>( Scene.v().getLocalNumberer() ); // Local -> List(VirtualCallSite)
-    private final LargeNumberedMap methodToStringConstants = new LargeNumberedMap( Scene.v().getMethodNumberer() ); // SootMethod -> List(Local)
-    public LargeNumberedMap methodToStringConstants() { return methodToStringConstants; }
+    private final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants = new LargeNumberedMap<SootMethod, List<Local>>( Scene.v().getMethodNumberer() ); // SootMethod -> List(Local)
+    public LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants() { return methodToStringConstants; }
 
     private CGOptions options;
 
@@ -397,11 +397,11 @@ public final class OnFlyCallGraphBuilder
             G.v().out.println( "[Call Graph] For information on where the call graph may be incomplete, use the verbose option to the cg phase." );
         }
         
-//        if(options.reflection_log()==null || options.reflection_log().length()==0) {
+        if(options.reflection_log()==null || options.reflection_log().length()==0) {
         	reflectionModel = new DefaultReflectionModel();
-//        } else {
-//        	reflectionModel = new TraceBasedReflectionModel();
-//        }
+        } else {
+        	reflectionModel = new TraceBasedReflectionModel();
+        }
     }
     public OnFlyCallGraphBuilder( ContextManager cm, ReachableMethods rm, boolean appOnly ) {
         this( cm, rm );
@@ -585,13 +585,14 @@ public final class OnFlyCallGraphBuilder
             final Stmt s = (Stmt) sIt.next();
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = s.getInvokeExpr();
-                if( ie.getMethodRef().getSignature().equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
+                final String methRefSig = ie.getMethodRef().getSignature();
+                if( methRefSig.equals( "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>" ) ) {
                 	reflectionModel.methodInvoke(source,s);
                 }
-                if( ie.getMethodRef().getSignature().equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
+                else if( methRefSig.equals( "<java.lang.Class: java.lang.Object newInstance()>" ) ) {
                 	reflectionModel.classNewInstance(source,s);
                 }
-                if( ie.getMethodRef().getSignature().equals( "<java.lang.reflect.Constructor: java.lang.Object newInstance(java.lang.Object[])>" ) ) {
+                else if( methRefSig.equals( "<java.lang.reflect.Constructor: java.lang.Object newInstance(java.lang.Object[])>" ) ) {
                 	reflectionModel.contructorNewInstance(source, s);
                 }
                 if( ie.getMethodRef().getSubSignature() == sigForName ) {

@@ -203,6 +203,8 @@ public class DexBody  {
             if (di instanceof ImmutableLineNumber) {
                 ImmutableLineNumber ln = (ImmutableLineNumber)di;
                 instructionAtAddress(ln.getCodeAddress()).setLineNumber(ln.getLineNumber());
+                Debug.printDbg("Add line number tag " + ln.getLineNumber() + " for instruction: "
+                        + instructionAtAddress(ln.getCodeAddress()));
             }
         }
 

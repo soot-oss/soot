@@ -69,15 +69,11 @@ public class HashChain<E> extends AbstractCollection<E>
     }
 
     /** Returns an unbacked list containing the contents of the given Chain. */
-    public static List toList(Chain c)
+    public static <E> List<E> toList(Chain<E> c)
     {
-        Iterator it = c.iterator();
-        List list = new ArrayList();
-        
-        while(it.hasNext()) {
-            list.add(it.next());
-        }
-        
+        List<E> list = new ArrayList<E>();
+        for (E e : c)
+        	list.add(e);
         return list;
     }
 
@@ -98,9 +94,8 @@ public class HashChain<E> extends AbstractCollection<E>
 
     public boolean follows(E someObject, E someReferenceObject)
     {
-        Iterator it = iterator(someObject);
+        Iterator<E> it = iterator(someObject);
         while(it.hasNext()) {
-
             if(it.next() == someReferenceObject)
                 return false;
         }
@@ -114,7 +109,7 @@ public class HashChain<E> extends AbstractCollection<E>
 
     public boolean containsAll(Collection c)
     {
-        Iterator it = c.iterator();
+        Iterator<E> it = c.iterator();
         while (it.hasNext())
             if (!(map.containsKey(it.next())))
                 return false;

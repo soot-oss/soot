@@ -38,7 +38,7 @@ public class AugEvalFunction implements IEvalFunction
 	
 	public Collection<Type> eval(Typing tg, Value expr, Stmt stmt)
 	{
-		return new SingletonList<Type>(eval_(tg, expr, stmt, this.jb));
+		return Collections.<Type>singletonList(eval_(tg, expr, stmt, this.jb));
 	}
 
 	public static Type eval_(Typing tg, Value expr, Stmt stmt, JimpleBody jb)
@@ -146,10 +146,8 @@ public class AugEvalFunction implements IEvalFunction
 		{
 			RefType r = null;
 			
-			for ( Iterator i = TrapManager.getExceptionTypesOf(
-				stmt, jb).iterator(); i.hasNext(); )
+			for (RefType t : TrapManager.getExceptionTypesOf(stmt, jb))
 			{
-				RefType t = (RefType)i.next();
 				if ( r == null )
 					r = t;
 				else

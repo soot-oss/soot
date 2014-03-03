@@ -19,9 +19,20 @@
 
 package soot;
 
-import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import soot.jimple.SpecialInvokeExpr;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
 
 
 /** Represents the class hierarchy.  It is closely linked to a Scene,
@@ -230,6 +241,8 @@ public class FastHierarchy
                 || parent.equals( RefType.v( "java.io.Serializable" ) )
                 || parent.equals( RefType.v( "java.lang.Cloneable" ) );
             }
+            if (!(parent instanceof ArrayType))
+            	return false;
             ArrayType aparent = (ArrayType) parent;
                                                 
             // You can store a int[][] in a Object[]. Yuck!
@@ -436,8 +449,12 @@ public class FastHierarchy
 							}								
 						}
                     }
-                    if( !concreteType.hasSuperclass() ) 
-                        throw new RuntimeException("could not resolve abstract dispatch!\nAbstract Type: "+abstractType+"\nConcrete Type: "+savedConcreteType+"\nMethod: "+m);
+                    if( !concreteType.hasSuperclass() ) {
+                    	if(concreteType.isPhantom())
+							break;
+						else
+							throw new RuntimeException("could not resolve abstract dispatch!\nAbstract Type: "+abstractType+"\nConcrete Type: "+savedConcreteType+"\nMethod: "+m);
+                    }
                     concreteType = concreteType.getSuperclass();
                 }
             }

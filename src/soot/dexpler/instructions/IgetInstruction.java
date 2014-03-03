@@ -54,7 +54,7 @@ public class IgetInstruction extends FieldInstruction {
                                                             getSootFieldRef(f));
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), r);
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {

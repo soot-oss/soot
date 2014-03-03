@@ -72,7 +72,7 @@ System.out.println("array element type (narr range): "+ arrayType);
             ArrayRef arrayRef = Jimple.v().newArrayRef(arrayLocal, IntConstant.v(i));
 
             AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, body.getRegisterLocal(i + filledNewArrayInstr.getStartRegister()));
-            tagWithLineNumber(assign);
+            addTags(assign);
             body.add(assign);
         }
 //        NopStmt nopStmtEnd = Jimple.v().newNopStmt();

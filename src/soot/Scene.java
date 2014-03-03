@@ -196,7 +196,7 @@ public class Scene  //extends AbstractHost
         return mainClass;
     }
     public SootMethod getMainMethod() {
-        if(mainClass==null) {
+        if(!hasMainClass()) {
             throw new RuntimeException("There is no main class set!");
         } 
         if (!mainClass.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v())) {
