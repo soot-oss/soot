@@ -156,6 +156,14 @@ public class DexPrinter {
 	    
 		dexFile.place();
 		
+        boolean fixJumbo = true;
+        boolean fixGoto = false;
+        for (CodeItem codeItem : dexFile.CodeItemsSection.getItems()) {
+            codeItem.fixInstructions(fixJumbo, fixGoto);
+        }
+
+        dexFile.place();
+
 		byte[] outArray = new byte[dexFile.getFileSize()];
 		ByteArrayAnnotatedOutput outBytes = new ByteArrayAnnotatedOutput(outArray);
 		dexFile.writeTo(outBytes);
