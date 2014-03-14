@@ -83,6 +83,10 @@ public class DominatorTree {
         return Collections.singletonList(head);
     }
 
+    public List<DominatorNode> getHead() {
+        return Collections.singletonList(head);
+    }
+
     /**
      * Returns a list of the tails of the dominator tree.
      **/
