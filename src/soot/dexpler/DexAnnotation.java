@@ -131,28 +131,32 @@ public class DexAnnotation {
                 Debug.printDbg("add method annotation: ", t);
             }
         }
-        
+
         // Is there any parameter annotation?
         boolean doParam = false;
         List<? extends MethodParameter> parameters = method.getParameters();
-        for (MethodParameter p : parameters)
+        for (MethodParameter p : parameters) {
+            Debug.printDbg("parameter ", p, " annotations: ", p.getAnnotations());
             if (p.getAnnotations().size() > 0) {
                 doParam = true;
                 break;
             }
+        }
         if (doParam) {
             VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(parameters.size(), 0);
             for (MethodParameter p : parameters) {
-                
                 List<Tag> tags = handleAnnotation(p.getAnnotations(), null);
+                boolean hasAnnotation = false;
                 for (Tag t : tags) {
                     if (! (t instanceof VisibilityAnnotationTag))
                         continue;
                     VisibilityAnnotationTag vat = (VisibilityAnnotationTag)t;
-//                    int visibility = AnnotationConstants.RUNTIME_VISIBLE;
-//                    VisibilityAnnotationTag vat = new VisibilityAnnotationTag(visibility);
-//                    vat.addAnnotation(at);
                     Debug.printDbg("add parameter annotation: ", t);
+                    tag.addVisibilityAnnotation(vat);
+                    hasAnnotation = true;
+                }
+                if (!hasAnnotation) {
+                    VisibilityAnnotationTag vat = new VisibilityAnnotationTag(0);
                     tag.addVisibilityAnnotation(vat);
                 }
                 
