@@ -22,12 +22,14 @@ import org.jf.dexlib.ClassDataItem;
 import org.jf.dexlib.ClassDataItem.EncodedField;
 import org.jf.dexlib.ClassDataItem.EncodedMethod;
 import org.jf.dexlib.ClassDefItem;
+import org.jf.dexlib.ClassDefItem.StaticFieldInitializer;
 import org.jf.dexlib.CodeItem;
 import org.jf.dexlib.CodeItem.EncodedCatchHandler;
 import org.jf.dexlib.CodeItem.EncodedTypeAddrPair;
 import org.jf.dexlib.CodeItem.TryItem;
 import org.jf.dexlib.DebugInfoItem;
 import org.jf.dexlib.DexFile;
+import org.jf.dexlib.EncodedArrayItem;
 import org.jf.dexlib.FieldIdItem;
 import org.jf.dexlib.MethodIdItem;
 import org.jf.dexlib.ProtoIdItem;
@@ -35,6 +37,7 @@ import org.jf.dexlib.StringIdItem;
 import org.jf.dexlib.TypeIdItem;
 import org.jf.dexlib.TypeListItem;
 import org.jf.dexlib.Code.Instruction;
+import org.jf.dexlib.EncodedValue.EncodedValue;
 import org.jf.dexlib.Util.ByteArrayAnnotatedOutput;
 import org.jf.dexlib.Util.DebugInfoBuilder;
 import org.jf.dexlib.Util.Pair;
@@ -209,9 +212,10 @@ public class DexPrinter {
 			interfaceTypes.add(implementedInterface.getType());
 		}
 		TypeListItem implementedInterfaces = toTypeListItem(interfaceTypes, dexFile);
-		ClassDataItem classData = toClassDataItem(c, dexFile);
+        List<StaticFieldInitializer> staticFieldInitializers = new ArrayList<StaticFieldInitializer>();
+        ClassDataItem classData = toClassDataItem(c, dexFile, staticFieldInitializers);
 		AnnotationDirectoryItem di= dexAnnotation.finish();
-		// staticFieldInitializers is not used since the <clinit> method should be enough
+
         // add source file tag if any
         StringIdItem sourceFileItem = null;
         if (c.hasTag("SourceFileTag")) {
@@ -220,19 +224,23 @@ public class DexPrinter {
             sourceFileItem = StringIdItem.internStringIdItem(dexFile, sourceFile);
         }
         ClassDefItem.internClassDefItem(dexFile, classType, accessFlags, superType,
-                implementedInterfaces, sourceFileItem, di, classData, null);
+                implementedInterfaces, sourceFileItem, di, classData, staticFieldInitializers);
 		dexAnnotation = null;
 	}
 	
-	private static ClassDataItem toClassDataItem(SootClass c, DexFile belongingDexFile) {
-		Pair<List<EncodedField>, List<EncodedField>> fields = toFields(c.getFields(), belongingDexFile);
+    private static ClassDataItem toClassDataItem(SootClass c, DexFile belongingDexFile,
+            List<StaticFieldInitializer> staticFieldInitializers) {
+        Pair<List<EncodedField>, List<EncodedField>> fields = toFields(c.getFields(),
+                belongingDexFile, staticFieldInitializers);
 		Pair<List<EncodedMethod>, List<EncodedMethod>> methods = toMethods(c.getMethods(), belongingDexFile);
 		ClassDataItem citem = ClassDataItem.internClassDataItem(belongingDexFile, fields.first, fields.second, methods.first, methods.second);
 		dexAnnotation.handleClass(c, citem);
 		return citem;
 	}
 	
-	private static Pair<List<EncodedField>, List<EncodedField>> toFields(Collection<SootField> sootFields, DexFile belongingDexFile) {
+    private static Pair<List<EncodedField>, List<EncodedField>> toFields(
+            Collection<SootField> sootFields, DexFile belongingDexFile,
+            List<StaticFieldInitializer> staticFieldInitializers) {
 		List<EncodedField> staticFields = new ArrayList<EncodedField>();
 		List<EncodedField> instanceFields = new ArrayList<EncodedField>();
 		Pair<List<EncodedField>, List<EncodedField>> fields = new Pair<List<EncodedField>, List<EncodedField>>(staticFields, instanceFields);
@@ -240,11 +248,20 @@ public class DexPrinter {
 			if (f.isPhantom()) {
 				continue;
 			}
-			FieldIdItem fieldIdItem = toFieldIdItem(f, belongingDexFile);
+            List<EncodedValue> staticInits = new ArrayList<EncodedValue>();
+            FieldIdItem fieldIdItem = toFieldIdItem(f, belongingDexFile, staticInits);
 			int accessFlags = f.getModifiers();
 			EncodedField ef = new EncodedField(fieldIdItem, accessFlags);
+
 			if (f.isStatic()) {
 				staticFields.add(ef);
+                if (staticInits.size() > 0) {
+                    EncodedValue ev = staticInits.get(0);
+                    StaticFieldInitializer sfi = new StaticFieldInitializer(ev, ef);
+                    staticFieldInitializers.add(sfi);
+                } else {
+                    throw new RuntimeException("error: expected static inial value.");
+                }
 			} else {
 				instanceFields.add(ef);
 			}
@@ -282,12 +299,16 @@ public class DexPrinter {
 		return TypeListItem.internTypeListItem(belongingDexFile, typeItems);
 	}
 	
-	protected static FieldIdItem toFieldIdItem(SootField f, DexFile belongingDexFile) {
+    protected static FieldIdItem toFieldIdItem(SootField f, DexFile belongingDexFile,
+            List<EncodedValue> staticInits) {
 		TypeIdItem declaringClassType = toTypeIdItem(f.getDeclaringClass().getType(), belongingDexFile);
 		TypeIdItem fieldType = toTypeIdItem(f.getType(), belongingDexFile);
 		StringIdItem fieldName = StringIdItem.internStringIdItem(belongingDexFile, f.getName());
 		FieldIdItem fid = FieldIdItem.internFieldIdItem(belongingDexFile, declaringClassType, fieldType, fieldName);
-		dexAnnotation.handleField(f, fid);
+        List<EncodedValue> staticInit = dexAnnotation.handleField(f, fid);
+        if (staticInits != null) {
+            staticInits.addAll(staticInit);
+        }
 		return fid;
 	}
 	

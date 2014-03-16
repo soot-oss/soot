@@ -10,6 +10,7 @@ import org.jf.dexlib.DexFile;
 import org.jf.dexlib.FieldIdItem;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Opcode;
+import org.jf.dexlib.EncodedValue.EncodedValue;
 
 import soot.ArrayType;
 import soot.Local;
@@ -483,7 +484,7 @@ public class StmtVisitor implements StmtSwitch {
 	
 	private Insn buildStaticFieldPutInsn(StaticFieldRef destRef, Value source) {
 		SootField destSootField = destRef.getField();
-		FieldIdItem destField = DexPrinter.toFieldIdItem(destSootField, getBelongingFile());
+        FieldIdItem destField = DexPrinter.toFieldIdItem(destSootField, getBelongingFile(), null);
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("sput", destField.getFieldType().getTypeDescriptor());
 		return new Insn21c(opc, sourceReg, destField);
@@ -491,7 +492,7 @@ public class StmtVisitor implements StmtSwitch {
 	
 	private Insn buildInstanceFieldPutInsn(InstanceFieldRef destRef, Value source) {
 		SootField destSootField = destRef.getField();
-		FieldIdItem destField = DexPrinter.toFieldIdItem(destSootField, getBelongingFile());
+        FieldIdItem destField = DexPrinter.toFieldIdItem(destSootField, getBelongingFile(), null);
 		Value instance = destRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
@@ -512,7 +513,8 @@ public class StmtVisitor implements StmtSwitch {
 	
 	private Insn buildStaticFieldGetInsn(Register destinationReg, StaticFieldRef sourceRef) {
 		SootField sourceSootField = sourceRef.getField();
-		FieldIdItem sourceField = DexPrinter.toFieldIdItem(sourceSootField, getBelongingFile());
+        FieldIdItem sourceField = DexPrinter.toFieldIdItem(sourceSootField, getBelongingFile(),
+                null);
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("sget", sourceField.getFieldType().getTypeDescriptor());
 		return new Insn21c(opc, destinationReg, sourceField);
 	}
@@ -521,7 +523,8 @@ public class StmtVisitor implements StmtSwitch {
 		Value instance = sourceRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
 		SootField sourceSootField = sourceRef.getField();
-		FieldIdItem sourceField = DexPrinter.toFieldIdItem(sourceSootField, getBelongingFile());
+        FieldIdItem sourceField = DexPrinter.toFieldIdItem(sourceSootField, getBelongingFile(),
+                null);
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("iget", sourceField.getFieldType().getTypeDescriptor());
 		return new Insn22c(opc, destinationReg, instanceReg, sourceField);
 	}
