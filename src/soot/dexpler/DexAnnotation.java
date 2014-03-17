@@ -148,9 +148,22 @@ public class DexAnnotation {
                 List<Tag> tags = handleAnnotation(p.getAnnotations(), null);
                 boolean hasAnnotation = false;
                 for (Tag t : tags) {
-                    if (! (t instanceof VisibilityAnnotationTag))
-                        continue;
-                    VisibilityAnnotationTag vat = (VisibilityAnnotationTag)t;
+                    VisibilityAnnotationTag vat = null;
+
+                    if (!(t instanceof VisibilityAnnotationTag)) {
+                        if (t instanceof DeprecatedTag) {
+                            DeprecatedTag dt = (DeprecatedTag) t;
+                            vat = new VisibilityAnnotationTag(0);
+                            vat.addAnnotation(new AnnotationTag("Ljava/lang/Deprecated;"));
+                        } else {
+                            throw new RuntimeException(
+                                    "error: unhandled tag for parameter annotation in method "
+                                            + h + " (" + t + ").");
+                        }
+                    } else {
+                        vat = (VisibilityAnnotationTag) t;
+                    }
+
                     Debug.printDbg("add parameter annotation: ", t);
                     tag.addVisibilityAnnotation(vat);
                     hasAnnotation = true;
