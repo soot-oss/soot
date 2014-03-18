@@ -16,8 +16,6 @@ import org.jf.dexlib.AnnotationSetItem;
 import org.jf.dexlib.AnnotationSetRefList;
 import org.jf.dexlib.AnnotationVisibility;
 import org.jf.dexlib.ClassDataItem;
-import org.jf.dexlib.ClassDataItem.EncodedField;
-import org.jf.dexlib.ClassDefItem.StaticFieldInitializer;
 import org.jf.dexlib.DexFile;
 import org.jf.dexlib.FieldIdItem;
 import org.jf.dexlib.MethodIdItem;
