@@ -10,7 +10,6 @@ import org.jf.dexlib.DexFile;
 import org.jf.dexlib.FieldIdItem;
 import org.jf.dexlib.Code.Instruction;
 import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.EncodedValue.EncodedValue;
 
 import soot.ArrayType;
 import soot.Local;
