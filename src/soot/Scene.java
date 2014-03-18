@@ -267,9 +267,15 @@ public class Scene  //extends AbstractHost
         for (File f: files) {
             String name = f.getName();
             if (f.isDirectory() && name.startsWith("android-")) {
+            	try {
                 int v = Integer.decode(name.split("android-")[1]);
                 if (v > maxApi)
                     maxApi = v;
+            	}
+            	catch (NumberFormatException ex) {
+            		// We simply ignore directories that do not follow the
+            		// Android naming structure
+            	}
             }
         }
         return maxApi;
