@@ -7,8 +7,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import soot.Local;
-import soot.NullType;
-import soot.RefType;
 import soot.SootMethod;
 import soot.Type;
 import soot.Value;
