@@ -129,7 +129,7 @@ public class Scene  //extends AbstractHost
     ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
     Numberer unitNumberer = new MapNumberer();
     Numberer contextNumberer = null;
-    ArrayNumberer<SootField> fieldNumberer = new ArrayNumberer<SootField>();
+    ArrayNumberer fieldNumberer = new ArrayNumberer<SootField>();
     ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
     StringNumberer subSigNumberer = new StringNumberer();
     ArrayNumberer<Local> localNumberer = new ArrayNumberer<Local>();
@@ -1005,12 +1005,12 @@ public class Scene  //extends AbstractHost
     {
         return getPhantomRefs();
     }
-    public Numberer<Kind> kindNumberer() { return kindNumberer; }
+    public Numberer kindNumberer() { return kindNumberer; }
     public ArrayNumberer<Type> getTypeNumberer() { return typeNumberer; }
     public ArrayNumberer<SootMethod> getMethodNumberer() { return methodNumberer; }
     public Numberer getContextNumberer() { return contextNumberer; }
     public Numberer getUnitNumberer() { return unitNumberer; }
-    public ArrayNumberer<SootField> getFieldNumberer() { return fieldNumberer; }
+    public ArrayNumberer getFieldNumberer() { return fieldNumberer; }
     public ArrayNumberer<SootClass> getClassNumberer() { return classNumberer; }
     public StringNumberer getSubSigNumberer() { return subSigNumberer; }
     public ArrayNumberer<Local> getLocalNumberer() { return localNumberer; }
@@ -1121,7 +1121,7 @@ public class Scene  //extends AbstractHost
         rn.add("to");
     }
 
-    private final Set<String>[] basicclasses = new Set[4];
+    private final Set<String>[] basicclasses=new Set[4];
 
     private void addSootBasicClasses() {
         basicclasses[SootClass.HIERARCHY] = new HashSet<String>();
@@ -1287,7 +1287,7 @@ public class Scene  //extends AbstractHost
         Iterator<String> it = Options.v().classes().iterator();
 
         while (it.hasNext()) {
-            String name = it.next();
+            String name = (String) it.next();
             loadNecessaryClass(name);
         }
 
@@ -1300,7 +1300,7 @@ public class Scene  //extends AbstractHost
         } else {
 	        for( Iterator<String> pathIt = Options.v().process_dir().iterator(); pathIt.hasNext(); ) {
 	
-	            final String path = pathIt.next();
+	            final String path = (String) pathIt.next();
 	            for (String cl : SourceLocator.v().getClassesUnder(path)) {
 	                loadClassAndSupport(cl).setApplicationClass();
 	            }
@@ -1318,13 +1318,13 @@ public class Scene  //extends AbstractHost
 
         for( Iterator<String> pathIt = Options.v().dynamic_dir().iterator(); pathIt.hasNext(); ) {
 
-            final String path = pathIt.next();
+            final String path = (String) pathIt.next();
             dynClasses.addAll(SourceLocator.v().getClassesUnder(path));
         }
 
         for( Iterator<String> pkgIt = Options.v().dynamic_package().iterator(); pkgIt.hasNext(); ) {
 
-            final String pkg = pkgIt.next();
+            final String pkg = (String) pkgIt.next();
             dynClasses.addAll(SourceLocator.v().classesInDynamicPackage(pkg));
         }
 
@@ -1367,14 +1367,14 @@ public class Scene  //extends AbstractHost
                     continue;
                 }
                 for( Iterator<String> pkgIt = excludedPackages.iterator(); pkgIt.hasNext(); ) {
-                    final String pkg = pkgIt.next();
+                    final String pkg = (String) pkgIt.next();
                     if (s.isApplicationClass()
                     && (s.getPackageName()+".").startsWith(pkg)) {
                             s.setLibraryClass();
                     }
                 }
                 for( Iterator<String> pkgIt = Options.v().include().iterator(); pkgIt.hasNext(); ) {
-                    final String pkg = pkgIt.next();
+                    final String pkg = (String) pkgIt.next();
                     if ((s.getPackageName()+".").startsWith(pkg))
                         s.setApplicationClass();
                 }
@@ -1445,7 +1445,7 @@ public class Scene  //extends AbstractHost
     public List<SootClass> getClasses(int desiredLevel) {
         List<SootClass> ret = new ArrayList<SootClass>();
         for( Iterator<SootClass> clIt = getClasses().iterator(); clIt.hasNext(); ) {
-            final SootClass cl = clIt.next();
+            final SootClass cl = (SootClass) clIt.next();
             if( cl.resolvingLevel() >= desiredLevel ) ret.add(cl);
         }
         return ret;
@@ -1474,7 +1474,7 @@ public class Scene  //extends AbstractHost
         	
         	// try to infer a main class from the usual classpath if none is given 
         	for (Iterator<SootClass> classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
-                    SootClass c = classIter.next();
+                    SootClass c = (SootClass) classIter.next();
                     if (c.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
                     {
                         G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
