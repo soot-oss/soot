@@ -65,22 +65,23 @@ public class TestDominance {
 
     @Test
     public void TestSimpleDiamond() {
-        Graph g = new Graph(new Node(1));
         Node x = new Node(4);
-        g.root.addkid((new Node(2)).addkid(x)).addkid((new Node(3)).addkid(x));
+        Node n = new Node(1).addkid((new Node(2)).addkid(x)).addkid((new Node(3)).addkid(x));
+        Graph g = new Graph(n);
         MHGDominatorsFinder finder = new MHGDominatorsFinder(g);
         DominatorTree tree = new DominatorTree(finder);
-        System.out.println(tree);
         assertThat(tree.getHeads().size(), is(1));
+
         DominatorNode head = tree.getHeads().get(0);
         assertThat(((Node)head.getGode()).id, is(1));
+
         Set<Integer> kids = kid_ids(head);
         assertThat(kids.size(), is(3));
         assertThat(kids, contains(2, 3, 4));
     }
 
     @Test
-    public void AcyclicCFG() {
+    public void TestAcyclicCFG() {
         Node n1 = new Node(1);
         Node n2 = new Node(2);
         Node n3 = new Node(3);
@@ -163,12 +164,19 @@ public class TestDominance {
     }
 }
 
-class Graph implements DirectedGraph {
+class Graph implements DirectedGraph<Node> {
 
     Node root;
+    List<Node> nodes;
+    List<Node> tails = new ArrayList<Node>();
 
     public Graph(Node root) {
         this.root = root;
+        for (Node n : this) {
+            if (n.succs.size() == 0) {
+                tails.add(n);
+            }
+        }
     }
 
     /** 
@@ -180,20 +188,20 @@ class Graph implements DirectedGraph {
 
     /** Returns a list of exit points for this graph. */
     public List<Node> getTails() {
-        throw new RuntimeException("wat");
+        return tails;
     }
 
     /** 
      *  Returns a list of predecessors for the given node in the graph.
      */
-    public List<Node> getPredsOf(Object s){
+    public List<Node> getPredsOf(Node s){
         return ((Node)s).preds;
     }
 
     /**
      *  Returns a list of successors for the given node in the graph.
      */
-    public List<Node> getSuccsOf(Object s) {
+    public List<Node> getSuccsOf(Node s) {
         return ((Node)s).succs;
     }
 
@@ -201,7 +209,10 @@ class Graph implements DirectedGraph {
      *  Returns the node count for this graph.
      */
     public int size() {
-        return dfs(this.root).size();
+        if (this.nodes == null) {
+             this.nodes = this.dfs(this.root);
+        }
+        return this.nodes.size();
     }
 
     /**
@@ -209,11 +220,15 @@ class Graph implements DirectedGraph {
      *  of the nodes is guaranteed.
      */
     public Iterator<Node> iterator() {
-        return dfs(this.root).iterator();
+        if (this.nodes == null) {
+             this.nodes = this.dfs(this.root);
+        }
+        Iterator<Node> i = this.nodes.iterator();
+        return i;
     }
 
     public List<Node> dfs(Node root) {
-        List<Node> list = new LinkedList<Node>();
+        List<Node> list = new ArrayList<Node>();
         Set<Node> seen = new HashSet<Node>();
         dfs_visit(root, seen, list);
         return list;
