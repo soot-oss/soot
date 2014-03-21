@@ -40,6 +40,7 @@ import org.junit.runners.JUnit4;
 import java.util.*;
 
 import soot.toolkits.graph.*;
+import soot.toolkits.graph.pdg.MHGDominatorTree;
 
 public class TestDominance {
 
@@ -159,6 +160,96 @@ public class TestDominance {
         assertThat(kids.size(), is(0));
 
         m = KM.get(8);
+        kids = kid_ids(m);
+        assertThat(kids.size(), is(0));
+    }
+
+    @Test
+    public void TestMultiTailedPostDom() {
+        Node n1 = new Node(1);
+        Node n2 = new Node(2);
+        Node n3 = new Node(3);
+        Node n4 = new Node(4);
+        Node n5 = new Node(5);
+        Node n6 = new Node(6);
+        n1.addkid(n2).addkid(n3);
+        n3.addkid(n4).addkid(n5);
+        n4.addkid(n6);
+        n5.addkid(n6);
+        Graph g = new Graph(n1);
+
+        MHGDominatorsFinder finder = new MHGDominatorsFinder(g);
+        MHGDominatorTree tree = new MHGDominatorTree(finder);
+        assertThat(tree.getHeads().size(), is(1));
+
+        DominatorNode n = tree.getHeads().get(0);
+        assertThat(((Node)n.getGode()).id, is(1));
+        Set<Integer> kids = kid_ids(n);
+        assertThat(kids.size(), is(2));
+        assertThat(kids, contains(2, 3));
+
+        Map<Integer, DominatorNode> KM = kid_map(n);
+        DominatorNode m = KM.get(2);
+        kids = kid_ids(m);
+        assertThat(kids.size(), is(0));
+
+        n = KM.get(3);
+        kids = kid_ids(n);
+        assertThat(kids.size(), is(3));
+        assertThat(kids, contains(4, 5, 6));
+
+        KM = kid_map(n);
+        m = KM.get(4);
+        kids = kid_ids(m);
+        assertThat(kids.size(), is(0));
+
+        m = KM.get(5);
+        kids = kid_ids(m);
+        assertThat(kids.size(), is(0));
+
+        m = KM.get(6);
+        kids = kid_ids(m);
+        assertThat(kids.size(), is(0));
+
+        // ---------- now post-dom --------------
+
+        MHGPostDominatorsFinder pfinder = new MHGPostDominatorsFinder(g);
+        tree = new MHGDominatorTree(pfinder);
+
+        Map<Integer,DominatorNode> heads = new HashMap<Integer,DominatorNode>();
+        for (Object o : tree.getHeads()) {
+            DominatorNode dhead = (DominatorNode)o;
+            Node head = (Node)dhead.getGode();
+            heads.put(head.id, dhead);
+        }
+
+        Set<Integer> head_ids = heads.keySet();
+        assertThat(head_ids.size(), is(3));
+        assertThat(head_ids, contains(1, 2, 6));
+
+        m = heads.get(1);
+        kids = kid_ids(m);
+        assertThat(kids.size(), is(0));
+
+        m = heads.get(2);
+        kids = kid_ids(m);
+        assertThat(kids.size(), is(0));
+
+        n = heads.get(6);
+        kids = kid_ids(n);
+        assertThat(kids.size(), is(3));
+        assertThat(kids, contains(3, 4, 5));
+
+        KM = kid_map(n);
+        m = KM.get(3);
+        kids = kid_ids(m);
+        assertThat(kids.size(), is(0));
+
+        m = KM.get(4);
+        kids = kid_ids(m);
+        assertThat(kids.size(), is(0));
+
+        m = KM.get(5);
         kids = kid_ids(m);
         assertThat(kids.size(), is(0));
     }
