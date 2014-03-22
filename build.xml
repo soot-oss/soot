@@ -213,7 +213,8 @@
 
             <formatter type="plain"/>
             <batchtest>
-                <fileset dir="testclasses" includes="**/*.class"/>
+                <fileset dir="testclasses" includes="**/Test*.class"/>
+                <fileset dir="testclasses" includes="**/*Test.class"/>
             </batchtest>
         </junit>
     </target>
