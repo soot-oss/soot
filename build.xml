@@ -195,7 +195,7 @@
         <javac
             srcdir="tests"
             destdir="testclasses"
-            classpath="classes:${polyglot.jar}:${jasmin.jar}:${junit.jar}"
+            classpath="classes:${polyglot.jar}:${jasmin.jar}:${junit.jar}:${hamcrest.jar}"
             debug="true"
             />
     </target>
@@ -207,6 +207,8 @@
                 <pathelement location="classes"/>
                 <pathelement location="${polyglot.jar}"/>
                 <pathelement location="${jasmin.jar}"/>
+                <pathelement location="${junit.jar}"/>
+                <pathelement location="${hamcrest.jar}"/>
             </classpath>
 
             <formatter type="plain"/>

@@ -32,6 +32,7 @@ release.loc=lib
 ## javadoc comments.
 javaapi.url=http://java.sun.com/j2se/1.6.0/docs/api/
 
-junit.jar=/home/user/ebodde/eclipse/plugins/org.junit_3.8.2/junit.jar
+junit.jar=/path/to/junit-4.8.x.jar
+hamcrest.jar=/path/to/hamcrest-all-1.3.jar
 
 javacup.jar=../libs/java_cup.jar
