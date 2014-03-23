@@ -42,7 +42,7 @@ public class DominatorTreeAdapter implements DirectedGraph
 
     public List getHeads()
     {
-        return Collections.singletonList(dt.getHead());
+        return dt.getHeads();
     }
 
     public List getTails()

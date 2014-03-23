@@ -37,71 +37,50 @@ import soot.toolkits.graph.DominatorsFinder;
  * March 2009
  * 
  **/
-@SuppressWarnings("unchecked")
-public class MHGDominatorTree extends DominatorTree
-{
-   
-	protected ArrayList<DominatorNode> heads;
+public class MHGDominatorTree extends DominatorTree {
 
- 
-	public MHGDominatorTree(DominatorsFinder dominators)
-    {
-		super(dominators);
+    protected ArrayList<DominatorNode> heads;
+
+    public MHGDominatorTree(DominatorsFinder dominators) {
+        super(dominators);
     }
 
- 
     /**
      * Returns the root(s)!!! of the dominator tree.
      **/
-	public List<DominatorNode> getHeads()
-    {
+    public List<DominatorNode> getHeads() {
         return (List<DominatorNode>) heads.clone();
     }
 
     /**
      * This overrides the parent buildTree to allow multiple heads.
      * Mostly copied from the super class and modified.
-     * 
+     *
      **/
-    protected void buildTree()
-    {
+    @Override
+    protected void buildTree() {
         // hook up children with parents and vice-versa
-    	this.heads = null;
-    	
-        for(Iterator godesIt = graph.iterator(); godesIt.hasNext();)
-        {
-        	
+        this.heads = new ArrayList<DominatorNode>();
+        for(Iterator godesIt = graph.iterator(); godesIt.hasNext();) {
             Object gode = godesIt.next();
 
             DominatorNode dode = fetchDode(gode);
             DominatorNode parent = fetchParent(gode);
 
-            if(parent == null){
-               
-            	//make sure the array is created!
-            	if(heads == null)
-                	heads = new ArrayList();
-            	
+            if (parent == null) {
                 heads.add(dode);
-            }
-            else{
+            } else {
                 parent.addChild(dode);
                 dode.setParent(parent);
             }
         }
-      
-        head = (DominatorNode) heads.get(0);
+
         // identify the tail nodes
-        
-        for(Iterator dodesIt = this.iterator(); dodesIt.hasNext();)
-        {
+        for(Iterator dodesIt = this.iterator(); dodesIt.hasNext(); ) {
             DominatorNode dode = (DominatorNode) dodesIt.next();
-
-            if(dode.isTail())
+            if(dode.isTail()) {
                 tails.add(dode);
+            }
         }
-    
     }
-
- 
 }
