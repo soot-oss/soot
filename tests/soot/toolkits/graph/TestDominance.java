@@ -70,7 +70,7 @@ public class TestDominance {
         Node x = new Node(4);
         Node n = new Node(1).addkid((new Node(2)).addkid(x)).addkid((new Node(3)).addkid(x));
         Graph g = new Graph(n);
-        MHGDominatorsFinder finder = new MHGDominatorsFinder(g);
+        MHGDominatorsFinder<Node> finder = new MHGDominatorsFinder<Node>(g);
         DominatorTree tree = new DominatorTree(finder);
         assertThat(tree.getHeads().size(), is(1));
 
@@ -107,7 +107,7 @@ public class TestDominance {
         n10.addkid(n11);
         Graph g = new Graph(n1);
 
-        MHGDominatorsFinder finder = new MHGDominatorsFinder(g);
+        MHGDominatorsFinder<Node> finder = new MHGDominatorsFinder<Node>(g);
         DominatorTree tree = new DominatorTree(finder);
         assertThat(tree.getHeads().size(), is(1));
 
@@ -179,7 +179,7 @@ public class TestDominance {
         n5.addkid(n6);
         Graph g = new Graph(n1);
 
-        MHGDominatorsFinder finder = new MHGDominatorsFinder(g);
+        MHGDominatorsFinder<Node> finder = new MHGDominatorsFinder<Node>(g);
         MHGDominatorTree tree = new MHGDominatorTree(finder);
         assertThat(tree.getHeads().size(), is(1));
 
@@ -214,7 +214,7 @@ public class TestDominance {
 
         // ---------- now post-dom --------------
 
-        MHGPostDominatorsFinder pfinder = new MHGPostDominatorsFinder(g);
+        MHGPostDominatorsFinder<Node> pfinder = new MHGPostDominatorsFinder<Node>(g);
         tree = new MHGDominatorTree(pfinder);
 
         Map<Integer,DominatorNode> heads = new HashMap<Integer,DominatorNode>();
