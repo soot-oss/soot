@@ -43,15 +43,14 @@ public class DominatorTree {
 
     protected DominatorsFinder dominators;
     protected DirectedGraph graph;
-    protected DominatorNode head;
-    protected ArrayList tails;
-
-
+    protected ArrayList<DominatorNode> heads;
+    protected ArrayList<DominatorNode> tails;
+    
     /**
      * "gode" is a node in the original graph, "dode" is a node in the
      * dominator tree.
      **/
-    protected HashMap godeToDode;
+    protected HashMap<Object, DominatorNode> godeToDode;
 
     public DominatorTree(DominatorsFinder dominators) {
         // if(Options.v().verbose())
@@ -61,8 +60,8 @@ public class DominatorTree {
         this.dominators = dominators;
         this.graph = dominators.getGraph();
 
-        head = null;
-        tails = new ArrayList();
+        heads = new ArrayList<DominatorNode>();
+        tails = new ArrayList<DominatorNode>();
         godeToDode = new HashMap();
 
         buildTree();
@@ -80,18 +79,23 @@ public class DominatorTree {
      * Returns the root of the dominator tree.
      **/
     public List<DominatorNode> getHeads() {
-        return Collections.singletonList(head);
+        return new ArrayList<DominatorNode>(heads);
     }
-
-    public List<DominatorNode> getHead() {
-        return Collections.singletonList(head);
+    
+    /**
+     * Gets the first head of the dominator tree. This function is implemented 
+     * for single-headed trees and mainly for backwards compatibility.
+     * @return The first head of the dominator tree
+     */
+    public DominatorNode getHead() {
+        return heads.isEmpty() ? null : heads.get(0);
     }
 
     /**
      * Returns a list of the tails of the dominator tree.
      **/
-    public List getTails() {
-        return (List) tails.clone();
+    public List<DominatorNode> getTails() {
+        return new ArrayList<DominatorNode>(tails);
     }
 
     /**
@@ -105,8 +109,8 @@ public class DominatorTree {
     /**
      * Returns the children of node in the tree.
      **/
-    public List getChildrenOf(DominatorNode node) {
-        return (List)((ArrayList)node.getChildren()).clone();
+    public List<DominatorNode> getChildrenOf(DominatorNode node) {
+        return new ArrayList<DominatorNode>(node.getChildren());
     }
 
     /**
@@ -118,8 +122,7 @@ public class DominatorTree {
         List preds = graph.getPredsOf(node.getGode());
 
         List<DominatorNode> predNodes = new ArrayList<DominatorNode>();
-
-        for(Iterator predsIt = preds.iterator(); predsIt.hasNext();){
+        for(Iterator<DominatorNode> predsIt = preds.iterator(); predsIt.hasNext();){
             Object pred = predsIt.next();
             predNodes.add(getDode(pred));
         }
@@ -134,7 +137,7 @@ public class DominatorTree {
     public List<DominatorNode> getSuccsOf(DominatorNode node) {
         List succs = graph.getSuccsOf(node.getGode());
         List<DominatorNode> succNodes = new ArrayList<DominatorNode>();
-        for(Iterator succsIt = succs.iterator(); succsIt.hasNext();){
+        for(Iterator<DominatorNode> succsIt = succs.iterator(); succsIt.hasNext();){
             Object succ = succsIt.next();
             succNodes.add(getDode(succ));
         }
@@ -174,7 +177,7 @@ public class DominatorTree {
      * Returns an iterator over the nodes in the tree.  No ordering is
      * implied.
      **/
-    public Iterator iterator() {
+    public Iterator<DominatorNode> iterator() {
         return godeToDode.values().iterator();
     }
 
@@ -191,17 +194,14 @@ public class DominatorTree {
      **/
     protected void buildTree() {
         // hook up children with parents and vice-versa
-        for (Iterator godesIt = graph.iterator(); godesIt.hasNext();) {
+        for(Iterator godesIt = graph.iterator(); godesIt.hasNext();) {
             Object gode = godesIt.next();
 
             DominatorNode dode = fetchDode(gode);
             DominatorNode parent = fetchParent(gode);
 
-            if(parent == null){
-                if(head != null) {
-                    throw new RuntimeException("Found multiple heads to graph.");
-                }
-                head = dode;
+            if (parent == null) {
+                heads.add(dode);
             } else {
                 parent.addChild(dode);
                 dode.setParent(parent);
@@ -209,9 +209,8 @@ public class DominatorTree {
         }
 
         // identify the tail nodes
-        for (Iterator dodesIt = this.iterator(); dodesIt.hasNext();) {
-            DominatorNode dode = (DominatorNode) dodesIt.next();
-
+        for(Iterator<DominatorNode> dodesIt = this.iterator(); dodesIt.hasNext(); ) {
+            DominatorNode dode = dodesIt.next();
             if(dode.isTail()) {
                 tails.add(dode);
             }

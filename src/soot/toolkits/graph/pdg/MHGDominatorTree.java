@@ -20,11 +20,6 @@ package soot.toolkits.graph.pdg;
 
 
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.DominatorTree;
 import soot.toolkits.graph.DominatorsFinder;
 
@@ -32,55 +27,18 @@ import soot.toolkits.graph.DominatorsFinder;
  * Constructs a multi-headed dominator tree. This is mostly the same as the DominatorTree
  * but the buildTree method is changed to allow mutilple heads. This can be used for 
  * graphs that are multi-headed and cannot be augmented to become single-headed.
+ * 
+ * March 2014: Pulled this code into the original {@link DominatorTree}. This class now
+ * became a stub (Steven Arzt).
  *
  * @author Hossein Sadat-Mohtasham
  * March 2009
  * 
  **/
 public class MHGDominatorTree extends DominatorTree {
-
-    protected ArrayList<DominatorNode> heads;
-
+	
     public MHGDominatorTree(DominatorsFinder dominators) {
         super(dominators);
     }
-
-    /**
-     * Returns the root(s)!!! of the dominator tree.
-     **/
-    public List<DominatorNode> getHeads() {
-        return (List<DominatorNode>) heads.clone();
-    }
-
-    /**
-     * This overrides the parent buildTree to allow multiple heads.
-     * Mostly copied from the super class and modified.
-     *
-     **/
-    @Override
-    protected void buildTree() {
-        // hook up children with parents and vice-versa
-        this.heads = new ArrayList<DominatorNode>();
-        for(Iterator godesIt = graph.iterator(); godesIt.hasNext();) {
-            Object gode = godesIt.next();
-
-            DominatorNode dode = fetchDode(gode);
-            DominatorNode parent = fetchParent(gode);
-
-            if (parent == null) {
-                heads.add(dode);
-            } else {
-                parent.addChild(dode);
-                dode.setParent(parent);
-            }
-        }
-
-        // identify the tail nodes
-        for(Iterator dodesIt = this.iterator(); dodesIt.hasNext(); ) {
-            DominatorNode dode = (DominatorNode) dodesIt.next();
-            if(dode.isTail()) {
-                tails.add(dode);
-            }
-        }
-    }
+    
 }
