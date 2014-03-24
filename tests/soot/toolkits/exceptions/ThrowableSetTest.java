@@ -1,20 +1,31 @@
 package soot.toolkits.exceptions;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import org.junit.Test;
-import org.junit.Ignore;
-import org.junit.Before;
+import junit.framework.AssertionFailedError;
+
 import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.junit.FixMethodOrder;
+import org.junit.Test;
+import org.junit.runners.MethodSorters;
 
-import soot.*;
-import java.util.*;
-
-import soot.toolkits.exceptions.ExceptionTestUtility.*;
+import soot.AnySubType;
+import soot.RefLikeType;
+import soot.RefType;
+import soot.Scene;
+import soot.toolkits.exceptions.ExceptionTestUtility.ExceptionHashSet;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class ThrowableSetTest {

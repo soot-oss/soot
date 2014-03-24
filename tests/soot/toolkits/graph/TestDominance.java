@@ -26,20 +26,21 @@ package soot.toolkits.graph;
  *   http://www.gnu.org/licenses/lgpl-2.1.html
  */
 
-import static org.junit.Assert.*;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.contains;
+import static org.hamcrest.Matchers.is;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.junit.Test;
-import org.junit.Ignore;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.runner.RunWith;
-import org.junit.runners.JUnit4;
 
-import java.util.*;
-
-import soot.toolkits.graph.*;
 import soot.toolkits.graph.pdg.MHGDominatorTree;
 
 public class TestDominance {
