@@ -691,20 +691,20 @@ public class PAG implements PointsToAnalysis {
 
     /** Adds an edge to the graph, returning false if it was already there. */
     public final boolean addEdge( Node from, Node to ) {
-        from = from.getReplacement();
-        to = to.getReplacement();
-	if( from instanceof VarNode ) {
-	    if( to instanceof VarNode ) {
-                return addSimpleEdge( (VarNode) from, (VarNode) to );
-	    } else {
-                return addStoreEdge( (VarNode) from, (FieldRefNode) to );
-	    }
-	} else if( from instanceof FieldRefNode ) {
-            return addLoadEdge( (FieldRefNode) from, (VarNode) to );
+		from = from.getReplacement();
+		to = to.getReplacement();
+		if (from instanceof VarNode) {
+			if (to instanceof VarNode) {
+				return addSimpleEdge((VarNode) from, (VarNode) to);
+			} else {
+				return addStoreEdge((VarNode) from, (FieldRefNode) to);
+			}
+		} else if (from instanceof FieldRefNode) {
+			return addLoadEdge((FieldRefNode) from, (VarNode) to);
 
-	} else {
-            return addAllocEdge( (AllocNode) from, (VarNode) to );
-	}
+		} else {
+			return addAllocEdge((AllocNode) from, (VarNode) to);
+		}
     }
 
     protected ChunkedQueue edgeQueue = new ChunkedQueue();
@@ -751,11 +751,10 @@ public class PAG implements PointsToAnalysis {
     // Must be simple edges
 	public Pair<Node, Node> addInterproceduralAssignment(Node from, Node to, Edge e) 
 	{
-		Set<Edge> sets;
 		Pair<Node, Node> val = new Pair<Node, Node>(from, to);
 		
 		if ( runGeomPTA ) {
-			sets = assign2edges.get(val);
+			Set<Edge> sets = assign2edges.get(val);
 			if ( sets == null ) {
 				sets = new HashSet<Edge>();
 				assign2edges.put(val, sets);
@@ -777,222 +776,248 @@ public class PAG implements PointsToAnalysis {
         MethodPAG tgtmpag = MethodPAG.v( this, e.tgt() );
         Pair<Node, Node> pval;
         
-        if( e.isExplicit() || e.kind() == Kind.THREAD || e.kind() == Kind.ASYNCTASK ) {
+        if( e.isExplicit() || e.kind() == Kind.THREAD
+        		 || e.kind() == Kind.ASYNCTASK ) {
             addCallTarget( srcmpag, tgtmpag, (Stmt) e.srcUnit(),
                            e.srcCtxt(), e.tgtCtxt(), e );
-        } else {
-            if( e.kind() == Kind.PRIVILEGED ) {
-                // Flow from first parameter of doPrivileged() invocation
-                // to this of target, and from return of target to the
-                // return of doPrivileged()
+        }
+        else if( e.kind() == Kind.EXECUTOR ) {
+        	// Flow from first parameter of doPrivileged() invocation
+        	// to this of target
+        	InvokeExpr ie = e.srcStmt().getInvokeExpr();
+            boolean virtualCall = callAssigns.containsKey(ie);
 
-                InvokeExpr ie = e.srcStmt().getInvokeExpr();
+        	Node parm = srcmpag.nodeFactory().getNode( ie.getArg(0) );
+        	parm = srcmpag.parameterize( parm, e.srcCtxt() );
+        	parm = parm.getReplacement();
 
-                Node parm = srcmpag.nodeFactory().getNode( ie.getArg(0) );
-                parm = srcmpag.parameterize( parm, e.srcCtxt() );
-                parm = parm.getReplacement();
+        	Node thiz = tgtmpag.nodeFactory().caseThis();
+        	thiz = tgtmpag.parameterize( thiz, e.tgtCtxt() );
+        	thiz = thiz.getReplacement();
 
-                Node thiz = tgtmpag.nodeFactory().caseThis();
-                thiz = tgtmpag.parameterize( thiz, e.tgtCtxt() );
-                thiz = thiz.getReplacement();
+        	addEdge( parm, thiz );
+        	pval = addInterproceduralAssignment(parm, thiz, e);
+        	callAssigns.put(ie, pval);
+        	callToMethod.put(ie, srcmpag.getMethod());
 
-                addEdge( parm, thiz );
-                pval = addInterproceduralAssignment(parm, thiz, e);
-				callAssigns.put(ie, pval);
-                callToMethod.put(ie, srcmpag.getMethod());
-
-                if( e.srcUnit() instanceof AssignStmt ) {
-                    AssignStmt as = (AssignStmt) e.srcUnit();
-
-                    Node ret = tgtmpag.nodeFactory().caseRet();
-                    ret = tgtmpag.parameterize( ret, e.tgtCtxt() );
-                    ret = ret.getReplacement();
-
-                    Node lhs = srcmpag.nodeFactory().getNode(as.getLeftOp());
-                    lhs = srcmpag.parameterize( lhs, e.srcCtxt() );
-                    lhs = lhs.getReplacement();
-
-                    addEdge( ret, lhs );
-                    pval = addInterproceduralAssignment(ret, lhs, e);
-					callAssigns.put(ie, pval);
-                    callToMethod.put(ie, srcmpag.getMethod());
-                }
-            } else if( e.kind() == Kind.FINALIZE ) {
-                Node srcThis = srcmpag.nodeFactory().caseThis();
-                srcThis = srcmpag.parameterize( srcThis, e.srcCtxt() );
-                srcThis = srcThis.getReplacement();
-
-                Node tgtThis = tgtmpag.nodeFactory().caseThis();
-                tgtThis = tgtmpag.parameterize( tgtThis, e.tgtCtxt() );
-                tgtThis = tgtThis.getReplacement();
-
-                addEdge( srcThis, tgtThis );
-                pval = addInterproceduralAssignment(srcThis, tgtThis, e);
-            } else if( e.kind() == Kind.NEWINSTANCE ) {
-                Stmt s = (Stmt) e.srcUnit();
-                InstanceInvokeExpr iie = (InstanceInvokeExpr) s.getInvokeExpr();
-
-                Node cls = srcmpag.nodeFactory().getNode( iie.getBase() );
-                cls = srcmpag.parameterize( cls, e.srcCtxt() );
-                cls = cls.getReplacement();
-                Node newObject = nodeFactory.caseNewInstance( (VarNode) cls );
-
-                Node initThis = tgtmpag.nodeFactory().caseThis();
-                initThis = tgtmpag.parameterize( initThis, e.tgtCtxt() );
-                initThis = initThis.getReplacement();
-
-                addEdge( newObject, initThis );
-                if (s instanceof AssignStmt) {
-                    AssignStmt as = (AssignStmt)s;
-                    Node asLHS = srcmpag.nodeFactory().getNode(as.getLeftOp());
-                    asLHS = srcmpag.parameterize( asLHS, e.srcCtxt());
-                    asLHS = asLHS.getReplacement();
-                    addEdge( newObject, asLHS);
-                }
-                
-                pval = addInterproceduralAssignment(newObject, initThis, e);
-				callAssigns.put(s.getInvokeExpr(), pval);
-                callToMethod.put(s.getInvokeExpr(), srcmpag.getMethod());
-            } else if( e.kind() == Kind.REFL_INVOKE ) {
-            	// Flow (1) from first parameter of invoke(..) invocation
-                // to this of target, (2) from the contents of the second (array) parameter
-            	// to all parameters of the target, and (3)  from return of target to the
-                // return of invoke(..)
-            	
-            	//(1)
-                InvokeExpr ie = e.srcStmt().getInvokeExpr();
-
-                Value arg0 = ie.getArg(0);
-                //if "null" is passed in, omit the edge
-                if(arg0!=NullConstant.v()) {
-					Node parm0 = srcmpag.nodeFactory().getNode( arg0 );
-	                parm0 = srcmpag.parameterize( parm0, e.srcCtxt() );
-	                parm0 = parm0.getReplacement();
-	
-	                Node thiz = tgtmpag.nodeFactory().caseThis();
-	                thiz = tgtmpag.parameterize( thiz, e.tgtCtxt() );
-	                thiz = thiz.getReplacement();
-	
-	                addEdge( parm0, thiz );
-	                pval = addInterproceduralAssignment(parm0, thiz, e);
-	                callAssigns.put(ie, pval);
-	                callToMethod.put(ie, srcmpag.getMethod());
-                }
-
-            	//(2)
-                Value arg1 = ie.getArg(1);
-                SootMethod tgt = e.getTgt().method();
-                //if "null" is passed in, or target has no parameters, omit the edge
-                if(arg1!=NullConstant.v() && tgt.getParameterCount()>0) {
-					Node parm1 = srcmpag.nodeFactory().getNode( arg1 );
-	                parm1 = srcmpag.parameterize( parm1, e.srcCtxt() );
-	                parm1 = parm1.getReplacement();
-	                FieldRefNode parm1contents = makeFieldRefNode( (VarNode) parm1, ArrayElement.v() );
-	                
-	                for(int i=0;i<tgt.getParameterCount(); i++) {
-	                	//if no reference type, create no edge
-	                	if(!(tgt.getParameterType(i) instanceof RefLikeType)) continue;
-	                	
-	                    Node tgtParmI = tgtmpag.nodeFactory().caseParm( i );
-	                    tgtParmI = tgtmpag.parameterize( tgtParmI, e.tgtCtxt() );
-	                    tgtParmI = tgtParmI.getReplacement();
-	
-	                    addEdge( parm1contents, tgtParmI );
-	                    pval = addInterproceduralAssignment(parm1contents, tgtParmI, e);
-	                    callAssigns.put(ie, pval);
-	                }
-                }
-
-                //(3)
-                //only create return edge if we are actually assigning the return value and
-                //the return type of the callee is actually a reference type
-                if( e.srcUnit() instanceof AssignStmt && (tgt.getReturnType() instanceof RefLikeType)) {
-                    AssignStmt as = (AssignStmt) e.srcUnit();
-
-                    Node ret = tgtmpag.nodeFactory().caseRet();
-                    ret = tgtmpag.parameterize( ret, e.tgtCtxt() );
-                    ret = ret.getReplacement();
-
-                    Node lhs = srcmpag.nodeFactory().getNode(as.getLeftOp());
-                    lhs = srcmpag.parameterize( lhs, e.srcCtxt() );
-                    lhs = lhs.getReplacement();
-
-                    addEdge( ret, lhs );
-                    pval = addInterproceduralAssignment(ret, lhs, e);
-                    callAssigns.put(ie, pval);
-                }
-            } else if( e.kind() == Kind.REFL_CLASS_NEWINSTANCE || e.kind() == Kind.REFL_CONSTR_NEWINSTANCE) {
-            	// (1) create a fresh node for the new object
-            	// (2) create edge from this object to "this" of the constructor
-            	// (3) if this is a call to Constructor.newInstance and not Class.newInstance,
-            	//     create edges passing the contents of the arguments array of the call
-            	//     to all possible parameters of the target
-            	// (4) if we are inside an assign statement,
-            	//     assign the fresh object from (1) to the LHS of the assign statement
-            	
-                Stmt s = (Stmt) e.srcUnit();
-                InstanceInvokeExpr iie = (InstanceInvokeExpr) s.getInvokeExpr();
-
-                //(1)
-                Node cls = srcmpag.nodeFactory().getNode( iie.getBase() );
-                cls = srcmpag.parameterize( cls, e.srcCtxt() );
-                cls = cls.getReplacement();
-                if( cls instanceof ContextVarNode ) cls = findLocalVarNode( ((VarNode)cls).getVariable() );
-                
-                VarNode newObject = makeGlobalVarNode( cls, RefType.v( "java.lang.Object" ) );
-                SootClass tgtClass = e.getTgt().method().getDeclaringClass();
-				RefType tgtType = tgtClass.getType();                
-                AllocNode site = makeAllocNode( new Pair(cls, tgtClass), tgtType, null );
-                addEdge( site, newObject );
-
-                //(2)
-                Node initThis = tgtmpag.nodeFactory().caseThis();
-                initThis = tgtmpag.parameterize( initThis, e.tgtCtxt() );
-                initThis = initThis.getReplacement();
-                addEdge( newObject, initThis );
-                addInterproceduralAssignment(newObject, initThis, e);
-                
-                //(3)
-                if(e.kind() == Kind.REFL_CONSTR_NEWINSTANCE) {
-	                Value arg = iie.getArg(0);
-	                SootMethod tgt = e.getTgt().method();
-	                //if "null" is passed in, or target has no parameters, omit the edge
-	                if(arg!=NullConstant.v() && tgt.getParameterCount()>0) {
-						Node parm0 = srcmpag.nodeFactory().getNode( arg );
-		                parm0 = srcmpag.parameterize( parm0, e.srcCtxt() );
-		                parm0 = parm0.getReplacement();
-		                FieldRefNode parm1contents = makeFieldRefNode( (VarNode) parm0, ArrayElement.v() );
-		                
-		                for(int i=0;i<tgt.getParameterCount(); i++) {
-		                	//if no reference type, create no edge
-		                	if(!(tgt.getParameterType(i) instanceof RefLikeType)) continue;
-		                	
-		                    Node tgtParmI = tgtmpag.nodeFactory().caseParm( i );
-		                    tgtParmI = tgtmpag.parameterize( tgtParmI, e.tgtCtxt() );
-		                    tgtParmI = tgtParmI.getReplacement();
-		
-		                    addEdge( parm1contents, tgtParmI );
-		                    pval = addInterproceduralAssignment(parm1contents, tgtParmI, e);
-		                    callAssigns.put(iie, pval);
-		                }
-	                }
-                }
-                
-                //(4)
-                if (s instanceof AssignStmt) {
-                    AssignStmt as = (AssignStmt)s;
-                    Node asLHS = srcmpag.nodeFactory().getNode(as.getLeftOp());
-                    asLHS = srcmpag.parameterize( asLHS, e.srcCtxt());
-                    asLHS = asLHS.getReplacement();
-                    addEdge( newObject, asLHS);
-                }
-                
-                pval = addInterproceduralAssignment(newObject, initThis, e);
-                callAssigns.put(s.getInvokeExpr(), pval);
-                callToMethod.put(s.getInvokeExpr(), srcmpag.getMethod());
-            } else {
-                throw new RuntimeException( "Unhandled edge "+e );
+        	if (virtualCall && !virtualCallsToReceivers.containsKey(ie)) {
+                virtualCallsToReceivers.put(ie, parm);
             }
+        }
+        else if( e.kind() == Kind.PRIVILEGED ) {
+        	// Flow from first parameter of doPrivileged() invocation
+        	// to this of target, and from return of target to the
+        	// return of doPrivileged()
+        	InvokeExpr ie = e.srcStmt().getInvokeExpr();
+
+        	Node parm = srcmpag.nodeFactory().getNode( ie.getArg(0) );
+        	parm = srcmpag.parameterize( parm, e.srcCtxt() );
+        	parm = parm.getReplacement();
+
+        	Node thiz = tgtmpag.nodeFactory().caseThis();
+        	thiz = tgtmpag.parameterize( thiz, e.tgtCtxt() );
+        	thiz = thiz.getReplacement();
+
+        	addEdge( parm, thiz );
+        	pval = addInterproceduralAssignment(parm, thiz, e);
+        	callAssigns.put(ie, pval);
+        	callToMethod.put(ie, srcmpag.getMethod());
+
+        	if( e.srcUnit() instanceof AssignStmt ) {
+        		AssignStmt as = (AssignStmt) e.srcUnit();
+
+        		Node ret = tgtmpag.nodeFactory().caseRet();
+        		ret = tgtmpag.parameterize( ret, e.tgtCtxt() );
+        		ret = ret.getReplacement();
+
+        		Node lhs = srcmpag.nodeFactory().getNode(as.getLeftOp());
+        		lhs = srcmpag.parameterize( lhs, e.srcCtxt() );
+        		lhs = lhs.getReplacement();
+
+        		addEdge( ret, lhs );
+        		pval = addInterproceduralAssignment(ret, lhs, e);
+        		callAssigns.put(ie, pval);
+        		callToMethod.put(ie, srcmpag.getMethod());
+        	}
+        }
+        else if( e.kind() == Kind.FINALIZE ) {
+        	Node srcThis = srcmpag.nodeFactory().caseThis();
+        	srcThis = srcmpag.parameterize( srcThis, e.srcCtxt() );
+        	srcThis = srcThis.getReplacement();
+
+        	Node tgtThis = tgtmpag.nodeFactory().caseThis();
+        	tgtThis = tgtmpag.parameterize( tgtThis, e.tgtCtxt() );
+        	tgtThis = tgtThis.getReplacement();
+
+        	addEdge( srcThis, tgtThis );
+        	pval = addInterproceduralAssignment(srcThis, tgtThis, e);
+        }
+        else if( e.kind() == Kind.NEWINSTANCE ) {
+        	Stmt s = (Stmt) e.srcUnit();
+        	InstanceInvokeExpr iie = (InstanceInvokeExpr) s.getInvokeExpr();
+
+        	Node cls = srcmpag.nodeFactory().getNode( iie.getBase() );
+        	cls = srcmpag.parameterize( cls, e.srcCtxt() );
+        	cls = cls.getReplacement();
+        	Node newObject = nodeFactory.caseNewInstance( (VarNode) cls );
+
+        	Node initThis = tgtmpag.nodeFactory().caseThis();
+        	initThis = tgtmpag.parameterize( initThis, e.tgtCtxt() );
+        	initThis = initThis.getReplacement();
+
+        	addEdge( newObject, initThis );
+        	if (s instanceof AssignStmt) {
+        		AssignStmt as = (AssignStmt)s;
+        		Node asLHS = srcmpag.nodeFactory().getNode(as.getLeftOp());
+        		asLHS = srcmpag.parameterize( asLHS, e.srcCtxt());
+        		asLHS = asLHS.getReplacement();
+        		addEdge( newObject, asLHS);
+        	}
+                
+        	pval = addInterproceduralAssignment(newObject, initThis, e);
+        	callAssigns.put(s.getInvokeExpr(), pval);
+        	callToMethod.put(s.getInvokeExpr(), srcmpag.getMethod());
+        }
+        else if( e.kind() == Kind.REFL_INVOKE ) {
+        	// Flow (1) from first parameter of invoke(..) invocation
+        	// to this of target, (2) from the contents of the second (array) parameter
+        	// to all parameters of the target, and (3)  from return of target to the
+        	// return of invoke(..)
+            	
+        	//(1)
+        	InvokeExpr ie = e.srcStmt().getInvokeExpr();
+        	Value arg0 = ie.getArg(0);
+        	//if "null" is passed in, omit the edge
+        	if(arg0!=NullConstant.v()) {
+        		Node parm0 = srcmpag.nodeFactory().getNode( arg0 );
+        		parm0 = srcmpag.parameterize( parm0, e.srcCtxt() );
+        		parm0 = parm0.getReplacement();
+	
+        		Node thiz = tgtmpag.nodeFactory().caseThis();
+        		thiz = tgtmpag.parameterize( thiz, e.tgtCtxt() );
+        		thiz = thiz.getReplacement();
+	
+        		addEdge( parm0, thiz );
+        		pval = addInterproceduralAssignment(parm0, thiz, e);
+        		callAssigns.put(ie, pval);
+        		callToMethod.put(ie, srcmpag.getMethod());
+        	}
+
+        	//(2)
+        	Value arg1 = ie.getArg(1);
+        	SootMethod tgt = e.getTgt().method();
+        	//if "null" is passed in, or target has no parameters, omit the edge
+        	if(arg1!=NullConstant.v() && tgt.getParameterCount()>0) {
+        		Node parm1 = srcmpag.nodeFactory().getNode( arg1 );
+        		parm1 = srcmpag.parameterize( parm1, e.srcCtxt() );
+        		parm1 = parm1.getReplacement();
+        		FieldRefNode parm1contents = makeFieldRefNode( (VarNode) parm1, ArrayElement.v() );
+	                
+        		for(int i=0;i<tgt.getParameterCount(); i++) {
+        			//if no reference type, create no edge
+        			if(!(tgt.getParameterType(i) instanceof RefLikeType)) continue;
+	                	
+        			Node tgtParmI = tgtmpag.nodeFactory().caseParm( i );
+        			tgtParmI = tgtmpag.parameterize( tgtParmI, e.tgtCtxt() );
+        			tgtParmI = tgtParmI.getReplacement();
+	
+        			addEdge( parm1contents, tgtParmI );
+        			pval = addInterproceduralAssignment(parm1contents, tgtParmI, e);
+        			callAssigns.put(ie, pval);
+        		}
+        	}
+
+        	//(3)
+        	//only create return edge if we are actually assigning the return value and
+        	//the return type of the callee is actually a reference type
+        	if( e.srcUnit() instanceof AssignStmt && (tgt.getReturnType() instanceof RefLikeType)) {
+        		AssignStmt as = (AssignStmt) e.srcUnit();
+
+        		Node ret = tgtmpag.nodeFactory().caseRet();
+        		ret = tgtmpag.parameterize( ret, e.tgtCtxt() );
+        		ret = ret.getReplacement();
+
+        		Node lhs = srcmpag.nodeFactory().getNode(as.getLeftOp());
+        		lhs = srcmpag.parameterize( lhs, e.srcCtxt() );
+        		lhs = lhs.getReplacement();
+
+        		addEdge( ret, lhs );
+        		pval = addInterproceduralAssignment(ret, lhs, e);
+        		callAssigns.put(ie, pval);
+        	}
+        }
+        else if( e.kind() == Kind.REFL_CLASS_NEWINSTANCE || e.kind() == Kind.REFL_CONSTR_NEWINSTANCE) {
+        	// (1) create a fresh node for the new object
+        	// (2) create edge from this object to "this" of the constructor
+        	// (3) if this is a call to Constructor.newInstance and not Class.newInstance,
+        	//     create edges passing the contents of the arguments array of the call
+        	//     to all possible parameters of the target
+        	// (4) if we are inside an assign statement,
+        	//     assign the fresh object from (1) to the LHS of the assign statement
+            	
+        	Stmt s = (Stmt) e.srcUnit();
+        	InstanceInvokeExpr iie = (InstanceInvokeExpr) s.getInvokeExpr();
+
+        	//(1)
+        	Node cls = srcmpag.nodeFactory().getNode( iie.getBase() );
+        	cls = srcmpag.parameterize( cls, e.srcCtxt() );
+        	cls = cls.getReplacement();
+        	if( cls instanceof ContextVarNode ) cls = findLocalVarNode( ((VarNode)cls).getVariable() );
+                
+        	VarNode newObject = makeGlobalVarNode( cls, RefType.v( "java.lang.Object" ) );
+        	SootClass tgtClass = e.getTgt().method().getDeclaringClass();
+        	RefType tgtType = tgtClass.getType();                
+        	AllocNode site = makeAllocNode( new Pair(cls, tgtClass), tgtType, null );
+        	addEdge( site, newObject );
+
+        	//(2)
+        	Node initThis = tgtmpag.nodeFactory().caseThis();
+        	initThis = tgtmpag.parameterize( initThis, e.tgtCtxt() );
+        	initThis = initThis.getReplacement();
+        	addEdge( newObject, initThis );
+        	addInterproceduralAssignment(newObject, initThis, e);
+                
+        	//(3)
+        	if(e.kind() == Kind.REFL_CONSTR_NEWINSTANCE) {
+        		Value arg = iie.getArg(0);
+        		SootMethod tgt = e.getTgt().method();
+        		//if "null" is passed in, or target has no parameters, omit the edge
+        		if(arg!=NullConstant.v() && tgt.getParameterCount()>0) {
+        			Node parm0 = srcmpag.nodeFactory().getNode( arg );
+        			parm0 = srcmpag.parameterize( parm0, e.srcCtxt() );
+        			parm0 = parm0.getReplacement();
+        			FieldRefNode parm1contents = makeFieldRefNode( (VarNode) parm0, ArrayElement.v() );
+		                
+        			for(int i=0;i<tgt.getParameterCount(); i++) {
+        				//if no reference type, create no edge
+        				if(!(tgt.getParameterType(i) instanceof RefLikeType)) continue;
+		                	
+        				Node tgtParmI = tgtmpag.nodeFactory().caseParm( i );
+        				tgtParmI = tgtmpag.parameterize( tgtParmI, e.tgtCtxt() );
+        				tgtParmI = tgtParmI.getReplacement();
+		
+        				addEdge( parm1contents, tgtParmI );
+        				pval = addInterproceduralAssignment(parm1contents, tgtParmI, e);
+        				callAssigns.put(iie, pval);
+        			}
+        		}
+        	}
+                
+        	//(4)
+        	if (s instanceof AssignStmt) {
+        		AssignStmt as = (AssignStmt)s;
+        		Node asLHS = srcmpag.nodeFactory().getNode(as.getLeftOp());
+        		asLHS = srcmpag.parameterize( asLHS, e.srcCtxt());
+        		asLHS = asLHS.getReplacement();
+        		addEdge( newObject, asLHS);
+        	}
+                
+        	pval = addInterproceduralAssignment(newObject, initThis, e);
+        	callAssigns.put(s.getInvokeExpr(), pval);
+        	callToMethod.put(s.getInvokeExpr(), srcmpag.getMethod());
+        }
+        else {
+        	throw new RuntimeException( "Unhandled edge "+e );
         }
     }
 
@@ -1029,7 +1054,6 @@ public class PAG implements PointsToAnalysis {
             Pair pval = addInterproceduralAssignment(argNode, parm, e);
 			callAssigns.put(ie, pval);
             callToMethod.put(ie, srcmpag.getMethod());
-            
         }
         if( ie instanceof InstanceInvokeExpr ) {
             InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
@@ -1141,7 +1165,7 @@ public class PAG implements PointsToAnalysis {
     public GlobalNodeFactory nodeFactory() { return nodeFactory; }
     public NativeMethodDriver nativeMethodDriver;
 
-    public HashMultiMap /* InvokeExpr -> Set[Pair] */ callAssigns = new HashMultiMap();
+    public HashMultiMap<InvokeExpr, Pair<Node, Node>> callAssigns = new HashMultiMap<InvokeExpr, Pair<Node, Node>>();
     public Map<InvokeExpr, SootMethod> callToMethod = new HashMap<InvokeExpr, SootMethod>(); 
     public Map<InvokeExpr, Node> virtualCallsToReceivers = new HashMap<InvokeExpr, Node>();
     

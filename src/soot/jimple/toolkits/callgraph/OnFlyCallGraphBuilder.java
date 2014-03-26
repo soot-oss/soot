@@ -428,10 +428,13 @@ public final class OnFlyCallGraphBuilder
             final VirtualCallSite site = siteIt.next();
             if( site.kind() == Kind.THREAD && !fh.canStoreType( type, clRunnable))
                 continue;
+            if( site.kind() == Kind.EXECUTOR && !fh.canStoreType( type, clRunnable))
+                continue;
             if( site.kind() == Kind.ASYNCTASK && !fh.canStoreType( type, clAsyncTask ))
                 continue;
 
             if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD
+            		&& site.kind != Kind.EXECUTOR
             		&& site.kind != Kind.ASYNCTASK ) {
             	SootMethod target = VirtualCalls.v().resolveSpecial( 
                             (SpecialInvokeExpr) site.iie(),
@@ -542,7 +545,15 @@ public final class OnFlyCallGraphBuilder
                         addVirtualCallSite( s, m, receiver, iie, sigRun,
                                 Kind.THREAD );
                     }
-                    if( subSig == sigExecute  ) {
+                    else if( subSig == sigExecutorExecute  ) {
+                    	if (iie.getArgCount() > 0) {
+                    		Value runnable = iie.getArg(0);
+                    		if (runnable instanceof Local)
+		                        addVirtualCallSite( s, m, (Local) runnable, iie, sigRun,
+		                                Kind.EXECUTOR );
+                    	}
+                    }
+                    else if( subSig == sigExecute  ) {
                         addVirtualCallSite( s, m, receiver, iie, sigDoInBackground,
                                 Kind.ASYNCTASK );
                     }
@@ -699,6 +710,8 @@ public final class OnFlyCallGraphBuilder
         findOrAdd( "void run()" );
     protected final NumberedString sigExecute = Scene.v().getSubSigNumberer().
             findOrAdd( "android.os.AsyncTask execute(java.lang.Object[])" );
+    protected final NumberedString sigExecutorExecute = Scene.v().getSubSigNumberer().
+            findOrAdd( "void execute(java.lang.Runnable)" );
     protected final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Object run()" );
     protected final NumberedString sigDoInBackground = Scene.v().getSubSigNumberer().
