@@ -63,19 +63,19 @@ public class Typing
 	
 	public static void minimize(List<Typing> tgs, IHierarchy h)
 	{
-		for ( ListIterator<Typing> i = tgs.listIterator(); i.hasNext(); )
+		outer: for ( ListIterator<Typing> i = tgs.listIterator(); i.hasNext(); )
 		{
 			Typing tgi = i.next();
-			for ( ListIterator<Typing> j = tgs.listIterator(); j.hasNext(); )
-			{
-				Typing tgj = j.next();
-				if ( tgi != tgj && compare(tgi, tgj, h) == 1 )
-				{
+
+			// Throw out duplicate typings
+			for ( Typing tgj : tgs ) {
+				if ( tgi != tgj && compare(tgi, tgj, h) == 1 ) {
 					i.remove();
-					break;
+					continue outer;
 				}
 			}
 		}
+		
 	}
 	
 	public static int compare(Typing a, Typing b, IHierarchy h)

@@ -106,7 +106,8 @@ public class UseChecker extends AbstractStmtSwitch
 		try {
 			this.tg = tg;
 			this.uv = uv;
-			if (this.tg == null) throw new Exception("null typing passed to useChecker");
+			if (this.tg == null)
+				throw new RuntimeException("null typing passed to useChecker");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
