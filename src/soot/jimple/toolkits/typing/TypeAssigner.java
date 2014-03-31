@@ -55,7 +55,7 @@ public class TypeAssigner extends BodyTransformer {
 	}
 
 	/** Assign types to local variables. * */
-	protected void internalTransform(Body b, String phaseName, Map options) {
+	protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 		if (b == null) {
 			throw new NullPointerException();
 		}
