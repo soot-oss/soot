@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
-import soot.Body;
 import soot.Value;
 import soot.toolkits.graph.DirectedGraph;
 
@@ -24,8 +23,15 @@ public interface BiDiInterproceduralCFG<N, M> extends InterproceduralCFG<N, M> {
 	public Set<N> allNonCallEndNodes();
 		
 	//also exposed to some clients who need it
-	public DirectedGraph<N> getOrCreateUnitGraph(Body body);
+	public DirectedGraph<N> getOrCreateUnitGraph(M body);
 
 	public List<Value> getParameterRefs(M m);
+	
+	/**
+	 * Gets whether the given statement is a return site of at least one call
+	 * @param n The statement to check
+	 * @return True if the given statement is a return site, otherwise false
+	 */
+	public boolean isReturnSite(N n);
 
 }

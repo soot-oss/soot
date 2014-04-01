@@ -114,6 +114,14 @@ class AbstractSootFieldRef implements SootFieldRef {
                 else break;
             }
         }
+
+        // If we allow phantom refs, we construct phantom fields
+        if(Options.v().allow_phantom_refs()) {
+        	SootField sf = new SootField(name, type, isStatic ? Modifier.STATIC : 0);
+        	declaringClass.addField(sf);
+        	return sf;
+        }
+
         if( trace == null ) {
         	FieldResolutionFailedException e = new FieldResolutionFailedException();
         	if(Options.v().ignore_resolution_errors())

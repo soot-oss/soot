@@ -33,7 +33,6 @@ import soot.RefType;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
-import soot.VoidType;
 import soot.util.Chain;
 
 /** Implementation of the Body class for the Jimple IR. */

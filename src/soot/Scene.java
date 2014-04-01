@@ -88,6 +88,7 @@ public class Scene  //extends AbstractHost
         kindNumberer.add( Kind.SPECIAL );
         kindNumberer.add( Kind.CLINIT );
         kindNumberer.add( Kind.THREAD );
+        kindNumberer.add( Kind.EXECUTOR );
         kindNumberer.add( Kind.ASYNCTASK );
         kindNumberer.add( Kind.FINALIZE );
         kindNumberer.add( Kind.INVOKE_FINALIZE );
@@ -267,9 +268,15 @@ public class Scene  //extends AbstractHost
         for (File f: files) {
             String name = f.getName();
             if (f.isDirectory() && name.startsWith("android-")) {
+            	try {
                 int v = Integer.decode(name.split("android-")[1]);
                 if (v > maxApi)
                     maxApi = v;
+            	}
+            	catch (NumberFormatException ex) {
+            		// We simply ignore directories that do not follow the
+            		// Android naming structure
+            	}
             }
         }
         return maxApi;

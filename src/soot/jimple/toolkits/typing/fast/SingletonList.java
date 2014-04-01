@@ -25,6 +25,7 @@ import java.util.*;
 /**
  * @author Ben Bellamy
  */
+@Deprecated
 public class SingletonList<E> extends AbstractList<E>
 {
 	private E e;

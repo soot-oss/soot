@@ -23,6 +23,7 @@ import soot.*;
 import soot.util.*;
 import soot.shimple.*;
 import soot.toolkits.scalar.*;
+
 import java.util.*;
 
 /**
@@ -46,7 +47,7 @@ import java.util.*;
  **/
 public class ShimpleLocalDefs implements LocalDefs
 {
-    protected  Map<Value, SingletonList> localToDefs;
+    protected  Map<Value, List<Unit>> localToDefs;
 
     /**
      * Build a LocalDefs interface from a ShimpleBody.  Proper SSA
@@ -64,13 +65,13 @@ public class ShimpleLocalDefs implements LocalDefs
         // units in the body and saving the unique definition site for
         // each local -- no need for fancy analysis 
         {
-            Chain unitsChain = sb.getUnits();
-            Iterator unitsIt = unitsChain.iterator();
-            localToDefs = new HashMap<Value, SingletonList>(unitsChain.size() * 2 + 1, 0.7f);
+            Chain<Unit> unitsChain = sb.getUnits();
+            Iterator<Unit> unitsIt = unitsChain.iterator();
+            localToDefs = new HashMap<Value, List<Unit>>(unitsChain.size() * 2 + 1, 0.7f);
         
             while(unitsIt.hasNext()){
                 Unit unit = (Unit) unitsIt.next();
-                Iterator defBoxesIt = unit.getDefBoxes().iterator();
+                Iterator<ValueBox> defBoxesIt = unit.getDefBoxes().iterator();
                 while(defBoxesIt.hasNext()){
                     Value value = ((ValueBox)defBoxesIt.next()).getValue();
 
@@ -78,7 +79,7 @@ public class ShimpleLocalDefs implements LocalDefs
                     if(!(value instanceof Local))
                         continue;
                         
-                    localToDefs.put(value, new SingletonList(unit));
+                    localToDefs.put(value, Collections.<Unit>singletonList(unit));
                 }
             }
         }
@@ -117,7 +118,7 @@ public class ShimpleLocalDefs implements LocalDefs
         // the problem of checking whether the local is actually
         // defined at the given point in the program.
         {
-            Iterator boxIt = s.getUseBoxes().iterator();
+            Iterator<ValueBox> boxIt = s.getUseBoxes().iterator();
             boolean defined = false;
 
             while(boxIt.hasNext()){

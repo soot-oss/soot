@@ -24,6 +24,7 @@ package soot.util;
  * @author Ondrej Lhotak
  */
 
+@Deprecated
 public class SingletonList<E> extends java.util.AbstractList<E> {
     private E o;
     public SingletonList( E o ) { this.o = o; }

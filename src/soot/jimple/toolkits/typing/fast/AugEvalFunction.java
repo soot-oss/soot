@@ -38,12 +38,11 @@ public class AugEvalFunction implements IEvalFunction
 	
 	public Collection<Type> eval(Typing tg, Value expr, Stmt stmt)
 	{
-		return new SingletonList<Type>(eval_(tg, expr, stmt, this.jb));
+		return Collections.<Type>singletonList(eval_(tg, expr, stmt, this.jb));
 	}
 
 	public static Type eval_(Typing tg, Value expr, Stmt stmt, JimpleBody jb)
 	{
-		
 		if ( expr instanceof ThisRef )
 			return ((ThisRef)expr).getType();
 		else if ( expr instanceof ParameterRef )
@@ -170,6 +169,15 @@ public class AugEvalFunction implements IEvalFunction
 			
 			if ( at instanceof ArrayType )
 				return ((ArrayType)at).getElementType();
+			else if ( at instanceof RefType ) {
+				RefType ref = (RefType) at;
+				if (ref.getSootClass().getName().equals("java.lang.Object")
+						|| ref.getSootClass().getName().equals("java.io.Serializable")
+						|| ref.getSootClass().getName().equals("java.lang.Cloneable"))
+					return ref;
+				else
+					return BottomType.v();
+			}
 			else
 				return BottomType.v();
 		}

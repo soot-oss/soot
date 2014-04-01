@@ -18,7 +18,8 @@
  */
 
 package soot.util;
-import java.util.*;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /** A java.util.Map-like map with Numberable objects as the keys.
  * This one is designed for maps close to the size of the universe.
@@ -27,14 +28,14 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 
-public final class LargeNumberedMap {
-    public LargeNumberedMap( ArrayNumberer universe ) {
+public final class LargeNumberedMap<K extends Numberable, V> {
+    public LargeNumberedMap( ArrayNumberer<K> universe ) {
         this.universe = universe;
         int newsize = universe.size();
         if( newsize < 8 ) newsize = 8;
         values = new Object[newsize];
     }
-    public boolean put( Numberable key, Object value ) {
+    public boolean put( Numberable key, V value ) {
         int number = key.getNumber();
         if( number == 0 ) throw new RuntimeException( "oops, forgot to initialize" );
         if( number >= values.length ) {
@@ -46,13 +47,14 @@ public final class LargeNumberedMap {
         values[number] = value;
         return ret;
     }
-    public Object get( Numberable key ) {
+    @SuppressWarnings("unchecked")
+	public V get( Numberable key ) {
         int i = key.getNumber();
         if( i >= values.length ) return null;
-        return values[ i ];
+        return (V) values[ i ];
     }
-    public Iterator keyIterator() {
-        return new Iterator() {
+    public Iterator<K> keyIterator() {
+        return new Iterator<K>() {
             int cur = 0;
             private void advance() {
                 while(cur < values.length && values[cur] == null) cur++;
@@ -61,7 +63,7 @@ public final class LargeNumberedMap {
                 advance();
                 return cur < values.length;
             }
-            public Object next() {
+            public K next() {
                 if(!hasNext()) throw new NoSuchElementException();
                 return universe.get(cur++);
             }
@@ -72,5 +74,5 @@ public final class LargeNumberedMap {
     /* Private stuff. */
 
     private Object[] values;
-    private ArrayNumberer universe;
+    private ArrayNumberer<K> universe;
 }

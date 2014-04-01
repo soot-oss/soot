@@ -68,7 +68,7 @@ public class Binop2addrInstruction extends TaggedInstruction {
         assign.addTag(getTag());
 
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {

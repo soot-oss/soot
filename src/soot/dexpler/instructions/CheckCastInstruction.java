@@ -68,7 +68,7 @@ public class CheckCastInstruction extends DexlibAbstractInstruction {
         assign = Jimple.v().newAssignStmt(castValue, castExpr);
 
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
         
 

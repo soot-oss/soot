@@ -146,7 +146,9 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 					while(edgeInIt.hasNext())
 					{
 						Edge edge = (Edge) edgeInIt.next();
-						if( edge.kind() != Kind.THREAD && edge.kind() != Kind.ASYNCTASK
+						if( edge.kind() != Kind.THREAD
+								&& edge.kind() != Kind.EXECUTOR
+								&& edge.kind() != Kind.ASYNCTASK
 								&& thread.containsMethod(edge.src())) // called directly by any of the thread methods?
 							ignoremethod = false;
 					}

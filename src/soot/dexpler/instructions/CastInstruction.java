@@ -65,7 +65,7 @@ public class CastInstruction extends TaggedInstruction {
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cast);
         assign.addTag (getTag());
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {

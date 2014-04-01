@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="soot/jimple/toolkits/ctl/CTLEvaluator.java|soot/jimple/toolkits/ctl/CopyOfCTLAnalysis.java|soot/jimple/toolkits/ctl/formula/AF.java|soot/jimple/toolkits/ctl/formula/AG.java|soot/jimple/toolkits/ctl/formula/AU.java|soot/jimple/toolkits/ctl/formula/AX.java|soot/jimple/toolkits/ctl/formula/EF.java|soot/jimple/toolkits/ctl/formula/And.java" kind="src" path="src"/>
+	<classpathentry kind="src" path="tests"/>
 	<classpathentry excluding="soot/AntTask.java" kind="src" path="generated/options"/>
 	<classpathentry kind="src" path="generated/sablecc"/>
 	<classpathentry kind="src" path="generated/singletons"/>
@@ -13,5 +14,7 @@
 	<classpathentry kind="lib" path="libs/AXMLPrinter2.jar"/>
 	<classpathentry kind="lib" path="libs/baksmali-2.0b5.jar"/>
 	<classpathentry kind="lib" path="libs/baksmali-1.3.2.jar"/>
+	<classpathentry kind="lib" path="libs/hamcrest-all-1.3.jar"/>
+	<classpathentry kind="lib" path="libs/junit-4.11.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

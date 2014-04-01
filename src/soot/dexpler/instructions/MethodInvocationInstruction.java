@@ -74,14 +74,14 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
 //                i.setTag(new SourceLineNumberTag(lineNumber));
           assign = Jimple.v().newAssignStmt(body.getStoreResultLocal(), invocation);
           setUnit(assign);
-          tagWithLineNumber(assign);
+          addTags(assign);
           body.add(assign);
           unit = assign;
         // this is a invoke statement (the MoveResult had to be the direct successor for an expression)
         } else {
             InvokeStmt invoke = Jimple.v().newInvokeStmt(invocation);
             setUnit(invoke);
-            tagWithLineNumber(invoke);
+            addTags(invoke);
             body.add(invoke);
             unit = invoke;
         }

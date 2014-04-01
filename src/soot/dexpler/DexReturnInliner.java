@@ -62,6 +62,7 @@ public class DexReturnInliner extends DexTransformer {
         return new DexReturnInliner();
     }
 
+    @Override
 	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
 		Iterator<Unit> it = body.getUnits().snapshotIterator();
 		while (it.hasNext()) {

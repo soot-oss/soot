@@ -60,8 +60,8 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 			super(new EdgePredicate() {
 				@Override
 				public boolean want(Edge e) {				
-					return e.kind().isExplicit() || e.kind().isThread() || e.kind().isAsyncTask()
-							|| e.kind().isClinit();
+					return e.kind().isExplicit() || e.kind().isThread() || e.kind().isExecutor()
+							|| e.kind().isAsyncTask() || e.kind().isClinit();
 				}
 			});
 		}
@@ -133,4 +133,5 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 	public Set<Unit> getCallersOf(SootMethod m) {
 		return methodToCallers.getUnchecked(m);
 	}
+	
 }
