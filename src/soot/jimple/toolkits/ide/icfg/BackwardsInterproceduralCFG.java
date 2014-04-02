@@ -108,13 +108,13 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
 
 	//same
 	@Override
-	public Set<SootMethod> getCalleesOfCallAt(Unit n) {
+	public Collection<SootMethod> getCalleesOfCallAt(Unit n) {
 		return delegate.getCalleesOfCallAt(n);
 	}
 
 	//same
 	@Override
-	public Set<Unit> getCallersOf(SootMethod m) {
+	public Collection<Unit> getCallersOf(SootMethod m) {
 		return delegate.getCallersOf(m);
 	}
 
