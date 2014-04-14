@@ -139,7 +139,8 @@ class MethodBuilder extends JSRInlinerAdapter {
 			if (t instanceof RefType)
 				scb.addDep(t);
 		}
-		scb.addDep(AsmUtil.toBaseQualifiedName(owner));
+		
+		scb.addDep(AsmUtil.toBaseType(owner));
 	}
 	
 	@Override

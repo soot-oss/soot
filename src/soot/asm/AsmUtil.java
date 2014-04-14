@@ -44,16 +44,45 @@ class AsmUtil {
 	}
 	
 	/**
-	 * Converts an internal class name to a fully qualified name.
+	 * Converts an internal class name to a Type.
 	 * @param internal internal name.
-	 * @return fully qualified name.
+	 * @return type
 	 */
-	public static String toBaseQualifiedName(String internal) {
-		if (internal.charAt(0) == '[') {
+	public static Type toBaseType(String internal) {
+		if (internal.charAt(0) == '['){ 
 			/* [Ljava/lang/Object; */
-			internal = internal.substring(internal.indexOf('L') + 1, internal.length() - 1);
+			internal = internal.substring(internal.lastIndexOf('[')+1, internal.length());
+			if(internal.charAt(internal.length()-1)==';')
+				internal = internal.substring(0, internal.length()-1);
+			/* Ljava/lang/Object */
 		}
-		return internal.replace('/', '.');
+		switch (internal.charAt(0)) {
+		case 'Z':
+			return BooleanType.v();
+		case 'B':
+			return ByteType.v();
+		case 'C':
+			return CharType.v();
+		case 'S':
+			return ShortType.v();
+		case 'I':
+			return IntType.v();
+		case 'F':
+			return FloatType.v();
+		case 'J':
+			return LongType.v();
+		case 'D':
+			return DoubleType.v();
+		case 'L':
+			internal = internal.substring(1, internal.length());
+			internal = toQualifiedName(internal);
+			return RefType.v(internal);
+		default:
+			internal = toQualifiedName(internal);
+			return RefType.v(internal);	
+		}
+		
+		//return internal.replace('/', '.');
 	}
 	
 	/**
