@@ -37,6 +37,7 @@ import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.IWorklist;
+import soot.jimple.spark.geom.geomPA.Parameters;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.ClassConstantNode;
 import soot.jimple.spark.pag.Node;
@@ -700,14 +701,14 @@ public class FullSensitiveNode extends IVarAbstraction
 	private void do_pts_interval_merge()
 	{
 		for ( GeometricManager gm : new_pts.values() ) {
-			gm.mergeFigures( Constants.max_pts_budget );
+			gm.mergeFigures( Parameters.max_pts_budget );
 		}
 	}
 	
 	private void do_flow_edge_interval_merge()
 	{
 		for ( GeometricManager gm : flowto.values() ) {
-			gm.mergeFigures( Constants.max_cons_budget );
+			gm.mergeFigures( Parameters.max_cons_budget );
 		}
 	}
 	

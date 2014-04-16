@@ -96,7 +96,7 @@ public class OfflineProcessor
 		for ( int i = 0; i < size; ++i ) varGraph.add(null);
 	}
 	
-	public void runOptimizations( int useClients, boolean useSpark, Set<VarNode> basePointers )
+	public void runOptimizations( int seedPts, boolean useSpark, Set<VarNode> basePointers )
 	{
 		// We prepare the essential data structure first
 		n_var = int2var.size();						// The size of the pointers will shrink after each round of analysis
@@ -109,15 +109,16 @@ public class OfflineProcessor
 		// The instance graph reverses the assignment relations. E.g., p = q  => p -> q
 		buildInstanceAssignmentGraph( useSpark );
 		
-		switch (useClients) {
-		case 1:
+		switch (seedPts) {
+		case Constants.seedPts_virtualBase:
 			setVirualBaseVarsUseful();
 			break;
 			
-		case 2:
+		case Constants.seedPts_staticCasts:
 			setStaticCastsVarUseful( useSpark );
 			break;
 			
+		case Constants.seedPts_all:
 		default:
 			setAllUserCodeVariablesUseful();
 			break;

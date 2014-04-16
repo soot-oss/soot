@@ -39,6 +39,7 @@ import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.IWorklist;
+import soot.jimple.spark.geom.geomPA.Parameters;
 import soot.jimple.spark.geom.heapinsE.HeapInsIntervalManager;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.LocalVarNode;
@@ -641,14 +642,14 @@ public class PtInsNode extends IVarAbstraction
 	private void do_pts_interval_merge()
 	{
 		for ( PtInsIntervalManager im : pt_objs.values() ) {
-			im.mergeFigures( Constants.max_pts_budget );
+			im.mergeFigures( Parameters.max_pts_budget );
 		}
 	}
 	
 	private void do_flow_edge_interval_merge()
 	{
 		for ( PtInsIntervalManager im : flowto.values() ) {
-			im.mergeFigures( Constants.max_cons_budget );
+			im.mergeFigures( Parameters.max_cons_budget );
 		}
 	}
 	
