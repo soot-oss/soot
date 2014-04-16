@@ -127,7 +127,8 @@ public class IFDSUninitializedVariables extends DefaultJimpleIFDSTabulationProbl
 					@Override
 					public Set<Local> computeTargets(final Local source) {
 						// Do not map parameters for <clinit> edges
-						if (destinationMethod.getName().equals("<clinit>"))
+						if (destinationMethod.getName().equals("<clinit>")
+								|| destinationMethod.getSubSignature().equals("void run()"))
 							return Collections.emptySet();
 
 						for (Local localArgument : localArguments) {

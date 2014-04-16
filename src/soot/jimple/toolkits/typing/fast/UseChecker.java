@@ -21,6 +21,7 @@
 package soot.jimple.toolkits.typing.fast;
 
 import java.util.Iterator;
+import java.util.List;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -83,6 +84,10 @@ import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.SimpleLocalDefs;
+import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
  * This checks all uses against the rules in Jimple, except some uses are not
@@ -96,6 +101,9 @@ public class UseChecker extends AbstractStmtSwitch
 	private Typing tg;
 	private IUseVisitor uv;
 
+	private SimpleLocalDefs defs = null;
+	private SimpleLocalUses uses = null;
+
 	public UseChecker(JimpleBody jb)
 	{
 		this.jb = jb;
@@ -106,7 +114,8 @@ public class UseChecker extends AbstractStmtSwitch
 		try {
 			this.tg = tg;
 			this.uv = uv;
-			if (this.tg == null) throw new Exception("null typing passed to useChecker");
+			if (this.tg == null)
+				throw new RuntimeException("null typing passed to useChecker");
 		} catch (Exception e) {
 			e.printStackTrace();
 			System.exit(1);
@@ -256,18 +265,46 @@ public class UseChecker extends AbstractStmtSwitch
 
 			//try to force Type integrity
 			ArrayType at;
+			Type et = null;
 			if (this.tg.get(base) instanceof ArrayType)
 				at = (ArrayType)this.tg.get(base);
-			else
-				at = this.tg.get(base).makeArrayType();
+			else {
+				Type bt = this.tg.get(base);
+				at = bt.makeArrayType();
+				
+				// If we have a type of java.lang.Object and access it like an object,
+				// this could lead to any kind of object, so we have to look at the uses.
+				// For some fixed type T, we assume that we can fix the array to T[].
+				if (bt instanceof RefType) {
+					RefType rt = (RefType) bt;
+					if (rt.getSootClass().getName().equals("java.lang.Object")
+							|| rt.getSootClass().getName().equals("java.io.Serializable")
+							|| rt.getSootClass().getName().equals("java.lang.Cloneable")) {
+						if (this.uses == null) {
+							this.defs = new SimpleLocalDefs(new ExceptionalUnitGraph(jb));
+							this.uses = new SimpleLocalUses(jb, defs);
+						}
+						
+						List<UnitValueBoxPair> usePairs = this.uses.getUsesOf(stmt);
+						outer: for (UnitValueBoxPair usePair : usePairs) {
+							Stmt useStmt = (Stmt) usePair.getUnit();
+							if (useStmt.containsInvokeExpr())
+								for (int i = 0; i < useStmt.getInvokeExpr().getArgCount(); i++)
+									if (useStmt.getInvokeExpr().getArg(i) == usePair.getValueBox().getValue()) {
+										et = useStmt.getInvokeExpr().getMethod().getParameterType(i);
+										at = et.makeArrayType();
+										break outer;
+									}
+						}
+					}
+				}
+			}
 			Type trhs = ((ArrayType)at).getElementType();
 
 			this.handleArrayRef(aref, stmt);
 
 			aref.setBase((Local) this.uv.visit(aref.getBase(), at, stmt));
 			stmt.setRightOp(this.uv.visit(rhs, trhs, stmt));
-//			if (!lhs.getType().isAllowedInFinalCode())
-//				stmt.setLeftOp(this.uv.visit(lhs, trhs, stmt));
 		}
 		else if ( rhs instanceof InstanceFieldRef )
 		{

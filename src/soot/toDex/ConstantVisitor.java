@@ -95,13 +95,12 @@ public class ConstantVisitor implements ConstantSwitch {
 	}
 	
 	private Insn buildConstInsn(int literal) {
-		if (SootToDexUtils.fitsSigned4(literal)) {
+		if (SootToDexUtils.fitsSigned4(literal))
 			return new Insn11n(Opcode.CONST_4, destinationReg, (byte) literal);
-		}
-		if (SootToDexUtils.fitsSigned16(literal)) {
+		else if (SootToDexUtils.fitsSigned16(literal))
 			return new Insn21s(Opcode.CONST_16, destinationReg, (short) literal);
-		}
-		return new Insn31i(Opcode.CONST, destinationReg, literal);
+		else
+			return new Insn31i(Opcode.CONST, destinationReg, literal);
 	}
 
 	public void caseIntConstant(IntConstant i) {

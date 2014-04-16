@@ -29,12 +29,20 @@
 
 
 package soot.toolkits.scalar;
-import soot.options.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import soot.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
-import java.util.*;
+import soot.Body;
+import soot.G;
+import soot.Local;
+import soot.Timers;
+import soot.Unit;
+import soot.ValueBox;
+import soot.options.Options;
+import soot.toolkits.graph.UnitGraph;
 
 
 /**
@@ -45,7 +53,7 @@ import java.util.*;
  */
 public class SimpleLocalUses implements LocalUses
 {
-    Map<Unit, List> unitToUses;
+    Map<Unit, List<UnitValueBoxPair>> unitToUses;
 
     /**
      * Construct the analysis from a UnitGraph representation
@@ -76,21 +84,12 @@ public class SimpleLocalUses implements LocalUses
         if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() +
                 "]     Constructing SimpleLocalUses...");
-    
-	Chain units = body.getUnits();
-	
-        unitToUses = new HashMap<Unit, List>(units.size() * 2 + 1, 0.7f);
+        
+        unitToUses = new HashMap<Unit, List<UnitValueBoxPair>>(body.getUnits().size() * 2 + 1, 0.7f);
     
         // Initialize this map to empty sets
-        {
-            Iterator it = units.iterator();
-
-            while(it.hasNext())
-            {
-                Unit s = (Unit) it.next();
-                unitToUses.put(s, new ArrayList());
-            }
-        }
+        for (Unit s : body.getUnits())
+        	unitToUses.put(s, new ArrayList<UnitValueBoxPair>());
 
         if(Options.v().time())
            Timers.v().usePhase1Timer.end();
@@ -100,30 +99,19 @@ public class SimpleLocalUses implements LocalUses
     
         // Traverse units and associate uses with definitions
         {
-            Iterator it = units.iterator();
-
-            while(it.hasNext())
+            for (Unit s : body.getUnits())
             {
-                Unit s = (Unit) it.next();
-
-                Iterator boxIt = s.getUseBoxes().iterator();
-
-                while(boxIt.hasNext())
+                for (ValueBox useBox : s.getUseBoxes())
                 {
-                    ValueBox useBox = (ValueBox) boxIt.next();
-
-                    if(useBox.getValue() instanceof Local)
+                	if(useBox.getValue() instanceof Local)
                     {
                         // Add this statement to the uses of the definition of the local
 
                         Local l = (Local) useBox.getValue();
 
                         List<Unit> possibleDefs = localDefs.getDefsOfAt(l, s);
-                        Iterator<Unit> defIt = possibleDefs.iterator();
-
-                        while(defIt.hasNext())
-                        {
-                            List<UnitValueBoxPair> useList = unitToUses.get(defIt.next());
+                        for (Unit def : possibleDefs) {
+                            List<UnitValueBoxPair> useList = unitToUses.get(def);
                             useList.add(new UnitValueBoxPair(s, useBox));
                         }
                     }
@@ -138,17 +126,8 @@ public class SimpleLocalUses implements LocalUses
            Timers.v().usePhase3Timer.start();
     
         // Store the map as a bunch of unmodifiable lists.
-        {
-            Iterator it = units.iterator();
-            
-            while(it.hasNext())
-            {
-                Unit s = (Unit) it.next();
-
-                unitToUses.put(s, Collections.unmodifiableList(unitToUses.get(s)));
-            }
-            
-        }
+        for (Unit s : body.getUnits())
+        	unitToUses.put(s, Collections.unmodifiableList(unitToUses.get(s)));
         
         if(Options.v().time())
            Timers.v().usePhase3Timer.end();
@@ -168,10 +147,8 @@ public class SimpleLocalUses implements LocalUses
      *  @param s a unit that we want to query for the uses of the Local it (may) define.
      *  @return a UnitValueBoxPair of the Units that use the Local.
      */
-    public List getUsesOf(Unit s)
+    public List<UnitValueBoxPair> getUsesOf(Unit s)
     {
-        List l = unitToUses.get(s);
-
-        return l;
+        return unitToUses.get(s);
     }
 }

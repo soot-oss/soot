@@ -86,7 +86,7 @@ public class LocalSplitter extends BodyTransformer
 	public static LocalSplitter v() { return G.v().soot_toolkits_scalar_LocalSplitter(); }
     
 	@Override
-    protected void internalTransform(Body body, String phaseName, Map options)
+    protected void internalTransform(Body body, String phaseName, Map<String, String> options)
     {
 		if (this.throwAnalysis == null)
 			this.throwAnalysis = Scene.v().getDefaultThrowAnalysis();
@@ -116,8 +116,7 @@ public class LocalSplitter extends BodyTransformer
             Map<ValueBox, Unit> boxToUnit = new HashMap<ValueBox, Unit>(units.size() * 2 + 1, 0.7f);
             
             Iterator<Unit> codeIt = units.iterator();
-
-
+            
             while(codeIt.hasNext())
             {
                 Unit s = (Unit) codeIt.next();
@@ -137,7 +136,7 @@ public class LocalSplitter extends BodyTransformer
 
                     List<ValueBox> web = new ArrayList<ValueBox>();
                     webs.add(web);
-                                        
+                    
                     defsToVisit.add(s);
                     markedBoxes.add(loBox);
                     
@@ -147,7 +146,7 @@ public class LocalSplitter extends BodyTransformer
                         {
                             Unit d = defsToVisit.removeFirst();
                             web.add(d.getDefBoxes().get(0));
-
+                            
                             // Add all the uses of this definition to the queue
                             for (UnitValueBoxPair use : localUses.getUsesOf(d)) {
                             	if(!markedBoxes.contains(use.valueBox)) {

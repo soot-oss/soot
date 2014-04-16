@@ -21,7 +21,6 @@ package soot.jimple.toolkits.callgraph;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -380,12 +379,12 @@ public final class OnFlyCallGraphBuilder
 
     /** context-sensitive stuff */
     private ReachableMethods rm;
-    private QueueReader worklist;
+    private QueueReader<MethodOrMethodContext> worklist;
 
     private ContextManager cm;
 
-    private final ChunkedQueue targetsQueue = new ChunkedQueue();
-    private final QueueReader targets = targetsQueue.reader();
+    private final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
+    private final QueueReader<SootMethod> targets = targetsQueue.reader();
 
 
     public OnFlyCallGraphBuilder( ContextManager cm, ReachableMethods rm ) {
@@ -425,15 +424,17 @@ public final class OnFlyCallGraphBuilder
     }
     public void addType( Local receiver, Context srcContext, Type type, Context typeContext ) {
         FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
-        for( Iterator siteIt = ((Collection) receiverToSites.get( receiver )).iterator(); siteIt.hasNext(); ) {
-            final VirtualCallSite site = (VirtualCallSite) siteIt.next();
-            InstanceInvokeExpr iie = site.iie();
+        for( Iterator<VirtualCallSite> siteIt = receiverToSites.get( receiver ).iterator(); siteIt.hasNext(); ) {
+            final VirtualCallSite site = siteIt.next();
             if( site.kind() == Kind.THREAD && !fh.canStoreType( type, clRunnable))
+                continue;
+            if( site.kind() == Kind.EXECUTOR && !fh.canStoreType( type, clRunnable))
                 continue;
             if( site.kind() == Kind.ASYNCTASK && !fh.canStoreType( type, clAsyncTask ))
                 continue;
 
             if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD
+            		&& site.kind != Kind.EXECUTOR
             		&& site.kind != Kind.ASYNCTASK ) {
             	SootMethod target = VirtualCalls.v().resolveSpecial( 
                             (SpecialInvokeExpr) site.iie(),
@@ -466,8 +467,8 @@ public final class OnFlyCallGraphBuilder
         return stringConstToSites.get(stringConst) != null;
     }
     public void addStringConstant( Local l, Context srcContext, String constant ) {
-        for( Iterator siteIt = (stringConstToSites.get( l )).iterator(); siteIt.hasNext(); ) {
-            final VirtualCallSite site = (VirtualCallSite) siteIt.next();
+        for( Iterator<VirtualCallSite> siteIt = (stringConstToSites.get( l )).iterator(); siteIt.hasNext(); ) {
+            final VirtualCallSite site = siteIt.next();
             if( constant == null ) {
                 if( options.verbose() ) {
                     G.v().out.println( "Warning: Method "+site.container()+
@@ -544,7 +545,15 @@ public final class OnFlyCallGraphBuilder
                         addVirtualCallSite( s, m, receiver, iie, sigRun,
                                 Kind.THREAD );
                     }
-                    if( subSig == sigExecute  ) {
+                    else if( subSig == sigExecutorExecute  ) {
+                    	if (iie.getArgCount() > 0) {
+                    		Value runnable = iie.getArg(0);
+                    		if (runnable instanceof Local)
+		                        addVirtualCallSite( s, m, (Local) runnable, iie, sigRun,
+		                                Kind.EXECUTOR );
+                    	}
+                    }
+                    else if( subSig == sigExecute  ) {
                         addVirtualCallSite( s, m, receiver, iie, sigDoInBackground,
                                 Kind.ASYNCTASK );
                     }
@@ -701,6 +710,8 @@ public final class OnFlyCallGraphBuilder
         findOrAdd( "void run()" );
     protected final NumberedString sigExecute = Scene.v().getSubSigNumberer().
             findOrAdd( "android.os.AsyncTask execute(java.lang.Object[])" );
+    protected final NumberedString sigExecutorExecute = Scene.v().getSubSigNumberer().
+            findOrAdd( "void execute(java.lang.Runnable)" );
     protected final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Object run()" );
     protected final NumberedString sigDoInBackground = Scene.v().getSubSigNumberer().

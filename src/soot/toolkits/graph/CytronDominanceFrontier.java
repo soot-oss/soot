@@ -40,7 +40,21 @@ public class CytronDominanceFrontier implements DominanceFrontier
     {
         this.dt = dt;
         nodeToFrontier = new HashMap<DominatorNode, List<DominatorNode>>();
-        bottomUpDispatch(dt.getHead());
+        for (DominatorNode head : dt.getHeads()) {
+            bottomUpDispatch(head);
+        }
+        for(Iterator godesIt = dt.graph.iterator(); godesIt.hasNext();) {
+            Object gode = godesIt.next();
+            DominatorNode dode = dt.fetchDode(gode);
+            if (dode == null) {
+                throw new RuntimeException("dode == null");
+            } else if (!isFrontierKnown(dode)) {
+                System.out.print("'");
+                System.out.print(dode);
+                System.out.println("'");
+                throw new RuntimeException("frontier did not have dode> ");
+            }
+        }
     }
 
     public List getDominanceFrontierOf(DominatorNode node)
@@ -72,13 +86,13 @@ public class CytronDominanceFrontier implements DominanceFrontier
             return;
 
         Iterator children = dt.getChildrenOf(node).iterator();
-
         while(children.hasNext()){
             DominatorNode child = (DominatorNode) children.next();
 
             if(!isFrontierKnown(child))
                 bottomUpDispatch(child);
         }
+
 
         processNode(node);
     }

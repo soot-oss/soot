@@ -24,9 +24,10 @@ import heros.SynchronizedBy;
 import heros.ThreadSafe;
 import heros.solver.IDESolver;
 
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
-import java.util.Set;
+import java.util.LinkedList;
+import java.util.List;
 
 import soot.Body;
 import soot.MethodOrMethodContext;
@@ -60,8 +61,8 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 			super(new EdgePredicate() {
 				@Override
 				public boolean want(Edge e) {				
-					return e.kind().isExplicit() || e.kind().isThread() || e.kind().isAsyncTask()
-							|| e.kind().isClinit();
+					return e.kind().isExplicit() || e.kind().isThread() || e.kind().isExecutor()
+							|| e.kind().isAsyncTask() || e.kind().isClinit();
 				}
 			});
 		}
@@ -71,11 +72,11 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 	protected final CallGraph cg;
 	
 	@SynchronizedBy("by use of synchronized LoadingCache class")
-	protected final LoadingCache<Unit,Set<SootMethod>> unitToCallees =
-			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Unit,Set<SootMethod>>() {
+	protected final LoadingCache<Unit,Collection<SootMethod>> unitToCallees =
+			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Unit,Collection<SootMethod>>() {
 				@Override
-				public Set<SootMethod> load(Unit u) throws Exception {
-					Set<SootMethod> res = new LinkedHashSet<SootMethod>();
+				public Collection<SootMethod> load(Unit u) throws Exception {
+					List<SootMethod> res = new LinkedList<SootMethod>();
 					//only retain callers that are explicit call sites or Thread.start()
 					Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesOutOf(u));					
 					while(edgeIter.hasNext()) {
@@ -91,16 +92,16 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 			});
 
 	@SynchronizedBy("by use of synchronized LoadingCache class")
-	protected final LoadingCache<SootMethod,Set<Unit>> methodToCallers =
-			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,Set<Unit>>() {
+	protected final LoadingCache<SootMethod,Collection<Unit>> methodToCallers =
+			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,Collection<Unit>>() {
 				@Override
-				public Set<Unit> load(SootMethod m) throws Exception {
-					Set<Unit> res = new LinkedHashSet<Unit>();					
+				public Collection<Unit> load(SootMethod m) throws Exception {
+					List<Unit> res = new LinkedList<Unit>();
 					//only retain callers that are explicit call sites or Thread.start()
 					Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesInto(m));					
 					while(edgeIter.hasNext()) {
 						Edge edge = edgeIter.next();
-						res.add(edge.srcUnit());			
+						res.add(edge.srcUnit());
 					}
 					return res;
 				}
@@ -125,12 +126,12 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 	}
 
 	@Override
-	public Set<SootMethod> getCalleesOfCallAt(Unit u) {
+	public Collection<SootMethod> getCalleesOfCallAt(Unit u) {
 		return unitToCallees.getUnchecked(u);
 	}
 
 	@Override
-	public Set<Unit> getCallersOf(SootMethod m) {
+	public Collection<Unit> getCallersOf(SootMethod m) {
 		return methodToCallers.getUnchecked(m);
 	}
 	

@@ -33,12 +33,12 @@ public class DominatorNode
 {
     protected Object gode;
     protected DominatorNode parent;
-    protected List children;
+    protected List<DominatorNode> children;
 
     protected DominatorNode(Object gode)
     {
         this.gode = gode;
-        children = new ArrayList();
+        children = new ArrayList<DominatorNode>();
     }
 
     /**
@@ -86,7 +86,7 @@ public class DominatorNode
      * Returns a backed list of the children of this node in the
      * DominatorTree.
      **/
-    public List getChildren()
+    public List<DominatorNode> getChildren()
     {
         return children;
     }
