@@ -31,4 +31,9 @@ public class Parameters
 	public static int max_pts_budget = 80;
 	public static int cg_refine_times = 1;
 	
+	// Querying parameters
+	// The budget size for intermediate methods from srouce to target path
+	public static int qry_defaultBudgetSize = 6;
+	// The budget size for target method
+	public static int qry_targetBudgetSize = 20;
 }

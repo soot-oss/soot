@@ -54,9 +54,6 @@ public class GeomQueries
 	protected int block_num[];
 	protected long max_context_size_block[];
 	
-	// Querying artifacts
-	private static int defaultBudgetSize = 6;
-	private static int targetBudgetSize = 20;
 	protected Queue<Integer> topQ;
 	protected int in_degree[];
 	protected ContextsCollector[] contextsForMethods;
@@ -213,7 +210,7 @@ public class GeomQueries
 		int rep_target = rep_cg[target];
 		
 		ContextsCollector targetContexts = contextsForMethods[target];
-		targetContexts.setBudget(targetBudgetSize);
+		targetContexts.setBudget(Parameters.qry_targetBudgetSize);
 		
 		if ( rep_start == rep_target ) {
 			// Fast path for special case
@@ -232,7 +229,7 @@ public class GeomQueries
 				
 				// We reset the container parameters every time before use
 				ContextsCollector sContexts = contextsForMethods[rep_s];
-				sContexts.setBudget(defaultBudgetSize);
+				sContexts.setBudget(Parameters.qry_defaultBudgetSize);
 				
 				// Loop over the edges
 				CgEdge p = call_graph[s];
