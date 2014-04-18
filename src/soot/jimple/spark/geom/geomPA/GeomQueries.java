@@ -299,6 +299,11 @@ public class GeomQueries
 				
 		// Obtain the internal representation for querying pointer
 		LocalVarNode vn = geomPts.findLocalVarNode(l);
+		if ( vn == null ) {
+			// Normally this could not happen, perhaps it's a bug
+			return false;
+		}
+		
 		IVarAbstraction pn = geomPts.findInternalNode(vn);
 		pn = pn.getRepresentative();
 		if ( pn == null ) {
@@ -379,6 +384,11 @@ public class GeomQueries
 				
 		// Obtain the internal representation for querying pointer
 		LocalVarNode vn = geomPts.findLocalVarNode(l);
+		if ( vn == null ) {
+			// Normally this could not happen, perhaps it's a bug
+			return false;
+		}
+		
 		IVarAbstraction pn = geomPts.findInternalNode(vn);
 		pn = pn.getRepresentative();
 		if (pn == null) {

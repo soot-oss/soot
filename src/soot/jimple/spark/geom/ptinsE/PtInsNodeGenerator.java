@@ -196,7 +196,7 @@ public class PtInsNodeGenerator extends IEncodingBroker
 			++n_legal_cons;
 		}
 
-		ptAnalyzer.ps.printf("We have %d legal constraints at the beginning, accounting for %.1f%% of the total.\n",
+		ptAnalyzer.ps.printf("Only %d (%.1f%%) constraints are needed for this run.\n",
 				n_legal_cons, ((double)n_legal_cons/ptAnalyzer.constraints.size()) * 100 );
 	}
 	

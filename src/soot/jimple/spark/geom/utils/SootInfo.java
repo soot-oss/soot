@@ -16,28 +16,36 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
+package soot.jimple.spark.geom.utils;
+
+import java.util.Iterator;
+
+import soot.Scene;
+import soot.jimple.Stmt;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Edge;
 
 /**
- * Parameters to control the behaviors of geom points-to solver.
- * 
+ * It implements missing features in Soot components.
+ * All functions should be static.
  * @author xiao
  *
  */
-public class Parameters 
-{
-	// Running the demand-driven refinements?
-	public static boolean ddMode = false;
+public class SootInfo {
 	
-	// The parameters that are used to tune the precision and performance tradeoff
-	public static int max_cons_budget = 40;
-	public static int max_pts_budget = 80;
-	public static int cg_refine_times = 1;
-	
-	// Parameters for offline processing
-	public static int seedPts = Constants.seedPts_allUser;
-	
-	// Querying parameters: budget size for intermediate methods and target method
-	public static int qry_defaultBudgetSize = 6;
-	public static int qry_targetBudgetSize = 20;
+	public static int countCallEdgesForCallsite(Stmt callsite, boolean stopForMutiple)
+	{
+		CallGraph cg = Scene.v().getCallGraph();
+		int count = 0;
+		
+		for ( Iterator<Edge> it = cg.edgesOutOf(callsite); 
+				it.hasNext(); ) {
+			it.next();
+			++count;
+			if ( stopForMutiple && count > 1) break;
+		}
+		
+		return count;
+	}
+
 }

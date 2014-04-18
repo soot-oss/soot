@@ -24,6 +24,7 @@ import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.toolkits.scalar.Pair;
+import soot.util.Numberable;
 
 /**
  * The geometric encoding based constraint descriptor.
@@ -31,7 +32,7 @@ import soot.toolkits.scalar.Pair;
  * @author xiao
  *
  */
-public class PlainConstraint {
+public class PlainConstraint implements Numberable{
 	// Plain constraint descriptor
 	// This is a full description that we can read/write without context
 	// A constraint has the form : lhs -> rhs, where lhs/rhs is a pointer p or a field p.f, which assigns the value of lhs to rhs
@@ -50,4 +51,18 @@ public class PlainConstraint {
 	public Set<Edge> interCallEdges = null;
 	/** To indicate if this constraint is useful or not (may be deleted by cycle detection) */
 	public boolean isViable = true;
+	
+	private int id = -1;
+	
+	@Override
+	public void setNumber(int number) {
+		// TODO Auto-generated method stub
+		id = number;
+	}
+	
+	@Override
+	public int getNumber() {
+		// TODO Auto-generated method stub
+		return id;
+	}
 }
