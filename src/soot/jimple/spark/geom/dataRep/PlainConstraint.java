@@ -20,6 +20,7 @@ package soot.jimple.spark.geom.dataRep;
 
 import java.util.Set;
 
+import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.toolkits.callgraph.Edge;
@@ -35,7 +36,8 @@ import soot.util.Numberable;
 public class PlainConstraint implements Numberable{
 	// Plain constraint descriptor
 	// This is a full description that we can read/write without context
-	// A constraint has the form : lhs -> rhs, where lhs/rhs is a pointer p or a field p.f, which assigns the value of lhs to rhs
+	// A constraint has the form : lhs -> rhs, which means lhs is assigned to rhs 
+	// lhs/rhs is a pointer p or a field p.f, which assigns the value of lhs to rhs
 	
 	/** The type of this constraint, e.g. allocation, assignment or complex */
 	public int type;
@@ -50,7 +52,7 @@ public class PlainConstraint implements Numberable{
 	/** If this constraint represents a parameter passing or function return, the corresponding call edge is identified here */
 	public Set<Edge> interCallEdges = null;
 	/** To indicate if this constraint is useful or not (may be deleted by cycle detection) */
-	public boolean isViable = true;
+	public int status = Constants.Cons_Active;
 	
 	private int id = -1;
 	
@@ -65,4 +67,7 @@ public class PlainConstraint implements Numberable{
 		// TODO Auto-generated method stub
 		return id;
 	}
+	
+	public IVarAbstraction getLHS() { return expr.getO1(); }
+	public IVarAbstraction getRHS() { return expr.getO2(); }
 }

@@ -60,4 +60,10 @@ public class Constants
 	public static final int seedPts_allUser = 0x7fffffff;
 	public static final int seedPts_virtualBase = 1;
 	public static final int seedPts_staticCasts = 2;
+	
+	// Reasons why a constraint is not used
+	public static final int Cons_Active = 0;
+	public static final int Cons_EqualPtrs = 1;
+	public static final int Cons_IndepQuery = 2;
+	public static final int Cons_MarkForRemoval = 3;
 }

@@ -245,18 +245,18 @@ public class GeomEvaluator {
 																ptsProvider.getNumberOfFunctions() );
 		outputer.printf("Reachable User Methods : %d (%d)\n", ptsProvider.n_reach_user_methods, 
 																		ptsProvider.n_reach_spark_user_methods );
-		outputer.println("#Pointers (all code): " + ptsProvider.getNumberOfPointers() );
-		outputer.println("#Pointers (app code only): " + n_legal_var + ", in which #AllocDot Fields : " + n_alloc_dot_fields );
-		outputer.printf("Total/Average Projected Points-to Tuples (app code only): %d (%d) / %.3f (%.3f) \n", 
+		outputer.println("#Pointers [all code]: " + ptsProvider.getNumberOfPointers() );
+		outputer.println("#Pointers [app code]: " + n_legal_var + ", in which #AllocDot Fields : " + n_alloc_dot_fields );
+		outputer.printf("Total/Average Projected Points-to Tuples [app code]: %d (%d) / %.3f (%.3f) \n", 
 				total_geom_ins_pts, total_spark_pts, 
 				(double) total_geom_ins_pts / (n_legal_var), (double) total_spark_pts / n_legal_var );
-		outputer.printf("Total/Average Context Sensitive Points-to Tuples (app code only): %d / %.3f \n", 
+		outputer.printf("Total/Average Context Sensitive Points-to Tuples [app code]: %d / %.3f \n", 
 				total_geom_sen_pts, (double) total_geom_sen_pts / (n_legal_var) );
-		outputer.println("The largest points-to set size (app code only): " + max_pts_geom + " (" + max_pts_spark + ")");
+		outputer.println("The largest points-to set size [app code]: " + max_pts_geom + " (" + max_pts_spark + ")");
 		
 		outputer.println();
-		pts_size_bar_geom.printResult( ptsProvider.ps, "Points-to Set Sizes Distribution (app code only):", pts_size_bar_spark );
-		type_size_bar_geom.printResult( ptsProvider.ps, "Points-to Set Types Distribution (app code only):", type_size_bar_spark );
+		pts_size_bar_geom.printResult( ptsProvider.ps, "Points-to Set Sizes Distribution [app code]:", pts_size_bar_spark );
+		type_size_bar_geom.printResult( ptsProvider.ps, "Points-to Set Types Distribution [app code]:", type_size_bar_spark );
 	}
 
 	/**

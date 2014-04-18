@@ -268,7 +268,7 @@ public class FullSensitiveNode extends IVarAbstraction
 				
 				for ( PlainConstraint pcons : complex_cons ) {
 					// For each newly points-to object, construct its instance field
-					objn = (FullSensitiveNode)ptAnalyzer.findAndInsertInstanceField(obj, pcons.f);
+					objn = (FullSensitiveNode)ptAnalyzer.findInstanceField(obj, pcons.f);
 					if ( objn == null ) {
 						// This combination of allocdotfield must be invalid
 						// This expression p.f also renders that p cannot point to obj, so we remove it

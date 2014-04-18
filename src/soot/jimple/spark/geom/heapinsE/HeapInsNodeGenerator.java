@@ -59,11 +59,11 @@ public class HeapInsNodeGenerator extends IEncodingBroker
 		n_legal_cons = 0;
 
 		for (PlainConstraint cons : ptAnalyzer.constraints) {
-			if (cons.isViable == false)
+			if (cons.status != Constants.Cons_Active)
 				continue;
 
-			my_lhs = cons.expr.getO1().getRepresentative();
-			my_rhs = cons.expr.getO2().getRepresentative();
+			my_lhs = cons.getLHS().getRepresentative();
+			my_rhs = cons.getRHS().getRepresentative();
 			nf1 = ptAnalyzer.getMappedMethodID(my_lhs.getWrappedNode());
 			nf2 = ptAnalyzer.getMappedMethodID(my_rhs.getWrappedNode());
 			

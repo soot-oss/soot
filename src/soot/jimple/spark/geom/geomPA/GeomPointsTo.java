@@ -855,13 +855,12 @@ public class GeomPointsTo extends PAG
 	/**
 	 * Prepare for the next iteration.
 	 */
-	private void prepareNextRun(Set<VarNode> qryNodes) 
+	private void prepareNextRun() 
 	{
 		// Clean the context sensitive points-to results for the representative pointers
 		for (IVarAbstraction pn : pointers) {
-			if ( pn == pn.getRepresentative() ) {
-				if ( qryNodes == null ||
-						qryNodes.contains(pn.getWrappedNode()) )
+			if ( pn == pn.getRepresentative()  &&
+					pn.willUpdate == true) {
 				pn.reconstruct();
 			}
 		}
@@ -982,23 +981,10 @@ public class GeomPointsTo extends PAG
 			pn.drop_duplicates();
 		}
 		
-		// Clean the useless constraints
-		for (Iterator<PlainConstraint> cIt = constraints.iterator(); cIt.hasNext(); ) {
-			PlainConstraint cons = cIt.next();
-			
-			final IVarAbstraction lhs = cons.expr.getO1();
-			final IVarAbstraction rhs = cons.expr.getO2();
-			
-			if ( lhs.getNumber() == -1 ||
-					rhs.getNumber() == -1 ) {
-				cIt.remove();
-			}
-		}
 		
-		// We reassign the ids to the pointers, objects, and constraints
+		// We reassign the ids to the pointers and objects
 		pointers.reassign();
 		allocations.reassign();
-		constraints.reassign();
 		
 		// Prepare for querying
 		IVarAbstraction.ptsProvider = this;
@@ -1109,7 +1095,7 @@ public class GeomPointsTo extends PAG
 			prepare_time += prepare_end.getTime() - prepare_begin.getTime();	
 
 			// Clear the points-to results in previous runs
-			prepareNextRun(null);
+			prepareNextRun();
 			
 			// We construct the initial flow graph
 			nodeGenerator.initFlowGraph(this);
@@ -1184,11 +1170,37 @@ public class GeomPointsTo extends PAG
 		if ( Parameters.ddMode == false )
 			return;
 		
+		if ( qryNodes.size() == 0 ) {
+			ps.println("Please give at least one pointer");
+			return;
+		}
+		
 		// Encode the contexts
 		encodeContexts();
 				
 		// We first perform the offline optimizations
 		Date prepare_begin = new Date();
+		
+		// Clean the useless constraints
+		for (Iterator<PlainConstraint> cIt = constraints.iterator(); cIt
+				.hasNext();) {
+			PlainConstraint cons = cIt.next();
+
+			final IVarAbstraction lhs = cons.expr.getO1();
+			final IVarAbstraction rhs = cons.expr.getO2();
+
+			if (lhs.getNumber() == -1 || 
+					rhs.getNumber() == -1 ||
+					cons.status == Constants.Cons_MarkForRemoval) {
+				cIt.remove();
+			}
+			else {
+				if (cons.status != Constants.Cons_EqualPtrs)
+					cons.status = Constants.Cons_Active;
+			}
+		}
+		
+		constraints.reassign();
 		
 		offlineProcessor.init();
 		offlineProcessor.addUserDefPts(qryNodes);
@@ -1200,7 +1212,7 @@ public class GeomPointsTo extends PAG
 		// Run geomPA again
 		Date begin = new Date();
 		
-		prepareNextRun(qryNodes);
+		prepareNextRun();
 		
 		// We construct the initial flow graph
 		nodeGenerator.initFlowGraph(this);
@@ -1215,10 +1227,10 @@ public class GeomPointsTo extends PAG
 		ps.printf("[ddGeom] Preprocessing time : %.2f seconds\n", (double) prepare_time / 1000);
 		ps.printf("[ddGeom] Main propagation time : %.2f seconds\n", (double) solve_time / 1000 );
 		
-		if (opts.geom_eval() != Constants.eval_nothing ) {
-			GeomEvaluator ge = new GeomEvaluator(this, ps);
-			ge.reportBasicMetrics();
-		}
+//		if (opts.geom_eval() != Constants.eval_nothing ) {
+//			GeomEvaluator ge = new GeomEvaluator(this, ps);
+//			ge.reportBasicMetrics();
+//		}
 	}
 	
 	/**

@@ -21,6 +21,7 @@ package soot.jimple.spark.geom.geomPA;
 
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
@@ -116,7 +117,7 @@ public class OfflineProcessor
 	
 	public void defaultFeedPtsRoutines(int routineID, boolean useSpark)
 	{
-		// We always need the virtual callsites pointers to update the call graph
+		// We always need the virtual callsites base pointers to update the call graph
 		addUserDefPts(geomPTA.basePointers);
 				
 		switch (routineID) {
@@ -168,15 +169,13 @@ public class OfflineProcessor
 		 */
 		buildDependenceGraph( useSpark );
 		computeReachablePts();
-		eliminateUselessConstraints( useSpark );
+		distillConstraints( useSpark );
 		
 		/*
 		 * Optimizations based on the impact graph.
 		 */
 		buildImpactGraph( useSpark );
-		
 		computeWeightsForPts();
-		
 		if ( useSpark == true ) {
 			// We only perform the local merging once.
 			mergeLocalVariables();
@@ -205,13 +204,13 @@ public class OfflineProcessor
 		
 		for ( PlainConstraint cons : geomPTA.constraints ) {
 			// We should keep all the constraints that are deleted by the offline variable merging
-			if ( cons.isViable == false &&
+			if ( cons.status != Constants.Cons_Active &&
 					cons.type != Constants.ASSIGN_CONS )
 				continue;
 			
 			// In our constraint representation, lhs -> rhs means rhs = lhs.
-			final IVarAbstraction lhs = cons.expr.getO1();
-			final IVarAbstraction rhs = cons.expr.getO2();
+			final IVarAbstraction lhs = cons.getLHS();
+			final IVarAbstraction rhs = cons.getRHS();
 			final SparkField field = cons.f;
 			
 			// We delete the constraint that includes unreachable code
@@ -222,7 +221,7 @@ public class OfflineProcessor
 					SootMethod sm = ((LocalVarNode)pn.getWrappedNode()).getMethod();
 					int sm_int = geomPTA.getIDFromSootMethod(sm);
 					if ( !geomPTA.isReachableMethod(sm_int) ) {
-						cons.isViable = false;
+						cons.status = Constants.Cons_MarkForRemoval;
 						break;
 					}
 				}
@@ -459,16 +458,17 @@ public class OfflineProcessor
 	/**
 	 * Eliminate the constraints that do not contribute points-to information to the seed pointers.
 	 */
-	protected void eliminateUselessConstraints( boolean useSpark )
+	protected void distillConstraints( boolean useSpark )
 	{
 		IVarAbstraction pn;
+		final Set<IVarAbstraction> Sadf = new HashSet<IVarAbstraction>();
 		
 		// The last step, we revisit the constraints and eliminate the useless ones
 		for ( PlainConstraint cons : geomPTA.constraints ) {
-			if ( cons.isViable == false ) continue;
+			if ( cons.status != Constants.Cons_Active ) continue;
 			
-			// We care only the pointer at the right hand side
-			pn = cons.expr.getO2();
+			// We only look at the receiver pointers
+			pn = cons.getRHS();
 			final SparkField field = cons.f;
 			visitedFlag = false;
 			
@@ -480,32 +480,45 @@ public class OfflineProcessor
 				break;
 			
 			case Constants.STORE_CONS:
+				/**
+				 * The rule for store constraint is: 
+				 * If any of the instance fields are required, the constraint is kept. 
+				 * More precise treatment can be applied here.
+				 */
+				Sadf.clear();
+				
 				if ( useSpark ) {
-					pn.getWrappedNode().getP2Set().forall( new P2SetVisitor() {
+					pn.getWrappedNode().getP2Set().forall(new P2SetVisitor() {
 						@Override
 						public void visit(Node n) {
-							if ( !visitedFlag ) {
-								IVarAbstraction padf = geomPTA.findAndInsertInstanceField((AllocNode)n, field);
-								if ( padf == null ) return;
-								visitedFlag = padf.willUpdate;
-							}
+							IVarAbstraction padf = geomPTA.findInstanceField((AllocNode)n, field);
+							if ( padf == null ) return;
+							Sadf.add(padf);
+							visitedFlag |= padf.willUpdate;
 						}
 					});
 				}
 				else {
 					// Use the geometric points-to result
 					for ( AllocNode o : pn.getRepresentative().get_all_points_to_objects() ) {
-						IVarAbstraction padf = geomPTA.findAndInsertInstanceField((AllocNode)o, field);
-						if ( padf == null ) return;
-						visitedFlag = padf.willUpdate;
-						if ( visitedFlag ) break;
+						IVarAbstraction padf = geomPTA.findInstanceField((AllocNode)o, field);
+						if ( padf == null ) break;
+						Sadf.add(padf);
+						visitedFlag |= padf.willUpdate;
+					}
+				}
+				
+				if ( visitedFlag == true ) {
+					for (IVarAbstraction padf : Sadf) {
+						padf.willUpdate = true;
 					}
 				}
 				
 				break;
 			}
 			
-			cons.isViable = visitedFlag;
+			if ( !visitedFlag )
+				cons.status = Constants.Cons_IndepQuery;
 		}
 	}
 	
@@ -521,11 +534,11 @@ public class OfflineProcessor
 		queue.clear();
 		
 		for ( PlainConstraint cons : geomPTA.constraints ) {
-			if ( cons.isViable == false ) 
+			if ( cons.status != Constants.Cons_Active ) 
 				continue;
 
-			final IVarAbstraction lhs = cons.expr.getO1();
-			final IVarAbstraction rhs = cons.expr.getO2();
+			final IVarAbstraction lhs = cons.getLHS();
+			final IVarAbstraction rhs = cons.getRHS();
 			final SparkField field = cons.f;
 			
 			switch ( cons.type ) {
@@ -676,9 +689,8 @@ public class OfflineProcessor
 	 * As pointed out by the single entry graph contraction, temporary variables incur high redundancy in points-to relations.
 	 * Find and eliminate the redundancies as early as possible.
 	 * 
-	 * Our approach is :
-	 * 1. Reuse the symbolic assignment graph;
-	 * 2. If a variable q has only one incoming edge p -> q and p, q both local to the same function and they have the same type, then we merge them.
+	 * Our approach is running on the impact graph:
+	 * If a variable q has only one incoming edge p -> q and p, q both local to the same function and they have the same type, then we merge them.
 	 */
 	protected void mergeLocalVariables()
 	{
@@ -698,19 +710,19 @@ public class OfflineProcessor
 		// If this pointer is a allocation result receiver
 		// We charge the degree counting with new constraint
 		for ( PlainConstraint cons : geomPTA.constraints ) {
-			if ( (cons.isViable == true ) &&
+			if ( (cons.status == Constants.Cons_Active) &&
 					(cons.type == Constants.NEW_CONS) ) {
-				my_rhs = cons.expr.getO2();
+				my_rhs = cons.getRHS();
 				count[ my_rhs.id ]++;
 			}
 		}
 		
 		// Second time scan, we delete those constraints that only duplicate points-to information
 		for ( PlainConstraint cons : geomPTA.constraints ) {
-			if ( (cons.isViable == true ) &&
+			if ( (cons.status == Constants.Cons_Active) &&
 					(cons.type == Constants.ASSIGN_CONS) ) {
-				my_lhs = cons.expr.getO1();
-				my_rhs = cons.expr.getO2();
+				my_lhs = cons.getLHS();
+				my_rhs = cons.getRHS();
 				lhs = my_lhs.getWrappedNode();
 				rhs = my_rhs.getWrappedNode();
 				
@@ -727,7 +739,7 @@ public class OfflineProcessor
 						boolean willUpdate = my_rhs.willUpdate;
 						root = my_rhs.merge(my_lhs);
 						if ( root.willUpdate == false ) root.willUpdate = willUpdate;
-						cons.isViable = false;
+						cons.status = Constants.Cons_EqualPtrs;
 					}
 				}
 			}
