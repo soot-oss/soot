@@ -60,10 +60,8 @@ public abstract class PtSensVisitor<VarType extends ContextVar>
 	 */
 	public void prepare()
 	{
-		if ( readyToUse == true ) {
-			tableView.clear();
-			readyToUse = false;
-		}
+		tableView.clear();
+		readyToUse = false;
 	}
 	
 	/**
@@ -92,6 +90,14 @@ public abstract class PtSensVisitor<VarType extends ContextVar>
 	public boolean getUsageState() 
 	{ 
 		return readyToUse; 
+	}
+	
+	/**
+	 * Return the number of different points-to targets.
+	 */
+	public int numOfDiffObjects()
+	{
+		return tableView.size();
 	}
 	
 	/**

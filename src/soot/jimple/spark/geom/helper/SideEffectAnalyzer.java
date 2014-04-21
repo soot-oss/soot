@@ -48,6 +48,8 @@ import soot.jimple.spark.pag.GlobalVarNode;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.SparkField;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.util.BitSetIterator;
 import soot.util.BitVector;
 import soot.util.Numberable;
@@ -142,13 +144,13 @@ public class SideEffectAnalyzer
 	}
 	
 	
-	private GeomPointsTo ptsProvider;
+	private GeomPointsTo geomPTA;
 	private ZArrayNumberer<modRefSet> allModRefSets = new ZArrayNumberer<modRefSet>();
 	private Map<Stmt, modRefSet> stmt2ModRefSet = new HashMap<Stmt, modRefSet>();
 
 	// The following mod/ref sets are not put into allModRefSets
-	private Map<SootMethod, modRefSet> method2ModSet = new HashMap<SootMethod, modRefSet>();
-	private Map<SootMethod, modRefSet> method2RefSet = new HashMap<SootMethod, modRefSet>();
+//	private Map<SootMethod, modRefSet> method2ModSet = new HashMap<SootMethod, modRefSet>();
+//	private Map<SootMethod, modRefSet> method2RefSet = new HashMap<SootMethod, modRefSet>();
 	
 	
 	// Temporarily used for variable existence checking
@@ -157,11 +159,12 @@ public class SideEffectAnalyzer
 	private ZArrayNumberer<CallsiteContextVar> selfMap = new ZArrayNumberer<CallsiteContextVar>();
 	
 	public SideEffectAnalyzer( GeomPointsTo pts ) {
-		ptsProvider = pts;
+		geomPTA = pts;
 	}
 	
 	/**
-	 * Generate the side-effect matrix.
+	 * Generate the side-effect sets for all load/store statements.
+	 * Call statements are not processed currently.
 	 * 
 	 * @param procJavaLib,  true -> processing Java library functions
 	 */
@@ -176,18 +179,18 @@ public class SideEffectAnalyzer
 		 * Prerequisite:
 		 * ContextTranslator.build_1cfa_map().
 		 */
-		for ( SootMethod sm : ptsProvider.getAllReachableMethods() ) {
+		for ( SootMethod sm : geomPTA.getAllReachableMethods() ) {
 			if ( !procJavaLib && sm.isJavaLibraryMethod() )
 				continue;
-			int sm_int = ptsProvider.getIDFromSootMethod(sm);
-			if ( !ptsProvider.isReachableMethod(sm_int) )
+			int sm_int = geomPTA.getIDFromSootMethod(sm);
+			if ( !geomPTA.isReachableMethod(sm_int) )
 				continue;
 			if (!sm.isConcrete())
 				continue;
 			if (!sm.hasActiveBody()) {
 				sm.retrieveActiveBody();
 			}
-			if ( !ptsProvider.isValidMethod(sm) )
+			if ( !geomPTA.isValidMethod(sm) )
 				continue;
 			
 			// We first gather all the memory access expressions
@@ -210,9 +213,9 @@ public class SideEffectAnalyzer
 				if ( op instanceof StaticFieldRef ) {
 					// f = xxxxx or xxxxx = f
 					SootField f = ((StaticFieldRef)op).getField();
-					GlobalVarNode vn = ptsProvider.makeGlobalVarNode(f, f.getType());
+					GlobalVarNode vn = geomPTA.makeGlobalVarNode(f, f.getType());
 					
-					if ( ptsProvider.isExceptionPointer(vn) == false ) {
+					if ( geomPTA.isExceptionPointer(vn) == false ) {
 						modRefSet modOrRef = generateModRefSet(null, st, type);
 						CallsiteContextVar cVar = getContextVar(null, vn);
 						modOrRef.addBit( cVar );
@@ -227,48 +230,51 @@ public class SideEffectAnalyzer
 				if (op instanceof InstanceFieldRef) {
 					// p.f = xxxxx or xxxxx = p.f
 					InstanceFieldRef ifr = (InstanceFieldRef) op;
-					vn = ptsProvider.findLocalVarNode((Local) ifr.getBase());
+					vn = geomPTA.findLocalVarNode((Local) ifr.getBase());
 					fld = ifr.getField();
 				} else if (op instanceof ArrayRef) {
 					// p[i] = xxxxx or xxxxx = p[i]
 					ArrayRef arf = (ArrayRef) op;
-					vn = ptsProvider.findLocalVarNode((Local) arf
+					vn = geomPTA.findLocalVarNode((Local) arf
 							.getBase());
 					fld = ArrayElement.v();
 				}
 				
 				// Now we construct the mod/ref set
 				if (vn != null
-						&& ptsProvider.isExceptionPointer(vn) == false) {
-					IVarAbstraction pn = ptsProvider.findInternalNode(vn);
+						&& geomPTA.isExceptionPointer(vn) == false) {
+					IVarAbstraction pn = geomPTA.findInternalNode(vn);
 					pn = pn.getRepresentative();
 					
-					if (pn.willUpdate == false) {
-						// We make only one mod/ref set
-						modRefSet modOrRef = generateModRefSet(null, st, type);
+					if (!pn.hasPTResult()) {
+						// We make a single mod/ref set for all contexts
+						final modRefSet modOrRef = generateModRefSet(null, st, type);
+						final SparkField f = fld;
+						PointsToSetInternal pts = vn.getP2Set();
 						
-						objs_1cfa.prepare();
-						pn.get_all_context_sensitive_objects(1, Constants.MAX_CONTEXTS, objs_1cfa);
-						objs_1cfa.finish();
-						
-						for (CallsiteContextVar can : objs_1cfa.outList) {
-							AllocNode an = (AllocNode) can.var;
-							AllocDotField adf = ptsProvider.makeAllocDotField(an, fld);
-							// We construct the 1CFA o.f variables
-							CallsiteContextVar cVar = getContextVar(can.context, adf);
-							modOrRef.addBit(cVar);
-						}
+						pts.forall(new P2SetVisitor() {
+							@Override
+							public void visit(Node n) 
+							{
+								AllocNode an = (AllocNode) n;
+								AllocDotField adf = geomPTA.makeAllocDotField(an, f);
+								// We construct the 1CFA o.f variables
+								CallsiteContextVar cVar = getContextVar(null, adf);
+								modOrRef.addBit(cVar);
+							}
+						});
+							
 						continue;
 					}
 					
-					List<CgEdge> edges = ptsProvider.getCallEdgesInto(sm_int);
+					List<CgEdge> edges = geomPTA.getCallEdgesInto(sm_int);
 					
 					for (CgEdge cxtEdge : edges) {
 						modRefSet modOrRef = generateModRefSet(cxtEdge, st, type);
 						// We are going to obtain a set of 1CFA objects that
 						// are modified under the context
 						long l = cxtEdge.map_offset;
-						long r = l + ptsProvider.max_context_size_block[cxtEdge.s];
+						long r = l + geomPTA.max_context_size_block[cxtEdge.s];
 						
 						objs_1cfa.prepare();
 						pn.get_all_context_sensitive_objects(l, r, objs_1cfa);
@@ -276,7 +282,7 @@ public class SideEffectAnalyzer
 						
 						for (CallsiteContextVar can : objs_1cfa.outList) {
 							AllocNode an = (AllocNode) can.var;
-							AllocDotField adf = ptsProvider.makeAllocDotField(an, fld);
+							AllocDotField adf = geomPTA.makeAllocDotField(an, fld);
 							// We construct the 1CFA o.f variables
 							CallsiteContextVar cVar = getContextVar(can.context, adf);
 							modOrRef.addBit(cVar);
@@ -298,9 +304,9 @@ public class SideEffectAnalyzer
 			refSize.addNumber( mr.getBitVector().cardinality() );
 		}
 		
-		ptsProvider.ps.println();
-		ptsProvider.ps.println( "--------------------Side Effect Matrix Information-------------------" );
-		refSize.printResult(ptsProvider.ps, "Side-effect matrix reference size distribution");
+		geomPTA.ps.println();
+		geomPTA.ps.println( "--------------------Side Effect Matrix Information-------------------" );
+		refSize.printResult(geomPTA.ps, "Side-effect matrix reference size distribution");
 	}
 	
 	/**
@@ -311,7 +317,7 @@ public class SideEffectAnalyzer
 	public void dumpSideEffectMatrix()
 	{
 		try {
-			final PrintWriter file = new PrintWriter( ptsProvider.createOutputFile("geomModRef.txt") );
+			final PrintWriter file = new PrintWriter( geomPTA.createOutputFile("geomModRef.txt") );
 			
 			// Rows and columns of the matrix
 			file.println( allModRefSets.size() + " " + selfMap.size() );

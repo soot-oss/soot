@@ -51,8 +51,8 @@ public class PlainConstraint implements Numberable{
 	public SparkField f = null;
 	/** If this constraint represents a parameter passing or function return, the corresponding call edge is identified here */
 	public Set<Edge> interCallEdges = null;
-	/** To indicate if this constraint is useful or not (may be deleted by cycle detection) */
-	public int status = Constants.Cons_Active;
+	/** To indicate if this constraint will be evaluated or not */
+	public boolean isActive = true;
 	
 	private int id = -1;
 	
@@ -69,5 +69,7 @@ public class PlainConstraint implements Numberable{
 	}
 	
 	public IVarAbstraction getLHS() { return expr.getO1(); }
+	public void setLHS(IVarAbstraction newLHS) { expr.setO1(newLHS); }
 	public IVarAbstraction getRHS() { return expr.getO2(); }
+	public void setRHS(IVarAbstraction newRHS) { expr.setO2(newRHS); }
 }

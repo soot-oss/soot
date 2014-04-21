@@ -88,14 +88,29 @@ public class GeomQueries
 				// To speedup context searching, SCC edges are all removed
 				if ( p.scc_edge == false ) {
 					CgEdge q = p.duplicate();
-					if ( q != null ) {
-						// And, a non-SCC edge is attached to the SCC representative node
-						q.next = call_graph[rep];
-						call_graph[rep] = q;
-						in_degree[ rep_cg[q.t] ]++;
-					}
+					
+					// The non-SCC edge is attached to the SCC representative
+					q.next = call_graph[rep];
+					call_graph[rep] = q;
+					in_degree[ rep_cg[q.t] ]++;
 				}
 				p = p.next;
+			}
+		}
+		
+		// We also add back the obsoleted edges
+		for (CgEdge p : geomPts.obsoletedEdges) {
+			if ( p.scc_edge == true ) 
+				continue;
+			
+			// The non-SCC edge is attached to the SCC representative
+			int s = rep_cg[p.s];
+			
+			if ( vis_cg[s] != 0 ) {
+				CgEdge q = p.duplicate();
+				q.next = call_graph[s];
+				call_graph[s] = q;
+				in_degree[ rep_cg[q.t] ]++;
 			}
 		}
 		
@@ -124,12 +139,14 @@ public class GeomQueries
 		contextsForMethods = new ContextsCollector[n_func];
 		for ( int i = 0; i < n_func; ++i ) {
 			ContextsCollector cc = new ContextsCollector();
+			cc.setBudget(Parameters.qryBudgetSize);
 			contextsForMethods[i] = cc;
 		}
 	}
 	
 	/**
 	 * Retrieve the subgraph from s->target.
+	 * An edge s->t is counted iff both s and t can reach target.
 	 * @param s
 	 * @param target
 	 * @return
@@ -172,7 +189,7 @@ public class GeomQueries
 		 *  We assume all blocks of target method are reachable for soundness and for simplicity.
 		 */
 		int n_blocks = block_num[t];
-		long block_size = max_context_size_block[s];
+		long block_size = max_context_size_block[rep_cg[s]];
 		
 		// Compute the offset to the nearest context block for s
 		// We use (lEnd - 1) because the context numbers start from 1 
@@ -202,7 +219,7 @@ public class GeomQueries
 	 */
 	protected boolean propagateIntervals(int start, long L, long R, int target)
 	{
-		// We start traversal from the callee, because the caller->callee mapping is straightforward
+		// We first identify the subgraph, where all edges in the subgraph lead to the target
 		if ( !dfsScanSubgraph(start, target) ) return false;
 		
 		// Now we prepare for iteration
@@ -210,13 +227,13 @@ public class GeomQueries
 		int rep_target = rep_cg[target];
 		
 		ContextsCollector targetContexts = contextsForMethods[target];
-		targetContexts.setBudget(Parameters.qry_targetBudgetSize);
 		
 		if ( rep_start == rep_target ) {
-			// Fast path for special case
+			// Fast path for the special case
 			transferInSCC(start, target, L, R, targetContexts);
 		}
 		else {
+			// We start traversal from the representative method
 			transferInSCC(start, rep_start, L, R, contextsForMethods[rep_start]);
 			
 			// Start topsort
@@ -226,10 +243,7 @@ public class GeomQueries
 			while ( !topQ.isEmpty() ) {
 				int s = topQ.poll();
 				int rep_s = rep_cg[s];
-				
-				// We reset the container parameters every time before use
 				ContextsCollector sContexts = contextsForMethods[rep_s];
-				sContexts.setBudget(Parameters.qry_defaultBudgetSize);
 				
 				// Loop over the edges
 				CgEdge p = call_graph[s];
@@ -286,10 +300,10 @@ public class GeomQueries
 	 * A common usage is specifying only one edge in the context path.
 	 * We implement this common usage here.
 	 * 
-	 * @param soot_edge: the specified context edge in soot edge format
+	 * @param sootEdge: the specified context edge in soot edge format
 	 * @param l: the querying pointer
 	 * @param visitor: container for querying result
-	 * @return false, if the passed in context call edge is obsoleted
+	 * @return false, l does not have points-to information under the contexts passing the given call edge
 	 */
 	public boolean contexsByAnyCallEdge( Edge sootEdge, Local l, PtSensVisitor visitor )
 	{
@@ -305,11 +319,13 @@ public class GeomQueries
 		}
 		
 		IVarAbstraction pn = geomPts.findInternalNode(vn);
-		pn = pn.getRepresentative();
 		if ( pn == null ) {
 			// This pointer is no longer reachable
 			return false;
 		}
+		
+		pn = pn.getRepresentative();
+		if ( !pn.hasPTResult() ) return false;
 		
 		// Obtain the internal representation of the method that encloses the querying pointer
 		SootMethod sm = vn.getMethod();
@@ -329,7 +345,7 @@ public class GeomQueries
 			
 			// Reset
 			targetContexts.clear();
-			return true;
+			return visitor.numOfDiffObjects() != 0;
 		}
 		
 		return false;
@@ -363,7 +379,7 @@ public class GeomQueries
 		}
 		
 		pts_l = null;
-		return true;
+		return visitor.numOfDiffObjects() != 0;
 	}
 	
 	
@@ -373,7 +389,7 @@ public class GeomQueries
 	 * @param callEdgeChain: last K call edges leading to the method that contains l. callEdgeChain[0] is the farthest call edge in the chain.
 	 * @param l: the querying pointer
 	 * @param visitor: the querying result container
-	 * @return false, if any of the call edge in the call chain is obsoleted
+	 * @return false, l does not have points-to information under the given context
 	 */
 	public boolean contextsByCallChain(Edge[] callEdgeChain, Local l, PtSensVisitor visitor)
 	{
@@ -390,11 +406,17 @@ public class GeomQueries
 		}
 		
 		IVarAbstraction pn = geomPts.findInternalNode(vn);
-		pn = pn.getRepresentative();
 		if (pn == null) {
 			// This pointer is no longer reachable
 			return false;
 		}
+		
+		pn = pn.getRepresentative();
+		if ( !pn.hasPTResult() ) return false;
+		
+		SootMethod sm = vn.getMethod();
+		if ( geomPts.getIDFromSootMethod(sm) == -1 )
+			return false;
 		
 		// Iterate the call edges and compute the contexts mapping iteratively
 		long L = 1;
@@ -408,18 +430,18 @@ public class GeomQueries
 			// with blocking scheme or without blocking scheme
 			
 			// We obtain the block that contains current offset L
-			long block_size = max_context_size_block[caller];
+			long block_size = max_context_size_block[rep_cg[caller]];
 			long in_block_offset = (L-1) % block_size;
 			// Transfer to the target block with the same in-block offset
 			L = ctxt.map_offset + in_block_offset;
 		}
 		
 		
-		long ctxtLength = max_context_size_block[firstMethodID];
+		long ctxtLength = max_context_size_block[rep_cg[firstMethodID]];
 		long R = L + ctxtLength;
 		
 		pn.get_all_context_sensitive_objects(L, R, visitor);
-		return true;
+		return visitor.numOfDiffObjects() != 0;
 	}
 	
 	/**
@@ -442,7 +464,7 @@ public class GeomQueries
 			AllocDotField obj_f = geomPts.findAllocDotField(obj, field);
 			if ( obj_f == null ) continue;
 			IVarAbstraction objField = geomPts.findInternalNode(obj_f);
-			if ( objField == null ) return false;
+			if ( objField == null ) continue;
 			
 			long L = icv.L;
 			long R = icv.R;
@@ -450,6 +472,6 @@ public class GeomQueries
 		}
 		
 		pts_l = null;
-		return true;
+		return visitor.numOfDiffObjects() != 0;
 	}
 }

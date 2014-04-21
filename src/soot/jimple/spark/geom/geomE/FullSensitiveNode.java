@@ -173,12 +173,27 @@ public class FullSensitiveNode extends IVarAbstraction
 	}
 
 	@Override
-	public int num_of_diff_objs() {
+	public int num_of_diff_objs() 
+	{
+		// If this pointer is not a representative pointer
+		if ( parent != this )
+			return getRepresentative().num_of_diff_objs();
+				
+		if ( pt_objs == null )
+			return -1;
+		
 		return pt_objs.size();
 	}
 
 	@Override
-	public int num_of_diff_edges() {
+	public int num_of_diff_edges() 
+	{
+		if ( parent != this )
+			return getRepresentative().num_of_diff_objs();
+		
+		if ( flowto == null ) 
+			return -1;
+		
 		return flowto.size();
 	}
 
@@ -277,6 +292,14 @@ public class FullSensitiveNode extends IVarAbstraction
 						entry.setValue( (GeometricManager)deadManager );
 						break;
 					}
+					
+					if ( objn.willUpdate == false ) {
+						// This must be a store constraint
+						// This object field is not need for computing 
+						// the points-to information of the seed pointers
+						continue;
+					}
+					
 					qn = (FullSensitiveNode) pcons.otherSide;
 					
 					for ( i = 0; i < GeometricManager.Divisions; ++i ) {
@@ -295,9 +318,6 @@ public class FullSensitiveNode extends IVarAbstraction
 								if ( instantiateLoadConstraint( objn, qn, pts, (pcons.code<<8) | i ) )
 									worklist.push( objn );
 								break;
-								
-							default:
-								throw new RuntimeException("Wrong Complex Constraint");
 							}
 							
 							pts = pts.next;
@@ -531,12 +551,13 @@ public class FullSensitiveNode extends IVarAbstraction
 	@Override
 	public void injectPts()
 	{
+		final GeomPointsTo geomPTA = (GeomPointsTo)Scene.v().getPointsToAnalysis();
 		pt_objs = new HashMap<AllocNode, GeometricManager>();
 		
 		me.getP2Set().forall( new P2SetVisitor() {
 			@Override
 			public void visit(Node n) {
-				if ( ptsProvider.isValidGeometricNode(n) )
+				if ( geomPTA.isValidGeometricNode(n) )
 					pt_objs.put((AllocNode)n, (GeometricManager)stubManager);
 			}
 		});
@@ -576,12 +597,14 @@ public class FullSensitiveNode extends IVarAbstraction
 			return;
 		}
 		
+		GeomPointsTo geomPTA = (GeomPointsTo)Scene.v().getPointsToAnalysis();
+		
 		for ( Map.Entry<AllocNode, GeometricManager> entry : pt_objs.entrySet() ) {
 			AllocNode obj = entry.getKey();
 			SootMethod sm = obj.getMethod();
 			int sm_int = 0;
 			if ( sm != null ) {
-				sm_int = ptsProvider.getIDFromSootMethod(sm);
+				sm_int = geomPTA.getIDFromSootMethod(sm);
 			}
 			
 			GeometricManager gm = entry.getValue();
@@ -725,7 +748,7 @@ public class FullSensitiveNode extends IVarAbstraction
 	/**
 	 * Implement the inference rules when the input points-to figure is a one-to-one mapping.
 	 */
-	private int infer_pts_is_one_to_one( SegmentNode pts, SegmentNode pe, int code )
+	private static int infer_pts_is_one_to_one( SegmentNode pts, SegmentNode pe, int code )
 	{
 		long interI, interJ;
 		
@@ -759,7 +782,7 @@ public class FullSensitiveNode extends IVarAbstraction
 	/**
 	 * Implement the inference rules when the input points-to figure is a many-to-many mapping.
 	 */
-	private int infer_pts_is_many_to_many( RectangleNode pts, SegmentNode pe, int code )
+	private static int infer_pts_is_many_to_many( RectangleNode pts, SegmentNode pe, int code )
 	{
 		long interI, interJ;
 		
@@ -801,7 +824,8 @@ public class FullSensitiveNode extends IVarAbstraction
 	 * 
 	 * Return value is used to indicate the type of the result
 	 */
-	private boolean reasonAndPropagate( FullSensitiveNode qn, AllocNode obj, SegmentNode pts, SegmentNode pe, int code )
+	private static boolean reasonAndPropagate( FullSensitiveNode qn, AllocNode obj, 
+			SegmentNode pts, SegmentNode pe, int code )
 	{
 		int ret_type = GeometricManager.Undefined_Mapping;
 		
@@ -826,7 +850,7 @@ public class FullSensitiveNode extends IVarAbstraction
 	/**
 	 * The last parameter code can only be 1-1 and many-1
 	 */
-	private boolean instantiateLoadConstraint(FullSensitiveNode objn,
+	private static boolean instantiateLoadConstraint(FullSensitiveNode objn,
 			FullSensitiveNode qn, SegmentNode pts, int code ) 
 	{
 		int ret_type = GeometricManager.Undefined_Mapping;
@@ -877,7 +901,7 @@ public class FullSensitiveNode extends IVarAbstraction
 	}
 
 	// code can only be 1-1 and 1-many
-	private boolean instantiateStoreConstraint(FullSensitiveNode qn,
+	private static boolean instantiateStoreConstraint(FullSensitiveNode qn,
 			FullSensitiveNode objn, SegmentNode pts, int code) 
 	{
 		int ret_type = GeometricManager.Undefined_Mapping;

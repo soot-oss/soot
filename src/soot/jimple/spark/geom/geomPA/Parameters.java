@@ -26,9 +26,6 @@ package soot.jimple.spark.geom.geomPA;
  */
 public class Parameters 
 {
-	// Running the demand-driven refinements?
-	public static boolean ddMode = false;
-	
 	// The parameters that are used to tune the precision and performance tradeoff
 	public static int max_cons_budget = 40;
 	public static int max_pts_budget = 80;
@@ -37,7 +34,6 @@ public class Parameters
 	// Parameters for offline processing
 	public static int seedPts = Constants.seedPts_allUser;
 	
-	// Querying parameters: budget size for intermediate methods and target method
-	public static int qry_defaultBudgetSize = 6;
-	public static int qry_targetBudgetSize = 20;
+	// Querying parameters: budget size for collecting contexts intervals
+	public static int qryBudgetSize = max_pts_budget/2;
 }

@@ -59,9 +59,6 @@ public class CgEdge {
 	 */
 	public CgEdge duplicate()
 	{
-		if ( is_obsoleted ) 
-			return null;
-		
 		CgEdge new_edge = new CgEdge(s, t, sootEdge, null);
 		new_edge.map_offset = map_offset;
 		new_edge.scc_edge = scc_edge;

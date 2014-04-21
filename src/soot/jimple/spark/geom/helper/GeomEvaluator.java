@@ -241,8 +241,8 @@ public class GeomEvaluator {
 		outputer.println("");
 		outputer.println("--------------Geom Solver Basics <Format:  Geometric Analysis (SPARK)>--------------");
 		outputer.printf("Lines of code (jimple): %.1fK\n", (double)loc/1000 );
-		outputer.printf("Reachable Methods : %d (%d)\n", ptsProvider.getNumberOfReachableFunctions(),
-																ptsProvider.getNumberOfFunctions() );
+		outputer.printf("Reachable Methods : %d (%d)\n", ptsProvider.getNumberOfMethods(),
+																ptsProvider.getNumberOfSparkMethods() );
 		outputer.printf("Reachable User Methods : %d (%d)\n", ptsProvider.n_reach_user_methods, 
 																		ptsProvider.n_reach_spark_user_methods );
 		outputer.println("#Pointers [all code]: " + ptsProvider.getNumberOfPointers() );

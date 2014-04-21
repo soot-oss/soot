@@ -29,7 +29,6 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.Type;
 import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
 import soot.jimple.spark.geom.dataRep.PlainConstraint;
 import soot.jimple.spark.geom.dataRep.RectangleNode;
@@ -78,9 +77,6 @@ public class PtInsNode extends IVarAbstraction
 	public PtInsNode( Node thisVar ) 
 	{
 		me = thisVar;
-		flowto = new HashMap<PtInsNode, PtInsIntervalManager>();
-		pt_objs = new HashMap<AllocNode, PtInsIntervalManager>();
-		new_pts = new HashMap<AllocNode, PtInsIntervalManager>();
 	}
 	
 	@Override
@@ -95,13 +91,11 @@ public class PtInsNode extends IVarAbstraction
 	@Override
 	public void reconstruct() 
 	{
+		flowto = new HashMap<PtInsNode, PtInsIntervalManager>();
+		pt_objs = new HashMap<AllocNode, PtInsIntervalManager>();
 		new_pts = new HashMap<AllocNode, PtInsIntervalManager>();
-		
-		if ( complex_cons != null )
-			complex_cons.clear();
-
-		flowto.clear();
-		pt_objs.clear();
+		complex_cons = null;
+		lrf_value = 0;
 	}
 
 	@Override
@@ -164,20 +158,28 @@ public class PtInsNode extends IVarAbstraction
 	}
 
 	@Override
-	public int num_of_diff_objs() {
+	public int num_of_diff_objs() 
+	{
 		// If this pointer is not a representative pointer
-		if ( parent != this )
+		if (parent != this)
 			return getRepresentative().num_of_diff_objs();
-		
-		// If this pointer is not updated in the points-to analysis (willUpdate = false)
-		if ( pt_objs == null )
-			injectPts();
+
+		if (pt_objs == null) {
+			return -1;
+		}
 		
 		return pt_objs.size();
 	}
 
 	@Override
-	public int num_of_diff_edges() {
+	public int num_of_diff_edges() 
+	{
+		if ( parent != this )
+			return getRepresentative().num_of_diff_objs();
+		
+		if ( flowto == null ) 
+			return -1;
+		
 		return flowto.size();
 	}
 	
@@ -279,6 +281,14 @@ public class PtInsNode extends IVarAbstraction
 						entry.setValue( (PtInsIntervalManager)deadManager );
 						break;
 					}
+					
+					if ( objn.willUpdate == false ) {
+						// This must be a store constraint
+						// This object field is not need for computing 
+						// the points-to information of the seed pointers
+						continue;
+					}
+					
 					qn = (PtInsNode) pcons.otherSide;
 					
 					for ( i = 0; i < HeapInsIntervalManager.Divisions; ++i ) {
@@ -305,9 +315,6 @@ public class PtInsNode extends IVarAbstraction
 								) )
 									worklist.push( objn );
 								break;
-								
-							default:
-								throw new RuntimeException("Wrong Complex Constraint");
 							}
 							
 							pts = pts.next;
@@ -535,6 +542,8 @@ public class PtInsNode extends IVarAbstraction
 			return;
 		}
 		
+		GeomPointsTo geomPTA = (GeomPointsTo)Scene.v().getPointsToAnalysis();
+		
 		for ( Map.Entry<AllocNode, PtInsIntervalManager> entry : pt_objs.entrySet() ) {
 			AllocNode obj = entry.getKey();
 			PtInsIntervalManager im = entry.getValue();
@@ -545,8 +554,8 @@ public class PtInsNode extends IVarAbstraction
 			int sm_int = 0;
 			long n_contexts = 1;
 			if ( sm != null ) {
-				sm_int = ptsProvider.getIDFromSootMethod(sm);
-				n_contexts = ptsProvider.context_size[sm_int];
+				sm_int = geomPTA.getIDFromSootMethod(sm);
+				n_contexts = geomPTA.context_size[sm_int];
 			}
 			
 			// We search for all the pointers falling in the range [1, r) that may point to this object
@@ -603,12 +612,13 @@ public class PtInsNode extends IVarAbstraction
 	@Override
 	public void injectPts() 
 	{
+		final GeomPointsTo geomPTA = (GeomPointsTo)Scene.v().getPointsToAnalysis();
 		pt_objs = new HashMap<AllocNode, PtInsIntervalManager>();
 		
 		me.getP2Set().forall( new P2SetVisitor() {
 			@Override
 			public void visit(Node n) {
-				if ( ptsProvider.isValidGeometricNode(n) )
+				if ( geomPTA.isValidGeometricNode(n) )
 					pt_objs.put((AllocNode)n, (PtInsIntervalManager)stubManager);
 			}
 		});

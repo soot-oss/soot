@@ -57,7 +57,7 @@ public class ContextTranslator {
 		
 		// We first transform the pointers
 		for ( IVarAbstraction pn : ptsProvider.pointers ) {
-			if ( pn.willUpdate == false ) continue;
+			if ( !pn.hasPTResult() ) continue;
 			Node v = pn.getWrappedNode();
 			
 			if ( v instanceof LocalVarNode ) {

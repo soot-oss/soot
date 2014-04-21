@@ -61,18 +61,12 @@ public class PtInsNodeGenerator extends IEncodingBroker
 		n_legal_cons = 0;
 
 		for (PlainConstraint cons : ptAnalyzer.constraints) {
-			if (cons.status != Constants.Cons_Active)
-				continue;
+			if ( !cons.isActive) continue;
 
 			my_lhs = cons.getLHS().getRepresentative();
 			my_rhs = cons.getRHS().getRepresentative();
 			nf1 = ptAnalyzer.getMappedMethodID(my_lhs.getWrappedNode());
 			nf2 = ptAnalyzer.getMappedMethodID(my_rhs.getWrappedNode());
-			if ( nf1 == Constants.UNKNOWN_FUNCTION || 
-					nf2 == Constants.UNKNOWN_FUNCTION ) {
-				cons.status = Constants.Cons_MarkForRemoval;
-				continue;
-			}
 			
 			// Test how many globals are in this constraint
 			code = ((nf1==Constants.SUPER_MAIN ? 1 : 0) << 1) |
@@ -197,7 +191,7 @@ public class PtInsNodeGenerator extends IEncodingBroker
 		}
 
 		ptAnalyzer.ps.printf("Only %d (%.1f%%) constraints are needed for this run.\n",
-				n_legal_cons, ((double)n_legal_cons/ptAnalyzer.constraints.size()) * 100 );
+				n_legal_cons, ((double)n_legal_cons/ptAnalyzer.n_init_constraints) * 100 );
 	}
 	
 	@Override
