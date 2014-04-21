@@ -4,7 +4,6 @@ import java.util.List;
 
 import dk.brics.soot.analyses.SimpleVeryBusyExpressions;
 import dk.brics.soot.analyses.VeryBusyExpressions;
-
 import soot.Body;
 import soot.NormalUnitPrinter;
 import soot.Scene;
@@ -12,6 +11,7 @@ import soot.SootClass;
 import soot.SootMethod;
 import soot.Unit;
 import soot.UnitPrinter;
+import soot.options.Options;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.jimple.internal.*;
@@ -26,8 +26,13 @@ public class RunVeryBusyAnalysis
 			System.exit(0);
 		}
 		
+		String path = System.getProperty("java.home") + "\\lib\\rt.jar";
+		path += ";.\\tutorial\\guide\\examples\\analysis_framework\\src";
+		Options.v().set_soot_classpath(path);
+		
 		SootClass sClass = Scene.v().loadClassAndSupport(args[0]);		
 		sClass.setApplicationClass();
+		Scene.v().loadNecessaryClasses();
 		
 		Iterator methodIt = sClass.getMethods().iterator();
 		while (methodIt.hasNext()) {

@@ -43,7 +43,7 @@ import soot.EquivTo;
 		return (flowSet instanceof ValueArraySparseSet);
 	}
 
-	public Object clone() {
+	public ValueArraySparseSet clone() {
 		return new ValueArraySparseSet(this);
 	}
 

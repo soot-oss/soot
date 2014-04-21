@@ -35,6 +35,7 @@ public class GenHelloWorld
 		// Load dependencies
 		Scene.v().loadClassAndSupport("java.lang.Object");
 		Scene.v().loadClassAndSupport("java.lang.System");
+		Scene.v().loadNecessaryClasses();
 		
 		// Create the class HelloWorld as a public class that extends Object
 		SootClass sClass = new SootClass("HelloWorld", Modifier.PUBLIC);

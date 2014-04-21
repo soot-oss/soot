@@ -1,21 +1,28 @@
 package dk.brics.soot;
 import soot.*;
+import soot.options.Options;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
+
 import java.util.*;
 
 public class RunLiveAnalysis
 {
 	public static void main(String[] args) {
-		args = new String[] {"testers.HelloWorld"};
+		args = new String[] {"testers.LiveVarsClass"};
 		
 		if (args.length == 0) {
 			System.out.println("Usage: java RunLiveAnalysis class_to_analyse");
 			System.exit(0);
 		}
 		
+		String path = System.getProperty("java.home") + "\\lib\\rt.jar";
+		path += ";.\\tutorial\\guide\\examples\\analysis_framework\\src";
+		Options.v().set_soot_classpath(path);
+		
 		SootClass sClass = Scene.v().loadClassAndSupport(args[0]);		
 		sClass.setApplicationClass();
+		Scene.v().loadNecessaryClasses();
 		
 		Iterator methodIt = sClass.getMethods().iterator();
 		while (methodIt.hasNext()) {
