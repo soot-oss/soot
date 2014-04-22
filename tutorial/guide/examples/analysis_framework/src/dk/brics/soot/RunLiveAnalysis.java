@@ -4,6 +4,7 @@ import soot.options.Options;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 
+import java.io.File;
 import java.util.*;
 
 public class RunLiveAnalysis
@@ -15,16 +16,20 @@ public class RunLiveAnalysis
 			System.out.println("Usage: java RunLiveAnalysis class_to_analyse");
 			System.exit(0);
 		}
-		
-		String path = System.getProperty("java.home") + "\\lib\\rt.jar";
-		path += ";.\\tutorial\\guide\\examples\\analysis_framework\\src";
+
+		String sep = File.separator;
+		String pathSep = File.pathSeparator;
+		String path = System.getProperty("java.home") + sep + "lib" + sep
+				+ "rt.jar";
+		path += pathSep + "." + sep + "tutorial" + sep + "guide" + sep
+				+ "examples" + sep + "analysis_framework" + sep + "src";
 		Options.v().set_soot_classpath(path);
-		
-		SootClass sClass = Scene.v().loadClassAndSupport(args[0]);		
+
+		SootClass sClass = Scene.v().loadClassAndSupport(args[0]);
 		sClass.setApplicationClass();
 		Scene.v().loadNecessaryClasses();
 		
-		Iterator methodIt = sClass.getMethods().iterator();
+		Iterator<SootMethod> methodIt = sClass.getMethods().iterator();
 		while (methodIt.hasNext()) {
 			SootMethod m = (SootMethod)methodIt.next();
 			Body b = m.retrieveActiveBody();
@@ -35,9 +40,9 @@ public class RunLiveAnalysis
 			UnitGraph graph = new ExceptionalUnitGraph(b);
 			SimpleLiveLocals sll = new SimpleLiveLocals(graph);
 			
-			Iterator gIt = graph.iterator();
+			Iterator<Unit> gIt = graph.iterator();
 			while (gIt.hasNext()) {
-				Unit u = (Unit)gIt.next();
+				Unit u = gIt.next();
 				List before = sll.getLiveLocalsBefore(u);
 				List after = sll.getLiveLocalsAfter(u);
 				UnitPrinter up = new NormalUnitPrinter(b);
@@ -47,7 +52,7 @@ public class RunLiveAnalysis
 				u.toString(up);			
 				System.out.println(up.output());
 				System.out.print("Live in: {");
-				String sep = "";
+				sep = "";
 				Iterator befIt = before.iterator();
 				while (befIt.hasNext()) {
 					Local l = (Local)befIt.next();

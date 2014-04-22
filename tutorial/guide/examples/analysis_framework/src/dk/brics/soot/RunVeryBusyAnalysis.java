@@ -1,4 +1,5 @@
 package dk.brics.soot;
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
 
@@ -26,11 +27,15 @@ public class RunVeryBusyAnalysis
 			System.exit(0);
 		}
 		
-		String path = System.getProperty("java.home") + "\\lib\\rt.jar";
-		path += ";.\\tutorial\\guide\\examples\\analysis_framework\\src";
+		String sep = File.separator;
+		String pathSep = File.pathSeparator;
+		String path = System.getProperty("java.home") + sep + "lib" + sep
+				+ "rt.jar";
+		path += pathSep + "." + sep + "tutorial" + sep + "guide" + sep
+				+ "examples" + sep + "analysis_framework" + sep + "src";
 		Options.v().set_soot_classpath(path);
-		
-		SootClass sClass = Scene.v().loadClassAndSupport(args[0]);		
+
+		SootClass sClass = Scene.v().loadClassAndSupport(args[0]);
 		sClass.setApplicationClass();
 		Scene.v().loadNecessaryClasses();
 		
@@ -45,9 +50,9 @@ public class RunVeryBusyAnalysis
 			UnitGraph graph = new ExceptionalUnitGraph(b);
 			VeryBusyExpressions vbe = new SimpleVeryBusyExpressions(graph);
 			
-			Iterator gIt = graph.iterator();
+			Iterator<Unit> gIt = graph.iterator();
 			while (gIt.hasNext()) {
-				Unit u = (Unit)gIt.next();
+				Unit u = gIt.next();
 				List before = vbe.getBusyExpressionsBefore(u);
 				List after = vbe.getBusyExpressionsAfter(u);
 				UnitPrinter up = new NormalUnitPrinter(b);
@@ -57,7 +62,7 @@ public class RunVeryBusyAnalysis
 				u.toString(up);			
 				System.out.println(up.output());
 				System.out.print("Busy in: {");
-				String sep = "";
+				sep = "";
 				Iterator befIt = before.iterator();
 				while (befIt.hasNext()) {
 					AbstractBinopExpr e = (AbstractBinopExpr)befIt.next();
