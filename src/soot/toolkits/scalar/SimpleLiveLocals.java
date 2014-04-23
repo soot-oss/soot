@@ -42,8 +42,8 @@ import soot.toolkits.graph.*;
  */
 public class SimpleLiveLocals implements LiveLocals
 {
-    Map<Unit, List> unitToLocalsAfter;
-    Map<Unit, List> unitToLocalsBefore;
+    Map<Unit, List<Local>> unitToLocalsAfter;
+    Map<Unit, List<Local>> unitToLocalsBefore;
 
 
 
@@ -74,19 +74,14 @@ public class SimpleLiveLocals implements LiveLocals
 
         // Build unitToLocals map
         {
-            unitToLocalsAfter = new HashMap<Unit, List>(graph.size() * 2 + 1, 0.7f);
-            unitToLocalsBefore = new HashMap<Unit, List>(graph.size() * 2 + 1, 0.7f);
+            unitToLocalsAfter = new HashMap<Unit, List<Local>>(graph.size() * 2 + 1, 0.7f);
+            unitToLocalsBefore = new HashMap<Unit, List<Local>>(graph.size() * 2 + 1, 0.7f);
 
-            Iterator unitIt = graph.iterator();
-
-            while(unitIt.hasNext())
-            {
-                Unit s = (Unit) unitIt.next();
- 
-                FlowSet set = (FlowSet) analysis.getFlowBefore(s);
+            for (Unit s : graph) {
+                FlowSet set = analysis.getFlowBefore(s);
                 unitToLocalsBefore.put(s, Collections.unmodifiableList(set.toList()));
                 
-                set = (FlowSet) analysis.getFlowAfter(s);
+                set = analysis.getFlowAfter(s);
                 unitToLocalsAfter.put(s, Collections.unmodifiableList(set.toList()));
             }            
         }
@@ -98,18 +93,18 @@ public class SimpleLiveLocals implements LiveLocals
             Timers.v().liveTimer.end();
     }
 
-    public List getLiveLocalsAfter(Unit s)
+    public List<Local> getLiveLocalsAfter(Unit s)
     {
         return unitToLocalsAfter.get(s);
     }
     
-    public List getLiveLocalsBefore(Unit s)
+    public List<Local> getLiveLocalsBefore(Unit s)
     {
         return unitToLocalsBefore.get(s);
     }
 }
 
-class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
+class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis<Unit, FlowSet>
 {
     FlowSet emptySet;
     Map<Unit, FlowSet> unitToGenerateSet;
@@ -128,25 +123,15 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
         {
             unitToKillSet = new HashMap<Unit, FlowSet>(g.size() * 2 + 1, 0.7f);
 
-            Iterator unitIt = g.iterator();
-
-            while(unitIt.hasNext())
-            {
-                Unit s = (Unit) unitIt.next();
-
+            for (Unit s : g) {
                 FlowSet killSet = emptySet.clone();
 
-                Iterator boxIt = s.getDefBoxes().iterator();
-
-                while(boxIt.hasNext())
-                {
-                    ValueBox box = (ValueBox) boxIt.next();
-
+                for (ValueBox box : s.getDefBoxes()) {
                     if(box.getValue() instanceof Local)
                         killSet.add(box.getValue(), killSet);
                 }
 
-                    unitToKillSet.put(s, killSet);
+                unitToKillSet.put(s, killSet);
             }
         }
 
@@ -154,20 +139,10 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
         {
             unitToGenerateSet = new HashMap<Unit, FlowSet>(g.size() * 2 + 1, 0.7f);
 
-            Iterator unitIt = g.iterator();
-
-            while(unitIt.hasNext())
-            {
-                Unit s = (Unit) unitIt.next();
-
+            for (Unit s : g) {
                 FlowSet genSet = emptySet.clone();
 
-                Iterator boxIt = s.getUseBoxes().iterator();
-
-                while(boxIt.hasNext())
-                {
-                    ValueBox box = (ValueBox) boxIt.next();
-
+                for (ValueBox box : s.getUseBoxes()) {
                     if(box.getValue() instanceof Local)
                         genSet.add(box.getValue(), genSet);
                 }
@@ -189,42 +164,37 @@ class SimpleLiveLocalsAnalysis extends BackwardFlowAnalysis
 
     }
 
-    protected Object newInitialFlow()
+    @Override
+    protected FlowSet newInitialFlow()
     {
         return emptySet.clone();
     }
 
-    protected Object entryInitialFlow()
+    @Override
+    protected FlowSet entryInitialFlow()
     {
         return emptySet.clone();
     }
         
-    protected void flowThrough(Object inValue, Object unit, Object outValue)
+    @Override
+    protected void flowThrough(FlowSet inValue, Unit unit, FlowSet outValue)
     {
-        FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
-
         // Perform kill
-            in.difference(unitToKillSet.get(unit), out);
+    	inValue.difference(unitToKillSet.get(unit), outValue);
 
         // Perform generation
-            out.union(unitToGenerateSet.get(unit), out);
+    	outValue.union(unitToGenerateSet.get(unit), outValue);
     }
 
-    protected void merge(Object in1, Object in2, Object out)
+    @Override
+    protected void merge(FlowSet in1, FlowSet in2, FlowSet out)
     {
-        FlowSet inSet1 = (FlowSet) in1,
-            inSet2 = (FlowSet) in2;
-
-        FlowSet outSet = (FlowSet) out;
-
-        inSet1.union(inSet2, outSet);
+        in1.union(in2, out);
     }
     
-    protected void copy(Object source, Object dest)
+    @Override
+    protected void copy(FlowSet source, FlowSet dest)
     {
-        FlowSet sourceSet = (FlowSet) source,
-            destSet = (FlowSet) dest;
-            
-        sourceSet.copy(destSet);
+        source.copy(dest);
     }
 }

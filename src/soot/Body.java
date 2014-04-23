@@ -342,13 +342,9 @@ public abstract class Body extends AbstractHost implements Serializable
         // "remove-unreachable-traps" option to true.
         ThrowAnalysis throwAnalysis = PedanticThrowAnalysis.v();
         UnitGraph g = new ExceptionalUnitGraph(this, throwAnalysis, false);
-        
         LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
-        Iterator<Unit> unitsIt = getUnits().iterator();
-        while (unitsIt.hasNext())
-        {
-            Unit u = unitsIt.next();
+        for (Unit u : getUnits()) {
             Iterator<ValueBox> useBoxIt = u.getUseBoxes().iterator();
             while (useBoxIt.hasNext())
             {
