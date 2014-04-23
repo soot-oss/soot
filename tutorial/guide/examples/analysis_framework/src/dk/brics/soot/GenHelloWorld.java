@@ -72,7 +72,7 @@ public class GenHelloWorld
 		body.getLocals().add(tmpRef);
 		
 		// Create a unit (or statement) that assigns main's formal param into the local arg
-		Chain units = body.getUnits();
+		PatchingChain<Unit> units = body.getUnits();
 		units.add(Jimple.v().newIdentityStmt(frm1,
 				Jimple.v().newParameterRef(ArrayType.v
 						(RefType.v("java.lang.String"), 1), 0)));

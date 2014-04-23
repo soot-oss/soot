@@ -1,6 +1,5 @@
 package dk.brics.soot;
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 
 import dk.brics.soot.analyses.SimpleVeryBusyExpressions;
@@ -39,9 +38,7 @@ public class RunVeryBusyAnalysis
 		sClass.setApplicationClass();
 		Scene.v().loadNecessaryClasses();
 		
-		Iterator methodIt = sClass.getMethods().iterator();
-		while (methodIt.hasNext()) {
-			SootMethod m = (SootMethod)methodIt.next();
+		for (SootMethod m : sClass.getMethods()) {
 			Body b = m.retrieveActiveBody();
 			
 			System.out.println("=======================================");			
@@ -50,11 +47,9 @@ public class RunVeryBusyAnalysis
 			UnitGraph graph = new ExceptionalUnitGraph(b);
 			VeryBusyExpressions vbe = new SimpleVeryBusyExpressions(graph);
 			
-			Iterator<Unit> gIt = graph.iterator();
-			while (gIt.hasNext()) {
-				Unit u = gIt.next();
-				List before = vbe.getBusyExpressionsBefore(u);
-				List after = vbe.getBusyExpressionsAfter(u);
+			for (Unit u : graph) {
+				List<AbstractBinopExpr> before = vbe.getBusyExpressionsBefore(u);
+				List<AbstractBinopExpr> after = vbe.getBusyExpressionsAfter(u);
 				UnitPrinter up = new NormalUnitPrinter(b);
 				up.setIndent("");
 				
@@ -63,9 +58,7 @@ public class RunVeryBusyAnalysis
 				System.out.println(up.output());
 				System.out.print("Busy in: {");
 				sep = "";
-				Iterator befIt = before.iterator();
-				while (befIt.hasNext()) {
-					AbstractBinopExpr e = (AbstractBinopExpr)befIt.next();
+				for (AbstractBinopExpr e : before) {
 					System.out.print(sep);
 					System.out.print(e.toString());
 					sep = ", ";
@@ -73,9 +66,7 @@ public class RunVeryBusyAnalysis
 				System.out.println("}");
 				System.out.print("Busy out: {");
 				sep = "";
-				Iterator aftIt = after.iterator();
-				while (aftIt.hasNext()) {
-					AbstractBinopExpr e = (AbstractBinopExpr)aftIt.next();
+				for (AbstractBinopExpr e : after) {
 					System.out.print(sep);
 					System.out.print(e.toString());
 					sep = ", ";

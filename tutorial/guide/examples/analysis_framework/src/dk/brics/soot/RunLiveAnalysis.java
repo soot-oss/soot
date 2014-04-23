@@ -5,7 +5,7 @@ import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 
 import java.io.File;
-import java.util.*;
+import java.util.List;
 
 public class RunLiveAnalysis
 {
@@ -29,9 +29,7 @@ public class RunLiveAnalysis
 		sClass.setApplicationClass();
 		Scene.v().loadNecessaryClasses();
 		
-		Iterator<SootMethod> methodIt = sClass.getMethods().iterator();
-		while (methodIt.hasNext()) {
-			SootMethod m = (SootMethod)methodIt.next();
+		for (SootMethod m : sClass.getMethods()) {
 			Body b = m.retrieveActiveBody();
 			
 			System.out.println("=======================================");			
@@ -40,11 +38,9 @@ public class RunLiveAnalysis
 			UnitGraph graph = new ExceptionalUnitGraph(b);
 			SimpleLiveLocals sll = new SimpleLiveLocals(graph);
 			
-			Iterator<Unit> gIt = graph.iterator();
-			while (gIt.hasNext()) {
-				Unit u = gIt.next();
-				List before = sll.getLiveLocalsBefore(u);
-				List after = sll.getLiveLocalsAfter(u);
+			for (Unit u : graph) {
+				List<Local> before = sll.getLiveLocalsBefore(u);
+				List<Local> after = sll.getLiveLocalsAfter(u);
 				UnitPrinter up = new NormalUnitPrinter(b);
 				up.setIndent("");
 				
@@ -53,9 +49,7 @@ public class RunLiveAnalysis
 				System.out.println(up.output());
 				System.out.print("Live in: {");
 				sep = "";
-				Iterator befIt = before.iterator();
-				while (befIt.hasNext()) {
-					Local l = (Local)befIt.next();
+				for (Local l : before) {
 					System.out.print(sep);
 					System.out.print(l.getName() + ": " + l.getType());
 					sep = ", ";
@@ -63,9 +57,7 @@ public class RunLiveAnalysis
 				System.out.println("}");
 				System.out.print("Live out: {");
 				sep = "";
-				Iterator aftIt = after.iterator();
-				while (aftIt.hasNext()) {
-					Local l = (Local)aftIt.next();
+				for (Local l : after) {
 					System.out.print(sep);
 					System.out.print(l.getName() + ": " + l.getType());
 					sep = ", ";
