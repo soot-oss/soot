@@ -20,8 +20,8 @@ public class SimpleVeryBusyExpressions implements VeryBusyExpressions
 	public SimpleVeryBusyExpressions(DirectedGraph<Unit> graph) {
 		SimpleVeryBusyAnalysis analysis = new SimpleVeryBusyAnalysis(graph);
 
-		unitToExpressionsAfter = new HashMap(graph.size() * 2 + 1, 0.7f);
-		unitToExpressionsBefore = new HashMap(graph.size() * 2 + 1, 0.7f);
+		unitToExpressionsAfter = new HashMap<Unit, List<AbstractBinopExpr>>(graph.size() * 2 + 1, 0.7f);
+		unitToExpressionsBefore = new HashMap<Unit, List<AbstractBinopExpr>>(graph.size() * 2 + 1, 0.7f);
 
 		for (Unit s : graph) {
 
