@@ -88,17 +88,22 @@ class AbstractSootFieldRef implements SootFieldRef {
         while(true) {
             if(trace != null) trace.append(
                     "Looking in "+cl+" which has fields "+cl.getFields()+"\n" );
+            
+            // Check whether we have the field in the current class
             if( cl.declaresField(name, type) ) {
                 return checkStatic(cl.getField(name, type));
             }
-
-            if(Scene.v().allowsPhantomRefs() && (cl.isPhantom() || Options.v().ignore_resolution_errors()))
-            {
+            
+            // If we have a phantom class, we directly construct a phantom field
+            // in it and don't care about superclasses.
+            if (Scene.v().allowsPhantomRefs() && cl.isPhantom()) {
                 SootField f = new SootField(name, type, isStatic()?Modifier.STATIC:0);
                 f.setPhantom(true);
                 cl.addField(f);
                 return f;
-            } else {
+            }
+            else {
+            	// Since this class is not phantom, we look at its interfaces
                 LinkedList<SootClass> queue = new LinkedList<SootClass>();
                 queue.addAll( cl.getInterfaces() );
                 while( !queue.isEmpty() ) {
@@ -110,6 +115,9 @@ class AbstractSootFieldRef implements SootFieldRef {
                     }
                     queue.addAll( iface.getInterfaces() );
                 }
+                
+                // If we have not found a suitable field in the current class,
+                // try the superclass
                 if( cl.hasSuperclass() ) cl = cl.getSuperclass();
                 else break;
             }
