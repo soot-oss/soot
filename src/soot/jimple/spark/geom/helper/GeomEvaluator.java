@@ -134,6 +134,38 @@ public class GeomEvaluator {
 	}
 	
 	/**
+	 * The locals and object fields that are not exception receivers are regular pointers. 
+	 */
+	private boolean isRegularPointer( IVarAbstraction pn )
+	{
+		Node v = pn.getWrappedNode();
+		SootMethod sm = null;
+		int method = 0;
+		
+		// We do not count the exception handler pointers
+		if ( ptsProvider.isExceptionPointer(v) == true )
+			return false;
+		
+		method = ptsProvider.getMappedMethodID(pn);
+		
+		// Global variable?
+		if ( method == Constants.SUPER_MAIN )
+			return false;
+		
+		// Is the enclosing method obsoleted?
+		if ( method == Constants.UNKNOWN_FUNCTION )
+			return false;
+		
+		sm = ptsProvider.getSootMethodFromID(method);
+		
+		// Is this a valid method in the verification list?
+		if ( !ptsProvider.isValidMethod(sm) )
+			return false;
+		
+		return !sm.isJavaLibraryMethod();
+	}
+	
+	/**
 	 * Summarize the geometric points-to analysis and report the basic metrics.
 	 */
 	public void reportBasicMetrics() 
@@ -170,13 +202,12 @@ public class GeomEvaluator {
 		for ( IVarAbstraction pn : ptsProvider.pointers ) {
 			// We don't consider those un-processed pointers because their points-to information is equivalent to SPARK
 			if ( !pn.willUpdate ) continue;
-			if ( ptsProvider.isLegalPointer(pn) == false ) continue;
+			if ( isRegularPointer(pn) == false ) continue;
 			Node var = pn.getWrappedNode();
 			pn = pn.getRepresentative();
 			
 			if ( var instanceof AllocDotField ) { 
 				++n_alloc_dot_fields;
-//				continue;
 			}
 			++n_legal_var;
 			

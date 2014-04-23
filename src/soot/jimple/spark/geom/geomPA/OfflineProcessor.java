@@ -289,7 +289,7 @@ public class OfflineProcessor
 			if ( pn != pn.getRepresentative() ) continue;
 			
 			Node node = pn.getWrappedNode();
-			int sm_id = geomPTA.getMappedMethodID(node);
+			int sm_id = geomPTA.getMappedMethodID(pn);
 			if ( !geomPTA.isReachableMethod(sm_id) )
 				continue;
 			

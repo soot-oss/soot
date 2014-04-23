@@ -525,7 +525,6 @@ public class GeomPointsTo extends PAG
 		
 		// We count how many ways a local pointer can be assigned
 		for ( PlainConstraint cons : constraints ) {
-			
 			my_lhs = cons.getLHS();
 			my_rhs = cons.getRHS();
 			
@@ -560,11 +559,10 @@ public class GeomPointsTo extends PAG
 					if ( sm1 == sm2 && 
 							count[my_rhs.id] == 1 
 							&& lhs.getType() == rhs.getType() ) {
+						
 						// They are local to the same function and the receiver pointer has unique incoming edge
 						// More importantly, they have the same type.
-						
 						my_rhs.merge(my_lhs);
-//						cons.status = Constants.Cons_EqualPtrs;
 						cons_it.remove();
 					}
 				}
@@ -983,12 +981,13 @@ public class GeomPointsTo extends PAG
 		// Scan again to remove unreachable methods
 		ans = 0;
 		for (int i = 1; i < n_func; ++i) {
+			SootMethod sm = int2func.get(i);
+			
 			if (vis_cg[i] == 0) {
-				func2int.remove(int2func.get(i));
+				func2int.remove(sm);
 				int2func.remove(i);
 			}
 			else {
-				SootMethod sm = int2func.get(i);
 				if ( !sm.isJavaLibraryMethod() )
 					++ans;
 			}
@@ -1475,10 +1474,12 @@ public class GeomPointsTo extends PAG
 	/**
 	 * Get the index of the enclosing function of the specified node.
 	 */
-	public int getMappedMethodID( Node node )
+	public int getMappedMethodID( IVarAbstraction pn )
 	{
 		SootMethod sm = null;
 		int ret = Constants.SUPER_MAIN;
+		
+		Node node = pn.getWrappedNode();
 		
 		if ( node instanceof AllocNode ) {
 			sm = ((AllocNode)node).getMethod();
@@ -1490,7 +1491,8 @@ public class GeomPointsTo extends PAG
 			sm = ((AllocDotField)node).getBase().getMethod();
 		}
 		
-		if ( sm != null ) {
+		if ( sm != null &&
+				func2int.containsKey(sm) ) {
 			ret = func2int.get( sm );
 			if ( vis_cg[ret] == 0 )
 				ret = Constants.UNKNOWN_FUNCTION;
@@ -1620,34 +1622,6 @@ public class GeomPointsTo extends PAG
 		}
 		
 		return false;
-	}
-	
-	public boolean isLegalPointer( IVarAbstraction pn )
-	{
-		Node v = pn.getWrappedNode();
-		SootMethod sm = null;
-		int method = 0;
-		
-		// We do not count the exception handler pointers
-		if ( isExceptionPointer(v) == true )
-			return false;
-		
-		method = getMappedMethodID(v);
-		sm = getSootMethodFromID(method);
-		
-		// Global variable?
-		if ( method == Constants.SUPER_MAIN )
-			return false;
-		
-		// Is the enclosing method obsoleted?
-		if ( method == Constants.UNKNOWN_FUNCTION )
-			return false;
-		
-		// Is this a valid method in the verification list?
-		if ( !isValidMethod(sm) )
-			return false;
-		
-		return !sm.isJavaLibraryMethod();
 	}
 	
 	/**
