@@ -27,17 +27,13 @@ import java.util.Set;
 
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
-import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
-
 import soot.RefLikeType;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 import soot.Value;
-import soot.jimple.spark.geom.dataRep.CgEdge;
 import soot.jimple.spark.geom.dataRep.PlainConstraint;
-import soot.jimple.spark.geom.utils.SootInfo;
 import soot.jimple.spark.geom.utils.ZArrayNumberer;
 import soot.jimple.spark.pag.GlobalVarNode;
 import soot.jimple.spark.pag.AllocNode;
