@@ -27,6 +27,7 @@ import java.util.Set;
 
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
 
 import soot.RefLikeType;
@@ -113,14 +114,10 @@ public class OfflineProcessor
 	
 	public void defaultFeedPtsRoutines(int routineID)
 	{
-		// We always need the virtual callsites base pointers to update the call graph
-		addUserDefPts(geomPTA.basePointers);
+		// We always refine the callsites that have multiple call targets 
+		addUserDefPts(geomPTA.multiBasePtrs);
 				
 		switch (routineID) {
-		case Constants.seedPts_virtualBase:
-			// setVirualBaseVarsUseful();
-			break;
-
 		case Constants.seedPts_staticCasts:
 			setStaticCastsVarUseful();
 			break;
@@ -164,7 +161,7 @@ public class OfflineProcessor
 	 * Preprocess the pointers and constraints before running geomPA.
 	 * 
 	 * @param useSpark
-	 * @param basePointers
+	 * @param multiCallsites
 	 */
 	public void runOptimizations()
 	{
@@ -311,39 +308,6 @@ public class OfflineProcessor
 					// Defined in the user code
 					pn.willUpdate = true;
 				}
-			}
-		}
-	}
-	
-	/**
-	 * A client driven constraints distillation interface.
-	 * We only set the base variables at the virtual callsites useful
-	 */
-	protected void setVirualBaseVarsUseful()
-	{
-		// We go through all the callsites
-		for ( int i = geomPTA.n_func - 1; i > 1; --i ) {
-//			SootMethod sm = geomPTA.getSootMethodFromID(i);
-//			if ( sm.isJavaLibraryMethod() )
-//				continue;
-			
-			CgEdge p = geomPTA.getCallEgesOutFrom(i);
-			while ( p != null ) {
-				if ( p.base_var != null ) {
-					// We check if this callsite has been solved to be unique
-					int count = SootInfo.countCallEdgesForCallsite(p.sootEdge.srcStmt(), true);
-					
-					if ( count > 1 ) {
-						IVarAbstraction pn = geomPTA.findInternalNode(p.base_var);
-						if ( pn != null ) {
-							pn = pn.getRepresentative();
-							int k = pn.getNumber();
-							pn.willUpdate = true;
-						}
-					}
-				}
-				
-				p = p.next;
 			}
 		}
 	}

@@ -49,6 +49,8 @@ import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.geom.dataRep.CgEdge;
@@ -117,11 +119,9 @@ public class GeomPointsTo extends PAG
 	// All the callsites that spawn a new thread
 	public Set<Stmt> thread_run_callsites = null;
 	
-	// The virtual callsites that have multiple call targets
-	public Set<Node> basePointers = null;
-	
-	// the internal ID of the main method
-	public int mainID = -1;			
+	// The virtual callsites (and base pointers) that have multiple call targets
+	protected Set<Edge> multiCallEdges = null;
+	public Set<Node> multiBasePtrs = null;
 	
 	/*
 	 * Context size records the total number of instances for a function.
@@ -141,7 +141,6 @@ public class GeomPointsTo extends PAG
 	// Output options
 	public String dump_dir = null;
 	public PrintStream ps = null;
-	
 	
 	/*
 	 * This container contains the methods that are considered "valid" by user.
@@ -207,7 +206,8 @@ public class GeomPointsTo extends PAG
 		thread_run_callsites = new HashSet<Stmt>(251);
 		
 		// The virtual callsites that have multiple call targets
-		basePointers = new HashSet<Node>(251);
+		multiCallEdges = new HashSet<Edge>(251);
+		multiBasePtrs = new HashSet<Node>(251);
 		
 		// The fake virtual call edges created by SPARK
 		obsoletedEdges = new Vector<CgEdge>(4021);
@@ -352,15 +352,12 @@ public class GeomPointsTo extends PAG
 			final SootMethod func = (SootMethod) smList.next();
 			func2int.put(func, id);
 			int2func.put(id, func);
-			if ( Scene.v().getCallGraph().isEntryMethod(func) || 
+			if ( Scene.v().getCallGraph().isEntryMethod(func) ||
 					func.isEntryMethod() ) {
 				CgEdge p = new CgEdge(Constants.SUPER_MAIN, id, null, call_graph[Constants.SUPER_MAIN]);
 				call_graph[Constants.SUPER_MAIN] = p;
 				n_calls++;
 			}
-			
-			if ( func.isMain() )
-				mainID = id;
 			
 			if ( !func.isJavaLibraryMethod() )
 				++n_reach_spark_user_methods;
@@ -386,19 +383,29 @@ public class GeomPointsTo extends PAG
 			call_graph[s] = p;
 			edgeMapping.put(edge, p);
 			
-			// We only care about the virtual callsites with multiple call targets
-			if ( edge.isVirtual() ) {
-				Stmt callsite = edge.srcStmt();
-				VirtualInvokeExpr expr = (VirtualInvokeExpr)callsite.getInvokeExpr();
-				p.base_var = findLocalVarNode( expr.getBase() );
-				if ( p.base_var != null &&
-						SootInfo.countCallEdgesForCallsite(callsite, true) > 1 )
-					basePointers.add(p.base_var);
-			}
+			// We collect callsite information
+			Stmt callsite = edge.srcStmt();
 			
-			// We don't modify the treatment to the Thread.start calls
-			if ( edge.tgt().getSignature().equals("<java.lang.Thread: void start()>") )
-				thread_run_callsites.add(p.sootEdge.srcStmt());
+			if ( edge.isThreadRunCall() ||
+					edge.kind().isExecutor() ||
+					edge.kind().isAsyncTask() ) {
+				// We don't modify the treatment to the thread run() calls
+				thread_run_callsites.add(callsite);
+			}
+			else if ( edge.isInstance() && !edge.isSpecial() ) {
+				// We try to refine the virtual callsites (virtual + interface) with multiple call targets
+//				if ( callsite.
+//						toString().equals("virtualinvoke l0.<java.util.concurrent.AbstractExecutorService: void execute(java.lang.Runnable)>(l2)"))
+//					System.out.println();
+				
+				InstanceInvokeExpr expr = (InstanceInvokeExpr)callsite.getInvokeExpr();
+				p.base_var = findLocalVarNode( expr.getBase() );
+				if ( SootInfo.countCallEdgesForCallsite(callsite, true) > 1 &&
+						p.base_var != null ) {
+					multiCallEdges.add(edge);
+					multiBasePtrs.add(p.base_var);
+				}
+			}
 			
 			++n_calls;
 		}
@@ -863,8 +870,7 @@ public class GeomPointsTo extends PAG
 					// If this method is unreachable, we delete all its outgoing edges
 					p.is_obsoleted = true;
 				}
-				else if ( (!thread_run_callsites.contains(p.sootEdge.srcStmt()))
-						&& basePointers.contains(p.base_var) ) {
+				else if ( multiCallEdges.contains(p.sootEdge) ) {
 					// The thread starting invocations are not processed
 					// Because it is a native call
 					keep_this_edge = false;
@@ -1270,8 +1276,9 @@ public class GeomPointsTo extends PAG
 			ge.reportBasicMetrics();
 			
 			if ( evalLevel != Constants.eval_basicInfo ) {
-				if ( (Parameters.seedPts & Constants.seedPts_virtualBase) == Constants.seedPts_virtualBase ) ge.checkCallGraph();
-				if ( (Parameters.seedPts & Constants.seedPts_staticCasts) == Constants.seedPts_staticCasts ) ge.checkCastsSafety();
+				ge.checkCallGraph();
+				if ( (Parameters.seedPts & Constants.seedPts_staticCasts) == Constants.seedPts_staticCasts ) 
+					ge.checkCastsSafety();
 				if ( Parameters.seedPts == Constants.seedPts_allUser ) {
 					ge.checkAliasAnalysis();
 					//ge.estimateHeapDefuseGraph();
@@ -1291,7 +1298,6 @@ public class GeomPointsTo extends PAG
 	 * The demand-driven mode for precisely computing points-to information for given pointers.
 	 * Call graph will not be updated in this mode.
 	 * @param qryNodes: the set of nodes that would be refined by geomPA.
-	 * @param unprocessedOnly: only those pointers that do not have geom points-to information are evaluated 
 	 */
 	public void ddSolve(Set<Node> qryNodes)
 	{
@@ -1316,21 +1322,6 @@ public class GeomPointsTo extends PAG
 			ps.println("Please provide at least one pointer.");
 			return;
 		}
-		
-//		if ( unprocessedOnly ) {	
-//			for ( Iterator<Node> qrynIterator = qryNodes.iterator(); 
-//					qrynIterator.hasNext(); ) {
-//				Node n = qrynIterator.next();
-//				IVarAbstraction pn = findInternalNode(n);
-//				pn = pn.getRepresentative();
-//				if ( pn.hasPTResult() ) {
-//					qrynIterator.remove();
-//				}
-//			}
-//		}
-//		
-//		ps.printf("%d out of %d pointers will be processed.\n", 
-//				qryNodes.size(), init_size);
 		
 		// We must not encode the contexts again, 
 		// otherwise the points-to information is invalid due to context mapping change

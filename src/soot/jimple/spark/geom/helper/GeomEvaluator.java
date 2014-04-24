@@ -42,6 +42,8 @@ import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.VirtualInvokeExpr;
@@ -361,9 +363,10 @@ public class GeomEvaluator {
 				Stmt st = (Stmt) stmts.next();
 				if (st.containsInvokeExpr()) {
 					InvokeExpr ie = st.getInvokeExpr();
-					if (ie instanceof VirtualInvokeExpr) {
+					if (ie instanceof VirtualInvokeExpr ||
+							ie instanceof InterfaceInvokeExpr) {
 						total_virtual_calls++;
-						Local l = (Local) ((VirtualInvokeExpr)ie).getBase();
+						Local l = (Local) ((InstanceInvokeExpr)ie).getBase();
 						LocalVarNode vn = ptsProvider.findLocalVarNode(l);
 						
 						// Test my points-to analysis
@@ -403,7 +406,6 @@ public class GeomEvaluator {
 							outputer.println("<<<<<<<<<   Additional Solved Call   >>>>>>>>>>");
 							outputer.println(sm.toString());
 							outputer.println(ie.toString());
-							EvalHelper.debug_succint_pointsto_info(vn, ptsProvider);
 						}
 					}
 				}
