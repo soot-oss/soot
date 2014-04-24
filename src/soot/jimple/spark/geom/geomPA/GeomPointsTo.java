@@ -391,11 +391,7 @@ public class GeomPointsTo extends PAG
 				thread_run_callsites.add(callsite);
 			}
 			else if ( edge.isInstance() && !edge.isSpecial() ) {
-				// We try to refine the virtual callsites (virtual + interface) with multiple call targets
-//				if ( callsite.
-//						toString().equals("virtualinvoke l0.<java.util.concurrent.AbstractExecutorService: void execute(java.lang.Runnable)>(l2)"))
-//					System.out.println();
-				
+				// We try to refine the virtual callsites (virtual + interface) with multiple call targets				
 				InstanceInvokeExpr expr = (InstanceInvokeExpr)callsite.getInvokeExpr();
 				p.base_var = findLocalVarNode( expr.getBase() );
 				if ( SootInfo.countCallEdgesForCallsite(callsite, true) > 1 &&
@@ -680,13 +676,6 @@ public class GeomPointsTo extends PAG
 			// Do simple statistics
 			++n_reachable;
 			if ( rep_cg[i] == i ) ++n_scc_reachable;
-			
-			// Un-comment the following code to see which functions are contained in the maximum SCC
-//			if ( rep_cg[i] == max_scc_id ) {
-//				SootMethod sm = int2func.get(i);
-//				if ( !sm.is_java_library_method() )
-//					ps.println( sm );
-//			}
 		}
 
 		// Next, we condense the SCCs
@@ -811,8 +800,6 @@ public class GeomPointsTo extends PAG
 							if ( block_num[j] > 1 )
 								iBlock = rGen.nextInt(block_num[j]) + 1;
 							p.map_offset = iBlock * max_context_size_block[j] + 1;
-							
-//							ps.println("~~~~~~~~~~~~Context Range For " + j + " is full!!!");
 						}
 					}
 					

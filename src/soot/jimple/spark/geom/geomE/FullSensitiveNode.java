@@ -336,10 +336,6 @@ public class FullSensitiveNode extends IVarAbstraction
 			gm1 = entry1.getValue();
 			entry_pe = gm1.getFigures();
 			
-//			if ( qn.getWrappedNode().toString().equals("<sun.misc.Launcher: sun.misc.URLClassPath getBootstrapClassPath()>:$r5") &&
-//					((LocalVarNode)qn.getWrappedNode()).getMethod().toString().equals("<sun.misc.Launcher: sun.misc.URLClassPath getBootstrapClassPath()>") )
-//				System.err.println();
-			
 			// We specialize the two cases that we hope it running faster
 			// We have new flow-to edges
 			if ( gm1.isThereUnprocessedFigures() ) {

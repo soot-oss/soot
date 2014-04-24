@@ -33,7 +33,6 @@ import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.StringConstantNode;
 import soot.jimple.spark.sets.P2SetVisitor;
-import soot.jimple.spark.sets.PointsToSetInternal;
 
 /**
  * This class defines a pointer variable for use in the HeapIns encoding based points-to solver.
@@ -689,7 +688,7 @@ public class HeapInsNode extends IVarAbstraction
 	}
 	
 	// Apply the inference rules
-	private boolean add_new_points_to_tuple( SegmentNode pts, SegmentNode pe, 
+	private static boolean add_new_points_to_tuple( SegmentNode pts, SegmentNode pe, 
 			AllocNode obj, HeapInsNode qn )
 	{
 		long interI, interJ;
@@ -737,7 +736,8 @@ public class HeapInsNode extends IVarAbstraction
 	
 	// We only test if their points-to objects intersected under context
 	// insensitive manner
-	private boolean quick_intersecting_test(SegmentNode p, SegmentNode q) {
+	private static boolean quick_intersecting_test(SegmentNode p, SegmentNode q) 
+	{
 		if ( p.I2 == 0 || q.I2 == 0 )
 			return true;
 		

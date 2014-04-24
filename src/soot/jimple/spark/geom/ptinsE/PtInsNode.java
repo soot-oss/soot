@@ -699,7 +699,7 @@ public class PtInsNode extends IVarAbstraction
 	}
 	
 	// Implement the pointer assignment inference rules
-	private boolean add_new_points_to_tuple( SegmentNode pts, SegmentNode pe, 
+	private static boolean add_new_points_to_tuple( SegmentNode pts, SegmentNode pe, 
 			AllocNode obj, PtInsNode qn )
 	{
 		long interI, interJ;
@@ -733,8 +733,8 @@ public class PtInsNode extends IVarAbstraction
 	
 	// We only test if their points-to objects intersected under context
 	// insensitive manner
-	private boolean quick_intersecting_test(SegmentNode p, SegmentNode q) {
-		
+	private static boolean quick_intersecting_test(SegmentNode p, SegmentNode q) 
+	{	
 		if (p.I2 >= q.I2)
 			return p.I2 < q.I2 + q.L;
 		return q.I2 < p.I2 + p.L;
