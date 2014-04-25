@@ -60,7 +60,6 @@ public class DexMethod {
      * @return the SootMethod of this method
      */
     public static SootMethod makeSootMethod(String dexFile, Method method, SootClass declaringClass) {
-
         Set<Type> types = new HashSet<Type>();
 
         int accessFlags = method.getAccessFlags();
@@ -69,7 +68,6 @@ public class DexMethod {
         // get the name of the method
         String name = method.getName();
         Debug.printDbg("processing method '", method.getDefiningClass() ,": ", method.getReturnType(), " ", method.getName(), " p: ", method.getParameters(), "'");
-
 
         // the following snippet retrieves all exceptions that this method throws by analyzing its annotations
         List<SootClass> thrownExceptions = new ArrayList<SootClass>();
@@ -92,7 +90,6 @@ public class DexMethod {
                 }
             }
         }
-
 
         // retrieve all parameter types
         if (method.getParameters() != null) {
@@ -143,17 +140,13 @@ public class DexMethod {
         for (Type t : dexBody.usedTypes())
             types.add(t);
 
-
-
-        if (dexBody != null) {
-            // sets the method source by adding its body as the active body
-            sm.setSource(new MethodSource() {
-                    public Body getBody(SootMethod m, String phaseName) {
-                        m.setActiveBody(dexBody.jimplify(m));
-                        return m.getActiveBody();
-                    }
-                });
-        }
+        // sets the method source by adding its body as the active body
+        sm.setSource(new MethodSource() {
+        	public Body getBody(SootMethod m, String phaseName) {
+        		m.setActiveBody(dexBody.jimplify(m));
+        		return m.getActiveBody();
+        	}
+        });
 
         return sm;
     }
