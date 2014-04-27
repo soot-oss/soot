@@ -80,6 +80,9 @@ public class Options extends OptionsBase {
         }
         while( hasMoreOptions() ) {
             String option = nextOption();
+            if (option.isEmpty())
+            	continue;
+            
             if( option.charAt(0) != '-' ) {
                 classes.add( option );
                 continue;

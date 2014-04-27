@@ -19,6 +19,7 @@
 
 package soot.util;
 import java.util.AbstractSet;
+import java.util.Collection;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Set;
@@ -34,14 +35,24 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
     /**
      * Creates a new, empty IdentityHashSet. 
      */
-    @SuppressWarnings("unchecked")
     public IdentityHashSet() {
-        delegate = new IdentityHashMap();
+        delegate = new IdentityHashMap<E, E>();
+    }
+
+    /**
+     * Creates a new IdentityHashSet containing the same elements as the given
+     * collection.
+     * @param original The original collection whose elements to inherit
+     */
+    public IdentityHashSet(Collection<E> original) {
+        delegate = new IdentityHashMap<E, E>();
+        addAll(original);
     }
 
     /**
      * {@inheritDoc}
      */
+    @Override
     public int size() {
         return delegate.size();
     }
@@ -49,6 +60,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean contains(Object o) {
         return delegate.containsKey(o);
     }
@@ -56,6 +68,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public Iterator<E> iterator() {
         return delegate.keySet().iterator();
     }
@@ -63,6 +76,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean add(E o) {
         return delegate.put(o, o)==null;
     }
@@ -70,6 +84,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public boolean remove(Object o) {
         return delegate.remove(o)!=null;
     }
@@ -77,6 +92,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
     /**
      * {@inheritDoc}
      */
+    @Override
     public void clear() {
         delegate.entrySet().clear();
     }
@@ -84,6 +100,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
 	/* 
 	 * Equality based on identity.
 	 */
+    @Override
 	public int hashCode() {
 		final int PRIME = 31;
 		int result = 1;
@@ -94,6 +111,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
 	/* 
 	 * Hash code based on identity.
 	 */
+    @Override
 	public boolean equals(Object obj) {
 		if (this == obj)
 			return true;
@@ -113,6 +131,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
 	/**
 	 * {@inheritDoc}
 	 */
+    @Override
 	public String toString() {
 		return delegate.keySet().toString();
 	}

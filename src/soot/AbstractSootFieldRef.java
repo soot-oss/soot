@@ -48,7 +48,7 @@ class AbstractSootFieldRef implements SootFieldRef {
     private final String name;
     private final Type type;
     private final boolean isStatic;
-
+    
     public SootClass declaringClass() { return declaringClass; }
     public String name() { return name; }
     public Type type() { return type; }
@@ -59,7 +59,12 @@ class AbstractSootFieldRef implements SootFieldRef {
     }
 
     public class FieldResolutionFailedException extends ResolutionFailedException {
-        public FieldResolutionFailedException() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -4657113720516199499L;
+		
+		public FieldResolutionFailedException() {
             super("Class "+declaringClass+" doesn't have field "+name+
                     " : "+type+
                     "; failed to resolve in superclasses and interfaces" );
@@ -73,8 +78,9 @@ class AbstractSootFieldRef implements SootFieldRef {
     }
 
     public SootField resolve() {
-        return resolve(null);
+    	return resolve(null);
     }
+    
     private SootField checkStatic(SootField ret) {
         if( ret.isStatic() != isStatic() && !ret.isPhantom()) {
         	if(!TypeAssigner.v().ignoreWrongStaticNess()) {
@@ -83,22 +89,35 @@ class AbstractSootFieldRef implements SootFieldRef {
         }
         return ret;
     }
+    
     private SootField resolve(StringBuffer trace) {
         SootClass cl = declaringClass;
         while(true) {
             if(trace != null) trace.append(
                     "Looking in "+cl+" which has fields "+cl.getFields()+"\n" );
+            
+            // Check whether we have the field in the current class
             if( cl.declaresField(name, type) ) {
                 return checkStatic(cl.getField(name, type));
-            }
-
-            if(Scene.v().allowsPhantomRefs() && (cl.isPhantom() || Options.v().ignore_resolution_errors()))
-            {
+            }            
+            // If we have a phantom class, we directly construct a phantom field
+            // in it and don't care about superclasses.
+            else if (Scene.v().allowsPhantomRefs() && cl.isPhantom()) {
                 SootField f = new SootField(name, type, isStatic()?Modifier.STATIC:0);
                 f.setPhantom(true);
-                cl.addField(f);
-                return f;
-            } else {
+            	synchronized (cl) {
+            		// Be careful: Another thread may have already created this
+            		// field in the meantime, so better check twice.
+                    if (cl.declaresField(name, type))
+                        return checkStatic(cl.getField(name, type));
+                    else {
+                    	cl.addField(f);
+                    	return f;
+                    }
+				}
+            }
+            else {
+            	// Since this class is not phantom, we look at its interfaces
                 LinkedList<SootClass> queue = new LinkedList<SootClass>();
                 queue.addAll( cl.getInterfaces() );
                 while( !queue.isEmpty() ) {
@@ -110,6 +129,9 @@ class AbstractSootFieldRef implements SootFieldRef {
                     }
                     queue.addAll( iface.getInterfaces() );
                 }
+                
+                // If we have not found a suitable field in the current class,
+                // try the superclass
                 if( cl.hasSuperclass() ) cl = cl.getSuperclass();
                 else break;
             }
@@ -118,8 +140,17 @@ class AbstractSootFieldRef implements SootFieldRef {
         // If we allow phantom refs, we construct phantom fields
         if(Options.v().allow_phantom_refs()) {
         	SootField sf = new SootField(name, type, isStatic ? Modifier.STATIC : 0);
-        	declaringClass.addField(sf);
-        	return sf;
+        	sf.setPhantom(true);
+        	synchronized (declaringClass) {
+        		// Be careful: Another thread may have already created this
+        		// field in the meantime, so better check twice.
+                if (cl.declaresField(name, type))
+                    return checkStatic(cl.getField(name, type));
+                else {
+                	declaringClass.addField(sf);
+                	return sf;
+                }
+        	}
         }
 
         if( trace == null ) {
@@ -131,7 +162,9 @@ class AbstractSootFieldRef implements SootFieldRef {
         }
         return null;
     }
+    
     public String toString() {
         return getSignature();
     }
+    
 }

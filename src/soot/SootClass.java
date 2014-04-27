@@ -183,7 +183,8 @@ public class SootClass extends AbstractHost implements Numberable
             throw new RuntimeException("already declared: "+f.getName());
 
         if(declaresField(f.getName(), f.getType()))
-            throw new RuntimeException("Field already exists : "+f.getName());
+            throw new RuntimeException("Field already exists : " + f.getName()
+            		+ " of type " + f.getType());
  
         fields.add(f);
         f.isDeclared = true;
