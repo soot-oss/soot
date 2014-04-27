@@ -44,7 +44,6 @@ public class Obj_full_extractor
 		if ( resList == null ) {
 			// The first time this object is inserted
 			resList = new ArrayList<IntervalContextVar>();
-			tableView.put(var, resList);
 		}
 		else {
 			// We search the list and merge the context sensitive objects
@@ -56,8 +55,8 @@ public class Obj_full_extractor
 				if ( old_cv.contains(tmp_icv) ) {
 					/*
 					 * Becase we keep the intervals disjoint.
-					 * It's impossible the passed in interval is contained in an interval and intersects with another interval.
-					 * So we can directly return.
+					 * It's impossible the passed in interval is contained in an interval or intersects with other intervals.
+					 * In such case, we can directly return.
 					 */
 					return false;
 				}
@@ -77,6 +76,7 @@ public class Obj_full_extractor
 		
 		IntervalContextVar icv = new IntervalContextVar( L, R, var );
 		resList.add(icv);
+		tableView.put(var, resList);
 		return true;
 	}
 }

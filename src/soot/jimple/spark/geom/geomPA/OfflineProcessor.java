@@ -108,12 +108,12 @@ public class OfflineProcessor
 		}
 	}
 	
-	public void defaultFeedPtsRoutines(int routineID)
+	public void defaultFeedPtsRoutines()
 	{
 		// We always refine the callsites that have multiple call targets 
 		addUserDefPts(geomPTA.multiBasePtrs);
 				
-		switch (routineID) {
+		switch (Parameters.seedPts) {
 		case Constants.seedPts_staticCasts:
 			setStaticCastsVarUseful();
 			break;
@@ -129,8 +129,6 @@ public class OfflineProcessor
 			}
 			break;
 		}
-		
-		Parameters.seedPts = routineID;
 	}
 	
 	/**

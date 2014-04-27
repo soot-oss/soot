@@ -54,6 +54,7 @@ public class GeomQueries
 	protected int block_num[];
 	protected long max_context_size_block[];
 	
+	private boolean prop_initialized = false;
 	protected Queue<Integer> topQ;
 	protected int in_degree[];
 	protected ContextsCollector[] contextsForMethods;
@@ -98,7 +99,7 @@ public class GeomQueries
 			}
 		}
 		
-		// We also add back the obsoleted edges
+		// We also add back the obsoleted edges in the last round of geomPTA
 		for (CgEdge p : geomPts.obsoletedEdges) {
 			if ( p.scc_edge == true ) 
 				continue;
@@ -113,35 +114,49 @@ public class GeomQueries
 				in_degree[ rep_cg[q.t] ]++;
 			}
 		}
+	}
+	
+	/**
+	 * Only needed by part of the queries.
+	 * Therefore, it is called on demand.
+	 */
+	private void prepareIntervalPropagations()
+	{
+		if ( prop_initialized ) return;
 		
-		// We layout the nodes hierarchically and give each of them a label
+		// We layout the nodes hierarchically by topological sorting
+		// The topological labels are used for speeding up reachability
 		top_rank = new int[n_func];
 		Arrays.fill(top_rank, 0);
-		
+
 		topQ = new LinkedList<Integer>();
 		topQ.add(Constants.SUPER_MAIN);
 
-		while ( !topQ.isEmpty() ) {
+		while (!topQ.isEmpty()) {
 			int s = topQ.poll();
 			CgEdge p = call_graph[s];
-			
-			while ( p != null ) {
+
+			while (p != null) {
 				int t = p.t;
 				int rep_t = rep_cg[t];
 				int w = top_rank[s] + 1;
-				if ( top_rank[rep_t] < w ) top_rank[rep_t] = w;
-				if ( --in_degree[rep_t] == 0 ) topQ.add(rep_t);
+				if (top_rank[rep_t] < w)
+					top_rank[rep_t] = w;
+				if (--in_degree[rep_t] == 0)
+					topQ.add(rep_t);
 				p = p.next;
 			}
 		}
-		
+
 		// Prepare for querying artifacts
 		contextsForMethods = new ContextsCollector[n_func];
-		for ( int i = 0; i < n_func; ++i ) {
+		for (int i = 0; i < n_func; ++i) {
 			ContextsCollector cc = new ContextsCollector();
 			cc.setBudget(Parameters.qryBudgetSize);
 			contextsForMethods[i] = cc;
 		}
+		
+		prop_initialized = true;
 	}
 	
 	/**
@@ -305,6 +320,7 @@ public class GeomQueries
 	 * @param visitor: container for querying result
 	 * @return false, l does not have points-to information under the contexts passing the given call edge
 	 */
+	@SuppressWarnings("rawtypes")
 	public boolean contexsByAnyCallEdge( Edge sootEdge, Local l, PtSensVisitor visitor )
 	{
 		// Obtain the internal representation of specified context
@@ -332,8 +348,11 @@ public class GeomQueries
 		int target = geomPts.getIDFromSootMethod(sm);
 		if ( target == -1 ) return false;
 		
+		// Start call graph traversal
 		long L = ctxt.map_offset;
-		long R = L + max_context_size_block[ctxt.s];
+		long R = L + max_context_size_block[rep_cg[ctxt.s]];
+		visitor.prepare();
+		prepareIntervalPropagations();
 		
 		if ( propagateIntervals(ctxt.t, L, R, target) ) {
 			// We calculate the points-to results
@@ -345,10 +364,10 @@ public class GeomQueries
 			
 			// Reset
 			targetContexts.clear();
-			return visitor.numOfDiffObjects() != 0;
 		}
 		
-		return false;
+		visitor.finish();
+		return visitor.numOfDiffObjects() != 0;
 	}
 	
 	/**
@@ -360,12 +379,14 @@ public class GeomQueries
 	 * @param visitor
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	public boolean contextsByAnyCallEdge(Edge sootEdge, Local l, SparkField field, PtSensVisitor visitor)
 	{
 		Obj_full_extractor pts_l = new Obj_full_extractor();
 		if ( contexsByAnyCallEdge(sootEdge, l, pts_l) == false )
 			return false;
 		
+		visitor.prepare();
 		for ( IntervalContextVar icv : pts_l.outList ) {
 			AllocNode obj = (AllocNode)icv.var;
 			AllocDotField obj_f = geomPts.findAllocDotField(obj, field);
@@ -379,6 +400,8 @@ public class GeomQueries
 		}
 		
 		pts_l = null;
+		
+		visitor.finish();
 		return visitor.numOfDiffObjects() != 0;
 	}
 	
@@ -391,6 +414,7 @@ public class GeomQueries
 	 * @param visitor: the querying result container
 	 * @return false, l does not have points-to information under the given context
 	 */
+	@SuppressWarnings("rawtypes")
 	public boolean contextsByCallChain(Edge[] callEdgeChain, Local l, PtSensVisitor visitor)
 	{
 		// Prepare for initial contexts
@@ -419,6 +443,8 @@ public class GeomQueries
 			return false;
 		
 		// Iterate the call edges and compute the contexts mapping iteratively
+		visitor.prepare();
+		
 		long L = 1;
 		for ( int i = 0; i < callEdgeChain.length; ++i ) {
 			Edge sootEdge = callEdgeChain[i];
@@ -436,11 +462,11 @@ public class GeomQueries
 			L = ctxt.map_offset + in_block_offset;
 		}
 		
-		
 		long ctxtLength = max_context_size_block[rep_cg[firstMethodID]];
 		long R = L + ctxtLength;
-		
 		pn.get_all_context_sensitive_objects(L, R, visitor);
+		
+		visitor.finish();
 		return visitor.numOfDiffObjects() != 0;
 	}
 	
@@ -453,11 +479,16 @@ public class GeomQueries
 	 * @param visitor
 	 * @return
 	 */
+	@SuppressWarnings("rawtypes")
 	public boolean contextByCallChain(Edge[] callEdgeChain, Local l, SparkField field, PtSensVisitor visitor)
 	{
+		// We first obtain the points-to information for l
 		Obj_full_extractor pts_l = new Obj_full_extractor();
 		if ( contextsByCallChain(callEdgeChain, l, pts_l) == false )
 			return false;
+		
+		// We compute the points-to information for l.field
+		visitor.prepare();
 		
 		for ( IntervalContextVar icv : pts_l.outList ) {
 			AllocNode obj = (AllocNode)icv.var;
@@ -472,6 +503,8 @@ public class GeomQueries
 		}
 		
 		pts_l = null;
+		
+		visitor.finish();
 		return visitor.numOfDiffObjects() != 0;
 	}
 }

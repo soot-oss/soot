@@ -598,10 +598,8 @@ public class FullSensitiveNode extends IVarAbstraction
 		for ( Map.Entry<AllocNode, GeometricManager> entry : pt_objs.entrySet() ) {
 			AllocNode obj = entry.getKey();
 			SootMethod sm = obj.getMethod();
-			int sm_int = 0;
-			if ( sm != null ) {
-				sm_int = geomPTA.getIDFromSootMethod(sm);
-			}
+			int sm_int = geomPTA.getIDFromSootMethod(sm);
+			if ( sm_int == -1 ) continue;
 			
 			GeometricManager gm = entry.getValue();
 			SegmentNode[] int_entry = gm.getFigures();
@@ -611,14 +609,18 @@ public class FullSensitiveNode extends IVarAbstraction
 				SegmentNode p = int_entry[i];
 				
 				while ( p != null ) {
-					long R = p.I1 + p.L;
+					long L = p.I1;
+					long R = L + p.L;
 					long objL = -1, objR = -1;
 					
 					// Now we compute which context sensitive objects are pointed to by this pointer
-					if ( l <= p.I1 && p.I1 < r ) {	
+					if ( l <= L && L < r ) {
+						// l----------r
+						//    L----R            or
+						//    L------------R
 						if ( i == GeometricManager.ONE_TO_ONE ) {
-							long d = r - p.I1;
-							if ( d > p.L ) d = p.L;
+							long d = r - L;
+							if ( R < r ) d = p.L;
 							objL = p.I2;
 							objR = objL + d;
 						}
@@ -627,11 +629,14 @@ public class FullSensitiveNode extends IVarAbstraction
 							objR = p.I2 + ((RectangleNode)p).L_prime;
 						}
 					}
-					else if (p.I1 <= l && l < R) {
+					else if (L <= l && l < R) {
+						//     l---------r
+						// L-------R                or
+						// L--------------------R
 						if ( i == GeometricManager.ONE_TO_ONE ) {
 							long d = R - l;
 							if ( R > r ) d = r - l;
-							objL = p.I2 + l - p.I1;
+							objL = p.I2 + l - L;
 							objR = objL + d;
 						}
 						else {

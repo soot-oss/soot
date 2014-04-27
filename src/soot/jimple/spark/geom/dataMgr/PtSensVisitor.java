@@ -97,7 +97,7 @@ public abstract class PtSensVisitor<VarType extends ContextVar>
 	 */
 	public int numOfDiffObjects()
 	{
-		return tableView.size();
+		return readyToUse ? outList.size() : tableView.size();
 	}
 	
 	/**

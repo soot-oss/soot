@@ -34,10 +34,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
-import soot.AnySubType;
-import soot.ArrayType;
 import soot.Context;
-import soot.FastHierarchy;
 import soot.G;
 import soot.Local;
 import soot.MethodOrMethodContext;
@@ -75,8 +72,11 @@ import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
+import soot.jimple.toolkits.callgraph.VirtualCalls;
 import soot.options.SparkOptions;
 import soot.toolkits.scalar.Pair;
+import soot.util.NumberedString;
+import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
  
@@ -118,7 +118,7 @@ public class GeomPointsTo extends PAG
 	public Set<Stmt> thread_run_callsites = null;
 	
 	// The virtual callsites (and base pointers) that have multiple call targets
-	protected Set<Edge> multiCallEdges = null;
+	protected Set<Stmt> multiCallsites = null;
 	public Set<Node> multiBasePtrs = null;
 	
 	/*
@@ -204,7 +204,7 @@ public class GeomPointsTo extends PAG
 		thread_run_callsites = new HashSet<Stmt>(251);
 		
 		// The virtual callsites that have multiple call targets
-		multiCallEdges = new HashSet<Edge>(251);
+		multiCallsites = new HashSet<Stmt>(251);
 		multiBasePtrs = new HashSet<Node>(251);
 		
 		// The fake virtual call edges created by SPARK
@@ -333,6 +333,7 @@ public class GeomPointsTo extends PAG
 	 *  We also construct our own call graph and pointer variables.
 	 *  Return: a set of base pointers for all virtual callsites (including calls in lib)
 	 */
+	@SuppressWarnings("unchecked")
 	private void preprocess() 
 	{
 		int id;
@@ -396,7 +397,7 @@ public class GeomPointsTo extends PAG
 				p.base_var = findLocalVarNode( expr.getBase() );
 				if ( SootInfo.countCallEdgesForCallsite(callsite, true) > 1 &&
 						p.base_var != null ) {
-					multiCallEdges.add(edge);
+					multiCallsites.add(callsite);
 					multiBasePtrs.add(p.base_var);
 				}
 			}
@@ -832,22 +833,94 @@ public class GeomPointsTo extends PAG
 	}
 	
 	/**
+	 * Obtain the set of possible call targets at given @param callsite.
+	 */
+	private void getCallTargets(IVarAbstraction pn, SootMethod src,
+			Stmt callsite, ChunkedQueue<SootMethod> targetsQueue)
+	{
+		InstanceInvokeExpr iie = (InstanceInvokeExpr)callsite.getInvokeExpr();
+		Local receiver = (Local)iie.getBase();
+		NumberedString subSig = iie.getMethodRef().getSubSignature();
+		
+		// We first build the set of possible call targets
+		for (AllocNode an : pn.get_all_points_to_objects()) {
+			Type type = an.getType();
+
+			if (type == null)
+				continue;
+//			else if (type instanceof AnySubType)
+//				type = ((AnySubType) type).getBase();
+//			else if (type instanceof ArrayType)
+//				type = RefType.v("java.lang.Object");
+
+			VirtualCalls.v().resolve(type, 
+					receiver.getType(), subSig, src,
+					targetsQueue);
+		}
+	}
+	
+	/**
 	 * Remove unreachable call targets at the virtual callsites using the up-to-date points-to information.
 	 */
 	private int updateCallGraph() 
 	{
 		int all_virtual_edges = 0, n_obsoleted = 0;
-		boolean keep_this_edge;
-		CgEdge p, q, temp;
 		
-		FastHierarchy typeHierarchy = Scene.v().getOrMakeFastHierarchy();
 		CallGraph cg = Scene.v().getCallGraph();
+		ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
+		QueueReader<SootMethod> targets = targetsQueue.reader();
+		Set<SootMethod> resolvedMethods = new HashSet<SootMethod>();
 		obsoletedEdges.clear();
 		
+		// We first update the virtual callsites
+		for ( Iterator<Stmt> csIt = multiCallsites.iterator(); csIt.hasNext(); ) {
+			Stmt callsite = csIt.next();
+			Iterator<Edge> edges = cg.edgesOutOf(callsite);
+			if ( !edges.hasNext() ) continue;
+			Edge anyEdge = edges.next();
+			CgEdge p = edgeMapping.get(anyEdge);
+			SootMethod src = anyEdge.src();
+			
+			if ( !edges.hasNext() ||
+					getIDFromSootMethod(src) == Constants.UNKNOWN_FUNCTION ) {
+				// This callsite has been solved to be unique or
+				// The source method is no longer reachable
+				// We move this callsite
+				csIt.remove();
+				multiBasePtrs.remove(p.base_var);
+				continue;
+			}
+			
+			IVarAbstraction pn = consG.get(p.base_var);
+			if ( pn != null ) {
+				pn = pn.getRepresentative();
+				
+				// We resolve the call targets with the new points-to result
+				getCallTargets(pn, src, callsite, targetsQueue);
+				resolvedMethods.clear();
+				while ( targets.hasNext() ) {
+					resolvedMethods.add(targets.next());
+				}
+				
+				// We delete the edges that are proven to be spurious
+				while (true) {
+					SootMethod tgt = anyEdge.tgt();
+					if ( !resolvedMethods.contains(tgt) ) {
+						p = edgeMapping.get(anyEdge);
+						p.is_obsoleted = true;
+					}
+					
+					if ( !edges.hasNext() ) break;
+					anyEdge = edges.next();
+				}
+			}
+		}
+		
+		// We delete the spurious edges
 		for (int i = 1; i < n_func; ++i) {
 			// New outgoing edge list is pointed to by q
-			p = call_graph[i];
-			q = null;
+			CgEdge p = call_graph[i];
+			CgEdge q = null;
 
 			while (p != null) {
 				
@@ -855,51 +928,13 @@ public class GeomPointsTo extends PAG
 					// If this method is unreachable, we delete all its outgoing edges
 					p.is_obsoleted = true;
 				}
-				else if ( multiCallEdges.contains(p.sootEdge) ) {
-					// The thread starting invocations are not processed
-					// Because it is a native call
-					keep_this_edge = false;
+				
+				if ( p.base_var != null ) {
 					++all_virtual_edges;
-					IVarAbstraction pn = consG.get(p.base_var).getRepresentative();
-					
-					if ( pn != null ) {
-						SootMethod sm = p.sootEdge.tgt();
-						
-						for (AllocNode an : pn.get_all_points_to_objects()) {
-							Type t = an.getType();
-
-							if (t == null)
-								continue;
-							else if (t instanceof AnySubType)
-								t = ((AnySubType) t).getBase();
-							else if (t instanceof ArrayType)
-								t = RefType.v("java.lang.Object");
-
-							try {
-								// Only the virtual calls do the following test
-								if (typeHierarchy.resolveConcreteDispatch(
-										((RefType) t).getSootClass(), sm) == sm) {
-									keep_this_edge = true;
-									break;
-								}
-							} catch (RuntimeException e) {
-								// Perhaps there is a bug, either from soot or
-								// geomPTA
-								keep_this_edge = true;
-							}
-						}
-						
-						if (keep_this_edge == false) {
-							p.is_obsoleted = true;
-						}
-					}
-					else {
-						System.err.println();
-						throw new RuntimeException("In updateCallGraph: Oops, cannot find the virtual base pointer.");
-					}
 				}
-								
-				temp = p.next;
+				
+				CgEdge temp = p.next;
+				
 				if (p.is_obsoleted == false) {
 					p.next = q;
 					q = p;
@@ -912,6 +947,7 @@ public class GeomPointsTo extends PAG
 					obsoletedEdges.add(p);
 					++n_obsoleted;
 				}
+				
 				p = temp;
 			}
 
@@ -1219,7 +1255,7 @@ public class GeomPointsTo extends PAG
 			// substantially use the points-to result for redundancy elimination prior to the analysis
 			Date prepare_begin = new Date();
 				offlineProcessor.init();
-				offlineProcessor.defaultFeedPtsRoutines(Constants.seedPts_allUser);
+				offlineProcessor.defaultFeedPtsRoutines();
 				offlineProcessor.runOptimizations();
 			Date prepare_end = new Date();
 			prepare_time += prepare_end.getTime() - prepare_begin.getTime();	
@@ -1235,11 +1271,11 @@ public class GeomPointsTo extends PAG
 			
 			// We update the call graph and other internal data when the new points-to information is ready
 			// The update time is not included in the points-to analysis
-			Date update_begin = new Date();
+//			Date update_begin = new Date();
 				n_obs = updateCallGraph();
 				finalizeInternalData();
-			Date update_end = new Date();
-			solve_time -= update_end.getTime() - update_begin.getTime();
+//			Date update_end = new Date();
+//			solve_time -= update_end.getTime() - update_begin.getTime();
 		}
 
 		if ( rounds < Parameters.cg_refine_times )
@@ -1358,7 +1394,8 @@ public class GeomPointsTo extends PAG
 	}
 	
 	/**
-	 * Or, we only keep the pointers the user is interested in.
+	 * Keep only the pointers the users are interested in.
+	 * Just used for reducing memory occupation.
 	 */
 	public void keepOnly( Set<IVarAbstraction> usefulPointers )
 	{
@@ -1379,28 +1416,45 @@ public class GeomPointsTo extends PAG
 		System.gc();
 	}
 	
+	/**
+	 * Get Internal ID for soot method @param sm
+	 * @return -1 if the given method is unreachable
+	 */
 	public int getIDFromSootMethod( SootMethod sm )
 	{
 		Integer ans = func2int.get(sm);
-		return ans == null ? -1 : ans.intValue();
+		return ans == null ? Constants.UNKNOWN_FUNCTION : ans.intValue();
 	}
 	
+	/**
+	 * Get soot method from given internal ID @param fid
+	 * @return null if such ID is illegal.
+	 */
 	public SootMethod getSootMethodFromID( int fid )
 	{
 		return int2func.get(fid); 
 	}
 	
+	/**
+	 * Deciding if the given method represented by @param fid is reachable.
+	 */
 	public boolean isReachableMethod( int fid )
 	{
 		return fid == Constants.UNKNOWN_FUNCTION ? false : vis_cg[fid] != 0;
 	}
 	
+	/**
+	 * Deciding if the given method represented by @param sm is reachable.
+	 */
 	public boolean isReachableMethod( SootMethod sm )
 	{
 		int id = getIDFromSootMethod(sm);
 		return isReachableMethod(id);
 	}
 
+	/**
+	 * Telling if the given method is in the file given by the option "cg.spark geom-verify-name".
+	 */
 	public boolean isValidMethod( SootMethod sm )
 	{
 		if ( validMethods != null ) {
@@ -1428,16 +1482,26 @@ public class GeomPointsTo extends PAG
 		}
 	}
 	
+	/**
+	 * A replacement of the Scene.v().getReachableMethods.
+	 * @return
+	 */
 	public Set<SootMethod> getAllReachableMethods()
 	{
 		return func2int.keySet();
 	}
 	
+	/**
+	 * Get the call edges calling from the method @param fid.
+	 */
 	public CgEdge getCallEgesOutFrom( int fid )
 	{
 		return call_graph[fid];
 	}
 	
+	/**
+	 * Get the call edges calling into the method @param fid.
+	 */
 	public LinkedList<CgEdge> getCallEdgesInto( int fid )
 	{
 		if ( rev_call_graph == null )
@@ -1478,9 +1542,7 @@ public class GeomPointsTo extends PAG
 	}
 	
 	/**
-	 * Transform the SPARK node representation to our representation.
-	 * @param v
-	 * @return
+	 * Transform the SPARK node @param v representation to our representation.
 	 */
 	public IVarAbstraction makeInternalNode( Node v )
 	{
@@ -1493,10 +1555,8 @@ public class GeomPointsTo extends PAG
 	}
 	
 	/**
-	 * Find our representation for the SPARK node.
+	 * Find our representation for the SPARK node @param v.
 	 * We don't create a new node if nothing found.
-	 * @param v
-	 * @return
 	 */
 	public IVarAbstraction findInternalNode( Node v )
 	{
@@ -1507,7 +1567,6 @@ public class GeomPointsTo extends PAG
 	 * Type compatibility test.
 	 * @param src
 	 * @param dst
-	 * @return
 	 */
 	public boolean castNeverFails( Type src, Type dst )
 	{
@@ -1515,8 +1574,7 @@ public class GeomPointsTo extends PAG
 	}
 	
 	/**
-	 * Get the number of valid pointers currently in the container.
-	 * @return
+	 * Get the number of valid pointers currently reachable by geomPTA.
 	 */
 	public int getNumberOfPointers()
 	{
