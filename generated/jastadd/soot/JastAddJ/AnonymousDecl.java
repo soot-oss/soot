@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -66,14 +65,16 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AnonymousDecl copy() {
-      try {
-        AnonymousDecl node = (AnonymousDecl)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      AnonymousDecl node = (AnonymousDecl) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -83,12 +84,9 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public AnonymousDecl fullCopy() {
-    try {
-      AnonymousDecl tree = (AnonymousDecl) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
+    AnonymousDecl tree = (AnonymousDecl) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
           switch (i) {
           case 3:
             tree.children[i] = new Opt();
@@ -97,19 +95,14 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
             tree.children[i] = new List();
             continue;
           }
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -654,7 +647,7 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public Opt getSuperClassAccessOpt() {
     if(getSuperClassAccessOpt_computed) {
-      return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
+      return (Opt) getChild(getSuperClassAccessOptChildPosition());
     }
     ASTNode$State state = state();
   int num = state.boundariesCrossed;
@@ -662,7 +655,7 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
     getSuperClassAccessOpt_value = getSuperClassAccessOpt_compute();
     setSuperClassAccessOpt(getSuperClassAccessOpt_value);
       if(isFinal && num == state().boundariesCrossed) getSuperClassAccessOpt_computed = true;
-    return (Opt)ASTNode.getChild(this, getSuperClassAccessOptChildPosition());
+    return (Opt) getChild(getSuperClassAccessOptChildPosition());
   }
   /**
    * @apilevel internal
@@ -689,7 +682,7 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
   @SuppressWarnings({"unchecked", "cast"})
   public List getImplementsList() {
     if(getImplementsList_computed) {
-      return (List)ASTNode.getChild(this, getImplementsListChildPosition());
+      return (List) getChild(getImplementsListChildPosition());
     }
     ASTNode$State state = state();
   int num = state.boundariesCrossed;
@@ -697,7 +690,7 @@ public class AnonymousDecl extends ClassDecl implements Cloneable {
     getImplementsList_value = getImplementsList_compute();
     setImplementsList(getImplementsList_value);
       if(isFinal && num == state().boundariesCrossed) getImplementsList_computed = true;
-    return (List)ASTNode.getChild(this, getImplementsListChildPosition());
+    return (List) getChild(getImplementsListChildPosition());
   }
   /**
    * @apilevel internal

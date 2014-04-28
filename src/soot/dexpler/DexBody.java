@@ -46,7 +46,9 @@ import org.jf.dexlib2.immutable.debug.ImmutableLineNumber;
 import org.jf.dexlib2.util.MethodUtil;
 
 import soot.Body;
+import soot.DoubleType;
 import soot.Local;
+import soot.LongType;
 import soot.Modifier;
 import soot.NullType;
 import soot.PrimType;
@@ -201,6 +203,8 @@ public class DexBody  {
             if (di instanceof ImmutableLineNumber) {
                 ImmutableLineNumber ln = (ImmutableLineNumber)di;
                 instructionAtAddress(ln.getCodeAddress()).setLineNumber(ln.getLineNumber());
+                Debug.printDbg("Add line number tag " + ln.getLineNumber() + " for instruction: "
+                        + instructionAtAddress(ln.getCodeAddress()));
             }
         }
 
@@ -429,7 +433,7 @@ public class DexBody  {
 	            // as the corresponding Jimple Local name. However, we also add
 	            // the second register to the registerLocals array since it could be
 	            // used later in the Dalvik bytecode
-	            if (t.toString().equals("long") || t.toString().equals("double")) {
+	            if (t instanceof LongType || t instanceof DoubleType) {
 	              parameterRegister++;
 	              Local g = Jimple.v().newLocal("$u"+ parameterRegister, UnknownType.v()); //may only use UnknownType here because the local may be reused with a different type later (before splitting)
 	              jBody.getLocals().add (g);
@@ -613,7 +617,7 @@ public class DexBody  {
             List<Local> toRemove = new ArrayList<Local>();
             for (Local l: jBody.getLocals()) {
                 
-                if (l.getType().toString().equals("null_type")) {
+                if (l.getType() instanceof NullType) {
                     toRemove.add(l);
                     for (ValueBox vb: uses) {
                         Value v = vb.getValue();
@@ -689,7 +693,7 @@ public class DexBody  {
         Debug.printDbg("\nafter jb pack");
         Debug.printDbg("",(Body)jBody);
 
-        // Leplace local type null_type by java.lang.Object.
+        // Replace local type null_type by java.lang.Object.
         //
         // The typing engine cannot find correct type for such code:
         //

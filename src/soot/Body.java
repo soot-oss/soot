@@ -34,6 +34,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -341,13 +342,9 @@ public abstract class Body extends AbstractHost implements Serializable
         // "remove-unreachable-traps" option to true.
         ThrowAnalysis throwAnalysis = PedanticThrowAnalysis.v();
         UnitGraph g = new ExceptionalUnitGraph(this, throwAnalysis, false);
-        
         LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
-        Iterator<Unit> unitsIt = getUnits().iterator();
-        while (unitsIt.hasNext())
-        {
-            Unit u = unitsIt.next();
+        for (Unit u : getUnits()) {
             Iterator<ValueBox> useBoxIt = u.getUseBoxes().iterator();
             while (useBoxIt.hasNext())
             {
@@ -408,8 +405,58 @@ public abstract class Body extends AbstractHost implements Serializable
             }
         }
 
-        throw new RuntimeException("couldn't find parameterref!"+" in "+getMethod());
+        throw new RuntimeException("couldn't find parameterref" + i +"! in "+getMethod());
     }
+
+    /**
+     * Get all the LHS of the identity statements assigning from parameter references.
+     *
+     * @return a list of size as per <code>getMethod().getParameterCount()</code> with all elements ordered as per the parameter index.
+     * @throws RuntimeException if a parameterref is missing
+     */
+    public List<Local> getParameterLocals(){
+        final int numParams = getMethod().getParameterCount();
+        final List<Local> retVal = new ArrayList<Local>(numParams);
+
+        //Parameters are zero-indexed, so the keeping of the index is safe
+        for (Unit u : getUnits()){
+            if (u instanceof IdentityStmt){
+                IdentityStmt is = ((IdentityStmt)u);
+                if (is.getRightOp() instanceof ParameterRef){
+                    ParameterRef pr = (ParameterRef) is.getRightOp();
+                    retVal.add(pr.getIndex(), (Local) is.getLeftOp());
+                }
+            }
+        }
+        if (retVal.size() != numParams)
+            throw new RuntimeException("couldn't find parameterref! in " + getMethod());
+        return retVal;
+    }
+    
+    /**
+     * Returns the list of parameter references used in this body. The list is as long as
+     * the number of parameters declared in the associated method's signature.
+     * The list may have <code>null</code> entries for parameters not referenced in the body.
+     * The returned list is of fixed size.
+     */
+    public List<Value> getParameterRefs()
+    {
+    	Value[] res = new Value[getMethod().getParameterCount()];
+        Iterator<Unit> unitsIt = getUnits().iterator();
+        while (unitsIt.hasNext())
+        {
+            Unit s = unitsIt.next();
+            if (s instanceof IdentityStmt) {
+				Value rightOp = ((IdentityStmt)s).getRightOp();
+				if (rightOp instanceof ParameterRef) {
+					ParameterRef parameterRef = (ParameterRef) rightOp;
+					res[parameterRef.getIndex()] = parameterRef;
+				}
+			}
+        }
+        return Arrays.asList(res);
+    }
+
 
     /**
      *  Returns the Chain of Units that make up this body. The units are

@@ -16,7 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
+package soot.jimple.spark.geom.utils;
 
 import java.io.PrintStream;
 
@@ -26,10 +26,8 @@ import java.io.PrintStream;
  * @author xiao
  *
  */
-public class Histogram {
-	// private static Histogram instance;
-
-	//
+public class Histogram 
+{
 	private int[] limits;
 	
 	private int count = 0;

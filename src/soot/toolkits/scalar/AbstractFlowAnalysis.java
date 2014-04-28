@@ -26,7 +26,7 @@
 
 package soot.toolkits.scalar;
 
-import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
 
 import soot.jimple.Stmt;
@@ -54,7 +54,7 @@ public abstract class AbstractFlowAnalysis<N,A>
     /** Constructs a flow analysis on the given <code>DirectedGraph</code>. */
     public AbstractFlowAnalysis(DirectedGraph<N> graph)
     {
-        unitToBeforeFlow = new HashMap<N,A>(graph.size() * 2 + 1, 0.7f);
+        unitToBeforeFlow = new IdentityHashMap<N,A>(graph.size() * 2 + 1);
         this.graph = graph;
         if (Options.v().interactive_mode()){
             InteractionHandler.v().handleCfgEvent(graph);

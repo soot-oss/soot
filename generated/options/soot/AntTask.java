@@ -156,6 +156,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-whole-shimple");
         }
   
+        public void seton_the_fly(boolean arg) {
+            if(arg) addArg("-on-the-fly");
+        }
+  
         public void setvalidate(boolean arg) {
             if(arg) addArg("-validate");
         }
@@ -1346,6 +1350,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg.spark");
             addArg("geom-blocking:"+(arg?"true":"false"));
+          }
+      
+          public void setgeom_app_only(boolean arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("geom-app-only:"+(arg?"true":"false"));
           }
       
           public void setpropagator(String arg) {

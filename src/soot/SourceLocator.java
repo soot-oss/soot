@@ -411,7 +411,7 @@ public class SourceLocator
     }
 
     /** Explodes a class path into a list of individual class path entries. */
-    protected List<String> explodeClassPath( String classPath ) {
+    public static List<String> explodeClassPath( String classPath ) {
         List<String> ret = new ArrayList<String>();
 
         StringTokenizer tokenizer = 

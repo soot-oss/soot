@@ -327,7 +327,7 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis
     /**
      * Draw the result of the intra-procedural analysis as one big dot file,
      * named className.methodName.dot, containing one purity graph for each
-     * statment in the method.
+     * statement in the method.
      */
     public void drawAsOneDot(String prefix, String name)
     {

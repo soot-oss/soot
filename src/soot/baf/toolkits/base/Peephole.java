@@ -42,7 +42,7 @@ public interface Peephole
 {
     /**
      *   Entry point for a peephole. This method is 
-     *   repeatly called by the peephole driver, until
+     *   repeatedly called by the peephole driver, until
      *   a fixed-point is reached over all peepholes.
      *
      *   @param b  Body to apply peephole to.

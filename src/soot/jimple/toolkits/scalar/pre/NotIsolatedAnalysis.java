@@ -31,7 +31,7 @@ import soot.toolkits.graph.*;
 import java.util.*;
 
 /** 
- * Performs a Not-Isolated-analysis on the given graph, which is basicly the
+ * Performs a Not-Isolated-analysis on the given graph, which is basically the
  * same as an Isolated-analysis (we just return the complement, as it's easier
  * to calculate it).
  * A computation is isolated, if it can only be used at the current
@@ -48,7 +48,7 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis {
   private FlowSet set;
 
   /**
-   * this constructor should not be used, and will throw a runtime-exception!
+   * This constructor should not be used, and will throw a runtime-exception!
    */
   public NotIsolatedAnalysis(DirectedGraph dg) {
     /* we have to add super(dg). otherwise Javac complains. */
@@ -57,7 +57,7 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis {
   }
 
   /**
-   * automaticly performs the Isolation-analysis on the graph
+   * Automatically performs the Isolation-analysis on the graph
    * <code>dg</code> using the Latest-computation <code>latest</code>.<br>
    * the <code>equivRhsMap</code> is only here to avoid doing these things
    * again...
@@ -73,7 +73,7 @@ public class NotIsolatedAnalysis extends BackwardFlowAnalysis {
   }
 
   /**
-   * automaticly performs the Isolation-analysis on the graph
+   * Automatically performs the Isolation-analysis on the graph
    * <code>dg</code> using the Latest-computation <code>latest</code>.<br>
    * the <code>equivRhsMap</code> is only here to avoid doing these things
    * again...<br>

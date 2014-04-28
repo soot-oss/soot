@@ -58,7 +58,7 @@ public class IputInstruction extends FieldInstruction {
         Local sourceValue = body.getRegisterLocal(source);
         assign = getAssignStmt(body, sourceValue, instanceField);
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {

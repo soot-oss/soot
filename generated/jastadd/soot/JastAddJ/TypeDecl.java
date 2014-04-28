@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -572,7 +571,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    */
   public void nameCheck() {
     if(isTopLevelType() && lookupType(packageName(), name()) != this)
-      error("duplicate member " + name() + " in compilation unit");
+      error("duplicate type " + name() + " in package " + packageName());
   
     if(!isTopLevelType() && !isAnonymous() && !isLocalClass() && extractSingleType(enclosingType().memberTypes(name())) != this)
       error("duplicate member type " + name() + " in type " + enclosingType().typeName());
@@ -585,7 +584,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     }
 
     if(!packageName().equals("") && hasPackage(fullName()))
-      error("duplicate member class and package " + name());
+      error("type name conflicts with a package using the same name: " + name());
     
     // 8.1 & 9.1
     if(hasEnclosingTypeDecl(name())) {
@@ -3836,7 +3835,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   /* It is a compile-time error if the return type of a method declared in an
   annotation type is any type other than one of the following: one of the
   primitive types, String, Class and any invocation of Class, an enum type
-  (\u00df8.9), an annotation type, or an array (\u00df10) of one of the preceding types.* @attribute syn
+  (\ufffd8.9), an annotation type, or an array (\ufffd10) of one of the preceding types.* @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:121
    */
@@ -3883,10 +3882,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     * T is an array type E[] and either:
           o V is an ElementValueArrayInitializer and each ElementValueInitializer (analogous to a variable initializer in an array initializer) in V is commensurate with E. Or
           o V is an ElementValue that is commensurate with T. 
-    * The type of V is assignment compatible (\u00df5.2) with T and, furthermore:
-          o If T is a primitive type or String, V is a constant expression (\u00df15.28).
+    * The type of V is assignment compatible (\ufffd5.2) with T and, furthermore:
+          o If T is a primitive type or String, V is a constant expression (\ufffd15.28).
           o V is not null.
-          o if T is Class, or an invocation of Class, and V is a class literal (\u00df15.8.2).
+          o if T is Class, or an invocation of Class, and V is a class literal (\ufffd15.8.2).
           o If T is an enum type, and V is an enum constant. * @attribute syn
    * @aspect Annotations
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:474
@@ -4031,7 +4030,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
   private boolean isIterable_compute() {  return instanceOf(lookupType("java.lang", "Iterable"));  }
   /* 
      1) It is a compile-time error to attempt to explicitly instantiate an enum type
-     (\u00d4\u00f8\u03a915.9.1).
+     (\ufffd\ufffd\ufffd15.9.1).
   * @attribute syn
    * @aspect Enums
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:16
@@ -6260,10 +6259,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_isDest(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_isDest(this, caller);
     }
   }
@@ -6272,10 +6271,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_isSource(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return true;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return true;
+  }
     else {      return getParent().Define_boolean_isSource(this, caller);
     }
   }
@@ -6284,9 +6283,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(caller == getBodyDeclListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    if(caller == getBodyDeclListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     BodyDecl b = getBodyDecl(childIndex);
     //if(b instanceof MethodDecl || b instanceof MemberTypeDecl) {
     if(!v.isInstanceVariable() && !v.isClassVariable()) {
@@ -6332,7 +6331,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     }
     return isDAbefore(v);
   }
-}
+  }
     else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
   }
@@ -6341,9 +6340,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(caller == getBodyDeclListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    if(caller == getBodyDeclListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     BodyDecl b = getBodyDecl(childIndex);
     if(b instanceof MethodDecl || b instanceof MemberTypeDecl) {
       return false;
@@ -6379,7 +6378,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     //System.err.println("Reached TypeDecl when searching for DU for variable");
     return isDUbefore(v);
   }
-}
+  }
     else {      return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
   }
@@ -6388,10 +6387,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public Collection Define_Collection_lookupConstructor(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return constructors();
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return constructors();
+  }
     else {      return getParent().Define_Collection_lookupConstructor(this, caller);
     }
   }
@@ -6400,10 +6399,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public Collection Define_Collection_lookupSuperConstructor(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return lookupSuperConstructor();
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return lookupSuperConstructor();
+  }
     else {      return getParent().Define_Collection_lookupSuperConstructor(this, caller);
     }
   }
@@ -6412,10 +6411,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-      return unqualifiedLookupMethod(name);
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int i = caller.getIndexOfChild(child);
+    return unqualifiedLookupMethod(name);
+  }
     else {      return getParent().Define_Collection_lookupMethod(this, caller, name);
     }
   }
@@ -6424,9 +6423,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupType(ASTNode caller, ASTNode child, String name) {
-    if(caller == getBodyDeclListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    if(caller == getBodyDeclListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     SimpleSet c = memberTypes(name);
     if(!c.isEmpty()) 
       return c;
@@ -6447,7 +6446,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     }
     return c;
   }
-}
+  }
     else {      return getParent().Define_SimpleSet_lookupType(this, caller, name);
     }
   }
@@ -6456,9 +6455,9 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-    if(caller == getBodyDeclListNoTransform()) { 
-   int i = caller.getIndexOfChild(child);
-{
+    if(caller == getBodyDeclListNoTransform())  { 
+    int i = caller.getIndexOfChild(child);
+    {
     SimpleSet list = memberFields(name);
     if(!list.isEmpty()) return list;
     list = lookupVariable(name);
@@ -6466,7 +6465,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
       list = removeInstanceVariables(list);
     return list;
   }
-}
+  }
     else {      return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
   }
@@ -6475,10 +6474,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else if(caller == getModifiersNoTransform()) {
       return true;
     }
@@ -6490,10 +6489,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else if(caller == getModifiersNoTransform()) {
       return true;
     }
@@ -6505,10 +6504,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else if(caller == getModifiersNoTransform()) {
       return true;
     }
@@ -6520,10 +6519,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeAbstract(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else if(caller == getModifiersNoTransform()) {
       return true;
     }
@@ -6535,10 +6534,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeStatic(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else if(caller == getModifiersNoTransform()) {
       return true;
     }
@@ -6550,10 +6549,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeStrictfp(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else if(caller == getModifiersNoTransform()) {
       return true;
     }
@@ -6565,10 +6564,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_mayBeFinal(this, caller);
     }
   }
@@ -6577,10 +6576,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeVolatile(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_mayBeVolatile(this, caller);
     }
   }
@@ -6589,10 +6588,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeTransient(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_mayBeTransient(this, caller);
     }
   }
@@ -6601,10 +6600,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeSynchronized(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_mayBeSynchronized(this, caller);
     }
   }
@@ -6613,10 +6612,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_mayBeNative(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_mayBeNative(this, caller);
     }
   }
@@ -6625,10 +6624,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public VariableScope Define_VariableScope_outerScope(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return this;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return this;
+  }
     else {      return getParent().Define_VariableScope_outerScope(this, caller);
     }
   }
@@ -6637,10 +6636,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_insideLoop(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int i = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_insideLoop(this, caller);
     }
   }
@@ -6649,10 +6648,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_insideSwitch(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int i = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_insideSwitch(this, caller);
     }
   }
@@ -6661,10 +6660,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return NameType.EXPRESSION_NAME;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return NameType.EXPRESSION_NAME;
+  }
     else {      return getParent().Define_NameType_nameType(this, caller);
     }
   }
@@ -6673,10 +6672,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_isAnonymous(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_isAnonymous(this, caller);
     }
   }
@@ -6685,10 +6684,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_enclosingType(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return this;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return this;
+  }
     else {      return getParent().Define_TypeDecl_enclosingType(this, caller);
     }
   }
@@ -6697,10 +6696,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_isNestedType(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return true;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return true;
+  }
     else {      return getParent().Define_boolean_isNestedType(this, caller);
     }
   }
@@ -6709,10 +6708,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_isLocalClass(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_isLocalClass(this, caller);
     }
   }
@@ -6724,10 +6723,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
     if(caller == getModifiersNoTransform()) {
       return hostType();
     }
-    else if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return hostType();
-    }
+    else if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return hostType();
+  }
     else  {
       int childIndex = this.getIndexOfChild(caller);
       return hostType();
@@ -6738,10 +6737,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_returnType(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return typeVoid();
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return typeVoid();
+  }
     else {      return getParent().Define_TypeDecl_returnType(this, caller);
     }
   }
@@ -6750,16 +6749,16 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_enclosingInstance(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) { 
-   int childIndex = caller.getIndexOfChild(child);
-{
+    if(caller == getBodyDeclListNoTransform())  { 
+    int childIndex = caller.getIndexOfChild(child);
+    {
     if(getBodyDecl(childIndex) instanceof MemberTypeDecl && !((MemberTypeDecl)getBodyDecl(childIndex)).typeDecl().isInnerType())
       return null;
     if(getBodyDecl(childIndex) instanceof ConstructorDecl)
       return enclosingInstance();
     return this;
   }
-}
+  }
     else {      return getParent().Define_TypeDecl_enclosingInstance(this, caller);
     }
   }
@@ -6768,10 +6767,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public String Define_String_methodHost(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return typeName();
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return typeName();
+  }
     else {      return getParent().Define_String_methodHost(this, caller);
     }
   }
@@ -6780,10 +6779,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return isStatic() || inStaticContext();
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return isStatic() || inStaticContext();
+  }
     else {      return getParent().Define_boolean_inStaticContext(this, caller);
     }
   }
@@ -6813,11 +6812,11 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_withinSuppressWarnings(ASTNode caller, ASTNode child, String s) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-      return getBodyDecl(i).hasAnnotationSuppressWarnings(s) || hasAnnotationSuppressWarnings(s) ||
+    if(caller == getBodyDeclListNoTransform())  {
+    int i = caller.getIndexOfChild(child);
+    return getBodyDecl(i).hasAnnotationSuppressWarnings(s) || hasAnnotationSuppressWarnings(s) ||
     withinSuppressWarnings(s);
-    }
+  }
     else {      return getParent().Define_boolean_withinSuppressWarnings(this, caller, s);
     }
   }
@@ -6826,10 +6825,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_withinDeprecatedAnnotation(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-      return getBodyDecl(i).isDeprecated() || isDeprecated() || withinDeprecatedAnnotation();
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int i = caller.getIndexOfChild(child);
+    return getBodyDecl(i).isDeprecated() || isDeprecated() || withinDeprecatedAnnotation();
+  }
     else {      return getParent().Define_boolean_withinDeprecatedAnnotation(this, caller);
     }
   }
@@ -6838,10 +6837,10 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
    * @apilevel internal
    */
   public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
-    if(caller == getBodyDeclListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getBodyDeclListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_enclosedByExceptionHandler(this, caller);
     }
   }

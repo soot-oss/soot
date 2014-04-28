@@ -173,9 +173,7 @@ public final class PropWorklist extends Propagator {
 
         final HashSet<Node[]> storesToPropagate = new HashSet<Node[]>();
         final HashSet<Node[]> loadsToPropagate = new HashSet<Node[]>();
-	Collection fieldRefs = src.getAllFieldRefs();
-	for( Iterator frIt = fieldRefs.iterator(); frIt.hasNext(); ) {
-	    final FieldRefNode fr = (FieldRefNode) frIt.next();
+	for( final FieldRefNode fr : src.getAllFieldRefs()) {
 	    final SparkField field = fr.getField();
 	    final Node[] storeSources = pag.storeInvLookup( fr );
             if( storeSources.length > 0 ) {

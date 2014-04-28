@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2012 Richard Xiao
+ * Copyright (C) 2012, 2013 Richard Xiao
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,7 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.helper;
+package soot.jimple.spark.geom.dataMgr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,7 +24,9 @@ import java.util.List;
 import java.util.Map;
 
 import soot.PointsToSet;
+import soot.Scene;
 import soot.jimple.spark.geom.dataRep.ContextVar;
+import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.PointsToSetInternal;
@@ -44,6 +46,8 @@ public abstract class PtSensVisitor<VarType extends ContextVar>
 {
 	// Indicates if this visitor is prepared
 	protected boolean readyToUse = false;
+	
+	protected GeomPointsTo ptsProvider = (GeomPointsTo)Scene.v().getPointsToAnalysis();
 	
 	// The list view
 	public List<VarType> outList = new ArrayList<VarType>();
@@ -65,15 +69,17 @@ public abstract class PtSensVisitor<VarType extends ContextVar>
 	 */
 	public void finish() 
 	{
-		// We flatten the list
-		readyToUse = true;
-		outList.clear();
-				
-		if ( tableView.size() == 0 ) return;
-		
-		for ( Map.Entry<Node, List<VarType>> entry : tableView.entrySet() ) {
-			List<VarType> resList = entry.getValue();
-			outList.addAll(resList);
+		if ( readyToUse == false ) {
+			// We flatten the list
+			readyToUse = true;
+			outList.clear();
+					
+			if ( tableView.size() == 0 ) return;
+			
+			for ( Map.Entry<Node, List<VarType>> entry : tableView.entrySet() ) {
+				List<VarType> resList = entry.getValue();
+				outList.addAll(resList);
+			}
 		}
 	}
 	
@@ -87,21 +93,25 @@ public abstract class PtSensVisitor<VarType extends ContextVar>
 	}
 	
 	/**
-	 * Calculate the intersection with other container. 
-	 * Can be used to answer alias query.
-	 * @param other
-	 * @return
+	 * Return the number of different points-to targets.
 	 */
-	public boolean hasIntersection(PtSensVisitor<VarType> other) 
+	public int numOfDiffObjects()
 	{
-		if ( !readyToUse ) finish();
-		if ( other.getUsageState() == false ) other.finish();
-		
+		return readyToUse ? outList.size() : tableView.size();
+	}
+	
+	/**
+	 * Tests if two containers have contain same things.
+	 * Can be used to answer the alias query.
+	 */
+	public boolean hasNonEmptyIntersection(PtSensVisitor<VarType> other) 
+	{
 		// Using table view for comparison, that's faster
 		for ( Map.Entry<Node, List<VarType>> entry : tableView.entrySet() ) {
 			Node var = entry.getKey();
 			List<VarType> list1 = entry.getValue();
 			List<VarType> list2 = other.getCSList(var);
+			if ( list1.size() == 0 || list2.size() == 0 ) continue;
 			
 			for ( VarType cv1 : list1 ) {
 				for ( VarType cv2 : list2 )

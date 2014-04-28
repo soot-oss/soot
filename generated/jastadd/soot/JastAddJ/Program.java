@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -64,7 +63,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     lookupType_String_String_values = null;
     lookupLibType_String_String_values = null;
     getLibCompilationUnit_String_values = null;
-    getPrimitiveCompilationUnit_computed = false;
+    getLibCompilationUnit_String_list = null;    getPrimitiveCompilationUnit_computed = false;
     getPrimitiveCompilationUnit_value = null;
     unknownConstructor_computed = false;
     unknownConstructor_value = null;
@@ -117,7 +116,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     node.lookupType_String_String_values = null;
     node.lookupLibType_String_String_values = null;
     node.getLibCompilationUnit_String_values = null;
-    node.getPrimitiveCompilationUnit_computed = false;
+    node.getLibCompilationUnit_String_list = null;    node.getPrimitiveCompilationUnit_computed = false;
     node.getPrimitiveCompilationUnit_value = null;
     node.unknownConstructor_computed = false;
     node.unknownConstructor_value = null;
@@ -132,14 +131,16 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Program copy() {
-      try {
-        Program node = (Program)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      Program node = (Program) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -149,25 +150,17 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Program fullCopy() {
-    try {
-      Program tree = (Program) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    Program tree = (Program) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -445,7 +438,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect ClassPath
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:584
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ClassPath.jrag:298
    */
   public void simpleReset() {
     lookupType_String_String_values = new HashMap();
@@ -529,7 +522,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
   /**
    * @ast method 
    * @aspect PrettyPrint
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:820
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:821
    */
   public String dumpTree() {
     StringBuffer s = new StringBuffer();
@@ -853,7 +846,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
       }
       
       if(sourcePart != null && srcPrec == SRC_PREC_JAVA) {
-        CompilationUnit unit = sourcePart.getCompilationUnit();
+        CompilationUnit unit = getCachedOrLoadCompilationUnit(new File(sourcePart.pathName).getCanonicalPath());
         int index = name.lastIndexOf('.');
         if(index == -1)
           return unit;
@@ -882,7 +875,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
         }
       }
       else if(sourcePart != null && (classPart == null || classPart.age <= sourcePart.age)) {
-        CompilationUnit unit = sourcePart.getCompilationUnit();
+        CompilationUnit unit = getCachedOrLoadCompilationUnit(new File(sourcePart.pathName).getCanonicalPath());
         int index = name.lastIndexOf('.');
         if(index == -1)
           return unit;
@@ -1524,8 +1517,8 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
       getLibCompilationUnit_String_list.is$Final = true;
       getLibCompilationUnit_String_list.setParent(this);
     }
+    getLibCompilationUnit_String_list.add(getLibCompilationUnit_String_value);
     if(getLibCompilationUnit_String_value != null) {
-      getLibCompilationUnit_String_list.add(getLibCompilationUnit_String_value);
       getLibCompilationUnit_String_value.is$Final = true;
     }
       if(true) getLibCompilationUnit_String_values.put(_parameters, getLibCompilationUnit_String_value);
@@ -1671,7 +1664,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
     }
   }
   /**
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:173
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:172
    * @apilevel internal
    */
   public LabeledStmt Define_LabeledStmt_lookupLabel(ASTNode caller, ASTNode child, String name) {
@@ -2557,12 +2550,12 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_false_label(ASTNode caller, ASTNode child) {
-    if(caller == getCompilationUnitListNoTransform()) { 
-   int i = caller.getIndexOfChild(child);
-{
+    if(caller == getCompilationUnitListNoTransform())  { 
+    int i = caller.getIndexOfChild(child);
+    {
     throw new Error("condition_false_label not implemented");
   }
-}
+  }
     else {      return getParent().Define_soot_jimple_Stmt_condition_false_label(this, caller);
     }
   }
@@ -2571,12 +2564,12 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   public soot.jimple.Stmt Define_soot_jimple_Stmt_condition_true_label(ASTNode caller, ASTNode child) {
-    if(caller == getCompilationUnitListNoTransform()) { 
-   int i = caller.getIndexOfChild(child);
-{
+    if(caller == getCompilationUnitListNoTransform())  { 
+    int i = caller.getIndexOfChild(child);
+    {
     throw new Error("condition_true_label not implemented");
   }
-}
+  }
     else {      return getParent().Define_soot_jimple_Stmt_condition_true_label(this, caller);
     }
   }
@@ -2585,10 +2578,10 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
    * @apilevel internal
    */
   public int Define_int_localNum(ASTNode caller, ASTNode child) {
-    if(caller == getCompilationUnitListNoTransform()) {
-      int index = caller.getIndexOfChild(child);
-      return 0;
-    }
+    if(caller == getCompilationUnitListNoTransform())  {
+    int index = caller.getIndexOfChild(child);
+    return 0;
+  }
     else {      return getParent().Define_int_localNum(this, caller);
     }
   }

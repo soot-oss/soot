@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -57,14 +56,16 @@ public class Annotation extends Modifier implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Annotation copy() {
-      try {
-        Annotation node = (Annotation)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      Annotation node = (Annotation) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -74,25 +75,17 @@ public class Annotation extends Modifier implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Annotation fullCopy() {
-    try {
-      Annotation tree = (Annotation) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    Annotation tree = (Annotation) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -176,14 +169,14 @@ public class Annotation extends Modifier implements Cloneable {
    * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:305
    */
   public void appendAsAttributeTo(Collection list) {
-    
+      soot.tagkit.AnnotationTag tag = new soot.tagkit.AnnotationTag(decl().typeDescriptor(), getNumElementValuePair());
       ArrayList elements = new ArrayList(getNumElementValuePair());
       for(int i = 0; i < getNumElementValuePair(); i++) {
         String name = getElementValuePair(i).getName();
         ElementValue value = getElementValuePair(i).getElementValue();
         value.appendAsAttributeTo(elements, name);
       }
-      soot.tagkit.AnnotationTag tag = new soot.tagkit.AnnotationTag(decl().typeDescriptor(), elements);
+      tag.setElems(elements);
       list.add(tag);
   }
   /**
@@ -627,10 +620,10 @@ public class Annotation extends Modifier implements Cloneable {
    * @apilevel internal
    */
   public TypeDecl Define_TypeDecl_enclosingAnnotationDecl(ASTNode caller, ASTNode child) {
-    if(caller == getElementValuePairListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return decl();
-    }
+    if(caller == getElementValuePairListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return decl();
+  }
     else {      return getParent().Define_TypeDecl_enclosingAnnotationDecl(this, caller);
     }
   }

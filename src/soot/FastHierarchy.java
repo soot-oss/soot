@@ -19,9 +19,20 @@
 
 package soot;
 
-import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import soot.jimple.SpecialInvokeExpr;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
 
 
 /** Represents the class hierarchy.  It is closely linked to a Scene,
@@ -109,14 +120,12 @@ public class FastHierarchy
         this.sc = Scene.v();
 
         /* First build the inverse maps. */
-        for( Iterator clIt = sc.getClasses().iterator(); clIt.hasNext(); ) {
-            final SootClass cl = (SootClass) clIt.next();
+        for(  final SootClass cl : sc.getClasses() ) {
             if( cl.resolvingLevel() < SootClass.HIERARCHY ) continue;
             if( !cl.isInterface() && cl.hasSuperclass() ) {
                 put( classToSubclasses, cl.getSuperclass(), cl );
             }
-            for( Iterator superclIt = cl.getInterfaces().iterator(); superclIt.hasNext(); ) {
-                final SootClass supercl = (SootClass) superclIt.next();
+            for( final SootClass supercl : cl.getInterfaces() ) {
                 if( cl.isInterface() ) {
                     interfaceToSubinterfaces.put( supercl, cl );
                 } else {
@@ -232,6 +241,8 @@ public class FastHierarchy
                 || parent.equals( RefType.v( "java.io.Serializable" ) )
                 || parent.equals( RefType.v( "java.lang.Cloneable" ) );
             }
+            if (!(parent instanceof ArrayType))
+            	return false;
             ArrayType aparent = (ArrayType) parent;
                                                 
             // You can store a int[][] in a Object[]. Yuck!
@@ -285,16 +296,14 @@ public class FastHierarchy
         }
     }
 
-    public Collection<SootMethod> resolveConcreteDispatchWithoutFailing(Collection concreteTypes, SootMethod m, RefType declaredTypeOfBase ) {
+    public Collection<SootMethod> resolveConcreteDispatchWithoutFailing(Collection<Type> concreteTypes, SootMethod m, RefType declaredTypeOfBase ) {
 
         Set<SootMethod> ret = new HashSet<SootMethod>();
         SootClass declaringClass = declaredTypeOfBase.getSootClass();
         declaringClass.checkLevel(SootClass.HIERARCHY);
-        for( Iterator tIt = concreteTypes.iterator(); tIt.hasNext(); ) {
-            final Type t = (Type) tIt.next();
+        for( final Type t : concreteTypes ) {
             if( t instanceof AnySubType ) {
-                String methodSig = m.getSubSignature();
-                HashSet s = new HashSet();
+                HashSet<SootClass> s = new HashSet<SootClass>();
                 s.add( declaringClass );
                 while( !s.isEmpty() ) {
                     SootClass c = (SootClass) s.iterator().next();
@@ -343,16 +352,14 @@ public class FastHierarchy
         return ret;
     }
 
-    public Collection<SootMethod> resolveConcreteDispatch(Collection concreteTypes, SootMethod m, RefType declaredTypeOfBase ) {
+    public Collection<SootMethod> resolveConcreteDispatch(Collection<Type> concreteTypes, SootMethod m, RefType declaredTypeOfBase ) {
 
         Set<SootMethod> ret = new HashSet<SootMethod>();
         SootClass declaringClass = declaredTypeOfBase.getSootClass();
         declaringClass.checkLevel(SootClass.HIERARCHY);
-        for( Iterator tIt = concreteTypes.iterator(); tIt.hasNext(); ) {
-            final Type t = (Type) tIt.next();
+        for( final Type t : concreteTypes ) {
             if( t instanceof AnySubType ) {
-                String methodSig = m.getSubSignature();
-                HashSet s = new HashSet();
+                HashSet<SootClass> s = new HashSet<SootClass>();
                 s.add( declaringClass );
                 while( !s.isEmpty() ) {
                     SootClass c = (SootClass) s.iterator().next();
@@ -425,7 +432,7 @@ public class FastHierarchy
                 worklist.addAll( getAllImplementersOfInterface( concreteType ) );
                 continue;
             }
-            Collection c = classToSubclasses.get( concreteType );
+            Collection<SootClass> c = classToSubclasses.get( concreteType );
             if( c != null ) worklist.addAll( c );
             if( !concreteType.isAbstract() ) {
                 while( true ) {
@@ -437,13 +444,17 @@ public class FastHierarchy
 							if (method.isAbstract())
 								throw new RuntimeException("abstract dispatch resolved to abstract method!\nAbstract Type: "+abstractType+"\nConcrete Type: "+savedConcreteType+"\nMethod: "+m);
 							else {
-							    ret.add( concreteType.getMethod( methodSig ) );
+							    ret.add( method );
 							    break;
 							}								
 						}
                     }
-                    if( !concreteType.hasSuperclass() ) 
-                        throw new RuntimeException("could not resolve abstract dispatch!\nAbstract Type: "+abstractType+"\nConcrete Type: "+savedConcreteType+"\nMethod: "+m);
+                    if( !concreteType.hasSuperclass() ) {
+                    	if(concreteType.isPhantom())
+							break;
+						else
+							throw new RuntimeException("could not resolve abstract dispatch!\nAbstract Type: "+abstractType+"\nConcrete Type: "+savedConcreteType+"\nMethod: "+m);
+                    }
                     concreteType = concreteType.getSuperclass();
                 }
             }

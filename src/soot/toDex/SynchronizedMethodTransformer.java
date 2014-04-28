@@ -51,7 +51,7 @@ public class SynchronizedMethodTransformer extends BodyTransformer
     public SynchronizedMethodTransformer( Singletons.Global g ) {}
     public static SynchronizedMethodTransformer v() { return G.v().soot_toDex_SynchronizedMethodTransformer(); }
     
-    protected void internalTransform(Body b, String phaseName, Map options) {
+    protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     	if (!b.getMethod().isSynchronized() || b.getMethod().isStatic())
     		return;
     	

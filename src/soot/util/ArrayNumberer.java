@@ -26,12 +26,11 @@ import java.util.*;
  * @author xiao, generalize it.
  */
 
-public class ArrayNumberer<E> implements IterableNumberer<E> {
+public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> {
     Numberable[] numberToObj = new Numberable[1024];
     int lastNumber = 0;
 
-    public void add( E oo ) {
-        Numberable o = (Numberable) oo;
+    public void add( E o ) {
         if( o.getNumber() != 0 ) return;
         
         ++lastNumber;

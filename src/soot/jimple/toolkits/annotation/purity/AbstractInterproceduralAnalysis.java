@@ -60,10 +60,10 @@ import soot.toolkits.graph.*;
  * use the off-the-shelf summary instead of performing an intra-procedural
  * analysis. This is useful for native methods, incremental analysis, 
  * or when you hand-made summary. Methods that are called solely by
- * filtered-out ones will never be analysed, effectively triming the
+ * filtered-out ones will never be analysed, effectively trimming the
  * call-graph dependencies.
  *
- * This class tries to use the same abstract methods and data managnment 
+ * This class tries to use the same abstract methods and data management
  * policy as regular FlowAnalysis classes.
  */
 public abstract class AbstractInterproceduralAnalysis {
@@ -102,7 +102,7 @@ public abstract class AbstractInterproceduralAnalysis {
 					  Object     dst);
 
     /**
-     * Interprocedural analysis will call applySummary repeatidly as a 
+     * Interprocedural analysis will call applySummary repeatedly as a 
      * consequence to analyseCall. Once for each possible target method 
      * of the callStmt statement, provided with its summary.
      *

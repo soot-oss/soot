@@ -18,8 +18,8 @@
  */
 
 package soot.jimple.spark.pag;
+import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 
 import soot.ArrayType;
@@ -32,11 +32,12 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Type;
+import soot.Unit;
 import soot.VoidType;
 import soot.jimple.Stmt;
 import soot.jimple.spark.builder.MethodNodeFactory;
 import soot.util.NumberedString;
-import soot.util.SingletonList;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
@@ -67,7 +68,7 @@ public final class MethodPAG {
             if( addedContexts == null ) addedContexts = new HashSet<Context>();
             if( !addedContexts.add( varNodeParameter ) ) return;
         }
-        QueueReader reader = (QueueReader) internalReader.clone();
+        QueueReader<Node> reader = internalReader.clone();
         while(reader.hasNext()) {
             Node src = (Node) reader.next();
             src = parameterize( src, varNodeParameter );
@@ -75,14 +76,14 @@ public final class MethodPAG {
             dst = parameterize( dst, varNodeParameter );
             pag.addEdge( src, dst );
         }
-        reader = (QueueReader) inReader.clone();
+        reader = inReader.clone();
         while(reader.hasNext()) {
             Node src = (Node) reader.next();
             Node dst = (Node) reader.next();
             dst = parameterize( dst, varNodeParameter );
             pag.addEdge( src, dst );
         }
-        reader = (QueueReader) outReader.clone();
+        reader = outReader.clone();
         while(reader.hasNext()) {
             Node src = (Node) reader.next();
             src = parameterize( src, varNodeParameter );
@@ -114,13 +115,13 @@ public final class MethodPAG {
             pag.addEdge(src, dst);
         }        
     }
-    private final ChunkedQueue internalEdges = new ChunkedQueue();
-    private final ChunkedQueue inEdges = new ChunkedQueue();
-    private final ChunkedQueue outEdges = new ChunkedQueue();
-    private final QueueReader internalReader = internalEdges.reader();
-    private final QueueReader inReader = inEdges.reader();
-    private final QueueReader outReader = outEdges.reader();
-
+    private final ChunkedQueue<Node> internalEdges = new ChunkedQueue<Node>();
+    private final ChunkedQueue<Node> inEdges = new ChunkedQueue<Node>();
+    private final ChunkedQueue<Node> outEdges = new ChunkedQueue<Node>();
+    private final QueueReader<Node> internalReader = internalEdges.reader();
+    private final QueueReader<Node> inReader = inEdges.reader();
+    private final QueueReader<Node> outReader = outEdges.reader();
+    
     SootMethod method;
     public SootMethod getMethod() { return method; }
     protected MethodNodeFactory nodeFactory;
@@ -174,12 +175,8 @@ public final class MethodPAG {
 
     protected void buildNormal() {
         Body b = method.retrieveActiveBody();
-        Iterator unitsIt = b.getUnits().iterator();
-        while( unitsIt.hasNext() )
-        {
-            Stmt s = (Stmt) unitsIt.next();
-            nodeFactory.handleStmt( s );
-        }
+        for (Unit u : b.getUnits())
+            nodeFactory.handleStmt( (Stmt) u );
     }
     protected void buildNative() {
         ValNode thisNode = null;
@@ -197,46 +194,48 @@ public final class MethodPAG {
         }
         pag.nativeMethodDriver.process( method, thisNode, retNode, args );
     }
+    
+    private final static String mainSubSignature =
+    		SootMethod.getSubSignature( "main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v() );
 
     protected void addMiscEdges() {
         // Add node for parameter (String[]) in main method
-        if( method.getSubSignature().equals( SootMethod.getSubSignature( "main", new SingletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v() ) ) ) {
+        final String signature = method.getSignature(); 
+        if( method.getSubSignature().equals( mainSubSignature )) {
             addInEdge( pag().nodeFactory().caseArgv(), nodeFactory.caseParm(0) );
         } else
 
-        if( method.getSignature().equals(
+        if(signature.equals(
                     "<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.String)>" ) ) {
             addInEdge( pag().nodeFactory().caseMainThread(), nodeFactory.caseThis() );
             addInEdge( pag().nodeFactory().caseMainThreadGroup(), nodeFactory.caseParm( 0 ) );
         } else
 
-        if (method.getSignature().equals(
+        if (signature.equals(
                 "<java.lang.ref.Finalizer: void <init>(java.lang.Object)>")) {
             addInEdge( nodeFactory.caseThis(), pag().nodeFactory().caseFinalizeQueue());
         } else
         	
-        if (method.getSignature().equals(
+        if (signature.equals(
                 "<java.lang.ref.Finalizer: void runFinalizer()>")) {
             addInEdge(pag.nodeFactory().caseFinalizeQueue(), nodeFactory.caseThis());
         } else
 
-        if (method.getSignature().equals(
+        if (signature.equals(
                 "<java.lang.ref.Finalizer: void access$100(java.lang.Object)>")) {
             addInEdge(pag.nodeFactory().caseFinalizeQueue(), nodeFactory.caseParm(0));
         } else
 
-        if (method.getSignature().equals(
+        if (signature.equals(
                 "<java.lang.ClassLoader: void <init>()>")) {
             addInEdge(pag.nodeFactory().caseDefaultClassLoader(), nodeFactory.caseThis());
         } else
 
-        if (method.getSignature().equals("<java.lang.Thread: void exit()>")) {
+        if (signature.equals("<java.lang.Thread: void exit()>")) {
             addInEdge(pag.nodeFactory().caseMainThread(), nodeFactory.caseThis());
         } else
 
-        if (method
-                .getSignature()
-                .equals(
+        if (signature.equals(
                         "<java.security.PrivilegedActionException: void <init>(java.lang.Exception)>")) {
             addInEdge(pag.nodeFactory().caseThrow(), nodeFactory.caseParm(0));
             addInEdge(pag.nodeFactory().casePrivilegedActionException(), nodeFactory.caseThis());

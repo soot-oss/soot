@@ -47,7 +47,7 @@ public class ThrowInstruction extends DexlibAbstractInstruction {
         Instruction11x throwInstruction = (Instruction11x)instruction;
         throwStmt = Jimple.v().newThrowStmt(body.getRegisterLocal(throwInstruction.getRegisterA()));
         setUnit(throwStmt);
-        tagWithLineNumber(throwStmt);
+        addTags(throwStmt);
         body.add(throwStmt);
 		
         if (IDalvikTyper.ENABLE_DVKTYPER) {

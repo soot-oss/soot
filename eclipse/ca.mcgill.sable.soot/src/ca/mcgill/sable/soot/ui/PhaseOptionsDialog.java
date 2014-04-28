@@ -871,6 +871,9 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkgeom_runs_widget(), "geom-runs");
 
 		
+		addToEnableGroup("cg", "cg.spark", getcgcg_sparkgeom_app_only_widget(), "geom-app-only");
+
+		
 		
 		makeNewEnableGroup("cg", "cg.paddle");
 		
@@ -1954,6 +1957,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionswhole_shimple_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getGeneral_Optionson_the_fly_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionson_the_fly_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getGeneral_Optionsvalidate_widget().getButton().getSelection();
@@ -3319,6 +3332,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkgeom_blocking_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_sparkgeom_app_only_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_sparkgeom_app_only_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getcgcg_sparkgeom_dump_verbose_widget().getText().getText();
@@ -6462,6 +6485,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return General_Optionswhole_shimple_widget;
 	}	
 	
+	private BooleanOptionWidget General_Optionson_the_fly_widget;
+	
+	private void setGeneral_Optionson_the_fly_widget(BooleanOptionWidget widget) {
+		General_Optionson_the_fly_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionson_the_fly_widget() {
+		return General_Optionson_the_fly_widget;
+	}	
+	
 	private BooleanOptionWidget General_Optionsvalidate_widget;
 	
 	private void setGeneral_Optionsvalidate_widget(BooleanOptionWidget widget) {
@@ -7884,6 +7917,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getcgcg_sparkgeom_blocking_widget() {
 		return cgcg_sparkgeom_blocking_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_sparkgeom_app_only_widget;
+	
+	private void setcgcg_sparkgeom_app_only_widget(BooleanOptionWidget widget) {
+		cgcg_sparkgeom_app_only_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_sparkgeom_app_only_widget() {
+		return cgcg_sparkgeom_app_only_widget;
 	}	
 	
 	
@@ -10066,6 +10109,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setGeneral_Optionswhole_shimple_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Shimple Mode", "", "","ws", "\nRun in whole shimple mode, taking into consideration the whole \nprogram when performing Shimple analyses and transformations. \nSoot uses the Call Graph Constructor to build a call graph for \nthe program, then applies enabled transformations in the \nWhole-Shimple Transformation and Whole-Shimple Optimization \nbefore applying enabled intraprocedural transformations. Note \nthat the Whole-Shimple Optimization pack is normally disabled \n(and thus not applied by whole shimple mode), unless you also \nspecify the Whole Program Optimize option.", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"fly";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionson_the_fly_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("On-the-fly Mode", "", "","fly", "\nThis enables whole-program mode but uses a less agressive class \nloading. By default, classes will be loaded without bodies \nunless otherwise requested. The cg pack is disabled in this \nmode. ", defaultBool)));
 		
 		
 		
@@ -13798,7 +13857,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_trans_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Transform to context-insensitive result", "p", "cg.spark","geom-trans", "\n						 If your work only concern the context insensitive \npoints-to information, you can use this option to transform the \ncontext sensitive result to insensitive result. Or, sometimes \nyour code wants to directly access to the points-to vector other \nthan using the standard querying interface, you can use this \noption to guarantee the correct behavior (because we clear the \nSPARK points-to result when running the geom solver). After the \ntransformation, the context sensitive points-to result is \ncleared in order to save memory space for your other jobs. \n						 ", defaultBool)));
+		setcgcg_sparkgeom_trans_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Transform to context-insensitive result", "p", "cg.spark","geom-trans", "\n						 If you stick to working with SPARK, you can use this \noption to transform the context sensitive result to insensitive \nresult. After the transformation, the context sensitive \npoints-to quries cannot be answered. 						 ", defaultBool)));
 		
 		
 		
@@ -13814,7 +13873,23 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_blocking_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Blocking strategy for recursive calls", "p", "cg.spark","geom-blocking", "\n						 When this option is on, we perform the blocking \nstrategy to the recursive calls. This strategy significantly \nimproves the precision. The details are presented in our paper. \n						 ", defaultBool)));
+		setcgcg_sparkgeom_blocking_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Blocking strategy for recursive calls", "p", "cg.spark","geom-blocking", "\n						 Blocking strategy is a 1CFA model for recursive \ncalls. This model significantly improves the precision. 						 ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.spark"+" "+"geom-app-only";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setcgcg_sparkgeom_app_only_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Pointers processed by geomPTA", "p", "cg.spark","geom-app-only", "\n						 When this option is true, geomPTA only processes the \npointers in library functions ( java.*, sun.*, and etc.) that \npotentially impact the points-to information of pointers in \napplication code, the pointers in application code, and the base \npointers at virtual callsites. 						 ", defaultBool)));
 		
 		
 		
@@ -13896,7 +13971,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_dump_verbose_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verbose dump file",  "p", "cg.spark","geom-dump-verbose", "\n						 If you want to persist the detailed execution \ninformation for future analysis, please provide a file name. \n						 ", defaultString)));
+		setcgcg_sparkgeom_dump_verbose_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verbose dump file",  "p", "cg.spark","geom-dump-verbose", "\n						 If you want to save the geomPTA analysis information \nfor future analysis, please provide a file name. 						 ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-verify-name";
@@ -13911,7 +13986,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_verify_name_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verification file",  "p", "cg.spark","geom-verify-name", "\n						 If you want to compare the precision of the points-to \nresults with other solvers (e.g. Paddle), you can use the \n'verify-file' to specify the list of methods (soot method \nsignature format) that are reachable by that solver. Then, in \nthe internal evaluations (see the switch geom-eval), we only \nconsider the methods that are present to both solvers. 						 ", defaultString)));
+		setcgcg_sparkgeom_verify_name_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verification file",  "p", "cg.spark","geom-verify-name", "\n						 If you want to compare the precision of the points-to \nresults with other solvers (e.g. Paddle), you can use the \n'verify-file' to specify the list of methods (soot method \nsignature format) that are reachable by that solver. During the \ninternal evaluations (see the option geom-eval), we only \nconsider the methods that are common to both solvers. 						 ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-eval";
@@ -13926,7 +14001,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_eval_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Precision evaluation methodologies",  "p", "cg.spark","geom-eval", "\n						 We internally provide some precision evaluation \nmethodologies, and classify the evaluation strength into three \nlevels. If level is 0, we do nothing. If level is 1, we report \nthe basic information about the points-to result. If level is 2, \nwe perform the virtual callsite resolution, static cast safety \nand all alias pairs evaluations. 						 ", defaultString)));
+		setcgcg_sparkgeom_eval_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Precision evaluation methodologies",  "p", "cg.spark","geom-eval", "\n						 We internally provide some precision evaluation \nmethodologies and classify the evaluation strength into three \nlevels. If level is 0, we do nothing. If level is 1, we report \nthe statistical information about the points-to result. If level \nis 2, we perform the virtual callsite resolution, static cast \nsafety and all-pairs alias evaluations. 						 ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-frac-base";
@@ -13941,7 +14016,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_frac_base_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Fractional parameter",  "p", "cg.spark","geom-frac-base", "\n						 This option specifies the fractional parameter, which \nis used to manually tune the precision and performance \ntrade-off. The smaller the value, the better the performance but \nthe worse the precision. 						 ", defaultString)));
+		setcgcg_sparkgeom_frac_base_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Fractional parameter",  "p", "cg.spark","geom-frac-base", "\n						 This option specifies the fractional parameter, which \nmanually balances the precision and the performance. Smaller \nvalue means better performance and worse precision. 						 ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-runs";

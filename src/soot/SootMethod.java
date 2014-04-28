@@ -86,6 +86,8 @@ public class SootMethod
      *
      * @param phaseName       Phase name for body loading. */
     private Body getBodyFromMethodSource(String phaseName) {
+    	if (ms == null)
+    		throw new RuntimeException("No method source set for method " + this.getSignature());
         return ms.getBody(this, phaseName);
     }
 
@@ -261,7 +263,7 @@ public class SootMethod
 
     /** Gets the type of the <i>n</i>th parameter of this method. */
     public Type getParameterType(int n) {
-        return (Type) parameterTypes.get(n);
+        return parameterTypes.get(n);
     }
 
     /**
@@ -278,9 +280,7 @@ public class SootMethod
         boolean wasDeclared = isDeclared;
         SootClass oldDeclaringClass = declaringClass;
         if( wasDeclared ) oldDeclaringClass.removeMethod(this);
-        List<Type> al = new ArrayList<Type>();
-        al.addAll(l);
-        this.parameterTypes = Collections.unmodifiableList(al);
+        this.parameterTypes = Collections.unmodifiableList(new ArrayList<Type>(l));
         subsignature =
             Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
         if( wasDeclared) oldDeclaringClass.addMethod(this);
@@ -397,8 +397,7 @@ public class SootMethod
 
     public void setExceptions(List<SootClass> exceptions) {
     	if (exceptions != null && !exceptions.isEmpty()) {
-	        this.exceptions = new ArrayList<SootClass>();
-	        this.exceptions.addAll(exceptions);
+	        this.exceptions = new ArrayList<SootClass>(exceptions);
 	    }
     	else
     		this.exceptions = null;
@@ -550,6 +549,7 @@ public class SootMethod
     public String getSignature() {
         return getSignature(getDeclaringClass(), getName(), getParameterTypes(), getReturnType());
     }
+    
     public static String getSignature(SootClass cl, String name, List<Type> params, Type returnType) {
         StringBuffer buffer = new StringBuffer();
         buffer.append(
@@ -824,4 +824,23 @@ public class SootMethod
     public SootMethodRef makeRef() {
         return Scene.v().makeMethodRef( declaringClass, name, parameterTypes, returnType, isStatic() );
     }
+    
+    @Override
+    public int getJavaSourceStartLineNumber() {
+    	super.getJavaSourceStartLineNumber();
+    	//search statements for first line number
+    	if(line==-1 && hasActiveBody()) {
+    		PatchingChain<Unit> unit = getActiveBody().getUnits();
+    		for (Unit u : unit) {
+    			int l = u.getJavaSourceStartLineNumber();
+    			if(l>-1) {
+    				//store l-1, as method header is usually one line before 1st statement
+    				line = l-1;
+    				break;
+    			}
+			}
+    	} 
+    	return line;
+    }
+   
 }

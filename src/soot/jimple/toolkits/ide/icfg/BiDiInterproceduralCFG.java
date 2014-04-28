@@ -1,15 +1,37 @@
 package soot.jimple.toolkits.ide.icfg;
 
-import java.util.List;
-
-import soot.Unit;
 import heros.InterproceduralCFG;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
+
+import soot.Value;
+import soot.toolkits.graph.DirectedGraph;
 
 /**
  * An {@link InterproceduralCFG} which supports the computation of predecessors.
  */
 public interface BiDiInterproceduralCFG<N, M> extends InterproceduralCFG<N, M> {
 
-	public List<Unit> getPredsOf(Unit u);
+	public List<N> getPredsOf(N u);
+	
+	public Collection<N> getEndPointsOf(M m);
+
+	public List<N> getPredsOfCallAt(N u);
+
+	public Set<N> allNonCallEndNodes();
+		
+	//also exposed to some clients who need it
+	public DirectedGraph<N> getOrCreateUnitGraph(M body);
+
+	public List<Value> getParameterRefs(M m);
+	
+	/**
+	 * Gets whether the given statement is a return site of at least one call
+	 * @param n The statement to check
+	 * @return True if the given statement is a return site, otherwise false
+	 */
+	public boolean isReturnSite(N n);
 
 }

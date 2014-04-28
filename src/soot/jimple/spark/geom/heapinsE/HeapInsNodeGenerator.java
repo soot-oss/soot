@@ -20,14 +20,14 @@ package soot.jimple.spark.geom.heapinsE;
 
 import java.util.Iterator;
 
+import soot.jimple.spark.geom.dataRep.CgEdge;
+import soot.jimple.spark.geom.dataRep.PlainConstraint;
 import soot.jimple.spark.geom.geomE.GeometricManager;
-import soot.jimple.spark.geom.geomPA.CgEdge;
 import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.DummyNode;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IEncodingBroker;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
-import soot.jimple.spark.geom.geomPA.PlainConstraint;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.FieldRefNode;
 import soot.jimple.spark.pag.Node;
@@ -59,13 +59,12 @@ public class HeapInsNodeGenerator extends IEncodingBroker
 		n_legal_cons = 0;
 
 		for (PlainConstraint cons : ptAnalyzer.constraints) {
-			if (cons.isViable == false)
-				continue;
+			if ( !cons.isActive) continue;
 
-			my_lhs = cons.expr.getO1().getRepresentative();
-			my_rhs = cons.expr.getO2().getRepresentative();
-			nf1 = ptAnalyzer.getMappedMethodID(my_lhs.getWrappedNode());
-			nf2 = ptAnalyzer.getMappedMethodID(my_rhs.getWrappedNode());
+			my_lhs = cons.getLHS().getRepresentative();
+			my_rhs = cons.getRHS().getRepresentative();
+			nf1 = ptAnalyzer.getMappedMethodID(my_lhs);
+			nf2 = ptAnalyzer.getMappedMethodID(my_rhs);
 			
 			// Test how many globals are in this constraint
 			code = ((nf1==Constants.SUPER_MAIN ? 1 : 0) << 1) |
@@ -194,8 +193,8 @@ public class HeapInsNodeGenerator extends IEncodingBroker
 			++n_legal_cons;
 		}
 
-		ptAnalyzer.ps.printf("We have %d legal constraints at the beginning, accounting for %.1f%% of the total.\n",
-				n_legal_cons, ((double)n_legal_cons/ptAnalyzer.constraints.size()) * 100 );
+		ptAnalyzer.ps.printf("Only %d (%.1f%%) constraints are needed for this run.\n",
+				n_legal_cons, ((double)n_legal_cons/ptAnalyzer.n_init_constraints) * 100 );
 	}
 	
 	@Override

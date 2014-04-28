@@ -61,7 +61,7 @@ public class JavaLangObjectNative extends NativeMethodClass {
 
   /*********************** java.lang.Object *********************/
   /**
-   * The return variable is assigned an abstract object represneting
+   * The return variable is assigned an abstract object representing
    * all classes (UnknowClassObject) from environment.
    *
    * public final native java.lang.Class getClass();

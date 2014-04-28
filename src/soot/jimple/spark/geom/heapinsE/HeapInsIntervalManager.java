@@ -18,10 +18,10 @@
  */
 package soot.jimple.spark.geom.heapinsE;
 
+import soot.jimple.spark.geom.dataRep.RectangleNode;
+import soot.jimple.spark.geom.dataRep.SegmentNode;
 import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.IFigureManager;
-import soot.jimple.spark.geom.geomPA.RectangleNode;
-import soot.jimple.spark.geom.geomPA.SegmentNode;
 
 /**
  * An abstraction for the management of all the heap insensitive encoding figures.

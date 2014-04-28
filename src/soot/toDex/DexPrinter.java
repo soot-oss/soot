@@ -18,17 +18,16 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.jf.dexlib.AnnotationDirectoryItem;
-import org.jf.dexlib.AnnotationDirectoryItem.FieldAnnotation;
-import org.jf.dexlib.AnnotationDirectoryItem.MethodAnnotation;
 import org.jf.dexlib.ClassDataItem;
 import org.jf.dexlib.ClassDataItem.EncodedField;
 import org.jf.dexlib.ClassDataItem.EncodedMethod;
 import org.jf.dexlib.ClassDefItem;
+import org.jf.dexlib.ClassDefItem.StaticFieldInitializer;
 import org.jf.dexlib.CodeItem;
 import org.jf.dexlib.CodeItem.EncodedCatchHandler;
 import org.jf.dexlib.CodeItem.EncodedTypeAddrPair;
 import org.jf.dexlib.CodeItem.TryItem;
-import org.jf.dexlib.AnnotationItem;
+import org.jf.dexlib.DebugInfoItem;
 import org.jf.dexlib.DexFile;
 import org.jf.dexlib.FieldIdItem;
 import org.jf.dexlib.MethodIdItem;
@@ -37,7 +36,9 @@ import org.jf.dexlib.StringIdItem;
 import org.jf.dexlib.TypeIdItem;
 import org.jf.dexlib.TypeListItem;
 import org.jf.dexlib.Code.Instruction;
+import org.jf.dexlib.EncodedValue.EncodedValue;
 import org.jf.dexlib.Util.ByteArrayAnnotatedOutput;
+import org.jf.dexlib.Util.DebugInfoBuilder;
 import org.jf.dexlib.Util.Pair;
 
 import soot.Body;
@@ -55,6 +56,9 @@ import soot.Unit;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.scalar.EmptySwitchEliminator;
 import soot.options.Options;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.SourceFileTag;
+import soot.tagkit.Tag;
 
 /**
  * Main entry point for the "dex" output format.<br>
@@ -154,6 +158,14 @@ public class DexPrinter {
 	    
 		dexFile.place();
 		
+        boolean fixJumbo = true;
+        boolean fixGoto = false;
+        for (CodeItem codeItem : dexFile.CodeItemsSection.getItems()) {
+            codeItem.fixInstructions(fixJumbo, fixGoto);
+        }
+
+        dexFile.place();
+
 		byte[] outArray = new byte[dexFile.getFileSize()];
 		ByteArrayAnnotatedOutput outBytes = new ByteArrayAnnotatedOutput(outArray);
 		dexFile.writeTo(outBytes);
@@ -199,22 +211,35 @@ public class DexPrinter {
 			interfaceTypes.add(implementedInterface.getType());
 		}
 		TypeListItem implementedInterfaces = toTypeListItem(interfaceTypes, dexFile);
-		ClassDataItem classData = toClassDataItem(c, dexFile);
+        List<StaticFieldInitializer> staticFieldInitializers = new ArrayList<StaticFieldInitializer>();
+        ClassDataItem classData = toClassDataItem(c, dexFile, staticFieldInitializers);
 		AnnotationDirectoryItem di= dexAnnotation.finish();
-		// staticFieldInitializers is not used since the <clinit> method should be enough
-		ClassDefItem.internClassDefItem(dexFile, classType, accessFlags, superType, implementedInterfaces, null, di, classData, null);
+
+        // add source file tag if any
+        StringIdItem sourceFileItem = null;
+        if (c.hasTag("SourceFileTag")) {
+            SourceFileTag sft = (SourceFileTag) c.getTag("SourceFileTag");
+            String sourceFile = sft.getSourceFile();
+            sourceFileItem = StringIdItem.internStringIdItem(dexFile, sourceFile);
+        }
+        ClassDefItem.internClassDefItem(dexFile, classType, accessFlags, superType,
+                implementedInterfaces, sourceFileItem, di, classData, staticFieldInitializers);
 		dexAnnotation = null;
 	}
 	
-	private static ClassDataItem toClassDataItem(SootClass c, DexFile belongingDexFile) {
-		Pair<List<EncodedField>, List<EncodedField>> fields = toFields(c.getFields(), belongingDexFile);
+    private static ClassDataItem toClassDataItem(SootClass c, DexFile belongingDexFile,
+            List<StaticFieldInitializer> staticFieldInitializers) {
+        Pair<List<EncodedField>, List<EncodedField>> fields = toFields(c.getFields(),
+                belongingDexFile, staticFieldInitializers);
 		Pair<List<EncodedMethod>, List<EncodedMethod>> methods = toMethods(c.getMethods(), belongingDexFile);
 		ClassDataItem citem = ClassDataItem.internClassDataItem(belongingDexFile, fields.first, fields.second, methods.first, methods.second);
 		dexAnnotation.handleClass(c, citem);
 		return citem;
 	}
 	
-	private static Pair<List<EncodedField>, List<EncodedField>> toFields(Collection<SootField> sootFields, DexFile belongingDexFile) {
+    private static Pair<List<EncodedField>, List<EncodedField>> toFields(
+            Collection<SootField> sootFields, DexFile belongingDexFile,
+            List<StaticFieldInitializer> staticFieldInitializers) {
 		List<EncodedField> staticFields = new ArrayList<EncodedField>();
 		List<EncodedField> instanceFields = new ArrayList<EncodedField>();
 		Pair<List<EncodedField>, List<EncodedField>> fields = new Pair<List<EncodedField>, List<EncodedField>>(staticFields, instanceFields);
@@ -222,11 +247,20 @@ public class DexPrinter {
 			if (f.isPhantom()) {
 				continue;
 			}
-			FieldIdItem fieldIdItem = toFieldIdItem(f, belongingDexFile);
+            List<EncodedValue> staticInits = new ArrayList<EncodedValue>();
+            FieldIdItem fieldIdItem = toFieldIdItem(f, belongingDexFile, staticInits);
 			int accessFlags = f.getModifiers();
 			EncodedField ef = new EncodedField(fieldIdItem, accessFlags);
+
 			if (f.isStatic()) {
 				staticFields.add(ef);
+                if (staticInits.size() > 0) {
+                    EncodedValue ev = staticInits.get(0);
+                    StaticFieldInitializer sfi = new StaticFieldInitializer(ev, ef);
+                    staticFieldInitializers.add(sfi);
+                } else {
+                    throw new RuntimeException("error: expected static inial value.");
+                }
 			} else {
 				instanceFields.add(ef);
 			}
@@ -264,12 +298,16 @@ public class DexPrinter {
 		return TypeListItem.internTypeListItem(belongingDexFile, typeItems);
 	}
 	
-	protected static FieldIdItem toFieldIdItem(SootField f, DexFile belongingDexFile) {
+    protected static FieldIdItem toFieldIdItem(SootField f, DexFile belongingDexFile,
+            List<EncodedValue> staticInits) {
 		TypeIdItem declaringClassType = toTypeIdItem(f.getDeclaringClass().getType(), belongingDexFile);
 		TypeIdItem fieldType = toTypeIdItem(f.getType(), belongingDexFile);
 		StringIdItem fieldName = StringIdItem.internStringIdItem(belongingDexFile, f.getName());
 		FieldIdItem fid = FieldIdItem.internFieldIdItem(belongingDexFile, declaringClassType, fieldType, fieldName);
-		dexAnnotation.handleField(f, fid);
+        List<EncodedValue> staticInit = dexAnnotation.handleField(f, fid);
+        if (staticInits != null) {
+            staticInits.addAll(staticInit);
+        }
 		return fid;
 	}
 	
@@ -284,7 +322,6 @@ public class DexPrinter {
 	
 	private static ProtoIdItem toProtoIdItem(SootMethodRef m, DexFile belongingDexFile) {
 		TypeIdItem returnType = toTypeIdItem(m.returnType(), belongingDexFile);
-		@SuppressWarnings("unchecked")
 		List<Type> parameterTypes = m.parameterTypes();
 		TypeListItem parameters = toTypeListItem(parameterTypes, belongingDexFile);
 		return ProtoIdItem.internProtoIdItem(belongingDexFile, returnType, parameters);
@@ -337,9 +374,33 @@ public class DexPrinter {
 		// Split the tries since Dalvik does not supported nested try/catch blocks
 		TrapSplitter.v().transform(activeBody);
 
+        DebugInfoBuilder diBuilder = new DebugInfoBuilder();
+        Map<Instruction, List<Tag>> instructionTagMap = stmtV.getInstructionTagMap();
+        // get line numbers
+        int codeAddress = 0;
+        for (Instruction i : instructions) {
+            if (instructionTagMap.containsKey(i)) {
+                List<Tag> tags = instructionTagMap.get(i);
+                for (Tag t : tags) {
+                    if (t instanceof LineNumberTag) {
+                        LineNumberTag lnt = (LineNumberTag) t;
+                        int lineNumber = lnt.getLineNumber();
+                        diBuilder.addLine(codeAddress, lineNumber);
+                        Debug.printDbg(" [toDex] add line " + lineNumber + " at code offset: "
+                                + codeAddress + " (" + i + ")");
+                    }
+                }
+            }
+
+            codeAddress += i.getSize(codeAddress);
+        }
+
 		List<EncodedCatchHandler> encodedCatchHandlers = new ArrayList<CodeItem.EncodedCatchHandler>();
 		List<TryItem> tries = toTries(activeBody.getTraps(), encodedCatchHandlers, stmtV, belongingDexFile);
-		return CodeItem.internCodeItem(belongingDexFile, registerCount, inWords, outWords, null, instructions, tries, encodedCatchHandlers);
+        DebugInfoItem debugInfo = diBuilder.encodeDebugInfo(belongingDexFile);
+
+        return CodeItem.internCodeItem(belongingDexFile, registerCount, inWords, outWords,
+                debugInfo, instructions, tries, encodedCatchHandlers);
 	}
 
 	private static List<Instruction> toInstructions(Collection<Unit> units, StmtVisitor stmtV) {

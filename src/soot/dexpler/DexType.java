@@ -175,6 +175,10 @@ public class DexType {
      * This method transforms the Java bytecode representation
      * into the Soot annotation type representation.
      * 
+     * Ljava/lang/Class<Ljava/lang/Enum<*>;>;
+     * becomes
+     * java/lang/Class<java/lang/Enum<*>>
+     *
      * @param type
      * @param pos
      * @return
@@ -192,6 +196,16 @@ public class DexType {
         return r;
     }
     
+    public static String toDalvikICAT(String type) {
+        type = type.replaceAll("<", "<L");
+        type = type.replaceAll(">", ">;");
+        type = "L" + type; // a class name cannot be a primitive
+        type = type.replaceAll("L\\*;", "*");
+        if (!type.endsWith(";"))
+            type += ";";
+        return type;
+    }
+
     /**
      * Types read from annotations should be converted to Soot type.
      * However, to maintain compatibility with Soot code most type

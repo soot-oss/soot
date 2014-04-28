@@ -1,5 +1,7 @@
 package soot.toolkits.purity;
 
+import org.junit.Ignore;
+
 /**
  * This example is from the article "A Combined Pointer and Purity Analysis for
  * Java Programs" by Alexandru Salcianu and Martin Rinard.
@@ -76,6 +78,7 @@ class Point {
     }
 }
 
+@Ignore("not a real test!")
 public class PurityTest {
 
     static float sumX(List list) {

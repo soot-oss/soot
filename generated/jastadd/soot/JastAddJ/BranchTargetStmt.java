@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -74,7 +73,7 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:58
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:57
    */
   public void collectBranches(Collection c) {
     c.addAll(escapedBranches());
@@ -82,7 +81,7 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:157
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:156
    */
   public Stmt branchTarget(Stmt branchStmt) {
     if(targetBranches().contains(branchStmt))
@@ -92,7 +91,7 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
   /**
    * @ast method 
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:195
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:194
    */
   public void collectFinally(Stmt branchStmt, ArrayList list) {
     if(targetBranches().contains(branchStmt))
@@ -137,14 +136,14 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:40
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:39
    */
   @SuppressWarnings({"unchecked", "cast"})
   public abstract boolean targetOf(ContinueStmt stmt);
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:41
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:40
    */
   @SuppressWarnings({"unchecked", "cast"})
   public abstract boolean targetOf(BreakStmt stmt);
@@ -231,7 +230,7 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:83
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:82
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection targetBranches() {
@@ -270,7 +269,7 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:95
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:94
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection escapedBranches() {
@@ -311,7 +310,7 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:109
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:108
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection branches() {
@@ -344,7 +343,7 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:216
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:215
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection targetContinues() {
@@ -388,7 +387,7 @@ public abstract class BranchTargetStmt extends Stmt implements Cloneable, Branch
   /**
    * @attribute syn
    * @aspect BranchTarget
-   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:233
+   * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/BranchTarget.jrag:232
    */
   @SuppressWarnings({"unchecked", "cast"})
   public Collection targetBreaks() {

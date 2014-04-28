@@ -46,8 +46,8 @@ import soot.toolkits.scalar.BackwardFlowAnalysis;
 
 /**
  * An intraprocedural nullness assumption analysis that computes for each location and each value
- * in a method if the value (before or after that location) is treated as definetely null,
- * definetely non-null or neither.  This information could be useful in deciding whether
+ * in a method if the value (before or after that location) is treated as definitely null,
+ * definitely non-null or neither.  This information could be useful in deciding whether
  * or not to insert code that accesses a potentially null object.  If the original
  * program assumes a value is non-null, then adding a use of that value 
  * will not introduce any NEW nullness errors into the program.

@@ -39,14 +39,14 @@ public class AllocNode extends Node implements Context {
     /** Returns the new expression of this allocation site. */
     public Object getNewExpr() { return newExpr; }
     /** Returns all field ref nodes having this node as their base. */
-    public Collection getAllFieldRefs() { 
-        if( fields == null ) return Collections.EMPTY_LIST;
+    public Collection<AllocDotField> getAllFieldRefs() { 
+        if( fields == null ) return Collections.emptySet();
         return fields.values();
     }
     /** Returns the field ref node having this node as its base,
      * and field as its field; null if nonexistent. */
     public AllocDotField dot( SparkField field ) 
-    { return fields == null ? null : (AllocDotField) fields.get( field ); }
+    { return fields == null ? null : fields.get( field ); }
     public String toString() {
 	return "AllocNode "+getNumber()+" "+newExpr+" in method "+method;
     }
@@ -71,19 +71,19 @@ public class AllocNode extends Node implements Context {
     }
     /** Registers a AllocDotField as having this node as its base. */
     void addField( AllocDotField adf, SparkField field ) {
-	if( fields == null ) fields = new HashMap();
+	if( fields == null ) fields = new HashMap<SparkField, AllocDotField>();
         fields.put( field, adf );
     }
 
     public Set<AllocDotField> getFields() {
-        if( fields == null ) return Collections.EMPTY_SET;
+        if( fields == null ) return Collections.emptySet();
         return new HashSet<AllocDotField>( fields.values() );
     }
 
     /* End of package methods. */
 
     protected Object newExpr;
-    protected Map fields;
+    protected Map<SparkField, AllocDotField> fields;
 
     private SootMethod method;
     public SootMethod getMethod() { return method; }

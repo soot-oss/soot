@@ -60,7 +60,7 @@ public class InstanceOfInstruction extends DexlibAbstractInstruction {
         InstanceOfExpr e = Jimple.v().newInstanceOfExpr(body.getRegisterLocal(source), t);
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), e);
         setUnit(assign);
-        tagWithLineNumber(assign);
+        addTags(assign);
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {

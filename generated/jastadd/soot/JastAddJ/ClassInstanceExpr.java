@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -72,14 +71,16 @@ public class ClassInstanceExpr extends Access implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ClassInstanceExpr copy() {
-      try {
-        ClassInstanceExpr node = (ClassInstanceExpr)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      ClassInstanceExpr node = (ClassInstanceExpr) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -89,25 +90,17 @@ public class ClassInstanceExpr extends Access implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ClassInstanceExpr fullCopy() {
-    try {
-      ClassInstanceExpr tree = (ClassInstanceExpr) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    ClassInstanceExpr tree = (ClassInstanceExpr) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -729,8 +722,6 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     getTypeDeclOpt().setChild(node, 0);
   }
   /**
-   * Retrieves the optional node for the TypeDecl child. This is the {@code Opt} node containing the child TypeDecl, not the actual child!
-   * @return The optional node for child the TypeDecl child.
    * @apilevel low-level
    * @ast method 
    * 
@@ -1223,10 +1214,10 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     if(caller == getTypeDeclOptNoTransform()) {
       return isDAafterInstance(v);
     }
-    else if(caller == getArgListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-      return computeDAbefore(i, v);
-    }
+    else if(caller == getArgListNoTransform())  {
+    int i = caller.getIndexOfChild(child);
+    return computeDAbefore(i, v);
+  }
     else {      return getParent().Define_boolean_isDAbefore(this, caller, v);
     }
   }
@@ -1235,10 +1226,10 @@ public class ClassInstanceExpr extends Access implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
-    if(caller == getArgListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-      return computeDUbefore(i, v);
-    }
+    if(caller == getArgListNoTransform())  {
+    int i = caller.getIndexOfChild(child);
+    return computeDUbefore(i, v);
+  }
     else {      return getParent().Define_boolean_isDUbefore(this, caller, v);
     }
   }
@@ -1247,10 +1238,10 @@ public class ClassInstanceExpr extends Access implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_hasPackage(ASTNode caller, ASTNode child, String packageName) {
-    if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return unqualifiedScope().hasPackage(packageName);
-    }
+    if(caller == getArgListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return unqualifiedScope().hasPackage(packageName);
+  }
     else {      return getParent().Define_boolean_hasPackage(this, caller, packageName);
     }
   }
@@ -1276,10 +1267,10 @@ public class ClassInstanceExpr extends Access implements Cloneable {
     }
     return c;
   }
-    else if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return unqualifiedScope().lookupType(name);
-    }
+    else if(caller == getArgListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return unqualifiedScope().lookupType(name);
+  }
     else {      return getParent().Define_SimpleSet_lookupType(this, caller, name);
     }
   }
@@ -1288,10 +1279,10 @@ public class ClassInstanceExpr extends Access implements Cloneable {
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-    if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return unqualifiedScope().lookupVariable(name);
-    }
+    if(caller == getArgListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return unqualifiedScope().lookupVariable(name);
+  }
     else {      return getParent().Define_SimpleSet_lookupVariable(this, caller, name);
     }
   }
@@ -1300,10 +1291,10 @@ public class ClassInstanceExpr extends Access implements Cloneable {
    * @apilevel internal
    */
   public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
-    if(caller == getArgListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return NameType.EXPRESSION_NAME;
-    }
+    if(caller == getArgListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return NameType.EXPRESSION_NAME;
+  }
     else if(caller == getTypeDeclOptNoTransform()) {
       return NameType.TYPE_NAME;
     }

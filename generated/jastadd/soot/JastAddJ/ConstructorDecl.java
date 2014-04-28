@@ -1,8 +1,7 @@
-/* This file was generated with JastAdd2 (http://jastadd.org) version R20121122 (r889) */
+/* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.io.File;
 import java.util.*;
 import beaver.*;
@@ -94,14 +93,16 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ConstructorDecl copy() {
-      try {
-        ConstructorDecl node = (ConstructorDecl)clone();
-        if(children != null) node.children = (ASTNode[])children.clone();
-        return node;
-      } catch (CloneNotSupportedException e) {
-      }
-      System.err.println("Error: Could not clone node of type " + getClass().getName() + "!");
-      return null;
+    try {
+      ConstructorDecl node = (ConstructorDecl) clone();
+      node.parent = null;
+      if(children != null)
+        node.children = (ASTNode[]) children.clone();
+      return node;
+    } catch (CloneNotSupportedException e) {
+      throw new Error("Error: clone not supported for " +
+        getClass().getName());
+    }
   }
   /**
    * Create a deep copy of the AST subtree at this node.
@@ -111,25 +112,17 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
    */
   @SuppressWarnings({"unchecked", "cast"})
   public ConstructorDecl fullCopy() {
-    try {
-      ConstructorDecl tree = (ConstructorDecl) clone();
-      tree.setParent(null);// make dangling
-      if (children != null) {
-        tree.children = new ASTNode[children.length];
-        for (int i = 0; i < children.length; ++i) {
-          if (children[i] == null) {
-            tree.children[i] = null;
-          } else {
-            tree.children[i] = ((ASTNode) children[i]).fullCopy();
-            ((ASTNode) tree.children[i]).setParent(tree);
-          }
+    ConstructorDecl tree = (ConstructorDecl) copy();
+    if (children != null) {
+      for (int i = 0; i < children.length; ++i) {
+        ASTNode child = (ASTNode) children[i];
+        if(child != null) {
+          child = child.fullCopy();
+          tree.setChild(child, i);
         }
       }
-      return tree;
-    } catch (CloneNotSupportedException e) {
-      throw new Error("Error: clone not supported for " +
-        getClass().getName());
     }
+    return tree;
   }
   /**
    * @ast method 
@@ -983,8 +976,6 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     getConstructorInvocationOpt().setChild(node, 0);
   }
   /**
-   * Retrieves the optional node for the ConstructorInvocation child. This is the {@code Opt} node containing the child ConstructorInvocation, not the actual child!
-   * @return The optional node for child the ConstructorInvocation child.
    * @apilevel low-level
    * @ast method 
    * 
@@ -2072,10 +2063,10 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
    * @apilevel internal
    */
   public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
-    if(caller == getParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return parameterDeclaration(name);
-    }
+    if(caller == getParameterListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return parameterDeclaration(name);
+  }
     else if(caller == getConstructorInvocationOptNoTransform()){
     SimpleSet set = parameterDeclaration(name);
     if(!set.isEmpty()) return set;
@@ -2146,14 +2137,14 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
     if(caller == getConstructorInvocationOptNoTransform()) {
       return NameType.EXPRESSION_NAME;
     }
-    else if(caller == getExceptionListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return NameType.TYPE_NAME;
-    }
-    else if(caller == getParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return NameType.TYPE_NAME;
-    }
+    else if(caller == getExceptionListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return NameType.TYPE_NAME;
+  }
+    else if(caller == getParameterListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return NameType.TYPE_NAME;
+  }
     else {      return getParent().Define_NameType_nameType(this, caller);
     }
   }
@@ -2212,10 +2203,10 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
-    if(caller == getParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getParameterListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_isMethodParameter(this, caller);
     }
   }
@@ -2224,10 +2215,10 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
-    if(caller == getParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return true;
-    }
+    if(caller == getParameterListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return true;
+  }
     else {      return getParent().Define_boolean_isConstructorParameter(this, caller);
     }
   }
@@ -2236,10 +2227,10 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
-    if(caller == getParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getParameterListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_isExceptionHandlerParameter(this, caller);
     }
   }
@@ -2259,10 +2250,10 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
-    if(caller == getParameterListNoTransform()) {
-      int i = caller.getIndexOfChild(child);
-      return i == getNumParameter() - 1;
-    }
+    if(caller == getParameterListNoTransform())  {
+    int i = caller.getIndexOfChild(child);
+    return i == getNumParameter() - 1;
+  }
     else {      return getParent().Define_boolean_variableArityValid(this, caller);
     }
   }
@@ -2271,15 +2262,15 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
    * @apilevel internal
    */
   public int Define_int_localNum(ASTNode caller, ASTNode child) {
-    if(caller == getParameterListNoTransform()) { 
-   int index = caller.getIndexOfChild(child);
-{
+    if(caller == getParameterListNoTransform())  { 
+    int index = caller.getIndexOfChild(child);
+    {
     if(index == 0) {
       return localNumOfFirstParameter();
     }
     return getParameter(index-1).localNum() + getParameter(index-1).type().variableSize();
   }
-}
+  }
     else {      return getParent().Define_int_localNum(this, caller);
     }
   }
@@ -2299,10 +2290,10 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_inhModifiedInScope(ASTNode caller, ASTNode child, Variable var) {
-    if(caller == getParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return getBlock().modifiedInScope(var);
-    }
+    if(caller == getParameterListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return getBlock().modifiedInScope(var);
+  }
     else {      return getParent().Define_boolean_inhModifiedInScope(this, caller, var);
     }
   }
@@ -2311,10 +2302,10 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
    * @apilevel internal
    */
   public boolean Define_boolean_isCatchParam(ASTNode caller, ASTNode child) {
-    if(caller == getParameterListNoTransform()) {
-      int childIndex = caller.getIndexOfChild(child);
-      return false;
-    }
+    if(caller == getParameterListNoTransform())  {
+    int childIndex = caller.getIndexOfChild(child);
+    return false;
+  }
     else {      return getParent().Define_boolean_isCatchParam(this, caller);
     }
   }

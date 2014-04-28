@@ -103,7 +103,8 @@ public class IFDSReachingDefinitions extends DefaultJimpleIFDSTabulationProblem<
 
 					@Override
 					public Set<Pair<Value, Set<DefinitionStmt>>> computeTargets(Pair<Value, Set<DefinitionStmt>> source) {
-						if (!destinationMethod.getName().equals("<clinit>"))
+						if (!destinationMethod.getName().equals("<clinit>")
+								&& !destinationMethod.getSubSignature().equals("void run()"))
 							if(localArguments.contains(source.getO1())) {
 								int paramIndex = args.indexOf(source.getO1());
 								Pair<Value, Set<DefinitionStmt>> pair = new Pair<Value, Set<DefinitionStmt>>(

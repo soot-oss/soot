@@ -24,12 +24,10 @@ import heros.SynchronizedBy;
 import heros.ThreadSafe;
 import heros.solver.IDESolver;
 
-import java.util.HashMap;
+import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import soot.Body;
 import soot.MethodOrMethodContext;
@@ -37,15 +35,10 @@ import soot.PatchingChain;
 import soot.Scene;
 import soot.SootMethod;
 import soot.Unit;
-import soot.UnitBox;
-import soot.jimple.Stmt;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.EdgePredicate;
 import soot.jimple.toolkits.callgraph.Filter;
-import soot.toolkits.exceptions.UnitThrowAnalysis;
-import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
 
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -60,7 +53,7 @@ import com.google.common.cache.LoadingCache;
  * in a thread-safe way, too.
  */
 @ThreadSafe
-public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,SootMethod> {
+public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 	
 	//retains only callers that are explicit call sites or Thread.start()
 	public static class EdgeFilter extends Filter {		
@@ -68,7 +61,8 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 			super(new EdgePredicate() {
 				@Override
 				public boolean want(Edge e) {				
-					return e.kind().isExplicit() || e.kind().isThread() || e.kind().isClinit();
+					return e.kind().isExplicit() || e.kind().isThread() || e.kind().isExecutor()
+							|| e.kind().isAsyncTask() || e.kind().isClinit();
 				}
 			});
 		}
@@ -77,24 +71,12 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 	@DontSynchronize("readonly")
 	protected final CallGraph cg;
 	
-	@DontSynchronize("written by single thread; read afterwards")
-	protected final Map<Unit,Body> unitToOwner = new HashMap<Unit,Body>();	
-	
 	@SynchronizedBy("by use of synchronized LoadingCache class")
-	protected final LoadingCache<Body,DirectedGraph<Unit>> bodyToUnitGraph =
-			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Body,DirectedGraph<Unit>>() {
+	protected final LoadingCache<Unit,Collection<SootMethod>> unitToCallees =
+			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Unit,Collection<SootMethod>>() {
 				@Override
-				public DirectedGraph<Unit> load(Body body) throws Exception {
-					return makeGraph(body);
-				}
-			});
-	
-	@SynchronizedBy("by use of synchronized LoadingCache class")
-	protected final LoadingCache<Unit,Set<SootMethod>> unitToCallees =
-			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Unit,Set<SootMethod>>() {
-				@Override
-				public Set<SootMethod> load(Unit u) throws Exception {
-					Set<SootMethod> res = new LinkedHashSet<SootMethod>();
+				public Collection<SootMethod> load(Unit u) throws Exception {
+					List<SootMethod> res = new LinkedList<SootMethod>();
 					//only retain callers that are explicit call sites or Thread.start()
 					Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesOutOf(u));					
 					while(edgeIter.hasNext()) {
@@ -110,36 +92,21 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 			});
 
 	@SynchronizedBy("by use of synchronized LoadingCache class")
-	protected final LoadingCache<SootMethod,Set<Unit>> methodToCallers =
-			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,Set<Unit>>() {
+	protected final LoadingCache<SootMethod,Collection<Unit>> methodToCallers =
+			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,Collection<Unit>>() {
 				@Override
-				public Set<Unit> load(SootMethod m) throws Exception {
-					Set<Unit> res = new LinkedHashSet<Unit>();					
+				public Collection<Unit> load(SootMethod m) throws Exception {
+					List<Unit> res = new LinkedList<Unit>();
 					//only retain callers that are explicit call sites or Thread.start()
 					Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesInto(m));					
 					while(edgeIter.hasNext()) {
 						Edge edge = edgeIter.next();
-						res.add(edge.srcUnit());			
+						res.add(edge.srcUnit());
 					}
 					return res;
 				}
 			});
 
-	@SynchronizedBy("by use of synchronized LoadingCache class")
-	protected final LoadingCache<SootMethod,Set<Unit>> methodToCallsFromWithin =
-			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,Set<Unit>>() {
-				@Override
-				public Set<Unit> load(SootMethod m) throws Exception {
-					Set<Unit> res = new LinkedHashSet<Unit>();
-					for(Unit u: m.getActiveBody().getUnits()) {
-						if(isCallStmt(u))
-							res.add(u);
-					}
-					return res;
-				}
-			});
-
-	
 	public JimpleBasedInterproceduralCFG() {
 		cg = Scene.v().getCallGraph();		
 		initializeUnitToOwner();
@@ -159,101 +126,13 @@ public class JimpleBasedInterproceduralCFG implements InterproceduralCFG<Unit,So
 	}
 
 	@Override
-	public SootMethod getMethodOf(Unit u) {
-		assert unitToOwner.containsKey(u);
-		return unitToOwner.get(u).getMethod();
-	}
-
-	@Override
-	public List<Unit> getSuccsOf(Unit u) {
-		Body body = unitToOwner.get(u);
-		DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
-		return unitGraph.getSuccsOf(u);
-	}
-
-	protected DirectedGraph<Unit> getOrCreateUnitGraph(Body body) {
-		return bodyToUnitGraph.getUnchecked(body);
-	}
-
-	protected synchronized DirectedGraph<Unit> makeGraph(Body body) {
-		return new ExceptionalUnitGraph(body, UnitThrowAnalysis.v() ,true);
-	}
-
-	@Override
-	public Set<SootMethod> getCalleesOfCallAt(Unit u) {
+	public Collection<SootMethod> getCalleesOfCallAt(Unit u) {
 		return unitToCallees.getUnchecked(u);
 	}
 
 	@Override
-	public List<Unit> getReturnSitesOfCallAt(Unit u) {
-		return getSuccsOf(u);
-	}
-
-	@Override
-	public boolean isCallStmt(Unit u) {
-		return ((Stmt)u).containsInvokeExpr();
-	}
-
-	@Override
-	public boolean isExitStmt(Unit u) {
-		Body body = unitToOwner.get(u);
-		DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
-		return unitGraph.getTails().contains(u);
-	}
-
-	@Override
-	public Set<Unit> getCallersOf(SootMethod m) {
+	public Collection<Unit> getCallersOf(SootMethod m) {
 		return methodToCallers.getUnchecked(m);
 	}
 	
-	@Override
-	public Set<Unit> getCallsFromWithin(SootMethod m) {
-		return methodToCallsFromWithin.getUnchecked(m);		
-	}
-
-	@Override
-	public Set<Unit> getStartPointsOf(SootMethod m) {
-		if(m.hasActiveBody()) {
-			Body body = m.getActiveBody();
-			DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
-			return new LinkedHashSet<Unit>(unitGraph.getHeads());
-		}
-		return null;
-	}
-
-	@Override
-	public boolean isStartPoint(Unit u) {
-		Body body = unitToOwner.get(u);
-		DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);		
-		return unitGraph.getHeads().contains(u);
-	}
-
-	@Override
-	//TODO do we need to replace call by return for backwards analysis?
-	public Set<Unit> allNonCallStartNodes() {
-		Set<Unit> res = new LinkedHashSet<Unit>(unitToOwner.keySet());
-		for (Iterator<Unit> iter = res.iterator(); iter.hasNext();) {
-			Unit u = iter.next();
-			if(isStartPoint(u) || isCallStmt(u)) iter.remove();
-		}
-		return res;
-	}
-
-	@Override
-	public boolean isFallThroughSuccessor(Unit u, Unit succ) {
-		assert getSuccsOf(u).contains(succ);
-		if(!u.fallsThrough()) return false;
-		Body body = unitToOwner.get(u);
-		return body.getUnits().getSuccOf(u) == succ;
-	}
-
-	@Override
-	public boolean isBranchTarget(Unit u, Unit succ) {
-		assert getSuccsOf(u).contains(succ);
-		if(!u.branches()) return false;
-		for (UnitBox ub : succ.getUnitBoxes()) {
-			if(ub.getUnit()==succ) return true;
-		}
-		return false;
-	}
 }

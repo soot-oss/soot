@@ -670,10 +670,10 @@ public final class JavaScanner extends Scanner {
       the source of the yytext() string */
   private char zzBuffer[] = new char[ZZ_BUFFERSIZE];
 
-  /** the textposition at the last accepting state */
+  /** the text position at the last accepting state */
   private int zzMarkedPos;
 
-  /** the textposition at the last state to be included in yytext */
+  /** the text position at the last state to be included in yytext */
   private int zzPushbackPos;
 
   /** the current text position in the buffer */
@@ -900,9 +900,9 @@ public final class JavaScanner extends Scanner {
 
 
   /**
-   * Reports an error that occured while scanning.
+   * Reports an error that occurred while scanning.
    *
-   * In a wellformed scanner (no or only correct usage of 
+   * In a well-formed scanner (no or only correct usage of 
    * yypushback(int) and a match-all fallback rule) this method 
    * will only be called with things that "Can't Possibly Happen".
    * If this method is called, something is seriously wrong

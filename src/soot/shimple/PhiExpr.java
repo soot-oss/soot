@@ -153,13 +153,13 @@ public interface PhiExpr extends ShimpleExpr
     public boolean setValue(int index, Value arg);
 
     /**
-     * Locate the argument assocatiated with the given CFG predecessor unit
+     * Locate the argument associated with the given CFG predecessor unit
      * and set the value.  Returns false on failure.
      **/
     public boolean setValue(Unit predTailUnit, Value arg);
 
     /**
-     * Locate the argument assocatiated with the given CFG predecessor
+     * Locate the argument associated with the given CFG predecessor
      * and set the value.  Returns false on failure.
      **/
     public boolean setValue(Block pred, Value arg);

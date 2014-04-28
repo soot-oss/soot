@@ -57,7 +57,7 @@ import soot.jimple.*;
  * TODO: see if we must take the global node  into account also when stating
  * whether a parameter is read-only or safe.
  *
- * - "simplifyXXX" functions are experimiental... they may be unsound, and
+ * - "simplifyXXX" functions are experimental... they may be unsound, and
  * thus, not used now.
  *
  *
@@ -66,7 +66,7 @@ import soot.jimple.*;
  * NOTE:
  * A lot of precision degradation comes from sequences of the form
  *   this.field = y; z = this.field
- * in initialisers: the second statment creates a load node because, as a
+ * in initialisers: the second statement creates a load node because, as a
  * parameter, this may have escaped and this.field may be externally modified
  * in-between the two instructions. I am not sure this can actually happend
  * in an initialiser... in a a function called directly and only by
@@ -648,7 +648,7 @@ public class PurityGraph
 	if (doCheck) sanityCheck();
     }
 
-    /** Experimental sumplification: remove inside nodes not reachables
+    /** Experimental simplification: remove inside nodes not reachable
 	from escaping nodes (params, ret, globEscape) or load nodes. */
     void simplifyInside()
     {
