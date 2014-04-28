@@ -1352,6 +1352,12 @@ public class AntTask extends MatchingTask {
             addArg("geom-blocking:"+(arg?"true":"false"));
           }
       
+          public void setgeom_app_only(boolean arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("geom-app-only:"+(arg?"true":"false"));
+          }
+      
           public void setpropagator(String arg) {
             addArg("-p");
             addArg("cg.spark");

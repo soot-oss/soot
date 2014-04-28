@@ -21,34 +21,31 @@ package soot.jimple.spark.geom.geomPA;
 import java.io.PrintStream;
 import java.util.Set;
 
-import soot.Scene;
+import soot.SootMethod;
 import soot.Type;
-import soot.jimple.spark.geom.helper.PtSensVisitor;
+import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
+import soot.jimple.spark.geom.dataRep.PlainConstraint;
+import soot.jimple.spark.geom.dataRep.RectangleNode;
 import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.Node;
 import soot.util.Numberable;
 
 /**
- * An interface makes the points-to solver automatically adapt to different kind of encodings.
- * This interface defines the operations that are needed for manipulating a variable (pointer/object).
+ * Pointer/object representation in geomPTA.
+ * This interface defines the operations needed for manipulating a pointer/object.
  * 
  * @author xiao
  *
  */
 public abstract class IVarAbstraction implements Numberable 
 {	
-	protected static GeomPointsTo ptsProvider = null;
 	// A shape manager that has only one all map to all member, representing the context insensitive points-to info
 	protected static IFigureManager stubManager = null;
 	// This is used to indicate the corresponding object should be removed
 	protected static IFigureManager deadManager = null;
 	// A temporary rectangle holds the candidate figure 
 	protected static RectangleNode pres = null;
-	
-	static {
-		// Initialize the static fields
-		ptsProvider = (GeomPointsTo)Scene.v().getPointsToAnalysis();
-	}
 	
 	// Corresponding SPARK node
 	public Node me;
@@ -72,20 +69,11 @@ public abstract class IVarAbstraction implements Numberable
 		parent = this;
 	}
 	
-	public Node getWrappedNode()
-	{
-		return me;
-	}
-	
-	public Type getType()
-	{
-		return me.getType();
-	}
-	
+	/**
+	 * Used by ordering the nodes in priority worklist.
+	 */
 	public boolean lessThan( IVarAbstraction other )
 	{
-		// NEED IMPROVE
-		
 		if ( lrf_value != other.lrf_value ) 
 			return lrf_value < other.lrf_value;
 		
@@ -128,6 +116,48 @@ public abstract class IVarAbstraction implements Numberable
 		return super.toString();
 	}
 	
+	/**
+	 * This pointer/object is reachable if its enclosing method is reachable.
+	 * Pleas always call this method to check the status before querying points-to information.
+	 */
+	public boolean reachable()
+	{
+		return id != -1;
+	}
+	
+	/**
+	 * Test if this pointer currently has points-to result.
+	 * The result can be computed in the last iteration of geomPTA, although its willUpdate = false this round.
+	 */
+	public boolean hasPTResult()
+	{
+		return num_of_diff_objs() != -1;
+	}
+	
+	/**
+	 * Processing the wrapped SPARK node.
+	 */
+	public Node getWrappedNode()
+	{
+		return me;
+	}
+	
+	public Type getType()
+	{
+		return me.getType();
+	}
+	
+	public boolean isLocalPointer()
+	{
+		return me instanceof LocalVarNode;
+	}
+	
+	public SootMethod enclosingMethod()
+	{
+		if ( me instanceof LocalVarNode )
+			return ((LocalVarNode) me).getMethod();
+		return null;
+	}
 	
 	// Initiation
 	public abstract boolean add_points_to_3( AllocNode obj, long I1, long I2, long L );
@@ -153,6 +183,10 @@ public abstract class IVarAbstraction implements Numberable
 	
 	
 	// Obtaining points-to information statistics
+	/**
+	 * Return -1 if this pointer does not have points-to information.
+	 * This function can be used for testing if the pointer has been processed by geomPTA.
+	 */
 	public abstract int num_of_diff_objs();
 	public abstract int num_of_diff_edges();
 	public abstract int count_pts_intervals( AllocNode obj );
@@ -160,7 +194,7 @@ public abstract class IVarAbstraction implements Numberable
 	public abstract int count_flow_intervals( IVarAbstraction qv );
 	
 	
-	// Testing procedures
+	// Querying procedures
 	/**
 	 * Perform context sensitive alias checking with qv.
 	 * @param qv
@@ -183,8 +217,7 @@ public abstract class IVarAbstraction implements Numberable
 	 */
 	public abstract boolean isDeadObject( AllocNode obj );
 	
-	
-	// Querying
+
 	/**
 	 * Obtain context insensitive points-to result (by removing contexts).
 	 * @return

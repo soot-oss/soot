@@ -20,8 +20,8 @@ package soot.jimple.spark.geom.geomPA;
 
 import java.io.PrintStream;
 import java.util.Set;
-import soot.Type;
-import soot.jimple.spark.geom.helper.PtSensVisitor;
+import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
+import soot.jimple.spark.geom.dataRep.PlainConstraint;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.Node;
 
@@ -115,13 +115,13 @@ public class DummyNode extends IVarAbstraction
 	@Override
 	public int num_of_diff_objs() {
 		// TODO Auto-generated method stub
-		return 0;
+		return -1;
 	}
 
 	@Override
 	public int num_of_diff_edges() {
 		// TODO Auto-generated method stub
-		return 0;
+		return -1;
 	}
 
 	@Override

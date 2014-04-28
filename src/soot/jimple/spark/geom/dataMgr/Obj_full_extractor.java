@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2012 Richard Xiao
+ * Copyright (C) 2012, 2013 Richard Xiao
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,10 +16,12 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.helper;
+package soot.jimple.spark.geom.dataMgr;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import soot.jimple.spark.geom.dataRep.IntervalContextVar;
 import soot.jimple.spark.pag.Node;
 
@@ -38,12 +40,13 @@ public class Obj_full_extractor
 	@Override
 	public boolean visit(Node var, long L, long R, int sm_int) 
 	{
+		if ( readyToUse ) return false;
+		
 		List<IntervalContextVar> resList = tableView.get(var);
 		
 		if ( resList == null ) {
 			// The first time this object is inserted
 			resList = new ArrayList<IntervalContextVar>();
-			tableView.put(var, resList);
 		}
 		else {
 			// We search the list and merge the context sensitive objects
@@ -55,8 +58,8 @@ public class Obj_full_extractor
 				if ( old_cv.contains(tmp_icv) ) {
 					/*
 					 * Becase we keep the intervals disjoint.
-					 * It's impossible the passed in interval is contained in an interval and intersects with another interval.
-					 * So we can directly return.
+					 * It's impossible the passed in interval is contained in an interval or intersects with other intervals.
+					 * In such case, we can directly return.
 					 */
 					return false;
 				}
@@ -76,6 +79,7 @@ public class Obj_full_extractor
 		
 		IntervalContextVar icv = new IntervalContextVar( L, R, var );
 		resList.add(icv);
+		tableView.put(var, resList);
 		return true;
 	}
 }

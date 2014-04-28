@@ -426,16 +426,10 @@ public class SparkOptions
     
      * Transform to context-insensitive result.
     
-     * 						 If your work only concern the context insensitive 
-     * points-to information, you can use this option to transform the 
-     * context sensitive result to insensitive result. Or, sometimes 
-     * your code wants to directly access to the points-to vector other 
-     * than using the standard querying interface, you can use this 
-     * option to guarantee the correct behavior (because we clear the 
-     * SPARK points-to result when running the geom solver). After the 
-     * transformation, the context sensitive points-to result is 
-     * cleared in order to save memory space for your other jobs. 
-     * 						 
+     * 						 If you stick to working with SPARK, you can use this 
+     * option to transform the context sensitive result to insensitive 
+     * result. After the transformation, the context sensitive 
+     * points-to quries cannot be answered. 						 
      */
     public boolean geom_trans() {
         return soot.PhaseOptions.getBoolean( options, "geom-trans" );
@@ -445,13 +439,26 @@ public class SparkOptions
     
      * Enable blocking strategy for recursive calls.
     
-     * 						 When this option is on, we perform the blocking 
-     * strategy to the recursive calls. This strategy significantly 
-     * improves the precision. The details are presented in our paper. 
-     * 						 
+     * 						 Blocking strategy is a 1CFA model for recursive 
+     * calls. This model significantly improves the precision. 						 
      */
     public boolean geom_blocking() {
         return soot.PhaseOptions.getBoolean( options, "geom-blocking" );
+    }
+    
+    /** Pointers processed by geomPTA --
+    
+     * Processing pointers that impact pointers in application code 
+     * only.
+    
+     * 						 When this option is true, geomPTA only processes the 
+     * pointers in library functions ( java.*, sun.*, and etc.) that 
+     * potentially impact the points-to information of pointers in 
+     * application code, the pointers in application code, and the base 
+     * pointers at virtual callsites. 						 
+     */
+    public boolean geom_app_only() {
+        return soot.PhaseOptions.getBoolean( options, "geom-app-only" );
     }
     
     /** Maximal traversal --
@@ -484,11 +491,11 @@ public class SparkOptions
      * Precision evaluation methodologies.
     
      * 						 We internally provide some precision evaluation 
-     * methodologies, and classify the evaluation strength into three 
+     * methodologies and classify the evaluation strength into three 
      * levels. If level is 0, we do nothing. If level is 1, we report 
-     * the basic information about the points-to result. If level is 2, 
-     * we perform the virtual callsite resolution, static cast safety 
-     * and all alias pairs evaluations. 						 
+     * the statistical information about the points-to result. If level 
+     * is 2, we perform the virtual callsite resolution, static cast 
+     * safety and all-pairs alias evaluations. 						 
      */
     public int geom_eval() {
         return soot.PhaseOptions.getInt( options, "geom-eval" );
@@ -499,9 +506,8 @@ public class SparkOptions
      * Fractional parameter for precision/performance trade-off.
     
      * 						 This option specifies the fractional parameter, which 
-     * is used to manually tune the precision and performance 
-     * trade-off. The smaller the value, the better the performance but 
-     * the worse the precision. 						 
+     * manually balances the precision and the performance. Smaller 
+     * value means better performance and worse precision. 						 
      */
     public int geom_frac_base() {
         return soot.PhaseOptions.getInt( options, "geom-frac-base" );
@@ -522,9 +528,8 @@ public class SparkOptions
     
      * Filename for detailed execution log.
     
-     * 						 If you want to persist the detailed execution 
-     * information for future analysis, please provide a file name. 
-     * 						 
+     * 						 If you want to save the geomPTA analysis information 
+     * for future analysis, please provide a file name. 						 
      */
     public String geom_dump_verbose() {
         return soot.PhaseOptions.getString( options, "geom-dump-verbose" );
@@ -537,9 +542,9 @@ public class SparkOptions
      * 						 If you want to compare the precision of the points-to 
      * results with other solvers (e.g. Paddle), you can use the 
      * 'verify-file' to specify the list of methods (soot method 
-     * signature format) that are reachable by that solver. Then, in 
-     * the internal evaluations (see the switch geom-eval), we only 
-     * consider the methods that are present to both solvers. 						 
+     * signature format) that are reachable by that solver. During the 
+     * internal evaluations (see the option geom-eval), we only 
+     * consider the methods that are common to both solvers. 						 
      */
     public String geom_verify_name() {
         return soot.PhaseOptions.getString( options, "geom-verify-name" );

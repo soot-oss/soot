@@ -29,16 +29,17 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.Type;
+import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
+import soot.jimple.spark.geom.dataRep.PlainConstraint;
+import soot.jimple.spark.geom.dataRep.RectangleNode;
+import soot.jimple.spark.geom.dataRep.SegmentNode;
 import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.geomPA.IWorklist;
-import soot.jimple.spark.geom.geomPA.PlainConstraint;
-import soot.jimple.spark.geom.geomPA.RectangleNode;
-import soot.jimple.spark.geom.geomPA.SegmentNode;
-import soot.jimple.spark.geom.helper.PtSensVisitor;
+import soot.jimple.spark.geom.geomPA.Parameters;
 import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ClassConstantNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.StringConstantNode;
@@ -172,12 +173,27 @@ public class FullSensitiveNode extends IVarAbstraction
 	}
 
 	@Override
-	public int num_of_diff_objs() {
+	public int num_of_diff_objs() 
+	{
+		// If this pointer is not a representative pointer
+		if ( parent != this )
+			return getRepresentative().num_of_diff_objs();
+				
+		if ( pt_objs == null )
+			return -1;
+		
 		return pt_objs.size();
 	}
 
 	@Override
-	public int num_of_diff_edges() {
+	public int num_of_diff_edges() 
+	{
+		if ( parent != this )
+			return getRepresentative().num_of_diff_objs();
+		
+		if ( flowto == null ) 
+			return -1;
+		
 		return flowto.size();
 	}
 
@@ -267,7 +283,7 @@ public class FullSensitiveNode extends IVarAbstraction
 				
 				for ( PlainConstraint pcons : complex_cons ) {
 					// For each newly points-to object, construct its instance field
-					objn = (FullSensitiveNode)ptAnalyzer.findAndInsertInstanceField(obj, pcons.f);
+					objn = (FullSensitiveNode)ptAnalyzer.findInstanceField(obj, pcons.f);
 					if ( objn == null ) {
 						// This combination of allocdotfield must be invalid
 						// This expression p.f also renders that p cannot point to obj, so we remove it
@@ -276,6 +292,14 @@ public class FullSensitiveNode extends IVarAbstraction
 						entry.setValue( (GeometricManager)deadManager );
 						break;
 					}
+					
+					if ( objn.willUpdate == false ) {
+						// This must be a store constraint
+						// This object field is not need for computing 
+						// the points-to information of the seed pointers
+						continue;
+					}
+					
 					qn = (FullSensitiveNode) pcons.otherSide;
 					
 					for ( i = 0; i < GeometricManager.Divisions; ++i ) {
@@ -294,9 +318,6 @@ public class FullSensitiveNode extends IVarAbstraction
 								if ( instantiateLoadConstraint( objn, qn, pts, (pcons.code<<8) | i ) )
 									worklist.push( objn );
 								break;
-								
-							default:
-								throw new RuntimeException("Wrong Complex Constraint");
 							}
 							
 							pts = pts.next;
@@ -314,10 +335,6 @@ public class FullSensitiveNode extends IVarAbstraction
 			qn = entry1.getKey();
 			gm1 = entry1.getValue();
 			entry_pe = gm1.getFigures();
-			
-//			if ( qn.getWrappedNode().toString().equals("<sun.misc.Launcher: sun.misc.URLClassPath getBootstrapClassPath()>:$r5") &&
-//					((LocalVarNode)qn.getWrappedNode()).getMethod().toString().equals("<sun.misc.Launcher: sun.misc.URLClassPath getBootstrapClassPath()>") )
-//				System.err.println();
 			
 			// We specialize the two cases that we hope it running faster
 			// We have new flow-to edges
@@ -454,11 +471,14 @@ public class FullSensitiveNode extends IVarAbstraction
 		int i, j;
 		FullSensitiveNode qn;
 		SegmentNode p, q, pt[], qt[];
+		boolean localToSameMethod;
 		
 		qn = (FullSensitiveNode)qv;
+		localToSameMethod = (enclosingMethod() == qv.enclosingMethod());
 		
 		for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext();) {
 			AllocNode an = it.next();
+			if ( an instanceof ClassConstantNode ) continue;
 			if ( an instanceof StringConstantNode ) continue;
 			qt = qn.find_points_to(an);
 			if (qt == null) continue;
@@ -470,13 +490,12 @@ public class FullSensitiveNode extends IVarAbstraction
 					for (j = 0; j < GeometricManager.Divisions; ++j) {
 						q = qt[j];
 						while (q != null) {
-							if ( i <= j ) {
-								if ( quick_intersecting_test(p, q, (i<<8) | j ) )
-									return true;
+							if ( localToSameMethod ) {
+								// We can use a more precise alias testing
+								if ( p.intersect(q) ) return true;
 							}
 							else {
-								if ( quick_intersecting_test(q, p, (j<<8) | i ) )
-									return true;
+								if ( p.projYIntersect(q) ) return true;
 							}
 							q = q.next;
 						}
@@ -486,98 +505,6 @@ public class FullSensitiveNode extends IVarAbstraction
 			}
 		}
 
-		return false;
-	}
-
-	/**
-	 * We check if the figures p and q have intersection.
-	 */
-	private boolean quick_intersecting_test(SegmentNode p, SegmentNode q, int code) 
-	{
-		RectangleNode rect_q, rect_p;
-		
-		switch (code>>8) {
-		case GeometricManager.ONE_TO_ONE:
-			switch (code&255) {
-			case GeometricManager.ONE_TO_ONE:
-				if ( (p.I2 - p.I1) == (q.I2 - q.I1) ) {
-					if ( p.I1 < (q.I1 + q.L) && q.I1 < (p.I1 + p.L) )
-						return true;
-				}
-				break;
-				
-			case GeometricManager.MANY_TO_MANY:
-				rect_q = (RectangleNode)q;
-				
-				// If one of the end point is in the body of the rectangle
-				if ( point_within_rectangle(p.I1, p.I2, rect_q) ||
-						point_within_rectangle(p.I1 + p.L - 1, p.I2 + p.L - 1, rect_q) )
-					return true;
-				
-				// Otherwise, the diagonal line must intersect with one of the boundary lines
-				if ( diagonal_line_intersect_horizontal(p, rect_q.I1, rect_q.I2, rect_q.L) ||
-						diagonal_line_intersect_horizontal(p, rect_q.I1, rect_q.I2 + rect_q.L_prime - 1, rect_q.L) ||
-						diagonal_line_intersect_vertical(p, rect_q.I1, rect_q.I2 , rect_q.L_prime) ||
-						diagonal_line_intersect_vertical(p, rect_q.I1 + rect_q.L - 1, rect_q.I2, rect_q.L_prime) )
-					return true;
-				break;
-			}
-			
-			break;
-			
-		case GeometricManager.MANY_TO_MANY:
-			rect_p = (RectangleNode)p;
-			rect_q = (RectangleNode)q;
-			
-			// If p is not entirely above, below, to the left, to the right of q
-			// then, p and q must intersect
-			
-			if ( rect_p.I2 >= rect_q.I2 + rect_q.L_prime )
-				return false;
-			
-			if ( rect_p.I2 + rect_p.L_prime <= rect_q.I2 )
-				return false;
-			
-			if ( rect_p.I1 + rect_p.L <= rect_q.I1 )
-				return false;
-			
-			if ( rect_p.I1 >= rect_q.I1 + rect_q.L )
-				return false;
-			
-			return true;
-		}
-		
-		return false;
-	}
-	
-	private boolean point_within_rectangle( long x, long y, RectangleNode rect )
-	{
-		if ( x >= rect.I1 && x < rect.I1 + rect.L )
-			if ( y >= rect.I2 && y < rect.I2 + rect.L_prime )
-				return true;
-		
-		return false;
-	}
-	
-	private boolean diagonal_line_intersect_vertical( SegmentNode p, long x, long y, long L)
-	{
-		if ( x >= p.I1 && x < (p.I1 + p.L) ) {
-			long y_cross = x - p.I1 + p.I2;
-			if ( y_cross >= y && y_cross < y + L )
-				return true;
-		}
-		
-		return false;
-	}
-	
-	private boolean diagonal_line_intersect_horizontal( SegmentNode p, long x, long y, long L)
-	{
-		if ( y >= p.I2 && y < (p.I2 + p.L) ) {
-			long x_cross = y - p.I2 + p.I1;
-			if ( x_cross >= x && x_cross < x + L )
-				return true;
-		}
-		
 		return false;
 	}
 	
@@ -620,12 +547,13 @@ public class FullSensitiveNode extends IVarAbstraction
 	@Override
 	public void injectPts()
 	{
+		final GeomPointsTo geomPTA = (GeomPointsTo)Scene.v().getPointsToAnalysis();
 		pt_objs = new HashMap<AllocNode, GeometricManager>();
 		
 		me.getP2Set().forall( new P2SetVisitor() {
 			@Override
 			public void visit(Node n) {
-				if ( ptsProvider.isValidGeometricNode(n) )
+				if ( geomPTA.isValidGeometricNode(n) )
 					pt_objs.put((AllocNode)n, (GeometricManager)stubManager);
 			}
 		});
@@ -665,13 +593,13 @@ public class FullSensitiveNode extends IVarAbstraction
 			return;
 		}
 		
+		GeomPointsTo geomPTA = (GeomPointsTo)Scene.v().getPointsToAnalysis();
+		
 		for ( Map.Entry<AllocNode, GeometricManager> entry : pt_objs.entrySet() ) {
 			AllocNode obj = entry.getKey();
 			SootMethod sm = obj.getMethod();
-			int sm_int = 0;
-			if ( sm != null ) {
-				sm_int = ptsProvider.getIDFromSootMethod(sm);
-			}
+			int sm_int = geomPTA.getIDFromSootMethod(sm);
+			if ( sm_int == -1 ) continue;
 			
 			GeometricManager gm = entry.getValue();
 			SegmentNode[] int_entry = gm.getFigures();
@@ -681,14 +609,18 @@ public class FullSensitiveNode extends IVarAbstraction
 				SegmentNode p = int_entry[i];
 				
 				while ( p != null ) {
-					long R = p.I1 + p.L;
+					long L = p.I1;
+					long R = L + p.L;
 					long objL = -1, objR = -1;
 					
 					// Now we compute which context sensitive objects are pointed to by this pointer
-					if ( l <= p.I1 && p.I1 < r ) {	
+					if ( l <= L && L < r ) {
+						// l----------r
+						//    L----R            or
+						//    L------------R
 						if ( i == GeometricManager.ONE_TO_ONE ) {
-							long d = r - p.I1;
-							if ( d > p.L ) d = p.L;
+							long d = r - L;
+							if ( R < r ) d = p.L;
 							objL = p.I2;
 							objR = objL + d;
 						}
@@ -697,11 +629,14 @@ public class FullSensitiveNode extends IVarAbstraction
 							objR = p.I2 + ((RectangleNode)p).L_prime;
 						}
 					}
-					else if (p.I1 <= l && l < R) {
+					else if (L <= l && l < R) {
+						//     l---------r
+						// L-------R                or
+						// L--------------------R
 						if ( i == GeometricManager.ONE_TO_ONE ) {
 							long d = R - l;
 							if ( R > r ) d = r - l;
-							objL = p.I2 + l - p.I1;
+							objL = p.I2 + l - L;
 							objR = objL + d;
 						}
 						else {
@@ -790,14 +725,14 @@ public class FullSensitiveNode extends IVarAbstraction
 	private void do_pts_interval_merge()
 	{
 		for ( GeometricManager gm : new_pts.values() ) {
-			gm.mergeFigures( Constants.max_pts_budget );
+			gm.mergeFigures( Parameters.max_pts_budget );
 		}
 	}
 	
 	private void do_flow_edge_interval_merge()
 	{
 		for ( GeometricManager gm : flowto.values() ) {
-			gm.mergeFigures( Constants.max_cons_budget );
+			gm.mergeFigures( Parameters.max_cons_budget );
 		}
 	}
 	
@@ -814,7 +749,7 @@ public class FullSensitiveNode extends IVarAbstraction
 	/**
 	 * Implement the inference rules when the input points-to figure is a one-to-one mapping.
 	 */
-	private int infer_pts_is_one_to_one( SegmentNode pts, SegmentNode pe, int code )
+	private static int infer_pts_is_one_to_one( SegmentNode pts, SegmentNode pe, int code )
 	{
 		long interI, interJ;
 		
@@ -848,7 +783,7 @@ public class FullSensitiveNode extends IVarAbstraction
 	/**
 	 * Implement the inference rules when the input points-to figure is a many-to-many mapping.
 	 */
-	private int infer_pts_is_many_to_many( RectangleNode pts, SegmentNode pe, int code )
+	private static int infer_pts_is_many_to_many( RectangleNode pts, SegmentNode pe, int code )
 	{
 		long interI, interJ;
 		
@@ -890,7 +825,8 @@ public class FullSensitiveNode extends IVarAbstraction
 	 * 
 	 * Return value is used to indicate the type of the result
 	 */
-	private boolean reasonAndPropagate( FullSensitiveNode qn, AllocNode obj, SegmentNode pts, SegmentNode pe, int code )
+	private static boolean reasonAndPropagate( FullSensitiveNode qn, AllocNode obj, 
+			SegmentNode pts, SegmentNode pe, int code )
 	{
 		int ret_type = GeometricManager.Undefined_Mapping;
 		
@@ -915,7 +851,7 @@ public class FullSensitiveNode extends IVarAbstraction
 	/**
 	 * The last parameter code can only be 1-1 and many-1
 	 */
-	private boolean instantiateLoadConstraint(FullSensitiveNode objn,
+	private static boolean instantiateLoadConstraint(FullSensitiveNode objn,
 			FullSensitiveNode qn, SegmentNode pts, int code ) 
 	{
 		int ret_type = GeometricManager.Undefined_Mapping;
@@ -966,7 +902,7 @@ public class FullSensitiveNode extends IVarAbstraction
 	}
 
 	// code can only be 1-1 and 1-many
-	private boolean instantiateStoreConstraint(FullSensitiveNode qn,
+	private static boolean instantiateStoreConstraint(FullSensitiveNode qn,
 			FullSensitiveNode objn, SegmentNode pts, int code) 
 	{
 		int ret_type = GeometricManager.Undefined_Mapping;

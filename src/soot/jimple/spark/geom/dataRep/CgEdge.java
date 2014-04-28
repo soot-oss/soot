@@ -16,7 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
+package soot.jimple.spark.geom.dataRep;
 
 
 import soot.jimple.spark.pag.VarNode;
@@ -59,9 +59,6 @@ public class CgEdge {
 	 */
 	public CgEdge duplicate()
 	{
-		if ( is_obsoleted ) 
-			return null;
-		
 		CgEdge new_edge = new CgEdge(s, t, sootEdge, null);
 		new_edge.map_offset = map_offset;
 		new_edge.scc_edge = scc_edge;
