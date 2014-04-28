@@ -21,12 +21,14 @@ package soot.jimple.spark.geom.geomPA;
 
 import java.util.ArrayList;
 import java.util.Deque;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Set;
 
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
 import soot.RefLikeType;
 import soot.SootClass;
@@ -109,15 +111,8 @@ public class OfflineProcessor
 	}
 	
 	public void defaultFeedPtsRoutines()
-	{
-		// We always refine the callsites that have multiple call targets 
-		addUserDefPts(geomPTA.multiBasePtrs);
-				
+	{		
 		switch (Parameters.seedPts) {
-		case Constants.seedPts_staticCasts:
-			setStaticCastsVarUseful();
-			break;
-
 		case Constants.seedPts_allUser:
 			setAllUserCodeVariablesUseful();
 			break;
@@ -125,10 +120,25 @@ public class OfflineProcessor
 		case Constants.seedPts_all:
 			// All pointers will be processed
 			for (int i = 0; i < n_var; ++i) {
-				int2var.get(i).willUpdate = true;
+				IVarAbstraction pn = int2var.get(i);
+				if ( pn != null &&
+						pn.getRepresentative() == pn )
+					pn.willUpdate = true;
 			}
-			break;
+			return;
 		}
+		
+		// We always refine the callsites that have multiple call targets
+		Set<Node> multiBaseptrs = new HashSet<Node>();
+
+		for (Stmt callsite : geomPTA.multiCallsites) {
+			InstanceInvokeExpr iie = 
+					(InstanceInvokeExpr) callsite.getInvokeExpr();
+			VarNode vn = geomPTA.findLocalVarNode(iie.getBase());
+			multiBaseptrs.add(vn);
+		}
+
+		addUserDefPts(multiBaseptrs);
 	}
 	
 	/**
@@ -301,68 +311,6 @@ public class OfflineProcessor
 						!geomPTA.isExceptionPointer(node) ) {
 					// Defined in the user code
 					pn.willUpdate = true;
-				}
-			}
-		}
-	}
-	
-	/**
-	 * We only keep the variables that are involved in the static casts.
-	 */
-	protected void setStaticCastsVarUseful()
-	{
-		for ( SootMethod sm : geomPTA.getAllReachableMethods() ) {
-			if (sm.isJavaLibraryMethod())
-				continue;
-			if (!sm.isConcrete())
-				continue;
-			if (!sm.hasActiveBody()) {
-				sm.retrieveActiveBody();
-			}
-			if ( !geomPTA.isValidMethod(sm) )
-				continue;
-			
-			// All the statements in the method
-			for (Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts.hasNext();) {
-				Stmt st = (Stmt) stmts.next();
-
-				if (st instanceof AssignStmt) {
-					Value rhs = ((AssignStmt) st).getRightOp();
-					Value lhs = ((AssignStmt) st).getLeftOp();
-					if (rhs instanceof CastExpr
-							&& lhs.getType() instanceof RefLikeType) {
-
-						Value v = ((CastExpr) rhs).getOp();
-						VarNode node = geomPTA.findLocalVarNode(v);
-						if (node == null) continue;
-						final Type targetType = (RefLikeType) ((CastExpr) rhs).getCastType();
-						
-						visitedFlag = true;
-						IVarAbstraction pn = geomPTA.findInternalNode(node);
-						if ( pn == null ) continue;
-						pn = pn.getRepresentative();
-						
-						if ( pn.hasPTResult() == false ) {
-							node.getP2Set().forall(new P2SetVisitor() {
-								public void visit(Node arg0) {
-									if ( !visitedFlag ) return;
-									visitedFlag &= geomPTA.castNeverFails(arg0.getType(), targetType);
-								}
-							});
-						}
-						else {
-							// use geom
-							pn = pn.getRepresentative();
-							for ( AllocNode obj : pn.get_all_points_to_objects() ) {
-								visitedFlag = geomPTA.castNeverFails( obj.getType(), targetType );
-								if ( visitedFlag == false ) break;
-							}
-						}
-						
-						if ( visitedFlag == false ) {
-							pn.willUpdate = true;
-						}
-					}
 				}
 			}
 		}

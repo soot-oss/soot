@@ -20,6 +20,7 @@ package soot.jimple.spark.geom.dataMgr;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import soot.jimple.spark.geom.dataRep.IntervalContextVar;
 import soot.jimple.spark.pag.Node;
@@ -39,6 +40,8 @@ public class Obj_full_extractor
 	@Override
 	public boolean visit(Node var, long L, long R, int sm_int) 
 	{
+		if ( readyToUse ) return false;
+		
 		List<IntervalContextVar> resList = tableView.get(var);
 		
 		if ( resList == null ) {

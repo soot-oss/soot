@@ -57,7 +57,6 @@ public class Constants
 	public static final RefType exeception_type = RefType.v( "java.lang.Throwable" );
 	
 	// The seed pointers for running constraints distillation
-	public static final int seedPts_staticCasts = 1;
-	public static final int seedPts_allUser = 0x000000ff;
+	public static final int seedPts_allUser = 0x0000000f;
 	public static final int seedPts_all = 0x7fffffff;
 }

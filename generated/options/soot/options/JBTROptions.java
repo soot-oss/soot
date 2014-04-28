@@ -51,7 +51,7 @@ public class JBTROptions
      * the other way around. The VM's bytecode verifier will reject 
      * such bytecode when loaded into the VM. This option, when 
      * enabled, causes to create Jimple bodies in such cases 
-     * nonetheless, ignoring the error. 
+     * nontheless, ignoring the error. 
      */
     public boolean ignore_wrong_staticness() {
         return soot.PhaseOptions.getBoolean( options, "ignore-wrong-staticness" );

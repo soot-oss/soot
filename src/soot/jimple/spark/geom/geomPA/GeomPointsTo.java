@@ -118,8 +118,7 @@ public class GeomPointsTo extends PAG
 	public Set<Stmt> thread_run_callsites = null;
 	
 	// The virtual callsites (and base pointers) that have multiple call targets
-	protected Set<Stmt> multiCallsites = null;
-	public Set<Node> multiBasePtrs = null;
+	public Set<Stmt> multiCallsites = null;
 	
 	/*
 	 * Context size records the total number of instances for a function.
@@ -205,7 +204,6 @@ public class GeomPointsTo extends PAG
 		
 		// The virtual callsites that have multiple call targets
 		multiCallsites = new HashSet<Stmt>(251);
-		multiBasePtrs = new HashSet<Node>(251);
 		
 		// The fake virtual call edges created by SPARK
 		obsoletedEdges = new Vector<CgEdge>(4021);
@@ -305,10 +303,15 @@ public class GeomPointsTo extends PAG
 			}
 		}
 		
+		// Set which pointers will be processed
+		Parameters.seedPts = opts.geom_app_only() ? 
+				Constants.seedPts_allUser : Constants.seedPts_all;
+		
 		// Output the SPARK running information
 		double mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-//		ps.printf("Spark [Time] : %.3fs\n", (double)spark_run_time/1000 );
-		ps.printf("[Spark] Memory used: %.1f MB\n", mem  / 1024 / 1024 );
+		ps.println();
+		ps.printf("[Spark] Time : %.3fs\n", (double)spark_run_time/1000 );
+		ps.printf("[Spark] Memory : %.1f MB\n", mem  / 1024 / 1024 );
 				
 		// Get type manager from SPARK
 		typeManager = getTypeManager();
@@ -323,7 +326,6 @@ public class GeomPointsTo extends PAG
 		prepareContainers();
 		
 		// Now we start working
-		ps.println();
 		ps.println( "[Geom]" + " Start working on " + 
 							(dump_dir.isEmpty() ? "untitled" : dump_dir) + " with " + encoding_name + " encoding." );
 	}
@@ -398,7 +400,6 @@ public class GeomPointsTo extends PAG
 				if ( SootInfo.countCallEdgesForCallsite(callsite, true) > 1 &&
 						p.base_var != null ) {
 					multiCallsites.add(callsite);
-					multiBasePtrs.add(p.base_var);
 				}
 			}
 			
@@ -591,6 +592,9 @@ public class GeomPointsTo extends PAG
 		}
 	}
 	
+	/**
+	 * Using Tarjan's algorithm to contract the SCCs.
+	 */
 	private void callGraphDFS(int s) 
 	{
 		int t;
@@ -876,18 +880,26 @@ public class GeomPointsTo extends PAG
 		for ( Iterator<Stmt> csIt = multiCallsites.iterator(); csIt.hasNext(); ) {
 			Stmt callsite = csIt.next();
 			Iterator<Edge> edges = cg.edgesOutOf(callsite);
-			if ( !edges.hasNext() ) continue;
+			if ( !edges.hasNext() ) {
+				csIt.remove();
+				continue;
+			}
+			
 			Edge anyEdge = edges.next();
 			CgEdge p = edgeMapping.get(anyEdge);
 			SootMethod src = anyEdge.src();
 			
-			if ( !edges.hasNext() ||
-					getIDFromSootMethod(src) == Constants.UNKNOWN_FUNCTION ) {
+			if ( getIDFromSootMethod(src) 
+					== Constants.UNKNOWN_FUNCTION ) {
 				// This callsite has been solved to be unique or
 				// The source method is no longer reachable
 				// We move this callsite
 				csIt.remove();
-				multiBasePtrs.remove(p.base_var);
+				continue;
+			}
+			
+			if ( !edges.hasNext() ) {
+				// We keep this resolved site for call graph profiling
 				continue;
 			}
 			
@@ -954,7 +966,7 @@ public class GeomPointsTo extends PAG
 			call_graph[i] = q;
 		}
 		
-		ps.printf( "Totally %d virtual edges, we find %d of them are obsoleted.\n", all_virtual_edges, n_obsoleted );
+		ps.printf( "%d of %d virtual call edges are proved to be spurious.\n", n_obsoleted, all_virtual_edges );
 		return n_obsoleted;
 	}
 	
@@ -1270,12 +1282,8 @@ public class GeomPointsTo extends PAG
 			solveConstraints();
 			
 			// We update the call graph and other internal data when the new points-to information is ready
-			// The update time is not included in the points-to analysis
-//			Date update_begin = new Date();
-				n_obs = updateCallGraph();
-				finalizeInternalData();
-//			Date update_end = new Date();
-//			solve_time -= update_end.getTime() - update_begin.getTime();
+			n_obs = updateCallGraph();
+			finalizeInternalData();
 		}
 
 		if ( rounds < Parameters.cg_refine_times )
@@ -1296,14 +1304,11 @@ public class GeomPointsTo extends PAG
 			GeomEvaluator ge = new GeomEvaluator(this, ps);
 			ge.reportBasicMetrics();
 			
-			if ( evalLevel != Constants.eval_basicInfo ) {
+			if ( evalLevel > Constants.eval_basicInfo ) {
 				ge.checkCallGraph();
-				if ( (Parameters.seedPts & Constants.seedPts_staticCasts) == Constants.seedPts_staticCasts ) 
-					ge.checkCastsSafety();
-				if ( Parameters.seedPts == Constants.seedPts_allUser ) {
-					ge.checkAliasAnalysis();
-					//ge.estimateHeapDefuseGraph();
-				}
+				ge.checkCastsSafety();
+				ge.checkAliasAnalysis();
+//				ge.estimateHeapDefuseGraph();
 			}
 		}
 		
@@ -1611,12 +1616,18 @@ public class GeomPointsTo extends PAG
 		return worklist;
 	}
 	
+	/**
+	 * Obtain the internal representation of an object field.
+	 */
 	public IVarAbstraction findInstanceField(AllocNode obj, SparkField field)
 	{
 		AllocDotField af = findAllocDotField(obj, field);
 		return consG.get(af);
 	}
 	
+	/**
+	 * Obtain or create an internal representation of an object field.
+	 */
 	public IVarAbstraction findAndInsertInstanceField(AllocNode obj, SparkField field) 
 	{
 		AllocDotField af = findAllocDotField(obj, field);
@@ -1640,6 +1651,9 @@ public class GeomPointsTo extends PAG
 		return pn;
 	}
 	
+	/**
+	 * Obtain the edge representation internal to geomPTA.
+	 */
 	public CgEdge getInternalEdgeFromSootEdge( Edge e )
 	{
 		return edgeMapping.get(e);

@@ -101,21 +101,17 @@ public abstract class PtSensVisitor<VarType extends ContextVar>
 	}
 	
 	/**
-	 * Calculate the intersection with other container. 
-	 * Can be used to answer alias query.
-	 * @param other
-	 * @return
+	 * Tests if two containers have contain same things.
+	 * Can be used to answer the alias query.
 	 */
-	public boolean hasIntersection(PtSensVisitor<VarType> other) 
+	public boolean hasNonEmptyIntersection(PtSensVisitor<VarType> other) 
 	{
-		if ( !readyToUse ) finish();
-		if ( other.getUsageState() == false ) other.finish();
-		
 		// Using table view for comparison, that's faster
 		for ( Map.Entry<Node, List<VarType>> entry : tableView.entrySet() ) {
 			Node var = entry.getKey();
 			List<VarType> list1 = entry.getValue();
 			List<VarType> list2 = other.getCSList(var);
+			if ( list1.size() == 0 || list2.size() == 0 ) continue;
 			
 			for ( VarType cv1 : list1 ) {
 				for ( VarType cv2 : list2 )

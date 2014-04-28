@@ -23,6 +23,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import soot.Local;
+import soot.PointsToSet;
 import soot.SootMethod;
 import soot.jimple.spark.geom.dataMgr.ContextsCollector;
 import soot.jimple.spark.geom.dataMgr.Obj_full_extractor;
@@ -34,6 +35,7 @@ import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.LocalVarNode;
 import soot.jimple.spark.pag.SparkField;
+import soot.jimple.spark.pag.VarNode;
 import soot.jimple.toolkits.callgraph.Edge;
 
 /**
@@ -473,7 +475,7 @@ public class GeomQueries
 	/**
 	 * Standard K-CFA querying for field expression.
 	 * 
-	 * @param callEdgeChain
+	 * @param callEdgeChain: callEdgeChain[0] is the farthest call edge in the chain.
 	 * @param l
 	 * @param field
 	 * @param visitor
@@ -506,5 +508,63 @@ public class GeomQueries
 		
 		visitor.finish();
 		return visitor.numOfDiffObjects() != 0;
+	}
+	
+	/**
+	 * Are the two pointers an alias with context insensitive points-to information?
+	 */
+	public boolean isAliasCI(Local l1, Local l2)
+	{
+		PointsToSet pts1 = geomPts.reachingObjects(l1);
+		PointsToSet pts2 = geomPts.reachingObjects(l2);
+		return pts1.hasNonEmptyIntersection(pts2);
+	}
+	
+	/**
+	 * Test if two pointers given in geomPTA form are an alias under any contexts.
+	 * @param pn1 and @param pn2 cannot be null.
+	 */
+	public boolean isAlias(IVarAbstraction pn1, IVarAbstraction pn2)
+	{
+		pn1 = pn1.getRepresentative();
+		pn2 = pn2.getRepresentative();
+		
+		if ( !pn1.hasPTResult() || !pn2.hasPTResult() ) {
+			VarNode vn1 = (VarNode)pn1.getWrappedNode();
+			VarNode vn2 = (VarNode)pn2.getWrappedNode();
+			return isAliasCI((Local)vn1.getVariable(), 
+					(Local)vn2.getVariable());
+		}
+		
+		return pn1.heap_sensitive_intersection(pn2);
+	}
+	
+	/**
+	 * Decide if under any contexts, pointers @param l1 and @param l2 can be an alias.
+	 */
+	public boolean isAlias(Local l1, Local l2)
+	{
+		// Obtain the internal representation for querying pointers
+		LocalVarNode vn1 = geomPts.findLocalVarNode(l1);
+		LocalVarNode vn2 = geomPts.findLocalVarNode(l2);
+		if (vn1 == null || vn2 == null) {
+			// Normally this could not happen, perhaps it's a bug
+			return false;
+		}
+
+		IVarAbstraction pn1 = geomPts.findInternalNode(vn1);
+		IVarAbstraction pn2 = geomPts.findInternalNode(vn2);
+		if (pn1 == null || pn2 == null) {
+			return isAliasCI(l1, l2);
+		}
+
+		pn1 = pn1.getRepresentative();
+		pn2 = pn2.getRepresentative();
+		if ( !pn1.hasPTResult() ||
+				!pn2.hasPTResult() ) {
+			return isAliasCI(l1, l2);
+		}
+		
+		return pn1.heap_sensitive_intersection(pn2);
 	}
 }
