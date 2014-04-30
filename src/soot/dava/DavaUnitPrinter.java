@@ -107,10 +107,17 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
         throw new RuntimeException( "Dava doesn't have unit references!" );
     }
 
-
-
-
-
+    @Override
+    public void constant( Constant c ) {
+      if (c instanceof ClassConstant) {
+        handleIndent();
+        String fullClassName =
+          ((ClassConstant)c).value.replaceAll("/", ".");
+        output.append(fullClassName + ".class");
+      } else {
+        super.constant(c);
+      }
+    }
 
     public void addNot() {
         output.append(" !");
