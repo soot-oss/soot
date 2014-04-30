@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
+import soot.jimple.spark.geom.dataRep.RectangleNode;
+import soot.jimple.spark.geom.dataRep.SegmentNode;
+
 /**
  * An interface to standardize the functionality of a figure manager.
  * 

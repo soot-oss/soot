@@ -21,18 +21,22 @@ package soot.jimple.spark.geom.geomPA;
 import soot.RefType;
 
 /**
- * Parameters to control the behaviors of geom points-to solver.
- * Not all fields are really constants.
+ * Named constants used in the geomPA.
  * 
  * @author xiao
  *
  */
-public class Constants {
-
+public class Constants 
+{
 	// Available encodings
 	public static final String geomE = "Geom";
 	public static final String heapinsE = "HeapIns";
 	public static final String ptinsE = "PtIns";
+	
+	// Evaluation level
+	public static final int eval_nothing = 0;
+	public static final int eval_basicInfo = 1;
+	public static final int eval_simpleClients = 2;
 	
 	// The constants for the constraints type identification
 	public static final int NEW_CONS = 0;
@@ -52,9 +56,7 @@ public class Constants {
 	// Some commonly referred to information
 	public static final RefType exeception_type = RefType.v( "java.lang.Throwable" );
 	
-	// The parameters that are used to tune the precision and performance tradeoff
-	public static int max_cons_budget = 40;
-	public static int max_pts_budget = 80;
-	public static int cg_refine_times = 1;
-
+	// The seed pointers for running constraints distillation
+	public static final int seedPts_allUser = 0x0000000f;
+	public static final int seedPts_all = 0x7fffffff;
 }

@@ -34,8 +34,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
-import soot.AnySubType;
-import soot.ArrayType;
 import soot.Context;
 import soot.G;
 import soot.Local;
@@ -48,12 +46,16 @@ import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
+import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.Stmt;
-import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.spark.geom.dataRep.CgEdge;
+import soot.jimple.spark.geom.dataRep.PlainConstraint;
 import soot.jimple.spark.geom.geomE.FullSensitiveNodeGenerator;
 import soot.jimple.spark.geom.heapinsE.HeapInsNodeGenerator;
 import soot.jimple.spark.geom.helper.GeomEvaluator;
 import soot.jimple.spark.geom.ptinsE.PtInsNodeGenerator;
+import soot.jimple.spark.geom.utils.SootInfo;
+import soot.jimple.spark.geom.utils.ZArrayNumberer;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
@@ -68,9 +70,13 @@ import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.EmptyPointsToSet;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
+import soot.jimple.toolkits.callgraph.VirtualCalls;
 import soot.options.SparkOptions;
 import soot.toolkits.scalar.Pair;
+import soot.util.NumberedString;
+import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
  
@@ -106,13 +112,13 @@ public class GeomPointsTo extends PAG
 	public ZArrayNumberer<IVarAbstraction> allocations = null;
 	
 	// Store all the constraints, initially generated from SPARK
-	public Vector<PlainConstraint> constraints = null;
+	public ZArrayNumberer<PlainConstraint> constraints = null;
 	
 	// All the callsites that spawn a new thread
 	public Set<Stmt> thread_run_callsites = null;
 	
-	// the internal ID of the main method
-	public int mainID = -1;			
+	// The virtual callsites (and base pointers) that have multiple call targets
+	public Set<Stmt> multiCallsites = null;
 	
 	/*
 	 * Context size records the total number of instances for a function.
@@ -125,13 +131,13 @@ public class GeomPointsTo extends PAG
 	
 	// Analysis statistics
 	public int max_scc_size, max_scc_id;
-	public int n_var, n_alloc_sites, n_func, n_calls;
+	public int n_func, n_calls;
 	public int n_reach_methods, n_reach_user_methods, n_reach_spark_user_methods;
+	public int n_init_constraints;
 	
 	// Output options
 	public String dump_dir = null;
 	public PrintStream ps = null;
-	
 	
 	/*
 	 * This container contains the methods that are considered "valid" by user.
@@ -143,6 +149,7 @@ public class GeomPointsTo extends PAG
 	
 	// Call graph related components
 	protected CgEdge call_graph[];
+	// Only keep the obsoleted call edges decided in the last round
 	protected Vector<CgEdge> obsoletedEdges = null;
 	protected Map<Integer, LinkedList<CgEdge>> rev_call_graph = null;
 	protected Deque<Integer> queue_cg = null;
@@ -160,7 +167,8 @@ public class GeomPointsTo extends PAG
 	private boolean hasTransformed = false;
 	// Because we override the points-to query interface for SPARK, we need this flag to know how to answer queries
 	private boolean hasExecuted = false;		
-	
+	// Prepare necessary structures when first time ddSolve is called
+	private boolean ddPrepared = false;
 	
 	// -------------------Constructors--------------------
 	public GeomPointsTo( final SparkOptions opts ) {
@@ -189,10 +197,13 @@ public class GeomPointsTo extends PAG
 		allocations = new ZArrayNumberer<IVarAbstraction>();
 		
 		// The constraints extracted from code
-		constraints = new Vector<PlainConstraint>(25771);
+		constraints = new ZArrayNumberer<PlainConstraint>(25771);
 		
 		// The statements that fork a new thread
 		thread_run_callsites = new HashSet<Stmt>(251);
+		
+		// The virtual callsites that have multiple call targets
+		multiCallsites = new HashSet<Stmt>(251);
 		
 		// The fake virtual call edges created by SPARK
 		obsoletedEdges = new Vector<CgEdge>(4021);
@@ -292,24 +303,29 @@ public class GeomPointsTo extends PAG
 			}
 		}
 		
+		// Set which pointers will be processed
+		Parameters.seedPts = opts.geom_app_only() ? 
+				Constants.seedPts_allUser : Constants.seedPts_all;
+		
 		// Output the SPARK running information
 		double mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
-//		ps.printf("Spark [Time] : %.3fs\n", (double)spark_run_time/1000 );
-		ps.printf("[Spark] Memory used: %.1f MB\n", mem  / 1024 / 1024 );
+		ps.println();
+		ps.printf("[Spark] Time : %.3fs\n", (double)spark_run_time/1000 );
+		ps.printf("[Spark] Memory : %.1f MB\n", mem  / 1024 / 1024 );
 				
 		// Get type manager from SPARK
 		typeManager = getTypeManager();
 		
 		// The tunable parameters
-		Constants.max_cons_budget = opts.geom_frac_base();
-		Constants.max_pts_budget = Constants.max_cons_budget * 2;
-		Constants.cg_refine_times = opts.geom_runs();
+		Parameters.max_cons_budget = opts.geom_frac_base();
+		Parameters.max_pts_budget = Parameters.max_cons_budget * 2;
+		Parameters.cg_refine_times = opts.geom_runs();
+		if ( Parameters.cg_refine_times < 1 ) Parameters.cg_refine_times = 1;
 		
 		// Prepare for the containers
 		prepareContainers();
 		
 		// Now we start working
-		ps.println();
 		ps.println( "[Geom]" + " Start working on " + 
 							(dump_dir.isEmpty() ? "untitled" : dump_dir) + " with " + encoding_name + " encoding." );
 	}
@@ -317,12 +333,13 @@ public class GeomPointsTo extends PAG
 	/**
 	 *	Read in the program facts generated by SPARK.
 	 *  We also construct our own call graph and pointer variables.
+	 *  Return: a set of base pointers for all virtual callsites (including calls in lib)
 	 */
-	private Set<VarNode> preprocess() 
+	@SuppressWarnings("unchecked")
+	private void preprocess() 
 	{
 		int id;
 		int s, t;
-		Set<VarNode> basePointers = new HashSet<VarNode>();
 		
 		// Build the call graph
 		n_func = Scene.v().getReachableMethods().size() + 1;
@@ -336,15 +353,12 @@ public class GeomPointsTo extends PAG
 			final SootMethod func = (SootMethod) smList.next();
 			func2int.put(func, id);
 			int2func.put(id, func);
-			if ( Scene.v().getCallGraph().isEntryMethod(func) || 
+			if ( Scene.v().getCallGraph().isEntryMethod(func) ||
 					func.isEntryMethod() ) {
 				CgEdge p = new CgEdge(Constants.SUPER_MAIN, id, null, call_graph[Constants.SUPER_MAIN]);
 				call_graph[Constants.SUPER_MAIN] = p;
 				n_calls++;
 			}
-			
-			if ( func.isMain() )
-				mainID = id;
 			
 			if ( !func.isJavaLibraryMethod() )
 				++n_reach_spark_user_methods;
@@ -370,17 +384,24 @@ public class GeomPointsTo extends PAG
 			call_graph[s] = p;
 			edgeMapping.put(edge, p);
 			
-			// We only care about the virtual callsites
-			if ( edge.isVirtual() ) {
-				VirtualInvokeExpr expr = (VirtualInvokeExpr)edge.srcStmt().getInvokeExpr();
-				p.base_var = findLocalVarNode( expr.getBase() );
-				if ( p.base_var != null )
-					basePointers.add(p.base_var);
-			}
+			// We collect callsite information
+			Stmt callsite = edge.srcStmt();
 			
-			// We don't modify the treatment to the Thread.start calls
-			if ( edge.tgt().getSignature().equals("<java.lang.Thread: void start()>") )
-				thread_run_callsites.add(p.sootEdge.srcStmt());
+			if ( edge.isThreadRunCall() ||
+					edge.kind().isExecutor() ||
+					edge.kind().isAsyncTask() ) {
+				// We don't modify the treatment to the thread run() calls
+				thread_run_callsites.add(callsite);
+			}
+			else if ( edge.isInstance() && !edge.isSpecial() ) {
+				// We try to refine the virtual callsites (virtual + interface) with multiple call targets				
+				InstanceInvokeExpr expr = (InstanceInvokeExpr)callsite.getInvokeExpr();
+				p.base_var = findLocalVarNode( expr.getBase() );
+				if ( SootInfo.countCallEdgesForCallsite(callsite, true) > 1 &&
+						p.base_var != null ) {
+					multiCallsites.add(callsite);
+				}
+			}
 			
 			++n_calls;
 		}
@@ -415,12 +436,6 @@ public class GeomPointsTo extends PAG
 			IVarAbstraction pn = makeInternalNode(obj);
 			allocations.add(pn);
 		}
-		
-		/*
-		 * Recording the initial sizes because later we may remove some stuff from the containers.
-		 */
-		n_var = pointers.size();
-		n_alloc_sites = allocations.size();
 
 		// Now we extract all the constraints from SPARK
 		// The address constraints, new obj -> p
@@ -484,6 +499,8 @@ public class GeomPointsTo extends PAG
 			}
 		}
 		
+		n_init_constraints = constraints.size();
+		
 		// Initialize other stuff
 		low_cg = new int[n_func];
 		vis_cg = new int[n_func];
@@ -493,11 +510,93 @@ public class GeomPointsTo extends PAG
 		block_num = new int[n_func];
 		context_size = new long[n_func];
 		max_context_size_block = new long[n_func];
-		
-		return basePointers;
 	}
 	
-	private void callGraphDFS(int s) {
+	/**
+	 * As pointed out by the single entry graph contraction, temporary variables incur high redundancy in points-to relations.
+	 * Find and eliminate the redundancies as early as possible.
+	 * 
+	 * Methodology:
+	 * If q has unique incoming edge p -> q, p and q are both local to the same function, and they have the same type, we merge them.
+	 */
+	private void mergeLocalVariables()
+	{
+		IVarAbstraction my_lhs, my_rhs;
+		Node lhs, rhs;
+		
+		int[] count = new int[pointers.size()];
+		
+		// We count how many ways a local pointer can be assigned
+		for ( PlainConstraint cons : constraints ) {
+			my_lhs = cons.getLHS();
+			my_rhs = cons.getRHS();
+			
+			switch (cons.type) {
+			case Constants.NEW_CONS:
+			case Constants.ASSIGN_CONS:
+				count[ my_rhs.id ]++;
+				break;
+				
+			case Constants.LOAD_CONS:
+				lhs = my_lhs.getWrappedNode();
+				count[ my_rhs.id ] += lhs.getP2Set().size();
+				break;
+			}
+		}
+		
+		// Second time scan, we delete those constraints that only duplicate points-to information
+		for ( Iterator<PlainConstraint> cons_it = constraints.iterator(); cons_it.hasNext(); ) {
+			PlainConstraint cons = cons_it.next();
+			
+			if ( cons.type == Constants.ASSIGN_CONS ) {
+				my_lhs = cons.getLHS();
+				my_rhs = cons.getRHS();
+				lhs = my_lhs.getWrappedNode();
+				rhs = my_rhs.getWrappedNode();
+				
+				if ( (lhs instanceof LocalVarNode) &&
+						(rhs instanceof LocalVarNode) ) {
+					SootMethod sm1 = ((LocalVarNode)lhs).getMethod();
+					SootMethod sm2 = ((LocalVarNode)rhs).getMethod();
+					
+					if ( sm1 == sm2 && 
+							count[my_rhs.id] == 1 
+							&& lhs.getType() == rhs.getType() ) {
+						
+						// They are local to the same function and the receiver pointer has unique incoming edge
+						// More importantly, they have the same type.
+						my_rhs.merge(my_lhs);
+						cons_it.remove();
+					}
+				}
+			}
+		}
+		
+		// Third scan, update the constraints with the representatives
+		for ( PlainConstraint cons : constraints ) {
+			my_lhs = cons.getLHS();
+			my_rhs = cons.getRHS();
+			
+			switch ( cons.type ) {
+			case Constants.NEW_CONS:
+				cons.setRHS(my_rhs.getRepresentative());
+				break;
+				
+			case Constants.ASSIGN_CONS:
+			case Constants.LOAD_CONS:
+			case Constants.STORE_CONS:
+				cons.setLHS(my_lhs.getRepresentative());
+				cons.setRHS(my_rhs.getRepresentative());
+				break;
+			}
+		}
+	}
+	
+	/**
+	 * Using Tarjan's algorithm to contract the SCCs.
+	 */
+	private void callGraphDFS(int s) 
+	{
 		int t;
 		CgEdge p;
 
@@ -571,8 +670,6 @@ public class GeomPointsTo extends PAG
 				// If this is an edge linking two functions in the same SCC
 				if (rep_cg[i] == rep_cg[p.t]) {
 					p.scc_edge = true;
-					// 0-CFA modeling for the SCC, the default mode
-					p.map_offset = 1;
 				} else {
 					p.scc_edge = false;
 					++indeg_cg[rep_cg[p.t]];
@@ -584,13 +681,6 @@ public class GeomPointsTo extends PAG
 			// Do simple statistics
 			++n_reachable;
 			if ( rep_cg[i] == i ) ++n_scc_reachable;
-			
-			// Un-comment the following code to see which functions are contained in the maximum SCC
-//			if ( rep_cg[i] == max_scc_id ) {
-//				SootMethod sm = int2func.get(i);
-//				if ( !sm.is_java_library_method() )
-//					ps.println( sm );
-//			}
 		}
 
 		// Next, we condense the SCCs
@@ -642,15 +732,10 @@ public class GeomPointsTo extends PAG
 								// We compensate the difference
 								max_context_size_block[j] = start + max_context_size_block[i];
 						}
+						
 						p.map_offset = start + 1;
-//						Edge e = p.sootEdge;
-//						if ( e == null )
-//							ps
-//								.println("~~~~~~~~~~~~Max Block For " + j + " is full!!!");
-//						else
-//							ps
-//								.println("~~~~~~~~~~~~Max Block For " + e.getTgt().method() + " is full!!!");
 					} else {
+						// Accumulate the contexts
 						p.map_offset = max_context_size_block[j] + 1;
 						max_context_size_block[j] += max_context_size_block[i];
 					}
@@ -659,6 +744,10 @@ public class GeomPointsTo extends PAG
 					if (--indeg_cg[j] == 0)
 						queue_cg.addLast(j);
 				}
+				else {
+					// 0-CFA modeling for the SCC, the default mode
+					p.map_offset = 1;
+				}
 
 				p = p.next;
 			}
@@ -666,18 +755,12 @@ public class GeomPointsTo extends PAG
 			if ( max_context_size_block[i] > max_contexts )
 				max_contexts = max_context_size_block[i];
 		}
-
-		// Sanity check
-//		for ( i = 0; i < n_func; ++i ) {
-//			if ( rep_cg[i] != i ) continue;
-//			assert indeg_cg[i] == 0 && max_context_size_block[i] != 0;
-//		}
 			
 		// Now we restore the call graph
 		for (i = n_func - 1; i > -1; --i) {
 			if ( vis_cg[i] == 0 ) continue;
 			if ( rep_cg[i] != i ) {
-				// We recharge the information into the none SCC representative nodes
+				// All nodes in the same SCC have the same number of contexts
 				max_context_size_block[i] = max_context_size_block[rep_cg[i]];
 				
 				// Put all the call edges back
@@ -695,15 +778,6 @@ public class GeomPointsTo extends PAG
 			context_size[i] = max_context_size_block[i];
 			block_num[i] = 1;
 		}
-
-		// Sanity check
-//		for ( i = 0; i < n_func; ++i ) {
-//			p = call_graph[i];
-//			while ( p != null ) {
-//				assert p.s == i;
-//				p = p.next;
-//			}
-//		}
 		
 		// Now we apply the blocking scheme if necessary
 		// The implementation is slightly different from our paper (the non-SCC edges are not moved, they still use their current context mappings)
@@ -731,8 +805,6 @@ public class GeomPointsTo extends PAG
 							if ( block_num[j] > 1 )
 								iBlock = rGen.nextInt(block_num[j]) + 1;
 							p.map_offset = iBlock * max_context_size_block[j] + 1;
-							
-//							ps.println("~~~~~~~~~~~~Context Range For " + j + " is full!!!");
 						}
 					}
 					
@@ -743,7 +815,7 @@ public class GeomPointsTo extends PAG
 			
 		// Print debug info
 		ps.printf("Reachable Methods = %d, in which #Condensed Nodes = %d, #Full Context Nodes = %d \n", 
-				n_reachable - 1, n_scc_reachable, n_full );
+				n_reachable - 1, n_scc_reachable - 1, n_full );
 		ps.printf("Maximum SCC = %d \n", max_scc_size);
 		ps.printf("The maximum context size = %e\n", (double)max_contexts );
 	}
@@ -754,31 +826,113 @@ public class GeomPointsTo extends PAG
 	 */
 	private void solveConstraints() 
 	{
-		while (worklist.has_job()) {
-			IVarAbstraction pn = worklist.next();
-//			ps.printf( " pointer %d has %d new points-to tuple\n", pn.id, pn.count_new_pts_intervals() );
-//			debug_context_sensitive_objects(pn);
+		IWorklist ptaList = worklist;
+		
+		while (ptaList.has_job()) {
+			IVarAbstraction pn = ptaList.next();
 			pn.do_before_propagation();
-//			ps.println( "------finish preprocess");
-//			if ( pn.id == 716 )
-//				System.err.println();
-			pn.propagate(this, worklist);
-//			ps.println( "------finish propagtion");
+			pn.propagate(this, ptaList);
 			pn.do_after_propagation();
-//			ps.println( "------finish postprocess");
 		}
 	}
 	
+	/**
+	 * Obtain the set of possible call targets at given @param callsite.
+	 */
+	private void getCallTargets(IVarAbstraction pn, SootMethod src,
+			Stmt callsite, ChunkedQueue<SootMethod> targetsQueue)
+	{
+		InstanceInvokeExpr iie = (InstanceInvokeExpr)callsite.getInvokeExpr();
+		Local receiver = (Local)iie.getBase();
+		NumberedString subSig = iie.getMethodRef().getSubSignature();
+		
+		// We first build the set of possible call targets
+		for (AllocNode an : pn.get_all_points_to_objects()) {
+			Type type = an.getType();
+
+			if (type == null)
+				continue;
+//			else if (type instanceof AnySubType)
+//				type = ((AnySubType) type).getBase();
+//			else if (type instanceof ArrayType)
+//				type = RefType.v("java.lang.Object");
+
+			VirtualCalls.v().resolve(type, 
+					receiver.getType(), subSig, src,
+					targetsQueue);
+		}
+	}
+	
+	/**
+	 * Remove unreachable call targets at the virtual callsites using the up-to-date points-to information.
+	 */
 	private int updateCallGraph() 
 	{
 		int all_virtual_edges = 0, n_obsoleted = 0;
-		boolean keep_this_edge;
-		CgEdge p, q, temp;
 		
+		CallGraph cg = Scene.v().getCallGraph();
+		ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
+		QueueReader<SootMethod> targets = targetsQueue.reader();
+		Set<SootMethod> resolvedMethods = new HashSet<SootMethod>();
+		obsoletedEdges.clear();
+		
+		// We first update the virtual callsites
+		for ( Iterator<Stmt> csIt = multiCallsites.iterator(); csIt.hasNext(); ) {
+			Stmt callsite = csIt.next();
+			Iterator<Edge> edges = cg.edgesOutOf(callsite);
+			if ( !edges.hasNext() ) {
+				csIt.remove();
+				continue;
+			}
+			
+			Edge anyEdge = edges.next();
+			CgEdge p = edgeMapping.get(anyEdge);
+			SootMethod src = anyEdge.src();
+			
+			if ( getIDFromSootMethod(src) 
+					== Constants.UNKNOWN_FUNCTION ) {
+				// This callsite has been solved to be unique or
+				// The source method is no longer reachable
+				// We move this callsite
+				csIt.remove();
+				continue;
+			}
+			
+			if ( !edges.hasNext() ) {
+				// We keep this resolved site for call graph profiling
+				continue;
+			}
+			
+			IVarAbstraction pn = consG.get(p.base_var);
+			if ( pn != null ) {
+				pn = pn.getRepresentative();
+				
+				// We resolve the call targets with the new points-to result
+				getCallTargets(pn, src, callsite, targetsQueue);
+				resolvedMethods.clear();
+				while ( targets.hasNext() ) {
+					resolvedMethods.add(targets.next());
+				}
+				
+				// We delete the edges that are proven to be spurious
+				while (true) {
+					SootMethod tgt = anyEdge.tgt();
+					if ( !resolvedMethods.contains(tgt) ) {
+						p = edgeMapping.get(anyEdge);
+						p.is_obsoleted = true;
+					}
+					
+					if ( !edges.hasNext() ) break;
+					anyEdge = edges.next();
+				}
+			}
+		}
+		
+		// We delete the spurious edges
 		for (int i = 1; i < n_func; ++i) {
 			// New outgoing edge list is pointed to by q
-			p = call_graph[i];
-			q = null;
+			CgEdge p = call_graph[i];
+			CgEdge q = null;
 
 			while (p != null) {
 				
@@ -786,64 +940,33 @@ public class GeomPointsTo extends PAG
 					// If this method is unreachable, we delete all its outgoing edges
 					p.is_obsoleted = true;
 				}
-				else if ( p.base_var != null 
-						&& (!thread_run_callsites.contains( p.sootEdge.srcStmt() ) ) 
-						) {
-					// It is a virtual call
-					keep_this_edge = false;
+				
+				if ( p.base_var != null ) {
 					++all_virtual_edges;
-					IVarAbstraction pn = consG.get(p.base_var).getRepresentative();
-					
-					if ( pn != null ) {
-						SootMethod sm = p.sootEdge.tgt();
-						
-						for (AllocNode an : pn.get_all_points_to_objects()) {
-							Type t = an.getType();
-							if ( t == null )
-								continue;
-							else if ( t instanceof AnySubType )
-								t = ((AnySubType)t).getBase();
-							else if ( t instanceof ArrayType )
-								t = RefType.v( "java.lang.Object" );
-							
-							// Only the virtual calls do the following test
-							// We should care about the thread start method, it is treated specially
-							if ( Scene.v().getOrMakeFastHierarchy().
-									resolveConcreteDispatch( ((RefType)t).getSootClass(), sm) == sm ) {
-								keep_this_edge = true;
-								break;
-							}
-						}
-						
-						if (keep_this_edge == false) {
-							p.is_obsoleted = true;
-							// We only count the edges from the user code
-//							if ( !p.sootEdge.src().isJavaLibraryMethod() )
-								++n_obsoleted;
-						}
-					}
-					else {
-						System.err.println();
-						throw new RuntimeException("In update_call_graph: oops, what's up?");
-					}
 				}
-								
-				temp = p.next;
+				
+				CgEdge temp = p.next;
+				
 				if (p.is_obsoleted == false) {
 					p.next = q;
 					q = p;
 				}
 				else {
-					// We put this obsoleted edge into a special container
+					// Update the corresponding SOOT call graph
+					cg.removeEdge(p.sootEdge);
+					
+					// We record this obsoleted edge
 					obsoletedEdges.add(p);
+					++n_obsoleted;
 				}
+				
 				p = temp;
 			}
 
 			call_graph[i] = q;
 		}
-
-		ps.printf( "Totally %d virtual edges, we find %d of them are obsoleted.\n", all_virtual_edges, n_obsoleted );
+		
+		ps.printf( "%d of %d virtual call edges are proved to be spurious.\n", n_obsoleted, all_virtual_edges );
 		return n_obsoleted;
 	}
 	
@@ -854,74 +977,97 @@ public class GeomPointsTo extends PAG
 	{
 		// Clean the context sensitive points-to results for the representative pointers
 		for (IVarAbstraction pn : pointers) {
-			if ( pn == pn.getRepresentative() )
+			if ( pn.willUpdate == true ) {
 				pn.reconstruct();
+			}
 		}
-		
+
 		// Reclaim
 		System.gc();
-		System.gc();
-		System.gc();
-		System.gc();
-		System.gc();
-	}
-	
-	protected int countReachableMethods( int s )
-	{
-		int ans = 1;
-		CgEdge p;
-		
-		p = call_graph[s];
-		vis_cg[s] = 1;
-		while ( p != null ) {
-			if ( vis_cg[p.t] == 0 )
-				ans += countReachableMethods(p.t);
-			p = p.next;
-		}
-		
-		if ( s != Constants.SUPER_MAIN ) {
-			SootMethod sm = int2func.get(s);
-			if ( !sm.isJavaLibraryMethod() )
-				++n_reach_user_methods;
-		}
-		
-		return ans;
 	}
 	
 	/**
-	 * Update the call graph and eliminate the pointers and objects appeared in the unreachable code.
+	 * Scan the call graph and mark the reachable methods.
 	 */
-	private void postProcess()
+	private void markReachableMethods()
 	{
-		// Compute the set of reachable functions after the points-to analysis
-		for ( int i = 0; i < n_func; ++i ) vis_cg[i] = 0;
-		n_reach_user_methods = 0;
-		n_reach_methods = countReachableMethods(Constants.SUPER_MAIN) - 1;
+		int ans = 0;
+		CgEdge p;
 		
-		// Update our reachable methods record and rebuild the reverse call graph 
-		rev_call_graph = new HashMap<Integer, LinkedList<CgEdge>>();
-		for (int i = 0; i < n_func; ++i) {
-			if (vis_cg[i] == 0) {
-				func2int.remove( int2func.get(i) );
-				int2func.remove(i);
-				continue;
-			}
-			
-			// Construct the reverse call graph
-			CgEdge p = call_graph[i];
+		for ( int i = 0; i < n_func; ++i ) vis_cg[i] = 0;
+		
+		queue_cg.clear();
+		queue_cg.add(Constants.SUPER_MAIN);
+		vis_cg[Constants.SUPER_MAIN] = 1;
+		
+		while ( queue_cg.size() > 0 ) {
+			int s = queue_cg.removeFirst();
+			p = call_graph[s];
 			while ( p != null ) {
-				LinkedList<CgEdge> list = rev_call_graph.get(p.t);
-				if ( list == null ) {
-					list = new LinkedList<CgEdge>();
-					rev_call_graph.put(p.t, list);
+				int t = p.t;
+				if ( vis_cg[t] == 0 ) {
+					queue_cg.add(t);
+					vis_cg[t] = 1;
+					++ans;
 				}
-				list.add(p);
-				
+
 				p = p.next;
 			}
 		}
 		
-		// Clean the unreachable pointers
+		n_reach_methods = ans;
+		
+		// Scan again to remove unreachable methods
+		ans = 0;
+		for (int i = 1; i < n_func; ++i) {
+			SootMethod sm = int2func.get(i);
+			
+			if (vis_cg[i] == 0) {
+				func2int.remove(sm);
+				int2func.remove(i);
+			}
+			else {
+				if ( !sm.isJavaLibraryMethod() )
+					++ans;
+			}
+		}
+		
+		n_reach_user_methods = ans;
+	}
+	
+	/**
+	 * The reversed call graph might be used by evaluating queries.
+	 */
+	private void buildRevCallGraph()
+	{
+		rev_call_graph = new HashMap<Integer, LinkedList<CgEdge>>();
+		
+		for (int i = 0; i < n_func; ++i) {
+			CgEdge p = call_graph[i];
+			
+			while (p != null) {
+				LinkedList<CgEdge> list = rev_call_graph.get(p.t);
+				if (list == null) {
+					list = new LinkedList<CgEdge>();
+					rev_call_graph.put(p.t, list);
+				}
+
+				list.add(p);
+				p = p.next;
+			}
+		}
+	}
+	
+	/**
+	 * 1. Update the call graph;
+	 * 2. Eliminate the pointers, objects, and constraints related to the unreachable code.
+	 */
+	private void finalizeInternalData()
+	{
+		// Compute the set of reachable functions after the points-to analysis
+		markReachableMethods();
+			
+		// Clean the unreachable objects
  		for ( Iterator<IVarAbstraction> it = allocations.iterator(); it.hasNext(); ) {
  			IVarAbstraction po = it.next();
 			AllocNode obj = (AllocNode)po.getWrappedNode();
@@ -931,28 +1077,26 @@ public class GeomPointsTo extends PAG
 				it.remove();
 		}
 		
- 		// Clean the unreachable objects
+ 		// Clean the unreachable pointers
+ 		final Vector<AllocNode> removeSet = new Vector<AllocNode>();
+ 		
 		for ( Iterator<IVarAbstraction> it = pointers.iterator(); it.hasNext(); ) {
 			IVarAbstraction pn = it.next();
-			if ( pn.willUpdate == false ) {
-				// We directly remove this pointer from geomPTA
-				it.remove();
-				continue;
-			}
 			
 			// Is this pointer obsoleted?
-			Node node = pn.getWrappedNode();
+			Node vn = pn.getWrappedNode();
 			SootMethod sm = null;
 			
-			if ( node instanceof LocalVarNode ) {
-				sm = ((LocalVarNode)node).getMethod();
+			if ( vn instanceof LocalVarNode ) {
+				sm = ((LocalVarNode)vn).getMethod();
 			}
-			else if ( node instanceof AllocDotField ) {
-				sm = ((AllocDotField)node).getBase().getMethod();
+			else if ( vn instanceof AllocDotField ) {
+				sm = ((AllocDotField)vn).getBase().getMethod();
 			}
 			
 			if ( sm != null ) {
 				if ( func2int.containsKey(sm) == false ) {
+					pn.deleteAll();
 					it.remove();
 					continue;
 				}
@@ -961,76 +1105,134 @@ public class GeomPointsTo extends PAG
 			if ( pn.getRepresentative() != pn )
 				continue;
 			
-			// Otherwise, we remove the useless shapes or objects
-			Set<AllocNode> objSet = pn.get_all_points_to_objects();
-			for ( Iterator<AllocNode> oit = objSet.iterator(); oit.hasNext(); ) {
-				AllocNode obj = oit.next();
-				IVarAbstraction po = consG.get(obj);
-				if ( po.getNumber() == -1 || pn.isDeadObject(obj) )
-					oit.remove();
-			}
+			removeSet.clear();
 			
-			pn.drop_duplicates();
+			if ( pn.hasPTResult() ) {
+				// We remove the useless shapes or objects
+				Set<AllocNode> objSet = pn.get_all_points_to_objects();
+				
+				for ( Iterator<AllocNode> oit = objSet.iterator(); oit.hasNext(); ) {
+					AllocNode obj = oit.next();
+					IVarAbstraction po = consG.get(obj);
+					if ( !po.reachable() || pn.isDeadObject(obj) ) {
+						removeSet.add(obj);
+					}
+				}
+				
+				for ( AllocNode obj : removeSet )
+					pn.remove_points_to(obj);
+				
+				pn.drop_duplicates();
+			}
+			else {
+				// We also remove unreachable objects for SPARK nodes
+				PointsToSetInternal pts = vn.getP2Set();
+				pts.forall( new P2SetVisitor() {
+					@Override
+					public void visit(Node n) {
+						IVarAbstraction pan = findInternalNode(n);
+						// The removeSet is misused as a contains set
+						if ( pan.reachable() )
+							removeSet.add((AllocNode)n);
+					}
+				});
+				
+				pts = vn.makeP2Set();
+				for ( AllocNode an : removeSet ) pts.add(an);
+			}
 		}
 		
-		// We reassign the ids to the pointers and objects
+		// Clean the useless constraints
+		for (Iterator<PlainConstraint> cIt = constraints.iterator(); 
+				cIt.hasNext();) {
+			PlainConstraint cons = cIt.next();
+
+			IVarAbstraction lhs = cons.getLHS();
+			IVarAbstraction rhs = cons.getRHS();
+
+			if (!lhs.reachable() || 
+					!rhs.reachable()) {
+				cIt.remove();
+			}
+		}
+				
+		// We reassign the IDs to the pointers, objects and constraints
 		pointers.reassign();
 		allocations.reassign();
-		
-		// Prepare for querying
-		IVarAbstraction.ptsProvider = this;
+		constraints.reassign();
 	}
 	
 	/**
 	 * Stuff that is useless for querying is released.
 	 */
-	public void releaseUselessResources()
+	private void releaseUselessResources()
 	{
 		offlineProcessor.destroy();
+		offlineProcessor = null;
 		IFigureManager.cleanCache();
-		System.gc(); System.gc(); System.gc(); System.gc(); System.gc();
+		System.gc();
 	}
 	
 	/**
-	 * Programmers can call this function any time to use the up-to-date call graph.
-	 * Geom-pts does not update soot call graph by default.
+	 * Update the reachable methods and SPARK points-to results.
 	 */
-	public void updateSootData()
+	private void finalizeSootData()
 	{
-		// We first update the Soot call graph
-		for (CgEdge p : obsoletedEdges) {
-			Scene.v().getCallGraph().removeEdge(p.sootEdge);
-		}
-
 		// We remove the unreachable functions from Soot internal structures
 		Scene.v().releaseReachableMethods();
 		// The we rebuild it from the updated Soot call graph
 		Scene.v().getReachableMethods();
+		
+		if ( !opts.geom_trans() ) {
+			// We remove the SPARK points-to information for pointers that have geomPTA results (willUpdate = true)
+			// At querying time, the SPARK points-to container acts as a query cache
+			for ( IVarAbstraction pn : pointers ) {
+				// Keep only the points-to results for representatives
+				if ( pn != pn.getRepresentative() ) {
+					continue;
+				}
+				
+				// Simplify
+				if ( pn.hasPTResult() ) {
+					pn.keepPointsToOnly();
+					Node vn = pn.getWrappedNode();
+					vn.discardP2Set();
+				}
+			}
+		}
+		else {
+			// Do we need to obtain the context insensitive points-to result?
+			transformToCIResult();
+		}
 	}
 	
 	/**
 	 * For many applications, they only need the context insensitive points-to result.
 	 * We provide a way to transfer our result back to SPARK.
 	 * After the transformation, we discard the context sensitive points-to information.
-	 * Therefore, the context sensitive queries are not served since then.
+	 * Therefore, if context sensitive queries are needed in future, please call ddSolve() for queried pointers first. 
 	 */
 	public void transformToCIResult()
 	{	
-		updateSootData();
-		
 		for ( IVarAbstraction pn : pointers ) {
+			if ( pn.getRepresentative() != pn ) continue;
+			
 			Node node = pn.getWrappedNode();
-			IVarAbstraction pRep = pn.getRepresentative();
 			node.discardP2Set();
 			PointsToSetInternal ptSet = node.makeP2Set();
-			for ( AllocNode obj : pRep.get_all_points_to_objects() ) {
+			for ( AllocNode obj : pn.get_all_points_to_objects() ) {
 				ptSet.add( obj );
 			}
+			
+			pn.deleteAll();
 		}
+		
+		hasTransformed = true;
 	}
 	
 	/**
 	 * The starting point of the geometric points-to analysis engine.
+	 * This function computes the whole program points-to information.
 	 */
 	public void solve() 
 	{
@@ -1038,35 +1240,39 @@ public class GeomPointsTo extends PAG
 		long mem;
 		int rounds;
 		int n_obs;
-		int useClients = 0;
 		
 		// Flush all accumulated outputs
 		G.v().out.flush();
-		System.gc(); System.gc(); System.gc(); System.gc(); System.gc();
 		
 		// Start our constraints solving phase
 		Date begin = new Date();
 		
-		// Collect the basic information from SPARK
-		Set<VarNode> basePointers = preprocess();
-		worklist.initialize(n_var);
-		offlineProcessor = new OfflineProcessor(n_var, this);
+		// Collect and process the basic information from SPARK
+		preprocess();
+		mergeLocalVariables();
+		
+		worklist.initialize(pointers.size());
+		offlineProcessor = new OfflineProcessor(this);
 		IFigureManager.cleanCache();
 		
-		for ( rounds = 0, n_obs = 1000; rounds < Constants.cg_refine_times && n_obs > 0; ++rounds ) {
+		for ( rounds = 0, n_obs = 1000; 
+				rounds < Parameters.cg_refine_times && n_obs > 0; ++rounds ) {
 
 			ps.println("\n" + "[Geom] Propagation Round " + rounds + " ==> ");
 			
 			// Encode the contexts
 			encodeContexts();
-			
-			// Offline process: 
+						
+			// Offline processing: 
 			// substantially use the points-to result for redundancy elimination prior to the analysis
 			Date prepare_begin = new Date();
-				offlineProcessor.runOptimizations( useClients, rounds == 0, basePointers );
+				offlineProcessor.init();
+				offlineProcessor.defaultFeedPtsRoutines();
+				offlineProcessor.runOptimizations();
 			Date prepare_end = new Date();
 			prepare_time += prepare_end.getTime() - prepare_begin.getTime();	
 
+			// Clear the points-to results in previous runs
 			prepareNextRun();
 			
 			// We construct the initial flow graph
@@ -1075,16 +1281,13 @@ public class GeomPointsTo extends PAG
 			// Solve the constraints
 			solveConstraints();
 			
-			// We update the call graph when the new points-to information is ready
-			// The call graph update time is not included in the points-to analysis
-			Date update_cg_begin = new Date();
-				n_obs = updateCallGraph();
-			Date update_cg_end = new Date();
-			solve_time -= update_cg_end.getTime() - update_cg_begin.getTime();
+			// We update the call graph and other internal data when the new points-to information is ready
+			n_obs = updateCallGraph();
+			finalizeInternalData();
 		}
 
-		if ( rounds < Constants.cg_refine_times )
-			ps.printf( "\nSorry, it's not necessary to iterate more times. We stop here.\n" );
+		if ( rounds < Parameters.cg_refine_times )
+			ps.printf( "\nThe points-to information has converged. We stop here.\n" );
 		
 		Date end = new Date();
 		solve_time += end.getTime() - begin.getTime();
@@ -1095,41 +1298,84 @@ public class GeomPointsTo extends PAG
 		ps.printf("[Geom] Main propagation time : %.2f seconds\n", (double) solve_time / 1000 );
 		ps.printf("[Geom] Memory used : %.1f MB\n", (double) (mem) / 1024 / 1024 );
 		
-		// Finish points-to analysis and prepare for querying
-		postProcess();
-		
 		// We perform a set of tests to assess the quality of the points-to results for user pointers
 		int evalLevel = opts.geom_eval();
-		if ( evalLevel > 0 ) {
+		if ( evalLevel != Constants.eval_nothing ) {
 			GeomEvaluator ge = new GeomEvaluator(this, ps);
 			ge.reportBasicMetrics();
 			
-			if ( evalLevel > 1 ) {
-				if ( useClients == 0 || useClients == 1 ) ge.checkCallGraph();
-				if ( useClients == 0 || useClients == 2 ) ge.checkCastsSafety();
-				if ( useClients == 0 ) ge.checkAliasAnalysis();
-				ge.estimateHeapDefuseGraph();
+			if ( evalLevel > Constants.eval_basicInfo ) {
+				ge.checkCallGraph();
+				ge.checkCastsSafety();
+				ge.checkAliasAnalysis();
+//				ge.estimateHeapDefuseGraph();
 			}
 		}
 		
-		if ( !opts.geom_trans() ) {
-			// We remove the SPARK points-to information for pointers that have geomPTA results
-			// At querying time, the SPARK points-to container will be used as query cache
-			for ( IVarAbstraction pn : pointers ) {
-				// Keep only representative result
-				if ( pn == pn.getRepresentative() ) pn.keepPointsToOnly();
-				Node vn = pn.getWrappedNode();
-				vn.discardP2Set();
-			}
-		}
-		else {
-			// Do we need to obtain the context insensitive points-to result?
-			transformToCIResult();
-			hasTransformed = true;
-		}
+		// Make changes available to Soot
+		finalizeSootData();
 		
-		hasExecuted = true;
+		// Finish
 		releaseUselessResources();
+		hasExecuted = true;
+	}
+
+	/**
+	 * The demand-driven mode for precisely computing points-to information for given pointers.
+	 * Call graph will not be updated in this mode.
+	 * @param qryNodes: the set of nodes that would be refined by geomPA.
+	 */
+	public void ddSolve(Set<Node> qryNodes)
+	{
+		long solve_time = 0, prepare_time = 0;
+		
+		if ( hasExecuted == false )
+			solve();
+		
+		if ( ddPrepared == false ) {
+			offlineProcessor = new OfflineProcessor(this);
+			IFigureManager.cleanCache();
+			ddPrepared = true;
+			
+			// First time entering into the demand-driven mode
+			ps.println();
+			ps.println("==> Entering demand-driven mode (experimental).");
+		}
+		
+		int init_size = qryNodes.size();
+		
+		if ( init_size == 0 ) {
+			ps.println("Please provide at least one pointer.");
+			return;
+		}
+		
+		// We must not encode the contexts again, 
+		// otherwise the points-to information is invalid due to context mapping change
+		// encodeContexts();
+
+		// We first perform the offline optimizations
+		Date prepare_begin = new Date();
+
+		offlineProcessor.init();
+		offlineProcessor.addUserDefPts(qryNodes);
+		offlineProcessor.runOptimizations();
+
+		Date prepare_end = new Date();
+		prepare_time += prepare_end.getTime() - prepare_begin.getTime();
+
+		// Run geomPA again
+		Date begin = new Date();
+
+		prepareNextRun();
+		nodeGenerator.initFlowGraph(this);
+		solveConstraints();
+
+		Date end = new Date();
+		solve_time += end.getTime() - begin.getTime();
+		
+		ps.println();
+		ps.printf("[ddGeom] Preprocessing time : %.2f seconds\n", (double) prepare_time / 1000);
+		ps.printf("[ddGeom] Main propagation time : %.2f seconds\n", (double) solve_time / 1000 );
 	}
 	
 	/**
@@ -1145,13 +1391,16 @@ public class GeomPointsTo extends PAG
 		func2int.clear();
 		int2func.clear();
 		edgeMapping.clear();
+		hasTransformed = false;
 		hasExecuted = false;
 		
-		System.gc(); System.gc(); System.gc(); System.gc();
+		System.gc(); System.gc(); 
+		System.gc(); System.gc();
 	}
 	
 	/**
-	 * Or, we only keep the pointers the user has interests.
+	 * Keep only the pointers the users are interested in.
+	 * Just used for reducing memory occupation.
 	 */
 	public void keepOnly( Set<IVarAbstraction> usefulPointers )
 	{
@@ -1161,32 +1410,56 @@ public class GeomPointsTo extends PAG
 			reps.add( pn.getRepresentative() );
 		}
 		
+		usefulPointers.addAll(reps);
+		reps = null;
+		
 		for ( IVarAbstraction pn : pointers ) {
-			if ( !usefulPointers.contains(pn) &&
-					!reps.contains(pn) )
+			if ( !usefulPointers.contains(pn) )
 				pn.deleteAll();
 		}
 		
-		reps = null;
-		System.gc(); System.gc(); System.gc(); System.gc();
+		System.gc();
 	}
 	
+	/**
+	 * Get Internal ID for soot method @param sm
+	 * @return -1 if the given method is unreachable
+	 */
 	public int getIDFromSootMethod( SootMethod sm )
 	{
 		Integer ans = func2int.get(sm);
-		return ans == null ? -1 : ans.intValue();
+		return ans == null ? Constants.UNKNOWN_FUNCTION : ans.intValue();
 	}
 	
+	/**
+	 * Get soot method from given internal ID @param fid
+	 * @return null if such ID is illegal.
+	 */
 	public SootMethod getSootMethodFromID( int fid )
 	{
 		return int2func.get(fid); 
 	}
 	
+	/**
+	 * Deciding if the given method represented by @param fid is reachable.
+	 */
 	public boolean isReachableMethod( int fid )
 	{
-		return vis_cg[fid] != 0;
+		return fid == Constants.UNKNOWN_FUNCTION ? false : vis_cg[fid] != 0;
+	}
+	
+	/**
+	 * Deciding if the given method represented by @param sm is reachable.
+	 */
+	public boolean isReachableMethod( SootMethod sm )
+	{
+		int id = getIDFromSootMethod(sm);
+		return isReachableMethod(id);
 	}
 
+	/**
+	 * Telling if the given method is in the file given by the option "cg.spark geom-verify-name".
+	 */
 	public boolean isValidMethod( SootMethod sm )
 	{
 		if ( validMethods != null ) {
@@ -1214,28 +1487,44 @@ public class GeomPointsTo extends PAG
 		}
 	}
 	
+	/**
+	 * A replacement of the Scene.v().getReachableMethods.
+	 * @return
+	 */
 	public Set<SootMethod> getAllReachableMethods()
 	{
 		return func2int.keySet();
 	}
 	
+	/**
+	 * Get the call edges calling from the method @param fid.
+	 */
 	public CgEdge getCallEgesOutFrom( int fid )
 	{
 		return call_graph[fid];
 	}
 	
+	/**
+	 * Get the call edges calling into the method @param fid.
+	 */
 	public LinkedList<CgEdge> getCallEdgesInto( int fid )
 	{
+		if ( rev_call_graph == null )
+			// We build the reversed call graph on demand
+			buildRevCallGraph();
+		
 		return rev_call_graph.get(fid);
 	}
 	
 	/**
 	 * Get the index of the enclosing function of the specified node.
 	 */
-	public int getMappedMethodID( Node node )
+	public int getMappedMethodID( IVarAbstraction pn )
 	{
 		SootMethod sm = null;
 		int ret = Constants.SUPER_MAIN;
+		
+		Node node = pn.getWrappedNode();
 		
 		if ( node instanceof AllocNode ) {
 			sm = ((AllocNode)node).getMethod();
@@ -1247,7 +1536,8 @@ public class GeomPointsTo extends PAG
 			sm = ((AllocDotField)node).getBase().getMethod();
 		}
 		
-		if ( sm != null ) {
+		if ( sm != null &&
+				func2int.containsKey(sm) ) {
 			ret = func2int.get( sm );
 			if ( vis_cg[ret] == 0 )
 				ret = Constants.UNKNOWN_FUNCTION;
@@ -1257,9 +1547,7 @@ public class GeomPointsTo extends PAG
 	}
 	
 	/**
-	 * Transform the SPARK node representation to our representation.
-	 * @param v
-	 * @return
+	 * Transform the SPARK node @param v representation to our representation.
 	 */
 	public IVarAbstraction makeInternalNode( Node v )
 	{
@@ -1272,10 +1560,8 @@ public class GeomPointsTo extends PAG
 	}
 	
 	/**
-	 * Find our representation for the SPARK node.
+	 * Find our representation for the SPARK node @param v.
 	 * We don't create a new node if nothing found.
-	 * @param v
-	 * @return
 	 */
 	public IVarAbstraction findInternalNode( Node v )
 	{
@@ -1286,7 +1572,6 @@ public class GeomPointsTo extends PAG
 	 * Type compatibility test.
 	 * @param src
 	 * @param dst
-	 * @return
 	 */
 	public boolean castNeverFails( Type src, Type dst )
 	{
@@ -1294,17 +1579,11 @@ public class GeomPointsTo extends PAG
 	}
 	
 	/**
-	 * Get the number of valid pointers currently in the container.
-	 * @return
+	 * Get the number of valid pointers currently reachable by geomPTA.
 	 */
 	public int getNumberOfPointers()
 	{
 		return pointers.size();
-	}
-	
-	public int getNumberOfSparkPointers()
-	{
-		return n_var;
 	}
 	
 	/**
@@ -1316,15 +1595,10 @@ public class GeomPointsTo extends PAG
 		return allocations.size();
 	}
 	
-	public int getNumberOfSparkObjects()
-	{
-		return n_alloc_sites;
-	}
-	
 	/**
 	 * Return the number of functions that are reachable by SPARK.
 	 */
-	public int getNumberOfFunctions()
+	public int getNumberOfSparkMethods()
 	{
 		return n_func;
 	}
@@ -1332,7 +1606,7 @@ public class GeomPointsTo extends PAG
 	/**
 	 * Return the number of functions that are reachable after the geometric points-to analysis.
 	 */
-	public int getNumberOfReachableFunctions()
+	public int getNumberOfMethods()
 	{
 		return n_reach_methods;
 	}
@@ -1342,17 +1616,29 @@ public class GeomPointsTo extends PAG
 		return worklist;
 	}
 	
+	/**
+	 * Obtain the internal representation of an object field.
+	 */
+	public IVarAbstraction findInstanceField(AllocNode obj, SparkField field)
+	{
+		AllocDotField af = findAllocDotField(obj, field);
+		return consG.get(af);
+	}
+	
+	/**
+	 * Obtain or create an internal representation of an object field.
+	 */
 	public IVarAbstraction findAndInsertInstanceField(AllocNode obj, SparkField field) 
 	{
 		AllocDotField af = findAllocDotField(obj, field);
 		IVarAbstraction pn = null;
 		
 		if ( af == null ) {
-			// We create a new instance field node with restrict type compatible check
+			// We create a new instance field node w.r.t type compatiblity
 			Type decType = ((SootField) field).getDeclaringClass().getType();
 			Type baseType = obj.getType();
 			// baseType must be a sub type of decType
-			if ( typeManager.castNeverFails(baseType, decType) ) {		
+			if ( typeManager.castNeverFails(baseType, decType) ) {
 				af = makeAllocDotField(obj, field);
 				pn = makeInternalNode(af);
 				pointers.add(pn);
@@ -1365,6 +1651,9 @@ public class GeomPointsTo extends PAG
 		return pn;
 	}
 	
+	/**
+	 * Obtain the edge representation internal to geomPTA.
+	 */
 	public CgEdge getInternalEdgeFromSootEdge( Edge e )
 	{
 		return edgeMapping.get(e);
@@ -1383,41 +1672,13 @@ public class GeomPointsTo extends PAG
 		return false;
 	}
 	
-	public boolean isLegalPointer( IVarAbstraction pn )
-	{
-		Node v = pn.getWrappedNode();
-		SootMethod sm = null;
-		int method = 0;
-		
-		// We do not count the exception handler pointers
-		if ( isExceptionPointer(v) == true )
-			return false;
-		
-		method = getMappedMethodID(v);
-		sm = getSootMethodFromID(method);
-		
-		// Global variable?
-		if ( method == Constants.SUPER_MAIN )
-			return false;
-		
-		// Is the enclosing method obsoleted?
-		if ( method == Constants.UNKNOWN_FUNCTION )
-			return false;
-		
-		// Is this a valid method in the verification list?
-		if ( !isValidMethod(sm) )
-			return false;
-		
-		return !sm.isJavaLibraryMethod();
-	}
-	
 	/**
 	 * Given a valid SPARK node, we test if it is still valid after the geometric analysis.
 	 */
 	public boolean isValidGeometricNode( Node sparkNode )
 	{
 		IVarAbstraction pNode = consG.get(sparkNode);
-		return pNode != null && pNode.getNumber() != -1;
+		return pNode != null && pNode.reachable();
 	}
 	
 	/**
@@ -1441,10 +1702,15 @@ public class GeomPointsTo extends PAG
 				new File( dump_dir, file_name ) );
 	}
 	
+	// --------------------------------------------------------------------------------------------------------
 	// -------------------------------Soot Standard Points-to Query Interface----------------------------------
+	// --------------------------------------------------------------------------------------------------------
 	
 	private PointsToSetInternal field_p2set( PointsToSet s, final SparkField f )
 	{
+		if ( !(s instanceof PointsToSetInternal) )
+			throw new RuntimeException( "Base pointers must be stored in *PointsToSetInternal*." );
+		
 		PointsToSetInternal bases = (PointsToSetInternal) s;
 		final PointsToSetInternal ret = getSetFactory().newSet(f.getType(), this);
 		
@@ -1480,9 +1746,13 @@ public class GeomPointsTo extends PAG
 		if ( !hasExecuted ) return super.reachingObjects(l);
 		
 		LocalVarNode vn = findLocalVarNode(l);
+		if ( vn == null ) 
+			return EmptyPointsToSet.v();
+		
 		IVarAbstraction pn = consG.get(vn);
 		
 		// In case this pointer has no geomPTA result
+		// This is perhaps a bug
 		if ( pn == null ) 
 			return vn.getP2Set();
 		
@@ -1490,7 +1760,7 @@ public class GeomPointsTo extends PAG
 		if ( hasTransformed ||
 				vn.getP2Set() != EmptyPointsToSet.v() ) return vn.getP2Set();
 		
-		// Obtain and cache the result
+		// Compute and cache the result
 		pn = pn.getRepresentative();
 		PointsToSetInternal ptSet = vn.makeP2Set();
 		for ( AllocNode obj : pn.get_all_points_to_objects() ) {
@@ -1511,37 +1781,47 @@ public class GeomPointsTo extends PAG
 		
 		if ( hasTransformed ||
 				!(c instanceof Unit) )
-			return G.v().soot_jimple_toolkits_pointer_FullObjectSet();
+			return reachingObjects(l);
 		
 		LocalVarNode vn = findLocalVarNode(l);
-		if ( vn == null ) return EmptyPointsToSet.v();
+		if ( vn == null ) 
+			return EmptyPointsToSet.v();
 		
 		// Lookup the context sensitive points-to information for this pointer
 		IVarAbstraction pn = consG.get(vn);
-		if ( pn == null ) return vn.getP2Set();
+		if ( pn == null ) 
+			return vn.getP2Set();
+		
 		pn = pn.getRepresentative();
+		
+		// Obtain the context sensitive points-to result
+		SootMethod callee = vn.getMethod();
+		Edge e = Scene.v().getCallGraph().findEdge((Unit) c, callee);
+		if (e == null)
+			return vn.getP2Set();
+
+		// Compute the contexts interval
+		CgEdge myEdge = getInternalEdgeFromSootEdge(e);
+		if (myEdge == null)
+			return vn.getP2Set();
+
+		long low = myEdge.map_offset;
+		long high = low + max_context_size_block[myEdge.s];
 		
 		// Lookup the cache
 		ContextVarNode cvn = vn.context(c);
 		if ( cvn != null ) {
-			PointsToSet ans = cvn.getP2Set();
+			PointsToSetInternal ans = cvn.getP2Set();
 			if ( ans != EmptyPointsToSet.v() ) return ans;
 		}
-		
-		// Create a new context sensitive variable
-		// The points-to vector is set to empty at start
-		cvn = makeContextVarNode(vn, c);			
-		
-		// Obtain the context sensitive points-to result
-		SootMethod callee = vn.getMethod();
-		Edge e = Scene.v().getCallGraph().findEdge((Unit)c, callee);
-		if ( e == null ) return vn.getP2Set();
-		CgEdge myEdge = edgeMapping.get(e);
-		
-		long low = myEdge.map_offset;
-		long high = low + max_context_size_block[myEdge.s];
+		else {
+			// Create a new context sensitive variable
+			// The points-to vector is set to empty at start
+			cvn = makeContextVarNode(vn, c);
+		}
+
+		// Fill
 		PointsToSetInternal ptset = cvn.makeP2Set();
-		
 		for ( AllocNode an : pn.get_all_points_to_objects() ) {
 			if ( pn.pointer_interval_points_to(low, high, an) )
 				ptset.add(an);
@@ -1559,10 +1839,12 @@ public class GeomPointsTo extends PAG
             throw new RuntimeException( "The parameter f must be a *static* field." );
 		
         VarNode vn = findGlobalVarNode( f );
-        if ( vn == null ) return EmptyPointsToSet.v();
+        if ( vn == null ) 
+        	return EmptyPointsToSet.v();
         
         IVarAbstraction pn = consG.get(f);
-        if( pn == null ) return vn.getP2Set();
+        if( pn == null ) 
+        	return vn.getP2Set();
         
         // Lookup the cache
         if ( hasTransformed ||
@@ -1609,8 +1891,13 @@ public class GeomPointsTo extends PAG
 		AllocDotField adf = an.dot(f);
 		IVarAbstraction pn = consG.get(adf);
 		
-		if ( adf == null || pn == null )
+		// No such pointer seen by SPARK
+		if ( adf == null )
 			return EmptyPointsToSet.v();
+		
+		// Not seen by geomPTA
+		if ( pn == null )
+			return adf.getP2Set();
 		
 		if ( hasTransformed ||
 	        	adf.getP2Set() != EmptyPointsToSet.v() ) return adf.getP2Set();	

@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2011 Richard Xiao
+ * Copyright (C) 2011-2014 Richard Xiao
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,15 +16,36 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.helper;
+package soot.jimple.spark.geom.utils;
+
+import java.util.Iterator;
+
+import soot.Scene;
+import soot.jimple.Stmt;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Edge;
 
 /**
- * For anyone who wants to experiment their own points-to analysis outside Soot,
- * we provide a facility to dump the program facts to an external file.
- * 
+ * It implements missing features in Soot components.
+ * All functions should be static.
  * @author xiao
  *
  */
-public class ConstraintsDumper {
+public class SootInfo {
+	
+	public static int countCallEdgesForCallsite(Stmt callsite, boolean stopForMutiple)
+	{
+		CallGraph cg = Scene.v().getCallGraph();
+		int count = 0;
+		
+		for ( Iterator<Edge> it = cg.edgesOutOf(callsite); 
+				it.hasNext(); ) {
+			it.next();
+			++count;
+			if ( stopForMutiple && count > 1) break;
+		}
+		
+		return count;
+	}
 
 }

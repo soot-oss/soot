@@ -16,13 +16,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
+package soot.jimple.spark.geom.dataRep;
 
 import java.util.Set;
 
+import soot.jimple.spark.geom.geomPA.Constants;
+import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.toolkits.scalar.Pair;
+import soot.util.Numberable;
 
 /**
  * The geometric encoding based constraint descriptor.
@@ -30,10 +33,11 @@ import soot.toolkits.scalar.Pair;
  * @author xiao
  *
  */
-public class PlainConstraint {
+public class PlainConstraint implements Numberable{
 	// Plain constraint descriptor
 	// This is a full description that we can read/write without context
-	// A constraint has the form : lhs -> rhs, where lhs/rhs is a pointer p or a field p.f, which assigns the value of lhs to rhs
+	// A constraint has the form : lhs -> rhs, which means lhs is assigned to rhs 
+	// lhs/rhs is a pointer p or a field p.f, which assigns the value of lhs to rhs
 	
 	/** The type of this constraint, e.g. allocation, assignment or complex */
 	public int type;
@@ -47,6 +51,25 @@ public class PlainConstraint {
 	public SparkField f = null;
 	/** If this constraint represents a parameter passing or function return, the corresponding call edge is identified here */
 	public Set<Edge> interCallEdges = null;
-	/** To indicate if this constraint is useful or not (may be deleted by cycle detection) */
-	public boolean isViable = true;
+	/** To indicate if this constraint will be evaluated or not */
+	public boolean isActive = true;
+	
+	private int id = -1;
+	
+	@Override
+	public void setNumber(int number) {
+		// TODO Auto-generated method stub
+		id = number;
+	}
+	
+	@Override
+	public int getNumber() {
+		// TODO Auto-generated method stub
+		return id;
+	}
+	
+	public IVarAbstraction getLHS() { return expr.getO1(); }
+	public void setLHS(IVarAbstraction newLHS) { expr.setO1(newLHS); }
+	public IVarAbstraction getRHS() { return expr.getO2(); }
+	public void setRHS(IVarAbstraction newRHS) { expr.setO2(newRHS); }
 }

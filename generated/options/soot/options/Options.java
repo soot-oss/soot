@@ -80,9 +80,6 @@ public class Options extends OptionsBase {
         }
         while( hasMoreOptions() ) {
             String option = nextOption();
-            if (option.isEmpty())
-            	continue;
-            
             if( option.charAt(0) != '-' ) {
                 classes.add( option );
                 continue;
@@ -1822,7 +1819,8 @@ public class Options extends OptionsBase {
                 +padOpt( "geom-trans (false)", "Transform to context-insensitive result" )
                 +padOpt( "geom-frac-base (40)", "Fractional parameter for precision/performance trade-off" )
                 +padOpt( "geom-blocking (true)", "Enable blocking strategy for recursive calls" )
-                +padOpt( "geom-runs (1)", "Iterations of analysis" );
+                +padOpt( "geom-runs (1)", "Iterations of analysis" )
+                +padOpt( "geom-app-only (true)", "Processing pointers that impact pointers in application code only" );
     
         if( phaseName.equals( "cg.paddle" ) )
             return "Phase "+phaseName+":\n"+
@@ -2702,7 +2700,8 @@ public class Options extends OptionsBase {
                 +"geom-trans "
                 +"geom-frac-base "
                 +"geom-blocking "
-                +"geom-runs ";
+                +"geom-runs "
+                +"geom-app-only ";
     
         if( phaseName.equals( "cg.paddle" ) )
             return ""
@@ -3307,7 +3306,8 @@ public class Options extends OptionsBase {
               +"geom-trans:false "
               +"geom-frac-base:40 "
               +"geom-blocking:true "
-              +"geom-runs:1 ";
+              +"geom-runs:1 "
+              +"geom-app-only:true ";
     
         if( phaseName.equals( "cg.paddle" ) )
             return ""

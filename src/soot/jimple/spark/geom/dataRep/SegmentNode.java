@@ -16,9 +16,7 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-package soot.jimple.spark.geom.geomPA;
-
-import soot.jimple.spark.geom.geomPA.RectangleNode;
+package soot.jimple.spark.geom.dataRep;
 
 /**
  * The segment figure for encoding the one-to-one relation.
@@ -95,5 +93,56 @@ public class SegmentNode implements Comparable<SegmentNode> {
 		}
 		
 		return 0;
+	}
+	
+	public long xEnd() 
+	{ 
+		return I1 + L; 
+	}
+	
+	public long yEnd() 
+	{ 
+		return I2 + L; 
+	}
+	
+	/**
+	 * Testing if two figures are intersected.
+	 * This interface implements standard intersection testing that ignores the semantics of the X- and Y- axis.
+	 * Processing the semantics issues before calling this method.
+	 * A sample usage, please @see heap_sensitive_intersection
+	 * 
+	 * @param q
+	 * @return
+	 */
+	public boolean intersect(SegmentNode q)
+	{
+		// Intersection with a rectangle is tested in the overrode method
+		if ( q instanceof RectangleNode )
+			return q.intersect(this);
+	
+		SegmentNode p = this;
+		
+		if ( (p.I2 - p.I1) == (q.I2 - q.I1) ) {
+			// Two segments have the same offset, so they are on the same line
+			if ( p.I1 <= q.I1 )
+				return q.I1 < p.I1 + p.L;
+			else
+				return p.I1 < q.I1 + q.L;
+		}
+		
+		return false;
+	}
+	
+	public boolean projYIntersect(SegmentNode q)
+	{
+		long py1 = this.I2;
+		long py2 = yEnd();
+		long qy1 = q.I2;
+		long qy2 = q.yEnd();
+		
+		if ( py1 <= qy1 )
+			return qy1 < py2;
+
+		return py1 < qy2;
 	}
 }
