@@ -81,8 +81,6 @@ class AsmUtil {
 			internal = toQualifiedName(internal);
 			return RefType.v(internal);	
 		}
-		
-		//return internal.replace('/', '.');
 	}
 	
 	/**

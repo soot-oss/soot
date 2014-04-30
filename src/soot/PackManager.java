@@ -953,7 +953,16 @@ public class PackManager {
     }
 
 	public BafBody convertJimpleBodyToBaf(SootMethod m) {
-		BafBody bafBody = Baf.v().newBody((JimpleBody) m.getActiveBody());
+		if (m.toString().equals("<com.google.common.collect.HashBiMap: com.google.common.collect.BiMap inverse()>"))
+		System.out.println("x");
+			
+		JimpleBody body = (JimpleBody) m.getActiveBody().clone();
+		ConditionalBranchFolder.v().transform(body);
+		UnreachableCodeEliminator.v().transform(body);
+		DeadAssignmentEliminator.v().transform(body);
+		UnusedLocalEliminator.v().transform(body);
+		
+		BafBody bafBody = Baf.v().newBody(body);
 		PackManager.v().getPack("bop").apply(bafBody);
 		PackManager.v().getPack("tag").apply(bafBody);
 		if( Options.v().validate() ) {

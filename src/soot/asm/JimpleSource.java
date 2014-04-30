@@ -1391,6 +1391,15 @@ final class JimpleSource implements MethodSource {
 		Edge(AbstractInsnNode insn) {
 			this(insn, new ArrayList<Operand>(JimpleSource.this.stack));
 		}
+		
+		public boolean isStackEmpty(){
+			for(Operand temp : this.stack){
+				if(temp != null){
+					return false;
+				}
+			}
+			return true;
+		}
 	}
 	
 	private Table<AbstractInsnNode, AbstractInsnNode, Edge> edges;
@@ -1406,18 +1415,23 @@ final class JimpleSource implements MethodSource {
 		do {
 			Edge edge = edges.get(cur, tgt);
 			if (edge == null) {
-				edge = lastIdx == -1 || i == lastIdx ? new Edge(tgt, stack) : new Edge(tgt);
+				edge = lastIdx == -1 || i == lastIdx ? new Edge(tgt, new ArrayList<Operand>(stack)) : new Edge(tgt);
 				edge.prevStacks.add(stackss);
 				edges.put(cur, tgt, edge);
 				conversionWorklist.add(edge);
 				continue;
 			}
 			if (edge.stack != null) {
-				List<Operand> stack = edge.stack;
-				if (stack.size() != stackss.length)
+				ArrayList<Operand> stackTemp = edge.stack;
+				if(edge.isStackEmpty()&&stackss.length>0){
+					System.out.println(stackTemp.size()+"/"+ stackss.length);
+					System.out.println(stackss.toString());
+				}
+				if (stackTemp.size() != stackss.length){
 					throw new AssertionError("Multiple un-equal stacks!");
+				}
 				for (int j = 0; j != stackss.length; j++) {
-					if (!stack.get(j).equivTo(stackss[j]))
+					if (!stackTemp.get(j).equivTo(stackss[j]))
 						throw new AssertionError("Multiple un-equal stacks!");
 				}
 				continue;
