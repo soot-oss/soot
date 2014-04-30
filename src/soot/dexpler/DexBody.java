@@ -162,9 +162,8 @@ public class DexBody  {
         } else {
         	parameterTypes = Collections.emptyList();
         }
-
+        
         isStatic = Modifier.isStatic(method.getAccessFlags());
-
         numRegisters = code.getRegisterCount();
         numParameterRegisters = MethodUtil.getParameterRegisterCount(method);
         if (!isStatic)
@@ -184,6 +183,11 @@ public class DexBody  {
             Debug.printDbg(" put instruction '", dexInstruction ,"' at 0x", Integer.toHexString(address));
             address += instruction.getCodeUnits();
         }
+        
+        // Check taken from Android's dalvik/libdex/DexSwapVerify.cpp
+        if (numParameterRegisters > numRegisters)
+        	throw new RuntimeException("Malformed dex file: insSize (" + numParameterRegisters
+        			+ ") > registersSize (" + numRegisters + ")");
 
 //        // get addresses of pseudo-instruction data blocks
 //        for(DexlibAbstractInstruction instruction : instructions) {
@@ -351,7 +355,6 @@ public class DexBody  {
       final ArrayList<Instruction> instructionList = new ArrayList<Instruction>();
       ArrayList<DexlibAbstractInstruction> dexInstructions = new ArrayList<DexlibAbstractInstruction>();
 
-      byte[] encodedInstructions = pi.getData();
 //      InstructionIterator.IterateInstructions(this.dexFile, encodedInstructions,
 //              new InstructionIterator.ProcessInstructionDelegate() {
 //                  public void ProcessInstruction(int codeAddress, Instruction instruction) {
@@ -469,7 +472,7 @@ public class DexBody  {
         }
         if (tries != null)
             addTraps();
-
+        
         // At this point Jimple code is generated
         // Cleaning...
 

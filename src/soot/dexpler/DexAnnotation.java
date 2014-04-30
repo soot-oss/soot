@@ -1,7 +1,6 @@
 package soot.dexpler;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -32,7 +31,6 @@ import org.jf.dexlib2.iface.value.ShortEncodedValue;
 import org.jf.dexlib2.iface.value.StringEncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
 
-import soot.G;
 import soot.Type;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
@@ -48,16 +46,11 @@ import soot.tagkit.AnnotationLongElem;
 import soot.tagkit.AnnotationStringElem;
 import soot.tagkit.AnnotationTag;
 import soot.tagkit.DeprecatedTag;
-import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.EnclosingMethodTag;
-import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.Host;
 import soot.tagkit.InnerClassAttribute;
 import soot.tagkit.InnerClassTag;
-import soot.tagkit.IntegerConstantValueTag;
-import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.SignatureTag;
-import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
@@ -152,7 +145,6 @@ public class DexAnnotation {
 
                     if (!(t instanceof VisibilityAnnotationTag)) {
                         if (t instanceof DeprecatedTag) {
-                            DeprecatedTag dt = (DeprecatedTag) t;
                             vat = new VisibilityAnnotationTag(0);
                             vat.addAnnotation(new AnnotationTag("Ljava/lang/Deprecated;"));
                         } else {
