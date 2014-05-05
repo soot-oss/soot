@@ -82,10 +82,12 @@ public class DexClass {
         }
 
         // super class for hierarchy level
-        String superClassName = Util.dottedClassName(superClass);
-        SootClass sootSuperClass = SootResolver.v().makeClassRef(superClassName);
-        sc.setSuperclass(sootSuperClass);
-        deps.typesToHierarchy.add(sootSuperClass.getType());
+        if (superClass != null) {
+	        String superClassName = Util.dottedClassName(superClass);
+	        SootClass sootSuperClass = SootResolver.v().makeClassRef(superClassName);
+	        sc.setSuperclass(sootSuperClass);
+	        deps.typesToHierarchy.add(sootSuperClass.getType());
+        }
 
         // access flags
         int accessFlags = defItem.getAccessFlags();
