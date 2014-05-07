@@ -1,11 +1,15 @@
 package soot.toDex.instructions;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Format.SparseSwitchDataPseudoInstruction;
+import org.jf.dexlib2.builder.BuilderInstruction;
+import org.jf.dexlib2.builder.SwitchLabelElement;
+import org.jf.dexlib2.builder.instruction.BuilderSparseSwitchPayload;
 
 import soot.Unit;
+import soot.jimple.Stmt;
+import soot.toDex.LabelAssigner;
 
 /**
  * The payload for a sparse-switch instruction.
@@ -28,7 +32,12 @@ public class SparseSwitchPayload extends SwitchPayload {
 	}
 
 	@Override
-	protected Instruction getRealInsn0() {
-		return new SparseSwitchDataPseudoInstruction(keys, getRelativeOffsets());
+	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
+		List<SwitchLabelElement> elements = new ArrayList<SwitchLabelElement>();
+		for (int i = 0; i < keys.length; i++)
+			elements.add(new SwitchLabelElement(keys[i],
+					assigner.getOrCreateLabel((Stmt) targets.get(i))));
+		return new BuilderSparseSwitchPayload(elements);
 	}
+
 }

@@ -2,10 +2,11 @@ package soot.toDex.instructions;
 
 import java.util.BitSet;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.Format.Instruction23x;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
+import org.jf.dexlib2.builder.instruction.BuilderInstruction23x;
 
+import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
@@ -36,8 +37,9 @@ public class Insn23x extends AbstractInsn implements ThreeRegInsn {
 	}
 
 	@Override
-	protected Instruction getRealInsn0() {
-		return new Instruction23x(opc, (short) getRegA().getNumber(), (short) getRegB().getNumber(), (short) getRegC().getNumber());
+	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
+		return new BuilderInstruction23x(opc, (short) getRegA().getNumber(),
+				(short) getRegB().getNumber(), (short) getRegC().getNumber());
 	}
 	
 	@Override

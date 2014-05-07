@@ -71,7 +71,6 @@ public class DexClass {
 
 
     public static Dependencies makeSootClass(SootClass sc, ClassDef defItem, DexFile dexFile) {
-
         String superClass = defItem.getSuperclass();
         Dependencies deps = new Dependencies();
 
@@ -99,6 +98,7 @@ public class DexClass {
                 String interfaceClassName = Util.dottedClassName(interfaceName);
                 if (sc.implementsInterface(interfaceClassName))
                     continue;
+                
                 SootClass interfaceClass = SootResolver.v().makeClassRef(interfaceClassName);
                 sc.addInterface(interfaceClass);
                 deps.typesToHierarchy.add(interfaceClass.getType());

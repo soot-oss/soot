@@ -104,7 +104,9 @@ public class Scene  //extends AbstractHost
         if (Options.v().exclude() != null)
             excludedPackages.addAll(Options.v().exclude());
 
-        if( !Options.v().include_all() ) {
+        // do not kill contents of the APK if we want a working new APK afterwards
+        if( !Options.v().include_all()
+        		&& Options.v().output_format() != Options.output_format_dex) {
             excludedPackages.add("java.");
             excludedPackages.add("sun.");
             excludedPackages.add("javax.");
@@ -1283,12 +1285,9 @@ public class Scene  //extends AbstractHost
      *  classes soot should use.
      */
     public void loadNecessaryClasses() {
-	loadBasicClasses();
-
-        Iterator<String> it = Options.v().classes().iterator();
-
-        while (it.hasNext()) {
-            String name = (String) it.next();
+    	loadBasicClasses();
+        
+    	for (String name : Options.v().classes()) {
             loadNecessaryClass(name);
         }
 
@@ -1303,7 +1302,8 @@ public class Scene  //extends AbstractHost
 	
 	            final String path = (String) pathIt.next();
 	            for (String cl : SourceLocator.v().getClassesUnder(path)) {
-	                loadClassAndSupport(cl).setApplicationClass();
+	            	SootClass theClass = loadClassAndSupport(cl);
+	            	theClass.setApplicationClass();
 	            }
 	        }
         }

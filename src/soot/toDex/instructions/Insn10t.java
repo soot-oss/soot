@@ -1,11 +1,10 @@
 package soot.toDex.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.Format.Instruction10t;
-import org.jf.dexlib.Code.Format.Instruction30t;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
+import org.jf.dexlib2.builder.instruction.BuilderInstruction10t;
 
-import soot.toDex.SootToDexUtils;
+import soot.toDex.LabelAssigner;
 
 /**
  * The "10t" instruction format: It needs one 16-bit code unit, does not have any registers
@@ -20,19 +19,10 @@ public class Insn10t extends InsnWithOffset {
 	}
 
 	@Override
-	protected Instruction getRealInsn0() {
-		int offA = getRelativeOffset();
-		
-		// If offset equals 0, must use goto/32 opcode
-		if (offA == 0)
-		  return new Instruction30t(Opcode.GOTO_32, offA);
-		
-		return new Instruction10t(opc, offA);
+	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
+		if (target == null)
+			throw new RuntimeException("Cannot jump to a NULL target");
+		return new BuilderInstruction10t(opc, assigner.getOrCreateLabel(target));
 	}
 
-	@Override
-	public boolean offsetFit() {
-		int offA = getRelativeOffset();
-		return SootToDexUtils.fitsSigned8(offA);
-	}
 }
