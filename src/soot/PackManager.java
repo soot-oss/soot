@@ -28,6 +28,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -129,7 +130,7 @@ import soot.xml.XMLPrinter;
 public class PackManager {
 	public static boolean DEBUG=false;
     public PackManager( Singletons.Global g ) { PhaseOptions.v().setPackManager(this); init(); }
-
+    private Date start;
     public boolean onlyStandardPacks() { return onlyStandardPacks; }
     private boolean onlyStandardPacks = false;
     void notifyAddPack() {
@@ -381,7 +382,8 @@ public class PackManager {
         return Collections.unmodifiableList( packList );
     }
 
-    public void runPacks() {
+    public void runPacks(Date start) {
+    	this.start = start;
     	if(Options.v().oaat())
     		runPacksForOneClassAtATime();
     	else {
@@ -413,7 +415,14 @@ public class PackManager {
                 SootClass clazz = Scene.v().getSootClass(cl);
                 clazz.setResolvingLevel(SootClass.BODIES);
                 source.resolve(clazz);
-
+                Date load = new Date();     
+                long loadtime = load.getTime() - start.getTime();
+                G.v().out.println(
+                    "Soot loaded the clases in "
+                        + (loadtime / 60000)
+                        + " min. "
+                        + ((loadtime % 60000) / 1000)
+                        + " sec.");
 				//run packs
 				runBodyPacks(clazz);
 				//generate output
@@ -460,6 +469,14 @@ public class PackManager {
                 G.v().out.println("Running in interactive mode.");
             }
         }
+        Date load = new Date();     
+        long loadtime = load.getTime() - start.getTime();
+        G.v().out.println(
+            "Soot loaded the clases in "
+                + (loadtime / 60000)
+                + " min. "
+                + ((loadtime % 60000) / 1000)
+                + " sec.");
 
         runBodyPacks();
         handleInnerClasses();
