@@ -30,7 +30,6 @@
 
 package soot.jimple.internal;
 
-import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
@@ -39,9 +38,8 @@ import java.util.*;
 
 public class JGotoStmt extends AbstractStmt implements GotoStmt
 {
-    UnitBox targetBox;
-
-    List targetBoxes;
+    final UnitBox targetBox;
+    final List<UnitBox> targetBoxes;
 
     public JGotoStmt(Unit target)
     {
@@ -50,11 +48,8 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
 
     public JGotoStmt(UnitBox box)
     {
-        this.targetBox = box;
-
-        targetBoxes = new ArrayList();
-        targetBoxes.add(this.targetBox);
-        targetBoxes = Collections.unmodifiableList(targetBoxes);
+        targetBox = box;
+        targetBoxes = Collections.singletonList(box);
     }
 
     public Object clone() 
@@ -92,7 +87,7 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
         return targetBox;
     }
 
-    public List getUnitBoxes()
+    public List<UnitBox> getUnitBoxes()
     {
         return targetBoxes;
     }
@@ -104,13 +99,9 @@ public class JGotoStmt extends AbstractStmt implements GotoStmt
     
     public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
-	Unit u;
-        out.add(u = Baf.v().newGotoInst(Baf.v().newPlaceholderInst(getTarget())));
-
-	Iterator it = getTags().iterator();
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
+    	Unit u = Baf.v().newGotoInst(Baf.v().newPlaceholderInst(getTarget()));
+    	u.addAllTagsOf(this);
+        out.add(u);
     }
     
     public boolean fallsThrough(){return false;}        

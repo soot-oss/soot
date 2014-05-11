@@ -31,8 +31,10 @@ import soot.jimple.*;
 import soot.options.Options;
 
 import java.util.*;
+
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
+
 import java.io.*;
 
 /**
@@ -223,7 +225,7 @@ public class TypeResolver
     if(DEBUG)
       {
 	G.v().out.println("-- Body Start --");
-	for( Iterator stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+	for( Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
 	    final Stmt stmt = (Stmt) stmtIt.next();
 	    G.v().out.println(stmt);
 	  }
@@ -303,7 +305,7 @@ public class TypeResolver
   {
     ConstraintCollector collector = new ConstraintCollector(this, true);
 
-    for( Iterator stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+    for( Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
 
         final Stmt stmt = (Stmt) stmtIt.next();
 	if(DEBUG)
@@ -322,7 +324,7 @@ public class TypeResolver
   {
     ConstraintCollector collector = new ConstraintCollector(this, false);
 
-    for( Iterator stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+    for( Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
 
         final Stmt stmt = (Stmt) stmtIt.next();
 	if(DEBUG)
@@ -371,10 +373,11 @@ public class TypeResolver
     }
 
     // create lists for each array depth
-    LinkedList[] lists = new LinkedList[max + 1];
+    @SuppressWarnings("unchecked")
+	LinkedList<TypeVariable>[] lists = new LinkedList[max + 1];
     for(int i = 0; i <= max; i++)
       {
-	lists[i] = new LinkedList();
+	lists[i] = new LinkedList<TypeVariable>();
       }
 
     for (TypeVariable var : typeVariableList) {
@@ -665,8 +668,8 @@ public class TypeResolver
 
   private void assign_types_1_2() throws TypeException
   {
-    for( Iterator localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
-        final Local local = (Local) localIt.next();
+    for( Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
+        final Local local = localIt.next();
 	TypeVariable var = typeVariable(local);
 	
 	if(var == null)
@@ -732,8 +735,8 @@ public class TypeResolver
 
   private void assign_types_3() throws TypeException
   {
-    for( Iterator localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
-        final Local local = (Local) localIt.next();
+    for( Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
+        final Local local = localIt.next();
 	TypeVariable var = typeVariable(local);
 	
 	if(var == null ||
@@ -759,7 +762,7 @@ public class TypeResolver
 	s = new StringBuffer("Checking:\n");
       }
 
-    for( Iterator stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+    for( Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
 
         final Stmt stmt = (Stmt) stmtIt.next();
 	if(DEBUG)
@@ -785,7 +788,7 @@ public class TypeResolver
   {
     ConstraintChecker checker = new ConstraintChecker(this, true);
     StringBuffer s = null;
-    PatchingChain units = stmtBody.getUnits();
+    PatchingChain<Unit> units = stmtBody.getUnits();
     Stmt[] stmts = new Stmt[units.size()];
     units.toArray(stmts);
 
@@ -966,9 +969,9 @@ public class TypeResolver
   private void split_new()
   {
     ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody);
-    SimpleLocalDefs defs = new SimpleLocalDefs(graph);
+    LocalDefs defs = new SmartLocalDefs(graph,new SimpleLiveLocals(graph));
     // SimpleLocalUses uses = new SimpleLocalUses(graph, defs);
-    PatchingChain units = stmtBody.getUnits();
+    PatchingChain<Unit> units = stmtBody.getUnits();
     Stmt[] stmts = new Stmt[units.size()];
 
     units.toArray(stmts);
@@ -982,7 +985,7 @@ public class TypeResolver
 	      {
 		SpecialInvokeExpr special = (SpecialInvokeExpr) invoke.getInvokeExpr();
 		
-		if(special.getMethodRef().name().equals("<init>"))
+		if("<init>".equals(special.getMethodRef().name()))
 		  {
 		    List<Unit> deflist = defs.getDefsOfAt((Local) special.getBase(), invoke);
 		    

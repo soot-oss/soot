@@ -23,66 +23,83 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.DefinitionStmt;
+
+
+@SuppressWarnings("serial")
 public abstract class AbstractDefinitionStmt extends AbstractStmt 
     implements DefinitionStmt
-{
-	public ValueBox leftBox;
-    public ValueBox rightBox;
+{	
+	public final ValueBox leftBox;
+	public final ValueBox rightBox;
+	
+	private final List<ValueBox> defBoxes; 
 
-    List defBoxes;
+	protected AbstractDefinitionStmt(ValueBox leftBox, ValueBox rightBox) {
+		this.leftBox = leftBox;
+		this.rightBox = rightBox;    	
+		
+		this.defBoxes = Collections.singletonList(leftBox); 
+	}
 
-    public Value getLeftOp()
+    
+    @Override
+    public final Value getLeftOp()
     {
         return leftBox.getValue();
     }
-
-    public Value getRightOp()
+    
+    @Override
+    public final Value getRightOp()
     {
         return rightBox.getValue();
     }
 
-    public ValueBox getLeftOpBox()
+    @Override
+    public final ValueBox getLeftOpBox()
     {
         return leftBox;
     }
-
-    public ValueBox getRightOpBox()
+    
+    @Override
+    public final ValueBox getRightOpBox()
     {
         return rightBox;
     }
 
-    public List getDefBoxes()
+	@Override
+    public final List<ValueBox> getDefBoxes()
     {
         return defBoxes;
     }
 
-    public List getUseBoxes()
+    @Override
+    public final List<ValueBox> getUseBoxes()
     {
-        List list = new ArrayList();
-
-        list.addAll(leftBox.getValue().getUseBoxes());
-        list.addAll(rightBox.getValue().getUseBoxes());
+        List<ValueBox> list = new ArrayList<ValueBox>();
+        list.addAll(getLeftOp().getUseBoxes());
         list.add(rightBox);
+        list.addAll(getRightOp().getUseBoxes());
         return list;
     }
-
-    public boolean fallsThrough() { return true;}        
-    public boolean branches() { return false;}
+    
+    @Override
+    public boolean fallsThrough() 
+    { 
+    	return true;
+	}      
+    
+    @Override
+    public boolean branches() 
+    { 
+    	return false;
+	}
 }
-
-
-
-
-
-

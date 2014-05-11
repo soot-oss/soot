@@ -796,7 +796,8 @@ public class PackManager {
 
 
     }
-
+    
+    @SuppressWarnings("fallthrough")
     private void runBodyPacks(SootClass c) {
         final int format = Options.v().output_format();
         if (format == Options.output_format_dava) {

@@ -181,12 +181,10 @@ public class EnhancedUnitGraph extends UnitGraph {
 		}
 	}
 	
-
-	@SuppressWarnings("unchecked")
 	protected void handleExplicitThrowEdges()
 	{
 		MHGDominatorTree dom = new MHGDominatorTree(new MHGDominatorsFinder<Unit>(this));
-		MHGDominatorTree pdom = new MHGDominatorTree(new MHGPostDominatorsFinder(this));
+		MHGDominatorTree pdom = new MHGDominatorTree(new MHGPostDominatorsFinder<Unit>(this));
 		
 		//this keeps a map from the entry of a try-catch-block to a selected merge point 
 		Hashtable<Unit, Unit> x2mergePoint = new Hashtable<Unit, Unit>();

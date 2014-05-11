@@ -27,13 +27,14 @@
 package soot.util;
 import soot.toolkits.graph.*;
 import soot.*;
+
 import java.util.*;
 
 /**
  * Maps each unit to the result of <code>mapTo</code>.
  */
-public abstract class UnitMap implements Map {
-  private Hashtable<Object, Object> unitToResult;
+public abstract class UnitMap<T> implements Map<Unit,T> {
+  private Map<Unit, T> unitToResult;
 
   /**
    * maps each unit of this body to the result of <code>mapTo</code>.<br>
@@ -43,7 +44,7 @@ public abstract class UnitMap implements Map {
    * @param b a Body
    */
   public UnitMap(Body b) {
-    unitToResult = new Hashtable<Object, Object>();
+    unitToResult = new HashMap<Unit, T>();
     map(b);
   }
 
@@ -67,7 +68,7 @@ public abstract class UnitMap implements Map {
    * @param initialCapacity the initialCapacity of the internal hashtable.
    */
   public UnitMap(Body b, int initialCapacity) {
-    unitToResult = new Hashtable<Object, Object>(initialCapacity);
+    unitToResult = new HashMap<Unit, T>(initialCapacity);
     map(b);
   }
 
@@ -94,7 +95,7 @@ public abstract class UnitMap implements Map {
    * @param loadFactor the loadFactor of the internal hashtable.
    */
   public UnitMap(Body b, int initialCapacity, float loadFactor) {
-    unitToResult = new Hashtable<Object, Object>(initialCapacity);
+    unitToResult = new HashMap<Unit, T>(initialCapacity);
     init();
     map(b);
   }
@@ -117,10 +118,10 @@ public abstract class UnitMap implements Map {
    * does the actual mapping. assumes, that the hashtable is already initialized.
    */
   private void map(Body b) {
-    Iterator unitIt = b.getUnits().iterator();
+    Iterator<Unit> unitIt = b.getUnits().iterator();
     while (unitIt.hasNext()) {
-      Unit currentUnit = (Unit)unitIt.next();
-      Object o = mapTo(currentUnit);
+      Unit currentUnit = unitIt.next();
+      T o = mapTo(currentUnit);
       if (o != null)
         unitToResult.put(currentUnit, o);
     }
@@ -140,7 +141,7 @@ public abstract class UnitMap implements Map {
    * @param the Unit to which <code>o</code> should be mapped.
    * @return an object that is mapped to the unit, or <code>null</code>.
    */
-  protected abstract Object mapTo(Unit unit);
+  protected abstract T mapTo(Unit unit);
 
   /*====== the Map-interface. all methods are deleguated tp the hashmap======*/
 
@@ -156,7 +157,7 @@ public abstract class UnitMap implements Map {
     return unitToResult.containsValue(value);
   }
 
-  public Set entrySet() {
+  public Set<Map.Entry<Unit,T>> entrySet() {
     return unitToResult.entrySet();
   }
 
@@ -164,7 +165,7 @@ public abstract class UnitMap implements Map {
     return unitToResult.equals(o);
   }
 
-  public Object get(Object key) {
+  public T get(Object key) {
     return unitToResult.get(key);
   }
 
@@ -176,19 +177,19 @@ public abstract class UnitMap implements Map {
     return unitToResult.isEmpty();
   }
 
-  public Set<Object> keySet() {
+  public Set<Unit> keySet() {
     return unitToResult.keySet();
   }
 
-  public Object put(Object key, Object value) {
+  public T put(Unit key, T value) {
     return unitToResult.put(key, value);
   }
 
-  public void putAll(Map t) {
+  public void putAll(Map<? extends Unit, ? extends T> t) {
     unitToResult.putAll(t);
   }
 
-  public Object remove(Object key) {
+  public T remove(Object key) {
     return unitToResult.remove(key);
   }
 
@@ -196,7 +197,7 @@ public abstract class UnitMap implements Map {
     return unitToResult.size();
   }
 
-  public Collection<Object> values() {
+  public Collection<T> values() {
     return unitToResult.values();
   }
 }

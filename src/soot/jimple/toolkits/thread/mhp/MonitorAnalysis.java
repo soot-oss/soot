@@ -84,7 +84,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis
 				Object afterFlow;
 				
 				Object s = changedUnits.removeFirst();
-				Tag tag = (Tag)((JPegStmt)s).getTags().get(0);
+				//Tag tag = (Tag)((JPegStmt)s).getTags().get(0);
 				//System.out.println("===unit is: "+tag+" "+s);
 				changedUnitsSet.remove(s);
 				
@@ -121,7 +121,7 @@ public class MonitorAnalysis extends ForwardFlowAnalysis
 								//System.out.println("!!!same object!!!");
 								continue;
 							}
-							Tag tag1 = (Tag)stmt.getTags().get(0);
+							//Tag tag1 = (Tag)stmt.getTags().get(0);
 							// System.out.println("pred: "+tag1+" "+stmt);
 							
 							// Object otherBranchFlow = unitToAfterFlow.get(stmt);

@@ -28,21 +28,22 @@
 package soot.jimple.internal;
 
 import soot.*;
-import soot.tagkit.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
+
 import java.util.*;
 
 
+@SuppressWarnings("serial")
 public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implements StaticInvokeExpr, ConvertToBaf
 {
-    AbstractStaticInvokeExpr(SootMethodRef methodRef, List args)
+    AbstractStaticInvokeExpr(SootMethodRef methodRef, List<Value> args)
     {
         this(methodRef, new ValueBox[args.size()]);
-
+        
         for(int i = 0; i < args.size(); i++)
-            this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
+            this.argBoxes[i] = Jimple.v().newImmediateBox(args.get(i));
     }
 
     public boolean equivTo(Object o)
@@ -72,8 +73,9 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
     
     protected AbstractStaticInvokeExpr(SootMethodRef methodRef, ValueBox[] argBoxes)
     {
+    	super(argBoxes);
         if( !methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
-        this.methodRef = methodRef; this.argBoxes = argBoxes;
+        this.methodRef = methodRef;
     }
 
     public String toString()
@@ -113,18 +115,6 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
         up.literal(")");
     }
 
-    public List getUseBoxes()
-    {
-        List list = new ArrayList();
-
-        for (ValueBox element : argBoxes) {
-            list.addAll(element.getValue().getUseBoxes());
-            list.add(element);
-        }
-
-        return list;
-    }
-
     public void apply(Switch sw)
     {
         ((ExprSwitch) sw).caseStaticInvokeExpr(this);
@@ -136,14 +126,8 @@ public abstract class AbstractStaticInvokeExpr extends AbstractInvokeExpr implem
 	    ((ConvertToBaf)(element.getValue())).convertToBaf(context, out);
 	}
        
-       Unit u;
-       out.add(u = Baf.v().newStaticInvokeInst(methodRef));
-
-       Unit currentUnit = context.getCurrentUnit();
-
-	Iterator it = currentUnit.getTags().iterator();	
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
+       Unit u = Baf.v().newStaticInvokeInst(methodRef);
+       out.add(u);
+       u.addAllTagsOf(context.getCurrentUnit());
     }
 }

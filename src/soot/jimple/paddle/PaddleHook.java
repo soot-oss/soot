@@ -38,7 +38,7 @@ public class PaddleHook extends SceneTransformer
         return paddleTransformer;
     }
 
-    protected void internalTransform( String phaseName, Map options )
+    protected void internalTransform( String phaseName, Map<String,String> options )
     {
         paddleTransformer().transform(phaseName, options);
     }

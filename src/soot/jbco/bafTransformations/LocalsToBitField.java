@@ -22,7 +22,6 @@ package soot.jbco.bafTransformations;
 import java.util.*;
 
 import soot.*;
-import soot.util.*;
 import soot.baf.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.Rand;
@@ -51,21 +50,22 @@ public class LocalsToBitField extends BodyTransformer  implements IJbcoTransform
     out.println("Original number of locals: "+locals);
   }
   
+
   @SuppressWarnings("fallthrough")
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) return;
     
     //  build mapping of baf locals to jimple locals
-    Chain bLocals = b.getLocals();
-    PatchingChain u = b.getUnits();
+    Collection<Local> bLocals = b.getLocals();
+    PatchingChain<Unit> u = b.getUnits();
 
     Unit first = null;
-    ArrayList<Value> params = new ArrayList<Value>();
-    Iterator uit = u.iterator();
+    List<Value> params = new ArrayList<Value>();
+    Iterator<Unit> uit = u.iterator();
     while (uit.hasNext()) {
-      Unit unit = (Unit)uit.next();
+      Unit unit = uit.next();
       if (unit instanceof IdentityInst) {
         IdentityInst ii = (IdentityInst)unit;
         if (ii.getRightOpBox().getValue() instanceof ParameterRef) {
@@ -79,13 +79,13 @@ public class LocalsToBitField extends BodyTransformer  implements IJbcoTransform
     }
     
     //  build mapping of baf locals to jimple locals
-    HashMap<Local, Local> bafToJLocals = new HashMap<Local, Local>();
-    Iterator jlocIt = soot.jbco.Main.methods2JLocals.get(b.getMethod()).iterator();
+    Map<Local, Local> bafToJLocals = new HashMap<Local, Local>();
+    Iterator<Local> jlocIt = soot.jbco.Main.methods2JLocals.get(b.getMethod()).iterator();
     while (jlocIt.hasNext()) {
-      Local jl = (Local) jlocIt.next();
-      Iterator blocIt = bLocals.iterator();
+      Local jl = jlocIt.next();
+      Iterator<Local> blocIt = bLocals.iterator();
       while (blocIt.hasNext()) {
-        Local bl = (Local) blocIt.next();
+        Local bl = blocIt.next();
         if (bl.getName().equals(jl.getName())) {
           bafToJLocals.put(bl, jl);
           break;
@@ -93,14 +93,14 @@ public class LocalsToBitField extends BodyTransformer  implements IJbcoTransform
       }
     }
     
-    ArrayList<Local> booleans = new ArrayList<Local>();
-    ArrayList<Local> bytes = new ArrayList<Local>();
-    ArrayList<Local> chars = new ArrayList<Local>();
-    ArrayList<Local> ints = new ArrayList<Local>();
-    HashMap<Local, Integer> sizes = new HashMap<Local, Integer>();
-    Iterator blocs = bLocals.iterator();
+    List<Local> booleans = new ArrayList<Local>();
+    List<Local> bytes = new ArrayList<Local>();
+    List<Local> chars = new ArrayList<Local>();
+    List<Local> ints = new ArrayList<Local>();
+    Map<Local, Integer> sizes = new HashMap<Local, Integer>();
+    Iterator<Local> blocs = bLocals.iterator();
     while (blocs.hasNext()) {
-      Local bl = (Local)blocs.next();
+      Local bl = blocs.next();
       if (params.contains(bl) )
           continue;
       
@@ -130,12 +130,12 @@ public class LocalsToBitField extends BodyTransformer  implements IJbcoTransform
     }
     
     int count = 0;
-    HashMap bafToNewLocs = new HashMap();
+    Map<Local,Local> bafToNewLocs = new HashMap<Local,Local>();
     int total = booleans.size() + bytes.size()*8 + chars.size()*16 + ints.size()*32;
-    HashMap<Local,Map<Local,Integer>> newLocs = new HashMap<Local,Map<Local,Integer>>();
+    Map<Local,Map<Local,Integer>> newLocs = new HashMap<Local,Map<Local,Integer>>();
     while (total >= 32 && booleans.size() + bytes.size() + chars.size() + ints.size() > 2) {
       Local nloc = Baf.v().newLocal("newDumby"+count++, LongType.v()); //soot.jbco.util.Rand.getInt(2) > 0 ? DoubleType.v() : LongType.v());
-      HashMap<Local, Integer> nlocMap = new HashMap<Local, Integer>();
+      Map<Local, Integer> nlocMap = new HashMap<Local, Integer>();
       
       boolean done = false;
       int index = 0;
@@ -197,13 +197,13 @@ public class LocalsToBitField extends BodyTransformer  implements IJbcoTransform
     
     if (bafToNewLocs.size()==0) return;
     
-    Iterator it = u.snapshotIterator();
+    Iterator<Unit> it = u.snapshotIterator();
     while (it.hasNext()) {
-      Unit unit = (Unit)it.next();
+      Unit unit = it.next();
       if (unit instanceof StoreInst) {
         StoreInst si = (StoreInst)unit;
         Local bafLoc = si.getLocal();
-        Local nloc = (Local)bafToNewLocs.get(bafLoc);
+        Local nloc = bafToNewLocs.get(bafLoc);
         if (nloc != null) {
           Local jloc = bafToJLocals.get(bafLoc);
           
@@ -230,7 +230,7 @@ public class LocalsToBitField extends BodyTransformer  implements IJbcoTransform
       } else if (unit instanceof LoadInst) {
         LoadInst li = (LoadInst)unit;
         Local bafLoc = li.getLocal();
-        Local nloc = (Local)bafToNewLocs.get(bafLoc);
+        Local nloc = bafToNewLocs.get(bafLoc);
         if (nloc != null) {
           int index = (newLocs.get(nloc).get(bafLoc)).intValue();
           int size = sizes.get(bafLoc).intValue();
@@ -255,7 +255,7 @@ public class LocalsToBitField extends BodyTransformer  implements IJbcoTransform
       } else if (unit instanceof IncInst) {
         IncInst ii = (IncInst)unit;
         Local bafLoc = ii.getLocal();
-        Local nloc = (Local)bafToNewLocs.get(bafLoc);
+        Local nloc = bafToNewLocs.get(bafLoc);
         if (nloc != null) {
           Type jlocType = getType(bafToJLocals.get(bafLoc).getType());
           
@@ -291,13 +291,12 @@ public class LocalsToBitField extends BodyTransformer  implements IJbcoTransform
       }
     }
     
-    it = bLocals.snapshotIterator();
-    while (it.hasNext()) {
-      Local l = (Local)it.next();
-      if (bafToNewLocs.containsKey(l)) {
-        bLocals.remove(l);
-        replaced++;
-      }
+    for(Iterator<Local> lit = bLocals.iterator(); lit.hasNext(); ) {
+    	Local l = lit.next();
+        if (bafToNewLocs.containsKey(l)) {
+            it.remove();
+            replaced++;
+          }
     }
   }
   

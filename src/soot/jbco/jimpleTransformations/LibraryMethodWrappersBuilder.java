@@ -22,7 +22,6 @@ package soot.jbco.jimpleTransformations;
 import java.util.*;
 
 import soot.*;
-import soot.util.*;
 import soot.jimple.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.*;
@@ -54,26 +53,26 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
     out.println("Method Calls Replaced: "+methodcalls);
   }
   
-  private static final HashMap<SootClass, HashMap> libClassesToMethods = new HashMap<SootClass, HashMap>();
+  private static final Map<SootClass, Map<SootMethod,SootMethodRef>> libClassesToMethods = new HashMap<SootClass, Map<SootMethod,SootMethodRef>>();
 
   private static final Scene scene = G.v().soot_Scene();
 
   public static ArrayList<SootMethod> builtByMe = new ArrayList<SootMethod>();
 
-  protected void internalTransform(String phaseName, Map options) {
+  protected void internalTransform(String phaseName, Map<String,String> options) {
     if (output)
       out.println("Building Library Wrapper Methods...");
     soot.jbco.util.BodyBuilder.retrieveAllBodies();
     // iterate through application classes to find library calls
-    Iterator it = scene.getApplicationClasses().snapshotIterator();
+    Iterator<SootClass> it = scene.getApplicationClasses().snapshotIterator();
     while (it.hasNext()) {
-      SootClass c = (SootClass) it.next();
+      SootClass c = it.next();
         
       if (output) out.println("\r\tProcessing " + c.getName()+"\r");
 
-      List mList = c.getMethods();
+      List<SootMethod> mList = c.getMethods();
       for (int midx = 0; midx < mList.size(); midx++) {
-        SootMethod m = (SootMethod) mList.get(midx);
+        SootMethod m = mList.get(midx);
         if (!m.isConcrete() || builtByMe.contains(m))
           continue;
 
@@ -87,13 +86,13 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
           continue;
 
         int localName = 0;
-        Chain locals = body.getLocals();
-        PatchingChain units = body.getUnits();
+        Collection<Local> locals = body.getLocals();
+        PatchingChain<Unit> units = body.getUnits();
         
         Unit first = null;
-        Iterator uIt = units.snapshotIterator();
+        Iterator<Unit> uIt = units.snapshotIterator();
         while (uIt.hasNext()) {
-          Unit unit = (Unit)uIt.next();
+          Unit unit = uIt.next();
           if (unit instanceof IdentityStmt)
             continue;
           first = unit;
@@ -102,10 +101,10 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
         
         uIt = units.snapshotIterator();
         while (uIt.hasNext()) {
-          Unit unit = (Unit) uIt.next();
-          List uses = unit.getUseBoxes();
+          Unit unit = uIt.next();
+          List<ValueBox> uses = unit.getUseBoxes();
           for (int i = 0; i < uses.size(); i++) {
-            ValueBox vb = (ValueBox) uses.get(i);
+            ValueBox vb = uses.get(i);
             Value v = vb.getValue();
             if (!(v instanceof InvokeExpr))
               continue;
@@ -137,8 +136,8 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
 
             if (output) out.println(" to " + smr.getSignature() + "\tUnit: " + unit);
             
-            List args = ie.getArgs();
-            List parms = smr.parameterTypes();
+            List<Value> args = ie.getArgs();
+            List<Type> parms = smr.parameterTypes();
             int argsCount = args.size();
             int paramCount = parms.size();
 
@@ -180,22 +179,22 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
     scene.getActiveHierarchy();
     scene.setFastHierarchy(new FastHierarchy());
   }
-
+  
   private SootMethodRef getNewMethodRef(SootClass libClass, SootMethod sm) {
-    HashMap methods = libClassesToMethods.get(libClass);
+    Map<SootMethod,SootMethodRef> methods = libClassesToMethods.get(libClass);
     if (methods == null) {
-      libClassesToMethods.put(libClass, new HashMap());
+      libClassesToMethods.put(libClass, new HashMap<SootMethod,SootMethodRef>());
       return null;
     }
 
-    return (SootMethodRef) methods.get(sm);
+    return methods.get(sm);
   }
 
   private void setNewMethodRef(SootClass libClass, SootMethod sm,
       SootMethodRef smr) {
-    HashMap<SootMethod, SootMethodRef> methods = libClassesToMethods.get(libClass);
+    Map<SootMethod, SootMethodRef> methods = libClassesToMethods.get(libClass);
     if (methods == null) {
-      libClassesToMethods.put(libClass, new HashMap());
+      libClassesToMethods.put(libClass, new HashMap<SootMethod,SootMethodRef>());
     }
 
     methods.put(sm, smr);
@@ -205,14 +204,14 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
       SootMethod sm, InvokeExpr origIE) 
   {
     SootClass randClass;
-    List methods;
+    List<SootMethod> methods;
     SootMethod randMethod;
     String newName;
 
     Vector<SootClass> availClasses = new Vector<SootClass>();
-    Iterator aIt = scene.getApplicationClasses().iterator();
+    Iterator<SootClass> aIt = scene.getApplicationClasses().iterator();
     while (aIt.hasNext()) {
-      SootClass c = (SootClass)aIt.next();
+      SootClass c = aIt.next();
       if (c.isConcrete() && !c.isInterface() && c.isPublic())
         availClasses.add(c);
     }
@@ -230,12 +229,12 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
 
       methods = randClass.getMethods();
       index = Rand.getInt(methods.size());
-      randMethod = (SootMethod) methods.get(index);
+      randMethod = methods.get(index);
       newName = randMethod.getName();
     } while (newName.endsWith("init>"));
 
-    List smParamTypes = sm.getParameterTypes();
-    ArrayList tmp = new ArrayList();
+    List<Type> smParamTypes = sm.getParameterTypes();
+    List<Type> tmp = new ArrayList<Type>();
     if (!sm.isStatic()) {
       for (int i = 0; i < smParamTypes.size(); i++)
         tmp.add(smParamTypes.get(i));
@@ -277,11 +276,11 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
 
     JimpleBody body = Jimple.v().newBody(newMethod);
     newMethod.setActiveBody(body);
-    PatchingChain units = body.getUnits();
-    Chain locals = body.getLocals();
+    PatchingChain<Unit> units = body.getUnits();
+    Collection<Local> locals = body.getLocals();
 
     InvokeExpr ie = null;
-    List args = BodyBuilder.buildParameterLocals(units, locals, smParamTypes);
+    List<Local> args = BodyBuilder.buildParameterLocals(units, locals, smParamTypes);
     while (extraParams-- > 0)
       args.remove(args.size() - 1);
     

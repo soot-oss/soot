@@ -28,17 +28,19 @@
 package soot.jimple.internal;
 
 import soot.*;
-import soot.tagkit.*;
 import soot.baf.*;
 import soot.jimple.*;
 import soot.util.*;
+
 import java.util.*;
+
 import soot.grimp.PrecedenceTest;
 
+@SuppressWarnings("serial")
 public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, ConvertToBaf
 {
     protected SootFieldRef fieldRef;
-    ValueBox baseBox;
+    final ValueBox baseBox;
 
 	protected AbstractInstanceFieldRef(ValueBox baseBox, SootFieldRef fieldRef)
     {
@@ -81,6 +83,7 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
     {
         return fieldRef;
     }
+    
 	public void setFieldRef(SootFieldRef fieldRef) {
 		this.fieldRef = fieldRef;
 	}
@@ -90,9 +93,10 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
         return fieldRef.resolve();
     }
 
-    public List getUseBoxes()
+    @Override
+    public final List<ValueBox> getUseBoxes()
     {
-        List useBoxes = new ArrayList();
+        List<ValueBox> useBoxes = new ArrayList<ValueBox>();
 
         useBoxes.addAll(baseBox.getValue().getUseBoxes());
         useBoxes.add(baseBox);
@@ -133,11 +137,6 @@ public abstract class AbstractInstanceFieldRef implements InstanceFieldRef, Conv
 	Unit u;
         out.add(u = Baf.v().newFieldGetInst(fieldRef));
 
-	
-	Unit currentUnit = context.getCurrentUnit();
-	Iterator it = currentUnit.getTags().iterator();	
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
+        u.addAllTagsOf(context.getCurrentUnit());
     }
 }

@@ -22,6 +22,7 @@ package soot.jimple.toolkits.typing.fast;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
@@ -241,16 +242,16 @@ public class BytecodeHierarchy implements IHierarchy
 			child, ancestor);
 	}
 	
-	private static LinkedList<RefType> superclassPath(RefType t)
+	private static Deque<RefType> superclassPath(RefType t)
 	{
-		LinkedList<RefType> r = new LinkedList<RefType>();
+		Deque<RefType> r = new LinkedList<RefType>();
 		r.addFirst(t);
 		
 		SootClass sc = t.getSootClass();
 		while ( sc.hasSuperclass() )
 		{
 			sc = sc.getSuperclass();
-			r.addFirst((RefType)sc.getType());
+			r.addFirst(sc.getType());
 		}
 		
 		return r;
@@ -258,8 +259,11 @@ public class BytecodeHierarchy implements IHierarchy
 	
 	public static RefType lcsc(RefType a, RefType b)
 	{
-		LinkedList<RefType> pathA = superclassPath(a),
-			pathB = superclassPath(b);
+		if (a == b)
+			return a;
+		
+		Deque<RefType> pathA = superclassPath(a);
+		Deque<RefType> pathB = superclassPath(b);
 		RefType r = null;
 		while ( !(pathA.isEmpty() || pathB.isEmpty()) 
 			&& TypeResolver.typesEqual(pathA.getFirst(), pathB.getFirst()) )

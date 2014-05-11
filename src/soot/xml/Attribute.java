@@ -204,9 +204,9 @@ public class Attribute {
 	}
 	
     private int getJavaLnOfHost(Host h){
-		Iterator it = h.getTags().iterator();
+		Iterator<Tag> it = h.getTags().iterator();
 		while (it.hasNext()){
-			Tag t = (Tag)it.next();
+			Tag t = it.next();
 			if (t instanceof SourceLnPosTag) {
 				return ((SourceLnPosTag)t).startLn();
 			}
@@ -218,9 +218,9 @@ public class Attribute {
 	}
 	
 	private int getJimpleLnOfHost(Host h){
-		Iterator it = h.getTags().iterator();
+		Iterator<Tag> it = h.getTags().iterator();
 		while (it.hasNext()){
-			Tag t = (Tag)it.next();
+			Tag t = it.next();
 			if (t instanceof JimpleLineNumberTag) {
 				return ((JimpleLineNumberTag)t).getStartLineNumber();
 			}

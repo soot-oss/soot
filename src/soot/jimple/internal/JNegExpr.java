@@ -30,7 +30,6 @@
 
 package soot.jimple.internal;
 
-import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
@@ -47,11 +46,8 @@ public class JNegExpr extends AbstractNegExpr implements ConvertToBaf
     {
         ((ConvertToBaf)(getOp())).convertToBaf(context, out);
         Unit u = Baf.v().newNegInst(getType());
-	out.add(u);
-	Iterator it = context.getCurrentUnit().getTags().iterator();
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
+        u.addAllTagsOf(context.getCurrentUnit());
+        out.add(u);
     }
 
     

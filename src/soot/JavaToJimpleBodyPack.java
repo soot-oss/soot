@@ -42,7 +42,7 @@ public class JavaToJimpleBodyPack extends BodyPack
 
 
     /** Applies the transformations corresponding to the given options. */
-    private void applyPhaseOptions(JimpleBody b, Map opts) 
+    private void applyPhaseOptions(JimpleBody b, Map<String,String> opts) 
     { 
         JJOptions options = new JJOptions( opts );
         

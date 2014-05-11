@@ -31,6 +31,7 @@
 package soot.jimple.toolkits.scalar;
 
 import soot.*;
+
 import java.util.*;
 
 public class LocalNameStandardizer extends BodyTransformer
@@ -38,7 +39,7 @@ public class LocalNameStandardizer extends BodyTransformer
     public LocalNameStandardizer( Singletons.Global g ) {}
     public static LocalNameStandardizer v() { return G.v().soot_jimple_toolkits_scalar_LocalNameStandardizer(); }
 
-    protected void internalTransform(Body body, String phaseName, Map options)
+    protected void internalTransform(Body body, String phaseName, Map<String,String> options)
     {
         boolean onlyStackName = PhaseOptions.getBoolean(options, "only-stack-locals");
 
@@ -53,11 +54,11 @@ public class LocalNameStandardizer extends BodyTransformer
             int errorCount = 0;
             int nullCount = 0;
 
-            Iterator localIt = body.getLocals().iterator();
+            Iterator<Local> localIt = body.getLocals().iterator();
 
             while(localIt.hasNext())
             {
-                Local l = (Local) localIt.next();
+                Local l = localIt.next();
                 String prefix = "";
                 
                 if(l.getName().startsWith("$"))

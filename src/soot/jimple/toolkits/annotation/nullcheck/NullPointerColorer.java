@@ -31,17 +31,17 @@ public class NullPointerColorer extends BodyTransformer {
 	public NullPointerColorer( Singletons.Global g ) {}
     public static NullPointerColorer v() { return G.v().soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer(); }
 
-	protected void internalTransform (Body b, String phaseName, Map options) {
+	protected void internalTransform (Body b, String phaseName, Map<String,String> options) {
 		
 		BranchedRefVarsAnalysis analysis = new BranchedRefVarsAnalysis (
 				new ExceptionalUnitGraph(b));
 
-		Iterator it = b.getUnits().iterator();
+		Iterator<Unit> it = b.getUnits().iterator();
 
 		while (it.hasNext()) {
 			Stmt s = (Stmt)it.next();
 			
-			Iterator usesIt = s.getUseBoxes().iterator();
+			Iterator<ValueBox> usesIt = s.getUseBoxes().iterator();
 			FlowSet beforeSet = (FlowSet)analysis.getFlowBefore(s);
 				
 			while (usesIt.hasNext()) {
@@ -49,7 +49,7 @@ public class NullPointerColorer extends BodyTransformer {
 				addColorTags(vBox, beforeSet, s, analysis);
 			}
 
-			Iterator defsIt = s.getDefBoxes().iterator();
+			Iterator<ValueBox> defsIt = s.getDefBoxes().iterator();
 			FlowSet afterSet = (FlowSet)analysis.getFallFlowAfter(s);
 
 			while (defsIt.hasNext()){
@@ -58,10 +58,10 @@ public class NullPointerColorer extends BodyTransformer {
 			}
 		}
 
-        Iterator keysIt = b.getMethod().getDeclaringClass().getTags().iterator();
+        Iterator<Tag> keysIt = b.getMethod().getDeclaringClass().getTags().iterator();
         boolean keysAdded = false;
         while (keysIt.hasNext()){
-            Object next = keysIt.next();
+        	Tag next = keysIt.next();
             if (next instanceof KeyTag){
                 if (((KeyTag)next).analysisType().equals("NullCheckTag")){
                     keysAdded = true;  

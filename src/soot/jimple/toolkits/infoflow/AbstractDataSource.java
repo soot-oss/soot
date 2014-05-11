@@ -2,6 +2,7 @@ package soot.jimple.toolkits.infoflow;
 
 import soot.*;
 import soot.util.*;
+
 import java.util.*;
 
 // Wraps any object as a Value
@@ -15,9 +16,10 @@ public class AbstractDataSource implements Value
 		this.sourcename = sourcename;
 	}
 	
-    public List getUseBoxes()
+    @Override
+    public List<ValueBox> getUseBoxes()
     {
-        return AbstractUnit.emptyList;
+        return Collections.emptyList();
     }
 
     /** Clones the object.  Not implemented here. */

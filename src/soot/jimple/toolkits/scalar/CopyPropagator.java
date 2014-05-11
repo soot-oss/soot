@@ -56,7 +56,7 @@ public class CopyPropagator extends BodyTransformer
         
         Does not propagate stack locals when the "only-regular-locals" option is true.
     */
-    protected void internalTransform(Body b, String phaseName, Map opts)
+    protected void internalTransform(Body b, String phaseName, Map<String,String> opts)
     {
         CPOptions options = new CPOptions( opts );
         StmtBody stmtBody = (StmtBody)b;

@@ -29,18 +29,18 @@ public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoT
   
   public void outputSummary() {}
 
-  protected void internalTransform(Body b, String phaseName, Map options) 
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) 
   {  
     // removes all redundant load-stores
     boolean changed = true;
-    PatchingChain units = b.getUnits();
+    PatchingChain<Unit> units = b.getUnits();
     while (changed) {
       changed = false;
       Unit prevprevprev = null, prevprev = null, prev = null;
       ExceptionalUnitGraph eug = new ExceptionalUnitGraph(b);
-      Iterator it = units.snapshotIterator();
+      Iterator<Unit> it = units.snapshotIterator();
       while (it.hasNext()) {
-        Unit u = (Unit)it.next();
+        Unit u = it.next();
         if (prev != null && prev instanceof PushInst && u instanceof StoreInst) {
           if (prevprev != null && prevprev instanceof StoreInst 
               && prevprevprev != null && prevprevprev instanceof PushInst) {
@@ -63,11 +63,9 @@ public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoT
     } // end while changes have been made
   }
 
-  private void fixJumps(Unit from, Unit to, Chain t) {
+  private void fixJumps(Unit from, Unit to, Chain<Trap> t) {
     from.redirectJumpsToThisTo(to);
-    Iterator it = t.iterator();
-    while (it.hasNext()) {
-      Trap trap = (Trap)it.next();
+    for (Trap trap : t) {
       if (trap.getBeginUnit() == from)
         trap.setBeginUnit(to);
       if (trap.getEndUnit() == from)

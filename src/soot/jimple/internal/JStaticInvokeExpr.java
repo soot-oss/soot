@@ -33,33 +33,29 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
+
 import java.util.*;
 
 public class JStaticInvokeExpr extends AbstractStaticInvokeExpr 
-{
-    public JStaticInvokeExpr(SootMethodRef methodRef, List args)
+{	
+    public JStaticInvokeExpr(SootMethodRef methodRef, List<? extends Value> args)
     {
         super(methodRef, new ValueBox[args.size()]);
 
         for(int i = 0; i < args.size(); i++)
-            this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
-    }  
+            this.argBoxes[i] = Jimple.v().newImmediateBox(args.get(i));
+        
+    }
 
-    JStaticInvokeExpr(SootMethodRef methodRef, ValueBox[] args)
-    {
-        super(methodRef, args);
-    }  
-
-   
     public Object clone() 
     {
-        ArrayList clonedArgs = new ArrayList(getArgCount());
+        List<Value> clonedArgs = new ArrayList<Value>(getArgCount());
 
         for(int i = 0; i < getArgCount(); i++) {
             clonedArgs.add(i, getArg(i));
         }
         
-        return new  JStaticInvokeExpr(methodRef, clonedArgs);
+        return new JStaticInvokeExpr(methodRef, clonedArgs);
     }
 }
 

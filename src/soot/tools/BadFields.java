@@ -34,25 +34,25 @@ public class BadFields extends SceneTransformer {
     private SootClass lastClass;
     private SootClass currentClass;
 
-    protected void internalTransform(String phaseName, Map options)
+    protected void internalTransform(String phaseName, Map<String,String> options)
     {
         lastClass = null;
 
-        for( Iterator clIt = Scene.v().getApplicationClasses().iterator(); clIt.hasNext(); ) {
+        for( Iterator<SootClass> clIt = Scene.v().getApplicationClasses().iterator(); clIt.hasNext(); ) {
 
-            final SootClass cl = (SootClass) clIt.next();
+            final SootClass cl = clIt.next();
             currentClass = cl;
             handleClass( cl );
-            for( Iterator it = cl.methodIterator(); it.hasNext(); ) {
-                handleMethod( (SootMethod) it.next() );
+            for( Iterator<SootMethod> it = cl.methodIterator(); it.hasNext(); ) {
+                handleMethod( it.next() );
             }
         }
         Scene.v().setCallGraph( new CallGraph() );
     }
 
     private void handleClass( SootClass cl ) {
-        for( Iterator fIt = cl.getFields().iterator(); fIt.hasNext(); ) {
-            final SootField f = (SootField) fIt.next();
+        for( Iterator<SootField> fIt = cl.getFields().iterator(); fIt.hasNext(); ) {
+            final SootField f = fIt.next();
             if( !f.isStatic() ) continue;
             String typeName = f.getType().toString();
             if( typeName.equals( "java.lang.Class" ) ) continue;
@@ -77,8 +77,8 @@ public class BadFields extends SceneTransformer {
 
     private void handleMethod( SootMethod m ) {
         if( !m.isConcrete() ) return;
-        for( Iterator bIt = m.retrieveActiveBody().getUseAndDefBoxes().iterator(); bIt.hasNext(); ) {
-            final ValueBox b = (ValueBox) bIt.next();
+        for( Iterator<ValueBox> bIt = m.retrieveActiveBody().getUseAndDefBoxes().iterator(); bIt.hasNext(); ) {
+            final ValueBox b = bIt.next();
             Value v = b.getValue();
             if( !(v instanceof StaticFieldRef) ) continue;
             StaticFieldRef sfr = (StaticFieldRef) v;
@@ -92,7 +92,7 @@ public class BadFields extends SceneTransformer {
                 G.v().out.println( "Use of System.out in "+m );
             }
         }
-        for( Iterator sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
+        for( Iterator<Unit> sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if( !s.containsInvokeExpr() ) continue;
             InvokeExpr ie = s.getInvokeExpr();
@@ -103,10 +103,10 @@ public class BadFields extends SceneTransformer {
             }
         }
         if( m.getName().equals( "<clinit>" ) ) {
-            for( Iterator sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
+            for( Iterator<Unit> sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
                 final Stmt s = (Stmt) sIt.next();
-                for( Iterator bIt = s.getUseBoxes().iterator(); bIt.hasNext(); ) {
-                    final ValueBox b = (ValueBox) bIt.next();
+                for( Iterator<ValueBox> bIt = s.getUseBoxes().iterator(); bIt.hasNext(); ) {
+                    final ValueBox b = bIt.next();
                     Value v = b.getValue();
                     if( v instanceof FieldRef ) {
                         warn( m.getName()+" reads field "+v );

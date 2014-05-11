@@ -30,17 +30,18 @@
 
 package soot.jimple.internal;
 
-import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
+
 import java.util.*;
 
+@SuppressWarnings("serial")
 public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, ConvertToBaf
 {
     ArrayType baseType;
-    protected ValueBox[] sizeBoxes;
+    final protected ValueBox[] sizeBoxes;
 
     public abstract Object clone();
     
@@ -57,6 +58,7 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
             if (!baseType.equals(ae.baseType) || 
                     sizeBoxes.length != ae.sizeBoxes.length)
                 return false;
+            
             for (ValueBox element : sizeBoxes)
 				if (element != element)
                     return false;
@@ -132,9 +134,9 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
         return sizeBoxes[index].getValue();
     }
 
-    public List getSizes()
+    public List<Value> getSizes()
     {
-        List toReturn = new ArrayList();
+        List<Value> toReturn = new ArrayList<Value>();
 
         for (ValueBox element : sizeBoxes)
 			toReturn.add(element.getValue());
@@ -147,13 +149,14 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
         sizeBoxes[index].setValue(size);
     }
 
-    public List getUseBoxes()
+    @Override
+    public final List<ValueBox> getUseBoxes()
     {
-        List list = new ArrayList();
-
+        List<ValueBox> list = new ArrayList<ValueBox>();
+        Collections.addAll(list, sizeBoxes);
+        
         for (ValueBox element : sizeBoxes) {
             list.addAll(element.getValue().getUseBoxes());
-            list.add(element);
         }
 
         return list;
@@ -171,19 +174,13 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
 
     public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
-        List sizes = getSizes();
+        List<Value> sizes = getSizes();
 
         for(int i = 0; i < sizes.size(); i++)
             ((ConvertToBaf)(sizes.get(i))).convertToBaf(context, out);
 	
-	Unit u;
-        out.add(u = Baf.v().newNewMultiArrayInst(getBaseType(), sizes.size()));
-
-	Unit currentUnit = context.getCurrentUnit();
-	Iterator it = currentUnit.getTags().iterator();	
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
-	
+        Unit u = Baf.v().newNewMultiArrayInst(getBaseType(), sizes.size());
+        out.add(u);
+        u.addAllTagsOf(context.getCurrentUnit());
     }
 }

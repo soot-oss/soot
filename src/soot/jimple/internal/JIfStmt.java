@@ -31,7 +31,6 @@
 package soot.jimple.internal;
 
 import soot.*;
-import soot.tagkit.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
@@ -39,24 +38,20 @@ import java.util.*;
 
 public class JIfStmt extends AbstractStmt implements IfStmt
 {
-    ValueBox conditionBox;
-    UnitBox targetBox;
+    final ValueBox conditionBox;
+    final UnitBox targetBox;
 
-    List targetBoxes;
+    final List<UnitBox> targetBoxes;
 
     public JIfStmt(Value condition, Unit target)
     {
-        this(Jimple.v().newConditionExprBox(condition),
-             Jimple.v().newStmtBox(target));
+        this(condition, Jimple.v().newStmtBox(target));
     }
 
     public JIfStmt(Value condition, UnitBox target)
     {
-        this(Jimple.v().newConditionExprBox(condition),
-             target);
+        this(Jimple.v().newConditionExprBox(condition), target);
     }
-
-
 
     protected JIfStmt(ValueBox conditionBox, UnitBox targetBox)
     {
@@ -94,6 +89,7 @@ public class JIfStmt extends AbstractStmt implements IfStmt
     {
         return conditionBox.getValue();
     }
+    
     public void setCondition(Value condition)
     {
         conditionBox.setValue(condition);
@@ -118,10 +114,11 @@ public class JIfStmt extends AbstractStmt implements IfStmt
     {
         return targetBox;
     }
-
-    public List getUseBoxes()
+    
+    @Override
+    public List<ValueBox> getUseBoxes()
     {
-        List useBoxes = new ArrayList();
+        List<ValueBox> useBoxes = new ArrayList<ValueBox>();
 
         useBoxes.addAll(conditionBox.getValue().getUseBoxes());
         useBoxes.add(conditionBox);
@@ -129,7 +126,8 @@ public class JIfStmt extends AbstractStmt implements IfStmt
         return useBoxes;
     }
 
-    public List getUnitBoxes()
+    @Override
+    public final List<UnitBox> getUnitBoxes()
     {
         return targetBoxes;
     }
@@ -166,11 +164,8 @@ public class JIfStmt extends AbstractStmt implements IfStmt
             else
               throw new RuntimeException("invalid condition");
 
+            u.addAllTagsOf(this);
             out.add(u);
-	    Iterator it = getTags().iterator();
-	    while(it.hasNext()) {
-		u.addTag((Tag) it.next());
-	    }
             return;
           }
 
@@ -183,11 +178,8 @@ public class JIfStmt extends AbstractStmt implements IfStmt
               {
                     private void add(Unit u)
                     {
-		        out.add(u);
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
-                        }
+                    	u.addAllTagsOf(JIfStmt.this);
+                    	out.add(u);
                     }
 
                     public void caseEqExpr(EqExpr expr)
@@ -233,11 +225,8 @@ public class JIfStmt extends AbstractStmt implements IfStmt
                 {
                     private void add(Unit u)
                     {
-		        out.add(u);
-			Iterator it = getTags().iterator();
-			while(it.hasNext()) {
-			    u.addTag((Tag) it.next());
-                        }
+                    	u.addAllTagsOf(JIfStmt.this);
+                    	out.add(u);
                     }
 
                     public void caseEqExpr(EqExpr expr)
@@ -281,11 +270,8 @@ public class JIfStmt extends AbstractStmt implements IfStmt
         cond.apply(new AbstractJimpleValueSwitch() {
             private void add(Unit u)
             {
+            	u.addAllTagsOf(JIfStmt.this);
                 out.add(u);
-                Iterator it = getTags().iterator();
-                while(it.hasNext()) {
-                    u.addTag((Tag) it.next());
-                }
             }
 
             public void caseEqExpr(EqExpr expr)

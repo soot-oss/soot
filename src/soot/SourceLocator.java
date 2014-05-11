@@ -214,6 +214,7 @@ public class SourceLocator
 						}
 					}
 				}
+				archive.close();
 			} catch (IOException e) {
 				G.v().out.println("Error reading " + aPath + ": " + e.toString());
 				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
@@ -498,7 +499,10 @@ public class SourceLocator
         try {
             ZipFile archive = new ZipFile(archivePath);
             ZipEntry entry = archive.getEntry(fileName);
-            if( entry == null ) return null;
+            if( entry == null ) {
+            	archive.close();
+            	return null;
+            }
             return new FoundFile(archive, entry);
         } catch( IOException e ) {
             throw new RuntimeException("Caught IOException " + e + " looking in archive file " + archivePath + " for file " + fileName);

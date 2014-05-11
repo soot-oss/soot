@@ -115,8 +115,8 @@ public class ZonedBlockGraph extends BlockGraph
 
         Set<Unit> leaders = super.computeLeaders(unitGraph);
 
-	for (Iterator it = body.getTraps().iterator(); it.hasNext(); ) {
-	    Trap trap = (Trap) it.next();
+	for (Iterator<Trap> it = body.getTraps().iterator(); it.hasNext(); ) {
+	    Trap trap = it.next();
 	    leaders.add(trap.getBeginUnit());
 	    leaders.add(trap.getEndUnit());
 	}

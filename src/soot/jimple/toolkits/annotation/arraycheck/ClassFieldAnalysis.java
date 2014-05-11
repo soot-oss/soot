@@ -25,12 +25,11 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 import soot.options.*;
-
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
+
 import java.util.*;
 
 
@@ -71,10 +70,10 @@ public class ClassFieldAnalysis
 
 	int arrayTypeFieldNum = 0;
 
-	Iterator fieldIt = c.getFields().iterator();
+	Iterator<SootField> fieldIt = c.getFields().iterator();
 	while(fieldIt.hasNext())
 	{
-	    SootField field = (SootField)fieldIt.next();
+	    SootField field = fieldIt.next();
 	    int modifiers = field.getModifiers();
 
 	    Type type = field.getType();
@@ -109,10 +108,10 @@ public class ClassFieldAnalysis
 	   For PRIVATE STATIC field, if it is not always assigned value, it may count null pointer
 	   exception before array exception */
 
-	Iterator methodIt = c.methodIterator();
+	Iterator<SootMethod> methodIt = c.methodIterator();
 	while (methodIt.hasNext())
 	{
-	    ScanMethod ((SootMethod)methodIt.next(),
+	    ScanMethod (methodIt.next(),
 			candidSet,
 			fieldInfoTable);	    
 	}
@@ -132,7 +131,7 @@ public class ClassFieldAnalysis
     {
 	SootClass c = field.getDeclaringClass();
 
-	Hashtable fieldInfoTable = classToFieldInfoMap.get(c);
+	Map<SootField,IntValueContainer> fieldInfoTable = classToFieldInfoMap.get(c);
 
 	if (fieldInfoTable == null)
 	{
@@ -164,12 +163,12 @@ public class ClassFieldAnalysis
 	{
 	    boolean hasArrayLocal = false;
 
-	    Chain locals = body.getLocals();
+	    Collection<Local> locals = body.getLocals();
 
-	    Iterator localIt = locals.iterator();
+	    Iterator<Local> localIt = locals.iterator();
 	    while (localIt.hasNext())
 	    {
-		Local local = (Local)localIt.next();
+		Local local = localIt.next();
 		Type type = local.getType();
 
 		if (type instanceof ArrayType)
@@ -196,7 +195,7 @@ public class ClassFieldAnalysis
 	HashMap<Stmt, SootField> stmtfield = new HashMap<Stmt, SootField>();
 
 	{
-	    Iterator unitIt = body.getUnits().iterator();
+	    Iterator<Unit> unitIt = body.getUnits().iterator();
 	    while (unitIt.hasNext())
 	    {
 		Stmt stmt = (Stmt)unitIt.next();
@@ -231,14 +230,14 @@ public class ClassFieldAnalysis
             UnitGraph g = new ExceptionalUnitGraph(body);
 	    LocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 	    
-	    Set entries = stmtfield.entrySet();
+	    Set<Map.Entry<Stmt,SootField>> entries = stmtfield.entrySet();
 
-	    Iterator entryIt = entries.iterator();
+	    Iterator<Map.Entry<Stmt,SootField>> entryIt = entries.iterator();
 	    while (entryIt.hasNext())
 	    {
-		Map.Entry entry = (Map.Entry)entryIt.next();
-		Stmt where = (Stmt)entry.getKey();
-		SootField which = (SootField)entry.getValue();
+	    Map.Entry<Stmt,SootField> entry = entryIt.next();
+		Stmt where = entry.getKey();
+		SootField which = entry.getValue();
 
 		IntValueContainer length = new IntValueContainer();
 

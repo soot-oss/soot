@@ -67,6 +67,7 @@ public class EquivalentValue implements Value {
      * @deprecated
      * @see #getValue()
      **/
+    @Deprecated
     public Value getDeepestValue() {
     	return getValue();
     }
@@ -78,7 +79,7 @@ public class EquivalentValue implements Value {
     /*********************************/
     /* implement the Value-interface */
     /*********************************/
-    public List getUseBoxes() {
+    public List<ValueBox> getUseBoxes() {
       return e.getUseBoxes();
     }
 

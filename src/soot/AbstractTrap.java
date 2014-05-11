@@ -31,6 +31,7 @@ import java.io.*;
 
 /** Partial implementation of trap (exception catcher), used within Body
  * classes.  */
+@SuppressWarnings("serial")
 public class AbstractTrap implements Trap, Serializable
 {
     /** The exception being caught. */
@@ -50,14 +51,14 @@ public class AbstractTrap implements Trap, Serializable
 
     private void readObject( ObjectInputStream in) throws IOException, ClassNotFoundException
     {
-	in.defaultReadObject();
-	exception = Scene.v().getSootClass( (String) in.readObject());
+    	in.defaultReadObject();
+    	exception = Scene.v().getSootClass( (String) in.readObject());
     }
 
     private void writeObject( ObjectOutputStream out) throws IOException
     {
-	out.defaultWriteObject();
-	out.writeObject( exception.getName());
+    	out.defaultWriteObject();
+    	out.writeObject(exception.getName());
     }
 
 
@@ -65,14 +66,13 @@ public class AbstractTrap implements Trap, Serializable
     protected AbstractTrap(SootClass exception, UnitBox beginUnitBox,
                    UnitBox endUnitBox, UnitBox handlerUnitBox)
     {
-        this.exception = exception; this.beginUnitBox = beginUnitBox;
-        this.endUnitBox = endUnitBox; this.handlerUnitBox = handlerUnitBox;
-
-        unitBoxes = new ArrayList<UnitBox>();
-        unitBoxes.add(beginUnitBox);
-        unitBoxes.add(endUnitBox);
-        unitBoxes.add(handlerUnitBox);
-        unitBoxes = Collections.unmodifiableList(unitBoxes);
+        this.exception = exception; 
+        this.beginUnitBox = beginUnitBox;
+        this.endUnitBox = endUnitBox; 
+        this.handlerUnitBox = handlerUnitBox;
+        this.unitBoxes = Collections.unmodifiableList(Arrays.asList(
+        		beginUnitBox, endUnitBox, handlerUnitBox
+        	));
     }
 
     public Unit getBeginUnit()
@@ -112,11 +112,9 @@ public class AbstractTrap implements Trap, Serializable
 
     public void clearUnitBoxes()
     {
-        Iterator<UnitBox> boxesIt = getUnitBoxes().iterator();
-        while(boxesIt.hasNext()){
-            UnitBox box = boxesIt.next();
-            box.setUnit(null);
-        }
+    	for (UnitBox box : getUnitBoxes()) {
+    		box.setUnit(null);
+    	}
     }
     
     public SootClass getException()

@@ -653,7 +653,7 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 			if(method.isStatic())
 				invokeExpr = Jimple.v().newStaticInvokeExpr(method.makeRef(), Arrays.asList(paramLocals));
 			else
-				invokeExpr = Jimple.v().newVirtualInvokeExpr(freshLocal, method.makeRef(), Arrays.asList(paramLocals));
+				invokeExpr = Jimple.v().newVirtualInvokeExpr(freshLocal, method.makeRef(), Arrays.<Value>asList(paramLocals));
 			if(method.getReturnType().equals(VoidType.v())) {
 				//method returns null; simply invoke it and return null
 				InvokeStmt invokeStmt = Jimple.v().newInvokeStmt(invokeExpr);

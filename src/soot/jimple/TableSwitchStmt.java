@@ -44,7 +44,7 @@ public interface TableSwitchStmt extends Stmt
     public void setHighIndex(int highIndex);
     public int getLowIndex();
     public int getHighIndex();
-    public List getTargets();
+    public List<Unit> getTargets();
     public Unit getTarget(int index);
     public void setTarget(int index, Unit target);
     public void setTargets(List<Unit> targets);

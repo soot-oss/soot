@@ -124,7 +124,7 @@ public class BodyExtractorWalker extends Walker
     {
         Type type;
         String name;
-        List parameterList = new ArrayList();
+        List<Type> parameterList = new ArrayList<Type>();
         List throwsClause = null;
         JimpleBody methodBody = null;
 
@@ -152,9 +152,9 @@ public class BodyExtractorWalker extends Walker
 
 	    
             G.v().out.println("[!] Methods in class are:");
-            Iterator it = mSootClass.methodIterator();
+            Iterator<SootMethod> it = mSootClass.methodIterator();
             while(it.hasNext()) {
-                SootMethod next = (SootMethod) it.next();
+                SootMethod next = it.next();
                 G.v().out.println(next.getSubSignature());
             }
             

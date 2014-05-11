@@ -34,6 +34,7 @@ import java.util.*;
  * 
  * @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead
  */
+@Deprecated
 class ConstraintCollectorBV extends AbstractStmtSwitch
 {
   private TypeResolverBV resolver;
@@ -595,12 +596,12 @@ class ConstraintCollectorBV extends AbstractStmtSwitch
 	  }
 	else
 	  {
-	    List exceptionTypes = TrapManager.getExceptionTypesOf(stmt, stmtBody);
-	    Iterator typeIt = exceptionTypes.iterator();
+	    List<RefType> exceptionTypes = TrapManager.getExceptionTypesOf(stmt, stmtBody);
+	    Iterator<RefType> typeIt = exceptionTypes.iterator();
 
 	    while(typeIt.hasNext())
 	      {
-		Type t = (Type) typeIt.next();
+		Type t = typeIt.next();
 
 		resolver.typeVariable(t).addParent(left);
 	      }

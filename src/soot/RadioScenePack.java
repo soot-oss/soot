@@ -33,10 +33,10 @@ public class RadioScenePack extends ScenePack
     {
         LinkedList<Transform> enableds = new LinkedList<Transform>();
 
-        for( Iterator tIt = this.iterator(); tIt.hasNext(); ) {
+        for( Iterator<Transform> tIt = this.iterator(); tIt.hasNext(); ) {
 
-            final Transform t = (Transform) tIt.next();
-            Map opts = PhaseOptions.v().getPhaseOptions( t );
+            final Transform t = tIt.next();
+            Map<String,String> opts = PhaseOptions.v().getPhaseOptions( t );
             if( !PhaseOptions.getBoolean( opts, "enabled" ) ) continue;
             enableds.add( t );
         }
@@ -71,7 +71,7 @@ public class RadioScenePack extends ScenePack
         checkEnabled(t);
     }
     private void checkEnabled(Transform t) {
-        Map options = PhaseOptions.v().getPhaseOptions(t);
+        Map<String,String> options = PhaseOptions.v().getPhaseOptions(t);
         if( PhaseOptions.getBoolean( options, "enabled" ) ) {
             // Enabling this one will disable all the others
             PhaseOptions.v().setPhaseOption( t, "enabled:true" );

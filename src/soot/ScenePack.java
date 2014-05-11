@@ -26,8 +26,6 @@
 
 package soot;
 
-import java.util.*;
-
 /** A wrapper object for a pack of optimizations.
  * Provides chain-like operations, except that the key is the phase name. */
 public class ScenePack extends Pack
@@ -38,9 +36,8 @@ public class ScenePack extends Pack
 
     protected void internalApply()
     {
-        for( Iterator tIt = this.iterator(); tIt.hasNext(); ) {
-            final Transform t = (Transform) tIt.next();
-            t.apply();
-        }
+    	for ( Transform t : this ) {
+    		t.apply();
+    	}
     }
 }

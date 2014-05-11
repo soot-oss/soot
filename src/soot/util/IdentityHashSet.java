@@ -26,8 +26,12 @@ import java.util.Set;
 
 /**
  * Implements a hashset with comparison over identity.
+ * 
  * @author Eric Bodden
+ * @deprecated can be replaced 
+ * 	with <code>java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<E,Boolean>())</code>
  */
+@Deprecated
 public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
 
     protected IdentityHashMap<E,E> delegate;
@@ -119,7 +123,7 @@ public class IdentityHashSet<E> extends AbstractSet<E> implements Set<E> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		final IdentityHashSet other = (IdentityHashSet) obj;
+		final IdentityHashSet<?> other = (IdentityHashSet<?>) obj;
 		if (delegate == null) {
 			if (other.delegate != null)
 				return false;

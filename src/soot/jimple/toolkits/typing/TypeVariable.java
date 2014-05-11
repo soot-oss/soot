@@ -32,7 +32,7 @@ import soot.util.*;
 import java.util.*;
 
 /** Represents a type variable. **/
-class TypeVariable implements Comparable
+class TypeVariable implements Comparable<Object>
 {
   private static final boolean DEBUG = false;
 
@@ -49,8 +49,8 @@ class TypeVariable implements Comparable
   private TypeVariable element;
   private int depth;
 
-  private List<TypeVariable> parents = Collections.unmodifiableList(new LinkedList());
-  private List<TypeVariable> children = Collections.unmodifiableList(new LinkedList());
+  private List<TypeVariable> parents = Collections.emptyList();
+  private List<TypeVariable> children = Collections.emptyList();
   private BitVector ancestors;
   private BitVector indirectAncestors;
 
@@ -67,9 +67,9 @@ class TypeVariable implements Comparable
     this.type = type;
     approx = type;
     
-    for( Iterator parentIt = type.parents().iterator(); parentIt.hasNext(); ) {
+    for( Iterator<TypeNode> parentIt = type.parents().iterator(); parentIt.hasNext(); ) {
     
-        final TypeNode parent = (TypeNode) parentIt.next();
+        final TypeNode parent = parentIt.next();
 	
 	addParent(resolver.typeVariable(parent));
       }

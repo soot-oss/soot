@@ -22,11 +22,10 @@ import java.util.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.*;
-import soot.util.*;
 import soot.jimple.*;
 
 /** A flow analysis that detects redundant cast checks. */
-public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
+public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSet> {
     Map unitToKill = new HashMap();
     Map unitToGenFallThrough = new HashMap();
     Map unitToGenBranch = new HashMap();
@@ -41,7 +40,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
 
     /** Put the results of the analysis into tags in cast statements. */
     protected void tagCasts() {
-        for( Iterator sIt = ((UnitGraph)graph).getBody().getUnits().iterator(); sIt.hasNext(); ) {
+        for( Iterator<Unit> sIt = ((UnitGraph)graph).getBody().getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if( s instanceof AssignStmt ) {
                 AssignStmt as = (AssignStmt) s;
@@ -70,9 +69,9 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
      * in LocalTypeSet. */
     protected void makeInitialSet() {
         // Find all locals of reference type
-        Chain locals = ((UnitGraph)graph).getBody().getLocals();
+        Collection<Local> locals = ((UnitGraph)graph).getBody().getLocals();
         List<Local> refLocals = new ArrayList<Local>();
-        for( Iterator lIt = locals.iterator(); lIt.hasNext(); ) {
+        for( Iterator<Local> lIt = locals.iterator(); lIt.hasNext(); ) {
             final Local l = (Local) lIt.next();
             if( l.getType() instanceof RefType ) {
                 refLocals.add( l );
@@ -81,7 +80,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
 
         // Find types of all casts
         List<Type> types = new ArrayList<Type>();
-        for( Iterator sIt = ((UnitGraph)graph).getBody().getUnits().iterator(); sIt.hasNext(); ) {
+        for( Iterator<Unit> sIt = ((UnitGraph)graph).getBody().getUnits().iterator(); sIt.hasNext(); ) {
             final Stmt s = (Stmt) sIt.next();
             if( s instanceof AssignStmt ) {
                 AssignStmt as = (AssignStmt) s;
@@ -100,23 +99,24 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
     
 
     /** Returns a new, aggressive (local,type) set. */
-    protected Object newInitialFlow() {
+    @Override
+    protected LocalTypeSet newInitialFlow() {
         LocalTypeSet ret = (LocalTypeSet) emptySet.clone();
         ret.setAllBits();
         return ret;
     }
 
     /** This is the flow function as described in the assignment write-up. */
-    protected void flowThrough( Object inValue, Unit unit, List outFallValues,
-                                List outBranchValues ) 
+    @Override
+    protected void flowThrough( LocalTypeSet in, Unit unit, List<LocalTypeSet> outFallValues,
+                                List<LocalTypeSet> outBranchValues ) 
     {
-        final LocalTypeSet in = (LocalTypeSet) inValue;
         final LocalTypeSet out = (LocalTypeSet) in.clone();
         LocalTypeSet outBranch = out; // aliased to out unless unit is IfStmt
         final Stmt stmt = (Stmt) unit;
         
         // First kill all locals defined in this statement
-        for( Iterator bIt = stmt.getDefBoxes().iterator(); bIt.hasNext(); ) {
+        for( Iterator<ValueBox> bIt = stmt.getDefBoxes().iterator(); bIt.hasNext(); ) {
             final ValueBox b = (ValueBox) bIt.next();
             Value v = b.getValue();
             if( v instanceof Local && v.getType() instanceof RefType ) {
@@ -188,31 +188,31 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis {
         }
         
         // Now copy the computed (local,type) set to all successors
-        for( Iterator it = outFallValues.iterator(); it.hasNext(); ) {
+        for( Iterator<LocalTypeSet> it = outFallValues.iterator(); it.hasNext(); ) {
             copy( out, it.next() );
         }
-        for( Iterator it = outBranchValues.iterator(); it.hasNext(); ) {
+        for( Iterator<LocalTypeSet> it = outBranchValues.iterator(); it.hasNext(); ) {
             copy( outBranch, it.next() );
         }
     }
 
-    protected void copy( Object source, Object dest ) {
-        LocalTypeSet s = (LocalTypeSet) source;
-        LocalTypeSet d = (LocalTypeSet) dest;
+    @Override
+    protected void copy( LocalTypeSet s, LocalTypeSet d ) {
         d.and( s );
         d.or( s );
     }
 
     // The merge operator is set intersection.
-    protected void merge( Object in1, Object in2, Object out ) {
-        LocalTypeSet o = (LocalTypeSet) out;
+    @Override
+    protected void merge( LocalTypeSet in1, LocalTypeSet in2, LocalTypeSet o ) {
         o.setAllBits();
-        o.and( (LocalTypeSet) in1 );
-        o.and( (LocalTypeSet) in2 );
+        o.and( in1 );
+        o.and( in2 );
     }
     
     /** Returns a new, aggressive (local,type) set. */
-    protected Object entryInitialFlow() {
+    @Override
+    protected LocalTypeSet entryInitialFlow() {
         LocalTypeSet ret = (LocalTypeSet) emptySet.clone();
         return ret;
     }

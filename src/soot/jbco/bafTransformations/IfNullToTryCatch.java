@@ -53,7 +53,7 @@ public class IfNullToTryCatch extends BodyTransformer implements IJbcoTransform 
     out.println("Total ifs found: "+ totalifs);
   }
   
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) return;
     
@@ -62,15 +62,15 @@ public class IfNullToTryCatch extends BodyTransformer implements IJbcoTransform 
     SootMethod toStrg = obj.getMethodByName("toString");
     SootMethod eq = obj.getMethodByName("equals");
     boolean change = false;
-    PatchingChain units = b.getUnits();
-    Iterator uit = units.snapshotIterator();
+    PatchingChain<Unit> units = b.getUnits();
+    Iterator<Unit> uit = units.snapshotIterator();
     while (uit.hasNext()) {
-      Unit u = (Unit)uit.next();
+      Unit u = uit.next();
       if (BodyBuilder.isBafIf(u))   totalifs++;
       
       if (u instanceof IfNullInst && Rand.getInt(10) <= weight) {
         Unit targ = ((IfNullInst)u).getTarget();
-        Unit succ = (Unit)units.getSuccOf(u);
+        Unit succ = units.getSuccOf(u);
         Unit pop = Baf.v().newPopInst(RefType.v());
         Unit popClone = (Unit)pop.clone();
         units.insertBefore(pop,targ);

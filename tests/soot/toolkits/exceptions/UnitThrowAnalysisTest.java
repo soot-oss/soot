@@ -513,12 +513,8 @@ public class UnitThrowAnalysisTest {
                     IntType.v()),
                 IntConstant.v(0));
         Stmt s = Jimple.v().newLookupSwitchStmt(IntConstant.v(1),
-                Arrays.asList(new Value[] {
-                    IntConstant.v(1)
-                }),
-                Arrays.asList(new Unit[] {
-                    target
-                }),
+                Collections.singletonList(IntConstant.v(1)),
+                Collections.singletonList(target),
                 target);
         assertTrue(ExceptionTestUtility.sameMembers(utility.VM_ERRORS, Collections.EMPTY_SET,
                     unitAnalysis.mightThrow(s)));

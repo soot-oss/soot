@@ -30,22 +30,20 @@
 
 package soot.jimple.internal;
 
-import soot.tagkit.*;
 import soot.baf.*;
 import soot.jimple.*;
 import soot.*;
+
 import java.util.*;
 
+@SuppressWarnings("serial")
 public abstract class AbstractStmt extends AbstractUnit implements Stmt, ConvertToBaf
 {
     public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
-	Unit u = Baf.v().newNopInst();
+    	Unit u = Baf.v().newNopInst();
         out.add(u);
-	Iterator it = getTags().iterator();
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
+        u.addAllTagsOf(this);
     }
 
     public boolean containsInvokeExpr()

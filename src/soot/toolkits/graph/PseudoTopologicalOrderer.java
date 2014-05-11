@@ -27,23 +27,20 @@ package soot.toolkits.graph;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.IdentityHashMap;
+import java.util.Set;
+import java.util.Collections;
 
 /**
  * Orders in pseudo-topological order, the nodes of a DirectedGraph instance.
- */
-
-/* Updated By Marc Berndl May 13 */
-/**
+ *
  * @author Steven Lambeth
+ * @author Marc Berndl
  */
-public class PseudoTopologicalOrderer<N> implements Orderer<N> {
-	private static final Object VISITED = new Object();
-	
+public class PseudoTopologicalOrderer<N> implements Orderer<N> {	
 	public static final boolean REVERSE = true;
 
-	private Map<N, Object> visited;
+	private Set<N> visited;
 
 	private int[] indexStack;
 
@@ -77,7 +74,7 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 	 */
 	public List<N> newList(DirectedGraph<N> g, boolean reverse) {
 		this.mIsReversed = reverse;
-		return computeOrder(g);
+		return computeOrder(g, !mIsReversed);
 	}
 
 	/**
@@ -89,9 +86,9 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 	 */
 
 	@SuppressWarnings("unchecked")
-	protected final List<N> computeOrder(DirectedGraph<N> g) {
+	protected final List<N> computeOrder(DirectedGraph<N> g, boolean reverse) {
 		final int n = g.size();
-		visited =  new IdentityHashMap<N, Object>(n*2+1);//new HashMap((3 * g.size()) / 2, 0.7f);
+		visited = Collections.newSetFromMap(new IdentityHashMap<N, Boolean>(n*2+1));//new HashMap((3 * g.size()) / 2, 0.7f);
 		indexStack = new int[n];
 		stmtStack = (N[]) new Object[n];
 		order = (N[]) new Object[n];
@@ -100,13 +97,14 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 
 		// Visit each node
 		for (N s : g) {
-			if (visited.put(s, VISITED) != VISITED)
+			if (visited.add(s))
 				visitNode(s);
+				
+			if (orderLength == n)
+				break;
 		}
 
-		assert (orderLength == n);
-
-		if (!mIsReversed)
+		if (reverse)
 			reverseArray(order);
 
 		List<N> o = Arrays.asList(order);
@@ -143,7 +141,7 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 			} else {
 				N childNode = succs.get(toVisitIndex);
 
-				if ( visited.put(childNode, VISITED) != VISITED ) {
+				if (visited.add(childNode)) {
 					stmtStack[last] = childNode;
 					indexStack[last++] = -1;
 				}
@@ -156,6 +154,7 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 	/**
 	 * @deprecated use {@link #PseudoTopologicalOrderer()} instead
 	 */
+	@Deprecated
 	public PseudoTopologicalOrderer(boolean isReversed) {
 		mIsReversed = isReversed;
 	}
@@ -166,8 +165,9 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 	 * @return a pseudo-topologically ordered list of the graph's nodes.
 	 * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
 	 */
+	@Deprecated
 	public List<N> newList(DirectedGraph<N> g) {
-		return computeOrder(g);
+		return computeOrder(g, !mIsReversed);
 	}
 
 	/**
@@ -178,6 +178,7 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 	 *            not.
 	 * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
 	 */
+	@Deprecated
 	public void setReverseOrder(boolean isReversed) {
 		mIsReversed = isReversed;
 	}
@@ -189,6 +190,7 @@ public class PseudoTopologicalOrderer<N> implements Orderer<N> {
 	 *         otherwise.
 	 * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
 	 */
+	@Deprecated
 	public boolean isReverseOrder() {
 		return mIsReversed;
 	}

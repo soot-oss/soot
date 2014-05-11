@@ -67,15 +67,9 @@ public class JNopStmt extends AbstractStmt implements NopStmt
     
     public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
-	Unit u;
-        out.add(u = Baf.v().newNopInst());
-
-	Unit currentUnit = this;
-
-	Iterator it = currentUnit.getTags().iterator();	
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
+    	Unit u = Baf.v().newNopInst();
+    	u.addAllTagsOf(this);
+        out.add(u);
     }
 
 

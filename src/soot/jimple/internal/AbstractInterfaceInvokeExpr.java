@@ -31,20 +31,20 @@ import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
+
 import java.util.*;
 
 
-import soot.tagkit.*;
-
+@SuppressWarnings("serial")
 public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvokeExpr 
                              implements InterfaceInvokeExpr, ConvertToBaf
 {
     protected AbstractInterfaceInvokeExpr(ValueBox baseBox, SootMethodRef methodRef,
                                   ValueBox[] argBoxes)
     {
-        if( methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
-        this.baseBox = baseBox; this.methodRef = methodRef;
-        this.argBoxes = argBoxes;
+    	super(baseBox, argBoxes); 
+    	if( methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
+        this.methodRef = methodRef;
     }
 
     public boolean equivTo(Object o)
@@ -132,13 +132,8 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
     private static int argCountOf(SootMethodRef m)
     {
         int argCount = 0;
-        Iterator typeIt = m.parameterTypes().iterator();
-
-        while(typeIt.hasNext())
-        {
-            Type t = (Type) typeIt.next();
-
-            argCount += sizeOfType(t);
+        for ( Type t : m.parameterTypes()) {
+        	argCount += sizeOfType(t);
         }
 
         return argCount;
@@ -152,16 +147,9 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
 	    ((ConvertToBaf)(element.getValue())).convertToBaf(context, out);
 	}
        
-       Unit u;
-       out.add(u = Baf.v().newInterfaceInvokeInst(methodRef, argCountOf(methodRef)));
-
-	Unit currentUnit = context.getCurrentUnit();
-
-	Iterator it = currentUnit.getTags().iterator();	
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
-	
+       Unit u = Baf.v().newInterfaceInvokeInst(methodRef, argCountOf(methodRef));
+       out.add(u);
+       u.addAllTagsOf(context.getCurrentUnit());	
     }
 }
 

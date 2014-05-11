@@ -28,9 +28,10 @@ public class NewStaticLock implements Value
 		return sc;
 	}
 
-    public List getUseBoxes()
+    @Override
+    public List<ValueBox> getUseBoxes()
     {
-        return AbstractUnit.emptyList;
+        return Collections.emptyList();
     }
 
     /** Clones the object.  Not implemented here. */

@@ -20,7 +20,6 @@
 package soot.toolkits.graph;
 
 import soot.*;
-import soot.util.*;
 
 import java.util.*;
 
@@ -153,19 +152,19 @@ class DummyBlock extends Block
         super(null, null, body, indexInMethod, 0, null);
     }
 
-    void makeHeadBlock(List oldHeads)
+    void makeHeadBlock(List<Block> oldHeads)
     {
         setPreds(new ArrayList<Block>());
         setSuccs(new ArrayList<Block>(oldHeads));
 
-        Iterator headsIt = oldHeads.iterator();
+        Iterator<Block> headsIt = oldHeads.iterator();
         while(headsIt.hasNext()){
-            Block oldHead = (Block) headsIt.next();
+            Block oldHead = headsIt.next();
 
-            List newPreds = new ArrayList();
+            List<Block> newPreds = new ArrayList<Block>();
             newPreds.add(this);
 
-            List oldPreds = oldHead.getPreds();
+            List<Block> oldPreds = oldHead.getPreds();
             if(oldPreds != null)
                 newPreds.addAll(oldPreds);
             
@@ -173,19 +172,19 @@ class DummyBlock extends Block
         }
     }
 
-    void makeTailBlock(List oldTails)
+    void makeTailBlock(List<Block> oldTails)
     {
-        setSuccs(new ArrayList());
-        setPreds(new ArrayList(oldTails));
+        setSuccs(new ArrayList<Block>());
+        setPreds(new ArrayList<Block>(oldTails));
 
-        Iterator tailsIt = oldTails.iterator();
+        Iterator<Block> tailsIt = oldTails.iterator();
         while(tailsIt.hasNext()){
-            Block oldTail = (Block) tailsIt.next();
+            Block oldTail = tailsIt.next();
 
-            List newSuccs = new ArrayList();
+            List<Block> newSuccs = new ArrayList<Block>();
             newSuccs.add(this);
 
-            List oldSuccs = oldTail.getSuccs();
+            List<Block> oldSuccs = oldTail.getSuccs();
             if(oldSuccs != null)
                 newSuccs.addAll(oldSuccs);
 
@@ -193,8 +192,8 @@ class DummyBlock extends Block
         }
     }    
 
-    public Iterator iterator()
+    public Iterator<Unit> iterator()
     {
-        return Collections.EMPTY_LIST.iterator();
+        return Collections.emptyListIterator();
     }
 }

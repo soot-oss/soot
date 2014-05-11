@@ -26,7 +26,9 @@ import soot.jimple.*;
 import soot.shimple.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
+
 import java.util.*;
+
 import soot.shimple.toolkits.scalar.SEvaluator.MetaConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.TopConstant;
 import soot.shimple.toolkits.scalar.SEvaluator.BottomConstant;
@@ -54,7 +56,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
     protected ShimpleBody sb;
     protected boolean debug;
     
-    protected void internalTransform(Body b, String phaseName, Map options)
+    protected void internalTransform(Body b, String phaseName, Map<String,String> options)
     {
         if(!(b instanceof ShimpleBody))
             throw new RuntimeException("SConstantPropagatorAndFolder requires a ShimpleBody.");
@@ -89,14 +91,14 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
      **/
     protected void propagateResults(Map<Local, Constant> localToConstant)
     {
-        Chain units = sb.getUnits();
-        Chain locals = sb.getLocals();
+        Chain<Unit> units = sb.getUnits();
+        Collection<Local> locals = sb.getLocals();
         ShimpleLocalDefs localDefs = new ShimpleLocalDefs(sb);
         ShimpleLocalUses localUses = new ShimpleLocalUses(sb);
         
-        Iterator localsIt = locals.iterator();
+        Iterator<Local> localsIt = locals.iterator();
         while(localsIt.hasNext()){
-            Local local = (Local) localsIt.next();
+            Local local = localsIt.next();
             Constant constant = localToConstant.get(local);
             
             if(constant instanceof MetaConstant)
@@ -265,8 +267,8 @@ class SCPFAnalysis extends ForwardBranchedFlowAnalysis
         // initialise localToConstant map -- assume all scalars are
         // constant (Top)
         {
-            Chain locals = graph.getBody().getLocals();
-            Iterator localsIt = locals.iterator();
+        	Collection<Local> locals = graph.getBody().getLocals();
+            Iterator<Local> localsIt = locals.iterator();
             localToConstant = new HashMap<Local, Constant>(graph.size() * 2 + 1, 0.7f);
 
             while(localsIt.hasNext()){

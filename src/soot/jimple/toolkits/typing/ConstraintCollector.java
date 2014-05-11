@@ -592,12 +592,12 @@ class ConstraintCollector extends AbstractStmtSwitch
 	  }
 	else
 	  {
-	    List exceptionTypes = TrapManager.getExceptionTypesOf(stmt, stmtBody);
-	    Iterator typeIt = exceptionTypes.iterator();
+	    List<RefType> exceptionTypes = TrapManager.getExceptionTypesOf(stmt, stmtBody);
+	    Iterator<RefType> typeIt = exceptionTypes.iterator();
 
 	    while(typeIt.hasNext())
 	      {
-		Type t = (Type) typeIt.next();
+		Type t = typeIt.next();
 
 		resolver.typeVariable(t).addParent(left);
 	      }

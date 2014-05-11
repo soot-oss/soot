@@ -33,6 +33,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import soot.CompilationDeathException;
@@ -41,6 +42,7 @@ import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.DocumentBuilder;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
@@ -395,7 +397,7 @@ public class ProcessData {
 			 * fft-enabled.xml fft-disabled.xml should be in one table where as
 			 * matrix-enabled.xml matrix-disabled.xml should be in another table
 			 */			
-			HashMap<String, List> benchMarkToFiles = new HashMap<String, List>();
+			Map<String, List<String>> benchMarkToFiles = new HashMap<String, List<String>>();
 			Iterator<String> it = xmlFileList.iterator();
 			while(it.hasNext()){
 				String fileName = it.next();
@@ -404,13 +406,13 @@ public class ProcessData {
 					return;
 				}
 				String benchmark = fileName.substring(0,fileName.indexOf('-'));
-				Object temp = benchMarkToFiles.get(benchmark);
+				List<String> temp = benchMarkToFiles.get(benchmark);
 				List<String> tempList = null;
 				if(temp == null){
 					tempList = new ArrayList<String>();
 				}
 				else{
-					tempList = (ArrayList<String>)temp;
+					tempList = temp;
 				}
 				tempList.add(fileName);
 				benchMarkToFiles.put(benchmark,tempList);
@@ -448,10 +450,10 @@ public class ProcessData {
 					printTexTableHeader(bench,key,columns);				
 				
 				//go through each value which is an xml file
-				Object tempValue = benchMarkToFiles.get(key);
+				List<String> tempValue = benchMarkToFiles.get(key);
 				if(tempValue == null)
 					continue;
-				List<String> files = (List<String>)tempValue;
+				List<String> files = tempValue;
 				
 				
 				/*

@@ -25,6 +25,7 @@
 
 package soot.jimple;
 
+@SuppressWarnings("serial")
 public abstract class ArithmeticConstant extends NumericConstant
 {
     // PTC 1999/06/28

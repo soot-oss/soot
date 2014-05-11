@@ -30,7 +30,6 @@
 
 package soot.jimple.internal;
 
-import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
@@ -39,7 +38,7 @@ import soot.baf.*;
 
 public class JInvokeStmt extends AbstractStmt implements InvokeStmt
 {
-    ValueBox invokeExprBox;
+    final ValueBox invokeExprBox;
 
     public JInvokeStmt(Value c)
     {
@@ -86,9 +85,9 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
         return invokeExprBox;
     }
 
-    public List getUseBoxes()
+    public List<ValueBox> getUseBoxes()
     {
-        List list = new ArrayList();
+        List<ValueBox> list = new ArrayList<ValueBox>();
 
         list.addAll(invokeExprBox.getValue().getUseBoxes());
         list.add(invokeExprBox);
@@ -111,12 +110,8 @@ public class JInvokeStmt extends AbstractStmt implements InvokeStmt
         if(!ie.getMethodRef().returnType().equals(VoidType.v()))
         {
             Unit u = Baf.v().newPopInst(ie.getMethodRef().returnType());
+            u.addAllTagsOf(this);
             out.add(u);
-
-	    Iterator it = getTags().iterator();
-	    while(it.hasNext()) {
-		u.addTag((Tag) it.next());
-	    }
 	}
     }    
 

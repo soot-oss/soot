@@ -33,6 +33,7 @@ package soot.jimple.internal;
 import soot.*;
 import soot.jimple.*;
 
+@SuppressWarnings("serial")
 abstract public class AbstractJimpleBinopExpr extends AbstractBinopExpr
 {
     protected AbstractJimpleBinopExpr (Value op1, Value op2)

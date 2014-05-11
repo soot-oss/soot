@@ -48,7 +48,7 @@ public class EmptySwitchEliminator extends BodyTransformer
     public EmptySwitchEliminator( Singletons.Global g ) {}
     public static EmptySwitchEliminator v() { return G.v().soot_jimple_toolkits_scalar_EmptySwitchEliminator(); }
 
-    protected void internalTransform(Body b, String phaseName, Map options)
+    protected void internalTransform(Body b, String phaseName, Map<String,String> options)
     {
     	Iterator<Unit> it = b.getUnits().snapshotIterator();
         while (it.hasNext()) {
