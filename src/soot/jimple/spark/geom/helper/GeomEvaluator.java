@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Set;
 import soot.AnySubType;
 import soot.ArrayType;
+import soot.FastHierarchy;
 import soot.Local;
 import soot.RefLikeType;
 import soot.RefType;
@@ -96,14 +97,17 @@ public class GeomEvaluator {
 			SootMethod callee_signature, Histogram ce_range) 
 	{
 		long l, r;
-		IVarAbstraction pn = ptsProvider.findInternalNode(vn)
-				.getRepresentative();
+		IVarAbstraction pn = ptsProvider.findInternalNode(vn);
+		if ( pn == null ) return;
+		pn = pn.getRepresentative();
 		Set<SootMethod> tgts = new HashSet<SootMethod>();
 		Set<AllocNode> set = pn.get_all_points_to_objects();
 
 		LinkedList<CgEdge> list = ptsProvider.getCallEdgesInto(ptsProvider
 				.getIDFromSootMethod(caller));
 
+		FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
+		
 		for (Iterator<CgEdge> it = list.iterator(); it.hasNext();) {
 			CgEdge p = it.next();
 
@@ -125,12 +129,8 @@ public class GeomEvaluator {
 					t = RefType.v("java.lang.Object");
 
 				try {
-					tgts.add(Scene
-							.v()
-							.getOrMakeFastHierarchy()
-							.resolveConcreteDispatch(
-									((RefType) t).getSootClass(),
-									callee_signature));
+					tgts.add(hierarchy.resolveConcreteDispatch(
+							((RefType) t).getSootClass(), callee_signature));
 				} catch (Exception e) {
 
 				}
@@ -292,16 +292,16 @@ public class GeomEvaluator {
 		outputer.println("");
 		outputer.println("----------Statistical Result of geomPTA <Data Format: geomPTA (SPARK)>----------");
 		outputer.printf("Lines of code (jimple): %.1fK\n", (double) loc / 1000);
-		outputer.printf("Reachable Methods : %d (%d)\n",
+		outputer.printf("Reachable Methods: %d (%d)\n",
 				ptsProvider.getNumberOfMethods(),
 				ptsProvider.getNumberOfSparkMethods());
-		outputer.printf("Reachable User Methods : %d (%d)\n",
+		outputer.printf("Reachable User Methods: %d (%d)\n",
 				ptsProvider.n_reach_user_methods,
 				ptsProvider.n_reach_spark_user_methods);
 		outputer.println("#All Pointers: "
 				+ ptsProvider.getNumberOfPointers());
 		outputer.println("#Core Pointers: " + n_legal_var
-				+ ", in which #AllocDot Fields : " + n_alloc_dot_fields);
+				+ ", in which #AllocDot Fields: " + n_alloc_dot_fields);
 		outputer.printf(
 				"Total/Average Projected Points-to Tuples [core pointers]: %d (%d) / %.3f (%.3f) \n",
 				total_geom_ins_pts, total_spark_pts,
@@ -343,14 +343,14 @@ public class GeomEvaluator {
 			
 			// get an edge
 			Edge anyEdge = edges.next();
-			CgEdge p = ptsProvider.getInternalEdgeFromSootEdge(anyEdge);
 			SootMethod src = anyEdge.src();
 			
-			if ( ptsProvider.getIDFromSootMethod(src) == 
-					Constants.UNKNOWN_FUNCTION )
+			if ( !ptsProvider.isReachableMethod(src) ||
+					!ptsProvider.isValidMethod(src) )
 				continue;
 			
 			// get the base pointer
+			CgEdge p = ptsProvider.getInternalEdgeFromSootEdge(anyEdge);
 			LocalVarNode vn = (LocalVarNode)p.base_var;
 			
 			// test the call graph
@@ -362,9 +362,7 @@ public class GeomEvaluator {
 			n_geom_call_edges += edge_cnt;
 			
 			// test app method
-			if ( !src.isJavaLibraryMethod() &&
-					ptsProvider.isValidMethod(src) ) {
-				
+			if ( !src.isJavaLibraryMethod() ) {
 				InvokeExpr ie = callsite.getInvokeExpr();
 				
 				if ( edge_cnt == 1 ) {
@@ -397,7 +395,7 @@ public class GeomEvaluator {
 				n_geom_call_edges, n_geom_user_edges);
 		ptsProvider.ps.printf("Resolved virtual callsites by geomPTA = %d\n", geom_solved);
 		total_call_edges.printResult(ptsProvider.ps,
-				"Resolution of 1-CFA call graph : ");
+				"Resolution of 1-CFA call graph: ");
 
 		if (ptsProvider.getOpts().verbose())
 			ptsProvider.outputNotEvaluatedMethods();
@@ -496,12 +494,12 @@ public class GeomEvaluator {
 
 		ptsProvider.ps.println();
 		ptsProvider.ps.println("--------> Alias Pairs Evaluation <---------");
-		ptsProvider.ps.println("All pointer pairs (app code) : " + cnt_all);
+		ptsProvider.ps.println("All pointer pairs (app code): " + cnt_all);
 		ptsProvider.ps
-				.printf("Heap sensitive alias pairs (by Geom) : %d, Percentage = %.3f%%\n",
+				.printf("Heap sensitive alias pairs (by Geom): %d, Percentage = %.3f%%\n",
 						cnt_hs_alias, (double) cnt_hs_alias / cnt_all * 100);
 		ptsProvider.ps
-				.printf("Heap insensitive alias pairs (by SPARK) : %d, Percentage = %.3f%%\n",
+				.printf("Heap insensitive alias pairs (by SPARK): %d, Percentage = %.3f%%\n",
 						cnt_hi_alias, (double) cnt_hi_alias / cnt_all * 100);
 		ptsProvider.ps.printf("Using time: %dms \n",
 				end.getTime() - begin.getTime());
@@ -588,7 +586,7 @@ public class GeomEvaluator {
 		ptsProvider.ps.println();
 		ptsProvider.ps
 				.println("-----------> Static Casts Safety Evaluation <------------");
-		ptsProvider.ps.println("Total casts (app code) : " + total_casts);
+		ptsProvider.ps.println("Total casts (app code): " + total_casts);
 		ptsProvider.ps.println("Safe casts: Geom = " + geom_solved_casts
 				+ ", SPARK = " + spark_solved_casts);
 	}

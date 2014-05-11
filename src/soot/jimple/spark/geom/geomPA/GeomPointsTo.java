@@ -206,7 +206,7 @@ public class GeomPointsTo extends PAG
 		multiCallsites = new HashSet<Stmt>(251);
 		
 		// The fake virtual call edges created by SPARK
-		obsoletedEdges = new Vector<CgEdge>(4021);
+//		obsoletedEdges = new Vector<CgEdge>(4021);
 		
 		// A linkedlist used for traversing the call graph
 		queue_cg = new LinkedList<Integer>();
@@ -257,9 +257,10 @@ public class GeomPointsTo extends PAG
     	
     	// We dump the processing statistics to an external file if needed by the user
     	dump_dir = opts.geom_dump_verbose();
+    	File dir = null;
     	if ( !dump_dir.isEmpty() ) {
     		// We create a new folder and put all the dump files in that folder
-    		File dir = new File( dump_dir );
+    		dir = new File( dump_dir );
     		if ( !dir.exists() ) dir.mkdirs();
     		
     		// We create the log file
@@ -310,8 +311,8 @@ public class GeomPointsTo extends PAG
 		// Output the SPARK running information
 		double mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		ps.println();
-		ps.printf("[Spark] Time : %.3fs\n", (double)spark_run_time/1000 );
-		ps.printf("[Spark] Memory : %.1f MB\n", mem  / 1024 / 1024 );
+		ps.printf("[Spark] Time: %.3fs\n", (double)spark_run_time/1000 );
+		ps.printf("[Spark] Memory: %.1f MB\n", mem  / 1024 / 1024 );
 				
 		// Get type manager from SPARK
 		typeManager = getTypeManager();
@@ -326,8 +327,8 @@ public class GeomPointsTo extends PAG
 		prepareContainers();
 		
 		// Now we start working
-		ps.println( "[Geom]" + " Start working on " + 
-							(dump_dir.isEmpty() ? "untitled" : dump_dir) + " with " + encoding_name + " encoding." );
+		ps.println( "[Geom]" + " Start working on <" + 
+							(dir == null ? "NoName" : dir.getName()) + "> with <" + encoding_name + "> encoding." );
 	}
 	
 	/**
@@ -803,7 +804,7 @@ public class GeomPointsTo extends PAG
 							// We randomly pick a block for reuse (try best to avoid reusing the first block)
 							int iBlock = 0;
 							if ( block_num[j] > 1 )
-								iBlock = rGen.nextInt(block_num[j]) + 1;
+								iBlock = rGen.nextInt(block_num[j]-1) + 1;
 							p.map_offset = iBlock * max_context_size_block[j] + 1;
 						}
 					}
@@ -849,13 +850,7 @@ public class GeomPointsTo extends PAG
 		// We first build the set of possible call targets
 		for (AllocNode an : pn.get_all_points_to_objects()) {
 			Type type = an.getType();
-
-			if (type == null)
-				continue;
-//			else if (type instanceof AnySubType)
-//				type = ((AnySubType) type).getBase();
-//			else if (type instanceof ArrayType)
-//				type = RefType.v("java.lang.Object");
+			if (type == null) continue;
 
 			VirtualCalls.v().resolve(type, 
 					receiver.getType(), subSig, src,
@@ -874,7 +869,7 @@ public class GeomPointsTo extends PAG
 		ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
 		QueueReader<SootMethod> targets = targetsQueue.reader();
 		Set<SootMethod> resolvedMethods = new HashSet<SootMethod>();
-		obsoletedEdges.clear();
+//		obsoletedEdges.clear();
 		
 		// We first update the virtual callsites
 		for ( Iterator<Stmt> csIt = multiCallsites.iterator(); csIt.hasNext(); ) {
@@ -889,9 +884,7 @@ public class GeomPointsTo extends PAG
 			CgEdge p = edgeMapping.get(anyEdge);
 			SootMethod src = anyEdge.src();
 			
-			if ( getIDFromSootMethod(src) 
-					== Constants.UNKNOWN_FUNCTION ) {
-				// This callsite has been solved to be unique or
+			if ( !isReachableMethod(src) ) {
 				// The source method is no longer reachable
 				// We move this callsite
 				csIt.remove();
@@ -956,7 +949,7 @@ public class GeomPointsTo extends PAG
 					cg.removeEdge(p.sootEdge);
 					
 					// We record this obsoleted edge
-					obsoletedEdges.add(p);
+//					obsoletedEdges.add(p);
 					++n_obsoleted;
 				}
 				
@@ -1294,9 +1287,9 @@ public class GeomPointsTo extends PAG
 		mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		
 		ps.println();
-		ps.printf("[Geom] Preprocessing time : %.2f seconds\n", (double) prepare_time / 1000);
-		ps.printf("[Geom] Main propagation time : %.2f seconds\n", (double) solve_time / 1000 );
-		ps.printf("[Geom] Memory used : %.1f MB\n", (double) (mem) / 1024 / 1024 );
+		ps.printf("[Geom] Preprocessing time: %.2f seconds\n", (double) prepare_time / 1000);
+		ps.printf("[Geom] Main propagation time: %.2f seconds\n", (double) solve_time / 1000 );
+		ps.printf("[Geom] Memory used: %.1f MB\n", (double) (mem) / 1024 / 1024 );
 		
 		// We perform a set of tests to assess the quality of the points-to results for user pointers
 		int evalLevel = opts.geom_eval();
@@ -1374,8 +1367,8 @@ public class GeomPointsTo extends PAG
 		solve_time += end.getTime() - begin.getTime();
 		
 		ps.println();
-		ps.printf("[ddGeom] Preprocessing time : %.2f seconds\n", (double) prepare_time / 1000);
-		ps.printf("[ddGeom] Main propagation time : %.2f seconds\n", (double) solve_time / 1000 );
+		ps.printf("[ddGeom] Preprocessing time: %.2f seconds\n", (double) prepare_time / 1000);
+		ps.printf("[ddGeom] Main propagation time: %.2f seconds\n", (double) solve_time / 1000);
 	}
 	
 	/**
