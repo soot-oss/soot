@@ -37,7 +37,7 @@ import soot.util.*;
 
 import java.util.*;
 
-public class JLookupSwitchStmt extends AbstractTableStmt 
+public class JLookupSwitchStmt extends AbstractSwitchStmt 
     implements LookupSwitchStmt
 {
     /** List of lookup values from the corresponding bytecode instruction,

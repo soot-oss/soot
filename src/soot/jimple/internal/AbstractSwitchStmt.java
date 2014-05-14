@@ -8,10 +8,10 @@ import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
 import soot.ValueBox;
-import soot.jimple.Jimple;
+import soot.jimple.SwitchStmt;
 
 @SuppressWarnings("serial")
-abstract class AbstractTableStmt extends AbstractStmt {
+abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchStmt {
 
     final UnitBox defaultTargetBox;
     
@@ -21,7 +21,7 @@ abstract class AbstractTableStmt extends AbstractStmt {
     
     final protected UnitBox[] targetBoxes;
     
-    protected AbstractTableStmt(ValueBox keyBox, UnitBox defaultTargetBox, UnitBox ... targetBoxes) {
+    protected AbstractSwitchStmt(ValueBox keyBox, UnitBox defaultTargetBox, UnitBox ... targetBoxes) {
     	this.keyBox = keyBox;
     	this.defaultTargetBox = defaultTargetBox;
     	this.targetBoxes = targetBoxes;
@@ -34,36 +34,43 @@ abstract class AbstractTableStmt extends AbstractStmt {
         list.add(defaultTargetBox);
     }
 
+    @Override
     final public Unit getDefaultTarget()
     {
         return defaultTargetBox.getUnit();
     }
 
+    @Override
     final public void setDefaultTarget(Unit defaultTarget)
     {
         defaultTargetBox.setUnit(defaultTarget);
     }
 
+    @Override
     final public UnitBox getDefaultTargetBox()
     {
         return defaultTargetBox;
     }
 
+    @Override
     final public Value getKey()
     {
         return keyBox.getValue();
     }
 
+    @Override
     final public void setKey(Value key)
     {
         keyBox.setValue(key);
     }
 
+    @Override
     final public ValueBox getKeyBox()
     {
         return keyBox;
     }    
     
+    @Override
     final public List<ValueBox> getUseBoxes()
     {
         List<ValueBox> list = new ArrayList<ValueBox>();
@@ -79,21 +86,25 @@ abstract class AbstractTableStmt extends AbstractStmt {
         return targetBoxes.length;
     }
     
+    @Override
     final public Unit getTarget(int index)
     {
         return targetBoxes[index].getUnit();
     }
 
+    @Override
     final public UnitBox getTargetBox(int index)
     {
         return targetBoxes[index];
     }
 
+    @Override
     final public void setTarget(int index, Unit target)
     {
         targetBoxes[index].setUnit(target);
     }
     
+    @Override
     final public List<Unit> getTargets()
     {
         List<Unit> targets = new ArrayList<Unit>();
@@ -104,7 +115,7 @@ abstract class AbstractTableStmt extends AbstractStmt {
         return targets;
     }
     
-    final public void setTargets(List<Unit> targets)
+    final public void setTargets(List<? extends Unit> targets)
     {
         for(int i = 0; i < targets.size(); i++)
             targetBoxes[i].setUnit(targets.get(i));
@@ -116,17 +127,20 @@ abstract class AbstractTableStmt extends AbstractStmt {
             targetBoxes[i].setUnit(targets[i]);
     }
 
+    @Override
     final public List<UnitBox> getUnitBoxes()
     {
         return stmtBoxes;
     }
 
-    public boolean fallsThrough() 
+    @Override
+    public final boolean fallsThrough() 
     {
     	return false;
 	}
     
-    public boolean branches()
+    @Override
+    public final boolean branches()
     {
     	return true;
 	}

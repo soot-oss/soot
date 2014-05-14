@@ -108,7 +108,7 @@ public class TrapManager
 
             while (unitIt.hasNext())
             {
-                Unit u = (Unit)unitIt.next();
+                Unit u = unitIt.next();
                 if (u.equals(rangeStart))
                     insideRange = true;
                 if (!unitIt.hasNext()) // i.e. u.equals(t.getEndUnit())

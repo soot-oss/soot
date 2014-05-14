@@ -37,7 +37,7 @@ import soot.util.*;
 
 import java.util.*;
 
-public class JTableSwitchStmt extends AbstractTableStmt 
+public class JTableSwitchStmt extends AbstractSwitchStmt 
     implements TableSwitchStmt
 {
     int lowIndex;
