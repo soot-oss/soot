@@ -176,6 +176,9 @@ public class DexBody  {
 
         int address = 0;
 
+        if (methodSignature.equals("La/a/b/c/b/s;: I e("))
+      	  System.out.println("x");
+
         for (Instruction instruction : code.getInstructions()) {
             DexlibAbstractInstruction dexInstruction = fromInstruction(instruction, address);
             instructions.add(dexInstruction);
@@ -206,7 +209,12 @@ public class DexBody  {
         for (DebugItem di: code.getDebugItems()) {
             if (di instanceof ImmutableLineNumber) {
                 ImmutableLineNumber ln = (ImmutableLineNumber)di;
-                instructionAtAddress(ln.getCodeAddress()).setLineNumber(ln.getLineNumber());
+                DexlibAbstractInstruction ins = instructionAtAddress(ln.getCodeAddress());
+                if (ins == null) {
+                	Debug.printDbg("Line number tag pointing to invalid offset: " + ln.getCodeAddress());
+                	continue;
+                }
+                ins.setLineNumber(ln.getLineNumber());
                 Debug.printDbg("Add line number tag " + ln.getLineNumber() + " for instruction: "
                         + instructionAtAddress(ln.getCodeAddress()));
             }
@@ -333,8 +341,8 @@ public class DexBody  {
         System.out.println();
       }
 
-        DexlibAbstractInstruction i = instructionAtAddress.get(address);
-        if (i == null) {
+        DexlibAbstractInstruction i = null;
+        while (i == null && address >= 0) {
             // catch addresses can be in the middlde of last instruction. Ex. in com.letang.ldzja.en.apk:
             //
             //          042c46: 7020 2a15 0100                         |008f: invoke-direct {v1, v0}, Ljavax/mi...
@@ -342,11 +350,12 @@ public class DexBody  {
             //          catches       : 4
             //              <any> -> 0x0065
             //            0x0069 - 0x0093
-            if ((i = instructionAtAddress.get(address - 1)) == null) {
-              if ((i = instructionAtAddress.get(address - 2)) == null) {
-                throw new RuntimeException("Address 0x" + Integer.toHexString(address) + "(& -1 -2) not part of method '"+ this.methodString +"'");
-              }
-            }
+        	//
+        	// SA, 14.05.2014: We originally scanned only two code units back. This is not sufficient
+        	// if we e.g., have a wide constant and the line number in the debug sections points to
+        	// some address the middle.
+        	i = instructionAtAddress.get(address);
+        	address--;
         }
         return i;
     }
