@@ -175,10 +175,7 @@ public class DexBody  {
         registerLocals = new Local[numRegisters];
 
         int address = 0;
-
-        if (methodSignature.equals("La/a/b/c/b/s;: I e("))
-      	  System.out.println("x");
-
+        
         for (Instruction instruction : code.getInstructions()) {
             DexlibAbstractInstruction dexInstruction = fromInstruction(instruction, address);
             instructions.add(dexInstruction);
