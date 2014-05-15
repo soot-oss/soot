@@ -1,6 +1,7 @@
 package soot.dexpler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -247,35 +248,30 @@ public class DexAnnotation {
                         methodSigString);       
                 
             } else if (atypes.equals("dalvik.annotation.InnerClass")) {
-                if (eSize != 2)
-                    throw new RuntimeException("error: expected 2 elements for annotation InnerClass. Got "+ eSize +" instead.");
-                List<AnnotationElem> elements = getElements(a.getElements());
-                AnnotationIntElem i = null;
-                AnnotationStringElem s = null;
-                for (AnnotationElem e: elements) {
-                    Debug.printDbg("class: ", e.getClass());
+                int accessFlags = -1;
+                String name = null;
+                for (AnnotationElem ele : getElements(a.getElements())) {
+                	if (ele instanceof AnnotationIntElem && ele.getName().equals("accessFlags"))
+                		accessFlags = ((AnnotationIntElem) ele).getValue();
+                	else if (ele instanceof AnnotationStringElem && ele.getName().equals("name"))
+                		name = ((AnnotationStringElem) ele).getValue();
+                	else
+                		throw new RuntimeException("Unexpected inner class annotation element");
                 }
-                if (elements.get(0) instanceof AnnotationIntElem) {
-                    i = (AnnotationIntElem) elements.get(0);
-                    s = (AnnotationStringElem) elements.get(1);
-                } else {
-                    i = (AnnotationIntElem) elements.get(1);
-                    s = (AnnotationStringElem) elements.get(0);
-                }
-                String name = s.getValue();
+                
                 String outerClass = null;
                 if (name == null)
                     outerClass = null;
                 else
                     outerClass = classType.replaceFirst("\\$"+ name, "");
                 String innerClass = classType;
-                int accessFlags = i.getValue();
                 Tag innerTag = new InnerClassTag(
                         DexType.toSootICAT(innerClass), 
-                        DexType.toSootICAT(outerClass),
+                        outerClass == null ? null : DexType.toSootICAT(outerClass),
                         name, 
                         accessFlags);
                 innerClassList.add(innerTag);
+                
                 continue;
                 
             } else if (atypes.equals("dalvik.annotation.MemberClasses")) {
@@ -355,10 +351,8 @@ public class DexAnnotation {
             //Debug.printDbg("element: ", ae.getName() ," ", ae.getValue() ," type: ", ae.getClass());
             //Debug.printDbg("value type: ", ae.getValue().getValueType() ," class: ", ae.getValue().getClass());
 
-            List<EncodedValue> evList = new ArrayList<EncodedValue>();
-            evList.add(ae.getValue());
             Debug.printDbg("   element type: ", ae.getValue().getClass());
-            List<AnnotationElem> eList = handleAnnotationElement(ae, evList);
+            List<AnnotationElem> eList = handleAnnotationElement(ae, Collections.singletonList(ae.getValue()));
             aelemList.addAll(eList);
         }
         return aelemList;
