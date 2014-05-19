@@ -1,6 +1,5 @@
 package dk.brics.soot.transformations;
 
-import java.util.Iterator;
 import java.util.Map;
 
 import dk.brics.soot.analyses.SimpleVeryBusyExpressions;
@@ -43,17 +42,11 @@ public class VeryBusyExpsTagger extends BodyTransformer {
 	protected void internalTransform(Body b, String phaseName, Map options) {
 		VeryBusyExpressions vbe = new SimpleVeryBusyExpressions(new ExceptionalUnitGraph(b));
 		
-		Iterator unitIt = b.getUnits().iterator();
-		while (unitIt.hasNext()) {
-			Unit u = (Unit)unitIt.next();
-			Iterator veryBusyIt = vbe.getBusyExpressionsAfter(u).iterator();
-			while (veryBusyIt.hasNext()) {
-				Value v = (Value)veryBusyIt.next();
+		for (Unit u : b.getUnits()) {
+			for (Value v : vbe.getBusyExpressionsAfter(u)) {
 				u.addTag(new StringTag("Busy expression: " + v, TAG_TYPE));
 				
-				Iterator usesIt = u.getUseBoxes().iterator();
-				while (usesIt.hasNext()) {
-					ValueBox use = (ValueBox)usesIt.next();					
+				for (ValueBox use : u.getUseBoxes()) {
 					if (use.getValue().equivTo(v))
 						use.addTag(new ColorTag(ColorTag.RED, TAG_TYPE));
 				}
