@@ -47,7 +47,7 @@ public interface LiveLocals
      *   @param s the Unit that defines this query.
      *   @return a list of Locals that are live before the specified unit in the method.
      */
-    public List getLiveLocalsBefore(Unit s);
+    public List<Local> getLiveLocalsBefore(Unit s);
 
 
     /**
@@ -56,7 +56,7 @@ public interface LiveLocals
      *   @param s the Unit that defines this query.
      *   @return a list of Locals that are live after the specified unit in the method.
      */
-    public List getLiveLocalsAfter(Unit s);
+    public List<Local> getLiveLocalsAfter(Unit s);
 }
 
 
