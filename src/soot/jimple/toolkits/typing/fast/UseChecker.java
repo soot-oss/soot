@@ -85,8 +85,13 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.LocalUses;
+import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
@@ -101,8 +106,8 @@ public class UseChecker extends AbstractStmtSwitch
 	private Typing tg;
 	private IUseVisitor uv;
 
-	private SimpleLocalDefs defs = null;
-	private SimpleLocalUses uses = null;
+	private LocalDefs defs = null;
+	private LocalUses uses = null;
 
 	public UseChecker(JimpleBody jb)
 	{
@@ -281,7 +286,8 @@ public class UseChecker extends AbstractStmtSwitch
 							|| rt.getSootClass().getName().equals("java.io.Serializable")
 							|| rt.getSootClass().getName().equals("java.lang.Cloneable")) {
 						if (this.uses == null) {
-							this.defs = new SimpleLocalDefs(new ExceptionalUnitGraph(jb));
+							UnitGraph graph = new ExceptionalUnitGraph(jb);
+							this.defs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
 							this.uses = new SimpleLocalUses(jb, defs);
 						}
 						
