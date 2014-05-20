@@ -23,574 +23,592 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.util;
 
-import java.io.Serializable;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.ObjectStreamField;
+import java.lang.ref.WeakReference;
 import java.util.AbstractCollection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 
-/** Reference implementation of the Chain interface, 
-    using a HashMap as the underlying structure. */
-public class HashChain<E> extends AbstractCollection<E>
-    implements Chain<E> 
-{
-    private final HashMap<E, Link> map = new HashMap<E, Link>(); 
-    private E firstItem;
-    private E lastItem;
-    private long stateCount = 0;  
+/**
+ * Reference implementation of the Chain interface, using a HashMap as the
+ * underlying structure.
+ */
+public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
+	private static class Entry<X> extends WeakReference<X> {
+		private Entry<X> prev;
+		private Entry<X> next;
+		
+		private Entry(Entry<X> prev, X item, Entry<X> next) {
+			super(Objects.requireNonNull(item));			
+			this.next = next;
+			this.prev = prev;
+			next.prev = prev.next = this;
+		}
+		
+		private Entry() {
+			super(null);
+			next = prev = this;
+		}
 
-    /** Erases the contents of the current HashChain. */
-    public void clear() 
-    {
-        stateCount++;
-        firstItem = lastItem = null;
-        map.clear();
-    }
+		@Override
+		public void clear() {
+			super.clear();
+			prev.next = next;
+			next.prev = prev;
+			prev = next = null;
+		}
 
-    public void swapWith(E out, E in)
-    {
-        insertBefore(in, out);
-        remove(out);
-    }
-    
-    /** Adds the given object to this HashChain. */
-    public boolean add(E item) 
-    {
-        addLast(item);
-        return true;
-    }
-
-    /** Returns an unbacked list containing the contents of the given Chain. */
-    public static <E> List<E> toList(Chain<E> c)
-    {
-        List<E> list = new ArrayList<E>();
-        for (E e : c)
-        	list.add(e);
-        return list;
-    }
-
-    /** Constructs an empty HashChain. */
-    public HashChain()
-    { 
-        firstItem = lastItem = null;
-    }
-
-    /** Constructs a HashChain filled with the contents of the src Chain. */
-    public HashChain(Chain<E> src) {
-      this();
-
-      for (E e : src) {
-        add(e);
-      }
-    }
-
-    public boolean follows(E someObject, E someReferenceObject)
-    {
-        Iterator<E> it = iterator(someObject);
-        while(it.hasNext()) {
-            if(it.next() == someReferenceObject)
-                return false;
-        }
-        return true;
-    }
-    
-    public boolean contains(Object o)
-    {
-        return map.containsKey(o);
-    }
-
-    public boolean containsAll(Collection c)
-    {
-        Iterator<E> it = c.iterator();
-        while (it.hasNext())
-            if (!(map.containsKey(it.next())))
-                return false;
-        
-        return true;
-    }
-    
-    public void insertAfter(E toInsert, E point)
-    {
-        if (toInsert == null)
-            throw new RuntimeException("Bad idea! You tried to insert "
-                                       + " a null object into a Chain!");
-
-        if(map.containsKey(toInsert))
-            throw new RuntimeException("Chain already contains object.");
-        stateCount++;
-        Link temp = map.get(point);
-        
-        Link newLink = temp.insertAfter(toInsert);
-        map.put(toInsert, newLink);    
-    }
-
-    public void insertAfter(List<E> toInsert, E point)
-    {
-        // if the list is null, treat it as an empty list
-        if (toInsert == null)
-            throw new RuntimeException("Warning! You tried to insert "
-                                       + "a null list into a Chain!");            
-
-        E previousPoint = point;
-        Iterator<E> it = toInsert.iterator();
-        while (it.hasNext())
-            {
-                E o = it.next();
-                insertAfter(o, previousPoint);
-                previousPoint = o;
-            }
-    }
-    
-    public void insertAfter(Chain<E> toInsert, E point)
-    {
-        // if the list is null, treat it as an empty list
-        if (toInsert == null)
-            throw new RuntimeException("Warning! You tried to insert "
-                                       + "a null list into a Chain!");            
-
-        E previousPoint = point;
-        Iterator<E> it = toInsert.iterator();
-        while (it.hasNext())
-            {
-                E o = it.next();
-                insertAfter(o, previousPoint);
-                previousPoint = o;
-            }
-    }
-
-    public void insertBefore(E toInsert, E point)
-    {
-        if (toInsert == null)
-            throw new RuntimeException("Bad idea! You tried to insert "
-                                       + "a null object into a Chain!");
-
-        if(map.containsKey(toInsert))
-            throw new RuntimeException("Chain already contains object.");
-        Link temp = map.get(point);
-        if(temp==null) {
-        	throw new RuntimeException("Insertion point not found in chain!");
-        }
-        stateCount++;
-        
-        Link newLink = temp.insertBefore(toInsert);
-        map.put(toInsert, newLink);
-    }
-    
-    public void insertBefore(List<E> toInsert, E point)
-    {
-        // if the list is null, treat it as an empty list
-        if (toInsert == null)
-            throw new RuntimeException("Warning! You tried to insert "
-                                       + "a null list into a Chain!");
-
-        Iterator<E> it = toInsert.iterator();
-        while (it.hasNext())
-            {
-                E o = it.next();
-                insertBefore(o, point);
-            }
-    }
-
-    public void insertBefore(Chain<E> toInsert, E point)
-    {
-        // if the list is null, treat it as an empty list
-        if (toInsert == null)
-            throw new RuntimeException("Warning! You tried to insert "
-                                       + "a null list into a Chain!");
-
-        Iterator<E> it = toInsert.iterator();
-        while (it.hasNext())
-            {
-                E o = it.next();
-                insertBefore(o, point);
-            }
-    }
-
-    public static HashChain listToHashChain(List list) {
-        HashChain c = new HashChain();
-        Iterator it = list.iterator();
-        while (it.hasNext()) 
-            c.addLast(it.next());
-        return c;
-    }
-  
-    public boolean remove(Object item)
-    { 
-        if (item == null)
-            throw new RuntimeException("Bad idea! You tried to remove "
-                                       + " a null object from a Chain!");
-
-        stateCount++;
-        /*
-         * 4th April 2005 Nomair A Naeem
-         * map.get(obj) can return null
-         * only return true if this is non null
-         * else return false
-         */
-        if(map.get(item) != null){
-        	Link link = map.get(item);
-        
-        	link.unlinkSelf();
-        	map.remove(item);
-        	return true;
-        }
-        return false;
-    }
-
-    public void addFirst(E item)
-    {
-        if (item == null)
-            throw new RuntimeException("Bad idea!  You tried to insert "
-                                       + "a null object into a Chain!");
-
-        stateCount++;
-        Link newLink, temp;
-
-        if(map.containsKey(item))
-            throw new RuntimeException("Chain already contains object.");
-
-        if(firstItem != null) {
-            temp = map.get(firstItem);
-            newLink = temp.insertBefore(item);
-        } else {
-            newLink = new Link(item);
-            firstItem = lastItem = item;
-        }
-        map.put(item, newLink);
-    }
-
-    public void addLast(E item)
-    {
-        if (item == null)
-            throw new RuntimeException("Bad idea! You tried to insert "
-                                       + " a null object into a Chain!");
-
-        stateCount++;
-        Link newLink, temp;
-        if(map.containsKey(item))
-            throw new RuntimeException("Chain already contains object: " 
-                                       + item);
-        
-        if(lastItem != null) {
-            temp = map.get(lastItem);
-            newLink = temp.insertAfter(item);   
-        } else {
-            newLink = new Link(item);
-            firstItem = lastItem = item;
-        }            
-        map.put(item, newLink);
-    }
-    
-    public void removeFirst()
-    {
-        stateCount++;
-        Object item = firstItem;
-        map.get(firstItem).unlinkSelf();
-        map.remove(item);
-    }
-
-    public void removeLast()
-    {
-        stateCount++;
-        Object item = lastItem;
-        map.get(lastItem).unlinkSelf();
-        map.remove(item);
-    }
-
-    public E getFirst()
-    {         
-        if(firstItem == null) 
-            throw new NoSuchElementException();
-        return firstItem; 
-    }
-    
-    public E getLast()
-    { 
-        if(lastItem == null) 
-            throw new NoSuchElementException();
-        return lastItem; 
-    }
-
-    public E getSuccOf(E point)
-        throws NoSuchElementException
-    {
-        Link<E> link = map.get(point);
-        try {
-            link = link.getNext();
-        }
-        catch (NullPointerException e) {
-            throw new NoSuchElementException();
-        }
-        if(link == null) 
-            return null;
-        
-        return link.getItem();
-    } 
-    
-    public E getPredOf(E point)
-        throws NoSuchElementException
-    {
-        Link<E> link = map.get(point);
-        if(point == null)
-            throw new RuntimeException("trying to hash null value.");
-
-        try {
-            link = link.getPrevious();
-        }
-        catch (NullPointerException e) {
-            throw new NoSuchElementException();
-        }
-        
-        if(link == null) 
-            return null;
-        else
-            return link.getItem();
-    } 
-    
-    public Iterator<E> snapshotIterator() 
-    {
-	List l = new LinkedList(); 
-	
-	l.addAll(this);
-
-        return l.iterator();
-    }
-   
-    public Iterator<E> snapshotIterator( Object item)
-    {
-        List l = new ArrayList( map.size());
-	
-        Iterator it = new LinkIterator( item);
-        while (it.hasNext())
-            l.add( it.next());
-	
-        return l.iterator();
-    }
-
-    public Iterator<E> iterator(){ return new LinkIterator(firstItem); }
-    public Iterator<E> iterator(E item) 
-    {
-        return new LinkIterator<E>(item);
-    }
-
-    /** <p>Returns an iterator ranging from <code>head</code> to
-     *  <code>tail</code>, inclusive.</p>
-
-        <p>If <code>tail</code> is the element immediately preceding
-        <code>head</code> in this <code>HashChain</code>, the returned
-        iterator will iterate 0 times (a special case to allow the
-        specification of an empty range of elements). Otherwise if
-        <code>tail</code> is not one of the elements following
-        <code>head</code>, the returned iterator will iterate past the
-        end of the <code>HashChain</code>, provoking a
-        {@link NoSuchElementException}.</p>
-
-	@throws NoSuchElementException if <code>head</code> is not
-	an element of the chain.
-     */
-    public Iterator<E> iterator(E head, E tail)
-    {
-	if (head != null && this.getPredOf(head) == tail) { 
-	    // special case hack, so empty ranges iterate 0 times
-	    return new LinkIterator(null, null);
-	} else {
-	    return new LinkIterator(head, tail);
+		public String toString() {
+			return String.valueOf(get());
+		}
 	}
-    }
+	
+	private static final long serialVersionUID = -1490174501247136465L;
 
-    public int size(){ return map.size(); }               
-
-    /** Returns a textual representation of the contents of this Chain. */
-    public String toString() 
-    {
-        StringBuffer strBuf = new StringBuffer();
-        Iterator it = iterator();
-        boolean b = false;
-
-        strBuf.append("[");
-        while(it.hasNext()) {
-            if (!b) b = true; else strBuf.append(", ");
-            strBuf.append(it.next().toString());
-        }
-        strBuf.append("]");
-        return strBuf.toString();
-    }
+	private static final ObjectStreamField[] serialPersistentFields = {
+        new ObjectStreamField("entries", Object[].class),
+    };
     
-
-    class Link<X extends E> implements Serializable {
-        private Link<X> nextLink;
-        private Link<X> previousLink;
-        private X item;
-        public Link(X item)
-        {
-            this.item = item;
-            nextLink = previousLink = null;
-        }
-
-        public Link<X> getNext() { return nextLink;}
-        public Link<X> getPrevious() { return previousLink;}
-
-        public void setNext(Link<X> link) { this.nextLink = link;}
-        public void setPrevious(Link<X> link) { this.previousLink = link;}
-
-        
-        public void unlinkSelf() 
-        {
-            bind(previousLink, nextLink);
-            
-        }
-
-        public Link<X> insertAfter(X item)
-        {
-            Link newLink = new Link(item);
-            
-            bind(newLink, nextLink);
-            bind(this, newLink);
-            return newLink;
-        }
-        
-        public Link<X> insertBefore(X item)
-        {
-            Link newLink = new Link(item);
-            
-            bind(previousLink, newLink);
-            bind(newLink, this);
-            return newLink;
-        }
-        
-
-        private void bind(Link<X> a, Link<X> b) 
-        {
-            if(a == null) {
-                if(b != null)
-                    firstItem = b.getItem();
-                else
-                    firstItem = null;
-            } else 
-                a.setNext(b);
-          
-            if(b == null){
-                if(a != null)
-                    lastItem = a.getItem();
-                else
-                    lastItem = null;
-            }
-            else
-                b.setPrevious(a);
-        }
-
-        public X getItem() { return item; }
+	private transient Map<E, Entry<E>> map;
+	
+	// <ring> 1 <-> 2 <-> 3 <-> ... <-> N-2 <-> N-1 <-> N <ring>
+	private transient Entry<E> ring = new Entry<E>();
+	
+    /**
+     * The number of times this Chain has been structurally modified.
+     * 
+     * This field is used to make iterators on Collection-views of
+     * the Chain fail-fast.  (See ConcurrentModificationException).
+     */
+	private transient long modCount = 0;
 
 
-        public String toString() 
-        {
-            if(item != null)
-                return item.toString();
-            else
-                return  "Link item is null" + super.toString();
+	/**
+	 * Returns an unbacked list containing the contents of the given Chain.
+	 * 
+	 * @deprecated you can use <code>new java.util.ArrayList<E>(c)</code> instead
+	 */
+	@Deprecated
+	public static <E> List<E> toList(Chain<E> c) {
+		return new ArrayList<E>(c);
+	}
 
-        }
-    
+	/**
+	 * @deprecated use <code>new soot.util.HashChain<T>(list)</code> instead
+	 * @param list
+	 * @return
+	 */
+	@Deprecated
+	public static <T> HashChain<T> listToHashChain(List<T> list) {
+		return new HashChain<T>(list);
+	}		
+
+	/** Constructs an empty HashChain. */
+	public HashChain() {
+		map = new HashMap<E, Entry<E>>();
+	}	
+
+	/**
+	 * Constructs a HashChain filled with the contents of <pre>src</pre>.
+	 * 
+	 * All elements of the collection will be added in order. It will be handled
+	 * if all elements would be added with addLast separately
+	 * 
+	 * @throws NullPointerException if <pre>src</pre> is null
+	 **/
+	public HashChain(Collection<? extends E> src) {
+		map = new HashMap<E, Entry<E>>(src.size());
+		addAll(src);
+	}
+	
+	/** Erases the contents of the current HashChain. */
+	@Override
+	public void clear() {
+		modCount++;
+		
+		// GC help
+		for (Entry<E> link : map.values()) {
+			link.clear();
+		}
+		assert ring.prev == ring;
+		assert ring.next == ring;
+		
+		map.clear();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @param in the new element
+	 * @param out the old element
+	 * @throws NullPointerException if <tt>out</tt> is null or <tt>in</tt> is null
+	 * @throws NoSuchElementException if <tt>out</tt> is not part of this chain
+	 * @throws RuntimeException if <tt>in</tt> is already part of this chain
+	 */
+	@Override
+	public void swapWith(E out, E in) {		
+		insertBefore(in, out);
+		remove(out);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @throws NullPointerException if <tt>someObject</tt> or <tt>someReferenceObject</tt> is null
+	 * @throws NoSuchElementException if <tt>someObject</tt> or <tt>someReferenceObject</tt> are not part of this chain
+	 */
+	@Override
+	public boolean follows(E someObject, E someReferenceObject) {		
+		Entry<E> h = getEntry(someReferenceObject);
+		Entry<E> t = getEntry(someObject);	
+		E last = null;
+		for (Iterator<E> it = newIterator(h.next, t); it.hasNext();) {
+			last = it.next();
+		}
+		return someObject.equals(last);
+	}
+
+	@Override
+	public boolean containsAll(Collection<?> c) {
+		return map.keySet().containsAll(c);
+	}
+
+	@Override
+	public boolean contains(Object o) {
+		return map.containsKey(o);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @param toInsert the new element
+	 * @param point the point after
+	 * @throws NullPointerException if <tt>toInsert</tt> is null or <tt>point</tt> is null
+	 * @throws NoSuchElementException if <tt>point</tt> is not part of this chain
+	 * @throws RuntimeException if <tt>toInsert</tt> is already part of this chain
+	 */
+	@Override
+	public void insertAfter(E toInsert, E point) {
+		insertBefore(toInsert, getEntry(point).next);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @param toInsert a list of new elements
+	 * @param point the point after
+	 * @throws NullPointerException if <tt>toInsert</tt> (or an element of it) is null or <tt>point</tt> is null
+	 * @throws NoSuchElementException if <tt>point</tt> is not part of this chain
+	 * @throws RuntimeException if an element of <tt>toInsert</tt> is already part of this chain
+	 */
+	@Override
+	public void insertAfter(List<E> toInsert, E point) {
+		insertBefore(toInsert, getEntry(point).next);
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @param toInsert a chain of new elements
+	 * @param point the point after
+	 * @throws NullPointerException if <tt>toInsert</tt> (or an element of it) is null or <tt>point</tt> is null
+	 * @throws NoSuchElementException if <tt>point</tt> is not part of this chain
+	 * @throws RuntimeException if an element of <tt>toInsert</tt> is already part of this chain
+	 */
+	@Override
+	public void insertAfter(Chain<E> toInsert, E point) {
+		insertBefore(toInsert, getEntry(point).next);
+	}
+	
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @param toInsert the new element
+	 * @param point the point before
+	 * @throws NullPointerException if <tt>toInsert</tt> is null or <tt>point</tt> is null
+	 * @throws NoSuchElementException if <tt>point</tt> is not part of this chain
+	 * @throws RuntimeException if <tt>toInsert</tt> is already part of this chain
+	 */
+	@Override
+	public void insertBefore(E toInsert, E point) {
+		insertBefore(toInsert, getEntry(point));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @param toInsert a list of new elements
+	 * @param point the point before
+	 * @throws NullPointerException if <tt>toInsert</tt> (or an element of it) is null or <tt>point</tt> is null
+	 * @throws NoSuchElementException if <tt>point</tt> is not part of this chain
+	 * @throws RuntimeException if an element of <tt>toInsert</tt> is already part of this chain
+	 */
+	@Override
+	public void insertBefore(List<E> toInsert, E point) {
+		insertBefore(toInsert, getEntry(point));
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @param toInsert a chain of new elements
+	 * @param point the point before
+	 * @throws NullPointerException if <tt>toInsert</tt> (or an element of it) is null or <tt>point</tt> is null
+	 * @throws NoSuchElementException if <tt>point</tt> is not part of this chain
+	 * @throws RuntimeException if an element of <tt>toInsert</tt> is already part of this chain
+	 */
+	@Override
+	public void insertBefore(Chain<E> toInsert, E point) {
+		insertBefore(toInsert, getEntry(point));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * 
+	 * @throws NullPointerException if item is null
+	 * @throws RuntimeException if item is already part of this chain
+	 * @param item
+	 */
+	@Override
+	public void addFirst(E item) {
+		insertBefore(item, ring.next);
+	}
+
+	/**
+	 * Adds the given object at the end of the Chain.
+	 * 
+	 * @param item the entry to insert
+	 * @throws NullPointerException if item is null
+	 * @throws RuntimeException if item is already part of this chain
+	 */
+	@Override
+	public void addLast(E item) {
+		insertBefore(item, ring);
+	}
+	
+	/**
+	 * Adds the given object at the end of the Chain.
+	 * 
+	 * @param item the entry to insert
+	 * @throws NullPointerException if item is null
+	 * @throws RuntimeException if item is already part of this chain
+	 */
+	@Override
+	public boolean add(E item) {
+		addLast(item);
+		return true;
+	}
+	
+
+	@Override
+	public boolean addAll(Collection<? extends E> e) {
+		insertBefore(e, ring);
+		return true;
+	}
+	
+	/**
+	 * @param toInsert
+	 * @param link
+	 * @throws RuntimeException if the map already contains the linked item
+	 */
+	private void insertBefore(E toInsert, Entry<E> point) {		
+		Objects.requireNonNull(toInsert, "Warning! You tried to insert "
+				+ "a null entry into a Chain!");
+		
+		Entry<E> e = new Entry<E>(point.prev, toInsert, point);		
+		Entry<E> o = map.put(toInsert, e);		
+		if (o == null) {
+			modCount++;
+			return;
+		} 
+		
+		// rollback last put
+		e.clear();
+		map.put(toInsert, o);			
+		throw new RuntimeException("Chain already contains object: "+toInsert);		
+	}	
+	
+	private void insertBefore(Collection<? extends E> toInsert, Entry<E> point) {
+		// if the list is null, treat it as an empty list
+		Objects.requireNonNull(toInsert, "Warning! You tried to insert "
+				+ "a null list into a Chain!");
+		
+		for (E o : toInsert) {
+			insertBefore(o, point);
+		}
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws NoSuchElementException - if this chain is empty
+	 */
+	@Override
+	public void removeFirst() {		
+		remove(getFirst());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @throws NoSuchElementException - if this chain is empty
+	 */
+	@Override
+	public void removeLast() {
+		remove(getLast());
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @throws NullPointerException if item is null
+	 */
+	public boolean remove(Object item) {
+		Objects.requireNonNull(item);
+		Entry<E> old = map.remove(item);
+		if ( old != null ) {		
+			modCount++;
+			old.clear();
+			return true;
+		}
+		return false;
+	}
+
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws NoSuchElementException if this chain is empty
+	 * @return
+	 */
+	@Override
+	public E getFirst() {
+		Entry<E> link = ring.next;
+		if (link == ring)
+			throw new NoSuchElementException();
+		return link.get();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws NoSuchElementException if this chain is empty
+	 * @return the last entry of this chain
+	 */
+	@Override
+	public E getLast() {
+		Entry<E> link = ring.prev;
+		if (link == ring)
+			throw new NoSuchElementException();
+		return link.get();
+	}
+
+	/**
+	 * {@inheritDoc}
+	 * @throws NullPointerException if point is null
+	 * @throws NoSuchElementException if point is not part of this chain
+	 * @param point
+	 * @return the immediately following entry or null if point is the last entry of the chain
+	 */
+	@Override
+	public E getSuccOf(E point) throws NoSuchElementException {
+		return getEntry(point).next.get();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 * @throws NullPointerException if point is null
+	 * @throws NoSuchElementException if point is not part of this chain
+	 * @param point
+	 * @return the immediately preceding entry or null if point is the first entry of the chain
+	 */
+	@Override
+	public E getPredOf(E point) throws NoSuchElementException {
+		return getEntry(point).prev.get();
+	}
+
+	/**
+	 * @throws NullPointerException if point is null
+	 * @throws NoSuchElementException if point is not part of this chain
+	 * @param point
+	 * @return the entry associated with the point. the result will never be null.
+	 */
+	private Entry<E> getEntry(Object point) {
+		Objects.requireNonNull(point);
+		Entry<E> link = map.get(point);
+		if (link == null)
+			throw new NoSuchElementException();
+		return link;
+	}
+
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Iterator<E> snapshotIterator() {
+		return (new ArrayList<E>(this)).iterator();
+	}
+	
+	/**
+	 * 
+	 * @param head the first entry in the iteration
+	 * @return an iterator that start at <tt>head</tt> and ends at the last entry of this chain
+	 * @see #getLast()
+	 * @throws NullPointerException
+	 *             if <tt>head</tt> is null.
+	 * @throws NoSuchElementException
+	 *             if <tt>head</tt> is not an element
+	 *             of this chain.
+	 */
+	public Iterator<E> snapshotIterator(E head) {
+		List<E> l = new ArrayList<E>(map.size());
+
+		Iterator<E> it = iterator(head);
+		while (it.hasNext())
+			l.add(it.next());
+
+		return l.iterator();
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public Iterator<E> iterator() {
+		return newIterator(ring.next, ring.prev);
+	}
+
+	/**
+	 * @param head the first entry in the iteration
+	 * @return an iterator that starts at <tt>head</tt> and ends at the 
+	 * last entry of this chain
+	 * @see #getLast()
+	 * @throws NullPointerException
+	 *             if <tt>head</tt> is null.
+	 * @throws NoSuchElementException
+	 *             if <tt>head</tt> is not an element
+	 *             of this chain.
+	 */
+	@Override
+	public Iterator<E> iterator(E head) {
+		return newIterator(getEntry(head), ring.prev);
+	}
+
+	/** 
+	 * Returns an iterator ranging from <tt>head</tt> to <tt>tail</tt>,
+	 * inclusive.
+	 * 
+	 * If <tt>tail</tt> is the element immediately preceding
+	 * <tt>head</tt> in this <tt>Chain</tt>, the returned iterator
+	 * will iterate 0 times (a special case to allow the specification of an
+	 * empty range of elements). Otherwise if <tt>tail</tt> is not one of
+	 * the elements following <tt>head</tt>, the returned iterator will
+	 * stop at the end of the <tt>Chain</tt>.
+	 * 
+	 * @throws NullPointerException
+	 *             if <tt>head</tt> is null.
+	 *             if <tt>tail</tt> is null and <tt>head</tt> is not the 
+	 *             first entry in this <tt>Chain</tt>.
+	 * @throws NoSuchElementException
+	 *             if <tt>head</tt> or <tt>tail</tt> is not an element
+	 *             of the chain.
+	 */
+	@Override
+	public Iterator<E> iterator(E head, E tail) {
+		Entry<E> headEntry = getEntry(head);		
+		if (headEntry.prev.get() == tail) {
+			// special case hack, so empty ranges iterate 0 times
+			return Collections.emptyIterator();
+		}
+		return newIterator(headEntry, getEntry(tail));
+	}
+	
+	/**
+	 * {@inheritDoc}
+	 */
+	@Override
+	public int size() {
+		return map.size();
+	}
+
+	private Iterator<E> newIterator(final Entry<E> from, final Entry<E> to) {
+		assert from != null;
+		assert to != null;
+		
+		return new Iterator<E>() {
+			private long expectedModCount = modCount;
+			private Entry<E> current = null;
+			private Entry<E> next = from;
+
+			public boolean hasNext() {
+				return next != ring;
+			}
+
+			public E next() throws NoSuchElementException {
+				if (modCount != expectedModCount) {
+					throw new ConcurrentModificationException();
+				}
+				if (next == ring) {
+					throw new NoSuchElementException();
+				}
+				current = next;
+				next = (current == to) ? ring : current.next;
+				return current.get();
+			}
+
+			public void remove() throws IllegalStateException {
+				if (current == null) {
+					throw new IllegalStateException();
+				}
+				if (modCount != expectedModCount) {
+					throw new ConcurrentModificationException();
+				}
+				HashChain.this.remove(current.get());
+				expectedModCount = modCount;
+				current = null;
+			}
+		};
+	}
+
+	
+    /**
+     * Save the state of the {@code HashChain} instance to a stream (i.e.,
+     * serialize it).
+     */
+    private void writeObject(ObjectOutputStream s)
+        throws IOException {       	
+        ObjectOutputStream.PutField fields = s.putFields();
+        s.writeObject(toArray());
+        fields.put("entries", toArray());
+        s.writeFields();
     }
 
-    class LinkIterator<X extends E> implements Iterator 
-    {
-        private Link<X> currentLink;
-        boolean state;    // only when this is true can remove() be called 
-        // (in accordance w/ iterator semantics)
-            
-        private X destination;
-        private long iteratorStateCount;
+    /**
+     * Reconstitute the {@code HashChain} instance from a stream (i.e.,
+     * deserialize it).
+     */
+	private void readObject(ObjectInputStream s)
+        throws IOException, ClassNotFoundException {
 
-
-        public LinkIterator(X item) 
-        {
-	    Link nextLink = map.get(item);
-	    if (nextLink == null && item != null) 
-		throw new NoSuchElementException("HashChain.LinkIterator(obj) with obj that is not in the chain: " + item.toString() );
-            currentLink = new Link(null);
-            currentLink.setNext(nextLink);
-            state = false;
-            destination = null;
-            iteratorStateCount = stateCount;
-        }
-
-        public LinkIterator(X from, X to)
-        {
-            this(from);
-            destination = to;
-        }
-
-            
-        public boolean hasNext() 
-        {
-            if(stateCount != iteratorStateCount) {
-                throw new ConcurrentModificationException();
-            }
-
-	    if(destination == null)
-		return (currentLink.getNext() != null);
-	    else
-		// Ignore whether (currentLink.getNext() == null), so
-		// next() will produce a NoSuchElementException if
-		// destination is not in the chain.
-		return (destination != currentLink.getItem());
-        }
-            
-        public X next()
-            throws NoSuchElementException
-        {
-            if(stateCount != iteratorStateCount)
-                throw new ConcurrentModificationException();
-                        
-            Link<X> temp = currentLink.getNext();
-            if(temp == null) {
-		String exceptionMsg;
-		if(destination != null && destination != currentLink.getItem())
-		    exceptionMsg = "HashChain.LinkIterator.next() reached end of chain without reaching specified tail unit";
-	        else 
-		    exceptionMsg = "HashChain.LinkIterator.next() called past the end of the Chain";
-                throw new NoSuchElementException(exceptionMsg);
-	    }
-            currentLink = temp;
-
-            state = true;
-            return currentLink.getItem();
-        }
-
-        public void remove()
-            throws IllegalStateException
-        {
-            if(stateCount != iteratorStateCount)
-                throw new ConcurrentModificationException();
-            
-            stateCount++; iteratorStateCount++;
-            if(!state)
-                throw new IllegalStateException();
-            else {
-                currentLink.unlinkSelf();
-                map.remove(currentLink.getItem());
-                state = false;
-            }
-
-        }
-   
-        public String toString() 
-        {
-            if(currentLink == null) 
-                return  "Current object under iterator is null" 
-                    + super.toString();
-            else
-                return currentLink.toString();
-        }
-    }    
+        ObjectInputStream.GetField fields = s.readFields();
+        
+        Object[] rawEntries = (Object[]) fields.get("entries", new Object[0]);
+        
+        @SuppressWarnings("unchecked")
+        List<E> list = (List<E>)Arrays.asList(rawEntries);
+        
+        ring = new Entry<E>();
+        map = new HashMap<E, Entry<E>>(rawEntries.length);
+        addAll(list);
+    }
 }
-
