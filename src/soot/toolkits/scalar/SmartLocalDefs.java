@@ -281,13 +281,6 @@ public class SmartLocalDefs implements LocalDefs {
 
 		// collect all live def points
 		for (Unit unit : g) {
-			Collection<Local> flow = liveLocals.getLiveLocalsAfter(unit);
-
-			// no live variables
-			if (flow.isEmpty()) {
-				continue;
-			}
-
 			for (ValueBox box : unit.getDefBoxes()) {
 				Value v = box.getValue();
 				if (v instanceof Local) {
@@ -295,13 +288,13 @@ public class SmartLocalDefs implements LocalDefs {
 					int lno = l.getNumber();
 
 					// only add local if it is used
-					if (flow.contains(l)) {
+					if (liveLocals.getLiveLocalsAfter(unit).contains(l)) {
 						unitList[lno].add(unit);
 					}
 				}
 			}
 		}
-
+		
 		// if a variable reaches at least one head node, it can be undefined
 		BitSet undefinedLocals = new BitSet(n);
 		for (Unit unit : g.getHeads()) {
