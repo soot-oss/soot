@@ -163,12 +163,14 @@ public class SmartLocalDefs implements LocalDefs {
 		protected void flowThrough(BitSet in, Unit unit, BitSet out) {
 			// copy everything that is live
 			out.clear();
-			for (Local l : liveLocals.getLiveLocalsAfter(unit)) {
-				int i = l.getNumber();
-				int j = i + 1;
-				out.set(localRange[i], localRange[j]);
+			if (!in.isEmpty()) {
+				for (Local l : liveLocals.getLiveLocalsAfter(unit)) {
+					int i = l.getNumber();
+					int j = i + 1;
+					out.set(localRange[i], localRange[j]);
+				}
+				out.and(in);
 			}
-			out.and(in);
 
 			if (unit.getDefBoxes().isEmpty()) {
 				return;
