@@ -34,6 +34,7 @@ import soot.util.*;
  *   Soot representation used for untypable objects. Implemented as
  *   a singleton.
  */
+@SuppressWarnings("serial")
 public class ErroneousType extends Type
 {
     public ErroneousType( Singletons.Global g ) {}

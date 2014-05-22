@@ -64,7 +64,6 @@ import soot.util.ArrayNumberer;
 import soot.util.Chain;
 import soot.util.HashChain;
 import soot.util.MapNumberer;
-import soot.util.Numberable;
 import soot.util.Numberer;
 import soot.util.StringNumberer;
 import test.AXMLPrinter;

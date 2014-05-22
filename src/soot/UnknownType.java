@@ -34,6 +34,7 @@ import soot.util.*;
  *   Soot representation used for not-yet-typed objects. Implemented as
  *   a singleton.
  */
+@SuppressWarnings("serial")
 public class UnknownType extends Type
 {
     public UnknownType( Singletons.Global g ) {}

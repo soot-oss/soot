@@ -26,7 +26,6 @@
 package soot;
 
 import java.util.AbstractCollection;
-import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -37,6 +36,7 @@ import soot.util.Chain;
  * and handles patching to deal with element insertions and removals.
  * This is done by calling Unit.redirectJumpsToThisTo at strategic
  * times. */
+@SuppressWarnings("serial")
 public class PatchingChain<E extends Unit> extends AbstractCollection<E> implements Chain<E> 
 {
     protected Chain<E> innerChain;

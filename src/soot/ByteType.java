@@ -35,6 +35,7 @@ import soot.util.*;
  *   Soot representation of the Java built-in type 'byte'. Implemented as
  *   a singleton.
  */
+@SuppressWarnings("serial")
 public class ByteType extends PrimType implements IntegerType
 {
     public ByteType( Singletons.Global g ) {}

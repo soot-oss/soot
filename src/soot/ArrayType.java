@@ -37,6 +37,7 @@ import soot.util.*;
  *
  *
  */
+@SuppressWarnings("serial")
 public class ArrayType extends RefLikeType
 {
     /**
