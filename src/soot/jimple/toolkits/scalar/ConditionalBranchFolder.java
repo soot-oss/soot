@@ -39,7 +39,7 @@ public class ConditionalBranchFolder  extends BodyTransformer
     public ConditionalBranchFolder ( Singletons.Global g ) {}
     public static ConditionalBranchFolder  v() { return G.v().soot_jimple_toolkits_scalar_ConditionalBranchFolder (); }
 
-    protected void internalTransform(Body body, String phaseName, Map options)
+    protected void internalTransform(Body body, String phaseName, Map<String,String> options)
     {
         StmtBody stmtBody = (StmtBody)body;
 
@@ -49,25 +49,20 @@ public class ConditionalBranchFolder  extends BodyTransformer
             G.v().out.println("[" + stmtBody.getMethod().getName() +
                                "] Folding conditional branches...");
 
-        Chain units = stmtBody.getUnits();
-        ArrayList<Unit> unitList = new ArrayList<Unit>(); unitList.addAll(units);
-
-        Iterator<Unit> stmtIt = unitList.iterator();
-        while (stmtIt.hasNext()) {
-            Stmt stmt = (Stmt)stmtIt.next();
+        Chain<Unit> units = stmtBody.getUnits();
+        		
+        for (Unit stmt : units.toArray(new Unit[units.size()])) {
             if (stmt instanceof IfStmt) {
+            	IfStmt ifs = (IfStmt) stmt;
                 // check for constant-valued conditions
-                Value cond = ((IfStmt) stmt).getCondition();
+                Value cond = ifs.getCondition();
                 if (Evaluator.isValueConstantValued(cond)) {
                     cond = Evaluator.getConstantValueOf(cond);
 
                     if (((IntConstant) cond).value == 1) {
                         // if condition always true, convert if to goto
-                        Stmt newStmt =
-                            Jimple.v().newGotoStmt(((IfStmt)stmt).getTarget());
-                        
-                        units.insertAfter(newStmt, stmt);
-                        
+                        Stmt newStmt = Jimple.v().newGotoStmt(ifs.getTarget());                        
+                        units.insertAfter(newStmt, stmt);                        
                         numTrue++;
                     }
                     else

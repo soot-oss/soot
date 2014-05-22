@@ -29,23 +29,24 @@
 
 package soot;
 
-import java.util.*;
+import java.util.AbstractMap;
+import java.util.Set;
 
-public class AbstractUnitAllMapTo extends AbstractMap
+public class AbstractUnitAllMapTo<K,V> extends AbstractMap<K,V>
 {
-    Object dest;
+    V dest;
     
-    public AbstractUnitAllMapTo(Object dest)
+    public AbstractUnitAllMapTo(V dest)
     {
         this.dest = dest;
     }
     
-    public Object get(Object key)
+    public V get(Object key)
     {
         return dest;
     }
     
-    public Set entrySet()
+    public Set<Entry<K,V>> entrySet()
     {
         throw new UnsupportedOperationException();
     }

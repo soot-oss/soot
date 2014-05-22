@@ -32,23 +32,11 @@ package soot.jimple;
 import soot.*;
 import java.util.*;
 
-public interface TableSwitchStmt extends Stmt
+public interface TableSwitchStmt extends SwitchStmt
 {
-    public Unit getDefaultTarget();
-    public void setDefaultTarget(Unit defaultTarget);
-    public UnitBox getDefaultTargetBox();
-    public Value getKey();
-    public void setKey(Value key);
-    public ValueBox getKeyBox();
     public void setLowIndex(int lowIndex);
     public void setHighIndex(int highIndex);
     public int getLowIndex();
     public int getHighIndex();
-    public List getTargets();
-    public Unit getTarget(int index);
-    public void setTarget(int index, Unit target);
-    public void setTargets(List<Unit> targets);
-    public UnitBox getTargetBox(int index);
+    public void setTargets(List<? extends Unit> targets);
 }
-
-

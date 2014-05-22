@@ -30,6 +30,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 
+@SuppressWarnings("serial")
 public abstract class AbstractLengthExpr extends AbstractUnopExpr implements LengthExpr
 {
     protected AbstractLengthExpr(ValueBox opBox) { super(opBox); }

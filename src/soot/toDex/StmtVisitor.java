@@ -538,8 +538,7 @@ public class StmtVisitor implements StmtSwitch {
         exprV.setOrigStmt(stmt);
         constantV.setOrigStmt(stmt);
 		// create payload that references the switch's targets
-		int firstKey = stmt.getLowIndex();
-		@SuppressWarnings("unchecked")
+		int firstKey = stmt.getLowIndex();		
 		List<Unit> targets = stmt.getTargets();
 		PackedSwitchPayload payload = new PackedSwitchPayload(firstKey, targets);
 		switchPayloads.add(payload);

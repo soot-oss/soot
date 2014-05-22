@@ -26,19 +26,23 @@
 
 package soot.jimple.internal;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
-import java.util.*;
 
+@SuppressWarnings("serial")
 public abstract class AbstractInstanceOfExpr implements InstanceOfExpr
 {
-    ValueBox opBox;
+    final ValueBox opBox;
     Type checkType;
 
     protected AbstractInstanceOfExpr(ValueBox opBox, Type checkType)
     {
-        this.opBox = opBox; this.checkType = checkType;
+        this.opBox = opBox; 
+        this.checkType = checkType;
     }
     
     public boolean equivTo(Object o)
@@ -72,32 +76,36 @@ public abstract class AbstractInstanceOfExpr implements InstanceOfExpr
         up.literal(" ");
         up.type(checkType);
     }
-
+    
+    @Override
     public Value getOp()
     {
         return opBox.getValue();
     }
 
+    @Override
     public void setOp(Value op)
     {
         opBox.setValue(op);
     }
-
+    
+    @Override
     public ValueBox getOpBox()
     {
         return opBox;
     }
 
-    public List getUseBoxes()
+    @Override
+    public final List<ValueBox> getUseBoxes()
     {
-        List list = new ArrayList();
+        List<ValueBox> list = new ArrayList<ValueBox>();
 
         list.addAll(opBox.getValue().getUseBoxes());
         list.add(opBox);
-
+    
         return list;
     }
-
+    
     public Type getType()
     {
         return BooleanType.v();

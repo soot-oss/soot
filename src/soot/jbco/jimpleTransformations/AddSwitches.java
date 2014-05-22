@@ -20,16 +20,18 @@
 package soot.jbco.jimpleTransformations;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Vector;
+
 import soot.*;
 import soot.jbco.util.Rand;
 import soot.jbco.*;
 import soot.jimple.*;
 import soot.toolkits.graph.BriefUnitGraph;
-import soot.toolkits.scalar.*;
-import soot.util.*;
 /**
  * @author Michael Batchelder 
  * 
@@ -55,9 +57,9 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
   }
 
   public boolean checkTraps(Unit u, Body b) {
-    Iterator it = b.getTraps().iterator();
+    Iterator<Trap> it = b.getTraps().iterator();
     while (it.hasNext()) {
-      Trap t = (Trap)it.next();
+      Trap t = it.next();
       if (t.getBeginUnit() == u ||
           t.getEndUnit() == u ||
           t.getHandlerUnit() == u)
@@ -68,7 +70,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
   }
 
 
-  protected void internalTransform(Body b, String phaseName, Map options) 
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) 
   {
     if (b.getMethod().getSignature().indexOf("<clinit>") >= 0) return;
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
@@ -76,28 +78,27 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
     
     New2InitFlowAnalysis fa = new New2InitFlowAnalysis(new BriefUnitGraph(b));
 
-    Vector zeroheight = new Vector();
-    PatchingChain units = b.getUnits();
+    Vector<Unit> zeroheight = new Vector<Unit>();
+    PatchingChain<Unit> units = b.getUnits();
 
     Unit first = null;
-    Iterator it = units.snapshotIterator();
-    while (it.hasNext()) {
-      Unit unit = (Unit)it.next();
-      if (unit instanceof IdentityStmt)
-        continue;
-      first = unit;
-      break;
+    for ( Unit unit : units) {
+        if (unit instanceof IdentityStmt)
+            continue;	
+        
+        first = unit;
+        break;
     }
     
-    it = units.snapshotIterator();
+    Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
       Unit unit = (Unit)it.next();
       if (unit instanceof IdentityStmt || checkTraps(unit,b)) 
         continue;
       // very conservative estimate about where new-<init> ranges are
-      if (((FlowSet)fa.getFlowAfter(unit)).size() == 0
-          && ((FlowSet)fa.getFlowBefore(unit)).size() == 0)
+      if (fa.getFlowAfter(unit).isEmpty() && fa.getFlowBefore(unit).isEmpty()) {
         zeroheight.add(unit);
+      }
     }
 
     if (zeroheight.size()<3) return;
@@ -120,8 +121,8 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
       zeroheight.remove(Rand.getInt(zeroheight.size()));
     }
     
-    Chain locals = b.getLocals();
-    ArrayList targs = new ArrayList();
+    Collection<Local> locals = b.getLocals();
+    List<Unit> targs = new ArrayList<Unit>();
     targs.addAll(zeroheight);
 
     SootField ops[] = FieldRenamer.getRandomOpaques();
@@ -139,7 +140,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
       Local B = Jimple.v().newLocal("addswitchesBOOL1", rt);
       locals.add(B);
       units.insertBefore(Jimple.v().newAssignStmt(B,Jimple.v().newStaticFieldRef(ops[0].makeRef())),u);
-      units.insertBefore(Jimple.v().newAssignStmt(b1,Jimple.v().newVirtualInvokeExpr(B,m.makeRef(),new ArrayList())),u);
+      units.insertBefore(Jimple.v().newAssignStmt(b1,Jimple.v().newVirtualInvokeExpr(B,m.makeRef(), Collections.<Value>emptyList())), u);
     }
     if (ops[1].getType() instanceof PrimType) {
       units.insertBefore(Jimple.v().newAssignStmt(b2,Jimple.v().newStaticFieldRef(ops[1].makeRef())),u);
@@ -149,7 +150,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
       Local B = Jimple.v().newLocal("addswitchesBOOL2", rt);
       locals.add(B);
       units.insertBefore(Jimple.v().newAssignStmt(B,Jimple.v().newStaticFieldRef(ops[1].makeRef())),u);
-      units.insertBefore(Jimple.v().newAssignStmt(b2,Jimple.v().newVirtualInvokeExpr(B,m.makeRef(),new ArrayList())),u);
+      units.insertBefore(Jimple.v().newAssignStmt(b2,Jimple.v().newVirtualInvokeExpr(B,m.makeRef(), Collections.<Value>emptyList())),u);
     }
 
     IfStmt ifstmt = Jimple.v().newIfStmt(Jimple.v().newNeExpr(b1,b2),u);
@@ -162,7 +163,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
 
     switchesadded += zeroheight.size() + 1; 
     
-    Iterator tit = targs.iterator();
+    Iterator<Unit> tit = targs.iterator();
     while (tit.hasNext()) {
       Unit nxt = (Unit)tit.next();
       if (Rand.getInt(5) < 4) {

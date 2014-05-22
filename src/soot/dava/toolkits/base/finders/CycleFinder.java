@@ -240,7 +240,7 @@ public class CycleFinder implements FactFinder
 		    //"as" has a predecssor and successor which is as i.e. it is a self loop
 	  
 		    List<AugmentedStmt> currentComponent = null;
-		    currentComponent = new StationaryArrayList();
+		    currentComponent = new StationaryArrayList<AugmentedStmt>();
 		    currentComponent.add(as);
 		    //System.out.println("Special add of"+as);
 		    c_list.add(currentComponent);

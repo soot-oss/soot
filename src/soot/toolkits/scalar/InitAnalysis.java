@@ -20,15 +20,11 @@
 
 package soot.toolkits.scalar;
 
-import java.util.Iterator;
-import java.util.List;
-
 import soot.Local;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.toolkits.graph.UnitGraph;
-import soot.util.Chain;
 
 /**
  * An analysis to check whether or not local variables have been initialised.
@@ -36,58 +32,51 @@ import soot.util.Chain;
  * @author Ganesh Sittampalam
  * @author Eric Bodden
  */
-public class InitAnalysis extends ForwardFlowAnalysis {
+public class InitAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
     FlowSet allLocals;
 
     public InitAnalysis(UnitGraph g) {
         super(g);
-        Chain locs = g.getBody().getLocals();
-        allLocals = new ArraySparseSet();
-        Iterator it = locs.iterator();
-        while (it.hasNext()) {
-            Local loc = (Local) it.next();
+        allLocals = new ArraySparseSet();        
+        for (Local loc : g.getBody().getLocals()) {
             allLocals.add(loc);
         }
 
         doAnalysis();
     }
 
-    protected Object entryInitialFlow() {
+    @Override
+    protected FlowSet entryInitialFlow() {
         return new ArraySparseSet();
     }
-
-    protected Object newInitialFlow() {
+    
+    @Override
+    protected FlowSet newInitialFlow() {
         FlowSet ret = new ArraySparseSet();
         allLocals.copy(ret);
         return ret;
     }
 
-    protected void flowThrough(Object in, Object unit, Object out) {
-        FlowSet inSet = (FlowSet) in;
-        FlowSet outSet = (FlowSet) out;
-        Unit s = (Unit) unit;
+    @Override
+    protected void flowThrough(FlowSet in, Unit unit, FlowSet out) {
+        in.copy(out);
 
-        inSet.copy(outSet);
-
-        for (ValueBox defBox : s.getDefBoxes()) {
+        for (ValueBox defBox : unit.getDefBoxes()) {
             Value lhs = defBox.getValue();
             if (lhs instanceof Local) {
-                outSet.add(lhs);
+                out.add(lhs);
             }
         }
     }
 
-    protected void merge(Object in1, Object in2, Object out) {
-        FlowSet outSet = (FlowSet) out;
-        FlowSet inSet1 = (FlowSet) in1;
-        FlowSet inSet2 = (FlowSet) in2;
-        inSet1.intersection(inSet2, outSet);
+    @Override
+    protected void merge(FlowSet in1, FlowSet in2, FlowSet out) {
+        in1.intersection(in2, out);
     }
-
-    protected void copy(Object source, Object dest) {
-        FlowSet sourceSet = (FlowSet) source;
-        FlowSet destSet = (FlowSet) dest;
-        sourceSet.copy(destSet);
+    
+    @Override
+    protected void copy(FlowSet source, FlowSet dest) {
+        source.copy(dest);
     }
 
 }

@@ -37,7 +37,7 @@ import java.util.List;
  * the Host interface, which allows arbitrary taggable
  * data to be stored with Soot objects. 
  */
-public  class AbstractHost implements Host 
+public class AbstractHost implements Host 
 {
 	
 	protected int line, col;	
@@ -49,9 +49,7 @@ public  class AbstractHost implements Host
     /** get the list of tags. This list should not be modified! */
     public List<Tag> getTags()
     {
-    	if (mTagList == null)
-    		return Collections.emptyList();
-        return mTagList;
+        return (mTagList == null) ? Collections.<Tag>emptyList() : mTagList;
     }
 
     /** remove the tag named <code>aName</code> */
@@ -112,11 +110,17 @@ public  class AbstractHost implements Host
 
     /** Adds all the tags from h to this host. */
     public void addAllTagsOf( Host h ) {
-        for( Iterator<Tag> tIt = h.getTags().iterator(); tIt.hasNext(); ) {
-            final Tag t = tIt.next();
-            addTag( t );
-        }
+    	List<Tag> tags = h.getTags();
+    	if ( tags.isEmpty() )
+    		return;    	
+    	
+        if (mTagList == null) {
+            mTagList = new ArrayList<Tag>(tags.size());
+        } 
+        
+        mTagList.addAll(tags);
     }
+    
     public int getJavaSourceStartLineNumber() {
     	if(line==0) {
     		//get line from source

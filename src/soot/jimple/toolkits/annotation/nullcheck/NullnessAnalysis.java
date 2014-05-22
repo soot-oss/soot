@@ -131,7 +131,6 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
 	protected void flowThrough(Object flowin, Unit u, List fallOut, List branchOuts) {
 		AnalysisInfo in = (AnalysisInfo) flowin;
 		AnalysisInfo out = new AnalysisInfo(in);

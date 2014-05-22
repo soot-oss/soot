@@ -25,7 +25,7 @@ public class MonitorSet extends ArraySparseSet{
 	}
 	
 	public Object getMonitorDepth(String objName){
-		Iterator it = iterator();
+		Iterator<?> it = iterator();
 		while (it.hasNext()){
 			Object obj = it.next();
 			if (obj instanceof MonitorDepth){		    
@@ -116,7 +116,7 @@ public class MonitorSet extends ArraySparseSet{
 			//dest.test();
 		}
 		else{
-			Iterator it = iterator();
+			Iterator<?> it = iterator();
 			while (it.hasNext()){
 				Object o   = it.next();
 				if (o   instanceof MonitorDepth){
@@ -140,7 +140,7 @@ public class MonitorSet extends ArraySparseSet{
 	
 	public void test(){
 		System.out.println("====MonitorSet===");
-		Iterator it = iterator();
+		Iterator<?> it = iterator();
 		while (it.hasNext()){
 			Object obj = it.next();
 			if (obj instanceof MonitorDepth){

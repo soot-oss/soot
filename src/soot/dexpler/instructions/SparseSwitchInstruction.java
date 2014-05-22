@@ -31,7 +31,6 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.SwitchElement;
 import org.jf.dexlib2.iface.instruction.formats.SparseSwitchPayload;
 
-import soot.Immediate;
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
@@ -60,7 +59,7 @@ public class SparseSwitchInstruction extends SwitchInstruction {
         int defaultTargetAddress = codeAddress + instruction.getCodeUnits();
         Unit defaultTarget = body.instructionAtAddress(defaultTargetAddress).getUnit();
 
-        List<Immediate> lookupValues = new ArrayList<Immediate>();
+        List<IntConstant> lookupValues = new ArrayList<IntConstant>();
         List<Unit> targets = new ArrayList<Unit>();
         for(SwitchElement se: seList) {
           lookupValues.add(IntConstant.v(se.getKey()));

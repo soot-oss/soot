@@ -77,6 +77,7 @@ import soot.util.HashChain;
  *  @see soot.jimple.JimpleBody
  *  @see soot.baf.BafBody
  */
+@SuppressWarnings("serial")
 public abstract class Body extends AbstractHost implements Serializable
 {
     /** The method associated with this Body. */

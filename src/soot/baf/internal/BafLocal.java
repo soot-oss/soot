@@ -61,21 +61,25 @@ public class BafLocal implements Local
         return new BafLocal(name, type);
     }
 
+    @Override
     public String getName()
     {
         return name;
     }
 
+    @Override
     public void setName(String name)
     {
         this.name = name;
     }
 
+    @Override
     public Type getType()
     {
         return type;
     }
 
+    @Override
     public void setType(Type t)
     {
         this.type = t;
@@ -90,9 +94,10 @@ public class BafLocal implements Local
         up.local( this );
     }
     
-    public List getUseBoxes()
+    @Override
+    public List<ValueBox> getUseBoxes()
     {
-        return AbstractUnit.emptyList;
+        return Collections.emptyList();
     }
 
     public void apply(Switch s)

@@ -22,7 +22,6 @@ package soot.jbco.jimpleTransformations;
 import java.util.*;
 
 import soot.*;
-import soot.util.*;
 import soot.jimple.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.Main;
@@ -60,7 +59,7 @@ public class BuildIntermediateAppClasses extends SceneTransformer  implements IJ
     return name;
   }
   
-  protected void internalTransform(String phaseName, Map options) {
+  protected void internalTransform(String phaseName, Map<String,String> options) {
     if (output) 
       out.println("Building Intermediate Classes...");
 
@@ -68,19 +67,19 @@ public class BuildIntermediateAppClasses extends SceneTransformer  implements IJ
     
     Scene scene = G.v().soot_Scene();
     // iterate through application classes, build intermediate classes
-    Iterator it = scene.getApplicationClasses().snapshotIterator();
+    Iterator<SootClass> it = scene.getApplicationClasses().snapshotIterator();
     while (it.hasNext()) {
       Vector<SootMethod> initMethodsToRewrite = new Vector<SootMethod>();
       Hashtable<String, SootMethod> methodsToAdd = new Hashtable<String, SootMethod>();
-      SootClass c = (SootClass) it.next();
+      SootClass c = it.next();
       SootClass cOrigSuperclass = c.getSuperclass();
       
       if (output)
         out.println("Processing "+c.getName()+" with super "+cOrigSuperclass.getName());
       
-      Iterator mIt = c.methodIterator();
+      Iterator<SootMethod> mIt = c.methodIterator();
       while (mIt.hasNext()) {
-        SootMethod m = (SootMethod) mIt.next();
+        SootMethod m = mIt.next();
         if (!m.isConcrete()) continue;
         
         try {
@@ -145,7 +144,7 @@ public class BuildIntermediateAppClasses extends SceneTransformer  implements IJ
         while (keys.hasMoreElements()) {
           String sSig = keys.nextElement();
           SootMethod oldM = methodsToAdd.get(sSig);
-          List paramTypes = oldM.getParameterTypes();
+          List<Type> paramTypes = oldM.getParameterTypes();
           Type rType = oldM.getReturnType();
           SootMethod newM;
           { // build new junk method to call original method
@@ -156,10 +155,10 @@ public class BuildIntermediateAppClasses extends SceneTransformer  implements IJ
 
             JimpleBody body = Jimple.v().newBody(newM);
             newM.setActiveBody(body);
-            Chain locals = body.getLocals();
-            PatchingChain units = body.getUnits();
+            Collection<Local> locals = body.getLocals();
+            PatchingChain<Unit> units = body.getUnits();
 
-            BodyBuilder.buildParameterLocals(units,locals,paramTypes);
+            BodyBuilder.buildParameterLocals(units,locals, paramTypes);
             BodyBuilder.buildThisLocal(units,thisRef,locals);
             
             if (rType instanceof VoidType) 
@@ -185,10 +184,10 @@ public class BuildIntermediateAppClasses extends SceneTransformer  implements IJ
 
             JimpleBody body = Jimple.v().newBody(newM);
             newM.setActiveBody(body);
-            Chain locals = body.getLocals();
-            PatchingChain units = body.getUnits();
+            Collection<Local> locals = body.getLocals();
+            PatchingChain<Unit> units = body.getUnits();
 
-            List args = BodyBuilder.buildParameterLocals(units,locals,paramTypes);
+            List<Local> args = BodyBuilder.buildParameterLocals(units,locals,paramTypes);
             Local ths = BodyBuilder.buildThisLocal(units, thisRef, locals);
             
             if (rType instanceof VoidType) 
@@ -219,13 +218,13 @@ public class BuildIntermediateAppClasses extends SceneTransformer  implements IJ
           SootMethod im = initMethodsToRewrite.remove(i);
           Body b = im.getActiveBody();
           Local thisLocal = b.getThisLocal();
-          Iterator uIt = b.getUnits().snapshotIterator();
+          Iterator<Unit> uIt = b.getUnits().snapshotIterator();
           while(uIt.hasNext())
           {
-            Iterator uUses = ((Unit)uIt.next()).getUseBoxes().iterator();
+            Iterator<ValueBox> uUses = uIt.next().getUseBoxes().iterator();
             while (uUses.hasNext())
             {
-              Value v = ((ValueBox)uUses.next()).getValue();
+              Value v = uUses.next().getValue();
               if (v instanceof SpecialInvokeExpr)
               {
                 SpecialInvokeExpr sie = (SpecialInvokeExpr)v;
@@ -237,16 +236,16 @@ public class BuildIntermediateAppClasses extends SceneTransformer  implements IJ
                   SootMethod newSuperInit = null;
                   if (!iC.declaresMethod("<init>",smr.parameterTypes()))
                   {
-                    List paramTypes = smr.parameterTypes();
+                    List<Type> paramTypes = smr.parameterTypes();
                     newSuperInit = new SootMethod("<init>",paramTypes,smr.returnType());
                     iC.addMethod(newSuperInit);
 
                     JimpleBody body = Jimple.v().newBody(newSuperInit);
                     newSuperInit.setActiveBody(body);
-                    PatchingChain initUnits = body.getUnits();
-                    Chain locals = body.getLocals();
+                    PatchingChain<Unit> initUnits = body.getUnits();
+                    Collection<Local> locals = body.getLocals();
                     
-                    List args = BodyBuilder.buildParameterLocals(initUnits,locals,paramTypes);
+                    List<Local> args = BodyBuilder.buildParameterLocals(initUnits,locals,paramTypes);
                     Local ths = BodyBuilder.buildThisLocal(initUnits,thisRef,locals);
 
                     initUnits.add(Jimple.v().newInvokeStmt(

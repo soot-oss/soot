@@ -63,9 +63,9 @@ public class JCaughtExceptionRef implements CaughtExceptionRef
         up.identityRef(this);
     }
 
-    public List getUseBoxes()
+    public final List<ValueBox> getUseBoxes()
     {
-        return AbstractUnit.emptyList;
+        return Collections.emptyList();
     }
 
     public Type getType()

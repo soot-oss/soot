@@ -21,19 +21,19 @@ package soot.util;
 
 /** A numberer that associates each number with the corresponding Long object.
 */
-public class IntegerNumberer implements Numberer {
+public class IntegerNumberer implements Numberer<Long> {
     /** Tells the numberer that a new object needs to be assigned a number. */
-    public void add( Object o ) {}
+    public void add( Long o ) {}
     /** Should return the number that was assigned to object o that was
      * previously passed as an argument to add().
      */
-    public long get( Object o ) {
+    public long get( Long o ) {
         if( o == null ) return 0;
-        return ((Long) o).longValue();
+        return o.longValue();
     }
     /** Should return the object that was assigned the number number. */
-    public Object get( long number ) {
-        if( number == 0 ) return null;
+    public Long get( long number ) {
+        if( number == 0 ) return null; 
         return new Long(number);
     }
     /** Should return the number of objects that have been assigned numbers. */

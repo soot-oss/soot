@@ -27,8 +27,7 @@ import soot.*;
  */
 public class Integer127Type extends PrimType implements IntegerType
 {
-	private static Integer127Type instance;
-	static { instance = new Integer127Type(); }
+	private final static Integer127Type instance = new Integer127Type();
 	
 	public static Integer127Type v() { return instance; }
 	

@@ -24,6 +24,7 @@ import java.util.Map;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Immediate;
+import soot.Unit;
 import soot.Value;
 import soot.jimple.BinopExpr;
 import soot.jimple.EqExpr;
@@ -54,7 +55,7 @@ public class NullCheckEliminator extends BodyTransformer {
 	this.analysisFactory=f;
     }
 
-    public void internalTransform(Body body, String phaseName, Map options) {
+    public void internalTransform(Body body, String phaseName, Map<String,String> options) {
 
 	// really, the analysis should be able to use its own results to determine
 	// that some branches are dead, but since it doesn't we just iterate.
@@ -64,7 +65,7 @@ public class NullCheckEliminator extends BodyTransformer {
 
 	    NullnessAnalysis analysis=analysisFactory.newAnalysis(new ExceptionalUnitGraph(body));
 	    
-	    Chain units=body.getUnits();
+	    Chain<Unit> units=body.getUnits();
 	    Stmt s;
 	    for(s=(Stmt) units.getFirst();s!=null;s=(Stmt) units.getSuccOf(s)) {
 		if(!(s instanceof IfStmt)) continue;

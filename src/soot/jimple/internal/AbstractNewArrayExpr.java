@@ -26,17 +26,18 @@
 
 package soot.jimple.internal;
 
-import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
+
 import java.util.*;
 
+@SuppressWarnings("serial")
 public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
 {
     Type baseType;
-    ValueBox sizeBox;
+    final ValueBox sizeBox;
 
     protected AbstractNewArrayExpr(Type type, ValueBox sizeBox)
     {
@@ -113,9 +114,10 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
         sizeBox.setValue(size);
     }
 
-    public List getUseBoxes()
+    @Override
+    public final List<ValueBox> getUseBoxes()
     {
-        List useBoxes = new ArrayList();
+        List<ValueBox> useBoxes = new ArrayList<ValueBox>();
 
         useBoxes.addAll(sizeBox.getValue().getUseBoxes());
         useBoxes.add(sizeBox);
@@ -142,15 +144,8 @@ public abstract class AbstractNewArrayExpr implements NewArrayExpr, ConvertToBaf
        ((ConvertToBaf)(getSize())).convertToBaf(context, out);
        
 
-       Unit u;
-       out.add(u = Baf.v().newNewArrayInst(getBaseType()));
-	
-	Unit currentUnit = context.getCurrentUnit();
-
-	Iterator it = currentUnit.getTags().iterator();	
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
-	
+       Unit u = Baf.v().newNewArrayInst(getBaseType());
+       out.add(u);	
+       u.addAllTagsOf(context.getCurrentUnit());	
     }
 }

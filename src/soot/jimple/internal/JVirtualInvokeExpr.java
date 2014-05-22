@@ -35,7 +35,7 @@ import java.util.*;
 
 public class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr 
 {
-    public JVirtualInvokeExpr(Value base, SootMethodRef methodRef, List args)
+    public JVirtualInvokeExpr(Value base, SootMethodRef methodRef, List<? extends Value> args)
     {
         super(Jimple.v().newLocalBox(base), methodRef, new ValueBox[args.size()]);
         
@@ -47,18 +47,18 @@ public class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr
         }
 
         for(int i = 0; i < args.size(); i++)
-            this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
+            this.argBoxes[i] = Jimple.v().newImmediateBox(args.get(i));
     }
     
     public Object clone() 
     {
-        ArrayList clonedArgs = new ArrayList(getArgCount());
+        ArrayList<Value> clonedArgs = new ArrayList<Value>(getArgCount());
 
         for(int i = 0; i < getArgCount(); i++) {
             clonedArgs.add(i, getArg(i));
         }
         
-        return new  JVirtualInvokeExpr(getBase(), methodRef, clonedArgs);
+        return new JVirtualInvokeExpr(getBase(), methodRef, clonedArgs);
     }
         
 }

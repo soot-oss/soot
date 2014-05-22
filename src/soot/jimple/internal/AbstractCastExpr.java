@@ -26,17 +26,19 @@
 
 package soot.jimple.internal;
 
-import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
+
 import java.util.*;
+
 import soot.grimp.PrecedenceTest;
 
+@SuppressWarnings("serial")
 abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
-{
-    ValueBox opBox;
+{	    
+	final ValueBox opBox;
     Type type;
 
     AbstractCastExpr(Value op, Type type)
@@ -48,7 +50,8 @@ abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
 
     protected AbstractCastExpr(ValueBox opBox, Type type)
     {
-        this.opBox = opBox; this.type = type;
+        this.opBox = opBox; 
+        this.type = type;
     }
 
     public boolean equivTo(Object o)
@@ -81,29 +84,33 @@ abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
         opBox.toString(up);
         if( PrecedenceTest.needsBrackets( opBox, this ) ) up.literal(")");
     }
-
+    
+    @Override
     public Value getOp()
     {
         return opBox.getValue();
     }
 
+    @Override
     public void setOp(Value op)
     {
         opBox.setValue(op);
     }
-
+    
+    @Override
     public ValueBox getOpBox()
     {
         return opBox;
     }
 
-    public List getUseBoxes()
+    @Override
+    public final List<ValueBox> getUseBoxes()
     {
-        List list = new ArrayList();
+        List<ValueBox> list = new ArrayList<ValueBox>();
 
         list.addAll(opBox.getValue().getUseBoxes());
         list.add(opBox);
-
+    
         return list;
     }
 
@@ -146,11 +153,6 @@ abstract public class AbstractCastExpr implements CastExpr, ConvertToBaf
 
 	out.add(u);
 
-	Unit currentUnit = context.getCurrentUnit();
-
-	Iterator it = currentUnit.getTags().iterator();	
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
+	u.addAllTagsOf(context.getCurrentUnit());
     }
 }

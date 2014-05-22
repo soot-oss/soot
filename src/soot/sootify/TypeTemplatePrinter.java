@@ -90,7 +90,7 @@ public class TypeTemplatePrinter extends TypeSwitch {
 		emit("CharType.v()");
 	}
 
-	public void caseDefault(Type t) {
+	public void defaultCase(Type t) {
 		throw new IllegalArgumentException("cannot print this type");		
 	}
 

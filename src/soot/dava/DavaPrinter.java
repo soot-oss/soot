@@ -24,6 +24,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -42,6 +43,7 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
+import soot.Unit;
 import soot.UnitPrinter;
 import soot.dava.internal.AST.ASTNode;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
@@ -67,7 +69,7 @@ public class DavaPrinter {
       if (Options.v().verbose())
         System.out.println("Printing "+body.getMethod().getName());
       
-        Chain units = ((DavaBody) body).getUnits();
+        Chain<Unit> units = ((DavaBody) body).getUnits();
 
         if (units.size() != 1) {
             throw new RuntimeException("DavaBody AST doesn't have single root.");
@@ -96,7 +98,7 @@ public class DavaPrinter {
                 //packagesUsed.add(superClass.getJavaPackageName());
             }
 
-            Iterator interfaceIt = cl.getInterfaces().iterator();
+            Iterator<SootClass> interfaceIt = cl.getInterfaces().iterator();
             while (interfaceIt.hasNext()) {
                 String interfacePackage = ((SootClass) interfaceIt.next()).toString();
                 
@@ -107,7 +109,7 @@ public class DavaPrinter {
                   //  packagesUsed.add(interfacePackage);
             }
 
-            Iterator methodIt = cl.methodIterator();
+            Iterator<SootMethod> methodIt = cl.methodIterator();
             while (methodIt.hasNext()) {
                 SootMethod dm = (SootMethod) methodIt.next();
 
@@ -126,7 +128,7 @@ public class DavaPrinter {
                       //  packagesUsed.add(thrownPackage);
                 }
 
-                Iterator pit = dm.getParameterTypes().iterator();
+                Iterator<Type> pit = dm.getParameterTypes().iterator();
                 while (pit.hasNext()) {
                     Type t = (Type) pit.next();
 
@@ -154,7 +156,7 @@ public class DavaPrinter {
                 }
             }
 
-            Iterator fieldIt = cl.getFields().iterator();
+            Iterator<SootField> fieldIt = cl.getFields().iterator();
             while (fieldIt.hasNext()) {
                 SootField f = (SootField) fieldIt.next();
 
@@ -172,8 +174,8 @@ public class DavaPrinter {
             }
 
 
-            Iterator pit = importList.iterator();
-            List toImport = new ArrayList();
+            Iterator<String> pit = importList.iterator();
+            List<String> toImport = new ArrayList<String>();
             while (pit.hasNext()){
             	/*
             	 * dont import any file which has currentPackage.className
@@ -286,17 +288,17 @@ public class DavaPrinter {
 
         // Print interfaces
         {
-            Iterator interfaceIt = cl.getInterfaces().iterator();
+            Iterator<SootClass> interfaceIt = cl.getInterfaces().iterator();
 
             if (interfaceIt.hasNext()) {
                 if( cl.isInterface() ) out.print(" extends ");
                 else out.print(" implements ");
 
-                out.print("" + ((SootClass) interfaceIt.next()).getName() + "");
+                out.print("" + (interfaceIt.next()).getName() + "");
 
                 while (interfaceIt.hasNext())
                     out.print(
-                        ", " + ((SootClass) interfaceIt.next()).getName() + "");
+                        ", " + (interfaceIt.next()).getName() + "");
             }
         }
 
@@ -305,10 +307,10 @@ public class DavaPrinter {
 
         // Print fields
         {
-			Iterator fieldIt = cl.getFields().iterator();
+			Iterator<SootField> fieldIt = cl.getFields().iterator();
 			if (fieldIt.hasNext()) {
 				while (fieldIt.hasNext()) {
-					SootField f = (SootField) fieldIt.next();
+					SootField f = fieldIt.next();
 
 					if (f.isPhantom())
 						continue;
@@ -390,7 +392,7 @@ public class DavaPrinter {
 
         // Print methods
         {
-            Iterator methodIt = cl.methodIterator();
+            Iterator<SootMethod> methodIt = cl.methodIterator();
 
             if (methodIt.hasNext()) {
                 if (cl.getMethodCount() != 0)
@@ -476,8 +478,8 @@ public class DavaPrinter {
 
         {
             out.println("    " + decl);
-            for( Iterator tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
-                final Tag t = (Tag) tIt.next();
+            for( Iterator<Tag> tIt = b.getMethod().getTags().iterator(); tIt.hasNext(); ) {
+                final Tag t = tIt.next();
                 if (Options.v().print_tags_in_output()){
                     out.println(t);
                 }

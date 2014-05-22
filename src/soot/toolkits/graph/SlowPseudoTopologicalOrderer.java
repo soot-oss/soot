@@ -313,6 +313,7 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 	 * @return a pseudo-topologically ordered list of the graph's nodes.
 	 * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
 	 */
+	@Deprecated
 	public List newList(DirectedGraph g) {
 		return computeOrder(g);
 	}
@@ -325,6 +326,7 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 	 *            not.
 	 * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
 	 */
+	@Deprecated
 	public void setReverseOrder(boolean isReversed) {
 		mIsReversed = isReversed;
 	}
@@ -336,6 +338,7 @@ public class SlowPseudoTopologicalOrderer implements Orderer {
 	 *         otherwise.
 	 * @deprecated use {@link #newList(DirectedGraph, boolean))} instead
 	 */
+	@Deprecated
 	public boolean isReverseOrder() {
 		return mIsReversed;
 	}

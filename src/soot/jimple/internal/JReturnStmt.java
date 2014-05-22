@@ -31,17 +31,14 @@
 package soot.jimple.internal;
 
 import soot.*;
-import soot.tagkit.*;
-
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
+
 import java.util.*;
 
-public class JReturnStmt extends AbstractStmt implements ReturnStmt
+public class JReturnStmt extends AbstractOpStmt implements ReturnStmt
 {
-    ValueBox returnValueBox;
-
     public JReturnStmt(Value returnValue)
     {
         this(Jimple.v().newImmediateBox(returnValue));
@@ -49,7 +46,7 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
 
     protected JReturnStmt(ValueBox returnValueBox)
     {
-        this.returnValueBox = returnValueBox;
+        super(returnValueBox);
     }
 
     public Object clone() 
@@ -59,40 +56,15 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
 
     public String toString()
     {
-        return Jimple.RETURN + " "  + returnValueBox.getValue().toString();
+        return Jimple.RETURN + " "  + opBox.getValue().toString();
     }
     
     public void toString( UnitPrinter up) {
         up.literal(Jimple.RETURN);
         up.literal(" ");
-        returnValueBox.toString(up);
+        opBox.toString(up);
     }
     
-    public ValueBox getOpBox()
-    {
-        return returnValueBox;
-    }
-
-    public void setOp(Value returnValue)
-    {
-        returnValueBox.setValue(returnValue);
-    }
-
-    public Value getOp()
-    {
-        return returnValueBox.getValue();
-    }
-
-    public List getUseBoxes()
-    {
-        List useBoxes = new ArrayList();
-
-        useBoxes.addAll(returnValueBox.getValue().getUseBoxes());
-        useBoxes.add(returnValueBox);
-
-        return useBoxes;
-    }
-
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseReturnStmt(this);
@@ -102,16 +74,9 @@ public class JReturnStmt extends AbstractStmt implements ReturnStmt
     {
        ((ConvertToBaf)(getOp())).convertToBaf(context, out);
        
-       
-       Unit u;
-       out.add(u = Baf.v().newReturnInst(getOp().getType()));
-     
-       Unit currentUnit = this;
-
-	Iterator it = currentUnit.getTags().iterator();	
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
+       Unit u = Baf.v().newReturnInst(getOp().getType());
+       u.addAllTagsOf(this);
+       out.add(u);
     }
 
      

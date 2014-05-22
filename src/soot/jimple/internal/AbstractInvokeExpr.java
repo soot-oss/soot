@@ -33,12 +33,18 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
+
 import java.util.*;
 
+@SuppressWarnings("serial")
 abstract public class AbstractInvokeExpr implements InvokeExpr
 {
     protected SootMethodRef methodRef;
-    protected ValueBox[] argBoxes;
+    final protected ValueBox[] argBoxes;
+    
+    protected AbstractInvokeExpr(ValueBox[] argBoxes) {
+    	this.argBoxes = argBoxes;
+    }
 
 	public void setMethodRef(SootMethodRef methodRef) {
 		this.methodRef = methodRef;
@@ -89,4 +95,18 @@ abstract public class AbstractInvokeExpr implements InvokeExpr
     {
         return methodRef.returnType();
     }
+    
+    @Override
+    public List<ValueBox> getUseBoxes()
+    {    	
+        List<ValueBox> list = new ArrayList<ValueBox>();      
+        Collections.addAll(list, argBoxes);
+        
+        for (ValueBox element : argBoxes) {
+            list.addAll(element.getValue().getUseBoxes());
+        }
+
+        return list;
+    }
+
 }

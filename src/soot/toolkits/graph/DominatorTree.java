@@ -43,14 +43,14 @@ public class DominatorTree {
 
     protected DominatorsFinder dominators;
     protected DirectedGraph graph;
-    protected ArrayList<DominatorNode> heads;
-    protected ArrayList<DominatorNode> tails;
+    protected List<DominatorNode> heads;
+    protected List<DominatorNode> tails;
     
     /**
      * "gode" is a node in the original graph, "dode" is a node in the
      * dominator tree.
      **/
-    protected HashMap<Object, DominatorNode> godeToDode;
+    protected Map<Object, DominatorNode> godeToDode;
 
     public DominatorTree(DominatorsFinder dominators) {
         // if(Options.v().verbose())
@@ -62,7 +62,7 @@ public class DominatorTree {
 
         heads = new ArrayList<DominatorNode>();
         tails = new ArrayList<DominatorNode>();
-        godeToDode = new HashMap();
+        godeToDode = new HashMap<Object, DominatorNode>();
 
         buildTree();
     }

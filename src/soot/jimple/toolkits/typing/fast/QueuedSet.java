@@ -27,7 +27,7 @@ import java.util.*;
  */
 public class QueuedSet<E>
 {
-	private HashSet<E> hs;
+	private Set<E> hs;
 	private LinkedList<E> ll;
 	
 	public QueuedSet()

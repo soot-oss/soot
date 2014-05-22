@@ -28,12 +28,19 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
+
 import java.util.*;
 
+@SuppressWarnings("serial")
 public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr 
                       implements InstanceInvokeExpr
 {
-    protected ValueBox baseBox;
+    final protected ValueBox baseBox;    
+    
+    protected AbstractInstanceInvokeExpr(ValueBox baseBox, ValueBox[] argBoxes) {
+    	super(argBoxes);
+    	this.baseBox = baseBox;
+    }
     
     public Value getBase()
     {
@@ -50,18 +57,16 @@ public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr
         baseBox.setValue(base);
     }
 
-    public List getUseBoxes()
+    @Override
+    public List<ValueBox> getUseBoxes()
     {
-        List list = new ArrayList();
-
+        List<ValueBox> list = new ArrayList<ValueBox>();    
+        Collections.addAll(list, argBoxes);
+        for (ValueBox element : argBoxes) {
+            list.addAll(element.getValue().getUseBoxes());            
+        }
         list.addAll(baseBox.getValue().getUseBoxes());
         list.add(baseBox);
-
-        for (ValueBox element : argBoxes) {
-            list.addAll(element.getValue().getUseBoxes());
-            list.add(element);
-            
-        }
         
         return list;
     }

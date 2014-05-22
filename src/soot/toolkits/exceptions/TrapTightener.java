@@ -56,7 +56,7 @@ public final class TrapTightener extends BodyTransformer {
     public TrapTightener( Singletons.Global g ) {}
     public static TrapTightener v() { return soot.G.v().soot_toolkits_exceptions_TrapTightener(); }
 
-    protected void internalTransform(Body body, String phaseName, Map options) {
+    protected void internalTransform(Body body, String phaseName, Map<String,String> options) {
         if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Tightening trap boundaries...");
 
@@ -66,16 +66,15 @@ public final class TrapTightener extends BodyTransformer {
 	    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
 
 	    for (Iterator<Trap> trapIt = trapChain.iterator(); trapIt.hasNext(); ) {
-		Trap trap = (Trap) trapIt.next();
+		Trap trap = trapIt.next();
 		Unit firstTrappedUnit = trap.getBeginUnit();
 		Unit firstTrappedThrower = null;
 		Unit firstUntrappedUnit = trap.getEndUnit();
-		Unit lastTrappedUnit = 
-		    (Unit) unitChain.getPredOf(firstUntrappedUnit);
+		Unit lastTrappedUnit = unitChain.getPredOf(firstUntrappedUnit);
 		Unit lastTrappedThrower = null;
 		for (Unit u = firstTrappedUnit; 
 		     u != null && u != firstUntrappedUnit; 
-		     u = (Unit) unitChain.getSuccOf(u)) {
+		     u = unitChain.getSuccOf(u)) {
 			if (mightThrowTo(graph, u, trap)) {
 			    firstTrappedThrower = u;
 			    break;
@@ -83,7 +82,7 @@ public final class TrapTightener extends BodyTransformer {
 		}
 		if (firstTrappedThrower != null) {
 		    for (Unit u = lastTrappedUnit;
-			 u != null; u = (Unit) unitChain.getPredOf(u)) {
+			 u != null; u = unitChain.getPredOf(u)) {
 			if (mightThrowTo(graph, u, trap)) {
 			    lastTrappedThrower = u;
 			    break;
@@ -103,7 +102,7 @@ public final class TrapTightener extends BodyTransformer {
 			    lastTrappedThrower = firstTrappedUnit;
 			}
 			if (lastTrappedUnit != lastTrappedThrower) {
-			    trap.setEndUnit((Unit) unitChain.getSuccOf(lastTrappedThrower));
+			    trap.setEndUnit(unitChain.getSuccOf(lastTrappedThrower));
 			}
 		}
 	    }

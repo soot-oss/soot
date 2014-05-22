@@ -26,6 +26,7 @@
 
 package soot;
 
+@SuppressWarnings("serial")
 public class CompilationDeathException extends RuntimeException
 {
     private final int mStatus;

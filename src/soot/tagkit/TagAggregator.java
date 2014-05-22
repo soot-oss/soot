@@ -42,7 +42,7 @@ public abstract class TagAggregator extends BodyTransformer {
     /** Return name of the resulting aggregated tag. */
     public abstract String aggregatedName();
 
-    protected void internalTransform(Body b, String phaseName, Map options)
+    protected void internalTransform(Body b, String phaseName, Map<String,String> options)
     {
         BafBody body = (BafBody) b;
        
@@ -51,10 +51,10 @@ public abstract class TagAggregator extends BodyTransformer {
 	units.clear();
 
 	/* aggregate all tags */
-        for( Iterator unitIt = body.getUnits().iterator(); unitIt.hasNext(); ) {
-            final Unit unit = (Unit) unitIt.next();
-            for( Iterator tagIt = unit.getTags().iterator(); tagIt.hasNext(); ) {
-                final Tag tag = (Tag) tagIt.next();
+        for( Iterator<Unit> unitIt = body.getUnits().iterator(); unitIt.hasNext(); ) {
+            final Unit unit = unitIt.next();
+            for( Iterator<Tag> tagIt = unit.getTags().iterator(); tagIt.hasNext(); ) {
+                final Tag tag = tagIt.next();
                 if( wantTag( tag ) ) considerTag( tag, unit );
 	    }         
         }        

@@ -50,7 +50,7 @@ public class LockAllocator extends SceneTransformer
 	boolean optionPrintTable = false;
 	boolean optionPrintDebug = false;
 	
-    protected void internalTransform(String phaseName, Map options)
+    protected void internalTransform(String phaseName, Map<String,String> options)
 	{
 		// Get phase options
 		String lockingScheme = PhaseOptions.getString( options, "locking-scheme" );
@@ -154,14 +154,14 @@ public class LockAllocator extends SceneTransformer
     	G.v().out.println("[wjtp.tn] *** Find and Name Transactions *** " + start);
     	Map<SootMethod, FlowSet> methodToFlowSet = new HashMap<SootMethod, FlowSet>();
     	Map<SootMethod, ExceptionalUnitGraph> methodToExcUnitGraph = new HashMap<SootMethod, ExceptionalUnitGraph>();
-    	Iterator runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
+    	Iterator<SootClass> runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
     	while (runAnalysisClassesIt.hasNext()) 
     	{
-    	    SootClass appClass = (SootClass) runAnalysisClassesIt.next();
-    	    Iterator methodsIt = appClass.getMethods().iterator();
+    	    SootClass appClass = runAnalysisClassesIt.next();
+    	    Iterator<SootMethod> methodsIt = appClass.getMethods().iterator();
     	    while (methodsIt.hasNext())
     	    {
-    	    	SootMethod method = (SootMethod) methodsIt.next();
+    	    	SootMethod method = methodsIt.next();
 				if(method.isConcrete())
 				{
 	    	    	Body b = method.retrieveActiveBody();
@@ -170,8 +170,8 @@ public class LockAllocator extends SceneTransformer
     		    	
     	    		// run the intraprocedural analysis
     				SynchronizedRegionFinder ta = new SynchronizedRegionFinder(eug, b, optionPrintDebug, optionOpenNesting, tlo);
-    				Chain units = b.getUnits();
-    				Unit lastUnit = (Unit) units.getLast();
+    				Chain<Unit> units = b.getUnits();
+    				Unit lastUnit = units.getLast();
     				FlowSet fs = (FlowSet) ta.getFlowBefore(lastUnit);
     			
     				// add the results to the list of results

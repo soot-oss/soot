@@ -51,15 +51,15 @@ public class UpdateConstantsToFields extends BodyTransformer  implements IJbcoTr
     out.println("Updated constant references: "+updated);
   }
 
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     if (b.getMethod().getName().indexOf("<clinit>")>=0) 
       return;
     
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) return;
     
-    PatchingChain units = b.getUnits();
-    Iterator iter = units.snapshotIterator();
+    PatchingChain<Unit> units = b.getUnits();
+    Iterator<Unit> iter = units.snapshotIterator();
     while (iter.hasNext()) {
       Unit u = (Unit)iter.next();
       if (u instanceof PushInst) {

@@ -27,8 +27,7 @@ import soot.*;
  */
 public class BottomType extends Type
 {
-	private static BottomType instance;
-	static { instance = new BottomType(); }
+	private final static BottomType instance = new BottomType();
 	
 	public static BottomType v() { return instance; }
 	

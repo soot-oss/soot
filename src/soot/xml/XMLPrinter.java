@@ -25,6 +25,7 @@
 
 package soot.xml;
 import java.io.PrintWriter;
+import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
@@ -114,9 +115,9 @@ public class XMLPrinter {
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
     private void printStatementsInBody(Body body, java.io.PrintWriter out) {
 	LabeledUnitPrinter up = new NormalUnitPrinter(body);
-        Map stmtToName = up.labels();
+        Map<Unit,String> stmtToName = up.labels();
 
-        Chain units = body.getUnits();
+        Chain<Unit> units = body.getUnits();
 
         //UnitGraph unitGraph = new soot.toolkits.graph.BriefUnitGraph( body );
         ExceptionalUnitGraph exceptionalUnitGraph =
@@ -127,7 +128,7 @@ public class XMLPrinter {
 
         // iterate through each statement
         String cleanMethodName = cleanMethod(body.getMethod().getName());
-        Iterator unitIt = units.iterator();
+        Iterator<Unit> unitIt = units.iterator();
         Unit currentStmt = null;
         
         String currentLabel = "default";
@@ -268,7 +269,7 @@ public class XMLPrinter {
 
             // uses for each statement            
             int j = 0;
-            Iterator boxIt = currentStmt.getUseBoxes().iterator();
+            Iterator<ValueBox> boxIt = currentStmt.getUseBoxes().iterator();
             while (boxIt.hasNext()) {
                 ValueBox box = (ValueBox) boxIt.next();
                 if (box.getValue() instanceof Local) {
@@ -393,8 +394,8 @@ public class XMLPrinter {
             */
 
             // simple live locals            
-            List liveLocalsIn = sll.getLiveLocalsBefore(currentStmt);
-            List liveLocalsOut = sll.getLiveLocalsAfter(currentStmt);
+            List<Local> liveLocalsIn = sll.getLiveLocalsBefore(currentStmt);
+            List<Local> liveLocalsOut = sll.getLiveLocalsAfter(currentStmt);
             XMLNode livevarsNode =
                 sootstmtNode.addChild(
                     "livevariables",
@@ -479,7 +480,7 @@ public class XMLPrinter {
                         "_parameter" + i });
             XMLNode sootparamNode = paramNode.addChild("soot_parameter");
 
-            Vector tempVec = paramData.elementAt(i);
+            Vector<String> tempVec = paramData.elementAt(i);
             for (int k = 0; k < tempVec.size(); k++) {
                 sootparamNode.addChild(
                     "use",
@@ -513,8 +514,8 @@ public class XMLPrinter {
         xmlLabelsList.addElement(xmlLabel);
 
         // print out locals
-        Chain locals = body.getLocals();
-        Iterator localsIterator = locals.iterator();
+        Collection<Local> locals = body.getLocals();
+        Iterator<Local> localsIterator = locals.iterator();
         Vector<String> localTypes = new Vector<String>();
         Vector<Vector<XMLNode>> typedLocals = new Vector<Vector<XMLNode>>();
         Vector<Integer> typeCounts = new Vector<Integer>();
@@ -561,7 +562,7 @@ public class XMLPrinter {
             for (int k = 0; k < useList.size(); k++) {
                 String query = useList.elementAt(k);
                 if (query.equalsIgnoreCase(local)) {
-                    Vector tempVector =
+                    Vector<Long> tempVector =
                         useDataList.elementAt(useList.indexOf(local));
 
                     for (int i = 0; i < tempVector.size(); i++) {
@@ -582,7 +583,7 @@ public class XMLPrinter {
             for (int k = 0; k < defList.size(); k++) {
                 String query = (defList.elementAt(k));
                 if (query.equalsIgnoreCase(local)) {
-                    Vector tempVector =
+                    Vector<Long> tempVector =
                         defDataList.elementAt(defList.indexOf(local));
 
                     for (int i = 0; i < tempVector.size(); i++) {
@@ -635,9 +636,9 @@ public class XMLPrinter {
                         type,
                         typeCounts.elementAt(i) + "" });
 
-            Vector list = typedLocals.elementAt(i);
+            Vector<XMLNode> list = typedLocals.elementAt(i);
             for (j = 0; j < list.size(); j++) {
-                typeNode.addChild((XMLNode) list.elementAt(j));
+                typeNode.addChild(list.elementAt(j));
             }
         }
 
@@ -665,10 +666,10 @@ public class XMLPrinter {
         // Print out exceptions		
         statementCount = 0;
         XMLNode exceptionsNode = methodNode.addChild("exceptions");
-        Iterator trapIt = body.getTraps().iterator();
+        Iterator<Trap> trapIt = body.getTraps().iterator();
         if (trapIt.hasNext()) {
             while (trapIt.hasNext()) {
-                Trap trap = (Trap) trapIt.next();
+                Trap trap = trapIt.next();
 
                 // catch java.io.IOException from label0 to label1 with label2;				
                 XMLNode catchNode =
@@ -812,7 +813,7 @@ public class XMLPrinter {
                     new String[] { "count" },
                     new String[] { cl.getInterfaceCount() + "" });
 
-            Iterator interfaceIt = cl.getInterfaces().iterator();
+            Iterator<SootClass> interfaceIt = cl.getInterfaces().iterator();
             if (interfaceIt.hasNext()) {
                 while (interfaceIt.hasNext())
                     xmlTempNode.addChild(
@@ -823,7 +824,7 @@ public class XMLPrinter {
                             Scene
                                 .v()
                                 .quotedNameOf(
-                                    ((SootClass) interfaceIt.next()).getName())
+                                    interfaceIt.next().getName())
                                 .toString()});
             }
         }
@@ -837,11 +838,11 @@ public class XMLPrinter {
                     new String[] { "count" },
                     new String[] { cl.getFieldCount() + "" });
 
-            Iterator fieldIt = cl.getFields().iterator();
+            Iterator<SootField> fieldIt = cl.getFields().iterator();
             if (fieldIt.hasNext()) {
                 int i = 0;
                 while (fieldIt.hasNext()) {
-                    SootField f = (SootField) fieldIt.next();
+                    SootField f = fieldIt.next();
 
                     if (f.isPhantom())
                         continue;
@@ -877,7 +878,7 @@ public class XMLPrinter {
 
         // Print methods
         {
-            Iterator methodIt = cl.methodIterator();
+            Iterator<SootMethod> methodIt = cl.methodIterator();
 
             setXMLNode(
                 xmlClassNode.addChild(
@@ -886,7 +887,7 @@ public class XMLPrinter {
                     new String[] { cl.getMethodCount() + "" }));
 
             while (methodIt.hasNext()) {
-                SootMethod method = (SootMethod) methodIt.next();
+                SootMethod method = methodIt.next();
 
                 if (method.isPhantom())
                     continue;

@@ -30,11 +30,12 @@
 
 package soot.jimple.internal;
 
-import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
+
 import java.util.*;
 
+@SuppressWarnings("serial")
 abstract public class AbstractJimpleFloatBinopExpr
     extends AbstractFloatBinopExpr implements ConvertToBaf
 {
@@ -56,10 +57,7 @@ abstract public class AbstractJimpleFloatBinopExpr
         ((ConvertToBaf) this.getOp2()).convertToBaf(context, out);
         Unit u = (Unit)makeBafInst(this.getOp1().getType());
         out.add(u);
-	Iterator it = context.getCurrentUnit().getTags().iterator();
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
+        u.addAllTagsOf(context.getCurrentUnit());
     }
 
     abstract Object makeBafInst(Type opType);

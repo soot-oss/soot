@@ -270,7 +270,6 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 		printInvokeExpr(v);		
 	}
 
-	@SuppressWarnings("unchecked")
 	private void printInvokeExpr(InvokeExpr v) {
 		p.openBlock();		
 		
@@ -390,7 +389,6 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 		varName = oldName;
 	}
 
-	@SuppressWarnings("unchecked")
 	public void caseNewMultiArrayExpr(NewMultiArrayExpr v) {
 		p.openBlock();
 		String oldName = varName; 
@@ -400,7 +398,7 @@ public class ValueTemplatePrinter implements JimpleValueSwitch {
 		
 		p.println("List<IntConstant> sizes = new LinkedList<IntConstant>();");
 		int i=0;
-		for(IntConstant s: (List<IntConstant>)v.getSizes()) {
+		for(Value s: v.getSizes()) {
 			this.suggestVariableName("size"+i);
 			s.apply(this);
 			i++;

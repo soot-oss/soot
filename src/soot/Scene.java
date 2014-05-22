@@ -49,6 +49,7 @@ import java.util.zip.ZipFile;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import soot.jimple.spark.pag.SparkField;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.ContextSensitiveCallGraph;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
@@ -130,9 +131,9 @@ public class Scene  //extends AbstractHost
     ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<Kind>();
     ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
     ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
-    Numberer unitNumberer = new MapNumberer();
+    Numberer<Unit> unitNumberer = new MapNumberer();
     Numberer contextNumberer = null;
-    ArrayNumberer fieldNumberer = new ArrayNumberer<SootField>();
+    Numberer<SparkField> fieldNumberer = new ArrayNumberer<SparkField>();
     ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
     StringNumberer subSigNumberer = new StringNumberer();
     ArrayNumberer<Local> localNumberer = new ArrayNumberer<Local>();
@@ -1008,12 +1009,12 @@ public class Scene  //extends AbstractHost
     {
         return getPhantomRefs();
     }
-    public Numberer kindNumberer() { return kindNumberer; }
+    public Numberer<Kind> kindNumberer() { return kindNumberer; }
     public ArrayNumberer<Type> getTypeNumberer() { return typeNumberer; }
     public ArrayNumberer<SootMethod> getMethodNumberer() { return methodNumberer; }
     public Numberer getContextNumberer() { return contextNumberer; }
-    public Numberer getUnitNumberer() { return unitNumberer; }
-    public ArrayNumberer getFieldNumberer() { return fieldNumberer; }
+    public Numberer<Unit> getUnitNumberer() { return unitNumberer; }
+    public Numberer<SparkField> getFieldNumberer() { return fieldNumberer; }
     public ArrayNumberer<SootClass> getClassNumberer() { return classNumberer; }
     public StringNumberer getSubSigNumberer() { return subSigNumberer; }
     public ArrayNumberer<Local> getLocalNumberer() { return localNumberer; }

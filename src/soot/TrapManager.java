@@ -41,12 +41,8 @@ public class TrapManager
 
         Hierarchy h = Scene.v().getActiveHierarchy();
         Chain<Unit> units = b.getUnits();
-        Iterator<Trap> trapsIt = b.getTraps().iterator();
-
-        while (trapsIt.hasNext())
-        {
-            Trap t = (Trap)trapsIt.next();
-
+        
+        for (Trap t : b.getTraps()) {
             /* Ah ha, we might win. */
             if (h.isClassSubclassOfIncluding(e, t.getException()))
             {
@@ -67,12 +63,7 @@ public class TrapManager
         List<Trap> trapsList = new ArrayList<Trap>();
         Chain<Unit> units = b.getUnits();
 
-        Iterator<Trap> trapsIt = b.getTraps().iterator();
-
-        while (trapsIt.hasNext())
-        {
-            Trap t = trapsIt.next();
-
+        for (Trap t : b.getTraps()) {
             Iterator<Unit> it = units.iterator(t.getBeginUnit(),
                                          units.getPredOf(t.getEndUnit()));
             while (it.hasNext())
@@ -89,12 +80,7 @@ public class TrapManager
         Set<Unit> trapsSet = new HashSet<Unit>();
         Chain<Unit> units = b.getUnits();
 
-        Iterator<Trap> trapsIt = b.getTraps().iterator();
-
-        while (trapsIt.hasNext())
-        {
-                Trap t = trapsIt.next();
-
+        for (Trap t : b.getTraps()) {
             Iterator<Unit> it = units.iterator(t.getBeginUnit(),
                                          units.getPredOf(t.getEndUnit()));
             while (it.hasNext())
@@ -122,7 +108,7 @@ public class TrapManager
 
             while (unitIt.hasNext())
             {
-                Unit u = (Unit)unitIt.next();
+                Unit u = unitIt.next();
                 if (u.equals(rangeStart))
                     insideRange = true;
                 if (!unitIt.hasNext()) // i.e. u.equals(t.getEndUnit())
@@ -163,20 +149,11 @@ public class TrapManager
     {
          List<RefType> possibleTypes = new ArrayList<RefType>();
         
-         Iterator<Trap> trapIt = body.getTraps().iterator();
-        
-         while(trapIt.hasNext())
-         {
-            Trap trap = (Trap) trapIt.next();
-            
-            Unit handler = trap.getHandlerUnit();
-             
-            if(handler == u)
-            {
-                possibleTypes.add(RefType.v(trap.getException().
-                    getName()));
-            }
-        }
+         for (Trap trap : body.getTraps()) {
+             if (trap.getHandlerUnit() == u) {
+                 possibleTypes.add(RefType.v(trap.getException().getName()));
+             }
+         }
         
         return possibleTypes;
     }

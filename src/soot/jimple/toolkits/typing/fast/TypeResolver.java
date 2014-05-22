@@ -53,7 +53,10 @@ import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.typing.Util;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.toolkits.scalar.SimpleLocalDefs;
+import soot.toolkits.scalar.SmartLocalDefs;
 
 /**
  * New Type Resolver by Ben Bellamy (see 'Efficient Local Type Inference'
@@ -527,7 +530,7 @@ public class TypeResolver
 	private void split_new()
 	{
 		ExceptionalUnitGraph graph = new ExceptionalUnitGraph(this.jb);
-		SimpleLocalDefs defs = new SimpleLocalDefs(graph);
+		LocalDefs defs = new SmartLocalDefs(graph,new SimpleLiveLocals(graph));
 		// SimpleLocalUses uses = new SimpleLocalUses(graph, defs);
 		PatchingChain<Unit> units = this.jb.getUnits();
 		Stmt[] stmts = new Stmt[units.size()];

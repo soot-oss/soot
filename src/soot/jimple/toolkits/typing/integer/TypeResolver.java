@@ -217,7 +217,7 @@ public class TypeResolver
   {
     ConstraintCollector collector = new ConstraintCollector(this, true);
 
-    for( Iterator stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+    for( Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
 
         final Stmt stmt = (Stmt) stmtIt.next();
 	if(DEBUG)
@@ -236,7 +236,7 @@ public class TypeResolver
   {
     ConstraintCollector collector = new ConstraintCollector(this, false);
 
-    for( Iterator stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+    for( Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
 
         final Stmt stmt = (Stmt) stmtIt.next();
 	if(DEBUG)
@@ -463,8 +463,8 @@ public class TypeResolver
 
   private void assign_types_1() throws TypeException
   {
-    for( Iterator localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
-        final Local local = (Local) localIt.next();
+    for( Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
+        final Local local = localIt.next();
 
 	if(local.getType() instanceof IntegerType)
 	  {
@@ -497,8 +497,8 @@ public class TypeResolver
   
   private void assign_types_2() throws TypeException
   {
-    for( Iterator localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
-        final Local local = (Local) localIt.next();
+    for( Iterator<Local> localIt = stmtBody.getLocals().iterator(); localIt.hasNext(); ) {
+        final Local local = localIt.next();
 
 	if(local.getType() instanceof IntegerType)
 	  {
@@ -538,7 +538,7 @@ public class TypeResolver
 	s = new StringBuffer("Checking:\n");
       }
 
-    for( Iterator stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
+    for( Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
 
         final Stmt stmt = (Stmt) stmtIt.next();
 	if(DEBUG)
@@ -564,7 +564,7 @@ public class TypeResolver
   {
     ConstraintChecker checker = new ConstraintChecker(this, true);
     StringBuffer s = null;
-    PatchingChain units = stmtBody.getUnits();
+    PatchingChain<Unit> units = stmtBody.getUnits();
     Stmt[] stmts = new Stmt[units.size()];
     units.toArray(stmts);
 

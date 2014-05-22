@@ -29,11 +29,13 @@ package soot.jimple.internal;
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
+
 import soot.grimp.PrecedenceTest;
 
+@SuppressWarnings("serial")
 public abstract class AbstractBinopExpr implements Expr
-{
-    protected ValueBox op1Box;
+{	
+	protected ValueBox op1Box;
     protected ValueBox op2Box;
 
     public Value getOp1()
@@ -66,9 +68,10 @@ public abstract class AbstractBinopExpr implements Expr
         op2Box.setValue(op2);
     }
 
-    public List getUseBoxes()
+    @Override
+    public final List<ValueBox> getUseBoxes()
     {
-        List list = new ArrayList();
+        List<ValueBox> list = new ArrayList<ValueBox>();
 
         list.addAll(op1Box.getValue().getUseBoxes());
         list.add(op1Box);
@@ -110,8 +113,8 @@ public abstract class AbstractBinopExpr implements Expr
     }
 
     public void toString( UnitPrinter up ) {
-        Value val1 = op1Box.getValue();
-        Value val2 = op2Box.getValue();
+        //Value val1 = op1Box.getValue();
+        //Value val2 = op2Box.getValue();
 
         if( PrecedenceTest.needsBrackets( op1Box, this ) ) up.literal("(");
         op1Box.toString(up);

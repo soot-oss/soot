@@ -34,6 +34,7 @@ import soot.util.*;
  *   Soot representation of the Java built-in type 'double'. Implemented as
  *   a singleton.
  */
+@SuppressWarnings("serial")
 public class DoubleType extends PrimType
 {
     public DoubleType( Singletons.Global g ) {}

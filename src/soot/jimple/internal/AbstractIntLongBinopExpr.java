@@ -32,6 +32,7 @@ package soot.jimple.internal;
 
 import soot.*;
 
+@SuppressWarnings("serial")
 abstract public class AbstractIntLongBinopExpr extends AbstractBinopExpr
 {
     public Type getType()

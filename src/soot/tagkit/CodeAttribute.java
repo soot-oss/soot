@@ -103,11 +103,11 @@ public class CodeAttribute extends JasminAttribute
 
 	while (tagIt.hasNext())
 	{
-	    Object unit = unitIt.next();
-	    Object tag = tagIt.next();
+		Unit unit = unitIt.next();
+	    Tag tag = tagIt.next();
 
 	    buf.append("%"+instToLabel.get(unit) + "%"+ 
-		       new String(Base64.encode(((Tag)tag).getValue())));
+		       new String(Base64.encode((tag).getValue())));
 	}
     
 	return buf.toString();

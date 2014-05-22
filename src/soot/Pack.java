@@ -31,7 +31,7 @@ import java.util.*;
 
 /** A wrapper object for a pack of optimizations.
  * Provides chain-like operations, except that the key is the phase name. */
-public abstract class Pack implements HasPhaseOptions
+public abstract class Pack implements HasPhaseOptions, Iterable<Transform>
 {
     final private boolean DEBUG = true;
     private String name;

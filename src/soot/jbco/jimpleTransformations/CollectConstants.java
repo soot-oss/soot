@@ -59,7 +59,7 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
 
   public static SootField field = null;  
   
-  protected void internalTransform(String phaseName, Map options)
+  protected void internalTransform(String phaseName, Map<String,String> options)
   {
     Scene scene = G.v().soot_Scene();
     
@@ -68,19 +68,15 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
     
     soot.jbco.util.BodyBuilder.retrieveAllNames();
    
-    Chain appClasses = scene.getApplicationClasses();
-    Iterator it = appClasses.iterator();
-    while (it.hasNext()) {
-      SootClass cl = (SootClass)it.next();
-      Object meths[] = cl.getMethods().toArray();
-      for (Object element : meths) {
-        SootMethod m = (SootMethod)element;
+    Chain<SootClass> appClasses = scene.getApplicationClasses();
+    
+    for (SootClass cl : appClasses) {
+      for (SootMethod m : cl.getMethods()) {
         if (!m.hasActiveBody() || m.getName().indexOf("<clinit>")>=0)
           continue;
-        Body body = m.getActiveBody();
-        Iterator iter = body.getUseBoxes().iterator();
-        while (iter.hasNext()) {
-          Value v = ((ValueBox) iter.next()).getValue();
+        
+        for (ValueBox useBox : m.getActiveBody().getUseBoxes()) {
+          Value v = useBox.getValue();
           if (v instanceof Constant) {
             Constant c = (Constant) v;
             Type t = c.getType();
@@ -111,13 +107,13 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
     int count = 0;
     String name = "newConstantJbcoName";
     Object classes[] = appClasses.toArray();
-    it = typesToValues.keySet().iterator();
+    Iterator<Type> it = typesToValues.keySet().iterator();
     while (it.hasNext()) {
-      Type t = (Type) it.next();
+      Type t = it.next();
       if (t instanceof NullType)  continue; //t = RefType.v("java.lang.Object");
-      Iterator cit = typesToValues.get(t).iterator();
+      Iterator<Constant> cit = typesToValues.get(t).iterator();
       while (cit.hasNext()) {
-        Constant c = (Constant) cit.next();
+        Constant c = cit.next();
         
         name += "_";
         SootClass rand = null;
@@ -155,7 +151,7 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
     Body b = null;
     boolean newInit = false;
     if (!clas.declaresMethodByName("<clinit>")) {
-      SootMethod m = new SootMethod("<clinit>", new ArrayList(), VoidType.v());
+      SootMethod m = new SootMethod("<clinit>", Collections.<Type>emptyList(), VoidType.v());
       clas.addMethod(m);
       b = Jimple.v().newBody(m);
       m.setActiveBody(b);
@@ -171,7 +167,7 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
       }
     }
 
-    PatchingChain units = b.getUnits();
+    PatchingChain<Unit> units = b.getUnits();
     
     units.addFirst(Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(f.makeRef()),con));
     if (newInit)

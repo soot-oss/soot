@@ -27,9 +27,11 @@
 package soot;
 
 import soot.util.*;
+
 import java.io.*;
 
 /** Represents types within Soot, eg <code>int</code>, <code>java.lang.String</code>. */
+@SuppressWarnings("serial")
 public abstract class Type implements Switchable, Serializable, Numberable
 {
     public Type() {

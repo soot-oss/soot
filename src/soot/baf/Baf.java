@@ -557,13 +557,13 @@ public class Baf
     /** Returns a BafBody constructed from b. */
     public BafBody newBody(Body b)
     {
-        return new BafBody(b, new HashMap());
+        return new BafBody(b, Collections.<String,String>emptyMap());
     }
 
     /** Returns a BafBody constructed from b. */
     public BafBody newBody(Body b, String phase)
     {
-        Map options = PhaseOptions.v().getPhaseOptions(phase);
+        Map<String,String> options = PhaseOptions.v().getPhaseOptions(phase);
         return new BafBody(b, options);
     }
 }

@@ -40,8 +40,8 @@ public class SimpleExceptionalGraph extends TrapUnitGraph {
     super(body);
 	int size = unitChain.size();
 
-	unitToSuccs = new HashMap(size * 2 + 1, 0.7f);
-	unitToPreds = new HashMap(size * 2 + 1, 0.7f);
+	unitToSuccs = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
+	unitToPreds = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
 	buildUnexceptionalEdges(unitToSuccs, unitToPreds);
 	buildSimpleExceptionalEdges(unitToSuccs, unitToPreds);
 	
@@ -51,9 +51,9 @@ public class SimpleExceptionalGraph extends TrapUnitGraph {
   }
 
   protected void buildSimpleExceptionalEdges(Map unitToSuccs, Map unitToPreds) {
-	for (Iterator trapIt = body.getTraps().iterator(); 
+	for (Iterator<Trap> trapIt = body.getTraps().iterator(); 
 	     	trapIt.hasNext(); ) {
-	    Trap trap = (Trap) trapIt.next();
+	    Trap trap = trapIt.next();
 
 	    Unit handler = trap.getHandlerUnit();
 	    for (Iterator predIt = ((List)unitToPreds.get(trap.getBeginUnit())).iterator();

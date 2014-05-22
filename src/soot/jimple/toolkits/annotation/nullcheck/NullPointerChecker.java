@@ -61,7 +61,7 @@ public class NullPointerChecker extends BodyTransformer
  
     private boolean enableOther = true;
     
-    protected void internalTransform(Body body, String phaseName, Map options)
+    protected void internalTransform(Body body, String phaseName, Map<String,String> options)
     {
 	isProfiling = PhaseOptions.getBoolean(options, "profiling");
 	enableOther = !PhaseOptions.getBoolean(options, "onlyarrayref");
@@ -85,9 +85,9 @@ public class NullPointerChecker extends BodyTransformer
 		increase = counterClass.getMethod("void increase(int)") ;
 	    }
 
-	    Chain units = body.getUnits();
+	    Chain<Unit> units = body.getUnits();
 
-	    Iterator stmtIt = units.snapshotIterator() ;
+	    Iterator<Unit> stmtIt = units.snapshotIterator() ;
 
 	    while (stmtIt.hasNext())
 	    {
@@ -117,7 +117,7 @@ public class NullPointerChecker extends BodyTransformer
 			}
 			else
 			{
-			    Iterator boxIt;
+			    Iterator<ValueBox> boxIt;
                             boxIt = s.getDefBoxes().iterator();
 			    while (boxIt.hasNext())
 			    {
