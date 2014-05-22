@@ -270,13 +270,13 @@ public class ExprVisitor implements ExprSwitch {
 		Register firstOpReg = regAlloc.asImmediate(firstOperand, constantV);
 		
 		// use special "/lit"-opcodes if int is the destination's type, the second op is an integer literal and the opc is not sub (no sub*/lit opc available)
-		if (destinationReg.getType() instanceof IntType && secondOperand instanceof IntConstant && !binaryOperation.equals("sub")) {
+		if (destinationReg.getType() instanceof IntType && secondOperand instanceof IntConstant && !binaryOperation.equals("SUB")) {
 			int secondOpConstant = ((IntConstant) secondOperand).value;
 			if (SootToDexUtils.fitsSigned8(secondOpConstant)) {
 				return buildLit8BinaryInsn(binaryOperation, firstOpReg, (byte) secondOpConstant);
 			}
 			if (SootToDexUtils.fitsSigned16(secondOpConstant)) {
-				if (!binaryOperation.equals("shl") && !binaryOperation.equals("shr") && !binaryOperation.equals("ushr")) {
+				if (!binaryOperation.equals("shl") && !binaryOperation.equals("SHR") && !binaryOperation.equals("USHR")) {
 					// no shift opc available for /lit16
 					return buildLit16BinaryInsn(binaryOperation, firstOpReg, (short) secondOpConstant);
 				}
