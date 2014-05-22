@@ -26,7 +26,7 @@ import soot.BodyTransformer;
 
 public class Counter extends BodyTransformer {
 
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     // TODO Auto-generated method stub
 
   }

@@ -20,6 +20,7 @@
 package soot;
 import soot.jimple.*;
 import soot.util.*;
+
 import java.util.*;
 
 /**
@@ -28,16 +29,24 @@ import java.util.*;
 */
 public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
     /** branch targets **/
-    protected Map labels;
+    protected Map<Unit, String> labels;
     /** for unit references in Phi nodes **/
     protected Map<Unit, String> references;
 
+    protected String labelIndent = "\u0020\u0020\u0020\u0020\u0020";
+    
     public LabeledUnitPrinter( Body b ) {
         createLabelMaps(b);
     }
+    
 
-    public Map labels() { return labels; }
-    public Map<Unit, String> references() { return references; }
+    public Map<Unit, String> labels() { 
+    	return labels; 
+    }
+    	
+    public Map<Unit, String> references() { 
+    	return references; 
+	}
 
     public abstract void literal( String s );
     public abstract void methodRef( SootMethodRef m );
@@ -49,78 +58,73 @@ public abstract class LabeledUnitPrinter extends AbstractUnitPrinter {
         String oldIndent = getIndent();
         
         // normal case, ie labels
-        if(branchTarget){
+        if (branchTarget) {
             setIndent(labelIndent);
             handleIndent();
             setIndent(oldIndent);
-            String label = (String) labels.get( u );
-            if( label == null || label.equals( "<unnamed>" ) )
+            String label = labels.get( u );
+            if (label == null || "<unnamed>".equals(label)) {
                 label = "[?= "+u+"]";
+            }
             output.append(label);
         }
         // refs to control flow predecessors (for Shimple)
         else{
-            String ref = references.get( u );
+            String ref = references.get(u);
 
-            if(startOfLine){
+            if (startOfLine) {
                 String newIndent = "(" + ref + ")" +
                     indent.substring(ref.length() + 2);
+                    
                 setIndent(newIndent);
                 handleIndent();
                 setIndent(oldIndent);
             }
-            else
+            else {
                 output.append(ref);
-        }
+            }
+        }        
     }
     
     private void createLabelMaps(Body body) {
-        Chain units = body.getUnits();
+        Chain<Unit> units = body.getUnits();
 
-        labels = new HashMap(units.size() * 2 + 1, 0.7f);
+        labels = new HashMap<Unit, String>(units.size() * 2 + 1, 0.7f);
         references = new HashMap<Unit, String>(units.size() * 2 + 1, 0.7f);
         
-        // Create statement name table
-        {
-            Iterator boxIt = body.getAllUnitBoxes().iterator();
+        // Create statement name table        
+        Set<Unit> labelStmts = new HashSet<Unit>();
+        Set<Unit> refStmts = new HashSet<Unit>();
+                    
+        // Build labelStmts and refStmts
+        for (UnitBox box : body.getAllUnitBoxes() ) {
+        	Unit stmt = box.getUnit();
 
-            Set<Unit> labelStmts = new HashSet<Unit>();
-            Set<Unit> refStmts = new HashSet<Unit>();
-            
-            // Build labelStmts and refStmts
-            {
-                while (boxIt.hasNext()) {
-                    UnitBox box = (UnitBox) boxIt.next();
-                    Unit stmt = box.getUnit();
-
-                    if(box.isBranchTarget())
-                        labelStmts.add(stmt);
-                    else
-                        refStmts.add(stmt);
-                }
-
+            if (box.isBranchTarget()) {
+                labelStmts.add(stmt);
             }
-
-            // Traverse the stmts and assign a label if necessary
-            {
-                int labelCount = 0;
-                int refCount = 0;
-                
-                Iterator stmtIt = units.iterator();
-
-                while (stmtIt.hasNext()) {
-                    Unit s = (Unit) stmtIt.next();
-
-                    if (labelStmts.contains(s)) 
-                        labels.put(s, "label" + (labelCount++));
-
-                    if (refStmts.contains(s))
-                        references.put(s, Integer.toString(refCount++));
-                }
+            else {
+                refStmts.add(stmt);
             }
         }
-    }
 
-    protected String labelIndent = "     ";
+		// left side zero padding for all labels 
+		// this simplifies debugging the jimple code in simple editors, as it 
+		// avoids the situation where a label is the prefix of another label		
+    	final int maxDigits = 1 + (int) Math.log10(labelStmts.size());            	
+    	final String formatString = "label%0" + maxDigits + "d";
+    	
+        int labelCount = 0;
+        int refCount = 0;
+        
+        // Traverse the stmts and assign a label if necessary        
+        for ( Unit s : units ) {                	
+            if (labelStmts.contains(s)) 
+                labels.put(s, String.format(formatString, ++labelCount));
+
+            if (refStmts.contains(s))
+                references.put(s, Integer.toString(refCount++));
+        }
+    }
 }
 

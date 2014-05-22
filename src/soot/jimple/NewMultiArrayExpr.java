@@ -40,7 +40,7 @@ public interface NewMultiArrayExpr extends Expr, AnyNewExpr
     public ValueBox getSizeBox(int index);
     public int getSizeCount();
     public Value getSize(int index);
-    public List getSizes();
+    public List<Value> getSizes();
     public void setSize(int index, Value size);
     public Type getType();
     public void apply(Switch sw);

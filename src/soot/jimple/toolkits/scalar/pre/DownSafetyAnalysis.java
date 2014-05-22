@@ -37,17 +37,17 @@ import java.util.*;
  * An expression is downsafe, if the computation will occur on every path from
  * the current point down to the END.
  */
-public class DownSafetyAnalysis extends BackwardFlowAnalysis {
+public class DownSafetyAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
   private SideEffectTester sideEffect = null;
 
-  private Map unitToGenerateMap;
+  private Map<Unit,EquivalentValue> unitToGenerateMap;
 
   private BoundedFlowSet set;
 
   /**
    * This constructor should not be used, and will throw a runtime-exception!
    */
-  public DownSafetyAnalysis(DirectedGraph dg) {
+  public DownSafetyAnalysis(DirectedGraph<Unit> dg) {
     /* we have to add super(dg). otherwise Javac complains. */
     super(dg);
     throw new RuntimeException("Don't use this Constructor!");
@@ -62,10 +62,10 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
    * @param unitToGen the equivalentValue of each unit.
    * @param sideEffect the SideEffectTester that performs kills.
    */
-  public DownSafetyAnalysis(DirectedGraph dg, Map unitToGen, SideEffectTester
+  public DownSafetyAnalysis(DirectedGraph<Unit> dg, Map<Unit,EquivalentValue> unitToGen, SideEffectTester
 			    sideEffect) {
     this(dg, unitToGen, sideEffect, new
-      ArrayPackedSet(new CollectionFlowUniverse(unitToGen.values())));
+      ArrayPackedSet(new CollectionFlowUniverse<EquivalentValue>(unitToGen.values())));
   }
 
   /**
@@ -80,7 +80,7 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
    * @param sideEffect the SideEffectTester that performs kills.
    * @param BoundedFlowSet the shared set.
    */
-  public DownSafetyAnalysis(DirectedGraph dg, Map unitToGen, SideEffectTester
+  public DownSafetyAnalysis(DirectedGraph<Unit> dg, Map<Unit,EquivalentValue> unitToGen, SideEffectTester
 			    sideEffect, BoundedFlowSet set) {
     super(dg);
     this.sideEffect = sideEffect;
@@ -89,36 +89,36 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
     doAnalysis();
   }
 
-  protected Object newInitialFlow() {
-    return set.topSet();
+  @Override
+  protected FlowSet newInitialFlow() {
+    return (FlowSet) set.topSet();
   }
 
-  protected Object entryInitialFlow() {
-    return set.emptySet();
+  @Override
+  protected FlowSet entryInitialFlow() {
+    return (FlowSet) set.emptySet();
   }
 
-  protected void flowThrough(Object inValue, Object unit, Object outValue) {
-    FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
-
+  @Override
+  protected void flowThrough(FlowSet in, Unit u, FlowSet out) {
     in.copy(out);
 
     { /* Perform kill */
-      Unit u = (Unit)unit;
 
-      Iterator outIt = (out).iterator();
+      Iterator<EquivalentValue> outIt = out.iterator();
       // iterate over things (avail) in out set.
       while (outIt.hasNext()) {
-        EquivalentValue equiVal = (EquivalentValue)outIt.next();
+        EquivalentValue equiVal = outIt.next();
         Value avail = equiVal.getValue();
         if (avail instanceof FieldRef) {
           if (sideEffect.unitCanWriteTo(u, avail))
             outIt.remove();
         } else {
-          Iterator usesIt = avail.getUseBoxes().iterator();
+          Iterator<ValueBox> usesIt = avail.getUseBoxes().iterator();
 
           // iterate over uses in each avail.
           while (usesIt.hasNext()) {
-            Value use = ((ValueBox)usesIt.next()).getValue();
+            Value use = usesIt.next().getValue();
             if (sideEffect.unitCanWriteTo(u, use)) {
               outIt.remove();
               break;
@@ -129,25 +129,19 @@ public class DownSafetyAnalysis extends BackwardFlowAnalysis {
     }
 
     // Perform generation
-    Value add = (Value)unitToGenerateMap.get(unit);
+    Value add = unitToGenerateMap.get(u);
     if (add != null)
       out.add(add, out);
   }
-
-  protected void merge(Object in1, Object in2, Object out) {
-    FlowSet inSet1 = (FlowSet) in1;
-    FlowSet inSet2 = (FlowSet) in2;
-
-    FlowSet outSet = (FlowSet) out;
-
-    inSet1.intersection(inSet2, outSet);
+  
+  @Override
+  protected void merge(FlowSet in1, FlowSet in2, FlowSet out) {
+    in1.intersection(in2, out);
   }
-
-  protected void copy(Object source, Object dest) {
-    FlowSet sourceSet = (FlowSet) source;
-    FlowSet destSet = (FlowSet) dest;
-
-    sourceSet.copy(destSet);
+  
+  @Override
+  protected void copy(FlowSet source, FlowSet dest) {
+    source.copy(dest);
   }
 }
 

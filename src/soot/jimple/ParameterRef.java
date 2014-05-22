@@ -31,6 +31,7 @@ package soot.jimple;
 
 import soot.*;
 import soot.util.*;
+
 import java.util.*;
 
 /** <code>ParameterRef</code> objects are used by <code>Body</code>
@@ -94,9 +95,10 @@ public class ParameterRef implements IdentityRef
         n = index;
     }
 
-    public List getUseBoxes()
+    @Override
+    public final List<ValueBox> getUseBoxes()
     {
-        return AbstractUnit.emptyList;
+        return Collections.emptyList();
     }
 
     /** Returns the type of this ParameterRef. */

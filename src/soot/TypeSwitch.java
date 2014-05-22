@@ -118,6 +118,7 @@ public class TypeSwitch implements ITypeSwitch
 
     /** @deprecated Replaced by defaultCase(Type)
         @see #defaultCase(Type) **/
+	@Deprecated
     public void caseDefault(Type t)
     {
     }

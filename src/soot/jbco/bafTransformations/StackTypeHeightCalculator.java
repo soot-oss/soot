@@ -25,6 +25,7 @@ import soot.*;
 import soot.baf.*;
 import soot.baf.internal.AbstractOpTypeInst;
 import soot.toolkits.graph.*;
+import soot.util.Chain;
 /**
  * @author Michael Batchelder 
  * 
@@ -35,7 +36,7 @@ public class StackTypeHeightCalculator {
   protected class StackEffectSwitch implements InstSwitch {
     
     public boolean shouldThrow = true;
-    public HashMap bafToJLocals = null; 
+    public Map<Local,Local> bafToJLocals = null; 
     public Type remove_types[] = null;
     public Type add_types[] = null;
     
@@ -465,27 +466,27 @@ public class StackTypeHeightCalculator {
   public static StackEffectSwitch sw = new StackTypeHeightCalculator().new StackEffectSwitch();
   public static BriefUnitGraph bug = null;
   
-  public static HashMap calculateStackHeights(Body b, HashMap b2JLocs) {
+  public static Map<Unit,Stack<Type>> calculateStackHeights(Body b, Map<Local,Local> b2JLocs) {
     sw.bafToJLocals = b2JLocs;
     return calculateStackHeights(b,true);
   }
   
-  public static HashMap calculateStackHeights(Body b) {
+  public static Map<Unit,Stack<Type>> calculateStackHeights(Body b) {
     sw.bafToJLocals = null;
     return calculateStackHeights(b,false);
   }
   
-  public static HashMap calculateStackHeights(Body b, boolean jimpleLocals) {
+  public static Map<Unit,Stack<Type>> calculateStackHeights(Body b, boolean jimpleLocals) {
     if (!(b instanceof BafBody)) 
       throw new java.lang.RuntimeException("Expecting Baf Body");
     //System.out.println("\n"+b.getMethod().getName());
     
-    HashMap results = new HashMap();
+    Map<Unit,Stack<Type>> results = new HashMap<Unit,Stack<Type>>();
     bug = new BriefUnitGraph(b);
-    List heads = bug.getHeads();
+    List<Unit> heads = bug.getHeads();
     for (int i = 0; i < heads.size(); i++)
     {
-      Unit h = (Unit)heads.get(i);
+      Unit h = heads.get(i);
       RefType handlerExc = isHandlerUnit(b.getTraps(),h);
       Stack<Type> stack = (Stack<Type>)results.get(h);
       if (stack != null) {
@@ -494,7 +495,7 @@ public class StackTypeHeightCalculator {
         continue;
       }
         
-      ArrayList worklist = new ArrayList();
+      List<Unit> worklist = new ArrayList<Unit>();
       stack = new Stack<Type>();
       if (handlerExc!=null)
         stack.push(handlerExc);
@@ -511,10 +512,10 @@ public class StackTypeHeightCalculator {
           printStack(b.getUnits(),results,false);
           System.exit(1);
         }
-        Iterator lit = bug.getSuccsOf(inst).iterator();
+        Iterator<Unit> lit = bug.getSuccsOf(inst).iterator();
         while (lit.hasNext()) {
-          Unit next = (Unit)lit.next();
-          Stack nxtStck = (Stack)results.get(next);
+          Unit next = lit.next();
+          Stack<Type> nxtStck = results.get(next);
           if (nxtStck != null) {
             if (nxtStck.size() != stack.size()) {
               printStack(b.getUnits(),results,false);
@@ -538,7 +539,8 @@ public class StackTypeHeightCalculator {
   }
   
   public static Stack<Type> updateStack(StackEffectSwitch sw, Stack<Type> st) {
-    Stack<Type> clone = (Stack<Type>)st.clone();
+    @SuppressWarnings("unchecked")
+	Stack<Type> clone = (Stack<Type>)st.clone();
     
     if (sw.remove_types != null) {
 	    if (sw.remove_types.length > clone.size()) {
@@ -604,37 +606,37 @@ public class StackTypeHeightCalculator {
     return false;
   }
   
-  public static void printStack(PatchingChain units, HashMap stacks, boolean before) {
+  public static void printStack(PatchingChain<Unit> units, Map<Unit,Stack<Type>> stacks, boolean before) {
     
     int count = 0;
     sw.shouldThrow = false;
-    HashMap indexes = new HashMap();
-    Iterator it = units.snapshotIterator();
+    Map<Unit,Integer> indexes = new HashMap<Unit,Integer>();
+    Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext())
       indexes.put(it.next(),new Integer(count++));
     it = units.snapshotIterator();
     while (it.hasNext()) {
       String s = "";
-      Object o = it.next();
-      if (o instanceof TargetArgInst) {
-        Object t = ((TargetArgInst)o).getTarget();
+      Unit unit = it.next();
+      if (unit instanceof TargetArgInst) {
+        Object t = ((TargetArgInst)unit).getTarget();
         s = indexes.get(t).toString();
-      } else if (o instanceof TableSwitchInst) {
-        TableSwitchInst tswi = (TableSwitchInst)o;
+      } else if (unit instanceof TableSwitchInst) {
+        TableSwitchInst tswi = (TableSwitchInst)unit;
         s+= "\r\tdefault: " + tswi.getDefaultTarget() + "  "+indexes.get(tswi.getDefaultTarget());
         int index = 0;
         for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++)
           s+= "\r\t "+x+": " + tswi.getTarget(index) + "  "+indexes.get(tswi.getTarget(index++));
       }
       try {
-        s = indexes.get(o) + " " + o + "  " + s + "   [";
+        s = indexes.get(unit) + " " + unit + "  " + s + "   [";
       } catch (Exception e) {
         G.v().out.println("Error in StackTypeHeightCalculator trying to find index of unit");
       }
-      Stack<Type> stack = (Stack<Type>)stacks.get(o);
+      Stack<Type> stack = stacks.get(unit);
       if (stack != null) {
         if (!before) {
-          ((Unit)o).apply(sw);
+          ((Unit)unit).apply(sw);
           stack = updateStack(sw,stack);
           if (stack == null) {
             soot.jbco.util.Debugger.printUnits(units, " StackTypeHeightCalc failed");
@@ -670,8 +672,8 @@ public class StackTypeHeightCalculator {
     }
   }
   
-  private static RefType isHandlerUnit(soot.util.Chain traps, Unit h) {
-    Iterator it = traps.iterator();
+  private static RefType isHandlerUnit(Chain<Trap> traps, Unit h) {
+    Iterator<Trap> it = traps.iterator();
     while (it.hasNext()) {
       Trap t = (Trap)it.next();
       if (t.getHandlerUnit() == h)
@@ -681,7 +683,7 @@ public class StackTypeHeightCalculator {
   }
   
   public static Stack<Type> getAfterStack(Body b, Unit u) {
-    Stack<Type> stack = (Stack<Type>)calculateStackHeights(b).get(u);
+    Stack<Type> stack = calculateStackHeights(b).get(u);
     u.apply(sw);
     return updateStack(sw,stack);
   }

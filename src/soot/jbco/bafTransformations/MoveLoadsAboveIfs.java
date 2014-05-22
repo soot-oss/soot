@@ -53,16 +53,16 @@ public class MoveLoadsAboveIfs extends BodyTransformer  implements IJbcoTransfor
     out.println("Moved Loads Above Ifs: "+movedloads);
   }
 
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) return;
     
     BriefUnitGraph bug = new BriefUnitGraph(b);
     
-    ArrayList<Unit> candidates = new ArrayList<Unit>();
-    ArrayList<Unit> visited = new ArrayList<Unit>();
-    ArrayList worklist = new ArrayList();
+    List<Unit> candidates = new ArrayList<Unit>();
+    List<Unit> visited = new ArrayList<Unit>();
+    List<Unit>worklist = new ArrayList<Unit>();
     worklist.addAll(bug.getHeads());
     
     while(worklist.size()>0) {
@@ -71,14 +71,14 @@ public class MoveLoadsAboveIfs extends BodyTransformer  implements IJbcoTransfor
         continue;
       
       visited.add(u);
-      List succs = bug.getSuccsOf(u);
+      List<Unit> succs = bug.getSuccsOf(u);
       if (u instanceof TargetArgInst) {
 	      if (checkCandidate(succs,bug))
 	        candidates.add(u);
       }
       
       for (int i = 0; i < succs.size(); i++) {
-        Object o = succs.get(i);
+        Unit o = succs.get(i);
         if (!visited.contains(o))
           worklist.add(o);
       }
@@ -86,11 +86,11 @@ public class MoveLoadsAboveIfs extends BodyTransformer  implements IJbcoTransfor
     
     int orig = movedloads;
     boolean changed = false;
-    PatchingChain units = b.getUnits();
+    PatchingChain<Unit> units = b.getUnits();
     
     for (int i = 0; i < candidates.size(); i++) {
       Unit u = candidates.get(i);
-      List succs = bug.getSuccsOf(u);
+      List<Unit> succs = bug.getSuccsOf(u);
       BLoadInst clone = (BLoadInst)((BLoadInst)succs.get(0)).clone();
      
       if (u instanceof IfNonNullInst || u instanceof IfNullInst) {
@@ -143,7 +143,7 @@ public class MoveLoadsAboveIfs extends BodyTransformer  implements IJbcoTransfor
       // remove old loads after the jump
       for (int j = 0; j < succs.size(); j++) {
         Unit suc = (Unit)succs.get(j);
-        List sucPreds = bug.getPredsOf(suc);
+        List<Unit> sucPreds = bug.getPredsOf(suc);
         
         if (sucPreds.size() > 1) {
           if (suc == ((TargetArgInst)u).getTarget())
@@ -170,7 +170,7 @@ public class MoveLoadsAboveIfs extends BodyTransformer  implements IJbcoTransfor
     }
   }
   
-  private boolean checkCandidate(List succs, BriefUnitGraph bug) {
+  private boolean checkCandidate(List<Unit> succs, BriefUnitGraph bug) {
     if (succs.size() < 2)
       return false;
     

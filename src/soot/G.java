@@ -60,7 +60,7 @@ public class G extends Singletons
     public NativeHelper NativeHelper_helper = null;
     public P2SetFactory newSetFactory;
     public P2SetFactory oldSetFactory;
-    public HashMap Parm_pairToElement = new HashMap();
+    public Map Parm_pairToElement = new HashMap();
     public int SparkNativeHelper_tempVar = 0;
     public int PaddleNativeHelper_tempVar = 0;
     public boolean PointsToSetInternal_warnedAlready = false;

@@ -32,21 +32,22 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
+
 import java.util.*;
 
 public class JNewMultiArrayExpr extends AbstractNewMultiArrayExpr
 {
-    public JNewMultiArrayExpr(ArrayType type, List sizes)
+    public JNewMultiArrayExpr(ArrayType type, List<? extends Value> sizes)
     {
         super(type, new ValueBox[sizes.size()]);
 
         for(int i = 0; i < sizes.size(); i++)
-            sizeBoxes[i] = Jimple.v().newImmediateBox((Value) sizes.get(i));
+            sizeBoxes[i] = Jimple.v().newImmediateBox(sizes.get(i));
     }
 
     public Object clone() 
     {
-        List clonedSizes =  new ArrayList(getSizeCount());
+        List<Value> clonedSizes =  new ArrayList<Value>(getSizeCount());
 
         for(int i = 0; i <  getSizeCount(); i++) {
             clonedSizes.add(i,  Jimple.cloneIfNecessary(getSize(i)));

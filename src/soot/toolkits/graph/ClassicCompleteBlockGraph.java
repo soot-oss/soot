@@ -76,17 +76,16 @@ public class ClassicCompleteBlockGraph extends BlockGraph
     {
         super(unitGraph);
 	// Adjust the heads and tails to match the old CompleteBlockGraph.
-	Unit entryPoint = (Unit) (getBody().getUnits().getFirst());
-	List newHeads = new ArrayList(1);
-	for (Iterator blockIt = getBlocks().iterator(); blockIt.hasNext(); ) {
-	    Block b = (Block) blockIt.next();
+	Unit entryPoint = getBody().getUnits().getFirst();
+	List<Block> newHeads = new ArrayList<Block>(1);
+	for (Block b : getBlocks()) {
 	    if (b.getHead() == entryPoint) {
 		newHeads.add(b);
 		break;
 	    }
 	}
 	mHeads = Collections.unmodifiableList(newHeads);
-	mTails = Collections.EMPTY_LIST;
+	mTails = Collections.emptyList();
 
 	soot.util.PhaseDumper.v().dumpGraph(this, mBody);
     }

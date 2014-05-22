@@ -21,6 +21,7 @@ package soot.jbco.util;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 import soot.baf.JSRInst;
 import soot.baf.TableSwitchInst;
@@ -36,8 +37,8 @@ public class Debugger {
     
     System.out.println(b.getMethod().getName()+"\n");
     int i = 0;
-    HashMap index = new HashMap();
-    Iterator it = b.getUnits().iterator();
+    Map<Unit,Integer> index = new HashMap<Unit,Integer>();
+    Iterator<Unit> it = b.getUnits().iterator();
     while (it.hasNext())
       index.put(it.next(),new Integer(i++));
     it = b.getUnits().iterator();
@@ -53,15 +54,15 @@ public class Debugger {
   
   public static void printUnits(Body b, String msg) {
     int i = 0;
-    HashMap<Unit,Integer> numbers = new HashMap<Unit,Integer>();
-    PatchingChain u = b.getUnits();
+    Map<Unit,Integer> numbers = new HashMap<Unit,Integer>();
+    PatchingChain<Unit> u = b.getUnits();
     Iterator<Unit> it = u.snapshotIterator();
     while (it.hasNext())
       numbers.put(it.next(),new Integer(i++));
     
     int jsr = 0;
     System.out.println("\r\r"+b.getMethod().getName() + "  "+msg);
-    Iterator udit = u.snapshotIterator();
+    Iterator<Unit> udit = u.snapshotIterator();
     while (udit.hasNext()) {
       Unit unit = (Unit)udit.next();
       Integer numb = numbers.get(unit);
@@ -91,15 +92,15 @@ public class Debugger {
       System.out.println(numb.toString() + " " + unit);
     }
     
-    Iterator tit = b.getTraps().iterator();
+    Iterator<Trap> tit = b.getTraps().iterator();
     while (tit.hasNext()) {
-      Trap t = (Trap)tit.next();
+      Trap t = tit.next();
       System.out.println(numbers.get(t.getBeginUnit())+" "+t.getBeginUnit() + " to "+ numbers.get(t.getEndUnit())+" "+t.getEndUnit() + "  at "+numbers.get(t.getHandlerUnit())+" "+t.getHandlerUnit());
     }
     if (jsr>0) System.out.println("\r\tJSR Instructions: "+jsr);
   }
   
-  public static void printUnits(PatchingChain u, String msg) {
+  public static void printUnits(PatchingChain<Unit> u, String msg) {
   int i = 0;
   HashMap<Unit,Integer> numbers = new HashMap<Unit,Integer>();
   Iterator<Unit> it = u.snapshotIterator();
@@ -108,7 +109,7 @@ public class Debugger {
   
   int jsr = 0;
   System.out.println("\r\r***********  "+msg);
-  Iterator udit = u.snapshotIterator();
+  Iterator<Unit> udit = u.snapshotIterator();
   while (udit.hasNext()) {
     Unit unit = (Unit)udit.next();
     Integer numb = numbers.get(unit);

@@ -26,6 +26,7 @@
 package soot.baf;
 
 import java.util.*;
+
 import soot.*;
 
 public interface LookupSwitchInst extends Inst
@@ -43,6 +44,6 @@ public interface LookupSwitchInst extends Inst
     public Unit getTarget(int index);
     public UnitBox getTargetBox(int index);
     public void setTarget(int index, Unit target);
-    public List getTargets();
+    public List<Unit> getTargets();
     public void setTargets(List<Unit> targets);
 }

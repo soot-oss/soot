@@ -31,18 +31,15 @@
 package soot.jimple.internal;
 
 
-import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
 import java.util.*;
 
-public class JEnterMonitorStmt extends AbstractStmt 
+public class JEnterMonitorStmt extends AbstractOpStmt 
     implements EnterMonitorStmt
 {
-    ValueBox opBox;
-
     public JEnterMonitorStmt(Value op)
     {
         this(Jimple.v().newImmediateBox(op));
@@ -50,7 +47,7 @@ public class JEnterMonitorStmt extends AbstractStmt
 
     protected JEnterMonitorStmt(ValueBox opBox)
     {
-        this.opBox = opBox;
+        super(opBox);
     }
 
     public Object clone() 
@@ -69,31 +66,6 @@ public class JEnterMonitorStmt extends AbstractStmt
         opBox.toString(up);
     }
     
-    public Value getOp()
-    {
-        return opBox.getValue();
-    }
-
-    public void setOp(Value op)
-    {
-        opBox.setValue(op);
-    }
-
-    public ValueBox getOpBox()
-    {
-        return opBox;
-    }
-
-    public List getUseBoxes()
-    {
-        List list = new ArrayList();
-
-        list.addAll(opBox.getValue().getUseBoxes());
-        list.add(opBox);
-
-        return list;
-    }
-
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseEnterMonitorStmt(this);
@@ -103,16 +75,9 @@ public class JEnterMonitorStmt extends AbstractStmt
     public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         ((ConvertToBaf)(getOp())).convertToBaf(context, out);
-	Unit u;
-        out.add(u = Baf.v().newEnterMonitorInst());
-
-	Unit currentUnit = this;
-
-	Iterator it = currentUnit.getTags().iterator();	
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
-
+        Unit u = Baf.v().newEnterMonitorInst();
+        u.addAllTagsOf(this);
+        out.add(u);
     }
   
     

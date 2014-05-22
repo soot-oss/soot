@@ -33,29 +33,24 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
+
 import java.util.*;
 
 public class JSpecialInvokeExpr extends AbstractSpecialInvokeExpr 
-{
-    public JSpecialInvokeExpr(Local base, SootMethodRef methodRef, List args)
+{	
+    public JSpecialInvokeExpr(Local base, SootMethodRef methodRef, List<? extends Value> args)
     {
         super(Jimple.v().newLocalBox(base), methodRef,
              new ImmediateBox[args.size()]);
 
         for(int i = 0; i < args.size(); i++) {
-            this.argBoxes[i] = Jimple.v().newImmediateBox((Value) args.get(i));
+            this.argBoxes[i] = Jimple.v().newImmediateBox(args.get(i));
         }
     }
-    
-    JSpecialInvokeExpr(Local base, SootMethodRef methodRef, ValueBox[] args)
-    {
-        super(Jimple.v().newLocalBox(base), methodRef, args);
-    }
-    
- 
+
     public Object clone() 
     {
-        ArrayList clonedArgs = new ArrayList(getArgCount());
+        List<Value> clonedArgs = new ArrayList<Value>(getArgCount());
  
         for(int i = 0; i < getArgCount(); i++) {
             clonedArgs.add(i, getArg(i));

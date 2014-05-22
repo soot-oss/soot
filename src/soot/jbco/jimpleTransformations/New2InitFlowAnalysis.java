@@ -20,7 +20,6 @@
 package soot.jbco.jimpleTransformations;
 
 import soot.toolkits.graph.*;
-import java.util.*;
 import soot.toolkits.scalar.*;
 import soot.*;
 import soot.jimple.*;
@@ -30,38 +29,35 @@ import soot.jimple.*;
  * 
  * Created on 10-Jul-2006 
  */
-public class New2InitFlowAnalysis extends BackwardFlowAnalysis {
+public class New2InitFlowAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
 
   FlowSet emptySet = new ArraySparseSet();
   
-  public New2InitFlowAnalysis(DirectedGraph graph) {
+  public New2InitFlowAnalysis(DirectedGraph<Unit> graph) {
     super(graph);
     
     doAnalysis();
   }
 
-  protected void flowThrough(Object in, Object d, Object out) {
-    FlowSet inf = (FlowSet)in;
-    FlowSet outf = (FlowSet)out;
-    
-    inf.copy(outf);
+  @Override
+  protected void flowThrough(FlowSet in, Unit d, FlowSet out) {    
+    in.copy(out);
     
     if (d instanceof DefinitionStmt) {
       DefinitionStmt ds = (DefinitionStmt)d;
       if (ds.getRightOp() instanceof NewExpr) {
         Value v = ds.getLeftOp();
-        if (v instanceof Local && inf.contains(v))
-          outf.remove(v);
+        if (v instanceof Local && in.contains(v))
+          out.remove(v);
       }
-    } 
-    
+    }    
     else {
-      Iterator it = ((Unit)d).getUseBoxes().iterator();
-      while (it.hasNext()) {
-        Value v = ((ValueBox)it.next()).getValue();
-        if (v instanceof Local)
-          outf.add(v);
-      }
+    	for (ValueBox useBox : d.getUseBoxes()) {
+    		Value v = useBox.getValue();
+    		if (v instanceof Local) {
+    			out.add(v);
+    		}
+    	}
     }
     /*else if (d instanceof InvokeStmt) {
         InvokeExpr ie = ((InvokeStmt)d).getInvokeExpr();
@@ -73,27 +69,23 @@ public class New2InitFlowAnalysis extends BackwardFlowAnalysis {
     }*/
   }
 
-  protected Object newInitialFlow() {
+  @Override
+  protected FlowSet newInitialFlow() {
+    return emptySet.clone();
+  }
+  
+  @Override
+  protected FlowSet entryInitialFlow() {
     return emptySet.clone();
   }
 
-  protected Object entryInitialFlow() {
-    return emptySet.clone();
+  @Override
+  protected void merge(FlowSet in1, FlowSet in2, FlowSet out) {
+    in1.union(in2, out);
   }
 
-  protected void merge(Object in1, Object in2, Object out) {
-    FlowSet inSet1 = (FlowSet) in1,
-    inSet2 = (FlowSet) in2;
-    
-    FlowSet outSet = (FlowSet) out;
-
-    inSet1.union(inSet2, outSet);
-  }
-
-  protected void copy(Object source, Object dest) {
-    FlowSet sourceSet = (FlowSet) source,
-    destSet = (FlowSet) dest;
-
-    sourceSet.copy(destSet);
+  @Override
+  protected void copy(FlowSet source, FlowSet dest) {
+    source.copy(dest);
   }
 }

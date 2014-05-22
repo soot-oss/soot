@@ -8,24 +8,30 @@ import soot.jimple.internal.AbstractDefinitionStmt;
 
 public class DAssignStmt extends AbstractDefinitionStmt implements AssignStmt {
 
-	public DAssignStmt(ValueBox left, ValueBox right){
-		this.leftBox = left;
-		this.rightBox = right;
+	public DAssignStmt(ValueBox left, ValueBox right)
+	{
+		super(left, right);
 	}
 	
-	public Object clone() {
+	public Object clone() 
+	{
         return new DAssignStmt(leftBox, rightBox);
 	}
 
-	public void setLeftOp(Value variable) {		
-		this.leftBox.setValue(variable);
+	@Override
+	public void setLeftOp(Value variable) 
+	{		
+		leftBox.setValue(variable);
 	}
 
-	public void setRightOp(Value rvalue) {
-		this.rightBox.setValue(rvalue);
+	@Override
+	public void setRightOp(Value rvalue) 
+	{
+		rightBox.setValue(rvalue);
 	}
 
-	public void toString(UnitPrinter up) {
+	public void toString(UnitPrinter up) 
+	{
 		leftBox.toString(up);
 		up.literal(" = ");
 		rightBox.toString(up);

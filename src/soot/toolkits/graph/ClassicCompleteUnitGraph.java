@@ -21,6 +21,7 @@
 package soot.toolkits.graph;
 
 import soot.*;
+
 import java.util.*;
 
 
@@ -104,14 +105,14 @@ public class ClassicCompleteUnitGraph extends TrapUnitGraph
      *                    all the <tt>Unit</tt>s within the scope of
      *                    that <tt>Trap</tt>.
      */
-    protected void buildExceptionalEdges(Map unitToSuccs, Map unitToPreds) {
+    protected void buildExceptionalEdges(Map<Unit, List<Unit>> unitToSuccs, Map<Unit, List<Unit>> unitToPreds) {
 	// First, add the same edges as TrapUnitGraph.
 	super.buildExceptionalEdges(unitToSuccs, unitToPreds);
 	// Then add edges from the predecessors of the first
 	// trapped Unit for each Trap.
-	for (Iterator trapIt = body.getTraps().iterator(); 
+	for (Iterator<Trap> trapIt = body.getTraps().iterator(); 
 	     trapIt.hasNext(); ) {
-	    Trap trap = (Trap) trapIt.next();
+	    Trap trap = trapIt.next();
 	    Unit firstTrapped = trap.getBeginUnit();
 	    Unit catcher = trap.getHandlerUnit();
 	    // Make a copy of firstTrapped's predecessors to iterate over,
@@ -121,10 +122,10 @@ public class ClassicCompleteUnitGraph extends TrapUnitGraph
 	    // possibility, we should iterate here until we reach a fixed
 	    // point; but the old UnitGraph that we are attempting to
 	    // duplicate did not do that, so we won't either.
-	    List origPredsOfTrapped = new ArrayList(getPredsOf(firstTrapped));
-	    for (Iterator unitIt = origPredsOfTrapped.iterator(); 
+	    List<Unit> origPredsOfTrapped = new ArrayList<Unit>(getPredsOf(firstTrapped));
+	    for (Iterator<Unit> unitIt = origPredsOfTrapped.iterator(); 
 		 unitIt.hasNext(); ) {
-		Unit pred = (Unit) unitIt.next();
+		Unit pred = unitIt.next();
 		addEdge(unitToSuccs, unitToPreds, pred, catcher);
 	    }
 	}

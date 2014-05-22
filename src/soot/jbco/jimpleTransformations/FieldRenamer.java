@@ -63,7 +63,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
   
   RefType boolRef;
   
-  protected void internalTransform(String phaseName, Map options)
+  protected void internalTransform(String phaseName, Map<String,String> options)
   {
     Scene scene = G.v().soot_Scene();
     //Hierarchy hierarchy = scene.getActiveHierarchy();

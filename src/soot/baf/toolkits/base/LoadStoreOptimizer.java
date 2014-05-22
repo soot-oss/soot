@@ -55,12 +55,12 @@ public class LoadStoreOptimizer extends BodyTransformer
     final static private int STORE_LOAD_LOAD_ELIMINATION = -1;
 
         
-    private Map gOptions;
+    private Map<String,String> gOptions;
 
     /** The method that drives the optimizations. */
     /* This is the public interface to LoadStoreOptimizer */
   
-    protected void internalTransform(Body body, String phaseName, Map options) 
+    protected void internalTransform(Body body, String phaseName, Map<String,String> options) 
     {   
 
         gOptions = options;
@@ -80,7 +80,7 @@ public class LoadStoreOptimizer extends BodyTransformer
     }
 class Instance {
     // Instance vars.
-    private Chain mUnits;
+    private Chain<Unit> mUnits;
     private Body mBody;
     private ExceptionalUnitGraph mExceptionalUnitGraph;
     private LocalDefs mLocalDefs;
@@ -129,16 +129,16 @@ class Instance {
             G.v().out.println(blockGraph);
         }
        
-        List blocks = blockGraph.getBlocks();
+        List<Block> blocks = blockGraph.getBlocks();
         mUnitToBlockMap = new HashMap<Unit, Block>();
         
-        Iterator blockIt = blocks.iterator();
+        Iterator<Block> blockIt = blocks.iterator();
         while(blockIt.hasNext() ) {
-            Block block = (Block) blockIt.next();
+            Block block = blockIt.next();
             
-            Iterator unitIt = block.iterator();
+            Iterator<Unit> unitIt = block.iterator();
             while(unitIt.hasNext()) {
-                Unit unit = (Unit) unitIt.next();                
+                Unit unit = unitIt.next();                
                 mUnitToBlockMap.put(unit, block);                
             }
         }
@@ -149,12 +149,10 @@ class Instance {
   
     private  List<Unit>  buildStoreList()
     {
-        Iterator it = mUnits.iterator();
         List<Unit> storeList = new ArrayList<Unit>();
         
-        while(it.hasNext()) {
-            Unit unit = (Unit) it.next();
-            if(unit  instanceof StoreInst)
+        for (Unit unit : mUnits) {
+            if (unit instanceof StoreInst)
                 storeList.add(unit);
         }     
         return storeList;
@@ -200,7 +198,7 @@ class Instance {
             nextUnit:
                 while(unitIt.hasNext()){
                     Unit unit = unitIt.next();                
-                    List uses = mLocalUses.getUsesOf(unit);
+                    List<UnitValueBoxPair> uses = mLocalUses.getUsesOf(unit);
                   
 
                     // if uses of a store < 3, attempt some form of store/load elimination
@@ -208,9 +206,9 @@ class Instance {
                         
                         // check that all uses have only the current store as their definition
                         {
-                            Iterator useIt = uses.iterator();
+                            Iterator<UnitValueBoxPair> useIt = uses.iterator();
                             while(useIt.hasNext()) {
-                                UnitValueBoxPair pair = (UnitValueBoxPair) useIt.next();
+                                UnitValueBoxPair pair = useIt.next();
                                 Unit loadUnit = pair.getUnit();
                                 if(!(loadUnit instanceof LoadInst))
                                     continue nextUnit;
@@ -229,9 +227,9 @@ class Instance {
                         {
                             Block storeBlock = mUnitToBlockMap.get(unit);
 
-                            Iterator useIt = uses.iterator();
+                            Iterator<UnitValueBoxPair> useIt = uses.iterator();
                             while(useIt.hasNext()) {
-                                UnitValueBoxPair pair = (UnitValueBoxPair) useIt.next();
+                                UnitValueBoxPair pair = useIt.next();
                                 Block useBlock = mUnitToBlockMap.get(pair.getUnit());
                                 if(useBlock != storeBlock) 
                                     continue nextUnit;
@@ -376,7 +374,7 @@ class Instance {
      */
     private boolean isRequiredByFollowingUnits(Unit from, Unit to)
     {
-        Iterator it = mUnits.iterator(from, to);
+        Iterator<Unit> it = mUnits.iterator(from, to);
         int stackHeight = 0;
         boolean res = false;
         
@@ -384,7 +382,7 @@ class Instance {
             // advance past the 'from' unit
             it.next();
             while(it.hasNext()) {
-                Unit  currentInst = (Unit) it.next();
+                Unit  currentInst = it.next();
                 if(currentInst == to)                     
                     break;
 
@@ -499,13 +497,13 @@ class Instance {
 
         int minStackHeightAttained = 0; // records the min stack height attained between [from, to]
         int stackHeight = 0;           // records the stack height when similating the effects on the stack
-        Iterator it = mUnits.iterator(mUnits.getSuccOf(from)); 
+        Iterator<Unit> it = mUnits.iterator(mUnits.getSuccOf(from)); 
         int res = FAILURE;
         
-        Unit currentInst = (Unit) it.next();   // get unit following the store
+        Unit currentInst = it.next();   // get unit following the store
         
         if(aContext == STORE_LOAD_LOAD_ELIMINATION) {
-            currentInst =  (Unit) it.next(); // jump after first load 
+            currentInst = it.next(); // jump after first load 
         } 
         
         // find minStackHeightAttained
@@ -517,7 +515,7 @@ class Instance {
             
             stackHeight += ((Inst)currentInst).getOutCount();                
             
-            currentInst = (Unit) it.next();
+            currentInst = it.next();
         }
                 
         // note: now stackHeight contains the delta height of the stack after executing the units contained in
@@ -587,10 +585,10 @@ class Instance {
             it = mUnits.iterator(mUnits.getSuccOf(from), to);
             
             Unit unitToMove = null; 
-            Unit u = (Unit) it.next();
+            Unit u = it.next();
 
             if(aContext == STORE_LOAD_LOAD_ELIMINATION) {
-                u =  (Unit) it.next();
+                u = it.next();
             } 
             int currentH = 0;
             
@@ -635,7 +633,7 @@ class Instance {
                 
                 currentH += ((Inst)u).getNetCount();                
                 unitToMove = null;
-                u =  (Unit) it.next();
+                u =  it.next();
             }
         }
 
@@ -876,9 +874,7 @@ class Instance {
     private boolean isExceptionHandlerBlock(Block aBlock)
     {
         Unit blockHead = aBlock.getHead();
-        Iterator  it = mBody.getTraps().iterator();
-        while(it.hasNext()) {
-            Trap trap = (Trap) it.next();
+        for (Trap trap : mBody.getTraps()) {
             if(trap.getHandlerUnit() == blockHead)
                 return true;
         }
@@ -888,7 +884,7 @@ class Instance {
     // not a save function :: goes over block boundries
     private int getDeltaStackHeightFromTo(Unit aFrom, Unit aTo) 
     {
-        Iterator it = mUnits.iterator(aFrom, aTo);
+        Iterator<Unit> it = mUnits.iterator(aFrom, aTo);
         int h = 0;
         
         while(it.hasNext()) {
@@ -930,14 +926,14 @@ class Instance {
                         if(defBlock != loadBlock && !(isExceptionHandlerBlock(loadBlock))) {
                             Unit storeUnit = defs.get(0);
                             if(storeUnit instanceof StoreInst) {
-                                List uses = mLocalUses.getUsesOf(storeUnit);
+                                List<UnitValueBoxPair> uses = mLocalUses.getUsesOf(storeUnit);
                                 if(uses.size() == 1){
                                     if(allSuccesorsOfAreThePredecessorsOf(defBlock, loadBlock)) {
                                         if(getDeltaStackHeightFromTo(defBlock.getSuccOf(storeUnit), defBlock.getTail()) == 0) {
-                                            Iterator it2 = defBlock.getSuccs().iterator();
+                                            Iterator<Block> it2 = defBlock.getSuccs().iterator();
                                             boolean res = true;
                                             while(it2.hasNext()) {
-                                                Block b = (Block) it2.next();
+                                                Block b = it2.next();
                                                 if(getDeltaStackHeightFromTo(b.getHead(), b.getTail()) != 0) {
                                                     res = false;
                                                     break;
@@ -974,8 +970,8 @@ class Instance {
                         if(defBlock0 != loadBlock && defBlock1 != loadBlock && defBlock0 != defBlock1
                            && !(isExceptionHandlerBlock(loadBlock))) {                                
                             if(mLocalUses.getUsesOf(def0).size() == 1  && mLocalUses.getUsesOf(def1).size() == 1) {
-                                List def0Succs = defBlock0.getSuccs();
-                                List def1Succs  = defBlock1.getSuccs();
+                                List<Block> def0Succs = defBlock0.getSuccs();
+                                List<Block> def1Succs  = defBlock1.getSuccs();
                                 if(def0Succs.size()==1 && def1Succs.size()==1) {
                                     if(def0Succs.get(0) == loadBlock && def1Succs.get(0)== loadBlock) {                                         
                                         if(loadBlock.getPreds().size() == 2) {
@@ -1010,9 +1006,9 @@ class Instance {
     private boolean allSuccesorsOfAreThePredecessorsOf(Block aFirstBlock, Block aSecondBlock)
     {        
         int size = aFirstBlock.getSuccs().size();        
-        Iterator it = aFirstBlock.getSuccs().iterator();
+        Iterator<Block> it = aFirstBlock.getSuccs().iterator();
         
-        List preds = aSecondBlock.getPreds();
+        List<Block> preds = aSecondBlock.getPreds();
         while(it.hasNext()) {
             if(!preds.contains(it.next())) 
                 return false;

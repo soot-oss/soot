@@ -1,7 +1,6 @@
 package soot.jimple.toolkits.thread.synchronization;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -11,7 +10,6 @@ import java.util.Map;
 import soot.EquivalentValue;
 import soot.G;
 import soot.MethodOrMethodContext;
-import soot.PointsToAnalysis;
 import soot.Scene;
 import soot.Unit;
 import soot.Value;

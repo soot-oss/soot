@@ -46,7 +46,7 @@ public class GuaranteedDefs
         // build map
         {
             unitToGuaranteedDefs = new HashMap<Unit, List>(graph.size() * 2 + 1, 0.7f);
-            Iterator unitIt = graph.iterator();
+            Iterator<Unit> unitIt = graph.iterator();
 
             while(unitIt.hasNext()){
                 Unit s = (Unit) unitIt.next();

@@ -37,13 +37,13 @@ public abstract class AbstractBranchInst extends AbstractInst
 {
     UnitBox targetBox;
 
-    List<UnitBox> targetBoxes;
+    final List<UnitBox> targetBoxes;
 
     AbstractBranchInst(UnitBox targetBox)
     {
         this.targetBox = targetBox;
 
-        targetBoxes = Collections.<UnitBox>singletonList(this.targetBox);
+        targetBoxes = Collections.singletonList(targetBox);
     }
 
     abstract public String getName();

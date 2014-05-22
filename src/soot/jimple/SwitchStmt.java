@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1999 Patrick Lam
+ * Copyright (C) 1997-1999 Raja Vallee-Rai
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -27,57 +27,23 @@
 
 
 
+package soot.jimple;
 
-package soot.jimple.internal;
-
-import soot.baf.*;
-
-import soot.tagkit.*;
-import soot.jimple.*;
 import soot.*;
-import soot.util.*;
 import java.util.*;
 
-public class JNopStmt extends AbstractStmt implements NopStmt
+public interface SwitchStmt extends Stmt
 {
-    public JNopStmt()
-    {
-    }
-    
-
-    public Object clone() 
-    {
-        return new JNopStmt();
-    }
-
-
-    public String toString()
-    {
-        return Jimple.NOP;
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.literal(Jimple.NOP);
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseNopStmt(this);
-    }    
-    
-    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
-    {
-    	Unit u = Baf.v().newNopInst();
-    	u.addAllTagsOf(this);
-        out.add(u);
-    }
-
-
-    public boolean fallsThrough(){return true;}        
-    public boolean branches(){return false;}
-
+    public Unit getDefaultTarget();
+    public void setDefaultTarget(Unit defaultTarget);
+    public UnitBox getDefaultTargetBox();
+    public Value getKey();
+    public void setKey(Value key);
+    public ValueBox getKeyBox();
+    public List<Unit> getTargets();
+    public Unit getTarget(int index);
+    public void setTarget(int index, Unit target);
+    public UnitBox getTargetBox(int index);
 }
-
-
 
 

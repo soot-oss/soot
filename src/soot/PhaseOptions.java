@@ -155,6 +155,7 @@ public class PhaseOptions {
         }
     }
     private boolean checkParentEnabled( String phaseName ) {
+/*
         if( true ) return true;
         for (Pack p : getPM().allPacks()) {
             if( getBoolean( getPhaseOptions( p ), "enabled" ) ) continue;
@@ -167,6 +168,7 @@ public class PhaseOptions {
                 }
             }
         }
+*/
         return true;
     }
     public boolean setPhaseOption( String phaseName, String option ) {

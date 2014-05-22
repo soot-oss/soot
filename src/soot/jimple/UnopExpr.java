@@ -30,12 +30,10 @@
 package soot.jimple;
 
 import soot.*;
-import java.util.*;
 
 public interface UnopExpr extends Expr
 {
     public Value getOp();
     public void setOp(Value op);
     public ValueBox getOpBox();
-    public List getUseBoxes();
 }

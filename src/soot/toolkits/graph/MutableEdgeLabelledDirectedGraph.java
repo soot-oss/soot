@@ -36,7 +36,7 @@ import java.util.*;
  *   add/delete nodes and edges.
  */
 
-public interface MutableEdgeLabelledDirectedGraph extends DirectedGraph
+public interface MutableEdgeLabelledDirectedGraph<N,L> extends DirectedGraph<N>
 {
     /**
      *  Adds an edge to the graph between 2 nodes.
@@ -45,7 +45,7 @@ public interface MutableEdgeLabelledDirectedGraph extends DirectedGraph
      *  @param to     in node for the edge.
      *  @param label  label for the edge.
      */
-    public void addEdge(Object from, Object to, Object label);
+    public void addEdge(N from, N to, L label);
 
 
     /**
@@ -53,7 +53,7 @@ public interface MutableEdgeLabelledDirectedGraph extends DirectedGraph
      *  @param from   out node for the edges to remove.
      *  @param to     in node for the edges to remove.
      */
-    public List<Object> getLabelsForEdges(Object from, Object to);
+    public List<L> getLabelsForEdges(N from, N to);
 
 
     /**
@@ -62,7 +62,7 @@ public interface MutableEdgeLabelledDirectedGraph extends DirectedGraph
      *  Nodes without edges are not included in the new graph.
      *  @param label  label for the edge to remove.
      */
-	public MutableDirectedGraph getEdgesForLabel(Object label);
+	public MutableDirectedGraph<N> getEdgesForLabel(L label);
 
 
     /**
@@ -72,7 +72,7 @@ public interface MutableEdgeLabelledDirectedGraph extends DirectedGraph
      *  @param to     in node for the edges to remove.
      *  @param label  label for the edge to remove.
      */
-    public void removeEdge(Object from, Object to, Object label);
+    public void removeEdge(N from, N to, L label);
     
     
     /**
@@ -81,7 +81,7 @@ public interface MutableEdgeLabelledDirectedGraph extends DirectedGraph
      *  @param from  out node for the edges to remove.
      *  @param to    in node for the edges to remove.
      */
-    public void removeAllEdges(Object from, Object to);
+    public void removeAllEdges(N from, N to);
     
     
     /**
@@ -89,13 +89,13 @@ public interface MutableEdgeLabelledDirectedGraph extends DirectedGraph
      *  If no edges are present, no change is made.
      *  @param label  label for the edge to remove.
      */
-    public void removeAllEdges(Object label);
+    public void removeAllEdges(L label);
 
 
     /** @return true if the graph contains an edge between 
      *  the 2 nodes with the given label, otherwise return false.
      */ 
-    public boolean containsEdge(Object from, Object to, Object label);
+    public boolean containsEdge(N from, N to, L label);
     
     
     /** @return true if the graph contains any edges between 
@@ -103,18 +103,18 @@ public interface MutableEdgeLabelledDirectedGraph extends DirectedGraph
      *  @param from  out node for the edges.
      *  @param to    in node for the edges.
      */ 
-    public boolean containsAnyEdge(Object from, Object to);
+    public boolean containsAnyEdge(N from, N to);
     
     
     /** @return true if the graph contains any edges
      *  with the given label, otherwise return false.
      *  @param label  label for the edges.
      */ 
-    public boolean containsAnyEdge(Object label);
+    public boolean containsAnyEdge(L label);
 
 
     /** @return a list of the nodes that compose the graph. No ordering is implied.*/
-    public List<Object> getNodes();
+    public List<N> getNodes();
 
 
     /**
@@ -124,7 +124,7 @@ public interface MutableEdgeLabelledDirectedGraph extends DirectedGraph
      *  @see #getHeads
      *  @see #getTails
      */
-    public void addNode(Object node);
+    public void addNode(N node);
 
 
     /**
@@ -132,7 +132,7 @@ public interface MutableEdgeLabelledDirectedGraph extends DirectedGraph
      *  found in the graph, no change is made.
      *  @param node the node to be removed.
      */
-    public void removeNode(Object node);
+    public void removeNode(N node);
 
 
     /**
@@ -140,7 +140,7 @@ public interface MutableEdgeLabelledDirectedGraph extends DirectedGraph
      *   @return  true if the graph contains the node.
      *            false otherwise.
      */
-    public boolean containsNode(Object node);
+    public boolean containsNode(N node);
 }
 
  

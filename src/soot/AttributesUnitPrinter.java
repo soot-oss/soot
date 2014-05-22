@@ -77,9 +77,8 @@ public class AttributesUnitPrinter {
 	}
 	
 	private boolean hasColorTag(Host h) {
-		Iterator it = h.getTags().iterator();
-		while (it.hasNext()){
-			if (it.next() instanceof ColorTag) return true;
+		for ( Tag t : h.getTags() ) {
+			if (t instanceof ColorTag) return true;
 		}
 		return false;
 	}

@@ -62,9 +62,10 @@ public class ThisRef implements IdentityRef
         up.identityRef(this);
     }
 
-    public List getUseBoxes()
+    @Override
+    public final List<ValueBox> getUseBoxes()
     {
-        return AbstractUnit.emptyList;
+        return Collections.emptyList();
     }
     
     public Type getType()

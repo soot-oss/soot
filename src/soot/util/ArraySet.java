@@ -117,7 +117,7 @@ public class ArraySet<E> extends AbstractSet<E>
 	final public boolean addAll(Collection<? extends E> s) {
         boolean ret = false;
         if( !(s instanceof ArraySet) ) return super.addAll(s);
-        ArraySet as = (ArraySet) s;
+        ArraySet<?> as = (ArraySet<?>) s;
         int asSize = as.size();
         Object[] asElements = as.elements;
         for (int i=0; i<asSize; i++)

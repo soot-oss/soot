@@ -50,7 +50,7 @@ public class ConstructorConfuser extends BodyTransformer implements
   }
 
   @SuppressWarnings("fallthrough")
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     if (!b.getMethod().getSubSignature().equals("void <init>()")) return;
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) return;
@@ -63,8 +63,8 @@ public class ConstructorConfuser extends BodyTransformer implements
       c = null;
     }
     
-    PatchingChain units = b.getUnits();
-    Iterator it = units.snapshotIterator();
+    PatchingChain<Unit> units = b.getUnits();
+    Iterator<Unit> it = units.snapshotIterator();
     Unit prev = null;
     SpecialInvokeInst sii = null;
     while (it.hasNext()) {
@@ -100,7 +100,7 @@ public class ConstructorConfuser extends BodyTransformer implements
         !BodyBuilder.isExceptionCaughtAt(units, sii, b.getTraps().iterator())) {
         
         Local bl = ((LoadInst)prev).getLocal();
-        HashMap locals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
+        Map<Local,Local> locals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
         if (locals != null && locals.containsKey(bl)) {
           Type t = ((Local)locals.get(bl)).getType();
           if (t instanceof RefType && ((RefType)t).getSootClass().getName().equals(origClass.getName())) {
@@ -112,7 +112,7 @@ public class ConstructorConfuser extends BodyTransformer implements
           
             Unit pop = Baf.v().newPopInst(RefType.v());
             units.add(pop);
-            units.add(prev.clone());
+            units.add((Unit)prev.clone());
             b.getTraps().add(Baf.v().newTrap(ThrowSet.getRandomThrowable(), ifinst, sii, pop));
             if (Rand.getInt() % 2 == 0) {
               pop = (Unit)pop.clone();

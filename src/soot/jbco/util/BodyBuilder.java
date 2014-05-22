@@ -20,6 +20,7 @@
 package soot.jbco.util;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -59,21 +60,15 @@ public class BodyBuilder {
 
   public static boolean bodiesHaveBeenBuilt = false;
   public static boolean namesHaveBeenRetrieved = false;
-  public static ArrayList<String> nameList = new ArrayList<String>();
+  public static List<String> nameList = new ArrayList<String>();
   public static void retrieveAllBodies() 
   {
     if (bodiesHaveBeenBuilt) return;
       
     //  iterate through application classes, rename fields with junk
-    Iterator it = soot.Scene.v().getApplicationClasses().iterator();
-    while (it.hasNext())
-    {
-      SootClass c = (SootClass)it.next();
+    for (SootClass c : soot.Scene.v().getApplicationClasses()) {
 
-      Iterator mIt = c.getMethods().iterator();
-      while (mIt.hasNext())
-      {
-        SootMethod m = (SootMethod)mIt.next();
+      for (SootMethod m : c.getMethods()) {
         if (!m.isConcrete()) continue;
         
         if (!m.hasActiveBody())
@@ -89,30 +84,22 @@ public class BodyBuilder {
     if (namesHaveBeenRetrieved) return;
       
     //  iterate through application classes, rename fields with junk
-    Iterator it = soot.Scene.v().getApplicationClasses().iterator();
-    while (it.hasNext())
-    {
-      SootClass c = (SootClass)it.next();
+    
+    for (SootClass c : soot.Scene.v().getApplicationClasses()) {      
       nameList.add(c.getName());
       
-      Iterator _it = c.getMethods().iterator();
-      while (_it.hasNext())
-      {
-        SootMethod m = (SootMethod)_it.next();
-        nameList.add(m.getName());
+      for (SootMethod m : c.getMethods()) {
+    	  nameList.add(m.getName());
       }
-      _it = c.getFields().iterator();
-      while (_it.hasNext())
-      {
-        SootField f = (SootField)_it.next();
-        nameList.add(f.getName());
+      for (SootField m : c.getFields()) {
+    	  nameList.add(m.getName());
       }
     }
     
     namesHaveBeenRetrieved = true;
   }
   
-  public static Local buildThisLocal(PatchingChain units, ThisRef tr, Chain locals)
+  public static Local buildThisLocal(PatchingChain<Unit> units, ThisRef tr, Collection<Local> locals)
   {
     Local ths = Jimple.v().newLocal("ths", tr.getType());
     locals.add(ths);
@@ -121,11 +108,11 @@ public class BodyBuilder {
     return ths;
   }
   
-  public static ArrayList buildParameterLocals(PatchingChain units, Chain locals, List paramTypes)
+  public static List<Local> buildParameterLocals(PatchingChain<Unit> units, Collection<Local> locals, List<Type> paramTypes)
   {
-    ArrayList args = new ArrayList();
+    List<Local> args = new ArrayList<Local>();
     for (int k = 0; k < paramTypes.size(); k++) {
-      Type type = (Type) paramTypes.get(k);
+      Type type = paramTypes.get(k);
       Local loc = Jimple.v().newLocal("l" + k, type);
       locals.add(loc);
 
@@ -137,11 +124,11 @@ public class BodyBuilder {
     return args;
   }
   
-  public static void updateTraps(Unit oldu, Unit newu, Chain traps) {
+  public static void updateTraps(Unit oldu, Unit newu, Chain<Trap> traps) {
     int size = traps.size();
     if (size == 0) return;
     
-    Trap t = (Trap)traps.getFirst();
+    Trap t = traps.getFirst();
     do {
       if (t.getBeginUnit() == oldu)
         t.setBeginUnit(newu);
@@ -149,15 +136,15 @@ public class BodyBuilder {
         t.setEndUnit(newu);
       if (t.getHandlerUnit() == oldu)
         t.setHandlerUnit(newu);
-    } while ((--size > 0) && (t = (Trap)traps.getSuccOf(t)) != null);
+    } while ((--size > 0) && (t = traps.getSuccOf(t)) != null);
   }
   
-  public static boolean isExceptionCaughtAt(Chain units, Unit u, Iterator trapsIt)
+  public static boolean isExceptionCaughtAt(Chain<Unit> units, Unit u, Iterator<Trap> trapsIt)
   {
     while (trapsIt.hasNext())
     {
-      Trap t = (Trap)trapsIt.next();
-      Iterator it = units.iterator(t.getBeginUnit(),units.getPredOf(t.getEndUnit()));
+      Trap t = trapsIt.next();
+      Iterator<Unit> it = units.iterator(t.getBeginUnit(),units.getPredOf(t.getEndUnit()));
       while (it.hasNext())
         if (u.equals(it.next()))
           return true;

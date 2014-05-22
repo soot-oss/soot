@@ -30,7 +30,6 @@
 
 package soot.jimple.internal;
 
-import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
@@ -48,9 +47,7 @@ public class JIdentityStmt extends AbstractDefinitionStmt
 
     protected JIdentityStmt(ValueBox localBox, ValueBox identityValueBox)
     {
-        this.leftBox = localBox; this.rightBox = identityValueBox;
-
-        defBoxes = Collections.singletonList(leftBox);
+    	super(localBox, identityValueBox);
     }
 
     public Object clone()
@@ -97,23 +94,16 @@ public class JIdentityStmt extends AbstractDefinitionStmt
             { 
 		Unit u = Baf.v().newStoreInst(RefType.v(), 
                        context.getBafLocalOfJimpleLocal((Local) getLeftOp()));
+			u.addAllTagsOf(this);
                 out.add(u);
-
-		Iterator it = getTags().iterator();
-		while(it.hasNext()) {
-		    u.addTag((Tag) it.next());
-		}
 		return; 
 	    }
         else
             throw new RuntimeException("Don't know how to convert unknown rhs");
 	Unit u = Baf.v().newIdentityInst(context.getBafLocalOfJimpleLocal
                                          ((Local) getLeftOp()), newRhs);
+		u.addAllTagsOf(this);
         out.add(u);
-	Iterator it = getTags().iterator();
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
     }
 
 

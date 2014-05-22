@@ -31,7 +31,8 @@ package soot.toolkits.graph;
  * flag set by default.
  * @deprecated use {@link PseudoTopologicalOrderer#newList(DirectedGraph, boolean)} instead
  * */
-public class ReversePseudoTopologicalOrderer extends PseudoTopologicalOrderer
+@Deprecated
+public class ReversePseudoTopologicalOrderer<N> extends PseudoTopologicalOrderer<N>
 {
     /** Constructs a PseudoTopologicalOrderer with the mReversed flag set.
      * @deprecated use {@link PseudoTopologicalOrderer#newList(DirectedGraph, boolean)} instead

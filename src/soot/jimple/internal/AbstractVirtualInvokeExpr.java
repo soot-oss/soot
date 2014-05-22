@@ -31,19 +31,19 @@ import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
+
 import java.util.*;
 
-import soot.tagkit.*;
-
+@SuppressWarnings("serial")
 public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeExpr
   implements VirtualInvokeExpr, ConvertToBaf                                               
 {
     protected AbstractVirtualInvokeExpr(ValueBox baseBox, SootMethodRef methodRef,
                                 ValueBox[] argBoxes)
     {
-        if( methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
-        this.baseBox = baseBox; this.methodRef = methodRef;
-        this.argBoxes = argBoxes;
+    	super(baseBox, argBoxes); 
+    	if( methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
+        this.methodRef = methodRef;
     }
 
     public boolean equivTo(Object o)
@@ -125,15 +125,8 @@ public abstract class AbstractVirtualInvokeExpr extends AbstractInstanceInvokeEx
 	    ((ConvertToBaf)(element.getValue())).convertToBaf(context, out);
 	}
 
-       Unit u;
-       out.add(u = Baf.v().newVirtualInvokeInst(methodRef));
-
-       Unit currentUnit = context.getCurrentUnit();
-
-	Iterator it = currentUnit.getTags().iterator();	
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
-
+       Unit u = Baf.v().newVirtualInvokeInst(methodRef);
+       out.add(u);
+       u.addAllTagsOf(context.getCurrentUnit());
     }
 }

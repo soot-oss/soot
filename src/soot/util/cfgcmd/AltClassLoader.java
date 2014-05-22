@@ -45,7 +45,7 @@ public class AltClassLoader extends ClassLoader {
 
   private String[] locations;	// Locations in the alternate
 				// classpath.
-  private final Map<String, Class> alreadyFound = new HashMap<String, Class>(); // Maps from already loaded
+  private final Map<String, Class<?>> alreadyFound = new HashMap<String, Class<?>>(); // Maps from already loaded
 					    // classnames to their
 					    // Class objects.
 
@@ -174,13 +174,13 @@ public class AltClassLoader extends ClassLoader {
    * @throws ClassNotFoundException if the class cannot be loaded.
    *
    */
-  protected Class findClass(String maybeMangledName)
+  protected Class<?> findClass(String maybeMangledName)
     throws ClassNotFoundException {
     if (DEBUG) {
       G.v().out.println("AltClassLoader.findClass(" + maybeMangledName + ')');
     }
 
-    Class result = alreadyFound.get(maybeMangledName);
+    Class<?> result = alreadyFound.get(maybeMangledName);
     if (result != null) {
       return result;
     }
@@ -200,6 +200,7 @@ public class AltClassLoader extends ClassLoader {
 	replaceAltClassNames(classBytes);
 	result = defineClass(maybeMangledName, classBytes, 0, classBytes.length);
 	alreadyFound.put(maybeMangledName, result);
+	stream.close();
 	return result;
       } catch (java.io.IOException e) {
 	// Try the next location.
@@ -227,7 +228,7 @@ public class AltClassLoader extends ClassLoader {
    * @return the loaded class.
    * @throws ClassNotFoundException if the class cannot be loaded.
    */
-  public Class loadClass(String name) 
+  public Class<?> loadClass(String name) 
   throws ClassNotFoundException {
     if (DEBUG) {
       G.v().out.println("AltClassLoader.loadClass(" + name + ")");
@@ -257,11 +258,10 @@ public class AltClassLoader extends ClassLoader {
    * with this so far!
    */
   private void replaceAltClassNames(byte[] classBytes) {
-    for (Object element : nameToMangledName.entrySet()) {
-      Map.Entry entry = (Map.Entry) element;
-      String origName = (String) entry.getKey();
+    for (Map.Entry<String,String> entry : nameToMangledName.entrySet()) {
+      String origName = entry.getKey();
       origName = origName.replace('.', '/');
-      String mangledName = (String) entry.getValue();
+      String mangledName = entry.getValue();
       mangledName = mangledName.replace('.', '/');
       findAndReplace(classBytes, stringToUtf8Pattern(origName), 
 		     stringToUtf8Pattern(mangledName));

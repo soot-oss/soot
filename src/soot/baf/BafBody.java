@@ -29,9 +29,9 @@
 
 package soot.baf;
 import soot.options.*;
-
 import soot.*;
 import soot.jimple.*;
+
 import java.util.*;
 
 public class BafBody extends Body
@@ -48,7 +48,7 @@ public class BafBody extends Body
         super(m);
     }
 
-    public BafBody(Body body, Map options)
+    public BafBody(Body body, Map<String,String> options)
     {
         super(body.getMethod());
 
@@ -69,11 +69,11 @@ public class BafBody extends Body
            
         // Convert all locals
         {
-            Iterator localIt = jimpleBody.getLocals().iterator();
+            Iterator<Local> localIt = jimpleBody.getLocals().iterator();
             
             while(localIt.hasNext())
             {
-                Local l = (Local) localIt.next();
+                Local l = localIt.next();
                 Type t = l.getType();
                 Local newLocal;
                 
@@ -93,7 +93,7 @@ public class BafBody extends Body
             
         // Convert all jimple instructions
         {
-            Iterator stmtIt = jimpleBody.getUnits().iterator();
+            Iterator<Unit> stmtIt = jimpleBody.getUnits().iterator();
             
             while(stmtIt.hasNext())
             {
@@ -109,13 +109,9 @@ public class BafBody extends Body
         }
         
         // Change all place holders
-        {
-            Iterator boxIt = getAllUnitBoxes().iterator();
-            
-            while(boxIt.hasNext())
-            {
-                UnitBox box = (UnitBox) boxIt.next();
-                
+        {            
+            for (UnitBox box : getAllUnitBoxes())
+            {                
                 if(box.getUnit() instanceof PlaceholderInst)
                 {
                     Unit source = ((PlaceholderInst) box.getUnit()).getSource();
@@ -126,11 +122,8 @@ public class BafBody extends Body
 
         // Convert all traps
         {
-            Iterator trapIt = jimpleBody.getTraps().iterator();
-            while (trapIt.hasNext())
+            for (Trap trap : jimpleBody.getTraps())
             {
-                Trap trap = (Trap) trapIt.next();
-
                 getTraps().add(Baf.v().newTrap(trap.getException(),
                      stmtToFirstInstruction.get(trap.getBeginUnit()),
                      stmtToFirstInstruction.get(trap.getEndUnit()),

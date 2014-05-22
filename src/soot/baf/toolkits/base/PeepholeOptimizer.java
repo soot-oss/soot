@@ -49,12 +49,12 @@ public class PeepholeOptimizer extends BodyTransformer
     private InputStream peepholeListingStream = null;
     private final String packageName = "soot.baf.toolkits.base";
 
-    private final Map<String, Class> peepholeMap = new HashMap<String, Class>();
+    private final Map<String, Class<?>> peepholeMap = new HashMap<String, Class<?>>();
 
     /** The method that drives the optimizations. */
     /* This is the public interface to PeepholeOptimizer */
   
-    protected void internalTransform(Body body, String phaseName, Map options) 
+    protected void internalTransform(Body body, String phaseName, Map<String,String> options) 
     {           
         boolean changed = true;
         BufferedReader reader = null;
@@ -93,7 +93,7 @@ public class PeepholeOptimizer extends BodyTransformer
                     peepholeWorked = false;
 
                 
-                    Class peepholeClass;
+                    Class<?> peepholeClass;
                     if((peepholeClass = peepholeMap.get(peepholeName)) == null) {
                         try {
                             peepholeClass =  Class.forName(packageName + "." + peepholeName);

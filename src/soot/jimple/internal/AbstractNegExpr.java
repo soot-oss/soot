@@ -34,6 +34,7 @@ import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 
+@SuppressWarnings("serial")
 public abstract class AbstractNegExpr extends AbstractUnopExpr implements NegExpr
 {
     protected AbstractNegExpr(ValueBox opBox) { super(opBox); }

@@ -48,12 +48,12 @@ public class LineNumberGenerator {
   }
   
   class BafLineNumberer extends BodyTransformer {
-    protected void internalTransform(Body b, String phaseName, Map options) {
+    protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
       
       System.out.println("Printing Line Numbers for: " + b.getMethod().getSignature());
       
-      PatchingChain units = b.getUnits(); // get the method code
-      Iterator it = units.iterator();
+      PatchingChain<Unit> units = b.getUnits(); // get the method code
+      Iterator<Unit> it = units.iterator();
       while (it.hasNext()) { // for each jimple statement or baf instruction
         Unit u = (Unit)it.next();
         if (u.hasTag("LineNumberTag")) { // see if a LineNumberTag exists (it will if you use -keep-line-number)

@@ -17,7 +17,8 @@ import soot.jimple.*;
 /**
  * @deprecated This class is buggy. Please use soot.jimple.toolkits.pointer.LocalMustAliasAnalysis instead.
  */
-public class EqualUsesAnalysis extends ForwardFlowAnalysis
+@Deprecated
+public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit,FlowSet>
 {
 	// Provided by client
 	Map<Stmt, Local> stmtToLocal;
@@ -119,12 +120,8 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis
 		return firstUseToAliasSet;
 	}
 
-	protected void merge(Object in1, Object in2, Object out)
-	{
-		FlowSet inSet1 = (FlowSet) in1;
-		FlowSet inSet2 = (FlowSet) in2;
-		FlowSet outSet = (FlowSet) out;
-		
+	protected void merge(FlowSet inSet1, FlowSet inSet2, FlowSet outSet)
+	{	
 		
 		inSet1.union(inSet2, outSet);
 		List aliases1 = null;
@@ -154,18 +151,16 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis
 		}
 	}
 	
-	protected void flowThrough(Object inValue, Object unit,
-			Object outValue)
+	protected void flowThrough(FlowSet in, Unit unit,
+			FlowSet out)
 	{
-		FlowSet in  = (FlowSet) inValue;
-		FlowSet out = (FlowSet) outValue;
 		Stmt stmt = (Stmt) unit;
 		
 		in.copy(out);
 
 		// get list of definitions at this unit
-		List newDefs = new ArrayList();
-		Iterator newDefBoxesIt = stmt.getDefBoxes().iterator();
+		List<Value> newDefs = new ArrayList<Value>();
+		Iterator<ValueBox> newDefBoxesIt = stmt.getDefBoxes().iterator();
 		while(newDefBoxesIt.hasNext())
 		{
 			newDefs.add( ((ValueBox) newDefBoxesIt.next()).getValue() );
@@ -178,7 +173,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis
 			Local useLocal = useLocalsIt.next();
 			if( newDefs.contains(useLocal) ) // if a relevant local was (re)def'd here
 			{
-				Iterator outIt = out.iterator();
+				Iterator<?> outIt = out.iterator();
 				while(outIt.hasNext())
 				{
 					Object o = outIt.next();
@@ -252,13 +247,13 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis
 			{
 				if( aliases.contains( new EquivalentValue(((DefinitionStmt)stmt).getRightOp()) ) )
 				{
-					Iterator newDefsIt = newDefs.iterator();
+					Iterator<Value> newDefsIt = newDefs.iterator();
 					while(newDefsIt.hasNext())
 						aliases.add( new EquivalentValue( (Value) newDefsIt.next() ) );
 				}
 				else
 				{
-					Iterator newDefsIt = newDefs.iterator();
+					Iterator<Value> newDefsIt = newDefs.iterator();
 					while(newDefsIt.hasNext())
 						aliases.remove( new EquivalentValue( (Value) newDefsIt.next() ) );
 				}
@@ -267,22 +262,17 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis
 			
 	}
 	
-	protected void copy(Object source, Object dest)
-	{
-		
-		FlowSet sourceSet = (FlowSet) source;
-		FlowSet destSet   = (FlowSet) dest;
-		
-		sourceSet.copy(destSet);
-		
+	protected void copy(FlowSet source, FlowSet dest)
+	{		
+		source.copy(dest);		
 	}
 	
-	protected Object entryInitialFlow()
+	protected FlowSet entryInitialFlow()
 	{
 		return new ArraySparseSet();
 	}
 	
-	protected Object newInitialFlow()
+	protected FlowSet newInitialFlow()
 	{
 		return new ArraySparseSet();
 	}	

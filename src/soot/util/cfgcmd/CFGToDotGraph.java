@@ -437,19 +437,16 @@ public class CFGToDotGraph {
    * to strings identifying the corresponding nodes in generated dot
    * source.
    */
-  private static class DotNamer extends HashMap {
+  @SuppressWarnings("serial")
+  private static class DotNamer<N> extends HashMap<N,Integer> {
     private int nodecount = 0;
 
     DotNamer(int initialCapacity, float loadFactor) {
       super(initialCapacity, loadFactor);
     }
 
-    DotNamer() {
-      super();
-    }
-
-    String getName(Object node) {
-      Integer index = (Integer)this.get(node);
+    String getName(N node) {
+      Integer index = this.get(node);
       if (index == null) {
 	index = new Integer(nodecount++);
 	this.put(node, index);
@@ -457,7 +454,7 @@ public class CFGToDotGraph {
       return index.toString();
     }
 
-    int getNumber(Object node) {
+    int getNumber(N node) {
       Integer index = (Integer)this.get(node);
       if (index == null) {
 	index = new Integer(nodecount++);
@@ -481,7 +478,7 @@ public class CFGToDotGraph {
    * @param namer provides a mapping from CFG objects to identifiers in
    *              generated dot source.
    */
-  private void formatNodeText(Body body, DotGraph canvas, DotNamer namer) {
+  private <N> void formatNodeText(Body body, DotGraph canvas, DotNamer<N> namer) {
 
     LabeledUnitPrinter printer = null;
     if (body != null) {
@@ -489,9 +486,9 @@ public class CFGToDotGraph {
       printer.noIndent();
     }
 
-    for (Iterator nodesIt = namer.keySet().iterator();
+    for (Iterator<N> nodesIt = namer.keySet().iterator();
 	 nodesIt.hasNext(); ) {
-      Object node = nodesIt.next();
+      N node = nodesIt.next();
       DotGraphNode dotnode = canvas.getNode(namer.getName(node));
       String nodeLabel = null;
 
@@ -500,7 +497,7 @@ public class CFGToDotGraph {
       } else {
 	if (node instanceof Unit) {
 	  ((Unit) node).toString(printer);
-	  String targetLabel = (String) printer.labels().get(node);
+	  String targetLabel = printer.labels().get(node);
 	  if (targetLabel == null) {
 	    nodeLabel = printer.toString();
 	  } else {
@@ -508,10 +505,10 @@ public class CFGToDotGraph {
 	  }
 
 	} else if (node instanceof Block) {
-	  Iterator units = ((Block) node).iterator();
+	  Iterator<Unit> units = ((Block) node).iterator();
 	  StringBuffer buffer = new StringBuffer();
 	  while (units.hasNext()) {
-	    Unit unit = (Unit) units.next();
+	    Unit unit = units.next();
 	    String targetLabel = (String) printer.labels().get(unit);
 	    if (targetLabel != null) {
 	      buffer.append(targetLabel)
@@ -545,12 +542,11 @@ public class CFGToDotGraph {
    * @param attrib if non-null, an additional attribute to associate
    *        with each of the nodes.
    */
-  private void setStyle(Collection objects, DotGraph canvas, 
-			DotNamer namer, String style,
+  private <N> void setStyle(Collection<? extends N> objects, DotGraph canvas, 
+			DotNamer<N> namer, String style,
 			DotGraphAttribute attrib) {
     // Fill the entry and exit nodes.
-    for (Iterator it = objects.iterator(); it.hasNext(); ) {
-      Object object = it.next();
+	  for (N object : objects) {
       DotGraphNode objectNode = canvas.getNode(namer.getName(object));
       objectNode.setStyle(style);
       objectNode.setAttribute(attrib);

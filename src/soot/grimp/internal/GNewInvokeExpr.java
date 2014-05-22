@@ -44,10 +44,11 @@ public class GNewInvokeExpr extends AbstractInvokeExpr
 
     public GNewInvokeExpr(RefType type, SootMethodRef methodRef, List args)
     {
+    	super(new ExprBox[args.size()]);
+    	
         if( methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
 
         this.methodRef = methodRef;
-        this.argBoxes = new ExprBox[args.size()]; 
         this.type = type;
         
         for(int i = 0; i < args.size(); i++)
@@ -114,19 +115,6 @@ public class GNewInvokeExpr extends AbstractInvokeExpr
         }
 
         up.literal(")");
-    }
-
-
-    public List getUseBoxes()
-    {
-        List list = new ArrayList();
-
-        for (ValueBox element : argBoxes) {
-            list.addAll(element.getValue().getUseBoxes());
-            list.add(element);
-        }
-        
-        return list;
     }
 
     public void apply(Switch sw)

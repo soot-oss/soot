@@ -40,7 +40,7 @@ public interface TableSwitchInst extends Inst
     public int getHighIndex();
     public void setHighIndex(int index);
     
-    public List getTargets();
+    public List<Unit> getTargets();
     public Unit getTarget(int index);
     public void setTarget(int index, Unit target);
     public void setTargets(List<Unit> targets);

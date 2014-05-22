@@ -69,6 +69,7 @@ import java.util.*;
 /**
  * @deprecated THIS IS KNOWN TO BE BUGGY. USE {@link NullnessAnalysis} INSTEAD!
  */
+@Deprecated
 public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 {
     /*
@@ -387,6 +388,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
     /**
      * @deprecated THIS IS KNOWN TO BE BUGGY. USE {@link NullnessAnalysis} INSTEAD!
      */
+    @Deprecated
     public BranchedRefVarsAnalysis (UnitGraph g)
     {
         super(g);

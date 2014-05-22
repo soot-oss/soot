@@ -59,13 +59,13 @@ public class CFGViewer extends BodyTransformer {
   private CFGGraphType graphtype;
   private CFGIntermediateRep ir;
   private CFGToDotGraph drawer;
-  private Map methodsToPrint;        // If the user specifies particular
+  private Map<String,String> methodsToPrint;        // If the user specifies particular
 				     // methods to print, this is a map
 				     // from method name to the class
 				     // name declaring the method.
 
 
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     initialize(options);
     SootMethod meth = b.getMethod();
     
@@ -150,7 +150,7 @@ CFGIntermediateRep.help(0, 70,
    * @return an array of arguments to pass on to Soot.Main.main().
    */
   private String[] parse_options(String[] args){
-    List sootArgs = new ArrayList(args.length);
+    List<String> sootArgs = new ArrayList<String>(args.length);
 
     for (int i=0, n=args.length; i<n; i++) {
       if (args[i].equals("--alt-classpath") ||
@@ -201,7 +201,7 @@ CFGIntermediateRep.help(0, 70,
 	  sootArgs.add(clsname);
 	  String methname = args[i].substring(smpos+1);
 	  if (methodsToPrint == null) {
-	    methodsToPrint = new HashMap();
+	    methodsToPrint = new HashMap<String,String>();
 	  }
 	  methodsToPrint.put(methname, clsname);
 	}
@@ -211,7 +211,7 @@ CFGIntermediateRep.help(0, 70,
     return (String[]) sootArgs.toArray(sootArgsArray);
   }
 
-  private void initialize(Map options) {
+  private void initialize(Map<String,String> options) {
     if (drawer == null) {
       drawer = new CFGToDotGraph();
       drawer.setBriefLabels(PhaseOptions.getBoolean(options, briefLabelOptionName));
@@ -243,7 +243,7 @@ CFGIntermediateRep.help(0, 70,
   }
 
   protected void print_cfg(Body body) {
-    DirectedGraph graph = graphtype.buildGraph(body);
+    DirectedGraph<Unit> graph = graphtype.buildGraph(body);
     DotGraph canvas = graphtype.drawGraph(drawer, graph, body);
 
     String methodname = body.getMethod().getSubSignature();

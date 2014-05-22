@@ -112,7 +112,7 @@ public class Printer {
 
         // Print interfaces
         {
-            Iterator interfaceIt = cl.getInterfaces().iterator();
+            Iterator<SootClass> interfaceIt = cl.getInterfaces().iterator();
 
             if (interfaceIt.hasNext()) {
                 out.print(" implements ");
@@ -120,7 +120,7 @@ public class Printer {
                 out.print(
                     ""
                         + Scene.v().quotedNameOf(
-                            ((SootClass) interfaceIt.next()).getName())
+                            interfaceIt.next().getName())
                         + "");
 
                 while (interfaceIt.hasNext()) {
@@ -128,7 +128,7 @@ public class Printer {
                     out.print(
                         " "
                             + Scene.v().quotedNameOf(
-                                ((SootClass) interfaceIt.next()).getName())
+                                interfaceIt.next().getName())
                             + "");
                 }
             }
@@ -146,9 +146,9 @@ public class Printer {
         out.println("{");
         incJimpleLnNum();
         if (Options.v().print_tags_in_output()){
-            Iterator cTagIterator = cl.getTags().iterator();
+            Iterator<Tag> cTagIterator = cl.getTags().iterator();
             while (cTagIterator.hasNext()) {
-                Tag t = (Tag) cTagIterator.next();
+                Tag t = cTagIterator.next();
                 out.print("/*");
                 out.print(t.toString());
                 out.println("*/");
@@ -157,19 +157,19 @@ public class Printer {
 
         // Print fields
         {
-            Iterator fieldIt = cl.getFields().iterator();
+            Iterator<SootField> fieldIt = cl.getFields().iterator();
 
             if (fieldIt.hasNext()) {
                 while (fieldIt.hasNext()) {
-                    SootField f = (SootField) fieldIt.next();
+                    SootField f = fieldIt.next();
 
                     if (f.isPhantom())
                         continue;
 
                     if (Options.v().print_tags_in_output()){
-                        Iterator fTagIterator = f.getTags().iterator();
+                        Iterator<Tag> fTagIterator = f.getTags().iterator();
                         while (fTagIterator.hasNext()) {
-                            Tag t = (Tag) fTagIterator.next();
+                            Tag t = fTagIterator.next();
                             out.print("/*");
                             out.print(t.toString());
                             out.println("*/");
@@ -187,7 +187,7 @@ public class Printer {
 
         // Print methods
         {
-            Iterator methodIt = cl.methodIterator();
+            Iterator<SootMethod> methodIt = cl.methodIterator();
 
             if (methodIt.hasNext()) {
                 if (cl.getMethodCount() != 0) {
@@ -196,7 +196,7 @@ public class Printer {
                 }
 
                 while (methodIt.hasNext()) {
-                    SootMethod method = (SootMethod) methodIt.next();
+                    SootMethod method = methodIt.next();
 
                     if (method.isPhantom())
                         continue;
@@ -210,9 +210,9 @@ public class Printer {
                         }
                         else
                             if (Options.v().print_tags_in_output()){
-                                Iterator mTagIterator = method.getTags().iterator();
+                                Iterator<Tag> mTagIterator = method.getTags().iterator();
                                 while (mTagIterator.hasNext()) {
-                                    Tag t = (Tag) mTagIterator.next();
+                                    Tag t = mTagIterator.next();
                                     out.print("/*");
                                     out.print(t.toString());
                                     out.println("*/");
@@ -227,9 +227,9 @@ public class Printer {
                     } else {
                            
                         if (Options.v().print_tags_in_output()){
-                            Iterator mTagIterator = method.getTags().iterator();
+                            Iterator<Tag> mTagIterator = method.getTags().iterator();
                             while (mTagIterator.hasNext()) {
-                                Tag t = (Tag) mTagIterator.next();
+                                Tag t = mTagIterator.next();
                                 out.print("/*");
                                 out.print(t.toString());
                                 out.println("*/");
@@ -366,14 +366,14 @@ public class Printer {
 
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
     private void printStatementsInBody(Body body, java.io.PrintWriter out, LabeledUnitPrinter up, UnitGraph unitGraph ) {
-    	Chain units = body.getUnits();
-        Iterator unitIt = units.iterator();
+    	Chain<Unit> units = body.getUnits();
+        Iterator<Unit> unitIt = units.iterator();
         Unit currentStmt = null, previousStmt;
 
         while (unitIt.hasNext()) {
 
             previousStmt = currentStmt;
-            currentStmt = (Unit) unitIt.next();
+            currentStmt = unitIt.next();
 
             // Print appropriate header.
             {
@@ -389,7 +389,7 @@ public class Printer {
                     } else {
                         // Or if the previous node does not have body statement as a successor.
 
-                        List succs = unitGraph.getSuccsOf(previousStmt);
+                        List<Unit> succs = unitGraph.getSuccsOf(previousStmt);
 
                         if (succs.get(0) != currentStmt) {
                             up.newline();
@@ -419,9 +419,9 @@ public class Printer {
             // because they mess up line number
             //if (!addJimpleLn()) {
             if (Options.v().print_tags_in_output()){
-                Iterator tagIterator = currentStmt.getTags().iterator();
+                Iterator<Tag> tagIterator = currentStmt.getTags().iterator();
                 while (tagIterator.hasNext()) {
-                    Tag t = (Tag) tagIterator.next();
+                    Tag t = tagIterator.next();
                     up.noIndent();
                     up.literal("/*");
                     up.literal(t.toString());
@@ -450,7 +450,7 @@ public class Printer {
 
         // Print out exceptions
         {
-            Iterator trapIt = body.getTraps().iterator();
+            Iterator<Trap> trapIt = body.getTraps().iterator();
 
             if (trapIt.hasNext()) {
                 out.println();
@@ -458,7 +458,7 @@ public class Printer {
             }
 
             while (trapIt.hasNext()) {
-                Trap trap = (Trap) trapIt.next();
+                Trap trap = trapIt.next();
 
                 out.println(
                     "        catch "
@@ -496,15 +496,15 @@ public class Printer {
         UnitPrinter up) {
         // Print out local variables
         {
-            Map<Type, List> typeToLocals =
+            Map<Type, List<Local>> typeToLocals =
                 new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
 
             // Collect locals
             {
-                Iterator localIt = body.getLocals().iterator();
+                Iterator<Local> localIt = body.getLocals().iterator();
 
                 while (localIt.hasNext()) {
-                    Local local = (Local) localIt.next();
+                    Local local = localIt.next();
 
                     List<Local> localList;
 
@@ -528,7 +528,7 @@ public class Printer {
                 while (typeIt.hasNext()) {
                     Type type = typeIt.next();
 
-                    List localList = typeToLocals.get(type);
+                    List<Local> localList = typeToLocals.get(type);
                     Object[] locals = localList.toArray();
                     up.type( type );
                     up.literal( " " );

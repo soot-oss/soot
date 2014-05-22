@@ -32,7 +32,7 @@
 package soot.jimple.internal;
 
 import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.Collections;
 import java.util.List;
 
 import soot.RefType;
@@ -49,16 +49,19 @@ import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.ExprSwitch;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleToBafContext;
-import soot.tagkit.Tag;
 import soot.util.Switch;
-@SuppressWarnings({"serial","unchecked","rawtypes"})
+
+
+@SuppressWarnings("serial")
 public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicInvokeExpr, ConvertToBaf
 {
 	protected SootMethodRef bsmRef;
 	protected ValueBox[] bsmArgBoxes;
 	
-    public JDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<Value> bootstrapArgs, SootMethodRef methodRef, List<Value> methodArgs)
+    public JDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<? extends Value> bootstrapArgs, SootMethodRef methodRef, List<? extends Value> methodArgs)
     {
+    	super(new ValueBox[methodArgs.size()]);
+    	
 		if(!methodRef.getSignature().startsWith("<"+SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME+": "))
     		throw new IllegalArgumentException("Receiver type of JDynamicInvokeExpr must be "+SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME+"!");
 		if(!bootstrapMethodRef.returnType().equals(RefType.v("java.lang.invoke.CallSite"))) {
@@ -69,15 +72,14 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
     	this.bsmRef = bootstrapMethodRef;
         this.methodRef = methodRef;
         this.bsmArgBoxes = new ValueBox[bootstrapArgs.size()];
-        this.argBoxes = new ValueBox[methodArgs.size()];
 
         for(int i = 0; i < bootstrapArgs.size(); i++)
         {
-        	this.bsmArgBoxes[i] = Jimple.v().newImmediateBox((Value) bootstrapArgs.get(i));	
+        	this.bsmArgBoxes[i] = Jimple.v().newImmediateBox(bootstrapArgs.get(i));	
         }
         for(int i = 0; i < methodArgs.size(); i++)
         {
-        	this.argBoxes[i] = Jimple.v().newImmediateBox((Value) methodArgs.get(i));	
+        	this.argBoxes[i] = Jimple.v().newImmediateBox( methodArgs.get(i));	
         }
     }
     
@@ -94,17 +96,17 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
     
     public Object clone() 
     {
-        ArrayList clonedBsmArgs = new ArrayList(getBootstrapArgCount());
+        List<Value> clonedBsmArgs = new ArrayList<Value>(getBootstrapArgCount());
         for(int i = 0; i < getBootstrapArgCount(); i++) {
             clonedBsmArgs.add(i, getBootstrapArg(i));
         }
         
-        ArrayList clonedArgs = new ArrayList(getArgCount());
+        List<Value> clonedArgs = new ArrayList<Value>(getArgCount());
         for(int i = 0; i < getArgCount(); i++) {
             clonedArgs.add(i, getArg(i));
         }
         
-        return new  JDynamicInvokeExpr(bsmRef, clonedBsmArgs, methodRef, clonedArgs);
+        return new JDynamicInvokeExpr(bsmRef, clonedBsmArgs, methodRef, clonedArgs);
     }
     
     public boolean equivTo(Object o)
@@ -218,18 +220,6 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
         ((ExprSwitch) sw).caseDynamicInvokeExpr(this);
     }
     
-    public List getUseBoxes()
-    { 
-    	//we do not include the bootstrap-method arguments here because they are static arguments
-        List list = new ArrayList();
-
-        for (ValueBox element : argBoxes) {
-            list.addAll(element.getValue().getUseBoxes());
-            list.add(element);
-        }
-
-        return list;
-    }
     
     public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
@@ -237,29 +227,23 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
     		((ConvertToBaf)(element.getValue())).convertToBaf(context, out);
     	}
 
-    	List<Value> bsmArgs = new ArrayList();
+    	List<Value> bsmArgs = new ArrayList<Value>();
     	for (ValueBox argBox : bsmArgBoxes) {
     		bsmArgs.add(argBox.getValue());
     	}
     	
     	Unit u = Baf.v().newDynamicInvokeInst(bsmRef, bsmArgs, methodRef);
+    	u.addAllTagsOf(context.getCurrentUnit());
     	out.add(u);
-
-    	Unit currentUnit = context.getCurrentUnit();
-
-    	Iterator it = currentUnit.getTags().iterator();	
-    	while(it.hasNext()) {
-    		u.addTag((Tag) it.next());
-    	}
     }
     
     public SootMethodRef getBootstrapMethodRef() {
 		return bsmRef;
 	}
     
-    public List getBootstrapArgs()
+    public List<Value> getBootstrapArgs()
     {
-        List l = new ArrayList();
+        List<Value> l = new ArrayList<Value>();
         for (ValueBox element : bsmArgBoxes)
 			l.add(element.getValue());
 

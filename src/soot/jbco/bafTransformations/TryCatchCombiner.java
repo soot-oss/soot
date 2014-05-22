@@ -26,7 +26,6 @@ import soot.jbco.util.Rand;
 import soot.jbco.jimpleTransformations.*;
 import soot.jimple.*;
 import soot.toolkits.graph.BriefUnitGraph;
-import soot.util.Chain;
 import soot.baf.*;
 
 public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform {
@@ -51,20 +50,20 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
     out.println("Combined TryCatches: " + changedcount);
   }
 
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) return;
     
     int trapCount = 0;
-    PatchingChain units = b.getUnits();
+    PatchingChain<Unit> units = b.getUnits();
     ArrayList<Unit> headList = new ArrayList<Unit>();
     ArrayList<Trap> trapList = new ArrayList<Trap>();
-    Iterator traps = b.getTraps().iterator();
+    Iterator<Trap> traps = b.getTraps().iterator();
 
     // build list of heads and corresponding traps
     while (traps.hasNext()) {
-      Trap t = (Trap) traps.next();
+      Trap t = traps.next();
       totalcount++;
       // skip runtime exceptions
       if (!isRewritable(t))
@@ -94,7 +93,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
     }
     
     Unit first = null;
-    Iterator uit = units.iterator();
+    Iterator<Unit> uit = units.iterator();
     while (uit.hasNext()) {
       Unit unit = (Unit)uit.next();
       if (!(unit instanceof IdentityInst))
@@ -108,20 +107,23 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
       first = (Unit)units.getSuccOf(first);
     }
     
-    Chain locs = b.getLocals();
-    HashMap stackHeightsBefore = null;
-    HashMap bafToJLocals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
+    Collection<Local> locs = b.getLocals();
+    Map<Unit,Stack<Type>> stackHeightsBefore = null;
+    Map<Local,Local> bafToJLocals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
     int varCount = trapCount + 1;
     traps = b.getTraps().snapshotIterator();
     while (traps.hasNext()) {
-      Trap t = (Trap) traps.next();
+      Trap t = traps.next();
       Unit begUnit = t.getBeginUnit();
       if (!isRewritable(t) || Rand.getInt(10) > weight)
         continue;
       
       stackHeightsBefore = StackTypeHeightCalculator.calculateStackHeights(b,bafToJLocals);
       boolean badType = false;
-      Stack s = (Stack)((Stack)stackHeightsBefore.get(begUnit)).clone();
+      
+      @SuppressWarnings("unchecked")
+	  Stack<Type> s = (Stack<Type>)stackHeightsBefore.get(begUnit).clone();
+      
       if (s.size() > 0) {
         for (int i = 0; i < s.size(); i++) {
           if (s.pop() instanceof StmtAddressType) {
@@ -146,17 +148,17 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
       units.insertBeforeNoRedirect((Unit)storZero.clone(), first);
       
       BriefUnitGraph graph = new BriefUnitGraph(b);
-      List l = graph.getPredsOf(begUnit);
+      List<Unit> l = graph.getPredsOf(begUnit);
 
       // add initializer seq for try - sets local to zero and loads null exc
       units.add(pushZero);
       units.add(storZero);
       
-      Stack varsToLoad = new Stack();
-      s = (Stack)stackHeightsBefore.get(begUnit);
+      Stack<Local> varsToLoad = new Stack<Local>();
+      s = stackHeightsBefore.get(begUnit);
       if (s.size() > 0) {
         for (int i = 0; i < s.size(); i++) {
-          Type type = (Type)s.pop();          
+          Type type = s.pop();          
           
           Local varLocal = Baf.v().newLocal("varLocal_tccomb" + varCount++, type);
           locs.add(varLocal);
@@ -172,14 +174,14 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
 
       // for each pred of the beginUnit of the try, we must insert goto initializer
       for (int i = 0; i < l.size(); i++) {
-        Unit pred = (Unit) l.get(i);
+        Unit pred = l.get(i);
         if (isIf(pred)) {
           TargetArgInst ifPred = ((TargetArgInst) pred);
           if (ifPred.getTarget() == begUnit) {
             ifPred.setTarget(pushZero);
           }
 
-          Unit succ = (Unit) units.getSuccOf(ifPred);
+          Unit succ = units.getSuccOf(ifPred);
           if (succ == begUnit) {
             units.insertAfter(Baf.v().newGotoInst(pushZero), ifPred);
           }
@@ -232,7 +234,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
     }
   }
   
-  private void loadBooleanValue(PatchingChain units, SootField f, Unit insert) 
+  private void loadBooleanValue(PatchingChain<Unit> units, SootField f, Unit insert) 
   {
     units.insertBefore(Baf.v().newStaticGetInst(f.makeRef()),insert);
     if (f.getType() instanceof RefType) {

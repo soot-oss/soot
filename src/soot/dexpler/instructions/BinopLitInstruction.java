@@ -88,6 +88,7 @@ public class BinopLitInstruction extends TaggedInstruction {
         }
     }
 
+    @SuppressWarnings("fallthrough")
     private Value getExpression(Local source1, Value source2) {
       Opcode opcode = instruction.getOpcode();
         switch(opcode) {

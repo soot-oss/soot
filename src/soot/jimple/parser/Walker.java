@@ -41,6 +41,7 @@ import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.G;
+import soot.Immediate;
 import soot.IntType;
 import soot.Local;
 import soot.LongType;
@@ -549,10 +550,8 @@ public class Walker extends DepthFirstAdapter
             int size = node.getDeclaration().size();
             for(int i = 0; i < size; i++) {
 		List<Local> localList = (List<Local>) mProductions.removeLast();
-                
-                int listSize = localList.size();
-                for(int j = listSize-1; j>=0; j--)
-                    jBody.getLocals().addFirst(localList.get(j));                               
+        
+		jBody.getLocals().addAll(localList);                            
             }
         }
         
@@ -839,7 +838,7 @@ public class Walker extends DepthFirstAdapter
 
     public void outATableswitchStatement(ATableswitchStatement node)
     {        
-        List<Object> targets = new ArrayList<Object>();
+        List<UnitBox> targets = new ArrayList<UnitBox>();
         UnitBox defaultTarget = null;
         
         int lowIndex = 0, highIndex = 0;
@@ -862,7 +861,7 @@ public class Walker extends DepthFirstAdapter
                     if(i == (size -1))
                         lowIndex = ((IntConstant) pair[0]).value;
 
-                    targets.add(0, pair[1]);                
+                    targets.add(0, (UnitBox) pair[1]);                
                 }
             }
         } else {
@@ -880,8 +879,8 @@ public class Walker extends DepthFirstAdapter
 
     public void outALookupswitchStatement(ALookupswitchStatement node)
     {        
-        List<Object> lookupValues = new ArrayList<Object>();
-        List<Object> targets = new ArrayList<Object>();
+        List<IntConstant> lookupValues = new ArrayList<IntConstant>();
+        List<UnitBox> targets = new ArrayList<UnitBox>();
         UnitBox defaultTarget = null;
         
 
@@ -898,8 +897,8 @@ public class Walker extends DepthFirstAdapter
                 } else {
                     Object[] pair = (Object[]) valueTargetPair;
                     
-                    lookupValues.add(0, pair[0]);
-                    targets.add(0, pair[1]);                
+                    lookupValues.add(0, (IntConstant) pair[0]);
+                    targets.add(0, (UnitBox) pair[1]);                
                 }
             }
         } else {
@@ -974,10 +973,10 @@ public class Walker extends DepthFirstAdapter
 
     public void outAReturnStatement(AReturnStatement node) 
     {
-        Value v;
+    	Immediate v;
         Stmt s = null;
         if(node.getImmediate() != null) {
-	    v = (Value) mProductions.removeLast();
+	    v = (Immediate) mProductions.removeLast();
             s = Jimple.v().newReturnStmt(v);
         } else {
             s = Jimple.v().newReturnVoidStmt();

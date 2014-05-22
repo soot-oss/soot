@@ -41,11 +41,11 @@ public class ExamplePeephole implements Peephole
     public boolean apply(Body b) 
     {
         boolean changed = false;
-        
-        Iterator it = b.getUnits().iterator();
+                
+        Iterator<Unit> it = b.getUnits().iterator();
         while(it.hasNext()) {
-            Unit u = (Unit) it.next();
-            if(u instanceof InstanceCastInst) {
+            Unit u = it.next();
+            if (u instanceof InstanceCastInst) {
                 it.remove();
                 changed = true;
             }                

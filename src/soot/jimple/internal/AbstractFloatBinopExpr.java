@@ -32,9 +32,10 @@ package soot.jimple.internal;
 
 import soot.*;
 
+@SuppressWarnings("serial")
 public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr
 {
-    public Type getType()
+	public Type getType()
     {
         Value op1 = op1Box.getValue();
         Value op2 = op1Box.getValue();
