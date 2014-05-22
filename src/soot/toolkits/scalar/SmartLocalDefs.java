@@ -65,22 +65,24 @@ public class SmartLocalDefs implements LocalDefs {
 
 		@Override
 		public List<Unit> getDefsOfAt(Local l, Unit s) {
-			List<Unit> r = localToDefs.get(l);
-			if (r == null) {
-				r = emptyList();
+			for (ValueBox useBox : s.getUseBoxes()) {
+				if (l == useBox.getValue()) {
+					return getDefsOfAt(useBox);
+				}
 			}
-			return r;
+			throw new RuntimeException();
 		}
 
 		public List<Unit> getDefsOfAt(ValueBox valueBox) {
 			Value v = valueBox.getValue();
 			if (v instanceof Local) {
 				List<Unit> r = localToDefs.get(v);
-				if (r != null) {
-					return r;
+				if (r == null) {
+					return emptyList();
 				}
+				return r;
 			}
-			return emptyList();
+			throw new RuntimeException();
 		}
 	}
 
@@ -141,13 +143,17 @@ public class SmartLocalDefs implements LocalDefs {
 					return getDefsOfAt(useBox);
 				}
 			}
-			return emptyList();
+			throw new RuntimeException();
 		}
-
+		
 		public List<Unit> getDefsOfAt(ValueBox valueBox) {
 			List<Unit> r = resultValueBoxes.get(valueBox);
 			if (r == null) {
-				r = emptyList();
+				Value v = valueBox.getValue();
+				if (v instanceof Local) {
+					return emptyList();
+				}
+				throw new RuntimeException();	
 			}
 			return r;
 		}
