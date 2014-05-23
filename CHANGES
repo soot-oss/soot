@@ -50,6 +50,9 @@ Improvements and API changes in HEAD
     
 13. Multiple performance improvements for intra-procedural analyses and class loading 
 
+14. soot.toolkits.scalar.SmartLocalDefs.getDefsOfAt(Local, Unit) returns now a empty list
+    instead of null-value. 
+
 Improvements and API changes in version 2.5.0
 
 1. Modified SourceLocator so that it will automatically load a SootClass
