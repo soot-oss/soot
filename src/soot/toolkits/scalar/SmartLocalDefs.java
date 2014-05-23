@@ -90,6 +90,7 @@ public class SmartLocalDefs implements LocalDefs {
 			// most of the units are like "a := b + c", 
 			// or a invoke like "a := b.foo()"
 			super(g.size() * 3 + 1);
+			assert localRange[n] == 0;
 			for (Unit s : g) {
 				for (ValueBox useBox : s.getUseBoxes()) {
 					Value v = useBox.getValue();
@@ -113,7 +114,7 @@ public class SmartLocalDefs implements LocalDefs {
 			// most of the units are like "a := b + c", 
 			// or a invoke like "a := b.foo()"
 			super(g.size() * 3 + 1);
-
+			assert localRange[n] > 0;
 			LocalDefsAnalysis reachingAnalysis = new LocalDefsAnalysis();
 			Unit[] buffer = new Unit[localRange[n]];
 
@@ -257,7 +258,7 @@ public class SmartLocalDefs implements LocalDefs {
 			locals[i].setNumber(i);
 		}
 
-		init(locals);
+		init();
 
 		// restore local numbering
 		for (int i = 0; i < n; i++) {
@@ -268,12 +269,12 @@ public class SmartLocalDefs implements LocalDefs {
 			Timers.v().defsTimer.end();
 	}
 
-	@SuppressWarnings("unchecked")
-	private void init(Local[] locals) {
+	private void init() {
 		indexOfUnit = new HashMap<Unit, Integer>(g.size());
 		units = new Unit[g.size()];
 		localRange = new int[n + 1];
-
+		
+		@SuppressWarnings("unchecked")
 		List<Unit>[] unitList = (List<Unit>[]) new List[n];
 
 		for (int i = 0; i < n; i++) {
