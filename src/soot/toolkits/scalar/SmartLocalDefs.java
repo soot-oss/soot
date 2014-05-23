@@ -22,7 +22,7 @@ package soot.toolkits.scalar;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
-import java.util.IdentityHashMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -44,55 +44,75 @@ import static java.util.Arrays.copyOf;
  * Analysis that provides an implementation of the LocalDefs interface.
  */
 public class SmartLocalDefs implements LocalDefs {
-
-	protected static class StaticSingleAssignment implements LocalDefs {
-		private final Map<Local, List<Unit>> localToDefs;
-
-		protected StaticSingleAssignment(List<Unit>[] units, Local[] locals) {
-			assert units.length == locals.length;
-
-			localToDefs = new IdentityHashMap<Local, List<Unit>>(units.length);
-
-			for (int i = 0; i < units.length; i++) {
-				List<Unit> list = units[i];
-				if (!list.isEmpty()) {
-					assert list.size() == 1;
-					list = singletonList(list.get(0));
-					localToDefs.put(locals[i], list);
-				}
+	
+	abstract static protected class Assignment implements LocalDefs {
+		protected static class Entry {
+			List<Unit> units;
+			Local local;
+			
+			Entry(List<Unit> units, Local local) {
+				this.units = units;
+				this.local = local;
 			}
+		}
+		
+		protected final Map<ValueBox, Entry> resultValueBoxes;
+	
+		protected Assignment(int size) {
+			resultValueBoxes = new HashMap<ValueBox, Entry>(size);
 		}
 
 		@Override
 		public List<Unit> getDefsOfAt(Local l, Unit s) {
 			for (ValueBox useBox : s.getUseBoxes()) {
 				if (l == useBox.getValue()) {
-					return getDefsOfAt(useBox);
+					Entry e = resultValueBoxes.get(useBox);
+					// check if local was exchanged!
+					if (e != null && l == e.local) {
+						return e.units;
+					}
 				}
 			}
-			throw new RuntimeException();
+			return emptyList();
 		}
-
-		public List<Unit> getDefsOfAt(ValueBox valueBox) {
-			Value v = valueBox.getValue();
-			if (v instanceof Local) {
-				List<Unit> r = localToDefs.get(v);
-				if (r == null) {
-					return emptyList();
-				}
-				return r;
+		
+		public List<Unit> getDefs(ValueBox valueBox) {
+			Entry e = resultValueBoxes.get(valueBox);
+			if (e == null) {
+				return emptyList();
 			}
-			throw new RuntimeException();
+			return e.units;
+		}
+	}
+	
+	protected class StaticSingleAssignment extends Assignment {
+		protected StaticSingleAssignment(List<Unit>[] unitList) {	
+			// most of the units are like "a := b + c", 
+			// or a invoke like "a := b.foo()"
+			super(g.size() * 3 + 1);
+			for (Unit s : g) {
+				for (ValueBox useBox : s.getUseBoxes()) {
+					Value v = useBox.getValue();
+					if (v instanceof Local) {
+						Local l = (Local) v;
+						int lno = l.getNumber();
+
+						List<Unit> list = unitList[lno];
+						if (!list.isEmpty()) {
+							list = singletonList(list.get(0));
+							resultValueBoxes.put(useBox, new Entry(list, l));	
+						}					
+					}
+				}
+			}
 		}
 	}
 
-	protected class DefaultAssignment implements LocalDefs {
-		private final Map<ValueBox, List<Unit>> resultValueBoxes;
-
+	protected class DefaultAssignment extends Assignment {
 		protected DefaultAssignment(List<Unit>[] unitList) {
 			// most of the units are like "a := b + c", 
 			// or a invoke like "a := b.foo()"
-			resultValueBoxes = new IdentityHashMap<ValueBox, List<Unit>>(g.size() * 3 + 1);
+			super(g.size() * 3 + 1);
 
 			LocalDefsAnalysis reachingAnalysis = new LocalDefsAnalysis();
 			Unit[] buffer = new Unit[localRange[n]];
@@ -107,18 +127,17 @@ public class SmartLocalDefs implements LocalDefs {
 						int from = localRange[lno];
 						int to = localRange[lno + 1];
 						assert from <= to;
-
+						
 						if (from == to) {
 							List<Unit> list = unitList[lno];
 							if (!list.isEmpty()) {
 								list = singletonList(list.get(0));
-								resultValueBoxes.put(useBox, list);
-							}
+								resultValueBoxes.put(useBox, new Entry(list, l));
+							}	
 						} else {
 							int j = 0;
 							BitSet reaching = reachingAnalysis.getFlowBefore(s);
-							for (int i = to; (i = reaching
-									.previousSetBit(i - 1)) >= from;) {
+							for (int i = to; (i = reaching.previousSetBit(i - 1)) >= from;) {
 								buffer[j++] = units[i];
 							}
 
@@ -126,36 +145,13 @@ public class SmartLocalDefs implements LocalDefs {
 								List<Unit> list = (j == 1) 
 									? singletonList(buffer[0])
 									: unmodifiableList(asList(copyOf(buffer, j)))
-									;
-									
-								resultValueBoxes.put(useBox, list);
-							}
-						}
+									;									
+								resultValueBoxes.put(useBox, new Entry(list, l));
+							}		
+						}				
 					}
 				}
 			}
-		}
-
-		@Override
-		public List<Unit> getDefsOfAt(Local l, Unit s) {
-			for (ValueBox useBox : s.getUseBoxes()) {
-				if (l == useBox.getValue()) {
-					return getDefsOfAt(useBox);
-				}
-			}
-			throw new RuntimeException();
-		}
-		
-		public List<Unit> getDefsOfAt(ValueBox valueBox) {
-			List<Unit> r = resultValueBoxes.get(valueBox);
-			if (r == null) {
-				Value v = valueBox.getValue();
-				if (v instanceof Local) {
-					return emptyList();
-				}
-				throw new RuntimeException();	
-			}
-			return r;
 		}
 	}
 
@@ -178,24 +174,21 @@ public class SmartLocalDefs implements LocalDefs {
 				out.and(in);
 			}
 
-			if (unit.getDefBoxes().isEmpty()) {
-				return;
-			}
-
 			// reassign all definitions
-			Integer idx = indexOfUnit.get(unit);
-			if (idx != null) {
-				for (ValueBox vb : unit.getDefBoxes()) {
-					Value v = vb.getValue();
-					if (v instanceof Local) {
-						int lno = ((Local) v).getNumber();
+			for (ValueBox vb : unit.getDefBoxes()) {
+				Value v = vb.getValue();
+				if (v instanceof Local) {
+					int lno = ((Local) v).getNumber();
 
-						int from = localRange[lno];
-						int to = localRange[lno + 1];
-						assert from <= to;
+					int from = localRange[lno];
+					int to = localRange[lno + 1];
+					assert from <= to;
 
-						if (from < to) {
-							out.clear(from, to);
+					if (from < to) {
+						out.clear(from, to);
+						//only set range if the unit is live
+						Integer idx = indexOfUnit.get(unit);
+						if (idx != null) {
 							out.set(idx);
 						}
 					}
@@ -277,7 +270,7 @@ public class SmartLocalDefs implements LocalDefs {
 
 	@SuppressWarnings("unchecked")
 	private void init(Local[] locals) {
-		indexOfUnit = new IdentityHashMap<Unit, Integer>(g.size());
+		indexOfUnit = new HashMap<Unit, Integer>(g.size());
 		units = new Unit[g.size()];
 		localRange = new int[n + 1];
 
@@ -323,7 +316,7 @@ public class SmartLocalDefs implements LocalDefs {
 		}
 
 		localDefs = (localRange[n] == 0) 
-			? new StaticSingleAssignment(unitList, locals) 
+			? new StaticSingleAssignment(unitList) 
 			: new DefaultAssignment(unitList)
 			;
 	}
