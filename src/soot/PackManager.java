@@ -424,6 +424,9 @@ public class PackManager {
                         + ((loadtime % 60000) / 1000)
                         + " sec.");
 				//run packs
+                if(clazz.getName().startsWith("<soot.dexpler.DexBody: soot.dexpler.instructions.DexlibAbstractInstruction instructionAtAddress(int)>")){
+                	continue;
+                }
 				runBodyPacks(clazz);
 				//generate output
 				writeClass(clazz);
@@ -597,8 +600,14 @@ public class PackManager {
     }
 
     private void runBodyPacks( Iterator<SootClass> classes ) {
-        while( classes.hasNext() ) {
-            runBodyPacks( classes.next() );
+        SootClass temp;
+    	while( classes.hasNext() ) {
+        	temp = classes.next();
+        	if(temp.getName().startsWith("com.google.common.collect.HashBiMap") || temp.getName().startsWith("com.google.common.collect.Tables$TransformedTable") ){ //||
+        			//temp.getName().startsWith("org.jf.util.Utf8Utils")){
+        		continue;
+        	}
+            runBodyPacks(temp);
         }
     }
 
@@ -824,6 +833,9 @@ public class PackManager {
         } else {
             G.v().out.print("Transforming ");
         }
+        if(c.getName().startsWith("soot.dexpler.DexBody")){
+        	System.out.print("");
+        }
         G.v().out.println(c.getName() + "... ");
 
         boolean produceBaf = false, produceGrimp = false, produceDava = false,
@@ -877,7 +889,10 @@ public class PackManager {
         Iterator<SootMethod> methodIt = methodsCopy.iterator();
         while (methodIt.hasNext()) {
             SootMethod m = (SootMethod) methodIt.next();
-
+            
+            if(m.toString().contains("<soot.dexpler.DexBody: soot.dexpler.instructions.DexlibAbstractInstruction instructionAtAddress(int)>")){
+            	System.out.print("");
+            }
             if(DEBUG){
             	if(m.getExceptions().size()!=0)
             		System.out.println("PackManager printing out jimple body exceptions for method "+m.toString()+" " + m.getExceptions().toString());
@@ -912,6 +927,10 @@ public class PackManager {
 
             if (produceJimple) {
                 JimpleBody body =(JimpleBody) m.retrieveActiveBody();
+                ConditionalBranchFolder.v().transform(body);
+        		UnreachableCodeEliminator.v().transform(body);
+        		DeadAssignmentEliminator.v().transform(body);
+        		UnusedLocalEliminator.v().transform(body);
                 PackManager.v().getPack("jtp").apply(body);
                 if( Options.v().validate() ) {
                     body.validate();
@@ -970,14 +989,8 @@ public class PackManager {
     }
 
 	public BafBody convertJimpleBodyToBaf(SootMethod m) {
-		if (m.toString().equals("<com.google.common.collect.HashBiMap: com.google.common.collect.BiMap inverse()>"))
-		System.out.println("x");
-			
+		
 		JimpleBody body = (JimpleBody) m.getActiveBody().clone();
-		ConditionalBranchFolder.v().transform(body);
-		UnreachableCodeEliminator.v().transform(body);
-		DeadAssignmentEliminator.v().transform(body);
-		UnusedLocalEliminator.v().transform(body);
 		
 		BafBody bafBody = Baf.v().newBody(body);
 		PackManager.v().getPack("bop").apply(bafBody);

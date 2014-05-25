@@ -121,6 +121,10 @@ import soot.jimple.StringConstant;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UnopExpr;
+import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
+import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
+import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.Chain;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -211,6 +215,9 @@ final class JimpleSource implements MethodSource {
 	}
 	
 	private void push(Type t, Operand opr) {
+		if(t.toString().contains("bottom")){
+			System.out.println();
+		}
 		if (AsmUtil.isDWord(t))
 			pushDual(opr);
 		else
@@ -1391,15 +1398,6 @@ final class JimpleSource implements MethodSource {
 		Edge(AbstractInsnNode insn) {
 			this(insn, new ArrayList<Operand>(JimpleSource.this.stack));
 		}
-		
-		public boolean isStackEmpty(){
-			for(Operand temp : this.stack){
-				if(temp != null){
-					return false;
-				}
-			}
-			return true;
-		}
 	}
 	
 	private Table<AbstractInsnNode, AbstractInsnNode, Edge> edges;
@@ -1415,6 +1413,7 @@ final class JimpleSource implements MethodSource {
 		do {
 			Edge edge = edges.get(cur, tgt);
 			if (edge == null) {
+				//edge = new Edge(tgt);
 				edge = lastIdx == -1 || i == lastIdx ? new Edge(tgt, new ArrayList<Operand>(stack)) : new Edge(tgt);
 				edge.prevStacks.add(stackss);
 				edges.put(cur, tgt, edge);
@@ -1423,10 +1422,6 @@ final class JimpleSource implements MethodSource {
 			}
 			if (edge.stack != null) {
 				ArrayList<Operand> stackTemp = edge.stack;
-				if(edge.isStackEmpty()&&stackss.length>0){
-					System.out.println(stackTemp.size()+"/"+ stackss.length);
-					System.out.println(stackss.toString());
-				}
 				if (stackTemp.size() != stackss.length){
 					throw new AssertionError("Multiple un-equal stacks!");
 				}
@@ -1460,6 +1455,9 @@ final class JimpleSource implements MethodSource {
 			edge.stack = null;
 			do {
 				int type = insn.getType();
+				if(insn.getOpcode()==181){
+					System.out.print("");
+				}
 				if (type == FIELD_INSN) {
 					convertFieldInsn((FieldInsnNode) insn);
 				} else if (type == IINC_INSN) {
@@ -1519,6 +1517,7 @@ final class JimpleSource implements MethodSource {
 		edges = null;
 	}
 	
+	
 	private void emitLocals() {
 		JimpleBody jb = body;
 		SootMethod m = jb.getMethod();
@@ -1541,8 +1540,9 @@ final class JimpleSource implements MethodSource {
 			else
 				iloc++;
 		}
-		for (Local l : locals.values())
+		for (Local l : locals.values()){
 			jbl.add(l);
+		}
 	}
 	
 	private void emitTraps() {
@@ -1625,7 +1625,19 @@ final class JimpleSource implements MethodSource {
 	public Body getBody(SootMethod m, String phaseName) {
 		if (!m.isConcrete())
 			return null;
+		if(m.toString().contains("com.google.common.collect.HashBiMap: com.google.common.collect.BiMap inverse()")){
+			System.out.println();
+		}
 		JimpleBody jb = Jimple.v().newBody(m);
+//		System.out.println(jb);
+//		ConditionalBranchFolder.v().transform(jb);
+//		System.out.println(jb);
+//		UnreachableCodeEliminator.v().transform(jb);
+//		System.out.println(jb);
+//		DeadAssignmentEliminator.v().transform(jb);
+//		System.out.println(jb);
+//		UnusedLocalEliminator.v().transform(jb);
+//		System.out.println(jb);
 		/* \/DEBUG\/ */
 //		if (!m.toString().equals("<jaggl.OpenGL: boolean j(java.lang.String)>"))
 //			return jb;
@@ -1648,6 +1660,7 @@ final class JimpleSource implements MethodSource {
 		} catch (Throwable t) {
 			throw new RuntimeException("Failed to convert " + m, t);
 		}
+		
 		/* build body (add units, locals, traps, etc.) */
 		emitLocals();
 		emitTraps();
