@@ -456,9 +456,9 @@ public class Scene  //extends AbstractHost
 				}
 
 				String jarPath = "";
-				if (!forceAndroidJar.equals("")) {
+				if (forceAndroidJar != null && !forceAndroidJar.equals("")) {
 					jarPath = forceAndroidJar;
-				} else if (!androidJars.equals("")) {
+				} else if (androidJars != null && !androidJars.equals("")) {
 					List<String> classPathEntries = new LinkedList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
 					classPathEntries.addAll(Options.v().process_dir());
 					Set<String> targetApks = new HashSet<String>();
