@@ -1,32 +1,31 @@
 package soot.toolkits.scalar;
 
 import static org.junit.Assert.*;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
+import static java.util.Arrays.asList;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.junit.After;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import soot.AbstractUnit;
 import soot.Local;
-import soot.Type;
 import soot.Unit;
-import soot.UnitPrinter;
 import soot.Value;
 import soot.ValueBox;
-import soot.tagkit.AbstractHost;
 import soot.toolkits.graph.DirectedGraph;
-import soot.util.Switch;
 
-public class LocalDefsTest {
+public class LocalDefsTest {	
+	
 	public static class TestLocal implements Local {
 		private static final long serialVersionUID = -9205035160965128826L;
 		
@@ -48,7 +47,7 @@ public class LocalDefsTest {
 		}
 
 		@Override
-		public Type getType() {
+		public soot.Type getType() {
 	    	throw new UnsupportedOperationException();
 		}
 		
@@ -57,12 +56,12 @@ public class LocalDefsTest {
 	    }
 	    
 		@Override
-		public void toString(UnitPrinter up) {
+		public void toString(soot.UnitPrinter up) {
 	    	throw new UnsupportedOperationException();
 		}
 
 		@Override
-		public void apply(Switch sw) {
+		public void apply(soot.util.Switch sw) {
 	    	throw new UnsupportedOperationException();
 		}
 
@@ -87,7 +86,7 @@ public class LocalDefsTest {
 		}
 
 		@Override
-		public void setType(Type t) {
+		public void setType(soot.Type t) {
 	    	throw new UnsupportedOperationException();
 		}
 		
@@ -96,7 +95,8 @@ public class LocalDefsTest {
 	    }		
 	}
 	
-	public static class TestBox extends AbstractHost implements ValueBox {
+	public static class TestBox extends soot.tagkit.AbstractHost 
+			implements ValueBox {
 		private static final long serialVersionUID = 1L;
 		Value value;
 		
@@ -124,12 +124,12 @@ public class LocalDefsTest {
 		}
 
 		@Override
-		public void toString(UnitPrinter up) {
+		public void toString(soot.UnitPrinter up) {
 			throw new UnsupportedOperationException();
 		}		
 	}
-		
-	public static class TestUnit extends AbstractUnit {
+	
+	public static class TestUnit extends soot.AbstractUnit {
 		private static final long serialVersionUID = 621613259853563173L;
 		
 		final List<ValueBox> def;
@@ -137,9 +137,9 @@ public class LocalDefsTest {
 		
 		public TestUnit(TestLocal defs, TestLocal ... uses) {
 			if ( defs == null) {
-				def = Collections.emptyList();
+				def = emptyList();
 			} else {
-				def = Collections.<ValueBox>singletonList(new TestBox(defs));
+				def = singletonList((ValueBox) new TestBox(defs));
 			}
 			
 			List<ValueBox> u = new ArrayList<ValueBox>();
@@ -147,28 +147,43 @@ public class LocalDefsTest {
 				u.add(new TestBox(l));
 			}
 
-			use = Collections.<ValueBox>unmodifiableList(u);
+			use = unmodifiableList(u);
 		}
 		
 	    final List<Unit> preds = new ArrayList<Unit>();
 	    final List<Unit> succs = new ArrayList<Unit>();
 
-	    public TestUnit addSucc(TestUnit succ) {
-	    	if (!succ.preds.contains(this))
-	    		succ.preds.add(this);
-	    	if (!this.succs.contains(succ))
-	    		this.succs.add(succ);
+	    public TestUnit addSucc(TestUnit u) {
+	    	if (!succs.contains(u))
+	    		succs.add(u);
+	    	if (!u.preds.contains(this))
+	    		u.preds.add(this);
 	        return this;
+	    }    
+	    
+	    public TestUnit addSuccs(TestUnit... s) {
+	    	for (TestUnit u : s) addSucc(u);
+	    	return this;
+	    }	    
+
+	    public TestUnit addPreds(TestUnit... p) {
+	    	for (TestUnit u : p) addPred(u);
+	    	return this;
 	    }
 	    
-	    public TestUnit addPred(TestUnit pred) {
-	        pred.succs.add(this);
-	        this.preds.add(pred);
+	    public TestUnit addPred(TestUnit u) {
+	    	if (!preds.contains(u))
+	    		preds.add(u);
+	    	if (!u.succs.contains(this))
+	    		u.succs.add(this);
 	        return this;
-	    }	
-		
+	    }		
+
 	    public String toString() {
-	    	return def + ":= " + use;
+	    	if (def.isEmpty()) {
+	    		return "f" + use;
+	    	}	    	
+	    	return def + " := f" + use;
 	    }
 	    
 		@Override
@@ -192,7 +207,7 @@ public class LocalDefsTest {
 		}
 
 		@Override
-		public void toString(UnitPrinter up) {
+		public void toString(soot.UnitPrinter up) {
 			throw new UnsupportedOperationException();
 		}
 
@@ -217,6 +232,11 @@ public class LocalDefsTest {
 					t.add(u);
 			}
 		}
+		
+		@Override
+		public String toString() {
+			return Arrays.toString(a.toArray(new Unit[a.size()]));
+		}		
 		
 		@Override
 		public List<Unit> getHeads() {
@@ -249,38 +269,54 @@ public class LocalDefsTest {
 		}		
 	}
 			
-	private static class SmartLocalDefsTest extends SmartLocalDefs {
-		protected SmartLocalDefsTest(Collection<? extends TestUnit> nodes, final Local[] locals) {
-			super(new TestGraph(nodes), new LiveLocals() {			
-				final List<Local> localList = Arrays.<Local>asList(locals);
-				@Override
-				public List<Local> getLiveLocalsBefore(Unit s) {
-					return localList;
-				}			
-				@Override
-				public List<Local> getLiveLocalsAfter(Unit s) {
-					return localList;
-				}
-			}, locals);
-		}		
+	private static LocalDefs newLocalDefs(Collection<? extends TestUnit> nodes) {
+		DirectedGraph<Unit> g = new TestGraph(nodes);
+		LiveLocals live = new SimpleLiveLocals(g){};
+
+		assertFalse(g.getHeads().isEmpty());
+		
+		return new SmartLocalDefs(g, live, locals){};
+	}		
+	
+	private static TestUnit newTestUnit(Collection<TestUnit> nodes,
+			TestLocal defs, TestLocal ... uses) {
+		TestUnit u = new TestUnit(defs, uses);
+		nodes.add(u);
+		return u;
+	}
+	
+	private static void createChain(TestUnit ... units) {
+		for (int i=1; i < units.length;i++) {
+			units[i].addPred(units[i-1]);
+		}
 	}
 
 	private static TestLocal[] locals;
+
+	private Collection<TestUnit> nodes;
+	
+	static public <T> void assertSetEquals(Collection<? extends T> expected, Collection<? extends T> actual) {
+		assertEquals(new HashSet<T>(expected), new HashSet<T>(actual));
+	}
+	
 	
 	@BeforeClass
 	public static void setUp() {
 		locals = new TestLocal[16];
 		for(int i = 0; i < locals.length; i++) {
-			locals[i] = new TestLocal();
-			locals[i].setNumber(i*19);
-		}
+			(locals[i] = new TestLocal()).setNumber(i*19);
+		}		
 	}
 
+	@Before
+	public void initNodes() {
+		nodes = new ArrayList<TestUnit>();
+	}
 
 	@After
 	public void postConditionLocalNumbers() {
 		for(int i = 0; i < locals.length; i++) {
-			assertEquals(i*19, locals[i].getNumber());
+			org.junit.Assert.assertEquals(i*19, locals[i].getNumber());
 		}		
 	}
 	
@@ -289,71 +325,43 @@ public class LocalDefsTest {
 	 * n:1
 	 */
 	@Test
-	public void test1() {
-		Collection<TestUnit> nodes = new ArrayList<TestUnit>();
-		TestUnit sink1 = new TestUnit(null, locals);		
-		TestUnit[] units = new TestUnit[locals.length];
-		
+	public void testSingleWaySink() {
+		TestUnit sink1 = newTestUnit(nodes, null, locals);		
+		TestUnit[] units = new TestUnit[locals.length];		
 		for(int i = 0; i < locals.length; i++) {
-			units[i] = new TestUnit(locals[i]);
-			units[i].addSucc(sink1);
+			units[i] = newTestUnit(nodes, locals[i]).addSucc(sink1);
 		}
-		Collections.addAll(nodes, units);
-		nodes.add(sink1);
 				
-		LocalDefs defs = new SmartLocalDefsTest(nodes, locals);
+		LocalDefs defs = newLocalDefs(nodes);
 		
-		for(int i = 0; i < locals.length; i++) {
-			for (TestUnit u : units)
-				assertArrayEquals(
-						new TestUnit[0], 
-						defs.getDefsOfAt(locals[i], u).toArray()
-					);
-			
-			assertArrayEquals(
-					new TestUnit[]{units[i]}, 
-					defs.getDefsOfAt(locals[i], sink1).toArray());
+		for (int i = 0; i < locals.length; i++) {
+			for (TestUnit u : units) {
+				assertSetEquals(emptyList(), defs.getDefsOfAt(locals[i], u));
+			}						
+
+			assertSetEquals(asList(units[i]), defs.getDefsOfAt(locals[i], sink1));
 		}	
 	}
 	
-	/**
-	 * n:1 2
-	 */
+	
 	@Test
-	public void test2() {
-		Collection<TestUnit> nodes = new ArrayList<TestUnit>();
-		TestUnit sink1 = new TestUnit(null, locals);		
-		TestUnit[] units1 = new TestUnit[locals.length];
-		TestUnit[] units2 = new TestUnit[locals.length];
-		
-		for(int i = 0; i < locals.length; i++) {
-			units1[i] = new TestUnit(locals[i]);
-			units1[i].addSucc(sink1);
-			units2[i] = new TestUnit(locals[i]);
-			units2[i].addSucc(sink1);
+	public void testSingleWaySink2() {	
+		TestUnit sink1 = newTestUnit(nodes, null, locals);
+		TestUnit[] units = new TestUnit[locals.length];		
+		for(int i = 0; i < units.length; i++) {
+			units[i] = newTestUnit(nodes, locals[i]).addSucc(sink1);
 		}
-		Collections.addAll(nodes, units1);
-		Collections.addAll(nodes, units2);
-		nodes.add(sink1);
+		
+		TestUnit sink2 = newTestUnit(nodes, null, locals).addPred(sink1);
 				
-		LocalDefs defs = new SmartLocalDefsTest(nodes, locals);
+		LocalDefs defs = newLocalDefs(nodes);
 		
 		for(int i = 0; i < locals.length; i++) {
-			for (TestUnit u : units1)
-				assertArrayEquals(
-						new TestUnit[0], 
-						defs.getDefsOfAt(locals[i], u).toArray()
-					);
-			for (TestUnit u : units2)
-				assertArrayEquals(
-						new TestUnit[0], 
-						defs.getDefsOfAt(locals[i], u).toArray()
-					);
+			for (TestUnit u : units)
+				assertSetEquals(emptyList(), defs.getDefsOfAt(locals[i], u));
 
-			Set<Unit> expected = new HashSet<Unit>();
-			Collections.addAll(expected, units1[i], units2[i]);
-			Set<Unit> actual = new HashSet<Unit>(defs.getDefsOfAt(locals[i], sink1));
-			assertEquals(expected, actual);
+			assertSetEquals(asList(units[i]), defs.getDefsOfAt(locals[i], sink1));
+			assertSetEquals(asList(units[i]), defs.getDefsOfAt(locals[i], sink2));
 		}
 	}
 	
@@ -361,75 +369,137 @@ public class LocalDefsTest {
 	 * n:1 2
 	 */
 	@Test
-	public void test3() {
-		Collection<TestUnit> nodes = new ArrayList<TestUnit>();
-		TestUnit sink1 = new TestUnit(null, locals);		
+	public void testDoubleWaySink() {
+		TestUnit sink1 = newTestUnit(nodes, null, locals);		
 		TestUnit[] units1 = new TestUnit[locals.length];
 		TestUnit[] units2 = new TestUnit[locals.length];
 		
 		for(int i = 0; i < locals.length; i++) {
-			units1[i] = new TestUnit(locals[i]);
-			units1[i].addSucc(sink1);
-			units2[i] = new TestUnit(locals[i]);
-			units2[i].addPred(sink1);
-			units2[i].addSucc(sink1);
+			units1[i] = newTestUnit(nodes, locals[i]).addSucc(sink1);
+			units2[i] = newTestUnit(nodes, locals[i]).addSucc(sink1);
 		}
-		Collections.addAll(nodes, units1);
-		Collections.addAll(nodes, units2);
-		nodes.add(sink1);
 				
-		LocalDefs defs = new SmartLocalDefsTest(nodes, locals);
+		LocalDefs defs = newLocalDefs(nodes);
 		
 		for(int i = 0; i < locals.length; i++) {
 			for (TestUnit u : units1)
-				assertArrayEquals(
-						new TestUnit[0], 
-						defs.getDefsOfAt(locals[i], u).toArray()
-					);
+				assertSetEquals(emptyList(), defs.getDefsOfAt(locals[i], u));
+			
 			for (TestUnit u : units2)
-				assertArrayEquals(
-						new TestUnit[0], 
-						defs.getDefsOfAt(locals[i], u).toArray()
-					);
+				assertSetEquals(emptyList(), defs.getDefsOfAt(locals[i], u));
 
-			Set<Unit> expected = new HashSet<Unit>();
-			Collections.addAll(expected, units1[i], units2[i]);
-			Set<Unit> actual = new HashSet<Unit>(defs.getDefsOfAt(locals[i], sink1));
-			assertEquals(expected, actual);
+			assertSetEquals(asList(units1[i], units2[i]), defs.getDefsOfAt(locals[i], sink1));
 		}
 	}
 	
+	/**
+	 * n:1 2
+	 */
 	@Test
-	public void test4() {
-		Collection<TestUnit> nodes = new ArrayList<TestUnit>();		
-		TestUnit sink1 = new TestUnit(null, locals);			
-		TestUnit sink2 = new TestUnit(null, locals);
-		sink1.addSucc(sink2);
+	public void testDoubleWayLoopSink() {
+		TestUnit sink = newTestUnit(nodes, null, locals);		
 		TestUnit[] units1 = new TestUnit[locals.length];
+		TestUnit[] units2 = new TestUnit[locals.length];
 		
 		for(int i = 0; i < locals.length; i++) {
-			units1[i] = new TestUnit(locals[i]);
-			units1[i].addSucc(sink1);
-		}
-		Collections.addAll(nodes, units1);
-		Collections.addAll(nodes, sink1, sink2);
-				
-		LocalDefs defs = new SmartLocalDefsTest(nodes, locals);
+			units1[i] = newTestUnit(nodes, locals[i]).addSucc(sink);
+			units2[i] = newTestUnit(nodes, locals[i]).addSucc(sink).addPred(sink);
+		}				
+		LocalDefs defs = newLocalDefs(nodes);
 		
 		for(int i = 0; i < locals.length; i++) {
 			for (TestUnit u : units1)
-				assertArrayEquals(
-						new TestUnit[0], 
-						defs.getDefsOfAt(locals[i], u).toArray()
-					);
+				assertSetEquals(emptyList(), defs.getDefsOfAt(locals[i], u));
+			
+			for (TestUnit u : units2)
+				assertSetEquals(emptyList(), defs.getDefsOfAt(locals[i], u));
 
-			Set<Unit> expected = new HashSet<Unit>();
-			Collections.addAll(expected, units1[i]);
-			Set<Unit> actual1 = new HashSet<Unit>(defs.getDefsOfAt(locals[i], sink1));
-			assertEquals(expected, actual1);
-			Set<Unit> actual2 = new HashSet<Unit>(defs.getDefsOfAt(locals[i], sink2));
-			assertEquals(expected, actual2);
+			assertSetEquals(asList(units1[i], units2[i]), defs.getDefsOfAt(locals[i], sink));
 		}
 	}
+
+	
+	@Test
+	public void testDoubleRingFlow() {	
+		TestUnit[] units = new TestUnit[6];
+		for(int i = 0; i < units.length; i++) {
+			units[i] = newTestUnit(nodes, locals[i], locals);
+		}
+		newTestUnit(nodes, null).addSuccs(units);
+		
+		createChain(units[0], units[1], units[0]);
+		createChain(units[2], units[3], units[2]);
+		createChain(units[2], units[4], units[1]);
+		createChain(units[0], units[5], units[3]);
+
+		LocalDefs defs = newLocalDefs(nodes);
+		
+		for(int i = 0; i < units.length; i++) {
+			for (TestUnit u : units)
+				assertSetEquals(asList(units[i]), 
+						defs.getDefsOfAt(locals[i], u));
+		}
+		
+		for(int i = units.length; i < locals.length; i++) {
+			for (TestUnit u : units)
+				assertSetEquals(emptyList(), defs.getDefsOfAt(locals[i], u));
+		}
+		
+	}
+
+	@Test
+	public void testPartialUndefined() {	
+		TestUnit u1 = newTestUnit(nodes, locals[0], locals[0]);
+		TestUnit u2 = newTestUnit(nodes, null, locals[0]);
+		TestUnit u3 = newTestUnit(nodes, null).addPred(u1).addPred(u2);
+		TestUnit u4 = newTestUnit(nodes, null, locals).addPred(u3);
+		TestUnit u5 = newTestUnit(nodes, locals[0], locals[0]).addPred(u4);
+		
+		LocalDefs defs = newLocalDefs(nodes);
+
+		assertSetEquals(emptyList(), defs.getDefsOfAt(locals[0], u1));
+		assertSetEquals(emptyList(), defs.getDefsOfAt(locals[0], u2));
+		assertSetEquals(asList(u1), defs.getDefsOfAt(locals[0], u4));
+		assertSetEquals(asList(u1), defs.getDefsOfAt(locals[0], u5));
+		
+	}
+
+	@Test
+	public void testNotInitializedLoopCounter() {
+		TestUnit u1 = newTestUnit(nodes, null);	
+		TestUnit u2 = newTestUnit(nodes, null).addPred(u1);
+		TestUnit u3 = newTestUnit(nodes, locals[0], locals[0]).addPred(u2).addSucc(u2);
+		TestUnit u4 = newTestUnit(nodes, null, locals[0]).addPred(u3);	
+
+		LocalDefs defs = newLocalDefs(nodes);
+
+		assertSetEquals(emptyList(), defs.getDefsOfAt(locals[0], u1));
+		assertSetEquals(emptyList(), defs.getDefsOfAt(locals[0], u2));
+		assertSetEquals(asList(u3), defs.getDefsOfAt(locals[0], u3));
+		assertSetEquals(asList(u3), defs.getDefsOfAt(locals[0], u4));
+	}
+	
+	@Test
+	public void testComplexFlow() {
+		TestUnit[] units = new TestUnit[locals.length*2];
+		
+		for(int i = 0; i < units.length; i++) {
+			units[i] = newTestUnit(nodes, locals[i%locals.length]);
+		}
+		for (TestUnit u : units) {
+			u.addSuccs(units);
+		}
+		TestUnit h = newTestUnit(nodes, null, locals).addSuccs(units);	
+		TestUnit t = newTestUnit(nodes, null, locals).addPreds(units);	
+
+		LocalDefs defs = newLocalDefs(nodes);
+		
+		for(int i = 0; i < locals.length; i++) {
+			assertSetEquals(emptyList(), defs.getDefsOfAt(locals[i], h));
+			assertSetEquals(asList(units[i], units[i+locals.length]), defs.getDefsOfAt(locals[i], t));
+		}
+		
+	}
+
 	
 }
