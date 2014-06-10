@@ -96,13 +96,19 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	private transient long modCount = 0;
 
 
-	private static <T> T requireNonNull(T obj)
+	/**
+	 * Backport of Objects.requireNonNull
+	 */
+	private static <T> T requireNonNull(T obj) {
 		if (obj == null)
 			throw new NullPointerException();
 		return obj;
 	}
 	
-	private static <T> T requireNonNull(T obj, String message)
+	/**
+	 * Backport of Objects.requireNonNull
+	 */
+	private static <T> T requireNonNull(T obj, String message) {
 		if (obj == null)
 			throw new NullPointerException(message);
 		return obj;
