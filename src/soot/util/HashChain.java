@@ -79,8 +79,8 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	private static final long serialVersionUID = -1490174501247136465L;
 
 	private static final ObjectStreamField[] serialPersistentFields = {
-		new ObjectStreamField("entries", Object[].class),
-	;
+		new ObjectStreamField("entries", Object[].class)
+	};
     
 	private transient Map<E, Entry<E>> map;
 	
