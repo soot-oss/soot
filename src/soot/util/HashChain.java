@@ -41,7 +41,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
-import java.util.Objects;
 
 /**
  * Reference implementation of the Chain interface, using a HashMap as the
@@ -53,7 +52,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		private Entry<X> next;
 		
 		private Entry(Entry<X> prev, X item, Entry<X> next) {
-			super(Objects.requireNonNull(item));			
+			super(requireNonNull(item));			
 			this.next = next;
 			this.prev = prev;
 			next.prev = prev.next = this;
@@ -80,21 +79,34 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	private static final long serialVersionUID = -1490174501247136465L;
 
 	private static final ObjectStreamField[] serialPersistentFields = {
-        new ObjectStreamField("entries", Object[].class),
-    };
+		new ObjectStreamField("entries", Object[].class),
+	;
     
 	private transient Map<E, Entry<E>> map;
 	
 	// <ring> 1 <-> 2 <-> 3 <-> ... <-> N-2 <-> N-1 <-> N <ring>
 	private transient Entry<E> ring = new Entry<E>();
 	
-    /**
-     * The number of times this Chain has been structurally modified.
-     * 
-     * This field is used to make iterators on Collection-views of
-     * the Chain fail-fast.  (See ConcurrentModificationException).
-     */
+	/**
+	 * The number of times this Chain has been structurally modified.
+	 * 
+	 * This field is used to make iterators on Collection-views of
+	 * the Chain fail-fast.  (See ConcurrentModificationException).
+	 */
 	private transient long modCount = 0;
+
+
+	private static <T> T requireNonNull(T obj)
+		if (obj == null)
+			throw new NullPointerException();
+		return obj;
+	}
+	
+	private static <T> T requireNonNull(T obj, String message)
+		if (obj == null)
+			throw new NullPointerException(message);
+		return obj;
+	}
 
 
 	/**
@@ -327,7 +339,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @throws RuntimeException if the map already contains the linked item
 	 */
 	private void insertBefore(E toInsert, Entry<E> point) {		
-		Objects.requireNonNull(toInsert, "Warning! You tried to insert "
+		requireNonNull(toInsert, "Warning! You tried to insert "
 				+ "a null entry into a Chain!");
 		
 		Entry<E> e = new Entry<E>(point.prev, toInsert, point);		
@@ -345,7 +357,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	
 	private void insertBefore(Collection<? extends E> toInsert, Entry<E> point) {
 		// if the list is null, treat it as an empty list
-		Objects.requireNonNull(toInsert, "Warning! You tried to insert "
+		requireNonNull(toInsert, "Warning! You tried to insert "
 				+ "a null list into a Chain!");
 		
 		for (E o : toInsert) {
@@ -376,7 +388,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @throws NullPointerException if item is null
 	 */
 	public boolean remove(Object item) {
-		Objects.requireNonNull(item);
+		requireNonNull(item);
 		Entry<E> old = map.remove(item);
 		if ( old != null ) {		
 			modCount++;
@@ -444,7 +456,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @return the entry associated with the point. the result will never be null.
 	 */
 	private Entry<E> getEntry(Object point) {
-		Objects.requireNonNull(point);
+		requireNonNull(point);
 		Entry<E> link = map.get(point);
 		if (link == null)
 			throw new NoSuchElementException();
