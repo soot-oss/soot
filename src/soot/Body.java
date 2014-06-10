@@ -40,6 +40,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import soot.dexpler.DalvikThrowAnalysis;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.IdentityStmt;
@@ -52,8 +53,10 @@ import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.tagkit.CodeAttribute;
 import soot.tagkit.Tag;
+import soot.toolkits.exceptions.AbstractThrowAnalysis;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.toolkits.exceptions.UnitThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.FlowSet;
@@ -770,8 +773,23 @@ public abstract class Body extends AbstractHost implements Serializable
 
     @SuppressWarnings("unchecked")
 	public void checkInit() {
+	    AbstractThrowAnalysis throwAnalysis = null;
+	    switch (Options.v().check_init_throw_analysis()) {
+	        case soot.options.Options.check_init_throw_analysis_pedantic:
+	            throwAnalysis = PedanticThrowAnalysis.v();
+	            break;
+	        case soot.options.Options.check_init_throw_analysis_unit:
+	            throwAnalysis = UnitThrowAnalysis.v();
+	            break;
+	        case soot.options.Options.check_init_throw_analysis_dalvik:
+	            throwAnalysis = DalvikThrowAnalysis.v();
+	            break;
+	        default:
+	            assert false; // The above cases should cover all posible options
+	            throwAnalysis = PedanticThrowAnalysis.v();
+	    }
         ExceptionalUnitGraph g = new ExceptionalUnitGraph
-	    (this, PedanticThrowAnalysis.v(), false);
+	    (this, throwAnalysis, false);
 
 		InitAnalysis analysis=new InitAnalysis(g);
 		for (Unit s : getUnits()) {
