@@ -20,6 +20,7 @@
 package soot.toolkits.scalar;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.toolkits.graph.UnitGraph;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.singletonList;
@@ -76,7 +78,7 @@ public class SmartLocalDefs implements LocalDefs {
 			return emptyList();
 		}
 		
-		public List<Unit> getDefs(ValueBox valueBox) {
+		public List<Unit> getDefsOf(ValueBox valueBox) {
 			Entry e = resultValueBoxes.get(valueBox);
 			if (e == null) {
 				return emptyList();
@@ -91,6 +93,7 @@ public class SmartLocalDefs implements LocalDefs {
 			// or a invoke like "a := b.foo()"
 			super(g.size() * 3 + 1);
 			assert localRange[n] == 0;
+			
 			for (Unit s : g) {
 				for (ValueBox useBox : s.getUseBoxes()) {
 					Value v = useBox.getValue();
@@ -114,7 +117,7 @@ public class SmartLocalDefs implements LocalDefs {
 			// most of the units are like "a := b + c", 
 			// or a invoke like "a := b.foo()"
 			super(g.size() * 3 + 1);
-			assert localRange[n] > 0;
+
 			LocalDefsAnalysis reachingAnalysis = new LocalDefsAnalysis();
 			Unit[] buffer = new Unit[localRange[n]];
 
@@ -138,7 +141,7 @@ public class SmartLocalDefs implements LocalDefs {
 						} else {
 							int j = 0;
 							BitSet reaching = reachingAnalysis.getFlowBefore(s);
-							for (int i = to; (i = reaching.previousSetBit(i - 1)) >= from;) {
+							for (int i = reaching.nextSetBit(from); (i < to) && (i >= 0); i = reaching.nextSetBit(i+1)) {
 								buffer[j++] = units[i];
 							}
 
@@ -161,39 +164,63 @@ public class SmartLocalDefs implements LocalDefs {
 			super(g);
 			doAnalysis();
 		}
-
+				
+		@Override
+		protected void mergeFilter(Unit unit, BitSet inout) {
+			BitSet mask = newInitialFlow();
+			for (Local l : liveLocals.getLiveLocalsBefore(unit)) {
+				int i = l.getNumber();
+				int j = i + 1;
+				mask.set(localRange[i], localRange[j]);
+			}
+			inout.and(mask);	
+		}
+		
 		@Override
 		protected void flowThrough(BitSet in, Unit unit, BitSet out) {
 			// copy everything that is live
 			out.clear();
-			if (!in.isEmpty()) {
-				for (Local l : liveLocals.getLiveLocalsAfter(unit)) {
-					int i = l.getNumber();
-					int j = i + 1;
-					out.set(localRange[i], localRange[j]);
-				}
-				out.and(in);
+			
+			if (in.isEmpty()) {		
+				initFlowAfter(unit, out);
+				return;
+			}			
+			/*
+			for (Local l : liveLocals.getLiveLocalsAfter(unit)) {
+				int i = l.getNumber();
+				int j = i + 1;
+				out.set(localRange[i], localRange[j]);
 			}
-
-			// reassign all definitions
-			for (ValueBox vb : unit.getDefBoxes()) {
-				Value v = vb.getValue();
-				if (v instanceof Local) {
-					int lno = ((Local) v).getNumber();
-
-					int from = localRange[lno];
-					int to = localRange[lno + 1];
-					assert from <= to;
-
-					if (from < to) {
-						out.clear(from, to);
-						//only set range if the unit is live
-						Integer idx = indexOfUnit.get(unit);
-						if (idx != null) {
+			out.and(in);
+			*/
+			out.or(in);
+			
+			Integer idx = indexOfUnit.get(unit);
+			if (idx != null) {
+				// reassign all definitions
+				for (ValueBox vb : unit.getDefBoxes()) {
+					Value v = vb.getValue();
+					if (v instanceof Local) {
+						int lno = ((Local) v).getNumber();
+	
+						int from = localRange[lno];
+						int to = localRange[lno + 1];
+						assert from <= to;
+	
+						if (from < to) {
+							out.clear(from, to);
 							out.set(idx);
 						}
 					}
 				}
+			}			
+		}
+
+		@Override
+		protected void initFlowAfter(Unit unit, BitSet flow) {
+			Integer idx = indexOfUnit.get(unit);
+			if (idx != null) {
+				flow.set(idx);
 			}
 		}
 
@@ -212,12 +239,12 @@ public class SmartLocalDefs implements LocalDefs {
 		protected BitSet newInitialFlow() {
 			return new BitSet(localRange[n]);
 		}
-
+/*
 		@Override
 		protected BitSet entryInitialFlow() {
 			return newInitialFlow();
 		}
-
+*/
 		@Override
 		protected void merge(BitSet in1, BitSet in2, BitSet out) {
 			throw new RuntimeException("should never be called");
@@ -233,7 +260,7 @@ public class SmartLocalDefs implements LocalDefs {
 	private Map<Unit, Integer> indexOfUnit;
 
 	private LiveLocals liveLocals;
-	private LocalDefs localDefs;
+	private Assignment assignment;
 
 	public SmartLocalDefs(UnitGraph graph, LiveLocals live) {
 		this(graph, live, graph.getBody().getLocals());
@@ -251,6 +278,18 @@ public class SmartLocalDefs implements LocalDefs {
 		this.n = locals.length;
 		this.liveLocals = live;
 
+		/*
+		List<List<Unit>> scc = (new StronglyConnectedComponentsFast<Unit>(graph)).getTrueComponents();
+		if ( !scc.isEmpty() ) {
+			System.out.println(graph.size());	
+			System.out.println("==============================");				
+			for (List<Unit> comp : scc){		
+				System.out.println(comp.size());// +" // "+live.getLiveLocalsBefore(comp.get(0))+" // "+live.getLiveLocalsBefore(comp.get(0)).size()+" of "+locals.length);
+			}
+			System.out.println();
+		}*/
+
+
 		// reassign local numbers
 		int[] oldNumbers = new int[n];
 		for (int i = 0; i < n; i++) {
@@ -264,7 +303,17 @@ public class SmartLocalDefs implements LocalDefs {
 		for (int i = 0; i < n; i++) {
 			locals[i].setNumber(oldNumbers[i]);
 		}
-
+		
+		// GC help
+		localRange = null;
+		liveLocals = null;
+		
+		indexOfUnit.clear();
+		indexOfUnit = null;
+		
+		Arrays.fill(units, null);
+		units = null;
+		
 		if (Options.v().time())
 			Timers.v().defsTimer.end();
 	}
@@ -305,25 +354,42 @@ public class SmartLocalDefs implements LocalDefs {
 			}
 		}
 
-		localRange[0] = 0;
-		for (int j = 0, i = 0; i < n; i++) {
-			if (unitList[i].size() >= 2 || undefinedLocals.get(i)) {
-				for (Unit u : unitList[i]) {
-					indexOfUnit.put(units[j] = u, j);
-					j++;
+		boolean isDefaultAssignment = !undefinedLocals.isEmpty();
+		
+		if (!isDefaultAssignment) {
+			for (List<Unit> l : unitList) {
+				if (l.size() >= 2) {
+					isDefaultAssignment = true;
+					break;
 				}
 			}
-			localRange[i + 1] = j;
 		}
 
-		localDefs = (localRange[n] == 0) 
-			? new StaticSingleAssignment(unitList) 
-			: new DefaultAssignment(unitList)
-			;
+		if (isDefaultAssignment) {
+			localRange[0] = 0;
+			for (int j = 0, i = 0; i < n; i++) {
+				if (unitList[i].size() >= 2 || undefinedLocals.get(i)) {
+					for (Unit u : unitList[i]) {
+						indexOfUnit.put(units[j] = u, j);
+						j++;
+					}
+				}
+				localRange[i + 1] = j;
+			}
+			assignment = new DefaultAssignment(unitList);
+		} else {
+			Arrays.fill(localRange, 0);
+			assignment = new StaticSingleAssignment(unitList);
+		}		
 	}
 
 	@Override
 	public List<Unit> getDefsOfAt(Local l, Unit s) {
-		return localDefs.getDefsOfAt(l, s);
+		return assignment.getDefsOfAt(l, s);
+	}
+	
+	
+	public List<Unit> getDefsOf(ValueBox valueBox) {
+		return assignment.getDefsOf(valueBox);
 	}
 }
