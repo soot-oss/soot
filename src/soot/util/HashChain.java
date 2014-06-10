@@ -546,7 +546,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		Entry<E> headEntry = getEntry(head);		
 		if (headEntry.prev.get() == tail) {
 			// special case hack, so empty ranges iterate 0 times
-			return Collections.emptyIterator();
+			return Collections.<E>emptyList().iterator();
 		}
 		return newIterator(headEntry, getEntry(tail));
 	}
