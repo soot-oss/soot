@@ -48,16 +48,18 @@ public final class HybridPointsToSet extends PointsToSetInternal {
 
     private final boolean nativeAddAll( HybridPointsToSet other, HybridPointsToSet exclude ) {
         boolean ret = false;
-        BitVector mask = null;
         TypeManager typeManager = pag.getTypeManager();
-        if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
-            mask = typeManager.get( this.getType() );
-        }
         if( other.bits != null ) {
             convertToBits();
             if( exclude != null ) {
                 exclude.convertToBits();
             }
+            
+            BitVector mask = null;
+            if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
+                mask = typeManager.get( this.getType() );
+            }
+
             BitVector ebits = ( exclude==null ? null : exclude.bits );
             ret = bits.orAndAndNot( other.bits, mask, ebits );
         } else {

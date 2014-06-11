@@ -62,8 +62,7 @@ public final class TypeManager {
         if( type == null ) return null;
         while(allocNodeListener.hasNext()) {
             AllocNode n = (AllocNode) allocNodeListener.next();
-            for( Iterator tIt = Scene.v().getTypeNumberer().iterator(); tIt.hasNext(); ) {
-                final Type t = (Type) tIt.next();
+            for( final Type t : Scene.v().getTypeNumberer()) {
                 if( !(t instanceof RefLikeType) ) continue;
                 if( t instanceof AnySubType ) continue;
                 if( isUnresolved(t) ) continue;
@@ -71,8 +70,7 @@ public final class TypeManager {
                     BitVector mask = (BitVector) typeMask.get( t );
                     if( mask == null ) {
                         typeMask.put( t, mask = new BitVector() );
-                        for( Iterator anIt = pag.getAllocNodeNumberer().iterator(); anIt.hasNext(); ) {
-                            final AllocNode an = (AllocNode) anIt.next();
+                        for( final AllocNode an : pag.getAllocNodeNumberer()) {
                             if( castNeverFails( an.getType(), t ) ) {
                                 mask.set( an.getNumber() );
                             }

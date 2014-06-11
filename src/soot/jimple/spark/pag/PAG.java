@@ -735,8 +735,8 @@ public class PAG implements PointsToAnalysis {
         return nodeToTag;
     }
 
-    private final ArrayNumberer allocNodeNumberer = new ArrayNumberer();
-    public ArrayNumberer getAllocNodeNumberer() { return allocNodeNumberer; }
+    private final ArrayNumberer<AllocNode> allocNodeNumberer = new ArrayNumberer();
+    public ArrayNumberer<AllocNode> getAllocNodeNumberer() { return allocNodeNumberer; }
     private final ArrayNumberer varNodeNumberer = new ArrayNumberer();
     public ArrayNumberer getVarNodeNumberer() { return varNodeNumberer; }
     private final ArrayNumberer fieldRefNodeNumberer = new ArrayNumberer();
