@@ -20,18 +20,18 @@
 package soot.util;
 import java.util.*;
 
-public class MapNumberer implements Numberer {
-    Map<Object, Integer> map = new HashMap<Object, Integer>();
-    ArrayList<Object> al = new ArrayList<Object>();
+public class MapNumberer<T> implements Numberer<T> {
+    Map<T, Integer> map = new HashMap<T, Integer>();
+    ArrayList<T> al = new ArrayList<T>();
     int nextIndex = 1;
-    public void add( Object o ) {
+    public void add( T o ) {
         if( !map.containsKey(o) ) {
             map.put( o, new Integer(nextIndex) );
             al.add(o);
             nextIndex++;
         }
     }
-    public Object get( long number ) {
+    public T get( long number ) {
         return al.get((int) number);
     }
     public long get( Object o ) {

@@ -79,7 +79,7 @@ public final class TypeManager {
     final public BitVector get( Type type ) {
         if( type == null ) return null;
         while(allocNodeListener.hasNext()) {
-            AllocNode n = (AllocNode) allocNodeListener.next();
+            AllocNode n = allocNodeListener.next();
             for( final Type t : Scene.v().getTypeNumberer()) {
                 if( !(t instanceof RefLikeType) ) continue;
                 if( t instanceof AnySubType ) continue;
