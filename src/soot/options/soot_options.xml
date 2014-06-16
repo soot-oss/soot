@@ -5751,13 +5751,24 @@ to the surrounding program.
 						</multiopt>
 						<multiopt>
 							<name>Local Initialization ThrowAnalysis</name>
+							<alias>check-init-ta</alias>
 							<alias>check-init-throw-analysis</alias>
 							<long_desc>
 This option specifies which throw analysis to use during local initialization 
-checking inside soot.Body. The default is OK for most Java applications, but 
-users analyzing Android applications should consider setting it to 'Dalvik' for 
-better compatibility.
+checking inside soot.Body.
         </long_desc>
+							<value>
+								<name>Select Automatically</name>
+								<alias>auto</alias>
+								<default/>
+								<short_desc>Automatically select a throw analysis</short_desc>
+								<long_desc>
+Selects the throw analysis to use for local initialization checking based on 
+information from other options. In particular, it will use 'dalvik' when 
+it detects it is analyzing an Android application (e.g. when --android-jars or 
+--force-android-jar are set) and 'pedantic' otherwise. This is the default.
+</long_desc>
+							</value>
 							<value>
 								<name>Pedantic</name>
 								<alias>pedantic</alias>
@@ -5774,8 +5785,7 @@ to occur at arbitrary points in the execution of a victim thread.
 							<value>
 								<name>Unit</name>
 								<alias>unit</alias>
-								<short_desc>Unit Throw Analysis</short_desc>
-								<default/>																
+								<short_desc>Unit Throw Analysis</short_desc>															
 								<long_desc>
 Says that each statement in the intermediate representation
 may throw those exception types associated with the corresponding
@@ -5787,8 +5797,7 @@ to the surrounding program.
 							<value>
 								<name>Dalvik</name>
 								<alias>dalvik</alias>
-								<short_desc>Dalvik Throw Analysis</short_desc>
-								<default/>																
+								<short_desc>Dalvik Throw Analysis</short_desc>								
 								<long_desc>
 Says that each statement in the intermediate representation
 may throw those exception types associated with the corresponding

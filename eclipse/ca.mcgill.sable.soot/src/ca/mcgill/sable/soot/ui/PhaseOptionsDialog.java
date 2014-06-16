@@ -2338,6 +2338,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getProcessing_Optionsthrow_analysis_widget().getAlias(), stringRes);
 		}
+		 
+		stringRes = getProcessing_Optionscheck_init_throw_analysis_widget().getSelectedAlias();
+
+		
+		defStringRes = "auto";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getProcessing_Optionscheck_init_throw_analysis_widget().getAlias(), stringRes);
+		}
 		
 		boolRes = getjbenabled_widget().getButton().getSelection();
 		
@@ -6901,6 +6911,18 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	}	
 	
 	
+	
+	private MultiOptionWidget Processing_Optionscheck_init_throw_analysis_widget;
+	
+	private void setProcessing_Optionscheck_init_throw_analysis_widget(MultiOptionWidget widget) {
+		Processing_Optionscheck_init_throw_analysis_widget = widget;
+	}
+	
+	public MultiOptionWidget getProcessing_Optionscheck_init_throw_analysis_widget() {
+		return Processing_Optionscheck_init_throw_analysis_widget;
+	}	
+	
+	
 	private BooleanOptionWidget jbenabled_widget;
 	
 	private void setjbenabled_widget(BooleanOptionWidget widget) {
@@ -10935,6 +10957,48 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			defaultString = getStringDef(defKey);
 		
 			getProcessing_Optionsthrow_analysis_widget().setDef(defaultString);
+		}
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Select Automatically",
+		"auto",
+		"\nSelects the throw analysis to use for local initialization \nchecking based on information from other options. In \nparticular, it will use 'dalvik' when it detects it is \nanalyzing an Android application (e.g. when --android-jars or \n--force-android-jar are set) and 'pedantic' otherwise. This is \nthe default. ",
+		
+		true),
+		
+		new OptionData("Pedantic",
+		"pedantic",
+		"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, since the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread. ",
+		
+		false),
+		
+		new OptionData("Unit",
+		"unit",
+		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. ",
+		
+		false),
+		
+		new OptionData("Dalvik",
+		"dalvik",
+		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the Dalvik Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. This is the equivalent of Unit \nabove, but targeting the Dalvik VM semantics as opposed to \nthose of the JVM. ",
+		
+		false),
+		
+		};
+		
+										
+		setProcessing_Optionscheck_init_throw_analysis_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Local Initialization ThrowAnalysis", "", "","check-init-ta", "\nThis option specifies which throw analysis to use during local \ninitialization checking inside soot.Body. ")));
+		
+		defKey = ""+" "+""+" "+"check-init-ta";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getProcessing_Optionscheck_init_throw_analysis_widget().setDef(defaultString);
 		}
 		
 		

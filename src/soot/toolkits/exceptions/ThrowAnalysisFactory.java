@@ -1,10 +1,5 @@
 /* Soot - a Java Optimization Framework
  *
- * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
- * Security Reliability and Trust (SnT) - All rights reserved
- * Alexandre Bartel
- *
- *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
@@ -40,6 +35,15 @@ public class ThrowAnalysisFactory {
      */
     public static ThrowAnalysis checkInitThrowAnalysis() {
         switch (Options.v().check_init_throw_analysis()) {
+	        case soot.options.Options.check_init_throw_analysis_auto:
+	        	if(!Options.v().android_jars().equals("") || 
+	        	   !Options.v().force_android_jar().equals("")) {
+	        	   // If Android related options are set, use 'dalvik' throw 
+	        	   // analysis.
+	        		return DalvikThrowAnalysis.v();
+	        	} else {
+	        		return PedanticThrowAnalysis.v();
+	        	}
 	        case soot.options.Options.check_init_throw_analysis_pedantic:
 	            return PedanticThrowAnalysis.v();
 	        case soot.options.Options.check_init_throw_analysis_unit:
