@@ -183,7 +183,7 @@ public class SootResolver
     }
     
     private void addToResolveWorklist(SootClass sc, int desiredLevel) {
-        if( sc.resolvingLevel() >= desiredLevel ) return;
+    	if( sc.resolvingLevel() >= desiredLevel ) return;
         worklist[desiredLevel].add(sc);
     }
 

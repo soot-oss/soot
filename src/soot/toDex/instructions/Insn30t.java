@@ -1,10 +1,10 @@
 package soot.toDex.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.Format.Instruction30t;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
+import org.jf.dexlib2.builder.instruction.BuilderInstruction30t;
 
-import soot.toDex.SootToDexUtils;
+import soot.toDex.LabelAssigner;
 
 /**
  * The "30t" instruction format: It needs three 16-bit code units, does not have any registers
@@ -19,14 +19,8 @@ public class Insn30t extends InsnWithOffset {
 	}
 
 	@Override
-	protected Instruction getRealInsn0() {
-		int offA = getRelativeOffset();
-		return new Instruction30t(opc, offA);
+	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
+		return new BuilderInstruction30t(opc, assigner.getOrCreateLabel(target));
 	}
-	
-	@Override
-	public boolean offsetFit() {
-		int offA = getRelativeOffset();
-		return SootToDexUtils.fitsSigned32(offA);
-	}
+
 }

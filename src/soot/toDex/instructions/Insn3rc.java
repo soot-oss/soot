@@ -3,11 +3,12 @@ package soot.toDex.instructions;
 import java.util.BitSet;
 import java.util.List;
 
-import org.jf.dexlib.Item;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.Format.Instruction3rc;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
+import org.jf.dexlib2.builder.instruction.BuilderInstruction3rc;
+import org.jf.dexlib2.writer.builder.BuilderReference;
 
+import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 import soot.toDex.SootToDexUtils;
 
@@ -22,9 +23,9 @@ public class Insn3rc extends AbstractInsn {
 	
 	private short regCount;
 	
-	private Item<?> referencedItem;
+	private BuilderReference referencedItem;
 
-	public Insn3rc(Opcode opc, List<Register> regs, short regCount, Item<?> referencedItem) {
+	public Insn3rc(Opcode opc, List<Register> regs, short regCount, BuilderReference referencedItem) {
 		super(opc);
 		this.regs = regs;
 		this.regCount = regCount;
@@ -32,9 +33,9 @@ public class Insn3rc extends AbstractInsn {
 	}
 	
 	@Override
-	protected Instruction getRealInsn0() {
+	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
 		Register startReg = regs.get(0);
-		return new Instruction3rc(opc, regCount, startReg.getNumber(), referencedItem);
+		return new BuilderInstruction3rc(opc, startReg.getNumber(), regCount, referencedItem);
 	}
 	
 	@Override

@@ -55,6 +55,7 @@ import soot.tagkit.SignatureTag;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
+import soot.toDex.SootToDexUtils;
 
 /**
  * Converts annotations from Dexlib to Jimple.
@@ -148,7 +149,20 @@ public class DexAnnotation {
                         if (t instanceof DeprecatedTag) {
                             vat = new VisibilityAnnotationTag(0);
                             vat.addAnnotation(new AnnotationTag("Ljava/lang/Deprecated;"));
-                        } else {
+                        }
+                        else if (t instanceof SignatureTag) {
+                        	SignatureTag sig = (SignatureTag) t;
+                        	
+                            vat = new VisibilityAnnotationTag(0);
+                            ArrayList<AnnotationElem> sigElements = new ArrayList<AnnotationElem>();
+                            for (String s : SootToDexUtils.splitSignature(sig.getSignature()))
+                            	sigElements.add(new AnnotationStringElem(s, 's', "value"));
+                            
+                            AnnotationElem elem = new AnnotationArrayElem(sigElements, 's', "value");
+                            vat.addAnnotation(new AnnotationTag("Ldalvik/annotation/Signature;",
+                            		Collections.singleton(elem)));
+                        }
+                        else {
                             throw new RuntimeException(
                                     "error: unhandled tag for parameter annotation in method "
                                             + h + " (" + t + ").");

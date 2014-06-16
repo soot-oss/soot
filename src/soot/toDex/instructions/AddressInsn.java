@@ -1,7 +1,9 @@
 package soot.toDex.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
+
+import soot.toDex.LabelAssigner;
 
 /** 
  * Inspired by com.android.dx.dex.code.CodeAddress: pseudo instruction for use
@@ -22,7 +24,7 @@ public class AddressInsn extends AbstractInsn {
 	}
 
 	@Override
-	protected Instruction getRealInsn0() {
+	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
 		return null;
 	}
 	

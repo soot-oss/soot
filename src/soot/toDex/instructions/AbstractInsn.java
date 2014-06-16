@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.List;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
 
+import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 import soot.toDex.SootToDexUtils;
 
@@ -17,8 +18,6 @@ public abstract class AbstractInsn implements Insn {
 	
 	protected Opcode opc;
 	
-	protected int insnOffset;
-	
 	protected List<Register> regs;
 	
 	public AbstractInsn(Opcode opc) {
@@ -26,20 +25,11 @@ public abstract class AbstractInsn implements Insn {
 			throw new IllegalArgumentException("opcode must not be null");
 		}
 		this.opc = opc;
-		insnOffset = -1;
 		regs = new ArrayList<Register>();
 	}
 	
 	public Opcode getOpcode() {
 		return opc;
-	}
-	
-	public void setInsnOffset(int insnOffset) {
-		this.insnOffset = insnOffset;
-	}
-	
-	public int getInsnOffset() {
-		return insnOffset;
 	}
 	
 	public List<Register> getRegs() {
@@ -70,18 +60,19 @@ public abstract class AbstractInsn implements Insn {
 		return Math.max(resultNeed, miscRegsNeed);
 	}
 	
-	public Instruction getRealInsn() {
+	@Override
+	public BuilderInstruction getRealInsn(LabelAssigner assigner) {
 		if (hasIncompatibleRegs()) {
 			throw new RuntimeException("the instruction still has incompatible registers: " + getIncompatibleRegs());
 		}
-		return getRealInsn0();
+		return getRealInsn0(assigner);
 	}
 	
-	protected abstract Instruction getRealInsn0();
+	protected abstract BuilderInstruction getRealInsn0(LabelAssigner assigner);
 	
 	@Override
 	public String toString() {
-		return opc.toString() + " @" + insnOffset + " " + regs;
+		return opc.toString() + " " + regs;
 	}
 
 	public int getSize() {

@@ -2,10 +2,11 @@ package soot.toDex.instructions;
 
 import java.util.BitSet;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.Format.Instruction32x;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
+import org.jf.dexlib2.builder.instruction.BuilderInstruction32x;
 
+import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
@@ -31,8 +32,9 @@ public class Insn32x extends AbstractInsn implements TwoRegInsn {
 	}
 	
 	@Override
-	protected Instruction getRealInsn0() {
-		return new Instruction32x(opc, getRegA().getNumber(), getRegB().getNumber());
+	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
+		return new BuilderInstruction32x(opc, getRegA().getNumber(),
+				getRegB().getNumber());
 	}
 	
 	@Override

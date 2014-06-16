@@ -2,11 +2,12 @@ package soot.toDex.instructions;
 
 import java.util.BitSet;
 
-import org.jf.dexlib.Item;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.Format.Instruction22c;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
+import org.jf.dexlib2.builder.instruction.BuilderInstruction22c;
+import org.jf.dexlib2.writer.builder.BuilderReference;
 
+import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
@@ -17,9 +18,9 @@ import soot.toDex.Register;
  */
 public class Insn22c extends AbstractInsn implements TwoRegInsn {
 	
-	private Item<?> referencedItem;
+	private BuilderReference referencedItem;
 
-	public Insn22c(Opcode opc, Register regA, Register regB, Item<?> referencedItem) {
+	public Insn22c(Opcode opc, Register regA, Register regB, BuilderReference referencedItem) {
 		super(opc);
 		regs.add(regA);
 		regs.add(regB);
@@ -35,8 +36,9 @@ public class Insn22c extends AbstractInsn implements TwoRegInsn {
 	}
 
 	@Override
-	protected Instruction getRealInsn0() {
-		return new Instruction22c(opc, (byte) getRegA().getNumber(), (byte) getRegB().getNumber(), referencedItem);
+	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
+		return new BuilderInstruction22c(opc, getRegA().getNumber(),
+				getRegB().getNumber(), referencedItem);
 	}
 	
 	@Override

@@ -3,9 +3,10 @@ package soot.toDex.instructions;
 import java.util.BitSet;
 import java.util.List;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
 
+import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
@@ -14,11 +15,7 @@ import soot.toDex.Register;
 public interface Insn extends Cloneable {
 	
 	Opcode getOpcode();
-
-	void setInsnOffset(int insnOffset);
-
-	int getInsnOffset();
-
+	
 	List<Register> getRegs();
 	
 	BitSet getIncompatibleRegs();
@@ -27,7 +24,7 @@ public interface Insn extends Cloneable {
 	
 	int getMinimumRegsNeeded();
 	
-	Instruction getRealInsn();
+	BuilderInstruction getRealInsn(LabelAssigner assigner);
 
 	int getSize();
 }

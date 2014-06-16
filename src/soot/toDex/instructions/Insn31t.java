@@ -2,12 +2,12 @@ package soot.toDex.instructions;
 
 import java.util.BitSet;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.Format.Instruction31t;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
+import org.jf.dexlib2.builder.instruction.BuilderInstruction31t;
 
+import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
-import soot.toDex.SootToDexUtils;
 
 /**
  * The "31t" instruction format: It needs three 16-bit code units, has one register
@@ -17,6 +17,8 @@ import soot.toDex.SootToDexUtils;
  */
 public class Insn31t extends InsnWithOffset implements OneRegInsn {
 	
+	public SwitchPayload payload = null;
+	
 	public Insn31t(Opcode opc, Register regA) {
 		super(opc);
 		regs.add(regA);
@@ -25,11 +27,15 @@ public class Insn31t extends InsnWithOffset implements OneRegInsn {
 	public Register getRegA() {
 		return regs.get(REG_A_IDX);
 	}
+	
+	public void setPayload(SwitchPayload payload) {
+		this.payload = payload;
+	}
 
 	@Override
-	protected Instruction getRealInsn0() {
-		int offB = getRelativeOffset();
-		return new Instruction31t(opc, (short) getRegA().getNumber(), offB);
+	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
+		return new BuilderInstruction31t(opc, (short) getRegA().getNumber(),
+				assigner.getOrCreateLabel(payload));
 	}
 	
 	@Override
@@ -40,10 +46,5 @@ public class Insn31t extends InsnWithOffset implements OneRegInsn {
 		}
 		return incompatRegs;
 	}
-	
-	@Override
-	public boolean offsetFit() {
-		int offB = getRelativeOffset();
-		return SootToDexUtils.fitsSigned32(offB);
-	}
+
 }
