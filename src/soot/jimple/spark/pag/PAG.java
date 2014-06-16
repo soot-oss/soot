@@ -316,7 +316,7 @@ public class PAG implements PointsToAnalysis {
                 for (Object o : os) {
                     if( o == null ) continue;
                     if( o instanceof Set ) {
-                        s.addAll( (Set) o );
+                        s.addAll( (Set<Node>) o );
                     } else {
                         Node[] ar = (Node[]) o;
                         for (Node element1 : ar) {
@@ -489,8 +489,8 @@ public class PAG implements PointsToAnalysis {
 	return ret;
     }
 
-    ChunkedQueue newAllocNodes = new ChunkedQueue();
-    public QueueReader allocNodeListener() { return newAllocNodes.reader(); }
+    ChunkedQueue<AllocNode> newAllocNodes = new ChunkedQueue<AllocNode>();
+    public QueueReader<AllocNode> allocNodeListener() { return newAllocNodes.reader(); }
 
     /** Finds the GlobalVarNode for the variable value, or returns null. */
     public GlobalVarNode findGlobalVarNode( Object value ) {
@@ -504,7 +504,7 @@ public class PAG implements PointsToAnalysis {
         if( opts.rta() ) {
             value = null;
         } else if( value instanceof Local ) {
-            return (LocalVarNode) localToNodeMap.get( (Local) value );
+            return localToNodeMap.get( (Local) value );
         }
 	return valToLocalVarNode.get( value );
     }
@@ -534,7 +534,7 @@ public class PAG implements PointsToAnalysis {
         } else if( value instanceof Local ) {
             Local val = (Local) value;
             if( val.getNumber() == 0 ) Scene.v().getLocalNumberer().add(val);
-            LocalVarNode ret = (LocalVarNode) localToNodeMap.get( val );
+            LocalVarNode ret = localToNodeMap.get( val );
             if( ret == null ) {
                 localToNodeMap.put( (Local) value,
                     ret = new LocalVarNode( this, value, type, method ) );
@@ -707,8 +707,8 @@ public class PAG implements PointsToAnalysis {
 		}
     }
 
-    protected ChunkedQueue edgeQueue = new ChunkedQueue();
-    public QueueReader edgeReader() { return edgeQueue.reader(); }
+    protected ChunkedQueue<Node> edgeQueue = new ChunkedQueue<Node>();
+    public QueueReader<Node> edgeReader() { return edgeQueue.reader(); }
 
     public int getNumAllocNodes() {
         return allocNodeNumberer.size();
@@ -735,8 +735,8 @@ public class PAG implements PointsToAnalysis {
         return nodeToTag;
     }
 
-    private final ArrayNumberer allocNodeNumberer = new ArrayNumberer();
-    public ArrayNumberer getAllocNodeNumberer() { return allocNodeNumberer; }
+    private final ArrayNumberer<AllocNode> allocNodeNumberer = new ArrayNumberer<AllocNode>();
+    public ArrayNumberer<AllocNode> getAllocNodeNumberer() { return allocNodeNumberer; }
     private final ArrayNumberer varNodeNumberer = new ArrayNumberer();
     public ArrayNumberer getVarNodeNumberer() { return varNodeNumberer; }
     private final ArrayNumberer fieldRefNodeNumberer = new ArrayNumberer();
@@ -967,7 +967,7 @@ public class PAG implements PointsToAnalysis {
         	VarNode newObject = makeGlobalVarNode( cls, RefType.v( "java.lang.Object" ) );
         	SootClass tgtClass = e.getTgt().method().getDeclaringClass();
         	RefType tgtType = tgtClass.getType();                
-        	AllocNode site = makeAllocNode( new Pair(cls, tgtClass), tgtType, null );
+        	AllocNode site = makeAllocNode( new Pair<Node, SootClass>(cls, tgtClass), tgtType, null );
         	addEdge( site, newObject );
 
         	//(2)
@@ -1051,7 +1051,7 @@ public class PAG implements PointsToAnalysis {
             parm = parm.getReplacement();
 
             addEdge( argNode, parm );
-            Pair pval = addInterproceduralAssignment(argNode, parm, e);
+            Pair<Node, Node> pval = addInterproceduralAssignment(argNode, parm, e);
 			callAssigns.put(ie, pval);
             callToMethod.put(ie, srcmpag.getMethod());
         }
@@ -1066,7 +1066,7 @@ public class PAG implements PointsToAnalysis {
             thisRef = tgtmpag.parameterize( thisRef, tgtContext );
             thisRef = thisRef.getReplacement();
             addEdge( baseNode, thisRef );
-            Pair pval = addInterproceduralAssignment(baseNode, thisRef, e);
+            Pair<Node, Node> pval = addInterproceduralAssignment(baseNode, thisRef, e);
 			callAssigns.put(ie, pval);
             callToMethod.put(ie, srcmpag.getMethod());
             if (virtualCall && !virtualCallsToReceivers.containsKey(ie)) {
@@ -1086,7 +1086,7 @@ public class PAG implements PointsToAnalysis {
                 retNode = retNode.getReplacement();
 
                 addEdge( retNode, destNode );
-                Pair pval = addInterproceduralAssignment( retNode, destNode, e );
+                Pair<Node, Node> pval = addInterproceduralAssignment( retNode, destNode, e );
 				callAssigns.put(ie, pval);
                 callToMethod.put(ie, srcmpag.getMethod());
             }
@@ -1158,7 +1158,8 @@ public class PAG implements PointsToAnalysis {
     private OnFlyCallGraph ofcg;
     private final ArrayList<VarNode> dereferences = new ArrayList<VarNode>();
     protected TypeManager typeManager;
-    private final LargeNumberedMap localToNodeMap = new LargeNumberedMap( Scene.v().getLocalNumberer() );
+    private final LargeNumberedMap<Local, LocalVarNode> localToNodeMap =
+    		new LargeNumberedMap<Local, LocalVarNode>( Scene.v().getLocalNumberer() );
     public int maxFinishNumber = 0;
     private Map<Node, Tag> nodeToTag;
     private final GlobalNodeFactory nodeFactory = new GlobalNodeFactory(this);

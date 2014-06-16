@@ -131,8 +131,8 @@ public class Scene  //extends AbstractHost
     ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<Kind>();
     ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
     ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
-    Numberer<Unit> unitNumberer = new MapNumberer();
-    Numberer contextNumberer = null;
+    Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
+    Numberer<Context> contextNumberer = null;
     Numberer<SparkField> fieldNumberer = new ArrayNumberer<SparkField>();
     ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
     StringNumberer subSigNumberer = new StringNumberer();
@@ -458,9 +458,9 @@ public class Scene  //extends AbstractHost
 				}
 
 				String jarPath = "";
-				if (!forceAndroidJar.equals("")) {
+				if (forceAndroidJar != null && !forceAndroidJar.equals("")) {
 					jarPath = forceAndroidJar;
-				} else if (!androidJars.equals("")) {
+				} else if (androidJars != null && !androidJars.equals("")) {
 					List<String> classPathEntries = new LinkedList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
 					classPathEntries.addAll(Options.v().process_dir());
 					Set<String> targetApks = new HashSet<String>();
@@ -1012,14 +1012,14 @@ public class Scene  //extends AbstractHost
     public Numberer<Kind> kindNumberer() { return kindNumberer; }
     public ArrayNumberer<Type> getTypeNumberer() { return typeNumberer; }
     public ArrayNumberer<SootMethod> getMethodNumberer() { return methodNumberer; }
-    public Numberer getContextNumberer() { return contextNumberer; }
+    public Numberer<Context> getContextNumberer() { return contextNumberer; }
     public Numberer<Unit> getUnitNumberer() { return unitNumberer; }
     public Numberer<SparkField> getFieldNumberer() { return fieldNumberer; }
     public ArrayNumberer<SootClass> getClassNumberer() { return classNumberer; }
     public StringNumberer getSubSigNumberer() { return subSigNumberer; }
     public ArrayNumberer<Local> getLocalNumberer() { return localNumberer; }
 
-    public void setContextNumberer( Numberer n ) {
+    public void setContextNumberer( Numberer<Context> n ) {
         if( contextNumberer != null )
             throw new RuntimeException(
                     "Attempt to set context numberer when it is already set." );
