@@ -572,16 +572,13 @@ public class Hierarchy
 	}
 
     /** Given a set of definite receiver types, returns a list of possible targets. */
-    public List<SootMethod> resolveConcreteDispatch(List classes, SootMethod m)
+    public List<SootMethod> resolveConcreteDispatch(List<Type> classes, SootMethod m)
     {
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
         checkState();
 
         Set<SootMethod> s = new ArraySet<SootMethod>();
-        Iterator classesIt = classes.iterator();
-
-        while (classesIt.hasNext()) {
-            Object cls = classesIt.next();
+        for (Type cls : classes) {
             if (cls instanceof RefType)
                 s.add(resolveConcreteDispatch(((RefType)cls).getSootClass(), m));
             else if (cls instanceof ArrayType) {
