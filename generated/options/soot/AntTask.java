@@ -390,6 +390,21 @@ public class AntTask extends MatchingTask {
             }
         }
   
+        public void setcheck_init_throw_analysis(String arg) {
+            if(false
+    
+                || arg.equals( "auto" )
+                || arg.equals( "pedantic" )
+                || arg.equals( "unit" )
+                || arg.equals( "dalvik" )
+                ) {
+                addArg("-check-init-throw-analysis");
+                addArg(arg);
+            } else {
+                throw new BuildException("Bad value "+arg+" for option check_init_throw_analysis");
+            }
+        }
+  
         public void setomit_excepting_unit_edges(boolean arg) {
             if(arg) addArg("-omit-excepting-unit-edges");
         }
