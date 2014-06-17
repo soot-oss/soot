@@ -75,7 +75,7 @@ public class HashMutableEdgeLabelledDirectedGraph<N,L> implements MutableEdgeLab
 		
 		public int hashCode()
 		{
-			return Objects.hash(from, to);
+			return Arrays.hashCode(new Object[]{from,to});
 		}
 	}
 	

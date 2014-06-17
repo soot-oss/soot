@@ -54,6 +54,7 @@ import soot.tagkit.CodeAttribute;
 import soot.tagkit.Tag;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.toolkits.exceptions.ThrowAnalysisFactory;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.FlowSet;
@@ -771,7 +772,7 @@ public abstract class Body extends AbstractHost implements Serializable
     @SuppressWarnings("unchecked")
 	public void checkInit() {
         ExceptionalUnitGraph g = new ExceptionalUnitGraph
-	    (this, PedanticThrowAnalysis.v(), false);
+	    (this, ThrowAnalysisFactory.checkInitThrowAnalysis(), false);
 
 		InitAnalysis analysis=new InitAnalysis(g);
 		for (Unit s : getUnits()) {
