@@ -14,6 +14,7 @@ import soot.FloatType;
 import soot.IntType;
 import soot.IntegerType;
 import soot.LongType;
+import soot.NullType;
 import soot.SootClass;
 import soot.Type;
 import soot.Value;
@@ -565,9 +566,15 @@ public class ExprVisitor implements ExprSwitch {
 	}
 	
 	private void castPrimitive(Register sourceReg, Value source, Type castSootType) {
+		PrimitiveType castType = PrimitiveType.getByName(castSootType.toString());
+
+		// Fix null_types on the fly. This should not be necessary, but better be safe
+		// than sorry and it's easy to fix it here.
+		if (castType == PrimitiveType.INT && source.getType() instanceof NullType)
+			source = IntConstant.v(0);
+		
 		// select fitting conversion opcode, depending on the source and cast type
 		PrimitiveType sourceType = PrimitiveType.getByName(source.getType().toString());
-		PrimitiveType castType = PrimitiveType.getByName(castSootType.toString());
 		if (castType == PrimitiveType.BOOLEAN) {
 			// there is no "-to-boolean" opcode, so just pretend to move an int to an int
 			castType = PrimitiveType.INT;
