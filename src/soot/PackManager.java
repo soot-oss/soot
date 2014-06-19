@@ -492,6 +492,10 @@ public class PackManager {
     public ZipOutputStream getJarFile() {
 		return jarFile;
 	}
+    
+    public void resetDexPrinter() {
+    	this.dexPrinter = new DexPrinter();
+    }
 
     public void writeOutput() {
         setupJAR();
