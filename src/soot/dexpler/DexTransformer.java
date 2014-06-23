@@ -130,9 +130,6 @@ public abstract class DexTransformer extends BodyTransformer {
 	protected Type findArrayType(ExceptionalUnitGraph g,
 			SmartLocalDefs localDefs, SimpleLocalUses localUses,
 			Stmt arrayStmt, int depth, Set<Unit> alreadyVisitedDefs) {
-		if (depth > 20)
-			System.out.println("x");
-
 		ArrayRef aRef = null;
 		if (arrayStmt.containsArrayRef()) {
 			aRef = arrayStmt.getArrayRef();
