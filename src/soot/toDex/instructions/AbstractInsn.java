@@ -57,7 +57,16 @@ public abstract class AbstractInsn implements Insn {
 				miscRegsNeed += SootToDexUtils.getDexWords(regs.get(i).getType());
 			}
 		}
-		return Math.max(resultNeed, miscRegsNeed);
+		
+		// The /2addr instruction format takes two operands and overwrites the
+		// first operand register with the result. The result register is thus
+		// not free to overlap as we still need to provide input data in it.
+		// add-long/2addr r0 r0 -> 2 registers
+		// add-int r0 r0 r2 -> 2 registers, re-use result register
+		if (opc.name.endsWith("/2addr"))
+			return resultNeed + miscRegsNeed;
+		else
+			return Math.max(resultNeed, miscRegsNeed);
 	}
 	
 	@Override

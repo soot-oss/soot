@@ -120,7 +120,14 @@ public class RegisterAssigner {
 			r.setNumber(newParamRegNum);
 		}
 	}
-
+	
+	/**
+	 * Reserves low registers in case we later find an instruction that has
+	 * short operands. We can then move the real operands into the reserved
+	 * low ones and use those instead.
+	 * @param insns
+	 * @param insnsStmtMap
+	 */
 	private void reserveRegisters(List<Insn> insns, Map<Insn, Stmt> insnsStmtMap) {
 		// reserve registers as long as new ones are needed
 		int reservedRegs = 0;
@@ -139,6 +146,14 @@ public class RegisterAssigner {
 		}
 	}
 	
+	/**
+	 * Gets the maximum number of registers needed by a single instruction in
+	 * the given list of instructions.
+	 * @param regsAlreadyReserved
+	 * @param insns
+	 * @param insnsStmtMap
+	 * @return
+	 */
 	private int getRegsNeeded(int regsAlreadyReserved, List<Insn> insns, Map<Insn, Stmt> insnsStmtMap) {
 		int regsNeeded = regsAlreadyReserved; // we only need regs that weren't reserved yet
 		for (int i = 0; i < insns.size(); i++) {
@@ -205,6 +220,15 @@ public class RegisterAssigner {
 		insns.add(extraMove, curInsn);
 	}
 
+	/**
+	 * Adds move instructions to put values into lower registers before using
+	 * them in an instruction. This assumes that enough registers have been
+	 * reserved at 0...n.
+	 * @param curInsn
+	 * @param insns
+	 * @param regs
+	 * @param incompatRegs
+	 */
 	private void addMovesForIncompatRegs(Insn curInsn, InstructionIterator insns, List<Register> regs, BitSet incompatRegs) {
 		insns.previous(); // extra MOVEs are added _before_ the current insn
 		int nextNewDestination = 0;

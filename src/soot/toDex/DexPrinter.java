@@ -412,10 +412,6 @@ public class DexPrinter {
     }
     
     private void addAsClassDefItem(SootClass c) {
-    	
-    	if (c.getName().contains("javax"))
-    		System.out.println("x");
-    	
         // add source file tag if any
         String sourceFile = "";
         if (c.hasTag("SourceFileTag")) {
@@ -600,7 +596,6 @@ public class DexPrinter {
             
             Set<String> alreadyWritten = new HashSet<String>();
             List<AnnotationElement> elements = new ArrayList<AnnotationElement>();
-            // TODO: fixme https://code.google.com/p/smali/issues/detail?id=211
             for (AnnotationElem ae : at.getElems()) {
             	if (ae.getName() == null || ae.getName().isEmpty())
             		throw new RuntimeException("Null or empty annotation name encountered");
