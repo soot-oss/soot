@@ -21,9 +21,13 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
-import soot.*;
-import java.util.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import soot.G;
 import soot.PackManager;
+import soot.Singletons;
 
 /** Soot command-line options parser.
  * @author Ondrej Lhotak
@@ -1183,7 +1187,11 @@ public class Options extends OptionsBase {
     public boolean no_bodies_for_excluded() { return no_bodies_for_excluded; }
     private boolean no_bodies_for_excluded = false;
     public void set_no_bodies_for_excluded( boolean setting ) { no_bodies_for_excluded = setting; }
-  
+
+    public boolean release_reachable_classes() { return release_reachable_classes; }
+    private boolean release_reachable_classes = true;
+    public void set_release_reachable_classes(boolean setting) { release_reachable_classes = setting; }
+    
     public boolean j2me() { return j2me; }
     private boolean j2me = false;
     public void set_j2me( boolean setting ) { j2me = setting; }

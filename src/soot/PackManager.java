@@ -492,6 +492,10 @@ public class PackManager {
     public ZipOutputStream getJarFile() {
 		return jarFile;
 	}
+    
+    public void resetDexPrinter() {
+    	this.dexPrinter = new DexPrinter();
+    }
 
     public void writeOutput() {
         setupJAR();
@@ -507,7 +511,8 @@ public class PackManager {
             tearDownJAR();
         }
         postProcessXML( reachableClasses() );
-        releaseBodies( reachableClasses() );
+        if (Options.v().release_reachable_classes())
+        	releaseBodies( reachableClasses() );
         if(Options.v().verbose())
             PhaseDumper.v().dumpAfter("output");
     }
