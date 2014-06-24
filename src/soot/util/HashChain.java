@@ -50,12 +50,15 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	private static class Entry<X> extends WeakReference<X> {
 		private Entry<X> prev;
 		private Entry<X> next;
+		private long index = 0;
 		
-		private Entry(Entry<X> prev, X item, Entry<X> next) {
-			super(requireNonNull(item));			
+		private Entry(X item, Entry<X> next) {
+			super(requireNonNull(item));		
 			this.next = next;
-			this.prev = prev;
-			next.prev = prev.next = this;
+			prev = next.prev;
+			index = next.index;
+			
+			next.prev.next = next.prev = this;
 		}
 		
 		private Entry() {
@@ -81,7 +84,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	private static final ObjectStreamField[] serialPersistentFields = {
 		new ObjectStreamField("entries", Object[].class)
 	};
-    
+    	
 	private transient Map<E, Entry<E>> map;
 	
 	// <ring> 1 <-> 2 <-> 3 <-> ... <-> N-2 <-> N-1 <-> N <ring>
@@ -156,7 +159,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	/** Erases the contents of the current HashChain. */
 	@Override
 	public void clear() {
-		modCount++;
+		ring.index = ++modCount;
 		
 		// GC help
 		for (Entry<E> link : map.values()) {
@@ -175,7 +178,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @param out the old element
 	 * @throws NullPointerException if <tt>out</tt> is null or <tt>in</tt> is null
 	 * @throws NoSuchElementException if <tt>out</tt> is not part of this chain
-	 * @throws RuntimeException if <tt>in</tt> is already part of this chain
+	 * @throws IllegalArgumentException if <tt>in</tt> is already part of this chain
 	 */
 	@Override
 	public void swapWith(E out, E in) {		
@@ -184,20 +187,43 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	}
 	
 	/**
+	 * Returns <tt>true</tt> if <tt>head</tt> is preceding 
+	 * <tt>tail</tt> - <tt>false</tt> otherwise.
+	 * 
+	 * @param head the head entry
+	 * @param tail the tail entry
+	 * @return <tt>true</tt> if <tt>head</tt> is preceding 
+	 * 		<tt>tail</tt> - <tt>false</tt> otherwise
+	 */
+	private boolean isPreceding(Entry<E> head, Entry<E> tail) {
+		if (head == tail)
+			return false;
+		
+		// rebuild all indices in this chain if head and tail are in the same range
+		if (head.index == tail.index) {
+			int i = 0;
+			for (Entry<E> e = ring.next; e != ring; e = e.next) {
+				e.index = i++;
+			}
+		}
+		return head.index < tail.index;
+	}
+	
+	/**
 	 * {@inheritDoc}
 	 * 
+	 * Returns <tt>false</tt> if <tt>someObject</tt> or 
+	 * <tt>someReferenceObject</tt> is not part of this chain.
+	 * 
 	 * @throws NullPointerException if <tt>someObject</tt> or <tt>someReferenceObject</tt> is null
-	 * @throws NoSuchElementException if <tt>someObject</tt> or <tt>someReferenceObject</tt> are not part of this chain
 	 */
 	@Override
-	public boolean follows(E someObject, E someReferenceObject) {		
-		Entry<E> h = getEntry(someReferenceObject);
-		Entry<E> t = getEntry(someObject);	
-		E last = null;
-		for (Iterator<E> it = newIterator(h.next, t); it.hasNext();) {
-			last = it.next();
+	public boolean follows(E someObject, E someReferenceObject) {
+		try {
+			return isPreceding(getEntry(someReferenceObject), getEntry(someObject));
+		} catch (NoSuchElementException e) {
+			return false;
 		}
-		return someObject.equals(last);
 	}
 
 	@Override
@@ -217,7 +243,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @param point the point after
 	 * @throws NullPointerException if <tt>toInsert</tt> is null or <tt>point</tt> is null
 	 * @throws NoSuchElementException if <tt>point</tt> is not part of this chain
-	 * @throws RuntimeException if <tt>toInsert</tt> is already part of this chain
+	 * @throws IllegalArgumentException if <tt>toInsert</tt> is already part of this chain
 	 */
 	@Override
 	public void insertAfter(E toInsert, E point) {
@@ -231,7 +257,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @param point the point after
 	 * @throws NullPointerException if <tt>toInsert</tt> (or an element of it) is null or <tt>point</tt> is null
 	 * @throws NoSuchElementException if <tt>point</tt> is not part of this chain
-	 * @throws RuntimeException if an element of <tt>toInsert</tt> is already part of this chain
+	 * @throws IllegalArgumentException if an element of <tt>toInsert</tt> is already part of this chain
 	 */
 	@Override
 	public void insertAfter(List<E> toInsert, E point) {
@@ -245,7 +271,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @param point the point after
 	 * @throws NullPointerException if <tt>toInsert</tt> (or an element of it) is null or <tt>point</tt> is null
 	 * @throws NoSuchElementException if <tt>point</tt> is not part of this chain
-	 * @throws RuntimeException if an element of <tt>toInsert</tt> is already part of this chain
+	 * @throws IllegalArgumentException if an element of <tt>toInsert</tt> is already part of this chain
 	 */
 	@Override
 	public void insertAfter(Chain<E> toInsert, E point) {
@@ -260,7 +286,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @param point the point before
 	 * @throws NullPointerException if <tt>toInsert</tt> is null or <tt>point</tt> is null
 	 * @throws NoSuchElementException if <tt>point</tt> is not part of this chain
-	 * @throws RuntimeException if <tt>toInsert</tt> is already part of this chain
+	 * @throws IllegalArgumentException if <tt>toInsert</tt> is already part of this chain
 	 */
 	@Override
 	public void insertBefore(E toInsert, E point) {
@@ -274,7 +300,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @param point the point before
 	 * @throws NullPointerException if <tt>toInsert</tt> (or an element of it) is null or <tt>point</tt> is null
 	 * @throws NoSuchElementException if <tt>point</tt> is not part of this chain
-	 * @throws RuntimeException if an element of <tt>toInsert</tt> is already part of this chain
+	 * @throws IllegalArgumentException if an element of <tt>toInsert</tt> is already part of this chain
 	 */
 	@Override
 	public void insertBefore(List<E> toInsert, E point) {
@@ -288,7 +314,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @param point the point before
 	 * @throws NullPointerException if <tt>toInsert</tt> (or an element of it) is null or <tt>point</tt> is null
 	 * @throws NoSuchElementException if <tt>point</tt> is not part of this chain
-	 * @throws RuntimeException if an element of <tt>toInsert</tt> is already part of this chain
+	 * @throws IllegalArgumentException if an element of <tt>toInsert</tt> is already part of this chain
 	 */
 	@Override
 	public void insertBefore(Chain<E> toInsert, E point) {
@@ -299,12 +325,13 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * {@inheritDoc}
 	 * 
 	 * @throws NullPointerException if item is null
-	 * @throws RuntimeException if item is already part of this chain
+	 * @throws IllegalArgumentException if item is already part of this chain
 	 * @param item
 	 */
 	@Override
 	public void addFirst(E item) {
 		insertBefore(item, ring.next);
+		ring.next.index--;
 	}
 
 	/**
@@ -312,7 +339,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * 
 	 * @param item the entry to insert
 	 * @throws NullPointerException if item is null
-	 * @throws RuntimeException if item is already part of this chain
+	 * @throws IllegalArgumentException if item is already part of this chain
 	 */
 	@Override
 	public void addLast(E item) {
@@ -324,7 +351,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * 
 	 * @param item the entry to insert
 	 * @throws NullPointerException if item is null
-	 * @throws RuntimeException if item is already part of this chain
+	 * @throws IllegalArgumentException if item is already part of this chain
 	 */
 	@Override
 	public boolean add(E item) {
@@ -332,33 +359,27 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		return true;
 	}
 	
-
-	@Override
-	public boolean addAll(Collection<? extends E> e) {
-		insertBefore(e, ring);
-		return true;
-	}
 	
 	/**
 	 * @param toInsert
 	 * @param link
-	 * @throws RuntimeException if the map already contains the linked item
+	 * @throws IllegalArgumentException if the map already contains the linked item
 	 */
 	private void insertBefore(E toInsert, Entry<E> point) {		
 		requireNonNull(toInsert, "Warning! You tried to insert "
 				+ "a null entry into a Chain!");
 		
-		Entry<E> e = new Entry<E>(point.prev, toInsert, point);		
+		Entry<E> e = new Entry<E>(toInsert, point);		
 		Entry<E> o = map.put(toInsert, e);		
 		if (o == null) {
-			modCount++;
+			ring.index = ++modCount;
 			return;
 		} 
 		
 		// rollback last put
 		e.clear();
 		map.put(toInsert, o);			
-		throw new RuntimeException("Chain already contains object: "+toInsert);		
+		throw new IllegalArgumentException("Chain already contains object: "+toInsert);		
 	}	
 	
 	private void insertBefore(Collection<? extends E> toInsert, Entry<E> point) {
@@ -397,7 +418,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		requireNonNull(item);
 		Entry<E> old = map.remove(item);
 		if ( old != null ) {		
-			modCount++;
+			ring.index = ++modCount;
 			old.clear();
 			return true;
 		}
@@ -503,7 +524,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 */
 	@Override
 	public Iterator<E> iterator() {
-		return newIterator(ring.next, ring.prev);
+		return newIterator(ring.next, ring);
 	}
 
 	/**
@@ -519,7 +540,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 */
 	@Override
 	public Iterator<E> iterator(E head) {
-		return newIterator(getEntry(head), ring.prev);
+		return newIterator(getEntry(head), ring);
 	}
 
 	/** 
@@ -530,8 +551,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * <tt>head</tt> in this <tt>Chain</tt>, the returned iterator
 	 * will iterate 0 times (a special case to allow the specification of an
 	 * empty range of elements). Otherwise if <tt>tail</tt> is not one of
-	 * the elements following <tt>head</tt>, the returned iterator will
-	 * stop at the end of the <tt>Chain</tt>.
+	 * the elements following <tt>head</tt>, a IllegalArgumentException will be thrown.
 	 * 
 	 * @throws NullPointerException
 	 *             if <tt>head</tt> is null.
@@ -540,15 +560,23 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @throws NoSuchElementException
 	 *             if <tt>head</tt> or <tt>tail</tt> is not an element
 	 *             of the chain.
+	 * @throws IllegalArgumentException 
+	 * 				if <tt>tail</tt> does not follow <tt>head</tt>
 	 */
 	@Override
 	public Iterator<E> iterator(E head, E tail) {
-		Entry<E> headEntry = getEntry(head);		
-		if (headEntry.prev.get() == tail) {
-			// special case hack, so empty ranges iterate 0 times
+		Entry<E> h = getEntry(head);		
+		
+		// special case hack, so empty ranges iterate 0 times
+		if (h.prev.get() == tail) {
 			return Collections.<E>emptyList().iterator();
 		}
-		return newIterator(headEntry, getEntry(tail));
+
+		Entry<E> t = getEntry(tail).next;
+		if (isPreceding(h, t)) {
+			return newIterator(h, t);
+		}
+		throw new IllegalArgumentException(tail + " has to follow " + head);		
 	}
 	
 	/**
@@ -559,32 +587,33 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		return map.size();
 	}
 
-	private Iterator<E> newIterator(final Entry<E> from, final Entry<E> to) {
-		assert from != null;
-		assert to != null;
+	
+	private Iterator<E> newIterator(final Entry<E> fromInclusive, final Entry<E> toExclusive) {
+		assert fromInclusive != null;
+		assert toExclusive != null;
 		
 		return new Iterator<E>() {
 			private long expectedModCount = modCount;
 			private Entry<E> current = null;
-			private Entry<E> next = from;
+			private Entry<E> next = fromInclusive;
 
 			public boolean hasNext() {
-				return next != ring;
+				return next != toExclusive;
 			}
 
-			public E next() throws NoSuchElementException {
+			public E next() {
 				if (modCount != expectedModCount) {
 					throw new ConcurrentModificationException();
 				}
-				if (next == ring) {
+				if (next == toExclusive) {
 					throw new NoSuchElementException();
 				}
 				current = next;
-				next = (current == to) ? ring : current.next;
+				next = current.next;
 				return current.get();
 			}
 
-			public void remove() throws IllegalStateException {
+			public void remove() {
 				if (current == null) {
 					throw new IllegalStateException();
 				}
