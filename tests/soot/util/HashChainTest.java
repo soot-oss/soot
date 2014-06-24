@@ -179,7 +179,7 @@ public class HashChainTest {
 		chain.insertBefore(3, 999);
 	}
 
-	@Test(expected = RuntimeException.class)
+	@Test(expected = IllegalArgumentException.class)
 	public void testAddErrorAgain() {
 		Collections.addAll(chain, expected = new Integer[] { 1, 2, 3, 4, 5 });
 		chain.add(2);
@@ -216,11 +216,10 @@ public class HashChainTest {
 		chain.follows(1, 6);
 	}
 
-	@Test(expected = NoSuchElementException.class)
 	public void testFollowsErrorNoSuchElement() {
 		Collections.addAll(chain, expected = new Integer[] { 1, 2, 3, 4, 5 });
-
-		chain.follows(1, 6);
+	
+		assertFalse(chain.follows(1, 6));
 	}
 
 	@Test
@@ -276,7 +275,7 @@ public class HashChainTest {
 		chain.insertAfter(Arrays.asList(3, 4), 2);		
 	}
 	
-	@Test(expected=RuntimeException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void testInsertAfterListErrorDuplicated() {
 		Collections.addAll(chain, 1, 2, 5);
 		expected = new Integer[] { 1, 2, 3, 5 };
@@ -284,7 +283,7 @@ public class HashChainTest {
 		chain.insertAfter(Arrays.asList(3, 3, 4), 2);		
 	}
 	
-	@Test(expected=RuntimeException.class)
+	@Test(expected=IllegalArgumentException.class)
 	public void testInsertBeforeListErrorDuplicated() {
 		Collections.addAll(chain, 1, 2, 5);
 		expected = new Integer[] { 1, 2, 3, 5 };
@@ -300,7 +299,54 @@ public class HashChainTest {
 		chain.insertBefore(Arrays.asList(3, 4), 5);		
 	}
 	
+	@Test(expected = NullPointerException.class)
+	public void testIteratorHeadCreateErrorNullPointer() {
+		Collections.addAll(chain, expected = new Integer[] { 1, 2, 3, 4, 5 });
+		chain.iterator(null);
+	}	
+	
+	@Test(expected = NoSuchElementException.class)
+	public void testIteratorHeadCreateErrorNoSuchElement() {
+		Collections.addAll(chain, expected = new Integer[] { 1, 2, 3, 4, 5 });
+		chain.iterator(6);
+	}
 
+	@Test(expected = NullPointerException.class)
+	public void testIteratorHeadTailCreateErrorNullPointer1() {
+		Collections.addAll(chain, expected = new Integer[] { 1, 2, 3, 4, 5 });
+		chain.iterator(null, 5);
+	}		
+	
+	@Test(expected = NullPointerException.class)
+	public void testIteratorHeadTailCreateErrorNullPointer2() {
+		Collections.addAll(chain, expected = new Integer[] { 1, 2, 3, 4, 5 });
+		chain.iterator(2, null);
+	}	
+	
+	public void testIteratorHeadTailCreateZeroIteration() {
+		Collections.addAll(chain, expected = new Integer[] { 1, 2, 3, 4, 5 });
+		Iterator<Integer> it = chain.iterator(1, null);
+		assertFalse(it.hasNext());
+	}	
+
+	@Test(expected = NoSuchElementException.class)
+	public void testIteratorHeadTailCreateErrorNoSuchElement1() {
+		Collections.addAll(chain, expected = new Integer[] { 1, 2, 3, 4, 5 });
+		chain.iterator(1, 6);
+	}
+
+	@Test(expected = NoSuchElementException.class)
+	public void testIteratorHeadTailCreateErrorNoSuchElement2() {
+		Collections.addAll(chain, expected = new Integer[] { 1, 2, 3, 4, 5 });
+		chain.iterator(0, 2);
+	}
+
+	@Test(expected = IllegalArgumentException.class)
+	public void testIteratorHeadTailCreateErrorRange() {
+		Collections.addAll(chain, expected = new Integer[] { 1, 2, 3, 4, 5 });
+		chain.iterator(5, 2);
+	}
+	
 	@Test(expected = NoSuchElementException.class)
 	public void testIteratorErrorNoSuchElement() {
 		Collections.addAll(chain, expected = new Integer[] { 1, 2, 3, 4, 5 });
