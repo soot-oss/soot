@@ -1116,4 +1116,8 @@ public class PackManager {
             }
         }
     }
+    
+    public void resetDexPrinter() {
+    	this.dexPrinter = new DexPrinter();
+    }
 }
