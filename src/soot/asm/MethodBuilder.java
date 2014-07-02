@@ -158,16 +158,22 @@ class MethodBuilder extends JSRInlinerAdapter {
 			VisibilityParameterAnnotationTag tag =
 					new VisibilityParameterAnnotationTag(visibleParamAnnotations.length,
 							AnnotationConstants.RUNTIME_VISIBLE);
-			for (VisibilityAnnotationTag vat : visibleParamAnnotations)
+			for (VisibilityAnnotationTag vat : visibleParamAnnotations) {
+//				if (vat == null)
+//					vat = new VisibilityAnnotationTag(AnnotationConstants.RUNTIME_VISIBLE);
 				tag.addVisibilityAnnotation(vat);
+			}
 			method.addTag(tag);
 		}
 		if (invisibleParamAnnotations != null) {
 			VisibilityParameterAnnotationTag tag =
 					new VisibilityParameterAnnotationTag(invisibleParamAnnotations.length,
 							AnnotationConstants.RUNTIME_VISIBLE);
-			for (VisibilityAnnotationTag vat : invisibleParamAnnotations)
+			for (VisibilityAnnotationTag vat : invisibleParamAnnotations){
+//				if (vat == null)
+//					vat = new VisibilityAnnotationTag(AnnotationConstants.RUNTIME_VISIBLE);
 				tag.addVisibilityAnnotation(vat);
+			}
 			method.addTag(tag);
 		}
 		if (method.isConcrete()) {

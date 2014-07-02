@@ -144,8 +144,7 @@ final class StackFrame {
 					} else {
 						as = src.getUnit(prevOp.insn);
 						ValueBox lvb = as.getLeftOpBox();
-						if (lvb.getValue() != prevOp.stack)
-							throw new AssertionError("Invalid stack local!");
+						assert lvb.getValue() == prevOp.stack : "Invalid stack local!";
 						lvb.setValue(stack);
 						prevOp.stack = stack;
 					}
@@ -159,12 +158,12 @@ final class StackFrame {
 					} else {
 						as = src.getUnit(newOp.insn);
 						ValueBox lvb = as.getLeftOpBox();
-						if (lvb.getValue() != newOp.stack)
-							throw new AssertionError("Invalid stack local!");
+						assert lvb.getValue() == newOp.stack : "Invalid stack local!";
 						lvb.setValue(stack);
 						newOp.stack = stack;
 					}
 					newOp.updateBoxes();
+					
 				}
 				if (box != null)
 					box.setValue(stack);

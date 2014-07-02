@@ -423,10 +423,6 @@ public class PackManager {
                         + " min. "
                         + ((loadtime % 60000) / 1000)
                         + " sec.");
-				//run packs
-                if(clazz.getName().startsWith("<soot.dexpler.DexBody: soot.dexpler.instructions.DexlibAbstractInstruction instructionAtAddress(int)>")){
-                	continue;
-                }
 				runBodyPacks(clazz);
 				//generate output
 				writeClass(clazz);
@@ -600,14 +596,8 @@ public class PackManager {
     }
 
     private void runBodyPacks( Iterator<SootClass> classes ) {
-        SootClass temp;
     	while( classes.hasNext() ) {
-        	temp = classes.next();
-        	if(temp.getName().startsWith("com.google.common.collect.HashBiMap") || temp.getName().startsWith("com.google.common.collect.Tables$TransformedTable") ){ //||
-        			//temp.getName().startsWith("org.jf.util.Utf8Utils")){
-        		continue;
-        	}
-            runBodyPacks(temp);
+            runBodyPacks(classes.next());
         }
     }
 
@@ -833,9 +823,6 @@ public class PackManager {
         } else {
             G.v().out.print("Transforming ");
         }
-        if(c.getName().startsWith("soot.dexpler.DexBody")){
-        	System.out.print("");
-        }
         G.v().out.println(c.getName() + "... ");
 
         boolean produceBaf = false, produceGrimp = false, produceDava = false,
@@ -890,9 +877,6 @@ public class PackManager {
         while (methodIt.hasNext()) {
             SootMethod m = (SootMethod) methodIt.next();
             
-            if(m.toString().contains("<soot.dexpler.DexBody: soot.dexpler.instructions.DexlibAbstractInstruction instructionAtAddress(int)>")){
-            	System.out.print("");
-            }
             if(DEBUG){
             	if(m.getExceptions().size()!=0)
             		System.out.println("PackManager printing out jimple body exceptions for method "+m.toString()+" " + m.getExceptions().toString());
@@ -927,10 +911,11 @@ public class PackManager {
 
             if (produceJimple) {
                 JimpleBody body =(JimpleBody) m.retrieveActiveBody();
+                //Change
                 ConditionalBranchFolder.v().transform(body);
-        		UnreachableCodeEliminator.v().transform(body);
-        		DeadAssignmentEliminator.v().transform(body);
-        		UnusedLocalEliminator.v().transform(body);
+                UnreachableCodeEliminator.v().transform(body);
+                DeadAssignmentEliminator.v().transform(body);
+                UnusedLocalEliminator.v().transform(body);
                 PackManager.v().getPack("jtp").apply(body);
                 if( Options.v().validate() ) {
                     body.validate();
@@ -989,9 +974,12 @@ public class PackManager {
     }
 
 	public BafBody convertJimpleBodyToBaf(SootMethod m) {
-		
 		JimpleBody body = (JimpleBody) m.getActiveBody().clone();
-		
+		//Change
+//        ConditionalBranchFolder.v().transform(body);
+//        UnreachableCodeEliminator.v().transform(body);
+//        DeadAssignmentEliminator.v().transform(body);
+//        UnusedLocalEliminator.v().transform(body);
 		BafBody bafBody = Baf.v().newBody(body);
 		PackManager.v().getPack("bop").apply(bafBody);
 		PackManager.v().getPack("tag").apply(bafBody);
@@ -1002,6 +990,9 @@ public class PackManager {
 	}
 
     public void writeClass(SootClass c) {
+//    	if(!c.getName().contains("com.google.common.collect.HashBiMap") && !c.getName().contains("com.google.common.collect.Tables$TransformedTable")){
+//    		return;
+//    	}
         final int format = Options.v().output_format();
         if( format == Options.output_format_none ) return;
         if( format == Options.output_format_dava ) return;

@@ -215,9 +215,6 @@ final class JimpleSource implements MethodSource {
 	}
 	
 	private void push(Type t, Operand opr) {
-		if(t.toString().contains("bottom")){
-			System.out.println();
-		}
 		if (AsmUtil.isDWord(t))
 			pushDual(opr);
 		else
@@ -435,7 +432,7 @@ final class JimpleSource implements MethodSource {
 			}
 			opr = new Operand(insn, val);
 			frame.out(opr);
-			AssignStmt as = Jimple.v().newAssignStmt(val, rvalue.stackOrValue());
+			AssignStmt as = Jimple.v().newAssignStmt(val, rvalue.stackOrValue()); 
 			rvalue.addBox(as.getRightOpBox());
 			if (!instance) {
 				frame.boxes(as.getRightOpBox());
@@ -565,6 +562,9 @@ final class JimpleSource implements MethodSource {
 	private void convertDupInsn(InsnNode insn) {
 		int op = insn.getOpcode();
 		boolean dword = op >= DUP2 && op <= DUP2_X2;
+		if(op==89){
+			System.out.print("");
+		}
 		/*
 		 * Following version is more complex,
 		 * using stack frames as opposed to simply swapping
@@ -1406,15 +1406,14 @@ final class JimpleSource implements MethodSource {
 	private void addEdges(AbstractInsnNode cur,
 			AbstractInsnNode tgt1, List<LabelNode> tgts) {
 		int lastIdx = tgts == null ? -1 : tgts.size() - 1;
-		Operand[] stackss = stack.toArray(new Operand[stack.size()]);
+		Operand[] stackss = (new ArrayList<Operand>(stack)).toArray(new Operand[stack.size()]);
 		AbstractInsnNode tgt = tgt1;
 		int i = 0;
 		tgt_loop:
 		do {
 			Edge edge = edges.get(cur, tgt);
 			if (edge == null) {
-				//edge = new Edge(tgt);
-				edge = lastIdx == -1 || i == lastIdx ? new Edge(tgt, new ArrayList<Operand>(stack)) : new Edge(tgt);
+				edge = new Edge(tgt);
 				edge.prevStacks.add(stackss);
 				edges.put(cur, tgt, edge);
 				conversionWorklist.add(edge);
@@ -1435,7 +1434,7 @@ final class JimpleSource implements MethodSource {
 				if (Arrays.equals(ps, stackss))
 					continue tgt_loop;
 			}
-			edge.stack = lastIdx == -1 || i == lastIdx ? stack : new ArrayList<Operand>(stack);
+			edge.stack = new ArrayList<Operand>(stack);
 			edge.prevStacks.add(stackss);
 			conversionWorklist.add(edge);
 		} while (i <= lastIdx && (tgt = tgts.get(i++)) != null);
@@ -1455,9 +1454,6 @@ final class JimpleSource implements MethodSource {
 			edge.stack = null;
 			do {
 				int type = insn.getType();
-				if(insn.getOpcode()==181){
-					System.out.print("");
-				}
 				if (type == FIELD_INSN) {
 					convertFieldInsn((FieldInsnNode) insn);
 				} else if (type == IINC_INSN) {
@@ -1625,19 +1621,7 @@ final class JimpleSource implements MethodSource {
 	public Body getBody(SootMethod m, String phaseName) {
 		if (!m.isConcrete())
 			return null;
-		if(m.toString().contains("com.google.common.collect.HashBiMap: com.google.common.collect.BiMap inverse()")){
-			System.out.println();
-		}
 		JimpleBody jb = Jimple.v().newBody(m);
-//		System.out.println(jb);
-//		ConditionalBranchFolder.v().transform(jb);
-//		System.out.println(jb);
-//		UnreachableCodeEliminator.v().transform(jb);
-//		System.out.println(jb);
-//		DeadAssignmentEliminator.v().transform(jb);
-//		System.out.println(jb);
-//		UnusedLocalEliminator.v().transform(jb);
-//		System.out.println(jb);
 		/* \/DEBUG\/ */
 //		if (!m.toString().equals("<jaggl.OpenGL: boolean j(java.lang.String)>"))
 //			return jb;

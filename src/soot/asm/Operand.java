@@ -79,6 +79,7 @@ final class Operand {
 			List<ValueBox> list = new ArrayList<ValueBox>();
 			list.add(ovb);
 			list.add(vb);
+			boxes = list;
 		} else {
 			boxes = vb;
 		}
