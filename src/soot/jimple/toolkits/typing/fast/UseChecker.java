@@ -89,7 +89,6 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;

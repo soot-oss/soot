@@ -80,7 +80,7 @@ import soot.toolkits.graph.pdg.IRegion;
  * Sep 2009
  */
 
-public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph implements ProgramDependenceGraph {
+public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode, String> implements ProgramDependenceGraph {
 	
 	protected Body m_body = null;
 	protected SootClass m_class = null;
@@ -140,7 +140,6 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 	 * It uses the list of weak regions, along with the dominator and post-dominator
 	 * trees to construct the PDG nodes.
 	 */
-	@SuppressWarnings("unchecked")
 	protected void constructPDG()
 	{
 		Hashtable<Block, Region> block2region = this.m_regionAnalysis.getBlock2RegionMap();
@@ -775,13 +774,10 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 	public List<PDGNode> getDependents(PDGNode node)
 	{
 	       List<PDGNode> toReturn = new ArrayList<PDGNode>();
-	       for(Object succ:this.getSuccsOf(node))
-	       {
-	                       PDGNode succPDGN = (PDGNode)succ;
-	                       if(this.dependentOn(succPDGN, node))
-	                       {
-	                               toReturn.add(succPDGN);
-	                       }
+	       for(PDGNode succ : this.getSuccsOf(node)) {
+	    	   if(this.dependentOn(succ, node)) {
+	    		   toReturn.add(succ);
+	    	   }
 	       }
 	       return toReturn;
 	}
@@ -805,13 +801,10 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 		
 		HashMutableEdgeLabelledDirectedGraph graph = (HashMutableEdgeLabelledDirectedGraph) this.clone();
 				
-		List succs = graph.getSuccsOf(oldnode);
-		List preds = graph.getPredsOf(oldnode);
+		List<PDGNode> succs = graph.getSuccsOf(oldnode);
+		List<PDGNode> preds = graph.getPredsOf(oldnode);
 		
-		Iterator<Object> itr = succs.iterator();
-		while(itr.hasNext())
-		{
-			PDGNode succ = (PDGNode) itr.next();
+		for (PDGNode succ : succs) {
 			List<Object> labels = graph.getLabelsForEdges(oldnode, succ);
 			for(Iterator<Object> labelItr = labels.iterator(); labelItr.hasNext(); )
 			{
@@ -820,10 +813,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 			}	
 		}
 			
-		itr = preds.iterator();
-		while(itr.hasNext())
-		{
-			PDGNode pred = (PDGNode) itr.next();
+		for (PDGNode pred : preds) {
 			List<Object> labels = graph.getLabelsForEdges(pred, oldnode);
 			for(Iterator<Object> labelItr = labels.iterator(); labelItr.hasNext(); )
 			{
@@ -840,19 +830,13 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 	 * most of the time. Here is a version that doesn't throw that exception.
 	 * 
 	 */
-    @SuppressWarnings("unchecked")
-	public void removeAllEdges(Object from, Object to)
+	public void removeAllEdges(PDGNode from, PDGNode to)
 	{
         if (!containsAnyEdge(from, to))
             return;
             
-        List labels = this.getLabelsForEdges(from, to);
-        
-        List lablesClone = new ArrayList();
-        lablesClone.addAll(labels);
-        
-        for(Object label : lablesClone)
-        {        
+        List<String> labels = new ArrayList<String>(this.getLabelsForEdges(from, to));        
+        for(String label : labels) {        
 	        this.removeEdge(from, to, label);
 	    }
 	}
@@ -860,15 +844,15 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 	/**
 	 * {@inheritDoc}
 	 */
-	@SuppressWarnings("unchecked")
+    @Override
 	public String toString()
 	{
 		String s = new String("\nProgram Dependence Graph for Method " + this.m_body.getMethod().getName());
-		s += "\n*********CFG******** \n" + this.m_regionAnalysis.CFGtoString(this.m_blockCFG, true);
+		s += "\n*********CFG******** \n" + RegionAnalysis.CFGtoString(this.m_blockCFG, true);
 		s += "\n*********PDG******** \n";
 		
 		List<PDGNode> processed = new ArrayList<PDGNode>();
-		Queue nodes = new LinkedList();
+		Queue<PDGNode> nodes = new LinkedList<PDGNode>();
 		nodes.offer(this.m_startNode);
 		
 		while(nodes.peek() != null)
@@ -877,15 +861,12 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 			processed.add(node);
 			
 			s += "\n Begin PDGNode: " + node;
-			List succs = this.getSuccsOf(node);
+			List<PDGNode> succs = this.getSuccsOf(node);
 			s += "\n has " + succs.size() + " successors:\n";
 			
 			int i = 0;
-			Iterator itr = succs.iterator();
-			while(itr.hasNext())
-			{
-				PDGNode succ = (PDGNode)itr.next();
-				List labels = this.getLabelsForEdges(node, succ);
+			for(PDGNode succ : succs) {
+				List<String> labels = this.getLabelsForEdges(node, succ);
 				
 				s += i++;
 				s += ": Edge's label: " + labels + " \n";
@@ -902,9 +883,6 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph impleme
 			
 		}
 		return s;
-		
 	}
 
-	
-	
 }

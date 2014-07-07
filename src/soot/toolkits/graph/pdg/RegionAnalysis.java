@@ -20,7 +20,6 @@ package soot.toolkits.graph.pdg;
 
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -56,7 +55,6 @@ import soot.toolkits.graph.UnitGraph;
  * Jan 2009
  */
 
-@SuppressWarnings("unchecked")
 public class RegionAnalysis{
 
     protected SootClass m_class = null;
@@ -111,20 +109,17 @@ public class RegionAnalysis{
 
 
 
-        this.m_dom = new MHGDominatorTree(new MHGDominatorsFinder(this.m_blockCFG));
+        this.m_dom = new MHGDominatorTree(new MHGDominatorsFinder<Block>(this.m_blockCFG));
 
 
         try{
 
-            this.m_pdom = new MHGDominatorTree(new MHGPostDominatorsFinder(m_blockCFG));
+            this.m_pdom = new MHGDominatorTree(new MHGPostDominatorsFinder<Block>(m_blockCFG));
 
             if(Options.v().verbose())
                 G.v().out.println("[RegionAnalysis] PostDominator tree: ");
 
-            List heads = this.m_pdom.getHeads();
-
             this.m_regCount = -1;
-
 
             /*
              * If a Brief graph or Exceptional graph is used, the CFG might be multi-headed and/or
@@ -200,7 +195,7 @@ public class RegionAnalysis{
             DominatorNode parentOfV = this.m_dom.getParentOf(this.m_dom.getDode(v));
             Block u2 = (parentOfV == null) ? null : (Block)parentOfV.getGode();
 
-            List children = this.m_pdom.getChildrenOf(this.m_pdom.getDode(v));
+            List<DominatorNode> children = this.m_pdom.getChildrenOf(this.m_pdom.getDode(v));
             for(int i = 0; i < children.size(); i++)
             {
                 DominatorNode w = (DominatorNode)children.get(i);
@@ -240,7 +235,7 @@ public class RegionAnalysis{
         DominatorNode parentOfV = this.m_pdom.getParentOf(this.m_pdom.getDode(v));
         Block u2 = (parentOfV == null) ? null : (Block)parentOfV.getGode();
 
-        List children = this.m_dom.getChildrenOf(this.m_dom.getDode(v));
+        List<DominatorNode> children = this.m_dom.getChildrenOf(this.m_dom.getDode(v));
         for(int i = 0; i < children.size(); i++)
         {
             DominatorNode w = (DominatorNode)children.get(i);
@@ -261,17 +256,8 @@ public class RegionAnalysis{
     }
     public List<Region> getRegions()
     {
-
         if(this.m_regionsList == null)
-        {
-            this.m_regionsList = new ArrayList<Region>();
-            Collection values = this.m_regions.values();
-            for(Iterator itr = values.iterator(); itr.hasNext();)
-            {
-                Region region = (Region) itr.next();
-                this.m_regionsList.add(region);
-            }
-        }
+            this.m_regionsList = new ArrayList<Region>(this.m_regions.values());
 
         return this.m_regionsList;
 
@@ -366,13 +352,11 @@ public class RegionAnalysis{
         return this.m_topLevelRegion;
     }
 
-    public String CFGtoString(DirectedGraph cfg, boolean blockDetail)
+    public static String CFGtoString(DirectedGraph<Block> cfg, boolean blockDetail)
     {
         String s = new String("");
         s += "Headers: " + cfg.getHeads().size() + " " + cfg.getHeads();
-        for (Iterator<Block> it = cfg.iterator(); it.hasNext(); ) 
-        {
-            Block node = it.next();
+        for (Block node : cfg) {
             s += "Node = " + node.toShortString() + "\n";
             s += "Preds:\n";
             for (Iterator<Block> predsIt = cfg.getPredsOf(node).iterator(); predsIt.hasNext(); ) 
@@ -400,26 +384,6 @@ public class RegionAnalysis{
         }
 
         return s;
-
     }
-
-    private String dominatorTreeToString(DominatorTree dom, DominatorNode root)
-    {
-        String s = new String();
-        s += "\n Begin " + ((Block)root.getGode()).toShortString() + " ( ";
-        List children = dom.getChildrenOf(root);
-
-        for(int i = 0; i < children.size(); i++)
-        {
-            s += dominatorTreeToString(dom, (DominatorNode) children.get(i));
-
-        }
-        s += " ) end of " + ((Block)root.getGode()).toShortString();
-
-        return s;
-
-
-    }
-
-
+    
 }
