@@ -10,6 +10,7 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/jasmin"/>
 	<classpathentry combineaccessrules="false" exported="true" kind="src" path="/heros"/>
 	<classpathentry kind="lib" path="libs/polyglot.jar"/>
+	<classpathentry kind="lib" path="libs/asm-debug-all-4.0.jar"/>
 	<classpathentry kind="lib" path="libs/AXMLPrinter2.jar"/>
 	<classpathentry kind="lib" path="libs/hamcrest-all-1.3.jar"/>
 	<classpathentry kind="lib" path="libs/junit-4.11.jar"/>

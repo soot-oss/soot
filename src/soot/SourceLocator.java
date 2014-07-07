@@ -37,6 +37,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import soot.JavaClassProvider.JarException;
+import soot.asm.AsmClassProvider;
 import soot.options.Options;
 
 /** Provides utility methods to retrieve an input stream for a class name, given
@@ -110,28 +111,29 @@ public class SourceLocator
 
     private void setupClassProviders() {
         classProviders = new LinkedList<ClassProvider>();
-        switch( Options.v().src_prec() ) {
+        ClassProvider classFileClassProvider = Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
+		switch( Options.v().src_prec() ) {
             case Options.src_prec_class:
-                classProviders.add(new CoffiClassProvider());
+                classProviders.add(classFileClassProvider);
                 classProviders.add(new JimpleClassProvider());
                 classProviders.add(new JavaClassProvider());
                 break;
             case Options.src_prec_only_class:
-                classProviders.add(new CoffiClassProvider());
+                classProviders.add(classFileClassProvider);
                 break;
             case Options.src_prec_java:
                 classProviders.add(new JavaClassProvider());
-                classProviders.add(new CoffiClassProvider());
+                classProviders.add(classFileClassProvider);
                 classProviders.add(new JimpleClassProvider());
                 break;
             case Options.src_prec_jimple:
                 classProviders.add(new JimpleClassProvider());
-                classProviders.add(new CoffiClassProvider());
+                classProviders.add(classFileClassProvider);
                 classProviders.add(new JavaClassProvider());
                 break;
             case Options.src_prec_apk:
                 classProviders.add(new DexClassProvider());
-				classProviders.add(new CoffiClassProvider());
+				classProviders.add(classFileClassProvider);
 				classProviders.add(new JavaClassProvider());
 				classProviders.add(new JimpleClassProvider());
                 break;

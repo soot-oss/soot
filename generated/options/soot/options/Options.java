@@ -94,6 +94,11 @@ public class Options extends OptionsBase {
             if( false );
 
             else if( false 
+            || option.equals( "coffi" )
+            )
+                coffi = true;
+  
+            else if( false 
             || option.equals( "h" )
             || option.equals( "help" )
             )
@@ -1077,6 +1082,10 @@ public class Options extends OptionsBase {
     }
 
 
+    public boolean coffi() { return coffi; }
+    private boolean coffi = false;
+    public void set_coffi( boolean setting ) { coffi = setting; }
+  
     public boolean help() { return help; }
     private boolean help = false;
     public void set_help( boolean setting ) { help = setting; }
@@ -1350,6 +1359,7 @@ public class Options extends OptionsBase {
 
 +"\nGeneral Options:\n"
       
++padOpt(" -coffi", "Use the good old Coffi front end for parsing Java bytecode (instead of using ASM)." )
 +padOpt(" -h -help", "Display help and exit" )
 +padOpt(" -pl -phase-list", "Print list of available phases" )
 +padOpt(" -ph PHASE -phase-help PHASE", "Print help for specified PHASE" )

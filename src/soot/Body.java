@@ -236,7 +236,7 @@ public abstract class Body extends AbstractHost implements Serializable
         if (Options.v().debug() || Options.v().validate()) {
             validateUses();
             validateValueBoxes();
-            checkInit();
+            //checkInit();
             checkTypes();
             checkLocals();
         }

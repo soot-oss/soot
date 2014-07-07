@@ -226,7 +226,10 @@ public class SootResolver
                 classToTypesHierarchy.put( sc, Collections.<Type>emptyList() );
             }
         } else {
+    
             Dependencies dependencies = is.resolve(sc);
+            
+        
             classToTypesSignature.put( sc, dependencies.typesToSignature);
             classToTypesHierarchy.put( sc, dependencies.typesToHierarchy);
         }

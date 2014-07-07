@@ -1869,6 +1869,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		String nextListToken;
 	
 		
+		boolRes = getGeneral_Optionscoffi_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionscoffi_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getGeneral_Optionshelp_widget().getButton().getSelection();
 		
 		
@@ -6405,6 +6415,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		
+	private BooleanOptionWidget General_Optionscoffi_widget;
+	
+	private void setGeneral_Optionscoffi_widget(BooleanOptionWidget widget) {
+		General_Optionscoffi_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionscoffi_widget() {
+		return General_Optionscoffi_widget;
+	}	
+	
 	private BooleanOptionWidget General_Optionshelp_widget;
 	
 	private void setGeneral_Optionshelp_widget(BooleanOptionWidget widget) {
@@ -9987,6 +10007,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 		OptionData [] data;	
 		
+		
+		
+		
+		defKey = ""+" "+""+" "+"coffi";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionscoffi_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Coffi Frontend", "", "","coffi", "\n", defaultBool)));
 		
 		
 		

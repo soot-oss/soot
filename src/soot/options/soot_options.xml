@@ -102,6 +102,11 @@ packages in the Java runtime.</p>
 	<section>
 		<name>General Options</name>
 		<boolopt>
+		<name>Coffi Frontend</name>
+		<alias>coffi</alias>
+		<short_desc>Use the good old Coffi front end for parsing Java bytecode (instead of using ASM).</short_desc>		
+		</boolopt>
+		<boolopt>
 			<name>Help</name>
 			<alias>h</alias>
 			<alias>help</alias>

@@ -52,6 +52,7 @@ public class Main {
 
     private Date start;
     private Date finish;
+    private Date load;
 
     private void printVersion() {
         G.v().out.println("Soot version " + versionString);
@@ -159,6 +160,7 @@ public class Main {
         cmdLineArgs = args;
 
         start = new Date();
+        
 
         try {
             Timers.v().totalTimer.start();
@@ -199,8 +201,7 @@ public class Main {
                 return;
             }
             
-            
-            PackManager.v().runPacks();
+            PackManager.v().runPacks(start);
             if(!Options.v().oaat())
             	PackManager.v().writeOutput();
 
