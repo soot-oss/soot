@@ -201,7 +201,7 @@ public class Main {
                 return;
             }
             
-            PackManager.v().runPacks(start);
+            PackManager.v().runPacks();
             if(!Options.v().oaat())
             	PackManager.v().writeOutput();
 
