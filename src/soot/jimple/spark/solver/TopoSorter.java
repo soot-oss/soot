@@ -28,8 +28,8 @@ import java.util.*;
 public class TopoSorter {
     /** Actually perform the topological sort on the PAG. */
     public void sort() {
-        for( Iterator it = pag.getVarNodeNumberer().iterator(); it.hasNext(); ) {
-            dfsVisit( (VarNode) it.next() );
+        for( VarNode v : pag.getVarNodeNumberer() ) {
+            dfsVisit( v );
         }
         visited = null;
     }
