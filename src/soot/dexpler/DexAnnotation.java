@@ -119,7 +119,6 @@ public class DexAnnotation {
      * @param method
      */
     void handleMethodAnnotation(Host h, Method method) {
-
         Set<? extends Annotation> aSet = method.getAnnotations();
         if (!(aSet == null || aSet.isEmpty())) {
             for (Tag t : handleAnnotation(aSet, null))
@@ -144,6 +143,8 @@ public class DexAnnotation {
             for (MethodParameter p : parameters) {
                 List<Tag> tags = handleAnnotation(p.getAnnotations(), null);
                 boolean hasAnnotation = false;
+                if (tags == null)
+                	continue;
                 for (Tag t : tags) {
                 	if (t == null)
                 		continue;
@@ -184,7 +185,6 @@ public class DexAnnotation {
                     VisibilityAnnotationTag vat = new VisibilityAnnotationTag(0);
                     tag.addVisibilityAnnotation(vat);
                 }
-                
             }
             h.addTag(tag);
             
@@ -368,7 +368,8 @@ public class DexAnnotation {
 
             Debug.printDbg("   element type: ", ae.getValue().getClass());
             List<AnnotationElem> eList = handleAnnotationElement(ae, Collections.singletonList(ae.getValue()));
-            aelemList.addAll(eList);
+            if (eList != null)
+            	aelemList.addAll(eList);
         }
         return aelemList;
     }
@@ -482,7 +483,8 @@ public class DexAnnotation {
             {
                 ArrayEncodedValue v = (ArrayEncodedValue)ev;
                 ArrayList<AnnotationElem> l = handleAnnotationElement(ae, v.getValue());
-                elem = new AnnotationArrayElem(l, '[', ae.getName());
+                if (l != null)
+                	elem = new AnnotationArrayElem(l, '[', ae.getName());
                 break;
             }
             case 0x1d: // ANNOTATION
@@ -493,9 +495,9 @@ public class DexAnnotation {
                     List<EncodedValue> l = new ArrayList<EncodedValue>();
                     l.add(newElem.getValue());
                     List<AnnotationElem> aList = handleAnnotationElement(newElem, l);
-                    
-                    for (AnnotationElem e: aList)
-                        t.addElem(e);
+                    if (aList != null)
+	                    for (AnnotationElem e: aList)
+	                        t.addElem(e);
                 }
                 elem = new AnnotationAnnotationElem(t, '@', ae.getName());
                 break;
@@ -517,7 +519,8 @@ public class DexAnnotation {
             }
             } // switch (type)
 
-            aelemList.add(elem);
+            if (elem != null)
+            	aelemList.add(elem);
             
         } // for (EncodedValue)
 
