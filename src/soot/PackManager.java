@@ -419,7 +419,7 @@ public class PackManager {
 				//generate output
 				writeClass(clazz);
 
-				if (Options.v().no_writeout_body_releasing())
+				if (!Options.v().no_writeout_body_releasing())
 					releaseBodies(clazz);
             }
 
