@@ -52,9 +52,6 @@ Improvements and API changes in HEAD
 
 14. ASM based .class-to-Jimple conversion (about twice as fast as Coffi, and cleaner code) 
 
-14. soot.toolkits.scalar.SmartLocalDefs.getDefsOfAt(Local, Unit) returns now a empty list
-    instead of null-value. 
-
 Improvements and API changes in version 2.5.0
 
 1. Modified SourceLocator so that it will automatically load a SootClass

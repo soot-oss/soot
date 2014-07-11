@@ -20,376 +20,223 @@
 package soot.toolkits.scalar;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.BitSet;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
+import soot.G;
 import soot.Local;
 import soot.Timers;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
-import soot.toolkits.graph.DirectedGraph;
-import soot.toolkits.graph.StronglyConnectedComponentsFast;
 import soot.toolkits.graph.UnitGraph;
-import static java.util.Collections.unmodifiableList;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.emptyList;
-import static java.util.Arrays.asList;
-import static java.util.Arrays.copyOf;
+import soot.util.Cons;
 
 /**
  * Analysis that provides an implementation of the LocalDefs interface.
  */
 public class SmartLocalDefs implements LocalDefs {
-	
-	abstract static protected class Assignment implements LocalDefs {
-		protected static class Entry {
-			List<Unit> units;
-			Local local;
-			
-			Entry(List<Unit> units, Local local) {
-				this.units = units;
-				this.local = local;
-			}
-		}
-		
-		protected final Map<ValueBox, Entry> resultValueBoxes;
-	
-		protected Assignment(int size) {
-			resultValueBoxes = new HashMap<ValueBox, Entry>(size);
+	private final Map<Cons, List<Unit>> answer;
+
+	private final Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined
+	private final UnitGraph graph;
+	private final LocalDefsAnalysis analysis;
+	private final Map<Unit, BitSet> liveLocalsAfter;
+
+	/**
+	 * Intersects 2 sets and returns the result as a list
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
+	private static <T> List<T> asList(Set<T> a, Set<T> b) {
+		if (a == null || b == null || a.isEmpty() || b.isEmpty()) {
+			return Collections.<T> emptyList();
 		}
 
-		@Override
-		public List<Unit> getDefsOfAt(Local l, Unit s) {
-			for (ValueBox useBox : s.getUseBoxes()) {
-				if (l == useBox.getValue()) {
-					Entry e = resultValueBoxes.get(useBox);
-					// check if local was exchanged!
-					if (e != null && l == e.local) {
-						return e.units;
-					}
-				}
-			}
-			return emptyList();
-		}
-		
-		public List<Unit> getDefsOf(ValueBox valueBox) {
-			Entry e = resultValueBoxes.get(valueBox);
-			if (e == null) {
-				return emptyList();
-			}
-			return e.units;
-		}
-	}
-	
-	protected class StaticSingleAssignment extends Assignment {
-		protected StaticSingleAssignment(List<Unit>[] unitList) {	
-			// most of the units are like "a := b + c", 
-			// or a invoke like "a := b.foo()"
-			super(g.size() * 3 + 1);
-			assert localRange[n] == 0;
-			
-			for (Unit s : g) {
-				for (ValueBox useBox : s.getUseBoxes()) {
-					Value v = useBox.getValue();
-					if (v instanceof Local) {
-						Local l = (Local) v;
-						int lno = l.getNumber();
-
-						List<Unit> list = unitList[lno];
-						if (!list.isEmpty()) {
-							list = singletonList(list.get(0));
-							resultValueBoxes.put(useBox, new Entry(list, l));	
-						}					
-					}
-				}
-			}
+		if (a.size() < b.size()) {
+			List<T> c = new ArrayList<T>(a);
+			c.retainAll(b);
+			return c;
+		} else {
+			List<T> c = new ArrayList<T>(b);
+			c.retainAll(a);
+			return c;
 		}
 	}
 
-	protected class DefaultAssignment extends Assignment {
-		protected DefaultAssignment(List<Unit>[] unitList) {
-			// most of the units are like "a := b + c", 
-			// or a invoke like "a := b.foo()"
-			super(g.size() * 3 + 1);
+	public SmartLocalDefs(UnitGraph g, LiveLocals live) {
+		this.graph = g;
 
-			LocalDefsAnalysis reachingAnalysis = new LocalDefsAnalysis();
-			Unit[] buffer = new Unit[localRange[n]];
-
-			for (Unit s : g) {
-				for (ValueBox useBox : s.getUseBoxes()) {
-					Value v = useBox.getValue();
-					if (v instanceof Local) {
-						Local l = (Local) v;
-						int lno = l.getNumber();
-
-						int from = localRange[lno];
-						int to = localRange[lno + 1];
-						assert from <= to;
-						
-						if (from == to) {
-							List<Unit> list = unitList[lno];
-							if (!list.isEmpty()) {
-								list = singletonList(list.get(0));
-								resultValueBoxes.put(useBox, new Entry(list, l));
-							}	
-						} else {
-							int j = 0;
-							BitSet reaching = reachingAnalysis.getFlowBefore(s);
-							for (int i = reaching.nextSetBit(from); (i < to) && (i >= 0); i = reaching.nextSetBit(i+1)) {
-								buffer[j++] = units[i];
-							}
-
-							if (j > 0) {
-								List<Unit> list = (j == 1) 
-									? singletonList(buffer[0])
-									: unmodifiableList(asList(copyOf(buffer, j)))
-									;									
-								resultValueBoxes.put(useBox, new Entry(list, l));
-							}		
-						}				
-					}
-				}
-			}
-		}
-	}
-
-	private class LocalDefsAnalysis extends ForwardFlowAnalysis<Unit, BitSet> {
-		private LocalDefsAnalysis() {
-			super(g);
-			doAnalysis();
-		}
-				
-		@Override
-		protected void mergeFilter(Unit unit, BitSet inout) {
-			BitSet mask = newInitialFlow();
-			for (Local l : liveLocals.getLiveLocalsBefore(unit)) {
-				int i = l.getNumber();
-				int j = i + 1;
-				mask.set(localRange[i], localRange[j]);
-			}
-			inout.and(mask);	
-		}
-		
-		@Override
-		protected void flowThrough(BitSet in, Unit unit, BitSet out) {
-			// copy everything that is live
-			out.clear();
-			
-			if (in.isEmpty()) {		
-				initFlowAfter(unit, out);
-				return;
-			}			
-			/*
-			for (Local l : liveLocals.getLiveLocalsAfter(unit)) {
-				int i = l.getNumber();
-				int j = i + 1;
-				out.set(localRange[i], localRange[j]);
-			}
-			out.and(in);
-			*/
-			out.or(in);
-			
-			Integer idx = indexOfUnit.get(unit);
-			if (idx != null) {
-				// reassign all definitions
-				for (ValueBox vb : unit.getDefBoxes()) {
-					Value v = vb.getValue();
-					if (v instanceof Local) {
-						int lno = ((Local) v).getNumber();
-	
-						int from = localRange[lno];
-						int to = localRange[lno + 1];
-						assert from <= to;
-	
-						if (from < to) {
-							out.clear(from, to);
-							out.set(idx);
-						}
-					}
-				}
-			}			
-		}
-
-		@Override
-		protected void initFlowAfter(Unit unit, BitSet flow) {
-			Integer idx = indexOfUnit.get(unit);
-			if (idx != null) {
-				flow.set(idx);
-			}
-		}
-
-		@Override
-		protected void mergeInto(Unit succNode, BitSet inout, BitSet in) {
-			inout.or(in);
-		}
-
-		@Override
-		protected void copy(BitSet source, BitSet dest) {
-			dest.clear();
-			dest.or(source);
-		}
-
-		@Override
-		protected BitSet newInitialFlow() {
-			return new BitSet(localRange[n]);
-		}
-/*
-		@Override
-		protected BitSet entryInitialFlow() {
-			return newInitialFlow();
-		}
-*/
-		@Override
-		protected void merge(BitSet in1, BitSet in2, BitSet out) {
-			throw new RuntimeException("should never be called");
-		}
-	}
-
-	final private DirectedGraph<Unit> g;
-	final int n;
-
-	private int[] localRange;
-
-	private Unit[] units;
-	private Map<Unit, Integer> indexOfUnit;
-
-	private LiveLocals liveLocals;
-	private Assignment assignment;
-
-	public SmartLocalDefs(UnitGraph graph, LiveLocals live) {
-		this(graph, live, graph.getBody().getLocals());
-	}
-
-	protected SmartLocalDefs(DirectedGraph<Unit> graph, LiveLocals live, Collection<Local> locals) {
-		this(graph, live, locals.toArray(new Local[locals.size()]));
-	}
-
-	protected SmartLocalDefs(DirectedGraph<Unit> graph, LiveLocals live, Local... locals) {
 		if (Options.v().time())
 			Timers.v().defsTimer.start();
 
-		this.g = graph;
-		this.n = locals.length;
-		this.liveLocals = live;
+		if (Options.v().verbose())
+			G.v().out.println("[" + g.getBody().getMethod().getName()
+					+ "]     Constructing SmartLocalDefs...");
 
-		/*
-		List<List<Unit>> scc = (new StronglyConnectedComponentsFast<Unit>(graph)).getTrueComponents();
-		if ( !scc.isEmpty() ) {
-			System.out.println(graph.size());	
-			System.out.println("==============================");				
-			for (List<Unit> comp : scc){		
-				System.out.println(comp.size());// +" // "+live.getLiveLocalsBefore(comp.get(0))+" // "+live.getLiveLocalsBefore(comp.get(0)).size()+" of "+locals.length);
-			}
-			System.out.println();
-		}*/
-
-
-		// reassign local numbers
+		// reassign local numbers for compact bitsets
+		int n = graph.getBody().getLocalCount();
+		Local[] locals = new Local[n];
 		int[] oldNumbers = new int[n];
-		for (int i = 0; i < n; i++) {
-			oldNumbers[i] = locals[i].getNumber();
-			locals[i].setNumber(i);
+		n = 0;
+		for (Local local : graph.getBody().getLocals()) {
+			locals[n] = local;
+			oldNumbers[n] = local.getNumber();
+			local.setNumber(n++);
 		}
 
-		init();
+		localToDefs = new HashMap<Local, Set<Unit>>();
+		liveLocalsAfter = new HashMap<Unit, BitSet>();
+		for (Unit u : graph) {
+			// translate locals to bits
+			BitSet set = new BitSet(n);
+			for (Object o : live.getLiveLocalsAfter(u)) {
+				set.set(((Local) o).getNumber());
+			}
+			liveLocalsAfter.put(u, set);
+
+			Local l = localDef(u);
+			if (l == null)
+				continue;
+			Set<Unit> s = defsOf(l);
+			s.add(u);
+		}
+
+		if (Options.v().verbose())
+			G.v().out.println("[" + g.getBody().getMethod().getName()
+					+ "]        done localToDefs map...");
+
+		if (Options.v().verbose())
+			G.v().out.println("[" + g.getBody().getMethod().getName()
+					+ "]        done unitToMask map...");
+
+		analysis = new LocalDefsAnalysis(graph);
+
+		answer = new HashMap<Cons, List<Unit>>();
+		for (Unit u : graph) {
+			for (ValueBox vb : u.getUseBoxes()) {
+				Value v = vb.getValue();
+				if (v instanceof Local) {
+					Cons key = new Cons(u, v);
+					if ( !answer.containsKey(key) ) {					
+						List<Unit> lst = asList(defsOf((Local) v), analysis.getFlowBefore(u));					
+						answer.put(key, lst);
+					}
+				}
+			}
+		}
 
 		// restore local numbering
-		for (int i = 0; i < n; i++) {
+		for (int i = 0; i < locals.length; i++) {
 			locals[i].setNumber(oldNumbers[i]);
 		}
-		
-		// GC help
-		localRange = null;
-		liveLocals = null;
-		
-		indexOfUnit.clear();
-		indexOfUnit = null;
-		
-		Arrays.fill(units, null);
-		units = null;
-		
+
 		if (Options.v().time())
 			Timers.v().defsTimer.end();
+
+		if (Options.v().verbose())
+			G.v().out.println("[" + g.getBody().getMethod().getName()
+					+ "]     SmartLocalDefs finished.");
 	}
 
-	private void init() {
-		indexOfUnit = new HashMap<Unit, Integer>(g.size());
-		units = new Unit[g.size()];
-		localRange = new int[n + 1];
-		
-		@SuppressWarnings("unchecked")
-		List<Unit>[] unitList = (List<Unit>[]) new List[n];
-
-		for (int i = 0; i < n; i++) {
-			unitList[i] = new ArrayList<Unit>();
-		}
-
-		// collect all live def points
-		for (Unit unit : g) {
-			for (ValueBox box : unit.getDefBoxes()) {
-				Value v = box.getValue();
-				if (v instanceof Local) {
-					Local l = (Local) v;
-					int lno = l.getNumber();
-
-					// only add local if it is used
-					if (liveLocals.getLiveLocalsAfter(unit).contains(l)) {
-						unitList[lno].add(unit);
-					}
-				}
-			}
-		}
-		
-		// if a variable reaches at least one head node, it can be undefined
-		BitSet undefinedLocals = new BitSet(n);
-		for (Unit unit : g.getHeads()) {
-			for (Local l : liveLocals.getLiveLocalsBefore(unit)) {
-				undefinedLocals.set(l.getNumber());
-			}
-		}
-
-		boolean isDefaultAssignment = !undefinedLocals.isEmpty();
-		
-		if (!isDefaultAssignment) {
-			for (List<Unit> l : unitList) {
-				if (l.size() >= 2) {
-					isDefaultAssignment = true;
-					break;
-				}
-			}
-		}
-
-		if (isDefaultAssignment) {
-			localRange[0] = 0;
-			for (int j = 0, i = 0; i < n; i++) {
-				if (unitList[i].size() >= 2 || undefinedLocals.get(i)) {
-					for (Unit u : unitList[i]) {
-						indexOfUnit.put(units[j] = u, j);
-						j++;
-					}
-				}
-				localRange[i + 1] = j;
-			}
-			assignment = new DefaultAssignment(unitList);
-		} else {
-			Arrays.fill(localRange, 0);
-			assignment = new StaticSingleAssignment(unitList);
-		}		
+	private Local localDef(Unit u) {
+		List<ValueBox> defBoxes = u.getDefBoxes();
+		int size = defBoxes.size();
+		if (size == 0)
+			return null;
+		if (size != 1)
+			throw new RuntimeException();
+		ValueBox vb = (ValueBox) defBoxes.get(0);
+		Value v = vb.getValue();
+		if (!(v instanceof Local))
+			return null;
+		return (Local) v;
 	}
 
-	@Override
+	private Set<Unit> defsOf(Local l) {
+		Set<Unit> ret = localToDefs.get(l);
+		if (ret == null)
+			localToDefs.put(l, ret = new HashSet<Unit>());
+		return ret;
+	}
+
+	class LocalDefsAnalysis extends ForwardFlowAnalysis<Unit, Set<Unit>> {
+		LocalDefsAnalysis(UnitGraph g) {
+			super(g);
+			doAnalysis();
+		}
+
+		@Override
+		protected void mergeInto(Unit succNode, Set<Unit> inout, Set<Unit> in) {
+			inout.addAll(in);
+		}
+
+		@Override
+		protected void merge(Set<Unit> in1, Set<Unit> in2, Set<Unit> out) {
+			// mergeInto should be called
+			throw new RuntimeException("should never be called");
+		}
+
+		@Override
+		protected void flowThrough(Set<Unit> in, Unit u, Set<Unit> out) {
+			out.clear();
+
+			BitSet liveLocals = liveLocalsAfter.get(u);
+
+			Local l = localDef(u);
+
+			if (l == null) {// add all units contained in mask
+				for (Unit inU : in) {
+					if (liveLocals.get(localDef(inU).getNumber())) {
+						out.add(inU);
+					}
+				}
+			} else {// check unit whether contained in allDefUnits before add
+					// into out set.
+				Set<Unit> allDefUnits = defsOf(l);
+
+				for (Unit inU : in) {
+					if (liveLocals.get(localDef(inU).getNumber())
+							&& !allDefUnits.contains(inU)) {
+						out.add(inU);
+					}
+				}
+
+				assert false == out.removeAll(allDefUnits);
+
+				if (liveLocals.get(l.getNumber())) {
+					out.add(u);
+				}
+			}
+		}
+
+		@Override
+		protected void copy(Set<Unit> sourceSet, Set<Unit> destSet) {
+			destSet.clear();
+			destSet.addAll(sourceSet);
+		}
+
+		@Override
+		protected Set<Unit> newInitialFlow() {
+			return new HashSet<Unit>();
+		}
+
+		@Override
+		protected Set<Unit> entryInitialFlow() {
+			return new HashSet<Unit>();
+		}
+	}
+
 	public List<Unit> getDefsOfAt(Local l, Unit s) {
-		return assignment.getDefsOfAt(l, s);
+		return answer.get(new Cons(s, l));
 	}
-	
-	
-	public List<Unit> getDefsOf(ValueBox valueBox) {
-		return assignment.getDefsOf(valueBox);
-	}
+
 }
