@@ -6117,5 +6117,14 @@ Attempt to subtract time spent in garbage collection from
 the reports of times required for transformations.
 </long_desc>
 		</boolopt>
+		
+		<boolopt>
+			<name>No body releasing after writeout</name>
+			<alias>no-writeout-body-releasing</alias>
+			<short_desc>Disables the release of method bodies after writeout. This flag is used internally.</short_desc>
+			<long_desc>
+By default soot releases the method bodies of all reachable classes after the final writeout. This option deactivates this behaviour. This flag should not affect end users at all.
+</long_desc>
+		</boolopt>
 	</section>
 </options>
