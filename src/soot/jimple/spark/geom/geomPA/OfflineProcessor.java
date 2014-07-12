@@ -161,6 +161,25 @@ public class OfflineProcessor
 		}
 	}
 	
+	public void releaseSparkMem()
+	{
+		for (int i = 0; i < n_var; ++i) {
+			IVarAbstraction pn = int2var.get(i);
+			// Keep only the points-to results for representatives
+			if ( pn != pn.getRepresentative() ) {
+				continue;
+			}
+			
+			if ( pn.willUpdate ) {
+				Node vn = pn.getWrappedNode();
+				vn.discardP2Set();
+			}
+		}
+		
+		System.gc(); System.gc();
+		System.gc(); System.gc();
+	}
+	
 	/**
 	 * Preprocess the pointers and constraints before running geomPA.
 	 * 
