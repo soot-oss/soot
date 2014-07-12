@@ -45,6 +45,7 @@ public class G extends Singletons
     private static G instance = new G();
     public static G v() { return instance; }
     public static void reset() { instance = new G(); }
+    public static void setInstance(G g) { instance = g; }
 
     public PrintStream out = System.out;
 

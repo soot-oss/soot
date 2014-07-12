@@ -416,7 +416,8 @@ public class PackManager {
 				//generate output
 				writeClass(clazz);
 
-				releaseBodies(clazz);
+				if (!Options.v().no_writeout_body_releasing())
+					releaseBodies(clazz);
             }
 
 //            for (String cl : SourceLocator.v().getClassesUnder(path)) {
@@ -1125,5 +1126,9 @@ public class PackManager {
                 }
             }
         }
+    }
+    
+    public void resetDexPrinter() {
+    	this.dexPrinter = new DexPrinter();
     }
 }
