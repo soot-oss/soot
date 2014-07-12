@@ -5297,6 +5297,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getMiscellaneous_Optionssubtract_gc_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getMiscellaneous_Optionsno_writeout_body_releasing_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getMiscellaneous_Optionsno_writeout_body_releasing_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		
 		setSootMainClass(getSootMainClassWidget().getText().getText());			
 		return setSootMainProject(getSootMainProjectWidget().getText().getText());
@@ -9983,6 +9993,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getMiscellaneous_Optionssubtract_gc_widget() {
 		return Miscellaneous_Optionssubtract_gc_widget;
+	}	
+	
+	private BooleanOptionWidget Miscellaneous_Optionsno_writeout_body_releasing_widget;
+	
+	private void setMiscellaneous_Optionsno_writeout_body_releasing_widget(BooleanOptionWidget widget) {
+		Miscellaneous_Optionsno_writeout_body_releasing_widget = widget;
+	}
+	
+	public BooleanOptionWidget getMiscellaneous_Optionsno_writeout_body_releasing_widget() {
+		return Miscellaneous_Optionsno_writeout_body_releasing_widget;
 	}	
 	
 
@@ -20027,6 +20047,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setMiscellaneous_Optionssubtract_gc_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Subtract Garbage Collection Time", "", "","subtract-gc", "\nAttempt to subtract time spent in garbage collection from the \nreports of times required for transformations. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"no-writeout-body-releasing";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setMiscellaneous_Optionsno_writeout_body_releasing_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("No body releasing after writeout", "", "","no-writeout-body-releasing", "\nBy default soot releases the method bodies of all reachable \nclasses after the final writeout. This option deactivates this \nbehaviour. This flag should not affect end users at all. ", defaultBool)));
 		
 		
 

@@ -521,6 +521,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-subtract-gc");
         }
   
+        public void setno_writeout_body_releasing(boolean arg) {
+            if(arg) addArg("-no-writeout-body-releasing");
+        }
+  
         public Object createp_jb() {
             Object ret = new PhaseOptjb();
             phaseopts.add(ret);

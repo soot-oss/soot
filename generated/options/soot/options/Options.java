@@ -1058,6 +1058,11 @@ public class Options extends OptionsBase {
             )
                 subtract_gc = true;
   
+            else if( false 
+            || option.equals( "no-writeout-body-releasing" )
+            )
+                no_writeout_body_releasing = true;
+  
             else {
                 G.v().out.println( "Invalid option -"+option );
                 return false;
@@ -1353,6 +1358,10 @@ public class Options extends OptionsBase {
     private boolean subtract_gc = false;
     public void set_subtract_gc( boolean setting ) { subtract_gc = setting; }
   
+    public boolean no_writeout_body_releasing() { return no_writeout_body_releasing; }
+    private boolean no_writeout_body_releasing = false;
+    public void set_no_writeout_body_releasing( boolean setting ) { no_writeout_body_releasing = setting; }
+  
 
     public String getUsage() {
         return ""
@@ -1464,7 +1473,8 @@ public class Options extends OptionsBase {
 +"\nMiscellaneous Options:\n"
       
 +padOpt(" -time", "Report time required for transformations" )
-+padOpt(" -subtract-gc", "Subtract gc from time" );
++padOpt(" -subtract-gc", "Subtract gc from time" )
++padOpt(" -no-writeout-body-releasing", "Disables the release of method bodies after writeout. This flag is used internally." );
     }
 
 
