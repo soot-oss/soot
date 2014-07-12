@@ -138,8 +138,11 @@ public class ExprVisitor implements ExprSwitch {
             stmtV.addInsn(buildInvokeInsn("INVOKE_DIRECT", method, arguments), origStmt);
 		} else if (isCallToSuper(sie)) {
             stmtV.addInsn(buildInvokeInsn("INVOKE_SUPER", method, arguments), origStmt);
-		} else
-			throw new Error("unknown SpecialInvokeExpr (no call to constructor, super or private method): " + sie);
+		} else {
+			// This should normally never happen, but if we have such a
+			// broken call (happens in malware for instance), we fix it.
+            stmtV.addInsn(buildInvokeInsn("INVOKE_VIRTUAL", method, arguments), origStmt);
+		}
 	}
 
 	private Insn buildInvokeInsn(String invokeOpcode, BuilderMethodReference method,
