@@ -311,7 +311,7 @@ public class GeomPointsTo extends PAG
 		// Output the SPARK running information
 		double mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		ps.println();
-		ps.printf("[Spark] Time: %.3fs\n", (double)spark_run_time/1000 );
+		ps.printf("[Spark] Time: %.3f s\n", (double)spark_run_time/1000 );
 		ps.printf("[Spark] Memory: %.1f MB\n", mem  / 1024 / 1024 );
 				
 		// Get type manager from SPARK
@@ -1090,6 +1090,7 @@ public class GeomPointsTo extends PAG
 			if ( sm != null ) {
 				if ( func2int.containsKey(sm) == false ) {
 					pn.deleteAll();
+					vn.discardP2Set();
 					it.remove();
 					continue;
 				}
@@ -1237,9 +1238,6 @@ public class GeomPointsTo extends PAG
 		// Flush all accumulated outputs
 		G.v().out.flush();
 		
-		// Start our constraints solving phase
-		Date begin = new Date();
-		
 		// Collect and process the basic information from SPARK
 		preprocess();
 		mergeLocalVariables();
@@ -1248,6 +1246,15 @@ public class GeomPointsTo extends PAG
 		offlineProcessor = new OfflineProcessor(this);
 		IFigureManager.cleanCache();
 		
+		int evalLevel = opts.geom_eval();
+		GeomEvaluator ge = new GeomEvaluator(this, ps);
+		if ( evalLevel == Constants.eval_basicInfo )
+			ge.profileSparkBasicMetrics();
+		
+		// Start our constraints solving phase
+		Date begin = new Date();
+				
+		// Main loop
 		for ( rounds = 0, n_obs = 1000; 
 				rounds < Parameters.cg_refine_times && n_obs > 0; ++rounds ) {
 
@@ -1265,6 +1272,12 @@ public class GeomPointsTo extends PAG
 			Date prepare_end = new Date();
 			prepare_time += prepare_end.getTime() - prepare_begin.getTime();	
 
+			if ( rounds == 0 ) {
+				if ( evalLevel <= Constants.eval_basicInfo ) {
+					offlineProcessor.releaseSparkMem();
+				}
+			}
+					
 			// Clear the points-to results in previous runs
 			prepareNextRun();
 			
@@ -1287,16 +1300,13 @@ public class GeomPointsTo extends PAG
 		mem = Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory();
 		
 		ps.println();
-		ps.printf("[Geom] Preprocessing time: %.2f seconds\n", (double) prepare_time / 1000);
-		ps.printf("[Geom] Main propagation time: %.2f seconds\n", (double) solve_time / 1000 );
-		ps.printf("[Geom] Memory used: %.1f MB\n", (double) (mem) / 1024 / 1024 );
+		ps.printf("[Geom] Preprocessing time: %.2f s\n", (double) prepare_time / 1000);
+		ps.printf("[Geom] Total time: %.2f s\n", (double) solve_time / 1000 );
+		ps.printf("[Geom] Memory: %.1f MB\n", (double) (mem) / 1024 / 1024 );
 		
 		// We perform a set of tests to assess the quality of the points-to results for user pointers
-		int evalLevel = opts.geom_eval();
 		if ( evalLevel != Constants.eval_nothing ) {
-			GeomEvaluator ge = new GeomEvaluator(this, ps);
-			ge.reportBasicMetrics();
-			
+			ge.profileGeomBasicMetrics(evalLevel > Constants.eval_basicInfo);
 			if ( evalLevel > Constants.eval_basicInfo ) {
 				ge.checkCallGraph();
 				ge.checkCastsSafety();
