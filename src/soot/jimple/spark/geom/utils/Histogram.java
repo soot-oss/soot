@@ -45,13 +45,15 @@ public class Histogram
 			results[i] = 0;
 	}
 	
-	public void printResult ( PrintStream output ){
+	public void printResult ( PrintStream output )
+	{
 		if ( count == 0 ) {
 			output.println( "No samples are inserted, no output!" );
 			return;
 		}
 		
 		output.println( "Samples : " + count );
+		
         for(int i = 0; i < results.length; i++){
         	if(i == 0)
         		output.print("<=" + limits[0] + ": " + results[i]);
@@ -63,8 +65,6 @@ public class Histogram
         	
         	output.printf( ", percentage = %.2f\n", (double)results[i] * 100/count );
         }
-        
-        output.println();
 	}
 
 	public void printResult( PrintStream output, String title )

@@ -101,21 +101,22 @@ public class GeomQueries
 			}
 		}
 		
-		// We also add back the obsoleted edges in the last round of geomPTA
-		for (CgEdge p : geomPts.obsoletedEdges) {
-			if ( p.scc_edge == true ) 
-				continue;
-			
-			// The non-SCC edge is attached to the SCC representative
-			int s = rep_cg[p.s];
-			
-			if ( vis_cg[s] != 0 ) {
-				CgEdge q = p.duplicate();
-				q.next = call_graph[s];
-				call_graph[s] = q;
-				in_degree[ rep_cg[q.t] ]++;
-			}
-		}
+		// We also add the edges dropped in the last round of geomPTA
+		// The are needed because the contexts mapping are built with them
+//		for (CgEdge p : geomPts.obsoletedEdges) {
+//			if ( p.scc_edge == true ) 
+//				continue;
+//			
+//			// The non-SCC edge is attached to the SCC representative
+//			int s = rep_cg[p.s];
+//			
+//			if ( vis_cg[s] != 0 ) {
+//				CgEdge q = p.duplicate();
+//				q.next = call_graph[s];
+//				call_graph[s] = q;
+//				in_degree[ rep_cg[q.t] ]++;
+//			}
+//		}
 	}
 	
 	/**
@@ -163,7 +164,7 @@ public class GeomQueries
 	
 	/**
 	 * Retrieve the subgraph from s->target.
-	 * An edge s->t is counted iff both s and t can reach target.
+	 * An edge s->t is included in the subgraph iff target is reachable from t.
 	 * @param s
 	 * @param target
 	 * @return
@@ -209,18 +210,18 @@ public class GeomQueries
 		long block_size = max_context_size_block[rep_cg[s]];
 		
 		// Compute the offset to the nearest context block for s
-		// We use (lEnd - 1) because the context numbers start from 1 
+		// We use (L - 1) because the contexts are numbered from 1 
 		long offset = (L-1) % block_size;
 		long ctxtLength = R - L;
-		long sum = 0;
+		long block_offset = 0;
 		long lEnd, rEnd;
 		
 		// We iterate all blocks of target method
 		for ( int i = 0; i < n_blocks; ++i ) {
-			lEnd = 1 + offset + sum; 
+			lEnd = 1 + offset + block_offset; 
 			rEnd = lEnd + ctxtLength;
 			tContexts.insert(lEnd, rEnd);
-			sum += block_size;
+			block_offset += block_size;
 		}
 	}
 	
@@ -258,46 +259,42 @@ public class GeomQueries
 			topQ.add(rep_start);
 			
 			while ( !topQ.isEmpty() ) {
+				// Every function in the queue is representative function
 				int s = topQ.poll();
-				int rep_s = rep_cg[s];
-				ContextsCollector sContexts = contextsForMethods[rep_s];
+				ContextsCollector sContexts = contextsForMethods[s];
 				
 				// Loop over the edges
 				CgEdge p = call_graph[s];
 				while ( p != null ) {		
 					int t = p.t;
+					int rep_t = rep_cg[t];
 					
-					if ( t != s ) {
-						// Discard the self-loop edges
-						int rep_t = rep_cg[t];
-						if ( in_degree[rep_t] != 0 ) {
-							// This node has a path to target
-							ContextsCollector reptContexts = contextsForMethods[rep_t];
-							long block_size = max_context_size_block[rep_s];
+					if ( in_degree[rep_t] != 0 ) {
+						// This node has a path to target
+						ContextsCollector reptContexts = contextsForMethods[rep_t];
+						long block_size = max_context_size_block[s];
+						
+						for ( SimpleInterval si : sContexts.bars ) {
+							// Compute the offset within the block for si
+							long in_block_offset = (si.L-1) % block_size;
+							long newL = p.map_offset + in_block_offset;
+							long newR = si.R - si.L + newL;
 							
-							for ( SimpleInterval si : sContexts.bars ) {
-								// Compute the offset to the nearest context block for s
-								// We use (lEnd - 1) because the context numbers start from 1		
-								long in_block_offset = (si.L-1) % block_size;
-								long newL = p.map_offset + in_block_offset;
-								long newR = si.R - si.L + newL;
-								
-								if ( rep_t == rep_target ) {
-									// t and target are in the same SCC
-									// We directly transfer this context interval to target
-									transferInSCC(t, target, newL, newR, targetContexts);
-								}
-								else {
-									// We transfer this interval to its SCC representative
-									// It might be t == rep_t
-									transferInSCC(t, rep_t, newL, newR, reptContexts);
-								}
+							if ( rep_t == rep_target ) {
+								// t and target are in the same SCC
+								// We directly transfer this context interval to target
+								transferInSCC(t, target, newL, newR, targetContexts);
 							}
-							
-							if ( --in_degree[rep_t] == 0 &&
-									rep_t != rep_target ) {
-								topQ.add(rep_t);
+							else {
+								// We transfer this interval to its SCC representative
+								// It might be t == rep_t
+								transferInSCC(t, rep_t, newL, newR, reptContexts);
 							}
+						}
+						
+						if ( --in_degree[rep_t] == 0 &&
+								rep_t != rep_target ) {
+							topQ.add(rep_t);
 						}
 					}
 					
@@ -320,14 +317,15 @@ public class GeomQueries
 	 * @param sootEdge: the specified context edge in soot edge format
 	 * @param l: the querying pointer
 	 * @param visitor: container for querying result
-	 * @return false, l does not have points-to information under the contexts passing the given call edge
+	 * @return false, l does not have points-to information under the contexts induced by the given call edge
 	 */
 	@SuppressWarnings("rawtypes")
 	public boolean contexsByAnyCallEdge( Edge sootEdge, Local l, PtSensVisitor visitor )
 	{
 		// Obtain the internal representation of specified context
 		CgEdge ctxt = geomPts.getInternalEdgeFromSootEdge(sootEdge);
-		if ( ctxt == null ) return false;
+		if ( ctxt == null ||
+				ctxt.is_obsoleted == true ) return false;
 				
 		// Obtain the internal representation for querying pointer
 		LocalVarNode vn = geomPts.findLocalVarNode(l);
@@ -353,6 +351,7 @@ public class GeomQueries
 		// Start call graph traversal
 		long L = ctxt.map_offset;
 		long R = L + max_context_size_block[rep_cg[ctxt.s]];
+		assert L < R;
 		visitor.prepare();
 		prepareIntervalPropagations();
 		
@@ -361,6 +360,7 @@ public class GeomQueries
 			ContextsCollector targetContexts = contextsForMethods[target];
 			
 			for ( SimpleInterval si : targetContexts.bars ) {
+				assert si.L < si.R;
 				pn.get_all_context_sensitive_objects(si.L, si.R, visitor);
 			}
 			
@@ -398,6 +398,7 @@ public class GeomQueries
 			
 			long L = icv.L;
 			long R = icv.R;
+			assert L < R;
 			objField.get_all_context_sensitive_objects(L, R, visitor);
 		}
 		
@@ -451,11 +452,12 @@ public class GeomQueries
 		for ( int i = 0; i < callEdgeChain.length; ++i ) {
 			Edge sootEdge = callEdgeChain[i];
 			CgEdge ctxt = geomPts.getInternalEdgeFromSootEdge(sootEdge);
-			if ( ctxt == null ) return false;
-			int caller = geomPts.getIDFromSootMethod(sootEdge.src());
+			if ( ctxt == null ||
+					ctxt.is_obsoleted == true ) return false;
 			
 			// Following searching procedure works for both methods in SCC and out of SCC
 			// with blocking scheme or without blocking scheme
+			int caller = geomPts.getIDFromSootMethod(sootEdge.src());
 			
 			// We obtain the block that contains current offset L
 			long block_size = max_context_size_block[rep_cg[caller]];
@@ -501,6 +503,7 @@ public class GeomQueries
 			
 			long L = icv.L;
 			long R = icv.R;
+			assert L < R;
 			objField.get_all_context_sensitive_objects(L, R, visitor);
 		}
 		
