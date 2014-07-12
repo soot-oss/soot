@@ -57,19 +57,19 @@ public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransfor
     out.println("Undefined Locals fixed with pre-initializers: "+undefined);
   }
 
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     //  deal with locals not defined at all used points
     
     int icount = 0;
     boolean passedIDs = false;
-    HashMap bafToJLocals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
+    Map<Local,Local> bafToJLocals = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
     ArrayList<Value> initialized = new ArrayList<Value>();
-    PatchingChain units = b.getUnits();
+    PatchingChain<Unit> units = b.getUnits();
     GuaranteedDefs gd = new GuaranteedDefs(new soot.toolkits.graph.ExceptionalUnitGraph(b));
-    Iterator unitIt = units.snapshotIterator();
+    Iterator<Unit> unitIt = units.snapshotIterator();
     Unit after = null;
     while (unitIt.hasNext()) {
-      Unit u = (Unit) unitIt.next();
+      Unit u = unitIt.next();
       if (!passedIDs && u instanceof IdentityInst) {
         Value v = ((IdentityInst)u).getLeftOp();
         if (v instanceof Local) {
@@ -87,8 +87,8 @@ public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransfor
         units.addFirst(after);
       }
       
-      List defs = gd.getGuaranteedDefs(u);
-      Iterator useIt = u.getUseBoxes().iterator();
+      List<?> defs = gd.getGuaranteedDefs(u);
+      Iterator<ValueBox> useIt = u.getUseBoxes().iterator();
       while (useIt.hasNext()) {
         Value v = ((ValueBox) useIt.next()).getValue();
         if (!(v instanceof Local) || defs.contains(v) || initialized.contains(v))

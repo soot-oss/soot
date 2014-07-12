@@ -18,13 +18,31 @@
  */
 
 package soot.jimple.spark.internal;
-import java.util.*;
-import soot.jimple.spark.pag.*;
-import soot.*;
-import soot.util.*;
-import java.util.Iterator;
-import soot.util.queue.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import soot.AnySubType;
+import soot.ArrayType;
+import soot.FastHierarchy;
+import soot.G;
+import soot.NullType;
+import soot.RefLikeType;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
 import soot.Type;
+import soot.TypeSwitch;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.util.ArrayNumberer;
+import soot.util.BitVector;
+import soot.util.LargeNumberedMap;
+import soot.util.queue.QueueReader;
 
 /** A map of bit-vectors representing subtype relationships.
  * @author Ondrej Lhotak
@@ -61,18 +79,16 @@ public final class TypeManager {
     final public BitVector get( Type type ) {
         if( type == null ) return null;
         while(allocNodeListener.hasNext()) {
-            AllocNode n = (AllocNode) allocNodeListener.next();
-            for( Iterator tIt = Scene.v().getTypeNumberer().iterator(); tIt.hasNext(); ) {
-                final Type t = (Type) tIt.next();
+            AllocNode n = allocNodeListener.next();
+            for( final Type t : Scene.v().getTypeNumberer()) {
                 if( !(t instanceof RefLikeType) ) continue;
                 if( t instanceof AnySubType ) continue;
                 if( isUnresolved(t) ) continue;
                 if( castNeverFails( n.getType(), t ) ) {
-                    BitVector mask = (BitVector) typeMask.get( t );
+                    BitVector mask = typeMask.get( t );
                     if( mask == null ) {
                         typeMask.put( t, mask = new BitVector() );
-                        for( Iterator anIt = pag.getAllocNodeNumberer().iterator(); anIt.hasNext(); ) {
-                            final AllocNode an = (AllocNode) anIt.next();
+                        for( final AllocNode an : pag.getAllocNodeNumberer()) {
                             if( castNeverFails( an.getType(), t ) ) {
                                 mask.set( an.getNumber() );
                             }
@@ -92,7 +108,7 @@ public final class TypeManager {
     }
     final public void makeTypeMask() {
         RefType.v( "java.lang.Class" );
-        typeMask = new LargeNumberedMap( Scene.v().getTypeNumberer() );
+        typeMask = new LargeNumberedMap<Type, BitVector>( Scene.v().getTypeNumberer() );
         if( fh == null ) return;
 
         int numTypes = Scene.v().getTypeNumberer().size();
@@ -102,9 +118,8 @@ public final class TypeManager {
         initClass2allocs();
         makeClassTypeMask(Scene.v().getSootClass("java.lang.Object"));
         // **
-        ArrayNumberer allocNodes = pag.getAllocNodeNumberer();
-        for( Iterator tIt = Scene.v().getTypeNumberer().iterator(); tIt.hasNext(); ) {
-            final Type t = (Type) tIt.next();
+        ArrayNumberer<AllocNode> allocNodes = pag.getAllocNodeNumberer();
+        for( Type t : Scene.v().getTypeNumberer()) {
             if( !(t instanceof RefLikeType) ) continue;
             if( t instanceof AnySubType ) continue;
             if( isUnresolved(t) ) continue;
@@ -121,8 +136,7 @@ public final class TypeManager {
             }
             // **
             BitVector mask = new BitVector( allocNodes.size() );
-            for( Iterator nIt = allocNodes.iterator(); nIt.hasNext(); ) {
-                final Node n = (Node) nIt.next();
+            for( Node n : allocNodes) {
                 if( castNeverFails( n.getType(), t ) ) {
                     mask.set( n.getNumber() );
                 }
@@ -133,7 +147,7 @@ public final class TypeManager {
         allocNodeListener = pag.allocNodeListener();
     }
 
-    private LargeNumberedMap typeMask = null;
+    private LargeNumberedMap<Type, BitVector> typeMask = null;
     final public boolean castNeverFails( Type src, Type dst ) {
         if( fh == null ) return true;
         if( dst == null ) return true;
@@ -151,12 +165,10 @@ public final class TypeManager {
 
     protected FastHierarchy fh = null;
     protected PAG pag;
-    protected QueueReader allocNodeListener = null;
+    protected QueueReader<AllocNode> allocNodeListener = null;
     // ** new methods
     private void initClass2allocs() {
-        Iterator allocIt = pag.getAllocNodeNumberer().iterator();
-        while (allocIt.hasNext()) {
-            AllocNode an = (AllocNode) allocIt.next();
+        for ( AllocNode an : pag.getAllocNodeNumberer() ) {
             addAllocNode(an);
         }
     }

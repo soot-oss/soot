@@ -31,6 +31,7 @@ import soot.util.*;
  *   Soot representation of the Java type for a statement address. Implemented as
  *   a singleton.
  */
+@SuppressWarnings("serial")
 public class StmtAddressType extends Type
 {
     public StmtAddressType( Singletons.Global g ) {}

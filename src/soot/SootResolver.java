@@ -183,7 +183,7 @@ public class SootResolver
     }
     
     private void addToResolveWorklist(SootClass sc, int desiredLevel) {
-        if( sc.resolvingLevel() >= desiredLevel ) return;
+    	if( sc.resolvingLevel() >= desiredLevel ) return;
         worklist[desiredLevel].add(sc);
     }
 
@@ -226,7 +226,10 @@ public class SootResolver
                 classToTypesHierarchy.put( sc, Collections.<Type>emptyList() );
             }
         } else {
+    
             Dependencies dependencies = is.resolve(sc);
+            
+        
             classToTypesSignature.put( sc, dependencies.typesToSignature);
             classToTypesHierarchy.put( sc, dependencies.typesToHierarchy);
         }

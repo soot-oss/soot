@@ -70,6 +70,10 @@ public class Options extends OptionsBase {
     public static final int output_format_template = 15;
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
+    public static final int check_init_throw_analysis_auto = 1;
+    public static final int check_init_throw_analysis_pedantic = 2;
+    public static final int check_init_throw_analysis_unit = 3;
+    public static final int check_init_throw_analysis_dalvik = 4;
 
     @SuppressWarnings("unused")
     public boolean parse( String[] argv ) {
@@ -89,6 +93,11 @@ public class Options extends OptionsBase {
             }
             if( false );
 
+            else if( false 
+            || option.equals( "coffi" )
+            )
+                coffi = true;
+  
             else if( false 
             || option.equals( "h" )
             || option.equals( "help" )
@@ -790,6 +799,68 @@ public class Options extends OptionsBase {
                 }
            }
   
+            else if( false
+            || option.equals( "check-init-ta" )
+            || option.equals( "check-init-throw-analysis" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( false );
+    
+                else if( false
+                || value.equals( "auto" )
+                ) {
+                    if( check_init_throw_analysis != 0
+                    && check_init_throw_analysis != check_init_throw_analysis_auto ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    check_init_throw_analysis = check_init_throw_analysis_auto;
+                }
+    
+                else if( false
+                || value.equals( "pedantic" )
+                ) {
+                    if( check_init_throw_analysis != 0
+                    && check_init_throw_analysis != check_init_throw_analysis_pedantic ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    check_init_throw_analysis = check_init_throw_analysis_pedantic;
+                }
+    
+                else if( false
+                || value.equals( "unit" )
+                ) {
+                    if( check_init_throw_analysis != 0
+                    && check_init_throw_analysis != check_init_throw_analysis_unit ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    check_init_throw_analysis = check_init_throw_analysis_unit;
+                }
+    
+                else if( false
+                || value.equals( "dalvik" )
+                ) {
+                    if( check_init_throw_analysis != 0
+                    && check_init_throw_analysis != check_init_throw_analysis_dalvik ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    check_init_throw_analysis = check_init_throw_analysis_dalvik;
+                }
+    
+                else {
+                    G.v().out.println( "Invalid value "+value+" given for option -"+option );
+                    return false;
+                }
+           }
+  
             else if( false 
             || option.equals( "omit-excepting-unit-edges" )
             )
@@ -1011,6 +1082,10 @@ public class Options extends OptionsBase {
     }
 
 
+    public boolean coffi() { return coffi; }
+    private boolean coffi = false;
+    public void set_coffi( boolean setting ) { coffi = setting; }
+  
     public boolean help() { return help; }
     private boolean help = false;
     public void set_help( boolean setting ) { help = setting; }
@@ -1204,6 +1279,12 @@ public class Options extends OptionsBase {
     }
     public void set_throw_analysis( int setting ) { throw_analysis = setting; }
     private int throw_analysis = 0;
+    public int check_init_throw_analysis() {
+        if( check_init_throw_analysis == 0 ) return check_init_throw_analysis_auto;
+        return check_init_throw_analysis; 
+    }
+    public void set_check_init_throw_analysis( int setting ) { check_init_throw_analysis = setting; }
+    private int check_init_throw_analysis = 0;
     public boolean omit_excepting_unit_edges() { return omit_excepting_unit_edges; }
     private boolean omit_excepting_unit_edges = false;
     public void set_omit_excepting_unit_edges( boolean setting ) { omit_excepting_unit_edges = setting; }
@@ -1278,6 +1359,7 @@ public class Options extends OptionsBase {
 
 +"\nGeneral Options:\n"
       
++padOpt(" -coffi", "Use the good old Coffi front end for parsing Java bytecode (instead of using ASM)." )
 +padOpt(" -h -help", "Display help and exit" )
 +padOpt(" -pl -phase-list", "Print list of available phases" )
 +padOpt(" -ph PHASE -phase-help PHASE", "Print help for specified PHASE" )
@@ -1352,6 +1434,11 @@ public class Options extends OptionsBase {
 +padOpt(" -throw-analysis ARG", "" )
 +padVal(" pedantic", "Pedantically conservative throw analysis" )
 +padVal(" unit (default)", "Unit Throw Analysis" )
++padOpt(" -check-init-ta ARG -check-init-throw-analysis ARG", "" )
++padVal(" auto (default)", "Automatically select a throw analysis" )
++padVal(" pedantic", "Pedantically conservative throw analysis" )
++padVal(" unit", "Unit Throw Analysis" )
++padVal(" dalvik", "Dalvik Throw Analysis" )
 +padOpt(" -omit-excepting-unit-edges", "Omit CFG edges to handlers from excepting units which lack side effects" )
 +padOpt(" -trim-cfgs", "Trim unrealizable exceptional edges from CFGs" )
 +padOpt(" -ire -ignore-resolution-errors", "Does not throw an exception when a program references an undeclared field or method." )

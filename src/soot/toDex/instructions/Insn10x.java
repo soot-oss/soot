@@ -1,8 +1,10 @@
 package soot.toDex.instructions;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.Format.Instruction10x;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
+import org.jf.dexlib2.builder.instruction.BuilderInstruction10x;
+
+import soot.toDex.LabelAssigner;
 
 /**
  * The "10x" instruction format: It needs one 16-bit code unit, does not have any registers
@@ -17,7 +19,7 @@ public class Insn10x extends AbstractInsn {
 	}
 
 	@Override
-	protected Instruction getRealInsn0() {
-		return new Instruction10x(opc);
+	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
+		return new BuilderInstruction10x(opc);
 	}
 }

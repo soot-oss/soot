@@ -31,18 +31,15 @@
 package soot.jimple.internal;
 
 
-import soot.tagkit.*;
 import soot.util.*;
 import java.util.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 
-public class JExitMonitorStmt extends AbstractStmt 
+public class JExitMonitorStmt extends AbstractOpStmt 
     implements ExitMonitorStmt
 {
-    ValueBox opBox;
-
     public JExitMonitorStmt(Value op)
     {
         this(Jimple.v().newImmediateBox(op));
@@ -50,7 +47,7 @@ public class JExitMonitorStmt extends AbstractStmt
 
     protected JExitMonitorStmt(ValueBox opBox)
     {
-        this.opBox = opBox;
+        super(opBox);
     }
 
     public Object clone() 
@@ -69,31 +66,6 @@ public class JExitMonitorStmt extends AbstractStmt
         opBox.toString(up);
     }
 
-    public Value getOp()
-    {
-        return opBox.getValue();
-    }
-
-    public void setOp(Value op)
-    {
-        opBox.setValue(op);
-    }
-
-    public ValueBox getOpBox()
-    {
-        return opBox;
-    }
-
-    public List getUseBoxes()
-    {
-        List list = new ArrayList();
-
-        list.addAll(opBox.getValue().getUseBoxes());
-        list.add(opBox);
-    
-        return list;
-    }
-
     public void apply(Switch sw)
     {
         ((StmtSwitch) sw).caseExitMonitorStmt(this);
@@ -104,16 +76,9 @@ public class JExitMonitorStmt extends AbstractStmt
   {
     ((ConvertToBaf)(getOp())).convertToBaf(context, out);
 
-    Unit u;
-    out.add(u = Baf.v().newExitMonitorInst());
-
-    Unit currentUnit = this;
-
-    Iterator it = currentUnit.getTags().iterator();	
-    while(it.hasNext()) {
-	u.addTag((Tag) it.next());
-    }
-
+    Unit u = Baf.v().newExitMonitorInst();
+    u.addAllTagsOf(this);
+    out.add(u);
   }
 
 

@@ -52,7 +52,7 @@ public class CFG {
      */
     BasicBlock cfg;
 
-    Chain units;
+    Chain<Unit> units;
     JimpleBody listBody;
 
     Map<Instruction, Stmt> instructionToFirstStmt;
@@ -851,7 +851,7 @@ public class CFG {
    {
         this.bootstrap_methods_attribute = bootstrap_methods_attribute;
 
-        Chain units = listBody.getUnits();
+        Chain<Unit> units = listBody.getUnits();
 
         this.listBody = listBody;
         this.units = units;
@@ -864,9 +864,9 @@ public class CFG {
         //TypeArray.setClassManager(cm);
         //TypeStack.setClassManager(cm);
 
-        Set initialLocals = new ArraySet();
+        Set<Local> initialLocals = new ArraySet<Local>();
 
-        List parameterTypes = jmethod.getParameterTypes();
+        List<Type> parameterTypes = jmethod.getParameterTypes();
 
         // Initialize nameToLocal which is an index*Type->Local map, which is used
         // to determine local in bytecode references.
@@ -895,13 +895,13 @@ public class CFG {
 
             // Initialize parameters
             {
-                Iterator typeIt = parameterTypes.iterator();
+                Iterator<Type> typeIt = parameterTypes.iterator();
                 int argCount = 0;
 
                 while(typeIt.hasNext())
                 {
                     Local local = Util.v().getLocalForParameter(listBody, currentLocalIndex);
-                    Type type = (Type) typeIt.next();
+                    Type type = typeIt.next();
                     initialLocals.add(local);
 
                     units.add(Jimple.v().newIdentityStmt(local, Jimple.v().newParameterRef(type, argCount)));
@@ -971,7 +971,7 @@ public class CFG {
     void jimplify(cp_info constant_pool[],int this_class)
     {
         Code_attribute codeAttribute = method.locate_code_attribute();
-        Set<Instruction> handlerInstructions = new ArraySet();
+        Set<Instruction> handlerInstructions = new ArraySet<Instruction>();
 
         Map<Instruction, SootClass> handlerInstructionToException = new HashMap<Instruction, SootClass>();
         Map<Instruction, TypeStack> instructionToTypeStack;
@@ -1352,7 +1352,7 @@ public class CFG {
 
 			// changed to account for catch blocks which are also part of normal control flow
             //units.insertBefore(newTarget, firstTargetStmt);			
-            ((PatchingChain)units).insertBeforeNoRedirect(newTarget, firstTargetStmt);
+            ((PatchingChain<Unit>)units).insertBeforeNoRedirect(newTarget, firstTargetStmt);
 
 			targetToHandler.put(firstTargetStmt, newTarget);
             if (units.getFirst()!=newTarget) {
@@ -4104,18 +4104,20 @@ public class CFG {
             int lowIndex = ((Instruction_Tableswitch)ins).low,
                 highIndex = ((Instruction_Tableswitch)ins).high;
 
+            int npairs = highIndex - lowIndex + 1;
+            
             stmt = Jimple.v().newTableSwitchStmt(
                     Util.v().getLocalForStackOp(listBody, typeStack, typeStack.topIndex()),
                     lowIndex,
                     highIndex,
-                    Arrays.asList(new FutureStmt[highIndex - lowIndex + 1]),
+                    Arrays.asList(new FutureStmt[npairs]),
                     new FutureStmt());
             break;
          }
 
          case ByteCode.LOOKUPSWITCH:
          {
-            List matches = new ArrayList();
+            List<IntConstant> matches = new ArrayList<IntConstant>();
             int npairs = ((Instruction_Lookupswitch)ins).npairs;
 
             for (int j = 0; j < npairs; j++)
@@ -4271,7 +4273,7 @@ public class CFG {
             args = cp_info.countParams(constant_pool,iv_info.name_and_type_index);
              
 			SootMethodRef bootstrapMethodRef;
-			List bootstrapArgs = new LinkedList();
+			List<Value> bootstrapArgs = new LinkedList<Value>();
 			{
 				short[] bootstrapMethodTable = bootstrap_methods_attribute.method_handles;
 				short methodSigIndex = bootstrapMethodTable[iv_info.bootstrap_method_index];
@@ -4301,14 +4303,14 @@ public class CFG {
 
         	 SootClass bclass = cm.getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
         	 
-        	 List parameterTypes;
+        	 List<Type> parameterTypes;
         	 Type returnType;
 
         	 // Generate parameters & returnType & parameterTypes
         	 {
         		 Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
 
-        		 parameterTypes = new ArrayList();
+        		 parameterTypes = new ArrayList<Type>();
 
         		 for(int k = 0; k < types.length - 1; k++)
         		 {
@@ -4613,13 +4615,13 @@ public class CFG {
 
 		SootClass bclass = cm.getSootClass(className);
 
-		List parameterTypes;
+		List<Type> parameterTypes;
 		Type returnType;
 		// Generate parameters & returnType & parameterTypes
 		{
 		    Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
 
-		    parameterTypes = new ArrayList();
+		    parameterTypes = new ArrayList<Type> ();
 
 		    for(int k = 0; k < types.length - 1; k++)
 		    {

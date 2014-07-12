@@ -28,7 +28,6 @@ package soot.jimple.toolkits.scalar;
 
 import soot.*;
 import soot.jimple.*;
-import soot.util.*;
 import java.util.*;
 
 /**
@@ -41,7 +40,7 @@ public class LocalCreation {
   private String prefix;
   private int counter;
   private Set<String> locals;
-  private Chain localChain;
+  private Collection<Local> localChain;
 
   /**
    * all actions are done on the given locals-chain. as prefix the
@@ -49,7 +48,7 @@ public class LocalCreation {
    *
    * @param chain the locals-chain of a Jimple-body
    */
-  public LocalCreation(Chain locals) {
+  public LocalCreation(Collection<Local> locals) {
     this(locals, DEFAULT_PREFIX);
   }
 
@@ -60,10 +59,10 @@ public class LocalCreation {
    * @param Chain the locals-chain of a Jimple-body
    * @param String prefix overrides the DEFAULT-PREFIX
    */
-  public LocalCreation(Chain locals, String prefix) {
+  public LocalCreation(Collection<Local> locals, String prefix) {
     this.locals = new HashSet<String>(locals.size());
     localChain = locals;
-    Iterator it = locals.iterator();
+    Iterator<Local> it = locals.iterator();
     while (it.hasNext()) {
       Local l = (Local)it.next();
       this.locals.add(l.getName());
@@ -111,7 +110,7 @@ public class LocalCreation {
     }
     String newName = prefix + suffix;
     Local newLocal = Jimple.v().newLocal(newName, type);
-    localChain.addLast(newLocal);
+    localChain.add(newLocal);
     locals.add(newName);
     return newLocal;
   }

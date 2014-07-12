@@ -246,7 +246,10 @@ public abstract class AbstractJasminClass
     
     private String getVisibilityAnnotationAttr(VisibilityAnnotationTag tag){
         StringBuffer sb = new StringBuffer();
-        if (tag.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE){
+        if(tag == null){
+        	return "";
+        }else 
+        	if (tag.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE){
             sb.append(".runtime_visible_annotation\n");
         }
         else if(tag.getVisibility() == AnnotationConstants.RUNTIME_INVISIBLE){

@@ -38,7 +38,7 @@ public class TagManager
      * (This does not seem to be necessary.) */
     public Tag getTagFor(String tagName) {
 	try {
-	    Class cc = Class.forName("soot.tagkit." + tagName);
+	    Class<?> cc = Class.forName("soot.tagkit." + tagName);
 	    return (Tag) cc.newInstance();
 	} 
 	catch (ClassNotFoundException e) {

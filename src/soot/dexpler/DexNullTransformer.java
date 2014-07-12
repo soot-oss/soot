@@ -91,7 +91,6 @@ public class DexNullTransformer extends DexTransformer {
 
    Local l = null;
 
-	@SuppressWarnings("unchecked")
 	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
         final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
         final SmartLocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));

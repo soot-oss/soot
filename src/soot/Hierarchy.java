@@ -38,16 +38,16 @@ import java.util.*;
 public class Hierarchy
 {
     // These two maps are not filled in the constructor.
-    HashMap<SootClass, List<SootClass>> classToSubclasses;
-    HashMap<SootClass, List<SootClass>> interfaceToSubinterfaces;
-    HashMap<SootClass, List<SootClass>> interfaceToSuperinterfaces;
+    Map<SootClass, List<SootClass>> classToSubclasses;
+    Map<SootClass, List<SootClass>> interfaceToSubinterfaces;
+    Map<SootClass, List<SootClass>> interfaceToSuperinterfaces;
 
-    HashMap<SootClass, List<SootClass>> classToDirSubclasses;
-    HashMap<SootClass, List<SootClass>> interfaceToDirSubinterfaces;
-    HashMap<SootClass, List<SootClass>> interfaceToDirSuperinterfaces;
+    Map<SootClass, List<SootClass>> classToDirSubclasses;
+    Map<SootClass, List<SootClass>> interfaceToDirSubinterfaces;
+    Map<SootClass, List<SootClass>> interfaceToDirSuperinterfaces;
 
     // This holds the direct implementers.
-    HashMap<SootClass, List<SootClass>> interfaceToDirImplementers;
+    Map<SootClass, List<SootClass>> interfaceToDirImplementers;
 
     int state;
     Scene sc;
@@ -546,43 +546,39 @@ public class Hierarchy
             //|| isClassSubclassOfIncluding( from, m.getDeclaringClass() );
     }
 
-    /** Given an object of actual type C (o = new C()), returns the method which will be called
-        on an o.f() invocation. */
-    public SootMethod resolveConcreteDispatch(SootClass concreteType, SootMethod m)
-    {
-        concreteType.checkLevel(SootClass.HIERARCHY);
-        m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
-        checkState();
+	/**
+	 * Given an object of actual type C (o = new C()), returns the method which
+	 * will be called on an o.f() invocation.
+	 */
+	public SootMethod resolveConcreteDispatch(SootClass concreteType,
+			SootMethod m) {
+		concreteType.checkLevel(SootClass.HIERARCHY);
+		m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
+		checkState();
 
-        if (concreteType.isInterface())
-            throw new RuntimeException("class needed!");
+		if (concreteType.isInterface())
+			throw new RuntimeException("class needed!");
 
-        Iterator<SootClass> it = getSuperclassesOfIncluding(concreteType).iterator();
-        String methodSig = m.getSubSignature();
+		String methodSig = m.getSubSignature();
 
-        while (it.hasNext())
-        {
-            SootClass c = it.next();
-            if (c.declaresMethod(methodSig) 
-            && isVisible( c, m )
-            ) {
-                return c.getMethod(methodSig);
-            }
-        }
-        throw new RuntimeException("could not resolve concrete dispatch!\nType: "+concreteType+"\nMethod: "+m);
-    }
+		for (SootClass c : getSuperclassesOfIncluding(concreteType)) {
+			if (c.declaresMethod(methodSig) && isVisible(c, m)) {
+				return c.getMethod(methodSig);
+			}
+		}
+		throw new RuntimeException(
+				"could not resolve concrete dispatch!\nType: " + concreteType
+						+ "\nMethod: " + m);
+	}
 
     /** Given a set of definite receiver types, returns a list of possible targets. */
-    public List resolveConcreteDispatch(List classes, SootMethod m)
+    public List<SootMethod> resolveConcreteDispatch(List<Type> classes, SootMethod m)
     {
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
         checkState();
 
-        ArraySet s = new ArraySet();
-        Iterator classesIt = classes.iterator();
-
-        while (classesIt.hasNext()) {
-            Object cls = classesIt.next();
+        Set<SootMethod> s = new ArraySet<SootMethod>();
+        for (Type cls : classes) {
             if (cls instanceof RefType)
                 s.add(resolveConcreteDispatch(((RefType)cls).getSootClass(), m));
             else if (cls instanceof ArrayType) {
@@ -591,57 +587,55 @@ public class Hierarchy
             else throw new RuntimeException("Unable to resolve concrete dispatch of type "+ cls);
         }
 
-        List l = new ArrayList(); l.addAll(s);
-        return Collections.unmodifiableList(l);
+        return Collections.unmodifiableList(new ArrayList<SootMethod>(s));
     }
 
     // what can get called for c & all its subclasses
     /** Given an abstract dispatch to an object of type c and a method m, gives
      * a list of possible receiver methods. */
-    public List resolveAbstractDispatch(SootClass c, SootMethod m) 
+    public List<SootMethod> resolveAbstractDispatch(SootClass c, SootMethod m) 
     {
         c.checkLevel(SootClass.HIERARCHY);
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
         checkState();
 
+        Set<SootMethod> s = new ArraySet<SootMethod>();
+        
         Iterator<SootClass> classesIt = null;
 
         if (c.isInterface()) {
-            classesIt = getImplementersOf(c).iterator();
-            HashSet<SootClass> classes = new HashSet<SootClass>();
-            while (classesIt.hasNext())
-                classes.addAll(getSubclassesOfIncluding(classesIt.next()));
+            Set<SootClass> classes = new HashSet<SootClass>();
+            for (SootClass sootClass : getImplementersOf(c)) {
+            	classes.addAll(getSubclassesOfIncluding(sootClass));
+            }
             classesIt = classes.iterator();
         }    
             
         else
             classesIt = getSubclassesOfIncluding(c).iterator();
 
-        ArraySet s = new ArraySet();
         
         while (classesIt.hasNext()) {
             SootClass cl = classesIt.next();
-            if( Modifier.isAbstract( cl.getModifiers() ) ) continue;
-            s.add(resolveConcreteDispatch(cl, m));
+            if( !Modifier.isAbstract( cl.getModifiers() ) ) {
+            	s.add(resolveConcreteDispatch(cl, m));
+            }
         }
 
-        List l = new ArrayList(); l.addAll(s);
-        return Collections.unmodifiableList(l);
+        return Collections.unmodifiableList(new ArrayList<SootMethod>(s));
     }
 
     // what can get called if you have a set of possible receiver types
     /** Returns a list of possible targets for the given method and set of receiver types. */
-    public List resolveAbstractDispatch(List classes, SootMethod m)
+    public List<SootMethod> resolveAbstractDispatch(List<SootClass> classes, SootMethod m)
     {
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
-        ArraySet s = new ArraySet();
-        Iterator classesIt = classes.iterator();
-
-        while (classesIt.hasNext())
-            s.addAll(resolveAbstractDispatch((SootClass)classesIt.next(), m));
-
-        List l = new ArrayList(); l.addAll(s);
-        return Collections.unmodifiableList(l);
+        Set<SootMethod> s = new ArraySet<SootMethod>();
+        for (SootClass sootClass : classes ) {
+            s.addAll(resolveAbstractDispatch(sootClass, m));
+        }
+        
+        return Collections.unmodifiableList(new ArrayList<SootMethod>(s));
     }
 
     /** Returns the target for the given SpecialInvokeExpr. */
@@ -653,7 +647,7 @@ public class Hierarchy
 
         /* This is a bizarre condition!  Hopefully the implementation is correct.
            See VM Spec, 2nd Edition, Chapter 6, in the definition of invokespecial. */
-        if (target.getName().equals("<init>") || target.isPrivate())
+        if ("<init>".equals(target.getName()) || target.isPrivate())
             return target;
         else if (isClassSubclassOf(target.getDeclaringClass(), container.getDeclaringClass()))
             return resolveConcreteDispatch(container.getDeclaringClass(), target);

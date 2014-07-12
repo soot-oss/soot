@@ -31,7 +31,6 @@
 package soot.jimple.internal;
 
 import soot.*;
-import soot.jimple.*;
 
 public class ImmediateBox extends AbstractValueBox
 {
@@ -42,8 +41,7 @@ public class ImmediateBox extends AbstractValueBox
 
     public boolean canContainValue(Value value)
     {
-        return value instanceof Local ||
-            value instanceof Constant;
+        return value instanceof Immediate;
     }
 }
 

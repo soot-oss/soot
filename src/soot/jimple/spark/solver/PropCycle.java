@@ -32,7 +32,7 @@ import soot.util.*;
 public final class PropCycle extends Propagator {
     public PropCycle( PAG pag ) {
         this.pag = pag;
-        varNodeToIteration = new LargeNumberedMap( pag.getVarNodeNumberer() );
+        varNodeToIteration = new LargeNumberedMap<VarNode, Integer>( pag.getVarNodeNumberer() );
     }
 
     /** Actually does the propagation. */
@@ -40,8 +40,7 @@ public final class PropCycle extends Propagator {
         ofcg = pag.getOnFlyCallGraph();
         boolean verbose = pag.getOpts().verbose();
         Collection<VarNode> bases = new HashSet<VarNode>();
-        for( Iterator frnIt = pag.getFieldRefNodeNumberer().iterator(); frnIt.hasNext(); ) {
-            final FieldRefNode frn = (FieldRefNode) frnIt.next();
+        for( FieldRefNode frn : pag.getFieldRefNodeNumberer() ) {
             bases.add( frn.getBase() );
         }
         bases = new ArrayList<VarNode>( bases );
@@ -76,8 +75,7 @@ public final class PropCycle extends Propagator {
                 finalIter = true;
                 if( verbose ) G.v().out.println( "Doing full graph" );
                 bases = new ArrayList<VarNode>(pag.getVarNodeNumberer().size());
-                for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
-                    final VarNode v = (VarNode) vIt.next();
+                for( VarNode v : pag.getVarNodeNumberer() ) {
                     bases.add( v );
                 }
                 changed = true;
@@ -93,10 +91,10 @@ public final class PropCycle extends Propagator {
         boolean ret = false;
 
         if( path.contains( v ) ) {
-            for( Iterator<VarNode> nIt = path.iterator(); nIt.hasNext(); ) {
-                final Node n = nIt.next();
+//            for( Iterator<VarNode> nIt = path.iterator(); nIt.hasNext(); ) {
+//                final Node n = nIt.next();
         //        if( n != v ) n.mergeWith( v );
-            }
+//            }
             return false;
         }
 
@@ -138,7 +136,7 @@ public final class PropCycle extends Propagator {
     private PAG pag;
     private OnFlyCallGraph ofcg;
     private Integer currentIteration;
-    private final LargeNumberedMap varNodeToIteration;
+    private final LargeNumberedMap<VarNode, Integer> varNodeToIteration;
 }
 
 

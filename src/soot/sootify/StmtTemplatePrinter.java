@@ -23,7 +23,6 @@ import soot.jimple.NopStmt;
 import soot.jimple.RetStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
-import soot.jimple.Stmt;
 import soot.jimple.StmtSwitch;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
@@ -105,7 +104,6 @@ class StmtTemplatePrinter implements StmtSwitch {
 	}
 
 
-	@SuppressWarnings("unchecked")
 	public void caseTableSwitchStmt(TableSwitchStmt stmt) {
 		p.openBlock();
 		String varName = printValueAssignment(stmt.getKey(),"key");
@@ -118,7 +116,7 @@ class StmtTemplatePrinter implements StmtSwitch {
 		p.println("int highIndex=" + highIndex + ";");
 		
 		p.println("List<Unit> targets = new LinkedList<Unit>();");
-		for(Stmt s: (List<Stmt>)stmt.getTargets()) {
+		for(Unit s: stmt.getTargets()) {
 			String nameOfJumpTarget = nameOfJumpTarget(s);
 			p.println("targets.add("+nameOfJumpTarget+")");
 		}

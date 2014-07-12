@@ -102,6 +102,11 @@ packages in the Java runtime.</p>
 	<section>
 		<name>General Options</name>
 		<boolopt>
+		<name>Coffi Frontend</name>
+		<alias>coffi</alias>
+		<short_desc>Use the good old Coffi front end for parsing Java bytecode (instead of using ASM).</short_desc>		
+		</boolopt>
+		<boolopt>
 			<name>Help</name>
 			<alias>h</alias>
 			<alias>help</alias>
@@ -5749,6 +5754,65 @@ to the surrounding program.
 </long_desc>
 							</value>
 						</multiopt>
+						<multiopt>
+							<name>Local Initialization ThrowAnalysis</name>
+							<alias>check-init-ta</alias>
+							<alias>check-init-throw-analysis</alias>
+							<long_desc>
+This option specifies which throw analysis to use during local initialization 
+checking inside soot.Body.
+        </long_desc>
+							<value>
+								<name>Select Automatically</name>
+								<alias>auto</alias>
+								<default/>
+								<short_desc>Automatically select a throw analysis</short_desc>
+								<long_desc>
+Selects the throw analysis to use for local initialization checking based on 
+information from other options. In particular, it will use 'dalvik' when 
+it detects it is analyzing an Android application (e.g. when --android-jars or 
+--force-android-jar are set) and 'pedantic' otherwise. This is the default.
+</long_desc>
+							</value>
+							<value>
+								<name>Pedantic</name>
+								<alias>pedantic</alias>
+								<short_desc>Pedantically conservative throw analysis</short_desc>
+								<long_desc>
+Says that any instruction may throw any
+<code>Throwable</code> whatsoever. Strictly speaking this is
+correct, since the Java libraries include the
+<code>Thread.stop(Throwable)</code>
+method, which allows other threads to cause arbitrary exceptions
+to occur at arbitrary points in the execution of a victim thread.
+</long_desc>
+							</value>
+							<value>
+								<name>Unit</name>
+								<alias>unit</alias>
+								<short_desc>Unit Throw Analysis</short_desc>															
+								<long_desc>
+Says that each statement in the intermediate representation
+may throw those exception types associated with the corresponding
+Java bytecode instructions in the JVM Specification.  The
+analysis deals with each statement in isolation, without regard
+to the surrounding program.
+</long_desc>
+							</value>
+							<value>
+								<name>Dalvik</name>
+								<alias>dalvik</alias>
+								<short_desc>Dalvik Throw Analysis</short_desc>								
+								<long_desc>
+Says that each statement in the intermediate representation
+may throw those exception types associated with the corresponding
+Java bytecode instructions in the Dalvik Specification.  The
+analysis deals with each statement in isolation, without regard
+to the surrounding program. This is the equivalent of Unit above, but targeting 
+the Dalvik VM semantics as opposed to those of the JVM.
+</long_desc>
+							</value>
+						</multiopt>
 		<boolopt>
 			<name>Omit Excepting Unit Edges</name>
 			<alias>omit-excepting-unit-edges</alias>
@@ -6051,6 +6115,15 @@ Report the time required to perform some of Soot's transformations.
 			<long_desc>
 Attempt to subtract time spent in garbage collection from
 the reports of times required for transformations.
+</long_desc>
+		</boolopt>
+		
+		<boolopt>
+			<name>No body releasing after writeout</name>
+			<alias>no-writeout-body-releasing</alias>
+			<short_desc>Disables the release of method bodies after writeout. This flag is used internally.</short_desc>
+			<long_desc>
+By default soot releases the method bodies of all reachable classes after the final writeout. This option deactivates this behaviour. This flag should not affect end users at all.
 </long_desc>
 		</boolopt>
 	</section>

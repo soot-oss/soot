@@ -23,18 +23,19 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple.toolkits.typing.integer;
 
-public class TypeException extends Exception
-{
-  public TypeException(String message)
-  {
-    super(message);
+public class TypeException extends Exception {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -602930090190087993L;
 
-    if(message == null)
-      {
-	throw new InternalTypingException();
-      }
-  }
+	public TypeException(String message) {
+		super(message);
+
+		if (message == null) {
+			throw new InternalTypingException();
+		}
+	}
 }

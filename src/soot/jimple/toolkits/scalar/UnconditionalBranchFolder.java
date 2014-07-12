@@ -45,7 +45,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
 
     HashMap<Stmt, Stmt> stmtMap;
     
-    protected void internalTransform(Body b, String phaseName, Map options) 
+    protected void internalTransform(Body b, String phaseName, Map<String,String> options) 
     {
         StmtBody body = (StmtBody)b;
 
@@ -64,11 +64,11 @@ public class UnconditionalBranchFolder extends BodyTransformer
             numFixed[i] = 0;
         }
 
-        Chain units = body.getUnits();
+        Chain<Unit> units = body.getUnits();
         stmtMap = new HashMap<Stmt, Stmt>();
 
         // find goto and if-goto statements
-        Iterator stmtIt = units.iterator();
+        Iterator<Unit> stmtIt = units.iterator();
         Stmt stmt, target, newTarget;
         while (stmtIt.hasNext()) {
             stmt = (Stmt)stmtIt.next();

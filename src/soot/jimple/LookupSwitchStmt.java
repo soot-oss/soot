@@ -32,22 +32,12 @@ package soot.jimple;
 import soot.*;
 import java.util.*;
 
-public interface LookupSwitchStmt extends Stmt
+public interface LookupSwitchStmt extends SwitchStmt
 {
-    public Unit getDefaultTarget();
-    public void setDefaultTarget(Unit defaultTarget);
-    public UnitBox getDefaultTargetBox();
-    public Value getKey();
-    public void setKey(Value key);
-    public ValueBox getKeyBox();
     public void setLookupValues(List<IntConstant> lookupValues);
     public void setLookupValue(int index, int value);
     public int getLookupValue(int index);
     public List<IntConstant> getLookupValues();
     public int getTargetCount();
-    public Unit getTarget(int index);
-    public UnitBox getTargetBox(int index);
-    public void setTarget(int index, Unit target);
-    public List<Unit> getTargets();
     public void setTargets(Unit[] targets);
 }

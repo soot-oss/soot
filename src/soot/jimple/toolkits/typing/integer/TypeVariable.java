@@ -29,7 +29,7 @@ package soot.jimple.toolkits.typing.integer;
 import java.util.*;
 
 /** Represents a type variable. **/
-class TypeVariable implements Comparable
+class TypeVariable implements Comparable<Object>
 {
   private static final boolean DEBUG = false;
 
@@ -42,8 +42,8 @@ class TypeVariable implements Comparable
   
   private TypeNode type;
 
-  private List<TypeVariable> parents = Collections.unmodifiableList(new LinkedList());
-  private List<TypeVariable> children = Collections.unmodifiableList(new LinkedList());
+  private List<TypeVariable> parents = Collections.emptyList();
+  private List<TypeVariable> children = Collections.emptyList();
 
   public TypeVariable(int id, TypeResolver resolver)
   {

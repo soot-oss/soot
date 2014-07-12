@@ -30,7 +30,6 @@
 
 package soot.jimple.internal;
 
-import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
@@ -42,7 +41,6 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
     public JReturnVoidStmt()
     {
     }
-
   
     public Object clone() 
     {
@@ -65,15 +63,9 @@ public class JReturnVoidStmt extends AbstractStmt implements ReturnVoidStmt
     
     public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
-	Unit u;
-        out.add(u = Baf.v().newReturnVoidInst());
-	
-	Unit currentUnit = this;
-
-	Iterator it = currentUnit.getTags().iterator();	
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
+    	Unit u = Baf.v().newReturnVoidInst();
+    	u.addAllTagsOf(this);
+        out.add(u);
     }
 
 

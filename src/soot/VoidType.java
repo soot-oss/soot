@@ -28,6 +28,7 @@ package soot;
 import soot.util.*;
 
 /** Represents the Java void type. */
+@SuppressWarnings("serial")
 public class VoidType extends Type
 {
     public VoidType( Singletons.Global g ) {}

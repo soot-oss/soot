@@ -27,6 +27,8 @@ import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
+import soot.jimple.ClassConstant;
+import soot.jimple.Constant;
 import soot.jimple.IdentityRef;
 import soot.jimple.Jimple;
 import soot.jimple.ThisRef;
@@ -106,12 +108,18 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
     public void unitRef( Unit u, boolean branchTarget ) {
         throw new RuntimeException( "Dava doesn't have unit references!" );
     }
-
-
-
-
-
-
+    
+    @Override
+    public void constant( Constant c ) {
+      if (c instanceof ClassConstant) {
+        handleIndent();
+        String fullClassName =
+          ((ClassConstant)c).value.replaceAll("/", ".");
+        output.append(fullClassName + ".class");
+      } else {
+        super.constant(c);
+      }
+    }
     public void addNot() {
         output.append(" !");
     }

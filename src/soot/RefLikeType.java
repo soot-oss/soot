@@ -25,6 +25,7 @@ package soot;
  * @author Ondrej Lhotak
  */
 
+@SuppressWarnings("serial")
 public abstract class RefLikeType extends Type
 {
     /**

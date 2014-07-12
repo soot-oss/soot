@@ -34,7 +34,8 @@ import java.util.*;
 /** Represents a type variable. 
  * @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead
  **/
-class TypeVariableBV implements Comparable
+@Deprecated
+class TypeVariableBV implements Comparable<Object>
 {
   private static final boolean DEBUG = false;
 
@@ -69,9 +70,9 @@ class TypeVariableBV implements Comparable
     this.type = type;
     approx = type;
     
-    for( Iterator parentIt = type.parents().iterator(); parentIt.hasNext(); ) {
+    for( Iterator<TypeNode> parentIt = type.parents().iterator(); parentIt.hasNext(); ) {
     
-        final TypeNode parent = (TypeNode) parentIt.next();
+        final TypeNode parent = parentIt.next();
 	
 	addParent(resolver.typeVariable(parent));
       }

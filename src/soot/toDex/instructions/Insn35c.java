@@ -2,11 +2,12 @@ package soot.toDex.instructions;
 
 import java.util.BitSet;
 
-import org.jf.dexlib.Item;
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.Format.Instruction35c;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
+import org.jf.dexlib2.builder.instruction.BuilderInstruction35c;
+import org.jf.dexlib2.writer.builder.BuilderReference;
 
+import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
 
 /**
@@ -25,9 +26,10 @@ public class Insn35c extends AbstractInsn implements FiveRegInsn {
 	
 	private int regCount;
 	
-	private final Item<?> referencedItem;
+	private final BuilderReference referencedItem;
 
-	public Insn35c(Opcode opc, int regCount, Register regD, Register regE, Register regF, Register regG, Register regA, Item<?> referencedItem) {
+	public Insn35c(Opcode opc, int regCount, Register regD, Register regE,
+			Register regF, Register regG, Register regA, BuilderReference referencedItem) {
 		super(opc);
 		this.regCount = regCount;
 		regs.add(regD);
@@ -86,14 +88,15 @@ public class Insn35c extends AbstractInsn implements FiveRegInsn {
 	}
 
 	@Override
-	protected Instruction getRealInsn0() {
+	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
 		int[] realRegNumbers = getRealRegNumbers();
 		byte regDNumber = (byte) realRegNumbers[REG_D_IDX];
 		byte regENumber = (byte) realRegNumbers[REG_E_IDX];
 		byte regFNumber = (byte) realRegNumbers[REG_F_IDX];
 		byte regGNumber = (byte) realRegNumbers[REG_G_IDX];
 		byte regANumber = (byte) realRegNumbers[REG_A_IDX];
-		return new Instruction35c(opc, regCount, regDNumber, regENumber, regFNumber, regGNumber, regANumber, referencedItem);
+		return new BuilderInstruction35c(opc, regCount, regDNumber, regENumber,
+				regFNumber, regGNumber, regANumber, referencedItem);
 	}
 	
 	@Override

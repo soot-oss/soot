@@ -29,7 +29,9 @@ import soot.options.*;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.*;
+
 import java.util.*;
+
 import soot.util.*;
 import soot.jimple.toolkits.pointer.PASideEffectTester;
 import soot.tagkit.*;
@@ -52,16 +54,16 @@ public class CommonSubexpressionEliminator extends BodyTransformer
     public static CommonSubexpressionEliminator v() { return G.v().soot_jimple_toolkits_scalar_CommonSubexpressionEliminator(); }
 
     /** Common subexpression eliminator. */
-    protected void internalTransform(Body b, String phaseName, Map options)
+    protected void internalTransform(Body b, String phaseName, Map<String,String> options)
     {
         int counter = 0;
 
         // Sigh.  check for name collisions.
-        Iterator localsIt = b.getLocals().iterator();
-        HashSet<String> localNames = new HashSet<String>(b.getLocals().size());
+        Iterator<Local> localsIt = b.getLocals().iterator();
+        Set<String> localNames = new HashSet<String>(b.getLocals().size());
         while (localsIt.hasNext())
         {
-            localNames.add(((Local)localsIt.next()).getName());
+            localNames.add((localsIt.next()).getName());
         }
 
         SideEffectTester sideEffect;
@@ -83,8 +85,8 @@ public class CommonSubexpressionEliminator extends BodyTransformer
         AvailableExpressions ae = // new SlowAvailableExpressions(b);
 	     new FastAvailableExpressions(b, sideEffect);
 
-        Chain units = b.getUnits();
-        Iterator unitsIt = units.snapshotIterator();
+        Chain<Unit> units = b.getUnits();
+        Iterator<Unit> unitsIt = units.snapshotIterator();
         while (unitsIt.hasNext())
         {
             Stmt s = (Stmt) unitsIt.next();

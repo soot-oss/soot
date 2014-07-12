@@ -39,8 +39,7 @@ public class SCCCollapser {
 
         new TopoSorter( pag, ignoreTypes ).sort();
         TreeSet<VarNode> s = new TreeSet<VarNode>();
-        for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
-            final VarNode v = (VarNode) vIt.next();
+        for( final VarNode v : pag.getVarNodeNumberer() ) {
             s.add(v);
         }
         for (VarNode v : s) {

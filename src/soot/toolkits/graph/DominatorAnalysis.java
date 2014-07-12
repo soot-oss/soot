@@ -38,7 +38,8 @@ import soot.toolkits.scalar.*;
 /**
  * @deprecated use {@link MHGDominatorsFinder} instead
  */
-public class DominatorAnalysis extends ForwardFlowAnalysis {
+@Deprecated
+public class DominatorAnalysis extends ForwardFlowAnalysis<Unit,FlowSet> {
 
     private UnitGraph g;
     private FlowSet allNodes;
@@ -56,7 +57,7 @@ public class DominatorAnalysis extends ForwardFlowAnalysis {
 
     private void initAllNodes(){
         allNodes = new ArraySparseSet();
-        Iterator it = g.iterator();
+        Iterator<Unit> it = g.iterator();
         while (it.hasNext()){
             allNodes.add(it.next());
         } 
@@ -66,37 +67,26 @@ public class DominatorAnalysis extends ForwardFlowAnalysis {
 // STEP 4: Is the merge operator union or intersection?
 // INTERSECTION
 
-    protected void merge(Object in1, Object in2, Object out)
+    @Override
+    protected void merge(FlowSet in1, FlowSet in2, FlowSet out)
     {
-	    FlowSet inSet1 = (FlowSet) in1;
-	    FlowSet inSet2 = (FlowSet) in2;
-	    FlowSet outSet = (FlowSet) out;
-
-        inSet1.intersection(inSet2, outSet);
-	
+        in1.intersection(in2, out);	
     }
-
-    protected void copy(Object source, Object dest) {
-
-        FlowSet sourceIn = (FlowSet)source;
-        FlowSet destOut = (FlowSet)dest;
-        
-        sourceIn.copy(destOut);
-
+    
+    @Override
+    protected void copy(FlowSet source, FlowSet dest) {        
+        source.copy(dest);
     }
    
 // STEP 5: Define flow equations.
 // dom(s) = s U ( ForAll Y in pred(s): Intersection (dom(y)))
 // ie: dom(s) = s and whoever dominates all the predeccessors of s
 // 
-    
-    protected void flowThrough(Object inValue, Object unit,
-            Object outValue)
+    @Override
+    protected void flowThrough(FlowSet in, Unit s,
+    		FlowSet out)
     {
-        FlowSet in  = (FlowSet) inValue;
-        FlowSet out = (FlowSet) outValue;
-        Unit    s   = (Unit)    unit;
-
+    	
         if (isUnitStartNode(s)){
             //System.out.println("s: "+s+" is start node");
             out.clear();
@@ -106,15 +96,15 @@ public class DominatorAnalysis extends ForwardFlowAnalysis {
         else {
         
             //System.out.println("s: "+s+" is not start node");
-            FlowSet domsOfPreds = allNodes.clone();
+            //FlowSet domsOfPreds = allNodes.clone();
         
             // for each pred of s
-            Iterator predsIt = g.getPredsOf(s).iterator();
+            Iterator<Unit> predsIt = g.getPredsOf(s).iterator();
             while (predsIt.hasNext()){
-                Unit pred = (Unit)predsIt.next();
+                Unit pred = predsIt.next();
                 // get the unitToBeforeFlow and find the intersection
                 //System.out.println("pred: "+pred);
-                FlowSet next = (FlowSet) unitToAfterFlow.get(pred);
+                FlowSet next = unitToAfterFlow.get(pred);
                 //System.out.println("next: "+next);
                 //System.out.println("in before intersect: "+in);
                 in.intersection(next, in);
@@ -141,11 +131,12 @@ public class DominatorAnalysis extends ForwardFlowAnalysis {
 // dom(startNode) = startNode
 // dom(node) = allNodes
 //
-    protected Object entryInitialFlow()
+    @Override
+    protected FlowSet entryInitialFlow()
     {
 
         FlowSet fs = new ArraySparseSet();
-        List heads = g.getHeads();
+        List<Unit> heads = g.getHeads();
         if (heads.size() != 1) {
             throw new RuntimeException("Expect one start node only.");
         }
@@ -153,8 +144,8 @@ public class DominatorAnalysis extends ForwardFlowAnalysis {
         return fs;
     }
 
-
-    protected Object newInitialFlow()
+    @Override
+    protected FlowSet newInitialFlow()
     {
         return allNodes.clone();
     }

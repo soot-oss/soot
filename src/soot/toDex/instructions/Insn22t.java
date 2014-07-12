@@ -2,12 +2,12 @@ package soot.toDex.instructions;
 
 import java.util.BitSet;
 
-import org.jf.dexlib.Code.Instruction;
-import org.jf.dexlib.Code.Opcode;
-import org.jf.dexlib.Code.Format.Instruction22t;
+import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.builder.BuilderInstruction;
+import org.jf.dexlib2.builder.instruction.BuilderInstruction22t;
 
+import soot.toDex.LabelAssigner;
 import soot.toDex.Register;
-import soot.toDex.SootToDexUtils;
 
 /**
  * The "22t" instruction format: It needs two 16-bit code units, has two registers
@@ -32,9 +32,9 @@ public class Insn22t extends InsnWithOffset implements TwoRegInsn {
 	}
 
 	@Override
-	protected Instruction getRealInsn0() {
-		int offC = getRelativeOffset();
-		return new Instruction22t(opc, (byte) getRegA().getNumber(), (byte) getRegB().getNumber(), (short) offC);
+	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
+		return new BuilderInstruction22t(opc, (byte) getRegA().getNumber(),
+				(byte) getRegB().getNumber(), assigner.getOrCreateLabel(target));
 	}
 	
 	@Override
@@ -49,9 +49,4 @@ public class Insn22t extends InsnWithOffset implements TwoRegInsn {
 		return incompatRegs;
 	}
 	
-	@Override
-	public boolean offsetFit() {
-		int offC = getRelativeOffset();
-		return SootToDexUtils.fitsSigned16(offC);
-	}
 }

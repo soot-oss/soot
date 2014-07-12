@@ -62,10 +62,10 @@ public class BusyCodeMotion extends BodyTransformer {
   /**
    * performs the busy code motion.
    */
-  protected void internalTransform(Body b, String phaseName, Map opts) {
+  protected void internalTransform(Body b, String phaseName, Map<String,String> opts) {
     BCMOptions options = new BCMOptions( opts );
     HashMap<EquivalentValue, Local> expToHelper = new HashMap<EquivalentValue, Local>();
-    Chain unitChain = b.getUnits();
+    Chain<Unit> unitChain = b.getUnits();
 
     if(Options.v().verbose())
       G.v().out.println("[" + b.getMethod().getName() +
@@ -76,8 +76,8 @@ public class BusyCodeMotion extends BodyTransformer {
     UnitGraph graph = new BriefUnitGraph(b);
 
     /* map each unit to its RHS. only take binary expressions */
-    Map unitToEquivRhs = new UnitMap(b, graph.size() + 1, 0.7f) {
-	protected Object mapTo(Unit unit) {
+    Map<Unit,EquivalentValue> unitToEquivRhs = new UnitMap<EquivalentValue>(b, graph.size() + 1, 0.7f) {
+	protected EquivalentValue mapTo(Unit unit) {
 	  Value tmp = SootFilter.noInvokeRhs(unit);
 	  Value tmp2 = SootFilter.binop(tmp);
 	  if (tmp2 == null) tmp2 = SootFilter.concreteRef(tmp);
@@ -86,8 +86,8 @@ public class BusyCodeMotion extends BodyTransformer {
       };
 
     /* same as before, but without exception-throwing expressions */
-    Map unitToNoExceptionEquivRhs = new UnitMap(b, graph.size() + 1, 0.7f) {
-	protected Object mapTo(Unit unit) {
+    Map<Unit,EquivalentValue> unitToNoExceptionEquivRhs = new UnitMap<EquivalentValue>(b, graph.size() + 1, 0.7f) {
+	protected EquivalentValue mapTo(Unit unit) {
 	  Value tmp = SootFilter.binopRhs(unit);
 	  tmp = SootFilter.noExceptionThrowing(tmp);
 	  return SootFilter.equiVal(tmp);
@@ -111,16 +111,16 @@ public class BusyCodeMotion extends BodyTransformer {
 
     LocalCreation localCreation = new LocalCreation(b.getLocals(), PREFIX);
 
-    Iterator unitIt = unitChain.snapshotIterator();
+    Iterator<Unit> unitIt = unitChain.snapshotIterator();
 
     { /* insert the computations at the earliest positions */
       while (unitIt.hasNext()) {
-        Unit currentUnit = (Unit)unitIt.next();
-        Iterator earliestIt =
+        Unit currentUnit = unitIt.next();
+        Iterator<EquivalentValue> earliestIt =
           ((FlowSet)earliest.getFlowBefore(currentUnit)).iterator();
         while (earliestIt.hasNext()) {
-          EquivalentValue equiVal = (EquivalentValue)earliestIt.next();
-          Value exp = equiVal.getValue();
+          EquivalentValue equiVal = earliestIt.next();
+          //Value exp = equiVal.getValue();
           /* get the unic helper-name for this expression */
           Local helper = expToHelper.get(equiVal);
           if (helper == null) {
@@ -139,8 +139,8 @@ public class BusyCodeMotion extends BodyTransformer {
     { /* replace old computations by the helper-vars */
       unitIt = unitChain.iterator();
       while (unitIt.hasNext()) {
-        Unit currentUnit = (Unit)unitIt.next();
-        EquivalentValue rhs = (EquivalentValue)unitToEquivRhs.get(currentUnit);
+        Unit currentUnit = unitIt.next();
+        EquivalentValue rhs = unitToEquivRhs.get(currentUnit);
         if (rhs != null) {
           Local helper = expToHelper.get(rhs);
           if (helper != null)

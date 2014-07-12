@@ -33,10 +33,11 @@
            		<pathelement location="${jasmin.jar}"/>
            		<pathelement location="${heros.jar}"/>
            		<pathelement location="${axmlprinter2.jar}"/>
-           		<pathelement location="${baksmali.jar}"/>
-           		<pathelement location="${baksmali2.jar}"/>
+           		<pathelement location="${dexlib2.jar}"/>
+           		<pathelement location="${dexlib-utils.jar}"/>
            		<pathelement location="${slf4j-api.jar}"/>
            		<pathelement location="${slf4j-simple.jar}"/>
+           		<pathelement location="${asm.jar}"/>
         	</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
@@ -321,8 +322,9 @@
             <zipfileset src="${polyglot.jar}"/>
             <zipfileset src="${javacup.jar}"/>
             <zipfileset src="${xmlprinter.jar}"/>
-            <zipfileset src="${baksmali.jar}"/>
-            <zipfileset src="${baksmali2.jar}"/>
+            <zipfileset src="${dexlib2.jar}"/>
+            <zipfileset src="${dexlib-utils.jar}"/>
+            <zipfileset src="${asm.jar}"/>
         </jar>
 		<delete dir="META-INF"/>
     </target>

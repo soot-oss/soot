@@ -23,7 +23,6 @@ import java.util.*;
 
 import soot.*;
 import soot.jbco.*;
-import soot.util.*;
 import soot.jimple.*;
 import soot.BodyTransformer;
 import soot.jbco.util.*;
@@ -62,20 +61,20 @@ public class ArithmeticTransformer extends BodyTransformer implements
     return name;
   }
 
-  protected void internalTransform(Body b, String phaseName, Map options) 
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) 
   {
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) return;
     
-    PatchingChain units = b.getUnits();
+    PatchingChain<Unit> units = b.getUnits();
 
     int localCount = 0;
-    Chain locals = b.getLocals();
+    Collection<Local> locals = b.getLocals();
     if (output)
       out.println("*** Performing Arithmetic Transformation on "
           + b.getMethod().getSignature());
 
-    Iterator it = units.snapshotIterator();
+    Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
       Unit u = (Unit) it.next();
       if (u instanceof AssignStmt) {

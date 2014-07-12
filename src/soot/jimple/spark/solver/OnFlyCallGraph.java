@@ -34,8 +34,8 @@ import soot.util.queue.*;
 public class OnFlyCallGraph {
     private final OnFlyCallGraphBuilder ofcgb;
     private final ReachableMethods reachableMethods;
-    private final QueueReader reachablesReader;
-    private final QueueReader callEdges;
+    private final QueueReader<MethodOrMethodContext> reachablesReader;
+    private final QueueReader<Edge> callEdges;
     private final CallGraph callGraph;
 
     public ReachableMethods reachableMethods() { return reachableMethods; }

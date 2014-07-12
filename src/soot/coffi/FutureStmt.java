@@ -32,14 +32,11 @@
 package soot.coffi;
 
 import soot.util.*;
-import java.util.*;
 import soot.*;
 
 class FutureStmt extends soot.jimple.internal.AbstractStmt
 {
     public Object object;
-
-    List myEmptyList = Collections.unmodifiableList(new ArrayList());
 
     public FutureStmt(Object object)
     {
@@ -59,30 +56,13 @@ class FutureStmt extends soot.jimple.internal.AbstractStmt
         up.literal("<futurestmt>");
     }
 
-    public List getDefBoxes()
-    {
-        return myEmptyList;
-    }
-
-    public List getUseBoxes()
-    {
-        return myEmptyList;
-    }
-
-    public List getUnitBoxes()
-    {
-        return myEmptyList;
-    }
-
     public void apply(Switch sw)
     {
         ((soot.jimple.StmtSwitch) sw).defaultCase(this);
     }
+    
     public boolean fallsThrough() {throw  new RuntimeException(); }
     public boolean branches() {throw new RuntimeException(); }
     public Object clone() {throw new RuntimeException();}
     
 }
-
-
-

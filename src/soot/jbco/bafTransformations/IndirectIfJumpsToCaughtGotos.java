@@ -25,6 +25,7 @@ import soot.*;
 import soot.baf.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.*;
+import soot.util.Chain;
 /**
  * @author Michael Batchelder 
  * 
@@ -53,17 +54,17 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
     out.println("Indirected Ifs through Traps: "+count);
   }
   
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) return;
     
-    PatchingChain units = b.getUnits();
+    PatchingChain<Unit> units = b.getUnits();
     Unit nonTrap = findNonTrappedUnit(units,b.getTraps());
     if (nonTrap == null) {
       Unit last = null;
       nonTrap = Baf.v().newNopInst();
-      for (Iterator it = units.iterator(); it.hasNext(); ) {
+      for (Iterator<Unit> it = units.iterator(); it.hasNext(); ) {
         Unit u = (Unit)it.next();
         if (u instanceof IdentityInst && ((IdentityInst)u).getLeftOp() instanceof Local) {
           last = u;
@@ -88,7 +89,7 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
     }
     
     ArrayList<Unit> addedUnits = new ArrayList<Unit>();
-    Iterator it = units.snapshotIterator();
+    Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
       Unit u = (Unit)it.next();
       if (isIf(u) && Rand.getInt(10) <= weight) {
@@ -166,15 +167,15 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
     }
   }
   
-  private Unit findNonTrappedUnit(PatchingChain units, soot.util.Chain traps) {
+  private Unit findNonTrappedUnit(PatchingChain<Unit> units, Chain<Trap> traps) {
     int intrap = 0;
     ArrayList<Unit> untrapped = new ArrayList<Unit>();
-    Iterator it = units.snapshotIterator();
+    Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
-      Unit u = (Unit)it.next();
-      Iterator tit = traps.iterator();
+      Unit u = it.next();
+      Iterator<Trap> tit = traps.iterator();
       while (tit.hasNext()) {
-        Trap t = (Trap)tit.next();
+        Trap t = tit.next();
         if (u == t.getBeginUnit()) intrap++;
         if (u == t.getEndUnit()) intrap--;
       }

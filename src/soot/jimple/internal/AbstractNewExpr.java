@@ -29,8 +29,10 @@ package soot.jimple.internal;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
+
 import java.util.*;
 
+@SuppressWarnings("serial")
 public abstract class AbstractNewExpr implements NewExpr
 {
     RefType type;
@@ -81,9 +83,9 @@ public abstract class AbstractNewExpr implements NewExpr
     }
 
 
-    public List getUseBoxes()
+    public List<ValueBox> getUseBoxes()
     {
-        return AbstractUnit.emptyList;
+        return Collections.emptyList();
     }
 
     public void apply(Switch sw)

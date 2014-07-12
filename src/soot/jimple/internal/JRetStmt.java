@@ -37,8 +37,8 @@ import java.util.*;
 
 public class JRetStmt extends AbstractStmt implements RetStmt
 {
-    ValueBox stmtAddressBox;
-    List useBoxes;
+    final ValueBox stmtAddressBox;
+    //List useBoxes;
 
     public JRetStmt(Value stmtAddress)
     {
@@ -82,9 +82,9 @@ public class JRetStmt extends AbstractStmt implements RetStmt
         stmtAddressBox.setValue(stmtAddress);
     }
 
-    public List getUseBoxes()
+    public List<ValueBox> getUseBoxes()
     {
-        List useBoxes = new ArrayList();
+        List<ValueBox> useBoxes = new ArrayList<ValueBox>();
 
         useBoxes.addAll(stmtAddressBox.getValue().getUseBoxes());
         useBoxes.add(stmtAddressBox);

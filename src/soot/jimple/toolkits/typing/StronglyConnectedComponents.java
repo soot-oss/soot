@@ -33,10 +33,10 @@ class StronglyConnectedComponents
 {
   List<TypeVariable> variables;
   Set<TypeVariable> black;
-  LinkedList<TypeVariable> finished;
+  List<TypeVariable> finished;
   
-  LinkedList<LinkedList<TypeVariable>> forest = new LinkedList<LinkedList<TypeVariable>>();
-  LinkedList<TypeVariable> current_tree;
+  List<List<TypeVariable>> forest = new LinkedList<List<TypeVariable>>();
+  List<TypeVariable> current_tree;
   
   private static final boolean DEBUG = false;
   
@@ -72,9 +72,9 @@ class StronglyConnectedComponents
 	  }
       }
     
-    for(Iterator<LinkedList<TypeVariable>> i = forest.iterator(); i.hasNext();)
+    for(Iterator<List<TypeVariable>> i = forest.iterator(); i.hasNext();)
       {
-	LinkedList list = i.next();
+	List<TypeVariable> list = i.next();
 	TypeVariable previous = null;
 	StringBuffer s = null;
 	if(DEBUG)
@@ -82,9 +82,9 @@ class StronglyConnectedComponents
 	    s = new StringBuffer("scc:\n");
 	  }
 	
-	for(Iterator j = list.iterator(); j.hasNext();)
+	for(Iterator<TypeVariable> j = list.iterator(); j.hasNext();)
 	  {
-	    TypeVariable current = (TypeVariable) j.next();
+	    TypeVariable current = j.next();
 	   
 	    if(DEBUG)
 	      {

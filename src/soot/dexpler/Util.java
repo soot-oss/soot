@@ -41,20 +41,10 @@ import soot.LongType;
 import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
-import soot.SootField;
 import soot.Type;
 import soot.Unit;
-import soot.Value;
 import soot.VoidType;
-import soot.jimple.AssignStmt;
-import soot.jimple.Constant;
-import soot.jimple.DoubleConstant;
-import soot.jimple.FieldRef;
-import soot.jimple.FloatConstant;
-import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
-import soot.jimple.LongConstant;
-import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 
 public class Util {

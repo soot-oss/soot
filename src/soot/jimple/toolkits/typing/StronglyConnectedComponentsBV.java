@@ -28,10 +28,12 @@ package soot.jimple.toolkits.typing;
 
 import soot.*;
 import soot.util.*;
+
 import java.util.*;
 /**
  * @deprecated use {@link soot.jimple.toolkits.typing.fast.TypeResolver} instead
  */
+@Deprecated
 class StronglyConnectedComponentsBV
 {
   BitVector variables;
@@ -78,7 +80,7 @@ class StronglyConnectedComponentsBV
     
     for(Iterator<LinkedList<TypeVariableBV>> i = forest.iterator(); i.hasNext();)
       {
-	LinkedList list = i.next();
+	LinkedList<TypeVariableBV> list = i.next();
 	TypeVariableBV previous = null;
 	StringBuffer s = null;
 	if(DEBUG)
@@ -86,9 +88,9 @@ class StronglyConnectedComponentsBV
 	    s = new StringBuffer("scc:\n");
 	  }
 	
-	for(Iterator j = list.iterator(); j.hasNext();)
+	for(Iterator<TypeVariableBV> j = list.iterator(); j.hasNext();)
 	  {
-	    TypeVariableBV current = (TypeVariableBV) j.next();
+	    TypeVariableBV current = j.next();
 	   
 	    if(DEBUG)
 	      {

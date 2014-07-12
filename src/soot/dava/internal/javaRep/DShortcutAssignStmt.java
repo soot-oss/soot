@@ -7,7 +7,7 @@ public class DShortcutAssignStmt extends DAssignStmt {
 	Type type;
 	
 	public DShortcutAssignStmt(DAssignStmt assignStmt, Type type){
-		super(assignStmt.getLeftOpBox(),assignStmt.getRightOpBox());
+		super(assignStmt.getLeftOpBox(), assignStmt.getRightOpBox());
 		this.type = type;
 	}
 	

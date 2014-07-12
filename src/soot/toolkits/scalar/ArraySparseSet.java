@@ -227,6 +227,7 @@ public class ArraySparseSet extends AbstractFlowSet
      * @deprecated This method uses linear-time lookup.
      * For better performance, consider using a {@link HashSet} instead, if you require this operation.
      */
+    @Deprecated
     public boolean contains(Object obj)
     {
         for(int i = 0; i < numElements; i++)

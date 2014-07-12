@@ -30,47 +30,43 @@ package soot.tagkit;
 
 import java.util.*;
 
+import soot.UnitBox;
 
-/** Represents a general attribute which can be attached to
- * implementations of Host. It can be directly used to add
- * attributes of class files, fields, and methods.
- *
+/**
+ * Represents a general attribute which can be attached to implementations of
+ * Host. It can be directly used to add attributes of class files, fields, and
+ * methods.
+ * 
  * @see CodeAttribute
  */
-public class GenericAttribute implements Attribute
-{
-    private final String mName;
-    private byte[] mValue;
-    
-    public GenericAttribute(String name, byte[] value)
-    {
-    	if(value==null) value = new byte[0];
+public class GenericAttribute implements Attribute {
+	private final String mName;
+	private byte[] mValue;
+
+	public GenericAttribute(String name, byte[] value) {
+		if (value == null)
+			value = new byte[0];
 		mName = name;
 		mValue = value;
-    }
-    public String getName()
-    {
-	return mName;
-    }
-    public  byte[] getValue()
-    {
-	return mValue;
-    }        
-    public  String toString()
-    {
-	return mName + " " + Base64.encode(mValue).toString();
-    }
+	}
 
-    public void setValue(byte[] value)
-    {
-	mValue = value;
-    }
+	public String getName() {
+		return mName;
+	}
 
-    
-    public List getUnitBoxes(){return new ArrayList();}
+	public byte[] getValue() {
+		return mValue;
+	}
 
+	public String toString() {
+		return mName + " " + Base64.encode(mValue).toString();
+	}
 
+	public void setValue(byte[] value) {
+		mValue = value;
+	}
+
+	public List<UnitBox> getUnitBoxes() {
+		return Collections.emptyList();
+	}
 }
-
-
-

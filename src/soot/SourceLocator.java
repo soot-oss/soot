@@ -37,6 +37,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import soot.JavaClassProvider.JarException;
+import soot.asm.AsmClassProvider;
 import soot.options.Options;
 
 /** Provides utility methods to retrieve an input stream for a class name, given
@@ -110,28 +111,29 @@ public class SourceLocator
 
     private void setupClassProviders() {
         classProviders = new LinkedList<ClassProvider>();
-        switch( Options.v().src_prec() ) {
+        ClassProvider classFileClassProvider = Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
+		switch( Options.v().src_prec() ) {
             case Options.src_prec_class:
-                classProviders.add(new CoffiClassProvider());
+                classProviders.add(classFileClassProvider);
                 classProviders.add(new JimpleClassProvider());
                 classProviders.add(new JavaClassProvider());
                 break;
             case Options.src_prec_only_class:
-                classProviders.add(new CoffiClassProvider());
+                classProviders.add(classFileClassProvider);
                 break;
             case Options.src_prec_java:
                 classProviders.add(new JavaClassProvider());
-                classProviders.add(new CoffiClassProvider());
+                classProviders.add(classFileClassProvider);
                 classProviders.add(new JimpleClassProvider());
                 break;
             case Options.src_prec_jimple:
                 classProviders.add(new JimpleClassProvider());
-                classProviders.add(new CoffiClassProvider());
+                classProviders.add(classFileClassProvider);
                 classProviders.add(new JavaClassProvider());
                 break;
             case Options.src_prec_apk:
                 classProviders.add(new DexClassProvider());
-				classProviders.add(new CoffiClassProvider());
+				classProviders.add(classFileClassProvider);
 				classProviders.add(new JavaClassProvider());
 				classProviders.add(new JimpleClassProvider());
                 break;
@@ -214,6 +216,7 @@ public class SourceLocator
 						}
 					}
 				}
+				archive.close();
 			} catch (IOException e) {
 				G.v().out.println("Error reading " + aPath + ": " + e.toString());
 				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
@@ -498,7 +501,10 @@ public class SourceLocator
         try {
             ZipFile archive = new ZipFile(archivePath);
             ZipEntry entry = archive.getEntry(fileName);
-            if( entry == null ) return null;
+            if( entry == null ) {
+            	archive.close();
+            	return null;
+            }
             return new FoundFile(archive, entry);
         } catch( IOException e ) {
             throw new RuntimeException("Caught IOException " + e + " looking in archive file " + archivePath + " for file " + fileName);

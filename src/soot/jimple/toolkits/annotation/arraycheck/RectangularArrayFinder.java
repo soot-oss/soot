@@ -49,7 +49,7 @@ public class RectangularArrayFinder extends SceneTransformer
     private final Set<Object> trueSet = new HashSet<Object>();
     private CallGraph cg;
 
-    protected void internalTransform(String phaseName, Map opts)
+    protected void internalTransform(String phaseName, Map<String,String> opts)
     {
 	Scene sc = Scene.v();
 
@@ -259,11 +259,11 @@ public class RectangularArrayFinder extends SceneTransformer
 
 	/* Collect the multi-array locals */
 
-	Chain locals = body.getLocals();
-	Iterator localIt = locals.iterator();
+	Collection<Local> locals = body.getLocals();
+	Iterator<Local> localIt = locals.iterator();
 	while (localIt.hasNext())
 	{
-	    Local local = (Local)localIt.next();
+	    Local local = localIt.next();
 	    
 	    Type type = local.getType();
 
@@ -281,7 +281,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	/* The method has a local graph. It will be merged to the whole graph after simplification. */
 	ExtendedHashMutableDirectedGraph ehmdg = new ExtendedHashMutableDirectedGraph();	
 
-	Iterator unitIt = body.getUnits().snapshotIterator();
+	Iterator<Unit> unitIt = body.getUnits().snapshotIterator();
 
 	while (unitIt.hasNext())
 	{
@@ -567,11 +567,11 @@ public class RectangularArrayFinder extends SceneTransformer
 	Body body = method.getActiveBody();
 	HashSet<Local> malocal = new HashSet<Local>();
 
-	Chain locals = body.getLocals();
-	Iterator localsIt = locals.iterator();
+	Collection<Local> locals = body.getLocals();
+	Iterator<Local> localsIt = locals.iterator();
 	while (localsIt.hasNext())
 	{
-	    Local local = (Local)localsIt.next();
+	    Local local = localsIt.next();
 	    Type type = local.getType();
 	    if (!(type instanceof ArrayType))
 		continue;
@@ -583,7 +583,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	if (malocal.size() == 0)
 	    return;
 
-	Chain units = body.getUnits();
+	Chain<Unit> units = body.getUnits();
 
 	Stmt stmt = (Stmt)units.getFirst();
 

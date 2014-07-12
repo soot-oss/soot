@@ -23,10 +23,6 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
 import soot.*;
@@ -35,121 +31,97 @@ import soot.baf.*;
 import soot.util.*;
 import java.util.*;
 
-public class BIncInst extends AbstractInst implements IncInst
-{
-    ValueBox localBox;
-    ValueBox defLocalBox;
-    List useBoxes;
-  Constant mConstant;
-  List mDefBoxes;  
+public class BIncInst extends AbstractInst implements IncInst {
+	final ValueBox localBox;
+	final ValueBox defLocalBox;
+	final List<ValueBox> useBoxes;
+	final List<ValueBox> mDefBoxes;
+	Constant mConstant;
 
-    public BIncInst(Local local, Constant constant)
-    {
-      mConstant = constant;
-      
-      localBox = new BafLocalBox(local);
-      
-      useBoxes = new ArrayList();
-      useBoxes.add(localBox);
-      useBoxes = Collections.unmodifiableList(useBoxes);
+	public BIncInst(Local local, Constant constant) {
+		mConstant = constant;
 
-      defLocalBox = new BafLocalBox(local);
-      
-      //((LinkedBafLocalBox) defLocalBox).setOtherBox(localBox);
-      //((LinkedBafLocalBox) localBox).setOtherBox(defLocalBox);
+		localBox = new BafLocalBox(local);
+		useBoxes = Collections.singletonList(localBox);
 
-      mDefBoxes = new ArrayList();
-      mDefBoxes.add(defLocalBox);
-      mDefBoxes = Collections.unmodifiableList(mDefBoxes);
-      
-    }
+		defLocalBox = new BafLocalBox(local);
+		mDefBoxes = Collections.singletonList(defLocalBox);
 
-    public int getInCount()
-    {
-        return 0;
-    }
+	}
 
-    public Object clone() 
-    {
-      return new  BIncInst( getLocal(), getConstant());
-    }
+	public int getInCount() {
+		return 0;
+	}
 
-  public int getInMachineCount()
-  {
-    return 0;
-  }
-    
-  public int getOutCount()
-  {
-    return 0;
-  }
+	public Object clone() {
+		return new BIncInst(getLocal(), getConstant());
+	}
 
-    public int getOutMachineCount()
-    {
-        return 0;
-    }
-    
-   
+	public int getInMachineCount() {
+		return 0;
+	}
 
-  
-  public Constant getConstant() 
-  {
-    return mConstant;
-  }
-  
-  public void setConstant(Constant aConstant) 
-  {
-    mConstant = aConstant;
-  }
+	public int getOutCount() {
+		return 0;
+	}
 
+	public int getOutMachineCount() {
+		return 0;
+	}
 
+	public Constant getConstant() {
+		return mConstant;
+	}
 
-  final public String getName() { return "inc.i"; }
-    final String getParameters()
-    { return " "+ localBox.getValue().toString(); }
-    protected void getParameters(UnitPrinter up ) {
-        up.literal(" ");
-        localBox.toString(up);
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseIncInst(this);
-    }   
- 
-    public void setLocal(Local l)
-    {
-        localBox.setValue(l);
-    }   
-    
-    public Local getLocal()
-    {
-        return (Local) localBox.getValue();
-    }
+	public void setConstant(Constant aConstant) {
+		mConstant = aConstant;
+	}
 
-    public List getUseBoxes() 
-    {
-        return useBoxes;
-    }
-    
-    public List getDefBoxes() 
-    {
-        return mDefBoxes;
-    }
+	final public String getName() {
+		return "inc.i";
+	}
 
-  
-  public String toString()
-  {
-    return "inc.i" + " " +getLocal() + " " + getConstant() ;
-  }
+	final String getParameters() {
+		return " " + localBox.getValue().toString();
+	}
 
-  public void toString( UnitPrinter up ) {
-      up.literal( "inc.i" );
-      up.literal( " " );
-      localBox.toString( up );
-      up.literal( " " );
-      up.constant( mConstant );
-  }
+	protected void getParameters(UnitPrinter up) {
+		up.literal(" ");
+		localBox.toString(up);
+	}
 
-    
+	public void apply(Switch sw) {
+		((InstSwitch) sw).caseIncInst(this);
+	}
+
+	public void setLocal(Local l) {
+		localBox.setValue(l);
+	}
+
+	public Local getLocal() {
+		return (Local) localBox.getValue();
+	}
+
+	@Override
+	public List<ValueBox> getUseBoxes() {
+		return useBoxes;
+	}
+
+	@Override
+	public List<ValueBox> getDefBoxes() {
+		return mDefBoxes;
+	}
+
+	public String toString() {
+		return "inc.i" + " " + getLocal() + " " + getConstant();
+	}
+
+	public void toString(UnitPrinter up) {
+		up.literal("inc.i");
+		up.literal(" ");
+		localBox.toString(up);
+		up.literal(" ");
+		up.constant(mConstant);
+	}
+
 }

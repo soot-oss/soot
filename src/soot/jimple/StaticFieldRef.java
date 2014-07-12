@@ -30,7 +30,6 @@
 
 package soot.jimple;
 
-import soot.tagkit.*;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
@@ -75,9 +74,10 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf
         return fieldRef.resolve();
     }
 
-    public List getUseBoxes()
+    @Override
+    public List<ValueBox> getUseBoxes()
     {
-        return AbstractUnit.emptyList;
+        return Collections.emptyList();
     }
 
     public Type getType()
@@ -106,11 +106,7 @@ public class StaticFieldRef implements FieldRef, ConvertToBaf
     public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
         Unit u = Baf.v().newStaticGetInst(fieldRef);
+        u.addAllTagsOf(context.getCurrentUnit());
         out.add(u);
-
-        Iterator it = context.getCurrentUnit().getTags().iterator();
-        while(it.hasNext()) {
-            u.addTag((Tag) it.next());
-        }
     }
 }

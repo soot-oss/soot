@@ -43,7 +43,7 @@ import soot.EquivTo;
 		return (flowSet instanceof ValueArraySparseSet);
 	}
 
-	public Object clone() {
+	public ValueArraySparseSet clone() {
 		return new ValueArraySparseSet(this);
 	}
 
@@ -64,7 +64,7 @@ import soot.EquivTo;
 	}
 
 	/** Returns a unbacked list of elements in this set. */
-	public List toList() {
+	public List<Object> toList() {
 		Object[] copiedElements = new Object[numElements];
 		System.arraycopy(elements, 0, copiedElements, 0, numElements);
 		return Arrays.asList(copiedElements);

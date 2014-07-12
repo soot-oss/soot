@@ -63,7 +63,8 @@ class ConstraintChecker extends AbstractStmtSwitch
       }
   }
 
-  private static class RuntimeTypeException extends RuntimeException
+  @SuppressWarnings("serial")
+private static class RuntimeTypeException extends RuntimeException
   {
     RuntimeTypeException(String message)
     {
@@ -817,12 +818,12 @@ class ConstraintChecker extends AbstractStmtSwitch
       }
     else
       {
-	List exceptionTypes = TrapManager.getExceptionTypesOf(stmt, stmtBody);
-	Iterator typeIt = exceptionTypes.iterator();
+	List<RefType> exceptionTypes = TrapManager.getExceptionTypesOf(stmt, stmtBody);
+	Iterator<RefType> typeIt = exceptionTypes.iterator();
 	
 	while(typeIt.hasNext())
 	  {
-	    Type t = (Type) typeIt.next();
+	    Type t = typeIt.next();
 	    
 	    if(!left.hasDescendantOrSelf(hierarchy.typeNode(t)))
 	      {

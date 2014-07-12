@@ -34,6 +34,7 @@ import soot.util.*;
  *   Soot representation of the Java built-in type 'char'. Implemented as
  *   a singleton.
  */
+@SuppressWarnings("serial")
 public class CharType extends PrimType implements IntegerType
 {
     public CharType( Singletons.Global g ) {}

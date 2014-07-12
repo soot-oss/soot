@@ -746,7 +746,7 @@ public class DavaBody extends Body {
 				Local copy = Dava.v().newLocal(original.getName(),
 						original.getType());
 
-				getLocals().addLast(copy);
+				getLocals().add(copy);
 
 				// Build old <-> new mapping.
 				bindings.put(original, copy);

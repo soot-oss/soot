@@ -42,10 +42,10 @@ public class JimpleLocal implements Local, ConvertToBaf
     boolean isHashCodeChosen;
 
     /** Constructs a JimpleLocal of the given name and type. */
-    public JimpleLocal(String name, Type t)
+    public JimpleLocal(String name, Type type)
     {
-        this.name = name.intern();
-        this.type = t;
+        setName(name);
+        setType(type);
         Scene.v().getLocalNumberer().add( this );
     }
 
@@ -64,7 +64,10 @@ public class JimpleLocal implements Local, ConvertToBaf
     /** Returns a clone of the current JimpleLocal. */
     public Object clone()
     {
-        return new JimpleLocal(name, type);
+    	// do not intern the name again
+        JimpleLocal local = new JimpleLocal(null, type);
+        local.name = name;
+        return local;
     }
 
     /** Returns the name of this object. */
@@ -76,7 +79,7 @@ public class JimpleLocal implements Local, ConvertToBaf
     /** Sets the name of this object as given. */
     public void setName(String name)
     {
-        this.name = name.intern();
+    	this.name = (name == null) ? null : name.intern();
     }
 
     /** Returns a hashCode consistent with object equality. */
@@ -122,9 +125,10 @@ public class JimpleLocal implements Local, ConvertToBaf
         up.local(this);
     }
 
-    public List getUseBoxes()
+    @Override
+    public final List<ValueBox> getUseBoxes()
     {
-        return AbstractUnit.emptyList;
+        return Collections.emptyList();
     }
 
     public void apply(Switch sw)
@@ -134,13 +138,11 @@ public class JimpleLocal implements Local, ConvertToBaf
 
     public void convertToBaf(JimpleToBafContext context, List<Unit> out)
     {
-	Unit u = Baf.v().newLoadInst(getType(),context.getBafLocalOfJimpleLocal(this));
+    	Unit u = Baf.v().newLoadInst(getType(), context.getBafLocalOfJimpleLocal(this));
+    	u.addAllTagsOf(context.getCurrentUnit());
         out.add(u);
-	Iterator it = context.getCurrentUnit().getTags().iterator();
-	while(it.hasNext()) {
-	    u.addTag((Tag) it.next());
-	}
     }
+    
     public final int getNumber() { return number; }
     public final void setNumber( int number ) { this.number = number; }
 

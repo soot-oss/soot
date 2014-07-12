@@ -55,21 +55,21 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
 
   static boolean verbose = G.v().soot_options_Options().verbose();
   
-  protected void internalTransform(Body b, String phaseName, Map options) 
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) 
   { 
     if (b.getMethod().getName().indexOf("<init>")>=0) return;
     
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) return;
     
-    PatchingChain units = b.getUnits();
+    PatchingChain<Unit> units = b.getUnits();
     int size = units.size();
     Unit first = null;
-    Iterator uit = units.iterator();
+    Iterator<Unit> uit = units.iterator();
     while (uit.hasNext()) {
-      Object o = uit.next();
+      Unit o = uit.next();
       if (o instanceof IdentityStmt) {
-        first=(Unit)o;
+        first=o;
         size--;
       } else
         break;
@@ -80,7 +80,7 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
     if (first == null)
       first = (Unit)units.getFirst();
     
-    Chain traps = b.getTraps();
+    Chain<Trap> traps = b.getTraps();
     int i = 0, rand = 0;
     while (i++ < 10)
     {
@@ -171,10 +171,10 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
     gotosInstrumented++;
   }
   
-  private boolean isExceptionCaughtAt(Chain units, int idx, Iterator trapsIt)
+  private boolean isExceptionCaughtAt(Chain<Unit> units, int idx, Iterator<Trap> trapsIt)
   {
     Object u = null;
-    Iterator it = units.iterator();
+    Iterator<Unit> it = units.iterator();
     while (it.hasNext())
     {
       if (idx--==0) {

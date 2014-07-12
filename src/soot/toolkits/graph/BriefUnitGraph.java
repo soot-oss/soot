@@ -28,7 +28,9 @@ package soot.toolkits.graph;
 
 
 import soot.*;
+
 import java.util.*;
+
 import soot.options.Options;
 
 
@@ -55,8 +57,8 @@ public class BriefUnitGraph extends UnitGraph
         if(Options.v().time())
             Timers.v().graphTimer.start();
 
-	unitToSuccs = new HashMap(size * 2 + 1, 0.7f);
-	unitToPreds = new HashMap(size * 2 + 1, 0.7f);
+	unitToSuccs = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
+	unitToPreds = new HashMap<Unit, List<Unit>>(size * 2 + 1, 0.7f);
 	buildUnexceptionalEdges(unitToSuccs, unitToPreds);
 	makeMappedListsUnmodifiable(unitToSuccs);
 	makeMappedListsUnmodifiable(unitToPreds);

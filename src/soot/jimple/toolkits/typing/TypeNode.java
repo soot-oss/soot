@@ -46,7 +46,7 @@ class TypeNode
   private TypeNode element;
   private TypeNode array;
 
-  private List parents = Collections.EMPTY_LIST;
+  private List<TypeNode> parents = Collections.emptyList();
   private final BitVector ancestors = new BitVector(0);
   private final BitVector descendants = new BitVector(0);
 	
@@ -82,7 +82,7 @@ class TypeNode
       SootClass sClass = type.getSootClass();
       if( sClass == null ) throw new RuntimeException( "Oops, forgot to load "+type );
       if(sClass.isPhantomClass()) throw new RuntimeException("Jimplification requires "+sClass+", but it is a phantom ref.");
-      List plist = new LinkedList();
+      List<TypeNode> plist = new LinkedList<TypeNode>();
       
       if(sClass.hasSuperclass() && 
 	 !sClass.getName().equals("java.lang.Object"))
@@ -92,9 +92,9 @@ class TypeNode
 	  parentClass = parent;
 	}
 
-      for(Iterator i = sClass.getInterfaces().iterator(); i.hasNext();)
+      for(Iterator<SootClass> i = sClass.getInterfaces().iterator(); i.hasNext();)
 	{
-	  TypeNode parent = hierarchy.typeNode(RefType.v(((SootClass) i.next()).getName()));
+	  TypeNode parent = hierarchy.typeNode(RefType.v((i.next()).getName()));
 	  plist.add(parent);
 	}
 
@@ -104,9 +104,9 @@ class TypeNode
     descendants.set(hierarchy.NULL.id);
     hierarchy.NULL.ancestors.set(id);
 
-    for( Iterator parentIt = parents.iterator(); parentIt.hasNext(); ) {
+    for( Iterator<TypeNode> parentIt = parents.iterator(); parentIt.hasNext(); ) {
 
-        final TypeNode parent = (TypeNode) parentIt.next();
+        final TypeNode parent = parentIt.next();
 	ancestors.set(parent.id);
 	ancestors.or(parent.ancestors);
 	parent.fixDescendants(id);
@@ -142,7 +142,7 @@ class TypeNode
       }
     
     {
-      List plist = new LinkedList();
+      List<TypeNode> plist = new LinkedList<TypeNode>();
       if(type.baseType instanceof RefType)
 	{
 	  RefType baseType = (RefType) type.baseType;
@@ -178,9 +178,9 @@ class TypeNode
 	      parentClass = hierarchy.typeNode(ArrayType.v(hierarchy.OBJECT.type(), type.numDimensions - 1));
 	    }
 
-	  for(Iterator i = sClass.getInterfaces().iterator(); i.hasNext(); )
+	  for(Iterator<SootClass> i = sClass.getInterfaces().iterator(); i.hasNext(); )
 	    {
-	      TypeNode parent = hierarchy.typeNode(ArrayType.v(RefType.v(((SootClass) i.next()).getName()), type.numDimensions));
+	      TypeNode parent = hierarchy.typeNode(ArrayType.v(RefType.v((i.next()).getName()), type.numDimensions));
 	      plist.add(parent);
 	    }
 	}
@@ -214,9 +214,9 @@ class TypeNode
     descendants.set(hierarchy.NULL.id);
     hierarchy.NULL.ancestors.set(id);
 
-    for( Iterator parentIt = parents.iterator(); parentIt.hasNext(); ) {
+    for( Iterator<TypeNode> parentIt = parents.iterator(); parentIt.hasNext(); ) {
 
-        final TypeNode parent = (TypeNode) parentIt.next();
+        final TypeNode parent = parentIt.next();
 	ancestors.set(parent.id);
 	ancestors.or(parent.ancestors);
 	parent.fixDescendants(id);
@@ -231,9 +231,9 @@ class TypeNode
 	return;
       }
 
-    for( Iterator parentIt = parents.iterator(); parentIt.hasNext(); ) {
+    for( Iterator<TypeNode> parentIt = parents.iterator(); parentIt.hasNext(); ) {
 
-        final TypeNode parent = (TypeNode) parentIt.next();
+        final TypeNode parent = parentIt.next();
 	parent.fixDescendants(id);
       }
 
@@ -278,7 +278,7 @@ class TypeNode
     return descendants.get(typeNode.id);
   }
 
-  public List parents()
+  public List<TypeNode> parents()
   {
     return parents;
   }
@@ -372,7 +372,7 @@ class TypeNode
 	    if(DEBUG)
 	      {
 		G.v().out.println("lca " + initial + " (" + type + ") & " + this + " =");
-		for(Iterator i = type.parents.iterator(); i.hasNext(); )
+		for(Iterator<TypeNode> i = type.parents.iterator(); i.hasNext(); )
 		  {
 		    G.v().out.println("  " + i.next());
 		  }

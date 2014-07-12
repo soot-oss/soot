@@ -53,7 +53,7 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
   public static HashMap<String, String> oldToNewClassNames = new HashMap<String, String>();
   public static HashMap<String, SootClass> newNameToClass = new HashMap<String, SootClass>();
   
-  protected void internalTransform(String phaseName, Map options)
+  protected void internalTransform(String phaseName, Map<String,String> options)
   {
     if (output)
       G.v().out.println("Transforming Class Names...");

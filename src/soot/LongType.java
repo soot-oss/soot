@@ -34,6 +34,7 @@ import soot.util.*;
  *   Soot representation of the Java built-in type 'long'. Implemented as
  *   a singleton.
  */
+@SuppressWarnings("serial")
 public class LongType extends PrimType
 {
     public LongType( Singletons.Global g ) {}

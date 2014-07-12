@@ -118,7 +118,6 @@ public class DexBody  {
     private int numParameterRegisters;
     private List<Type> parameterTypes;
     private boolean isStatic;
-    private String methodString = "";
     private String methodSignature = "";
 
     private JimpleBody jBody;
@@ -149,7 +148,6 @@ public class DexBody  {
             throw new RuntimeException("error: no code for method "+ method.getName());
         this.declaringClassType = declaringClassType;
         tries = code.getTryBlocks();
-        methodString = method.getName();
         methodSignature = method.getDefiningClass() +": "+ method.getReturnType() +" "+ method.getName() +"(";
         for (MethodParameter mp: method.getParameters())
             methodSignature += mp.getType() +",";
@@ -162,9 +160,8 @@ public class DexBody  {
         } else {
         	parameterTypes = Collections.emptyList();
         }
-
+        
         isStatic = Modifier.isStatic(method.getAccessFlags());
-
         numRegisters = code.getRegisterCount();
         numParameterRegisters = MethodUtil.getParameterRegisterCount(method);
         if (!isStatic)
@@ -176,7 +173,7 @@ public class DexBody  {
         registerLocals = new Local[numRegisters];
 
         int address = 0;
-
+        
         for (Instruction instruction : code.getInstructions()) {
             DexlibAbstractInstruction dexInstruction = fromInstruction(instruction, address);
             instructions.add(dexInstruction);
@@ -184,6 +181,11 @@ public class DexBody  {
             Debug.printDbg(" put instruction '", dexInstruction ,"' at 0x", Integer.toHexString(address));
             address += instruction.getCodeUnits();
         }
+        
+        // Check taken from Android's dalvik/libdex/DexSwapVerify.cpp
+        if (numParameterRegisters > numRegisters)
+        	throw new RuntimeException("Malformed dex file: insSize (" + numParameterRegisters
+        			+ ") > registersSize (" + numRegisters + ")");
 
 //        // get addresses of pseudo-instruction data blocks
 //        for(DexlibAbstractInstruction instruction : instructions) {
@@ -202,7 +204,12 @@ public class DexBody  {
         for (DebugItem di: code.getDebugItems()) {
             if (di instanceof ImmutableLineNumber) {
                 ImmutableLineNumber ln = (ImmutableLineNumber)di;
-                instructionAtAddress(ln.getCodeAddress()).setLineNumber(ln.getLineNumber());
+                DexlibAbstractInstruction ins = instructionAtAddress(ln.getCodeAddress());
+                if (ins == null) {
+                	Debug.printDbg("Line number tag pointing to invalid offset: " + ln.getCodeAddress());
+                	continue;
+                }
+                ins.setLineNumber(ln.getLineNumber());
                 Debug.printDbg("Add line number tag " + ln.getLineNumber() + " for instruction: "
                         + instructionAtAddress(ln.getCodeAddress()));
             }
@@ -318,6 +325,7 @@ public class DexBody  {
 //      }
 
       // check if it is a jump to pseudo-instructions data (=obfuscation)
+     /*
       PseudoInstruction pi = null; // TODO: isAddressInData(address);
       if (pi != null && !pi.isLoaded()) {
         System.out.println("warning: attempting to jump to pseudo-instruction data at address 0x"+ Integer.toHexString(address));
@@ -328,9 +336,10 @@ public class DexBody  {
           e.printStackTrace();
         System.out.println();
       }
+      */
 
-        DexlibAbstractInstruction i = instructionAtAddress.get(address);
-        if (i == null) {
+        DexlibAbstractInstruction i = null;
+        while (i == null && address >= 0) {
             // catch addresses can be in the middlde of last instruction. Ex. in com.letang.ldzja.en.apk:
             //
             //          042c46: 7020 2a15 0100                         |008f: invoke-direct {v1, v0}, Ljavax/mi...
@@ -338,20 +347,21 @@ public class DexBody  {
             //          catches       : 4
             //              <any> -> 0x0065
             //            0x0069 - 0x0093
-            if ((i = instructionAtAddress.get(address - 1)) == null) {
-              if ((i = instructionAtAddress.get(address - 2)) == null) {
-                throw new RuntimeException("Address 0x" + Integer.toHexString(address) + "(& -1 -2) not part of method '"+ this.methodString +"'");
-              }
-            }
+        	//
+        	// SA, 14.05.2014: We originally scanned only two code units back. This is not sufficient
+        	// if we e.g., have a wide constant and the line number in the debug sections points to
+        	// some address the middle.
+        	i = instructionAtAddress.get(address);
+        	address--;
         }
         return i;
     }
 
+    /*
     private ArrayList<DexlibAbstractInstruction> decodeInstructions(PseudoInstruction pi) {
       final ArrayList<Instruction> instructionList = new ArrayList<Instruction>();
       ArrayList<DexlibAbstractInstruction> dexInstructions = new ArrayList<DexlibAbstractInstruction>();
 
-      byte[] encodedInstructions = pi.getData();
 //      InstructionIterator.IterateInstructions(this.dexFile, encodedInstructions,
 //              new InstructionIterator.ProcessInstructionDelegate() {
 //                  public void ProcessInstruction(int codeAddress, Instruction instruction) {
@@ -372,7 +382,7 @@ public class DexBody  {
       }
       return dexInstructions;
     }
-
+	*/
     
     /**
      * Return the jimple equivalent of this body.
@@ -469,7 +479,7 @@ public class DexBody  {
         }
         if (tries != null)
             addTraps();
-
+        
         // At this point Jimple code is generated
         // Cleaning...
 
@@ -764,7 +774,7 @@ public class DexBody  {
      * Should only be called at the end jimplify.
      */
     private void addTraps() {
-      for (TryBlock tryItem : tries) {
+      for (TryBlock<? extends ExceptionHandler> tryItem : tries) {
             int startAddress = tryItem.getStartCodeAddress();
             Debug.printDbg(" start : 0x", Integer.toHexString(startAddress));
             int length = tryItem.getCodeUnitCount();//.getTryLength();
@@ -781,8 +791,7 @@ public class DexBody  {
             Debug.printDbg("end instruction   (0x", Integer.toHexString(endAddress)   ,"): ", instructionAtAddress (endAddress).getUnit()  ," --- ", instructionAtAddress (endAddress).getUnit());
 
 
-            List<ExceptionHandler> hList = tryItem.getExceptionHandlers();
-
+            List<? extends ExceptionHandler> hList = tryItem.getExceptionHandlers();
             for (ExceptionHandler handler: hList) {
               int handlerAddress = handler.getHandlerCodeAddress();
               Debug.printDbg("handler   (0x", Integer.toHexString(handlerAddress)   ,"): ", instructionAtAddress (handlerAddress).getUnit()  ," --- ", instructionAtAddress (handlerAddress-1).getUnit());
@@ -805,7 +814,5 @@ public class DexBody  {
             }
         }
     }
-
-
-
+    
 }

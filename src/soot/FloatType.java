@@ -36,6 +36,7 @@ import soot.util.*;
  *   Soot representation of the Java built-in type 'float'. Implemented as
  *   a singleton.
  */
+@SuppressWarnings("serial")
 public class FloatType extends PrimType
 {
     public FloatType( Singletons.Global g ) {}

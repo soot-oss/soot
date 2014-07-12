@@ -52,7 +52,7 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
     out.println("If/Gotos replaced with JSRs: " + jsrcount);
   }
 
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) return;
 
@@ -61,21 +61,19 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
 
     boolean fallsthrough = false;
     HashMap<Trap,Unit> trapsToHandler = new HashMap<Trap,Unit>();
-    Iterator it = b.getTraps().iterator();
-    while (it.hasNext()) {
-      Trap t = (Trap) it.next();
+    for (Trap t : b.getTraps()) {
       trapsToHandler.put(t, t.getHandlerUnit());
     }
 
-    ArrayList<Unit> targets = new ArrayList<Unit>();
-    ArrayList seenUts = new ArrayList();
+    List<Unit> targets = new ArrayList<Unit>();
+    List<Unit> seenUts = new ArrayList<Unit>();
     HashMap<Unit,List<Unit>> switches = new HashMap<Unit,List<Unit>>();
     HashMap<Unit,Unit> switchDefs = new HashMap<Unit,Unit>();
     HashMap<TargetArgInst,Unit> ignoreJumps = new HashMap<TargetArgInst,Unit>();
-    PatchingChain u = b.getUnits();
-    it = u.snapshotIterator();
+    PatchingChain<Unit> u = b.getUnits();
+    Iterator<Unit> it = u.snapshotIterator();
     while (it.hasNext()) {
-      Unit unit = (Unit) it.next();
+      Unit unit = it.next();
       if (unit instanceof TargetArgInst) {
         TargetArgInst ti = (TargetArgInst) unit;
         Unit tu = ti.getTarget();
@@ -89,16 +87,12 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
       }
 
       if (unit instanceof TableSwitchInst) {
-        List targs = new ArrayList();
         TableSwitchInst ts = (TableSwitchInst) unit;
-        targs.addAll(ts.getTargets());
-        switches.put(unit, targs);
+        switches.put(unit, new ArrayList<Unit>(ts.getTargets()));
         switchDefs.put(unit, ts.getDefaultTarget());
       } else if (unit instanceof LookupSwitchInst) {
-        List targs = new ArrayList();
         LookupSwitchInst ls = (LookupSwitchInst) unit;
-        targs.addAll(ls.getTargets());
-        switches.put(unit, targs);
+        switches.put(unit, new ArrayList<Unit>(ls.getTargets()));
         switchDefs.put(unit, ls.getDefaultTarget());
       }
 
@@ -173,15 +167,11 @@ public class AddJSRs extends BodyTransformer implements IJbcoTransform {
       }
     }
 
-    it = trapsToHandler.keySet().iterator();
-    while (it.hasNext()) {
-      Trap t = (Trap) it.next();
-      t.setHandlerUnit(trapsToHandler.get(t));
+    for (Trap t : trapsToHandler.keySet()) {
+    	t.setHandlerUnit(trapsToHandler.get(t));
     }
 
-    it = ignoreJumps.keySet().iterator();
-    while (it.hasNext()) {
-      TargetArgInst ti = (TargetArgInst) it.next();
+    for (TargetArgInst ti : ignoreJumps.keySet()) {
       if (popsBuilt.containsKey(ti.getTarget()))
         ti.setTarget(popsBuilt.get(ti.getTarget()));
     }

@@ -34,6 +34,7 @@ import soot.util.*;
  *   Soot representation of the Java built-in type 'int'. Implemented as
  *   a singleton.
  */
+@SuppressWarnings("serial")
 public class IntType extends PrimType implements IntegerType
 {
     public IntType( Singletons.Global g ) {}

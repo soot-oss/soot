@@ -145,7 +145,7 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
 					System.out.println("Param Map is: "+body.get_ParamMap());
 					System.out.println("Locals are:"+body.getLocals());
 				}			
-				Chain localChain = body.getLocals();
+				Collection<Local> localChain = body.getLocals();
 				if(removeLocal != null && localChain != null)
 					localChain.remove(removeLocal);
 			}

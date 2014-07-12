@@ -35,6 +35,7 @@ import soot.util.*;
  *   Soot representation of the Java type 'null'. Implemented as
  *   a singleton.
  */
+@SuppressWarnings("serial")
 public class NullType extends RefLikeType
 {
     public NullType( Singletons.Global g ) {}

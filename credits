@@ -95,6 +95,9 @@ Florian Loitsch (florian@loitsch.net)
 Jerome Miecznikowski (jerome@sable.mcgill.ca)
     - Dava decompiler
 
+Aaloan Miftah (aaloanmiftah@yahoo.com)
+	- ASM based .class-to-Jimple conversion
+
 Antoine Mine (Antoine.Mine@ens.fr)
     - purity analysis 
     

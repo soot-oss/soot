@@ -507,13 +507,13 @@ public class PhiNodeManager
     {
         Map<Unit, Block> unitToBlock = new HashMap<Unit, Block>();
 
-        Iterator blocksIt = blocks.iterator();
+        Iterator<Block> blocksIt = blocks.iterator();
         while(blocksIt.hasNext()){
-            Block block = (Block) blocksIt.next();
-            Iterator unitsIt = block.iterator();
+            Block block = blocksIt.next();
+            Iterator<Unit> unitsIt = block.iterator();
 
             while(unitsIt.hasNext()){
-                Unit unit = (Unit) unitsIt.next();
+                Unit unit = unitsIt.next();
                 unitToBlock.put(unit, block);
             }
         }

@@ -109,8 +109,8 @@ public class ArrayRefBlockGraph extends BlockGraph
 	}
         Set<Unit> leaders = super.computeLeaders(unitGraph);
 
-	for (Iterator it = body.getUnits().iterator(); it.hasNext(); ) {
-	    Unit unit = (Unit) it.next();
+	for (Iterator<Unit> it = body.getUnits().iterator(); it.hasNext(); ) {
+	    Unit unit = it.next();
 	    if (((unit instanceof Stmt) && ((Stmt) unit).containsArrayRef()) ||
 		((unit instanceof Inst) && ((Inst) unit).containsArrayRef())) {
 		leaders.add(unit);

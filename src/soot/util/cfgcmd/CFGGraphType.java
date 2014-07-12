@@ -232,8 +232,8 @@ public abstract class CFGGraphType extends CFGOptionMatcher.CFGOption {
 
   private static DirectedGraph loadAltGraph(String className, Body b) {
     try {
-      Class graphClass = AltClassLoader.v().loadClass(className);
-      Class[] paramTypes = new Class[] { Body.class };
+      Class<?> graphClass = AltClassLoader.v().loadClass(className);
+      Class<?>[] paramTypes = new Class[] { Body.class };
       Constructor constructor = graphClass.getConstructor(paramTypes);    
       DirectedGraph result = (DirectedGraph) 
 	constructor.newInstance(new Object[] { b });

@@ -29,6 +29,7 @@
 
 package soot;
 import soot.util.*;
+
 import java.util.*;
 
 /**
@@ -36,6 +37,7 @@ import java.util.*;
  *   Two RefType are equal iff they are parametrized by the same class name as a String.
  */
 
+@SuppressWarnings("serial")
 public class RefType extends RefLikeType implements Comparable
 {
     public RefType( Singletons.Global g ) { className = ""; }

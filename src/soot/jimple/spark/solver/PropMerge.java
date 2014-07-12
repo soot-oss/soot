@@ -133,9 +133,7 @@ public final class PropMerge extends Propagator {
             }
         }
 
-        for( Iterator frIt = src.getAllFieldRefs().iterator(); frIt.hasNext(); ) {
-
-            final FieldRefNode fr = (FieldRefNode) frIt.next();
+        for( final FieldRefNode fr : src.getAllFieldRefs() ) {
             final SparkField field = fr.getField();
             ret = newP2Set.forall( new P2SetVisitor() {
             public final void visit( Node n ) {

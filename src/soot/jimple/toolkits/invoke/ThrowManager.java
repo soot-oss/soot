@@ -45,8 +45,8 @@ public class ThrowManager
         
     public static Stmt getNullPointerExceptionThrower(JimpleBody b)
     {
-        Chain units = b.getUnits();
-        Set trappedUnits = TrapManager.getTrappedUnitsOf(b);
+        Chain<Unit> units = b.getUnits();
+        Set<Unit> trappedUnits = TrapManager.getTrappedUnitsOf(b);
         
         for (Stmt s = (Stmt)units.getLast(); s != units.getFirst();
              s = (Stmt)units.getPredOf(s))
@@ -103,8 +103,8 @@ public class ThrowManager
 
     static Stmt addThrowAfter(JimpleBody b, Stmt target)
     {
-        Chain units = b.getUnits();
-        Chain locals = b.getLocals();
+        Chain<Unit> units = b.getUnits();
+        Collection<Local> locals = b.getLocals();
         int i = 0;
         
         // Bah!
@@ -112,7 +112,7 @@ public class ThrowManager
         do
         {
             canAddI = true;
-            Iterator localIt = locals.iterator();
+            Iterator<Local> localIt = locals.iterator();
             while (localIt.hasNext())
             {
                 Local l = (Local)localIt.next();
@@ -151,16 +151,16 @@ public class ThrowManager
 
         Hierarchy h = new Hierarchy();
 
-        Iterator trapsIt = b.getTraps().iterator();
+        Iterator<Trap> trapsIt = b.getTraps().iterator();
 
         while (trapsIt.hasNext())
         {
-            Trap t = (Trap)trapsIt.next();
+            Trap t = trapsIt.next();
 
             /* Ah ha, we might win. */
             if (h.isClassSubclassOfIncluding(e, t.getException()))
             {
-                Iterator it = b.getUnits().iterator(t.getBeginUnit(),
+                Iterator<Unit> it = b.getUnits().iterator(t.getBeginUnit(),
                                                     t.getEndUnit());
                 while (it.hasNext())
                     if (stmt.equals(it.next()))

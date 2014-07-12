@@ -49,6 +49,7 @@ import java.util.zip.ZipFile;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import soot.jimple.spark.pag.SparkField;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.ContextSensitiveCallGraph;
 import soot.jimple.toolkits.callgraph.ReachableMethods;
@@ -104,7 +105,9 @@ public class Scene  //extends AbstractHost
         if (Options.v().exclude() != null)
             excludedPackages.addAll(Options.v().exclude());
 
-        if( !Options.v().include_all() ) {
+        // do not kill contents of the APK if we want a working new APK afterwards
+        if( !Options.v().include_all()
+        		&& Options.v().output_format() != Options.output_format_dex) {
             excludedPackages.add("java.");
             excludedPackages.add("sun.");
             excludedPackages.add("javax.");
@@ -128,9 +131,9 @@ public class Scene  //extends AbstractHost
     ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<Kind>();
     ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
     ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
-    Numberer unitNumberer = new MapNumberer();
-    Numberer contextNumberer = null;
-    ArrayNumberer fieldNumberer = new ArrayNumberer<SootField>();
+    Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
+    Numberer<Context> contextNumberer = null;
+    Numberer<SparkField> fieldNumberer = new ArrayNumberer<SparkField>();
     ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
     StringNumberer subSigNumberer = new StringNumberer();
     ArrayNumberer<Local> localNumberer = new ArrayNumberer<Local>();
@@ -455,9 +458,9 @@ public class Scene  //extends AbstractHost
 				}
 
 				String jarPath = "";
-				if (!forceAndroidJar.equals("")) {
+				if (forceAndroidJar != null && !forceAndroidJar.equals("")) {
 					jarPath = forceAndroidJar;
-				} else if (!androidJars.equals("")) {
+				} else if (androidJars != null && !androidJars.equals("")) {
 					List<String> classPathEntries = new LinkedList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
 					classPathEntries.addAll(Options.v().process_dir());
 					Set<String> targetApks = new HashSet<String>();
@@ -1006,17 +1009,17 @@ public class Scene  //extends AbstractHost
     {
         return getPhantomRefs();
     }
-    public Numberer kindNumberer() { return kindNumberer; }
+    public Numberer<Kind> kindNumberer() { return kindNumberer; }
     public ArrayNumberer<Type> getTypeNumberer() { return typeNumberer; }
     public ArrayNumberer<SootMethod> getMethodNumberer() { return methodNumberer; }
-    public Numberer getContextNumberer() { return contextNumberer; }
-    public Numberer getUnitNumberer() { return unitNumberer; }
-    public ArrayNumberer getFieldNumberer() { return fieldNumberer; }
+    public Numberer<Context> getContextNumberer() { return contextNumberer; }
+    public Numberer<Unit> getUnitNumberer() { return unitNumberer; }
+    public Numberer<SparkField> getFieldNumberer() { return fieldNumberer; }
     public ArrayNumberer<SootClass> getClassNumberer() { return classNumberer; }
     public StringNumberer getSubSigNumberer() { return subSigNumberer; }
     public ArrayNumberer<Local> getLocalNumberer() { return localNumberer; }
 
-    public void setContextNumberer( Numberer n ) {
+    public void setContextNumberer( Numberer<Context> n ) {
         if( contextNumberer != null )
             throw new RuntimeException(
                     "Attempt to set context numberer when it is already set." );
@@ -1203,7 +1206,7 @@ public class Scene  //extends AbstractHost
     	addReflectionTraceClasses();
     	
 		for(int i=SootClass.BODIES;i>=SootClass.HIERARCHY;i--) {
-		    for(String name: basicclasses[i]) {
+		    for(String name: basicclasses[i]){
 		    	tryLoadClass(name,i);
 		    }
 		}
@@ -1283,12 +1286,9 @@ public class Scene  //extends AbstractHost
      *  classes soot should use.
      */
     public void loadNecessaryClasses() {
-	loadBasicClasses();
-
-        Iterator<String> it = Options.v().classes().iterator();
-
-        while (it.hasNext()) {
-            String name = (String) it.next();
+    	loadBasicClasses();
+        
+    	for (String name : Options.v().classes()) {
             loadNecessaryClass(name);
         }
 
@@ -1303,7 +1303,8 @@ public class Scene  //extends AbstractHost
 	
 	            final String path = (String) pathIt.next();
 	            for (String cl : SourceLocator.v().getClassesUnder(path)) {
-	                loadClassAndSupport(cl).setApplicationClass();
+	            	SootClass theClass = loadClassAndSupport(cl);
+	            	theClass.setApplicationClass();
 	            }
 	        }
         }

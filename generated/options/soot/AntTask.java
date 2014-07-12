@@ -108,6 +108,10 @@ public class AntTask extends MatchingTask {
 
 
 
+        public void setcoffi(boolean arg) {
+            if(arg) addArg("-coffi");
+        }
+  
         public void sethelp(boolean arg) {
             if(arg) addArg("-help");
         }
@@ -387,6 +391,21 @@ public class AntTask extends MatchingTask {
                 addArg(arg);
             } else {
                 throw new BuildException("Bad value "+arg+" for option throw_analysis");
+            }
+        }
+  
+        public void setcheck_init_throw_analysis(String arg) {
+            if(false
+    
+                || arg.equals( "auto" )
+                || arg.equals( "pedantic" )
+                || arg.equals( "unit" )
+                || arg.equals( "dalvik" )
+                ) {
+                addArg("-check-init-throw-analysis");
+                addArg(arg);
+            } else {
+                throw new BuildException("Bad value "+arg+" for option check_init_throw_analysis");
             }
         }
   

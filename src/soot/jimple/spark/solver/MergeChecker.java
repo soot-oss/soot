@@ -18,11 +18,18 @@
  */
 
 package soot.jimple.spark.solver;
-import soot.jimple.spark.pag.*;
-import soot.jimple.spark.sets.*;
-import soot.*;
-import soot.util.*;
-import java.util.*;
+import soot.FastHierarchy;
+import soot.G;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.FieldRefNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.SparkField;
+import soot.jimple.spark.pag.VarNode;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.util.HashMultiMap;
+import soot.util.MultiMap;
 
 /** Checks points-to sets with pointer assignment graph to make sure everything
  * has been correctly propagated.
@@ -53,12 +60,9 @@ public class MergeChecker {
             final FieldRefNode fr = (FieldRefNode) object;
             fieldToBase.put( fr.getField(), fr.getBase() );
         }
-        for( Iterator srcIt = pag.getVarNodeNumberer().iterator(); srcIt.hasNext(); ) {
-            final VarNode src = (VarNode) srcIt.next();
-            for( Iterator frIt = src.getAllFieldRefs().iterator(); frIt.hasNext(); ) {
-                final FieldRefNode fr = (FieldRefNode) frIt.next();
-                for( Iterator dstIt = fieldToBase.get( fr.getField() ).iterator(); dstIt.hasNext(); ) {
-                    final VarNode dst = (VarNode) dstIt.next();
+        for( final VarNode src : pag.getVarNodeNumberer() ) {
+            for( FieldRefNode fr : src.getAllFieldRefs() ) {
+                for( VarNode dst : fieldToBase.get( fr.getField() ) ) {
                     if( !src.getP2Set().hasNonEmptyIntersection(
                                 dst.getP2Set() ) ) continue;
                     FieldRefNode fr2 = dst.dot( fr.getField() );
@@ -134,7 +138,7 @@ public class MergeChecker {
     }
 
     protected PAG pag;
-    protected MultiMap fieldToBase = new HashMultiMap();
+    protected MultiMap<SparkField, VarNode> fieldToBase = new HashMultiMap<SparkField, VarNode>();
 }
 
 

@@ -51,16 +51,16 @@ public class WrapSwitchesInTrys extends BodyTransformer implements IJbcoTransfor
     out.println("Switches wrapped in Tries: "+totaltraps);
   }
   
-  protected void internalTransform(Body b, String phaseName, Map options) 
+  protected void internalTransform(Body b, String phaseName, Map<String,String> options) 
   {
     int weight = soot.jbco.Main.getWeight(phaseName, b.getMethod().getSignature());
     if (weight == 0) return;
     
     int i = 0;
     Unit handler = null;
-    Chain traps = b.getTraps();
-    PatchingChain units = b.getUnits();
-    Iterator it = units.snapshotIterator();
+    Chain<Trap> traps = b.getTraps();
+    PatchingChain<Unit> units = b.getUnits();
+    Iterator<Unit> it = units.snapshotIterator();
     while (it.hasNext()) {
       Unit u = (Unit)it.next();
       if (u instanceof TableSwitchInst) {
@@ -68,7 +68,7 @@ public class WrapSwitchesInTrys extends BodyTransformer implements IJbcoTransfor
         
         if (!BodyBuilder.isExceptionCaughtAt(units,twi,traps.iterator()) && Rand.getInt(10) <= weight) {
 	        if (handler==null) {
-	          Iterator uit = units.snapshotIterator();
+	          Iterator<Unit> uit = units.snapshotIterator();
 	          while (uit.hasNext()) {
 	            Unit uthrow = (Unit)uit.next();
 	            if (uthrow instanceof ThrowInst &&

@@ -18,7 +18,6 @@
  */
 package soot.toolkits.scalar;
 
-import soot.util.IdentityHashSet;
 
 /**
  * An optimized kind of {@link IdentityHashSet} that only holds two objects. (Allows for faster comparison.) 
