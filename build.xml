@@ -203,7 +203,7 @@
 
     <target name="runtests" depends="buildtests,settings">
 	<mkdir dir="reports" />
-        <junit printsummary="yes">
+        <junit printsummary="yes" fork="true">
             <classpath>
                 <pathelement location="testclasses"/>
                 <pathelement location="classes"/>
@@ -213,8 +213,12 @@
                 <pathelement location="${hamcrest.jar}"/>
            	<pathelement location="${dexlib2.jar}"/>
                 <pathelement location="${dexlib-utils.jar}"/>
+                <pathelement location="${heros.jar}"/>
+           		<pathelement location="${asm.jar}"/>
             </classpath>
-
+			
+			<jvmarg value="-ea" />
+            
             <formatter type="xml" usefile="true" />
             <batchtest todir="reports">
                 <fileset dir="testclasses" includes="**/Test*.class"/>
