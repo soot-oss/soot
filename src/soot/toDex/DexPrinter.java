@@ -705,7 +705,8 @@ public class DexPrinter {
 		    			elements));
         	}
 	    	
-        	if (skipList.add("Ldalvik/annotation/EnclosingClass;")) {
+        	if (skipList.add("Ldalvik/annotation/EnclosingClass;")
+        			&& icTag.getOuterClass() != null && !icTag.getOuterClass().isEmpty()) {
 		    	// EnclosingClass annotation
 		    	ImmutableAnnotationElement enclosingElement = new ImmutableAnnotationElement
 		    			("value", new ImmutableTypeEncodedValue
