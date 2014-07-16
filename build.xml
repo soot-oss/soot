@@ -211,7 +211,8 @@
                 <pathelement location="${jasmin.jar}"/>
                 <pathelement location="${junit.jar}"/>
                 <pathelement location="${hamcrest.jar}"/>
-           	    <pathelement location="${dexlib2.jar}"/>
+           	<pathelement location="${dexlib2.jar}"/>
+                <pathelement location="${dexlib-utils.jar}"/>
             </classpath>
 
             <formatter type="xml" usefile="true" />
