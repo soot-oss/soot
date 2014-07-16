@@ -202,6 +202,7 @@
     </target>
 
     <target name="runtests" depends="buildtests,settings">
+	<mkdir dir="reports" />
         <junit printsummary="yes">
             <classpath>
                 <pathelement location="testclasses"/>
@@ -220,14 +221,14 @@
         </junit>
     </target>
 
-	<target name="reporttests" depends="runtests">
-		<junitreport tofile="TESTS-TestSuites.xml" todir="reports">
-			<fileset dir="reports">
-				<include name="TEST-*.xml" />
-			</fileset>
-			<report format="frames" todir="reports" />
-		</junitreport>
-	</target>
+    <target name="reporttests" depends="runtests">
+        <junitreport tofile="TESTS-TestSuites.xml" todir="reports">
+            <fileset dir="reports">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="reports" />
+        </junitreport>
+    </target>
 
     <target name="release" depends="barebones,javadoc,settings">
     </target>
