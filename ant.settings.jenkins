@@ -11,7 +11,7 @@ slf4j-api.jar=libs/slf4j-api-1.7.5.jar
 slf4j-simple.jar=libs/slf4j-simple-1.7.5.jar
 
 ## Location of JastAdd classes jar file to link Soot against
-jastaddfrontend.loc=D:/Arbeit/abc/JastAddExtensions/SootJastAddJ
+jastaddfrontend.loc=SootJastAddJ
 
 ## Location of Jasmin classes jar file
 jasmin.jar=libs/jasminclasses-2.2.1.jar
