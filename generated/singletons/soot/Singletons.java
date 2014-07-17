@@ -917,4 +917,10 @@ public class Singletons {
         return instance_soot_toDex_TrapSplitter;
     }
 
+    private soot.toDex.FastDexTrapTightener instance_soot_toDex_FastDexTrapTightener;
+    public soot.toDex.FastDexTrapTightener soot_toDex_FastDexTrapTightener() {
+        if( instance_soot_toDex_FastDexTrapTightener == null ) instance_soot_toDex_FastDexTrapTightener = new soot.toDex.FastDexTrapTightener( g );
+        return instance_soot_toDex_FastDexTrapTightener;
+    }
+
 }

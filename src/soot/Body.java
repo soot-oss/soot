@@ -768,8 +768,7 @@ public abstract class Body extends AbstractHost implements Serializable
 	}
 	throw new RuntimeException("Warning: Bad types"+errorSuffix+" in "+getMethod());
     }
-
-    @SuppressWarnings("unchecked")
+    
 	public void checkInit() {
         ExceptionalUnitGraph g = new ExceptionalUnitGraph
 	    (this, ThrowAnalysisFactory.checkInitThrowAnalysis(), false);

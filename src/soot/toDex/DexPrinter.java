@@ -821,7 +821,13 @@ public class DexPrinter {
 		// We cannot place this upon the developer since it is only required
 		// for Dalvik, but not for other targets.
 		SynchronizedMethodTransformer.v().transform(activeBody);
-
+		
+		// Tries may not start or end at units which have no corresponding Dalvik
+		// instructions such as IdentityStmts. We reduce the traps to start at the
+		// first "real" instruction. We could also use a TrapTigthener, but that
+		// would be too expensive for what we need here.
+		FastDexTrapTightener.v().transform(activeBody);
+		
 		// Split the tries since Dalvik does not supported nested try/catch blocks
 		TrapSplitter.v().transform(activeBody);
 
