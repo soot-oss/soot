@@ -49,9 +49,8 @@ public final class PropIter extends Propagator {
                 change = handleSimples( (VarNode) object ) | change;
             }
             if( ofcg != null ) {
-                QueueReader addedEdges = pag.edgeReader();
-                for( Iterator srcIt = pag.getVarNodeNumberer().iterator(); srcIt.hasNext(); ) {
-                    final VarNode src = (VarNode) srcIt.next();
+                QueueReader<Node> addedEdges = pag.edgeReader();
+                for( VarNode src : pag.getVarNodeNumberer() ) {
                     ofcg.updatedNode( src );
                 }
                 ofcg.build();

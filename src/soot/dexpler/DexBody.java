@@ -118,7 +118,6 @@ public class DexBody  {
     private int numParameterRegisters;
     private List<Type> parameterTypes;
     private boolean isStatic;
-    private String methodString = "";
     private String methodSignature = "";
 
     private JimpleBody jBody;
@@ -149,7 +148,6 @@ public class DexBody  {
             throw new RuntimeException("error: no code for method "+ method.getName());
         this.declaringClassType = declaringClassType;
         tries = code.getTryBlocks();
-        methodString = method.getName();
         methodSignature = method.getDefiningClass() +": "+ method.getReturnType() +" "+ method.getName() +"(";
         for (MethodParameter mp: method.getParameters())
             methodSignature += mp.getType() +",";
@@ -327,6 +325,7 @@ public class DexBody  {
 //      }
 
       // check if it is a jump to pseudo-instructions data (=obfuscation)
+     /*
       PseudoInstruction pi = null; // TODO: isAddressInData(address);
       if (pi != null && !pi.isLoaded()) {
         System.out.println("warning: attempting to jump to pseudo-instruction data at address 0x"+ Integer.toHexString(address));
@@ -337,6 +336,7 @@ public class DexBody  {
           e.printStackTrace();
         System.out.println();
       }
+      */
 
         DexlibAbstractInstruction i = null;
         while (i == null && address >= 0) {
@@ -357,6 +357,7 @@ public class DexBody  {
         return i;
     }
 
+    /*
     private ArrayList<DexlibAbstractInstruction> decodeInstructions(PseudoInstruction pi) {
       final ArrayList<Instruction> instructionList = new ArrayList<Instruction>();
       ArrayList<DexlibAbstractInstruction> dexInstructions = new ArrayList<DexlibAbstractInstruction>();
@@ -381,7 +382,7 @@ public class DexBody  {
       }
       return dexInstructions;
     }
-
+	*/
     
     /**
      * Return the jimple equivalent of this body.
@@ -773,7 +774,7 @@ public class DexBody  {
      * Should only be called at the end jimplify.
      */
     private void addTraps() {
-      for (TryBlock tryItem : tries) {
+      for (TryBlock<? extends ExceptionHandler> tryItem : tries) {
             int startAddress = tryItem.getStartCodeAddress();
             Debug.printDbg(" start : 0x", Integer.toHexString(startAddress));
             int length = tryItem.getCodeUnitCount();//.getTryLength();
@@ -790,8 +791,7 @@ public class DexBody  {
             Debug.printDbg("end instruction   (0x", Integer.toHexString(endAddress)   ,"): ", instructionAtAddress (endAddress).getUnit()  ," --- ", instructionAtAddress (endAddress).getUnit());
 
 
-            List<ExceptionHandler> hList = tryItem.getExceptionHandlers();
-
+            List<? extends ExceptionHandler> hList = tryItem.getExceptionHandlers();
             for (ExceptionHandler handler: hList) {
               int handlerAddress = handler.getHandlerCodeAddress();
               Debug.printDbg("handler   (0x", Integer.toHexString(handlerAddress)   ,"): ", instructionAtAddress (handlerAddress).getUnit()  ," --- ", instructionAtAddress (handlerAddress-1).getUnit());
@@ -814,7 +814,5 @@ public class DexBody  {
             }
         }
     }
-
-
-
+    
 }

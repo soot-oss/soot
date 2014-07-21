@@ -1869,6 +1869,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		String nextListToken;
 	
 		
+		boolRes = getGeneral_Optionscoffi_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionscoffi_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getGeneral_Optionshelp_widget().getButton().getSelection();
 		
 		
@@ -5287,6 +5297,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getMiscellaneous_Optionssubtract_gc_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getMiscellaneous_Optionsno_writeout_body_releasing_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getMiscellaneous_Optionsno_writeout_body_releasing_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		
 		setSootMainClass(getSootMainClassWidget().getText().getText());			
 		return setSootMainProject(getSootMainProjectWidget().getText().getText());
@@ -6405,6 +6425,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		
+	private BooleanOptionWidget General_Optionscoffi_widget;
+	
+	private void setGeneral_Optionscoffi_widget(BooleanOptionWidget widget) {
+		General_Optionscoffi_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionscoffi_widget() {
+		return General_Optionscoffi_widget;
+	}	
+	
 	private BooleanOptionWidget General_Optionshelp_widget;
 	
 	private void setGeneral_Optionshelp_widget(BooleanOptionWidget widget) {
@@ -9965,6 +9995,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Miscellaneous_Optionssubtract_gc_widget;
 	}	
 	
+	private BooleanOptionWidget Miscellaneous_Optionsno_writeout_body_releasing_widget;
+	
+	private void setMiscellaneous_Optionsno_writeout_body_releasing_widget(BooleanOptionWidget widget) {
+		Miscellaneous_Optionsno_writeout_body_releasing_widget = widget;
+	}
+	
+	public BooleanOptionWidget getMiscellaneous_Optionsno_writeout_body_releasing_widget() {
+		return Miscellaneous_Optionsno_writeout_body_releasing_widget;
+	}	
+	
 
 	private Composite General_OptionsCreate(Composite parent) {
 		String defKey;
@@ -9987,6 +10027,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 		OptionData [] data;	
 		
+		
+		
+		
+		defKey = ""+" "+""+" "+"coffi";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionscoffi_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Coffi Frontend", "", "","coffi", "\n", defaultBool)));
 		
 		
 		
@@ -19991,6 +20047,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setMiscellaneous_Optionssubtract_gc_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Subtract Garbage Collection Time", "", "","subtract-gc", "\nAttempt to subtract time spent in garbage collection from the \nreports of times required for transformations. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"no-writeout-body-releasing";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setMiscellaneous_Optionsno_writeout_body_releasing_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("No body releasing after writeout", "", "","no-writeout-body-releasing", "\nBy default soot releases the method bodies of all reachable \nclasses after the final writeout. This option deactivates this \nbehaviour. This flag should not affect end users at all. ", defaultBool)));
 		
 		
 

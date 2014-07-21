@@ -1206,7 +1206,7 @@ public class Scene  //extends AbstractHost
     	addReflectionTraceClasses();
     	
 		for(int i=SootClass.BODIES;i>=SootClass.HIERARCHY;i--) {
-		    for(String name: basicclasses[i]) {
+		    for(String name: basicclasses[i]){
 		    	tryLoadClass(name,i);
 		    }
 		}

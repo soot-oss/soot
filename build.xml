@@ -37,6 +37,7 @@
            		<pathelement location="${dexlib-utils.jar}"/>
            		<pathelement location="${slf4j-api.jar}"/>
            		<pathelement location="${slf4j-simple.jar}"/>
+           		<pathelement location="${asm.jar}"/>
         	</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
@@ -201,7 +202,8 @@
     </target>
 
     <target name="runtests" depends="buildtests,settings">
-        <junit printsummary="yes">
+	<mkdir dir="reports" />
+        <junit printsummary="yes" fork="true">
             <classpath>
                 <pathelement location="testclasses"/>
                 <pathelement location="classes"/>
@@ -209,14 +211,29 @@
                 <pathelement location="${jasmin.jar}"/>
                 <pathelement location="${junit.jar}"/>
                 <pathelement location="${hamcrest.jar}"/>
+           	<pathelement location="${dexlib2.jar}"/>
+                <pathelement location="${dexlib-utils.jar}"/>
+                <pathelement location="${heros.jar}"/>
+           		<pathelement location="${asm.jar}"/>
             </classpath>
-
-            <formatter type="plain"/>
-            <batchtest>
+			
+			<jvmarg value="-ea" />
+            
+            <formatter type="xml" usefile="true" />
+            <batchtest todir="reports">
                 <fileset dir="testclasses" includes="**/Test*.class"/>
                 <fileset dir="testclasses" includes="**/*Test.class"/>
             </batchtest>
         </junit>
+    </target>
+
+    <target name="reporttests" depends="runtests">
+        <junitreport tofile="TESTS-TestSuites.xml" todir="reports">
+            <fileset dir="reports">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="reports" />
+        </junitreport>
     </target>
 
     <target name="release" depends="barebones,javadoc,settings">
@@ -323,7 +340,8 @@
             <zipfileset src="${xmlprinter.jar}"/>
             <zipfileset src="${dexlib2.jar}"/>
             <zipfileset src="${dexlib-utils.jar}"/>
-		</jar>
+            <zipfileset src="${asm.jar}"/>
+        </jar>
 		<delete dir="META-INF"/>
     </target>
     

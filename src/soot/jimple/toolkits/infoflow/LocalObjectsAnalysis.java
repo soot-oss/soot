@@ -27,7 +27,6 @@ public class LocalObjectsAnalysis
 
 	Map<SootClass, ClassLocalObjectsAnalysis> classToClassLocalObjectsAnalysis;
 	
-	Map mergedContextsCache;
 	Map<SootMethod, SmartMethodLocalObjectsAnalysis> mloaCache;
 	
 	public LocalObjectsAnalysis(InfoFlowAnalysis dfa)
@@ -37,7 +36,6 @@ public class LocalObjectsAnalysis
 		this.cg = Scene.v().getCallGraph();
 		
 		classToClassLocalObjectsAnalysis = new HashMap<SootClass, ClassLocalObjectsAnalysis>();
-		mergedContextsCache = new HashMap();
 		mloaCache = new HashMap<SootMethod, SmartMethodLocalObjectsAnalysis>();
 	}
 	

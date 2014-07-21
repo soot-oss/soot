@@ -737,12 +737,12 @@ public class PAG implements PointsToAnalysis {
 
     private final ArrayNumberer<AllocNode> allocNodeNumberer = new ArrayNumberer<AllocNode>();
     public ArrayNumberer<AllocNode> getAllocNodeNumberer() { return allocNodeNumberer; }
-    private final ArrayNumberer varNodeNumberer = new ArrayNumberer();
-    public ArrayNumberer getVarNodeNumberer() { return varNodeNumberer; }
-    private final ArrayNumberer fieldRefNodeNumberer = new ArrayNumberer();
-    public ArrayNumberer getFieldRefNodeNumberer() { return fieldRefNodeNumberer; }
-    private final ArrayNumberer allocDotFieldNodeNumberer = new ArrayNumberer();
-    public ArrayNumberer getAllocDotFieldNodeNumberer() { return allocDotFieldNodeNumberer; }
+    private final ArrayNumberer<VarNode> varNodeNumberer = new ArrayNumberer<VarNode>();
+    public ArrayNumberer<VarNode> getVarNodeNumberer() { return varNodeNumberer; }
+    private final ArrayNumberer<FieldRefNode> fieldRefNodeNumberer = new ArrayNumberer<FieldRefNode>();
+    public ArrayNumberer<FieldRefNode> getFieldRefNodeNumberer() { return fieldRefNodeNumberer; }
+    private final ArrayNumberer<AllocDotField> allocDotFieldNodeNumberer = new ArrayNumberer<AllocDotField>();
+    public ArrayNumberer<AllocDotField> getAllocDotFieldNodeNumberer() { return allocDotFieldNodeNumberer; }
 
 
     /** Returns SparkOptions for this graph. */

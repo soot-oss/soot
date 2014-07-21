@@ -138,8 +138,11 @@ public class ExprVisitor implements ExprSwitch {
             stmtV.addInsn(buildInvokeInsn("INVOKE_DIRECT", method, arguments), origStmt);
 		} else if (isCallToSuper(sie)) {
             stmtV.addInsn(buildInvokeInsn("INVOKE_SUPER", method, arguments), origStmt);
-		} else
-			throw new Error("unknown SpecialInvokeExpr (no call to constructor, super or private method): " + sie);
+		} else {
+			// This should normally never happen, but if we have such a
+			// broken call (happens in malware for instance), we fix it.
+            stmtV.addInsn(buildInvokeInsn("INVOKE_VIRTUAL", method, arguments), origStmt);
+		}
 	}
 
 	private Insn buildInvokeInsn(String invokeOpcode, BuilderMethodReference method,
@@ -149,7 +152,8 @@ public class ExprVisitor implements ExprSwitch {
 		if (regCountForArguments <= 5) {
 			Register[] paddedArray = pad35cRegs(argumentRegs);
 			Opcode opc = Opcode.valueOf(invokeOpcode);
-			invokeInsn = new Insn35c(opc, regCountForArguments, paddedArray[0], paddedArray[1], paddedArray[2], paddedArray[3], paddedArray[4], method);
+			invokeInsn = new Insn35c(opc, regCountForArguments, paddedArray[0],
+					paddedArray[1], paddedArray[2], paddedArray[3], paddedArray[4], method);
 		} else if (regCountForArguments <= 255) {
 			Opcode opc = Opcode.valueOf(invokeOpcode + "_RANGE");
 			invokeInsn = new Insn3rc(opc, argumentRegs, (short) regCountForArguments, method);
@@ -521,7 +525,8 @@ public class ExprVisitor implements ExprSwitch {
 	public void caseInstanceOfExpr(InstanceOfExpr ioe) {
 		Value referenceToCheck = ioe.getOp();
 		Register referenceToCheckReg = regAlloc.asLocal(referenceToCheck);
-		BuilderReference checkType = DexPrinter.toTypeReference(ioe.getCheckType(), stmtV.getBelongingFile());
+		BuilderReference checkType = DexPrinter.toTypeReference(ioe.getCheckType(),
+				stmtV.getBelongingFile());
         stmtV.addInsn(new Insn22c(Opcode.INSTANCE_OF, destinationReg, referenceToCheckReg,
                 checkType), origStmt);
 	}

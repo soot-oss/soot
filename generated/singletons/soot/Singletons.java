@@ -925,4 +925,10 @@ public class Singletons {
     		instance_soot_jimple_toolkits_base_RenameDuplicatedClasses = new soot.jimple.toolkits.base.RenameDuplicatedClasses(g);
 		return instance_soot_jimple_toolkits_base_RenameDuplicatedClasses;
 	}
+
+    private soot.toDex.FastDexTrapTightener instance_soot_toDex_FastDexTrapTightener;
+    public soot.toDex.FastDexTrapTightener soot_toDex_FastDexTrapTightener() {
+        if( instance_soot_toDex_FastDexTrapTightener == null ) instance_soot_toDex_FastDexTrapTightener = new soot.toDex.FastDexTrapTightener( g );
+        return instance_soot_toDex_FastDexTrapTightener;
+    }
 }

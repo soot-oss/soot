@@ -130,7 +130,6 @@ import soot.xml.XMLPrinter;
 public class PackManager {
 	public static boolean DEBUG=false;
     public PackManager( Singletons.Global g ) { PhaseOptions.v().setPackManager(this); init(); }
-
     public boolean onlyStandardPacks() { return onlyStandardPacks; }
     private boolean onlyStandardPacks = false;
     void notifyAddPack() {
@@ -415,13 +414,12 @@ public class PackManager {
                 SootClass clazz = Scene.v().getSootClass(cl);
                 clazz.setResolvingLevel(SootClass.BODIES);
                 source.resolve(clazz);
-
-				//run packs
 				runBodyPacks(clazz);
 				//generate output
 				writeClass(clazz);
 
-				releaseBodies(clazz);
+				if (!Options.v().no_writeout_body_releasing())
+					releaseBodies(clazz);
             }
 
 //            for (String cl : SourceLocator.v().getClassesUnder(path)) {
@@ -462,7 +460,6 @@ public class PackManager {
                 G.v().out.println("Running in interactive mode.");
             }
         }
-
         runBodyPacks();
         handleInnerClasses();
 	}
@@ -582,8 +579,8 @@ public class PackManager {
     }
 
     private void runBodyPacks( Iterator<SootClass> classes ) {
-        while( classes.hasNext() ) {
-            runBodyPacks( classes.next() );
+    	while( classes.hasNext() ) {
+            runBodyPacks(classes.next());
         }
     }
 
@@ -863,7 +860,7 @@ public class PackManager {
         Iterator<SootMethod> methodIt = methodsCopy.iterator();
         while (methodIt.hasNext()) {
             SootMethod m = (SootMethod) methodIt.next();
-
+            
             if(DEBUG){
             	if(m.getExceptions().size()!=0)
             		System.out.println("PackManager printing out jimple body exceptions for method "+m.toString()+" " + m.getExceptions().toString());
@@ -898,6 +895,11 @@ public class PackManager {
 
             if (produceJimple) {
                 JimpleBody body =(JimpleBody) m.retrieveActiveBody();
+                //Change
+                ConditionalBranchFolder.v().transform(body);
+                UnreachableCodeEliminator.v().transform(body);
+                DeadAssignmentEliminator.v().transform(body);
+                UnusedLocalEliminator.v().transform(body);
                 PackManager.v().getPack("jtp").apply(body);
                 if( Options.v().validate() ) {
                     body.validate();
@@ -956,7 +958,13 @@ public class PackManager {
     }
 
 	public BafBody convertJimpleBodyToBaf(SootMethod m) {
-		BafBody bafBody = Baf.v().newBody((JimpleBody) m.getActiveBody());
+		JimpleBody body = (JimpleBody) m.getActiveBody().clone();
+		//Change
+//        ConditionalBranchFolder.v().transform(body);
+//        UnreachableCodeEliminator.v().transform(body);
+//        DeadAssignmentEliminator.v().transform(body);
+//        UnusedLocalEliminator.v().transform(body);
+		BafBody bafBody = Baf.v().newBody(body);
 		PackManager.v().getPack("bop").apply(bafBody);
 		PackManager.v().getPack("tag").apply(bafBody);
 		if( Options.v().validate() ) {
@@ -966,6 +974,9 @@ public class PackManager {
 	}
 
     public void writeClass(SootClass c) {
+//    	if(!c.getName().contains("com.google.common.collect.HashBiMap") && !c.getName().contains("com.google.common.collect.Tables$TransformedTable")){
+//    		return;
+//    	}
         final int format = Options.v().output_format();
         if( format == Options.output_format_none ) return;
         if( format == Options.output_format_dava ) return;
@@ -1117,5 +1128,9 @@ public class PackManager {
                 }
             }
         }
+    }
+    
+    public void resetDexPrinter() {
+    	this.dexPrinter = new DexPrinter();
     }
 }

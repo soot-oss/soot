@@ -39,7 +39,7 @@ public class TrapSplitter extends BodyTransformer {
 		// If we have less then two traps, there's nothing to do here
 		if (b.getTraps().size() < 2)
 			return;
-
+		
 		// Look for overlapping traps
 		TrapOverlap to;
 		while ((to = getNextOverlap(b)) != null) {
@@ -70,13 +70,21 @@ public class TrapSplitter extends BodyTransformer {
 					firstEndUnit = b.getUnits().getSuccOf(firstEndUnit);
 
 				if (firstEndUnit == to.t1.getEndUnit()) {
-					Trap newTrap = Jimple.v().newTrap(to.t2.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t2.getHandlerUnit());
-					safeAddTrap(b, newTrap);
+					if (to.t1.getException() != to.t2.getException())  {
+						Trap newTrap = Jimple.v().newTrap(to.t2.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t2.getHandlerUnit());
+						safeAddTrap(b, newTrap);
+					}
+					else if (to.t1.getHandlerUnit() != to.t2.getHandlerUnit())
+						throw new RuntimeException("Different trap handlers for same code region detected");
 					to.t2.setBeginUnit(firstEndUnit);
 				}
 				else if (firstEndUnit == to.t2.getEndUnit()) {
-					Trap newTrap2 = Jimple.v().newTrap(to.t1.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t1.getHandlerUnit());
-					safeAddTrap(b, newTrap2);
+					if (to.t1.getException() != to.t2.getException())  {
+						Trap newTrap2 = Jimple.v().newTrap(to.t1.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t1.getHandlerUnit());
+						safeAddTrap(b, newTrap2);
+					}
+					else if (to.t1.getHandlerUnit() != to.t2.getHandlerUnit())
+						throw new RuntimeException("Different trap handlers for same code region detected");
 					to.t1.setBeginUnit(firstEndUnit);
 				}
 			}
@@ -89,8 +97,9 @@ public class TrapSplitter extends BodyTransformer {
 	 * @param newTrap The trap to add
 	 */
 	private void safeAddTrap(Body b, Trap newTrap) {
+		// Do not create any empty traps
 		if (newTrap.getBeginUnit() != newTrap.getEndUnit())
-		b.getTraps().add(newTrap);		
+			b.getTraps().add(newTrap);
 	}
 	/**
 	 * Gets two arbitrary overlapping traps in the given method body
@@ -103,7 +112,7 @@ public class TrapSplitter extends BodyTransformer {
 			// statement of another trap
 			for (Unit splitUnit = t1.getBeginUnit(); splitUnit != t1.getEndUnit(); splitUnit = b.getUnits().getSuccOf(splitUnit)) {
 				for (Trap t2 : b.getTraps())
-					if (t1 != t2 && t1.getEndUnit() != t2.getEndUnit() && t2.getBeginUnit() == splitUnit) {
+					if (t1 != t2 && (t1.getEndUnit() != t2.getEndUnit() || t1.getException() == t2.getException()) && t2.getBeginUnit() == splitUnit) {
 						return new TrapOverlap(t1, t2, t2.getBeginUnit());
 					}
 				}

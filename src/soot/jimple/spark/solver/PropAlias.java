@@ -38,7 +38,7 @@ public final class PropAlias extends Propagator {
 
     public PropAlias( PAG pag ) {
         this.pag = pag;
-        loadSets = new LargeNumberedMap( pag.getFieldRefNodeNumberer() );
+        loadSets = new LargeNumberedMap<FieldRefNode, PointsToSetInternal>( pag.getFieldRefNodeNumberer() );
     }
 
     /** Actually does the propagation. */
@@ -76,11 +76,9 @@ public final class PropAlias extends Propagator {
 
             for (VarNode src : aliasWorkList) {
 
-                for( Iterator srcFrIt = src.getAllFieldRefs().iterator(); srcFrIt.hasNext(); ) {
-                    final FieldRefNode srcFr = (FieldRefNode) srcFrIt.next();
+                for( FieldRefNode srcFr : src.getAllFieldRefs() ) {
                     SparkField field = srcFr.getField();
-                    for( Iterator dstIt = fieldToBase.get( field ).iterator(); dstIt.hasNext(); ) {
-                        final VarNode dst = (VarNode) dstIt.next();
+                    for( VarNode dst : fieldToBase.get( field ) ) {
                         if( src.getP2Set().hasNonEmptyIntersection(
                                     dst.getP2Set() ) ) {
                             FieldRefNode dstFr = dst.dot( field );
@@ -101,8 +99,7 @@ public final class PropAlias extends Propagator {
                 }
             }
             for (FieldRefNode src : fieldRefWorkList) {
-                for( Iterator dstIt = aliasEdges.get( src ).iterator(); dstIt.hasNext(); ) {
-                    final FieldRefNode dst = (FieldRefNode) dstIt.next();
+                for( FieldRefNode dst : aliasEdges.get( src ) ) {
                     if( makeP2Set( dst ).addAll( src.getP2Set().getNewSet(), null ) ) {
                         outFieldRefWorkList.add( dst );
                     }
@@ -154,7 +151,7 @@ public final class PropAlias extends Propagator {
 	if( newP2Set.isEmpty() ) return false;
 
         if( ofcg != null ) {
-            QueueReader addedEdges = pag.edgeReader();
+            QueueReader<Node> addedEdges = pag.edgeReader();
             ofcg.updatedNode( src );
             ofcg.build();
 
@@ -211,7 +208,7 @@ public final class PropAlias extends Propagator {
     }
 
     protected final PointsToSetInternal makeP2Set( FieldRefNode n ) {
-        PointsToSetInternal ret = (PointsToSetInternal) loadSets.get(n);
+        PointsToSetInternal ret = loadSets.get(n);
         if( ret == null ) {
             ret = pag.getSetFactory().newSet( null, pag );
             loadSets.put( n, ret );
@@ -220,7 +217,7 @@ public final class PropAlias extends Propagator {
     }
 
     protected final PointsToSetInternal getP2Set( FieldRefNode n ) {
-        PointsToSetInternal ret = (PointsToSetInternal) loadSets.get(n);
+        PointsToSetInternal ret = loadSets.get(n);
         if( ret == null ) {
             return EmptyPointsToSet.v();
         }
@@ -234,9 +231,9 @@ public final class PropAlias extends Propagator {
     }
 
     protected PAG pag;
-    protected MultiMap fieldToBase = new HashMultiMap();
-    protected MultiMap aliasEdges = new HashMultiMap();
-    protected LargeNumberedMap loadSets;
+    protected MultiMap<SparkField, VarNode> fieldToBase = new HashMultiMap<SparkField, VarNode>();
+    protected MultiMap<FieldRefNode, FieldRefNode> aliasEdges = new HashMultiMap<FieldRefNode, FieldRefNode>();
+    protected LargeNumberedMap<FieldRefNode, PointsToSetInternal> loadSets;
     protected OnFlyCallGraph ofcg;
 }
 

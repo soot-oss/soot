@@ -108,6 +108,10 @@ public class AntTask extends MatchingTask {
 
 
 
+        public void setcoffi(boolean arg) {
+            if(arg) addArg("-coffi");
+        }
+  
         public void sethelp(boolean arg) {
             if(arg) addArg("-help");
         }
@@ -515,6 +519,10 @@ public class AntTask extends MatchingTask {
   
         public void setsubtract_gc(boolean arg) {
             if(arg) addArg("-subtract-gc");
+        }
+  
+        public void setno_writeout_body_releasing(boolean arg) {
+            if(arg) addArg("-no-writeout-body-releasing");
         }
   
         public Object createp_jb() {

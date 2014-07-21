@@ -43,8 +43,7 @@ public class CytronDominanceFrontier implements DominanceFrontier
         for (DominatorNode head : dt.getHeads()) {
             bottomUpDispatch(head);
         }
-        for(Iterator godesIt = dt.graph.iterator(); godesIt.hasNext();) {
-            Object gode = godesIt.next();
+        for(Object gode : dt.graph) {
             DominatorNode dode = dt.fetchDode(gode);
             if (dode == null) {
                 throw new RuntimeException("dode == null");
@@ -57,14 +56,12 @@ public class CytronDominanceFrontier implements DominanceFrontier
         }
     }
 
-    public List getDominanceFrontierOf(DominatorNode node)
+    public List<DominatorNode> getDominanceFrontierOf(DominatorNode node)
     {
-        ArrayList frontier = (ArrayList) nodeToFrontier.get(node);
-
+        List<DominatorNode> frontier = nodeToFrontier.get(node);
         if(frontier == null)
             throw new RuntimeException("Frontier not defined for node: " + node);
-
-        return (List) frontier.clone();
+        return new ArrayList<DominatorNode>(frontier);
     }
 
     protected boolean isFrontierKnown(DominatorNode node)
@@ -85,14 +82,10 @@ public class CytronDominanceFrontier implements DominanceFrontier
         if(isFrontierKnown(node))
             return;
 
-        Iterator children = dt.getChildrenOf(node).iterator();
-        while(children.hasNext()){
-            DominatorNode child = (DominatorNode) children.next();
-
+        for (DominatorNode child : dt.getChildrenOf(node)) {
             if(!isFrontierKnown(child))
                 bottomUpDispatch(child);
         }
-
 
         processNode(node);
     }
@@ -134,16 +127,8 @@ public class CytronDominanceFrontier implements DominanceFrontier
 
         // up
         {
-            Iterator childIt = dt.getChildrenOf(node).iterator();
-            
-            while(childIt.hasNext()){
-                DominatorNode child = (DominatorNode) childIt.next();
-                
-                Iterator childFrontIt = getDominanceFrontierOf(child).iterator();
-
-                while(childFrontIt.hasNext()){
-                    DominatorNode childFront = (DominatorNode) childFrontIt.next();
-                    
+        	for (DominatorNode child : dt.getChildrenOf(node)) {
+        		for (DominatorNode childFront : getDominanceFrontierOf(child)) {
                     if(!dt.isImmediateDominatorOf(node, childFront))
                         dominanceFrontier.add(childFront);
                 }

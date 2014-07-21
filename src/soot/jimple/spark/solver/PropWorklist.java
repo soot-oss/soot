@@ -117,7 +117,7 @@ public final class PropWorklist extends Propagator {
 	if( newP2Set.isEmpty() ) return false;
 
         if( ofcg != null ) {
-            QueueReader addedEdges = pag.edgeReader();
+            QueueReader<Node> addedEdges = pag.edgeReader();
             ofcg.updatedNode( src );
             ofcg.build();
 

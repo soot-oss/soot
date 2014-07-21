@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-2000 Etienne Gagnon.  All rights reserved.
+ * Copyright (C) 1997-2014 Raja Vallee-Rai and others
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -16,26 +16,23 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
+package soot.asm;
 
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+import soot.ClassProvider;
+import soot.ClassSource;
+import soot.SourceLocator;
+
+/**
+ * Objectweb ASM class provider.
+ * 
+ * @author Aaloan Miftah
  */
+public class AsmClassProvider implements ClassProvider {
 
-package soot.jimple.toolkits.typing.integer;
-
-public class TypeException extends Exception {
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = -602930090190087993L;
-
-	public TypeException(String message) {
-		super(message);
-
-		if (message == null) {
-			throw new InternalTypingException();
-		}
+	public ClassSource find(String cls) {
+		String clsFile = cls.replace('.', '/') + ".class";
+		SourceLocator.FoundFile file =
+				SourceLocator.v().lookupInClassPath(clsFile);
+		return file == null ? null : new AsmClassSource(cls, file.inputStream());
 	}
 }

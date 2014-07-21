@@ -102,6 +102,11 @@ packages in the Java runtime.</p>
 	<section>
 		<name>General Options</name>
 		<boolopt>
+		<name>Coffi Frontend</name>
+		<alias>coffi</alias>
+		<short_desc>Use the good old Coffi front end for parsing Java bytecode (instead of using ASM).</short_desc>		
+		</boolopt>
+		<boolopt>
 			<name>Help</name>
 			<alias>h</alias>
 			<alias>help</alias>
@@ -6110,6 +6115,15 @@ Report the time required to perform some of Soot's transformations.
 			<long_desc>
 Attempt to subtract time spent in garbage collection from
 the reports of times required for transformations.
+</long_desc>
+		</boolopt>
+		
+		<boolopt>
+			<name>No body releasing after writeout</name>
+			<alias>no-writeout-body-releasing</alias>
+			<short_desc>Disables the release of method bodies after writeout. This flag is used internally.</short_desc>
+			<long_desc>
+By default soot releases the method bodies of all reachable classes after the final writeout. This option deactivates this behaviour. This flag should not affect end users at all.
 </long_desc>
 		</boolopt>
 	</section>

@@ -50,9 +50,9 @@ public class AllocNodesFinder{
 					Unit unit = (Unit)iterator.next();
 					//System.out.println("unit: "+unit);
 					if (clinitMethods.contains(sm)  && unit instanceof AssignStmt){
-						Value rightOp = ((AssignStmt)unit).getRightOp();
+						//Value rightOp = ((AssignStmt)unit).getRightOp();
 						
-						Type type = ((NewExpr)rightOp).getType();
+						//Type type = ((NewExpr)rightOp).getType();
 						AllocNode allocNode = pag.makeAllocNode(
 								PointsToAnalysis.STRING_NODE,
 								RefType.v( "java.lang.String" ), null );

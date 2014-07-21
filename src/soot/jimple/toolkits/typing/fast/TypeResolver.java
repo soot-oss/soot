@@ -55,7 +55,6 @@ import soot.jimple.toolkits.typing.Util;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SimpleLocalDefs;
 import soot.toolkits.scalar.SmartLocalDefs;
 
 /**
