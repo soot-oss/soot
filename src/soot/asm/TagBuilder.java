@@ -26,6 +26,7 @@ import org.objectweb.asm.MethodVisitor;
 
 import soot.tagkit.AnnotationConstants;
 import soot.tagkit.AnnotationTag;
+import soot.tagkit.GenericAttribute;
 import soot.tagkit.Host;
 import soot.tagkit.VisibilityAnnotationTag;
 
@@ -82,6 +83,7 @@ final class TagBuilder {
 	 * @see ClassVisitor#visitAttribute(Attribute)
 	 */
 	public void visitAttribute(Attribute attr) {
-		throw new UnsupportedOperationException("Unknown attribute: " + attr);
+		host.addTag(new GenericAttribute(attr.type,null));
+		//throw new UnsupportedOperationException("Unknown attribute: " + attr);
 	}
 }
