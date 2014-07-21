@@ -65,6 +65,9 @@ public class SootToDexUtils {
 	}
 	
 	public static String getDexClassName(String dottedClassName) {
+		if (dottedClassName == null || dottedClassName.isEmpty())
+			throw new RuntimeException("Empty class name detected");
+		
 		String slashedName = dottedClassName.replace('.', '/');
 		if (slashedName.startsWith("L") && slashedName.endsWith(";"))
 			return slashedName;
@@ -103,7 +106,8 @@ public class SootToDexUtils {
 			throw new RuntimeException("dex does not support more than 255 dimensions! " + sootArray + " has " + sootArray.numDimensions);
 		}
 		String baseTypeDescriptor = getDexTypeDescriptor(sootArray.baseType);
-		StringBuilder sb = new StringBuilder(sootArray.numDimensions);
+		StringBuilder sb = new StringBuilder(sootArray.numDimensions
+				+ baseTypeDescriptor.length());
 		for (int i = 0; i < sootArray.numDimensions; i++) {
 			sb.append('[');
 		}
