@@ -22,6 +22,8 @@
 
 package soot;
 
+import soot.jimple.toolkits.base.RenameDuplicatedClasses;
+
 /** A class to group together all the global variables in Soot. */
 public class Singletons {
     public final class Global {
@@ -917,4 +919,10 @@ public class Singletons {
         return instance_soot_toDex_TrapSplitter;
     }
 
+    private soot.jimple.toolkits.base.RenameDuplicatedClasses instance_soot_jimple_toolkits_base_RenameDuplicatedClasses;
+    public RenameDuplicatedClasses soot_jimple_toolkits_base_RenameDuplicatedClasses() {
+    	if (instance_soot_jimple_toolkits_base_RenameDuplicatedClasses == null) 
+    		instance_soot_jimple_toolkits_base_RenameDuplicatedClasses = new soot.jimple.toolkits.base.RenameDuplicatedClasses(g);
+		return instance_soot_jimple_toolkits_base_RenameDuplicatedClasses;
+	}
 }
