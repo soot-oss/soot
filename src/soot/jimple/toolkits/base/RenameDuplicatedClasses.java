@@ -1,5 +1,6 @@
 package soot.jimple.toolkits.base;
 
+import java.io.File;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -26,7 +27,7 @@ import soot.util.Chain;
  * 		//className1 and className2 are duplicated class names.
  * 	}
  * 
- * Because the file system is case-insensitive.
+ * Because some file systems are case-insensitive (e.g., Mac OS).
  * When file a.b.c.class exists, a.b.C.class will over-write the content of a.b.c.class and 
  * case inconsistent that a.b.c.class file contains the content of a.b.C.class.
  * 
@@ -52,6 +53,12 @@ public class RenameDuplicatedClasses extends SceneTransformer
 	@Override
 	protected void internalTransform(String phaseName, Map<String, String> options) 
 	{
+		//If the file system is case sensitive, no need to rename the classes
+		if (isFileSystemCaseSensitive())
+		{
+			return;
+		}
+		
 		String fixedClassNamesStr = PhaseOptions.getString(options, "fixedClassNames");
 		String[] classNames = fixedClassNamesStr.split(FIXED_CLASS_NAME_SPERATOR);
 		List<String> fixedClassNames = Arrays.asList(classNames);
@@ -84,10 +91,10 @@ public class RenameDuplicatedClasses extends SceneTransformer
 				String newClassName = className + (count++);
 				sootClass.rename(newClassName);
 				
-				if(Options.v().verbose())
-				{
+				//if(Options.v().verbose())
+				//{
 					G.v().out.println("Rename duplicated class " + className + " to class " + newClassName);
-				}
+				//}
 			}
 			else
 			{
@@ -110,5 +117,36 @@ public class RenameDuplicatedClasses extends SceneTransformer
 				classNameSet.add(className.toLowerCase());
 			}
 		}
+	}
+	
+	/**
+	 * An naive approach to check whether the file system is case sensitive or not
+	 * 
+	 * @return
+	 */
+	public boolean isFileSystemCaseSensitive()
+	{
+ 		File dir = new File(".");
+		File[] files = dir.listFiles();
+
+		for (File file : files)
+		{
+			if (file.isFile())
+			{
+				String lowerCaseFilePath = file.getAbsolutePath().toLowerCase();
+				String upperCaseFilePath = file.getAbsolutePath().toUpperCase();
+				
+				File lowerCaseFile = new File(lowerCaseFilePath);
+				File upperCaseFile = new File(upperCaseFilePath);
+				
+				if (! (lowerCaseFile.exists() && upperCaseFile.exists()) )
+				{
+					return true;
+				}
+				
+			}
+		}
+
+		return false;
 	}
 }
