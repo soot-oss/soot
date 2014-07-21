@@ -741,6 +741,11 @@ public class DexPrinter {
 
         List<BuilderMethod> methods = new ArrayList<BuilderMethod>();
         for (SootMethod sm : clazz.getMethods()) {
+            if (sm.isPhantom()) {
+                // Do not print method bodies for inherited methods
+                continue;
+            }
+
         	MethodImplementation impl = toMethodImplementation(sm);
         	
         	List<String> parameterNames = null;
