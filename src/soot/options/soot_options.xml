@@ -3577,9 +3577,9 @@ Print debugging info, including every statement visited.
 					<name>Rename duplicated classes</name>
 					<class>RenameDuplicatedClasses</class>
 					<alias>wjtp.rdc</alias>
-					<short_desc>Rename duplicated classes when the file system does not case sensitive</short_desc>
+					<short_desc>Rename duplicated classes when the file system is not case sensitive</short_desc>
 <long_desc>
-Rename duplicated classes when the file system does not case sensitive.
+Rename duplicated classes when the file system is not case sensitive.
 If the file system is case sensitive, this phase does nothing.
 </long_desc>
 					<boolopt>
