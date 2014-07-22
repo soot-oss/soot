@@ -149,4 +149,5 @@
   <class>soot.toDex.SynchronizedMethodTransformer</class>
   <class>soot.toDex.TrapSplitter</class>
   <class>soot.toDex.FastDexTrapTightener</class>
+  <class>soot.jimple.toolkits.base.RenameDuplicatedClasses</class>
 </singletons>

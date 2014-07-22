@@ -1014,5 +1014,22 @@ public class SootClass extends AbstractHost implements Numberable
     public final void setNumber( int number ) { this.number = number; }
 
     private int number = 0;
+    
+    public void rename(String newName)
+    {
+    	this.name = newName;
+    	//resolvingLevel = BODIES;
+	
+    	if (this.refType != null)
+    	{
+    		refType.setClassName(name);
+    	}
+    	else
+    	{
+    		refType = RefType.v(name);
+    	}
+    	Scene.v().addRefType(refType);
+    	
+    }
 }
 
