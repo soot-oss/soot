@@ -114,16 +114,17 @@
         <javadoc
             classpath="classes:${polyglot.jar}:${jasmin.jar}:${heros.jar}"
             sourcepath="src:generated/singletons:generated/sablecc:generated/options"
-            destdir="doc"
+			destdir="javadoc"
             maxmemory="400m"
             link="${javaapi.url}"
             windowtitle="Soot API"
-            verbose="true"
             use="true"
+            useexternalfile="true"
         >
             <fileset dir="src" includes="**/*.java"/>
         </javadoc>
-    </target>
+		<jar basedir="javadoc" destfile="${release.loc}/sootjavadoc-${soot.version}.jar" />
+	</target>
 
     <target name="clean">
         <delete quiet="true">
@@ -308,20 +309,7 @@
         </jar>
         
     </target>
-	
-	<target name="doc" depends="compile,settings">
-		<javadoc
-			sourcepath="src"
-			destdir="javadoc"
-			author="true"
-			version="true"
-			use="true"
-			windowtitle="Soot Documentation">
-		</javadoc>
 		
-		<jar basedir="javadoc" destfile="${release.loc}/sootjavadoc-${soot.version}.jar" />
-	</target>
-	
 	<target name="fulljar" depends="classesjar">
     	<mkdir dir="META-INF"/>
 
