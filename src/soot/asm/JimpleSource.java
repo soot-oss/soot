@@ -154,6 +154,8 @@ final class JimpleSource implements MethodSource {
 	private final List<LocalVariableNode> localVars;
 	private final List<TryCatchBlockNode> tryCatchBlocks;
 	
+	private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
+	
 	JimpleSource(int maxLocals, InsnList insns,
 			List<LocalVariableNode> localVars,
 			List<TryCatchBlockNode> tryCatchBlocks) {
@@ -1661,6 +1663,15 @@ final class JimpleSource implements MethodSource {
 		stack = null;
 		frames = null;
 		body = null;
+		
+		// Make sure to inline patterns of the form to enable proper variable
+		// splitting and type assignment:
+		// a = new A();
+		// goto l0;
+		// l0:
+		// 	b = (B) a;
+		// 	return b;
+		castAndReturnInliner.transform(jb);
 		
 		try {
 	        PackManager.v().getPack("jb").apply(jb);
