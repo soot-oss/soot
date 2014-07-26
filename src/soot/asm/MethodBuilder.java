@@ -46,7 +46,7 @@ class MethodBuilder extends JSRInlinerAdapter {
 	
 	MethodBuilder(SootMethod method, SootClassBuilder scb,
 			String desc, String[] ex) {
-		super(Opcodes.ASM4, null, method.getModifiers(),
+		super(Opcodes.ASM5, null, method.getModifiers(),
 				method.getName(), desc, null, ex);
 		this.method = method;
 		this.scb = scb;
@@ -133,8 +133,8 @@ class MethodBuilder extends JSRInlinerAdapter {
 	}
 	
 	@Override
-	public void visitMethodInsn(int opcode, String owner, String name, String desc) {
-		super.visitMethodInsn(opcode, owner, name, desc);
+	public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean isInterf) {
+		super.visitMethodInsn(opcode, owner, name, desc, isInterf);
 		for (Type t : AsmUtil.toJimpleDesc(desc)) {
 			if (t instanceof RefType)
 				scb.addDep(t);

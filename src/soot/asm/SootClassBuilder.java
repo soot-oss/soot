@@ -65,7 +65,7 @@ class SootClassBuilder extends ClassVisitor {
 	 * @param klass Soot class to build.
 	 */
 	SootClassBuilder(SootClass klass) {
-		super(Opcodes.ASM4);
+		super(Opcodes.ASM5);
 		this.klass = klass;
 		this.deps = new HashSet();
 	}

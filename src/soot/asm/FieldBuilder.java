@@ -38,7 +38,7 @@ final class FieldBuilder extends FieldVisitor {
 	private final SootClassBuilder scb;
 	
 	FieldBuilder(SootField field, SootClassBuilder scb) {
-		super(Opcodes.ASM4);
+		super(Opcodes.ASM5);
 		this.field = field;
 		this.scb = scb;
 	}
