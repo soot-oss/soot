@@ -898,6 +898,7 @@ public class DexPrinter {
 		StmtVisitor stmtV = new StmtVisitor(m, dexFile);
 		
 		toInstructions(units, stmtV);
+		
 		int registerCount = stmtV.getRegisterCount();
 		if (inWords > registerCount) {
 			/*

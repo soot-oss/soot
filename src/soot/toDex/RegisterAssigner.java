@@ -190,18 +190,24 @@ public class RegisterAssigner {
 		BitSet incompatRegs = insn.getIncompatibleRegs();
 		Register resultReg = regs.get(0);
 		// do we have an incompatible result reg?
-		boolean hasResultReg = insn.getOpcode(). setsRegister();
+		boolean hasResultReg = insn.getOpcode().setsRegister() || insn.getOpcode().setsWideRegister();
 		boolean isResultRegIncompat = incompatRegs.get(0);
+		
 		// is there an incompat result reg which is not also used as a source (like in /2addr)?
 		if (hasResultReg && isResultRegIncompat && !insn.getOpcode().name.endsWith("/2addr")) {
 			// yes, so pretend result reg is compatible, since it will get a special move
 			incompatRegs.clear(0);
 		}
+		
 		// handle normal incompatible regs, if any: add moves
 		if (incompatRegs.cardinality() > 0) {
 			addMovesForIncompatRegs(insn, allInsns, regs, incompatRegs);
 		}
-		// handle incompatible result reg
+		
+		// handle incompatible result reg. This is for three-operand instructions
+		// in which the result register is out of scope. For /2addr instructions,
+		// we need to coherently move source and result, so this is already done
+		// in addMovesForIncompatRegs.
 		if (hasResultReg && isResultRegIncompat) {
 			Register resultRegClone = resultReg.clone();
 			addMoveForIncompatResultReg(allInsns, resultRegClone, resultReg, insn);
@@ -230,6 +236,10 @@ public class RegisterAssigner {
 	 * @param incompatRegs
 	 */
 	private void addMovesForIncompatRegs(Insn curInsn, InstructionIterator insns, List<Register> regs, BitSet incompatRegs) {
+		final Register resultReg = regs.get(0);
+		final boolean hasResultReg = curInsn.getOpcode().setsRegister();
+		Insn moveResultInsn = null;
+		
 		insns.previous(); // extra MOVEs are added _before_ the current insn
 		int nextNewDestination = 0;
 		for (int regIdx = 0; regIdx < regs.size(); regIdx++) {
@@ -252,9 +262,16 @@ public class RegisterAssigner {
 					// finally patch the original, incompatible reg
 					incompatReg.setNumber(destination.getNumber());
 				}
+				
+				// If this is the result register, we need to save the result as well
+				if (hasResultReg && regIdx == resultReg.getNumber())
+					moveResultInsn = StmtVisitor.buildMoveInsn(source, destination);					
 			}
 		}
 		insns.next(); // get past current insn again
+
+		if (moveResultInsn != null)
+			insns.add(moveResultInsn, curInsn); // advances the cursor, so no next() needed
 	}
 
 	private Insn findFittingInsn(Insn insn) {
