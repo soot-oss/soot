@@ -15,7 +15,9 @@ We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/w
 
 # How do I obtain the nightly builds
 
-Nightly builds of soot can be obtained from [nightly build](http://vandyk.st.informatik.tu-darmstadt.de/abc/). You might have to downloads the dependency jars as well.
+** Note that the nightly build server has moved**
+
+Nightly builds of soot can be obtained from [nightly build](http://ssebuild.cased.de/nightly/soot/). The "soot-trunk.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to use manually pick dependencies as you need them.
 
 # About Soot's source code
 
