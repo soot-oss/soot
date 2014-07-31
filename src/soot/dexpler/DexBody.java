@@ -463,7 +463,7 @@ public class DexBody  {
         // add local to store intermediate results
         storeResultLocal = Jimple.v().newLocal("$u-1", UnknownType.v());
         jBody.getLocals().add (storeResultLocal);
-
+        
         // process bytecode instructions
         for(DexlibAbstractInstruction instruction : instructions) {
             if (dangling != null) {
@@ -512,7 +512,7 @@ public class DexBody  {
          */
 
         Debug.printDbg("body before any transformation : \n", jBody);
-
+        
         // Remove dead code and the corresponding locals before assigning types
 		UnreachableCodeEliminator.v().transform(jBody);
 		DeadAssignmentEliminator.v().transform(jBody);

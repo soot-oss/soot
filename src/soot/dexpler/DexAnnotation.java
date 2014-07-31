@@ -119,7 +119,7 @@ public class DexAnnotation {
      * @param method
      */
     void handleMethodAnnotation(Host h, Method method) {
-        Set<? extends Annotation> aSet = method.getAnnotations();
+    	Set<? extends Annotation> aSet = method.getAnnotations();
         if (!(aSet == null || aSet.isEmpty())) {
             for (Tag t : handleAnnotation(aSet, null))
             	if (t != null ){
@@ -142,7 +142,6 @@ public class DexAnnotation {
             VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(parameters.size(), 0);
             for (MethodParameter p : parameters) {
                 List<Tag> tags = handleAnnotation(p.getAnnotations(), null);
-                boolean hasAnnotation = false;
                 if (tags == null)
                 	continue;
                 for (Tag t : tags) {
@@ -179,15 +178,10 @@ public class DexAnnotation {
 
                     Debug.printDbg("add parameter annotation: ", t);
                     tag.addVisibilityAnnotation(vat);
-                    hasAnnotation = true;
-                }
-                if (!hasAnnotation) {
-                    VisibilityAnnotationTag vat = new VisibilityAnnotationTag(0);
-                    tag.addVisibilityAnnotation(vat);
                 }
             }
-            h.addTag(tag);
-            
+            if (tag.getVisibilityAnnotations().size() > 0)
+            	h.addTag(tag);
         }
 
     }
