@@ -523,8 +523,12 @@ public class ExprVisitor implements ExprSwitch {
 	
 	@Override
 	public void caseInstanceOfExpr(InstanceOfExpr ioe) {
-		Value referenceToCheck = ioe.getOp();
-		Register referenceToCheckReg = regAlloc.asLocal(referenceToCheck);
+		final Value referenceToCheck = ioe.getOp();
+		
+		// There are some strange apps that use constants here
+		constantV.setOrigStmt(origStmt);
+		Register referenceToCheckReg = regAlloc.asImmediate(referenceToCheck, constantV);
+		
 		BuilderReference checkType = DexPrinter.toTypeReference(ioe.getCheckType(),
 				stmtV.getBelongingFile());
         stmtV.addInsn(new Insn22c(Opcode.INSTANCE_OF, destinationReg, referenceToCheckReg,
