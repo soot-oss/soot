@@ -96,12 +96,10 @@ public class DexlibWrapper {
         }
 
         if (dexFile instanceof DexBackedDexFile) {
-
             DexBackedDexFile dbdf = (DexBackedDexFile)dexFile;
             int i = 0;
             try {
                 while (true) {
-
                     String t = dbdf.getType(i++);
 
                     Type st = DexType.toSoot(t);

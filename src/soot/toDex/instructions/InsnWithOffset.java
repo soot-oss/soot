@@ -20,5 +20,9 @@ public abstract class InsnWithOffset extends AbstractInsn {
 			throw new RuntimeException("Cannot jump to a NULL target");
 		this.target = target;
 	}
-		
+	
+	public Stmt getTarget() {
+		return this.target;
+	}
+	
 }

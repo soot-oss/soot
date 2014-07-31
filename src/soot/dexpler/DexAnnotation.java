@@ -204,7 +204,7 @@ public class DexAnnotation {
      * @param annotations
      * @return
      */
-    List<Tag> handleAnnotation(Set<? extends org.jf.dexlib2.iface.Annotation> annotations, String classType) {
+    private List<Tag> handleAnnotation(Set<? extends org.jf.dexlib2.iface.Annotation> annotations, String classType) {
         if (annotations.size() == 0)
             return null;
         
