@@ -61,6 +61,7 @@ import soot.toDex.instructions.Insn22x;
 import soot.toDex.instructions.Insn23x;
 import soot.toDex.instructions.Insn31t;
 import soot.toDex.instructions.Insn32x;
+import soot.toDex.instructions.InsnWithOffset;
 import soot.toDex.instructions.PackedSwitchPayload;
 import soot.toDex.instructions.SparseSwitchPayload;
 import soot.toDex.instructions.SwitchPayload;
@@ -169,8 +170,72 @@ public class StmtVisitor implements StmtSwitch {
 	public void finalizeInstructions() {
 		addSwitchPayloads();
 		finishRegs();
+		reduceInstructions();
 	}
 	
+	/**
+	 * Reduces the instruction list by removing unnecessary instruction pairs
+	 * such as move v0 v1; move v1 v0;
+	 */
+	private void reduceInstructions() {
+		for (int i = 0; i < this.insns.size() - 1; i++) {
+			Insn curInsn = this.insns.get(i);
+			// Only consider real instructions
+			if (curInsn instanceof AddressInsn)
+				continue;
+			if (!curInsn.getOpcode().name.startsWith("move/"))
+				continue;
+			
+			// Skip over following address instructions
+			Insn nextInsn = null;
+			int nextIndex = -1;
+			for (int j = i + 1; j < this.insns.size(); j++) {
+				Insn candidate = this.insns.get(j);
+				if (candidate instanceof AddressInsn)
+					continue;
+				nextInsn = candidate;
+				nextIndex = j;
+				break;
+			}
+			if (nextInsn == null || !nextInsn.getOpcode().name.startsWith("move/"))
+				continue;
+			
+			// Do not remove the last instruction in the body as we need to remap
+			// jump targets to the successor
+			if (nextIndex == this.insns.size() - 1)
+				continue;
+			
+			// Check if we have a <- b; b <- a;
+			Register firstTarget = curInsn.getRegs().get(0);
+			Register firstSource = curInsn.getRegs().get(1);
+			Register secondTarget = nextInsn.getRegs().get(0);
+			Register secondSource = nextInsn.getRegs().get(1);
+			if (firstTarget.equals(secondSource) && secondTarget.equals(firstSource)) {
+				Stmt origStmt = insnStmtMap.get(nextInsn);
+				
+				// Remove the second instruction as it does not change any
+				// state. We cannot remove the first instruction as other
+				// instructions may depend on the register being set.
+				if (origStmt == null || !isJumpTarget(origStmt)) {
+					insns.remove(nextIndex);
+				
+					if (origStmt != null) {
+						insnStmtMap.remove(nextInsn);
+						insnStmtMap.put(this.insns.get(nextIndex + 1), origStmt);
+					}
+				}
+			}
+		}
+	}
+	
+	private boolean isJumpTarget(Stmt target) {
+		for (Insn insn : this.insns)
+			if (insn instanceof InsnWithOffset)
+				if (((InsnWithOffset) insn).getTarget() == target)
+					return true;
+		return false;
+	}
+
 	private void addSwitchPayloads() {
 		// add switch payloads to the end of the insns
 		for (SwitchPayload payload : switchPayloads) {
