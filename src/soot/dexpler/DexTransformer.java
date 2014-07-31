@@ -229,7 +229,11 @@ public abstract class DexTransformer extends BodyTransformer {
 					}
 				} else if (r instanceof CastExpr) {
 					Type t = (((CastExpr) r).getCastType());
-					Debug.printDbg("atype cast: ", t);
+					Debug.printDbg("atype cast: ", t);					
+					if (t instanceof ArrayType) {
+						ArrayType at = (ArrayType) t;
+						t = at.getArrayElementType();
+					}
 					if (depth == 0) {
 						aType = t;
 						break;
@@ -239,6 +243,10 @@ public abstract class DexTransformer extends BodyTransformer {
 				} else if (r instanceof InvokeExpr) {
 					Type t = ((InvokeExpr) r).getMethodRef().returnType();
 					Debug.printDbg("atype invoke: ", t);
+					if (t instanceof ArrayType) {
+						ArrayType at = (ArrayType) t;
+						t = at.getArrayElementType();
+					}
 					if (depth == 0) {
 						aType = t;
 						break;
@@ -282,9 +290,8 @@ public abstract class DexTransformer extends BodyTransformer {
 
 			if (aType != null)
 			    break;
-
 		} // loop
-
+		
 		if (depth == 0 && aType == null)
 			throw new RuntimeException(
 					"ERROR: could not find type of array from statement '"

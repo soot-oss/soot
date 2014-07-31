@@ -525,7 +525,7 @@ public class DexBody  {
 
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);
-
+        
   		for (RetypeableInstruction i : instructionsToRetype)
             i.retype(jBody);
 
@@ -568,8 +568,6 @@ public class DexBody  {
           Debug.printDbg("\nafter Num and Null transformers");
         }
         Debug.printDbg("",(Body)jBody);
-
-     
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
             for (Local l: jBody.getLocals()) {

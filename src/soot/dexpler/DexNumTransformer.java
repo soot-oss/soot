@@ -31,7 +31,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import soot.ArrayType;
 import soot.Body;
 import soot.Local;
 import soot.Type;
@@ -122,18 +121,17 @@ public class DexNumTransformer extends DexTransformer {
 			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs,
 					localUses, body);
 			
-			// process normally
+	        // process normally
 			doBreak = false;
 			for (Unit u : defs) {
-
 				// put correct local in l
 				if (u instanceof AssignStmt) {
 					l = (Local) ((AssignStmt) u).getLeftOp();
 				} else if (u instanceof IdentityStmt) {
 					l = (Local) ((IdentityStmt) u).getLeftOp();
 				}
-
-				Debug.printDbg("    def  : ", u);
+				
+		        Debug.printDbg("    def  : ", u);
 				Debug.printDbg("    local: ", l);
 
 				// check defs
@@ -168,13 +166,7 @@ public class DexNumTransformer extends DexTransformer {
 																					// update
 																					// if(ArrayRef...
 								Debug.printDbg(" array type:", t);
-								if (t instanceof UnknownType)
-									usedAsFloatingPoint = false;
-								else {									
-									if (!(t instanceof ArrayType))
-										throw new RuntimeException("Expected an array type for an array reference");
-									usedAsFloatingPoint = isFloatingPointLike(((ArrayType) t).getArrayElementType());
-								}
+								usedAsFloatingPoint = isFloatingPointLike(t);
 							} else {
 								usedAsFloatingPoint = isFloatingPointLike(ar
 										.getType());
