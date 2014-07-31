@@ -132,6 +132,11 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis implements Combined
                         "lla of "+u+"\ncombined: "+hs1+"\nsimple: "+hs2);
                 return combined.getLiveLocalsAfter(u);
             }
+			@Override
+			public void printAnswer() {
+				// TODO Auto-generated method stub
+				
+			}
         }
         ;
     }
@@ -260,6 +265,11 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis implements Combined
             
         sourceSet.copy(destSet);
     }
+	@Override
+	public void printAnswer() {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
 

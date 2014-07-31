@@ -353,14 +353,13 @@ public abstract class Body extends AbstractHost implements Serializable
                 Value v = (useBoxIt.next()).getValue();
                 if (v instanceof Local)
                 {
+                	if(v.toString().contains("r1") && u.toString().contains("$z8 = interfaceinvoke r1.<org.alfresco.service.cmr.repository.ContentReader: boolean isChannelOpen()>()")){
+                		ld.printAnswer();
+                	}
                     // This throws an exception if there is
                     // no def already; we check anyhow.
                     List<Unit> l = ld.getDefsOfAt((Local)v, u);
                     if (l.size() == 0){
-                        for( Iterator<Unit> uuIt = getUnits().iterator(); uuIt.hasNext(); ) {
-                            final Unit uu = uuIt.next();
-                            System.err.println(""+uu);
-                        }
                         throw new RuntimeException("("+ getMethod() +") no defs for value: " + v + "!\n" + this);
                     }
                 }

@@ -451,7 +451,16 @@ public class Hierarchy
     {
         child.checkLevel(SootClass.HIERARCHY);
         possibleParent.checkLevel(SootClass.HIERARCHY);
-        return getSuperclassesOf(child).contains(possibleParent);
+        List<SootClass> parentClasses = getSuperclassesOf(child);
+        boolean correctArq = parentClasses.contains(possibleParent);
+        if(correctArq){
+        	return true;
+        } else{
+        	if(parentClasses.get(parentClasses.size()-1).isPhantom){
+        		return true;
+        	}
+        }
+        return false;
     }
 
     /** Returns true if child is, or is a subclass of, possibleParent. */
@@ -459,7 +468,17 @@ public class Hierarchy
     {
         child.checkLevel(SootClass.HIERARCHY);
         possibleParent.checkLevel(SootClass.HIERARCHY);
-        return getSuperclassesOfIncluding(child).contains(possibleParent);
+        List<SootClass> parentClasses = getSuperclassesOfIncluding(child);
+        boolean correctArq = parentClasses.contains(possibleParent);
+        if(correctArq){
+        	return true;
+        } else{
+        	if(parentClasses.get(parentClasses.size()-1).isPhantom){
+        		return true;
+        	}
+        }
+        return false;
+        //return getSuperclassesOfIncluding(child).contains(possibleParent);
     }
 
     /** Returns true if child is a direct subclass of possibleParent. */

@@ -54,8 +54,7 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
 		this(4);
 	}
 	
-	@Override
-	public void visit(String name, Object value) {
+	public AnnotationElem getAnnotationElement(String name, Object value){
 		AnnotationElem elem;
 		if (value instanceof Byte) {
 			elem = new AnnotationIntElem((Byte) value, 'B', name);
@@ -78,10 +77,39 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
 		} else if (value instanceof Type) {
 			Type t = (Type) value;
 			elem = new AnnotationClassElem(t.getDescriptor(), 'c', name);
-		} else {
+		} else if (value.getClass().isArray()){
+			ArrayList<AnnotationElem> annotationArray = new ArrayList<AnnotationElem>();
+			if (value instanceof byte[]) {
+				for(Object element:(byte[])value) annotationArray.add(getAnnotationElement(name,element));
+			} else if (value instanceof boolean[]) {
+				for(Object element:(boolean[])value) annotationArray.add(getAnnotationElement(name,element));
+			} else if (value instanceof char[]) {
+				for(Object element:(char[])value) annotationArray.add(getAnnotationElement(name,element));
+			} else if (value instanceof short[]) {
+				for(Object element:(short[])value) annotationArray.add(getAnnotationElement(name,element));
+			} else if (value instanceof int[]) {
+				for(Object element:(int[])value) annotationArray.add(getAnnotationElement(name,element));
+			} else if (value instanceof long[]) {
+				for(Object element:(long[])value) annotationArray.add(getAnnotationElement(name,element));
+			} else if (value instanceof float[]) {
+				for(Object element:(float[])value) annotationArray.add(getAnnotationElement(name,element));
+			} else if (value instanceof double[]) {
+				for(Object element:(double[])value) annotationArray.add(getAnnotationElement(name,element));
+			} else if (value instanceof String[]) {
+				for(Object element:(String[])value) annotationArray.add(getAnnotationElement(name,element));
+			} else if (value instanceof Type[]) {
+				for(Object element:(Type[])value) annotationArray.add(getAnnotationElement(name,element));
+			}
+			elem = new AnnotationArrayElem(annotationArray, '[', name);
+		} else
 			throw new UnsupportedOperationException("Unsupported value type: " + value.getClass());
-		}
-		elems.add(elem);
+		return(elem);
+	}
+	
+	@Override
+	public void visit(String name, Object value) {
+		AnnotationElem elem = getAnnotationElement(name,value);
+		this.elems.add(elem);
 	}
 	
 	@Override
