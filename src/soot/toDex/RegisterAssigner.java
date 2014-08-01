@@ -237,7 +237,8 @@ public class RegisterAssigner {
 	 */
 	private void addMovesForIncompatRegs(Insn curInsn, InstructionIterator insns, List<Register> regs, BitSet incompatRegs) {
 		final Register resultReg = regs.get(0);
-		final boolean hasResultReg = curInsn.getOpcode().setsRegister();
+		final boolean hasResultReg = curInsn.getOpcode().setsRegister()
+				|| curInsn.getOpcode().setsWideRegister();
 		Insn moveResultInsn = null;
 		
 		insns.previous(); // extra MOVEs are added _before_ the current insn
@@ -261,11 +262,11 @@ public class RegisterAssigner {
 					insns.add(extraMove, curInsn); // advances the cursor, so no next() needed
 					// finally patch the original, incompatible reg
 					incompatReg.setNumber(destination.getNumber());
+					
+					// If this is the result register, we need to save the result as well
+					if (hasResultReg && regIdx == resultReg.getNumber())
+						moveResultInsn = StmtVisitor.buildMoveInsn(source, destination);					
 				}
-				
-				// If this is the result register, we need to save the result as well
-				if (hasResultReg && regIdx == resultReg.getNumber())
-					moveResultInsn = StmtVisitor.buildMoveInsn(source, destination);					
 			}
 		}
 		insns.next(); // get past current insn again
