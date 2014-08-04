@@ -135,4 +135,10 @@ public class ShimpleLocalDefs implements LocalDefs
 
         return getDefsOf(l);
     }
+
+	@Override
+	public void printAnswer() {
+		// TODO Auto-generated method stub
+		
+	}
 }

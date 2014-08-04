@@ -50,4 +50,8 @@ public final class Cons {
     }
     public Object car() { return car; }
     public Object cdr() { return cdr; }
+    @Override
+    public String toString(){
+		return car.toString()+","+cdr.toString();
+    }
 }

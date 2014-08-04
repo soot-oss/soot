@@ -53,5 +53,6 @@ public interface LocalDefs
      *            method context.         
      */
     public List<Unit> getDefsOfAt(Local l, Unit s);
+    public void printAnswer();
 }
 
