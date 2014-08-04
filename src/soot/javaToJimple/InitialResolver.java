@@ -18,15 +18,19 @@
  */
 
 package soot.javaToJimple;
-import soot.*;
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 import polyglot.ast.ClassDecl;
 import polyglot.ast.New;
 import polyglot.ast.Node;
 import polyglot.types.ConstructorInstance;
 import polyglot.util.IdentityKey;
+import soot.FastHierarchy;
+import soot.SootClass;
+import soot.SootMethod;
 
 public class InitialResolver implements IInitialResolver {
 
@@ -198,7 +202,7 @@ public class InitialResolver implements IInitialResolver {
         String srcName = src.source().path();
         String srcFileName = null;
         if (src.package_() != null){
-            String slashedPkg = soot.util.StringTools.replaceAll(src.package_().package_().fullName(), ".", System.getProperty("file.separator"));
+            String slashedPkg = src.package_().package_().fullName().replaceAll(".", System.getProperty("file.separator"));
             srcFileName = srcName.substring(srcName.lastIndexOf(slashedPkg));
         }
         else {

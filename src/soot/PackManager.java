@@ -731,7 +731,7 @@ public class PackManager {
 
             try {
                 if( jarFile != null ) {
-                    ZipEntry entry = new ZipEntry(soot.util.StringTools.replaceAll(fileName,"\\","/"));
+                    ZipEntry entry = new ZipEntry(fileName.replaceAll("\\","/"));
                     jarFile.putNextEntry(entry);
                     streamOut = jarFile;
                 } else {

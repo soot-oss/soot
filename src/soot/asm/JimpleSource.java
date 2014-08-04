@@ -1644,6 +1644,9 @@ final class JimpleSource implements MethodSource {
 			throw new RuntimeException("Failed to convert " + m, t);
 		}
 		
+		if (m.toString().equals("<org.alfresco.repo.content.metadata.xml.XmlMetadataExtracter: java.util.Map extract(org.alfresco.service.cmr.repository.ContentReader,org.alfresco.repo.content.metadata.MetadataExtracter$OverwritePolicy,java.util.Map,java.util.Map)>"))
+			System.out.println("x");
+		
 		/* build body (add units, locals, traps, etc.) */
 		emitLocals();
 		emitTraps();

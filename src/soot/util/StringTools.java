@@ -209,57 +209,7 @@ public class StringTools
         } 
         return res;
     }
-
-    /**
-     * Replaces all occurrences of the given substring with the
-     * given replacement string.
-     *
-     * @param orig The string in which all occurrences of the substring
-     *             are to be replaced.
-     *
-     * @param toBeReplaced The substring which is to be replaced.
-     *
-     * @param replacment The string which is to replace 
-     *                   <code>toBeReplaced</code>. 
-     *
-     * @return The resulting {@link String}.
-     *
-     * <p>This method provides a facility similar to the
-     * String.replaceAll() method available in Java 1.4, except that 
-     * it can only replace substrings rather than regular expressions.
-     * So if Soot ever abandons compatibility with pre-1.4
-     * definitions of the Java API, it can also abandon replaceAllIn().
-     */
-     public static String replaceAll(String orig, String toBeReplaced, 
-				     String replacement) { 
-	 int quarryLength = toBeReplaced.length();
-	 if (quarryLength <= 0) {
-	     return orig;
-	 }
-
-	 int index = orig.indexOf(toBeReplaced);
-	 if (index < 0) {
-	     return orig;
-	 } else {
-	     int from = 0;
-	     StringBuffer sb;
-	     if (quarryLength < replacement.length()) {
-		 sb = new StringBuffer(orig.length());
-	     } else {
-		 sb = new StringBuffer(orig.length() * 2);
-	     }
-	     
-	     do {
-		 sb.append(orig.substring(from, index));
-		 sb.append(replacement);
-		 from = index + quarryLength;
-		 index = orig.indexOf(toBeReplaced, from);
-	     } while (index >= 0);
-
-	     sb.append(orig.substring(from));
-	     return sb.toString();
-	 }
-     }
+    
 }
 
 

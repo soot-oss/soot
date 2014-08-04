@@ -1,6 +1,5 @@
 package soot.util;
 
-import soot.util.StringTools;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -17,7 +16,7 @@ public class StringTools_replaceAll_Test extends TestCase {
 
     private static void runAndCompare(String orig, String toBeReplaced,
 			       String replacement, String expected) {
-	String result = StringTools.replaceAll(orig, toBeReplaced, replacement);
+	String result = orig.replaceAll(toBeReplaced, replacement);
 	assertEquals(expected, result);
     }
 

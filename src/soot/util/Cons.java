@@ -21,35 +21,48 @@ package soot.util;
 
 /** A Lisp-style cons cell. */
 public final class Cons {
+    final private Object car;
+    final private Object cdr;
+    
     public Cons( Object car, Object cdr ) {
         this.car = car;
         this.cdr = cdr;
     }
-    final private Object car;
-    final private Object cdr;
-    public int hashCode() {
-        int ret = 0;
-        if( car != null ) ret += car.hashCode();
-        if( cdr != null ) ret += cdr.hashCode();
-        return ret;
-    }
-    public boolean equals(Object o) {
-        if( !( o instanceof Cons ) ) return false;
-        Cons other = (Cons) o;
-        if( car == null ) {
-            if( other.car != null ) return false;
-        } else {
-            if( !car.equals(other.car) ) return false;
-        }
-        if( cdr == null ) {
-            if( other.cdr != null ) return false;
-        } else {
-            if( !cdr.equals(other.cdr) ) return false;
-        }
-        return true;
-    }
+    
+    @Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((car == null) ? 0 : car.hashCode());
+		result = prime * result + ((cdr == null) ? 0 : cdr.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Cons other = (Cons) obj;
+		if (car == null) {
+			if (other.car != null)
+				return false;
+		} else if (!car.equals(other.car))
+			return false;
+		if (cdr == null) {
+			if (other.cdr != null)
+				return false;
+		} else if (!cdr.equals(other.cdr))
+			return false;
+		return true;
+	}
+	
     public Object car() { return car; }
     public Object cdr() { return cdr; }
+    
     @Override
     public String toString(){
 		return car.toString()+","+cdr.toString();

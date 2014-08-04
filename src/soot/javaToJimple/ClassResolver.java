@@ -34,6 +34,7 @@ import soot.G;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootField;
+import soot.SootMethod;
 import soot.options.Options;
 
 public class ClassResolver {
@@ -265,11 +266,9 @@ public class ClassResolver {
     }
     private void addFinals(polyglot.types.LocalInstance li, ArrayList<SootField> finalFields){
         // add as param for init
-        Iterator it = sootClass.getMethods().iterator();
-        while (it.hasNext()){
-            soot.SootMethod meth = (soot.SootMethod)it.next();
+        for (SootMethod meth : sootClass.getMethods()) {
             if (meth.getName().equals("<init>")){
-                List newParams = new ArrayList();
+                List<soot.Type> newParams = new ArrayList<soot.Type>();
                 newParams.addAll(meth.getParameterTypes());
                 newParams.add(Util.getSootType(li.type()));
                 meth.setParameterTypes(newParams);
@@ -543,7 +542,7 @@ public class ClassResolver {
         // this field is named after the outer class even if the outer
         // class is an interface and will be actually added to the
         // special interface anon class
-        fieldName = "class$"+soot.util.StringTools.replaceAll(addToClass.getName(), ".", "$");
+        fieldName = "class$"+addToClass.getName().replaceAll(".", "$");
         if ((InitialResolver.v().getInterfacesList() != null) && (InitialResolver.v().getInterfacesList().contains(addToClass.getName()))) {
             addToClass = getSpecialInterfaceAnonClass(addToClass);
         }
