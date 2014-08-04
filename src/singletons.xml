@@ -149,4 +149,8 @@
   <class>soot.toDex.SynchronizedMethodTransformer</class>
   <class>soot.toDex.TrapSplitter</class>
   <class>soot.toDex.FastDexTrapTightener</class>
+  <class>soot.jimple.toolkits.typing.fast.Integer127Type</class>
+  <class>soot.jimple.toolkits.typing.fast.Integer1Type</class>
+  <class>soot.jimple.toolkits.typing.fast.Integer32767Type</class>
+  <class>soot.jimple.toolkits.typing.fast.BottomType</class>
 </singletons>
