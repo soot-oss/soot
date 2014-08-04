@@ -198,12 +198,6 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
 	protected ThrowableSet defaultResult() {
 		return mgr.EMPTY;
 	}
-
-    @Override
-    protected ThrowableSet mightThrow(Value v) {
-    	return super.mightThrow(v);
-    }
-	
 	
 	@Override
 	protected UnitSwitch unitSwitch() {
