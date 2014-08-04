@@ -135,13 +135,7 @@ public class SimpleLocalDefs implements LocalDefs
         
         return toReturn;
     }
-
-	@Override
-	public void printAnswer() {
-		// TODO Auto-generated method stub
-		
-	}
-
+    
     /*
       public List getDefsOfBefore(Local l, Unit s)
       {

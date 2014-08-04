@@ -100,6 +100,8 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
 			} else if (value instanceof Type[]) {
 				for(Object element:(Type[])value) annotationArray.add(getAnnotationElement(name,element));
 			}
+			else
+				throw new UnsupportedOperationException("Unsupported array value type: " + value.getClass());
 			elem = new AnnotationArrayElem(annotationArray, '[', name);
 		} else
 			throw new UnsupportedOperationException("Unsupported value type: " + value.getClass());

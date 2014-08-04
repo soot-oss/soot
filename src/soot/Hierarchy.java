@@ -446,39 +446,44 @@ public class Hierarchy
         return Collections.unmodifiableList(l);
     }
 
-    /** Returns true if child is a subclass of possibleParent. */
+    /**
+     * Returns true if child is a subclass of possibleParent. If one of the
+     * known parent classes is phantom, we conservatively assume that the
+     * current class might be a child.
+     */
     public boolean isClassSubclassOf(SootClass child, SootClass possibleParent)
     {
         child.checkLevel(SootClass.HIERARCHY);
         possibleParent.checkLevel(SootClass.HIERARCHY);
         List<SootClass> parentClasses = getSuperclassesOf(child);
-        boolean correctArq = parentClasses.contains(possibleParent);
-        if(correctArq){
+        if (parentClasses.contains(possibleParent))
         	return true;
-        } else{
-        	if(parentClasses.get(parentClasses.size()-1).isPhantom){
+        
+        for (SootClass sc : parentClasses)
+        	if (sc.isPhantom())
         		return true;
-        	}
-        }
+        
         return false;
     }
 
-    /** Returns true if child is, or is a subclass of, possibleParent. */
+    /**
+     * Returns true if child is, or is a subclass of, possibleParent. If one of
+     * the known parent classes is phantom, we conservatively assume that the
+     * current class might be a child.
+     */
     public boolean isClassSubclassOfIncluding(SootClass child, SootClass possibleParent)
     {
         child.checkLevel(SootClass.HIERARCHY);
         possibleParent.checkLevel(SootClass.HIERARCHY);
         List<SootClass> parentClasses = getSuperclassesOfIncluding(child);
-        boolean correctArq = parentClasses.contains(possibleParent);
-        if(correctArq){
+        if (parentClasses.contains(possibleParent))
         	return true;
-        } else{
-        	if(parentClasses.get(parentClasses.size()-1).isPhantom){
+        
+        for (SootClass sc : parentClasses)
+        	if (sc.isPhantom())
         		return true;
-        	}
-        }
+        
         return false;
-        //return getSuperclassesOfIncluding(child).contains(possibleParent);
     }
 
     /** Returns true if child is a direct subclass of possibleParent. */
