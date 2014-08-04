@@ -129,7 +129,7 @@ public class SmartLocalDefs implements LocalDefs {
 				Value v = vb.getValue();
 				if (v instanceof Local) {
 					Cons key = new Cons(u, v);
-					if ( !answer.containsKey(key) ) {					
+					if ( !answer.containsKey(key) ) {
 						List<Unit> lst = asList(defsOf((Local) v), analysis.getFlowBefore(u));					
 						answer.put(key, lst);
 					}

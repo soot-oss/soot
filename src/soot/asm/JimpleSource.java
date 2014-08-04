@@ -1575,28 +1575,39 @@ final class JimpleSource implements MethodSource {
 		AbstractInsnNode insn = instructions.getFirst();
 		ArrayDeque<LabelNode> labls = new ArrayDeque<LabelNode>();
 		while (insn != null) {
+			// Save the label to assign it to the next real unit
 			if (insn instanceof LabelNode)
 				labls.add((LabelNode) insn);
+			
+			// Get the unit associated with the current instruction
 			Unit u = units.get(insn);
-			if (u != null) {
-				emitUnits(u);
-				if (u instanceof IdentityStmt &&
-						((IdentityStmt) u).getRightOp() instanceof CaughtExceptionRef) {
-					//FIXME not sure if this cast is always correct...
-					for (UnitBox ub : trapHandlers.get((LabelNode) insn))
-						ub.setUnit(u);
-				} else {
-					while (!labls.isEmpty()) {
-						LabelNode ln = labls.poll();
-						Collection<UnitBox> boxes = labels.get(ln);
-						if (boxes != null) {
-							for (UnitBox box : boxes) {
-								Unit uu = u;
-								while (uu instanceof UnitContainer)
-									uu = ((UnitContainer) u).units[0];
-								box.setUnit(uu);
-							}
-						}
+			if (u == null) {
+				insn = insn.getNext();
+				continue;
+			}
+			
+			emitUnits(u);
+			
+			// If this is an exception handler, register the starting unit for it
+			if (insn instanceof LabelNode
+					&& u instanceof IdentityStmt
+					&& ((IdentityStmt) u).getRightOp() instanceof CaughtExceptionRef) {
+				// We directly place this label
+				Collection<UnitBox> traps = trapHandlers.get((LabelNode) insn);
+				for (UnitBox ub : traps)
+					ub.setUnit(u);
+			}
+			
+			// Register this unit for all targets of the labels ending up at it
+			while (!labls.isEmpty()) {
+				LabelNode ln = labls.poll();
+				Collection<UnitBox> boxes = labels.get(ln);
+				if (boxes != null) {
+					for (UnitBox box : boxes) {
+						Unit uu = u;
+						while (uu instanceof UnitContainer)
+							uu = ((UnitContainer) u).units[0];
+						box.setUnit(uu);
 					}
 				}
 			}
@@ -1621,10 +1632,6 @@ final class JimpleSource implements MethodSource {
 		if (!m.isConcrete())
 			return null;
 		JimpleBody jb = Jimple.v().newBody(m);
-		/* \/DEBUG\/ */
-//		if (!m.toString().equals("<jaggl.OpenGL: boolean j(java.lang.String)>"))
-//			return jb;
-		/* /\DEBUG/\ */
 		/* initialize */
 		int nrInsn = instructions.size();
 		nextLocal = maxLocals;
@@ -1644,21 +1651,11 @@ final class JimpleSource implements MethodSource {
 			throw new RuntimeException("Failed to convert " + m, t);
 		}
 		
-		if (m.toString().equals("<org.alfresco.repo.content.metadata.xml.XmlMetadataExtracter: java.util.Map extract(org.alfresco.service.cmr.repository.ContentReader,org.alfresco.repo.content.metadata.MetadataExtracter$OverwritePolicy,java.util.Map,java.util.Map)>"))
-			System.out.println("x");
-		
 		/* build body (add units, locals, traps, etc.) */
 		emitLocals();
 		emitTraps();
 		emitUnits();
-		/* \/DEBUG\/ */
-//		java.io.PrintWriter pw = new java.io.PrintWriter(System.out);
-//		m.setActiveBody(jb);
-//		soot.Printer.v().printTo(jb, pw);
-//		m.setActiveBody(null);
-//		pw.flush();
-//		System.exit(0);
-		/* /\DEBUG/\ */
+		
 		/* clean up */
 		locals = null;
 		labels = null;
