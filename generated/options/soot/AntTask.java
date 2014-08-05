@@ -1803,6 +1803,27 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_wjtp_rdc() {
+            Object ret = new PhaseOptwjtp_rdc();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptwjtp_rdc {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("wjtp.rdc");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+          public void setfixed_class_names(String arg) {
+            addArg("-p");
+            addArg("wjtp.rdc");
+            addArg("fixed-class-names:"+arg);
+          }
+      
+        }
+    
         public Object createp_wjop() {
             Object ret = new PhaseOptwjop();
             phaseopts.add(ret);

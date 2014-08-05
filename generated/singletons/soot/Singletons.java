@@ -923,4 +923,10 @@ public class Singletons {
         return instance_soot_toDex_FastDexTrapTightener;
     }
 
+    private soot.jimple.toolkits.base.RenameDuplicatedClasses instance_soot_jimple_toolkits_base_RenameDuplicatedClasses;
+    public soot.jimple.toolkits.base.RenameDuplicatedClasses soot_jimple_toolkits_base_RenameDuplicatedClasses() {
+        if( instance_soot_jimple_toolkits_base_RenameDuplicatedClasses == null ) instance_soot_jimple_toolkits_base_RenameDuplicatedClasses = new soot.jimple.toolkits.base.RenameDuplicatedClasses( g );
+        return instance_soot_jimple_toolkits_base_RenameDuplicatedClasses;
+    }
+
 }

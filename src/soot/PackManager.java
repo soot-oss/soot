@@ -79,6 +79,7 @@ import soot.jimple.toolkits.annotation.purity.PurityAnalysis;
 import soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger;
 import soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator;
 import soot.jimple.toolkits.base.Aggregator;
+import soot.jimple.toolkits.base.RenameDuplicatedClasses;
 import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.jimple.toolkits.callgraph.CallGraphPack;
 import soot.jimple.toolkits.callgraph.UnreachableMethodTransformer;
@@ -201,6 +202,7 @@ public class PackManager {
         {
 	    	p.add(new Transform("wjtp.mhp", MhpTransformer.v()));
 	    	p.add(new Transform("wjtp.tn", LockAllocator.v()));
+	    	p.add(new Transform("wjtp.rdc", RenameDuplicatedClasses.v()));
         }
 
         // Whole-Jimple Optimization pack
