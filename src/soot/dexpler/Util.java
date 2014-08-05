@@ -234,7 +234,6 @@ public class Util {
         List<String> pList = new ArrayList<String>();
         
         int idx = 0;
-        int arraySize = 0;
         boolean object = false;
         
         String curr = "";
