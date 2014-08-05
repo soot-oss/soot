@@ -15666,7 +15666,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	 	
 		editGroupwjtpwjtp_rdc.setData("id", "wjtpwjtp_rdc");
 		
-		String descwjtpwjtp_rdc = "Rename duplicated classes when the file system does not case sensitive";	
+		String descwjtpwjtp_rdc = "Rename duplicated classes when the file system is not case sensitive";	
 		if (descwjtpwjtp_rdc.length() > 0) {
 			Label descLabelwjtpwjtp_rdc = new Label(editGroupwjtpwjtp_rdc, SWT.WRAP);
 			descLabelwjtpwjtp_rdc.setText(descwjtpwjtp_rdc);

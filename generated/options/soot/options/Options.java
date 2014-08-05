@@ -1519,7 +1519,7 @@ public class Options extends OptionsBase {
         +padOpt("wjtp", "Whole-jimple transformation pack")
         +padVal("wjtp.mhp", "Determines what statements may be run concurrently")
         +padVal("wjtp.tn", "Finds critical sections, allocates locks")
-        +padVal("wjtp.rdc", "Rename duplicated classes when the file system does not case sensitive")
+        +padVal("wjtp.rdc", "Rename duplicated classes when the file system is not case sensitive")
         +padOpt("wjop", "Whole-jimple optimization pack")
         +padVal("wjop.smb", "Static method binder: Devirtualizes monomorphic calls")
         +padVal("wjop.si", "Static inliner: inlines monomorphic calls")
@@ -2106,7 +2106,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjtp.rdc" ) )
             return "Phase "+phaseName+":\n"+
-                "\nRename duplicated classes when the file system does not case \nsensitive. If the file system is case sensitive, this phase does \nnothing. "
+                "\nRename duplicated classes when the file system is not case \nsensitive. If the file system is case sensitive, this phase does \nnothing. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "fcn", "Set  for the fixed class names." );
