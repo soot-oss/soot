@@ -929,4 +929,28 @@ public class Singletons {
         return instance_soot_jimple_toolkits_base_RenameDuplicatedClasses;
     }
 
+    private soot.jimple.toolkits.typing.fast.Integer127Type instance_soot_jimple_toolkits_typing_fast_Integer127Type;
+    public soot.jimple.toolkits.typing.fast.Integer127Type soot_jimple_toolkits_typing_fast_Integer127Type() {
+        if( instance_soot_jimple_toolkits_typing_fast_Integer127Type == null ) instance_soot_jimple_toolkits_typing_fast_Integer127Type = new soot.jimple.toolkits.typing.fast.Integer127Type( g );
+        return instance_soot_jimple_toolkits_typing_fast_Integer127Type;
+    }
+
+    private soot.jimple.toolkits.typing.fast.Integer1Type instance_soot_jimple_toolkits_typing_fast_Integer1Type;
+    public soot.jimple.toolkits.typing.fast.Integer1Type soot_jimple_toolkits_typing_fast_Integer1Type() {
+        if( instance_soot_jimple_toolkits_typing_fast_Integer1Type == null ) instance_soot_jimple_toolkits_typing_fast_Integer1Type = new soot.jimple.toolkits.typing.fast.Integer1Type( g );
+        return instance_soot_jimple_toolkits_typing_fast_Integer1Type;
+    }
+
+    private soot.jimple.toolkits.typing.fast.Integer32767Type instance_soot_jimple_toolkits_typing_fast_Integer32767Type;
+    public soot.jimple.toolkits.typing.fast.Integer32767Type soot_jimple_toolkits_typing_fast_Integer32767Type() {
+        if( instance_soot_jimple_toolkits_typing_fast_Integer32767Type == null ) instance_soot_jimple_toolkits_typing_fast_Integer32767Type = new soot.jimple.toolkits.typing.fast.Integer32767Type( g );
+        return instance_soot_jimple_toolkits_typing_fast_Integer32767Type;
+    }
+
+    private soot.jimple.toolkits.typing.fast.BottomType instance_soot_jimple_toolkits_typing_fast_BottomType;
+    public soot.jimple.toolkits.typing.fast.BottomType soot_jimple_toolkits_typing_fast_BottomType() {
+        if( instance_soot_jimple_toolkits_typing_fast_BottomType == null ) instance_soot_jimple_toolkits_typing_fast_BottomType = new soot.jimple.toolkits.typing.fast.BottomType( g );
+        return instance_soot_jimple_toolkits_typing_fast_BottomType;
+    }
+
 }
