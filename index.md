@@ -57,7 +57,7 @@ Jimple is Soot's primary IR and most analyses are implemented on the Jimple leve
 
 # How do I get started with Soot?
 
-We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki) and also a large range of [tutorials](/tutorials) on Soot.
+We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki) and also a large range of [tutorials](tutorials) on Soot.
 
 # How do I obtain the nightly builds
 
