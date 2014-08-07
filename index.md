@@ -1,6 +1,6 @@
 ---
 layout: post
-title: An framework for analyzing and transforming Java and Android Applications
+title: A framework for analyzing and transforming Java and Android Applications
 ---
 
 # What is Soot?
