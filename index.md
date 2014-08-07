@@ -5,7 +5,7 @@ title: A framework for analyzing and transforming Java and Android Applications
 
 # What is Soot?
 
-Around the year 2000, Soot started off as a Java optimization framework. By now, researchers and practitioners from around the world use Soot to analyze, instrument, optimize and visualize Java and Android applications.
+Originally, Soot started off as a Java optimization framework. By now, researchers and practitioners from around the world use Soot to analyze, instrument, optimize and visualize Java and Android applications.
 
 # What input formats does Soot provide?
 
