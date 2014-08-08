@@ -98,6 +98,10 @@ public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,
 				}
 				return new FlowFunction<Local>() {
 					public Set<Local> computeTargets(Local source) {
+						//ignore implicit calls to static initializers
+						if(dest.getName().equals(SootMethod.staticInitializerName) && dest.getParameterCount()==0)
+							return Collections.emptySet();
+						
 						Set<Local> taintsInCaller = new HashSet<Local>();
 						for(int i=0;i<callArgs.size();i++) {
 							if(callArgs.get(i).equivTo(source)) {
