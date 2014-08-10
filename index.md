@@ -65,8 +65,8 @@ Nightly builds of soot can be obtained from [nightly build](http://ssebuild.case
 
 # About Soot's source code
 
-Soot follows the git-flow convention. Releases and hotfixes are maintained in the master branch.
+Soot follows the [git-flow convention](http://nvie.com/posts/a-successful-git-branching-model/). Releases and hotfixes are maintained in the master branch.
 Development happens in the develop branch. To catch the bleeding edge of Soot, check out the latter.
 You will also need the projects [jasmin](https://github.com/Sable/jasmin) and
 [heros](https://github.com/Sable/heros). In case of any questions, please consult the Soot
-mailing list at: http://www.sable.mcgill.ca/mailman/listinfo/soot-list/
+[mailing list](https://github.com/Sable/soot/wiki/Getting-help).
