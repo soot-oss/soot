@@ -177,7 +177,7 @@ class MethodBuilder extends JSRInlinerAdapter {
 			method.addTag(tag);
 		}
 		if (method.isConcrete()) {
-			method.setSource(new JimpleSource(maxLocals, instructions,
+			method.setSource(new AsmMethodSource(maxLocals, instructions,
 					localVariables, tryCatchBlocks));
 		}
 	}

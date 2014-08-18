@@ -37,13 +37,13 @@ final class StackFrame {
 	private Local[] inStackLocals;
 	private ValueBox[] boxes;
 	private ArrayList<Operand[]> in;
-	private final JimpleSource src;
+	private final AsmMethodSource src;
 	
 	/**
 	 * Constructs a new stack frame.
 	 * @param src source the frame belongs to.
 	 */
-	StackFrame(JimpleSource src) {
+	StackFrame(AsmMethodSource src) {
 		this.src = src;
 	}
 	

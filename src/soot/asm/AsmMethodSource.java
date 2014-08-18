@@ -135,7 +135,7 @@ import com.google.common.collect.Table;
  * 
  * @author Aaloan Miftah
  */
-final class JimpleSource implements MethodSource {
+final class AsmMethodSource implements MethodSource {
 	
 	private static final Operand DWORD_DUMMY = new Operand(null, null);
 	
@@ -156,7 +156,7 @@ final class JimpleSource implements MethodSource {
 	
 	private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
 	
-	JimpleSource(int maxLocals, InsnList insns,
+	AsmMethodSource(int maxLocals, InsnList insns,
 			List<LocalVariableNode> localVars,
 			List<TryCatchBlockNode> tryCatchBlocks) {
 		this.maxLocals = maxLocals;
@@ -1391,7 +1391,7 @@ final class JimpleSource implements MethodSource {
 		}
 		
 		Edge(AbstractInsnNode insn) {
-			this(insn, new ArrayList<Operand>(JimpleSource.this.stack));
+			this(insn, new ArrayList<Operand>(AsmMethodSource.this.stack));
 		}
 	}
 	
