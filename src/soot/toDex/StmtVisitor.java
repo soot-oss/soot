@@ -336,6 +336,7 @@ public class StmtVisitor implements StmtSwitch {
 			throw new Error("left-hand side of AssignStmt is not a Local: " + lhs.getClass());
 		}
 		Register lhsReg = regAlloc.asLocal(lhs);
+		stmt.addTag(LocalRegisterAssignmentTag.v(lhsReg, lhs));
 		
 		Value rhs = stmt.getRightOp();
 		if (rhs instanceof Local) {
@@ -548,6 +549,7 @@ public class StmtVisitor implements StmtSwitch {
 		if (rhs instanceof CaughtExceptionRef) {
 			// save the caught exception with move-exception
 			Register localReg = regAlloc.asLocal(lhs);
+			stmt.addTag(LocalRegisterAssignmentTag.v(localReg, lhs));
             addInsn(new Insn11x(Opcode.MOVE_EXCEPTION, localReg), stmt);
 		} else if (rhs instanceof ThisRef || rhs instanceof ParameterRef) {
 			/* 

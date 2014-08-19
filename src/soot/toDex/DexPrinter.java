@@ -30,6 +30,7 @@ import org.jf.dexlib2.iface.MethodParameter;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.reference.FieldReference;
 import org.jf.dexlib2.iface.reference.MethodReference;
+import org.jf.dexlib2.iface.reference.StringReference;
 import org.jf.dexlib2.iface.value.EncodedValue;
 import org.jf.dexlib2.immutable.ImmutableAnnotation;
 import org.jf.dexlib2.immutable.ImmutableAnnotationElement;
@@ -70,6 +71,7 @@ import soot.CharType;
 import soot.CompilationDeathException;
 import soot.G;
 import soot.IntType;
+import soot.Local;
 import soot.PackManager;
 import soot.ShortType;
 import soot.SootClass;
@@ -916,6 +918,35 @@ public class DexPrinter {
 		List<BuilderInstruction> instructions = stmtV.getRealInsns(labelAssinger);
 		
 		Map<Instruction, Stmt> instructionStmtMap = stmtV.getInstructionStmtMap();
+		Map<Local, Integer> seenRegisters = new HashMap<Local, Integer>();
+        
+    	
+        //Calculate arguments and this registers for the debugging information
+		//Sadly they do not seem to be known already in the StmtVisitor during visiting the IdentityStmts (e.g. the parameter 
+		//registers are said to be 1, 2 ... in non-static methods, although they are registerCount - n, registerCount - n + 1, ...
+		{
+    		int currentIndex = registerCount;
+    		
+        	for (int paramIndex = m.getParameterCount() - 1; paramIndex >= 0; paramIndex--) {
+        		currentIndex -= SootToDexUtils.getDexWords(m.getParameterType(paramIndex));
+        		try {
+        			Local l = activeBody.getParameterLocal(paramIndex);
+        			addRegisterAssignmentDebugInfo(LocalRegisterAssignmentTag.v(new Register(l.getType(), currentIndex), l), seenRegisters, builder);
+        		} catch (Exception e) {
+        		}
+        	}
+        	if (!m.isStatic())
+        	{
+        		currentIndex--;
+        		try {
+	    			Local l = activeBody.getThisLocal();
+	    			addRegisterAssignmentDebugInfo(LocalRegisterAssignmentTag.v(new Register(m.getDeclaringClass().getType(), currentIndex), l), seenRegisters, builder);
+        		} catch (Exception e) {
+        		}
+        	}
+        }
+    	
+    	
         for (BuilderInstruction ins : instructions) {
             Stmt origStmt = instructionStmtMap.get(ins);
             
@@ -957,8 +988,22 @@ public class DexPrinter {
             }
             
             builder.addInstruction(ins);
+            if (origStmt != null)
+            {
+
+				//Add start local debugging information: Register -> Local assignment
+            	LocalRegisterAssignmentTag registerAssignment = (LocalRegisterAssignmentTag) origStmt.getTag(LocalRegisterAssignmentTag.TAGNAME);
+            	if (registerAssignment != null)
+            	{
+            		addRegisterAssignmentDebugInfo(registerAssignment, seenRegisters, builder);
+            		origStmt.getTags().remove(registerAssignment);
+            	}
+            }
 		}
 		
+        
+		for (int registersLeft : seenRegisters.values())
+				builder.addEndLocal(registersLeft);
 		toTries(activeBody.getTraps(), stmtV, builder, labelAssinger);
         
         // Make sure that all labels have been placed by now
@@ -967,6 +1012,25 @@ public class DexPrinter {
         		throw new RuntimeException("Label not placed: " + lbl);
         
         return builder.getMethodImplementation();
+	}
+	
+	private void addRegisterAssignmentDebugInfo(
+			LocalRegisterAssignmentTag registerAssignment, Map<Local, Integer> seenRegisters, MethodImplementationBuilder builder) {
+		Local local = registerAssignment.getLocal();
+		String dexLocalType = SootToDexUtils.getDexTypeDescriptor(local.getType());
+		StringReference localName = dexFile.internStringReference(local.getName());
+		Register reg = registerAssignment.getRegister();
+		int register = reg.getNumber();
+		
+		Integer beforeRegister = seenRegisters.get(local);
+		if (beforeRegister != null)
+		{
+			builder.addEndLocal(beforeRegister);
+		}
+		String decl = local.getType().toString() + " " + local.getName();
+		builder.addStartLocal(register, localName, dexFile.internTypeReference(dexLocalType), dexFile.internStringReference(decl));
+		seenRegisters.put(local, register);
+		
 	}
 
 	private void toInstructions(Collection<Unit> units, StmtVisitor stmtV) {
