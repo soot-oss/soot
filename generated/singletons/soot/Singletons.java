@@ -53,7 +53,7 @@ public class Singletons {
         return instance_soot_util_SharedBitSetCache;
     }
 
-    private soot.options.Options instance_soot_options_Options;
+    private static soot.options.Options instance_soot_options_Options;
     public soot.options.Options soot_options_Options() {
         if( instance_soot_options_Options == null ) instance_soot_options_Options = new soot.options.Options( g );
         return instance_soot_options_Options;
