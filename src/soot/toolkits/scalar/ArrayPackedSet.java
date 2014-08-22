@@ -237,11 +237,14 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
       if (sameType(otherFlow) &&
           sameType(destFlow)) {
 
-        if(!(other instanceof ArrayPackedSet) || bits.length != other.bits.length)
+        if(!(otherFlow instanceof ArrayPackedSet))
             throw new RuntimeException("Incompatible other set for union");
 
         ArrayPackedSet other = (ArrayPackedSet) otherFlow;
         ArrayPackedSet dest = (ArrayPackedSet) destFlow;
+        
+        if (bits.length != other.bits.length)
+            throw new RuntimeException("Incompatible other set for union");
 
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = this.bits[i] & ~other.bits[i];
@@ -253,11 +256,14 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
     {
       if (sameType(otherFlow) &&
           sameType(destFlow)) {
-        if(!(other instanceof ArrayPackedSet) || bits.length != other.bits.length)
+        if(!(otherFlow instanceof ArrayPackedSet))
             throw new RuntimeException("Incompatible other set for union");
 
         ArrayPackedSet other = (ArrayPackedSet) otherFlow;
         ArrayPackedSet dest = (ArrayPackedSet) destFlow;
+        
+        if (bits.length != other.bits.length)
+            throw new RuntimeException("Incompatible other set for union");
 
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = this.bits[i] & other.bits[i];
