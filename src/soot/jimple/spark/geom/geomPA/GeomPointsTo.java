@@ -240,6 +240,9 @@ public class GeomPointsTo extends PAG
     	
     	String encoding_name = nodeGenerator.getSignature();
     	
+    	if ( encoding_name == null )
+    		throw new RuntimeException( "No encoding given for geometric points-to analysis." );
+
     	if ( nodeGenerator == null )
     		throw new RuntimeException( "The encoding " + encoding_name 
     		                                        + " is unavailable for geometric points-to analysis." );

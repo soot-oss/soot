@@ -130,7 +130,7 @@ public class BytecodeHierarchy implements IHierarchy
 			Collection<Type> ts;
 			
 			// Primitive arrays are not covariant but all other arrays are
-			if ( eta instanceof PrimType || eta instanceof PrimType )
+			if ( eta instanceof PrimType || etb instanceof PrimType )
 				ts = Collections.<Type>emptyList();
 			else
 				ts = lcas_(eta, etb);

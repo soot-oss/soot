@@ -255,9 +255,11 @@ public class ProcessData {
 				}
 			};
 			children = dir.list(filter);
-			
-			for (String element : children)
-				xmlFileList.add(element);
+
+			if(children!=null) {
+				for (String element : children)
+					xmlFileList.add(element);
+			}
 		}
 	}
 	
