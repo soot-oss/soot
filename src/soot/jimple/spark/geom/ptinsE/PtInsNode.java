@@ -469,12 +469,14 @@ public class PtInsNode extends IVarAbstraction
 		for (Iterator<AllocNode> it = pt_objs.keySet().iterator(); it.hasNext();) {
 			AllocNode obj = it.next();
 			SegmentNode[] int_entry = find_points_to( obj );
-			for (int j = 0; j < PtInsIntervalManager.Divisions; ++j) {
-				SegmentNode p = int_entry[j];
-				while (p != null) {
-					outPrintStream.println("(" + obj.toString() + ", " + p.I1 + ", "
-							+ p.I2 + ", " + p.L + ")");
-					p = p.next;
+			if(int_entry!=null) {
+				for (int j = 0; j < PtInsIntervalManager.Divisions; ++j) {
+					SegmentNode p = int_entry[j];
+					while (p != null) {
+						outPrintStream.println("(" + obj.toString() + ", " + p.I1 + ", "
+								+ p.I2 + ", " + p.L + ")");
+						p = p.next;
+					}
 				}
 			}
 		}

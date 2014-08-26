@@ -90,16 +90,16 @@ public class AnnotationTag implements Tag
     
     // should also print here number of annotations and perhaps the annotations themselves
     public String toString() {
-        StringBuffer sb = new StringBuffer("Annotation: type: "+type+" num elems: "+elems.size()+" elems: ");
         if (elems != null){
+        	StringBuffer sb = new StringBuffer("Annotation: type: "+type+" num elems: "+elems.size()+" elems: ");
             Iterator<AnnotationElem> it = elems.iterator();
             while (it.hasNext()){
                 sb.append("\n");
                 sb.append(it.next());
             }
-        }
-        sb.append("\n");
-        return sb.toString();
+            sb.append("\n");
+            return sb.toString();
+        } else return "Annotation type: "+type+" without elements";
     }
 
     /** Returns the tag name. */

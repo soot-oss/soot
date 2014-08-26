@@ -288,16 +288,16 @@ public class PagToDotDumper {
      * @throws FileNotFoundException if output file cannot be written
      */
 	public void dumpPAGForMethod(String fName, String cName, String mName) throws FileNotFoundException {
-		PrintStream ps;
-
 		FileOutputStream fos = new FileOutputStream(new File(fName));
-		ps = new PrintStream(fos);
+		PrintStream ps = new PrintStream(fos);
 		ps.println("digraph G {");
 		ps.println("\trankdir=LR;");
-		dumpLocalPAG(cName, mName, ps);
-		
+		dumpLocalPAG(cName, mName, ps);		
 		ps.print("}");
-
+		try{
+			fos.close();
+		} catch(IOException e) {}
+		ps.close();
 	}
 
 	private void dumpLocalPAG(String cName, String mName, final PrintStream ps) {
@@ -406,7 +406,8 @@ public class PagToDotDumper {
 			}
 			
 			ps.print("}");
-
+			ps.close();
+			fos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -455,7 +456,8 @@ public class PagToDotDumper {
 
 			}
 			ps.print("}");
-
+			ps.close();
+			fos.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

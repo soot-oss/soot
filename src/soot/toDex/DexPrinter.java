@@ -206,6 +206,7 @@ public class DexPrinter {
 				destination.write(buffer, 0, bytesRead);
 				bytesRead = zipEntryInput.read(buffer);
 			}
+			zipEntryInput.close();
 		}
 	}
 
