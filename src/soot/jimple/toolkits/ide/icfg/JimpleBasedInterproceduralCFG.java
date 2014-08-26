@@ -24,10 +24,9 @@ import heros.SynchronizedBy;
 import heros.ThreadSafe;
 import heros.solver.IDESolver;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 
 import soot.Body;
 import soot.MethodOrMethodContext;
@@ -76,7 +75,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Unit,Collection<SootMethod>>() {
 				@Override
 				public Collection<SootMethod> load(Unit u) throws Exception {
-					List<SootMethod> res = new LinkedList<SootMethod>();
+					ArrayList<SootMethod> res = new ArrayList<SootMethod>();
 					//only retain callers that are explicit call sites or Thread.start()
 					Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesOutOf(u));					
 					while(edgeIter.hasNext()) {
@@ -87,6 +86,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 						else if(IDESolver.DEBUG) 
 							System.err.println("Method "+m.getSignature()+" is referenced but has no body!");
 					}
+					res.trimToSize();
 					return res; 
 				}
 			});
@@ -96,13 +96,14 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,Collection<Unit>>() {
 				@Override
 				public Collection<Unit> load(SootMethod m) throws Exception {
-					List<Unit> res = new LinkedList<Unit>();
+					ArrayList<Unit> res = new ArrayList<Unit>();
 					//only retain callers that are explicit call sites or Thread.start()
 					Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesInto(m));					
 					while(edgeIter.hasNext()) {
 						Edge edge = edgeIter.next();
 						res.add(edge.srcUnit());
 					}
+					res.trimToSize();
 					return res;
 				}
 			});
