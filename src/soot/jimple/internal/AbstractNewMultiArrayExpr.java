@@ -58,10 +58,6 @@ public abstract class AbstractNewMultiArrayExpr implements NewMultiArrayExpr, Co
             if (!baseType.equals(ae.baseType) || 
                     sizeBoxes.length != ae.sizeBoxes.length)
                 return false;
-            
-            for (ValueBox element : sizeBoxes)
-				if (element != element)
-                    return false;
             return true;
         }
         return false;

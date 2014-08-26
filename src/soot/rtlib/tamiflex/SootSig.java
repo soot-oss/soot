@@ -33,7 +33,7 @@ public class SootSig {
 					resolved = c.getDeclaredMethod(m.getName(), m.getParameterTypes());
 				} catch(NoSuchMethodException e) {
 					c = c.getSuperclass();
-				}				
+				}
 			} while(resolved==null && c!=null);
 			if(resolved==null) {
 				Error error = new Error("Method not found : "+m+" in class "+receiverClass+" and super classes.");

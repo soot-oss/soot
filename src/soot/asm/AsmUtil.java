@@ -235,7 +235,7 @@ class AsmUtil {
 					throw new AssertionError("Unknown type: " + c);
 				}
 			}
-			if (nrDims > 0)
+			if (baseType != null && nrDims > 0)
 				types.add(ArrayType.v(baseType, nrDims));
 			else
 				types.add(baseType);

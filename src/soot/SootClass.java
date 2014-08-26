@@ -207,16 +207,27 @@ public class SootClass extends AbstractHost implements Numberable
     }
 
     /**
-        Returns the field of this class with the given name and type. 
+     * Returns the field of this class with the given name and type. If the
+     * field cannot be found, an exception is thrown.  
     */
-
     public SootField getField( String name, Type type ) {
+    	SootField sf = getFieldUnsafe(name, type);
+    	if (sf == null)
+    		throw new RuntimeException("No field " + name + " in class " + getName());
+    	return sf;
+    }
+    
+    /**
+     * Returns the field of this class with the given name and type. If the
+     * field cannot be found, null is returned.  
+    */    
+    public SootField getFieldUnsafe( String name, Type type ) {
         checkLevel(SIGNATURES);
         for (SootField field : fields) {
             if(field.getName().equals(name) && field.getType().equals(type))
                 return field;
         }
-        throw new RuntimeException("No field " + name + " in class " + getName());
+        return null;
     }
     
     /**
@@ -245,25 +256,34 @@ public class SootClass extends AbstractHost implements Numberable
     }
 
     
-    /*    
-        Returns the field of this class with the given subsignature.
-    */
-
+    /**
+     * Returns the field of this class with the given subsignature. If such a field
+     * does not exist, an exception is thrown.
+     */
     public SootField getField(String subsignature)
+    {
+        SootField sf = getFieldUnsafe(subsignature);
+        if (sf == null)
+        	throw new RuntimeException("No field " + subsignature + " in class " + getName());
+        return sf;
+    }
+    
+    /**
+     * Returns the field of this class with the given subsignature. If such a field
+     * does not exist, null is returned.
+     */
+    public SootField getFieldUnsafe(String subsignature)
     {
         checkLevel(SIGNATURES);
         for (SootField field : fields) {
             if( field.getSubSignature().equals( subsignature ) ) return field;
         }
-
-        throw new RuntimeException("No field " + subsignature + " in class " + getName());
+        return null;
     }
-
     
     /**
-        Does this class declare a field with the given subsignature?
-    */
-
+     * Does this class declare a field with the given subsignature?
+     */
     public boolean declaresField(String subsignature)
     {
         checkLevel(SIGNATURES);
@@ -273,10 +293,9 @@ public class SootClass extends AbstractHost implements Numberable
     }
 
     
-    /*    
-        Returns the method of this class with the given subsignature.
-    */
-
+    /**    
+     * Returns the method of this class with the given subsignature.
+     */
     public SootMethod getMethod(NumberedString subsignature)
     {
         checkLevel(SIGNATURES);
@@ -288,9 +307,8 @@ public class SootClass extends AbstractHost implements Numberable
     }
 
     /**
-        Does this class declare a method with the given subsignature?
-    */
-
+     * Does this class declare a method with the given subsignature?
+     */
     public boolean declaresMethod(NumberedString subsignature)
     {
         checkLevel(SIGNATURES);
@@ -337,9 +355,8 @@ public class SootClass extends AbstractHost implements Numberable
 
     
     /**
-        Does this class declare a field with the given name and type.
-    */
-
+     * Does this class declare a field with the given name and type.
+     */
     public boolean declaresField(String name, Type type)
     {
         checkLevel(SIGNATURES);

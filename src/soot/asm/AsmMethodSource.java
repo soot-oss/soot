@@ -1149,8 +1149,6 @@ final class AsmMethodSource implements MethodSource {
 					iinvoke = Jimple.v().newSpecialInvokeExpr(base, ref, argList);
 				else if (op == INVOKEVIRTUAL)
 					iinvoke = Jimple.v().newVirtualInvokeExpr(base, ref, argList);
-				else if (op == INVOKEVIRTUAL)
-					iinvoke = Jimple.v().newVirtualInvokeExpr(base, ref, argList);
 				else if (op == INVOKEINTERFACE)
 					iinvoke = Jimple.v().newInterfaceInvokeExpr(base, ref, argList);
 				else

@@ -71,7 +71,8 @@ public class Util {
               c.startsWith("D") ||
               c.startsWith("F") || 
               c.startsWith("Z")) ) {
-            return getType (t).toString();
+        	 Type ty = getType(t);
+            return ty == null ? "" : getType (t).toString();
           }
             throw new IllegalArgumentException("typeDescriptor is not a class typedescriptor: '"+ typeDescriptor +"'");
         }
@@ -167,7 +168,7 @@ public class Util {
         }
         idx++;
       }
-      if (arraySize > 0) {
+      if (returnType != null && arraySize > 0) {
         returnType = ArrayType.v(returnType, arraySize);
       }
       Debug.printDbg("casttype i:", returnType);

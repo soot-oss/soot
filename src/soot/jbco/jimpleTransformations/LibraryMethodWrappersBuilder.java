@@ -196,8 +196,8 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
     if (methods == null) {
       libClassesToMethods.put(libClass, new HashMap<SootMethod,SootMethodRef>());
     }
-
-    methods.put(sm, smr);
+    else
+    	methods.put(sm, smr);
   }
 
   private SootMethodRef buildNewMethod(SootClass fromC, SootClass libClass,

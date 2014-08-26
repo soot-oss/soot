@@ -267,6 +267,9 @@ public class Scene  //extends AbstractHost
         			+ "specified (" + dir + ") does not exist. Please check.");
         
         File[] files = d.listFiles();
+        if (files == null)
+        	return -1;
+        
         int maxApi = -1;
         for (File f: files) {
             String name = f.getName();
@@ -453,7 +456,8 @@ public class Scene  //extends AbstractHost
 			if (!defaultClassPath.contains ("android.jar")) {
 				String androidJars = Options.v().android_jars();
 				String forceAndroidJar = Options.v().force_android_jar();
-				if (androidJars.equals("") && forceAndroidJar.equals("")) {
+				if ((androidJars == null || androidJars.equals(""))
+						&& (forceAndroidJar == null || forceAndroidJar.equals(""))) {
 					throw new RuntimeException("You are analyzing an Android application but did not define android.jar. Options -android-jars or -force-android-jar should be used.");
 				}
 
@@ -575,8 +579,7 @@ public class Scene  //extends AbstractHost
         String fname = signatureToSubsignature( fieldSignature );
         if( !containsClass(cname) ) return null;
         SootClass c = getSootClass(cname);
-        if( !c.declaresField( fname ) ) return null;
-        return c.getField( fname );
+        return c.getFieldUnsafe( fname );
     }
 
     public boolean containsField(String fieldSignature)

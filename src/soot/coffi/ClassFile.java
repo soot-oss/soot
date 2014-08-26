@@ -202,8 +202,9 @@ public class ClassFile {
       
       try {
         classFileStream.close();
-        d.close(); 
-        f.close();
+        d.close();
+        if (f != null)
+        	f.close();
       } catch(IOException e) {
          G.v().out.println("IOException with " + fn + ": " + e.getMessage());
          return false;
@@ -241,12 +242,6 @@ public class ClassFile {
          }
       }
       d = new DataOutputStream(f);
-      if (d==null) {
-         try {
-            f.close();
-         } catch(IOException e) { }
-         return false;
-      }
       b = writeClass(d);
       try {
          d.close();
@@ -917,8 +912,6 @@ public class ClassFile {
          
          mi.attributes_count = d.readUnsignedShort();
 
-         CONSTANT_Utf8_info ci;
-           ci = (CONSTANT_Utf8_info)(constant_pool[mi.name_index]);
           //G.v().out.println("Has " + mi.attributes_count + " attribute(s)");
          
          if (mi.attributes_count>0) {
@@ -965,7 +958,6 @@ public class ClassFile {
     * @exception java.io.IOException on error.
     */
    protected boolean writeConstantPool(DataOutputStream dd) throws IOException {
-      byte tag;
       cp_info cp;
       int i;
       boolean skipone = false;
@@ -1037,9 +1029,7 @@ public class ClassFile {
    protected boolean writeAttributes(DataOutputStream dd, int attributes_count,
                                      attribute_info[] ai) throws IOException {
       attribute_info a=null;
-      int i,len;
-      short j;
-      String s;
+      int i;
 
       for (i=0;i<attributes_count;i++) {
          a = ai[i];
@@ -1340,11 +1330,7 @@ public class ClassFile {
 
       // construct a new array for the byte-code
       bc = new byte[codesize];
-      if (bc==null) {
-         G.v().out.println("Warning: can't allocate memory for recompile");
-         return null;
-      }
-
+      
       // then recompile the instructions into byte-code
       i = m.instructions;
       codesize = 0;

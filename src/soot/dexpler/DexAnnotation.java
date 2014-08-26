@@ -103,13 +103,14 @@ public class DexAnnotation {
      */
     void handleFieldAnnotation(Host h, Field f) {
         Set<? extends Annotation> aSet = f.getAnnotations();
-        if (aSet == null || aSet.isEmpty()) {
-        } else {
-            for (Tag t : handleAnnotation(aSet, null))
-            	if (t != null ){
-	                h.addTag(t);
-	                Debug.printDbg("add field annotation: ", t);
-	            }
+        if (aSet != null && !aSet.isEmpty()) {
+        	List<Tag> tags = handleAnnotation(aSet, null);
+        	if (tags != null)
+        		for (Tag t : tags)
+	            	if (t != null) {
+		                h.addTag(t);
+		                Debug.printDbg("add field annotation: ", t);
+		            }
         }
     }
 
@@ -121,11 +122,13 @@ public class DexAnnotation {
     void handleMethodAnnotation(Host h, Method method) {
     	Set<? extends Annotation> aSet = method.getAnnotations();
         if (!(aSet == null || aSet.isEmpty())) {
-            for (Tag t : handleAnnotation(aSet, null))
-            	if (t != null ){
-	                h.addTag(t);
-	                Debug.printDbg("add method annotation: ", t);
-	            }
+        	List<Tag> tags = handleAnnotation(aSet, null);
+        	if (tags != null)
+	            for (Tag t : tags)
+	            	if (t != null) {
+		                h.addTag(t);
+		                Debug.printDbg("add method annotation: ", t);
+		            }
         }
 
         // Is there any parameter annotation?
@@ -205,7 +208,7 @@ public class DexAnnotation {
      * @return
      */
     private List<Tag> handleAnnotation(Set<? extends org.jf.dexlib2.iface.Annotation> annotations, String classType) {
-        if (annotations.size() == 0)
+        if (annotations == null || annotations.size() == 0)
             return null;
         
         List<Tag> tags = new ArrayList<Tag>();

@@ -30,14 +30,71 @@
 
 
 package soot.coffi;
-import soot.options.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Set;
+import java.util.Vector;
 
-import java.util.*;
-
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import soot.tagkit.*;
+import soot.ArrayType;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.G;
+import soot.IntType;
+import soot.Local;
+import soot.LongType;
+import soot.Modifier;
+import soot.PatchingChain;
+import soot.RefType;
+import soot.Scene;
+import soot.ShortType;
+import soot.SootClass;
+import soot.SootFieldRef;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.StmtAddressType;
+import soot.Trap;
+import soot.Type;
+import soot.Unit;
+import soot.UnknownType;
+import soot.Value;
+import soot.VoidType;
+import soot.jimple.ArrayRef;
+import soot.jimple.ClassConstant;
+import soot.jimple.ConditionExpr;
+import soot.jimple.DoubleConstant;
+import soot.jimple.Expr;
+import soot.jimple.FloatConstant;
+import soot.jimple.GotoStmt;
+import soot.jimple.IdentityStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.jimple.LongConstant;
+import soot.jimple.LookupSwitchStmt;
+import soot.jimple.NullConstant;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
+import soot.jimple.StringConstant;
+import soot.jimple.TableSwitchStmt;
+import soot.options.Options;
+import soot.tagkit.BytecodeOffsetTag;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.Tag;
+import soot.util.ArraySet;
+import soot.util.Chain;
 
 /** A Control Flow Graph.
  * @author Clark Verbrugge
@@ -89,13 +146,13 @@ public class CFG {
 
 	// printBBs();
 	// printBBCFGSucc();
-
-	cfg.beginCode = true;
-
+	
 	m.cfg = this;
 
-	if(cfg != null)
+	if(cfg != null) {
+		cfg.beginCode = true;
 	    firstInstruction = cfg.head;
+	}
 	else
 	    firstInstruction = null;
 

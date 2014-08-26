@@ -1492,6 +1492,7 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter{
     		if(temp == null){
     			//couldnt find uses
     			toRemoveDefs.add(s);
+    			continue;
     		}
     		
     		ArrayList uses = (ArrayList) temp;
