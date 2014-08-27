@@ -66,9 +66,7 @@ public class CoffiMethodSource implements MethodSource
             
         if(Options.v().time())
             Timers.v().conversionTimer.start();
-
-        if (coffiMethod == null)
-            G.v().out.println(m);
+        
         if(coffiMethod.instructions == null)
         {
             if(Options.v().verbose())

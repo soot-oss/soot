@@ -779,7 +779,6 @@ public class ClassResolver {
                 // assume its anon class (only option left) 
                 //
                 if ((InitialResolver.v().getAnonClassMap() != null) && InitialResolver.v().getAnonClassMap().containsVal(simpleName)){
-                    
                     polyglot.ast.New aNew = (polyglot.ast.New)InitialResolver.v().getAnonClassMap().getKey(simpleName);
                     createAnonClassDecl(aNew);
                     findReferences(aNew.body());

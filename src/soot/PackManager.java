@@ -411,6 +411,8 @@ public class PackManager {
             for (String cl : SourceLocator.v().getClassesUnder(path)) {
 
                 ClassSource source = SourceLocator.v().getClassSource(cl);
+                if (source == null)
+                	throw new RuntimeException("Could not locate class source");
                 SootClass clazz = Scene.v().getSootClass(cl);
                 clazz.setResolvingLevel(SootClass.BODIES);
                 source.resolve(clazz);
