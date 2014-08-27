@@ -104,8 +104,7 @@ public class LocalSplitter extends BodyTransformer
         {
             ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body,this.throwAnalysis,true);
 
-            LocalDefs localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
-            LocalUses localUses = new SimpleLocalUses(graph, localDefs);
+            CombinedDUAnalysis localDefUses = new CombinedDUAnalysis(graph);
             
             if(Options.v().time())
                 Timers.v().splitPhase1Timer.end();
@@ -148,7 +147,7 @@ public class LocalSplitter extends BodyTransformer
                             web.add(d.getDefBoxes().get(0));
                             
                             // Add all the uses of this definition to the queue
-                            for (UnitValueBoxPair use : localUses.getUsesOf(d)) {
+                            for (UnitValueBoxPair use : localDefUses.getUsesOf(d)) {
                             	if(!markedBoxes.contains(use.valueBox)) {
                             		markedBoxes.add(use.valueBox);
                             		boxesToVisit.addLast(use.valueBox);
@@ -162,7 +161,7 @@ public class LocalSplitter extends BodyTransformer
                             web.add(box);
 
                             // Add all the definitions of this use to the queue.
-                            List<Unit> defs = localDefs.getDefsOfAt((Local) box.getValue(),
+                            List<Unit> defs = localDefUses.getDefsOfAt((Local) box.getValue(),
                             		boxToUnit.get(box));
                             for (Unit u : defs) {
                             	for (ValueBox b : u.getDefBoxes()) {

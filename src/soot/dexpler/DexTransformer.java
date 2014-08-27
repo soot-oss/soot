@@ -45,8 +45,6 @@ import soot.jimple.Stmt;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
-import soot.toolkits.scalar.SimpleLocalUses;
-import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 public abstract class DexTransformer extends BodyTransformer {
@@ -128,7 +126,7 @@ public abstract class DexTransformer extends BodyTransformer {
 	}
 
 	protected Type findArrayType(ExceptionalUnitGraph g,
-			SmartLocalDefs localDefs, SimpleLocalUses localUses,
+			LocalDefs localDefs, LocalUses localUses,
 			Stmt arrayStmt, int depth, Set<Unit> alreadyVisitedDefs) {
 		ArrayRef aRef = null;
 		if (arrayStmt.containsArrayRef()) {

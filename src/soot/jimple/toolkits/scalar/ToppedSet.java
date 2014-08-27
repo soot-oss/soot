@@ -67,7 +67,7 @@ public class ToppedSet extends AbstractFlowSet
         dest.setTop(true);
     }
 
-    public Object emptySet()
+    public FlowSet emptySet()
     {
         return new ToppedSet((FlowSet)underlyingSet.emptySet());
     }

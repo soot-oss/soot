@@ -530,7 +530,6 @@ public class TypeResolver
 	{
 		ExceptionalUnitGraph graph = new ExceptionalUnitGraph(this.jb);
 		LocalDefs defs = new SmartLocalDefs(graph,new SimpleLiveLocals(graph));
-		// SimpleLocalUses uses = new SimpleLocalUses(graph, defs);
 		PatchingChain<Unit> units = this.jb.getUnits();
 		Stmt[] stmts = new Stmt[units.size()];
 		
