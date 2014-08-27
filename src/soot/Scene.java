@@ -943,7 +943,7 @@ public class Scene  //extends AbstractHost
         this.entryPoints = entryPoints;
     }
 
-    private ContextSensitiveCallGraph cscg;
+    private ContextSensitiveCallGraph cscg = null;
     public ContextSensitiveCallGraph getContextSensitiveCallGraph() {
         if(cscg == null) throw new RuntimeException("No context-sensitive call graph present in Scene. You can bulid one with Paddle.");
         return cscg;
@@ -1271,7 +1271,7 @@ public class Scene  //extends AbstractHost
 		}
 	}
 
-	private List<SootClass> dynamicClasses;
+	private List<SootClass> dynamicClasses = null;
     public Collection<SootClass> dynamicClasses() {
     	if(dynamicClasses==null) {
     		throw new IllegalStateException("Have to call loadDynamicClasses() first!");

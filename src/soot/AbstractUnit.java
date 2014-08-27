@@ -74,12 +74,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     {
         return Collections.emptyList();
     }
-
-    /** 
-     * Canonical AbstractUnit.emptyList list.
-     **/    
-    static final public List<?> emptyList = Collections.EMPTY_LIST;
-
+    
     /** List of UnitBoxes pointing to this Unit. */
     List<UnitBox> boxesPointingToThis = null;
 
