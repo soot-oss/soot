@@ -46,7 +46,7 @@ public class GNewInvokeExpr extends AbstractInvokeExpr
     {
     	super(new ExprBox[args.size()]);
     	
-        if( methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
+        if( methodRef != null && methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
 
         this.methodRef = methodRef;
         this.type = type;

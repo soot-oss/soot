@@ -775,7 +775,7 @@ public class PackManager {
         /*
          * Create the build.xml for Dava
          */
-        {
+        if (pathForBuild != null) {
         	//path for build is probably ending in sootoutput/dava/src
         	//definetly remove the src
         	if(pathForBuild.endsWith("src/"))

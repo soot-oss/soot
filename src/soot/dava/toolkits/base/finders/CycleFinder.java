@@ -26,6 +26,7 @@
 package soot.dava.toolkits.base.finders;
 
 import soot.*;
+
 import java.util.*;
 
 import soot.dava.*;
@@ -342,6 +343,8 @@ public class CycleFinder implements FactFinder
 	
 	candidates = max_Reach_Set;
 	
+	if (candidates == null)
+		throw new RuntimeException("Did not find a suitable candidate");
 	if (candidates.size() == 1)
 	    return (AugmentedStmt) candidates.getFirst();
 	

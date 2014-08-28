@@ -53,6 +53,7 @@ import soot.jimple.spark.sets.P2SetVisitor;
  * @author xiao
  *
  */
+@Deprecated
 public class PtInsNode extends IVarAbstraction 
 {
 	// The targets of directed edges on the constraint graph

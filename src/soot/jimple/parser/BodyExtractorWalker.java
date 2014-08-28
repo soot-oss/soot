@@ -160,7 +160,7 @@ public class BodyExtractorWalker extends Walker
             
         }
 
-        if(sm.isConcrete()) 
+        if(sm.isConcrete() && methodBody != null) 
         {
           if (Options.v().verbose())
               G.v().out.println("[Parsed] "+sm.getDeclaration());

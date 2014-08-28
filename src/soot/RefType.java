@@ -206,6 +206,10 @@ public class RefType extends RefLikeType implements Comparable<RefType>
                     commonClass = otherHierarchy.removeFirst();
                     thisHierarchy.removeFirst();
                 }
+                
+                if (commonClass == null)
+                    throw new RuntimeException("Could not find a common superclass for "
+                            + this + " and " + other);
 
                 return RefType.v(commonClass.getName());
             }
