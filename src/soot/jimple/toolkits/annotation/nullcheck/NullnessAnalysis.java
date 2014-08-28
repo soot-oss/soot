@@ -31,6 +31,7 @@ import soot.Unit;
 import soot.Value;
 import soot.jimple.ArrayRef;
 import soot.jimple.ClassConstant;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
 import soot.jimple.InstanceFieldRef;
@@ -300,7 +301,8 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 		if ( isAlwaysNonNull(right)
 		|| right instanceof NewExpr || right instanceof NewArrayExpr
 		|| right instanceof NewMultiArrayExpr || right instanceof ThisRef
-		|| right instanceof StringConstant || right instanceof ClassConstant) {
+		|| right instanceof StringConstant || right instanceof ClassConstant
+		|| right instanceof CaughtExceptionRef) {
 			//if we assign new... or @this, the result is non-null
 			out.put(left,NON_NULL);
 		} else if(right==NullConstant.v()) {
