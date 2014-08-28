@@ -46,7 +46,7 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
 		implements CombinedAnalysis, LocalDefs, LocalUses, LiveLocals
 {
     // Implementations of our interfaces...
-    private final Map<Cons, List<Unit>> defsOfAt = new HashMap<>();
+    private final Map<Cons, List<Unit>> defsOfAt = new HashMap<Cons, List<Unit>>();
     
     public List<Unit> getDefsOfAt(Local l, Unit s) {
         Cons cons = new Cons(l, s);
@@ -56,7 +56,7 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
         }
         return ret;
     }
-    private final Map<Unit, List<UnitValueBoxPair>> usesOf = new HashMap<>();
+    private final Map<Unit, List<UnitValueBoxPair>> usesOf = new HashMap<Unit, List<UnitValueBoxPair>>();
     
     public List<UnitValueBoxPair> getUsesOf(Unit u) {
         List<UnitValueBoxPair> ret = usesOf.get(u);
@@ -65,7 +65,7 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
             if( def == null ) {
                 usesOf.put(u, ret = Collections.emptyList());
             } else {
-                usesOf.put(u, ret = new ArrayList<>());
+                usesOf.put(u, ret = new ArrayList<UnitValueBoxPair>());
                 for( Iterator<ValueBox> vbIt = getFlowAfter(u).iterator(); vbIt.hasNext(); ) {
                     final ValueBox vb = vbIt.next();
                     if( vb.getValue() != def ) continue;
@@ -75,29 +75,29 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
         }
         return ret;
     }
-    private final Map<Unit, List<Local>> liveLocalsBefore = new HashMap<>();
+    private final Map<Unit, List<Local>> liveLocalsBefore = new HashMap<Unit, List<Local>>();
     public List<Local> getLiveLocalsBefore(Unit u) {
         List<Local> ret = liveLocalsBefore.get(u);
         if( ret == null ) {
-            HashSet<Local> hs = new HashSet<>();
+            HashSet<Local> hs = new HashSet<Local>();
             for( Iterator<ValueBox> vbIt = getFlowBefore(u).iterator(); vbIt.hasNext(); ) {
                 final ValueBox vb = vbIt.next();
                 hs.add((Local) vb.getValue());
             }
-            liveLocalsBefore.put(u, ret = new ArrayList<>(hs));
+            liveLocalsBefore.put(u, ret = new ArrayList<Local>(hs));
         }
         return ret;
     }
-    private final Map<Unit, List<Local>> liveLocalsAfter = new HashMap<>();
+    private final Map<Unit, List<Local>> liveLocalsAfter = new HashMap<Unit, List<Local>>();
     public List<Local> getLiveLocalsAfter(Unit u) {
         List<Local> ret = liveLocalsAfter.get(u);
         if( ret == null ) {
-            HashSet<Local> hs = new HashSet<>();
+            HashSet<Local> hs = new HashSet<Local>();
             for( Iterator<ValueBox> vbIt = getFlowAfter(u).iterator(); vbIt.hasNext(); ) {
                 final ValueBox vb = vbIt.next();
                 hs.add((Local) vb.getValue());
             }
-            liveLocalsAfter.put(u, ret = new ArrayList<>(hs));
+            liveLocalsAfter.put(u, ret = new ArrayList<Local>(hs));
         }
         return ret;
     }
