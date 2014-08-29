@@ -1687,8 +1687,8 @@ public class Walker extends DepthFirstAdapter
                 tokenString = StringTools.getUnEscapedStringOf(tokenString);
 
               } catch(RuntimeException e) {
-                G.v().out.println(tokenString);
-                throw e;
+                G.v().out.println("Invalid escaped string: " + tokenString);
+                // just used the unescaped string, better than nothing
               }
             }
 	    	  

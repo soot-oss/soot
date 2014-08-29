@@ -136,9 +136,7 @@ public class DexlibWrapper {
             System.out.println("type: "+ dexFile.getClass());
         }
     }
-
-
-
+    
     public Dependencies makeSootClass(SootClass sc, String className) {
         if (Util.isByteCodeClassName(className)) {
             className = Util.dottedClassName(className);
@@ -151,7 +149,6 @@ public class DexlibWrapper {
           }
       }
       throw new RuntimeException("Error: class not found in classes.dex: "+ className);
-
     }
 
 }

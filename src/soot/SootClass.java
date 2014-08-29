@@ -443,12 +443,12 @@ public class SootClass extends AbstractHost implements Numberable
 
     
      /**
-        Attempts to retrieve the method with the given name.  This method
-        may throw an AmbiguousMethodException if there are more than one method with the
-        given name.
+      * Attempts to retrieve the method with the given name.  This method may
+      * throw an AmbiguousMethodException if there are more than one method
+      * with the given name. If no method with the given is found, null is
+      * returned.
     */
-
-    public SootMethod getMethodByName(String name) 
+    public SootMethod getMethodByNameUnsafe(String name) 
     {
         checkLevel(SIGNATURES);
         SootMethod foundMethod = null;
@@ -462,12 +462,24 @@ public class SootClass extends AbstractHost implements Numberable
                     throw new RuntimeException("ambiguous method: " + name + " in class " + this);
             }
         }
-        if(foundMethod == null)
-            throw new RuntimeException("couldn't find method "+name+"(*) in "+this);
         return foundMethod;
     }
 
     /**
+     * Attempts to retrieve the method with the given name.  This method may
+     * throw an AmbiguousMethodException if there are more than one method
+     * with the given name. If no method with the given is found, an exception
+     * is thrown as well.
+   */
+   public SootMethod getMethodByName(String name) 
+   {
+       SootMethod foundMethod = getMethodByNameUnsafe(name);
+       if(foundMethod == null)
+           throw new RuntimeException("couldn't find method "+name+"(*) in "+this);
+       return foundMethod;
+   }
+
+   /**
         Does this class declare a method with the given name and parameter types?
     */
 
