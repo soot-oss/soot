@@ -46,4 +46,9 @@ public class Integer127Type extends PrimType implements IntegerType {
     public RefType boxedType() {
         return RefType.v("java.lang.Integer");
     }
+
+    @Override
+	public boolean isAllowedInFinalCode() {
+		return false;
+	}
 }
