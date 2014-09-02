@@ -161,16 +161,11 @@ public class CopyPropagator extends BodyTransformer
 
                                 if(l != m)
                                 {   
-                                    Object dcObj = localToDefCount.get(m);
-
-                                    if (dcObj == null)
+                                    Integer defCount = localToDefCount.get(m);
+                                    if (defCount == null || defCount == 0)
                                         throw new RuntimeException("Variable " + m + " used without definition!");
-
-                                    int defCount = ((Integer)dcObj).intValue();
                                     
-                                    if(defCount == 0)
-                                        throw new RuntimeException("Variable " + m + " used without definition!");
-                                    else if(defCount == 1)
+                                    if(defCount == 1)
                                     {
                                         useBox.setValue(m);
                                         fastCopyPropagationCount++;
@@ -178,7 +173,6 @@ public class CopyPropagator extends BodyTransformer
                                     }
 
                                     List<Unit> path = graph.getExtendedBasicBlockPathBetween(def, stmt);
-                                    
                                     if(path == null)
                                     {
                                         // no path in the extended basic block

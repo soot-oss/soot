@@ -177,7 +177,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
 				Set<Unit> essential = new HashSet<Unit>(graph.size());
 				while (!q.isEmpty()) {
 					Unit s = q.removeFirst();			
-					if ( essential.add(s) ) {			
+					if ( essential.add(s) ) {
 						for (ValueBox box : s.getUseBoxes()) {
 							Value v = box.getValue();
 							if (v instanceof Local) {
