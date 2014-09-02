@@ -88,8 +88,6 @@ public class CopyPropagator extends BodyTransformer
        		}
        	}
         
-//            ((JimpleBody) stmtBody).printDebugTo(new java.io.PrintWriter(G.v().out, true));
-            
         ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody);
 
         LocalDefs localDefs;
@@ -122,7 +120,7 @@ public class CopyPropagator extends BodyTransformer
 
                         // We can propagate the definition if we either only have
                         // one definition or all definitions are side-effect free
-                        // and equal. For starters, we only support costants in
+                        // and equal. For starters, we only support constants in
                         // the case of multiple definitions.
                         boolean propagateDef = defsOfUse.size() == 1;
                         if (!propagateDef && defsOfUse.size() > 0) {
