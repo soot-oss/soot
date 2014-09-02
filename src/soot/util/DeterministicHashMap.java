@@ -26,16 +26,20 @@
 
 package soot.util;
 
-import java.util.*;
+import java.util.AbstractSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.Set;
 
 /** Implementation of HashMap which guarantees a stable
  * (between executions) order for its elements upon iteration.
  *
  * This is quite useful for maps of Locals, to avoid nondeterministic
  * local-name drift. */
-public class DeterministicHashMap extends HashMap
+public class DeterministicHashMap<K, V> extends HashMap<K, V>
 {
-    Set<Object> keys = new TrustingMonotonicArraySet();
+    Set<K> keys = new TrustingMonotonicArraySet<K>();
     
     /** Constructs a DeterministicHashMap with the given initial capacity. */
     public DeterministicHashMap(int initialCapacity)
@@ -50,28 +54,25 @@ public class DeterministicHashMap extends HashMap
     }
     
     /** Inserts a mapping in this HashMap from <code>key</code> to <code>value</code>. */
-    public Object put(Object key, Object value)
+    @Override
+    public V put(K key, V value)
     {
         if(!containsKey(key))
             keys.add(key);
     
         return super.put(key, value);    
     }   
-
-    /** Returns a backed list of entries for this HashMap (unsupported). */
-    public Collection entries()
-    {
-        throw new UnsupportedOperationException();
-    }    
     
     /** Removes the given object from this HashMap (unsupported). */
-    public Object remove(Object obj)
+    @Override
+    public V remove(Object obj)
     {
         throw new UnsupportedOperationException();
     }
     
     /** Returns a backed list of keys for this HashMap (unsupported). */
-    public Set<Object> keySet()
+    @Override
+    public Set<K> keySet()
     {
         return keys;
     }
@@ -80,18 +81,19 @@ public class DeterministicHashMap extends HashMap
 /** ArraySet which doesn't check that the elements that you insert
     are previous uncontained. */
 
-class TrustingMonotonicArraySet extends AbstractSet
+class TrustingMonotonicArraySet<T> extends AbstractSet<T>
 {
     private static final int DEFAULT_SIZE = 8;
 
     private int numElements;
     private int maxElements;
-    private Object[] elements;
+    private T[] elements;
 
-    public TrustingMonotonicArraySet()
+    @SuppressWarnings("unchecked")
+	public TrustingMonotonicArraySet()
     {
         maxElements = DEFAULT_SIZE;
-        elements = new Object[DEFAULT_SIZE];
+        elements = (T[]) new Object[DEFAULT_SIZE];
         numElements = 0;
     }
 
@@ -99,11 +101,11 @@ class TrustingMonotonicArraySet extends AbstractSet
      * Create a set which contains the given elements.
      */
 
-    public TrustingMonotonicArraySet(Object[] elements)
+    public TrustingMonotonicArraySet(T[] elements)
     {
         this();
 
-        for (Object element : elements)
+        for (T element : elements)
 			add(element);
     }
 
@@ -121,7 +123,8 @@ class TrustingMonotonicArraySet extends AbstractSet
         return false;
     }
 
-    public boolean add(Object e)
+    @Override
+    public boolean add(T e)
     {
         // Expand array if necessary
             if(numElements == maxElements)
@@ -132,17 +135,19 @@ class TrustingMonotonicArraySet extends AbstractSet
             return true;
     }
 
+    @Override
     public int size()
     {
         return numElements;
     }
 
-    public Iterator iterator()
+    @Override
+    public Iterator<T> iterator()
     {
         return new ArrayIterator();
     }
 
-    private class ArrayIterator implements Iterator
+    private class ArrayIterator implements Iterator<T>
     {
         int nextIndex;
 
@@ -156,7 +161,8 @@ class TrustingMonotonicArraySet extends AbstractSet
             return nextIndex < numElements;
         }
 
-        public Object next() throws NoSuchElementException
+        @Override
+        public T next() throws NoSuchElementException
         {
             if(!(nextIndex < numElements))
                 throw new NoSuchElementException();
@@ -164,6 +170,7 @@ class TrustingMonotonicArraySet extends AbstractSet
             return elements[nextIndex++];
         }
 
+        @Override
         public void remove() throws NoSuchElementException
         {
             if(nextIndex == 0)
@@ -197,16 +204,19 @@ class TrustingMonotonicArraySet extends AbstractSet
     {
         int newSize = maxElements * 2;
 
-        Object[] newElements = new Object[newSize];
+        @SuppressWarnings("unchecked")
+		T[] newElements = (T[]) new Object[newSize];
 
         System.arraycopy(elements, 0, newElements, 0, numElements);
         elements = newElements;
         maxElements = newSize;
     }
 
-    public Object[] toArray()
+    @Override
+    public T[] toArray()
     {
-        Object[] array = new Object[numElements];
+        @SuppressWarnings("unchecked")
+		T[] array = (T[]) new Object[numElements];
 
         System.arraycopy(elements, 0, array, 0, numElements);
         return array;

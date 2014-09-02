@@ -169,9 +169,8 @@ public class DeadAssignmentEliminator extends BodyTransformer
 			// Add all the statements which are used to compute values
 			// for the essential statements, recursively 
 			ExceptionalUnitGraph graph = new ExceptionalUnitGraph(b);
-		
-			LocalDefs defs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
-			LocalUses uses = new SimpleLocalUses(graph, defs);
+			
+			CombinedDUAnalysis defUses = new CombinedDUAnalysis(graph);
 	
 			if ( !allEssential ) {		
 				Set<Unit> essential = new HashSet<Unit>(graph.size());
@@ -182,7 +181,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
 							Value v = box.getValue();
 							if (v instanceof Local) {
 								Local l = (Local) v;
-								q.addAll(defs.getDefsOfAt(l, s));
+								q.addAll(defUses.getDefsOfAt(l, s));
 							}
 						}
 					}
@@ -202,7 +201,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
 						if (s.containsInvokeExpr()) {					
 							// Just find one use of l which is essential 
 							boolean deadAssignment = true;
-							for (UnitValueBoxPair pair : uses.getUsesOf(s)) {
+							for (UnitValueBoxPair pair : defUses.getUsesOf(s)) {
 								if (units.contains(pair.unit)) {
 									deadAssignment = false;
 									break;
