@@ -294,16 +294,27 @@ public class SootClass extends AbstractHost implements Numberable
 
     
     /**    
-     * Returns the method of this class with the given subsignature.
+     * Returns the method of this class with the given subsignature. If no
+     * method with the given subsignature can be found, an exception is thrown.
      */
     public SootMethod getMethod(NumberedString subsignature)
     {
-        checkLevel(SIGNATURES);
-        SootMethod ret = subSigToMethods.get( subsignature );
+        SootMethod ret = getMethodUnsafe(subsignature);
         if(ret == null)
             throw new RuntimeException("No method " + subsignature + " in class " + getName());
         else
             return ret;
+    }
+
+    /**    
+     * Returns the method of this class with the given subsignature. If no
+     * method with the given subsignature can be found, null is returned.
+     */
+    public SootMethod getMethodUnsafe(NumberedString subsignature)
+    {
+        checkLevel(SIGNATURES);
+        SootMethod ret = subSigToMethods.get( subsignature );
+        return ret;
     }
 
     /**
@@ -317,16 +328,26 @@ public class SootClass extends AbstractHost implements Numberable
     }
     
     
-    /*    
-        Returns the method of this class with the given subsignature.
-    */
-
+    /*
+     * Returns the method of this class with the given subsignature. If no
+     * method with the given subsignature can be found, an exception is thrown.
+     */
     public SootMethod getMethod(String subsignature)
     {
         checkLevel(SIGNATURES);
         return getMethod( Scene.v().getSubSigNumberer().findOrAdd( subsignature ) );
     }
-
+    
+    /*
+     * Returns the method of this class with the given subsignature. If no
+     * method with the given subsignature can be found, null is returned.
+     */
+    public SootMethod getMethodUnsafe(String subsignature)
+    {
+        checkLevel(SIGNATURES);
+        return getMethodUnsafe( Scene.v().getSubSigNumberer().findOrAdd( subsignature ) );
+    }
+    
     /**
         Does this class declare a method with the given subsignature?
     */
