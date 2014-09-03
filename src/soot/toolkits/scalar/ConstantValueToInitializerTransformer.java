@@ -21,6 +21,7 @@ import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.LongConstant;
+import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.tagkit.DoubleConstantValueTag;
@@ -29,6 +30,7 @@ import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
+import soot.util.Chain;
 
 /**
  * Transformer that creates a static initializer which sets constant values
@@ -53,31 +55,9 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
 	}
     
 	public void transformClass(SootClass sc) {
-		SootMethod smInit;
+		SootMethod smInit = null;
 		Set<SootField> alreadyInitialized = new HashSet<SootField>();
-		
-		// Create a static initializer if we don't already have one
-		boolean newMethod = false;
-		smInit = sc.getMethodByNameUnsafe("<clinit>");
-		if (smInit == null) {
-			smInit = new SootMethod("<clinit>", Collections.<Type>emptyList(), VoidType.v());
-			smInit.setActiveBody(Jimple.v().newBody(smInit));
-			sc.addMethod(smInit);
-			smInit.setModifiers(Modifier.PUBLIC | Modifier.STATIC);
-			newMethod = true;
-		}
-		else {
-			smInit.retrieveActiveBody();
-			
-			// We need to collect those variables that are already initialized somewhere
-			for (Unit u : smInit.getActiveBody().getUnits()) {
-				Stmt s = (Stmt) u;
-				for (ValueBox vb : s.getDefBoxes())
-					if (vb.getValue() instanceof FieldRef)
-						alreadyInitialized.add(((FieldRef) vb.getValue()).getField());
-			}
-		}
-		
+				
 		for (SootField sf : sc.getFields()) {
 			// We can only create an initializer for static final fields that
 			// have a constant value. We ignore non-static final fields as
@@ -119,13 +99,44 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
 							StringConstant.v(value));
 				}
 				
-				if (initStmt != null)
+				if (initStmt != null) {
+					if (smInit == null)
+						smInit = getOrCreateInitializer(sc, alreadyInitialized);
 					smInit.getActiveBody().getUnits().add(initStmt);
+				}
 			}
 		}
 		
-		if (newMethod)
-			smInit.getActiveBody().getUnits().add(Jimple.v().newReturnVoidStmt());
+		if (smInit != null) {
+			Chain<Unit> units = smInit.getActiveBody().getUnits();
+			if (units.isEmpty() || !(units.getLast() instanceof ReturnVoidStmt))
+				units.add(Jimple.v().newReturnVoidStmt());
+		}
+	}
+
+	private SootMethod getOrCreateInitializer(SootClass sc,
+			Set<SootField> alreadyInitialized) {
+		SootMethod smInit;
+		// Create a static initializer if we don't already have one
+		smInit = sc.getMethodByNameUnsafe("<clinit>");
+		if (smInit == null) {
+			smInit = new SootMethod("<clinit>", Collections.<Type>emptyList(), VoidType.v());
+			smInit.setActiveBody(Jimple.v().newBody(smInit));
+			sc.addMethod(smInit);
+			smInit.setModifiers(Modifier.PUBLIC | Modifier.STATIC);
+		}
+		else {
+			smInit.retrieveActiveBody();
+			
+			// We need to collect those variables that are already initialized somewhere
+			for (Unit u : smInit.getActiveBody().getUnits()) {
+				Stmt s = (Stmt) u;
+				for (ValueBox vb : s.getDefBoxes())
+					if (vb.getValue() instanceof FieldRef)
+						alreadyInitialized.add(((FieldRef) vb.getValue()).getField());
+			}
+		}
+		return smInit;
 	}
 
 }
