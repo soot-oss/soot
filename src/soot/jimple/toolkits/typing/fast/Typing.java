@@ -91,7 +91,7 @@ public class Typing
 			int cmp;
 			if ( TypeResolver.typesEqual(ta, tb) )
 				cmp = 0;
-			if ( h.ancestor(ta, tb) )
+			else if ( h.ancestor(ta, tb) )
 				cmp = 1;
 			else if ( h.ancestor(tb, ta) )
 				cmp = -1;
