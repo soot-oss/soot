@@ -231,11 +231,23 @@ public class SootClass extends AbstractHost implements Numberable
     }
     
     /**
-        Returns the field of this class with the given name.  Throws a RuntimeException if there
-        are more than one.
+     * Returns the field of this class with the given name.  Throws a RuntimeException if there
+     * is more than one field with the given name or if no such field exists at all.
     */
-
     public SootField getFieldByName(String name)
+    {
+        SootField foundField = getFieldByNameUnsafe(name);
+        if(foundField == null)
+            throw new RuntimeException("No field " + name + " in class " + getName());
+        return foundField;
+    }
+    
+    /**
+     * Returns the field of this class with the given name.  Throws a RuntimeException if there
+     * is more than one field with the given name. Returns null if no field with the given name
+     * exists.
+    */
+    public SootField getFieldByNameUnsafe(String name)
     {
         checkLevel(SIGNATURES);
         SootField foundField = null;
@@ -249,12 +261,8 @@ public class SootClass extends AbstractHost implements Numberable
                     throw new RuntimeException("ambiguous field: "+name);
             }
         }
-
-        if(foundField == null)
-            throw new RuntimeException("No field " + name + " in class " + getName());
         return foundField;
     }
-
     
     /**
      * Returns the field of this class with the given subsignature. If such a field
@@ -415,7 +423,27 @@ public class SootClass extends AbstractHost implements Numberable
         return new ArrayList<SootMethod>(methodList);
     }
 
+    /**
+     * Attempts to retrieve the method with the given name, parameters and return type.
+     * If no matching method can be found, an exception is thrown.  
+     */
     public SootMethod getMethod( String name, List<Type> parameterTypes,
+            Type returnType )
+    {
+        SootMethod sm = getMethodUnsafe(name, parameterTypes, returnType);
+        if (sm != null)
+        	return sm;
+        
+        throw new RuntimeException(
+                "Class "+getName()+" doesn't have method "+
+            name + "(" + parameterTypes + ")" + " : " + returnType );
+    }
+    
+    /**
+     * Attempts to retrieve the method with the given name, parameters and return type.
+     * If no matching method can be found, null is returned.  
+     */
+    public SootMethod getMethodUnsafe( String name, List<Type> parameterTypes,
             Type returnType )
     {
         checkLevel(SIGNATURES);
@@ -427,14 +455,9 @@ public class SootClass extends AbstractHost implements Numberable
                 return method;
             }
         }
-        throw new RuntimeException(
-                "Class "+getName()+" doesn't have method "+
-            name + "(" + parameterTypes + ")" + " : " + returnType );
+        return null;
     }
-    /**
-        Attempts to retrieve the method with the given name, parameters and return type.  
-    */
-
+    
     /**
         Attempts to retrieve the method with the given name and parameters.  This method
         may throw an AmbiguousMethodException if there is more than one method with the

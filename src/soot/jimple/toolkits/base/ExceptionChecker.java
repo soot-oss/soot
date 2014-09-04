@@ -127,13 +127,13 @@ public class ExceptionChecker extends BodyTransformer{
     // interface had declared the method. Returns null if no supertype declares
     // the method.
     private List<SootClass> getExceptionSpec(SootClass intrface,NumberedString sig) {
-        if(intrface.declaresMethod(sig)) return intrface.getMethod(sig).getExceptions();
+    	SootMethod sm = intrface.getMethodUnsafe(sig);
+        if(sm != null) return sm.getExceptions();
         List<SootClass> result=null;
         SootClass obj=Scene.v().getSootClass("java.lang.Object");
-        if(obj.declaresMethod(sig)) result=new Vector<SootClass>(obj.getMethod(sig).getExceptions());
-        Iterator intrfacesit=intrface.getInterfaces().iterator();
-        while(intrfacesit.hasNext()) {
-            SootClass suprintr=(SootClass) intrfacesit.next();
+        sm = obj.getMethodUnsafe(sig);
+        if(sm != null) result=new Vector<SootClass>(sm.getExceptions());
+        for (SootClass suprintr : intrface.getInterfaces() ) {
             List<SootClass> other=getExceptionSpec(suprintr,sig);
             if(other!=null)
                 if(result==null) result=other;

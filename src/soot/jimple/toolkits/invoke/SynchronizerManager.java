@@ -124,11 +124,10 @@ public class SynchronizerManager
         String methodName = "class$";
         for ( ; true; methodName = "_" + methodName)
         {
-            if (!c.declaresMethodByName(methodName))
+        	SootMethod m = c.getMethodByNameUnsafe(methodName);
+            if (m == null)
                 return createClassFetcherFor(c, methodName);
-
-            SootMethod m = c.getMethodByName(methodName);
-
+            
             // Check signature.
             if (!m.getSignature().equals
                      ("<"+c.getName().replace('.', '$')+": java.lang.Class "+
