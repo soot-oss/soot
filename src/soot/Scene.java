@@ -687,12 +687,22 @@ public class Scene  //extends AbstractHost
      */
     public RefType getRefType(String className) 
     {
-        RefType refType = (RefType) nameToClass.get(className);
+        RefType refType = getRefTypeUnsafe(className);
         if(refType==null) {
         	throw new IllegalStateException("RefType "+className+" not loaded. " +
         			"If you tried to get the RefType of a library class, did you call loadNecessaryClasses()? " +
         			"Otherwise please check Soot's classpath.");
         }
+		return refType;
+    }
+    
+    /**
+     * Returns the RefType with the given className. Returns null if no type
+     * with the given name can be found.
+     */
+    public RefType getRefTypeUnsafe(String className) 
+    {
+        RefType refType = (RefType) nameToClass.get(className);
 		return refType;
     }
     

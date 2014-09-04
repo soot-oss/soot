@@ -43,7 +43,7 @@ public class RefType extends RefLikeType implements Comparable<RefType>
     public RefType( Singletons.Global g ) { className = ""; }
     public static RefType v() { return G.v().soot_RefType(); }
 
-    /** the class name that parametrizes this RefType */
+    /** the class name that parameterizes this RefType */
     private String className;
     public String getClassName() { return className; }
     private SootClass sootClass;
@@ -64,13 +64,12 @@ public class RefType extends RefLikeType implements Comparable<RefType>
      */
     public static RefType v(String className)
     {
-        if(Scene.v().containsType(className)) {
-        	return Scene.v().getRefType( className );
-        } else {
-	        RefType ret = new RefType(className);
-	        Scene.v().addRefType( ret );
-	        return ret;
-        }
+    	RefType rt = Scene.v().getRefTypeUnsafe( className );
+    	if (rt == null) {
+	        rt = new RefType(className);
+		    Scene.v().addRefType( rt );
+    	}
+	    return rt;
     }
 
     public int compareTo(RefType t)
