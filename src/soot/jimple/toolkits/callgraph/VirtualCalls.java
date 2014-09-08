@@ -63,10 +63,10 @@ public final class VirtualCalls
         SootMethod ret = (SootMethod) vtbl.get( subSig );
         if( ret != null ) return ret;
         SootClass cls = (t).getSootClass();
-        if( cls.declaresMethod( subSig ) ) {
-            SootMethod m = cls.getMethod( subSig );
+        SootMethod m = cls.getMethodUnsafe( subSig );
+        if( m != null ) {
             if( m.isConcrete() || m.isNative() || m.isPhantom() ) {
-                ret = cls.getMethod( subSig );
+                ret = m;
             }
         } else {
             if( cls.hasSuperclass() ) {

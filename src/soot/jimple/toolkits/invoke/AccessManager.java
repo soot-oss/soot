@@ -238,9 +238,8 @@ public class AccessManager
 		SootMethod accessor;
 		
 		String name=createAccessorName(ref.getField(), false);
-		if (target.declaresMethodByName(name)) {
-			accessor=target.getMethodByName(name);
-		} else {			
+		accessor = target.getMethodByNameUnsafe(name);
+		if (accessor == null) {			
 			 Type returnType=ref.getField().getType();
 			 Local thisLocal=lg.generateLocal(target.getType());
 			 if (ref instanceof InstanceFieldRef) {
@@ -291,9 +290,8 @@ public class AccessManager
 		SootMethod accessor;
 		
 		String name=createAccessorName(ref.getField(), true);
-		if (target.declaresMethodByName(name)) {
-			accessor=target.getMethodByName(name);
-		} else {    			
+		accessor = target.getMethodByNameUnsafe(name);
+		if (accessor == null) {			
 			Local thisLocal=lg.generateLocal(target.getType());
 			int paramID=0;
 			if (ref instanceof InstanceFieldRef) {
@@ -365,9 +363,8 @@ public class AccessManager
 		SootMethod accessor;
 		
 		String name=createAccessorName(method, true);
-		if (target.declaresMethodByName(name)) {
-			accessor=target.getMethodByName(name);
-		} else {    		
+		accessor = target.getMethodByNameUnsafe(name);
+		if (accessor == null) {			
 			java.util.List arguments=new LinkedList();
 			
 			if (expr instanceof InstanceInvokeExpr) {

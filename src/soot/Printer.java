@@ -367,14 +367,11 @@ public class Printer {
     /** Prints the given <code>JimpleBody</code> to the specified <code>PrintWriter</code>. */
     private void printStatementsInBody(Body body, java.io.PrintWriter out, LabeledUnitPrinter up, UnitGraph unitGraph ) {
     	Chain<Unit> units = body.getUnits();
-        Iterator<Unit> unitIt = units.iterator();
-        Unit currentStmt = null, previousStmt;
+        Unit previousStmt;
 
-        while (unitIt.hasNext()) {
-
+        for (Unit currentStmt : units) {
             previousStmt = currentStmt;
-            currentStmt = unitIt.next();
-
+            
             // Print appropriate header.
             {
                 // Put an empty line if the previous node was a branch node, the current node is a join node
@@ -497,7 +494,7 @@ public class Printer {
         // Print out local variables
         {
             Map<Type, List<Local>> typeToLocals =
-                new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
+                new DeterministicHashMap<Type, List<Local>>(body.getLocalCount() * 2 + 1, 0.7f);
 
             // Collect locals
             {

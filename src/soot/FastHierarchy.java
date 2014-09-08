@@ -438,8 +438,8 @@ public class FastHierarchy
                 while( true ) {
                     if( resolved.contains( concreteType ) ) break;
                     resolved.add( concreteType );
-                    if( concreteType.declaresMethod( methodSig ) ) {
-                        SootMethod method = concreteType.getMethod( methodSig );
+                    SootMethod method = concreteType.getMethodUnsafe(methodSig);
+                    if( method != null ) {
                         if ( isVisible(concreteType, m) ) {
 							if (method.isAbstract())
 								throw new RuntimeException("abstract dispatch resolved to abstract method!\nAbstract Type: "+abstractType+"\nConcrete Type: "+savedConcreteType+"\nMethod: "+m);
@@ -474,9 +474,9 @@ public class FastHierarchy
 
         String methodSig = m.getSubSignature();
         while( true ) {
-            if( concreteType.declaresMethod( methodSig ) ) {
+        	SootMethod method = concreteType.getMethodUnsafe(methodSig);
+            if( method != null ) {
                 if( isVisible( concreteType, m ) ) {
-                    SootMethod method = concreteType.getMethod( methodSig );
                     if(method.isAbstract()) {
                     	throw new RuntimeException("Error: Method call resolves to abstract method!");
                     }

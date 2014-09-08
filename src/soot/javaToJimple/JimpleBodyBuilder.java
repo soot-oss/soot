@@ -104,22 +104,24 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
         //create outer class this param ref for inner classes except for static inner classes - this is not needed
         int outerIndex = sootMethod.getDeclaringClass().getName().lastIndexOf("$");
             
-        if ((outerIndex != -1) && (sootMethod.getName().equals("<init>")) && sootMethod.getDeclaringClass().declaresFieldByName("this$0")){
-
-            // we know its an inner non static class can get outer class
-            // from field ref of the this$0 field
-            soot.SootClass outerClass = ((soot.RefType)sootMethod.getDeclaringClass().getFieldByName("this$0").getType()).getSootClass();
-            soot.Local outerLocal = lg.generateLocal(outerClass.getType());
-            
-            soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(outerClass.getType(), formalsCounter);
-            paramRefCount++;
-            soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(outerLocal, paramRef);
-            stmt.addTag(new soot.tagkit.EnclosingTag());
-            body.getUnits().add(stmt);
-            
-            ((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).setOuterClassThisInit(outerLocal);
-            outerClassParamLocal = outerLocal;
-            formalsCounter++;
+        if ((outerIndex != -1) && (sootMethod.getName().equals("<init>"))) {
+        	SootField this0Field = sootMethod.getDeclaringClass().getFieldByNameUnsafe("this$0");
+        	if (this0Field != null) {
+	            // we know its an inner non static class can get outer class
+	            // from field ref of the this$0 field
+	            soot.SootClass outerClass = ((soot.RefType)this0Field.getType()).getSootClass();
+	            soot.Local outerLocal = lg.generateLocal(outerClass.getType());
+	            
+	            soot.jimple.ParameterRef paramRef = soot.jimple.Jimple.v().newParameterRef(outerClass.getType(), formalsCounter);
+	            paramRefCount++;
+	            soot.jimple.Stmt stmt = soot.jimple.Jimple.v().newIdentityStmt(outerLocal, paramRef);
+	            stmt.addTag(new soot.tagkit.EnclosingTag());
+	            body.getUnits().add(stmt);
+	            
+	            ((soot.javaToJimple.PolyglotMethodSource)sootMethod.getSource()).setOuterClassThisInit(outerLocal);
+	            outerClassParamLocal = outerLocal;
+	            formalsCounter++;
+	        }
         }
 
         // handle formals
@@ -254,8 +256,9 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
      */
     private void handleOuterClassThisInit(soot.SootMethod sootMethod) {
         // static inner classes are different
-        if (body.getMethod().getDeclaringClass().declaresFieldByName("this$0")){
-            soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, body.getMethod().getDeclaringClass().getFieldByName("this$0").makeRef());
+    	SootField this0Field = body.getMethod().getDeclaringClass().getFieldByNameUnsafe("this$0");
+        if (this0Field != null){
+            soot.jimple.FieldRef fieldRef = soot.jimple.Jimple.v().newInstanceFieldRef(specialThisLocal, this0Field.makeRef());
             soot.jimple.AssignStmt stmt = soot.jimple.Jimple.v().newAssignStmt(fieldRef, outerClassParamLocal);
             body.getUnits().add(stmt);
         }

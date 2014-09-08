@@ -26,12 +26,13 @@ package soot.dexpler;
 
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import soot.Body;
+import soot.DoubleType;
+import soot.FloatType;
 import soot.Local;
 import soot.Type;
 import soot.Unit;
@@ -201,8 +202,7 @@ public class DexNumTransformer extends DexTransformer {
 				}
 
 				// check uses
-				for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localDefUses
-						.getUsesOf(u)) {
+				for (UnitValueBoxPair pair : localDefUses.getUsesOf(u)) {
 					Unit use = pair.getUnit();
 
 					Debug.printDbg("    use: ", use);
@@ -315,11 +315,7 @@ public class DexNumTransformer extends DexTransformer {
 	}
 
 	private boolean isFloatingPointLike(Type t) {
-		String ts = t.toString();
-		if (ts.equals("double") || ts.equals("float")) {
-			return true;
-		}
-		return false;
+		return (t instanceof FloatType || t instanceof DoubleType);
 	}
 
 	/**
@@ -331,33 +327,18 @@ public class DexNumTransformer extends DexTransformer {
 	 */
 	private Set<Local> getNumCandidates(Body body) {
 		Set<Local> candidates = new HashSet<Local>();
-		Iterator<Unit> i = body.getUnits().iterator();
-		while (i.hasNext()) {
-			Unit u = i.next();
+		for (Unit u : body.getUnits()) {
 			if (u instanceof AssignStmt) {
 				AssignStmt a = (AssignStmt) u;
 				if (!(a.getLeftOp() instanceof Local))
 					continue;
 				Local l = (Local) a.getLeftOp();
 				Value r = a.getRightOp();
-				if ((r instanceof IntConstant || r instanceof LongConstant)) { // &&
-																				// ((IntConstant)
-																				// r).value
-																				// ==
-																				// 0))
-																				// {
+				if ((r instanceof IntConstant || r instanceof LongConstant)) {
 					candidates.add(l);
 					Debug.printDbg("[add null candidate: ", u);
 				}
 			}
-			// else if (u instanceof IfStmt) {
-			// ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
-			// if (isZeroComparison(expr) && expr.getOp1() instanceof Local) {
-			// candidates.add((Local) expr.getOp1());
-			// Debug.printDbg("[add null candidate if: ", u);
-			// }
-			//
-			// }
 		}
 
 		return candidates;
