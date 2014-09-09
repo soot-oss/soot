@@ -76,12 +76,12 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 		if (dest != this && dest != other)
 			dest.clear();
 
-		if (dest != this) {
+		if (dest != null && dest != this) {
 			for (T t : this)
 				dest.add(t);
 		}
 
-		if (dest != other) {
+		if (other != null && dest != other) {
 			for (T t : other)
 				dest.add(t);
 		}
