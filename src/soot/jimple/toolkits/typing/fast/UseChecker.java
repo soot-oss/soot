@@ -86,7 +86,11 @@ import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
-import soot.toolkits.scalar.CombinedDUAnalysis;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.LocalUses;
+import soot.toolkits.scalar.SimpleLiveLocals;
+import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
@@ -100,8 +104,9 @@ public class UseChecker extends AbstractStmtSwitch
 
 	private Typing tg;
 	private IUseVisitor uv;
-
-	private CombinedDUAnalysis defUses = null;
+	
+	private LocalDefs defs = null;
+	private LocalUses uses = null;
 	
 	public UseChecker(JimpleBody jb)
 	{
@@ -279,12 +284,14 @@ public class UseChecker extends AbstractStmtSwitch
 					if (rt.getSootClass().getName().equals("java.lang.Object")
 							|| rt.getSootClass().getName().equals("java.io.Serializable")
 							|| rt.getSootClass().getName().equals("java.lang.Cloneable")) {
-						if (this.defUses == null) {
+						if (this.defs == null) {
 							UnitGraph graph = new ExceptionalUnitGraph(jb);
-							this.defUses = new CombinedDUAnalysis(graph);
+					        this.defs = new SmartLocalDefs(graph,
+									new SimpleLiveLocals(graph));
+							this.uses = new SimpleLocalUses(graph, this.defs);
 						}
 						
-						List<UnitValueBoxPair> usePairs = this.defUses.getUsesOf(stmt);
+						List<UnitValueBoxPair> usePairs = this.uses.getUsesOf(stmt);
 						outer: for (UnitValueBoxPair usePair : usePairs) {
 							Stmt useStmt = (Stmt) usePair.getUnit();
 							if (useStmt.containsInvokeExpr())

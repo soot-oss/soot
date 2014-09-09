@@ -40,6 +40,9 @@ import soot.util.MultiMap;
 
 /**
  *   Analysis that computes live locals, local defs, and local uses all at once.
+ *   
+ *   SA, 09.09.2014: Inefficient as hell (memory). Use the distinct analyses or
+ *   fix this class before using it.
  */
 public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<ValueBox>> 
 		implements CombinedAnalysis, LocalDefs, LocalUses, LiveLocals

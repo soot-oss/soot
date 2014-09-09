@@ -67,7 +67,9 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.CombinedDUAnalysis;
+import soot.toolkits.scalar.SimpleLiveLocals;
+import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
@@ -93,17 +95,18 @@ public class DexNullTransformer extends DexTransformer {
 			@SuppressWarnings("rawtypes") Map options) {
 		final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
 
-		final CombinedDUAnalysis localDefUses = new CombinedDUAnalysis(g);
-
+		final SmartLocalDefs localDefs = new SmartLocalDefs(g,
+				new SimpleLiveLocals(g));
+		final SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
+		
 		for (Local loc : getNullCandidates(body)) {
 			Debug.printDbg("\n[null candidate] ", loc);
 			usedAsObject = false;
-			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefUses,
-					localDefUses, body);
+			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs,
+					localUses, body);
 			// check if no use
 			for (Unit u : defs) {
-				for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localDefUses
-						.getUsesOf(u)) {
+				for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
 					Debug.printDbg("[use in u]: ", pair.getUnit());
 				}
 			}
@@ -185,8 +188,7 @@ public class DexNullTransformer extends DexTransformer {
 					break;
 
 				// check uses
-				for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localDefUses
-						.getUsesOf(u)) {
+				for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
 					Unit use = pair.getUnit();
 					Debug.printDbg("    use: ", use);
 					use.apply(new AbstractStmtSwitch() {
@@ -371,8 +373,7 @@ public class DexNullTransformer extends DexTransformer {
 			if (usedAsObject) {
 				for (Unit u : defs) {
 					replaceWithNull(u);
-					for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localDefUses
-							.getUsesOf(u)) {
+					for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
 						Unit use = pair.getUnit();
 						replaceWithNull(use);
 					}

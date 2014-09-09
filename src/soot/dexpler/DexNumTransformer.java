@@ -56,7 +56,11 @@ import soot.jimple.LongConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.ReturnStmt;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.CombinedDUAnalysis;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.LocalUses;
+import soot.toolkits.scalar.SimpleLiveLocals;
+import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
@@ -110,13 +114,16 @@ public class DexNumTransformer extends DexTransformer {
 	protected void internalTransform(final Body body, String phaseName,
 			@SuppressWarnings("rawtypes") Map options) {
 		final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
-		final CombinedDUAnalysis localDefUses = new CombinedDUAnalysis(g);
+		
+        final LocalDefs localDefs = new SmartLocalDefs(g,
+				new SimpleLiveLocals(g));
+		final LocalUses localUses = new SimpleLocalUses(g, localDefs);
 		
         for (Local loc : getNumCandidates(body)) {
             Debug.printDbg("\n[num candidate] ", loc);
 			usedAsFloatingPoint = false;
-			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefUses,
-					localDefUses, body);
+			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs,
+					localUses, body);
 			
 	        // process normally
 			doBreak = false;
@@ -154,7 +161,7 @@ public class DexNumTransformer extends DexTransformer {
 							Type arType = ar.getType();
 							Debug.printDbg("ar: ", r, " ", arType);
 							if (arType instanceof UnknownType) {
-								Type t = findArrayType(g, localDefUses, localDefUses,
+								Type t = findArrayType(g, localDefs, localUses,
 										stmt, 0, Collections.<Unit> emptySet()); // TODO:
 																					// check
 																					// where
@@ -202,7 +209,7 @@ public class DexNumTransformer extends DexTransformer {
 				}
 
 				// check uses
-				for (UnitValueBoxPair pair : localDefUses.getUsesOf(u)) {
+				for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
 					Unit use = pair.getUnit();
 
 					Debug.printDbg("    use: ", use);
