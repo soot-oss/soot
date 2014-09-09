@@ -507,7 +507,7 @@ public class TypeResolver
 					
 					Collection<Type> lcas = h.lcas(told, t_);
 					
-					for ( Type t : lcas )
+					for ( Type t : lcas ) {
 						if ( ! typesEqual(t, told) )
 						{
 							Typing tg_;
@@ -530,8 +530,9 @@ public class TypeResolver
 							tg_.set(v, t);
 							
 							wl_.or(this.depends.get(v));							
-							isFirstType = false;
 						}
+						isFirstType = false;
+					}
 				}//end for
 			}
 		}
