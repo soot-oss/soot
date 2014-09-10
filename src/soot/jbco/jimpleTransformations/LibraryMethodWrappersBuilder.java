@@ -192,12 +192,10 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer  implements I
 
   private void setNewMethodRef(SootClass libClass, SootMethod sm,
       SootMethodRef smr) {
-    Map<SootMethod, SootMethodRef> methods = libClassesToMethods.get(libClass);
-    if (methods == null) {
-      libClassesToMethods.put(libClass, new HashMap<SootMethod,SootMethodRef>());
-    }
-    else
-    	methods.put(sm, smr);
+      if (!libClassesToMethods.contains(libClass)) {
+          libClassesToMethods.put(libClass, new HashMap<SootMethod,SootMethodRef>());
+      }
+      libClassesToMethods.get(libClass).put(sm, smr);  
   }
 
   private SootMethodRef buildNewMethod(SootClass fromC, SootClass libClass,
