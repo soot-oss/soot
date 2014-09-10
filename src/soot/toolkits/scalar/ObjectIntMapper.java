@@ -89,7 +89,7 @@ public class ObjectIntMapper<E> {
    * @param i
    * @return <code>i</code>'s object
    */
-  public Object getObject(int i) {
+  public E getObject(int i) {
     return intToObjects.get(i);
   }
 

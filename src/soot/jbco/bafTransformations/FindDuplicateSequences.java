@@ -536,8 +536,8 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
       if (t2 instanceof RefType) {
         // TODO: more discerning comparison here?
         RefType rt1 = (RefType) t1;
-
-        return rt1.compareTo(t2) == 0;
+        RefType rt2 = (RefType) t2;
+        return rt1.compareTo(rt2) == 0;
       }
       return false;
     }

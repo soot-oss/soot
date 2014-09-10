@@ -67,6 +67,8 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.SmartLocalDefs;
@@ -96,9 +98,11 @@ public class DexIfTransformer extends DexTransformer {
 
 	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
         final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
-        final SmartLocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
-        final SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
-
+		
+        final LocalDefs localDefs = new SmartLocalDefs(g,
+				new SimpleLiveLocals(g));
+		final LocalUses localUses = new SimpleLocalUses(g, localDefs);
+		
         Set<IfStmt> ifSet = getNullIfCandidates(body);        
         for (IfStmt ifs: ifSet) {
           List<Local> twoIfLocals = new ArrayList<Local>();
@@ -113,7 +117,7 @@ public class DexIfTransformer extends DexTransformer {
             List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs, localUses, body);
             // check if no use
             for (Unit u  : defs) {
-              for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
+              for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
                 Debug.printDbg("[use in u]: ", pair.getUnit());
               }
             }
@@ -188,7 +192,7 @@ public class DexIfTransformer extends DexTransformer {
                 break;
 
               // check uses
-                for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
+                for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
                     Unit use = pair.getUnit();
                     Debug.printDbg("    use: ", use);
                     use.apply( new AbstractStmtSwitch() {
@@ -385,7 +389,7 @@ public class DexIfTransformer extends DexTransformer {
             defsOp1.addAll(defsOp2);
             for (Unit u : defsOp1) {
                 replaceWithNull(u);
-                for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localUses.getUsesOf(u)) {
+                for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
                     Unit use = pair.getUnit();
                     replaceWithNull(use);
                 }

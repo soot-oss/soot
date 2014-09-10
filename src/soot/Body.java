@@ -139,11 +139,8 @@ public abstract class Body extends AbstractHost implements Serializable
         HashMap<Object, Object> bindings = new HashMap<Object, Object>();
 
         {
-	        Iterator<Unit> it = b.getUnits().iterator();
-	
 	        // Clone units in body's statement list
-	        while(it.hasNext()) {
-	            Unit original = it.next();
+	        for (Unit original : b.getUnits()) {
 	            Unit copy = (Unit) original.clone();
 	
 	            copy.addAllTagsOf(original);
@@ -160,9 +157,7 @@ public abstract class Body extends AbstractHost implements Serializable
 
         {
 	        // Clone trap units.
-	        Iterator<Trap> it = b.getTraps().iterator();
-	        while(it.hasNext()) {
-	            Trap original = it.next();
+	        for (Trap original : b.getTraps()) {
 	            Trap copy = (Trap) original.clone();
 	
 	            // Add cloned unit to our trap list.
@@ -175,9 +170,7 @@ public abstract class Body extends AbstractHost implements Serializable
 
         {
 	        // Clone local units.
-	        Iterator<Local> it = b.getLocals().iterator();
-	        while(it.hasNext()) {
-	            Local original = it.next();
+	        for (Local original : b.getLocals()) {
 	            Local copy = (Local) original.clone();
 	
 	            // Add cloned unit to our trap list.
@@ -190,9 +183,7 @@ public abstract class Body extends AbstractHost implements Serializable
 
         {
 	        // Patch up references within units using our (old <-> new) map.
-	        Iterator<UnitBox> it = getAllUnitBoxes().iterator();
-	        while(it.hasNext()) {
-	            UnitBox box = it.next();
+	        for (UnitBox box : getAllUnitBoxes()) {
 	            Unit newObject, oldObject = box.getUnit();
 	
 	            // if we have a reference to an old object, replace it
@@ -206,15 +197,11 @@ public abstract class Body extends AbstractHost implements Serializable
 
         {
 	        // backpatching all local variables.
-	        Iterator<ValueBox> it = getUseBoxes().iterator();
-	        while(it.hasNext()) {
-	            ValueBox vb = it.next();
+	        for (ValueBox vb : getUseBoxes()) {
 	            if(vb.getValue() instanceof Local)
 	                vb.setValue((Value) bindings.get(vb.getValue()));
 	        }
-	        it = getDefBoxes().iterator();
-	        while(it.hasNext()) {
-	            ValueBox vb = it.next();
+	        for (ValueBox vb : getDefBoxes()) {
 	            if(vb.getValue() instanceof Local)
 	                vb.setValue((Value) bindings.get(vb.getValue()));
 	        }
@@ -260,13 +247,11 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Verifies that each Local of getUseAndDefBoxes() is in this body's locals Chain. */
     public void validateLocals()
     {
-        Iterator<ValueBox> it = getUseBoxes().iterator();
-        while(it.hasNext()){
-            validateLocal( it.next() );
+        for (ValueBox vb : getUseBoxes()) {
+            validateLocal(vb);
         }
-        it = getDefBoxes().iterator();
-        while(it.hasNext()){
-            validateLocal( it.next() );
+        for (ValueBox vb : getDefBoxes()) {
+            validateLocal(vb);
         }
     }
     private void validateLocal( ValueBox vb ) {
@@ -281,10 +266,8 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Verifies that the begin, end and handler units of each trap are in this body. */
     public void validateTraps()
     {
-        Iterator<Trap> it = getTraps().iterator();
-        while (it.hasNext())
+        for (Trap t : getTraps())
         {
-            Trap t = it.next();
             if (!unitChain.contains(t.getBeginUnit()))
                 throw new RuntimeException("begin not in chain"+" in "+getMethod());
 
@@ -299,10 +282,8 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Verifies that the UnitBoxes of this Body all point to a Unit contained within this body. */
     public void validateUnitBoxes()
     {
-        Iterator<UnitBox> it = getAllUnitBoxes().iterator();
-        while (it.hasNext())
+        for (UnitBox ub : getAllUnitBoxes())
         {
-            UnitBox ub = it.next();
             if (!unitChain.contains(ub.getUnit()))
                 throw new RuntimeException
                     ("Unitbox points outside unitChain! to unit : "+ub.getUnit()+" in "+getMethod());
@@ -352,7 +333,7 @@ public abstract class Body extends AbstractHost implements Serializable
                     // This throws an exception if there is
                     // no def already; we check anyhow.
                     List<Unit> l = ld.getDefsOfAt((Local)v, u);
-                    if (l.size() == 0){
+                    if (l.isEmpty()){
                         throw new RuntimeException("("+ getMethod() +") no defs for value: " + v + "!\n" + this);
                     }
                 }
@@ -369,11 +350,8 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Return LHS of the first identity stmt assigning from \@this. **/
     public Local getThisLocal()
     {
-        Iterator<Unit> unitsIt = getUnits().iterator();
-
-        while (unitsIt.hasNext())
+        for (Unit s : getUnits())
         {
-            Unit s = unitsIt.next();
             if (s instanceof IdentityStmt &&
                 ((IdentityStmt)s).getRightOp() instanceof ThisRef)
                 return (Local)(((IdentityStmt)s).getLeftOp());
@@ -385,10 +363,8 @@ public abstract class Body extends AbstractHost implements Serializable
     /** Return LHS of the first identity stmt assigning from \@parameter i. **/
     public Local getParameterLocal(int i)
     {
-        Iterator<Unit> unitsIt = getUnits().iterator();
-        while (unitsIt.hasNext())
+        for (Unit s : getUnits())
         {
-            Unit s = unitsIt.next();
             if (s instanceof IdentityStmt &&
                 ((IdentityStmt)s).getRightOp() instanceof ParameterRef)
             {
@@ -436,10 +412,7 @@ public abstract class Body extends AbstractHost implements Serializable
     public List<Value> getParameterRefs()
     {
     	Value[] res = new Value[getMethod().getParameterCount()];
-        Iterator<Unit> unitsIt = getUnits().iterator();
-        while (unitsIt.hasNext())
-        {
-            Unit s = unitsIt.next();
+        for (Unit s : getUnits()) {
             if (s instanceof IdentityStmt) {
 				Value rightOp = ((IdentityStmt)s).getRightOp();
 				if (rightOp instanceof ParameterRef) {

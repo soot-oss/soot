@@ -89,11 +89,13 @@ public class DexAnnotation {
         Set<? extends Annotation> aSet = classDef.getAnnotations();
         if (aSet == null || aSet.isEmpty())
             return;
-        for (Tag t : handleAnnotation(aSet, classDef.getType()))
-        	if (t != null) {
-	            h.addTag(t);
-	            Debug.printDbg("add class annotation: ", t, " type: ", t.getClass());
-	        }
+        List<Tag> tags = handleAnnotation(aSet, classDef.getType());
+        if (tags != null)
+	        for (Tag t : tags)
+	        	if (t != null) {
+		            h.addTag(t);
+		            Debug.printDbg("add class annotation: ", t, " type: ", t.getClass());
+		        }
     }
 
     /**

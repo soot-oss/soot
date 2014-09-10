@@ -1338,7 +1338,7 @@ public class GeomPointsTo extends PAG
 		if ( hasExecuted == false )
 			solve();
 		
-		if ( ddPrepared == false ) {
+		if ( ddPrepared == false || offlineProcessor == null ) {
 			offlineProcessor = new OfflineProcessor(this);
 			IFigureManager.cleanCache();
 			ddPrepared = true;

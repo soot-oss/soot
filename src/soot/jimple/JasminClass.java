@@ -92,7 +92,7 @@ public class JasminClass extends AbstractJasminClass
         
         body.validate();
             
-        if(body == null)
+        //if(body == null)
             
         if(Options.v().time())
             Timers.v().buildJasminTimer.start();

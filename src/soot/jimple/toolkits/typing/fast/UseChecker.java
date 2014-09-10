@@ -104,10 +104,10 @@ public class UseChecker extends AbstractStmtSwitch
 
 	private Typing tg;
 	private IUseVisitor uv;
-
+	
 	private LocalDefs defs = null;
 	private LocalUses uses = null;
-
+	
 	public UseChecker(JimpleBody jb)
 	{
 		this.jb = jb;
@@ -284,10 +284,11 @@ public class UseChecker extends AbstractStmtSwitch
 					if (rt.getSootClass().getName().equals("java.lang.Object")
 							|| rt.getSootClass().getName().equals("java.io.Serializable")
 							|| rt.getSootClass().getName().equals("java.lang.Cloneable")) {
-						if (this.uses == null) {
+						if (this.defs == null) {
 							UnitGraph graph = new ExceptionalUnitGraph(jb);
-							this.defs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
-							this.uses = new SimpleLocalUses(jb, defs);
+					        this.defs = new SmartLocalDefs(graph,
+									new SimpleLiveLocals(graph));
+							this.uses = new SimpleLocalUses(graph, this.defs);
 						}
 						
 						List<UnitValueBoxPair> usePairs = this.uses.getUsesOf(stmt);

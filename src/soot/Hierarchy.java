@@ -586,8 +586,9 @@ public class Hierarchy
 		String methodSig = m.getSubSignature();
 
 		for (SootClass c : getSuperclassesOfIncluding(concreteType)) {
-			if (c.declaresMethod(methodSig) && isVisible(c, m)) {
-				return c.getMethod(methodSig);
+			SootMethod sm = c.getMethodUnsafe(methodSig); 
+			if (sm != null && isVisible(c, m)) {
+				return sm;
 			}
 		}
 		throw new RuntimeException(

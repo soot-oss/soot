@@ -970,7 +970,6 @@ public class TypeResolver
   {
     ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody);
     LocalDefs defs = new SmartLocalDefs(graph,new SimpleLiveLocals(graph));
-    // SimpleLocalUses uses = new SimpleLocalUses(graph, defs);
     PatchingChain<Unit> units = stmtBody.getUnits();
     Stmt[] stmts = new Stmt[units.size()];
 

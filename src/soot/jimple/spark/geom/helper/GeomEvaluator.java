@@ -25,9 +25,9 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -35,7 +35,6 @@ import soot.Local;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
-import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
@@ -44,17 +43,12 @@ import soot.Value;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.InstanceFieldRef;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
-import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.geom.dataRep.CgEdge;
-import soot.jimple.spark.geom.geomPA.Constants;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
 import soot.jimple.spark.geom.geomPA.IVarAbstraction;
 import soot.jimple.spark.geom.utils.Histogram;
-import soot.jimple.spark.geom.utils.SootInfo;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.LocalVarNode;
@@ -63,7 +57,6 @@ import soot.jimple.spark.pag.VarNode;
 import soot.jimple.spark.sets.P2SetVisitor;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
-import soot.util.queue.QueueReader;
 
 /**
  * We provide a set of methods to evaluate the quality of geometric points-to
@@ -93,40 +86,7 @@ public class GeomEvaluator {
 		outputer = ps;
 		evalRes = new EvalResults();
 	}
-
-	/**
-	 * The locals and object fields that are not exception receivers are regular
-	 * pointers.
-	 */
-	private boolean isRegularPointer(IVarAbstraction pn) 
-	{
-		Node v = pn.getWrappedNode();
-		SootMethod sm = null;
-		int method = 0;
-
-		// We do not count the exception handler pointers
-		if (ptsProvider.isExceptionPointer(v) == true)
-			return false;
-
-		method = ptsProvider.getMappedMethodID(pn);
-
-		// Global variable?
-		if (method == Constants.SUPER_MAIN)
-			return false;
-
-		// Is the enclosing method obsoleted?
-		if (method == Constants.UNKNOWN_FUNCTION)
-			return false;
-
-		sm = ptsProvider.getSootMethodFromID(method);
-
-		// Is this a valid method in the verification list?
-		if (!ptsProvider.isValidMethod(sm))
-			return false;
-
-		return !sm.isJavaLibraryMethod();
-	}
-
+	
 	/**
 	 * Collecting basic statistical information for SPARK.
 	 */
@@ -498,7 +458,7 @@ public class GeomEvaluator {
 				continue;
 
 			// All the statements in the method
-			for (Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts
+			for (Iterator<Unit> stmts = sm.getActiveBody().getUnits().iterator(); stmts
 					.hasNext();) {
 				Stmt st = (Stmt) stmts.next();
 
@@ -586,7 +546,7 @@ public class GeomEvaluator {
 				continue;
 
 			// We first gather all the memory access expressions
-			for (Iterator stmts = sm.getActiveBody().getUnits().iterator(); stmts
+			for (Iterator<Unit> stmts = sm.getActiveBody().getUnits().iterator(); stmts
 					.hasNext();) {
 				Stmt st = (Stmt) stmts.next();
 

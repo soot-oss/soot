@@ -38,8 +38,8 @@ public class FixedMethods {
 		SootClass c = m.getDeclaringClass();
 		//TODO could use PTA and call graph to filter subclasses further
 		for (SootClass cPrime : Scene.v().getFastHierarchy().getSubclassesOf(c)) {
-			if(cPrime.declaresMethod(m.getSubSignature())) {
-				SootMethod mPrime = cPrime.getMethod(m.getSubSignature());
+			SootMethod mPrime = cPrime.getMethodUnsafe(m.getSubSignature());
+			if(mPrime != null) {
 				if(clientOverwriteable(mPrime)) return true;
 			}
 		}

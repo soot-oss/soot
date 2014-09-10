@@ -425,17 +425,19 @@ public class ClassResolver {
             addQualifierRefToInit(aNew.qualifier().type());
             src.hasQualifier(true);
         }
-        if (info != null && !info.inStaticMethod()){
-            if (!InitialResolver.v().isAnonInCCall(aNew.anonType())){
-                addOuterClassThisRefToInit(aNew.anonType().outer());
-                addOuterClassThisRefField(aNew.anonType().outer());
-                src.thisOuterType(Util.getSootType(aNew.anonType().outer()));
-                src.hasOuterRef(true);
-            }
+        if (info != null) {
+            src.inStaticMethod(info.inStaticMethod());
+        	if (!info.inStaticMethod()){
+	            if (!InitialResolver.v().isAnonInCCall(aNew.anonType())){
+	                addOuterClassThisRefToInit(aNew.anonType().outer());
+	                addOuterClassThisRefField(aNew.anonType().outer());
+	                src.thisOuterType(Util.getSootType(aNew.anonType().outer()));
+	                src.hasOuterRef(true);
+	            }
+        	}
         }
         src.polyglotType((polyglot.types.ClassType)aNew.anonType().superType());
         src.anonType(aNew.anonType()); 
-        src.inStaticMethod(info.inStaticMethod());
         if (info != null){
             src.setFinalsList(addFinalLocals(aNew.body(), info.finalLocalsAvail(), aNew.anonType(), info));
         }
@@ -779,8 +781,10 @@ public class ClassResolver {
                 // assume its anon class (only option left) 
                 //
                 if ((InitialResolver.v().getAnonClassMap() != null) && InitialResolver.v().getAnonClassMap().containsVal(simpleName)){
-                    
                     polyglot.ast.New aNew = (polyglot.ast.New)InitialResolver.v().getAnonClassMap().getKey(simpleName);
+                    if (aNew == null)
+                    	throw new RuntimeException("Could resolve class: " + simpleName);
+                    
                     createAnonClassDecl(aNew);
                     findReferences(aNew.body());
                     createClassBody(aNew.body());

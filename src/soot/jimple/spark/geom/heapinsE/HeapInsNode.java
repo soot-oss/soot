@@ -474,6 +474,8 @@ public class HeapInsNode extends IVarAbstraction
 	public boolean pointer_interval_points_to(long l, long r, AllocNode obj) 
 	{
 		SegmentNode[] int_entry = find_points_to(obj);
+		if (int_entry == null)
+			return false;
 		
 		// Check all-to-many figures
 		if ( int_entry[HeapInsIntervalManager.ALL_TO_MANY] != null ) return true;

@@ -139,10 +139,9 @@ public class BodyExtractorWalker extends Walker
 
 	name = (String) mProductions.removeLast(); // name
 	type = (Type) mProductions.removeLast(); // type
-        SootMethod sm = null;
-        if (mSootClass.declaresMethod(SootMethod.getSubSignature(name, parameterList, type)))
+        SootMethod sm = mSootClass.getMethodUnsafe(SootMethod.getSubSignature(name, parameterList, type));
+        if (sm != null)
         {
-            sm = mSootClass.getMethod(SootMethod.getSubSignature(name, parameterList, type));
             if (Options.v().verbose())
                 G.v().out.println("[Jimple parser] " + SootMethod.getSubSignature(name, parameterList, type));
         }
@@ -152,15 +151,13 @@ public class BodyExtractorWalker extends Walker
 
 	    
             G.v().out.println("[!] Methods in class are:");
-            Iterator<SootMethod> it = mSootClass.methodIterator();
-            while(it.hasNext()) {
-                SootMethod next = it.next();
+            for (SootMethod next : mSootClass.getMethods()) {
                 G.v().out.println(next.getSubSignature());
             }
             
         }
 
-        if(sm.isConcrete()) 
+        if(sm.isConcrete() && methodBody != null) 
         {
           if (Options.v().verbose())
               G.v().out.println("[Parsed] "+sm.getDeclaration());

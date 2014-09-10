@@ -128,6 +128,8 @@ public class RenameDuplicatedClasses extends SceneTransformer
 	{
  		File dir = new File(".");
 		File[] files = dir.listFiles();
+		if (files == null)
+			return false;
 
 		for (File file : files)
 		{

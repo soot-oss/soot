@@ -118,8 +118,11 @@ public class StmtVisitor implements StmtSwitch {
 	
     // maps used to map Jimple statements to dalvik instructions
     private Map<Insn, Stmt> insnStmtMap = new HashMap<Insn, Stmt>();
+    private Map<Instruction, LocalRegisterAssignmentInformation> instructionRegisterMap = new IdentityHashMap<Instruction, LocalRegisterAssignmentInformation>();
     private Map<Instruction, Stmt> instructionStmtMap = new IdentityHashMap<Instruction, Stmt>();
+    private Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap = new IdentityHashMap<Insn, LocalRegisterAssignmentInformation>();
     private Map<Instruction, SwitchPayload> instructionPayloadMap = new IdentityHashMap<Instruction, SwitchPayload>();
+	private List<LocalRegisterAssignmentInformation> parameterInstructionsList = new ArrayList<LocalRegisterAssignmentInformation>();
     
     public StmtVisitor(SootMethod belongingMethod, DexBuilder belongingFile) {
 		this.belongingMethod = belongingMethod;
@@ -146,11 +149,19 @@ public class StmtVisitor implements StmtSwitch {
     public Map<Instruction, Stmt> getInstructionStmtMap() {
         return this.instructionStmtMap;
     }
+	
+    public Map<Instruction, LocalRegisterAssignmentInformation> getInstructionRegisterMap() {
+        return this.instructionRegisterMap;
+    }
+    
+    public List<LocalRegisterAssignmentInformation> getParameterInstructionsList() {
+    	return parameterInstructionsList;
+    }
 
     public Map<Instruction, SwitchPayload> getInstructionPayloadMap() {
         return this.instructionPayloadMap;
     }
-
+    
     protected void addInsn(Insn insn, Stmt s) {
 		int highestIndex = insns.size();
 		addInsn(highestIndex, insn);
@@ -255,6 +266,9 @@ public class StmtVisitor implements StmtSwitch {
             if (insnStmtMap.containsKey(i)) { // get tags
                 instructionStmtMap.put(realInsn, insnStmtMap.get(i));
             }
+            if (insnRegisterMap.containsKey(i)) {
+            	instructionRegisterMap.put(realInsn, insnRegisterMap.get(i));
+            }
             if (i instanceof SwitchPayload)
             	instructionPayloadMap.put(realInsn, (SwitchPayload) i);
 		}
@@ -264,7 +278,7 @@ public class StmtVisitor implements StmtSwitch {
 	private void finishRegs() {
 		// fit registers into insn formats, potentially replacing insns
 		RegisterAssigner regAssigner = new RegisterAssigner(regAlloc);
-		insns = regAssigner.finishRegs(insns, insnStmtMap);
+		insns = regAssigner.finishRegs(insns, insnStmtMap, insnRegisterMap, parameterInstructionsList);
 	}
 	
 	protected int getRegisterCount() {
@@ -336,7 +350,6 @@ public class StmtVisitor implements StmtSwitch {
 			throw new Error("left-hand side of AssignStmt is not a Local: " + lhs.getClass());
 		}
 		Register lhsReg = regAlloc.asLocal(lhs);
-		stmt.addTag(LocalRegisterAssignmentTag.v(lhsReg, lhs));
 		
 		Value rhs = stmt.getRightOp();
 		if (rhs instanceof Local) {
@@ -365,6 +378,8 @@ public class StmtVisitor implements StmtSwitch {
 				addInsn(invokeInsnIndex + 1, moveResultInsn);
 			}
 		}
+
+		this.insnRegisterMap.put(insns.get(insns.size() - 1), LocalRegisterAssignmentInformation.v(lhsReg, (Local)lhs));
 	}
 
 	private Insn buildGetInsn(ConcreteRef sourceRef, Register destinationReg) {
@@ -549,8 +564,10 @@ public class StmtVisitor implements StmtSwitch {
 		if (rhs instanceof CaughtExceptionRef) {
 			// save the caught exception with move-exception
 			Register localReg = regAlloc.asLocal(lhs);
-			stmt.addTag(LocalRegisterAssignmentTag.v(localReg, lhs));
+			
             addInsn(new Insn11x(Opcode.MOVE_EXCEPTION, localReg), stmt);
+
+            this.insnRegisterMap.put(insns.get(insns.size() - 1), LocalRegisterAssignmentInformation.v(localReg, (Local)lhs));
 		} else if (rhs instanceof ThisRef || rhs instanceof ParameterRef) {
 			/* 
 			 * do not save the ThisRef or ParameterRef in a local, because it always has a parameter register already.
@@ -558,6 +575,8 @@ public class StmtVisitor implements StmtSwitch {
 			 */
 			Local localForThis = (Local) lhs;
 			regAlloc.asParameter(belongingMethod, localForThis);
+			
+			parameterInstructionsList.add(LocalRegisterAssignmentInformation.v(regAlloc.asLocal(localForThis), localForThis));
 		} else {
 			throw new Error("unknown Value as right-hand side of IdentityStmt: " + rhs);
 		}

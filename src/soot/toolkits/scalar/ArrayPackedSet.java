@@ -33,16 +33,16 @@ import java.util.*;
 /**
  *   Reference implementation for a BoundedFlowSet. Items are stored in an Array.  
  */
-public class ArrayPackedSet extends AbstractBoundedFlowSet
+public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
 {
-    ObjectIntMapper map;
+    ObjectIntMapper<T> map;
     int[] bits;
 
-    public ArrayPackedSet(FlowUniverse universe) {
-        this(new ObjectIntMapper(universe));
+    public ArrayPackedSet(FlowUniverse<T> universe) {
+        this(new ObjectIntMapper<T>(universe));
     }
 
-    ArrayPackedSet(ObjectIntMapper map)
+    ArrayPackedSet(ObjectIntMapper<T> map)
     {
         //int size = universe.getSize();
 
@@ -51,27 +51,28 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
         this(map, new int[map.size() / 32 + (((map.size() % 32) != 0) ? 1 : 0)]);
     }
     
-    ArrayPackedSet(ObjectIntMapper map, int[] bits)
+    ArrayPackedSet(ObjectIntMapper<T> map, int[] bits)
     {
         this.map = map;
         this.bits = bits.clone();
     }
 
     /** Returns true if flowSet is the same type of flow set as this. */
-    private boolean sameType(Object flowSet)
+    @SuppressWarnings("rawtypes")
+	private boolean sameType(Object flowSet)
     {
         return (flowSet instanceof ArrayPackedSet &&
                 ((ArrayPackedSet)flowSet).map == map);
     }
 
-    public ArrayPackedSet clone()
+    public ArrayPackedSet<T> clone()
     {
-        return new ArrayPackedSet(map, bits);
+        return new ArrayPackedSet<T>(map, bits);
     }
 
-    public Object emptySet()
+    public FlowSet<T> emptySet()
     {
-        return new ArrayPackedSet(map);
+        return new ArrayPackedSet<T>(map);
     }
 
     public int size()
@@ -104,9 +105,9 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
     }
 
 
-    public List toList(int low, int high)
+    public List<T> toList(int low, int high)
     {
-        List elements = new ArrayList();
+        List<T> elements = new ArrayList<T>();
 
         int startWord = low / 32,
             startBit = low % 32;
@@ -165,9 +166,9 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
     }
 
 
-    public List toList()
+    public List<T> toList()
     {
-        List elements = new ArrayList();
+        List<T> elements = new ArrayList<T>();
 
         for(int i = 0; i < bits.length; i++)
         {
@@ -182,17 +183,17 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
         return elements;
     }
 
-    public void add(Object obj)
+    public void add(T obj)
     {
         int bitNum = map.getInt(obj);
 
         bits[bitNum / 32] |= 1 << (bitNum % 32);
     }
 
-    public void complement(FlowSet destFlow)
+    public void complement(FlowSet<T> destFlow)
     {
       if (sameType(destFlow)) {
-        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
+        ArrayPackedSet<T> dest = (ArrayPackedSet<T>) destFlow;
 
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = ~(this.bits[i]);
@@ -209,19 +210,19 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
         super.complement(destFlow);
     }
 
-    public void remove(Object obj)
+    public void remove(T obj)
     {
         int bitNum = map.getInt(obj);
 
         bits[bitNum / 32] &= ~(1 << (bitNum % 32));
     }
 
-    public void union(FlowSet otherFlow, FlowSet destFlow)
+    public void union(FlowSet<T> otherFlow, FlowSet<T> destFlow)
     {
       if (sameType(otherFlow) &&
           sameType(destFlow)) {
-        ArrayPackedSet other = (ArrayPackedSet) otherFlow;
-        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
+        ArrayPackedSet<T> other = (ArrayPackedSet<T>) otherFlow;
+        ArrayPackedSet<T> dest = (ArrayPackedSet<T>) destFlow;
 
         if(!(other instanceof ArrayPackedSet) || bits.length != other.bits.length)
             throw new RuntimeException("Incompatible other set for union");
@@ -232,7 +233,7 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
         super.union(otherFlow, destFlow);
     }
 
-    public void difference(FlowSet otherFlow, FlowSet destFlow)
+    public void difference(FlowSet<T> otherFlow, FlowSet<T> destFlow)
     {
       if (sameType(otherFlow) &&
           sameType(destFlow)) {
@@ -240,8 +241,8 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
         if(!(otherFlow instanceof ArrayPackedSet))
             throw new RuntimeException("Incompatible other set for union");
 
-        ArrayPackedSet other = (ArrayPackedSet) otherFlow;
-        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
+        ArrayPackedSet<T> other = (ArrayPackedSet<T>) otherFlow;
+        ArrayPackedSet<T> dest = (ArrayPackedSet<T>) destFlow;
         
         if (bits.length != other.bits.length)
             throw new RuntimeException("Incompatible other set for union");
@@ -252,15 +253,15 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
         super.difference(otherFlow, destFlow);
     }
     
-    public void intersection(FlowSet otherFlow, FlowSet destFlow)
+    public void intersection(FlowSet<T> otherFlow, FlowSet<T> destFlow)
     {
       if (sameType(otherFlow) &&
           sameType(destFlow)) {
         if(!(otherFlow instanceof ArrayPackedSet))
             throw new RuntimeException("Incompatible other set for union");
 
-        ArrayPackedSet other = (ArrayPackedSet) otherFlow;
-        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
+        ArrayPackedSet<T> other = (ArrayPackedSet<T>) otherFlow;
+        ArrayPackedSet<T> dest = (ArrayPackedSet<T>) destFlow;
         
         if (bits.length != other.bits.length)
             throw new RuntimeException("Incompatible other set for union");
@@ -273,7 +274,7 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
 
   /** Returns true, if the object is in the set.
    */
-    public boolean contains(Object obj)
+    public boolean contains(T obj)
     {
       /* check if the object is in the map, direct call of map.getInt will
        * add the object into the map.
@@ -285,18 +286,19 @@ public class ArrayPackedSet extends AbstractBoundedFlowSet
         return (bits[bitNum / 32] & (1 << (bitNum % 32))) != 0;
     }
 
-    public boolean equals(Object otherFlow)
+    @SuppressWarnings("unchecked")
+	public boolean equals(Object otherFlow)
     {
       if (sameType(otherFlow)) {
-        return Arrays.equals(bits, ((ArrayPackedSet)otherFlow).bits);
+        return Arrays.equals(bits, ((ArrayPackedSet<T>)otherFlow).bits);
       } else
         return super.equals(otherFlow);
     }
 
-    public void copy(FlowSet destFlow)
+    public void copy(FlowSet<T> destFlow)
     {
       if (sameType(destFlow)) {
-        ArrayPackedSet dest = (ArrayPackedSet) destFlow;
+        ArrayPackedSet<T> dest = (ArrayPackedSet<T>) destFlow;
 
         for(int i = 0; i < bits.length; i++)
             dest.bits[i] = this.bits[i];

@@ -40,24 +40,24 @@ package soot.toolkits.scalar;
  * </pre>
  */
 
-public abstract class AbstractBoundedFlowSet extends AbstractFlowSet implements
-                                                               BoundedFlowSet {
+public abstract class AbstractBoundedFlowSet<T> extends AbstractFlowSet<T> implements
+                                                               BoundedFlowSet<T> {
   
   public void complement() {
     complement(this);
   }
 
-  public void complement(FlowSet dest) {
+  public void complement(FlowSet<T> dest) {
     if (this == dest)
       complement();
     else {
-      BoundedFlowSet tmp = (BoundedFlowSet)topSet();
+      BoundedFlowSet<T> tmp = (BoundedFlowSet<T>)topSet();
       tmp.difference(this, dest);
     }
   }
 
-  public Object topSet() {
-    BoundedFlowSet tmp = (BoundedFlowSet)emptySet();
+  public FlowSet<T> topSet() {
+    BoundedFlowSet<T> tmp = (BoundedFlowSet<T>)emptySet();
     tmp.complement();
     return tmp;
   }

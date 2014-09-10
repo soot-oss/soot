@@ -115,9 +115,10 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 					while(threadClassesIt.hasNext())
 					{
 						SootClass currentClass = threadClassesIt.next();
-						if( currentClass.declaresMethod("void run()") )							
+						SootMethod currentMethod = currentClass.getMethodUnsafe("void run()");
+						if( currentMethod != null )
 						{
-							runMethodsList.add(currentClass.getMethod("void run()"));
+							runMethodsList.add(currentMethod);
 						}
 					}
 				}

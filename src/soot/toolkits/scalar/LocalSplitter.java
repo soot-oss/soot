@@ -104,9 +104,10 @@ public class LocalSplitter extends BodyTransformer
         {
             ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body,this.throwAnalysis,true);
 
-            LocalDefs localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
-            LocalUses localUses = new SimpleLocalUses(graph, localDefs);
-            
+            final LocalDefs localDefs = new SmartLocalDefs(graph,
+    				new SimpleLiveLocals(graph));
+    		final LocalUses localUses = new SimpleLocalUses(graph, localDefs);
+    		
             if(Options.v().time())
                 Timers.v().splitPhase1Timer.end();
             if(Options.v().time())

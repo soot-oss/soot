@@ -97,7 +97,10 @@ public class SourceLocator
         if(ex!=null) throw ex;
         if(className.startsWith("soot.rtlib.tamiflex.")) {
 	        String fileName = className.replace('.', '/') + ".class";
-        	InputStream stream = getClass().getClassLoader().getResourceAsStream(fileName);
+	        ClassLoader cl = getClass().getClassLoader();
+	        if (cl == null)
+	        	return null;
+        	InputStream stream = cl.getResourceAsStream(fileName);
         	if(stream!=null) {
 				return new CoffiClassSource(className, stream, fileName, null);
         	}

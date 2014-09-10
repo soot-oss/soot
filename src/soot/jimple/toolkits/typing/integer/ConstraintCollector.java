@@ -554,8 +554,10 @@ class ConstraintCollector extends AbstractStmtSwitch
 	    if(lop != null && rop != null)
 	      {
 		TypeVariable common = resolver.typeVariable();
-		rop.addParent(common);
-		lop.addParent(common);
+		if (rop != null)
+			rop.addParent(common);
+		if (lop != null)
+			lop.addParent(common);
 
 		right = common;
 	      }
@@ -611,8 +613,10 @@ class ConstraintCollector extends AbstractStmtSwitch
 	    if(uses)
 	      {
 		TypeVariable common = resolver.typeVariable();
-		rop.addParent(common);
-		lop.addParent(common);
+		if (rop != null)
+			rop.addParent(common);
+		if (lop != null)
+			lop.addParent(common);
 	      }
 
 	    right = resolver.BOOLEAN;
@@ -976,8 +980,10 @@ class ConstraintCollector extends AbstractStmtSwitch
 	if(rop != null && lop != null)
 	  {
 	    TypeVariable common = resolver.typeVariable();
-	    rop.addParent(common);
-	    lop.addParent(common);
+	    if (rop != null)
+	    	rop.addParent(common);
+	    if (lop != null)
+	    	lop.addParent(common);
 	  }
       }
   }

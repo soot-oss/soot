@@ -124,8 +124,9 @@ class SootMethodRefImpl implements SootMethodRef {
         while(true) {
             if(trace != null) trace.append(
                     "Looking in "+cl+" which has methods "+cl.getMethods()+"\n" );
-            if( cl.declaresMethod( getSubSignature() ) )
-                return checkStatic(cl.getMethod( getSubSignature() ));
+            SootMethod sm = cl.getMethodUnsafe(getSubSignature());
+            if( sm != null )
+                return checkStatic(sm);
             if(Scene.v().allowsPhantomRefs() && (cl.isPhantom() || Options.v().ignore_resolution_errors()))
             {
                 SootMethod m = new SootMethod(name, parameterTypes, returnType, isStatic()?Modifier.STATIC:0);
@@ -144,8 +145,9 @@ class SootMethodRefImpl implements SootMethodRef {
                 SootClass iface = queue.removeFirst();
                 if(trace != null) trace.append(
                         "Looking in "+iface+" which has methods "+iface.getMethods()+"\n" );
-                if( iface.declaresMethod( getSubSignature() ) )
-                    return checkStatic(iface.getMethod( getSubSignature() ));
+                SootMethod sm = iface.getMethodUnsafe(getSubSignature());
+                if( sm != null )
+                    return checkStatic(sm);
                 queue.addAll( iface.getInterfaces() );
             }
             if( cl.hasSuperclass() ) cl = cl.getSuperclass();
