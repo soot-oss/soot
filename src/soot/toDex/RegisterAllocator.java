@@ -155,6 +155,10 @@ public class RegisterAllocator {
 	    return multipleConstantsPossible;
 	}
 
+	public Map<String, Integer> getLocalToRegisterMapping() {
+		return localToLastRegNum;
+	}
+	
 	public Register asLocal(Value v) {
 		Local l = (Local) v;
 		String localName = l.getName();
