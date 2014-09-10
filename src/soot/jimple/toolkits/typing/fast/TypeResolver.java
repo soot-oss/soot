@@ -529,7 +529,9 @@ public class TypeResolver
 							}
 							tg_.set(v, t);
 							
-							wl_.or(this.depends.get(v));							
+							BitSet dependsV = this.depends.get(v);
+							if (dependsV != null)
+								wl_.or(dependsV);
 						}
 						isFirstType = false;
 					}
