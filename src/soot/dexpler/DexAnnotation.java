@@ -143,34 +143,43 @@ public class DexAnnotation {
                 break;
             }
         }
+                
         if (doParam) {
-            VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(parameters.size(), 0);
+            VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(
+            		parameters.size(), AnnotationConstants.RUNTIME_VISIBLE);
             for (MethodParameter p : parameters) {
                 List<Tag> tags = handleAnnotation(p.getAnnotations(), null);
-                if (tags == null)
+                
+                // If we have no tag for this parameter, add a placeholder
+                // so that we keep the order intact.
+                if (tags == null) {
+                	tag.addVisibilityAnnotation(null);
                 	continue;
+                }
+
+                VisibilityAnnotationTag paramVat = new VisibilityAnnotationTag(
+            			AnnotationConstants.RUNTIME_VISIBLE);
+            	tag.addVisibilityAnnotation(paramVat);
+                
                 for (Tag t : tags) {
                 	if (t == null)
                 		continue;
                 	
-                    VisibilityAnnotationTag vat = null;
-
+                    AnnotationTag vat = null;
                     if (!(t instanceof VisibilityAnnotationTag)) {
                         if (t instanceof DeprecatedTag) {
-                            vat = new VisibilityAnnotationTag(0);
-                            vat.addAnnotation(new AnnotationTag("Ljava/lang/Deprecated;"));
+                            vat = new AnnotationTag("Ljava/lang/Deprecated;");
                         }
                         else if (t instanceof SignatureTag) {
                         	SignatureTag sig = (SignatureTag) t;
                         	
-                            vat = new VisibilityAnnotationTag(0);
                             ArrayList<AnnotationElem> sigElements = new ArrayList<AnnotationElem>();
                             for (String s : SootToDexUtils.splitSignature(sig.getSignature()))
                             	sigElements.add(new AnnotationStringElem(s, 's', "value"));
                             
                             AnnotationElem elem = new AnnotationArrayElem(sigElements, 's', "value");
-                            vat.addAnnotation(new AnnotationTag("Ldalvik/annotation/Signature;",
-                            		Collections.singleton(elem)));
+                            vat = new AnnotationTag("Ldalvik/annotation/Signature;",
+                            		Collections.singleton(elem));
                         }
                         else {
                             throw new RuntimeException(
@@ -178,11 +187,11 @@ public class DexAnnotation {
                                             + h + " (" + t + ").");
                         }
                     } else {
-                        vat = (VisibilityAnnotationTag) t;
+                        vat = ((VisibilityAnnotationTag) t).getAnnotations().get(0);
                     }
 
                     Debug.printDbg("add parameter annotation: ", t);
-                    tag.addVisibilityAnnotation(vat);
+                    paramVat.addAnnotation(vat);
                 }
             }
             if (tag.getVisibilityAnnotations().size() > 0)

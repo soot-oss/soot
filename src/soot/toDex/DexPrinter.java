@@ -556,15 +556,18 @@ public class DexPrinter {
     	return annotations;
     }
 
-    private Set<Annotation> buildMethodParameterAnnotations(SootMethod m) {
+    private Set<Annotation> buildMethodParameterAnnotations(SootMethod m,
+    		final int paramIdx) {
     	Set<String> skipList = new HashSet<String>();
     	Set<Annotation> annotations = buildCommonAnnotations(m, skipList);
     	
+        if (m.getName().contains("foo"))
+        	System.out.println("x");
     	for (Tag t : m.getTags()) {
-            if (t.getName().equals("VisibilityParameterAnnotationTag")){
+            if (t.getName().equals("VisibilityParameterAnnotationTag")) {
                 VisibilityParameterAnnotationTag vat = (VisibilityParameterAnnotationTag)t;
                 List<ImmutableAnnotation> visibilityItems = buildVisibilityParameterAnnotationTag
-                		(vat, skipList);
+                		(vat, skipList, paramIdx);
             	annotations.addAll(visibilityItems);
             }
     	}
@@ -655,13 +658,17 @@ public class DexPrinter {
 	}
 
     private List<ImmutableAnnotation> buildVisibilityParameterAnnotationTag
-			(VisibilityParameterAnnotationTag t, Set<String> skipList) {
+    		(VisibilityParameterAnnotationTag t, Set<String> skipList,
+    				int paramIdx) {
 		if (t.getVisibilityAnnotations() == null)
     		return Collections.emptyList();
-    	
+		
+        int paramTagIdx = 0;
     	List<ImmutableAnnotation> annotations = new ArrayList<ImmutableAnnotation>();
         for (VisibilityAnnotationTag vat : t.getVisibilityAnnotations()) {
-        	if (vat.getAnnotations() != null)
+        	if (paramTagIdx == paramIdx
+        			&& vat != null
+        			&& vat.getAnnotations() != null)
 	        	for (AnnotationTag at : vat.getAnnotations()) {
 		            String type = at.getType();
 		            if (!skipList.add(type))
@@ -688,6 +695,7 @@ public class DexPrinter {
 		            		elements);
 		            annotations.add(ann);
 	        	}
+        	paramTagIdx++;
         }
         return annotations;
     }
@@ -810,7 +818,7 @@ public class DexPrinter {
 	        	for (Type tp : sm.getParameterTypes()) {
 	        		String paramType = SootToDexUtils.getDexTypeDescriptor(tp);
 	        		parameters.add(new ImmutableMethodParameter(paramType,
-	        				buildMethodParameterAnnotations(sm),
+	        				buildMethodParameterAnnotations(sm, paramIdx),
 	        				sm.isConcrete() && parameterNames != null ?
 	        						parameterNames.get(paramIdx) : null));
 	        		paramIdx++;

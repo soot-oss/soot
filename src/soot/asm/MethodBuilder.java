@@ -159,8 +159,6 @@ class MethodBuilder extends JSRInlinerAdapter {
 					new VisibilityParameterAnnotationTag(visibleParamAnnotations.length,
 							AnnotationConstants.RUNTIME_VISIBLE);
 			for (VisibilityAnnotationTag vat : visibleParamAnnotations) {
-				if (vat == null)
-					vat = new VisibilityAnnotationTag(AnnotationConstants.RUNTIME_VISIBLE);
 				tag.addVisibilityAnnotation(vat);
 			}
 			method.addTag(tag);
@@ -170,8 +168,6 @@ class MethodBuilder extends JSRInlinerAdapter {
 					new VisibilityParameterAnnotationTag(invisibleParamAnnotations.length,
 							AnnotationConstants.RUNTIME_INVISIBLE);
 			for (VisibilityAnnotationTag vat : invisibleParamAnnotations){
-				if (vat == null)
-					vat = new VisibilityAnnotationTag(AnnotationConstants.RUNTIME_INVISIBLE);
 				tag.addVisibilityAnnotation(vat);
 			}
 			method.addTag(tag);

@@ -286,16 +286,27 @@ public abstract class AbstractJasminClass
         }
         ArrayList<VisibilityAnnotationTag> vis_list = tag.getVisibilityAnnotations();
         if (vis_list != null){
-            Iterator<VisibilityAnnotationTag> it = vis_list.iterator();
-            while (it.hasNext()){
-                sb.append(getVisibilityAnnotationAttr(it.next()));
+            for (VisibilityAnnotationTag vat : vis_list) {
+            	VisibilityAnnotationTag safeVat = vat == null
+            			? getSafeVisibilityAnnotationTag(tag.getKind()) : vat;
+                sb.append(getVisibilityAnnotationAttr(safeVat));
             }
         }
         sb.append(".end .param\n");
         return sb.toString();    
     }
-   
-    private String getElemAttr(AnnotationElem elem){
+    
+    private static Map<Integer, VisibilityAnnotationTag> safeVats =
+    		new HashMap<Integer, VisibilityAnnotationTag>();
+    
+    private VisibilityAnnotationTag getSafeVisibilityAnnotationTag(int kind) {
+    	VisibilityAnnotationTag safeVat = safeVats.get(kind);
+		if (safeVat == null)
+			safeVats.put(kind, safeVat = new VisibilityAnnotationTag(kind));
+		return safeVat;
+	}
+
+	private String getElemAttr(AnnotationElem elem){
         StringBuffer result = new StringBuffer(".elem ");
         switch (elem.getKind()){
             case 'Z': {
