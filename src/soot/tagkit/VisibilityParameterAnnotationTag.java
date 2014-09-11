@@ -48,10 +48,9 @@ public class VisibilityParameterAnnotationTag implements  Tag
     public String toString() {
         StringBuffer sb = new StringBuffer("Visibility Param Annotation: num params: "+num_params+" kind: "+kind);
         if (visibilityAnnotations != null){
-            Iterator<VisibilityAnnotationTag> it = visibilityAnnotations.iterator();
-            while (it.hasNext()){
+            for (VisibilityAnnotationTag tag : visibilityAnnotations) {
                 sb.append("\n");
-                sb.append(it.next().toString());
+                sb.append(tag.toString());
             }
         }
         sb.append("\n");
@@ -73,6 +72,10 @@ public class VisibilityParameterAnnotationTag implements  Tag
     }
 
     public void addVisibilityAnnotation(VisibilityAnnotationTag a){
+    	// Do not add null annotation tags
+    	if (a == null)
+    		return;
+    	
         if (visibilityAnnotations == null){
             visibilityAnnotations = new ArrayList<VisibilityAnnotationTag>();
         }
