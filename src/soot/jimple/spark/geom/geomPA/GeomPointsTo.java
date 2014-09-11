@@ -1848,7 +1848,7 @@ public class GeomPointsTo extends PAG
         if ( vn == null ) 
         	return EmptyPointsToSet.v();
         
-        IVarAbstraction pn = consG.get(f);
+        IVarAbstraction pn = consG.get(vn);
         if( pn == null ) 
         	return vn.getP2Set();
         
