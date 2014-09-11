@@ -48,11 +48,11 @@ public class VisibilityParameterAnnotationTag implements  Tag
     public String toString() {
         StringBuffer sb = new StringBuffer("Visibility Param Annotation: num params: "+num_params+" kind: "+kind);
         if (visibilityAnnotations != null){
-            for (VisibilityAnnotationTag tag : visibilityAnnotations)
-	            if (tag != null){
-	                sb.append("\n");
+            for (VisibilityAnnotationTag tag : visibilityAnnotations) {
+            	sb.append("\n");
+            	if (tag != null)
 	                sb.append(tag.toString());
-	            }
+            }
         }
         sb.append("\n");
         return sb.toString();
