@@ -207,24 +207,47 @@ public class SootClass extends AbstractHost implements Numberable
     }
 
     /**
-        Returns the field of this class with the given name and type. 
+     * Returns the field of this class with the given name and type. If the
+     * field cannot be found, an exception is thrown.  
     */
-
     public SootField getField( String name, Type type ) {
+    	SootField sf = getFieldUnsafe(name, type);
+    	if (sf == null)
+    		throw new RuntimeException("No field " + name + " in class " + getName());
+    	return sf;
+    }
+    
+    /**
+     * Returns the field of this class with the given name and type. If the
+     * field cannot be found, null is returned.  
+    */    
+    public SootField getFieldUnsafe( String name, Type type ) {
         checkLevel(SIGNATURES);
         for (SootField field : fields) {
             if(field.getName().equals(name) && field.getType().equals(type))
                 return field;
         }
-        throw new RuntimeException("No field " + name + " in class " + getName());
+        return null;
     }
     
     /**
-        Returns the field of this class with the given name.  Throws a RuntimeException if there
-        are more than one.
+     * Returns the field of this class with the given name.  Throws a RuntimeException if there
+     * is more than one field with the given name or if no such field exists at all.
     */
-
     public SootField getFieldByName(String name)
+    {
+        SootField foundField = getFieldByNameUnsafe(name);
+        if(foundField == null)
+            throw new RuntimeException("No field " + name + " in class " + getName());
+        return foundField;
+    }
+    
+    /**
+     * Returns the field of this class with the given name.  Throws a RuntimeException if there
+     * is more than one field with the given name. Returns null if no field with the given name
+     * exists.
+    */
+    public SootField getFieldByNameUnsafe(String name)
     {
         checkLevel(SIGNATURES);
         SootField foundField = null;
@@ -238,32 +261,37 @@ public class SootClass extends AbstractHost implements Numberable
                     throw new RuntimeException("ambiguous field: "+name);
             }
         }
-
-        if(foundField == null)
-            throw new RuntimeException("No field " + name + " in class " + getName());
         return foundField;
     }
-
     
-    /*    
-        Returns the field of this class with the given subsignature.
-    */
-
+    /**
+     * Returns the field of this class with the given subsignature. If such a field
+     * does not exist, an exception is thrown.
+     */
     public SootField getField(String subsignature)
+    {
+        SootField sf = getFieldUnsafe(subsignature);
+        if (sf == null)
+        	throw new RuntimeException("No field " + subsignature + " in class " + getName());
+        return sf;
+    }
+    
+    /**
+     * Returns the field of this class with the given subsignature. If such a field
+     * does not exist, null is returned.
+     */
+    public SootField getFieldUnsafe(String subsignature)
     {
         checkLevel(SIGNATURES);
         for (SootField field : fields) {
             if( field.getSubSignature().equals( subsignature ) ) return field;
         }
-
-        throw new RuntimeException("No field " + subsignature + " in class " + getName());
+        return null;
     }
-
     
     /**
-        Does this class declare a field with the given subsignature?
-    */
-
+     * Does this class declare a field with the given subsignature?
+     */
     public boolean declaresField(String subsignature)
     {
         checkLevel(SIGNATURES);
@@ -273,24 +301,33 @@ public class SootClass extends AbstractHost implements Numberable
     }
 
     
-    /*    
-        Returns the method of this class with the given subsignature.
-    */
-
+    /**    
+     * Returns the method of this class with the given subsignature. If no
+     * method with the given subsignature can be found, an exception is thrown.
+     */
     public SootMethod getMethod(NumberedString subsignature)
     {
-        checkLevel(SIGNATURES);
-        SootMethod ret = subSigToMethods.get( subsignature );
+        SootMethod ret = getMethodUnsafe(subsignature);
         if(ret == null)
             throw new RuntimeException("No method " + subsignature + " in class " + getName());
         else
             return ret;
     }
 
-    /**
-        Does this class declare a method with the given subsignature?
-    */
+    /**    
+     * Returns the method of this class with the given subsignature. If no
+     * method with the given subsignature can be found, null is returned.
+     */
+    public SootMethod getMethodUnsafe(NumberedString subsignature)
+    {
+        checkLevel(SIGNATURES);
+        SootMethod ret = subSigToMethods.get( subsignature );
+        return ret;
+    }
 
+    /**
+     * Does this class declare a method with the given subsignature?
+     */
     public boolean declaresMethod(NumberedString subsignature)
     {
         checkLevel(SIGNATURES);
@@ -299,16 +336,26 @@ public class SootClass extends AbstractHost implements Numberable
     }
     
     
-    /*    
-        Returns the method of this class with the given subsignature.
-    */
-
+    /*
+     * Returns the method of this class with the given subsignature. If no
+     * method with the given subsignature can be found, an exception is thrown.
+     */
     public SootMethod getMethod(String subsignature)
     {
         checkLevel(SIGNATURES);
         return getMethod( Scene.v().getSubSigNumberer().findOrAdd( subsignature ) );
     }
-
+    
+    /*
+     * Returns the method of this class with the given subsignature. If no
+     * method with the given subsignature can be found, null is returned.
+     */
+    public SootMethod getMethodUnsafe(String subsignature)
+    {
+        checkLevel(SIGNATURES);
+        return getMethodUnsafe( Scene.v().getSubSigNumberer().findOrAdd( subsignature ) );
+    }
+    
     /**
         Does this class declare a method with the given subsignature?
     */
@@ -337,9 +384,8 @@ public class SootClass extends AbstractHost implements Numberable
 
     
     /**
-        Does this class declare a field with the given name and type.
-    */
-
+     * Does this class declare a field with the given name and type.
+     */
     public boolean declaresField(String name, Type type)
     {
         checkLevel(SIGNATURES);
@@ -377,7 +423,27 @@ public class SootClass extends AbstractHost implements Numberable
         return new ArrayList<SootMethod>(methodList);
     }
 
+    /**
+     * Attempts to retrieve the method with the given name, parameters and return type.
+     * If no matching method can be found, an exception is thrown.  
+     */
     public SootMethod getMethod( String name, List<Type> parameterTypes,
+            Type returnType )
+    {
+        SootMethod sm = getMethodUnsafe(name, parameterTypes, returnType);
+        if (sm != null)
+        	return sm;
+        
+        throw new RuntimeException(
+                "Class "+getName()+" doesn't have method "+
+            name + "(" + parameterTypes + ")" + " : " + returnType );
+    }
+    
+    /**
+     * Attempts to retrieve the method with the given name, parameters and return type.
+     * If no matching method can be found, null is returned.  
+     */
+    public SootMethod getMethodUnsafe( String name, List<Type> parameterTypes,
             Type returnType )
     {
         checkLevel(SIGNATURES);
@@ -389,14 +455,9 @@ public class SootClass extends AbstractHost implements Numberable
                 return method;
             }
         }
-        throw new RuntimeException(
-                "Class "+getName()+" doesn't have method "+
-            name + "(" + parameterTypes + ")" + " : " + returnType );
+        return null;
     }
-    /**
-        Attempts to retrieve the method with the given name, parameters and return type.  
-    */
-
+    
     /**
         Attempts to retrieve the method with the given name and parameters.  This method
         may throw an AmbiguousMethodException if there is more than one method with the
@@ -426,12 +487,12 @@ public class SootClass extends AbstractHost implements Numberable
 
     
      /**
-        Attempts to retrieve the method with the given name.  This method
-        may throw an AmbiguousMethodException if there are more than one method with the
-        given name.
+      * Attempts to retrieve the method with the given name.  This method may
+      * throw an AmbiguousMethodException if there are more than one method
+      * with the given name. If no method with the given is found, null is
+      * returned.
     */
-
-    public SootMethod getMethodByName(String name) 
+    public SootMethod getMethodByNameUnsafe(String name) 
     {
         checkLevel(SIGNATURES);
         SootMethod foundMethod = null;
@@ -445,12 +506,24 @@ public class SootClass extends AbstractHost implements Numberable
                     throw new RuntimeException("ambiguous method: " + name + " in class " + this);
             }
         }
-        if(foundMethod == null)
-            throw new RuntimeException("couldn't find method "+name+"(*) in "+this);
         return foundMethod;
     }
 
     /**
+     * Attempts to retrieve the method with the given name.  This method may
+     * throw an AmbiguousMethodException if there are more than one method
+     * with the given name. If no method with the given is found, an exception
+     * is thrown as well.
+   */
+   public SootMethod getMethodByName(String name) 
+   {
+       SootMethod foundMethod = getMethodByNameUnsafe(name);
+       if(foundMethod == null)
+           throw new RuntimeException("couldn't find method "+name+"(*) in "+this);
+       return foundMethod;
+   }
+
+   /**
         Does this class declare a method with the given name and parameter types?
     */
 
@@ -1014,5 +1087,22 @@ public class SootClass extends AbstractHost implements Numberable
     public final void setNumber( int number ) { this.number = number; }
 
     private int number = 0;
+    
+    public void rename(String newName)
+    {
+    	this.name = newName;
+    	//resolvingLevel = BODIES;
+	
+    	if (this.refType != null)
+    	{
+    		refType.setClassName(name);
+    	}
+    	else
+    	{
+    		refType = RefType.v(name);
+    	}
+    	Scene.v().addRefType(refType);
+    	
+    }
 }
 

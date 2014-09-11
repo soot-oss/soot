@@ -30,10 +30,12 @@ public class RegisterAssigner {
 		
 		private final ListIterator<Insn> insnsIterator;
 		private final Map<Insn, Stmt> insnStmtMap;
+		private final Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap;
 		
-		public InstructionIterator(List<Insn> insns, Map<Insn, Stmt> insnStmtMap) {
+		public InstructionIterator(List<Insn> insns, Map<Insn, Stmt> insnStmtMap, Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap) {
 			this.insnStmtMap = insnStmtMap;
 			this.insnsIterator = insns.listIterator(); 
+			this.insnRegisterMap = insnRegisterMap;
 		}
 		
 		@Override
@@ -55,13 +57,29 @@ public class RegisterAssigner {
 			this.insnsIterator.remove();
 		}
 		
-		public void add(Insn element, Insn forOriginal) {
+		public void add(Insn element, Insn forOriginal, Register newRegister) {
+			LocalRegisterAssignmentInformation originalRegisterLocal = this.insnRegisterMap.get(forOriginal);
+			if (originalRegisterLocal != null)
+			{
+				if (newRegister != null)
+					this.insnRegisterMap.put(element, LocalRegisterAssignmentInformation.v(newRegister, this.insnRegisterMap.get(forOriginal).getLocal()));
+				else
+					this.insnRegisterMap.put(element, originalRegisterLocal);
+			}
+			
 			if (this.insnStmtMap.containsKey(forOriginal))
 				this.insnStmtMap.put(element, insnStmtMap.get(forOriginal));
 			this.insnsIterator.add(element);
 		}
 		
 		public void set(Insn element, Insn forOriginal) {
+			LocalRegisterAssignmentInformation originalRegisterLocal = this.insnRegisterMap.get(forOriginal);
+			if (originalRegisterLocal != null)
+			{
+				this.insnRegisterMap.put(element, originalRegisterLocal);
+				this.insnRegisterMap.remove(forOriginal);
+			}
+			
 			if (this.insnStmtMap.containsKey(forOriginal)) {
 				this.insnStmtMap.put(element, insnStmtMap.get(forOriginal));
 				this.insnStmtMap.remove(forOriginal);
@@ -77,10 +95,10 @@ public class RegisterAssigner {
 		this.regAlloc = regAlloc;
 	}
 
-	public List<Insn> finishRegs(List<Insn> insns, Map<Insn, Stmt> insnsStmtMap) {
-		renumParamRegsToHigh(insns);
+	public List<Insn> finishRegs(List<Insn> insns, Map<Insn, Stmt> insnsStmtMap, Map<Insn, LocalRegisterAssignmentInformation> instructionRegisterMap, List<LocalRegisterAssignmentInformation> parameterInstructionsList) {
+		renumParamRegsToHigh(insns, parameterInstructionsList);
 		reserveRegisters(insns, insnsStmtMap);
-		InstructionIterator insnIter = new InstructionIterator(insns, insnsStmtMap);
+		InstructionIterator insnIter = new InstructionIterator(insns, insnsStmtMap, instructionRegisterMap);
 		while (insnIter.hasNext()) {
 			Insn oldInsn = insnIter.next();
 			if (oldInsn.hasIncompatibleRegs()) {
@@ -95,7 +113,7 @@ public class RegisterAssigner {
 		return insns;
 	}
 	
-	private void renumParamRegsToHigh(List<Insn> insns) {
+	private void renumParamRegsToHigh(List<Insn> insns, List<LocalRegisterAssignmentInformation> parameterInstructionsList) {
 		int regCount = regAlloc.getRegCount();
 		int paramRegCount = regAlloc.getParamRegCount();
 		if (paramRegCount == 0 || paramRegCount == regCount) {
@@ -105,6 +123,10 @@ public class RegisterAssigner {
 			for (Register r : insn.getRegs()) {
 				renumParamRegToHigh(r, regCount, paramRegCount);
 			}
+		}
+		for (LocalRegisterAssignmentInformation parameter : parameterInstructionsList)
+		{
+			renumParamRegToHigh(parameter.getRegister(), regCount, paramRegCount);
 		}
 	}
 
@@ -190,18 +212,24 @@ public class RegisterAssigner {
 		BitSet incompatRegs = insn.getIncompatibleRegs();
 		Register resultReg = regs.get(0);
 		// do we have an incompatible result reg?
-		boolean hasResultReg = insn.getOpcode(). setsRegister();
+		boolean hasResultReg = insn.getOpcode().setsRegister() || insn.getOpcode().setsWideRegister();
 		boolean isResultRegIncompat = incompatRegs.get(0);
+		
 		// is there an incompat result reg which is not also used as a source (like in /2addr)?
 		if (hasResultReg && isResultRegIncompat && !insn.getOpcode().name.endsWith("/2addr")) {
 			// yes, so pretend result reg is compatible, since it will get a special move
 			incompatRegs.clear(0);
 		}
+		
 		// handle normal incompatible regs, if any: add moves
 		if (incompatRegs.cardinality() > 0) {
 			addMovesForIncompatRegs(insn, allInsns, regs, incompatRegs);
 		}
-		// handle incompatible result reg
+		
+		// handle incompatible result reg. This is for three-operand instructions
+		// in which the result register is out of scope. For /2addr instructions,
+		// we need to coherently move source and result, so this is already done
+		// in addMovesForIncompatRegs.
 		if (hasResultReg && isResultRegIncompat) {
 			Register resultRegClone = resultReg.clone();
 			addMoveForIncompatResultReg(allInsns, resultRegClone, resultReg, insn);
@@ -217,7 +245,7 @@ public class RegisterAssigner {
 		origResultReg.setNumber(0); // fix reg in original insn
 		Register sourceReg = new Register(destReg.getType(), 0);
 		Insn extraMove = StmtVisitor.buildMoveInsn(destReg, sourceReg);
-		insns.add(extraMove, curInsn);
+		insns.add(extraMove, curInsn, destReg);
 	}
 
 	/**
@@ -230,6 +258,12 @@ public class RegisterAssigner {
 	 * @param incompatRegs
 	 */
 	private void addMovesForIncompatRegs(Insn curInsn, InstructionIterator insns, List<Register> regs, BitSet incompatRegs) {
+		Register newRegister = null;
+		final Register resultReg = regs.get(0);
+		final boolean hasResultReg = curInsn.getOpcode().setsRegister()
+				|| curInsn.getOpcode().setsWideRegister();
+		Insn moveResultInsn = null;
+		
 		insns.previous(); // extra MOVEs are added _before_ the current insn
 		int nextNewDestination = 0;
 		for (int regIdx = 0; regIdx < regs.size(); regIdx++) {
@@ -248,13 +282,23 @@ public class RegisterAssigner {
 				nextNewDestination += SootToDexUtils.getDexWords(source.getType());
 				if (source.getNumber() != destination.getNumber()) {
 					Insn extraMove = StmtVisitor.buildMoveInsn(destination, source);
-					insns.add(extraMove, curInsn); // advances the cursor, so no next() needed
+					insns.add(extraMove, curInsn, null); // advances the cursor, so no next() needed
 					// finally patch the original, incompatible reg
 					incompatReg.setNumber(destination.getNumber());
+					
+					// If this is the result register, we need to save the result as well
+					if (hasResultReg && regIdx == resultReg.getNumber())
+					{
+						moveResultInsn = StmtVisitor.buildMoveInsn(source, destination);
+						newRegister = destination;
+					}
 				}
 			}
 		}
 		insns.next(); // get past current insn again
+
+		if (moveResultInsn != null)
+			insns.add(moveResultInsn, curInsn, newRegister); // advances the cursor, so no next() needed
 	}
 
 	private Insn findFittingInsn(Insn insn) {

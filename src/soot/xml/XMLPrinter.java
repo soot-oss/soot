@@ -52,7 +52,6 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LiveLocals;
 import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.util.Chain;
-import soot.util.StringTools;
 
 /** XML printing routines all XML output comes through here */
 public class XMLPrinter {
@@ -720,7 +719,7 @@ public class XMLPrinter {
 
     private String toCDATA(String str) {
         // wrap a string in CDATA markup - str can contain anything and will pass XML validation
-	str = StringTools.replaceAll(str, "]]>", "]]&gt;");
+    	str = str.replaceAll("]]>", "]]&gt;");
         return "<![CDATA[" + str + "]]>";
     }
 

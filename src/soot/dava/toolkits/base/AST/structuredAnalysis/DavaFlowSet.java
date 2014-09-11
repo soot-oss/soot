@@ -102,7 +102,7 @@ public class DavaFlowSet extends AbstractFlowSet{
         return new DavaFlowSet(this);
     }
 
-    public Object emptySet()
+    public FlowSet emptySet()
     {
         return new DavaFlowSet();
     }

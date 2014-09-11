@@ -50,7 +50,7 @@ public final class BitPointsToSet extends PointsToSetInternal {
         if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
             mask = typeManager.get( this.getType() );
         }
-        BitVector obits = other.bits;
+        BitVector obits = ( other == null  ? null : other.bits );
         BitVector ebits = ( exclude==null ? null : exclude.bits );
         boolean ret = bits.orAndAndNot( obits, mask, ebits );
         if( ret ) empty = false;

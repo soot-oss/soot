@@ -444,7 +444,9 @@ public abstract class AbstractJasminClass
                 // 'Badly formatted number' error. When analyzing an Android 
                 // applications (.apk) their name is stored in srcName and 
                 // can start with a digit.
-                if (Options.v().android_jars() != "" && Character.isDigit(srcName.charAt(0))) 
+                if (!Options.v().android_jars().isEmpty()
+                		&& !srcName.isEmpty()
+                		&& Character.isDigit(srcName.charAt(0))) 
                     srcName = "n_"+ srcName;
                 
                 // Jasmin does not support blanks, so get rid of them

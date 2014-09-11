@@ -124,6 +124,9 @@ Feng Qian (fqian@sable.mcgill.ca)
     - Dot interface, CFGViewer
     - prepared 1.2.2, 1.2.3 release
 
+Samuel Andres Beracasa Rodriguez (samuelbera91@gmail.com)
+	- Improvements to the ASM frontend
+
 Hossein Sadat-Mohtasham
 	- Program Dependency Graphs
 

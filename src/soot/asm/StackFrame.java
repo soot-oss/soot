@@ -21,6 +21,7 @@ package soot.asm;
 import java.util.ArrayList;
 
 import soot.Local;
+import soot.Unit;
 import soot.ValueBox;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
@@ -36,13 +37,13 @@ final class StackFrame {
 	private Local[] inStackLocals;
 	private ValueBox[] boxes;
 	private ArrayList<Operand[]> in;
-	private final JimpleSource src;
+	private final AsmMethodSource src;
 	
 	/**
 	 * Constructs a new stack frame.
 	 * @param src source the frame belongs to.
 	 */
-	StackFrame(JimpleSource src) {
+	StackFrame(AsmMethodSource src) {
 		this.src = src;
 	}
 	
@@ -95,7 +96,6 @@ final class StackFrame {
 		ArrayList<Operand[]> in = this.in;
 		if (in.get(0).length != oprs.length)
 			throw new IllegalArgumentException("Invalid in operands length!");
-		AssignStmt as;
 		int nrIn = in.size();
 		boolean diff = false;
 		all_opr:
@@ -111,11 +111,11 @@ final class StackFrame {
 			if (stack != null) {
 				if (newOp.stack == null) {
 					newOp.stack = stack;
-					as = Jimple.v().newAssignStmt(stack, newOp.value);
+					AssignStmt as = Jimple.v().newAssignStmt(stack, newOp.value);
 					src.setUnit(newOp.insn, as);
 					newOp.updateBoxes();
 				} else {
-					as = Jimple.v().newAssignStmt(stack, newOp.stackOrValue());
+					AssignStmt as = Jimple.v().newAssignStmt(stack, newOp.stackOrValue());
 					src.mergeUnits(newOp.insn, as);
 					newOp.addBox(as.getRightOpBox());
 				}
@@ -139,10 +139,18 @@ final class StackFrame {
 					prevOp.removeBox(box);
 					if (prevOp.stack == null) {
 						prevOp.stack = stack;
-						as = Jimple.v().newAssignStmt(stack, prevOp.value);
+						AssignStmt as = Jimple.v().newAssignStmt(stack, prevOp.value);
 						src.setUnit(prevOp.insn, as);
 					} else {
-						as = src.getUnit(prevOp.insn);
+						Unit u = src.getUnit(prevOp.insn);		// TODO: Fails with UnitContainers
+						AssignStmt as;
+						if (u instanceof UnitContainer) {
+							UnitContainer uc = (UnitContainer) u;
+							as = (AssignStmt) uc.units[0];
+						}
+						else
+							as = (AssignStmt) u;
+						
 						ValueBox lvb = as.getLeftOpBox();
 						assert lvb.getValue() == prevOp.stack : "Invalid stack local!";
 						lvb.setValue(stack);
@@ -153,10 +161,18 @@ final class StackFrame {
 				if (newOp.stack != stack) {
 					if (newOp.stack == null) {
 						newOp.stack = stack;
-						as = Jimple.v().newAssignStmt(stack, newOp.value);
+						AssignStmt as = Jimple.v().newAssignStmt(stack, newOp.value);
 						src.setUnit(newOp.insn, as);
 					} else {
-						as = src.getUnit(newOp.insn);
+						Unit u = src.getUnit(newOp.insn);
+						AssignStmt as;
+						if (u instanceof UnitContainer) {
+							UnitContainer uc = (UnitContainer) u;
+							as = (AssignStmt) uc.units[0];
+						}
+						else
+							as = (AssignStmt) u;
+						
 						ValueBox lvb = as.getLeftOpBox();
 						assert lvb.getValue() == newOp.stack : "Invalid stack local!";
 						lvb.setValue(stack);

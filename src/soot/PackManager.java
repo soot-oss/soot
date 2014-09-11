@@ -79,6 +79,7 @@ import soot.jimple.toolkits.annotation.purity.PurityAnalysis;
 import soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger;
 import soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator;
 import soot.jimple.toolkits.base.Aggregator;
+import soot.jimple.toolkits.base.RenameDuplicatedClasses;
 import soot.jimple.toolkits.callgraph.CHATransformer;
 import soot.jimple.toolkits.callgraph.CallGraphPack;
 import soot.jimple.toolkits.callgraph.UnreachableMethodTransformer;
@@ -113,6 +114,8 @@ import soot.tagkit.LineNumberTagAggregator;
 import soot.toDex.DexPrinter;
 import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.graph.interaction.InteractionHandler;
+import soot.toolkits.scalar.ConstantInitializerToTagTransformer;
+import soot.toolkits.scalar.ConstantValueToInitializerTransformer;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
 import soot.toolkits.scalar.UnusedLocalEliminator;
@@ -201,6 +204,7 @@ public class PackManager {
         {
 	    	p.add(new Transform("wjtp.mhp", MhpTransformer.v()));
 	    	p.add(new Transform("wjtp.tn", LockAllocator.v()));
+	    	p.add(new Transform("wjtp.rdc", RenameDuplicatedClasses.v()));
         }
 
         // Whole-Jimple Optimization pack
@@ -409,9 +413,17 @@ public class PackManager {
             for (String cl : SourceLocator.v().getClassesUnder(path)) {
 
                 ClassSource source = SourceLocator.v().getClassSource(cl);
+                if (source == null)
+                	throw new RuntimeException("Could not locate class source");
                 SootClass clazz = Scene.v().getSootClass(cl);
                 clazz.setResolvingLevel(SootClass.BODIES);
                 source.resolve(clazz);
+                
+            	// Create tags from all values we only have in code assingments now
+                for (SootClass sc : Scene.v().getApplicationClasses())
+                	if (!sc.isPhantom)
+                		ConstantInitializerToTagTransformer.v().transformClass(sc, true);
+                
 				runBodyPacks(clazz);
 				//generate output
 				writeClass(clazz);
@@ -436,12 +448,17 @@ public class PackManager {
             LineNumberAdder lineNumAdder = LineNumberAdder.v();
             lineNumAdder.internalTransform("", null);
         }
-
+		
         if (Options.v().whole_program() || Options.v().whole_shimple()) {
             runWholeProgramPacks();
         }
         retrieveAllBodies();
-
+        
+    	// Create tags from all values we only have in code assignments now
+        for (SootClass sc : Scene.v().getApplicationClasses())
+        	if (!sc.isPhantom)
+        		ConstantInitializerToTagTransformer.v().transformClass(sc, true);
+        
         // if running coffi cfg metrics, print out results and exit
         if (soot.jbco.Main.metrics) {
           coffiMetrics();
@@ -523,7 +540,7 @@ public class PackManager {
             jarFile = null;
         }
 	}
-
+	
     private void runWholeProgramPacks() {
         if (Options.v().whole_shimple()) {
             ShimpleTransformer.v().transform();
@@ -731,7 +748,7 @@ public class PackManager {
 
             try {
                 if( jarFile != null ) {
-                    ZipEntry entry = new ZipEntry(soot.util.StringTools.replaceAll(fileName,"\\","/"));
+                    ZipEntry entry = new ZipEntry(fileName.replaceAll("\\","/"));
                     jarFile.putNextEntry(entry);
                     streamOut = jarFile;
                 } else {
@@ -771,7 +788,7 @@ public class PackManager {
         /*
          * Create the build.xml for Dava
          */
-        {
+        if (pathForBuild != null) {
         	//path for build is probably ending in sootoutput/dava/src
         	//definetly remove the src
         	if(pathForBuild.endsWith("src/"))
@@ -855,10 +872,7 @@ public class PackManager {
         //resolving a method reference to a non-existing method, then this
         //method is created as a phantom method when phantom-refs are enabled
         LinkedList<SootMethod> methodsCopy = new LinkedList<SootMethod>(c.getMethods());
-        Iterator<SootMethod> methodIt = methodsCopy.iterator();
-        while (methodIt.hasNext()) {
-            SootMethod m = (SootMethod) methodIt.next();
-            
+        for (SootMethod m : methodsCopy) {
             if(DEBUG){
             	if(m.getExceptions().size()!=0)
             		System.out.println("PackManager printing out jimple body exceptions for method "+m.toString()+" " + m.getExceptions().toString());
@@ -892,7 +906,7 @@ public class PackManager {
             }
 
             if (produceJimple) {
-                JimpleBody body =(JimpleBody) m.retrieveActiveBody();
+                Body body = m.retrieveActiveBody();
                 //Change
                 ConditionalBranchFolder.v().transform(body);
                 UnreachableCodeEliminator.v().transform(body);
@@ -926,9 +940,7 @@ public class PackManager {
         }
 
         if (produceDava) {
-            methodIt = c.methodIterator();
-            while (methodIt.hasNext()) {
-                SootMethod m = (SootMethod) methodIt.next();
+            for (SootMethod m : c.getMethods()) {
                 if (!m.isConcrete())
                 	continue;
                 //all the work done in decompilation is done in DavaBody which is invoked from within newBody
@@ -972,9 +984,11 @@ public class PackManager {
 	}
 
     public void writeClass(SootClass c) {
-//    	if(!c.getName().contains("com.google.common.collect.HashBiMap") && !c.getName().contains("com.google.common.collect.Tables$TransformedTable")){
-//    		return;
-//    	}
+        // Create code assignments for those values we only have in code assignments
+        if (Options.v().output_format() == Options.output_format_jimple)
+        	if (!c.isPhantom)
+        		ConstantValueToInitializerTransformer.v().transformClass(c);
+        
         final int format = Options.v().output_format();
         if( format == Options.output_format_none ) return;
         if( format == Options.output_format_dava ) return;

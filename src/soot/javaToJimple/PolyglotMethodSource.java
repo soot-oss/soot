@@ -19,11 +19,17 @@
 
 package soot.javaToJimple;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
 
 import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
-import soot.*;
+import soot.MethodSource;
+import soot.PackManager;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootField;
 
 public class PolyglotMethodSource implements MethodSource {
 
@@ -118,7 +124,7 @@ public class PolyglotMethodSource implements MethodSource {
         }
 
         String paramName = assertStatusClass.getName();
-        String fieldName = "class$"+soot.util.StringTools.replaceAll(assertStatusClass.getName(), ".", "$");
+        String fieldName = "class$"+assertStatusClass.getName().replaceAll(".", "$");
         
         if (assertStatusClass.isInterface()){
             assertStatusClass = InitialResolver.v().specialAnonMap().get(assertStatusClass);

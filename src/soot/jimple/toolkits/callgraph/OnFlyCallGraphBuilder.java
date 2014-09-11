@@ -126,8 +126,9 @@ public final class OnFlyCallGraphBuilder
 				}
 			} else {
 				for (SootClass cls : Scene.v().dynamicClasses()) {
-					if( cls.declaresMethod(sigInit) ) {
-						addEdge( source, s, cls.getMethod(sigInit), Kind.NEWINSTANCE );
+					SootMethod sm = cls.getMethodUnsafe(sigInit);
+					if( sm != null ) {
+						addEdge( source, s, sm, Kind.NEWINSTANCE );
 					}
 				}
 
@@ -240,8 +241,8 @@ public final class OnFlyCallGraphBuilder
 			} else {
 				for (String clsName : classNames) {
 					SootClass cls = Scene.v().getSootClass(clsName);
-					if( cls.declaresMethod(sigInit) ) {
-						SootMethod constructor = cls.getMethod(sigInit);
+					SootMethod constructor = cls.getMethodUnsafe(sigInit);
+					if( constructor != null ) {
 						addEdge( container, newInstanceInvokeStmt, constructor, Kind.REFL_CLASS_NEWINSTANCE );
 					}
 				}
@@ -691,8 +692,9 @@ public final class OnFlyCallGraphBuilder
     }
 
     private void addEdge(  SootMethod src, Stmt stmt, SootClass cls, NumberedString methodSubSig, Kind kind ) {
-        if( cls.declaresMethod( methodSubSig ) ) {
-            addEdge( src, stmt, cls.getMethod( methodSubSig ), kind );
+    	SootMethod sm = cls.getMethodUnsafe( methodSubSig );
+        if( sm != null ) {
+            addEdge( src, stmt, sm, kind );
         }
     }
     private void addEdge( SootMethod src, Stmt stmt, SootMethod tgt ) {

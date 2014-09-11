@@ -49,8 +49,9 @@ public class EntryPoints
     final NumberedString sigForName = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Class forName(java.lang.String)" );
     private final void addMethod( List<SootMethod> set, SootClass cls, NumberedString methodSubSig ) {
-        if( cls.declaresMethod( methodSubSig ) ) {
-            set.add( cls.getMethod( methodSubSig ) );
+    	SootMethod sm = cls.getMethodUnsafe(methodSubSig);
+        if( sm != null ) {
+            set.add( sm );
         }
     }
     private final void addMethod( List<SootMethod> set, String methodSig ) {
@@ -150,8 +151,8 @@ public class EntryPoints
         List<SootMethod> ret = new ArrayList<SootMethod>();
         for( Iterator<SootClass> clIt = Scene.v().getApplicationClasses().iterator(); clIt.hasNext(); ) {
             final SootClass cl = clIt.next();
-            if( cl.declaresMethod( "void main(java.lang.String[])" ) ) {
-                SootMethod m = cl.getMethod("void main(java.lang.String[])" );
+            SootMethod m = cl.getMethodUnsafe("void main(java.lang.String[])" );
+            if( m != null ) {
                 if( m.isConcrete() ) ret.add( m );
             }
         }

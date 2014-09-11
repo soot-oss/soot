@@ -183,6 +183,9 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
       }
       it.next();
     }
+    
+    if (u == null)
+    	return false;
   
     //System.out.println("\r\tselected unit is "+u);
     while (trapsIt.hasNext())

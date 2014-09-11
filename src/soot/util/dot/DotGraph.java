@@ -96,7 +96,6 @@ public class DotGraph implements Renderable{
    * @return a graph edge
    */
   public DotGraphEdge drawEdge(String from, String to) {
-
     DotGraphNode src = drawNode(from);
     DotGraphNode dst = drawNode(to);
     DotGraphEdge edge = new DotGraphEdge(src, dst);
@@ -131,6 +130,9 @@ public class DotGraph implements Renderable{
    * to the graph if there is no such node.
    */
   public DotGraphNode getNode(String name){
+	  if (name == null)
+		  return null;
+	  
       DotGraphNode node = nodes.get(name);
       if (node == null) {
           node = new DotGraphNode(name);

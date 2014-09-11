@@ -92,7 +92,7 @@ public class Util {
   /** Binary log: finds the smallest power k such that 2^k>=n */
   public static int binaryLogUp(long n_) {
     int k = 0;
-    while ((1 << k) < n_)
+    while ((1L << k) < n_)
       k++;
     return k;
   }

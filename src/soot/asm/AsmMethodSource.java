@@ -32,6 +32,8 @@ import static org.objectweb.asm.tree.AbstractInsnNode.MULTIANEWARRAY_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TABLESWITCH_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.LINE;
+import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -133,7 +135,7 @@ import com.google.common.collect.Table;
  * 
  * @author Aaloan Miftah
  */
-final class JimpleSource implements MethodSource {
+final class AsmMethodSource implements MethodSource {
 	
 	private static final Operand DWORD_DUMMY = new Operand(null, null);
 	
@@ -152,7 +154,9 @@ final class JimpleSource implements MethodSource {
 	private final List<LocalVariableNode> localVars;
 	private final List<TryCatchBlockNode> tryCatchBlocks;
 	
-	JimpleSource(int maxLocals, InsnList insns,
+	private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
+	
+	AsmMethodSource(int maxLocals, InsnList insns,
 			List<LocalVariableNode> localVars,
 			List<TryCatchBlockNode> tryCatchBlocks) {
 		this.maxLocals = maxLocals;
@@ -218,6 +222,8 @@ final class JimpleSource implements MethodSource {
 	}
 	
 	private Operand pop() {
+		if (stack.isEmpty())
+			throw new RuntimeException("Stack underrun");
 		return stack.remove(stack.size() - 1);
 	}
 	
@@ -555,53 +561,16 @@ final class JimpleSource implements MethodSource {
 		}
 	}
 	
-	private void convertDupInsn(InsnNode insn) {
-		int op = insn.getOpcode();
-		boolean dword = op >= DUP2 && op <= DUP2_X2;
-		if(op==89){
-			System.out.print("");
-		}
-		/*
-		 * Following version is more complex,
-		 * using stack frames as opposed to simply swapping
-		 */
-		/*StackFrame frame = getFrame(insn);
-		Operand[] out = frame.out();
-		Operand dup, dup2 = null, dupd, dupd2 = null;
-		if (out == null) {
-			dupd = popImmediate();
-			dup = new Operand(insn, dupd.stackOrValue());
-			if (dword) {
-				dupd2 = peek();
-				if (dupd2 == DWORD_DUMMY) {
-					pop();
-					dupd2 = dupd;
-				} else {
-					dupd2 = popImmediate();
-				}
-				dup2 = new Operand(insn, dupd2.stackOrValue());
-				frame.out(dup, dup2);
-				frame.in(dupd, dupd2);
-			} else {
-				frame.out(dup);
-				frame.in(dupd);
-			}
-		} else {
-			dupd = pop();
-			dup = out[0];
-			if (dword) {
-				dupd2 = pop();
-				if (dupd2 == DWORD_DUMMY)
-					dupd2 = dupd;
-				dup2 = out[1];
-				frame.mergeIn(dupd, dupd2);
-			} else {
-				frame.mergeIn(dupd);
-			}
-		}*/
-		Operand dupd = popImmediate();
-		Operand dup = dupd;
-		Operand dupd2, dup2;
+	/*
+	 * Following version is more complex,
+	 * using stack frames as opposed to simply swapping
+	 */
+	/*StackFrame frame = getFrame(insn);
+	Operand[] out = frame.out();
+	Operand dup, dup2 = null, dupd, dupd2 = null;
+	if (out == null) {
+		dupd = popImmediate();
+		dup = new Operand(insn, dupd.stackOrValue());
 		if (dword) {
 			dupd2 = peek();
 			if (dupd2 == DWORD_DUMMY) {
@@ -610,57 +579,84 @@ final class JimpleSource implements MethodSource {
 			} else {
 				dupd2 = popImmediate();
 			}
-			dup2 = dupd2;
+			dup2 = new Operand(insn, dupd2.stackOrValue());
+			frame.out(dup, dup2);
+			frame.in(dupd, dupd2);
 		} else {
-			dupd2 = dup2 = null;
+			frame.out(dup);
+			frame.in(dupd);
 		}
+	} else {
+		dupd = pop();
+		dup = out[0];
+		if (dword) {
+			dupd2 = pop();
+			if (dupd2 == DWORD_DUMMY)
+				dupd2 = dupd;
+			dup2 = out[1];
+			frame.mergeIn(dupd, dupd2);
+		} else {
+			frame.mergeIn(dupd);
+		}
+	}*/
+
+	private void convertDupInsn(InsnNode insn) {
+		int op = insn.getOpcode();
+		
+		// Get the top stack value which we need in either case
+		Operand dupd = popImmediate();
+		Operand dupd2 = null;
+		
+		// Some instructions allow operands that take two registers
+		boolean dword = op == DUP2 || op == DUP2_X1 || op == DUP2_X2;
+		if (dword) {
+			if (peek() == DWORD_DUMMY) {
+				pop();
+				dupd2 = dupd;
+			} else
+				dupd2 = popImmediate();
+		}
+		
 		if (op == DUP) {
+			// val -> val, val
 			push(dupd);
-			push(dup);
+			push(dupd);
 		} else if (op == DUP_X1) {
+			// val2, val1 -> val1, val2, val1
+			// value1, value2 must not be of type double or long
 			Operand o2 = popImmediate();
-			push(dup);
+			push(dupd);
 			push(o2);
 			push(dupd);
 		} else if (op == DUP_X2) {
+			// value3, value2, value1 -> value1, value3, value2, value1
 			Operand o2 = popImmediate();
 			Operand o3 = peek() == DWORD_DUMMY ? pop() : popImmediate();
-			push(dup);
+			push(dupd);
 			push(o3);
 			push(o2);
 			push(dupd);
 		} else if (op == DUP2) {
-			push(dup2);
-			push(dup);
+			// value2, value1 -> value2, value1, value2, value1
+			push(dupd2);
+			push(dupd);
 			push(dupd2);
 			push(dupd);
 		} else if (op == DUP2_X1) {
+			// value3, value2, value1 -> value2, value1, value3, value2, value1
+			// Attention: value2 may be
 			Operand o2 = popImmediate();
-			push(dup2);
-			push(dup);
+			push(dupd2);
+			push(dupd);
 			push(o2);
 			push(dupd2);
 			push(dupd);
 		} else if (op == DUP2_X2) {
+			// (value4, value3), (value2, value1) -> (value2, value1), (value4, value3), (value2, value1) 
 			Operand o2 = popImmediate();
-			Operand o2h = peek();
-			if (dupd == dupd2 && o2h == DWORD_DUMMY) {
-				o2h = pop();
-				push(dup2);
-				push(dup);
-				push(DWORD_DUMMY);
-				push(o2);
-				push(dupd2);
-				push(dupd);
-				return;
-			}
-			o2h = o2h == DWORD_DUMMY ? pop() : popImmediate();
-			Operand o3 = popImmediate();
-			Operand o3h = peek() == DWORD_DUMMY ? pop() : popImmediate();
-			push(dup2);
-			push(dup);
-			push(o3h);
-			push(o3);
+			Operand o2h = peek() == DWORD_DUMMY ? pop() : popImmediate();
+			push(dupd2);
+			push(dupd);
 			push(o2h);
 			push(o2);
 			push(dupd2);
@@ -1153,8 +1149,6 @@ final class JimpleSource implements MethodSource {
 					iinvoke = Jimple.v().newSpecialInvokeExpr(base, ref, argList);
 				else if (op == INVOKEVIRTUAL)
 					iinvoke = Jimple.v().newVirtualInvokeExpr(base, ref, argList);
-				else if (op == INVOKEVIRTUAL)
-					iinvoke = Jimple.v().newVirtualInvokeExpr(base, ref, argList);
 				else if (op == INVOKEINTERFACE)
 					iinvoke = Jimple.v().newInterfaceInvokeExpr(base, ref, argList);
 				else
@@ -1395,7 +1389,7 @@ final class JimpleSource implements MethodSource {
 		}
 		
 		Edge(AbstractInsnNode insn) {
-			this(insn, new ArrayList<Operand>(JimpleSource.this.stack));
+			this(insn, new ArrayList<Operand>(AsmMethodSource.this.stack));
 		}
 	}
 	
@@ -1505,7 +1499,11 @@ final class JimpleSource implements MethodSource {
 					convertVarInsn((VarInsnNode) insn);
 				} else if (type == LABEL) {
 					convertLabel((LabelNode) insn);
+				} else if (type == LINE || type == FRAME) {
+						// we can ignore it
 				}
+				else
+					throw new RuntimeException("Unknown instruction type: " + type);
 			} while ((insn = insn.getNext()) != null);
 		} while (!worklist.isEmpty());
 		conversionWorklist = null;
@@ -1575,28 +1573,39 @@ final class JimpleSource implements MethodSource {
 		AbstractInsnNode insn = instructions.getFirst();
 		ArrayDeque<LabelNode> labls = new ArrayDeque<LabelNode>();
 		while (insn != null) {
+			// Save the label to assign it to the next real unit
 			if (insn instanceof LabelNode)
 				labls.add((LabelNode) insn);
+			
+			// Get the unit associated with the current instruction
 			Unit u = units.get(insn);
-			if (u != null) {
-				emitUnits(u);
-				if (u instanceof IdentityStmt &&
-						((IdentityStmt) u).getRightOp() instanceof CaughtExceptionRef) {
-					//FIXME not sure if this cast is always correct...
-					for (UnitBox ub : trapHandlers.get((LabelNode) insn))
-						ub.setUnit(u);
-				} else {
-					while (!labls.isEmpty()) {
-						LabelNode ln = labls.poll();
-						Collection<UnitBox> boxes = labels.get(ln);
-						if (boxes != null) {
-							for (UnitBox box : boxes) {
-								Unit uu = u;
-								while (uu instanceof UnitContainer)
-									uu = ((UnitContainer) u).units[0];
-								box.setUnit(uu);
-							}
-						}
+			if (u == null) {
+				insn = insn.getNext();
+				continue;
+			}
+			
+			emitUnits(u);
+			
+			// If this is an exception handler, register the starting unit for it
+			if (insn instanceof LabelNode
+					&& u instanceof IdentityStmt
+					&& ((IdentityStmt) u).getRightOp() instanceof CaughtExceptionRef) {
+				// We directly place this label
+				Collection<UnitBox> traps = trapHandlers.get((LabelNode) insn);
+				for (UnitBox ub : traps)
+					ub.setUnit(u);
+			}
+			
+			// Register this unit for all targets of the labels ending up at it
+			while (!labls.isEmpty()) {
+				LabelNode ln = labls.poll();
+				Collection<UnitBox> boxes = labels.get(ln);
+				if (boxes != null) {
+					for (UnitBox box : boxes) {
+						Unit uu = u;
+						while (uu instanceof UnitContainer)
+							uu = ((UnitContainer) u).units[0];
+						box.setUnit(uu);
 					}
 				}
 			}
@@ -1621,10 +1630,6 @@ final class JimpleSource implements MethodSource {
 		if (!m.isConcrete())
 			return null;
 		JimpleBody jb = Jimple.v().newBody(m);
-		/* \/DEBUG\/ */
-//		if (!m.toString().equals("<jaggl.OpenGL: boolean j(java.lang.String)>"))
-//			return jb;
-		/* /\DEBUG/\ */
 		/* initialize */
 		int nrInsn = instructions.size();
 		nextLocal = maxLocals;
@@ -1648,14 +1653,7 @@ final class JimpleSource implements MethodSource {
 		emitLocals();
 		emitTraps();
 		emitUnits();
-		/* \/DEBUG\/ */
-//		java.io.PrintWriter pw = new java.io.PrintWriter(System.out);
-//		m.setActiveBody(jb);
-//		soot.Printer.v().printTo(jb, pw);
-//		m.setActiveBody(null);
-//		pw.flush();
-//		System.exit(0);
-		/* /\DEBUG/\ */
+		
 		/* clean up */
 		locals = null;
 		labels = null;
@@ -1663,6 +1661,16 @@ final class JimpleSource implements MethodSource {
 		stack = null;
 		frames = null;
 		body = null;
+		
+		// Make sure to inline patterns of the form to enable proper variable
+		// splitting and type assignment:
+		// a = new A();
+		// goto l0;
+		// l0:
+		// 	b = (B) a;
+		// 	return b;
+		castAndReturnInliner.transform(jb);
+		
 		try {
 	        PackManager.v().getPack("jb").apply(jb);
 		} catch (Throwable t) {

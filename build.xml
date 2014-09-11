@@ -114,16 +114,17 @@
         <javadoc
             classpath="classes:${polyglot.jar}:${jasmin.jar}:${heros.jar}"
             sourcepath="src:generated/singletons:generated/sablecc:generated/options"
-            destdir="doc"
+			destdir="javadoc"
             maxmemory="400m"
             link="${javaapi.url}"
             windowtitle="Soot API"
-            verbose="true"
             use="true"
+            useexternalfile="true"
         >
             <fileset dir="src" includes="**/*.java"/>
         </javadoc>
-    </target>
+		<jar basedir="javadoc" destfile="${release.loc}/sootjavadoc-${soot.version}.jar" />
+	</target>
 
     <target name="clean">
         <delete quiet="true">
@@ -202,7 +203,8 @@
     </target>
 
     <target name="runtests" depends="buildtests,settings">
-        <junit printsummary="yes">
+	<mkdir dir="reports" />
+        <junit printsummary="yes" fork="true">
             <classpath>
                 <pathelement location="testclasses"/>
                 <pathelement location="classes"/>
@@ -210,14 +212,29 @@
                 <pathelement location="${jasmin.jar}"/>
                 <pathelement location="${junit.jar}"/>
                 <pathelement location="${hamcrest.jar}"/>
+           	<pathelement location="${dexlib2.jar}"/>
+                <pathelement location="${dexlib-utils.jar}"/>
+                <pathelement location="${heros.jar}"/>
+           		<pathelement location="${asm.jar}"/>
             </classpath>
-
-            <formatter type="plain"/>
-            <batchtest>
+			
+			<jvmarg value="-ea" />
+            
+            <formatter type="xml" usefile="true" />
+            <batchtest todir="reports">
                 <fileset dir="testclasses" includes="**/Test*.class"/>
                 <fileset dir="testclasses" includes="**/*Test.class"/>
             </batchtest>
         </junit>
+    </target>
+
+    <target name="reporttests" depends="runtests">
+        <junitreport tofile="TESTS-TestSuites.xml" todir="reports">
+            <fileset dir="reports">
+                <include name="TEST-*.xml" />
+            </fileset>
+            <report format="frames" todir="reports" />
+        </junitreport>
     </target>
 
     <target name="release" depends="barebones,javadoc,settings">
@@ -292,20 +309,7 @@
         </jar>
         
     </target>
-	
-	<target name="doc" depends="compile,settings">
-		<javadoc
-			sourcepath="src"
-			destdir="javadoc"
-			author="true"
-			version="true"
-			use="true"
-			windowtitle="Soot Documentation">
-		</javadoc>
 		
-		<jar basedir="javadoc" destfile="${release.loc}/sootjavadoc-${soot.version}.jar" />
-	</target>
-	
 	<target name="fulljar" depends="classesjar">
     	<mkdir dir="META-INF"/>
 

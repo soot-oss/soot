@@ -69,6 +69,9 @@ public class Typing
 
 			// Throw out duplicate typings
 			for ( Typing tgj : tgs ) {
+				// if compare = 1, then tgi is the more general typing
+				// We shouldn't pick that one as we would then end up
+				// with lots of locals typed to Serializable etc.
 				if ( tgi != tgj && compare(tgi, tgj, h) == 1 ) {
 					i.remove();
 					continue outer;
@@ -88,7 +91,7 @@ public class Typing
 			int cmp;
 			if ( TypeResolver.typesEqual(ta, tb) )
 				cmp = 0;
-			if ( h.ancestor(ta, tb) )
+			else if ( h.ancestor(ta, tb) )
 				cmp = 1;
 			else if ( h.ancestor(tb, ta) )
 				cmp = -1;

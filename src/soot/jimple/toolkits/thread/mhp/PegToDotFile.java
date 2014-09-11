@@ -66,11 +66,7 @@ public class PegToDotFile {
 	public PegToDotFile(PegGraph graph, boolean onepage, String name) {
 		PegToDotFile.onepage = onepage;
 		toDotFile(name, graph,"PEG graph");
-		
-		
 	}
-	
-	
 	
 	private static int nodecount = 0;
 	
@@ -210,7 +206,6 @@ public class PegToDotFile {
 					//Iterator succsIt = graph.getPredsOf(node).iterator();
 					while (succsIt.hasNext()) {
 						Object succ = succsIt.next();
-						
 						
 						String threadNodeName = null;
 						if (succ instanceof List){

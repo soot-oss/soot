@@ -107,10 +107,8 @@ public class DexMethod {
         types.add(returnType);
 
         //Build soot method by all available parameters
-        SootMethod sm = null;
-        if (declaringClass.declaresMethod(name, parameterTypes, returnType)) {
-            sm = declaringClass.getMethod(name, parameterTypes, returnType);
-        } else {
+        SootMethod sm = declaringClass.getMethodUnsafe(name, parameterTypes, returnType);
+        if (sm == null) {
             sm = new SootMethod(name, parameterTypes, returnType, accessFlags, thrownExceptions);
         }
 

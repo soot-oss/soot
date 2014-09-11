@@ -49,6 +49,9 @@ public class SmartLocalDefs implements LocalDefs {
 	private final LocalDefsAnalysis analysis;
 	private final Map<Unit, BitSet> liveLocalsAfter;
 
+	public void printAnswer(){
+		System.out.println(answer.toString());
+	}
 	/**
 	 * Intersects 2 sets and returns the result as a list
 	 * 
@@ -126,7 +129,7 @@ public class SmartLocalDefs implements LocalDefs {
 				Value v = vb.getValue();
 				if (v instanceof Local) {
 					Cons key = new Cons(u, v);
-					if ( !answer.containsKey(key) ) {					
+					if ( !answer.containsKey(key) ) {
 						List<Unit> lst = asList(defsOf((Local) v), analysis.getFlowBefore(u));					
 						answer.put(key, lst);
 					}

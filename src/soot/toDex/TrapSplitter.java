@@ -39,7 +39,7 @@ public class TrapSplitter extends BodyTransformer {
 		// If we have less then two traps, there's nothing to do here
 		if (b.getTraps().size() < 2)
 			return;
-
+		
 		// Look for overlapping traps
 		TrapOverlap to;
 		while ((to = getNextOverlap(b)) != null) {
@@ -97,8 +97,9 @@ public class TrapSplitter extends BodyTransformer {
 	 * @param newTrap The trap to add
 	 */
 	private void safeAddTrap(Body b, Trap newTrap) {
+		// Do not create any empty traps
 		if (newTrap.getBeginUnit() != newTrap.getEndUnit())
-		b.getTraps().add(newTrap);		
+			b.getTraps().add(newTrap);
 	}
 	/**
 	 * Gets two arbitrary overlapping traps in the given method body

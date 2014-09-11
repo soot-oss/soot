@@ -39,8 +39,6 @@ import soot.dexpler.typing.UntypedIntOrFloatConstant;
 import soot.dexpler.typing.UntypedLongOrDoubleConstant;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
-import soot.jimple.DoubleConstant;
-import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.LongConstant;
@@ -92,7 +90,7 @@ public class ConstInstruction extends DexlibAbstractInstruction {
         }
         
 
-        boolean isFloatingPoint = false; // this is done later in DexBody by calling DexNumtransformer
+        // floats are handled later in DexBody by calling DexNumtransformer
         Opcode opcode = instruction.getOpcode();
         switch (opcode) {
         case CONST:
@@ -101,8 +99,6 @@ public class ConstInstruction extends DexlibAbstractInstruction {
             if (IDalvikTyper.ENABLE_DVKTYPER) {
                 return UntypedIntOrFloatConstant.v((int)literal);
             } else {
-                if (isFloatingPoint)
-                    return FloatConstant.v(Float.intBitsToFloat((int) literal));
                 return IntConstant.v((int) literal);
             }
 
@@ -124,10 +120,7 @@ public class ConstInstruction extends DexlibAbstractInstruction {
                 //
                 return UntypedLongOrDoubleConstant.v((long)literal);//.toDoubleConstant();
             } else {
-                if (isFloatingPoint)
-                    return DoubleConstant.v(Double.longBitsToDouble(literal));
-                else
-                    return LongConstant.v(literal);
+            	return LongConstant.v(literal);
             }
 
         case CONST_WIDE:
@@ -136,10 +129,7 @@ public class ConstInstruction extends DexlibAbstractInstruction {
             if (IDalvikTyper.ENABLE_DVKTYPER) {
                 return UntypedLongOrDoubleConstant.v(literal);
             } else {
-                if (isFloatingPoint)
-                    return DoubleConstant.v(Double.longBitsToDouble(literal));
-                else
-                    return LongConstant.v(literal);
+            	return LongConstant.v(literal);
             }
         default:
             throw new IllegalArgumentException("Expected a const or a const-wide instruction, got neither.");

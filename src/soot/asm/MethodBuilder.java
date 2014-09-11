@@ -46,7 +46,7 @@ class MethodBuilder extends JSRInlinerAdapter {
 	
 	MethodBuilder(SootMethod method, SootClassBuilder scb,
 			String desc, String[] ex) {
-		super(Opcodes.ASM4, null, method.getModifiers(),
+		super(Opcodes.ASM5, null, method.getModifiers(),
 				method.getName(), desc, null, ex);
 		this.method = method;
 		this.scb = scb;
@@ -133,8 +133,8 @@ class MethodBuilder extends JSRInlinerAdapter {
 	}
 	
 	@Override
-	public void visitMethodInsn(int opcode, String owner, String name, String desc) {
-		super.visitMethodInsn(opcode, owner, name, desc);
+	public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean isInterf) {
+		super.visitMethodInsn(opcode, owner, name, desc, isInterf);
 		for (Type t : AsmUtil.toJimpleDesc(desc)) {
 			if (t instanceof RefType)
 				scb.addDep(t);
@@ -159,8 +159,8 @@ class MethodBuilder extends JSRInlinerAdapter {
 					new VisibilityParameterAnnotationTag(visibleParamAnnotations.length,
 							AnnotationConstants.RUNTIME_VISIBLE);
 			for (VisibilityAnnotationTag vat : visibleParamAnnotations) {
-//				if (vat == null)
-//					vat = new VisibilityAnnotationTag(AnnotationConstants.RUNTIME_VISIBLE);
+				if (vat == null)
+					vat = new VisibilityAnnotationTag(AnnotationConstants.RUNTIME_VISIBLE);
 				tag.addVisibilityAnnotation(vat);
 			}
 			method.addTag(tag);
@@ -168,16 +168,16 @@ class MethodBuilder extends JSRInlinerAdapter {
 		if (invisibleParamAnnotations != null) {
 			VisibilityParameterAnnotationTag tag =
 					new VisibilityParameterAnnotationTag(invisibleParamAnnotations.length,
-							AnnotationConstants.RUNTIME_VISIBLE);
+							AnnotationConstants.RUNTIME_INVISIBLE);
 			for (VisibilityAnnotationTag vat : invisibleParamAnnotations){
-//				if (vat == null)
-//					vat = new VisibilityAnnotationTag(AnnotationConstants.RUNTIME_VISIBLE);
+				if (vat == null)
+					vat = new VisibilityAnnotationTag(AnnotationConstants.RUNTIME_INVISIBLE);
 				tag.addVisibilityAnnotation(vat);
 			}
 			method.addTag(tag);
 		}
 		if (method.isConcrete()) {
-			method.setSource(new JimpleSource(maxLocals, instructions,
+			method.setSource(new AsmMethodSource(maxLocals, instructions,
 					localVariables, tryCatchBlocks));
 		}
 	}

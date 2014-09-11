@@ -211,9 +211,10 @@ public class PhaseDumper {
 			    name.endsWith(DotGraph.DOT_EXTENSION);
 		    }
 		});
-	    for (File element : toDelete) {
-		element.delete();
-	    }
+	    if (toDelete != null)
+		    for (File element : toDelete) {
+			element.delete();
+		    }
 	} catch (java.io.IOException e) {
 	    // Don't abort execution because of an I/O error, but report
 	    // the error.

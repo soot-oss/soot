@@ -23,15 +23,16 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.toolkits.scalar;
 
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
 
-/** 
+/**
  * provides functional code for most of the methods. Subclasses are invited to
  * provide a more efficient version. Most often this will be done in the
  * following way:<br>
+ * 
  * <pre>
  * public void yyy(FlowSet dest) {
  *   if (dest instanceof xxx) {
@@ -41,162 +42,157 @@ import java.util.*;
  * }
  * </pre>
  */
-public abstract class AbstractFlowSet implements FlowSet, Iterable {
-  public abstract AbstractFlowSet clone();
+public abstract class AbstractFlowSet<T> implements FlowSet<T> {
+	public abstract AbstractFlowSet<T> clone();
 
-  /**
-   * implemented, but inefficient.
-   */
-  public Object emptySet() {
-    FlowSet t = clone();
-    t.clear();
-    return t;
-  }
+	/**
+	 * implemented, but inefficient.
+	 */
+	public FlowSet<T> emptySet() {
+		FlowSet<T> t = clone();
+		t.clear();
+		return t;
+	}
 
-  public void copy(FlowSet dest) {
-    List elements = toList();
-    Iterator it = elements.iterator();
-    dest.clear();
-    while (it.hasNext())
-      dest.add(it.next());
-  }
+	public void copy(FlowSet<T> dest) {
+		dest.clear();
+		for (T t : this)
+			dest.add(t);
+	}
 
-  /**
-   * implemented, but *very* inefficient.
-   */
-  public void clear() {
-    Iterator it = toList().iterator();
-    while (it.hasNext())
-      remove(it.next());
-  }
+	/**
+	 * implemented, but *very* inefficient.
+	 */
+	public void clear() {
+		for (T t : this)
+			remove(t);
+	}
 
-  public void union(FlowSet other) {
-    union(other, this);
-  }
+	public void union(FlowSet<T> other) {
+		union(other, this);
+	}
 
-  public void union(FlowSet other, FlowSet dest) {
-    if (dest != this && dest != other)
-      dest.clear();
+	public void union(FlowSet<T> other, FlowSet<T> dest) {
+		if (dest != this && dest != other)
+			dest.clear();
 
-    if (dest != this) {
-      Iterator thisIt = toList().iterator();
-      while (thisIt.hasNext())
-        dest.add(thisIt.next());
-    }
+		if (dest != null && dest != this) {
+			for (T t : this)
+				dest.add(t);
+		}
 
-    if (dest != other) {
-      Iterator otherIt = other.toList().iterator();
-      while (otherIt.hasNext())
-        dest.add(otherIt.next());
-    }
-  }
+		if (other != null && dest != other) {
+			for (T t : other)
+				dest.add(t);
+		}
+	}
 
-  public void intersection(FlowSet other) {
-    intersection(other, this);
-  }
+	public void intersection(FlowSet<T> other) {
+		intersection(other, this);
+	}
 
-  public void intersection(FlowSet other, FlowSet dest) {
-    if (dest == this && dest == other) return;
-    List elements = null;
-    FlowSet flowSet = null;
-    if (dest == this) {
-      /* makes automaticly a copy of <code>this</code>, as it will be cleared */
-      elements = toList();
-      flowSet = other;
-    } else {
-      /* makes a copy o <code>other</code>, as it might be cleared */
-      elements = other.toList();
-      flowSet = this;
-    }
-    dest.clear();
-    Iterator it = elements.iterator();
-    while (it.hasNext()) {
-      Object o = it.next();
-      if (flowSet.contains(o))
-        dest.add(o);
-    }
-  }
+	public void intersection(FlowSet<T> other, FlowSet<T> dest) {
+		if (dest == this && dest == other)
+			return;
+		FlowSet<T> elements = null;
+		FlowSet<T> flowSet = null;
+		if (dest == this) {
+			/*
+			 * makes automaticly a copy of <code>this</code>, as it will be
+			 * cleared
+			 */
+			elements = this;
+			flowSet = other;
+		} else {
+			/* makes a copy o <code>other</code>, as it might be cleared */
+			elements = other;
+			flowSet = this;
+		}
+		dest.clear();
+		for (T t : elements) {
+			if (flowSet.contains(t))
+				dest.add(t);
+		}
+	}
 
-  public void difference(FlowSet other) {
-    difference(other, this);
-  }
+	public void difference(FlowSet<T> other) {
+		difference(other, this);
+	}
 
-  public void difference(FlowSet other, FlowSet dest) {
-    if (dest == this && dest == other) {
-      dest.clear();
-      return;
-    }
+	public void difference(FlowSet<T> other, FlowSet<T> dest) {
+		if (dest == this && dest == other) {
+			dest.clear();
+			return;
+		}
 
-    Iterator it = this.toList().iterator();
-    FlowSet flowSet = (other == dest)? (FlowSet)other.clone(): other;
-    dest.clear(); // now safe, since we have copies of this & other
+		FlowSet<T> flowSet = (other == dest) ? other.clone() : other;
+		dest.clear(); // now safe, since we have copies of this & other
 
-    while (it.hasNext()) {
-      Object o = it.next();
-      if (!flowSet.contains(o))
-        dest.add(o);
-    }
-  }
+		for (T t : this)
+			if (!flowSet.contains(t))
+				dest.add(t);
+	}
 
-  public abstract boolean isEmpty();
+	public abstract boolean isEmpty();
 
-  public abstract int size();
+	public abstract int size();
 
-  public abstract void add(Object obj);
+	public abstract void add(T obj);
 
-  public void add(Object obj, FlowSet dest) {
-    if (dest != this)
-      copy(dest);
-    dest.add(obj);
-  }
-  
-  public abstract void remove(Object obj);
+	public void add(T obj, FlowSet<T> dest) {
+		if (dest != this)
+			copy(dest);
+		dest.add(obj);
+	}
 
-  public void remove(Object obj, FlowSet dest) {
-    if (dest != this)
-      copy(dest);
-    dest.remove(obj);
-  }
+	public abstract void remove(T obj);
 
-  public abstract boolean contains(Object obj);
+	public void remove(T obj, FlowSet<T> dest) {
+		if (dest != this)
+			copy(dest);
+		dest.remove(obj);
+	}
 
-  public Iterator iterator() {
-    return toList().iterator();
-  }
+	public abstract boolean contains(T obj);
 
-  public abstract List toList();
+	public Iterator<T> iterator() {
+		return toList().iterator();
+	}
 
-  public boolean equals(Object o) {
-    if (o.getClass()!=getClass()) return false;
-    FlowSet other = (FlowSet)o;
-    if (size() != other.size()) return false;
-    Iterator it = toList().iterator();
-    while (it.hasNext())
-      if (!other.contains(it.next())) return false;
-    return true;
-  }
-  
+	public abstract List<T> toList();
+
+	@SuppressWarnings("unchecked")
+	public boolean equals(Object o) {
+		if (o.getClass() != getClass())
+			return false;
+		FlowSet<T> other = (FlowSet<T>) o;
+		if (size() != other.size())
+			return false;
+		for (T t : this)
+			if (!other.contains(t))
+				return false;
+		return true;
+	}
+
 	public int hashCode() {
 		int result = 1;
-		Iterator iter = iterator();
-		while (iter.hasNext()) {
-			Object o = iter.next();
-			result += o.hashCode();
-		}
+		for (T t : this)
+			result += t.hashCode();
 		return result;
 	}
 
-  public String toString() {
-    StringBuffer buffer = new StringBuffer("{");
-    Iterator it = toList().iterator();
-    if (it.hasNext()) {
-      buffer.append(it.next());
+	public String toString() {
+		StringBuffer buffer = new StringBuffer("{");
+		
+		boolean isFirst = true;
+		for (T t : this) {
+			if (!isFirst)
+				buffer.append(", ");
+			isFirst = false;
 
-      while(it.hasNext())
-        buffer.append(", " + it.next());
-    }
-    buffer.append("}");
-    return buffer.toString();
-  }
+			buffer.append(t);
+		}
+		buffer.append("}");
+		return buffer.toString();
+	}
 }
-

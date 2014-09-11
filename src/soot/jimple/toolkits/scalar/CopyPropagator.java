@@ -88,8 +88,6 @@ public class CopyPropagator extends BodyTransformer
        		}
        	}
         
-//            ((JimpleBody) stmtBody).printDebugTo(new java.io.PrintWriter(G.v().out, true));
-            
         ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody);
 
         LocalDefs localDefs;
@@ -122,7 +120,7 @@ public class CopyPropagator extends BodyTransformer
 
                         // We can propagate the definition if we either only have
                         // one definition or all definitions are side-effect free
-                        // and equal. For starters, we only support costants in
+                        // and equal. For starters, we only support constants in
                         // the case of multiple definitions.
                         boolean propagateDef = defsOfUse.size() == 1;
                         if (!propagateDef && defsOfUse.size() > 0) {
@@ -163,16 +161,11 @@ public class CopyPropagator extends BodyTransformer
 
                                 if(l != m)
                                 {   
-                                    Object dcObj = localToDefCount.get(m);
-
-                                    if (dcObj == null)
+                                    Integer defCount = localToDefCount.get(m);
+                                    if (defCount == null || defCount == 0)
                                         throw new RuntimeException("Variable " + m + " used without definition!");
-
-                                    int defCount = ((Integer)dcObj).intValue();
                                     
-                                    if(defCount == 0)
-                                        throw new RuntimeException("Variable " + m + " used without definition!");
-                                    else if(defCount == 1)
+                                    if(defCount == 1)
                                     {
                                         useBox.setValue(m);
                                         fastCopyPropagationCount++;
@@ -180,7 +173,6 @@ public class CopyPropagator extends BodyTransformer
                                     }
 
                                     List<Unit> path = graph.getExtendedBasicBlockPathBetween(def, stmt);
-                                    
                                     if(path == null)
                                     {
                                         // no path in the extended basic block

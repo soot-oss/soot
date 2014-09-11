@@ -85,7 +85,8 @@ public  void addOptions(String[] args) {
       if(arg.startsWith("@")) {
         try {
           String fileName = arg.substring(1,arg.length());
-          java.io.StreamTokenizer tokenizer = new java.io.StreamTokenizer(new java.io.FileReader(fileName));
+          java.io.FileReader r = new java.io.FileReader(fileName);
+		  java.io.StreamTokenizer tokenizer = new java.io.StreamTokenizer(r);
           tokenizer.resetSyntax();
           tokenizer.whitespaceChars(' ',' ');
           tokenizer.whitespaceChars('\t','\t');
@@ -107,6 +108,7 @@ public  void addOptions(String[] args) {
             newArgs[index] = (String)iter.next();
           }
           addOptions(newArgs);
+          r.close();
         } catch (java.io.FileNotFoundException e) {
           System.err.println("File not found: "+arg.substring(1));
         } catch (java.io.IOException e) {

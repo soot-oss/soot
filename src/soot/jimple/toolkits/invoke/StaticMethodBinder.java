@@ -106,15 +106,10 @@ public class StaticMethodBinder extends SceneTransformer
                     if (target.getDeclaringClass()==Scene.v().getSootClass("java.lang.Object"))
                         continue;
 
-                    boolean targetUsesThis = true; //methodUsesThis(target);
-                    //                    targetUsesThis = true;
-
                     if (!instanceToStaticMap.containsKey(target))
                     {
                         List newParameterTypes = new ArrayList();
-                        if (targetUsesThis)
-                            newParameterTypes.add
-                                (RefType.v(target.getDeclaringClass().getName()));
+                        newParameterTypes.add(RefType.v(target.getDeclaringClass().getName()));
 
                         newParameterTypes.addAll(target.getParameterTypes());
 
@@ -173,13 +168,10 @@ public class StaticMethodBinder extends SceneTransformer
                                     IdentityStmt is = (IdentityStmt)st;
                                     if (is.getRightOp() instanceof ThisRef)
                                     {
-                                        if (targetUsesThis)
-                                            units.swapWith(st, Jimple.v().newIdentityStmt(is.getLeftOp(),
-                                                    Jimple.v().newParameterRef(is.getRightOp().getType(), 0)));
-                                        else
-                                            { units.remove(st); break; }
+                                    	units.swapWith(st, Jimple.v().newIdentityStmt(is.getLeftOp(),
+                                    		Jimple.v().newParameterRef(is.getRightOp().getType(), 0)));
                                     }
-                                    else if (targetUsesThis)
+                                    else
                                     {
                                         if (is.getRightOp() instanceof ParameterRef)
                                         {
@@ -199,7 +191,7 @@ public class StaticMethodBinder extends SceneTransformer
                     Value thisToAdd = ((InstanceInvokeExpr)ie).getBase();
 
                     // Insert casts to please the verifier.
-                    if (options.insert_redundant_casts() && targetUsesThis)
+                    if (options.insert_redundant_casts())
                     {
                         // The verifier will complain if targetUsesThis, and:
                         //    the argument passed to the method is not the same type.
@@ -224,8 +216,7 @@ public class StaticMethodBinder extends SceneTransformer
                     // Now rebind the method call & fix the invoke graph.
                     {
                         List newArgs = new ArrayList();
-                        if (targetUsesThis)
-                            newArgs.add(thisToAdd);
+                        newArgs.add(thisToAdd);
                         newArgs.addAll(ie.getArgs());
 
                         StaticInvokeExpr sie = Jimple.v().newStaticInvokeExpr

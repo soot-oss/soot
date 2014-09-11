@@ -19,11 +19,20 @@
 
 package soot.xml;
 
-import soot.util.*;
-import soot.tagkit.*;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-import java.util.*;
-import java.io.*;
+import soot.tagkit.ColorTag;
+import soot.tagkit.Host;
+import soot.tagkit.JimpleLineNumberTag;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.LinkTag;
+import soot.tagkit.PositionTag;
+import soot.tagkit.SourceLnPosTag;
+import soot.tagkit.SourcePositionTag;
+import soot.tagkit.StringTag;
+import soot.tagkit.Tag;
 
 public class JavaAttribute {
 
@@ -212,9 +221,9 @@ public class JavaAttribute {
     }
     
     private String  formatForXML(String in) {
-        in = StringTools.replaceAll(in, "<", "&lt;");
-        in = StringTools.replaceAll(in, ">", "&gt;");
-        in = StringTools.replaceAll(in, "&", "&amp;");
+        in = in.replaceAll( "<", "&lt;");
+        in = in.replaceAll(">", "&gt;");
+        in = in.replaceAll("&", "&amp;");
         return in;
     }
 	

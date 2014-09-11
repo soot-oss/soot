@@ -50,7 +50,8 @@ Improvements and API changes in HEAD
     
 13. Multiple performance improvements for intra-procedural analyses and class loading
 
-14. ASM based .class-to-Jimple conversion (about twice as fast as Coffi, and cleaner code) 
+14. ASM based .class-to-Jimple conversion (about twice as fast as Coffi, and cleaner code)
+	use -coffi to enable old Coffi frontend 
 
 Improvements and API changes in version 2.5.0
 

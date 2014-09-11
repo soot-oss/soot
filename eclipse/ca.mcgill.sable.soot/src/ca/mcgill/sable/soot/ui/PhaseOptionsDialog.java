@@ -200,6 +200,8 @@ Composite wjtpwjtp_mhpChild = wjtpwjtp_mhpCreate(getPageContainer());
 
 Composite wjtpwjtp_tnChild = wjtpwjtp_tnCreate(getPageContainer());
 
+Composite wjtpwjtp_rdcChild = wjtpwjtp_rdcCreate(getPageContainer());
+
 Composite wjopwjop_smbChild = wjopwjop_smbCreate(getPageContainer());
 
 Composite wjopwjop_siChild = wjopwjop_siCreate(getPageContainer());
@@ -1056,6 +1058,14 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		getwjtpwjtp_tnprint_table_widget().getButton().addSelectionListener(this);
 		
 		getwjtpwjtp_tnprint_debug_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("wjtp", "wjtp.rdc");
+		
+		
+		addToEnableGroup("wjtp", "wjtp.rdc", getwjtpwjtp_rdcenabled_widget(), "enabled");
+		
+		getwjtpwjtp_rdcenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("wjop");
@@ -3906,6 +3916,25 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getwjtpwjtp_tnlocking_scheme_widget().getAlias(), stringRes);
 		}
 		
+		boolRes = getwjtpwjtp_rdcenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getwjtpwjtp_rdcenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		stringRes = getwjtpwjtp_rdcfixed_class_names_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getwjtpwjtp_rdcfixed_class_names_widget().getAlias(), stringRes);
+		}
+		
 		boolRes = getwjopenabled_widget().getButton().getSelection();
 		
 		
@@ -5760,6 +5789,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 			
 			subSectParent = wjtp_wjtp_tn_branch;
+			
+			
+			SootOption wjtp_wjtp_rdc_branch = new SootOption("Rename duplicated classes", "wjtpwjtp_rdc");
+			subParent.addChild(wjtp_wjtp_rdc_branch);
+
+
+			
+
+			
+			subSectParent = wjtp_wjtp_rdc_branch;
 			
 			
 			//Whole-Jimple Optimization Pack
@@ -8567,6 +8606,28 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	public MultiOptionWidget getwjtpwjtp_tnlocking_scheme_widget() {
 		return wjtpwjtp_tnlocking_scheme_widget;
 	}	
+	
+	
+	private BooleanOptionWidget wjtpwjtp_rdcenabled_widget;
+	
+	private void setwjtpwjtp_rdcenabled_widget(BooleanOptionWidget widget) {
+		wjtpwjtp_rdcenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getwjtpwjtp_rdcenabled_widget() {
+		return wjtpwjtp_rdcenabled_widget;
+	}	
+	
+	
+	private StringOptionWidget wjtpwjtp_rdcfixed_class_names_widget;
+	
+	private void setwjtpwjtp_rdcfixed_class_names_widget(StringOptionWidget widget) {
+		wjtpwjtp_rdcfixed_class_names_widget = widget;
+	}
+	
+	public StringOptionWidget getwjtpwjtp_rdcfixed_class_names_widget() {
+		return wjtpwjtp_rdcfixed_class_names_widget;
+	}
 	
 	
 	private BooleanOptionWidget wjopenabled_widget;
@@ -15587,6 +15648,67 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		return editGroupwjtpwjtp_tn;
+	}
+
+
+
+	private Composite wjtpwjtp_rdcCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupwjtpwjtp_rdc = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupwjtpwjtp_rdc.setLayout(layout);
+	
+	 	editGroupwjtpwjtp_rdc.setText("Rename duplicated classes");
+	 	
+		editGroupwjtpwjtp_rdc.setData("id", "wjtpwjtp_rdc");
+		
+		String descwjtpwjtp_rdc = "Rename duplicated classes when the file system is not case sensitive";	
+		if (descwjtpwjtp_rdc.length() > 0) {
+			Label descLabelwjtpwjtp_rdc = new Label(editGroupwjtpwjtp_rdc, SWT.WRAP);
+			descLabelwjtpwjtp_rdc.setText(descwjtpwjtp_rdc);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"wjtp.rdc"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setwjtpwjtp_rdcenabled_widget(new BooleanOptionWidget(editGroupwjtpwjtp_rdc, SWT.NONE, new OptionData("Enabled", "p", "wjtp.rdc","enabled", "\n", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"wjtp.rdc"+" "+"fcn";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setwjtpwjtp_rdcfixed_class_names_widget(new StringOptionWidget(editGroupwjtpwjtp_rdc, SWT.NONE, new OptionData("FixedClassNames",  "p", "wjtp.rdc","fcn", "\n							Use this parameter to set some class names unchangable \neven they are duplicated. 							The fixed class name list \ncannot contain duplicated class names. 							Using '-' to split \nmultiple class names (e.g., fcn:a.b.c-a.b.d). 						", defaultString)));
+		
+
+		
+		return editGroupwjtpwjtp_rdc;
 	}
 
 

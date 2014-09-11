@@ -463,7 +463,7 @@ public class DexBody  {
         // add local to store intermediate results
         storeResultLocal = Jimple.v().newLocal("$u-1", UnknownType.v());
         jBody.getLocals().add (storeResultLocal);
-
+        
         // process bytecode instructions
         for(DexlibAbstractInstruction instruction : instructions) {
             if (dangling != null) {
@@ -512,7 +512,7 @@ public class DexBody  {
          */
 
         Debug.printDbg("body before any transformation : \n", jBody);
-
+        
         // Remove dead code and the corresponding locals before assigning types
 		UnreachableCodeEliminator.v().transform(jBody);
 		DeadAssignmentEliminator.v().transform(jBody);
@@ -525,7 +525,7 @@ public class DexBody  {
 
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);
-
+        
   		for (RetypeableInstruction i : instructionsToRetype)
             i.retype(jBody);
 
@@ -558,9 +558,11 @@ public class DexBody  {
           DexNumTransformer.v().transform (jBody);
           DexNullTransformer.v().transform(jBody);
           DexIfTransformer.v().transform(jBody);
-          
           DexReturnInliner.v().transform(jBody);
+          
+          CopyPropagator.v().transform(jBody);
           DeadAssignmentEliminator.v().transform(jBody);
+          UnusedLocalEliminator.v().transform(jBody);
           
           //DexRefsChecker.v().transform(jBody);
           //DexNullArrayRefTransformer.v().transform(jBody);
@@ -568,8 +570,6 @@ public class DexBody  {
           Debug.printDbg("\nafter Num and Null transformers");
         }
         Debug.printDbg("",(Body)jBody);
-
-     
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
             for (Local l: jBody.getLocals()) {
@@ -577,7 +577,6 @@ public class DexBody  {
             }
         }
         
-
         TypeAssigner.v().transform(jBody);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
@@ -667,8 +666,7 @@ public class DexBody  {
         //TypeAssigner.v().transform(jBody);
         //LocalPacker.v().transform(jBody);
         //LocalNameStandardizer.v().transform(jBody);
-        CopyPropagator.v().transform(jBody);
-
+        
         // Remove if (null == null) goto x else <madness>. We can only do this
         // after we have run the constant propagation as we might not be able
         // to statically decide the conditions earlier.
@@ -678,13 +676,16 @@ public class DexBody  {
         // might have rendered some code unreachable (well, it was unreachable
         // before as well, but we didn't know).
         UnreachableCodeEliminator.v().transform(jBody);
+        
+        // Not sure whether we need this even though we do it earlier on as
+        // the earlier pass does not have type information
+        //CopyPropagator.v().transform(jBody);
 
         // we might have gotten new dead assignments and unused locals through
         // copy propagation and unreachable code elimination, so we have to do
         // this again
         DeadAssignmentEliminator.v().transform(jBody);
         UnusedLocalEliminator.v().transform(jBody);
-        //LocalPacker.v().transform(jBody);
         NopEliminator.v().transform(jBody);
 
         for (Unit u: jBody.getUnits()) {

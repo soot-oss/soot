@@ -26,9 +26,9 @@ public class Util {
     public static void addInnerClassTag(soot.SootClass sc, String innerName, String outerName, String simpleName, int access){
         // maybe need file sep here - may break windows
 
-        innerName = soot.util.StringTools.replaceAll(innerName, ".", "/");
+        innerName = innerName.replaceAll(".", "/");
         if (outerName != null){
-            outerName = soot.util.StringTools.replaceAll(outerName, ".", "/");
+            outerName = outerName.replaceAll(".", "/");
         }
         sc.addTag(new soot.tagkit.InnerClassTag(
             innerName,
@@ -128,7 +128,7 @@ public class Util {
             }
             else {
                 String typeSt = getSootType(arrType).toString();
-                typeSt = soot.util.StringTools.replaceAll(typeSt, ".", "$");
+                typeSt = typeSt.replaceAll(".", "$");
 
                 fieldName = fieldName+"L"+typeSt;
             }
@@ -136,7 +136,7 @@ public class Util {
        else {
             fieldName = "class$";
             String typeSt = getSootType(type).toString();
-            typeSt = soot.util.StringTools.replaceAll(typeSt, ".", "$");
+            typeSt = typeSt.replaceAll(".", "$");
             fieldName = fieldName+typeSt;
        }
        

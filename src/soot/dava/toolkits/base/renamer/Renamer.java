@@ -575,7 +575,7 @@ public class Renamer {
 				return false;
 			}
 			else
-				debug("isUniqurName","New Name "+ name+ " is different from field "+ tempField.getName());
+				debug("isUniqueName","New Name "+ name+ " is different from field "+ tempField.getName());
 		}
 		return true;
 	}

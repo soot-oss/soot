@@ -1,0 +1,40 @@
+asm.jar=libs/asm-debug-all-5.0.3.jar
+xmlprinter.jar=libs/AXMLPrinter2.jar
+
+## Location of Polyglot classes jar file to link Soot against
+polyglot.jar=libs/polyglot.jar
+
+dexlib2.jar=libs/dexlib2-2.0.3-dev.jar
+dexlib-utils.jar=libs/util-2.0.3-dev.jar
+
+slf4j-api.jar=libs/slf4j-api-1.7.5.jar
+slf4j-simple.jar=libs/slf4j-simple-1.7.5.jar
+
+## Location of JastAdd classes jar file to link Soot against
+jastaddfrontend.loc=JastAddExtensions/SootJastAddJ
+
+## Location of Jasmin classes jar file
+jasmin.jar=libs/jasminclasses-2.2.1.jar
+
+heros.jar=libs/heros-trunk.jar
+
+## Location of Eclipse installation.
+## This should have a directory called plugins in it.
+#eclipse.loc=c:\\coding\\java\\eclipse
+
+## Version of Soot for tagging tarballs.
+soot.version=trunk
+
+## Location in which to generate Soot release tarballs.
+release.loc=lib
+
+## URL for Java API documentation, for resolving things like
+## {@link Iterator} when generating documentation from 
+## javadoc comments.
+javaapi.url=http://java.sun.com/j2se/1.6.0/docs/api/
+
+## We need a recent version of junit and hamcrest these days.
+junit.jar=libs/junit-4.11.jar
+hamcrest.jar=libs/hamcrest-all-1.3.jar
+
+javacup.jar=libs/java_cup.jar

@@ -61,6 +61,7 @@ import soot.toDex.instructions.Insn22x;
 import soot.toDex.instructions.Insn23x;
 import soot.toDex.instructions.Insn31t;
 import soot.toDex.instructions.Insn32x;
+import soot.toDex.instructions.InsnWithOffset;
 import soot.toDex.instructions.PackedSwitchPayload;
 import soot.toDex.instructions.SparseSwitchPayload;
 import soot.toDex.instructions.SwitchPayload;
@@ -117,8 +118,11 @@ public class StmtVisitor implements StmtSwitch {
 	
     // maps used to map Jimple statements to dalvik instructions
     private Map<Insn, Stmt> insnStmtMap = new HashMap<Insn, Stmt>();
+    private Map<Instruction, LocalRegisterAssignmentInformation> instructionRegisterMap = new IdentityHashMap<Instruction, LocalRegisterAssignmentInformation>();
     private Map<Instruction, Stmt> instructionStmtMap = new IdentityHashMap<Instruction, Stmt>();
+    private Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap = new IdentityHashMap<Insn, LocalRegisterAssignmentInformation>();
     private Map<Instruction, SwitchPayload> instructionPayloadMap = new IdentityHashMap<Instruction, SwitchPayload>();
+	private List<LocalRegisterAssignmentInformation> parameterInstructionsList = new ArrayList<LocalRegisterAssignmentInformation>();
     
     public StmtVisitor(SootMethod belongingMethod, DexBuilder belongingFile) {
 		this.belongingMethod = belongingMethod;
@@ -145,11 +149,19 @@ public class StmtVisitor implements StmtSwitch {
     public Map<Instruction, Stmt> getInstructionStmtMap() {
         return this.instructionStmtMap;
     }
+	
+    public Map<Instruction, LocalRegisterAssignmentInformation> getInstructionRegisterMap() {
+        return this.instructionRegisterMap;
+    }
+    
+    public List<LocalRegisterAssignmentInformation> getParameterInstructionsList() {
+    	return parameterInstructionsList;
+    }
 
     public Map<Instruction, SwitchPayload> getInstructionPayloadMap() {
         return this.instructionPayloadMap;
     }
-
+    
     protected void addInsn(Insn insn, Stmt s) {
 		int highestIndex = insns.size();
 		addInsn(highestIndex, insn);
@@ -169,8 +181,72 @@ public class StmtVisitor implements StmtSwitch {
 	public void finalizeInstructions() {
 		addSwitchPayloads();
 		finishRegs();
+		reduceInstructions();
 	}
 	
+	/**
+	 * Reduces the instruction list by removing unnecessary instruction pairs
+	 * such as move v0 v1; move v1 v0;
+	 */
+	private void reduceInstructions() {
+		for (int i = 0; i < this.insns.size() - 1; i++) {
+			Insn curInsn = this.insns.get(i);
+			// Only consider real instructions
+			if (curInsn instanceof AddressInsn)
+				continue;
+			if (!curInsn.getOpcode().name.startsWith("move/"))
+				continue;
+			
+			// Skip over following address instructions
+			Insn nextInsn = null;
+			int nextIndex = -1;
+			for (int j = i + 1; j < this.insns.size(); j++) {
+				Insn candidate = this.insns.get(j);
+				if (candidate instanceof AddressInsn)
+					continue;
+				nextInsn = candidate;
+				nextIndex = j;
+				break;
+			}
+			if (nextInsn == null || !nextInsn.getOpcode().name.startsWith("move/"))
+				continue;
+			
+			// Do not remove the last instruction in the body as we need to remap
+			// jump targets to the successor
+			if (nextIndex == this.insns.size() - 1)
+				continue;
+			
+			// Check if we have a <- b; b <- a;
+			Register firstTarget = curInsn.getRegs().get(0);
+			Register firstSource = curInsn.getRegs().get(1);
+			Register secondTarget = nextInsn.getRegs().get(0);
+			Register secondSource = nextInsn.getRegs().get(1);
+			if (firstTarget.equals(secondSource) && secondTarget.equals(firstSource)) {
+				Stmt origStmt = insnStmtMap.get(nextInsn);
+				
+				// Remove the second instruction as it does not change any
+				// state. We cannot remove the first instruction as other
+				// instructions may depend on the register being set.
+				if (origStmt == null || !isJumpTarget(origStmt)) {
+					insns.remove(nextIndex);
+				
+					if (origStmt != null) {
+						insnStmtMap.remove(nextInsn);
+						insnStmtMap.put(this.insns.get(nextIndex + 1), origStmt);
+					}
+				}
+			}
+		}
+	}
+	
+	private boolean isJumpTarget(Stmt target) {
+		for (Insn insn : this.insns)
+			if (insn instanceof InsnWithOffset)
+				if (((InsnWithOffset) insn).getTarget() == target)
+					return true;
+		return false;
+	}
+
 	private void addSwitchPayloads() {
 		// add switch payloads to the end of the insns
 		for (SwitchPayload payload : switchPayloads) {
@@ -190,6 +266,9 @@ public class StmtVisitor implements StmtSwitch {
             if (insnStmtMap.containsKey(i)) { // get tags
                 instructionStmtMap.put(realInsn, insnStmtMap.get(i));
             }
+            if (insnRegisterMap.containsKey(i)) {
+            	instructionRegisterMap.put(realInsn, insnRegisterMap.get(i));
+            }
             if (i instanceof SwitchPayload)
             	instructionPayloadMap.put(realInsn, (SwitchPayload) i);
 		}
@@ -199,7 +278,7 @@ public class StmtVisitor implements StmtSwitch {
 	private void finishRegs() {
 		// fit registers into insn formats, potentially replacing insns
 		RegisterAssigner regAssigner = new RegisterAssigner(regAlloc);
-		insns = regAssigner.finishRegs(insns, insnStmtMap);
+		insns = regAssigner.finishRegs(insns, insnStmtMap, insnRegisterMap, parameterInstructionsList);
 	}
 	
 	protected int getRegisterCount() {
@@ -299,6 +378,8 @@ public class StmtVisitor implements StmtSwitch {
 				addInsn(invokeInsnIndex + 1, moveResultInsn);
 			}
 		}
+
+		this.insnRegisterMap.put(insns.get(insns.size() - 1), LocalRegisterAssignmentInformation.v(lhsReg, (Local)lhs));
 	}
 
 	private Insn buildGetInsn(ConcreteRef sourceRef, Register destinationReg) {
@@ -483,7 +564,10 @@ public class StmtVisitor implements StmtSwitch {
 		if (rhs instanceof CaughtExceptionRef) {
 			// save the caught exception with move-exception
 			Register localReg = regAlloc.asLocal(lhs);
+			
             addInsn(new Insn11x(Opcode.MOVE_EXCEPTION, localReg), stmt);
+
+            this.insnRegisterMap.put(insns.get(insns.size() - 1), LocalRegisterAssignmentInformation.v(localReg, (Local)lhs));
 		} else if (rhs instanceof ThisRef || rhs instanceof ParameterRef) {
 			/* 
 			 * do not save the ThisRef or ParameterRef in a local, because it always has a parameter register already.
@@ -491,6 +575,8 @@ public class StmtVisitor implements StmtSwitch {
 			 */
 			Local localForThis = (Local) lhs;
 			regAlloc.asParameter(belongingMethod, localForThis);
+			
+			parameterInstructionsList.add(LocalRegisterAssignmentInformation.v(regAlloc.asLocal(localForThis), localForThis));
 		} else {
 			throw new Error("unknown Value as right-hand side of IdentityStmt: " + rhs);
 		}

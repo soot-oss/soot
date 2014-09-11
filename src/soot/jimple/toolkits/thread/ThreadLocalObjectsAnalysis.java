@@ -83,25 +83,27 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 		
 		if(printDebug)
 			G.v().out.println("- " + localOrRef + " in " + sm + " is...");
-	    for(AbstractRuntimeThread thread : mhp.getThreads())
-	    {
-	        for(Object meth : thread.getRunMethods())
-	        {
-	            SootMethod runMethod = (SootMethod) meth;
-
-				if( runMethod.getDeclaringClass().isApplicationClass() &&
-					!isObjectLocalToContext(localOrRef, sm, runMethod))
-				{
-					if(printDebug)
-						G.v().out.println("  THREAD-SHARED (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
-														" smartdfa " + SmartMethodInfoFlowAnalysis.counter + 
-														" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
-//					valueCache.put(cacheKey, Boolean.FALSE);
-//					escapesThrough(localOrRef, sm);
-					return false;
+		Collection<AbstractRuntimeThread> mhpThreads = mhp.getThreads();
+		if (mhpThreads != null)
+		    for(AbstractRuntimeThread thread : mhpThreads)
+		    {
+		        for(Object meth : thread.getRunMethods())
+		        {
+		            SootMethod runMethod = (SootMethod) meth;
+	
+					if( runMethod.getDeclaringClass().isApplicationClass() &&
+						!isObjectLocalToContext(localOrRef, sm, runMethod))
+					{
+						if(printDebug)
+							G.v().out.println("  THREAD-SHARED (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
+															" smartdfa " + SmartMethodInfoFlowAnalysis.counter + 
+															" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
+	//					valueCache.put(cacheKey, Boolean.FALSE);
+	//					escapesThrough(localOrRef, sm);
+						return false;
+					}
 				}
 			}
-		}
 		if(printDebug)
 			G.v().out.println("  THREAD-LOCAL (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
 							 " smartdfa " + SmartMethodInfoFlowAnalysis.counter + 

@@ -107,7 +107,6 @@ public class Debugger {
   while (it.hasNext())
     numbers.put(it.next(),new Integer(i++));
   
-  int jsr = 0;
   System.out.println("\r\r***********  "+msg);
   Iterator<Unit> udit = u.snapshotIterator();
   while (udit.hasNext()) {
@@ -118,7 +117,6 @@ public class Debugger {
       System.out.println("hi");
     
     if (unit instanceof TargetArgInst) {
-      if(unit instanceof JSRInst) jsr++;
       TargetArgInst ti = (TargetArgInst)unit;
       if (ti.getTarget() == null)
       {

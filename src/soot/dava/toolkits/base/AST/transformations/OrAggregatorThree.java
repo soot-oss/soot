@@ -153,11 +153,6 @@ public class OrAggregatorThree {
 		G.v().ASTTransformations_modified = true;
 		((ASTIfElseNode)node).replaceBody((List<Object>)subBodies.get(0),newBody);
 	    }
-	    else{//realllly shouldnt come here
-		//something bad is happening dont do nothin
-		//System.out.println("Error-------not modifying AST");
-		return;
-	    }
 
 	}//end of ASTIfElseNode
     }

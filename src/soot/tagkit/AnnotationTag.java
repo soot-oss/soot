@@ -72,14 +72,19 @@ public class AnnotationTag implements Tag
     private List<AnnotationElem> elems;
     
     public AnnotationTag(String type){
-      this(type, new ArrayList<AnnotationElem>());
+        this.type = type;
+        this.elems = null;
     }
+    
     public AnnotationTag(String type, Collection<AnnotationElem> elements){
       this.type = type;
-      if (elements instanceof List<?>)
-        this.elems = (List<AnnotationElem>)elements;
+      
+      if (elements == null || elements.isEmpty())
+    	  this.elems = null;
+      else if (elements instanceof List<?>)
+    	  this.elems = (List<AnnotationElem>)elements;
       else
-        this.elems = new ArrayList<AnnotationElem>(elements);
+    	  this.elems = new ArrayList<AnnotationElem>(elements);
     }
     
     @Deprecated
@@ -90,16 +95,16 @@ public class AnnotationTag implements Tag
     
     // should also print here number of annotations and perhaps the annotations themselves
     public String toString() {
-        StringBuffer sb = new StringBuffer("Annotation: type: "+type+" num elems: "+elems.size()+" elems: ");
         if (elems != null){
+        	StringBuffer sb = new StringBuffer("Annotation: type: "+type+" num elems: "+elems.size()+" elems: ");
             Iterator<AnnotationElem> it = elems.iterator();
             while (it.hasNext()){
                 sb.append("\n");
                 sb.append(it.next());
             }
-        }
-        sb.append("\n");
-        return sb.toString();
+            sb.append("\n");
+            return sb.toString();
+        } else return "Annotation type: "+type+" without elements";
     }
 
     /** Returns the tag name. */
@@ -115,14 +120,6 @@ public class AnnotationTag implements Tag
         return type;
     }
     
-    /**
-     * @return the number of elements
-     */
-    @Deprecated
-    public int getNumElems(){
-        return elems.size();
-    }
-    
     /** Returns the tag raw data. */
     public byte[] getValue() {
         throw new RuntimeException( "AnnotationTag has no value for bytecode" );
@@ -133,6 +130,8 @@ public class AnnotationTag implements Tag
      * @param elem the element
      */
     public void addElem(AnnotationElem elem){
+    	if (elems == null)
+    		elems = new ArrayList<AnnotationElem>();
         elems.add(elem);
     }
     
@@ -143,22 +142,13 @@ public class AnnotationTag implements Tag
     public void setElems(List<AnnotationElem> list){
         this.elems = list;
     }
-
-    /**
-     * Gets the ith element
-     * @param i the element to retrieve
-     * @return whichever element is at this index
-     */
-    @Deprecated
-    public AnnotationElem getElemAt(int i){
-        return elems.get(i);
-    }
     
     /**
      * @return an immutable collection of the elements
      */
     public Collection<AnnotationElem> getElems(){
-      return Collections.unmodifiableCollection(elems);
+    	return elems == null ? Collections.<AnnotationElem>emptyList()
+    			: Collections.unmodifiableCollection(elems);
     }
 }
 

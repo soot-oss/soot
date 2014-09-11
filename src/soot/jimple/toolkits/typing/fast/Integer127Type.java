@@ -25,19 +25,30 @@ import soot.*;
 /**
  * @author Ben Bellamy
  */
-public class Integer127Type extends PrimType implements IntegerType
-{
-	private final static Integer127Type instance = new Integer127Type();
-	
-	public static Integer127Type v() { return instance; }
-	
-	private Integer127Type() { }
-	
-	public String toString() { return "[0..127]"; }
-	public boolean equals(Object t) { return this == t; }
+public class Integer127Type extends PrimType implements IntegerType {
+
+    public static Integer127Type v() {
+        return G.v().soot_jimple_toolkits_typing_fast_Integer127Type();
+    }
+
+    public Integer127Type(Singletons.Global g) {
+    }
+
+    public String toString() {
+        return "[0..127]";
+    }
+
+    public boolean equals(Object t) {
+        return this == t;
+    }
 
     @Override
     public RefType boxedType() {
-    	return RefType.v("java.lang.Integer");
+        return RefType.v("java.lang.Integer");
     }
+
+    @Override
+	public boolean isAllowedInFinalCode() {
+		return false;
+	}
 }

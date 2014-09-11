@@ -38,22 +38,22 @@ import java.util.*;
  *
  * @see: FlowUniverse
  */
-public interface FlowSet {
+public interface FlowSet<T> extends Iterable<T> {
   /**
    * Clones the current FlowSet.
    */
-  public FlowSet clone();
+  public FlowSet<T> clone();
 
   /** 
    * returns an empty set, most often more efficient than:
    * <code>((FlowSet)clone()).clear()</code>
    */
-  public Object emptySet();
+  public FlowSet<T> emptySet();
 
   /**
    * Copies the current FlowSet into dest.
    */
-  public void copy(FlowSet dest);
+  public void copy(FlowSet<T> dest);
 
   /** 
    * Sets this FlowSet to the empty set (more generally, the bottom element
@@ -63,33 +63,33 @@ public interface FlowSet {
   /**
    * Returns the union (join) of this FlowSet and <code>other</code>, putting
    * result into <code>this</code>. */
-  public void union(FlowSet other);
+  public void union(FlowSet<T> other);
 
   /** 
    * Returns the union (join) of this FlowSet and <code>other</code>, putting
    * result into <code>dest</code>. <code>dest</code>, <code>other</code> and
    * <code>this</code> could be the same object.
    */
-  public void union(FlowSet other, FlowSet dest);
+  public void union(FlowSet<T> other, FlowSet<T> dest);
 
   /**
    * Returns the intersection (meet) of this FlowSet and <code>other</code>,
    * putting result into <code>this</code>.
    */
-  public void intersection(FlowSet other);
+  public void intersection(FlowSet<T> other);
 
   /**
    * Returns the intersection (meet) of this FlowSet and <code>other</code>,
    * putting result into <code>dest</code>. <code>dest</code>,
    * <code>other</code> and <code>this</code> could be the same object.
    */
-  public void intersection(FlowSet other, FlowSet dest);
+  public void intersection(FlowSet<T> other, FlowSet<T> dest);
 
   /** 
    * Returns the set difference (this intersect ~other) of this FlowSet and
    * <code>other</code>, putting result into <code>this</code>.
    */
-  public void difference(FlowSet other);
+  public void difference(FlowSet<T> other);
 
   /**
    * Returns the set difference (this intersect ~other) of this FlowSet and 
@@ -97,7 +97,7 @@ public interface FlowSet {
    * <code>dest</code>, <code>other</code> and <code>this</code> could be the
    * same object.
    */
-  public void difference(FlowSet other, FlowSet dest);
+  public void difference(FlowSet<T> other, FlowSet<T> dest);
 
   /**
    * Returns true if this FlowSet is the empty set.
@@ -114,38 +114,38 @@ public interface FlowSet {
   /**
    * Adds <code>obj</code> to <code>this</code>.
    */
-  public void add(Object obj);
+  public void add(T obj);
 
   /**
    * puts <code>this</code> union <code>obj</code> into <code>dest</code>.
    */
-  public void add(Object obj, FlowSet dest);
+  public void add(T obj, FlowSet<T> dest);
 
   /**
    * Removes <code>obj</code> from <code>this</code>.
    */
-  public void remove(Object obj);
+  public void remove(T obj);
 
   /**
    * Puts <code>this</code> minus <code>obj</code> into <code>dest</code>.
    */
-  public void remove(Object obj, FlowSet dest);
+  public void remove(T obj, FlowSet<T> dest);
 
   /**
    * Returns true if this FlowSet contains <code>obj</code>.
    */
-  public boolean contains(Object obj);
+  public boolean contains(T obj);
 
   /**
    * returns an iterator over the elements of the flowSet. Note that the
    * iterator might be backed, and hence be faster in the creation, than doing
    * <code>toList().iterator()</code>.
    */
-  public Iterator iterator();
+  public Iterator<T> iterator();
 
   /**
    * Returns an unbacked list of contained objects for this FlowSet.
    */
-  public List toList();
+  public List<T> toList();
 }
 

@@ -97,9 +97,10 @@ class AbstractSootFieldRef implements SootFieldRef {
                     "Looking in "+cl+" which has fields "+cl.getFields()+"\n" );
             
             // Check whether we have the field in the current class
-            if( cl.declaresField(name, type) ) {
-                return checkStatic(cl.getField(name, type));
-            }            
+            SootField clField = cl.getFieldUnsafe(name, type);
+            if (clField != null) {
+                return checkStatic(clField);
+            }
             // If we have a phantom class, we directly construct a phantom field
             // in it and don't care about superclasses.
             else if (Scene.v().allowsPhantomRefs() && cl.isPhantom()) {
@@ -108,8 +109,9 @@ class AbstractSootFieldRef implements SootFieldRef {
             	synchronized (cl) {
             		// Be careful: Another thread may have already created this
             		// field in the meantime, so better check twice.
-                    if (cl.declaresField(name, type))
-                        return checkStatic(cl.getField(name, type));
+            		clField = cl.getFieldUnsafe(name, type);
+                    if (clField != null)
+                        return checkStatic(clField);
                     else {
                     	cl.addField(f);
                     	return f;
@@ -124,8 +126,9 @@ class AbstractSootFieldRef implements SootFieldRef {
                     SootClass iface = queue.removeFirst();
                     if(trace != null) trace.append(
                             "Looking in "+iface+" which has fields "+iface.getFields()+"\n" );
-                    if( iface.declaresField(name, type) ) {
-                        return checkStatic(iface.getField( name, type ));
+                    SootField ifaceField = iface.getFieldUnsafe(name, type);
+                    if (ifaceField != null) {
+                        return checkStatic(ifaceField);
                     }
                     queue.addAll( iface.getInterfaces() );
                 }
@@ -144,8 +147,9 @@ class AbstractSootFieldRef implements SootFieldRef {
         	synchronized (declaringClass) {
         		// Be careful: Another thread may have already created this
         		// field in the meantime, so better check twice.
-                if (cl.declaresField(name, type))
-                    return checkStatic(cl.getField(name, type));
+        		SootField clField = cl.getFieldUnsafe(name, type);
+                if (clField != null)
+                    return checkStatic(clField);
                 else {
                 	declaringClass.addField(sf);
                 	return sf;

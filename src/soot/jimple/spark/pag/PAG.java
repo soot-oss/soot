@@ -782,8 +782,6 @@ public class PAG implements PointsToAnalysis {
                            e.srcCtxt(), e.tgtCtxt(), e );
         }
         else if( e.kind() == Kind.EXECUTOR ) {
-        	// Flow from first parameter of doPrivileged() invocation
-        	// to this of target
         	InvokeExpr ie = e.srcStmt().getInvokeExpr();
             boolean virtualCall = callAssigns.containsKey(ie);
 

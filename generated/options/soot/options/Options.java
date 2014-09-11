@@ -1519,6 +1519,7 @@ public class Options extends OptionsBase {
         +padOpt("wjtp", "Whole-jimple transformation pack")
         +padVal("wjtp.mhp", "Determines what statements may be run concurrently")
         +padVal("wjtp.tn", "Finds critical sections, allocates locks")
+        +padVal("wjtp.rdc", "Rename duplicated classes when the file system is not case sensitive")
         +padOpt("wjop", "Whole-jimple optimization pack")
         +padVal("wjop.smb", "Static method binder: Devirtualizes monomorphic calls")
         +padVal("wjop.si", "Static inliner: inlines monomorphic calls")
@@ -2102,6 +2103,13 @@ public class Options extends OptionsBase {
                 +padOpt( "print-graph (false)", "Print topological graph of transactions" )
                 +padOpt( "print-table (false)", "Print table of transactions" )
                 +padOpt( "print-debug (false)", "Print debugging info" );
+    
+        if( phaseName.equals( "wjtp.rdc" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nRename duplicated classes when the file system is not case \nsensitive. If the file system is case sensitive, this phase does \nnothing. "
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" )
+                +padOpt( "fcn", "Set  for the fixed class names." );
     
         if( phaseName.equals( "wjop" ) )
             return "Phase "+phaseName+":\n"+
@@ -2866,6 +2874,11 @@ public class Options extends OptionsBase {
                 +"print-table "
                 +"print-debug ";
     
+        if( phaseName.equals( "wjtp.rdc" ) )
+            return ""
+                +"enabled "
+                +"fcn ";
+    
         if( phaseName.equals( "wjop" ) )
             return ""
                 +"enabled ";
@@ -3471,6 +3484,10 @@ public class Options extends OptionsBase {
               +"print-table:false "
               +"print-debug:false ";
     
+        if( phaseName.equals( "wjtp.rdc" ) )
+            return ""
+              +"enabled:false ";
+    
         if( phaseName.equals( "wjop" ) )
             return ""
               +"enabled:false ";
@@ -3844,6 +3861,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjtp" ) ) return;
         if( phaseName.equals( "wjtp.mhp" ) ) return;
         if( phaseName.equals( "wjtp.tn" ) ) return;
+        if( phaseName.equals( "wjtp.rdc" ) ) return;
         if( phaseName.equals( "wjop" ) ) return;
         if( phaseName.equals( "wjop.smb" ) ) return;
         if( phaseName.equals( "wjop.si" ) ) return;
@@ -3993,6 +4011,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase wjtp.mhp" );
         if( !PackManager.v().hasPhase( "wjtp.tn" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjtp.tn" );
+        if( !PackManager.v().hasPhase( "wjtp.rdc" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjtp.rdc" );
         if( !PackManager.v().hasPhase( "wjop" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjop" );
         if( !PackManager.v().hasPhase( "wjop.smb" ) )

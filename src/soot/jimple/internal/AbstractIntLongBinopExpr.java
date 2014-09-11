@@ -38,7 +38,7 @@ abstract public class AbstractIntLongBinopExpr extends AbstractBinopExpr
     public Type getType()
     {
         Value op1 = op1Box.getValue();
-        Value op2 = op1Box.getValue();
+        Value op2 = op2Box.getValue();
 
         if((op1.getType().equals(IntType.v()) || 
             op1.getType().equals(ByteType.v()) ||

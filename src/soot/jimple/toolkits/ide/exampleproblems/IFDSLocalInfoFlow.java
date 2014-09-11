@@ -30,10 +30,10 @@ import heros.flowfunc.Transfer;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 
 import soot.Local;
 import soot.NullType;
@@ -89,21 +89,26 @@ public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,
 
 			@Override
 			public FlowFunction<Local> getCallFlowFunction(Unit src, final SootMethod dest) {
-				Stmt stmt = (Stmt) src;
-				InvokeExpr ie = stmt.getInvokeExpr();
+				Stmt s = (Stmt) src;
+				InvokeExpr ie = s.getInvokeExpr();
 				final List<Value> callArgs = ie.getArgs();
 				final List<Local> paramLocals = new ArrayList<Local>();
 				for(int i=0;i<dest.getParameterCount();i++) {
 					paramLocals.add(dest.getActiveBody().getParameterLocal(i));
 				}
 				return new FlowFunction<Local>() {
-
 					public Set<Local> computeTargets(Local source) {
-						int argIndex = callArgs.indexOf(source);
-						if(argIndex>-1) {
-							return Collections.singleton(paramLocals.get(argIndex));
+						//ignore implicit calls to static initializers
+						if(dest.getName().equals(SootMethod.staticInitializerName) && dest.getParameterCount()==0)
+							return Collections.emptySet();
+						
+						Set<Local> taintsInCaller = new HashSet<Local>();
+						for(int i=0;i<callArgs.size();i++) {
+							if(callArgs.get(i).equivTo(source)) {
+								taintsInCaller.add(paramLocals.get(i));
+							}
 						}
-						return Collections.emptySet();
+						return taintsInCaller;
 					}
 				};
 			}

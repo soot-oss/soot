@@ -38,7 +38,7 @@ public abstract class AbstractFloatBinopExpr extends AbstractBinopExpr
 	public Type getType()
     {
         Value op1 = op1Box.getValue();
-        Value op2 = op1Box.getValue();
+        Value op2 = op2Box.getValue();
 		Type op1t = op1.getType();
 		Type op2t = op2.getType();
         if((op1t.equals(IntType.v()) || 

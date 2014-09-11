@@ -152,7 +152,8 @@ public class ExprVisitor implements ExprSwitch {
 		if (regCountForArguments <= 5) {
 			Register[] paddedArray = pad35cRegs(argumentRegs);
 			Opcode opc = Opcode.valueOf(invokeOpcode);
-			invokeInsn = new Insn35c(opc, regCountForArguments, paddedArray[0], paddedArray[1], paddedArray[2], paddedArray[3], paddedArray[4], method);
+			invokeInsn = new Insn35c(opc, regCountForArguments, paddedArray[0],
+					paddedArray[1], paddedArray[2], paddedArray[3], paddedArray[4], method);
 		} else if (regCountForArguments <= 255) {
 			Opcode opc = Opcode.valueOf(invokeOpcode + "_RANGE");
 			invokeInsn = new Insn3rc(opc, argumentRegs, (short) regCountForArguments, method);
@@ -522,9 +523,14 @@ public class ExprVisitor implements ExprSwitch {
 	
 	@Override
 	public void caseInstanceOfExpr(InstanceOfExpr ioe) {
-		Value referenceToCheck = ioe.getOp();
-		Register referenceToCheckReg = regAlloc.asLocal(referenceToCheck);
-		BuilderReference checkType = DexPrinter.toTypeReference(ioe.getCheckType(), stmtV.getBelongingFile());
+		final Value referenceToCheck = ioe.getOp();
+		
+		// There are some strange apps that use constants here
+		constantV.setOrigStmt(origStmt);
+		Register referenceToCheckReg = regAlloc.asImmediate(referenceToCheck, constantV);
+		
+		BuilderReference checkType = DexPrinter.toTypeReference(ioe.getCheckType(),
+				stmtV.getBelongingFile());
         stmtV.addInsn(new Insn22c(Opcode.INSTANCE_OF, destinationReg, referenceToCheckReg,
                 checkType), origStmt);
 	}

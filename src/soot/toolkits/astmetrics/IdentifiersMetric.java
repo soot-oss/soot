@@ -87,7 +87,7 @@ public class IdentifiersMetric extends ASTMetric {
   
   private void initializeDictionary() {
     String line;
-    BufferedReader br;
+    BufferedReader br = null;
     dictionary = new ArrayList<String>();
     names = new HashMap<String, Double>();
     
@@ -117,6 +117,14 @@ public class IdentifiersMetric extends ASTMetric {
       G.v().out.println("Error reading in dictionary file(s)");  
     else if (Options.v().verbose())
       G.v().out.println("Read "+dictionarySize+" words in from dictionary file(s)");
+    
+    try{
+    	is.close();
+    } catch(IOException e){}
+    try{
+    	if(br!=null) br.close();
+    } catch(IOException e){}
+    
   }
   
   private void addWord(String word) {

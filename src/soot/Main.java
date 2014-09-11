@@ -52,8 +52,7 @@ public class Main {
 
     private Date start;
     private Date finish;
-    private Date load;
-
+    
     private void printVersion() {
         G.v().out.println("Soot version " + versionString);
 
