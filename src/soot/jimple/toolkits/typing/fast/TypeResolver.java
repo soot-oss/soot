@@ -213,15 +213,8 @@ public class TypeResolver
 			if ( this.h.ancestor(useType, t) )
 				return op;
 			
-			// We introduce a high penalty for impossible calls to make the
-			// respective typing less likely to win.
-			if (!this.h.ancestor(t, useType)) {
-				this.count += 1000;
-				return op;
-			}
-			
 			this.count++;
-
+			
 			if ( countOnly )
 				return op;
 			else
