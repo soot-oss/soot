@@ -102,7 +102,7 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
 				if (initStmt != null) {
 					if (smInit == null)
 						smInit = getOrCreateInitializer(sc, alreadyInitialized);
-					smInit.getActiveBody().getUnits().add(initStmt);
+					smInit.getActiveBody().getUnits().addFirst(initStmt);
 				}
 			}
 		}
