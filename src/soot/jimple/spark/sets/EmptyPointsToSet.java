@@ -19,7 +19,9 @@
 
 package soot.jimple.spark.sets;
 import soot.*;
+import soot.jimple.ClassConstant;
 import soot.jimple.spark.pag.Node;
+
 import java.util.*;
 
 /** Implementation of an empty, immutable points-to set.
@@ -28,6 +30,10 @@ import java.util.*;
 public class EmptyPointsToSet extends PointsToSetInternal {
     public EmptyPointsToSet( Singletons.Global g ) { super(null); }
     public static EmptyPointsToSet v() { return G.v().soot_jimple_spark_sets_EmptyPointsToSet(); }
+    
+    public EmptyPointsToSet(Singletons.Global g, Type type) {
+    	super(type);
+    }
 
     /** Returns true if this set contains no run-time objects. */
     public boolean isEmpty() { return true; }
@@ -36,7 +42,7 @@ public class EmptyPointsToSet extends PointsToSetInternal {
         return false;
     }
     /** Set of all possible run-time types of objects in the set. */
-    public Set possibleTypes() { return Collections.EMPTY_SET; }
+    public Set<Type> possibleTypes() { return Collections.emptySet(); }
     /** Adds contents of other into this set, returns true if this set 
      * changed. */
     public boolean addAll( PointsToSetInternal other,
@@ -56,8 +62,8 @@ public class EmptyPointsToSet extends PointsToSetInternal {
         return false;
     }
 
-    public Set possibleStringConstants() { return Collections.EMPTY_SET; }
-    public Set possibleClassConstants() { return Collections.EMPTY_SET; }
+    public Set<String> possibleStringConstants() { return Collections.emptySet(); }
+    public Set<ClassConstant> possibleClassConstants() { return Collections.emptySet(); }
     
     /**
      * {@inheritDoc}

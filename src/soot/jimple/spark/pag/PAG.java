@@ -1132,18 +1132,6 @@ public class PAG implements PointsToAnalysis {
             for (Node element : ar)
 				vl.add( element );
             return vl.add( value );
-            /*
-	    Node[] ar = (Node[]) valueList;
-            Node[] newar = new Node[ar.length+1];
-            for( int i = 0; i < ar.length; i++ ) {
-                Node n = ar[i];
-                if( n == value ) return false;
-                newar[i] = n;
-            }
-            newar[ar.length] = value;
-            m.put( key, newar );
-            return true;
-            */
 	}
 	return ((Set<Node>) valueList).add( value );
     }
