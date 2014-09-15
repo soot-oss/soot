@@ -561,8 +561,6 @@ public class DexPrinter {
     	Set<String> skipList = new HashSet<String>();
     	Set<Annotation> annotations = buildCommonAnnotations(m, skipList);
     	
-        if (m.getName().contains("foo"))
-        	System.out.println("x");
     	for (Tag t : m.getTags()) {
             if (t.getName().equals("VisibilityParameterAnnotationTag")) {
                 VisibilityParameterAnnotationTag vat = (VisibilityParameterAnnotationTag)t;
@@ -986,7 +984,7 @@ public class DexPrinter {
             }
 		}
 		
-        
+		
 		for (int registersLeft : seenRegisters.values())
 				builder.addEndLocal(registersLeft);
 		toTries(activeBody.getTraps(), stmtV, builder, labelAssinger);
@@ -1099,7 +1097,6 @@ public class DexPrinter {
 					(exceptionType, labelAssigner.getLabel((Stmt) t.getHandlerUnit()).getCodeAddress());
 			
 			List<ExceptionHandler> newHandlers = new ArrayList<ExceptionHandler>();
-			newHandlers.add(exceptionHandler);
 			
 			CodeRange range = new CodeRange(startCodeAddress, endCodeAddress);
 			
@@ -1114,7 +1111,6 @@ public class DexPrinter {
 					List<ExceptionHandler> oldHandlers = codeRangesToTryItem.get(r);
 					if (oldHandlers != null)
 						newHandlers.addAll(oldHandlers);
-					newHandlers.add(exceptionHandler);
 					break;
 				}
 				// Check whether the other range is contained in this range. In this case,
@@ -1128,7 +1124,6 @@ public class DexPrinter {
 					List<ExceptionHandler> oldHandlers = codeRangesToTryItem.get(range);
 					if (oldHandlers != null)
 						newHandlers.addAll(oldHandlers);
-					newHandlers.add(exceptionHandler);
 					
 					// remove the old range, the new one will be added anyway and contain
 					// the merged handlers
@@ -1137,6 +1132,8 @@ public class DexPrinter {
 				}
 			}
 			
+			if (!newHandlers.contains(exceptionHandler))
+				newHandlers.add(exceptionHandler);
 			codeRangesToTryItem.put(range, newHandlers);
 		}
 		for (CodeRange range : codeRangesToTryItem.keySet())
