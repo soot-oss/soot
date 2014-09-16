@@ -117,7 +117,11 @@ public class DeadAssignmentEliminator extends BodyTransformer
 			Unit s = it.next();
 			boolean isEssential = true;
 			
-			if (s instanceof AssignStmt) {
+			if (s instanceof NopStmt) {
+				it.remove();
+				continue;
+			}
+			else if (s instanceof AssignStmt) {
 				AssignStmt as = (AssignStmt) s;
 				
 				Value lhs = as.getLeftOp();
@@ -156,8 +160,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
 					   // NewExpr           : can trigger class initialization					   
 						isEssential = true;
 					}
-					
-					if (rhs instanceof FieldRef) {
+					else if (rhs instanceof FieldRef) {
 						// Can trigger class initialization
 						isEssential = true;
 					
@@ -174,9 +177,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
 							isEssential = (isStatic || thisLocal != ifr.getBase());			
 						} 
 					}
-
-
-					if (rhs instanceof DivExpr || rhs instanceof RemExpr) {
+					else if (rhs instanceof DivExpr || rhs instanceof RemExpr) {
 						BinopExpr expr = (BinopExpr) rhs;
 						
 						Type t1 = expr.getOp1().getType();
@@ -187,11 +188,6 @@ public class DeadAssignmentEliminator extends BodyTransformer
 						            || IntType.v().equals(t2) || LongType.v().equals(t2);							
 					}
 				}
-			}
-			
-			if (s instanceof NopStmt) {
-				it.remove();
-				continue;
 			}
 			
 			if (isEssential) {
@@ -228,7 +224,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
 				units.retainAll(essential);		
 			}
 		
-			if ( checkInvoke ) {		
+			if ( checkInvoke ) {
 				// Eliminate dead assignments from invokes such as x = f(), where
 				//	x is no longer used
 		 
