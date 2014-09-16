@@ -163,7 +163,7 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 
 	@SuppressWarnings("unchecked")
 	public boolean equals(Object o) {
-		if (o.getClass() != getClass())
+		if (!(o instanceof FlowSet))
 			return false;
 		FlowSet<T> other = (FlowSet<T>) o;
 		if (size() != other.size())
