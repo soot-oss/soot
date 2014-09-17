@@ -319,7 +319,6 @@
         </manifest>
 		
         <jar destfile="${release.loc}/soot-${soot.version}.jar" manifest="META-INF/MANIFEST.MF">
-        	
             <zipfileset src="${release.loc}/sootclasses-${soot.version}.jar"/>
             <zipfileset src="${jasmin.jar}"/>
             <zipfileset src="${heros.jar}"/>
@@ -332,5 +331,15 @@
         </jar>
 		<delete dir="META-INF"/>
     </target>
+    
+	<target name="sourcejar">
+        <jar destfile="${release.loc}/sootsources-${soot.version}.jar">
+            <fileset dir="src"/>
+            <fileset dir="generated/singletons"/>
+            <fileset dir="generated/sablecc"/>
+            <fileset dir="generated/jastadd"/>
+            <fileset dir="generated/options"/>
+        </jar>
+	</target>
     
 </project>
