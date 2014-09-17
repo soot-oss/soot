@@ -59,7 +59,7 @@ Jimple is Soot's primary IR and most analyses are implemented on the Jimple leve
 
 We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki) and also a large range of [tutorials](tutorials) on Soot.
 
-# How do I obtain the nightly builds
+# How do I obtain the nightly builds?
 
 Nightly builds of soot can be obtained from [nightly build](http://ssebuild.cased.de/nightly/soot/). The "soot-trunk.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to use manually pick dependencies as you need them.
 
