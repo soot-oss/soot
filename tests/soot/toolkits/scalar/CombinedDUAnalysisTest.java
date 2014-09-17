@@ -29,24 +29,24 @@ public class CombinedDUAnalysisTest {
             }
             
             public List<UnitValueBoxPair> getUsesOf(Unit u) {
-                HashSet<UnitValueBoxPair> hs1 = new HashSet<>(combined.getUsesOf(u));
-                HashSet<UnitValueBoxPair> hs2 = new HashSet<>(uses.getUsesOf(u));
+                HashSet<UnitValueBoxPair> hs1 = new HashSet<UnitValueBoxPair>(combined.getUsesOf(u));
+                HashSet<UnitValueBoxPair> hs2 = new HashSet<UnitValueBoxPair>(uses.getUsesOf(u));
                 if( !hs1.equals(hs2) ) throw new RuntimeException(
                         "Uses of "+u+"\ncombined: "+hs1+"\nsimple: "+hs2);
                 return combined.getUsesOf(u);
             }
             
             public List<Local> getLiveLocalsBefore(Unit u) {
-                HashSet<Local> hs1 = new HashSet<>(combined.getLiveLocalsBefore(u));
-                HashSet<Local> hs2 = new HashSet<>(live.getLiveLocalsBefore(u));
+                HashSet<Local> hs1 = new HashSet<Local>(combined.getLiveLocalsBefore(u));
+                HashSet<Local> hs2 = new HashSet<Local>(live.getLiveLocalsBefore(u));
                 if( !hs1.equals(hs2) ) throw new RuntimeException(
                         "llb of "+u+"\ncombined: "+hs1+"\nsimple: "+hs2);
                 return combined.getLiveLocalsBefore(u);
             }
             
             public List<Local> getLiveLocalsAfter(Unit u) {
-                HashSet<Local> hs1 = new HashSet<>(combined.getLiveLocalsAfter(u));
-                HashSet<Local> hs2 = new HashSet<>(live.getLiveLocalsAfter(u));
+                HashSet<Local> hs1 = new HashSet<Local>(combined.getLiveLocalsAfter(u));
+                HashSet<Local> hs2 = new HashSet<Local>(live.getLiveLocalsAfter(u));
                 if( !hs1.equals(hs2) ) throw new RuntimeException(
                         "lla of "+u+"\ncombined: "+hs1+"\nsimple: "+hs2);
                 return combined.getLiveLocalsAfter(u);
