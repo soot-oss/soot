@@ -41,11 +41,24 @@ import soot.LongType;
 import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
+import soot.SootClass;
+import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
 import soot.VoidType;
+import soot.javaToJimple.LocalGenerator;
+import soot.jimple.AssignStmt;
+import soot.jimple.DoubleConstant;
+import soot.jimple.FloatConstant;
+import soot.jimple.IdentityStmt;
+import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.jimple.LongConstant;
+import soot.jimple.NullConstant;
+import soot.jimple.ParameterRef;
 import soot.jimple.StringConstant;
+import soot.jimple.ThisRef;
 
 public class Util {
     /**
@@ -210,10 +223,71 @@ public class Util {
                t.equals(RefType.v("java.lang.Double"));
     }
     
+
+    /**
+     * Remove all statements except from IdentityStatements for parameters.
+     * Return default value (null or zero or nothing depending on the return type).
+     * @param jBody
+     */
+    public static void emptyBody(Body jBody) {
+
+        LocalGenerator lg = new LocalGenerator(jBody);
+        // identity statements
+        List<Unit> idStmts = new ArrayList<Unit>();
+        for (Unit u : jBody.getUnits()) {
+            if (u instanceof IdentityStmt) {
+                IdentityStmt i = (IdentityStmt) u;
+                if (i.getRightOp() instanceof ParameterRef || i.getRightOp() instanceof ThisRef)
+                    idStmts.add(u);
+            }
+        }
+
+        jBody.getUnits().clear();
+        jBody.getTraps().clear();
+
+        for (Unit u : idStmts)
+            jBody.getUnits().add(u);
+        Type rType = jBody.getMethod().getReturnType();
+
+        jBody.getUnits().add(Jimple.v().newNopStmt());
+
+        if (rType instanceof VoidType) {
+            jBody.getUnits().add(Jimple.v().newReturnVoidStmt());
+        } else {
+            Type t = jBody.getMethod().getReturnType();
+            Local l = lg.generateLocal(t);
+
+            AssignStmt ass = null;
+            if (t instanceof RefType || t instanceof ArrayType) {
+                ass = Jimple.v().newAssignStmt(l, NullConstant.v());
+            } else if (t instanceof LongType) {
+                ass = Jimple.v().newAssignStmt(l, LongConstant.v(0));
+            } else if (t instanceof FloatType) {
+                ass = Jimple.v().newAssignStmt(l, FloatConstant.v(0.0f));
+            } else if (t instanceof IntType) {
+                ass = Jimple.v().newAssignStmt(l, IntConstant.v(0));
+            } else if (t instanceof DoubleType) {
+                ass = Jimple.v().newAssignStmt(l, DoubleConstant.v(0));
+            } else if (t instanceof BooleanType || t instanceof ByteType || t instanceof CharType
+                    || t instanceof ShortType) {
+                ass = Jimple.v().newAssignStmt(l, IntConstant.v(0));
+            } else {
+                throw new RuntimeException("error: return type unknown: " + t + " class: "
+                        + t.getClass());
+            }
+            jBody.getUnits().add(ass);
+            jBody.getUnits().add(Jimple.v().newReturnStmt(l));
+        }
+
+    }
+
+
+
     /**
      * Insert a runtime exception before unit u of body b. Useful to analyze broken code (which make reference to inexisting class for instance)
      */
     public static void addRuntimeExceptionAfterUnit (Body b, Unit u ,String m) {
+
       Local l = Jimple.v().newLocal("myException", RefType.v("java.lang.RuntimeException"));
       b.getLocals().add(l);
       
@@ -221,7 +295,7 @@ public class Util {
       Unit u1 = Jimple.v().newAssignStmt (l, Jimple.v().newNewExpr(RefType.v("java.lang.RuntimeException")));
       Unit u2 = Jimple.v().newInvokeStmt (Jimple.v().newSpecialInvokeExpr(
           l, 
-          Scene.v().getMethod("<java.lang.RuntimeException: void <init(java.lang.String)>").makeRef(), 
+          Scene.v().getMethod("<java.lang.RuntimeException: void <init>(java.lang.String)>").makeRef(),
           StringConstant.v(m)));
       Unit u3 = Jimple.v().newThrowStmt(l);
       newUnits.add(u1);

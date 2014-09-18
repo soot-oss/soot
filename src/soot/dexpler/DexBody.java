@@ -304,8 +304,12 @@ public class DexBody  {
      * Handles if the register number actually points to a method parameter.
      *
      * @param num the register number
+     * @throws InvalidDalvikBytecodeException
      */
-    public Local getRegisterLocal(int num) {
+    public Local getRegisterLocal(int num) throws InvalidDalvikBytecodeException {
+        int totalRegisters = registerLocals.length;
+        if (num > totalRegisters)
+            throw new InvalidDalvikBytecodeException("Trying to access register "+ num +" but only "+ totalRegisters +" is/are available.");
         return registerLocals[num];
     }
 
@@ -389,8 +393,8 @@ public class DexBody  {
      *
      * @param m the SootMethod that contains this body
      */
-    public Body jimplify(SootMethod m) {
-        jBody = Jimple.v().newBody(m);
+    public Body jimplify(Body b, SootMethod m) {
+        jBody = (JimpleBody)b;
         localGenerator = new LocalGenerator(jBody);
         deferredInstructions = new ArrayList<DeferableInstruction>();
         instructionsToRetype = new HashSet<RetypeableInstruction>();

@@ -34,6 +34,7 @@ import soot.Local;
 import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
+import soot.dexpler.InvalidDalvikBytecodeException;
 import soot.dexpler.tags.ObjectOpTag;
 import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.ArrayRef;
@@ -48,7 +49,7 @@ public class AgetInstruction extends DexlibAbstractInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    public void jimplify (DexBody body) throws InvalidDalvikBytecodeException {
         if(!(instruction instanceof Instruction23x))
             throw new IllegalArgumentException("Expected Instruction23x but got: "+instruction.getClass());
 

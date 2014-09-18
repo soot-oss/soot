@@ -37,13 +37,17 @@ import org.jf.dexlib2.iface.value.EncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
 
 import soot.Body;
+import soot.G;
 import soot.MethodSource;
 import soot.Modifier;
 import soot.RefType;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootResolver;
 import soot.Type;
+import soot.jimple.Jimple;
+import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
 
 /**
@@ -140,10 +144,20 @@ public class DexMethod {
 
         // sets the method source by adding its body as the active body
         sm.setSource(new MethodSource() {
-        	public Body getBody(SootMethod m, String phaseName) {
-        		m.setActiveBody(dexBody.jimplify(m));
-        		return m.getActiveBody();
-        	}
+            public Body getBody(SootMethod m, String phaseName) {
+                Body b = Jimple.v().newBody(m);
+                try {
+                    dexBody.jimplify(b, m);
+                } catch (InvalidDalvikBytecodeException e) {
+                    String msg = "Warning: Invalid bytecode in method "+ m +": "+ e;
+                    G.v().out.println(msg);
+                    Util.emptyBody(b);
+                    Util.addRuntimeExceptionAfterUnit(b, b.getUnits().getLast(), "Soot has detected that this method contains invalid Dalvik bytecode which would have throw an exception at runtime. ["+ msg +"]");
+                    TypeAssigner.v().transform(b);
+                }
+                m.setActiveBody(b);
+                return m.getActiveBody();
+            }
         });
 
         return sm;
