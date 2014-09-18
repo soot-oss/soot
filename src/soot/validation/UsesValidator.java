@@ -78,7 +78,7 @@ public class UsesValidator implements BodyValidator {
                             final Unit uu = uuIt.next();
                             System.err.println(""+uu);
                         }
-                        exception.add(new ValidationException(u, "No definition for " + v + " before this statement.", 
+                        exception.add(new ValidationException(u, "There is no path from a definition of " + v + " to this statement.", 
                         		"("+ body.getMethod() +") no defs for value: " + v + "!"));
                     }
                 }

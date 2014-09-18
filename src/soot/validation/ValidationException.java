@@ -29,7 +29,7 @@ public class ValidationException extends RuntimeException {
 	 * @param strCompatibilityMessage the compatibility message containing useful information without supporting the concerned object
 	 */
 	public ValidationException(Object concerned, String strMessage, String strCompatibilityMessage) {
-		this(concerned, strCompatibilityMessage, strCompatibilityMessage, false);
+		this(concerned, strMessage, strCompatibilityMessage, false);
 	}
 	/**
 	 * Creates a new ValidationException, treated as an error.
