@@ -95,7 +95,7 @@ class SootClassBuilder extends ClassVisitor {
 			String superName, String[] interfaces) {
 		name = AsmUtil.toQualifiedName(name);
 		if (!name.equals(klass.getName()))
-			throw new RuntimeException("Class names not equal!");
+			throw new RuntimeException("Class names not equal! "+name+" != "+klass.getName());
 		klass.setModifiers(access & ~Opcodes.ACC_SUPER);
 		if (superName != null) {
 			superName = AsmUtil.toQualifiedName(superName);			
