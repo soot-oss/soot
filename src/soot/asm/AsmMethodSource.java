@@ -20,6 +20,7 @@ package soot.asm;
 
 import static org.objectweb.asm.Opcodes.*;
 import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
 import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.INT_INSN;
@@ -27,14 +28,13 @@ import static org.objectweb.asm.tree.AbstractInsnNode.INVOKE_DYNAMIC_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.JUMP_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.LABEL;
 import static org.objectweb.asm.tree.AbstractInsnNode.LDC_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.LINE;
 import static org.objectweb.asm.tree.AbstractInsnNode.LOOKUPSWITCH_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.METHOD_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.MULTIANEWARRAY_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TABLESWITCH_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.TYPE_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.VAR_INSN;
-import static org.objectweb.asm.tree.AbstractInsnNode.LINE;
-import static org.objectweb.asm.tree.AbstractInsnNode.FRAME;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -58,6 +58,7 @@ import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
+import org.objectweb.asm.tree.LineNumberNode;
 import org.objectweb.asm.tree.LocalVariableNode;
 import org.objectweb.asm.tree.LookupSwitchInsnNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -129,7 +130,9 @@ import soot.jimple.StringConstant;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UnopExpr;
-import soot.jimple.internal.JDynamicInvokeExpr;
+import soot.options.Options;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.Tag;
 import soot.util.Chain;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -155,6 +158,7 @@ final class AsmMethodSource implements MethodSource {
 	private Map<AbstractInsnNode, StackFrame> frames;
 	private Multimap<LabelNode, UnitBox> trapHandlers;
 	private JimpleBody body;
+	private int lastLineNumber = -1;
 	/* -const fields- */
 	private final int maxLocals;
 	private final InsnList instructions;
@@ -318,6 +322,16 @@ final class AsmMethodSource implements MethodSource {
 	}
 	
 	void setUnit(AbstractInsnNode insn, Unit u) {
+		if (Options.v().keep_line_number() && lastLineNumber >= 0) {
+			Tag lineTag = u.getTag("LineNumberTag");
+			if (lineTag == null) {
+				lineTag = new LineNumberTag(lastLineNumber);
+				u.addTag(lineTag);
+			}
+			else if (((LineNumberTag) lineTag).getLineNumber() != lastLineNumber)
+				throw new RuntimeException("Line tag mismatch");
+		}
+		
 		Unit o = units.put(insn, u);
 		if (o != null)
 			throw new AssertionError(insn.getOpcode() + " already has a unit, " + o);
@@ -1458,6 +1472,10 @@ final class AsmMethodSource implements MethodSource {
 		push(opr);
 	}
 	
+	private void convertLine(LineNumberNode ln) {
+		lastLineNumber = ln.line;
+	}
+	
 	/* Conversion */
 	
 	private final class Edge {
@@ -1587,7 +1605,9 @@ final class AsmMethodSource implements MethodSource {
 					convertVarInsn((VarInsnNode) insn);
 				} else if (type == LABEL) {
 					convertLabel((LabelNode) insn);
-				} else if (type == LINE || type == FRAME) {
+				} else if (type == LINE) {
+					convertLine((LineNumberNode) insn);
+				} else if (type == FRAME) {
 						// we can ignore it
 				}
 				else
@@ -1766,6 +1786,6 @@ final class AsmMethodSource implements MethodSource {
 		} catch (Throwable t) {
 			throw new RuntimeException("Failed to apply jb to " + m, t);
 		}
-		return jb;
+ 		return jb;
 	}
 }
