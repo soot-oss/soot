@@ -224,6 +224,7 @@ public class DexAnnotation {
         
         List<Tag> tags = new ArrayList<Tag>();
         ArrayList<Tag> innerClassList = new ArrayList<Tag>();
+        VisibilityAnnotationTag[] vatg = new VisibilityAnnotationTag[3]; // RUNTIME_VISIBLE, RUNTIME_INVISIBLE, SOURCE_VISIBLE, see soot.tagkit.AnnotationConstants
         
         for (Annotation a: annotations) {
         	int v = getVisibility(a.getVisibility());
@@ -242,9 +243,9 @@ public class DexAnnotation {
                 AnnotationElem e = getElements(a.getElements()).get(0);
                 AnnotationTag adt = new AnnotationTag(a.getType());
                 adt.addElem(e);
-                VisibilityAnnotationTag tag = new VisibilityAnnotationTag(v);
-                tag.addAnnotation(adt);
-                t = tag;
+                if (vatg[v] == null)
+                    vatg[v] = new VisibilityAnnotationTag(v);
+                vatg[v].addAnnotation(adt);
                 
             } else if (atypes.equals("dalvik.annotation.EnclosingClass")) {
                 if (eSize != 1)
@@ -346,18 +347,23 @@ public class DexAnnotation {
             } else {
                 Debug.printDbg("read visibility tag: ", a.getType());
 
-                VisibilityAnnotationTag vat = new VisibilityAnnotationTag(v);
+                if (vatg[v] == null)
+                    vatg[v] = new VisibilityAnnotationTag(v);
+
                 AnnotationTag tag = new AnnotationTag(a.getType());
                 for (AnnotationElem e: getElements(a.getElements()))
                     tag.addElem(e);
-                vat.addAnnotation(tag);
-                t = vat;
+                vatg[v].addAnnotation(tag);
 
             }
 
             tags.add(t);
         }
         
+        for (VisibilityAnnotationTag vat: vatg)
+            if (vat != null)
+                tags.add(vat);
+
         if (innerClassList.size() > 0) {
             InnerClassAttribute ica = new InnerClassAttribute(innerClassList);
             tags.add(ica);
