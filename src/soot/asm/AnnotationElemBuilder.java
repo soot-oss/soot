@@ -116,7 +116,7 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
 	
 	@Override
 	public void visitEnum(String name, String desc, String value) {
-		elems.add(new AnnotationEnumElem(value, desc, 'e', name));
+		elems.add(new AnnotationEnumElem(desc, value, 'e', name));
 	}
 	
 	@Override
