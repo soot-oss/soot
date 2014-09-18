@@ -339,11 +339,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 		Map<Unit, ThrowableSet> unitToUncaughtThrowables = new LinkedHashMap<Unit, ThrowableSet>(
 				units.size());
 		Map<Unit, Collection<ExceptionDest>> result = null;
-
+		
 		// Record the caught exceptions.
-		for (Iterator<Trap> trapIt = body.getTraps().iterator(); trapIt
-				.hasNext();) {
-			Trap trap = trapIt.next();
+		for (Trap trap : body.getTraps()) {
 			RefType catcher = trap.getException().getType();
 			for (Iterator<Unit> unitIt = units.iterator(trap.getBeginUnit(),
 					units.getPredOf(trap.getEndUnit())); unitIt.hasNext();) {

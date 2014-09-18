@@ -513,7 +513,7 @@ public class DexBody  {
 
         Debug.printDbg("body before any transformation : \n", jBody);
         
-        // Remove dead code and the corresponding locals before assigning types
+		// Remove dead code and the corresponding locals before assigning types
 		UnreachableCodeEliminator.v().transform(jBody);
 		DeadAssignmentEliminator.v().transform(jBody);
 		UnusedLocalEliminator.v().transform(jBody);

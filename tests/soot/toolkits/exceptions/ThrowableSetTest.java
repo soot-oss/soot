@@ -1,6 +1,7 @@
 package soot.toolkits.exceptions;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -9,7 +10,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,13 +41,13 @@ public class ThrowableSetTest {
     // A class for verifying that the sizeToSetsMap
     // follows our expectations. 
     static class ExpectedSizeToSets {
-        private Map expectedMap = new HashMap(); // from Integer to Set.
+        private Map<Integer, Set<SetPair>> expectedMap = new HashMap<Integer, Set<SetPair>>(); // from Integer to Set.
 
         private static class SetPair {
-            Set included;
-            Set excluded;
+            Set<RefLikeType> included;
+            Set<AnySubType> excluded;
 
-            SetPair(Set included, Set excluded) {
+            SetPair(Set<RefLikeType> included, Set<AnySubType> excluded) {
                 this.included = included;
                 this.excluded = excluded;
             }
@@ -81,24 +81,24 @@ public class ThrowableSetTest {
 
         ExpectedSizeToSets() {
             // The empty set.
-            this.add(Collections.EMPTY_SET, Collections.EMPTY_SET);
+            this.add(Collections.<RefLikeType>emptySet(), Collections.<AnySubType>emptySet());
 
             // All Throwables set.
-            Set temp = new ExceptionHashSet();
+            Set<RefLikeType> temp = new ExceptionHashSet<RefLikeType>();
             temp.add(AnySubType.v(Scene.v().getRefType("java.lang.Throwable")));
-            this.add(temp, Collections.EMPTY_SET);
+            this.add(temp, Collections.<AnySubType>emptySet());
 
             // VM errors set.
-            temp = new ExceptionHashSet();
+            temp = new ExceptionHashSet<RefLikeType>();
             temp.add(Scene.v().getRefType("java.lang.InternalError"));
             temp.add(Scene.v().getRefType("java.lang.OutOfMemoryError"));
             temp.add(Scene.v().getRefType("java.lang.StackOverflowError"));
             temp.add(Scene.v().getRefType("java.lang.UnknownError"));
             temp.add(Scene.v().getRefType("java.lang.ThreadDeath"));
-            this.add(temp, Collections.EMPTY_SET);
+            this.add(temp, Collections.<AnySubType>emptySet());
 
             // Resolve Class errors set.
-            Set classErrors = new ExceptionHashSet();
+            Set<RefLikeType> classErrors = new ExceptionHashSet<RefLikeType>();
             classErrors.add(Scene.v().getRefType("java.lang.ClassCircularityError"));
             classErrors.add(AnySubType.v(Scene.v().getRefType("java.lang.ClassFormatError")));
             classErrors.add(Scene.v().getRefType("java.lang.IllegalAccessError"));
@@ -106,69 +106,66 @@ public class ThrowableSetTest {
             classErrors.add(Scene.v().getRefType("java.lang.LinkageError"));
             classErrors.add(Scene.v().getRefType("java.lang.NoClassDefFoundError"));
             classErrors.add(Scene.v().getRefType("java.lang.VerifyError"));
-            this.add(classErrors, Collections.EMPTY_SET);
+            this.add(classErrors, Collections.<AnySubType>emptySet());
 
             // Resolve Field errors set.
-            temp = new ExceptionHashSet(classErrors);
+            temp = new ExceptionHashSet<RefLikeType>(classErrors);
             temp.add(Scene.v().getRefType("java.lang.NoSuchFieldError"));
-            this.add(temp, Collections.EMPTY_SET);
+            this.add(temp, Collections.<AnySubType>emptySet());
 
             // Resolve method errors set.
-            temp = new ExceptionHashSet(classErrors);
+            temp = new ExceptionHashSet<RefLikeType>(classErrors);
             temp.add(Scene.v().getRefType("java.lang.AbstractMethodError"));
             temp.add(Scene.v().getRefType("java.lang.NoSuchMethodError"));
             temp.add(Scene.v().getRefType("java.lang.UnsatisfiedLinkError"));
-            this.add(temp, Collections.EMPTY_SET);
+            this.add(temp, Collections.<AnySubType>emptySet());
 
             // Initialization errors set.
-            temp = new ExceptionHashSet();
+            temp = new ExceptionHashSet<RefLikeType>();
             temp.add(AnySubType.v(Scene.v().getRefType("java.lang.Error")));
-            this.add(temp, Collections.EMPTY_SET);
+            this.add(temp, Collections.<AnySubType>emptySet());
         }
 
-        void add(Set inclusions, Set exclusions) {
+        void add(Set<RefLikeType> inclusions, Set<AnySubType> exclusions) {
             Integer sz = new Integer(inclusions.size() + exclusions.size());
-            Set values = (Set) expectedMap.get(sz);
+            Set<SetPair> values = expectedMap.get(sz);
             if (values == null) {
-                values = new HashSet();
+                values = new HashSet<SetPair>();
                 expectedMap.put(sz, values);
             }
             // Make sure we have our own copies of the sets.
-            values.add(new SetPair(new ExceptionHashSet(inclusions), 
-                        new ExceptionHashSet(exclusions)));
+            values.add(new SetPair(new ExceptionHashSet<RefLikeType>(inclusions), 
+                        new ExceptionHashSet<AnySubType>(exclusions)));
         }
 
-        void addAndCheck(Set inclusions, Set exclusions) {
+        void addAndCheck(Set<RefLikeType> inclusions, Set<AnySubType> exclusions) {
             this.add(inclusions, exclusions);
             assertTrue(this.match());
         }
 
         boolean match() {
             boolean result = true;
-            Map actualMap = ThrowableSet.Manager.v().getSizeToSets();
+            Map<Integer, List<ThrowableSet>> actualMap = ThrowableSet.Manager.v().getSizeToSets();
             if (expectedMap.size() != actualMap.size()) {
                 result = false;
             } else {
 setloop: 
-                for (Iterator i = expectedMap.keySet().iterator(); 
-                        i.hasNext(); ) {
-                    Integer key = (Integer) i.next();
-                    Set expectedValues = (Set) expectedMap.get(key);
+                for (Integer key : expectedMap.keySet()) {
+                    Set<SetPair> expectedValues = expectedMap.get(key);
 
                     // To minimize restrictions on the contents of 
                     // sizeToSets, use only the Collection interface
                     // to access its values:
-                    Collection actualValues = (Collection) actualMap.get(key);
+                    Collection<ThrowableSet> actualValues = actualMap.get(key);
 
                     if (expectedValues.size() != actualValues.size()) {
                         result = false;
                         break setloop;
                     }
-                    for (Iterator j = actualValues.iterator(); j.hasNext(); ) {
-                        ThrowableSet actual = (ThrowableSet) j.next();
+                    for (ThrowableSet actual : actualValues) {
                         SetPair actualPair
-                            = new SetPair(new ExceptionHashSet(actual.typesIncluded()),
-                                    new ExceptionHashSet(actual.typesExcluded()));
+                            = new SetPair(new ExceptionHashSet<RefLikeType>(actual.typesIncluded()),
+                                    new ExceptionHashSet<AnySubType>(actual.typesExcluded()));
                         if (! expectedValues.contains(actualPair)) {
                             result = false;
                             break setloop;
@@ -194,16 +191,17 @@ setloop:
     // structures within ThrowableSet -- I'm hoping that the two 
     // implementations will have different bugs!
     static class ExpectedMemoizations  {
-        Map throwableSetToMemoized = new HashMap();
+        Map<ThrowableSet, Map<Object, ThrowableSet>> throwableSetToMemoized =
+        		new HashMap<ThrowableSet, Map<Object, ThrowableSet>>();
 
         void checkAdd(ThrowableSet lhs, Object rhs, ThrowableSet result) {
             // rhs should be either a ThrowableSet or a RefType.
-            Map actualMemoized = lhs.getMemoizedAdds();
+            Map<Object, ThrowableSet> actualMemoized = lhs.getMemoizedAdds();
             assertTrue(actualMemoized.get(rhs) == result);
 
-            Map expectedMemoized = (Map) throwableSetToMemoized.get(lhs);
+            Map<Object, ThrowableSet> expectedMemoized = throwableSetToMemoized.get(lhs);
             if (expectedMemoized == null) {
-                expectedMemoized = new HashMap();
+                expectedMemoized = new HashMap<Object, ThrowableSet>();
                 throwableSetToMemoized.put(lhs, expectedMemoized);
             }
             expectedMemoized.put(rhs, result);
@@ -238,8 +236,8 @@ setloop:
      * in <code>excluded</code>.
      */
     public static void assertSameMembers(ThrowableSet s,
-            Set included,
-            Set excluded) {
+            Set<? extends RefLikeType> included,
+            Set<AnySubType> excluded) {
         assertTrue(ExceptionTestUtility.sameMembers(included, excluded, s));
     }
 
@@ -262,10 +260,10 @@ setloop:
      */
     public static void assertSameMembers(ThrowableSet s,
             RefLikeType[] included,
-            RefLikeType[] excluded) {
+            AnySubType[] excluded) {
         assertTrue(ExceptionTestUtility.sameMembers(
-                    new ExceptionHashSet(Arrays.asList(included)), 
-                    new ExceptionHashSet(Arrays.asList(excluded)),
+                    new ExceptionHashSet<RefLikeType>(Arrays.asList(included)), 
+                    new ExceptionHashSet<AnySubType>(Arrays.asList(excluded)),
                     s));
     }
 
@@ -293,10 +291,10 @@ setloop:
      * in <code>excluded</code>.
      */
     public static void assertSameMembers(ThrowableSet.Pair p,
-            Set caughtIncluded,
-            Set caughtExcluded,
-            Set uncaughtIncluded,
-            Set uncaughtExcluded) {
+            Set<? extends RefLikeType> caughtIncluded,
+            Set<AnySubType> caughtExcluded,
+            Set<? extends RefLikeType> uncaughtIncluded,
+            Set<AnySubType> uncaughtExcluded) {
         assertSameMembers(p.getCaught(), caughtIncluded, caughtExcluded);
         assertSameMembers(p.getUncaught(), uncaughtIncluded, uncaughtExcluded);
     }
@@ -326,16 +324,16 @@ setloop:
      */
     public static void assertSameMembers(ThrowableSet.Pair p,
             RefLikeType[] caughtIncluded,
-            RefLikeType[] caughtExcluded,
+            AnySubType[] caughtExcluded,
             RefLikeType[] uncaughtIncluded,
-            RefLikeType[] uncaughtExcluded) {
+            AnySubType[] uncaughtExcluded) {
         assertSameMembers(p.getCaught(), caughtIncluded, caughtExcluded);
         assertSameMembers(p.getUncaught(), uncaughtIncluded, uncaughtExcluded);
     }
 
 
     private ThrowableSet checkAdd(ThrowableSet lhs, Object rhs,
-            Set expectedIncluded, Set expectedExcluded,
+            Set<RefLikeType> expectedIncluded, Set<AnySubType> expectedExcluded,
             ThrowableSet actualResult) {
         // Utility routine used by the next three add()s.
 
@@ -346,15 +344,15 @@ setloop:
     }
 
     private ThrowableSet checkAdd(ThrowableSet lhs, Object rhs,
-            Set expectedResult, ThrowableSet actualResult) {
+            Set<RefLikeType> expectedResult, ThrowableSet actualResult) {
         // Utility routine used by the next three add()s.
-        return checkAdd(lhs, rhs, expectedResult, Collections.EMPTY_SET, 
+        return checkAdd(lhs, rhs, expectedResult, Collections.<AnySubType>emptySet(), 
                 actualResult);
     }
 
 
     private ThrowableSet add(ThrowableSet lhs, ThrowableSet rhs, 
-            Set expectedIncluded, Set expectedExcluded) {
+            Set<RefLikeType> expectedIncluded, Set<AnySubType> expectedExcluded) {
         // Add rhs to lhs, checking the results.
 
         ThrowableSet actualResult = lhs.add(rhs);
@@ -363,13 +361,13 @@ setloop:
     }
 
     private ThrowableSet add(ThrowableSet lhs, ThrowableSet rhs, 
-            Set expectedResult) {
+            Set<RefLikeType> expectedResult) {
         // Add rhs to lhs, checking the results.
-        return add(lhs, rhs, expectedResult, Collections.EMPTY_SET);
+        return add(lhs, rhs, expectedResult, Collections.<AnySubType>emptySet());
     }
 
     private ThrowableSet add(ThrowableSet lhs, RefType rhs,
-            Set expectedResult) {
+            Set<RefLikeType> expectedResult) {
         // Add rhs to lhs, checking the results.
 
         ThrowableSet actualResult = lhs.add(rhs);
@@ -377,7 +375,7 @@ setloop:
     }
 
     private ThrowableSet add(ThrowableSet lhs, AnySubType rhs,
-            Set expectedResult) {
+            Set<RefLikeType> expectedResult) {
         // Add rhs to lhs, checking the results.
 
         ThrowableSet actualResult = lhs.add(rhs);
@@ -401,7 +399,7 @@ setloop:
         if (DUMP_INTERNALS) {
             System.err.println("\n\ntestSingleInstance0()");
         }
-        Set expected = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        Set<RefLikeType> expected = new ExceptionHashSet<RefLikeType>(Arrays.asList(new RefLikeType[] {
             util.UNDECLARED_THROWABLE_EXCEPTION,
         }));
 
@@ -412,7 +410,7 @@ setloop:
         assertTrue("The same ThrowableSet object should represent two sets containing the same single class.",
                 set0 == set1);
 
-        Set catchable = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        Set<RefType> catchable = new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.UNDECLARED_THROWABLE_EXCEPTION,
             util.RUNTIME_EXCEPTION,
             util.EXCEPTION,
@@ -440,13 +438,13 @@ setloop:
         if (DUMP_INTERNALS) {
             System.err.println("\n\ntestSingleInstance1()");
         }
-        Set expected0 = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        Set<RefLikeType> expected0 = new ExceptionHashSet<RefLikeType>(Arrays.asList(new RefLikeType[] {
             util.UNDECLARED_THROWABLE_EXCEPTION,
         }));
-        Set expected1 = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        Set<RefLikeType> expected1 = new ExceptionHashSet<RefLikeType>(Arrays.asList(new RefLikeType[] {
             util.UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION,
         }));
-        Set expectedResult = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        Set<RefLikeType> expectedResult = new ExceptionHashSet<RefLikeType>(Arrays.asList(new RefLikeType[] {
             util.UNDECLARED_THROWABLE_EXCEPTION,
             util.UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION,
         }));
@@ -464,7 +462,7 @@ setloop:
         assertTrue("The same ThrowableSet object should represent two sets containing the same two exceptions, even if added in different orders.",
                 set0a == set1a);
 
-        Set catchable = new ExceptionHashSet(expectedResult);
+        Set<RefLikeType> catchable = new ExceptionHashSet<RefLikeType>(expectedResult);
         catchable.add(util.RUNTIME_EXCEPTION);
         catchable.add(util.EXCEPTION);
         catchable.add(util.THROWABLE);
@@ -483,7 +481,7 @@ setloop:
         if (DUMP_INTERNALS) {
             System.err.println("\n\ntestAddingSubclasses()");
         }
-        Set expected = new ExceptionHashSet();
+        Set<RefLikeType> expected = new ExceptionHashSet<RefLikeType>();
         expected.add(util.INDEX_OUT_OF_BOUNDS_EXCEPTION);
         ThrowableSet set0 = add(mgr.EMPTY, util.INDEX_OUT_OF_BOUNDS_EXCEPTION,
                 expected);
@@ -496,7 +494,7 @@ setloop:
         assertTrue("ThrowableSet should distinguish the case where a single exception includes subclasses from that where it does not.",
                 set0 != set1);
 
-        Set catchable = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        Set<RefLikeType> catchable = new ExceptionHashSet<RefLikeType>(Arrays.asList(new RefLikeType[] {
             util.INDEX_OUT_OF_BOUNDS_EXCEPTION,
             util.RUNTIME_EXCEPTION,
             util.EXCEPTION,
@@ -518,7 +516,7 @@ setloop:
         if (DUMP_INTERNALS) {
             System.err.println("\n\ntestAddingSets0()");
         }
-        Set expected = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        Set<RefLikeType> expected = new ExceptionHashSet<RefLikeType>(Arrays.asList(new RefLikeType[] {
             util.INDEX_OUT_OF_BOUNDS_EXCEPTION,
         }));
         ThrowableSet set0 = add(mgr.EMPTY, util.INDEX_OUT_OF_BOUNDS_EXCEPTION,
@@ -547,7 +545,7 @@ setloop:
 
     @Test
     public void test_06_AddingSets1() {
-        Set expected = new ExceptionHashSet(util.VM_ERRORS);
+        Set<RefLikeType> expected = new ExceptionHashSet<RefLikeType>(util.VM_ERRORS);
         expected.add(util.UNDECLARED_THROWABLE_EXCEPTION);
         ThrowableSet set0 = add(mgr.VM_ERRORS,
                 util.UNDECLARED_THROWABLE_EXCEPTION, expected);
@@ -555,9 +553,9 @@ setloop:
         set0 = add(set0, util.UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION, expected);
 
         ThrowableSet set1 = mgr.INITIALIZATION_ERRORS;
-        expected = new ExceptionHashSet();
+        expected = new ExceptionHashSet<RefLikeType>();
         expected.add(AnySubType.v(util.ERROR));
-        assertSameMembers(set1, expected, Collections.EMPTY_SET);
+        assertSameMembers(set1, expected, Collections.<AnySubType>emptySet());
 
         expected.add(util.UNDECLARED_THROWABLE_EXCEPTION);
         expected.add(util.UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION);
@@ -565,7 +563,7 @@ setloop:
         ThrowableSet result1 = add(set1, set0, expected);
         assertTrue("Adding sets should be commutative.", result0 == result1);
 
-        Set catchable = new ExceptionHashSet(util.ALL_TEST_ERRORS);
+        Set<RefLikeType> catchable = new ExceptionHashSet<RefLikeType>(util.ALL_TEST_ERRORS_PLUS_SUPERTYPES);
         catchable.add(util.UNDECLARED_THROWABLE_EXCEPTION);
         catchable.add(util.UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION);
         catchable.add(util.RUNTIME_EXCEPTION);// Superclasses of 
@@ -582,7 +580,7 @@ setloop:
 
     @Test
     public void test_07_AddingSets2() {
-        Set expected = new ExceptionHashSet(util.VM_ERRORS);
+        Set<RefLikeType> expected = new ExceptionHashSet<RefLikeType>(util.VM_ERRORS);
         expected.add(util.UNDECLARED_THROWABLE_EXCEPTION);
         ThrowableSet set0 = add(mgr.VM_ERRORS,
                 util.UNDECLARED_THROWABLE_EXCEPTION, expected);
@@ -590,9 +588,9 @@ setloop:
         set0 = add(set0, util.UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION, expected);
 
         ThrowableSet set1 = mgr.INITIALIZATION_ERRORS;
-        expected = new ExceptionHashSet();
+        expected = new ExceptionHashSet<RefLikeType>();
         expected.add(AnySubType.v(util.ERROR));
-        assertSameMembers(set1, expected, Collections.EMPTY_SET);
+        assertSameMembers(set1, expected, Collections.<AnySubType>emptySet());
 
         expected.add(util.UNDECLARED_THROWABLE_EXCEPTION);
         expected.add(util.UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION);
@@ -600,7 +598,7 @@ setloop:
         ThrowableSet result1 = add(set1, set0, expected);
         assertTrue("Adding sets should be commutative.", result0 == result1);
 
-        Set catchable = new ExceptionHashSet(util.ALL_TEST_ERRORS);
+        Set<RefLikeType> catchable = new ExceptionHashSet<RefLikeType>(util.ALL_TEST_ERRORS_PLUS_SUPERTYPES);
         catchable.add(util.UNDECLARED_THROWABLE_EXCEPTION);
         catchable.add(util.UNSUPPORTED_LOOK_AND_FEEL_EXCEPTION);
         catchable.add(util.RUNTIME_EXCEPTION);// Superclasses of 
@@ -620,13 +618,13 @@ setloop:
         if (DUMP_INTERNALS) {
             System.err.println("\n\ntestWhichCatchable0()");
         }
-        Set expected = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        Set<RefLikeType> expected = new ExceptionHashSet<RefLikeType>(Arrays.asList(new RefLikeType[] {
             util.UNDECLARED_THROWABLE_EXCEPTION,
         }));
 
         ThrowableSet set0 = add(mgr.EMPTY, util.UNDECLARED_THROWABLE_EXCEPTION,
                 expected);
-        Set catchable = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        Set<RefLikeType> catchable = new ExceptionHashSet<RefLikeType>(Arrays.asList(new RefLikeType[] {
             util.UNDECLARED_THROWABLE_EXCEPTION,
             util.RUNTIME_EXCEPTION,
             util.EXCEPTION,
@@ -692,7 +690,7 @@ setloop:
             System.err.println("\n\ntestWhichCatchable1()");
         }
         ThrowableSet set0 = mgr.EMPTY.add(util.LINKAGE_ERROR);
-        Set catcherTypes = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        Set<RefType> catcherTypes = new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.LINKAGE_ERROR,
             util.ERROR,
             util.THROWABLE,
@@ -756,7 +754,7 @@ setloop:
         }
 
         ThrowableSet set0 = mgr.EMPTY.add(AnySubType.v(util.LINKAGE_ERROR));
-        Set catcherTypes = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        Set<RefType> catcherTypes = new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.CLASS_CIRCULARITY_ERROR,
             util.CLASS_FORMAT_ERROR,
             util.UNSUPPORTED_CLASS_VERSION_ERROR,
@@ -795,20 +793,20 @@ setloop:
 
         assertTrue(set0.catchableAs(util.INCOMPATIBLE_CLASS_CHANGE_ERROR));
         catchableAs = set0.whichCatchableAs(util.INCOMPATIBLE_CLASS_CHANGE_ERROR);
-        Set expectedCaughtIncluded = new ExceptionHashSet(
-                Arrays.asList(new RefLikeType[] 
+        Set<AnySubType> expectedCaughtIncluded = new ExceptionHashSet<AnySubType>(
+                Arrays.asList(new AnySubType[] 
                     {AnySubType.v(util.INCOMPATIBLE_CLASS_CHANGE_ERROR)}));
-        Set expectedCaughtExcluded = Collections.EMPTY_SET;
-        Set expectedUncaughtIncluded = new ExceptionHashSet(
-                Arrays.asList(new RefLikeType[] 
+        Set<AnySubType> expectedCaughtExcluded = Collections.emptySet();
+        Set<AnySubType> expectedUncaughtIncluded = new ExceptionHashSet<AnySubType>(
+                Arrays.asList(new AnySubType[] 
                     {AnySubType.v(util.LINKAGE_ERROR)}));
-        Set expectedUncaughtExcluded = expectedCaughtIncluded;
+        Set<AnySubType> expectedUncaughtExcluded = expectedCaughtIncluded;
         assertSameMembers(catchableAs,
                 expectedCaughtIncluded, 
                 expectedCaughtExcluded,
                 expectedUncaughtIncluded, 
                 expectedUncaughtExcluded);
-        catcherTypes = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        catcherTypes = new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
                      util.ABSTRACT_METHOD_ERROR,
                      util.ILLEGAL_ACCESS_ERROR,
@@ -819,7 +817,7 @@ setloop:
                      util.ERROR,
                      util.THROWABLE,
         }));
-        Set noncatcherTypes = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        Set<RefType> noncatcherTypes = new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.CLASS_CIRCULARITY_ERROR,
             util.CLASS_FORMAT_ERROR,
             util.UNSUPPORTED_CLASS_VERSION_ERROR,
@@ -838,24 +836,24 @@ setloop:
 
         assertTrue(set0.catchableAs(util.INSTANTIATION_ERROR));
         catchableAs = set0.whichCatchableAs(util.INSTANTIATION_ERROR);
-        expectedCaughtIncluded = new ExceptionHashSet(
-                Arrays.asList(new RefLikeType[] 
+        expectedCaughtIncluded = new ExceptionHashSet<AnySubType>(
+                Arrays.asList(new AnySubType[] 
                     {AnySubType.v(util.INSTANTIATION_ERROR)}));
-        expectedCaughtExcluded = Collections.EMPTY_SET;
+        expectedCaughtExcluded = Collections.emptySet();
         expectedUncaughtExcluded = expectedCaughtIncluded;
         assertSameMembers(catchableAs,
                 expectedCaughtIncluded, 
                 expectedCaughtExcluded,
                 expectedUncaughtIncluded, 
                 expectedUncaughtExcluded);
-        catcherTypes = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        catcherTypes = new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.INSTANTIATION_ERROR,
                      util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
                      util.LINKAGE_ERROR,
                      util.ERROR,
                      util.THROWABLE,
         }));
-        noncatcherTypes = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        noncatcherTypes = new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.CLASS_CIRCULARITY_ERROR,
                         util.CLASS_FORMAT_ERROR,
                         util.UNSUPPORTED_CLASS_VERSION_ERROR,
@@ -881,7 +879,7 @@ setloop:
         catchableAs = set0.whichCatchableAs(util.INTERNAL_ERROR);
         assertEquals(mgr.EMPTY, catchableAs.getCaught());
         assertEquals(set0, catchableAs.getUncaught());
-        noncatcherTypes = new ExceptionHashSet(Arrays.asList(new RefType[] {
+        noncatcherTypes = new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.CLASS_CIRCULARITY_ERROR,
                         util.CLASS_FORMAT_ERROR,
                         util.UNSUPPORTED_CLASS_VERSION_ERROR,
@@ -922,21 +920,21 @@ setloop:
 
         assertTrue(set0.catchableAs(util.INCOMPATIBLE_CLASS_CHANGE_ERROR));
         ThrowableSet.Pair catchableAs = set0.whichCatchableAs(util.INCOMPATIBLE_CLASS_CHANGE_ERROR);
-        Set expectedCaughtIncluded = new ExceptionHashSet(
-                Arrays.asList(new RefLikeType[] 
+        Set<AnySubType> expectedCaughtIncluded = new ExceptionHashSet<AnySubType>(
+                Arrays.asList(new AnySubType[] 
                     {AnySubType.v(util.INCOMPATIBLE_CLASS_CHANGE_ERROR)}));
-        Set expectedCaughtExcluded = Collections.EMPTY_SET;
-        Set expectedUncaughtIncluded = new ExceptionHashSet(
-                Arrays.asList(new RefLikeType[] 
+        Set<AnySubType> expectedCaughtExcluded = Collections.emptySet();
+        Set<AnySubType> expectedUncaughtIncluded = new ExceptionHashSet<AnySubType>(
+                Arrays.asList(new AnySubType[] 
                     {AnySubType.v(util.ERROR)}));
-        Set expectedUncaughtExcluded = expectedCaughtIncluded;
+        Set<AnySubType> expectedUncaughtExcluded = expectedCaughtIncluded;
         assertTrue(ExceptionTestUtility.sameMembers(expectedCaughtIncluded, 
                     expectedCaughtExcluded,
                     catchableAs.getCaught()));
         assertTrue(ExceptionTestUtility.sameMembers(expectedUncaughtIncluded, 
                     expectedUncaughtExcluded,
                     catchableAs.getUncaught()));
-        assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
+        assertEquals(new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.THROWABLE,
             util.ERROR,
             util.LINKAGE_ERROR,
@@ -947,7 +945,7 @@ setloop:
             util.NO_SUCH_FIELD_ERROR,
             util.NO_SUCH_METHOD_ERROR,})),
                 util.catchableSubset(catchableAs.getCaught()));
-        assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
+        assertEquals(new ExceptionHashSet<RefLikeType>(Arrays.asList(new RefLikeType[] {
             util.THROWABLE,
             util.ERROR,
             util.AWT_ERROR,
@@ -973,7 +971,7 @@ setloop:
         catchableAs = set0.whichCatchableAs(util.THROWABLE);
         assertEquals(set0, catchableAs.getCaught());
         assertEquals(mgr.EMPTY, catchableAs.getUncaught());
-        assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
+        assertEquals(new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.THROWABLE,
             util.ERROR,
             util.AWT_ERROR,
@@ -999,7 +997,7 @@ setloop:
         catchableAs = set0.whichCatchableAs(util.ERROR);
         assertEquals(set0, catchableAs.getCaught());
         assertEquals(mgr.EMPTY, catchableAs.getUncaught());
-        assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
+        assertEquals(new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.THROWABLE,
             util.ERROR,
             util.AWT_ERROR,
@@ -1023,14 +1021,14 @@ setloop:
 
         assertTrue(set0.catchableAs(util.LINKAGE_ERROR));
         catchableAs = set0.whichCatchableAs(util.LINKAGE_ERROR);
-        expectedCaughtIncluded = new ExceptionHashSet(
-                Arrays.asList(new RefLikeType[] 
+        expectedCaughtIncluded = new ExceptionHashSet<AnySubType>(
+                Arrays.asList(new AnySubType[] 
                     {AnySubType.v(util.LINKAGE_ERROR)}));
-        expectedCaughtExcluded = new ExceptionHashSet(
-                Arrays.asList(new RefLikeType[] 
+        expectedCaughtExcluded = new ExceptionHashSet<AnySubType>(
+                Arrays.asList(new AnySubType[] 
                     {AnySubType.v(util.INCOMPATIBLE_CLASS_CHANGE_ERROR)}));
-        expectedUncaughtIncluded = new ExceptionHashSet(
-                Arrays.asList(new RefLikeType[] 
+        expectedUncaughtIncluded = new ExceptionHashSet<AnySubType>(
+                Arrays.asList(new AnySubType[] 
                     {AnySubType.v(util.ERROR)}));
         expectedUncaughtExcluded = expectedCaughtIncluded;
         assertTrue(ExceptionTestUtility.sameMembers(expectedCaughtIncluded, 
@@ -1039,7 +1037,7 @@ setloop:
         assertTrue(ExceptionTestUtility.sameMembers(expectedUncaughtIncluded, 
                     expectedUncaughtExcluded,
                     catchableAs.getUncaught()));
-        assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
+        assertEquals(new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.THROWABLE,
             util.ERROR,
             util.LINKAGE_ERROR,
@@ -1051,7 +1049,7 @@ setloop:
             util.UNSATISFIED_LINK_ERROR,
             util.VERIFY_ERROR,})),
                 util.catchableSubset(catchableAs.getCaught()));
-        assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
+        assertEquals(new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.THROWABLE,
             util.ERROR,
             util.AWT_ERROR,
@@ -1069,7 +1067,7 @@ setloop:
         assertEquals(set0, catchableAs.getUncaught());
         assertEquals(Collections.EMPTY_SET,
                 util.catchableSubset(catchableAs.getCaught()));
-        assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
+        assertEquals(new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.THROWABLE,
             util.ERROR,
             util.LINKAGE_ERROR,
@@ -1094,7 +1092,7 @@ setloop:
         assertEquals(set0, catchableAs.getUncaught());
         assertEquals(Collections.EMPTY_SET,
                 util.catchableSubset(catchableAs.getCaught()));
-        assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
+        assertEquals(new ExceptionHashSet<RefType>(Arrays.asList(new RefType[] {
             util.THROWABLE,
             util.ERROR,
             util.LINKAGE_ERROR,
@@ -1135,21 +1133,21 @@ setloop:
                 new RefLikeType[] {
                     AnySubType.v(util.ARITHMETIC_EXCEPTION),
                 }, 
-                new RefLikeType[] {
+                new AnySubType[] {
                 },
                 new RefLikeType[] {
                     AnySubType.v(util.THROWABLE),
                 }, 
-                new RefLikeType[] {
+                new AnySubType[] {
                     AnySubType.v(util.ARITHMETIC_EXCEPTION),
                 });
-        assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
+        assertEquals(new ExceptionHashSet<RefLikeType>(Arrays.asList(new RefLikeType[] {
             util.THROWABLE,
             util.EXCEPTION,
             util.RUNTIME_EXCEPTION,
             util.ARITHMETIC_EXCEPTION,})),
                 util.catchableSubset(catchableAs.getCaught()));
-        HashSet expectedUncaught = new HashSet(util.ALL_TEST_THROWABLES);
+        HashSet<RefLikeType> expectedUncaught = new HashSet<RefLikeType>(util.ALL_TEST_THROWABLES);
         expectedUncaught.remove(util.ARITHMETIC_EXCEPTION);
         assertEquals(expectedUncaught,
                 util.catchableSubset(catchableAs.getUncaught()));
@@ -1161,16 +1159,16 @@ setloop:
                 new RefLikeType[] {
                     AnySubType.v(util.ABSTRACT_METHOD_ERROR),
                 },
-                new RefLikeType[] {
+                new AnySubType[] {
                 },
                 new RefLikeType[] {
                     AnySubType.v(util.THROWABLE),
                 },
-                new RefLikeType[] {
+                new AnySubType[] {
                     AnySubType.v(util.ARITHMETIC_EXCEPTION),
             AnySubType.v(util.ABSTRACT_METHOD_ERROR),
                 });
-        assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
+        assertEquals(new ExceptionHashSet<RefLikeType>(Arrays.asList(new RefLikeType[] {
             util.THROWABLE,
             util.ERROR,
             util.LINKAGE_ERROR,
@@ -1188,17 +1186,17 @@ setloop:
                 new RefLikeType[] {
                     AnySubType.v(util.RUNTIME_EXCEPTION),
                 },
-                new RefLikeType[] {
+                new AnySubType[] {
                     AnySubType.v(util.ARITHMETIC_EXCEPTION),
                 },
                 new RefLikeType[] {
                     AnySubType.v(util.THROWABLE),
                 },
-                new RefLikeType[] {
+                new AnySubType[] {
                     AnySubType.v(util.RUNTIME_EXCEPTION),
             AnySubType.v(util.ABSTRACT_METHOD_ERROR),
                 });
-        assertEquals(new ExceptionHashSet(Arrays.asList(new RefType[] {
+        assertEquals(new ExceptionHashSet<RefLikeType>(Arrays.asList(new RefLikeType[] {
             util.THROWABLE,
             util.EXCEPTION,
             util.RUNTIME_EXCEPTION,
@@ -1241,12 +1239,12 @@ setloop:
                 new RefLikeType[] {
                     AnySubType.v(util.LINKAGE_ERROR),
                 }, 
-                new RefLikeType[] {
+                new AnySubType[] {
                 },
                 new RefLikeType[] {
                     AnySubType.v(util.ERROR),
                 }, 
-                new RefLikeType[] {
+                new AnySubType[] {
                     AnySubType.v(util.LINKAGE_ERROR),
                 });
 
@@ -1262,7 +1260,7 @@ setloop:
                         AnySubType.v(util.ERROR),
                 util.INCOMPATIBLE_CLASS_CHANGE_ERROR,
                     },
-                    new RefLikeType[] {
+                    new AnySubType[] {
                         AnySubType.v(util.LINKAGE_ERROR),
                     });
         } catch (ThrowableSet.AlreadyHasExclusionsException e) {
@@ -1280,7 +1278,7 @@ setloop:
                         AnySubType.v(util.ERROR),
                 AnySubType.v(util.INCOMPATIBLE_CLASS_CHANGE_ERROR),
                     },
-                    new RefLikeType[] {
+                    new AnySubType[] {
                         AnySubType.v(util.LINKAGE_ERROR),
                     });
         } catch (ThrowableSet.AlreadyHasExclusionsException e) {
@@ -1295,7 +1293,7 @@ setloop:
                 new RefLikeType[] {
                     AnySubType.v(util.ERROR),
                 },
-                new RefLikeType[] {
+                new AnySubType[] {
                     AnySubType.v(util.LINKAGE_ERROR),
                 });
         sameSet
@@ -1305,7 +1303,7 @@ setloop:
                 new RefLikeType[] {
                     AnySubType.v(util.ERROR),
                 },
-                new RefLikeType[] {
+                new AnySubType[] {
                     AnySubType.v(util.LINKAGE_ERROR),
                 });
 
@@ -1316,7 +1314,7 @@ setloop:
                     AnySubType.v(util.ERROR),
             util.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION,
                 },
-                new RefLikeType[] {
+                new AnySubType[] {
                     AnySubType.v(util.LINKAGE_ERROR),
                 });
 
@@ -1327,7 +1325,7 @@ setloop:
                     AnySubType.v(util.ERROR),
             AnySubType.v(util.INDEX_OUT_OF_BOUNDS_EXCEPTION),
                 },
-                new RefLikeType[] {
+                new AnySubType[] {
                     AnySubType.v(util.LINKAGE_ERROR),
                 });
 
@@ -1338,7 +1336,7 @@ setloop:
                     AnySubType.v(util.ERROR),
             AnySubType.v(util.RUNTIME_EXCEPTION),
                 },
-                new RefLikeType[] {
+                new AnySubType[] {
                     AnySubType.v(util.LINKAGE_ERROR),
                 });
 
@@ -1353,7 +1351,7 @@ setloop:
                         AnySubType.v(util.ERROR),
                 AnySubType.v(util.RUNTIME_EXCEPTION),
                     },
-                    new RefLikeType[] {
+                    new AnySubType[] {
                     });
         } catch (ThrowableSet.AlreadyHasExclusionsException e) {
             // This is what should happen.
@@ -1370,7 +1368,7 @@ setloop:
                         AnySubType.v(util.ERROR),
                 AnySubType.v(util.RUNTIME_EXCEPTION),
                     },
-                    new RefLikeType[] {
+                    new AnySubType[] {
                     });
         } catch (ThrowableSet.AlreadyHasExclusionsException e) {
             // This is what should happen.
@@ -1378,16 +1376,132 @@ setloop:
 
     }
 
+    @Test
+    public void test_14_WhichCatchablePhantom0() {
+        if (DUMP_INTERNALS) {
+            System.err.println("\n\ntestWhichCatchablePhantom0()");
+        }
+
+        ThrowableSet anyError = mgr.EMPTY.add(AnySubType.v(util.ERROR));
+        
+        assertSameMembers(anyError.whichCatchableAs(util.LINKAGE_ERROR),
+        		new RefLikeType[] { AnySubType.v(util.LINKAGE_ERROR) },
+        		new AnySubType[] {},
+        		new RefLikeType[] { AnySubType.v(util.ERROR) },
+        		new AnySubType[] { AnySubType.v(util.LINKAGE_ERROR) });
+        assertSameMembers(anyError.whichCatchableAs(util.PHANTOM_EXCEPTION1),
+        		new RefLikeType[] {},
+        		new AnySubType[] {},
+        		new RefLikeType[] { AnySubType.v(util.ERROR) },
+        		new AnySubType[] {});
+        
+        assertTrue(anyError.catchableAs(util.LINKAGE_ERROR));
+        assertFalse(anyError.catchableAs(util.PHANTOM_EXCEPTION1));
+        
+        ThrowableSet phantomOnly = mgr.EMPTY.add(util.PHANTOM_EXCEPTION1);
+        
+        assertSameMembers(phantomOnly.whichCatchableAs(util.LINKAGE_ERROR),
+        		new RefLikeType[] {},
+        		new AnySubType[] {},
+        		new RefLikeType[] { util.PHANTOM_EXCEPTION1 },
+        		new AnySubType[] {});
+        assertSameMembers(phantomOnly.whichCatchableAs(util.PHANTOM_EXCEPTION2),
+        		new RefLikeType[] {},
+        		new AnySubType[] {},
+        		new RefLikeType[] { util.PHANTOM_EXCEPTION1 },
+        		new AnySubType[] {});
+        assertSameMembers(phantomOnly.whichCatchableAs(util.PHANTOM_EXCEPTION1),
+        		new RefLikeType[] { util.PHANTOM_EXCEPTION1 },
+        		new AnySubType[] {},
+        		new RefLikeType[] {},
+        		new AnySubType[] {});
+        
+        assertFalse(phantomOnly.catchableAs(util.LINKAGE_ERROR));
+        assertTrue(phantomOnly.catchableAs(util.PHANTOM_EXCEPTION1));
+        assertFalse(phantomOnly.catchableAs(util.PHANTOM_EXCEPTION2));
+        
+        ThrowableSet bothPhantoms = phantomOnly.add(util.PHANTOM_EXCEPTION2);
+
+        assertSameMembers(bothPhantoms.whichCatchableAs(util.PHANTOM_EXCEPTION1),
+        		new RefLikeType[] { util.PHANTOM_EXCEPTION1 },
+        		new AnySubType[] {},
+        		new RefLikeType[] { util.PHANTOM_EXCEPTION2 },
+        		new AnySubType[] {});
+        assertSameMembers(bothPhantoms.whichCatchableAs(util.PHANTOM_EXCEPTION2),
+        		new RefLikeType[] { util.PHANTOM_EXCEPTION2 },
+        		new AnySubType[] {},
+        		new RefLikeType[] { util.PHANTOM_EXCEPTION1 },
+        		new AnySubType[] {});
+        
+        assertFalse(bothPhantoms.catchableAs(util.LINKAGE_ERROR));
+        assertTrue(bothPhantoms.catchableAs(util.PHANTOM_EXCEPTION1));
+        assertTrue(bothPhantoms.catchableAs(util.PHANTOM_EXCEPTION2));
+
+        ThrowableSet bothPhantoms2 = phantomOnly.add(util.PHANTOM_EXCEPTION2);
+        assertTrue(bothPhantoms == bothPhantoms2);
+
+        ThrowableSet throwableOnly = mgr.EMPTY.add(util.THROWABLE);
+        assertFalse(throwableOnly.catchableAs(util.PHANTOM_EXCEPTION1));
+
+        ThrowableSet allThrowables = mgr.EMPTY.add(AnySubType.v(util.THROWABLE));
+        assertTrue(allThrowables.catchableAs(util.PHANTOM_EXCEPTION1));
+    }
+
+    @Test
+    public void test_14_WhichCatchablePhantom1() {
+        if (DUMP_INTERNALS) {
+            System.err.println("\n\ntestWhichCatchablePhantom1()");
+        }
+
+        ThrowableSet phantomOnly = mgr.EMPTY.add(AnySubType.v(util.PHANTOM_EXCEPTION1));
+        
+        assertSameMembers(phantomOnly.whichCatchableAs(util.LINKAGE_ERROR),
+        		new RefLikeType[] {},
+        		new AnySubType[] {},
+        		new RefLikeType[] { AnySubType.v(util.PHANTOM_EXCEPTION1) },
+        		new AnySubType[] {});
+        assertSameMembers(phantomOnly.whichCatchableAs(util.PHANTOM_EXCEPTION2),
+        		new RefLikeType[] {},
+        		new AnySubType[] {},
+        		new RefLikeType[] { AnySubType.v(util.PHANTOM_EXCEPTION1) },
+        		new AnySubType[] {});
+        assertSameMembers(phantomOnly.whichCatchableAs(util.PHANTOM_EXCEPTION1),
+        		new RefLikeType[] { AnySubType.v(util.PHANTOM_EXCEPTION1) },
+        		new AnySubType[] {},
+        		new RefLikeType[] {},
+        		new AnySubType[] {});
+        
+        assertFalse(phantomOnly.catchableAs(util.LINKAGE_ERROR));
+        assertTrue(phantomOnly.catchableAs(util.PHANTOM_EXCEPTION1));
+        assertFalse(phantomOnly.catchableAs(util.PHANTOM_EXCEPTION2));
+        
+        ThrowableSet bothPhantoms = phantomOnly.add(AnySubType.v(util.PHANTOM_EXCEPTION2));
+
+        assertSameMembers(bothPhantoms.whichCatchableAs(util.PHANTOM_EXCEPTION1),
+        		new RefLikeType[] { AnySubType.v(util.PHANTOM_EXCEPTION1) },
+        		new AnySubType[] {},
+        		new RefLikeType[] { AnySubType.v(util.PHANTOM_EXCEPTION2) },
+        		new AnySubType[] {});
+        assertSameMembers(bothPhantoms.whichCatchableAs(util.PHANTOM_EXCEPTION2),
+        		new RefLikeType[] { AnySubType.v(util.PHANTOM_EXCEPTION2) },
+        		new AnySubType[] {},
+        		new RefLikeType[] { AnySubType.v(util.PHANTOM_EXCEPTION1) },
+        		new AnySubType[] {});
+        
+        assertFalse(bothPhantoms.catchableAs(util.LINKAGE_ERROR));
+        assertTrue(bothPhantoms.catchableAs(util.PHANTOM_EXCEPTION1));
+        assertTrue(bothPhantoms.catchableAs(util.PHANTOM_EXCEPTION2));
+
+        ThrowableSet bothPhantoms2 = phantomOnly.add(AnySubType.v(util.PHANTOM_EXCEPTION2));
+        assertTrue(bothPhantoms == bothPhantoms2);
+    }
+
     void printAllSets() {
-        for (Iterator i = mgr.getSizeToSets().values().iterator(); i.hasNext(); ) {
-            List sizeList = (List) i.next();
-            for (Iterator j = sizeList.iterator(); j.hasNext(); ) {
-                ThrowableSet s = (ThrowableSet) j.next();
+        for (List <ThrowableSet> sizeList : mgr.getSizeToSets().values()) {
+            for (ThrowableSet s : sizeList) {
                 System.err.println(s.toString());
                 System.err.println("\n\tMemoized Adds:");
-                for (Iterator k = s.getMemoizedAdds().entrySet().iterator(); 
-                        k.hasNext(); ) {
-                    Map.Entry entry = (Map.Entry) k.next();
+                for (Map.Entry<Object, ThrowableSet> entry : s.getMemoizedAdds().entrySet()) {
                     System.err.print(' ');
                     if (entry.getKey() instanceof ThrowableSet) {
                         System.err.print(((ThrowableSet) entry.getKey()).toBriefString());
