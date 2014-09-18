@@ -518,7 +518,7 @@ public class DexAnnotation {
             }
             case 0x1e: // NULL (Dalvik specific?)
             {
-                elem = new AnnotationStringElem("null", 'N', ae.getName());
+                elem = new AnnotationStringElem(null, 'N', ae.getName());
                 break;
             }
             case 0x1f: // BOOLEAN
