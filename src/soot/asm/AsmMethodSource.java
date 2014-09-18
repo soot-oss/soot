@@ -23,6 +23,7 @@ import static org.objectweb.asm.tree.AbstractInsnNode.FIELD_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.IINC_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.INT_INSN;
+import static org.objectweb.asm.tree.AbstractInsnNode.INVOKE_DYNAMIC_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.JUMP_INSN;
 import static org.objectweb.asm.tree.AbstractInsnNode.LABEL;
 import static org.objectweb.asm.tree.AbstractInsnNode.LDC_INSN;
@@ -46,12 +47,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.objectweb.asm.Handle;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.FieldInsnNode;
 import org.objectweb.asm.tree.IincInsnNode;
 import org.objectweb.asm.tree.InsnList;
 import org.objectweb.asm.tree.InsnNode;
 import org.objectweb.asm.tree.IntInsnNode;
+import org.objectweb.asm.tree.InvokeDynamicInsnNode;
 import org.objectweb.asm.tree.JumpInsnNode;
 import org.objectweb.asm.tree.LabelNode;
 import org.objectweb.asm.tree.LdcInsnNode;
@@ -91,6 +94,7 @@ import soot.UnknownType;
 import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
+import soot.coffi.Util;
 import soot.jimple.AddExpr;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -102,6 +106,7 @@ import soot.jimple.ConditionExpr;
 import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.DoubleConstant;
+import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.FieldRef;
 import soot.jimple.FloatConstant;
 import soot.jimple.IdentityStmt;
@@ -114,6 +119,7 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.LongConstant;
 import soot.jimple.LookupSwitchStmt;
+import soot.jimple.MethodHandle;
 import soot.jimple.MonitorStmt;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewMultiArrayExpr;
@@ -123,6 +129,7 @@ import soot.jimple.StringConstant;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UnopExpr;
+import soot.jimple.internal.JDynamicInvokeExpr;
 import soot.util.Chain;
 
 import com.google.common.collect.ArrayListMultimap;
@@ -1045,22 +1052,8 @@ final class AsmMethodSource implements MethodSource {
 		Operand[] out = frame.out();
 		Operand opr;
 		if (out == null) {
-			Constant c;
-			if (val instanceof Integer)
-				c = IntConstant.v((Integer) val);
-			else if (val instanceof Float)
-				c = FloatConstant.v((Float) val);
-			else if (val instanceof Long)
-				c = LongConstant.v((Long) val);
-			else if (val instanceof Double)
-				c = DoubleConstant.v((Double) val);
-			else if (val instanceof String)
-				c = StringConstant.v(val.toString());
-			else if (val instanceof org.objectweb.asm.Type)
-				c = ClassConstant.v(((org.objectweb.asm.Type) val).getInternalName());
-			else
-				throw new AssertionError("Unknown constant type: " + val.getClass());
-			opr = new Operand(insn, c);
+			Value v = toSootValue(val);
+			opr = new Operand(insn, v);
 			frame.out(opr);
 		} else {
 			opr = out[0];
@@ -1069,6 +1062,27 @@ final class AsmMethodSource implements MethodSource {
 			pushDual(opr);
 		else
 			push(opr);
+	}
+
+	private Value toSootValue(Object val) throws AssertionError {
+		Value v;
+		if (val instanceof Integer)
+			v = IntConstant.v((Integer) val);
+		else if (val instanceof Float)
+			v = FloatConstant.v((Float) val);
+		else if (val instanceof Long)
+			v = LongConstant.v((Long) val);
+		else if (val instanceof Double)
+			v = DoubleConstant.v((Double) val);
+		else if (val instanceof String)
+			v = StringConstant.v(val.toString());
+		else if (val instanceof org.objectweb.asm.Type)
+			v = ClassConstant.v(((org.objectweb.asm.Type) val).getInternalName());
+		else if (val instanceof Handle)
+			v = MethodHandle.v(toSootMethodRef((Handle) val));
+		else
+			throw new AssertionError("Unknown constant type: " + val.getClass());
+		return v;
 	}
 	
 	private void convertLookupSwitchInsn(LookupSwitchInsnNode insn) {
@@ -1195,11 +1209,55 @@ final class AsmMethodSource implements MethodSource {
 		else if (!units.containsKey(insn))
 			setUnit(insn, Jimple.v().newInvokeStmt(opr.value));
 		/*
-		 * assign all read ops incase the method modifies any of the fields
+		 * assign all read ops in case the method modifies any of the fields
 		 */
 		assignReadOps(null);
 	}
 	
+	private void convertInvokeDynamicInsn(InvokeDynamicInsnNode insn) {
+		//convert info on bootstrap method
+		SootMethodRef bsmMethodRef = toSootMethodRef(insn.bsm);
+		List<Value> bsmMethodArgs = new ArrayList<Value>(insn.bsmArgs.length);
+		for(Object bsmArg: insn.bsmArgs) {
+			bsmMethodArgs.add(toSootValue(bsmArg));
+		}
+		
+		// create ref to actual method
+
+		SootClass bclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
+		Type returnType;
+		// Generate parameters & returnType & parameterTypes
+		Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
+		List<Type> parameterTypes = new ArrayList<Type>(types.length);
+		List<Value> methodArgs = new ArrayList<Value>(types.length);
+		for (int k = 0; k < types.length - 1; k++) {
+			parameterTypes.add(types[k]);
+			methodArgs.add(popImmediate(types[k]).stackOrValue());
+		}
+		returnType = types[types.length - 1];
+		// we always model invokeDynamic method refs as static method references
+		// of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
+		SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);		
+		
+		DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, methodArgs);
+		Operand opr = new Operand(insn,indy);
+		
+		if (AsmUtil.isDWord(returnType)) {
+			pushDual(opr);
+		} else if (!(returnType instanceof VoidType))
+			push(opr);
+		else if (!units.containsKey(insn))
+			setUnit(insn, Jimple.v().newInvokeStmt(opr.value));
+	}
+
+	private SootMethodRef toSootMethodRef(Handle methodHandle) {
+		String bsmClsName = AsmUtil.toQualifiedName(methodHandle.getOwner());
+		SootClass bsmCls = Scene.v().getSootClass(bsmClsName);
+		List<Type> bsmSigTypes = AsmUtil.toJimpleDesc(methodHandle.getDesc());
+		Type returnType = bsmSigTypes.remove(bsmSigTypes.size() - 1);
+		return Scene.v().makeMethodRef(bsmCls, methodHandle.getName(), bsmSigTypes, returnType, true /*always static*/);
+	}
+
 	private void convertMultiANewArrayInsn(MultiANewArrayInsnNode insn) {
 		StackFrame frame = getFrame(insn);
 		Operand[] out = frame.out();
@@ -1484,6 +1542,8 @@ final class AsmMethodSource implements MethodSource {
 					break;
 				} else if (type == METHOD_INSN) {
 					convertMethodInsn((MethodInsnNode) insn);
+				} else if (type == INVOKE_DYNAMIC_INSN) {
+					convertInvokeDynamicInsn((InvokeDynamicInsnNode) insn);
 				} else if (type == MULTIANEWARRAY_INSN) {
 					convertMultiANewArrayInsn((MultiANewArrayInsnNode) insn);
 				} else if (type == TABLESWITCH_INSN) {
@@ -1511,6 +1571,8 @@ final class AsmMethodSource implements MethodSource {
 	}
 	
 	
+
+
 	private void emitLocals() {
 		JimpleBody jb = body;
 		SootMethod m = jb.getMethod();

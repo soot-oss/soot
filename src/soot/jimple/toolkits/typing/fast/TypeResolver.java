@@ -23,6 +23,7 @@ package soot.jimple.toolkits.typing.fast;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -498,7 +499,16 @@ public class TypeResolver
 						t_ = t_.makeArrayType();
 					}
 					
-					Collection<Type> lcas = h.lcas(told, t_);
+					// Special handling for exception objects with phantom types
+					final Collection<Type> lcas;
+					if (!typesEqual(told, t_)
+							&& told instanceof RefType && t_ instanceof RefType
+							&& (
+									((RefType) told).getSootClass().isPhantom()
+									|| ((RefType) t_).getSootClass().isPhantom()))
+						lcas = Collections.<Type>singleton(RefType.v("java.lang.Throwable"));
+					else
+						lcas = h.lcas(told, t_);
 					
 					for ( Type t : lcas ) {
 						if ( ! typesEqual(t, told) )

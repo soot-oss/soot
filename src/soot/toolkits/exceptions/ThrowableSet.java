@@ -95,7 +95,7 @@ public final class ThrowableSet {
 		 * Map from {@link Integer}s representing set size to all
 		 * <code>ThrowableSet</code>s of that size.
 		 */
-		private final Map<Integer, List> sizeToSets = new HashMap<Integer, List>();
+		private final Map<Integer, List<ThrowableSet>> sizeToSets = new HashMap<Integer, List<ThrowableSet>>();
 
 		/**
 		 * <code>ThrowableSet</code> containing no exception classes.
@@ -209,12 +209,12 @@ public final class ThrowableSet {
 
 			EMPTY = registerSetIfNew(null, null);
 
-			Set allThrowablesSet = new HashSet();
+			Set<RefLikeType> allThrowablesSet = new HashSet<RefLikeType>();
 			allThrowablesSet.add(AnySubType.v(Scene.v().getRefType(
 					"java.lang.Throwable")));
 			ALL_THROWABLES = registerSetIfNew(allThrowablesSet, null);
 
-			Set vmErrorSet = new HashSet();
+			Set<RefLikeType> vmErrorSet = new HashSet<RefLikeType>();
 			vmErrorSet.add(Scene.v().getRefType("java.lang.InternalError"));
 			vmErrorSet.add(Scene.v().getRefType("java.lang.OutOfMemoryError"));
 			vmErrorSet
@@ -228,7 +228,7 @@ public final class ThrowableSet {
 
 			VM_ERRORS = registerSetIfNew(vmErrorSet, null);
 
-			Set resolveClassErrorSet = new HashSet();
+			Set<RefLikeType> resolveClassErrorSet = new HashSet<RefLikeType>();
 			resolveClassErrorSet.add(Scene.v().getRefType(
 					"java.lang.ClassCircularityError"));
 			// We add AnySubType(ClassFormatError) so that we can
@@ -251,12 +251,12 @@ public final class ThrowableSet {
 					"java.lang.VerifyError"));
 			RESOLVE_CLASS_ERRORS = registerSetIfNew(resolveClassErrorSet, null);
 
-			Set resolveFieldErrorSet = new HashSet(resolveClassErrorSet);
+			Set<RefLikeType> resolveFieldErrorSet = new HashSet<RefLikeType>(resolveClassErrorSet);
 			resolveFieldErrorSet.add(Scene.v().getRefType(
 					"java.lang.NoSuchFieldError"));
 			RESOLVE_FIELD_ERRORS = registerSetIfNew(resolveFieldErrorSet, null);
 
-			Set resolveMethodErrorSet = new HashSet(resolveClassErrorSet);
+			Set<RefLikeType> resolveMethodErrorSet = new HashSet<RefLikeType>(resolveClassErrorSet);
 			resolveMethodErrorSet.add(Scene.v().getRefType(
 					"java.lang.AbstractMethodError"));
 			resolveMethodErrorSet.add(Scene.v().getRefType(
@@ -271,7 +271,7 @@ public final class ThrowableSet {
 			// RuntimeException---it would be replaced by an
 			// ExceptionInInitializerError):
 			//
-			Set initializationErrorSet = new HashSet();
+			Set<RefLikeType> initializationErrorSet = new HashSet<RefLikeType>();
 			initializationErrorSet.add(AnySubType.v(Scene.v().getRefType(
 					"java.lang.Error")));
 			INITIALIZATION_ERRORS = registerSetIfNew(initializationErrorSet,
@@ -310,15 +310,15 @@ public final class ThrowableSet {
 		 *         exceptions corresponding to <code>include</code> -
 		 *         <code>exclude</code>.
 		 */
-		private ThrowableSet registerSetIfNew(Set include, Set exclude) {
+		private ThrowableSet registerSetIfNew(Set<RefLikeType> include, Set<AnySubType> exclude) {
 			if (INSTRUMENTING) {
 				registrationCalls++;
 			}
 			if (include == null) {
-				include = Collections.EMPTY_SET;
+				include = Collections.emptySet();
 			}
 			if (exclude == null) {
-				exclude = Collections.EMPTY_SET;
+				exclude = Collections.emptySet();
 			}
 			int size = include.size() + exclude.size();
 			Integer sizeKey = new Integer(size);
@@ -351,7 +351,7 @@ public final class ThrowableSet {
 		 */
 		public String reportInstrumentation() {
 			int setCount = 0;
-			for (List sizeList : sizeToSets.values()) {
+			for (List<ThrowableSet> sizeList : sizeToSets.values()) {
 				setCount += sizeList.size();
 			}
 			if (setCount != registeredSets) {
@@ -392,7 +392,7 @@ public final class ThrowableSet {
 		 * A package-private method to provide unit tests with access to the
 		 * collection of ThrowableSets.
 		 */
-		Map<Integer, List> getSizeToSets() {
+		Map<Integer, List<ThrowableSet>> getSizeToSets() {
 			return Manager.v().sizeToSets;
 		}
 	}
@@ -407,7 +407,7 @@ public final class ThrowableSet {
 	/**
 	 * Set of exception types included within the set.
 	 */
-	private final Set exceptionsIncluded;
+	private final Set<RefLikeType> exceptionsIncluded;
 
 	/**
 	 * Set of exception types which, though members of exceptionsIncluded, are
@@ -417,7 +417,7 @@ public final class ThrowableSet {
 	 * <code>add()</code> methods of this class must bar additions of subtypes
 	 * of those excluded types.
 	 */
-	private final Set exceptionsExcluded;
+	private final Set<AnySubType> exceptionsExcluded;
 
 	/**
 	 * A map from ({@link RefLikeType} \\union <code>ThrowableSet</code>) to
@@ -431,7 +431,7 @@ public final class ThrowableSet {
 
 	private ThrowableSet getMemoizedAdds(Object key) {
 		if (memoizedAdds == null) {
-			memoizedAdds = new HashMap();
+			memoizedAdds = new HashMap<Object, ThrowableSet>();
 		}
 		return memoizedAdds.get(key);
 	}
@@ -450,7 +450,7 @@ public final class ThrowableSet {
 	 *            The set of {@link AnySubType} objects representing the types
 	 *            to be excluded from the set.
 	 */
-	private ThrowableSet(Set include, Set exclude) {
+	private ThrowableSet(Set<RefLikeType> include, Set<AnySubType> exclude) {
 		exceptionsIncluded = Collections.unmodifiableSet(include);
 		exceptionsExcluded = Collections.unmodifiableSet(exclude);
 		// We don't need to clone include and exclude to guarantee
@@ -506,65 +506,68 @@ public final class ThrowableSet {
 				Manager.v().addsExclusionWithoutSearch++;
 			}
 			return this;
-		} else {
-			ThrowableSet result = getMemoizedAdds(e);
-			if (result != null) {
-				if (INSTRUMENTING) {
-					Manager.v().addsInclusionFromMemo++;
-					Manager.v().addsExclusionWithoutSearch++;
-				}
-				return result;
+		}
+		
+		ThrowableSet result = getMemoizedAdds(e);
+		if (result != null) {
+			if (INSTRUMENTING) {
+				Manager.v().addsInclusionFromMemo++;
+				Manager.v().addsExclusionWithoutSearch++;
+			}
+			return result;
+		}
+		
+		if (INSTRUMENTING) {
+			Manager.v().addsInclusionFromSearch++;
+			if (exceptionsExcluded.size() != 0) {
+				Manager.v().addsExclusionWithSearch++;
 			} else {
-				if (INSTRUMENTING) {
-					Manager.v().addsInclusionFromSearch++;
-					if (exceptionsExcluded.size() != 0) {
-						Manager.v().addsExclusionWithSearch++;
-					} else {
-						Manager.v().addsExclusionWithoutSearch++;
-					}
-				}
-				FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
-
-				for (Iterator i = exceptionsExcluded.iterator(); i.hasNext();) {
-					RefType exclusionBase = ((AnySubType) i.next()).getBase();
-					if (hierarchy.canStoreType(e, exclusionBase)) {
-						throw new AlreadyHasExclusionsException(
-								"ThrowableSet.add(RefType): adding"
-										+ e.toString() + " to the set [ "
-										+ this.toString() + "] where "
-										+ exclusionBase.toString()
-										+ " is excluded.");
-					}
-				}
-
-				for (Iterator i = exceptionsIncluded.iterator(); i.hasNext();) {
-					RefLikeType incumbent = (RefLikeType) i.next();
-					if (incumbent instanceof AnySubType) {
-						// Need to use incumbent.getBase() because
-						// hierarchy.canStoreType() assumes that parent
-						// is not an AnySubType.
-						RefType incumbentBase = ((AnySubType) incumbent)
-								.getBase();
-						if (hierarchy.canStoreType(e, incumbentBase)) {
-							memoizedAdds.put(e, this);
-							return this;
-						}
-					} else if (!(incumbent instanceof RefType)) {
-						// assertion failure.
-						throw new IllegalStateException(
-								"ThrowableSet.add(RefType): Set element "
-										+ incumbent.toString()
-										+ " is neither a RefType nor an AnySubType.");
-					}
-				}
-				Set resultSet = new HashSet(this.exceptionsIncluded);
-				resultSet.add(e);
-				result = Manager.v().registerSetIfNew(resultSet,
-						this.exceptionsExcluded);
-				memoizedAdds.put(e, result);
-				return result;
+				Manager.v().addsExclusionWithoutSearch++;
 			}
 		}
+		FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
+
+		for (AnySubType excludedType : exceptionsExcluded) {
+			RefType exclusionBase = excludedType.getBase();
+			if ((e.getSootClass().isPhantom() && exclusionBase.equals(e))
+					|| (!e.getSootClass().isPhantom() && hierarchy.canStoreType(e, exclusionBase))) {
+				throw new AlreadyHasExclusionsException(
+						"ThrowableSet.add(RefType): adding"
+								+ e.toString() + " to the set [ "
+								+ this.toString() + "] where "
+								+ exclusionBase.toString()
+								+ " is excluded.");
+			}
+		}
+		
+		// If this is a real class, we need to check whether we already have it
+		// in the list through subtyping.
+		if (!e.getSootClass().isPhantom())
+			for (RefLikeType incumbent : exceptionsIncluded) {
+				if (incumbent instanceof AnySubType) {
+					// Need to use incumbent.getBase() because
+					// hierarchy.canStoreType() assumes that parent
+					// is not an AnySubType.
+					RefType incumbentBase = ((AnySubType) incumbent)
+							.getBase();
+					if (hierarchy.canStoreType(e, incumbentBase)) {
+						memoizedAdds.put(e, this);
+						return this;
+					}
+				} else if (!(incumbent instanceof RefType)) {
+					// assertion failure.
+					throw new IllegalStateException(
+							"ThrowableSet.add(RefType): Set element "
+									+ incumbent.toString()
+									+ " is neither a RefType nor an AnySubType.");
+				}
+			}
+		Set<RefLikeType> resultSet = new HashSet<RefLikeType>(this.exceptionsIncluded);
+		resultSet.add(e);
+		result = Manager.v().registerSetIfNew(resultSet,
+				this.exceptionsExcluded);
+		memoizedAdds.put(e, result);
+		return result;
 	}
 
 	/**
@@ -619,96 +622,103 @@ public final class ThrowableSet {
 				Manager.v().addsExclusionWithoutSearch++;
 			}
 			return result;
-		} else {
-			FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
-			RefType newBase = e.getBase();
+		}
+		
+		FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
+		RefType newBase = e.getBase();
 
-			if (INSTRUMENTING) {
-				if (exceptionsExcluded.size() != 0) {
-					Manager.v().addsExclusionWithSearch++;
-				} else {
-					Manager.v().addsExclusionWithoutSearch++;
-				}
-			}
-			for (Iterator i = exceptionsExcluded.iterator(); i.hasNext();) {
-				RefType exclusionBase = ((AnySubType) i.next()).getBase();
-				if (hierarchy.canStoreType(newBase, exclusionBase)
-						|| hierarchy.canStoreType(exclusionBase, newBase)) {
-					if (INSTRUMENTING) {
-						// To ensure that the subcategories total properly:
-						Manager.v().addsInclusionInterrupted++;
-					}
-					throw new AlreadyHasExclusionsException("ThrowableSet.add("
-							+ e.toString() + ") to the set [ "
-							+ this.toString() + "] where "
-							+ exclusionBase.toString() + " is excluded.");
-				}
-			}
-
-			if (this.exceptionsIncluded.contains(e)) {
-				if (INSTRUMENTING) {
-					Manager.v().addsInclusionFromMap++;
-				}
-				return this;
-
+		if (INSTRUMENTING) {
+			if (exceptionsExcluded.size() != 0) {
+				Manager.v().addsExclusionWithSearch++;
 			} else {
-				if (INSTRUMENTING) {
-					Manager.v().addsInclusionFromSearch++;
-				}
-
-				int changes = 0;
-				boolean addNewException = true;
-				Set resultSet = new HashSet();
-
-				for (Iterator i = this.exceptionsIncluded.iterator(); i
-						.hasNext();) {
-					RefLikeType incumbent = (RefLikeType) i.next();
-					if (incumbent instanceof RefType) {
-						if (hierarchy.canStoreType(incumbent, newBase)) {
-							// Omit incumbent from result.
-							changes++;
-						} else {
-							resultSet.add(incumbent);
-						}
-					} else if (incumbent instanceof AnySubType) {
-						RefType incumbentBase = ((AnySubType) incumbent)
-								.getBase();
-						// We have to use the base types in these hierarchy
-						// calls
-						// because we want to know if _all_ possible
-						// types represented by e can be represented by
-						// the incumbent, or vice versa.
-						if (hierarchy.canStoreType(newBase, incumbentBase)) {
-							addNewException = false;
-							resultSet.add(incumbent);
-						} else if (hierarchy.canStoreType(incumbentBase,
-								newBase)) {
-							// Omit incumbent from result;
-							changes++;
-						} else {
-							resultSet.add(incumbent);
-						}
-					} else { // assertion failure.
-						throw new IllegalStateException(
-								"ThrowableSet.add(AnySubType): Set element "
-										+ incumbent.toString()
-										+ " is neither a RefType nor an AnySubType.");
-					}
-				}
-				if (addNewException) {
-					resultSet.add(e);
-					changes++;
-				}
-				if (changes > 0) {
-					result = Manager.v().registerSetIfNew(resultSet,
-							this.exceptionsExcluded);
-				} else {
-					result = this;
-				}
-				memoizedAdds.put(e, result);
-				return result;
+				Manager.v().addsExclusionWithoutSearch++;
 			}
 		}
+		for (AnySubType excludedType : exceptionsExcluded) {
+			RefType exclusionBase = excludedType.getBase();
+			
+			boolean isExcluded = exclusionBase.getSootClass().isPhantom()
+					&& exclusionBase.equals(newBase);
+			isExcluded |= !exclusionBase.getSootClass().isPhantom()
+					&& (hierarchy.canStoreType(newBase, exclusionBase)
+							|| hierarchy.canStoreType(exclusionBase, newBase));
+			
+			if (isExcluded) {
+				if (INSTRUMENTING) {
+					// To ensure that the subcategories total properly:
+					Manager.v().addsInclusionInterrupted++;
+				}
+				throw new AlreadyHasExclusionsException("ThrowableSet.add("
+						+ e.toString() + ") to the set [ "
+						+ this.toString() + "] where "
+						+ exclusionBase.toString() + " is excluded.");
+			}
+		}
+
+		if (this.exceptionsIncluded.contains(e)) {
+			if (INSTRUMENTING) {
+				Manager.v().addsInclusionFromMap++;
+			}
+			return this;
+		}
+
+		if (INSTRUMENTING) {
+			Manager.v().addsInclusionFromSearch++;
+		}
+
+		int changes = 0;
+		boolean addNewException = true;
+		Set<RefLikeType> resultSet = new HashSet<RefLikeType>();
+
+		for (RefLikeType incumbent : this.exceptionsIncluded) {
+			if (incumbent instanceof RefType) {
+				if (hierarchy.canStoreType(incumbent, newBase)) {
+					// Omit incumbent from result.
+					changes++;
+				} else {
+					resultSet.add(incumbent);
+				}
+			} else if (incumbent instanceof AnySubType) {
+				RefType incumbentBase = ((AnySubType) incumbent)
+						.getBase();
+				if (newBase.getSootClass().isPhantom()) {
+					if (!incumbentBase.equals(newBase))
+						resultSet.add(incumbent);
+				}
+				// We have to use the base types in these hierarchy
+				// calls
+				// because we want to know if _all_ possible
+				// types represented by e can be represented by
+				// the incumbent, or vice versa.
+				else if (hierarchy.canStoreType(newBase, incumbentBase)) {
+					addNewException = false;
+					resultSet.add(incumbent);
+				} else if (hierarchy.canStoreType(incumbentBase,
+						newBase)) {
+					// Omit incumbent from result;
+					changes++;
+				} else {
+					resultSet.add(incumbent);
+				}
+			} else { // assertion failure.
+				throw new IllegalStateException(
+						"ThrowableSet.add(AnySubType): Set element "
+								+ incumbent.toString()
+								+ " is neither a RefType nor an AnySubType.");
+			}
+		}
+		if (addNewException) {
+			resultSet.add(e);
+			changes++;
+		}
+		if (changes > 0) {
+			result = Manager.v().registerSetIfNew(resultSet,
+					this.exceptionsExcluded);
+		} else {
+			result = this;
+		}
+		memoizedAdds.put(e, result);
+		return result;
 	}
 
 	/**
@@ -764,21 +774,19 @@ public final class ThrowableSet {
 	 * @return a set containing all the <code>addedExceptions</code> as well as
 	 *         the exceptions in this set.
 	 */
-	private ThrowableSet add(Set addedExceptions) {
-		Set resultSet = new HashSet(this.exceptionsIncluded);
+	private ThrowableSet add(Set<RefLikeType> addedExceptions) {
+		Set<RefLikeType> resultSet = new HashSet<RefLikeType>(this.exceptionsIncluded);
 		int changes = 0;
 		FastHierarchy hierarchy = Scene.v().getOrMakeFastHierarchy();
 
 		// This algorithm is O(n m), where n and m are the sizes of the
 		// two sets, so hope that the sets are small.
 
-		for (Iterator i = addedExceptions.iterator(); i.hasNext();) {
-			RefLikeType newType = (RefLikeType) i.next();
+		for (RefLikeType newType : addedExceptions) {
 			if (!resultSet.contains(newType)) {
 				boolean addNewType = true;
 				if (newType instanceof RefType) {
-					for (Iterator j = resultSet.iterator(); j.hasNext();) {
-						RefLikeType incumbentType = (RefLikeType) j.next();
+					for (RefLikeType incumbentType : resultSet) {
 						if (incumbentType instanceof RefType) {
 							if (newType == incumbentType) {
 								// assertion failure.
@@ -802,7 +810,7 @@ public final class ThrowableSet {
 					}
 				} else if (newType instanceof AnySubType) {
 					RefType newBase = ((AnySubType) newType).getBase();
-					for (Iterator j = resultSet.iterator(); j.hasNext();) {
+					for (Iterator<RefLikeType> j = resultSet.iterator(); j.hasNext();) {
 						RefLikeType incumbentType = (RefLikeType) j.next();
 						if (incumbentType instanceof RefType) {
 							RefType incumbentBase = (RefType) incumbentType;
@@ -871,16 +879,19 @@ public final class ThrowableSet {
 		if (INSTRUMENTING) {
 			Manager.v().catchableAsQueries++;
 		}
-
+		
 		FastHierarchy h = Scene.v().getOrMakeFastHierarchy();
 
 		if (exceptionsExcluded.size() > 0) {
 			if (INSTRUMENTING) {
 				Manager.v().catchableAsFromSearch++;
 			}
-			for (Iterator i = exceptionsExcluded.iterator(); i.hasNext();) {
-				AnySubType exclusion = (AnySubType) i.next();
-				if (h.canStoreType(catcher, exclusion.getBase())) {
+			for (AnySubType exclusion : exceptionsExcluded) {
+				if (catcher.getSootClass().isPhantom()) {
+					if (exclusion.getBase().equals(catcher))
+						return false;
+				}
+				else if (h.canStoreType(catcher, exclusion.getBase())) {
 					return false;
 				}
 			}
@@ -901,22 +912,26 @@ public final class ThrowableSet {
 					Manager.v().catchableAsFromSearch++;
 				}
 			}
-			for (Iterator i = exceptionsIncluded.iterator(); i.hasNext();) {
-				RefLikeType thrownType = (RefLikeType) i.next();
+			for (RefLikeType thrownType : exceptionsIncluded) {
 				if (thrownType instanceof RefType) {
 					if (thrownType == catcher) {
 						// assertion failure.
 						throw new IllegalStateException(
 								"ThrowableSet.catchableAs(RefType): exceptions.contains() failed to match contained RefType "
 										+ catcher);
-					} else if (h.canStoreType(thrownType, catcher)) {
+					} else if (!catcher.getSootClass().isPhantom()
+							&& h.canStoreType(thrownType, catcher)) {
 						return true;
 					}
 				} else {
 					RefType thrownBase = ((AnySubType) thrownType).getBase();
+					if (catcher.getSootClass().isPhantom()) {
+						if (thrownBase.equals(catcher) || thrownBase.getClassName().equals("java.lang.Throwable"))
+							return true;
+					}
 					// At runtime, thrownType might be instantiated by any
 					// of thrownBase's subtypes, so:
-					if (h.canStoreType(thrownBase, catcher)
+					else if (h.canStoreType(thrownBase, catcher)
 							|| h.canStoreType(catcher, thrownBase)) {
 						return true;
 					}
@@ -946,18 +961,22 @@ public final class ThrowableSet {
 		}
 
 		FastHierarchy h = Scene.v().getOrMakeFastHierarchy();
-		Set caughtIncluded = null;
-		Set caughtExcluded = null;
-		Set uncaughtIncluded = null;
-		Set uncaughtExcluded = null;
+		Set<RefLikeType> caughtIncluded = null;
+		Set<AnySubType> caughtExcluded = null;
+		Set<RefLikeType> uncaughtIncluded = null;
+		Set<AnySubType> uncaughtExcluded = null;
 
 		if (INSTRUMENTING) {
 			Manager.v().removesFromSearch++;
 		}
-
-		for (Iterator i = exceptionsExcluded.iterator(); i.hasNext();) {
-			AnySubType exclusion = (AnySubType) i.next();
+		
+		for (AnySubType exclusion : exceptionsExcluded) {
 			RefType exclusionBase = exclusion.getBase();
+			
+			// Is the current type explicitly excluded?
+			if (catcher.getSootClass().isPhantom() && exclusionBase.equals(catcher))
+				return new Pair(ThrowableSet.Manager.v().EMPTY, this);
+			
 			if (h.canStoreType(catcher, exclusionBase)) {
 				// Because the add() operations ban additions to sets
 				// with exclusions, we can be sure no types in this are
@@ -974,11 +993,20 @@ public final class ThrowableSet {
 						uncaughtExcluded);
 			}
 		}
-
-		for (Iterator i = exceptionsIncluded.iterator(); i.hasNext();) {
-			RefLikeType inclusion = (RefLikeType) i.next();
+		
+		for (RefLikeType inclusion : exceptionsIncluded) {
 			if (inclusion instanceof RefType) {
-				if (h.canStoreType(inclusion, catcher)) {
+				// If the current type is a phantom type, we catch it if and
+				// only if it is in the inclusion list and ignore any hierarchy.
+				if (catcher.getSootClass().isPhantom()) {
+					if (inclusion.equals(catcher))
+						caughtIncluded = addExceptionToSet(inclusion,
+								caughtIncluded);
+					else
+						uncaughtIncluded = addExceptionToSet(inclusion,
+								uncaughtIncluded);
+				}
+				else if (h.canStoreType(inclusion, catcher)) {
 					caughtIncluded = addExceptionToSet(inclusion,
 							caughtIncluded);
 				} else {
@@ -987,7 +1015,21 @@ public final class ThrowableSet {
 				}
 			} else {
 				RefType base = ((AnySubType) inclusion).getBase();
-				if (h.canStoreType(base, catcher)) {
+				// If the current type is a phantom type, we catch it if and
+				// only if it is in the inclusion list and ignore any hierarchy.
+				if (catcher.getSootClass().isPhantom()) {
+					if (base.equals(catcher))
+						caughtIncluded = addExceptionToSet(inclusion,
+								caughtIncluded);
+					else {
+						if (base.getClassName().equals("java.lang.Throwable"))
+							caughtIncluded = addExceptionToSet(catcher,
+									caughtIncluded);
+						uncaughtIncluded = addExceptionToSet(inclusion,
+								uncaughtIncluded);
+					}
+				}
+				else if (h.canStoreType(base, catcher)) {
 					// All subtypes of base will be caught. Any exclusions
 					// will already have been copied to caughtExcluded by
 					// the preceding loop.
@@ -1113,9 +1155,9 @@ public final class ThrowableSet {
 	 * @return A <code>Set</code> containing the elements in <code>set</code>
 	 *         plus <code>e</code>.
 	 */
-	private Set addExceptionToSet(RefLikeType e, Set set) {
+	private <T> Set<T> addExceptionToSet(T e, Set<T> set) {
 		if (set == null) {
-			set = new HashSet();
+			set = new HashSet<T>();
 		}
 		set.add(e);
 		return set;
@@ -1127,15 +1169,14 @@ public final class ThrowableSet {
 	public String toString() {
 		StringBuffer buffer = new StringBuffer(this.toBriefString());
 		buffer.append(":\n  ");
-		for (Iterator i = exceptionsIncluded.iterator(); i.hasNext();) {
+		for (RefLikeType ei : exceptionsIncluded) {
 			buffer.append('+');
-			Object o = i.next();
-			buffer.append(o == null ? "null" : o.toString());
+			buffer.append(ei == null ? "null" : ei.toString());
 			// buffer.append(i.next().toString());
 		}
-		for (Iterator i = exceptionsExcluded.iterator(); i.hasNext();) {
+		for (RefLikeType ee : exceptionsExcluded) {
 			buffer.append('-');
-			buffer.append(i.next().toString());
+			buffer.append(ee.toString());
 		}
 		return buffer.toString();
 	}
@@ -1160,12 +1201,13 @@ public final class ThrowableSet {
 	 * @return An iterator which presents the elements of <code>coll</code> in
 	 *         order.
 	 */
-	private static Iterator sortedThrowableIterator(Collection coll) {
+	private static <T extends RefLikeType> Iterator<T> sortedThrowableIterator(Collection<T> coll) {
 		if (coll.size() <= 1) {
 			return coll.iterator();
 		} else {
-			Object array[] = coll.toArray();
-			Arrays.sort(array, new ThrowableComparator());
+			@SuppressWarnings("unchecked")
+			T array[] = (T[]) coll.toArray(new Object[0]);
+			Arrays.sort(array, new ThrowableComparator<T>());
 			return Arrays.asList(array).iterator();
 		}
 	}
@@ -1174,17 +1216,18 @@ public final class ThrowableSet {
 	 * Comparator used to implement sortedThrowableIterator().
 	 * 
 	 */
-	private static class ThrowableComparator implements java.util.Comparator {
+	private static class ThrowableComparator<T extends RefLikeType> implements java.util.Comparator<T> {
 
-		private static RefType baseType(Object o) {
+		private static RefType baseType(RefLikeType o) {
 			if (o instanceof AnySubType) {
 				return ((AnySubType) o).getBase();
 			} else {
 				return (RefType) o; // ClassCastException if o is not a RefType.
 			}
 		}
-
-		public int compare(Object o1, Object o2) {
+		
+		@Override
+		public int compare(T o1, T o2) {
 			RefType t1 = baseType(o1);
 			RefType t2 = baseType(o2);
 			if (t1.equals(t2)) {
@@ -1206,10 +1249,7 @@ public final class ThrowableSet {
 				return t1.toString().compareTo(t2.toString());
 			}
 		}
-
-		public boolean equal(Object o1, Object o2) {
-			return (o1.equals(o2));
-		}
+		
 	}
 
 	/**
@@ -1255,13 +1295,13 @@ public final class ThrowableSet {
 	 *
 	 * @return An abbreviated representation of the exceptions.
 	 */
-	private String toAbbreviatedString(Set s, char connector) {
+	private String toAbbreviatedString(Set<? extends RefLikeType> s, char connector) {
 		final String JAVA_LANG = "java.lang.";
 		final int JAVA_LANG_LENGTH = JAVA_LANG.length();
 		final String EXCEPTION = "Exception";
 		final int EXCEPTION_LENGTH = EXCEPTION.length();
 
-		Collection vmErrorThrowables = ThrowableSet.Manager.v().VM_ERRORS.exceptionsIncluded;
+		Collection<RefLikeType> vmErrorThrowables = ThrowableSet.Manager.v().VM_ERRORS.exceptionsIncluded;
 		boolean containsAllVmErrors = s.containsAll(vmErrorThrowables);
 		StringBuffer buf = new StringBuffer();
 
@@ -1270,8 +1310,8 @@ public final class ThrowableSet {
 			buf.append("vmErrors");
 		}
 
-		for (Iterator it = sortedThrowableIterator(s); it.hasNext();) {
-			RefLikeType reflikeType = (RefLikeType) it.next();
+		for (Iterator<? extends RefLikeType> it = sortedThrowableIterator(s); it.hasNext();) {
+			RefLikeType reflikeType = it.next();
 			RefType baseType = null;
 			if (reflikeType instanceof RefType) {
 				baseType = (RefType) reflikeType;
@@ -1312,18 +1352,18 @@ public final class ThrowableSet {
 	 * @return an unmodifiable collection view of the <code>Throwable</code>
 	 *         types in this set.
 	 */
-	Collection<Object> typesIncluded() {
-		return new AbstractCollection() {
+	Collection<RefLikeType> typesIncluded() {
+		return new AbstractCollection<RefLikeType>() {
 
-			public Iterator iterator() {
-				return new Iterator() {
-					private final Iterator i = exceptionsIncluded.iterator();
+			public Iterator<RefLikeType> iterator() {
+				return new Iterator<RefLikeType>() {
+					private final Iterator<RefLikeType> i = exceptionsIncluded.iterator();
 
 					public boolean hasNext() {
 						return i.hasNext();
 					}
 
-					public Object next() {
+					public RefLikeType next() {
 						return i.next();
 					}
 
@@ -1347,18 +1387,18 @@ public final class ThrowableSet {
 	 * @return an unmodifiable collection view of the <code>Throwable</code>
 	 *         types excluded from this set.
 	 */
-	Collection<Object> typesExcluded() {
-		return new AbstractCollection() {
+	Collection<AnySubType> typesExcluded() {
+		return new AbstractCollection<AnySubType>() {
 
-			public Iterator iterator() {
-				return new Iterator() {
-					private final Iterator i = exceptionsExcluded.iterator();
+			public Iterator<AnySubType> iterator() {
+				return new Iterator<AnySubType>() {
+					private final Iterator<AnySubType> i = exceptionsExcluded.iterator();
 
 					public boolean hasNext() {
 						return i.hasNext();
 					}
 
-					public Object next() {
+					public AnySubType next() {
 						return i.next();
 					}
 
@@ -1378,9 +1418,9 @@ public final class ThrowableSet {
 	 * A package-private method to provide unit tests with access to
 	 * ThrowableSet's internals.
 	 */
-	Map getMemoizedAdds() {
+	Map<Object, ThrowableSet> getMemoizedAdds() {
 		if (memoizedAdds == null) {
-			return Collections.EMPTY_MAP;
+			return Collections.emptyMap();
 		} else {
 			return Collections.unmodifiableMap(memoizedAdds);
 		}

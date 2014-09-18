@@ -4,8 +4,8 @@ import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.writer.builder.BuilderReference;
 import org.jf.dexlib2.writer.builder.DexBuilder;
 
+import soot.jimple.AbstractConstantSwitch;
 import soot.jimple.ClassConstant;
-import soot.jimple.ConstantSwitch;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
@@ -30,7 +30,7 @@ import soot.util.Switchable;
  * 
  * @see StmtVisitor
  */
-public class ConstantVisitor implements ConstantSwitch {
+public class ConstantVisitor extends AbstractConstantSwitch {
 	
 	private final DexBuilder dexFile;
 	private StmtVisitor stmtV;
