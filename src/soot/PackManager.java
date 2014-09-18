@@ -521,7 +521,9 @@ public class PackManager {
             tearDownJAR();
         }
         postProcessXML( reachableClasses() );
-        releaseBodies( reachableClasses() );
+
+		if (!Options.v().no_writeout_body_releasing())
+			releaseBodies( reachableClasses() );
         if(Options.v().verbose())
             PhaseDumper.v().dumpAfter("output");
     }
