@@ -1229,39 +1229,67 @@ final class AsmMethodSource implements MethodSource {
 	}
 	
 	private void convertInvokeDynamicInsn(InvokeDynamicInsnNode insn) {
-		//convert info on bootstrap method
-		SootMethodRef bsmMethodRef = toSootMethodRef(insn.bsm);
-		List<Value> bsmMethodArgs = new ArrayList<Value>(insn.bsmArgs.length);
-		for(Object bsmArg: insn.bsmArgs) {
-			bsmMethodArgs.add(toSootValue(bsmArg));
-		}
-		
-		// create ref to actual method
-
-		SootClass bclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
+		StackFrame frame = getFrame(insn);
+		Operand[] out = frame.out();
+		Operand opr;
 		Type returnType;
-		// Generate parameters & returnType & parameterTypes
-		Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
-		List<Type> parameterTypes = new ArrayList<Type>(types.length);
-		List<Value> methodArgs = new ArrayList<Value>(types.length);
-		for (int k = 0; k < types.length - 1; k++) {
-			parameterTypes.add(types[k]);
-			methodArgs.add(popImmediate(types[k]).stackOrValue());
-		}
-		returnType = types[types.length - 1];
-		// we always model invokeDynamic method refs as static method references
-		// of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
-		SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);		
-		
-		DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, methodArgs);
-		Operand opr = new Operand(insn,indy);
-		
-		if (AsmUtil.isDWord(returnType)) {
+		if (out == null) {
+			//convert info on bootstrap method
+			SootMethodRef bsmMethodRef = toSootMethodRef(insn.bsm);
+			List<Value> bsmMethodArgs = new ArrayList<Value>(insn.bsmArgs.length);
+			for(Object bsmArg: insn.bsmArgs) {
+				bsmMethodArgs.add(toSootValue(bsmArg));
+			}
+			
+			// create ref to actual method
+	
+			SootClass bclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
+			// Generate parameters & returnType & parameterTypes
+			Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
+			List<Type> parameterTypes = new ArrayList<Type>(types.length);
+			List<Value> methodArgs = new ArrayList<Value>(types.length);
+			for (int k = 0; k < types.length - 1; k++) {
+				parameterTypes.add(types[k]);
+				methodArgs.add(popImmediate(types[k]).stackOrValue());
+			}
+			returnType = types[types.length - 1];
+			// we always model invokeDynamic method refs as static method references
+			// of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
+			SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);		
+			
+			DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, methodArgs);
+			opr = new Operand(insn,indy);
+		} else {
+			opr = out[0];
+			InvokeExpr expr = (InvokeExpr) opr.value;
+			List<Type> types = expr.getMethodRef().parameterTypes();
+			Operand[] oprs;
+			int nrArgs = types.size();
+			if (expr.getMethodRef().isStatic())
+				oprs = nrArgs == 0 ? null : new Operand[nrArgs];
+			else
+				oprs = new Operand[nrArgs + 1];
+			if (oprs != null) {
+				while (nrArgs-- != 0) {
+					oprs[nrArgs] = pop(types.get(nrArgs));
+				}
+				if (!expr.getMethodRef().isStatic())
+					oprs[oprs.length - 1] = pop();
+				frame.mergeIn(oprs);
+				nrArgs = types.size();
+			}
+			returnType = expr.getMethodRef().returnType();
+		}		
+		if (AsmUtil.isDWord(returnType))
 			pushDual(opr);
-		} else if (!(returnType instanceof VoidType))
+		else if (!(returnType instanceof VoidType))
 			push(opr);
 		else if (!units.containsKey(insn))
 			setUnit(insn, Jimple.v().newInvokeStmt(opr.value));
+		/*
+		 * assign all read ops in case the method modifies any of the fields
+		 */
+		assignReadOps(null);
 	}
 
 	private SootMethodRef toSootMethodRef(Handle methodHandle) {

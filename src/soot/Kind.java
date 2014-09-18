@@ -117,5 +117,9 @@ public final class Kind implements Numberable
     public boolean isAsyncTask() {
     	return this == ASYNCTASK;
     }
+    
+    public boolean isPrivileged() {
+    	return this == PRIVILEGED;
+    }
 }
 
