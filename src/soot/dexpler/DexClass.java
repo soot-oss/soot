@@ -39,7 +39,10 @@ import soot.SootResolver;
 import soot.Type;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
+import soot.tagkit.InnerClassAttribute;
+import soot.tagkit.InnerClassTag;
 import soot.tagkit.SourceFileTag;
+import soot.tagkit.Tag;
 
 /**
  * DexClass is a container for all relevant information of that class
@@ -144,6 +147,17 @@ public class DexClass {
         }
         
         da.handleClassAnnotation(sc, defItem);
+        
+        // If we have an inner class tag, we also need to set the corresponding
+        // outer class
+        InnerClassAttribute ica = (InnerClassAttribute) sc.getTag("InnerClassAttribute");
+        if (ica != null)
+        	for (Tag t : ica.getSpecs())
+        		if (t instanceof InnerClassTag) {
+        			InnerClassTag ict = (InnerClassTag) t;
+        			sc.setOuterClass(SootResolver.v().makeClassRef(
+        					ict.getOuterClass().replaceAll("/", ".")));
+        		}
 
         return deps;
     }

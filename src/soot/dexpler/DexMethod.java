@@ -41,7 +41,6 @@ import soot.G;
 import soot.MethodSource;
 import soot.Modifier;
 import soot.RefType;
-import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootResolver;
