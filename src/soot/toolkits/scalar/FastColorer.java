@@ -27,6 +27,8 @@
 package soot.toolkits.scalar;
 
 import soot.*;
+import soot.options.Options;
+import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.graph.*;
 import soot.util.*;
 
@@ -44,7 +46,8 @@ public class FastColorer
                                                    Map<Local, Integer> localToColor, 
                                                    Map<Object, Integer> groupToColorCount)
     {
-        ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(unitBody);
+    	// To understand why a pedantic throw analysis is required, see comment in assignColorsToLocals method
+        ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
 
         LiveLocals liveLocals;        
         liveLocals = new SimpleLiveLocals(unitGraph);
@@ -181,7 +184,8 @@ public class FastColorer
     public static void assignColorsToLocals(Body unitBody, Map<Local, Object> localToGroup, 
         Map<Local, Integer> localToColor, Map<Object, Integer> groupToColorCount)
     {
-        ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(unitBody);
+    	// Build a CFG using a pedantic throw analysis to prevent JVM "java.lang.VerifyError: Incompatible argument to function" errors.
+        ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(unitBody, PedanticThrowAnalysis.v(), Options.v().omit_excepting_unit_edges());
         LiveLocals liveLocals;
        
         liveLocals = new SimpleLiveLocals(unitGraph);
