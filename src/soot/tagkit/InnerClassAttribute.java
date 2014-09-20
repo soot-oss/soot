@@ -82,7 +82,6 @@ public class InnerClassAttribute implements Tag
 			InnerClassTag ict = (InnerClassTag)t;
 			String inner = ict.getInnerClass();
 			if (new_inner.equals(inner)) {
-				System.out.println("old/new : "+ ict.accessFlags +" "+ newt.accessFlags);
 				if (ict.accessFlags != 0 && newt.accessFlags > 0 && ict.accessFlags != newt.accessFlags)
 					throw new RuntimeException("Error: trying to add an InnerClassTag twice with different access flags! ("+ict.accessFlags +" and "+ newt.accessFlags +")");
 				if (ict.accessFlags == 0 && newt.accessFlags != 0)  {
