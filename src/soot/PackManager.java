@@ -521,7 +521,9 @@ public class PackManager {
             tearDownJAR();
         }
         postProcessXML( reachableClasses() );
-        releaseBodies( reachableClasses() );
+
+		if (!Options.v().no_writeout_body_releasing())
+			releaseBodies( reachableClasses() );
         if(Options.v().verbose())
             PhaseDumper.v().dumpAfter("output");
     }
@@ -639,9 +641,7 @@ public class PackManager {
         /*
          * apply analyses etc
          */
-        Iterator<SootClass> classIt = appClasses.iterator();
-        while (classIt.hasNext()) {
-            SootClass s = classIt.next();
+        for (SootClass s : appClasses) {
             String fileName = SourceLocator.v().getFileNameFor(s, Options.v().output_format());
 
             /*
@@ -673,12 +673,7 @@ public class PackManager {
             	 * Added hook into going through each decompiled method again
             	 * Need it for all the implemented AST analyses
             	 */
-            	Iterator<SootMethod> methodIt = s.methodIterator();
-            	while (methodIt.hasNext()) {
-
-            		SootMethod m = methodIt.next();
-            		//System.out.println("SootMethod:"+m.getName().toString());
-
+            	for (SootMethod m : s.getMethods()) {
             		/*
             		 * 3rd April 2006
             		 * Fixing RuntimeException caused when you
@@ -701,9 +696,6 @@ public class PackManager {
 
         } //going through all classes
 
-
-
-
         /*
          * Nomair A. Naeem March 6th, 2006
          *
@@ -716,8 +708,6 @@ public class PackManager {
         if(transformations){
         	InterProceduralAnalyses.applyInterProceduralAnalyses();
         }
-
-
 
         outputDava();
     }

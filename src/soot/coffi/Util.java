@@ -31,8 +31,10 @@
 
 package soot.coffi;
 import soot.jimple.*;
+
 import java.util.*;
 import java.io.*;
+
 import soot.tagkit.*;
 import soot.*;
 
@@ -379,7 +381,6 @@ public class Util
 	    }
 	    // Set "InnerClass" attribute tag
 	    else if(coffiClass.attributes[i] instanceof InnerClasses_attribute){
-		   
 		    InnerClasses_attribute attr = (InnerClasses_attribute)coffiClass.attributes[i];
             for (int j = 0; j < attr.inner_classes_length; j++)
                 {
@@ -394,6 +395,8 @@ public class Util
                 if (e.name_index != 0)
                     name = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[e.name_index])).convert();
                 bclass.addTag(new InnerClassTag(inner, outer, name, e.access_flags));
+                if (outer != null)
+                	bclass.setOuterClass(SootResolver.v().makeClassRef(outer.replaceAll("/", ".")));
             }
         }
         // set synthetic tags
