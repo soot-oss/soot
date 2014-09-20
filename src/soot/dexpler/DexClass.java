@@ -24,6 +24,9 @@
 
 package soot.dexpler;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jf.dexlib2.iface.Annotation;
@@ -136,7 +139,7 @@ public class DexClass {
             if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
                 continue;
             sc.addMethod(sm);
-            da.handleMethodAnnotation(sm, method);        
+            da.handleMethodAnnotation(sm, method);
         }
         for (Method method : defItem.getVirtualMethods()) {
             SootMethod sm = DexMethod.makeSootMethod(defItem.getSourceFile(), method, sc);
@@ -151,13 +154,37 @@ public class DexClass {
         // If we have an inner class tag, we also need to set the corresponding
         // outer class
         InnerClassAttribute ica = (InnerClassAttribute) sc.getTag("InnerClassAttribute");
-        if (ica != null)
-        	for (Tag t : ica.getSpecs())
+        List<Entry<InnerClassAttribute, InnerClassTag>> pairList= new ArrayList<Entry<InnerClassAttribute, InnerClassTag>>();
+        if (ica != null) {
+        	for (Tag t : ica.getSpecs()) {
         		if (t instanceof InnerClassTag) {
         			InnerClassTag ict = (InnerClassTag) t;
-        			sc.setOuterClass(SootResolver.v().makeClassRef(
-        					ict.getOuterClass().replaceAll("/", ".")));
+        			String outer = null;
+        			if (ict.getOuterClass() == null) { // anonymous inner classes
+        				outer = ict.getInnerClass().replaceAll("\\$[0-9]*$", "").replaceAll("/", ".");
+        			} else {
+        				outer = ict.getOuterClass().replaceAll("/", ".");
+        			}
+        			System.out.println("inner: "+ ict.getInnerClass() +" outer: "+ ict.getOuterClass() +" newouter: "+ outer);
+        			SootClass osc = SootResolver.v().makeClassRef(outer);
+        			sc.setOuterClass(osc);
+        			InnerClassTag newt = new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags());
+
+        			InnerClassAttribute icat = null;
+        			icat = (InnerClassAttribute)osc.getTag("InnerClassAttribute");
+        			if (icat == null) {
+        				icat = new InnerClassAttribute(new ArrayList<Tag>());
+        				osc.addTag(icat);
+        			}
+        			Entry<InnerClassAttribute, InnerClassTag> pair = new java.util.AbstractMap.SimpleEntry<InnerClassAttribute, InnerClassTag>(icat, newt);
+        			pairList.add(pair);
         		}
+        	}
+        	for (Entry<InnerClassAttribute, InnerClassTag> e: pairList) {
+        		e.getKey().add(e.getValue());
+        	}
+
+        }
 
         return deps;
     }

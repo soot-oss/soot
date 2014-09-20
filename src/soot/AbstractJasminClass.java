@@ -520,7 +520,8 @@ public abstract class AbstractJasminClass
         emit(".synthetic\n");
     }
     // emit inner class attributes
-    if (sootClass.hasTag("InnerClassAttribute")){
+    InnerClassAttribute ica = (InnerClassAttribute) sootClass.getTag("InnerClassAttribute");
+    if (ica != null && ica.getSpecs().size() > 0){
         if (!Options.v().no_output_inner_classes_attribute()){
             emit(".inner_class_attr ");
             Iterator<Tag> innersIt = ((InnerClassAttribute)sootClass.getTag("InnerClassAttribute")).getSpecs().iterator();

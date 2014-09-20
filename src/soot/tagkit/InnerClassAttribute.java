@@ -75,4 +75,26 @@ public class InnerClassAttribute implements Tag
     public ArrayList<Tag> getSpecs(){
         return list;
     }
+
+	public void add(InnerClassTag newt) {
+		String new_inner = newt.getInnerClass();
+		for (Tag t: this.list) {
+			InnerClassTag ict = (InnerClassTag)t;
+			String inner = ict.getInnerClass();
+			if (new_inner.equals(inner)) {
+				System.out.println("old/new : "+ ict.accessFlags +" "+ newt.accessFlags);
+				if (ict.accessFlags != 0 && newt.accessFlags > 0 && ict.accessFlags != newt.accessFlags)
+					throw new RuntimeException("Error: trying to add an InnerClassTag twice with different access flags! ("+ict.accessFlags +" and "+ newt.accessFlags +")");
+				if (ict.accessFlags == 0 && newt.accessFlags != 0)  {
+					// The Dalvik parser may find an InnerClass annotation without accessFlags in the outer class 
+					// and then an annotation with the accessFlags in the inner class.
+					// When we have more information about the accessFlags we update the InnerClassTag.
+					list.remove(t);
+					list.add(newt);
+				}
+				return;
+			}
+		}
+		list.add(newt);
+	}
 }
