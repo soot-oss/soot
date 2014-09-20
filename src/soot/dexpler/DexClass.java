@@ -165,7 +165,6 @@ public class DexClass {
         			} else {
         				outer = ict.getOuterClass().replaceAll("/", ".");
         			}
-        			System.out.println("inner: "+ ict.getInnerClass() +" outer: "+ ict.getOuterClass() +" newouter: "+ outer);
         			SootClass osc = SootResolver.v().makeClassRef(outer);
         			sc.setOuterClass(osc);
         			InnerClassTag newt = new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags());
