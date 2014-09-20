@@ -173,7 +173,7 @@ class SootClassBuilder extends ClassVisitor {
 	
 	@Override
 	public void visitInnerClass(String name, String outerName, String innerName, int access) {
-		klass.addTag(new InnerClassTag(outerName + "$" + innerName, outerName, name, access));
+		klass.addTag(new InnerClassTag(name, outerName, innerName, access));
 	}
 	
 	@Override
