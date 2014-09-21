@@ -40,6 +40,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import soot.JastAddJ.Modifiers;
 import soot.baf.DoubleWordType;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Stmt;
@@ -600,7 +601,7 @@ public abstract class AbstractJasminClass
                     double val = ((DoubleConstantValueTag)field.getTag("DoubleConstantValueTag")).getDoubleValue();
                     fieldString += Double.doubleToRawLongBits(val);
                 }
-                if (field.hasTag("SyntheticTag")){
+                if (field.hasTag("SyntheticTag") || Modifier.isSynthetic(field.getModifiers())){
                     fieldString +=" .synthetic";
                 }
 
@@ -728,7 +729,7 @@ public abstract class AbstractJasminClass
                 SootClass exceptClass = throwsIt.next();
                 emit(".throws "+exceptClass.getName());
             }
-            if (method.hasTag("SyntheticTag")){
+            if (method.hasTag("SyntheticTag") || Modifier.isSynthetic(method.getModifiers())){
                 emit(".synthetic");
             }
             if (method.hasTag("DeprecatedTag")){
