@@ -13,6 +13,11 @@ Soot Command Line Options
 
 <body>
 
+<xsl:for-each select="options/intro">
+	<xsl:value-of select="."/><xsl:text></xsl:text>
+</xsl:for-each>
+  
+
 <table border="3">
 
 <xsl:for-each select="options/section">
