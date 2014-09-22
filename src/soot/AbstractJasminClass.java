@@ -517,7 +517,7 @@ public abstract class AbstractJasminClass
 
 
     // emit synthetic attributes
-    if (sootClass.hasTag("SyntheticTag")){
+    if (sootClass.hasTag("SyntheticTag") || Modifier.isSynthetic(sootClass.getModifiers())){
         emit(".synthetic\n");
     }
     // emit inner class attributes
