@@ -31,7 +31,11 @@ package soot.jimple.toolkits.typing;
 
 import soot.*;
 import soot.options.*;
+import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.jimple.*;
+import soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder;
+import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+
 import java.util.*;
 
 /**
@@ -110,10 +114,84 @@ public class TypeAssigner extends BodyTransformer {
 			G.v().out.println("[TypeAssigner] typing system ended. It took "
 					+ mins + " mins and " + secs + " secs.");
 		}
+		
+		replaceNullType(b);
 
 		if (typingFailed((JimpleBody) b))
 			throw new RuntimeException("type inference failed!");
 	}
+	
+	/**
+	 * Replace statements using locals with null_type type and that would 
+	 * throw a NullPointerException at runtime by a set of instructions
+	 * throwing a NullPointerException.
+	 * 
+	 * This is done to remove locals with null_type type.
+	 * 
+	 * @param b
+	 */
+	private void replaceNullType(Body b) {
+		List<Local> localsToRemove = new ArrayList<Local>();
+		boolean hasNullType = false;
+		
+		ConstantPropagatorAndFolder.v().transform(b);
+		
+		// check if any local has null_type
+		for (Local l: b.getLocals()) {
+			if (l.getType() instanceof NullType) {
+				localsToRemove.add(l);	
+				hasNullType = true;
+			}
+		}
+		
+		// No local with null_type
+		if (!hasNullType)
+			return;
+		
+		List<Unit> unitToReplaceByException = new ArrayList<Unit>();
+		for (Unit u: b.getUnits()) {
+			for (ValueBox vb : u.getUseBoxes()) {
+				if( vb.getValue() instanceof Local && ((Local)vb.getValue()).getType() instanceof NullType) {
+					
+					Local l = (Local)vb.getValue();
+					Stmt s = (Stmt)u;
+					
+					boolean replace = false;
+					if (s.containsArrayRef()) {
+						ArrayRef r = s.getArrayRef();
+						if (r.getBase() == l) { replace = true; }
+					} else if (s.containsFieldRef()) {
+						FieldRef r = s.getFieldRef();
+						if (r instanceof InstanceFieldRef) {
+							InstanceFieldRef ir = (InstanceFieldRef)r;
+							if (ir.getBase() == l) { replace = true; }
+						}
+					} else if (s.containsInvokeExpr()) {
+						InvokeExpr ie = s.getInvokeExpr();
+						if (ie instanceof InstanceInvokeExpr) {
+							InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
+							if (iie.getBase() == l) { replace = true; }
+						}
+					}
+					
+					if (replace) {
+						unitToReplaceByException.add(u);
+					}
+				}
+			}
+		}
+		
+		for (Unit u: unitToReplaceByException) {
+			soot.dexpler.Util.addExceptionAfterUnit(b, "java.lang.NullPointerException", u, "This statement would have triggered an Exception: "+ u);
+			b.getUnits().remove(u);
+		}
+
+		DeadAssignmentEliminator.v().transform(b);
+		UnusedLocalEliminator.v().transform(b);
+
+	}
+	
+
 
 	private void compareTypeAssigners(Body b, boolean useOlderTypeAssigner) {
 		JimpleBody jb = (JimpleBody) b, oldJb, newJb;

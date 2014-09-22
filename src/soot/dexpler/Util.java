@@ -282,17 +282,18 @@ public class Util {
 
     /**
      * Insert a runtime exception before unit u of body b. Useful to analyze broken code (which make reference to inexisting class for instance)
+     * exceptionType: e.g., "java.lang.RuntimeException"
      */
-    public static void addRuntimeExceptionAfterUnit (Body b, Unit u ,String m) {
+    public static void addExceptionAfterUnit (Body b, String exceptionType, Unit u ,String m) {
 
-      Local l = Jimple.v().newLocal("myException", RefType.v("java.lang.RuntimeException"));
+      Local l = Jimple.v().newLocal("myException", RefType.v(exceptionType));
       b.getLocals().add(l);
       
       List<Unit> newUnits = new ArrayList<Unit>();
-      Unit u1 = Jimple.v().newAssignStmt (l, Jimple.v().newNewExpr(RefType.v("java.lang.RuntimeException")));
+      Unit u1 = Jimple.v().newAssignStmt (l, Jimple.v().newNewExpr(RefType.v(exceptionType)));
       Unit u2 = Jimple.v().newInvokeStmt (Jimple.v().newSpecialInvokeExpr(
           l, 
-          Scene.v().getMethod("<java.lang.RuntimeException: void <init>(java.lang.String)>").makeRef(),
+          Scene.v().getMethod("<"+ exceptionType +": void <init>(java.lang.String)>").makeRef(),
           StringConstant.v(m)));
       Unit u3 = Jimple.v().newThrowStmt(l);
       newUnits.add(u1);
