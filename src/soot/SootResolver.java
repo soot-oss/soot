@@ -229,9 +229,10 @@ public class SootResolver
     
             Dependencies dependencies = is.resolve(sc);
             
-        
-            classToTypesSignature.put( sc, dependencies.typesToSignature);
-            classToTypesHierarchy.put( sc, dependencies.typesToHierarchy);
+            if (!dependencies.typesToSignature.isEmpty())
+            	classToTypesSignature.put( sc, dependencies.typesToSignature);
+            if (!dependencies.typesToHierarchy.isEmpty())
+            	classToTypesHierarchy.put( sc, dependencies.typesToHierarchy);
         }
         reResolveHierarchy(sc);
     }
@@ -295,27 +296,27 @@ public class SootResolver
 
         {
         	Collection<Type> references = classToTypesHierarchy.get(sc);
-            if( references == null ) return;
-
-            // This must be an interator, not a for-all since the underlying
-            // collection may change as we go
-            Iterator<Type> it = references.iterator();
-            while( it.hasNext() ) {
-                final Type t = it.next();
-                addToResolveWorklist(t, SootClass.HIERARCHY);
+            if( references != null ) {
+	            // This must be an iterator, not a for-all since the underlying
+	            // collection may change as we go
+	            Iterator<Type> it = references.iterator();
+	            while( it.hasNext() ) {
+	                final Type t = it.next();
+	                addToResolveWorklist(t, SootClass.HIERARCHY);
+	            }
             }
         }
         
         {
         	Collection<Type> references = classToTypesSignature.get(sc);
-            if( references == null ) return;
-
-            // This must be an interator, not a for-all since the underlying
-            // collection may change as we go
-            Iterator<Type> it = references.iterator();
-            while( it.hasNext() ) {
-                final Type t = it.next();
-                addToResolveWorklist(t, SootClass.SIGNATURES);
+            if( references != null ){
+	            // This must be an iterator, not a for-all since the underlying
+	            // collection may change as we go
+	            Iterator<Type> it = references.iterator();
+	            while( it.hasNext() ) {
+	                final Type t = it.next();
+	                addToResolveWorklist(t, SootClass.SIGNATURES);
+	            }
             }
         }
     }
