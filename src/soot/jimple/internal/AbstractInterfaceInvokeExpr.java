@@ -42,9 +42,8 @@ public abstract class AbstractInterfaceInvokeExpr extends AbstractInstanceInvoke
     protected AbstractInterfaceInvokeExpr(ValueBox baseBox, SootMethodRef methodRef,
                                   ValueBox[] argBoxes)
     {
-    	super(baseBox, argBoxes); 
+    	super(methodRef, baseBox, argBoxes); 
     	if( methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
-        this.methodRef = methodRef;
     }
 
     public boolean equivTo(Object o)

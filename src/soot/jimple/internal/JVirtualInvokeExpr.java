@@ -38,7 +38,7 @@ public class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr
     public JVirtualInvokeExpr(Value base, SootMethodRef methodRef, List<? extends Value> args)
     {
         super(Jimple.v().newLocalBox(base), methodRef, new ValueBox[args.size()]);
-        
+
         if(methodRef.declaringClass().isInterface()) {
             SootClass sc = methodRef.declaringClass();
             String path = sc.hasTag("SourceFileTag")? ((SourceFileTag)sc.getTag("SourceFileTag")).getAbsolutePath() : "uknown";
