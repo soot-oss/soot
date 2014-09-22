@@ -69,9 +69,6 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 		Set<SootField> nonConstantFields = new HashSet<SootField>();
 		Map<SootField, ConstantValueTag> newTags = new HashMap<SootField, ConstantValueTag>();
 		
-		if (smInit.toString().equals("<com.fasterxml.jackson.core.io.NumberOutput: void <clinit>()>"))
-			System.out.println("x");
-		
 		for (Iterator<Unit> itU = smInit.getActiveBody().getUnits().snapshotIterator();
 				itU.hasNext(); ) {
 			Unit u = itU.next();
