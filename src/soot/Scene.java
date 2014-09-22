@@ -126,7 +126,7 @@ public class Scene  //extends AbstractHost
     Chain<SootClass> libraryClasses = new HashChain<SootClass>();
     Chain<SootClass> phantomClasses = new HashChain<SootClass>();
     
-    private final Map<String,Type> nameToClass = new HashMap<String,Type>();
+    private final Map<String,RefType> nameToClass = new HashMap<String,RefType>();
 
     ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<Kind>();
     ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
@@ -545,7 +545,7 @@ public class Scene  //extends AbstractHost
 
     public boolean containsClass(String className)
     {
-        RefType type = (RefType) nameToClass.get(className);
+        RefType type = nameToClass.get(className);
         if( type == null ) return false;
         if( !type.hasSootClass() ) return false;
         SootClass c = type.getSootClass();
@@ -702,7 +702,7 @@ public class Scene  //extends AbstractHost
      */
     public RefType getRefTypeUnsafe(String className) 
     {
-        RefType refType = (RefType) nameToClass.get(className);
+        RefType refType = nameToClass.get(className);
 		return refType;
     }
     
@@ -726,7 +726,7 @@ public class Scene  //extends AbstractHost
      */
 
 	public SootClass getSootClass(String className) {
-		RefType type = (RefType) nameToClass.get(className);
+		RefType type = nameToClass.get(className);
 		SootClass toReturn = null;
 		if (type != null)
 			toReturn = type.getSootClass();
