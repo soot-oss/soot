@@ -158,20 +158,6 @@ public class CFG {
 
 	// calculate complexity metrics
     if (soot.jbco.Main.metrics) complexity();
-    
-    /*	
-	if (m.code_attr != null)
-	{
-	    for (int i=0; i<m.code_attr.attributes.length; i++)
-	    {
-		if (m.code_attr.attributes[i] 
-		    instanceof LineNumberTable_attribute)
-		{
-		    G.v().out.print(m.code_attr.attributes[i]);
-		}
-	    }
-	}
-	*/
     }
 
     public static HashMap<SootMethod, int[]> methodsToVEM = new HashMap<SootMethod, int[]>();
