@@ -129,6 +129,11 @@ class MethodBuilder extends JSRInlinerAdapter {
 	@Override
 	public void visitFieldInsn(int opcode, String owner, String name, String desc) {
 		super.visitFieldInsn(opcode, owner, name, desc);
+		for (Type t : AsmUtil.toJimpleDesc(desc)) {
+			if (t instanceof RefType)
+				scb.addDep(t);
+		}
+
 		scb.addDep(AsmUtil.toQualifiedName(owner));
 	}
 	

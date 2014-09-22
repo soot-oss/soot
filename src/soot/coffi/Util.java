@@ -46,7 +46,6 @@ public class Util
 
     private cp_info[] activeConstantPool = null;
     private LocalVariableTable_attribute activeVariableTable;
-    private LocalVariableTypeTable_attribute activeVariableTypeTable;
     /* maps from variable names to local variable slot indexes to soot Locals*/
     private Map<String, Map<Integer, Local>> nameToIndexToLocal;
     private boolean useFaithfulNaming = false;
@@ -62,7 +61,6 @@ public class Util
                       cp_info[] ca)
     {
       activeVariableTable = la;
-      activeVariableTypeTable = lt;
       activeConstantPool = ca;
       nameToIndexToLocal = null;
     }
@@ -246,14 +244,14 @@ public class Util
             String methodName = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[methodInfo.name_index])).convert();
 		    String methodDescriptor = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[methodInfo.descriptor_index])).convert();
     
-            List parameterTypes;
+            List<Type> parameterTypes;
             Type returnType;
     
             // Generate parameterTypes & returnType
             {
                 Type[] types = jimpleTypesOfFieldOrMethodDescriptor(methodDescriptor);
     
-                parameterTypes = new ArrayList();
+                parameterTypes = new ArrayList<Type>();
                 for(int j = 0; j < types.length - 1; j++){
                     references.add(types[j]);
                     parameterTypes.add(types[j]);
@@ -792,44 +790,19 @@ swtch:
         return className;
     }
 
-    private Local getLocal(Body b, String name) 
-        throws soot.jimple.NoSuchLocalException
-    {
-        Iterator localIt = b.getLocals().iterator();
-
-        while(localIt.hasNext())
-        {
-            Local local = (Local) localIt.next();
-
-            if(local.getName().equals(name))
-                return local;
-        }
-
-        throw new soot.jimple.NoSuchLocalException();
+    private Local getLocalUnsafe(Body b, String name) {
+    	for (Local local : b.getLocals()) {
+    		if(local.getName().equals(name))
+    			return local;
+    	}
+    	return null;
     }
-
-
-    private boolean declaresLocal(Body b, String localName)
-    {
-        Iterator localIt = b.getLocals().iterator();
-
-        while(localIt.hasNext())
-        {
-            Local local = (Local) localIt.next();
-
-            if(local.getName().equals(localName))
-                return true;
-        }
-
-        return false;
-    }
-
+    
     Local getLocalCreatingIfNecessary(JimpleBody listBody, String name, Type type)
     {
-      Local l;
-      if(declaresLocal(listBody, name))
+      Local l = getLocalUnsafe(listBody, name);
+      if(l != null)
       {
-        l = getLocal(listBody, name);
         if(!l.getType().equals(type)) {
           throw new RuntimeException("The body already declares this local name with a different type.");
         }
