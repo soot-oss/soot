@@ -155,39 +155,10 @@ public class DexMethod {
                     String msg = "Warning: Invalid bytecode in method "+ m +": "+ e;
                     G.v().out.println(msg);
                     Util.emptyBody(b);
-                    Util.addRuntimeExceptionAfterUnit(b, b.getUnits().getLast(), "Soot has detected that this method contains invalid Dalvik bytecode which would have throw an exception at runtime. ["+ msg +"]");
+                    Util.addExceptionAfterUnit(b, "java.lang.RuntimeException", b.getUnits().getLast(), "Soot has detected that this method contains invalid Dalvik bytecode which would have throw an exception at runtime. ["+ msg +"]");
                     TypeAssigner.v().transform(b);
                 }
                 m.setActiveBody(b);
-                
-                // Remove field's constant value tags if field is
-                // initialized in <clinit>.
-                // If a static final field is both initialized with a 
-                // constant value tag and <clinit>, only the constant
-                // value tag is taken into account (tested on JVM).
-                // Ex: if the constant value tag is 0x00 for field f, 
-                // and field f is initialized in <clinit> with 
-                // File.separatorChar, the value of f at runtime will be
-                // 0x00 (JVM).
-                // This seems to occur with the current version of dexlib2-2.0.3
-                // whose method  sf.getInitialValue() returns initial values it 
-                // should not.
-                if (m.getName().equals("<clinit>")) {
-                	for (Unit u: b.getUnits()) {
-                		if (u instanceof AssignStmt) {
-                			AssignStmt ass = (AssignStmt)u;
-                			if (ass.getLeftOp() instanceof FieldRef) {
-                				FieldRef fr = (FieldRef)ass.getLeftOp();
-                				SootField f = fr.getField();
-                				f.removeTag("StringConstantValueTag");
-                				f.removeTag("LongConstantValueTag");
-                				f.removeTag("DoubleConstantValueTag");
-                				f.removeTag("FloatConstantValueTag");
-                				f.removeTag("IntegerConstantValueTag");
-                			}
-                		}
-                	}
-                }
                 
                 return m.getActiveBody();
             }
