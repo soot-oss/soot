@@ -29,7 +29,6 @@ package soot;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -195,16 +194,10 @@ public class SootResolver
         if(Options.v().debug_resolver())
             G.v().out.println("bringing to HIERARCHY: "+sc);
         sc.setResolvingLevel(SootClass.HIERARCHY);
-
+        
         String className = sc.getName();
         ClassSource is = SourceLocator.v().getClassSource(className);
-        boolean modelAsPhantomRef = is == null;
-//        || (
-//        		Options.v().no_jrl() &&
-//        		Scene.v().isExcluded(sc) &&
-//        		!Scene.v().getBasicClasses().contains(sc.getName())
-//    		);        
-		if( modelAsPhantomRef ) {
+		if( is == null ) {
             if(!Scene.v().allowsPhantomRefs()) {
             	String suffix="";
             	if(className.equals("java.lang.Object")) {
@@ -222,16 +215,13 @@ public class SootResolver
                 G.v().out.println(
                         "Warning: " + className + " is a phantom class!");
                 sc.setPhantomClass();
-                classToTypesSignature.put( sc, Collections.<Type>emptyList());
-                classToTypesHierarchy.put( sc, Collections.<Type>emptyList() );
             }
         } else {
-    
             Dependencies dependencies = is.resolve(sc);
-            
-        
-            classToTypesSignature.put( sc, dependencies.typesToSignature);
-            classToTypesHierarchy.put( sc, dependencies.typesToHierarchy);
+            if (!dependencies.typesToSignature.isEmpty())
+            	classToTypesSignature.put( sc, dependencies.typesToSignature);
+            if (!dependencies.typesToHierarchy.isEmpty())
+            	classToTypesHierarchy.put( sc, dependencies.typesToHierarchy);
         }
         reResolveHierarchy(sc);
     }
@@ -297,7 +287,7 @@ public class SootResolver
         	Collection<Type> references = classToTypesHierarchy.get(sc);
             if( references == null ) return;
 
-            // This must be an interator, not a for-all since the underlying
+            // This must be an iterator, not a for-all since the underlying
             // collection may change as we go
             Iterator<Type> it = references.iterator();
             while( it.hasNext() ) {
@@ -310,7 +300,7 @@ public class SootResolver
         	Collection<Type> references = classToTypesSignature.get(sc);
             if( references == null ) return;
 
-            // This must be an interator, not a for-all since the underlying
+            // This must be an iterator, not a for-all since the underlying
             // collection may change as we go
             Iterator<Type> it = references.iterator();
             while( it.hasNext() ) {

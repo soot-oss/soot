@@ -202,6 +202,8 @@ public class FastHierarchy
         	return parent instanceof RefLikeType;
         }
         if( child instanceof RefType ) {
+        	if (parent.equals(Scene.v().getObjectType()))
+        		return true;
             if( parent instanceof RefType) {
                 return canStoreClass( ((RefType) child).getSootClass(),
                     ((RefType) parent).getSootClass() );
