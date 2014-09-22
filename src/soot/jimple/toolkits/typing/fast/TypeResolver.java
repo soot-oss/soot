@@ -45,6 +45,7 @@ import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -85,7 +86,7 @@ public class TypeResolver
 	public TypeResolver(JimpleBody jb)
 	{
 		this.jb = jb;
-		
+
 		this.assignments = new LinkedList<DefinitionStmt>();
 		this.depends = new HashMap<Local, BitSet>();
 		for ( Local v : this.jb.getLocals() )
@@ -505,11 +506,12 @@ public class TypeResolver
 							&& told instanceof RefType && t_ instanceof RefType
 							&& (
 									((RefType) told).getSootClass().isPhantom()
-									|| ((RefType) t_).getSootClass().isPhantom()))
+									|| ((RefType) t_).getSootClass().isPhantom())
+							&& (stmt.getRightOp() instanceof CaughtExceptionRef))
 						lcas = Collections.<Type>singleton(RefType.v("java.lang.Throwable"));
 					else
 						lcas = h.lcas(told, t_);
-					
+
 					for ( Type t : lcas ) {
 						if ( ! typesEqual(t, told) )
 						{
