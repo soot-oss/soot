@@ -32,7 +32,6 @@
 package soot.jimple.internal;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import soot.RefType;
@@ -60,7 +59,7 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
 	
     public JDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List<? extends Value> bootstrapArgs, SootMethodRef methodRef, List<? extends Value> methodArgs)
     {
-    	super(new ValueBox[methodArgs.size()]);
+    	super(methodRef, new ValueBox[methodArgs.size()]);
     	
 		if(!methodRef.getSignature().startsWith("<"+SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME+": "))
     		throw new IllegalArgumentException("Receiver type of JDynamicInvokeExpr must be "+SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME+"!");
@@ -70,7 +69,6 @@ public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicIn
 		
 		
     	this.bsmRef = bootstrapMethodRef;
-        this.methodRef = methodRef;
         this.bsmArgBoxes = new ValueBox[bootstrapArgs.size()];
 
         for(int i = 0; i < bootstrapArgs.size(); i++)

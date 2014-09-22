@@ -37,8 +37,8 @@ public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr
 {
     final protected ValueBox baseBox;    
     
-    protected AbstractInstanceInvokeExpr(ValueBox baseBox, ValueBox[] argBoxes) {
-    	super(argBoxes);
+    protected AbstractInstanceInvokeExpr(SootMethodRef methodRef, ValueBox baseBox, ValueBox[] argBoxes) {
+    	super(methodRef, argBoxes);
     	this.baseBox = baseBox;
     }
     
