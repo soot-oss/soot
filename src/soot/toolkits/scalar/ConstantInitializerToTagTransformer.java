@@ -1,8 +1,10 @@
 package soot.toolkits.scalar;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -85,6 +87,7 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 							&& field.isFinal()) {
 						// Do we already have a constant value for this field?
 						boolean found = false;
+						List<Tag> tagsToRemove = new ArrayList<Tag>();
 						for (Tag t : field.getTags()) {
 							if (t instanceof ConstantValueTag) {
 								if (checkConstantValue((ConstantValueTag) t, (Constant) assign.getRightOp())) {
@@ -93,12 +96,16 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 									if (removeAssignments)
 										itU.remove();
 								}
-								else
-									G.v().out.println("WARNING: Constant value mismatch between code and constant table");
+								else {
+									G.v().out.println("WARNING: Constant value for field '"+ field +"' mismatch between code ("+ (Constant) assign.getRightOp() +") and constant table ("+ t +")");
+									tagsToRemove.add(t);
+								}
 								found = true;
 								break;
 							}
 						}
+						for (Tag t: tagsToRemove)
+							field.removeTag(t.getName());
 						
 						if (!found) {
 							// If we already have a different tag for this field,
