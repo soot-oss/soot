@@ -70,6 +70,7 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 		
 		Set<SootField> nonConstantFields = new HashSet<SootField>();
 		Map<SootField, ConstantValueTag> newTags = new HashMap<SootField, ConstantValueTag>();
+		Set<SootField> removeTagList = new HashSet<SootField>(); // in case of mismatch between code/constant table values, constant tags are removed
 		
 		for (Iterator<Unit> itU = smInit.getActiveBody().getUnits().snapshotIterator();
 				itU.hasNext(); ) {
@@ -87,7 +88,6 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 							&& field.isFinal()) {
 						// Do we already have a constant value for this field?
 						boolean found = false;
-						List<Tag> tagsToRemove = new ArrayList<Tag>();
 						for (Tag t : field.getTags()) {
 							if (t instanceof ConstantValueTag) {
 								if (checkConstantValue((ConstantValueTag) t, (Constant) assign.getRightOp())) {
@@ -98,14 +98,12 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 								}
 								else {
 									G.v().out.println("WARNING: Constant value for field '"+ field +"' mismatch between code ("+ (Constant) assign.getRightOp() +") and constant table ("+ t +")");
-									tagsToRemove.add(t);
+									removeTagList.add(field);
 								}
 								found = true;
 								break;
 							}
 						}
-						for (Tag t: tagsToRemove)
-							field.removeTag(t.getName());
 						
 						if (!found) {
 							// If we already have a different tag for this field,
@@ -114,6 +112,7 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 							if (!checkConstantValue(newTags.get(field), (Constant) assign.getRightOp())) {
 								nonConstantFields.add(field);
 								newTags.remove(field);
+								removeTagList.add(field);
 								continue;
 							}
 							
@@ -122,6 +121,10 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 								newTags.put(field, newTag);
 						}
 					}
+				} else if (assign.getLeftOp() instanceof StaticFieldRef){
+					// a non-constant is assigned to the field
+					SootField sf = ((StaticFieldRef)assign.getLeftOp()).getField();
+					removeTagList.add(sf);
 				}
 			}
 		}
@@ -129,6 +132,8 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 		// Do the actual assignment
 		for (Entry<SootField, ConstantValueTag> entry : newTags.entrySet()) {
 			SootField field = entry.getKey();
+			if (removeTagList.contains(field))
+				continue;
 			field.addTag(entry.getValue());
 		}
 		
@@ -143,6 +148,21 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 							itU.remove();
 				}
 			}
+		
+		// remove constant tags
+		for (SootField sf: removeTagList) {
+			if (removeTagList.contains(sf)) {
+				List<Tag> toRemoveTagList = new ArrayList<Tag>();
+				for (Tag t : sf.getTags()) {
+					if (t instanceof ConstantValueTag) {
+						toRemoveTagList.add(t);
+					}
+				}
+				for (Tag t: toRemoveTagList) {
+					sf.getTags().remove(t);
+				}
+			}
+		}
 	}
 
 	private ConstantValueTag createConstantTagFromValue(Constant rightOp) {
