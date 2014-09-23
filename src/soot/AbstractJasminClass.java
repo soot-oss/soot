@@ -363,14 +363,14 @@ public abstract class AbstractJasminClass
             case 'F': {
                         result.append(".float_kind ");
                         result.append("\""+elem.getName()+"\" ");
-                        result.append(Float.floatToRawIntBits(((AnnotationFloatElem)elem).getValue()));
+                        result.append(((AnnotationFloatElem)elem).getValue());
                         result.append("\n");
                         break;
                       }
             case 'D': {
                         result.append(".doub_kind ");
                         result.append("\""+elem.getName()+"\" ");
-                        result.append(Double.doubleToRawLongBits(((AnnotationDoubleElem)elem).getValue()));
+                        result.append(((AnnotationDoubleElem)elem).getValue());
                         result.append("\n");
                         break;
                       }
