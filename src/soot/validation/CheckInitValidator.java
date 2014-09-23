@@ -30,9 +30,9 @@ public class CheckInitValidator implements BodyValidator {
         ExceptionalUnitGraph g = new ExceptionalUnitGraph
 	    (body, ThrowAnalysisFactory.checkInitThrowAnalysis(), false);
 
-		InitAnalysis analysis=new InitAnalysis(g);
+		InitAnalysis analysis = new InitAnalysis(g);
 		for (Unit s : body.getUnits()) {
-			FlowSet init=(FlowSet) analysis.getFlowBefore(s);
+			FlowSet<Local> init = analysis.getFlowBefore(s);
 		    for (ValueBox vBox : s.getUseBoxes()) {
 				Value v=vBox.getValue();
 				if(v instanceof Local) {

@@ -89,16 +89,16 @@ public class DexAnnotation {
     	Set<? extends Annotation> aSet = classDef.getAnnotations();
     	if (aSet == null || aSet.isEmpty())
     		return;
-    	InnerClassAttribute ica = null;
-    	if ((ica = (InnerClassAttribute) h.getTag("InnerClassAttribute")) == null) {
-    		ica = new InnerClassAttribute(new ArrayList<Tag>());
-    		h.addTag(ica);
-    	}
+    	InnerClassAttribute ica = (InnerClassAttribute) h.getTag("InnerClassAttribute");
     	List<Tag> tags = handleAnnotation(aSet, classDef.getType());
     	if (tags != null)
     		for (Tag t : tags)
     			if (t != null) {
     				if (t instanceof InnerClassTag) {
+    			    	if (ica == null) {
+    			    		ica = new InnerClassAttribute(new ArrayList<Tag>());
+    			    		h.addTag(ica);
+    			    	}
     					ica.add((InnerClassTag)t);
     				} else {
     					h.addTag(t);

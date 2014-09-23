@@ -60,12 +60,7 @@ public class FastColorer
         
         // Map each local variable to its original name
         {
-            Iterator localIt = intGraph.getLocals().iterator();
-            
-            while(localIt.hasNext())
-            {
-                Local local = (Local) localIt.next();
-                
+        	for (Local local : intGraph.getLocals()) {
                 int signIndex;
                 
                 signIndex = local.getName().indexOf("#");
@@ -81,18 +76,13 @@ public class FastColorer
             }
         }
         
-        Map<StringGroupPair, List> originalNameAndGroupToColors = new HashMap<StringGroupPair, List>();
+        Map<StringGroupPair, List<Integer>> originalNameAndGroupToColors = new HashMap<StringGroupPair, List<Integer>>();
             // maps an original name to the colors being used for it
                     
         // Assign a color for each local.
         {
             int[] freeColors = new int[10];
-            Iterator localIt = intGraph.getLocals().iterator();
-            
-            while(localIt.hasNext())
-            {
-                Local local = (Local) localIt.next();
-                
+            for (Local local : intGraph.getLocals()) {
                 if(localToColor.containsKey(local))
                 {
                     // Already assigned, probably a parameter
@@ -196,12 +186,7 @@ public class FastColorer
         // Assign a color for each local.
         {
             int[] freeColors = new int[10];
-            Iterator localIt = intGraph.getLocals().iterator();
-            
-            while(localIt.hasNext())
-            {
-                Local local = (Local) localIt.next();
-                
+            for (Local local : intGraph.getLocals()) {
                 if(localToColor.containsKey(local))
                 {
                     // Already assigned, probably a parameter
@@ -265,16 +250,12 @@ public class FastColorer
     }
 
     /** Implementation of a unit interference graph. */
-    public static class UnitInterferenceGraph
+    private static class UnitInterferenceGraph
     {
-        Map<Local, ArraySet> localToLocals;// Maps a local to its interfering locals.
-        List locals;
-        
-        private UnitInterferenceGraph()
-        {
-        }
-    
-        public List getLocals()
+        Map<Local, ArraySet<Local>> localToLocals;// Maps a local to its interfering locals.
+        List<Local> locals;
+            
+        public List<Local> getLocals()
         {
             return locals;
         }
@@ -282,38 +263,28 @@ public class FastColorer
         public UnitInterferenceGraph(Body body, Map<Local, Object> localToGroup, 
                                      LiveLocals liveLocals)
         {
-            locals = new ArrayList();
+            locals = new ArrayList<Local>();
             locals.addAll(body.getLocals());
             
             // Initialize localToLocals
             {
-                localToLocals = new HashMap<Local, ArraySet>(body.getLocalCount() * 2 + 1, 
+                localToLocals = new HashMap<Local, ArraySet<Local>>(body.getLocalCount() * 2 + 1, 
                                             0.7f);
-    
-                Iterator localIt = body.getLocals().iterator();
-    
-                while(localIt.hasNext())
-                {
-                    Local local = (Local) localIt.next();
-    
-                    localToLocals.put(local, new ArraySet());
+
+                for (Local local : body.getLocals()) {
+                    localToLocals.put(local, new ArraySet<Local>());
                 }
             }
     
             // Go through code, noting interferences
             {
-                Iterator codeIt = body.getUnits().iterator();
-    
-                while(codeIt.hasNext())
-                    {
-                        Unit unit = (Unit) codeIt.next();
-    
-                        List liveLocalsAtUnit = 
+                for (Unit unit : body.getUnits()) {
+                        List<Local> liveLocalsAtUnit = 
                             liveLocals.getLiveLocalsAfter(unit);
                     
                         // Note interferences if this stmt is a definition
                         {
-                            List defBoxes = unit.getDefBoxes();
+                            List<ValueBox> defBoxes = unit.getDefBoxes();
                 
                             if(!defBoxes.isEmpty()) {
                 
@@ -325,12 +296,7 @@ public class FastColorer
                                    instanceof Local) 
                                 {
                                     Local defLocal = (Local) ((ValueBox)defBoxes.get(0)).getValue();
-                                    Iterator localIt = liveLocalsAtUnit.iterator();
-                                
-                                    while(localIt.hasNext())
-                                    {
-                                        Local otherLocal = (Local) localIt.next();
-                
+                                    for (Local otherLocal : liveLocalsAtUnit) {
                                         if(localToGroup.get(otherLocal)
                                               .equals(localToGroup.get(defLocal)))
                                             setInterference(defLocal, otherLocal);
@@ -342,21 +308,11 @@ public class FastColorer
                     }
             }
         }
-    
-        public boolean localsInterfere(Local l1, Local l2)
-        {
-            return localToLocals.get(l1).contains(l2);
-        }
-    
+        
         public void setInterference(Local l1, Local l2)
         {
             localToLocals.get(l1).add(l2);
             localToLocals.get(l2).add(l1);
-        }
-    
-        public boolean isEmpty()
-        {
-            return localToLocals.isEmpty();
         }
         
         Local[] getInterferencesOf(Local l)

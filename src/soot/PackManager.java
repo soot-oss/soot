@@ -420,9 +420,12 @@ public class PackManager {
                 source.resolve(clazz);
                 
             	// Create tags from all values we only have in code assingments now
-                for (SootClass sc : Scene.v().getApplicationClasses())
+                for (SootClass sc : Scene.v().getApplicationClasses()) {
+                    if( Options.v().validate() )
+                    	sc.validate();
                 	if (!sc.isPhantom)
                 		ConstantInitializerToTagTransformer.v().transformClass(sc, true);
+                }
                 
 				runBodyPacks(clazz);
 				//generate output
@@ -455,9 +458,12 @@ public class PackManager {
         retrieveAllBodies();
         
     	// Create tags from all values we only have in code assignments now
-        for (SootClass sc : Scene.v().getApplicationClasses())
+        for (SootClass sc : Scene.v().getApplicationClasses()) {
+            if( Options.v().validate() )
+            	sc.validate();
         	if (!sc.isPhantom)
         		ConstantInitializerToTagTransformer.v().transformClass(sc, true);
+        }
         
         // if running coffi cfg metrics, print out results and exit
         if (soot.jbco.Main.metrics) {
