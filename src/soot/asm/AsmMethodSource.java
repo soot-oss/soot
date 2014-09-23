@@ -1145,14 +1145,12 @@ final class AsmMethodSource implements MethodSource {
 			SootMethodRef ref =
 					Scene.v().makeMethodRef(cls, insn.name, sigTypes, returnType, !instance);
 			int nrArgs = sigTypes.size();
-			Operand[] args = null;
+			final Operand[] args;
 			List<Value> argList = Collections.emptyList();
 			if (!instance) {
 				args = nrArgs == 0 ? null : new Operand[nrArgs];
-				if (nrArgs != 0) {
-					args = new Operand[nrArgs];
+				if (args != null)
 					argList = new ArrayList<Value>(nrArgs);
-				}
 			} else {
 				args = new Operand[nrArgs + 1];
 				if (nrArgs != 0)
@@ -1242,23 +1240,38 @@ final class AsmMethodSource implements MethodSource {
 			}
 			
 			// create ref to actual method
-	
 			SootClass bclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
+			
 			// Generate parameters & returnType & parameterTypes
 			Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
 			List<Type> parameterTypes = new ArrayList<Type>(types.length);
 			List<Value> methodArgs = new ArrayList<Value>(types.length);
+
+			Operand[] args = new Operand[types.length - 1];
+			ValueBox[] boxes = new ValueBox[args.length];
+			
 			for (int k = 0; k < types.length - 1; k++) {
 				parameterTypes.add(types[k]);
-				methodArgs.add(popImmediate(types[k]).stackOrValue());
+				args[k] = popImmediate(types[k]);
+				methodArgs.add(args[k].stackOrValue());				
 			}
 			returnType = types[types.length - 1];
+						
 			// we always model invokeDynamic method refs as static method references
 			// of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
 			SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);		
 			
 			DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, methodArgs);
+			
+			for (int i = 0; i < args.length - 1; i++) {
+				boxes[i] = indy.getArgBox(i);
+				args[i].addBox(boxes[i]);
+			}
+			
 			opr = new Operand(insn,indy);
+			frame.boxes(boxes);
+			frame.in(args);
+			frame.out(opr);
 		} else {
 			opr = out[0];
 			InvokeExpr expr = (InvokeExpr) opr.value;
@@ -1279,7 +1292,7 @@ final class AsmMethodSource implements MethodSource {
 				nrArgs = types.size();
 			}
 			returnType = expr.getMethodRef().returnType();
-		}		
+		}
 		if (AsmUtil.isDWord(returnType))
 			pushDual(opr);
 		else if (!(returnType instanceof VoidType))
