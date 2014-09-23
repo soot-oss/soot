@@ -38,6 +38,8 @@ public interface DynamicInvokeExpr extends InvokeExpr
 {
 	public SootMethodRef getBootstrapMethodRef();
 	public List<Value> getBootstrapArgs();
+    public Value getBootstrapArg(int index);
+    public int getBootstrapArgCount();
 }
 
 

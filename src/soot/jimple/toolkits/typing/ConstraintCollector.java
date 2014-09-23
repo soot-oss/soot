@@ -25,13 +25,88 @@
 
 package soot.jimple.toolkits.typing;
 
-import soot.*;
-import soot.jimple.*;
-import java.util.*;
+import java.util.Iterator;
+import java.util.List;
+
+import soot.ArrayType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.Local;
+import soot.LongType;
+import soot.NullType;
+import soot.RefType;
+import soot.SootMethodRef;
+import soot.TrapManager;
+import soot.Type;
+import soot.Value;
+import soot.jimple.AbstractStmtSwitch;
+import soot.jimple.AddExpr;
+import soot.jimple.AndExpr;
+import soot.jimple.ArrayRef;
+import soot.jimple.AssignStmt;
+import soot.jimple.BinopExpr;
+import soot.jimple.BreakpointStmt;
+import soot.jimple.CastExpr;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.ClassConstant;
+import soot.jimple.CmpExpr;
+import soot.jimple.CmpgExpr;
+import soot.jimple.CmplExpr;
+import soot.jimple.ConditionExpr;
+import soot.jimple.DivExpr;
+import soot.jimple.DoubleConstant;
+import soot.jimple.DynamicInvokeExpr;
+import soot.jimple.EnterMonitorStmt;
+import soot.jimple.EqExpr;
+import soot.jimple.ExitMonitorStmt;
+import soot.jimple.FloatConstant;
+import soot.jimple.GeExpr;
+import soot.jimple.GotoStmt;
+import soot.jimple.GtExpr;
+import soot.jimple.IdentityStmt;
+import soot.jimple.IfStmt;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceOfExpr;
+import soot.jimple.IntConstant;
+import soot.jimple.InterfaceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.JimpleBody;
+import soot.jimple.LeExpr;
+import soot.jimple.LengthExpr;
+import soot.jimple.LongConstant;
+import soot.jimple.LookupSwitchStmt;
+import soot.jimple.LtExpr;
+import soot.jimple.MulExpr;
+import soot.jimple.NeExpr;
+import soot.jimple.NegExpr;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewExpr;
+import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.NopStmt;
+import soot.jimple.NullConstant;
+import soot.jimple.OrExpr;
+import soot.jimple.RemExpr;
+import soot.jimple.ReturnStmt;
+import soot.jimple.ReturnVoidStmt;
+import soot.jimple.ShlExpr;
+import soot.jimple.ShrExpr;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.StaticInvokeExpr;
+import soot.jimple.Stmt;
+import soot.jimple.StringConstant;
+import soot.jimple.SubExpr;
+import soot.jimple.TableSwitchStmt;
+import soot.jimple.ThrowStmt;
+import soot.jimple.UshrExpr;
+import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.XorExpr;
 
 class ConstraintCollector extends AbstractStmtSwitch {
 	private TypeResolver resolver;
-	private boolean uses; // if true, include use contraints
+	private boolean uses; // if true, include use constraints
 
 	private JimpleBody stmtBody;
 
@@ -49,96 +124,53 @@ class ConstraintCollector extends AbstractStmtSwitch {
 	private void handleInvokeExpr(InvokeExpr ie) {
 		if (!uses)
 			return;
-
+		
+		// Handle the parameters
+		SootMethodRef method = ie.getMethodRef();
+		for (int i = 0; i < ie.getArgCount(); i++) {
+			if (ie.getArg(i) instanceof Local) {
+				Local local = (Local) ie.getArg(i);
+				TypeVariable localType = resolver.typeVariable(local);
+				localType.addParent(resolver.typeVariable(method.parameterType(i)));
+			}
+		}
+		
 		if (ie instanceof InterfaceInvokeExpr) {
 			InterfaceInvokeExpr invoke = (InterfaceInvokeExpr) ie;
-
-			SootMethodRef method = invoke.getMethodRef();
 			Value base = invoke.getBase();
-
 			if (base instanceof Local) {
 				Local local = (Local) base;
-
 				TypeVariable localType = resolver.typeVariable(local);
-
 				localType.addParent(resolver.typeVariable(method.declaringClass()));
-			}
-
-			int count = invoke.getArgCount();
-
-			for (int i = 0; i < count; i++) {
-				if (invoke.getArg(i) instanceof Local) {
-					Local local = (Local) invoke.getArg(i);
-
-					TypeVariable localType = resolver.typeVariable(local);
-
-					localType.addParent(resolver.typeVariable(method.parameterType(i)));
-				}
 			}
 		} else if (ie instanceof SpecialInvokeExpr) {
 			SpecialInvokeExpr invoke = (SpecialInvokeExpr) ie;
-
-			SootMethodRef method = invoke.getMethodRef();
 			Value base = invoke.getBase();
 
 			if (base instanceof Local) {
 				Local local = (Local) base;
-
 				TypeVariable localType = resolver.typeVariable(local);
-
 				localType.addParent(resolver.typeVariable(method.declaringClass()));
-			}
-
-			int count = invoke.getArgCount();
-
-			for (int i = 0; i < count; i++) {
-				if (invoke.getArg(i) instanceof Local) {
-					Local local = (Local) invoke.getArg(i);
-
-					TypeVariable localType = resolver.typeVariable(local);
-
-					localType.addParent(resolver.typeVariable(method.parameterType(i)));
-				}
 			}
 		} else if (ie instanceof VirtualInvokeExpr) {
 			VirtualInvokeExpr invoke = (VirtualInvokeExpr) ie;
-
-			SootMethodRef method = invoke.getMethodRef();
 			Value base = invoke.getBase();
 
 			if (base instanceof Local) {
 				Local local = (Local) base;
-
 				TypeVariable localType = resolver.typeVariable(local);
-
 				localType.addParent(resolver.typeVariable(method.declaringClass()));
 			}
-
-			int count = invoke.getArgCount();
-
-			for (int i = 0; i < count; i++) {
-				if (invoke.getArg(i) instanceof Local) {
-					Local local = (Local) invoke.getArg(i);
-
-					TypeVariable localType = resolver.typeVariable(local);
-
-					localType.addParent(resolver.typeVariable(method.parameterType(i)));
-				}
-			}
 		} else if (ie instanceof StaticInvokeExpr) {
-			StaticInvokeExpr invoke = (StaticInvokeExpr) ie;
-
-			SootMethodRef method = invoke.getMethodRef();
-
-			int count = invoke.getArgCount();
-
-			for (int i = 0; i < count; i++) {
+			// no base to handle
+		} else if (ie instanceof DynamicInvokeExpr) {
+			DynamicInvokeExpr invoke = (DynamicInvokeExpr) ie;
+			SootMethodRef bootstrapMethod = invoke.getBootstrapMethodRef();
+			for (int i = 0; i < invoke.getBootstrapArgCount(); i++) {
 				if (invoke.getArg(i) instanceof Local) {
-					Local local = (Local) invoke.getArg(i);
-
+					Local local = (Local) invoke.getBootstrapArg(i);
 					TypeVariable localType = resolver.typeVariable(local);
-
-					localType.addParent(resolver.typeVariable(method.parameterType(i)));
+					localType.addParent(resolver.typeVariable(bootstrapMethod.parameterType(i)));
 				}
 			}
 		} else {

@@ -47,6 +47,7 @@ import soot.jimple.CmplExpr;
 import soot.jimple.ConditionExpr;
 import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
+import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.EqExpr;
 import soot.jimple.ExitMonitorStmt;
@@ -110,15 +111,28 @@ class ConstraintCollector extends AbstractStmtSwitch {
 		if (!uses)
 			return;
 
+		// Handle the parameters
 		SootMethodRef method = ie.getMethodRef();
-		int count = ie.getArgCount();
-	
-		for (int i = 0; i < count; i++) {
+		for (int i = 0; i < ie.getArgCount(); i++) {
 			if (ie.getArg(i) instanceof Local) {
 				Local local = (Local) ie.getArg(i);
 				if (local.getType() instanceof IntegerType) {
 					TypeVariable localType = resolver.typeVariable(local);
 					localType.addParent(resolver.typeVariable(method.parameterType(i)));
+				}
+			}
+		}
+		
+		if (ie instanceof DynamicInvokeExpr) {
+			DynamicInvokeExpr die = (DynamicInvokeExpr) ie;
+			SootMethodRef bootstrapMethod = die.getBootstrapMethodRef();
+			for (int i = 0; i < die.getBootstrapArgCount(); i++) {
+				if (die.getBootstrapArg(i) instanceof Local) {
+					Local local = (Local) die.getBootstrapArg(i);
+					if (local.getType() instanceof IntegerType) {
+						TypeVariable localType = resolver.typeVariable(local);
+						localType.addParent(resolver.typeVariable(bootstrapMethod.parameterType(i)));
+					}
 				}
 			}
 		}
