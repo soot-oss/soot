@@ -59,7 +59,6 @@ import soot.jimple.IfStmt;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.IntConstant;
-import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.JimpleBody;
@@ -82,16 +81,13 @@ import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.ShlExpr;
 import soot.jimple.ShrExpr;
-import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticFieldRef;
-import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.SubExpr;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
-import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 
 class ConstraintCollector extends AbstractStmtSwitch {
@@ -114,72 +110,17 @@ class ConstraintCollector extends AbstractStmtSwitch {
 		if (!uses)
 			return;
 
-		if (ie instanceof InterfaceInvokeExpr) {
-			InterfaceInvokeExpr invoke = (InterfaceInvokeExpr) ie;
-			SootMethodRef method = invoke.getMethodRef();
-			int count = invoke.getArgCount();
-
-			for (int i = 0; i < count; i++) {
-				if (invoke.getArg(i) instanceof Local) {
-					Local local = (Local) invoke.getArg(i);
-
-					if (local.getType() instanceof IntegerType) {
-						TypeVariable localType = resolver.typeVariable(local);
-
-						localType.addParent(resolver.typeVariable(method.parameterType(i)));
-					}
+		SootMethodRef method = ie.getMethodRef();
+		int count = ie.getArgCount();
+	
+		for (int i = 0; i < count; i++) {
+			if (ie.getArg(i) instanceof Local) {
+				Local local = (Local) ie.getArg(i);
+				if (local.getType() instanceof IntegerType) {
+					TypeVariable localType = resolver.typeVariable(local);
+					localType.addParent(resolver.typeVariable(method.parameterType(i)));
 				}
 			}
-		} else if (ie instanceof SpecialInvokeExpr) {
-			SpecialInvokeExpr invoke = (SpecialInvokeExpr) ie;
-			SootMethodRef method = invoke.getMethodRef();
-			int count = invoke.getArgCount();
-
-			for (int i = 0; i < count; i++) {
-				if (invoke.getArg(i) instanceof Local) {
-					Local local = (Local) invoke.getArg(i);
-
-					if (local.getType() instanceof IntegerType) {
-						TypeVariable localType = resolver.typeVariable(local);
-
-						localType.addParent(resolver.typeVariable(method.parameterType(i)));
-					}
-				}
-			}
-		} else if (ie instanceof VirtualInvokeExpr) {
-			VirtualInvokeExpr invoke = (VirtualInvokeExpr) ie;
-			SootMethodRef method = invoke.getMethodRef();
-			int count = invoke.getArgCount();
-
-			for (int i = 0; i < count; i++) {
-				if (invoke.getArg(i) instanceof Local) {
-					Local local = (Local) invoke.getArg(i);
-
-					if (local.getType() instanceof IntegerType) {
-						TypeVariable localType = resolver.typeVariable(local);
-
-						localType.addParent(resolver.typeVariable(method.parameterType(i)));
-					}
-				}
-			}
-		} else if (ie instanceof StaticInvokeExpr) {
-			StaticInvokeExpr invoke = (StaticInvokeExpr) ie;
-			SootMethodRef method = invoke.getMethodRef();
-			int count = invoke.getArgCount();
-
-			for (int i = 0; i < count; i++) {
-				if (invoke.getArg(i) instanceof Local) {
-					Local local = (Local) invoke.getArg(i);
-
-					if (local.getType() instanceof IntegerType) {
-						TypeVariable localType = resolver.typeVariable(local);
-
-						localType.addParent(resolver.typeVariable(method.parameterType(i)));
-					}
-				}
-			}
-		} else {
-			throw new RuntimeException("Unhandled invoke expression type: " + ie.getClass());
 		}
 	}
 
