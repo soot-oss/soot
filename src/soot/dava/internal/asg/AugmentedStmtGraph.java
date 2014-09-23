@@ -30,19 +30,18 @@ import soot.toolkits.graph.*;
 public class AugmentedStmtGraph implements DirectedGraph
 {
     private HashMap binding, original2clone;
-    private IterableSet aug_list, stmt_list;
-    private List bheads, btails, cheads, ctails;
+    private IterableSet<AugmentedStmt> aug_list;
+    private IterableSet<Stmt> stmt_list;
+    private List<AugmentedStmt> bheads, btails, cheads, ctails;
 
 
     public AugmentedStmtGraph( AugmentedStmtGraph other)
     {
 	this();
 
-	HashMap old2new = new HashMap();
+	HashMap<AugmentedStmt, AugmentedStmt> old2new = new HashMap<AugmentedStmt, AugmentedStmt>();
 
-	Iterator it = other.aug_list.iterator();
-	while (it.hasNext()) {
-	    AugmentedStmt oas = (AugmentedStmt) it.next();
+	for (AugmentedStmt oas : other.aug_list) {
 	    Stmt s = oas.get_Stmt();
 
 	    AugmentedStmt nas = new AugmentedStmt( s);
@@ -52,34 +51,27 @@ public class AugmentedStmtGraph implements DirectedGraph
 
 	    old2new.put( oas, nas);
 	}
-
 	
-	it = other.aug_list.iterator();
-	while (it.hasNext()) {
-	    AugmentedStmt oas = (AugmentedStmt) it.next();
+	for (AugmentedStmt oas : other.aug_list) {
 	    AugmentedStmt nas = (AugmentedStmt) old2new.get( oas);
 
-	    Iterator pit = oas.bpreds.iterator();
-	    while (pit.hasNext())
-		nas.bpreds.add( old2new.get( pit.next()));
+	    for (AugmentedStmt aug : oas.bpreds)
+	    	nas.bpreds.add( old2new.get( aug));
 	    if (nas.bpreds.isEmpty())
-		bheads.add( nas);
+	    	bheads.add( nas);
 
-	    pit = oas.cpreds.iterator();
-	    while (pit.hasNext())
-		nas.cpreds.add( old2new.get( pit.next()));
+	    for (AugmentedStmt aug : oas.cpreds)
+	    	nas.cpreds.add( old2new.get( aug));
 	    if (nas.cpreds.isEmpty())
-		cheads.add( nas);
+	    	cheads.add( nas);
 
-	    Iterator sit = oas.bsuccs.iterator();
-	    while (sit.hasNext())
-		nas.bsuccs.add( old2new.get( sit.next()));
+	    for (AugmentedStmt aug : oas.bsuccs)
+	    	nas.bsuccs.add( old2new.get( aug));
 	    if (nas.bsuccs.isEmpty())
-		btails.add( nas);
+	    	btails.add( nas);
 
-	    sit = oas.csuccs.iterator();
-	    while (sit.hasNext())
-		nas.csuccs.add( old2new.get( sit.next()));
+	    for (AugmentedStmt aug : oas.csuccs)
+	    	nas.csuccs.add( old2new.get( aug));
 	    if (nas.csuccs.isEmpty())
 		ctails.add( nas);
 	}
@@ -94,25 +86,20 @@ public class AugmentedStmtGraph implements DirectedGraph
 	Dava.v().log( "AugmentedStmtGraph::AugmentedStmtGraph() - cug.size() = " + cug.size());
 
 	// make the augmented statements
-	Iterator it = cug.iterator();
-	while (it.hasNext()) {
-	    Stmt s = (Stmt) it.next();
+	for (Unit u : cug) {
+		Stmt s = (Stmt) u;
 	    add_StmtBinding( s, new AugmentedStmt( s));
 	}
 
 	// make the list of augmented statements in pseudo topological order!
-        it = (new PseudoTopologicalOrderer()).newList( cug, false ).iterator();
-	while (it.hasNext()) {
-	    Stmt s = (Stmt) it.next();
+	List<Stmt> cugList = (new PseudoTopologicalOrderer()).newList( cug, false );
+	for (Stmt s : cugList) {
 	    aug_list.add( get_AugStmt( s));
 	    stmt_list.add( s);
 	}
 
 	// now that we've got all the augmented statements, mirror the statement graph
-	it = aug_list.iterator();
-	while (it.hasNext()) {
-	    AugmentedStmt as = (AugmentedStmt) it.next();
-	    
+	for (AugmentedStmt as : aug_list) {
 	    mirror_PredsSuccs( as, bug);
 	    mirror_PredsSuccs( as, cug);
 	}
