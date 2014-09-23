@@ -79,7 +79,7 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
         return new  GDynamicInvokeExpr(bsmRef, clonedBsmArgs, methodRef, clonedArgs);
     }
 	
-	private Value getBootstrapArg(int i) {
+	public Value getBootstrapArg(int i) {
 		return bsmArgBoxes[i].getValue();
 	}
 
