@@ -55,6 +55,7 @@ import soot.jimple.CmplExpr;
 import soot.jimple.ConditionExpr;
 import soot.jimple.DivExpr;
 import soot.jimple.DoubleConstant;
+import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.EqExpr;
 import soot.jimple.ExitMonitorStmt;
@@ -67,7 +68,6 @@ import soot.jimple.IfStmt;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.IntConstant;
-import soot.jimple.InterfaceInvokeExpr;
 import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -91,16 +91,13 @@ import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.ShlExpr;
 import soot.jimple.ShrExpr;
-import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticFieldRef;
-import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.SubExpr;
 import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
-import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 import soot.jimple.toolkits.typing.Util;
 
@@ -140,125 +137,44 @@ class ConstraintChecker extends AbstractStmtSwitch {
 	}
 
 	private void handleInvokeExpr(InvokeExpr ie, Stmt invokestmt) {
-		if (ie instanceof InterfaceInvokeExpr) {
-			InterfaceInvokeExpr invoke = (InterfaceInvokeExpr) ie;
-			SootMethodRef method = invoke.getMethodRef();
-			int count = invoke.getArgCount();
-
-			for (int i = 0; i < count; i++) {
-				if (invoke.getArg(i) instanceof Local) {
-					Local local = (Local) invoke.getArg(i);
-
+		// Handle the parameters
+		SootMethodRef method = ie.getMethodRef();
+		for (int i = 0; i < ie.getArgCount(); i++) {
+			if (ie.getArg(i) instanceof Local) {
+				Local local = (Local) ie.getArg(i);
+				if (local.getType() instanceof IntegerType) {
+					if (!ClassHierarchy.v().typeNode(local.getType())
+							.hasAncestor_1(ClassHierarchy.v().typeNode(method.parameterType(i)))) {
+						if (fix) {
+							ie.setArg(i, insertCast(local,
+									method.parameterType(i), invokestmt));
+						} else {
+							error("Type Error");
+						}
+					}
+				}
+			}
+		}
+		
+		if (ie instanceof DynamicInvokeExpr) {
+			DynamicInvokeExpr die = (DynamicInvokeExpr) ie;
+			SootMethodRef bootstrapMethod = die.getBootstrapMethodRef();
+			for (int i = 0; i < die.getBootstrapArgCount(); i++) {
+				if (die.getBootstrapArg(i) instanceof Local) {
+					Local local = (Local) die.getBootstrapArg(i);
 					if (local.getType() instanceof IntegerType) {
-						if (!ClassHierarchy
-								.v()
-								.typeNode(local.getType())
-								.hasAncestor_1(
-										ClassHierarchy.v().typeNode(
-												method.parameterType(i)))) {
+						if (!ClassHierarchy.v().typeNode(local.getType())
+								.hasAncestor_1(ClassHierarchy.v().typeNode(bootstrapMethod.parameterType(i)))) {
 							if (fix) {
-								invoke.setArg(
-										i,
-										insertCast(local,
-												method.parameterType(i),
-												invokestmt));
+								die.setArg(i, insertCast(local,
+										bootstrapMethod.parameterType(i), invokestmt));
 							} else {
-								error("Type Error(1)");
+								error("Type Error");
 							}
 						}
 					}
 				}
 			}
-		} else if (ie instanceof SpecialInvokeExpr) {
-			SpecialInvokeExpr invoke = (SpecialInvokeExpr) ie;
-			SootMethodRef method = invoke.getMethodRef();
-			int count = invoke.getArgCount();
-
-			for (int i = 0; i < count; i++) {
-				if (invoke.getArg(i) instanceof Local) {
-					Local local = (Local) invoke.getArg(i);
-
-					if (local.getType() instanceof IntegerType) {
-						if (!ClassHierarchy
-								.v()
-								.typeNode(local.getType())
-								.hasAncestor_1(
-										ClassHierarchy.v().typeNode(
-												method.parameterType(i)))) {
-							if (fix) {
-								invoke.setArg(
-										i,
-										insertCast(local,
-												method.parameterType(i),
-												invokestmt));
-							} else {
-								error("Type Error(2)");
-							}
-						}
-					}
-				}
-			}
-		} else if (ie instanceof VirtualInvokeExpr) {
-			VirtualInvokeExpr invoke = (VirtualInvokeExpr) ie;
-			SootMethodRef method = invoke.getMethodRef();
-			int count = invoke.getArgCount();
-
-			for (int i = 0; i < count; i++) {
-				if (invoke.getArg(i) instanceof Local) {
-					Local local = (Local) invoke.getArg(i);
-
-					if (local.getType() instanceof IntegerType) {
-						if (!ClassHierarchy
-								.v()
-								.typeNode(local.getType())
-								.hasAncestor_1(
-										ClassHierarchy.v().typeNode(
-												method.parameterType(i)))) {
-							if (fix) {
-								invoke.setArg(
-										i,
-										insertCast(local,
-												method.parameterType(i),
-												invokestmt));
-							} else {
-								error("Type Error(3)");
-							}
-						}
-					}
-				}
-			}
-		} else if (ie instanceof StaticInvokeExpr) {
-			StaticInvokeExpr invoke = (StaticInvokeExpr) ie;
-			SootMethodRef method = invoke.getMethodRef();
-			int count = invoke.getArgCount();
-
-			for (int i = 0; i < count; i++) {
-				if (invoke.getArg(i) instanceof Local) {
-					Local local = (Local) invoke.getArg(i);
-
-					if (local.getType() instanceof IntegerType) {
-						if (!ClassHierarchy
-								.v()
-								.typeNode(local.getType())
-								.hasAncestor_1(
-										ClassHierarchy.v().typeNode(
-												method.parameterType(i)))) {
-							if (fix) {
-								invoke.setArg(
-										i,
-										insertCast(local,
-												method.parameterType(i),
-												invokestmt));
-							} else {
-								error("Type Error(4)");
-							}
-						}
-					}
-				}
-			}
-		} else {
-			throw new RuntimeException("Unhandled invoke expression type: "
-					+ ie.getClass());
 		}
 	}
 

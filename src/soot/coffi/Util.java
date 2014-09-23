@@ -393,10 +393,6 @@ public class Util
                 if (e.name_index != 0)
                     name = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[e.name_index])).convert();
                 bclass.addTag(new InnerClassTag(inner, outer, name, e.access_flags));
-                if (inner != null && outer != null) {
-                	SootClass innerClass = SootResolver.v().makeClassRef(inner.replaceAll("/", "."));
-                	innerClass.setOuterClass(SootResolver.v().makeClassRef(outer.replaceAll("/", ".")));
-                }
             }
         }
         // set synthetic tags

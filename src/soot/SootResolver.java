@@ -226,9 +226,7 @@ public class SootResolver
                 classToTypesHierarchy.put( sc, Collections.<Type>emptyList() );
             }
         } else {
-    
             Dependencies dependencies = is.resolve(sc);
-            
             if (!dependencies.typesToSignature.isEmpty())
             	classToTypesSignature.put( sc, dependencies.typesToSignature);
             if (!dependencies.typesToHierarchy.isEmpty())
@@ -239,9 +237,9 @@ public class SootResolver
 
     public void reResolveHierarchy(SootClass sc) {
         // Bring superclasses to hierarchy
-        if(sc.hasSuperclass()) 
+        if(sc.hasSuperclass())
             addToResolveWorklist(sc.getSuperclass(), SootClass.HIERARCHY);
-        if(sc.hasOuterClass()) 
+        if(sc.hasOuterClass())
             addToResolveWorklist(sc.getOuterClass(), SootClass.HIERARCHY);
         for( SootClass iface : sc.getInterfaces()) {
             addToResolveWorklist(iface, SootClass.HIERARCHY);
