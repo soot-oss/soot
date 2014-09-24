@@ -77,7 +77,13 @@
             in="${basedir}/src/soot/options/soot_options.xml"
             out="${basedir}/eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/PhaseOptionsDialog.java"
         />
-    </target>
+        <xslt
+            style="${basedir}/src/soot/options/soot_options.xsl"
+            in="${basedir}/src/soot/options/soot_options.xml"
+            out="${basedir}/doc/soot_options.htm"
+        />
+        <copy file="${basedir}/src/soot/options/soot_options.css" todir="${basedir}/doc" />
+	</target>
 
     <target name="copypeephole" depends="sablecc,settings">
         <copy file="src/soot/baf/toolkits/base/peephole.dat" tofile="classes/soot/baf/toolkits/base/peephole.dat"/>
