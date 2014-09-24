@@ -40,13 +40,13 @@ public final class HybridPointsToSet extends PointsToSetInternal {
         return empty;
     }
 
-    private final boolean superAddAll( PointsToSetInternal other, PointsToSetInternal exclude ) {
+    private boolean superAddAll( PointsToSetInternal other, PointsToSetInternal exclude ) {
         boolean ret = super.addAll( other, exclude );
         if( ret ) empty = false;
         return ret;
     }
 
-    private final boolean nativeAddAll( HybridPointsToSet other, HybridPointsToSet exclude ) {
+    private boolean nativeAddAll( HybridPointsToSet other, HybridPointsToSet exclude ) {
         boolean ret = false;
         TypeManager typeManager = pag.getTypeManager();
         if( other.bits != null ) {
@@ -54,7 +54,6 @@ public final class HybridPointsToSet extends PointsToSetInternal {
             if( exclude != null ) {
                 exclude.convertToBits();
             }
-            
             BitVector mask = null;
             if( !typeManager.castNeverFails( other.getType(), this.getType() ) ) {
                 mask = typeManager.get( this.getType() );
@@ -73,8 +72,8 @@ public final class HybridPointsToSet extends PointsToSetInternal {
         if( ret ) empty = false;
         return ret;
     }
- 
-    /** Adds contents of other into this set, returns true if this set 
+
+    /** Adds contents of other into this set, returns true if this set
      * changed. */
     public final boolean addAll( final PointsToSetInternal other,
             final PointsToSetInternal exclude ) {
@@ -88,14 +87,14 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     /** Calls v's visit method on all nodes in this set. */
     public final boolean forall( P2SetVisitor v ) {
     	if( bits == null ) {
-    		for (int i = 0; i < nodes.length; i++) {
-    			if( nodes[i] == null )
-    				return v.getReturnValue();
-    			v.visit( nodes[i] );
-    		}
+            for (Node node : nodes) {
+                if (node == null)
+                    return v.getReturnValue();
+                v.visit(node);
+            }
         } else {
             for( BitSetIterator it = bits.iterator(); it.hasNext(); ) {
-                v.visit( (Node) pag.getAllocNodeNumberer().get( it.next() ) );
+                v.visit(pag.getAllocNodeNumberer().get( it.next() ) );
             }
         }
         return v.getReturnValue();
@@ -110,15 +109,19 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     /** Returns true iff the set contains n. */
     public final boolean contains( Node n ) {
         if( bits == null ) {
-    		for (int i = 0; i < nodes.length; i++)
-    			if( nodes[i] == n )
-    				return true;
+            for (Node node : nodes) {
+                if (node == n)
+                    return true;
+                if (node == null) {
+                    break;
+                }
+            }
             return false;
         } else {
             return bits.get( n.getNumber() );
         }
     }
-    public final static P2SetFactory getFactory() {
+    public static P2SetFactory getFactory() {
         return new P2SetFactory() {
             public final PointsToSetInternal newSet( Type type, PAG pag ) {
                 return new HybridPointsToSet( type, pag );
@@ -131,16 +134,15 @@ public final class HybridPointsToSet extends PointsToSetInternal {
 
     protected final boolean fastAdd( Node n ) {
         if( bits == null ) {
-    		for (int i = 0; i < nodes.length; i++)
-    			if (nodes[i] == null) {
-    				if( nodes[i] == null ) {
-    					empty = false;
-    					nodes[i] = n;
-    					return true;
-    				}
-    				if( nodes[i] == n) 
-    					return false;
-    			}
+    		for (int i = 0; i < nodes.length; i++) {
+                if (nodes[i] == null) {
+                    empty = false;
+                    nodes[i] = n;
+                    return true;
+                } else if (nodes[i] == n) {
+                    return false;
+                }
+            }
             convertToBits();
         }
         boolean ret = bits.set( n.getNumber() );
@@ -152,9 +154,11 @@ public final class HybridPointsToSet extends PointsToSetInternal {
         if( bits != null ) return;
 //		++numBitVectors;
         bits = new BitVector( pag.getAllocNodeNumberer().size() );
-		for (int i = 0; i < nodes.length; i++)
-			if( nodes[i] != null )
-				fastAdd( nodes[i] );
+        for (Node node : nodes) {
+            if (node != null) {
+                fastAdd(node);
+            }
+        }
     }
 
 //	public static int numBitVectors = 0;
@@ -177,7 +181,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
                     if (set1.contains(n))
                         ret.add(n);
                 }
-            });                
+            });
         } else {
             // set1 smaller, or both small
             set1.forall(new P2SetVisitor() {
@@ -186,7 +190,7 @@ public final class HybridPointsToSet extends PointsToSetInternal {
                     if (set2.contains(n))
                         ret.add(n);
                 }
-            });                                
+            });
         }
     } else {
         // both big; do bit-vector operation
@@ -197,6 +201,6 @@ public final class HybridPointsToSet extends PointsToSetInternal {
     }
     return ret;
 }
-    
+
 }
 
