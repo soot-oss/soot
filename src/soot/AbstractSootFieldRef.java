@@ -18,7 +18,7 @@
  */
 
 package soot;
-import java.util.*;
+import java.util.LinkedList;
 
 import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
@@ -43,7 +43,7 @@ class AbstractSootFieldRef implements SootFieldRef {
         if( name == null ) throw new RuntimeException( "Attempt to create SootFieldRef with null name" );
         if( type == null ) throw new RuntimeException( "Attempt to create SootFieldRef with null type" );
     }
-
+    
     private final SootClass declaringClass;
     private final String name;
     private final Type type;
@@ -170,5 +170,45 @@ class AbstractSootFieldRef implements SootFieldRef {
     public String toString() {
         return getSignature();
     }
+    
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((declaringClass == null) ? 0 : declaringClass.hashCode());
+		result = prime * result + (isStatic ? 1231 : 1237);
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		AbstractSootFieldRef other = (AbstractSootFieldRef) obj;
+		if (declaringClass == null) {
+			if (other.declaringClass != null)
+				return false;
+		} else if (!declaringClass.equals(other.declaringClass))
+			return false;
+		if (isStatic != other.isStatic)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (type == null) {
+			if (other.type != null)
+				return false;
+		} else if (!type.equals(other.type))
+			return false;
+		return true;
+	}
     
 }
