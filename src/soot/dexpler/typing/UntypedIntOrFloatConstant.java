@@ -5,7 +5,11 @@ import soot.jimple.IntConstant;
 
 public class UntypedIntOrFloatConstant extends UntypedConstant {
 
-    public final int value;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 4413439694269487822L;
+	public final int value;
 
     private UntypedIntOrFloatConstant(int value)
     {

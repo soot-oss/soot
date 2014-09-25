@@ -89,7 +89,8 @@ public class CodeAttribute extends JasminAttribute
     }
 
   /** Generates Jasmin Value String */
-    public String getJasminValue(Map instToLabel)
+    @Override
+    public String getJasminValue(Map<Unit, String> instToLabel)
     {
         // some benchmarks fail because of the returned string larger than
         // the possible buffer size. 
@@ -127,7 +128,8 @@ public class CodeAttribute extends JasminAttribute
 	return unitBoxes;
     }    
 
-    public byte[] decode(String attr, Hashtable labelToPc)
+    @Override
+    public byte[] decode(String attr, Hashtable<String, Integer> labelToPc)
     {
 	if (Options.v().verbose())
 	    G.v().out.println("[] JasminAttribute decode...");
@@ -146,7 +148,7 @@ public class CodeAttribute extends JasminAttribute
 	while(st.hasMoreTokens()) {	    
 	    String token = st.nextToken();
 	    if(isLabel) {		
-		Integer pc = (Integer) labelToPc.get(token);
+		Integer pc = labelToPc.get(token);
 
 		if(pc == null)
 		    throw new RuntimeException("PC is null, the token is "+token);
