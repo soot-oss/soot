@@ -28,11 +28,12 @@
 package soot;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
 
 import soot.JastAddJ.BytecodeParser;
@@ -54,18 +55,18 @@ public class SootResolver
 
     /** SootClasses waiting to be resolved. */
     @SuppressWarnings("unchecked")
-	private final LinkedList<SootClass>[] worklist = new LinkedList[4];
+	private final Deque<SootClass>[] worklist = new Deque[4];
 
 	protected Program program;
 
     public SootResolver (Singletons.Global g) {
-        worklist[SootClass.HIERARCHY] = new LinkedList<SootClass>();
-        worklist[SootClass.SIGNATURES] = new LinkedList<SootClass>();
-        worklist[SootClass.BODIES] = new LinkedList<SootClass>();
+        worklist[SootClass.HIERARCHY] = new ArrayDeque<SootClass>();
+        worklist[SootClass.SIGNATURES] = new ArrayDeque<SootClass>();
+        worklist[SootClass.BODIES] = new ArrayDeque<SootClass>();
         
         
         program = new Program();
-	program.state().reset();
+        program.state().reset();
 
         program.initBytecodeReader(new BytecodeParser());
         program.initJavaParser(
@@ -142,7 +143,7 @@ public class SootResolver
     private void processResolveWorklist() {
         for( int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i-- ) {
             while( !worklist[i].isEmpty() ) {
-                SootClass sc = (SootClass) worklist[i].removeFirst();
+                SootClass sc = worklist[i].pop();
                 if( resolveEverything() ) { //Whole program mode
                     boolean onlySignatures = sc.isPhantom() || (
 	            			Options.v().no_bodies_for_excluded() &&
