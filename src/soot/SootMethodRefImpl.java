@@ -158,7 +158,7 @@ class SootMethodRefImpl implements SootMethodRef {
         //we simply create the methods on the fly; the method body will throw an appropriate
         //error just in case the code *is* actually reached at runtime
         if(Options.v().allow_phantom_refs())
-        	return createUnresolvedErrorMethod(cl);
+        	return createUnresolvedErrorMethod(declaringClass);
         
         if( trace == null ) {
         	ClassResolutionFailedException e = new ClassResolutionFailedException();
