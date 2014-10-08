@@ -40,7 +40,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import soot.JastAddJ.Modifiers;
 import soot.baf.DoubleWordType;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Stmt;
@@ -525,9 +524,8 @@ public abstract class AbstractJasminClass
     if (ica != null && ica.getSpecs().size() > 0){
         if (!Options.v().no_output_inner_classes_attribute()){
             emit(".inner_class_attr ");
-            Iterator<Tag> innersIt = ((InnerClassAttribute)sootClass.getTag("InnerClassAttribute")).getSpecs().iterator();
-            while (innersIt.hasNext()){
-                InnerClassTag ict = (InnerClassTag)innersIt.next();
+            for (InnerClassTag ict : ((InnerClassAttribute)sootClass.getTag(
+            		"InnerClassAttribute")).getSpecs()) {
                 //System.out.println("inner class tag: "+ict);
                 emit(".inner_class_spec_attr "+
                     "\""+ict.getInnerClass()+"\" "+
