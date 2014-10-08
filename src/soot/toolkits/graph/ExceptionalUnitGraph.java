@@ -811,14 +811,12 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 	 *         <code>u</code>.
 	 */
 	public Collection<ExceptionDest> getExceptionDests(Unit u) {
-		Collection<ExceptionDest> result = (Collection<ExceptionDest>) unitToExceptionDests
-				.get(u);
-		if (result == null) {
-			result = new LinkedList<ExceptionDest>();
-			result.add(new ExceptionDest(null, throwAnalysis
-					.mightThrow((Unit) u)));
-		}
-		return result;
+		Collection<ExceptionDest> result = unitToExceptionDests.get(u);
+		if (result != null)
+			return result;
+		
+		ThrowableSet ts = throwAnalysis.mightThrow(u);
+		return Collections.singleton(new ExceptionDest(null, ts));
 	}
 
 	public static class ExceptionDest implements

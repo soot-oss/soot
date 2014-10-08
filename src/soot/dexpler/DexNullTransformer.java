@@ -44,6 +44,7 @@ import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
 import soot.jimple.ConditionExpr;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.EqExpr;
 import soot.jimple.ExitMonitorStmt;
@@ -104,20 +105,12 @@ public class DexNullTransformer extends DexTransformer {
 			usedAsObject = false;
 			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs,
 					localUses, body);
-			// check if no use
-			for (Unit u : defs) {
-				for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-					Debug.printDbg("[use in u]: ", pair.getUnit());
-				}
-			}
 			// process normally
 			doBreak = false;
 			for (Unit u : defs) {
 				// put correct local in l
-				if (u instanceof AssignStmt) {
-					l = (Local) ((AssignStmt) u).getLeftOp();
-				} else if (u instanceof IdentityStmt) {
-					l = (Local) ((IdentityStmt) u).getLeftOp();
+				if (u instanceof DefinitionStmt) {
+					l = (Local) ((DefinitionStmt) u).getLeftOp();
 				} else if (u instanceof IfStmt) {
 					throw new RuntimeException(
 							"ERROR: def can not be something else than Assign or Identity statement! (def: "
