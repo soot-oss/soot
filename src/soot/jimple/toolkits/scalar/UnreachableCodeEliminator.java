@@ -45,6 +45,7 @@ import soot.Trap;
 import soot.Unit;
 import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
+import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.DirectedGraph;
 import soot.util.Chain;
@@ -52,11 +53,20 @@ import soot.util.Chain;
 
 public class UnreachableCodeEliminator extends BodyTransformer
 {
+	protected ThrowAnalysis throwAnalysis = null;
+
 	public UnreachableCodeEliminator( Singletons.Global g ) {}
 	public static UnreachableCodeEliminator v() { return G.v().soot_jimple_toolkits_scalar_UnreachableCodeEliminator(); }
 
+	public UnreachableCodeEliminator( ThrowAnalysis ta ) {
+		this.throwAnalysis = ta;
+	}
+
 	protected void internalTransform(Body body, String phaseName, Map<String,String> options) 
 	{		
+		if (this.throwAnalysis == null)
+			this.throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+
 		if (Options.v().verbose()) {
 			G.v().out.println("[" + body.getMethod().getName() + "] Eliminating unreachable code...");
 		}
@@ -66,10 +76,10 @@ public class UnreachableCodeEliminator extends BodyTransformer
 		// its handler, so that we retain Traps in the case where
 		// trapped units remain, but the default ThrowAnalysis
 		// says that none of them can throw the caught exception.
-		ExceptionalUnitGraph graph = PhaseOptions.getBoolean(options, "remove-unreachable-traps")
-			? new ExceptionalUnitGraph(body, Scene.v().getDefaultThrowAnalysis(), true)
-			: new ExceptionalUnitGraph(body, PedanticThrowAnalysis.v(), false)
-			;
+		if (this.throwAnalysis == null)
+			this.throwAnalysis = PhaseOptions.getBoolean(options, "remove-unreachable-traps")
+				? Scene.v().getDefaultThrowAnalysis() : PedanticThrowAnalysis.v();
+		ExceptionalUnitGraph graph =  new ExceptionalUnitGraph(body, throwAnalysis, false);
 
 		Chain<Unit> units = body.getUnits();
 		int numPruned = units.size();

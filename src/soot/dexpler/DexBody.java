@@ -518,13 +518,13 @@ public class DexBody  {
         Debug.printDbg("body before any transformation : \n", jBody);
         
 		// Remove dead code and the corresponding locals before assigning types
-		UnreachableCodeEliminator.v().transform(jBody);
+		getUnreachableCodeEliminator().transform(jBody);
 		DeadAssignmentEliminator.v().transform(jBody);
 		UnusedLocalEliminator.v().transform(jBody);
 
         Debug.printDbg("\nbefore splitting");
         Debug.printDbg("",(Body)jBody);
-
+        
         getLocalSplitter().transform(jBody);
 
         Debug.printDbg("\nafter splitting");
@@ -732,6 +732,21 @@ public class DexBody  {
     	if (this.localSplitter == null)
     		this.localSplitter = new LocalSplitter(DalvikThrowAnalysis.v());
     	return this.localSplitter;
+    }
+
+    private TrapTightener trapTightener = null;
+    protected TrapTightener getTrapTightener() {
+    	if (this.trapTightener == null)
+    		this.trapTightener = new TrapTightener(DalvikThrowAnalysis.v());
+    	return this.trapTightener;
+    }
+
+    private UnreachableCodeEliminator unreachableCodeEliminator = null;
+    protected UnreachableCodeEliminator getUnreachableCodeEliminator() {
+    	if (this.unreachableCodeEliminator == null)
+    		this.unreachableCodeEliminator =
+    			new UnreachableCodeEliminator(DalvikThrowAnalysis.v());
+    	return this.unreachableCodeEliminator;
     }
 
     /**
