@@ -94,22 +94,30 @@ public class DexAnnotation {
     	Set<? extends Annotation> aSet = classDef.getAnnotations();
     	if (aSet == null || aSet.isEmpty())
     		return;
-    	InnerClassAttribute ica = (InnerClassAttribute) clazz.getTag("InnerClassAttribute");
+    	
     	List<Tag> tags = handleAnnotation(aSet, classDef.getType());
-    	if (tags != null)
-    		for (Tag t : tags)
-    			if (t != null) {
-    				if (t instanceof InnerClassTag) {
-    			    	if (ica == null) {
-    			    		ica = new InnerClassAttribute();
-    			    		clazz.addTag(ica);
-    			    	}
-    					ica.add((InnerClassTag)t);
-    				} else {
-    					clazz.addTag(t);
-    				}
-    				Debug.printDbg("add class annotation: ", t, " type: ", t.getClass());
-    			}
+    	if (tags == null)
+    		return;
+    	
+       	InnerClassAttribute ica = null;
+   		for (Tag t : tags)
+   			if (t != null) {
+   				if (t instanceof InnerClassTag) {
+   			    	if (ica == null) {
+   			    		// Do we already have an InnerClassAttribute?
+   			    		ica = (InnerClassAttribute) clazz.getTag("InnerClassAttribute");
+   			    		// If not, create one
+   			    		if (ica == null) {
+	   			    		ica = new InnerClassAttribute();
+	   			    		clazz.addTag(ica);
+   			    		}
+   			    	}
+   					ica.add((InnerClassTag)t);
+   				} else {
+   					clazz.addTag(t);
+   				}
+   				Debug.printDbg("add class annotation: ", t, " type: ", t.getClass());
+   			}
     }
 
     /**

@@ -499,18 +499,30 @@ public class DexPrinter {
     	Set<String> skipList = new HashSet<String>();
     	Set<Annotation> annotations = buildCommonAnnotations(c, skipList);
     	
-    	// handle enclosing method tags
-        if (c.hasTag("EnclosingMethodTag")){
+       	// Classes can have either EnclosingMethod or EnclosingClass tags. Soot
+    	// sets the outer class for both "normal" and anonymous inner classes,
+    	// so we test for enclosing methods first. 
+        if (c.hasTag("EnclosingMethodTag")) {
         	EnclosingMethodTag eMethTag = (EnclosingMethodTag)c.getTag("EnclosingMethodTag");
         	Annotation enclosingMethodItem = buildEnclosingMethodTag(eMethTag, skipList);
         	if (enclosingMethodItem != null)
         	  annotations.add(enclosingMethodItem);
         }
-    	
-    	// handle inner classes
+        else if (c.hasOuterClass()) {
+   			if (skipList.add("Ldalvik/annotation/EnclosingClass;")) {
+		    	// EnclosingClass annotation
+		    	ImmutableAnnotationElement enclosingElement = new ImmutableAnnotationElement
+		    			("value", new ImmutableTypeEncodedValue
+		    					(SootToDexUtils.getDexClassName(c.getOuterClass().getName())));
+		    	annotations.add(new ImmutableAnnotation(AnnotationVisibility.SYSTEM,
+		    			"Ldalvik/annotation/EnclosingClass;",
+		    			Collections.singleton(enclosingElement)));
+       		}
+       	}
+        
         if (c.hasTag("InnerClassAttribute")){
         	InnerClassAttribute icTag = (InnerClassAttribute)c.getTag("InnerClassAttribute");
-        	List<Annotation> innerClassItem = buildInnerClassAttribute(icTag, skipList);
+        	List<Annotation> innerClassItem = buildInnerClassAttribute(c, icTag, skipList);
         	if (innerClassItem != null)
         	  annotations.addAll(innerClassItem);
         }
@@ -729,12 +741,39 @@ public class DexPrinter {
     			Collections.singleton(methodElement));
     }
 
-    private List<Annotation> buildInnerClassAttribute(InnerClassAttribute t, Set<String> skipList) {
-    	List<Annotation> anns = new ArrayList<Annotation>();
+    private List<Annotation> buildInnerClassAttribute(SootClass parentClass,
+    		InnerClassAttribute t, Set<String> skipList) {
+    	Set<String> memberClasses = null;
     	
+    	List<Annotation> anns = new ArrayList<Annotation>();
     	for (Tag t2 : t.getSpecs()) {
     		InnerClassTag icTag = (InnerClassTag) t2;
     		
+        	// In Dalvik, both the EnclosingMethod/EnclosingClass tag and the
+        	// InnerClass tag are written to the inner class which is different
+        	// to Java. We thus check whether this tag actually points to our
+    		// outer class.
+    		String outer;
+			if (icTag.getOuterClass() == null) { // anonymous inner classes
+				outer = icTag.getInnerClass().replaceAll("\\$[0-9]*$", "").replaceAll("/", ".");
+			} else {
+				outer = icTag.getOuterClass().replaceAll("/", ".");
+			}
+    		if (!parentClass.hasOuterClass()
+    				|| !outer.equals(parentClass.getOuterClass().getName())) {
+    			// Only classes with names are member classes
+    			if (icTag.getOuterClass() != null) {
+    				if (memberClasses == null)
+    					memberClasses = new HashSet<String>();
+    				memberClasses.add(icTag.getInnerClass());
+    			}
+    			
+    			// Only write the InnerClass tag to the inner class itself, not
+    			// the other one.
+    			continue;
+    		}
+    		
+    		// This is an actual inner class. Write the annotation
         	if (skipList.add("Ldalvik/annotation/InnerClass;")) {
 	    		// InnerClass annotation
 	        	List<AnnotationElement> elements = new ArrayList<AnnotationElement>();
@@ -748,29 +787,32 @@ public class DexPrinter {
 			    			("name", new ImmutableStringEncodedValue(icTag.getShortName()));
 			    	elements.add(nameElement);
 		    	}
-		    	else
-		    		G.v().out.println("WARNING: InnerClass attribute without name detected");
-
+		    	
 		    	anns.add(new ImmutableAnnotation(AnnotationVisibility.SYSTEM,
 		    			"Ldalvik/annotation/InnerClass;",
 		    			elements));
         	}
-	    	
-        	if (skipList.add("Ldalvik/annotation/EnclosingClass;")) {
-        		if (icTag.getOuterClass() != null && !icTag.getOuterClass().isEmpty()) {
-			    	// EnclosingClass annotation
-			    	ImmutableAnnotationElement enclosingElement = new ImmutableAnnotationElement
-			    			("value", new ImmutableTypeEncodedValue
-			    					(SootToDexUtils.getDexClassName(icTag.getOuterClass())));
-			    	anns.add(new ImmutableAnnotation(AnnotationVisibility.SYSTEM,
-			    			"Ldalvik/annotation/EnclosingClass;",
-			    			Collections.singleton(enclosingElement)));
-        		}
-        		else
-        			G.v().out.println("WARNING: Skipping EnclosingClass attribute "
-        					+ "with empty class name");
-        	}
     	}
+    	
+    	// Write the member classes
+    	if (memberClasses != null && !memberClasses.isEmpty()) {
+        	List<EncodedValue> classes = new ArrayList<EncodedValue>();
+	    	for (String memberClass : memberClasses) {
+	    		ImmutableTypeEncodedValue classValue = new ImmutableTypeEncodedValue(memberClass);
+	    		classes.add(classValue);
+	    	}
+	    	
+    		ImmutableArrayEncodedValue classesValue =
+    				new ImmutableArrayEncodedValue(classes);
+    		ImmutableAnnotationElement element =
+    				new ImmutableAnnotationElement("value", classesValue);
+	    	ImmutableAnnotation memberAnnotation =
+    				new ImmutableAnnotation(AnnotationVisibility.SYSTEM,
+    						"Ldalvik/annotation/MemberClasses;",
+    						Collections.singletonList(element));
+	    	anns.add(memberAnnotation);
+    	}
+    	
     	return anns;
     }
 
