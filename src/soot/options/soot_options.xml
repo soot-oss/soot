@@ -904,6 +904,16 @@ This option causes Soot to compress output files of intermediate representations
 with GZip. It does not apply to class files output by Soot.
 </long_desc>
 	</boolopt>
+	<boolopt>
+	    <name>Force Overwrite Output Files</name>
+	    <alias>force-overwrite</alias>
+	    <default>false</default>
+	  <short_desc>Force Overwrite Output Files</short_desc>
+	  <long_desc>
+	      If this option is set to true, the output files will be overwritten
+	      if they already exist and no further warning will be issued.
+		</long_desc>
+	</boolopt>
 	</section>
 	<section>
 		<name>Processing Options</name>

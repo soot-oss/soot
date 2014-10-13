@@ -151,7 +151,7 @@ public class DexPrinter {
 			String outputFileName = outputDir + File.separatorChar + originalApk.getName();
 		
 			File outputFile = new File(outputFileName);
-			if(outputFile.exists()) {
+			if(outputFile.exists() && !Options.v().force_overwrite()) {
 				throw new CompilationDeathException("Output file "+outputFile+" exists. Not overwriting.");
 			} 
 			outputApk = new ZipOutputStream(new FileOutputStream(outputFile));

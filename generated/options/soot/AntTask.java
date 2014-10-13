@@ -353,6 +353,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-gzip");
         }
   
+        public void setforce_overwrite(boolean arg) {
+            if(arg) addArg("-force-overwrite");
+        }
+  
         public void setplugin(Path arg) {
             if(plugin == null )
                 plugin = new Path(getProject());

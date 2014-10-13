@@ -2233,6 +2233,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getOutput_Optionsgzip_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getOutput_Optionsforce_overwrite_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getOutput_Optionsforce_overwrite_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		stringRes = getOutput_Optionsoutput_dir_widget().getText().getText();
 		
 		defStringRes = "./sootOutput";
@@ -6838,6 +6848,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Output_Optionsgzip_widget;
 	}	
 	
+	private BooleanOptionWidget Output_Optionsforce_overwrite_widget;
+	
+	private void setOutput_Optionsforce_overwrite_widget(BooleanOptionWidget widget) {
+		Output_Optionsforce_overwrite_widget = widget;
+	}
+	
+	public BooleanOptionWidget getOutput_Optionsforce_overwrite_widget() {
+		return Output_Optionsforce_overwrite_widget;
+	}	
+	
 
 	private ListOptionWidget Output_Optionsdump_body_widget;
 	
@@ -10750,6 +10770,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setOutput_Optionsgzip_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("GZipped IR output", "", "","gzip", "\nThis option causes Soot to compress output files of \nintermediate representations with GZip. It does not apply to \nclass files output by Soot. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"force-overwrite";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setOutput_Optionsforce_overwrite_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Force Overwrite Output Files", "", "","force-overwrite", "\n	 If this option is set to true, the output files will be \noverwritten 	 if they already exist and no further warning \nwill be issued. 		", defaultBool)));
 		
 		
 		
