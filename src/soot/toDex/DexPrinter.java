@@ -765,7 +765,7 @@ public class DexPrinter {
     			if (icTag.getOuterClass() != null) {
     				if (memberClasses == null)
     					memberClasses = new HashSet<String>();
-    				memberClasses.add(icTag.getInnerClass());
+    				memberClasses.add(SootToDexUtils.getDexClassName(icTag.getInnerClass()));
     			}
     			
     			// Only write the InnerClass tag to the inner class itself, not
