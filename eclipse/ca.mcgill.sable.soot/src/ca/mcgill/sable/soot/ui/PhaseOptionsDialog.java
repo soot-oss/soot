@@ -72,6 +72,8 @@ Composite Annotation_OptionsChild = Annotation_OptionsCreate(getPageContainer())
 
 Composite Miscellaneous_OptionsChild = Miscellaneous_OptionsCreate(getPageContainer());
 
+Composite RTAClassLoader_OptionsChild = RTAClassLoader_OptionsCreate(getPageContainer());
+
 Composite jbChild = jbCreate(getPageContainer());
 
 Composite jjChild = jjCreate(getPageContainer());
@@ -5346,6 +5348,36 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getMiscellaneous_Optionsno_writeout_body_releasing_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getRTAClassLoader_Optionsrtaclassload_verbose_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getRTAClassLoader_Optionsrtaclassload_verbose_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getRTAClassLoader_Optionsrtaclassload_callgraph_print_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getRTAClassLoader_Optionsrtaclassload_callgraph_print_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getRTAClassLoader_Optionsrtaclassload_context_sensitive_new_invokes_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getRTAClassLoader_Optionsrtaclassload_context_sensitive_new_invokes_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		
 		setSootMainClass(getSootMainClassWidget().getText().getText());			
 		return setSootMainProject(getSootMainProjectWidget().getText().getText());
@@ -6464,6 +6496,10 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		SootOption Miscellaneous_Options_branch = new SootOption("Miscellaneous Options", "Miscellaneous_Options");
 		root.addChild(Miscellaneous_Options_branch);
 		parent = Miscellaneous_Options_branch;		
+		
+		SootOption RTAClassLoader_Options_branch = new SootOption("RTAClassLoader Options", "RTAClassLoader_Options");
+		root.addChild(RTAClassLoader_Options_branch);
+		parent = RTAClassLoader_Options_branch;		
 		
 
 		addOtherBranches(root);
@@ -10086,6 +10122,36 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Miscellaneous_Optionsno_writeout_body_releasing_widget;
 	}	
 	
+	private BooleanOptionWidget RTAClassLoader_Optionsrtaclassload_verbose_widget;
+	
+	private void setRTAClassLoader_Optionsrtaclassload_verbose_widget(BooleanOptionWidget widget) {
+		RTAClassLoader_Optionsrtaclassload_verbose_widget = widget;
+	}
+	
+	public BooleanOptionWidget getRTAClassLoader_Optionsrtaclassload_verbose_widget() {
+		return RTAClassLoader_Optionsrtaclassload_verbose_widget;
+	}	
+	
+	private BooleanOptionWidget RTAClassLoader_Optionsrtaclassload_callgraph_print_widget;
+	
+	private void setRTAClassLoader_Optionsrtaclassload_callgraph_print_widget(BooleanOptionWidget widget) {
+		RTAClassLoader_Optionsrtaclassload_callgraph_print_widget = widget;
+	}
+	
+	public BooleanOptionWidget getRTAClassLoader_Optionsrtaclassload_callgraph_print_widget() {
+		return RTAClassLoader_Optionsrtaclassload_callgraph_print_widget;
+	}	
+	
+	private BooleanOptionWidget RTAClassLoader_Optionsrtaclassload_context_sensitive_new_invokes_widget;
+	
+	private void setRTAClassLoader_Optionsrtaclassload_context_sensitive_new_invokes_widget(BooleanOptionWidget widget) {
+		RTAClassLoader_Optionsrtaclassload_context_sensitive_new_invokes_widget = widget;
+	}
+	
+	public BooleanOptionWidget getRTAClassLoader_Optionsrtaclassload_context_sensitive_new_invokes_widget() {
+		return RTAClassLoader_Optionsrtaclassload_context_sensitive_new_invokes_widget;
+	}	
+	
 
 	private Composite General_OptionsCreate(Composite parent) {
 		String defKey;
@@ -10408,7 +10474,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsoaat_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("One at a time", "", "","oaat", "\nThis option is meant to keep memory consumption low. If \nenabled, the -process-dir option must be used as well. From the \nprocess-dir, Soot will process one class at a time. Only body \npacks are run, no whole-program packs. 			 ", defaultBool)));
+		setInput_Optionsoaat_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("One at a time", "", "","oaat", "\nThis option is meant to keep memory consumption low. If \nenabled, the -process-dir option must be used as well. From the \nprocess-dir, Soot will process one class at a time. Only body \npacks are run, no whole-program packs. ", defaultBool)));
 		
 		
 		
@@ -10488,7 +10554,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsj2me_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use J2ME mode", "", "","j2me", "\nUse J2ME mode. J2ME does not have class Cloneable nor \nSerializable, so we have to change type assignment to not refer \nto those classes.			 ", defaultBool)));
+		setInput_Optionsj2me_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use J2ME mode", "", "","j2me", "\nUse J2ME mode. J2ME does not have class Cloneable nor \nSerializable, so we have to change type assignment to not refer \nto those classes. ", defaultBool)));
 		
 		
 		
@@ -11118,7 +11184,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Select Automatically",
 		"auto",
-		"\nSelects the throw analysis to use for local initialization \nchecking based on information from other options. In \nparticular, it will use 'dalvik' when it detects it is \nanalyzing an Android application (e.g. when --android-jars or \n--force-android-jar are set) and 'pedantic' otherwise. This is \nthe default. ",
+		"\nSelects the throw analysis to use for local initialization \nchecking based on information from other options. In particular, \nit will use 'dalvik' when it detects it is analyzing an Android \napplication (e.g. when --android-jars or --force-android-jar are \nset) and 'pedantic' otherwise. This is the default. ",
 		
 		true),
 		
@@ -11136,7 +11202,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Dalvik",
 		"dalvik",
-		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the Dalvik Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. This is the equivalent of Unit \nabove, but targeting the Dalvik VM semantics as opposed to \nthose of the JVM. ",
+		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the Dalvik Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. This is the equivalent of Unit \nabove, but targeting the Dalvik VM semantics as opposed to those \nof the JVM. ",
 		
 		false),
 		
@@ -13025,7 +13091,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgguards_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Guarding strategy",  "p", "cg","guards", "\nUsing a reflection log is only sound for method executions that \nwere logged. Executing the program differently may be unsound. \nSoot can insert guards at program points for which the \nreflection log contains no information. When these points are \nreached (because the program is executed differently) then the \nfollwing will happen, depending on the value of this flag. \nignore: no guard is inserted, the program executes normally but \nunder unsound assumptions. print: the program prints a stack \ntrace when reaching a porgram location that was not traced but \ncontinues to run. throw (default): the program throws an Error \ninstead. \n", defaultString)));
+		setcgguards_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Guarding strategy",  "p", "cg","guards", "\nUsing a reflection log is only sound for method executions that \nwere logged. Executing the program differently may be unsound. \nSoot can insert guards at program points for which the \nreflection log contains no information. When these points are \nreached (because the program is executed differently) then the \nfollwing will happen, depending on the value of this flag. \nignore: no guard is inserted, the program executes normally but \nunder unsound assumptions. print: the program prints a stack \ntrace when reaching a porgram location that was not traced but \ncontinues to run. throw (default): the program throws an Error \ninstead. ", defaultString)));
 		
 
 		
@@ -13982,7 +14048,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparklazy_pts_widget(new BooleanOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Create lazy points-to sets", "p", "cg.spark","lazy-pts", "\nWhen this option is disabled, context information is computed \nfor every query to the reachingObjects method. When it is \nenabled, a call to reachingObjects returns a lazy wrapper object \nthat contains a context-insensitive points-to set. This set is \nthen automatically refined with context information when \nnecessary, i.e. when we try to determine the intersection with \nanother points-to set and this intersection seems to be \nnon-empty.							 					", defaultBool)));
+		setcgcg_sparklazy_pts_widget(new BooleanOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Create lazy points-to sets", "p", "cg.spark","lazy-pts", "\nWhen this option is disabled, context information is computed \nfor every query to the reachingObjects method. When it is \nenabled, a call to reachingObjects returns a lazy wrapper object \nthat contains a context-insensitive points-to set. This set is \nthen automatically refined with context information when \nnecessary, i.e. when we try to determine the intersection with \nanother points-to set and this intersection seems to be \nnon-empty. 					", defaultBool)));
 		
 		
 		
@@ -19665,7 +19731,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setdbsource_is_javac_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Source", "p", "db","source-is-javac", "\n					check out soot.dava.toolkits.base.misc.ThrowFinder 					In \nshort we want to ensure that if there are throw exception info \nin the class file dava uses this info.					 					", defaultBool)));
+		setdbsource_is_javac_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Source", "p", "db","source-is-javac", "\n					check out soot.dava.toolkits.base.misc.ThrowFinder 					In \nshort we want to ensure that if there are throw exception info \nin the class file dava uses this info. 					", defaultBool)));
 		
 		
 
@@ -20226,6 +20292,84 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		return editGroupMiscellaneous_Options;
+	}
+
+
+
+	private Composite RTAClassLoader_OptionsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupRTAClassLoader_Options = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupRTAClassLoader_Options.setLayout(layout);
+	
+	 	editGroupRTAClassLoader_Options.setText("RTAClassLoader Options");
+	 	
+		editGroupRTAClassLoader_Options.setData("id", "RTAClassLoader_Options");
+		
+		String descRTAClassLoader_Options = "";	
+		if (descRTAClassLoader_Options.length() > 0) {
+			Label descLabelRTAClassLoader_Options = new Label(editGroupRTAClassLoader_Options, SWT.WRAP);
+			descLabelRTAClassLoader_Options.setText(descRTAClassLoader_Options);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = ""+" "+""+" "+"rtaclassload_verbose";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setRTAClassLoader_Optionsrtaclassload_verbose_widget(new BooleanOptionWidget(editGroupRTAClassLoader_Options, SWT.NONE, new OptionData("RTAClassLoader Verbose", "", "","rtaclassload_verbose", "\nPrint details of RTAClassLoader processing", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"rtaclassload_callgraph_print";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setRTAClassLoader_Optionsrtaclassload_callgraph_print_widget(new BooleanOptionWidget(editGroupRTAClassLoader_Options, SWT.NONE, new OptionData("RTAClassLoader CallGraph Print", "", "","rtaclassload_callgraph_print", "\nPrint details of RTAClassLoader call graph DFS", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"rtaclassload_context_sensitive_new_invokes";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setRTAClassLoader_Optionsrtaclassload_context_sensitive_new_invokes_widget(new BooleanOptionWidget(editGroupRTAClassLoader_Options, SWT.NONE, new OptionData("RTAClassLoader Context Sensitive NewInvokes", "", "","rtaclassload_context_sensitive_new_invokes", "\nMake NewInvokes Context Sensitive in RTAClassLoader", defaultBool)));
+		
+		
+
+		
+		return editGroupRTAClassLoader_Options;
 	}
 
 

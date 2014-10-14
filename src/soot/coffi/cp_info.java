@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -38,7 +38,7 @@ import java.util.StringTokenizer;
  * @see ClassFile#constant_pool
  * @author Clark Verbrugge
  */
-abstract class cp_info {
+public abstract class cp_info {
 
    public static final byte CONSTANT_Utf8 = 1;
    public static final byte CONSTANT_Integer = 3;
@@ -54,7 +54,7 @@ abstract class cp_info {
    public static final byte CONSTANT_MethodHandle = 15;
    public static final byte CONSTANT_MethodType = 16; //TODO
    public static final byte CONSTANT_InvokeDynamic = 18;
-   
+
    /* constants for method handle kinds */
    public static final byte REF_getField = 1;
    public static final byte REF_getStatic = 2;
@@ -65,7 +65,7 @@ abstract class cp_info {
    public static final byte REF_invokeSpecial = 7;
    public static final byte REF_newInvokeSpecial = 8;
    public static final byte REF_invokeInterface = 9;
-   
+
    //mapping from the above to the kinds of members they refer to
    public static final byte[] REF_TO_CONSTANT = {
 	   -1,
@@ -266,7 +266,7 @@ abstract class cp_info {
    public static String fieldType(cp_info constant_pool[],int i) {
       return ClassFile.parseDesc(getTypeDescr(constant_pool,i),"");
    }
-   
+
    /** Creates an appropriate jimple representation of this constant.
     * Field and method constants are assumed to point to static fields/methods.
     * */

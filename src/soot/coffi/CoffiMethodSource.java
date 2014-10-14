@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -36,7 +36,7 @@ public class CoffiMethodSource implements MethodSource
     public ClassFile coffiClass;
     public method_info coffiMethod;
 
-    CoffiMethodSource(soot.coffi.ClassFile coffiClass, soot.coffi.method_info coffiMethod)
+    public CoffiMethodSource(soot.coffi.ClassFile coffiClass, soot.coffi.method_info coffiMethod)
     {
         this.coffiClass = coffiClass;
         this.coffiMethod = coffiMethod;
@@ -45,7 +45,7 @@ public class CoffiMethodSource implements MethodSource
     public Body getBody(SootMethod m, String phaseName)
     {
         JimpleBody jb = Jimple.v().newBody(m);
-        
+
         Map options = PhaseOptions.v().getPhaseOptions(phaseName);
         boolean useOriginalNames = PhaseOptions.getBoolean(options, "use-original-names");
 
@@ -63,10 +63,10 @@ public class CoffiMethodSource implements MethodSource
 
         if(m.isAbstract() || m.isNative() || m.isPhantom())
             return jb;
-            
+
         if(Options.v().time())
             Timers.v().conversionTimer.start();
-        
+
         if(coffiMethod.instructions == null)
         {
             if(Options.v().verbose())
@@ -75,7 +75,7 @@ public class CoffiMethodSource implements MethodSource
 
              coffiClass.parseMethod(coffiMethod);
         }
-                
+
         if(coffiMethod.cfg == null)
         {
             if(Options.v().verbose())
@@ -83,7 +83,7 @@ public class CoffiMethodSource implements MethodSource
                     "]     Building Coffi CFG...");
 
              new soot.coffi.CFG(coffiMethod);
-             
+
              // if just computing metrics, we don't need to actually return body
              if (soot.jbco.Main.metrics) return null;
          }
@@ -111,7 +111,7 @@ public class CoffiMethodSource implements MethodSource
 
          coffiMethod = null;
          coffiClass = null;
-         
+
          PackManager.v().getPack("jb").apply(jb);
          return jb;
     }

@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -57,6 +57,12 @@ public class CONSTANT_Utf8_info extends cp_info {
                     bytes[j+2] = (byte)d.readUnsignedByte();
           }
    }
+
+   public CONSTANT_Utf8_info(byte[] buffer){
+     bytes = buffer;
+   }
+
+
    /** For writing out the byte stream for this utf8 properly (incl size). */
    public void writeBytes(DataOutputStream dd) throws IOException {
           int len;
