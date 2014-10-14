@@ -670,6 +670,11 @@ public class Options extends OptionsBase {
             )
                 gzip = true;
   
+            else if( false 
+            || option.equals( "force-overwrite" )
+            )
+                force_overwrite = true;
+  
             else if( false
             || option.equals( "plugin" )
             ) {
@@ -1262,6 +1267,10 @@ public class Options extends OptionsBase {
     private boolean gzip = false;
     public void set_gzip( boolean setting ) { gzip = setting; }
   
+    public boolean force_overwrite() { return force_overwrite; }
+    private boolean force_overwrite = false;
+    public void set_force_overwrite( boolean setting ) { force_overwrite = setting; }
+  
     public List<String> plugin() { 
         if( plugin == null )
             return java.util.Collections.emptyList();
@@ -1432,6 +1441,7 @@ public class Options extends OptionsBase {
 +padOpt(" -dump-cfg PHASENAME", "Dump the internal representation of each CFG constructed during phase PHASENAME" )
 +padOpt(" -show-exception-dests", "Include exception destination edges as well as CFG edges in dumped CFGs" )
 +padOpt(" -gzip", "GZip IR output files" )
++padOpt(" -force-overwrite", "Force Overwrite Output Files" )
 +"\nProcessing Options:\n"
       
 +padOpt(" -plugin FILE", "Load all plugins found in FILE" )

@@ -9,7 +9,6 @@ import org.jf.dexlib2.AnnotationVisibility;
 import org.jf.dexlib2.iface.Annotation;
 import org.jf.dexlib2.iface.AnnotationElement;
 import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Field;
 import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.MethodParameter;
@@ -32,7 +31,11 @@ import org.jf.dexlib2.iface.value.ShortEncodedValue;
 import org.jf.dexlib2.iface.value.StringEncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
 
+import soot.RefType;
+import soot.SootClass;
+import soot.SootResolver;
 import soot.Type;
+import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;
@@ -66,10 +69,12 @@ import soot.toDex.SootToDexUtils;
  */
 public class DexAnnotation {
     
-    DexFile dexFile = null;
+	private final SootClass clazz;
+    private final Dependencies deps;
     
-    DexAnnotation(DexFile df) {
-        this.dexFile = df;
+    DexAnnotation(SootClass clazz, Dependencies deps) {
+    	this.clazz = clazz;
+        this.deps = deps;
     }
 
     /**
@@ -86,26 +91,34 @@ public class DexAnnotation {
 //    .annotation "Ldalvik/annotation/Signature;"
 //    .annotation "Ldalvik/annotation/Throws;"
 
-    void handleClassAnnotation(Host h, ClassDef classDef) {
+    void handleClassAnnotation(ClassDef classDef) {
     	Set<? extends Annotation> aSet = classDef.getAnnotations();
     	if (aSet == null || aSet.isEmpty())
     		return;
-    	InnerClassAttribute ica = (InnerClassAttribute) h.getTag("InnerClassAttribute");
+    	
     	List<Tag> tags = handleAnnotation(aSet, classDef.getType());
-    	if (tags != null)
-    		for (Tag t : tags)
-    			if (t != null) {
-    				if (t instanceof InnerClassTag) {
-    			    	if (ica == null) {
-    			    		ica = new InnerClassAttribute(new ArrayList<Tag>());
-    			    		h.addTag(ica);
-    			    	}
-    					ica.add((InnerClassTag)t);
-    				} else {
-    					h.addTag(t);
-    				}
-    				Debug.printDbg("add class annotation: ", t, " type: ", t.getClass());
-    			}
+    	if (tags == null)
+    		return;
+    	
+       	InnerClassAttribute ica = null;
+   		for (Tag t : tags)
+   			if (t != null) {
+   				if (t instanceof InnerClassTag) {
+   			    	if (ica == null) {
+   			    		// Do we already have an InnerClassAttribute?
+   			    		ica = (InnerClassAttribute) clazz.getTag("InnerClassAttribute");
+   			    		// If not, create one
+   			    		if (ica == null) {
+	   			    		ica = new InnerClassAttribute();
+	   			    		clazz.addTag(ica);
+   			    		}
+   			    	}
+   					ica.add((InnerClassTag)t);
+   				} else {
+   					clazz.addTag(t);
+   				}
+   				Debug.printDbg("add class annotation: ", t, " type: ", t.getClass());
+   			}
     }
 
     /**
@@ -270,6 +283,14 @@ public class DexAnnotation {
             } else if (atypes.equals("dalvik.annotation.EnclosingClass")) {
                 if (eSize != 1)
                     throw new RuntimeException("error: expected 1 element for annotation EnclosingClass. Got "+ eSize +" instead.");
+                
+                for (AnnotationElement elem : a.getElements()) {
+                	String outerClass = ((TypeEncodedValue) elem.getValue()).getValue();
+                	outerClass = Util.dottedClassName(outerClass);
+                	deps.typesToSignature.add(RefType.v(outerClass));
+                	clazz.setOuterClass(SootResolver.v().makeClassRef(outerClass));
+                }
+                
                 // EnclosingClass comes in pair with InnerClass.
                 // Those are generated from a single InnerClassTag,
                 // that is re-constructed only for the InnerClass Dalvik
@@ -290,6 +311,10 @@ public class DexAnnotation {
                         classString, 
                         methodString, 
                         methodSigString);       
+
+                String outerClass = classString.replace("/", ".");
+            	deps.typesToSignature.add(RefType.v(outerClass));
+            	clazz.setOuterClass(SootResolver.v().makeClassRef(outerClass));
                 
             } else if (atypes.equals("dalvik.annotation.InnerClass")) {
                 int accessFlags = -1;
@@ -303,12 +328,17 @@ public class DexAnnotation {
                 		throw new RuntimeException("Unexpected inner class annotation element");
                 }
                 
-                String outerClass = null;
-                if (name == null)
-                    outerClass = null;
-                else
+                String outerClass;
+                String sootOuterClass;
+                if (name == null) {
+                	outerClass = null;
+                	sootOuterClass = classType.replaceAll("\\$[0-9]*;$", ";");
+                } else {
                     outerClass = classType.replaceFirst("\\$"+ name, "");
+                    sootOuterClass = outerClass;
+                }
                 String innerClass = classType;
+                                
                 Tag innerTag = new InnerClassTag(
                         DexType.toSootICAT(innerClass), 
                         outerClass == null ? null : DexType.toSootICAT(outerClass),
@@ -316,7 +346,13 @@ public class DexAnnotation {
                         accessFlags);
                 tags.add(innerTag);
                 
-                continue;
+                if (!clazz.hasOuterClass()) {
+	                sootOuterClass = Util.dottedClassName(sootOuterClass);
+	            	deps.typesToSignature.add(RefType.v(sootOuterClass));
+	            	clazz.setOuterClass(SootResolver.v().makeClassRef(sootOuterClass));
+                }
+
+            	continue;
                 
             } else if (atypes.equals("dalvik.annotation.MemberClasses")) {
                 

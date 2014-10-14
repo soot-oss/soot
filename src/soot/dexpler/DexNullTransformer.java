@@ -444,7 +444,7 @@ public class DexNullTransformer extends DexTransformer {
 						if (isObject(nea.getBaseType()))
 							return true;
 					}
-					if (assign.getRightOp() instanceof FieldRef) {
+					else if (assign.getRightOp() instanceof FieldRef) {
 						FieldRef fr = (FieldRef) assign.getRightOp();
 						if (fr.getType() instanceof ArrayType)
 							if (isObject(((ArrayType) fr.getType())

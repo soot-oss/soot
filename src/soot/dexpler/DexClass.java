@@ -110,12 +110,11 @@ public class DexClass {
                 deps.typesToHierarchy.add(interfaceClass.getType());
             }
         }
-
+        
         if (Options.v().oaat() && sc.resolvingLevel() <= SootClass.HIERARCHY) {
             return deps;
         }
-
-        DexAnnotation da = new DexAnnotation(dexFile);
+        DexAnnotation da = new DexAnnotation(sc, deps);
         
         // get the fields of the class
         for (Field sf : defItem.getStaticFields()) {
@@ -132,7 +131,7 @@ public class DexClass {
             sc.addField(sootField);
             da.handleFieldAnnotation(sootField, f);
         }
-
+        
         // get the methods of the class
         for (Method method : defItem.getDirectMethods()) {
             SootMethod sm = DexMethod.makeSootMethod(defItem.getSourceFile(), method, sc);
@@ -149,10 +148,11 @@ public class DexClass {
             da.handleMethodAnnotation(sm, method);
         }
         
-        da.handleClassAnnotation(sc, defItem);
+        da.handleClassAnnotation(defItem);
         
-        // If we have an inner class tag, we also need to set the corresponding
-        // outer class
+        // In contrast to Java, Dalvik associates the InnerClassAttribute
+        // with the inner class, not the outer one. We need to copy the
+        // tags over to correspond to the Soot semantics.
         InnerClassAttribute ica = (InnerClassAttribute) sc.getTag("InnerClassAttribute");
         List<Entry<InnerClassAttribute, InnerClassTag>> pairList= new ArrayList<Entry<InnerClassAttribute, InnerClassTag>>();
         if (ica != null) {
@@ -166,13 +166,12 @@ public class DexClass {
         				outer = ict.getOuterClass().replaceAll("/", ".");
         			}
         			SootClass osc = SootResolver.v().makeClassRef(outer);
-        			sc.setOuterClass(osc);
+        			
         			InnerClassTag newt = new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags());
-
         			InnerClassAttribute icat = null;
         			icat = (InnerClassAttribute)osc.getTag("InnerClassAttribute");
         			if (icat == null) {
-        				icat = new InnerClassAttribute(new ArrayList<Tag>());
+        				icat = new InnerClassAttribute();
         				osc.addTag(icat);
         			}
         			Entry<InnerClassAttribute, InnerClassTag> pair = new java.util.AbstractMap.SimpleEntry<InnerClassAttribute, InnerClassTag>(icat, newt);
@@ -184,7 +183,7 @@ public class DexClass {
         	}
 
         }
-
+        
         return deps;
     }
 
