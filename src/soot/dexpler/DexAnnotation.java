@@ -51,6 +51,7 @@ import soot.tagkit.EnclosingMethodTag;
 import soot.tagkit.Host;
 import soot.tagkit.InnerClassAttribute;
 import soot.tagkit.InnerClassTag;
+import soot.tagkit.ParamNamesTag;
 import soot.tagkit.SignatureTag;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
@@ -140,6 +141,18 @@ public class DexAnnotation {
 		                h.addTag(t);
 		                Debug.printDbg("add method annotation: ", t);
 		            }
+		}
+
+        ArrayList<String> parameterNames = new ArrayList<String>();
+        boolean addParameterNames = false;
+        for (MethodParameter p : method.getParameters()) {
+			String name = p.getName();
+			parameterNames.add(name);
+			if (name != null)
+				addParameterNames = true;
+        }
+        if (addParameterNames) {
+			h.addTag(new ParamNamesTag(parameterNames));
         }
 
         // Is there any parameter annotation?
