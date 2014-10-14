@@ -1069,8 +1069,14 @@ public class RTAClassLoader {
       RTAType rtaType = RTAType.create(className);
       byte[] originalContents = classNumberToContents.get(rtaType);
 
-      int jarNumber = rtaTypeToJar.get(rtaType);
-      String jarFilename = StringNumbers.v().getString(jarNumber);
+      String jarFilename;
+      if(rtaTypeToJar.containsKey(rtaType)){
+        int jarNumber = rtaTypeToJar.get(rtaType);
+        jarFilename = StringNumbers.v().getString(jarNumber);
+      } else {
+        //this is the case in purely generated SootClasses
+        jarFilename = "";
+      }
       ModifiedClassMerger merger = new ModifiedClassMerger();
       ret.add(merger.merge(jarFilename, className, sootClass, originalContents));
     }
