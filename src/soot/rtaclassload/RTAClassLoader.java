@@ -44,6 +44,7 @@ import soot.util.Chain;
 import soot.Type;
 import soot.SootField;
 import soot.options.Options;
+import soot.Modifier;
 
 public class RTAClassLoader {
 
@@ -549,7 +550,13 @@ public class RTAClassLoader {
         return arrayClass;
       } else {
         if(classNumberToContents.containsKey(type) == false){
-          return null;
+          if(allowPhantomRefs){
+            System.out.println("adding phantom class: "+type.toString());
+            addPhantomRef(type);
+            return rtaClasses.get(type);
+          } else {
+            throw new RuntimeException("Cannot find class "+type.toString()+" and not allowing phantom refs");
+          }
         }
         byte[] classContents = classNumberToContents.get(type);
         RTAClass rtaClass = new RTAClass(type, classContents);
@@ -707,15 +714,6 @@ public class RTAClassLoader {
         continue;
       }
       RTAClass rtaClass = getRTAClass(classNumber);
-      if(rtaClass == null){
-        if(allowPhantomRefs){
-          System.out.println("adding phantom class: "+classNumber.toString());
-          addPhantomRef(classNumber);
-          rtaClass = getRTAClass(classNumber);
-        } else {
-          throw new RuntimeException("Cannot find class "+classNumber.toString()+" and not allowing phantom refs");
-        }
-      }
       RTAMethod rtaMethod = rtaClass.findMethodBySubSignature(methodSig.getSubSignatureString());
       if(rtaMethod == null){
         throw new RuntimeException("Cannot find method "+methodSig.toString()+". Try adding more jars to classpath or enable phantom refs");
@@ -973,8 +971,13 @@ public class RTAClassLoader {
 
       RTAClass rtaClass = getRTAClass(declaringClass);
       RTAField rtaField = rtaClass.findFieldByName(fieldName);
-      int fieldModifiers = rtaField.getAccessFlags();
-      Type fieldType = StringToType.convert(rtaField.getType().toString());
+      int fieldModifiers;
+      if(rtaField != null){
+        fieldModifiers = rtaField.getAccessFlags();
+      } else {
+        fieldModifiers = Modifier.PUBLIC;
+      }
+      Type fieldType = fieldSignature.getType().toSootType();
       SootField newField = new SootField(fieldName, fieldType, fieldModifiers);
       fieldClass.addField(newField);
     }
@@ -986,6 +989,9 @@ public class RTAClassLoader {
     while(queue.isEmpty() == false){
       RTAType item = queue.removeFirst();
       RTAClass rtaClass = getRTAClass(item);
+      if(rtaClass.isPhantom()){
+        return item.toString();
+      }
 
       RTAField[] fields = rtaClass.getFields();
       for(RTAField field : fields){
@@ -1001,7 +1007,7 @@ public class RTAClassLoader {
       }
     }
 
-    throw new RuntimeException();
+    return fieldSignature.getDeclaringClass().toString();
   }
 
   private void createEmptyMethods(){

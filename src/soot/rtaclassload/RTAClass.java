@@ -223,6 +223,10 @@ public class RTAClass {
     return interfaces;
   }
 
+  public boolean isPhantom(){
+    return isPhantom;
+  }
+
   public boolean implementsInterface(RTAType iface){
     RTAType[] interfaces = getInterfaces();
     for(RTAType currentInterface : interfaces){
