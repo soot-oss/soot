@@ -173,11 +173,11 @@ public class RTAType implements Comparable<RTAType> {
 
   @Override
   public int compareTo(RTAType other){
-    int packageCompare = Integer.valueOf(packageNumber).compareTo(Integer.valueOf(other.packageNumber));
+    int packageCompare = Integer.compare(packageNumber, other.packageNumber);
     if(packageCompare == 0){
-      int classCompare = Integer.valueOf(classNumber).compareTo(Integer.valueOf(other.classNumber));
+      int classCompare = Integer.compare(classNumber, other.classNumber);
       if(classCompare == 0){
-        return Integer.valueOf(numDimensions).compareTo(Integer.valueOf(other.numDimensions));
+        return Integer.compare(numDimensions, other.numDimensions);
       } else {
         return classCompare;
       }

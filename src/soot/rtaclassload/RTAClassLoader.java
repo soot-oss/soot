@@ -45,6 +45,8 @@ import soot.Type;
 import soot.SootField;
 import soot.options.Options;
 import soot.Modifier;
+import soot.jimple.toolkits.callgraph.CallGraph;
+import soot.jimple.toolkits.callgraph.Edge;
 
 public class RTAClassLoader {
 
@@ -125,8 +127,8 @@ public class RTAClassLoader {
     applicationJARs = new TreeSet<String>();
 
     jarPaths = new TreeMap<String, Boolean>();
-    superClassHierarchy = new TreeMap<RTAType, RTAType>();
-    subClassHierarchy = new TreeMap<RTAType, List<RTAType>>();
+    superClassHierarchy = new HashMap<RTAType, RTAType>();
+    subClassHierarchy = new HashMap<RTAType, List<RTAType>>();
     newInvokes = new TreeSet<RTAType>();
     classNumberToContents = new TreeMap<RTAType, byte[]>();
 
@@ -255,6 +257,7 @@ public class RTAClassLoader {
     loadForcedFields();
     loadScene();
     Scene.v().loadDynamicClasses();
+    buildCallGraph();
   }
 
   private void addJarPath(String path, boolean appClass){
@@ -783,10 +786,10 @@ public class RTAClassLoader {
     }
 
     RTAType methodSigClass = methodSig.getClassName();
-    for(RTAType newInvoke : contextNewInvokes){
-      if(!isParentRTAType(methodSigClass, newInvoke) &&
-         !isParentRTAType(newInvoke, methodSigClass)){
+    Set<RTAType> hierarchyTypes = getHierarchyTypes(methodSigClass);
 
+    for(RTAType newInvoke : contextNewInvokes){
+      if(hierarchyTypes.contains(newInvoke) == false){
         continue;
       }
 
@@ -801,20 +804,27 @@ public class RTAClassLoader {
     return ret;
   }
 
-  private boolean isParentRTAType(RTAType child, RTAType parent){
+  private Set<RTAType> getHierarchyTypes(RTAType rtaType){
+    Set<RTAType> ret = new HashSet<RTAType>();
     LinkedList<RTAType> queue = new LinkedList<RTAType>();
-    queue.add(child);
+    queue.add(rtaType);
     while(queue.isEmpty() == false){
       RTAType curr = queue.removeFirst();
-      if(curr == null){
-        return false;
+      ret.add(curr);
+      if(superClassHierarchy.containsKey(curr)){
+        queue.add(superClassHierarchy.get(curr));
       }
-      if(curr == parent){
-        return true;
-      }
-      queue.add(superClassHierarchy.get(curr));
     }
-    return false;
+    queue.add(rtaType);
+    while(queue.isEmpty() == false){
+      RTAType curr = queue.removeFirst();
+      ret.add(curr);
+      if(subClassHierarchy.containsKey(curr)){
+        List<RTAType> subclasses = subClassHierarchy.get(curr);
+        queue.addAll(subclasses);
+      }
+    }
+    return ret;
   }
 
   private void addHierarchy(RTAType className){
@@ -1063,7 +1073,6 @@ public class RTAClassLoader {
         }
         visited.add(sootMethod.getSignature());
         sootMethod.setSource(rtaMethod.getMethodSource());
-        sootMethod.retrieveActiveBody();
       }
     }
   }
@@ -1093,4 +1102,6 @@ public class RTAClassLoader {
     return ret;
   }
 
+  private void buildCallGraph(){
+  }
 }
