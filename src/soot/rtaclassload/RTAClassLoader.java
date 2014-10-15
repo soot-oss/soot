@@ -235,6 +235,10 @@ public class RTAClassLoader {
     return ret;
   }
 
+  public List<NumberedType> getNumberedTypes(){
+    return numberedClasses;
+  }
+
   public void loadNecessaryClasses(){
     sourcePaths = SourceLocator.v().sourcePath();
     classPaths = SourceLocator.v().classPath();
