@@ -144,9 +144,11 @@ public class JasminEmitter {
       emitln();
 
       RTAMethodFactory factory = new RTAMethodFactory();
-      emitln("  .limit stack "+factory.getMaxStack(info));
-      emitln("  .limit locals "+factory.getMaxLocals(info));
-      emitln();
+      if(info.code_attr != null){
+        emitln("  .limit stack "+factory.getMaxStack(info));
+        emitln("  .limit locals "+factory.getMaxLocals(info));
+        emitln();
+      }
 
       List<String> instructions = factory.parseRawInstructions(classFile, info);
       for(String inst : instructions){

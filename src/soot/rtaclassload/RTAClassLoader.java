@@ -543,7 +543,7 @@ public class RTAClassLoader {
     rtaClasses.put(type, rtaClass);
   }
 
-  public RTAClass getRTAClass(RTAType type){
+  public RTAClass getRTAClass(RTAType type, boolean create){
     if(rtaClasses.containsKey(type)){
       return rtaClasses.get(type);
     } else {
@@ -553,6 +553,9 @@ public class RTAClassLoader {
         return arrayClass;
       } else {
         if(classNumberToContents.containsKey(type) == false){
+          if(create == false){
+            return null;
+          }
           if(allowPhantomRefs){
             System.out.println("adding phantom class: "+type.toString());
             addPhantomRef(type);
@@ -567,6 +570,10 @@ public class RTAClassLoader {
         return rtaClass;
       }
     }
+  }
+
+  public RTAClass getRTAClass(RTAType type){
+    return getRTAClass(type, true);
   }
 
   public RTAClass getRTAClass(String fullClassName){
