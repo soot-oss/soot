@@ -496,7 +496,10 @@ public class ExprVisitor implements ExprSwitch {
 	@Override
 	public void caseLengthExpr(LengthExpr le) {
 		Value array = le.getOp();
-		Register arrayReg = regAlloc.asLocal(array);
+		constantV.setOrigStmt(origStmt);
+		// In buggy code, the parameter could be a NullConstant.
+		// This is why we use .asImmediate() and not .asLocal()
+		Register arrayReg = regAlloc.asImmediate(array, constantV);
         stmtV.addInsn(new Insn12x(Opcode.ARRAY_LENGTH, destinationReg, arrayReg), origStmt);
 	}
 	
