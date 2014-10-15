@@ -289,6 +289,7 @@ public class DexAnnotation {
                 	outerClass = Util.dottedClassName(outerClass);
                 	deps.typesToSignature.add(RefType.v(outerClass));
                 	clazz.setOuterClass(SootResolver.v().makeClassRef(outerClass));
+                	assert clazz.getOuterClass() != clazz;
                 }
                 
                 // EnclosingClass comes in pair with InnerClass.
@@ -315,7 +316,8 @@ public class DexAnnotation {
                 String outerClass = classString.replace("/", ".");
             	deps.typesToSignature.add(RefType.v(outerClass));
             	clazz.setOuterClass(SootResolver.v().makeClassRef(outerClass));
-                
+            	assert clazz.getOuterClass() != clazz;
+
             } else if (atypes.equals("dalvik.annotation.InnerClass")) {
                 int accessFlags = -1;
                 String name = null;
@@ -333,9 +335,13 @@ public class DexAnnotation {
                 if (name == null) {
                 	outerClass = null;
                 	sootOuterClass = classType.replaceAll("\\$[0-9]*;$", ";");
+                    // Make sure that no funny business is going on if the
+                    // annotation is broken and does not end in $nn.
+                    if (sootOuterClass.equals(classType))
+                    	sootOuterClass = null;
                 } else {
                     outerClass = classType.replaceFirst("\\$"+ name, "");
-                    sootOuterClass = outerClass;
+                   	sootOuterClass = outerClass;
                 }
                 String innerClass = classType;
                                 
@@ -346,10 +352,11 @@ public class DexAnnotation {
                         accessFlags);
                 tags.add(innerTag);
                 
-                if (!clazz.hasOuterClass()) {
+                if (sootOuterClass != null && !clazz.hasOuterClass()) {
 	                sootOuterClass = Util.dottedClassName(sootOuterClass);
 	            	deps.typesToSignature.add(RefType.v(sootOuterClass));
 	            	clazz.setOuterClass(SootResolver.v().makeClassRef(sootOuterClass));
+                	assert clazz.getOuterClass() != clazz;
                 }
 
             	continue;
