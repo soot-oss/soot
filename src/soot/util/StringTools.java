@@ -196,6 +196,9 @@ public class StringTools
         case 'b':
             res = '\b';
             break;
+        case 'f':
+            res = '\f';
+            break;
         case '\"':
             res = '\"';
             break;
