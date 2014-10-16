@@ -744,8 +744,8 @@ public class DexPrinter {
     private List<Annotation> buildInnerClassAttribute(SootClass parentClass,
     		InnerClassAttribute t, Set<String> skipList) {
     	Set<String> memberClasses = null;
+    	List<Annotation> anns = null;
     	
-    	List<Annotation> anns = new ArrayList<Annotation>();
     	for (Tag t2 : t.getSpecs()) {
     		InnerClassTag icTag = (InnerClassTag) t2;
     		
@@ -753,14 +753,15 @@ public class DexPrinter {
         	// InnerClass tag are written to the inner class which is different
         	// to Java. We thus check whether this tag actually points to our
     		// outer class.
-    		String outer;
+    		String outerClass;
+			String innerClass = icTag.getInnerClass().replaceAll("/", ".");
 			if (icTag.getOuterClass() == null) { // anonymous inner classes
-				outer = icTag.getInnerClass().replaceAll("\\$[0-9]*$", "").replaceAll("/", ".");
+				outerClass = icTag.getInnerClass().replaceAll("\\$[0-9]*$", "").replaceAll("/", ".");
 			} else {
-				outer = icTag.getOuterClass().replaceAll("/", ".");
+				outerClass = icTag.getOuterClass().replaceAll("/", ".");
 			}
     		if (!parentClass.hasOuterClass()
-    				|| !outer.equals(parentClass.getOuterClass().getName())) {
+    				|| !outerClass.equals(parentClass.getOuterClass().getName())) {    			
     			// Only classes with names are member classes
     			if (icTag.getOuterClass() != null) {
     				if (memberClasses == null)
@@ -772,6 +773,10 @@ public class DexPrinter {
     			// the other one.
     			continue;
     		}
+    		// If the outer class points to our parent, but this is simply the
+    		// wrong inner class, we continue with the next tag.
+    		else if (!innerClass.equals(parentClass.getName()))
+    			continue;
     		
     		// This is an actual inner class. Write the annotation
         	if (skipList.add("Ldalvik/annotation/InnerClass;")) {
@@ -788,6 +793,7 @@ public class DexPrinter {
 			    	elements.add(nameElement);
 		    	}
 		    	
+		    	if (anns == null) anns = new ArrayList<Annotation>();
 		    	anns.add(new ImmutableAnnotation(AnnotationVisibility.SYSTEM,
 		    			"Ldalvik/annotation/InnerClass;",
 		    			elements));
@@ -810,6 +816,7 @@ public class DexPrinter {
     				new ImmutableAnnotation(AnnotationVisibility.SYSTEM,
     						"Ldalvik/annotation/MemberClasses;",
     						Collections.singletonList(element));
+	    	if (anns == null) anns = new ArrayList<Annotation>();
 	    	anns.add(memberAnnotation);
     	}
     	
