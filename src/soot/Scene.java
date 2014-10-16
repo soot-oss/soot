@@ -1136,6 +1136,7 @@ public class Scene  //extends AbstractHost
         rn.add("null");
         rn.add("from");
         rn.add("to");
+        rn.add("with");
     }
 
     private final Set<String>[] basicclasses=new Set[4];
