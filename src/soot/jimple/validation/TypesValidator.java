@@ -9,6 +9,11 @@ import soot.Type;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
+/**
+ * Checks whether the types used for locals, method parameters, and method
+ * return values are allowed in final Jimple code. This reports an error
+ * if a method uses e.g., null_type.
+ */
 public class TypesValidator implements BodyValidator {
 	public static TypesValidator INSTANCE;
 	

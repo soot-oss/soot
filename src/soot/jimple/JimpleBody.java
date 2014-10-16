@@ -36,6 +36,7 @@ import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
 import soot.jimple.validation.IdentityStatementsValidator;
+import soot.jimple.validation.InvokeArgumentValidator;
 import soot.jimple.validation.ReturnStatementsValidator;
 import soot.jimple.validation.TypesValidator;
 import soot.options.Options;
@@ -58,6 +59,7 @@ public class JimpleBody extends StmtBody
 				IdentityStatementsValidator.v(),
 				TypesValidator.v(),
 				ReturnStatementsValidator.v(),
+				InvokeArgumentValidator.v(),
 				//InvokeValidator.v()
 			};
 		}
