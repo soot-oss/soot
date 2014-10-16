@@ -335,23 +335,20 @@ public class DexAnnotation {
                 if (name == null) {
                 	outerClass = null;
                 	sootOuterClass = classType.replaceAll("\\$[0-9]*;$", ";");
-                    // Make sure that no funny business is going on if the
-                    // annotation is broken and does not end in $nn.
-                    if (sootOuterClass.equals(classType))
-                    	sootOuterClass = null;
                 } else {
                     outerClass = classType.replaceFirst("\\$"+ name, "");
                    	sootOuterClass = outerClass;
                 }
-                String innerClass = classType;
 
-				// Make sure that no funny business is going on if the
-				// annotation is broken and does not end in $nn.
+				String innerClass = classType;
+
+                // Make sure that no funny business is going on if the
+                // annotation is broken and does not end in $nn.
 				if (sootOuterClass.equals(classType)) {
 					outerClass = null;
 					sootOuterClass = null;
 				}
-                                
+
                 Tag innerTag = new InnerClassTag(
                         DexType.toSootICAT(innerClass), 
                         outerClass == null ? null : DexType.toSootICAT(outerClass),
