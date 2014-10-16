@@ -74,10 +74,6 @@ public class UsesValidator implements BodyValidator {
                     // no def already; we check anyhow.
                     List<Unit> l = ld.getDefsOfAt((Local)v, u);
                     if (l.size() == 0){
-                        for( Iterator<Unit> uuIt = body.getUnits().iterator(); uuIt.hasNext(); ) {
-                            final Unit uu = uuIt.next();
-                            System.err.println(""+uu);
-                        }
                         exception.add(new ValidationException(u, "There is no path from a definition of " + v + " to this statement.", 
                         		"("+ body.getMethod() +") no defs for value: " + v + "!"));
                     }
