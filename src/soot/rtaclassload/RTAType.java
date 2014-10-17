@@ -207,6 +207,33 @@ public class RTAType implements Comparable<RTAType> {
   }
 
   @Override
+  public boolean equals(Object other){
+    if(other instanceof RTAType == false){
+      return false;
+    }
+    RTAType rhs = (RTAType) other;
+    if(packageNumber != rhs.packageNumber){
+      return false;
+    }
+    if(classNumber != rhs.classNumber){
+      return false;
+    }
+    if(numDimensions != rhs.numDimensions){
+      return false;
+    }
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int hash = 5;
+    hash = 23 * hash + this.packageNumber;
+    hash = 23 * hash + this.classNumber;
+    hash = 23 * hash + this.numDimensions;
+    return hash;
+  }
+
+  @Override
   public int compareTo(RTAType other){
     int packageCompare = Integer.compare(packageNumber, other.packageNumber);
     if(packageCompare == 0){
@@ -235,5 +262,16 @@ public class RTAType implements Comparable<RTAType> {
       ret += "[]";
     }
     return ret;
+  }
+
+  public static void main(String[] args){
+    //test
+    RTAType type0 = RTAType.create("java.lang.Object");
+    RTAType type1 = RTAType.create("java.lang.Object");
+    if(type0 == type1){
+      System.out.println("equal");
+    } else {
+      System.out.println("not equal");
+    }
   }
 }

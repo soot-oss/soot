@@ -271,7 +271,7 @@ public class RTAClassLoader {
     if(path.endsWith(".jar")){
       File jarFile = new File(path);
       if(jarFile.exists()){
-        jarPaths.put(path, appClass);
+        jarPaths.put(jarFile.getAbsolutePath(), appClass);
       }
     }
   }
@@ -1035,10 +1035,12 @@ public class RTAClassLoader {
 
   private void createEmptyMethods(){
     log("[rtaclassload] creating empty methods...");
-    Set<MethodSignature> emptyMethods = new HashSet<MethodSignature>();
-    emptyMethods.addAll(allMethods);
-    emptyMethods.addAll(signaturesMethods);
-    for(MethodSignature methodSignature : emptyMethods){
+    createEmptyMethods(allMethods, true);
+    createEmptyMethods(signaturesMethods, false);
+  }
+
+  private void createEmptyMethods(Set<MethodSignature> signatures, boolean addBodies){
+    for(MethodSignature methodSignature : signatures){
       RTAType declaringClass = methodSignature.getClassName();
       String methodName = StringNumbers.v().getString(methodSignature.getMethodName());
 
@@ -1063,9 +1065,9 @@ public class RTAClassLoader {
 
       if(sootClass.declaresMethod(sootMethod.getSubSignature()) == false){
         sootClass.addMethod(sootMethod);
-        MethodSignature addedSig = new MethodSignature(sootMethod.getSignature());
-        if(allMethods.contains(addedSig)){
-          bodyMethods.add(addedSig);
+        if(addBodies){
+          MethodSignature addedSignature = new MethodSignature(sootMethod.getSignature());
+          bodyMethods.add(addedSignature);
         }
       }
     }
@@ -1078,6 +1080,8 @@ public class RTAClassLoader {
       RTAType declaringClass = methodSignature.getClassName();
       RTAClass rtaClass = getRTAClass(declaringClass);
       RTAMethod rtaMethod = rtaClass.findMethodBySubSignature(methodSignature.getSubSignatureString());
+      methodSignature = rtaMethod.getSignature();
+      declaringClass = methodSignature.getClassName();
       if(rtaMethod.isConcrete() && rtaMethod.isPhantom() == false){
         SootClass sootClass = Scene.v().getSootClass(declaringClass.toString());
         SootMethod sootMethod = sootClass.getMethod(methodSignature.getSubSignatureString());
