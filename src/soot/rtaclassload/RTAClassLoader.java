@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.HashSet;
 import java.util.Map;
-import java.util.TreeMap;
 import java.util.HashMap;
 import java.io.File;
 import org.apache.commons.collections4.trie.PatriciaTrie;
@@ -78,8 +77,6 @@ public class RTAClassLoader {
   private Set<String> forcedLoadedFieldSignatures;
   private Map<RTAType, Integer> rtaTypeToJar;
 
-  private Map<RTAType, RTAType> superClassHierarchy;
-  private Map<RTAType, List<RTAType>> subClassHierarchy;
   private Map<String, String> classRemappings;
   private Map<String, String> reverseClassRemappings;
 
@@ -98,6 +95,8 @@ public class RTAClassLoader {
   private List<NumberedType> numberedClasses;
   private Set<String> modifiedClasses;
 
+  private Map<RTAType, Set<RTAType>> hierarchyTypeCache;
+
   private boolean verbose;
   private boolean callGraphPrint;
   private boolean contextSensitiveNewInvokes;
@@ -109,8 +108,8 @@ public class RTAClassLoader {
 
   public RTAClassLoader(Singletons.Global g){
 
-    entryMethodSignatures = new TreeSet<String>();
-    entryMethodSubSignatures = new TreeSet<String>();
+    entryMethodSignatures = new HashSet<String>();
+    entryMethodSubSignatures = new HashSet<String>();
 
     entryMethodTesters = new ArrayList<EntryMethodTester>();
     dontFollowMethodTesters = new ArrayList<MethodTester>();
@@ -118,40 +117,40 @@ public class RTAClassLoader {
 
     dontFollowClassTesters = new ArrayList<ClassTester>();
     toSignaturesClassTesters = new ArrayList<ClassTester>();
-    callGraphLinks = new TreeMap<String, List<String>>();
+    callGraphLinks = new HashMap<String, List<String>>();
 
     cgVisitedMethods = new HashSet<MethodSignature>();
     cgMethodQueue = new LinkedList<Pair<MethodSignature, Set<RTAType>>>();
     entryPoints = new ArrayList<Pair<MethodSignature, Set<RTAType>>>();
-    applicationClasses = new TreeSet<RTAType>();
-    applicationJARs = new TreeSet<String>();
+    applicationClasses = new HashSet<RTAType>();
+    applicationJARs = new HashSet<String>();
 
-    jarPaths = new TreeMap<String, Boolean>();
-    superClassHierarchy = new HashMap<RTAType, RTAType>();
-    subClassHierarchy = new HashMap<RTAType, List<RTAType>>();
-    newInvokes = new TreeSet<RTAType>();
-    classNumberToContents = new TreeMap<RTAType, byte[]>();
+    jarPaths = new HashMap<String, Boolean>();
+    newInvokes = new HashSet<RTAType>();
+    classNumberToContents = new HashMap<RTAType, byte[]>();
 
-    rtaClasses = new TreeMap<RTAType, RTAClass>();
+    rtaClasses = new HashMap<RTAType, RTAClass>();
     rtaMethodVisitorMap = new HashMap<RTAMethod, RTAMethodVisitor>();
-    classRemappings = new TreeMap<String, String>();
-    reverseClassRemappings = new TreeMap<String, String>();
+    classRemappings = new HashMap<String, String>();
+    reverseClassRemappings = new HashMap<String, String>();
 
-    allMethods = new TreeSet<MethodSignature>();
-    signaturesMethods = new TreeSet<MethodSignature>();
-    bodyMethods = new TreeSet<MethodSignature>();
-    allFields = new TreeSet<FieldSignature>();
+    allMethods = new HashSet<MethodSignature>();
+    signaturesMethods = new HashSet<MethodSignature>();
+    bodyMethods = new HashSet<MethodSignature>();
+    allFields = new HashSet<FieldSignature>();
 
-    followMethods = new TreeSet<String>();
-    toSignaturesMethods = new TreeSet<String>();
-    followClasses = new TreeSet<String>();
-    toSignaturesClasses = new TreeSet<String>();
-    toHierarchyClasses = new TreeSet<String>();
-    forcedLoadedFieldSignatures = new TreeSet<String>();
-    modifiedClasses = new TreeSet<String>();
+    followMethods = new HashSet<String>();
+    toSignaturesMethods = new HashSet<String>();
+    followClasses = new HashSet<String>();
+    toSignaturesClasses = new HashSet<String>();
+    toHierarchyClasses = new HashSet<String>();
+    forcedLoadedFieldSignatures = new HashSet<String>();
+    modifiedClasses = new HashSet<String>();
 
     classHierarchy = new RTAClassHierarchy();
-    rtaTypeToJar = new TreeMap<RTAType, Integer>();
+    rtaTypeToJar = new HashMap<RTAType, Integer>();
+
+    hierarchyTypeCache = new HashMap<RTAType, Set<RTAType>>();
 
     verbose = Options.v().rtaclassload_verbose();
     callGraphPrint = Options.v().rtaclassload_callgraph_print();
@@ -402,15 +401,8 @@ public class RTAClassLoader {
             classNumberToContents.put(fullClass, classContents);
             RTAType fullSuperClass = RTAType.create(superClass);
 
-            superClassHierarchy.put(fullClass, fullSuperClass);
-            List<RTAType> subClasses;
-            if(subClassHierarchy.containsKey(fullSuperClass)){
-              subClasses = subClassHierarchy.get(fullSuperClass);
-            } else {
-              subClasses = new ArrayList<RTAType>();
-              subClassHierarchy.put(fullSuperClass, subClasses);
-            }
-            subClasses.add(fullClass);
+            fullClass.setSuperClass(fullSuperClass);
+            fullSuperClass.addSubClass(fullClass);
           } else if (filename.endsWith(".jar")){
             //TODO: go into jar
           }
@@ -423,11 +415,7 @@ public class RTAClassLoader {
   }
 
   public List<RTAType> getSubClasses(RTAType rtaType){
-    if(subClassHierarchy.containsKey(rtaType)){
-      return subClassHierarchy.get(rtaType);
-    } else {
-      return new ArrayList<RTAType>();
-    }
+    return rtaType.getSubClasses();
   }
 
   private void findEntryPoints(){
@@ -438,7 +426,7 @@ public class RTAClassLoader {
       for(RTAMethod method : methods){
         if(entryMethodSignatures.contains(method.getSignature().toString())){
           MethodSignature methodSig = method.getSignature();
-          Set<RTAType> entryNewInvokes = new TreeSet<RTAType>();
+          Set<RTAType> entryNewInvokes = new HashSet<RTAType>();
           entryNewInvokes.add(methodSig.getClassName());
           Pair<MethodSignature, Set<RTAType>> pair =
             new Pair<MethodSignature, Set<RTAType>>(methodSig, entryNewInvokes);
@@ -446,7 +434,7 @@ public class RTAClassLoader {
         }
         if(entryMethodSubSignatures.contains(method.getSignature().getSubSignatureString())){
           MethodSignature methodSig = method.getSignature();
-          Set<RTAType> entryNewInvokes = new TreeSet<RTAType>();
+          Set<RTAType> entryNewInvokes = new HashSet<RTAType>();
           entryNewInvokes.add(methodSig.getClassName());
           Pair<MethodSignature, Set<RTAType>> pair =
             new Pair<MethodSignature, Set<RTAType>>(methodSig, entryNewInvokes);
@@ -455,7 +443,7 @@ public class RTAClassLoader {
         for(EntryMethodTester methodTester : entryMethodTesters){
           if(methodTester.matches(method)){
             Set<String> stringNewInvokes = methodTester.getNewInvokes();
-            Set<RTAType> entryNewInvokes = new TreeSet<RTAType>();
+            Set<RTAType> entryNewInvokes = new HashSet<RTAType>();
             for(String stringNewInvoke : stringNewInvokes){
               RTAType rtaType = RTAType.create(stringNewInvoke);
               entryNewInvokes.add(rtaType);
@@ -540,16 +528,17 @@ public class RTAClassLoader {
   private void addPhantomRef(RTAType type){
     type = type.getNonArray();
     RTAClass rtaClass = new RTAClass(type, true);
-    rtaClasses.put(type, rtaClass);
+    type.setRTAClass(rtaClass);
   }
 
   public RTAClass getRTAClass(RTAType type, boolean create){
-    if(rtaClasses.containsKey(type)){
-      return rtaClasses.get(type);
+    RTAClass ret = type.getRTAClass();
+    if(ret != null){
+      return ret;
     } else {
       if(type.isArray()){
         RTAClass arrayClass = new RTAClass(type, true);
-        rtaClasses.put(type, arrayClass);
+        type.setRTAClass(arrayClass);
         return arrayClass;
       } else {
         if(classNumberToContents.containsKey(type) == false){
@@ -559,14 +548,14 @@ public class RTAClassLoader {
           if(allowPhantomRefs){
             System.out.println("adding phantom class: "+type.toString());
             addPhantomRef(type);
-            return rtaClasses.get(type);
+            return type.getRTAClass();
           } else {
             throw new RuntimeException("Cannot find class "+type.toString()+" and not allowing phantom refs");
           }
         }
         byte[] classContents = classNumberToContents.get(type);
         RTAClass rtaClass = new RTAClass(type, classContents);
-        rtaClasses.put(type, rtaClass);
+        type.setRTAClass(rtaClass);
         return rtaClass;
       }
     }
@@ -654,7 +643,7 @@ public class RTAClassLoader {
     for(String followMethod : followMethods){
       MethodSignature methodSignature = new MethodSignature(followMethod);
       Pair<MethodSignature, Set<RTAType>> pair =
-        new Pair<MethodSignature, Set<RTAType>>(methodSignature, new TreeSet<RTAType>());
+        new Pair<MethodSignature, Set<RTAType>>(methodSignature, new HashSet<RTAType>());
       ret.add(pair);
     }
 
@@ -671,7 +660,7 @@ public class RTAClassLoader {
       for(RTAMethod rtaMethod : rtaClass.getMethods()){
         MethodSignature methodSignature = rtaMethod.getSignature();
         Pair<MethodSignature, Set<RTAType>> pair =
-          new Pair<MethodSignature, Set<RTAType>>(methodSignature, new TreeSet<RTAType>());
+          new Pair<MethodSignature, Set<RTAType>>(methodSignature, new HashSet<RTAType>());
         ret.add(pair);
       }
     }
@@ -737,7 +726,7 @@ public class RTAClassLoader {
         allFields.addAll(visitor.getFieldRefs());
 
         Set<RTAType> methodInvokes = visitor.getNewInvokes();
-        Set<RTAType> forwardNewInvokes = new TreeSet<RTAType>();
+        Set<RTAType> forwardNewInvokes = new HashSet<RTAType>();
         forwardNewInvokes.addAll(methodInvokes);
         forwardNewInvokes.addAll(contextNewInvokes);
         newInvokes.addAll(methodInvokes);
@@ -812,25 +801,35 @@ public class RTAClassLoader {
   }
 
   private Set<RTAType> getHierarchyTypes(RTAType rtaType){
+    if(hierarchyTypeCache.containsKey(rtaType)){
+      return hierarchyTypeCache.get(rtaType);
+    }
+    List<RTAType> retList = new ArrayList<RTAType>();
     Set<RTAType> ret = new HashSet<RTAType>();
-    LinkedList<RTAType> queue = new LinkedList<RTAType>();
-    queue.add(rtaType);
-    while(queue.isEmpty() == false){
-      RTAType curr = queue.removeFirst();
-      ret.add(curr);
-      if(superClassHierarchy.containsKey(curr)){
-        queue.add(superClassHierarchy.get(curr));
+    List<RTAType> queue = new ArrayList<RTAType>();
+    int queueIndex = 0;
+    RTAType superClass = rtaType.getSuperClass();
+    if(superClass != null){
+      queue.add(superClass);
+    }
+    while(queueIndex < queue.size()){
+      RTAType curr = queue.get(queueIndex);
+      ++queueIndex;
+      retList.add(curr);
+      superClass = curr.getSuperClass();
+      if(superClass != null){
+        queue.add(superClass);
       }
     }
     queue.add(rtaType);
-    while(queue.isEmpty() == false){
-      RTAType curr = queue.removeFirst();
-      ret.add(curr);
-      if(subClassHierarchy.containsKey(curr)){
-        List<RTAType> subclasses = subClassHierarchy.get(curr);
-        queue.addAll(subclasses);
-      }
+    while(queueIndex < queue.size()){
+      RTAType curr = queue.get(queueIndex);
+      ++queueIndex;
+      retList.add(curr);
+      queue.addAll(curr.getSubClasses());
     }
+    ret.addAll(retList);
+    hierarchyTypeCache.put(rtaType, ret);
     return ret;
   }
 
@@ -1029,7 +1028,7 @@ public class RTAClassLoader {
 
   private void createEmptyMethods(){
     log("[rtaclassload] creating empty methods...");
-    Set<MethodSignature> emptyMethods = new TreeSet<MethodSignature>();
+    Set<MethodSignature> emptyMethods = new HashSet<MethodSignature>();
     emptyMethods.addAll(allMethods);
     emptyMethods.addAll(signaturesMethods);
     for(MethodSignature methodSignature : emptyMethods){
@@ -1067,7 +1066,7 @@ public class RTAClassLoader {
 
   private void fillInMethodBodies(){
     log("[rtaclassload] filling in method bodies...");
-    Set<String> visited = new TreeSet<String>();
+    Set<String> visited = new HashSet<String>();
     for(MethodSignature methodSignature : bodyMethods){
       RTAType declaringClass = methodSignature.getClassName();
       RTAClass rtaClass = getRTAClass(declaringClass);

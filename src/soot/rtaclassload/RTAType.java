@@ -23,6 +23,8 @@ import java.util.TreeMap;
 import java.util.Set;
 import java.util.TreeSet;
 import soot.Type;
+import java.util.List;
+import java.util.ArrayList;
 
 public class RTAType implements Comparable<RTAType> {
 
@@ -77,6 +79,9 @@ public class RTAType implements Comparable<RTAType> {
   private int packageNumber;
   private int classNumber;
   private int numDimensions;
+  private RTAType superClass;
+  private List<RTAType> subClasses;
+  private RTAClass rtaClass;
 
   private RTAType(String typeString){
     String typeStrNonArray = typeString.replace("[", "");
@@ -98,6 +103,9 @@ public class RTAType implements Comparable<RTAType> {
     String arrayPostFix = typeString.substring(typeStrNonArray.length());
     //each dimension has []
     numDimensions = arrayPostFix.length() / 2;
+
+    subClasses = new ArrayList<RTAType>();
+    rtaClass = null;
   }
 
   private RTAType(int packageNumber, int classNumber, int numDimensions)
@@ -105,6 +113,33 @@ public class RTAType implements Comparable<RTAType> {
     this.packageNumber = packageNumber;
     this.classNumber = classNumber;
     this.numDimensions = numDimensions;
+
+    subClasses = new ArrayList<RTAType>();
+    rtaClass = null;
+  }
+
+  public void setRTAClass(RTAClass rtaClass){
+    this.rtaClass = rtaClass;
+  }
+
+  public RTAClass getRTAClass(){
+    return rtaClass;
+  }
+
+  public void setSuperClass(RTAType superClass){
+    this.superClass = superClass;
+  }
+
+  public RTAType getSuperClass(){
+    return superClass;
+  }
+
+  public void addSubClass(RTAType subClass){
+    subClasses.add(subClass);
+  }
+
+  public List<RTAType> getSubClasses(){
+    return subClasses;
   }
 
   public int getPackageNumber(){

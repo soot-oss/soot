@@ -24,14 +24,29 @@ import java.util.TreeSet;
 public class MainEntryMethodTester implements EntryMethodTester {
 
   private Set<String> newInvokes;
+  private String className;
+  private boolean classNameSet;
 
   public MainEntryMethodTester(){
     newInvokes = new TreeSet<String>();
+    classNameSet = false;
+  }
+
+  public MainEntryMethodTester(String className){
+    newInvokes = new TreeSet<String>();
+    this.className = className;
+    classNameSet = true;
   }
 
   public boolean matches(RTAMethod method){
     if(method.isStatic() == false){
       return false;
+    }
+    if(classNameSet){
+      String currClassName = method.getSignature().getClassName().toString();
+      if(className.equals(currClassName) == false){
+        return false;
+      }
     }
     MethodSignature signature = method.getSignature();
     String subsig = signature.getSubSignatureString();
