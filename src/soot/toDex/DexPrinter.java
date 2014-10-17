@@ -520,11 +520,23 @@ public class DexPrinter {
        		}
        	}
         
-        if (c.hasTag("InnerClassAttribute")){
-        	InnerClassAttribute icTag = (InnerClassAttribute)c.getTag("InnerClassAttribute");
+        // If we have an outer class, we also pick up the InnerClass annotations
+        // from there. Note that Java and Soot associate InnerClass annotations
+        // with the respective outer classes, while Dalvik puts them on the
+        // respective inner classes.
+        if (c.hasOuterClass()) {
+        	InnerClassAttribute icTag = (InnerClassAttribute) c.getOuterClass().getTag("InnerClassAttribute");
         	List<Annotation> innerClassItem = buildInnerClassAttribute(c, icTag, skipList);
         	if (innerClassItem != null)
         	  annotations.addAll(innerClassItem);
+        }
+        
+    	// Write the MemberClasses tag
+    	InnerClassAttribute icTag = (InnerClassAttribute) c.getTag("InnerClassAttribute");
+    	if (icTag != null) {
+        	List<Annotation> memberClassesItem = buildMemberClassesAttribute(c, icTag, skipList);
+        	if (memberClassesItem != null)
+        	  annotations.addAll(memberClassesItem);
         }
         
         for (Tag t : c.getTags()) {
@@ -743,9 +755,8 @@ public class DexPrinter {
 
     private List<Annotation> buildInnerClassAttribute(SootClass parentClass,
     		InnerClassAttribute t, Set<String> skipList) {
-    	Set<String> memberClasses = null;
     	List<Annotation> anns = null;
-    	
+
     	for (Tag t2 : t.getSpecs()) {
     		InnerClassTag icTag = (InnerClassTag) t2;
     		
@@ -753,29 +764,16 @@ public class DexPrinter {
         	// InnerClass tag are written to the inner class which is different
         	// to Java. We thus check whether this tag actually points to our
     		// outer class.
-    		String outerClass;
+    		String outerClass = getOuterClassNameFromTag(icTag);
 			String innerClass = icTag.getInnerClass().replaceAll("/", ".");
-			if (icTag.getOuterClass() == null) { // anonymous inner classes
-				outerClass = icTag.getInnerClass().replaceAll("\\$[0-9]*$", "").replaceAll("/", ".");
-			} else {
-				outerClass = icTag.getOuterClass().replaceAll("/", ".");
-			}
+						
+			// Only write the InnerClass tag to the inner class itself, not
+			// the other one. If the outer class points to our parent, but
+			// this is simply the wrong inner class, we also continue with the
+			// next tag.
     		if (!parentClass.hasOuterClass()
-    				|| !outerClass.equals(parentClass.getOuterClass().getName())) {    			
-    			// Only classes with names are member classes
-    			if (icTag.getOuterClass() != null) {
-    				if (memberClasses == null)
-    					memberClasses = new HashSet<String>();
-    				memberClasses.add(SootToDexUtils.getDexClassName(icTag.getInnerClass()));
-    			}
-    			
-    			// Only write the InnerClass tag to the inner class itself, not
-    			// the other one.
-    			continue;
-    		}
-    		// If the outer class points to our parent, but this is simply the
-    		// wrong inner class, we continue with the next tag.
-    		else if (!innerClass.equals(parentClass.getName()))
+    				|| !innerClass.equals(parentClass.getName())
+    				|| parentClass.getName().equals(outerClass))
     			continue;
     		
     		// This is an actual inner class. Write the annotation
@@ -799,9 +797,43 @@ public class DexPrinter {
 		    			elements));
         	}
     	}
+    	    	
+    	return anns;
+    }
+
+	private String getOuterClassNameFromTag(InnerClassTag icTag) {
+		String outerClass;
+		if (icTag.getOuterClass() == null) { // anonymous inner classes
+			outerClass = icTag.getInnerClass().replaceAll("\\$[0-9]*$", "").replaceAll("/", ".");
+		} else {
+			outerClass = icTag.getOuterClass().replaceAll("/", ".");
+		}
+		return outerClass;
+	}
+
+    private List<Annotation> buildMemberClassesAttribute(SootClass parentClass,
+    		InnerClassAttribute t, Set<String> skipList) {
+    	List<Annotation> anns = null;
+    	Set<String> memberClasses = null;
+    	
+    	// Collect the inner classes
+    	for (Tag t2 : t.getSpecs()) {
+    		InnerClassTag icTag = (InnerClassTag) t2;
+    		String outerClass = getOuterClassNameFromTag(icTag);
+			
+			// Only classes with names are member classes
+			if (icTag.getOuterClass() != null
+					&& parentClass.getName().equals(outerClass)) {
+				if (memberClasses == null)
+					memberClasses = new HashSet<String>();
+				memberClasses.add(SootToDexUtils.getDexClassName(icTag.getInnerClass()));
+			}
+    	}
     	
     	// Write the member classes
-    	if (memberClasses != null && !memberClasses.isEmpty()) {
+    	if (memberClasses != null
+    			&& !memberClasses.isEmpty()
+    			&& skipList.add("Ldalvik/annotation/MemberClasses;")) {
         	List<EncodedValue> classes = new ArrayList<EncodedValue>();
 	    	for (String memberClass : memberClasses) {
 	    		ImmutableTypeEncodedValue classValue = new ImmutableTypeEncodedValue(memberClass);
@@ -819,10 +851,9 @@ public class DexPrinter {
 	    	if (anns == null) anns = new ArrayList<Annotation>();
 	    	anns.add(memberAnnotation);
     	}
-    	
     	return anns;
     }
-
+    
     /**
      * Converts Jimple visibility to Dexlib visibility
      * 
@@ -851,7 +882,7 @@ public class DexPrinter {
                 // Do not print method bodies for inherited methods
                 continue;
             }
-
+            
         	MethodImplementation impl = toMethodImplementation(sm);
         	
         	List<String> parameterNames = null;
@@ -1197,6 +1228,7 @@ public class DexPrinter {
 	public void add(SootClass c) {
 		if (c.isPhantom())
 			return;
+				
 		addAsClassDefItem(c);
 		// save original APK for this class, needed to copy all the other files inside
 		Map<String, File> dexClassIndex = SourceLocator.v().dexClassIndex();
