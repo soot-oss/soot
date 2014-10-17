@@ -46,6 +46,13 @@ import soot.options.Options;
 import soot.Modifier;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
+import soot.PatchingChain;
+import soot.Unit;
+import soot.jimple.InvokeExpr;
+import soot.Body;
+import soot.ValueBox;
+import soot.Value;
+import soot.jimple.Stmt;
 
 public class RTAClassLoader {
 
@@ -154,7 +161,7 @@ public class RTAClassLoader {
 
     verbose = Options.v().rtaclassload_verbose();
     callGraphPrint = Options.v().rtaclassload_callgraph_print();
-    contextSensitiveNewInvokes = Options.v().rtaclassload_context_sensitive_new_invokes();
+    contextSensitiveNewInvokes = false;
     allowPhantomRefs = Options.v().allow_phantom_refs();
   }
 
@@ -1079,6 +1086,7 @@ public class RTAClassLoader {
         }
         visited.add(sootMethod.getSignature());
         sootMethod.setSource(rtaMethod.getMethodSource());
+        sootMethod.retrieveActiveBody();
       }
     }
   }
@@ -1109,5 +1117,57 @@ public class RTAClassLoader {
   }
 
   private void buildCallGraph(){
+    log("[rtaclassload] building call graph...");
+    CallGraph callGraph = new CallGraph();
+    LinkedList<SootMethod> queue = new LinkedList<SootMethod>();
+    Set<SootMethod> visited = new HashSet<SootMethod>();
+    queue.addAll(getEntryPoints());
+    while(queue.isEmpty() == false){
+      SootMethod method = queue.removeFirst();
+      if(visited.contains(method)){
+        continue;
+      }
+      visited.add(method);
+      if(method.isConcrete() == false || method.isNative() == true){
+        return;
+      }
+      if(method.hasActiveBody() == false){
+        return;
+      }
+      MethodSignatureUtil util = new MethodSignatureUtil();
+      MethodSignature srcSignature = new MethodSignature(method.getSignature());
+      Body body = method.getActiveBody();
+      PatchingChain<Unit> units = body.getUnits();
+      Unit unit = units.getFirst();
+      while(unit != null){
+        List valueBoxes = unit.getUseAndDefBoxes();
+        for(Object valueBox : valueBoxes){
+          Value value = ((ValueBox) valueBox).getValue();
+          if(value instanceof InvokeExpr){
+            InvokeExpr expr = (InvokeExpr) value;
+            SootMethod target = expr.getMethod();
+            if(target.isStatic()){
+              callGraphAddEdge(callGraph, method, target, unit);
+            } else {
+              MethodSignature virtualTargetSignature = new MethodSignature(target.getSignature());
+              List<MethodSignature> targets = getVirtualMethods(virtualTargetSignature, newInvokes);
+              for(MethodSignature targetSignature : targets){
+                util.parse(targetSignature);
+                SootMethod virtualTarget = util.getSootMethod();
+                callGraphAddEdge(callGraph, method, virtualTarget, unit);
+              }
+            }
+          }
+        }
+        unit = units.getSuccOf(unit);
+      }
+    }
+    Scene.v().setCallGraph(callGraph);
+  }
+
+  private void callGraphAddEdge(CallGraph callGraph, SootMethod src, SootMethod dest, Unit unit){
+    Stmt stmt = (Stmt) unit;
+    Edge edge = new Edge(src, stmt, dest);
+    callGraph.addEdge(edge);
   }
 }
