@@ -1,0 +1,20 @@
+<project default="jar">
+  <target name="clean">
+    <delete dir="build"/>
+  </target>
+  <target name="compile">
+    <mkdir dir="build/classes"/>
+    <javac srcdir="src" destdir="build/classes"
+      debug="true"
+      debugLevel="lines,vars,source"
+      includeantruntime="false"
+    />
+  </target>
+  <target name="jar" depends="compile">
+    <jar destfile="dist/analysis.jar" basedir="build/classes">
+      <manifest>
+        <attribute name="Main-Class" value="Main"/>
+      </manifest>
+    </jar>
+  </target>
+</project>

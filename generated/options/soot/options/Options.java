@@ -1068,6 +1068,21 @@ public class Options extends OptionsBase {
             )
                 no_writeout_body_releasing = true;
   
+            else if( false 
+            || option.equals( "rtaclassload_verbose" )
+            )
+                rtaclassload_verbose = true;
+  
+            else if( false 
+            || option.equals( "rtaclassload_callgraph_print" )
+            )
+                rtaclassload_callgraph_print = true;
+  
+            else if( false 
+            || option.equals( "rtaclassload_context_sensitive_new_invokes" )
+            )
+                rtaclassload_context_sensitive_new_invokes = true;
+  
             else {
                 G.v().out.println( "Invalid option -"+option );
                 return false;
@@ -1371,6 +1386,18 @@ public class Options extends OptionsBase {
     private boolean no_writeout_body_releasing = false;
     public void set_no_writeout_body_releasing( boolean setting ) { no_writeout_body_releasing = setting; }
   
+    public boolean rtaclassload_verbose() { return rtaclassload_verbose; }
+    private boolean rtaclassload_verbose = false;
+    public void set_rtaclassload_verbose( boolean setting ) { rtaclassload_verbose = setting; }
+  
+    public boolean rtaclassload_callgraph_print() { return rtaclassload_callgraph_print; }
+    private boolean rtaclassload_callgraph_print = false;
+    public void set_rtaclassload_callgraph_print( boolean setting ) { rtaclassload_callgraph_print = setting; }
+  
+    public boolean rtaclassload_context_sensitive_new_invokes() { return rtaclassload_context_sensitive_new_invokes; }
+    private boolean rtaclassload_context_sensitive_new_invokes = false;
+    public void set_rtaclassload_context_sensitive_new_invokes( boolean setting ) { rtaclassload_context_sensitive_new_invokes = setting; }
+  
 
     public String getUsage() {
         return ""
@@ -1484,7 +1511,12 @@ public class Options extends OptionsBase {
       
 +padOpt(" -time", "Report time required for transformations" )
 +padOpt(" -subtract-gc", "Subtract gc from time" )
-+padOpt(" -no-writeout-body-releasing", "Disables the release of method bodies after writeout. This flag is used internally." );
++padOpt(" -no-writeout-body-releasing", "Disables the release of method bodies after writeout. This flag is used internally." )
++"\nRTAClassLoader Options:\n"
+      
++padOpt(" -rtaclassload_verbose", "RTAClassLoader Verbose" )
++padOpt(" -rtaclassload_callgraph_print", "RTAClassLoader CallGraph Print" )
++padOpt(" -rtaclassload_context_sensitive_new_invokes", "RTAClassLoader Context Sensitive NewInvokes" );
     }
 
 
@@ -2598,7 +2630,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "db.deobfuscate" ) )
             return "Phase "+phaseName+":\n"+
-                "\nCertain analyses make sense only when the bytecode is obfuscated \ncode. There are plans to implement such analyses and apply them \non methods only if this flag is set. Dead Code elimination \nwhich includes removing code guarded by some condition which is \nalways false or always true is one such analysis. Another \nsuggested analysis is giving default names to classes and \nfields. Onfuscators love to use weird names for fields and \nclasses and even a simple re-naming of these could be a good \nhelp to the user. Another more advanced analysis would be to \ncheck for redundant constant fields added by obfuscators and \nthen remove uses of these constant fields from the code."
+                "\nCertain analyses make sense only when the bytecode is obfuscated \ncode. There are plans to implement such analyses and apply them \non methods only if this flag is set. Dead Code elimination which \nincludes removing code guarded by some condition which is always \nfalse or always true is one such analysis. Another suggested \nanalysis is giving default names to classes and fields. \nOnfuscators love to use weird names for fields and classes and \neven a simple re-naming of these could be a good help to the \nuser. Another more advanced analysis would be to check for \nredundant constant fields added by obfuscators and then remove \nuses of these constant fields from the code."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     

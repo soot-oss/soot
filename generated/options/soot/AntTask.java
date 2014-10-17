@@ -529,6 +529,18 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-no-writeout-body-releasing");
         }
   
+        public void setrtaclassload_verbose(boolean arg) {
+            if(arg) addArg("-rtaclassload_verbose");
+        }
+  
+        public void setrtaclassload_callgraph_print(boolean arg) {
+            if(arg) addArg("-rtaclassload_callgraph_print");
+        }
+  
+        public void setrtaclassload_context_sensitive_new_invokes(boolean arg) {
+            if(arg) addArg("-rtaclassload_context_sensitive_new_invokes");
+        }
+  
         public Object createp_jb() {
             Object ret = new PhaseOptjb();
             phaseopts.add(ret);

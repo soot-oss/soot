@@ -49,9 +49,9 @@ public class SourceLocator
 
     protected Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
 	protected Set<String> classesToLoad;
-    
+
     /** Given a class name, uses the soot-class-path to return a ClassSource for the given class. */
-	public ClassSource getClassSource(String className) 
+	public ClassSource getClassSource(String className)
     {
 		if(classesToLoad==null) {
 			classesToLoad = new HashSet<String>();
@@ -60,7 +60,7 @@ public class SourceLocator
 				classesToLoad.add(c.getName());
 			}
 		}
-    	
+
         if( classPath == null ) {
             classPath = explodeClassPath(Scene.v().getSootClassPath());
         }
@@ -80,7 +80,7 @@ public class SourceLocator
         for(final ClassLoader cl: additionalClassLoaders) {
             try {
             	ClassSource ret = new ClassProvider() {
-					
+
 					public ClassSource find(String className) {
 				        String fileName = className.replace('.', '/') + ".class";
 						InputStream stream = cl.getResourceAsStream(fileName);
@@ -107,7 +107,7 @@ public class SourceLocator
         }
         return null;
     }
-    
+
     public void additionalClassLoader(ClassLoader c) {
     	additionalClassLoaders.add(c);
     }
@@ -151,7 +151,13 @@ public class SourceLocator
     }
 
     private List<String> classPath;
-    public List<String> classPath() { return classPath; }
+    public List<String> classPath() {
+      if(classPath == null) {
+        classPath = explodeClassPath(Scene.v().getSootClassPath());
+      }
+      return classPath;
+    }
+
     public void invalidateClassPath() {
         classPath = null;
     }
@@ -160,7 +166,7 @@ public class SourceLocator
     public List<String> sourcePath() {
         if( sourcePath == null ) {
             sourcePath = new ArrayList<String>();
-            for (String dir : classPath) {
+            for (String dir : classPath()) {
                 if( !isArchive(dir) ) sourcePath.add(dir);
             }
         }
@@ -299,7 +305,7 @@ public class SourceLocator
 
         return getDavaFilenameFor(c, b);
     }
-    
+
 	private String getDavaFilenameFor(SootClass c, StringBuffer b) {
 		b.append("dava");
         b.append(File.separatorChar);
@@ -420,7 +426,7 @@ public class SourceLocator
     public static List<String> explodeClassPath( String classPath ) {
         List<String> ret = new ArrayList<String>();
 
-        StringTokenizer tokenizer = 
+        StringTokenizer tokenizer =
             new StringTokenizer(classPath, File.pathSeparator);
         while( tokenizer.hasMoreTokens() ) {
             String originalDir = tokenizer.nextToken();
@@ -463,20 +469,20 @@ public class SourceLocator
     }
 
     private static InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {
-	
+
 	int sz = (int) size;
-	byte[] buf = new byte[sz];					
-				
-				    
+	byte[] buf = new byte[sz];
+
+
 	final int N = 1024;
 	int ln = 0;
 	int count = 0;
-	while (sz > 0 &&  
+	while (sz > 0 &&
 	       (ln = is.read(buf, count, Math.min(N, sz))) != -1) {
 	    count += ln;
 	    sz -= ln;
 	}
-	return  new ByteArrayInputStream(buf);		
+	return  new ByteArrayInputStream(buf);
     }
 
 
@@ -569,4 +575,3 @@ public class SourceLocator
     	dexClassIndex = index;
     }
 }
-

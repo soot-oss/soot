@@ -953,4 +953,16 @@ public class Singletons {
         return instance_soot_jimple_toolkits_typing_fast_BottomType;
     }
 
+    private soot.rtaclassload.RTAClassLoader instance_soot_rtaclassload_RTAClassLoader;
+    public soot.rtaclassload.RTAClassLoader soot_rtaclassload_RTAClassLoader() {
+        if( instance_soot_rtaclassload_RTAClassLoader == null ) instance_soot_rtaclassload_RTAClassLoader = new soot.rtaclassload.RTAClassLoader( g );
+        return instance_soot_rtaclassload_RTAClassLoader;
+    }
+
+    private soot.rtaclassload.StringNumbers instance_soot_rtaclassload_StringNumbers;
+    public soot.rtaclassload.StringNumbers soot_rtaclassload_StringNumbers() {
+        if( instance_soot_rtaclassload_StringNumbers == null ) instance_soot_rtaclassload_StringNumbers = new soot.rtaclassload.StringNumbers( g );
+        return instance_soot_rtaclassload_StringNumbers;
+    }
+
 }
