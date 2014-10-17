@@ -251,67 +251,7 @@ public class Printer {
         out.println("}");
         incJimpleLnNum();
     }
-
-    /**
-        Writes the class out to a file.
-     */
-    // This method is deprecated. Use soot.util.JasminOutputStream instead.
-    public void writeXXXDeprecated(SootClass cl, String outputDir) {
-        String outputDirWithSep = "";
-
-        if (!outputDir.equals(""))
-            outputDirWithSep = outputDir + fileSeparator;
-
-        try {
-            File tempFile =
-                new File(outputDirWithSep + cl.getName() + ".jasmin");
-
-            FileOutputStream streamOut = new FileOutputStream(tempFile);
-
-            PrintWriter writerOut =
-                new PrintWriter(
-                    new EscapedWriter(new OutputStreamWriter(streamOut)));
-
-            if (cl.containsBafBody())
-                new soot.baf.JasminClass(cl).print(writerOut);
-            else
-                new soot.jimple.JasminClass(cl).print(writerOut);
-
-            writerOut.close();
-
-            if (Options.v().time())
-                Timers.v().assembleJasminTimer.start();
-
-            // Invoke jasmin
-            {
-                String[] args;
-
-                if (outputDir.equals("")) {
-                    args = new String[1];
-
-                    args[0] = cl.getName() + ".jasmin";
-                } else {
-                    args = new String[3];
-
-                    args[0] = "-d";
-                    args[1] = outputDir;
-                    args[2] = outputDirWithSep + cl.getName() + ".jasmin";
-                }
-
-                jasmin.Main.main(args);
-            }
-
-            tempFile.delete();
-
-            if (Options.v().time())
-                Timers.v().assembleJasminTimer.end();
-
-        } catch (IOException e) {
-            throw new RuntimeException(
-                "Could not produce new classfile! (" + e + ")");
-        }
-    }
-
+    
     /**
      *   Prints out the method corresponding to b Body, (declaration and body),
      *   in the textual format corresponding to the IR used to encode b body.
