@@ -807,8 +807,23 @@ public class DexBody  {
             // instruction of the try block. Removing 1 from (startAddress + length) always points to "somewhere" in
             // the last instruction of the try block since the smallest instruction is on two bytes (nop = 0x0000).
             Unit endStmt =  instructionAtAddress (endAddress).getUnit();
-            Debug.printDbg("begin instruction (0x", Integer.toHexString(startAddress) ,"): ", instructionAtAddress(startAddress).getUnit() ," --- ", instructionAtAddress(startAddress).getUnit());
-            Debug.printDbg("end instruction   (0x", Integer.toHexString(endAddress)   ,"): ", instructionAtAddress (endAddress).getUnit()  ," --- ", instructionAtAddress (endAddress).getUnit());
+			// if the try block ends on the last instruction of the body, add a
+			// nop instruction so Soot can include
+			// the last instruction in the try block.
+			if (jBody.getUnits().getLast() == endStmt
+					&& instructionAtAddress(endAddress - 1).getUnit() == endStmt) {
+				Unit nop = Jimple.v().newNopStmt();
+				jBody.getUnits().insertAfter(nop, endStmt);
+				endStmt = nop;
+			}
+			Debug.printDbg("begin instruction (0x",
+					Integer.toHexString(startAddress), "): ",
+					instructionAtAddress(startAddress).getUnit(), " --- ",
+					beginStmt);
+			Debug.printDbg("end instruction   (0x",
+					Integer.toHexString(endAddress), "): ",
+					instructionAtAddress(endAddress).getUnit(), " --- ",
+					endStmt);
 
 
             List<? extends ExceptionHandler> hList = tryItem.getExceptionHandlers();
