@@ -1302,7 +1302,7 @@ public class JasminClass extends AbstractJasminClass
                 emit("lookupswitch", -1);
 
                 List lookupValues = s.getLookupValues();
-                List targets = s.getTargets();
+                List<Unit> targets = s.getTargets();
 
                 for(int i = 0; i < lookupValues.size(); i++)
                     emit("  " + lookupValues.get(i) + " : " + unitToLabel.get(targets.get(i)));
@@ -1401,7 +1401,7 @@ public class JasminClass extends AbstractJasminClass
                 emitValue(s.getKey());
                 emit("tableswitch " + s.getLowIndex() + " ; high = " + s.getHighIndex(), -1);
 
-                List targets = s.getTargets();
+                List<Unit> targets = s.getTargets();
 
                 for(int i = 0; i < targets.size(); i++)
                     emit("  " + unitToLabel.get(targets.get(i)));
@@ -2416,12 +2416,11 @@ public class JasminClass extends AbstractJasminClass
 
             public void caseNewMultiArrayExpr(NewMultiArrayExpr v)
             {
-                List sizes = v.getSizes();
+                for (Value val : v.getSizes())
+                    emitValue(val);
 
-                for(int i = 0; i < sizes.size(); i++)
-                    emitValue((Value) sizes.get(i));
-
-                emit("multianewarray " + jasminDescriptorOf(v.getBaseType()) + " " + sizes.size(), -sizes.size() + 1);
+                int size = v.getSizeCount();
+                emit("multianewarray " + jasminDescriptorOf(v.getBaseType()) + " " + size, -size + 1);
             }
 
             public void caseNewExpr(NewExpr v)

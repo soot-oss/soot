@@ -233,11 +233,10 @@ public class JasminClass extends AbstractJasminClass
             {
                 for (Local local : body.getLocals())
                 {
-                    if(!assignedLocals.contains(local))
+                    if(assignedLocals.add(local))
                     {
                         localToSlot.put(local, new Integer(localCount));
                         localCount += sizeOfType((Type)local.getType());
-                        assignedLocals.add(local);
                     }
                 }
 
