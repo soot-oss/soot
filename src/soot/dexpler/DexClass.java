@@ -180,7 +180,7 @@ public class DexClass {
         			// Transfer the tag from the inner class to the outer class
         			InnerClassTag newt = new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags());
         			icat.add(newt);
-        			innerTagIt.remove();
+					// innerTagIt.remove();
         		}
         	}
         }

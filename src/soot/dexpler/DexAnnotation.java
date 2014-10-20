@@ -344,6 +344,13 @@ public class DexAnnotation {
                    	sootOuterClass = outerClass;
                 }
                 String innerClass = classType;
+
+				// Make sure that no funny business is going on if the
+				// annotation is broken and does not end in $nn.
+				if (sootOuterClass.equals(classType)) {
+					outerClass = null;
+					sootOuterClass = null;
+				}
                                 
                 Tag innerTag = new InnerClassTag(
                         DexType.toSootICAT(innerClass), 
