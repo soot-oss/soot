@@ -71,10 +71,8 @@ public class NopEliminator extends BodyTransformer
 					// is at the very end of the code.
 					boolean keepNop = false;
 					if (b.getUnits().getLast() == u) {
-						System.out.println("we are here");
 						for (Trap t : b.getTraps()) {
 							if (t.getEndUnit() == u) {
-								System.out.println("we are here for trap " + t);
 								keepNop = true;
 							}
 						}

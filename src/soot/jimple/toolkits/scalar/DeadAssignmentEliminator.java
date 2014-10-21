@@ -123,10 +123,8 @@ public class DeadAssignmentEliminator extends BodyTransformer
 				// which is at the very end of the code.
 				boolean keepNop = false;
 				if (b.getUnits().getLast() == s) {
-					System.out.println("we are here");
 					for (Trap t : b.getTraps()) {
 						if (t.getEndUnit() == s) {
-							System.out.println("we are here for trap " + t);
 							keepNop = true;
 						}
 					}
