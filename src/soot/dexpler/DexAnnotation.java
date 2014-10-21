@@ -335,16 +335,20 @@ public class DexAnnotation {
                 if (name == null) {
                 	outerClass = null;
                 	sootOuterClass = classType.replaceAll("\\$[0-9]*;$", ";");
-                    // Make sure that no funny business is going on if the
-                    // annotation is broken and does not end in $nn.
-                    if (sootOuterClass.equals(classType))
-                    	sootOuterClass = null;
                 } else {
                     outerClass = classType.replaceFirst("\\$"+ name, "");
                    	sootOuterClass = outerClass;
                 }
-                String innerClass = classType;
-                                
+
+				String innerClass = classType;
+
+                // Make sure that no funny business is going on if the
+                // annotation is broken and does not end in $nn.
+				if (sootOuterClass.equals(classType)) {
+					outerClass = null;
+					sootOuterClass = null;
+				}
+
                 Tag innerTag = new InnerClassTag(
                         DexType.toSootICAT(innerClass), 
                         outerClass == null ? null : DexType.toSootICAT(outerClass),
@@ -408,7 +412,13 @@ public class DexAnnotation {
             } else if (atypes.equals("java.lang.Deprecated")) {
                 if (eSize != 0)
                     throw new RuntimeException("error: expected 1 element for annotation Deprecated. Got "+ eSize +" instead.");
-                t = new DeprecatedTag(); 
+
+				t = new DeprecatedTag();
+
+				AnnotationTag adt = new AnnotationTag("Ljava/lang/Deprecated;");
+				if (vatg[v] == null)
+					vatg[v] = new VisibilityAnnotationTag(v);
+				vatg[v].addAnnotation(adt);
                 
             } else {
                 Debug.printDbg("read visibility tag: ", a.getType());

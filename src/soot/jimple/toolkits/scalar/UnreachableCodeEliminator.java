@@ -27,13 +27,13 @@
 
 package soot.jimple.toolkits.scalar;
 
+import java.util.ArrayDeque;
+import java.util.Collections;
+import java.util.Deque;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.Collections;
-import java.util.ArrayDeque;
-import java.util.Deque;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -46,8 +46,8 @@ import soot.Unit;
 import soot.options.Options;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
 import soot.toolkits.exceptions.ThrowAnalysis;
-import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.Chain;
 
 
@@ -107,7 +107,12 @@ public class UnreachableCodeEliminator extends BodyTransformer
 			if ( (trap.getBeginUnit() == trap.getEndUnit()) || !reachable.contains(trap.getHandlerUnit()) ) {
 				it.remove();
 			}
-		}   
+			// Rare case hack: do not remove nop if is is used for a Trap which
+			// is at the very end of the code.
+			if (trap.getEndUnit() == body.getUnits().getLast()) {
+				reachable.add(trap.getEndUnit());
+			}
+		}
 			
 		units.retainAll(reachable);   
 	  	

@@ -48,6 +48,7 @@ import soot.NullType;
 import soot.PhaseOptions;
 import soot.Singletons;
 import soot.Timers;
+import soot.Trap;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
@@ -118,8 +119,20 @@ public class DeadAssignmentEliminator extends BodyTransformer
 			boolean isEssential = true;
 			
 			if (s instanceof NopStmt) {
-				it.remove();
-				continue;
+				// Hack: do not remove nop if is is used for a Trap
+				// which is at the very end of the code.
+				boolean keepNop = false;
+				if (b.getUnits().getLast() == s) {
+					for (Trap t : b.getTraps()) {
+						if (t.getEndUnit() == s) {
+							keepNop = true;
+						}
+					}
+				}
+				if (!keepNop) {
+					it.remove();
+					continue;
+				}
 			}
 			else if (s instanceof AssignStmt) {
 				AssignStmt as = (AssignStmt) s;
