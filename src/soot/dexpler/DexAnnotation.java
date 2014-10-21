@@ -415,7 +415,13 @@ public class DexAnnotation {
             } else if (atypes.equals("java.lang.Deprecated")) {
                 if (eSize != 0)
                     throw new RuntimeException("error: expected 1 element for annotation Deprecated. Got "+ eSize +" instead.");
-                t = new DeprecatedTag(); 
+
+				t = new DeprecatedTag();
+
+				AnnotationTag adt = new AnnotationTag("Ljava/lang/Deprecated;");
+				if (vatg[v] == null)
+					vatg[v] = new VisibilityAnnotationTag(v);
+				vatg[v].addAnnotation(adt);
                 
             } else {
                 Debug.printDbg("read visibility tag: ", a.getType());
