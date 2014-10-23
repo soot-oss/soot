@@ -101,7 +101,6 @@ public class DexReturnInliner extends DexTransformer {
 						Unit newTarget = (Unit) t.clone();
 						body.getUnits().addLast(newTarget);
 						ifstmt.setTarget(newTarget);
-						System.out.println("new if target: " + newTarget + " for if: " + ifstmt);
 						body.getUnits().remove(ifstmt);
 					}
 				}
