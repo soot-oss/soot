@@ -2,7 +2,9 @@ package soot.dexpler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jf.dexlib2.AnnotationVisibility;
@@ -33,6 +35,7 @@ import org.jf.dexlib2.iface.value.TypeEncodedValue;
 
 import soot.RefType;
 import soot.SootClass;
+import soot.SootMethod;
 import soot.SootResolver;
 import soot.Type;
 import soot.javaToJimple.IInitialResolver.Dependencies;
@@ -41,6 +44,7 @@ import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationConstants;
+import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationDoubleElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationEnumElem;
@@ -114,6 +118,37 @@ public class DexAnnotation {
    			    		}
    			    	}
    					ica.add((InnerClassTag)t);
+				} else if (t instanceof VisibilityAnnotationTag) {
+					// If a dalvik/annotation/AnnotationDefault tag is present
+					// in a class, its AnnotationElements must be propagated
+					// to methods through the creation of new AnnotationDefaultTag.
+					VisibilityAnnotationTag vt = (VisibilityAnnotationTag) t;
+					for (AnnotationTag a : vt.getAnnotations()) {
+						if (a.getType().equals("Ldalvik/annotation/AnnotationDefault;")) {
+							for (AnnotationElem ae : a.getElems()) {
+								if (ae instanceof AnnotationAnnotationElem) {
+									AnnotationAnnotationElem aae = (AnnotationAnnotationElem) ae;
+									AnnotationTag at = (AnnotationTag) aae.getValue();
+									// extract default elements
+									Map<String, AnnotationElem> defaults = new HashMap<String, AnnotationElem>();
+									for (AnnotationElem aelem: at.getElems()) {
+										defaults.put(aelem.getName(), aelem);
+									}
+									// create default tags containing default elements
+									// and add tags on methods
+									for (SootMethod sm: clazz.getMethods()) {
+										String methodName = sm.getName();
+										if (defaults.containsKey(methodName)) {
+											AnnotationElem e = defaults.get(methodName);
+											e.setName("default");
+											AnnotationDefaultTag d = new AnnotationDefaultTag(e);
+											sm.addTag(d);
+										}
+									}
+								}
+							}
+						}
+					}
    				} else {
    					clazz.addTag(t);
    				}

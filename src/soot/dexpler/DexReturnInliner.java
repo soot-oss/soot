@@ -36,6 +36,7 @@ import soot.UnitBox;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
 import soot.jimple.GotoStmt;
+import soot.jimple.IfStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.Stmt;
 import soot.toolkits.graph.ExceptionalUnitGraph;
@@ -78,6 +79,14 @@ public class DexReturnInliner extends DexTransformer {
 					while (!u.getBoxesPointingToThis().isEmpty())
 						u.getBoxesPointingToThis().get(0).setUnit(stmt);
 					body.getUnits().swapWith(u, stmt);
+				}
+			} else if (u instanceof IfStmt) {
+				IfStmt ifstmt = (IfStmt) u;
+				Unit t = ifstmt.getTarget();
+				if (t instanceof ReturnStmt) {
+					Unit newTarget = (Unit) t.clone();
+					body.getUnits().addLast(newTarget);
+					ifstmt.setTarget(newTarget);
 				}
 			}
 		}

@@ -124,7 +124,11 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
 		return new AnnotationElemBuilder() {
 			@Override
 			public void visitEnd() {
-				AnnotationElemBuilder.this.elems.add(new AnnotationArrayElem(this.elems, '[', name));
+				String ename = name;
+				if (ename == null)
+					ename = "default";
+				AnnotationElemBuilder.this.elems.add(new AnnotationArrayElem(
+						this.elems, '[', ename));
 			}
 		};
 	}
