@@ -329,14 +329,14 @@ public class DexAnnotation {
                 	else
                 		throw new RuntimeException("Unexpected inner class annotation element");
                 }
-                
+                                
                 String outerClass;
                 String sootOuterClass;
                 if (name == null) {
                 	outerClass = null;
                 	sootOuterClass = classType.replaceAll("\\$[0-9]*;$", ";");
                 } else {
-                    outerClass = classType.replaceFirst("\\$"+ name, "");
+                    outerClass = classType.replaceFirst("\\$"+ name + ";$", ";");
                    	sootOuterClass = outerClass;
                 }
 
