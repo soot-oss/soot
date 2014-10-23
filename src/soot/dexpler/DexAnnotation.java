@@ -149,6 +149,8 @@ public class DexAnnotation {
 							}
 						}
 					}
+					if (!(vt.getVisibility() == AnnotationConstants.RUNTIME_INVISIBLE))
+						clazz.addTag(vt);
    				} else {
    					clazz.addTag(t);
    				}
