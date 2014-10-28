@@ -178,12 +178,13 @@ class SootClassBuilder extends ClassVisitor {
 	
 	@Override
 	public void visitOuterClass(String owner, String name, String desc) {
+
+		if (name != null)
+			klass.addTag(new EnclosingMethodTag(owner, name, desc));
+
 		owner = AsmUtil.toQualifiedName(owner);
 		deps.add(RefType.v(owner));
 		klass.setOuterClass(SootResolver.v().makeClassRef(owner));
-		
-		if (name != null)
-			klass.addTag(new EnclosingMethodTag(owner, name, desc));
 	}
 	
 	@Override
