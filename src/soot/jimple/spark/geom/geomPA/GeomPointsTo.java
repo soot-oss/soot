@@ -1148,7 +1148,9 @@ public class GeomPointsTo extends PAG
 			IVarAbstraction rhs = cons.getRHS();
 
 			if (!lhs.reachable() || 
-					!rhs.reachable()) {
+					!rhs.reachable() ||
+					getMappedMethodID(lhs) == Constants.UNKNOWN_FUNCTION ||
+					getMappedMethodID(rhs) == Constants.UNKNOWN_FUNCTION ) {
 				cIt.remove();
 			}
 		}
