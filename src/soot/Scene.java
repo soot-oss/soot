@@ -1313,9 +1313,7 @@ public class Scene  //extends AbstractHost
         		throw new IllegalArgumentException("If switch -oaat is used, then also -process-dir must be given.");
         	}
         } else {
-	        for( Iterator<String> pathIt = Options.v().process_dir().iterator(); pathIt.hasNext(); ) {
-	
-	            final String path = (String) pathIt.next();
+	        for( final String path : Options.v().process_dir() ) {
 	            for (String cl : SourceLocator.v().getClassesUnder(path)) {
 	            	SootClass theClass = loadClassAndSupport(cl);
 	            	theClass.setApplicationClass();
