@@ -161,8 +161,8 @@ public class DexClass {
         			
         			// Get the outer class
         			String outer = null;
-        			if (ict.getOuterClass() == null) { // anonymous inner classes
-        				outer = ict.getInnerClass().replaceAll("\\$[0-9]*$", "").replaceAll("/", ".");
+					if (ict.getOuterClass() == null) { // anonymous and local classes
+						outer = ict.getInnerClass().replaceAll("\\$[0-9].*$", "").replaceAll("/", ".");
         			} else {
         				outer = ict.getOuterClass().replaceAll("/", ".");
         			}
