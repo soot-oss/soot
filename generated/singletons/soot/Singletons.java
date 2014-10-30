@@ -953,4 +953,10 @@ public class Singletons {
         return instance_soot_jimple_toolkits_typing_fast_BottomType;
     }
 
+    private soot.dexpler.TrapMinimizer instance_soot_dexpler_TrapMinimizer;
+    public soot.dexpler.TrapMinimizer soot_dexpler_TrapMinimizer() {
+        if( instance_soot_dexpler_TrapMinimizer == null ) instance_soot_dexpler_TrapMinimizer = new soot.dexpler.TrapMinimizer( g );
+        return instance_soot_dexpler_TrapMinimizer;
+    }
+
 }

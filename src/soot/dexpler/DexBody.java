@@ -664,6 +664,7 @@ public class DexBody  {
         // Keep only transformations that have not been done
         // at this point.
         TrapTightener.v().transform(jBody);
+		TrapMinimizer.v().transform(jBody);
         //LocalSplitter.v().transform(jBody);
         Aggregator.v().transform(jBody);
         //UnusedLocalEliminator.v().transform(jBody);
