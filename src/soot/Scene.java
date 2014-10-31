@@ -1415,10 +1415,10 @@ public class Scene  //extends AbstractHost
                     continue;
                 }
                 if(s.isApplicationClass() && isExcluded(s)){
-                	s.setLibraryClass();
+                    s.setLibraryClass();
                 }
                 if(isIncluded(s)){
-                	s.setApplicationClass();
+                    s.setApplicationClass();
                 }
                 if(s.isApplicationClass()) {
                     // make sure we have the support
@@ -1427,28 +1427,28 @@ public class Scene  //extends AbstractHost
             }
         }
     }
-	
-	public boolean isExcluded(SootClass sc){
-		String name = sc.getName();
-		for (String pkg : excludedPackages) {
-			if ((name.startsWith(pkg) && pkg.charAt(pkg.length()-1) == '.' ) || name.equals(pkg)) {
-				return !isIncluded(sc);
-			}
-		}
-		return false;
-	}
-	
-	public boolean isIncluded(SootClass sc){
-		String name = sc.getName();
-		for (String inc : (List<String>) Options.v().include()) {
-			if ((name.startsWith(inc) && inc.charAt(inc.length()-1) == '.') || name.equals(inc)) {
-				return true;
-			}
-		}
-		return false;
-	}
+    
+    public boolean isExcluded(SootClass sc){
+        String name = sc.getName();
+        for (String pkg : excludedPackages) {
+            if ((name.startsWith(pkg) && pkg.charAt(pkg.length()-1) == '.' ) || name.equals(pkg)) {
+                return !isIncluded(sc);
+            }
+        }
+        return false;
+    }
+    
+    public boolean isIncluded(SootClass sc){
+        String name = sc.getName();
+        for (String inc : (List<String>) Options.v().include()) {
+            if ((name.startsWith(inc) && inc.charAt(inc.length()-1) == '.') || name.equals(inc)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	List<String> pkgList;
+    List<String> pkgList;
 
     public void setPkgList(List<String> list){
         pkgList = list;
