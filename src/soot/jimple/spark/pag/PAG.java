@@ -84,6 +84,10 @@ public class PAG implements PointsToAnalysis {
         if( opts.add_tags() ) {
             nodeToTag = new HashMap<Node, Tag>();
         }
+        if (opts.rta() && opts.on_fly_cg()) {
+        	throw new RuntimeException("Incompatible options rta:true and on-fly-cg:true for cg.spark. Use -p cg-"
+        			+ ".spark on-fly-cg:false when using RTA.");
+		}
         typeManager = new TypeManager(this);
         if( !opts.ignore_types() ) {
             typeManager.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );

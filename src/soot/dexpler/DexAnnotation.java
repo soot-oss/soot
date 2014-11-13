@@ -422,8 +422,8 @@ public class DexAnnotation {
                     Debug.printDbg("signature: ", sig);
                     String innerClass = c.getDesc();
                     String outerClass = innerClass.replaceAll("\\$[^\\$]*$", "");
-                    String name = innerClass.replaceAll("^.*\\$", "");
-                    if (name.replaceAll("[0-9]*", "").equals("")) { // anonymous inner classes
+					String name = innerClass.replaceAll("^.*\\$", "").replaceAll(";$", "");
+					if (name.replaceAll("[0-9].*", "").equals("")) { // anonymous or local inner classes
                     	name = null;
                     }
                     int accessFlags = 0; // seems like this information is lost during the .class -- dx --> .dex process.
