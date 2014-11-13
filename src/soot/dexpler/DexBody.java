@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jf.dexlib2.dexbacked.DexBackedDexFile;
+import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.ExceptionHandler;
 import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.MethodImplementation;
@@ -65,6 +67,7 @@ import soot.dexpler.instructions.DanglingInstruction;
 import soot.dexpler.instructions.DeferableInstruction;
 import soot.dexpler.instructions.DexlibAbstractInstruction;
 import soot.dexpler.instructions.MoveExceptionInstruction;
+import soot.dexpler.instructions.OdexInstruction;
 import soot.dexpler.instructions.PseudoInstruction;
 import soot.dexpler.instructions.RetypeableInstruction;
 import soot.dexpler.typing.DalvikTyper;
@@ -124,6 +127,8 @@ public class DexBody  {
     private List<? extends TryBlock<? extends ExceptionHandler>> tries;
 
     private RefType declaringClassType;
+    
+    private final DexFile dexFile;
 
     // detect array/instructions overlapping obfuscation
     private ArrayList<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
@@ -142,7 +147,7 @@ public class DexBody  {
      * @param code the codeitem that is contained in this body
      * @param method the method that is associated with this body
      */
-    public DexBody(String dexFile, Method method, RefType declaringClassType) {
+    public DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
         MethodImplementation code = method.getImplementation();
         if (code == null)
             throw new RuntimeException("error: no code for method "+ method.getName());
@@ -186,21 +191,7 @@ public class DexBody  {
         if (numParameterRegisters > numRegisters)
         	throw new RuntimeException("Malformed dex file: insSize (" + numParameterRegisters
         			+ ") > registersSize (" + numRegisters + ")");
-
-//        // get addresses of pseudo-instruction data blocks
-//        for(DexlibAbstractInstruction instruction : instructions) {
-//          if (instruction instanceof PseudoInstruction) {
-//            PseudoInstruction pi = (PseudoInstruction)instruction;
-//            try {
-//				pi.computeDataOffsets(this);
-//			} catch (Exception e) {
-//				throw new RuntimeException("exception while computing data offsets: ", e);
-//			}
-//            pseudoInstructionData.add (pi);
-//            Debug.printDbg("add pseudo instruction: 0x" + Integer.toHexString(pi.getDataFirstByte()) ," - 0x", Integer.toHexString(pi.getDataLastByte()) ," : ", pi.getDataSize());
-//          }
-//        }
-
+        
         for (DebugItem di: code.getDebugItems()) {
             if (di instanceof ImmutableLineNumber) {
                 ImmutableLineNumber ln = (ImmutableLineNumber)di;
@@ -215,7 +206,7 @@ public class DexBody  {
             }
         }
 
-
+        this.dexFile = dexFile;
     }
 
     /**
@@ -324,24 +315,6 @@ public class DexBody  {
      * @throws RuntimeException if address is not part of this body.
      */
     public DexlibAbstractInstruction instructionAtAddress(int address) {
-//      for (int j=address - 10; j< address+10; j++ ){
-//        Debug.printDbg(" dump2: 0x", Integer.toHexString(j) ," : ",instructionAtAddress.get (j) );
-//      }
-
-      // check if it is a jump to pseudo-instructions data (=obfuscation)
-     /*
-      PseudoInstruction pi = null; // TODO: isAddressInData(address);
-      if (pi != null && !pi.isLoaded()) {
-        System.out.println("warning: attempting to jump to pseudo-instruction data at address 0x"+ Integer.toHexString(address));
-        System.out.println("pseudo instruction: "+ pi);
-        pi.setLoaded(true);
-        instructions.addAll(decodeInstructions(pi)); // TODO: should add a throw instruction here just to be sure...
-        Exception e = new Exception();
-          e.printStackTrace();
-        System.out.println();
-      }
-      */
-
         DexlibAbstractInstruction i = null;
         while (i == null && address >= 0) {
             // catch addresses can be in the middlde of last instruction. Ex. in com.letang.ldzja.en.apk:
@@ -360,33 +333,6 @@ public class DexBody  {
         }
         return i;
     }
-
-    /*
-    private ArrayList<DexlibAbstractInstruction> decodeInstructions(PseudoInstruction pi) {
-      final ArrayList<Instruction> instructionList = new ArrayList<Instruction>();
-      ArrayList<DexlibAbstractInstruction> dexInstructions = new ArrayList<DexlibAbstractInstruction>();
-
-//      InstructionIterator.IterateInstructions(this.dexFile, encodedInstructions,
-//              new InstructionIterator.ProcessInstructionDelegate() {
-//                  public void ProcessInstruction(int codeAddress, Instruction instruction) {
-//                      instructionList.add(instruction);
-//                  }
-//              });
-
-      Instruction[] instructions = new Instruction[instructionList.size()];
-      instructionList.toArray(instructions);
-      System.out.println("instructionList: ");
-      int address = pi.getDataFirstByte();
-      for (Instruction i: instructions) {
-        DexlibAbstractInstruction dexInstruction = fromInstruction(i, address);
-        instructionAtAddress.put(address, dexInstruction);
-        dexInstructions.add(dexInstruction);
-        System.out.println("i = "+ dexInstruction +" @ 0x"+ Integer.toHexString(address));
-        address += i.getCodeUnits();
-      }
-      return dexInstructions;
-    }
-	*/
     
     /**
      * Return the jimple equivalent of this body.
@@ -469,7 +415,11 @@ public class DexBody  {
         jBody.getLocals().add (storeResultLocal);
         
         // process bytecode instructions
+        final boolean isOdex = dexFile instanceof DexBackedDexFile ?
+        		((DexBackedDexFile) dexFile).isOdexFile() : false;
         for(DexlibAbstractInstruction instruction : instructions) {
+        	if (isOdex && instruction instanceof OdexInstruction)
+        		((OdexInstruction) instruction).deOdex(dexFile);
             if (dangling != null) {
                 dangling.finalize(this, instruction);
                 dangling = null;

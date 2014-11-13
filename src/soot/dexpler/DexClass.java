@@ -132,14 +132,14 @@ public class DexClass {
         
         // get the methods of the class
         for (Method method : defItem.getDirectMethods()) {
-            SootMethod sm = DexMethod.makeSootMethod(defItem.getSourceFile(), method, sc);
+            SootMethod sm = DexMethod.makeSootMethod(dexFile, method, sc);
             if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
                 continue;
             sc.addMethod(sm);
             da.handleMethodAnnotation(sm, method);
         }
         for (Method method : defItem.getVirtualMethods()) {
-            SootMethod sm = DexMethod.makeSootMethod(defItem.getSourceFile(), method, sc);
+            SootMethod sm = DexMethod.makeSootMethod(dexFile, method, sc);
             if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
                 continue;
             sc.addMethod(sm);

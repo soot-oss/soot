@@ -42,9 +42,9 @@ public class InvokeStaticInstruction extends MethodInvocationInstruction {
 //        tagWithLineNumber(nop);
 //        body.add(nop);
 //        beginUnit = nop;
-        invocation = Jimple.v().newStaticInvokeExpr(getStaticSootMethodRef(),
-                                                    buildParameters(body, true));
-        body.setDanglingInstruction(this);
+    	
+    	jimplifyStatic();
+    	
         // setUnit() is called in MethodInvocationInstruction
     }
 

@@ -46,11 +46,7 @@ public class InvokeInterfaceInstruction extends MethodInvocationInstruction {
 //        body.add(nop);
 //        beginUnit = nop;
 
-        List<Local> parameters = buildParameters(body, false);
-        invocation = Jimple.v().newInterfaceInvokeExpr(parameters.get(0),
-                                                       getSootMethodRef(),
-                                                       parameters.subList(1, parameters.size()));
-        body.setDanglingInstruction(this);
+    	jimplifyInterface();
         // setUnit() is called in MethodInvocationInstruction
     }
 }
