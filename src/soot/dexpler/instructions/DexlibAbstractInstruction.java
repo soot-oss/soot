@@ -58,7 +58,6 @@ public abstract class DexlibAbstractInstruction {
 //    protected Unit beginUnit;
 //    protected Unit endUnit;
     protected Unit unit;
-    protected DexBody body = null;
 
     public Instruction getInstruction() {
       return instruction;

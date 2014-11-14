@@ -42,7 +42,7 @@ public class InvokeVirtualInstruction extends MethodInvocationInstruction {
 //        body.add(nop);
 //        beginUnit = nop;
 
-   		jimplifyVirtual();
+   		jimplifyVirtual(body);
     	
         // setUnit() is called in MethodInvocationInstruction
     }

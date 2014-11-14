@@ -27,7 +27,6 @@ package soot.dexpler.instructions;
 import org.jf.dexlib2.iface.instruction.Instruction;
 
 import soot.dexpler.DexBody;
-import soot.jimple.Jimple;
 
 public class InvokeStaticInstruction extends MethodInvocationInstruction {
 
@@ -43,7 +42,7 @@ public class InvokeStaticInstruction extends MethodInvocationInstruction {
 //        body.add(nop);
 //        beginUnit = nop;
     	
-    	jimplifyStatic();
+    	jimplifyStatic(body);
     	
         // setUnit() is called in MethodInvocationInstruction
     }

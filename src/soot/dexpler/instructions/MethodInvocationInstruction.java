@@ -311,12 +311,12 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     /**
      * Executes the "jimplify" operation for a virtual invocation
      */
-    protected void jimplifyVirtual() {
+    protected void jimplifyVirtual(DexBody body) {
     	// In some applications, InterfaceInvokes are disguised as VirtualInvokes.
     	// We fix this silently
     	SootMethodRef ref = getSootMethodRef();
     	if (ref.declaringClass().isInterface()) {
-    		jimplifyInterface();
+    		jimplifyInterface(body);
     		return;
     	}
 
@@ -331,7 +331,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     /**
      * Executes the "jimplify" operation for an interface invocation
      */
-    protected void jimplifyInterface() {
+    protected void jimplifyInterface(DexBody body) {
         List<Local> parameters = buildParameters(body, false);
         invocation = Jimple.v().newInterfaceInvokeExpr(parameters.get(0),
                                                        getSootMethodRef(),
@@ -342,7 +342,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     /**
      * Executes the "jimplify" operation for a special invocation
      */
-    protected void jimplifySpecial() {
+    protected void jimplifySpecial(DexBody body) {
     	List<Local> parameters = buildParameters(body, false);
         invocation = Jimple.v().newSpecialInvokeExpr(parameters.get(0),
         											 getSootMethodRef(),
@@ -353,7 +353,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     /**
      * Executes the "jimplify" operation for a static invocation
      */
-    protected void jimplifyStatic() {
+    protected void jimplifyStatic(DexBody body) {
         invocation = Jimple.v().newStaticInvokeExpr(getStaticSootMethodRef(),
                 buildParameters(body, true));
         body.setDanglingInstruction(this);

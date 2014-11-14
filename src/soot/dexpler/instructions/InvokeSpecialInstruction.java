@@ -35,6 +35,6 @@ public class InvokeSpecialInstruction extends MethodInvocationInstruction {
     }
 
     public void jimplify (DexBody body) {
-    	jimplifySpecial();
+    	jimplifySpecial(body);
     }
 }

@@ -43,11 +43,11 @@ public class ExecuteInlineInstruction extends MethodInvocationInstruction implem
 	public void jimplify(DexBody body) {
     	int acccessFlags = targetMethod.getAccessFlags();
         if (AccessFlags.STATIC.isSet(acccessFlags))
-            jimplifyStatic();
+            jimplifyStatic(body);
         else if (AccessFlags.PRIVATE.isSet(acccessFlags))
-            jimplifySpecial();
+            jimplifySpecial(body);
         else
-            jimplifyVirtual();
+            jimplifyVirtual(body);
 	}
 	
     /**
