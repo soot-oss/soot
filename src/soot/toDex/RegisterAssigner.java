@@ -97,7 +97,7 @@ public class RegisterAssigner {
 
 	public List<Insn> finishRegs(List<Insn> insns, Map<Insn, Stmt> insnsStmtMap, Map<Insn, LocalRegisterAssignmentInformation> instructionRegisterMap, List<LocalRegisterAssignmentInformation> parameterInstructionsList) {
 		renumParamRegsToHigh(insns, parameterInstructionsList);
-		reserveRegisters(insns, insnsStmtMap);
+		reserveRegisters(insns, insnsStmtMap, parameterInstructionsList);
 		InstructionIterator insnIter = new InstructionIterator(insns, insnsStmtMap, instructionRegisterMap);
 		while (insnIter.hasNext()) {
 			Insn oldInsn = insnIter.next();
@@ -149,8 +149,9 @@ public class RegisterAssigner {
 	 * low ones and use those instead.
 	 * @param insns
 	 * @param insnsStmtMap
+	 * @param parameterInstructionsList 
 	 */
-	private void reserveRegisters(List<Insn> insns, Map<Insn, Stmt> insnsStmtMap) {
+	private void reserveRegisters(List<Insn> insns, Map<Insn, Stmt> insnsStmtMap, List<LocalRegisterAssignmentInformation> parameterInstructionsList) {
 		// reserve registers as long as new ones are needed
 		int reservedRegs = 0;
 		while (true) {
@@ -163,6 +164,10 @@ public class RegisterAssigner {
 			// "reservation": shift the old regs to higher numbers
 			for (Insn insn : insns) {
 				shiftRegs(insn, regsToReserve);
+			}
+			for (LocalRegisterAssignmentInformation info : parameterInstructionsList) {
+				Register r = info.getRegister();
+				r.setNumber(r.getNumber() + regsToReserve);
 			}
 			reservedRegs += regsToReserve;
 		}

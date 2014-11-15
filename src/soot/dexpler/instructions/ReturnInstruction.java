@@ -50,7 +50,6 @@ public class ReturnInstruction extends DexlibAbstractInstruction {
         setUnit(returnStmt);
         addTags(returnStmt);
         body.add(returnStmt);
-        this.body = body;
 		
         if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ returnStmt);

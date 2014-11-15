@@ -576,7 +576,7 @@ public class StmtVisitor implements StmtSwitch {
 			Local localForThis = (Local) lhs;
 			regAlloc.asParameter(belongingMethod, localForThis);
 			
-			parameterInstructionsList.add(LocalRegisterAssignmentInformation.v(regAlloc.asLocal(localForThis), localForThis));
+			parameterInstructionsList.add(LocalRegisterAssignmentInformation.v(regAlloc.asLocal(localForThis).clone(), localForThis));
 		} else {
 			throw new Error("unknown Value as right-hand side of IdentityStmt: " + rhs);
 		}

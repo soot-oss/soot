@@ -24,14 +24,9 @@
 
 package soot.dexpler.instructions;
 
-import java.util.List;
-
 import org.jf.dexlib2.iface.instruction.Instruction;
 
-import soot.Local;
-import soot.SootMethodRef;
 import soot.dexpler.DexBody;
-import soot.jimple.Jimple;
 
 public class InvokeVirtualInstruction extends MethodInvocationInstruction {
 
@@ -47,20 +42,7 @@ public class InvokeVirtualInstruction extends MethodInvocationInstruction {
 //        body.add(nop);
 //        beginUnit = nop;
 
-    	// In some applications, InterfaceInvokes are disguised as VirtualInvokes.
-    	// We fix this silently
-    	SootMethodRef ref = getSootMethodRef();
-    	if (ref.declaringClass().isInterface()) {
-    		new InvokeInterfaceInstruction(instruction, codeAddress).jimplify(body);
-    	}
-    	else {
-    		// This is actually a VirtualInvoke
-	        List<Local> parameters = buildParameters(body, false);
-	        invocation = Jimple.v().newVirtualInvokeExpr(parameters.get(0),
-	                                                     ref,
-	                                                     parameters.subList(1, parameters.size()));
-	        body.setDanglingInstruction(this);
-    	}
+   		jimplifyVirtual(body);
     	
         // setUnit() is called in MethodInvocationInstruction
     }

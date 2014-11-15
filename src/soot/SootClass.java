@@ -126,18 +126,35 @@ public class SootClass extends AbstractHost implements Numberable
             default: throw new RuntimeException("unknown resolving level");
         }
     }
+
+  /**
+   * Checks if the class has at lease the resolving level specified.
+   * This check does nothing is the class resolution process is not completed.
+   * @param level the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, and BODIES
+   * @throws java.lang.RuntimeException if the resolution is at an insufficient level
+   */
     public void checkLevel( int level ) {
         if( !Scene.v().doneResolving() ) return;
-        if( resolvingLevel < level ) {
-        	String hint = "\nIf you are extending Soot, try to add the following call before calling soot.Main.main(..):\n" +
-        			      "Scene.v().addBasicClass("+getName()+","+levelToString(level)+");\n" +
-        			      "Otherwise, try whole-program mode (-w).";
-            throw new RuntimeException(
-                "This operation requires resolving level "+
-                levelToString(level)+" but "+name+
-                " is at resolving level "+levelToString(resolvingLevel) + hint);
-        }
+      checkLevelIgnoreResolving(level);
     }
+
+  /**
+   * Checks if the class has at lease the resolving level specified.
+   * This check ignores the resolution completeness.
+   * @param level the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, and BODIES
+   * @throws java.lang.RuntimeException if the resolution is at an insufficient level
+   */
+  public void checkLevelIgnoreResolving( int level ) {
+    if( resolvingLevel < level ) {
+      String hint = "\nIf you are extending Soot, try to add the following call before calling soot.Main.main(..):\n" +
+              "Scene.v().addBasicClass("+getName()+","+levelToString(level)+");\n" +
+              "Otherwise, try whole-program mode (-w).";
+      throw new RuntimeException(
+              "This operation requires resolving level "+
+                      levelToString(level)+" but "+name+
+                      " is at resolving level "+levelToString(resolvingLevel) + hint);
+    }
+  }
 
     public int resolvingLevel() { return resolvingLevel; }
     public void setResolvingLevel( int newLevel ) {
