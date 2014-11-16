@@ -108,15 +108,15 @@ public class Scene  //extends AbstractHost
         // do not kill contents of the APK if we want a working new APK afterwards
         if( !Options.v().include_all()
         		&& Options.v().output_format() != Options.output_format_dex) {
-            excludedPackages.add("java.");
-            excludedPackages.add("sun.");
-            excludedPackages.add("javax.");
-            excludedPackages.add("com.sun.");
-            excludedPackages.add("com.ibm.");
-            excludedPackages.add("org.xml.");
-            excludedPackages.add("org.w3c.");
-            excludedPackages.add("apple.awt.");
-            excludedPackages.add("com.apple.");
+            excludedPackages.add("java.*");
+            excludedPackages.add("sun.*");
+            excludedPackages.add("javax.*");
+            excludedPackages.add("com.sun.*");
+            excludedPackages.add("com.ibm.*");
+            excludedPackages.add("org.xml.*");
+            excludedPackages.add("org.w3c.*");
+            excludedPackages.add("apple.awt.*");
+            excludedPackages.add("com.apple.*");
         }
 	}
     public static Scene  v() { return G.v().soot_Scene (); }
@@ -1397,9 +1397,9 @@ public class Scene  //extends AbstractHost
     public boolean isExcluded(SootClass sc){
         String name = sc.getName();
         for (String pkg : excludedPackages) {
-            if ((name.startsWith(pkg) && pkg.charAt(pkg.length()-1) == '.' ) || name.equals(pkg)) {
-                return !isIncluded(sc);
-            }
+        	if(name.equals(pkg) || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && name.startsWith(pkg.substring(0, pkg.length() - 1)))){
+        		return !isIncluded(sc);
+        	}
         }
         return false;
     }
@@ -1407,7 +1407,7 @@ public class Scene  //extends AbstractHost
     public boolean isIncluded(SootClass sc){
         String name = sc.getName();
         for (String inc : (List<String>) Options.v().include()) {
-            if ((name.startsWith(inc) && inc.charAt(inc.length()-1) == '.') || name.equals(inc)) {
+            if (name.equals(inc) || ((inc.endsWith(".*") || inc.endsWith("$*")) && name.startsWith(inc.substring(0, inc.length() - 1)))) {
                 return true;
             }
         }
