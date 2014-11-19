@@ -61,7 +61,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 				@Override
 				public boolean want(Edge e) {				
 					return e.kind().isExplicit() || e.kind().isThread() || e.kind().isExecutor()
-							|| e.kind().isAsyncTask() || e.kind().isClinit();
+							|| e.kind().isAsyncTask() || e.kind().isClinit() || e.kind().isPrivileged();
 				}
 			});
 		}
@@ -116,12 +116,16 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 	protected void initializeUnitToOwner() {
 		for(Iterator<MethodOrMethodContext> iter = Scene.v().getReachableMethods().listener(); iter.hasNext(); ) {
 			SootMethod m = iter.next().method();
-			if(m.hasActiveBody()) {
-				Body b = m.getActiveBody();
-				PatchingChain<Unit> units = b.getUnits();
-				for (Unit unit : units) {
-					unitToOwner.put(unit, b);
-				}
+			initializeUnitToOwner(m);
+		}
+	}
+	
+	public void initializeUnitToOwner(SootMethod m) {
+		if(m.hasActiveBody()) {
+			Body b = m.getActiveBody();
+			PatchingChain<Unit> units = b.getUnits();
+			for (Unit unit : units) {
+				unitToOwner.put(unit, b);
 			}
 		}
 	}

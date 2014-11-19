@@ -29,7 +29,7 @@ import soot.dava.internal.SET.*;
 
 public class AugmentedStmt 
 {
-    public List bpreds, bsuccs, cpreds, csuccs;
+    public List<AugmentedStmt> bpreds, bsuccs, cpreds, csuccs;
     public SETNode myNode;
 
     private final IterableSet dominators;

@@ -23,6 +23,7 @@ package soot.jimple.toolkits.typing.fast;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -44,6 +45,7 @@ import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
@@ -84,7 +86,7 @@ public class TypeResolver
 	public TypeResolver(JimpleBody jb)
 	{
 		this.jb = jb;
-		
+
 		this.assignments = new LinkedList<DefinitionStmt>();
 		this.depends = new HashMap<Local, BitSet>();
 		for ( Local v : this.jb.getLocals() )
@@ -213,15 +215,8 @@ public class TypeResolver
 			if ( this.h.ancestor(useType, t) )
 				return op;
 			
-			// We introduce a high penalty for impossible calls to make the
-			// respective typing less likely to win.
-			if (!this.h.ancestor(t, useType)) {
-				this.count += 1000;
-				return op;
-			}
-			
 			this.count++;
-
+			
 			if ( countOnly )
 				return op;
 			else
@@ -505,9 +500,19 @@ public class TypeResolver
 						t_ = t_.makeArrayType();
 					}
 					
-					Collection<Type> lcas = h.lcas(told, t_);
-					
-					for ( Type t : lcas )
+					// Special handling for exception objects with phantom types
+					final Collection<Type> lcas;
+					if (!typesEqual(told, t_)
+							&& told instanceof RefType && t_ instanceof RefType
+							&& (
+									((RefType) told).getSootClass().isPhantom()
+									|| ((RefType) t_).getSootClass().isPhantom())
+							&& (stmt.getRightOp() instanceof CaughtExceptionRef))
+						lcas = Collections.<Type>singleton(RefType.v("java.lang.Throwable"));
+					else
+						lcas = h.lcas(told, t_);
+
+					for ( Type t : lcas ) {
 						if ( ! typesEqual(t, told) )
 						{
 							Typing tg_;
@@ -529,9 +534,12 @@ public class TypeResolver
 							}
 							tg_.set(v, t);
 							
-							wl_.or(this.depends.get(v));							
-							isFirstType = false;
+							BitSet dependsV = this.depends.get(v);
+							if (dependsV != null)
+								wl_.or(dependsV);
 						}
+						isFirstType = false;
+					}
 				}//end for
 			}
 		}

@@ -101,8 +101,8 @@ public class SmartLocalDefs implements LocalDefs {
 		for (Unit u : graph) {
 			// translate locals to bits
 			BitSet set = new BitSet(n);
-			for (Object o : live.getLiveLocalsAfter(u)) {
-				set.set(((Local) o).getNumber());
+			for (Local l : live.getLiveLocalsAfter(u)) {
+				set.set(l.getNumber());
 			}
 			liveLocalsAfter.put(u, set);
 
@@ -157,7 +157,7 @@ public class SmartLocalDefs implements LocalDefs {
 			return null;
 		if (size != 1)
 			throw new RuntimeException();
-		ValueBox vb = (ValueBox) defBoxes.get(0);
+		ValueBox vb = defBoxes.get(0);
 		Value v = vb.getValue();
 		if (!(v instanceof Local))
 			return null;
@@ -193,7 +193,6 @@ public class SmartLocalDefs implements LocalDefs {
 			out.clear();
 
 			BitSet liveLocals = liveLocalsAfter.get(u);
-
 			Local l = localDef(u);
 
 			if (l == null) {// add all units contained in mask

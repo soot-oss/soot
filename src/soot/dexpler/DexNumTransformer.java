@@ -44,6 +44,7 @@ import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
 import soot.jimple.CmpExpr;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FieldRef;
 import soot.jimple.FloatConstant;
@@ -56,7 +57,11 @@ import soot.jimple.LongConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.ReturnStmt;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.CombinedDUAnalysis;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.LocalUses;
+import soot.toolkits.scalar.SimpleLiveLocals;
+import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
@@ -110,23 +115,23 @@ public class DexNumTransformer extends DexTransformer {
 	protected void internalTransform(final Body body, String phaseName,
 			@SuppressWarnings("rawtypes") Map options) {
 		final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
-		final CombinedDUAnalysis localDefUses = new CombinedDUAnalysis(g);
+		
+        final LocalDefs localDefs = new SmartLocalDefs(g,
+				new SimpleLiveLocals(g));
+		final LocalUses localUses = new SimpleLocalUses(g, localDefs);
 		
         for (Local loc : getNumCandidates(body)) {
             Debug.printDbg("\n[num candidate] ", loc);
 			usedAsFloatingPoint = false;
-			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefUses,
-					localDefUses, body);
+			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs,
+					localUses, body);
 			
 	        // process normally
 			doBreak = false;
 			for (Unit u : defs) {
 				// put correct local in l
-				if (u instanceof AssignStmt) {
-					l = (Local) ((AssignStmt) u).getLeftOp();
-				} else if (u instanceof IdentityStmt) {
-					l = (Local) ((IdentityStmt) u).getLeftOp();
-				}
+				if (u instanceof DefinitionStmt)
+					l = (Local) ((DefinitionStmt) u).getLeftOp();
 				
 		        Debug.printDbg("    def  : ", u);
 				Debug.printDbg("    local: ", l);
@@ -154,7 +159,7 @@ public class DexNumTransformer extends DexTransformer {
 							Type arType = ar.getType();
 							Debug.printDbg("ar: ", r, " ", arType);
 							if (arType instanceof UnknownType) {
-								Type t = findArrayType(g, localDefUses, localDefUses,
+								Type t = findArrayType(g, localDefs, localUses,
 										stmt, 0, Collections.<Unit> emptySet()); // TODO:
 																					// check
 																					// where
@@ -202,9 +207,8 @@ public class DexNumTransformer extends DexTransformer {
 				}
 
 				// check uses
-				for (UnitValueBoxPair pair : localDefUses.getUsesOf(u)) {
+				for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
 					Unit use = pair.getUnit();
-
 					Debug.printDbg("    use: ", use);
 
 					use.apply(new AbstractStmtSwitch() {
@@ -248,8 +252,7 @@ public class DexNumTransformer extends DexTransformer {
 									return;
 								}
 							} else if (r instanceof InvokeExpr) {
-								usedAsFloatingPoint = examineInvokeExpr((InvokeExpr) stmt
-										.getRightOp());
+								usedAsFloatingPoint = examineInvokeExpr((InvokeExpr) r);
 								doBreak = true;
 								return;
 							} else if (r instanceof BinopExpr) {
@@ -261,9 +264,8 @@ public class DexNumTransformer extends DexTransformer {
 										|| stmt.hasTag("DoubleOpTag");
 								doBreak = true;
 								return;
-							}
-
-							if (left instanceof FieldRef && r instanceof Local) {
+							} else if (left instanceof FieldRef && r instanceof Local
+									&& r == l) {
 								FieldRef fr = (FieldRef) left;
 								if (isFloatingPointLike(fr.getType())) {
 									usedAsFloatingPoint = true;

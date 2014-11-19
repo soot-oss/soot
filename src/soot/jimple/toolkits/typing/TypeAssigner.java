@@ -29,10 +29,40 @@
 
 package soot.jimple.toolkits.typing;
 
-import soot.*;
-import soot.options.*;
-import soot.jimple.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import soot.Body;
+import soot.BodyTransformer;
+import soot.ByteType;
+import soot.CharType;
+import soot.ErroneousType;
+import soot.G;
+import soot.Local;
+import soot.NullType;
+import soot.PhaseOptions;
+import soot.Scene;
+import soot.ShortType;
+import soot.Singletons;
+import soot.Type;
+import soot.Unit;
+import soot.UnknownType;
+import soot.ValueBox;
+import soot.jimple.ArrayRef;
+import soot.jimple.FieldRef;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.JimpleBody;
+import soot.jimple.Stmt;
+import soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder;
+import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.options.JBTROptions;
+import soot.options.Options;
+import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
  * This transformer assigns types to local variables.
@@ -110,10 +140,90 @@ public class TypeAssigner extends BodyTransformer {
 			G.v().out.println("[TypeAssigner] typing system ended. It took "
 					+ mins + " mins and " + secs + " secs.");
 		}
+		
+		replaceNullType(b);
 
 		if (typingFailed((JimpleBody) b))
 			throw new RuntimeException("type inference failed!");
 	}
+	
+	/**
+	 * Replace statements using locals with null_type type and that would 
+	 * throw a NullPointerException at runtime by a set of instructions
+	 * throwing a NullPointerException.
+	 * 
+	 * This is done to remove locals with null_type type.
+	 * 
+	 * @param b
+	 */
+	private void replaceNullType(Body b) {
+		List<Local> localsToRemove = new ArrayList<Local>();
+		boolean hasNullType = false;
+
+		// check if any local has null_type
+		for (Local l: b.getLocals()) {
+			if (l.getType() instanceof NullType) {
+				localsToRemove.add(l);	
+				hasNullType = true;
+			}
+		}
+		
+		// No local with null_type
+		if (!hasNullType)
+			return;
+		
+		// force to propagate null constants
+		Map<String, String> opts = PhaseOptions.v().getPhaseOptions("jop.cpf");
+		if (!opts.containsKey("enabled") || !opts.get("enabled").equals("true")) {
+			G.v().out.println("Warning: Cannot run TypeAssigner.replaceNullType(Body). Try to enable jop.cfg.");
+			return;
+		}
+		ConstantPropagatorAndFolder.v().transform(b);
+
+		List<Unit> unitToReplaceByException = new ArrayList<Unit>();
+		for (Unit u: b.getUnits()) {
+			for (ValueBox vb : u.getUseBoxes()) {
+				if( vb.getValue() instanceof Local && ((Local)vb.getValue()).getType() instanceof NullType) {
+					
+					Local l = (Local)vb.getValue();
+					Stmt s = (Stmt)u;
+					
+					boolean replace = false;
+					if (s.containsArrayRef()) {
+						ArrayRef r = s.getArrayRef();
+						if (r.getBase() == l) { replace = true; }
+					} else if (s.containsFieldRef()) {
+						FieldRef r = s.getFieldRef();
+						if (r instanceof InstanceFieldRef) {
+							InstanceFieldRef ir = (InstanceFieldRef)r;
+							if (ir.getBase() == l) { replace = true; }
+						}
+					} else if (s.containsInvokeExpr()) {
+						InvokeExpr ie = s.getInvokeExpr();
+						if (ie instanceof InstanceInvokeExpr) {
+							InstanceInvokeExpr iie = (InstanceInvokeExpr) ie;
+							if (iie.getBase() == l) { replace = true; }
+						}
+					}
+					
+					if (replace) {
+						unitToReplaceByException.add(u);
+					}
+				}
+			}
+		}
+		
+		for (Unit u: unitToReplaceByException) {
+			soot.dexpler.Util.addExceptionAfterUnit(b, "java.lang.NullPointerException", u, "This statement would have triggered an Exception: "+ u);
+			b.getUnits().remove(u);
+		}
+
+		DeadAssignmentEliminator.v().transform(b);
+		UnusedLocalEliminator.v().transform(b);
+
+	}
+	
+
 
 	private void compareTypeAssigners(Body b, boolean useOlderTypeAssigner) {
 		JimpleBody jb = (JimpleBody) b, oldJb, newJb;

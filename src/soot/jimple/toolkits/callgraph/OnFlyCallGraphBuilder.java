@@ -52,6 +52,7 @@ import soot.Unit;
 import soot.Value;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
+import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.FieldRef;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
@@ -558,6 +559,9 @@ public final class OnFlyCallGraphBuilder
                         addVirtualCallSite( s, m, receiver, iie, sigDoInBackground,
                                 Kind.ASYNCTASK );
                     }
+                } else if (ie instanceof DynamicInvokeExpr) {
+                	if(options.verbose())
+                		G.v().out.println("WARNING: InvokeDynamic to "+ie+" not resolved during call-graph construction.");
                 } else {
                 	SootMethod tgt = ie.getMethod();
                 	if(tgt!=null) {

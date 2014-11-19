@@ -175,10 +175,10 @@ public class SynchronizedStmt extends Stmt implements Cloneable, FinallyHost {
     Local l = b.newTemp(typeThrowable().getSootType());
     b.add(b.newIdentityStmt(l, b.newCaughtExceptionRef(this), this));
     emitFinallyCode(b);
+    b.addLabel(label_end());
     soot.jimple.Stmt throwStmt = b.newThrowStmt(l, this);
     throwStmt.addTag(new soot.tagkit.ThrowCreatedByCompilerTag());
     b.add(throwStmt);
-    b.addLabel(label_end());
 
     // createExceptionTable
     for(Iterator iter = exceptionRanges().iterator(); iter.hasNext(); ) {

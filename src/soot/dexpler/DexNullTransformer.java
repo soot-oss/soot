@@ -44,6 +44,7 @@ import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
 import soot.jimple.ConditionExpr;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.EqExpr;
 import soot.jimple.ExitMonitorStmt;
@@ -67,7 +68,9 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.CombinedDUAnalysis;
+import soot.toolkits.scalar.SimpleLiveLocals;
+import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
@@ -93,28 +96,21 @@ public class DexNullTransformer extends DexTransformer {
 			@SuppressWarnings("rawtypes") Map options) {
 		final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
 
-		final CombinedDUAnalysis localDefUses = new CombinedDUAnalysis(g);
-
+		final SmartLocalDefs localDefs = new SmartLocalDefs(g,
+				new SimpleLiveLocals(g));
+		final SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
+		
 		for (Local loc : getNullCandidates(body)) {
 			Debug.printDbg("\n[null candidate] ", loc);
 			usedAsObject = false;
-			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefUses,
-					localDefUses, body);
-			// check if no use
-			for (Unit u : defs) {
-				for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localDefUses
-						.getUsesOf(u)) {
-					Debug.printDbg("[use in u]: ", pair.getUnit());
-				}
-			}
+			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs,
+					localUses, body);
 			// process normally
 			doBreak = false;
 			for (Unit u : defs) {
 				// put correct local in l
-				if (u instanceof AssignStmt) {
-					l = (Local) ((AssignStmt) u).getLeftOp();
-				} else if (u instanceof IdentityStmt) {
-					l = (Local) ((IdentityStmt) u).getLeftOp();
+				if (u instanceof DefinitionStmt) {
+					l = (Local) ((DefinitionStmt) u).getLeftOp();
 				} else if (u instanceof IfStmt) {
 					throw new RuntimeException(
 							"ERROR: def can not be something else than Assign or Identity statement! (def: "
@@ -185,8 +181,7 @@ public class DexNullTransformer extends DexTransformer {
 					break;
 
 				// check uses
-				for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localDefUses
-						.getUsesOf(u)) {
+				for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
 					Unit use = pair.getUnit();
 					Debug.printDbg("    use: ", use);
 					use.apply(new AbstractStmtSwitch() {
@@ -371,8 +366,7 @@ public class DexNullTransformer extends DexTransformer {
 			if (usedAsObject) {
 				for (Unit u : defs) {
 					replaceWithNull(u);
-					for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localDefUses
-							.getUsesOf(u)) {
+					for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
 						Unit use = pair.getUnit();
 						replaceWithNull(use);
 					}
@@ -450,7 +444,7 @@ public class DexNullTransformer extends DexTransformer {
 						if (isObject(nea.getBaseType()))
 							return true;
 					}
-					if (assign.getRightOp() instanceof FieldRef) {
+					else if (assign.getRightOp() instanceof FieldRef) {
 						FieldRef fr = (FieldRef) assign.getRightOp();
 						if (fr.getType() instanceof ArrayType)
 							if (isObject(((ArrayType) fr.getType())

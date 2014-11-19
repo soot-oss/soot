@@ -99,6 +99,102 @@ as <tt>HelloWorld</tt>, <tt>UI</tt>, and <tt>textUI</tt>. The set
 of library classes includes the referenced classes from other
 packages in the Java runtime.</p>
 </intro>
+<phaseintro>
+    <P>
+Soot supports the powerful--but initially confusing--notion of
+``phase options''.  This document aims to clear up the confusion so
+you can exploit the power of phase options.
+</P>
+
+<P>
+Soot's execution is divided into a number of phases.  For example,
+<TT>JimpleBody</TT>s are built by a phase called <TT>jb</TT>, which is
+itself comprised of subphases, such as the aggregation of local
+variables (<TT>jb.a</TT>).
+</P>
+
+<P>
+Phase options provide a way for you to
+change the behaviour of a phase from the Soot command-line.  They take
+the form <TT>-p </TT><EM>phase</EM>.<EM>name</EM> 
+<EM>option</EM>:<EM>value</EM>.  For instance,
+to instruct Soot to use original names in Jimple, we would invoke Soot
+like this:
+<PRE>
+java soot.Main foo -p jb use-original-names:true
+</PRE>
+Multiple option-value pairs may be specified in a single <TT>-p</TT> option
+separated by commas. For example,
+<PRE>
+java soot.Main foo -p cg.spark verbose:true,on-fly-cg:true
+</PRE>
+</P>
+
+<P>
+There are five types of phase options:
+</P>
+
+<OL>
+<LI>Boolean options take the values
+``true'' and ``false''; if you specify the name of a boolean option without adding a value for it, ``true'' is assumed.
+</LI>
+<LI>Multi-valued options take a value from a set of allowed values
+specific to that option.
+</LI>
+<LI>Integer options
+take an integer value. 
+</LI>
+<LI>Floating point options take a 
+floating point number as their value. 
+</LI>
+<LI>String options take an arbitrary
+string as their value.
+</LI>
+</OL>
+
+<P>
+Each option has a default value which is used if the option is not
+specified on the command line.
+</P>
+
+<P>
+All phases and subphases accept the option ``<TT>enabled</TT>'', which
+must be ``<TT>true</TT>'' for the phase or subphase to execute. To save
+you some typing, the pseudo-options ``<TT>on</TT>'' and ``<TT>off</TT>''
+are equivalent to ``<TT>enabled:true</TT>'' and ``<TT>enabled:false</TT>'',
+respectively. In addition, specifying any options for a phase
+automatically enables that phase.
+</P>
+
+<H4>Adding your own subphases</H4>
+
+<P>
+Within Soot, each phase is implemented by a <TT>Pack</TT>. The <TT>Pack</TT>
+is a collection of transformers, each corresponding to a subphase of
+the phase implemented by the <TT>Pack</TT>. When the <TT>Pack</TT> is
+called, it executes each of its transformers in order.
+</P>
+
+<P>
+Soot transformers are usually instances of classes that extend 
+<TT>BodyTransformer</TT> or <TT>SceneTransformer</TT>.  In either case, the
+transformer class must override the <TT>internalTransform</TT> method,
+providing an implementation which carries out some transformation on
+the code being analyzed.
+</P>
+
+<P>
+To add a transformer to some <TT>Pack</TT> without modifying Soot itself,
+create your own class which changes the contents of the <TT>Pack</TT>s to
+meet your requirements and then calls <TT>soot.Main</TT>.
+</P>
+
+<P>
+The remainder of this document describes the transformations belonging
+to Soot's various <TT>Pack</TT>s and their corresponding phase
+options.
+</P>
+</phaseintro>
 	<section>
 		<name>General Options</name>
 		<boolopt>
@@ -807,6 +903,16 @@ dumps of exceptional control flow graphs.
 This option causes Soot to compress output files of intermediate representations
 with GZip. It does not apply to class files output by Soot.
 </long_desc>
+	</boolopt>
+	<boolopt>
+	    <name>Force Overwrite Output Files</name>
+	    <alias>force-overwrite</alias>
+	    <default>false</default>
+	  <short_desc>Force Overwrite Output Files</short_desc>
+	  <long_desc>
+	      If this option is set to true, the output files will be overwritten
+	      if they already exist and no further warning will be issued.
+		</long_desc>
 	</boolopt>
 	</section>
 	<section>

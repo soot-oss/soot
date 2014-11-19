@@ -126,7 +126,9 @@ public class PAG2HTML {
     protected String varNode( String dirPrefix, VarNode vv ) {
         StringBuffer ret = new StringBuffer();
         ret.append( "<li><a href=\""+dirPrefix+"n"+vv.getNumber()+".html\">" );
-        ret.append( ""+htmlify(vv.getVariable().toString()) );
+        if(vv.getVariable()!=null)
+        	ret.append( ""+htmlify(vv.getVariable().toString()) );
+    	ret.append( "GlobalVarNode" );
         ret.append( "</a><br>" );
         ret.append( "<li>Context: " );
         ret.append( ""+(vv.context() == null ?"null":htmlify(vv.context().toString()) ) );

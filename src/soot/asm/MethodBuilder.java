@@ -129,6 +129,11 @@ class MethodBuilder extends JSRInlinerAdapter {
 	@Override
 	public void visitFieldInsn(int opcode, String owner, String name, String desc) {
 		super.visitFieldInsn(opcode, owner, name, desc);
+		for (Type t : AsmUtil.toJimpleDesc(desc)) {
+			if (t instanceof RefType)
+				scb.addDep(t);
+		}
+
 		scb.addDep(AsmUtil.toQualifiedName(owner));
 	}
 	
@@ -159,8 +164,6 @@ class MethodBuilder extends JSRInlinerAdapter {
 					new VisibilityParameterAnnotationTag(visibleParamAnnotations.length,
 							AnnotationConstants.RUNTIME_VISIBLE);
 			for (VisibilityAnnotationTag vat : visibleParamAnnotations) {
-//				if (vat == null)
-//					vat = new VisibilityAnnotationTag(AnnotationConstants.RUNTIME_VISIBLE);
 				tag.addVisibilityAnnotation(vat);
 			}
 			method.addTag(tag);
@@ -168,10 +171,8 @@ class MethodBuilder extends JSRInlinerAdapter {
 		if (invisibleParamAnnotations != null) {
 			VisibilityParameterAnnotationTag tag =
 					new VisibilityParameterAnnotationTag(invisibleParamAnnotations.length,
-							AnnotationConstants.RUNTIME_VISIBLE);
+							AnnotationConstants.RUNTIME_INVISIBLE);
 			for (VisibilityAnnotationTag vat : invisibleParamAnnotations){
-//				if (vat == null)
-//					vat = new VisibilityAnnotationTag(AnnotationConstants.RUNTIME_VISIBLE);
 				tag.addVisibilityAnnotation(vat);
 			}
 			method.addTag(tag);

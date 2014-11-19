@@ -116,7 +116,7 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
 	
 	@Override
 	public void visitEnum(String name, String desc, String value) {
-		elems.add(new AnnotationEnumElem(value, desc, 'e', name));
+		elems.add(new AnnotationEnumElem(desc, value, 'e', name));
 	}
 	
 	@Override
@@ -124,7 +124,11 @@ abstract class AnnotationElemBuilder extends AnnotationVisitor {
 		return new AnnotationElemBuilder() {
 			@Override
 			public void visitEnd() {
-				AnnotationElemBuilder.this.elems.add(new AnnotationArrayElem(this.elems, '[', name));
+				String ename = name;
+				if (ename == null)
+					ename = "default";
+				AnnotationElemBuilder.this.elems.add(new AnnotationArrayElem(
+						this.elems, '[', ename));
 			}
 		};
 	}

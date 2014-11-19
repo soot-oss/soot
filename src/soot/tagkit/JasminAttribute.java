@@ -25,7 +25,10 @@
 
 package soot.tagkit;
 
-import java.util.*;
+import java.util.Hashtable;
+import java.util.Map;
+
+import soot.Unit;
 
 
 
@@ -60,7 +63,7 @@ import java.util.*;
 
 public abstract class JasminAttribute implements Attribute
 {
-    abstract public byte[] decode(String attr, Hashtable labelToPc);
+    abstract public byte[] decode(String attr, Hashtable<String, Integer> labelToPc);
     
-    abstract public String getJasminValue(Map instToLabel);
+    abstract public String getJasminValue(Map<Unit, String> instToLabel);
 }

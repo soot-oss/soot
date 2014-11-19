@@ -25,12 +25,19 @@
 
 
 package soot.jimple.toolkits.scalar;
-import soot.options.*;
+import java.util.Iterator;
+import java.util.Map;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Singletons;
+import soot.Trap;
+import soot.Unit;
+import soot.jimple.JimpleBody;
+import soot.jimple.NopStmt;
+import soot.options.Options;
+import soot.util.Chain;
 
 public class NopEliminator extends BodyTransformer
 {
@@ -59,8 +66,21 @@ public class NopEliminator extends BodyTransformer
             while(stmtIt.hasNext()) 
             {
                 Unit u = stmtIt.next();
-                if(u instanceof NopStmt)
-                    units.remove(u);
+				if (u instanceof NopStmt) {
+					// Hack: do not remove nop, if is is used for a Trap which
+					// is at the very end of the code.
+					boolean keepNop = false;
+					if (b.getUnits().getLast() == u) {
+						for (Trap t : b.getTraps()) {
+							if (t.getEndUnit() == u) {
+								keepNop = true;
+							}
+						}
+					}
+					if (!keepNop) {
+						units.remove(u);
+					}
+				}
             }
         }
     }

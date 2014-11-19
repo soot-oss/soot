@@ -89,7 +89,7 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
         } );
     }
     public Set<Type> possibleTypes() {
-        final HashSet ret = new HashSet();
+        final HashSet<Type> ret = new HashSet<Type>();
         forall( new P2SetVisitor() {
             public void visit( Node n ) {
                 Type t = n.getType();

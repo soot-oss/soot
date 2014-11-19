@@ -55,29 +55,20 @@ public class BafBody extends Body
         if(Options.v().verbose())
             G.v().out.println("[" + getMethod().getName() + "] Constructing BafBody...");
 
-        JimpleBody jimpleBody;
-
-        if(body instanceof JimpleBody)
-            jimpleBody = (JimpleBody) body;
-        else
+        if (!(body instanceof JimpleBody))
             throw new RuntimeException("Can only construct BafBody's directly"
               + " from JimpleBody's.");
 
+        JimpleBody jimpleBody = (JimpleBody) body;
         jimpleBody.validate();
                
         JimpleToBafContext context = new JimpleToBafContext(jimpleBody.getLocalCount());
            
         // Convert all locals
         {
-            Iterator<Local> localIt = jimpleBody.getLocals().iterator();
-            
-            while(localIt.hasNext())
-            {
-                Local l = localIt.next();
+            for (Local l : jimpleBody.getLocals()) {
                 Type t = l.getType();
-                Local newLocal;
-                
-                newLocal = Baf.v().newLocal(l.getName(), UnknownType.v());
+                Local newLocal = Baf.v().newLocal(l.getName(), UnknownType.v());
                 
                 if(t.equals(DoubleType.v()) || t.equals(LongType.v()))
                     newLocal.setType(DoubleWordType.v());
@@ -93,11 +84,8 @@ public class BafBody extends Body
             
         // Convert all jimple instructions
         {
-            Iterator<Unit> stmtIt = jimpleBody.getUnits().iterator();
-            
-            while(stmtIt.hasNext())
-            {
-                Stmt s = (Stmt) stmtIt.next();
+            for (Unit u : jimpleBody.getUnits()) {
+            	Stmt s = (Stmt) u;
                 List<Unit> conversionList = new ArrayList<Unit>();
 
                 context.setCurrentUnit(s);

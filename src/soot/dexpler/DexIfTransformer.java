@@ -67,7 +67,11 @@ import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.CombinedDUAnalysis;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.LocalUses;
+import soot.toolkits.scalar.SimpleLiveLocals;
+import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
@@ -94,8 +98,11 @@ public class DexIfTransformer extends DexTransformer {
 
 	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
         final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
-        final CombinedDUAnalysis localDefUses = new CombinedDUAnalysis(g);
-
+		
+        final LocalDefs localDefs = new SmartLocalDefs(g,
+				new SimpleLiveLocals(g));
+		final LocalUses localUses = new SimpleLocalUses(g, localDefs);
+		
         Set<IfStmt> ifSet = getNullIfCandidates(body);        
         for (IfStmt ifs: ifSet) {
           List<Local> twoIfLocals = new ArrayList<Local>();
@@ -107,10 +114,10 @@ public class DexIfTransformer extends DexTransformer {
           usedAsObject = false;
           for (Local loc: twoIfLocals) {
             Debug.printDbg("\n[null if with two local candidate] ", loc);
-            List<Unit> defs = collectDefinitionsWithAliases(loc, localDefUses, localDefUses, body);
+            List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs, localUses, body);
             // check if no use
             for (Unit u  : defs) {
-              for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localDefUses.getUsesOf(u)) {
+              for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
                 Debug.printDbg("[use in u]: ", pair.getUnit());
               }
             }
@@ -185,7 +192,7 @@ public class DexIfTransformer extends DexTransformer {
                 break;
 
               // check uses
-                for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localDefUses.getUsesOf(u)) {
+                for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
                     Unit use = pair.getUnit();
                     Debug.printDbg("    use: ", use);
                     use.apply( new AbstractStmtSwitch() {
@@ -377,12 +384,12 @@ public class DexIfTransformer extends DexTransformer {
 
           // change values
           if (usedAsObject) {
-            List<Unit> defsOp1 = collectDefinitionsWithAliases(lOp1, localDefUses, localDefUses, body);
-            List<Unit> defsOp2 = collectDefinitionsWithAliases(lOp1, localDefUses, localDefUses, body);
+            List<Unit> defsOp1 = collectDefinitionsWithAliases(lOp1, localDefs, localUses, body);
+            List<Unit> defsOp2 = collectDefinitionsWithAliases(lOp1, localDefs, localUses, body);
             defsOp1.addAll(defsOp2);
             for (Unit u : defsOp1) {
                 replaceWithNull(u);
-                for (UnitValueBoxPair pair : (List<UnitValueBoxPair>) localDefUses.getUsesOf(u)) {
+                for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
                     Unit use = pair.getUnit();
                     replaceWithNull(use);
                 }

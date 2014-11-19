@@ -105,8 +105,8 @@ public class AnnotatedCFGSaver {
 				while (pFlowData.hasNext()){
 					CFGFlowInfo info = (CFGFlowInfo)pFlowData.next();
 					String temp = info.getText();
-					temp = soot.util.StringTools.replaceAll(temp, "<", "&lt;");
-					temp = soot.util.StringTools.replaceAll(temp, ">", "&gt;");
+					temp = temp.replaceAll("<", "&lt;");
+					temp = temp.replaceAll(">", "&gt;");
 					sb.append(temp);
 					
 				}
@@ -119,8 +119,8 @@ public class AnnotatedCFGSaver {
 		Iterator data = node.getData().getText().iterator();
 		while (data.hasNext()){
 			String temp = data.next().toString();
-			temp = soot.util.StringTools.replaceAll(temp, "<", "&lt;");
-			temp = soot.util.StringTools.replaceAll(temp, ">", "&gt;");
+			temp = temp.replaceAll("<", "&lt;");
+			temp = temp.replaceAll(">", "&gt;");
 			sb.append(temp);
 		}
 		sb.append("</TD></TR>");
@@ -134,8 +134,8 @@ public class AnnotatedCFGSaver {
 				while (pFlowData.hasNext()){
 					CFGFlowInfo info = (CFGFlowInfo)pFlowData.next();
 					String temp = info.getText();
-					temp = soot.util.StringTools.replaceAll(temp, "<", "&lt;");
-					temp = soot.util.StringTools.replaceAll(temp, ">", "&gt;");
+					temp = temp.replaceAll("<", "&lt;");
+					temp = temp.replaceAll(">", "&gt;");
 					sb.append(temp);
 				}
 			}

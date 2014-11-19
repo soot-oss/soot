@@ -49,15 +49,13 @@ import soot.util.Switch;
 public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInvokeExpr 
 {
 	protected ValueBox[] bsmArgBoxes;
-	private SootMethodRef methodRef;
 	private SootMethodRef bsmRef;
 
 
 	public GDynamicInvokeExpr(SootMethodRef bootStrapMethodRef, List<Value> bootstrapArgs, SootMethodRef methodRef, List args)
     {
-		super(new ValueBox[args.size()]);
+		super(methodRef, new ValueBox[args.size()]);
 		this.bsmRef = bootStrapMethodRef;
-		this.methodRef = methodRef; 		
 		
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
@@ -81,7 +79,7 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
         return new  GDynamicInvokeExpr(bsmRef, clonedBsmArgs, methodRef, clonedArgs);
     }
 	
-	private Value getBootstrapArg(int i) {
+	public Value getBootstrapArg(int i) {
 		return bsmArgBoxes[i].getValue();
 	}
 

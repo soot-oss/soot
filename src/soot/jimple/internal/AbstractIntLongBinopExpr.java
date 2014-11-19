@@ -35,21 +35,21 @@ import soot.*;
 @SuppressWarnings("serial")
 abstract public class AbstractIntLongBinopExpr extends AbstractBinopExpr
 {
+	
+	public boolean isIntLikeType(Type t) {
+		return t.equals(IntType.v())
+				|| t.equals(ByteType.v())
+				|| t.equals(ShortType.v())
+	            || t.equals(CharType.v())
+	            || t.equals(BooleanType.v());
+	}
+	
     public Type getType()
     {
         Value op1 = op1Box.getValue();
-        Value op2 = op1Box.getValue();
+        Value op2 = op2Box.getValue();
 
-        if((op1.getType().equals(IntType.v()) || 
-            op1.getType().equals(ByteType.v()) ||
-            op1.getType().equals(ShortType.v()) ||
-            op1.getType().equals(CharType.v()) ||
-            op1.getType().equals(BooleanType.v())) &&
-           (op2.getType().equals(IntType.v()) ||
-            op2.getType().equals(ByteType.v()) ||
-            op2.getType().equals(ShortType.v()) ||
-            op2.getType().equals(CharType.v()) ||
-            op2.getType().equals(BooleanType.v())))
+        if (isIntLikeType(op1.getType()) && isIntLikeType(op2.getType()))
           return IntType.v();
         else if(op1.getType().equals(LongType.v()) && op2.getType().equals(LongType.v()))
             return LongType.v();

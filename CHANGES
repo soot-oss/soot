@@ -52,6 +52,8 @@ Improvements and API changes in HEAD
 
 14. ASM based .class-to-Jimple conversion (about twice as fast as Coffi, and cleaner code)
 	use -coffi to enable old Coffi frontend 
+	
+15. Improved error reporting. 
 
 Improvements and API changes in version 2.5.0
 

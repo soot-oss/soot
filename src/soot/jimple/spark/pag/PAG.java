@@ -84,6 +84,10 @@ public class PAG implements PointsToAnalysis {
         if( opts.add_tags() ) {
             nodeToTag = new HashMap<Node, Tag>();
         }
+        if (opts.rta() && opts.on_fly_cg()) {
+        	throw new RuntimeException("Incompatible options rta:true and on-fly-cg:true for cg.spark. Use -p cg-"
+        			+ ".spark on-fly-cg:false when using RTA.");
+		}
         typeManager = new TypeManager(this);
         if( !opts.ignore_types() ) {
             typeManager.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
@@ -782,8 +786,6 @@ public class PAG implements PointsToAnalysis {
                            e.srcCtxt(), e.tgtCtxt(), e );
         }
         else if( e.kind() == Kind.EXECUTOR ) {
-        	// Flow from first parameter of doPrivileged() invocation
-        	// to this of target
         	InvokeExpr ie = e.srcStmt().getInvokeExpr();
             boolean virtualCall = callAssigns.containsKey(ie);
 
@@ -1134,18 +1136,6 @@ public class PAG implements PointsToAnalysis {
             for (Node element : ar)
 				vl.add( element );
             return vl.add( value );
-            /*
-	    Node[] ar = (Node[]) valueList;
-            Node[] newar = new Node[ar.length+1];
-            for( int i = 0; i < ar.length; i++ ) {
-                Node n = ar[i];
-                if( n == value ) return false;
-                newar[i] = n;
-            }
-            newar[ar.length] = value;
-            m.put( key, newar );
-            return true;
-            */
 	}
 	return ((Set<Node>) valueList).add( value );
     }

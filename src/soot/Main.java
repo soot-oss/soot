@@ -26,17 +26,23 @@
 package soot;
 
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
+import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Date;
 import java.util.Iterator;
 
 import soot.options.CGOptions;
 import soot.options.Options;
 import soot.toolkits.astmetrics.ClassData;
+
+import com.google.common.base.Joiner;
 
 /** Main class for Soot; provides Soot's command-line user interface. */
 public class Main {
@@ -48,7 +54,7 @@ public class Main {
     // TODO: the following string should be updated by the source control
     // No it shouldn't. Prcs is horribly broken in this respect, and causes
     // the code to not compile all the time.
-    public final String versionString = Main.class.getPackage().getImplementationVersion() == null ? "trunk" : Main.class.getPackage().getImplementationVersion();
+    public static final String versionString = Main.class.getPackage().getImplementationVersion() == null ? "trunk" : Main.class.getPackage().getImplementationVersion();
 
     private Date start;
     private Date finish;
@@ -149,6 +155,41 @@ public class Main {
             G.v().out.println( "To allocate more memory to Soot, use the -Xmx switch to Java." );
             G.v().out.println( "For example (for 400MB): java -Xmx400m soot.Main ..." );
             throw e;
+        } catch( RuntimeException e ) {
+        	e.printStackTrace();
+        	
+        	ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			e.printStackTrace(new PrintStream(bos));
+			String stackStraceString = bos.toString();
+			try {
+				final String TRACKER_URL="https://github.com/Sable/soot/issues/new?";
+				String commandLineArgs = Joiner.on(" ").join(args);
+				String body = "Steps to reproduce:\n1.) ...\n\n"
+						+ "Files used to reproduce: \n...\n\n"
+						+ "Soot version: "+versionString+"\n\n"
+						+ "Command line:\n"+commandLineArgs+"\n\nMax Memory:\n"+Runtime.getRuntime().maxMemory()/(1024*1024)+"MB\n\nStack trace:\n"+stackStraceString;
+				String title = e.getClass().getName()+" when ...";
+				
+	        	StringBuilder sb = new StringBuilder();
+	        	sb.append("\n\nOuuups... something went wrong! Sorry about that.\n");
+	        	sb.append("Follow these steps to fix the problem:\n");
+	        	sb.append("1.) Are you sure you used the right command line?\n");
+	        	sb.append("    Click here to double-check:\n");
+	        	sb.append("    http://www.sable.mcgill.ca/soot/tutorial/usage/\n");
+	        	sb.append("    http://www.sable.mcgill.ca/soot/tutorial/phase/\n");
+	        	sb.append("\n");
+	        	sb.append("2.) Not sure whether it's a bug? Feel free to discuss\n");
+				sb.append("    the issue on the Soot mailing list:\n");
+				sb.append("    https://github.com/Sable/soot/wiki/Getting-help\n");			
+	        	sb.append("\n");
+	        	sb.append("3.) Sure it's a bug? Click this link to report it.\n");
+	        	sb.append("    "+TRACKER_URL+"title="+URLEncoder.encode(title,"UTF-8")+"&body="+URLEncoder.encode(body,"UTF-8")+"\n");
+	        	sb.append("    Please be as precise as possible when giving us\n");
+	        	sb.append("    information on how to reproduce the problem. Thanks!");
+	        	
+	        	System.err.println(sb.toString());
+			} catch (UnsupportedEncodingException e1) {
+			}
         }
     }
 

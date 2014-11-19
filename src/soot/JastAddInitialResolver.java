@@ -99,6 +99,11 @@ public class JastAddInitialResolver implements IInitialResolver {
 
 	public Dependencies resolveFromJavaFile(SootClass sootclass) {
 		CompilationUnit u = classNameToCU.get(sootclass.getName());
+
+		if(u == null)
+			throw new RuntimeException("Error: couldn't find class: "+sootclass.getName()+" are the packages set properly?");
+
+
 		HashSet<SootClass> types = new HashSet<SootClass>();
 		for(TypeDecl typeDecl : u.getTypeDecls()) {
 			collectTypeDecl(typeDecl, types);

@@ -286,16 +286,27 @@ public abstract class AbstractJasminClass
         }
         ArrayList<VisibilityAnnotationTag> vis_list = tag.getVisibilityAnnotations();
         if (vis_list != null){
-            Iterator<VisibilityAnnotationTag> it = vis_list.iterator();
-            while (it.hasNext()){
-                sb.append(getVisibilityAnnotationAttr(it.next()));
+            for (VisibilityAnnotationTag vat : vis_list) {
+            	VisibilityAnnotationTag safeVat = vat == null
+            			? getSafeVisibilityAnnotationTag(tag.getKind()) : vat;
+                sb.append(getVisibilityAnnotationAttr(safeVat));
             }
         }
         sb.append(".end .param\n");
         return sb.toString();    
     }
-   
-    private String getElemAttr(AnnotationElem elem){
+    
+    private static Map<Integer, VisibilityAnnotationTag> safeVats =
+    		new HashMap<Integer, VisibilityAnnotationTag>();
+    
+    private VisibilityAnnotationTag getSafeVisibilityAnnotationTag(int kind) {
+    	VisibilityAnnotationTag safeVat = safeVats.get(kind);
+		if (safeVat == null)
+			safeVats.put(kind, safeVat = new VisibilityAnnotationTag(kind));
+		return safeVat;
+	}
+
+	private String getElemAttr(AnnotationElem elem){
         StringBuffer result = new StringBuffer(".elem ");
         switch (elem.getKind()){
             case 'Z': {
@@ -351,14 +362,14 @@ public abstract class AbstractJasminClass
             case 'F': {
                         result.append(".float_kind ");
                         result.append("\""+elem.getName()+"\" ");
-                        result.append(Float.floatToRawIntBits(((AnnotationFloatElem)elem).getValue()));
+                        result.append(((AnnotationFloatElem)elem).getValue());
                         result.append("\n");
                         break;
                       }
             case 'D': {
                         result.append(".doub_kind ");
                         result.append("\""+elem.getName()+"\" ");
-                        result.append(Double.doubleToRawLongBits(((AnnotationDoubleElem)elem).getValue()));
+                        result.append(((AnnotationDoubleElem)elem).getValue());
                         result.append("\n");
                         break;
                       }
@@ -505,16 +516,16 @@ public abstract class AbstractJasminClass
 
 
     // emit synthetic attributes
-    if (sootClass.hasTag("SyntheticTag")){
+    if (sootClass.hasTag("SyntheticTag") || Modifier.isSynthetic(sootClass.getModifiers())){
         emit(".synthetic\n");
     }
     // emit inner class attributes
-    if (sootClass.hasTag("InnerClassAttribute")){
+    InnerClassAttribute ica = (InnerClassAttribute) sootClass.getTag("InnerClassAttribute");
+    if (ica != null && ica.getSpecs().size() > 0){
         if (!Options.v().no_output_inner_classes_attribute()){
             emit(".inner_class_attr ");
-            Iterator<Tag> innersIt = ((InnerClassAttribute)sootClass.getTag("InnerClassAttribute")).getSpecs().iterator();
-            while (innersIt.hasNext()){
-                InnerClassTag ict = (InnerClassTag)innersIt.next();
+            for (InnerClassTag ict : ((InnerClassAttribute)sootClass.getTag(
+            		"InnerClassAttribute")).getSpecs()) {
                 //System.out.println("inner class tag: "+ict);
                 emit(".inner_class_spec_attr "+
                     "\""+ict.getInnerClass()+"\" "+
@@ -581,14 +592,14 @@ public abstract class AbstractJasminClass
                 else if (field.hasTag("FloatConstantValueTag")){
                     fieldString += " = ";
                     float val = ((FloatConstantValueTag)field.getTag("FloatConstantValueTag")).getFloatValue();
-                    fieldString += Float.floatToRawIntBits(val);
+                    fieldString += val;
                 }
                 else if (field.hasTag("DoubleConstantValueTag")){
                     fieldString += " = ";
                     double val = ((DoubleConstantValueTag)field.getTag("DoubleConstantValueTag")).getDoubleValue();
-                    fieldString += Double.doubleToRawLongBits(val);
+                    fieldString += val;
                 }
-                if (field.hasTag("SyntheticTag")){
+                if (field.hasTag("SyntheticTag") || Modifier.isSynthetic(field.getModifiers())){
                     fieldString +=" .synthetic";
                 }
 
@@ -716,7 +727,7 @@ public abstract class AbstractJasminClass
                 SootClass exceptClass = throwsIt.next();
                 emit(".throws "+exceptClass.getName());
             }
-            if (method.hasTag("SyntheticTag")){
+            if (method.hasTag("SyntheticTag") || Modifier.isSynthetic(method.getModifiers())){
                 emit(".synthetic");
             }
             if (method.hasTag("DeprecatedTag")){

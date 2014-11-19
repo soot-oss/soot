@@ -36,7 +36,7 @@ public class VisibilityAnnotationTag implements  Tag
 {
     
     private int visibility;
-    private ArrayList<AnnotationTag> annotations;
+    private ArrayList<AnnotationTag> annotations = null;
     
     public VisibilityAnnotationTag(int vis){
         this.visibility = vis;
@@ -58,10 +58,9 @@ public class VisibilityAnnotationTag implements  Tag
         }        
         sb.append("\n Annotations:"); 
         if (annotations != null){
-            Iterator<AnnotationTag> it = annotations.iterator();
-            while (it.hasNext()){
+            for (AnnotationTag tag : annotations) {
                 sb.append("\n");
-                sb.append(it.next().toString());
+                sb.append(tag.toString());
             }
         }
         sb.append("\n");

@@ -71,15 +71,17 @@ public class ArrayType extends RefLikeType
      */
     public static ArrayType v(Type baseType, int numDimensions)
     {
-        if( numDimensions < 1 ) throw new RuntimeException( "attempt to create array with "+numDimensions+" dimensions" );
-        ArrayType ret;
         Type elementType;
         if( numDimensions == 1 ) {
             elementType = baseType;
-        } else {
+        }
+        else if (numDimensions > 1) {
             elementType = ArrayType.v( baseType, numDimensions-1 );
         }
-        ret = elementType.getArrayType();
+        else
+        	throw new RuntimeException("Invalid number of array dimensions: " + numDimensions);
+        
+        ArrayType ret = elementType.getArrayType();
         if( ret == null ) {
             ret = new ArrayType(baseType, numDimensions);
             elementType.setArrayType( ret );

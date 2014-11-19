@@ -5,7 +5,11 @@ import soot.jimple.LongConstant;
 
 public class UntypedLongOrDoubleConstant extends UntypedConstant {
 
-    public final long value;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -3970057807907204253L;
+	public final long value;
 
     private UntypedLongOrDoubleConstant(long value)
     {

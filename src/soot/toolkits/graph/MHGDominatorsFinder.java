@@ -131,7 +131,7 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N>
         return graph;
     }
     
-    public List<N> getDominators(Object node)
+    public List<N> getDominators(N node)
     {
         //reconstruct list of dominators from bitset
         List<N> result = new ArrayList<N>();
@@ -144,7 +144,7 @@ public class MHGDominatorsFinder<N> implements DominatorsFinder<N>
         return result;
     }
 
-    public N getImmediateDominator(Object node)
+    public N getImmediateDominator(N node)
     {
         // root node
         if(getGraph().getHeads().contains(node))

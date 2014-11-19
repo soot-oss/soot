@@ -29,11 +29,21 @@
 
 package soot;
 
-import soot.tagkit.*;
-import soot.util.*;
-import java.util.*;
-import soot.dava.toolkits.base.misc.*;
-import soot.options.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import soot.dava.toolkits.base.misc.PackageNamer;
+import soot.options.Options;
+import soot.tagkit.AbstractHost;
+import soot.util.Chain;
+import soot.util.HashChain;
+import soot.util.Numberable;
+import soot.util.NumberedString;
+import soot.util.SmallNumberedMap;
+import soot.validation.ClassValidator;
+import soot.validation.OuterClassValidator;
+import soot.validation.ValidationException;
 
 /*
  * Incomplete and inefficient implementation.
@@ -116,18 +126,35 @@ public class SootClass extends AbstractHost implements Numberable
             default: throw new RuntimeException("unknown resolving level");
         }
     }
+
+  /**
+   * Checks if the class has at lease the resolving level specified.
+   * This check does nothing is the class resolution process is not completed.
+   * @param level the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, and BODIES
+   * @throws java.lang.RuntimeException if the resolution is at an insufficient level
+   */
     public void checkLevel( int level ) {
         if( !Scene.v().doneResolving() ) return;
-        if( resolvingLevel < level ) {
-        	String hint = "\nIf you are extending Soot, try to add the following call before calling soot.Main.main(..):\n" +
-        			      "Scene.v().addBasicClass("+getName()+","+levelToString(level)+");\n" +
-        			      "Otherwise, try whole-program mode (-w).";
-            throw new RuntimeException(
-                "This operation requires resolving level "+
-                levelToString(level)+" but "+name+
-                " is at resolving level "+levelToString(resolvingLevel) + hint);
-        }
+      checkLevelIgnoreResolving(level);
     }
+
+  /**
+   * Checks if the class has at lease the resolving level specified.
+   * This check ignores the resolution completeness.
+   * @param level the resolution level, one of DANGLING, HIERARCHY, SIGNATURES, and BODIES
+   * @throws java.lang.RuntimeException if the resolution is at an insufficient level
+   */
+  public void checkLevelIgnoreResolving( int level ) {
+    if( resolvingLevel < level ) {
+      String hint = "\nIf you are extending Soot, try to add the following call before calling soot.Main.main(..):\n" +
+              "Scene.v().addBasicClass("+getName()+","+levelToString(level)+");\n" +
+              "Otherwise, try whole-program mode (-w).";
+      throw new RuntimeException(
+              "This operation requires resolving level "+
+                      levelToString(level)+" but "+name+
+                      " is at resolving level "+levelToString(resolvingLevel) + hint);
+    }
+  }
 
     public int resolvingLevel() { return resolvingLevel; }
     public void setResolvingLevel( int newLevel ) {
@@ -1104,5 +1131,48 @@ public class SootClass extends AbstractHost implements Numberable
     	Scene.v().addRefType(refType);
     	
     }
+    
+	private static ClassValidator[] validators;
+	
+	/**
+	 * Returns an array containing some validators in order to validate the SootClass
+	 * @return the array containing validators
+	 */
+	private synchronized static ClassValidator[] getValidators() {
+		if (validators == null)
+		{
+			validators = new ClassValidator[] {
+				OuterClassValidator.v()
+			};
+		}
+		return validators;
+	};
+	
+
+	/**
+     * Validates this SootClass for logical errors. Note that this does not
+     * validate the method bodies, only the class structure.
+     */
+    public void validate() {
+        final List<ValidationException> exceptionList = new ArrayList<ValidationException>();
+        validate(exceptionList);
+        if (!exceptionList.isEmpty())
+        	throw exceptionList.get(0);
+    }
+
+    /**
+     * Validates this SootClass for logical errors. Note that this does not
+     * validate the method bodies, only the class structure. All found errors
+     * are saved into the given list.
+     */
+    public void validate(List<ValidationException> exceptionList) {
+        final boolean runAllValidators = Options.v().debug() || Options.v().validate();
+    	for (ClassValidator validator : getValidators()) {
+    		if (!validator.isBasicValidator() && !runAllValidators)
+    			continue;
+    		validator.validate(this, exceptionList);
+    	}
+    }
+    
 }
 

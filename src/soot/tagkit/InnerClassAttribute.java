@@ -31,25 +31,29 @@ package soot.tagkit;
 import java.util.*;
 
 
-/** Represents an inner class attribute which can be attatched to
+/** Represents an inner class attribute which can be attached to
  * implementations of Host. It can be directly used to add
  * attributes to class files
  *
  */
 public class InnerClassAttribute implements Tag
 {
-    private ArrayList<Tag> list;
+    private ArrayList<InnerClassTag> list = null;
     
-    public InnerClassAttribute(ArrayList<Tag> list)
+    public InnerClassAttribute() {
+    }
+
+    public InnerClassAttribute(ArrayList<InnerClassTag> list)
     {
 	    this.list = list;
     }
 
     public String getClassSpecs(){
+    	if (list == null)
+    		return "";
+    	
         StringBuffer sb = new StringBuffer();
-        Iterator<Tag> it = list.iterator();
-        while (it.hasNext()){
-            InnerClassTag ict = (InnerClassTag)it.next();
+        for (InnerClassTag ict : list) {
             sb.append(".inner_class_spec_attr ");
             sb.append(ict.getInnerClass());
             sb.append(" ");
@@ -72,7 +76,32 @@ public class InnerClassAttribute implements Tag
         return new byte[1];
     }
 
-    public ArrayList<Tag> getSpecs(){
-        return list;
+    public List<InnerClassTag> getSpecs() {
+        return list == null ? Collections.<InnerClassTag>emptyList() : list;
     }
+
+	public void add(InnerClassTag newt) {
+		if (list != null) {
+			String new_inner = newt.getInnerClass();
+			for (InnerClassTag ict : this.list) {
+				String inner = ict.getInnerClass();
+				if (new_inner.equals(inner)) {
+					if (ict.accessFlags != 0 && newt.accessFlags > 0 && ict.accessFlags != newt.accessFlags)
+						throw new RuntimeException("Error: trying to add an InnerClassTag twice with different access flags! ("+ict.accessFlags +" and "+ newt.accessFlags +")");
+					if (ict.accessFlags == 0 && newt.accessFlags != 0)  {
+						// The Dalvik parser may find an InnerClass annotation without accessFlags in the outer class 
+						// and then an annotation with the accessFlags in the inner class.
+						// When we have more information about the accessFlags we update the InnerClassTag.
+						list.remove(ict);
+						list.add(newt);
+					}
+					return;
+				}
+			}
+		}
+		
+		if (list == null)
+			list = new ArrayList<InnerClassTag>();
+		list.add(newt);
+	}
 }

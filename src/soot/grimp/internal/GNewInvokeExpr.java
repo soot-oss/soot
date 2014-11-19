@@ -31,11 +31,21 @@
 
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
-import soot.util.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+
+import soot.RefType;
+import soot.SootMethodRef;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.grimp.Grimp;
+import soot.grimp.GrimpValueSwitch;
+import soot.grimp.NewInvokeExpr;
+import soot.grimp.Precedence;
+import soot.jimple.internal.AbstractInvokeExpr;
+import soot.util.Switch;
 
 public class GNewInvokeExpr extends AbstractInvokeExpr
     implements NewInvokeExpr, Precedence
@@ -44,7 +54,7 @@ public class GNewInvokeExpr extends AbstractInvokeExpr
 
     public GNewInvokeExpr(RefType type, SootMethodRef methodRef, List args)
     {
-    	super(new ExprBox[args.size()]);
+    	super(methodRef, new ExprBox[args.size()]);
     	
         if( methodRef != null && methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
 

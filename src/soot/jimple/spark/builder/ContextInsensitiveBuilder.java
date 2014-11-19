@@ -42,8 +42,7 @@ public class ContextInsensitiveBuilder {
             change = false;
             for( Iterator<SootClass> cIt = new ArrayList<SootClass>(Scene.v().getClasses()).iterator(); cIt.hasNext(); ) {
                 final SootClass c = cIt.next();
-                for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
-                    final SootMethod m = (SootMethod) mIt.next();
+                for( final SootMethod m : c.getMethods() ) {
                     if( !m.isConcrete() ) continue;
                     if( m.isNative() ) continue;
                     if( m.isPhantom() ) continue;
@@ -71,7 +70,7 @@ public class ContextInsensitiveBuilder {
     }
     /** Fills in the pointer assignment graph returned by setup. */
     public void build() {
-        QueueReader callEdges;
+        QueueReader<Edge> callEdges;
         if( ofcg != null ) {
             callEdges = ofcg.callGraph().listener();
             ofcg.build();
@@ -82,12 +81,11 @@ public class ContextInsensitiveBuilder {
             cgb.build();
             reachables = cgb.reachables();
         }
-        for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
-            final SootClass c = (SootClass) cIt.next();
+        for( final SootClass c : Scene.v().getClasses()) {
 	    handleClass( c );
 	}
         while(callEdges.hasNext()) {
-            Edge e = (Edge) callEdges.next();
+            Edge e = callEdges.next();
             if(!e.getTgt().method().getDeclaringClass().isPhantom()) {
 	            MethodPAG.v( pag, e.tgt() ).addToPAG(null);
 	            pag.addCallTarget( e );
@@ -105,10 +103,7 @@ public class ContextInsensitiveBuilder {
     /* End of package methods. */
     protected void handleClass( SootClass c ) {
         boolean incedClasses = false;
-	Iterator methodsIt = c.methodIterator();
-	while( methodsIt.hasNext() ) 
-	{
-	    SootMethod m = (SootMethod) methodsIt.next();
+	for (SootMethod m : c.getMethods()) {
 	    if( !m.isConcrete() && !m.isNative() ) continue;
             totalMethods++;
             if( reachables.contains( m ) ) {

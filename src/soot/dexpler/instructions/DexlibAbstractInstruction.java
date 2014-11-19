@@ -24,10 +24,14 @@
 
 package soot.dexpler.instructions;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
+import org.jf.dexlib2.iface.instruction.FiveRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.instruction.RegisterRangeInstruction;
 
 import soot.DoubleType;
 import soot.FloatType;
@@ -54,7 +58,6 @@ public abstract class DexlibAbstractInstruction {
 //    protected Unit beginUnit;
 //    protected Unit endUnit;
     protected Unit unit;
-    protected DexBody body = null;
 
     public Instruction getInstruction() {
       return instruction;
@@ -358,5 +361,40 @@ public abstract class DexlibAbstractInstruction {
         };
 
       //public abstract void getConstraint(IDalvikTyper DalvikTyper.v());
+
+      /**
+       * Return the indices used in the given instruction.
+       *
+       * @param instruction a range invocation instruction
+       * @return a list of register indices
+       */
+      protected List<Integer> getUsedRegistersNums(RegisterRangeInstruction instruction) {
+          List<Integer> regs = new ArrayList<Integer>();
+          int start = instruction.getStartRegister();
+          for (int i = start; i < start + instruction.getRegisterCount(); i++)
+              regs.add(i);
+
+          return regs;
+      }
+      
+      /**
+       * Return the indices used in the given instruction.
+       *
+       * @param instruction a invocation instruction
+       * @return a list of register indices
+       */
+      protected List<Integer> getUsedRegistersNums(FiveRegisterInstruction instruction) {
+          int[] regs = {
+              instruction.getRegisterC(),
+              instruction.getRegisterD(),
+              instruction.getRegisterE(),
+              instruction.getRegisterF(),
+              instruction.getRegisterG(),
+          };
+          List<Integer> l = new ArrayList<Integer>();
+          for (int i = 0; i < instruction.getRegisterCount(); i++)
+              l.add(regs[i]);
+          return l;
+      }
 
 }

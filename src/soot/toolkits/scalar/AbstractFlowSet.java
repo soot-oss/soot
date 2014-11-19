@@ -76,12 +76,12 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 		if (dest != this && dest != other)
 			dest.clear();
 
-		if (dest != this) {
+		if (dest != null && dest != this) {
 			for (T t : this)
 				dest.add(t);
 		}
 
-		if (dest != other) {
+		if (other != null && dest != other) {
 			for (T t : other)
 				dest.add(t);
 		}
@@ -163,7 +163,7 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 
 	@SuppressWarnings("unchecked")
 	public boolean equals(Object o) {
-		if (o.getClass() != getClass())
+		if (!(o instanceof FlowSet))
 			return false;
 		FlowSet<T> other = (FlowSet<T>) o;
 		if (size() != other.size())

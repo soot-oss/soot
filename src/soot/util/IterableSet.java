@@ -26,13 +26,12 @@
 
 package soot.util;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Set;
 
-import soot.SootClass;
-
-public class IterableSet extends HashChain implements Set
+public class IterableSet<T> extends HashChain<T> implements Set<T>
 {
-    public IterableSet( Collection<SootClass> c)
+    public IterableSet( Collection<T> c)
     {
 	super();
 	addAll( c);
@@ -43,7 +42,7 @@ public class IterableSet extends HashChain implements Set
 	super();
     }
 
-    public boolean add( Object o)
+    public boolean add( T o)
     {
 	if (o == null)
 	    throw new IllegalArgumentException( "Cannot add \"null\" to an IterableSet.");
@@ -51,7 +50,7 @@ public class IterableSet extends HashChain implements Set
 	if (contains( o))
 	    return false;
 
-	return super.add( o);
+	return super.add(o);
     }
 
     public boolean remove( Object o)
@@ -73,15 +72,15 @@ public class IterableSet extends HashChain implements Set
 	if ((o instanceof IterableSet) == false)
 	    return false;
 
-	IterableSet other = (IterableSet) o;
+	@SuppressWarnings("unchecked")
+	IterableSet<T> other = (IterableSet<T>) o;
 
 	if (size() != other.size())
 	    return false;
 	
-	Iterator it = iterator();
-	while (it.hasNext()) 
-	    if (other.contains( it.next()) == false)
-		return false;
+	for (T t : this)
+	    if (!other.contains(t))
+	    	return false;
 	
 	return true;
     }
@@ -89,22 +88,21 @@ public class IterableSet extends HashChain implements Set
     @Override
     public int hashCode() {
     	int code = 23;
-    	Iterator it = iterator();
-    	while (it.hasNext()) {
+    	for (T t : this) {
     		//use addition here to have hash code independent of order
-    		code += it.next().hashCode();
+    		code += t.hashCode();
     	}
     	return code;
     }
     
     public Object clone()
     {
-	IterableSet s = new IterableSet();
+	IterableSet<T> s = new IterableSet<T>();
 	s.addAll( this);
 	return s;
     }    
 
-    public boolean isSubsetOf( IterableSet other)
+    public boolean isSubsetOf( IterableSet<T> other)
     {
 	if (other == null)
 	    throw new IllegalArgumentException( "Cannot set compare an IterableSet with \"null\".");
@@ -112,15 +110,14 @@ public class IterableSet extends HashChain implements Set
 	if (size() > other.size())
 	    return false;
 
-	Iterator it = iterator();
-	while (it.hasNext())
-	    if (other.contains( it.next()) == false)
-		return false;
+	for (T t : this)
+	    if (!other.contains(t))
+	    	return false;
 
 	return true;
     }
     
-    public boolean isSupersetOf( IterableSet other)
+    public boolean isSupersetOf( IterableSet<T> other)
     {
 	if (other == null)
 	    throw new IllegalArgumentException( "Cannot set compare an IterableSet with \"null\".");
@@ -128,15 +125,14 @@ public class IterableSet extends HashChain implements Set
 	if (size() < other.size())
 	    return false;
 
-	Iterator it = other.iterator();
-	while (it.hasNext())
-	    if (contains( it.next()) == false)
-		return false;
+	for (T t : other)
+	    if (!contains(t))
+	    	return false;
 	
 	return true;
     }
 
-    public boolean isStrictSubsetOf( IterableSet other)
+    public boolean isStrictSubsetOf( IterableSet<T> other)
     {
 	if (other == null)
 	    throw new IllegalArgumentException( "Cannot set compare an IterableSet with \"null\".");
@@ -147,7 +143,7 @@ public class IterableSet extends HashChain implements Set
 	return isSubsetOf( other);
     }
     
-    public boolean isStrictSupersetOf( IterableSet other)
+    public boolean isStrictSupersetOf( IterableSet<T> other)
     {
 	if (other == null)
 	    throw new IllegalArgumentException( "Cannot set compare an IterableSet with \"null\".");
@@ -159,61 +155,51 @@ public class IterableSet extends HashChain implements Set
     }
 
 
-    public boolean intersects( IterableSet other)
+    public boolean intersects( IterableSet<T> other)
     {
 	if (other == null)
 	    throw new IllegalArgumentException( "Cannot set intersect an IterableSet with \"null\".");
 
 	if (other.size() < size()) {
-	    Iterator it = other.iterator();
-	    while (it.hasNext())
-		if (contains( it.next()))
-		    return true;
+	    for (T t : other)
+	    	if (contains(t))
+	    		return true;
 	}
 	else {
-	    Iterator it = iterator();
-	    while (it.hasNext())
-		if (other.contains( it.next()))
-		    return true;
+	    for (T t : this)
+			if (other.contains(t))
+			    return true;
 	}
 
 	return false;
     }
 
-    public IterableSet intersection( IterableSet other)
+    public IterableSet<T> intersection( IterableSet<T> other)
     {
 	if (other == null)
 	    throw new IllegalArgumentException( "Cannot set intersect an IterableSet with \"null\".");
 
-	IterableSet c = new IterableSet();
+	IterableSet<T> c = new IterableSet<T>();
 
 	if (other.size() < size()) {
-	    Iterator it = other.iterator();
-	    while (it.hasNext()) {
-		Object o = it.next();
-		
-		if (contains( o))
-		    c.add( o);
-	    }
+	    for (T t : other)
+			if (contains(t))
+			    c.add(t);
 	}
 	else {
-	    Iterator it = iterator();
-	    while (it.hasNext()) {
-		Object o = it.next();
-		
-		if (other.contains( o))
-		    c.add( o);
-	    }
+	    for (T t : this)
+	    	if (other.contains(t))
+	    		c.add(t);
 	}
 	return c;
     }
 
-    public IterableSet union( IterableSet other)
+    public IterableSet<T> union( IterableSet<T> other)
     {
 	if (other == null)
 	    throw new IllegalArgumentException( "Cannot set union an IterableSet with \"null\".");
 
-	IterableSet c = new IterableSet();
+	IterableSet<T> c = new IterableSet<T>();
 
 	c.addAll( this);
 	c.addAll( other);
@@ -225,9 +211,8 @@ public class IterableSet extends HashChain implements Set
     {
 	StringBuffer b = new StringBuffer();
 
-	Iterator it = iterator();
-	while (it.hasNext()) {
-	    b.append( it.next().toString());
+	for (T t : this) {
+	    b.append( t.toString());
 	    b.append( "\n");
 	}
 

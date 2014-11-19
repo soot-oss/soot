@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import soot.AbstractJasminClass;
@@ -62,6 +61,7 @@ import soot.Trap;
 import soot.Type;
 import soot.TypeSwitch;
 import soot.Unit;
+import soot.UnitBox;
 import soot.Value;
 import soot.ValueBox;
 import soot.jimple.CaughtExceptionRef;
@@ -129,25 +129,22 @@ public class JasminClass extends AbstractJasminClass
         if(Options.v().time())
             Timers.v().buildJasminTimer.start();
         
-        Chain instList = body.getUnits();
+        Chain<Unit> instList = body.getUnits();
 
         int stackLimitIndex = -1;
         
-
         subroutineToReturnAddressSlot = new HashMap<Unit, Integer>(10, 0.7f);
 
         // Determine the unitToLabel map
         {
-            Iterator boxIt = body.getUnitBoxes(true).iterator();
-
-            unitToLabel = new HashMap(instList.size() * 2 + 1, 0.7f);
+            unitToLabel = new HashMap<Unit, String>(instList.size() * 2 + 1, 0.7f);
             labelCount = 0;
 
-            while(boxIt.hasNext())
+            for (UnitBox uBox : body.getUnitBoxes(true))
             {
                 // Assign a label for each statement reference
                 {
-                    InstBox box = (InstBox) boxIt.next();
+                    InstBox box = (InstBox) uBox;
 
                     if(!unitToLabel.containsKey(box.getUnit()))
                         unitToLabel.put(box.getUnit(), "label" + labelCount++);
@@ -161,14 +158,9 @@ public class JasminClass extends AbstractJasminClass
         // Emit the exceptions, recording the Units at the beginning
 	// of handlers so that later on we can recognize blocks that 
 	// begin with an exception on the stack.
-	Set<Unit> handlerUnits = new ArraySet(body.getTraps().size());
+	Set<Unit> handlerUnits = new ArraySet<Unit>(body.getTraps().size());
         {
-            Iterator trapIt = body.getTraps().iterator();
-
-            while(trapIt.hasNext())
-            {
-                Trap trap = (Trap) trapIt.next();
-
+        	for (Trap trap : body.getTraps()) {
 		handlerUnits.add(trap.getHandlerUnit());
                 if(trap.getBeginUnit() != trap.getEndUnit()) {
                     emit(".catch " + slashify(trap.getException().getName()) + " from " +
@@ -184,7 +176,6 @@ public class JasminClass extends AbstractJasminClass
             int[] paramSlots = new int[method.getParameterCount()];
             int thisSlot = 0;
             Set<Local> assignedLocals = new HashSet<Local>();
-            Map groupColorPairToSlot = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
             
             localToSlot = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
 
@@ -192,29 +183,24 @@ public class JasminClass extends AbstractJasminClass
             
             // Determine slots for 'this' and parameters
             {
-                List paramTypes = method.getParameterTypes();
-
                 if(!method.isStatic())
                 {
                     thisSlot = 0;
                     localCount++;
                 }
 
-                for(int i = 0; i < paramTypes.size(); i++)
+                for(int i = 0; i < method.getParameterCount(); i++)
                 {
                     paramSlots[i] = localCount;
-                    localCount += sizeOfType((Type) paramTypes.get(i));
+                    localCount += sizeOfType(method.getParameterType(i));
                 }
             }
 
             // Handle identity statements
             {
-                Iterator instIt = instList.iterator();
-
-                while(instIt.hasNext())
+                for (Unit u : instList)
                 {
-                    Inst s = (Inst) instIt.next();
-
+                    Inst s = (Inst) u;
                     if(s instanceof IdentityInst && ((IdentityInst) s).getLeftOp() instanceof Local)
                     {
                         Local l = (Local) ((IdentityInst) s).getLeftOp();
@@ -245,17 +231,12 @@ public class JasminClass extends AbstractJasminClass
 
             // Assign the rest of the locals
             {
-                Iterator localIt = body.getLocals().iterator();
-
-                while(localIt.hasNext())
+                for (Local local : body.getLocals())
                 {
-                    Local local = (Local) localIt.next();
-
-                    if(!assignedLocals.contains(local))
+                    if(assignedLocals.add(local))
                     {
                         localToSlot.put(local, new Integer(localCount));
                         localCount += sizeOfType((Type)local.getType());
-                        assignedLocals.add(local);
                     }
                 }
 
@@ -272,15 +253,13 @@ public class JasminClass extends AbstractJasminClass
 
         // Emit code in one pass
         {
-            Iterator codeIt = instList.iterator();
-
             isEmittingMethodCode = true;
             maxStackHeight = 0; 
             isNextGotoAJsr = false;
 
-            while(codeIt.hasNext())
+            for (Unit u : instList)
             {
-                Inst s = (Inst) codeIt.next();
+                Inst s = (Inst) u;
 
                 if(unitToLabel.containsKey(s))
                     emit(unitToLabel.get(s) + ":");
@@ -298,17 +277,12 @@ public class JasminClass extends AbstractJasminClass
                 maxStackHeight = 0;
                 if(activeBody.getUnits().size() !=  0 ) {
                     BlockGraph blockGraph = new BriefBlockGraph(activeBody);
-
-                
-                    List blocks = blockGraph.getBlocks();
-                
+                    List<Block> blocks = blockGraph.getBlocks();
 
                     if(blocks.size() != 0) {
                         // set the stack height of the entry points
-                        List entryPoints = ((DirectedGraph)blockGraph).getHeads();                
-                        Iterator entryIt = entryPoints.iterator();
-                        while(entryIt.hasNext()) {
-                            Block entryBlock = (Block) entryIt.next();
+                        List<Block> entryPoints = ((DirectedGraph<Block>)blockGraph).getHeads();                
+                        for (Block entryBlock : entryPoints) {
                             Integer initialHeight;
                             if(handlerUnits.contains(entryBlock.getHead())) {
                                 initialHeight = new Integer(1);
@@ -326,9 +300,7 @@ public class JasminClass extends AbstractJasminClass
                         }                
                                     
                         // dfs the block graph using the blocks in the entryPoints list  as roots 
-                        entryIt = entryPoints.iterator();
-                        while(entryIt.hasNext()) {
-                            Block nextBlock = (Block) entryIt.next();
+                        for (Block nextBlock : entryPoints) {
                             calculateStackHeight(nextBlock);
                             calculateLogicalStackHeightCheck(nextBlock);
                         }                
@@ -343,12 +315,10 @@ public class JasminClass extends AbstractJasminClass
 
 	// emit code attributes
 	{
-	    Iterator it =  body.getTags().iterator();
-	    while(it.hasNext()) {
-		Tag t = (Tag) it.next();
-		if(t instanceof JasminAttribute) {
-		    emit(".code_attribute " + t.getName() +" \"" + ((JasminAttribute) t).getJasminValue(unitToLabel) +"\"");
-		}		
+	    for (Tag t : body.getTags()) {
+			if(t instanceof JasminAttribute) {
+			    emit(".code_attribute " + t.getName() +" \"" + ((JasminAttribute) t).getJasminValue(unitToLabel) +"\"");
+			}		
 	    }
 	}
     }
@@ -1706,7 +1676,7 @@ public class JasminClass extends AbstractJasminClass
                 emit("lookupswitch");
 
                 List lookupValues = i.getLookupValues();
-                List targets = i.getTargets();
+                List<Unit> targets = i.getTargets();
 
                 for(int j = 0; j < lookupValues.size(); j++)
                     emit("  " + lookupValues.get(j) + " : " + 
@@ -1719,7 +1689,7 @@ public class JasminClass extends AbstractJasminClass
                 {
                 emit("tableswitch " + i.getLowIndex() + " ; high = " + i.getHighIndex());
 
-                List targets = i.getTargets();
+                List<Unit> targets = i.getTargets();
 
                 for(int j = 0; j < targets.size(); j++)
                     emit("  " + unitToLabel.get(targets.get(j)));
@@ -1886,14 +1856,13 @@ public class JasminClass extends AbstractJasminClass
  
     private void calculateStackHeight(Block aBlock)
     {
-        Iterator it = aBlock.iterator();
         int blockHeight =  blockToStackHeight.get(aBlock).intValue();
         if( blockHeight > maxStackHeight) {
             maxStackHeight = blockHeight;
         }
         
-        while(it.hasNext()) {
-          Inst nInst = (Inst) it.next();
+        for (Unit u : aBlock) {
+          Inst nInst = (Inst) u;
           
           blockHeight -= nInst.getInMachineCount();
 	  
@@ -1915,9 +1884,7 @@ public class JasminClass extends AbstractJasminClass
         }
         
         
-        Iterator succs = aBlock.getSuccs().iterator();
-        while(succs.hasNext()) {
-            Block b = (Block) succs.next();
+        for (Block b : aBlock.getSuccs()) {
             Integer i = blockToStackHeight.get(b);
             if(i != null) {
                 if(i.intValue() != blockHeight) {
@@ -1934,11 +1901,9 @@ public class JasminClass extends AbstractJasminClass
 
     private void calculateLogicalStackHeightCheck(Block aBlock)
     {
-        Iterator it = aBlock.iterator();
         int blockHeight =  blockToLogicalStackHeight.get(aBlock).intValue();
-        
-        while(it.hasNext()) {
-            Inst nInst = (Inst) it.next();
+        for (Unit u : aBlock) {
+            Inst nInst = (Inst) u;
           
             blockHeight -= nInst.getInCount();
 
@@ -1957,10 +1922,7 @@ public class JasminClass extends AbstractJasminClass
             //G.v().out.println(">>> " + nInst + " " + blockHeight);            
         }
         
-        
-        Iterator succs = aBlock.getSuccs().iterator();
-        while(succs.hasNext()) {
-            Block b = (Block) succs.next();
+        for (Block b : aBlock.getSuccs()) {
             Integer i = blockToLogicalStackHeight.get(b);
             if(i != null) {
                 if(i.intValue() != blockHeight) {
@@ -1973,15 +1935,6 @@ public class JasminClass extends AbstractJasminClass
             }            
         }        
     }
-
-
-
-
-
-
-
-
-
 
 }
 

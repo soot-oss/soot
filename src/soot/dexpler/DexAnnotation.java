@@ -2,14 +2,15 @@ package soot.dexpler;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.jf.dexlib2.AnnotationVisibility;
 import org.jf.dexlib2.iface.Annotation;
 import org.jf.dexlib2.iface.AnnotationElement;
 import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Field;
 import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.MethodParameter;
@@ -32,12 +33,18 @@ import org.jf.dexlib2.iface.value.ShortEncodedValue;
 import org.jf.dexlib2.iface.value.StringEncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
 
+import soot.RefType;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.SootResolver;
 import soot.Type;
+import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationConstants;
+import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationDoubleElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationEnumElem;
@@ -51,6 +58,7 @@ import soot.tagkit.EnclosingMethodTag;
 import soot.tagkit.Host;
 import soot.tagkit.InnerClassAttribute;
 import soot.tagkit.InnerClassTag;
+import soot.tagkit.ParamNamesTag;
 import soot.tagkit.SignatureTag;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
@@ -65,10 +73,12 @@ import soot.toDex.SootToDexUtils;
  */
 public class DexAnnotation {
     
-    DexFile dexFile = null;
+	private final SootClass clazz;
+    private final Dependencies deps;
     
-    DexAnnotation(DexFile df) {
-        this.dexFile = df;
+    DexAnnotation(SootClass clazz, Dependencies deps) {
+    	this.clazz = clazz;
+        this.deps = deps;
     }
 
     /**
@@ -85,17 +95,67 @@ public class DexAnnotation {
 //    .annotation "Ldalvik/annotation/Signature;"
 //    .annotation "Ldalvik/annotation/Throws;"
 
-    void handleClassAnnotation(Host h, ClassDef classDef) {
-        Set<? extends Annotation> aSet = classDef.getAnnotations();
-        if (aSet == null || aSet.isEmpty())
-            return;
-        List<Tag> tags = handleAnnotation(aSet, classDef.getType());
-        if (tags != null)
-	        for (Tag t : tags)
-	        	if (t != null) {
-		            h.addTag(t);
-		            Debug.printDbg("add class annotation: ", t, " type: ", t.getClass());
-		        }
+    void handleClassAnnotation(ClassDef classDef) {
+    	Set<? extends Annotation> aSet = classDef.getAnnotations();
+    	if (aSet == null || aSet.isEmpty())
+    		return;
+    	
+    	List<Tag> tags = handleAnnotation(aSet, classDef.getType());
+    	if (tags == null)
+    		return;
+    	
+       	InnerClassAttribute ica = null;
+   		for (Tag t : tags)
+   			if (t != null) {
+   				if (t instanceof InnerClassTag) {
+   			    	if (ica == null) {
+   			    		// Do we already have an InnerClassAttribute?
+   			    		ica = (InnerClassAttribute) clazz.getTag("InnerClassAttribute");
+   			    		// If not, create one
+   			    		if (ica == null) {
+	   			    		ica = new InnerClassAttribute();
+	   			    		clazz.addTag(ica);
+   			    		}
+   			    	}
+   					ica.add((InnerClassTag)t);
+				} else if (t instanceof VisibilityAnnotationTag) {
+					// If a dalvik/annotation/AnnotationDefault tag is present
+					// in a class, its AnnotationElements must be propagated
+					// to methods through the creation of new AnnotationDefaultTag.
+					VisibilityAnnotationTag vt = (VisibilityAnnotationTag) t;
+					for (AnnotationTag a : vt.getAnnotations()) {
+						if (a.getType().equals("Ldalvik/annotation/AnnotationDefault;")) {
+							for (AnnotationElem ae : a.getElems()) {
+								if (ae instanceof AnnotationAnnotationElem) {
+									AnnotationAnnotationElem aae = (AnnotationAnnotationElem) ae;
+									AnnotationTag at = (AnnotationTag) aae.getValue();
+									// extract default elements
+									Map<String, AnnotationElem> defaults = new HashMap<String, AnnotationElem>();
+									for (AnnotationElem aelem: at.getElems()) {
+										defaults.put(aelem.getName(), aelem);
+									}
+									// create default tags containing default elements
+									// and add tags on methods
+									for (SootMethod sm: clazz.getMethods()) {
+										String methodName = sm.getName();
+										if (defaults.containsKey(methodName)) {
+											AnnotationElem e = defaults.get(methodName);
+											e.setName("default");
+											AnnotationDefaultTag d = new AnnotationDefaultTag(e);
+											sm.addTag(d);
+										}
+									}
+								}
+							}
+						}
+					}
+					if (!(vt.getVisibility() == AnnotationConstants.RUNTIME_INVISIBLE))
+						clazz.addTag(vt);
+   				} else {
+   					clazz.addTag(t);
+   				}
+   				Debug.printDbg("add class annotation: ", t, " type: ", t.getClass());
+   			}
     }
 
     /**
@@ -131,6 +191,18 @@ public class DexAnnotation {
 		                h.addTag(t);
 		                Debug.printDbg("add method annotation: ", t);
 		            }
+		}
+
+        ArrayList<String> parameterNames = new ArrayList<String>();
+        boolean addParameterNames = false;
+        for (MethodParameter p : method.getParameters()) {
+			String name = p.getName();
+			parameterNames.add(name);
+			if (name != null)
+				addParameterNames = true;
+        }
+        if (addParameterNames) {
+			h.addTag(new ParamNamesTag(parameterNames));
         }
 
         // Is there any parameter annotation?
@@ -143,34 +215,43 @@ public class DexAnnotation {
                 break;
             }
         }
+                
         if (doParam) {
-            VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(parameters.size(), 0);
+            VisibilityParameterAnnotationTag tag = new VisibilityParameterAnnotationTag(
+            		parameters.size(), AnnotationConstants.RUNTIME_VISIBLE);
             for (MethodParameter p : parameters) {
                 List<Tag> tags = handleAnnotation(p.getAnnotations(), null);
-                if (tags == null)
+                
+                // If we have no tag for this parameter, add a placeholder
+                // so that we keep the order intact.
+                if (tags == null) {
+                	tag.addVisibilityAnnotation(null);
                 	continue;
+                }
+
+                VisibilityAnnotationTag paramVat = new VisibilityAnnotationTag(
+            			AnnotationConstants.RUNTIME_VISIBLE);
+            	tag.addVisibilityAnnotation(paramVat);
+                
                 for (Tag t : tags) {
                 	if (t == null)
                 		continue;
                 	
-                    VisibilityAnnotationTag vat = null;
-
+                    AnnotationTag vat = null;
                     if (!(t instanceof VisibilityAnnotationTag)) {
                         if (t instanceof DeprecatedTag) {
-                            vat = new VisibilityAnnotationTag(0);
-                            vat.addAnnotation(new AnnotationTag("Ljava/lang/Deprecated;"));
+                            vat = new AnnotationTag("Ljava/lang/Deprecated;");
                         }
                         else if (t instanceof SignatureTag) {
                         	SignatureTag sig = (SignatureTag) t;
                         	
-                            vat = new VisibilityAnnotationTag(0);
                             ArrayList<AnnotationElem> sigElements = new ArrayList<AnnotationElem>();
                             for (String s : SootToDexUtils.splitSignature(sig.getSignature()))
                             	sigElements.add(new AnnotationStringElem(s, 's', "value"));
                             
                             AnnotationElem elem = new AnnotationArrayElem(sigElements, 's', "value");
-                            vat.addAnnotation(new AnnotationTag("Ldalvik/annotation/Signature;",
-                            		Collections.singleton(elem)));
+                            vat = new AnnotationTag("Ldalvik/annotation/Signature;",
+                            		Collections.singleton(elem));
                         }
                         else {
                             throw new RuntimeException(
@@ -178,11 +259,11 @@ public class DexAnnotation {
                                             + h + " (" + t + ").");
                         }
                     } else {
-                        vat = (VisibilityAnnotationTag) t;
+                        vat = ((VisibilityAnnotationTag) t).getAnnotations().get(0);
                     }
 
                     Debug.printDbg("add parameter annotation: ", t);
-                    tag.addVisibilityAnnotation(vat);
+                    paramVat.addAnnotation(vat);
                 }
             }
             if (tag.getVisibilityAnnotations().size() > 0)
@@ -214,13 +295,12 @@ public class DexAnnotation {
             return null;
         
         List<Tag> tags = new ArrayList<Tag>();
-        ArrayList<Tag> innerClassList = new ArrayList<Tag>();
+        VisibilityAnnotationTag[] vatg = new VisibilityAnnotationTag[3]; // RUNTIME_VISIBLE, RUNTIME_INVISIBLE, SOURCE_VISIBLE, see soot.tagkit.AnnotationConstants
         
         for (Annotation a: annotations) {
         	int v = getVisibility(a.getVisibility());
 
             Tag t = null;
-            //AnnotationTag aTag = new AnnotationTag(DexType.toSoot(a.getType()).toString());
             Type atype = DexType.toSoot(a.getType());
             String atypes = atype.toString();
             int eSize = a.getElements().size();
@@ -233,13 +313,22 @@ public class DexAnnotation {
                 AnnotationElem e = getElements(a.getElements()).get(0);
                 AnnotationTag adt = new AnnotationTag(a.getType());
                 adt.addElem(e);
-                VisibilityAnnotationTag tag = new VisibilityAnnotationTag(v);
-                tag.addAnnotation(adt);
-                t = tag;
+                if (vatg[v] == null)
+                    vatg[v] = new VisibilityAnnotationTag(v);
+                vatg[v].addAnnotation(adt);
                 
             } else if (atypes.equals("dalvik.annotation.EnclosingClass")) {
                 if (eSize != 1)
                     throw new RuntimeException("error: expected 1 element for annotation EnclosingClass. Got "+ eSize +" instead.");
+                
+                for (AnnotationElement elem : a.getElements()) {
+                	String outerClass = ((TypeEncodedValue) elem.getValue()).getValue();
+                	outerClass = Util.dottedClassName(outerClass);
+                	deps.typesToSignature.add(RefType.v(outerClass));
+                	clazz.setOuterClass(SootResolver.v().makeClassRef(outerClass));
+                	assert clazz.getOuterClass() != clazz;
+                }
+                
                 // EnclosingClass comes in pair with InnerClass.
                 // Those are generated from a single InnerClassTag,
                 // that is re-constructed only for the InnerClass Dalvik
@@ -260,10 +349,17 @@ public class DexAnnotation {
                         classString, 
                         methodString, 
                         methodSigString);       
-                
+
+                String outerClass = classString.replace("/", ".");
+            	deps.typesToSignature.add(RefType.v(outerClass));
+            	clazz.setOuterClass(SootResolver.v().makeClassRef(outerClass));
+            	assert clazz.getOuterClass() != clazz;
+
             } else if (atypes.equals("dalvik.annotation.InnerClass")) {
-                int accessFlags = -1;
-                String name = null;
+
+				int accessFlags = -1; // access flags of the inner class
+				String name = null; // name of the inner class
+
                 for (AnnotationElem ele : getElements(a.getElements())) {
                 	if (ele instanceof AnnotationIntElem && ele.getName().equals("accessFlags"))
                 		accessFlags = ((AnnotationIntElem) ele).getValue();
@@ -272,21 +368,44 @@ public class DexAnnotation {
                 	else
                 		throw new RuntimeException("Unexpected inner class annotation element");
                 }
+                                
+				String outerClass; // outer class name
+				String sootOuterClass;
+
+				// compute outer class name by replacing the
+				outerClass = classType.replaceFirst("\\$[0-9]*" + name + ";$", ";");
+
+				if (name == null) {
+					outerClass = null;
+					sootOuterClass = classType.replaceAll("\\$[0-9]*;$", ";");
+                } else {
+                   	sootOuterClass = outerClass;
+                }
+
+				// do not set an outer class for local classes
+				if (outerClass != null && !(outerClass.replaceFirst(";$", "") + "$" + name + ";").equals(classType)) {
+					outerClass = null;
+				}
+
+				// Make sure that no funny business is going on if the
+				// annotation is broken and does not end in $nn.
+				if (sootOuterClass.equals(classType)) {
+					outerClass = null;
+				}
+
+				String innerClass = classType;
+
+				Tag innerTag = new InnerClassTag(DexType.toSootICAT(innerClass), outerClass == null ? null : DexType.toSootICAT(outerClass), name, accessFlags);
+				tags.add(innerTag);
                 
-                String outerClass = null;
-                if (name == null)
-                    outerClass = null;
-                else
-                    outerClass = classType.replaceFirst("\\$"+ name, "");
-                String innerClass = classType;
-                Tag innerTag = new InnerClassTag(
-                        DexType.toSootICAT(innerClass), 
-                        outerClass == null ? null : DexType.toSootICAT(outerClass),
-                        name, 
-                        accessFlags);
-                innerClassList.add(innerTag);
-                
-                continue;
+                if (sootOuterClass != null && !clazz.hasOuterClass()) {
+	                sootOuterClass = Util.dottedClassName(sootOuterClass);
+	            	deps.typesToSignature.add(RefType.v(sootOuterClass));
+	            	clazz.setOuterClass(SootResolver.v().makeClassRef(sootOuterClass));
+                	assert clazz.getOuterClass() != clazz;
+                }
+
+            	continue;
                 
             } else if (atypes.equals("dalvik.annotation.MemberClasses")) {
                 
@@ -302,15 +421,18 @@ public class DexAnnotation {
                     Debug.printDbg("s: ", c.getDesc());
                     Debug.printDbg("signature: ", sig);
                     String innerClass = c.getDesc();
-                    String outerClass = innerClass.replaceFirst("\\$[^\\$]*", "");
-                    String name = classType.replaceFirst("\\.*\\$", "");
+                    String outerClass = innerClass.replaceAll("\\$[^\\$]*$", "");
+					String name = innerClass.replaceAll("^.*\\$", "").replaceAll(";$", "");
+					if (name.replaceAll("[0-9].*", "").equals("")) { // anonymous or local inner classes
+                    	name = null;
+                    }
                     int accessFlags = 0; // seems like this information is lost during the .class -- dx --> .dex process.
                     Tag innerTag = new InnerClassTag(
                             DexType.toSootICAT(innerClass), 
                             DexType.toSootICAT(outerClass), 
                             name, 
                             accessFlags);
-                    innerClassList.add(innerTag);
+                    tags.add(innerTag);
                 }               
                 continue;
                 
@@ -332,27 +454,33 @@ public class DexAnnotation {
             } else if (atypes.equals("java.lang.Deprecated")) {
                 if (eSize != 0)
                     throw new RuntimeException("error: expected 1 element for annotation Deprecated. Got "+ eSize +" instead.");
-                t = new DeprecatedTag(); 
+
+				t = new DeprecatedTag();
+
+				AnnotationTag adt = new AnnotationTag("Ljava/lang/Deprecated;");
+				if (vatg[v] == null)
+					vatg[v] = new VisibilityAnnotationTag(v);
+				vatg[v].addAnnotation(adt);
                 
             } else {
                 Debug.printDbg("read visibility tag: ", a.getType());
 
-                VisibilityAnnotationTag vat = new VisibilityAnnotationTag(v);
+                if (vatg[v] == null)
+                    vatg[v] = new VisibilityAnnotationTag(v);
+
                 AnnotationTag tag = new AnnotationTag(a.getType());
                 for (AnnotationElem e: getElements(a.getElements()))
                     tag.addElem(e);
-                vat.addAnnotation(tag);
-                t = vat;
+                vatg[v].addAnnotation(tag);
 
             }
 
             tags.add(t);
         }
         
-        if (innerClassList.size() > 0) {
-            InnerClassAttribute ica = new InnerClassAttribute(innerClassList);
-            tags.add(ica);
-        }
+        for (VisibilityAnnotationTag vat: vatg)
+            if (vat != null)
+                tags.add(vat);
 
         return tags;
 
@@ -503,7 +631,7 @@ public class DexAnnotation {
             }
             case 0x1e: // NULL (Dalvik specific?)
             {
-                elem = new AnnotationStringElem("null", 'N', ae.getName());
+                elem = new AnnotationStringElem(null, 'N', ae.getName());
                 break;
             }
             case 0x1f: // BOOLEAN

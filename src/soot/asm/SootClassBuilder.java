@@ -95,7 +95,7 @@ class SootClassBuilder extends ClassVisitor {
 			String superName, String[] interfaces) {
 		name = AsmUtil.toQualifiedName(name);
 		if (!name.equals(klass.getName()))
-			throw new RuntimeException("Class names not equal!");
+			throw new RuntimeException("Class names not equal! "+name+" != "+klass.getName());
 		klass.setModifiers(access & ~Opcodes.ACC_SUPER);
 		if (superName != null) {
 			superName = AsmUtil.toQualifiedName(superName);			
@@ -173,18 +173,18 @@ class SootClassBuilder extends ClassVisitor {
 	
 	@Override
 	public void visitInnerClass(String name, String outerName, String innerName, int access) {
-		klass.addTag(new InnerClassTag(outerName + "$" + innerName, outerName, name, access));
+		klass.addTag(new InnerClassTag(name, outerName, innerName, access));
 	}
 	
 	@Override
 	public void visitOuterClass(String owner, String name, String desc) {
-		if (name == null) {
-			owner = AsmUtil.toQualifiedName(owner);
-			deps.add(RefType.v(owner));
-			klass.setOuterClass(SootResolver.v().makeClassRef(owner));
-		} else {
+
+		if (name != null)
 			klass.addTag(new EnclosingMethodTag(owner, name, desc));
-		}
+
+		owner = AsmUtil.toQualifiedName(owner);
+		deps.add(RefType.v(owner));
+		klass.setOuterClass(SootResolver.v().makeClassRef(owner));
 	}
 	
 	@Override

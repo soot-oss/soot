@@ -68,8 +68,8 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
     /** Replaces <code>out</code> in the Chain by <code>in</code>. */
     public void swapWith(E out, E in)
     {
-        insertBefore(in, out);
-        remove(out);
+        innerChain.swapWith(out, in);
+        out.redirectJumpsToThisTo(in);
     }
 
     /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. */
@@ -161,10 +161,10 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
 
         if(contains(obj))
         {
-            Unit successor;
+            Unit successor = getSuccOf((E) obj);
+            if (successor == null)
+                successor = getPredOf((E) obj);
             
-            if((successor = getSuccOf((E) obj)) == null)
-                successor = getPredOf((E) obj); 
 		// Note that redirecting to the last unit in the method 
 		// like this is probably incorrect when dealing with a Trap.
 	        // I.e., let's say that the final unit in the method used to

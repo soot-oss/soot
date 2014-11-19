@@ -24,6 +24,7 @@
 
 package soot.dexpler;
 
+import java.util.Iterator;
 import java.util.Set;
 
 import org.jf.dexlib2.iface.Annotation;
@@ -39,7 +40,10 @@ import soot.SootResolver;
 import soot.Type;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
+import soot.tagkit.InnerClassAttribute;
+import soot.tagkit.InnerClassTag;
 import soot.tagkit.SourceFileTag;
+import soot.tagkit.Tag;
 
 /**
  * DexClass is a container for all relevant information of that class
@@ -104,12 +108,11 @@ public class DexClass {
                 deps.typesToHierarchy.add(interfaceClass.getType());
             }
         }
-
+        
         if (Options.v().oaat() && sc.resolvingLevel() <= SootClass.HIERARCHY) {
             return deps;
         }
-
-        DexAnnotation da = new DexAnnotation(dexFile);
+        DexAnnotation da = new DexAnnotation(sc, deps);
         
         // get the fields of the class
         for (Field sf : defItem.getStaticFields()) {
@@ -126,25 +129,62 @@ public class DexClass {
             sc.addField(sootField);
             da.handleFieldAnnotation(sootField, f);
         }
-
+        
         // get the methods of the class
         for (Method method : defItem.getDirectMethods()) {
-            SootMethod sm = DexMethod.makeSootMethod(defItem.getSourceFile(), method, sc);
-            if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
-                continue;
-            sc.addMethod(sm);
-            da.handleMethodAnnotation(sm, method);        
-        }
-        for (Method method : defItem.getVirtualMethods()) {
-            SootMethod sm = DexMethod.makeSootMethod(defItem.getSourceFile(), method, sc);
+            SootMethod sm = DexMethod.makeSootMethod(dexFile, method, sc);
             if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
                 continue;
             sc.addMethod(sm);
             da.handleMethodAnnotation(sm, method);
         }
+        for (Method method : defItem.getVirtualMethods()) {
+            SootMethod sm = DexMethod.makeSootMethod(dexFile, method, sc);
+            if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
+                continue;
+            sc.addMethod(sm);
+            da.handleMethodAnnotation(sm, method);
+        }
+                
+        da.handleClassAnnotation(defItem);
+                
+        // In contrast to Java, Dalvik associates the InnerClassAttribute
+        // with the inner class, not the outer one. We need to copy the
+        // tags over to correspond to the Soot semantics.
+        InnerClassAttribute ica = (InnerClassAttribute) sc.getTag("InnerClassAttribute");
+        if (ica != null) {
+        	Iterator<InnerClassTag> innerTagIt = ica.getSpecs().iterator();
+        	while (innerTagIt.hasNext()) {
+        		Tag t = innerTagIt.next();
+        		if (t instanceof InnerClassTag) {
+        			InnerClassTag ict = (InnerClassTag) t;
+        			
+        			// Get the outer class
+        			String outer = null;
+					if (ict.getOuterClass() == null) { // anonymous and local classes
+						outer = ict.getInnerClass().replaceAll("\\$[0-9].*$", "").replaceAll("/", ".");
+        			} else {
+        				outer = ict.getOuterClass().replaceAll("/", ".");
+        			}
+        			
+        			// Get the InnerClassAttribute of the outer class
+        			SootClass osc = SootResolver.v().makeClassRef(outer);
+        			if (osc == sc)
+        				continue;
+        			InnerClassAttribute icat = (InnerClassAttribute)osc.getTag("InnerClassAttribute");
+        			if (icat == null) {
+        				icat = new InnerClassAttribute();
+        				osc.addTag(icat);
+        			}
+        			
+        			// Transfer the tag from the inner class to the outer class
+        			InnerClassTag newt = new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags());
+        			icat.add(newt);
+					// innerTagIt.remove();
+        		}
+        	}
+        }
         
-        da.handleClassAnnotation(sc, defItem);
-
         return deps;
     }
 

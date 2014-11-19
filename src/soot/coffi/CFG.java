@@ -158,20 +158,6 @@ public class CFG {
 
 	// calculate complexity metrics
     if (soot.jbco.Main.metrics) complexity();
-    
-    /*	
-	if (m.code_attr != null)
-	{
-	    for (int i=0; i<m.code_attr.attributes.length; i++)
-	    {
-		if (m.code_attr.attributes[i] 
-		    instanceof LineNumberTable_attribute)
-		{
-		    G.v().out.print(m.code_attr.attributes[i]);
-		}
-	    }
-	}
-	*/
     }
 
     public static HashMap<SootMethod, int[]> methodsToVEM = new HashMap<SootMethod, int[]>();
@@ -934,7 +920,6 @@ public class CFG {
 
             Util.v().bodySetup(la,lt,constant_pool);
             
-            Type thisType = RefType.v(jmethod.getDeclaringClass().getName());
             boolean isStatic = Modifier.isStatic(jmethod.getModifiers());
 
             int currentLocalIndex = 0;
@@ -1239,39 +1224,6 @@ public class CFG {
                 }
             }
         }
-
-        // Print out instructions + their localArray + typeStack
-        {
-            Instruction ins = firstInstruction;
-
-     //       G.v().out.println();
-
-            while(ins != null)
-            {
-                TypeStack typeStack = instructionToTypeStack.get(ins);
-                // TypeArray typeArray = (TypeArray) instructionToLocalArray.get(ins);
-/*
-                G.v().out.println("[TypeArray]");
-                typeArray.print(G.v().out);
-                G.v().out.println();
-
-                G.v().out.println("[TypeStack]");
-                typeStack.print(G.v().out);
-                G.v().out.println();
-
-                G.v().out.println(ins.toString());
-*/
-
-                ins = ins.next;
-/*
-
-                G.v().out.println();
-                G.v().out.println();
-*/
-
-            }
-        }
-
 
         // G.v().out.println("Producing Jimple code...");
 
@@ -3305,7 +3257,7 @@ public class CFG {
          case ByteCode.MULTIANEWARRAY:
          {
                int bdims = (((Instruction_Multianewarray)ins).dims);
-               List dims = new ArrayList();
+               List<Value> dims = new ArrayList<Value>();
 
                for (int j=0; j < bdims; j++)
                   dims.add(Util.v().getLocalForStackOp(listBody, typeStack,

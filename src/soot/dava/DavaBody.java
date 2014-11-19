@@ -612,7 +612,7 @@ public class DavaBody extends Body {
 		//29th Jan 2006
 		//make sure when recompiling there is no variable might not be initialized error
 
-		Map options = PhaseOptions.v().getPhaseOptions("db.force-recompile");
+		Map<String, String> options = PhaseOptions.v().getPhaseOptions("db.force-recompile");
         boolean force = PhaseOptions.getBoolean(options, "enabled");
         //System.out.println("Force is"+force);
 
@@ -679,11 +679,8 @@ public class DavaBody extends Body {
 			HashMap<Switchable, Switchable> bindings = new HashMap<Switchable, Switchable>();
 			HashMap<Unit, Unit> reverse_binding = new HashMap<Unit, Unit>();
 
-			Iterator it = grimpBody.getUnits().iterator();
-
 			// Clone units in body's statement list 
-			while (it.hasNext()) {
-				Unit original = (Unit) it.next();
+			for (Unit original : grimpBody.getUnits()) {
 				Unit copy = (Unit) original.clone();
 
 				// Add cloned unit to our unitChain.
@@ -697,9 +694,7 @@ public class DavaBody extends Body {
 			}
 
 			// patch up the switch statments
-			it = getUnits().iterator();
-			while (it.hasNext()) {
-				Unit u = (Unit) it.next();
+			for (Unit u : getUnits()) {
 				Stmt s = (Stmt) u;
 
 				if (s instanceof TableSwitchStmt) {
@@ -739,10 +734,7 @@ public class DavaBody extends Body {
 			}
 
 			// Clone locals.
-			it = grimpBody.getLocals().iterator();
-			while (it.hasNext()) {
-				Local original = (Local) it.next();
-
+			for (Local original : grimpBody.getLocals()) {
 				Local copy = Dava.v().newLocal(original.getName(),
 						original.getType());
 
@@ -753,9 +745,7 @@ public class DavaBody extends Body {
 			}
 
 			// Patch up references within units using our (old <-> new) map.
-			it = getAllUnitBoxes().iterator();
-			while (it.hasNext()) {
-				UnitBox box = (UnitBox) it.next();
+			for (UnitBox box : getAllUnitBoxes()) {
 				Unit newObject, oldObject = box.getUnit();
 
 				// if we have a reference to an old object, replace it 
@@ -765,18 +755,13 @@ public class DavaBody extends Body {
 			}
 
 			// backpatch all local variables.
-			it = getUseAndDefBoxes().iterator();
-			while (it.hasNext()) {
-				ValueBox vb = (ValueBox) it.next();
+			for (ValueBox vb : getUseAndDefBoxes()) {
 				if (vb.getValue() instanceof Local)
 					vb.setValue((Value) bindings.get(vb.getValue()));
 			}
 
 			// clone the traps 
-			Iterator trit = grimpBody.getTraps().iterator();
-			while (trit.hasNext()) {
-
-				Trap originalTrap = (Trap) trit.next();
+			for (Trap originalTrap : grimpBody.getTraps()) {
 				Trap cloneTrap = (Trap) originalTrap.clone();
 
 				Unit handlerUnit = (Unit) bindings.get(originalTrap
@@ -797,11 +782,10 @@ public class DavaBody extends Body {
 		 *  This allows for easy handling of breaks, continues and exceptional loops.
 		 */
 		{
-			PatchingChain units = getUnits();
-
-			Iterator it = units.snapshotIterator();
+			PatchingChain<Unit> units = getUnits();
+			Iterator<Unit> it = units.snapshotIterator();
 			while (it.hasNext()) {
-				Unit u = (Unit) it.next();
+				Unit u = it.next();
 				Stmt s = (Stmt) u;
 
 				if (s instanceof IfStmt) {
@@ -846,10 +830,7 @@ public class DavaBody extends Body {
 				}
 			}
 
-			it = getTraps().iterator();
-			while (it.hasNext()) {
-				Trap t = (Trap) it.next();
-
+			for (Trap t : getTraps()) {
 				JGotoStmt jgs = new JGotoStmt((Unit) t.getHandlerUnit());
 				units.addLast(jgs);
 				t.setHandlerUnit((Unit) jgs);
@@ -861,9 +842,8 @@ public class DavaBody extends Body {
 		 */
 
 		{
-			Iterator it = getLocals().iterator();
-			while (it.hasNext()) {
-				Type t = ((Local) it.next()).getType();
+			for (Local l : getLocals()) {
+				Type t = l.getType();
 
 				if (t instanceof RefType) {
 					RefType rt = (RefType) t;
@@ -886,9 +866,7 @@ public class DavaBody extends Body {
 				}
 			}
 
-			it = getUnits().iterator();
-			while (it.hasNext()) {
-				Unit u = (Unit) it.next();
+			for (Unit u : getUnits()) {
 				Stmt s = (Stmt) u;
 
 				if (s instanceof IfStmt)
@@ -941,9 +919,8 @@ public class DavaBody extends Body {
 		 */
 
 		{
-			Iterator ucit = getUnits().iterator();
-			while (ucit.hasNext()) {
-				Stmt s = (Stmt) ucit.next();
+			for (Unit u : getUnits()) {
+				Stmt s = (Stmt) u;
 
 				if (s instanceof IdentityStmt) {
 					IdentityStmt ids = (IdentityStmt) s;
@@ -964,8 +941,8 @@ public class DavaBody extends Body {
 					Value rightOp = ds.getRightOp();
 
 					if (rightOp instanceof ParameterRef)
-						pMap.put(new Integer(((ParameterRef) rightOp)
-								.getIndex()), ds.getLeftOp());
+						pMap.put(((ParameterRef) rightOp)
+								.getIndex(), ds.getLeftOp());
 
 					if (rightOp instanceof CaughtExceptionRef)
 						caughtrefs.add(ds.getLeftOp());
@@ -978,9 +955,8 @@ public class DavaBody extends Body {
 		 */
 
 		{
-			Iterator ucit = getUnits().iterator();
-			while (ucit.hasNext()) {
-				Stmt s = (Stmt) ucit.next();
+			for (Unit u : getUnits()) {
+				Stmt s = (Stmt) u;
 
 				if (s instanceof InvokeStmt) {
 

@@ -25,7 +25,9 @@
 
 package soot.jimple;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import soot.Body;
 import soot.Local;
@@ -33,11 +35,37 @@ import soot.RefType;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
-import soot.util.Chain;
+import soot.jimple.validation.IdentityStatementsValidator;
+import soot.jimple.validation.InvokeArgumentValidator;
+import soot.jimple.validation.ReturnStatementsValidator;
+import soot.jimple.validation.TypesValidator;
+import soot.options.Options;
+import soot.validation.BodyValidator;
+import soot.validation.ValidationException;
 
 /** Implementation of the Body class for the Jimple IR. */
 public class JimpleBody extends StmtBody
 {
+	private static BodyValidator[] validators;
+	
+	/**
+	 * Returns an array containing some validators in order to validate the JimpleBody
+	 * @return the array containing validators
+	 */
+	private synchronized static BodyValidator[] getValidators() {
+		if (validators == null)
+		{
+			validators = new BodyValidator[] {
+				IdentityStatementsValidator.v(),
+				TypesValidator.v(),
+				ReturnStatementsValidator.v(),
+				InvokeArgumentValidator.v(),
+				//InvokeValidator.v()
+			};
+		}
+		return validators;
+	};
+	
     /**
         Construct an empty JimpleBody 
      **/
@@ -63,118 +91,37 @@ public class JimpleBody extends StmtBody
         return b;
     }
 
+
+
     /** Make sure that the JimpleBody is well formed.  If not, throw
      *  an exception.  Right now, performs only a handful of checks.  
      */
     public void validate()
     {
-        super.validate();
-        validateIdentityStatements();
-        validateTypes();
-        
-        // A jimple body must contain a return statement
-        validateReturnStatement();
+        final List<ValidationException> exceptionList = new ArrayList<ValidationException>();
+        validate(exceptionList);
+        if (!exceptionList.isEmpty())
+        	throw exceptionList.get(0);
     }
     
-    private void validateTypes() {
-		if(method!=null) {
-			if(!method.getReturnType().isAllowedInFinalCode()) {
-				throw new RuntimeException("return type not allowed in final code:"+method.getReturnType()
-				        +"\n method: "+ method
-				        +"\n body: \n" + this);
-			}
-			for(Type t: method.getParameterTypes()) {
-				if(!t.isAllowedInFinalCode()) {
-					throw new RuntimeException("parameter type not allowed in final code:"+t
-					        +"\n method: "+ method
-					        +"\n body: \n" + this);
-				}
-			}
-		}
-		for(Local l: localChain) {
-			Type t = l.getType();
-			if(!t.isAllowedInFinalCode()) {
-				System.out.println("(" + this.getMethod()+ ") local type not allowed in final code: " + t +" local: "+l +" body: \n"+ this);
-				throw new RuntimeException("(" + this.getMethod()+ ") local type not allowed in final code: " + t +" local: "+l +" body: \n"+ this);
-			}
-		}
-	}
-
     /**
-     * Checks that this Jimple body actually contains a return statement
+     * Validates the jimple body and saves a list of all validation errors 
+     * @param exceptionList the list of validation errors
      */
-    private void validateReturnStatement() {
-		for (Unit u : this.getUnits())
-			if ((u instanceof ReturnStmt) || (u instanceof ReturnVoidStmt)
-					|| (u instanceof RetStmt)
-					|| (u instanceof ThrowStmt))
-				return;
-
-
-        // A method can have an infinite loop 
-		// and no return statement:
-		//
-        //  public class Infinite {
-        //  public static void main(String[] args) {
-        //  int i = 0; while (true) {i += 1;}      } }
-        //
-        // Only check that the execution cannot fall off the code.
-        Unit last = this.getUnits().getLast();
-        if (last instanceof GotoStmt || last instanceof ThrowStmt)
-            return;
-
-		throw new RuntimeException("Body of method " + this.getMethod().getSignature()
-				+ " does not contain a return statement");
-	}
-
-	/**
-     * Checks the following invariants on this Jimple body:
-     * <ol>
-     * <li> this-references may only occur in instance methods
-     * <li> this-references may only occur as the first statement in a method, if they occur at all
-     * <li> param-references must precede all statements that are not themselves param-references or this-references,
-     *      if they occur at all
-     * </ol>
-     */
-    public void validateIdentityStatements() {
-		if (method.isAbstract())
-			return;
-		
-		Body body=method.getActiveBody();
-		Chain<Unit> units=body.getUnits().getNonPatchingChain();
-
-		boolean foundNonThisOrParamIdentityStatement = false;
-		boolean firstStatement = true;
-		
-		for (Unit unit : units) {
-			if(unit instanceof IdentityStmt) {
-				IdentityStmt identityStmt = (IdentityStmt) unit;
-				if(identityStmt.getRightOp() instanceof ThisRef) {					
-					if(method.isStatic()) {
-						throw new RuntimeException("@this-assignment in a static method!");
-					}					
-					if(!firstStatement) {
-						throw new RuntimeException("@this-assignment statement should precede all other statements"
-						        +"\n method: "+ method
-						        +"\n body: \n" + this);
-					}
-				} else if(identityStmt.getRightOp() instanceof ParameterRef) {
-					if(foundNonThisOrParamIdentityStatement) {
-						throw new RuntimeException("@param-assignment statements should precede all non-identity statements"
-						        +"\n method: "+ method
-						        +"\n body: \n" + this);
-					}
-				} else {
-					//@caughtexception statement					
-					foundNonThisOrParamIdentityStatement = true;
-				}
-			} else {
-				//non-identity statement
-				foundNonThisOrParamIdentityStatement = true;
-			}
-			firstStatement = false;
-		}
+    public void validate(List<ValidationException> exceptionList) {
+        super.validate(exceptionList);
+        final boolean runAllValidators = Options.v().debug() || Options.v().validate();
+    	for (BodyValidator validator : getValidators()) {
+    		if (!validator.isBasicValidator() && !runAllValidators)
+    			continue;
+    		validator.validate(this, exceptionList);
+    	}
     }
+    
+    public void validateIdentityStatements() {
+    	runValidation(IdentityStatementsValidator.v());
+    }
+    
     
     /** Inserts usual statements for handling this & parameters into body. */
     public void insertIdentityStmts()

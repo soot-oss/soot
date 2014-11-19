@@ -71,14 +71,14 @@ public class LocalPacker extends BodyTransformer
         if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Packing locals...");
     
-        Map<Local, Object> localToGroup = new DeterministicHashMap(body.getLocalCount() * 2 + 1, 0.7f);
+        Map<Local, Object> localToGroup = new DeterministicHashMap<Local, Object>(body.getLocalCount() * 2 + 1, 0.7f);
             // A group represents a bunch of locals which may potentially intefere with each other
             // 2 separate groups can not possibly interfere with each other 
             // (coloring say ints and doubles)
             
         Map<Object, Integer> groupToColorCount = new HashMap<Object, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
         Map<Local, Integer> localToColor = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
-        Map localToNewLocal;
+        Map<Local, Local> localToNewLocal;
         
         // Assign each local to a group, and set that group's color count to 0.
         {
@@ -128,8 +128,8 @@ public class LocalPacker extends BodyTransformer
         // Map each local to a new local.
         {
             List<Local> originalLocals = new ArrayList<Local>(body.getLocals());
-            localToNewLocal = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
-            Map groupIntToLocal = new HashMap(body.getLocalCount() * 2 + 1, 0.7f);
+            localToNewLocal = new HashMap<Local,Local>(body.getLocalCount() * 2 + 1, 0.7f);
+            Map<GroupIntPair, Local> groupIntToLocal = new HashMap<GroupIntPair, Local>(body.getLocalCount() * 2 + 1, 0.7f);
 
             body.getLocals().clear();
 
