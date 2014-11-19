@@ -178,7 +178,7 @@ public class Main {
 	        	sb.append("    http://www.sable.mcgill.ca/soot/tutorial/usage/\n");
 	        	sb.append("    http://www.sable.mcgill.ca/soot/tutorial/phase/\n");
 	        	sb.append("\n");
-	        	sb.append("2.) Not sure whether it's a bug? Fell free to discuss\n");
+	        	sb.append("2.) Not sure whether it's a bug? Feel free to discuss\n");
 				sb.append("    the issue on the Soot mailing list:\n");
 				sb.append("    https://github.com/Sable/soot/wiki/Getting-help\n");			
 	        	sb.append("\n");
