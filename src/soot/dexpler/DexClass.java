@@ -159,7 +159,12 @@ public class DexClass {
         		if (t instanceof InnerClassTag) {
         			InnerClassTag ict = (InnerClassTag) t;
         			
-        			// Get the outer class
+        			// Check the inner class to make sure that this tag actually
+        			// refers to the current class as the inner class
+        			String inner = ict.getInnerClass().replaceAll("/", ".");
+        			if (!inner.equals(sc.getName()))
+        				continue;
+        			
         			String outer = null;
 					if (ict.getOuterClass() == null) { // anonymous and local classes
 						outer = ict.getInnerClass().replaceAll("\\$[0-9].*$", "").replaceAll("/", ".");
@@ -167,10 +172,14 @@ public class DexClass {
         				outer = ict.getOuterClass().replaceAll("/", ".");
         			}
         			
-        			// Get the InnerClassAttribute of the outer class
         			SootClass osc = SootResolver.v().makeClassRef(outer);
-        			if (osc == sc)
-        				continue;
+        			if (osc == sc) {
+        				if (!sc.hasOuterClass())
+        					continue;
+        				osc = sc.getOuterClass();
+        			}
+        			
+        			// Get the InnerClassAttribute of the outer class
         			InnerClassAttribute icat = (InnerClassAttribute)osc.getTag("InnerClassAttribute");
         			if (icat == null) {
         				icat = new InnerClassAttribute();
@@ -178,9 +187,14 @@ public class DexClass {
         			}
         			
         			// Transfer the tag from the inner class to the outer class
-        			InnerClassTag newt = new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags());
+        			InnerClassTag newt = new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(),
+        					ict.getShortName(), ict.getAccessFlags());
         			icat.add(newt);
-					// innerTagIt.remove();
+        			
+        			// Remove the tag from the inner class as inner classes do
+        			// not have these tags in the Java / Soot semantics. The
+        			// DexPrinter will copy it back if we do dex->dex.
+					innerTagIt.remove();
         		}
         	}
         }

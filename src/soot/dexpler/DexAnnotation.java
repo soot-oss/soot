@@ -358,8 +358,8 @@ public class DexAnnotation {
             } else if (atypes.equals("dalvik.annotation.InnerClass")) {
 				int accessFlags = -1; // access flags of the inner class
 				String name = null; // name of the inner class
-
-                for (AnnotationElem ele : getElements(a.getElements())) {
+				
+				for (AnnotationElem ele : getElements(a.getElements())) {
                 	if (ele instanceof AnnotationIntElem && ele.getName().equals("accessFlags"))
                 		accessFlags = ((AnnotationIntElem) ele).getValue();
                 	else if (ele instanceof AnnotationStringElem && ele.getName().equals("name"))
@@ -370,7 +370,7 @@ public class DexAnnotation {
                 
 				String outerClass; // outer class name
 				if (name == null)
-					outerClass = classType.replaceAll("\\$[0-9]*;$", ";");
+					outerClass = classType.replaceAll("\\$[0-9,a-z,A-Z]*;$", ";");
                 else
                    	outerClass = classType.replaceFirst("\\$" + name + ";$", ";");
 				
