@@ -772,8 +772,16 @@ public class DexPrinter {
 			// this is simply the wrong inner class, we also continue with the
 			// next tag.
     		if (!parentClass.hasOuterClass()
-    				|| !innerClass.equals(parentClass.getName())
-    				|| parentClass.getName().equals(outerClass))
+    				|| !innerClass.equals(parentClass.getName()))
+    			continue;
+    		
+    		// If the outer class points to the very same class, we null it
+    		if (parentClass.getName().equals(outerClass)
+    				&& icTag.getOuterClass() == null)
+    			outerClass = null;
+    		
+    		// Do not write garbage. Never.
+    		if (parentClass.getName().equals(outerClass))
     			continue;
     		
     		// This is an actual inner class. Write the annotation
@@ -785,11 +793,15 @@ public class DexPrinter {
 		    			("accessFlags", new ImmutableIntEncodedValue(icTag.getAccessFlags()));
 		    	elements.add(flagsElement);
 		    	
-		    	if (icTag.getShortName() != null && !icTag.getShortName().isEmpty()) {
-			    	ImmutableAnnotationElement nameElement = new ImmutableAnnotationElement
-			    			("name", new ImmutableStringEncodedValue(icTag.getShortName()));
-			    	elements.add(nameElement);
-		    	}
+		    	ImmutableEncodedValue nameValue;
+		    	if (icTag.getShortName() != null && !icTag.getShortName().isEmpty())
+		    		nameValue = new ImmutableStringEncodedValue(icTag.getShortName());
+		    	else
+		    		nameValue = ImmutableNullEncodedValue.INSTANCE;
+		    	
+		    	ImmutableAnnotationElement nameElement = new ImmutableAnnotationElement
+			    		("name", nameValue);
+			    elements.add(nameElement);
 		    	
 		    	if (anns == null) anns = new ArrayList<Annotation>();
 		    	anns.add(new ImmutableAnnotation(AnnotationVisibility.SYSTEM,
@@ -804,10 +816,11 @@ public class DexPrinter {
 	private String getOuterClassNameFromTag(InnerClassTag icTag) {
 		String outerClass;
 		if (icTag.getOuterClass() == null) { // anonymous inner classes
-			outerClass = icTag.getInnerClass().replaceAll("\\$[0-9]*$", "").replaceAll("/", ".");
+			outerClass = icTag.getInnerClass().replaceAll("\\$[0-9,a-z,A-Z]*$", "").replaceAll("/", ".");
 		} else {
 			outerClass = icTag.getOuterClass().replaceAll("/", ".");
 		}
+		
 		return outerClass;
 	}
 

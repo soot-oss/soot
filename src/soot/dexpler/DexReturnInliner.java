@@ -24,9 +24,11 @@
 
 package soot.dexpler;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import soot.Body;
 import soot.Local;
@@ -72,6 +74,8 @@ public class DexReturnInliner extends DexTransformer {
 
     @Override
 	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
+    	Set<Unit> duplicateIfTargets = null;
+    	
 		Iterator<Unit> it = body.getUnits().snapshotIterator();
 		boolean mayBeMore = false;
 		do {
@@ -97,10 +101,17 @@ public class DexReturnInliner extends DexTransformer {
 				} else if (u instanceof IfStmt) {
 					IfStmt ifstmt = (IfStmt) u;
 					Unit t = ifstmt.getTarget();
+					
 					if (isInstanceofReturn(t)) {
-						Unit newTarget = (Unit) t.clone();
-						body.getUnits().addLast(newTarget);
-						ifstmt.setTarget(newTarget);
+						// We only copy this return if it is used more than
+						// once, otherwise we will end up with unused copies
+						if (duplicateIfTargets == null)
+							duplicateIfTargets = new HashSet<Unit>();
+						if (!duplicateIfTargets.add(t)) {
+							Unit newTarget = (Unit) t.clone();
+							body.getUnits().addLast(newTarget);
+							ifstmt.setTarget(newTarget);
+						}
 					}
 				}
 			}

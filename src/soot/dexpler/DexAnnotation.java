@@ -356,11 +356,10 @@ public class DexAnnotation {
             	assert clazz.getOuterClass() != clazz;
 
             } else if (atypes.equals("dalvik.annotation.InnerClass")) {
-
 				int accessFlags = -1; // access flags of the inner class
 				String name = null; // name of the inner class
-
-                for (AnnotationElem ele : getElements(a.getElements())) {
+				
+				for (AnnotationElem ele : getElements(a.getElements())) {
                 	if (ele instanceof AnnotationIntElem && ele.getName().equals("accessFlags"))
                 		accessFlags = ((AnnotationIntElem) ele).getValue();
                 	else if (ele instanceof AnnotationStringElem && ele.getName().equals("name"))
@@ -368,38 +367,26 @@ public class DexAnnotation {
                 	else
                 		throw new RuntimeException("Unexpected inner class annotation element");
                 }
-                                
+                
 				String outerClass; // outer class name
-				String sootOuterClass;
-
-				// compute outer class name by replacing the
-				outerClass = classType.replaceFirst("\\$[0-9]*" + name + ";$", ";");
-
-				if (name == null) {
-					outerClass = null;
-					sootOuterClass = classType.replaceAll("\\$[0-9]*;$", ";");
-                } else {
-                   	sootOuterClass = outerClass;
-                }
-
-				// do not set an outer class for local classes
-				if (outerClass != null && !(outerClass.replaceFirst(";$", "") + "$" + name + ";").equals(classType)) {
-					outerClass = null;
-				}
-
+				if (name == null)
+					outerClass = classType.replaceAll("\\$[0-9,a-z,A-Z]*;$", ";");
+                else
+                   	outerClass = classType.replaceFirst("\\$" + name + ";$", ";");
+				
 				// Make sure that no funny business is going on if the
 				// annotation is broken and does not end in $nn.
-				if (sootOuterClass.equals(classType)) {
+				if (outerClass.equals(classType)) {
 					outerClass = null;
 				}
-
-				String innerClass = classType;
-
-				Tag innerTag = new InnerClassTag(DexType.toSootICAT(innerClass), outerClass == null ? null : DexType.toSootICAT(outerClass), name, accessFlags);
+				
+				Tag innerTag = new InnerClassTag(DexType.toSootICAT(classType),
+						outerClass == null ? null : DexType.toSootICAT(outerClass),
+						name, accessFlags);
 				tags.add(innerTag);
-                
-                if (sootOuterClass != null && !clazz.hasOuterClass()) {
-	                sootOuterClass = Util.dottedClassName(sootOuterClass);
+				
+                if (outerClass != null && !clazz.hasOuterClass()) {
+	                String sootOuterClass = Util.dottedClassName(outerClass);
 	            	deps.typesToSignature.add(RefType.v(sootOuterClass));
 	            	clazz.setOuterClass(SootResolver.v().makeClassRef(sootOuterClass));
                 	assert clazz.getOuterClass() != clazz;
@@ -408,18 +395,9 @@ public class DexAnnotation {
             	continue;
                 
             } else if (atypes.equals("dalvik.annotation.MemberClasses")) {
-                
                 AnnotationArrayElem e = (AnnotationArrayElem) getElements(a.getElements()).get(0); 
-                String sig = "";
-                Debug.printDbg("memberclasses size: ", e.getValues().size());
-                for (AnnotationElem ae : e.getValues()) {
-                    Debug.printDbg("annotation ", ae);
-                }
                 for (AnnotationElem ae : e.getValues()) {
                     AnnotationClassElem c = (AnnotationClassElem) ae;
-                    sig += c.getDesc() +" -- "+ c.getName() +" ;; ";
-                    Debug.printDbg("s: ", c.getDesc());
-                    Debug.printDbg("signature: ", sig);
                     String innerClass = c.getDesc();
                     String outerClass = innerClass.replaceAll("\\$[^\\$]*$", "");
 					String name = innerClass.replaceAll("^.*\\$", "").replaceAll(";$", "");
