@@ -510,11 +510,13 @@ public class DexBody  {
 
         } else {
           DexNumTransformer.v().transform (jBody);
+          
+          DexReturnInliner.v().transform(jBody);
+          CopyPropagator.v().transform(jBody);
+          
           DexNullTransformer.v().transform(jBody);
           DexIfTransformer.v().transform(jBody);
-          DexReturnInliner.v().transform(jBody);
           
-          CopyPropagator.v().transform(jBody);
           DeadAssignmentEliminator.v().transform(jBody);
           UnusedLocalEliminator.v().transform(jBody);
           
@@ -642,7 +644,7 @@ public class DexBody  {
         DeadAssignmentEliminator.v().transform(jBody);
         UnusedLocalEliminator.v().transform(jBody);
         NopEliminator.v().transform(jBody);
-
+        
         for (Unit u: jBody.getUnits()) {
             if (u instanceof AssignStmt) {
                 AssignStmt ass = (AssignStmt)u;
