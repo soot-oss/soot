@@ -147,7 +147,13 @@ public class DexMethod {
             public Body getBody(SootMethod m, String phaseName) {
                 Body b = Jimple.v().newBody(m);
                 try {
-                    dexBody.jimplify(b, m);
+                	if (dexBody.getParameterTypes() == null) {
+						DexBody testBody = new DexBody(null, dexBody
+								.getMethod(), dexBody.getDeclaringClassType());
+						testBody.jimplify(b, m);
+					} else
+						dexBody.jimplify(b, m);
+
                 } catch (InvalidDalvikBytecodeException e) {
                     String msg = "Warning: Invalid bytecode in method "+ m +": "+ e;
                     G.v().out.println(msg);
