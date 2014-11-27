@@ -123,6 +123,7 @@ public class DexBody  {
     private boolean isStatic;
     private String methodSignature = "";
 
+    private final Method method;
     private JimpleBody jBody;
     private List<? extends TryBlock<? extends ExceptionHandler>> tries;
 
@@ -148,6 +149,7 @@ public class DexBody  {
      * @param method the method that is associated with this body
      */
     public DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
+    	this.method = method;
         MethodImplementation code = method.getImplementation();
         if (code == null)
             throw new RuntimeException("error: no code for method "+ method.getName());
@@ -208,6 +210,18 @@ public class DexBody  {
 
         this.dexFile = dexFile;
     }
+    
+    public Method getMethod() {
+		return method;
+	}
+
+	public RefType getDeclaringClassType() {
+		return declaringClassType;
+	}
+
+	public List<Type> getParameterTypes() {
+		return parameterTypes;
+	}
 
     /**
      * Return the types that are used in this body.
@@ -417,6 +431,8 @@ public class DexBody  {
         // process bytecode instructions
         final boolean isOdex = dexFile instanceof DexBackedDexFile ?
         		((DexBackedDexFile) dexFile).isOdexFile() : false;
+        
+        int prevLineNumber = -1;
         for(DexlibAbstractInstruction instruction : instructions) {
         	if (isOdex && instruction instanceof OdexInstruction)
         		((OdexInstruction) instruction).deOdex(dexFile);
@@ -426,6 +442,11 @@ public class DexBody  {
             }
             //Debug.printDbg(" current op to jimplify: 0x", Integer.toHexString(instruction.getInstruction().opcode.value) ," instruction: ", instruction );
             instruction.jimplify(this);
+            if (instruction.getLineNumber() > 0)
+				prevLineNumber = instruction.getLineNumber();
+			else {
+				instruction.setLineNumber(prevLineNumber);
+			}
             //System.out.println("jimple: "+ jBody.getUnits().getLast());
         }
         for(DeferableInstruction instruction : deferredInstructions) {
