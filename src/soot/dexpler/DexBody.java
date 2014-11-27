@@ -509,21 +509,21 @@ public class DexBody  {
           Debug.printDbg("\nafter Dalvik Typer");
 
         } else {
-          DexNumTransformer.v().transform (jBody);
+        	DexNumTransformer.v().transform (jBody);
           
-          DexReturnInliner.v().transform(jBody);
-          CopyPropagator.v().transform(jBody);
-          
-          DexNullTransformer.v().transform(jBody);
-          DexIfTransformer.v().transform(jBody);
-          
-          DeadAssignmentEliminator.v().transform(jBody);
-          UnusedLocalEliminator.v().transform(jBody);
-          
-          //DexRefsChecker.v().transform(jBody);
-          //DexNullArrayRefTransformer.v().transform(jBody);
-
-          Debug.printDbg("\nafter Num and Null transformers");
+        	DexReturnInliner.v().transform(jBody);
+        	CopyPropagator.v().transform(jBody);
+        	
+        	DexNullTransformer.v().transform(jBody);
+        	DexIfTransformer.v().transform(jBody);
+        	
+        	DeadAssignmentEliminator.v().transform(jBody);
+        	UnusedLocalEliminator.v().transform(jBody);
+        	
+        	//DexRefsChecker.v().transform(jBody);
+        	//DexNullArrayRefTransformer.v().transform(jBody);
+        	
+        	Debug.printDbg("\nafter Num and Null transformers");
         }
         Debug.printDbg("",(Body)jBody);
         

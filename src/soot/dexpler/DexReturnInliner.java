@@ -72,9 +72,15 @@ public class DexReturnInliner extends DexTransformer {
 		return false;
 	}
 
-    @Override
+	private boolean isInstanceofFlowChange(Unit u) {
+		if (u instanceof GotoStmt || isInstanceofReturn(u))
+			return true;
+		return false;
+	}
+
+	@Override
 	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
-    	Set<Unit> duplicateIfTargets = null;
+    	Set<Unit> duplicateIfTargets = getFallThroughReturns(body);
     	
 		Iterator<Unit> it = body.getUnits().snapshotIterator();
 		boolean mayBeMore = false;
@@ -136,6 +142,29 @@ public class DexReturnInliner extends DexTransformer {
 				}
 			}
     }
+    
+    /**
+     * Gets the set of return statements that can be reached via fall-throughs,
+     * i.e. normal sequential code execution. Dually, these are the statements
+     * that can be reached without jumping there.
+     * @param body The method body
+     * @return The set of fall-through return statements
+     */
+	private Set<Unit> getFallThroughReturns(Body body) {
+		Set<Unit> fallThroughReturns = null;
+		Unit lastUnit = null;
+		for (Unit u : body.getUnits()) {
+			if (lastUnit != null
+					&& isInstanceofReturn(u)
+					&& !isInstanceofFlowChange(lastUnit)) {
+				if (fallThroughReturns == null)
+					fallThroughReturns = new HashSet<Unit>();
+				fallThroughReturns.add(u);
+			}
+			lastUnit = u;
+		}
+		return fallThroughReturns;
+	}
 
 }
 
