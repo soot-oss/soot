@@ -735,27 +735,40 @@ public class Scene  //extends AbstractHost
     }
 
     /**
-     * Returns the SootClass with the given className.  
+     * Returns the SootClass with the given className. If no class with the
+     * given name exists, null is returned
+     * @param className The name of the class to get
+     * @return The class if it exists, otherwise null  
      */
-
-	public SootClass getSootClass(String className) {
+	public SootClass getSootClassUnsafe(String className) {
 		RefType type = nameToClass.get(className);
-		SootClass toReturn = null;
-		if (type != null)
-			toReturn = type.getSootClass();
-
-		if (toReturn != null) {
-			return toReturn;
-		} else if (allowsPhantomRefs() ||
+		if (type != null) {
+			SootClass tsc = type.getSootClass();
+			if (tsc != null)
+				return tsc;
+		}
+		
+		if (allowsPhantomRefs() ||
 				   className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
 			SootClass c = new SootClass(className);
 			addClass(c);
             c.setPhantom(true);
 			return c;
-		} else {
-			throw new RuntimeException(System.getProperty("line.separator")
-					+ "Aborting: can't find classfile " + className);
 		}
+		
+		return null;
+	}
+	
+    /**
+     * Returns the SootClass with the given className.  
+     */
+	public SootClass getSootClass(String className) {
+		SootClass sc = getSootClassUnsafe(className);
+		if (sc != null)
+			return sc;
+		
+		throw new RuntimeException(System.getProperty("line.separator")
+				+ "Aborting: can't find classfile " + className);
 	}
 
     /**

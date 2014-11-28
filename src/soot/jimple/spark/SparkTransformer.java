@@ -19,7 +19,6 @@
 
 package soot.jimple.spark;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
 
 import soot.G;
