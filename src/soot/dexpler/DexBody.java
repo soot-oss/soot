@@ -119,11 +119,10 @@ public class DexBody  {
 
     private int numRegisters;
     private int numParameterRegisters;
-    private List<Type> parameterTypes;
+    private final List<Type> parameterTypes;
     private boolean isStatic;
     private String methodSignature = "";
-
-    private final Method method;
+    
     private JimpleBody jBody;
     private List<? extends TryBlock<? extends ExceptionHandler>> tries;
 
@@ -149,7 +148,6 @@ public class DexBody  {
      * @param method the method that is associated with this body
      */
     public DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
-    	this.method = method;
         MethodImplementation code = method.getImplementation();
         if (code == null)
             throw new RuntimeException("error: no code for method "+ method.getName());
@@ -211,18 +209,6 @@ public class DexBody  {
         this.dexFile = dexFile;
     }
     
-    public Method getMethod() {
-		return method;
-	}
-
-	public RefType getDeclaringClassType() {
-		return declaringClassType;
-	}
-
-	public List<Type> getParameterTypes() {
-		return parameterTypes;
-	}
-
     /**
      * Return the types that are used in this body.
      */
@@ -466,7 +452,6 @@ public class DexBody  {
         deferredInstructions = null;
         //instructionsToRetype = null;
         dangling = null;
-        parameterTypes = null;
         tries = null;
 
         /* We eliminate dead code. Dead code has been shown to occur under the following
