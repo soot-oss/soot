@@ -30,6 +30,7 @@ import soot.dava.internal.SET.SETNode;
 
 import java.io.PrintStream;
 import java.util.*;
+
 import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.spark.pag.MethodPAG;
 import soot.jimple.spark.sets.P2SetFactory;
@@ -42,10 +43,33 @@ import soot.toolkits.astmetrics.ClassData;
 /** A class to group together all the global variables in Soot. */
 public class G extends Singletons 
 {
-    private static G instance = new G();
-    public static G v() { return instance; }
-    public static void reset() { instance = new G(); }
-    public static void setInstance(G g) { instance = g; }
+    
+    public static interface GlobalObjectGetter {
+    	public G getG();
+    	public void reset();
+    }
+    
+    public static G v() { return objectGetter.getG(); }
+    public static void reset() { objectGetter.reset(); }
+    
+    private static GlobalObjectGetter objectGetter = new GlobalObjectGetter() {
+
+        private G instance = new G();
+        
+		@Override
+		public G getG() {
+			return instance;
+		}
+
+		@Override
+		public void reset() {
+			instance = new G();
+		}
+	};
+	
+	public static void setGlobalObjectGetter(GlobalObjectGetter newGetter) {
+		objectGetter = newGetter;
+	}
 
     public PrintStream out = System.out;
 
