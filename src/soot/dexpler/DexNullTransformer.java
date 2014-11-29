@@ -377,22 +377,28 @@ public class DexNullTransformer extends AbstractNullTransformer {
 		for (Unit u : body.getUnits()) {
 			u.apply(new AbstractStmtSwitch() {
 				@Override
-				public void caseAssignStmt(AssignStmt stmt) {					
+				public void caseAssignStmt(AssignStmt stmt) {
+					// Case a = 0 with a being an object
 					if (isObject(stmt.getLeftOp().getType())
 							&& isConstZero(stmt.getRightOp())) {
 						stmt.setRightOp(NullConstant.v());
 						return;
 					}
+					
+					// Case a = (Object) 0
 					if (stmt.getRightOp() instanceof CastExpr) {
 						CastExpr ce = (CastExpr) stmt.getRightOp();
 						if (isObject(ce.getCastType()) && isConstZero(ce.getOp())) {
 							stmt.setRightOp(NullConstant.v());
 						}
 					}
+					
+					// Case a[0] = 0
 					if (stmt.getLeftOp() instanceof ArrayRef
 							&& isConstZero(stmt.getRightOp())) {
-						if (isObjectArray(
-								((ArrayRef) stmt.getLeftOp()).getBase(), body)) {
+						ArrayRef ar = (ArrayRef) stmt.getLeftOp();
+						if (isObjectArray(ar.getBase(), body)
+								|| stmt.hasTag("ObjectOpTag")) {
 							stmt.setRightOp(NullConstant.v());
 						}
 					}

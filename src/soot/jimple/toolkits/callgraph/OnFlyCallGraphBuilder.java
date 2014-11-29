@@ -531,8 +531,8 @@ public final class OnFlyCallGraphBuilder
         findReceivers(m, b);
     }
     private void findReceivers(SootMethod m, Body b) {
-        for( Iterator<Unit> sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
-            final Stmt s = (Stmt) sIt.next();
+        for( final Unit u : b.getUnits() ) {
+            final Stmt s = (Stmt) u;
             if (s.containsInvokeExpr()) {
                 InvokeExpr ie = s.getInvokeExpr();
 

@@ -119,10 +119,10 @@ public class DexBody  {
 
     private int numRegisters;
     private int numParameterRegisters;
-    private List<Type> parameterTypes;
+    private final List<Type> parameterTypes;
     private boolean isStatic;
     private String methodSignature = "";
-
+    
     private JimpleBody jBody;
     private List<? extends TryBlock<? extends ExceptionHandler>> tries;
 
@@ -208,7 +208,7 @@ public class DexBody  {
 
         this.dexFile = dexFile;
     }
-
+    
     /**
      * Return the types that are used in this body.
      */
@@ -417,6 +417,8 @@ public class DexBody  {
         // process bytecode instructions
         final boolean isOdex = dexFile instanceof DexBackedDexFile ?
         		((DexBackedDexFile) dexFile).isOdexFile() : false;
+        
+        int prevLineNumber = -1;
         for(DexlibAbstractInstruction instruction : instructions) {
         	if (isOdex && instruction instanceof OdexInstruction)
         		((OdexInstruction) instruction).deOdex(dexFile);
@@ -426,6 +428,11 @@ public class DexBody  {
             }
             //Debug.printDbg(" current op to jimplify: 0x", Integer.toHexString(instruction.getInstruction().opcode.value) ," instruction: ", instruction );
             instruction.jimplify(this);
+            if (instruction.getLineNumber() > 0)
+				prevLineNumber = instruction.getLineNumber();
+			else {
+				instruction.setLineNumber(prevLineNumber);
+			}
             //System.out.println("jimple: "+ jBody.getUnits().getLast());
         }
         for(DeferableInstruction instruction : deferredInstructions) {
@@ -445,7 +452,6 @@ public class DexBody  {
         deferredInstructions = null;
         //instructionsToRetype = null;
         dangling = null;
-        parameterTypes = null;
         tries = null;
 
         /* We eliminate dead code. Dead code has been shown to occur under the following
@@ -509,21 +515,21 @@ public class DexBody  {
           Debug.printDbg("\nafter Dalvik Typer");
 
         } else {
-          DexNumTransformer.v().transform (jBody);
+        	DexNumTransformer.v().transform (jBody);
           
-          DexReturnInliner.v().transform(jBody);
-          CopyPropagator.v().transform(jBody);
-          
-          DexNullTransformer.v().transform(jBody);
-          DexIfTransformer.v().transform(jBody);
-          
-          DeadAssignmentEliminator.v().transform(jBody);
-          UnusedLocalEliminator.v().transform(jBody);
-          
-          //DexRefsChecker.v().transform(jBody);
-          //DexNullArrayRefTransformer.v().transform(jBody);
-
-          Debug.printDbg("\nafter Num and Null transformers");
+        	DexReturnInliner.v().transform(jBody);
+        	CopyPropagator.v().transform(jBody);
+        	
+        	DexNullTransformer.v().transform(jBody);
+        	DexIfTransformer.v().transform(jBody);
+        	
+        	DeadAssignmentEliminator.v().transform(jBody);
+        	UnusedLocalEliminator.v().transform(jBody);
+        	
+        	//DexRefsChecker.v().transform(jBody);
+        	//DexNullArrayRefTransformer.v().transform(jBody);
+        	
+        	Debug.printDbg("\nafter Num and Null transformers");
         }
         Debug.printDbg("",(Body)jBody);
         
