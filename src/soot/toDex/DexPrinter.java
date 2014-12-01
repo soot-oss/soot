@@ -755,8 +755,10 @@ public class DexPrinter {
 
     private List<Annotation> buildInnerClassAttribute(SootClass parentClass,
     		InnerClassAttribute t, Set<String> skipList) {
+    	if (t.getSpecs() == null)
+    		return null;
+    	
     	List<Annotation> anns = null;
-
     	for (Tag t2 : t.getSpecs()) {
     		InnerClassTag icTag = (InnerClassTag) t2;
     		
