@@ -526,9 +526,11 @@ public class DexPrinter {
         // respective inner classes.
         if (c.hasOuterClass()) {
         	InnerClassAttribute icTag = (InnerClassAttribute) c.getOuterClass().getTag("InnerClassAttribute");
-        	List<Annotation> innerClassItem = buildInnerClassAttribute(c, icTag, skipList);
-        	if (innerClassItem != null)
-        	  annotations.addAll(innerClassItem);
+        	if (icTag != null) {
+	        	List<Annotation> innerClassItem = buildInnerClassAttribute(c, icTag, skipList);
+	        	if (innerClassItem != null)
+	        	  annotations.addAll(innerClassItem);
+        	}
         }
         
     	// Write the MemberClasses tag
