@@ -13,6 +13,8 @@ import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
 import soot.jimple.spark.ondemand.DemandCSPointsTo;
 import soot.jimple.spark.pag.*;
 import soot.options.SparkOptions;
+import heros.util.SootThreadGroup;
+
 import java.util.*;
 
 /** UnsynchronizedMhpAnalysis written by Richard L. Halpert 2006-12-09
@@ -54,7 +56,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 			if(self != null)
 				return; // already running... do nothing
 
-			self = new Thread(this);
+			self = new Thread(new SootThreadGroup(), this);
 			self.start();
 		}
 		else
