@@ -19,17 +19,31 @@
 
 package soot.dava.internal.asg;
 
-import soot.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
-import soot.util.*;
-import soot.dava.*;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
+import soot.Unit;
+import soot.dava.Dava;
+import soot.jimple.IfStmt;
+import soot.jimple.LookupSwitchStmt;
+import soot.jimple.Stmt;
+import soot.jimple.TableSwitchStmt;
+import soot.toolkits.graph.BriefUnitGraph;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.PseudoTopologicalOrderer;
+import soot.toolkits.graph.TrapUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.util.IterableSet;
 
-public class AugmentedStmtGraph implements DirectedGraph
+public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt>
 {
-    private HashMap binding, original2clone;
+    private HashMap<Stmt, AugmentedStmt> binding;
+    private HashMap<AugmentedStmt, AugmentedStmt> original2clone;
     private IterableSet<AugmentedStmt> aug_list;
     private IterableSet<Stmt> stmt_list;
     private List<AugmentedStmt> bheads, btails, cheads, ctails;
@@ -109,15 +123,15 @@ public class AugmentedStmtGraph implements DirectedGraph
 
     public AugmentedStmtGraph()
     {
-        binding  = new HashMap();
-	original2clone = new HashMap();
-	aug_list = new IterableSet();
-	stmt_list = new IterableSet();
+        binding  = new HashMap<Stmt, AugmentedStmt>();
+	original2clone = new HashMap<AugmentedStmt, AugmentedStmt>();
+	aug_list = new IterableSet<AugmentedStmt>();
+	stmt_list = new IterableSet<Stmt>();
 
-	bheads = new LinkedList();
-	btails = new LinkedList();
-	cheads = new LinkedList();
-	ctails = new LinkedList();
+	bheads = new LinkedList<AugmentedStmt>();
+	btails = new LinkedList<AugmentedStmt>();
+	cheads = new LinkedList<AugmentedStmt>();
+	ctails = new LinkedList<AugmentedStmt>();
     }
 
     public void add_AugmentedStmt( AugmentedStmt as)
@@ -154,7 +168,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 
     public AugmentedStmt get_CloneOf( AugmentedStmt as)
     {
-	return (AugmentedStmt) original2clone.get( as);
+	return original2clone.get( as);
     }
 
     public int size()
@@ -162,19 +176,16 @@ public class AugmentedStmtGraph implements DirectedGraph
 	return aug_list.size();
     }
 
-    private void check_List( List psList, List htList)
+    private <T> void check_List( List<T> psList, List<T> htList)
     {
-	Iterator it = psList.iterator();
-	while (it.hasNext()) {
-	    Object o = it.next();
-
-	    if (htList.contains( o))
-		htList.remove(o);
+    	for (T t : psList) {
+	    if (htList.contains( t))
+		htList.remove(t);
 	}
     }
 
 
-    public void calculate_Reachability( AugmentedStmt source, HashSet blockers, AugmentedStmt dominator)
+    public void calculate_Reachability( AugmentedStmt source, HashSet<AugmentedStmt> blockers, AugmentedStmt dominator)
     {
 	if (blockers == null)
 	    throw new RuntimeException( "Tried to call AugmentedStmtGraph:calculate_Reachability() with null blockers.");
@@ -191,10 +202,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 	while (worklist.isEmpty() == false) {
 	    AugmentedStmt as = worklist.removeFirst();
 	    
-	    Iterator sit = as.csuccs.iterator();
-	    while (sit.hasNext()) {
-		AugmentedStmt sas = (AugmentedStmt) sit.next();
-		
+	    for (AugmentedStmt sas : as.csuccs) {
 		if ((touchSet.contains( sas)) || (sas.get_Dominators().contains( dominator) == false))
 		    continue;
 		
@@ -220,7 +228,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 
     public void calculate_Reachability( AugmentedStmt source, AugmentedStmt blocker, AugmentedStmt dominator)
     {
-	HashSet h = new HashSet();
+	HashSet<AugmentedStmt> h = new HashSet<AugmentedStmt>();
 
 	h.add( blocker);
 
@@ -273,59 +281,61 @@ public class AugmentedStmtGraph implements DirectedGraph
 
     // now put in the methods to satisfy the DirectedGraph interface
 
-    public List getHeads()
+    @Override
+    public List<AugmentedStmt> getHeads()
     {
 	return cheads;
     }
 
-    public List getTails()
+    @Override
+    public List<AugmentedStmt> getTails()
     {
 	return ctails;
     }
 
-    public Iterator iterator()
+    @Override
+    public Iterator<AugmentedStmt> iterator()
     {
 	return aug_list.iterator();
     }
 
-    public List getPredsOf( Object s)
+    @Override
+    public List<AugmentedStmt> getPredsOf( AugmentedStmt s)
     {
-	if (s instanceof AugmentedStmt)
-	    return ((AugmentedStmt) s).cpreds;
-	else if (s instanceof Stmt)
-	    return get_AugStmt((Stmt) s).cpreds;
-	else
-	    throw new RuntimeException( "Object " + s + " class: " + s.getClass() + " not a member of this AugmentedStmtGraph");
+	    return s.cpreds;
+    }
+    
+    public List<AugmentedStmt> getPredsOf( Stmt s)
+    {
+	    return get_AugStmt(s).cpreds;    
     }
 
-    public List getSuccsOf( Object s)
+    @Override
+    public List<AugmentedStmt> getSuccsOf( AugmentedStmt s)
     {
-	if (s instanceof AugmentedStmt)
-	    return ((AugmentedStmt) s).csuccs;
-	else if (s instanceof Stmt)
-	    return get_AugStmt((Stmt) s).csuccs;
-	else
-	    throw new RuntimeException( "Object " + s + " class: " + s.getClass() + " not a member of this AugmentedStmtGraph");
+	    return s.csuccs;
+    }
+
+    public List<AugmentedStmt> getSuccsOf( Stmt s)
+    {
+	    return get_AugStmt(s).csuccs;    	
     }
     
     // end of methods satisfying DirectedGraph
 
-    public List get_BriefHeads()
+    public List<AugmentedStmt> get_BriefHeads()
     {
 	return bheads;
     }
 
-    public List get_BriefTails()
+    public List<AugmentedStmt> get_BriefTails()
     {
 	return btails;
     }
 
-    public IterableSet get_ChainView()
+    public IterableSet<AugmentedStmt> get_ChainView()
     {
-	IterableSet c = new IterableSet();
-
-	c.addAll( aug_list);
-	return c;
+    	return new IterableSet<AugmentedStmt>(aug_list);
     }
 
     public Object clone()
@@ -338,30 +348,22 @@ public class AugmentedStmtGraph implements DirectedGraph
 	if (aug_list.contains( toRemove) == false)
 	    return false;
 	
-	Iterator pit = toRemove.bpreds.iterator();
-	while (pit.hasNext()) {
-	    AugmentedStmt pas = (AugmentedStmt) pit.next();
+	for (AugmentedStmt pas : toRemove.bpreds) {
 	    if (pas.bsuccs.contains( toRemove))
 		pas.bsuccs.remove( toRemove);
 	}
 
-	pit = toRemove.cpreds.iterator();
-	while (pit.hasNext()) {
-	    AugmentedStmt pas = (AugmentedStmt) pit.next();
+	for (AugmentedStmt pas : toRemove.cpreds) {
 	    if (pas.csuccs.contains( toRemove))
 		pas.csuccs.remove( toRemove);
 	}
 
-	Iterator sit = toRemove.bsuccs.iterator();
-	while (sit.hasNext()) {
-	    AugmentedStmt sas = (AugmentedStmt) sit.next();
+	for (AugmentedStmt sas : toRemove.bsuccs) {
 	    if (sas.bpreds.contains( toRemove))
 		sas.bpreds.remove( toRemove);
 	}
 
-	sit = toRemove.csuccs.iterator();
-	while (sit.hasNext()) {
-	    AugmentedStmt sas = (AugmentedStmt) sit.next();
+	for (AugmentedStmt sas : toRemove.csuccs) {
 	    if (sas.cpreds.contains( toRemove))
 		sas.cpreds.remove( toRemove);
 	}
@@ -369,14 +371,10 @@ public class AugmentedStmtGraph implements DirectedGraph
 	aug_list.remove( toRemove);
 	stmt_list.remove( toRemove.get_Stmt());
 
-	if (bheads.contains( toRemove))
-	    bheads.remove( toRemove);
-	if (btails.contains( toRemove))
-	    btails.remove( toRemove);
-	if (cheads.contains( toRemove))
-	    cheads.remove( toRemove);
-	if (ctails.contains( toRemove))
-	    ctails.remove( toRemove);
+    bheads.remove( toRemove);
+    btails.remove( toRemove);
+    cheads.remove( toRemove);
+    ctails.remove( toRemove);
 	
 	binding.remove( toRemove.get_Stmt());
 
@@ -433,22 +431,20 @@ public class AugmentedStmtGraph implements DirectedGraph
     {
 	Stmt s = as.get_Stmt();
 
-	LinkedList 
-	    preds = new LinkedList(),
-	    succs = new LinkedList();
+	LinkedList<AugmentedStmt>
+	    preds = new LinkedList<AugmentedStmt>(),
+	    succs = new LinkedList<AugmentedStmt>();
 	
 	// mirror the predecessors
-	Iterator pit = ug.getPredsOf( s).iterator();
-	while (pit.hasNext()) {
-	    Object po = get_AugStmt( (Stmt) pit.next());
+	for (Unit u : ug.getPredsOf( s)) {
+	    AugmentedStmt po = get_AugStmt( (Stmt) u);
 	    if (preds.contains( po) == false)
 		preds.add( po);
 	}
 
 	// mirror the successors
-	Iterator sit = ug.getSuccsOf( s).iterator();
-	while (sit.hasNext()) {
-	    Object so = get_AugStmt( (Stmt) sit.next());
+	for (Unit u : ug.getSuccsOf( s)) {
+		AugmentedStmt so = get_AugStmt((Stmt) u);
 	    if (succs.contains( so) == false)
 		succs.add( so);
 	}
@@ -638,10 +634,7 @@ public class AugmentedStmtGraph implements DirectedGraph
     public void find_Dominators()
     {
 	// set up the dominator sets for all the nodes in the graph
-	Iterator asgit = aug_list.iterator();
-	while (asgit.hasNext()) {
-	    AugmentedStmt as = (AugmentedStmt) asgit.next();
-
+	for (AugmentedStmt as : aug_list) {
 	    // Dominators:
 	    // safe starting approximation for S(0) ... empty set
 	    // unsafe starting approximation for S(i) .. full set
@@ -657,22 +650,19 @@ public class AugmentedStmtGraph implements DirectedGraph
 	}
 
 	// build the worklist
-	IterableSet worklist = new IterableSet();
+	IterableSet<AugmentedStmt> worklist = new IterableSet<AugmentedStmt>();
 	worklist.addAll( aug_list);
 
 	// keep going until the worklist is empty
-	while (worklist.isEmpty() == false) {
-	    AugmentedStmt as = (AugmentedStmt) worklist.getFirst();
+	while (!worklist.isEmpty()) {
+	    AugmentedStmt as = worklist.getFirst();
 	    worklist.removeFirst();
 	    
-	    IterableSet pred_intersection = new IterableSet();
+	    IterableSet<AugmentedStmt> pred_intersection = new IterableSet<AugmentedStmt>();
 	    boolean first_pred = true;
 
 	    // run through all the predecessors and get their dominance intersection
-	    Iterator pit = as.cpreds.iterator();
-	    while (pit.hasNext()) {
-		AugmentedStmt pas = (AugmentedStmt) pit.next();
-		
+	    for (AugmentedStmt pas : as.cpreds) {
 		// for the first predecessor just take all his dominators
 		if (first_pred) {
 		    pred_intersection.addAll( pas.get_Dominators());
@@ -683,9 +673,9 @@ public class AugmentedStmtGraph implements DirectedGraph
 
 		// for the subsequent predecessors remove the ones they do not have from the intersection
 		else {
-		    Iterator piit = pred_intersection.snapshotIterator();
+		    Iterator<AugmentedStmt> piit = pred_intersection.snapshotIterator();
 		    while (piit.hasNext()) {
-			AugmentedStmt pid = (AugmentedStmt) piit.next();
+			AugmentedStmt pid = piit.next();
 
 			if ((pas.get_Dominators().contains( pid) == false) && (pas != pid))
 			    pred_intersection.remove( pid);
@@ -695,10 +685,7 @@ public class AugmentedStmtGraph implements DirectedGraph
 
 	    // update dominance if we have a change
 	    if (as.get_Dominators().equals( pred_intersection) == false) {
-		Iterator sit = as.csuccs.iterator();
-		while (sit.hasNext()) {
-		    Object o = sit.next();
-
+		for (AugmentedStmt o : as.csuccs) {
 		    if (worklist.contains( o) == false)
 			worklist.add( o);
 		}

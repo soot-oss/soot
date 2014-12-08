@@ -94,6 +94,7 @@ import soot.dava.toolkits.base.AST.traversals.CopyPropagation;
 import soot.dava.toolkits.base.finders.AbruptEdgeFinder;
 import soot.dava.toolkits.base.finders.CycleFinder;
 import soot.dava.toolkits.base.finders.ExceptionFinder;
+import soot.dava.toolkits.base.finders.ExceptionNode;
 import soot.dava.toolkits.base.finders.IfFinder;
 import soot.dava.toolkits.base.finders.LabeledBlockFinder;
 import soot.dava.toolkits.base.finders.SequenceFinder;
@@ -188,7 +189,9 @@ public class DavaBody extends Body {
 
 	private HashSet<Object> consumedConditions, thisLocals;
 
-	private IterableSet synchronizedBlockFacts, exceptionFacts, monitorFacts;
+	private IterableSet<ExceptionNode> synchronizedBlockFacts;
+	private IterableSet<ExceptionNode> exceptionFacts;
+	private IterableSet<AugmentedStmt> monitorFacts;
 	
 	private IterableSet importList;
 	
@@ -198,7 +201,7 @@ public class DavaBody extends Body {
 
 	private Unit constructorUnit; //holds a stmt (this.init<>)
 
-	private List caughtrefs;
+	private List<CaughtExceptionRef> caughtrefs;
 
 	/**
 	 *  Construct an empty DavaBody 
@@ -210,12 +213,12 @@ public class DavaBody extends Body {
 		pMap = new HashMap();
 		consumedConditions = new HashSet<Object>();
 		thisLocals = new HashSet<Object>();
-		synchronizedBlockFacts = new IterableSet();
-		exceptionFacts = new IterableSet();
-		monitorFacts = new IterableSet();
+		synchronizedBlockFacts = new IterableSet<ExceptionNode>();
+		exceptionFacts = new IterableSet<ExceptionNode>();
+		monitorFacts = new IterableSet<AugmentedStmt>();
 		importList = new IterableSet();
 		//packagesUsed = new IterableSet();
-		caughtrefs = new LinkedList();
+		caughtrefs = new LinkedList<CaughtExceptionRef>();
 
 		controlLocal = null;
 		constructorExpr = null;
@@ -225,7 +228,7 @@ public class DavaBody extends Body {
 		return constructorUnit;
 	}
 
-	public List get_CaughtRefs() {
+	public List<CaughtExceptionRef> get_CaughtRefs() {
 		return caughtrefs;
 	}
 
@@ -276,15 +279,15 @@ public class DavaBody extends Body {
 		return b;
 	}
 
-	public IterableSet get_SynchronizedBlockFacts() {
+	public IterableSet<ExceptionNode> get_SynchronizedBlockFacts() {
 		return synchronizedBlockFacts;
 	}
 
-	public IterableSet get_ExceptionFacts() {
+	public IterableSet<ExceptionNode> get_ExceptionFacts() {
 		return exceptionFacts;
 	}
 
-	public IterableSet get_MonitorFacts() {
+	public IterableSet<AugmentedStmt> get_MonitorFacts() {
 		return monitorFacts;
 	}
 	
@@ -945,7 +948,7 @@ public class DavaBody extends Body {
 								.getIndex(), ds.getLeftOp());
 
 					if (rightOp instanceof CaughtExceptionRef)
-						caughtrefs.add(ds.getLeftOp());
+						caughtrefs.add((CaughtExceptionRef) ds.getLeftOp());
 				}
 			}
 		}

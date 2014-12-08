@@ -180,10 +180,7 @@ public class SwitchFinder implements FactFinder
 
 	    IterableSet body = new IterableSet();
 	    body.add( as);
-	    Iterator<SwitchNode> snlit = switchNodeList.iterator();
-	    while (snlit.hasNext()) {
-		SwitchNode sn = snlit.next();
-
+	    for	(SwitchNode sn : switchNodeList) {
 		body.addAll( sn.get_Body());
 		if (sn.get_IndexSet().contains( defaultStr)) {
 		    sn.get_IndexSet().clear();
@@ -193,9 +190,7 @@ public class SwitchFinder implements FactFinder
 
 	    body.addAll( junkBody);
 
-	    Iterator enlit = davaBody.get_ExceptionFacts().iterator();
-	    while (enlit.hasNext()) {
-		ExceptionNode en = (ExceptionNode) enlit.next();
+	    for (ExceptionNode en : davaBody.get_ExceptionFacts()) {
 		IterableSet tryBody = en.get_TryBody();
 		
 		if (tryBody.contains( as)) {
@@ -207,9 +202,8 @@ public class SwitchFinder implements FactFinder
 			if (tryBody.contains( fbas) == false) {
 			    body.remove( fbas);
 			    
-			    snlit = switchNodeList.iterator();
-			    while (snlit.hasNext()) {
-				IterableSet switchBody = snlit.next().get_Body();
+			    for (SwitchNode sn : switchNodeList) {
+				IterableSet switchBody = sn.get_Body();
 
 				if (switchBody.contains( fbas)) {
 				    switchBody.remove( fbas);

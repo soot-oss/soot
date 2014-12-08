@@ -67,9 +67,7 @@ public class MonitorConverter
 
     public void convert( DavaBody body)
     {
-	Iterator mfit = body.get_MonitorFacts().iterator();
-	while (mfit.hasNext()) {
-	    AugmentedStmt mas = (AugmentedStmt) mfit.next();
+    	for (AugmentedStmt mas : body.get_MonitorFacts()) {
 	    MonitorStmt ms = (MonitorStmt) mas.get_Stmt();
 
 	    body.addToImportList("soot.dava.toolkits.base.DavaMonitor.DavaMonitor");

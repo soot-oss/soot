@@ -173,13 +173,10 @@ public class SynchronizedBlockFinder implements FactFinder
 	    previousStmt=as;
 	}//going through all augmented stmts
 
-	IterableSet monitorFacts = body.get_MonitorFacts();
+	IterableSet<AugmentedStmt> monitorFacts = body.get_MonitorFacts();
 	monitorFacts.clear();
 
-	asgit = asg.iterator();
-	while (asgit.hasNext()) {
-	    AugmentedStmt as = (AugmentedStmt) asgit.next();
-
+	for (AugmentedStmt as : asg) {
 	    if ((as.get_Stmt() instanceof MonitorStmt) && (usedMonitors.contains( as) == false)){
 		monitorFacts.add( as);
 	    }
