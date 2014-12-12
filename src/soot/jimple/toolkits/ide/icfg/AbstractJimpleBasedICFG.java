@@ -62,7 +62,8 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 
 	@Override
 	public SootMethod getMethodOf(Unit u) {
-		assert unitToOwner.containsKey(u);
+		assert unitToOwner.containsKey(u) : "Statement " + u
+				+ " not in unit-to-owner mapping";
 		return unitToOwner.get(u).getMethod();
 	}
 
