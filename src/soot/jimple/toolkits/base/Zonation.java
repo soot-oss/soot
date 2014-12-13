@@ -98,7 +98,7 @@ public class Zonation
     }
     
     private void addTrapBoundary(Unit unit, Trap t, Map<Unit, List<Trap>> unitToTrapBoundaries) {
-        List<Trap> boundary = unitToTrapBoundaries.get(t.getBeginUnit());
+        List<Trap> boundary = unitToTrapBoundaries.get(unit);
         if (boundary == null) {
         	boundary = new ArrayList<Trap>();
         	unitToTrapBoundaries.put(unit, boundary);
