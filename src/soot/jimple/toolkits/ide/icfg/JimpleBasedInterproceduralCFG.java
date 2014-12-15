@@ -26,6 +26,7 @@ import heros.solver.IDESolver;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 import soot.Body;
@@ -75,19 +76,27 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Unit,Collection<SootMethod>>() {
 				@Override
 				public Collection<SootMethod> load(Unit u) throws Exception {
-					ArrayList<SootMethod> res = new ArrayList<SootMethod>();
+					ArrayList<SootMethod> res = null;
 					//only retain callers that are explicit call sites or Thread.start()
 					Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesOutOf(u));					
 					while(edgeIter.hasNext()) {
 						Edge edge = edgeIter.next();
 						SootMethod m = edge.getTgt().method();
-						if(m.hasActiveBody())
+						if(m.hasActiveBody()) {
+							if (res == null)
+								res = new ArrayList<SootMethod>();
 							res.add(m);
+						}
 						else if(IDESolver.DEBUG) 
 							System.err.println("Method "+m.getSignature()+" is referenced but has no body!");
 					}
-					res.trimToSize();
-					return res; 
+					
+					if (res != null) {
+						res.trimToSize();
+						return res;
+					}
+					else
+						return Collections.emptySet();
 				}
 			});
 
