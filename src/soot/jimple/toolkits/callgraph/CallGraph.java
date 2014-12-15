@@ -66,6 +66,24 @@ public class CallGraph
         e.insertAfterByTgt( position );
         return true;
     }
+    
+    /**
+     * Removes all outgoing edges that start at the given unit
+     * @param u The unit from which to remove all outgoing edges
+     * @return True if at least one edge has been removed, otherwise false
+     */
+    public boolean removeAllEdgesOutOf(Unit u) {
+    	boolean hasRemoved = false;
+    	for (QueueReader<Edge> edgeRdr = listener(); edgeRdr.hasNext(); ) {
+    		Edge e = edgeRdr.next();
+    		if (e.srcUnit() == u) {
+    			removeEdge(e);
+    			hasRemoved = true;
+    		}
+    	}
+    	return hasRemoved;
+    }
+    
     /** Removes the edge e from the call graph. Returns true iff the edge
      * was originally present in the call graph. */
     public boolean removeEdge( Edge e ) {
