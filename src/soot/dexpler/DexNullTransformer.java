@@ -366,8 +366,10 @@ public class DexNullTransformer extends AbstractNullTransformer {
 				for (Unit u : defs) {
 					replaceWithNull(u);
 					for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-						Unit use = pair.getUnit();
-						replaceWithNull(use);
+						Stmt use = (Stmt) pair.getUnit();
+						// If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
+						if (!use.containsArrayRef() || use.getArrayRef().getBase() != loc)
+							replaceWithNull(use);
 					}
 				}
 			} // end if
