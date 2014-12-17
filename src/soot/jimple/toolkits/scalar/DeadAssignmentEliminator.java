@@ -47,6 +47,7 @@ import soot.LongType;
 import soot.NullType;
 import soot.PhaseOptions;
 import soot.RefType;
+import soot.Scene;
 import soot.Singletons;
 import soot.Timers;
 import soot.Trap;
@@ -273,6 +274,10 @@ public class DeadAssignmentEliminator extends BodyTransformer
 					Stmt newInvoke = Jimple.v().newInvokeStmt(s.getInvokeExpr());
 					newInvoke.addAllTagsOf(s);					
 					units.swapWith(s, newInvoke);
+					
+					// If we have a callgraph, we need to fix it
+					if (Scene.v().hasCallGraph())
+						Scene.v().getCallGraph().swapEdgesOutOf(s, newInvoke);
 				}
 			}
 		}
