@@ -75,6 +75,13 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
                                 numPropagated++;
                             }
                         }
+                        else if (rhs instanceof CastExpr) {
+                        	CastExpr ce = (CastExpr) rhs;
+                        	if (ce.getOp() instanceof NullConstant) {
+                                useBox.setValue(NullConstant.v());
+                                numPropagated++;
+                        	}
+                        }
                     }
                 }
             }
