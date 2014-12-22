@@ -54,7 +54,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 						Set<Unit> res = null;
 						for(Unit u: m.getActiveBody().getUnits()) {
 							if(isCallStmt(u)) {
-								if (res != null)
+								if (res == null)
 									res = new LinkedHashSet<Unit>();
 								res.add(u);
 							}
