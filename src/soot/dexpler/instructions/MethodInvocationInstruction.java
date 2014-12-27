@@ -32,6 +32,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.jf.dexlib2.AccessFlags;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
@@ -333,7 +334,8 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     	// We fix this silently
     	SootMethodRef ref = getSootMethodRef();
     	if (ref.declaringClass().isInterface()) {
-    		// Force re-resolving
+    		// Force re-resolving. Otherwise, if this created a phantom class,
+    		// it would not be marked as an interface.
     		methodRef = null;
     		jimplifyInterface(body);
     		return;
@@ -351,7 +353,15 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
      * Executes the "jimplify" operation for an interface invocation
      */
     protected void jimplifyInterface(DexBody body) {
-        List<Local> parameters = buildParameters(body, false);
+    	// In some applications, VirtualInvokes are disguised as InterfaceInvokes.
+    	// We fix this silently
+        SootMethodRef ref = getSootMethodRef(InvocationType.Interface);
+    	if (!ref.declaringClass().isInterface()) {
+    		jimplifyVirtual(body);
+    		return;
+    	}
+    	
+    	List<Local> parameters = buildParameters(body, false);
         invocation = Jimple.v().newInterfaceInvokeExpr(parameters.get(0),
                                                        getSootMethodRef(InvocationType.Interface),
                                                        parameters.subList(1, parameters.size()));
