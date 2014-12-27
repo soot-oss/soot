@@ -333,6 +333,8 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     	// We fix this silently
     	SootMethodRef ref = getSootMethodRef();
     	if (ref.declaringClass().isInterface()) {
+    		// Force re-resolving
+    		methodRef = null;
     		jimplifyInterface(body);
     		return;
     	}
