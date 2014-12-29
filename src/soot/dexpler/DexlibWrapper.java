@@ -98,7 +98,7 @@ public class DexlibWrapper {
         if (dexFile instanceof DexBackedDexFile) {
             DexBackedDexFile dbdf = (DexBackedDexFile)dexFile;
             for (int i = 0; i < dbdf.getTypeCount(); i++) {
-            	String t = dbdf.getType(i++);
+            	String t = dbdf.getType(i);
 
             	Type st = DexType.toSoot(t);
             	if (st instanceof ArrayType) {
