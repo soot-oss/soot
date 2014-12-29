@@ -37,14 +37,18 @@ import soot.Unit;
 import soot.UnitBox;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
+import soot.jimple.FieldRef;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
+import soot.jimple.toolkits.scalar.LocalCreation;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.SimpleLiveLocals;
+import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.SmartLocalDefs;
 
 /**
@@ -92,16 +96,16 @@ public class DexReturnInliner extends DexTransformer {
 					GotoStmt gtStmt = (GotoStmt) u;
 					if (isInstanceofReturn(gtStmt.getTarget())) {
 						Stmt stmt = (Stmt) gtStmt.getTarget().clone();
-
+						
 						for (Trap t : body.getTraps())
 							for (UnitBox ubox : t.getUnitBoxes())
 								if (ubox.getUnit() == u)
 									ubox.setUnit(stmt);
-
+						
 						while (!u.getBoxesPointingToThis().isEmpty())
 							u.getBoxesPointingToThis().get(0).setUnit(stmt);
 						body.getUnits().swapWith(u, stmt);
-
+						
 						mayBeMore = true;
 					}
 				} else if (u instanceof IfStmt) {
@@ -123,8 +127,10 @@ public class DexReturnInliner extends DexTransformer {
 			}
 		} while (mayBeMore);
 
-        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
+        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, DalvikThrowAnalysis.v(), true);
         LocalDefs localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
+        LocalUses localUses = null;
+        LocalCreation localCreation = null;
         
 		// If a return statement's operand has only one definition and this is
 		// a copy statement, we take the original operand
@@ -138,6 +144,20 @@ public class DexReturnInliner extends DexTransformer {
 						if (assign.getRightOp() instanceof Local
 								|| assign.getRightOp() instanceof Constant)
 							retStmt.setOp(assign.getRightOp());
+						
+						// If this is a field access which has no other uses,
+						// we rename the local to help splitting
+						if (assign.getRightOp() instanceof FieldRef) {
+							if (localUses == null)
+								localUses = new SimpleLocalUses(body, localDefs);
+							if (localUses.getUsesOf(assign).size() == 1) {
+								if (localCreation == null)
+									localCreation = new LocalCreation(body.getLocals(), "ret");
+								Local newLocal = localCreation.newLocal(assign.getLeftOp().getType());
+								assign.setLeftOp(newLocal);
+								retStmt.setOp(newLocal);
+							}
+						}
 					}
 				}
 			}
