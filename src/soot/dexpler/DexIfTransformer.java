@@ -24,7 +24,6 @@
 
 package soot.dexpler;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -59,6 +58,7 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.ReturnStmt;
 import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
@@ -101,12 +101,9 @@ public class DexIfTransformer extends AbstractNullTransformer {
 
 		Set<IfStmt> ifSet = getNullIfCandidates(body);
 		for (IfStmt ifs : ifSet) {
-			List<Local> twoIfLocals = new ArrayList<Local>();
 			ConditionExpr ifCondition = (ConditionExpr) ifs.getCondition();
-			Local lOp1 = (Local) ifCondition.getOp1();
-			Local lOp2 = (Local) ifCondition.getOp2();
-			twoIfLocals.add(lOp1);
-			twoIfLocals.add(lOp2);
+			Local[] twoIfLocals = new Local[] { (Local) ifCondition.getOp1(),
+					(Local) ifCondition.getOp2() };
 			usedAsObject = false;
 			for (Local loc : twoIfLocals) {
 				Debug.printDbg("\n[null if with two local candidate] ", loc);
@@ -413,14 +410,22 @@ public class DexIfTransformer extends AbstractNullTransformer {
 
 			// change values
 			if (usedAsObject) {
-				List<Unit> defsOp1 = collectDefinitionsWithAliases(lOp1, localDefs, localUses, body);
-				List<Unit> defsOp2 = collectDefinitionsWithAliases(lOp1, localDefs, localUses, body);
+				List<Unit> defsOp1 = collectDefinitionsWithAliases(twoIfLocals[0], localDefs, localUses, body);
+				List<Unit> defsOp2 = collectDefinitionsWithAliases(twoIfLocals[1], localDefs, localUses, body);
 				defsOp1.addAll(defsOp2);
 				for (Unit u : defsOp1) {
-					replaceWithNull(u);
+					Stmt s = (Stmt) u;
+					// If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
+					if (!s.containsArrayRef() || (!defsOp1.contains(s.getArrayRef().getBase())
+							&& !defsOp2.contains(s.getArrayRef().getBase())))
+						replaceWithNull(u);
+					
 					for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-						Unit use = pair.getUnit();
-						replaceWithNull(use);
+						Stmt use = (Stmt) pair.getUnit();
+						// If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
+						if (!use.containsArrayRef() || (twoIfLocals[0] != use.getArrayRef().getBase())
+								&& twoIfLocals[1] != use.getArrayRef().getBase())
+							replaceWithNull(use);
 					}
 				}
 			} // end if
