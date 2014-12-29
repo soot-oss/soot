@@ -108,10 +108,11 @@ public class SimpleLocalUses implements LocalUses
                         // Add this statement to the uses of the definition of the local
                         Local l = (Local) useBox.getValue();
                         List<Unit> possibleDefs = localDefs.getDefsOfAt(l, s);
-                        for (Unit def : possibleDefs) {
-                            List<UnitValueBoxPair> useList = unitToUses.get(def);
-                            useList.add(new UnitValueBoxPair(s, useBox));
-                        }
+                        if (possibleDefs != null)
+	                        for (Unit def : possibleDefs) {
+	                            List<UnitValueBoxPair> useList = unitToUses.get(def);
+	                            useList.add(new UnitValueBoxPair(s, useBox));
+	                        }
                     }
                 }
             }
