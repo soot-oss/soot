@@ -97,40 +97,29 @@ public class DexlibWrapper {
 
         if (dexFile instanceof DexBackedDexFile) {
             DexBackedDexFile dbdf = (DexBackedDexFile)dexFile;
-            int i = 0;
-            try {
-                while (true) {
-                    String t = dbdf.getType(i++);
+            for (int i = 0; i < dbdf.getTypeCount(); i++) {
+            	String t = dbdf.getType(i++);
 
-                    Type st = DexType.toSoot(t);
-                    if (st instanceof ArrayType) {
-                        st = ((ArrayType) st).baseType;
-                    }
-                    Debug.printDbg("Type: ", t ," soot type:", st);
-                    String sootTypeName = st.toString();
-                    if (!Scene.v().containsClass(sootTypeName)) {
-                        if (st instanceof PrimType || st instanceof VoidType || systemAnnotationNames.contains(sootTypeName)) {
-                            // dex files contain references to the Type IDs of void / primitive types - we obviously do not want them to be resolved
-                            /*
-                             * dex files contain references to the Type IDs of the system annotations.
-                             * They are only visible to the Dalvik VM (for reflection, see vm/reflect/Annotations.cpp), and not to
-                             * the user - so we do not want them to be resolved.
-                             */
-                            continue;
-                        }
-                        SootResolver.v().makeClassRef(sootTypeName);
-
-                    }
-                    SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
-                }
-            } catch (Exception e) {
-                // hack: we stop when an exception is thrown at us
-                // indicating that the type index reached its max value
-                //
-                //System.out.println("Exception: "+ e);
-                //e.printStackTrace();
+            	Type st = DexType.toSoot(t);
+            	if (st instanceof ArrayType) {
+            		st = ((ArrayType) st).baseType;
+            	}
+            	Debug.printDbg("Type: ", t ," soot type:", st);
+            	String sootTypeName = st.toString();
+            	if (!Scene.v().containsClass(sootTypeName)) {
+            		if (st instanceof PrimType || st instanceof VoidType || systemAnnotationNames.contains(sootTypeName)) {
+            			// dex files contain references to the Type IDs of void / primitive types - we obviously do not want them to be resolved
+            			/*
+            			 * dex files contain references to the Type IDs of the system annotations.
+            			 * They are only visible to the Dalvik VM (for reflection, see vm/reflect/Annotations.cpp), and not to
+            			 * the user - so we do not want them to be resolved.
+            			 */
+            			continue;
+            		}
+            		SootResolver.v().makeClassRef(sootTypeName);
+            	}
+            	SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
             }
-
         } else {
             System.out.println("Warning: DexFile not instance of DexBackedDexFile! Not resolving types!");
             System.out.println("type: "+ dexFile.getClass());
