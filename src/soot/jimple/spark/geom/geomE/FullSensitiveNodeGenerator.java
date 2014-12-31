@@ -202,7 +202,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 				break;
 
 			default:
-				System.exit(-1);
+				throw new IllegalStateException();
 				break;
 			}
 

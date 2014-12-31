@@ -85,7 +85,7 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
     } catch (Exception exc) {
       out.println(exc);
       Debugger.printUnits(b, b.getMethod().getSignature());
-      System.exit(1);
+      throw new IllegalStateException();
     }
     
     ArrayList<Unit> addedUnits = new ArrayList<Unit>();

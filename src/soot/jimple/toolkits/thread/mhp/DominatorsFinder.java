@@ -48,7 +48,7 @@ public class DominatorsFinder{
 		List heads = peg.getHeads();
 		if (heads.size() != 1){
 			System.err.println("The size of heads of peg is not equal to 1!");
-			System.exit(1);
+			throw new IllegalStateException();
 		}
 		else{
 			FlowSet dominators = new ArraySparseSet();

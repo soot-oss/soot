@@ -259,7 +259,7 @@ public class PegToDotFile {
 		if (node == null ) {  
 			System.out.println("----node is null-----");
 			return 0;
-//			System.exit(1); // RLH
+//			throw new IllegalStateException(); // RLH
 		}
 		//System.out.println("node is: "+node);
 		Integer index = nodeindex.get(node);

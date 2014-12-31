@@ -175,7 +175,7 @@ public class Util {
           default:
             Debug.printDbg("unknown type: '", type ,"'");
             Thread.dumpStack();
-            System.exit(-1);
+            throw new IllegalStateException();
             break;
         }
         idx++;
