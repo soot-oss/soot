@@ -141,7 +141,7 @@ public abstract class DexTransformer extends BodyTransformer {
 			} else {
 				System.out.println("ERROR: not an assign statement: "
 						+ arrayStmt);
-				System.exit(-1);
+				throw new IllegalStateException();
 			}
 		} else {
 			aBase = (Local) aRef.getBase();
@@ -152,7 +152,7 @@ public abstract class DexTransformer extends BodyTransformer {
 			System.out
 					.println("ERROR: no def statement found for array base local "
 							+ arrayStmt);
-			System.exit(-1);
+			throw new IllegalStateException();
 		}
 
 		// We should find an answer only by processing the first item of the

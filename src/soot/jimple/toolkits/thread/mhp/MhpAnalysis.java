@@ -1053,7 +1053,7 @@ class MhpAnalysis
 				 s2.add(a);
 				 System.out.println("equals: "+s1.equals(s2));
 				 System.out.println("contains: "+mSetPairs.contains(s2));
-				 System.exit(1);
+				 throw new IllegalStateException();
 				 */
 				
 				Object m = it.next();

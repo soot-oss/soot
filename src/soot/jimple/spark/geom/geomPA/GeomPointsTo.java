@@ -278,7 +278,7 @@ public class GeomPointsTo extends PAG
 				G.v().out.println( "[Geom] Analysis log can be found in: " + log_file.toString() );
 			} catch (FileNotFoundException e) {
 				G.v().out.println( "[Geom] The dump file: " + log_file.toString() + " cannot be created. Abort." );
-				System.exit(-1);
+				throw new IllegalStateException();
 			}
 		}
 		else

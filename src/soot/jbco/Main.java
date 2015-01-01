@@ -99,7 +99,7 @@ public class Main {
             tweight = Integer.parseInt(arg.substring(0,1));
           } catch (NumberFormatException nfe) {
             G.v().out.println("Improperly formated transformation weight: "+argv[i]);
-            System.exit(1);
+            throw new IllegalStateException();
           }
           arg = arg.substring(arg.indexOf(':') + 1);
         }
@@ -134,11 +134,11 @@ public class Main {
             tweight = Integer.parseInt(arg.substring(0,1));
           } catch (NumberFormatException nfe) {
             G.v().out.println("Improperly formatted transformation weight: "+argv[i]);
-            System.exit(1);
+            throw new IllegalStateException();
           }
           if (arg.indexOf(':') < 0) {
             G.v().out.println("Illegally Formatted Option: "+argv[i]);
-            System.exit(1);
+            throw new IllegalStateException();
           }
           arg = arg.substring(arg.indexOf(':') + 1);
         }
@@ -146,7 +146,7 @@ public class Main {
         int index = arg.indexOf(':');
         if (index < 0) {
           G.v().out.println("Illegally Formatted Option: "+argv[i]);
-          System.exit(1);
+          throw new IllegalStateException();
         }
         
         String trans = arg.substring(0,index);
@@ -158,7 +158,7 @@ public class Main {
             o = java.util.regex.Pattern.compile(arg);
           } catch (java.util.regex.PatternSyntaxException pse) {
             G.v().out.println("Illegal Regular Expression Pattern: "+arg);
-            System.exit(1);
+            throw new IllegalStateException();
           }
         } else {
           o = arg;

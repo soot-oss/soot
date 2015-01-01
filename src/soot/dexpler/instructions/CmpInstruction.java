@@ -99,7 +99,7 @@ public class CmpInstruction extends TaggedInstruction {
           break;
         default:
             System.out.println ("no opcode for CMP: 0x"+ Integer.toHexString(opcode.value));
-            System.exit(-1);
+            throw new IllegalStateException();
             cmpExpr = Jimple.v().newCmpExpr(first, second);
         }
 
