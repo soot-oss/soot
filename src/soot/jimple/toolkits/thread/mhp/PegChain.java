@@ -231,7 +231,7 @@ public class PegChain extends HashChain{
 				if (!(invokeExpr instanceof StaticInvokeExpr))
 				{
 					System.err.println("Error: new type of invokeExpre: "+invokeExpr);
-					throw new IllegalStateException();
+					System.exit(1);
 				}
 				else{
 					//static invoke
@@ -294,7 +294,7 @@ public class PegChain extends HashChain{
 					
 					if (pg.getStartToThread().containsKey(pegStmt)){
 						System.err.println(" map startToThread contain duplicated start() method call");
-						throw new IllegalStateException();
+						System.exit(1);
 					}
 					pg.getCanNotBeCompacted().add(pegStmt);
 					addAndPut(unit, pegStmt);
@@ -470,7 +470,7 @@ public class PegChain extends HashChain{
 											System.out.println("target: "+targetList);
 											System.out.println("unit is: "+unit);
 											System.err.println("exit because target is bigger than 1.");
-											throw new IllegalStateException(); // What SHOULD be done is that all possible targets are inlined 
+											System.exit(1); // What SHOULD be done is that all possible targets are inlined 
 															// as though each method body is in a big switch on the type of
 															// the receiver object.  The infrastructure to do this is not
 															// currently available, so instead we exit.  Continuing would
@@ -478,7 +478,7 @@ public class PegChain extends HashChain{
 										}
 										else if(targetList.size() < 1){
 											System.err.println("targetList size <1");
-											//					    throw new IllegalStateException();
+											//					    System.exit(1);
 											//continue;
 										}
 										else

@@ -172,7 +172,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
                 System.out.println("Fields of "+sfr.declaringClass().getName() + ": "+sfr.declaringClass().getFields());
                 //System.out.println("Fields of "+_c.getName() + ": "+_c.getFields());
                 System.out.println(exc);
-                throw new IllegalStateException();
+                System.exit(1);
               }
             }
           }

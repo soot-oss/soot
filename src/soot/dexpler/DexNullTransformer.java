@@ -280,7 +280,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
 								Debug.printDbg(
 										"NOT POSSIBLE StringConstant or NewExpr! ",
 										stmt);
-								throw new IllegalStateException();
+								System.exit(-1);
 								usedAsObject = true;
 								doBreak = true;
 								return;
@@ -314,7 +314,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
 						public void caseIdentityStmt(IdentityStmt stmt) {
 							if (stmt.getLeftOp() == l) {
 								Debug.printDbg("IMPOSSIBLE 0");
-								throw new IllegalStateException();
+								System.exit(-1);
 								usedAsObject = isObject(stmt.getRightOp()
 										.getType());
 							}

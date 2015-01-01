@@ -40,7 +40,7 @@ public abstract class TaggedInstruction extends DexlibAbstractInstruction {
   public Tag getTag () {
     if (instructionTag == null) {
       System.err.println("Must tag instruction first! (0x"+ Integer.toHexString(codeAddress) +": "+ instruction +")");
-      throw new IllegalStateException();
+      System.exit(-1);
     }
     return instructionTag;
   }

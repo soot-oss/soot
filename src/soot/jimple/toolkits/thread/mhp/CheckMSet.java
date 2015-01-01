@@ -39,7 +39,7 @@ public class CheckMSet{
 							temp.add(o);
 							if (!m1.containsKey(o)){
 								System.err.println("1--before compacting map does not contains key "+o);
-								throw new IllegalStateException();
+								System.exit(1);
 							}
 						}
 					}
@@ -47,7 +47,7 @@ public class CheckMSet{
 						temp.add(obj);
 						if (!m1.containsKey(obj)){
 							System.err.println("2--before compacting map does not contains key "+obj);
-							throw new IllegalStateException();
+							System.exit(1);
 						}
 					}
 				}
@@ -55,12 +55,12 @@ public class CheckMSet{
 			else{
 				if (!(key2 instanceof JPegStmt)){
 					System.err.println("key error: "+ key2);
-					throw new IllegalStateException();
+					System.exit(1);
 				}
 				temp.add(key2);
 				if (!m1.containsKey(key2)){
 					System.err.println("3--before compacting map does not contains key "+key2);
-					throw new IllegalStateException();
+					System.exit(1);
 				}
 			}
 		}
@@ -71,7 +71,7 @@ public class CheckMSet{
 			Object key1 = keySetIt1.next();
 			if (!temp.contains(key1)){
 				System.err.println("after compacting map does not contains key "+key1);
-				throw new IllegalStateException();
+				System.exit(1);
 			}
 		}
 		
@@ -101,11 +101,11 @@ public class CheckMSet{
 							FlowSet mSet11 = (FlowSet)m1.get(oo);
 							if (mSet11 == null){
 								System.err.println("1--mSet of "+obj +" is null!");
-								throw new IllegalStateException();
+								System.exit(1);
 							}
 							if (!compare(mSet11, mSet2)){
 								System.err.println("1--mSet before and after are NOT the same!");
-								throw new IllegalStateException();
+								System.exit(1);
 							}
 						}
 					}
@@ -113,11 +113,11 @@ public class CheckMSet{
 						FlowSet mSet1 = (FlowSet)m1.get(obj);
 						if (mSet1 == null){
 							System.err.println("2--mSet of "+obj +" is null!");
-							throw new IllegalStateException();
+							System.exit(1);
 						}
 						if (!compare(mSet1, mSet2)){
 							System.err.println("2--mSet before and after are NOT the same!");
-							throw new IllegalStateException();
+							System.exit(1);
 						}
 					}
 				}
@@ -127,7 +127,7 @@ public class CheckMSet{
 				
 				if (!compare(mSet1, mSet2)){
 					System.err.println("3--mSet before and after are NOT the same!");
-					throw new IllegalStateException();
+					System.exit(1);
 				}
 			}
 		}

@@ -311,7 +311,7 @@ public class PegGraph implements DirectedGraph
 						}
 						if (find == false){
 							System.err.println("fail to find stmt: "+node+" in chains!");
-							throw new IllegalStateException();
+							System.exit(1);
 						}
 						
 						//this.toString();
@@ -613,7 +613,7 @@ public class PegGraph implements DirectedGraph
 						}
 						else{
 							System.err.println("predlist of "+s +" is null");
-//							throw new IllegalStateException();
+//							System.exit(1);
 						}
 						//			unitToPreds.put(successor, predList);
 						
@@ -623,7 +623,7 @@ public class PegGraph implements DirectedGraph
 				}
 				else{
 					System.err.println("unitToSuccs does not contains key"+s);
-					throw new IllegalStateException();
+					System.exit(1);
 				}
 			}
 		}
@@ -650,7 +650,7 @@ public class PegGraph implements DirectedGraph
 					tailList.add(s);
 				if (!unitToPreds.containsKey(s)){
 					System.err.println("unitToPreds does not contain key: "+s);
-					throw new IllegalStateException();
+					System.exit(1);
 				}
 				List preds = unitToPreds.get(s);
 				if(preds.size() == 0)
@@ -691,7 +691,7 @@ public class PegGraph implements DirectedGraph
 			mainPegChain.addLast(s);
 //			if (chain.contains(s)){
 //				System.err.println("error! chain contains: "+s);
-//				throw new IllegalStateException();
+//				System.exit(1);
 //			}
 //			else
 //				chain.addLast(s);
@@ -703,7 +703,7 @@ public class PegGraph implements DirectedGraph
 			//System.out.println("add to allNodes: "+s);
 			if (allNodes.contains(s)){
 				System.err.println("error! allNodes contains: "+s);
-				throw new IllegalStateException();
+				System.exit(1);
 			}
 			else
 				allNodes.add(s);
@@ -725,7 +725,7 @@ public class PegGraph implements DirectedGraph
 			// System.out.println("heads: "+heads);
 			//System.out.println("Error: the size of heads is not equal to 1!");
 			return false;
-			//	    throw new IllegalStateException();
+			//	    System.exit(1);
 		}
 		
 		else{
@@ -733,7 +733,7 @@ public class PegGraph implements DirectedGraph
 			//System.out.println("test head: "+head);
 			if (!head.getName().equals("begin")){
 				System.err.println("Error: the head is not begin node!");
-				throw new IllegalStateException();
+				System.exit(1);
 			}
 			//remove begin node from heads list
 			heads.remove(0);
@@ -750,11 +750,11 @@ public class PegGraph implements DirectedGraph
 			//remove begin node from inlinee Peg
 			if (!mainPegChain.remove(head)) {
 				System.err.println("fail to remove begin node in from mainPegChain!");
-				throw new IllegalStateException();
+				System.exit(1);
 			}
 			if (!allNodes.contains(head)){
 				System.err.println("fail to find begin node in FlowSet allNodes!");
-				throw new IllegalStateException();
+				System.exit(1);
 			}
 			else{
 				allNodes.remove(head);
@@ -874,7 +874,7 @@ public class PegGraph implements DirectedGraph
 					List predListOfSucc = getPredsOf(succ);
 					if (predListOfSucc == null){
 						System.err.println("Error: predListOfSucc is null!");
-						throw new IllegalStateException();
+						System.exit(1);
 					}
 					else{
 						if (predListOfSucc.size() != 0){
@@ -940,7 +940,7 @@ public class PegGraph implements DirectedGraph
 		
 		if (!allNodes.contains(stmt)){
 			System.err.println("fail to find begin node in  allNodes!");
-			throw new IllegalStateException();
+			System.exit(1);
 		}
 		else{
 			allNodes.remove(stmt);
@@ -949,13 +949,13 @@ public class PegGraph implements DirectedGraph
 		
 		if (!chain.contains(stmt)){
 			System.err.println("Error! Chain does not contains stmt (extending point)!");
-			throw new IllegalStateException();
+			System.exit(1);
 			
 		}
 		else{
 			if (!chain.remove(stmt)){
 				System.err.println("fail to remove invoke stmt in from Chain!");
-				throw new IllegalStateException();
+				System.exit(1);
 			}
 		}
 		/*
@@ -973,14 +973,14 @@ public class PegGraph implements DirectedGraph
 		  find = true;
 		  if (!chain.remove(stmt)){
 		  System.err.println("fail to remove begin node in from mainPegChain!");
-		  throw new IllegalStateException();
+		  System.exit(1);
 		  }
 		  break;
 		  }
 		  }
 		  if (find == false){
 		  System.err.println("fail to find stmt: "+stmt+" in chains!");
-		  throw new IllegalStateException();
+		  System.exit(1);
 		  }
 		  }
 		  //this.toString();
@@ -988,7 +988,7 @@ public class PegGraph implements DirectedGraph
 		   else{
 		   if (!mainPegChain.remove(stmt)) {
 		   System.err.println("fail to remove begin node in from mainPegChain!");
-		   throw new IllegalStateException();
+		   System.exit(1);
 		   }
 		   else{
 		   // System.out.println("remove(from mainchain): "+stmt);

@@ -48,7 +48,7 @@ public class MethodInliner
 //		PegToDotFile printer = new PegToDotFile(inlinee, false, "before_addPeg_inlinee"+invokeStmt.getName());
 		if (!container.addPeg(inlinee, chain)) {
 			System.out.println("heads >1 stm: "+invokeStmt);
-			throw new IllegalStateException();
+			System.exit(1);
 		}
 		
 //		printer = new PegToDotFile(container, false, "after_addPeg_"+invokeStmt);

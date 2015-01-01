@@ -78,12 +78,12 @@ public class ProcessData {
 		if(argLength ==0){
 			printIntro();
 			useHelp();
-			throw new IllegalStateException();
+			System.exit(1);
 		}
 		
 		if(args[0].equals("--help")){
 			printHelp();
-			throw new IllegalStateException();
+			System.exit(1);
 		}
 		else if(args[0].equals("-metricList")){
 			metricListFileName(args);
@@ -125,7 +125,7 @@ public class ProcessData {
 		}
 		else{
 			System.out.println("Incorrect argument number 1: expecting -metricList or -tables");
-			throw new IllegalStateException();
+			System.exit(1);
 		}
 		
 	}
@@ -138,7 +138,7 @@ public class ProcessData {
 	private static void aggregationOption(String[] args){
 		if(args.length < 3){
 			System.out.println("Expecting -class or -benchmark at argument number 3");
-			throw new IllegalStateException();
+			System.exit(1);
 		}
 		if(args[2].equals("-class")){
 			aggregationMechanism = ProcessData.CLASS;
@@ -148,7 +148,7 @@ public class ProcessData {
 		}
 		else{
 			System.out.println("Expecting -class or -benchmark at argument number 3");
-			throw new IllegalStateException();
+			System.exit(1);
 		}
 	}
 	
@@ -159,7 +159,7 @@ public class ProcessData {
 	private static void readXMLFileNames(int startIndex, String args[]){
 		if(args.length<startIndex+1){
 			System.out.println("Expecting an xml file OR * symbol as argument number"+(startIndex+1));
-			throw new IllegalStateException();
+			System.exit(1);
 		}
 		
 		//check if its a *
@@ -174,7 +174,7 @@ public class ProcessData {
 				String temp = args[i];
 				if(!temp.endsWith(".xml")){
 					//System.out.println("Argument number "+(startIndex+1) + ": '" + temp+"' is not a valid xml file");
-					//throw new IllegalStateException();
+					//System.exit(1);
 				}
 				else{
 					xmlFileList.add(temp);
@@ -196,7 +196,7 @@ public class ProcessData {
 	private static void metricListFileName(String[] args){
 		if(args.length < 2 ){
 			System.out.println("Expecting name of metricList as argumnet number 2");
-			throw new IllegalStateException();
+			System.exit(1);
 		}
 		metricListFileName = args[1];
 
@@ -339,7 +339,7 @@ public class ProcessData {
 		}
 		catch(Exception e){
 			System.out.println("Exception while reading from metricList"+metricListFileName);
-			throw new IllegalStateException();
+			System.exit(1);
 		}
 
 		
@@ -365,7 +365,7 @@ public class ProcessData {
 		}
 		catch(Exception e){
 			System.out.println("Exception while reading from metricList"+metricListFileName);
-			throw new IllegalStateException();
+			System.exit(1);
 		}
 
 		
@@ -584,7 +584,7 @@ public class ProcessData {
 						Object myTemp = aggregatedValues.get("Total-Conditionals");
 						if(myTemp == null){
 							System.out.println("Total-Conditionals not found in aggregatedValues");
-							throw new IllegalStateException();	
+							System.exit(1);	
 						}
 						double total_if_ifelse = ((Integer)myTemp).doubleValue();
 						
@@ -592,7 +592,7 @@ public class ProcessData {
 						myTemp = aggregatedValues.get("Total Loops");
 						if(myTemp == null){
 							System.out.println("Total Loops not found in aggregatedValues");
-							throw new IllegalStateException();	
+							System.exit(1);	
 						}
 						double totalLoops = ((Integer)myTemp).doubleValue();
 						
@@ -601,7 +601,7 @@ public class ProcessData {
 						myTemp = aggregatedValues.get("AST-Node-Count");
 						if(myTemp == null){
 							System.out.println("AST-Node-Count not found in aggregatedValues");
-							throw new IllegalStateException();	
+							System.exit(1);	
 						}
 						double astCount = ((Integer)myTemp).doubleValue();
 
@@ -612,7 +612,7 @@ public class ProcessData {
 						myTemp = aggregatedValues.get("NameCount");
 						if(myTemp == null){
 							System.out.println("NameCount not found in aggregatedValues");
-							throw new IllegalStateException();	
+							System.exit(1);	
 						}
 						double nameCount = ((Double)myTemp).doubleValue();
 
@@ -622,7 +622,7 @@ public class ProcessData {
 						myTemp = aggregatedValues.get("Expr-Count");
 						if(myTemp == null){
 							System.out.println("ExprCount not found in aggregatedValues");
-							throw new IllegalStateException();	
+							System.exit(1);	
 						}
 						double exprCount = ((Double)myTemp).doubleValue();
 
@@ -659,7 +659,7 @@ public class ProcessData {
 											else{
 												//val not 0 but toalconds are 0...not good
 												System.out.println("Val not 0 but totalConditionals are zero!!!");
-												throw new IllegalStateException();
+												System.exit(1);
 											}
 												
 										}
@@ -673,7 +673,7 @@ public class ProcessData {
 											else{
 												//val not 0 but astcount is 0...not good
 												System.out.println("Val not 0 but astcount is zero!!!");
-												throw new IllegalStateException();
+												System.exit(1);
 											}
 												
 										}								
@@ -688,7 +688,7 @@ public class ProcessData {
 											else{
 												//val not 0 but expr-count are 0...not good
 												System.out.println("Val not 0 but exprcount is zero!!!");
-												throw new IllegalStateException();
+												System.exit(1);
 											}
 
 										}
@@ -703,7 +703,7 @@ public class ProcessData {
 											else{
 												//val not 0 but name-count are 0...not good
 												System.out.println("Val not 0 but name-count is zero!!!");
-												throw new IllegalStateException();
+												System.exit(1);
 											}
 										}
 										else{
@@ -713,7 +713,7 @@ public class ProcessData {
 										break;
 									default:
 										System.out.println("unhandled count value");
-										throw new IllegalStateException();
+										System.exit(1);
 									}
 
 								}
@@ -748,7 +748,7 @@ public class ProcessData {
 											else{
 												//val not 0 but toalconds are 0...not good
 												System.out.println("Val not 0 but totalConditionals are zero!!!");
-												throw new IllegalStateException();
+												System.exit(1);
 											}
 												
 										}
@@ -762,7 +762,7 @@ public class ProcessData {
 											else{
 												//val not 0 but astcount is 0...not good
 												System.out.println("Val not 0 but astcount is zero!!!");
-												throw new IllegalStateException();
+												System.exit(1);
 											}
 												
 										}								
@@ -777,7 +777,7 @@ public class ProcessData {
 											else{
 												//val not 0 but expr-count are 0...not good
 												System.out.println("Val not 0 but exprcount is zero!!!");
-												throw new IllegalStateException();
+												System.exit(1);
 											}
 
 										}
@@ -792,7 +792,7 @@ public class ProcessData {
 											else{
 												//val not 0 but name-count are 0...not good
 												System.out.println("Val not 0 but name-count is zero!!!");
-												throw new IllegalStateException();
+												System.exit(1);
 											}
 										}
 										else{
@@ -802,7 +802,7 @@ public class ProcessData {
 										break;
 									default:
 										System.out.println("unhandled count value");
-										throw new IllegalStateException();
+										System.exit(1);
 									}
 
 								}
@@ -814,7 +814,7 @@ public class ProcessData {
 							if(CSV){
 								if(tempIt.hasNext()){
 									System.out.println("Only allowed one metric for CSV");
-									throw new IllegalStateException();
+									System.exit(1);
 								}								
 							}
 							else{
@@ -871,7 +871,7 @@ public class ProcessData {
 					}
 					else{
 						System.out.println("Unknown aggregation Mechanism");
-						throw new IllegalStateException();
+						System.exit(1);
 					}
 				}catch (SAXParseException err) {
 					System.out.println ("** Parsing error" + ", line " + err.getLineNumber () + ", uri " + err.getSystemId ());

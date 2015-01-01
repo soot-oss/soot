@@ -122,7 +122,7 @@ public class UseChecker extends AbstractStmtSwitch
 				throw new RuntimeException("null typing passed to useChecker");
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new IllegalStateException();
+			System.exit(1);
 		}
 
 		for ( Iterator<Unit> i = this.jb.getUnits().snapshotIterator();

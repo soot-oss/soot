@@ -186,7 +186,7 @@ public class HeapInsNodeGenerator extends IEncodingBroker
 				break;
 
 			default:
-				throw new IllegalStateException();
+				System.exit(-1);
 				break;
 			}
 

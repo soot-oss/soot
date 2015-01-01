@@ -183,7 +183,7 @@ public class PtInsNodeGenerator extends IEncodingBroker
 				break;
 
 			default:
-				throw new IllegalStateException();
+				System.exit(-1);
 				break;
 			}
 
