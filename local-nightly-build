@@ -1,0 +1,160 @@
+#!/bin/bash
+#
+# Soot nightly self-contained building script
+#
+# adapted from: https://raw.githubusercontent.com/Sable/soot/develop/nightly
+# latest update: 20150101
+# Author(s):
+# - Wei "pw" Peng <4pengw@gmail.com>
+#
+# build deps:
+# - Ant: https://ant.apache.org/
+# - wget: https://www.gnu.org/software/wget/
+# - JDK: http://www.oracle.com/technetwork/java/javase/downloads/index.html
+
+# http://stackoverflow.com/a/246128
+CUR_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
+
+HOME_AB=${HOME_AB:-${HOME}/autobuild}
+TMP_AB=${TMP_AB:-/tmp/autobuild}
+HOME_AB_TMP=${HOME_AB_TMP:-${HOME_AB}/tmp}
+HOME_AB_SET=${HOME_AB_SET:-${HOME_AB}/settings}
+HOME_AB_RES=${HOME_AB_RES:-${HOME_AB}/resources}
+HOME_AB_REL=${HOME_AB_REL:-${HOME_AB}/releases}
+HOME_AB_TMP_LIB=${HOME_AB_TMP_LIB:-${HOME_AB_TMP}/libs}
+
+## create $HOME_AB_TMP as a symlink to tmpfs if not already existed
+[[ -d ${HOME_AB_TMP} ]] || ( mkdir -p ${TMP_AB} && ln -sf ${TMP_AB} ${HOME_AB_TMP} )
+
+## create directories if not existed
+mkdir -p ${HOME_AB_SET} ${HOME_AB_REL} ${HOME_AB_RES} ${HOME_AB_TMP_LIB}
+
+## set up settings
+BASE_SETTING=${HOME_AB_SET}/jasmin
+[[ -f ${BASE_SETTING} ]] || wget https://raw.githubusercontent.com/Sable/jasmin/develop/ant.settings.template -O ${BASE_SETTING}
+BASE_SETTING=${HOME_AB_SET}/soot
+[[ -f ${BASE_SETTING} ]] || wget https://raw.githubusercontent.com/Sable/soot/develop/ant.settings.template -O ${BASE_SETTING}
+unset BASE_SETTING
+
+## set up resources
+ln -sf ${CUR_DIR}/nightly.html ${HOME_AB_RES}
+
+# ready to start
+cd ${HOME_AB_TMP}
+
+polyglotrev=1.3.5
+rev=2.5.0
+
+## Sable sources: Jasmin, Heros, Soot
+function getSableSrc() { (
+cd ${HOME_AB_TMP}
+for name in jasmin soot heros; do
+    [[ -d ${name} ]] || git clone https://github.com/Sable/${name}.git || return
+    ( cd ${name}; git pull; git clean -dfx ) || return
+done
+) }
+
+## Polyglot
+
+function getSrcPolyglot() { (
+cd ${HOME_AB_RES}
+POLYGLOT_NAME=polyglot-${polyglotrev}-src 
+POLYGLOT_TB=${POLYGLOT_NAME}.tar.gz
+POLYGLOT_URL="http://www.cs.cornell.edu/Projects/polyglot/src/${POLYGLOT_TB}"
+[[ -d ${POLYGLOT_NAME} ]] || wget -nv -nc -nd ${POLYGLOT_URL} && tar xvfz ${POLYGLOT_TB} || return
+cp -r ${POLYGLOT_NAME} ${HOME_AB_TMP}/polyglot || return
+) }
+
+function buildPolyglot() { (
+TARGET_DIR=${HOME_AB_TMP}/polyglot
+
+# source packages
+cd ${HOME_AB_TMP}
+jar -cf ${HOME_AB_REL}/polyglotsrc-$polyglotrev.jar polyglot || return
+tar -czf ${HOME_AB_REL}/polyglotsrc-$polyglotrev.tar.gz polyglot || return
+
+# generate jars
+cd ${TARGET_DIR}
+if ant; then
+    cd ${TARGET_DIR}/classes && jar -cf ${HOME_AB_REL}/polyglotclasses-$polyglotrev.jar * || return
+    cd ${TARGET_DIR}/cup-classes && jar -uf ${HOME_AB_REL}/polyglotclasses-$polyglotrev.jar * || return
+fi
+) }
+
+## Jasmin
+
+function buildJasmin() { (
+TARGET_DIR=${HOME_AB_TMP}/jasmin
+
+# build
+cd ${TARGET_DIR}
+cp ant.settings.template ant.settings
+ant barebones 
+ant jasmin-jar
+
+# install
+cp libs/java_cup.jar ${HOME_AB_TMP_LIB}/java_cup.jar || return
+cp lib/jasminclasses-*.jar ${HOME_AB_TMP_LIB}/jasminclasses-custom.jar || return 
+) }
+
+## Heros
+
+function buildHeros() { (
+TARGET_DIR=${HOME_AB_TMP}/heros
+
+# build
+cd ${TARGET_DIR}
+cp ant.settings.template ant.settings
+ant || return
+
+# install
+
+) }
+
+ 
+## Soot
+
+function buildSoot(){ (
+TARGET_DIR=${HOME_AB_TMP}/soot
+
+# patch
+cd ${TARGET_DIR}
+cp ${HOME_AB_SET}/soot ant.settings || return
+sed -i 's/jastaddfrontend/#jastaddfrontend/g' ant.settings || return
+
+# build
+cd ${TARGET_DIR}
+ant barebones || return
+ant fulljar || return
+ant javadoc || return
+
+# release
+cp -r javadoc lib/* ${HOME_AB_REL}/ || return
+) }
+
+
+function getExternalSrc() {
+: || return
+}
+
+function getExternalJar() {
+: || return
+}
+
+function buildDeps() {
+# buildPolyglot || return
+buildJasmin || return
+buildHeros || return 
+}
+
+function makeNightly() {
+# get sources
+getSableSrc || exit
+getExternalSrc || exit
+getExternalJar || exit
+
+buildDeps || exit
+buildSoot || exit
+}
+
+makeNightly
