@@ -132,6 +132,7 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected void flowThrough(Object flowin, Unit u, List fallOut, List branchOuts) {
 		AnalysisInfo in = (AnalysisInfo) flowin;
 		AnalysisInfo out = new AnalysisInfo(in);
@@ -318,6 +319,7 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected void copy(Object source, Object dest) {
 		AnalysisInfo s = (AnalysisInfo) source;
 		AnalysisInfo d = (AnalysisInfo) dest;
@@ -328,6 +330,7 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected Object entryInitialFlow() {
 		return new AnalysisInfo();
 	}
@@ -335,6 +338,7 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected void merge(Object in1, Object in2, Object out) {
 		AnalysisInfo outflow = (AnalysisInfo) out;
 		outflow.clear();
@@ -345,6 +349,7 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	/**
 	 * {@inheritDoc}
 	 */
+	@Override
 	protected Object newInitialFlow() {
 		return new AnalysisInfo();
 	}
