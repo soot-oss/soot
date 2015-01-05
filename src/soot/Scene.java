@@ -1140,6 +1140,7 @@ public class Scene  //extends AbstractHost
         rn.add("catch");
         rn.add("char");
         rn.add("class");
+        rn.add("enum");
         rn.add("final");
         rn.add("native");
         rn.add("public");
