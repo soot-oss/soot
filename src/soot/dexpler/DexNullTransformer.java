@@ -222,7 +222,13 @@ public class DexNullTransformer extends AbstractNullTransformer {
 							Value r = stmt.getRightOp();
 
 							if (left instanceof ArrayRef) {
-								if (((ArrayRef) left).getIndex() == l) {
+								ArrayRef ar = (ArrayRef) left;
+								if (ar.getIndex() == l) {
+									doBreak = true;
+									return;
+								}
+								else if (ar.getBase() == l) {
+									usedAsObject = true;
 									doBreak = true;
 									return;
 								}
