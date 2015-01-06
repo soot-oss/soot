@@ -539,6 +539,7 @@ public class DexBody  {
             }
         }
         
+        DexNullArrayRefTransformer.v().transform(jBody);
         TypeAssigner.v().transform(jBody);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
