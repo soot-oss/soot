@@ -122,6 +122,7 @@ public class SootResourceManager implements IResourceChangeListener, ITextListen
 	public void addToLists(IResource res){
 		if (res instanceof IFile){
 			IFile file = (IFile)res;
+			if (file.getFileExtension() == null) return;
 			if ((file.getFileExtension().equals(JAVA_FILE_EXT)) ||
 			 	(file.getFileExtension().equals(JIMPLE_FILE_EXT))){
 						
