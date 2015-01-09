@@ -52,9 +52,20 @@ class AsmUtil {
 		if (internal.charAt(0) == '['){ 
 			/* [Ljava/lang/Object; */
 			internal = internal.substring(internal.lastIndexOf('[')+1, internal.length());
-			if(internal.charAt(internal.length()-1)==';')
-				internal = internal.substring(0, internal.length()-1);
 			/* Ljava/lang/Object */
+		}
+		if(internal.charAt(internal.length()-1)==';') {
+			internal = internal.substring(0, internal.length()-1);
+			// we need to have this guarded by a ; check as you can have a situation
+			// were a call is called Lxxxxx with now leading package name. Rare, but it
+			// happens. However, you need to strip the leading L it will always be
+			// followed by a ; per
+			// http://docs.oracle.com/javase/specs/jvms/se7/html/jvms-4.html
+			if (internal.charAt(0) == 'L') {
+				internal = internal.substring(1, internal.length());
+			}
+			internal = toQualifiedName(internal);
+			return RefType.v(internal);
 		}
 		switch (internal.charAt(0)) {
 		case 'Z':
@@ -73,13 +84,9 @@ class AsmUtil {
 			return LongType.v();
 		case 'D':
 			return DoubleType.v();
-		case 'L':
-			internal = internal.substring(1, internal.length());
-			internal = toQualifiedName(internal);
-			return RefType.v(internal);
 		default:
 			internal = toQualifiedName(internal);
-			return RefType.v(internal);	
+			return RefType.v(internal);
 		}
 	}
 	
