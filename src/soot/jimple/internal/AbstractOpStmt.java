@@ -7,7 +7,7 @@ import soot.Value;
 import soot.ValueBox;
 
 @SuppressWarnings("serial")
-abstract class AbstractOpStmt extends AbstractStmt {
+abstract public class AbstractOpStmt extends AbstractStmt {
 
 	final ValueBox opBox;
 	
