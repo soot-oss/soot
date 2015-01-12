@@ -520,6 +520,7 @@ public class DexBody  {
         	DexReturnInliner.v().transform(jBody);
         	CopyPropagator.v().transform(jBody);
         	
+        	DexNullThrowTransformer.v().transform(jBody);
         	DexNullTransformer.v().transform(jBody);
         	DexIfTransformer.v().transform(jBody);
         	
@@ -527,7 +528,7 @@ public class DexBody  {
         	UnusedLocalEliminator.v().transform(jBody);
         	
         	//DexRefsChecker.v().transform(jBody);
-        	//DexNullArrayRefTransformer.v().transform(jBody);
+            DexNullArrayRefTransformer.v().transform(jBody);
         	
         	Debug.printDbg("\nafter Num and Null transformers");
         }
@@ -539,7 +540,6 @@ public class DexBody  {
             }
         }
         
-        DexNullArrayRefTransformer.v().transform(jBody);
         TypeAssigner.v().transform(jBody);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
