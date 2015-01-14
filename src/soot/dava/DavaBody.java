@@ -185,7 +185,7 @@ import soot.util.Switchable;
 public class DavaBody extends Body {
 
 	public boolean DEBUG = false;
-	private Map pMap;
+	private Map<Integer, Value> pMap;
 
 	private HashSet<Object> consumedConditions, thisLocals;
 
@@ -193,7 +193,7 @@ public class DavaBody extends Body {
 	private IterableSet<ExceptionNode> exceptionFacts;
 	private IterableSet<AugmentedStmt> monitorFacts;
 	
-	private IterableSet importList;
+	private IterableSet<String> importList;
 	
 	private Local controlLocal;
 
@@ -210,13 +210,13 @@ public class DavaBody extends Body {
 	DavaBody(SootMethod m) {
 		super(m);
 
-		pMap = new HashMap();
+		pMap = new HashMap<Integer, Value>();
 		consumedConditions = new HashSet<Object>();
 		thisLocals = new HashSet<Object>();
 		synchronizedBlockFacts = new IterableSet<ExceptionNode>();
 		exceptionFacts = new IterableSet<ExceptionNode>();
 		monitorFacts = new IterableSet<AugmentedStmt>();
-		importList = new IterableSet();
+		importList = new IterableSet<String>();
 		//packagesUsed = new IterableSet();
 		caughtrefs = new LinkedList<CaughtExceptionRef>();
 
@@ -244,11 +244,11 @@ public class DavaBody extends Body {
 		constructorUnit = s;
 	}
 
-	public Map get_ParamMap() {
+	public Map<Integer, Value> get_ParamMap() {
 		return pMap;
 	}
 
-	public void set_ParamMap(Map map) {
+	public void set_ParamMap(Map<Integer, Value> map) {
 		pMap = map;
 	}
 
@@ -291,7 +291,7 @@ public class DavaBody extends Body {
 		return monitorFacts;
 	}
 	
-	public IterableSet getImportList(){
+	public IterableSet<String> getImportList(){
 		return importList;
 	}
 	
@@ -471,7 +471,6 @@ public class DavaBody extends Body {
 		debug("applyASTAnalyses","initial one time analyses completed");
 		
 		boolean flag = true;
-		int times = 0;
 
 		G.v().ASTTransformations_modified = false;
 		G.v().ASTIfElseFlipped = false;
@@ -483,8 +482,6 @@ public class DavaBody extends Body {
 			do {
 				debug("applyASTAnalyses","ITERATION");
 				G.v().ASTTransformations_modified = false;
-				times++;
-
 				
 				
 				AST.apply(new AndAggregator());
@@ -948,7 +945,7 @@ public class DavaBody extends Body {
 								.getIndex(), ds.getLeftOp());
 
 					if (rightOp instanceof CaughtExceptionRef)
-						caughtrefs.add((CaughtExceptionRef) ds.getLeftOp());
+						caughtrefs.add((CaughtExceptionRef) rightOp);
 				}
 			}
 		}
@@ -1273,14 +1270,8 @@ public class DavaBody extends Body {
 
 	
 	public void addToImportList(String className){
-		if(className.equals(""))
-			return;
-		
-		if(!importList.contains(className)){
+		if(!className.isEmpty())
 			importList.add(className);
-			if(DEBUG) 
-				System.out.println("Adding to import list: "+className);
-		}
 	}
 	
 	public void debug(String methodName, String debug){		
