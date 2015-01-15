@@ -373,10 +373,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 			}
 		}
 
-		for (Map.Entry<Unit, ThrowableSet> entry : unitToUncaughtThrowables
-				.entrySet()) {
-			Unit unit = (Unit) entry.getKey();
-			ThrowableSet escaping = (ThrowableSet) entry.getValue();
+		for (Map.Entry<Unit, ThrowableSet> entry : unitToUncaughtThrowables.entrySet()) {
+			Unit unit = entry.getKey();
+			ThrowableSet escaping = entry.getValue();
 			if (escaping != ThrowableSet.Manager.v().EMPTY) {
 				result = addDestToMap(result, unit, null, escaping);
 			}
@@ -478,11 +477,9 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 			Map<Unit, List<Unit>> unitToSuccs,
 			Map<Unit, List<Unit>> unitToPreds, boolean omitExceptingUnitEdges) {
 		Set<Unit> trapsThatAreHeads = new ArraySet<Unit>();
-		Unit entryPoint = (Unit) unitChain.getFirst();
-		for (Iterator<Entry<Unit, Collection<ExceptionDest>>> it = unitToExceptionDests
-				.entrySet().iterator(); it.hasNext();) {
-			Entry<Unit, Collection<ExceptionDest>> entry = it.next();
-			Unit thrower = (Unit) entry.getKey();
+		Unit entryPoint = unitChain.getFirst();
+		for (Entry<Unit, Collection<ExceptionDest>> entry : unitToExceptionDests.entrySet()) {
+			Unit thrower = entry.getKey();
 			List<Unit> throwersPreds = getUnexceptionalPredsOf(thrower);
 			Collection<ExceptionDest> dests = entry.getValue();
 
@@ -532,9 +529,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 				selfThrowables = throwAnalysis.mightThrowExplicitly(throwStmt);
 			}
 
-			for (Iterator<ExceptionDest> destIt = dests.iterator(); destIt
-					.hasNext();) {
-				ExceptionDest dest = destIt.next();
+			for (ExceptionDest dest : dests) {
 				if (dest.getTrap() != null) {
 					Unit catcher = dest.getTrap().getHandlerUnit();
 					RefType trapsType = dest.getTrap().getException().getType();
@@ -545,9 +540,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 						if (thrower == entryPoint) {
 							trapsThatAreHeads.add(catcher);
 						}
-						for (Iterator<Unit> p = throwersPreds.iterator(); p
-								.hasNext();) {
-							Unit pred = p.next();
+						for (Unit pred : throwersPreds) {
 							addEdge(unitToSuccs, unitToPreds, pred, catcher);
 						}
 					}
@@ -603,19 +596,15 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 
 		LinkedList<CFGEdge> workList = new LinkedList<CFGEdge>();
 
-		for (Iterator<Trap> trapIt = body.getTraps().iterator(); trapIt
-				.hasNext();) {
-			Trap trap = trapIt.next();
+		for (Trap trap : body.getTraps()) {
 			Unit handlerStart = trap.getHandlerUnit();
 			if (mightThrowToIntraproceduralCatcher(handlerStart)) {
 				List<Unit> handlerPreds = getUnexceptionalPredsOf(handlerStart);
-				for (Iterator<Unit> it = handlerPreds.iterator(); it.hasNext();) {
-					Unit pred = it.next();
+				for (Unit pred : handlerPreds) {
 					workList.addLast(new CFGEdge(pred, handlerStart));
 				}
 				handlerPreds = getExceptionalPredsOf(handlerStart);
-				for (Iterator<Unit> it = handlerPreds.iterator(); it.hasNext();) {
-					Unit pred = it.next();
+				for (Unit pred : handlerPreds) {
 					workList.addLast(new CFGEdge(pred, handlerStart));
 				}
 				if (trapsThatAreHeads.contains(handlerStart)) {
@@ -633,9 +622,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 			Unit pred = edgeToThrower.head;
 			Unit thrower = edgeToThrower.tail;
 			Collection<ExceptionDest> throwerDests = getExceptionDests(thrower);
-			for (Iterator<ExceptionDest> i = throwerDests.iterator(); i
-					.hasNext();) {
-				ExceptionDest dest = i.next();
+			for (ExceptionDest dest : throwerDests) {
 				if (dest.getTrap() != null) {
 					Unit handlerStart = dest.getTrap().getHandlerUnit();
 					boolean edgeAdded = false;
@@ -684,9 +671,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 			return (i.containsInvokeExpr() || (i instanceof StaticPutInst)
 					|| (i instanceof StaticGetInst) || (i instanceof NewInst));
 		} else if (u instanceof Stmt) {
-			for (Iterator<ValueBox> it = u.getUseBoxes().iterator(); it
-					.hasNext();) {
-				Value v = it.next().getValue();
+			for (ValueBox vb : u.getUseBoxes()) {
+				Value v = vb.getValue();
 				if ((v instanceof StaticFieldRef) || (v instanceof InvokeExpr)
 						|| (v instanceof NewExpr)) {
 					return true;
@@ -708,8 +694,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 	 */
 	private boolean mightThrowToIntraproceduralCatcher(Unit u) {
 		Collection<ExceptionDest> dests = getExceptionDests(u);
-		for (Iterator<ExceptionDest> i = dests.iterator(); i.hasNext();) {
-			ExceptionDest dest = i.next();
+		for (ExceptionDest dest : dests) {
 			if (dest.getTrap() != null) {
 				return true;
 			}
@@ -761,14 +746,13 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 			throw new IllegalStateException("No body for method "
 					+ body.getMethod().getSignature());
 
-		Unit entryPoint = (Unit) unitChain.getFirst();
+		Unit entryPoint = unitChain.getFirst();
 		if (!headList.contains(entryPoint)) {
 			headList.add(entryPoint);
 		}
 
 		List<Unit> tailList = new ArrayList<Unit>();
-		for (Iterator<Unit> it = unitChain.iterator(); it.hasNext();) {
-			Unit u = (Unit) it.next();
+		for (Unit u : unitChain) {
 			if (u instanceof soot.jimple.ReturnStmt
 					|| u instanceof soot.jimple.ReturnVoidStmt
 					|| u instanceof soot.baf.ReturnInst
@@ -778,9 +762,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 					|| u instanceof soot.baf.ThrowInst) {
 				Collection<ExceptionDest> dests = getExceptionDests(u);
 				int escapeMethodCount = 0;
-				for (Iterator<ExceptionDest> destIt = dests.iterator(); destIt
-						.hasNext();) {
-					ExceptionDest dest = destIt.next();
+				for (ExceptionDest dest : dests) {
 					if (dest.getTrap() == null) {
 						escapeMethodCount++;
 					}
@@ -914,11 +896,8 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 	}
 
 	public String toString() {
-		Iterator<Unit> it = unitChain.iterator();
 		StringBuffer buf = new StringBuffer();
-		while (it.hasNext()) {
-			Unit u = it.next();
-
+		for (Unit u : unitChain) {
 			buf.append("  preds: " + getPredsOf(u) + "\n");
 			buf.append("  unexceptional preds: " + getUnexceptionalPredsOf(u)
 					+ "\n");
