@@ -35,6 +35,7 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
+import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Cons;
 
@@ -109,8 +110,8 @@ public class SmartLocalDefs implements LocalDefs {
 			Local l = localDef(u);
 			if (l == null)
 				continue;
-			Set<Unit> s = defsOf(l);
-			s.add(u);
+			
+			addDefOf(l, u);
 		}
 
 		if (Options.v().verbose())
@@ -165,13 +166,20 @@ public class SmartLocalDefs implements LocalDefs {
 	}
 
 	private Set<Unit> defsOf(Local l) {
-		Set<Unit> ret = localToDefs.get(l);
-		if (ret == null)
-			localToDefs.put(l, ret = new HashSet<Unit>());
-		return ret;
+		Set<Unit> s = localToDefs.get(l);
+		if (s == null)
+			return Collections.emptySet();
+		return s;
+	}
+	
+	private void addDefOf(Local l, Unit u) {
+		Set<Unit> s = localToDefs.get(l);
+		if (s == null)
+			localToDefs.put(l, s = new HashSet<Unit>());
+		s.add(u);
 	}
 
-	class LocalDefsAnalysis extends ForwardFlowAnalysis<Unit, Set<Unit>> {
+	class LocalDefsAnalysis extends ForwardFlowAnalysisExtended<Unit, Set<Unit>> {
 		LocalDefsAnalysis(UnitGraph g) {
 			super(g);
 			doAnalysis();
@@ -189,7 +197,9 @@ public class SmartLocalDefs implements LocalDefs {
 		}
 
 		@Override
-		protected void flowThrough(Set<Unit> in, Unit u, Set<Unit> out) {
+		protected void flowThrough(Set<Unit> in, Unit u, Unit succ, Set<Unit> out) {
+			final ExceptionalUnitGraph exGraph = graph instanceof ExceptionalUnitGraph
+					? (ExceptionalUnitGraph) graph : null;
 			out.clear();
 
 			BitSet liveLocals = liveLocalsAfter.get(u);
@@ -204,7 +214,7 @@ public class SmartLocalDefs implements LocalDefs {
 			} else {// check unit whether contained in allDefUnits before add
 					// into out set.
 				Set<Unit> allDefUnits = defsOf(l);
-
+				
 				for (Unit inU : in) {
 					if (liveLocals.get(localDef(inU).getNumber())
 							&& !allDefUnits.contains(inU)) {
@@ -215,7 +225,8 @@ public class SmartLocalDefs implements LocalDefs {
 				assert false == out.removeAll(allDefUnits);
 
 				if (liveLocals.get(l.getNumber())) {
-					out.add(u);
+					if (exGraph == null || !exGraph.getExceptionalSuccsOf(u).contains(succ))
+						out.add(u);
 				}
 			}
 		}
