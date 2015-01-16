@@ -36,6 +36,7 @@ import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Cons;
 
@@ -215,17 +216,25 @@ public class SmartLocalDefs implements LocalDefs {
 					// into out set.
 				Set<Unit> allDefUnits = defsOf(l);
 				
+				boolean isExceptionalTarget = false;
+				if (exGraph != null) {
+					for (ExceptionDest ed : exGraph.getExceptionDests(u))
+						if (ed.getTrap() != null && ed.getTrap().getHandlerUnit() == succ)
+							isExceptionalTarget = true;
+				}
+				
 				for (Unit inU : in) {
-					if (liveLocals.get(localDef(inU).getNumber())
-							&& !allDefUnits.contains(inU)) {
-						out.add(inU);
-					}
+					if (liveLocals.get(localDef(inU).getNumber()))
+						// If we have a = foo and foo can throw an exception, we
+						// must keep the old definition of a.
+						if (isExceptionalTarget || !allDefUnits.contains(inU))
+							out.add(inU);
 				}
 
-				assert false == out.removeAll(allDefUnits);
+				assert isExceptionalTarget || !out.removeAll(allDefUnits);
 
 				if (liveLocals.get(l.getNumber())) {
-					if (exGraph == null || !exGraph.getExceptionalSuccsOf(u).contains(succ))
+					if (!isExceptionalTarget)
 						out.add(u);
 				}
 			}
