@@ -84,7 +84,7 @@ public abstract class FlowAnalysis<N,A> extends AbstractFlowAnalysis<N,A>
 	}
 	
 	
-	protected FlowInfo getFlowInfo(N s, A flow, Map<?,A> filterFlow, boolean b) {
+	protected FlowInfo<A, N> getFlowInfo(N s, A flow, Map<?,A> filterFlow, boolean b) {
 		A savedFlow;
 		if (filterFlow != null) {
 			savedFlow = filterFlow.get(s);
@@ -93,13 +93,13 @@ public abstract class FlowAnalysis<N,A> extends AbstractFlowAnalysis<N,A>
 			savedFlow = newInitialFlow();
 			copy(flow, savedFlow);
 		}
-		return new FlowInfo(savedFlow, s, b);
+		return new FlowInfo<A, N>(savedFlow, s, b);
 	}	
 
 	protected void afterFlowThrough(N s, A flow, boolean handleStop) {
 		final InteractionHandler h = InteractionHandler.v();
 
-		FlowInfo fi = getFlowInfo(s, flow, filterUnitToAfterFlow, false);
+		FlowInfo<A, N> fi = getFlowInfo(s, flow, filterUnitToAfterFlow, false);
 
 		if (handleStop && h.getStopUnitList() != null && h.getStopUnitList().contains(s)) {
 			h.handleStopAtNodeEvent(s);
@@ -110,7 +110,7 @@ public abstract class FlowAnalysis<N,A> extends AbstractFlowAnalysis<N,A>
 	protected void beforeFlowThrough(N s, A flow, boolean handleStop) {
     	final InteractionHandler h = InteractionHandler.v();
     	
-		FlowInfo fi = getFlowInfo(s, flow, filterUnitToBeforeFlow, true);
+		FlowInfo<A, N> fi = getFlowInfo(s, flow, filterUnitToBeforeFlow, true);
     	
         if (handleStop && h.getStopUnitList() != null && h.getStopUnitList().contains(s)){
             h.handleStopAtNodeEvent(s);
