@@ -433,7 +433,6 @@ public class DexBody  {
 			else {
 				instruction.setLineNumber(prevLineNumber);
 			}
-            //System.out.println("jimple: "+ jBody.getUnits().getLast());
         }
         for(DeferableInstruction instruction : deferredInstructions) {
             instruction.deferredJimplify(this);
@@ -481,8 +480,9 @@ public class DexBody  {
         Debug.printDbg("\nbefore splitting");
         Debug.printDbg("",(Body)jBody);
         
+        DexReturnInliner.v().transform(jBody);        
         getLocalSplitter().transform(jBody);
-
+        
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);
         
@@ -516,9 +516,8 @@ public class DexBody  {
 
         } else {
         	DexNumTransformer.v().transform (jBody);
-          
-        	DexReturnInliner.v().transform(jBody);
-        	CopyPropagator.v().transform(jBody);
+        	
+            getCopyPopagator().transform(jBody);
         	
         	DexNullThrowTransformer.v().transform(jBody);
         	DexNullTransformer.v().transform(jBody);
@@ -683,7 +682,7 @@ public class DexBody  {
                 l.setType(RefType.v("java.lang.Object"));
             }
         }
-
+        
         return jBody;
     }
 
@@ -707,6 +706,13 @@ public class DexBody  {
     		this.unreachableCodeEliminator =
     			new UnreachableCodeEliminator(DalvikThrowAnalysis.v());
     	return this.unreachableCodeEliminator;
+    }
+
+    private CopyPropagator copyPropagator = null;
+    protected CopyPropagator getCopyPopagator() {
+    	if (this.copyPropagator == null)
+    		this.copyPropagator = new CopyPropagator(DalvikThrowAnalysis.v(), false);
+    	return this.copyPropagator;
     }
 
     /**
