@@ -44,7 +44,7 @@ import soot.util.Cons;
  * Analysis that provides an implementation of the LocalDefs interface.
  */
 public class SmartLocalDefs implements LocalDefs {
-	private final Map<Cons, List<Unit>> answer;
+	private final Map<Cons<Unit, Local>, List<Unit>> answer;
 
 	private final Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined
 	private final UnitGraph graph;
@@ -125,12 +125,12 @@ public class SmartLocalDefs implements LocalDefs {
 
 		analysis = new LocalDefsAnalysis(graph);
 
-		answer = new HashMap<Cons, List<Unit>>();
+		answer = new HashMap<Cons<Unit, Local>, List<Unit>>();
 		for (Unit u : graph) {
 			for (ValueBox vb : u.getUseBoxes()) {
 				Value v = vb.getValue();
 				if (v instanceof Local) {
-					Cons key = new Cons(u, v);
+					Cons<Unit, Local> key = new Cons<Unit, Local>(u, (Local) v);
 					if ( !answer.containsKey(key) ) {
 						List<Unit> lst = asList(defsOf((Local) v), analysis.getFlowBefore(u));					
 						answer.put(key, lst);
@@ -258,7 +258,7 @@ public class SmartLocalDefs implements LocalDefs {
 	}
 
 	public List<Unit> getDefsOfAt(Local l, Unit s) {
-		return answer.get(new Cons(s, l));
+		return answer.get(new Cons<Unit, Local>(s, l));
 	}
 
 }

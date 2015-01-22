@@ -20,11 +20,11 @@
 package soot.util;
 
 /** A Lisp-style cons cell. */
-public final class Cons {
-    final private Object car;
-    final private Object cdr;
+public final class Cons<U, V> {
+    final private U car;
+    final private V cdr;
     
-    public Cons( Object car, Object cdr ) {
+    public Cons( U car, V cdr ) {
         this.car = car;
         this.cdr = cdr;
     }
@@ -46,7 +46,8 @@ public final class Cons {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Cons other = (Cons) obj;
+		@SuppressWarnings("unchecked")
+		Cons<U, V> other = (Cons<U, V>) obj;
 		if (car == null) {
 			if (other.car != null)
 				return false;
@@ -60,8 +61,8 @@ public final class Cons {
 		return true;
 	}
 	
-    public Object car() { return car; }
-    public Object cdr() { return cdr; }
+    public U car() { return car; }
+    public V cdr() { return cdr; }
     
     @Override
     public String toString(){
