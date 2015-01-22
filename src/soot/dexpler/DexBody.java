@@ -517,6 +517,7 @@ public class DexBody  {
         } else {
         	DexNumTransformer.v().transform (jBody);
         	
+        	DexReturnValuePropagator.v().transform(jBody);
             getCopyPopagator().transform(jBody);
         	
         	DexNullThrowTransformer.v().transform(jBody);
