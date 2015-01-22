@@ -75,14 +75,20 @@ public class LocalSplitter extends BodyTransformer
 {
 	
 	protected ThrowAnalysis throwAnalysis = null;
+	protected boolean forceOmitExceptingUnitEdges = false;
 
 	public LocalSplitter( Singletons.Global g ) {
 	}
-		
+	
 	public LocalSplitter( ThrowAnalysis ta ) {
 		this.throwAnalysis = ta;
 	}
 
+	public LocalSplitter( ThrowAnalysis ta, boolean forceOmitExceptingUnitEdges ) {
+		this.throwAnalysis = ta;
+		this.forceOmitExceptingUnitEdges = forceOmitExceptingUnitEdges;
+	}
+	
 	public static LocalSplitter v() { return G.v().soot_toolkits_scalar_LocalSplitter(); }
     
 	@Override
@@ -103,7 +109,7 @@ public class LocalSplitter extends BodyTransformer
         // Go through the definitions, building the webs
         {
             ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body,this.throwAnalysis,
-            		Options.v().omit_excepting_unit_edges());
+            		forceOmitExceptingUnitEdges || Options.v().omit_excepting_unit_edges());
 
             final LocalDefs localDefs = new SmartLocalDefs(graph,
     				new SimpleLiveLocals(graph));

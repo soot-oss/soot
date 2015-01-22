@@ -26,17 +26,32 @@
 package soot.jimple.toolkits.scalar;
 
 import soot.options.*;
-
 import soot.*;
 import soot.jimple.*;
 import soot.toolkits.scalar.*;
+import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.*;
 import soot.util.*;
+
 import java.util.*;
+
 import soot.options.CPOptions;
 
 public class CopyPropagator extends BodyTransformer {
+
+	protected ThrowAnalysis throwAnalysis = null;
+	protected boolean forceOmitExceptingUnitEdges = false;
+	
 	public CopyPropagator(Singletons.Global g) {
+	}
+	
+	public CopyPropagator(ThrowAnalysis ta) {
+		this.throwAnalysis = ta;
+	}
+	
+	public CopyPropagator(ThrowAnalysis ta, boolean forceOmitExceptingUnitEdges) {
+		this.throwAnalysis = ta;
+		this.forceOmitExceptingUnitEdges = forceOmitExceptingUnitEdges;
 	}
 
 	public static CopyPropagator v() {
@@ -88,7 +103,10 @@ public class CopyPropagator extends BodyTransformer {
 			}
 		}
 
-		ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody);
+		if (this.throwAnalysis == null)
+			this.throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+		ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody, throwAnalysis,
+				forceOmitExceptingUnitEdges || Options.v().omit_excepting_unit_edges());
 
 		LocalDefs localDefs;
 
@@ -99,13 +117,16 @@ public class CopyPropagator extends BodyTransformer {
 			Iterator<Unit> stmtIt = (new PseudoTopologicalOrderer<Unit>()).newList(graph, false).iterator();
 			while (stmtIt.hasNext()) {
 				Stmt stmt = (Stmt) stmtIt.next();
+				
+				if (stmt.toString().equals("$u1#29 = $u0"))
+					System.out.println("x");
+				
 				for (ValueBox useBox : stmt.getUseBoxes()) {
 					if (useBox.getValue() instanceof Local) {
 						Local l = (Local) useBox.getValue();
 
 						// We force propagating nulls. If a target can only be
-						// null due to
-						// typing, we always inline that constant.
+						// null due to typing, we always inline that constant.
 						if (!(l.getType() instanceof NullType)) {
 							if (options.only_regular_locals() && l.getName().startsWith("$"))
 								continue;
