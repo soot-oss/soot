@@ -173,6 +173,7 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
 				N s = orderedUnits.get(i);
 				
 				// For all successors, compute the flow function
+				int k = i;
 				for (N v : graph.getSuccsOf(s)) {
 					A beforeFlow = getFromMap(unitToBeforeFlow, s, v);					
 					A afterFlow = getFromMap(unitToAfterFlow, s, v);
@@ -189,7 +190,7 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
 								mergeInto(s, beforeFlow, getFromMap(unitToAfterFlow, it.next(), s));
 							}
 
-							if (head.get(i)) {
+							if (head.get(k)) {
 								mergeInto(s, beforeFlow, entryInitialFlow());
 							}
 						}
@@ -204,7 +205,7 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
 					if ( hasChanged ) {
 						int j = index.get(v);
 						work.set(j);
-						i = Math.min(i, j);
+						i = Math.min(i, j-1);
 					}
 
 					numComputations++;

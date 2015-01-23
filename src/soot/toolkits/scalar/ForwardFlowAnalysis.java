@@ -130,7 +130,7 @@ public abstract class ForwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 					for (N v : graph.getSuccsOf(s)) {
 						int j = index.get(v);
 						work.set(j);
-						i = Math.min(i, j);
+						i = Math.min(i, j-1);
 					}
 				}
 
