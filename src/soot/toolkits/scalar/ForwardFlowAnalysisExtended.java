@@ -204,7 +204,7 @@ public abstract class ForwardFlowAnalysisExtended<N, A> {
 					if ( hasChanged ) {
 						int j = index.get(v);
 						work.set(j);
-						i = Math.min(i, j-1);
+						i = Math.min(i, j);
 					}
 
 					numComputations++;
