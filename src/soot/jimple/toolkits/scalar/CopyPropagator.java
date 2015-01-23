@@ -118,9 +118,6 @@ public class CopyPropagator extends BodyTransformer {
 			while (stmtIt.hasNext()) {
 				Stmt stmt = (Stmt) stmtIt.next();
 				
-				if (stmt.toString().equals("$u1#29 = $u0"))
-					System.out.println("x");
-				
 				for (ValueBox useBox : stmt.getUseBoxes()) {
 					if (useBox.getValue() instanceof Local) {
 						Local l = (Local) useBox.getValue();
