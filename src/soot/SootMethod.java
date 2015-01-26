@@ -487,7 +487,7 @@ public class SootMethod
 
 	/**
 	 * 
-	 * @return yes, if this function is a constructor.
+	 * @return yes, if this function is a constructor. Please not that <clinit> methods are not treated as constructors in this method.
 	 */
 	public boolean isConstructor()
 	{
