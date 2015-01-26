@@ -92,6 +92,7 @@ import soot.tagkit.AnnotationArrayElem;
 import soot.tagkit.AnnotationBooleanElem;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationConstants;
+import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationDoubleElem;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationEnumElem;
@@ -548,6 +549,34 @@ public class DexPrinter {
             	annotations.addAll(visibilityItems);
             }
     	}
+        
+
+        //Write default-annotation tags
+		List<AnnotationElem> defaults = new ArrayList<AnnotationElem>();
+        for (SootMethod method : c.getMethods()) {
+        	AnnotationDefaultTag tag = (AnnotationDefaultTag) method.getTag("AnnotationDefaultTag");
+        	if (tag != null) {
+        		tag.getDefaultVal().setName(method.getName());
+        		defaults.add(tag.getDefaultVal());
+        	}
+        }
+        if (defaults.size() > 0) {
+        	VisibilityAnnotationTag defaultAnnotationTag = new VisibilityAnnotationTag(AnnotationConstants.RUNTIME_INVISIBLE);
+        	AnnotationTag a = new AnnotationTag("Ldalvik/annotation/AnnotationDefault;");
+        	defaultAnnotationTag.addAnnotation(a);
+
+        	AnnotationTag at = new AnnotationTag(SootToDexUtils.getDexClassName(c.getName()));
+        	AnnotationAnnotationElem ae = new AnnotationAnnotationElem(at, '@', "value");
+        	a.addElem(ae);
+
+        	
+        	for (AnnotationElem aelem : defaults)
+        		at.addElem(aelem);
+        	
+            List<ImmutableAnnotation> visibilityItems = buildVisibilityAnnotationTag
+            		(defaultAnnotationTag, skipList);
+        	annotations.addAll(visibilityItems);
+        }
 		
     	return annotations;
     }
