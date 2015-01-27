@@ -5,7 +5,7 @@ title: A framework for analyzing and transforming Java and Android Applications
 
 # What is Soot?
 
-<img align="right" src="http://sable.github.io/soot/logo/soot-logo.png" size="100">
+<img align="right" src="http://sable.github.io/soot/logo/soot-logo.png" size="50">
 
 Originally, Soot started off as a Java optimization framework. By now, researchers and practitioners from around the world use Soot to analyze, instrument, optimize and visualize Java and Android applications.
 
