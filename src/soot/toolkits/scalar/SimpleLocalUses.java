@@ -32,8 +32,10 @@ package soot.toolkits.scalar;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import soot.Body;
 import soot.G;
@@ -53,6 +55,7 @@ import soot.toolkits.graph.UnitGraph;
  */
 public class SimpleLocalUses implements LocalUses
 {
+	final Body body;
     Map<Unit, List<UnitValueBoxPair>> unitToUses;
 
     /**
@@ -75,6 +78,7 @@ public class SimpleLocalUses implements LocalUses
      */
     public SimpleLocalUses(Body body, LocalDefs localDefs)
     {
+    	this.body = body;
         if(Options.v().time())
            Timers.v().usesTimer.start();
     
@@ -146,8 +150,36 @@ public class SimpleLocalUses implements LocalUses
      *  @param s a unit that we want to query for the uses of the Local it (may) define.
      *  @return a UnitValueBoxPair of the Units that use the Local.
      */
+    @Override
     public List<UnitValueBoxPair> getUsesOf(Unit s)
     {
         return unitToUses.get(s);
     }
+    
+    /**
+     * Gets all variables that are used in this body
+     * @return The list of variables used in this body
+     */
+    public Set<Local> getUsedVariables() {
+    	Set<Local> res = new HashSet<Local>();
+    	for (List<UnitValueBoxPair> vals : unitToUses.values())
+    		for (UnitValueBoxPair val : vals)
+    			res.add((Local) val.valueBox.getValue());
+    	return res;
+    }
+    
+    /**
+     * Gets all variables that are not used in this body
+     * @return The list of variables declared, but not used in this body
+     */
+    public Set<Local> getUnusedVariables() {
+    	Set<Local> usedVariables = getUsedVariables();
+    	Set<Local> res = new HashSet<Local>(usedVariables.size());
+    	for (Local l : body.getLocals())
+    		if (!usedVariables.contains(l))
+    			res.add(l);
+    	return res;
+    }
+    
+    
 }

@@ -25,9 +25,20 @@
 
 package soot;
 
-import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.ConcurrentModificationException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Set;
+
+import soot.jimple.SpecialInvokeExpr;
+import soot.util.ArraySet;
+import soot.util.Chain;
 
 /** Represents the class hierarchy.  It is closely linked to a Scene,
  * and must be recreated if the Scene changes. 
@@ -135,7 +146,7 @@ public class Hierarchy
                 classesIt = allClasses.iterator();
                 while (classesIt.hasNext())
                 {
-                    SootClass c = (SootClass)classesIt.next();
+                    SootClass c = classesIt.next();
                     if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
                     if (c.isInterface())
                     {
@@ -158,7 +169,7 @@ public class Hierarchy
             classesIt = allClasses.iterator();
             while (classesIt.hasNext())
             {
-                SootClass c = (SootClass)classesIt.next();
+                SootClass c = classesIt.next();
                 if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
 
                 if (c.isInterface())
@@ -291,7 +302,7 @@ public class Hierarchy
         ListIterator<SootClass> it = interfaceToDirSubinterfaces.get(c).listIterator();
         while (it.hasNext())
         {
-            l.addAll(getSubinterfacesOfIncluding((SootClass)it.next()));
+            l.addAll(getSubinterfacesOfIncluding(it.next()));
         }
         
         interfaceToSubinterfaces.put(c, Collections.unmodifiableList(l));
@@ -332,7 +343,7 @@ public class Hierarchy
         ListIterator<SootClass> it = interfaceToDirSuperinterfaces.get(c).listIterator();
         while (it.hasNext())
         {
-            l.addAll(getSuperinterfacesOfIncluding((SootClass)it.next()));
+            l.addAll(getSuperinterfacesOfIncluding(it.next()));
         }
         
         interfaceToSuperinterfaces.put(c, Collections.unmodifiableList(l));
@@ -553,10 +564,30 @@ public class Hierarchy
 
     // Questions about method invocation.
 
-    /** Returns true if the method m is visible from code in the class from. */
-    public boolean isVisible( SootClass from, SootMethod m ) {
+    /** Checks whether check is a visible class in view of the from class.
+     *  It assumes that protected and private classes do not exit.
+     *  If they exist and check is either protected or private,
+     *  the check will return false. */
+    public boolean isVisible( SootClass from, SootClass check) {
+    	if (check.isPublic())
+    		return true;
+    	
+    	if( check.isProtected() || check.isPrivate())
+    		return false;
+    		
+    	//package visibility
+    	return from.getJavaPackageName().equals(
+                check.getJavaPackageName() );
+    }
+    
+    /** Returns true if the classmember m is visible from code in the class from. */
+    public boolean isVisible( SootClass from, ClassMember m ) {
         from.checkLevel(SootClass.HIERARCHY);
         m.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
+        
+        if (!isVisible(from, m.getDeclaringClass()))
+        	return false;
+        
         if( m.isPublic() ) return true;
         if( m.isPrivate() ) {
             return from.equals( m.getDeclaringClass() );
@@ -569,6 +600,7 @@ public class Hierarchy
                 m.getDeclaringClass().getJavaPackageName() );
             //|| isClassSubclassOfIncluding( from, m.getDeclaringClass() );
     }
+
 
 	/**
 	 * Given an object of actual type C (o = new C()), returns the method which

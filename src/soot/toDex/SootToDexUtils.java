@@ -77,7 +77,7 @@ public class SootToDexUtils {
 	public static int getDexAccessFlags(SootMethod m) {
 		int dexAccessFlags = m.getModifiers();
 		// dex constructor flag is not included in the Soot modifiers, so add it if necessary
-		if (m.isConstructor()) {
+		if (m.isConstructor() || m.getName().equals(SootMethod.staticInitializerName)) {
 			dexAccessFlags |= Modifier.CONSTRUCTOR;
 		}
 		// add declared_synchronized for dex if synchronized
