@@ -260,5 +260,12 @@ public class SmartLocalDefs implements LocalDefs {
 	public List<Unit> getDefsOfAt(Local l, Unit s) {
 		return answer.get(new Cons<Unit, Local>(s, l));
 	}
+	
+	/**
+	 * Returns the associated unit graph.
+	 */
+	public UnitGraph getGraph() {
+		return graph;
+	}
 
 }

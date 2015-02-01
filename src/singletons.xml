@@ -155,4 +155,5 @@
   <class>soot.jimple.toolkits.typing.fast.Integer32767Type</class>
   <class>soot.jimple.toolkits.typing.fast.BottomType</class>
   <class>soot.dexpler.TrapMinimizer</class>
+  <class>soot.toolkits.scalar.SmartLocalDefsPool</class>
 </singletons>

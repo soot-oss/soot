@@ -284,4 +284,10 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
 
     /** Returns the size of this Chain. */
     public int size(){return innerChain.size(); }
+    
+    @Override
+    /** Returns the number of times this chain has been modified. */
+    public long getModificationCount() {
+    	return innerChain.getModificationCount();
+    }
 }

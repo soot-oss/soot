@@ -30,12 +30,12 @@
 
 package soot.jimple.toolkits.base;
 import soot.options.*;
-
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
+
 import java.util.*;
 
 public class PartialConstructorFolder extends BodyTransformer
@@ -73,9 +73,8 @@ public class PartialConstructorFolder extends BodyTransformer
         // start ahead one
         nextStmtIt.next();
         
-        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
-        
-        LocalDefs localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
+        SmartLocalDefs localDefs = SmartLocalDefsPool.v().getSmartLocalDefsFor(body);
+        UnitGraph graph = localDefs.getGraph();
         LocalUses localUses = new SimpleLocalUses(graph, localDefs);
 
         /* fold in NewExpr's with specialinvoke's */

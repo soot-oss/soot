@@ -571,6 +571,12 @@ public class HashChain<E> extends AbstractCollection<E>
             else
                 return currentLink.toString();
         }
-    }    
+        
+    }
+    
+    /** Returns the number of times this chain has been modified. */
+    public long getModificationCount() {
+		return stateCount;
+	}
 }
 

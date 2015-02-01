@@ -72,12 +72,11 @@ import soot.jimple.NullConstant;
 import soot.jimple.RemExpr;
 import soot.jimple.Stmt;
 import soot.options.Options;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalUses;
-import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.SmartLocalDefs;
+import soot.toolkits.scalar.SmartLocalDefsPool;
 import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
@@ -221,10 +220,9 @@ public class DeadAssignmentEliminator extends BodyTransformer
 		if ( checkInvoke || !allEssential ) {		
 			// Add all the statements which are used to compute values
 			// for the essential statements, recursively 
-			ExceptionalUnitGraph graph = new ExceptionalUnitGraph(b);
 			
-	        final LocalDefs localDefs = new SmartLocalDefs(graph,
-					new SimpleLiveLocals(graph));
+	        final SmartLocalDefs localDefs = SmartLocalDefsPool.v().getSmartLocalDefsFor(b);
+	        UnitGraph graph = localDefs.getGraph();
 			final LocalUses localUses = new SimpleLocalUses(graph, localDefs);
 			
 			if ( !allEssential ) {		

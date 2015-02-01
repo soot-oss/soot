@@ -36,12 +36,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import soot.jimple.CaughtExceptionRef;
-import soot.jimple.DefinitionStmt;
 import soot.jimple.IdentityStmt;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.InvokeExpr;
-import soot.jimple.InvokeStmt;
 import soot.jimple.ParameterRef;
 import soot.jimple.ThisRef;
 import soot.options.Options;
@@ -595,6 +590,11 @@ public abstract class Body extends AbstractHost implements Serializable
         writerOut.close();
         return streamOut.toString();
     }
+    
+    public long getModificationCount() {
+    	return localChain.getModificationCount() + unitChain.getModificationCount() + trapChain.getModificationCount();
+    }
+
 }
 
 

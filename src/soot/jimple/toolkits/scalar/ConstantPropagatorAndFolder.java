@@ -51,14 +51,13 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
             G.v().out.println("[" + b.getMethod().getName() +
                                "] Propagating and folding constants...");
 
-        ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(b);
-        LocalDefs localDefs = new SmartLocalDefs(unitGraph, new SimpleLiveLocals(unitGraph));
+        SmartLocalDefs localDefs = SmartLocalDefsPool.v().getSmartLocalDefsFor(b);
 
         // Perform a constant/local propagation pass.
         Orderer<Unit> orderer = new PseudoTopologicalOrderer<Unit>();
         
         // go through each use box in each statement
-        for (Unit u : orderer.newList(unitGraph, false)) {
+        for (Unit u : orderer.newList(localDefs.getGraph(), false)) {
 
             // propagation pass
             for (ValueBox useBox : u.getUseBoxes()) {

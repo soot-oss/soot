@@ -959,4 +959,10 @@ public class Singletons {
         return instance_soot_dexpler_TrapMinimizer;
     }
 
+    private soot.toolkits.scalar.SmartLocalDefsPool instance_soot_toolkits_scalar_SmartLocalDefsPool;
+    public soot.toolkits.scalar.SmartLocalDefsPool soot_toolkits_scalar_SmartLocalDefsPool() {
+        if( instance_soot_toolkits_scalar_SmartLocalDefsPool == null ) instance_soot_toolkits_scalar_SmartLocalDefsPool = new soot.toolkits.scalar.SmartLocalDefsPool( g );
+        return instance_soot_toolkits_scalar_SmartLocalDefsPool;
+    }
+
 }

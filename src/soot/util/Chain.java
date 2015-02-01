@@ -103,6 +103,9 @@ public interface Chain<E> extends Collection<E>, Serializable
     public Iterator<E> iterator(E head, E tail);
 
     /** Returns the size of this Chain. */
-    public int size();   
+    public int size();
+    
+    /** Returns the number of times this chain has been modified. */
+	long getModificationCount();   
 }
 

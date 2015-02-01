@@ -57,11 +57,10 @@ import soot.jimple.LongConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.ReturnStmt;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
-import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.SmartLocalDefs;
+import soot.toolkits.scalar.SmartLocalDefsPool;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
@@ -114,10 +113,8 @@ public class DexNumTransformer extends DexTransformer {
 
 	protected void internalTransform(final Body body, String phaseName,
 			@SuppressWarnings("rawtypes") Map options) {
-		final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
-		
-        final LocalDefs localDefs = new SmartLocalDefs(g,
-				new SimpleLiveLocals(g));
+        final SmartLocalDefs localDefs = SmartLocalDefsPool.v().getSmartLocalDefsFor(body);
+        final ExceptionalUnitGraph g = (ExceptionalUnitGraph) localDefs.getGraph();
 		final LocalUses localUses = new SimpleLocalUses(g, localDefs);
 		
         for (Local loc : getNumCandidates(body)) {

@@ -23,7 +23,9 @@ import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.tagkit.*;
+
 import java.util.*;
+
 import soot.jimple.*;
 
 public class ReachingDefsTagger extends BodyTransformer {
@@ -34,8 +36,8 @@ public class ReachingDefsTagger extends BodyTransformer {
 
     protected void internalTransform(Body b, String phaseName, Map options){
     
-        UnitGraph g = new ExceptionalUnitGraph(b);
-        LocalDefs sld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
+        SmartLocalDefs sld = SmartLocalDefsPool.v().getSmartLocalDefsFor(b);
+        UnitGraph g = sld.getGraph();
 
         Iterator it = b.getUnits().iterator();
         while (it.hasNext()){
