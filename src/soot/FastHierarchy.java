@@ -88,6 +88,7 @@ public class FastHierarchy
         int lower;
         int upper;
         boolean isSubrange( Interval potentialSubrange ) {
+        	if (potentialSubrange == null) return false;
             if( lower > potentialSubrange.lower ) return false;
             if( upper < potentialSubrange.upper ) return false;
             return true;
