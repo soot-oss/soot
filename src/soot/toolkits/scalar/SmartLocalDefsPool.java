@@ -68,5 +68,9 @@ public class SmartLocalDefsPool {
 
     public SmartLocalDefsPool(Singletons.Global g) {
     }
+    
+    public void invalidate(Body b) {
+    	pool.remove(b);
+    }
 
 }

@@ -250,7 +250,8 @@ public class CopyPropagator extends BodyTransformer {
 
 		if (Options.v().time())
 			Timers.v().propagatorTimer.end();
-
+		
+		SmartLocalDefsPool.v().invalidate(b);
 	}
 
 }
