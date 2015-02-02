@@ -234,7 +234,9 @@ public class DeadAssignmentEliminator extends BodyTransformer
 							Value v = box.getValue();
 							if (v instanceof Local) {
 								Local l = (Local) v;
-								q.addAll(localDefs.getDefsOfAt(l, s));
+								List<Unit> defs = localDefs.getDefsOfAt(l, s);
+								if (defs != null)
+									q.addAll(defs);
 							}
 						}
 					}
