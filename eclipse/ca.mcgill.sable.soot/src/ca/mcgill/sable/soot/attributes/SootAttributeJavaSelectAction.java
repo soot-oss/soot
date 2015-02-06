@@ -63,7 +63,7 @@ public class SootAttributeJavaSelectAction extends SootAttributeSelectAction {
 	
 		IProject proj = getResource(getEditor()).getProject();
 		String slashedClassName = className.replaceAll("\\.", System.getProperty("file.separator"));
-		String classNameToFind = slashedClassName+"."+ext;
+		String classNameToFind = (ext == null) ? slashedClassName : slashedClassName+"."+ext;
 		IJavaProject jProj = JavaCore.create(proj);
 		try {
 	

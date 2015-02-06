@@ -275,7 +275,8 @@ public class AnalysisVisManipDialog
 	
 	private SootAttributesHandler getHandlerForFile(IFile next){
 		SootAttributesHandler handler = null;
-		if (next.getFileExtension().equals("java")){
+		String fileExtension = next.getFileExtension();
+		if (fileExtension != null && fileExtension.equals("java")){
 			JavaAttributesComputer jac = new JavaAttributesComputer();
 			jac.setProj(getProj());
 			jac.setRec(next);
