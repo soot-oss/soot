@@ -46,7 +46,8 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 				if ((flags & IResourceDelta.CONTENT) != 0) {
 					if (delta.getResource() instanceof IFile){
 						SootPlugin.getDefault().getManager().updateFileChangedFlag((IFile)delta.getResource());
-						if (delta.getResource().getFullPath().getFileExtension().equals(SootResourceManager.JIMPLE_FILE_EXT)){
+						String fileExtension = delta.getResource().getFullPath().getFileExtension();
+						if (fileExtension != null && fileExtension.equals(SootResourceManager.JIMPLE_FILE_EXT)){
 							updateJimpleOutline((IFile)delta.getResource());
 						}
 					}
@@ -58,7 +59,8 @@ public class SootDeltaVisitor implements IResourceDeltaVisitor {
 			case IResourceDelta.ADDED: {
 				SootPlugin.getDefault().getManager().addToLists(delta.getResource());
 				if (delta.getResource() instanceof IFile){
-					if (delta.getResource().getFullPath().getFileExtension().equals(SootResourceManager.JIMPLE_FILE_EXT)){
+					String fileExtension = delta.getResource().getFullPath().getFileExtension();
+					if (fileExtension != null && fileExtension.equals(SootResourceManager.JIMPLE_FILE_EXT)){
 						updateJimpleOutline((IFile)delta.getResource());
 					}
 				}

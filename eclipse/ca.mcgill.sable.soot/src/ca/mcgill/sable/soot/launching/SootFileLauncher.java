@@ -85,31 +85,34 @@ public class SootFileLauncher extends SootLauncher {
 		}
 		else if (toProcess instanceof IFile){
 			IFile file = (IFile)toProcess;
-			if (file.getFileExtension().compareTo("jimple") == 0) {
-				setClasspathAppend(platform_location+file.getParent().getFullPath().toOSString());	
-				addJars();
-				setIsSrcPrec(true);
-				setSrcPrec(LaunchCommands.JIMPLE_IN);
-				getToProcessList().add(removeFileExt(file.getName()));
-			}
-            else if (file.getFileExtension().equals("java")){
-                try {
-                
-                	handleSourceFile(JavaCore.createCompilationUnitFrom(file));
-                }
-                catch(Exception e){
-                	System.out.println("problem creating CompilationUnit");
-                }
-                
-            }
-            
-			else if (file.getFileExtension().equals("class")) {
-				try {
-					handleClassFile(file);
-					
+			String fileExtension = file.getFileExtension();
+			if (fileExtension != null) {
+				if (fileExtension.compareTo("jimple") == 0) {
+					setClasspathAppend(platform_location+file.getParent().getFullPath().toOSString());	
+					addJars();
+					setIsSrcPrec(true);
+					setSrcPrec(LaunchCommands.JIMPLE_IN);
+					getToProcessList().add(removeFileExt(file.getName()));
 				}
-				catch(Exception e){
-					System.out.println("not a class file");
+	            else if (fileExtension.equals("java")){
+	                try {
+	                
+	                	handleSourceFile(JavaCore.createCompilationUnitFrom(file));
+	                }
+	                catch(Exception e){
+	                	System.out.println("problem creating CompilationUnit");
+	                }
+	                
+	            }
+	            
+				else if (fileExtension.equals("class")) {
+					try {
+						handleClassFile(file);
+						
+					}
+					catch(Exception e){
+						System.out.println("not a class file");
+					}
 				}
 			}
 						
