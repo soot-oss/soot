@@ -549,7 +549,10 @@ public final class OnFlyCallGraphBuilder
                     }
                     else if( subSig == sigExecutorExecute 
                     		|| subSig == sigHandlerPost
-                    		|| subSig == sigHandlerPostAtFrontOfQueue ) {
+                    		|| subSig == sigHandlerPostAtFrontOfQueue
+                    		|| subSig == sigHandlerPostAtTime
+                    		|| subSig == sigHandlerPostAtTimeWithToken
+                    		|| subSig == sigHandlerPostDelayed ) {
                     	if (iie.getArgCount() > 0) {
                     		Value runnable = iie.getArg(0);
                     		if (runnable instanceof Local)
@@ -726,18 +729,12 @@ public final class OnFlyCallGraphBuilder
             findOrAdd( "boolean post(java.lang.Runnable)" );
     protected final NumberedString sigHandlerPostAtFrontOfQueue = Scene.v().getSubSigNumberer().
             findOrAdd( "boolean postAtFrontOfQueue(java.lang.Runnable)" );
-    /* 
-     * We don't fake these callgraph edges at the moment since they would violate
-     * a common assumption of various static analyses: The signatures of call site
-     * and callees must match. (SA, 19.02.2015)
-     * 
     protected final NumberedString sigHandlerPostAtTime = Scene.v().getSubSigNumberer().
             findOrAdd( "boolean postAtTime(java.lang.Runnable,long)" );
     protected final NumberedString sigHandlerPostAtTimeWithToken = Scene.v().getSubSigNumberer().
             findOrAdd( "boolean postAtTime(java.lang.Runnable,java.lang.Object,long)" );
     protected final NumberedString sigHandlerPostDelayed = Scene.v().getSubSigNumberer().
             findOrAdd( "boolean postDelayed(java.lang.Runnable,long)" );
-	*/
     
     protected final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Object run()" );

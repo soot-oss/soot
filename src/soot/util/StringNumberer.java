@@ -27,15 +27,7 @@ import java.util.*;
 
 public class StringNumberer extends ArrayNumberer<NumberedString> {
     HashMap<String, NumberedString> stringToNumbered = new HashMap<String, NumberedString>(1024);
-
-    public NumberedString find( String s ) {
-        NumberedString ret = stringToNumbered.get( s );
-        if( ret == null ) {
-            stringToNumbered.put( s, ret = new NumberedString(s) );
-            add( ret );
-        }
-        return ret;
-    }
+    
     public NumberedString findOrAdd( String s ) {
         NumberedString ret = stringToNumbered.get( s );
         if( ret == null ) {
