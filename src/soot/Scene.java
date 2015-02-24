@@ -593,7 +593,7 @@ public class Scene  //extends AbstractHost
         return sig.substring(index+2,sig.length()-1);
     }
 
-    private SootField grabField(String fieldSignature)
+    public SootField grabField(String fieldSignature)
     {
         String cname = signatureToClass( fieldSignature );
         String fname = signatureToSubsignature( fieldSignature );

@@ -220,15 +220,12 @@ public class Hierarchy
 
         // If already cached, return the value.
         if (classToSubclasses.get(c) != null)
-            return classToSubclasses.get(c);
-
+            return classToSubclasses.get(c);        
+        
         // Otherwise, build up the hashmap.
         List<SootClass> l = new ArrayList<SootClass>();
 
-        ListIterator<SootClass> it = classToDirSubclasses.get(c).listIterator();
-        while (it.hasNext())
-        {
-            SootClass cls = it.next();
+        for (SootClass cls : classToDirSubclasses.get(c)) {
             if( cls.resolvingLevel() < SootClass.HIERARCHY ) continue;
             l.addAll(getSubclassesOfIncluding(cls));
         }
@@ -440,15 +437,10 @@ public class Hierarchy
             throw new RuntimeException("interface needed; got "+i);
 
         checkState();
-
-        Iterator<SootClass> it = getSubinterfacesOfIncluding(i).iterator();
+        
         ArraySet<SootClass> set = new ArraySet<SootClass>();
-
-        while (it.hasNext())
-        {
-            SootClass c = it.next();
-
-            set.addAll(getDirectImplementersOf(c));
+        for (SootClass c : getSubinterfacesOfIncluding(i)) {
+        	set.addAll(getDirectImplementersOf(c));
         }
 
         ArrayList<SootClass> l = new ArrayList<SootClass>();

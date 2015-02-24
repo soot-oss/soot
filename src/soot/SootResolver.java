@@ -152,16 +152,13 @@ public class SootResolver
             			);
 					if( onlySignatures ) {
 						bringToSignatures(sc);
-                        //Contradiction - this thing forces phantom, but then checks for it
 						sc.setPhantomClass();
-				        if(sc.isPhantom()) {
-				        	for( SootMethod m: sc.getMethods() ) {
-				        		m.setPhantom(true);
-				        	}
-				        	for( SootField f: sc.getFields() ) {
-				        		f.setPhantom(true);
-				        	}
-				        }
+			        	for( SootMethod m: sc.getMethods() ) {
+			        		m.setPhantom(true);
+			        	}
+			        	for( SootField f: sc.getFields() ) {
+			        		f.setPhantom(true);
+			        	}
 			        } else bringToBodies(sc);
                 } else { // No transitive
                     switch(i) {
