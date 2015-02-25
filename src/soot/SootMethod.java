@@ -317,10 +317,8 @@ public class SootMethod
                 "cannot get resident body for phantom class : "
                     + getSignature()
                     + "; maybe you want to call c.setApplicationClass() on this class!");
-
+        
         if (!hasActiveBody()) {
-            //	    G.v().out.println("Retrieving "+this.getSignature());
-
             setActiveBody(this.getBodyFromMethodSource("jb"));
             ms = null;
         }
@@ -657,7 +655,7 @@ public class SootMethod
              */
             if(hasActiveBody()){
             	DavaBody body = (DavaBody) getActiveBody();
-            	IterableSet importSet = body.getImportList();
+            	IterableSet<String> importSet = body.getImportList();
 
             	if(!importSet.contains(tempString)){
             		body.addToImportList(tempString);
@@ -688,7 +686,7 @@ public class SootMethod
 			 */
 			if(hasActiveBody()){
 				DavaBody body = (DavaBody) getActiveBody();
-				IterableSet importSet = body.getImportList();
+				IterableSet<String> importSet = body.getImportList();
 
 				if(!importSet.contains(tempString)){
 					body.addToImportList(tempString);
