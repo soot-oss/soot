@@ -437,6 +437,7 @@ public class DexBody  {
         for(DeferableInstruction instruction : deferredInstructions) {
             instruction.deferredJimplify(this);
         }
+        
         if (tries != null)
             addTraps();
         
@@ -618,7 +619,7 @@ public class DexBody  {
 
         Debug.printDbg("\nafter type assigner localpacker and name standardizer");
         Debug.printDbg("",(Body)jBody);
-
+        
         // Inline PackManager.v().getPack("jb").apply(jBody);
         // Keep only transformations that have not been done
         // at this point.

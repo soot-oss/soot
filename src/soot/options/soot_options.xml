@@ -1306,7 +1306,7 @@ traps whose catch blocks are empty.
 					<boolopt>
 						<name>Remove unreachable traps</name>
 						<alias>remove-unreachable-traps</alias>
-                                                <default>false</default>
+                                                <default>true</default>
 	  					<long_desc>
 Remove exception table entries when none of the protected instructions can
 throw the exception being caught.

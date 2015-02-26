@@ -64,9 +64,6 @@ public class UnreachableCodeEliminator extends BodyTransformer
 
 	protected void internalTransform(Body body, String phaseName, Map<String,String> options) 
 	{		
-		if (this.throwAnalysis == null)
-			this.throwAnalysis = Scene.v().getDefaultThrowAnalysis();
-
 		if (Options.v().verbose()) {
 			G.v().out.println("[" + body.getMethod().getName() + "] Eliminating unreachable code...");
 		}
@@ -77,7 +74,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
 		// trapped units remain, but the default ThrowAnalysis
 		// says that none of them can throw the caught exception.
 		if (this.throwAnalysis == null)
-			this.throwAnalysis = PhaseOptions.getBoolean(options, "remove-unreachable-traps")
+			this.throwAnalysis = PhaseOptions.getBoolean(options, "remove-unreachable-traps", true)
 				? Scene.v().getDefaultThrowAnalysis() : PedanticThrowAnalysis.v();
 		ExceptionalUnitGraph graph =  new ExceptionalUnitGraph(body, throwAnalysis, false);
 
@@ -107,12 +104,13 @@ public class UnreachableCodeEliminator extends BodyTransformer
 			if ( (trap.getBeginUnit() == trap.getEndUnit()) || !reachable.contains(trap.getHandlerUnit()) ) {
 				it.remove();
 			}
-			// Rare case hack: do not remove nop if is is used for a Trap which
-			// is at the very end of the code.
-			if (trap.getEndUnit() == body.getUnits().getLast()) {
-				reachable.add(trap.getEndUnit());
-			}
 		}
+		
+		// We must make sure that the end units of all traps which are still
+		// alive are kept in the code
+		for (Trap t : body.getTraps())
+			if (t.getEndUnit() == body.getUnits().getLast())
+				reachable.add(t.getEndUnit());
 			
 		units.retainAll(reachable);   
 	  	
