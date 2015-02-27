@@ -21,6 +21,7 @@ package soot.toolkits.exceptions;
 
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Set;
 
 import soot.Body;
 import soot.BodyTransformer;
@@ -51,7 +52,7 @@ import soot.util.Chain;
  * unrealizable exceptional control flow edges have been removed.
  */
 
-public final class TrapTightener extends BodyTransformer {
+public final class TrapTightener extends TrapTransformer {
 
 	protected ThrowAnalysis throwAnalysis = null;
 
@@ -78,9 +79,11 @@ public final class TrapTightener extends BodyTransformer {
 		if (trapChain.size() > 0) {
 			ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis,
 					Options.v().omit_excepting_unit_edges());
+			Set<Unit> unitsWithMonitor = getUnitsWithMonitor(graph);
 
 			for (Iterator<Trap> trapIt = trapChain.iterator(); trapIt.hasNext();) {
 				Trap trap = trapIt.next();
+				boolean isCatchAll = trap.getException().getName().equals("java.lang.Throwable");
 				Unit firstTrappedUnit = trap.getBeginUnit();
 				Unit firstTrappedThrower = null;
 				Unit firstUntrappedUnit = trap.getEndUnit();
@@ -91,13 +94,23 @@ public final class TrapTightener extends BodyTransformer {
 						firstTrappedThrower = u;
 						break;
 					}
+					
+					// If this is the catch-all block and the current unit has an,
+					// active monitor, we need to keep the block
+					if (isCatchAll && unitsWithMonitor.contains(u))
+						break;
 				}
 				if (firstTrappedThrower != null) {
-					for (Unit u = lastTrappedUnit; u != null; u = unitChain.getPredOf(u)) {
+					for (Unit u = lastTrappedUnit; u != null; u = unitChain.getPredOf(u)) {						
 						if (mightThrowTo(graph, u, trap)) {
 							lastTrappedThrower = u;
 							break;
 						}
+						
+						// If this is the catch-all block and the current unit has an,
+						// active monitor, we need to keep the block
+						if (isCatchAll && unitsWithMonitor.contains(u))
+							break;
 					}
 				}
 				// If no statement inside the trap can throw an exception, we
