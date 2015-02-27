@@ -460,10 +460,12 @@ public abstract class AbstractJasminClass
                 		&& Character.isDigit(srcName.charAt(0))) 
                     srcName = "n_"+ srcName;
                 
-                // Jasmin does not support blanks, so get rid of them
+                // Jasmin does not support blanks and quotes, so get rid of them
                 srcName = srcName.replace(" ", "-");
+                srcName = srcName.replace("\"", "");
                 
-             	emit(".source "+srcName);
+                if (!srcName.isEmpty())
+                	emit(".source "+srcName);
             }
             if(Modifier.isInterface(modifiers))
             {
