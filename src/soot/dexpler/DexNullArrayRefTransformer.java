@@ -98,7 +98,8 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
 							changed = true;
 						}
 					}
-					else if (isAlwaysNullBefore(s, (Local) base, defs)) {
+					else if (base == NullConstant.v()
+							|| isAlwaysNullBefore(s, (Local) base, defs)) {
 						createThrowStmt(body, s, lc);
 						changed = true;
 					}
