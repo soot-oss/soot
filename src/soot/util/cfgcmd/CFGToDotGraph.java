@@ -27,6 +27,7 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.ExceptionalGraph;
 import soot.toolkits.graph.Block;
+import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.ExceptionalGraph.ExceptionDest;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.dot.DotGraph;
@@ -491,6 +492,10 @@ public class CFGToDotGraph {
       N node = nodesIt.next();
       DotGraphNode dotnode = canvas.getNode(namer.getName(node));
       String nodeLabel = null;
+      
+      if(node instanceof DominatorNode){
+          node = ((DominatorNode<N>)node).getGode();
+      }
 
       if (printer == null) {
 	nodeLabel = node.toString();
