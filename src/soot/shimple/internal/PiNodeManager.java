@@ -56,9 +56,9 @@ public class PiNodeManager
 {
     protected ShimpleBody body;
     protected ShimpleFactory sf;
-    protected DominatorTree dt;
-    protected DominanceFrontier df;
-    protected ReversibleGraph cfg;
+    protected DominatorTree<Block> dt;
+    protected DominanceFrontier<Block> df;
+    protected ReversibleGraph<Block> cfg;
     protected boolean trimmed;
     
     /**
@@ -83,21 +83,21 @@ public class PiNodeManager
     {
         update();
         boolean change = false;
-        MultiMap localsToUsePoints = new SHashMultiMap();
-        varToBlocks = new HashMultiMap();    
+        MultiMap<Local, Block> localsToUsePoints = new SHashMultiMap<Local, Block>();
+        varToBlocks = new HashMultiMap<Local, Block>();    
         
         // compute localsToUsePoints and varToBlocks
-        for(Iterator blocksIt = cfg.iterator(); blocksIt.hasNext();){
-            Block block = (Block)blocksIt.next();
+        for(Iterator<Block> blocksIt = cfg.iterator(); blocksIt.hasNext();){
+            Block block = blocksIt.next();
 
-            for(Iterator unitsIt = block.iterator(); unitsIt.hasNext();){
-                Unit unit = (Unit) unitsIt.next();
+            for(Iterator<Unit> unitsIt = block.iterator(); unitsIt.hasNext();){
+                Unit unit = unitsIt.next();
 
-                List useBoxes = unit.getUseBoxes();
-                for(Iterator useBoxesIt = useBoxes.iterator(); useBoxesIt.hasNext();){
-                    Value use = ((ValueBox)useBoxesIt.next()).getValue();
+                List<ValueBox> useBoxes = unit.getUseBoxes();
+                for(Iterator<ValueBox> useBoxesIt = useBoxes.iterator(); useBoxesIt.hasNext();){
+                    Value use = useBoxesIt.next().getValue();
                     if(use instanceof Local)
-                        localsToUsePoints.put(use, block);
+                        localsToUsePoints.put((Local)use, block);
                 }
 
                 if(Shimple.isPiNode(unit))
@@ -116,18 +116,18 @@ public class PiNodeManager
         /* Main Cytron algorithm. */
         
         {
-            Iterator localsIt = localsToUsePoints.keySet().iterator();
+            Iterator<Local> localsIt = localsToUsePoints.keySet().iterator();
 
             while(localsIt.hasNext()){
-                Local local = (Local) localsIt.next();
+                Local local = localsIt.next();
 
                 iterCount++;
 
                 // initialise worklist
                 {
-                    Iterator useNodesIt = localsToUsePoints.get(local).iterator();
+                    Iterator<Block> useNodesIt = localsToUsePoints.get(local).iterator();
                     while(useNodesIt.hasNext()){
-                        Block block = (Block) useNodesIt.next();
+                        Block block = useNodesIt.next();
                         workFlags[block.getIndexInMethod()] = iterCount;
                         workList.push(block);
                     }
@@ -135,11 +135,11 @@ public class PiNodeManager
 
                 while(!workList.empty()){
                     Block block = workList.pop();
-                    DominatorNode node = dt.getDode(block);
-                    Iterator frontierNodes = df.getDominanceFrontierOf(node).iterator();
+                    DominatorNode<Block> node = dt.getDode(block);
+                    Iterator<DominatorNode<Block>> frontierNodes = df.getDominanceFrontierOf(node).iterator();
 
                     while(frontierNodes.hasNext()){
-                        Block frontierBlock = (Block) ((DominatorNode) frontierNodes.next()).getGode();
+                        Block frontierBlock = frontierNodes.next().getGode();
                         int fBIndex = frontierBlock.getIndexInMethod();
                         
                         if(hasAlreadyFlags[fBIndex] < iterCount){
@@ -173,8 +173,8 @@ public class PiNodeManager
         TRIMMED:
         {
             if(trimmed){
-                for(Iterator i = u.getUseBoxes().iterator(); i.hasNext();){
-                    Value use = ((ValueBox)i.next()).getValue();
+                for(Iterator<ValueBox> i = u.getUseBoxes().iterator(); i.hasNext();){
+                    Value use = i.next().getValue();
                     if(use.equals(local))
                         break TRIMMED;
                 }
@@ -199,7 +199,7 @@ public class PiNodeManager
         Unit addt = Jimple.v().newAssignStmt(local, pit);
         Unit addf = Jimple.v().newAssignStmt(local, pif);
             
-        PatchingChain units = body.getUnits();
+        PatchingChain<Unit> units = body.getUnits();
             
         // insert after should be safe; a new block should result if
         // the Unit originally after the IfStmt had another predecessor.
@@ -215,7 +215,7 @@ public class PiNodeManager
         {
             Unit predOfTarget = null;
             try{
-                predOfTarget = (Unit) units.getPredOf(target);
+                predOfTarget = units.getPredOf(target);
             }
             catch(NoSuchElementException e){
                 predOfTarget = null;
@@ -238,7 +238,7 @@ public class PiNodeManager
     public void piHandleSwitchStmt(Local local, Unit u)
     {
         List<UnitBox> targetBoxes = new ArrayList<UnitBox>();
-        List targetKeys = new ArrayList();
+        List<Object> targetKeys = new ArrayList<Object>();
 
         if(u instanceof LookupSwitchStmt){
             LookupSwitchStmt lss = (LookupSwitchStmt) u;
@@ -308,10 +308,10 @@ public class PiNodeManager
     {
         if(smart){
             Map<Local, Value> newToOld = new HashMap<Local, Value>();
-            List boxes = new ArrayList();
+            List<ValueBox> boxes = new ArrayList();
             
-            for(Iterator unitsIt = body.getUnits().iterator(); unitsIt.hasNext();){
-                Unit u = (Unit) unitsIt.next();
+            for(Iterator<Unit> unitsIt = body.getUnits().iterator(); unitsIt.hasNext();){
+                Unit u = unitsIt.next();
                 PiExpr pe = Shimple.getPiExpr(u);
                 if(pe != null){
                     newToOld.put(Shimple.getLhsLocal(u), pe.getValue());
@@ -322,8 +322,8 @@ public class PiNodeManager
                 }
             }
 
-            for(Iterator boxesIt = boxes.iterator(); boxesIt.hasNext();){
-                ValueBox box = (ValueBox) boxesIt.next();
+            for(Iterator<ValueBox> boxesIt = boxes.iterator(); boxesIt.hasNext();){
+                ValueBox box = boxesIt.next();
                 Value value = box.getValue();
                 Value old = newToOld.get(value);
                 if(old != null)
@@ -344,14 +344,14 @@ public class PiNodeManager
         }
     }
     
-    public static List getUseBoxesFromBlock(Block block)
+    public static List<ValueBox> getUseBoxesFromBlock(Block block)
     {
-        Iterator unitsIt = block.iterator();
+        Iterator<Unit> unitsIt = block.iterator();
         
-        List useBoxesList = new ArrayList();
+        List<ValueBox> useBoxesList = new ArrayList();
     
         while(unitsIt.hasNext())
-            useBoxesList.addAll(((Unit)unitsIt.next()).getUseBoxes());
+            useBoxesList.addAll(unitsIt.next().getUseBoxes());
         
         return useBoxesList;
     }

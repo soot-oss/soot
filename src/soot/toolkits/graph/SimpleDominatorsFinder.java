@@ -29,47 +29,47 @@ import soot.toolkits.scalar.*;
  *
  * @author Navindra Umanee
  **/
-public class SimpleDominatorsFinder implements DominatorsFinder
+public class SimpleDominatorsFinder<N> implements DominatorsFinder<N>
 {
-    protected DirectedGraph graph;
-    protected Map<Object, FlowSet> nodeToDominators;
+    protected DirectedGraph<N> graph;
+    protected Map<N, FlowSet<N>> nodeToDominators;
 
     /**
      * Compute dominators for provided singled-headed directed graph.
      **/
-    public SimpleDominatorsFinder(DirectedGraph graph)
+    public SimpleDominatorsFinder(DirectedGraph<N> graph)
     {
         //if(Options.v().verbose())
         //G.v().out.println("[" + graph.getBody().getMethod().getName() +
         //"]     Finding Dominators...");
 
         this.graph = graph;
-        SimpleDominatorsAnalysis analysis = new SimpleDominatorsAnalysis(graph);
+        SimpleDominatorsAnalysis<N> analysis = new SimpleDominatorsAnalysis<N>(graph);
 
         // build node to dominators map
         {
-            nodeToDominators = new HashMap<Object, FlowSet>(graph.size() * 2 + 1, 0.7f);
+            nodeToDominators = new HashMap<N, FlowSet<N>>(graph.size() * 2 + 1, 0.7f);
             
-            for(Iterator nodeIt = graph.iterator(); nodeIt.hasNext();) {
-                Object node = nodeIt.next();
-                FlowSet set = (FlowSet) analysis.getFlowAfter(node);
+            for(Iterator<N> nodeIt = graph.iterator(); nodeIt.hasNext();) {
+                N node = nodeIt.next();
+                FlowSet<N> set = analysis.getFlowAfter(node);
                 nodeToDominators.put(node, set);
             }
         }
     }
 
-    public DirectedGraph getGraph()
+    public DirectedGraph<N> getGraph()
     {
         return graph;
     }
     
-    public List getDominators(Object node)
+    public List<N> getDominators(N node)
     {
         // non-backed list since FlowSet is an ArrayPackedFlowSet
         return nodeToDominators.get(node).toList();
     }
 
-    public Object getImmediateDominator(Object node)
+    public N getImmediateDominator(N node)
     {
         // root node
         if(getGraph().getHeads().contains(node))
@@ -77,14 +77,14 @@ public class SimpleDominatorsFinder implements DominatorsFinder
 
 	// could be memoised, I guess
 
-        List dominatorsList = getDominators(node);
+        List<N> dominatorsList = getDominators(node);
         dominatorsList.remove(node);
 
-        Iterator dominatorsIt = dominatorsList.iterator();
-        Object immediateDominator = null;
+        Iterator<N> dominatorsIt = dominatorsList.iterator();
+        N immediateDominator = null;
 
         while((immediateDominator == null) && dominatorsIt.hasNext()){
-            Object dominator = dominatorsIt.next();
+            N dominator = dominatorsIt.next();
 
             if(isDominatedByAll(dominator, dominatorsList))
                 immediateDominator = dominator;
@@ -96,12 +96,12 @@ public class SimpleDominatorsFinder implements DominatorsFinder
         return immediateDominator;
     }
 
-    public boolean isDominatedBy(Object node, Object dominator)
+    public boolean isDominatedBy(N node, N dominator)
     {
         return getDominators(node).contains(dominator);
     }
 
-    public boolean isDominatedByAll(Object node, Collection dominators)
+    public boolean isDominatedByAll(N node, Collection<N> dominators)
     {
         return getDominators(node).containsAll(dominators);
     }
@@ -118,33 +118,33 @@ public class SimpleDominatorsFinder implements DominatorsFinder
  *             D(n) := {n} U (intersect of D(p) over all predecessors p of n)
  * </pre>
  **/
-class SimpleDominatorsAnalysis extends ForwardFlowAnalysis
+class SimpleDominatorsAnalysis<N> extends ForwardFlowAnalysis<N, FlowSet<N>>
 {
-    FlowSet emptySet;
-    Map<Object, FlowSet> nodeToGenerateSet;
+    FlowSet<N> emptySet;
+    Map<N, FlowSet<N>> nodeToGenerateSet;
     
-    SimpleDominatorsAnalysis(DirectedGraph graph)
+    SimpleDominatorsAnalysis(DirectedGraph<N> graph)
     {
         super(graph);
 
         // define empty set, with proper universe for complementation
         {
-            List nodes = new ArrayList();
+            List<N> nodes = new ArrayList();
 
-            for(Iterator nodesIt = graph.iterator(); nodesIt.hasNext();)
+            for(Iterator<N> nodesIt = graph.iterator(); nodesIt.hasNext();)
                 nodes.add(nodesIt.next());
             
-            FlowUniverse nodeUniverse = new CollectionFlowUniverse(nodes);
-            emptySet = new ArrayPackedSet(nodeUniverse);
+            FlowUniverse<N> nodeUniverse = new CollectionFlowUniverse<N>(nodes);
+            emptySet = new ArrayPackedSet<N>(nodeUniverse);
         }
 
         // pre-compute generate sets
         {
-            nodeToGenerateSet = new HashMap<Object, FlowSet>(graph.size() * 2 + 1, 0.7f);
+            nodeToGenerateSet = new HashMap<N, FlowSet<N>>(graph.size() * 2 + 1, 0.7f);
 
-            for(Iterator nodeIt = graph.iterator(); nodeIt.hasNext();){
-                Object s = nodeIt.next();
-                FlowSet genSet = emptySet.clone();
+            for(Iterator<N> nodeIt = graph.iterator(); nodeIt.hasNext();){
+                N s = nodeIt.next();
+                FlowSet<N> genSet = emptySet.clone();
                 genSet.add(s, genSet);
                 nodeToGenerateSet.put(s, genSet);
             }
@@ -157,9 +157,9 @@ class SimpleDominatorsAnalysis extends ForwardFlowAnalysis
      * All OUTs are initialized to the full set of definitions
      * OUT(Start) is tweaked in customizeInitialFlowGraph.
      **/
-    protected Object newInitialFlow()
+    protected FlowSet<N> newInitialFlow()
     {
-        BoundedFlowSet initSet = (BoundedFlowSet) emptySet.clone();
+        BoundedFlowSet<N> initSet = (BoundedFlowSet<N>) emptySet.clone();
         initSet.complement();
         return initSet;
     }
@@ -167,14 +167,14 @@ class SimpleDominatorsAnalysis extends ForwardFlowAnalysis
     /**
      * OUT(Start) contains only Start at initialization time.
      **/
-    protected Object entryInitialFlow()
+    protected FlowSet<N> entryInitialFlow()
     {
-        List heads = graph.getHeads();
+        List<N> heads = graph.getHeads();
 
         if(heads.size() != 1)
             throw new RuntimeException("Assertion failed:  Only one head expected.");
 
-        BoundedFlowSet initSet = (BoundedFlowSet) emptySet.clone();
+        BoundedFlowSet<N> initSet = (BoundedFlowSet<N>) emptySet.clone();
         initSet.add(heads.get(0));
         return initSet;
     }
@@ -182,10 +182,8 @@ class SimpleDominatorsAnalysis extends ForwardFlowAnalysis
     /**
      * We compute out straightforwardly.
      **/
-    protected void flowThrough(Object inValue, Object block, Object outValue)
+    protected void flowThrough(FlowSet<N> in, N block, FlowSet<N> out)
     {
-        FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
-
         // Perform generation
         in.union(nodeToGenerateSet.get(block), out);
     }
@@ -193,21 +191,13 @@ class SimpleDominatorsAnalysis extends ForwardFlowAnalysis
     /**
      * All paths == Intersection.
      **/
-    protected void merge(Object in1, Object in2, Object out)
+    protected void merge(FlowSet<N> in1, FlowSet<N> in2, FlowSet<N> out)
     {
-        FlowSet inSet1 = (FlowSet) in1,
-            inSet2 = (FlowSet) in2;
-
-        FlowSet outSet = (FlowSet) out;
-
-        inSet1.intersection(inSet2, outSet);
+        in1.intersection(in2, out);
     }
 
-    protected void copy(Object source, Object dest)
+    protected void copy(FlowSet<N> source, FlowSet<N> dest)
     {
-        FlowSet sourceSet = (FlowSet) source,
-            destSet = (FlowSet) dest;
-
-        sourceSet.copy(destSet);
+        source.copy(dest);
     }
 }

@@ -214,11 +214,11 @@ public class ClassInfoFlowAnalysis
 		}
 		
 		// Each accessed field, global, and parameter becomes a node in the graph
-		HashMutableDirectedGraph dataFlowGraph = new MemoryEfficientGraph();
+		HashMutableDirectedGraph<EquivalentValue> dataFlowGraph = new MemoryEfficientGraph<EquivalentValue>();
 		Iterator<EquivalentValue> accessedIt1 = fieldsStaticsParamsAccessed.iterator();
 		while(accessedIt1.hasNext())
 		{
-			Object o = accessedIt1.next();
+			EquivalentValue o = accessedIt1.next();
 			dataFlowGraph.addNode(o);
 		}
 		
@@ -284,15 +284,15 @@ public class ClassInfoFlowAnalysis
 		accessedIt1 = fieldsStaticsParamsAccessed.iterator();
 		while(accessedIt1.hasNext())
 		{
-			Object r = accessedIt1.next();
-			Ref rRef = (Ref) ((EquivalentValue) r).getValue();
+			EquivalentValue r = accessedIt1.next();
+			Ref rRef = (Ref) r.getValue();
 			if( !(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveInfoFlow())
 				continue;
 			Iterator<EquivalentValue> accessedIt2 = fieldsStaticsParamsAccessed.iterator();
 			while(accessedIt2.hasNext())
 			{
-				Object s = accessedIt2.next();
-				Ref sRef = (Ref) ((EquivalentValue) s).getValue();
+				EquivalentValue s = accessedIt2.next();
+				Ref sRef = (Ref) s.getValue();
 				if( rRef instanceof ThisRef && sRef instanceof InstanceFieldRef )
 					; // don't add this edge
 				else if( sRef instanceof ThisRef && rRef instanceof InstanceFieldRef )
@@ -323,9 +323,9 @@ public class ClassInfoFlowAnalysis
 		}
 		
 		// Add every relevant field of this class (static methods don't get non-static fields)
-		for(Iterator it = sm.getDeclaringClass().getFields().iterator(); it.hasNext(); )
+		for(Iterator<SootField> it = sm.getDeclaringClass().getFields().iterator(); it.hasNext(); )
 		{
-			SootField sf = (SootField) it.next();
+			SootField sf = it.next();
 			if(sf.isStatic() || !sm.isStatic())
 			{
 				EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, sf);
@@ -339,10 +339,10 @@ public class ClassInfoFlowAnalysis
 			superclass = sm.getDeclaringClass().getSuperclass();
 		while(superclass.hasSuperclass()) // we don't want to process Object
 		{
-	        Iterator scFieldsIt = superclass.getFields().iterator();
+	        Iterator<SootField> scFieldsIt = superclass.getFields().iterator();
 	        while(scFieldsIt.hasNext())
 	        {
-				SootField scField = (SootField) scFieldsIt.next();
+				SootField scField = scFieldsIt.next();
 				if(scField.isStatic() || !sm.isStatic())
 				{
 					EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, scField);
@@ -355,11 +355,11 @@ public class ClassInfoFlowAnalysis
 		// Don't add any static fields outside of the class... unsafe???
 
 		// Each field, global, and parameter becomes a node in the graph
-		HashMutableDirectedGraph dataFlowGraph = new MemoryEfficientGraph();
+		HashMutableDirectedGraph<EquivalentValue> dataFlowGraph = new MemoryEfficientGraph<EquivalentValue>();
 		Iterator<EquivalentValue> accessedIt1 = fieldsStaticsParamsAccessed.iterator();
 		while(accessedIt1.hasNext())
 		{
-			Object o = accessedIt1.next();
+			EquivalentValue o = accessedIt1.next();
 			dataFlowGraph.addNode(o);
 		}
 		
@@ -384,15 +384,15 @@ public class ClassInfoFlowAnalysis
 		accessedIt1 = fieldsStaticsParamsAccessed.iterator();
 		while(accessedIt1.hasNext())
 		{
-			Object r = accessedIt1.next();
-			Ref rRef = (Ref) ((EquivalentValue) r).getValue();
+			EquivalentValue r = accessedIt1.next();
+			Ref rRef = (Ref) r.getValue();
 			if( !(rRef.getType() instanceof RefLikeType) && !dfa.includesPrimitiveInfoFlow() )
 				continue;
 			Iterator<EquivalentValue> accessedIt2 = fieldsStaticsParamsAccessed.iterator();
 			while(accessedIt2.hasNext())
 			{
-				Object s = accessedIt2.next();
-				Ref sRef = (Ref) ((EquivalentValue) s).getValue();
+				EquivalentValue s = accessedIt2.next();
+				Ref sRef = (Ref) s.getValue();
 				if( rRef instanceof ThisRef && sRef instanceof InstanceFieldRef )
 					; // don't add this edge
 				else if( sRef instanceof ThisRef && rRef instanceof InstanceFieldRef )

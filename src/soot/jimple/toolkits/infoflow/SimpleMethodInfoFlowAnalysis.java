@@ -16,18 +16,18 @@ import soot.jimple.*;
 // large data structure, but that entire structure will be represented only by
 // the parameter's one node in the data flow graph.
 
-public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
+public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Pair<EquivalentValue,EquivalentValue>>>
 {
 	SootMethod sm;
 	Value thisLocal;
 	InfoFlowAnalysis dfa;
 	boolean refOnly;
 	
-	MutableDirectedGraph infoFlowGraph;
+	MutableDirectedGraph<EquivalentValue> infoFlowGraph;
 	Ref returnRef;
 	
-	FlowSet entrySet;
-	FlowSet emptySet;
+	FlowSet<Pair<EquivalentValue,EquivalentValue>> entrySet;
+	FlowSet<Pair<EquivalentValue,EquivalentValue>> emptySet;
 	
 	boolean printMessages;
 	
@@ -104,27 +104,27 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		this.dfa = dfa;
 		this.refOnly = ignoreNonRefTypeFlow;
 		
-		this.infoFlowGraph = new MemoryEfficientGraph();
+		this.infoFlowGraph = new MemoryEfficientGraph<EquivalentValue>();
 		this.returnRef = new ParameterRef(g.getBody().getMethod().getReturnType(), -1); // it's a dummy parameter ref
 		
-		this.entrySet = new ArraySparseSet();
-		this.emptySet = new ArraySparseSet();
+		this.entrySet = new ArraySparseSet<Pair<EquivalentValue,EquivalentValue>>();
+		this.emptySet = new ArraySparseSet<Pair<EquivalentValue,EquivalentValue>>();
 		
 		printMessages = false;
 	}
 	
 	public void doFlowInsensitiveAnalysis()
 	{
-		FlowSet fs = (FlowSet) newInitialFlow();
+		FlowSet<Pair<EquivalentValue,EquivalentValue>> fs = newInitialFlow();
 		boolean flowSetChanged = true;
 		while(flowSetChanged)
 		{
 			int sizebefore = fs.size();
-			Iterator stmtIt = graph.iterator();
-			while(stmtIt.hasNext())
+			Iterator<Unit> unitIt = graph.iterator();
+			while(unitIt.hasNext())
 			{
-				Stmt s = (Stmt) stmtIt.next();
-				flowThrough(fs, s, fs);
+				Unit u = unitIt.next();
+				flowThrough(fs, u, fs);
 			}
 			if(fs.size() > sizebefore)
 				flowSetChanged = true;
@@ -133,18 +133,16 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		}
 	}
 
-	public MutableDirectedGraph getMethodInfoFlowSummary()
+	public MutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary()
 	{
 		return infoFlowGraph;
 	}
 
-	protected void merge(Object in1, Object in2, Object out)
+	protected void merge(FlowSet<Pair<EquivalentValue,EquivalentValue>> in1,
+                            FlowSet<Pair<EquivalentValue,EquivalentValue>> in2,
+                            FlowSet<Pair<EquivalentValue,EquivalentValue>> out)
 	{
-		FlowSet inSet1 = (FlowSet) in1;
-		FlowSet inSet2 = (FlowSet) in2;
-		FlowSet outSet = (FlowSet) out;
-
-		inSet1.union(inSet2, outSet);
+		in1.union(in2, out);
 	}
 	
 	protected boolean isNonRefType(Type type)
@@ -181,22 +179,24 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		return isInterestingSink(sink) || (sink instanceof Ref) || (sink instanceof Local);
 	}
 	
-	private ArrayList<Value> getDirectSources(Value v, FlowSet fs)
+	private ArrayList<Value> getDirectSources(Value v,
+                                FlowSet<Pair<EquivalentValue,EquivalentValue>> fs)
 	{
 		ArrayList<Value> ret = new ArrayList<Value>(); // of "interesting sources"
 		EquivalentValue vEqVal = new CachedEquivalentValue(v);
-		Iterator fsIt = fs.iterator();
+		Iterator<Pair<EquivalentValue,EquivalentValue>> fsIt = fs.iterator();
 		while(fsIt.hasNext())
 		{
-			Pair pair = (Pair) fsIt.next();
+			Pair<EquivalentValue,EquivalentValue> pair = fsIt.next();
 			if( pair.getO1().equals(vEqVal) )
-				ret.add( ((EquivalentValue)pair.getO2()).getValue() );
+				ret.add(pair.getO2().getValue() );
 		}
 		return ret;
 	}
 	
 	// For when data flows to a local
-	protected void handleFlowsToValue(Value sink, Value initialSource, FlowSet fs)
+	protected void handleFlowsToValue(Value sink, Value initialSource,
+                                FlowSet<Pair<EquivalentValue,EquivalentValue>> fs)
 	{
 		if(!isTrackableSink(sink))
 			return;
@@ -212,7 +212,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 			EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
 			if(sinkEqVal.equals(sourceEqVal))
 				continue;
-			Pair pair = new Pair(sinkEqVal, sourceEqVal);
+			Pair<EquivalentValue,EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
 			if(!fs.contains(pair))
 			{
 				fs.add(pair);
@@ -231,7 +231,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 	}
 	
 	// for when data flows to the data structure pointed to by a local
-	protected void handleFlowsToDataStructure(Value base, Value initialSource, FlowSet fs)
+	protected void handleFlowsToDataStructure(Value base, Value initialSource,
+                                FlowSet<Pair<EquivalentValue,EquivalentValue>> fs)
 	{
 		List<Value> sinks = getDirectSources(base, fs);
 		if(isTrackableSink(base))
@@ -253,7 +254,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 				EquivalentValue sinkEqVal = new CachedEquivalentValue(sink);
 				if(sinkEqVal.equals(sourceEqVal))
 					continue;
-				Pair pair = new Pair(sinkEqVal, sourceEqVal);
+				Pair<EquivalentValue,EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
 				if(!fs.contains(pair))
 				{
 					fs.add(pair);
@@ -293,22 +294,23 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 				// if the sink is the return value
 					// add node to list of return value sources
 
-	protected List handleInvokeExpr(InvokeExpr ie, Stmt is, FlowSet fs)
+	protected List handleInvokeExpr(InvokeExpr ie, Stmt is,
+                                FlowSet<Pair<EquivalentValue,EquivalentValue>> fs)
 	{
 		// get the data flow graph
-		MutableDirectedGraph dataFlowGraph = dfa.getInvokeInfoFlowSummary(ie, is, sm); // must return a graph whose nodes are Refs!!!
+		MutableDirectedGraph<EquivalentValue> dataFlowGraph = dfa.getInvokeInfoFlowSummary(ie, is, sm); // must return a graph whose nodes are Refs!!!
 //		if( ie.getMethodRef().resolve().getSubSignature().equals(new String("boolean remove(java.lang.Object)")) )
 //		{
 //			G.v().out.println("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE infoFlowGraph: ");
 //			ClassInfoFlowAnalysis.printDataFlowGraph(infoFlowGraph);
 //		}
 		
-		List returnValueSources = new ArrayList();
+		List<Value> returnValueSources = new ArrayList<Value>();
 		
-		Iterator<Object> nodeIt = dataFlowGraph.getNodes().iterator();
+		Iterator<EquivalentValue> nodeIt = dataFlowGraph.getNodes().iterator();
 		while(nodeIt.hasNext())
 		{
-			EquivalentValue nodeEqVal = (EquivalentValue) nodeIt.next();
+			EquivalentValue nodeEqVal = nodeIt.next();
 			
 			if(!(nodeEqVal.getValue() instanceof Ref))
 				throw new RuntimeException("Illegal node type in data flow graph:" + nodeEqVal.getValue() + " should be an object of type Ref.");
@@ -334,10 +336,10 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 				source = iie.getBase(); // Local
 			}
 			
-			Iterator sinksIt = dataFlowGraph.getSuccsOf(nodeEqVal).iterator();
+			Iterator<EquivalentValue> sinksIt = dataFlowGraph.getSuccsOf(nodeEqVal).iterator();
 			while(sinksIt.hasNext())
 			{
-				EquivalentValue sinkEqVal = (EquivalentValue) sinksIt.next();
+				EquivalentValue sinkEqVal = sinksIt.next();
 				Ref sink = (Ref) sinkEqVal.getValue();
 				if(sink instanceof ParameterRef)
 				{
@@ -367,16 +369,14 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		return returnValueSources;
 	}
 	
-	protected void flowThrough(Object inValue, Object unit,
-			Object outValue)
+	protected void flowThrough(FlowSet<Pair<EquivalentValue,EquivalentValue>> in,
+                        Unit unit, FlowSet<Pair<EquivalentValue,EquivalentValue>> out)
 	{
-		FlowSet in  = (FlowSet) inValue;
-		FlowSet out = (FlowSet) outValue;
 		Stmt stmt = (Stmt) unit;
 		
 		if(in != out) // this method is reused for flow insensitive analysis, which uses the same FlowSet for in and out
 			in.copy(out);
-		FlowSet changedFlow = out;
+		FlowSet<Pair<EquivalentValue,EquivalentValue>> changedFlow = out;
 		
 		// Calculate the minimum subset of the flow set that we need to consider - OBSELETE optimization
 //		FlowSet changedFlow = new ArraySparseSet();
@@ -595,22 +595,19 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 //		changedFlow.union(out, out); - OBSELETE optimization
 	}
 	
-	protected void copy(Object source, Object dest)
+	protected void copy(FlowSet<Pair<EquivalentValue,EquivalentValue>> source,
+                            FlowSet<Pair<EquivalentValue,EquivalentValue>> dest)
 	{
-		
-		FlowSet sourceSet = (FlowSet) source;
-		FlowSet destSet   = (FlowSet) dest;
-		
-		sourceSet.copy(destSet);
+		source.copy(dest);
 		
 	}
 	
-	protected Object entryInitialFlow()
+	protected FlowSet<Pair<EquivalentValue,EquivalentValue>> entryInitialFlow()
 	{
 		return entrySet.clone();
 	}
 	
-	protected Object newInitialFlow()
+	protected FlowSet<Pair<EquivalentValue,EquivalentValue>> newInitialFlow()
 	{
 		return emptySet.clone();
 	}
@@ -621,7 +618,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
 		if(sinkEqVal.equals(sourceEqVal))
 			return;
-		Pair pair = new Pair(sinkEqVal, sourceEqVal);
+		Pair<EquivalentValue,EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
 		if(!entrySet.contains(pair))
 		{
 			entrySet.add(pair);
@@ -634,7 +631,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis
 		EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
 		if(sinkEqVal.equals(sourceEqVal))
 			return;
-		Pair pair = new Pair(sinkEqVal, sourceEqVal);
+		Pair<EquivalentValue,EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
 		if(!emptySet.contains(pair))
 		{
 			emptySet.add(pair);

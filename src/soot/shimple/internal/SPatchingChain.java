@@ -143,7 +143,7 @@ public class SPatchingChain extends PatchingChain<Unit>
                     }
                 }
                     
-                if(needsPatching.booleanValue()){
+                if(needsPatching){
                     box.setUnit((Unit)toInsert);
                     box.setUnitChanged(false);
                 }
@@ -375,17 +375,17 @@ public class SPatchingChain extends PatchingChain<Unit>
         }
     }
 
-    public Iterator iterator()
+    public Iterator<Unit> iterator()
     {
         return new SPatchingIterator(innerChain);
     }
 
-    public Iterator iterator(Unit u)
+    public Iterator<Unit> iterator(Unit u)
     {
         return new SPatchingIterator(innerChain, u);
     }
 
-    public Iterator iterator(Unit head, Unit tail)
+    public Iterator<Unit> iterator(Unit head, Unit tail)
     {
         return new SPatchingIterator(innerChain, head, tail);
     }

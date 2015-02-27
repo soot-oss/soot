@@ -39,8 +39,8 @@ public class PhiNodeManager
 {
     protected ShimpleBody body;
     protected ShimpleFactory sf;
-    protected DominatorTree dt;
-    protected DominanceFrontier df;
+    protected DominatorTree<Block> dt;
+    protected DominanceFrontier<Block> df;
     protected BlockGraph cfg;
     protected GuaranteedDefs gd;
     
@@ -58,7 +58,7 @@ public class PhiNodeManager
         df = sf.getDominanceFrontier();
     }
 
-    protected MultiMap varToBlocks;
+    protected MultiMap<Local, Block> varToBlocks;
     
     /**
      * Phi node Insertion Algorithm from Cytron et al 91, P24-5,
@@ -70,19 +70,19 @@ public class PhiNodeManager
     {
         update();
         boolean change = false;
-        varToBlocks = new HashMultiMap();    
+        varToBlocks = new HashMultiMap<Local, Block>();    
         Map<Local, List<Block>> localsToDefPoints = new HashMap<Local, List<Block>>();
         
         // compute localsToDefPoints and varToBlocks
-        for(Iterator blocksIt = cfg.iterator(); blocksIt.hasNext();){
-            Block block = (Block)blocksIt.next();
+        for(Iterator<Block> blocksIt = cfg.iterator(); blocksIt.hasNext();){
+            Block block = blocksIt.next();
 
-            for(Iterator unitsIt = block.iterator(); unitsIt.hasNext();){
-                Unit unit = (Unit) unitsIt.next();
+            for(Iterator<Unit> unitsIt = block.iterator(); unitsIt.hasNext();){
+                Unit unit = unitsIt.next();
 
-                List defBoxes = unit.getDefBoxes();
-                for(Iterator defBoxesIt = defBoxes.iterator(); defBoxesIt.hasNext();){
-                    Value def = ((ValueBox)defBoxesIt.next()).getValue();
+                List<ValueBox> defBoxes = unit.getDefBoxes();
+                for(Iterator<ValueBox> defBoxesIt = defBoxes.iterator(); defBoxesIt.hasNext();){
+                    Value def = defBoxesIt.next().getValue();
                     if(def instanceof Local){
                       Local local = (Local) def;
                       List<Block> def_points = null;
@@ -108,18 +108,18 @@ public class PhiNodeManager
         Stack<Block> workList = new Stack<Block>();
 
         Map<Integer, Integer> has_already = new HashMap<Integer, Integer>();
-        for(Iterator blocksIt = cfg.iterator(); blocksIt.hasNext(); ){
-          Block block = (Block) blocksIt.next();
+        for(Iterator<Block> blocksIt = cfg.iterator(); blocksIt.hasNext(); ){
+          Block block = blocksIt.next();
           has_already.put(block.getIndexInMethod(), 0);
         }
 
         /* Main Cytron algorithm. */
         
         {
-            Iterator localsIt = localsToDefPoints.keySet().iterator();
+            Iterator<Local> localsIt = localsToDefPoints.keySet().iterator();
 
             while(localsIt.hasNext()){
-                Local local = (Local) localsIt.next();
+                Local local = localsIt.next();
 
                 iterCount++;
 
@@ -138,14 +138,14 @@ public class PhiNodeManager
 
                 while(!workList.empty()){
                     Block block = workList.pop();
-                    DominatorNode node = dt.getDode(block);
-                    Iterator frontierNodes = df.getDominanceFrontierOf(node).iterator();
+                    DominatorNode<Block> node = dt.getDode(block);
+                    Iterator<DominatorNode<Block>> frontierNodes = df.getDominanceFrontierOf(node).iterator();
 
                     while(frontierNodes.hasNext()){
-                        Block frontierBlock = (Block) ((DominatorNode) frontierNodes.next()).getGode();
+                        Block frontierBlock = frontierNodes.next().getGode();
                         int fBIndex = frontierBlock.getIndexInMethod();
 
-                        Iterator unitsIt = frontierBlock.iterator();
+                        Iterator<Unit> unitsIt = frontierBlock.iterator();
                         if(!unitsIt.hasNext()){
                           continue;
                         }
@@ -175,7 +175,7 @@ public class PhiNodeManager
      **/
     public void prependTrivialPhiNode(Local local, Block frontierBlock)
     {
-        List preds = frontierBlock.getPreds();
+        List<Block> preds = frontierBlock.getPreds();
         PhiExpr pe = Shimple.v().newPhiExpr(local, preds);
         pe.setBlockId(frontierBlock.getIndexInMethod());
         Unit trivialPhi = Jimple.v().newAssignStmt(local, pe);
@@ -201,22 +201,22 @@ public class PhiNodeManager
     public void trimExceptionalPhiNodes()
     {
         Set<Unit> handlerUnits = new HashSet<Unit>();
-        Iterator trapsIt = body.getTraps().iterator();
+        Iterator<Trap> trapsIt = body.getTraps().iterator();
 
         while(trapsIt.hasNext()) {
-            Trap trap = (Trap) trapsIt.next();
+            Trap trap = trapsIt.next();
             handlerUnits.add(trap.getHandlerUnit());
         }
 
-        Iterator blocksIt = cfg.iterator();
+        Iterator<Block> blocksIt = cfg.iterator();
         while(blocksIt.hasNext()){
-            Block block = (Block) blocksIt.next();
+            Block block = blocksIt.next();
 
             // trim relevant Phi expressions
             if(handlerUnits.contains(block.getHead())){
-                Iterator unitsIt = block.iterator();
+                Iterator<Unit> unitsIt = block.iterator();
                 while(unitsIt.hasNext()){
-                    Unit unit = (Unit) unitsIt.next();
+                    Unit unit = unitsIt.next();
 
                     //if(!(newPhiNodes.contains(unit)))
                     PhiExpr phi = Shimple.getPhiExpr(unit);
@@ -239,11 +239,11 @@ public class PhiNodeManager
            the same value may be associated with many UnitBoxes. We
            build the MultiMap valueToPairs for convenience.  */
 
-        MultiMap valueToPairs = new HashMultiMap();
+        MultiMap<Value, ValueUnitPair> valueToPairs = new HashMultiMap<Value, ValueUnitPair>();
 
-        Iterator argsIt = phiExpr.getArgs().iterator();
+        Iterator<ValueUnitPair> argsIt = phiExpr.getArgs().iterator();
         while(argsIt.hasNext()){
-            ValueUnitPair argPair = (ValueUnitPair) argsIt.next();
+            ValueUnitPair argPair = argsIt.next();
             Value value = argPair.getValue();
             valueToPairs.put(value, argPair);
         }
@@ -253,19 +253,19 @@ public class PhiNodeManager
            UnitBoxes, the rest of the redundant arguments can be
            trimmed.  */
         
-        Iterator valuesIt = valueToPairs.keySet().iterator();
+        Iterator<Value> valuesIt = valueToPairs.keySet().iterator();
         while(valuesIt.hasNext()){
-            Value value = (Value) valuesIt.next();
+            Value value = valuesIt.next();
 
             // although the champs list constantly shrinks, guaranteeing
             // termination, the challengers list never does.  This could
             // be optimised.
-            Set pairsSet = valueToPairs.get(value);
-            List champs = new ArrayList(pairsSet);
-            List challengers = new ArrayList(pairsSet);
+            Set<ValueUnitPair> pairsSet = valueToPairs.get(value);
+            List<ValueUnitPair> champs = new ArrayList<ValueUnitPair>(pairsSet);
+            List<ValueUnitPair> challengers = new ArrayList<ValueUnitPair>(pairsSet);
             
             // champ is the currently assumed dominator
-            ValueUnitPair champ = (ValueUnitPair) champs.remove(0);
+            ValueUnitPair champ = champs.remove(0);
             Unit champU = champ.getUnit();
 
             // hopefully everything will work out the first time, but
@@ -278,7 +278,7 @@ public class PhiNodeManager
                 // go through each challenger and see if we dominate them
                 // if not, the challenger becomes the new champ
                 for(int i = 0; i < challengers.size(); i++){
-                    ValueUnitPair challenger = (ValueUnitPair)challengers.get(i);
+                    ValueUnitPair challenger = challengers.get(i);
 
                     if(challenger.equals(champ))
                         continue;
@@ -306,9 +306,9 @@ public class PhiNodeManager
                 }
 
                 if(retry) {
-                    if(champs.size() == 0)
+                    if(champs.isEmpty())
                         break;
-                    champ = (ValueUnitPair)champs.remove(0);
+                    champ = champs.remove(0);
                     champU = champ.getUnit();
                 }
             }
@@ -369,10 +369,10 @@ public class PhiNodeManager
         Block challengerBlock = unitToBlock.get(challenger);
 
         if(champBlock.equals(challengerBlock)){
-            Iterator unitsIt = champBlock.iterator();
+            Iterator<Unit> unitsIt = champBlock.iterator();
 
             while(unitsIt.hasNext()){
-                Unit unit = (Unit) unitsIt.next();
+                Unit unit = unitsIt.next();
                 if(unit.equals(champ))
                     return true;
                 if(unit.equals(challenger))
@@ -382,8 +382,8 @@ public class PhiNodeManager
             throw new RuntimeException("Assertion failed.");
         }
 
-        DominatorNode champNode = dt.getDode(champBlock);
-        DominatorNode challengerNode = dt.getDode(challengerBlock);
+        DominatorNode<Block> champNode = dt.getDode(champBlock);
+        DominatorNode<Block> challengerNode = dt.getDode(challengerBlock);
 
         // *** FIXME: System.out.println("champ: " + champNode);
         // System.out.println("chall: " + challengerNode);
@@ -420,10 +420,10 @@ public class PhiNodeManager
         List<ValueUnitPair> predBoxes = new ArrayList<ValueUnitPair>();
         
         Chain units = body.getUnits();
-        Iterator unitsIt = units.iterator();
+        Iterator<Unit> unitsIt = units.iterator();
 
         while(unitsIt.hasNext()){
-            Unit unit = (Unit) unitsIt.next();
+            Unit unit = unitsIt.next();
             PhiExpr phi = Shimple.getPhiExpr(unit);
 
             if(phi == null)
@@ -464,10 +464,10 @@ public class PhiNodeManager
                 Local lhsLocal = (Local) stmt.getLeftOp();
                 Local savedLocal = Jimple.v().newLocal(lhsLocal.getName()+"_",
                                                        lhsLocal.getType());
-                Iterator useBoxesIt = pred.getUseBoxes().iterator();
+                Iterator<ValueBox> useBoxesIt = pred.getUseBoxes().iterator();
 
                 while(useBoxesIt.hasNext()){
-                    ValueBox useBox = (ValueBox) useBoxesIt.next();
+                    ValueBox useBox = useBoxesIt.next();
                     if(lhsLocal.equals(useBox.getValue())){
                         needPriming = true;
                         addedNewLocals = true;

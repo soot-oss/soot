@@ -35,9 +35,9 @@ import soot.toolkits.graph.DominatorsFinder;
  * March 2009
  * 
  **/
-public class MHGDominatorTree extends DominatorTree {
+public class MHGDominatorTree<N> extends DominatorTree<N> {
 	
-    public MHGDominatorTree(DominatorsFinder dominators) {
+    public MHGDominatorTree(DominatorsFinder<N> dominators) {
         super(dominators);
     }
     

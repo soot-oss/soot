@@ -183,8 +183,8 @@ public class EnhancedUnitGraph extends UnitGraph {
 	
 	protected void handleExplicitThrowEdges()
 	{
-		MHGDominatorTree dom = new MHGDominatorTree(new MHGDominatorsFinder<Unit>(this));
-		MHGDominatorTree pdom = new MHGDominatorTree(new MHGPostDominatorsFinder<Unit>(this));
+		MHGDominatorTree<Unit> dom = new MHGDominatorTree<Unit>(new MHGDominatorsFinder<Unit>(this));
+		MHGDominatorTree<Unit> pdom = new MHGDominatorTree<Unit>(new MHGPostDominatorsFinder<Unit>(this));
 		
 		//this keeps a map from the entry of a try-catch-block to a selected merge point 
 		Hashtable<Unit, Unit> x2mergePoint = new Hashtable<Unit, Unit>();
@@ -198,12 +198,12 @@ public class EnhancedUnitGraph extends UnitGraph {
 			if(!(tail instanceof ThrowStmt))
 				continue;
 			
-			DominatorNode x = dom.getDode(tail);
-			DominatorNode parentOfX = dom.getParentOf(x);
-			Object xgode = x.getGode();
-			DominatorNode xpdomDode = pdom.getDode(xgode);
-			Object parentXGode = parentOfX.getGode();
-			DominatorNode parentpdomDode = pdom.getDode(parentXGode);
+			DominatorNode<Unit> x = dom.getDode(tail);
+			DominatorNode<Unit> parentOfX = dom.getParentOf(x);
+			Unit xgode = x.getGode();
+			DominatorNode<Unit> xpdomDode = pdom.getDode(xgode);
+			Unit parentXGode = parentOfX.getGode();
+			DominatorNode<Unit> parentpdomDode = pdom.getDode(parentXGode);
 			//while x post-dominates its dominator (parent in dom)
 			while(pdom.isDominatorOf(xpdomDode, parentpdomDode))
 			{
@@ -236,28 +236,28 @@ public class EnhancedUnitGraph extends UnitGraph {
 			{
 				//Now get all the children of x in the dom
 				
-				List<DominatorNode> domChilds = dom.getChildrenOf(x);
+				List<DominatorNode<Unit>> domChilds = dom.getChildrenOf(x);
 								
-				Object child1god = null;
-				Object child2god = null;
+				Unit child1god = null;
+				Unit child2god = null;
 				
-				for(Iterator<DominatorNode> domItr = domChilds.iterator(); domItr.hasNext(); )
+				for(Iterator<DominatorNode<Unit>> domItr = domChilds.iterator(); domItr.hasNext(); )
 				{
-					DominatorNode child = domItr.next();
-					Object childGode = child.getGode();
-					DominatorNode childpdomDode = pdom.getDode(childGode);
+					DominatorNode<Unit> child = domItr.next();
+					Unit childGode = child.getGode();
+					DominatorNode<Unit> childpdomDode = pdom.getDode(childGode);
 					
 					
 					//we don't want to make a loop! 
-					List<Unit> path = this.getExtendedBasicBlockPathBetween((Unit)childGode, tail);
+					List<Unit> path = this.getExtendedBasicBlockPathBetween(childGode, tail);
 					
 					//if(dom.isDominatorOf(child, dom.getDode(tail)))
-					if(!(path == null || path.size() == 0))
+					if(!(path == null || path.isEmpty()))
 						continue;
 					
 					if(pdom.isDominatorOf(childpdomDode, xpdomDode))
 					{
-						mergePoint = (Unit) child.getGode();				
+						mergePoint = child.getGode();				
 						break;
 					}					
 									
@@ -273,16 +273,16 @@ public class EnhancedUnitGraph extends UnitGraph {
 				{
 					if(child1god != null && child2god != null)
 					{
-						DominatorNode child1 = pdom.getDode(child1god);
-						DominatorNode child2 = pdom.getDode(child2god);
+						DominatorNode<Unit> child1 = pdom.getDode(child1god);
+						DominatorNode<Unit> child2 = pdom.getDode(child2god);
 	
 						//go up the pdom tree and find the common parent of child1 and child2
-						DominatorNode comParent = child1.getParent();
+						DominatorNode<Unit> comParent = child1.getParent();
 						while(comParent != null)
 						{
 							if(pdom.isDominatorOf(comParent, child2))
 							{
-								mergePoint = (Unit) comParent.getGode();
+								mergePoint = comParent.getGode();
 								break;
 							}
 							comParent = comParent.getParent();
@@ -290,7 +290,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 					}
 					else if(child1god != null || child2god != null){
 					
-						DominatorNode y = null;
+						DominatorNode<Unit> y = null;
 						
 						if(child1god != null)
 							y = pdom.getDode(child1god);
@@ -298,8 +298,8 @@ public class EnhancedUnitGraph extends UnitGraph {
 							y = pdom.getDode(child2god);
 						
 							
-						DominatorNode initialY = dom.getDode(y.getGode());
-						DominatorNode yDodeInDom = initialY;
+						DominatorNode<Unit> initialY = dom.getDode(y.getGode());
+						DominatorNode<Unit> yDodeInDom = initialY;
 						
 						while(dom.isDominatorOf(x, yDodeInDom))
 						{
@@ -314,9 +314,9 @@ public class EnhancedUnitGraph extends UnitGraph {
 							yDodeInDom = dom.getDode(y.getGode());
 						}
 						if(y != null)
-							mergePoint = (Unit) y.getGode();
+							mergePoint = y.getGode();
 						else
-							mergePoint = (Unit) initialY.getGode();
+							mergePoint = initialY.getGode();
 					}
 				}
 				
@@ -343,7 +343,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 							continue;
 						
 						
-						DominatorNode y = pdom.getDode(u);
+						DominatorNode<Unit> y = pdom.getDode(u);
 						
 						while(dom.isDominatorOf(x, y))
 						{
@@ -355,7 +355,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 								continue TailsLoop;
 							}
 						}
-						mergePoint = (Unit) y.getGode();
+						mergePoint = y.getGode();
 						break;
 					}
 				}
@@ -367,7 +367,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 				if(mergePoint == null)
 					continue TailsLoop;
 				
-				x2mergePoint.put((Unit) xgode, mergePoint);
+				x2mergePoint.put(xgode, mergePoint);
 			}
 			//add an edge from the tail (throw) to the merge point
 			
@@ -378,7 +378,7 @@ public class EnhancedUnitGraph extends UnitGraph {
 			throwSuccs.add(mergePoint);
 			
 			List<Unit> mergePreds = this.unitToPreds.get(mergePoint);
-			mergePreds.add(tail);	
+			mergePreds.add(tail);
 			
 		}
 
