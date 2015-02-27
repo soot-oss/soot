@@ -27,6 +27,7 @@ import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.BlockGraph;
 import soot.toolkits.graph.ExceptionalGraph;
 import soot.toolkits.graph.Block;
+import soot.toolkits.graph.DominatorNode;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.dot.DotGraph;
 import soot.util.dot.DotGraphAttribute;
@@ -223,18 +224,18 @@ public class CFGToDotGraph {
    * Comparator used to order a list of nodes by the order in 
    * which they were labeled.
    */
-  private static class NodeComparator implements java.util.Comparator {
-    private DotNamer namer;
+  private static class NodeComparator<N> implements java.util.Comparator<N> {
+    private DotNamer<N> namer;
 
-    NodeComparator(DotNamer namer) {
+    NodeComparator(DotNamer<N> namer) {
       this.namer = namer;
     }
 
-    public int compare(Object o1, Object o2) {
+    public int compare(N o1, N o2) {
       return (namer.getNumber(o1) - namer.getNumber(o2));
     }
 
-    public boolean equal(Object o1, Object o2) {
+    public boolean equal(N o1, N o2) {
       return (namer.getNumber(o1) == namer.getNumber(o2));
     }
   }
@@ -285,26 +286,26 @@ public class CFGToDotGraph {
    *
    * @return a visualization of <code>graph</code>.
    */
-  public DotGraph drawCFG(DirectedGraph graph, Body body) {
+  public <N> DotGraph drawCFG(DirectedGraph<N> graph, Body body) {
     DotGraph canvas = initDotGraph(body);
-    DotNamer namer = new DotNamer((int)(graph.size()/0.7f), 0.7f);
-    NodeComparator comparator = new NodeComparator(namer);
+    DotNamer<N> namer = new DotNamer<N>((int)(graph.size()/0.7f), 0.7f);
+    NodeComparator<N> comparator = new NodeComparator<N>(namer);
 
     // To facilitate comparisons between different graphs of the same
     // method, prelabel the nodes in the order they appear
     // in the iterator, rather than the order that they appear in the
     // graph traversal (so that corresponding nodes are more likely
     // to have the same label in different graphs of a given method).
-    for (Iterator nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
+    for (Iterator<N> nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
       String junk = namer.getName(nodesIt.next());
     }
 
-    for (Iterator nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
-      Object node = nodesIt.next();
+    for (Iterator<N> nodesIt = graph.iterator(); nodesIt.hasNext(); ) {
+      N node = nodesIt.next();
       canvas.drawNode(namer.getName(node));
-      for (Iterator succsIt = sortedIterator(graph.getSuccsOf(node), comparator);
+      for (Iterator<N> succsIt = sortedIterator(graph.getSuccsOf(node), comparator);
 	   succsIt.hasNext(); ) {
-	Object succ = succsIt.next();
+	N succ = succsIt.next();
 	canvas.drawEdge(namer.getName(node), namer.getName(succ));
       }
     }
@@ -333,7 +334,7 @@ public class CFGToDotGraph {
     Body body = graph.getBody();
     DotGraph canvas = initDotGraph(body);
     DotNamer namer = new DotNamer((int)(graph.size()/0.7f), 0.7f);
-    NodeComparator nodeComparator = new NodeComparator(namer);
+    NodeComparator<N> nodeComparator = new NodeComparator<N>(namer);
 
     // Prelabel nodes in iterator order, to facilitate
     // comparisons between graphs of a given method.
@@ -346,30 +347,30 @@ public class CFGToDotGraph {
 
       canvas.drawNode(namer.getName(node));
 
-      for (Iterator succsIt = sortedIterator(graph.getUnexceptionalSuccsOf(node),
+      for (Iterator<N> succsIt = sortedIterator(graph.getUnexceptionalSuccsOf(node),
 					     nodeComparator); 
 	   succsIt.hasNext(); ) {
-        Object succ = succsIt.next();
+        N succ = succsIt.next();
         DotGraphEdge edge = canvas.drawEdge(namer.getName(node), 
 					    namer.getName(succ));
 	edge.setAttribute(unexceptionalControlFlowAttr);
       }
 
-      for (Iterator succsIt = sortedIterator(graph.getExceptionalSuccsOf(node),
+      for (Iterator<N> succsIt = sortedIterator(graph.getExceptionalSuccsOf(node),
 					     nodeComparator); 
 	   succsIt.hasNext(); ) {
-	Object succ = succsIt.next();
+	N succ = succsIt.next();
 	DotGraphEdge edge = canvas.drawEdge(namer.getName(node),
 					    namer.getName(succ));
 	edge.setAttribute(exceptionalControlFlowAttr);
       }
 
       if (showExceptions) {
-	for (Iterator destsIt = sortedIterator(graph.getExceptionDests(node),
+	for (Iterator<N> destsIt = sortedIterator(graph.getExceptionDests(node),
 					       new ExceptionDestComparator(namer));
 	     destsIt.hasNext(); ) {
-	  ExceptionalGraph.ExceptionDest dest
-	    = (ExceptionalGraph.ExceptionDest) destsIt.next();
+	  ExceptionalGraph.ExceptionDest<N> dest
+	    = (ExceptionalGraph.ExceptionDest<N>) destsIt.next();
 	  Object handlerStart = dest.getHandlerNode();
 	  if (handlerStart == null) {
 	    // Giving each escaping exception its own, invisible
@@ -448,19 +449,19 @@ public class CFGToDotGraph {
     String getName(N node) {
       Integer index = this.get(node);
       if (index == null) {
-	index = new Integer(nodecount++);
+	index = nodecount++;
 	this.put(node, index);
       }
       return index.toString();
     }
 
     int getNumber(N node) {
-      Integer index = (Integer)this.get(node);
+      Integer index = this.get(node);
       if (index == null) {
-	index = new Integer(nodecount++);
+	index = nodecount++;
 	this.put(node, index);
       }
-      return index.intValue();
+      return index;
     }
   }
 
@@ -491,13 +492,18 @@ public class CFGToDotGraph {
       N node = nodesIt.next();
       DotGraphNode dotnode = canvas.getNode(namer.getName(node));
       String nodeLabel = null;
+      
+      if(node instanceof DominatorNode){
+          node = ((DominatorNode<N>)node).getGode();
+      }
 
       if (printer == null) {
 	nodeLabel = node.toString();
       } else {
 	if (node instanceof Unit) {
-	  ((Unit) node).toString(printer);
-	  String targetLabel = printer.labels().get(node);
+          Unit uNode = (Unit) node;
+	  uNode.toString(printer);
+	  String targetLabel = printer.labels().get(uNode);
 	  if (targetLabel == null) {
 	    nodeLabel = printer.toString();
 	  } else {
@@ -509,7 +515,7 @@ public class CFGToDotGraph {
 	  StringBuffer buffer = new StringBuffer();
 	  while (units.hasNext()) {
 	    Unit unit = units.next();
-	    String targetLabel = (String) printer.labels().get(unit);
+	    String targetLabel = printer.labels().get(unit);
 	    if (targetLabel != null) {
 	      buffer.append(targetLabel)
 		.append(":\\n");
