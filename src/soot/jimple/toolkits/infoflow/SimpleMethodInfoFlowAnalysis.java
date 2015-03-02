@@ -50,9 +50,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 		}
 		
 		// Add every field of this class
-		for(Iterator it = sm.getDeclaringClass().getFields().iterator(); it.hasNext(); )
+		for (SootField sf : sm.getDeclaringClass().getFields())
 		{
-			SootField sf = (SootField) it.next();
 			EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, sf);
 			if(!infoFlowGraph.containsNode(fieldRefEqVal))
 				infoFlowGraph.addNode(fieldRefEqVal);
@@ -64,10 +63,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 			superclass = sm.getDeclaringClass().getSuperclass();
 		while(superclass.hasSuperclass()) // we don't want to process Object
 		{
-	        Iterator scFieldsIt = superclass.getFields().iterator();
-	        while(scFieldsIt.hasNext())
+			for (SootField scField : superclass.getFields())
 	        {
-				SootField scField = (SootField) scFieldsIt.next();
 				EquivalentValue fieldRefEqVal = InfoFlowAnalysis.getNodeForFieldRef(sm, scField);
 				if(!infoFlowGraph.containsNode(fieldRefEqVal))
 					infoFlowGraph.addNode(fieldRefEqVal);
@@ -212,7 +209,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 			EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
 			if(sinkEqVal.equals(sourceEqVal))
 				continue;
-			Pair<EquivalentValue,EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
+			Pair<EquivalentValue,EquivalentValue> pair = new Pair<EquivalentValue,EquivalentValue>(
+					sinkEqVal, sourceEqVal);
 			if(!fs.contains(pair))
 			{
 				fs.add(pair);
@@ -254,7 +252,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 				EquivalentValue sinkEqVal = new CachedEquivalentValue(sink);
 				if(sinkEqVal.equals(sourceEqVal))
 					continue;
-				Pair<EquivalentValue,EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
+				Pair<EquivalentValue,EquivalentValue> pair = new Pair<EquivalentValue,EquivalentValue>(
+						sinkEqVal, sourceEqVal);
 				if(!fs.contains(pair))
 				{
 					fs.add(pair);
@@ -294,7 +293,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 				// if the sink is the return value
 					// add node to list of return value sources
 
-	protected List handleInvokeExpr(InvokeExpr ie, Stmt is,
+	protected List<Value> handleInvokeExpr(InvokeExpr ie, Stmt is,
                                 FlowSet<Pair<EquivalentValue,EquivalentValue>> fs)
 	{
 		// get the data flow graph
@@ -490,7 +489,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 				}
 			}
 			
-			List sources = new ArrayList();
+			List<Value> sources = new ArrayList<Value>();
 			boolean interestingFlow = true;
 			
 			if(rv instanceof Local)
@@ -569,21 +568,13 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 			{
 				if(flowsToDataStructure)
 				{
-					Iterator sourcesIt = sources.iterator();
-					while(sourcesIt.hasNext())
-					{
-						Value source = (Value) sourcesIt.next();
+					for (Value source : sources)
 						handleFlowsToDataStructure(sink, source, changedFlow);
-					}
 				}
 				else
 				{
-					Iterator sourcesIt = sources.iterator();
-					while(sourcesIt.hasNext())
-					{
-						Value source = (Value) sourcesIt.next();
+					for (Value source : sources)
 						handleFlowsToValue(sink, source, changedFlow);
-					}
 				}
 			}
 		}
@@ -618,7 +609,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 		EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
 		if(sinkEqVal.equals(sourceEqVal))
 			return;
-		Pair<EquivalentValue,EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
+		Pair<EquivalentValue,EquivalentValue> pair = new Pair<EquivalentValue,EquivalentValue>(
+				sinkEqVal, sourceEqVal);
 		if(!entrySet.contains(pair))
 		{
 			entrySet.add(pair);
@@ -631,7 +623,8 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 		EquivalentValue sourceEqVal = new CachedEquivalentValue(source);
 		if(sinkEqVal.equals(sourceEqVal))
 			return;
-		Pair<EquivalentValue,EquivalentValue> pair = new Pair<>(sinkEqVal, sourceEqVal);
+		Pair<EquivalentValue,EquivalentValue> pair = new Pair<EquivalentValue,EquivalentValue>(
+				sinkEqVal, sourceEqVal);
 		if(!emptySet.contains(pair))
 		{
 			emptySet.add(pair);
