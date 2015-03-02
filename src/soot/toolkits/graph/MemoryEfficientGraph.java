@@ -38,22 +38,22 @@ import java.util.*;
  * process of adding edges.
  */
 
-public class MemoryEfficientGraph extends HashMutableDirectedGraph
+public class MemoryEfficientGraph<N> extends HashMutableDirectedGraph<N>
 {
 
-    HashMap<Object, Object> self = new HashMap<Object, Object>();
+    HashMap<N, N> self = new HashMap<N, N>();
 
-    public void addNode(Object o) {
+    public void addNode(N o) {
         super.addNode(o);
         self.put(o,o);
     }
 
-    public void removeNode(Object o) {
+    public void removeNode(N o) {
         super.removeNode(o);
         self.remove(o);
     }
 
-    public void addEdge(Object from, Object to) {
+    public void addEdge(N from, N to) {
         if (containsNode(from) && containsNode(to))
             super.addEdge(self.get(from), self.get(to));
         else if (!containsNode(from))
@@ -62,7 +62,7 @@ public class MemoryEfficientGraph extends HashMutableDirectedGraph
             throw new RuntimeException(to.toString() + " not in graph!");
     }
 
-    public void removeEdge(Object from, Object to) {
+    public void removeEdge(N from, N to) {
         if (containsNode(from) && containsNode(to))
             super.removeEdge(self.get(from), self.get(to));
         else if (!containsNode(from))
