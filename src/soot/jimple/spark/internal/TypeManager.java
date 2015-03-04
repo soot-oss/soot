@@ -100,7 +100,13 @@ public final class TypeManager {
             }
         }
         BitVector ret = (BitVector) typeMask.get( type );
-        if( ret == null && fh != null ) throw new RuntimeException( "Type mask not found for type "+type );
+        if( ret == null && fh != null )
+        	// If we have a phantom class and have no type mask, we assume that
+        	// it is not cast-compatible to anything
+        	if (type instanceof RefType && ((RefType) type).getSootClass().isPhantom())
+        		return new BitVector();
+        	else
+        		throw new RuntimeException( "Type mask not found for type "+type );
         return ret;
     }
     final public void clearTypeMask() {
