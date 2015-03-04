@@ -55,6 +55,7 @@ import soot.Modifier;
 import soot.NullType;
 import soot.PrimType;
 import soot.RefType;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Trap;
@@ -75,8 +76,10 @@ import soot.dexpler.typing.Validate;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ConditionExpr;
 import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.EqExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
@@ -487,6 +490,9 @@ public class DexBody  {
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);
         
+        if (m.toString().equals("<org.apache.log4j.config.PropertySetter: void introspect()>"))
+        	System.out.println("x");
+        
   		for (RetypeableInstruction i : instructionsToRetype)
             i.retype(jBody);
 
@@ -653,6 +659,9 @@ public class DexBody  {
         UnusedLocalEliminator.v().transform(jBody);
         NopEliminator.v().transform(jBody);
         
+        if (m.toString().equals("<org.apache.log4j.config.PropertySetter: void introspect()>"))
+        	System.out.println("x");
+        
         for (Unit u: jBody.getUnits()) {
             if (u instanceof AssignStmt) {
                 AssignStmt ass = (AssignStmt)u;
@@ -664,8 +673,23 @@ public class DexBody  {
                     }
                 }
             }
+            if (u instanceof DefinitionStmt) {
+            	DefinitionStmt def = (DefinitionStmt) u;
+                // If the body references a phantom class in a CaughtExceptionRef,
+                // we must manually fix the hierarchy
+                if (def.getLeftOp() instanceof Local
+                		&& def.getRightOp() instanceof CaughtExceptionRef) {
+                	Type t = def.getLeftOp().getType();
+                	if (t instanceof RefType) {
+                		RefType rt = (RefType) t;
+                		if (rt.getSootClass().isPhantom()
+                				&& !rt.getSootClass().hasSuperclass())
+                			rt.getSootClass().setSuperclass(Scene.v().getSootClass("java.lang.Throwable"));
+                	}
+                }
+            }
         }
-
+        
         Debug.printDbg("\nafter jb pack");
         Debug.printDbg("",(Body)jBody);
 
