@@ -489,10 +489,7 @@ public class DexBody  {
         
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);
-        
-        if (m.toString().equals("<org.apache.log4j.config.PropertySetter: void introspect()>"))
-        	System.out.println("x");
-        
+                
   		for (RetypeableInstruction i : instructionsToRetype)
             i.retype(jBody);
 
