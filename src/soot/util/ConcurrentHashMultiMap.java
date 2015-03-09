@@ -18,18 +18,24 @@
  */
 
 package soot.util;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-/** A map with sets as values, HashMap implementation.
+/**
+ * A concurrent version of the {@link HashMultiMap}
  *
- * @author Ondrej Lhotak
+ * @author Steven Arzt
+ * 
  */
+public class ConcurrentHashMultiMap<K,V> implements MultiMap<K,V> {
+    Map<K,Map<V, V>> m = new ConcurrentHashMap<K,Map<V, V>>(0);
 
-public class HashMultiMap<K,V> implements MultiMap<K,V> {
-    Map<K,Set<V>> m = new HashMap<K,Set<V>>(0);
-
-    public HashMultiMap() {}
-    public HashMultiMap( MultiMap<K,V> m ) {
+    public ConcurrentHashMultiMap() {}
+    
+    public ConcurrentHashMultiMap( MultiMap<K,V> m ) {
         putAll( m );
     }
 
@@ -56,17 +62,17 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
 
     @Override
     public boolean containsValue( V value ) {
-        for (Set<V> s: m.values())
-            if (s.contains(value)) return true;
+        for (Map<V, V> s: m.values())
+            if (s.containsKey(value)) return true;
         return false;
     }
 
-    protected Set<V> newSet() {
-        return new HashSet<V>(4);
+    protected Map<V,V> newSet() {
+        return new ConcurrentHashMap<V, V>();
     }
     
-    private Set<V> findSet( K key ) {
-        Set<V> s = m.get( key );
+    private Map<V, V> findSet( K key ) {
+        Map<V, V> s = m.get( key );
         if( s == null ) {
             s = newSet();
             m.put( key, s );
@@ -76,20 +82,27 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
 
     @Override
     public boolean put( K key, V value ) {
-        return findSet( key ).add( value );
+        return findSet( key ).put( value, value ) == null;
     }
 
     @Override
     public boolean putAll( K key, Set<V> values ) {
         if (values.isEmpty()) return false;
-        return findSet( key ).addAll( values );
+        
+        Map<V,V> set = findSet( key );
+        boolean ok = false;
+        for (V v : values)
+        	if (set.put(v, v) == null)
+        		ok = true;
+        
+        return ok;
     }
 
     @Override
     public boolean remove( K key, V value ) {
-        Set<V> s = m.get( key );
+        Map<V,V> s = m.get( key );
         if( s == null ) return false;
-        boolean ret = s.remove( value );
+        boolean ret = s.remove( value ) != null;
         if( s.isEmpty() ) {
             m.remove( key );
         }
@@ -103,9 +116,12 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
 
     @Override
     public boolean removeAll( K key, Set<V> values ) {
-        Set<V> s = m.get( key );
+        Map<V,V> s = m.get( key );
         if( s == null ) return false;
-        boolean ret = s.removeAll( values );
+        boolean ret = false;
+        for (V v : values)
+        	if (s.remove( v ) != null)
+        		ret = true;
         if( s.isEmpty() ) {
             m.remove( key );
         }
@@ -114,9 +130,9 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
 
     @Override
     public Set<V> get( K o ) {
-        Set<V> ret = m.get( o );
+        Map<V,V> ret = m.get( o );
         if( ret == null ) return Collections.emptySet();
-        return Collections.unmodifiableSet(ret);
+        return Collections.unmodifiableSet(ret.keySet());
     }
 
     @Override
@@ -127,8 +143,8 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
     @Override
     public Set<V> values() {
         Set<V> ret = new HashSet<V>(m.size());
-        for (Set<V> s : m.values())
-            ret.addAll(s);
+        for (Map<V,V> s : m.values())
+            ret.addAll(s.keySet());
         return ret;
     }
 
@@ -138,10 +154,8 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
         @SuppressWarnings("unchecked")
 		MultiMap<K,V> mm = (MultiMap<K,V>) o;
         if( !keySet().equals( mm.keySet() ) ) return false;
-        Iterator<Map.Entry<K, Set<V>>> it = m.entrySet().iterator();
-        while( it.hasNext() ) {
-            Map.Entry<K, Set<V>> e = it.next();
-            Set<V> s = e.getValue();
+        for (Map.Entry<K, Map<V,V>> e : m.entrySet()) {
+            Map<V, V> s = e.getValue();
             if( !s.equals( mm.get( e.getKey() ) ) ) return false;
         }
         return true;
