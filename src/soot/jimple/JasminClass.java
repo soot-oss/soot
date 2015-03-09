@@ -1301,7 +1301,7 @@ public class JasminClass extends AbstractJasminClass
                 emitValue(s.getKey());
                 emit("lookupswitch", -1);
 
-                List lookupValues = s.getLookupValues();
+                List<IntConstant> lookupValues = s.getLookupValues();
                 List<Unit> targets = s.getTargets();
 
                 for(int i = 0; i < lookupValues.size(); i++)
@@ -1928,17 +1928,7 @@ public class JasminClass extends AbstractJasminClass
                 else if(v.value == 1)
                     emit("dconst_1", 2);
                 else {
-                    String s = v.toString();
-                    
-                    if(s.equals("#Infinity"))
-                        s="+DoubleInfinity";
-                    
-                    if(s.equals("#-Infinity"))
-                        s="-DoubleInfinity";
-                    
-                    if(s.equals("#NaN"))
-                        s="+DoubleNaN";
-                        
+                    String s = doubleToString(v);
                     emit("ldc2_w " + s, 2);
                 }
             }
@@ -1952,20 +1942,10 @@ public class JasminClass extends AbstractJasminClass
                 else if(v.value == 2)
                     emit("fconst_2", 1);
                 else {
-                    String s = v.toString();
-                    
-                    if(s.equals("#InfinityF"))
-                        s="+FloatInfinity";
-                    if(s.equals("#-InfinityF"))
-                        s="-FloatInfinity";
-                        
-                    if(s.equals("#NaNF"))
-                        s="+FloatNaN";
-                    
+                    String s = floatToString(v);
                     emit("ldc " + s, 1);
                 }
             }
-
 
             public void caseInstanceFieldRef(InstanceFieldRef v)
             {

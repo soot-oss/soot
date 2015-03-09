@@ -41,6 +41,8 @@ import java.util.List;
 import java.util.Map;
 
 import soot.baf.DoubleWordType;
+import soot.jimple.DoubleConstant;
+import soot.jimple.FloatConstant;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Stmt;
 import soot.options.Options;
@@ -593,13 +595,13 @@ public abstract class AbstractJasminClass
                 }
                 else if (field.hasTag("FloatConstantValueTag")){
                     fieldString += " = ";
-                    float val = ((FloatConstantValueTag)field.getTag("FloatConstantValueTag")).getFloatValue();
-                    fieldString += val;
+                    FloatConstantValueTag val = (FloatConstantValueTag) field.getTag("FloatConstantValueTag");
+                    fieldString += floatToString(val.getFloatValue());
                 }
                 else if (field.hasTag("DoubleConstantValueTag")){
                     fieldString += " = ";
-                    double val = ((DoubleConstantValueTag)field.getTag("DoubleConstantValueTag")).getDoubleValue();
-                    fieldString += val;
+                    DoubleConstantValueTag val = (DoubleConstantValueTag) field.getTag("DoubleConstantValueTag");
+                    fieldString += doubleToString(val.getDoubleValue());
                 }
                 if (field.hasTag("SyntheticTag") || Modifier.isSynthetic(field.getModifiers())){
                     fieldString +=" .synthetic";
@@ -785,6 +787,56 @@ public abstract class AbstractJasminClass
         for (String s : code)
             out.println(s);
     }
+	
+    protected String doubleToString(DoubleConstant v) {
+		String s = v.toString();
+		
+		if(s.equals("#Infinity"))
+		    s="+DoubleInfinity";
+		else if(s.equals("#-Infinity"))
+		    s="-DoubleInfinity";
+		else if(s.equals("#NaN"))
+		    s="+DoubleNaN";
+		return s;
+	}
+    
+    protected String doubleToString(double d) {
+        String doubleString = new Double(d).toString();
+        
+        if (doubleString.equals("NaN"))
+        	return "+DoubleNaN";
+        else if (doubleString.equals("Infinity"))
+		    return "+DoubleInfinity";
+        else if (doubleString.equals("-Infinity"))
+        	return "-DoubleInfinity";
+        
+        return doubleString;
+	}
+
+    protected String floatToString(FloatConstant v) {
+		String s = v.toString();
+		
+		if(s.equals("#InfinityF"))
+		    s="+FloatInfinity";
+		else if(s.equals("#-InfinityF"))
+		    s="-FloatInfinity";
+		else if(s.equals("#NaNF"))
+		    s="+FloatNaN";
+		return s;
+	}
+
+    protected String floatToString(float d) {
+        String floatString = new Float(d).toString();
+        
+        if (floatString.equals("NaN"))
+        	return "+FloatNaN";
+        else if (floatString.equals("Infinity"))
+		    return "+FloatInfinity";
+        else if (floatString.equals("-Infinity"))
+        	return "-FloatInfinity";
+        
+        return floatString;
+	}
 
 }
 

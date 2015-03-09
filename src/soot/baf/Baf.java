@@ -470,7 +470,7 @@ public class Baf
   }
   
     public LookupSwitchInst newLookupSwitchInst(Unit defaultTarget, 
-                             List lookupValues, List targets)
+                             List<IntConstant> lookupValues, List targets)
     {
         return new BLookupSwitchInst(defaultTarget, lookupValues, targets);
     }
