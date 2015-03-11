@@ -732,7 +732,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 
 			@Override
 			public boolean hasNext() {
-				return lastIdx < numElements - 1;
+				return lastIdx < numElements;
 			}
 
 			@Override
