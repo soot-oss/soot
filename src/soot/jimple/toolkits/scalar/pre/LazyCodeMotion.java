@@ -202,7 +202,8 @@ public class LazyCodeMotion extends BodyTransformer {
 						Local helper = expToHelper.get(rhs);
 
 						try {
-							((AssignStmt) currentUnit).setRightOp(helper);
+							if (helper != null)
+								((AssignStmt) currentUnit).setRightOp(helper);
 						} catch (RuntimeException e) {
 							G.v().out.println("Error on " + b.getMethod().getName());
 							G.v().out.println(currentUnit.toString());

@@ -40,6 +40,7 @@ import soot.Singletons;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.AssignStmt;
+import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 import soot.jimple.NaiveSideEffectTester;
 import soot.jimple.toolkits.graph.CriticalEdgeRemover;
@@ -131,13 +132,17 @@ public class BusyCodeMotion extends BodyTransformer {
 
 		{ /* insert the computations at the earliest positions */
 			while (unitIt.hasNext()) {
-				Unit currentUnit = unitIt.next();
-				Iterator<EquivalentValue> earliestIt = (earliest.getFlowBefore(currentUnit)).iterator();
-				while (earliestIt.hasNext()) {
-					EquivalentValue equiVal = earliestIt.next();
+				Unit currentUnit = unitIt.next();				
+				for (EquivalentValue equiVal : earliest.getFlowBefore(currentUnit)) {
 					// Value exp = equiVal.getValue();
 					/* get the unic helper-name for this expression */
 					Local helper = expToHelper.get(equiVal);
+					
+					// Make sure not to place any stuff inside the identity block at
+					// the beginning of the method
+					if (currentUnit instanceof IdentityStmt)
+						currentUnit = getFirstNonIdentityStmt(b);
+					
 					if (helper == null) {
 						helper = localCreation.newLocal(equiVal.getType());
 						expToHelper.put(equiVal, helper);
@@ -165,5 +170,12 @@ public class BusyCodeMotion extends BodyTransformer {
 		}
 		if (Options.v().verbose())
 			G.v().out.println("[" + b.getMethod().getName() + "]     Busy Code Motion done!");
+	}
+
+	private Unit getFirstNonIdentityStmt(Body b) {
+		for (Unit u : b.getUnits())
+			if (!(u instanceof IdentityStmt))
+				return u;
+		return null;
 	}
 }

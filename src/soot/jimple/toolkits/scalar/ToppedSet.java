@@ -198,5 +198,12 @@ public class ToppedSet<T> extends AbstractFlowSet<T>
     {
         if (isTop()) return "{TOP}"; else return underlyingSet.toString();
     }
+    
+	@Override
+	public Iterator<T> iterator() {
+        if (isTop()) throw new UnsupportedOperationException();
+		return underlyingSet.iterator();
+	}
+	
 }
 

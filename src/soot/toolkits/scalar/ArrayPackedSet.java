@@ -306,5 +306,46 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
         super.copy(destFlow);
     }
 
+	@Override
+	public Iterator<T> iterator() {
+		return new Iterator<T>() {
+			
+			int wordIndex = 0;
+			int bitIndex = 0;
+			
+			@Override
+			public boolean hasNext() {
+		        for (int i = wordIndex; i < bits.length; i++) {
+		            int word = bits[i];
+		            for (int j = (i == wordIndex ? bitIndex + 1 : 0); j < 32; j++)
+		                if((word & (1 << j)) != 0)
+		                    return true;
+		        }
+	            return false;
+			}
+
+			@Override
+			public T next() {
+		        for (int i = wordIndex; i < bits.length; i++) {
+		            int word = bits[i];
+		            int offset = i * 32;
+		            for (int j = (i == wordIndex ? bitIndex + 1 : 0); j < 32; j++)
+		                if((word & (1 << j)) != 0) {
+		                	wordIndex = i;
+		                	bitIndex = j;
+		                    return map.getObject(offset + j);
+		                }
+		        }
+				return null;
+			}
+
+			@Override
+			public void remove() {
+		        bits[wordIndex] &= ~(1 << (bitIndex));
+			}
+			
+		};
+	}
+
 }
 

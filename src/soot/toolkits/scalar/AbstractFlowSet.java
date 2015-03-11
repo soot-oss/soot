@@ -155,9 +155,7 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 
 	public abstract boolean contains(T obj);
 
-	public Iterator<T> iterator() {
-		return toList().iterator();
-	}
+	public abstract Iterator<T> iterator();
 
 	public abstract List<T> toList();
 
