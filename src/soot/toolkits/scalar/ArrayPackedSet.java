@@ -311,7 +311,7 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
 		return new Iterator<T>() {
 			
 			int wordIndex = 0;
-			int bitIndex = 0;
+			int bitIndex = -1;
 			
 			@Override
 			public boolean hasNext() {
