@@ -118,7 +118,7 @@ public class DexClassProvider implements ClassProvider {
 	public static Set<String> classesOfDex(File file) throws IOException {
 		Set<String> classes = new HashSet<String>();
 		// TODO (SA): Go for API 1 because DexlibWrapper does so, but needs more attention
-		DexBackedDexFile d = DexFileFactory.loadDexFile(file, 1);
+		DexBackedDexFile d = DexFileFactory.loadDexFile(file, 1, false);
 		for (ClassDef c : d.getClasses()) {
 			String name = Util.dottedClassName(c.getType());
 			classes.add(name);

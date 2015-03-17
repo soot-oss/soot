@@ -90,7 +90,7 @@ public class DexlibWrapper {
 
         try {
             int api = 1; // TODO:
-            this.dexFile = DexFileFactory.loadDexFile(inputDexFile, api);
+            this.dexFile = DexFileFactory.loadDexFile(inputDexFile, api, false);
         } catch (Exception e) {
             throw new RuntimeException(e.toString());
         }
