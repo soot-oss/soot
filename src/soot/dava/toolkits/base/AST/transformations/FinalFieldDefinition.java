@@ -69,7 +69,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				.compareTo("<init>") == 0)) {
 			// dont care about these since we want only static block and
 			// constructors
-			// System.out.println("\n\nName"+sootMethod.getName()+"
+			// logger.info("\n\nName"+sootMethod.getName()+"
 			// SubSignature:"+sootMethod.getSubSignature());
 			return;
 		}
@@ -164,12 +164,12 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				continue;
 			}
 
-			// System.out.println("SootField: "+interest+" not initialized.
+			// logger.info("SootField: "+interest+" not initialized.
 			// checking may analysis");
 			MustMayInitialize may = new MustMayInitialize(node,
 					MustMayInitialize.MAY);
 			if (may.isMayInitialized(interest)) {
-				// System.out.println("It is initialized on some path just not
+				// logger.info("It is initialized on some path just not
 				// all paths\n");
 				List defs = must.getDefs(interest);
 				if (defs == null)
@@ -179,7 +179,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				handleAssignOnSomePaths(node, interest, defs);
 			} else {
 				// not initialized on any path., assign default
-				// System.out.println("Final field is not initialized on any
+				// logger.info("Final field is not initialized on any
 				// path--------ASSIGN DEFAULT VALUE");
 				assignDefault(node, interest);
 			}
@@ -290,7 +290,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 		}
 
 		if (assignStmt != null) {
-			// System.out.println("AssignStmt is"+assignStmt);
+			// logger.info("AssignStmt is"+assignStmt);
 			AugmentedStmt as = new AugmentedStmt(assignStmt);
 			return as;
 		} else
@@ -368,7 +368,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				 *		// there was some method call after the definition stmt so
 				 *  	// we cant continue
 				 *	 	 // remove the final modifier and leave
-				 *	 	  //System.out.println("Method invoked somewhere after definition");
+				 *	 	  //logger.info("Method invoked somewhere after definition");
 				 *	 	   cancelFinalModifier.add(field);
 				 *	 	   return;
 				 * 	 	   }
@@ -385,7 +385,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				varStmt.addLocal(newLocal);
 				AugmentedStmt as = new AugmentedStmt(varStmt);
 
-				// System.out.println("Var Decl stmt"+as);
+				// logger.info("Var Decl stmt"+as);
 
 				// STORE IT IN Methods Declaration Node
 				ASTStatementSequenceNode declNode = node.getDeclarations();
@@ -429,10 +429,10 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 					List<Object> stmts1 = ((ASTStatementSequenceNode) nodeSecond).getStatements();
 					stmts1.add(initialization);
 					nodeSecond = new ASTStatementSequenceNode(stmts1);
-					// System.out.println("Init added in exisiting node");
+					// logger.info("Init added in exisiting node");
 					body.remove(1);
 				} else {
-					//System.out.println("had to add new node");
+					//logger.info("had to add new node");
 					List<Object> tempList = new ArrayList<Object>();
 					tempList.add(initialization);
 					nodeSecond = new ASTStatementSequenceNode(tempList);
@@ -497,7 +497,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 				MustMayInitialize must = new MustMayInitialize(node,MustMayInitialize.MUST);
 				while(!must.isMustInitialized(field)) {
 					
-					//System.out.println("not must initialized");
+					//logger.info("not must initialized");
 					Object parentOfGrandParent = parentFinder.getParentOf(grandParent);
 					if( !(grandParent instanceof ASTMethodNode) && parentOfGrandParent == null){
 						throw new DecompilationException("Parent of non method node was null");
@@ -531,7 +531,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 								newStmts.add(assignStmt1);
 								newStmts.addAll(stmtsLast);
 								someNode.setStatements(newStmts);
-								//System.out.println("here1");
+								//logger.info("here1");
 								//check if problem is solved else remove the assign and change parents
 								must = new MustMayInitialize(node,MustMayInitialize.MUST);
 								if(!must.isMustInitialized(field)){
@@ -547,7 +547,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 									ASTStatementSequenceNode lastNode = new ASTStatementSequenceNode(tempList);
 									ancestorSubBody.add(index+1,lastNode);
 									//node.replaceBody(body);
-									//System.out.println("here2");
+									//logger.info("here2");
 									//check if problem is solved else remove the assign and change parents
 									must = new MustMayInitialize(node,MustMayInitialize.MUST);
 									if(!must.isMustInitialized(field)){
@@ -564,7 +564,7 @@ public class FinalFieldDefinition {// extends DepthFirstAdapter{
 						//meaning we still dont have must initialization 
 						//we should put assign in one level above than current
 						grandParent = parentFinder.getParentOf(grandParent);
-						//System.out.println("Going one level up");						
+						//logger.info("Going one level up");						
 					}									
 				}//while ! ismustinitialized
 			}
@@ -600,15 +600,15 @@ class MethodCallFinder extends DepthFirstAdapter {
 		if (s instanceof GAssignStmt) {
 			if (((GAssignStmt) s).equals(def)) {
 				foundIt = true;
-				//System.out.println("Found it" + s);
+				//logger.info("Found it" + s);
 			}
 		}
 	}
 
 	public void inInvokeExpr(InvokeExpr ie) {
-		//System.out.println("In invoke Expr");
+		//logger.info("In invoke Expr");
 		if (foundIt) {
-			//System.out.println("oops invoking something after definition");
+			//logger.info("oops invoking something after definition");
 			anyMethodCalls = true;
 		}
 	}

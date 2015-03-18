@@ -17,6 +17,9 @@ import heros.util.SootThreadGroup;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** UnsynchronizedMhpAnalysis written by Richard L. Halpert 2006-12-09
  *  Calculates May-Happen-in-Parallel (MHP) information as if in the absence
  *  of synchronization. Any synchronization statements (synchronized, wait, 
@@ -33,6 +36,8 @@ import java.util.*;
 
 public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 {
+	final static Logger logger = LoggerFactory.getLogger(SynchObliviousMhpAnalysis.class);
+
 	List<AbstractRuntimeThread> threadList;
 	boolean optionPrintDebug;
 	boolean optionThreaded = false; // DOESN'T WORK if set to true... ForwardFlowAnalysis uses a static field in a thread-unsafe way
@@ -163,7 +168,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 			// Add this list of methods to MHPLists
 			threadList.add(thread);
 			if(optionPrintDebug)
-				System.out.println(thread.toString());
+				logger.info(thread.toString());
 			
 			// Find out if the "thread" in "thread.start()" could be more than one object
 			boolean mayStartMultipleThreadObjects = (threadAllocNodes.size() > 1) || so.types_for_sites();
@@ -236,14 +241,13 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 			// and this start statement may be run more than once,
 			// then add this list of methods to MHPLists *AGAIN*
 			if(optionPrintDebug)
-				System.out.println("Start Stmt " + startStmt.toString() + 
-					" mayStartMultipleThreadObjects=" + mayStartMultipleThreadObjects + " mayBeRunMultipleTimes=" + mayBeRunMultipleTimes);
+				logger.info("Start Stmt {} mayStartMultipleThreadObjects={} mayBeRunMultipleTimes={}",startStmt.toString(), mayStartMultipleThreadObjects, mayBeRunMultipleTimes);
 			if(mayStartMultipleThreadObjects && mayBeRunMultipleTimes)
 			{
 				threadList.add(thread); // add another copy
 				thread.setRunsMany();
 				if(optionPrintDebug)
-					System.out.println(thread.toString());
+					logger.info(thread.toString());
 			}
 			else
 				thread.setRunsOnce();

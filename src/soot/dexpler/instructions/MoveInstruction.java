@@ -26,8 +26,9 @@ package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -35,7 +36,7 @@ import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 
 public class MoveInstruction extends DexlibAbstractInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(MoveInstruction.class);
     AssignStmt assign = null;
   
     public MoveInstruction (Instruction instruction, int codeAdress) {
@@ -46,7 +47,7 @@ public class MoveInstruction extends DexlibAbstractInstruction {
        
         TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
         
-        Debug.printDbg("moveInstruction: ", i);
+        logger.debug("moveInstruction: ", i);
         
         int dest = i.getRegisterA();
         int source = i.getRegisterB();
@@ -56,7 +57,7 @@ public class MoveInstruction extends DexlibAbstractInstruction {
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			logger.debug("constraint: {}", assign);
           int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
         }

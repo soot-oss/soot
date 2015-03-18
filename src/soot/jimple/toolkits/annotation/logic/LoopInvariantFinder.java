@@ -61,8 +61,8 @@ public class LoopInvariantFinder extends BodyTransformer {
             Iterator<Stmt> bIt = loopStmts.iterator();
             while (bIt.hasNext()){
                 Stmt tStmt = bIt.next();
-                //System.out.println("will test stmt: "+tStmt+" for loop header: "+header);
-                //System.out.println("will test with loop stmts: "+loopStmts);
+                //logger.info("will test stmt: "+tStmt+" for loop header: "+header);
+                //logger.info("will test with loop stmts: "+loopStmts);
                 handleLoopBodyStmt(tStmt, nset, loopStmts);
             }
         }
@@ -99,8 +99,8 @@ public class LoopInvariantFinder extends BodyTransformer {
         uses: while (useBoxesIt.hasNext()){
             ValueBox vb = (ValueBox)useBoxesIt.next();
             Value v = vb.getValue();
-            //System.out.println("next vb: "+v+" is a: "+vb.getClass());
-            //System.out.println("next vb: "+v+" class is a: "+v.getClass());
+            //logger.info("next vb: "+v+" is a: "+vb.getClass());
+            //logger.info("next vb: "+v+" class is a: "+v.getClass());
             // new's are not invariant
             if (v instanceof NewExpr) {
                 result = false;

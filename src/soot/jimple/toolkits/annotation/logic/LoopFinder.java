@@ -81,7 +81,7 @@ public class LoopFinder extends BodyTransformer {
                 List<Stmt> loopBody = getLoopBodyFor(header, s);
 
                 // for now just print out loops as sets of stmts
-                //System.out.println("FOUND LOOP: Header: "+header+" Body: "+loopBody);
+                //logger.info("FOUND LOOP: Header: "+header+" Body: "+loopBody);
                 if (loops.containsKey(header)){
                     // merge bodies
                     List<Stmt> lb1 = loops.get(header);

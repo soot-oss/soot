@@ -102,7 +102,7 @@ public class ForLoopCreator extends DepthFirstAdapter{
 					    List<Object> ifElseBody = (List<Object>)subBodies.get(1);
 					    ((ASTIfElseNode)node).replaceBody(newBody,ifElseBody);
 					    G.v().ASTTransformations_modified = true;
-					    //System.out.println("FOR LOOP CREATED");
+					    //logger.info("FOR LOOP CREATED");
 					    return;
 					}
 					else if(subBodyNumber==1){
@@ -111,7 +111,7 @@ public class ForLoopCreator extends DepthFirstAdapter{
 					    List<Object> ifBody = (List<Object>)subBodies.get(0);
 					    ((ASTIfElseNode)node).replaceBody(ifBody,newBody);
 					    G.v().ASTTransformations_modified = true;
-					    //System.out.println("FOR LOOP CREATED");
+					    //logger.info("FOR LOOP CREATED");
 					    return;
 					}
 					else{
@@ -122,50 +122,50 @@ public class ForLoopCreator extends DepthFirstAdapter{
 					if(node instanceof ASTMethodNode){
 					    ((ASTMethodNode)node).replaceBody(newBody);
 					    G.v().ASTTransformations_modified = true;
-					    //System.out.println("FOR LOOP CREATED");
+					    //logger.info("FOR LOOP CREATED");
 					    return;
 					    
 					}
 					else if(node instanceof ASTSynchronizedBlockNode){
 					    ((ASTSynchronizedBlockNode)node).replaceBody(newBody);
 					    G.v().ASTTransformations_modified = true;
-					    //System.out.println("FOR LOOP CREATED");
+					    //logger.info("FOR LOOP CREATED");
 					    return;
 					}
 					else if(node instanceof ASTLabeledBlockNode){
 					    ((ASTLabeledBlockNode)node).replaceBody(newBody);
 					    G.v().ASTTransformations_modified = true;
-					    //System.out.println("FOR LOOP CREATED");
+					    //logger.info("FOR LOOP CREATED");
 					    return;
 					}
 					else if(node instanceof ASTUnconditionalLoopNode){
 					    ((ASTUnconditionalLoopNode)node).replaceBody(newBody);
 					    G.v().ASTTransformations_modified = true;
-					    //System.out.println("FOR LOOP CREATED");
+					    //logger.info("FOR LOOP CREATED");
 					    return;
 					}
 					else if(node instanceof ASTIfNode){
 					    ((ASTIfNode)node).replaceBody(newBody);
 					    G.v().ASTTransformations_modified = true;
-					    //System.out.println("FOR LOOP CREATED");
+					    //logger.info("FOR LOOP CREATED");
 					    return;
 					}
 					else if(node instanceof ASTWhileNode){
 					    ((ASTWhileNode)node).replaceBody(newBody);
 					    G.v().ASTTransformations_modified = true;
-					    //System.out.println("FOR LOOP CREATED");
+					    //logger.info("FOR LOOP CREATED");
 					    return;
 					}
 					else if(node instanceof ASTDoWhileNode){
 					    ((ASTDoWhileNode)node).replaceBody(newBody);
 					    G.v().ASTTransformations_modified = true;
-					    //System.out.println("FOR LOOP CREATED");
+					    //logger.info("FOR LOOP CREATED");
 					    return;
 					}
 					else if(node instanceof ASTForLoopNode){
 					    ((ASTForLoopNode)node).replaceBody(newBody);
 					    G.v().ASTTransformations_modified = true;
-					    //System.out.println("FOR LOOP CREATED");
+					    //logger.info("FOR LOOP CREATED");
 					    return;
 					}
 					else {
@@ -214,7 +214,7 @@ public class ForLoopCreator extends DepthFirstAdapter{
 				//something did not go wrong
 				node.replaceTryBody(newBody);
 				G.v().ASTTransformations_modified = true;
-				//System.out.println("FOR LOOP CREATED");
+				//logger.info("FOR LOOP CREATED");
 				return;
 			    }//newBody was not null
 			}//for loop creation pattern matched
@@ -278,7 +278,7 @@ public class ForLoopCreator extends DepthFirstAdapter{
 				    //something did not go wrong
 				    catchBody.replaceBody(newBody);
 				    G.v().ASTTransformations_modified = true;
-				    //System.out.println("FOR LOOP CREATED");
+				    //logger.info("FOR LOOP CREATED");
 				    return;
 				}//newBody was not null
 			    }//for loop creation pattern matched
@@ -339,7 +339,7 @@ public class ForLoopCreator extends DepthFirstAdapter{
 					node.replaceIndex2BodyList(index2BodyList);
 
 					G.v().ASTTransformations_modified = true;
-					//System.out.println("FOR LOOP CREATED");
+					//logger.info("FOR LOOP CREATED");
 					return;
 				    }//newBody was not null
 				}//for loop creation pattern matched

@@ -26,9 +26,10 @@ package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction21t;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.BooleanType;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -39,6 +40,8 @@ import soot.jimple.internal.JIfStmt;
 
 public class IfTestzInstruction extends ConditionalJumpInstruction {
 
+	final static Logger logger = LoggerFactory.getLogger(IfTestzInstruction.class);
+			
     JIfStmt jif = null;
   
     public IfTestzInstruction (Instruction instruction, int codeAdress) {
@@ -54,7 +57,7 @@ public class IfTestzInstruction extends ConditionalJumpInstruction {
         
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ jif);
+			logger.debug("constraint: {}", jif);
            int op = instruction.getOpcode().value;
            switch (op) {
            case 0x38:

@@ -27,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -42,7 +45,6 @@ import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
-import soot.dexpler.Debug;
 import soot.dexpler.IDalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -53,6 +55,7 @@ import soot.jimple.NullConstant;
 
 public class DalvikTyper implements IDalvikTyper {
 
+	final static Logger logger = LoggerFactory.getLogger(DalvikTyper.class);
     private static DalvikTyper dt = null;
     
     private Set<Constraint> constraints = new HashSet<Constraint>();
@@ -79,7 +82,7 @@ public class DalvikTyper implements IDalvikTyper {
     
 	public void setType(ValueBox vb, Type t, boolean isUse) {
 	    if (IDalvikTyper.DEBUG)
-	        Debug.printDbg(IDalvikTyper.DEBUG, "   [setType] "+ vb +" -> "+ t);
+	        logger.debug("   [setType] "+ vb +" -> "+ t);
 //        if (typed.containsKey(vb)) {
 //            System.err.println("warning: typed already contains vb "+ vb +" ("+ typed.get(vb) +") new type: "+ t);
 //        }
@@ -89,7 +92,7 @@ public class DalvikTyper implements IDalvikTyper {
         if (vb.getValue() instanceof Local) {
             localObjList.add(new LocalObj(vb, t, isUse));
         } else {
-            Debug.printDbg(IDalvikTyper.DEBUG, "not instance of local: vb: "+ vb +" value: "+ vb.getValue() +" class: "+ vb.getValue().getClass());
+            logger.debug("not instance of local: vb: "+ vb +" value: "+ vb.getValue() +" class: "+ vb.getValue().getClass());
         }
 	}
 //
@@ -100,13 +103,13 @@ public class DalvikTyper implements IDalvikTyper {
 
 	public void addConstraint(ValueBox l, ValueBox r) {
 	    if (IDalvikTyper.DEBUG)
-	        Debug.printDbg(IDalvikTyper.DEBUG, "   [addConstraint] "+ l +" < "+ r);
+	        logger.debug("   [addConstraint] "+ l +" < "+ r);
 		constraints.add(new Constraint(l, r));		
 	}
 	
 //	public void addStrongConstraint(ValueBox vb, Type t) {
 //	    if (IDalvikTyper.DEBUG)
-//	        Debug.printDbg(IDalvikTyper.DEBUG, "   [addStrongConstraint] "+ vb +" -> "+ t);
+//	        logger.debug("   [addStrongConstraint] "+ vb +" -> "+ t);
 //	    if (typed.containsKey(vb)) {
 //	        System.err.println("warning: typed already contains vb "+ vb +" ("+ typed.get(vb) +") new type: "+ t);
 //	    }
@@ -116,19 +119,19 @@ public class DalvikTyper implements IDalvikTyper {
 	public void assignType(Body b) {
 	    
 	    
-	    Debug.printDbg(IDalvikTyper.DEBUG, "list of constraints:");
+	    logger.debug("list of constraints:");
 	    List<ValueBox> vbList = b.getUseAndDefBoxes();
 	    
 	    // clear constraints after local splitting and dead code eliminator
 	    List<Constraint> toRemove = new ArrayList<Constraint>();
 		for (Constraint c: constraints) {    
 		    if (!vbList.contains(c.l)) {
-		        Debug.printDbg(IDalvikTyper.DEBUG, "warning: "+ c.l +" not in locals! removing...");
+		        logger.debug("warning: "+ c.l +" not in locals! removing...");
 		        toRemove.add(c);
 		        continue;
 		    }
 		    if (!vbList.contains(c.r)) {
-                Debug.printDbg(IDalvikTyper.DEBUG, "warning: "+ c.r +" not in locals! removing...");
+                logger.debug("warning: "+ c.r +" not in locals! removing...");
                 toRemove.add(c);
                 continue;
 		    }
@@ -139,15 +142,15 @@ public class DalvikTyper implements IDalvikTyper {
 		// keep only valid locals
 		for (LocalObj lo: localObjList) {
 		    if (!vbList.contains(lo.vb)) {
-		        Debug.printDbg(IDalvikTyper.DEBUG, "removing vb: "+ lo.vb +" with type "+ lo.t);
+		        logger.debug("removing vb: "+ lo.vb +" with type "+ lo.t);
 		        continue;
 		    }
 		    Local l = lo.getLocal();
 		    Type t = lo.t;
             if (localTemp.contains(l) && lo.isUse) {
-                Debug.printDbg(IDalvikTyper.DEBUG, "def already added for local "+ l +"! for vb: "+ lo.vb);
+                logger.debug("def already added for local "+ l +"! for vb: "+ lo.vb);
             } else {
-                Debug.printDbg(IDalvikTyper.DEBUG, "add type "+ t +" to local "+ l + " for vb: "+ lo.vb);
+                logger.debug("add type "+ t +" to local "+ l + " for vb: "+ lo.vb);
                 localTemp.add(l);
                 typed.put(lo.vb, t);
             }
@@ -160,18 +163,18 @@ public class DalvikTyper implements IDalvikTyper {
 	    }
 		
 		for (Constraint c: constraints)
-		    Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ c);
+		    logger.debug("constraint: "+ c);
 		for (ValueBox vb: typed.keySet()) {
-		    Debug.printDbg(IDalvikTyper.DEBUG, "typed: "+ vb +" -> "+ typed.get(vb));
+		    logger.debug("typed: "+ vb +" -> "+ typed.get(vb));
 		}
 		for (Local l: localTyped.keySet()){
-		    Debug.printDbg(IDalvikTyper.DEBUG, "localTyped: "+ l + " -> "+ localTyped.get(l));
+		    logger.debug("localTyped: "+ l + " -> "+ localTyped.get(l));
 		}
 		
 		while (!constraints.isEmpty()) {
 		    boolean update = false;
 		    for (Constraint c: constraints) {
-		        Debug.printDbg(IDalvikTyper.DEBUG, "current constraint: "+ c);
+		        logger.debug("current constraint: "+ c);
 		        Value l = c.l.getValue();
 		        Value r = c.r.getValue();
 		        if (l instanceof Local && r instanceof Constant) {
@@ -179,7 +182,7 @@ public class DalvikTyper implements IDalvikTyper {
 		            if (!localTyped.containsKey(l))
 		                continue;
 		            Type lt = localTyped.get((Local)l);
-		            Debug.printDbg(IDalvikTyper.DEBUG, "would like to set type "+ lt +" to constant: "+ c);
+		            logger.debug("would like to set type "+ lt +" to constant: "+ c);
 		            Value newValue = null;
 		            if (lt instanceof IntType
 		                    || lt instanceof BooleanType
@@ -200,14 +203,14 @@ public class DalvikTyper implements IDalvikTyper {
 		            } else {
 		                if (cst instanceof UntypedIntOrFloatConstant && ((UntypedIntOrFloatConstant)cst).value == 0) {
 		                    newValue = NullConstant.v();
-		                    System.out.println("new null constant for constraint "+ c +" with l type: "+ localTyped.get(l));
+		                    logger.info("new null constant for constraint "+ c +" with l type: "+ localTyped.get(l));
 		                } else {
 		                    throw new RuntimeException("unknow type for constance: "+ lt);
 		                }
 		            }
 		            c.r.setValue(newValue);
 		            //c.r.setValue(new Int)
-		            Debug.printDbg(IDalvikTyper.DEBUG, "remove constraint: "+ c);
+		            logger.debug("remove constraint: "+ c);
 		            constraints.remove(c);
 		            update = true;
 		            break;
@@ -217,22 +220,22 @@ public class DalvikTyper implements IDalvikTyper {
 		            if (localTyped.containsKey(leftLocal)) {
 		                Type leftLocalType = localTyped.get(leftLocal);
 		                if (!localTyped.containsKey(rightLocal)) {
-		                    Debug.printDbg(IDalvikTyper.DEBUG, "set type "+ leftLocalType +" to local "+ rightLocal);
+		                    logger.debug("set type "+ leftLocalType +" to local "+ rightLocal);
 		                    rightLocal.setType(leftLocalType);
 		                    setLocalTyped(rightLocal, leftLocalType);
 		                }
-		                Debug.printDbg(IDalvikTyper.DEBUG, "remove constraint: "+ c);
+		                logger.debug("remove constraint: "+ c);
 		                constraints.remove(c);
 		                update = true;
 		                break;
 		            } else if (localTyped.containsKey(rightLocal)) {
 		                Type rightLocalType = localTyped.get(rightLocal);
 		                if (!localTyped.containsKey(leftLocal)) {
-		                    Debug.printDbg(IDalvikTyper.DEBUG, "set type "+ rightLocalType +" to local "+ leftLocal);
+		                    logger.debug("set type "+ rightLocalType +" to local "+ leftLocal);
 		                    leftLocal.setType(rightLocalType);
 		                    setLocalTyped(leftLocal, rightLocalType);
 		                }
-		                Debug.printDbg(IDalvikTyper.DEBUG, "remove constraint: "+ c);
+		                logger.debug("remove constraint: "+ c);
 		                constraints.remove(c);
 	                    update = true;
 	                    break;
@@ -241,13 +244,13 @@ public class DalvikTyper implements IDalvikTyper {
 		            Local rightLocal = (Local)r;
 		            ArrayRef ar = (ArrayRef)l;
 		            Local base = (Local)ar.getBase();
-		            Debug.printDbg(IDalvikTyper.DEBUG, "base: "+ base);
-		            Debug.printDbg(IDalvikTyper.DEBUG, "index: "+ ar.getIndex());
+		            logger.debug("base: "+ base);
+		            logger.debug("index: "+ ar.getIndex());
 		            if (localTyped.containsKey(base)) {
 		                Type t = localTyped.get(base);
 		                //ArrayType at = (ArrayType) t;
 		                //Type elementType = at.getElementType();
-		                Debug.printDbg(IDalvikTyper.DEBUG, "type of local1: "+ t +" "+ t.getClass());
+		                logger.debug("type of local1: "+ t +" "+ t.getClass());
 		                Type elementType = null;
 		                if (t instanceof ArrayType) {
 		                    ArrayType at = (ArrayType)t;
@@ -258,11 +261,11 @@ public class DalvikTyper implements IDalvikTyper {
 		                }
 		                 
 		                if (!localTyped.containsKey(rightLocal)) {
-		                    Debug.printDbg(IDalvikTyper.DEBUG, "set type "+ elementType +" to local "+ r);
+		                    logger.debug("set type "+ elementType +" to local "+ r);
 		                    rightLocal.setType(elementType);
 		                    setLocalTyped(rightLocal, elementType);
 		                }
-		                Debug.printDbg(IDalvikTyper.DEBUG, "remove constraint: "+ c);
+		                logger.debug("remove constraint: "+ c);
 	                    constraints.remove(c);
 	                    update = true;
 	                    break;
@@ -275,7 +278,7 @@ public class DalvikTyper implements IDalvikTyper {
                         Type t = localTyped.get(base);
                         //ArrayType at = (ArrayType)t;
                         //Type elementType = at.getElementType();
-                        Debug.printDbg(IDalvikTyper.DEBUG, "type of local2: "+ t +" "+ t.getClass());
+                        logger.debug("type of local2: "+ t +" "+ t.getClass());
                         Type elementType = null;
                         if (t instanceof ArrayType) {
                             ArrayType at = (ArrayType)t;
@@ -286,11 +289,11 @@ public class DalvikTyper implements IDalvikTyper {
                         }
                         
                         if (!localTyped.containsKey(leftLocal)) {
-                            Debug.printDbg(IDalvikTyper.DEBUG, "set type "+ elementType +" to local "+ l);
+                            logger.debug("set type "+ elementType +" to local "+ l);
                             leftLocal.setType(elementType);
                             setLocalTyped(leftLocal, elementType);
                         }
-                        Debug.printDbg(IDalvikTyper.DEBUG, "remove constraint: "+ c);
+                        logger.debug("remove constraint: "+ c);
                         constraints.remove(c);
                         update = true;
                         break;
@@ -308,7 +311,7 @@ public class DalvikTyper implements IDalvikTyper {
 		// We assume type in integer.
 		//
 		for (Constraint c: constraints) {
-            Debug.printDbg(IDalvikTyper.DEBUG, "current constraint: "+ c);
+            logger.debug("current constraint: "+ c);
             Value l = c.l.getValue();
             Value r = c.r.getValue();
             if (l instanceof Local && r instanceof Constant) {
@@ -316,14 +319,14 @@ public class DalvikTyper implements IDalvikTyper {
                     UntypedIntOrFloatConstant cst = (UntypedIntOrFloatConstant)r;
                     Value newValue = null;
                     if (cst.value != 0) {
-                        Debug.printDbg(IDalvikTyper.DEBUG, "[untyped constaints] set type int to non zero constant: "+ c +" = "+ cst.value);
+                        logger.debug("[untyped constaints] set type int to non zero constant: "+ c +" = "+ cst.value);
                         newValue = cst.toIntConstant();
                     } else { // check if used in cast, just in case...
                         for (Unit u: b.getUnits()) {
                             for (ValueBox vb1: u.getUseBoxes()) {
                                 Value v1 = vb1.getValue();
                                 if (v1 == l) {
-                                    System.out.println("local used in "+ u);
+                                    logger.info("local used in "+ u);
                                     if (u instanceof AssignStmt) {
                                         AssignStmt a = (AssignStmt)u;
                                         Value right = a.getRightOp();
@@ -341,7 +344,7 @@ public class DalvikTyper implements IDalvikTyper {
                     }
                     c.r.setValue(newValue);
                 } else if (r instanceof UntypedLongOrDoubleConstant) {
-                    Debug.printDbg(IDalvikTyper.DEBUG, "[untyped constaints] set type long to constant: "+ c);
+                    logger.debug("[untyped constaints] set type long to constant: {}",c);
                     Value newValue = ((UntypedLongOrDoubleConstant)r).toLongConstant();
                     c.r.setValue(newValue);
                 }

@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -58,6 +61,8 @@ import soot.util.Chain;
 import soot.util.IterableSet;
 
 public class DavaPrinter {
+	final static Logger logger = LoggerFactory.getLogger(DavaPrinter.class);
+	
     public DavaPrinter(Singletons.Global g) {
     }
     public static DavaPrinter v() {
@@ -67,7 +72,7 @@ public class DavaPrinter {
     private void printStatementsInBody(Body body, java.io.PrintWriter out) {
       
       if (Options.v().verbose())
-        System.out.println("Printing "+body.getMethod().getName());
+        logger.info("Printing {}", body.getMethod().getName());
       
         Chain<Unit> units = ((DavaBody) body).getUnits();
 
@@ -182,19 +187,19 @@ public class DavaPrinter {
             	 * dont import any file which starts with java.lang
             	 */
             	String temp = (String)pit.next();
-            	//System.out.println("temp is "+temp);
+            	//logger.info("temp is "+temp);
             	if(temp.indexOf("java.lang")>-1 ){
             		//problem is that we need to import sub packages java.lang.ref 
             		//for instance if the type is java.lang.ref.WeakReference
             		String tempClassName = RemoveFullyQualifiedName.getClassName(temp);
             		if(temp.equals("java.lang."+tempClassName)){
-            			//System.out.println("temp was not printed as it belongs to java.lang");
+            			//logger.info("temp was not printed as it belongs to java.lang");
             			continue;
             		}
             	}
 
             	if(curPackage.length()>0 && temp.indexOf(curPackage)>-1){
-            		//System.out.println("here  "+temp);
+            		//logger.info("here  "+temp);
             		continue;
             	}
             	
@@ -202,7 +207,7 @@ public class DavaPrinter {
             		continue;
             	               
             	
-            	//System.out.println("printing"+);
+            	//logger.info("printing"+);
             	toImport.add(temp);
 
 
@@ -378,7 +383,7 @@ public class DavaPrinter {
 							out.println("    " + declaration + " = \""+ val + "\";");
 							
 						} else {
-							// System.out.println("Couldnt find type of
+							// logger.info("Couldnt find type of
 							// field"+f.getDeclaration());
 							out.println("    " + declaration + ";");
 						}

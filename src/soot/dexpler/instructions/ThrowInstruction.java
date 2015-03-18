@@ -26,9 +26,10 @@ package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction11x;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.RefType;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -36,7 +37,7 @@ import soot.jimple.Jimple;
 import soot.jimple.ThrowStmt;
 
 public class ThrowInstruction extends DexlibAbstractInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(ThrowInstruction.class);
     ThrowStmt throwStmt = null;
   
     public ThrowInstruction (Instruction instruction, int codeAdress) {
@@ -51,7 +52,7 @@ public class ThrowInstruction extends DexlibAbstractInstruction {
         body.add(throwStmt);
 		
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ throwStmt);
+			logger.debug("constraint: {}", throwStmt);
           DalvikTyper.v().setType(throwStmt.getOpBox(), RefType.v("java.lang.Throwable"), true);
         }
     }

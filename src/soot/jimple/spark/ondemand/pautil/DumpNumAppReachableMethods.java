@@ -37,7 +37,7 @@ public class DumpNumAppReachableMethods extends SceneTransformer {
             final SootMethod m = (SootMethod) mIt.next();
 
             if (isAppMethod(m)) {
-                // System.out.println(m);
+                // logger.info(m);
                 // assert OnFlyCallGraphBuilder.processedMethods.contains(m) : m
                 // + " not processed!!";
                 numAppMethods++;

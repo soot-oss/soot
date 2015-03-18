@@ -5,7 +5,11 @@ import soot.toolkits.graph.*;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.tagkit.*;
 import soot.util.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -19,7 +23,8 @@ import java.util.*;
 // -Richard L. Halpert, 2006-11-30
 
 public class DfsForBackEdge{
-	
+	final static Logger logger = LoggerFactory.getLogger(DfsForBackEdge.class);
+
 	private final Map<Object, Object> backEdges = new HashMap<Object, Object>();    
 	private final Set<Object> gray = new HashSet<Object>();
 	private final Set<Object> black = new HashSet<Object>();
@@ -51,7 +56,7 @@ public class DfsForBackEdge{
 	}
 	
 	private void visitNode(DirectedGraph g, Object s ){
-		//	System.out.println("s is: "+ s);
+		//	logger.info("s is: "+ s);
 		gray.add(s);
 		Iterator it = g.getSuccsOf(s).iterator();
 		
@@ -70,8 +75,8 @@ public class DfsForBackEdge{
 						 */
 						FlowSet dominators = domFinder.getDominatorsOf(s);
 						if (dominators.contains(succ)){
-							System.out.println("s is "+s);
-							System.out.println("succ is "+succ);
+							logger.info("s is {}",s);
+							logger.info("succ is {}",succ);
 							backEdges.put(s, succ);
 						}
 					}
@@ -88,18 +93,18 @@ public class DfsForBackEdge{
 	}
 	
 	private void testBackEdge(){
-		System.out.println("===test backEdges==");
+		logger.info("===test backEdges==");
 		Set maps = backEdges.entrySet();
 		for(Iterator iter=maps.iterator(); iter.hasNext();){
 			Map.Entry entry = (Map.Entry)iter.next();
 			JPegStmt key = (JPegStmt)entry.getKey();
 			Tag tag = (Tag)key.getTags().get(0);
-			System.out.println("---key=  "+tag+" "+key);
+			logger.info("---key=  {} {}",tag,key);
 			JPegStmt  value = (JPegStmt)entry.getValue();
 			Tag tag1 = (Tag)value.getTags().get(0);
-			System.out.println("---value=  "+tag1+" "+value);
+			logger.info("---value=  {} {}",tag1,value);
 		}
-		System.out.println("===test backEdges==end==");
+		logger.info("===test backEdges==end==");
 	}
 	
 }

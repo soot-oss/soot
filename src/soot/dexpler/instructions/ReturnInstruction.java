@@ -26,9 +26,10 @@ package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction11x;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Local;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -36,7 +37,7 @@ import soot.jimple.Jimple;
 import soot.jimple.ReturnStmt;
 
 public class ReturnInstruction extends DexlibAbstractInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(ReturnInstruction.class);
     ReturnStmt returnStmt = null;
   
     public ReturnInstruction (Instruction instruction, int codeAdress) {
@@ -52,7 +53,7 @@ public class ReturnInstruction extends DexlibAbstractInstruction {
         body.add(returnStmt);
 		
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ returnStmt);
+			logger.debug("constraint: {}", returnStmt);
           DalvikTyper.v().setType(returnStmt.getOpBox(), body.getBody().getMethod().getReturnType(), true);
         }
     }

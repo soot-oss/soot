@@ -83,12 +83,12 @@ public class ConstructNumbersMetric extends ASTMetric {
 			Stmt temp = ifNode.alternative();
 			if(temp == null){
 				//else branch is empty
-				//System.out.println("This was an if stmt"+n);
+				//logger.info("This was an if stmt"+n);
 				numIf++;
 			}
 			else{
 				//else branch has something
-				//System.out.println("This was an ifElse stmt"+n);
+				//logger.info("This was an ifElse stmt"+n);
 				numIfElse++;
 			}
 		}
@@ -98,9 +98,9 @@ public class ConstructNumbersMetric extends ASTMetric {
 		 */
 		if (n instanceof Labeled){
 				Stmt s = ((Labeled)n).statement();
-				//System.out.println("labeled"+((Labeled)n).label());
+				//logger.info("labeled"+((Labeled)n).label());
 				if(s instanceof Block){
-					//System.out.println("labeled block with label"+((Labeled)n).label());
+					//logger.info("labeled block with label"+((Labeled)n).label());
 					numLabeledBlocks++;
 				}
 		}
@@ -109,14 +109,14 @@ public class ConstructNumbersMetric extends ASTMetric {
 		 * Do
 		 */	
 		if(n instanceof Do){
-			//System.out.println((Do)n);
+			//logger.info((Do)n);
 			doLoop++;
 		}
 		/*
 		 * For
 		 */	
 		if(n instanceof For){
-			//System.out.println((For)n);
+			//logger.info((For)n);
 			forLoop++;
 		}
 
@@ -124,7 +124,7 @@ public class ConstructNumbersMetric extends ASTMetric {
 		 * While and While True loop
 		 */	
 		if(n instanceof While){
-			//System.out.println((While)n);
+			//logger.info((While)n);
 			if(((While)n).condIsConstantTrue())
 				whileTrue++;
 			else

@@ -28,7 +28,12 @@ package soot.jimple.toolkits.thread.mhp;
 
 import soot.util.dot.*;
 import soot.util.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.tagkit.*;
 
@@ -47,6 +52,8 @@ import soot.tagkit.*;
 
 public class PegToDotFile {
 	
+	final static Logger logger = LoggerFactory.getLogger(PegToDotFile.class);
+
 	/* make all control fields public, allow other soot class dump 
 	 * the graph in the middle */
 	
@@ -86,7 +93,7 @@ public class PegToDotFile {
 		
 		// file name is the method name + .dot
 		DotGraph canvas = new DotGraph(methodname);
-		//System.out.println("onepage is:"+onepage);
+		//logger.info("onepage is:"+onepage);
 		if (!onepage) {
 			canvas.setPageSize(8.5, 11.0);
 		}
@@ -141,24 +148,24 @@ public class PegToDotFile {
 				}
 				
 				canvas.drawEdge(nodeName, succName);
-				//System.out.println("main: nodeName: "+nodeName);
-				//System.out.println("main: succName: "+succName);
+				//logger.info("main: nodeName: "+nodeName);
+				//logger.info("main: succName: "+succName);
 			}     
 			
 		}
-		System.out.println("Drew main chain");
+		logger.info("Drew main chain");
 		
 		//graph for thread
 		
-		System.out.println("while printing, startToThread has size " + graph.getStartToThread().size());
+		logger.info("while printing, startToThread has size {}", graph.getStartToThread().size());
 		Set maps = graph.getStartToThread().entrySet();
-		System.out.println("maps has size " + maps.size());
+		logger.info("maps has size {}", maps.size());
 		for(Iterator iter=maps.iterator(); iter.hasNext();){
 			Map.Entry entry = (Map.Entry)iter.next();
 			Object startNode= entry.getKey();
-			System.out.println("startNode is: "+startNode);
+			logger.info("startNode is: {}",startNode);
 			String startNodeName = startNodeToName.get(startNode);
-			System.out.println("startNodeName is: "+startNodeName);
+			logger.info("startNodeName is: {}",startNodeName);
 			
 			List runMethodChainList = (List)entry.getValue();
 			Iterator it = runMethodChainList.iterator();
@@ -169,14 +176,14 @@ public class PegToDotFile {
 				while (subNodesIt.hasNext()) {
 					Object node = subNodesIt.next();
 					//JPegStmt node = (JPegStmt)subNodesIt.next();
-					//System.out.println(node);
+					//logger.info(node);
 					
 					
 					String nodeName = null;
 					if (node instanceof List){
 						
 						nodeName = makeNodeName(getNodeOrder(nodeindex,  listNodeName.get(node)));
-						System.out.println("Didn't draw list node");
+						logger.info("Didn't draw list node");
 						// need to draw these nodes!!!   
 					}
 					else{
@@ -191,9 +198,9 @@ public class PegToDotFile {
 						
 						if (firstNode){
 							if (startNodeName==null)
-								System.out.println("00000000startNodeName is null ");   
+								logger.info("00000000startNodeName is null ");   
 							if (nodeName == null)
-								System.out.println("00000000nodeName is null ");
+								logger.info("00000000nodeName is null ");
 							//			DotGraphEdge startThreadEdge = canvas.drawEdge(startNodeName, threadNodeName);
 							DotGraphEdge startThreadEdge = canvas.drawEdge(startNodeName, nodeName);	
 							startThreadEdge.setStyle("dotted");
@@ -223,8 +230,8 @@ public class PegToDotFile {
 						// 	    makeNodeName(getNodeOrder(nodeindex, succTag+" "+succ)));
 						
 						canvas.drawEdge(nodeName, threadNodeName);
-						//System.out.println(" nodeName: "+nodeName);
-						//System.out.println(" threadNdoeName: "+threadNodeName);
+						//logger.info(" nodeName: "+nodeName);
+						//logger.info(" threadNdoeName: "+threadNodeName);
 						// canvas.drawEdge(threadNodeName, 
 						//	    makeNodeName(getNodeOrder(nodeindex,succ)));
 						
@@ -257,17 +264,17 @@ public class PegToDotFile {
 	
 	private static int getNodeOrder(Hashtable<Object,Integer> nodeindex, Object node){
 		if (node == null ) {  
-			System.out.println("----node is null-----");
+			logger.info("----node is null-----");
 			return 0;
 //			System.exit(1); // RLH
 		}
-		//System.out.println("node is: "+node);
+		//logger.info("node is: "+node);
 		Integer index = nodeindex.get(node);
 		if (index == null) {
 			index = new Integer(nodecount++);
 			nodeindex.put(node, index);
 		}
-		//System.out.println("order is:"+index.intValue());
+		//logger.info("order is:"+index.intValue());
 		return index.intValue();
 	}
 	

@@ -21,6 +21,9 @@ package soot.jbco;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jbco.bafTransformations.*;
 import soot.jbco.jimpleTransformations.*;
@@ -31,6 +34,7 @@ import soot.jbco.jimpleTransformations.*;
  */
 public class Main {
 
+	final static Logger logger = LoggerFactory.getLogger(Main.class);
   public static boolean jbcoDebug = false;
   public static boolean jbcoSummary = true;
   public static boolean jbcoVerbose = false;

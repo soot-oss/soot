@@ -27,7 +27,7 @@ public class LoopBodyFinder{
 			Map.Entry entry = (Map.Entry)iter.next();
 			Object tail = entry.getKey();
 			//Tag tag = (Tag)key.getTags().get(0);
-			// System.out.println("---key=  "+tag+" "+key);
+			// logger.info("---key=  "+tag+" "+key);
 			Object  head  = entry.getValue();
 			Set<Object> loopBody = finder(tail, head, g); 
 			loops.add(loopBody);

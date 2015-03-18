@@ -560,12 +560,12 @@ public class SourceLocator
             // class is an inner class and will be in
             // Outer of Outer$Inner
             javaClassName = className.substring(0, className.indexOf("$"));
-            //System.out.println("cut off inner class: look for: "+javaClassName);
+            //logger.info("cut off inner class: look for: "+javaClassName);
         }
         // always do this because an inner class could be in a class
         // thats in the map
         if (sourceToClassMap != null) {
-            //System.out.println("in source map: "+sourceToClassMap);
+            //logger.info("in source map: "+sourceToClassMap);
             if (sourceToClassMap.get(javaClassName) != null) {
                 javaClassName = sourceToClassMap.get(javaClassName);
             }

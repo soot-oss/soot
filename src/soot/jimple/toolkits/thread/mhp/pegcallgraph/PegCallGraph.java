@@ -49,12 +49,12 @@ public class PegCallGraph implements DirectedGraph{
 	
 	protected void testChain()
 	{
-		System.out.println("******** chain of pegcallgraph********");
+		logger.info("******** chain of pegcallgraph********");
 		Iterator it = chain.iterator();
 		while (it.hasNext()) {
 			SootMethod sm = (SootMethod)it.next();
-			System.out.println(sm);
-			//System.out.println("name: "+sm.getName());	
+			logger.info(sm);
+			//logger.info("name: "+sm.getName());	
 		}
 	}
 	public Set getClinitMethods(){
@@ -83,7 +83,7 @@ public class PegCallGraph implements DirectedGraph{
 						succsList.add(target);
 						if (!chain.contains(target)){
 							chain.add(target);
-							//			    System.out.println("add: "+target);
+							//			    logger.info("add: "+target);
 						}
 						if (edge.isClinit()){
 							clinitMethods.add(target);
@@ -92,7 +92,7 @@ public class PegCallGraph implements DirectedGraph{
 						
 					}
 				}
-				//if (succsList == null) System.out.println("null succsList");
+				//if (succsList == null) logger.info("null succsList");
 				if (succsList.size()>0 ) methodToSuccs.put(sm, succsList);
 			}
 		}
@@ -108,7 +108,7 @@ public class PegCallGraph implements DirectedGraph{
 				
 				if (!methodToSuccs.containsKey(sm)){
 					methodToSuccs.put(sm, new ArrayList());
-					//System.out.println("put: "+sm+"into methodToSuccs");
+					//logger.info("put: "+sm+"into methodToSuccs");
 				}
 			}
 		}
@@ -134,7 +134,7 @@ public class PegCallGraph implements DirectedGraph{
 			while(chainIt.hasNext()){
 				
 				SootMethod s =  (SootMethod)chainIt.next();
-				//		System.out.println(s);
+				//		logger.info(s);
 				if (methodToSuccs.containsKey(s)){
 					methodToSuccs.put(s, Collections.unmodifiableList(methodToSuccs.get(s)));
 				}
@@ -173,12 +173,12 @@ public class PegCallGraph implements DirectedGraph{
 						Object successor =  succIt.next();
 						
 						List<Object> predList = methodToPreds.get(successor);
-						//  if (predList == null) System.out.println("null predList");
-						//if (s == null) System.out.println("null s");
+						//  if (predList == null) logger.info("null predList");
+						//if (s == null) logger.info("null s");
 						try {
 							predList.add(s);
 						} catch(NullPointerException e) {
-							System.out.println(s + "successor: " + successor);
+							logger.info(s + "successor: " + successor);
 							throw e;
 						}
 					}
@@ -250,46 +250,46 @@ public class PegCallGraph implements DirectedGraph{
 	}
 	
 	protected void testMethodToSucc(){
-		System.out.println("=====test methodToSucc ");
+		logger.info("=====test methodToSucc ");
 		Set maps = methodToSuccs.entrySet();
 		for(Iterator iter=maps.iterator(); iter.hasNext();){
 			Map.Entry entry = (Map.Entry)iter.next();
-			System.out.println("---key=  "+entry.getKey());
+			logger.info("---key=  "+entry.getKey());
 			List list = (List)entry.getValue();
 			if (list.size()>0){
 				
-				System.out.println("**succ set:");
+				logger.info("**succ set:");
 				Iterator it = list.iterator();
 				while (it.hasNext()){
-					System.out.println(it.next());
+					logger.info(it.next());
 					
 					
 				}
 				
 			}
 		}
-		System.out.println("=========methodToSucc--ends--------");	
+		logger.info("=========methodToSucc--ends--------");	
 	}
 	protected void testMethodToPred(){
-		System.out.println("=====test methodToPred ");
+		logger.info("=====test methodToPred ");
 		Set maps = methodToPreds.entrySet();
 		for(Iterator iter=maps.iterator(); iter.hasNext();){
 			Map.Entry entry = (Map.Entry)iter.next();
-			System.out.println("---key=  "+entry.getKey());
+			logger.info("---key=  "+entry.getKey());
 			List list = (List)entry.getValue();
 			if (list.size()>0){
 				
-				System.out.println("**pred set:");
+				logger.info("**pred set:");
 				Iterator it = list.iterator();
 				while (it.hasNext()){
-					System.out.println(it.next());
+					logger.info(it.next());
 					
 					
 				}
 				
 			}
 		}
-		System.out.println("=========methodToPred--ends--------");	
+		logger.info("=========methodToPred--ends--------");	
 	}
 	
 }

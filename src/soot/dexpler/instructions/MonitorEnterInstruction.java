@@ -26,10 +26,11 @@ package soot.dexpler.instructions;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Local;
 import soot.RefType;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -37,7 +38,7 @@ import soot.jimple.EnterMonitorStmt;
 import soot.jimple.Jimple;
 
 public class MonitorEnterInstruction extends DexlibAbstractInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(MonitorEnterInstruction.class);
     EnterMonitorStmt enterMonitorStmt = null;
   
     public MonitorEnterInstruction (Instruction instruction, int codeAdress) {
@@ -53,7 +54,7 @@ public class MonitorEnterInstruction extends DexlibAbstractInstruction {
         body.add(enterMonitorStmt);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ enterMonitorStmt);
+			logger.debug("constraint: {}", enterMonitorStmt);
 			DalvikTyper.v().setType(enterMonitorStmt.getOpBox(), RefType.v("java.lang.Object"), true);
         }
     }

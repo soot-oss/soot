@@ -298,7 +298,7 @@ public class SharedListSet extends PointsToSetInternal
 		{
 			++refCount;
 			//Get an idea of how much sharing is taking place
-//			System.out.println(refCount);
+//			logger.info(refCount);
 		}
 		public void decRefCount()
 		{

@@ -108,7 +108,7 @@ public class heuristicTuple{
 
 	temp=temp.concat("  Class: "+objectClassName.toString());
 
-	//System.out.println("TUPLE:"+temp);
+	//logger.info("TUPLE:"+temp);
 	return temp;
     }
 

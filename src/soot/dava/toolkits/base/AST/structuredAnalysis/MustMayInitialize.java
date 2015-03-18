@@ -81,7 +81,7 @@ public class MustMayInitialize extends StructuredAnalysis {
 		mapping = new HashMap<Object, List>();
 		MUSTMAY = MUSTorMAY;
 
-		// System.out.println("MustOrMay value is"+MUSTorMAY);
+		// logger.info("MustOrMay value is"+MUSTorMAY);
 		setMergeType();
 		// the input to the process method is an empty DavaFlow Set meaning
 		// out(start) ={} (no var initialized)
@@ -96,13 +96,13 @@ public class MustMayInitialize extends StructuredAnalysis {
 	}
 
 	public void setMergeType() {
-		// System.out.println("here"+MUSTMAY);
+		// logger.info("here"+MUSTMAY);
 		if (MUSTMAY == MUST) {
 			MERGETYPE = INTERSECTION;
-			// System.out.println("MERGETYPE set to intersection");
+			// logger.info("MERGETYPE set to intersection");
 		} else if (MUSTMAY == MAY) {
 			MERGETYPE = UNION;
-			// System.out.println("MERGETYPE set to union");
+			// logger.info("MERGETYPE set to union");
 		} else
 			throw new DavaFlowAnalysisException("Only allowed 0 or 1 for MUST or MAY values");
 	}

@@ -30,11 +30,12 @@ import java.util.List;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.SwitchElement;
 import org.jf.dexlib2.iface.instruction.formats.PackedSwitchPayload;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -44,7 +45,7 @@ import soot.jimple.LookupSwitchStmt;
 import soot.jimple.Stmt;
 
 public class PackedSwitchInstruction extends SwitchInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(PackedSwitchInstruction.class);
     LookupSwitchStmt switchStmt = null;
 
     public PackedSwitchInstruction (Instruction instruction, int codeAdress) {
@@ -70,7 +71,7 @@ public class PackedSwitchInstruction extends SwitchInstruction {
         setUnit(switchStmt);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ switchStmt);
+			logger.debug("constraint: {}", switchStmt);
             DalvikTyper.v().setType(switchStmt.getKeyBox(), IntType.v(), true);
         }
         

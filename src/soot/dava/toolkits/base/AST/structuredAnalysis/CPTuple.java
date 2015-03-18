@@ -121,7 +121,7 @@ public class CPTuple{
 
 	
 	public void  setValue(Object constant){
-		//System.out.println("here currently valued as"+this.constant);
+		//logger.info("here currently valued as"+this.constant);
 		if( ! (constant instanceof Float || constant instanceof Double || constant instanceof Long || 
 				constant instanceof Boolean || constant instanceof Integer))
 			throw new DavaFlowAnalysisException("argument to setValue not an acceptable constant value...report to developer");
@@ -155,7 +155,7 @@ public class CPTuple{
 	    		return false;
 
 	    	if(sootClass.equals(var.getSootClassName()) && variable.equals(var.getVariable()) && constant.equals(var.getValue())  ){
-	    		//System.out.println("constant value "+constant.toString() + " is equal to "+ var.toString());
+	    		//logger.info("constant value "+constant.toString() + " is equal to "+ var.toString());
 	    		return true;
 	    	}
 	    }

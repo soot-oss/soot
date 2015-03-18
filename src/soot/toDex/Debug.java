@@ -31,7 +31,7 @@ public class Debug {
       for (Object o: objects) {
         s += o.toString();
       }
-      System.out.println (s);
+      logger.info (s);
     }
       
   }

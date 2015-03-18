@@ -24,6 +24,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.ArrayType;
 import soot.Local;
 import soot.RefLikeType;
@@ -35,7 +38,7 @@ import soot.util.Chain;
 
 
 public class Renamer {
-	public final boolean DEBUG = false;
+	final static Logger logger = LoggerFactory.getLogger(Renamer.class);
 	heuristicSet heuristics;
 
 	List locals; // a list of locals in scope
@@ -369,7 +372,7 @@ public class Renamer {
 
 				if(isUniqueName(newName)){
 					setName(tempLocal,newName);
-//					System.out.println("Changed "+currentName+" to "+newName);
+//					logger.info("Changed "+currentName+" to "+newName);
 					//tempLocal.setName(newName);
 				}
 			}
@@ -611,9 +614,7 @@ public class Renamer {
 	}
 
 	public void debug(String methodName, String debug){
-		
-		if(DEBUG)
-			System.out.println(methodName+ "    DEBUG: "+debug);
+			logger.info("{} {}",methodName, debug);
 	}
 	
 }

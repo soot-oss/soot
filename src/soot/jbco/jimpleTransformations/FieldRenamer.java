@@ -20,6 +20,10 @@
 package soot.jbco.jimpleTransformations;
 
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.*;
@@ -31,6 +35,7 @@ import soot.jimple.*;
  * Created on 26-Jan-2006 
  */
 public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
+	final static Logger logger = LoggerFactory.getLogger(FieldRenamer.class);
 
   public void outputSummary() {}
   
@@ -160,7 +165,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
                 continue;
               
               if (newName.equals(oldName)) {
-                System.out.println("Strange.. Should not find a field with the same old and new name.");
+                logger.info("Strange.. Should not find a field with the same old and new name.");
               }
               sfr = scene.makeFieldRef(sfr.declaringClass(), newName, sfr.type(), sfr.isStatic());
               fr.setFieldRef(sfr);
@@ -168,10 +173,10 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
                 sfr.resolve();
               } catch (Exception exc)
               {
-                System.out.println("********ERROR Updating "+sfr.name()+" to "+newName);
-                System.out.println("Fields of "+sfr.declaringClass().getName() + ": "+sfr.declaringClass().getFields());
-                //System.out.println("Fields of "+_c.getName() + ": "+_c.getFields());
-                System.out.println(exc);
+                logger.error("********ERROR Updating {} to {}",sfr.name(),newName);
+                logger.error("Fields of {}: {}",sfr.declaringClass().getName(),sfr.declaringClass().getFields());
+                //logger.info("Fields of "+_c.getName() + ": "+_c.getFields());
+                logger.error("{}",exc);
                 System.exit(1);
               }
             }

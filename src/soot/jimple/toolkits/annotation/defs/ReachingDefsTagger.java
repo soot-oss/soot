@@ -42,13 +42,13 @@ public class ReachingDefsTagger extends BodyTransformer {
         Iterator it = b.getUnits().iterator();
         while (it.hasNext()){
             Stmt s = (Stmt)it.next();
-            //System.out.println("stmt: "+s);
+            //logger.info("stmt: "+s);
             Iterator usesIt = s.getUseBoxes().iterator();
             while (usesIt.hasNext()){
                 ValueBox vbox = (ValueBox)usesIt.next();
                 if (vbox.getValue() instanceof Local) {
                     Local l = (Local)vbox.getValue();
-                    //System.out.println("local: "+l);
+                    //logger.info("local: "+l);
                     Iterator<Unit> rDefsIt = sld.getDefsOfAt(l, s).iterator();
                     while (rDefsIt.hasNext()){
                         Stmt next = (Stmt)rDefsIt.next();

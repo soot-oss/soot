@@ -48,6 +48,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Local;
 import soot.Value;
 import soot.dava.internal.AST.ASTAggregatedCondition;
@@ -84,12 +87,9 @@ import soot.jimple.Stmt;
  * (Nomair 16th November 2005)
  */
 public abstract class StructuredAnalysis {
+	final static Logger logger = LoggerFactory.getLogger(StructuredAnalysis.class);
+			
 
-	public static boolean DEBUG = false;
-	public static boolean DEBUG_IF = false;
-	public static boolean DEBUG_WHILE = false;
-	public static boolean DEBUG_STATEMENTS = false;
-	public static boolean DEBUG_TRY = false;
 	/*
 	 * public static boolean DEBUG = true; public static boolean DEBUG_IF =
 	 * true; public static boolean DEBUG_WHILE = true; public static boolean
@@ -115,7 +115,7 @@ public abstract class StructuredAnalysis {
 		// invoke user defined function which makes sure that you have the merge
 		// operator set
 		setMergeType();
-		// System.out.println("MergeType is"+MERGETYPE);
+		// logger.info("MergeType is"+MERGETYPE);
 		if (MERGETYPE == UNDEFINED)
 			throw new RuntimeException("MERGETYPE UNDEFINED");
 	}
@@ -171,7 +171,7 @@ public abstract class StructuredAnalysis {
 	public abstract DavaFlowSet processSwitchKey(Value key, DavaFlowSet input);
 
 	public void print(Object toPrint) {
-		System.out.println(toPrint.toString());
+		logger.info(toPrint.toString());
 	}
 
 	/**
@@ -338,7 +338,7 @@ public abstract class StructuredAnalysis {
 
 			DavaFlowSet temp = NOPATH;
 			SETNodeLabel nodeLabel = abStmt.getLabel();
-			// System.out.println("here");
+			// logger.info("here");
 			if (nodeLabel != null && nodeLabel.toString() != null) {
 				// explicit abrupt stmt
 				if (abStmt.is_Continue())
@@ -392,10 +392,7 @@ public abstract class StructuredAnalysis {
 			 * previous is input of next
 			 */
 			output = process(s, output);
-			if (DEBUG_STATEMENTS) {
-				System.out.println("After Processing statement " + s + output.toString());
-				;
-			}
+				logger.debug("After Processing statement " + s + output.toString());
 		}
 		return output;
 	}
@@ -431,10 +428,8 @@ public abstract class StructuredAnalysis {
 
 		DavaFlowSet temp = handleBreak(label, output2, node);
 
-		if (DEBUG_IF) {
-			System.out.println("Exiting if node" + temp.toString());
-			;
-		}
+		logger.debug("Exiting if node {}", temp.toString());
+			
 		return temp;
 	}
 
@@ -474,8 +469,7 @@ public abstract class StructuredAnalysis {
 		DavaFlowSet output = null;
 
 		input = processCondition(node.get_Condition(), input);
-		if (DEBUG_WHILE)
-			System.out.println("Going int while (condition processed): " + input.toString());
+		logger.debug("Going int while (condition processed): {}", input.toString());
 
 		do {
 			lastin = cloneFlowSet(input);
@@ -491,8 +485,7 @@ public abstract class StructuredAnalysis {
 
 		// input contains the result of the fixed point
 		DavaFlowSet temp = handleBreak(label, input, node);
-		if (DEBUG_WHILE)
-			System.out.println("Going out of while: " + temp.toString());
+		logger.debug("Going out of while: {}", temp.toString());
 		return temp;
 	}
 
@@ -500,8 +493,7 @@ public abstract class StructuredAnalysis {
 		DavaFlowSet lastin = null, output = null;
 		DavaFlowSet initialInput = cloneFlowSet(input);
 		String label = getLabel(node);
-		if (DEBUG_WHILE)
-			System.out.println("Going into do-while: " + initialInput.toString());
+		logger.debug("Going into do-while: {}", initialInput.toString());
 
 		do {
 			lastin = cloneFlowSet(input);
@@ -519,8 +511,7 @@ public abstract class StructuredAnalysis {
 		// output contains the result of the fixed point since do-while breaks
 		// of at the processing of cond
 		DavaFlowSet temp = handleBreak(label, output, node);
-		if (DEBUG_WHILE)
-			System.out.println("Going out of do-while: " + temp.toString());
+		logger.debug("Going out of do-while: {}", temp.toString());
 
 		return temp;
 
@@ -530,8 +521,7 @@ public abstract class StructuredAnalysis {
 		// an unconditional loop behaves almost like a conditional While loop
 		DavaFlowSet initialInput = cloneFlowSet(input);
 		DavaFlowSet lastin = null;
-		if (DEBUG_WHILE)
-			System.out.println("Going into while(true): " + initialInput.toString());
+		logger.debug("Going into while(true): {}", initialInput.toString());
 
 		String label = getLabel(node);
 		DavaFlowSet output = null;
@@ -550,8 +540,7 @@ public abstract class StructuredAnalysis {
 		// it is just used to retrieve the set of breaklists stored for this
 		// label
 		DavaFlowSet temp = getMergedBreakList(label, output, node);
-		if (DEBUG_WHILE)
-			System.out.println("Going out of while(true): " + temp.toString());
+		logger.debug("Going out of while(true): {}", temp.toString());
 		return temp;
 
 	}
@@ -615,8 +604,7 @@ public abstract class StructuredAnalysis {
 	 * bound to have empty or full sets
 	 */
 	public DavaFlowSet processASTSwitchNode(ASTSwitchNode node, DavaFlowSet input) {
-		if (DEBUG)
-			System.out.println("Going into switch: " + input.toString());
+		logger.debug("Going into switch: {}", input.toString());
 
 		List<Object> indexList = node.getIndexList();
 		Map<Object, List<Object>> index2BodyList = node.getIndex2BodyList();
@@ -641,7 +629,7 @@ public abstract class StructuredAnalysis {
 			if (body != null) {
 				out = process(body, input);
 
-				// System.out.println("Breaklist for this out is"+out.getBreakList());
+				// logger.info("Breaklist for this out is"+out.getBreakList());
 				toMergeBreaks.add(cloneFlowSet(out));
 
 				if (currentIndex instanceof String) {
@@ -668,9 +656,9 @@ public abstract class StructuredAnalysis {
 			 */
 			if (defaultOut != null) {
 				// there was a default
-				// System.out.println("DEFAULTSET");
-				// System.out.println("defaultOut is"+defaultOut);
-				// System.out.println("out is"+out);
+				// logger.info("DEFAULTSET");
+				// logger.info("defaultOut is"+defaultOut);
+				// logger.info("out is"+out);
 
 				output = merge(defaultOut, out);
 			} else {
@@ -697,28 +685,25 @@ public abstract class StructuredAnalysis {
 		for (DavaFlowSet outIt : outList)
 			finalOut = merge(finalOut, outIt);
 
-		if (DEBUG)
-			System.out.println("Going out of switch: " + finalOut.toString());
+		logger.debug("Going out of switch: {}", finalOut.toString());
 
 		return finalOut;
 	}
 
 	public DavaFlowSet processASTTryNode(ASTTryNode node, DavaFlowSet input) {
-		if (DEBUG_TRY)
-			System.out.println("TRY START is:" + input);
+		logger.debug("TRY START is:{}", input);
 
-		// System.out.println("SET beginning of tryBody is:"+input);
+		// logger.info("SET beginning of tryBody is:"+input);
 		List<Object> tryBody = node.get_TryBody();
 		DavaFlowSet tryBodyOutput = process(tryBody, input);
-		// System.out.println("SET end of tryBody is:"+tryBodyOutput);
+		// logger.info("SET end of tryBody is:"+tryBodyOutput);
 
 		/*
 		 * By default take either top or bottom as the input to the catch
 		 * statements Which goes in depends on the type of analysis.
 		 */
 		DavaFlowSet inputCatch = newInitialFlow();
-		if (DEBUG_TRY)
-			System.out.println("TRY initialFLOW is:" + inputCatch);
+		logger.debug("TRY initialFLOW is:{}", inputCatch);
 
 		List<Object> catchList = node.get_CatchList();
 		Iterator<Object> it = catchList.iterator();
@@ -732,7 +717,7 @@ public abstract class StructuredAnalysis {
 
 			// result because of going through the catchBody
 			DavaFlowSet tempResult = process(body, cloneFlowSet(inputCatch));
-			// System.out.println("TempResult going through body"+tempResult);
+			// logger.info("TempResult going through body"+tempResult);
 			catchOutput.add(tempResult);
 		}
 
@@ -755,14 +740,13 @@ public abstract class StructuredAnalysis {
 
 		// handle breaks out of tryBodyOutput
 		outList.add(handleBreak(label, tryBodyOutput, node));
-		// System.out.println("After handling break from tryBodyOutput"+outList.get(0));
+		// logger.info("After handling break from tryBodyOutput"+outList.get(0));
 
 		// handling breakLists of each of the catchOutputs
 		for (DavaFlowSet co : catchOutput) {
 			DavaFlowSet temp = handleBreak(label, co, node);
 
-			if (DEBUG_TRY)
-				System.out.println("TRY handling breaks is:" + temp);
+			logger.debug("TRY handling breaks is:{}", temp);
 
 			outList.add(temp);
 		}
@@ -773,16 +757,14 @@ public abstract class StructuredAnalysis {
 		for (DavaFlowSet co : outList)
 			out = merge(out, co);
 		
-		if (DEBUG_TRY)
-			System.out.println("TRY after merge outList is:" + out);
+		logger.debug("TRY after merge outList is:",out);
 
-		// System.out.println("After handling break"+out);
+		// logger.info("After handling break"+out);
 
 		for (DavaFlowSet co : catchOutput)
 			out = merge(out, co);
 		
-		if (DEBUG_TRY)
-			System.out.println("TRY END RESULT is:" + out);
+		logger.debug("TRY END RESULT is:{}",out);
 
 		return out;
 	}
@@ -868,13 +850,13 @@ public abstract class StructuredAnalysis {
 	public DavaFlowSet handleBreak(String label, DavaFlowSet out, ASTNode node) {
 		// get the explicit list with this label from the breakList
 		List<DavaFlowSet> explicitSet = out.getBreakSet(label);
-		// System.out.println("\n\nExplicit set is"+explicitSet);
+		// logger.info("\n\nExplicit set is"+explicitSet);
 		// getting the implicit list now
 		if (node == null)
 			throw new RuntimeException("ASTNode sent to handleBreak was null");
 
 		List<DavaFlowSet> implicitSet = out.getImplicitlyBrokenSets(node);
-		// System.out.println("\n\nImplicit set is"+implicitSet);
+		// logger.info("\n\nImplicit set is"+implicitSet);
 
 		// invoke mergeExplicitAndImplicit
 		return mergeExplicitAndImplicit(label, out, explicitSet, implicitSet);
@@ -959,12 +941,12 @@ public abstract class StructuredAnalysis {
 	public boolean isDifferent(DavaFlowSet oldObj, DavaFlowSet newObj) {
 		if (oldObj.equals(newObj) && oldObj.internalDataMatchesTo(newObj)) {
 			// set matches and breaks and continues also match
-			// System.out.println("NOT DIFFERENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			// logger.info("NOT DIFFERENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			return false;
 		} else {
-			// System.out.println(oldObj);
-			// System.out.println(newObj);
-			// System.out.println("DIFFERENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
+			// logger.info(oldObj);
+			// logger.info(newObj);
+			// logger.info("DIFFERENT!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 			return true;
 		}
 	}
@@ -987,13 +969,11 @@ public abstract class StructuredAnalysis {
 	}
 
 	public void debug(String methodName, String debug) {
-		if (DEBUG)
-			System.out.println("Class: StructuredAnalysis MethodName: " + methodName + "    DEBUG: " + debug);
+		logger.debug("Class: StructuredAnalysis MethodName: {}    DEBUG: {}",methodName, debug);
 	}
 
 	public void debug(String debug) {
-		if (DEBUG)
-			System.out.println("Class: StructuredAnalysis DEBUG: " + debug);
+		logger.debug("Class: StructuredAnalysis DEBUG: {}", debug);
 	}
 
 }

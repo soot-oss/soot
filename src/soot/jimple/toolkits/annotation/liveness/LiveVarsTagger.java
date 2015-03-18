@@ -39,7 +39,7 @@ public class LiveVarsTagger extends BodyTransformer {
         Iterator it = b.getUnits().iterator();
         while (it.hasNext()){
             Stmt s = (Stmt)it.next();
-            //System.out.println("stmt: "+s);
+            //logger.info("stmt: "+s);
             Iterator liveLocalsIt = sll.getLiveLocalsAfter(s).iterator();
             while (liveLocalsIt.hasNext()){
                 Value v = (Value)liveLocalsIt.next();

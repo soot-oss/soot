@@ -52,7 +52,7 @@ public class MethodExtentBuilder {
 	}
 	
 	private void computeForMethodInlining(SootMethod targetMethod, CallGraph cg){
-//		System.out.println("method:  "+targetMethod);
+//		logger.info("method:  "+targetMethod);
 		
 		if (targetMethod.isSynchronized()){
 			methodsNeedingInlining.add(targetMethod);
@@ -66,13 +66,13 @@ public class MethodExtentBuilder {
 			if (stmt instanceof MonitorStmt) {
 //				methodsNeedingInlining.put(targetMethod, new Boolean(true));
 				methodsNeedingInlining.add(targetMethod);		
-				//System.out.println("put: "+targetMethod);
+				//logger.info("put: "+targetMethod);
 				return;
 				//return true;
 			}
 			else {
 				if (stmt.containsInvokeExpr()){
-					//System.out.println("stmt is: "+stmt);
+					//logger.info("stmt is: "+stmt);
 					Value invokeExpr =(stmt).getInvokeExpr();
 					
 					SootMethod method = ((InvokeExpr)invokeExpr).getMethod();
@@ -96,7 +96,7 @@ public class MethodExtentBuilder {
 							while (targetIt.hasNext()){
 								SootMethod target = targetIt.next();     
 								if (target.isSynchronized()){
-									//System.out.println("method is synchronized: "+method);    
+									//logger.info("method is synchronized: "+method);    
 									methodsNeedingInlining.add(targetMethod);
 									return;
 								}
@@ -125,15 +125,15 @@ public class MethodExtentBuilder {
 			Object o = it.next();
 			if (methodsNeedingInlining.contains(o)) continue;
 			else if ( !gray.contains(o)){
-				//System.out.println("visit: "+o);
+				//logger.info("visit: "+o);
 				if (visitNode(o, gray, cg)){
 					methodsNeedingInlining.add(o);
-					//System.out.println("put: "+o+"in pro");
+					//logger.info("put: "+o+"in pro");
 				}
 			}
 		}
 		
-		//System.out.println("======after pro========");
+		//logger.info("======after pro========");
 		
 	}
 	
@@ -142,7 +142,7 @@ public class MethodExtentBuilder {
 	
 	
 	private boolean visitNode(Object o, Set<Object> gray, PegCallGraph cg){
-		//System.out.println("visit(in visit): "+o);
+		//logger.info("visit(in visit): "+o);
 		gray.add(o);
 		Iterator childIt = (cg.getSuccsOf(o)).iterator();
 		while(childIt.hasNext()){
@@ -150,7 +150,7 @@ public class MethodExtentBuilder {
 			if (methodsNeedingInlining.contains(child)) {
 				gray.add(child);
 				//methodsNeedingInlining.add(child);
-				//System.out.println("return true for: "+child);
+				//logger.info("return true for: "+child);
 				return true;
 			}
 			else{   
@@ -158,8 +158,8 @@ public class MethodExtentBuilder {
 					if (visitNode(child, gray, cg)) {
 						
 						methodsNeedingInlining.add(child);
-						//System.out.println("put: "+child+"in pro");
-						//System.out.println("return true for: "+child);
+						//logger.info("put: "+child+"in pro");
+						//logger.info("return true for: "+child);
 						return true;
 					}
 				}

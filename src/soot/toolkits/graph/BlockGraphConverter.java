@@ -131,11 +131,11 @@ public class BlockGraphConverter
         SootMethod sm = sc.getMethod(args[1]);
         Body b = sm.retrieveActiveBody();
         CompleteBlockGraph cfg = new CompleteBlockGraph(b);
-        System.out.println(cfg);
+        logger.info(cfg);
         BlockGraphConverter.addStartStopNodesTo(cfg);
-        System.out.println(cfg);
+        logger.info(cfg);
         BlockGraphConverter.reverse(cfg);
-        System.out.println(cfg);
+        logger.info(cfg);
     }
     
 }

@@ -28,10 +28,11 @@ import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.IntType;
 import soot.Local;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.InvalidDalvikBytecodeException;
@@ -42,7 +43,7 @@ import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 
 public class AgetInstruction extends DexlibAbstractInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(AgetInstruction.class);
     AssignStmt assign = null;
   
     public AgetInstruction (Instruction instruction, int codeAdress) {
@@ -71,7 +72,7 @@ public class AgetInstruction extends DexlibAbstractInstruction {
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			logger.debug("constraint: {}", assign);
           DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
           DalvikTyper.v().setType(arrayRef.getIndexBox(), IntType.v(), true);
         }

@@ -33,6 +33,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Local;
 import soot.Value;
 import soot.dava.DecompilationException;
@@ -74,7 +77,7 @@ import soot.toolkits.scalar.FlowSet;
  */
 
 public class UnreachableCodeFinder extends StructuredAnalysis {
-	public static boolean DEBUG=false;
+	final static Logger logger = LoggerFactory.getLogger(UnreachableCodeFinder.class);
 	public class UnreachableCodeFlowSet extends DavaFlowSet{
 		
 		public UnreachableCodeFlowSet clone(){
@@ -90,7 +93,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 		
 		@Override
 		public void intersection(FlowSet otherFlow, FlowSet destFlow){
-			if(DEBUG) System.out.println("In intersection");
+			logger.debug("In intersection");
 			if(!(otherFlow instanceof UnreachableCodeFlowSet) || 
 						!(destFlow instanceof UnreachableCodeFlowSet)){
 		          super.intersection(otherFlow, destFlow);
@@ -111,8 +114,8 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
             
     
 			if( other.size()!=1 || this.size() != 1){
-				System.out.println("Other size = "+other.size());
-				System.out.println("This size = "+this.size());
+				logger.info("Other size = {}",other.size());
+				logger.info("This size = {}",this.size());
 				throw new DecompilationException("UnreachableCodeFlowSet size should always be one");
 			}
 			
@@ -135,7 +138,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 	                workingSet.copy(dest);
 			  
 			  
-			if(DEBUG) System.out.println("destFlow contains size:"+ ((UnreachableCodeFlowSet)destFlow).size());
+			logger.debug("destFlow contains size:{}", ((UnreachableCodeFlowSet)destFlow).size());
 		}
 
 	}//end UnreachableCodeFlowSet
@@ -210,14 +213,14 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 	
 	@Override
 	public DavaFlowSet processAbruptStatements(Stmt s, DavaFlowSet input){
-    	if(DEBUG)	System.out.println("processing stmt "+s);
+    	logger.debug("processing stmt {}",s);
     	if(s instanceof ReturnStmt || s instanceof RetStmt || s instanceof ReturnVoidStmt){
     	    //dont need to remember this path
     		UnreachableCodeFlowSet toReturn = new UnreachableCodeFlowSet();
     		toReturn.add(new Boolean(false));
     		toReturn.copyInternalDataFrom(input);
     		//false indicates NOPATH
-        	if(DEBUG)	System.out.println("\tstmt is a return stmt. Hence sending forward false");
+        	logger.debug("\tstmt is a return stmt. Hence sending forward false");
     	    return toReturn;
     	}
     	else if(s instanceof DAbruptStmt){
@@ -245,11 +248,11 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     	    }
     	    temp.add(new Boolean(false));
     	    temp.copyInternalDataFrom(input);
-        	if(DEBUG)	System.out.println("\tstmt is an abrupt stmt. Hence sending forward false");
+        	logger.debug("\tstmt is an abrupt stmt. Hence sending forward false");
     	    return temp;
     	}
     	else{
-        	if(DEBUG)	System.out.println("\tstmt is not an abrupt stmt.");
+        	logger.debug("\tstmt is not an abrupt stmt.");
     	    return processStatement(s,input);
     	}
     }
@@ -262,7 +265,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
      */
 	@Override
     public DavaFlowSet handleBreak(String label, DavaFlowSet output, ASTNode node){
-    	if(DEBUG)	System.out.println("Handling break. Output contains"+ ((UnreachableCodeFlowSet)output).size());
+    	logger.debug("Handling break. Output contains{}", ((UnreachableCodeFlowSet)output).size());
     	if( !(output instanceof UnreachableCodeFlowSet) )
     	    throw new RuntimeException("handleBreak is only implemented for UnreachableCodeFlowSet type");
 
@@ -276,12 +279,12 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     	    throw new RuntimeException("ASTNode sent to handleBreak was null");
     	
     	List implicitSet = out.getImplicitlyBrokenSets(node);
-    	//System.out.println("\n\nImplicit set is"+implicitSet);
+    	//logger.info("\n\nImplicit set is"+implicitSet);
     
 		DavaFlowSet toReturn = emptyFlowSet();
 		toReturn.copyInternalDataFrom(output);
     	if( (explicitSet != null && explicitSet.size()>0) || (implicitSet != null && implicitSet.size()>0 )){
-        	if(DEBUG)	System.out.println("\tBreak sets (implicit and explicit are nonempty hence forwarding true");
+        	logger.debug("\tBreak sets (implicit and explicit are nonempty hence forwarding true");
     		//some break targets node
     		toReturn.add(new Boolean(true));
     		return toReturn;
@@ -289,7 +292,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     	else{
     		//no break targets node, maybe output was true though hence use merge
     		toReturn.add(new Boolean(false));
-        	if(DEBUG)	System.out.println("\tBreak sets (implicit and explicit are empty hence forwarding merge of false with inset");
+        	logger.debug("\tBreak sets (implicit and explicit are empty hence forwarding merge of false with inset");
     		return merge(toReturn,output);
     	}
     }
@@ -306,11 +309,11 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 	
     	if(((Boolean)checking.elements[0]).booleanValue()){
     		//it is reachable
-    		if(DEBUG)	System.out.println("\t Reachable");
+    		logger.debug("\t Reachable");
     		return true;
     	}
     	else{
-    		if(DEBUG)	System.out.println("\t NOT Reachable");
+    		logger.debug("\t NOT Reachable");
     		return false;
     	}
     }
@@ -319,7 +322,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     
     @Override
     public DavaFlowSet processASTStatementSequenceNode(ASTStatementSequenceNode node, DavaFlowSet input){
-		if(DEBUG)	System.out.println("Processing statement sequence node");
+		logger.debug("Processing statement sequence node");
     	if(!isReachable(input)){
     		//this sequence is not reachable hence simply return inset
     		return input;
@@ -330,7 +333,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     
     @Override
     public DavaFlowSet processASTLabeledBlockNode(ASTLabeledBlockNode node, DavaFlowSet input){
-		if(DEBUG)	System.out.println("Processing labeled block node node");
+		logger.debug("Processing labeled block node node");
     	if(!isReachable(input)){
     		//this sequence is not reachable hence simply return inset
     		return input;
@@ -342,7 +345,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     
     @Override
     public DavaFlowSet processASTSynchronizedBlockNode(ASTSynchronizedBlockNode node, DavaFlowSet input){
-		if(DEBUG)	System.out.println("Processing synchronized block node");
+		logger.debug("Processing synchronized block node");
     	if(!isReachable(input)){
     		//this sequence is not reachable hence simply return inset
     		return input;
@@ -354,7 +357,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     
     @Override
     public DavaFlowSet processASTIfElseNode(ASTIfElseNode node, DavaFlowSet input){
-		if(DEBUG)	System.out.println("Processing ifelse node");
+		logger.debug("Processing ifelse node");
     	if(!isReachable(input)){
     		//this sequence is not reachable hence simply return inset
     		return input;
@@ -368,7 +371,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     
     
     public DavaFlowSet ifNotReachableReturnInputElseProcessBodyAndReturnTrue(ASTNode node, DavaFlowSet input){
-		if(DEBUG)	System.out.println("Processing "+node.getClass()+" node");
+		logger.debug("Processing "+node.getClass()+" node");
     	if(!isReachable(input)){
     		//this sequence is not reachable hence simply return inset
     		return input;
@@ -450,7 +453,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
      */
     @Override
     public DavaFlowSet processASTSwitchNode(ASTSwitchNode node, DavaFlowSet input){
-		if(DEBUG)	System.out.println("Processing switch node");
+		logger.debug("Processing switch node");
     	if(!isReachable(input)){
     		//this sequence is not reachable hence simply return inset
     		return input;
@@ -511,7 +514,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 
     @Override
     public DavaFlowSet processASTTryNode(ASTTryNode node, DavaFlowSet input){
-		if(DEBUG)	System.out.println("Processing try node");
+		logger.debug("Processing try node");
     	if(!isReachable(input)){
     		//this sequence is not reachable hence simply return inset
     		return input;
@@ -536,7 +539,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
 
        		//result because of going through the catchBody
        		DavaFlowSet tempResult = process(body,cloneFlowSet(inputCatch));
-       		//System.out.println("TempResult going through body"+tempResult);
+       		//logger.info("TempResult going through body"+tempResult);
        		catchOutput.add(tempResult);
        	}
 		
@@ -572,8 +575,7 @@ public class UnreachableCodeFinder extends StructuredAnalysis {
     	if(temp == null)
     		return true;
     	else{
-    		if(DEBUG)
-    			System.out.println("Have before set");
+    		logger.debug("Have before set");
     		Boolean reachable = (Boolean)((UnreachableCodeFlowSet)temp).elements[0];
     		return reachable.booleanValue();
     	}

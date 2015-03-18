@@ -53,7 +53,7 @@ public class JavaClassSource extends ClassSource
         if (fullPath != null){
             resolver.formAst(fullPath.getPath(), SourceLocator.v().sourcePath(), className);
         }
-        //System.out.println("about to call initial resolver in j2j: "+sc.getName());
+        //logger.info("about to call initial resolver in j2j: "+sc.getName());
         Dependencies references = resolver.resolveFromJavaFile(sc);
         
         /*
@@ -63,7 +63,7 @@ public class JavaClassSource extends ClassSource
          * AST Metrics needed from Java's AST
          */
 		if(Options.v().ast_metrics()){
-			//System.out.println("CALLING COMPUTEASTMETRICS!!!!!!!");
+			//logger.info("CALLING COMPUTEASTMETRICS!!!!!!!");
 			Node ast = InitialResolver.v().getAst();
 			if(ast==null) {
 				G.v().out.println("No compatible AST available for AST metrics. Skipping. Try -polyglot option.");

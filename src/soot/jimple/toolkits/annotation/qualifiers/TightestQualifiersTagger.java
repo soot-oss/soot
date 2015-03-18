@@ -94,7 +94,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
                 actual = "Package";
             }
             
-            //System.out.println("Method: "+meth.getName()+" has "+actual+" level access, can have: "+sRes+" level access.");
+            //logger.info("Method: "+meth.getName()+" has "+actual+" level access, can have: "+sRes+" level access.");
         
             if (!sRes.equals(actual)) {
                 if (meth.getName().equals("<init>")){
@@ -115,7 +115,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
 
         //Iterator eIt = Scene.v().getEntryPoints().iterator();
         //while (eIt.hasNext()){
-        //    System.out.println(eIt.next());
+        //    logger.info(eIt.next());
         //}
         
         if( methodToContexts == null ) {
@@ -129,7 +129,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
                 Edge callEdge = (Edge)callerEdges.next();
                 if (!callEdge.isExplicit()) continue;
                 SootMethod methodCaller = callEdge.src();
-                //System.out.println("Caller edge type: "+Edge.kindToString(callEdge.kind()));
+                //logger.info("Caller edge type: "+Edge.kindToString(callEdge.kind()));
                 SootClass callingClass = methodCaller.getDeclaringClass();
                 // public methods
                 if (Modifier.isPublic(sm.getModifiers())){
@@ -155,7 +155,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
     private boolean analyzeProtectedMethod(SootMethod sm, SootClass callingClass){
         SootClass methodClass = sm.getDeclaringClass();
         
-        //System.out.println("protected method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class: "+callingClass.getName());
+        //logger.info("protected method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class: "+callingClass.getName());
 
         boolean insidePackageAccess = isCallSamePackage(callingClass, methodClass);
         boolean subClassAccess = isCallClassSubClass(callingClass, methodClass);
@@ -178,7 +178,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
     private boolean analyzePackageMethod(SootMethod sm, SootClass callingClass){
         SootClass methodClass = sm.getDeclaringClass();
 
-        //System.out.println("package method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class: "+callingClass.getName());
+        //logger.info("package method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class: "+callingClass.getName());
         boolean insidePackageAccess = isCallSamePackage(callingClass, methodClass);
         boolean subClassAccess = isCallClassSubClass(callingClass, methodClass);
         boolean sameClassAccess = isCallClassMethodClass(callingClass, methodClass);
@@ -197,7 +197,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
         
         SootClass methodClass = sm.getDeclaringClass();
         
-        //System.out.println("public method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class: "+callingClass.getName());
+        //logger.info("public method: "+sm.getName()+" in class: "+methodClass.getName()+" calling class: "+callingClass.getName());
            
         boolean insidePackageAccess = isCallSamePackage(callingClass, methodClass);
         boolean subClassAccess = isCallClassSubClass(callingClass, methodClass);
@@ -297,7 +297,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
             
             String actual = null;
             if (Modifier.isPublic(f.getModifiers())){
-                //System.out.println("Field: "+f.getName()+" is public");
+                //logger.info("Field: "+f.getName()+" is public");
                 actual = "Public";
             }
             else if (Modifier.isProtected(f.getModifiers())){
@@ -310,7 +310,7 @@ public class TightestQualifiersTagger extends SceneTransformer {
                 actual = "Package";
             }
             
-            //System.out.println("Field: "+f.getName()+" has "+actual+" level access, can have: "+sRes+" level access.");
+            //logger.info("Field: "+f.getName()+" has "+actual+" level access, can have: "+sRes+" level access.");
         
             if (!sRes.equals(actual)){
                 f.addTag(new StringTag("Field: "+f.getName()+" has "+actual+" level access, can have: "+sRes+" level access.", "Tightest Qualifiers"));

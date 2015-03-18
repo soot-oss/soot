@@ -38,11 +38,11 @@ public class UnreachableFieldsTagger extends SceneTransformer
         Iterator getClassesIt = Scene.v().getApplicationClasses().iterator();
         while (getClassesIt.hasNext()) {
             SootClass appClass = (SootClass)getClassesIt.next();
-            //System.out.println("class to check: "+appClass); 
+            //logger.info("class to check: "+appClass); 
             Iterator getFieldsIt = appClass.getFields().iterator();
             while (getFieldsIt.hasNext()) {
                 SootField field = (SootField)getFieldsIt.next();
-                //System.out.println("adding field: "+field);
+                //logger.info("adding field: "+field);
                 fieldList.add(field);
             }
         }
@@ -54,7 +54,7 @@ public class UnreachableFieldsTagger extends SceneTransformer
             Iterator mIt = appClass.getMethods().iterator();
             while (mIt.hasNext()) {
                 SootMethod sm = (SootMethod)mIt.next();
-                //System.out.println("checking method: "+sm.getName());
+                //logger.info("checking method: "+sm.getName());
                 if (!sm.hasActiveBody()) continue;
                 if (!Scene.v().getReachableMethods().contains(sm)) continue;
                 Body b = sm.getActiveBody();
@@ -70,7 +70,7 @@ public class UnreachableFieldsTagger extends SceneTransformer
                         if (fieldList.contains(f)) {
                             int index = fieldList.indexOf(f);
                             fieldList.remove(index);
-                            //System.out.println("removed field: "+f);
+                            //logger.info("removed field: "+f);
                         }
                     
                     }
@@ -85,7 +85,7 @@ public class UnreachableFieldsTagger extends SceneTransformer
             SootField unusedField = unusedIt.next();
             unusedField.addTag(new StringTag("Field "+unusedField.getName()+" is not used!", "Unreachable Fields"));
             unusedField.addTag(new ColorTag(ColorTag.RED, true, "Unreachable Fields"));   
-            //System.out.println("tagged field: "+unusedField);
+            //logger.info("tagged field: "+unusedField);
 
         }
     }

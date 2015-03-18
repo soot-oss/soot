@@ -87,7 +87,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit,Map<Value, String>>
                         
             filterUnitToBeforeFlow.put(s, map);
         } 
-        //System.out.println("init filtBeforeMap: "+filterUnitToBeforeFlow);           
+        //logger.info("init filtBeforeMap: "+filterUnitToBeforeFlow);           
     }
 
 // STEP 4: Is the merge operator union or intersection?
@@ -111,12 +111,12 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit,Map<Value, String>>
 	Iterator<Value> it = keys.iterator();
 	while (it.hasNext()) {
 	 	Value var1 = it.next();
-        //System.out.println(var1);
+        //logger.info(var1);
 		String inVal1 = (String)inMap1.get(var1);
-        //System.out.println(inVal1);
+        //logger.info(inVal1);
 		String inVal2 = (String)inMap2.get(var1);
-        //System.out.println(inVal2);
-       // System.out.println("before out "+outMap.get(var1));
+        //logger.info(inVal2);
+       // logger.info("before out "+outMap.get(var1));
 
         if (inVal2 == null){
             outMap.put(var1, inVal1);
@@ -164,7 +164,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit,Map<Value, String>>
     //
 
     private String getParity(Map<Value, String> in, Value val) {
-        //System.out.println("get Parity in: "+in);
+        //logger.info("get Parity in: "+in);
         if ((val instanceof AddExpr) | (val instanceof SubExpr)) {
         	String resVal1 = getParity(in, ((BinopExpr)val).getOp1());
 	        String resVal2 = getParity(in, ((BinopExpr)val).getOp2());
@@ -252,10 +252,10 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit,Map<Value, String>>
         // if use or def is int or long constant add their parity
         for (ValueBox next : s.getUseAndDefBoxes()) {
             Value val = next.getValue();
-            //System.out.println("val: "+val.getClass());
+            //logger.info("val: "+val.getClass());
             if (val instanceof ArithmeticConstant){
                 out.put(val, getParity(out, val));
-                //System.out.println("out map: "+out);
+                //logger.info("out map: "+out);
             }
         }
         
@@ -276,7 +276,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit,Map<Value, String>>
             map.put(listIt.next(), BOTTOM);
         }
         filterUnitToAfterFlow.put(s, map);
-        //System.out.println("built afterflow filter map: "+filterUnitToAfterFlow);
+        //logger.info("built afterflow filter map: "+filterUnitToAfterFlow);
     }
 
 
@@ -356,7 +356,7 @@ public class ParityAnalysis extends ForwardFlowAnalysis<Unit,Map<Value, String>>
 	    Iterator<Local> it = locals.iterator();
 	    while (it.hasNext()) {
             Local next = (Local)it.next();
-            //System.out.println("next local: "+next);
+            //logger.info("next local: "+next);
             if ((next.getType() instanceof IntegerType) || (next.getType() instanceof LongType)){
 	            initMap.put(next, BOTTOM);
             }

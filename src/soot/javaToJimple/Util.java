@@ -240,7 +240,7 @@ public class Util {
         
         soot.FastHierarchy fh = InitialResolver.v().hierarchy();
        
-        //System.out.println("getting this for type: "+sootType);
+        //logger.info("getting this for type: "+sootType);
         // if this for type already created return it from map
         //if (getThisMap.containsKey(sootType)){
         //    return (soot.Local)getThisMap.get(sootType);

@@ -82,7 +82,7 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	List<Object> newBody=matchPattern(label,subBodies);
 	if(newBody!=null){
 	    node.replaceBody(newBody);
-	    //System.out.println("OR AGGREGATOR FOUR");
+	    //logger.info("OR AGGREGATOR FOUR");
 	    G.v().ASTTransformations_modified = true;
 	}
 	
@@ -103,7 +103,7 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	List<Object> newBody=matchPattern(label,subBodies);
 	if(newBody!=null){
 	    node.replaceBody(newBody);
-	    //System.out.println("OR AGGREGATOR FOUR");
+	    //logger.info("OR AGGREGATOR FOUR");
 	    G.v().ASTTransformations_modified = true;
 	}
 	
@@ -122,7 +122,7 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	List<Object> newBody=matchPattern(label,subBodies);
 	if(newBody!=null){
 	    node.replaceBody(newBody);
-	    //System.out.println("OR AGGREGATOR FOUR");
+	    //logger.info("OR AGGREGATOR FOUR");
 	    G.v().ASTTransformations_modified = true;
 	}
 	/*
@@ -140,7 +140,7 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	List<Object> newBody=matchPattern(label,subBodies);
 	if(newBody!=null){
 	    node.replaceBody(newBody);
-	    //System.out.println("OR AGGREGATOR FOUR");
+	    //logger.info("OR AGGREGATOR FOUR");
 	    G.v().ASTTransformations_modified = true;
 	}
 	/*
@@ -273,9 +273,9 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	    }
 	    else{
 		//need to flip condition
-		//System.out.println("old:"+cond);
+		//logger.info("old:"+cond);
 		cond.flip();
-		//System.out.println("new"+cond);
+		//logger.info("new"+cond);
 		toReturn.add(cond);
 	    }
 	}//end of while

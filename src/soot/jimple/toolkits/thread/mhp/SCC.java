@@ -67,11 +67,11 @@ public class SCC{
 	
 	
 	private void visitNode(DirectedGraph g, Object s ){
-		//System.out.println("visit "+s);
+		//logger.info("visit "+s);
 		gray.add(s);
 //		time++; // begin visit time
 		Iterator it = g.getSuccsOf(s).iterator();
-		//	System.out.println("succs are: "+g.getSuccsOf(s));
+		//	logger.info("succs are: "+g.getSuccsOf(s));
 		if (g.getSuccsOf(s).size()>0){
 			while (it.hasNext()){
 				Object succ = it.next();
@@ -83,7 +83,7 @@ public class SCC{
 		}
 //		time++;//end time
 		finishedOrder.addFirst(s);
-		//System.out.println("add "+s+ " to finished order ");
+		//logger.info("add "+s+ " to finished order ");
 		
 	}
 	

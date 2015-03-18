@@ -20,7 +20,11 @@
 package soot.dava.toolkits.base.AST.transformations;
 
 import soot.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.dava.internal.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
@@ -43,7 +47,7 @@ import soot.dava.toolkits.base.AST.analysis.*;
 */
 
 public class LoopStrengthener extends DepthFirstAdapter{
-
+	final static Logger logger = LoggerFactory.getLogger(LoopStrengthener.class);
     public LoopStrengthener(){
     }
 
@@ -150,7 +154,7 @@ public class LoopStrengthener extends DepthFirstAdapter{
 			    //something did not go wrong
 			    node.replaceTryBody(newBody);
 			    G.v().ASTTransformations_modified = true;
-			    //System.out.println("strengthened loop within trybody");
+			    //logger.info("strengthened loop within trybody");
 			}
 			UselessLabelFinder.v().findAndKill(node);
 		    }
@@ -215,7 +219,7 @@ public class LoopStrengthener extends DepthFirstAdapter{
 				//something did not go wrong
 				catchBody.replaceBody(newBody);
 				G.v().ASTTransformations_modified = true;
-				//System.out.println("strengthened loop within catchbody");
+				//logger.info("strengthened loop within catchbody");
 			    }
 			    UselessLabelFinder.v().findAndKill(node);
 			}
@@ -273,7 +277,7 @@ public class LoopStrengthener extends DepthFirstAdapter{
 				    //replace in actual switchNode
  				    node.replaceIndex2BodyList(index2BodyList);
 	 			    G.v().ASTTransformations_modified = true;
-				    //System.out.println("strengthened loop within switch body");
+				    //logger.info("strengthened loop within switch body");
 				}
 				UselessLabelFinder.v().findAndKill(node);
 			    }
@@ -362,37 +366,37 @@ public class LoopStrengthener extends DepthFirstAdapter{
 	    if(node instanceof ASTMethodNode){
 		((ASTMethodNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("Stenghtened Loop");
+		//logger.info("Stenghtened Loop");
 	    }
 	    else if(node instanceof ASTSynchronizedBlockNode){
 		((ASTSynchronizedBlockNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("Stenghtened Loop in synchblock");
+		//logger.info("Stenghtened Loop in synchblock");
 	    }
 	    else if(node instanceof ASTLabeledBlockNode){
 		((ASTLabeledBlockNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("Stenghtened Loop in labeledblock node");
+		//logger.info("Stenghtened Loop in labeledblock node");
 	    }
 	    else if(node instanceof ASTUnconditionalLoopNode){
 		((ASTUnconditionalLoopNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("Stenghtened Loop in unconditionalloopNode");
+		//logger.info("Stenghtened Loop in unconditionalloopNode");
 	    }
 	    else if(node instanceof ASTIfNode){
 		((ASTIfNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("Stenghtened Loop in ifnode");
+		//logger.info("Stenghtened Loop in ifnode");
 	    }
 	    else if(node instanceof ASTWhileNode){
 		((ASTWhileNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("Stenghtened Loop in whilenode");
+		//logger.info("Stenghtened Loop in whilenode");
 	    }
 	    else if(node instanceof ASTDoWhileNode){
 		((ASTDoWhileNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("Stenghtened Loop in dowhile node");
+		//logger.info("Stenghtened Loop in dowhile node");
 	    }
 	    else {
 		//there is no other case something is wrong if we get here
@@ -403,7 +407,7 @@ public class LoopStrengthener extends DepthFirstAdapter{
 	    //if its an ASIfElseNode then check which Subbody has the labeledBlock
 	    if(subBodyNumber!=0 && subBodyNumber!=1){
 		//something bad is happening dont do nothin
-		//System.out.println("Error-------not modifying AST");
+		//logger.info("Error-------not modifying AST");
 		return;
 	    }
 	    List<Object> subBodies = node.get_SubBodies();
@@ -425,19 +429,19 @@ public class LoopStrengthener extends DepthFirstAdapter{
 	    }
 	    if(subBodyNumber==0){
 		//the if body was modified
-		//System.out.println("Stenghtened Loop");
+		//logger.info("Stenghtened Loop");
 		G.v().ASTTransformations_modified = true;
 		((ASTIfElseNode)node).replaceBody(newBody,(List<Object>)subBodies.get(1));
 	    }
 	    else if(subBodyNumber==1){
 		//else body was modified
-		//System.out.println("Stenghtened Loop");
+		//logger.info("Stenghtened Loop");
 		G.v().ASTTransformations_modified = true;
 		((ASTIfElseNode)node).replaceBody((List<Object>)subBodies.get(0),newBody);
 	    }
 	    else{//realllly shouldnt come here
 		//something bad is happening dont do nothin
-		//System.out.println("Error-------not modifying AST");
+		//logger.info("Error-------not modifying AST");
 		return;
 	    }
 
@@ -471,7 +475,7 @@ public class LoopStrengthener extends DepthFirstAdapter{
 	//just to make sure check this
 	ASTNode toRemove = (ASTNode)it.next();
 	if(toRemove.toString().compareTo(oldNode.toString())!=0){
-	    System.out.println("The replace nodes dont match please report benchmark to developer");
+	    logger.info("The replace nodes dont match please report benchmark to developer");
 	    return null;
 	}
 	else{

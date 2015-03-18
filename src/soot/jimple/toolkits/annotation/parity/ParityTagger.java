@@ -37,7 +37,7 @@ public class ParityTagger extends BodyTransformer
             Body b, String phaseName, Map options)
     {
 
-        //System.out.println("parity tagger for method: "+b.getMethod().getName());
+        //logger.info("parity tagger for method: "+b.getMethod().getName());
         boolean isInteractive = Options.v().interactive_mode();
         Options.v().set_interactive_mode(false);
         ParityAnalysis a;

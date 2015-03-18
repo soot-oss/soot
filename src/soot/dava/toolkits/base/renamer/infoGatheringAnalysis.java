@@ -22,7 +22,12 @@ package soot.dava.toolkits.base.renamer;
 import soot.dava.toolkits.base.AST.analysis.*;
 import soot.*;
 import soot.jimple.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //import soot.util.*;
 import soot.dava.*;
 import soot.grimp.*;
@@ -33,9 +38,7 @@ import soot.jimple.internal.*;
 import soot.dava.internal.AST.*;
 
 public class infoGatheringAnalysis extends DepthFirstAdapter {
-	
-	public boolean DEBUG=false;
-	
+	final static Logger logger = LoggerFactory.getLogger(infoGatheringAnalysis.class);
 	public final static int CLASSNAME = 0;  //used by renamer
 
 	public final static int METHODNAME = 1;
@@ -91,7 +94,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 		//params.addAll(davaBody.get_CaughtRefs());
 		HashSet<Object> thisLocals = davaBody.get_ThisLocals();
 
-		//System.out.println("params"+params);
+		//logger.info("params"+params);
 
 		Iterator localIt = davaBody.getLocals().iterator();
 
@@ -116,9 +119,9 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 		 Check if we are dealing with a main method
 		 In which case set the MAINARG heuristic of the param
 		 */
-		//System.out.println("METHOD:"+davaBody.getMethod());
+		//logger.info("METHOD:"+davaBody.getMethod());
 		SootMethod method = davaBody.getMethod();
-		//System.out.println(method.getSubSignature());
+		//logger.info(method.getSubSignature());
 		if (method.getSubSignature().compareTo("void main(java.lang.String[])") == 0) {
 			//means we are currently working on the main method
 			it = davaBody.get_ParamMap().values().iterator();
@@ -145,10 +148,10 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 	 */
 	public void inDefinitionStmt(DefinitionStmt s) {
 		inDefinitionStmt = true;
-		//System.out.println(s);
+		//logger.info(s);
 		Value v = s.getLeftOp();
 		if (v instanceof Local) {
-			//System.out.println("This is a local:"+v);
+			//logger.info("This is a local:"+v);
 			/*
 			 * We want definedLocal to be set only if we are interested in naming it
 			 * Variables that are created by Dava itself e.g. handler (refer to SuperFirstStmtHandler)
@@ -162,7 +165,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 			
 			
 		} else {
-			//System.out.println("Not a local"+v);
+			//logger.info("Not a local"+v);
 		}
 	}
 
@@ -201,7 +204,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 		if (ifr instanceof AbstractInstanceFieldRef) {
 			if (inDefinitionStmt && (definedLocal != null)) {
 				SootField field = ((AbstractInstanceFieldRef) ifr).getField();
-				//System.out.println(definedLocal+" is being assigned field:"+field.getName());
+				//logger.info(definedLocal+" is being assigned field:"+field.getName());
 				info.setFieldName(definedLocal, field.getName());
 			}
 		}
@@ -218,7 +221,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 		if (inDefinitionStmt && (definedLocal != null)) {
 			//if its a new object being created
 			if (ie instanceof NewInvokeExpr) {
-				//System.out.println("new object being created retrieve the name");
+				//logger.info("new object being created retrieve the name");
 				RefType ref = ((NewInvokeExpr) ie).getBaseType();
 				String className = ref.getClassName();
 				debug("outInvokeExpr","defined local is"+definedLocal);
@@ -227,7 +230,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 			} else {
 				SootMethodRef methodRef = ie.getMethodRef();
 				String name = methodRef.name();
-				//System.out.println(name);
+				//logger.info(name);
 				info.setMethodName(definedLocal, name);
 			}
 		}
@@ -366,11 +369,10 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 	 it might be a good idea to store that information
 	 */
 	public void outASTMethodNode(ASTMethodNode node) {
-		if(DEBUG){
-			System.out.println("SET START");
-			info.print();
-			System.out.println("SET END");
-		}
+		logger.debug("SET START");
+		info.print();
+		logger.debug("SET END");
+	
 	}
 
 	/*
@@ -413,8 +415,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 	
 	public void debug(String methodName, String debug){
 		
-		if(DEBUG)
-			System.out.println(methodName+ "    DEBUG: "+debug);
+		logger.debug("{} {}", methodName, debug);
 	}
 
 

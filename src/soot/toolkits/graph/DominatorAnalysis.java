@@ -88,14 +88,14 @@ public class DominatorAnalysis extends ForwardFlowAnalysis<Unit,FlowSet> {
     {
     	
         if (isUnitStartNode(s)){
-            //System.out.println("s: "+s+" is start node");
+            //logger.info("s: "+s+" is start node");
             out.clear();
             out.add(s);
-            //System.out.println("in: "+in+" out: "+out);
+            //logger.info("in: "+in+" out: "+out);
         }
         else {
         
-            //System.out.println("s: "+s+" is not start node");
+            //logger.info("s: "+s+" is not start node");
             //FlowSet domsOfPreds = allNodes.clone();
         
             // for each pred of s
@@ -103,25 +103,25 @@ public class DominatorAnalysis extends ForwardFlowAnalysis<Unit,FlowSet> {
             while (predsIt.hasNext()){
                 Unit pred = predsIt.next();
                 // get the unitToBeforeFlow and find the intersection
-                //System.out.println("pred: "+pred);
+                //logger.info("pred: "+pred);
                 FlowSet next = unitToAfterFlow.get(pred);
-                //System.out.println("next: "+next);
-                //System.out.println("in before intersect: "+in);
+                //logger.info("next: "+next);
+                //logger.info("in before intersect: "+in);
                 in.intersection(next, in);
-                //System.out.println("in after intersect: "+in);
+                //logger.info("in after intersect: "+in);
             }
         
             // intersected with in
        
-            //System.out.println("out init: "+out);
+            //logger.info("out init: "+out);
             out.intersection(in, out);
             out.add(s);
-            //System.out.println("out after: "+out);
+            //logger.info("out after: "+out);
         }
     }
     
     private boolean isUnitStartNode(Unit s){
-        //System.out.println("head: "+g.getHeads().get(0));
+        //logger.info("head: "+g.getHeads().get(0));
         if (s.equals(g.getHeads().get(0))) return true;
         return false;
     }

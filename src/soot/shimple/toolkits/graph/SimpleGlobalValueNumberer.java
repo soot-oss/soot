@@ -58,7 +58,7 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer
         ShimpleBody sb = Shimple.v().newBody(b);
         CompleteBlockGraph cfg = new CompleteBlockGraph(sb);
         SimpleGlobalValueNumberer sgvn = new SimpleGlobalValueNumberer(cfg);
-        System.out.println(sgvn);
+        logger.info(sgvn);
     }
     
     public int getGlobalValueNumber(Local local)

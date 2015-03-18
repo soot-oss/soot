@@ -55,9 +55,9 @@ public class StrictFPPropagator extends polyglot.visit.NodeVisitor {
         if (n instanceof polyglot.ast.MethodDecl) {
             polyglot.ast.MethodDecl decl = (polyglot.ast.MethodDecl)n;
             if (strict && !decl.flags().isAbstract() && !decl.flags().isStrictFP()){
-                //  System.out.println("changing method decl "+decl);
+                //  logger.info("changing method decl "+decl);
                 decl = decl.flags(decl.flags().StrictFP());
-                //System.out.println("changed decl: "+decl);
+                //logger.info("changed decl: "+decl);
                 return decl;
             }
         }

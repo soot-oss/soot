@@ -23,7 +23,13 @@ import soot.toolkits.graph.*;
 import soot.jimple.toolkits.callgraph.*;
 //import soot.util.cfgcmd.*;
 import soot.util.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+
+import org.slf4j.LoggerFactory;
+
 //add for add tag
 import soot.tagkit.*;
 
@@ -44,7 +50,8 @@ import soot.tagkit.*;
 // limiting caveat.
 
 public class PegChain extends HashChain{
-	
+	final static Logger logger = LoggerFactory.getLogger(PegChain.class);
+
 	CallGraph callGraph;
 	private final List heads = new ArrayList();
 	private final List tails= new ArrayList() ;
@@ -93,7 +100,7 @@ public class PegChain extends HashChain{
 		
 		
 		
-		//System.out.println("entering buildPegChain");
+		//logger.info("entering buildPegChain");
 		UnitGraph graph = new CompleteUnitGraph(unitBody);
 		
 		Iterator unitIt = graph.iterator();	
@@ -151,11 +158,11 @@ public class PegChain extends HashChain{
 	{
 		/*
 		 if (unit instanceof JIdentityStmt){
-		 System.out.println("JIdentityStmt left: "+((JIdentityStmt)unit).getLeftOp());
-		 System.out.println("JIdentityStmt right: "+((JIdentityStmt)unit).getRightOp());
+		 logger.info("JIdentityStmt left: "+((JIdentityStmt)unit).getLeftOp());
+		 logger.info("JIdentityStmt right: "+((JIdentityStmt)unit).getRightOp());
 		 }
 		 */
-		//System.out.println("unit: "+unit);
+		//logger.info("unit: "+unit);
 		if (unit instanceof MonitorStmt)
 		{
 			Value value =((MonitorStmt)unit).getOp();
@@ -230,7 +237,7 @@ public class PegChain extends HashChain{
 			{
 				if (!(invokeExpr instanceof StaticInvokeExpr))
 				{
-					System.err.println("Error: new type of invokeExpre: "+invokeExpr);
+					logger.error("Error: new type of invokeExpre: {}",invokeExpr);
 					System.exit(1);
 				}
 				else{
@@ -241,8 +248,8 @@ public class PegChain extends HashChain{
 			boolean find = false;
 			if (method.getName().equals("start"))
 			{
-				//System.out.println("Test method is: "+method);
-				//System.out.println("DeclaringClass: "+method.getDeclaringClass());
+				//logger.info("Test method is: "+method);
+				//logger.info("DeclaringClass: "+method.getDeclaringClass());
 				List<SootClass> superClasses = hierarchy.getSuperclassesOfIncluding(method.getDeclaringClass());
 				Iterator<SootClass> it = superClasses.iterator();
 				
@@ -257,10 +264,10 @@ public class PegChain extends HashChain{
 				}
 			}
 			if (method.getName().equals("run") ){
-				//System.out.println("method name: "+method.getName());
-				//System.out.println("DeclaringClass name: "+method.getDeclaringClass().getName());
+				//logger.info("method name: "+method.getName());
+				//logger.info("DeclaringClass name: "+method.getDeclaringClass().getName());
 				if ((method.getDeclaringClass().getName()).equals("java.lang.Runnable")){
-					//System.out.println("find: "+find);
+					//logger.info("find: "+find);
 					
 					find = true;
 				}
@@ -282,9 +289,9 @@ public class PegChain extends HashChain{
 				if ((name.equals("start") || name.equals("run")) && find){
 					
 					
-					// System.out.println("DeclaringClass: "+method.getDeclaringClass().getName());
-					//System.out.println("====start method: "+method);
-					//  System.out.println("unit: "+unit);
+					// logger.info("DeclaringClass: "+method.getDeclaringClass().getName());
+					//logger.info("====start method: "+method);
+					//  logger.info("unit: "+unit);
 					List<AllocNode> mayAlias = null;
 					PointsToSetInternal pts = (PointsToSetInternal) pag.reachingObjects((Local)value );
 					mayAlias = findMayAlias(pts, unit);
@@ -293,7 +300,7 @@ public class PegChain extends HashChain{
 					
 					
 					if (pg.getStartToThread().containsKey(pegStmt)){
-						System.err.println(" map startToThread contain duplicated start() method call");
+						logger.error(" map startToThread contain duplicated start() method call");
 						System.exit(1);
 					}
 					pg.getCanNotBeCompacted().add(pegStmt);
@@ -307,10 +314,10 @@ public class PegChain extends HashChain{
 						
 					}
 					Iterator<AllocNode> mayAliasIt = mayAlias.iterator();
-					//System.out.println("mayAlias: "+mayAlias);
+					//logger.info("mayAlias: "+mayAlias);
 					while (mayAliasIt.hasNext()){
 						AllocNode allocNode = mayAliasIt.next();
-						//System.out.println("allocNode toString: "+allocNode.toString());
+						//logger.info("allocNode toString: "+allocNode.toString());
 						RefType refType = ((NewExpr)allocNode.getNewExpr()).getBaseType();
 						SootClass maySootClass = refType.getSootClass();
 						//remeber to modify here!!! getMethodByName is unsafe!
@@ -320,21 +327,21 @@ public class PegChain extends HashChain{
 						 List targetList = tmd.find(unit, callGraph, false);
 						 SootMethod meth=null;
 						 if (targetList.size()>1) {
-						 System.out.println("targetList: "+targetList);
+						 logger.info("targetList: "+targetList);
 						 throw new RuntimeException("target of start >1!");
 						 }
 						 else
 						 meth = (SootMethod)targetList.get(0);
 						 */
 						SootMethod meth = hierarchy.resolveConcreteDispatch(maySootClass, method.getDeclaringClass().getMethodByName("run"));
-						//System.out.println("==method is: "+meth);
+						//logger.info("==method is: "+meth);
 						
 						Body mBody = meth.getActiveBody();
 						
 						//Feb 2 modify thread name
 						int threadNo = Counter.getThreadNo();
 						String callerName = "thread"+threadNo;
-//						System.out.println("Adding thread start point: " + "thread" + threadNo + " pegStmt: " + pegStmt);
+//						logger.info("Adding thread start point: " + "thread" + threadNo + " pegStmt: " + pegStmt);
 						
 						//map caller ()-> start pegStmt
 						pg.getThreadNameToStart().put(callerName, pegStmt);
@@ -348,7 +355,7 @@ public class PegChain extends HashChain{
 					
 					//end add Feb 01
 					
-//					System.out.println("Adding something to startToThread");
+//					logger.info("Adding something to startToThread");
 					pg.getStartToThread().put(pegStmt,runMethodChainList);
 					pg.getStartToAllocNodes().put(pegStmt,threadAllocNodesList);
 					
@@ -362,15 +369,15 @@ public class PegChain extends HashChain{
 						
 						//If the may-alias of "join" has more that one elements, we can NOT kill anything.
 						PointsToSetInternal pts = (PointsToSetInternal) pag.reachingObjects((Local)value );
-						//System.out.println("pts: "+pts);
+						//logger.info("pts: "+pts);
 						List<AllocNode> mayAlias = findMayAlias(pts, unit);
 						
-						//System.out.println("=====mayAlias for thread: "+unit +" is:\n"+mayAlias);
+						//logger.info("=====mayAlias for thread: "+unit +" is:\n"+mayAlias);
 						
 						if (mayAlias.size() != 1){
 							if (mayAlias.size() <1){
-								//System.out.println("===points to set: "+pts);
-								//System.out.println("the size of mayAlias <0 : \n"+mayAlias);	
+								//logger.info("===points to set: "+pts);
+								//logger.info("the size of mayAlias <0 : \n"+mayAlias);	
 								throw new RuntimeException("==threadAllocaSits==\n"+threadAllocSites.toString());
 								
 							}
@@ -388,7 +395,7 @@ public class PegChain extends HashChain{
 							while (mayAliasIt.hasNext()){
 								
 								AllocNode allocNode = mayAliasIt.next();
-								//System.out.println("allocNode toString: "+allocNode.toString());
+								//logger.info("allocNode toString: "+allocNode.toString());
 								JPegStmt pegStmt = new JoinStmt(value.toString(), threadName,
 										unit, graph, sm);
 								if (!pg.getAllocNodeToThread().containsKey(allocNode)){
@@ -450,9 +457,9 @@ public class PegChain extends HashChain{
 							}
 							
 							else{
-								//				    //System.out.println("******method before extend: "+method); 
-								// System.out.println("isConcretemethod: "+method.isConcrete());
-								// System.out.println("isLibraryClass: "+method.getDeclaringClass().isLibraryClass());
+								//				    //logger.info("******method before extend: "+method); 
+								// logger.info("isConcretemethod: "+method.isConcrete());
+								// logger.info("isLibraryClass: "+method.getDeclaringClass().isLibraryClass());
 								if (method.isConcrete() && !method.getDeclaringClass().isLibraryClass()){
 									
 									List<SootMethod> targetList = new LinkedList<SootMethod>();
@@ -467,9 +474,9 @@ public class PegChain extends HashChain{
 										
 										
 										if (targetList.size() > 1){
-											System.out.println("target: "+targetList);
-											System.out.println("unit is: "+unit);
-											System.err.println("exit because target is bigger than 1.");
+											logger.info("target: {}",targetList);
+											logger.info("unit is: {}",unit);
+											logger.error("exit because target is bigger than 1.");
 											System.exit(1); // What SHOULD be done is that all possible targets are inlined 
 															// as though each method body is in a big switch on the type of
 															// the receiver object.  The infrastructure to do this is not
@@ -477,7 +484,7 @@ public class PegChain extends HashChain{
 															// yield wrong answers.
 										}
 										else if(targetList.size() < 1){
-											System.err.println("targetList size <1");
+											logger.error("targetList size <1");
 											//					    System.exit(1);
 											//continue;
 										}
@@ -487,11 +494,11 @@ public class PegChain extends HashChain{
 									
 									if (methodsNeedingInlining == null)
 									{
-										System.err.println("methodsNeedingInlining is null at " + unit);
+										logger.error("methodsNeedingInlining is null at {}", unit);
 									}
 									else if (targetMethod == null)
 									{
-										System.err.println("targetMethod is null at " + unit);
+										logger.error("targetMethod is null at {}", unit);
 									}
 									else if (methodsNeedingInlining.contains(targetMethod))
 									{					
@@ -558,7 +565,7 @@ public class PegChain extends HashChain{
 			if (!waitingNodesSet.contains(pegWaiting)){
 				waitingNodesSet.add(pegWaiting);
 				waitingNodes.put(pegWaiting.getObject(), waitingNodesSet);
-				//System.out.println("get a waiting nodes set");
+				//logger.info("get a waiting nodes set");
 			}
 			else{
 				//throw an run time exception
@@ -568,7 +575,7 @@ public class PegChain extends HashChain{
 			FlowSet waitingNodesSet = new ArraySparseSet();
 			waitingNodesSet.add(pegWaiting);
 			waitingNodes.put(pegWaiting.getObject(), waitingNodesSet);
-			//System.out.println("new a waiting nodes set");
+			//logger.info("new a waiting nodes set");
 		}
 		//end build waitingNodes Map
 		
@@ -602,14 +609,14 @@ public class PegChain extends HashChain{
 	
 	private void inlineMethod(SootMethod targetMethod,  String objName, String name, String threadName,
 			Unit unit, UnitGraph graph,  SootMethod sm ){
-		//System.out.println("inside extendMethod "+ targetMethod);
+		//logger.info("inside extendMethod "+ targetMethod);
 		
 		Body unitBody = targetMethod.getActiveBody();
 		
 		JPegStmt pegStmt = new OtherStmt(objName,name,threadName,unit, graph,sm );
 		
 		if (targetMethod.isSynchronized()){
-			// System.out.println(unit+" is synchronized========");
+			// logger.info(unit+" is synchronized========");
 			
 			String synchObj = findSynchObj(targetMethod);
 			JPegStmt enter = new MonitorEntryStmt(synchObj, threadName, graph, sm);
@@ -621,7 +628,7 @@ public class PegChain extends HashChain{
 			list.add(pegStmt);
 			list.add(enter);
 			list.add(exit);
-			//System.out.println("add list to synch: "+list);
+			//logger.info("add list to synch: "+list);
 			pg.getSynch().add(list);
 		}
 		addAndPut(unit, pegStmt);
@@ -630,7 +637,7 @@ public class PegChain extends HashChain{
 		PegGraph pG = new PegGraph( callGraph, hierarchy, pag, methodsNeedingInlining, allocNodes, inlineSites, synchObj, multiRunAllocNodes, allocNodeToObj, unitBody, threadName, targetMethod,true,false );
 //		pg.addPeg(pG, this); // RLH
 		//PegToDotFile printer1 = new PegToDotFile(pG, false, targetMethod.getName());
-		//System.out.println("NeedInlining for "+targetMethod +": "+pG.getNeedInlining());
+		//logger.info("NeedInlining for "+targetMethod +": "+pG.getNeedInlining());
 		
 		//if (pG.getNeedInlining()){
 		List list = new ArrayList();
@@ -639,7 +646,7 @@ public class PegChain extends HashChain{
 		list.add(pg);
 		list.add(pG);
 		inlineSites.add(list);
-		//System.out.println("----add list to inlineSites !---------");
+		//logger.info("----add list to inlineSites !---------");
 		//}
 		
 	}
@@ -765,31 +772,31 @@ public class PegChain extends HashChain{
 		}
 	}
 	private String makeObjName(Value value, Type type, Unit unit){
-		//System.out.println("unit: "+unit);
+		//logger.info("unit: "+unit);
 		PointsToSetInternal pts = (PointsToSetInternal) pag.reachingObjects((Local)value );
-		//System.out.println("pts for makeobjname: "+pts);
+		//logger.info("pts for makeobjname: "+pts);
 		List<AllocNode> mayAlias = findMayAlias(pts, unit);
 		
 		String objName =null;
 		if (allocNodeToObj == null) throw new RuntimeException("allocNodeToObj is null!");
 		
 		if (mayAlias.size() == 1){
-			//System.out.println("unit: "+unit);
+			//logger.info("unit: "+unit);
 			
 			AllocNode an = mayAlias.get(0);
-			// System.out.println("alloc node: "+an);
+			// logger.info("alloc node: "+an);
 //			if (!multiRunAllocNodes.contains(an)){
 			
 			if (allocNodeToObj.containsKey(an)){
 				objName = allocNodeToObj.get(an);
 			}
 			else{
-				//System.out.println("===AllocNodeToObj does not contain key allocnode: "+an);
+				//logger.info("===AllocNodeToObj does not contain key allocnode: "+an);
 				//objName = type.toString()+Counter.getObjNo();
 				objName = "obj"+Counter.getObjNo();
 				allocNodeToObj.put(an, objName);
 			}
-			//System.out.println("objName: "+objName);
+			//logger.info("objName: "+objName);
 //			}
 //			else
 //			throw new RuntimeException("The size of object corresponds to site "+ unit + " is not 1.");
@@ -798,26 +805,26 @@ public class PegChain extends HashChain{
 		}
 		else{
 			AllocNode an = mayAlias.get(0);
-			// System.out.println("alloc node: "+an);
+			// logger.info("alloc node: "+an);
 //			if (!multiRunAllocNodes.contains(an)){
 			
 			if (allocNodeToObj.containsKey(an)){
 				objName = "MULTI" + allocNodeToObj.get(an);
 			}
 			else{
-				//System.out.println("===AllocNodeToObj does not contain key allocnode: "+an);
+				//logger.info("===AllocNodeToObj does not contain key allocnode: "+an);
 				//objName = type.toString()+Counter.getObjNo();
 				objName = "MULTIobj"+Counter.getObjNo();
 				allocNodeToObj.put(an, objName);
 			}
-			//System.out.println("objName: "+objName);
+			//logger.info("objName: "+objName);
 //			}
 //			else
 //			throw new RuntimeException("The size of object corresponds to site "+ unit + " is not 1.");
-//			System.out.println("pts: "+pts);
+//			logger.info("pts: "+pts);
 //			throw new RuntimeException("The program exit because the size of object corresponds to site "+ unit + "is not 1.");
 		}
-		//System.out.println("==return objName: "+objName);
+		//logger.info("==return objName: "+objName);
 		if (objName == null) throw new RuntimeException("Can not find target object for "+unit);
 		return objName;
 	}
@@ -826,12 +833,12 @@ public class PegChain extends HashChain{
 	}
 	protected void testChain()
 	{
-		System.out.println("******** chain********");
+		logger.info("******** chain********");
 		Iterator it = iterator();
 		while (it.hasNext()) {
 			
 			JPegStmt stmt =(JPegStmt)it.next(); 
-			System.out.println(stmt.toString());
+			logger.info(stmt.toString());
 			
 		}
 		

@@ -59,7 +59,7 @@ public class ClassData {
 		while(it.hasNext()){
 			MetricData temp = it.next();
 			if(temp.metricName.equals(data.metricName)){
-				//System.out.println("Not adding same metric again......"+temp.metricName);
+				//logger.info("Not adding same metric again......"+temp.metricName);
 				return;
 			}
 		}

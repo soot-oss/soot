@@ -189,7 +189,7 @@ public class RegionAnalysis{
     private void weakRegionDFS(Block v, int r)
     {
         try{
-            //System.out.println("##entered weakRegionDFS for region " + r);
+            //logger.info("##entered weakRegionDFS for region " + r);
             this.m_regions.get(r).add(v);
 
             DominatorNode<Block> parentOfV = this.m_dom.getParentOf(this.m_dom.getDode(v));

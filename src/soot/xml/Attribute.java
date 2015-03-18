@@ -197,7 +197,7 @@ public class Attribute {
         else if (t instanceof SourceLineNumberTag){
         }*/
 		else {
-            //System.out.println("t is: "+t.getClass());
+            //logger.info("t is: "+t.getClass());
             StringAttribute sa = new StringAttribute(t.toString(), t.getName());
             addText(sa);
 		}
@@ -250,9 +250,9 @@ public class Attribute {
 
     public void print(PrintWriter writerOut){
         if ( isEmpty() ) {
-            //System.out.println("no data found for: ");
-            //System.out.println("<srcPos sline=\""+javaStartLn()+"\" eline=\""+javaEndLn()+"\" spos=\""+javaStartPos()+"\" epos=\""+javaEndPos()+"\"/>");
-            //System.out.println("<jmpPos sline=\""+jimpleStartLn()+"\" eline=\""+jimpleEndLn()+"\" spos=\""+jimpleStartPos()+"\" epos=\""+jimpleEndPos()+"\"/>");
+            //logger.info("no data found for: ");
+            //logger.info("<srcPos sline=\""+javaStartLn()+"\" eline=\""+javaEndLn()+"\" spos=\""+javaStartPos()+"\" epos=\""+javaEndPos()+"\"/>");
+            //logger.info("<jmpPos sline=\""+jimpleStartLn()+"\" eline=\""+jimpleEndLn()+"\" spos=\""+jimpleStartPos()+"\" epos=\""+jimpleEndPos()+"\"/>");
             return;
         }
         writerOut.println("<attribute>");

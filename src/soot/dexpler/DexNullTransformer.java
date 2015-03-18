@@ -30,6 +30,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.Local;
@@ -79,6 +82,9 @@ import soot.toolkits.scalar.UnitValueBoxPair;
  * @author Michael Markert
  */
 public class DexNullTransformer extends AbstractNullTransformer {
+	
+	final static Logger logger = LoggerFactory.getLogger(DexNullTransformer.class);
+			
 	// Note: we need an instance variable for inner class access, treat this as
 	// a local variable (including initialization before use)
 
@@ -98,7 +104,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
 		final SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
 		
 		for (Local loc : getNullCandidates(body)) {
-			Debug.printDbg("\n[null candidate] ", loc);
+			logger.debug("\n[null candidate] {}", loc);
 			usedAsObject = false;
 			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs,
 					localUses, body);
@@ -114,7 +120,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
 									+ u + " class: " + u.getClass() + "");
 				}
 
-				Debug.printDbg("    target local: ", l, " (Unit: ", u, " )");
+				logger.debug("    target local: {} (Unit: {} )", l, u);
 
 				// check defs
 				u.apply(new AbstractStmtSwitch() { // Alex: should also end as
@@ -180,7 +186,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
 				// check uses
 				for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
 					Unit use = pair.getUnit();
-					Debug.printDbg("    use: ", use);
+					logger.debug("    use: {}", use);
 					use.apply(new AbstractStmtSwitch() {
 						private boolean examineInvokeExpr(InvokeExpr e) {
 							List<Value> args = e.getArgs();
@@ -210,7 +216,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
 						public void caseInvokeStmt(InvokeStmt stmt) {
 							InvokeExpr e = stmt.getInvokeExpr();
 							usedAsObject = examineInvokeExpr(e);
-							Debug.printDbg("use as object = ", usedAsObject);
+							logger.debug("use as object = {}", usedAsObject);
 							doBreak = true;
 							return;
 						}
@@ -281,8 +287,8 @@ public class DexNullTransformer extends AbstractNullTransformer {
 								return;
 							} else if (r instanceof StringConstant
 									|| r instanceof NewExpr) {
-								Debug.printDbg(
-										"NOT POSSIBLE StringConstant or NewExpr! ",
+								logger.debug(
+										"NOT POSSIBLE StringConstant or NewExpr! {}",
 										stmt);
 								System.exit(-1);
 								usedAsObject = true;
@@ -300,7 +306,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
 							} else if (r instanceof InvokeExpr) {
 								usedAsObject = examineInvokeExpr((InvokeExpr) stmt
 										.getRightOp());
-								Debug.printDbg("use as object 2 = ",
+								logger.debug("use as object 2 = {}",
 										usedAsObject);
 								doBreak = true;
 								return;
@@ -317,7 +323,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
 
 						public void caseIdentityStmt(IdentityStmt stmt) {
 							if (stmt.getLeftOp() == l) {
-								Debug.printDbg("IMPOSSIBLE 0");
+								logger.debug("IMPOSSIBLE 0");
 								System.exit(-1);
 								usedAsObject = isObject(stmt.getRightOp()
 										.getType());
@@ -340,11 +346,10 @@ public class DexNullTransformer extends AbstractNullTransformer {
 							usedAsObject = stmt.getOp() == l
 									&& isObject(body.getMethod()
 											.getReturnType());
-							Debug.printDbg(" [return stmt] ", stmt,
-									" usedAsObject: ", usedAsObject,
-									", return type: ", body.getMethod()
-											.getReturnType());
-							Debug.printDbg(" class: ", body.getMethod()
+							logger.debug(" [return stmt] {} usedAsObject: {}, return type: {}",
+							stmt,usedAsObject,body.getMethod().getReturnType());
+							
+							logger.debug(" class: {}", body.getMethod()
 									.getReturnType().getClass());
 							doBreak = true;
 							return;
@@ -489,7 +494,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
 					if (candidates == null)
 						candidates = new HashSet<Local>();
 					candidates.add(l);
-					Debug.printDbg("[add null candidate: ", u);
+					logger.debug("[add null candidate: {}", u);
 				}
 			} else if (u instanceof IfStmt) {
 				ConditionExpr expr = (ConditionExpr) ((IfStmt) u)
@@ -498,7 +503,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
 					if (candidates == null)
 						candidates = new HashSet<Local>();
 					candidates.add((Local) expr.getOp1());
-					Debug.printDbg("[add null candidate if: ", u);
+					logger.debug("[add null candidate if: {}", u);
 				}
 			}
 		}

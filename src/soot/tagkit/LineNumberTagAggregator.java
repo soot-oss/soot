@@ -48,7 +48,7 @@ public class LineNumberTagAggregator extends FirstTagAggregator
     }
 
     public void considerTag(Tag t, Unit u){
-        //System.out.println("consider tag for unit: "+u.getClass());
+        //logger.info("consider tag for unit: "+u.getClass());
         if (!(u instanceof IdentityUnit)) super.considerTag(t, u);
     }
 }

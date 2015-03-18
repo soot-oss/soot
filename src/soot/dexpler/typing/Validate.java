@@ -5,6 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.Local;
@@ -18,7 +21,6 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
-import soot.dexpler.Debug;
 import soot.dexpler.IDalvikTyper;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -42,6 +44,7 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
 
 public class Validate {
 
+	final static Logger logger = LoggerFactory.getLogger(Validate.class);
     public static void validateArrays(Body b) {
         
         Set<DefinitionStmt> definitions = new HashSet<DefinitionStmt>();
@@ -69,11 +72,11 @@ public class Validate {
         
         for (Unit u: unitWithArrayRef) {
             boolean ok = false;
-            Debug.printDbg(IDalvikTyper.DEBUG, "handling unit: "+ u);
+            logger.debug("handling unit: {}", u);
             List<ValueBox> uses = u.getUseBoxes();
-            Debug.printDbg(IDalvikTyper.DEBUG,"uses size: "+ uses.size());
+            logger.debug("uses size: {}", uses.size());
             for (ValueBox vb: uses) {
-                Debug.printDbg(IDalvikTyper.DEBUG,"vb use: "+ vb +" class: "+ vb.getClass());
+                logger.debug("vb use: {} class: {}", vb, vb.getClass());
                 Value v = vb.getValue();
                 if (v instanceof ArrayRef) {
                     ArrayRef ar = (ArrayRef)v;
@@ -109,9 +112,9 @@ public class Validate {
                             break;
                     }
                     
-                    //System.out.println("def size "+ defs.size());
+                    //logger.info("def size "+ defs.size());
                     for (Unit def: defs) {
-                        //System.out.println("def u "+ def);
+                        //logger.info("def u "+ def);
                         Value r = null;
                         if (def instanceof IdentityStmt) {
                             IdentityStmt idstmt = (IdentityStmt)def;
@@ -127,13 +130,13 @@ public class Validate {
                         if (r instanceof InvokeExpr) {
                             InvokeExpr ie = (InvokeExpr)r;
                             t = ie.getType();
-                            //System.out.println("ie type: "+ t +" "+ t.getClass());
+                            //logger.info("ie type: "+ t +" "+ t.getClass());
                             if (t instanceof ArrayType)
                                 ok = true;
                         } else if (r instanceof FieldRef) {
                             FieldRef ref = (FieldRef)r;
                             t = ref.getType();
-                            //System.out.println("fr type: "+ t +" "+ t.getClass());
+                            //logger.info("fr type: "+ t +" "+ t.getClass());
                             if (t instanceof ArrayType)
                                 ok = true;
                         } else if (r instanceof IdentityRef) {
@@ -169,14 +172,14 @@ public class Validate {
             }
             
             if (!ok) {
-                Debug.printDbg(IDalvikTyper.DEBUG, "warning: no valid defs for local used for array: "+ u +" replacing with throw exception instruction...");
+            	logger.warn("no valid defs for local used for array: {} replacing with throw exception instruction...", u);
                 toReplace.add(u);
             }
         }
         
         int i = 0;
         for (Unit u: toReplace) {
-            System.out.println("warning: incorrect array def, replacing unit "+ u);
+            logger.warn("incorrect array def, replacing unit {}", u);
             // new object
             RefType throwableType = RefType.v("java.lang.Throwable");
             Local ttt = Jimple.v().newLocal("ttt_"+ ++i, throwableType);

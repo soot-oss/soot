@@ -22,6 +22,9 @@ package soot.jbco;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Transform;
@@ -31,7 +34,7 @@ import soot.Unit;
 import soot.tagkit.LineNumberTag;
 
 public class LineNumberGenerator {
-  
+	final static Logger logger = LoggerFactory.getLogger(LineNumberGenerator.class);
   BafLineNumberer bln = new BafLineNumberer();
   
   public static void main(String[] argv)
@@ -50,7 +53,7 @@ public class LineNumberGenerator {
   class BafLineNumberer extends BodyTransformer {
     protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
       
-      System.out.println("Printing Line Numbers for: " + b.getMethod().getSignature());
+      logger.info("Printing Line Numbers for: {}", b.getMethod().getSignature());
       
       PatchingChain<Unit> units = b.getUnits(); // get the method code
       Iterator<Unit> it = units.iterator();
@@ -58,13 +61,13 @@ public class LineNumberGenerator {
         Unit u = (Unit)it.next();
         if (u.hasTag("LineNumberTag")) { // see if a LineNumberTag exists (it will if you use -keep-line-number)
           LineNumberTag tag = (LineNumberTag)u.getTag(("LineNumberTag"));
-          System.out.println(u + " has Line Number: " + tag.getLineNumber()); // print out the unit and line number
+          logger.info("{} has Line Number: {}",u, tag.getLineNumber()); // print out the unit and line number
         } else {
-          System.out.println(u + " has no Line Number");
+          logger.info("{} has no Line Number", u);
         }
       }
       
-      System.out.println("\n");
+      logger.info("\n");
     }
   }
 }

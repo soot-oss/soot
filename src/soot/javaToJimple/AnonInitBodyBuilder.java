@@ -138,7 +138,7 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
         soot.jimple.Stmt invokeStmt = soot.jimple.Jimple.v().newInvokeStmt(invoke);
         body.getUnits().add(invokeStmt);
        
-        //System.out.println("polyglotType: "+polyglotType+" needs ref: "+needsOuterClassRef(polyglotType));
+        //logger.info("polyglotType: "+polyglotType+" needs ref: "+needsOuterClassRef(polyglotType));
         
         // field assign
         if (!inStaticMethod && needsOuterClassRef(anonType)){

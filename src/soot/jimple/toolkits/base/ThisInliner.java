@@ -22,12 +22,16 @@ package soot.jimple.toolkits.base;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
 import soot.Trap;
 import soot.Unit;
 import soot.ValueBox;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.GotoStmt;
 import soot.jimple.IdentityStmt;
@@ -43,6 +47,7 @@ import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.util.Chain;
 
 public class ThisInliner extends BodyTransformer{
+	final static Logger logger = LoggerFactory.getLogger(ThisInliner.class);
 
     public void internalTransform(Body b, String phaseName, Map options){
         
@@ -73,7 +78,7 @@ public class ThisInliner extends BodyTransformer{
            
             HashMap<Stmt, Stmt> oldStmtsToNew = new HashMap<Stmt, Stmt>();
             
-            //System.out.println("locals: "+b.getLocals());
+            //logger.info("locals: "+b.getLocals());
             Chain<Unit> containerUnits = b.getUnits();
             for (Unit u : specInvokeExpr.getMethod().getActiveBody().getUnits()) {
                 Stmt inlineeStmt = (Stmt)u;
@@ -112,7 +117,7 @@ public class ThisInliner extends BodyTransformer{
                 else if (inlineeStmt instanceof ReturnVoidStmt){
                     Stmt newRet = Jimple.v().newGotoStmt((Stmt)containerUnits.getSuccOf(invokeStmt));
                     containerUnits.insertBefore(newRet, invokeStmt);
-                    System.out.println("adding to stmt map: "+inlineeStmt+" and "+newRet);
+                    logger.info("adding to stmt map: {} and {}",inlineeStmt,newRet);
                     oldStmtsToNew.put(inlineeStmt, newRet);
                 }
 
@@ -133,11 +138,11 @@ public class ThisInliner extends BodyTransformer{
                 
             // handleTraps
             for (Trap t : specInvokeExpr.getMethod().getActiveBody().getTraps()) {
-                System.out.println("begin: "+t.getBeginUnit());
+                logger.info("begin: {}",t.getBeginUnit());
                 Stmt newBegin = oldStmtsToNew.get(t.getBeginUnit());
-                System.out.println("end: "+t.getEndUnit());
+                logger.info("end: {}",t.getEndUnit());
                 Stmt newEnd = oldStmtsToNew.get(t.getEndUnit());
-                System.out.println("handler: "+t.getHandlerUnit());
+                logger.info("handler: {}",t.getHandlerUnit());
                 Stmt newHandler = oldStmtsToNew.get(t.getHandlerUnit());
 
                 if (newBegin == null || newEnd == null || newHandler == null)
@@ -150,7 +155,7 @@ public class ThisInliner extends BodyTransformer{
             for (Unit u : specInvokeExpr.getMethod().getActiveBody().getUnits()) {
                 Stmt inlineeStmt = (Stmt)u;
                 if (inlineeStmt instanceof GotoStmt){
-                    System.out.println("inlinee goto target: "+((GotoStmt)inlineeStmt).getTarget());
+                    logger.info("inlinee goto target: {}",((GotoStmt)inlineeStmt).getTarget());
                     ((GotoStmt)oldStmtsToNew.get(inlineeStmt)).setTarget(oldStmtsToNew.get(((GotoStmt)inlineeStmt).getTarget()));
                 }
                        
@@ -164,8 +169,8 @@ public class ThisInliner extends BodyTransformer{
 
             
         }
-        //System.out.println("locals: "+b.getLocals());
-        //System.out.println("units: "+b.getUnits());
+        //logger.info("locals: "+b.getLocals());
+        //logger.info("units: "+b.getUnits());
     }
 
     private InvokeStmt getFirstSpecialInvoke(Body b){

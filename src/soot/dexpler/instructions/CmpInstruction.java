@@ -28,6 +28,8 @@ import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ThreeRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.DoubleType;
 import soot.FloatType;
@@ -35,7 +37,6 @@ import soot.IntType;
 import soot.Local;
 import soot.LongType;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
@@ -49,7 +50,7 @@ import soot.jimple.Jimple;
 import soot.jimple.internal.JAssignStmt;
 
 public class CmpInstruction extends TaggedInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(CmpInstruction.class);
     AssignStmt assign = null;
     Expr cmpExpr = null;
     Type type = null;
@@ -98,7 +99,7 @@ public class CmpInstruction extends TaggedInstruction {
           cmpExpr = Jimple.v().newCmpExpr(first, second);
           break;
         default:
-            System.out.println ("no opcode for CMP: 0x"+ Integer.toHexString(opcode.value));
+            logger.info ("no opcode for CMP: 0x"+ Integer.toHexString(opcode.value));
             System.exit(-1);
             cmpExpr = Jimple.v().newCmpExpr(first, second);
         }
@@ -111,7 +112,7 @@ public class CmpInstruction extends TaggedInstruction {
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			logger.debug("constraint: {}", assign);
           getTag().getName();
           BinopExpr bexpr = (BinopExpr)cmpExpr;
           DalvikTyper.v().setType(bexpr.getOp1Box(), type, true);

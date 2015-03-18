@@ -530,7 +530,7 @@ public abstract class AbstractJasminClass
             emit(".inner_class_attr ");
             for (InnerClassTag ict : ((InnerClassAttribute)sootClass.getTag(
             		"InnerClassAttribute")).getSpecs()) {
-                //System.out.println("inner class tag: "+ict);
+                //logger.info("inner class tag: "+ict);
                 emit(".inner_class_spec_attr "+
                     "\""+ict.getInnerClass()+"\" "+
                 

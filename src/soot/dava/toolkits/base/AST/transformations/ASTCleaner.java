@@ -118,7 +118,7 @@ public class ASTCleaner extends DepthFirstAdapter{
     			    OrAggregatorThree.checkAndTransform(node,(ASTIfNode)temp,(ASTIfNode)nextNode,nodeNumber,subBodyNumber);
     			    if(G.v().ASTTransformations_modified){
     			    	//if we modified something we want to stop since the tree is stale
-    			    	//System.out.println("here");
+    			    	//logger.info("here");
     			    	return;
     			    }
     			    
@@ -155,7 +155,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 			//something did not go wrong
 			node.replaceTryBody(newBody);
 			G.v().ASTTransformations_modified = true;
-			//System.out.println("REMOVED LABEL from within trybody");
+			//logger.info("REMOVED LABEL from within trybody");
 		    }
 		}
 	    }
@@ -163,13 +163,13 @@ public class ASTCleaner extends DepthFirstAdapter{
 		//check if there is an empty else body
 		List<Object> elseBody = ((ASTIfElseNode)temp).getElseBody();
 		if(elseBody.size()==0){
-		    //System.out.println("Empty else body found"+temp);
+		    //logger.info("Empty else body found"+temp);
 		    List<Object> newBody=EmptyElseRemover.createNewNodeBody(tryBody,nodeNumber,(ASTIfElseNode)temp);
 		    if(newBody!=null){
 			//something did not go wrong
 			node.replaceTryBody(newBody);
 			G.v().ASTTransformations_modified = true;
-			//System.out.println("REMOVED ELSEBODY from within trybody");
+			//logger.info("REMOVED ELSEBODY from within trybody");
 			return;
 		    }
 		}
@@ -186,9 +186,9 @@ public class ASTCleaner extends DepthFirstAdapter{
 			    node.replaceTryBody(newBody);
 			    G.v().ASTTransformations_modified = true;
 			    //we modified something we want to stop since the tree is stale
-			    //System.out.println("here");
+			    //logger.info("here");
 			    return;
-			    //System.out.println("OR AGGREGATOR THREE");
+			    //logger.info("OR AGGREGATOR THREE");
 			}
 		    }
 		}
@@ -242,7 +242,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 			    //something did not go wrong
 			    catchBody.replaceBody(newBody);
 			    G.v().ASTTransformations_modified = true;
-			    //System.out.println("REMOVED LABEL from within catchlist");
+			    //logger.info("REMOVED LABEL from within catchlist");
 			}
 			
 		    }
@@ -251,13 +251,13 @@ public class ASTCleaner extends DepthFirstAdapter{
 		    //check if there is an empty else body
 		    List<Object> elseBody = ((ASTIfElseNode)temp).getElseBody();
 		    if(elseBody.size()==0){
-			//System.out.println("Empty else body found"+temp);
+			//logger.info("Empty else body found"+temp);
 			List<Object> newBody=EmptyElseRemover.createNewNodeBody(body,nodeNumber,(ASTIfElseNode)temp);
 			if(newBody!=null){
 			    //something did not go wrong
 			    catchBody.replaceBody(newBody);
 			    G.v().ASTTransformations_modified = true;
-			    //System.out.println("REMOVED ELSEBODY FROm within catchlist");
+			    //logger.info("REMOVED ELSEBODY FROm within catchlist");
 			    return;
 			}
 		    }
@@ -273,7 +273,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 				//something did not go wrong and pattern was matched
 				catchBody.replaceBody(newBody);
 				G.v().ASTTransformations_modified = true;
-				//System.out.println("OR AGGREGATOR THREE");
+				//logger.info("OR AGGREGATOR THREE");
 				return;
 			    }
 			}
@@ -323,7 +323,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 				//replace in actual switchNode
 				node.replaceIndex2BodyList(index2BodyList);
 				G.v().ASTTransformations_modified = true;
-				//System.out.println("REMOVED LABEL From Within Switch");
+				//logger.info("REMOVED LABEL From Within Switch");
 			    }
 			}
 		    }
@@ -331,7 +331,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 			//check if there is an empty else body
 			List<Object> elseBody = ((ASTIfElseNode)temp).getElseBody();
 			if(elseBody.size()==0){
-			    //System.out.println("Empty else body found"+temp);
+			    //logger.info("Empty else body found"+temp);
 			    List<Object> newBody=EmptyElseRemover.createNewNodeBody(body,nodeNumber,(ASTIfElseNode)temp);
 			    if(newBody!=null){
 				//something did not go wrong
@@ -341,7 +341,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 				//replace in actual switchNode
 				node.replaceIndex2BodyList(index2BodyList);
 				G.v().ASTTransformations_modified = true;
-				//System.out.println("REMOVED ELSEBODY FROM WITHIN SWITCH");
+				//logger.info("REMOVED ELSEBODY FROM WITHIN SWITCH");
 				return;
 			    }
 			}
@@ -362,7 +362,7 @@ public class ASTCleaner extends DepthFirstAdapter{
 				    node.replaceIndex2BodyList(index2BodyList);
 
 				    G.v().ASTTransformations_modified = true;
-				    //System.out.println("OR AGGREGATOR THREE");
+				    //logger.info("OR AGGREGATOR THREE");
 				    return;
 				}
 			    }

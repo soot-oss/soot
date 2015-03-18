@@ -94,7 +94,7 @@ public class RefType extends RefLikeType implements Comparable<RefType>
     public SootClass getSootClass()
     {
         if( sootClass == null ) {
-            //System.out.println( "wrning: "+this+" has no sootclass" );
+            //logger.info( "wrning: "+this+" has no sootclass" );
             sootClass = SootResolver.v().makeClassRef(className);
         }
         return sootClass;

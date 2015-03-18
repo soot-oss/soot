@@ -50,7 +50,7 @@ public class CytronDominanceFrontier<N> implements DominanceFrontier<N>
             } else if (!isFrontierKnown(dode)) {
                 System.out.print("'");
                 System.out.print(dode);
-                System.out.println("'");
+                logger.info("'");
                 throw new RuntimeException("frontier did not have dode> ");
             }
         }

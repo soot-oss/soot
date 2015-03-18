@@ -60,7 +60,7 @@ public class ASTStatementSequenceNode extends ASTNode
     	Iterator<Object> it = statementSequence.iterator();
     	while (it.hasNext()) {
                 AugmentedStmt as = (AugmentedStmt) it.next();
-    	    //System.out.println("Stmt is:"+as.get_Stmt());
+    	    //logger.info("Stmt is:"+as.get_Stmt());
                 Unit u = as.get_Stmt();
                 up.startUnit( u );
                 u.toString( up );

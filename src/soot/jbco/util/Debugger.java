@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.baf.JSRInst;
 import soot.baf.TableSwitchInst;
 import soot.baf.TargetArgInst;
@@ -32,10 +35,11 @@ import soot.Trap;
 import soot.Unit;
 
 public class Debugger {
-  
+	final static Logger logger = LoggerFactory.getLogger(Debugger.class);
+
   public static void printBaf(Body b) {
     
-    System.out.println(b.getMethod().getName()+"\n");
+    logger.debug("{}\n",b.getMethod().getName());
     int i = 0;
     Map<Unit,Integer> index = new HashMap<Unit,Integer>();
     Iterator<Unit> it = b.getUnits().iterator();
@@ -44,12 +48,10 @@ public class Debugger {
     it = b.getUnits().iterator();
     while (it.hasNext()) {
       Object o = it.next();
-      System.out.println(index.get(o).toString() 
-          + " " + o + " " + (o instanceof TargetArgInst ? 
-              		index.get(((TargetArgInst)o).getTarget()).toString() 
-              		: ""));
+      String s = (o instanceof TargetArgInst ?  index.get(((TargetArgInst)o).getTarget()).toString() : "");
+      logger.debug("{} {} {}",index.get(o).toString(),o, s);
     }
-    System.out.println("\n");
+    logger.debug("\n");
   }
   
   public static void printUnits(Body b, String msg) {
@@ -61,43 +63,43 @@ public class Debugger {
       numbers.put(it.next(),new Integer(i++));
     
     int jsr = 0;
-    System.out.println("\r\r"+b.getMethod().getName() + "  "+msg);
+    logger.debug("\r\r{}  {}",b.getMethod().getName(),msg);
     Iterator<Unit> udit = u.snapshotIterator();
     while (udit.hasNext()) {
       Unit unit = (Unit)udit.next();
       Integer numb = numbers.get(unit);
       
       if (numb.intValue() == 149) 
-        System.out.println("hi");
+        logger.debug("hi");
       
       if (unit instanceof TargetArgInst) {
         if(unit instanceof JSRInst) jsr++;
         TargetArgInst ti = (TargetArgInst)unit;
         if (ti.getTarget() == null)
         {
-          System.out.println(unit + " null null null null null null null null null");
+          logger.debug("{} null null null null null null null null null", unit);
           continue;
         }
-        System.out.println(numbers.get(unit).toString() + " " + unit + "   #"+ numbers.get(ti.getTarget()).toString());
+        logger.debug(numbers.get(unit).toString() + " " + unit + "   #"+ numbers.get(ti.getTarget()).toString());
         continue;
       } else if (unit instanceof TableSwitchInst) {
         TableSwitchInst tswi = (TableSwitchInst)unit;
-        System.out.println(numbers.get(unit).toString() + " SWITCH:");
-        System.out.println("\tdefault: " + tswi.getDefaultTarget() + "  "+numbers.get(tswi.getDefaultTarget()).toString());
+        logger.debug("{} SWITCH:",numbers.get(unit).toString());
+        logger.debug("\tdefault: {}  {}",tswi.getDefaultTarget(),numbers.get(tswi.getDefaultTarget()).toString());
         int index = 0;
         for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++)
-          System.out.println("\t "+x+": " + tswi.getTarget(index) + "  "+numbers.get(tswi.getTarget(index++)).toString());
+          logger.debug("\t {}: {} {}  ",x, tswi.getTarget(index), numbers.get(tswi.getTarget(index++)).toString());
         continue;
       }
-      System.out.println(numb.toString() + " " + unit);
+      logger.debug(numb.toString() + " " + unit);
     }
     
     Iterator<Trap> tit = b.getTraps().iterator();
     while (tit.hasNext()) {
       Trap t = tit.next();
-      System.out.println(numbers.get(t.getBeginUnit())+" "+t.getBeginUnit() + " to "+ numbers.get(t.getEndUnit())+" "+t.getEndUnit() + "  at "+numbers.get(t.getHandlerUnit())+" "+t.getHandlerUnit());
+      logger.debug("{} {} to {}  {} at {} {}", numbers.get(t.getBeginUnit()), t.getBeginUnit(), numbers.get(t.getEndUnit()), t.getEndUnit(), numbers.get(t.getHandlerUnit()), t.getHandlerUnit());
     }
-    if (jsr>0) System.out.println("\r\tJSR Instructions: "+jsr);
+    if (jsr>0) logger.debug("\r\tJSR Instructions: {}",jsr);
   }
   
   public static void printUnits(PatchingChain<Unit> u, String msg) {
@@ -107,34 +109,34 @@ public class Debugger {
   while (it.hasNext())
     numbers.put(it.next(),new Integer(i++));
   
-  System.out.println("\r\r***********  "+msg);
+  logger.debug("\r\r***********  {}",msg);
   Iterator<Unit> udit = u.snapshotIterator();
   while (udit.hasNext()) {
     Unit unit = (Unit)udit.next();
     Integer numb = numbers.get(unit);
     
     if (numb.intValue() == 149) 
-      System.out.println("hi");
+      logger.debug("hi");
     
     if (unit instanceof TargetArgInst) {
       TargetArgInst ti = (TargetArgInst)unit;
       if (ti.getTarget() == null)
       {
-        System.out.println(unit + " null null null null null null null null null");
+        logger.debug(unit + " null null null null null null null null null");
         continue;
       }
-      System.out.println(numbers.get(unit).toString() + " " + unit + "   #"+ numbers.get(ti.getTarget()).toString());
+      logger.debug("{} {}  #{}",numbers.get(unit).toString(),unit,  numbers.get(ti.getTarget()).toString());
       continue;
     } else if (unit instanceof TableSwitchInst) {
       TableSwitchInst tswi = (TableSwitchInst)unit;
-      System.out.println(numbers.get(unit).toString() + " SWITCH:");
-      System.out.println("\tdefault: " + tswi.getDefaultTarget() + "  "+numbers.get(tswi.getDefaultTarget()).toString());
+      logger.debug("{} SWITCH:", numbers.get(unit).toString());
+      logger.debug("\tdefault: {} {}", tswi.getDefaultTarget(), numbers.get(tswi.getDefaultTarget()).toString());
       int index = 0;
       for (int x = tswi.getLowIndex(); x <= tswi.getHighIndex(); x++)
-        System.out.println("\t "+x+": " + tswi.getTarget(index) + "  "+numbers.get(tswi.getTarget(index++)).toString());
+        logger.debug("\t {}: {}  {}",x,tswi.getTarget(index), numbers.get(tswi.getTarget(index++)).toString());
       continue;
     }
-    System.out.println(numb.toString() + " " + unit);
+    logger.debug("{} {}",numb.toString(), unit);
   }
   }
 }

@@ -33,6 +33,8 @@ import org.jf.dexlib2.DexFileFactory;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.DexFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.PrimType;
@@ -51,7 +53,7 @@ import soot.javaToJimple.IInitialResolver.Dependencies;
  *
  */
 public class DexlibWrapper {
-
+	final static Logger logger = LoggerFactory.getLogger(DexlibWrapper.class);
 	static {
 		Set<String> systemAnnotationNamesModifiable = new HashSet<String>();
 		// names as defined in the ".dex - Dalvik Executable Format" document
@@ -104,7 +106,7 @@ public class DexlibWrapper {
             	if (st instanceof ArrayType) {
             		st = ((ArrayType) st).baseType;
             	}
-            	Debug.printDbg("Type: ", t ," soot type:", st);
+            	logger.debug("Type: {} soot type:{}",t, st);
             	String sootTypeName = st.toString();
             	if (!Scene.v().containsClass(sootTypeName)) {
             		if (st instanceof PrimType || st instanceof VoidType || systemAnnotationNames.contains(sootTypeName)) {
@@ -121,8 +123,8 @@ public class DexlibWrapper {
             	SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
             }
         } else {
-            System.out.println("Warning: DexFile not instance of DexBackedDexFile! Not resolving types!");
-            System.out.println("type: "+ dexFile.getClass());
+            logger.info("Warning: DexFile not instance of DexBackedDexFile! Not resolving types!");
+            logger.info("type: "+ dexFile.getClass());
         }
     }
     

@@ -23,6 +23,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.BooleanType;
 import soot.Value;
 import soot.dava.internal.AST.ASTCondition;
@@ -68,8 +71,7 @@ import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
  * for(int i =0;false;i++)   remove for .  copy init stmts to parent
  */
 public class EliminateConditions extends DepthFirstAdapter {
-
-	public static boolean DEBUG=false;
+	final static Logger logger = LoggerFactory.getLogger(EliminateConditions.class);
 	public boolean modified=false;
 	
 	ASTParentNodeFinder finder;
@@ -119,8 +121,8 @@ public class EliminateConditions extends DepthFirstAdapter {
 		    			break;
 		    		}
 		    		else{
-		    			if(DEBUG)
-		    				System.out.println("returned is null"+temp.getClass());
+		    			
+		    				logger.debug("returned is null"+temp.getClass());
 		    			bodyContainingNode=null;
 		    		}
 		    	}
@@ -215,8 +217,8 @@ public class EliminateConditions extends DepthFirstAdapter {
     	if(! (internal instanceof DIntConstant))
     		return null;
 				
-    	if(DEBUG)
-    		System.out.println("Found Constant");
+    	
+    		logger.debug("Found Constant");
     	
     	DIntConstant intConst = (DIntConstant)internal;
     		
@@ -224,8 +226,8 @@ public class EliminateConditions extends DepthFirstAdapter {
     		return null;
     				
     	//either true or false
-    	if(DEBUG)
-    		System.out.println("Found Boolean Constant");
+    	
+    		logger.debug("Found Boolean Constant");
 
     	if(intConst.value == 1){
     		return new Boolean(true);
@@ -360,7 +362,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     		//go over the ASTNodes and apply
     		while (itBody.hasNext()){
     			temp = (ASTNode) itBody.next();
-    			//System.out.println("Next node is "+temp);
+    			//logger.info("Next node is "+temp);
     			//only check condition if this is a control flow node
     			if(temp instanceof ASTControlFlowNode){ 		
     				bodyContainingNode=null;
@@ -394,7 +396,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     	if(bodyContainingNode!=null && returned!=null && temp!=null){
 
     		int index = bodyContainingNode.indexOf(temp);
-			if(DEBUG) System.out.println("in change");
+			 logger.debug("in change");
     		if(temp instanceof ASTIfNode ){
     			bodyContainingNode.remove(temp);
         		
@@ -411,7 +413,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     					bodyContainingNode.addAll(index,(List)temp.get_SubBodies().get(0));
     				}
     			}
-    			if(DEBUG) System.out.println("Removed if"+temp);
+    			 logger.debug("Removed if{}",temp);
     			return true;
     		}
     		else if(temp instanceof ASTIfElseNode){
@@ -449,7 +451,7 @@ public class EliminateConditions extends DepthFirstAdapter {
     			return true;
     		}
     		else if(temp instanceof ASTDoWhileNode && returned.booleanValue()==false){
-    			//System.out.println("in try dowhile false");
+    			//logger.info("in try dowhile false");
     			//remove the loop copy the body out since it gets executed once
     			bodyContainingNode.remove(temp);
     			bodyContainingNode.addAll(index,(List)temp.get_SubBodies().get(0));

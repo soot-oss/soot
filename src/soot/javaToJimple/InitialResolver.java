@@ -385,15 +385,15 @@ public class InitialResolver implements IInitialResolver {
     private void handleFinalLocals(polyglot.ast.ClassMember member){
         MethodFinalsChecker mfc = new MethodFinalsChecker();
         member.visit(mfc);
-        //System.out.println("member: "+member);
-        //System.out.println("mcf final locals avail: "+mfc.finalLocals());
-        //System.out.println("mcf locals used: "+mfc.typeToLocalsUsed());
-        //System.out.println("mfc inners: "+mfc.inners());
+        //logger.info("member: "+member);
+        //logger.info("mcf final locals avail: "+mfc.finalLocals());
+        //logger.info("mcf locals used: "+mfc.typeToLocalsUsed());
+        //logger.info("mfc inners: "+mfc.inners());
         if (cCallList == null){
             cCallList = new ArrayList<Node>();
         }
         cCallList.addAll(mfc.ccallList());
-        //System.out.println("cCallList: "+cCallList);
+        //logger.info("cCallList: "+cCallList);
         AnonLocalClassInfo alci = new AnonLocalClassInfo();
         if (member instanceof polyglot.ast.ProcedureDecl){
             polyglot.ast.ProcedureDecl procedure = (polyglot.ast.ProcedureDecl)member;
@@ -449,16 +449,16 @@ public class InitialResolver implements IInitialResolver {
     }
     
     public boolean isAnonInCCall(polyglot.types.ClassType anonType){
-        //System.out.println("checking type: "+anonType);
+        //logger.info("checking type: "+anonType);
         Iterator<Node> it = cCallList.iterator();
         while (it.hasNext()){
             polyglot.ast.ConstructorCall cCall = (polyglot.ast.ConstructorCall)it.next();
-            //System.out.println("cCall params: "+cCall.arguments());
+            //logger.info("cCall params: "+cCall.arguments());
             Iterator argsIt = cCall.arguments().iterator();
             while (argsIt.hasNext()){
                 Object next = argsIt.next();
                 if (next instanceof polyglot.ast.New && ((polyglot.ast.New)next).anonType() != null){
-                    //System.out.println("comparing: "+((polyglot.ast.New)next).anonType());
+                    //logger.info("comparing: "+((polyglot.ast.New)next).anonType());
                     if (((polyglot.ast.New)next).anonType().equals(anonType)) return true;
                 }
             }

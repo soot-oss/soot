@@ -18,6 +18,9 @@
  */
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.BooleanType;
 import soot.Value;
 import soot.dava.internal.AST.ASTAggregatedCondition;
@@ -68,7 +71,7 @@ import soot.jimple.LongConstant;
 	 * TODO IDEA     if(io==0 && io==0) --> if(io==0)
 	 */
 public class SimplifyConditions extends DepthFirstAdapter {
-	public static boolean DEBUG=false;
+	final static Logger logger = LoggerFactory.getLogger(SimplifyConditions.class);
 	public boolean changed=false;
 	
 	public SimplifyConditions() {
@@ -84,8 +87,8 @@ public class SimplifyConditions extends DepthFirstAdapter {
 		
 		ASTCondition returned;
 		do{
-			if(DEBUG)
-				System.out.println("Invoking simplify");
+			
+				logger.debug("Invoking simplify");
 			changed=false;
 			ASTCondition cond = node.get_Condition();
 			returned = simplifyTheCondition(cond);
@@ -338,8 +341,8 @@ public class SimplifyConditions extends DepthFirstAdapter {
     	if(! (internal instanceof DIntConstant))
     		return null;
 				
-    	if(DEBUG)
-    		System.out.println("Found Constant");
+    	
+    		logger.debug("Found Constant");
     	
     	DIntConstant intConst = (DIntConstant)internal;
     		
@@ -347,8 +350,8 @@ public class SimplifyConditions extends DepthFirstAdapter {
     		return null;
     				
     	//either true or false
-    	if(DEBUG)
-    		System.out.println("Found Boolean Constant");
+    	
+    		logger.debug("Found Boolean Constant");
 
     	if(intConst.value == 1){
     		return new Boolean(true);
@@ -407,7 +410,7 @@ public class SimplifyConditions extends DepthFirstAdapter {
 			 */
 			Value unaryVal = unary.getValue();
 			if(unaryVal instanceof DNotExpr){
-				if(DEBUG) System.out.println("Found NotExpr in unary COndition"+unaryVal);
+				 logger.debug("Found NotExpr in unary COndition{}",unaryVal);
 				
 				DNotExpr notted = (DNotExpr)unaryVal;
 				Value internal = notted.getOp();
@@ -418,13 +421,13 @@ public class SimplifyConditions extends DepthFirstAdapter {
 					//convert !true to false
 					if(isIt.booleanValue()){
 						//true
-						if(DEBUG) System.out.println("CONVERTED !true to false");
+						 logger.debug("CONVERTED !true to false");
 						changed=true;
 						return new ASTUnaryCondition( DIntConstant.v(0,BooleanType.v()));
 					}
 					else if(!isIt.booleanValue()){
 						//false
-						if(DEBUG)	System.out.println("CONVERTED !false to true");
+							logger.debug("CONVERTED !false to true");
 						changed=true;
 						return new ASTUnaryCondition( DIntConstant.v(1,BooleanType.v()));
 					}
@@ -432,7 +435,7 @@ public class SimplifyConditions extends DepthFirstAdapter {
 						throw new RuntimeException("BooleanType found with value different than 0 or 1");
 				}
 				else{
-					if(DEBUG)System.out.println("Not boolean type");
+					logger.debug("Not boolean type");
 				}
 			}
 			return unary;
@@ -443,8 +446,7 @@ public class SimplifyConditions extends DepthFirstAdapter {
 			
 			//returns null if no change
 			ASTUnaryCondition temp = evaluateBinaryCondition(expr);
-			if(DEBUG)
-				System.out.println("changed binary condition "+cond +" to" + temp);
+			logger.debug("changed binary condition {} to{}",cond, temp);
 			if(temp != null)
 				changed=true;
 			return temp;			
@@ -463,33 +465,27 @@ public class SimplifyConditions extends DepthFirstAdapter {
 		
 		int op =-1;
 		if(symbol.indexOf("==")>-1){
-			if(DEBUG)
-				System.out.println("==");
+			logger.debug("==");
 			op=1;
 		}
 		else if(symbol.indexOf(">=")>-1){
-			if(DEBUG)
-				System.out.println(">=");
+			logger.debug(">=");
 			op=2;			
 		}
 		else if(symbol.indexOf('>')>-1){
-			if(DEBUG)
-				System.out.println(">");
+			logger.debug(">");
 			op=3;
 		}
 		else if(symbol.indexOf("<=")>-1){
-			if(DEBUG)
-				System.out.println("<=");
+			logger.debug("<=");
 			op=4;
 		}
 		else if(symbol.indexOf('<')>-1){
-			if(DEBUG)
-				System.out.println("<");
+			logger.debug("<");
 			op=5;
 		}
 		else if(symbol.indexOf("!=")>-1){
-			if(DEBUG)
-				System.out.println("!=");
+			logger.debug("!=");
 			op=6;
 		}
 		
@@ -499,8 +495,7 @@ public class SimplifyConditions extends DepthFirstAdapter {
 		
 		Boolean result=null;
 		if(leftOp instanceof LongConstant  && rightOp instanceof LongConstant){
-			if(DEBUG)
-				System.out.println("long constants!!");
+			logger.debug("long constants!!");
 			long left = ((LongConstant)leftOp).value;
 			long right = ((LongConstant)rightOp).value;
 			result = longSwitch(op,left,right);
@@ -598,8 +593,7 @@ public class SimplifyConditions extends DepthFirstAdapter {
 
 			
 		default:
-			if(DEBUG)
-				System.out.println("got here");
+			logger.debug("got here");
 			return null;
 		}
 	}

@@ -83,36 +83,36 @@ public class CPApplication extends DepthFirstAdapter{
 	    Value key = node.get_Key();
 		if(key instanceof Local){
 			Local useLocal = (Local)key;
-			//System.out.println("switch key is a local: "+useLocal);
+			//logger.info("switch key is a local: "+useLocal);
 			Object value = beforeSet.contains(className,useLocal.toString());
 			if(value != null){
-				//System.out.println("switch key Local "+useLocal+"is present in before set with value"+value);
+				//logger.info("switch key Local "+useLocal+"is present in before set with value"+value);
 				//create constant value for the value and replace this local use with the constant value use
 				Value newValue = CPHelper.createConstant(value);
 				if(newValue != null){
-					//System.out.println("Substituted the switch key local use with the constant value"+newValue);
+					//logger.info("Substituted the switch key local use with the constant value"+newValue);
 					node.set_Key(newValue);
 				}
 				else{
-					//System.out.println("FAILED TO Substitute the local use with the constant value");
+					//logger.info("FAILED TO Substitute the local use with the constant value");
 				}
 			}
 		}
 		else if (key instanceof FieldRef){
 			FieldRef useField = (FieldRef)key;
-			//System.out.println("switch key is a FieldRef which is: "+useField);
+			//logger.info("switch key is a FieldRef which is: "+useField);
 			SootField usedSootField = useField.getField();
 			Object value = beforeSet.contains(usedSootField.getDeclaringClass().getName(),usedSootField.getName().toString());
 			if(value != null){
-				//System.out.println("FieldRef "+usedSootField+"is present in before set with value"+value);
+				//logger.info("FieldRef "+usedSootField+"is present in before set with value"+value);
 				//create constant value for the value and replace this local use with the constant value use
 				Value newValue = CPHelper.createConstant(value);
 				if(newValue != null){
-					//System.out.println("Substituted the constant field ref use with the constant value"+newValue);
+					//logger.info("Substituted the constant field ref use with the constant value"+newValue);
 					node.set_Key(newValue);
 				}
 				else{
-					//System.out.println("FAILED TO Substitute the constant field ref use with the constant value");
+					//logger.info("FAILED TO Substitute the constant field ref use with the constant value");
 				}
 			}
 			
@@ -151,8 +151,8 @@ public class CPApplication extends DepthFirstAdapter{
     	    //before set is a non null CPFlowSet
     	    CPFlowSet beforeSet = (CPFlowSet)obj;
     	    
-    	    //System.out.println("Init Statement: "+s);
-    	    //System.out.println("Before set is: "+beforeSet.toString());
+    	    //logger.info("Init Statement: "+s);
+    	    //logger.info("Before set is: "+beforeSet.toString());
     	    
     	    /*
     	     * get all use boxes see if their value is determined 
@@ -177,8 +177,8 @@ public class CPApplication extends DepthFirstAdapter{
 	    //conditon
 		ASTCondition cond = node.get_Condition();
 		
-	    //System.out.println("For Loop with condition: "+cond);
-	    //System.out.println("After set is: "+afterSet.toString());
+	    //logger.info("For Loop with condition: "+cond);
+	    //logger.info("After set is: "+afterSet.toString());
     
 	    changedCondition(cond,afterSet);		
 
@@ -191,8 +191,8 @@ public class CPApplication extends DepthFirstAdapter{
     	    
     	    List useBoxes = s.getUseBoxes();
     	    
-    	    //System.out.println("For update Statement: "+s);
-    	    //System.out.println("After set is: "+afterSet.toString());
+    	    //logger.info("For update Statement: "+s);
+    	    //logger.info("After set is: "+afterSet.toString());
     	    
     	    /*
     	     * get all use boxes see if their value is determined 
@@ -228,8 +228,8 @@ public class CPApplication extends DepthFirstAdapter{
 	    
 		ASTCondition cond = node.get_Condition();
 		
-	    //System.out.println("While Statement with condition: "+cond);
-	    //System.out.println("After set is: "+afterSet.toString());
+	    //logger.info("While Statement with condition: "+cond);
+	    //logger.info("After set is: "+afterSet.toString());
     
 	    changedCondition(cond,afterSet);		
 	}
@@ -251,8 +251,8 @@ public class CPApplication extends DepthFirstAdapter{
 	    
 		ASTCondition cond = node.get_Condition();
 		
-	    //System.out.println("Do While Statement with condition: "+cond);
-	    //System.out.println("After set is: "+afterSet.toString());
+	    //logger.info("Do While Statement with condition: "+cond);
+	    //logger.info("After set is: "+afterSet.toString());
     
 	    changedCondition(cond,afterSet);		
 	}
@@ -261,7 +261,7 @@ public class CPApplication extends DepthFirstAdapter{
 	
 	
     public void inASTIfNode(ASTIfNode node){
-    	//System.out.println(node);
+    	//logger.info(node);
     	Object obj = cp.getBeforeSet(node);
     	
 	    if(obj == null )
@@ -272,12 +272,12 @@ public class CPApplication extends DepthFirstAdapter{
 	    //before set is a non null CPFlowSet
 	    CPFlowSet beforeSet = (CPFlowSet)obj;
 	    
-	    //System.out.println("Printing before Set for IF"+beforeSet.toString());
+	    //logger.info("Printing before Set for IF"+beforeSet.toString());
 	    
 		ASTCondition cond = node.get_Condition();
 		
-	    //System.out.println("If Statement with condition: "+cond);
-	    //System.out.println("Before set is: "+beforeSet.toString());
+	    //logger.info("If Statement with condition: "+cond);
+	    //logger.info("Before set is: "+beforeSet.toString());
     
 	    changedCondition(cond,beforeSet);		
 	}
@@ -296,8 +296,8 @@ public class CPApplication extends DepthFirstAdapter{
 	    
 		ASTCondition cond = node.get_Condition();
 		
-	    //System.out.println("IfElse Statement with condition: "+cond);
-	    //System.out.println("Before set is: "+beforeSet.toString());
+	    //logger.info("IfElse Statement with condition: "+cond);
+	    //logger.info("Before set is: "+beforeSet.toString());
     
 	    changedCondition(cond,beforeSet);
 	}
@@ -315,7 +315,7 @@ public class CPApplication extends DepthFirstAdapter{
     		ASTCondition right = changedCondition(((ASTAggregatedCondition)cond).getRightOp(),set);
     		((ASTAggregatedCondition)cond).setLeftOp(left);
     		((ASTAggregatedCondition)cond).setRightOp(right);
-    		//System.out.println("New condition is: "+cond);
+    		//logger.info("New condition is: "+cond);
     		return cond;
     	}
     	else if(cond instanceof ASTUnaryCondition){
@@ -323,15 +323,15 @@ public class CPApplication extends DepthFirstAdapter{
     		if(val instanceof Local){
     			Object value = set.contains(className,((Local)val).toString());
     			if(value != null){
-    				//System.out.println("if Condition Local "+((Local)val)+"is present in before set with value"+value);
+    				//logger.info("if Condition Local "+((Local)val)+"is present in before set with value"+value);
     				//create constant value for the value and replace this local use with the constant value use
     				Value newValue = CPHelper.createConstant(value);
     				if(newValue != null){
-    					//System.out.println("Substituted the local use with the constant value"+newValue);
+    					//logger.info("Substituted the local use with the constant value"+newValue);
     					((ASTUnaryCondition)cond).setValue(newValue);
     				}
     				else{
-    					//System.out.println("FAILED TO Substitute the local use with the constant value");
+    					//logger.info("FAILED TO Substitute the local use with the constant value");
     				}
     			}
     		}
@@ -340,22 +340,22 @@ public class CPApplication extends DepthFirstAdapter{
     			SootField usedSootField = useField.getField();
     			Object value = set.contains(usedSootField.getDeclaringClass().getName(),usedSootField.getName().toString());
     			if(value != null){
-    				//System.out.println("if condition FieldRef "+usedSootField+"is present in before set with value"+value);
+    				//logger.info("if condition FieldRef "+usedSootField+"is present in before set with value"+value);
     				//create constant value for the value and replace this field use with the constant value use
     				Value newValue = CPHelper.createConstant(value);
     				if(newValue != null){
-    					//System.out.println("Substituted the constant field ref use with the constant value"+newValue);
+    					//logger.info("Substituted the constant field ref use with the constant value"+newValue);
     					((ASTUnaryCondition)cond).setValue(newValue);
     				}
     				else{
-    					//System.out.println("FAILED TO Substitute the constant field ref use with the constant value");
+    					//logger.info("FAILED TO Substitute the constant field ref use with the constant value");
     				}
     			}
     		}
     		else{
     			substituteUses(val.getUseBoxes(),set);
     		}
-    		//System.out.println("New condition is: "+cond);
+    		//logger.info("New condition is: "+cond);
     		return cond;
     	}
     	else if(cond instanceof ASTBinaryCondition){
@@ -363,7 +363,7 @@ public class CPApplication extends DepthFirstAdapter{
     		Value val = ((ASTBinaryCondition)cond).getConditionExpr();
     		substituteUses(val.getUseBoxes(),set);
     		
-    		//System.out.println("New condition is: "+cond);
+    		//logger.info("New condition is: "+cond);
     		return cond;
     	}
     	else{
@@ -396,8 +396,8 @@ public class CPApplication extends DepthFirstAdapter{
     	    //before set is a non null CPFlowSet
     	    CPFlowSet beforeSet = (CPFlowSet)obj;
     	    
-    	    //System.out.println("Statement: "+s);
-    	    //System.out.println("Before set is: "+beforeSet.toString());
+    	    //logger.info("Statement: "+s);
+    	    //logger.info("Before set is: "+beforeSet.toString());
     	    
     	    /*
     	     * get all use boxes see if their value is determined from the before set
@@ -416,36 +416,36 @@ public class CPApplication extends DepthFirstAdapter{
     		Value use = ((ValueBox)useObj).getValue();
     		if(use instanceof Local){
     			Local useLocal = (Local)use;
-    			//System.out.println("local is: "+useLocal);
+    			//logger.info("local is: "+useLocal);
     			Object value = beforeSet.contains(className,useLocal.toString());
     			if(value != null){
-    				//System.out.println("Local "+useLocal+"is present in before set with value"+value);
+    				//logger.info("Local "+useLocal+"is present in before set with value"+value);
     				//create constant value for the value and replace this local use with the constant value use
     				Value newValue = CPHelper.createConstant(value);
     				if(newValue != null){
-    					//System.out.println("Substituted the local use with the constant value"+newValue);
+    					//logger.info("Substituted the local use with the constant value"+newValue);
     					((ValueBox)useObj).setValue(newValue);
     				}
     				else{
-    					//System.out.println("FAILED TO Substitute the local use with the constant value");
+    					//logger.info("FAILED TO Substitute the local use with the constant value");
     				}
     			}
     		}
     		else if (use instanceof FieldRef){
     			FieldRef useField = (FieldRef)use;
-    			//System.out.println("FieldRef is: "+useField);
+    			//logger.info("FieldRef is: "+useField);
     			SootField usedSootField = useField.getField();
     			Object value = beforeSet.contains(usedSootField.getDeclaringClass().getName(),usedSootField.getName().toString());
     			if(value != null){
-    				//System.out.println("FieldRef "+usedSootField+"is present in before set with value"+value);
+    				//logger.info("FieldRef "+usedSootField+"is present in before set with value"+value);
     				//create constant value for the value and replace this local use with the constant value use
     				Value newValue = CPHelper.createConstant(value);
     				if(newValue != null){
-    					//System.out.println("Substituted the constant field ref use with the constant value"+newValue);
+    					//logger.info("Substituted the constant field ref use with the constant value"+newValue);
     					((ValueBox)useObj).setValue(newValue);
     				}
     				else{
-    					//System.out.println("FAILED TO Substitute the constant field ref use with the constant value");
+    					//logger.info("FAILED TO Substitute the constant field ref use with the constant value");
     				}
     			}
     			

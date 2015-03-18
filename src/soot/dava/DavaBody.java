@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.G;
 import soot.IntType;
@@ -184,6 +187,7 @@ import soot.util.Switchable;
 
 public class DavaBody extends Body {
 
+	final static Logger logger = LoggerFactory.getLogger(DavaBody.class);
 	public boolean DEBUG = false;
 	private Map<Integer, Value> pMap;
 
@@ -316,7 +320,7 @@ public class DavaBody extends Body {
 		// prime the analysis
 		AugmentedStmtGraph asg = new AugmentedStmtGraph(
 				new BriefUnitGraph(this), new TrapUnitGraph(this));
-		//System.out.println(asg.toString());
+		//logger.info(asg.toString());
 
 		ExceptionFinder.v().preprocess(this, asg);
 		SETNode SET = new SETTopNode(asg.get_ChainView());
@@ -376,7 +380,7 @@ public class DavaBody extends Body {
 			 */
 			Map options = PhaseOptions.v().getPhaseOptions("db.force-recompile");
 	        boolean force = PhaseOptions.getBoolean(options, "enabled");
-	        //System.out.println("force is "+force);
+	        //logger.info("force is "+force);
 	        if(force){
 	        	AST.apply(new SuperFirstStmtHandler((ASTMethodNode) AST));
 	        }
@@ -451,7 +455,7 @@ public class DavaBody extends Body {
 		 */
 		//AST.apply(new ExtraLabelNamesRemover());
         
-        //System.out.println("\nEND analyzing method"+this.getMethod().toString());
+        //logger.info("\nEND analyzing method"+this.getMethod().toString());
 	}
 
 	private void applyASTAnalyses(ASTNode AST) {
@@ -599,7 +603,7 @@ public class DavaBody extends Body {
 				}//if ASTTransformations was not modified
 				
 			} while (G.v().ASTTransformations_modified);
-			//System.out.println("The AST trasnformations has run"+times);
+			//logger.info("The AST trasnformations has run"+times);
 		}
 
 		/*
@@ -614,7 +618,7 @@ public class DavaBody extends Body {
 
 		Map<String, String> options = PhaseOptions.v().getPhaseOptions("db.force-recompile");
         boolean force = PhaseOptions.getBoolean(options, "enabled");
-        //System.out.println("Force is"+force);
+        //logger.info("Force is"+force);
 
         if(force){
     		debug("applyASTAnalyses","before FinalFieldDefinition"+G.v().ASTTransformations_modified);
@@ -1275,7 +1279,6 @@ public class DavaBody extends Body {
 	}
 	
 	public void debug(String methodName, String debug){		
-		if(DEBUG)
-			System.out.println(methodName+ "    DEBUG: "+debug);
+			logger.debug("{}    DEBUG: {}",methodName, debug);
 	}
 }

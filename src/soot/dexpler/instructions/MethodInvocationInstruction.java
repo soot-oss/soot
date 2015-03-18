@@ -37,6 +37,8 @@ import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
 import org.jf.dexlib2.iface.reference.MethodReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Local;
 import soot.Modifier;
@@ -46,7 +48,6 @@ import soot.SootClass;
 import soot.SootMethodRef;
 import soot.SootResolver;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -58,6 +59,7 @@ import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 
 public abstract class MethodInvocationInstruction extends DexlibAbstractInstruction implements DanglingInstruction {
+	final static Logger logger = LoggerFactory.getLogger(MethodInvocationInstruction.class);
 	private enum InvocationType {
 		Static,
 		Interface,
@@ -96,7 +98,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         }
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint special invoke: "+ assign);
+			logger.debug("constraint special invoke: {}", assign);
 			
           if (invocation instanceof InstanceInvokeExpr) {
             Type t = invocation.getMethodRef().declaringClass().getType();
@@ -223,7 +225,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         String tItem = mItem.getDefiningClass();
 
         String className = tItem;
-        Debug.printDbg("tItem: ", tItem ," class name: ", className);
+        logger.debug("tItem: {} class name: {}",tItem, className);
           if (className.startsWith("[")) {
             className = "java.lang.Object";
           } else {
@@ -242,13 +244,13 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             for (CharSequence type : paramTypes)
                 parameterTypes.add(DexType.toSoot(type.toString()));
 
-        Debug.printDbg("sc: ", sc);
-        Debug.printDbg("methodName: ", methodName);
-        Debug.printDbg("parameterTypes: ");
+        logger.debug("sc: {}", sc);
+        logger.debug("methodName: {}", methodName);
+        logger.debug("parameterTypes: ");
         for (Type t: parameterTypes)
-          Debug.printDbg(" t: ", t);
-        Debug.printDbg("returnType: ", returnType);
-        Debug.printDbg("isStatic: ", invType == InvocationType.Static);
+          logger.debug(" t: {}", t);
+        logger.debug("returnType: {}", returnType);
+        logger.debug("isStatic: {}", invType == InvocationType.Static);
         methodRef = Scene.v().makeMethodRef(sc, methodName, parameterTypes, returnType,
         		invType == InvocationType.Static);
         
@@ -280,16 +282,16 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         List<Local> parameters = new ArrayList<Local>();
         List<Integer> regs = getUsedRegistersNums();
 
-        Debug.printDbg(" [methodIdItem]: ", item);
-        Debug.printDbg(" params types:");
+        logger.debug(" [methodIdItem]: {}", item);
+        logger.debug(" params types:");
         if (paramTypes != null) {
           for (CharSequence t: paramTypes) {
-            Debug.printDbg(" t: ", t);
+            logger.debug(" t: {}", t);
           }
         }
-        Debug.printDbg(" used registers (", regs.size() ,"): ");
+        logger.debug(" used registers ({}): ",regs.size());
         for (int i: regs) {
-          Debug.printDbg( " r: ", i);
+          logger.debug( " r: {}", i);
         }
         // i: index for register
         // j: index for parameter type

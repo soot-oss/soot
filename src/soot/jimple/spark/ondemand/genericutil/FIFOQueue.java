@@ -75,7 +75,7 @@ public final class FIFOQueue {
             // allocate a new array and copy
             int oldLen = _buf.length;
             int newLen = oldLen * 2;
-            //            System.out.println("growing buffer to size " + newLen);
+            //            logger.info("growing buffer to size " + newLen);
             Object[] newBuf = new Object[newLen];
             int topToEnd = oldLen - _top;
             int newTop = newLen - topToEnd;

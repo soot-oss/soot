@@ -55,7 +55,7 @@ public class JavaToJimple {
         Iterator<String> it = sourceLocations.iterator();
         while (it.hasNext()){
             Object next = it.next();
-            //System.out.println("adding src loc: "+next.toString());
+            //logger.info("adding src loc: "+next.toString());
             options.source_path.add(new File(next.toString()));
         }
 

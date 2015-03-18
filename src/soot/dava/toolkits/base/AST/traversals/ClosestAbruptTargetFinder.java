@@ -184,7 +184,7 @@ public class ClosestAbruptTargetFinder extends DepthFirstAdapter{
 	Iterator it = closestNode.keySet().iterator();
 	while(it.hasNext()){
 	    DAbruptStmt ab = (DAbruptStmt)it.next();
-	    System.out.println("Closest to "+ab+" is "+((ASTNode)closestNode.get(ab)).toString()+"\n\n");
+	    logger.info("Closest to "+ab+" is "+((ASTNode)closestNode.get(ab)).toString()+"\n\n");
 	}
 	
 	}*/

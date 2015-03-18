@@ -4,7 +4,11 @@ package soot.jimple.toolkits.thread.mhp;
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.toolkits.scalar.*;
 import soot.tagkit.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -18,6 +22,8 @@ import java.util.*;
 // -Richard L. Halpert, 2006-11-30
 
 public class CheckMSet{
+	final static Logger logger = LoggerFactory.getLogger(CheckMSet.class);
+
 	CheckMSet(Map m1, Map m2){
 		checkKeySet(m1,m2);
 		check(m1, m2);   
@@ -38,7 +44,7 @@ public class CheckMSet{
 							Object o = itit.next();
 							temp.add(o);
 							if (!m1.containsKey(o)){
-								System.err.println("1--before compacting map does not contains key "+o);
+								logger.error("1--before compacting map does not contains key {}",o);
 								System.exit(1);
 							}
 						}
@@ -46,7 +52,7 @@ public class CheckMSet{
 					else{
 						temp.add(obj);
 						if (!m1.containsKey(obj)){
-							System.err.println("2--before compacting map does not contains key "+obj);
+							logger.error("2--before compacting map does not contains key {}",obj);
 							System.exit(1);
 						}
 					}
@@ -54,12 +60,12 @@ public class CheckMSet{
 			}
 			else{
 				if (!(key2 instanceof JPegStmt)){
-					System.err.println("key error: "+ key2);
+					logger.error("key error: "+ key2);
 					System.exit(1);
 				}
 				temp.add(key2);
 				if (!m1.containsKey(key2)){
-					System.err.println("3--before compacting map does not contains key "+key2);
+					logger.error("3--before compacting map does not contains key {}",key2);
 					System.exit(1);
 				}
 			}
@@ -70,7 +76,7 @@ public class CheckMSet{
 		while (keySetIt1.hasNext()) {
 			Object key1 = keySetIt1.next();
 			if (!temp.contains(key1)){
-				System.err.println("after compacting map does not contains key "+key1);
+				logger.error("after compacting map does not contains key {}",key1);
 				System.exit(1);
 			}
 		}
@@ -85,10 +91,10 @@ public class CheckMSet{
 			Object key = keySetIt.next();
 			if (key instanceof JPegStmt){
 				Tag tag1 = (Tag)((JPegStmt)key).getTags().get(0);
-				// System.out.println("check key: "+tag1+" "+key);
+				// logger.info("check key: "+tag1+" "+key);
 				
 			}
-			// System.out.println("check key: "+key);
+			// logger.info("check key: "+key);
 			FlowSet mSet2 = (FlowSet)m2.get(key);
 			if (key instanceof List){
 				Iterator it = ((List)key).iterator();
@@ -100,11 +106,11 @@ public class CheckMSet{
 							Object oo = itit.next();
 							FlowSet mSet11 = (FlowSet)m1.get(oo);
 							if (mSet11 == null){
-								System.err.println("1--mSet of "+obj +" is null!");
+								logger.error("1--mSet of {} is null!",obj);
 								System.exit(1);
 							}
 							if (!compare(mSet11, mSet2)){
-								System.err.println("1--mSet before and after are NOT the same!");
+								logger.error("1--mSet before and after are NOT the same!");
 								System.exit(1);
 							}
 						}
@@ -112,11 +118,11 @@ public class CheckMSet{
 					else{
 						FlowSet mSet1 = (FlowSet)m1.get(obj);
 						if (mSet1 == null){
-							System.err.println("2--mSet of "+obj +" is null!");
+							logger.error("2--mSet of {} is null!",obj);
 							System.exit(1);
 						}
 						if (!compare(mSet1, mSet2)){
-							System.err.println("2--mSet before and after are NOT the same!");
+							logger.error("2--mSet before and after are NOT the same!");
 							System.exit(1);
 						}
 					}
@@ -126,7 +132,7 @@ public class CheckMSet{
 				FlowSet mSet1 = (FlowSet)m1.get(key);
 				
 				if (!compare(mSet1, mSet2)){
-					System.err.println("3--mSet before and after are NOT the same!");
+					logger.error("3--mSet before and after are NOT the same!");
 					System.exit(1);
 				}
 			}
@@ -168,8 +174,8 @@ public class CheckMSet{
 			while (it1.hasNext()){
 				Object o = it1.next();
 				if (!temp.contains(o)){
-					System.out.println("mSet2: \n"+mSet2);
-					System.err.println("mSet2 does not contains "+o);
+					logger.info("mSet2: \n{}",mSet2);
+					logger.error("mSet2 does not contains {}",o);
 					
 					return false;
 				}
@@ -194,14 +200,14 @@ public class CheckMSet{
 								Object oo = itit.next();
 								
 								if (!mSet1.contains(oo)){
-									System.err.println("1--mSet1 does not contains "+oo);
+									logger.error("1--mSet1 does not contains {}",oo);
 									return false;
 								}
 							}
 						}
 						else{
 							if (!mSet1.contains(o)){
-								System.err.println("2--mSet1 does not contains "+o);
+								logger.error("2--mSet1 does not contains {}",o);
 								return false;
 							}
 						}
@@ -211,7 +217,7 @@ public class CheckMSet{
 				else{
 					
 					if (!mSet1.contains(obj)){
-						System.err.println("3--mSet1 does not contains "+obj);
+						logger.error("3--mSet1 does not contains {}",obj);
 						return false;
 					}
 				}

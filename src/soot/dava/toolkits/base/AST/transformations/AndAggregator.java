@@ -106,7 +106,7 @@ public class AndAggregator extends DepthFirstAdapter{
 		    if(newBodyList.size()==1){//should always be one since this is body of IF
 			List<Object> newBody = (List<Object>)newBodyList.get(0);
 			node.replace(newLabel,newCond,newBody);
-			//System.out.println("ANDDDDDD AGGREGATING !!!");
+			//logger.info("ANDDDDDD AGGREGATING !!!");
 			G.v().ASTTransformations_modified=true;
 		    }
 		}

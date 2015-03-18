@@ -44,7 +44,7 @@ public class AllSharedHybridNodes {
 /*			if (map[size] == null)
 			{
 				//Can't happen
-				System.out.println(toRemove.cardinality());
+				logger.info(toRemove.cardinality());
 			}
 */
 			map[size].remove(toRemove);

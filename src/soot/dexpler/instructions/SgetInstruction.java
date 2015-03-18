@@ -28,8 +28,9 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.reference.FieldReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -38,7 +39,7 @@ import soot.jimple.Jimple;
 import soot.jimple.StaticFieldRef;
 
 public class SgetInstruction extends FieldInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(SgetInstruction.class);
     AssignStmt assign = null;
   
     public SgetInstruction (Instruction instruction, int codeAdress) {
@@ -55,7 +56,7 @@ public class SgetInstruction extends FieldInstruction {
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			logger.debug("constraint: {}", assign);
           int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().setType(assign.getLeftOpBox(), r.getType(), false);
         }

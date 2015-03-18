@@ -24,7 +24,7 @@ public class CheckRecursiveCalls{
 		//printSCC(sccList);
 		newSccList = updateScc(sccList, pcg);
 		
-		//System.out.println("after update scc");
+		//logger.info("after update scc");
 		//printSCC(newSccList);
 		check(newSccList, methodNeedExtent);
 	}

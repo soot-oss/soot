@@ -35,6 +35,9 @@ import soot.*;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
@@ -61,7 +64,7 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 
 */
 public class ASTUsesAndDefs extends DepthFirstAdapter{
-	public static boolean DEBUG=false;
+	final static Logger logger = LoggerFactory.getLogger(ASTUsesAndDefs.class);
     HashMap<Object, List<DefinitionStmt>> uD; //mapping a use to all possible definitions
     HashMap<Object, List> dU; //mapping a def to all possible uses
     ReachingDefs reaching;  //using structural analysis information 
@@ -95,7 +98,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 	    if(val instanceof Local)
 		toReturn.add(val);
 	}
-	//System.out.println("VALUES:"+toReturn);
+	//logger.info("VALUES:"+toReturn);
 	return toReturn;
     }
 
@@ -105,9 +108,9 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 
     public void checkStatementUses(Stmt s,Object useNodeOrStatement){
 	List useBoxes = s.getUseBoxes();
-	//System.out.println("Uses in this statement:"+useBoxes);
+	//logger.info("Uses in this statement:"+useBoxes);
 	List<Value> uses= getUsesFromBoxes(useBoxes);
-	//System.out.println("Local Uses in this statement:"+uses);
+	//logger.info("Local Uses in this statement:"+uses);
 
 	Iterator<Value> it = uses.iterator();
 	while(it.hasNext()){
@@ -143,12 +146,11 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
      * The use is added to all the defs reaching this node
      */
     public void createUDDUChain(Local local, Object useNodeOrStatement){
-	//System.out.println("Local is:"+local);
-	//System.out.println("useNodeOrStatement is"+useNodeOrStatement);
+	//logger.info("Local is:"+local);
+	//logger.info("useNodeOrStatement is"+useNodeOrStatement);
 
 	List<DefinitionStmt> reachingDefs = reaching.getReachingDefs(local,useNodeOrStatement);
-	if(DEBUG)
-		System.out.println("Reaching def for:"+local+" are:"+reachingDefs);
+	logger.debug("Reaching def for:{} are:{}",local,reachingDefs);
 	
 	//add the reaching defs into the use def chain
 	Object tempObj = uD.get(useNodeOrStatement);
@@ -176,7 +178,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 	    
 	    //add the new local use to this list (we add the node since thats where the local is used
 	    uses.add(useNodeOrStatement);
-	    //System.out.println("Adding definition:"+defStmt+"with uses:"+uses);
+	    //logger.info("Adding definition:"+defStmt+"with uses:"+uses);
 	    dU.put(defStmt,uses);
 	}
     }
@@ -209,8 +211,7 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 
 	    Value val = ((ASTUnaryCondition)cond).getValue();
 	    if(val instanceof Local){
-	    	if(DEBUG)
-	    		System.out.println("adding local from unary condition as a use"+val);
+	    	logger.debug("adding local from unary condition as a use {}",val);
 	    	uses.add(val);
 	    }
 	    else{
@@ -248,13 +249,13 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
     public void checkConditionalUses(ASTCondition cond,ASTNode node){
 	List<Value> useList = getUseList(cond);
 
-	//System.out.println("FOR NODE with condition:"+cond+"USE list is:"+useList);
+	//logger.info("FOR NODE with condition:"+cond+"USE list is:"+useList);
 
 	//FOR EACH USE
 	Iterator<Value> it = useList.iterator();
 	while(it.hasNext()){
 	    Local local = (Local)it.next();
-	    //System.out.println("creating uddu for "+local);
+	    //logger.info("creating uddu for "+local);
 	    createUDDUChain(local,node);
 	}//end of going through all locals uses in condition
     }
@@ -301,13 +302,13 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
 	}
 
 	Iterator<Value> it = uses.iterator();
-	//System.out.println("SWITCH uses start:");
+	//logger.info("SWITCH uses start:");
 	while(it.hasNext()){
 	    Local local = (Local)it.next();
-	    //System.out.println(local);
+	    //logger.info(local);
 	    createUDDUChain(local,node);
 	}//end of going through all locals uses in switch key
-	//System.out.println("SWITCH uses end:");
+	//logger.info("SWITCH uses end:");
     }
 
 
@@ -449,23 +450,23 @@ public class ASTUsesAndDefs extends DepthFirstAdapter{
     }
 
     public void print(){
-	System.out.println("\n\n\nPRINTING uD dU CHAINS ______________________________");
+	logger.info("\n\n\nPRINTING uD dU CHAINS ______________________________");
 	Iterator<Object> it = dU.keySet().iterator();
 	while(it.hasNext()){
 	    DefinitionStmt s = (DefinitionStmt)it.next();
-	    System.out.println("*****The def  "+s+" has following uses:");
+	    logger.info("*****The def  {} has following uses:",s);
 	    Object obj = dU.get(s);
 	    if(obj !=null){
 		ArrayList list = (ArrayList)obj;
 		Iterator tempIt = list.iterator();
 		while(tempIt.hasNext()){
 		    Object tempUse = tempIt.next();
-		    System.out.println("-----------Use  "+tempUse);
-		    System.out.println("----------------Defs of this use:   "+uD.get(tempUse));
+		    logger.info("-----------Use  {}",tempUse);
+		    logger.info("----------------Defs of this use:   {}",uD.get(tempUse));
 		}
 	    }
 	}
-	System.out.println("END --------PRINTING uD dU CHAINS ______________________________");
+	logger.info("END --------PRINTING uD dU CHAINS ______________________________");
     }
 
 }

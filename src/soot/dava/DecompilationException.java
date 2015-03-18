@@ -19,15 +19,18 @@
 
 package soot.dava;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //import java.util.*;
 //import soot.util.*;
 //import soot.dava.toolkits.base.finders.*;
 
 public class DecompilationException extends RuntimeException 
 {
-
+	final static Logger logger = LoggerFactory.getLogger(DecompilationException.class);
     public DecompilationException(){
-	System.out.println("DECOMPILATION INCOMPLETE:");
+	logger.info("DECOMPILATION INCOMPLETE:");
 	//printStackTrace();
     }
 
@@ -37,7 +40,7 @@ public class DecompilationException extends RuntimeException
     }
     
     public void report(){
-	System.out.println("\n\nPlease report this exception to nomair.naeem@mail.mcgill.ca");
-	System.out.println("Please include the soot version, sample code and this output.\n\n");
+	logger.info("\n\nPlease report this exception to nomair.naeem@mail.mcgill.ca");
+	logger.info("Please include the soot version, sample code and this output.\n\n");
     }
 }

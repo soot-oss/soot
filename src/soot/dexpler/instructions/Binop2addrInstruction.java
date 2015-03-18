@@ -28,10 +28,11 @@ import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction12x;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Local;
 import soot.Value;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
@@ -44,7 +45,7 @@ import soot.jimple.BinopExpr;
 import soot.jimple.Jimple;
 
 public class Binop2addrInstruction extends TaggedInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(Binop2addrInstruction.class);
    Value expr = null;
    AssignStmt assign = null;
   
@@ -72,7 +73,7 @@ public class Binop2addrInstruction extends TaggedInstruction {
         body.add(assign);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			logger.debug("constraint: {}", assign);
           BinopExpr bexpr = (BinopExpr)expr;
           short op = instruction.getOpcode().value;
           DalvikTyper.v().setType(bexpr.getOp1Box(), op1BinType[op-0xb0], true);

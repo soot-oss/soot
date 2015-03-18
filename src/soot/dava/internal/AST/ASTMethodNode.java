@@ -352,13 +352,13 @@ public class ASTMethodNode extends ASTNode {
 	 * easy way to find out which locals are used by this method...... bad code design but hey what can i say :(
 	 */
 	public void printDeclarationsFollowedByBody(UnitPrinter up, List<Object> body){
-		//System.out.println("printing body from within MEthodNode\n\n"+body.toString());
+		//logger.info("printing body from within MEthodNode\n\n"+body.toString());
 		
 		List<Object> stmts = declarations.getStatements();
 		Iterator<Object> it = stmts.iterator();
 		while (it.hasNext()) {
 			AugmentedStmt as = (AugmentedStmt) it.next();
-			//System.out.println("Stmt is:"+as.get_Stmt());
+			//logger.info("Stmt is:"+as.get_Stmt());
 			Unit u = as.get_Stmt();
 			
 			//stupid sanity check cos i am paranoid
@@ -445,7 +445,7 @@ public class ASTMethodNode extends ASTNode {
 			}
 		}
 		if(!printed){
-			//System.out.println("Here for method"+this.getDavaBody().getMethod().toString());
+			//logger.info("Here for method"+this.getDavaBody().getMethod().toString());
 			body_toString(up, body);
 		}		
 	}

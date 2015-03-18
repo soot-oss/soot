@@ -48,7 +48,7 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit,BitSet>
 		
 		nodeToIndex = new HashMap<Object, Integer>();
 				
-		//      System.out.println("===entering MultiObjectAllocSites==");	
+		//      logger.info("===entering MultiObjectAllocSites==");	
 		doAnalysis();
 		
 		//testMultiObjSites(sm);
@@ -113,14 +113,14 @@ public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit,BitSet>
 		
 		if (!out.get(indexOf(unit))){
 			out.set(indexOf(unit));
-//			System.out.println("add to out: "+unit);
+//			logger.info("add to out: "+unit);
 		}
 		else{
 			multiRunStatements.add(unit);
 		}
 		
-//		System.out.println("in: "+in);
-//		System.out.println("out: "+out);
+//		logger.info("in: "+in);
+//		logger.info("out: "+out);
 		
 	}
 	

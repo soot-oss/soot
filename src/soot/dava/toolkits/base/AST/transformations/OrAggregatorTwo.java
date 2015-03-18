@@ -20,7 +20,12 @@
 package soot.dava.toolkits.base.AST.transformations;
 
 import soot.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.*;
 import soot.dava.internal.SET.*;
 import soot.dava.internal.AST.*;
@@ -65,14 +70,13 @@ we need a reference to the parent node of this if
 */
 public class OrAggregatorTwo extends DepthFirstAdapter{
 
+	final static Logger logger = LoggerFactory.getLogger(OrAggregatorTwo.class);
 	
 	
     public OrAggregatorTwo(){
-    	DEBUG=false;
     }
     public OrAggregatorTwo(boolean verbose){
 	super(verbose);
-		DEBUG=false;
     }
 
     public void caseASTStatementSequenceNode(ASTStatementSequenceNode node){
@@ -116,7 +120,7 @@ public class OrAggregatorTwo extends DepthFirstAdapter{
 
 	  We therefore keep the outerIfElse label 
 	*/
-	//System.out.println("OR AGGREGATOR TWO");
+	//logger.info("OR AGGREGATOR TWO");
 	node.set_Condition(newCond);
 	
 	/*

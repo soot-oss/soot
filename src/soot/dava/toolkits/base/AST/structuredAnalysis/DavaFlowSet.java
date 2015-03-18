@@ -215,7 +215,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 	 * This should also be merged using the copyInternalDataFrom method
 	 */
 	public void intersection(FlowSet<T> otherFlow, FlowSet<T> destFlow) {
-		// System.out.println("DAVA FLOWSET INTERSECTION INVOKED!!!");
+		// logger.info("DAVA FLOWSET INTERSECTION INVOKED!!!");
 		if (sameType(otherFlow) && sameType(destFlow)) {
 			DavaFlowSet<T> other = (DavaFlowSet<T>) otherFlow;
 			DavaFlowSet<T> dest = (DavaFlowSet<T>) destFlow;
@@ -350,7 +350,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 			labelsBreakList = new ArrayList<DavaFlowSet<T>>();
 			labelsBreakList.add(set);
 			breakList.put(labelBroken, labelsBreakList);
-			// System.out.println("ADDED"+labelBroken+" with"+set.toString());
+			// logger.info("ADDED"+labelBroken+" with"+set.toString());
 		} else {
 			// add set into this list if its not a duplicate and update the
 			// hashMap

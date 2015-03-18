@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.SootClass;
 import soot.SootMethod;
@@ -28,8 +31,7 @@ import soot.util.Chain;
  * also check tht the call to super has no arguments i.e. default super
  */
 public class RemoveEmptyBodyDefaultConstructor{
-	public static boolean DEBUG=false;
-	
+	final static Logger logger = LoggerFactory.getLogger(RemoveEmptyBodyDefaultConstructor.class);
 	public static void checkAndRemoveDefault(SootClass s){
 		debug("\n\nRemoveEmptyBodyDefaultConstructor----"+s.getName());
 		List methods = s.getMethods();
@@ -108,8 +110,7 @@ public class RemoveEmptyBodyDefaultConstructor{
 	
 	
 	public static void debug(String debug){		
-		if(DEBUG)
-			System.out.println("DEBUG: "+debug);
+		logger.info(debug);
 	}
 
 }

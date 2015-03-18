@@ -41,7 +41,7 @@ public class UsesValidator implements BodyValidator {
         //     try {
         //      a = 2;
         //     } catch (Exception e) {
-        //      System.out.println("a: "+ a);
+        //      logger.info("a: "+ a);
         //     }
         //   }
         // }
@@ -49,7 +49,7 @@ public class UsesValidator implements BodyValidator {
         // In a graph generated from the Jimple representation there would 
         // be no edge from "a = 2;" to "catch..." because "a = 2" can only 
         // generate an Error, a subclass of Throwable and not of Exception. 
-        // Use of 'a' in "System.out.println" would thus trigger a 'no defs 
+        // Use of 'a' in "logger.info" would thus trigger a 'no defs 
         // for value' RuntimeException. 
         // To avoid this  we create an ExceptionalUnitGraph that considers all 
         // exception handlers (even unreachable ones as the one in the code 

@@ -33,6 +33,8 @@ import org.jf.dexlib2.iface.value.MethodEncodedValue;
 import org.jf.dexlib2.iface.value.ShortEncodedValue;
 import org.jf.dexlib2.iface.value.StringEncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.RefType;
@@ -74,7 +76,8 @@ import soot.toDex.SootToDexUtils;
  *
  */
 public class DexAnnotation {
-    
+	final static Logger logger = LoggerFactory.getLogger(DexAnnotation.class);
+	
 	private final Type ARRAY_TYPE = RefType.v("Array");
 	private final SootClass clazz;
     private final Dependencies deps;
@@ -189,7 +192,7 @@ public class DexAnnotation {
    				} else {
    					clazz.addTag(t);
    				}
-   				Debug.printDbg("add class annotation: ", t, " type: ", t.getClass());
+   				logger.debug("add class annotation: {} type: {} ", t, t.getClass());
    			}
     }
 
@@ -257,7 +260,7 @@ public class DexAnnotation {
         		for (Tag t : tags)
 	            	if (t != null) {
 		                h.addTag(t);
-		                Debug.printDbg("add field annotation: ", t);
+		                logger.debug("add field annotation: {}", t);
 		            }
         }
     }
@@ -275,7 +278,7 @@ public class DexAnnotation {
 	            for (Tag t : tags)
 	            	if (t != null) {
 		                h.addTag(t);
-		                Debug.printDbg("add method annotation: ", t);
+		                logger.debug("add method annotation: {}", t);
 		            }
 		}
 
@@ -295,7 +298,7 @@ public class DexAnnotation {
         boolean doParam = false;
         List<? extends MethodParameter> parameters = method.getParameters();
         for (MethodParameter p : parameters) {
-            Debug.printDbg("parameter ", p, " annotations: ", p.getAnnotations());
+            logger.debug("parameter {} annotations: {}", p, p.getAnnotations());
             if (p.getAnnotations().size() > 0) {
                 doParam = true;
                 break;
@@ -348,7 +351,7 @@ public class DexAnnotation {
                         vat = ((VisibilityAnnotationTag) t).getAnnotations().get(0);
                     }
 
-                    Debug.printDbg("add parameter annotation: ", t);
+                    logger.debug("add parameter annotation: {}", t);
                     paramVat.addAnnotation(vat);
                 }
             }
@@ -390,7 +393,7 @@ public class DexAnnotation {
             Type atype = DexType.toSoot(a.getType());
             String atypes = atype.toString();
             int eSize = a.getElements().size();
-            Debug.printDbg("annotation type: ", atypes ," elements: ", eSize);
+            logger.debug("annotation type: {} elements: {} ", atypes, eSize);
 
             if (atypes.equals("dalvik.annotation.AnnotationDefault")) {
                 if (eSize != 1)
@@ -527,7 +530,7 @@ public class DexAnnotation {
 				vatg[v].addAnnotation(adt);
                 
             } else {
-                Debug.printDbg("read visibility tag: ", a.getType());
+                logger.debug("read visibility tag: {}", a.getType());
 
                 if (vatg[v] == null)
                     vatg[v] = new VisibilityAnnotationTag(v);
@@ -554,10 +557,10 @@ public class DexAnnotation {
         ArrayList<AnnotationElem> aelemList = new ArrayList<AnnotationElem>();
         for (AnnotationElement ae: set) {
             
-            //Debug.printDbg("element: ", ae.getName() ," ", ae.getValue() ," type: ", ae.getClass());
-            //Debug.printDbg("value type: ", ae.getValue().getValueType() ," class: ", ae.getValue().getClass());
+            //logger.debug("element: ", ae.getName() ," ", ae.getValue() ," type: ", ae.getClass());
+            //logger.debug("value type: ", ae.getValue().getValueType() ," class: ", ae.getValue().getClass());
 
-            Debug.printDbg("   element type: ", ae.getValue().getClass());
+            logger.debug("   element type: {}", ae.getValue().getClass());
             List<AnnotationElem> eList = handleAnnotationElement(ae, Collections.singletonList(ae.getValue()));
             if (eList != null)
             	aelemList.addAll(eList);
@@ -571,7 +574,7 @@ public class DexAnnotation {
         for (EncodedValue ev: evList) {
             int type = ev.getValueType();
             AnnotationElem elem = null;
-            Debug.printDbg("encoded value type: ", type);
+            logger.debug("encoded value type: {}", type);
             switch (type) {
             case 0x00: // BYTE
             {
@@ -619,7 +622,7 @@ public class DexAnnotation {
             {
                 StringEncodedValue v = (StringEncodedValue)ev;
                 elem = new AnnotationStringElem(v.getValue(), 's', ae.getName());
-                Debug.printDbg("value for string: ", v.getValue());
+                logger.debug("value for string: {}", v.getValue());
                 break;
             }
             case 0x18: // TYPE
@@ -639,7 +642,7 @@ public class DexAnnotation {
                 fieldSig += DexType.toSootAT(fr.getDefiningClass()) +": ";
                 fieldSig += DexType.toSootAT(fr.getType()) +" ";
                 fieldSig += fr.getName();
-                Debug.printDbg("FIELD: ", fieldSig);
+                logger.debug("FIELD: {}", fieldSig);
                 elem = new AnnotationStringElem(fieldSig, 'f', ae.getName());
                 break;
             }

@@ -30,10 +30,11 @@ import org.jf.dexlib2.iface.instruction.NarrowLiteralInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22b;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22s;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Local;
 import soot.Value;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.IntOpTag;
@@ -45,7 +46,7 @@ import soot.jimple.Jimple;
 import soot.jimple.internal.JAssignStmt;
 
 public class BinopLitInstruction extends TaggedInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(BinopLitInstruction.class);
     Value expr = null;
     AssignStmt assign = null;
   
@@ -75,7 +76,7 @@ public class BinopLitInstruction extends TaggedInstruction {
         body.add(assign);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			logger.debug("constraint: {}", assign);
             int op = (int)instruction.getOpcode().value;
           if (op >= 0xd8) {
             op -= 0xd8;

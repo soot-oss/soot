@@ -29,6 +29,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.Local;
 import soot.Scene;
@@ -43,6 +46,7 @@ import soot.jimple.Stmt;
 
  */
 public class DexRefsChecker extends DexTransformer { 
+	final static Logger logger = LoggerFactory.getLogger(DexRefsChecker.class);
 	// Note: we need an instance variable for inner class access, treat this as
 	// a local variable (including initialization before use)
 	
@@ -74,8 +78,8 @@ public class DexRefsChecker extends DexTransformer {
           }
           
           if (!hasField) {
-            Debug.printDbg("field ", fr ," '", fr ,"' has not been found!");
-            System.out.println("Warning: add missing field '"+ fr +"' to class!");
+            logger.debug("field {} '{}' has not been found!", fr, fr);
+            logger.warn("add missing field '{}' to class!", fr);
             SootClass sc = null;
             String frStr = fr.toString();
             if (frStr.contains(".<")) {
@@ -86,10 +90,10 @@ public class DexRefsChecker extends DexTransformer {
             String fname = fr.toString().split(">")[0].split(" ")[2];
             int modifiers = soot.Modifier.PUBLIC;
             Type ftype = fr.getType();
-            Debug.printDbg("missing field: to class '", sc ,"' field name '", fname ,"' field modifiers '", modifiers ,"' field type '", ftype ,"'");
+            logger.debug("missing field: to class '{}' field name '{}' field modifiers '{}' field type '{}'", sc, fname, modifiers, ftype);
             sc.addField(new SootField(fname, ftype, modifiers));
           } else {
-            //System.out.println("field "+ sf.getName() +" '"+ sf +"' phantom: "+ isPhantom +" declared: "+ isDeclared);
+            //logger.info("field "+ sf.getName() +" '"+ sf +"' phantom: "+ isPhantom +" declared: "+ isDeclared);
           }
           
         } // for if statements

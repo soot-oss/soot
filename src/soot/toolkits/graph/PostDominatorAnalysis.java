@@ -87,14 +87,14 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
     protected void flowThrough(FlowSet in, Unit s, FlowSet out)
     {
         if (isUnitEndNode(s)){
-//            System.out.println("s: "+s+" is end node");
+//            logger.info("s: "+s+" is end node");
             out.clear();
             out.add(s);
-//            System.out.println("in: "+in+" out: "+out);
+//            logger.info("in: "+in+" out: "+out);
         }
         else {
         
-//            System.out.println("s: "+s+" is not start node");
+//            logger.info("s: "+s+" is not start node");
             //FlowSet domsOfSuccs = (FlowSet) allNodes.clone();
         
             // for each pred of s
@@ -102,25 +102,25 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
             while (succsIt.hasNext()){
                 Unit succ = succsIt.next();
                 // get the unitToBeforeFlow and find the intersection
-//                System.out.println("succ: "+succ);
+//                logger.info("succ: "+succ);
                 FlowSet next = (FlowSet) unitToBeforeFlow.get(succ);
-//                System.out.println("next: "+next);
-//                System.out.println("in before intersect: "+in);
+//                logger.info("next: "+next);
+//                logger.info("in before intersect: "+in);
                 in.intersection(next, in);
-//                System.out.println("in after intersect: "+in);
+//                logger.info("in after intersect: "+in);
             }
         
             // intersected with in
        
-//            System.out.println("out init: "+out);
+//            logger.info("out init: "+out);
             out.intersection(in, out);
             out.add(s);
-//            System.out.println("out after: "+out);
+//            logger.info("out after: "+out);
         }
     }
     
     private boolean isUnitEndNode(Unit s){
-        //System.out.println("head: "+g.getHeads().get(0));
+        //logger.info("head: "+g.getHeads().get(0));
         if( g.getTails().contains(s) )
         	return true;
         return false;

@@ -3,6 +3,9 @@ package soot.dava.toolkits.base.AST.transformations;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.ByteType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -21,7 +24,7 @@ import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
 
 public class TypeCastingError extends DepthFirstAdapter {
-	public boolean myDebug=false;
+	final static Logger logger = LoggerFactory.getLogger(TypeCastingError.class);
 	public TypeCastingError(){
 		
 	}
@@ -40,7 +43,7 @@ public class TypeCastingError extends DepthFirstAdapter {
 				continue;
 			
 			DefinitionStmt ds = (DefinitionStmt)s;
-			if(myDebug) System.out.println("Definition stmt"+ds);			
+			 logger.debug("Definition stmt{}",ds);			
 			
 			ValueBox rightBox = ds.getRightOpBox();
 			ValueBox leftBox = ds.getLeftOpBox();
@@ -50,20 +53,20 @@ public class TypeCastingError extends DepthFirstAdapter {
 				
 			if(! (left.getType() instanceof PrimType && right.getType() instanceof PrimType )){
 				//only interested in prim type casting errors
-				if(myDebug) System.out.println("\tDefinition stmt does not contain prims no need to modify");
+				 logger.debug("\tDefinition stmt does not contain prims no need to modify");
 				continue;
 			}
 			
 			Type leftType = left.getType();
 			Type rightType = right.getType();
-			if(myDebug) System.out.println("Left type is: "+leftType);
-			if(myDebug) System.out.println("Right type is: "+rightType);
+			 logger.debug("Left type is: {}",leftType);
+			 logger.debug("Right type is: {}",rightType);
 			if(leftType.equals(rightType)){
-				if(myDebug) System.out.println("\tTypes are the same");
-				if(myDebug) System.out.println("Right value is of instance"+right.getClass());
+				 logger.debug("\tTypes are the same");
+				 logger.debug("Right value is of instance{}",right.getClass());
 			}
 			if(!leftType.equals(rightType)){
-				if(myDebug) System.out.println("\tDefinition stmt has to be modified");	
+				 logger.debug("\tDefinition stmt has to be modified");	
 				// ByteType, DoubleType, FloatType, IntType, LongType, ShortType
 				/*
 				 * byte  	 Byte-length integer  	8-bit two's complement
@@ -78,9 +81,9 @@ public class TypeCastingError extends DepthFirstAdapter {
 		    			|| rightType instanceof ShortType)) {
 		    	//loss of precision do explicit casting
 		    	
-			    	if(DEBUG) System.out.println("Explicit casting to BYTE required");
+			    	 logger.debug("Explicit casting to BYTE required");
 			    	rightBox.setValue(new GCastExpr(right,ByteType.v()));
-			    	if(DEBUG)System.out.println("New right expr is "+rightBox.getValue().toString());
+			    	logger.debug("New right expr is {}",rightBox.getValue().toString());
 			    	continue;
 			    }
 		    	
@@ -88,9 +91,9 @@ public class TypeCastingError extends DepthFirstAdapter {
 		    			rightType instanceof FloatType || rightType instanceof IntType || rightType instanceof LongType)) {
 			    	//loss of precision do explicit casting
 		    	
-			    	if(DEBUG)System.out.println("Explicit casting to SHORT required");
+			    	logger.debug("Explicit casting to SHORT required");
 			    	rightBox.setValue(new GCastExpr(right,ShortType.v()));
-			    	if(DEBUG)System.out.println("New right expr is "+rightBox.getValue().toString());
+			    	logger.debug("New right expr is {}",rightBox.getValue().toString());
 			    	continue;
 			    }
 
@@ -99,9 +102,9 @@ public class TypeCastingError extends DepthFirstAdapter {
 		    			rightType instanceof FloatType || rightType instanceof LongType)) {
 			    	//loss of precision do explicit casting
 		    	
-			    	if(myDebug)System.out.println("Explicit casting to INT required");
+			    	logger.debug("Explicit casting to INT required");
 			    	rightBox.setValue(new GCastExpr(right,IntType.v()));
-			    	if(myDebug)System.out.println("New right expr is "+rightBox.getValue().toString());
+			    	logger.debug("New right expr is {}",rightBox.getValue().toString());
 			    	continue;
 			    }
 			    
@@ -110,9 +113,9 @@ public class TypeCastingError extends DepthFirstAdapter {
 		    			rightType instanceof FloatType )) {
 			    	//loss of precision do explicit casting
 		    	
-			    	if(DEBUG)System.out.println("Explicit casting to LONG required");
+			    	logger.debug("Explicit casting to LONG required");
 			    	rightBox.setValue(new GCastExpr(right,LongType.v()));
-			    	if(DEBUG)System.out.println("New right expr is "+rightBox.getValue().toString());
+			    	logger.debug("New right expr is {}",rightBox.getValue().toString());
 			    	continue;
 			    }
 			    
@@ -120,9 +123,9 @@ public class TypeCastingError extends DepthFirstAdapter {
 			    if(leftType instanceof FloatType && rightType instanceof DoubleType) {
 			    	//loss of precision do explicit casting
 		    	
-			    	if(DEBUG)System.out.println("Explicit casting to FLOAT required");
+			    	logger.debug("Explicit casting to FLOAT required");
 			    	rightBox.setValue(new GCastExpr(right,FloatType.v()));
-			    	if(DEBUG)System.out.println("New right expr is "+rightBox.getValue().toString());
+			    	logger.debug("New right expr is {}",rightBox.getValue().toString());
 			    	continue;
 			    }		    	
 		    }

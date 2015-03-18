@@ -91,8 +91,8 @@ public class DavaUnitPrinter extends AbstractUnitPrinter {
         	if(!name.equals( ((RefType)t).getSootClass().toString())){
         		//means javaStyle name is probably shorter check that there is no class clash in imports for this
         		
-        		//System.out.println(">>>>Type is"+t.toString());
-        		//System.out.println(">>>>Name is"+name);
+        		//logger.info(">>>>Type is"+t.toString());
+        		//logger.info(">>>>Name is"+name);
         		name = RemoveFullyQualifiedName.getReducedName(body.getImportList(),((RefType)t).getSootClass().toString(),t);
         	
         	}

@@ -29,7 +29,7 @@ public class AllocNodesFinder{
 	PAG pag;
 	
 	public  AllocNodesFinder(PegCallGraph pcg, CallGraph cg, PAG pag){
-		//System.out.println("===inside AllocNodesFinder===");
+		//logger.info("===inside AllocNodesFinder===");
 		this.pag = pag;
 		allocNodes = new HashSet<AllocNode>();
 		multiRunAllocNodes = new HashSet<AllocNode>();
@@ -48,7 +48,7 @@ public class AllocNodesFinder{
 			if (multiCalledMethods.contains(sm)){
 				while (iterator.hasNext()){
 					Unit unit = (Unit)iterator.next();
-					//System.out.println("unit: "+unit);
+					//logger.info("unit: "+unit);
 					if (clinitMethods.contains(sm)  && unit instanceof AssignStmt){
 						//Value rightOp = ((AssignStmt)unit).getRightOp();
 						
@@ -57,7 +57,7 @@ public class AllocNodesFinder{
 								PointsToAnalysis.STRING_NODE,
 								RefType.v( "java.lang.String" ), null );
 						//AllocNode allocNode = pag.makeAllocNode((NewExpr)rightOp, type, sm);
-						//  System.out.println("make alloc node: "+allocNode);
+						//  logger.info("make alloc node: "+allocNode);
 						allocNodes.add(allocNode);
 						multiRunAllocNodes.add(allocNode);
 						
@@ -68,7 +68,7 @@ public class AllocNodesFinder{
 						if (rightOp instanceof NewExpr){
 							Type type = ((NewExpr)rightOp).getType();
 							AllocNode allocNode = pag.makeAllocNode(rightOp, type, sm);
-							//System.out.println("make alloc node: "+allocNode);
+							//logger.info("make alloc node: "+allocNode);
 							allocNodes.add(allocNode);
 							multiRunAllocNodes.add(allocNode);
 						}
@@ -85,14 +85,14 @@ public class AllocNodesFinder{
 				
 				while (iterator.hasNext()){
 					Unit unit = (Unit)iterator.next();
-					//System.out.println("unit: "+unit);
+					//logger.info("unit: "+unit);
 					
 					if (clinitMethods.contains(sm)  && unit instanceof AssignStmt){
 						AllocNode allocNode = pag.makeAllocNode(
 								PointsToAnalysis.STRING_NODE,
 								RefType.v( "java.lang.String" ), null );
 						//   AllocNode allocNode = pag.makeAllocNode((NewExpr)rightOp, type, sm);
-						//System.out.println("make alloc node: "+allocNode);
+						//logger.info("make alloc node: "+allocNode);
 						allocNodes.add(allocNode);
 						/*if (fs.contains(unit)){
 						 multiRunAllocNodes.add(unit);
@@ -104,10 +104,10 @@ public class AllocNodesFinder{
 						if (rightOp instanceof NewExpr){
 							Type type = ((NewExpr)rightOp).getType();
 							AllocNode allocNode = pag.makeAllocNode(rightOp, type, sm);
-							//System.out.println("make alloc node: "+allocNode);
+							//logger.info("make alloc node: "+allocNode);
 							allocNodes.add(allocNode);
 							if (fs.contains(unit)){
-								//System.out.println("fs contains: "+unit);
+								//logger.info("fs contains: "+unit);
 								multiRunAllocNodes.add(allocNode);
 							}
 						}

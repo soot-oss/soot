@@ -29,6 +29,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -60,6 +63,7 @@ import soot.jimple.ThisRef;
 import soot.jimple.toolkits.scalar.LocalCreation;
 
 public class Util {
+	final static Logger logger = LoggerFactory.getLogger(Util.class);
     /**
      * Return the dotted class name of a type descriptor, i.e. change Ljava/lang/Object; to java.lang.Object.
      *
@@ -93,7 +97,7 @@ public class Util {
         while (idx < t.length() && t.charAt(idx) == '[') {
           idx++;
         }
-        //Debug.printDbg("t ", t ," idx ", idx);
+        //logger.debug("t ", t ," idx ", idx);
         String className = typeDescriptor.substring(idx);
 
         className = className.substring(className.indexOf('L') + 1, className.indexOf(';'));
@@ -106,7 +110,7 @@ public class Util {
     }
     
     public static Type getType(String type) {
-        System.out.println("get type from '"+ type +"'");
+        logger.info("get type from '"+ type +"'");
       int idx = 0;
       int arraySize = 0;
       Type returnType = null;
@@ -173,7 +177,7 @@ public class Util {
             break;
 
           default:
-            Debug.printDbg("unknown type: '", type ,"'");
+            logger.debug("unknown type: '{}'", type);
             Thread.dumpStack();
             System.exit(-1);
             break;
@@ -183,7 +187,7 @@ public class Util {
       if (returnType != null && arraySize > 0) {
         returnType = ArrayType.v(returnType, arraySize);
       }
-      Debug.printDbg("casttype i:", returnType);
+      logger.debug("casttype i: {}", returnType);
       return returnType;
     }
 

@@ -3,6 +3,9 @@ package soot.dava.toolkits.base.AST.transformations;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.BooleanType;
 import soot.IntType;
 import soot.Type;
@@ -19,7 +22,7 @@ import soot.jimple.Stmt;
 import soot.jimple.internal.ImmediateBox;
 
 public class ShortcutIfGenerator extends DepthFirstAdapter {
-	
+	final static Logger logger = LoggerFactory.getLogger(ShortcutIfGenerator.class);
 	public ShortcutIfGenerator(){
 		
 	}
@@ -75,8 +78,7 @@ public class ShortcutIfGenerator extends DepthFirstAdapter {
 			ImmediateBox falseBox = new ImmediateBox(IntConstant.v(0));
 				
 			DShortcutIf shortcut = new DShortcutIf(OpBox,trueBox,falseBox);
-			if(DEBUG)
-				System.out.println("created: "+shortcut);
+			logger.debug("created: {}",shortcut);
 			rightBox.setValue(shortcut);
 		}
 		

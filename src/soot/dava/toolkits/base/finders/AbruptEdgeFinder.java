@@ -72,9 +72,9 @@ public class AbruptEdgeFinder implements FactFinder
 	    	/*
 	    	 * Nomair debugging bug number 29
 	    	 */
-	    	//System.out.println();
+	    	//logger.info();
 	    	//((SETNode)temp).dump();
-	    	//System.out.println("Statement is"+pas);
+	    	//logger.info("Statement is"+pas);
 	    	((SETStatementSequenceNode)temp).insert_AbruptStmt( new DAbruptStmt( "break", prev.get_Label()));
 	    }
 	}

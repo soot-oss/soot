@@ -31,10 +31,11 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction21c;
 import org.jf.dexlib2.iface.reference.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Local;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -45,7 +46,7 @@ import soot.jimple.Jimple;
 
 
 public class CheckCastInstruction extends DexlibAbstractInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(CheckCastInstruction.class);
     AssignStmt assign = null;
 
     public CheckCastInstruction (Instruction instruction, int codeAdress) {
@@ -73,7 +74,7 @@ public class CheckCastInstruction extends DexlibAbstractInstruction {
         
 
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			logger.debug("constraint: {}", assign);
             DalvikTyper.v().setType(assign.getLeftOpBox(), checkCastType, false);
 		}
 

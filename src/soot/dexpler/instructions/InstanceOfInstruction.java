@@ -32,9 +32,10 @@ import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 import org.jf.dexlib2.iface.reference.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -43,7 +44,7 @@ import soot.jimple.InstanceOfExpr;
 import soot.jimple.Jimple;
 
 public class InstanceOfInstruction extends DexlibAbstractInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(InstanceOfInstruction.class);
     AssignStmt assign = null;
 
     public InstanceOfInstruction (Instruction instruction, int codeAdress) {
@@ -64,7 +65,7 @@ public class InstanceOfInstruction extends DexlibAbstractInstruction {
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			logger.debug("constraint: {}", assign);
           int op = (int)instruction.getOpcode().value;
           //DalvikTyper.v().?
         }

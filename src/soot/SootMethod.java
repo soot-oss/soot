@@ -31,6 +31,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.dava.DavaBody;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
@@ -47,9 +50,11 @@ import soot.util.NumberedString;
 public class SootMethod 
     extends AbstractHost
     implements ClassMember, Numberable, MethodOrMethodContext {
+	
+	final static Logger logger = LoggerFactory.getLogger(SootMethod.class);
+	
     public static final String constructorName = "<init>";
     public static final String staticInitializerName = "<clinit>";
-    public static boolean DEBUG=false;
     /** Name of the current method. */
     private String name;
 
@@ -141,7 +146,7 @@ public class SootMethod
             this.exceptions.addAll(thrownExceptions);
             /*DEBUG=true;
             if(DEBUG)
-            	System.out.println("Added thrown exceptions"+thrownExceptions);
+            	logger.info("Added thrown exceptions"+thrownExceptions);
             DEBUG=false;
             */
         }
@@ -361,8 +366,7 @@ public class SootMethod
     }
     /** Adds the given exception to the list of exceptions thrown by this method. */
     public void addException(SootClass e) {
-    	if(DEBUG)
-    		System.out.println("Adding exception "+e);
+    		logger.debug("Adding exception {}",e);
     	
         if (exceptions == null)
             exceptions = new ArrayList<SootClass>();
@@ -375,8 +379,7 @@ public class SootMethod
 
     /** Removes the given exception from the list of exceptions thrown by this method. */
     public void removeException(SootClass e) {
-    	if(DEBUG)
-    		System.out.println("Removing exception "+e);
+    		logger.debug("Removing exception {}",e);
 
         if (exceptions == null)
             exceptions = new ArrayList<SootClass>();

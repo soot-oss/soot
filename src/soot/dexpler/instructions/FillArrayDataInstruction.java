@@ -33,6 +33,8 @@ import org.jf.dexlib2.iface.instruction.formats.ArrayPayload;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 import org.jf.dexlib2.iface.instruction.formats.Instruction31t;
 import org.jf.dexlib2.iface.reference.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -46,7 +48,6 @@ import soot.Local;
 import soot.LongType;
 import soot.ShortType;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.jimple.ArrayRef;
@@ -61,6 +62,7 @@ import soot.jimple.Stmt;
 
 public class FillArrayDataInstruction extends PseudoInstruction {
 
+	final static Logger logger = LoggerFactory.getLogger(FillArrayDataInstruction.class);
   public FillArrayDataInstruction (Instruction instruction, int codeAdress) {
     super(instruction, codeAdress);
   }
@@ -186,14 +188,14 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     } else {
       throw new RuntimeException("Invalid Array Type occured in FillArrayDataInstruction: "+ elementType);
     }
-    Debug.printDbg("array element: ", value);
+    logger.debug("array element: {}", value);
     return value;
 
   }
 
   @Override
   public void computeDataOffsets(DexBody body) {
-    Debug.printDbg("compute data offset");
+    logger.debug("compute data offset");
     if(!(instruction instanceof Instruction31t))
       throw new IllegalArgumentException("Expected Instruction31t but got: "+instruction.getClass());
 

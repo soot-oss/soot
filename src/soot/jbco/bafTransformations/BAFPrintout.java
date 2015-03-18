@@ -22,6 +22,10 @@ package soot.jbco.bafTransformations;
 import java.util.Map;
 import java.util.Stack;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jbco.*;
 import soot.Body;
 import soot.BodyTransformer;
@@ -35,7 +39,8 @@ import soot.Unit;
  * Created on 15-Jun-2006 
  */
 public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
-  
+	final static Logger logger = LoggerFactory.getLogger(BAFPrintout.class);
+
   private String name = "bb.printout";
   
   public void outputSummary() {}
@@ -54,7 +59,7 @@ public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
   
   protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     //if (b.getMethod().getSignature().indexOf("run")<0) return;
-    System.out.println("\n"+b.getMethod().getSignature());
+    logger.info("\n{}",b.getMethod().getSignature());
   
     if (stack) {
       Map<Unit,Stack<Type>> stacks = null;
@@ -68,12 +73,12 @@ public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
       
         StackTypeHeightCalculator.printStack(b.getUnits(), stacks, true);
       } catch (Exception exc) {
-        System.out.println("\n**************Exception calculating height " + exc + ", printing plain bytecode now\n\n");
+        logger.error("\n**************Exception calculating height {}, printing plain bytecode now\n\n", exc);
         soot.jbco.util.Debugger.printUnits(b, "  FINAL");  
       }
     } else {
       soot.jbco.util.Debugger.printUnits(b, "  FINAL");
     }
-    System.out.println();
+    logger.info("");
   }
 }

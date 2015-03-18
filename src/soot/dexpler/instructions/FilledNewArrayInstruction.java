@@ -29,10 +29,11 @@ import static soot.dexpler.Util.isFloatLike;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
 import org.jf.dexlib2.iface.reference.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -45,6 +46,7 @@ import soot.jimple.NewArrayExpr;
 
 public class FilledNewArrayInstruction extends FilledArrayInstruction {
 
+	final static Logger logger = LoggerFactory.getLogger(FilledNewArrayInstruction.class);
     AssignStmt assign = null;
 
     public FilledNewArrayInstruction (Instruction instruction, int codeAdress) {
@@ -70,7 +72,7 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
         Type t = DexType.toSoot((TypeReference) filledNewArrayInstr.getReference());
         // NewArrayExpr needs the ElementType as it increases the array dimension by 1
         Type arrayType = ((ArrayType) t).getElementType();
-System.out.println("array element type: (filled narr)"+ arrayType);
+logger.info("array element type: (filled narr)"+ arrayType);
         NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
         // new local generated intentional, will be moved to real register by MoveResult
         arrayLocal = body.getStoreResultLocal();
@@ -91,7 +93,7 @@ System.out.println("array element type: (filled narr)"+ arrayType);
 //      body.setDanglingInstruction(this);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			logger.debug("constraint: {}", assign);
           int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().setType(assign.getLeftOpBox(), arrayExpr.getType(), false);
           //DalvikTyper.v().setType(array, arrayType, isUse)

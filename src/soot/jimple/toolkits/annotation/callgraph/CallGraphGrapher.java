@@ -166,11 +166,11 @@ public class CallGraphGrapher extends SceneTransformer
     public void handleNextMethod(){
         if (!getNextMethod().hasActiveBody()) return;
         ArrayList<MethInfo> tgts = getTgtMethods(getNextMethod(), true);
-        //System.out.println("for: "+getNextMethod().getName()+" tgts: "+tgts);
+        //logger.info("for: "+getNextMethod().getName()+" tgts: "+tgts);
         ArrayList<MethInfo> srcs = getSrcMethods(getNextMethod(), true);
-        //System.out.println("for: "+getNextMethod().getName()+" srcs: "+srcs);
+        //logger.info("for: "+getNextMethod().getName()+" srcs: "+srcs);
         CallGraphInfo info = new CallGraphInfo(getNextMethod(), tgts, srcs);
-        //System.out.println("sending next method");
+        //logger.info("sending next method");
         InteractionHandler.v().handleCallGraphPart(info);
         //handleNextMethod();
     }

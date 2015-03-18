@@ -50,14 +50,14 @@ public class StmtSumWeightedByDepth extends ASTMetric {
   }
   
   private void increaseDepth(){
-	  System.out.println("Increasing depth");
+	  logger.info("Increasing depth");
 	  currentDepth++;
 	  if(currentDepth > maxDepth)
 		  maxDepth = currentDepth;
   }
   
   private void decreaseDepth(){
-	  System.out.println("Decreasing depth");
+	  logger.info("Decreasing depth");
 	  currentDepth--;
   }
   
@@ -90,7 +90,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
         || n instanceof LocalClassDecl || n instanceof Synchronized 
         || n instanceof ProcedureDecl || n instanceof Initializer ){
       sum += currentDepth*2;
-      System.out.println(n);
+      logger.info(n);
       increaseDepth();
     } else if (parent instanceof Block && n instanceof Block) {
       StmtSumWeightedByDepth.tmpAbruptChecker = false;
@@ -119,7 +119,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
       {
         blocksWithAbruptFlow.add(n);
         sum += currentDepth*2;
-        System.out.println(n);
+        logger.info(n);
         increaseDepth();
       }
     } 
@@ -127,7 +127,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
     else if (n instanceof Expr || n instanceof Formal){
     	System.out.print(sum +"  "+n+"  ");
     	sum += currentDepth*2;
-    	System.out.println(sum);
+    	logger.info(sum);
     }
     
     // carry metric cummulative for each statement for metricPrettyPrinter 

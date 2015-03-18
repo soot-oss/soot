@@ -34,7 +34,7 @@ public class JjBinary_c extends Binary_c {
     public Type childExpectedType(Expr child, AscriptionVisitor av){
         Expr other;
 
-        //System.out.println("child: "+child+" op: "+op);
+        //logger.info("child: "+child+" op: "+op);
         if (child == left) {
             other = right;
         }
@@ -117,8 +117,8 @@ public class JjBinary_c extends Binary_c {
         }
 
         if (op == ADD || op == SUB || op == MUL || op == DIV || op == MOD) {
-            //System.out.println("other: "+other+" type: "+other.type());
-            //System.out.println("child: "+child+" child: "+child.type());
+            //logger.info("other: "+other+" type: "+other.type());
+            //logger.info("child: "+child+" child: "+child.type());
             
             if (other.type().isNumeric()) {
                 if (other.type().isDouble() || child.type().isDouble()) {

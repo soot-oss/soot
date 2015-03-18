@@ -74,12 +74,12 @@ public class DavaStaticBlockCleaner {
     	//retrieve the clinit method if any for sootClass
     	//the clinit method gets converted into the static block which could initialize the final variable
     	if(!sootClass.declaresMethod("void <clinit>()")){
-    		//System.out.println("no clinit");
+    		//logger.info("no clinit");
     		return;
     	}
 
     	SootMethod clinit = sootClass.getMethod("void <clinit>()");
-    	//System.out.println(clinit);
+    	//logger.info(clinit);
 
     	//retireve the active body
     	if (!clinit.hasActiveBody())
@@ -116,7 +116,7 @@ public class DavaStaticBlockCleaner {
 	if(sootClass !=null){
 	    //1, method should belong to the same class as the clinit method
 	    if(sootClass.declaresMethod(maybeInline.getSubSignature())){
-		//System.out.println("The method invoked is from the same class");
+		//logger.info("The method invoked is from the same class");
 		//2, method should be static
 		
 		if (Modifier.isStatic(maybeInline.getModifiers())){
@@ -146,7 +146,7 @@ public class DavaStaticBlockCleaner {
 		    ASTStatementSequenceNode declarations = toReturn.getDeclarations();
 		    if(declarations.getStatements().size() == 0){
 			//inline only if there are no declarations in the method inlined
-			//System.out.println("No declarations in the method. we can inline this method");
+			//logger.info("No declarations in the method. we can inline this method");
 			return toReturn;
 		    }
 		}

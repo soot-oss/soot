@@ -138,7 +138,7 @@ public class TagCollector {
                 if (t instanceof JimpleLineNumberTag){
                     jlnt = (JimpleLineNumberTag)t;
                 }
-                //System.out.println("adding unit tag: "+t);
+                //logger.info("adding unit tag: "+t);
             }
             addAttribute(ua);
 			for (ValueBox vb : u.getUseAndDefBoxes()) {
@@ -146,16 +146,16 @@ public class TagCollector {
 				if (!vb.getTags().isEmpty()){
                     Attribute va = new Attribute();
 			    	for (Tag t : vb.getTags()) {
-                        //System.out.println("adding vb tag: "+t);
+                        //logger.info("adding vb tag: "+t);
 					    va.addTag(t);
-                        //System.out.println("vb: "+vb.getValue()+" tag: "+t);
+                        //logger.info("vb: "+vb.getValue()+" tag: "+t);
                         if (jlnt != null) {
                             va.addTag(jlnt);
                         }
                     }
                     // also here add line tags of the unit
                     addAttribute(va);
-                    //System.out.println("added att: "+va);
+                    //logger.info("added att: "+va);
                 }
             }
         }
@@ -166,7 +166,7 @@ public class TagCollector {
         Iterator<Attribute> it = attributes.iterator();
         while (it.hasNext()){
             Attribute a = it.next();
-            //System.out.println("will print attr: "+a);
+            //logger.info("will print attr: "+a);
             a.print(writerOut);
         }
     }

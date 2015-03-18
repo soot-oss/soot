@@ -3,6 +3,9 @@ package soot.dava.toolkits.base.AST.transformations;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.G;
 import soot.dava.DecompilationException;
 import soot.dava.internal.AST.ASTCondition;
@@ -40,7 +43,8 @@ import soot.jimple.Stmt;
  *    has the abrupt statement in that case we just negated the condition
  */
 public class IfElseSplitter extends DepthFirstAdapter {
-	public static boolean DEBUG=false;
+	final static Logger logger = LoggerFactory.getLogger(IfElseSplitter.class);
+	
 	boolean targeted=false;
 	ASTMethodNode methodNode;
 
@@ -109,8 +113,8 @@ public class IfElseSplitter extends DepthFirstAdapter {
 		boolean negateIfCondition=false;
 		
 		if(patternMatched){
-			if(DEBUG)
-				System.out.println("First pattern matched");
+			
+				logger.debug("First pattern matched");
 			newIfBody = ifBody;
 			outerScopeBody=elseBody;
 			negateIfCondition=false;
@@ -118,8 +122,8 @@ public class IfElseSplitter extends DepthFirstAdapter {
 		else{
 			patternMatched = tryBodyPattern(elseBody,node.get_Label(),ifBody);
 			if(patternMatched){
-				if(DEBUG)
-					System.out.println("Second pattern matched");
+				
+					logger.debug("Second pattern matched");
 
 				newIfBody = elseBody;
 				outerScopeBody = ifBody;
@@ -134,12 +138,11 @@ public class IfElseSplitter extends DepthFirstAdapter {
 				cond.flip();
 			
 			ASTIfNode newNode = new ASTIfNode(node.get_Label(),cond,newIfBody);
-			if(DEBUG){
-				System.out.println("New IF Node is: "+newNode.toString());
-				System.out.println("Outer scope body list is:\n");
+				logger.debug("New IF Node is: {}",newNode.toString());
+				logger.debug("Outer scope body list is:\n");
 				for(int i=0;i<outerScopeBody.size();i++)
-					System.out.println("\n\n "+outerScopeBody.get(i).toString());
-			}
+					logger.debug("\n\n {}",outerScopeBody.get(i).toString());
+			
 			
 			
 

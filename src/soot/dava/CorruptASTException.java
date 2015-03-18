@@ -19,16 +19,20 @@
 
 package soot.dava;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //import java.util.*;
 //import soot.util.*;
 //import soot.dava.toolkits.base.finders.*;
 
 public class CorruptASTException extends DecompilationException 
 {
+	final static Logger logger = LoggerFactory.getLogger(CorruptASTException.class);
     public CorruptASTException(String message){
 	super();
-	System.out.println("The Abstract Syntax Tree is corrupt");
-	System.out.println(message);
+	logger.info("The Abstract Syntax Tree is corrupt");
+	logger.info(message);
 	report();
     }
 }

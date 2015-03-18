@@ -39,9 +39,9 @@ public class JjArrayInit_c extends ArrayInit_c {
 
         Type t = av.toType();
 
-        //System.out.println("t type: "+t);
+        //logger.info("t type: "+t);
         if (t == null) {
-            //System.out.println("t is null");
+            //logger.info("t is null");
             return child.type();
         }
         if (! t.isArray()) {

@@ -94,7 +94,7 @@ public class PointsToBitVector extends BitVector {
 		//An estimate of how much sharing is going on (but it should be 1 less
 		//than the printed value in some cases, because incRefCount is called
 		//for an intermediate result in nativeAddAll.
-		//System.out.println("Reference count = " + refCount);
+		//logger.info("Reference count = " + refCount);
 	}
 	public void decRefCount()
 	{

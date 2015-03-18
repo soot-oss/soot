@@ -27,13 +27,14 @@ package soot.dexpler.instructions;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction23x;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.IntType;
 import soot.Local;
 import soot.Type;
 import soot.UnknownType;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.ObjectOpTag;
@@ -43,7 +44,7 @@ import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 
 public class AputInstruction extends FieldInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(AputInstruction.class);
     AssignStmt assign = null;
   
     public AputInstruction (Instruction instruction, int codeAdress) {
@@ -71,7 +72,7 @@ public class AputInstruction extends FieldInstruction {
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			logger.debug("constraint: {}", assign);
           DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
           DalvikTyper.v().setType(arrayRef.getIndexBox(), IntType.v(), true);
         }

@@ -20,9 +20,14 @@
 package soot.dava.toolkits.base.renamer;
 
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 public class heuristicSet {
+	final static Logger logger = LoggerFactory.getLogger(heuristicSet.class);
 	HashMap<Local, heuristicTuple> set;
 
 	public heuristicSet() {
@@ -99,8 +104,8 @@ public class heuristicSet {
 			Object local = it.next();
 			heuristicTuple temp = set.get(local);
 			String tuple = temp.getPrint();
-			System.out.println(local + "  " + tuple + " DefinedType: "
-					+ ((Local) local).getType());
+			logger.info("{}  {} DefinedType: {}", local, tuple, 
+					((Local) local).getType());
 		}
 	}
 

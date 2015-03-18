@@ -191,7 +191,7 @@ public class AccessManager
      */
     public static void createAccessorMethod(SootMethod container, Stmt stmt) 
 	{
-    	//System.out.println("Creating accessor method: \n" + 
+    	//logger.info("Creating accessor method: \n" + 
     	//		" method: " + container + " \n" +
 		//		" stmt: " + stmt);
     	   	
@@ -353,12 +353,12 @@ public class AccessManager
     	
 		InvokeExpr expr=stmt.getInvokeExpr();
 		SootMethod method=expr.getMethod();
-		//System.out.println("method: " + method);
+		//logger.info("method: " + method);
 	
 		SootClass target=method.getDeclaringClass();
-		//System.out.println("target: " + target);
+		//logger.info("target: " + target);
 		
-		//System.out.println("method ref: " + expr.getMethodRef());
+		//logger.info("method ref: " + expr.getMethodRef());
 		
 		SootMethod accessor;
 		
@@ -379,7 +379,7 @@ public class AccessManager
 			for (java.util.Iterator it=parameterTypes.iterator(); it.hasNext();) {
 				Type type=(Type)it.next();
 				Local l=lg.generateLocal(type);
-				//System.out.println("local type: " + type);
+				//logger.info("local type: " + type);
 				accStmts.add(
 						Jimple.v().newIdentityStmt(l, 
 						Jimple.v().newParameterRef(type, paramID)));

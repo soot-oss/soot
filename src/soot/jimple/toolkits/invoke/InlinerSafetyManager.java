@@ -135,22 +135,22 @@ public class InlinerSafetyManager
                                              String modifierOptions)
     {
         if(!InlinerSafetyManager.canSafelyInlineInto(target, toInline, container)) {
-        	//System.out.println("canSafelyInlineInto failed");
+        	//logger.info("canSafelyInlineInto failed");
             return false;
         }
     
         if(!AccessManager.ensureAccess(container, target, modifierOptions)) {
-        	//System.out.println("ensure access failed");
+        	//logger.info("ensure access failed");
             return false;
         }
             
         if (!checkSpecialInlineRestrictions(container, target, modifierOptions)) {
-        	//System.out.println("checkSpecialInlineRestrictions failed");
+        	//logger.info("checkSpecialInlineRestrictions failed");
         	return false;
         }
         
         if (!checkAccessRestrictions(container, target, modifierOptions)) {
-        	//System.out.println("checkAccessRestrictions failed");
+        	//logger.info("checkAccessRestrictions failed");
         	return false;
         }
         

@@ -24,6 +24,9 @@ import soot.util.*;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.*;
 import soot.jimple.internal.JExitMonitorStmt;
 import soot.jimple.toolkits.callgraph.*;
@@ -61,13 +64,12 @@ import soot.jimple.toolkits.callgraph.*;
  */
 public class ThrowFinder
 {
+	final static Logger logger = LoggerFactory.getLogger(ThrowFinder.class);
     public ThrowFinder( Singletons.Global g ) {}
     public static ThrowFinder v() { return G.v().soot_dava_toolkits_base_misc_ThrowFinder(); }
 
     private HashSet<SootMethod> registeredMethods;
     private HashMap<Stmt, HashSet<SootClass>> protectionSet;
-
-    public static boolean DEBUG=false;
     
     public void find()
     {
@@ -218,12 +220,10 @@ public class ThrowFinder
 		    			if(! (pred instanceof JExitMonitorStmt)){
 		    				exceptionSet.add( c);
 			    			changed = true;
-			    			if(DEBUG)
-			    				System.out.println("Added exception which is explicitly thrown"+c.getName());
+			    				logger.debug("Added exception which is explicitly thrown {}",c.getName());
 		    			}
 		    			else{
-		    				if(DEBUG)
-		    					System.out.println("Found monitor exit"+pred+" hence not adding");
+		    					logger.debug("Found monitor exit {} hence not adding",pred);
 		    			}
 		    		}
 		    	}

@@ -385,8 +385,8 @@ public class PhiNodeManager
         DominatorNode<Block> champNode = dt.getDode(champBlock);
         DominatorNode<Block> challengerNode = dt.getDode(challengerBlock);
 
-        // *** FIXME: System.out.println("champ: " + champNode);
-        // System.out.println("chall: " + challengerNode);
+        // *** FIXME: logger.info("champ: " + champNode);
+        // logger.info("chall: " + challengerNode);
         
         return(dt.isDominatorOf(champNode, challengerNode));
     }

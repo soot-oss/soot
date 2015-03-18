@@ -26,10 +26,10 @@ import java.util.*;
 public class UnreachableMethodTransformer extends BodyTransformer
 {
     protected void internalTransform(Body b, String phaseName, Map options) {
-        //System.out.println( "Performing UnreachableMethodTransformer" );
+        //logger.info( "Performing UnreachableMethodTransformer" );
         ReachableMethods reachableMethods = Scene.v().getReachableMethods();
         SootMethod method = b.getMethod();
-        //System.out.println( "Method: " + method.getName() );
+        //logger.info( "Method: " + method.getName() );
         if( reachableMethods.contains( method ) ) return;
 
         JimpleBody body = (JimpleBody) method.getActiveBody();
@@ -81,8 +81,8 @@ public class UnreachableMethodTransformer extends BodyTransformer
             Object o = units.getFirst();
             boolean insertFirst = false;
             while( true ) {
-                //System.out.println( "Unit: " + o );
-                //System.out.println( "\tClass: " + o.getClass() );
+                //logger.info( "Unit: " + o );
+                //logger.info( "\tClass: " + o.getClass() );
                 if( o == null ) {
                     insertFirst = true;
                     break;

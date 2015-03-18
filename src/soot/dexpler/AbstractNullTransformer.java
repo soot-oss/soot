@@ -1,5 +1,8 @@
 package soot.dexpler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.RefLikeType;
 import soot.Type;
 import soot.Unit;
@@ -21,6 +24,7 @@ import soot.jimple.NullConstant;
  */
 public abstract class AbstractNullTransformer extends DexTransformer {
 
+	final static Logger logger = LoggerFactory.getLogger(AbstractNullTransformer.class);
 	/**
 	 * Examine expr if it is a comparison with 0.
 	 *
@@ -50,8 +54,8 @@ public abstract class AbstractNullTransformer extends DexTransformer {
 			ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
 			if (isZeroComparison(expr)) {
 				expr.setOp2(NullConstant.v());
-				Debug.printDbg("[null] replacing with null in ", u);
-				Debug.printDbg(" new u: ", u);
+				logger.debug("[null] replacing with null in ", u);
+				logger.debug(" new u: ", u);
 			}
 		} else if (u instanceof AssignStmt) {
 			AssignStmt s = (AssignStmt) u;
@@ -65,8 +69,8 @@ public abstract class AbstractNullTransformer extends DexTransformer {
 						|| ((InstanceFieldRef) s.getLeftOp()).getField().getType()
 							instanceof RefLikeType) {
 					s.setRightOp(NullConstant.v());
-					Debug.printDbg("[null] replacing with null in ", u);
-					Debug.printDbg(" new u: ", u);
+					logger.debug("[null] replacing with null in ", u);
+					logger.debug(" new u: ", u);
 				}
 			}
 		}

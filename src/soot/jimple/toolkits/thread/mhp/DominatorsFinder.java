@@ -4,7 +4,11 @@ package soot.jimple.toolkits.thread.mhp;
 import soot.toolkits.scalar.*; 
 import soot.toolkits.graph.*;
 import soot.util.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -18,6 +22,8 @@ import java.util.*;
 // -Richard L. Halpert, 2006-11-30
 
 public class DominatorsFinder{
+	final static Logger logger = LoggerFactory.getLogger(DominatorsFinder.class);
+
 	private final Map<Object, FlowSet> unitToDominators;
 	private final DirectedGraph peg;
 	
@@ -66,8 +72,8 @@ public class DominatorsFinder{
 				unitToDominators.put(n, domin);
 			}
 		}
-		System.out.println("===finish init unitToDominators===");
-		System.err.println("===finish init unitToDominators===");
+		logger.info("===finish init unitToDominators===");
+		logger.error("===finish init unitToDominators===");
 		
 		// testUnitToDominators();
 		

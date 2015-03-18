@@ -19,20 +19,24 @@
 
 package soot.dava;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //import java.util.*;
 //import soot.util.*;
 //import soot.dava.toolkits.base.finders.*;
 
 public class DavaFlowAnalysisException extends DecompilationException 
 {
+	final static Logger logger = LoggerFactory.getLogger(DavaFlowAnalysisException.class);
     public DavaFlowAnalysisException(){
 	super();
     }
 
     public DavaFlowAnalysisException(String message){
 	super();
-	System.out.println("There was an Error During the Structural Flow Analysis in Dava");
-	System.out.println(message);
+	logger.info("There was an Error During the Structural Flow Analysis in Dava");
+	logger.info(message);
 	report();
     }
 

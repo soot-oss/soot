@@ -2,6 +2,11 @@
 package soot.jimple.toolkits.thread.mhp;
 
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.toolkits.scalar.*;
 
 // *** USE AT YOUR OWN RISK ***
@@ -17,7 +22,8 @@ import soot.toolkits.scalar.*;
 
 
 public class MonitorSet extends ArraySparseSet{
-	
+	final static Logger logger = LoggerFactory.getLogger(MonitorSet.class);
+
 	//    int size = 0;
 	
 	MonitorSet(){
@@ -42,21 +48,21 @@ public class MonitorSet extends ArraySparseSet{
 		return newSet;
 	}
 	/*public void copy(MonitorSet dest){
-	 System.out.println("====begin copy");
+	 logger.info("====begin copy");
 	 dest.clear();
 	 Iterator iterator = iterator();
 	 while (iterator.hasNext()){
 	 Object obj = iterator.next();
 	 if (obj instanceof MonitorDepth) {
-	 System.out.println("obj: "+((MonitorDepth)obj).getObjName());
-	 System.out.println("depth: "+((MonitorDepth)obj).getDepth());	
+	 logger.info("obj: "+((MonitorDepth)obj).getObjName());
+	 logger.info("depth: "+((MonitorDepth)obj).getDepth());	
 	 }
 	 else
-	 System.out.println("obj: "+obj);
+	 logger.info("obj: "+obj);
 	 if (!dest.contains(obj)) dest.add(obj);
-	 else System.out.println("dest contains "+obj);
+	 else logger.info("dest contains "+obj);
 	 }
-	 System.out.println("===finish copy===");
+	 logger.info("===finish copy===");
 	 }
 	 */
 	
@@ -99,20 +105,20 @@ public class MonitorSet extends ArraySparseSet{
 	 */
 	public void intersection(MonitorSet other, MonitorSet dest){
 		/*
-		 System.out.println("this:");
+		 logger.info("this:");
 		 this.test();
-		 System.out.println("other:");
+		 logger.info("other:");
 		 other.test();
 		 */
 		if (other.contains("&")) {
 			
 			this.copy(dest);
-			//System.out.println("copy this to dest: ");
+			//logger.info("copy this to dest: ");
 			//dest.test();
 		}
 		else if (this.contains("&")) {
 			other.copy(dest);
-			//System.out.println("copy other to dest: ");
+			//logger.info("copy other to dest: ");
 			//dest.test();
 		}
 		else{
@@ -139,19 +145,19 @@ public class MonitorSet extends ArraySparseSet{
 	
 	
 	public void test(){
-		System.out.println("====MonitorSet===");
+		logger.info("====MonitorSet===");
 		Iterator<?> it = iterator();
 		while (it.hasNext()){
 			Object obj = it.next();
 			if (obj instanceof MonitorDepth){
 				MonitorDepth md = (MonitorDepth)obj;     ;
-				System.out.println("obj: "+md.getObjName());
-				System.out.println("depth: "+md.getDepth());
+				logger.info("obj: {}",md.getObjName());
+				logger.info("depth: {}",md.getDepth());
 			}
 			else
-				System.out.println(obj);
+				logger.info(obj+"");
 		}
-		System.out.println("====MonitorSet end====");
+		logger.info("====MonitorSet end====");
 	}
 	
 }

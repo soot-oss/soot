@@ -46,7 +46,7 @@ public class DecrementIncrementStmtCreation extends DepthFirstAdapter {
 				
 		while (stmtIt.hasNext()) {
 			Object temp = stmtIt.next();
-			//System.out.println(temp);
+			//logger.info(temp);
 			AugmentedStmt as = (AugmentedStmt)temp;
 			Stmt s = as.get_Stmt();
 			if (!( s instanceof DefinitionStmt)) 

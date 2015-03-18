@@ -52,7 +52,7 @@ public class SmartLocalDefs implements LocalDefs {
 	private final Map<Unit, BitSet> liveLocalsAfter;
 
 	public void printAnswer(){
-		System.out.println(answer.toString());
+		logger.info(answer.toString());
 	}
 	/**
 	 * Intersects 2 sets and returns the result as a list

@@ -91,7 +91,7 @@ public class PegCallGraphToDot {
 		
 		// file name is the method name + .dot
 		DotGraph canvas = new DotGraph(methodname);
-		//System.out.println("onepage is:"+onepage);
+		//logger.info("onepage is:"+onepage);
 		if (!onepage) {
 			canvas.setPageSize(8.5, 11.0);
 		}
@@ -109,7 +109,7 @@ public class PegCallGraphToDot {
 					String listName = "list" + (new Integer(sequence++)).toString();
 					String nodeName = makeNodeName(getNodeOrder(nodeindex, listName));
 					listNodeName.put(node, listName);
-//					System.out.println("put node: "+node +"into listNodeName");
+//					logger.info("put node: "+node +"into listNodeName");
 					
 				}
 			}
@@ -137,11 +137,11 @@ public class PegCallGraphToDot {
 				}
 				else{
 					Object succ = s;
-					//	System.out.println("$$$$$$succ: "+succ);
+					//	logger.info("$$$$$$succ: "+succ);
 //					nodeName = makeNodeName(getNodeOrder(nodeindex, tag+" "+node));
 					succName = makeNodeName(getNodeOrder(nodeindex, succ));
-					//  System.out.println("node is :" +node);
-//					System.out.println("find start node in pegtodotfile:"+node);
+					//  logger.info("node is :" +node);
+//					logger.info("find start node in pegtodotfile:"+node);
 				}
 				
 				
@@ -158,13 +158,13 @@ public class PegCallGraphToDot {
 			nodesIt = nodeindex.keySet().iterator();
 			while (nodesIt.hasNext()) {
 				Object node = nodesIt.next();
-//				System.out.println("node is:"+node);
+//				logger.info("node is:"+node);
 				if (node != null){
-					//System.out.println("node: "+node);
+					//logger.info("node: "+node);
 					String nodename = makeNodeName(getNodeOrder(nodeindex, node));
-					//System.out.println("nodename: "+ nodename);
+					//logger.info("nodename: "+ nodename);
 					DotGraphNode dotnode = canvas.getNode(nodename);
-					//System.out.println("dotnode: "+dotnode);
+					//logger.info("dotnode: "+dotnode);
 					if (dotnode != null)	dotnode.setLabel(node.toString());
 				}
 			}
@@ -183,7 +183,7 @@ public class PegCallGraphToDot {
 			index = new Integer(nodecount++);
 			nodeindex.put(node, index);
 		}
-//		System.out.println("order is:"+index.intValue());
+//		logger.info("order is:"+index.intValue());
 		return index.intValue();
 	}
 	

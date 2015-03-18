@@ -97,7 +97,7 @@ public class CPFlowSet extends DavaFlowSet{
 	 * if we find one: update the Value with the value of the newTuple
 	 */
 	public void addIfNotPresent(CPTuple newTuple){
-		//System.out.println("addIfnotPresent invoked");
+		//logger.info("addIfnotPresent invoked");
 		//going through all the elements in the set
 		for(int i = 0; i < this.numElements; i++) {
 			CPTuple current = (CPTuple)elements[i];
@@ -118,7 +118,7 @@ public class CPFlowSet extends DavaFlowSet{
 			
 			//same class and same variable
 			//UPDATE this elements VALUE
-			//System.out.println("got here"+newTuple.getValue());
+			//logger.info("got here"+newTuple.getValue());
 			
 			current.setValue(newTuple.getValue());
 			//since the tuple was present no need to ADD since we updated
@@ -126,7 +126,7 @@ public class CPFlowSet extends DavaFlowSet{
 		}
 		
 		//if we get to this part we know that we need to add
-		//System.out.println("no got here");
+		//logger.info("no got here");
 		this.add(newTuple);
 	}
 
@@ -160,7 +160,7 @@ public class CPFlowSet extends DavaFlowSet{
 	 */
 	
 	public void addIfNotPresentButDontUpdate(CPTuple newTuple){
-		//System.out.println("addIfnotPresent invoked");
+		//logger.info("addIfnotPresent invoked");
 		//going through all the elements in the set
 		for(int i = 0; i < this.numElements; i++) {
 			CPTuple current = (CPTuple)elements[i];
@@ -222,7 +222,7 @@ public class CPFlowSet extends DavaFlowSet{
 	 * 
 	 */
 	public void intersection(FlowSet otherFlow, FlowSet destFlow){
-		//System.out.println("In specialized intersection for CopyPropagation");
+		//logger.info("In specialized intersection for CopyPropagation");
 		if ( ! (otherFlow instanceof CPFlowSet  && destFlow instanceof CPFlowSet ) ) {
 	          super.intersection(otherFlow, destFlow);
 	          return;
@@ -379,13 +379,13 @@ public class CPFlowSet extends DavaFlowSet{
 				
 
 				//if we get here we know both sets have this variable so this is not case 2 or 3
-				//System.out.println(">>>> FOUND"+thisVar.toString());
+				//logger.info(">>>> FOUND"+thisVar.toString());
 				inBoth=true;
 				break;
 			}
 			
 			if(!inBoth){
-				//System.out.println("....NOT FOUND ....SET IS:"+this.toString());
+				//logger.info("....NOT FOUND ....SET IS:"+this.toString());
 				//not in both so this is case 2 or 3
 				/*
 				 * clone and add if its local

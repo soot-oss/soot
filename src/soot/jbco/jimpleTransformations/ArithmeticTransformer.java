@@ -21,6 +21,9 @@ package soot.jbco.jimpleTransformations;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jbco.*;
 import soot.jimple.*;
@@ -42,6 +45,7 @@ import soot.jbco.util.*;
 // not hurt the speed of the program. Empirically: 4 adds/shifts == 1 mult?
 public class ArithmeticTransformer extends BodyTransformer implements
     IJbcoTransform {
+	final static Logger logger = LoggerFactory.getLogger(ArithmeticTransformer.class);
 
   private static int mulPerformed = 0;
 
@@ -209,14 +213,11 @@ public class ArithmeticTransformer extends BodyTransformer implements
                 mulPerformed++;
 
                 if (output) {
-                  System.out.println(" after as: ");
+                  logger.info(" after as: ");
                   Iterator<Unit> ait = unitsBuilt.iterator();
                   while (ait.hasNext()) {
                     Unit uu = ait.next();
-                    System.out.println("\t"
-                        + uu
-                        + "\ttype : "
-                        + (uu instanceof AssignStmt ? ((AssignStmt) uu)
+                    logger.info("\t{}\ttype : {}",uu,(uu instanceof AssignStmt ? ((AssignStmt) uu)
                             .getLeftOp().getType().toString() : ""));
                   }
                 }
@@ -278,14 +279,12 @@ public class ArithmeticTransformer extends BodyTransformer implements
                   divPerformed++;
 
                   if (output) {
-                    System.out.println(" after as: ");
+                    logger.info(" after as: ");
                     Iterator<Unit> ait = unitsBuilt.iterator();
                     while (ait.hasNext()) {
                       Unit uu = ait.next();
-                      System.out.println("\t"
-                          + uu
-                          + "\ttype : "
-                          + (uu instanceof AssignStmt ? ((AssignStmt) uu)
+                      logger.info("\t{}\ttype : {}",uu,
+                          (uu instanceof AssignStmt ? ((AssignStmt) uu)
                               .getLeftOp().getType().toString() : ""));
                     }
                   }

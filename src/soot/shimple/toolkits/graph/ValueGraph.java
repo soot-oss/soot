@@ -467,7 +467,7 @@ public class ValueGraph
         ShimpleBody sb = Shimple.v().newBody(b);
         CompleteBlockGraph cfg = new CompleteBlockGraph(sb);
         ValueGraph vg = new ValueGraph(cfg);
-        System.out.println(vg);
+        logger.info(vg);
     }
 
     public class Node

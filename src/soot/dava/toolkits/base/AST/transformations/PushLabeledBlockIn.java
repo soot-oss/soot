@@ -153,7 +153,7 @@ public class PushLabeledBlockIn extends DepthFirstAdapter{
 		    //we know that the breaks occur within the subtree rooted at temp
 		    boolean done=replaceBreakLabels(temp,label,innerLabel);
 		    if(done){
-			//System.out.println("REMOVED LABELED BLOCK-replaced label names");
+			//logger.info("REMOVED LABELED BLOCK-replaced label names");
 			node.set_Label(new SETNodeLabel());
 			G.v().ASTTransformations_modified = true;
 		    }
@@ -163,7 +163,7 @@ public class PushLabeledBlockIn extends DepthFirstAdapter{
 	    }
 	    else{
 		//doesnt have a label
-		//System.out.println("PUSHED LABEL DOWN");
+		//logger.info("PUSHED LABEL DOWN");
 		SETNodeLabel newLabel = new SETNodeLabel();
 		newLabel.set_Name(label);
 		tempNode.set_Label(newLabel);

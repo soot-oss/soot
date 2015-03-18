@@ -1,5 +1,8 @@
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Value;
 import soot.ValueBox;
 import soot.dava.internal.javaRep.DCmpExpr;
@@ -28,8 +31,7 @@ import soot.jimple.SubExpr;
  */
 
 public class SimplifyExpressions extends DepthFirstAdapter {
-	public static boolean DEBUG=false;
-	
+	final static Logger logger = LoggerFactory.getLogger(SimplifyExpressions.class);
 	public SimplifyExpressions() {
 		super();
 	}
@@ -49,29 +51,27 @@ public class SimplifyExpressions extends DepthFirstAdapter {
 	*/
 	
 	public void outExprOrRefValueBox(ValueBox vb){
-		//System.out.println("here"+vb);
+		//logger.info("here"+vb);
 		Value v = vb.getValue();
 		if(! (v instanceof BinopExpr )){
 			return;
 		}
 
 		BinopExpr binop = (BinopExpr)v;
-		if(DEBUG)
-			System.out.println("calling getResult");
+		
+			logger.debug("calling getResult");
 		NumericConstant constant = getResult(binop);
 		
 		if(constant ==null)
 			return;
-		if(DEBUG)
-			System.out.println("Changin"+vb+" to...."+constant);
+		logger.debug("Changin{} to....{}",vb,constant);
 		vb.setValue(constant);
 	}
 		
 		
 	
 	public NumericConstant getResult(BinopExpr binop){
-		if(DEBUG)
-			System.out.println("Binop expr"+binop);
+		logger.debug("Binop expr{}",binop);
 		Value leftOp = binop.getOp1();
 		Value rightOp = binop.getOp2();
 		
@@ -89,16 +89,14 @@ public class SimplifyExpressions extends DepthFirstAdapter {
 		}
 
 		if(op == 0){
-			if(DEBUG){
-				System.out.println("not add sub or mult");
-				System.out.println(binop.getClass().getName());
-			}			
+			logger.debug("not add sub or mult");
+			logger.debug(binop.getClass().getName());
+					
 			return null;
 		}
 		NumericConstant constant = null;
 		if(leftOp instanceof LongConstant  && rightOp instanceof LongConstant){
-			if(DEBUG)
-				System.out.println("long constants!!");
+			logger.debug("long constants!!");
 			if(op ==1)
 				constant = ((LongConstant)leftOp).add((LongConstant)rightOp);
 			else if(op ==2)
@@ -107,8 +105,7 @@ public class SimplifyExpressions extends DepthFirstAdapter {
 				constant = ((LongConstant)leftOp).multiply((LongConstant)rightOp);
 		}
 		else if(leftOp instanceof DoubleConstant  && rightOp instanceof DoubleConstant){
-			if(DEBUG)
-				System.out.println("double constants!!");
+			logger.debug("double constants!!");
 			if(op ==1)
 				constant = ((DoubleConstant)leftOp).add((DoubleConstant)rightOp);
 			else if(op ==2)
@@ -118,8 +115,7 @@ public class SimplifyExpressions extends DepthFirstAdapter {
 
 		}
 		else if(leftOp instanceof FloatConstant  && rightOp instanceof FloatConstant){
-			if(DEBUG)
-				System.out.println("Float constants!!");
+			logger.debug("Float constants!!");
 			if(op ==1)
 				constant = ((FloatConstant)leftOp).add((FloatConstant)rightOp);
 			else if(op ==2)
@@ -128,8 +124,7 @@ public class SimplifyExpressions extends DepthFirstAdapter {
 				constant = ((FloatConstant)leftOp).multiply((FloatConstant)rightOp);
 		}
 		else if(leftOp instanceof IntConstant  && rightOp instanceof IntConstant){
-			if(DEBUG)
-				System.out.println("Integer constants!!");
+			logger.debug("Integer constants!!");
 			if(op ==1)
 				constant = ((IntConstant)leftOp).add((IntConstant)rightOp);
 			else if(op ==2)

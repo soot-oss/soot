@@ -154,7 +154,7 @@ public final class MethodPAG {
     protected VarNode parameterize( LocalVarNode vn, Context varNodeParameter ) {
         SootMethod m = vn.getMethod();
         if( m != method && m != null ) throw new RuntimeException( "VarNode "+vn+" with method "+m+" parameterized in method "+method );
-        //System.out.println( "parameterizing "+vn+" with "+varNodeParameter );
+        //logger.info( "parameterizing "+vn+" with "+varNodeParameter );
         return pag().makeContextVarNode( vn, varNodeParameter );
     }
     protected FieldRefNode parameterize( FieldRefNode frn, Context varNodeParameter ) {

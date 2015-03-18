@@ -29,10 +29,11 @@ import static soot.dexpler.Util.isFloatLike;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
 import org.jf.dexlib2.iface.reference.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -45,6 +46,7 @@ import soot.jimple.NewArrayExpr;
 
 public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
 
+	final static Logger logger = LoggerFactory.getLogger(FilledNewArrayRangeInstruction.class);
     public FilledNewArrayRangeInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -62,7 +64,7 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
         Type t = DexType.toSoot((TypeReference) filledNewArrayInstr.getReference());
         // NewArrayExpr needs the ElementType as it increases the array dimension by 1
         Type arrayType = ((ArrayType) t).getElementType();
-System.out.println("array element type (narr range): "+ arrayType);
+logger.info("array element type (narr range): "+ arrayType);
         NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
         arrayLocal = body.getStoreResultLocal();
         AssignStmt assignStmt = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
@@ -84,7 +86,7 @@ System.out.println("array element type (narr range): "+ arrayType);
 //        body.setDanglingInstruction(this);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-            Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assignStmt);
+            logger.debug("constraint: {}", assignStmt);
           int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().setType(assignStmt.getLeftOpBox(), arrayExpr.getType(), false);
           //DalvikTyper.v().addConstraint(assignStmt.getLeftOpBox(), assignStmt.getRightOpBox());

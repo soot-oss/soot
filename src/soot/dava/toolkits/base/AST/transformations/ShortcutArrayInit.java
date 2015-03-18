@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.G;
 import soot.Local;
 import soot.Type;
@@ -26,7 +29,7 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.Stmt;
 
 public class ShortcutArrayInit extends DepthFirstAdapter {
-	public static boolean DEBUG=false;
+	final static Logger logger = LoggerFactory.getLogger(ShortcutArrayInit.class);
 	ASTMethodNode methodNode;
 	
 	public ShortcutArrayInit(){
@@ -42,8 +45,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 	}
 	
 	public void debug(String msg){
-		if(DEBUG)
-			System.out.println("[SHortcutArrayInit]  DEBUG"+msg);
+		logger.debug("[SHortcutArrayInit]  DEBUG {}",msg);
 	}
 	
 	public void inASTStatementSequenceNode(ASTStatementSequenceNode node){
@@ -86,8 +88,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 				continue;
 			}
 				
-			if(DEBUG)
-				System.out.println("Size of array is: "+((IntConstant)size).value);
+			logger.debug("Size of array is: {}",((IntConstant)size).value);
 
 			Iterator<Object> tempIt = node.getStatements().iterator();
 			//get to the array creation stmt
@@ -105,8 +106,8 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 				
 				if(!tempIt.hasNext()){
 					//since its end of the stmt seq node just return
-					if(DEBUG)
-						System.out.println("returning");
+					
+						logger.debug("returning");
 					return;
 				}
 				
@@ -114,15 +115,15 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 				Stmt augS = aug.get_Stmt();
 				if(!isInSequenceAssignment(augS,ds.getLeftOp(),i)){
 					//cant create shortcut since we dont have all necessary initializations
-					if(DEBUG)
-						System.out.println("Out of order assignment aborting attempt");
+					
+						logger.debug("Out of order assignment aborting attempt");
 					
 					success=false;
 					break;
 				}
 				else{
-					if(DEBUG)
-						System.out.println("Assignment stmt in order adding to array");
+					
+						logger.debug("Assignment stmt in order adding to array");
 					//the augS is the next assignment in the sequence add to ValueBox array
 					array[i] = ((DefinitionStmt)augS).getRightOpBox();
 					toRemove.add(aug);
@@ -136,16 +137,16 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 				//cant do array initialization without declaration being part of the stmt!!!!!
 				//have to prove that this array is never utilized before i.e. from start of method to this point there is no use
 				//or def of this array then only can we create this decl/init stmt
-				if(DEBUG)
-					System.out.println("Created new DAssignStmt and replacing it");
+				
+					logger.debug("Created new DAssignStmt and replacing it");
 				
 				InitializationDeclarationShortcut shortcutChecker = new InitializationDeclarationShortcut(as);
 				methodNode.apply(shortcutChecker);
 				boolean possible = shortcutChecker.isShortcutPossible();
 				
 				if(possible){
-					if(DEBUG)
-						System.out.println("Shortcut is possible");
+					
+						logger.debug("Shortcut is possible");
 					
 					//create shortcut stmt
 					DShortcutAssignStmt newShortcutStmt = new DShortcutAssignStmt(newStmt,arrayType);
@@ -195,28 +196,27 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 		if(! (leftValue instanceof ArrayRef))
 			return false;
 		
-		if(DEBUG){
-			System.out.println("Stmt number "+index + " is an array ref assignment"+leftValue);
-			System.out.println("Array is"+leftOp);
-		}
+			logger.debug("Stmt number {} is an array ref assignment{}",index,leftValue);
+			logger.debug("Array is{}",leftOp);
+		
 
 		ArrayRef leftRef = (ArrayRef)leftValue;
 		if(! (leftOp.equals(leftRef.getBase()))){
-			if(DEBUG)
-				System.out.println("Not assigning to same array");
+			
+				logger.debug("Not assigning to same array");
 			return false;
 		}
 			
 		if( ! (leftRef.getIndex() instanceof IntConstant)){
-			if(DEBUG)
-				System.out.println("Cant determine index of assignment");
+			
+				logger.debug("Cant determine index of assignment");
 			return false;
 		}
 		
 		IntConstant leftIndex = (IntConstant)leftRef.getIndex();
 		if(leftIndex.value != index){
-			if(DEBUG)
-				System.out.println("Out of order assignment");
+			
+				logger.debug("Out of order assignment");
 			return false;
 		}
 		
@@ -248,10 +248,9 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 			if(! (rightValue instanceof NewArrayExpr))
 				continue;
 
-			if(DEBUG){
-				System.out.println("Found a new ArrayExpr"+rightValue);
-				System.out.println("Type of array is:"+rightValue.getType());
-			}
+				logger.debug("Found a new ArrayExpr{}",rightValue);
+				logger.debug("Type of array is:{}",rightValue.getType());
+			
 				
 			//get type out
 			Type arrayType = rightValue.getType();
@@ -266,8 +265,7 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 				debug("Found value to be 0 doing nothing");
 				continue;
 			}
-			if(DEBUG)
-				System.out.println("Size of array is: "+((IntConstant)size).value);
+			logger.debug("Size of array is: {}",((IntConstant)size).value);
 
 			Iterator<Object> tempIt = node.getStatements().iterator();
 			//get to the array creation stmt
@@ -284,8 +282,8 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 				//check for each iteration there is one DAssignStmt followed by a DefinitionStmt				
 				if(!tempIt.hasNext()){
 					//since its end of the stmt seq node just return
-					if(DEBUG)
-						System.out.println("returning");
+					
+						logger.debug("returning");
 					return;
 				}
 				
@@ -294,8 +292,8 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 				
 				if(!tempIt.hasNext()){
 					//since its end of the stmt seq node just return
-					if(DEBUG)
-						System.out.println("returning");
+					
+						logger.debug("returning");
 					return;
 				}
 				
@@ -306,14 +304,14 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 				
 				if(!isInSequenceAssignmentPatternTwo(augSOne,augSTwo,ds.getLeftOp(),i)){
 					//cant create shortcut since we dont have all necessary initializations
-					if(DEBUG) 
-						System.out.println("Out of order assignment aborting attempt");
+					 
+						logger.debug("Out of order assignment aborting attempt");
 					success=false;
 					break;
 				}
 				else{
-					if(DEBUG)
-						System.out.println("Assignment stmt in order adding to array");
+					
+						logger.debug("Assignment stmt in order adding to array");
 					//the RHS of augSOne is the next assignment in the sequence add to ValueBox array
 					array[i] = ((DShortcutAssignStmt)augSOne).getRightOpBox();
 					toRemove.add(augOne);
@@ -328,16 +326,16 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 				//cant do array initialization without declaration being part of the stmt!!!!!
 				//have to prove that this array is never utilized before i.e. from start of method to this point there is no use
 				//or def of this array then only can we create this decl/init stmt
-				if(DEBUG)
-					System.out.println("Created new DAssignStmt and replacing it");
+				
+					logger.debug("Created new DAssignStmt and replacing it");
 				
 				InitializationDeclarationShortcut shortcutChecker = new InitializationDeclarationShortcut(as);
 				methodNode.apply(shortcutChecker);
 				boolean possible = shortcutChecker.isShortcutPossible();
 				
 				if(possible){
-					if(DEBUG)
-						System.out.println("Shortcut is possible");
+					
+						logger.debug("Shortcut is possible");
 					
 					//create shortcut stmt
 					DShortcutAssignStmt newShortcutStmt = new DShortcutAssignStmt(newStmt,arrayType);
@@ -398,21 +396,21 @@ public class ShortcutArrayInit extends DepthFirstAdapter {
 		
 		ArrayRef leftRef = (ArrayRef)leftValue;
 		if(! (leftOp.equals(leftRef.getBase()))){
-			if(DEBUG)
-				System.out.println("Not assigning to same array");
+			
+				logger.debug("Not assigning to same array");
 			return false;
 		}
 			
 		if( ! (leftRef.getIndex() instanceof IntConstant)){
-			if(DEBUG)
-				System.out.println("Cant determine index of assignment");
+			
+				logger.debug("Cant determine index of assignment");
 			return false;
 		}
 		
 		IntConstant leftIndex = (IntConstant)leftRef.getIndex();
 		if(leftIndex.value != index){
-			if(DEBUG)
-				System.out.println("Out of order assignment");
+			
+				logger.debug("Out of order assignment");
 			return false;
 		}
 

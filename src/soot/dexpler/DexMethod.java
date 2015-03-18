@@ -36,6 +36,8 @@ import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.value.ArrayEncodedValue;
 import org.jf.dexlib2.iface.value.EncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.G;
@@ -56,7 +58,7 @@ import soot.options.Options;
  *
  */
 public class DexMethod {
-
+	final static Logger logger = LoggerFactory.getLogger(DexMethod.class);
     private DexMethod() {}
 
     /**
@@ -71,8 +73,8 @@ public class DexMethod {
 
         // get the name of the method
         String name = method.getName();
-        Debug.printDbg("processing method '", method.getDefiningClass() ,": ", method.getReturnType(), " ", method.getName(), " p: ", method.getParameters(), "'");
-
+        logger.debug("processing method '{}: {} {} p: {}'",
+        method.getDefiningClass(),method.getReturnType(),method.getName(),method.getParameters());
         // the following snippet retrieves all exceptions that this method throws by analyzing its annotations
         List<SootClass> thrownExceptions = new ArrayList<SootClass>();
         for (Annotation a : method.getAnnotations()) {

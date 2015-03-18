@@ -123,7 +123,7 @@ public class SynchronizedBlockFinder implements FactFinder
 			if (verify_CatchBody( en, synchBody, local,copiedLocal)) {
 			    if (SET.nest( new SETSynchronizedBlockNode( en, local))) {
 				done=true;
-				//System.out.println("synch block created");
+				//logger.info("synch block created");
 				Iterator ssit = synchSet.iterator();
 				while (ssit.hasNext()) {
 				    AugmentedStmt ssas = (AugmentedStmt) ssit.next();
@@ -296,7 +296,7 @@ public class SynchronizedBlockFinder implements FactFinder
 			    viAugStmts.addLast( as);
 		    }
 		    else{
-			//System.out.println("List was empty added as");
+			//logger.info("List was empty added as");
 			viAugStmts.addLast(as);
 		    }
 
@@ -626,7 +626,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	    AugmentedStmt as = (AugmentedStmt)it.next();
 	    IterableSet doms = as.get_Dominators();
 	    if(doms.contains(sas)){
-		//System.out.println("\n\nstmt:"+as+" is dominated by removed stmt"+sas);
+		//logger.info("\n\nstmt:"+as+" is dominated by removed stmt"+sas);
 		toRemove.add(as);
 	    }
 	}
@@ -634,7 +634,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	it = toRemove.iterator();
 	while(it.hasNext()){
 	    AugmentedStmt as = (AugmentedStmt)it.next();
-	    // System.out.println("Removed dominated stmt: "+as);
+	    // logger.info("Removed dominated stmt: "+as);
 	    synchBody.remove(as);
 	}
     } 
@@ -644,7 +644,7 @@ public class SynchronizedBlockFinder implements FactFinder
 
     private boolean verify_CatchBody( ExceptionNode en, IterableSet synchBody, Value monitorVariable,Value copiedLocal)
     {
-	//System.out.println("starting verification");
+	//logger.info("starting verification");
 	{
 	    /*
 	     * synchBody is a likely superset of exception Node since the synchBody contains a goto stmt
@@ -671,7 +671,7 @@ public class SynchronizedBlockFinder implements FactFinder
 			break outer;
 		    }
 		}
-		//System.out.println(tempas);
+		//logger.info(tempas);
 	    }	    
 
 
@@ -682,13 +682,13 @@ public class SynchronizedBlockFinder implements FactFinder
 		Iterator sit = tempas.bsuccs.iterator();
 		while (sit.hasNext()) {
 		    AugmentedStmt sas = (AugmentedStmt) sit.next();
-		    //System.out.println("Removing: successor of last stmt:"+sas.get_Stmt());
+		    //logger.info("Removing: successor of last stmt:"+sas.get_Stmt());
 
 		    //this is the stmt which is the successor of the try block which shouldnt be in the synchronized block
 		    //remove the stmt if present in synchBody
 
 		    synchBody.remove(sas);
-		    //System.out.println("Here, removed: "+sas);
+		    //logger.info("Here, removed: "+sas);
 		    //should remove all other stmts in the synchBody which are dominated by this stmt
 		    removeOtherDominatedStmts(synchBody,sas);
 		}
@@ -708,13 +708,13 @@ public class SynchronizedBlockFinder implements FactFinder
 	     while(tempIt.hasNext()){
  		 AugmentedStmt as = (AugmentedStmt)tempIt.next();
 	 	if(as.get_Stmt() instanceof ExitMonitorStmt){
-		    //System.out.println("All possible sucessors of as (CSUCCS):"+as.csuccs);
+		    //logger.info("All possible sucessors of as (CSUCCS):"+as.csuccs);
 		     List csuccs = as.csuccs;
 
 		     //remove the natural sucessors
 		     csuccs.remove(as.bsuccs);
 		     //now csuccs have the exception sucessors
-		     //System.out.println("Exception sucessors of Exit (CSUCCS:"+csuccs);	 	    
+		     //logger.info("Exception sucessors of Exit (CSUCCS:"+csuccs);	 	    
 		     
 		     Iterator succIt = csuccs.iterator();
 		     while(succIt.hasNext()){
@@ -733,14 +733,14 @@ public class SynchronizedBlockFinder implements FactFinder
 				 
 				 //if not a caught exception of type throwable remove from synch
 				 if (!  (asnFrom instanceof CaughtExceptionRef)){
-				     //System.out.println("REMOVING:"+defStmt+" since this is not a caughtexception def");
+				     //logger.info("REMOVING:"+defStmt+" since this is not a caughtexception def");
 				     synchBody.remove(as1);
 				     //should remove all other stmts in the synchBody which are dominated by this stmt
 				     removeOtherDominatedStmts(synchBody,as1);				    
 				 }
 				 else{
 				     Value leftOp = defStmt.getLeftOp();
-				     //System.out.println("the left op is:"+leftOp);
+				     //logger.info("the left op is:"+leftOp);
 				     
 				     /*
 				       Only keep this if it is of throwable type
@@ -761,22 +761,22 @@ public class SynchronizedBlockFinder implements FactFinder
 				     }
 
 				     if(!( typeName.compareTo(THROWABLE)==0) ){
-					 //System.out.println("REMOVING:"+defStmt+ " since the caughtException not throwable type");
+					 //logger.info("REMOVING:"+defStmt+ " since the caughtException not throwable type");
 					 synchBody.remove(as1);
 					 //should remove all other stmts in the synchBody which are dominated by this stmt
 					 removeOtherDominatedStmts(synchBody,as1);				    
 				     }
 				     else{
-					 //System.out.println("KEEPING"+defStmt);
-					 //System.out.println((RefType)((CaughtExceptionRef) asnFrom).getType());
+					 //logger.info("KEEPING"+defStmt);
+					 //logger.info((RefType)((CaughtExceptionRef) asnFrom).getType());
 				     }
 				 }
 			     }
  			    else{
-	 			//System.out.println("\n\nnot definition"+target);
-		 		//System.out.println("Removed"+as1);
+	 			//logger.info("\n\nnot definition"+target);
+		 		//logger.info("Removed"+as1);
 			 	synchBody.remove(as1);
-				//System.out.println(as1.bsuccs.get(0));
+				//logger.info(as1.bsuccs.get(0));
  				synchBody.remove(as1.bsuccs.get(0));
 	 			//should remove all other stmts in the synchBody which are dominated by this stmt
 		 		removeOtherDominatedStmts(synchBody,as1);				    
@@ -827,7 +827,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	    throw new RuntimeException ("Could not find enter stmt of the synchBody: " + davaBody.getMethod().getSignature());
 	}
 
-	//System.out.println("Enter stmt of synchBody is:"+synchEnter);
+	//logger.info("Enter stmt of synchBody is:"+synchEnter);
 
 
 
@@ -864,7 +864,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	    if(toRemove.size() >0){
 		//none of the preds of synchAs are in the synchBody hence this stmt is unreachable
 		synchBody.removeAll(toRemove);
-		//System.out.println("Removing:"+toRemove+" since none of its preds are in the synchBody");
+		//logger.info("Removing:"+toRemove+" since none of its preds are in the synchBody");
 		unChanged=false;
 	    }
 	}
@@ -876,9 +876,9 @@ public class SynchronizedBlockFinder implements FactFinder
 
 	//see if the two bodies match
 	if ((en.get_Body().equals( synchBody) == false)){
-	    //System.out.println("returning unverified since synchBody does not match");
-	    //System.out.println("\n\nEN BODY:\n"+en.get_Body());
-	    //System.out.println("\n\nSYNCH BODY:\n"+synchBody);
+	    //logger.info("returning unverified since synchBody does not match");
+	    //logger.info("\n\nEN BODY:\n"+en.get_Body());
+	    //logger.info("\n\nSYNCH BODY:\n"+synchBody);
 	    return false;
 	}
 
@@ -890,7 +890,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	 * with the catch , catching the throwable exception and this is the ONLY catch
 	 */
 	if ((en.get_Exception().getName().equals( THROWABLE) == false) || (en.get_CatchList().size() > 1)){
-	    //System.out.println("returning unverified here");
+	    //logger.info("returning unverified here");
 	    return false;
 	}
 
@@ -937,7 +937,7 @@ public class SynchronizedBlockFinder implements FactFinder
 
 	Unit entryPointTarget = null;
 	if(entryPoint.get_Stmt() instanceof GotoStmt){
-	    //System.out.println("Entry point is a goto stmt getting the target");
+	    //logger.info("Entry point is a goto stmt getting the target");
 	    entryPointTarget=((soot.jimple.internal.JGotoStmt)entryPoint.get_Stmt()).getTarget();
 	}
 
@@ -945,7 +945,7 @@ public class SynchronizedBlockFinder implements FactFinder
 
 	AugmentedStmt as = entryPoint;
 	if (as.bsuccs.size() != 1){
-	    //System.out.println("here1");
+	    //logger.info("here1");
 	    return false;
 	}
 
@@ -955,20 +955,20 @@ public class SynchronizedBlockFinder implements FactFinder
 	    //return false;
 	   // }
 	    if (as.bsuccs.size() != 1){
-		//System.out.println("here2a");
+		//logger.info("here2a");
 		return false;
 	    }
 	    if(entryPointTarget != null){
 		if ((as.get_Stmt() != entryPointTarget) && (as.cpreds.size() != 1)){
 		    if(as.cpreds.size() != 1) {
-			//System.out.println("here2b");
+			//logger.info("here2b");
 			return false;
 		    }
 		}
 	    }
 	    else{
 		if ((as != entryPoint) && (as.cpreds.size() != 1)) {
-		    //System.out.println("here2c");
+		    //logger.info("here2c");
 		    return false;
 		}
 	    }
@@ -982,7 +982,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	Stmt s = as.get_Stmt();
 	
 	if (!(s instanceof DefinitionStmt)){
-	    //System.out.println("here3");
+	    //logger.info("here3");
 	    return false;
 	}
 
@@ -993,7 +993,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	//if not a caught exception of type throwable we have a problem
 	if (!  (  (asnFrom instanceof CaughtExceptionRef) && 
 		  (((RefType) ((CaughtExceptionRef) asnFrom).getType()).getSootClass().getName().equals( THROWABLE)) ) ){
-	    //System.out.println("here4");
+	    //logger.info("here4");
 	    return false;
 	}
 
@@ -1002,7 +1002,7 @@ public class SynchronizedBlockFinder implements FactFinder
 
 	
 	Value throwlocal = ds.getLeftOp();
-	//System.out.println("Throw local is:"+throwlocal);
+	//logger.info("Throw local is:"+throwlocal);
 
 	/*
 	  The escuccs contains all the EXCEPTION SUCESSORS of the caughtexception stmt
@@ -1023,8 +1023,8 @@ public class SynchronizedBlockFinder implements FactFinder
 	while(s instanceof DefinitionStmt &&  
 	   ( ((DefinitionStmt)s).getRightOp().toString().compareTo(throwlocal.toString()) ==0)) {
 
-	    //System.out.println("copy stmt using throwLocal found");
-	    //System.out.println("Right op is :"+((DefinitionStmt)s).getRightOp());
+	    //logger.info("copy stmt using throwLocal found");
+	    //logger.info("Right op is :"+((DefinitionStmt)s).getRightOp());
 	    //return false;
 	    throwlocal = ((DefinitionStmt)s).getLeftOp();
 
@@ -1037,14 +1037,14 @@ public class SynchronizedBlockFinder implements FactFinder
 
 	if (as.bsuccs.size() != 1){
 	    //should have one true sucessor
-	    //System.out.println("here5a");
+	    //logger.info("here5a");
 	    return false;
 	}
 
 
 	if (as.cpreds.size() != 1){
 	    //should have one true predecessor
-	    //System.out.println("here5b");
+	    //logger.info("here5b");
 	    return false;
 	}
 
@@ -1055,7 +1055,7 @@ public class SynchronizedBlockFinder implements FactFinder
 
 	s = as.get_Stmt();
 	if (!(s instanceof ExitMonitorStmt)){
-	    //System.out.println("Not an exit monitor stmt"+s);
+	    //logger.info("Not an exit monitor stmt"+s);
 	    return false;
 	}
 
@@ -1063,7 +1063,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	if ( (((ExitMonitorStmt) s).getOp() != monitorVariable)){
 
 	    if( ( ((ExitMonitorStmt) s).getOp() != copiedLocal)){
-		//System.out.println("exit monitor variable does not match enter monitor variable");
+		//logger.info("exit monitor variable does not match enter monitor variable");
 		return false;
 	    }
 	}
@@ -1073,7 +1073,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	//next stmt should be a throw stmt
 	as = (AugmentedStmt) as.bsuccs.get(0);
 	if ((as.bsuccs.size() != 0) || (as.cpreds.size() != 1) || (verify_ESuccs( as, esuccs) == false)){
-	    //System.out.println("here7");
+	    //logger.info("here7");
 	    return false;
 	}
 
@@ -1082,7 +1082,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	s = as.get_Stmt();
 
 	if ( !  (  (s instanceof ThrowStmt) && (((ThrowStmt) s).getOp() == throwlocal)  ) ){
- 	    //System.out.println("here8"+s+" Throw local is:"+throwlocal);
+ 	    //logger.info("here8"+s+" Throw local is:"+throwlocal);
 	    return false;
 	} 
 	
@@ -1107,7 +1107,7 @@ public class SynchronizedBlockFinder implements FactFinder
  	esuccs.removeAll( as.bsuccs);
 
 	//esuccs contains the exception sucessors of as
-	//System.out.println("ESUCCS are:"+esuccs);
+	//logger.info("ESUCCS are:"+esuccs);
 
 	Iterator it = esuccs.iterator();
 	while(it.hasNext()){
@@ -1117,20 +1117,20 @@ public class SynchronizedBlockFinder implements FactFinder
 	    if(temps instanceof GotoStmt){
 		Unit target = ((GotoStmt)temps).getTarget();
 		if(target != s){
-		    //System.out.println("DID NOT Match indirectly");
+		    //logger.info("DID NOT Match indirectly");
 		    return false;
 		}
 		else{
-		    //System.out.println("Matched indirectly");
+		    //logger.info("Matched indirectly");
 		}
 	    }
 	    else{
 		if(temps != s){
-		    //System.out.println("DID NOT Match directly");
+		    //logger.info("DID NOT Match directly");
 		    return false;
 		}
 		else{
-		    //System.out.println("Matched directly");
+		    //logger.info("Matched directly");
 		}
 	    }
 
@@ -1148,8 +1148,8 @@ public class SynchronizedBlockFinder implements FactFinder
 	esuccs.addAll( as.csuccs);
 	esuccs.removeAll( as.bsuccs);
 
-	//System.out.println("ESUCCS are:"+esuccs);
-	//System.out.println("ref are:"+ref);
+	//logger.info("ESUCCS are:"+esuccs);
+	//logger.info("ref are:"+ref);
 	return esuccs.equals( ref);
     }
 
@@ -1166,7 +1166,7 @@ public class SynchronizedBlockFinder implements FactFinder
 	Integer level = as2ml.get( head).get( local);
 
 
-	//System.out.println("BODY"+body);
+	//logger.info("BODY"+body);
 	body.remove( head);
 	
 	Iterator bit = body.snapshotIterator();
@@ -1189,7 +1189,7 @@ public class SynchronizedBlockFinder implements FactFinder
 		    
 		    if (((ss instanceof GotoStmt) || (ss instanceof ThrowStmt)) && (body.contains( sas) == false)){
 		    //if (ss instanceof ThrowStmt && (body.contains( sas) == false)){
-			//System.out.println("adding"+sas);
+			//logger.info("adding"+sas);
 			body.add( sas);
 		    }
 		}

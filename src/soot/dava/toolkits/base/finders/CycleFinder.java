@@ -243,7 +243,7 @@ public class CycleFinder implements FactFinder
 		    List<AugmentedStmt> currentComponent = null;
 		    currentComponent = new StationaryArrayList<AugmentedStmt>();
 		    currentComponent.add(as);
-		    //System.out.println("Special add of"+as);
+		    //logger.info("Special add of"+as);
 		    c_list.add(currentComponent);
 		}
 	    }

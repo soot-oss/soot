@@ -97,7 +97,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
     public void inASTMethodNode(ASTMethodNode node){
 	DavaBody davaBody = node.getDavaBody();
 	sootMethod = davaBody.getMethod();
-	//System.out.println("Deiniling  method: "+sootMethod.getName());
+	//logger.info("Deiniling  method: "+sootMethod.getName());
 	sootClass = sootMethod.getDeclaringClass();
 
 	finalFields = new HashMap<Comparable, SootField>();
@@ -108,7 +108,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 	Iterator it = appClasses.iterator();
 	while(it.hasNext()){
 		SootClass tempClass = (SootClass)it.next(); 
-		//System.out.println("DeInlining"+tempClass.getName());
+		//logger.info("DeInlining"+tempClass.getName());
 		Chain tempChain = tempClass.getFields();
 		Iterator tempIt = tempChain.iterator();
 		while(tempIt.hasNext()){
@@ -156,7 +156,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 		}
 		else if(f.hasTag("StringConstantValueTag")){
 		    String val = ((StringConstantValueTag)f.getTag("StringConstantValueTag")).getStringValue();
-		    //System.out.println("adding string constant"+val);
+		    //logger.info("adding string constant"+val);
 		    finalFields.put(val,f);
 		}
 	    }//end if final
@@ -199,7 +199,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 
     	Object finalField = check(val);
     	if(finalField!=null){
-    		//System.out.println("Final field with this value exists"+finalField);
+    		//logger.info("Final field with this value exists"+finalField);
 		
     		/*
     		 * If the final field belongs to the same class then we should supress declaring class
@@ -220,7 +220,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 
     	}
     	//else
-    	//  System.out.println("Final field not found");
+    	//  logger.info("Final field not found");
     }
 
 
@@ -228,13 +228,13 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
     public Object check(Value val){
 	Object finalField=null;
 	if(isConstant(val)){
-	    //System.out.println("Found constant in code"+val);
+	    //logger.info("Found constant in code"+val);
 	    
 	    //can be a byte or short or char......or an int ...in the case of int you also have to check for Booleans
 	    if(val instanceof StringConstant){
 		String myString = ((StringConstant)val).toString();
 		myString = myString.substring(1,myString.length()-1);
-		//System.out.println("looking for:"+myString);
+		//logger.info("looking for:"+myString);
 		finalField = finalFields.get(myString);
 	    }
 	    else if(val instanceof DoubleConstant){
@@ -272,7 +272,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 			myInt = new Integer(myString);
 		}
 		catch(Exception e){
-		    //System.out.println("exception occured...gracefully exitting method..string was"+myString);
+		    //logger.info("exception occured...gracefully exitting method..string was"+myString);
 		    return finalField;
 		}
 
@@ -318,7 +318,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 
 	if(isConstant(val)){
 	    //find if there is a SootField with this constant
-	    //System.out.println("Found constant as key to switch");
+	    //logger.info("Found constant as key to switch");
 
 	    checkAndSwitch(node.getKeyBox());
 	    return;
@@ -328,7 +328,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 	Iterator it = val.getUseBoxes().iterator();
 	while(it.hasNext()){
 	    ValueBox tempBox = (ValueBox)it.next();
-	    //System.out.println("Checking useBox of switch key");
+	    //logger.info("Checking useBox of switch key");
 	    checkAndSwitch(tempBox);
 	}
     }
@@ -356,7 +356,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
     		Iterator tempIt = s.getUseBoxes().iterator();
     		while(tempIt.hasNext()){
     			ValueBox tempBox = (ValueBox)tempIt.next();
-    			//System.out.println("Checking useBox of stmt");
+    			//logger.info("Checking useBox of stmt");
     			checkAndSwitch(tempBox);
     		}
     	}
@@ -380,7 +380,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 	    Iterator tempIt = s.getUseBoxes().iterator();
 	    while(tempIt.hasNext()){
 		ValueBox tempBox = (ValueBox)tempIt.next();
-		//System.out.println("Checking useBox of init stmt");
+		//logger.info("Checking useBox of init stmt");
 		checkAndSwitch(tempBox);
 	    }
 	}
@@ -399,7 +399,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 	    Iterator tempIt = s.getUseBoxes().iterator();
 	    while(tempIt.hasNext()){
 		ValueBox tempBox = (ValueBox)tempIt.next();
-		//System.out.println("Checking useBox of update stmt");
+		//logger.info("Checking useBox of update stmt");
 		checkAndSwitch(tempBox);
 	    }
 	}
@@ -422,7 +422,7 @@ public class DeInliningFinalFields extends DepthFirstAdapter{
 	    Iterator tempIt = val.getUseBoxes().iterator();
 	    while(tempIt.hasNext()){
 		ValueBox tempBox = (ValueBox)tempIt.next();
-		//System.out.println("Checking useBox of binary condition");
+		//logger.info("Checking useBox of binary condition");
 		checkAndSwitch(tempBox);
 	    }
 	}

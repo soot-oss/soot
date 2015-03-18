@@ -46,6 +46,8 @@ import org.jf.dexlib2.iface.debug.DebugItem;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.immutable.debug.ImmutableLineNumber;
 import org.jf.dexlib2.util.MethodUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.DoubleType;
@@ -109,6 +111,8 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  * @author Frank Hartmann
  */
 public class DexBody  {
+	final static Logger logger = LoggerFactory.getLogger(DexBody.class);
+			
     private List<DexlibAbstractInstruction> instructions;
     // keeps track about the jimple locals that are associated with the dex registers
     private Local[] registerLocals;
@@ -186,7 +190,7 @@ public class DexBody  {
             DexlibAbstractInstruction dexInstruction = fromInstruction(instruction, address);
             instructions.add(dexInstruction);
             instructionAtAddress.put(address, dexInstruction);
-            Debug.printDbg(" put instruction '", dexInstruction ,"' at 0x", Integer.toHexString(address));
+            logger.debug(" put instruction '", dexInstruction ,"' at 0x", Integer.toHexString(address));
             address += instruction.getCodeUnits();
         }
         
@@ -200,11 +204,11 @@ public class DexBody  {
                 ImmutableLineNumber ln = (ImmutableLineNumber)di;
                 DexlibAbstractInstruction ins = instructionAtAddress(ln.getCodeAddress());
                 if (ins == null) {
-                	Debug.printDbg("Line number tag pointing to invalid offset: " + ln.getCodeAddress());
+                	logger.debug("Line number tag pointing to invalid offset: " + ln.getCodeAddress());
                 	continue;
                 }
                 ins.setLineNumber(ln.getLineNumber());
-                Debug.printDbg("Add line number tag " + ln.getLineNumber() + " for instruction: "
+                logger.debug("Add line number tag " + ln.getLineNumber() + " for instruction: "
                         + instructionAtAddress(ln.getCodeAddress()));
             }
         }
@@ -349,11 +353,11 @@ public class DexBody  {
         instructionsToRetype = new HashSet<RetypeableInstruction>();
 
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-            Debug.printDbg(IDalvikTyper.DEBUG, "clear dalvik typer");
+            logger.debug("clear dalvik typer");
             DalvikTyper.v().clear();
         }
 
-        Debug.printDbg("\n[jimplify] start for: ", methodSignature);
+        logger.debug("\n[jimplify] start for: {}", methodSignature);
 
         // process method parameters and generate Jimple locals from Dalvik registers
         List<Local> paramLocals = new LinkedList<Local>();
@@ -368,7 +372,7 @@ public class DexBody  {
             add(idStmt);
             paramLocals.add(thisLocal);
             if (IDalvikTyper.ENABLE_DVKTYPER) {
-                Debug.printDbg(IDalvikTyper.DEBUG, "constraint: ", idStmt);
+                logger.debug("constraint: {}", idStmt);
                 DalvikTyper.v().setType(idStmt.leftBox, jBody.getMethod().getDeclaringClass().getType(), false);
             }
 
@@ -381,13 +385,13 @@ public class DexBody  {
 	            Local gen = Jimple.v().newLocal("$u"+ parameterRegister, UnknownType.v()); //may only use UnknownType here because the local may be reused with a different type later (before splitting)
 	            jBody.getLocals().add(gen);
 
-	            Debug.printDbg ("add local for parameter register number: ", parameterRegister);
+	            logger.debug ("add local for parameter register number: {}", parameterRegister);
 	            registerLocals[parameterRegister] = gen;
 	            JIdentityStmt idStmt = (JIdentityStmt) Jimple.v().newIdentityStmt(gen, Jimple.v().newParameterRef(t, i++));
 	            add(idStmt);
 	            paramLocals.add(gen);
 	            if (IDalvikTyper.ENABLE_DVKTYPER) {
-	                Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ idStmt);
+	                logger.debug("constraint: {}", idStmt);
 	                DalvikTyper.v().setType(idStmt.leftBox, t, false);
 	            }
 
@@ -408,7 +412,7 @@ public class DexBody  {
         }
 
         for (int i = 0; i < (numRegisters - numParameterRegisters - (isStatic?0:1)); i++) {
-            Debug.printDbg ("add local for register number: ", i);
+            logger.debug ("add local for register number: {}", i);
             registerLocals[i] = Jimple.v().newLocal("$u"+ i, UnknownType.v());
             jBody.getLocals().add(registerLocals[i]);
         }
@@ -429,7 +433,7 @@ public class DexBody  {
                 dangling.finalize(this, instruction);
                 dangling = null;
             }
-            //Debug.printDbg(" current op to jimplify: 0x", Integer.toHexString(instruction.getInstruction().opcode.value) ," instruction: ", instruction );
+            //logger.debug(" current op to jimplify: 0x", Integer.toHexString(instruction.getInstruction().opcode.value) ," instruction: ", instruction );
             instruction.jimplify(this);
             if (instruction.getLineNumber() > 0)
 				prevLineNumber = instruction.getLineNumber();
@@ -474,21 +478,21 @@ public class DexBody  {
 	       will not be split. Hence we remove all dead code here.
          */
 
-        Debug.printDbg("body before any transformation : \n", jBody);
+        logger.debug("body before any transformation : \n {}", jBody);
         
 		// Remove dead code and the corresponding locals before assigning types
 		getUnreachableCodeEliminator().transform(jBody);
 		DeadAssignmentEliminator.v().transform(jBody);
 		UnusedLocalEliminator.v().transform(jBody);
 
-        Debug.printDbg("\nbefore splitting");
-        Debug.printDbg("",(Body)jBody);
+        logger.debug("\nbefore splitting");
+        logger.debug("{}",(Body)jBody);
         
         DexReturnInliner.v().transform(jBody);        
         getLocalSplitter().transform(jBody);
         
-        Debug.printDbg("\nafter splitting");
-        Debug.printDbg("",(Body)jBody);
+        logger.debug("\nafter splitting");
+        logger.debug("{}",(Body)jBody);
                 
   		for (RetypeableInstruction i : instructionsToRetype)
             i.retype(jBody);
@@ -500,15 +504,15 @@ public class DexBody  {
 //            if (!jBody.getUnits().contains(i.getUnit()))
 //              iToRemove.add(i);
 //          for (DexlibAbstractInstruction i: iToRemove) {
-//            Debug.printDbg("removing dexinstruction containing unit '", i.getUnit() ,"'");
+//            logger.debug("removing dexinstruction containing unit '", i.getUnit() ,"'");
 //            instructions.remove(i);
 //          }
 //        }
 
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-          Debug.printDbg("[DalvikTyper] resolving typing constraints...");
+          logger.debug("[DalvikTyper] resolving typing constraints...");
           DalvikTyper.v().assignType(jBody);
-          Debug.printDbg("[DalvikTyper] resolving typing constraints... done.");
+          logger.debug("[DalvikTyper] resolving typing constraints... done.");
           //jBody.validate();
           jBody.validateUses();
           jBody.validateValueBoxes();
@@ -516,7 +520,7 @@ public class DexBody  {
           Validate.validateArrays(jBody);
           //jBody.checkTypes();
           //jBody.checkLocals();
-          Debug.printDbg("\nafter Dalvik Typer");
+          logger.debug("\nafter Dalvik Typer");
 
         } else {
         	DexNumTransformer.v().transform (jBody);
@@ -534,9 +538,9 @@ public class DexBody  {
         	//DexRefsChecker.v().transform(jBody);
             DexNullArrayRefTransformer.v().transform(jBody);
         	
-        	Debug.printDbg("\nafter Num and Null transformers");
+        	logger.debug("\nafter Num and Null transformers");
         }
-        Debug.printDbg("",(Body)jBody);
+        logger.debug("{}",(Body)jBody);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
             for (Local l: jBody.getLocals()) {
@@ -603,11 +607,11 @@ public class DexBody  {
                 }
             }
             for (ValueBox vb: toNullConstantify) {
-                System.out.println("replace valuebox '"+ vb +" with null constant");
+                logger.info("replace valuebox '"+ vb +" with null constant");
                 vb.setValue(NullConstant.v());
             }
             for (Local l: toRemove) {
-                System.out.println("removing null_type local "+ l);
+                logger.info("removing null_type local "+ l);
                 l.setType(RefType.v("java.lang.Object"));
             }
             
@@ -620,8 +624,8 @@ public class DexBody  {
         UnusedLocalEliminator.v().transform(jBody);
         LocalNameStandardizer.v().transform(jBody);
 
-        Debug.printDbg("\nafter type assigner localpacker and name standardizer");
-        Debug.printDbg("",(Body)jBody);
+        logger.debug("\nafter type assigner localpacker and name standardizer");
+        logger.debug("{}",(Body)jBody);
         
         // Inline PackManager.v().getPack("jb").apply(jBody);
         // Keep only transformations that have not been done
@@ -657,7 +661,7 @@ public class DexBody  {
         NopEliminator.v().transform(jBody);
         
         if (m.toString().equals("<org.apache.log4j.config.PropertySetter: void introspect()>"))
-        	System.out.println("x");
+        	logger.info("x");
         
         for (Unit u: jBody.getUnits()) {
             if (u instanceof AssignStmt) {
@@ -665,7 +669,7 @@ public class DexBody  {
                 if (ass.getRightOp() instanceof CastExpr) {
                     CastExpr c = (CastExpr)ass.getRightOp();
                     if (c.getType() instanceof NullType) {
-                        Debug.printDbg("replacing cast to null_type by nullConstant assignment in ", u);
+                        logger.debug("replacing cast to null_type by nullConstant assignment in {}", u);
                         ass.setRightOp(NullConstant.v());
                     }
                 }
@@ -687,8 +691,8 @@ public class DexBody  {
             }
         }
         
-        Debug.printDbg("\nafter jb pack");
-        Debug.printDbg("",(Body)jBody);
+        logger.debug("\nafter jb pack");
+        logger.debug("{}",(Body)jBody);
 
         // Replace local type null_type by java.lang.Object.
         //
@@ -701,7 +705,7 @@ public class DexBody  {
         for(Local l: jBody.getLocals()) {
             Type t = l.getType();
             if (t instanceof NullType) {
-                Debug.printDbg("replacing null_type by java.lang.Object for local ", l);
+                logger.debug("replacing null_type by java.lang.Object for local {}", l);
                 l.setType(RefType.v("java.lang.Object"));
             }
         }
@@ -785,10 +789,10 @@ public class DexBody  {
     private void addTraps() {
       for (TryBlock<? extends ExceptionHandler> tryItem : tries) {
             int startAddress = tryItem.getStartCodeAddress();
-            Debug.printDbg(" start : 0x", Integer.toHexString(startAddress));
+            logger.debug(" start : 0x {}", Integer.toHexString(startAddress));
             int length = tryItem.getCodeUnitCount();//.getTryLength();
-            Debug.printDbg(" length: 0x", Integer.toHexString(length));
-            Debug.printDbg(" end   : 0x", Integer.toHexString(startAddress + length));
+            logger.debug(" length: 0x {}", Integer.toHexString(length));
+            logger.debug(" end   : 0x {}", Integer.toHexString(startAddress + length));
             int endAddress = startAddress + length;// - 1;
             Unit beginStmt = instructionAtAddress(startAddress).getUnit();
             // (startAddress + length) typically points to the first byte of the first instruction after the try block
@@ -805,20 +809,14 @@ public class DexBody  {
 				jBody.getUnits().insertAfter(nop, endStmt);
 				endStmt = nop;
 			}
-			Debug.printDbg("begin instruction (0x",
-					Integer.toHexString(startAddress), "): ",
-					instructionAtAddress(startAddress).getUnit(), " --- ",
-					beginStmt);
-			Debug.printDbg("end instruction   (0x",
-					Integer.toHexString(endAddress), "): ",
-					instructionAtAddress(endAddress).getUnit(), " --- ",
-					endStmt);
+			logger.debug("begin instruction (0x{}): {} --- {}", Integer.toHexString(startAddress),instructionAtAddress(startAddress).getUnit(), beginStmt);
+			logger.debug("end instruction   (0x{}): {} --- {}",Integer.toHexString(endAddress),instructionAtAddress(endAddress).getUnit(), endStmt);
 
 
             List<? extends ExceptionHandler> hList = tryItem.getExceptionHandlers();
             for (ExceptionHandler handler: hList) {
               int handlerAddress = handler.getHandlerCodeAddress();
-              Debug.printDbg("handler   (0x", Integer.toHexString(handlerAddress)   ,"): ", instructionAtAddress (handlerAddress).getUnit()  ," --- ", instructionAtAddress (handlerAddress-1).getUnit());
+              logger.debug("handler   (0x{}): {} --- {}", Integer.toHexString(handlerAddress),instructionAtAddress (handlerAddress).getUnit(), instructionAtAddress (handlerAddress-1).getUnit());
               String exceptionType = handler.getExceptionType();
               if (exceptionType == null)
                   exceptionType = "Ljava/lang/Throwable;";
@@ -828,7 +826,7 @@ public class DexBody  {
                     SootClass exception = ((RefType) t).getSootClass();
                     DexlibAbstractInstruction instruction = instructionAtAddress(handler.getHandlerCodeAddress());
                     if (! (instruction instanceof MoveExceptionInstruction))
-                        Debug.printDbg("First instruction of trap handler unit not MoveException but " , instruction.getClass());
+                        logger.debug("First instruction of trap handler unit not MoveException but {}" , instruction.getClass());
                     else
                       ((MoveExceptionInstruction) instruction).setRealType(this, exception.getType());
 

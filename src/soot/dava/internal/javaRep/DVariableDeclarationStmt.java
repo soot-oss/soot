@@ -77,7 +77,7 @@ public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
 			Local temp = (Local) declarations.get(i);
 			if (temp.getName().compareTo(remove.getName()) == 0) {
 				//this is the local to be removed
-				//System.out.println("REMOVED"+temp);
+				//logger.info("REMOVED"+temp);
 				declarations.remove(i);
 				return;
 			}

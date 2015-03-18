@@ -132,7 +132,7 @@ public class OrAggregatorOne extends DepthFirstAdapter{
 	newLabeledBlockBody.add(newNode);
 
 	G.v().ASTTransformations_modified = true;
-	//System.out.println("OR AGGREGATING ONE!!!");
+	//logger.info("OR AGGREGATING ONE!!!");
 	node.replaceBody(newLabeledBlockBody);
 
 

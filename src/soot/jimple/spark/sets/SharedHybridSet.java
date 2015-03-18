@@ -48,7 +48,7 @@ public class SharedHybridSet extends PointsToSetInternal {
 		// did it
 		super(type);
 		this.pag = pag;
-		//System.out.println("Using new heintze set");
+		//logger.info("Using new heintze set");
 	}
 
 	// The following 2 constants should be tweaked for efficiency

@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.PhaseOptions;
 import soot.Scene;
 import soot.SootClass;
@@ -43,7 +46,8 @@ import soot.dava.toolkits.base.renamer.infoGatheringAnalysis;
 import soot.util.Chain;
 
 public class InterProceduralAnalyses {
-	public static boolean DEBUG=false;
+	final static Logger logger = LoggerFactory.getLogger(InterProceduralAnalyses.class);
+			
 	/*
 	 * Method is invoked by postProcessDava in PackManager
 	 * if the transformations flag is true
@@ -53,12 +57,10 @@ public class InterProceduralAnalyses {
 	public static void applyInterProceduralAnalyses(){
 		Chain classes = Scene.v().getApplicationClasses();
 		
-		if(DEBUG)
-			System.out.println("\n\nInvoking redundantFielduseEliminator");
+			logger.debug("\n\nInvoking redundantFielduseEliminator");
 		ConstantFieldValueFinder finder = new ConstantFieldValueFinder(classes);
 		
 		HashMap<String, Object> constantValueFields = finder.getFieldsWithConstantValues();
-		if(DEBUG)		
 			finder.printConstantValueFields();
 		
 		/*
@@ -89,15 +91,13 @@ public class InterProceduralAnalyses {
 				
 				Map options = PhaseOptions.v().getPhaseOptions("db.deobfuscate");
 		        boolean deobfuscate = PhaseOptions.getBoolean(options, "enabled");
-		        //System.out.println("force is "+force);
+		        //logger.info("force is "+force);
 		        if(deobfuscate){
-		        	if(DEBUG)
-		        		System.out.println("\nSTART CP Class:"+s.getName()+ " Method: "+m.getName());
+		        		logger.debug("\nSTART CP Class: {} Method: {}", s.getName(), m.getName());
 		        	CPApplication CPApp = new CPApplication((ASTMethodNode)AST , constantValueFields, finder.getClassNameFieldNameToSootFieldMapping());
 		        	AST.apply(CPApp);
 				
-		        	if(DEBUG)
-		        		System.out.println("DONE CP for "+m.getName());
+		        		logger.debug("DONE CP for {}",m.getName());
 		        }
 		        
 		        //expression simplification
@@ -120,15 +120,14 @@ public class InterProceduralAnalyses {
 
 		         //VERY EXPENSIVE STAGE of redoing all analyses!!!!
 		        if(deobfuscate){
-		        	if(DEBUG)System.out.println("reinvoking analyzeAST");
-		        	UselessLabelFinder.DEBUG=false;
+		        	logger.debug("reinvoking analyzeAST");
 		        	body.analyzeAST();
 		        }
 		
 		        //renaming should be applied as the last stage
 				options = PhaseOptions.v().getPhaseOptions("db.renamer");
 		        boolean renamer = PhaseOptions.getBoolean(options, "enabled");
-		        //System.out.println("renaming is"+renamer);
+		        //logger.info("renaming is"+renamer);
 		        if(renamer){
 		        	applyRenamerAnalyses(AST,body);
 		        }

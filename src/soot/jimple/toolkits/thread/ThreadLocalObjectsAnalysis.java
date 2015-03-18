@@ -218,7 +218,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 	                        if(clc != null && !clc.isFieldLocal(source)) // (bail out if clc is null)
 	                        {
 	                        	ret.add(source);
-//	                            System.out.println(sharedValue + " in " + containingMethod + " escapes through " + source);
+//	                            logger.info(sharedValue + " in " + containingMethod + " escapes through " + source);
 	                        }
 	                    }
 	                }

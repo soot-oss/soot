@@ -88,7 +88,7 @@ public class DavaBuildFile {
 			if(temp.endsWith(".java")){
 				temp = temp.substring(0,temp.length()-5);
 			}
-			//System.out.println(temp);
+			//logger.info(temp);
 			out.print("		<arg value=\"" + temp + "\" />\n");
 			
 		}

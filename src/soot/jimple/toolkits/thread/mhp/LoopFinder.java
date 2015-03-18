@@ -6,6 +6,9 @@ import soot.util.*;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
 // This code should be treated as beta-quality code.
@@ -18,6 +21,8 @@ import java.util.*;
 // -Richard L. Halpert, 2006-11-30
 
 public class LoopFinder{
+	final static Logger logger = LoggerFactory.getLogger(LoopFinder.class);
+
 	private final Map<Chain, Set<Set<Object>>> chainToLoop = new HashMap<Chain, Set<Set<Object>>>();
 	
 	LoopFinder(PegGraph peg){
@@ -31,19 +36,19 @@ public class LoopFinder{
 		
 	}
 	private void testLoops(Set<Set<Object>> loopBody){
-		System.out.println("====loops===");
+		logger.info("====loops===");
 		Iterator<Set<Object>> it = loopBody.iterator();
 		while (it.hasNext()){
 			Set loop = it.next();
 			Iterator loopIt = loop.iterator();
-			System.out.println("---loop---");
+			logger.info("---loop---");
 			while (loopIt.hasNext()){
 				JPegStmt o = (JPegStmt)loopIt.next();
 				Tag tag = (Tag)o.getTags().get(0);
-				System.out.println(tag+" "+o);
+				logger.info("{} {}",tag,o);
 			}
 		}
-		System.out.println("===end===loops===");
+		logger.info("===end===loops===");
 	}
 	
 	

@@ -83,7 +83,7 @@ public class CompactSequentNodes{
 	
 	private void visitNode(PegGraph pg, Object node, List<Object> list,
 			Set canNotBeCompacted, Set<Object> gray){
-		//System.out.println("node is: "+node);
+		//logger.info("node is: "+node);
 		if (pg.getPredsOf(node).size() ==1 && pg.getSuccsOf(node).size()==1 &&
 				!canNotBeCompacted.contains(node) && !gray.contains(node)){
 			list.add(node);
@@ -108,7 +108,7 @@ public class CompactSequentNodes{
 			
 			
 			if (canNotBeCompacted.contains(node)){
-				//System.out.println("find a syn method!!");
+				//logger.info("find a syn method!!");
 				return true;
 			}
 		}
@@ -155,7 +155,7 @@ public class CompactSequentNodes{
 			
 		}
 		unitToSuccs.put(list, newSuccs);
-		//System.out.println("put list"+list+"\n"+ "newSuccs: "+newSuccs);
+		//logger.info("put list"+list+"\n"+ "newSuccs: "+newSuccs);
 		unitToPreds.put(list, newPreds);
 		allNodes.add(list);
 		chain.add(list);
@@ -171,7 +171,7 @@ public class CompactSequentNodes{
 			}
 			
 		}
-//		System.out.println("inside compactSCC");
+//		logger.info("inside compactSCC");
 //		testListSucc(peg);
 		compactNodes+=list.size();
 	}
@@ -180,11 +180,11 @@ public class CompactSequentNodes{
 	
 	
 	private void updateMonitor(PegGraph pg, List list){
-		//System.out.println("=======update monitor===");
+		//logger.info("=======update monitor===");
 		//add list to corresponding monitor objects sets 
 		Set maps = pg.getMonitor().entrySet();
 		
-		//System.out.println("---test list----");
+		//logger.info("---test list----");
 		//testList(list);
 		
 		for(Iterator iter=maps.iterator(); iter.hasNext();){
@@ -199,13 +199,13 @@ public class CompactSequentNodes{
 					fs.add(list);
 					//flag = true;
 					break;
-					// System.out.println("add list to monitor: "+entry.getKey());
+					// logger.info("add list to monitor: "+entry.getKey());
 					
 				}
 				
 			}
 			
 		}
-		//System.out.println("=======update monitor==end====");		     
+		//logger.info("=======update monitor==end====");		     
 	}
 }

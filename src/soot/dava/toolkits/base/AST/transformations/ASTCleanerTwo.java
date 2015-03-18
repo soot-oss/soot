@@ -94,7 +94,7 @@ public class ASTCleanerTwo extends DepthFirstAdapter{
 		    //if(G.v().ASTTransformations_modified)
 		    	//return;
 		    if(!success){
-			//System.out.println("not successful");
+			//logger.info("not successful");
 		    }
 		    if(success){
 			List<Object> newBody = breaker.createNewBody(subBody,nodeNumber);
@@ -107,7 +107,7 @@ public class ASTCleanerTwo extends DepthFirstAdapter{
 				    List<Object> ifElseBody = (List<Object>)subBodies.get(1);
 				    ((ASTIfElseNode)node).replaceBody(newBody,ifElseBody);
 				    G.v().ASTTransformations_modified = true;
-				    //System.out.println("BROKE IFELSE 1");
+				    //logger.info("BROKE IFELSE 1");
 				    return;
 				}
 				else if(subBodyNumber==1){
@@ -116,7 +116,7 @@ public class ASTCleanerTwo extends DepthFirstAdapter{
 				    List<Object> ifBody = (List<Object>)subBodies.get(0);
 				    ((ASTIfElseNode)node).replaceBody(ifBody,newBody);
 				    G.v().ASTTransformations_modified = true;
-				    //System.out.println("BROKE IFELSE 2");
+				    //logger.info("BROKE IFELSE 2");
 				    return;
 				}
 				else{
@@ -127,49 +127,49 @@ public class ASTCleanerTwo extends DepthFirstAdapter{
 				if(node instanceof ASTMethodNode){
 				    ((ASTMethodNode)node).replaceBody(newBody);
 				    G.v().ASTTransformations_modified = true;
-				    //System.out.println("BROKE IFELSE 3");
+				    //logger.info("BROKE IFELSE 3");
 				    return;
 				}
 				else if(node instanceof ASTSynchronizedBlockNode){
 				    ((ASTSynchronizedBlockNode)node).replaceBody(newBody);
 				    G.v().ASTTransformations_modified = true;
-				    //System.out.println("BROKE IFELSE 4");
+				    //logger.info("BROKE IFELSE 4");
 				    return;
 				}
 				else if(node instanceof ASTLabeledBlockNode){
 				    ((ASTLabeledBlockNode)node).replaceBody(newBody);
 				    G.v().ASTTransformations_modified = true;
-				    //System.out.println("BROKE IFELSE 5");
+				    //logger.info("BROKE IFELSE 5");
 				    return;
 				}
 				else if(node instanceof ASTUnconditionalLoopNode){
 				    ((ASTUnconditionalLoopNode)node).replaceBody(newBody);
 				    G.v().ASTTransformations_modified = true;
-				    //System.out.println("BROKE IFELSE 6");
+				    //logger.info("BROKE IFELSE 6");
 				    return;
 				}
 				else if(node instanceof ASTIfNode){
 				    ((ASTIfNode)node).replaceBody(newBody);
 				    G.v().ASTTransformations_modified = true;
-				    //System.out.println("BROKE IFELSE 7");
+				    //logger.info("BROKE IFELSE 7");
 				    return;
 				}
 				else if(node instanceof ASTWhileNode){
 				    ((ASTWhileNode)node).replaceBody(newBody);
 				    G.v().ASTTransformations_modified = true;
-				    //System.out.println("BROKE IFELSE 8");
+				    //logger.info("BROKE IFELSE 8");
 				    return;
 				}
 				else if(node instanceof ASTDoWhileNode){
 				    ((ASTDoWhileNode)node).replaceBody(newBody);
 				    G.v().ASTTransformations_modified = true;
-				    //System.out.println("BROKE IFELSE 9");
+				    //logger.info("BROKE IFELSE 9");
 				    return;
 				}
 				else if(node instanceof ASTForLoopNode){
 				    ((ASTForLoopNode)node).replaceBody(newBody);
 				    G.v().ASTTransformations_modified = true;
-				    //System.out.println("BROKE IFELSE 11");
+				    //logger.info("BROKE IFELSE 11");
 				    return;
 				}
 				else {
@@ -216,7 +216,7 @@ public class ASTCleanerTwo extends DepthFirstAdapter{
 			//something did not go wrong
 			node.replaceTryBody(newBody);
 			G.v().ASTTransformations_modified = true;
-			//System.out.println("BROKE IFELSE 10");
+			//logger.info("BROKE IFELSE 10");
 			return;
 		    }//newBody was not null				
 		}
@@ -276,7 +276,7 @@ public class ASTCleanerTwo extends DepthFirstAdapter{
 			    //something did not go wrong
 			    catchBody.replaceBody(newBody);
 			    G.v().ASTTransformations_modified = true;
-			    //System.out.println("BROKE IFELSE 11");
+			    //logger.info("BROKE IFELSE 11");
 			    return;
 			}//newBody was not null				
 		    }
@@ -329,7 +329,7 @@ public class ASTCleanerTwo extends DepthFirstAdapter{
 				//replace in actual switchNode
 				node.replaceIndex2BodyList(index2BodyList);
 				G.v().ASTTransformations_modified = true;
-				//System.out.println("BROKE IFELSE 12");
+				//logger.info("BROKE IFELSE 12");
 				return;
 			    }//newBody was not null				
 			}

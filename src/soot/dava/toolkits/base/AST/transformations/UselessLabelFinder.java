@@ -20,7 +20,12 @@
 package soot.dava.toolkits.base.AST.transformations;
 
 import soot.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.SET.*;
@@ -28,7 +33,7 @@ import soot.dava.internal.AST.*;
 import soot.dava.internal.javaRep.*;
 
 public class UselessLabelFinder{
-	public static boolean DEBUG = false;
+	final static Logger logger = LoggerFactory.getLogger(UselessLabelFinder.class);
     public UselessLabelFinder( Singletons.Global g ) {}
     public static UselessLabelFinder v() { return G.v().soot_dava_toolkits_base_AST_transformations_UselessLabelFinder(); }
 
@@ -36,18 +41,18 @@ public class UselessLabelFinder{
     //check whether label on a node is useless 
     public boolean findAndKill(ASTNode node){
     	if(!(node instanceof ASTLabeledNode)){
-    		if(DEBUG)
-    			System.out.println("Returning from findAndKill for node of type "+node.getClass());
+    		
+    			logger.debug("Returning from findAndKill for node of type {}",node.getClass());
     		return false;
     	}
     	else{
-    		if(DEBUG) System.out.println("FindAndKill continuing for node fo type"+node.getClass());
+    		 logger.debug("FindAndKill continuing for node fo type{}",node.getClass());
     	}
 
     	String label = ((ASTLabeledNode)node).get_Label().toString();
     	if(label==null)
     		return false;
-    	if(DEBUG) System.out.println("dealing with labeled node"+label);
+    	 logger.debug("dealing with labeled node{}",label);
 	
 	
     	List<Object> subBodies = node.get_SubBodies();
@@ -59,10 +64,10 @@ public class UselessLabelFinder{
     			//an astTryNode
     			ASTTryNode.container subBody = (ASTTryNode.container)it.next();
     			subBodyTemp = (List)subBody.o;
-    			//System.out.println("\ntryNode body");
+    			//logger.debug("\ntryNode body");
     		}
     		else{//not an astTryNode
-    			//System.out.println("not try node in findAndkill");
+    			//logger.debug("not try node in findAndkill");
     			subBodyTemp = (List)it.next();
     		}
     			
@@ -76,7 +81,7 @@ public class UselessLabelFinder{
     	
 		//means break was not found so we can remove
 		((ASTLabeledNode)node).set_Label(new SETNodeLabel());		    
-		if (DEBUG) System.out.println("USELESS LABEL DETECTED");
+		logger.debug("USELESS LABEL DETECTED");
 		return true;
     }
 
@@ -84,14 +89,14 @@ public class UselessLabelFinder{
       Returns True if finds a break for this label
     */
     private boolean checkForBreak(List ASTNodeBody,String outerLabel){
-//    	if(DEBUG)
-  //  		System.out.println("method checkForBreak..... label is "+outerLabel);
+//    	
+  //  		logger.debug("method checkForBreak..... label is "+outerLabel);
     	Iterator it = ASTNodeBody.iterator();
     	while(it.hasNext()){
     		ASTNode temp = (ASTNode)it.next();
     		//check if this is ASTStatementSequenceNode
     		if(temp instanceof ASTStatementSequenceNode){
-    			//if(DEBUG) System.out.println("Stmt seq Node");
+    			// logger.debug("Stmt seq Node");
     			ASTStatementSequenceNode stmtSeq = (ASTStatementSequenceNode)temp;
     			List<Object> statements = stmtSeq.getStatements();
     			Iterator<Object> stmtIt = statements.iterator();
@@ -110,7 +115,7 @@ public class UselessLabelFinder{
     		else{
     			//otherwise recursion
     			//getSubBodies
-    			//if(DEBUG) System.out.println("Not Stmt seq Node");
+    			// logger.debug("Not Stmt seq Node");
     			List<Object> subBodies=temp.get_SubBodies();
     			Iterator<Object> subIt = subBodies.iterator();
     			while(subIt.hasNext()){
@@ -118,7 +123,7 @@ public class UselessLabelFinder{
     				if(temp instanceof ASTTryNode){
     					ASTTryNode.container subBody = (ASTTryNode.container) subIt.next();
     					subBodyTemp = (List)subBody.o;
-    					//System.out.println("Try body node");
+    					//logger.debug("Try body node");
     				}
     				else{
     					subBodyTemp = (List)subIt.next();

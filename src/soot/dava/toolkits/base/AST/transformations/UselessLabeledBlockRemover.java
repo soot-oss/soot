@@ -171,37 +171,37 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter{
 	    if(node instanceof ASTMethodNode){
 		((ASTMethodNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("REMOVED LABEL");
+		//logger.info("REMOVED LABEL");
 	    }
 	    else if(node instanceof ASTSynchronizedBlockNode){
 		((ASTSynchronizedBlockNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("REMOVED LABEL");
+		//logger.info("REMOVED LABEL");
 	    }
 	    else if(node instanceof ASTLabeledBlockNode){
 		((ASTLabeledBlockNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("REMOVED LABEL");
+		//logger.info("REMOVED LABEL");
 	    }
 	    else if(node instanceof ASTUnconditionalLoopNode){
 		((ASTUnconditionalLoopNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("REMOVED LABEL");
+		//logger.info("REMOVED LABEL");
 	    }
 	    else if(node instanceof ASTIfNode){
 		((ASTIfNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("REMOVED LABEL");
+		//logger.info("REMOVED LABEL");
 	    }
 	    else if(node instanceof ASTWhileNode){
 		((ASTWhileNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("REMOVED LABEL");
+		//logger.info("REMOVED LABEL");
 	    }
 	    else if(node instanceof ASTDoWhileNode){
 		((ASTDoWhileNode)node).replaceBody(newBody);
 		G.v().ASTTransformations_modified = true;
-		//System.out.println("REMOVED LABEL");
+		//logger.info("REMOVED LABEL");
 	    }
 	    else {
 		//there is no other case something is wrong if we get here
@@ -212,7 +212,7 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter{
 	    //if its an ASIfElseNode then check which Subbody has the labeledBlock
 	    if(subBodyNumber!=0 && subBodyNumber!=1){
 		//something bad is happening dont do nothin
-		//System.out.println("Error-------not modifying AST");
+		//logger.info("Error-------not modifying AST");
 		return;
 	    }
 	    List<Object> subBodies = node.get_SubBodies();
@@ -234,19 +234,19 @@ public class UselessLabeledBlockRemover extends DepthFirstAdapter{
 	    }
 	    if(subBodyNumber==0){
 		//the if body was modified
-		//System.out.println("REMOVED LABEL");
+		//logger.info("REMOVED LABEL");
 		G.v().ASTTransformations_modified = true;
 		((ASTIfElseNode)node).replaceBody(newBody,(List<Object>)subBodies.get(1));
 	    }
 	    else if(subBodyNumber==1){
 		//else body was modified
-		//System.out.println("REMOVED LABEL");
+		//logger.info("REMOVED LABEL");
 		G.v().ASTTransformations_modified = true;
 		((ASTIfElseNode)node).replaceBody((List<Object>)subBodies.get(0),newBody);
 	    }
 	    else{//realllly shouldnt come here
 		//something bad is happening dont do nothin
-		//System.out.println("Error-------not modifying AST");
+		//logger.info("Error-------not modifying AST");
 		return;
 	    }
 

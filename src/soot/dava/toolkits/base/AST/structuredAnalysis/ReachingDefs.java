@@ -24,7 +24,12 @@
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
 import soot.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.*;
 //import soot.dava.internal.javaRep.*;
 import soot.dava.internal.AST.*;
@@ -61,6 +66,8 @@ import soot.dava.toolkits.base.AST.traversals.*;
  */
 
 public class ReachingDefs extends StructuredAnalysis {
+	final static Logger logger = LoggerFactory.getLogger(ReachingDefs.class);
+			
 	Object toAnalyze;
 
 	public ReachingDefs(Object analyze) {
@@ -165,7 +172,7 @@ public class ReachingDefs extends StructuredAnalysis {
 	}
 
 	public void gen(DavaFlowSet in, DefinitionStmt s) {
-		// System.out.println("Adding Definition Stmt: "+s);
+		// logger.info("Adding Definition Stmt: "+s);
 		in.add(s);
 	}
 
@@ -183,7 +190,7 @@ public class ReachingDefs extends StructuredAnalysis {
 				String storedLocalName = ((Local) leftOp).getName();
 				if (redefinedLocalName.compareTo(storedLocalName) == 0) {
 					// need to kill this from the list
-					// System.out.println("Killing "+tempStmt);
+					// logger.info("Killing "+tempStmt);
 					in.remove(tempStmt);
 				}
 			}
@@ -250,7 +257,7 @@ public class ReachingDefs extends StructuredAnalysis {
 		List allReachingDefs = beforeSet.toList();
 		Iterator it = allReachingDefs.iterator();
 		while (it.hasNext()) {
-			System.out.println("Reaching def:" + it.next());
+			logger.info("Reaching def:{}",it.next());
 		}
 	}
 }

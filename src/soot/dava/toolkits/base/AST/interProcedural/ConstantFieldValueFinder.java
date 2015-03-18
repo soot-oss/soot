@@ -24,6 +24,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -37,11 +40,9 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
-
 import soot.Value;
 import soot.dava.DavaBody;
 import soot.dava.DecompilationException;
-
 import soot.dava.internal.AST.ASTNode;
 import soot.dava.toolkits.base.AST.traversals.AllDefinitionsFinder;
 import soot.jimple.DefinitionStmt;
@@ -51,7 +52,6 @@ import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 import soot.jimple.NumericConstant;
-
 import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.FloatConstantValueTag;
 import soot.tagkit.IntegerConstantValueTag;
@@ -70,7 +70,8 @@ import soot.util.Chain;
  *    
  */
 public class ConstantFieldValueFinder {
-	public final boolean DEBUG = false;
+
+	final static Logger logger = LoggerFactory.getLogger(ConstantFieldValueFinder.class);
 	
 	public static String combiner = "_$p$g_";
 
@@ -272,11 +273,11 @@ public class ConstantFieldValueFinder {
 						SootField tempField = classNameFieldNameToSootFieldMapping.get(combined);
 						if(tempField.getType() instanceof BooleanType){
 							primTypeFieldValueToUse.put(combined,new Boolean(false));							
-							//System.out.println("puttingvalue false for"+combined);	
+							//logger.info("puttingvalue false for"+combined);	
 						}
 						else{
 							primTypeFieldValueToUse.put(combined,tempVal);
-							//System.out.println("puttingvalue 0 for"+combined);
+							//logger.info("puttingvalue 0 for"+combined);
 						}
 					}
 					else
@@ -380,28 +381,26 @@ public class ConstantFieldValueFinder {
 	
 	
 	public void printConstantValueFields(){
-		System.out.println("\n\n Printing Constant Value Fields (method: printConstantValueFields)");
+		logger.debug("\n\n Printing Constant Value Fields (method: printConstantValueFields)");
 		Iterator<String> it =  primTypeFieldValueToUse.keySet().iterator();
 		while(it.hasNext()){
 			String combined = it.next();
 			
 			int temp = combined.indexOf(combiner,0);
 			if(temp > 0){
-				System.out.println("Class: "+ combined.substring(0,temp)+" Field: "+combined.substring(temp+combiner.length()) +" Value: "+ primTypeFieldValueToUse.get(combined));
-				
+				logger.debug("Class: {} Field: {} Value: {}", 
+				combined.substring(0,temp), combined.substring(temp+combiner.length()), primTypeFieldValueToUse.get(combined));
 			}
 		}
 	}
 	
 	public void debug(String methodName, String debug){		
-		if(DEBUG)
-			System.out.println(methodName+ "    DEBUG: "+debug);
+			logger.debug("{}    DEBUG: {}",methodName, debug);
 	}
 
 	
 	public void debug(String debug){		
-		if(DEBUG)
-			System.out.println("DEBUG: "+debug);
+			logger.debug("DEBUG: {}",debug);
 	}
 
 }

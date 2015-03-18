@@ -109,7 +109,7 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
     /*Iterator it = units.iterator();
     while(it.hasNext()) {
       Unit x = (Unit)it.next();
-      System.out.println(i+++":  "+x.toString() + "  : "+isExceptionCaughtAt(units, x,traps.iterator()));
+      logger.info(i+++":  "+x.toString() + "  : "+isExceptionCaughtAt(units, x,traps.iterator()));
     }*/
   
     // move random-size chunk at beginning to end
@@ -187,7 +187,7 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
     if (u == null)
     	return false;
   
-    //System.out.println("\r\tselected unit is "+u);
+    //logger.info("\r\tselected unit is "+u);
     while (trapsIt.hasNext())
     {
       Trap t = (Trap)trapsIt.next();

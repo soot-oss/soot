@@ -32,13 +32,14 @@ import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction22c;
 import org.jf.dexlib2.iface.reference.TypeReference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.IntType;
 import soot.Local;
 import soot.Type;
 import soot.Value;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -48,7 +49,7 @@ import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
 
 public class NewArrayInstruction extends DexlibAbstractInstruction {
-
+	final static Logger logger = LoggerFactory.getLogger(NewArrayInstruction.class);
     AssignStmt assign = null;
 
     public NewArrayInstruction (Instruction instruction, int codeAdress) {
@@ -68,7 +69,7 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         Type t = DexType.toSoot((TypeReference) newArray.getReference());
         // NewArrayExpr needs the ElementType as it increases the array dimension by 1
         Type arrayType = ((ArrayType) t).getElementType();
-        Debug.printDbg("new array element type: ", arrayType);
+        logger.debug("new array element type: ", arrayType);
         
         NewArrayExpr newArrayExpr = Jimple.v().newNewArrayExpr(arrayType, size);
 
@@ -80,7 +81,7 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			logger.debug("constraint: {}", assign);
           int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().setType(newArrayExpr.getSizeBox(), IntType.v(), true);
           DalvikTyper.v().setType(assign.getLeftOpBox(), newArrayExpr.getType(), false);

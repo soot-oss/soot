@@ -93,7 +93,7 @@ public class SETStatementSequenceNode extends SETNode
 		  
 		*/
 		if (s == davaBody.get_ConstructorUnit()){
-		    //System.out.println("ALLOWING this.init STMT TO GET ADDED..............SETStatementSequenceNode");
+		    //logger.info("ALLOWING this.init STMT TO GET ADDED..............SETStatementSequenceNode");
 		    //  continue;
 		}
 

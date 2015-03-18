@@ -95,7 +95,7 @@ public class AbruptEdgesMetric extends ASTMetric {
 					iContinues++;
 			}
 			else{
-				System.out.println("\t Error:'"+branch.toString()+"'");
+				logger.info("\t Error:'"+branch.toString()+"'");
 			}
 		}
 		return enter(n);

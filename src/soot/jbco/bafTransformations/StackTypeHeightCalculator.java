@@ -21,6 +21,9 @@ package soot.jbco.bafTransformations;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.baf.internal.AbstractOpTypeInst;
@@ -32,6 +35,7 @@ import soot.util.Chain;
  * Created on 3-May-2006 
  */
 public class StackTypeHeightCalculator {
+	final static Logger logger = LoggerFactory.getLogger(StackTypeHeightCalculator.class);
 
   protected class StackEffectSwitch implements InstSwitch {
     
@@ -479,7 +483,7 @@ public class StackTypeHeightCalculator {
   public static Map<Unit,Stack<Type>> calculateStackHeights(Body b, boolean jimpleLocals) {
     if (!(b instanceof BafBody)) 
       throw new java.lang.RuntimeException("Expecting Baf Body");
-    //System.out.println("\n"+b.getMethod().getName());
+    //logger.info("\n"+b.getMethod().getName());
     
     Map<Unit,Stack<Type>> results = new HashMap<Unit,Stack<Type>>();
     bug = new BriefUnitGraph(b);
@@ -569,7 +573,7 @@ public class StackTypeHeightCalculator {
             Type t = clone.pop();
          
             if (!checkTypes(t,sw.remove_types[i])) {
-              //System.out.println("Incompatible types: " + t + "  :  "+sw.remove_types[i]);
+              //logger.info("Incompatible types: " + t + "  :  "+sw.remove_types[i]);
             }
           } catch (Exception exc) {
             return null;
@@ -647,7 +651,7 @@ public class StackTypeHeightCalculator {
         for (int i = 0; i < stack.size(); i++)
           s += printType(stack.get(i));
       } else s+="***missing***";
-      System.out.println(s+"]");  
+      logger.info("{}]",s);  
     }
     sw.shouldThrow = true;
   }

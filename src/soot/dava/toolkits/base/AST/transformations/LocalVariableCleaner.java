@@ -31,6 +31,9 @@ import soot.*;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.*;
 import soot.util.Chain;
 //import soot.dava.internal.javaRep.*;
@@ -53,7 +56,7 @@ import soot.dava.toolkits.base.AST.traversals.*;
  */
 
 public class LocalVariableCleaner extends DepthFirstAdapter {
-	public final boolean DEBUG = false;
+	final static Logger logger = LoggerFactory.getLogger(LocalVariableCleaner.class);
 	
 	
 	ASTNode AST;
@@ -138,13 +141,12 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
 			if(AST instanceof ASTMethodNode){
 				//this should always be true but whatever
 				DavaBody body = ((ASTMethodNode)AST).getDavaBody();
-				if(DEBUG){
-					System.out.println("body information");
-					System.out.println("Control local is: "+body.get_ControlLocal());
-					System.out.println("his locals are: "+body.get_ThisLocals());
-					System.out.println("Param Map is: "+body.get_ParamMap());
-					System.out.println("Locals are:"+body.getLocals());
-				}			
+				logger.debug("body information");
+				logger.debug("Control local is: {}",body.get_ControlLocal());
+				logger.debug("his locals are: {}",body.get_ThisLocals());
+				logger.debug("Param Map is: {}",body.get_ParamMap());
+				logger.debug("Locals are:{}",body.getLocals());
+					
 				Collection<Local> localChain = body.getLocals();
 				if(removeLocal != null && localChain != null)
 					localChain.remove(removeLocal);
@@ -155,8 +157,7 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
 			
 			
 			
-			if(DEBUG)
-				System.out.println("Removed"+removeLocal);
+			logger.debug("Removed"+removeLocal);
 			redo = true;
 		}
 
@@ -207,7 +208,7 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
 	public boolean removeStmt(Stmt stmt) {
 		Object tempParent = parentOf.getParentOf(stmt);
 		if (tempParent == null) {
-			//System.out.println("NO PARENT FOUND CANT DO ANYTHING");
+			//logger.info("NO PARENT FOUND CANT DO ANYTHING");
 			return false;
 		}
 
@@ -233,7 +234,7 @@ public class LocalVariableCleaner extends DepthFirstAdapter {
 				newSequence.add(as);
 			}
 		}
-		//System.out.println("STMT REMOVED---------------->"+stmt);
+		//logger.info("STMT REMOVED---------------->"+stmt);
 		parentNode.setStatements(newSequence);
 		if (newSequence.size() < size)
 			return true; //size of new node is smaller than orignal size

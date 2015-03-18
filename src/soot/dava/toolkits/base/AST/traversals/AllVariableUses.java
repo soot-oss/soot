@@ -59,6 +59,9 @@ import soot.*;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
@@ -73,6 +76,7 @@ import soot.dava.toolkits.base.AST.analysis.*;
  *    Notice that the mapping is for SootField to uses not for FieldRef to uses
  */
 public class AllVariableUses extends DepthFirstAdapter{
+	final static Logger logger = LoggerFactory.getLogger(AllVariableUses.class);
     ASTMethodNode methodNode;
 
     HashMap<Local, List> localsToUses;
@@ -123,11 +127,11 @@ public class AllVariableUses extends DepthFirstAdapter{
 
 	if(val instanceof Local){
 	    localUses.add(val);
-	    System.out.println("Added "+val+" to local uses for switch");
+	    logger.info("Added {} to local uses for switch", val);
 	}
 	else if(val instanceof FieldRef){
 	    fieldUses.add(val);
-	    System.out.println("Added "+val+" to field uses for switch");
+	    logger.info("Added {} to field uses for switch", val);
 	}
 	else{
 	    List useBoxes = val.getUseBoxes();
@@ -139,11 +143,11 @@ public class AllVariableUses extends DepthFirstAdapter{
 		Value temp = it.next();
 		if(temp instanceof Local){
 		    localUses.add(temp);
-		    System.out.println("Added "+temp+" to local uses for switch");
+		    logger.info("Added {} to local uses for switch", temp);
 		}
 		else if(temp instanceof FieldRef){
 		    fieldUses.add(temp);
-		    System.out.println("Added "+temp+" to field uses for switch");
+		    logger.info("Added {} to field uses for switch",temp);
 		}
 	    }
 	}
@@ -267,7 +271,7 @@ public class AllVariableUses extends DepthFirstAdapter{
     public void checkConditionalUses(ASTCondition cond,ASTNode node){
 	List<Value> useList = getUseList(cond);
 		
-	//System.out.println("FOR NODE with condition:"+cond+"USE list is:"+useList);
+	//logger.info("FOR NODE with condition:"+cond+"USE list is:"+useList);
 
 	//FOR EACH USE
 	Iterator<Value> it = useList.iterator();
@@ -471,7 +475,7 @@ public class AllVariableUses extends DepthFirstAdapter{
     	    if(val instanceof Local || val instanceof FieldRef)
     		toReturn.add(val);
     	}
-    	//System.out.println("VALUES:"+toReturn);
+    	//logger.info("VALUES:"+toReturn);
 	return toReturn;
     }
 

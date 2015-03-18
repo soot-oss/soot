@@ -42,6 +42,9 @@ import soot.*;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.*;
 import soot.dava.internal.AST.*;
 import soot.dava.internal.asg.*;
@@ -72,8 +75,7 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.*;
  */
 
 public class CopyPropagation extends DepthFirstAdapter {
-	public static boolean DEBUG = false;
-
+	final static Logger logger = LoggerFactory.getLogger(CopyPropagation.class);
 	ASTNode AST;
 
 	ASTUsesAndDefs useDefs;
@@ -106,15 +108,13 @@ public class CopyPropagation extends DepthFirstAdapter {
 
 	private void setup() {
 		//create the uD and dU chains
-		if (DEBUG) 
-			System.out.println("computing usesAnd Defs");
+		logger.debug("computing usesAnd Defs");
 		useDefs = new ASTUsesAndDefs(AST);
 		AST.apply(useDefs);
 
 		
 		
-		if (DEBUG) 
-			System.out.println("computing usesAnd Defs....done");
+		logger.debug("computing usesAnd Defs....done");
 
 		
 		
@@ -136,7 +136,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 			//before running a structured flow analysis have to do this one
 			AST.apply(ClosestAbruptTargetFinder.v());
 
-			//System.out.println("\n\n\nCOPY PROP\n\n\n\n");
+			//logger.info("\n\n\nCOPY PROP\n\n\n\n");
 
 			CopyPropagation prop1 = new CopyPropagation(AST);
 			AST.apply(prop1);
@@ -186,7 +186,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 	 * Replace use of a with use of b
 	 */
 	public void handleCopyStmt(DefinitionStmt copyStmt) {
-		//System.out.println("COPY STMT FOUND-----------------------------------"+copyStmt);
+		//logger.info("COPY STMT FOUND-----------------------------------"+copyStmt);
 
 		//get defined local...safe to cast since this is copyStmt
 		Local definedLocal = (Local) copyStmt.getLeftOp();
@@ -203,12 +203,9 @@ public class CopyPropagation extends DepthFirstAdapter {
 
 		//check if uses is non-empty
 		if (uses.size() != 0) {
-			if (DEBUG) {
-				System.out.println(">>>>The defined local:" + definedLocal
-						+ " is used in the following");
-				System.out.println("\n numof uses:" + uses.size() + uses
-						+ ">>>>>>>>>>>>>>>\n\n");
-			}
+			logger.debug(">>>>The defined local:{}  is used in the following",definedLocal);
+			logger.debug("\n numof uses:{} {}>>>>>>>>>>>>>>>\n\n",uses.size(),uses);
+		
 
 			//continuing with copy propagation algorithm
 
@@ -240,9 +237,8 @@ public class CopyPropagation extends DepthFirstAdapter {
 			useIt = uses.iterator();
 			while (useIt.hasNext()) {
 				Object tempUse = useIt.next();
-				if (DEBUG) {
-					System.out.println("copy stmt reached this use" + tempUse);
-				}
+				logger.debug("copy stmt reached this use {}", tempUse);
+				
 				replace(leftLocal, rightLocal, tempUse);
 			}
 
@@ -256,7 +252,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 			}
 		} else {
 			//the copy stmt is usesless since the definedLocal is not being used anywhere after definition
-			//System.out.println("The defined local:"+definedLocal+" is not used anywhere");
+			//logger.info("The defined local:"+definedLocal+" is not used anywhere");
 			removeStmt(copyStmt);
 		}
 	}
@@ -264,7 +260,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 	public void removeStmt(Stmt stmt) {
 		Object tempParent = parentOf.getParentOf(stmt);
 		if (tempParent == null) {
-			//System.out.println("NO PARENT FOUND CANT DO ANYTHING");
+			//logger.info("NO PARENT FOUND CANT DO ANYTHING");
 			return;
 		}
 
@@ -290,7 +286,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 				newSequence.add(as);
 			}
 		}
-		//System.out.println("STMT REMOVED---------------->"+stmt);
+		//logger.info("STMT REMOVED---------------->"+stmt);
 		parentNode.setStatements(newSequence);
 
 		ASTMODIFIED = true;
@@ -394,8 +390,8 @@ public class CopyPropagation extends DepthFirstAdapter {
 				someCopyStmtModified = true;
 			}
 			List useBoxes = s.getUseBoxes();
-			if(DEBUG)
-				System.out.println("Printing uses for stmt"+useBoxes);
+			
+				logger.debug("Printing uses for stmt {}" ,useBoxes);
 			
 			//TODO
 			modifyUseBoxes(from,to,useBoxes);
@@ -428,7 +424,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 				}
 			} 
 			else if (use instanceof ASTIfNode) {
-				if (DEBUG)	System.out.println("Use is an instanceof if node");
+				logger.debug("Use is an instanceof if node");
 				
 				ASTIfNode temp = (ASTIfNode) use;
 				ASTCondition cond = temp.get_Condition();

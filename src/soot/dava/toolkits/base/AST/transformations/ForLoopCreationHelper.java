@@ -95,7 +95,7 @@ public class ForLoopCreationHelper{
 	    newSubBody.add(newStmtSeqNode);
 	}
 	else{
-	    //System.out.println("Stmt seq was empty hence not putting a node in");
+	    //logger.info("Stmt seq was empty hence not putting a node in");
 	}
 
 	//add new For Loop Node
@@ -248,26 +248,26 @@ public class ForLoopCreationHelper{
 
 	List<Object> update = getUpdate(defs,condUses,commonVars);
 	if(update==null  || update.size() == 0){
-	    //System.out.println("Aborting because of update");
+	    //logger.info("Aborting because of update");
 	    return false;
 	}
 
 	if(commonVars==null || commonVars.size()==0){
-	    //System.out.println("Aborting because of commonVars");
+	    //logger.info("Aborting because of commonVars");
 	    return false;
 	}
 	
 	//there are some vars which are 
 	//1, defined in the stmtseq node
 	//2, used in the condition
-	//System.out.println(commonVars);
+	//logger.info(commonVars);
 
 
 
 	//create new stmtSeqNode and get the init list for the for loop
 	List<Object> init= createNewStmtSeqNodeAndGetInit(commonVars);
 	if(init.size()==0){
-	    //System.out.println("Aborting because of init size");
+	    //logger.info("Aborting because of init size");
 	    return false;
 	}
 
@@ -288,7 +288,7 @@ public class ForLoopCreationHelper{
 	
 	//about to create loop make sure to remove the update stmt
 	if(removeLast){
-	    //System.out.println("Removing"+myStmts.get(myStmts.size()-1));
+	    //logger.info("Removing"+myStmts.get(myStmts.size()-1));
 	    myStmts.remove(myStmts.size()-1);
 	    removeLast=false;
 	}
@@ -324,7 +324,7 @@ public class ForLoopCreationHelper{
 
 	    if(!(temp instanceof ASTStatementSequenceNode)){
 		//not a statementsequence node
-		//System.out.println("Aborting because last node is not a stmtseqnode");
+		//logger.info("Aborting because last node is not a stmtseqnode");
 		return null;
 	    }
 
@@ -334,7 +334,7 @@ public class ForLoopCreationHelper{
 
 	    if(!(lastStmt instanceof DefinitionStmt)){
 		//not a definition stmt
-		//System.out.println("Aborting because last stmt is not definition stmt");
+		//logger.info("Aborting because last stmt is not definition stmt");
 		return null;
 	    }
 
