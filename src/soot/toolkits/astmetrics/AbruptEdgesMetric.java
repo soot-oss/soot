@@ -19,6 +19,9 @@
 
 package soot.toolkits.astmetrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.Branch;
 import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
@@ -38,6 +41,8 @@ import polyglot.visit.NodeVisitor;
        2. of explicit continues (breaking outer loops)       DONE
   */
 public class AbruptEdgesMetric extends ASTMetric {
+
+	final static Logger logger = LoggerFactory.getLogger(AbruptEdgesMetric.class);
 
 	private int iBreaks, eBreaks;
 	private int iContinues, eContinues;

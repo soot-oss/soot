@@ -21,6 +21,9 @@ package soot.toolkits.astmetrics;
 
 import java.util.Iterator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.ClassDecl;
 import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
@@ -28,6 +31,8 @@ import polyglot.util.CodeWriter;
 import soot.G;
 
 public abstract class ASTMetric extends NodeVisitor implements MetricInterface {
+	final static Logger logger = LoggerFactory.getLogger(ASTMetric.class);
+
 	polyglot.ast.Node astNode;
 	String className=null; //name of Class being currently processed
 	

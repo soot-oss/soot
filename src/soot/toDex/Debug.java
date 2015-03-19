@@ -20,9 +20,14 @@
 
 package soot.toDex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.options.Options;
 
 public class Debug {
+	final static Logger logger = LoggerFactory.getLogger(Debug.class);
+
   public static boolean TODEX_DEBUG;
   
   public static void printDbg (String s, Object...objects) {

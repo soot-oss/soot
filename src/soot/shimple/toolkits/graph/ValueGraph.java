@@ -35,9 +35,14 @@ import soot.toolkits.graph.*;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 // consider implementing DirectedGraph
 public class ValueGraph
 {
+	final static Logger logger = LoggerFactory.getLogger(ValueGraph.class);
+
     // can we handle field writes/reads?
     // Issues:  - does the field write DOMINATE field uses?
     //          - do intervening method calls have SIDE-EFFECTs?
@@ -467,7 +472,7 @@ public class ValueGraph
         ShimpleBody sb = Shimple.v().newBody(b);
         CompleteBlockGraph cfg = new CompleteBlockGraph(sb);
         ValueGraph vg = new ValueGraph(cfg);
-        logger.info(vg);
+        logger.info(""+vg);
     }
 
     public class Node

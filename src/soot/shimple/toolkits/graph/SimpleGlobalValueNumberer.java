@@ -22,11 +22,18 @@ package soot.shimple.toolkits.graph;
 import soot.*;
 import soot.shimple.*;
 import soot.toolkits.graph.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.shimple.toolkits.graph.ValueGraph.Node;
 
 public class SimpleGlobalValueNumberer implements GlobalValueNumberer
 {
+	final static Logger logger = LoggerFactory.getLogger(SimpleGlobalValueNumberer.class);
+
     protected BlockGraph cfg;
     protected ValueGraph vg;
     protected Set<Partition> partitions;
@@ -58,7 +65,7 @@ public class SimpleGlobalValueNumberer implements GlobalValueNumberer
         ShimpleBody sb = Shimple.v().newBody(b);
         CompleteBlockGraph cfg = new CompleteBlockGraph(sb);
         SimpleGlobalValueNumberer sgvn = new SimpleGlobalValueNumberer(cfg);
-        logger.info(sgvn);
+        logger.info(""+sgvn);
     }
     
     public int getGlobalValueNumber(Local local)

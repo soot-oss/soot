@@ -28,6 +28,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.G;
 import soot.Local;
 import soot.Timers;
@@ -44,6 +47,8 @@ import soot.util.Cons;
  * Analysis that provides an implementation of the LocalDefs interface.
  */
 public class SmartLocalDefs implements LocalDefs {
+	final static Logger logger = LoggerFactory.getLogger(SmartLocalDefs.class);
+
 	private final Map<Cons<Unit, Local>, List<Unit>> answer;
 
 	private final Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined

@@ -38,6 +38,8 @@ import java.util.Vector;
 
 import soot.CompilationDeathException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.*;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -48,6 +50,8 @@ import org.xml.sax.SAXParseException;
 
 public class ProcessData {
 	
+	final static Logger logger = LoggerFactory.getLogger(ProcessData.class);
+
 	//when printing class names what is the max size of each class name
 	private static final int CLASSNAMESIZE=15;
 	

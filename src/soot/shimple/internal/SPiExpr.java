@@ -23,13 +23,19 @@ import soot.*;
 import soot.util.*;
 import soot.shimple.*;
 import soot.toolkits.scalar.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Navindra Umanee
  **/
 public class SPiExpr implements PiExpr
 {
+	final static Logger logger = LoggerFactory.getLogger(SPiExpr.class);
+
     protected ValueUnitPair argBox;
     protected Object targetKey;
 

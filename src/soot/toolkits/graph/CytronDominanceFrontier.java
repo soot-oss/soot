@@ -21,6 +21,9 @@ package soot.toolkits.graph;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Class to compute the DominanceFrontier using Cytron's celebrated efficient
  * algorithm.
@@ -33,6 +36,8 @@ import java.util.*;
  **/
 public class CytronDominanceFrontier<N> implements DominanceFrontier<N>
 {
+	final static Logger logger = LoggerFactory.getLogger(CytronDominanceFrontier.class);
+
     protected DominatorTree<N> dt;
     protected Map<DominatorNode<N>, List<DominatorNode<N>>> nodeToFrontier;
     

@@ -2,12 +2,18 @@ package soot.toolkits.astmetrics;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.*;
 import polyglot.util.CodeWriter;
 import polyglot.visit.NodeVisitor;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 
 public class StmtSumWeightedByDepth extends ASTMetric {
   
+	final static Logger logger = LoggerFactory.getLogger(StmtSumWeightedByDepth.class);
+
   int currentDepth;
   int sum;
   int maxDepth;
@@ -90,7 +96,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
         || n instanceof LocalClassDecl || n instanceof Synchronized 
         || n instanceof ProcedureDecl || n instanceof Initializer ){
       sum += currentDepth*2;
-      logger.info(n);
+      logger.info(""+n);
       increaseDepth();
     } else if (parent instanceof Block && n instanceof Block) {
       StmtSumWeightedByDepth.tmpAbruptChecker = false;
@@ -119,7 +125,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
       {
         blocksWithAbruptFlow.add(n);
         sum += currentDepth*2;
-        logger.info(n);
+        logger.info(""+n);
         increaseDepth();
       }
     } 
@@ -127,7 +133,7 @@ public class StmtSumWeightedByDepth extends ASTMetric {
     else if (n instanceof Expr || n instanceof Formal){
     	System.out.print(sum +"  "+n+"  ");
     	sum += currentDepth*2;
-    	logger.info(sum);
+    	logger.info(""+sum);
     }
     
     // carry metric cummulative for each statement for metricPrettyPrinter 

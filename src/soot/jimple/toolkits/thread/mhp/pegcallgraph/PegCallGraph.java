@@ -1,10 +1,15 @@
 package soot.jimple.toolkits.thread.mhp.pegcallgraph;
 
 import soot.toolkits.graph.*;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.toolkits.callgraph.*;
 import soot.*;
 import soot.util.*;
+
 import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -19,6 +24,8 @@ import java.util.*;
 
 
 public class PegCallGraph implements DirectedGraph{
+	final static Logger logger = LoggerFactory.getLogger(PegCallGraph.class);
+
 	List heads;
 	List tails;
 	Chain chain;
@@ -53,7 +60,7 @@ public class PegCallGraph implements DirectedGraph{
 		Iterator it = chain.iterator();
 		while (it.hasNext()) {
 			SootMethod sm = (SootMethod)it.next();
-			logger.info(sm);
+			logger.info("" +sm);
 			//logger.info("name: "+sm.getName());	
 		}
 	}
@@ -261,7 +268,7 @@ public class PegCallGraph implements DirectedGraph{
 				logger.info("**succ set:");
 				Iterator it = list.iterator();
 				while (it.hasNext()){
-					logger.info(it.next());
+					logger.info(""+it.next());
 					
 					
 				}
@@ -282,7 +289,7 @@ public class PegCallGraph implements DirectedGraph{
 				logger.info("**pred set:");
 				Iterator it = list.iterator();
 				while (it.hasNext()){
-					logger.info(it.next());
+					logger.info(""+it.next());
 					
 					
 				}

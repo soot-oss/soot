@@ -23,6 +23,9 @@ import soot.*;
 
 import java.util.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * This utility class can convert any BlockGraph to a single-headed
  * and single-tailed graph by inserting appropriate Start or Stop
@@ -39,6 +42,8 @@ import java.util.*;
  **/
 public class BlockGraphConverter
 {
+	final static Logger logger = LoggerFactory.getLogger(BlockGraphConverter.class);
+
     /**
      * Transforms a multi-headed and/or multi-tailed BlockGraph to a
      * single-headed singled-tailed BlockGraph by inserting a dummy
@@ -131,11 +136,11 @@ public class BlockGraphConverter
         SootMethod sm = sc.getMethod(args[1]);
         Body b = sm.retrieveActiveBody();
         CompleteBlockGraph cfg = new CompleteBlockGraph(b);
-        logger.info(cfg);
+        logger.info(""+cfg);
         BlockGraphConverter.addStartStopNodesTo(cfg);
-        logger.info(cfg);
+        logger.info(""+cfg);
         BlockGraphConverter.reverse(cfg);
-        logger.info(cfg);
+        logger.info(""+cfg);
     }
     
 }
