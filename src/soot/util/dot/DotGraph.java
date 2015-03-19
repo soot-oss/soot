@@ -188,6 +188,13 @@ public class DotGraph implements Renderable{
   }
 
   /**
+   * sets the graph name
+   */
+  public void setGraphName(String name){
+    this.graphname = name;
+  }
+  
+  /**
    * sets the graph label
    */
   public void setGraphLabel(String label){
