@@ -680,7 +680,8 @@ public class DexBody  {
                 	if (t instanceof RefType) {
                 		RefType rt = (RefType) t;
                 		if (rt.getSootClass().isPhantom()
-                				&& !rt.getSootClass().hasSuperclass())
+                				&& !rt.getSootClass().hasSuperclass()
+                				&& !rt.getSootClass().getName().equals("java.lang.Throwable"))
                 			rt.getSootClass().setSuperclass(Scene.v().getSootClass("java.lang.Throwable"));
                 	}
                 }

@@ -31,6 +31,7 @@ import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 
+import soot.Modifier;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootField;
@@ -105,7 +106,10 @@ class SootClassBuilder extends ClassVisitor {
 		for (String intrf : interfaces) {
 			intrf = AsmUtil.toQualifiedName(intrf);
 			addDep(RefType.v(intrf));
-			klass.addInterface(SootResolver.v().makeClassRef(intrf));
+			
+			SootClass interfaceClass = SootResolver.v().makeClassRef(intrf);
+            interfaceClass.setModifiers(interfaceClass.getModifiers() | Modifier.INTERFACE);
+			klass.addInterface(interfaceClass);
 		}
 		if (signature != null)
 			klass.addTag(new SignatureTag(signature));

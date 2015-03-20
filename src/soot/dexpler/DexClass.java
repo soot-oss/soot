@@ -33,6 +33,7 @@ import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Field;
 import org.jf.dexlib2.iface.Method;
 
+import soot.Modifier;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -104,6 +105,7 @@ public class DexClass {
                     continue;
                 
                 SootClass interfaceClass = SootResolver.v().makeClassRef(interfaceClassName);
+                interfaceClass.setModifiers(interfaceClass.getModifiers() | Modifier.INTERFACE);
                 sc.addInterface(interfaceClass);
                 deps.typesToHierarchy.add(interfaceClass.getType());
             }
