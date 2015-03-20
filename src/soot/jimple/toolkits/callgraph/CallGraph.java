@@ -37,7 +37,7 @@ import soot.util.queue.QueueReader;
  * be kept out of it, as well as most code for accessing the edges.
  * @author Ondrej Lhotak
  */
-public class CallGraph
+public class CallGraph implements Iterable<Edge>
 { 
     protected Set<Edge> edges = new HashSet<Edge>();
     protected ChunkedQueue<Edge> stream = new ChunkedQueue<Edge>();
@@ -290,5 +290,10 @@ public class CallGraph
     public int size() {
         return edges.size();
     }
+
+	@Override
+	public Iterator<Edge> iterator() {
+		return edges.iterator();
+	}
 }
 
