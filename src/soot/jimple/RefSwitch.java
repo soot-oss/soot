@@ -29,6 +29,9 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public interface RefSwitch extends soot.util.Switch
 {
     public abstract void caseArrayRef(ArrayRef v);

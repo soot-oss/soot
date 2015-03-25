@@ -26,6 +26,9 @@
 
 package soot.jimple.toolkits.typing.integer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 /**
@@ -33,6 +36,7 @@ import soot.*;
  **/
 class TypeNode
 {
+	final static Logger logger = LoggerFactory.getLogger(TypeNode.class);
   public static final boolean DEBUG = false;
 
   private final int id;
@@ -45,7 +49,7 @@ class TypeNode
 
     if(DEBUG)
       {
-	G.v().out.println("creating node " + this);
+	logger.info("creating node " + this);
       }
   }
   

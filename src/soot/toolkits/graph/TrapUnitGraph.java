@@ -26,6 +26,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -78,6 +81,8 @@ import soot.options.Options;
  */
 public class TrapUnitGraph extends UnitGraph
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(TrapUnitGraph.class);
     /**
      *  Constructs the graph from a given Body instance.
      *  @param the Body instance from which the graph is built.

@@ -29,6 +29,9 @@
 
 
 package soot.toolkits.scalar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.toolkits.graph.*;
@@ -46,6 +49,8 @@ import java.util.*;
  */
 public class SimpleLocalDefs implements LocalDefs
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SimpleLocalDefs.class);
     Map<LocalUnitPair, List> localUnitPairToDefs;
 
 
@@ -63,7 +68,7 @@ public class SimpleLocalDefs implements LocalDefs
             Timers.v().defsTimer.start();
         
         if(Options.v().verbose())
-            G.v().out.println("[" + g.getBody().getMethod().getName() +
+            logger.info("[" + g.getBody().getMethod().getName() +
                                "]     Constructing SimpleLocalDefs...");
     
         LocalDefsFlowAnalysis analysis = new LocalDefsFlowAnalysis(g);
@@ -114,7 +119,7 @@ public class SimpleLocalDefs implements LocalDefs
             Timers.v().defsTimer.end();
 
 	if(Options.v().verbose())
-	    G.v().out.println("[" + g.getBody().getMethod().getName() +
+	    logger.info("[" + g.getBody().getMethod().getName() +
                                "]     SimpleLocalDefs finished.");
     }
 
@@ -328,7 +333,7 @@ class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
 
                             localToIntPair.put(l, new IntPair(startPos, endPos));
 
-                            // G.v().out.println(startPos + ":" + endPos);
+                            // logger.info(startPos + ":" + endPos);
 
                             startPos = endPos + 1;
                         }

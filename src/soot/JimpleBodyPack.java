@@ -25,11 +25,14 @@
 
 
 package soot;
-import soot.options.*;
 
-import soot.jimple.*;
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.Map;
+
+import soot.jimple.JimpleBody;
 import soot.options.JBOptions;
+import soot.options.Options;
 
 
 /** A wrapper object for a pack of optimizations.
@@ -37,6 +40,8 @@ import soot.options.JBOptions;
  * This is a specific one for the very messy jb phase. */
 public class JimpleBodyPack extends BodyPack
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JimpleBodyPack.class);
     public JimpleBodyPack() {
         super("jb");
     }

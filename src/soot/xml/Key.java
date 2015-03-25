@@ -19,9 +19,14 @@
 
 package soot.xml;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 public class Key {
+
+	private static final Logger logger =LoggerFactory.getLogger(Key.class);
 
     private final int red;
     private final int green;

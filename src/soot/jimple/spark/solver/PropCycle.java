@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.solver;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
 import soot.*;
@@ -30,6 +33,7 @@ import soot.util.*;
  */
 
 public final class PropCycle extends Propagator {
+	final static Logger logger = LoggerFactory.getLogger(PropCycle.class);
     public PropCycle( PAG pag ) {
         this.pag = pag;
         varNodeToIteration = new LargeNumberedMap<VarNode, Integer>( pag.getVarNodeNumberer() );
@@ -51,12 +55,12 @@ public final class PropCycle extends Propagator {
             changed = false;
             iteration++;
             currentIteration = new Integer( iteration );
-            if( verbose ) G.v().out.println( "Iteration: "+iteration );
+            if( verbose ) logger.info( "Iteration: "+iteration );
             for (VarNode v : bases) {
                 changed = computeP2Set( (VarNode) v.getReplacement(), new ArrayList<VarNode>() ) | changed;
             }
             if( ofcg != null ) throw new RuntimeException( "NYI" );
-            if( verbose ) G.v().out.println( "Processing stores" );
+            if( verbose ) logger.info( "Processing stores" );
             for (Object object : pag.storeSources()) {
                 final VarNode src = (VarNode) object;
                 Node[] targets = pag.storeLookup( src );
@@ -73,7 +77,7 @@ public final class PropCycle extends Propagator {
             }
             if( !changed && !finalIter ) {
                 finalIter = true;
-                if( verbose ) G.v().out.println( "Doing full graph" );
+                if( verbose ) logger.info( "Doing full graph" );
                 bases = new ArrayList<VarNode>(pag.getVarNodeNumberer().size());
                 for( VarNode v : pag.getVarNodeNumberer() ) {
                     bases.add( v );

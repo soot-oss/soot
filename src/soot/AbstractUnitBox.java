@@ -29,6 +29,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Reference implementation for UnitBox; just
  * add a canContainUnit method. */
 @SuppressWarnings("serial")

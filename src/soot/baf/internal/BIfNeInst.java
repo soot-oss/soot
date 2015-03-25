@@ -29,12 +29,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BIfNeInst extends AbstractBranchInst implements IfNeInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BIfNeInst.class);
     public BIfNeInst(Unit target)
     {
         super(Baf.v().newInstBox(target));

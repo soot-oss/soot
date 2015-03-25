@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.pag;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.G;
 import soot.PointsToAnalysis;
 import soot.Scene;
@@ -29,6 +32,8 @@ import soot.toolkits.scalar.Pair;
  * @author Ondrej Lhotak
  */
 public class Parm implements SparkField {
+
+	private static final Logger logger =LoggerFactory.getLogger(Parm.class);
     private final int index;
     private final SootMethod method;
     private Parm( SootMethod m, int i ) {

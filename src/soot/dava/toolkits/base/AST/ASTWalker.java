@@ -25,6 +25,9 @@
 
 package soot.dava.toolkits.base.AST;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 

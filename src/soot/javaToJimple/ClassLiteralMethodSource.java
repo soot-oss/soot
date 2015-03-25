@@ -19,8 +19,13 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 public class ClassLiteralMethodSource implements soot.MethodSource {
+
+	private static final Logger logger =LoggerFactory.getLogger(ClassLiteralMethodSource.class);
 
     public soot.Body getBody(soot.SootMethod sootMethod, String phaseName){
             

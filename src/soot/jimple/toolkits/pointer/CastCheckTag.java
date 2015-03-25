@@ -18,11 +18,16 @@
  */
 
 package soot.jimple.toolkits.pointer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.tagkit.*;
 
 /** Implements a tag that can be used to tell a VM whether a cast check can
  * be eliminated or not. */
 public class CastCheckTag implements Tag {
+
+	private static final Logger logger =LoggerFactory.getLogger(CastCheckTag.class);
     boolean eliminateCheck;
     CastCheckTag( boolean eliminateCheck ) {
 	this.eliminateCheck = eliminateCheck;

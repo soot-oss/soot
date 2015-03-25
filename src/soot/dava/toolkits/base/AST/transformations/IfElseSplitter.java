@@ -1,5 +1,8 @@
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -43,7 +46,9 @@ import soot.jimple.Stmt;
  *    has the abrupt statement in that case we just negated the condition
  */
 public class IfElseSplitter extends DepthFirstAdapter {
-	final static Logger logger = LoggerFactory.getLogger(IfElseSplitter.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(IfElseSplitter.class);
+
 	
 	boolean targeted=false;
 	ASTMethodNode methodNode;

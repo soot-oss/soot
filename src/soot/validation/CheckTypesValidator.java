@@ -1,5 +1,8 @@
 package soot.validation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -25,6 +28,8 @@ import soot.jimple.InvokeStmt;
 import soot.util.Chain;
 
 public class CheckTypesValidator implements BodyValidator {
+
+	private static final Logger logger =LoggerFactory.getLogger(CheckTypesValidator.class);
 	public static CheckTypesValidator INSTANCE;
 	
 	

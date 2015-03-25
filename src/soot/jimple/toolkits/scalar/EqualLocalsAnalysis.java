@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.toolkits.graph.*;
@@ -13,6 +16,8 @@ import soot.jimple.*;
 
 public class EqualLocalsAnalysis extends ForwardFlowAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(EqualLocalsAnalysis.class);
 	Local l;
 	Stmt s;
 	

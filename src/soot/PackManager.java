@@ -18,6 +18,9 @@
  */
 
 package soot;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -133,7 +136,9 @@ import soot.xml.XMLPrinter;
 
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
-	final static Logger logger = LoggerFactory.getLogger(PackManager.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(PackManager.class);
+
     public PackManager( Singletons.Global g ) { PhaseOptions.v().setPackManager(this); init(); }
     public boolean onlyStandardPacks() { return onlyStandardPacks; }
     private boolean onlyStandardPacks = false;
@@ -477,11 +482,11 @@ public class PackManager {
         preProcessDAVA();
         if (Options.v().interactive_mode()){
             if (InteractionHandler.v().getInteractionListener() == null){
-                G.v().out.println("Cannot run in interactive mode. No listeners available. Continuing in regular mode.");
+                logger.info("Cannot run in interactive mode. No listeners available. Continuing in regular mode.");
                 Options.v().set_interactive_mode(false);
             }
             else {
-                G.v().out.println("Running in interactive mode.");
+                logger.info("Running in interactive mode.");
             }
         }
         runBodyPacks();
@@ -503,7 +508,7 @@ public class PackManager {
       if (hashVem.size()>0)
         aM/=hashVem.size();
 
-      G.v().out.println("Vertices, Edges, Avg Degree, Highest Deg:    "+tV+"  "+tE+"  "+aM+"  "+hM);
+      logger.info("Vertices, Edges, Avg Degree, Highest Deg:    "+tV+"  "+tE+"  "+aM+"  "+hM);
     }
 
     public void runBodyPacks() {
@@ -598,7 +603,7 @@ public class PackManager {
 
             PackageNamer.v().fixNames();
 
-            G.v().out.println();
+            
         }
     }
 
@@ -639,7 +644,7 @@ public class PackManager {
 
     /* post process for DAVA */
     private void postProcessDAVA() {
-        G.v().out.println();
+        
 
         Chain<SootClass> appClasses = Scene.v().getApplicationClasses();
 
@@ -673,7 +678,7 @@ public class PackManager {
 
             	//debug("analyzeAST","Advanced Analyses ALL DISABLED");
 
-            	G.v().out.println("Analyzing " + fileName + "... ");
+            	logger.info("Analyzing " + fileName + "... ");
 
             	/*
             	 * Nomair A. Naeem 29th Jan 2006
@@ -767,7 +772,7 @@ public class PackManager {
 
             DavaPrinter.v().printTo(s, writerOut);
 
-            G.v().out.println();
+            
             G.v().out.flush();
 
             {
@@ -779,7 +784,7 @@ public class PackManager {
                 }
             }
         } //going through all classes
-        G.v().out.println();
+        
 
 
         /*
@@ -819,7 +824,7 @@ public class PackManager {
         } else {
             G.v().out.print("Transforming ");
         }
-        G.v().out.println(c.getName() + "... ");
+        logger.info(c.getName() + "... ");
 
         boolean produceBaf = false, produceGrimp = false, produceDava = false,
             produceJimple = true, produceShimple = false;
@@ -1019,7 +1024,7 @@ public class PackManager {
                 streamOut = new JasminOutputStream(streamOut);
             }
             writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-            G.v().out.println( "Writing to "+fileName );
+            logger.info( "Writing to "+fileName );
         } catch (IOException e) {
             throw new CompilationDeathException("Cannot output file " + fileName,e);
         }

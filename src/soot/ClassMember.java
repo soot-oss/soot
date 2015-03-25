@@ -25,6 +25,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Provides methods common to Soot objects belonging to classes,
  * namely SootField and SootMethod. */
 public interface ClassMember

@@ -31,10 +31,15 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** There can be many element_value pairs in each annotation 
  * @see attribute_info
  * @author Jennifer Lhotak
  */
 public class class_element_value extends element_value {
+
+	private static final Logger logger =LoggerFactory.getLogger(class_element_value.class);
     int class_info_index;
 }

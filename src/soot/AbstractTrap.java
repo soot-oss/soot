@@ -26,14 +26,27 @@
 
 package soot;
 
-import java.util.*;
-import java.io.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /** Partial implementation of trap (exception catcher), used within Body
  * classes.  */
 @SuppressWarnings("serial")
 public class AbstractTrap implements Trap, Serializable
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AbstractTrap.class);
     /** The exception being caught. */
     protected transient SootClass exception;
 

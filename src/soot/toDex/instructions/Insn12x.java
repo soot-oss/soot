@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.BitSet;
 
 import org.jf.dexlib2.Opcode;
@@ -17,6 +20,8 @@ import soot.toDex.Register;
  * and the "/2addr" binary operations.
  */
 public class Insn12x extends AbstractInsn implements TwoRegInsn {
+
+	private static final Logger logger =LoggerFactory.getLogger(Insn12x.class);
 
 	public Insn12x(Opcode opc, Register regA, Register regB) {
 		super(opc);

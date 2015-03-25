@@ -26,6 +26,9 @@
 
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** 
  * Represents bounded information for flow analysis.  
  * Just like FlowSet, but also provides complementation.

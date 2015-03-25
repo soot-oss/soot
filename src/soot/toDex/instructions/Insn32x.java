@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.BitSet;
 
 import org.jf.dexlib2.Opcode;
@@ -16,6 +19,8 @@ import soot.toDex.Register;
  * It is used by the opcodes "move/16", "move-wide/16" and "move-object/16".
  */
 public class Insn32x extends AbstractInsn implements TwoRegInsn {
+
+	private static final Logger logger =LoggerFactory.getLogger(Insn32x.class);
 
 	public Insn32x(Opcode opc, Register regA, Register regB) {
 		super(opc);

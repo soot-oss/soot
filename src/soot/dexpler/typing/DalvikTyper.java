@@ -20,6 +20,9 @@
 
 package soot.dexpler.typing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -55,7 +58,8 @@ import soot.jimple.NullConstant;
 
 public class DalvikTyper implements IDalvikTyper {
 
-	final static Logger logger = LoggerFactory.getLogger(DalvikTyper.class);
+	private static final Logger logger =LoggerFactory.getLogger(DalvikTyper.class);
+
     private static DalvikTyper dt = null;
     
     private Set<Constraint> constraints = new HashSet<Constraint>();

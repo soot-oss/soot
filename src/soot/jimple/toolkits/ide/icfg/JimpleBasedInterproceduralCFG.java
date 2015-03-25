@@ -18,6 +18,9 @@
  */
 package soot.jimple.toolkits.ide.icfg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import heros.DontSynchronize;
 import heros.InterproceduralCFG;
 import heros.SynchronizedBy;
@@ -54,6 +57,8 @@ import com.google.common.cache.LoadingCache;
  */
 @ThreadSafe
 public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
+
+	private static final Logger logger =LoggerFactory.getLogger(JimpleBasedInterproceduralCFG.class);
 	
 	//retains only callers that are explicit call sites or Thread.start()
 	public static class EdgeFilter extends Filter {		

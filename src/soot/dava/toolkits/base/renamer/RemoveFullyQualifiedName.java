@@ -1,5 +1,8 @@
 package soot.dava.toolkits.base.renamer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 
 import soot.ArrayType;
@@ -7,6 +10,8 @@ import soot.Type;
 import soot.util.IterableSet;
 
 public class RemoveFullyQualifiedName {
+
+	private static final Logger logger =LoggerFactory.getLogger(RemoveFullyQualifiedName.class);
 
 	public static boolean containsMultiple(Iterator it, String qualifiedName,Type t){
 		/*

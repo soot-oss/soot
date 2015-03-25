@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction20t;
@@ -13,6 +16,8 @@ import soot.toDex.LabelAssigner;
  * It is used by the "goto/16" opcode for jumps to a 16-bit wide offset.
  */
 public class Insn20t extends InsnWithOffset {
+
+	private static final Logger logger =LoggerFactory.getLogger(Insn20t.class);
 	
 	public Insn20t(Opcode opc) {
 		super(opc);

@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.geomE;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.spark.geom.dataRep.RectangleNode;
 import soot.jimple.spark.geom.dataRep.SegmentNode;
 import soot.jimple.spark.geom.geomPA.IFigureManager;
@@ -35,6 +38,8 @@ import soot.jimple.spark.geom.geomPA.IFigureManager;
  */
 public class GeometricManager extends IFigureManager
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GeometricManager.class);
 	public static final int Divisions = 2;
 
 	// The type ID for different figures

@@ -19,6 +19,9 @@
 
 package soot.shimple.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.shimple.*;
 import soot.toolkits.graph.*;
@@ -32,7 +35,9 @@ import soot.shimple.toolkits.graph.ValueGraph.Node;
 
 public class SimpleGlobalValueNumberer implements GlobalValueNumberer
 {
-	final static Logger logger = LoggerFactory.getLogger(SimpleGlobalValueNumberer.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(SimpleGlobalValueNumberer.class);
+
 
     protected BlockGraph cfg;
     protected ValueGraph vg;

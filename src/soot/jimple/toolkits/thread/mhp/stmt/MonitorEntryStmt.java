@@ -2,6 +2,9 @@
 
 package soot.jimple.toolkits.thread.mhp.stmt;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import soot.*;
 import soot.toolkits.graph.*;
@@ -21,6 +24,8 @@ import soot.toolkits.graph.*;
 public class MonitorEntryStmt extends JPegStmt
 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(MonitorEntryStmt.class);
 	
 	public MonitorEntryStmt(String obj, String ca, Unit un, UnitGraph ug, SootMethod sm)
 	{

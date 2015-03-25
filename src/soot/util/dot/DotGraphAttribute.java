@@ -26,12 +26,17 @@
 
 package soot.util.dot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A class for specifying Dot graph attributes.
  *
  * @author Feng Qian 
  */
 public class DotGraphAttribute {
+
+	private static final Logger logger =LoggerFactory.getLogger(DotGraphAttribute.class);
   String id;
   String value;
 

@@ -19,6 +19,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Representation of a reference to a field as it appears in a class file.
  * Note that the field directly referred to may not actually exist; the
  * actual target of the reference is determined according to the resolution

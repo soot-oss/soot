@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -32,6 +35,8 @@ import soot.jimple.NullConstant;
  * Created on 20-Jun-2006 
  */
 public class IfNullToTryCatch extends BodyTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(IfNullToTryCatch.class);
 
   int count = 0;
   int totalifs = 0;

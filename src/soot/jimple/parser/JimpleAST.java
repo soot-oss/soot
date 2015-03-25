@@ -26,6 +26,9 @@
 
 package soot.jimple.parser;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.JimpleBody;
 import soot.jimple.parser.parser.*;
 import soot.jimple.parser.lexer.*;
@@ -41,6 +44,8 @@ import soot.*;
 */
 public class JimpleAST
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JimpleAST.class);
     private Start mTree = null;
     private HashMap<SootMethod, JimpleBody> methodToParsedBodyMap = null;
 

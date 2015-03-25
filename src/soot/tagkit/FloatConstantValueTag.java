@@ -25,8 +25,13 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class FloatConstantValueTag extends ConstantValueTag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(FloatConstantValueTag.class);
     private final float value;
   /*  private final int value;
 

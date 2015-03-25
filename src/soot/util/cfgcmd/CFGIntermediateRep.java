@@ -19,6 +19,9 @@
 
 package soot.util.cfgcmd;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.jimple.JimpleBody;
 import soot.baf.Baf;

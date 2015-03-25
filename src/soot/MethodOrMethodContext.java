@@ -19,6 +19,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A common interface for either just a method, or a method with context.
  * @author Ondrej Lhotak
  */

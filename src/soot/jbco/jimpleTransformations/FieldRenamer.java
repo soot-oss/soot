@@ -19,6 +19,9 @@
 
 package soot.jbco.jimpleTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -35,7 +38,9 @@ import soot.jimple.*;
  * Created on 26-Jan-2006 
  */
 public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
-	final static Logger logger = LoggerFactory.getLogger(FieldRenamer.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(FieldRenamer.class);
+
 
   public void outputSummary() {}
   
@@ -241,7 +246,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
       oldToNewFieldNames.put(f.getName(), newName);
     }
    if (output)
-      G.v().out.println("\t\tChanged " + f.getName() + " to " + newName);
+      logger.info("\t\tChanged " + f.getName() + " to " + newName);
     f.setName(newName);
     sootFieldsRenamed.add(f);
   }

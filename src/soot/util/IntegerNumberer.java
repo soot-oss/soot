@@ -19,9 +19,14 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A numberer that associates each number with the corresponding Long object.
 */
 public class IntegerNumberer implements Numberer<Long> {
+
+	private static final Logger logger =LoggerFactory.getLogger(IntegerNumberer.class);
     /** Tells the numberer that a new object needs to be assigned a number. */
     public void add( Long o ) {}
     /** Should return the number that was assigned to object o that was

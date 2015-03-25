@@ -19,11 +19,16 @@
 
 package soot.jimple.spark.pag;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Represents an alloc-site-dot-field node (Yellow) in the pointer
  * assignment graph.
  * @author Ondrej Lhotak
  */
 public class AllocDotField extends Node {
+
+	private static final Logger logger =LoggerFactory.getLogger(AllocDotField.class);
     /** Returns the base AllocNode. */
     public AllocNode getBase() { return base; }
     /** Returns the field of this node. */

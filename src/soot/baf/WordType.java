@@ -29,11 +29,16 @@
 
 package soot.baf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 
 public class WordType extends Type
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(WordType.class);
     public WordType( Singletons.Global g ) {}
     public static WordType v() { return G.v().soot_baf_WordType(); }
 

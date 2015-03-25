@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.renamer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -27,7 +30,9 @@ import org.slf4j.LoggerFactory;
 import soot.*;
 
 public class heuristicSet {
-	final static Logger logger = LoggerFactory.getLogger(heuristicSet.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(heuristicSet.class);
+
 	HashMap<Local, heuristicTuple> set;
 
 	public heuristicSet() {

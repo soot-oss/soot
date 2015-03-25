@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.annotation.liveness;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -27,6 +30,8 @@ import java.util.*;
 import soot.jimple.*;
 
 public class LiveVarsTagger extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(LiveVarsTagger.class);
 
 
     public LiveVarsTagger(Singletons.Global g) {}

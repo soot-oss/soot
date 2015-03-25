@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 
@@ -14,6 +17,8 @@ import soot.jimple.spark.pag.*;
 
 public class StartJoinFinder
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(StartJoinFinder.class);
 	Set<Stmt> startStatements;
 	Set<Stmt> joinStatements;
 	

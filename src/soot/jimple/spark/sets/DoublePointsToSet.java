@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.sets;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import java.util.*;
@@ -29,6 +32,8 @@ import soot.*;
  * @author Ondrej Lhotak
  */
 public class DoublePointsToSet extends PointsToSetInternal {
+
+	private static final Logger logger =LoggerFactory.getLogger(DoublePointsToSet.class);
     public DoublePointsToSet( Type type, PAG pag ) {
         super( type );
         newSet = G.v().newSetFactory.newSet( type, pag );

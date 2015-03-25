@@ -20,6 +20,9 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.G;
 import soot.Singletons;
 import soot.Type;

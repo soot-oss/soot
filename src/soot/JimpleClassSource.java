@@ -18,25 +18,32 @@
  */
 
 package soot;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Iterator;
+
+import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.jimple.JimpleMethodSource;
 import soot.jimple.parser.lexer.LexerException;
 import soot.jimple.parser.parser.ParserException;
-import soot.options.*;
-import soot.javaToJimple.IInitialResolver.Dependencies;
-import soot.jimple.*;
-import java.io.*;
-import java.util.*;
+import soot.options.Options;
 
 /** A class source for resolving from .jimple files using the Jimple parser.
  */
 public class JimpleClassSource extends ClassSource
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JimpleClassSource.class);
     public JimpleClassSource( String className, InputStream classFile ) {
         super( className );
         this.classFile = classFile;
     }
     public Dependencies resolve( SootClass sc ) {
         if(Options.v().verbose())
-            G.v().out.println("resolving [from .jimple]: " + className );
+            logger.info("resolving [from .jimple]: " + className );
 
         try {
           soot.jimple.parser.JimpleAST jimpAST = new soot.jimple.parser.JimpleAST(classFile);

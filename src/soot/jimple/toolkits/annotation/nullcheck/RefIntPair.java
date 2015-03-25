@@ -27,6 +27,9 @@
 */
 
 package soot.jimple.toolkits.annotation.nullcheck;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 /**
@@ -36,6 +39,8 @@ import soot.*;
 @Deprecated
 public class RefIntPair
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(RefIntPair.class);
     private EquivalentValue _ref;
     private int _val;
     // constructor is not public so that people go throught the ref pair constants factory on the analysis

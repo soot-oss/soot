@@ -29,12 +29,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BReturnInst extends AbstractOpTypeInst implements ReturnInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BReturnInst.class);
     public BReturnInst(Type opType) { super(opType); }
     
     public int getInCount()

@@ -19,6 +19,9 @@
 
 package soot.dava.internal.SET;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.util.*;
 import soot.dava.internal.asg.*;
 

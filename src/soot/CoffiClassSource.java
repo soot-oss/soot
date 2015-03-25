@@ -18,16 +18,29 @@
  */
 
 package soot;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.javaToJimple.IInitialResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
-import soot.options.*;
-import java.io.*;
-import java.util.*;
+import soot.options.Options;
 
 /** A class source for resolving from .class files through coffi.
  */
 public class CoffiClassSource extends ClassSource
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CoffiClassSource.class);
+
     protected final InputStream classFile;
 	private final String fileName;
 	private final String zipFileName;
@@ -40,7 +53,7 @@ public class CoffiClassSource extends ClassSource
     }
     public Dependencies resolve( SootClass sc ) {
         if(Options.v().verbose())
-            G.v().out.println("resolving [from .class]: " + className );
+            logger.info("resolving [from .class]: " + className );
         List<Type> references = new ArrayList<Type>();
         soot.coffi.Util.v().resolveFromClassFile(sc, classFile, fileName, references);
 

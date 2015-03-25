@@ -20,6 +20,9 @@
 
 package soot.dexpler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -63,6 +66,8 @@ import soot.toolkits.scalar.SmartLocalDefs;
  *
  */
 public class DexNullArrayRefTransformer extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(DexNullArrayRefTransformer.class);
 	
 	public static DexNullArrayRefTransformer v() {
 		return new DexNullArrayRefTransformer();

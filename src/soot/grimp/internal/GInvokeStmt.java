@@ -30,12 +30,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GInvokeStmt extends JInvokeStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GInvokeStmt.class);
     public GInvokeStmt(Value c)
     {
         super(Grimp.v().newInvokeExprBox(c));

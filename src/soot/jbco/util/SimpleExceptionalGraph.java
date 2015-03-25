@@ -19,6 +19,9 @@
 
 package soot.jbco.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.Body;
@@ -32,6 +35,8 @@ import soot.toolkits.graph.TrapUnitGraph;
  * Created on 15-Jun-2006 
  */
 public class SimpleExceptionalGraph extends TrapUnitGraph {
+
+	private static final Logger logger =LoggerFactory.getLogger(SimpleExceptionalGraph.class);
 
   /**
    * @param body

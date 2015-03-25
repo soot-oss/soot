@@ -1,5 +1,8 @@
 package soot.toDex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -131,6 +134,8 @@ import soot.tagkit.VisibilityParameterAnnotationTag;
  * @see <a href="http://developer.android.com/tools/help/zipalign.html">zipalign documentation</a>
  */
 public class DexPrinter {
+
+	private static final Logger logger =LoggerFactory.getLogger(DexPrinter.class);
 	
 	private static final String CLASSES_DEX = "classes.dex";
 	
@@ -147,7 +152,7 @@ public class DexPrinter {
 		ZipOutputStream outputApk;
 		if(Options.v().output_jar()) {
 			outputApk = PackManager.v().getJarFile();
-			G.v().out.println("Writing APK to: " + Options.v().output_dir());
+			logger.info("Writing APK to: " + Options.v().output_dir());
 		} else {
 			String outputFileName = outputDir + File.separatorChar + originalApk.getName();
 		
@@ -156,9 +161,9 @@ public class DexPrinter {
 				throw new CompilationDeathException("Output file "+outputFile+" exists. Not overwriting.");
 			} 
 			outputApk = new ZipOutputStream(new FileOutputStream(outputFile));
-			G.v().out.println("Writing APK to: " + outputFileName);
+			logger.info("Writing APK to: " + outputFileName);
 		}
-		G.v().out.println("do not forget to sign the .apk file with jarsigner and to align it with zipalign");
+		logger.info("do not forget to sign the .apk file with jarsigner and to align it with zipalign");
 		ZipFile original = new ZipFile(originalApk);
 		copyAllButClassesDexAndSigFiles(original, outputApk);
 		original.close();
@@ -462,7 +467,7 @@ public class DexPrinter {
 	            for (Tag t : f.getTags()) {
 	                if (t instanceof ConstantValueTag) {
 	                    if (staticInit != null) {
-	                        G.v().out.println("warning: more than one constant tag for field: " + f + ": "
+	                        logger.info("warning: more than one constant tag for field: " + f + ": "
 	                                + t);
 	                    } else {
 	                        staticInit = makeConstantItem(f, t);
@@ -661,7 +666,7 @@ public class DexPrinter {
 	            elements.add(valueElement);
             }
             else
-            	G.v().out.println("Signature annotation without value detected");
+            	logger.info("Signature annotation without value detected");
             
             ImmutableAnnotation ann = new ImmutableAnnotation
             		(AnnotationVisibility.SYSTEM,
@@ -1301,7 +1306,7 @@ public class DexPrinter {
 				printApk(outputDir, originalApk);
 			} else {
 				String fileName = outputDir + File.separatorChar + CLASSES_DEX;
-				G.v().out.println("Writing dex to: " + fileName);
+				logger.info("Writing dex to: " + fileName);
 				writeTo(fileName);
 			}
 		} catch (IOException e) {

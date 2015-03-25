@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.toolkits.graph.*;
@@ -12,6 +15,8 @@ import soot.jimple.*;
 
 public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CommonPrecedingEqualValueAnalysis.class);
 	Map unitToAliasSet;
 	Stmt s;
 	
@@ -84,7 +89,7 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis
 			// to be smarter, we could also add the right side to the list of aliases...
 		}
 
-//		G.v().out.println(stmt + " HAS ALIASES in" + in + " out" + out);
+//		logger.info(stmt + " HAS ALIASES in" + in + " out" + out);
 	}
 	
 	protected void copy(Object source, Object dest)

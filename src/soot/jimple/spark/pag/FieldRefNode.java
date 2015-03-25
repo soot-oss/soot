@@ -19,10 +19,15 @@
 
 package soot.jimple.spark.pag;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Represents a field reference node (Red) in the pointer assignment graph.
  * @author Ondrej Lhotak
  */
 public class FieldRefNode extends ValNode {
+
+	private static final Logger logger =LoggerFactory.getLogger(FieldRefNode.class);
     /** Returns the base of this field reference. */
     public VarNode getBase() { return base; }
     public Node getReplacement() {

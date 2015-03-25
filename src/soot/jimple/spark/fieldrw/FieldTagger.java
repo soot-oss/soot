@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.fieldrw;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.util.*;
 import java.util.*;

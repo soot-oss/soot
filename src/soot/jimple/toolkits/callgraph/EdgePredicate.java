@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** An interface for predicates on edges, used to specify which edges
  * should or shouldn't be included as part of a particular subgraph.
  * @author Ondrej Lhotak

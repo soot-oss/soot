@@ -29,12 +29,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BShrInst extends AbstractOpTypeInst implements ShrInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BShrInst.class);
     public BShrInst(Type opType)
     {
         super(opType);

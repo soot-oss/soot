@@ -29,12 +29,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BIfGtInst extends AbstractBranchInst implements IfGtInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BIfGtInst.class);
     public BIfGtInst(Unit target)
     {
         super(Baf.v().newInstBox(target));

@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.invoke;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -36,6 +39,8 @@ import soot.jimple.*;
 /** Methods for checking Java scope and visibiliity requirements. */
 public class AccessManager
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AccessManager.class);
     /** Returns true iff target is legally accessible from container.
      *  Illegal access occurs when any of the following cases holds:
      *    1. target is private, but container.declaringClass() != 

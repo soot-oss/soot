@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.annotation.callgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.tagkit.*;
@@ -26,6 +29,8 @@ import java.util.*;
 import soot.jimple.*;
 
 public class CallGraphTagger extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(CallGraphTagger.class);
 
     public CallGraphTagger( Singletons.Global g ) {}
     public static CallGraphTagger v() { return G.v().soot_jimple_toolkits_annotation_callgraph_CallGraphTagger(); }

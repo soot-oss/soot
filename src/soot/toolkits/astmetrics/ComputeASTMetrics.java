@@ -19,6 +19,9 @@
 
 package soot.toolkits.astmetrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import polyglot.ast.Node;
@@ -28,6 +31,8 @@ import soot.options.Options;
  * Add all metrics to be computed here.
  */
 public class ComputeASTMetrics {
+
+	private static final Logger logger =LoggerFactory.getLogger(ComputeASTMetrics.class);
 	
 	ArrayList<ASTMetric> metrics;
 	/*

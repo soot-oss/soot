@@ -27,6 +27,9 @@
 
 package soot.shimple.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;

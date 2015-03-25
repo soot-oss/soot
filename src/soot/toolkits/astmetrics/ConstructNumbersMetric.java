@@ -20,6 +20,9 @@
 
 package soot.toolkits.astmetrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.Block;
 import polyglot.ast.Do;
 import polyglot.ast.For;
@@ -35,6 +38,8 @@ import polyglot.visit.NodeVisitor;
  * code
  */
 public class ConstructNumbersMetric extends ASTMetric {
+
+	private static final Logger logger =LoggerFactory.getLogger(ConstructNumbersMetric.class);
 
 	private int numIf, numIfElse;
 	

@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -39,6 +42,8 @@ import java.util.List;
  */
 public class AbstractHost implements Host 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AbstractHost.class);
 	
 	protected int line, col;	
 

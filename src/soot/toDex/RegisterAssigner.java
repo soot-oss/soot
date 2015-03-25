@@ -1,5 +1,8 @@
 package soot.toDex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.BitSet;
 import java.util.Iterator;
 import java.util.List;
@@ -25,8 +28,11 @@ import soot.toDex.instructions.TwoRegInsn;
  * IMPLEMENTATION NOTE: The algorithm is heavily inspired by com.android.dx.dex.code.OutputFinisher.
  */
 public class RegisterAssigner {
+
+	private static final Logger logger =LoggerFactory.getLogger(RegisterAssigner.class);
 	
 	private class InstructionIterator implements Iterator<Insn> {
+
 		
 		private final ListIterator<Insn> insnsIterator;
 		private final Map<Insn, Stmt> insnStmtMap;

@@ -1,5 +1,8 @@
 package soot.toDex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.writer.builder.BuilderReference;
 import org.jf.dexlib2.writer.builder.DexBuilder;
@@ -31,6 +34,8 @@ import soot.util.Switchable;
  * @see StmtVisitor
  */
 public class ConstantVisitor extends AbstractConstantSwitch {
+
+	private static final Logger logger =LoggerFactory.getLogger(ConstantVisitor.class);
 	
 	private final DexBuilder dexFile;
 	private StmtVisitor stmtV;

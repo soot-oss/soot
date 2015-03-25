@@ -31,6 +31,9 @@
 
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.jimple.*;
@@ -65,8 +68,11 @@ import soot.dava.internal.AST.*;
 
 public class ReachingCopies extends StructuredAnalysis {
 
+	private static final Logger logger =LoggerFactory.getLogger(ReachingCopies.class);
+
 	/***************** DEFINIING LOCAL PAIR CLASS ************************/
 	public class LocalPair {
+
 		private final Local leftLocal;
 		private final Local rightLocal;
 

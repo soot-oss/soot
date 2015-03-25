@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 class WeightedDirectedEdge {
     Object from, to;
     int weight;

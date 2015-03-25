@@ -18,6 +18,9 @@
  */
 
 package soot;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -41,6 +44,8 @@ import soot.util.NumberedString;
  */
 
 class SootMethodRefImpl implements SootMethodRef {
+	private static final Logger logger =LoggerFactory.getLogger(ClassResolutionFailedException.class);
+
     public SootMethodRefImpl( 
             SootClass declaringClass,
             String name,
@@ -91,6 +96,7 @@ class SootMethodRefImpl implements SootMethodRef {
     }
 
     public class ClassResolutionFailedException extends ResolutionFailedException {
+
         public ClassResolutionFailedException() {
             super("Class "+declaringClass+" doesn't have method "+name+
                     "("+parameterTypes+")"+" : "+returnType+
@@ -163,7 +169,7 @@ class SootMethodRefImpl implements SootMethodRef {
         if( trace == null ) {
         	ClassResolutionFailedException e = new ClassResolutionFailedException();
         	if(Options.v().ignore_resolution_errors())
-        		G.v().out.println(e.getMessage());
+        		logger.info(e.getMessage());
         	else
         		throw e;
         }

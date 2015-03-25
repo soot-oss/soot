@@ -1,5 +1,8 @@
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -39,6 +42,8 @@ import soot.jimple.FieldRef;
 import soot.jimple.Stmt;
 
 public class CP extends StructuredAnalysis {
+
+	private static final Logger logger =LoggerFactory.getLogger(CP.class);
 	/*
 	 * Constant Propagation:
 	 * 
@@ -79,7 +84,6 @@ public class CP extends StructuredAnalysis {
 	 * processASTSwitchNode(ASTSwitchNode node,Object input)
 	 */
 
-	final static Logger logger = LoggerFactory.getLogger(CP.class);
 			
 	ArrayList<CPTuple> constantFieldTuples = null; // VariableTuples of
 													// constantFields
@@ -163,7 +167,7 @@ public class CP extends StructuredAnalysis {
 				// System.out.print("\t"+tempLocal.getName());
 			}
 		}
-		// logger.info();
+		// 
 
 		// adding locals
 		List decLocals = methodNode.getDeclaredLocals();
@@ -218,7 +222,7 @@ public class CP extends StructuredAnalysis {
 				// System.out.print("\t"+tempLocal.getName());
 			}// was a local
 		}
-		// logger.info();
+		// 
 	}
 
 	/*

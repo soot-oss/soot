@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.pag;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.RefType;
 import soot.jimple.ClassConstant;
 
@@ -26,6 +29,8 @@ import soot.jimple.ClassConstant;
  * @author Ondrej Lhotak
  */
 public class ClassConstantNode extends AllocNode {
+
+	private static final Logger logger =LoggerFactory.getLogger(ClassConstantNode.class);
     public String toString() {
 	return "ClassConstantNode "+getNumber()+" "+newExpr;
     }

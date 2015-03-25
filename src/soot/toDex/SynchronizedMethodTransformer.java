@@ -25,6 +25,9 @@
 
 
 package soot.toDex;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -48,6 +51,8 @@ import soot.toolkits.graph.UnitGraph;
  */
 public class SynchronizedMethodTransformer extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SynchronizedMethodTransformer.class);
     public SynchronizedMethodTransformer( Singletons.Global g ) {}
     public static SynchronizedMethodTransformer v() { return G.v().soot_toDex_SynchronizedMethodTransformer(); }
     

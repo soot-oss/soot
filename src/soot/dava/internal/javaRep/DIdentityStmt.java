@@ -19,11 +19,16 @@
 
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.internal.*;
 
 public class DIdentityStmt extends GIdentityStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DIdentityStmt.class);
     public DIdentityStmt(Value local, Value identityValue)
     {
         super( local, identityValue);

@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.toolkits.callgraph;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 /** A context manager which adds no context-sensitivity to the call graph.

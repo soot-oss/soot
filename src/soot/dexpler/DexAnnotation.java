@@ -1,5 +1,8 @@
 package soot.dexpler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -76,7 +79,9 @@ import soot.toDex.SootToDexUtils;
  *
  */
 public class DexAnnotation {
-	final static Logger logger = LoggerFactory.getLogger(DexAnnotation.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(DexAnnotation.class);
+
 	
 	private final Type ARRAY_TYPE = RefType.v("Array");
 	private final SootClass clazz;

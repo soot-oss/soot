@@ -19,6 +19,9 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A class that numbers objects, so they can be placed in bitsets.
  *
  * @author Ondrej Lhotak

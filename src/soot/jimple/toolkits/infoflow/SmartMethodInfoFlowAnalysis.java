@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.infoflow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -17,6 +20,8 @@ import soot.jimple.*;
 
 public class SmartMethodInfoFlowAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SmartMethodInfoFlowAnalysis.class);
 	UnitGraph graph;
 	SootMethod sm;
 	Value thisLocal;
@@ -121,7 +126,7 @@ public class SmartMethodInfoFlowAnalysis
 		Date start = new Date();
 		int counterSoFar = counter;
 		if(printMessages)
-			G.v().out.println("STARTING SMART ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+			logger.info("STARTING SMART ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 		
 		// S=#Statements, R=#Refs, L=#Locals, where generally (S ~= L), (L >> R)
 		// Generates a data flow graph of refs and locals where "flows to data structure" is represented in a single node
@@ -133,11 +138,11 @@ public class SmartMethodInfoFlowAnalysis
 		{
 	    	long longTime = ((new Date()).getTime() - start.getTime());
 	    	float time = (longTime) / 1000.0f;
-			G.v().out.println("ENDING   SMART ANALYSIS FOR " + g.getBody().getMethod() + " ----- " + 
+			logger.info("ENDING   SMART ANALYSIS FOR " + g.getBody().getMethod() + " ----- " + 
 								(counter - counterSoFar + 1) + " analyses took: " + time + "s");
-			G.v().out.println("  AbbreviatedDataFlowGraph:");
+			logger.info("  AbbreviatedDataFlowGraph:");
 			InfoFlowAnalysis.printInfoFlowSummary(abbreviatedInfoFlowGraph);
-			G.v().out.println("  DataFlowSummary:");
+			logger.info("  DataFlowSummary:");
 			InfoFlowAnalysis.printInfoFlowSummary(infoFlowSummary);
 		}
 	}
@@ -391,7 +396,7 @@ public class SmartMethodInfoFlowAnalysis
 			SootMethod method = ie.getMethodRef().resolve();
 			if(method.getDeclaringClass().isApplicationClass())
 			{
-				G.v().out.println("Attempting to print graph (will succeed only if ./dfg/ is a valid path)");
+				logger.info("Attempting to print graph (will succeed only if ./dfg/ is a valid path)");
 				MutableDirectedGraph<EquivalentValue> abbreviatedDataFlowGraph = dfa.getInvokeAbbreviatedInfoFlowGraph(ie, sm);
 				InfoFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName() + (refOnly ? "" : "_primitive"), 
 					abbreviatedDataFlowGraph, method.getName() + (refOnly ? "" : "_primitive"), false);
@@ -399,7 +404,7 @@ public class SmartMethodInfoFlowAnalysis
 		}
 //		if( ie.getMethodRef().resolve().getSubSignature().equals(new String("boolean remove(java.lang.Object)")) )
 //		{
-//			G.v().out.println("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE infoFlowSummary: ");
+//			logger.info("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE infoFlowSummary: ");
 //			ClassInfoFlowAnalysis.printDataFlowGraph(infoFlowSummary);
 //		}
 		

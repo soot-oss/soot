@@ -25,6 +25,9 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.util.*;
 import java.util.*;
 import soot.*;
@@ -32,6 +35,8 @@ import soot.baf.*;
 
 public class BTableSwitchInst extends AbstractInst implements TableSwitchInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BTableSwitchInst.class);
     UnitBox defaultTargetBox;
     int lowIndex, highIndex;
     UnitBox[] targetBoxes;

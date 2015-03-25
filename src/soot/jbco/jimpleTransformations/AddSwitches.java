@@ -19,6 +19,9 @@
 
 package soot.jbco.jimpleTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -38,6 +41,8 @@ import soot.toolkits.graph.BriefUnitGraph;
  * Created on 10-Jul-2006 
  */
 public class AddSwitches extends BodyTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(AddSwitches.class);
 
   int switchesadded = 0;
   public void outputSummary() {

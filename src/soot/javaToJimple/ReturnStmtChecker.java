@@ -19,7 +19,12 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class ReturnStmtChecker extends polyglot.visit.NodeVisitor {
+
+	private static final Logger logger =LoggerFactory.getLogger(ReturnStmtChecker.class);
 
     private boolean hasReturn;
 

@@ -30,6 +30,9 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.*;
@@ -37,6 +40,8 @@ import soot.util.*;
 
 public class GCmpgExpr extends AbstractGrimpIntBinopExpr implements CmpgExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GCmpgExpr.class);
     public GCmpgExpr(Value op1, Value op2) { super(op1, op2); }
     public final String getSymbol() { return " cmpg "; }
     public final int getPrecedence() { return 600; }

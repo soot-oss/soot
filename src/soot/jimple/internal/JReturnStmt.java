@@ -30,6 +30,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
@@ -39,6 +42,8 @@ import java.util.*;
 
 public class JReturnStmt extends AbstractOpStmt implements ReturnStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JReturnStmt.class);
     public JReturnStmt(Value returnValue)
     {
         this(Jimple.v().newImmediateBox(returnValue));

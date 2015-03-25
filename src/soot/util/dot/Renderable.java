@@ -25,6 +25,9 @@
 
 package soot.util.dot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 public interface Renderable {

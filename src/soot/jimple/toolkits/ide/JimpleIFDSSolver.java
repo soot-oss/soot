@@ -18,6 +18,9 @@
  */
 package soot.jimple.toolkits.ide;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import heros.IFDSTabulationProblem;
 import heros.InterproceduralCFG;
 import heros.solver.IFDSSolver;

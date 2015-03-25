@@ -20,6 +20,9 @@
 
 package soot.dava;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -187,7 +190,8 @@ import soot.util.Switchable;
 
 public class DavaBody extends Body {
 
-	final static Logger logger = LoggerFactory.getLogger(DavaBody.class);
+	private static final Logger logger =LoggerFactory.getLogger(DavaBody.class);
+
 	public boolean DEBUG = false;
 	private Map<Integer, Value> pMap;
 

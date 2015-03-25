@@ -25,6 +25,9 @@
 
 
 package soot.baf.toolkits.base;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.util.*;
@@ -36,6 +39,8 @@ import soot.toolkits.graph.*;
 
 public class LoadStoreOptimizer extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LoadStoreOptimizer.class);
     public LoadStoreOptimizer( Singletons.Global g ) {}
     public static LoadStoreOptimizer v() { return G.v().soot_baf_toolkits_base_LoadStoreOptimizer(); }
 
@@ -72,9 +77,9 @@ public class LoadStoreOptimizer extends BodyTransformer
         debug = PhaseOptions.getBoolean(gOptions, "debug");
         
         if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
+            logger.info("[" + body.getMethod().getName() + "] Performing LoadStore optimizations...");
 
-        if(debug) { G.v().out.println("\n\nOptimizing Method: " + body.getMethod().getName());}
+        if(debug) { logger.info("\n\nOptimizing Method: " + body.getMethod().getName());}
         
         instance.go();
     }
@@ -96,23 +101,23 @@ class Instance {
            
             
            
-            if(debug){G.v().out.println("Calling optimizeLoadStore(1)\n");}
+            if(debug){logger.info("Calling optimizeLoadStore(1)\n");}
             optimizeLoadStores(); 
         
             if(PhaseOptions.getBoolean(gOptions, "inter") ) {
-                if(debug){G.v().out.println("Calling doInterBlockOptimizations");}
+                if(debug){logger.info("Calling doInterBlockOptimizations");}
                 doInterBlockOptimizations(); 
                              
                 //computeLocalDefsAndLocalUsesInfo();          
-                //propagateLoadsBackwards();         if(debug)     G.v().out.println("pass 3");         
-                //optimizeLoadStores();      if(debug)   G.v().out.println("pass 4"); 
-                //propagateLoadsForward();   if(debug)   G.v().out.println("pass 5"); 
-                //propagateBackwardsIndependentHunk(); if(debug)  G.v().out.println("pass 6");                        
+                //propagateLoadsBackwards();         if(debug)     logger.info("pass 3");         
+                //optimizeLoadStores();      if(debug)   logger.info("pass 4"); 
+                //propagateLoadsForward();   if(debug)   logger.info("pass 5"); 
+                //propagateBackwardsIndependentHunk(); if(debug)  logger.info("pass 6");                        
             }
 
             if(PhaseOptions.getBoolean(gOptions, "sl2") || PhaseOptions.getBoolean(gOptions, "sll2")  ) {        
                 mPass2 = true;
-                if(debug){G.v().out.println("Calling optimizeLoadStore(2)");}
+                if(debug){logger.info("Calling optimizeLoadStore(2)");}
                 optimizeLoadStores();   
             }
         }        
@@ -125,8 +130,8 @@ class Instance {
     {
         BlockGraph blockGraph = new ZonedBlockGraph(mBody); 
         if(debug) {
-            G.v().out.println("Method " +  mBody.getMethod().getName()+ " Block Graph: ");
-            G.v().out.println(blockGraph);
+            logger.info("Method " +  mBody.getMethod().getName()+ " Block Graph: ");
+            logger.info(blockGraph+"");
         }
        
         List<Block> blocks = blockGraph.getBlocks();
@@ -268,7 +273,7 @@ class Instance {
                                             hasChanged = true;        hasChangedFlag = false;
                                     
                                             //delme[
-                                            if(debug) { G.v().out.println("Store/Load elimination occurred case1.");}
+                                            if(debug) { logger.info("Store/Load elimination occurred case1.");}
                                             //delme]
                                         } /*else if (test == SPECIAL_SUCCESS2) {
                                             if(!hasChangedFlag) {
@@ -331,7 +336,7 @@ class Instance {
                                                   throw new RuntimeException("this has to be corrected (loadstoroptimiser.java)" + stackUnit);
                                                   }
                                         
-                                                  if(debug) { G.v().out.println("stack unit is: " + stackUnit + " stack type is " + underType);}
+                                                  if(debug) { logger.info("stack unit is: " + stackUnit + " stack type is " + underType);}
                                                   replaceUnit(unit, Baf.v().newDup1_x1Inst(((LoadInst) secondLoad).getOpType(),underType));
                                                   unitIt.remove();                
                                         
@@ -417,7 +422,7 @@ class Instance {
                         
                         h-= ((Inst)currentUnit).getOutCount();
                         if(h<0){ // xxx could be more flexible here?
-                            if(debug) { G.v().out.println("xxx: negative");}
+                            if(debug) { logger.info("xxx: negative");}
                             return FAILURE;
                         }
                         h+= ((Inst)currentUnit).getInCount();
@@ -428,7 +433,7 @@ class Instance {
                     }
                 }
                 if(currentUnit == null) {
-                    if(debug) { G.v().out.println("xxx: null");}
+                    if(debug) { logger.info("xxx: null");}
                     return FAILURE;        
                 }
                 
@@ -440,14 +445,14 @@ class Instance {
                     Iterator<Unit> it2 = unitsToMove.iterator();
                     while(it2.hasNext()) {
                         Unit nu = it2.next();
-                        if(debug) { G.v().out.println("xxxspecial;success pushing forward stuff.");}
+                        if(debug) { logger.info("xxxspecial;success pushing forward stuff.");}
                         
                         
                         if(!canMoveUnitOver(nu, uu)){
-                            if(debug) { G.v().out.println("xxx: cant move over faillure" + nu);}
+                            if(debug) { logger.info("xxx: cant move over faillure" + nu);}
                             return FAILURE;
                         }
-                        if(debug) { G.v().out.println("can move" + nu + " over " + uu);}
+                        if(debug) { logger.info("can move" + nu + " over " + uu);}
                     }
                 }        
                 
@@ -455,7 +460,7 @@ class Instance {
                 Unit unitToMove = currentUnit; 
                 while(unitToMove != from) {        
                     Unit succ = block.getSuccOf(unitToMove);
-                    if(debug) { G.v().out.println("moving " + unitToMove);}
+                    if(debug) { logger.info("moving " + unitToMove);}
                     block.remove(unitToMove);
                     block.insertBefore(unitToMove, to);                            
                     unitToMove = succ;
@@ -463,7 +468,7 @@ class Instance {
                 block.remove(from);
                 block.insertBefore(from, to);
                                
-                if(debug) { G.v().out.println("xxx1success pushing forward stuff.");}
+                if(debug) { logger.info("xxx1success pushing forward stuff.");}
                 return SPECIAL_SUCCESS;
             }
         }
@@ -488,8 +493,8 @@ class Instance {
     private  int stackIndependent(Unit from, Unit to, Block block, int aContext) 
     {                
         if(debug) { 
-            G.v().out.println("Trying: " + from + "/" + to +  " in block  " + block.getIndexInMethod()+":" );
-            G.v().out.println("context:" + (aContext == STORE_LOAD_ELIMINATION ? 
+            logger.info("Trying: " + from + "/" + to +  " in block  " + block.getIndexInMethod()+":" );
+            logger.info("context:" + (aContext == STORE_LOAD_ELIMINATION ? 
                                              "STORE_LOAD_ELIMINATION" :
                                              "STORE_LOAD_LOAD_ELIMINATION"));
         }
@@ -523,8 +528,8 @@ class Instance {
         
         
         if(debug) { 
-            G.v().out.println("nshv = " + stackHeight);
-            G.v().out.println("mshv = " + minStackHeightAttained);
+            logger.info("nshv = " + stackHeight);
+            logger.info("mshv = " + minStackHeightAttained);
         }
         
         
@@ -539,19 +544,19 @@ class Instance {
                                 
                 if(stackHeight == 0 && minStackHeightAttained == 0){
                     if(debug) { 
-                        G.v().out.println("xxx: succ: -1, makedup ");
+                        logger.info("xxx: succ: -1, makedup ");
                     }
                     return MAKE_DUP;
                 }
                 else if(stackHeight == -1 && minStackHeightAttained == -1){
-                    if(debug) { G.v().out.println("xxx: succ: -1, makedup , -1");}        
+                    if(debug) { logger.info("xxx: succ: -1, makedup , -1");}        
                     return MAKE_DUP;
                  }
-                else if(stackHeight == -2 && minStackHeightAttained == -2){if(debug) { G.v().out.println("xxx: succ -1 , make dupx1 ");}
+                else if(stackHeight == -2 && minStackHeightAttained == -2){if(debug) { logger.info("xxx: succ -1 , make dupx1 ");}
                 return MAKE_DUP1_X1; }
                 
                 else  if (minStackHeightAttained < -2) {
-                    if(debug) { G.v().out.println("xxx: failled due: minStackHeightAttained < -2 ");}
+                    if(debug) { logger.info("xxx: failled due: minStackHeightAttained < -2 ");}
                     return FAILURE;
                 }                
             }
@@ -560,7 +565,7 @@ class Instance {
             // check for possible sl elimination
             if(aContext == STORE_LOAD_ELIMINATION) {                
                 if(stackHeight == 0 && minStackHeightAttained == 0){
-                    if(debug) { G.v().out.println("xxx: success due: 0, SUCCESS ");}
+                    if(debug) { logger.info("xxx: success due: 0, SUCCESS ");}
                     return SUCCESS;
                 }
                 /* xxx broken data depensie problem.
@@ -572,7 +577,7 @@ class Instance {
                             block.insertBefore(u, to);
                             block.remove(from);
                             block.insertBefore(from, to);
-                            if(debug) { G.v().out.println("xxx: success due to 1, SPECIAL_SUCCESS2");}
+                            if(debug) { logger.info("xxx: success due to 1, SPECIAL_SUCCESS2");}
                             return SPECIAL_SUCCESS2;
                         }                    
 			}*/
@@ -606,7 +611,7 @@ class Instance {
                         
                     }
                     else{
-                        if(debug) { G.v().out.println("1003:(LoadStoreOptimizer@stackIndependent): found unknown unit w/ getNetCount == 1" + u);}
+                        if(debug) { logger.info("1003:(LoadStoreOptimizer@stackIndependent): found unknown unit w/ getNetCount == 1" + u);}
                     }
                 }
                 
@@ -639,7 +644,7 @@ class Instance {
 
         if(isCommutativeBinOp(block.getSuccOf(to))) {
             if(aContext == STORE_LOAD_ELIMINATION && stackHeight == 1 && minStackHeightAttained == 0) {
-                if(debug) { G.v().out.println("xxx: commutative ");}
+                if(debug) { logger.info("xxx: commutative ");}
                 return SPECIAL_SUCCESS;
             }
             else if( ((Inst) to).getOutCount()  == 1 &&
@@ -775,7 +780,7 @@ class Instance {
         boolean reachedStore = false;
         boolean reorderingOccurred =false;
               
-        if(debug) {G.v().out.println("[tryToMoveUnit]: trying to move:" + unitToMove);}
+        if(debug) {logger.info("[tryToMoveUnit]: trying to move:" + unitToMove);}
         if(unitToMove == null) 
             return false;                
                 
@@ -791,7 +796,7 @@ class Instance {
         
             h -= ((Inst)current).getOutCount();                
             if(h < 0 ){
-                if(debug) { G.v().out.println("1006:(LoadStoreOptimizer@stackIndependent): Stack went negative while trying to reorder code.");}
+                if(debug) { logger.info("1006:(LoadStoreOptimizer@stackIndependent): Stack went negative while trying to reorder code.");}
 
 
 
@@ -810,7 +815,7 @@ class Instance {
             
             if(h == 0 && reachedStore == true) {
                 if(!isRequiredByFollowingUnits(unitToMove, to)) {
-                    if(debug) { G.v().out.println("10077:(LoadStoreOptimizer@stackIndependent): reordering bytecode move: " + unitToMove + "before: " + current);}
+                    if(debug) { logger.info("10077:(LoadStoreOptimizer@stackIndependent): reordering bytecode move: " + unitToMove + "before: " + current);}
                     block.remove(unitToMove);
                     block.insertBefore(unitToMove, current);
                     
@@ -821,10 +826,10 @@ class Instance {
         }
             
         if(reorderingOccurred) {
-            if(debug) { G.v().out.println("reordering occured");}
+            if(debug) { logger.info("reordering occured");}
             return true;
         } else {
-            if(debug) { G.v().out.println("1008:(LoadStoreOptimizer@stackIndependent):failled to find a new slot for unit to move");}
+            if(debug) { logger.info("1008:(LoadStoreOptimizer@stackIndependent):failled to find a new slot for unit to move");}
             return false;
         }
     }
@@ -916,7 +921,7 @@ class Instance {
                 Unit u = it.next();
                 
                 if(u instanceof LoadInst) {
-                    if(debug) { G.v().out.println("inter trying: " + u);}
+                    if(debug) { logger.info("inter trying: " + u);}
                     Block loadBlock = mUnitToBlockMap.get(u);
                     List<Unit> defs = mLocalDefs.getDefsOfAt(((LoadInst)u).getLocal(), u);
 
@@ -943,15 +948,15 @@ class Instance {
                                                     break;
                                                 }
                                             }                        
-                                            if(debug) { G.v().out.println(defBlock.toString() + loadBlock.toString());}
+                                            if(debug) { logger.info(defBlock.toString() + loadBlock.toString());}
                                             
                                             if(res) {
                                                 defBlock.remove(storeUnit);                            
                                                 mUnitToBlockMap.put(storeUnit, loadBlock);
                                                 loadBlock.insertBefore(storeUnit, loadBlock.getHead());
                                                 hasChanged = true;
-                                                if(debug) { G.v().out.println("inter-block opti occurred " + storeUnit + " " + u);}
-                                                if(debug) { G.v().out.println(defBlock.toString() + loadBlock.toString());}
+                                                if(debug) { logger.info("inter-block opti occurred " + storeUnit + " " + u);}
+                                                if(debug) { logger.info(defBlock.toString() + loadBlock.toString());}
                                             }
                                         }
                                     }
@@ -984,13 +989,13 @@ class Instance {
                                                 loadBlock.insertBefore(def0, loadBlock.getHead());
                                                 mUnitToBlockMap.put(def0, loadBlock);
                                                 hasChanged = true;
-                                                if(debug) { G.v().out.println("inter-block opti2 occurred " + def0);}
-                                            } else { if(debug) { G.v().out.println("failed: inter1");}}
-                                        } else { if(debug) { G.v().out.println("failed: inter2");}}
-                                    } else { if(debug) { G.v().out.println("failed: inter3");}}                                        
-                                } else { if(debug) { G.v().out.println("failed: inter4");}}
-                            }        else { if(debug) { G.v().out.println("failed: inter5");}}                        
-                        } else { if(debug) { G.v().out.println("failed: inter6");}}
+                                                if(debug) { logger.info("inter-block opti2 occurred " + def0);}
+                                            } else { if(debug) { logger.info("failed: inter1");}}
+                                        } else { if(debug) { logger.info("failed: inter2");}}
+                                    } else { if(debug) { logger.info("failed: inter3");}}                                        
+                                } else { if(debug) { logger.info("failed: inter4");}}
+                            }        else { if(debug) { logger.info("failed: inter5");}}                        
+                        } else { if(debug) { logger.info("failed: inter6");}}
                     }                         
                 }        
             }

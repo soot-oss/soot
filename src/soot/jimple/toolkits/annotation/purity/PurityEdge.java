@@ -27,6 +27,9 @@
 
 package soot.jimple.toolkits.annotation.purity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** 
  * An edge in a purity graph.
  * Each edge has a source PurityNode, a target PurityNode, and a field label
@@ -38,6 +41,8 @@ package soot.jimple.toolkits.annotation.purity;
  */
 public class PurityEdge
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PurityEdge.class);
     private String     field; 
     private PurityNode source, target;
     private boolean    inside;

@@ -19,7 +19,12 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class StrictFPPropagator extends polyglot.visit.NodeVisitor {
+
+	private static final Logger logger =LoggerFactory.getLogger(StrictFPPropagator.class);
 
     boolean strict = false;
     public StrictFPPropagator(boolean val){

@@ -19,10 +19,15 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Exception thrown when resolving a method or field reference fails.
  */
 
 public class ResolutionFailedException extends RuntimeException {
+
+	private static final Logger logger =LoggerFactory.getLogger(ResolutionFailedException.class);
     /**
 	 * 
 	 */

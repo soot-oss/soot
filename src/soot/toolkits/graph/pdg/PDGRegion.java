@@ -18,6 +18,9 @@
  */
 package soot.toolkits.graph.pdg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,6 +48,8 @@ import soot.toolkits.graph.UnitGraph;
  */
 
 public class PDGRegion implements IRegion, Iterable<PDGNode>{
+
+	private static final Logger logger =LoggerFactory.getLogger(PDGRegion.class);
 	
 	private SootClass m_class = null;;
 	private SootMethod m_method = null;
@@ -79,7 +84,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode>{
 		this.m_corrspondingPDGNode = node;	
 		
 		if(Options.v().verbose())
-			G.v().out.println("New pdg region create: " + id);
+			logger.info("New pdg region create: " + id);
 		
 	}
 	

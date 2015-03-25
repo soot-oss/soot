@@ -26,6 +26,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import soot.*;
 
@@ -44,6 +47,8 @@ import soot.options.Options;
  */
 public class BriefUnitGraph extends UnitGraph
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BriefUnitGraph.class);
     /**
      *   Constructs a BriefUnitGraph given a Body instance.
      *   @param body The underlying body we want to make a 

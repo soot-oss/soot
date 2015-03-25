@@ -29,6 +29,9 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
@@ -36,6 +39,8 @@ import java.util.*;
 
 public class BDup1_x1Inst extends BDupInst implements Dup1_x1Inst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BDup1_x1Inst.class);
 
     private final Type mOpType;
     private final Type mUnderType;

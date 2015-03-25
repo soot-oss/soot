@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.pag;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,6 +32,8 @@ import soot.Type;
  * @author Ondrej Lhotak
  */
 public class LocalVarNode extends VarNode {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalVarNode.class);
     public ContextVarNode context( Object context ) 
     { return cvns == null ? null : cvns.get( context ); }
 

@@ -32,12 +32,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BSwapInst extends AbstractInst implements SwapInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BSwapInst.class);
 
     protected Type mFromType, mToType;
     

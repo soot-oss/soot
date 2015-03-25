@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand.pautil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.spark.pag.VarNode;
 
 /**

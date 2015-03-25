@@ -26,6 +26,9 @@
 
 package soot.jimple.toolkits.typing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.options.Options;
 
@@ -38,6 +41,8 @@ import java.util.*;
  **/
 public class ClassHierarchy
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ClassHierarchy.class);
   /** Map: Scene -> ClassHierarchy **/
   
   public final TypeNode OBJECT;

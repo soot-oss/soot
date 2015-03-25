@@ -18,10 +18,15 @@
  */
 
 package soot.jimple.toolkits.pointer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.tagkit.*;
 
 public class DependenceTag implements Tag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DependenceTag.class);
     private final static String NAME = "DependenceTag";
     protected short read = -1;
     protected short write = -1;

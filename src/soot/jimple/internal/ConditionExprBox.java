@@ -30,11 +30,16 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
 public class ConditionExprBox extends AbstractValueBox
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ConditionExprBox.class);
     public ConditionExprBox(Value value)
     {
         setValue(value);

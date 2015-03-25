@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 
@@ -18,6 +21,8 @@ import soot.jimple.toolkits.infoflow.*;
 
 public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LockableReferenceAnalysis.class);
 	UnitGraph graph;
 	SootMethod method;
 	CriticalSectionAwareSideEffectAnalysis tasea;
@@ -54,7 +59,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 		G.v().out.print("[wjtp.tn] ");
 		for(int i = 0; i < analyzing.size() - 1; i++) 
 			G.v().out.print("  ");
-		G.v().out.println(msg);
+		logger.info(msg);
 	}
 
 	public List<EquivalentValue> getLocksetOf(CriticalSectionAwareSideEffectAnalysis tasea, RWSet contributingRWSet, CriticalSection tn)

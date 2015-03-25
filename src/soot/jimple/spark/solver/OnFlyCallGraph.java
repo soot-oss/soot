@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.solver;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.sets.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -32,6 +35,8 @@ import soot.util.queue.*;
  */
 
 public class OnFlyCallGraph {
+
+	private static final Logger logger =LoggerFactory.getLogger(OnFlyCallGraph.class);
     private final OnFlyCallGraphBuilder ofcgb;
     private final ReachableMethods reachableMethods;
     private final QueueReader<MethodOrMethodContext> reachablesReader;

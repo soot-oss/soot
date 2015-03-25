@@ -29,12 +29,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BCmpgInst extends AbstractOpTypeInst implements CmpgInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BCmpgInst.class);
     public BCmpgInst(Type opType)
     {
         super(opType);

@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.infoflow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 
@@ -9,6 +12,8 @@ import java.util.*;
 
 public class AbstractDataSource implements Value
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AbstractDataSource.class);
 	Object sourcename;
 	
 	public AbstractDataSource(Object sourcename)

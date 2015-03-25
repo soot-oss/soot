@@ -26,6 +26,9 @@
 
 package soot.jimple.toolkits.typing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.options.Options;
@@ -45,6 +48,8 @@ import java.io.*;
 @Deprecated
 public class TypeResolverBV
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(TypeResolverBV.class);
   /** Reference to the class hierarchy **/
   private final ClassHierarchy hierarchy;
 
@@ -103,7 +108,7 @@ public class TypeResolverBV
 	
 	if(DEBUG)
 	  {
-	    G.v().out.println("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
+	    logger.info("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
 	  }
       }
     
@@ -175,7 +180,7 @@ public class TypeResolverBV
   {
     if(DEBUG)
       {
-	G.v().out.println(stmtBody.getMethod());
+	logger.info(stmtBody.getMethod().toString());
       }
 
     try
@@ -188,7 +193,7 @@ public class TypeResolverBV
       if(DEBUG)
         {
           e1.printStackTrace();
-          G.v().out.println("Step 1 Exception-->" + e1.getMessage());
+          logger.info("Step 1 Exception-->" + e1.getMessage());
         }
     
       try
@@ -201,7 +206,7 @@ public class TypeResolverBV
           if(DEBUG)
             {
           e2.printStackTrace();
-          G.v().out.println("Step 2 Exception-->" + e2.getMessage());
+          logger.info("Step 2 Exception-->" + e2.getMessage());
             }
           
           try
@@ -227,11 +232,11 @@ public class TypeResolverBV
     if(DEBUG)
       {
 	int count = 0;
-	G.v().out.println("**** START:" + message);
+	logger.info("**** START:" + message);
 	for (TypeVariableBV var : typeVariableList) {
-	    G.v().out.println(count++ + " " + var);
+	    logger.info(count++ + " " + var);
 	  }
-	G.v().out.println("**** END:" + message);
+	logger.info("**** END:" + message);
       }
   }
 
@@ -239,12 +244,12 @@ public class TypeResolverBV
   {
     if(DEBUG)
       {
-	G.v().out.println("-- Body Start --");
+	logger.info("-- Body Start --");
 	for( Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
 	    final Stmt stmt = (Stmt) stmtIt.next();
-	    G.v().out.println(stmt);
+	    logger.info(stmt.toString());
 	  }
-	G.v().out.println("-- Body End --");
+	logger.info("-- Body End --");
       }
   }
 
@@ -330,7 +335,7 @@ public class TypeResolverBV
 	collector.collect(stmt, stmtBody);
 	if(DEBUG)
 	  {
-	    G.v().out.println(stmt);
+	    logger.info(stmt.toString());
 	  }
       }
   }
@@ -349,7 +354,7 @@ public class TypeResolverBV
 	collector.collect(stmt, stmtBody);
 	if(DEBUG)
 	  {
-	    G.v().out.println(stmt);
+	    logger.info(stmt.toString());
 	  }
       }
   }
@@ -637,7 +642,7 @@ public class TypeResolverBV
 			  {
 			    if(DEBUG)
 			      {
-				G.v().out.println
+				logger.info
 				  ("==++==" +
 				   stmtBody.getMethod().getDeclaringClass().getName() + "." + 
 				   stmtBody.getMethod().getName());
@@ -762,7 +767,7 @@ public class TypeResolverBV
 	       (local.getType() != null) &&
 	       !local.getType().equals(var.approx().type()))
 	      {
-		G.v().out.println("local: " + local + ", type: " + local.getType() + ", approx: " + var.approx().type());
+		logger.info("local: " + local + ", type: " + local.getType() + ", approx: " + var.approx().type());
 	      }
 	  }
       }
@@ -812,7 +817,7 @@ public class TypeResolverBV
 	  {
 	    if(DEBUG)
 	      {
-		G.v().out.println(s);
+		logger.info(s.toString());
 	      }
 	    throw e;
 	  }
@@ -845,7 +850,7 @@ public class TypeResolverBV
 	  {
 	    if(DEBUG)
 	      {
-		G.v().out.println(s);
+		logger.info(s.toString());
 	      }
 	    throw e;
 	  }
@@ -1038,7 +1043,7 @@ public class TypeResolverBV
 			    else if(assign.getRightOp() instanceof NewExpr)
 			      {			
 				// We split the local.
-				//G.v().out.println("split: [" + assign + "] and [" + stmt + "]");
+				//logger.info("split: [" + assign + "] and [" + stmt + "]");
 				Local newlocal = Jimple.v().newLocal("tmp", null);
 				stmtBody.getLocals().add(newlocal);
 				

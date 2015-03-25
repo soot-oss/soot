@@ -20,6 +20,9 @@
 
 package soot.dava.internal.AST;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.dava.internal.asg.*;
@@ -28,6 +31,8 @@ import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTStatementSequenceNode extends ASTNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ASTStatementSequenceNode.class);
     private List<Object> statementSequence;
 
     public ASTStatementSequenceNode( List<Object> statementSequence)

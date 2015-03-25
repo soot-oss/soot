@@ -18,12 +18,17 @@
  */
 package soot.toolkits.graph.pdg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * This represents a loop in the PDG.
  *
  */
 public class LoopedPDGNode extends PDGNode{
+
+	private static final Logger logger =LoggerFactory.getLogger(LoopedPDGNode.class);
 	
 	protected PDGNode m_header = null;
 	protected PDGNode m_body = null;

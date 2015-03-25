@@ -27,9 +27,14 @@
 /* @author Feng Qian */
 
 package soot.util.dot;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.*;
 
 public class DotGraphUtility {
+
+	private static final Logger logger =LoggerFactory.getLogger(DotGraphUtility.class);
 
   /* replace any " to \" in the string */
   public static String replaceQuotes(String original){
@@ -50,8 +55,8 @@ public class DotGraphUtility {
     }
 
     /*
-    G.v().out.println("before "+original);
-    G.v().out.println("after  "+(new String(newsrc)));
+    logger.info("before "+original);
+    logger.info("after  "+(new String(newsrc)));
     */
 
     return new String(newsrc);
@@ -78,8 +83,8 @@ public class DotGraphUtility {
     }
 
     /*
-    G.v().out.println("before "+original);
-    G.v().out.println("after  "+(new String(newsrc)));
+    logger.info("before "+original);
+    logger.info("after  "+(new String(newsrc)));
     */
 
     return new String(newsrc);    

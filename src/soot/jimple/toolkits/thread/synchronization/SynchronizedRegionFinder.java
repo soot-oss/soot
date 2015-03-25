@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -18,6 +21,8 @@ import soot.toolkits.graph.*;
  */
 public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SynchronizedRegionFinder.class);
     FlowSet emptySet = new ArraySparseSet();
 
     Map unitToGenerateSet;
@@ -146,7 +151,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
         		prepUnits.add(unit);
         		if(optionPrintDebug)
         		{
-        			G.v().out.println("prep: " + unit.toString());
+        			logger.info("prep: " + unit.toString());
         		}
         		return;
         	}
@@ -319,7 +324,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
 			{
 	        	G.v().out.print("[0,0] ");
 			}
-			G.v().out.println(unit.toString());
+			logger.info(unit.toString());
 			
 			// If this unit is an invoke statement calling a library function and the R/W sets are huge, print out the targets
 			if(stmt.containsInvokeExpr() && 
@@ -328,9 +333,9 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
 				{
 					if(stmtRead.size() < 25 && stmtWrite.size() < 25)
 					{
-						G.v().out.println("        Read/Write Set for LibInvoke:");
-						G.v().out.println("Read Set:(" + stmtRead.size() + ")" + stmtRead.toString().replaceAll("\n", "\n        "));
-						G.v().out.println("Write Set:(" + stmtWrite.size() + ")" + stmtWrite.toString().replaceAll("\n", "\n        "));
+						logger.info("        Read/Write Set for LibInvoke:");
+						logger.info("Read Set:(" + stmtRead.size() + ")" + stmtRead.toString().replaceAll("\n", "\n        "));
+						logger.info("Write Set:(" + stmtWrite.size() + ")" + stmtWrite.toString().replaceAll("\n", "\n        "));
 					}
 				}
 		}
@@ -346,7 +351,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
 				newTn.origLock = ((EnterMonitorStmt) stmt).getOp();
 				
         	if(optionPrintDebug)
-        		G.v().out.println("Transaction found in method: " + newTn.method.toString());
+        		logger.info("Transaction found in method: " + newTn.method.toString());
 			out.add(new SynchronizedRegionFlowPair(newTn, true));
 			
 			// This is a really stupid way to find out which prep applies to this txn.

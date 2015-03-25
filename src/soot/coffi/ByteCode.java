@@ -30,13 +30,16 @@
 
 
 package soot.coffi;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 /** Procedural code for parsing and otherwise handling bytecode.
  * @author Clark Verbrugge
  */
 class ByteCode {
-
+	final static Logger logger = LoggerFactory.getLogger(ByteCode.class);
    public static final int NOP = 0;
    public static final int ACONST_NULL = 1;
    public static final int ICONST_M1 = 2;
@@ -998,7 +1001,7 @@ class ByteCode {
       default:
          //int j;
          //j = ((int)b)&0xff;
-         //G.v().out.println("Unknown instruction op=" + j +
+         //logger.info("Unknown instruction op=" + j +
          //                   " at offset " + index);
          i = (Instruction)new Instruction_Unknown(b);
          break;
@@ -1082,7 +1085,7 @@ class ByteCode {
          else if (i>9) pref = "  ";
          else pref = "   ";
          G.v().out.print(pref + i + ": ");
-         G.v().out.println(j.toString(constant_pool));
+         logger.info(j.toString(constant_pool));
          i = j.nextOffset(i);
          j = j.next;
       }

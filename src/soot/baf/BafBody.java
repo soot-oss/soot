@@ -28,6 +28,9 @@
 
 
 package soot.baf;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 import soot.*;
 import soot.jimple.*;
@@ -36,6 +39,8 @@ import java.util.*;
 
 public class BafBody extends Body
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BafBody.class);
     public Object clone()
     {
         Body b = new BafBody(getMethod());
@@ -53,7 +58,7 @@ public class BafBody extends Body
         super(body.getMethod());
 
         if(Options.v().verbose())
-            G.v().out.println("[" + getMethod().getName() + "] Constructing BafBody...");
+            logger.info("[" + getMethod().getName() + "] Constructing BafBody...");
 
         if (!(body instanceof JimpleBody))
             throw new RuntimeException("Can only construct BafBody's directly"

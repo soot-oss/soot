@@ -19,6 +19,9 @@
 
 package soot.shimple.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import soot.options.*;
@@ -48,6 +51,8 @@ import soot.shimple.toolkits.scalar.SEvaluator.BottomConstant;
  **/
 public class SConstantPropagatorAndFolder extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SConstantPropagatorAndFolder.class);
     public SConstantPropagatorAndFolder(Singletons.Global g) {}
 
     public static SConstantPropagatorAndFolder v()
@@ -71,7 +76,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
         debug |= sb.getOptions().debug();
         
         if (Options.v().verbose())
-            G.v().out.println("[" + sb.getMethod().getName() +
+            logger.info("[" + sb.getMethod().getName() +
                               "] Propagating and folding constants (SSA)...");
 
         // *** FIXME: What happens when Shimple is built with another UnitGraph?
@@ -120,7 +125,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
                         ((UnitBoxOwner)defSrc).clearUnitBoxes();
                 }
                 else if(debug)
-                    G.v().out.println("Warning: Couldn't propagate constant " + constant + " to box " + defSrcBox.getValue() + " in unit " + stmt);
+                    logger.info("Warning: Couldn't propagate constant " + constant + " to box " + defSrcBox.getValue() + " in unit " + stmt);
             }
             
             // update uses
@@ -134,7 +139,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
                     if(useBox.canContainValue(constant))
                        useBox.setValue(constant);
                     else if(debug)
-                        G.v().out.println("Warning: Couldn't propagate constant " + constant + " to box " + useBox.getValue() + " in unit " + pair.getUnit());
+                        logger.info("Warning: Couldn't propagate constant " + constant + " to box " + useBox.getValue() + " in unit " + pair.getUnit());
                 }
             }
         }

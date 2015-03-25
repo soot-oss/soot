@@ -25,6 +25,9 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -46,6 +49,8 @@ import soot.validation.ValidationException;
 /** Implementation of the Body class for the Jimple IR. */
 public class JimpleBody extends StmtBody
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JimpleBody.class);
 	private static BodyValidator[] validators;
 	
 	/**

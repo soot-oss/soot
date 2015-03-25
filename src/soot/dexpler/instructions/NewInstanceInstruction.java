@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static soot.dexpler.Util.dottedClassName;
 
 import java.util.HashSet;
@@ -48,7 +51,9 @@ import soot.jimple.Jimple;
 import soot.jimple.NewExpr;
 
 public class NewInstanceInstruction extends DexlibAbstractInstruction {
-	final static Logger logger = LoggerFactory.getLogger(NewInstanceInstruction.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(NewInstanceInstruction.class);
+
     AssignStmt assign = null;
 
     public NewInstanceInstruction (Instruction instruction, int codeAdress) {

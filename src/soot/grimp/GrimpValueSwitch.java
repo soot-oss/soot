@@ -27,6 +27,9 @@
 
 package soot.grimp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.*;
 
 public interface GrimpValueSwitch extends JimpleValueSwitch

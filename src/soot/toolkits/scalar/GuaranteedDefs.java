@@ -19,6 +19,9 @@
 
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -33,12 +36,14 @@ import soot.toolkits.graph.*;
  **/
 public class GuaranteedDefs
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GuaranteedDefs.class);
     protected Map<Unit, List> unitToGuaranteedDefs;
 
     public GuaranteedDefs(UnitGraph graph)
     {
         if(Options.v().verbose())
-            G.v().out.println("[" + graph.getBody().getMethod().getName() +
+            logger.info("[" + graph.getBody().getMethod().getName() +
                                "]     Constructing GuaranteedDefs...");
 
         GuaranteedDefsAnalysis analysis = new GuaranteedDefsAnalysis(graph);

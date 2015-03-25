@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand.genericutil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A FIFO queue of objects, implemented as a
  * circular buffer.  NOTE: elements stored in the

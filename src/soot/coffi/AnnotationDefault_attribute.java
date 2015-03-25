@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** There should be at most one AnnotationDefault attribute in 
  * every method
  * indicating the default value of the element represented by the
@@ -40,6 +43,8 @@ package soot.coffi;
  * @author Jennifer Lhotak
  */
 public class AnnotationDefault_attribute extends attribute_info {
+
+	private static final Logger logger =LoggerFactory.getLogger(AnnotationDefault_attribute.class);
    /** Default value. */
    public element_value default_value;
 }

@@ -20,6 +20,9 @@
 
 package soot.dava.internal.AST;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.*;
 import soot.dava.internal.SET.*;
@@ -27,6 +30,8 @@ import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTUnconditionalLoopNode extends ASTLabeledNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ASTUnconditionalLoopNode.class);
     private List<Object> body;
 
     public ASTUnconditionalLoopNode( SETNodeLabel label, List<Object> body)

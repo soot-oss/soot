@@ -18,6 +18,9 @@
  */
 package soot.toolkits.graph.pdg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.ArrayList;
 import java.util.Enumeration;
@@ -81,6 +84,8 @@ import soot.toolkits.graph.pdg.IRegion;
  */
 
 public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode, String> implements ProgramDependenceGraph {
+
+	private static final Logger logger =LoggerFactory.getLogger(HashMutablePDG.class);
 	
 	protected Body m_body = null;
 	protected SootClass m_class = null;

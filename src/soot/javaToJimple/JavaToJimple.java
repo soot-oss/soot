@@ -18,11 +18,16 @@
  */
 
 package soot.javaToJimple;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import polyglot.frontend.*;
 import java.util.*;
 import java.io.*;
 
 public class JavaToJimple {
+
+	private static final Logger logger =LoggerFactory.getLogger(JavaToJimple.class);
 	
     public static final polyglot.frontend.Pass.ID CAST_INSERTION = new polyglot.frontend.Pass.ID("cast-insertion");
     public static final polyglot.frontend.Pass.ID STRICTFP_PROP = new polyglot.frontend.Pass.ID("strictfp-prop");

@@ -35,6 +35,9 @@
 
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.toolkits.graph.*;
 import java.util.*;

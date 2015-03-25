@@ -26,11 +26,16 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A MethodSource for methods that don't know where to get Body's from. 
  * @see soot.jimple.JimpleMethodSource
  * @see soot.coffi.CoffiMethodSource */
 public class UnknownMethodSource implements MethodSource
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(UnknownMethodSource.class);
     UnknownMethodSource()
     {
     }

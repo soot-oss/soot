@@ -19,6 +19,9 @@
 
 package soot.dava.internal.SET;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.util.*;
@@ -28,6 +31,8 @@ import soot.dava.toolkits.base.finders.*;
 
 public class SETSynchronizedBlockNode extends SETNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SETSynchronizedBlockNode.class);
     private Value local;
 
     public SETSynchronizedBlockNode( ExceptionNode en, Value local)

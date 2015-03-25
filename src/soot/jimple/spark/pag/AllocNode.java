@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.pag;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -36,6 +39,8 @@ import soot.options.CGOptions;
  * @author Ondrej Lhotak
  */
 public class AllocNode extends Node implements Context {
+
+	private static final Logger logger =LoggerFactory.getLogger(AllocNode.class);
     /** Returns the new expression of this allocation site. */
     public Object getNewExpr() { return newExpr; }
     /** Returns all field ref nodes having this node as their base. */

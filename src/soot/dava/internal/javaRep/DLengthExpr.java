@@ -19,12 +19,17 @@
 
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class DLengthExpr extends AbstractLengthExpr implements Precedence
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DLengthExpr.class);
     public DLengthExpr(Value op)
     {
         super(Grimp.v().newObjExprBox(op));

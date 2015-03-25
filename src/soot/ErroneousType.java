@@ -28,7 +28,10 @@
 
 
 package soot;
-import soot.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.util.Switch;
 
 /**
  *   Soot representation used for untypable objects. Implemented as
@@ -37,6 +40,8 @@ import soot.util.*;
 @SuppressWarnings("serial")
 public class ErroneousType extends Type
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ErroneousType.class);
     public ErroneousType( Singletons.Global g ) {}
     public static ErroneousType v() { return G.v().soot_ErroneousType(); }
 

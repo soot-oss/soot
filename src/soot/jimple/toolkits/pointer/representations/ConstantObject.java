@@ -30,6 +30,9 @@
 
 package soot.jimple.toolkits.pointer.representations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class ConstantObject implements AbstractObject {
   public String toString(){
     return "constantobject";

@@ -18,7 +18,12 @@
  */
 package soot.jimple.spark.ondemand;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @SuppressWarnings("serial")
 public class CallSiteException extends RuntimeException {
+
+	private static final Logger logger =LoggerFactory.getLogger(CallSiteException.class);
 
 }

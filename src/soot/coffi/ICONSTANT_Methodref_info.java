@@ -19,6 +19,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A {@link CONSTANT_Methodref_info} or {@link CONSTANT_InterfaceMethodref_info}.
  */

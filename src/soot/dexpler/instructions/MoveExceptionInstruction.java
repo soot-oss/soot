@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 import org.slf4j.Logger;
@@ -40,7 +43,9 @@ import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
 
 public class MoveExceptionInstruction extends DexlibAbstractInstruction implements RetypeableInstruction {
-	final static Logger logger = LoggerFactory.getLogger(MoveExceptionInstruction.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(MoveExceptionInstruction.class);
+
     private Type realType;
     private IdentityStmt stmtToRetype;
     

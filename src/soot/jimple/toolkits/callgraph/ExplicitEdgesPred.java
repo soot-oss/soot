@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A predicate that accepts edges that are the result of an explicit invoke.
  * @author Ondrej Lhotak
  */

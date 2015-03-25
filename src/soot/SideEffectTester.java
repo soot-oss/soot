@@ -26,6 +26,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Provides side effect information. 
  * Presumably, different side-effect information can be computed by
  * different implementations of this interface. */

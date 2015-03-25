@@ -1,6 +1,9 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -36,7 +39,9 @@ import org.slf4j.LoggerFactory;
 
 public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 {
-	final static Logger logger = LoggerFactory.getLogger(SynchObliviousMhpAnalysis.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(SynchObliviousMhpAnalysis.class);
+
 
 	List<AbstractRuntimeThread> threadList;
 	boolean optionPrintDebug;
@@ -89,18 +94,18 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 		CallGraph callGraph = Scene.v().getCallGraph();
 
 		// Get a call graph trimmed to contain only the relevant methods (non-lib, non-native)
-//		G.v().out.println("    MHP: PegCallGraph");
+//		logger.info("    MHP: PegCallGraph");
 		PegCallGraph pecg = new PegCallGraph(callGraph);
 	    
 	    // Find allocation nodes that are run more than once
 	    // Also find methods that are run more than once
-//		G.v().out.println("    MHP: AllocNodesFinder");
+//		logger.info("    MHP: AllocNodesFinder");
 		AllocNodesFinder anf = new AllocNodesFinder(pecg, callGraph, (PAG) pta);
 		Set<AllocNode> multiRunAllocNodes = anf.getMultiRunAllocNodes();
 		Set<SootMethod> multiCalledMethods = anf.getMultiCalledMethods();
 
 		// Find Thread.start() and Thread.join() statements (in live code)
-//		G.v().out.println("    MHP: StartJoinFinder");
+//		logger.info("    MHP: StartJoinFinder");
 		StartJoinFinder sjf = new StartJoinFinder(callGraph, (PAG) pta); // does analysis
 		Map<Stmt, List<AllocNode>> startToAllocNodes = sjf.getStartToAllocNodes();
 		Map<Stmt, List<SootMethod>> startToRunMethods = sjf.getStartToRunMethods();
@@ -108,7 +113,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 		Map<Stmt, Stmt> startToJoin = sjf.getStartToJoin();
 		
 		// Build MHP Lists
-//		G.v().out.println("    MHP: Building MHP Lists");
+//		logger.info("    MHP: Building MHP Lists");
 		List<AbstractRuntimeThread> runAtOnceCandidates = new ArrayList<AbstractRuntimeThread>();
 		Iterator threadIt = startToRunMethods.entrySet().iterator();
 		int threadNum = 0;
@@ -284,7 +289,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 			methodNum++;
 		}
 		if(optionPrintDebug)
-			G.v().out.println(mainThread.toString());
+			logger.info(mainThread.toString());
 			
 		// Revisit the containing methods of start-join pairs that are non-reentrant but might be called in parallel
 		boolean addedNew = true;
@@ -303,7 +308,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 					someThread.setRunsMany();
 					it.remove();
 					if(optionPrintDebug)
-						G.v().out.println(someThread.toString());
+						logger.info(someThread.toString());
 					addedNew = true;
 				}
 			}
@@ -326,7 +331,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 				return true; // not started...
 
 			// Wait until finished
-			G.v().out.println("[mhp] waiting for analysis thread to finish");
+			logger.info("[mhp] waiting for analysis thread to finish");
 			try
 			{
 				self.join();
@@ -348,7 +353,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 				return true; // not started...
 
 			// Wait until finished
-			G.v().out.println("[mhp] waiting for thread to finish");
+			logger.info("[mhp] waiting for thread to finish");
 			try
 			{
 				self.join();
@@ -394,7 +399,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 				return; // not run... do nothing
 
 			// Wait until finished
-			G.v().out.println("[mhp] waiting for thread to finish");
+			logger.info("[mhp] waiting for thread to finish");
 			try
 			{
 				self.join();
@@ -407,16 +412,16 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 
 		List<AbstractRuntimeThread> threads = new ArrayList<AbstractRuntimeThread>();
 		int size = threadList.size();
-		G.v().out.println("[mhp]");
+		logger.info("[mhp]");
 		for(int i = 0; i < size; i++)
 		{
 			if( !threads.contains(threadList.get(i)) )
 			{
-				G.v().out.println("[mhp] " + 
+				logger.info("[mhp] " + 
 					threadList.get(i).toString().replaceAll(
 						"\n", "\n[mhp] ").replaceAll(
 						">,",">\n[mhp]  "));
-				G.v().out.println("[mhp]");
+				logger.info("[mhp]");
 			}
 			threads.add(threadList.get(i));
 		}
@@ -430,7 +435,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 				return null; // not run... do nothing
 
 			// Wait until finished
-			G.v().out.println("[mhp] waiting for thread to finish");
+			logger.info("[mhp] waiting for thread to finish");
 			try
 			{
 				self.join();
@@ -468,7 +473,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 				return null; // not run... do nothing
 
 			// Wait until finished
-			G.v().out.println("[mhp] waiting for thread to finish");
+			logger.info("[mhp] waiting for thread to finish");
 			try
 			{
 				self.join();

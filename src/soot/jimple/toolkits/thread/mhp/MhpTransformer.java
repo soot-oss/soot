@@ -1,6 +1,9 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 /**
@@ -8,6 +11,8 @@ import java.util.*;
  */
 
 public class MhpTransformer extends SceneTransformer{
+
+	private static final Logger logger =LoggerFactory.getLogger(MhpTransformer.class);
     public MhpTransformer(Singletons.Global g){}
     public static MhpTransformer v() 
 	{ 

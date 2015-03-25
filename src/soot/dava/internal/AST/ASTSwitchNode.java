@@ -20,6 +20,9 @@
 
 package soot.dava.internal.AST;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 
@@ -30,6 +33,8 @@ import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTSwitchNode extends ASTLabeledNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ASTSwitchNode.class);
     private ValueBox keyBox;
     private List<Object> indexList;
     private Map<Object, List<Object>> index2BodyList;

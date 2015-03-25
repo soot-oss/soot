@@ -19,7 +19,12 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CommaJBB extends AbstractJimpleBodyBuilder{
+
+	private static final Logger logger =LoggerFactory.getLogger(CommaJBB.class);
 
     public CommaJBB(){
         //ext(null);

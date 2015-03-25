@@ -31,12 +31,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GNegExpr extends AbstractNegExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GNegExpr.class);
     public GNegExpr(Value op) { super(Grimp.v().newExprBox(op)); }
         
     public Object clone()  

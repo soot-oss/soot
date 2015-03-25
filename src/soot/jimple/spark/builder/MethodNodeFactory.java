@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.builder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.*;
 import soot.jimple.*;
 import soot.*;
@@ -29,6 +32,8 @@ import soot.shimple.*;
  * @author Ondrej Lhotak
  */
 public class MethodNodeFactory extends AbstractShimpleValueSwitch {
+
+	private static final Logger logger =LoggerFactory.getLogger(MethodNodeFactory.class);
     public MethodNodeFactory( PAG pag, MethodPAG mpag ) {
 	this.pag = pag;
 	this.mpag = mpag;

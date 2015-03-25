@@ -18,6 +18,9 @@
  */
 
 package soot.jimple;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import soot.*;
@@ -29,6 +32,8 @@ import java.io.*;
  * @author Ondrej Lhotak
  */
 public class ReachingTypeDumper {
+
+	private static final Logger logger =LoggerFactory.getLogger(ReachingTypeDumper.class);
     private static class StringComparator<T> implements Comparator<T> {
         public int compare( T o1, T o2 ) {
             return o1.toString().compareTo( o2.toString() );

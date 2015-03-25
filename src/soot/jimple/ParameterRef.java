@@ -29,6 +29,9 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 
@@ -41,6 +44,8 @@ import java.util.*;
  * often be <code> this := @parameter0; </code> */
 public class ParameterRef implements IdentityRef
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ParameterRef.class);
     int n;
     Type paramType;
 

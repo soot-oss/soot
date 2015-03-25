@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.Opcode;
 
 import soot.jimple.Stmt;

@@ -31,6 +31,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +48,8 @@ import soot.jimple.InvokeExpr;
 @SuppressWarnings("serial")
 abstract public class AbstractInvokeExpr implements InvokeExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AbstractInvokeExpr.class);
     protected SootMethodRef methodRef;
     final protected ValueBox[] argBoxes;
     

@@ -18,7 +18,10 @@
  */
 
 package soot;
-import soot.jimple.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.jimple.AnyNewExpr;
 
 /** A generic interface to an escape analysis.
  * @author Ondrej Lhotak

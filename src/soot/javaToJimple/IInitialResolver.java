@@ -18,6 +18,9 @@
  */
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,6 +35,8 @@ public interface IInitialResolver {
 	public Dependencies resolveFromJavaFile(SootClass sc);
 	
 	public class Dependencies {
+
+	private static final Logger logger =LoggerFactory.getLogger(Dependencies.class);
 		public final Set<Type> typesToHierarchy, typesToSignature;
 		public Dependencies() {
 			typesToHierarchy = new HashSet<Type>();

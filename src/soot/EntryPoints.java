@@ -18,8 +18,14 @@
  */
 
 package soot;
-import soot.util.*;
-import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import soot.util.NumberedString;
 
 
 /** Returns the various potential entry points of a Java program.

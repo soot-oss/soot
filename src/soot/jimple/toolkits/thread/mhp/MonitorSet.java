@@ -1,6 +1,9 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -22,7 +25,9 @@ import soot.toolkits.scalar.*;
 
 
 public class MonitorSet extends ArraySparseSet{
-	final static Logger logger = LoggerFactory.getLogger(MonitorSet.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(MonitorSet.class);
+
 
 	//    int size = 0;
 	

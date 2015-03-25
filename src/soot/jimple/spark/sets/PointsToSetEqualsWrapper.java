@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.sets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Set;
 
 import soot.PointsToSet;
@@ -30,6 +33,8 @@ import soot.jimple.ClassConstant;
  * @author Eric Bodden
  */
 public class PointsToSetEqualsWrapper implements PointsToSet {
+
+	private static final Logger logger =LoggerFactory.getLogger(PointsToSetEqualsWrapper.class);
 
     protected EqualsSupportingPointsToSet pts;
 

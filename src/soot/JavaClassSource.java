@@ -18,13 +18,15 @@
  */
 
 package soot;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.File;
 
 import polyglot.ast.Node;
-
 import soot.javaToJimple.IInitialResolver;
-import soot.javaToJimple.InitialResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.javaToJimple.InitialResolver;
 import soot.options.Options;
 import soot.toolkits.astmetrics.ComputeASTMetrics;
 
@@ -32,6 +34,8 @@ import soot.toolkits.astmetrics.ComputeASTMetrics;
  */
 public class JavaClassSource extends ClassSource
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JavaClassSource.class);
     public JavaClassSource( String className, File fullPath ) {
         super( className );
         this.fullPath = fullPath;
@@ -42,7 +46,7 @@ public class JavaClassSource extends ClassSource
     
     public Dependencies resolve( SootClass sc ) {
         if (Options.v().verbose())
-            G.v().out.println("resolving [from .java]: " + className);
+            logger.info("resolving [from .java]: " + className);
                     
         IInitialResolver resolver;
         if(Options.v().polyglot())
@@ -66,7 +70,7 @@ public class JavaClassSource extends ClassSource
 			//logger.info("CALLING COMPUTEASTMETRICS!!!!!!!");
 			Node ast = InitialResolver.v().getAst();
 			if(ast==null) {
-				G.v().out.println("No compatible AST available for AST metrics. Skipping. Try -polyglot option.");
+				logger.info("No compatible AST available for AST metrics. Skipping. Try -polyglot option.");
 			} else {
 				ComputeASTMetrics metrics = new ComputeASTMetrics(ast);
 				metrics.apply();

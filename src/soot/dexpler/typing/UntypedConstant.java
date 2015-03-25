@@ -1,5 +1,8 @@
 package soot.dexpler.typing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Type;
 import soot.jimple.Constant;
 import soot.util.Switch;

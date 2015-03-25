@@ -26,6 +26,9 @@
  */
 
 package soot.jimple.toolkits.annotation.purity;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 import java.util.*;
@@ -36,6 +39,8 @@ import java.util.*;
  */
 public class PurityMethodNode implements PurityNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PurityMethodNode.class);
     /** Method that created the node */
     private SootMethod id;
 

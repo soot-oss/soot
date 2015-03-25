@@ -18,12 +18,22 @@
  */
 
 package soot;
-import soot.jimple.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.IdentityRef;
+import soot.jimple.Jimple;
+import soot.jimple.ParameterRef;
+import soot.jimple.Stmt;
+import soot.jimple.ThisRef;
 
 /**
 * UnitPrinter implementation for normal (full) Jimple, Grimp, and Baf
 */
 public class BriefUnitPrinter extends LabeledUnitPrinter {
+
+	private static final Logger logger =LoggerFactory.getLogger(BriefUnitPrinter.class);
     public BriefUnitPrinter( Body body ) {
         super(body);
     }

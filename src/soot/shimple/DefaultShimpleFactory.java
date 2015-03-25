@@ -19,6 +19,9 @@
 
 package soot.shimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.shimple.toolkits.graph.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -31,6 +34,8 @@ import soot.toolkits.graph.*;
  **/
 public class DefaultShimpleFactory implements ShimpleFactory
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DefaultShimpleFactory.class);
     protected Body body;
     protected BlockGraph bg;
     protected UnitGraph ug;

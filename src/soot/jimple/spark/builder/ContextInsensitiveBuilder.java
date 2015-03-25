@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.builder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.*;
 import soot.jimple.toolkits.callgraph.*;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
@@ -36,6 +39,8 @@ import soot.options.*;
  * @author Ondrej Lhotak
  */
 public class ContextInsensitiveBuilder {
+
+	private static final Logger logger =LoggerFactory.getLogger(ContextInsensitiveBuilder.class);
     public void preJimplify() {
         boolean change = true;
         while( change ) {
@@ -93,9 +98,9 @@ public class ContextInsensitiveBuilder {
         }
 
         if( pag.getOpts().verbose() ) {
-            G.v().out.println( "Total methods: "+totalMethods );
-            G.v().out.println( "Initially reachable methods: "+analyzedMethods );
-            G.v().out.println( "Classes with at least one reachable method: "+classes );
+            logger.info( "Total methods: "+totalMethods );
+            logger.info( "Initially reachable methods: "+analyzedMethods );
+            logger.info( "Classes with at least one reachable method: "+classes );
         }
     }
 

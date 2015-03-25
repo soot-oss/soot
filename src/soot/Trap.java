@@ -26,7 +26,10 @@
 
 package soot;
 
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /** A trap (exception catcher), used within Body
  * classes.  Intermediate representations must use an implementation

@@ -1,5 +1,8 @@
 package soot.rtlib.tamiflex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -8,6 +11,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class SootSig {
+
+	private static final Logger logger =LoggerFactory.getLogger(SootSig.class);
 	
 	private static Map<Constructor<?>,String> constrCache = new ConcurrentHashMap<Constructor<?>, String>(); //TODO should be a map with soft keys, actually	
 	private static Map<Method,String> methodCache = new ConcurrentHashMap<Method, String>(); //TODO should be a map with soft keys, actually	

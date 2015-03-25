@@ -1,5 +1,8 @@
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Modifier;
 import java.util.Collections;
 import java.util.HashSet;
@@ -41,6 +44,8 @@ import soot.util.Chain;
  * @author Steven Arzt
  */
 public class ConstantValueToInitializerTransformer extends SceneTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(ConstantValueToInitializerTransformer.class);
 	
     public static ConstantValueToInitializerTransformer v() {
         return new ConstantValueToInitializerTransformer();

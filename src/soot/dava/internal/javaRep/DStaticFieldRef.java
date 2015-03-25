@@ -20,11 +20,16 @@
 
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
 public class DStaticFieldRef extends StaticFieldRef 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DStaticFieldRef.class);
     private boolean supressDeclaringClass;
 
     public void toString( UnitPrinter up ) {

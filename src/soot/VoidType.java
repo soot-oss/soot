@@ -25,12 +25,17 @@
 
 
 package soot;
-import soot.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.util.Switch;
 
 /** Represents the Java void type. */
 @SuppressWarnings("serial")
 public class VoidType extends Type
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(VoidType.class);
     public VoidType( Singletons.Global g ) {}
     public static VoidType v() { return G.v().soot_VoidType(); }
 

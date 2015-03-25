@@ -20,6 +20,9 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.toolkits.graph.*;
@@ -96,13 +99,13 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 /*
     {
         if (true) {
-            G.v().out.println();
-            G.v().out.println();
-            G.v().out.println("BranchedRefVarsAnalysis:");
-            G.v().out.println("     isNotConservative = "+isNotConservative);
-            G.v().out.println("            isBranched = "+isBranched);
-            G.v().out.println("        careForAliases = "+careForAliases);
-            G.v().out.println("    careForMethodCalls = "+careForMethodCalls);
+            
+            
+            logger.info("BranchedRefVarsAnalysis:");
+            logger.info("     isNotConservative = "+isNotConservative);
+            logger.info("            isBranched = "+isBranched);
+            logger.info("        careForAliases = "+careForAliases);
+            logger.info("    careForMethodCalls = "+careForMethodCalls);
         }
     } // end 
 */
@@ -454,7 +457,7 @@ public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
         refTypeValues.addAll(refTypeInstFields);
         refTypeValues.addAll(refTypeStaticFields);
         
-        // G.v().out.println("Analyzed references: " + refTypeValues);
+        // logger.info("Analyzed references: " + refTypeValues);
     } // end initRefTypeLists 
     
     private void initRefTypeLists( ValueBox box ) {

@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.infoflow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -14,6 +17,8 @@ import soot.jimple.*;
 
 public class ClassLocalObjectsAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ClassLocalObjectsAnalysis.class);
 	boolean printdfgs;
 
 	LocalObjectsAnalysis loa;
@@ -76,27 +81,27 @@ public class ClassLocalObjectsAnalysis
 		
 		if(true) // verbose)
 		{
-			G.v().out.println("[local-objects] Analyzing local objects for " + sootClass);
-			G.v().out.println("[local-objects]   preparing class             " + new Date());
+			logger.info("[local-objects] Analyzing local objects for " + sootClass);
+			logger.info("[local-objects]   preparing class             " + new Date());
 		}
 		prepare();
 		
 		if(true) // verbose)
 		{
-			G.v().out.println("[local-objects]   analyzing class             " + new Date());
+			logger.info("[local-objects]   analyzing class             " + new Date());
 		}
 		doAnalysis();
 		
 		if(true) // verbose)
 		{
-			G.v().out.println("[local-objects]   propagating over call graph " + new Date());
+			logger.info("[local-objects]   propagating over call graph " + new Date());
 		}
 		propagate();
 
     	if(true)
     	{
-    		G.v().out.println("[local-objects]   finished at                 " + new Date());
-    		G.v().out.println("[local-objects]   (#analyzed/#encountered): " + SmartMethodInfoFlowAnalysis.counter + "/" + ClassInfoFlowAnalysis.methodCount);
+    		logger.info("[local-objects]   finished at                 " + new Date());
+    		logger.info("[local-objects]   (#analyzed/#encountered): " + SmartMethodInfoFlowAnalysis.counter + "/" + ClassInfoFlowAnalysis.methodCount);
     	}		
 	}
 	
@@ -247,7 +252,7 @@ public class ClassLocalObjectsAnalysis
 				
 				if(printdfgs && method.getDeclaringClass().isApplicationClass())
 				{
-					G.v().out.println("Attempting to print graphs (will succeed only if ./dfg/ is a valid path)");
+					logger.info("Attempting to print graphs (will succeed only if ./dfg/ is a valid path)");
 					DirectedGraph primitiveGraph = primitiveDfa.getMethodInfoFlowAnalysis(method).getMethodAbbreviatedInfoFlowGraph();
 					InfoFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName() + "_primitive", 
 						primitiveGraph, method.getName() + "_primitive", false);
@@ -263,7 +268,7 @@ public class ClassLocalObjectsAnalysis
 				
 				if(printdfgs && method.getDeclaringClass().isApplicationClass())
 				{
-					G.v().out.println("Attempting to print graph (will succeed only if ./dfg/ is a valid path)");
+					logger.info("Attempting to print graph (will succeed only if ./dfg/ is a valid path)");
 					DirectedGraph nonPrimitiveGraph = dfa.getMethodInfoFlowAnalysis(method).getMethodAbbreviatedInfoFlowGraph();
 					InfoFlowAnalysis.printGraphToDotFile("dfg/" + method.getDeclaringClass().getShortName() + "_" + method.getName(),
 						nonPrimitiveGraph, method.getName(), false);
@@ -293,7 +298,7 @@ public class ClassLocalObjectsAnalysis
 		while(changed)
 		{
 			changed = false;
-//			G.v().out.println("Starting iteration:");
+//			logger.info("Starting iteration:");
 			methodsIt = allMethods.iterator();
 			while(methodsIt.hasNext())
 			{
@@ -327,10 +332,10 @@ public class ClassLocalObjectsAnalysis
 					{
 //						if(!printedMethodHeading)
 //						{
-//							G.v().out.println("    Method: " + method.toString());
+//							logger.info("    Method: " + method.toString());
 //							printedMethodHeading = true;
 //						}
-//						G.v().out.println("        Field: " + localField.toString());
+//						logger.info("        Field: " + localField.toString());
 					}
 					while(sourcesAndSinksIt.hasNext())
 					{
@@ -361,7 +366,7 @@ public class ClassLocalObjectsAnalysis
 						if(fieldBecomesShared)
 						{
 //							if(localField.getDeclaringClass().isApplicationClass())
-//								G.v().out.println("            Source/Sink: " + sourceOrSinkRef.toString() + " is SHARED");
+//								logger.info("            Source/Sink: " + sourceOrSinkRef.toString() + " is SHARED");
 							localFieldsIt.remove();
 							sharedFields.add(localField);
 							changed = true;
@@ -370,7 +375,7 @@ public class ClassLocalObjectsAnalysis
 						else
 						{
 //							if(localField.getDeclaringClass().isApplicationClass())
-//								G.v().out.println("            Source: " + sourceRef.toString() + " is local");
+//								logger.info("            Source: " + sourceRef.toString() + " is local");
 						}
 					}
 				}
@@ -402,10 +407,10 @@ public class ClassLocalObjectsAnalysis
 					{
 //						if(!printedMethodHeading)
 //						{
-//							G.v().out.println("    Method: " + method.toString());
+//							logger.info("    Method: " + method.toString());
 //							printedMethodHeading = true;
 //						}
-//						G.v().out.println("        Field: " + localField.toString());
+//						logger.info("        Field: " + localField.toString());
 					}
 					while(sourcesAndSinksIt.hasNext())
 					{
@@ -436,7 +441,7 @@ public class ClassLocalObjectsAnalysis
 						if(fieldBecomesShared)
 						{
 //							if(localField.getDeclaringClass().isApplicationClass())
-//								G.v().out.println("            Source/Sink: " + sourceOrSinkRef.toString() + " is SHARED");
+//								logger.info("            Source/Sink: " + sourceOrSinkRef.toString() + " is SHARED");
 							localInnerFieldsIt.remove();
 							sharedInnerFields.add(localInnerField);
 							changed = true;
@@ -445,7 +450,7 @@ public class ClassLocalObjectsAnalysis
 						else
 						{
 //							if(localField.getDeclaringClass().isApplicationClass())
-//								G.v().out.println("            Source: " + sourceRef.toString() + " is local");
+//								logger.info("            Source: " + sourceRef.toString() + " is local");
 						}
 					}
 				}
@@ -455,38 +460,38 @@ public class ClassLocalObjectsAnalysis
 		// Print debug output
 		if(dfa.printDebug())
 		{
-			G.v().out.println("        Found local/shared fields for " + sootClass.toString());
-			G.v().out.println("          Local fields: ");
+			logger.info("        Found local/shared fields for " + sootClass.toString());
+			logger.info("          Local fields: ");
 			Iterator<SootField> localsToPrintIt = localFields.iterator();
 			while(localsToPrintIt.hasNext())
 			{
 				SootField localToPrint = localsToPrintIt.next();
 				if(localToPrint.getDeclaringClass().isApplicationClass())
-					G.v().out.println("                  " + localToPrint);
+					logger.info("                  " + localToPrint);
 			}
-			G.v().out.println("          Shared fields: ");
+			logger.info("          Shared fields: ");
 			Iterator<SootField> sharedsToPrintIt = sharedFields.iterator();
 			while(sharedsToPrintIt.hasNext())
 			{
 				SootField sharedToPrint = sharedsToPrintIt.next();
 				if(sharedToPrint.getDeclaringClass().isApplicationClass())
-					G.v().out.println("                  " + sharedToPrint);
+					logger.info("                  " + sharedToPrint);
 			}
-			G.v().out.println("          Local inner fields: ");
+			logger.info("          Local inner fields: ");
 			localsToPrintIt = localInnerFields.iterator();
 			while(localsToPrintIt.hasNext())
 			{
 				SootField localToPrint = localsToPrintIt.next();
 				if(localToPrint.getDeclaringClass().isApplicationClass())
-					G.v().out.println("                  " + localToPrint);
+					logger.info("                  " + localToPrint);
 			}
-			G.v().out.println("          Shared inner fields: ");
+			logger.info("          Shared inner fields: ");
 			sharedsToPrintIt = sharedInnerFields.iterator();
 			while(sharedsToPrintIt.hasNext())
 			{
 				SootField sharedToPrint = sharedsToPrintIt.next();
 				if(sharedToPrint.getDeclaringClass().isApplicationClass())
-					G.v().out.println("                  " + sharedToPrint);
+					logger.info("                  " + sharedToPrint);
 			}
 		}
 	}
@@ -506,7 +511,7 @@ public class ClassLocalObjectsAnalysis
 		// Propagate
 		Date start = new Date();
 		if(dfa.printDebug())
-			G.v().out.println("CLOA: Starting Propagation at " + start);
+			logger.info("CLOA: Starting Propagation at " + start);
 		while(worklist.size() > 0)
 		{
 			ArrayList<SootMethod> newWorklist = new ArrayList<SootMethod>();
@@ -514,7 +519,7 @@ public class ClassLocalObjectsAnalysis
 				CallLocalityContext containingContext = methodToContext.get(containingMethod);
 
 				if(dfa.printDebug())
-					G.v().out.println("      " + containingMethod.getName() + " " + containingContext.toShortString());
+					logger.info("      " + containingMethod.getName() + " " + containingContext.toShortString());
 				
 				// Calculate the context for each invoke stmt in the containingMethod
 				Map<Stmt, CallLocalityContext> invokeToContext = new HashMap<Stmt, CallLocalityContext>();
@@ -541,7 +546,7 @@ public class ClassLocalObjectsAnalysis
 					}
 					else
 					{
-//						G.v().out.println("        Merging Contexts for " + e.tgt());
+//						logger.info("        Merging Contexts for " + e.tgt());
 						boolean causedChange = methodToContext.get(e.tgt()).merge(invokeContext); // The contexts being merged could be from different DFAs.  If so, primitive version might be bigger.
 						if( causedChange )
 							newWorklist.add(e.tgt());
@@ -553,7 +558,7 @@ public class ClassLocalObjectsAnalysis
     	long longTime = ((new Date()).getTime() - start.getTime()) / 100;
     	float time = (longTime) / 10.0f;
 		if(dfa.printDebug())
-			G.v().out.println("CLOA: Ending Propagation after " + time + "s");
+			logger.info("CLOA: Ending Propagation after " + time + "s");
 	}
 	
 	public CallLocalityContext getMergedContext(SootMethod method)
@@ -690,7 +695,7 @@ public class ClassLocalObjectsAnalysis
 		}
 		
 		if(dfa.printDebug())
-			G.v().out.println("      CLOA testing if " + localOrRef + " is local in " + sm);
+			logger.info("      CLOA testing if " + localOrRef + " is local in " + sm);
 
 		SmartMethodLocalObjectsAnalysis smloa = getMethodLocalObjectsAnalysis(sm, includePrimitiveDataFlowIfAvailable);
 		if(localOrRef instanceof InstanceFieldRef)
@@ -705,13 +710,13 @@ public class ClassLocalObjectsAnalysis
 				{
 					boolean retval = loa.isFieldLocalToParent(ifr.getFieldRef().resolve());
 					if(dfa.printDebug())
-						G.v().out.println("      " + (retval ? "local" : "shared"));
+						logger.info("      " + (retval ? "local" : "shared"));
 					return retval;
 				}
 				else
 				{
 					if(dfa.printDebug())
-						G.v().out.println("      shared");
+						logger.info("      shared");
 					return false;
 				}
 			}
@@ -721,7 +726,7 @@ public class ClassLocalObjectsAnalysis
 		
 		boolean retval = smloa.isObjectLocal(localOrRef, context);
 		if(dfa.printDebug())
-			G.v().out.println("      " + (retval ? "local" : "shared"));
+			logger.info("      " + (retval ? "local" : "shared"));
 		return retval;
 	}
 	
@@ -792,14 +797,14 @@ public class ClassLocalObjectsAnalysis
 	protected boolean parameterIsLocal(SootMethod method, EquivalentValue parameterRef, boolean includePrimitiveDataFlowIfAvailable)
 	{
 		if(dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
-			G.v().out.println("        Checking PARAM " + parameterRef + " for " + method);
+			logger.info("        Checking PARAM " + parameterRef + " for " + method);
 			
 		// Check if param is primitive or ref type
 		ParameterRef param = (ParameterRef) parameterRef.getValue();
 		if( !(param.getType() instanceof RefLikeType) && (!dfa.includesPrimitiveInfoFlow() || method.getName().equals("<init>")) ) // TODO fix
 		{
 			if(dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
-				G.v().out.println("          PARAM is local (primitive)");
+				logger.info("          PARAM is local (primitive)");
 			return true; // primitive params are always considered local
 		}
 		
@@ -813,7 +818,7 @@ public class ClassLocalObjectsAnalysis
 			if(s.getInvokeExpr().getMethodRef().resolve() == method)
 			{
 				if(dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
-					G.v().out.println("          PARAM is shared (external access)");
+					logger.info("          PARAM is shared (external access)");
 				return false; // If so, assume it's params are shared
 			}
 		}
@@ -834,7 +839,7 @@ public class ClassLocalObjectsAnalysis
 					if(!isObjectLocal( ie.getArg( ((ParameterRef) parameterRef.getValue()).getIndex() ), containingMethod, includePrimitiveDataFlowIfAvailable)) // WORST CASE SCENARIO HERE IS INFINITE RECURSION!
 					{
 						if(dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
-							G.v().out.println("          PARAM is shared (internal propagation)");
+							logger.info("          PARAM is shared (internal propagation)");
 						return false; // if arg is shared for any internal call, then param is shared
 					}
 				}
@@ -846,7 +851,7 @@ public class ClassLocalObjectsAnalysis
 						if(!isObjectLocal( obj, containingMethod, includePrimitiveDataFlowIfAvailable)) // WORST CASE SCENARIO HERE IS INFINITE RECURSION!
 						{
 							if(dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
-								G.v().out.println("          PARAM is shared (internal propagation)");
+								logger.info("          PARAM is shared (internal propagation)");
 							return false; // if arg is shared for any internal call, then param is shared
 						}
 					}
@@ -854,7 +859,7 @@ public class ClassLocalObjectsAnalysis
 			}
 		}
 		if(dfa.printDebug() && method.getDeclaringClass().isApplicationClass())
-			G.v().out.println("          PARAM is local SO FAR (internal propagation)");
+			logger.info("          PARAM is local SO FAR (internal propagation)");
 		return true; // if argument is always local, then parameter is local
 	}
 	

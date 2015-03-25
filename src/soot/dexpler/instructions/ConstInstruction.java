@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.NarrowLiteralInstruction;
@@ -45,7 +48,9 @@ import soot.jimple.Jimple;
 import soot.jimple.LongConstant;
 
 public class ConstInstruction extends DexlibAbstractInstruction {
-	final static Logger logger = LoggerFactory.getLogger(ConstInstruction.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(ConstInstruction.class);
+
     AssignStmt assign = null;
   
     public ConstInstruction (Instruction instruction, int codeAdress) {

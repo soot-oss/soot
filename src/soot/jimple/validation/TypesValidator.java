@@ -1,5 +1,8 @@
 package soot.jimple.validation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 import soot.Body;
@@ -15,6 +18,8 @@ import soot.validation.ValidationException;
  * if a method uses e.g., null_type.
  */
 public class TypesValidator implements BodyValidator {
+
+	private static final Logger logger =LoggerFactory.getLogger(TypesValidator.class);
 	public static TypesValidator INSTANCE;
 	
 	

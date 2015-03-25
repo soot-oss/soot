@@ -18,10 +18,15 @@
  */
 
 package soot.dava.internal.SET;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 public class SETNodeLabel
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SETNodeLabel.class);
     private String name;
 
     public SETNodeLabel()

@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.base;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
@@ -26,6 +29,8 @@ import java.util.*;
 import soot.tagkit.*;
 
 public class ExceptionChecker extends BodyTransformer{
+
+	private static final Logger logger =LoggerFactory.getLogger(ExceptionChecker.class);
 
     FastHierarchy hierarchy;
     ExceptionCheckerErrorReporter reporter;

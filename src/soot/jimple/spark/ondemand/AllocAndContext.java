@@ -18,10 +18,15 @@
  */
 package soot.jimple.spark.ondemand;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.spark.ondemand.genericutil.ImmutableStack;
 import soot.jimple.spark.pag.AllocNode;
 
 public class AllocAndContext {
+
+	private static final Logger logger =LoggerFactory.getLogger(AllocAndContext.class);
 
   public final AllocNode alloc;
 

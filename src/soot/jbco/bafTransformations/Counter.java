@@ -19,12 +19,17 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 import soot.Body;
 import soot.BodyTransformer;
 
 public class Counter extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(Counter.class);
 
   protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     // TODO Auto-generated method stub

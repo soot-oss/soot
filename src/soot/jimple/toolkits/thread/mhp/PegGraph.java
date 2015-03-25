@@ -22,6 +22,9 @@
 
 package soot.jimple.toolkits.thread.mhp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import soot.*;
 import soot.jimple.*;
@@ -71,7 +74,9 @@ import soot.tagkit.*;
 public class PegGraph implements DirectedGraph
 //public class PegGraph extends SimplePegGraph
 {
-	final static Logger logger = LoggerFactory.getLogger(PegGraph.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(PegGraph.class);
+
 
 	private List heads;
 	private List tails;

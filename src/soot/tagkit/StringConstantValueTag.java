@@ -25,10 +25,15 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.coffi.CONSTANT_Utf8_info;
 
 public class StringConstantValueTag extends ConstantValueTag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(StringConstantValueTag.class);
     private final String value;
 
     public StringConstantValueTag(String value) {

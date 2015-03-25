@@ -31,12 +31,17 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A debugging attribute, this gives the name of the source file
  * for this <tt>.class</tt> file.
  * @see attribute_info
  * @author Clark Verbrugge
  */
 public class SourceFile_attribute extends attribute_info {
+
+	private static final Logger logger =LoggerFactory.getLogger(SourceFile_attribute.class);
    /** Constant pool index of a utf8 string for the name of
     * the associated source file.
     * @see CONSTANT_Utf8_info

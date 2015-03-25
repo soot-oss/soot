@@ -26,6 +26,9 @@
  */
 
 package soot.jimple.toolkits.annotation.purity;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.io.*;
 import soot.*;
@@ -67,7 +70,8 @@ import soot.toolkits.graph.*;
  * policy as regular FlowAnalysis classes.
  */
 public abstract class AbstractInterproceduralAnalysis {
-
+final static Logger logger = LoggerFactory
+		.getLogger(AbstractInterproceduralAnalysis.class);
     public static final boolean doCheck = false;
 
     protected CallGraph     cg;        		// analysed call-graph
@@ -352,7 +356,7 @@ public abstract class AbstractInterproceduralAnalysis {
 	    if (nb.containsKey(m)) nb.put(m,new Integer(nb.get(m).intValue()+1));
 	    else nb.put(m,new Integer(1));
 	    if (verbose)
-		G.v().out.println(" |- processing "+m.toString()+" ("+nb.get(m)+"-st time)");
+		logger.info(" |- processing "+m.toString()+" ("+nb.get(m)+"-st time)");
 
 	    analyseMethod(m,newSummary);
 	    if (!oldSummary.equals(newSummary)) {
@@ -371,7 +375,7 @@ public abstract class AbstractInterproceduralAnalysis {
 		Object oldSummary = data.get(m);
 		analyseMethod(m,newSummary);
 		if (!oldSummary.equals(newSummary)) {
-		    G.v().out.println("inter-procedural fixpoint not reached for method "+m.toString());
+		    logger.info("inter-procedural fixpoint not reached for method "+m.toString());
 		    DotGraph gm  = new DotGraph("false_fixpoint");
 		    DotGraph gmm = new	DotGraph("next_iterate");
 		    gm.setGraphLabel("false fixpoint: "+m.toString());

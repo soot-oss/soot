@@ -19,6 +19,9 @@
 
 package soot.jbco.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -57,6 +60,8 @@ import soot.util.Chain;
  * Created on 7-Feb-2006 
  */
 public class BodyBuilder {
+
+	private static final Logger logger =LoggerFactory.getLogger(BodyBuilder.class);
 
   public static boolean bodiesHaveBeenBuilt = false;
   public static boolean namesHaveBeenRetrieved = false;

@@ -23,12 +23,15 @@
  */
 package soot.jimple.toolkits.pointer.nativemethods;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public abstract class NativeMethodClass {
-
+final static Logger logger = LoggerFactory.getLogger(NativeMethodClass.class);
   private static final boolean DEBUG = false;
   protected NativeHelper helper;
   public NativeMethodClass(NativeHelper helper) {
@@ -43,7 +46,7 @@ public abstract class NativeMethodClass {
 				   ReferenceVariable returnVar,
 				   ReferenceVariable params[]){
     if (DEBUG) {
-      G.v().out.println("No side effects : "+method.toString());
+      logger.info("No side effects : "+method.toString());
     }
   }
 

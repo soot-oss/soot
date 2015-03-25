@@ -25,6 +25,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** There should be exactly one BootstrapMethods attribute in every class file.
  * @author Eric Bodden
  * @see http://www.xiebiao.com/docs/javase/7/api/java/lang/invoke/package-summary.html#bsmattr

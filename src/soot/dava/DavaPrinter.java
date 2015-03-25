@@ -20,6 +20,9 @@
 
 package soot.dava;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -61,7 +64,9 @@ import soot.util.Chain;
 import soot.util.IterableSet;
 
 public class DavaPrinter {
-	final static Logger logger = LoggerFactory.getLogger(DavaPrinter.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(DavaPrinter.class);
+
 	
     public DavaPrinter(Singletons.Global g) {
     }

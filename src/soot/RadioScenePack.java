@@ -19,12 +19,19 @@
 
 package soot;
 
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
 
 /** A wrapper object for a pack of optimizations.
  * Provides chain-like operations, except that the key is the phase name. */
 public class RadioScenePack extends ScenePack
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(RadioScenePack.class);
     public RadioScenePack(String name) {
         super(name);
     }
@@ -41,15 +48,15 @@ public class RadioScenePack extends ScenePack
             enableds.add( t );
         }
         if( enableds.size() == 0 ) {
-            G.v().out.println( "Exactly one phase in the pack "+getPhaseName()+
+            logger.info( "Exactly one phase in the pack "+getPhaseName()+
                     " must be enabled. Currently, none of them are." );
             throw new CompilationDeathException( CompilationDeathException.COMPILATION_ABORTED );
         }
         if( enableds.size() > 1 ) {
-            G.v().out.println( "Only one phase in the pack "+getPhaseName()+
+            logger.info( "Only one phase in the pack "+getPhaseName()+
                     " may be enabled. The following are enabled currently: " );
             for (Transform t : enableds) {
-                G.v().out.println( "  "+t.getPhaseName() );
+                logger.info( "  "+t.getPhaseName() );
             }
             throw new CompilationDeathException( CompilationDeathException.COMPILATION_ABORTED );
         }

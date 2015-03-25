@@ -26,6 +26,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** An alternate equivalence relation
  * between objects.  The standard interpretation will be structural
  * equality.  We also demand that if x.equivTo(y), then x.equivHashCode() == 

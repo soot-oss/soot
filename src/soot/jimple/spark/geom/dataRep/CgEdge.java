@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.dataRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import soot.jimple.spark.pag.VarNode;
 import soot.jimple.toolkits.callgraph.Edge;
@@ -29,6 +32,8 @@ import soot.jimple.toolkits.callgraph.Edge;
  *
  */
 public class CgEdge {
+
+	private static final Logger logger =LoggerFactory.getLogger(CgEdge.class);
 	// The edge structure in soot
 	public Edge sootEdge;
 	// The source/destination

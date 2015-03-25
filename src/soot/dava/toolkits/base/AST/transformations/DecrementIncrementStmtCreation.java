@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.*;
 import soot.jimple.*;
@@ -32,6 +35,8 @@ import soot.dava.toolkits.base.AST.analysis.*;
  *                       Added SubExpr for i--
  */
 public class DecrementIncrementStmtCreation extends DepthFirstAdapter {
+
+	private static final Logger logger =LoggerFactory.getLogger(DecrementIncrementStmtCreation.class);
 
 	public DecrementIncrementStmtCreation() {
 	}

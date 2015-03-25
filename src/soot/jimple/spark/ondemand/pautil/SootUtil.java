@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand.pautil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -71,6 +74,8 @@ import soot.util.queue.ChunkedQueue;
  * 
  */
 public class SootUtil {
+
+	private static final Logger logger =LoggerFactory.getLogger(SootUtil.class);
 
   public final static class CallSiteAndContext extends Pair<Integer, ImmutableStack<Integer>> {
 
@@ -276,11 +281,11 @@ public class SootUtil {
       public void visit(Node n) {
         // TODO Auto-generated method stub
         if (!intersection.contains(n)) {
-          G.v().out.println(n + " missing from intersection");
-          G.v().out.println(set1);
-          G.v().out.println(set2);
-          G.v().out.println(intersection);
-          G.v().out.println(ret);
+          logger.info(n + " missing from intersection");
+          logger.info(set1+"");
+          logger.info(set2+"");
+          logger.info(intersection+"");
+          logger.info(ret+"");
           throw new RuntimeException("intersection too small");
         }
       }
@@ -292,11 +297,11 @@ public class SootUtil {
       public void visit(Node n) {
         // TODO Auto-generated method stub
         if (!ret.contains(n)) {
-          G.v().out.println(n + " missing from ret");
-          G.v().out.println(set1);
-          G.v().out.println(set2);
-          G.v().out.println(intersection);
-          G.v().out.println(ret);
+          logger.info(n + " missing from ret");
+          logger.info(set1.toString());
+          logger.info(set2.toString());
+          logger.info(intersection.toString());
+          logger.info(ret.toString());
           throw new RuntimeException("old way too small???");
         }
       }
@@ -422,7 +427,7 @@ public class SootUtil {
           dir.mkdirs();
         }
       } catch (SecurityException se) {
-        G.v().out.println("Unable to create " + dirName);
+        logger.info("Unable to create " + dirName);
         throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
       }
     }

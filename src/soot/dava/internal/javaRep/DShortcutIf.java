@@ -1,5 +1,8 @@
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +13,8 @@ import soot.jimple.Expr;
 import soot.util.Switch;
 
 public class DShortcutIf implements Expr {
+
+	private static final Logger logger =LoggerFactory.getLogger(DShortcutIf.class);
 	ValueBox testExprBox;
 	ValueBox trueExprBox;
 	ValueBox falseExprBox;

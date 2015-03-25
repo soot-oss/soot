@@ -3,6 +3,9 @@ package soot.dexpler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.RefLikeType;
 import soot.Type;
 import soot.Unit;

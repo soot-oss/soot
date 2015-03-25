@@ -21,6 +21,9 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -41,6 +44,8 @@ import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 
 public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
+
+	private static final Logger logger =LoggerFactory.getLogger(JimpleBodyBuilder.class);
 
 
     public JimpleBodyBuilder(){

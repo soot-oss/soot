@@ -18,12 +18,17 @@
  */
 
 package soot.jbco.util;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /**
  * @author Michael Batchelder 
  * 
  * Created on 30-Mar-2006 
  */
 public class StringTrie {
+
+	private static final Logger logger =LoggerFactory.getLogger(StringTrie.class);
 
   private char[] startChars = new char[0];
   private StringTrie[] tries = new StringTrie[0];

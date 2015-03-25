@@ -19,10 +19,15 @@
 
 package soot.javaToJimple.jj;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Version information for jj extension
  */
 public class Version extends polyglot.main.Version {
+
+	private static final Logger logger =LoggerFactory.getLogger(Version.class);
     public String name() { return "jj"; }
 
     // TODO: define a version number, the default (below) is 0.1.0

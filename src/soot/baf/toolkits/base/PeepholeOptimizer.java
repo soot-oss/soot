@@ -26,6 +26,9 @@
 
 package soot.baf.toolkits.base;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import java.io.*;
 
@@ -43,6 +46,8 @@ import soot.*;
 
 public class PeepholeOptimizer extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PeepholeOptimizer.class);
     public PeepholeOptimizer( Singletons.Global g ) {}
     public static PeepholeOptimizer v() { return G.v().soot_baf_toolkits_base_PeepholeOptimizer(); }
 

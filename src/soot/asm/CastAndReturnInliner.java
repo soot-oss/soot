@@ -1,5 +1,8 @@
 package soot.asm;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.Map;
 
@@ -34,6 +37,8 @@ import soot.jimple.ReturnStmt;
  * @author Steven Arzt
  */
 public class CastAndReturnInliner extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(CastAndReturnInliner.class);
 
 	@Override
 	protected void internalTransform(Body body, String phaseName,

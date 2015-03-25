@@ -24,6 +24,9 @@
  */
 
 package soot.jimple.parser;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -45,6 +48,8 @@ import java.util.*;
    
 public class BodyExtractorWalker extends Walker
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BodyExtractorWalker.class);
     Map<SootMethod, JimpleBody> methodToParsedBodyMap;
 
     /** Constructs a walker, and attaches it to the given SootClass, sending bodies to
@@ -143,16 +148,16 @@ public class BodyExtractorWalker extends Walker
         if (sm != null)
         {
             if (Options.v().verbose())
-                G.v().out.println("[Jimple parser] " + SootMethod.getSubSignature(name, parameterList, type));
+                logger.info("[Jimple parser] " + SootMethod.getSubSignature(name, parameterList, type));
         }
         else
         {
-            G.v().out.println("[!!! Couldn't parse !!] " + SootMethod.getSubSignature(name, parameterList, type));
+            logger.info("[!!! Couldn't parse !!] " + SootMethod.getSubSignature(name, parameterList, type));
 
 	    
-            G.v().out.println("[!] Methods in class are:");
+            logger.info("[!] Methods in class are:");
             for (SootMethod next : mSootClass.getMethods()) {
-                G.v().out.println(next.getSubSignature());
+                logger.info(next.getSubSignature());
             }
             
         }
@@ -160,14 +165,14 @@ public class BodyExtractorWalker extends Walker
         if(sm.isConcrete() && methodBody != null) 
         {
           if (Options.v().verbose())
-              G.v().out.println("[Parsed] "+sm.getDeclaration());
+              logger.info("[Parsed] "+sm.getDeclaration());
 
           methodBody.setMethod(sm);
           methodToParsedBodyMap.put(sm, methodBody);
         } 
         else if(node.getMethodBody() instanceof AFullMethodBody) {
             if(sm.isPhantom() && Options.v().verbose())
-               G.v().out.println("[jimple parser] phantom method!");
+               logger.info("[jimple parser] phantom method!");
             throw new RuntimeException("Impossible: !concrete => ! instanceof " + sm.getName() );        
         }
     }

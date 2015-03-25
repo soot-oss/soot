@@ -26,6 +26,9 @@
 
 package soot.jimple.toolkits.annotation.tags;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** NullCheckTag contains the null pointer check information. 
  * The right third bit of a byte is used to represent whether
  * the null check is needed.
@@ -33,6 +36,8 @@ package soot.jimple.toolkits.annotation.tags;
 
 public class NullCheckTag implements OneByteCodeTag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(NullCheckTag.class);
     private final static String NAME = "NullCheckTag";
     
     private byte value = 0;

@@ -1,5 +1,8 @@
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
@@ -14,6 +17,8 @@ import soot.toolkits.scalar.FlowSet;
  * intersection is done differently for constant propagation
  */
 public class CPFlowSet extends DavaFlowSet{
+
+	private static final Logger logger =LoggerFactory.getLogger(CPFlowSet.class);
 
 
 	public CPFlowSet(){

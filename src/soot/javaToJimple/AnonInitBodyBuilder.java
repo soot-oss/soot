@@ -19,6 +19,9 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -27,6 +30,8 @@ import polyglot.ast.Block;
 import polyglot.ast.FieldDecl;
 
 public class AnonInitBodyBuilder extends JimpleBodyBuilder {
+
+	private static final Logger logger =LoggerFactory.getLogger(AnonInitBodyBuilder.class);
 
     public soot.jimple.JimpleBody createBody(soot.SootMethod sootMethod){
         

@@ -19,6 +19,9 @@
 
 package soot.shimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import java.util.*;
@@ -37,6 +40,8 @@ import soot.toolkits.scalar.*;
  **/
 public class PhiNodeManager
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PhiNodeManager.class);
     protected ShimpleBody body;
     protected ShimpleFactory sf;
     protected DominatorTree<Block> dt;

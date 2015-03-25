@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.solver;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
 import soot.*;
@@ -31,6 +34,7 @@ import java.util.*;
  */
 
 public final class PropAlias extends Propagator {
+	final static Logger logger = LoggerFactory.getLogger(PropAlias.class);
     protected final Set<VarNode> varNodeWorkList = new TreeSet<VarNode>();
     protected Set<VarNode> aliasWorkList;
     protected Set<FieldRefNode> fieldRefWorkList = new HashSet<FieldRefNode>();
@@ -60,7 +64,7 @@ public final class PropAlias extends Propagator {
         boolean verbose = pag.getOpts().verbose();
 	do {
             if( verbose ) {
-                G.v().out.println( "Worklist has "+varNodeWorkList.size()+
+                logger.info( "Worklist has "+varNodeWorkList.size()+
                         " nodes." );
             }
             aliasWorkList = new HashSet<VarNode>();
@@ -71,7 +75,7 @@ public final class PropAlias extends Propagator {
                 handleVarNode( src );
             }
             if( verbose ) {
-                G.v().out.println( "Now handling field references" );
+                logger.info( "Now handling field references" );
             }
 
             for (VarNode src : aliasWorkList) {

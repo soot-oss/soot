@@ -19,10 +19,15 @@
 
 package soot.jimple.toolkits.annotation.callgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.*;
 
 public class CallGraphInfo {
+
+	private static final Logger logger =LoggerFactory.getLogger(CallGraphInfo.class);
 
     private ArrayList<MethInfo> inputs = new ArrayList<MethInfo>();
     private ArrayList<MethInfo> outputs = new ArrayList<MethInfo>();

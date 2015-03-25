@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.invoke;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
@@ -32,6 +35,8 @@ import java.util.*;
 /** Methods for checking safety requirements for inlining. */
 public class InlinerSafetyManager
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(InlinerSafetyManager.class);
 	// true if safe to inline
 	public static boolean checkSpecialInlineRestrictions(SootMethod container, SootMethod target, String options) {
 	 // Check the body of the method to inline for specialinvoke's 

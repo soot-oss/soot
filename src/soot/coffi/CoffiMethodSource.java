@@ -25,6 +25,9 @@
 
 
 package soot.coffi;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -33,6 +36,8 @@ import soot.jimple.*;
 
 public class CoffiMethodSource implements MethodSource
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CoffiMethodSource.class);
     public ClassFile coffiClass;
     public method_info coffiMethod;
 
@@ -59,7 +64,7 @@ public class CoffiMethodSource implements MethodSource
 
         */
         if(Options.v().verbose())
-            G.v().out.println("[" + m.getName() + "] Constructing JimpleBody from coffi...");
+            logger.info("[" + m.getName() + "] Constructing JimpleBody from coffi...");
 
         if(m.isAbstract() || m.isNative() || m.isPhantom())
             return jb;
@@ -70,7 +75,7 @@ public class CoffiMethodSource implements MethodSource
         if(coffiMethod.instructions == null)
         {
             if(Options.v().verbose())
-                G.v().out.println("[" + m.getName() +
+                logger.info("[" + m.getName() +
                     "]     Parsing Coffi instructions...");
 
              coffiClass.parseMethod(coffiMethod);
@@ -79,7 +84,7 @@ public class CoffiMethodSource implements MethodSource
         if(coffiMethod.cfg == null)
         {
             if(Options.v().verbose())
-                G.v().out.println("[" + m.getName() +
+                logger.info("[" + m.getName() +
                     "]     Building Coffi CFG...");
 
              new soot.coffi.CFG(coffiMethod);
@@ -89,7 +94,7 @@ public class CoffiMethodSource implements MethodSource
          }
 
          if(Options.v().verbose())
-             G.v().out.println("[" + m.getName() +
+             logger.info("[" + m.getName() +
                     "]     Producing naive Jimple...");
 
          boolean oldPhantomValue = Scene.v().getPhantomRefs();

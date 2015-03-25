@@ -30,12 +30,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GLengthExpr extends AbstractLengthExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GLengthExpr.class);
     public GLengthExpr(Value op)
     {
         super(Grimp.v().newObjExprBox(op));

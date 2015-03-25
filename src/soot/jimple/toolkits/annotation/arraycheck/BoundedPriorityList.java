@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.annotation.arraycheck;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -38,6 +41,8 @@ import java.util.ListIterator;
  */
 public class BoundedPriorityList implements Collection
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BoundedPriorityList.class);
     protected final List fulllist;
     protected ArrayList worklist; 
 

@@ -31,12 +31,17 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A debugging attribute, this associates blocks of bytecode with
  * specific source code line numbers.
  * @see attribute_info
  * @author Clark Verbrugge
  */
 public class LineNumberTable_attribute extends attribute_info {
+
+	private static final Logger logger =LoggerFactory.getLogger(LineNumberTable_attribute.class);
 
    /** Length of the line_number_table array. */
    public int line_number_table_length;

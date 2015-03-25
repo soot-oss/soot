@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.toolkits.callgraph;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 /** Interface for context managers, which decide how edges should be added to

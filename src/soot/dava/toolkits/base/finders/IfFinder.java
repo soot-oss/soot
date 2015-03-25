@@ -18,6 +18,9 @@
  */
 
 package soot.dava.toolkits.base.finders;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 import soot.dava.*;
@@ -29,6 +32,8 @@ import soot.dava.internal.SET.*;
 
 public class IfFinder implements FactFinder
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(IfFinder.class);
     public IfFinder( Singletons.Global g ) {}
     public static IfFinder v() { return G.v().soot_dava_toolkits_base_finders_IfFinder(); }
 

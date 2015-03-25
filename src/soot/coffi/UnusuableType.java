@@ -31,10 +31,15 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 public class UnusuableType extends Type
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(UnusuableType.class);
     public UnusuableType( Singletons.Global g ) {}
     public static UnusuableType v() { return G.v().soot_coffi_UnusuableType(); }
 

@@ -20,6 +20,9 @@
 
 package soot.dava.toolkits.base.AST.interProcedural;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -71,7 +74,8 @@ import soot.util.Chain;
  */
 public class ConstantFieldValueFinder {
 
-	final static Logger logger = LoggerFactory.getLogger(ConstantFieldValueFinder.class);
+	private static final Logger logger =LoggerFactory.getLogger(ConstantFieldValueFinder.class);
+
 	
 	public static String combiner = "_$p$g_";
 

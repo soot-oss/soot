@@ -30,6 +30,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
@@ -37,6 +40,8 @@ import java.util.*;
 
 public class JNewMultiArrayExpr extends AbstractNewMultiArrayExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JNewMultiArrayExpr.class);
     public JNewMultiArrayExpr(ArrayType type, List<? extends Value> sizes)
     {
         super(type, new ValueBox[sizes.size()]);

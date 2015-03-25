@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.dataRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The segment figure for encoding the one-to-one relation.
  * 
@@ -25,6 +28,8 @@ package soot.jimple.spark.geom.dataRep;
  * 
  */
 public class SegmentNode implements Comparable<SegmentNode> {
+
+	private static final Logger logger =LoggerFactory.getLogger(SegmentNode.class);
 	
 	// I1 : start interval of the pointer
 	// I2 : start interval of the pointed to object

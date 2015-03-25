@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.invoke;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -67,6 +70,8 @@ import soot.util.Chain;
 /** Provides methods to inline a given invoke site. */
 public class SiteInliner
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SiteInliner.class);
     public String getDefaultOptions() 
     {
         return "insert-null-checks insert-redundant-casts";

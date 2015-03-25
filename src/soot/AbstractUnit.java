@@ -29,10 +29,15 @@
 
 package soot;
 
-import soot.tagkit.*;
-import soot.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import soot.tagkit.AbstractHost;
+import soot.util.Switch;
 
 /** Provides default implementations for the methods in Unit. */
 @SuppressWarnings("serial")

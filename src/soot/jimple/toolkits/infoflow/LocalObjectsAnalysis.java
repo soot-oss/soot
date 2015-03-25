@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.infoflow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -21,6 +24,8 @@ import soot.jimple.*;
 
 public class LocalObjectsAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalObjectsAnalysis.class);
 	public InfoFlowAnalysis dfa;
 	UseFinder uf;
 	CallGraph cg;
@@ -80,10 +85,10 @@ public class LocalObjectsAnalysis
 		// Handle special case
 		if(sm == context)
 		{
-//			G.v().out.println("      Directly Reachable: ");
+//			logger.info("      Directly Reachable: ");
 			boolean isLocal = isObjectLocalToParent(localOrRef, sm);
 			if(dfa.printDebug())
-				G.v().out.println("    " + (isLocal ? 
+				logger.info("    " + (isLocal ? 
 					"LOCAL  (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")" :
 					"SHARED (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")"));
 			return isLocal;
@@ -93,7 +98,7 @@ public class LocalObjectsAnalysis
 		if( localOrRef instanceof StaticFieldRef )
 		{
 			if(dfa.printDebug())
-				G.v().out.println("    SHARED (Static             from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+				logger.info("    SHARED (Static             from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
 			return false;
 		}
 
@@ -112,13 +117,13 @@ public class LocalObjectsAnalysis
 		if( mloaCache.containsKey(sm) )
 		{
 			mloa = (SmartMethodLocalObjectsAnalysis) mloaCache.get(sm);
-//			G.v().out.println("      Retrieved mloa From Cache: ");
+//			logger.info("      Retrieved mloa From Cache: ");
 		}
 		else
 		{
 			UnitGraph g = new ExceptionalUnitGraph(b);
 			mloa = new SmartMethodLocalObjectsAnalysis(g, dfa);
-//			G.v().out.println("        Caching mloa (smdfa " + SmartMethodInfoFlowAnalysis.counter + 
+//			logger.info("        Caching mloa (smdfa " + SmartMethodInfoFlowAnalysis.counter + 
 //				" smloa " + SmartMethodLocalObjectsAnalysis.counter + ") for " + sm.getName() + " on goal:");
 			mloaCache.put(sm, mloa);
 		}
@@ -128,7 +133,7 @@ public class LocalObjectsAnalysis
 		if(mergedContext == null)
 		{
 			if(dfa.printDebug())
-				G.v().out.println("      ------ (Unreachable        from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+				logger.info("      ------ (Unreachable        from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
 			return true; // it's not non-local...
 		}
 
@@ -149,12 +154,12 @@ public class LocalObjectsAnalysis
 				{
 					if(isLocal)
 					{
-						G.v().out.println("      LOCAL  (this  .localField  from " + context.getDeclaringClass().getShortName() + "."
+						logger.info("      LOCAL  (this  .localField  from " + context.getDeclaringClass().getShortName() + "."
 																				   + context.getName() + ")");
 					}
 					else
 					{
-						G.v().out.println("      SHARED (this  .sharedField from " + context.getDeclaringClass().getShortName() + "." 
+						logger.info("      SHARED (this  .sharedField from " + context.getDeclaringClass().getShortName() + "." 
 																				   + context.getName() + ")");
 					}
 				}
@@ -171,12 +176,12 @@ public class LocalObjectsAnalysis
 					{
 						if(isLocal)
 						{
-							G.v().out.println("      LOCAL  (local .localField  from " + context.getDeclaringClass().getShortName() + "."
+							logger.info("      LOCAL  (local .localField  from " + context.getDeclaringClass().getShortName() + "."
 																					   + context.getName() + ")");
 						}
 						else
 						{
-							G.v().out.println("      SHARED (local .sharedField from " + context.getDeclaringClass().getShortName() + "."
+							logger.info("      SHARED (local .sharedField from " + context.getDeclaringClass().getShortName() + "."
 																					   + context.getName() + ")");
 						}
 					}
@@ -185,7 +190,7 @@ public class LocalObjectsAnalysis
 				else
 				{
 					if(dfa.printDebug())
-						G.v().out.println("      SHARED (shared.someField   from " + context.getDeclaringClass().getShortName() + "."
+						logger.info("      SHARED (shared.someField   from " + context.getDeclaringClass().getShortName() + "."
 																			   + context.getName() + ")");
 					return isLocal;
 				}
@@ -197,12 +202,12 @@ public class LocalObjectsAnalysis
 		{
 			if(isLocal)
 			{	
-				G.v().out.println("      LOCAL  ( local             from " + context.getDeclaringClass().getShortName() + "."
+				logger.info("      LOCAL  ( local             from " + context.getDeclaringClass().getShortName() + "."
 																		   + context.getName() + ")");
 			}
 			else
 			{
-				G.v().out.println("      SHARED (shared             from " + context.getDeclaringClass().getShortName() + "."
+				logger.info("      SHARED (shared             from " + context.getDeclaringClass().getShortName() + "."
 																		   + context.getName() + ")");
 			}
 		}
@@ -212,12 +217,12 @@ public class LocalObjectsAnalysis
 /*	BROKEN	
 	public boolean isFieldLocalToContext(SootField sf, SootMethod sm, SootClass context)
 	{
-		G.v().out.println("    Checking if " + sf + " in " + sm + " is local to " + context + ":");
+		logger.info("    Checking if " + sf + " in " + sm + " is local to " + context + ":");
 
 		if(sm.getDeclaringClass() == context) // special case
 		{
 			boolean isLocal = isFieldLocalToParent(sf);
-			G.v().out.println("      Directly Reachable: " + (isLocal ? "LOCAL" : "SHARED"));
+			logger.info("      Directly Reachable: " + (isLocal ? "LOCAL" : "SHARED"));
 			return isLocal;
 		}
 	
@@ -247,12 +252,12 @@ public class LocalObjectsAnalysis
 		
 		if(callChains.size() == 0)
 		{
-			G.v().out.println("      Unreachable: treat as local.");
+			logger.info("      Unreachable: treat as local.");
 			return true; // it's not non-local...
 		}
-		G.v().out.println("      Found " + callChains.size() + " Call Chains...");
+		logger.info("      Found " + callChains.size() + " Call Chains...");
 //		for(int i = 0; i < callChains.size(); i++)
-//			G.v().out.println("      " + callChains.get(i));
+//			logger.info("      " + callChains.get(i));
 		
 		// Check Call Chains
 		for(int i = 0; i < callChains.size(); i++)
@@ -260,11 +265,11 @@ public class LocalObjectsAnalysis
 			List callChain = (List) callChains.get(i);
 			if(!isFieldLocalToContextViaCallChain(sf, sm, context, (SootMethod) startingMethods.get(i), callChain))
 			{
-				G.v().out.println("      SHARED");
+				logger.info("      SHARED");
 				return false;
 			}
 		}
-		G.v().out.println("      LOCAL");
+		logger.info("      LOCAL");
 		return true;
 	}
 */

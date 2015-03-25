@@ -19,9 +19,14 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodSource {
+
+	private static final Logger logger =LoggerFactory.getLogger(AnonClassInitMethodSource.class);
 
     private boolean hasOuterRef;
     public void hasOuterRef(boolean b){

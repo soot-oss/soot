@@ -18,6 +18,9 @@
  */
 package soot.toolkits.graph.pdg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -56,6 +59,7 @@ import soot.toolkits.graph.UnitGraph;
  */
 
 public class RegionAnalysis{
+	final static Logger logger = LoggerFactory.getLogger(RegionAnalysis.class);
 
     protected SootClass m_class = null;
     protected SootMethod m_method = null;
@@ -82,10 +86,10 @@ public class RegionAnalysis{
         this.m_class = c;
 
         if(Options.v().verbose())
-            G.v().out.println("[RegionAnalysis]~~~~~~~~~~~~~~~ Begin Region Analsis for method: " + m.getName() +" ~~~~~~~~~~~~~~~~~~~~");
+            logger.info("[RegionAnalysis]~~~~~~~~~~~~~~~ Begin Region Analsis for method: " + m.getName() +" ~~~~~~~~~~~~~~~~~~~~");
         this.findWeakRegions();
         if(Options.v().verbose())
-            G.v().out.println("[RegionAnalysis]~~~~~~~~~~~~~~~ End:" + m.getName() +" ~~~~~~~~~~~~~~~~~~~~");
+            logger.info("[RegionAnalysis]~~~~~~~~~~~~~~~ End:" + m.getName() +" ~~~~~~~~~~~~~~~~~~~~");
     }
 
 
@@ -117,7 +121,7 @@ public class RegionAnalysis{
             this.m_pdom = new MHGDominatorTree<Block>(new MHGPostDominatorsFinder<Block>(m_blockCFG));
 
             if(Options.v().verbose())
-                G.v().out.println("[RegionAnalysis] PostDominator tree: ");
+                logger.info("[RegionAnalysis] PostDominator tree: ");
 
             this.m_regCount = -1;
 
@@ -153,7 +157,7 @@ public class RegionAnalysis{
             else 
             {
                 if(Options.v().verbose())
-                    G.v().out.println("WARNING: RegionAnalysis: the CFG is multi-headed and tailed, so, the results of this analysis might not be reliable!");
+                    logger.info("WARNING: RegionAnalysis: the CFG is multi-headed and tailed, so, the results of this analysis might not be reliable!");
 
                 for(int i = 0; i < this.m_blockCFG.getTails().size(); i++)
                 {
@@ -169,7 +173,7 @@ public class RegionAnalysis{
         }
         catch(RuntimeException e)
         {
-            G.v().out.println("[RegionAnalysis] Exception in findWeakRegions: " + e);			
+            logger.info("[RegionAnalysis] Exception in findWeakRegions: " + e);			
         }
 
 
@@ -215,8 +219,8 @@ public class RegionAnalysis{
         }
         catch(RuntimeException e)
         {
-            G.v().out.println("[RegionAnalysis] Exception in weakRegionDFS: " + e);
-            G.v().out.println("v is  " + v.toShortString() + " in region " + r);
+            logger.info("[RegionAnalysis] Exception in weakRegionDFS: " + e);
+            logger.info("v is  " + v.toShortString() + " in region " + r);
             G.v().out.flush();
         }
     }

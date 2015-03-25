@@ -19,6 +19,9 @@
 
 package soot.javaToJimple.jj.types;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.types.*;
 
 public interface JjTypeSystem extends TypeSystem {

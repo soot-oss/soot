@@ -25,6 +25,9 @@
 
 
 package soot.jimple.toolkits.scalar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -37,6 +40,8 @@ import soot.util.*;
  * Returns, for each statement, the list of expressions available before and after it. */
 public class SlowAvailableExpressions implements AvailableExpressions
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SlowAvailableExpressions.class);
     Map<Unit, List<UnitValueBoxPair>> unitToPairsAfter;
     Map<Unit, List<UnitValueBoxPair>> unitToPairsBefore;
 

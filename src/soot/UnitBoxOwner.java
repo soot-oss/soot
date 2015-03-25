@@ -19,7 +19,10 @@
 
 package soot;
 
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
 
 /**
  * An implementor of this interface indicates that it may contain

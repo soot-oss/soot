@@ -26,11 +26,16 @@
 
 package soot.jimple.toolkits.pointer.nativemethods;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilZipZipEntryNative extends NativeMethodClass {
+
+	private static final Logger logger =LoggerFactory.getLogger(JavaUtilZipZipEntryNative.class);
     public JavaUtilZipZipEntryNative( NativeHelper helper ) { super(helper); }
 
   /**

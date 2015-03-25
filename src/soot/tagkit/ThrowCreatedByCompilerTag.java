@@ -25,12 +25,17 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** Represents a tag that just has a string to be printed with the code.
  */
 
 public class ThrowCreatedByCompilerTag implements  Tag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ThrowCreatedByCompilerTag.class);
 
     public ThrowCreatedByCompilerTag(){
     }

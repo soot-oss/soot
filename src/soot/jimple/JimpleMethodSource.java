@@ -25,12 +25,17 @@
 
 
 package soot.jimple;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 import soot.*;
 import soot.jimple.parser.*;
 
 public class JimpleMethodSource implements MethodSource
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JimpleMethodSource.class);
     JimpleAST mJimpleAST;
 
     public JimpleMethodSource(JimpleAST aJimpleAST)
@@ -43,7 +48,7 @@ public class JimpleMethodSource implements MethodSource
         JimpleBody jb = (JimpleBody)mJimpleAST.getBody(m);
 
         if(Options.v().verbose())
-            G.v().out.println("[" + m.getName() + "] Retrieving JimpleBody from AST...");
+            logger.info("[" + m.getName() + "] Retrieving JimpleBody from AST...");
     
 
         PackManager.v().getPack("jb").apply(jb);

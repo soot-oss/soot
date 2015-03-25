@@ -1,5 +1,8 @@
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 import org.jf.dexlib2.AccessFlags;
@@ -16,6 +19,8 @@ import org.jf.dexlib2.iface.reference.MethodReference;
 import soot.dexpler.DexBody;
 
 public class ExecuteInlineInstruction extends MethodInvocationInstruction implements OdexInstruction {
+
+	private static final Logger logger =LoggerFactory.getLogger(ExecuteInlineInstruction.class);
 	
 	private Method targetMethod = null;
 

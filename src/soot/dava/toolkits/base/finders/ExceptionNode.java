@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.finders;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.util.*;
@@ -26,6 +29,8 @@ import soot.dava.internal.asg.*;
 
 public class ExceptionNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ExceptionNode.class);
     private final IterableSet body;
 	private IterableSet tryBody, catchBody;
     private boolean dirty;
@@ -293,21 +298,21 @@ public class ExceptionNode
 
     public void dump()
     {
-	G.v().out.println("try {");
+	logger.info("try {");
 	Iterator tit = get_TryBody().iterator();
 	while (tit.hasNext())
-	    G.v().out.println( "\t" + tit.next());
-	G.v().out.println( "}");
+	    logger.info( "\t" + tit.next());
+	logger.info( "}");
 	
 	Iterator cit = get_CatchList().iterator();
 	while (cit.hasNext()) {
 	    IterableSet catchBody = (IterableSet) cit.next();
 	    
-	    G.v().out.println( "catch " + get_ExceptionMap().get( catchBody) + " {");
+	    logger.info( "catch " + get_ExceptionMap().get( catchBody) + " {");
 	    Iterator cbit = catchBody.iterator();
 	    while (cbit.hasNext()) 
-		G.v().out.println( "\t" + cbit.next());
-	    G.v().out.println("}");
+		logger.info( "\t" + cbit.next());
+	    logger.info("}");
 	    
 	}
     }

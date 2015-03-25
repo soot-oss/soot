@@ -28,6 +28,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.UnitBox;
@@ -40,6 +43,8 @@ import soot.UnitBox;
  * @see CodeAttribute
  */
 public class GenericAttribute implements Attribute {
+
+	private static final Logger logger =LoggerFactory.getLogger(GenericAttribute.class);
 	private final String mName;
 	private byte[] mValue;
 

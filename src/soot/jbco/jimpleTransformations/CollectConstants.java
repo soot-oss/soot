@@ -19,6 +19,9 @@
 
 package soot.jbco.jimpleTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -33,6 +36,8 @@ import soot.util.*;
  * Created on 31-May-2006
  */
 public class CollectConstants extends SceneTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(CollectConstants.class);
 
   int updatedConstants = 0;
   int constants = 0;

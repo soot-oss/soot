@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.BitSet;
 
 import org.jf.dexlib2.Opcode;
@@ -16,6 +19,8 @@ import soot.toDex.Register;
  * It is used e.g. by the opcodes "packed-switch" and "sparse-switch".
  */
 public class Insn31t extends InsnWithOffset implements OneRegInsn {
+
+	private static final Logger logger =LoggerFactory.getLogger(Insn31t.class);
 	
 	public SwitchPayload payload = null;
 	

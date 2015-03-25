@@ -18,6 +18,9 @@
  */
 
 package soot.util;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.*;
 
 /**
@@ -26,6 +29,8 @@ import java.io.*;
  * stream. (Write Jasmin into this stream, and .class will come out.)
  */
 public class JasminOutputStream extends ByteArrayOutputStream {
+
+	private static final Logger logger =LoggerFactory.getLogger(JasminOutputStream.class);
     final private OutputStream out;
     public JasminOutputStream( OutputStream out ) {
         this.out = out;

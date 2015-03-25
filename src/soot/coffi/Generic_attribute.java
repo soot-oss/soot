@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** For representing an unknown, or generic attribute.
  * @see attribute_info
  * @author Clark Verbrugge

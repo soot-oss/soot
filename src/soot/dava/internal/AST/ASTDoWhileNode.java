@@ -20,6 +20,9 @@
 
 package soot.dava.internal.AST;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.*;
 import soot.jimple.*;
@@ -28,6 +31,8 @@ import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTDoWhileNode extends ASTControlFlowNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ASTDoWhileNode.class);
     private List<Object> body;
 
     public ASTDoWhileNode( SETNodeLabel label, ConditionExpr ce, List<Object> body)

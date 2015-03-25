@@ -25,6 +25,9 @@
 
 
 package soot.jimple.toolkits.scalar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 import soot.*;
 import soot.toolkits.scalar.*;
@@ -38,6 +41,8 @@ import soot.util.*;
  * Returns, for each statement, the list of expressions available before and after it. */
 public class FastAvailableExpressions implements AvailableExpressions
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(FastAvailableExpressions.class);
     Map<Unit, List<UnitValueBoxPair>> unitToPairsAfter;
     Map<Unit, List<UnitValueBoxPair>> unitToPairsBefore;
     Map<Unit, Chain> unitToEquivsAfter;
@@ -47,7 +52,7 @@ public class FastAvailableExpressions implements AvailableExpressions
     public FastAvailableExpressions(Body b, SideEffectTester st)
     {
         if(Options.v().verbose())
-            G.v().out.println("[" + b.getMethod().getName() +
+            logger.info("[" + b.getMethod().getName() +
                 "] Finding available expressions...");
 
         FastAvailableExpressionsAnalysis analysis = 
@@ -119,7 +124,7 @@ public class FastAvailableExpressions implements AvailableExpressions
         }
 
         if(Options.v().verbose())
-            G.v().out.println("[" + b.getMethod().getName() +
+            logger.info("[" + b.getMethod().getName() +
                 "]     Found available expressions...");
     }
 

@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** 
  *  Tags that are attached to the class file, field, method, or method body
  *  should implement this interface.

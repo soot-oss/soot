@@ -29,11 +29,16 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 
 public class DoubleConstant extends RealConstant
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DoubleConstant.class);
     public final double value;
 
     private DoubleConstant(double value)

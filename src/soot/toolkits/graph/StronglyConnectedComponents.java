@@ -24,6 +24,9 @@
  */
 
 package soot.toolkits.graph;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -42,6 +45,8 @@ import java.util.*;
 @Deprecated
 public class StronglyConnectedComponents
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(StronglyConnectedComponents.class);
     private HashMap<Object, Object> nodeToColor;
     private static final Object Visited=new Object();
     private static final Object Black=new Object();
@@ -106,9 +111,9 @@ public class StronglyConnectedComponents
 
         if (Options.v().verbose()) 
         {
-            G.v().out.println("Done computing scc components");
-            G.v().out.println("number of nodes in underlying graph: "+g.size());
-            G.v().out.println("number of components: "+sccGraph.size());
+            logger.info("Done computing scc components");
+            logger.info("number of nodes in underlying graph: "+g.size());
+            logger.info("number of components: "+sccGraph.size());
         }
     }
 

@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -38,6 +41,8 @@ import soot.toolkits.scalar.GuaranteedDefs;
  * Created on 16-Jun-2006 
  */
 public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(FixUndefinedLocals.class);
 
   private int undefined = 0;
   

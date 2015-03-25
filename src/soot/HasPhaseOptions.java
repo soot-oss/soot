@@ -19,6 +19,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Interface for things like Packs and phases that have phase options. */
 public interface HasPhaseOptions {
     public String getDeclaredOptions();

@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.RefType;
 
 /**
@@ -28,6 +31,8 @@ import soot.RefType;
  */
 public class Constants 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Constants.class);
 	// Available encodings
 	public static final String geomE = "Geom";
 	public static final String heapinsE = "HeapIns";

@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.BitSet;
 
 import org.jf.dexlib2.Opcode;
@@ -23,6 +26,8 @@ import soot.toDex.Register;
  * the "real" explicit reg numbers.
  */
 public class Insn35c extends AbstractInsn implements FiveRegInsn {
+
+	private static final Logger logger =LoggerFactory.getLogger(Insn35c.class);
 	
 	private int regCount;
 	

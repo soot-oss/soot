@@ -25,6 +25,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.exceptions.PedanticThrowAnalysis;
@@ -72,6 +75,8 @@ import soot.toolkits.exceptions.PedanticThrowAnalysis;
  */
 public class CompleteUnitGraph extends ExceptionalUnitGraph 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CompleteUnitGraph.class);
     public CompleteUnitGraph(Body b) {
 	super(b, PedanticThrowAnalysis.v(), false);
     }

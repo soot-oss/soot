@@ -27,11 +27,16 @@
 
 package soot.jimple.toolkits.annotation.purity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** 
  * The GBL node.
  */
 public class PurityGlobalNode implements PurityNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PurityGlobalNode.class);
     private PurityGlobalNode() {}
 
     public static PurityGlobalNode node = new PurityGlobalNode();

@@ -25,6 +25,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public interface Interface_Astore
 {
     public int getLocalNumber();

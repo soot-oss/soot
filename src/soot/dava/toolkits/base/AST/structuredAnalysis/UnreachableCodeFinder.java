@@ -28,6 +28,9 @@
  */ 
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -77,8 +80,11 @@ import soot.toolkits.scalar.FlowSet;
  */
 
 public class UnreachableCodeFinder extends StructuredAnalysis {
-	final static Logger logger = LoggerFactory.getLogger(UnreachableCodeFinder.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(UnreachableCodeFinder.class);
+
 	public class UnreachableCodeFlowSet extends DavaFlowSet{
+
 		
 		public UnreachableCodeFlowSet clone(){
 			if(this.size() != 1)

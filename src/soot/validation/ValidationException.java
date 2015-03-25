@@ -1,7 +1,12 @@
 package soot.validation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class ValidationException extends RuntimeException {
+
+	private static final Logger logger =LoggerFactory.getLogger(ValidationException.class);
 	private Object concerned;
 	private String strMessage;
 	private String strCompatibilityMessage;

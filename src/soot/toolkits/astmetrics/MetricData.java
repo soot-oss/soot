@@ -19,10 +19,15 @@
 
 package soot.toolkits.astmetrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*
  * Information about a particular metric
  */
 public class MetricData {
+
+	private static final Logger logger =LoggerFactory.getLogger(MetricData.class);
 	String metricName;
 	Object value;
 	

@@ -18,6 +18,9 @@
  */
 
 package soot.util.queue;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /** A queue of Object's. One can add objects to the queue, and they are

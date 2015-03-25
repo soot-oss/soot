@@ -26,8 +26,12 @@
 
 package soot;
 
-import java.io.*;
-import soot.tagkit.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+
+import soot.tagkit.Host;
 
 /** A box which can contain values. 
  *

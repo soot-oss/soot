@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -35,6 +38,8 @@ import soot.jbco.IJbcoTransform;
  * Created on 16-Jun-2006 
  */
 public class Jimple2BafLocalBuilder extends BodyTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(Jimple2BafLocalBuilder.class);
 
   public static String dependancies[] = new String[] {"jtp.jbco_jl","bb.jbco_j2bl","bb.lp"};
 

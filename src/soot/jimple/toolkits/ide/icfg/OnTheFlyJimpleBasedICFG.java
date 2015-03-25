@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.ide.icfg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;
 
@@ -55,6 +58,8 @@ import com.google.common.cache.LoadingCache;
  * @see FastHierarchy#resolveAbstractDispatch(SootClass, SootMethod)
  */
 public class OnTheFlyJimpleBasedICFG extends AbstractJimpleBasedICFG {
+
+	private static final Logger logger =LoggerFactory.getLogger(OnTheFlyJimpleBasedICFG.class);
 
 	@SynchronizedBy("by use of synchronized LoadingCache class")
 	protected final LoadingCache<Body,LocalMustNotAliasAnalysis> bodyToLMNAA = IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Body,LocalMustNotAliasAnalysis>() {

@@ -25,6 +25,9 @@
 
 
 package soot.jimple.toolkits.scalar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -41,6 +44,8 @@ import soot.util.Chain;
 
 public class NopEliminator extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(NopEliminator.class);
     public NopEliminator( Singletons.Global g ) {}
     public static NopEliminator v() { return G.v().soot_jimple_toolkits_scalar_NopEliminator(); }
 
@@ -54,7 +59,7 @@ public class NopEliminator extends BodyTransformer
         JimpleBody body = (JimpleBody)b;
         
         if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
+            logger.info("[" + body.getMethod().getName() +
                 "] Removing nops...");
                 
         Chain<Unit> units = body.getUnits();

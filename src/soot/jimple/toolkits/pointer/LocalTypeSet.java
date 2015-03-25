@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.toolkits.pointer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import java.util.*;
 
@@ -94,7 +97,7 @@ class LocalTypeSet extends java.util.BitSet {
             while (typesIt.hasNext()){
                 RefType t = (RefType)typesIt.next();
                 int index = indexOf(l, t);
-                //G.v().out.println("for: "+l+" and type: "+t+" at: "+index);
+                //logger.info("for: "+l+" and type: "+t+" at: "+index);
                 if (get(index)) {
                     sb.append("(("+l+","+t+") -> elim cast check) ");
                 }

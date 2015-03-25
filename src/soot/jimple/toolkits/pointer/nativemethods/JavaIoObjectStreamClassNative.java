@@ -26,11 +26,16 @@
 
 package soot.jimple.toolkits.pointer.nativemethods;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaIoObjectStreamClassNative extends NativeMethodClass {
+
+	private static final Logger logger =LoggerFactory.getLogger(JavaIoObjectStreamClassNative.class);
     public JavaIoObjectStreamClassNative( NativeHelper helper ) { super(helper); }
 
   /**

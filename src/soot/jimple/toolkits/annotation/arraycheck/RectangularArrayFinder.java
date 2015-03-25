@@ -24,6 +24,9 @@
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -39,6 +42,8 @@ import java.util.*;
 
 public class RectangularArrayFinder extends SceneTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(RectangularArrayFinder.class);
     public RectangularArrayFinder( Singletons.Global g ) {}
     public static RectangularArrayFinder v() { return G.v().soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder(); }
 
@@ -57,7 +62,7 @@ public class RectangularArrayFinder extends SceneTransformer
 
 	Date start = new Date();
 	if (Options.v().verbose())
-	    G.v().out.println("[ra] Finding rectangular arrays, start on "+start);
+	    logger.info("[ra] Finding rectangular arrays, start on "+start);
 
 	Chain appClasses = sc.getApplicationClasses();
 
@@ -196,25 +201,25 @@ public class RectangularArrayFinder extends SceneTransformer
 	
 	if (Options.v().debug())
 	{
-	    G.v().out.println("Rectangular Array :");
+	    logger.info("Rectangular Array :");
 	    {
 		Iterator<Object> nodeIt = trueSet.iterator();
 		while (nodeIt.hasNext())
 		{
 		    Object node = nodeIt.next();
 
-		    G.v().out.println(node);
+		    logger.info(node.toString());
 		}
 	    }
 
-	    G.v().out.println("\nNon-rectangular Array :");
+	    logger.info("\nNon-rectangular Array :");
 	    {
 		Iterator nodeIt = falseSet.iterator();
 		while (nodeIt.hasNext())
 		{
 		    Object node = nodeIt.next();
 		    
-		    G.v().out.println(node);
+		    logger.info(node.toString());
 		}
 	    }
 	}
@@ -225,7 +230,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	    long runtime = finish.getTime() - start.getTime();
 	    long mins = runtime/60000;
 	    long secs = (runtime%60000)/1000;
-	    G.v().out.println("[ra] Rectangular array finder finishes."
+	    logger.info("[ra] Rectangular array finder finishes."
 			       +" It took "+mins+" mins and "+secs+" secs.");
 	}
     }
@@ -233,7 +238,7 @@ public class RectangularArrayFinder extends SceneTransformer
     private void addInfoFromMethod(SootMethod method)
     {
 	if (Options.v().verbose()) 
-	    G.v().out.println("[ra] Operating "+method.getSignature());
+	    logger.info("[ra] Operating "+method.getSignature());
 
 	boolean needTransfer = true;
 

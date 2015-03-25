@@ -27,11 +27,16 @@
 
 package soot.jimple.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
 
 public class Evaluator {
+
+	private static final Logger logger =LoggerFactory.getLogger(Evaluator.class);
 
     public static boolean isValueConstantValued(Value op) {
 

@@ -20,6 +20,9 @@
 
 package soot.dava.toolkits.base.finders;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.dava.*;
 import soot.util.*;
@@ -33,6 +36,8 @@ import soot.dava.internal.SET.*;
 
 public class SynchronizedBlockFinder implements FactFinder
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SynchronizedBlockFinder.class);
     public SynchronizedBlockFinder( Singletons.Global g ) {}
     public static SynchronizedBlockFinder v() { return G.v().soot_dava_toolkits_base_finders_SynchronizedBlockFinder(); }
 

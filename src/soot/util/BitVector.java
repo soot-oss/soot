@@ -19,6 +19,9 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** This is the Soot internal implementation of java.util.BitSet with
  * Felix and Jerome's clever efficient iterator. It was re-implemented
  * from scratch by Ondrej Lhotak to avoid licence issues. It was named

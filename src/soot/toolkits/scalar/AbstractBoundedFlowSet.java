@@ -26,6 +26,9 @@
 
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** 
  * provides functional code for most of the methods. Subclasses are invited to
  * provide a more efficient version. Most often this will be done in the

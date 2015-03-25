@@ -41,9 +41,14 @@
 
 package soot.jimple.toolkits.pointer.representations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 public class Environment {
+
+	private static final Logger logger =LoggerFactory.getLogger(Environment.class);
     public Environment( Singletons.Global g ) {}
     public static Environment v() { return G.v().soot_jimple_toolkits_pointer_representations_Environment(); }
 

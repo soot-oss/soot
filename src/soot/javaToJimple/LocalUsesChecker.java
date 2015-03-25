@@ -18,12 +18,17 @@
  */
 
 package soot.javaToJimple;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import polyglot.ast.Node;
 import polyglot.util.IdentityKey;
 
 public class LocalUsesChecker extends polyglot.visit.NodeVisitor{
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalUsesChecker.class);
 
     private final ArrayList<IdentityKey> locals;
     private final ArrayList<IdentityKey> localDecls;

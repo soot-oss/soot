@@ -1,5 +1,8 @@
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,6 +16,8 @@ import soot.util.Switch;
  * later
  */
 public class DArrayInitExpr implements Value {
+
+	private static final Logger logger =LoggerFactory.getLogger(DArrayInitExpr.class);
 	// an array of elements for the initialization
 	ValueBox[] elements;
 	

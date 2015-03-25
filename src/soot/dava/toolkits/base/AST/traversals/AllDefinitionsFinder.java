@@ -31,6 +31,9 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.jimple.*;
 import soot.dava.toolkits.base.AST.analysis.*;
@@ -43,6 +46,8 @@ import soot.dava.toolkits.base.AST.analysis.*;
 
 
 public class AllDefinitionsFinder extends DepthFirstAdapter{
+
+	private static final Logger logger =LoggerFactory.getLogger(AllDefinitionsFinder.class);
     ArrayList<DefinitionStmt> allDefs = new ArrayList<DefinitionStmt>();
 
     public AllDefinitionsFinder(){

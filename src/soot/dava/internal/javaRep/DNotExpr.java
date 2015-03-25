@@ -26,6 +26,9 @@
 
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import soot.grimp.*;
@@ -34,6 +37,8 @@ import soot.jimple.internal.*;
 
 public class DNotExpr extends AbstractUnopExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DNotExpr.class);
     public DNotExpr(Value op)
     {
         super(Grimp.v().newExprBox(op));

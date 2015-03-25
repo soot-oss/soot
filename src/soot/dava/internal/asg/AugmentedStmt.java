@@ -19,6 +19,9 @@
  */
 
 package soot.dava.internal.asg;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 import java.util.*;
@@ -29,6 +32,8 @@ import soot.dava.internal.SET.*;
 
 public class AugmentedStmt 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AugmentedStmt.class);
     public List<AugmentedStmt> bpreds, bsuccs, cpreds, csuccs;
     public SETNode myNode;
 
@@ -170,7 +175,7 @@ public class AugmentedStmt
 
     public void dump()
     {
-	G.v().out.println( toString());
+	logger.info( toString());
     }
 
     public String toString()

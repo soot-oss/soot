@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.solver;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
 import soot.*;
@@ -29,6 +32,7 @@ import java.util.*;
  */
 
 public final class PropIter extends Propagator {
+	final static Logger logger = LoggerFactory.getLogger(PropIter.class);
     public PropIter( PAG pag ) { this.pag = pag; }
     /** Actually does the propagation. */
     public final void propagate() {
@@ -43,7 +47,7 @@ public final class PropIter extends Propagator {
 	    change = false;
             TreeSet<Object> simpleSources = new TreeSet<Object>( pag.simpleSources() );
             if( pag.getOpts().verbose() ) {
-                G.v().out.println( "Iteration "+(iteration++) );
+                logger.info( "Iteration "+(iteration++) );
             }
             for (Object object : simpleSources) {
                 change = handleSimples( (VarNode) object ) | change;

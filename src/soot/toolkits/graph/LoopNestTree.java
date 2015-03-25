@@ -18,6 +18,9 @@
  */
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.TreeSet;
@@ -36,6 +39,8 @@ import soot.jimple.toolkits.annotation.logic.LoopFinder;
  * @author Eric Bodden
  */
 public class LoopNestTree extends TreeSet<Loop> {
+
+	private static final Logger logger =LoggerFactory.getLogger(LoopNestTree.class);
 	
 	/**
 	 * Comparator, stating that a loop l1 is smaller than a loop l2 if l2 contains all statements of l1.

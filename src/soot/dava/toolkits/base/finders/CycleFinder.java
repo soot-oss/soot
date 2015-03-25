@@ -25,6 +25,9 @@
  */
 package soot.dava.toolkits.base.finders;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -42,6 +45,8 @@ import soot.dava.toolkits.base.misc.*;
 
 public class CycleFinder implements FactFinder
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CycleFinder.class);
     public CycleFinder( Singletons.Global g ) {}
     public static CycleFinder v() { return G.v().soot_dava_toolkits_base_finders_CycleFinder(); }
 
@@ -401,15 +406,15 @@ public class CycleFinder implements FactFinder
 
 		/*
 		if (sas.get_Dominators().contains( asg_ep) == false) {
-		    G.v().out.println( wsas + " not dominated by " + asg_ep);
-		    G.v().out.println( "doms");
+		    logger.info( wsas + " not dominated by " + asg_ep);
+		    logger.info( "doms");
 		    Iterator dit = sas.get_Dominators().iterator();
 		    while (dit.hasNext()) 
-			G.v().out.println( "    " + dit.next());
-		    G.v().out.println("preds");
+			logger.info( "    " + dit.next());
+		    logger.info("preds");
 		    dit = sas.cpreds.iterator();
 		    while (dit.hasNext())
-			G.v().out.println( "    " + dit.next());
+			logger.info( "    " + dit.next());
 		}
 		*/
 
@@ -420,7 +425,7 @@ public class CycleFinder implements FactFinder
 			
 			continue;
 
-		    // G.v().out.println( sas);
+		    // logger.info( sas);
 		    
 		    worklist.add( wsas);
 		    cycle_body.add( sas);

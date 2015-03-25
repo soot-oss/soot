@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.pag;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.Type;
 
 /** Represents a simple of field ref node (Green or Red) in the pointer
@@ -26,6 +29,8 @@ import soot.Type;
  */
 public class ValNode extends Node
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ValNode.class);
     protected ValNode( PAG pag, Type t ) {
 	super( pag, t );
     }

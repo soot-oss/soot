@@ -30,12 +30,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GReturnStmt extends JReturnStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GReturnStmt.class);
     public GReturnStmt(Value returnValue)
     {
         super(Grimp.v().newExprBox(returnValue));

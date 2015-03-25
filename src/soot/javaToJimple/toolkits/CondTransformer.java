@@ -19,11 +19,16 @@
 
 package soot.javaToJimple.toolkits;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
 
 public class CondTransformer extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(CondTransformer.class);
     public CondTransformer (Singletons.Global g) {}
     public static CondTransformer v() { 
         return G.v().soot_javaToJimple_toolkits_CondTransformer();
@@ -35,7 +40,7 @@ public class CondTransformer extends BodyTransformer {
 
     protected void internalTransform(Body b, String phaseName, Map options){
 
-        //G.v().out.println("running cond and/or transformer");
+        //logger.info("running cond and/or transformer");
         boolean change = true;
         /*
          * the idea is to look for groups of statements of the form
@@ -67,7 +72,7 @@ public class CondTransformer extends BodyTransformer {
                 }
                 if (pos == 6) {
                     // found seq now transform then continue
-                    //G.v().out.println("found sequence will transform");
+                    //logger.info("found sequence will transform");
                     change = true;
                     break;
                 }

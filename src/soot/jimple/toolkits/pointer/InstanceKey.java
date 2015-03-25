@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.pointer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Local;
 import soot.PointsToAnalysis;
 import soot.PointsToSet;
@@ -44,6 +47,8 @@ import soot.jimple.toolkits.pointer.LocalMustNotAliasAnalysis;
  * @author Eric Bodden
  */
 public class InstanceKey {
+
+	private static final Logger logger =LoggerFactory.getLogger(InstanceKey.class);
 
     protected final Local assignedLocal;
     protected final LocalMustAliasAnalysis lmaa;

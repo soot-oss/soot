@@ -27,11 +27,16 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.*;
 
 /** Utility methods for string manipulations commonly used in Soot. */
 public class StringTools
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(StringTools.class);
 
     /** Returns fromString, but with non-isalpha() characters printed as
      * <code>'\\unnnn'</code>.  Used by SootClass to generate output. */

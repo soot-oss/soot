@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** An entry in the line number table.
  * @see LineNumberTable_attribute
  * @author Clark Verbrugge

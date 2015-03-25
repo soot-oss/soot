@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.infoflow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -16,6 +19,8 @@ import soot.jimple.*;
 
 public class ClassInfoFlowAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ClassInfoFlowAnalysis.class);
 	SootClass sootClass;
 	InfoFlowAnalysis dfa; // used to access the data flow analyses of other classes
 	
@@ -61,7 +66,7 @@ public class ClassInfoFlowAnalysis
 				methodToInfoFlowSummary.remove(method);
 				methodToInfoFlowSummary.put(method, smdfa.getMethodInfoFlowSummary());
 				return smdfa;
-//				G.v().out.println(method + " has SMART infoFlowGraph: ");
+//				logger.info(method + " has SMART infoFlowGraph: ");
 //				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
 			}
 		}
@@ -94,7 +99,7 @@ public class ClassInfoFlowAnalysis
 				methodToInfoFlowSummary.remove(method);
 				methodToInfoFlowSummary.put(method, smdfa.getMethodInfoFlowSummary());
 
-//				G.v().out.println(method + " has SMART infoFlowGraph: ");
+//				logger.info(method + " has SMART infoFlowGraph: ");
 //				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
 			}
 		}
@@ -120,7 +125,7 @@ public class ClassInfoFlowAnalysis
 					methodCount++;
 				methodToInfoFlowSummary.put(method, smdfa.getMethodDataFlowSummary());
 
-//				G.v().out.println(method + " has FLOW SENSITIVE infoFlowGraph: ");
+//				logger.info(method + " has FLOW SENSITIVE infoFlowGraph: ");
 //				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
 			}
 			else
@@ -131,7 +136,7 @@ public class ClassInfoFlowAnalysis
 					methodCount++;
 				methodToInfoFlowSummary.put(method, triviallyConservativeDataFlowAnalysis(method));
 
-//				G.v().out.println(method + " has TRIVIALLY CONSERVATIVE infoFlowGraph: ");
+//				logger.info(method + " has TRIVIALLY CONSERVATIVE infoFlowGraph: ");
 //				printDataFlowGraph((MutableDirectedGraph) methodToInfoFlowSummary.get(method));
 			}
 		}
@@ -151,7 +156,7 @@ public class ClassInfoFlowAnalysis
 				methodCount++;
 			methodToInfoFlowSummary.put(method, infoFlowGraph);
 
-//			G.v().out.println(method + " has infoFlowGraph: ");
+//			logger.info(method + " has infoFlowGraph: ");
 //			printDataFlowGraph(infoFlowGraph);
 		}
 	}

@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.base;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +50,9 @@ import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.util.Chain;
 
 public class ThisInliner extends BodyTransformer{
-	final static Logger logger = LoggerFactory.getLogger(ThisInliner.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(ThisInliner.class);
+
 
     public void internalTransform(Body b, String phaseName, Map options){
         

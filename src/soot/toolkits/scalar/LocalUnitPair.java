@@ -30,6 +30,9 @@
 
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 
@@ -38,6 +41,8 @@ import soot.*;
  */
 public class LocalUnitPair
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalUnitPair.class);
     Local local;
     Unit unit;
 

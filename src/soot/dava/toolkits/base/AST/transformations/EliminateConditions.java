@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -71,7 +74,9 @@ import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
  * for(int i =0;false;i++)   remove for .  copy init stmts to parent
  */
 public class EliminateConditions extends DepthFirstAdapter {
-	final static Logger logger = LoggerFactory.getLogger(EliminateConditions.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(EliminateConditions.class);
+
 	public boolean modified=false;
 	
 	ASTParentNodeFinder finder;

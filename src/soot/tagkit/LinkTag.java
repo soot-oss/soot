@@ -25,12 +25,17 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** Represents a tag that just has a string to be printed with the code.
  */
 
 public class LinkTag extends StringTag 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LinkTag.class);
     Host link;
 	String className;
 	

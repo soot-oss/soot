@@ -1,5 +1,8 @@
 package soot.toDex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +30,8 @@ import soot.jimple.internal.JimpleLocal;
  * should check for their register limits themselves.
  */
 public class RegisterAllocator {
+
+	private static final Logger logger =LoggerFactory.getLogger(RegisterAllocator.class);
 	
 	private int nextRegNum;
 	

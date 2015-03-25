@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.infoflow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.internal.*;
 
@@ -14,6 +17,8 @@ import soot.jimple.internal.*;
 
 public class FakeJimpleLocal extends JimpleLocal
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(FakeJimpleLocal.class);
 	Local realLocal;
 	Object info; // whatever you want to attach to it...
 	

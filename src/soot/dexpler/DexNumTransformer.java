@@ -24,6 +24,9 @@
 
 package soot.dexpler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -102,8 +105,9 @@ import soot.toolkits.scalar.UnitValueBoxPair;
  * DoubleConstant.v(Double.longBitsToDouble(literal)).
  */
 public class DexNumTransformer extends DexTransformer {
-	
-	final static Logger logger = LoggerFactory.getLogger(DexNumTransformer.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(DexNumTransformer.class);
+
 	
 	// Note: we need an instance variable for inner class access, treat this as
 	// a local variable (including initialization before use)

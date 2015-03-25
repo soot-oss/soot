@@ -29,12 +29,17 @@
 
 package soot.baf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import soot.baf.internal.*;
 
 public class PlaceholderInst extends AbstractInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PlaceholderInst.class);
     private Unit source;
 
     public final String getName() { return "<placeholder>"; }

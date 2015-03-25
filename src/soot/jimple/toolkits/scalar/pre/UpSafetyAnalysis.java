@@ -26,6 +26,9 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -38,6 +41,8 @@ import java.util.*;
  * given program-point.
  */
 public class UpSafetyAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<EquivalentValue>> {
+
+	private static final Logger logger =LoggerFactory.getLogger(UpSafetyAnalysis.class);
 	private SideEffectTester sideEffect;
 
 	private Map<Unit, EquivalentValue> unitToGenerateMap;

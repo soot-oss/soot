@@ -24,6 +24,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.options.Options;
 
 /** A class provider looks for a file of a specific format for a specified
@@ -31,6 +34,8 @@ import soot.options.Options;
  */
 public class JavaClassProvider implements ClassProvider
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JavaClassProvider.class);
 	public static class JarException extends RuntimeException {
 		private static final long serialVersionUID = 1L;
 

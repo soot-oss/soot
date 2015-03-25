@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.infoflow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.WeakHashMap;
 
 import soot.EquivalentValue;
@@ -29,6 +32,8 @@ import soot.Value;
  * @author Eric Bodden 
  */
 public class CachedEquivalentValue extends EquivalentValue {
+
+	private static final Logger logger =LoggerFactory.getLogger(CachedEquivalentValue.class);
 
 	protected int code = Integer.MAX_VALUE;
 	

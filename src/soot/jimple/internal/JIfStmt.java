@@ -30,6 +30,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
@@ -38,6 +41,8 @@ import java.util.*;
 
 public class JIfStmt extends AbstractStmt implements IfStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JIfStmt.class);
     final ValueBox conditionBox;
     final UnitBox targetBox;
 

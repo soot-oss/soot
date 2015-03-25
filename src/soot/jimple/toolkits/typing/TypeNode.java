@@ -26,6 +26,9 @@
 
 package soot.jimple.toolkits.typing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.options.Options;
 import soot.util.*;
@@ -36,6 +39,7 @@ import java.util.*;
  **/
 class TypeNode
 {
+	final static Logger logger = LoggerFactory.getLogger(TypeNode.class);
   private static final boolean DEBUG = false;
 
   private final int id;
@@ -60,7 +64,7 @@ class TypeNode
     if(!((type instanceof PrimType) || (type instanceof RefType) || 
 	 (type instanceof ArrayType) || (type instanceof NullType)))
       {
-	G.v().out.println("Unhandled type: " + type);
+	logger.info("Unhandled type: " + type);
 	throw new InternalTypingException();
       }
 
@@ -70,7 +74,7 @@ class TypeNode
 
     if(DEBUG)
       {
-	G.v().out.println("creating node " + this);
+	logger.info("creating node " + this);
       }
   }
   
@@ -371,10 +375,10 @@ class TypeNode
 	  {
 	    if(DEBUG)
 	      {
-		G.v().out.println("lca " + initial + " (" + type + ") & " + this + " =");
+		logger.info("lca " + initial + " (" + type + ") & " + this + " =");
 		for(Iterator<TypeNode> i = type.parents.iterator(); i.hasNext(); )
 		  {
-		    G.v().out.println("  " + i.next());
+		    logger.info("  " + i.next());
 		  }
 	      }
 	    return null;

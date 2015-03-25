@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.dava.*;
 import soot.jimple.*;
@@ -51,6 +54,8 @@ import java.util.*;
  * initialized on multiple paths but not all) then we remove the final keyword
  */
 public class FinalFieldDefinition {// extends DepthFirstAdapter{
+
+	private static final Logger logger =LoggerFactory.getLogger(FinalFieldDefinition.class);
 	SootClass sootClass;
 
 	SootMethod sootMethod;

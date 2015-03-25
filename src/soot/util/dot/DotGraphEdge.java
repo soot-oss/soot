@@ -27,6 +27,9 @@
 
 package soot.util.dot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.*;
 
@@ -34,6 +37,8 @@ import java.util.*;
  * @author Feng Qian 
  */
 public class DotGraphEdge implements Renderable {
+
+	private static final Logger logger =LoggerFactory.getLogger(DotGraphEdge.class);
   private boolean isDirected;
   private DotGraphNode start, end;
   private List<DotGraphAttribute> attributes;

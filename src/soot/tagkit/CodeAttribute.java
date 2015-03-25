@@ -25,6 +25,9 @@
 
 
 package soot.tagkit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import java.util.*;
@@ -38,6 +41,8 @@ import soot.*;
  */
 public class CodeAttribute extends JasminAttribute
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CodeAttribute.class);
     protected List<Unit> mUnits;
     protected List<Tag> mTags;
 
@@ -132,7 +137,7 @@ public class CodeAttribute extends JasminAttribute
     public byte[] decode(String attr, Hashtable<String, Integer> labelToPc)
     {
 	if (Options.v().verbose())
-	    G.v().out.println("[] JasminAttribute decode...");
+	    logger.info("[] JasminAttribute decode...");
 
 	List<byte[]> attributeHunks = new LinkedList<byte[]>();
 	int attributeSize = 0;
@@ -196,7 +201,7 @@ public class CodeAttribute extends JasminAttribute
 	    throw new RuntimeException("Index does not euqal to attrubute size :"+index+" -- "+attributeSize);
 
 	if (Options.v().verbose())
-	    G.v().out.println("[] Jasmin.decode finished...");
+	    logger.info("[] Jasmin.decode finished...");
 
 	return attributeValue;
     }

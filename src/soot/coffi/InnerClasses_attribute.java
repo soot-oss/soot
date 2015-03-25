@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Attribute that connects inner classes with their containing classes.
  * @see attribute_info
  * @author Archie L. Cobbs

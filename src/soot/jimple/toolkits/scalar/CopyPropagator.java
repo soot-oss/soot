@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.options.*;
 import soot.*;
 import soot.jimple.*;
@@ -38,6 +41,8 @@ import java.util.*;
 import soot.options.CPOptions;
 
 public class CopyPropagator extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(CopyPropagator.class);
 
 	protected ThrowAnalysis throwAnalysis = null;
 	protected boolean forceOmitExceptingUnitEdges = false;
@@ -81,7 +86,7 @@ public class CopyPropagator extends BodyTransformer {
 		int slowCopyPropagationCount = 0;
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + stmtBody.getMethod().getName() + "] Propagating copies...");
+			logger.info("[" + stmtBody.getMethod().getName() + "] Propagating copies...");
 
 		if (Options.v().time())
 			Timers.v().propagatorTimer.start();
@@ -245,7 +250,7 @@ public class CopyPropagator extends BodyTransformer {
 		}
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + stmtBody.getMethod().getName() + "]     Propagated: " + fastCopyPropagationCount
+			logger.info("[" + stmtBody.getMethod().getName() + "]     Propagated: " + fastCopyPropagationCount
 					+ " fast copies  " + slowCopyPropagationCount + " slow copies");
 
 		if (Options.v().time())

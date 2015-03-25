@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.BitSet;
 import java.util.List;
 
@@ -20,6 +23,8 @@ import soot.toDex.SootToDexUtils;
  * It is used by the "filled-new-array/range" opcode and the various ranged "invoke-" opcodes.
  */
 public class Insn3rc extends AbstractInsn {
+
+	private static final Logger logger =LoggerFactory.getLogger(Insn3rc.class);
 	
 	private short regCount;
 	

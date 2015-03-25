@@ -20,6 +20,9 @@
 
 package soot.plugins.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -31,6 +34,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(namespace="http://github.com/Sable/soot/plugins", name="phase-plugin")
 public class PhasePluginDescription extends PluginDescription {
+
+	private static final Logger logger =LoggerFactory.getLogger(PhasePluginDescription.class);
 	/**
 	 * Name of phase. Make sure it consists of '&lt;pack&gt;.&lt;phase&gt;'.
 	 */

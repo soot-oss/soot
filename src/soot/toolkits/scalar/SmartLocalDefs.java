@@ -19,6 +19,9 @@
 
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collections;
@@ -47,7 +50,9 @@ import soot.util.Cons;
  * Analysis that provides an implementation of the LocalDefs interface.
  */
 public class SmartLocalDefs implements LocalDefs {
-	final static Logger logger = LoggerFactory.getLogger(SmartLocalDefs.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(SmartLocalDefs.class);
+
 
 	private final Map<Cons<Unit, Local>, List<Unit>> answer;
 
@@ -89,7 +94,7 @@ public class SmartLocalDefs implements LocalDefs {
 			Timers.v().defsTimer.start();
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + g.getBody().getMethod().getName()
+			logger.info("[" + g.getBody().getMethod().getName()
 					+ "]     Constructing SmartLocalDefs...");
 
 		// reassign local numbers for compact bitsets
@@ -121,11 +126,11 @@ public class SmartLocalDefs implements LocalDefs {
 		}
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + g.getBody().getMethod().getName()
+			logger.info("[" + g.getBody().getMethod().getName()
 					+ "]        done localToDefs map...");
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + g.getBody().getMethod().getName()
+			logger.info("[" + g.getBody().getMethod().getName()
 					+ "]        done unitToMask map...");
 
 		analysis = new LocalDefsAnalysis(graph);
@@ -153,7 +158,7 @@ public class SmartLocalDefs implements LocalDefs {
 			Timers.v().defsTimer.end();
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + g.getBody().getMethod().getName()
+			logger.info("[" + g.getBody().getMethod().getName()
 					+ "]     SmartLocalDefs finished.");
 	}
 

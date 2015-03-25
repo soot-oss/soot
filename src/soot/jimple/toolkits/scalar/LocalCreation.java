@@ -26,6 +26,9 @@
 
 package soot.jimple.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
@@ -35,6 +38,8 @@ import java.util.*;
  * added to the chain, and the provided locals are guaranteed to have a unique name.
  */
 public class LocalCreation {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalCreation.class);
   /** if no prefix is given, this one's used */
   public static final String DEFAULT_PREFIX = "soot";
   private String prefix;

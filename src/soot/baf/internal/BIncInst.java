@@ -25,6 +25,9 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
@@ -32,6 +35,8 @@ import soot.util.*;
 import java.util.*;
 
 public class BIncInst extends AbstractInst implements IncInst {
+
+	private static final Logger logger =LoggerFactory.getLogger(BIncInst.class);
 	final ValueBox localBox;
 	final ValueBox defLocalBox;
 	final List<ValueBox> useBoxes;

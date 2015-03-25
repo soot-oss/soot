@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.jimple.*;
 import soot.dava.internal.SET.*;

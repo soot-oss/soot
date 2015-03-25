@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.internal;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -58,6 +61,7 @@ import soot.util.queue.QueueReader;
  * reversed-topological-order.
  */
 public final class TypeManager {
+	final static Logger logger = LoggerFactory.getLogger(TypeManager.class);
     private Map<SootClass, List<AllocNode>> class2allocs = 
         new HashMap<SootClass, List<AllocNode>>(1024);
     private List<AllocNode> anySubtypeAllocs = new LinkedList<AllocNode>();
@@ -119,7 +123,7 @@ public final class TypeManager {
 
         int numTypes = Scene.v().getTypeNumberer().size();
         if( pag.getOpts().verbose() )
-            G.v().out.println( "Total types: "+numTypes );
+            logger.info( "Total types: "+numTypes );
         // **
         initClass2allocs();
         makeClassTypeMask(Scene.v().getSootClass("java.lang.Object"));

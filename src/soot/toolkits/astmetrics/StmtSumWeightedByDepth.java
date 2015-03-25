@@ -1,5 +1,8 @@
 package soot.toolkits.astmetrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -11,8 +14,9 @@ import polyglot.visit.NodeVisitor;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 
 public class StmtSumWeightedByDepth extends ASTMetric {
-  
-	final static Logger logger = LoggerFactory.getLogger(StmtSumWeightedByDepth.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(StmtSumWeightedByDepth.class);
+
 
   int currentDepth;
   int sum;

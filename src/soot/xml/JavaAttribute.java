@@ -19,6 +19,9 @@
 
 package soot.xml;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -35,6 +38,8 @@ import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
 
 public class JavaAttribute {
+
+	private static final Logger logger =LoggerFactory.getLogger(JavaAttribute.class);
 
     private int startLn;
     private ArrayList<Tag> tags;
@@ -231,9 +236,9 @@ public class JavaAttribute {
 		Iterator<Tag> it = h.getTags().iterator();
 		while (it.hasNext()){
 			Tag t = it.next();
-			//G.v().out.println(t.getClass().toString());
+			//logger.info(t.getClass().toString());
 			if (t instanceof SourceLnPosTag) {
-				//G.v().out.println("t is LineNumberTag");
+				//logger.info("t is LineNumberTag");
 				return ((SourceLnPosTag)t).startLn();
 			}
             else if (t instanceof LineNumberTag){

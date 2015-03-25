@@ -18,6 +18,9 @@
  */
 
 package soot.dava.toolkits.base.AST;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 import java.util.*;
@@ -25,6 +28,8 @@ import soot.dava.internal.AST.*;
 
 public class UselessTryRemover extends ASTAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(UselessTryRemover.class);
     public UselessTryRemover( Singletons.Global g ) {}
     public static UselessTryRemover v() { return G.v().soot_dava_toolkits_base_AST_UselessTryRemover(); }
 

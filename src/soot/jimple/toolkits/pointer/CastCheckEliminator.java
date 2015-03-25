@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.toolkits.pointer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -26,6 +29,8 @@ import soot.jimple.*;
 
 /** A flow analysis that detects redundant cast checks. */
 public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSet> {
+
+	private static final Logger logger =LoggerFactory.getLogger(CastCheckEliminator.class);
     Map unitToKill = new HashMap();
     Map unitToGenFallThrough = new HashMap();
     Map unitToGenBranch = new HashMap();

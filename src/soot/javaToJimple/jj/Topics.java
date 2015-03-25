@@ -19,12 +19,17 @@
 
 package soot.javaToJimple.jj;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.main.Report;
 
 /**
  * Extension information for jj extension.
  */
 public class Topics {
+
+	private static final Logger logger =LoggerFactory.getLogger(Topics.class);
     public static final String jj = "jj";
 
     static {

@@ -1,11 +1,16 @@
 package soot.jimple.toolkits.typing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.Unit;
 import soot.jimple.IdentityStmt;
 import soot.jimple.Stmt;
 
 public class Util {
+
+	private static final Logger logger =LoggerFactory.getLogger(Util.class);
     
     /**
      * A new "normal" statement cannot be inserted in the middle of special

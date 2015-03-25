@@ -30,6 +30,9 @@
 
 
 package soot.grimp.internal;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,6 +51,8 @@ import soot.util.Switch;
 @SuppressWarnings({"serial","rawtypes","unchecked"})
 public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInvokeExpr 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GDynamicInvokeExpr.class);
 	protected ValueBox[] bsmArgBoxes;
 	private SootMethodRef bsmRef;
 

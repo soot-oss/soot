@@ -30,6 +30,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.tagkit.*;
 import soot.jimple.*;
@@ -39,6 +42,8 @@ import java.util.*;
 
 public class JArrayRef implements ArrayRef, ConvertToBaf
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JArrayRef.class);
     protected ValueBox baseBox;
     protected ValueBox indexBox;
 

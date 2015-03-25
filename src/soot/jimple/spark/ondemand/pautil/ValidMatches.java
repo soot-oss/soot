@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand.pautil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.Set;
 
@@ -33,6 +36,8 @@ import soot.jimple.spark.pag.VarNode;
 import soot.toolkits.scalar.Pair;
 
 public class ValidMatches {
+
+	private static final Logger logger =LoggerFactory.getLogger(ValidMatches.class);
 
 	// edges are in same direction as PAG, in the direction of value flow
 	private final MultiMap<VarNode, VarNode> vMatchEdges = new HashSetMultiMap<VarNode, VarNode>();

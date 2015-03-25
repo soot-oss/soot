@@ -1,9 +1,14 @@
 package soot.dexpler.typing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.DoubleConstant;
 import soot.jimple.LongConstant;
 
 public class UntypedLongOrDoubleConstant extends UntypedConstant {
+
+	private static final Logger logger =LoggerFactory.getLogger(UntypedLongOrDoubleConstant.class);
 
     /**
 	 * 

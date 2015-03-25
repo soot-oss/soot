@@ -30,6 +30,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
@@ -37,6 +40,8 @@ import java.util.*;
 
 public class JNewExpr extends AbstractNewExpr implements ConvertToBaf
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JNewExpr.class);
     public JNewExpr(RefType type) { this.type = type; }
 
     public void convertToBaf(JimpleToBafContext context, List<Unit> out)

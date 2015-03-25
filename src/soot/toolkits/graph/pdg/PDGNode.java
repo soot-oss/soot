@@ -18,6 +18,9 @@
  */
 package soot.toolkits.graph.pdg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +41,8 @@ import soot.toolkits.graph.Block;
  */
 
 public class PDGNode {
+
+	private static final Logger logger =LoggerFactory.getLogger(PDGNode.class);
 	
 	public enum Type{REGION, CFGNODE};
 	public enum Attribute{NORMAL, ENTRY, CONDHEADER, LOOPHEADER};

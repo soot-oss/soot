@@ -18,6 +18,9 @@
  */
 
 package soot.javaToJimple;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -33,6 +36,8 @@ import soot.SootClass;
 import soot.SootMethod;
 
 public class InitialResolver implements IInitialResolver {
+
+	private static final Logger logger =LoggerFactory.getLogger(InitialResolver.class);
 
     private polyglot.ast.Node astNode;  // source node
     private polyglot.frontend.Compiler compiler; 

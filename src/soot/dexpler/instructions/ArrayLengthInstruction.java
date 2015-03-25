@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction12x;
@@ -40,7 +43,9 @@ import soot.jimple.Jimple;
 import soot.jimple.LengthExpr;
 
 public class ArrayLengthInstruction extends DexlibAbstractInstruction {
-	final static Logger logger = LoggerFactory.getLogger(ArrayLengthInstruction.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(ArrayLengthInstruction.class);
+
     AssignStmt assign = null;
   
     public ArrayLengthInstruction (Instruction instruction, int codeAdress) {

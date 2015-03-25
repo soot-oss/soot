@@ -19,11 +19,16 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A class provider looks for a file of a specific format for a specified
  * class, and returns a ClassSource for it if it finds it.
  */
 public class CoffiClassProvider implements ClassProvider
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CoffiClassProvider.class);
     /** Look for the specified class. Return a ClassSource for it if found,
      * or null if it was not found. */
     public ClassSource find( String className ) {

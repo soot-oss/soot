@@ -24,6 +24,9 @@
  */
 
 package soot.tagkit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.baf.BafBody;
 import java.util.*;

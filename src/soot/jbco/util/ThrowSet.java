@@ -19,6 +19,9 @@
 
 package soot.jbco.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Scene;
 import soot.SootClass;
 
@@ -28,6 +31,8 @@ import soot.SootClass;
  * Created on 20-Jun-2006 
  */
 public class ThrowSet {
+
+	private static final Logger logger =LoggerFactory.getLogger(ThrowSet.class);
 
   private static SootClass throwable[] = null;
   

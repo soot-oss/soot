@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.toolkits.pointer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.tagkit.*;
 import soot.jimple.*;
@@ -26,6 +29,8 @@ import java.util.*;
 
 /** Adds colour tags to indicate potential aliasing between method parameters. */
 public class ParameterAliasTagger extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(ParameterAliasTagger.class);
     public ParameterAliasTagger( Singletons.Global g ) {}
     public static ParameterAliasTagger v() { return G.v().soot_jimple_toolkits_pointer_ParameterAliasTagger(); }
 

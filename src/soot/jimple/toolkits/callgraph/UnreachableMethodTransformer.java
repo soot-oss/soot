@@ -19,12 +19,17 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
 
 public class UnreachableMethodTransformer extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(UnreachableMethodTransformer.class);
     protected void internalTransform(Body b, String phaseName, Map options) {
         //logger.info( "Performing UnreachableMethodTransformer" );
         ReachableMethods reachableMethods = Scene.v().getReachableMethods();

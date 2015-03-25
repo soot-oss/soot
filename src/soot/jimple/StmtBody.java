@@ -26,12 +26,17 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 /** Abstract base class for Body's on Stmts (Jimple and Grimp). */
 @SuppressWarnings("serial")
 abstract public class StmtBody extends Body
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(StmtBody.class);
     /** Creates a StmtBody associated with the given method. */
     protected StmtBody(SootMethod m)
     {

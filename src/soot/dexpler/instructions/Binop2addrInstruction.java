@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
@@ -45,7 +48,9 @@ import soot.jimple.BinopExpr;
 import soot.jimple.Jimple;
 
 public class Binop2addrInstruction extends TaggedInstruction {
-	final static Logger logger = LoggerFactory.getLogger(Binop2addrInstruction.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(Binop2addrInstruction.class);
+
    Value expr = null;
    AssignStmt assign = null;
   

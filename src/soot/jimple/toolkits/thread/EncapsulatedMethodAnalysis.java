@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.toolkits.graph.*;
@@ -9,6 +12,8 @@ import soot.jimple.*;
 
 public class EncapsulatedMethodAnalysis // extends ForwardFlowAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(EncapsulatedMethodAnalysis.class);
 	boolean isMethodPure;
 	boolean isMethodConditionallyPure;
 	

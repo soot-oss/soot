@@ -20,6 +20,9 @@
 
 package soot.dexpler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.G;
 import soot.Singletons;
 import soot.baf.EnterMonitorInst;
@@ -176,6 +179,8 @@ op   fe +sput-object-volatile       21c  n field-ref     optimized|continue|thro
  */
 
 public class DalvikThrowAnalysis extends UnitThrowAnalysis {
+
+	private static final Logger logger =LoggerFactory.getLogger(DalvikThrowAnalysis.class);
  
     /**
      * Constructs a <code>DalvikThrowAnalysis</code> for inclusion in 

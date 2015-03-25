@@ -19,8 +19,13 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 public class PrivateFieldSetMethodSource implements soot.MethodSource {
+
+	private static final Logger logger =LoggerFactory.getLogger(PrivateFieldSetMethodSource.class);
 
     private final soot.Type fieldType;
     private final String fieldName;

@@ -19,6 +19,9 @@
 
 package soot.util.cfgcmd;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -42,6 +45,8 @@ import soot.util.dot.DotGraphNode;
  * of a control flow graph.
  */
 public class CFGToDotGraph {
+
+	private static final Logger logger =LoggerFactory.getLogger(CFGToDotGraph.class);
 
   private boolean onePage; // in one or several 8.5x11 pages.
   private boolean isBrief;

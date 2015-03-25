@@ -1,5 +1,8 @@
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -24,7 +27,9 @@ import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
 
 public class TypeCastingError extends DepthFirstAdapter {
-	final static Logger logger = LoggerFactory.getLogger(TypeCastingError.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(TypeCastingError.class);
+
 	public TypeCastingError(){
 		
 	}

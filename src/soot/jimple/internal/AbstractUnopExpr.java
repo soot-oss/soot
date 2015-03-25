@@ -30,6 +30,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
@@ -38,6 +41,8 @@ import java.util.*;
 @SuppressWarnings("serial")
 abstract public class AbstractUnopExpr implements UnopExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AbstractUnopExpr.class);
     final ValueBox opBox;
 
     protected AbstractUnopExpr(ValueBox opBox) { 

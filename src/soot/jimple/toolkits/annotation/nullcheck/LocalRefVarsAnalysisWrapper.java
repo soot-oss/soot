@@ -49,6 +49,9 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
@@ -61,6 +64,8 @@ import java.util.*;
 @Deprecated
 public class LocalRefVarsAnalysisWrapper
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalRefVarsAnalysisWrapper.class);
     // compilation options
     private static final boolean computeChecks = true;
     private static final boolean discardKTop = true;

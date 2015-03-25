@@ -31,6 +31,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,6 +57,8 @@ import soot.util.Switch;
 @SuppressWarnings("serial")
 public class JDynamicInvokeExpr extends AbstractInvokeExpr  implements DynamicInvokeExpr, ConvertToBaf
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JDynamicInvokeExpr.class);
 	protected SootMethodRef bsmRef;
 	protected ValueBox[] bsmArgBoxes;
 	

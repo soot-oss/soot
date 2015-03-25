@@ -18,6 +18,9 @@
  */
 package soot.jimple.toolkits.ide.icfg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +36,8 @@ import soot.toolkits.graph.DirectedGraph;
  * This should be used for backward analyses.
  */
 public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,SootMethod> {
+
+	private static final Logger logger =LoggerFactory.getLogger(BackwardsInterproceduralCFG.class);
 	
 	protected final BiDiInterproceduralCFG<Unit,SootMethod> delegate;
 	

@@ -19,6 +19,9 @@
 
 package soot.toolkits.graph.interaction;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public interface IInteractionConstants{
 
     public static final int NEW_ANALYSIS = 0;

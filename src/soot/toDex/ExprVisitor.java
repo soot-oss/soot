@@ -1,5 +1,8 @@
 package soot.toDex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -83,6 +86,8 @@ import soot.util.Switchable;
  * @see StmtVisitor
  */
 public class ExprVisitor implements ExprSwitch {
+
+	private static final Logger logger =LoggerFactory.getLogger(ExprVisitor.class);
 	
 	private final DexBuilder dexFile;
 	

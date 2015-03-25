@@ -19,12 +19,17 @@
 
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class DNegExpr extends AbstractNegExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DNegExpr.class);
     public DNegExpr(Value op)
     {
         super(Grimp.v().newExprBox(op));

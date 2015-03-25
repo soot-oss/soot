@@ -1,5 +1,8 @@
 package soot.jimple.validation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 import soot.Body;
@@ -13,6 +16,8 @@ import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
 public class IdentityStatementsValidator implements BodyValidator {
+
+	private static final Logger logger =LoggerFactory.getLogger(IdentityStatementsValidator.class);
 	public static IdentityStatementsValidator INSTANCE;
 	
 	

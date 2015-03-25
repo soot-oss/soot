@@ -26,12 +26,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BStaticInvokeInst extends AbstractInvokeInst implements StaticInvokeInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BStaticInvokeInst.class);
     public BStaticInvokeInst(SootMethodRef methodRef) { 
         if( !methodRef.isStatic() ) throw new RuntimeException("wrong static-ness");
         this.methodRef = methodRef;

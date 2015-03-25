@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.ide.libsumm;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 import soot.Body;
@@ -11,6 +14,8 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
 
 public class Main {
+
+	private static final Logger logger =LoggerFactory.getLogger(Main.class);
 	static int yes=0, no=0;
 
 	/**

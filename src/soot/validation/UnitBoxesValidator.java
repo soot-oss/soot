@@ -1,11 +1,16 @@
 package soot.validation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 import soot.Body;
 import soot.UnitBox;
 
 public class UnitBoxesValidator implements BodyValidator {
+
+	private static final Logger logger =LoggerFactory.getLogger(UnitBoxesValidator.class);
 	public static UnitBoxesValidator INSTANCE;
 	
 	

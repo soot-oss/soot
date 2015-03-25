@@ -19,6 +19,9 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -32,6 +35,8 @@ import soot.SootClass;
 import soot.SootField;
 
 public class PolyglotMethodSource implements MethodSource {
+
+	private static final Logger logger =LoggerFactory.getLogger(PolyglotMethodSource.class);
 
     private polyglot.ast.Block block;
     private List formals;

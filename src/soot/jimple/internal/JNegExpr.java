@@ -30,6 +30,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
@@ -37,6 +40,8 @@ import java.util.*;
 
 public class JNegExpr extends AbstractNegExpr implements ConvertToBaf
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JNegExpr.class);
     public JNegExpr(Value op)
     {
         super(Jimple.v().newImmediateBox(op));

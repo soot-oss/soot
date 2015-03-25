@@ -27,6 +27,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -56,7 +59,9 @@ import soot.dava.toolkits.base.AST.traversals.*;
  */
 
 public class LocalVariableCleaner extends DepthFirstAdapter {
-	final static Logger logger = LoggerFactory.getLogger(LocalVariableCleaner.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalVariableCleaner.class);
+
 	
 	
 	ASTNode AST;

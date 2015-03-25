@@ -26,8 +26,13 @@
 
 package soot.jimple.toolkits.typing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TypeException extends Exception
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(TypeException.class);
   public TypeException(String message)
   {
     super(message);

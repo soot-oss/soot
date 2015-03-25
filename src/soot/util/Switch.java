@@ -26,6 +26,9 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Basic interface used in the implementation of the Visitor design pattern. */
 public interface Switch
 {

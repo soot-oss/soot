@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.heapinsE;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.spark.geom.dataRep.RectangleNode;
 import soot.jimple.spark.geom.dataRep.SegmentNode;
 import soot.jimple.spark.geom.geomPA.Constants;
@@ -40,6 +43,8 @@ import soot.jimple.spark.geom.geomPA.IFigureManager;
  *
  */
 public class HeapInsIntervalManager extends IFigureManager {
+
+	private static final Logger logger =LoggerFactory.getLogger(HeapInsIntervalManager.class);
 	public static int Divisions = 3;
 	
 	// Type IDs for the figures

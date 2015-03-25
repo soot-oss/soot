@@ -20,6 +20,9 @@
 
 package soot.plugins.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Base class of all available plugin description.
  * 

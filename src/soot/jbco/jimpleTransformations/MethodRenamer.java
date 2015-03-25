@@ -19,6 +19,9 @@
 
 package soot.jbco.jimpleTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.*;
 import soot.jbco.IJbcoTransform;
@@ -31,6 +34,8 @@ import soot.jimple.*;
  *         Created on 24-Jan-2006
  */
 public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(MethodRenamer.class);
 
 	public static String dependancies[] = new String[] { "wjtp.jbco_mr" };
 

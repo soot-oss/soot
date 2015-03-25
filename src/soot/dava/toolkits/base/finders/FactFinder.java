@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.finders;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.dava.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.SET.*;

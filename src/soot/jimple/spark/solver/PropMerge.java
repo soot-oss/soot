@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.solver;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
 import soot.*;
@@ -29,6 +32,7 @@ import java.util.*;
  */
 
 public final class PropMerge extends Propagator {
+	final static Logger logger = LoggerFactory.getLogger(PropMerge.class);
     protected final Set<Node> varNodeWorkList = new TreeSet<Node>();
 
     public PropMerge( PAG pag ) { this.pag = pag; }
@@ -42,7 +46,7 @@ public final class PropMerge extends Propagator {
         boolean verbose = pag.getOpts().verbose();
 	do {
             if( verbose ) {
-                G.v().out.println( "Worklist has "+varNodeWorkList.size()+
+                logger.info( "Worklist has "+varNodeWorkList.size()+
                         " nodes." );
             }
             int iter = 0;
@@ -54,13 +58,13 @@ public final class PropMerge extends Propagator {
                     iter++;
                     if( iter >= 1000 ) {
                         iter = 0;
-                        G.v().out.println( "Worklist has "+varNodeWorkList.size()+
+                        logger.info( "Worklist has "+varNodeWorkList.size()+
                                 " nodes." );
                     }
                 }
             }
             if( verbose ) {
-                G.v().out.println( "Now handling field references" );
+                logger.info( "Now handling field references" );
             }
             for (Object object : pag.storeSources()) {
                 final VarNode src = (VarNode) object;

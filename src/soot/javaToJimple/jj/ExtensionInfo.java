@@ -19,6 +19,9 @@
 
 package soot.javaToJimple.jj;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.List;
@@ -35,6 +38,8 @@ import soot.javaToJimple.jj.types.JjTypeSystem_c;
  * Extension information for jj extension.
  */
 public class ExtensionInfo extends polyglot.ext.jl.ExtensionInfo {
+
+	private static final Logger logger =LoggerFactory.getLogger(ExtensionInfo.class);
     static {
         // force Topics to load
         new Topics();

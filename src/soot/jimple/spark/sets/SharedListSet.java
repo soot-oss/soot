@@ -1,5 +1,8 @@
 package soot.jimple.spark.sets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Type;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
@@ -49,6 +52,8 @@ add: O(n), and might add things to other lists too
  */
 public class SharedListSet extends PointsToSetInternal
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SharedListSet.class);
 	public SharedListSet(Type type, PAG pag)
 	{
         super( type );

@@ -26,6 +26,9 @@
  */
 
 package soot.jimple.toolkits.annotation.purity;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import soot.*;
 import soot.util.*;
@@ -44,6 +47,8 @@ import soot.toolkits.graph.*;
  * DirectedGraph!
  */
 public class DirectedCallGraph implements DirectedGraph {
+
+	private static final Logger logger =LoggerFactory.getLogger(DirectedCallGraph.class);
 
     protected Set  nodes;
     protected Map<Object,List>  succ;
@@ -83,7 +88,7 @@ public class DirectedCallGraph implements DirectedGraph {
 	// simple breadth-first visit
 	Set remain = new HashSet(filteredHeads);
 	int nb = 0;
-	if (verbose) G.v().out.println("[AM] dumping method dependencies");
+	if (verbose) logger.info("[AM] dumping method dependencies");
 	while (!remain.isEmpty()) {
 	    Set newRemain = new HashSet();
 	    Iterator it = remain.iterator();
@@ -91,13 +96,13 @@ public class DirectedCallGraph implements DirectedGraph {
 		SootMethod m = (SootMethod)it.next();
 		Iterator itt = cg.edgesOutOf(m);
 		if (verbose) 
-		    G.v().out.println(" |- "+m.toString()+" calls");
+		    logger.info(" |- "+m.toString()+" calls");
 		while (itt.hasNext())  {
 		    Edge edge = (Edge)itt.next();
 		    SootMethod mm = edge.tgt();
 		    boolean keep = mm.isConcrete() && filter.want(mm);
 		    if (verbose)
-			G.v().out.println(" |  |- "+mm.toString()+
+			logger.info(" |  |- "+mm.toString()+
 					  (keep?"":" (filtered out)"));
 		    if (keep) {
 			if (this.nodes.add(mm)) newRemain.add(mm);
@@ -109,7 +114,7 @@ public class DirectedCallGraph implements DirectedGraph {
 	    }
 	    remain = newRemain;
 	}
-	G.v().out.println("[AM] number of methods to be analysed: "+nb);
+	logger.info("[AM] number of methods to be analysed: "+nb);
 
 	// MultiMap -> Map of List
 	this.succ   = new HashMap();

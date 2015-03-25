@@ -25,6 +25,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.toolkits.graph.ExceptionalBlockGraph;
 import soot.toolkits.graph.CompleteUnitGraph;
@@ -48,6 +51,8 @@ import soot.toolkits.graph.CompleteUnitGraph;
  */
 public class CompleteBlockGraph extends ExceptionalBlockGraph 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CompleteBlockGraph.class);
     public CompleteBlockGraph(Body b) {
 	super(new CompleteUnitGraph(b));
     }

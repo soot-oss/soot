@@ -28,7 +28,10 @@
 
 
 package soot;
-import soot.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.util.Switch;
 
 /**
  *   Soot representation used for not-yet-typed objects. Implemented as
@@ -37,6 +40,8 @@ import soot.util.*;
 @SuppressWarnings("serial")
 public class UnknownType extends Type
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(UnknownType.class);
     public UnknownType( Singletons.Global g ) {}
     public static UnknownType v() { return G.v().soot_UnknownType(); }
 

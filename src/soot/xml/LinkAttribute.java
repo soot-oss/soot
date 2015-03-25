@@ -17,9 +17,14 @@
  * Boston, MA 02111-1307, USA.
  */
 
-package soot.xml;    
+package soot.xml;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;    
 
 public class LinkAttribute {
+
+	private static final Logger logger =LoggerFactory.getLogger(LinkAttribute.class);
     
     private String info;
     private int jimpleLink;

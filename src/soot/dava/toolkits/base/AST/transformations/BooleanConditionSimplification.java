@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.dava.toolkits.base.AST.analysis.*;
 import soot.dava.internal.javaRep.*;
 import soot.dava.internal.AST.*;
@@ -30,6 +33,8 @@ import soot.jimple.*;
   this is done by overriding the caseASTStatementSequenceNode
 */
 public class BooleanConditionSimplification extends DepthFirstAdapter{
+
+	private static final Logger logger =LoggerFactory.getLogger(BooleanConditionSimplification.class);
 
     public BooleanConditionSimplification(boolean verbose){
 	super(verbose);

@@ -20,10 +20,15 @@
 
 package soot.dexpler.tags;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import soot.tagkit.Tag;
 
 public class NumOpTag implements Tag {
+
+	private static final Logger logger =LoggerFactory.getLogger(NumOpTag.class);
 	public String getName() {
 		return "NumOpTag";
 	}

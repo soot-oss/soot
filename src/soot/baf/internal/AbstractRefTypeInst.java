@@ -29,6 +29,9 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 public abstract class AbstractRefTypeInst extends AbstractInst

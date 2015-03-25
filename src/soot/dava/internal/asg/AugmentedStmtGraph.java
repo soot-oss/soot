@@ -19,6 +19,9 @@
 
 package soot.dava.internal.asg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,6 +45,8 @@ import soot.util.IterableSet;
 
 public class AugmentedStmtGraph implements DirectedGraph<AugmentedStmt>
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AugmentedStmtGraph.class);
     private HashMap<Stmt, AugmentedStmt> binding;
     private HashMap<AugmentedStmt, AugmentedStmt> original2clone;
     private IterableSet<AugmentedStmt> aug_list;

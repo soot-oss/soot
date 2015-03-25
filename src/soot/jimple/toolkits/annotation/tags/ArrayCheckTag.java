@@ -25,10 +25,15 @@
 
 package soot.jimple.toolkits.annotation.tags;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Implementation of the Tag interface for array bounds checks.
  */
 public class ArrayCheckTag implements OneByteCodeTag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ArrayCheckTag.class);
     private final static String NAME = "ArrayCheckTag";
 
     private boolean lowerCheck = true;

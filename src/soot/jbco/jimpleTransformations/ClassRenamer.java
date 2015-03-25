@@ -19,6 +19,9 @@
 
 package soot.jbco.jimpleTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -30,6 +33,8 @@ import soot.jbco.util.*;
  * Created on 26-Jan-2006 
  */
 public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(ClassRenamer.class);
 
   public void outputSummary() {}
   
@@ -56,7 +61,7 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
   protected void internalTransform(String phaseName, Map<String,String> options)
   {
     if (output)
-      G.v().out.println("Transforming Class Names...");
+      logger.info("Transforming Class Names...");
     
     soot.jbco.util.BodyBuilder.retrieveAllBodies();
     soot.jbco.util.BodyBuilder.retrieveAllNames();

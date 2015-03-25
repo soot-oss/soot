@@ -20,6 +20,9 @@
 
 package soot.dava.internal.AST;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
@@ -28,6 +31,8 @@ import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTSynchronizedBlockNode extends ASTLabeledNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ASTSynchronizedBlockNode.class);
     private List<Object> body;
     private ValueBox localBox;
 

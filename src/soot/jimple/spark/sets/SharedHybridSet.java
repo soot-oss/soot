@@ -1,5 +1,8 @@
 package soot.jimple.spark.sets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Type;
 import soot.util.BitSetIterator;
 import soot.util.BitVector;
@@ -41,6 +44,8 @@ import java.util.*;
  */
 
 public class SharedHybridSet extends PointsToSetInternal {
+
+	private static final Logger logger =LoggerFactory.getLogger(SharedHybridSet.class);
 
 	public SharedHybridSet(Type type, PAG pag) {
 		// I'm not sure what "type" is for, but this is the way the other set
@@ -472,7 +477,9 @@ public class SharedHybridSet extends PointsToSetInternal {
 	}
 
 	private class OverflowList {
+
 		public class ListNode {
+
 			public Node elem;
 			public ListNode next;
 			public ListNode(Node elem, ListNode next)

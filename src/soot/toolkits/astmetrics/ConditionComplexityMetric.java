@@ -1,5 +1,8 @@
 package soot.toolkits.astmetrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.Binary;
 import polyglot.ast.Expr;
 import polyglot.ast.If;
@@ -18,6 +21,8 @@ import polyglot.visit.NodeVisitor;
  * A boolean logical operator ( AND and OR) +1.0
  */
 public class ConditionComplexityMetric extends ASTMetric {
+
+	private static final Logger logger =LoggerFactory.getLogger(ConditionComplexityMetric.class);
 	int loopComplexity;
 	int ifComplexity;
 	

@@ -18,11 +18,16 @@
  */
 
 package soot.jimple.toolkits.pointer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import soot.tagkit.*;
 
 public class DependenceGraph implements Attribute
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DependenceGraph.class);
     private final static String NAME = "DependenceGraph";
     HashSet<Edge> edges = new HashSet<Edge>();
 

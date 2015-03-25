@@ -18,12 +18,17 @@
  */
 package soot.toolkits.graph.pdg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.toolkits.graph.BlockGraph;
 
 
 public class EnhancedBlockGraph extends BlockGraph 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(EnhancedBlockGraph.class);
    
     public  EnhancedBlockGraph(Body body) {
         this(new EnhancedUnitGraph(body));

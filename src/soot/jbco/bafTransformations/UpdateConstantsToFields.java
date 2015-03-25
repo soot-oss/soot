@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -33,6 +36,8 @@ import soot.jbco.jimpleTransformations.*;
  * Created on 31-May-2006
  */
 public class UpdateConstantsToFields extends BodyTransformer  implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(UpdateConstantsToFields.class);
 
   public static String dependancies[] = new String[] {"wjtp.jbco_cc","bb.jbco_ecvf", "bb.jbco_ful", "bb.lp"};
   

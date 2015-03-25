@@ -18,6 +18,9 @@
  */
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
@@ -57,6 +60,8 @@ import soot.toolkits.scalar.Pair;
 
 @SuppressWarnings("serial")
 public class IFDSPossibleTypes extends DefaultJimpleIFDSTabulationProblem<Pair<Value,Type>,InterproceduralCFG<Unit, SootMethod>> {
+
+	private static final Logger logger =LoggerFactory.getLogger(IFDSPossibleTypes.class);
 
 	public IFDSPossibleTypes(InterproceduralCFG<Unit,SootMethod> icfg) {
 		super(icfg);

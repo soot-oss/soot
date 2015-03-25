@@ -18,6 +18,9 @@
  */
 package soot.jimple.toolkits.annotation.logic;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -34,6 +37,8 @@ import soot.toolkits.graph.UnitGraph;
  * @author Eric Bodden
  */
 public class Loop {
+
+	private static final Logger logger =LoggerFactory.getLogger(Loop.class);
     
     protected final Stmt header;
     protected final Stmt backJump;

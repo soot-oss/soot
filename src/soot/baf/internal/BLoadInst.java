@@ -29,6 +29,9 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
@@ -36,6 +39,8 @@ import java.util.*;
 
 public class BLoadInst extends AbstractOpTypeInst implements LoadInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BLoadInst.class);
     ValueBox localBox;
     List useBoxes;
     

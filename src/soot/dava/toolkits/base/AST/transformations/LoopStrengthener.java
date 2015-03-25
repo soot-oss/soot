@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -47,7 +50,9 @@ import soot.dava.toolkits.base.AST.analysis.*;
 */
 
 public class LoopStrengthener extends DepthFirstAdapter{
-	final static Logger logger = LoggerFactory.getLogger(LoopStrengthener.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(LoopStrengthener.class);
+
     public LoopStrengthener(){
     }
 

@@ -19,8 +19,13 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 public class PrivateMethodAccMethodSource implements soot.MethodSource {
+
+	private static final Logger logger =LoggerFactory.getLogger(PrivateMethodAccMethodSource.class);
 
     public PrivateMethodAccMethodSource(polyglot.types.MethodInstance methInst){
         this.methodInst = methInst;

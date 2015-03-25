@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.pag;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.SootClass;
 import soot.SootField;
 import soot.Type;
@@ -27,6 +30,8 @@ import soot.Type;
  * @author Ondrej Lhotak
  */
 public class GlobalVarNode extends VarNode {
+
+	private static final Logger logger =LoggerFactory.getLogger(GlobalVarNode.class);
     GlobalVarNode( PAG pag, Object variable, Type t ) {
 	super( pag, variable, t );
     }

@@ -19,7 +19,12 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SourcePositionTag extends PositionTag {
+
+	private static final Logger logger =LoggerFactory.getLogger(SourcePositionTag.class);
     public SourcePositionTag(int i, int j){
         super(i,j);
     }

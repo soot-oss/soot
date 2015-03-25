@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.*;
 import soot.baf.*;
@@ -33,6 +36,8 @@ import soot.jbco.util.*;
  * This transformer transforms gotos/ifs into JSRS, but not all of them.
  */
 public class AddJSRs extends BodyTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(AddJSRs.class);
 
   int jsrcount = 0;
 

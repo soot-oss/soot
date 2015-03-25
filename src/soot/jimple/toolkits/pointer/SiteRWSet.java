@@ -18,11 +18,16 @@
  */
 
 package soot.jimple.toolkits.pointer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import soot.*;
 
 /** Represents the read or write set of a statement. */
 public class SiteRWSet extends RWSet {
+
+	private static final Logger logger =LoggerFactory.getLogger(SiteRWSet.class);
     public HashSet<RWSet> sets = new HashSet<RWSet>();
     protected boolean callsNative = false;
 

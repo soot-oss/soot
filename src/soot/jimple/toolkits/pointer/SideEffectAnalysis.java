@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.toolkits.pointer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -25,6 +28,8 @@ import java.util.*;
 
 /** Generates side-effect information from a PointsToAnalysis. */
 public class SideEffectAnalysis {
+
+	private static final Logger logger =LoggerFactory.getLogger(SideEffectAnalysis.class);
     PointsToAnalysis pa;
     CallGraph cg;
     Map<SootMethod, MethodRWSet> methodToNTReadSet = new HashMap<SootMethod, MethodRWSet>();

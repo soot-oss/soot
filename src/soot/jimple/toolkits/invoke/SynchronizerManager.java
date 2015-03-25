@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.invoke;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
@@ -33,6 +36,8 @@ import java.util.*;
 /** Utility methods for dealing with synchronization. */
 public class SynchronizerManager
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SynchronizerManager.class);
     public SynchronizerManager( Singletons.Global g ) {}
     public static SynchronizerManager v() { return G.v().soot_jimple_toolkits_invoke_SynchronizerManager(); }
     /** Maps classes to class$ fields.  Don't trust default. */

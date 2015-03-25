@@ -26,6 +26,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 
@@ -38,6 +41,8 @@ import soot.*;
  */
 public class BriefBlockGraph extends BlockGraph 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BriefBlockGraph.class);
     /**
      *  Constructs a {@link BriefBlockGraph} from a given {@link Body}.
      *

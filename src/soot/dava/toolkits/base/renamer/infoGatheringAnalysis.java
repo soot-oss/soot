@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.renamer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.dava.toolkits.base.AST.analysis.*;
 import soot.*;
 import soot.jimple.*;
@@ -38,7 +41,9 @@ import soot.jimple.internal.*;
 import soot.dava.internal.AST.*;
 
 public class infoGatheringAnalysis extends DepthFirstAdapter {
-	final static Logger logger = LoggerFactory.getLogger(infoGatheringAnalysis.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(infoGatheringAnalysis.class);
+
 	public final static int CLASSNAME = 0;  //used by renamer
 
 	public final static int METHODNAME = 1;

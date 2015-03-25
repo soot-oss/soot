@@ -31,11 +31,16 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** There can be many annotations in each Visibility attribute 
  * @see attribute_info
  * @author Jennifer Lhotak
  */
 public class annotation extends attribute_info {
+
+	private static final Logger logger =LoggerFactory.getLogger(annotation.class);
    /** type_index - CONSTANT_Utf8_info structure constant pool entry. */
    public int type_index;
    /** num_element_value_pairs */

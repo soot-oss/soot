@@ -26,6 +26,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -46,6 +49,8 @@ import soot.toolkits.exceptions.ThrowableSet;
 
 public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGraph<Block>
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ExceptionalBlockGraph.class);
     // Maps for distinguishing exceptional and unexceptional control flow.
     // We follow two conventions to save space (and runtime, if no client ever 
     // asks for the exceptional information):  if the graph contains no

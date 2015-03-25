@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Set;
 
 import soot.PointsToSet;
@@ -27,6 +30,8 @@ import soot.jimple.spark.sets.EqualsSupportingPointsToSet;
 import soot.jimple.spark.sets.PointsToSetInternal;
 
 public class WrappedPointsToSet implements EqualsSupportingPointsToSet {
+
+	private static final Logger logger =LoggerFactory.getLogger(WrappedPointsToSet.class);
   
   final PointsToSetInternal wrapped;
 

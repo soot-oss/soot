@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.solver;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.FastHierarchy;
 import soot.G;
 import soot.jimple.spark.pag.AllocNode;
@@ -37,6 +40,8 @@ import soot.util.MultiMap;
  */
 
 public class MergeChecker {
+
+	private static final Logger logger =LoggerFactory.getLogger(MergeChecker.class);
     public MergeChecker( PAG pag ) { this.pag = pag; }
     /** Actually does the propagation. */
     public void check() {
@@ -67,7 +72,7 @@ public class MergeChecker {
                                 dst.getP2Set() ) ) continue;
                     FieldRefNode fr2 = dst.dot( fr.getField() );
                     if( fr2.getReplacement() != fr.getReplacement() ) {
-                        G.v().out.println( "Check failure: "
+                        logger.info( "Check failure: "
                                 +fr+" should be merged with "+fr2 );
                     }
                 }
@@ -97,7 +102,7 @@ public class MergeChecker {
         if( !p2set.contains( n ) 
                 && ( fh == null || container.getType() == null ||
                 fh.canStoreType( n.getType(), container.getType() ) ) ) {
-            G.v().out.println( "Check failure: "+container+" does not have "+n
+            logger.info( "Check failure: "+container+" does not have "+n
                     +"; upstream is "+upstream );
         }
     }

@@ -30,6 +30,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
@@ -38,6 +41,8 @@ import soot.baf.*;
 
 public class JInvokeStmt extends AbstractStmt implements InvokeStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JInvokeStmt.class);
     final ValueBox invokeExprBox;
 
     public JInvokeStmt(Value c)

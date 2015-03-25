@@ -19,6 +19,9 @@
 
 package soot.toolkits.exceptions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 
 import soot.FastHierarchy;
@@ -194,6 +197,8 @@ import soot.toolkits.exceptions.ThrowableSet;
  * all possible exceptions.
  */
 public class UnitThrowAnalysis extends AbstractThrowAnalysis {
+
+	private static final Logger logger =LoggerFactory.getLogger(UnitThrowAnalysis.class);
 	
 	protected final ThrowableSet.Manager mgr = ThrowableSet.Manager.v();
 

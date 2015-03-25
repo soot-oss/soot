@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -44,6 +47,8 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
  * if that is done then make sure to set the ASTAnalysisModified
  */
 public class UselessLabeledBlockRemover extends DepthFirstAdapter{
+
+	private static final Logger logger =LoggerFactory.getLogger(UselessLabeledBlockRemover.class);
 	boolean changed=false;
 	
     public UselessLabeledBlockRemover(){

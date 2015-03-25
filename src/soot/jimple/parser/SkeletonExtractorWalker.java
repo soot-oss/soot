@@ -28,6 +28,9 @@
 
 package soot.jimple.parser;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.parser.node.*;
 import java.util.*;
@@ -39,6 +42,8 @@ import java.util.*;
 */   
 public class SkeletonExtractorWalker extends Walker
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SkeletonExtractorWalker.class);
            
     public SkeletonExtractorWalker(SootResolver aResolver, SootClass aSootClass) 
     {        

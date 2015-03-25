@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.BitSet;
 
 import org.jf.dexlib2.Opcode;
@@ -16,6 +19,8 @@ import soot.toDex.Register;
  * It is used e.g. by the opcodes "cmp-long", "aput" and "add-int".
  */
 public class Insn23x extends AbstractInsn implements ThreeRegInsn {
+
+	private static final Logger logger =LoggerFactory.getLogger(Insn23x.class);
 
 	public Insn23x(Opcode opc, Register regA, Register regB, Register regC) {
 		super(opc);

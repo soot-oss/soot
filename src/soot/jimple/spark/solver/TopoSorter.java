@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.solver;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.*;
 import java.util.*;
 
@@ -26,6 +29,8 @@ import java.util.*;
  */
 
 public class TopoSorter {
+
+	private static final Logger logger =LoggerFactory.getLogger(TopoSorter.class);
     /** Actually perform the topological sort on the PAG. */
     public void sort() {
         for( VarNode v : pag.getVarNodeNumberer() ) {

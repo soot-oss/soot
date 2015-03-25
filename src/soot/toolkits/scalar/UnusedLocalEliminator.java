@@ -25,6 +25,9 @@
 
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.options.*;
 
 import soot.*;
@@ -39,6 +42,8 @@ import java.util.*;
  * @see Body
  */
 public class UnusedLocalEliminator extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(UnusedLocalEliminator.class);
 	public UnusedLocalEliminator(Singletons.Global g) {
 	}
 
@@ -48,7 +53,7 @@ public class UnusedLocalEliminator extends BodyTransformer {
 
 	protected void internalTransform(Body body, String phaseName, Map<String,String> options) {
 		if (Options.v().verbose())
-			G.v().out.println("[" + body.getMethod().getName()
+			logger.info("[" + body.getMethod().getName()
 					+ "] Eliminating unused locals...");
 
 		

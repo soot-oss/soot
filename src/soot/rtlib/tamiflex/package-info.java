@@ -16,3 +16,6 @@
  * This will cause Soot to emit the class SootSig along with the analyzed program.
  */
 package soot.rtlib.tamiflex;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;

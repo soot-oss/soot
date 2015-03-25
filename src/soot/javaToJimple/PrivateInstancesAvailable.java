@@ -18,11 +18,16 @@
  */
 
 package soot.javaToJimple;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import polyglot.util.IdentityKey;
 
 public class PrivateInstancesAvailable extends polyglot.visit.NodeVisitor {
+
+	private static final Logger logger =LoggerFactory.getLogger(PrivateInstancesAvailable.class);
 
     private final ArrayList<IdentityKey> list;
       

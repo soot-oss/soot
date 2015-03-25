@@ -18,6 +18,9 @@
  */
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 import soot.Body;
@@ -36,6 +39,8 @@ import com.google.common.collect.Maps;
  * @author Eric Bodden
  */
 public class SmartLocalDefsPool {
+
+	private static final Logger logger =LoggerFactory.getLogger(SmartLocalDefsPool.class);
 
 	protected Map<Body,Pair<Long,SmartLocalDefs>> pool = Maps.newHashMap();
 		

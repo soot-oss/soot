@@ -26,9 +26,14 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Implements Switchable on base Java types. */
 public class TypeSwitch implements ITypeSwitch 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(TypeSwitch.class);
     Object result;
 
     public void caseArrayType(ArrayType t)

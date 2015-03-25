@@ -19,11 +19,16 @@
 
 package soot.toolkits.astmetrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.LocalDecl;
 import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
 
 public class NumLocalsMetric extends ASTMetric {
+
+	private static final Logger logger =LoggerFactory.getLogger(NumLocalsMetric.class);
 
 	int numLocals; //store the current number of locals for this CLASS
 	

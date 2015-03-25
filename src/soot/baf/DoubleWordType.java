@@ -29,11 +29,16 @@
 
 package soot.baf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.util.*;
 import soot.*;
 
 public class DoubleWordType extends Type
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DoubleWordType.class);
     public DoubleWordType( Singletons.Global g ) {}
     public static DoubleWordType v() { return G.v().soot_baf_DoubleWordType(); }
 

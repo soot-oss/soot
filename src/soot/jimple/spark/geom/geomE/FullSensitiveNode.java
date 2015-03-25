@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.geomE;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -55,6 +58,8 @@ import soot.jimple.spark.sets.P2SetVisitor;
  */
 public class FullSensitiveNode extends IVarAbstraction 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(FullSensitiveNode.class);
 	// The targets of directed edges on the constraint graph
 	public Map<FullSensitiveNode, GeometricManager> flowto;
 

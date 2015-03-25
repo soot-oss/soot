@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.annotation.qualifiers;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -30,6 +33,8 @@ import soot.jimple.toolkits.callgraph.*;
  * possible for fields and methods (ie: private, protected or public)
  */
 public class TightestQualifiersTagger extends SceneTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(TightestQualifiersTagger.class);
     
     public TightestQualifiersTagger(Singletons.Global g) {}
     public static TightestQualifiersTagger v() { return G.v().soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger();}

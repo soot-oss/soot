@@ -19,6 +19,9 @@
 
 package soot.javaToJimple.jj.ast;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.*;
 import polyglot.visit.*;
 import polyglot.ext.jl.ast.*;
@@ -26,6 +29,8 @@ import polyglot.types.*;
 import polyglot.util.*;
 
 public class JjFieldAssign_c extends FieldAssign_c {
+
+	private static final Logger logger =LoggerFactory.getLogger(JjFieldAssign_c.class);
 
     public JjFieldAssign_c(Position pos, Field left, Operator op, Expr right){
         super(pos, left, op, right);

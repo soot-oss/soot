@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 import org.slf4j.Logger;
@@ -38,7 +41,9 @@ import soot.jimple.internal.JAssignStmt;
 import soot.tagkit.Tag;
 
 public class MoveResultInstruction extends DexlibAbstractInstruction {
-	final static Logger logger = LoggerFactory.getLogger(MoveResultInstruction.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(MoveResultInstruction.class);
+
 //    private Local local;
 //    private Expr expr;
     private Tag tag;

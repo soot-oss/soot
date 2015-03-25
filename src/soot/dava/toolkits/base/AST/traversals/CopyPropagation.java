@@ -38,6 +38,9 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -75,7 +78,9 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.*;
  */
 
 public class CopyPropagation extends DepthFirstAdapter {
-	final static Logger logger = LoggerFactory.getLogger(CopyPropagation.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(CopyPropagation.class);
+
 	ASTNode AST;
 
 	ASTUsesAndDefs useDefs;

@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.scalar.pre;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -42,6 +45,8 @@ import java.util.*;
  * this interval would not be isolated.
  */
 public class NotIsolatedAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<EquivalentValue>> {
+
+	private static final Logger logger =LoggerFactory.getLogger(NotIsolatedAnalysis.class);
 	private LatestComputation unitToLatest;
 	private Map<Unit, EquivalentValue> unitToGen;
 	private FlowSet<EquivalentValue> set;

@@ -29,12 +29,17 @@
 
 package soot;
 
-import soot.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import soot.util.Switch;
 
 
 @SuppressWarnings("serial")
 public class AnySubType extends RefLikeType
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AnySubType.class);
     private AnySubType( RefType base )
     {
         this.base = base;

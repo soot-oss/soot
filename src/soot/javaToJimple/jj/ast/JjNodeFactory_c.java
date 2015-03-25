@@ -19,6 +19,9 @@
 
 package soot.javaToJimple.jj.ast;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.*;
 import polyglot.ext.jl.ast.*;
 import polyglot.types.Flags;
@@ -29,6 +32,8 @@ import java.util.*;
  * NodeFactory for jj extension.
  */
 public class JjNodeFactory_c extends NodeFactory_c implements JjNodeFactory {
+
+	private static final Logger logger =LoggerFactory.getLogger(JjNodeFactory_c.class);
     // TODO:  Implement factory methods for new AST nodes.
     // TODO:  Override factory methods for overriden AST nodes.
     // TODO:  Override factory methods for AST nodes with new extension nodes.

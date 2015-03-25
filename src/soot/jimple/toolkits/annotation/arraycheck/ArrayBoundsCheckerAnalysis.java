@@ -24,6 +24,9 @@
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.* ;
@@ -34,6 +37,8 @@ import java.util.* ;
 
 class ArrayBoundsCheckerAnalysis 
 {
+	final static Logger logger = LoggerFactory
+			.getLogger(ArrayBoundsCheckerAnalysis.class);
     protected Map<Block, WeightedDirectedSparseGraph> blockToBeforeFlow;
     protected Map<Unit, WeightedDirectedSparseGraph> unitToBeforeFlow;
 
@@ -82,7 +87,7 @@ class ArrayBoundsCheckerAnalysis
         SootMethod thismethod = body.getMethod();
 
         if (Options.v().debug()) 
-            G.v().out.println("ArrayBoundsCheckerAnalysis started on  "+thismethod.getName());
+            logger.info("ArrayBoundsCheckerAnalysis started on  "+thismethod.getName());
 
         ailanalysis = new ArrayIndexLivenessAnalysis(new ExceptionalUnitGraph(body), fieldin, arrayin, csin, rectarray);
         
@@ -137,7 +142,7 @@ class ArrayBoundsCheckerAnalysis
         convertToUnitEntry();
         
         if (Options.v().debug()) 
-            G.v().out.println("ArrayBoundsCheckerAnalysis finished.");
+            logger.info("ArrayBoundsCheckerAnalysis finished.");
     }
 
     private void convertToUnitEntry()
@@ -238,12 +243,12 @@ class ArrayBoundsCheckerAnalysis
             /*        
             for (int i=0; i<ins.length; i++)
             {
-                G.v().out.println("in " + i);
-                G.v().out.println(ins[i]);
+                logger.info("in " + i);
+                logger.info(ins[i]);
             }
 
-            G.v().out.println("out ");
-            G.v().out.println(out);        
+            logger.info("out ");
+            logger.info(out);        
             */
         }
     }
@@ -254,7 +259,7 @@ class ArrayBoundsCheckerAnalysis
     {
         Date start = new Date();
         if (Options.v().debug())
-            G.v().out.println("Building PseudoTopological order list on "+start);
+            logger.info("Building PseudoTopological order list on "+start);
 
         LinkedList allUnits = (LinkedList)SlowPseudoTopologicalOrderer.v().newList(this.graph,false);
                         
@@ -269,7 +274,7 @@ class ArrayBoundsCheckerAnalysis
             long runtime = finish.getTime()-start.getTime();
             long mins = runtime/60000;
             long secs = (runtime%60000)/1000;
-            G.v().out.println("Building PseudoTopological order finished. "
+            logger.info("Building PseudoTopological order finished. "
                                +"It took "+mins+" mins and "+secs+" secs.");
         }
 
@@ -413,7 +418,7 @@ class ArrayBoundsCheckerAnalysis
 
                         if (allUnvisited)
                         {
-                            G.v().out.println("Warning : see all unvisited node");
+                            logger.info("Warning : see all unvisited node");
                         }
                         else
                         {
@@ -463,7 +468,7 @@ class ArrayBoundsCheckerAnalysis
             long runtime = finish.getTime()-start.getTime();
             long mins = runtime/60000;
             long secs = (runtime/60000)/1000;
-            G.v().out.println("Doing analysis finished."
+            logger.info("Doing analysis finished."
                                + " It took "+mins+" mins and "+secs+ "secs.");
         }
     }

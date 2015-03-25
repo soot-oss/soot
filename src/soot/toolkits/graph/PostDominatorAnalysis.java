@@ -19,6 +19,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 
@@ -40,6 +43,8 @@ import soot.toolkits.scalar.*;
  */
 @Deprecated
 public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
+
+	private static final Logger logger =LoggerFactory.getLogger(PostDominatorAnalysis.class);
 
     private UnitGraph g;
     private FlowSet allNodes;

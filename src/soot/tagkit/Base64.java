@@ -26,6 +26,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
 *   Provides encoding of raw bytes to base64-encoded characters, and
 *  decoding of base64 characters to raw bytes.
@@ -37,6 +40,8 @@ package soot.tagkit;
 * @modified 22 September 2000
 */
 public class Base64 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Base64.class);
 
 /**
 * returns an array of base64-encoded characters to represent the

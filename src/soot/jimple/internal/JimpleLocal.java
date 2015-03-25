@@ -26,6 +26,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
@@ -35,6 +38,8 @@ import java.util.*;
 
 public class JimpleLocal implements Local, ConvertToBaf
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JimpleLocal.class);
     String name;
     Type type;
 

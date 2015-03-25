@@ -30,11 +30,16 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
 public class JTrap extends AbstractTrap
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JTrap.class);
 
     public JTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
     {

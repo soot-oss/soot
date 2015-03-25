@@ -26,12 +26,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import java.util.*;
 
 public class BafLocal implements Local
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BafLocal.class);
     String name;
     Type type;
 

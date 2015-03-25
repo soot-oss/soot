@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -34,6 +37,8 @@ import soot.baf.*;
  * Created on 31-Mar-2006 
  */
 public class MoveLoadsAboveIfs extends BodyTransformer  implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(MoveLoadsAboveIfs.class);
 
   int movedloads = 0;
   

@@ -22,13 +22,18 @@ package soot.dava;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 //import java.util.*;
 //import soot.util.*;
 //import soot.dava.toolkits.base.finders.*;
 
 public class DavaFlowAnalysisException extends DecompilationException 
 {
-	final static Logger logger = LoggerFactory.getLogger(DavaFlowAnalysisException.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(DavaFlowAnalysisException.class);
+
     public DavaFlowAnalysisException(){
 	super();
     }

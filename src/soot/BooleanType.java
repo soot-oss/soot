@@ -28,7 +28,10 @@
 
 
 package soot;
-import soot.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.util.Switch;
 
 
 /**
@@ -38,6 +41,8 @@ import soot.util.*;
 @SuppressWarnings("serial")
 public class BooleanType extends PrimType implements IntegerType
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BooleanType.class);
     public BooleanType( Singletons.Global g ) {}
     public static BooleanType v() { return G.v().soot_BooleanType(); }
 

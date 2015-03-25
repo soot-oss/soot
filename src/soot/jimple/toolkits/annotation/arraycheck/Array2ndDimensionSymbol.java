@@ -24,10 +24,15 @@
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 public class Array2ndDimensionSymbol
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Array2ndDimensionSymbol.class);
     private Object var;
 
    

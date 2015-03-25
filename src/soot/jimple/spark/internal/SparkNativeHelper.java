@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.internal;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.*;
 import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
@@ -25,6 +28,8 @@ import soot.toolkits.scalar.Pair;
 import soot.*;
 
 public class SparkNativeHelper extends NativeHelper {
+
+	private static final Logger logger =LoggerFactory.getLogger(SparkNativeHelper.class);
     protected PAG pag;
 
     public SparkNativeHelper( PAG pag ) {

@@ -1,5 +1,8 @@
 package soot.dexpler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +29,8 @@ import soot.toolkits.scalar.SimpleLocalUses;
 import soot.toolkits.scalar.SmartLocalDefs;
 
 public class DexReturnValuePropagator extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(DexReturnValuePropagator.class);
 	
 	public static DexReturnValuePropagator v() {
 		return new DexReturnValuePropagator();

@@ -26,6 +26,9 @@
 
 package soot.baf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 public interface SwapInst extends Inst

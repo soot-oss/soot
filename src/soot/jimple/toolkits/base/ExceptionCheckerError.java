@@ -19,11 +19,16 @@
 
 package soot.jimple.toolkits.base;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.tagkit.*;
 
 public class ExceptionCheckerError extends Exception {
+
+	private static final Logger logger =LoggerFactory.getLogger(ExceptionCheckerError.class);
 
     public ExceptionCheckerError(SootMethod m, SootClass sc, Stmt s, SourceLnPosTag pos){
         method(m);

@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.infoflow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import java.util.*;
@@ -16,6 +19,8 @@ import soot.jimple.*;
 
 public class UseFinder
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(UseFinder.class);
 	ReachableMethods rm;
 
 	Map<SootClass, List> classToExtFieldAccesses; // each field access is a Pair <containing method, stmt>

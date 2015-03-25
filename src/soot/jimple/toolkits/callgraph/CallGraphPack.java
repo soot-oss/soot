@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -28,6 +31,8 @@ import soot.options.CGOptions;
  * intra-procedural clinit eliminator after the call graph has been built. */
 public class CallGraphPack extends RadioScenePack
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CallGraphPack.class);
     public CallGraphPack(String name) {
         super(name);
     }

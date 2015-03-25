@@ -1,5 +1,8 @@
 package soot.rtlib.tamiflex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -7,6 +10,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ReflectiveCalls {
+
+	private static final Logger logger =LoggerFactory.getLogger(ReflectiveCalls.class);
 	
 	private final static Set<String> classForName = new HashSet<String>();
 	private final static Set<String> classNewInstance = new HashSet<String>();

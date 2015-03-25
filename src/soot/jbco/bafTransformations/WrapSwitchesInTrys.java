@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -32,6 +35,8 @@ import soot.jbco.util.*;
  * Created on 24-May-2006 
  */
 public class WrapSwitchesInTrys extends BodyTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(WrapSwitchesInTrys.class);
 
   int totaltraps = 0;
   

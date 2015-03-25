@@ -25,6 +25,9 @@
 
 
 package soot.jimple.toolkits.scalar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -45,6 +48,8 @@ import soot.jimple.LookupSwitchStmt;
  */
 public class EmptySwitchEliminator extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(EmptySwitchEliminator.class);
     public EmptySwitchEliminator( Singletons.Global g ) {}
     public static EmptySwitchEliminator v() { return G.v().soot_jimple_toolkits_scalar_EmptySwitchEliminator(); }
 

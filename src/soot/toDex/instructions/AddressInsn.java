@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 
@@ -11,6 +14,8 @@ import soot.toDex.LabelAssigner;
  * so that its offset is the same as the following real instruction.
  */
 public class AddressInsn extends AbstractInsn {
+
+	private static final Logger logger =LoggerFactory.getLogger(AddressInsn.class);
 	
 	private Object originalSource;
 

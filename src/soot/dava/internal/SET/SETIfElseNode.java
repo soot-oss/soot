@@ -19,6 +19,9 @@
 
 package soot.dava.internal.SET;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.util.*;
 import soot.jimple.*;
@@ -28,6 +31,8 @@ import soot.dava.toolkits.base.misc.*;
 
 public class SETIfElseNode extends SETDagNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SETIfElseNode.class);
     private IterableSet ifBody, elseBody;
 
     public SETIfElseNode( AugmentedStmt characterizingStmt, IterableSet body, IterableSet ifBody, IterableSet elseBody) 

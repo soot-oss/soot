@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.pag;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.G;
 import soot.RefType;
 import soot.Scene;
@@ -28,6 +31,8 @@ import soot.Type;
  * @author Ondrej Lhotak
  */
 public class ArrayElement implements SparkField {
+
+	private static final Logger logger =LoggerFactory.getLogger(ArrayElement.class);
     public ArrayElement( Singletons.Global g ) {}
     public static ArrayElement v() { return G.v().soot_jimple_spark_pag_ArrayElement(); }
 

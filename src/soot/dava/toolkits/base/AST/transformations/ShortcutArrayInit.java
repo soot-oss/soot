@@ -1,5 +1,8 @@
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -29,7 +32,9 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.Stmt;
 
 public class ShortcutArrayInit extends DepthFirstAdapter {
-	final static Logger logger = LoggerFactory.getLogger(ShortcutArrayInit.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(ShortcutArrayInit.class);
+
 	ASTMethodNode methodNode;
 	
 	public ShortcutArrayInit(){

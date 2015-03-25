@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.mhp.pegcallgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.toolkits.thread.mhp.SCC;
 import java.util.*;
 

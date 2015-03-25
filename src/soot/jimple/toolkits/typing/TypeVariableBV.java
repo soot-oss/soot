@@ -26,6 +26,9 @@
 
 package soot.jimple.toolkits.typing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.options.Options;
 import soot.util.*;
@@ -37,6 +40,7 @@ import java.util.*;
 @Deprecated
 class TypeVariableBV implements Comparable<Object>
 {
+	final static Logger logger = LoggerFactory.getLogger(TypeVariableBV.class);
   private static final boolean DEBUG = false;
 
   private final int id;
@@ -239,7 +243,7 @@ class TypeVariableBV implements Comparable<Object>
 		  {
 		    if(DEBUG)
 		      {
-			G.v().out.println(parent.type + " is not a parent of " + type);
+			logger.info(parent.type + " is not a parent of " + type);
 		      }
 
 		    error("Type Error(2): Parent type is not a valid ancestor.");
@@ -257,7 +261,7 @@ class TypeVariableBV implements Comparable<Object>
 		  {
 		    if(DEBUG)
 		      {
-			G.v().out.println(child.type + "(" + child + ") is not a child of " + type + "(" + this + ")");
+			logger.info(child.type + "(" + child + ") is not a child of " + type + "(" + this + ")");
 		      }
 
 		    error("Type Error(3): Child type is not a valid descendant.");
@@ -544,7 +548,7 @@ class TypeVariableBV implements Comparable<Object>
 	  {
 	    if(!approx.hasElement())
 	      {
-		G.v().out.println("*** " + this + " ***");
+		logger.info("*** " + this + " ***");
 		
 		error("Type Error(4)");
 	      }

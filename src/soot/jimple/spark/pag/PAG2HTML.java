@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.pag;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,6 +38,8 @@ import soot.util.MultiMap;
  * @author Ondrej Lhotak
  */
 public class PAG2HTML {
+
+	private static final Logger logger =LoggerFactory.getLogger(PAG2HTML.class);
     public PAG2HTML( PAG pag, String output_dir ) {
         this.pag = pag;
         this.output_dir = output_dir;

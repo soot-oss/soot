@@ -19,6 +19,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A generic interface to any type of pointer analysis.
  * @author Ondrej Lhotak
  */

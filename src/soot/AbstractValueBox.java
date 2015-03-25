@@ -26,7 +26,10 @@
 
 package soot;
 
-import soot.tagkit.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import soot.tagkit.AbstractHost;
 
 /** Reference implementation for ValueBox; just
  * add a canContainValue method. */

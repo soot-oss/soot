@@ -30,12 +30,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GAssignStmt extends JAssignStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GAssignStmt.class);
     public GAssignStmt(Value variable, Value rvalue)
     {
         super(Grimp.v().newVariableBox(variable),

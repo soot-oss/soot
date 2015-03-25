@@ -19,6 +19,9 @@
 
 package soot.xml;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -34,6 +37,8 @@ import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
 
 public class Attribute {
+
+	private static final Logger logger =LoggerFactory.getLogger(Attribute.class);
     
     //private ColorAttribute color;
     private ArrayList<ColorAttribute> colors;

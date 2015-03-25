@@ -26,6 +26,9 @@
 
 package soot.util.dot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Defines several constants used to generate a Dot graph.
  *

@@ -19,9 +19,14 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ExtraLabelNamesRemover extends DepthFirstAdapter{
+
+	private static final Logger logger =LoggerFactory.getLogger(ExtraLabelNamesRemover.class);
 
     /*
       label_0:

@@ -26,12 +26,17 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import java.util.*;
 
 public class ThisRef implements IdentityRef
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ThisRef.class);
     RefType thisType;
 
     public ThisRef(RefType thisType)

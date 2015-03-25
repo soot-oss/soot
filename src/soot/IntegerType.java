@@ -26,6 +26,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Soot interface implemented by all classes representing
  * integer types [boolean, byte, short, char, and int].

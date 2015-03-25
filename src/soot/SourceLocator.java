@@ -18,6 +18,9 @@
  */
 
 package soot;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -44,6 +47,8 @@ import soot.options.Options;
  * a classfile, or jimple or baf output files. */
 public class SourceLocator
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SourceLocator.class);
     public SourceLocator( Singletons.Global g ) {}
     public static SourceLocator v() { return G.v().soot_SourceLocator(); }
 
@@ -207,7 +212,7 @@ public class SourceLocator
 				}
 				archive.close();			
 			} catch (IOException e) {
-				G.v().out.println("Error reading " + aPath + ": " + e.toString());
+				logger.info("Error reading " + aPath + ": " + e.toString());
 				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
 			}
 		}
@@ -216,7 +221,7 @@ public class SourceLocator
 			try {
 				classes.addAll(DexClassProvider.classesOfDex(new File(aPath)));
 			} catch (IOException e) {
-				G.v().out.println("Error reading " + aPath + ": " + e.toString());
+				logger.info("Error reading " + aPath + ": " + e.toString());
 				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
 			}
 		}
@@ -243,7 +248,7 @@ public class SourceLocator
 				}
 				archive.close();
 			} catch (IOException e) {
-				G.v().out.println("Error reading " + aPath + ": " + e.toString());
+				logger.info("Error reading " + aPath + ": " + e.toString());
 				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
 			}
 		}
@@ -336,7 +341,7 @@ public class SourceLocator
                 try {
                     dir.mkdirs();
                 } catch (SecurityException se) {
-                    G.v().out.println("Unable to create " + classPath);
+                    logger.info("Unable to create " + classPath);
                     throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
                 }
         }
@@ -358,7 +363,7 @@ public class SourceLocator
                 try {
                     dir.mkdirs();
                 } catch (SecurityException se) {
-                    G.v().out.println("Unable to create " + path);
+                    logger.info("Unable to create " + path);
                     throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
                 }
         }
@@ -434,7 +439,7 @@ public class SourceLocator
                     dir.mkdirs();
                 }
             } catch (SecurityException se) {
-                G.v().out.println("Unable to create " + ret);
+                logger.info("Unable to create " + ret);
                 throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
             }
         }

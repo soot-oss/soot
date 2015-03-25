@@ -25,6 +25,9 @@
 
 
 package soot.jimple.toolkits.scalar.pre;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.*;
 import soot.*;
 
@@ -33,6 +36,8 @@ import soot.*;
  * very often are grouped here.
  */
 public class SootFilter {
+
+	private static final Logger logger =LoggerFactory.getLogger(SootFilter.class);
 
   /**
    * wraps a value into a EquivalentValue.

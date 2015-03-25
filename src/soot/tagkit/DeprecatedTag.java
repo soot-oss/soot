@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** 
  * Represents the deprecated attribute used by fields, methods and classes 
@@ -32,6 +35,8 @@ package soot.tagkit;
 
 public class DeprecatedTag implements  Tag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DeprecatedTag.class);
 
     public DeprecatedTag(){
     }

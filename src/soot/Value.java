@@ -26,9 +26,13 @@
 
 package soot;
 
-import soot.util.*;
-import java.util.*;
-import java.io.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.List;
+
+import soot.util.Switchable;
 
 /** Data used as, for instance, arguments to instructions; typical implementations are
  * constants or expressions. 

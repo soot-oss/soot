@@ -19,10 +19,15 @@
 
 package soot.jimple.toolkits.pointer.representations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.options.*;
 
 public class TypeConstants {
+
+	private static final Logger logger =LoggerFactory.getLogger(TypeConstants.class);
     public static TypeConstants v() { return G.v().soot_jimple_toolkits_pointer_representations_TypeConstants(); }
   
   public Type OBJECTCLASS; 

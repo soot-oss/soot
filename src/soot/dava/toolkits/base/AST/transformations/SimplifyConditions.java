@@ -21,6 +21,9 @@ package soot.dava.toolkits.base.AST.transformations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.BooleanType;
 import soot.Value;
 import soot.dava.internal.AST.ASTAggregatedCondition;
@@ -71,7 +74,9 @@ import soot.jimple.LongConstant;
 	 * TODO IDEA     if(io==0 && io==0) --> if(io==0)
 	 */
 public class SimplifyConditions extends DepthFirstAdapter {
-	final static Logger logger = LoggerFactory.getLogger(SimplifyConditions.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(SimplifyConditions.class);
+
 	public boolean changed=false;
 	
 	public SimplifyConditions() {

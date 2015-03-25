@@ -27,6 +27,9 @@
  */
 package soot.dava.toolkits.base.AST.traversals;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.jimple.*;
@@ -54,6 +57,8 @@ import soot.dava.toolkits.base.AST.analysis.*;
  * worried about in this analysis
 */
 public class ClosestAbruptTargetFinder extends DepthFirstAdapter{
+
+	private static final Logger logger =LoggerFactory.getLogger(ClosestAbruptTargetFinder.class);
 
     public ClosestAbruptTargetFinder( Singletons.Global g ) {}
     public static ClosestAbruptTargetFinder v() { return G.v().soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder(); }

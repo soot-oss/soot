@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.*;
 import soot.jimple.toolkits.pointer.RWSet;

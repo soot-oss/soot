@@ -29,12 +29,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BFieldGetInst extends AbstractInst implements FieldGetInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BFieldGetInst.class);
     SootFieldRef fieldRef;
 
     public BFieldGetInst(SootFieldRef fieldRef)

@@ -30,12 +30,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GNewArrayExpr extends AbstractNewArrayExpr implements Precedence
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GNewArrayExpr.class);
   public GNewArrayExpr(Type type, Value size)
     {
       super(type, Grimp.v().newExprBox(size));

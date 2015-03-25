@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 
@@ -46,6 +49,8 @@ import soot.dava.toolkits.base.AST.analysis.*;
 */
 
 public class ASTCleaner extends DepthFirstAdapter{
+
+	private static final Logger logger =LoggerFactory.getLogger(ASTCleaner.class);
 
     public ASTCleaner(){
     }

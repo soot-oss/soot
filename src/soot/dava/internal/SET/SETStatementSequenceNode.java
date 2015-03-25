@@ -19,6 +19,9 @@
 
 package soot.dava.internal.SET;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import java.util.*;
@@ -30,6 +33,8 @@ import soot.dava.internal.javaRep.*;
 
 public class SETStatementSequenceNode extends SETNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SETStatementSequenceNode.class);
     private DavaBody davaBody;
     private boolean hasContinue;
 

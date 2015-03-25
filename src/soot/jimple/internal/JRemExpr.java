@@ -30,6 +30,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
@@ -37,6 +40,8 @@ import soot.baf.*;
 
 public class JRemExpr extends AbstractJimpleFloatBinopExpr implements RemExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JRemExpr.class);
     public JRemExpr(Value op1, Value op2) { super(op1, op2); }
     public String getSymbol() { return " % "; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseRemExpr(this); }

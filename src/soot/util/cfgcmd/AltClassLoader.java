@@ -19,6 +19,9 @@
 
 package soot.util.cfgcmd;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
@@ -40,6 +43,8 @@ import soot.G;
  * implementations of Soot's CFG representations.</p>
  */
 public class AltClassLoader extends ClassLoader {
+
+	private static final Logger logger =LoggerFactory.getLogger(AltClassLoader.class);
 
   private final static boolean DEBUG = false;
 
@@ -177,7 +182,7 @@ public class AltClassLoader extends ClassLoader {
   protected Class<?> findClass(String maybeMangledName)
     throws ClassNotFoundException {
     if (DEBUG) {
-      G.v().out.println("AltClassLoader.findClass(" + maybeMangledName + ')');
+      logger.info("AltClassLoader.findClass(" + maybeMangledName + ')');
     }
 
     Class<?> result = alreadyFound.get(maybeMangledName);
@@ -231,7 +236,7 @@ public class AltClassLoader extends ClassLoader {
   public Class<?> loadClass(String name) 
   throws ClassNotFoundException {
     if (DEBUG) {
-      G.v().out.println("AltClassLoader.loadClass(" + name + ")");
+      logger.info("AltClassLoader.loadClass(" + name + ")");
     }
 
     String nameForParent = nameToMangledName.get(name);
@@ -241,7 +246,7 @@ public class AltClassLoader extends ClassLoader {
     }
 
     if (DEBUG) {
-      G.v().out.println("AltClassLoader.loadClass asking parent for " + 
+      logger.info("AltClassLoader.loadClass asking parent for " + 
 			nameForParent);
     }
     return super.loadClass(nameForParent, false);
@@ -377,7 +382,7 @@ public class AltClassLoader extends ClassLoader {
       AltClassLoader.v().setAltClasses(new String[] {
 	argv[i]
       });
-      G.v().out.println("main() loadClass(" + argv[i] + ")");
+      logger.info("main() loadClass(" + argv[i] + ")");
       AltClassLoader.v().loadClass(argv[i]);
     }
   }

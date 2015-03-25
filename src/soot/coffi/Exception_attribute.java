@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** There should be exactly one Exceptions attribute in every method,
  * indicating the types of exceptions the method might throw.
  * @see attribute_info
@@ -38,6 +41,8 @@ package soot.coffi;
  * @author Clark Verbrugge
  */
 public class Exception_attribute extends attribute_info {
+
+	private static final Logger logger =LoggerFactory.getLogger(Exception_attribute.class);
    /** Length of exception table array. */
    public int number_of_exceptions;
    /** Constant pool indices of CONSTANT_Class types representing exceptions

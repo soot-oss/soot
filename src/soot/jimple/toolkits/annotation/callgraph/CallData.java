@@ -19,9 +19,14 @@
 
 package soot.jimple.toolkits.annotation.callgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public class CallData {
+
+	private static final Logger logger =LoggerFactory.getLogger(CallData.class);
 
     private final HashMap<Object, CallData> map = new HashMap<Object, CallData>();
     private final ArrayList<CallData> children = new ArrayList<CallData>();

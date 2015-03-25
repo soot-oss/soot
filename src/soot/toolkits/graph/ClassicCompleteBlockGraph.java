@@ -20,6 +20,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.*;
 
@@ -43,6 +46,8 @@ import soot.*;
 
 public class ClassicCompleteBlockGraph extends BlockGraph 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ClassicCompleteBlockGraph.class);
     /**
      *   <p> Constructs a <tt>ClassicCompleteBlockGraph</tt> for the blocks
      *   found by partitioning the the units of the provided

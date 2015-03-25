@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.jimple.*;
@@ -51,6 +54,8 @@ import soot.dava.internal.javaRep.*;
 
 */
 public class OrAggregatorThree {
+
+	private static final Logger logger =LoggerFactory.getLogger(OrAggregatorThree.class);
 
 
     public static void checkAndTransform(ASTNode node,ASTIfNode ifOne,ASTIfNode ifTwo, int nodeNumber,int subBodyNumber){

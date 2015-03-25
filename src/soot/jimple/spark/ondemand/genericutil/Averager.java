@@ -18,7 +18,12 @@
  */
 package soot.jimple.spark.ondemand.genericutil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Averager {
+
+	private static final Logger logger =LoggerFactory.getLogger(Averager.class);
 	
 	private double curAverage;
 	

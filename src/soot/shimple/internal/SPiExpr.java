@@ -19,6 +19,9 @@
 
 package soot.shimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import soot.shimple.*;
@@ -34,7 +37,9 @@ import org.slf4j.LoggerFactory;
  **/
 public class SPiExpr implements PiExpr
 {
-	final static Logger logger = LoggerFactory.getLogger(SPiExpr.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(SPiExpr.class);
+
 
     protected ValueUnitPair argBox;
     protected Object targetKey;

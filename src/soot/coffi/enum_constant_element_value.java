@@ -31,11 +31,16 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** There can be many element_value pairs in each annotation 
  * @see attribute_info
  * @author Jennifer Lhotak
  */
 public class enum_constant_element_value extends element_value {
+
+	private static final Logger logger =LoggerFactory.getLogger(enum_constant_element_value.class);
     int type_name_index;
     int constant_name_index;
 }

@@ -25,6 +25,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -46,6 +49,8 @@ import com.google.common.base.Joiner;
 
 /** Main class for Soot; provides Soot's command-line user interface. */
 public class Main {
+
+	private static final Logger logger =LoggerFactory.getLogger(Main.class);
     public Main(Singletons.Global g) {
     }
     public static Main v() {
@@ -60,29 +65,29 @@ public class Main {
     private Date finish;
     
     private void printVersion() {
-        G.v().out.println("Soot version " + versionString);
+        logger.info("Soot version " + versionString);
 
-        G.v().out.println(
+        logger.info(
             "Copyright (C) 1997-2010 Raja Vallee-Rai and others.");
-        G.v().out.println("All rights reserved.");
-        G.v().out.println("");
-        G.v().out.println(
+        logger.info("All rights reserved.");
+        logger.info("");
+        logger.info(
             "Contributions are copyright (C) 1997-2010 by their respective contributors.");
-        G.v().out.println("See the file 'credits' for a list of contributors.");
-        G.v().out.println("See individual source files for details.");
-        G.v().out.println("");
-        G.v().out.println(
+        logger.info("See the file 'credits' for a list of contributors.");
+        logger.info("See individual source files for details.");
+        logger.info("");
+        logger.info(
             "Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
-        G.v().out.println(
+        logger.info(
             "and you are welcome to redistribute it under certain conditions.");
-        G.v().out.println(
+        logger.info(
             "See the accompanying file 'COPYING-LESSER.txt' for details.");
-        G.v().out.println();
-        G.v().out.println("Visit the Soot website:");
-        G.v().out.println("  http://www.sable.mcgill.ca/soot/");
-        G.v().out.println();
-        G.v().out.println("For a list of command line options, enter:");
-        G.v().out.println("  java soot.Main --help");
+        
+        logger.info("Visit the Soot website:");
+        logger.info("  http://www.sable.mcgill.ca/soot/");
+        
+        logger.info("For a list of command line options, enter:");
+        logger.info("  java soot.Main --help");
     }
 
     private void processCmdLine(String[] args) {
@@ -104,19 +109,19 @@ public class Main {
         Options.v().warnNonexistentPhase();
 
         if (Options.v().help()) {
-            G.v().out.println(Options.v().getUsage());
+            logger.info(Options.v().getUsage());
             throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
         }
 
         if (Options.v().phase_list()) {
-            G.v().out.println(Options.v().getPhaseList());
+            logger.info(Options.v().getPhaseList());
             throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
         }
 
         if(!Options.v().phase_help().isEmpty()) {
             for( Iterator<String> phaseIt = Options.v().phase_help().iterator(); phaseIt.hasNext(); ) {
                 final String phase = phaseIt.next();
-                G.v().out.println(Options.v().getPhaseHelp(phase));
+                logger.info(Options.v().getPhaseHelp(phase));
             }
             throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
         }
@@ -151,9 +156,9 @@ public class Main {
         try {
             Main.v().run(args);
         } catch( OutOfMemoryError e ) {
-            G.v().out.println( "Soot has run out of the memory allocated to it by the Java VM." );
-            G.v().out.println( "To allocate more memory to Soot, use the -Xmx switch to Java." );
-            G.v().out.println( "For example (for 400MB): java -Xmx400m soot.Main ..." );
+            logger.info( "Soot has run out of the memory allocated to it by the Java VM." );
+            logger.info( "To allocate more memory to Soot, use the -Xmx switch to Java." );
+            logger.info( "For example (for 400MB): java -Xmx400m soot.Main ..." );
             throw e;
         } catch( RuntimeException e ) {
         	e.printStackTrace();
@@ -209,7 +214,7 @@ public class Main {
             
             autoSetOptions();
 
-            G.v().out.println("Soot started on " + start);
+            logger.info("Soot started on " + start);
 
             Scene.v().loadNecessaryClasses();
 
@@ -261,9 +266,9 @@ public class Main {
 
         finish = new Date();
 
-        G.v().out.println("Soot finished on " + finish);
+        logger.info("Soot finished on " + finish);
         long runtime = finish.getTime() - start.getTime();
-        G.v().out.println(
+        logger.info(
             "Soot has run for "
                 + (runtime / 60000)
                 + " min. "

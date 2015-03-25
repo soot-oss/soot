@@ -24,6 +24,9 @@
 
 package soot.dexpler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.iface.reference.TypeReference;
 import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
 
@@ -46,6 +49,8 @@ import soot.VoidType;
  *
  */
 public class DexType {
+
+	private static final Logger logger =LoggerFactory.getLogger(DexType.class);
 
     protected String name;
 

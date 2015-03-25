@@ -19,6 +19,9 @@
 
 package soot.dava.internal.SET;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 
@@ -29,6 +32,8 @@ import soot.dava.toolkits.base.finders.*;
 
 public class SETSwitchNode extends SETDagNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SETSwitchNode.class);
     private List<SwitchNode> switchNodeList;
     private Value key;
     public SETSwitchNode( AugmentedStmt characterizingStmt, Value key, IterableSet body, List<SwitchNode> switchNodeList, IterableSet junkBody)

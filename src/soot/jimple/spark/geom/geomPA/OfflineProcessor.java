@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.ArrayList;
 import java.util.Deque;
@@ -57,6 +60,8 @@ import soot.jimple.spark.sets.P2SetVisitor;
  */
 public class OfflineProcessor 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(OfflineProcessor.class);
 	class off_graph_edge
 	{
 		// Start and end of this edge

@@ -3,6 +3,9 @@ package soot.dava.toolkits.base.AST.transformations;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Value;
 import soot.ValueBox;
 import soot.dava.internal.javaRep.DCmpExpr;
@@ -31,7 +34,9 @@ import soot.jimple.SubExpr;
  */
 
 public class SimplifyExpressions extends DepthFirstAdapter {
-	final static Logger logger = LoggerFactory.getLogger(SimplifyExpressions.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(SimplifyExpressions.class);
+
 	public SimplifyExpressions() {
 		super();
 	}

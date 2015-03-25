@@ -18,6 +18,9 @@
  */
 
 package soot.javaToJimple;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,6 +41,8 @@ import soot.SootMethod;
 import soot.options.Options;
 
 public class ClassResolver {
+
+	private static final Logger logger =LoggerFactory.getLogger(ClassResolver.class);
 
     private ArrayList<FieldDecl> staticFieldInits; 
     private ArrayList<FieldDecl> fieldInits;
@@ -231,7 +236,7 @@ public class ClassResolver {
                 createInitializer((polyglot.ast.Initializer)next);
             }
             else if(Options.v().verbose()) {
-            		G.v().out.println("Class Body Member not implemented for type "+next.getClass().getName());
+            		logger.info("Class Body Member not implemented for type "+next.getClass().getName());
             }
         }
         handleInnerClassTags(classBody);
@@ -840,7 +845,7 @@ public class ClassResolver {
     }
     
     private void addConstValTag(polyglot.ast.FieldDecl field, soot.SootField sootField){
-        //G.v().out.println("adding constantval tag to field: "+field);
+        //logger.info("adding constantval tag to field: "+field);
         if (field.fieldInstance().constantValue() instanceof Integer){
             sootField.addTag(new soot.tagkit.IntegerConstantValueTag(((Integer)field.fieldInstance().constantValue()).intValue()));
         }

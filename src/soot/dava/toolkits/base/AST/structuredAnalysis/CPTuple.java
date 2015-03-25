@@ -1,5 +1,8 @@
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.dava.DavaFlowAnalysisException;
 import soot.dava.toolkits.base.AST.structuredAnalysis.CPVariable;
 

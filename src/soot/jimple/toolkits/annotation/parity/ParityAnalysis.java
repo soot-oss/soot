@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.annotation.parity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 
@@ -39,6 +42,8 @@ import soot.options.*;
 //
 //
 public class ParityAnalysis extends ForwardFlowAnalysis<Unit,Map<Value, String>> {
+
+	private static final Logger logger =LoggerFactory.getLogger(ParityAnalysis.class);
 
     private UnitGraph g;
     private final static String TOP = "top";

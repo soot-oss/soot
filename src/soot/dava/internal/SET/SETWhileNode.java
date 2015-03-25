@@ -19,6 +19,9 @@
 
 package soot.dava.internal.SET;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.util.*;
 import soot.jimple.*;
 import soot.dava.internal.asg.*;
@@ -26,6 +29,8 @@ import soot.dava.internal.AST.*;
 
 public class SETWhileNode extends SETCycleNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SETWhileNode.class);
     public SETWhileNode( AugmentedStmt characterizingStmt, IterableSet body)
     {
 	super( characterizingStmt, body);

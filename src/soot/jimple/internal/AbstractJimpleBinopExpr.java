@@ -30,12 +30,17 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
 @SuppressWarnings("serial")
 abstract public class AbstractJimpleBinopExpr extends AbstractBinopExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AbstractJimpleBinopExpr.class);
     protected AbstractJimpleBinopExpr (Value op1, Value op2)
     {
         op1Box = Jimple.v().newArgBox(op1); 

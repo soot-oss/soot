@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.toolkits.thread.mhp;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.toolkits.callgraph.*;
 
 /** A predicate that accepts edges whose targets are runnable.run methods.

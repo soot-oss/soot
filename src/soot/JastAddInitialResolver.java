@@ -19,19 +19,22 @@
  */
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
-import soot.javaToJimple.IInitialResolver;
 import soot.JastAddJ.BodyDecl;
 import soot.JastAddJ.CompilationUnit;
 import soot.JastAddJ.ConstructorDecl;
 import soot.JastAddJ.MethodDecl;
 import soot.JastAddJ.Program;
 import soot.JastAddJ.TypeDecl;
+import soot.javaToJimple.IInitialResolver;
 
 /**
  * An {@link IInitialResolver} for the JastAdd frontend.
@@ -40,6 +43,8 @@ import soot.JastAddJ.TypeDecl;
  * @author Eric Bodden
  */
 public class JastAddInitialResolver implements IInitialResolver {
+
+	private static final Logger logger =LoggerFactory.getLogger(JastAddInitialResolver.class);
 
     public JastAddInitialResolver(soot.Singletons.Global g){}
 
@@ -58,7 +63,7 @@ public class JastAddInitialResolver implements IInitialResolver {
 	          u.errorCheck(errors);
 	          if(!errors.isEmpty()) {
 	        	  for(soot.JastAddJ.Problem p : errors)
-	        		  G.v().out.println(p);
+	        		  logger.info(p+"");
 	        	  //die
 	        	  throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED,
 	        			  "there were errors during parsing and/or type checking (JastAdd frontend)");

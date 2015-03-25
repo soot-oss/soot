@@ -19,7 +19,12 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class CastInsertionVisitor extends polyglot.visit.AscriptionVisitor {
+
+	private static final Logger logger =LoggerFactory.getLogger(CastInsertionVisitor.class);
 
     public CastInsertionVisitor(polyglot.frontend.Job job, polyglot.types.TypeSystem ts, polyglot.ast.NodeFactory nf) {
         super(job, ts, nf);

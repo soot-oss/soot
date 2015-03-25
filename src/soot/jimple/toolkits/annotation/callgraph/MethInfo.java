@@ -19,9 +19,14 @@
 
 package soot.jimple.toolkits.annotation.callgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 public class MethInfo {
+
+	private static final Logger logger =LoggerFactory.getLogger(MethInfo.class);
     private SootMethod method;
     private boolean canExpandCollapse;
     private Kind edgeKind;

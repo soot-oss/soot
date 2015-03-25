@@ -26,10 +26,15 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A wrapper object for a pack of optimizations.
  * Provides chain-like operations, except that the key is the phase name. */
 public class ScenePack extends Pack
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ScenePack.class);
     public ScenePack(String name) {
         super(name);
     }

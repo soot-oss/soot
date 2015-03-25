@@ -20,6 +20,9 @@
 
 package soot.plugins;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Transformer;
 import soot.plugins.model.PhasePluginDescription;
 

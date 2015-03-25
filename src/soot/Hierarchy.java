@@ -25,6 +25,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
@@ -48,6 +51,8 @@ import soot.util.Chain;
  * it does a strict query (e.g. strict superclass).  */
 public class Hierarchy
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Hierarchy.class);
     // These two maps are not filled in the constructor.
     Map<SootClass, List<SootClass>> classToSubclasses;
     Map<SootClass, List<SootClass>> interfaceToSubinterfaces;

@@ -25,6 +25,9 @@
 
 
 package soot.jimple.toolkits.scalar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -41,6 +44,8 @@ import soot.util.*;
  * the kill rule would be computed on-the-fly for each statement. */
 public class SlowAvailableExpressionsAnalysis extends ForwardFlowAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SlowAvailableExpressionsAnalysis.class);
     Map<Unit, BoundedFlowSet> unitToGenerateSet;
     Map<Unit, BoundedFlowSet> unitToPreserveSet;
     Map<Value, Stmt> rhsToContainingStmt;

@@ -18,8 +18,14 @@
  */
 
 package soot;
-import soot.jimple.*;
-import java.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.HashSet;
+
+import soot.jimple.Constant;
+import soot.jimple.IdentityRef;
+import soot.jimple.Jimple;
 
 /**
 * Partial default UnitPrinter implementation.

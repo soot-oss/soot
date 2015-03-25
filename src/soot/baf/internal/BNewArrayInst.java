@@ -29,12 +29,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BNewArrayInst extends AbstractInst implements NewArrayInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BNewArrayInst.class);
     protected Type baseType;
     
     public BNewArrayInst(Type opType)

@@ -19,6 +19,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A class provider looks for a file of a specific format for a specified
  * class, and returns a ClassSource for it if it finds it.
  */

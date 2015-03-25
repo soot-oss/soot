@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +48,9 @@ import soot.jimple.LookupSwitchStmt;
 import soot.jimple.Stmt;
 
 public class PackedSwitchInstruction extends SwitchInstruction {
-	final static Logger logger = LoggerFactory.getLogger(PackedSwitchInstruction.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(PackedSwitchInstruction.class);
+
     LookupSwitchStmt switchStmt = null;
 
     public PackedSwitchInstruction (Instruction instruction, int codeAdress) {

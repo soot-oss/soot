@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Enumeration;
 
 /** An enumeration of a Utf8 allows one to run through the characters in a
@@ -44,6 +47,8 @@ import java.util.Enumeration;
  * @author Clark Verbrugge
  */
 public class Utf8_Enumeration implements Enumeration {
+
+	private static final Logger logger =LoggerFactory.getLogger(Utf8_Enumeration.class);
 
    /** The latest character, as determined by nextElement.
     * @see Utf8_Enumeration#nextElement

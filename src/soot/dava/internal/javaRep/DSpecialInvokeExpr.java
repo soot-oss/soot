@@ -20,6 +20,9 @@
 
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.grimp.*;
@@ -27,6 +30,8 @@ import soot.grimp.internal.*;
 
 public class DSpecialInvokeExpr extends GSpecialInvokeExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DSpecialInvokeExpr.class);
     public DSpecialInvokeExpr( Value base, SootMethodRef methodRef, java.util.List args) 
     {
 	super( base, methodRef, args);

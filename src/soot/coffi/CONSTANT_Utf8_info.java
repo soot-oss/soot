@@ -25,6 +25,9 @@
 
 
 package soot.coffi;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.jimple.StringConstant;
 
@@ -38,6 +41,8 @@ import javax.naming.OperationNotSupportedException;
  * @author Clark Verbrugge
  */
 public class CONSTANT_Utf8_info extends cp_info {
+
+	private static final Logger logger =LoggerFactory.getLogger(CONSTANT_Utf8_info.class);
    // Some local private objects to help with efficient comparisons.
    private int sHashCode;
    // for caching the conversion.
@@ -164,7 +169,7 @@ public class CONSTANT_Utf8_info extends cp_info {
          d.writeUTF(s);
          return bs.toByteArray();
       } catch(IOException e) {
-         G.v().out.println("Some sort of IO exception in toUtf8 with " + s);
+         logger.info("Some sort of IO exception in toUtf8 with " + s);
       }
       return null;
    }

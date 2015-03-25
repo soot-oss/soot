@@ -28,7 +28,10 @@
 
 
 package soot;
-import soot.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.util.Switch;
 
 /**
  *   Soot representation of the Java built-in type 'double'. Implemented as
@@ -37,6 +40,8 @@ import soot.util.*;
 @SuppressWarnings("serial")
 public class DoubleType extends PrimType
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DoubleType.class);
     public DoubleType( Singletons.Global g ) {}
     public static DoubleType v() { return G.v().soot_DoubleType(); }
 

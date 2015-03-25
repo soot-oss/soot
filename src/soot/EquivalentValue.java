@@ -26,15 +26,20 @@
 
 
 package soot;
-import java.util.*;
 
-import soot.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
+
+import soot.util.Switch;
 
 /** 
  * Encapsulates the Value class, but uses EquivTo for equality comparisons. 
  * Also uses equivHashCode as its hash code. */
 @SuppressWarnings("serial")
 public class EquivalentValue implements Value {
+
+	private static final Logger logger =LoggerFactory.getLogger(EquivalentValue.class);
     Value e;
     public EquivalentValue(Value e) {
     	if (e instanceof EquivalentValue)

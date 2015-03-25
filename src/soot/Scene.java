@@ -26,6 +26,9 @@
 
 
 package soot;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -72,6 +75,8 @@ import android.content.res.AXmlResourceParser;
 /** Manages the SootClasses of the application being analyzed. */
 public class Scene  //extends AbstractHost
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Scene.class);
 	
 	private final int defaultSdkVersion = 15;
 	private final Map<String, Integer> maxAPIs = new HashMap<String, Integer>();
@@ -354,7 +359,7 @@ public class Scene  //extends AbstractHost
 			}
 		
 		if (manifestIS == null) {
-			G.v().out.println("Could not find sdk version in Android manifest! Using default: "+defaultSdkVersion);
+			logger.info("Could not find sdk version in Android manifest! Using default: "+defaultSdkVersion);
 			return defaultSdkVersion;
 		}
 		
@@ -406,7 +411,7 @@ public class Scene  //extends AbstractHost
 			    if (sdkTargetVersion > maxAPI
 			            && minSdkVersion != -1
 			            && minSdkVersion <= maxAPI) {
-			        G.v().out.println("warning: Android API version '"+ sdkTargetVersion +"' not available, using minApkVersion '"+ minSdkVersion +"' instead");
+			        logger.info("warning: Android API version '"+ sdkTargetVersion +"' not available, using minApkVersion '"+ minSdkVersion +"' instead");
 			        APIVersion = minSdkVersion;
 			    } else {
 			        APIVersion = sdkTargetVersion;
@@ -414,7 +419,7 @@ public class Scene  //extends AbstractHost
 			} else if (minSdkVersion != -1) {
 				APIVersion = minSdkVersion;
 			} else {
-				G.v().out.println("Could not find sdk version in Android manifest! Using default: "+defaultSdkVersion);
+				logger.info("Could not find sdk version in Android manifest! Using default: "+defaultSdkVersion);
 				APIVersion = defaultSdkVersion;
 			}
 			
@@ -504,11 +509,11 @@ public class Scene  //extends AbstractHost
 				if (!f.exists())
 					throw new RuntimeException("file '"+ jarPath +"' does not exist!");
 				else
-					G.v().out.println("Using '"+ jarPath +"' as android.jar");
+					logger.info("Using '"+ jarPath +"' as android.jar");
 				defaultClassPath = jarPath + File.pathSeparator + defaultClassPath;
 
 			} else {
-				G.v().out.println("warning: defaultClassPath contains android.jar! Options -android-jars and -force-android-jar are ignored!");
+				logger.info("warning: defaultClassPath contains android.jar! Options -android-jars and -force-android-jar are ignored!");
 			}
 		}
 
@@ -1386,7 +1391,7 @@ public class Scene  //extends AbstractHost
 			SootClass c = iterator.next();
 			if(!c.isConcrete()) {
 				if(Options.v().verbose()) {
-					G.v().out.println("Warning: dynamic class "+c.getName()+" is abstract or an interface, and it will not be considered.");
+					logger.info("Warning: dynamic class "+c.getName()+" is abstract or an interface, and it will not be considered.");
 				}
 				iterator.remove();
 			}
@@ -1513,7 +1518,7 @@ public class Scene  //extends AbstractHost
                     SootClass c = getSootClass(classIter.next());
                     if (c.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
                     {
-                        G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
+                        logger.info("No main class given. Inferred '"+c.getName()+"' as main class.");					
                         setMainClass(c);
                         return;
                     }
@@ -1524,7 +1529,7 @@ public class Scene  //extends AbstractHost
                     SootClass c = (SootClass) classIter.next();
                     if (c.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
                     {
-                        G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					
+                        logger.info("No main class given. Inferred '"+c.getName()+"' as main class.");					
                         setMainClass(c);
                         return;
                     }

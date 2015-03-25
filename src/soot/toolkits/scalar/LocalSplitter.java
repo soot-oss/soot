@@ -28,6 +28,9 @@
 
 
 package soot.toolkits.scalar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -73,6 +76,8 @@ import soot.util.Chain;
  */
 public class LocalSplitter extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalSplitter.class);
 	
 	protected ThrowAnalysis throwAnalysis = null;
 	protected boolean forceOmitExceptingUnitEdges = false;
@@ -101,7 +106,7 @@ public class LocalSplitter extends BodyTransformer
         List<List<ValueBox>> webs = new ArrayList<List<ValueBox>>();
 
         if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() + "] Splitting locals...");
+            logger.info("[" + body.getMethod().getName() + "] Splitting locals...");
 
         if(Options.v().time())
                 Timers.v().splitPhase1Timer.start();

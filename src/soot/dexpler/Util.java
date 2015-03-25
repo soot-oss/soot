@@ -24,6 +24,9 @@
 
 package soot.dexpler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -63,7 +66,9 @@ import soot.jimple.ThisRef;
 import soot.jimple.toolkits.scalar.LocalCreation;
 
 public class Util {
-	final static Logger logger = LoggerFactory.getLogger(Util.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(Util.class);
+
     /**
      * Return the dotted class name of a type descriptor, i.e. change Ljava/lang/Object; to java.lang.Object.
      *

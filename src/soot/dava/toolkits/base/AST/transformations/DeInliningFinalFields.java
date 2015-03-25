@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.dava.*;
 import soot.tagkit.*;
@@ -79,6 +82,8 @@ import java.util.*;
 
 
 public class DeInliningFinalFields extends DepthFirstAdapter{
+
+	private static final Logger logger =LoggerFactory.getLogger(DeInliningFinalFields.class);
     SootClass sootClass=null;
     SootMethod sootMethod=null; 
     DavaBody davaBody=null;  

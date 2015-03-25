@@ -30,12 +30,17 @@
 
 package soot.jimple.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
 
 public class LocalNameStandardizer extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalNameStandardizer.class);
     public LocalNameStandardizer( Singletons.Global g ) {}
     public static LocalNameStandardizer v() { return G.v().soot_jimple_toolkits_scalar_LocalNameStandardizer(); }
 

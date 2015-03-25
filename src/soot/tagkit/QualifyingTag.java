@@ -25,12 +25,17 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** Represents the synthetic attribute.
  */
 
 public class QualifyingTag extends SyntheticParamTag 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(QualifyingTag.class);
 
     /** Returns the tag name. */
     public String getName() {

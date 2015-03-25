@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** There should be at most one RuntimeVisibleAnnotations attribute in 
  * every method, field and class
  * indicating the list of annotations.
@@ -40,6 +43,8 @@ package soot.coffi;
  * @author Jennifer Lhotak
  */
 public class RuntimeVisibleAnnotations_attribute extends attribute_info {
+
+	private static final Logger logger =LoggerFactory.getLogger(RuntimeVisibleAnnotations_attribute.class);
    /** Length of annotations table array. */
    public int number_of_annotations;
    /** 

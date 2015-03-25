@@ -19,6 +19,9 @@
 
 package soot.shimple.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.shimple.*;
 import soot.toolkits.scalar.*;
@@ -43,6 +46,8 @@ import java.util.*;
  **/
 public class ShimpleLocalUses implements LocalUses
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ShimpleLocalUses.class);
     protected  Map<Local, ArrayList> localToUses;
 
     /**
@@ -121,7 +126,7 @@ public class ShimpleLocalUses implements LocalUses
                 return Collections.EMPTY_LIST;
             return getUsesOf((Local) local);
         default:
-            G.v().out.println("Warning: Unit has multiple definition boxes?");
+            logger.info("Warning: Unit has multiple definition boxes?");
             List usesList = new ArrayList();
             Iterator defBoxesIt = defBoxes.iterator();
             while(defBoxesIt.hasNext()){

@@ -17,6 +17,9 @@
  */
  
 package soot.toolkits.exceptions;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
  
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.options.Options;
@@ -27,6 +30,8 @@ import soot.options.Options;
  *
  */
 public class ThrowAnalysisFactory {
+
+	private static final Logger logger =LoggerFactory.getLogger(ThrowAnalysisFactory.class);
 
 	/**
      * Resolve the ThrowAnalysis to be used for initialization checking

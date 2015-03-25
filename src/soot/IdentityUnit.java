@@ -26,6 +26,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A unit that assigns to a variable from one of {parameters, this, caughtexception}. */
 public interface IdentityUnit extends Unit
 { 

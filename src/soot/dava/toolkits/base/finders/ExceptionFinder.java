@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.finders;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.io.Serializable;
@@ -31,6 +34,8 @@ import soot.dava.internal.SET.*;
 
 public class ExceptionFinder implements FactFinder
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ExceptionFinder.class);
     public ExceptionFinder( Singletons.Global g ) {}
     public static ExceptionFinder v() { return G.v().soot_dava_toolkits_base_finders_ExceptionFinder(); }
 

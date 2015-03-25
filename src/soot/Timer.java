@@ -25,14 +25,19 @@
 
 
 package soot;
-import soot.options.*;
 
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.Iterator;
+
+import soot.options.Options;
 
 /** Utility class providing a timer.  Used for profiling various
  * phases of Sootification. */
 public class Timer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Timer.class);
     private long duration;
     private long startTime;
     private boolean hasStarted;

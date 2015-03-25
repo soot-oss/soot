@@ -26,6 +26,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.*;
 
@@ -45,6 +48,8 @@ import soot.*;
 
 public class ZonedBlockGraph extends BlockGraph 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ZonedBlockGraph.class);
     /**
      *   <p>Constructs a <tt>ZonedBlockGraph</tt> for the <tt>Unit</tt>s
      *   comprising the passed {@link Body}.</p>

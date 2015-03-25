@@ -29,12 +29,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BDivInst extends AbstractOpTypeInst implements DivInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BDivInst.class);
     public BDivInst(Type opType)
     {
         super(opType);

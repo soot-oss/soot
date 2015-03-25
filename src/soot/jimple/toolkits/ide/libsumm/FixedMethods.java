@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.ide.libsumm;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -13,6 +16,8 @@ import soot.jimple.StaticInvokeExpr;
  */
 //TODO implement caching for class and method info
 public class FixedMethods {
+
+	private static final Logger logger =LoggerFactory.getLogger(FixedMethods.class);
 	
 	public final static boolean ASSUME_PACKAGES_SEALED = false;
 

@@ -19,7 +19,12 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class InnerClassInfo {
+
+	private static final Logger logger =LoggerFactory.getLogger(InnerClassInfo.class);
     
     public static final int NESTED = 0;
     public static final int STATIC = 1;

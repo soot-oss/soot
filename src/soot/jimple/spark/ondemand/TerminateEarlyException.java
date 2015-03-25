@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * @author manu_s
@@ -27,5 +30,7 @@ package soot.jimple.spark.ondemand;
  */
 @SuppressWarnings("serial")
 public class TerminateEarlyException extends RuntimeException {
+
+	private static final Logger logger =LoggerFactory.getLogger(TerminateEarlyException.class);
 
 }

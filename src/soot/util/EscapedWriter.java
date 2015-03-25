@@ -26,12 +26,17 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 /** A FilterWriter which catches to-be-escaped characters (<code>\\unnnn</code>) in the
  * input and substitutes their escaped representation.  Used for Soot output. */
 public class EscapedWriter extends FilterWriter
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(EscapedWriter.class);
     /** Convenience field containing the system's line separator. */
     public final String lineSeparator = System.getProperty("line.separator");
     private final int cr = lineSeparator.charAt(0);

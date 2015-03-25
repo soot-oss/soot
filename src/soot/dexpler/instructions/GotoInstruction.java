@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 
 import soot.dexpler.DexBody;
@@ -31,6 +34,8 @@ import soot.jimple.GotoStmt;
 import soot.jimple.Jimple;
 
 public class GotoInstruction extends JumpInstruction implements DeferableInstruction {
+
+	private static final Logger logger =LoggerFactory.getLogger(GotoInstruction.class);
     public GotoInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }

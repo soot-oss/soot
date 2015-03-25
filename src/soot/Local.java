@@ -26,7 +26,10 @@
 
 package soot;
 
-import soot.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import soot.util.Numberable;
 
 /** A local variable, used within Body
  * classes.  Intermediate representations must use an implementation

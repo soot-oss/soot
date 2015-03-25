@@ -19,12 +19,17 @@
 
 package soot.dava.toolkits.base.finders;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.util.*;
 import soot.dava.internal.asg.*;
 
 public class SwitchNode implements Comparable
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SwitchNode.class);
     private final LinkedList preds, succs;
     private AugmentedStmt as;
     private int score;

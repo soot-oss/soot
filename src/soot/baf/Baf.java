@@ -30,6 +30,9 @@
 
 package soot.baf;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.jimple.internal.*;
@@ -38,6 +41,8 @@ import java.util.*;
 
 public class Baf
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Baf.class);
     public Baf( Singletons.Global g ) {}
     public static Baf v() { return G.v().soot_baf_Baf(); }
 

@@ -34,6 +34,9 @@
  */
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -45,6 +48,8 @@ import soot.dava.*;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 
 public class DVariableDeclarationStmt extends AbstractUnit implements Stmt {
+
+	private static final Logger logger =LoggerFactory.getLogger(DVariableDeclarationStmt.class);
 
 	Type declarationType = null;
 

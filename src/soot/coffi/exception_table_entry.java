@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** An entry in some code's exception table; describes an exception
  * handler and the code it protects.

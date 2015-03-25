@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.annotation.nullcheck;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 import soot.Body;
@@ -38,6 +41,8 @@ import soot.toolkits.graph.UnitGraph;
 import soot.util.Chain;
 
 public class NullCheckEliminator extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(NullCheckEliminator.class);
 
     public static class AnalysisFactory {
 	public NullnessAnalysis newAnalysis(UnitGraph g) {

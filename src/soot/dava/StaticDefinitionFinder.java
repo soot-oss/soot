@@ -28,6 +28,9 @@
  */
 package soot.dava;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.SootField;
 import soot.SootMethod;
 import soot.Value;
@@ -36,6 +39,8 @@ import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
 
 public class StaticDefinitionFinder extends DepthFirstAdapter{
+
+	private static final Logger logger =LoggerFactory.getLogger(StaticDefinitionFinder.class);
 
     SootMethod method;
     boolean finalFieldDefined;

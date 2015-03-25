@@ -26,8 +26,15 @@
 
 package soot;
 
-import soot.util.*;
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
+import java.util.Map;
+
+import soot.util.Chain;
+import soot.util.HashChain;
+import soot.util.PhaseDumper;
 
 /** A wrapper object for a pack of optimizations.
  * Provides chain-like operations, except that the key is the phase name. */

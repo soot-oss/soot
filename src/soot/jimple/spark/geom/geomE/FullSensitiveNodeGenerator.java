@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.geomE;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 
 import soot.jimple.spark.geom.dataRep.CgEdge;
@@ -40,6 +43,8 @@ import soot.jimple.toolkits.callgraph.Edge;
  */
 public class FullSensitiveNodeGenerator extends IEncodingBroker 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(FullSensitiveNodeGenerator.class);
 	private static final int full_convertor[] = { 
 		GeometricManager.ONE_TO_ONE, GeometricManager.MANY_TO_MANY, 
 		GeometricManager.MANY_TO_MANY, GeometricManager.MANY_TO_MANY 

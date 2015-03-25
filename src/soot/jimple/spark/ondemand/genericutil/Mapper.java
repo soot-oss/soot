@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand.genericutil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A simple interface for defining a function that maps objects.
  */

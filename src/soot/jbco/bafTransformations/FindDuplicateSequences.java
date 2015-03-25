@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -37,7 +40,9 @@ import soot.toolkits.graph.*;
  * Created on 12-May-2006
  */
 public class FindDuplicateSequences extends BodyTransformer implements IJbcoTransform {
-	final static Logger logger = LoggerFactory.getLogger(FindDuplicateSequences.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(FindDuplicateSequences.class);
+
 
   int totalcounts[] = new int[512];
   

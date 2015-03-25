@@ -19,6 +19,9 @@
 
 package soot.javaToJimple.jj.ast;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.*;
 import polyglot.types.*;
 import polyglot.visit.*;
@@ -26,6 +29,8 @@ import polyglot.ext.jl.ast.*;
 import polyglot.util.*;
 
 public class JjReturn_c extends Return_c {
+
+	private static final Logger logger =LoggerFactory.getLogger(JjReturn_c.class);
 
     public JjReturn_c(Position pos, Expr expr){
         super(pos, expr);

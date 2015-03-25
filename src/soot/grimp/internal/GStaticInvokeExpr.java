@@ -31,6 +31,9 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
@@ -38,6 +41,8 @@ import java.util.*;
 
 public class GStaticInvokeExpr extends AbstractStaticInvokeExpr 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GStaticInvokeExpr.class);
     public GStaticInvokeExpr(SootMethodRef methodRef, List args)
     {
         super(methodRef, new ValueBox[args.size()]);

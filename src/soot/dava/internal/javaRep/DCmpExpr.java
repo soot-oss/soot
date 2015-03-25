@@ -19,6 +19,9 @@
 
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import soot.grimp.*;
@@ -30,6 +33,8 @@ import soot.grimp.internal.*;
  */
 public class DCmpExpr extends AbstractGrimpIntBinopExpr implements CmpExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DCmpExpr.class);
     public DCmpExpr(Value op1, Value op2) { super(op1, op2); }
     public final String getSymbol() { return " - "; }
     public final int getPrecedence() { return 700; }

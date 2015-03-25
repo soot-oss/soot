@@ -19,7 +19,12 @@
 
 package soot.toolkits.graph.interaction;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class InteractionEvent {
+
+	private static final Logger logger =LoggerFactory.getLogger(InteractionEvent.class);
 
     
     private int type;

@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.ide.icfg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import heros.DontSynchronize;
 import heros.SynchronizedBy;
 import heros.solver.IDESolver;

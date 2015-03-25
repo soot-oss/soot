@@ -17,6 +17,9 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.toolkits.pointer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -51,6 +54,8 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  */
 public class LocalMustNotAliasAnalysis extends ForwardFlowAnalysis<Unit, HashMap<Local,Set<NewExpr>>>
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalMustNotAliasAnalysis.class);
     @SuppressWarnings({ "serial", "unchecked" })
 	protected static final NewExpr UNKNOWN = new AbstractNewExpr() {
         public String toString() {

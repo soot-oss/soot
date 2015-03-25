@@ -27,6 +27,9 @@
 
 package soot.jimple.toolkits.annotation.purity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A node representing a method parameter.
  * Each method parameter has a number, starting from 0.
@@ -34,6 +37,8 @@ package soot.jimple.toolkits.annotation.purity;
  */
 public class PurityParamNode implements PurityNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PurityParamNode.class);
     private int id;
 
     PurityParamNode(int id) { this.id = id; }

@@ -1,5 +1,8 @@
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.BooleanType;
 import soot.Value;
 import soot.dava.internal.javaRep.DIntConstant;
@@ -9,6 +12,8 @@ import soot.jimple.IntConstant;
 import soot.jimple.LongConstant;
 
 public class CPHelper {
+
+	private static final Logger logger =LoggerFactory.getLogger(CPHelper.class);
 
 	/*
 	 * The helper class just checks the type of the 

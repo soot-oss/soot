@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -10,6 +13,8 @@ import soot.jimple.toolkits.infoflow.*;
 
 public class LockAllocationBodyTransformer extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LockAllocationBodyTransformer.class);
     private static final LockAllocationBodyTransformer instance = new LockAllocationBodyTransformer();
     private LockAllocationBodyTransformer() {}
 
@@ -471,11 +476,11 @@ public class LockAllocationBodyTransformer extends BodyTransformer
 	
 	public InstanceFieldRef reconstruct(Body b, PatchingChain<Unit> units, InstanceFieldRef lock, Stmt insertBefore, boolean redirect)
 	{
-		G.v().out.println("Reconstructing " + lock);
+		logger.info("Reconstructing " + lock);
 
 		if(!(lock.getBase() instanceof FakeJimpleLocal))
 		{
-			G.v().out.println("  base is not a FakeJimpleLocal");
+			logger.info("  base is not a FakeJimpleLocal");
 			return lock;
 		}
 		FakeJimpleLocal fakeBase = (FakeJimpleLocal) lock.getBase();
@@ -508,7 +513,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer
 			throw new RuntimeException("InstanceFieldRef cannot be reconstructed because it's base is of an unsupported type" + base.getType() + ": " + base);
 		
 		InstanceFieldRef newLock = Jimple.v().newInstanceFieldRef(baseLocal, lock.getField().makeRef());
-		G.v().out.println("  as " + newLock);
+		logger.info("  as " + newLock);
 		return newLock;
 	}
 	

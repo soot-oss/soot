@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** 
  * There can be several parameter annotations in each 
  * Parameter Visibility attribute 
@@ -38,6 +41,8 @@ package soot.coffi;
  * @author Jennifer Lhotak
  */
 public class parameter_annotation extends attribute_info {
+
+	private static final Logger logger =LoggerFactory.getLogger(parameter_annotation.class);
    /** number of annotations */
    public int num_annotations;
    /** 

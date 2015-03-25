@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** There should be exactly one code attribute in every method; there
  * may also be a code attribute associated with a field (as an
  * initializer).

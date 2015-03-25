@@ -19,7 +19,12 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class AssertStmtChecker extends polyglot.visit.NodeVisitor {
+
+	private static final Logger logger =LoggerFactory.getLogger(AssertStmtChecker.class);
 
     private boolean hasAssert = false;
 

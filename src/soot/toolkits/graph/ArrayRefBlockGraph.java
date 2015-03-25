@@ -26,6 +26,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.*;
 import soot.jimple.Stmt;
@@ -41,6 +44,8 @@ import soot.baf.Inst;
  */
 public class ArrayRefBlockGraph extends BlockGraph 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ArrayRefBlockGraph.class);
     /**
      *   <p>Constructs an {@link ArrayRefBlockGraph} from the given
      *   {@link Body}.</p>

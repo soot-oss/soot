@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import soot.*;
 import soot.jimple.*;
@@ -20,6 +23,8 @@ import java.util.*;
 // -Richard L. Halpert, 2006-11-30
 
 public class MethodExtentBuilder {
+
+	private static final Logger logger =LoggerFactory.getLogger(MethodExtentBuilder.class);
 	
 	
 	//private List inlineSites = new ArrayList(); 

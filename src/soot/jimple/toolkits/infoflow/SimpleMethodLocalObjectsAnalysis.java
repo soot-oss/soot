@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.infoflow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -13,6 +16,8 @@ import soot.toolkits.graph.*;
 
 public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SimpleMethodLocalObjectsAnalysis.class);
 	public static int mlocounter = 0;
 
 	public SimpleMethodLocalObjectsAnalysis(UnitGraph g, ClassLocalObjectsAnalysis cloa, InfoFlowAnalysis dfa)
@@ -45,10 +50,10 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
 		}
 		
 		if(printMessages)
-			G.v().out.println("----- STARTING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+			logger.info("----- STARTING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 		doFlowInsensitiveAnalysis();
 		if(printMessages)
-			G.v().out.println("----- ENDING   SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+			logger.info("----- ENDING   SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 	}
 	
 	public SimpleMethodLocalObjectsAnalysis(UnitGraph g, CallLocalityContext context, InfoFlowAnalysis dfa)
@@ -74,13 +79,13 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
 		
 		if(printMessages)
 		{
-			G.v().out.println("----- STARTING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+			logger.info("----- STARTING SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 			G.v().out.print("      " + context.toString().replaceAll("\n","\n      "));
-			G.v().out.println("found " + sharedRefs.size() + " shared refs in context.");
+			logger.info("found " + sharedRefs.size() + " shared refs in context.");
 		}	
 		doFlowInsensitiveAnalysis();
 		if(printMessages)
-			G.v().out.println("----- ENDING   SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+			logger.info("----- ENDING   SHARED/LOCAL ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 	}
 	
 	// Interesting sources are summarized (and possibly printed)
@@ -103,13 +108,13 @@ public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalys
 		{
 			List sinks = infoFlowGraph.getSuccsOf(source);
 			if(printMessages)
-				G.v().out.println("      Requested value " + local + " is " + ( !sinks.contains(new CachedEquivalentValue(local)) ? "Local" : "Shared" ) + " in " + sm + " ");
+				logger.info("      Requested value " + local + " is " + ( !sinks.contains(new CachedEquivalentValue(local)) ? "Local" : "Shared" ) + " in " + sm + " ");
 			return !sinks.contains(new CachedEquivalentValue(local));
 		}
 		else
 		{
 			if(printMessages)
-				G.v().out.println("      Requested value " + local + " is Local (LIKE ALL VALUES) in " + sm + " ");
+				logger.info("      Requested value " + local + " is Local (LIKE ALL VALUES) in " + sm + " ");
 			return true; // no shared data in this method
 		}
 	}

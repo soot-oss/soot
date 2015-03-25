@@ -26,10 +26,15 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public class IterableMap implements Map
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(IterableMap.class);
     private HashMap<Object, Object> content_map, back_map;
     private HashChain key_chain, value_chain;
 
@@ -302,6 +307,7 @@ public class IterableMap implements Map
 
     public class Mapping_Iterator implements Iterator
     {
+
 	private final Iterator it;
 	private HashMap<Object, Object> m;
 

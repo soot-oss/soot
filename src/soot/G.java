@@ -24,25 +24,36 @@
  */
 
 package soot;
-import soot.coffi.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import soot.coffi.Utf8_Enumeration;
 import soot.dava.internal.SET.SETBasicBlock;
 import soot.dava.internal.SET.SETNode;
-
-import java.io.PrintStream;
-import java.util.*;
-
-import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.spark.pag.MethodPAG;
 import soot.jimple.spark.sets.P2SetFactory;
 import soot.jimple.toolkits.annotation.arraycheck.Array2ndDimensionSymbol;
 import soot.jimple.toolkits.pointer.UnionFactory;
+import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.toolkits.typing.ClassHierarchy;
-import soot.shimple.*;
+import soot.shimple.DefaultShimpleFactory;
+import soot.shimple.ShimpleFactory;
 import soot.toolkits.astmetrics.ClassData;
 
 /** A class to group together all the global variables in Soot. */
 public class G extends Singletons 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(G.class);
     
     public static interface GlobalObjectGetter {
     	public G getG();
@@ -74,6 +85,7 @@ public class G extends Singletons
     public PrintStream out = System.out;
 
     public class Global {
+
     }
 
     public long coffi_BasicBlock_ids = 0;

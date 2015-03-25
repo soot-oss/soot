@@ -18,6 +18,9 @@
  */
 package soot.asm;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.ClassProvider;
 import soot.ClassSource;
 import soot.SourceLocator;
@@ -28,6 +31,8 @@ import soot.SourceLocator;
  * @author Aaloan Miftah
  */
 public class AsmClassProvider implements ClassProvider {
+
+	private static final Logger logger =LoggerFactory.getLogger(AsmClassProvider.class);
 
 	public ClassSource find(String cls) {
 		String clsFile = cls.replace('.', '/') + ".class";

@@ -27,6 +27,9 @@
  * 
  */
 package soot.tagkit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 
@@ -38,6 +41,8 @@ import java.util.*;
 
 public class AnnotationTag implements Tag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AnnotationTag.class);
     
     // type - the question here is the class of the type is potentially
     // not loaded -- Does it need to be ??? - If it does then this may

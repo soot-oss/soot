@@ -9,3 +9,6 @@
  * Software Testing and Analysis, Toronto, Canada, 2011
  */
 package soot.jimple.spark.geom;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;

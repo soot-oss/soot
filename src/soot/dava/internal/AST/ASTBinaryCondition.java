@@ -19,12 +19,17 @@
 
 package soot.dava.internal.AST;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.dava.toolkits.base.misc.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTBinaryCondition extends ASTUnaryBinaryCondition{
+
+	private static final Logger logger =LoggerFactory.getLogger(ASTBinaryCondition.class);
     ConditionExpr condition;
     
     public ASTBinaryCondition(ConditionExpr condition){

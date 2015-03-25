@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -34,6 +37,8 @@ import soot.util.Chain;
  * This transformer takes a portion of gotos/ifs and moves them into a TRY/CATCH block 
  */
 public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(IndirectIfJumpsToCaughtGotos.class);
 
   int count = 0;
   

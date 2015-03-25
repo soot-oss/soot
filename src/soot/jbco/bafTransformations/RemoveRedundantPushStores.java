@@ -1,5 +1,8 @@
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -14,6 +17,8 @@ import soot.util.Chain;
  * Created on 16-Jun-2006 
  */
 public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(RemoveRedundantPushStores.class);
   
   public static String dependancies[] = new String[] {"bb.jbco_rrps"};
 

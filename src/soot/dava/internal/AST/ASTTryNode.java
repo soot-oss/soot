@@ -20,6 +20,9 @@
 
 package soot.dava.internal.AST;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.dava.internal.SET.*;
@@ -28,6 +31,8 @@ import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTTryNode extends ASTLabeledNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ASTTryNode.class);
     private List<Object> tryBody, catchList;
     private Map<Object, Object> exceptionMap, paramMap;
     private container tryBodyContainer;

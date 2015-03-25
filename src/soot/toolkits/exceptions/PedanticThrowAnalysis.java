@@ -19,6 +19,9 @@
 
 package soot.toolkits.exceptions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Unit;
 import soot.Singletons;
 import soot.G;
@@ -34,6 +37,8 @@ import soot.jimple.ThrowStmt;
  * arrive asynchronously from the perspective of the victim thread.
  */
 public class PedanticThrowAnalysis extends AbstractThrowAnalysis {
+
+	private static final Logger logger =LoggerFactory.getLogger(PedanticThrowAnalysis.class);
 
     /**
      * Constructs a <code>PedanticThrowAnalysis</code> for inclusion in 

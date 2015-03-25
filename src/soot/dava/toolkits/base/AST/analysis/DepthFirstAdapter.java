@@ -29,6 +29,9 @@
  */
 package soot.dava.toolkits.base.AST.analysis;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.dava.internal.AST.*;
@@ -46,7 +49,9 @@ import soot.dava.internal.javaRep.*;
  *              and then apply on the value inside the valuebox
  */
 public class DepthFirstAdapter extends AnalysisAdapter {
-	final static Logger logger = LoggerFactory.getLogger(DepthFirstAdapter.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(DepthFirstAdapter.class);
+
 
 
 	public DepthFirstAdapter() {

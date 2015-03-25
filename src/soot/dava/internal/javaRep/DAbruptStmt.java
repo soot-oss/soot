@@ -20,12 +20,17 @@
 
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.internal.*;
 import soot.dava.internal.SET.*;
 import soot.*;
 
 public class DAbruptStmt extends AbstractStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DAbruptStmt.class);
     private String command;
     private SETNodeLabel label;
 

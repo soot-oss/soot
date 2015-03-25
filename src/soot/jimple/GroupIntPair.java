@@ -29,8 +29,13 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class GroupIntPair
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GroupIntPair.class);
     public Object group;
     public int x;
     

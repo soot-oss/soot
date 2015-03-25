@@ -19,6 +19,9 @@
 
 package soot.jimple.spark.pag;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -39,6 +42,8 @@ import soot.jimple.spark.sets.P2SetVisitor;
  * 
  */
 public class PagToDotDumper {
+
+	private static final Logger logger =LoggerFactory.getLogger(PagToDotDumper.class);
 
 	public static final int TRACE_MAX_LVL = 99;
 	private PAG pag;

@@ -30,10 +30,15 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 public class ImmediateBox extends AbstractValueBox
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ImmediateBox.class);
     public ImmediateBox(Value value)
     {
         setValue(value);

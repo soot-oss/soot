@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -28,6 +31,8 @@ import soot.jbco.util.Rand;
 import soot.jimple.*;
 
 public class LocalsToBitField extends BodyTransformer  implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalsToBitField.class);
 
   int replaced = 0;
   int locals = 0;

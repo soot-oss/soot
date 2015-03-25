@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.util.*;
 

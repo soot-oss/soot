@@ -30,12 +30,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GInstanceOfExpr extends AbstractInstanceOfExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GInstanceOfExpr.class);
     public GInstanceOfExpr(Value op, Type checkType)
     {
         super(Grimp.v().newObjExprBox(op), checkType);

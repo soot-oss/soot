@@ -26,6 +26,9 @@
 
 package soot.jimple.toolkits.typing.integer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
@@ -36,6 +39,8 @@ import java.io.*;
  **/
 public class TypeResolver
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(TypeResolver.class);
   /** All type variable instances **/
   private final List<TypeVariable> typeVariableList = new ArrayList<TypeVariable>();
 
@@ -77,7 +82,7 @@ public class TypeResolver
 	
 	if(DEBUG)
 	  {
-	    G.v().out.println("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
+	    logger.info("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
 	  }
       }
     
@@ -131,7 +136,7 @@ public class TypeResolver
   {
     if(DEBUG)
       {
-	G.v().out.println(stmtBody.getMethod());
+	logger.info(stmtBody.getMethod().toString());
       }
 
     try
@@ -143,7 +148,7 @@ public class TypeResolver
       {
 	if(DEBUG)
 	  {
-	    G.v().out.println("[integer] Step 1 Exception-->" + e1.getMessage());
+	    logger.info("[integer] Step 1 Exception-->" + e1.getMessage());
 	  }
 	
 	try
@@ -167,11 +172,11 @@ public class TypeResolver
     if(DEBUG)
       {
 	int count = 0;
-	G.v().out.println("**** START:" + message);
+	logger.info("**** START:" + message);
 	for (TypeVariable var : typeVariableList) {
-	    G.v().out.println(count++ + " " + var);
+	    logger.info(count++ + " " + var);
 	  }
-	G.v().out.println("**** END:" + message);
+	logger.info("**** END:" + message);
       }
   }
 
@@ -198,7 +203,7 @@ public class TypeResolver
       {
 	if(DEBUG)
 	  {
-	    G.v().out.println("[integer] Step 1(check) Exception [" + stmtBody.getMethod() + "]-->" + e.getMessage());
+	    logger.info("[integer] Step 1(check) Exception [" + stmtBody.getMethod() + "]-->" + e.getMessage());
 	  }
 	
 	check_and_fix_constraints();
@@ -227,7 +232,7 @@ public class TypeResolver
 	collector.collect(stmt, stmtBody);
 	if(DEBUG)
 	  {
-	    G.v().out.println(stmt);
+	    logger.info(stmt.toString());
 	  }
       }
   }
@@ -246,7 +251,7 @@ public class TypeResolver
 	collector.collect(stmt, stmtBody);
 	if(DEBUG)
 	  {
-	    G.v().out.println(stmt);
+	    logger.info(stmt.toString());
 	  }
       }
   }
@@ -302,9 +307,9 @@ public class TypeResolver
 		  {
 		    if(lca == ClassHierarchy.v().TOP)
 		      {
-			G.v().out.println("*** TOP *** " + var);
+			logger.info("*** TOP *** " + var);
 			for (TypeVariable typeVariable : children_to_remove) {
-			    G.v().out.println("-- " + typeVariable);
+			    logger.info("-- " + typeVariable);
 			  }
 		      }
 		  }
@@ -387,7 +392,7 @@ public class TypeResolver
 		  {
 		    if(DEBUG)
 		      {
-			G.v().out.println("*** I->" + var.inv_approx().type() + " *** " + var);
+			logger.info("*** I->" + var.inv_approx().type() + " *** " + var);
 		      }
 		    
 		    var.union(typeVariable(var.inv_approx()));
@@ -403,7 +408,7 @@ public class TypeResolver
 		  {
 		    if(DEBUG)
 		      {
-			G.v().out.println("*** A->" + var.approx().type() + " *** " + var);
+			logger.info("*** A->" + var.approx().type() + " *** " + var);
 		      }
 		    
 		    var.union(typeVariable(var.approx()));
@@ -419,7 +424,7 @@ public class TypeResolver
 		  {
 		    if(DEBUG)
 		      {
-			G.v().out.println("*** R->SHORT *** " + var);
+			logger.info("*** R->SHORT *** " + var);
 		      }
 		    
 		    var.union(SHORT);
@@ -435,7 +440,7 @@ public class TypeResolver
 		  {
 		    if(DEBUG)
 		      {
-			G.v().out.println("*** R->BYTE *** " + var);
+			logger.info("*** R->BYTE *** " + var);
 		      }
 		    
 		    var.union(BYTE);
@@ -451,7 +456,7 @@ public class TypeResolver
 		  {
 		    if(DEBUG)
 		      {
-			G.v().out.println("*** R->BOOLEAN *** " + var);
+			logger.info("*** R->BOOLEAN *** " + var);
 		      }
 		    var.union(BOOLEAN);
 		    modified = true;
@@ -488,7 +493,7 @@ public class TypeResolver
 		   (local.getType() != null) &&
 		   !local.getType().equals(var.approx().type()))
 		  {
-		    G.v().out.println("local: " + local + ", type: " + local.getType() + ", approx: " + var.approx().type());
+		    logger.info("local: " + local + ", type: " + local.getType() + ", approx: " + var.approx().type());
 		  }
 	      }
 	  }
@@ -553,7 +558,7 @@ public class TypeResolver
 	  {
 	    if(DEBUG)
 	      {
-		G.v().out.println(s);
+		logger.info(s.toString());
 	      }
 	    throw e;
 	  }
@@ -586,7 +591,7 @@ public class TypeResolver
 	  {
 	    if(DEBUG)
 	      {
-		G.v().out.println(s);
+		logger.info(s.toString());
 	      }
 	    throw e;
 	  }

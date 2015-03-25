@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.thread.synchronization;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.jimple.toolkits.callgraph.*;
 
@@ -27,6 +30,8 @@ import soot.jimple.toolkits.callgraph.*;
  */
 public class CriticalSectionVisibleEdgesPred implements EdgePredicate
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CriticalSectionVisibleEdgesPred.class);
 	Collection<CriticalSection> tns;
 	CriticalSection exemptTn;
 	

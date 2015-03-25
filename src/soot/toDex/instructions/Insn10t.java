@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction10t;
@@ -13,6 +16,8 @@ import soot.toDex.LabelAssigner;
  * It is used by the "goto" opcode for jumps to offsets up to 8 bits away.
  */
 public class Insn10t extends InsnWithOffset {
+
+	private static final Logger logger =LoggerFactory.getLogger(Insn10t.class);
 
 	public Insn10t(Opcode opc) {
 		super(opc);

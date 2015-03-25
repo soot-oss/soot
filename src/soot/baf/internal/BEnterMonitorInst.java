@@ -29,11 +29,16 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.baf.*;
 import soot.util.*;
 
 public class BEnterMonitorInst extends AbstractInst implements EnterMonitorInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BEnterMonitorInst.class);
     public BEnterMonitorInst()
     {
     }

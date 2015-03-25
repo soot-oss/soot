@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 
 import soot.Scene;
@@ -32,6 +35,8 @@ import soot.jimple.toolkits.callgraph.Edge;
  *
  */
 public class SootInfo {
+
+	private static final Logger logger =LoggerFactory.getLogger(SootInfo.class);
 	
 	public static int countCallEdgesForCallsite(Stmt callsite, boolean stopForMutiple)
 	{

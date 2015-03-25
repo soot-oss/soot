@@ -18,6 +18,9 @@
  */
 
 package soot.dava.internal.SET;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 import java.util.*;
@@ -25,6 +28,8 @@ import soot.util.*;
 
 public class SETBasicBlock implements Comparable
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SETBasicBlock.class);
     
     private SETNode entryNode, exitNode;
     private final IterableSet predecessors, successors, body;
@@ -134,13 +139,13 @@ public class SETBasicBlock implements Comparable
     public void dump()
     {
 	printSig();
-	G.v().out.println( "=== preds ===");
+	logger.info( "=== preds ===");
 
 	Iterator it = predecessors.iterator();
 	while (it.hasNext())
 	    ((SETBasicBlock) it.next()).printSig();
 
-	G.v().out.println( "=== succs ===");
+	logger.info( "=== succs ===");
 
 	it = successors.iterator();
 	while (it.hasNext())

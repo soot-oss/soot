@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.sets;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.Type;
 import soot.jimple.spark.pag.PAG;
 

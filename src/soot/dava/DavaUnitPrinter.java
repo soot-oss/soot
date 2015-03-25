@@ -19,6 +19,9 @@
  */
 
 package soot.dava;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.AbstractUnitPrinter;
 import soot.ArrayType;
 import soot.RefType;
@@ -37,6 +40,8 @@ import soot.jimple.ThisRef;
  * UnitPrinter implementation for Dava.
  */
 public class DavaUnitPrinter extends AbstractUnitPrinter {
+
+	private static final Logger logger =LoggerFactory.getLogger(DavaUnitPrinter.class);
 	DavaBody body;
 	
 	/*

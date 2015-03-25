@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.annotation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -26,6 +29,8 @@ import soot.jimple.*;
 import soot.tagkit.*;
 
 public class LineNumberAdder extends SceneTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(LineNumberAdder.class);
 
     public LineNumberAdder( Singletons.Global g) {}
     public static LineNumberAdder v() { return G.v().soot_jimple_toolkits_annotation_LineNumberAdder();}

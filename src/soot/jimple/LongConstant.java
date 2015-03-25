@@ -29,11 +29,16 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 
 public class LongConstant extends ArithmeticConstant
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LongConstant.class);
     public final long value;
 
     private LongConstant(long value)

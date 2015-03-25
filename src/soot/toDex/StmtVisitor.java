@@ -1,5 +1,8 @@
 package soot.toDex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -79,6 +82,8 @@ import soot.util.Switchable;
  * @see Instruction final representation of an instruction
  */
 public class StmtVisitor implements StmtSwitch {
+
+	private static final Logger logger =LoggerFactory.getLogger(StmtVisitor.class);
 	
 	private static final Map<Opcode, Opcode> oppositeIfs;
 	

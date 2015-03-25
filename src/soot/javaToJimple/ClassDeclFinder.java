@@ -18,11 +18,16 @@
  */
 
 package soot.javaToJimple;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import polyglot.ast.ClassDecl;
 
 public class ClassDeclFinder extends polyglot.visit.NodeVisitor {
+
+	private static final Logger logger =LoggerFactory.getLogger(ClassDeclFinder.class);
 
     private final ArrayList<ClassDecl> declsFound;
 

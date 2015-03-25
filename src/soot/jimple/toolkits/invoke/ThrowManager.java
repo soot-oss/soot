@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.invoke;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
@@ -33,6 +36,8 @@ import java.util.*;
 /** Utility methods for dealing with traps. */
 public class ThrowManager
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ThrowManager.class);
     /** Iterate through the statements in b (starting at the end), returning
      * the last instance of the following pattern:
      *

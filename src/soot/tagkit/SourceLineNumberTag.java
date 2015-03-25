@@ -26,8 +26,13 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SourceLineNumberTag implements Tag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SourceLineNumberTag.class);
     /* it is a value representing line number. */
     private final int startLineNumber;
 	private final int endLineNumber;

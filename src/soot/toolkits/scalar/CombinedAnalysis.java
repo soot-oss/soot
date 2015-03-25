@@ -19,6 +19,9 @@
 
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  *   Analysis that computes live locals, local defs, and local uses all at once.

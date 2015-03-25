@@ -26,11 +26,16 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
 public class ObjExprBox extends ExprBox
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ObjExprBox.class);
     /* an ExprBox which can only contain object-looking references */
     public ObjExprBox(Value value)
     {

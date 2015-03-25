@@ -30,6 +30,9 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.*;
 
@@ -52,6 +55,8 @@ import soot.dava.toolkits.base.AST.analysis.*;
  */
 
 public class ASTParentNodeFinder extends DepthFirstAdapter{
+
+	private static final Logger logger =LoggerFactory.getLogger(ASTParentNodeFinder.class);
 
     HashMap<Unit, ASTNode> parentOf;
     Stack<ASTNode> parentStack;

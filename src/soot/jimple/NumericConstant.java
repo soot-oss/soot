@@ -25,6 +25,9 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class NumericConstant extends Constant
 {
     // PTC 1999/06/28

@@ -30,11 +30,16 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
 public class JCastExpr extends AbstractCastExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JCastExpr.class);
     public JCastExpr(Value op, Type type)
     {
         super(Jimple.v().newImmediateBox(op), type);

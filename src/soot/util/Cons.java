@@ -19,6 +19,9 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A Lisp-style cons cell. */
 public final class Cons<U, V> {
     final private U car;

@@ -30,6 +30,9 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
@@ -37,6 +40,8 @@ import java.util.*;
 
 public class StaticFieldRef implements FieldRef, ConvertToBaf
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(StaticFieldRef.class);
 
 
 	protected SootFieldRef fieldRef;

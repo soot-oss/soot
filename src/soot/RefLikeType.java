@@ -20,6 +20,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Abstract class for Soot classes that model subtypes of java.lang.Object
  * (ie. object references and arrays)
  * @author Ondrej Lhotak

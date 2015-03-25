@@ -19,6 +19,9 @@
 
 package soot.toolkits.astmetrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -29,6 +32,8 @@ import java.util.Iterator;
  * Plus a list of MetricData objects
  */
 public class ClassData {
+
+	private static final Logger logger =LoggerFactory.getLogger(ClassData.class);
 	String className;   //the name of the class whose data is being stored
 	ArrayList<MetricData> metricData;  //each element should be a MetricData
 	

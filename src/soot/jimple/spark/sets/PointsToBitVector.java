@@ -1,4 +1,7 @@
 package soot.jimple.spark.sets;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.util.BitVector;
 import soot.jimple.spark.pag.Node;
 
@@ -13,6 +16,8 @@ import soot.jimple.spark.pag.Node;
  *
  */
 public class PointsToBitVector extends BitVector {
+
+	private static final Logger logger =LoggerFactory.getLogger(PointsToBitVector.class);
 	public PointsToBitVector(int size) { super(size); }
 	
 	/**

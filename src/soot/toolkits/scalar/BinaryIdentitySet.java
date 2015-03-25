@@ -18,6 +18,9 @@
  */
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * An optimized kind of {@link IdentityHashSet} that only holds two objects. (Allows for faster comparison.) 

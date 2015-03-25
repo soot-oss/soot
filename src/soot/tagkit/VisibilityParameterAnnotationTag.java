@@ -24,6 +24,9 @@
  */
 
 package soot.tagkit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /** Represents the visibility of an annotation attribute attatched 
@@ -34,6 +37,8 @@ import java.util.*;
 
 public class VisibilityParameterAnnotationTag implements  Tag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(VisibilityParameterAnnotationTag.class);
     
     private int num_params;
     private int kind;

@@ -18,6 +18,9 @@
  */
 package soot.asm;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.Label;

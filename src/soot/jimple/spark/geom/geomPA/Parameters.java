@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Parameters to control the behaviors of geom points-to solver.
  * 
@@ -26,6 +29,8 @@ package soot.jimple.spark.geom.geomPA;
  */
 public class Parameters 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Parameters.class);
 	// The parameters that are used to tune the precision and performance tradeoff
 	public static int max_cons_budget = 40;
 	public static int max_pts_budget = 80;

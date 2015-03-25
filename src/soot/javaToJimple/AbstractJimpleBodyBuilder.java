@@ -21,6 +21,9 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public abstract class AbstractJimpleBodyBuilder {

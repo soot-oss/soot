@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.helper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -74,6 +77,8 @@ import soot.jimple.toolkits.callgraph.Edge;
  * 
  */
 public class GeomEvaluator {
+
+	private static final Logger logger =LoggerFactory.getLogger(GeomEvaluator.class);
 
 	private GeomPointsTo ptsProvider;
 	private PrintStream outputer;

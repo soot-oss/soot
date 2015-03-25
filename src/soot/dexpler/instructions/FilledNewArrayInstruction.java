@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import static soot.dexpler.Util.isFloatLike;
 
 import org.jf.dexlib2.iface.instruction.Instruction;
@@ -46,7 +49,8 @@ import soot.jimple.NewArrayExpr;
 
 public class FilledNewArrayInstruction extends FilledArrayInstruction {
 
-	final static Logger logger = LoggerFactory.getLogger(FilledNewArrayInstruction.class);
+	private static final Logger logger =LoggerFactory.getLogger(FilledNewArrayInstruction.class);
+
     AssignStmt assign = null;
 
     public FilledNewArrayInstruction (Instruction instruction, int codeAdress) {

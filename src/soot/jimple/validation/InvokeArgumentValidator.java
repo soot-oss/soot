@@ -1,5 +1,8 @@
 package soot.jimple.validation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 import soot.Body;
@@ -16,6 +19,8 @@ import soot.validation.ValidationException;
  * @author Steven Arzt
  */
 public class InvokeArgumentValidator implements BodyValidator {
+
+	private static final Logger logger =LoggerFactory.getLogger(InvokeArgumentValidator.class);
 
 	private static InvokeArgumentValidator INSTANCE;
 	

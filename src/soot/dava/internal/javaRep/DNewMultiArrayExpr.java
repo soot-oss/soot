@@ -19,6 +19,9 @@
 
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -27,6 +30,8 @@ import soot.jimple.internal.*;
 
 public class DNewMultiArrayExpr extends AbstractNewMultiArrayExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DNewMultiArrayExpr.class);
     public DNewMultiArrayExpr(ArrayType type, List sizes)
     {
         super(type, new ValueBox[sizes.size()]);

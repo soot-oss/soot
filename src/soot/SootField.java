@@ -27,16 +27,21 @@
 
 package soot;
 
-import soot.tagkit.*;
-import soot.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.paddle.PaddleField;
 import soot.jimple.spark.pag.SparkField;
+import soot.tagkit.AbstractHost;
+import soot.util.Numberable;
 
 /**
     Soot representation of a Java field.  Can be declared to belong to a SootClass.
 */
 public class SootField extends AbstractHost implements ClassMember, SparkField, Numberable, PaddleField
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SootField.class);
     String name;
     Type type;
     int modifiers;

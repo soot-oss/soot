@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.formats.Instruction21t;
 import org.slf4j.Logger;
@@ -40,7 +43,8 @@ import soot.jimple.internal.JIfStmt;
 
 public class IfTestzInstruction extends ConditionalJumpInstruction {
 
-	final static Logger logger = LoggerFactory.getLogger(IfTestzInstruction.class);
+	private static final Logger logger =LoggerFactory.getLogger(IfTestzInstruction.class);
+
 			
     JIfStmt jif = null;
   

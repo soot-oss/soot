@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.toolkits.callgraph;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -38,6 +41,8 @@ import soot.util.queue.QueueReader;
  */
 public final class CallGraphBuilder
 { 
+	final static Logger logger = LoggerFactory
+			.getLogger(CallGraphBuilder.class);
     private PointsToAnalysis pa;
     private final ReachableMethods reachables;
     private final OnFlyCallGraphBuilder ofcgb;
@@ -66,7 +71,7 @@ public final class CallGraphBuilder
      * any calls by non-application class methods.
      * Don't use this constructor if you need a real call graph. */
     public CallGraphBuilder() {
-        G.v().out.println( "Warning: using incomplete callgraph containing "+
+        logger.info( "Warning: using incomplete callgraph containing "+
                 "only application classes." );
         pa = soot.jimple.toolkits.pointer.DumbPointerAnalysis.v();
         cg = new CallGraph();

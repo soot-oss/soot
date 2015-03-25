@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** 
  * Represents the int annotation element
@@ -34,6 +37,8 @@ package soot.tagkit;
 
 public class AnnotationFloatElem extends AnnotationElem
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AnnotationFloatElem.class);
 
     float value;
 

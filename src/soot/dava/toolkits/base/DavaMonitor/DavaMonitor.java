@@ -19,10 +19,15 @@
 
 package soot.dava.toolkits.base.DavaMonitor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 
 public class DavaMonitor
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DavaMonitor.class);
     private static final DavaMonitor instance = new DavaMonitor();
 
     private final HashMap<Object, Lock> ref, lockTable;

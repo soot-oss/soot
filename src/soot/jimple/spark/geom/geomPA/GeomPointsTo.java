@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -89,6 +92,8 @@ import soot.util.queue.QueueReader;
  */
 public class GeomPointsTo extends PAG 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GeomPointsTo.class);
 	// Worklist, the core data structure for fixed point computation
 	// Other choice, FIFO_Worklist
 	protected IWorklist worklist = null;
@@ -275,9 +280,9 @@ public class GeomPointsTo extends PAG
 										"_log.txt" );
 			try {
 				ps = new PrintStream(log_file);
-				G.v().out.println( "[Geom] Analysis log can be found in: " + log_file.toString() );
+				logger.info( "[Geom] Analysis log can be found in: " + log_file.toString() );
 			} catch (FileNotFoundException e) {
-				G.v().out.println( "[Geom] The dump file: " + log_file.toString() + " cannot be created. Abort." );
+				logger.info( "[Geom] The dump file: " + log_file.toString() + " cannot be created. Abort." );
 				System.exit(-1);
 			}
 		}
@@ -299,7 +304,7 @@ public class GeomPointsTo extends PAG
 				
 				fin.close();
 				fr.close();
-				G.v().out.println( "[Geom] Read in verification file successfully.\n" );
+				logger.info( "[Geom] Read in verification file successfully.\n" );
 			} catch (FileNotFoundException e) {
 				validMethods = null;
 			} catch (IOException e) {

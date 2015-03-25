@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.annotation.defs;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
@@ -29,6 +32,8 @@ import java.util.*;
 import soot.jimple.*;
 
 public class ReachingDefsTagger extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(ReachingDefsTagger.class);
 
 
     public ReachingDefsTagger(Singletons.Global g) {}

@@ -18,6 +18,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -29,6 +32,8 @@ import soot.toolkits.graph.BriefUnitGraph;
 import soot.baf.*;
 
 public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(TryCatchCombiner.class);
 
   int totalcount = 0;
   int changedcount = 0;

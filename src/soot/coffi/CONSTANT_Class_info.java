@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Value;
 import soot.jimple.ClassConstant;
 
@@ -39,6 +42,8 @@ import soot.jimple.ClassConstant;
  * @author Clark Verbrugge
  */
 public class CONSTANT_Class_info extends cp_info {
+
+	private static final Logger logger =LoggerFactory.getLogger(CONSTANT_Class_info.class);
    /** Constant pool index of name of this class. */
    public int name_index;
 

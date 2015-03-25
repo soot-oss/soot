@@ -28,12 +28,17 @@
 
 package soot.util.dot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 /**
  * Encodes general Dot commands.
  */
 public class DotGraphCommand implements Renderable{
+
+	private static final Logger logger =LoggerFactory.getLogger(DotGraphCommand.class);
   String command;
 
   /**

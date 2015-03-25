@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** This class represents a tag for byte-code offset of
  * instructions that correspond to Jimple statements.
  *
@@ -33,6 +36,8 @@ package soot.tagkit;
  */
 
 public class BytecodeOffsetTag implements Tag {
+
+	private static final Logger logger =LoggerFactory.getLogger(BytecodeOffsetTag.class);
   /** The index of the last byte-code instruction.
    */
   private int offset;

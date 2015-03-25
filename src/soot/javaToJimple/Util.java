@@ -19,9 +19,14 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 public class Util {
+
+	private static final Logger logger =LoggerFactory.getLogger(Util.class);
 
     public static void addInnerClassTag(soot.SootClass sc, String innerName, String outerName, String simpleName, int access){
         // maybe need file sep here - may break windows

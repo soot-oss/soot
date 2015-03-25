@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand.genericutil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 
 public class IteratorMapper<T,U> implements Iterator<U> {

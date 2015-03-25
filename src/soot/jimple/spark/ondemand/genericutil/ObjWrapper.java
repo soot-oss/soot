@@ -18,10 +18,15 @@
  */
 package soot.jimple.spark.ondemand.genericutil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author manu
  */
 public class ObjWrapper {
+
+	private static final Logger logger =LoggerFactory.getLogger(ObjWrapper.class);
 
     public final Object wrapped;
     

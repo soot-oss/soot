@@ -19,6 +19,9 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Any expression that allocates objects.
  * @author Ondrej Lhotak
  */

@@ -30,6 +30,9 @@
 
 
 package soot.coffi;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 // for storing statistical or informative data about a class file
 
 import java.io.*;

@@ -30,6 +30,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
@@ -37,6 +40,8 @@ import soot.util.*;
 
 public class JCmpgExpr extends AbstractJimpleIntBinopExpr implements CmpgExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JCmpgExpr.class);
     public JCmpgExpr(Value op1, Value op2) { super(op1, op2); }
     public final String getSymbol() { return " " + Jimple.CMPG + " " ; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseCmpgExpr(this); }

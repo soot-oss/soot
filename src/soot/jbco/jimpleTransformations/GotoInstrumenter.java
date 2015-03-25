@@ -19,6 +19,9 @@
 
 package soot.jbco.jimpleTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import soot.jbco.IJbcoTransform;
@@ -32,6 +35,8 @@ import java.util.*;
  * Created on 15-Feb-2006 
  */
 public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(GotoInstrumenter.class);
 
   private int trapsAdded = 0;
   private int gotosInstrumented = 0;

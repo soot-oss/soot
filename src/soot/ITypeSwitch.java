@@ -27,6 +27,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Describes a switch on internal types. */
 interface ITypeSwitch extends soot.util.Switch
 {

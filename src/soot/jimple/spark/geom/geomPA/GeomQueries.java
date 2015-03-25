@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -47,6 +50,8 @@ import soot.jimple.toolkits.callgraph.Edge;
  */
 public class GeomQueries 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GeomQueries.class);
 	protected GeomPointsTo geomPts = null;
 	
 	// Call graph information

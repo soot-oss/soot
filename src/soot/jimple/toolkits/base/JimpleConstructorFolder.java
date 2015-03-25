@@ -29,6 +29,9 @@
 
 
 package soot.jimple.toolkits.base;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -40,6 +43,8 @@ import java.util.*;
 
 public class JimpleConstructorFolder extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JimpleConstructorFolder.class);
     static boolean isNew(Stmt s) {
         if(!(s instanceof AssignStmt)) return false;
         if(!(rhs(s) instanceof NewExpr)) return false;
@@ -82,6 +87,7 @@ public class JimpleConstructorFolder extends BodyTransformer
     static Local rhsLocal(Stmt s) { return (Local) rhs(s); }
     static Local lhsLocal(Stmt s) { return (Local) lhs(s); }
     private class Fact {
+
         private Map<Local, Stmt> varToStmt = new HashMap<Local, Stmt>();
         private MultiMap stmtToVar = new HashMultiMap();
         private Stmt alloc = null;
@@ -146,6 +152,7 @@ public class JimpleConstructorFolder extends BodyTransformer
         public void setAlloc(Stmt newAlloc) { alloc = newAlloc; }
     }
     private class Analysis extends ForwardFlowAnalysis {
+
         public Analysis(DirectedGraph graph) {
             super(graph);
             doAnalysis();
@@ -193,7 +200,7 @@ public class JimpleConstructorFolder extends BodyTransformer
         //PhaseDumper.v().dumpBody(body, "constructorfolder.in");
 
         if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
+            logger.info("[" + body.getMethod().getName() +
                 "] Folding Jimple constructors...");
 
         Analysis analysis = new Analysis(new BriefUnitGraph(body));

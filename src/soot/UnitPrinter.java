@@ -18,7 +18,11 @@
  */
 
 package soot;
-import soot.jimple.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.jimple.Constant;
+import soot.jimple.IdentityRef;
 
 /**
 * Interface for different methods of printing out a Unit.

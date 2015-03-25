@@ -28,7 +28,10 @@
 
 
 package soot;
-import soot.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.util.Switch;
 
 /**
  *   Soot representation of the Java built-in type 'long'. Implemented as
@@ -37,6 +40,8 @@ import soot.util.*;
 @SuppressWarnings("serial")
 public class LongType extends PrimType
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LongType.class);
     public LongType( Singletons.Global g ) {}
     public static LongType v() { return G.v().soot_LongType(); }
 

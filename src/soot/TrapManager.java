@@ -25,12 +25,22 @@
 
 package soot;
 
-import soot.util.*;
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import soot.util.Chain;
 
 /** Utility methods for dealing with traps. */
 public class TrapManager
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(TrapManager.class);
     /** If exception e is caught at unit u in body b, return true;
      * otherwise, return false. */
     public static boolean isExceptionCaughtAt(SootClass e, Unit u, Body b)

@@ -19,6 +19,9 @@
 
 package soot.jbco.jimpleTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 import soot.*;
@@ -30,6 +33,8 @@ import soot.jimple.*;
  * Created on 10-Jul-2006 
  */
 public class New2InitFlowAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
+
+	private static final Logger logger =LoggerFactory.getLogger(New2InitFlowAnalysis.class);
 
   FlowSet emptySet = new ArraySparseSet();
   

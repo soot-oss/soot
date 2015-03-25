@@ -19,6 +19,9 @@
 
 package soot.javaToJimple.jj.ast;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.*;
 import polyglot.types.*;
 import polyglot.visit.*;
@@ -27,6 +30,8 @@ import polyglot.ext.jl.ast.*;
 import java.util.*;
 
 public class JjArrayInit_c extends ArrayInit_c {
+
+	private static final Logger logger =LoggerFactory.getLogger(JjArrayInit_c.class);
     
     public JjArrayInit_c(Position pos, List elements) {
         super(pos, elements);

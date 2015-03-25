@@ -27,12 +27,17 @@
 
 package soot.jimple.toolkits.annotation.purity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A node representing the this parameter.
  * (should we make it a singleton ?)
  */ 
 public class PurityThisNode extends PurityParamNode
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PurityThisNode.class);
     private PurityThisNode() { super(-1); }
     
     public static PurityThisNode node = new PurityThisNode();

@@ -25,9 +25,14 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class AttributeValueException extends RuntimeException
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AttributeValueException.class);
 
 	/**
 	 * 

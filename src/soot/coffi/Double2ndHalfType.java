@@ -31,10 +31,15 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 public class Double2ndHalfType extends Type
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Double2ndHalfType.class);
     public Double2ndHalfType( Singletons.Global g ) {}
     public static Double2ndHalfType v() { return G.v().soot_coffi_Double2ndHalfType(); }
 

@@ -18,8 +18,12 @@
  */
 
 package soot;
-import java.util.*;
-import soot.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.List;
+
+import soot.util.NumberedString;
 
 /** Representation of a reference to a method as it appears in a class file.
  * Note that the method directly referred to may not actually exist; the

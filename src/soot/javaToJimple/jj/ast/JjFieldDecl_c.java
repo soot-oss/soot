@@ -19,6 +19,9 @@
 
 package soot.javaToJimple.jj.ast;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.*;
 import polyglot.visit.*;
 import polyglot.ext.jl.ast.*;
@@ -26,6 +29,8 @@ import polyglot.types.*;
 import polyglot.util.*;
 
 public class JjFieldDecl_c extends FieldDecl_c {
+
+	private static final Logger logger =LoggerFactory.getLogger(JjFieldDecl_c.class);
 
     public JjFieldDecl_c(Position pos, Flags flags, TypeNode type, String name, Expr init){
         super(pos, flags, type, name, init);

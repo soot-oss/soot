@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** Represents the annotation constants
  * for Java 1.5.
@@ -32,6 +35,8 @@ package soot.tagkit;
 
 public class AnnotationConstants
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AnnotationConstants.class);
     public static final int RUNTIME_VISIBLE = 0;
     public static final int RUNTIME_INVISIBLE = 1;
     public static final int SOURCE_VISIBLE = 2;

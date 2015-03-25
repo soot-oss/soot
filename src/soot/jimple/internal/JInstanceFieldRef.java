@@ -27,11 +27,16 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
 public class JInstanceFieldRef extends AbstractInstanceFieldRef
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JInstanceFieldRef.class);
     public JInstanceFieldRef(Value base, SootFieldRef fieldRef)
     {
         super(Jimple.v().newLocalBox(base), fieldRef);

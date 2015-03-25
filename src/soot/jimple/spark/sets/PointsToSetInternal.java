@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.sets;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.ClassConstant;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.pag.*;
@@ -29,6 +32,8 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public abstract class PointsToSetInternal implements PointsToSet, EqualsSupportingPointsToSet {
+	final static Logger logger = LoggerFactory
+			.getLogger(PointsToSetInternal.class);
     /** Adds contents of other minus the contents of exclude into this set;
      * returns true if this set changed. */
     public boolean addAll( PointsToSetInternal other,
@@ -42,13 +47,13 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
             return addAll( other, null );
         }
         if( !G.v().PointsToSetInternal_warnedAlready ) {
-            G.v().out.println( "Warning: using default implementation of addAll. You should implement a faster specialized implementation." );
-            G.v().out.println( "this is of type "+getClass().getName() );
-            G.v().out.println( "other is of type "+other.getClass().getName() );
+            logger.info( "Warning: using default implementation of addAll. You should implement a faster specialized implementation." );
+            logger.info( "this is of type "+getClass().getName() );
+            logger.info( "other is of type "+other.getClass().getName() );
             if( exclude == null ) {
-                G.v().out.println( "exclude is null" );
+                logger.info( "exclude is null" );
             } else {
-                G.v().out.println( "exclude is of type "+
+                logger.info( "exclude is of type "+
                         exclude.getClass().getName() );
             }
             G.v().PointsToSetInternal_warnedAlready = true;

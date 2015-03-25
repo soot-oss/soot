@@ -18,12 +18,17 @@
  */
 
 package soot.jimple.spark.pag;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.RefType;
 
 /** Represents an allocation site node the represents a constant string.
  * @author Ondrej Lhotak
  */
 public class StringConstantNode extends AllocNode {
+
+	private static final Logger logger =LoggerFactory.getLogger(StringConstantNode.class);
     public String toString() {
 	return "StringConstantNode "+getNumber()+" "+newExpr;
     }

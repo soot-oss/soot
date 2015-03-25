@@ -18,10 +18,15 @@
  */
 
 package soot.jimple.toolkits.pointer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import soot.*;
 
 public class FullObjectSet extends Union {
+
+	private static final Logger logger =LoggerFactory.getLogger(FullObjectSet.class);
     public FullObjectSet( Singletons.Global g ) {
         this( RefType.v( "java.lang.Object" ) );
     }

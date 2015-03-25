@@ -19,6 +19,9 @@
 
 package soot.jimple.spark.solver;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Abstract base class for a propagator that propagates points-to sets
  * along pointer assignment graph.
  * @author Ondrej Lhotak

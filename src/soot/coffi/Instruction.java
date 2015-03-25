@@ -30,6 +30,9 @@
 
 
 package soot.coffi;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
  * <p>

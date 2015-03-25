@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class ConstantValueTag implements Tag
 {
     protected byte[] bytes;			// encoded constant

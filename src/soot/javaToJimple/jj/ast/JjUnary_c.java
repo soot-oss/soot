@@ -19,6 +19,9 @@
 
 package soot.javaToJimple.jj.ast;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.*;
 import polyglot.visit.*;
 import polyglot.ext.jl.ast.*;
@@ -26,6 +29,8 @@ import polyglot.types.*;
 import polyglot.util.*;
 
 public class JjUnary_c extends Unary_c {
+
+	private static final Logger logger =LoggerFactory.getLogger(JjUnary_c.class);
 
     public JjUnary_c(Position pos, Unary.Operator op, Expr expr){
         super(pos, op, expr);

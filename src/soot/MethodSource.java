@@ -26,6 +26,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** A class which knows how to produce Body's for SootMethods. */
 public interface MethodSource

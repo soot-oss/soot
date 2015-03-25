@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 
 import soot.dava.internal.AST.ASTDoWhileNode;
@@ -46,6 +49,8 @@ import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
  *        
  */
 public class LabelToNodeMapper extends DepthFirstAdapter {
+
+	private static final Logger logger =LoggerFactory.getLogger(LabelToNodeMapper.class);
 	private final HashMap<String, ASTLabeledNode> labelsToNode;
 	
 	public LabelToNodeMapper(){

@@ -30,6 +30,9 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.*;
@@ -37,6 +40,8 @@ import soot.util.*;
 
 public class GShrExpr extends AbstractGrimpIntLongBinopExpr implements ShrExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GShrExpr.class);
     public GShrExpr(Value op1, Value op2) { super(op1, op2); }
     public String getSymbol() { return " >> "; }
     public int getPrecedence() { return 650; }

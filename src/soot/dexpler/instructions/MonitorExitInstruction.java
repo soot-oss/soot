@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 import org.slf4j.Logger;
@@ -38,7 +41,9 @@ import soot.jimple.ExitMonitorStmt;
 import soot.jimple.Jimple;
 
 public class MonitorExitInstruction extends DexlibAbstractInstruction {
-	final static Logger logger = LoggerFactory.getLogger(MonitorExitInstruction.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(MonitorExitInstruction.class);
+
     ExitMonitorStmt exitMonitorStmt = null;
   
     public MonitorExitInstruction (Instruction instruction, int codeAdress) {

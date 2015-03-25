@@ -18,10 +18,15 @@
  */
 
 package soot.jimple.toolkits.pointer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import soot.*;
 
 public class FullRWSet extends RWSet {
+
+	private static final Logger logger =LoggerFactory.getLogger(FullRWSet.class);
     
     public int size()
     {

@@ -18,6 +18,9 @@
  */
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
@@ -50,6 +53,8 @@ import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 import soot.toolkits.scalar.Pair;
 
 public class IFDSReachingDefinitions extends DefaultJimpleIFDSTabulationProblem<Pair<Value, Set<DefinitionStmt>>,InterproceduralCFG<Unit, SootMethod>> {
+
+	private static final Logger logger =LoggerFactory.getLogger(IFDSReachingDefinitions.class);
 	public IFDSReachingDefinitions(InterproceduralCFG<Unit, SootMethod> icfg) {
 		super(icfg);
 	}

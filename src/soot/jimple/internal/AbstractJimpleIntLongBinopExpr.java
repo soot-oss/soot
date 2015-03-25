@@ -30,6 +30,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
@@ -38,6 +41,8 @@ import java.util.*;
 @SuppressWarnings("serial")
 abstract public class AbstractJimpleIntLongBinopExpr extends AbstractIntLongBinopExpr implements ConvertToBaf
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AbstractJimpleIntLongBinopExpr.class);
     protected AbstractJimpleIntLongBinopExpr(Value op1, Value op2)
     {
         this.op1Box = Jimple.v().newArgBox(op1);

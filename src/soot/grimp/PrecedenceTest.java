@@ -29,6 +29,9 @@
 
 
 package soot.grimp;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 /** Provides static helper methods to indicate if parenthesization is
@@ -66,6 +69,8 @@ import soot.*;
  */
 public class PrecedenceTest
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PrecedenceTest.class);
     public static boolean needsBrackets( ValueBox subExprBox, Value expr ) {
         Value sub = subExprBox.getValue();
         if( !(sub instanceof Precedence) ) return false;

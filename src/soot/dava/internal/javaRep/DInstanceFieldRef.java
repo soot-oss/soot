@@ -20,12 +20,17 @@
 
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.grimp.internal.*;
 
 public class DInstanceFieldRef extends GInstanceFieldRef 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DInstanceFieldRef.class);
     private HashSet<Object> thisLocals;
 
     public DInstanceFieldRef( Value base, SootFieldRef fieldRef, HashSet<Object> thisLocals)

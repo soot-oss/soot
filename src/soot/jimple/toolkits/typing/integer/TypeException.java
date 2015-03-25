@@ -25,7 +25,12 @@
 
 package soot.jimple.toolkits.typing.integer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class TypeException extends Exception {
+
+	private static final Logger logger =LoggerFactory.getLogger(TypeException.class);
 	/**
 	 * 
 	 */

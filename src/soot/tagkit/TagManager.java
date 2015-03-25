@@ -24,11 +24,16 @@
  */
 
 package soot.tagkit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 /** Utility functions for tags. */
 public class TagManager
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(TagManager.class);
     public TagManager( Singletons.Global g ) {}
     public static TagManager v() { return G.v().soot_tagkit_TagManager(); }
     private TagPrinter tagPrinter = new StdTagPrinter();

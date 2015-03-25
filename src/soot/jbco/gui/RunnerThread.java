@@ -18,9 +18,14 @@
  */
 
 package soot.jbco.gui;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.*;
 import javax.swing.*;
 public class RunnerThread implements Runnable {
+
+	private static final Logger logger =LoggerFactory.getLogger(RunnerThread.class);
 
   public boolean stopRun = false;
   private JBCOViewer viewer = null;

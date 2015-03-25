@@ -30,6 +30,9 @@
 
 
 package soot.coffi;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.*;
 
 import java.util.*;
@@ -41,6 +44,8 @@ import soot.*;
 
 public class Util
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Util.class);
     public Util( Singletons.Global g ) {}
     public static Util v() { return G.v().soot_coffi_Util(); }
 
@@ -89,7 +94,7 @@ public class Util
                     if(!Scene.v().allowsPhantomRefs())
                         throw new RuntimeException("Could not load classfile: " + bclass.getName());
                     else {                        
-                        G.v().out.println("Warning: " + className + " is a phantom class!");
+                        logger.info("Warning: " + className + " is a phantom class!");
                         bclass.setPhantom(true);                                                                
                         return;
                     } 
@@ -237,7 +242,7 @@ public class Util
 		
 		
 		    if( (coffiClass.constant_pool[methodInfo.name_index]) == null) {
-		        G.v().out.println("method index: " + methodInfo.toName(coffiClass.constant_pool));
+		        logger.info("method index: " + methodInfo.toName(coffiClass.constant_pool));
 		        throw new RuntimeException("method has no name");
 		    }
 
@@ -371,7 +376,7 @@ public class Util
             String sourceFile = ((CONSTANT_Utf8_info)(coffiClass.constant_pool[attr.sourcefile_index])).convert();
 
             if( sourceFile.indexOf(' ') >= 0 ) {
-                G.v().out.println( "Warning: Class "+className+" has invalid SourceFile attribute (will be ignored)." );
+                logger.info( "Warning: Class "+className+" has invalid SourceFile attribute (will be ignored)." );
             } else {
                 bclass.addTag(new SourceFileTag( sourceFile , filePath) );
             }

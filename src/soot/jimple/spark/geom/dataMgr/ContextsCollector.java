@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.dataMgr;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.List;
 import soot.jimple.spark.geom.dataRep.SimpleInterval;
@@ -30,6 +33,8 @@ import soot.jimple.spark.geom.dataRep.SimpleInterval;
  */
 public class ContextsCollector 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ContextsCollector.class);
 	public List<SimpleInterval> bars;
 	
 	protected List<SimpleInterval> backupList;

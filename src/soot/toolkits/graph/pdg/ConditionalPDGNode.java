@@ -18,6 +18,9 @@
  */
 package soot.toolkits.graph.pdg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 
  * This represents a PDGNode that has more than 1 dependent but is not 
@@ -26,6 +29,8 @@ package soot.toolkits.graph.pdg;
  *
  */
 public class ConditionalPDGNode extends PDGNode {
+
+	private static final Logger logger =LoggerFactory.getLogger(ConditionalPDGNode.class);
 	
 	
 	public ConditionalPDGNode(Object obj, Type t)

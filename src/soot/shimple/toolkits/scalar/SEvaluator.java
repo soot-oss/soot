@@ -19,6 +19,9 @@
 
 package soot.shimple.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import soot.jimple.*;
@@ -36,6 +39,8 @@ import java.util.*;
  **/
 public class SEvaluator
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SEvaluator.class);
     /**
      * Returns true if given value is determined to be constant valued,
      * false otherwise

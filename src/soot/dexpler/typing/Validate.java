@@ -1,4 +1,7 @@
-package soot.dexpler.typing; 
+package soot.dexpler.typing;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory; 
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -44,7 +47,8 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
 
 public class Validate {
 
-	final static Logger logger = LoggerFactory.getLogger(Validate.class);
+	private static final Logger logger =LoggerFactory.getLogger(Validate.class);
+
     public static void validateArrays(Body b) {
         
         Set<DefinitionStmt> definitions = new HashSet<DefinitionStmt>();

@@ -28,9 +28,14 @@
 
 package soot.jimple.toolkits.pointer.representations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 public class GeneralConstObject extends ConstantObject {
+
+	private static final Logger logger =LoggerFactory.getLogger(GeneralConstObject.class);
 
 
   /* what's the soot class */

@@ -26,6 +26,9 @@
  */
 
 package soot.jimple.toolkits.annotation.purity;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import java.io.File;
 import soot.*;
@@ -43,6 +46,8 @@ import soot.toolkits.graph.*;
  */
 public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PurityIntraproceduralAnalysis.class);
 
     AbstractInterproceduralAnalysis inter;
 
@@ -84,7 +89,7 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis
 	// I throw much "match failure" Errors to ease debugging...
 	// => we could optimize the pattern matching a little bit
 
-	//G.v().out.println(" | |- exec "+stmt);
+	//logger.info(" | |- exec "+stmt);
 
 
 	///////////

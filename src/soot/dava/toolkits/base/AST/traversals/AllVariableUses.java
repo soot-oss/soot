@@ -55,6 +55,9 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -76,7 +79,9 @@ import soot.dava.toolkits.base.AST.analysis.*;
  *    Notice that the mapping is for SootField to uses not for FieldRef to uses
  */
 public class AllVariableUses extends DepthFirstAdapter{
-	final static Logger logger = LoggerFactory.getLogger(AllVariableUses.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(AllVariableUses.class);
+
     ASTMethodNode methodNode;
 
     HashMap<Local, List> localsToUses;

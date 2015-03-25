@@ -26,10 +26,15 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.UnsupportedEncodingException;
 
 public class InnerClassTag implements Tag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(InnerClassTag.class);
     String innerClass;
     String outerClass;
     String name;

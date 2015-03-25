@@ -19,11 +19,16 @@
 
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.grimp.internal.*;
 
 public class DDecrementStmt extends GAssignStmt{
+
+	private static final Logger logger =LoggerFactory.getLogger(DDecrementStmt.class);
     public DDecrementStmt(Value variable, Value rvalue){
 	super(variable,rvalue);
     }

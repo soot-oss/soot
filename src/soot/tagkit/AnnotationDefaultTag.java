@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** Represents the annotation default attribute attatched method
  * - could have at most one annotation default each
@@ -33,6 +36,8 @@ package soot.tagkit;
 
 public class AnnotationDefaultTag implements Tag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AnnotationDefaultTag.class);
     private AnnotationElem defaultVal;
     
     public AnnotationDefaultTag(AnnotationElem def){

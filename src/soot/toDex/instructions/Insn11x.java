@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.BitSet;
 
 import org.jf.dexlib2.Opcode;
@@ -16,6 +19,8 @@ import soot.toDex.Register;
  * It is used e.g. by the opcodes "monitor-enter", "monitor-exit", "move-result" and "return".
  */
 public class Insn11x extends AbstractInsn implements OneRegInsn {
+
+	private static final Logger logger =LoggerFactory.getLogger(Insn11x.class);
 
 	public Insn11x(Opcode opc, Register regA) {
 		super(opc);

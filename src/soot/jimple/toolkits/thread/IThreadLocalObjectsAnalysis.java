@@ -18,6 +18,9 @@
  */
 package soot.jimple.toolkits.thread;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.SootMethod;
 import soot.Value;
 

@@ -24,6 +24,9 @@
 
 package soot.dexpler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
@@ -53,7 +56,9 @@ import soot.javaToJimple.IInitialResolver.Dependencies;
  *
  */
 public class DexlibWrapper {
-	final static Logger logger = LoggerFactory.getLogger(DexlibWrapper.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(DexlibWrapper.class);
+
 	static {
 		Set<String> systemAnnotationNamesModifiable = new HashSet<String>();
 		// names as defined in the ".dex - Dalvik Executable Format" document

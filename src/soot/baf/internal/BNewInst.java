@@ -29,12 +29,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BNewInst extends AbstractRefTypeInst implements NewInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BNewInst.class);
     public BNewInst(RefType opType)
     {
         super(opType);

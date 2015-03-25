@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
@@ -42,7 +45,9 @@ import soot.jimple.InstanceFieldRef;
 import soot.jimple.Jimple;
 
 public class IputInstruction extends FieldInstruction {
-	final static Logger logger = LoggerFactory.getLogger(IputInstruction.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(IputInstruction.class);
+
     AssignStmt assign = null;
 
     public IputInstruction (Instruction instruction, int codeAdress) {

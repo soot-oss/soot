@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.SootField;
 import soot.jimple.spark.pag.ArrayElement;
 import soot.jimple.spark.pag.SparkField;
@@ -29,6 +32,8 @@ import soot.jimple.spark.pag.SparkField;
  * 
  */
 public class ManualFieldCheckHeuristic implements FieldCheckHeuristic {
+
+	private static final Logger logger =LoggerFactory.getLogger(ManualFieldCheckHeuristic.class);
 
     private boolean allNotBothEnds = false;
 

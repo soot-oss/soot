@@ -19,11 +19,16 @@
 
 package soot.dava.internal.javaRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
 public class DThisRef extends ThisRef
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DThisRef.class);
     public DThisRef(RefType thisType)
     {
 	super( thisType);

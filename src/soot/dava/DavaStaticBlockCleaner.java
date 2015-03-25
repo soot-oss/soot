@@ -19,6 +19,9 @@
 
 package soot.dava;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import soot.Body;
 import soot.G;
@@ -57,6 +60,8 @@ import soot.util.Chain;
 
 
 public class DavaStaticBlockCleaner {
+
+	private static final Logger logger =LoggerFactory.getLogger(DavaStaticBlockCleaner.class);
     SootClass sootClass;
 
 

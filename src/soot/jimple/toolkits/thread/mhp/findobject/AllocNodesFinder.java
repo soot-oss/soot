@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.mhp.findobject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.toolkits.callgraph.*;

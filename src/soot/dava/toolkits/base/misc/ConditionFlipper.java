@@ -19,11 +19,16 @@
 
 package soot.dava.toolkits.base.misc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.*;
 import soot.grimp.internal.*;
 
 public class ConditionFlipper
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ConditionFlipper.class);
     public static ConditionExpr flip( ConditionExpr ce)
     {
 	if (ce instanceof EqExpr) 

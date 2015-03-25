@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.dataRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Set;
 
 import soot.jimple.spark.geom.geomPA.Constants;
@@ -34,6 +37,8 @@ import soot.util.Numberable;
  *
  */
 public class PlainConstraint implements Numberable{
+
+	private static final Logger logger =LoggerFactory.getLogger(PlainConstraint.class);
 	// Plain constraint descriptor
 	// This is a full description that we can read/write without context
 	// A constraint has the form : lhs -> rhs, which means lhs is assigned to rhs 

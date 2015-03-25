@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.jimple.*;
@@ -26,6 +29,8 @@ import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 
 public class ClinitElimAnalysis extends ForwardFlowAnalysis {
+
+	private static final Logger logger =LoggerFactory.getLogger(ClinitElimAnalysis.class);
 	
 	private UnitGraph g;
 

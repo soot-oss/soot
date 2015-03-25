@@ -19,6 +19,9 @@
 
 package soot.jbco.jimpleTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -38,6 +41,8 @@ import soot.jbco.util.*;
  * a different class, thereby cloaking somewhat the mechanisms.
  */
 public class BuildIntermediateAppClasses extends SceneTransformer  implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(BuildIntermediateAppClasses.class);
 
   static int newclasses = 0;
   static int newmethods = 0;

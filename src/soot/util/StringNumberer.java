@@ -18,6 +18,9 @@
  */
 
 package soot.util;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /** A class that numbers strings, so they can be placed in bitsets.
@@ -26,6 +29,8 @@ import java.util.*;
  */
 
 public class StringNumberer extends ArrayNumberer<NumberedString> {
+
+	private static final Logger logger =LoggerFactory.getLogger(StringNumberer.class);
     HashMap<String, NumberedString> stringToNumbered = new HashMap<String, NumberedString>(1024);
     
     public NumberedString findOrAdd( String s ) {

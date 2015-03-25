@@ -18,10 +18,16 @@
  */
 
 package soot;
-import soot.jimple.*;
-import soot.util.*;
 
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
+
+import soot.jimple.IdentityRef;
+import soot.util.Chain;
 
 /**
 * UnitPrinter implementation for representations that have labelled stmts,

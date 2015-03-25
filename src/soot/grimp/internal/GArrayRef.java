@@ -31,12 +31,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GArrayRef extends JArrayRef implements Precedence
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GArrayRef.class);
   public GArrayRef(Value base, Value index)
     {
       super(Grimp.v().newObjExprBox(base),

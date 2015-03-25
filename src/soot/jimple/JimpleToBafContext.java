@@ -29,12 +29,17 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import java.util.*;
 
 public class JimpleToBafContext
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JimpleToBafContext.class);
     private Map<Local, Local> jimpleLocalToBafLocal = new HashMap<Local, Local>();
     private BafBody bafBody;
     private Unit mCurrentUnit;

@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.pag;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.Type;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.sets.EmptyPointsToSet;
@@ -29,6 +32,8 @@ import soot.util.Numberable;
  * @author Ondrej Lhotak
  */
 public class Node implements ReferenceVariable, Numberable {
+
+	private static final Logger logger =LoggerFactory.getLogger(Node.class);
     public final int hashCode() { return number; }
     public final boolean equals( Object other ) { 
         return this == other;

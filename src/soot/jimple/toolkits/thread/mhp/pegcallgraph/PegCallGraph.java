@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.mhp.pegcallgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.toolkits.graph.*;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.toolkits.callgraph.*;
@@ -24,7 +27,9 @@ import org.slf4j.LoggerFactory;
 
 
 public class PegCallGraph implements DirectedGraph{
-	final static Logger logger = LoggerFactory.getLogger(PegCallGraph.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(PegCallGraph.class);
+
 
 	List heads;
 	List tails;

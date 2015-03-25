@@ -29,10 +29,15 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 public class LocalStmtPair
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalStmtPair.class);
     Local local;
     Stmt stmt;
 

@@ -19,12 +19,17 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import polyglot.frontend.Job;
 import polyglot.frontend.Source;
 
 public class SaveASTVisitor extends polyglot.frontend.AbstractPass {
+
+	private static final Logger logger =LoggerFactory.getLogger(SaveASTVisitor.class);
 
     private polyglot.frontend.Job job;
     private polyglot.frontend.ExtensionInfo extInfo;

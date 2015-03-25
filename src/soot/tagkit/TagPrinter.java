@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Interface to allow display of tags. */
 public interface TagPrinter
 {

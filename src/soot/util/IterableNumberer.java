@@ -18,6 +18,9 @@
  */
 
 package soot.util;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /** A numberer which also supports an iterator on newly-added objects.

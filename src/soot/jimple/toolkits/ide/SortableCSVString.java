@@ -18,6 +18,9 @@
  */
 package soot.jimple.toolkits.ide;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class SortableCSVString implements Comparable<SortableCSVString> {
 	String value;
 	int position;

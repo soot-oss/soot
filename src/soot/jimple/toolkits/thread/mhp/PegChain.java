@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.mhp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import soot.*;
 import soot.jimple.*;
@@ -50,7 +53,9 @@ import soot.tagkit.*;
 // limiting caveat.
 
 public class PegChain extends HashChain{
-	final static Logger logger = LoggerFactory.getLogger(PegChain.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(PegChain.class);
+
 
 	CallGraph callGraph;
 	private final List heads = new ArrayList();

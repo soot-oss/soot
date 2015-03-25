@@ -31,6 +31,9 @@
 
 package soot.jimple.toolkits.thread.mhp.stmt;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import soot.tagkit.*;
 import soot.*;
@@ -55,6 +58,8 @@ public abstract class JPegStmt extends AbstractHost
 //public class JPegStmt extends AbstractStm 
 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JPegStmt.class);
 	
 	protected String object;
 	protected String name;

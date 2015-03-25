@@ -25,8 +25,13 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DoubleConstantValueTag extends ConstantValueTag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DoubleConstantValueTag.class);
     private final double value;
     //private final long value;
 

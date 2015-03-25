@@ -1,5 +1,8 @@
 package soot.toDex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
@@ -9,6 +12,8 @@ import soot.Type;
  * A register for the Dalvik VM. It has a number and a type.
  */
 public class Register implements Cloneable {
+
+	private static final Logger logger =LoggerFactory.getLogger(Register.class);
 	
 	public static final int MAX_REG_NUM_UNCONSTRAINED = 65535;
 

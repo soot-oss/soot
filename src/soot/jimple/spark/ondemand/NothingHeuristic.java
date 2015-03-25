@@ -18,9 +18,14 @@
  */
 package soot.jimple.spark.ondemand;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.spark.pag.SparkField;
 
 public class NothingHeuristic implements FieldCheckHeuristic {
+
+	private static final Logger logger =LoggerFactory.getLogger(NothingHeuristic.class);
 
     public boolean runNewPass() {
         return false;

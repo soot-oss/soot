@@ -19,6 +19,9 @@
 
 package soot.jbco.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -35,7 +38,9 @@ import soot.Trap;
 import soot.Unit;
 
 public class Debugger {
-	final static Logger logger = LoggerFactory.getLogger(Debugger.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(Debugger.class);
+
 
   public static void printBaf(Body b) {
     

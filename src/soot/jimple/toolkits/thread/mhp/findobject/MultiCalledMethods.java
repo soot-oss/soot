@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.mhp.findobject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Scene;
 import soot.SootMethod;
 import soot.toolkits.graph.CompleteUnitGraph;

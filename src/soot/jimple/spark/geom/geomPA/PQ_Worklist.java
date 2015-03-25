@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The implementation of prioritized worklist.
  * The priority is computed by two parameters: the Topsort order and the least recent fired (LRF) timestamp.
@@ -30,6 +33,8 @@ package soot.jimple.spark.geom.geomPA;
  *
  */
 public class PQ_Worklist implements IWorklist {
+
+	private static final Logger logger =LoggerFactory.getLogger(PQ_Worklist.class);
 
 	private IVarAbstraction[] heap = null;
 	int cur_tail = 0;

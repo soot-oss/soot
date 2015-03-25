@@ -19,6 +19,9 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A numberer converts objects to unique non-negative integers, and vice-versa.
  * @author xiao, generalize the interface
  */

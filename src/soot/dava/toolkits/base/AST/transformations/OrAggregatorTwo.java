@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -70,7 +73,8 @@ we need a reference to the parent node of this if
 */
 public class OrAggregatorTwo extends DepthFirstAdapter{
 
-	final static Logger logger = LoggerFactory.getLogger(OrAggregatorTwo.class);
+	private static final Logger logger =LoggerFactory.getLogger(OrAggregatorTwo.class);
+
 	
 	
     public OrAggregatorTwo(){

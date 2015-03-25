@@ -20,6 +20,9 @@
 
 package soot.plugins.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 
 import javax.xml.bind.JAXBContext;
@@ -40,6 +43,8 @@ import soot.plugins.model.Plugins;
  * @author Bernhard J. Berger
  */
 public class PluginLoader {
+
+	private static final Logger logger =LoggerFactory.getLogger(PluginLoader.class);
 
 	/**
 	 * Loads the plugin configuration file {@code file} and registers the plugins.
@@ -95,7 +100,7 @@ public class PluginLoader {
 			if(plugin instanceof PhasePluginDescription) {
 				handlePhasePlugin((PhasePluginDescription)plugin);
 			} else {
-				G.v().out.println("[Warning] Unhandled plugin of type '" + plugin.getClass() + "'");
+				logger.info("[Warning] Unhandled plugin of type '" + plugin.getClass() + "'");
 			}
 		}
 	}

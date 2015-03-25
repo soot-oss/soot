@@ -20,6 +20,9 @@
 
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Local;
 import soot.Unit;
 import soot.Value;
@@ -33,6 +36,8 @@ import soot.toolkits.graph.UnitGraph;
  * @author Eric Bodden
  */
 public class InitAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Local>> {
+
+	private static final Logger logger =LoggerFactory.getLogger(InitAnalysis.class);
     FlowSet<Local> allLocals;
 
     public InitAnalysis(UnitGraph g) {

@@ -29,12 +29,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BNewMultiArrayInst extends AbstractInst implements NewMultiArrayInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BNewMultiArrayInst.class);
     int dimensionCount;
 
     ArrayType baseType;

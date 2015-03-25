@@ -20,6 +20,9 @@
 
 package soot.plugins.model;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,6 +37,8 @@ import javax.xml.bind.annotation.XmlRootElement;
  */
 @XmlRootElement(namespace="http://github.com/Sable/soot/plugins", name="soot-plugins")
 public class Plugins {
+
+	private static final Logger logger =LoggerFactory.getLogger(Plugins.class);
 	/**
 	 * List of all plugin entries.
 	 */

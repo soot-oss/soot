@@ -25,8 +25,13 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class LongConstantValueTag extends ConstantValueTag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LongConstantValueTag.class);
     private final long value;
 
     public LongConstantValueTag(long value) {

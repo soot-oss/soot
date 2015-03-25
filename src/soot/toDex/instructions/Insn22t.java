@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.BitSet;
 
 import org.jf.dexlib2.Opcode;
@@ -16,6 +19,8 @@ import soot.toDex.Register;
  * It is used e.g. by the opcode "if-eq" for conditional jumps to a 16-bit wide offset.
  */
 public class Insn22t extends InsnWithOffset implements TwoRegInsn {
+
+	private static final Logger logger =LoggerFactory.getLogger(Insn22t.class);
 
 	public Insn22t(Opcode opc, Register regA, Register regB) {
 		super(opc);

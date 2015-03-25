@@ -19,7 +19,12 @@
 
 package soot.xml;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class StringAttribute {
+
+	private static final Logger logger =LoggerFactory.getLogger(StringAttribute.class);
 
     private String info;
     private final String analysisType;

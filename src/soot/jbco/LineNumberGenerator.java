@@ -19,6 +19,9 @@
 
 package soot.jbco;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.Map;
 
@@ -34,7 +37,9 @@ import soot.Unit;
 import soot.tagkit.LineNumberTag;
 
 public class LineNumberGenerator {
-	final static Logger logger = LoggerFactory.getLogger(LineNumberGenerator.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(LineNumberGenerator.class);
+
   BafLineNumberer bln = new BafLineNumberer();
   
   public static void main(String[] argv)

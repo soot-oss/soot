@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jbco.IJbcoTransform;
 import java.util.*;
 import soot.tagkit.*;
@@ -26,6 +29,8 @@ import soot.*;
 import soot.baf.*;
 
 public class BafLineNumberer extends BodyTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(BafLineNumberer.class);
   public void outputSummary() {}
   public String[] getDependancies() { return new String[]{"bb.jbco_bln"};}
   public String getName() { return "bb.jbco_bln";}

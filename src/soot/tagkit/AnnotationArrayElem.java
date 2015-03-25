@@ -24,6 +24,9 @@
  */
 
 package soot.tagkit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /** 
@@ -34,6 +37,8 @@ import java.util.*;
 
 public class AnnotationArrayElem extends AnnotationElem
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AnnotationArrayElem.class);
 
     ArrayList<AnnotationElem> values;
 

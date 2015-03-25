@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.NarrowLiteralInstruction;
@@ -46,7 +49,9 @@ import soot.jimple.Jimple;
 import soot.jimple.internal.JAssignStmt;
 
 public class BinopLitInstruction extends TaggedInstruction {
-	final static Logger logger = LoggerFactory.getLogger(BinopLitInstruction.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(BinopLitInstruction.class);
+
     Value expr = null;
     AssignStmt assign = null;
   

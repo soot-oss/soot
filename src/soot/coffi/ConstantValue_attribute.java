@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** An attribute for a constant value; used for field initializers.
  * @see attribute_info
  * @see field_info#attributes

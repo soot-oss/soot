@@ -30,6 +30,9 @@
 
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 
@@ -39,6 +42,8 @@ import soot.*;
  */
 public class UnitValueBoxPair
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(UnitValueBoxPair.class);
     public Unit unit;
     public ValueBox valueBox;
 

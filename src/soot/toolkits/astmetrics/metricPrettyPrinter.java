@@ -19,6 +19,9 @@
 
 package soot.toolkits.astmetrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.visit.PrettyPrinter;
 import polyglot.ast.Node;
 import polyglot.util.CodeWriter;
@@ -29,6 +32,8 @@ import polyglot.util.CodeWriter;
  * Created on 12-Apr-2006 
  */
 public class metricPrettyPrinter extends PrettyPrinter {
+
+	private static final Logger logger =LoggerFactory.getLogger(metricPrettyPrinter.class);
 
   ASTMetric astMetric;
   /**

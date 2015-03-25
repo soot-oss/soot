@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.pointer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.PointsToSet;
@@ -12,6 +15,8 @@ import soot.jimple.spark.sets.*;
 
 public class CodeBlockRWSet extends MethodRWSet
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CodeBlockRWSet.class);
 	public int size()
 	{
 		if(globals == null)

@@ -19,10 +19,15 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Map;
 
 public class TryCatchTag implements soot.tagkit.Tag {
+
+	private static final Logger logger =LoggerFactory.getLogger(TryCatchTag.class);
 	
 	public static final String NAME = "TryCatchTag"; 
 	

@@ -31,6 +31,9 @@
 
 package soot.dava.toolkits.base.AST.traversals;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -64,7 +67,9 @@ import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 
 */
 public class ASTUsesAndDefs extends DepthFirstAdapter{
-	final static Logger logger = LoggerFactory.getLogger(ASTUsesAndDefs.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(ASTUsesAndDefs.class);
+
     HashMap<Object, List<DefinitionStmt>> uD; //mapping a use to all possible definitions
     HashMap<Object, List> dU; //mapping a def to all possible uses
     ReachingDefs reaching;  //using structural analysis information 

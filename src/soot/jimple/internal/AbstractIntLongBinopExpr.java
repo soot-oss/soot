@@ -30,11 +30,16 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 @SuppressWarnings("serial")
 abstract public class AbstractIntLongBinopExpr extends AbstractBinopExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AbstractIntLongBinopExpr.class);
 	
 	public boolean isIntLikeType(Type t) {
 		return t.equals(IntType.v())

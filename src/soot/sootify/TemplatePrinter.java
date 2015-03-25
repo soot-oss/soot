@@ -19,6 +19,9 @@
 
 package soot.sootify;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.PrintWriter;
 
 import soot.Body;
@@ -30,6 +33,8 @@ import soot.SootMethod;
 import soot.Unit;
 
 public class TemplatePrinter {
+
+	private static final Logger logger =LoggerFactory.getLogger(TemplatePrinter.class);
     
 	private PrintWriter out;
 	private int indentationLevel = 0;

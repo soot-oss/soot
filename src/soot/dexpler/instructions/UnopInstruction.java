@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
@@ -45,7 +48,9 @@ import soot.jimple.internal.JAssignStmt;
 import soot.jimple.internal.JCastExpr;
 
 public class UnopInstruction extends DexlibAbstractInstruction {
-	final static Logger logger = LoggerFactory.getLogger(UnopInstruction.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(UnopInstruction.class);
+
     AssignStmt assign = null;
   
     public UnopInstruction (Instruction instruction, int codeAdress) {

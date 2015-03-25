@@ -1,5 +1,8 @@
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -8,7 +11,9 @@ import org.slf4j.LoggerFactory;
 import polyglot.types.Type;
 
 public class AnonConstructorFinder extends polyglot.visit.ContextVisitor {
-	final static Logger logger = LoggerFactory.getLogger(AnonConstructorFinder.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(AnonConstructorFinder.class);
+
     public AnonConstructorFinder(polyglot.frontend.Job job, polyglot.types.TypeSystem ts, polyglot.ast.NodeFactory nf) {
         super(job, ts, nf);
     }

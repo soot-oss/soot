@@ -19,6 +19,9 @@
 
 package soot.toolkits.astmetrics;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.Expr;
 import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
@@ -29,6 +32,8 @@ import polyglot.visit.NodeVisitor;
  * Created on 7-Mar-2006 
  */
 public class ExpressionComplexityMetric extends ASTMetric {
+
+	private static final Logger logger =LoggerFactory.getLogger(ExpressionComplexityMetric.class);
 
   	int currentExprDepth;
 	int exprDepthSum;

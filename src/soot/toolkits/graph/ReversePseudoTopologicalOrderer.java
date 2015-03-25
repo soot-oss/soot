@@ -26,6 +26,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** Convenience class which returns a PseudoTopologicalOrderer with the mReversed
  * flag set by default.

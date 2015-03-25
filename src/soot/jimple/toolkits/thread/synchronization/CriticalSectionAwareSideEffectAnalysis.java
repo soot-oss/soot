@@ -1,4 +1,7 @@
 package soot.jimple.toolkits.thread.synchronization;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Ondrej Lhotak
  *
@@ -90,6 +93,8 @@ class WholeObject
 }
 
 public class CriticalSectionAwareSideEffectAnalysis {
+
+	private static final Logger logger =LoggerFactory.getLogger(CriticalSectionAwareSideEffectAnalysis.class);
 	PointsToAnalysis pa;
 	CallGraph cg;
 	Map<SootMethod, CodeBlockRWSet> methodToNTReadSet = new HashMap<SootMethod, CodeBlockRWSet>();

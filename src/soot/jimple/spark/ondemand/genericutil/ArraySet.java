@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand.genericutil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.AbstractSet;
 import java.util.Collection;
 import java.util.Iterator;
@@ -228,6 +231,7 @@ public class ArraySet<T> extends AbstractSet<T> {
    * @author manu
    */
   public class ArraySetIterator implements Iterator<T> {
+
 
     int ind = 0;
 

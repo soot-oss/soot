@@ -18,6 +18,9 @@
  */
 package soot.jimple.toolkits.pointer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,6 +40,8 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  * @author Eric Bodden
  */
 public class LocalMayAliasAnalysis extends ForwardFlowAnalysis<Unit, Set<Set<Value>>> {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalMayAliasAnalysis.class);
 
 	private Body body;
 

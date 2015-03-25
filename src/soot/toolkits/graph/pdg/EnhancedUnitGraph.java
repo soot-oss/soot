@@ -18,6 +18,9 @@
  */
 package soot.toolkits.graph.pdg;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -49,6 +52,8 @@ import soot.util.Chain;
  */
 
 public class EnhancedUnitGraph extends UnitGraph {
+
+	private static final Logger logger =LoggerFactory.getLogger(EnhancedUnitGraph.class);
 	
 	//This keeps a map from the beginning of each guarded block
 	//to the corresponding special EHNopStmt.

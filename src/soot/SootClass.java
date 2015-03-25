@@ -29,6 +29,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -67,6 +70,8 @@ import soot.validation.ValidationException;
 */
 public class SootClass extends AbstractHost implements Numberable
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SootClass.class);
     protected String name, shortName, fixedShortName, packageName, fixedPackageName;
     protected int modifiers;
     protected Chain<SootField> fields = new HashChain<SootField>();
@@ -96,7 +101,7 @@ public class SootClass extends AbstractHost implements Numberable
         this.modifiers = modifiers;
         refType = RefType.v(name);
         refType.setSootClass(this);
-        if(Options.v().debug_resolver()) G.v().out.println("created "+name+" with modifiers "+modifiers);
+        if(Options.v().debug_resolver()) logger.info("created "+name+" with modifiers "+modifiers);
         setResolvingLevel(BODIES);
         
         Scene.v().getClassNumberer().add(this);

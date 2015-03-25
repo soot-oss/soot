@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.dataRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * The rectangle figure for encoding the many-to-many relation.
  * 
@@ -25,6 +28,8 @@ package soot.jimple.spark.geom.dataRep;
  *
  */
 public class RectangleNode extends SegmentNode {
+
+	private static final Logger logger =LoggerFactory.getLogger(RectangleNode.class);
 
 	// I1 : the starting x coordinate
 	// I2 : the starting y coordinate

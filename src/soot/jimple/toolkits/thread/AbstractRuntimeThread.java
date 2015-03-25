@@ -1,6 +1,9 @@
 
 package soot.jimple.toolkits.thread;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
@@ -13,6 +16,8 @@ import java.util.*;
 
 public class AbstractRuntimeThread
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AbstractRuntimeThread.class);
 	// Where thread is started/joined
 	Stmt startStmt;
 	SootMethod startStmtMethod;

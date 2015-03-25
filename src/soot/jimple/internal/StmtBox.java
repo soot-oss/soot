@@ -30,11 +30,16 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
 public class StmtBox extends AbstractUnitBox
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(StmtBox.class);
     public StmtBox(Stmt s)
     {
         setUnit(s);

@@ -27,6 +27,9 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.tagkit.SourceFileTag;
@@ -35,6 +38,8 @@ import java.util.*;
 
 public class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JVirtualInvokeExpr.class);
     public JVirtualInvokeExpr(Value base, SootMethodRef methodRef, List<? extends Value> args)
     {
         super(Jimple.v().newLocalBox(base), methodRef, new ValueBox[args.size()]);

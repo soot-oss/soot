@@ -27,6 +27,9 @@
 
 
 package soot.jimple.toolkits.annotation.purity;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import soot.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -46,6 +49,8 @@ import soot.options.PurityOptions;
 
 public class PurityAnalysis extends SceneTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PurityAnalysis.class);
     Singletons.Global g;
 
     public PurityAnalysis(Singletons.Global g ) { this.g = g; }
@@ -59,7 +64,7 @@ public class PurityAnalysis extends SceneTransformer
     {
 	PurityOptions opts = new PurityOptions(options);
 
-	G.v().out.println("[AM] Analysing purity");
+	logger.info("[AM] Analysing purity");
 
 	CallGraph cg = Scene.v().getCallGraph();
 

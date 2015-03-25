@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.misc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.dava.*;
@@ -29,6 +32,8 @@ import soot.dava.internal.javaRep.*;
 
 public class MonitorConverter
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(MonitorConverter.class);
     public MonitorConverter( Singletons.Global g )
     {
 	SootClass davaMonitor = new SootClass(

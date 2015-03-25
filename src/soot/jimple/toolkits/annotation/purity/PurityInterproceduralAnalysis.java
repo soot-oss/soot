@@ -26,6 +26,9 @@
  */
 
 package soot.jimple.toolkits.annotation.purity;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import soot.*;
 import soot.util.dot.*;
@@ -37,6 +40,8 @@ import soot.tagkit.*;
 
 public class PurityInterproceduralAnalysis 
     extends AbstractInterproceduralAnalysis {
+	final static Logger logger = LoggerFactory
+			.getLogger(PurityInterproceduralAnalysis.class);
 
     // Note: these method lists are adapted to JDK-1.4.2.06 and may
     // not work for other versions
@@ -207,6 +212,8 @@ public class PurityInterproceduralAnalysis
 
     /** Filter out some method. */
     static private class Filter implements SootMethodFilter {
+
+	private static final Logger logger =LoggerFactory.getLogger(Filter.class);
 	public boolean want(SootMethod method) { 
 	    // could be optimized with HashSet....
 	    String c = method.getDeclaringClass().toString();
@@ -232,30 +239,30 @@ public class PurityInterproceduralAnalysis
 	super(cg,new Filter(),heads, opts.dump_cg());
 	
 	if (opts.dump_cg()) {
-	    G.v().out.println("[AM] Dumping empty .dot call-graph");
+	    logger.info("[AM] Dumping empty .dot call-graph");
 	    drawAsOneDot("EmptyCallGraph");
 	}
 
 	Date start = new Date();
-	G.v().out.println("[AM] Analysis began");
+	logger.info("[AM] Analysis began");
 	doAnalysis(opts.verbose());
-	G.v().out.println("[AM] Analysis finished");
+	logger.info("[AM] Analysis finished");
 	Date finish = new Date();
 	long runtime = finish.getTime() - start.getTime();
-	G.v().out.println("[AM] run time: "+runtime/1000.+" s");
+	logger.info("[AM] run time: "+runtime/1000.+" s");
 
 	if (opts.dump_cg()) {
-	    G.v().out.println("[AM] Dumping annotated .dot call-graph");
+	    logger.info("[AM] Dumping annotated .dot call-graph");
 	    drawAsOneDot("CallGraph");
 	}
 
 	if (opts.dump_summaries()) {
-	    G.v().out.println("[AM] Dumping .dot summaries of analysed methods");
+	    logger.info("[AM] Dumping .dot summaries of analysed methods");
 	    drawAsManyDot("Summary_",false);
 	}
 
 	if (opts.dump_intra()) {
-	    G.v().out.println("[AM] Dumping .dot full intra-procedural method analyses");
+	    logger.info("[AM] Dumping .dot full intra-procedural method analyses");
 	    // relaunch the interprocedural analysis once on each method
 	    // to get a purity graph at each statement, not only summaries
 	    Iterator it = getAnalysedMethods();
@@ -263,7 +270,7 @@ public class PurityInterproceduralAnalysis
 		SootMethod method = (SootMethod)it.next();
 		Body body = method.retrieveActiveBody();
 		ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
-		if (opts.verbose()) G.v().out.println("  |- "+method);
+		if (opts.verbose()) logger.info("  |- "+method);
 		PurityIntraproceduralAnalysis r = 
 		    new PurityIntraproceduralAnalysis(graph, this);
 		r.drawAsOneDot("Intra_",method.toString());
@@ -274,7 +281,7 @@ public class PurityInterproceduralAnalysis
 
 
 	{
-	    G.v().out.println("[AM] Annotate methods. ");
+	    logger.info("[AM] Annotate methods. ");
 	    Iterator it = getAnalysedMethods();
 	    while (it.hasNext()) {
 		SootMethod m = (SootMethod)it.next();
@@ -293,7 +300,7 @@ public class PurityInterproceduralAnalysis
 		if(isPure && opts.annotate())
 			m.addTag(new GenericAttribute("Pure", new byte[0]));
 		if (opts.print()) 
-		    G.v().out.println("  |- method "+m.toString()+" is "+(isPure?"pure":"impure"));
+		    logger.info("  |- method "+m.toString()+" is "+(isPure?"pure":"impure"));
 
 		// param & this ro / safety
 		if (!m.isStatic()) {
@@ -308,7 +315,7 @@ public class PurityInterproceduralAnalysis
 		    /*  m.addTag(new GenericAttribute("thisStatus",s.getBytes()));
 		     */
 		    m.addTag(new StringTag("this: "+s));
-		    if (opts.print()) G.v().out.println("  |   |- this is "+s);
+		    if (opts.print()) logger.info("  |   |- this is "+s);
 		}
 		
 		Iterator itt = m.getParameterTypes().iterator();
@@ -329,7 +336,7 @@ public class PurityInterproceduralAnalysis
 			*/
 			m.addTag(new StringTag("param"+i+": "+s));
 			if (opts.print())
-			    G.v().out.println("  |   |- param "+i+" is "+s);
+			    logger.info("  |   |- param "+i+" is "+s);
 		    }
 		    i++;
 		}

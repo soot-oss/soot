@@ -18,6 +18,9 @@
  */
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Value;
 
 /** A constant pool entry of type CONSTANT_InvokeDynamic

@@ -119,6 +119,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -137,7 +140,9 @@ import soot.dava.toolkits.base.AST.traversals.*;
 
 
 public class SuperFirstStmtHandler extends DepthFirstAdapter{
-	final static Logger logger = LoggerFactory.getLogger(SuperFirstStmtHandler.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(SuperFirstStmtHandler.class);
+
 	
     ASTMethodNode originalASTMethod;    //contains the entire method which was being decompiled
     DavaBody originalDavaBody;  //originalASTMethod.getDavaBody

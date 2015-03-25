@@ -30,6 +30,9 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
@@ -37,6 +40,8 @@ import java.util.*;
 
 public class GNewMultiArrayExpr extends AbstractNewMultiArrayExpr 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GNewMultiArrayExpr.class);
     public GNewMultiArrayExpr(ArrayType type, List sizes)
     {
         super(type, new ValueBox[sizes.size()]);

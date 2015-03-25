@@ -25,6 +25,9 @@
 
 
 package soot.coffi;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import java.util.*;
 
@@ -33,6 +36,8 @@ import java.util.*;
 
 public class CONSTANT_Utf8_collector 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CONSTANT_Utf8_collector.class);
     public CONSTANT_Utf8_collector( Singletons.Global g ) {}
     public static CONSTANT_Utf8_collector v() { return G.v().soot_coffi_CONSTANT_Utf8_collector(); }
     HashMap<String, CONSTANT_Utf8_info> hash = null;

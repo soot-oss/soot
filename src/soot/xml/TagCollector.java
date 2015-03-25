@@ -19,6 +19,9 @@
 
 package soot.xml;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.tagkit.*;
 import java.util.*;
@@ -26,6 +29,8 @@ import java.io.*;
 import soot.jimple.spark.ondemand.genericutil.Predicate;
 
 public class TagCollector {
+
+	private static final Logger logger =LoggerFactory.getLogger(TagCollector.class);
 
     private final ArrayList<Attribute> attributes;
     private final ArrayList<Key> keys;

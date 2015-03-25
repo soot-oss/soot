@@ -29,11 +29,16 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.internal.*;
 
 public class PlaceholderStmt extends AbstractStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PlaceholderStmt.class);
     private Unit source;
 
     public String toString()

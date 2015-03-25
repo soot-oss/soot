@@ -1,5 +1,8 @@
 package soot.toDex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.Map;
 
@@ -21,6 +24,8 @@ import soot.jimple.ThisRef;
  * @author Steven Arzt
  */
 public class FastDexTrapTightener extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(FastDexTrapTightener.class);
 
     public FastDexTrapTightener( Singletons.Global g ) {}
     public static FastDexTrapTightener v() { return soot.G.v().soot_toDex_FastDexTrapTightener(); }

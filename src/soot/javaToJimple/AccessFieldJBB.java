@@ -19,10 +19,15 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 
 public class AccessFieldJBB extends AbstractJimpleBodyBuilder{
+
+	private static final Logger logger =LoggerFactory.getLogger(AccessFieldJBB.class);
 
     public AccessFieldJBB(){
         //ext(null);

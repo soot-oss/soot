@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.geomPA;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.PrintStream;
 import java.util.Set;
 import soot.jimple.spark.geom.dataMgr.PtSensVisitor;
@@ -33,6 +36,8 @@ import soot.jimple.spark.pag.Node;
  */
 public class DummyNode extends IVarAbstraction 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DummyNode.class);
 	public DummyNode(Node thisVarNode)
 	{
 		me = thisVarNode;

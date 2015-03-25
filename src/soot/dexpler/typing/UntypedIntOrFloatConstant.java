@@ -1,9 +1,14 @@
 package soot.dexpler.typing;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.FloatConstant;
 import soot.jimple.IntConstant;
 
 public class UntypedIntOrFloatConstant extends UntypedConstant {
+
+	private static final Logger logger =LoggerFactory.getLogger(UntypedIntOrFloatConstant.class);
 
     /**
 	 * 

@@ -19,6 +19,9 @@
 
 package soot.toolkits.astmetrics.DataHandlingApplication;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -49,8 +52,9 @@ import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 public class ProcessData {
-	
-	final static Logger logger = LoggerFactory.getLogger(ProcessData.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(ProcessData.class);
+
 
 	//when printing class names what is the max size of each class name
 	private static final int CLASSNAMESIZE=15;

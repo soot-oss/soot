@@ -24,12 +24,17 @@
  */
 
 package soot.baf.internal;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BJSRInst extends AbstractBranchInst implements JSRInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BJSRInst.class);
     public BJSRInst(Unit target)
     {
         super(Baf.v().newInstBox(target));

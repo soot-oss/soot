@@ -19,6 +19,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 import soot.toolkits.scalar.*;
 
@@ -40,7 +43,7 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N>
     public SimpleDominatorsFinder(DirectedGraph<N> graph)
     {
         //if(Options.v().verbose())
-        //G.v().out.println("[" + graph.getBody().getMethod().getName() +
+        //logger.info("[" + graph.getBody().getMethod().getName() +
         //"]     Finding Dominators...");
 
         this.graph = graph;

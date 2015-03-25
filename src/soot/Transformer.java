@@ -25,6 +25,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** An abstract class which acts on some Soot object.  Transformers
  * are generally expected to supply some sort of transform()
  * method. */

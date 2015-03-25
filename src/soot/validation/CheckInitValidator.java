@@ -1,5 +1,8 @@
 package soot.validation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 import soot.Body;
@@ -13,6 +16,8 @@ import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.InitAnalysis;
 
 public class CheckInitValidator implements BodyValidator {
+
+	private static final Logger logger =LoggerFactory.getLogger(CheckInitValidator.class);
 	public static CheckInitValidator INSTANCE;
 	
 	

@@ -25,6 +25,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A context in a context-sensitive all graph. May be a unit
  * (in a 1CFA call graph) or a Spark AllocNode (in an object-sensitive call
  * graph).

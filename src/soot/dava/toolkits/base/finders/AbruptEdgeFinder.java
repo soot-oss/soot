@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.finders;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.util.*;
@@ -29,6 +32,8 @@ import soot.dava.internal.javaRep.*;
 
 public class AbruptEdgeFinder implements FactFinder
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AbruptEdgeFinder.class);
     public AbruptEdgeFinder( Singletons.Global g ) {}
     public static AbruptEdgeFinder v() { return G.v().soot_dava_toolkits_base_finders_AbruptEdgeFinder(); }
 
@@ -72,7 +77,7 @@ public class AbruptEdgeFinder implements FactFinder
 	    	/*
 	    	 * Nomair debugging bug number 29
 	    	 */
-	    	//logger.info();
+	    	//
 	    	//((SETNode)temp).dump();
 	    	//logger.info("Statement is"+pas);
 	    	((SETStatementSequenceNode)temp).insert_AbruptStmt( new DAbruptStmt( "break", prev.get_Label()));

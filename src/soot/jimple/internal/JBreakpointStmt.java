@@ -30,12 +30,17 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 
 public class JBreakpointStmt extends AbstractStmt implements BreakpointStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JBreakpointStmt.class);
     public JBreakpointStmt()
     {
     }

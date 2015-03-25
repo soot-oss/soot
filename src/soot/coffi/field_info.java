@@ -31,11 +31,16 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Represents a single field_info object.
  * @see ClassFile
  * @author Clark Verbrugge
  */
 public class field_info {
+
+	private static final Logger logger =LoggerFactory.getLogger(field_info.class);
    /** Access flags for this field. */
    public int access_flags;
    /** Constant pool index of the name of this field.

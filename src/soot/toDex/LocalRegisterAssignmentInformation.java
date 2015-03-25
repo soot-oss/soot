@@ -1,11 +1,16 @@
 package soot.toDex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Local;
 
 /**
  * Contains information about which register maps to which local
  */
 public class LocalRegisterAssignmentInformation {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalRegisterAssignmentInformation.class);
 
 	private Local local;
 	private Register register;

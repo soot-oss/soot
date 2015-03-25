@@ -18,6 +18,9 @@
  */
 package soot.jimple.toolkits.ide;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import heros.IFDSTabulationProblem;
 import heros.InterproceduralCFG;
 
@@ -32,6 +35,8 @@ import soot.jimple.toolkits.ide.exampleproblems.IFDSPossibleTypes;
 import soot.jimple.toolkits.ide.icfg.JimpleBasedInterproceduralCFG;
 
 public class Main {
+
+	private static final Logger logger =LoggerFactory.getLogger(Main.class);
 
 	/**
 	 * @param args

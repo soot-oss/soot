@@ -29,6 +29,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  *   Abstract class for Soot classes that that model Java primitive types 

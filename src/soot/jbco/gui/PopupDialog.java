@@ -19,11 +19,16 @@
 
 package soot.jbco.gui;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.awt.event.ActionListener;
 import javax.swing.*;
 import java.awt.event.ActionEvent;
 
 public class PopupDialog extends JDialog implements ActionListener {
+
+	private static final Logger logger =LoggerFactory.getLogger(PopupDialog.class);
       private JPanel myPanel = null;
       private JButton okButton = null;
       

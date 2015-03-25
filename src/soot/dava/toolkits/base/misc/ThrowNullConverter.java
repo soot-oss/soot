@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.misc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.dava.*;
@@ -27,6 +30,8 @@ import soot.dava.internal.javaRep.*;
 
 public class ThrowNullConverter
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ThrowNullConverter.class);
     public ThrowNullConverter( Singletons.Global g ) {}
     public static ThrowNullConverter v() { return G.v().soot_dava_toolkits_base_misc_ThrowNullConverter(); }
 

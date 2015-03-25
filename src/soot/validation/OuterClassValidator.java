@@ -1,5 +1,8 @@
 package soot.validation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -12,6 +15,8 @@ import soot.SootClass;
  * @author Steven Arzt
  */
 public class OuterClassValidator implements ClassValidator {
+
+	private static final Logger logger =LoggerFactory.getLogger(OuterClassValidator.class);
 
 	public static OuterClassValidator INSTANCE;
 	

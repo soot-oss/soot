@@ -30,6 +30,9 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 
 
@@ -42,6 +45,8 @@ package soot;
  */
 public class Modifier
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Modifier.class);
     public static final int ABSTRACT =     0x0400;
     public static final int FINAL =        0x0010;
     public static final int INTERFACE =    0x0200;

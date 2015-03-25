@@ -26,11 +26,16 @@
 
 package soot.jimple.toolkits.pointer.nativemethods;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaUtilResourceBundleNative extends NativeMethodClass {
+
+	private static final Logger logger =LoggerFactory.getLogger(JavaUtilResourceBundleNative.class);
     public JavaUtilResourceBundleNative( NativeHelper helper ) { super(helper); }
 
   /**

@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -16,6 +19,8 @@ import soot.jimple.toolkits.pointer.CodeBlockRWSet;
 import soot.jimple.toolkits.thread.mhp.MhpTester;
 
 public class CriticalSectionInterferenceGraph {
+
+	private static final Logger logger =LoggerFactory.getLogger(CriticalSectionInterferenceGraph.class);
 
 	int nextGroup;
 	List<CriticalSectionGroup> groups;

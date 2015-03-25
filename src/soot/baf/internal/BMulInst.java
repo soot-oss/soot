@@ -29,12 +29,17 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.util.*;
 
 public class BMulInst extends AbstractOpTypeInst implements MulInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BMulInst.class);
     public BMulInst(Type opType)
     {
         super(opType);

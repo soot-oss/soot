@@ -1,5 +1,8 @@
 package soot.sootify;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -63,6 +66,8 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 
 public class ValueTemplatePrinter implements JimpleValueSwitch {
+
+	private static final Logger logger =LoggerFactory.getLogger(ValueTemplatePrinter.class);
 
 	private final TemplatePrinter p;
 	private final TypeTemplatePrinter ttp;

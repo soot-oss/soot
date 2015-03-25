@@ -6,6 +6,9 @@
  */
 package soot.jimple.spark.geom.heapinsE;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.PrintStream;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,6 +48,8 @@ import soot.jimple.spark.sets.P2SetVisitor;
  */
 public class HeapInsNode extends IVarAbstraction
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(HeapInsNode.class);
 	// The targets of directed edges on the constraint graph
 	public HashMap<HeapInsNode, HeapInsIntervalManager> flowto;
 

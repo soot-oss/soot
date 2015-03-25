@@ -24,6 +24,9 @@
  */
 
 package soot.jimple.toolkits.invoke;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -36,6 +39,8 @@ import soot.util.*;
 /** Uses the Scene's currently-active InvokeGraph to statically bind monomorphic call sites. */
 public class StaticMethodBinder extends SceneTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(StaticMethodBinder.class);
     public StaticMethodBinder( Singletons.Global g ) {}
     public static StaticMethodBinder v() { return G.v().soot_jimple_toolkits_invoke_StaticMethodBinder(); }
 

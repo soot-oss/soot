@@ -27,12 +27,17 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import soot.*;
 import java.util.*;
 
 /** The aggregator for LineNumberTable attribute. */
 public class InnerClassTagAggregator extends SceneTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(InnerClassTagAggregator.class);
     
     public InnerClassTagAggregator( Singletons.Global g ) {}
     public static InnerClassTagAggregator v() { return G.v().soot_tagkit_InnerClassTagAggregator(); }

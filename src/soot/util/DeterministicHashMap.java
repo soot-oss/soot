@@ -26,6 +26,9 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.AbstractSet;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -149,6 +152,7 @@ class TrustingMonotonicArraySet<T> extends AbstractSet<T>
 
     private class ArrayIterator implements Iterator<T>
     {
+
         int nextIndex;
 
         ArrayIterator()

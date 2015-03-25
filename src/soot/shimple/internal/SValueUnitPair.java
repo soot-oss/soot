@@ -19,6 +19,9 @@
 
 package soot.shimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.toolkits.scalar.ValueUnitPair;
 
@@ -30,6 +33,8 @@ import soot.toolkits.scalar.ValueUnitPair;
  **/
 public class SValueUnitPair extends ValueUnitPair implements SUnitBox
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SValueUnitPair.class);
     public SValueUnitPair(Value value, Unit unit)
     {
         super(value, unit);

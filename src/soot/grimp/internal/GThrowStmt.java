@@ -30,12 +30,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GThrowStmt extends JThrowStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GThrowStmt.class);
     public GThrowStmt(Value op)
     {
         super(Grimp.v().newExprBox(op));

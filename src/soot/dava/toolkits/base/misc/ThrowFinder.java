@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.misc;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 
@@ -64,7 +67,8 @@ import soot.jimple.toolkits.callgraph.*;
  */
 public class ThrowFinder
 {
-	final static Logger logger = LoggerFactory.getLogger(ThrowFinder.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(ThrowFinder.class);
     public ThrowFinder( Singletons.Global g ) {}
     public static ThrowFinder v() { return G.v().soot_dava_toolkits_base_misc_ThrowFinder(); }
 
@@ -330,7 +334,7 @@ public class ThrowFinder
 	    }
 	}
 
-	G.v().out.println();
+	
 	G.v().out.flush();
     }
 

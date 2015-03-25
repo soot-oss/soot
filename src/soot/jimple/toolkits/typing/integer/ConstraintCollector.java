@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.typing.integer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.ArrayType;
 import soot.IntegerType;
 import soot.Local;

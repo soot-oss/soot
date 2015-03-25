@@ -19,6 +19,9 @@
 
 package soot.dava;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -29,6 +32,8 @@ import java.util.Iterator;
  * TODO: Jalopy would be awesome here!!
  */
 public class DavaBuildFile {
+
+	private static final Logger logger =LoggerFactory.getLogger(DavaBuildFile.class);
 	public static void generate(PrintWriter out, ArrayList<String> decompiledClasses){
 		out.print("<project default=\"compile\" name=\"Build file for decompiled code\">\n");
 		out.print("	<description>\n");

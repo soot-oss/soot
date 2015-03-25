@@ -18,11 +18,16 @@
  */
 
 package soot.javaToJimple;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 import polyglot.ast.Node;
 
 public class NestedClassListBuilder extends polyglot.visit.NodeVisitor {
+
+	private static final Logger logger =LoggerFactory.getLogger(NestedClassListBuilder.class);
 
     private final ArrayList<Node> classDeclsList;
     private final ArrayList<Node> anonClassBodyList;

@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.reflection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,6 +45,8 @@ import soot.tagkit.LineNumberTag;
 import soot.tagkit.SourceLnPosTag;
 
 public class ReflectionTraceInfo {
+
+	private static final Logger logger =LoggerFactory.getLogger(ReflectionTraceInfo.class);
 	
 	public enum Kind { ClassForName, ClassNewInstance, ConstructorNewInstance, MethodInvoke, FieldSet, FieldGet }
 	
@@ -142,10 +147,10 @@ public class ReflectionTraceInfo {
 					lines++;
 				}
 				if(!ignoredKinds.isEmpty()) {
-					G.v().out.println("Encountered reflective calls entries of the following kinds that\n" +
+					logger.info("Encountered reflective calls entries of the following kinds that\n" +
 							"cannot currently be handled:");
 					for (String kind : ignoredKinds) {
-						G.v().out.println(kind);
+						logger.info(kind);
 					}
 				}
 			} catch (FileNotFoundException e) {

@@ -18,6 +18,9 @@
  */
 package soot.jimple.toolkits.annotation.j5anno;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

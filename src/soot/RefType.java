@@ -28,9 +28,12 @@
 
 
 package soot;
-import soot.util.*;
 
-import java.util.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import java.util.LinkedList;
+
+import soot.util.Switch;
 
 /**
  *   A class that models Java's reference types. RefTypes are parametrized by a class name.
@@ -40,6 +43,8 @@ import java.util.*;
 @SuppressWarnings("serial")
 public class RefType extends RefLikeType implements Comparable<RefType>
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(RefType.class);
     public RefType( Singletons.Global g ) { className = ""; }
     public static RefType v() { return G.v().soot_RefType(); }
 

@@ -1,4 +1,7 @@
 package soot;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
@@ -40,7 +43,7 @@ import soot.dexpler.Util;
  * 
  */
 public class DexClassProvider implements ClassProvider {
-
+final static Logger logger = LoggerFactory.getLogger(DexClassProvider.class);
 	/**
 	 * Provides the DexClassSource for the class.
 	 * 
@@ -98,11 +101,11 @@ public class DexClassProvider implements ClassProvider {
                 index.put(className, dex);
             }
         } catch (IOException e) { 
-          G.v().out.println("Warning: IO error while processing dex file '"+ dex +"'");
-          G.v().out.println("Exception: "+ e);
+          logger.info("Warning: IO error while processing dex file '"+ dex +"'");
+          logger.info("Exception: "+ e);
         } catch (Exception e) {
-          G.v().out.println("Warning: exception while processing dex file '"+ dex +"'");
-          G.v().out.println("Exception: "+ e);
+          logger.info("Warning: exception while processing dex file '"+ dex +"'");
+          logger.info("Exception: "+ e);
         }
     }
 

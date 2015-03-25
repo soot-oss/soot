@@ -26,8 +26,13 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class PositionTag implements Tag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PositionTag.class);
     /* it is a value representing end offset. */
     private final int endOffset;
     

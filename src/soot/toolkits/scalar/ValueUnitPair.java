@@ -19,6 +19,9 @@
 
 package soot.toolkits.scalar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.Jimple;
 
@@ -29,6 +32,8 @@ import soot.jimple.Jimple;
  **/
 public class ValueUnitPair extends AbstractValueBox implements UnitBox, EquivTo
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ValueUnitPair.class);
     // oub was initially a private inner class.  ended up being a
     // *bad* *bad* idea with endless opportunity for *evil* *evil*
     // pointer bugs.  in the end so much code needed to be copy pasted

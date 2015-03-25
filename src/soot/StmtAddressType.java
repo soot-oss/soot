@@ -25,7 +25,10 @@
 
 
 package soot;
-import soot.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.util.Switch;
 
 /**
  *   Soot representation of the Java type for a statement address. Implemented as
@@ -34,6 +37,8 @@ import soot.util.*;
 @SuppressWarnings("serial")
 public class StmtAddressType extends Type
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(StmtAddressType.class);
     public StmtAddressType( Singletons.Global g ) {}
     public static StmtAddressType v() { return G.v().soot_StmtAddressType(); }
 

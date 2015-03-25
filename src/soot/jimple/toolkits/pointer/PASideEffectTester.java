@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.pointer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
@@ -34,6 +37,8 @@ import java.util.*;
 
 public class PASideEffectTester implements SideEffectTester
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PASideEffectTester.class);
     PointsToAnalysis pa = Scene.v().getPointsToAnalysis();
     SideEffectAnalysis sea = Scene.v().getSideEffectAnalysis();
     HashMap<Unit, RWSet> unitToRead;

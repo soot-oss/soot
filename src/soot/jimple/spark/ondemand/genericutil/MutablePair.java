@@ -19,6 +19,9 @@
 
 package soot.jimple.spark.ondemand.genericutil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A mutable pair of objects.
  * 

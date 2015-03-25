@@ -18,6 +18,9 @@
  */
 package soot.jimple.toolkits.ide.exampleproblems;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import heros.DefaultSeeds;
 import heros.FlowFunction;
 import heros.FlowFunctions;
@@ -52,6 +55,8 @@ import soot.jimple.internal.JimpleLocal;
 import soot.jimple.toolkits.ide.DefaultJimpleIFDSTabulationProblem;
 
 public class IFDSLocalInfoFlow extends DefaultJimpleIFDSTabulationProblem<Local,InterproceduralCFG<Unit, SootMethod>> {
+
+	private static final Logger logger =LoggerFactory.getLogger(IFDSLocalInfoFlow.class);
 
 	public IFDSLocalInfoFlow(InterproceduralCFG<Unit,SootMethod> icfg) {
 		super(icfg);		

@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** 
  * There should be at most one RuntimeVisibleParameterAnnotations 
  * attribute in method
@@ -40,6 +43,8 @@ package soot.coffi;
  * @author Jennifer Lhotak
  */
 public class RuntimeInvisibleParameterAnnotations_attribute extends attribute_info {
+
+	private static final Logger logger =LoggerFactory.getLogger(RuntimeInvisibleParameterAnnotations_attribute.class);
    /** Length of annotations table array. */
    public int num_parameters;
    /** 

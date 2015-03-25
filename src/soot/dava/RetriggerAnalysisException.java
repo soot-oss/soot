@@ -19,9 +19,14 @@
 
 package soot.dava;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 public class RetriggerAnalysisException extends Exception 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(RetriggerAnalysisException.class);
     public RetriggerAnalysisException()
     {
 	Dava.v().log( "RetriggerAnalysisException");

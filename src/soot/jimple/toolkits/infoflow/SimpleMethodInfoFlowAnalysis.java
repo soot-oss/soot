@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.infoflow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -18,6 +21,8 @@ import soot.jimple.*;
 
 public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Pair<EquivalentValue,EquivalentValue>>>
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SimpleMethodInfoFlowAnalysis.class);
 	SootMethod sm;
 	Value thisLocal;
 	InfoFlowAnalysis dfa;
@@ -83,10 +88,10 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 			infoFlowGraph.addNode(returnRefEqVal);
 		
 		if(printMessages)
-			G.v().out.println("STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+			logger.info("STARTING ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 		doFlowInsensitiveAnalysis();
 		if(printMessages)
-			G.v().out.println("ENDING   ANALYSIS FOR " + g.getBody().getMethod() + " -----");
+			logger.info("ENDING   ANALYSIS FOR " + g.getBody().getMethod() + " -----");
 	}
 	
 	/** A constructor that doesn't run the analysis */
@@ -222,7 +227,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 						infoFlowGraph.addNode(sourceEqVal);
 					infoFlowGraph.addEdge(sourceEqVal, sinkEqVal);
 					if(printMessages)
-						G.v().out.println("      Found " + source + " flows to " + sink);
+						logger.info("      Found " + source + " flows to " + sink);
 				}
 			}
 		}
@@ -265,7 +270,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 							infoFlowGraph.addNode(sourceEqVal);
 						infoFlowGraph.addEdge(sourceEqVal, sinkEqVal);
 						if(printMessages)
-							G.v().out.println("      Found " + source + " flows to " + sink);
+							logger.info("      Found " + source + " flows to " + sink);
 					}
 				}
 			}
@@ -300,7 +305,7 @@ public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, Flow
 		MutableDirectedGraph<EquivalentValue> dataFlowGraph = dfa.getInvokeInfoFlowSummary(ie, is, sm); // must return a graph whose nodes are Refs!!!
 //		if( ie.getMethodRef().resolve().getSubSignature().equals(new String("boolean remove(java.lang.Object)")) )
 //		{
-//			G.v().out.println("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE infoFlowGraph: ");
+//			logger.info("*!*!*!*!*!<boolean remove(java.lang.Object)> has FLOW SENSITIVE infoFlowGraph: ");
 //			ClassInfoFlowAnalysis.printDataFlowGraph(infoFlowGraph);
 //		}
 		

@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.infoflow;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -21,6 +24,8 @@ import soot.jimple.*;
 
 public class InfoFlowAnalysis
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(InfoFlowAnalysis.class);
 	boolean includePrimitiveInfoFlow;
 	boolean includeInnerFields;
 	boolean printDebug;
@@ -241,7 +246,7 @@ public class InfoFlowAnalysis
 	public static void printInfoFlowSummary(DirectedGraph<EquivalentValue> g)
 	{
 		if(g.size() > 0)
-			G.v().out.println("    " + " --> ");
+			logger.info("    " + " --> ");
 		for (EquivalentValue node : g)
 		{
 			List<EquivalentValue> sources = g.getPredsOf(node);
@@ -284,7 +289,7 @@ public class InfoFlowAnalysis
 			}
 			for(int i = 0; i < sourcesnamelength - lastnamelength; i++)
 				G.v().out.print(" ");
-			G.v().out.println(" ] --> " + node.toString());
+			logger.info(" ] --> " + node.toString());
 		}
 	}
 		

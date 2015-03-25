@@ -19,6 +19,9 @@
 
 package soot.javaToJimple.jj.ast;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ast.*;
 import polyglot.visit.*;
 import polyglot.ext.jl.ast.*;
@@ -26,6 +29,8 @@ import polyglot.util.*;
 import java.util.*;
 
 public class JjAccessField_c extends Expr_c implements Expr {
+
+	private static final Logger logger =LoggerFactory.getLogger(JjAccessField_c.class);
 
     private Call getMeth;
     private Call setMeth;

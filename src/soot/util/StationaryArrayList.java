@@ -26,6 +26,9 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** This class implements an ArrayList where the
  * equality and hashCode use object equality, not list
  * equality.  This is important for putting Lists into HashMaps. 

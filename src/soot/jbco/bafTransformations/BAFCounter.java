@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.Body;
@@ -30,6 +33,8 @@ import soot.baf.TargetArgInst;
 import soot.jbco.IJbcoTransform;
 
 public class BAFCounter extends BodyTransformer implements IJbcoTransform {
+
+	private static final Logger logger =LoggerFactory.getLogger(BAFCounter.class);
 
 	static int count = 0;
 	public static String dependancies[] = new String[] { "bb.jbco_counter" };

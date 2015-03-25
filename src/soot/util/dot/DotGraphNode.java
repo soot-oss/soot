@@ -28,6 +28,9 @@
 
 package soot.util.dot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 import java.util.*;
 
@@ -35,6 +38,8 @@ import java.util.*;
  * A Dot graph node with various attributes.
  */  
 public class DotGraphNode implements Renderable{
+
+	private static final Logger logger =LoggerFactory.getLogger(DotGraphNode.class);
   private String name;
   private List<DotGraphAttribute> attributes;
 

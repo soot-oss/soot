@@ -27,6 +27,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import java.util.*;
 
@@ -39,6 +42,8 @@ import soot.*;
 
 public class HashMutableEdgeLabelledDirectedGraph<N,L> implements MutableEdgeLabelledDirectedGraph<N,L>
 {
+	final static Logger logger = LoggerFactory
+			.getLogger(HashMutableEdgeLabelledDirectedGraph.DGEdge.class);
 	/**
 	 *   HashMap based implementation of a MutableEdgeLabelledDirectedGraph.
 	 */
@@ -386,20 +391,20 @@ public class HashMutableEdgeLabelledDirectedGraph<N,L> implements MutableEdgeLab
     public void printGraph()
     {
     	for (N node : this ) {
-		    G.v().out.println("Node = "+node);
+		    logger.info("Node = "+node);
 		    
-		    G.v().out.println("Preds:");
+		    logger.info("Preds:");
 		    for (N pred : getPredsOf(node)) {
 		        DGEdge<N> edge = new DGEdge<N>(pred, node);
 		        List<L> labels = edgeToLabels.get(edge);
-				G.v().out.println("     " + pred + " [" + labels + "]");
+				logger.info("     " + pred + " [" + labels + "]");
 		    }
 		    
-		    G.v().out.println("Succs:");
+		    logger.info("Succs:");
 		    for (N succ : getSuccsOf(node)) {
 		        DGEdge<N> edge = new DGEdge<N>(node, succ);
 		        List<L> labels = edgeToLabels.get(edge);
-				G.v().out.println("     " + succ + " [" + labels + "]");
+				logger.info("     " + succ + " [" + labels + "]");
 		    }
 		}
     }

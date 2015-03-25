@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.sets;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.jimple.ClassConstant;
 import soot.jimple.spark.pag.Node;
@@ -28,6 +31,8 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public class EmptyPointsToSet extends PointsToSetInternal {
+
+	private static final Logger logger =LoggerFactory.getLogger(EmptyPointsToSet.class);
     public EmptyPointsToSet( Singletons.Global g ) { super(null); }
     public static EmptyPointsToSet v() { return G.v().soot_jimple_spark_sets_EmptyPointsToSet(); }
     

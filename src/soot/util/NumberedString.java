@@ -19,6 +19,9 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** A class that assigns integers to java.lang.Strings.
  *
  * @author Ondrej Lhotak

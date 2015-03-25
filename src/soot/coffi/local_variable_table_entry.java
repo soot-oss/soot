@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** An entry in a local variable table.
  * @see LocalVariableTable_attribute
  * @author Clark Verbrugge

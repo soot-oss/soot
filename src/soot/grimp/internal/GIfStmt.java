@@ -30,12 +30,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GIfStmt extends JIfStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GIfStmt.class);
     public GIfStmt(Value condition, Unit target)
     {
         super(Grimp.v().newConditionExprBox(condition),

@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.synchronization;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.jimple.Stmt;
@@ -7,6 +10,8 @@ import soot.toolkits.scalar.Pair;
 
 public class SynchronizedRegion
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SynchronizedRegion.class);
 	public Stmt prepStmt;
 	public Stmt entermonitor;
 	public Stmt beginning; // first stmt of body

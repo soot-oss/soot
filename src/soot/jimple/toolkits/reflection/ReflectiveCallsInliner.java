@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.reflection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -87,6 +90,8 @@ import soot.util.Chain;
 import soot.util.HashChain;
 
 public class ReflectiveCallsInliner extends SceneTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(ReflectiveCallsInliner.class);
 	//caching currently does not work because it adds fields to Class, Method and Constructor,
 	//but such fields cannot currently be added using the Instrumentation API
 	private final boolean useCaching = false;

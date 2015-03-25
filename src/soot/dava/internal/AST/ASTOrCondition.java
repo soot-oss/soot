@@ -19,11 +19,16 @@
 
 package soot.dava.internal.AST;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.dava.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 
 public class ASTOrCondition extends ASTAggregatedCondition{
+
+	private static final Logger logger =LoggerFactory.getLogger(ASTOrCondition.class);
     public ASTOrCondition(ASTCondition left, ASTCondition right){
 	super(left,right);
     }

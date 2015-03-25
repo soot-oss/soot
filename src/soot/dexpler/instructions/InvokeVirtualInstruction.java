@@ -24,11 +24,16 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import org.jf.dexlib2.iface.instruction.Instruction;
 
 import soot.dexpler.DexBody;
 
 public class InvokeVirtualInstruction extends MethodInvocationInstruction {
+
+	private static final Logger logger =LoggerFactory.getLogger(InvokeVirtualInstruction.class);
 
     public InvokeVirtualInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);

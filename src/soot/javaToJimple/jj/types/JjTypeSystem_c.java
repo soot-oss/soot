@@ -19,9 +19,14 @@
 
 package soot.javaToJimple.jj.types;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import polyglot.ext.jl.types.TypeSystem_c;
 
 public class JjTypeSystem_c extends TypeSystem_c implements JjTypeSystem {
+
+	private static final Logger logger =LoggerFactory.getLogger(JjTypeSystem_c.class);
     // TODO: implement new methods in JjTypeSystem.
     // TODO: override methods as needed from TypeSystem_c.
 }

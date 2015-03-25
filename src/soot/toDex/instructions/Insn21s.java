@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.BitSet;
 
 import org.jf.dexlib2.Opcode;
@@ -16,6 +19,8 @@ import soot.toDex.Register;
  * It is used by the opcodes "const/16" and "const-wide/16".
  */
 public class Insn21s extends AbstractInsn implements OneRegInsn {
+
+	private static final Logger logger =LoggerFactory.getLogger(Insn21s.class);
 	
 	private short litB;
 

@@ -26,12 +26,17 @@
  */
 package soot.jimple.toolkits.pointer.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.nativemethods.*;
 import java.util.*;
 
 public class NativeMethodDriver {
+
+	private static final Logger logger =LoggerFactory.getLogger(NativeMethodDriver.class);
     public NativeMethodDriver( NativeHelper helper ) {
         cnameToSim.put("java.lang.Object", new JavaLangObjectNative(helper));
         cnameToSim.put("java.lang.System", new JavaLangSystemNative(helper));
@@ -134,10 +139,10 @@ public class NativeMethodDriver {
     String cname = method.getDeclaringClass().getName();
     NativeMethodClass clsSim = cnameToSim.get(cname);
 
-//    G.v().out.println(method.toString());
+//    logger.info(method.toString());
     if (clsSim == null) {
-	  //G.v().out.println("WARNING: it is unsafe to simulate the method ");
-	  //G.v().out.println("         "+method.toString());	
+	  //logger.info("WARNING: it is unsafe to simulate the method ");
+	  //logger.info("         "+method.toString());	
       //throw new NativeMethodNotSupportedException(method);
       return true;
     } else {
@@ -149,8 +154,8 @@ public class NativeMethodDriver {
 			      params);
       } catch (NativeMethodNotSupportedException e) {
           if(DEBUG) {
-              G.v().out.println("WARNING: it is unsafe to simulate the method ");
-              G.v().out.println("         "+method.toString());	
+              logger.info("WARNING: it is unsafe to simulate the method ");
+              logger.info("         "+method.toString());	
           }
       }
       return true;

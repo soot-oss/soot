@@ -25,6 +25,9 @@
 
 package soot.dexpler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import org.jf.dexlib2.iface.Field;
 import org.jf.dexlib2.iface.value.BooleanEncodedValue;
@@ -53,6 +56,8 @@ import soot.tagkit.Tag;
  * It holds its name, its modifier, and the type
  */
 public class DexField {
+
+	private static final Logger logger =LoggerFactory.getLogger(DexField.class);
     private DexField() {}
 
     /**

@@ -1,5 +1,8 @@
 package soot.toDex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,6 +35,8 @@ import soot.jimple.Stmt;
  * Utility class for the conversion from soot to dex.
  */
 public class SootToDexUtils {
+
+	private static final Logger logger =LoggerFactory.getLogger(SootToDexUtils.class);
 	
 	private static final Map<Class<? extends Type>, String> sootToDexTypeDescriptor;
 	

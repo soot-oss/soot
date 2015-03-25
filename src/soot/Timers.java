@@ -25,12 +25,17 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.text.DecimalFormat;
 
 import soot.options.Options;
 
 public class Timers
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Timers.class);
     public Timers( Singletons.Global g ) {}
     public static Timers v() { return G.v().soot_Timers(); }
 
@@ -148,55 +153,55 @@ public class Timers
     {                                                   
         long totalTime = totalTimer.getTime();
                 
-        G.v().out.println("Time measurements");
-        G.v().out.println();
+        logger.info("Time measurements");
+        
                 
-        G.v().out.println("      Building graphs: " + toTimeString(graphTimer, totalTime));
-        G.v().out.println("  Computing LocalDefs: " + toTimeString(defsTimer, totalTime));
-	//                G.v().out.println("                setup: " + toTimeString(defsSetupTimer, totalTime));
-	//                G.v().out.println("             analysis: " + toTimeString(defsAnalysisTimer, totalTime));
-	//                G.v().out.println("                 post: " + toTimeString(defsPostTimer, totalTime));
-        G.v().out.println("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
-	//                G.v().out.println("            Use phase1: " + toTimeString(usePhase1Timer, totalTime));
-	//                G.v().out.println("            Use phase2: " + toTimeString(usePhase2Timer, totalTime));
-	//                G.v().out.println("            Use phase3: " + toTimeString(usePhase3Timer, totalTime));
+        logger.info("      Building graphs: " + toTimeString(graphTimer, totalTime));
+        logger.info("  Computing LocalDefs: " + toTimeString(defsTimer, totalTime));
+	//                logger.info("                setup: " + toTimeString(defsSetupTimer, totalTime));
+	//                logger.info("             analysis: " + toTimeString(defsAnalysisTimer, totalTime));
+	//                logger.info("                 post: " + toTimeString(defsPostTimer, totalTime));
+        logger.info("  Computing LocalUses: " + toTimeString(usesTimer, totalTime));
+	//                logger.info("            Use phase1: " + toTimeString(usePhase1Timer, totalTime));
+	//                logger.info("            Use phase2: " + toTimeString(usePhase2Timer, totalTime));
+	//                logger.info("            Use phase3: " + toTimeString(usePhase3Timer, totalTime));
 
-        G.v().out.println("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
-        G.v().out.println("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
-        G.v().out.println(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
-	//                G.v().out.println("                setup: " + toTimeString(liveSetupTimer, totalTime));
-	//                G.v().out.println("             analysis: " + toTimeString(liveAnalysisTimer, totalTime));
-	//                G.v().out.println("                 post: " + toTimeString(livePostTimer, totalTime));
+        logger.info("     Cleaning up code: " + toTimeString(cleanupAlgorithmTimer, totalTime));
+        logger.info("Computing LocalCopies: " + toTimeString(copiesTimer, totalTime));
+        logger.info(" Computing LiveLocals: " + toTimeString(liveTimer, totalTime));
+	//                logger.info("                setup: " + toTimeString(liveSetupTimer, totalTime));
+	//                logger.info("             analysis: " + toTimeString(liveAnalysisTimer, totalTime));
+	//                logger.info("                 post: " + toTimeString(livePostTimer, totalTime));
                 
-        G.v().out.println("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
+        logger.info("Coading coffi structs: " + toTimeString(resolveTimer, totalTime));
 
                 
-        G.v().out.println();
+        
 
         // Print out time stats.
         {
             float timeInSecs;
 
-            G.v().out.println("       Resolving classfiles: " + toTimeString(resolverTimer, totalTime)); 
-            G.v().out.println(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime)); 
-            G.v().out.println("        Splitting variables: " + toTimeString(splitTimer, totalTime));
-            G.v().out.println("            Assigning types: " + toTimeString(assignTimer, totalTime));
-            G.v().out.println("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
-            G.v().out.println("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
-            G.v().out.println("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
-            G.v().out.println("            Coloring locals: " + toTimeString(packTimer, totalTime));
-            G.v().out.println("     Generating jasmin code: " + toTimeString(buildJasminTimer, totalTime));
-            G.v().out.println("          .jasmin -> .class: " + toTimeString(assembleJasminTimer, totalTime));
+            logger.info("       Resolving classfiles: " + toTimeString(resolverTimer, totalTime)); 
+            logger.info(" Bytecode -> jimple (naive): " + toTimeString(conversionTimer, totalTime)); 
+            logger.info("        Splitting variables: " + toTimeString(splitTimer, totalTime));
+            logger.info("            Assigning types: " + toTimeString(assignTimer, totalTime));
+            logger.info("  Propagating copies & csts: " + toTimeString(propagatorTimer, totalTime));
+            logger.info("      Eliminating dead code: " + toTimeString(deadCodeTimer, totalTime));
+            logger.info("                Aggregation: " + toTimeString(aggregationTimer, totalTime));
+            logger.info("            Coloring locals: " + toTimeString(packTimer, totalTime));
+            logger.info("     Generating jasmin code: " + toTimeString(buildJasminTimer, totalTime));
+            logger.info("          .jasmin -> .class: " + toTimeString(assembleJasminTimer, totalTime));
             
                                             
-	    //                    G.v().out.println("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
+	    //                    logger.info("           Cleaning up code: " + toTimeString(cleanup1Timer, totalTime) +
 	    //                        "\t" + cleanup1LocalCount + " locals  " + cleanup1StmtCount + " stmts");
                     
-	    //                    G.v().out.println("               Split phase1: " + toTimeString(splitPhase1Timer, totalTime));
-	    //                    G.v().out.println("               Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
+	    //                    logger.info("               Split phase1: " + toTimeString(splitPhase1Timer, totalTime));
+	    //                    logger.info("               Split phase2: " + toTimeString(splitPhase2Timer, totalTime));
                 
 	    /*
-	      G.v().out.println("cleanup2Timer:   " + cleanup2Time +
+	      logger.info("cleanup2Timer:   " + cleanup2Time +
 	      "(" + (cleanup2Time * 100 / totalTime) + "%) " +
 	      cleanup2LocalCount + " locals  " + cleanup2StmtCount + " stmts");
 	    */
@@ -204,18 +209,18 @@ public class Timers
             timeInSecs = totalTime / 1000.0f;
             //float memoryUsed = (Runtime.getRuntime().totalMemory() - Runtime.getRuntime().freeMemory()) / 1000.0f;
             
-            G.v().out.println("totalTime:" + toTimeString(totalTimer, totalTime));
+            logger.info("totalTime:" + toTimeString(totalTimer, totalTime));
             
             if(Options.v().subtract_gc())
 		{
-		    G.v().out.println("Garbage collection was subtracted from these numbers.");
-		    G.v().out.println("           forcedGC:" + 
+		    logger.info("Garbage collection was subtracted from these numbers.");
+		    logger.info("           forcedGC:" + 
 				       toTimeString(G.v().Timer_forcedGarbageCollectionTimer, totalTime));
 		}
 
-            G.v().out.println("stmtCount: " + stmtCount + "(" + toFormattedString(stmtCount / timeInSecs) + " stmt/s)");
+            logger.info("stmtCount: " + stmtCount + "(" + toFormattedString(stmtCount / timeInSecs) + " stmt/s)");
                     
-            G.v().out.println("totalFlowNodes: " + totalFlowNodes + 
+            logger.info("totalFlowNodes: " + totalFlowNodes + 
                                " totalFlowComputations: " + totalFlowComputations + " avg: " + 
                                truncatedOf((double) totalFlowComputations / totalFlowNodes, 2));
         }

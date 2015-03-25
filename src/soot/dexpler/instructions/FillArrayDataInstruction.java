@@ -24,6 +24,9 @@
 
 package soot.dexpler.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -62,7 +65,8 @@ import soot.jimple.Stmt;
 
 public class FillArrayDataInstruction extends PseudoInstruction {
 
-	final static Logger logger = LoggerFactory.getLogger(FillArrayDataInstruction.class);
+	private static final Logger logger =LoggerFactory.getLogger(FillArrayDataInstruction.class);
+
   public FillArrayDataInstruction (Instruction instruction, int codeAdress) {
     super(instruction, codeAdress);
   }
@@ -161,7 +165,7 @@ public class FillArrayDataInstruction extends PseudoInstruction {
 
     if(elementType==null) {
       //throw new InternalError("Unable to find array type to type array elements!");
-      G.v().out.println("Warning: Unable to find array type to type array elements! Array was not defined! (obfuscated bytecode?)");
+      logger.info("Warning: Unable to find array type to type array elements! Array was not defined! (obfuscated bytecode?)");
       return null;
     }
 

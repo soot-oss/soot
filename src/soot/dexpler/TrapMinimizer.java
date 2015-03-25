@@ -1,5 +1,8 @@
 package soot.dexpler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -43,6 +46,8 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
  * @author Alexandre Bartel
  */
 public class TrapMinimizer extends TrapTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(TrapMinimizer.class);
 
     public TrapMinimizer( Singletons.Global g ) {}
 

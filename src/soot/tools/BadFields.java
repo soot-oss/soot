@@ -18,12 +18,17 @@
  */
 
 package soot.tools;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
 
 public class BadFields extends SceneTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(BadFields.class);
     public static void main(String[] args) 
     {
 	PackManager.v().getPack("cg").add(
@@ -70,9 +75,9 @@ public class BadFields extends SceneTransformer {
 
     private void warn( String warning ) {
         if( lastClass != currentClass ) 
-            G.v().out.println( "In class "+currentClass );
+            logger.info( "In class "+currentClass );
         lastClass = currentClass;
-        G.v().out.println( "  "+warning );
+        logger.info( "  "+warning );
     }
 
     private void handleMethod( SootMethod m ) {
@@ -86,10 +91,10 @@ public class BadFields extends SceneTransformer {
             if( !f.getDeclaringClass().getName().equals( "java.lang.System" ) )
                 continue;
             if( f.getName().equals( "err" ) ) {
-                G.v().out.println( "Use of System.err in "+m );
+                logger.info( "Use of System.err in "+m );
             }
             if( f.getName().equals( "out" ) ) {
-                G.v().out.println( "Use of System.out in "+m );
+                logger.info( "Use of System.out in "+m );
             }
         }
         for( Iterator<Unit> sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {

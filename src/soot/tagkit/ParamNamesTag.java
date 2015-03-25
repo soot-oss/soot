@@ -24,6 +24,9 @@
  */
 
 package soot.tagkit;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /** Represents a tag that just has a string to be printed with the code.
@@ -31,6 +34,8 @@ import java.util.*;
 
 public class ParamNamesTag implements  Tag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ParamNamesTag.class);
     ArrayList<String> names;
     public ParamNamesTag(ArrayList<String> list){
         names = list;

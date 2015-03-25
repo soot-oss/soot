@@ -30,12 +30,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 
 
 public class GTrap extends AbstractTrap 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GTrap.class);
     public GTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
     {
         super(exception, Grimp.v().newStmtBox(beginStmt),

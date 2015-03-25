@@ -26,6 +26,9 @@
 /* Reference Version: $SootVersion: 1.2.5.dev.1 $ */
 package soot.jimple.toolkits.thread.mhp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.util.dot.*;
 import soot.util.*;
 
@@ -51,8 +54,9 @@ import soot.tagkit.*;
 // -Richard L. Halpert, 2006-11-30
 
 public class PegToDotFile {
-	
-	final static Logger logger = LoggerFactory.getLogger(PegToDotFile.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(PegToDotFile.class);
+
 
 	/* make all control fields public, allow other soot class dump 
 	 * the graph in the middle */

@@ -26,6 +26,9 @@
 /* Reference Version: $SootVersion: 1.2.5.dev.5 $ */
 
 package soot.jimple.toolkits.base;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -37,6 +40,8 @@ import java.util.*;
 
 public class Aggregator extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Aggregator.class);
     public Aggregator( Singletons.Global g ) {}
     public static Aggregator v() { return G.v().soot_jimple_toolkits_base_Aggregator(); }
 
@@ -79,7 +84,7 @@ public class Aggregator extends BodyTransformer
                      
         do {
             if(Options.v().verbose())
-                G.v().out.println("[" + body.getMethod().getName() + "] Aggregating iteration " + aggregateCount + "...");
+                logger.info("[" + body.getMethod().getName() + "] Aggregating iteration " + aggregateCount + "...");
         
             // body.printTo(new java.io.PrintWriter(G.v().out, true));
             
@@ -299,11 +304,11 @@ public class Aggregator extends BodyTransformer
             {/*
             if(Options.v().verbose())
             {
-                G.v().out.println("[debug] failed aggregation");
-                  G.v().out.println("[debug] tried to put "+aggregatee+
+                logger.info("[debug] failed aggregation");
+                  logger.info("[debug] tried to put "+aggregatee+
                                  " into "+usepair.stmt + 
                                  ": in particular, "+usepair.valueBox);
-                  G.v().out.println("[debug] aggregatee instanceof Expr: "
+                  logger.info("[debug] aggregatee instanceof Expr: "
                                  +(aggregatee instanceof Expr));
             }*/
             }

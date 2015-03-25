@@ -19,6 +19,9 @@
 
 package soot.jimple.toolkits.pointer;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,6 +52,8 @@ import soot.toolkits.graph.UnitGraph;
  * @author Eric Bodden
  */
 public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
+
+	private static final Logger logger =LoggerFactory.getLogger(StrongLocalMustAliasAnalysis.class);
 
     protected Set<Integer> invalidInstanceKeys;
     

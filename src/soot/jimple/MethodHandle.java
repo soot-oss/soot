@@ -29,11 +29,16 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 
 public class MethodHandle extends Constant
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(MethodHandle.class);
     public final SootMethodRef methodRef;
 
     private MethodHandle(SootMethodRef ref)

@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -66,7 +69,9 @@ import soot.jimple.Stmt;
  *    if the construct carrying this node has become empty and so on..... 
  */
 public class UselessAbruptStmtRemover extends DepthFirstAdapter {
-	final static Logger logger = LoggerFactory.getLogger(UselessAbruptStmtRemover.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(UselessAbruptStmtRemover.class);
+
 	ASTParentNodeFinder finder;
 	ASTMethodNode methodNode;
 	LabelToNodeMapper mapper;

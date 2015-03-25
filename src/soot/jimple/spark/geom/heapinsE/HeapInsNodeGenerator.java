@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.heapinsE;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Iterator;
 
 import soot.jimple.spark.geom.dataRep.CgEdge;

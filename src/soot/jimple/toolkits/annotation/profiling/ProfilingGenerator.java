@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.annotation.profiling;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
@@ -34,6 +37,8 @@ import soot.options.ProfilingOptions;
 
 public class ProfilingGenerator extends BodyTransformer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ProfilingGenerator.class);
     public ProfilingGenerator( Singletons.Global g ) {}
     public static ProfilingGenerator v() { return G.v().soot_jimple_toolkits_annotation_profiling_ProfilingGenerator(); }
 

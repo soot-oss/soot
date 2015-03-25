@@ -1,5 +1,8 @@
 package soot.validation;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 import soot.Body;
@@ -8,6 +11,8 @@ import soot.Value;
 import soot.ValueBox;
 
 public class LocalsValidator implements BodyValidator {
+
+	private static final Logger logger =LoggerFactory.getLogger(LocalsValidator.class);
 	public static LocalsValidator INSTANCE;
 	
 	

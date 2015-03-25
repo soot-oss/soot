@@ -26,9 +26,14 @@
 
 package soot;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @SuppressWarnings("serial")
 public class CompilationDeathException extends RuntimeException
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CompilationDeathException.class);
     private final int mStatus;
 
     public static final int COMPILATION_ABORTED = 0;

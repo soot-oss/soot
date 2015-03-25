@@ -1,5 +1,8 @@
 package soot.dava.toolkits.base.AST.traversals;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.List;
 
 import soot.Local;
@@ -20,6 +23,8 @@ import soot.jimple.Stmt;
  * else false
  */
 public class InitializationDeclarationShortcut extends DepthFirstAdapter {
+
+	private static final Logger logger =LoggerFactory.getLogger(InitializationDeclarationShortcut.class);
 	AugmentedStmt ofInterest;
 	boolean possible=false;
 	Local definedLocal=null;

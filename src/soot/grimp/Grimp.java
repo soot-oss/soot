@@ -31,6 +31,9 @@
 
 package soot.grimp;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.grimp.internal.*;
@@ -48,6 +51,8 @@ import java.util.*;
 
 public class Grimp
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Grimp.class);
     public Grimp( Singletons.Global g ) {}
     public static Grimp v() { return G.v().soot_grimp_Grimp(); }
 

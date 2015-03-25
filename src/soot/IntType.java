@@ -28,7 +28,10 @@
 
 
 package soot;
-import soot.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.util.Switch;
 
 /**
  *   Soot representation of the Java built-in type 'int'. Implemented as
@@ -37,6 +40,8 @@ import soot.util.*;
 @SuppressWarnings("serial")
 public class IntType extends PrimType implements IntegerType
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(IntType.class);
     public IntType( Singletons.Global g ) {}
     public static IntType v() { return G.v().soot_IntType(); }
 

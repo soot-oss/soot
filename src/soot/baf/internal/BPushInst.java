@@ -29,6 +29,9 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 import soot.jimple.*;
@@ -36,6 +39,8 @@ import soot.util.*;
 
 public class BPushInst extends AbstractInst implements PushInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BPushInst.class);
     private Constant constant;
     
     public BPushInst(Constant c)

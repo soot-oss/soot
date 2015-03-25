@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.*;
 
 import soot.*;
@@ -151,7 +154,7 @@ class TypeStack
                     throw new RuntimeException("TypeStack merging failed; incompatible types " + types[i] + " and " + other.types[i]);
                 }
 
-                // G.v().out.println("Merging: " + types[i] + " with " + other.types[i]);
+                // logger.info("Merging: " + types[i] + " with " + other.types[i]);
 
                 newStack.types[i] = RefType.v("java.lang.Object");
             }

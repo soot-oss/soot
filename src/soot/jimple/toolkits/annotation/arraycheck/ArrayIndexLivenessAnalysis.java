@@ -24,6 +24,9 @@
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -66,6 +69,8 @@ import soot.toolkits.scalar.BackwardFlowAnalysis;
 
 class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
 {
+	final static Logger logger = LoggerFactory
+			.getLogger(ArrayIndexLivenessAnalysis.class);
     HashSet<Local> fullSet = new HashSet<Local>();
     ExceptionalUnitGraph eug;
 
@@ -114,7 +119,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
         rectarray = takeRectArray;
         
         if (Options.v().debug()) 
-            G.v().out.println("Enter ArrayIndexLivenessAnalysis");
+            logger.info("Enter ArrayIndexLivenessAnalysis");
         
         eug = (ExceptionalUnitGraph)dg;
         retrieveAllArrayLocals(eug.getBody(), fullSet);
@@ -159,7 +164,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
         doAnalysis();
 
         if (Options.v().debug()) 
-            G.v().out.println("Leave ArrayIndexLivenessAnalysis");
+            logger.info("Leave ArrayIndexLivenessAnalysis");
     }
 
     public HashMap<Object, HashSet<Value>> getLocalToFieldRef()

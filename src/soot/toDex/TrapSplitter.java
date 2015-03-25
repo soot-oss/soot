@@ -1,5 +1,8 @@
 package soot.toDex;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 
 import soot.Body;
@@ -19,10 +22,13 @@ import soot.jimple.Jimple;
  */
 public class TrapSplitter extends BodyTransformer {
 
+	private static final Logger logger =LoggerFactory.getLogger(TrapSplitter.class);
+
     public TrapSplitter( Singletons.Global g ) {}
     public static TrapSplitter v() { return soot.G.v().soot_toDex_TrapSplitter(); }
 
     private class TrapOverlap {
+
 		private Trap t1;
 		private Trap t2;
 		private Unit t2Start;

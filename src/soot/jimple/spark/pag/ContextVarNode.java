@@ -18,12 +18,17 @@
  */
 
 package soot.jimple.spark.pag;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.Context;
 
 /** Represents a simple variable node with context.
  * @author Ondrej Lhotak
  */
 public class ContextVarNode extends LocalVarNode {
+
+	private static final Logger logger =LoggerFactory.getLogger(ContextVarNode.class);
     private Context context;
     public Context context() { return context; }
     public String toString() {

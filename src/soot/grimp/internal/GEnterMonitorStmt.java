@@ -30,12 +30,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GEnterMonitorStmt extends JEnterMonitorStmt 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GEnterMonitorStmt.class);
     public GEnterMonitorStmt(Value op)
     {
         super(Grimp.v().newExprBox(op));

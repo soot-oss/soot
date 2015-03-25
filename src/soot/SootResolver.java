@@ -26,6 +26,9 @@
 
 
 package soot;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayDeque;
@@ -47,6 +50,8 @@ import soot.options.Options;
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(SootResolver.class);
     /** Maps each resolved class to a list of all references in it. */
     private final Map<SootClass, Collection<Type>> classToTypesSignature = new HashMap<SootClass, Collection<Type>>();
 
@@ -191,7 +196,7 @@ public class SootResolver
     private void bringToHierarchy(SootClass sc) {
         if(sc.resolvingLevel() >= SootClass.HIERARCHY ) return;
         if(Options.v().debug_resolver())
-            G.v().out.println("bringing to HIERARCHY: "+sc);
+            logger.info("bringing to HIERARCHY: "+sc);
         sc.setResolvingLevel(SootClass.HIERARCHY);
 
         String className = sc.getName();
@@ -217,7 +222,7 @@ public class SootResolver
                 throw new SootClassNotFoundException("couldn't find class: " +
                     className + " (is your soot-class-path set properly?)"+suffix);
             } else {
-                G.v().out.println(
+                logger.info(
                         "Warning: " + className + " is a phantom class!");
                 sc.setPhantomClass();
                 classToTypesSignature.put( sc, Collections.<Type>emptyList());
@@ -251,7 +256,7 @@ public class SootResolver
         if(sc.resolvingLevel() >= SootClass.SIGNATURES ) return;
         bringToHierarchy(sc);
         if(Options.v().debug_resolver()) 
-            G.v().out.println("bringing to SIGNATURES: "+sc);
+            logger.info("bringing to SIGNATURES: "+sc);
         sc.setResolvingLevel(SootClass.SIGNATURES);
 
         for( SootField f : sc.getFields()){
@@ -287,7 +292,7 @@ public class SootResolver
         if(sc.resolvingLevel() >= SootClass.BODIES ) return;
         bringToSignatures(sc);
         if(Options.v().debug_resolver()) 
-            G.v().out.println("bringing to BODIES: "+sc);
+            logger.info("bringing to BODIES: "+sc);
         sc.setResolvingLevel(SootClass.BODIES);
 
         {
@@ -335,6 +340,7 @@ public class SootResolver
 	}
 	
 	private class SootClassNotFoundException extends RuntimeException {
+
 		/**
 		 * 
 		 */

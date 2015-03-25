@@ -19,6 +19,9 @@
 
 package soot.jbco.bafTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Map;
 import java.util.Stack;
 
@@ -39,7 +42,9 @@ import soot.Unit;
  * Created on 15-Jun-2006 
  */
 public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
-	final static Logger logger = LoggerFactory.getLogger(BAFPrintout.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(BAFPrintout.class);
+
 
   private String name = "bb.printout";
   

@@ -1,6 +1,9 @@
 
 package soot.jimple.toolkits.thread.synchronization;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 import soot.*;
@@ -13,6 +16,8 @@ import soot.util.*;
 
 public class NewStaticLock implements Value
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(NewStaticLock.class);
 	SootClass sc; // The class to which to add a static lock.
 	static int nextidnum = 1;
 	int idnum;

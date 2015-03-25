@@ -19,7 +19,12 @@
 
 package soot.javaToJimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class JimpleBodyBuilderFactory extends AbstractJBBFactory {
+
+	private static final Logger logger =LoggerFactory.getLogger(JimpleBodyBuilderFactory.class);
 
     protected AbstractJimpleBodyBuilder createJimpleBodyBuilder(){
         return new JimpleBodyBuilder();

@@ -30,6 +30,9 @@
 
 
 package soot.coffi;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 import java.util.StringTokenizer;
@@ -39,7 +42,7 @@ import java.util.StringTokenizer;
  * @author Clark Verbrugge
  */
 abstract class cp_info {
-
+	final static Logger logger = LoggerFactory.getLogger(cp_info.class);
    public static final byte CONSTANT_Utf8 = 1;
    public static final byte CONSTANT_Integer = 3;
    public static final byte CONSTANT_Float = 4;
@@ -182,7 +185,7 @@ abstract class cp_info {
          return getClassname(constant_pool,
                              ((CONSTANT_InterfaceMethodref_info)c).class_index);
       }
-      G.v().out.println("Request for classname for non-class object!");
+      logger.info("Request for classname for non-class object!");
       return "Can't find classname. Sorry.";
    }
 
@@ -208,7 +211,7 @@ abstract class cp_info {
          return getName(constant_pool,
                         ((CONSTANT_InterfaceMethodref_info)c).name_and_type_index);
       }
-      G.v().out.println("Request for name for non-named object!");
+      logger.info("Request for name for non-named object!");
       return "Can't find name of that object. Sorry.";
    }
 
@@ -251,7 +254,7 @@ abstract class cp_info {
       if (c instanceof CONSTANT_Fieldref_info)
          return getTypeDescr(constant_pool,
                              ((CONSTANT_Fieldref_info)c).name_and_type_index);
-      G.v().out.println("Invalid request for type descr!");
+      logger.info("Invalid request for type descr!");
       return "Invalid type descriptor request.";
    }
 

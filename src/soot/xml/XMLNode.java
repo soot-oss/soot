@@ -26,6 +26,9 @@
 
 package soot.xml;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** XML helper */
 public class XMLNode extends XMLRoot

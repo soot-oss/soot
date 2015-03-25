@@ -18,11 +18,16 @@
  */
 
 package soot.jimple.toolkits.pointer;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 /** A very naive pointer analysis that just reports that any points can point
  * to any object. */
 public class DumbPointerAnalysis implements PointsToAnalysis {
+
+	private static final Logger logger =LoggerFactory.getLogger(DumbPointerAnalysis.class);
     public DumbPointerAnalysis( Singletons.Global g ) {}
     public static DumbPointerAnalysis v() { return G.v().soot_jimple_toolkits_pointer_DumbPointerAnalysis(); }
 

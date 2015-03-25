@@ -24,6 +24,9 @@
 
 package soot.dexpler;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -83,7 +86,9 @@ import soot.toolkits.scalar.UnitValueBoxPair;
  * objects (i.e: 0s are replaced by nulls).
  */
 public class DexIfTransformer extends AbstractNullTransformer {
-	final static Logger logger = LoggerFactory.getLogger(DexIfTransformer.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(DexIfTransformer.class);
+
 	// Note: we need an instance variable for inner class access, treat this as
 	// a local variable (including initialization before use)
 

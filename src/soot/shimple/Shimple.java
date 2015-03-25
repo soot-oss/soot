@@ -19,6 +19,9 @@
 
 package soot.shimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.options.Options;
 import soot.jimple.*;
@@ -48,6 +51,8 @@ import java.util.*;
 **/
 public class Shimple
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(Shimple.class);
     public static final String IFALIAS = "IfAlias";
     public static final String MAYMODIFY = "MayModify";
     public static final String PHI = "Phi";
@@ -286,24 +291,24 @@ public class Shimple
         
         if(phis.size() == 0){
             if(debug)
-                G.v().out.println("Warning: Orphaned UnitBoxes to " + remove + "? Shimple.redirectToPreds is giving up.");
+                logger.info("Warning: Orphaned UnitBoxes to " + remove + "? Shimple.redirectToPreds is giving up.");
             return;
         }
 
         if(preds.size() == 0){
             if(debug)
-                G.v().out.println("Warning: Shimple.redirectToPreds couldn't find any predecessors for " + remove + " in " + body.getMethod() + ".");
+                logger.info("Warning: Shimple.redirectToPreds couldn't find any predecessors for " + remove + " in " + body.getMethod() + ".");
 
             if(!remove.equals(units.getFirst())){
                 Unit pred = (Unit) units.getPredOf(remove);
                 if(debug)
-                    G.v().out.println("Warning: Falling back to immediate chain predecessor: " + pred + ".");
+                    logger.info("Warning: Falling back to immediate chain predecessor: " + pred + ".");
                 preds.add(pred);
             }
             else if(!remove.equals(units.getLast())){
                 Unit succ = (Unit) units.getSuccOf(remove);
                 if(debug)
-                    G.v().out.println("Warning: Falling back to immediate chain successor: " + succ + ".");
+                    logger.info("Warning: Falling back to immediate chain successor: " + succ + ".");
                 preds.add(succ);
             }
             else

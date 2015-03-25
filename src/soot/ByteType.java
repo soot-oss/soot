@@ -28,7 +28,10 @@
 
 
 package soot;
-import soot.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.util.Switch;
 
 
 /**
@@ -38,6 +41,8 @@ import soot.util.*;
 @SuppressWarnings("serial")
 public class ByteType extends PrimType implements IntegerType
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ByteType.class);
     public ByteType( Singletons.Global g ) {}
     public static ByteType v() { return G.v().soot_ByteType(); }
 

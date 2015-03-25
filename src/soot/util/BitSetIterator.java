@@ -26,6 +26,9 @@
 
 package soot.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.*;
 
 
@@ -35,6 +38,8 @@ import java.util.*;
  *  Iterator interface, but it doesn't because the return type of next
  *  is int rather than Object. */
 public class BitSetIterator {
+
+	private static final Logger logger =LoggerFactory.getLogger(BitSetIterator.class);
 
     long[] bits;    // Bits inherited from the underlying BitVector
     int index;      // The 64-bit block currently being examined

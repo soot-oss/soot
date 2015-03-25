@@ -26,14 +26,20 @@
 
 package soot;
 
-import java.util.*;
-import soot.toolkits.graph.interaction.*;
-import soot.options.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.Iterator;
+
+import soot.options.Options;
+import soot.toolkits.graph.interaction.InteractionHandler;
 
 /** A wrapper object for a pack of optimizations.
  * Provides chain-like operations, except that the key is the phase name. */
 public class BodyPack extends Pack
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BodyPack.class);
     public BodyPack(String name) {
         super(name);
     }
@@ -43,7 +49,7 @@ public class BodyPack extends Pack
         for( Iterator<Transform> tIt = this.iterator(); tIt.hasNext(); ) {
             final Transform t = tIt.next();
             if (Options.v().interactive_mode()){
-                //G.v().out.println("sending transform: "+t.getPhaseName()+" for body: "+b+" for body pack: "+this.getPhaseName());
+                //logger.info("sending transform: "+t.getPhaseName()+" for body: "+b+" for body pack: "+this.getPhaseName());
                 InteractionHandler.v().handleNewAnalysis(t, b);
             }
             t.apply(b);

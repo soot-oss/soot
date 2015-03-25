@@ -29,11 +29,16 @@
 
 package soot.baf.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.baf.*;
 
 public class BTrap extends AbstractTrap
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BTrap.class);
     public BTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
     {
         super(exception, Baf.v().newInstBox(beginStmt),

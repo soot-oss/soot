@@ -18,170 +18,202 @@
  */
 
 package soot;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.LinkedList;
 
 import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
+import soot.toDex.TrapSplitter;
 
-/** Representation of a reference to a field as it appears in a class file.
- * Note that the field directly referred to may not actually exist; the
- * actual target of the reference is determined according to the resolution
- * procedure in the Java Virtual Machine Specification, 2nd ed, section 5.4.3.2.
+/**
+ * Representation of a reference to a field as it appears in a class file. Note
+ * that the field directly referred to may not actually exist; the actual target
+ * of the reference is determined according to the resolution procedure in the
+ * Java Virtual Machine Specification, 2nd ed, section 5.4.3.2.
  */
 
 class AbstractSootFieldRef implements SootFieldRef {
-    public AbstractSootFieldRef( 
-            SootClass declaringClass,
-            String name,
-            Type type,
-            boolean isStatic) {
-        this.declaringClass = declaringClass;
-        this.name = name;
-        this.type = type;
-        this.isStatic = isStatic;
-        if( declaringClass == null ) throw new RuntimeException( "Attempt to create SootFieldRef with null class" );
-        if( name == null ) throw new RuntimeException( "Attempt to create SootFieldRef with null name" );
-        if( type == null ) throw new RuntimeException( "Attempt to create SootFieldRef with null type" );
-    }
-    
-    private final SootClass declaringClass;
-    private final String name;
-    private final Type type;
-    private final boolean isStatic;
-    
-    public SootClass declaringClass() { return declaringClass; }
-    public String name() { return name; }
-    public Type type() { return type; }
-    public boolean isStatic() { return isStatic; }
+	private static final Logger logger =LoggerFactory.getLogger(AbstractSootFieldRef.class);
 
-    public String getSignature() {
-        return SootField.getSignature(declaringClass, name, type);
-    }
+	public AbstractSootFieldRef(SootClass declaringClass, String name,
+			Type type, boolean isStatic) {
+		this.declaringClass = declaringClass;
+		this.name = name;
+		this.type = type;
+		this.isStatic = isStatic;
+		if (declaringClass == null)
+			throw new RuntimeException(
+					"Attempt to create SootFieldRef with null class");
+		if (name == null)
+			throw new RuntimeException(
+					"Attempt to create SootFieldRef with null name");
+		if (type == null)
+			throw new RuntimeException(
+					"Attempt to create SootFieldRef with null type");
+	}
 
-    public class FieldResolutionFailedException extends ResolutionFailedException {
-        /**
+	private final SootClass declaringClass;
+	private final String name;
+	private final Type type;
+	private final boolean isStatic;
+
+	public SootClass declaringClass() {
+		return declaringClass;
+	}
+
+	public String name() {
+		return name;
+	}
+
+	public Type type() {
+		return type;
+	}
+
+	public boolean isStatic() {
+		return isStatic;
+	}
+
+	public String getSignature() {
+		return SootField.getSignature(declaringClass, name, type);
+	}
+
+	public class FieldResolutionFailedException extends
+			ResolutionFailedException {
+		/**
 		 * 
 		 */
 		private static final long serialVersionUID = -4657113720516199499L;
-		
+
 		public FieldResolutionFailedException() {
-            super("Class "+declaringClass+" doesn't have field "+name+
-                    " : "+type+
-                    "; failed to resolve in superclasses and interfaces" );
-        }
-        public String toString() {
-            StringBuffer ret = new StringBuffer();
-            ret.append(super.toString());
-            resolve(ret);
-            return ret.toString();
-        }
-    }
+			super("Class " + declaringClass + " doesn't have field " + name
+					+ " : " + type
+					+ "; failed to resolve in superclasses and interfaces");
+		}
 
-    public SootField resolve() {
-    	return resolve(null);
-    }
-    
-    private SootField checkStatic(SootField ret) {
-        if( ret.isStatic() != isStatic() && !ret.isPhantom()) {
-        	if(!TypeAssigner.v().ignoreWrongStaticNess()) {
-        		throw new ResolutionFailedException( "Resolved "+this+" to "+ret+" which has wrong static-ness" );
-        	}
-        }
-        return ret;
-    }
-    
-    private SootField resolve(StringBuffer trace) {
-        SootClass cl = declaringClass;
-        while(true) {
-            if(trace != null) trace.append(
-                    "Looking in "+cl+" which has fields "+cl.getFields()+"\n" );
-            
-            // Check whether we have the field in the current class
-            SootField clField = cl.getFieldUnsafe(name, type);
-            if (clField != null) {
-                return checkStatic(clField);
-            }
-            // If we have a phantom class, we directly construct a phantom field
-            // in it and don't care about superclasses.
-            else if (Scene.v().allowsPhantomRefs() && cl.isPhantom()) {
-                SootField f = new SootField(name, type, isStatic()?Modifier.STATIC:0);
-                f.setPhantom(true);
-            	synchronized (cl) {
-            		// Be careful: Another thread may have already created this
-            		// field in the meantime, so better check twice.
-            		clField = cl.getFieldUnsafe(name, type);
-                    if (clField != null)
-                        return checkStatic(clField);
-                    else {
-                    	cl.addField(f);
-                    	return f;
-                    }
+		public String toString() {
+			StringBuffer ret = new StringBuffer();
+			ret.append(super.toString());
+			resolve(ret);
+			return ret.toString();
+		}
+	}
+
+	public SootField resolve() {
+		return resolve(null);
+	}
+
+	private SootField checkStatic(SootField ret) {
+		if (ret.isStatic() != isStatic() && !ret.isPhantom()) {
+			if (!TypeAssigner.v().ignoreWrongStaticNess()) {
+				throw new ResolutionFailedException("Resolved " + this + " to "
+						+ ret + " which has wrong static-ness");
+			}
+		}
+		return ret;
+	}
+
+	private SootField resolve(StringBuffer trace) {
+		SootClass cl = declaringClass;
+		while (true) {
+			if (trace != null)
+				trace.append("Looking in " + cl + " which has fields "
+						+ cl.getFields() + "\n");
+
+			// Check whether we have the field in the current class
+			SootField clField = cl.getFieldUnsafe(name, type);
+			if (clField != null) {
+				return checkStatic(clField);
+			}
+			// If we have a phantom class, we directly construct a phantom field
+			// in it and don't care about superclasses.
+			else if (Scene.v().allowsPhantomRefs() && cl.isPhantom()) {
+				SootField f = new SootField(name, type,
+						isStatic() ? Modifier.STATIC : 0);
+				f.setPhantom(true);
+				synchronized (cl) {
+					// Be careful: Another thread may have already created this
+					// field in the meantime, so better check twice.
+					clField = cl.getFieldUnsafe(name, type);
+					if (clField != null)
+						return checkStatic(clField);
+					else {
+						cl.addField(f);
+						return f;
+					}
 				}
-            }
-            else {
-            	// Since this class is not phantom, we look at its interfaces
-                LinkedList<SootClass> queue = new LinkedList<SootClass>();
-                queue.addAll( cl.getInterfaces() );
-                while( !queue.isEmpty() ) {
-                    SootClass iface = queue.removeFirst();
-                    if(trace != null) trace.append(
-                            "Looking in "+iface+" which has fields "+iface.getFields()+"\n" );
-                    SootField ifaceField = iface.getFieldUnsafe(name, type);
-                    if (ifaceField != null) {
-                        return checkStatic(ifaceField);
-                    }
-                    queue.addAll( iface.getInterfaces() );
-                }
-                
-                // If we have not found a suitable field in the current class,
-                // try the superclass
-                if( cl.hasSuperclass() ) cl = cl.getSuperclass();
-                else break;
-            }
-        }
+			} else {
+				// Since this class is not phantom, we look at its interfaces
+				LinkedList<SootClass> queue = new LinkedList<SootClass>();
+				queue.addAll(cl.getInterfaces());
+				while (!queue.isEmpty()) {
+					SootClass iface = queue.removeFirst();
+					if (trace != null)
+						trace.append("Looking in " + iface
+								+ " which has fields " + iface.getFields()
+								+ "\n");
+					SootField ifaceField = iface.getFieldUnsafe(name, type);
+					if (ifaceField != null) {
+						return checkStatic(ifaceField);
+					}
+					queue.addAll(iface.getInterfaces());
+				}
 
-        // If we allow phantom refs, we construct phantom fields
-        if(Options.v().allow_phantom_refs()) {
-        	SootField sf = new SootField(name, type, isStatic ? Modifier.STATIC : 0);
-        	sf.setPhantom(true);
-        	synchronized (declaringClass) {
-        		// Be careful: Another thread may have already created this
-        		// field in the meantime, so better check twice.
-        		SootField clField = cl.getFieldUnsafe(name, type);
-                if (clField != null)
-                    return checkStatic(clField);
-                else {
-                	declaringClass.addField(sf);
-                	return sf;
-                }
-        	}
-        }
+				// If we have not found a suitable field in the current class,
+				// try the superclass
+				if (cl.hasSuperclass())
+					cl = cl.getSuperclass();
+				else
+					break;
+			}
+		}
 
-        if( trace == null ) {
-        	FieldResolutionFailedException e = new FieldResolutionFailedException();
-        	if(Options.v().ignore_resolution_errors())
-        		G.v().out.println(e.getMessage());
-        	else
-        		throw e;
-        }
-        return null;
-    }
-    
-    public String toString() {
-        return getSignature();
-    }
-    
+		// If we allow phantom refs, we construct phantom fields
+		if (Options.v().allow_phantom_refs()) {
+			SootField sf = new SootField(name, type, isStatic ? Modifier.STATIC
+					: 0);
+			sf.setPhantom(true);
+			synchronized (declaringClass) {
+				// Be careful: Another thread may have already created this
+				// field in the meantime, so better check twice.
+				SootField clField = cl.getFieldUnsafe(name, type);
+				if (clField != null)
+					return checkStatic(clField);
+				else {
+					declaringClass.addField(sf);
+					return sf;
+				}
+			}
+		}
+
+		if (trace == null) {
+			FieldResolutionFailedException e = new FieldResolutionFailedException();
+			if (Options.v().ignore_resolution_errors())
+				logger.info(e.getMessage());
+			else
+				throw e;
+		}
+		return null;
+	}
+
+	public String toString() {
+		return getSignature();
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((declaringClass == null) ? 0 : declaringClass.hashCode());
+		result = prime * result
+				+ ((declaringClass == null) ? 0 : declaringClass.hashCode());
 		result = prime * result + (isStatic ? 1231 : 1237);
 		result = prime * result + ((name == null) ? 0 : name.hashCode());
 		result = prime * result + ((type == null) ? 0 : type.hashCode());
 		return result;
 	}
-	
+
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -210,5 +242,5 @@ class AbstractSootFieldRef implements SootFieldRef {
 			return false;
 		return true;
 	}
-    
+
 }

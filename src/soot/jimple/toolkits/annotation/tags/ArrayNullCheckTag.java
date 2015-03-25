@@ -25,6 +25,9 @@
 
 package soot.jimple.toolkits.annotation.tags;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** ArrayNullCheckTag combines ArrayCheckTag and NullCheckTag
  * into one tag. It uses bits of one byte value to represent
  * the check information. The right-most two bits stand for
@@ -39,6 +42,8 @@ package soot.jimple.toolkits.annotation.tags;
  */
 public class ArrayNullCheckTag implements OneByteCodeTag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ArrayNullCheckTag.class);
     private final static String NAME = "ArrayNullCheckTag";
     
     private byte value = 0;

@@ -27,12 +27,17 @@
 
 package soot.jimple.toolkits.annotation.purity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Simple box class that encapsulates a reference to a PurityGraph.
  * 
  */
 public class PurityGraphBox
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PurityGraphBox.class);
     public PurityGraph g;
 
     PurityGraphBox()

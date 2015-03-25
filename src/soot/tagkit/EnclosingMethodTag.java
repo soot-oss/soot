@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** Represents the enclosing method attribute attatched to anon and
  * inner classes to indicate the class and method it is declared in
@@ -33,6 +36,8 @@ package soot.tagkit;
 
 public class EnclosingMethodTag implements  Tag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(EnclosingMethodTag.class);
 
     private String enclosingClass;
     private String enclosingMethod;

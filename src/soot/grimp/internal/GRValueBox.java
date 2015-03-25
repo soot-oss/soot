@@ -30,11 +30,16 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
 public class GRValueBox extends AbstractValueBox
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GRValueBox.class);
     public GRValueBox (Value value)
     {
         setValue(value);

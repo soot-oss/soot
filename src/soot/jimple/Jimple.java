@@ -25,6 +25,9 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.internal.*;
 
@@ -41,6 +44,8 @@ import java.util.*;
  */
 
 public class Jimple {
+
+	private static final Logger logger =LoggerFactory.getLogger(Jimple.class);
 	public Jimple(Singletons.Global g) {
 	}
 

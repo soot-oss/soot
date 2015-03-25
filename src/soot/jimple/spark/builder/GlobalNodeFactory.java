@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.builder;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.*;
 import soot.*;
 import soot.toolkits.scalar.Pair;
@@ -26,6 +29,8 @@ import soot.toolkits.scalar.Pair;
  * @author Ondrej Lhotak
  */
 public class GlobalNodeFactory {
+
+	private static final Logger logger =LoggerFactory.getLogger(GlobalNodeFactory.class);
     public GlobalNodeFactory( PAG pag ) {
 	this.pag = pag;
     }

@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** 
  * Represents the base class of annotation elements
@@ -34,6 +37,8 @@ package soot.tagkit;
 
 public class AnnotationElem
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(AnnotationElem.class);
 
     char kind;
     String name;

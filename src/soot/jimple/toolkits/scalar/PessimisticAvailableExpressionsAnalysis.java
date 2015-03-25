@@ -25,6 +25,9 @@
 
 
 package soot.jimple.toolkits.scalar;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import soot.toolkits.graph.*;
 
@@ -32,6 +35,8 @@ import soot.toolkits.graph.*;
  * pessimistic analysis - for teaching 621*/
 public class PessimisticAvailableExpressionsAnalysis extends SlowAvailableExpressionsAnalysis 
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PessimisticAvailableExpressionsAnalysis.class);
     public PessimisticAvailableExpressionsAnalysis(DirectedGraph dg, SootMethod m, SideEffectTester st){
         super(dg);
     }

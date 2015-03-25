@@ -24,6 +24,9 @@
  */
 
 package soot.baf.internal;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.Constant;
 import soot.util.*;
 import java.util.*;
@@ -32,6 +35,8 @@ import soot.baf.*;
 
 public class BLookupSwitchInst extends AbstractInst implements LookupSwitchInst
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(BLookupSwitchInst.class);
     UnitBox defaultTargetBox;
     List lookupValues;
     UnitBox[] targetBoxes;

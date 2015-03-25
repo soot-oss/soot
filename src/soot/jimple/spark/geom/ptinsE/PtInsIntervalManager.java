@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.ptinsE;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.spark.geom.dataRep.RectangleNode;
 import soot.jimple.spark.geom.dataRep.SegmentNode;
 import soot.jimple.spark.geom.geomPA.Constants;
@@ -32,6 +35,8 @@ import soot.jimple.spark.geom.geomPA.IFigureManager;
  */
 public class PtInsIntervalManager extends IFigureManager
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(PtInsIntervalManager.class);
 	public static final int Divisions = 3;
 	public static final int ALL_TO_ALL = -1;		// A special case
 	public static final int ALL_TO_MANY = 0;

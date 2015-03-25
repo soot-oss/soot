@@ -30,12 +30,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.grimp.*;
 import soot.jimple.internal.*;
 import soot.*;
 
 public class GExitMonitorStmt extends JExitMonitorStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GExitMonitorStmt.class);
     public GExitMonitorStmt(Value op)
     {
         super(((Grimp.v())).newExprBox(op));

@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.spark.solver;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.internal.*;
 import soot.*;
@@ -30,17 +33,19 @@ import java.util.*;
  */
 
 public class EBBCollapser {
+
+	private static final Logger logger =LoggerFactory.getLogger(EBBCollapser.class);
     /** Actually collapse the EBBs in the PAG. */
     public void collapse() {
         boolean verbose = pag.getOpts().verbose();
         if( verbose ) {
-            G.v().out.println( "Total VarNodes: "+pag.getVarNodeNumberer().size()+". Collapsing EBBs..." );
+            logger.info( "Total VarNodes: "+pag.getVarNodeNumberer().size()+". Collapsing EBBs..." );
         }
         collapseAlloc();
         collapseLoad();
         collapseSimple();
         if( verbose ) {
-            G.v().out.println( ""+numCollapsed+" nodes were collapsed." );
+            logger.info( ""+numCollapsed+" nodes were collapsed." );
         }
     }
     public EBBCollapser( PAG pag ) {

@@ -1,5 +1,8 @@
 package soot.jimple.toolkits.thread.mhp.findobject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
@@ -36,6 +39,8 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 public class MultiRunStatementsFinder extends ForwardFlowAnalysis<Unit,BitSet>
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(MultiRunStatementsFinder.class);
 	Set<Unit> multiRunStatements = new HashSet<Unit>();
 	
     protected Map<Object,Integer> nodeToIndex;

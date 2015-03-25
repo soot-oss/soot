@@ -30,12 +30,17 @@
 
 package soot.jimple.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
 
 public class JLeExpr extends AbstractJimpleIntBinopExpr implements LeExpr
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(JLeExpr.class);
     public JLeExpr(Value op1, Value op2) { super(op1, op2); }
     public final String getSymbol() { return " <= "; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseLeExpr(this); }

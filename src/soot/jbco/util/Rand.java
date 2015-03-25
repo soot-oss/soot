@@ -19,12 +19,17 @@
 
 package soot.jbco.util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * @author Michael Batchelder 
  * 
  * Created on 17-Feb-2006 
  */
 public class Rand {
+
+	private static final Logger logger =LoggerFactory.getLogger(Rand.class);
 
   private static final java.util.Random r = new java.util.Random(1);//System.currentTimeMillis());
   

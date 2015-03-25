@@ -26,11 +26,16 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.jimple.*;
 
 public class ExprBox extends AbstractValueBox
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ExprBox.class);
     public ExprBox(Value value)
     {
         setValue(value);

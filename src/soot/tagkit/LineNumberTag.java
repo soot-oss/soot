@@ -26,8 +26,13 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class LineNumberTag implements Tag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(LineNumberTag.class);
     /* it is a u2 value representing line number. */
     int line_number;
     public LineNumberTag(int ln)
@@ -65,7 +70,7 @@ public class LineNumberTag implements Tag
 	    throw new RuntimeException();
 	} catch (RuntimeException re)
 	{
-	    G.v().out.println("I, at line "+line_number+", dead here.");
+	    logger.info("I, at line "+line_number+", dead here.");
 	    re.printStackTrace();
 	}
     }

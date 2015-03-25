@@ -29,11 +29,16 @@
 
 package soot.jimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 
 public class StringConstant extends Constant
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(StringConstant.class);
     public final String value;
 
     private StringConstant(String s)

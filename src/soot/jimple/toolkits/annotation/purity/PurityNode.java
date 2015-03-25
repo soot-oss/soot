@@ -27,6 +27,9 @@
 
 package soot.jimple.toolkits.annotation.purity;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Interface shared by all kinds of nodes in a PurityGraph.
  * Such nodes are immutables. They are hashable and two nodes are equal

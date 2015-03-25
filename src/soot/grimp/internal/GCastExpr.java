@@ -30,12 +30,17 @@
 
 package soot.grimp.internal;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.grimp.*;
 import soot.jimple.internal.*;
 
 public class GCastExpr extends AbstractCastExpr implements Precedence
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(GCastExpr.class);
     public GCastExpr(Value op, Type type)
     {
         super(Grimp.v().newExprBox(op), type);

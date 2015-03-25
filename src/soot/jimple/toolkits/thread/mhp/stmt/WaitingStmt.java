@@ -1,6 +1,9 @@
 
 package soot.jimple.toolkits.thread.mhp.stmt;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 import soot.*;
 
@@ -18,6 +21,8 @@ import soot.*;
 
 public class WaitingStmt extends JPegStmt
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(WaitingStmt.class);
 	
 	public WaitingStmt(String obj, String ca, SootMethod sm)
 	{

@@ -26,6 +26,9 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import java.util.*;
@@ -33,6 +36,8 @@ import java.util.*;
 
 public class TopologicalOrderer
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(TopologicalOrderer.class);
     CallGraph cg;
     List<SootMethod> order = new ArrayList<SootMethod>();
     NumberedSet visited = new NumberedSet( Scene.v().getMethodNumberer() );

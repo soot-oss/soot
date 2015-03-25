@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** An entry in the inner classes table.
  * @see InnerClasses_attribute
  * @author Archie L. Cobbs

@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /** Represents the signature attribute used by fields, methods and classes 
  * for dealing with generics in Java 1.5.
@@ -32,6 +35,8 @@ package soot.tagkit;
 
 public class DebugTypeTag extends SignatureTag
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(DebugTypeTag.class);
 
     public DebugTypeTag(String signature){
         super(signature);

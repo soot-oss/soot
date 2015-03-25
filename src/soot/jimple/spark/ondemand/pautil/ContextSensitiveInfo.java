@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand.pautil;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -45,6 +48,8 @@ import soot.util.HashMultiMap;
  * @author manu
  */
 public class ContextSensitiveInfo {
+
+	private static final Logger logger =LoggerFactory.getLogger(ContextSensitiveInfo.class);
 
     private static final boolean SKIP_STRING_NODES = false;
 
@@ -269,7 +274,7 @@ public class ContextSensitiveInfo {
             for (AssignEdge edge : assigns) {
                 if (edge.isCallEdge()) {
                     if (edge.getCallSite() == null) {
-                    	G.v().out.println(edge + " is weird!!");
+                    	logger.info(edge + " is weird!!");
                         return false;
                     }
                 }

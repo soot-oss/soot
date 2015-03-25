@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.jimple.*;
@@ -84,6 +87,8 @@ to exactly the same point as we were jumping before.
 */
 
 public class PushLabeledBlockIn extends DepthFirstAdapter{
+
+	private static final Logger logger =LoggerFactory.getLogger(PushLabeledBlockIn.class);
 
     public PushLabeledBlockIn(){
     }

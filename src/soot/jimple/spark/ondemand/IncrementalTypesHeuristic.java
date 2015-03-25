@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.ondemand;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashSet;
 import java.util.Set;
 
@@ -31,6 +34,8 @@ import soot.jimple.spark.pag.ArrayElement;
 import soot.jimple.spark.pag.SparkField;
 
 public class IncrementalTypesHeuristic implements FieldCheckHeuristic {
+
+	private static final Logger logger =LoggerFactory.getLogger(IncrementalTypesHeuristic.class);
 
     private final TypeManager manager;
 

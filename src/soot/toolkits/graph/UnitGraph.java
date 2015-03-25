@@ -26,6 +26,9 @@
 
 package soot.toolkits.graph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import soot.util.*;
 import java.util.*;
@@ -45,6 +48,7 @@ import soot.options.Options;
  */
 public abstract class UnitGraph implements DirectedGraph<Unit>
 {
+	final static Logger logger = LoggerFactory.getLogger(UnitGraph.class);
     protected List<Unit> heads;
     protected List<Unit> tails;
 
@@ -66,7 +70,7 @@ public abstract class UnitGraph implements DirectedGraph<Unit>
 	unitChain = body.getUnits();
         method = body.getMethod();
         if(Options.v().verbose())
-	    G.v().out.println("[" + method.getName() + "]     Constructing " + 
+	    logger.info("[" + method.getName() + "]     Constructing " + 
 			      this.getClass().getName() + "...");
       
     }

@@ -34,10 +34,15 @@
  */
 
 package soot.util.dot;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.*;
 
 public class DotGraph implements Renderable{
+
+	private static final Logger logger =LoggerFactory.getLogger(DotGraph.class);
   
   /* allow a serialized drawing, following steps:
    * 1. new DotGraph

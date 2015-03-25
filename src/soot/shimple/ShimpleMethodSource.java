@@ -19,10 +19,15 @@
 
 package soot.shimple;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 public class ShimpleMethodSource implements MethodSource
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(ShimpleMethodSource.class);
     MethodSource ms;
 
     public ShimpleMethodSource(MethodSource ms)

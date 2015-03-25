@@ -18,6 +18,9 @@
  */
 
 package soot.jimple.toolkits.callgraph;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /** Adapts an iterator over a collection of Edge's to be an iterator

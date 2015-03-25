@@ -30,6 +30,9 @@
 
 package soot.dava.internal.AST;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 
 import java.util.*;
@@ -48,6 +51,8 @@ import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
  * SEQUENCE NODE WITH DECLARATIONS!!!!
  */
 public class ASTMethodNode extends ASTNode {
+
+	private static final Logger logger =LoggerFactory.getLogger(ASTMethodNode.class);
 	private List<Object> body;
 
 	private DavaBody davaBody;

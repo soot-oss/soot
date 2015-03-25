@@ -1,5 +1,8 @@
 package soot.jimple.spark.sets;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.LinkedList;
 
 import soot.G;
@@ -8,10 +11,13 @@ import soot.Singletons;
 /**A singleton to hold the hash table for SharedHybridSet*/
 
 public class AllSharedHybridNodes {
+
+	private static final Logger logger =LoggerFactory.getLogger(AllSharedHybridNodes.class);
     public AllSharedHybridNodes( Singletons.Global g ) {}
     public static AllSharedHybridNodes v() { return G.v().soot_jimple_spark_sets_AllSharedHybridNodes(); }
 
 	public class BitVectorLookupMap {
+
 		// Each element i is a list of BitVectors which have i 1s
 		// (i elements in the set).
 		// But should this be a LinkedList or some kind of Set?

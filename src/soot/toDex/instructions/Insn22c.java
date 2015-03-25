@@ -1,5 +1,8 @@
 package soot.toDex.instructions;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.BitSet;
 
 import org.jf.dexlib2.Opcode;
@@ -17,6 +20,8 @@ import soot.toDex.Register;
  * It is used e.g. by the opcodes "instance-of", "new-array" and "iget".
  */
 public class Insn22c extends AbstractInsn implements TwoRegInsn {
+
+	private static final Logger logger =LoggerFactory.getLogger(Insn22c.class);
 	
 	private BuilderReference referencedItem;
 

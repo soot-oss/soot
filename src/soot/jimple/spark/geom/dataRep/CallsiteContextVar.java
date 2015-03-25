@@ -18,6 +18,9 @@
  */
 package soot.jimple.spark.geom.dataRep;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.jimple.spark.pag.Node;
 import soot.util.Numberable;
 
@@ -29,6 +32,8 @@ import soot.util.Numberable;
  */
 public class CallsiteContextVar extends ContextVar
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(CallsiteContextVar.class);
 	/*
 	 * If var is a local pointer or object, context is the callsite for the creation of the pointer or object.
 	 * If var is a instance field, context is the callsite for the creation of its base object.

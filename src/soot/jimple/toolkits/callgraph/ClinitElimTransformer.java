@@ -19,12 +19,17 @@
 
 package soot.jimple.toolkits.callgraph;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.*;
 import java.util.*;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 
 public class ClinitElimTransformer extends BodyTransformer {
+
+	private static final Logger logger =LoggerFactory.getLogger(ClinitElimTransformer.class);
     
     protected void internalTransform(Body b, String phaseName, Map options){
         ClinitElimAnalysis a = new ClinitElimAnalysis( new BriefUnitGraph(b));

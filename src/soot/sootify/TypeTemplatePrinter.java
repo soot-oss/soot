@@ -18,6 +18,9 @@
  */
 package soot.sootify;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.BooleanType;
@@ -38,6 +41,8 @@ import soot.UnknownType;
 import soot.VoidType;
 
 public class TypeTemplatePrinter extends TypeSwitch {
+
+	private static final Logger logger =LoggerFactory.getLogger(TypeTemplatePrinter.class);
 
 	private String varName;
 	private final TemplatePrinter p;

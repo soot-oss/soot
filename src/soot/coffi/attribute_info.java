@@ -31,6 +31,9 @@
 
 package soot.coffi;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Generic superclass for all attributes.
  * @author Clark Verbrugge
  */

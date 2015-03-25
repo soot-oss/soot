@@ -18,6 +18,9 @@
  */
 package soot.dava.toolkits.base.AST.transformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -40,7 +43,9 @@ import soot.grimp.internal.GAddExpr;
  */
 
 public class NewStringBufferSimplification extends DepthFirstAdapter {
-	final static Logger logger = LoggerFactory.getLogger(NewStringBufferSimplification.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(NewStringBufferSimplification.class);
+
 	
     public NewStringBufferSimplification(){
     	

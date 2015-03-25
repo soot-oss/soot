@@ -19,6 +19,9 @@
 
 package soot.dava.toolkits.base.AST.interProcedural;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
@@ -46,7 +49,9 @@ import soot.dava.toolkits.base.renamer.infoGatheringAnalysis;
 import soot.util.Chain;
 
 public class InterProceduralAnalyses {
-	final static Logger logger = LoggerFactory.getLogger(InterProceduralAnalyses.class);
+
+	private static final Logger logger =LoggerFactory.getLogger(InterProceduralAnalyses.class);
+
 			
 	/*
 	 * Method is invoked by postProcessDava in PackManager

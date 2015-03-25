@@ -28,7 +28,10 @@
 
 
 package soot;
-import soot.util.*;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import soot.util.Switch;
 
 
 
@@ -39,6 +42,8 @@ import soot.util.*;
 @SuppressWarnings("serial")
 public class FloatType extends PrimType
 {
+
+	private static final Logger logger =LoggerFactory.getLogger(FloatType.class);
     public FloatType( Singletons.Global g ) {}
     public static FloatType v() { return G.v().soot_FloatType(); }
 
