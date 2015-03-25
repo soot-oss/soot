@@ -111,7 +111,8 @@ public class Scene  //extends AbstractHost
 
         // do not kill contents of the APK if we want a working new APK afterwards
         if( !Options.v().include_all()
-        		&& Options.v().output_format() != Options.output_format_dex) {
+        		&& Options.v().output_format() != Options.output_format_dex
+        		&& Options.v().output_format() != Options.output_format_force_dex) {
             excludedPackages.add("java.*");
             excludedPackages.add("sun.*");
             excludedPackages.add("javax.*");

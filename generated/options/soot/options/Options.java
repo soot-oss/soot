@@ -59,15 +59,16 @@ public class Options extends OptionsBase {
     public static final int output_format_X = 9;
     public static final int output_format_xml = 9;
     public static final int output_format_dex = 10;
-    public static final int output_format_n = 11;
-    public static final int output_format_none = 11;
-    public static final int output_format_jasmin = 12;
-    public static final int output_format_c = 13;
-    public static final int output_format_class = 13;
-    public static final int output_format_d = 14;
-    public static final int output_format_dava = 14;
-    public static final int output_format_t = 15;
-    public static final int output_format_template = 15;
+    public static final int output_format_force_dex = 11;
+    public static final int output_format_n = 12;
+    public static final int output_format_none = 12;
+    public static final int output_format_jasmin = 13;
+    public static final int output_format_c = 14;
+    public static final int output_format_class = 14;
+    public static final int output_format_d = 15;
+    public static final int output_format_dava = 15;
+    public static final int output_format_t = 16;
+    public static final int output_format_template = 16;
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
     public static final int check_init_throw_analysis_auto = 1;
@@ -534,6 +535,17 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     output_format = output_format_dex;
+                }
+    
+                else if( false
+                || value.equals( "force-dex" )
+                ) {
+                    if( output_format != 0
+                    && output_format != output_format_force_dex ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    output_format = output_format_force_dex;
                 }
     
                 else if( false
@@ -1427,6 +1439,7 @@ public class Options extends OptionsBase {
 +padVal(" g grimp", "Produce .grimp (abbreviated Grimp) files" )
 +padVal(" X xml", "Produce .xml Files" )
 +padVal(" dex", "Produce Dalvik Virtual Machine files" )
++padVal(" force-dex", "Produce Dalvik DEX files" )
 +padVal(" n none", "Produce no output" )
 +padVal(" jasmin", "Produce .jasmin files" )
 +padVal(" c class (default)", "Produce .class Files" )
@@ -1691,7 +1704,7 @@ public class Options extends OptionsBase {
                 "\nThe Unreachable Code Eliminator removes unreachable code and \ntraps whose catch blocks are empty. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "remove-unreachable-traps (false)", "" );
+                +padOpt( "remove-unreachable-traps (true)", "" );
     
         if( phaseName.equals( "jb.tt" ) )
             return "Phase "+phaseName+":\n"+
@@ -3287,7 +3300,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.uce" ) )
             return ""
               +"enabled:true "
-              +"remove-unreachable-traps:false ";
+              +"remove-unreachable-traps:true ";
     
         if( phaseName.equals( "jb.tt" ) )
             return ""

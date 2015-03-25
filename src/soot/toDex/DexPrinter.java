@@ -1297,7 +1297,8 @@ public class DexPrinter {
 	public void print() {
 		String outputDir = SourceLocator.v().getOutputDir();
 		try {
-			if (originalApk != null) {
+			if (originalApk != null
+					&& Options.v().output_format() != Options.output_format_force_dex) {
 				printApk(outputDir, originalApk);
 			} else {
 				String fileName = outputDir + File.separatorChar + CLASSES_DEX;

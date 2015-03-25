@@ -284,6 +284,7 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "X" )
                 || arg.equals( "xml" )
                 || arg.equals( "dex" )
+                || arg.equals( "force-dex" )
                 || arg.equals( "n" )
                 || arg.equals( "none" )
                 || arg.equals( "jasmin" )

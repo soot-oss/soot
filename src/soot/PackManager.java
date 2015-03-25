@@ -519,7 +519,9 @@ public class PackManager {
             PhaseDumper.v().dumpBefore("output");
         if( Options.v().output_format() == Options.output_format_dava ) {
             postProcessDAVA();
-        } else if (Options.v().output_format() == Options.output_format_dex) {
+        }
+        else if (Options.v().output_format() == Options.output_format_dex
+        		|| Options.v().output_format() == Options.output_format_force_dex) {
         	writeOutput(reachableClasses());
         	dexPrinter.print();
         } else {
@@ -830,6 +832,7 @@ public class PackManager {
             case Options.output_format_jimp :
             case Options.output_format_template :
             case Options.output_format_dex :
+            case Options.output_format_force_dex :
                 break;
             case Options.output_format_shimp:
             case Options.output_format_shimple:
@@ -988,7 +991,8 @@ public class PackManager {
         final int format = Options.v().output_format();
         if( format == Options.output_format_none ) return;
         if( format == Options.output_format_dava ) return;
-        if (format == Options.output_format_dex) {
+        if (format == Options.output_format_dex
+        		|| format == Options.output_format_force_dex) {
         	// just add the class to the dex printer, writing is done after adding all classes
         	dexPrinter.add(c);
         	return;

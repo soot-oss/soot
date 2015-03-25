@@ -732,10 +732,18 @@ version of the Soot's Jimple internal representation.
 			<alias>dex</alias>
 			<short_desc>Produce Dalvik Virtual Machine files</short_desc>
 			<long_desc>Produce Dalvik Virtual Machine files. If input was an Android
-			Package (APK), a new APK is generated with it's classes.dex replaced. If
-			no input APK is found, only a classes.dex is generated.</long_desc>
+Package (APK), a new APK is generated with it's classes.dex replaced. If
+no input APK is found, only a classes.dex is generated.</long_desc>
 			</value>
-				<value>
+			<value>
+			<name>Dalvik Executable File</name>
+			<alias>force-dex</alias>
+			<short_desc>Produce Dalvik DEX files</short_desc>
+			<long_desc>Produce Dalvik Virtual Machine files. This option always creates
+a stand-alone DEX file, even if the input was read from an Android Package (APK).
+</long_desc>
+			</value>
+			<value>
 				<name>No Output File</name>
 				<alias>n</alias>
 				<alias>none</alias>

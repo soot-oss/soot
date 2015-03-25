@@ -2632,7 +2632,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		boolRes = getjbjb_uceremove_unreachable_traps_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -10847,7 +10847,13 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Dalvik Executable File",
 		"dex",
-		"\nProduce Dalvik Virtual Machine files. If input was an Android \n			Package (APK), a new APK is generated with it's classes.dex \nreplaced. If 			no input APK is found, only a classes.dex is \ngenerated.",
+		"\nProduce Dalvik Virtual Machine files. If input was an Android \nPackage (APK), a new APK is generated with it's classes.dex \nreplaced. If no input APK is found, only a classes.dex is \ngenerated.",
+		
+		false),
+		
+		new OptionData("Dalvik Executable File",
+		"force-dex",
+		"\nProduce Dalvik Virtual Machine files. This option always creates \na stand-alone DEX file, even if the input was read from an \nAndroid Package (APK). ",
 		
 		false),
 		
@@ -11969,7 +11975,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
