@@ -493,6 +493,15 @@ public class SootMethod
 	}
 	
 	/**
+	 * 
+	 * @return yes, if this function is a static initializer.
+	 */
+	public boolean isStaticInitializer()
+	{
+		return name.equals(staticInitializerName);
+	}
+
+	/**
 	 * @return yes, if this is a class initializer or main function.
 	 */
 	public boolean isEntryMethod()
