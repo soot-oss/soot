@@ -102,14 +102,14 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>>{
      * the root.
      **/
     public DominatorNode<N> getParentOf(DominatorNode<N> node) {
-        return node.getParent();
+        return localize(node).getParent();
     }
 
     /**
      * @return  the children of node in the tree.
      **/
     public List<DominatorNode<N>> getChildrenOf(DominatorNode<N> node) {
-        return new ArrayList<DominatorNode<N>>(node.getChildren());
+        return new ArrayList<DominatorNode<N>>(localize(node).getChildren());
     }
 
     /**
@@ -142,8 +142,8 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>>{
      * @return  true if idom immediately dominates node.
      **/
     public boolean isImmediateDominatorOf(DominatorNode<N> idom, DominatorNode<N> node) {
-        // node.getParent() could be null
-        return (node.getParent() == idom);
+        // getParentOf(node) could be null
+        return (getParentOf(node) == idom);
     }
 
     /**
@@ -231,5 +231,17 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>>{
         }
 
         return fetchDode(immediateDominator);
+    }
+    
+    /**
+     * Converts a DominatorNode from any DominatorTree to a DominatorNode 
+     * in this DominatorTree (if applicable)
+     * 
+     * @param node  {@link DominatorNode} which may be from any DominatorTree
+     * @return      DominatorNode in this DominatorTree corresponding to the 
+     *              gode of the given {@code node}
+     */
+    private DominatorNode<N> localize(DominatorNode<N> node){
+        return getDode(node.getGode());
     }
 }
