@@ -38,6 +38,7 @@ import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
+import soot.ValueBox;
 import soot.jimple.AbstractStmtSwitch;
 import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
@@ -369,10 +370,15 @@ public class DexNullTransformer extends AbstractNullTransformer {
 			if (usedAsObject) {
 				for (Unit u : defs) {
 					replaceWithNull(u);
+					Set<Value> defLocals = new HashSet<Value>();
+					for (ValueBox vb : u.getDefBoxes())
+						defLocals.add(vb.getValue());
+					
 					for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
 						Stmt use = (Stmt) pair.getUnit();
 						// If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
-						if (!use.containsArrayRef() || use.getArrayRef().getBase() != loc)
+						if (!use.containsArrayRef()
+								|| !defLocals.contains(use.getArrayRef().getBase()))
 							replaceWithNull(use);
 					}
 				}
