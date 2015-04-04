@@ -25,6 +25,8 @@
 
 package soot.tagkit;
 
+import soot.util.Switch;
+
 
 /** 
  * Represents the base class of annotation elements
@@ -55,5 +57,10 @@ public class AnnotationEnumElem extends AnnotationElem
     public String getConstantName(){
         return constantName;
     }
+    
+	@Override
+	public void apply(Switch sw) {
+		((IAnnotationElemTypeSwitch) sw).caseAnnotationEnumElem(this);
+	}
 }
 

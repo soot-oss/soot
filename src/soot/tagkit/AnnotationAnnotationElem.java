@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import soot.TypeSwitch;
+import soot.util.Switch;
+
 
 /** 
  * Represents the base class of annotation elements
@@ -49,5 +52,10 @@ public class AnnotationAnnotationElem extends AnnotationElem
     public AnnotationTag getValue(){
         return value;
     }
+
+	@Override
+	public void apply(Switch sw) {
+		((IAnnotationElemTypeSwitch) sw).caseAnnotationAnnotationElem(this);
+	}
 }
 
