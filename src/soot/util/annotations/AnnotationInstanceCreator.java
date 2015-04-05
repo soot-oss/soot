@@ -7,6 +7,8 @@ import java.lang.reflect.Proxy;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.common.reflect.AbstractInvocationHandler;
+
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
 import soot.util.annotations.AnnotationElemSwitch.KeyValuePair;
@@ -32,18 +34,14 @@ public class AnnotationInstanceCreator {
 				map.put(result.getKey(), result.getValue());
 			}
 			
-			Object result = Proxy.newProxyInstance(cl, new Class[]{clazz}, new InvocationHandler() {
+			Object result = Proxy.newProxyInstance(cl, new Class[]{clazz}, new AbstractInvocationHandler() {
 				
 				@Override
-				public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+				protected Object handleInvocation(Object proxy, Method method, Object[] args) throws Throwable {
 					String name = method.getName();
 					Class<?> retType =  method.getReturnType();
 					if (name.equals("annotationType")){
 						return clazz;
-					}
-					
-					if (name.equals("toString")){
-						return proxy.getClass().toString();
 					}
 					
 					Object result = map.get(name);
@@ -62,11 +60,16 @@ public class AnnotationInstanceCreator {
 							
 							return array;
 						}
-						return retType.cast(result);
+						
+						if ((retType.equals(boolean.class) || retType.equals(Boolean.class)) && (result instanceof Integer)) {
+							return ((Integer) result).intValue() == 0 ? Boolean.FALSE : Boolean.TRUE;
+						}
+						
+						return result;
 					} else {
 						result = method.getDefaultValue();
 						if (result != null){
-							return retType.cast(result);
+							return result;
 						}
 					}
 					
