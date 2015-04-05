@@ -25,6 +25,8 @@
 
 package soot.tagkit;
 
+import soot.util.Switch;
+
 
 /** 
  * Represents the base class of annotation elements
@@ -49,5 +51,10 @@ public class AnnotationClassElem extends AnnotationElem
     public String getDesc(){
         return desc;
     }
+    
+	@Override
+	public void apply(Switch sw) {
+		((IAnnotationElemTypeSwitch) sw).caseAnnotationClassElem(this);
+	}
 }
 
