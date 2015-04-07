@@ -116,7 +116,7 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 	public boolean isBranchTarget(Unit u, Unit succ) {
 		assert getSuccsOf(u).contains(succ);
 		if(!u.branches()) return false;
-		for (UnitBox ub : succ.getUnitBoxes()) {
+		for (UnitBox ub : u.getUnitBoxes()) {
 			if(ub.getUnit()==succ) return true;
 		}
 		return false;
