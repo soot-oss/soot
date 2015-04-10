@@ -15,6 +15,7 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.toolkits.scalar.SmartLocalDefs;
+import soot.util.Chain;
 
 public class UsesValidator implements BodyValidator {
 	public static UsesValidator INSTANCE;
@@ -63,6 +64,7 @@ public class UsesValidator implements BodyValidator {
         UnitGraph g = new ExceptionalUnitGraph(body, throwAnalysis, false);
         LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
+        Chain<Local> locals = body.getLocals();
         for (Unit u : body.getUnits()) {
             Iterator<ValueBox> useBoxIt = u.getUseBoxes().iterator();
             while (useBoxIt.hasNext())
@@ -70,7 +72,11 @@ public class UsesValidator implements BodyValidator {
                 Value v = (useBoxIt.next()).getValue();
                 if (v instanceof Local)
                 {
-                    // This throws an exception if there is
+					if(!locals.contains(v)) {
+                    	String msg = "Local "+v+" is referenced here but not in body's local-chain. ("+body.getMethod()+")";
+						exception.add(new ValidationException(u, msg, msg));
+                    }
+                	// This throws an exception if there is
                     // no def already; we check anyhow.
                     List<Unit> l = ld.getDefsOfAt((Local)v, u);
                     if (l.size() == 0){
