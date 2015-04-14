@@ -233,6 +233,15 @@ public class DexNullTransformer extends AbstractNullTransformer {
 								}
 							}
 							
+							if (left instanceof InstanceFieldRef) {
+								InstanceFieldRef ifr = (InstanceFieldRef) left;
+								if (ifr.getBase() == l) {
+									usedAsObject = true;
+									doBreak = true;
+									return;
+								}
+							}
+							
 							// used to assign
 							if (stmt.getRightOp() == l) {
 								Value l = stmt.getLeftOp();
@@ -282,13 +291,8 @@ public class DexNullTransformer extends AbstractNullTransformer {
 								return;
 							} else if (r instanceof StringConstant
 									|| r instanceof NewExpr) {
-								Debug.printDbg(
-										"NOT POSSIBLE StringConstant or NewExpr! ",
-										stmt);
-								System.exit(-1);
-								usedAsObject = true;
-								doBreak = true;
-								return;
+								throw new RuntimeException(
+										"NOT POSSIBLE StringConstant or NewExpr at " + stmt);
 							} else if (r instanceof NewArrayExpr) {
 								usedAsObject = false;
 								doBreak = true;
@@ -317,12 +321,8 @@ public class DexNullTransformer extends AbstractNullTransformer {
 						}
 
 						public void caseIdentityStmt(IdentityStmt stmt) {
-							if (stmt.getLeftOp() == l) {
-								Debug.printDbg("IMPOSSIBLE 0");
-								System.exit(-1);
-								usedAsObject = isObject(stmt.getRightOp()
-										.getType());
-							}
+							if (stmt.getLeftOp() == l)
+								throw new RuntimeException("IMPOSSIBLE 0");
 						}
 
 						public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {

@@ -173,10 +173,7 @@ public class Util {
             break;
 
           default:
-            Debug.printDbg("unknown type: '", type ,"'");
-            Thread.dumpStack();
-            System.exit(-1);
-            break;
+            throw new RuntimeException("unknown type: '" + type + "'");
         }
         idx++;
       }

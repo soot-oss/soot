@@ -316,12 +316,7 @@ public class DexIfTransformer extends AbstractNullTransformer {
 										doBreak = true;
 									return;
 								} else if (r instanceof StringConstant || r instanceof NewExpr) {
-									Debug.printDbg("NOT POSSIBLE StringConstant or NewExpr! ", stmt);
-									System.exit(-1);
-									usedAsObject = true;
-									if (usedAsObject)
-										doBreak = true;
-									return;
+									throw new RuntimeException("NOT POSSIBLE StringConstant or NewExpr at "  + stmt);
 								} else if (r instanceof NewArrayExpr) {
 									usedAsObject = false;
 									if (usedAsObject)
@@ -352,11 +347,8 @@ public class DexIfTransformer extends AbstractNullTransformer {
 							}
 
 							public void caseIdentityStmt(IdentityStmt stmt) {
-								if (stmt.getLeftOp() == l) {
-									Debug.printDbg("IMPOSSIBLE 0");
-									System.exit(-1);
-									usedAsObject = isObject(stmt.getRightOp().getType());
-								}
+								if (stmt.getLeftOp() == l)
+									throw new RuntimeException("IMPOSSIBLE 0");
 							}
 
 							public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {

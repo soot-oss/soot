@@ -139,9 +139,8 @@ public abstract class DexTransformer extends BodyTransformer {
 				AssignStmt stmt = (AssignStmt) arrayStmt;
 				aBase = (Local) stmt.getRightOp();
 			} else {
-				System.out.println("ERROR: not an assign statement: "
+				throw new RuntimeException("ERROR: not an assign statement: "
 						+ arrayStmt);
-				System.exit(-1);
 			}
 		} else {
 			aBase = (Local) aRef.getBase();
@@ -149,10 +148,8 @@ public abstract class DexTransformer extends BodyTransformer {
 
 		List<Unit> defsOfaBaseList = localDefs.getDefsOfAt(aBase, arrayStmt);
 		if (defsOfaBaseList == null || defsOfaBaseList.size() == 0) {
-			System.out
-					.println("ERROR: no def statement found for array base local "
+			throw new RuntimeException("ERROR: no def statement found for array base local "
 							+ arrayStmt);
-			System.exit(-1);
 		}
 
 		// We should find an answer only by processing the first item of the

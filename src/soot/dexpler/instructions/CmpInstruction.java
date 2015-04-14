@@ -98,9 +98,7 @@ public class CmpInstruction extends TaggedInstruction {
           cmpExpr = Jimple.v().newCmpExpr(first, second);
           break;
         default:
-            System.out.println ("no opcode for CMP: 0x"+ Integer.toHexString(opcode.value));
-            System.exit(-1);
-            cmpExpr = Jimple.v().newCmpExpr(first, second);
+            throw new RuntimeException("no opcode for CMP: 0x"+ Integer.toHexString(opcode.value));
         }
 
         assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cmpExpr);
