@@ -29,16 +29,26 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
     Map<K,Set<V>> m = new HashMap<K,Set<V>>(0);
 
     public HashMultiMap() {}
+    
     public HashMultiMap( MultiMap<K,V> m ) {
         putAll( m );
     }
-
+    
+    public HashMultiMap( Map<K,Set<V>> m ) {
+        putAll( m );
+    }
+    
     @Override
     public void putAll( MultiMap<K,V> m ) {
         for (K key : m.keySet())
             putAll(key, m.get(key));
     }
-
+    
+    public void putAll( Map<K,Set<V>> m ) {
+        for (K key : m.keySet())
+            putAll(key, m.get(key));
+    }
+    
     @Override
     public boolean isEmpty() {
         return numKeys() == 0;
