@@ -558,9 +558,10 @@ public class SootMethod
     }
     
     public static String getSignature(SootClass cl, String name, List<Type> params, Type returnType) {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(
-            "<" + Scene.v().quotedNameOf(cl.getName()) + ": ");
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("<");
+        buffer.append(Scene.v().quotedNameOf(cl.getName()));
+        buffer.append(": ");
         buffer.append(getSubSignatureImpl(name, params, returnType));
         buffer.append(">");
 
@@ -591,24 +592,18 @@ public class SootMethod
         String name,
         List<Type> params,
         Type returnType) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         Type t = returnType;
 
-        buffer.append(t.toString() + " " + Scene.v().quotedNameOf(name) + "(");
+        buffer.append(t.toString());
+        buffer.append(" ");
+        buffer.append(Scene.v().quotedNameOf(name));
+        buffer.append("(");
 
-        Iterator<Type> typeIt = params.iterator();
-
-        if (typeIt.hasNext()) {
-            t = (Type) typeIt.next();
-
-            buffer.append(t);
-
-            while (typeIt.hasNext()) {
+        for (int i = 0; i < params.size(); i++) {
+            buffer.append(params.get(i));
+            if (i < params.size() - 1)
                 buffer.append(",");
-
-                t = (Type) typeIt.next();
-                buffer.append(t);
-            }
         }
         buffer.append(")");
 
