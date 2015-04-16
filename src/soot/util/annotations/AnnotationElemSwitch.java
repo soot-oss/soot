@@ -13,16 +13,31 @@ import soot.tagkit.AnnotationIntElem;
 import soot.tagkit.AnnotationLongElem;
 import soot.tagkit.AnnotationStringElem;
 
-public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch{
-	
-	public class KeyValuePair<V>{
-		
+/**
+ * 
+ * An {@link AbstractAnnotationElemTypeSwitch} that converts an
+ * {@link AnnotationElem} to a mapping of element name and the actual result.
+ * 
+ * @author Florian Kübler
+ *
+ */
+public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
+
+	/**
+	 * 
+	 * A helper class to map method name and result.
+	 * 
+	 * @author Florian Kübler
+	 *
+	 * @param <V>
+	 *            the result type.
+	 */
+	public class AnnotationElemResult<V> {
+
 		private String name;
 		private V value;
-		
 
-
-		public KeyValuePair(String name, V value) {
+		public AnnotationElemResult(String name, V value) {
 			this.name = name;
 			this.value = value;
 		}
@@ -39,35 +54,39 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch{
 	@Override
 	public void caseAnnotationAnnotationElem(AnnotationAnnotationElem v) {
 		AnnotationInstanceCreator aic = new AnnotationInstanceCreator();
-		
+
 		Object result = aic.create(v.getValue());
-		
-		setResult(new KeyValuePair<Object>(v.getName(), result));
+
+		setResult(new AnnotationElemResult<Object>(v.getName(), result));
 	}
 
 	@Override
 	public void caseAnnotationArrayElem(AnnotationArrayElem v) {
-		
-		
+
+		/*
+		 * for arrays, apply a new AnnotationElemSwitch to every array element
+		 * and collect the results. Note that the component type of the result
+		 * is unknown here, s.t. object has to be used.
+		 */
 		Object[] result = new Object[v.getNumValues()];
-		
+
 		int i = 0;
-		for (AnnotationElem elem : v.getValues()){
+		for (AnnotationElem elem : v.getValues()) {
 			AnnotationElemSwitch sw = new AnnotationElemSwitch();
-			elem.apply(sw);	
-			result[i] =  ((KeyValuePair<?>) sw.getResult()).getValue();
-			
+			elem.apply(sw);
+			result[i] = ((AnnotationElemResult<?>) sw.getResult()).getValue();
+
 			i++;
 		}
-		
-		setResult(new KeyValuePair<Object[]>(v.getName(), result));
-		
+
+		setResult(new AnnotationElemResult<Object[]>(v.getName(), result));
+
 	}
 
 	@Override
 	public void caseAnnotationBooleanElem(AnnotationBooleanElem v) {
-		setResult(new KeyValuePair<Boolean>(v.getName(), v.getValue()));
-		
+		setResult(new AnnotationElemResult<Boolean>(v.getName(), v.getValue()));
+
 	}
 
 	@Override
@@ -75,16 +94,16 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch{
 		ClassLoader cl = this.getClass().getClassLoader();
 		try {
 			Class<?> clazz = cl.loadClass(toQuallifiedClassName(v.getDesc()));
-			setResult(new KeyValuePair<Class<?>>(v.getName(), clazz));
+			setResult(new AnnotationElemResult<Class<?>>(v.getName(), clazz));
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Could not load class: " + v.getDesc());
 		}
-		
+
 	}
 
 	@Override
 	public void caseAnnotationDoubleElem(AnnotationDoubleElem v) {
-		setResult(new KeyValuePair<Double>(v.getName(), v.getValue()));
+		setResult(new AnnotationElemResult<Double>(v.getName(), v.getValue()));
 	}
 
 	@Override
@@ -92,7 +111,8 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch{
 		ClassLoader cl = this.getClass().getClassLoader();
 		try {
 			Class<?> clazz = cl.loadClass(toQuallifiedClassName(v.getTypeName()));
-			
+
+			// find out which enum constant is used.
 			Enum<?> result = null;
 			for (Object o : clazz.getEnumConstants()) {
 				try {
@@ -105,37 +125,37 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch{
 					throw new RuntimeException("Class " + v.getTypeName() + " is no Enum");
 				}
 			}
-			
+
 			if (result == null) {
 				throw new RuntimeException(v.getConstantName() + " is not a EnumConstant of " + v.getTypeName());
 			}
-			
-			setResult(new KeyValuePair<Enum<?>>(v.getName(), result));
-			
+
+			setResult(new AnnotationElemResult<Enum<?>>(v.getName(), result));
+
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Could not load class: " + v.getTypeName());
-		}	
-		
+		}
+
 	}
 
 	@Override
 	public void caseAnnotationFloatElem(AnnotationFloatElem v) {
-		setResult(new KeyValuePair<Float>(v.getName(), v.getValue()));
+		setResult(new AnnotationElemResult<Float>(v.getName(), v.getValue()));
 	}
 
 	@Override
 	public void caseAnnotationIntElem(AnnotationIntElem v) {
-		setResult(new KeyValuePair<Integer>(v.getName(), v.getValue()));
+		setResult(new AnnotationElemResult<Integer>(v.getName(), v.getValue()));
 	}
 
 	@Override
 	public void caseAnnotationLongElem(AnnotationLongElem v) {
-		setResult(new KeyValuePair<Long>(v.getName(), v.getValue()));
+		setResult(new AnnotationElemResult<Long>(v.getName(), v.getValue()));
 	}
 
 	@Override
 	public void caseAnnotationStringElem(AnnotationStringElem v) {
-		setResult(new KeyValuePair<String>(v.getName(), v.getValue()));
+		setResult(new AnnotationElemResult<String>(v.getName(), v.getValue()));
 	}
 
 	@Override
@@ -143,8 +163,14 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch{
 		throw new RuntimeException("Unexpected AnnotationElem");
 	}
 
-	
-	
+	/**
+	 * Translates a quallified class name in java bytecode internal form to the
+	 * java internal form using "." for package seperation.
+	 * 
+	 * @param name
+	 *            quallified class name in java bytecode internal form.
+	 * @return Java internal equivalent of <code>name</code>.
+	 */
 	public static String toQuallifiedClassName(String name) {
 		name = name.substring(1, name.length() - 1);
 		name = name.replace('/', '.');
