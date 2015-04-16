@@ -57,7 +57,7 @@ public class AnnotationInstanceCreator {
 
 			// load the class of the annotation to be created
 			final Class<?> clazz = cl.loadClass(toQuallifiedClassName(tag.getType()));
-			final Map<String, Object> map = new HashMap<>();
+			final Map<String, Object> map = new HashMap<String, Object>();
 
 			// for every element generate the result
 			for (AnnotationElem elem : tag.getElems()) {
