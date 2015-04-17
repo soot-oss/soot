@@ -20,7 +20,7 @@ import static soot.util.annotations.AnnotationElemSwitch.toQuallifiedClassName;
  * {@link AnnotationTag}.
  * 
  * 
- * @author Florian Kübler
+ * @author Florian Kuebler
  *
  */
 public class AnnotationInstanceCreator {

@@ -18,7 +18,7 @@ import soot.tagkit.AnnotationStringElem;
  * An {@link AbstractAnnotationElemTypeSwitch} that converts an
  * {@link AnnotationElem} to a mapping of element name and the actual result.
  * 
- * @author Florian Kübler
+ * @author Florian Kuebler
  *
  */
 public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
