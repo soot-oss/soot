@@ -27,7 +27,7 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
 	 * 
 	 * A helper class to map method name and result.
 	 * 
-	 * @author Florian Kübler
+	 * @author Florian Kuebler
 	 *
 	 * @param <V>
 	 *            the result type.
