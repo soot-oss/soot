@@ -608,7 +608,7 @@ public class Scene  //extends AbstractHost
         return grabField(fieldSignature) != null;
     }
     
-    private SootMethod grabMethod(String methodSignature)
+    public SootMethod grabMethod(String methodSignature)
     {
         String cname = signatureToClass( methodSignature );
         String mname = signatureToSubsignature( methodSignature );
