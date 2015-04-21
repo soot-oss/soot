@@ -819,7 +819,12 @@ public class DexBody  {
             List<? extends ExceptionHandler> hList = tryItem.getExceptionHandlers();
             for (ExceptionHandler handler: hList) {
               int handlerAddress = handler.getHandlerCodeAddress();
-              Debug.printDbg("handler   (0x", Integer.toHexString(handlerAddress)   ,"): ", instructionAtAddress (handlerAddress).getUnit()  ," --- ", instructionAtAddress (handlerAddress-1).getUnit());
+              Debug.printDbg("handler   (0x",
+            		  Integer.toHexString(handlerAddress),
+            		  "): ",
+            		  instructionAtAddress (handlerAddress).getUnit(),
+            		  " --- ",
+            		  handlerAddress > 0 ? instructionAtAddress (handlerAddress-1).getUnit() : "<unknown>");
               String exceptionType = handler.getExceptionType();
               if (exceptionType == null)
                   exceptionType = "Ljava/lang/Throwable;";
