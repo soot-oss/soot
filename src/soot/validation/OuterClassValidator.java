@@ -11,14 +11,10 @@ import soot.SootClass;
  * 
  * @author Steven Arzt
  */
-public class OuterClassValidator implements ClassValidator {
-
-	public static OuterClassValidator INSTANCE;
-	
+public enum OuterClassValidator implements ClassValidator {
+	INSTANCE;	
 	
 	public static OuterClassValidator v() {
-		if (INSTANCE == null)
-			INSTANCE = new OuterClassValidator();
 		return INSTANCE;
 	}
 

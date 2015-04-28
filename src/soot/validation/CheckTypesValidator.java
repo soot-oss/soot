@@ -24,13 +24,10 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.util.Chain;
 
-public class CheckTypesValidator implements BodyValidator {
-	public static CheckTypesValidator INSTANCE;
+public enum CheckTypesValidator implements BodyValidator {
+	INSTANCE;
 
 	public static CheckTypesValidator v() {
-		if (INSTANCE == null) {
-			INSTANCE = new CheckTypesValidator();
-		}
 		return INSTANCE;
 	}
 

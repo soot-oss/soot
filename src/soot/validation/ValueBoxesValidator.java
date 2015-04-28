@@ -1,21 +1,19 @@
 package soot.validation;
 
-import java.util.Iterator;
+import java.util.IdentityHashMap;
 import java.util.List;
+import java.util.Set;
 
 import soot.Body;
 import soot.Unit;
 import soot.ValueBox;
 
-public class ValueBoxesValidator implements BodyValidator {
-	public static ValueBoxesValidator INSTANCE;
-	
+import static java.util.Collections.newSetFromMap;
+
+public enum ValueBoxesValidator implements BodyValidator {
+	INSTANCE;
 	
 	public static ValueBoxesValidator v() {
-		if (INSTANCE == null)
-		{
-			INSTANCE = new ValueBoxesValidator();
-		}
 		return INSTANCE;
 	}
 
@@ -23,20 +21,18 @@ public class ValueBoxesValidator implements BodyValidator {
 	@Override
 	/** Verifies that a ValueBox is not used in more than one place. */
 	public void validate(Body body, List<ValidationException> exception) {
-        List<ValueBox> l = body.getUseAndDefBoxes();
-        for( int i = 0; i < l.size(); i++ ) {
-            for( int j = 0; j < l.size(); j++ ) {
-                if( i == j ) continue;
-                if( l.get(i) == l.get(j) ) {
-                    System.err.println("Aliased value box : "+l.get(i)+" in "+body.getMethod());
-                    for( Iterator<Unit> uIt = body.getUnits().iterator(); uIt.hasNext(); ) {
-                        final Unit u = uIt.next();
-                        System.err.println(""+u);
-                    }
-                    exception.add(new ValidationException(l.get(i), "Aliased value box : "+l.get(i)+" in "+body.getMethod()));
-                }
+		Set<ValueBox> set = newSetFromMap(new IdentityHashMap<ValueBox, Boolean>());
+		
+		for (ValueBox vb: body.getUseAndDefBoxes()) {
+			if (set.add(vb))
+				continue;			
+			
+			exception.add(new ValidationException(vb, "Aliased value box : "+vb+" in "+body.getMethod()));
+            
+			for (Unit u : body.getUnits()) {
+                System.err.println(u);
             }
-        }
+		}
     }
 
 	@Override

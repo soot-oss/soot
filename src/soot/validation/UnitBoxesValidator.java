@@ -5,15 +5,10 @@ import java.util.List;
 import soot.Body;
 import soot.UnitBox;
 
-public class UnitBoxesValidator implements BodyValidator {
-	public static UnitBoxesValidator INSTANCE;
-	
+public enum UnitBoxesValidator implements BodyValidator {
+	INSTANCE;
 	
 	public static UnitBoxesValidator v() {
-		if (INSTANCE == null)
-		{
-			INSTANCE = new UnitBoxesValidator();
-		}
 		return INSTANCE;
 	}
 
