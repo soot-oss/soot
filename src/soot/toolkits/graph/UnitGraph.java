@@ -393,7 +393,7 @@ public abstract class UnitGraph implements DirectedGraph<Unit>
         if (l == null) 
         	throw new NoSuchElementException("Invalid unit " + u);
 
-        return unitToPreds.get(u);
+        return l;
     }
 
     public List<Unit> getSuccsOf(Unit u)
