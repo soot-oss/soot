@@ -1,5 +1,6 @@
 package soot.validation;
 
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -15,17 +16,11 @@ import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.SimpleLiveLocals;
 import soot.toolkits.scalar.SmartLocalDefs;
-import soot.util.Chain;
 
-public class UsesValidator implements BodyValidator {
-	public static UsesValidator INSTANCE;
-	
+public enum UsesValidator implements BodyValidator {
+	INSTANCE;	
 	
 	public static UsesValidator v() {
-		if (INSTANCE == null)
-		{
-			INSTANCE = new UsesValidator();
-		}
 		return INSTANCE;
 	}
 
@@ -64,7 +59,7 @@ public class UsesValidator implements BodyValidator {
         UnitGraph g = new ExceptionalUnitGraph(body, throwAnalysis, false);
         LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
-        Chain<Local> locals = body.getLocals();
+        Collection<Local> locals = body.getLocals();
         for (Unit u : body.getUnits()) {
             Iterator<ValueBox> useBoxIt = u.getUseBoxes().iterator();
             while (useBoxIt.hasNext())
