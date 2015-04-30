@@ -588,13 +588,13 @@ public class PackManager {
         		 * See ThrowFinder for more details
         		 */
         		if(DEBUG)
-        			System.out.println("Source is not Javac hence invoking ThrowFinder");
+        			G.v().out.println("Source is not Javac hence invoking ThrowFinder");
 
         		ThrowFinder.v().find();
         	}
         	else{
         		if(DEBUG)
-        			System.out.println("Source is javac hence we dont need to invoke ThrowFinder");
+        			G.v().out.println("Source is javac hence we dont need to invoke ThrowFinder");
         	}
 
             PackageNamer.v().fixNames();
@@ -690,7 +690,7 @@ public class PackManager {
             		 */
             		if(m.hasActiveBody()){
             			DavaBody body = (DavaBody)m.getActiveBody();
-                		//System.out.println("body"+body.toString());
+                		//G.v().out.println("body"+body.toString());
                         if(transformations){
                         	body.analyzeAST();
                         } //if tansformations are enabled
@@ -739,7 +739,7 @@ public class PackManager {
             decompiledClasses.add(fileName.substring(fileName.lastIndexOf('/')+1));
             if(pathForBuild == null){
             	pathForBuild =fileName.substring(0,fileName.lastIndexOf('/')+1);
-            	//System.out.println(pathForBuild);
+            	//G.v().out.println(pathForBuild);
             }
             if( Options.v().gzip() )
             	fileName = fileName+".gz";
@@ -874,7 +874,7 @@ public class PackManager {
         for (SootMethod m : methodsCopy) {
             if(DEBUG){
             	if(m.getExceptions().size()!=0)
-            		System.out.println("PackManager printing out jimple body exceptions for method "+m.toString()+" " + m.getExceptions().toString());
+            		G.v().out.println("PackManager printing out jimple body exceptions for method "+m.toString()+" " + m.getExceptions().toString());
             }
 
             if (!m.isConcrete()) continue;
@@ -918,7 +918,7 @@ public class PackManager {
                 PackManager.v().getPack("jop").apply(body);
                 PackManager.v().getPack("jap").apply(body);
                 if (Options.v().xml_attributes() && Options.v().output_format() != Options.output_format_jimple) {
-                    //System.out.println("collecting body tags");
+                    //G.v().out.println("collecting body tags");
                     tc.collectBodyTags(body);
                 }
             }
@@ -935,7 +935,7 @@ public class PackManager {
 
         if (Options.v().xml_attributes() && Options.v().output_format() != Options.output_format_jimple) {
             processXMLForClass(c, tc);
-            //System.out.println("processed xml for class");
+            //G.v().out.println("processed xml for class");
         }
 
         if (produceDava) {
@@ -953,7 +953,7 @@ public class PackManager {
              */
             //could use G to add new method...................
             if(G.v().SootMethodAddedByDava){
-            	//System.out.println("PACKMANAGER SAYS:----------------Have to add the new method(s)");
+            	//G.v().out.println("PACKMANAGER SAYS:----------------Have to add the new method(s)");
             	ArrayList<SootMethod> sootMethodsAdded = G.v().SootMethodsAdded;
             	Iterator<SootMethod> it = sootMethodsAdded.iterator();
             	while(it.hasNext()){
@@ -1135,9 +1135,9 @@ public class PackManager {
                 SootMethod m = (SootMethod) methodIt.next();
                 if(DEBUG && cl.isApplicationClass()){
                 	if(m.getExceptions().size()!=0)
-                		System.out.println("PackManager printing out from within retrieveAllBodies exceptions for method "+m.toString()+" " + m.getExceptions().toString());
+                		G.v().out.println("PackManager printing out from within retrieveAllBodies exceptions for method "+m.toString()+" " + m.getExceptions().toString());
                 	else
-                		System.out.println("in retrieveAllBodies......Currently Method "+ m.toString() +" has no exceptions ");
+                		G.v().out.println("in retrieveAllBodies......Currently Method "+ m.toString() +" has no exceptions ");
                 }
 
                 if( m.isConcrete() ) {

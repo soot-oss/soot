@@ -24,21 +24,28 @@
  */
 
 package soot;
-import soot.coffi.*;
+import java.io.PrintStream;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import soot.coffi.Utf8_Enumeration;
 import soot.dava.internal.SET.SETBasicBlock;
 import soot.dava.internal.SET.SETNode;
-
-import java.io.PrintStream;
-import java.util.*;
-
-import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.spark.pag.MethodPAG;
 import soot.jimple.spark.sets.P2SetFactory;
 import soot.jimple.toolkits.annotation.arraycheck.Array2ndDimensionSymbol;
 import soot.jimple.toolkits.pointer.UnionFactory;
+import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.toolkits.typing.ClassHierarchy;
-import soot.shimple.*;
+import soot.shimple.DefaultShimpleFactory;
+import soot.shimple.ShimpleFactory;
 import soot.toolkits.astmetrics.ClassData;
+import soot.util.SLF4JPrintStreamLogger;
 
 /** A class to group together all the global variables in Soot. */
 public class G extends Singletons 
@@ -71,7 +78,21 @@ public class G extends Singletons
 		objectGetter = newGetter;
 	}
 
-    public PrintStream out = System.out;
+	/**
+	 * The old deprecated {@link PrintStream} logging system of Soot. 
+	 * 
+	 * For logging use <a href="http://www.slf4j.org">SLF4J</a> instead: 
+	 * 
+	 * <p>In each class:</p>
+	 * <pre>
+	 * static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(CurrentClass.class);
+	 * 
+	 * logger.debug("Debug output");
+	 * logger.debug("Debug output p1 {} p2 {}", param1, param2);
+	 * </pre> 
+	 */
+	@Deprecated
+    public PrintStream out = new SLF4JPrintStreamLogger();//System.out;
 
     public class Global {
     }

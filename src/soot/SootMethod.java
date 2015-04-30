@@ -141,7 +141,7 @@ public class SootMethod
             this.exceptions.addAll(thrownExceptions);
             /*DEBUG=true;
             if(DEBUG)
-            	System.out.println("Added thrown exceptions"+thrownExceptions);
+            	G.v().out.println("Added thrown exceptions"+thrownExceptions);
             DEBUG=false;
             */
         }
@@ -362,7 +362,7 @@ public class SootMethod
     /** Adds the given exception to the list of exceptions thrown by this method. */
     public void addException(SootClass e) {
     	if(DEBUG)
-    		System.out.println("Adding exception "+e);
+    		G.v().out.println("Adding exception "+e);
     	
         if (exceptions == null)
             exceptions = new ArrayList<SootClass>();
@@ -376,7 +376,7 @@ public class SootMethod
     /** Removes the given exception from the list of exceptions thrown by this method. */
     public void removeException(SootClass e) {
     	if(DEBUG)
-    		System.out.println("Removing exception "+e);
+    		G.v().out.println("Removing exception "+e);
 
         if (exceptions == null)
             exceptions = new ArrayList<SootClass>();
