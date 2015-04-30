@@ -16,5 +16,6 @@
 	<classpathentry kind="lib" path="libs/asm-debug-all-5.0.3.jar"/>
 	<classpathentry kind="lib" path="libs/dexlib2-2.0.5-dev.jar"/>
 	<classpathentry kind="lib" path="libs/util-2.0.5-dev.jar"/>
+	<classpathentry kind="lib" path="libs/commons-exec-1.3.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
