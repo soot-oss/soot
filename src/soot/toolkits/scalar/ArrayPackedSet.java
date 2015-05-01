@@ -100,8 +100,7 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
 
     public void clear()
     {
-        for(int i = 0; i < bits.length; i++)
-            bits[i] = 0;
+        bits = new int[bits.length];
     }
 
 
