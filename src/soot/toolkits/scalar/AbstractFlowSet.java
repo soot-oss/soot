@@ -55,6 +55,8 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 	}
 
 	public void copy(FlowSet<T> dest) {
+		if (this == dest)
+			return;
 		dest.clear();
 		for (T t : this)
 			dest.add(t);
@@ -69,6 +71,8 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 	}
 
 	public void union(FlowSet<T> other) {
+		if (this == other)
+			return;
 		union(other, this);
 	}
 
@@ -88,6 +92,8 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 	}
 
 	public void intersection(FlowSet<T> other) {
+		if (this == other)
+			return;
 		intersection(other, this);
 	}
 
