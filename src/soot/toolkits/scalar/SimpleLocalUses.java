@@ -42,6 +42,7 @@ import soot.G;
 import soot.Local;
 import soot.Timers;
 import soot.Unit;
+import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.graph.UnitGraph;
@@ -56,7 +57,7 @@ import soot.toolkits.graph.UnitGraph;
 public class SimpleLocalUses implements LocalUses
 {
 	final Body body;
-    Map<Unit, List<UnitValueBoxPair>> unitToUses;
+    private Map<Unit, List<UnitValueBoxPair>> unitToUses;
 
     /**
      * Construct the analysis from a UnitGraph representation
@@ -92,8 +93,6 @@ public class SimpleLocalUses implements LocalUses
         unitToUses = new HashMap<Unit, List<UnitValueBoxPair>>(body.getUnits().size() * 2 + 1, 0.7f);
     
         // Initialize this map to empty sets
-        for (Unit s : body.getUnits())
-        	unitToUses.put(s, new ArrayList<UnitValueBoxPair>());
 
         if(Options.v().time())
            Timers.v().usePhase1Timer.end();
@@ -102,39 +101,33 @@ public class SimpleLocalUses implements LocalUses
            Timers.v().usePhase2Timer.start();
     
         // Traverse units and associate uses with definitions
+        for (Unit unit : body.getUnits())
         {
-            for (Unit s : body.getUnits())
+            for (ValueBox useBox : unit.getUseBoxes())
             {
-                for (ValueBox useBox : s.getUseBoxes())
+            	Value v = useBox.getValue();
+            	if (v instanceof Local)
                 {
-                	if(useBox.getValue() instanceof Local)
-                    {
-                        // Add this statement to the uses of the definition of the local
-                        Local l = (Local) useBox.getValue();
-                        List<Unit> possibleDefs = localDefs.getDefsOfAt(l, s);
-                        if (possibleDefs != null)
-	                        for (Unit def : possibleDefs) {
-	                            List<UnitValueBoxPair> useList = unitToUses.get(def);
-	                            useList.add(new UnitValueBoxPair(s, useBox));
-	                        }
+                    // Add this statement to the uses of the definition of the local
+                    Local l = (Local) v;
+                                        
+                    UnitValueBoxPair newPair = new UnitValueBoxPair(unit, useBox);
+                    
+                    for (Unit def : localDefs.getDefsOfAt(l, unit)) {
+                    	List<UnitValueBoxPair> lst = unitToUses.get(def);
+                    	if (lst == null) {
+                    		unitToUses.put(def, lst = new ArrayList<UnitValueBoxPair>());
+                    	}                    	
+                    	lst.add(newPair);
                     }
                 }
             }
         }
+        
 
         if(Options.v().time())
            Timers.v().usePhase2Timer.end();
-    
-        if(Options.v().time())
-           Timers.v().usePhase3Timer.start();
-    
-        // Store the map as a bunch of unmodifiable lists.
-        for (Unit s : body.getUnits())
-        	unitToUses.put(s, Collections.unmodifiableList(unitToUses.get(s)));
         
-        if(Options.v().time())
-           Timers.v().usePhase3Timer.end();
-    
         if(Options.v().time())
             Timers.v().usesTimer.end();
 
@@ -153,7 +146,11 @@ public class SimpleLocalUses implements LocalUses
     @Override
     public List<UnitValueBoxPair> getUsesOf(Unit s)
     {
-        return unitToUses.get(s);
+    	List<UnitValueBoxPair> l = unitToUses.get(s);
+    	if (l == null)
+    		return Collections.emptyList();
+    		
+        return Collections.unmodifiableList(l);
     }
     
     /**
@@ -173,11 +170,8 @@ public class SimpleLocalUses implements LocalUses
      * @return The list of variables declared, but not used in this body
      */
     public Set<Local> getUnusedVariables() {
-    	Set<Local> usedVariables = getUsedVariables();
-    	Set<Local> res = new HashSet<Local>(usedVariables.size());
-    	for (Local l : body.getLocals())
-    		if (!usedVariables.contains(l))
-    			res.add(l);
+    	Set<Local> res = new HashSet<Local>(body.getLocals());
+    	res.retainAll(getUsedVariables());
     	return res;
     }
     
