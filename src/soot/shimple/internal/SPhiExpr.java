@@ -349,7 +349,8 @@ public class SPhiExpr implements PhiExpr
      **/
     protected void updateCache()
     {
-        predToPair = new HashMap();
+        int needed = argPairs.size();
+        predToPair = new HashMap(needed << 1, 1.0F); //Always attempt to allocate the next power of 2 sized map
         Iterator pairsIt = argPairs.iterator();
         while(pairsIt.hasNext()){
             ValueUnitPair vup = (ValueUnitPair) pairsIt.next();
