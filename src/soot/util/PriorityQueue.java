@@ -280,7 +280,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 		});
 	}
 	
-	public static <E> PriorityQueue<E> newPriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
+	private static <E> PriorityQueue<E> newPriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
 		if (universe.size() <= SmallPriorityQueue.MAX_CAPACITY)
 			return new SmallPriorityQueue<E>(universe, ordinalMap);
 		if (universe.size() <= MediumPriorityQueue.MAX_CAPACITY)
