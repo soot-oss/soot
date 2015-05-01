@@ -261,8 +261,8 @@ public class PhiNodeManager
             // termination, the challengers list never does.  This could
             // be optimised.
             Set<ValueUnitPair> pairsSet = valueToPairs.get(value);
-            List<ValueUnitPair> champs = new ArrayList<ValueUnitPair>(pairsSet);
-            List<ValueUnitPair> challengers = new ArrayList<ValueUnitPair>(pairsSet);
+            List<ValueUnitPair> champs = new LinkedList<ValueUnitPair>(pairsSet);
+            List<ValueUnitPair> challengers = new LinkedList<ValueUnitPair>(pairsSet);
             
             // champ is the currently assumed dominator
             ValueUnitPair champ = champs.remove(0);
@@ -277,23 +277,22 @@ public class PhiNodeManager
 
                 // go through each challenger and see if we dominate them
                 // if not, the challenger becomes the new champ
-                for(int i = 0; i < challengers.size(); i++){
-                    ValueUnitPair challenger = challengers.get(i);
-
-                    if(challenger.equals(champ))
+                for (Iterator<ValueUnitPair> iterator = challengers.iterator(); iterator.hasNext(); ) {
+                    ValueUnitPair challenger = iterator.next();
+                    if (challenger.equals(champ))
                         continue;
                     Unit challengerU = challenger.getUnit();
-                
-                    // kill the challenger
-                    if(dominates(champU, challengerU))
-                        phiExpr.removeArg(challenger);
 
+                    // kill the challenger
+                    if (dominates(champU, challengerU)) {
+                        phiExpr.removeArg(challenger);
+                        iterator.remove();
+                    }
                     // we die, find a new champ
-                    else if(dominates(challengerU, champU)){
+                    else if (dominates(challengerU, champU)) {
                         phiExpr.removeArg(champ);
                         champ = challenger;
                         champU = champ.getUnit();
-                        champs.remove(champ);
                     }
 
                     // neither wins, oops!  we'll have to try the next
