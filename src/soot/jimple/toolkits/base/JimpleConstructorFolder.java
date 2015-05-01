@@ -81,9 +81,10 @@ public class JimpleConstructorFolder extends BodyTransformer
     }
     static Local rhsLocal(Stmt s) { return (Local) rhs(s); }
     static Local lhsLocal(Stmt s) { return (Local) lhs(s); }
+    
     private class Fact {
         private Map<Local, Stmt> varToStmt = new HashMap<Local, Stmt>();
-        private MultiMap stmtToVar = new HashMultiMap();
+        private MultiMap<Stmt,Local> stmtToVar = new HashMultiMap<Stmt,Local>();
         private Stmt alloc = null;
         public void add(Local l, Stmt s) {
             varToStmt.put(l, s);
@@ -92,27 +93,27 @@ public class JimpleConstructorFolder extends BodyTransformer
         public Stmt get(Local l) {
             return varToStmt.get(l);
         }
-        public Set get(Stmt s) {
+        public Set<Local> get(Stmt s) {
             return stmtToVar.get(s);
         }
         public void removeAll(Stmt s) {
-            for(Iterator it = stmtToVar.get(s).iterator(); it.hasNext();) {
-                final Local var = (Local) it.next();
-                varToStmt.remove(var);
+            for (Local var : stmtToVar.get(s)) {
+            	varToStmt.remove(var);
             }
+            
             stmtToVar.remove(s);
         }
         public void copyFrom(Fact in) {
             varToStmt = new HashMap<Local, Stmt>(in.varToStmt);
-            stmtToVar = new HashMultiMap(in.stmtToVar);
+            stmtToVar = new HashMultiMap<Stmt,Local>(in.stmtToVar);
             alloc = in.alloc;
         }
         public void mergeFrom(Fact in1, Fact in2) {
             varToStmt = new HashMap<Local, Stmt>();
-            Iterator<Local> it = in1.varToStmt.keySet().iterator();
-            while(it.hasNext()) {
-                Local l = it.next();
-                Stmt newStmt = in1.varToStmt.get(l);
+
+            for (Map.Entry<Local, Stmt> e : in1.varToStmt.entrySet()) {
+            	Local l = e.getKey();
+                Stmt newStmt = e.getValue();
                 if(in2.varToStmt.containsKey(l)) {
                     Stmt newStmt2 = in2.varToStmt.get(l);
                     if(!newStmt.equals(newStmt2)) {
@@ -121,12 +122,11 @@ public class JimpleConstructorFolder extends BodyTransformer
                 }
                 add(l, newStmt);
             }
-            it = in2.varToStmt.keySet().iterator();
-            while(it.hasNext()) {
-                Local l = it.next();
-                Stmt newStmt = in2.varToStmt.get(l);
+            for (Map.Entry<Local, Stmt> e : in2.varToStmt.entrySet()) {
+            	Local l = e.getKey();
+                Stmt newStmt = e.getValue();
                 add(l, newStmt);
-            }
+            }            
             if(in1.alloc != null && in1.alloc.equals(in2.alloc)) {
                 alloc = in1.alloc;
             } else {
@@ -145,22 +145,19 @@ public class JimpleConstructorFolder extends BodyTransformer
         public Stmt alloc() { return alloc; }
         public void setAlloc(Stmt newAlloc) { alloc = newAlloc; }
     }
-    private class Analysis extends ForwardFlowAnalysis {
-        public Analysis(DirectedGraph graph) {
+    
+    private class Analysis extends ForwardFlowAnalysis<Unit, Fact> {
+        public Analysis(DirectedGraph<Unit> graph) {
             super(graph);
             doAnalysis();
         }
-        protected Object entryInitialFlow() {
+        
+        protected Fact newInitialFlow() {
             return new Fact();
         }
-        protected Object newInitialFlow() {
-            return new Fact();
-        }
-        public void flowThrough(Object inFact, Object unit, Object outFact) {
-            Stmt s = (Stmt) unit;
-            Fact in = (Fact) inFact;
-            Fact out = (Fact) outFact;
-
+        
+        public void flowThrough(Fact in, Unit u, Fact out) {
+        	Stmt s  = (Stmt) u;
             copy(in, out);
             out.setAlloc(null);
 
@@ -177,16 +174,16 @@ public class JimpleConstructorFolder extends BodyTransformer
                 }
             }
         }
-        public void copy(Object source, Object dest) {
-            ((Fact) dest).copyFrom((Fact) source);
+        public void copy(Fact source, Fact dest) {
+        	dest.copyFrom(source);
         }
-        public void merge(Object in1, Object in2, Object out) {
-            ((Fact) out).mergeFrom((Fact) in1, (Fact) in2);
+        public void merge(Fact in1, Fact in2, Fact out) {
+        	out.mergeFrom(in1, in2);
         }
     }
     /** This method pushes all newExpr down to be the stmt directly before every
      * invoke of the init */
-    public void internalTransform(Body b, String phaseName, Map options)
+    public void internalTransform(Body b, String phaseName, Map<String, String> options)
     {
         JimpleBody body = (JimpleBody)b;
 
@@ -198,20 +195,16 @@ public class JimpleConstructorFolder extends BodyTransformer
 
         Analysis analysis = new Analysis(new BriefUnitGraph(body));
 
-        Chain units = body.getUnits();
+        Chain<Unit> units = body.getUnits();
         List<Unit> stmtList = new ArrayList<Unit>();
         stmtList.addAll(units);
 
-        Iterator<Unit> it;
-        it = stmtList.iterator();
-        while(it.hasNext()) {
-            Stmt s = (Stmt) it.next();
+        for (Unit u : stmtList) {
+        	Stmt s = (Stmt) u;
             if(isCopy(s)) continue;
             if(isConstructor(s)) continue;
-            Fact before = (Fact) analysis.getFlowBefore(s);
-            Iterator usesIt = s.getUseBoxes().iterator();
-            while(usesIt.hasNext()) {
-                ValueBox usebox = (ValueBox) usesIt.next();
+            Fact before = analysis.getFlowBefore(s);
+            for (ValueBox usebox : s.getUseBoxes()) {
                 Value value = usebox.getValue();
                 if(!(value instanceof Local)) continue;
                 Local local = (Local) value;
@@ -223,19 +216,18 @@ public class JimpleConstructorFolder extends BodyTransformer
         }
 
         // throw out all new statements
-        it = stmtList.iterator();
-        while(it.hasNext()) {
-            Stmt s = (Stmt) it.next();
+        for (Unit u : stmtList) {
+            Stmt s = (Stmt) u;
             if(isNew(s)) {
                 units.remove(s);
             }
         }
 
-        it = stmtList.iterator();
-        while(it.hasNext()) {
-            Stmt s = (Stmt) it.next();
-            Fact before = (Fact) analysis.getFlowBefore(s);
-            Fact after = (Fact) analysis.getFlowAfter(s);
+
+        for (Unit u : stmtList) {
+            Stmt s = (Stmt) u;
+            Fact before = analysis.getFlowBefore(s);
+            Fact after = analysis.getFlowAfter(s);
 
             // throw out copies of uninitialized variables
             if(isCopy(s)) {
@@ -248,9 +240,7 @@ public class JimpleConstructorFolder extends BodyTransformer
                 units.insertBefore(newStmt, s);
 
                 // add necessary copies
-                Iterator copyIt = before.get(newStmt).iterator();
-                while(copyIt.hasNext()) {
-                    Local l = (Local) copyIt.next();
+                for (Local l : before.get(newStmt)) {
                     if(l.equals(base(s))) continue;
                     units.insertAfter(Jimple.v().newAssignStmt(l, base(s)), s);
                 }
