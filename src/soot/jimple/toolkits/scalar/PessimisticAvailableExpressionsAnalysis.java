@@ -25,20 +25,24 @@
 
 
 package soot.jimple.toolkits.scalar;
-import soot.*;
-import soot.toolkits.graph.*;
+import soot.SideEffectTester;
+import soot.SootMethod;
+import soot.Unit;
+import soot.Value;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.scalar.FlowSet;
 
 /** Implements an available expressions analysis on local variables. 
  * pessimistic analysis - for teaching 621*/
 public class PessimisticAvailableExpressionsAnalysis extends SlowAvailableExpressionsAnalysis 
 {
-    public PessimisticAvailableExpressionsAnalysis(DirectedGraph dg, SootMethod m, SideEffectTester st){
+    public PessimisticAvailableExpressionsAnalysis(DirectedGraph<Unit> dg, SootMethod m, SideEffectTester st){
         super(dg);
     }
     
-    protected Object newInitialFlow()
+    protected FlowSet<Value> newInitialFlow()
     {
-        Object newSet = emptySet.clone();
+        FlowSet<Value> newSet = emptySet.clone();
         //((ToppedSet)newSet).setTop(true);
         return newSet;
     }

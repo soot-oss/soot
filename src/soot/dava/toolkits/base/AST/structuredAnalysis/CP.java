@@ -435,10 +435,7 @@ public class CP extends StructuredAnalysis {
 	 */
 	public Object killButGetValueForUse(Local left, CPFlowSet toReturn) {
 
-		Iterator it = toReturn.toList().iterator();
-		while (it.hasNext()) {
-			CPTuple tempTuple = (CPTuple) it.next();
-
+		for (CPTuple tempTuple : toReturn) {
 			if (!(tempTuple.getSootClassName().equals(localClassName)))
 				continue;
 
@@ -601,10 +598,7 @@ public class CP extends StructuredAnalysis {
 			else
 				toCheckClassName = ((FieldRef) toCheck).getField().getDeclaringClass().getName();
 
-			Iterator it = set.toList().iterator();
-			while (it.hasNext()) {
-				CPTuple tempTuple = (CPTuple) it.next();
-
+			for (CPTuple tempTuple : set) {
 				// check that the classNames are the same
 				if (!(tempTuple.getSootClassName().equals(toCheckClassName))) {
 					// classNames are not the same no point in continuing with

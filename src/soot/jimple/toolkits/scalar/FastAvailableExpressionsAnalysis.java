@@ -35,17 +35,17 @@ import java.util.*;
  * The current implementation is slow but correct.
  * A better implementation would use an implicit universe and
  * the kill rule would be computed on-the-fly for each statement. */
-public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
+public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Value>>
 {
     SideEffectTester st;
 
-    Map<Unit, FlowSet> unitToGenerateSet;
-    Map unitToPreserveSet;
+    Map<Unit, FlowSet<Value>> unitToGenerateSet;
+    Map<Unit, FlowSet<Value>> unitToPreserveSet;
     Map<Value, Unit> rhsToContainingStmt;
 
-    FlowSet emptySet;
+    FlowSet<Value> emptySet;
 
-    public FastAvailableExpressionsAnalysis(DirectedGraph dg, SootMethod m,
+    public FastAvailableExpressionsAnalysis(DirectedGraph<Unit> dg, SootMethod m,
             SideEffectTester st)
     {
         super(dg);
@@ -57,19 +57,14 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
         // maps an rhs to its containing stmt.  object equality in rhs.
         rhsToContainingStmt = new HashMap<Value, Unit>();
 
-        emptySet = new ToppedSet(new ArraySparseSet());
+        emptySet = new ToppedSet<Value>(new ArraySparseSet<Value>());
 
         // Create generate sets
         {
-            unitToGenerateSet = new HashMap<Unit, FlowSet>(g.size() * 2 + 1, 0.7f);
+            unitToGenerateSet = new HashMap<Unit, FlowSet<Value>>(g.size() * 2 + 1, 0.7f);
 
-            Iterator unitIt = g.iterator();
-
-            while(unitIt.hasNext())
-            {
-                Unit s = (Unit) unitIt.next();
-
-                FlowSet genSet = emptySet.clone();
+            for (Unit s : g) {
+                FlowSet<Value> genSet = emptySet.clone();
                 // In Jimple, expressions only occur as the RHS of an AssignStmt.
                 if (s instanceof AssignStmt)
                 {
@@ -101,22 +96,20 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
         doAnalysis();
     }
 
-    protected Object newInitialFlow()
+    protected FlowSet<Value> newInitialFlow()
     {
-        Object newSet = emptySet.clone();
-        ((ToppedSet)newSet).setTop(true);
+        FlowSet<Value> newSet = emptySet.clone();
+        ((ToppedSet<Value>)newSet).setTop(true);
         return newSet;
     }
 
-    protected Object entryInitialFlow()
+    protected FlowSet<Value> entryInitialFlow()
     {
         return emptySet.clone();
     }
 
-    protected void flowThrough(Object inValue, Object unit, Object outValue)
+    protected void flowThrough(FlowSet<Value> in, Unit unit, FlowSet<Value> out)
     {
-        FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
-
         in.copy(out);
         if (((ToppedSet)in).isTop())
             return;
@@ -163,21 +156,14 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
             }
     }
 
-    protected void merge(Object in1, Object in2, Object out)
+    protected void merge(FlowSet<Value> inSet1, FlowSet<Value> inSet2,
+    		FlowSet<Value> outSet)
     {
-        FlowSet inSet1 = (FlowSet) in1,
-            inSet2 = (FlowSet) in2;
-
-        FlowSet outSet = (FlowSet) out;
-
         inSet1.intersection(inSet2, outSet);
     }
     
-    protected void copy(Object source, Object dest)
+    protected void copy(FlowSet<Value> sourceSet, FlowSet<Value> destSet)
     {
-        FlowSet sourceSet = (FlowSet) source,
-            destSet = (FlowSet) dest;
-            
         sourceSet.copy(destSet);
     }
 }

@@ -215,16 +215,14 @@ public class ReachingCopies extends StructuredAnalysis {
 		in.add(localp);
 	}
 
-	public void kill(DavaFlowSet in, Local redefined) {
+	public void kill(DavaFlowSet<LocalPair> in, Local redefined) {
 		// kill any previous localpairs which have the redefined Local in the
 		// left OR right position
-		List list = in.toList();
-		Iterator listIt = list.iterator();
-		while (listIt.hasNext()) {
-			LocalPair tempPair = (LocalPair) listIt.next();
+		for (Iterator<LocalPair> listIt = in.iterator(); listIt.hasNext(); ) {
+			LocalPair tempPair = listIt.next();
 			if (tempPair.contains(redefined)) {
 				// need to kill this from the list
-				in.remove(tempPair);
+				listIt.remove();
 			}
 		}
 	}

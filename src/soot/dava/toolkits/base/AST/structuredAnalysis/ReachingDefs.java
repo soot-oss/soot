@@ -174,9 +174,7 @@ public class ReachingDefs extends StructuredAnalysis {
 
 		// kill any previous localpairs which have the redefined Local in the
 		// left i.e. previous definitions
-		List list = in.toList();
-		Iterator listIt = list.iterator();
-		while (listIt.hasNext()) {
+		for (Iterator listIt = in.iterator(); listIt.hasNext(); ) {
 			DefinitionStmt tempStmt = (DefinitionStmt) listIt.next();
 			Value leftOp = tempStmt.getLeftOp();
 			if (leftOp instanceof Local) {
@@ -184,7 +182,7 @@ public class ReachingDefs extends StructuredAnalysis {
 				if (redefinedLocalName.compareTo(storedLocalName) == 0) {
 					// need to kill this from the list
 					// System.out.println("Killing "+tempStmt);
-					in.remove(tempStmt);
+					listIt.remove();
 				}
 			}
 		}
@@ -210,12 +208,8 @@ public class ReachingDefs extends StructuredAnalysis {
 		}
 
 		// find all reachingdefs matching this local
-		List allReachingDefs = beforeSet.toList();
-
-		Iterator it = allReachingDefs.iterator();
-		while (it.hasNext()) {
+		for (Object temp : beforeSet) {
 			// checking each def to see if it is a def of local
-			Object temp = it.next();
 			if (!(temp instanceof DefinitionStmt))
 				throw new RuntimeException("Not an instanceof DefinitionStmt" + temp);
 			DefinitionStmt stmt = (DefinitionStmt) temp;
@@ -247,10 +241,8 @@ public class ReachingDefs extends StructuredAnalysis {
 		}
 
 		// find all reachingdefs matching this local
-		List allReachingDefs = beforeSet.toList();
-		Iterator it = allReachingDefs.iterator();
-		while (it.hasNext()) {
-			System.out.println("Reaching def:" + it.next());
+		for (Object o : beforeSet) {
+			System.out.println("Reaching def:" + o);
 		}
 	}
 }
