@@ -39,10 +39,10 @@ import soot.toolkits.scalar.*;
  * @deprecated use {@link MHGPostDominatorsFinder} instead
  */
 @Deprecated
-public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
+public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit,FlowSet<Unit>> {
 
     private UnitGraph g;
-    private FlowSet allNodes;
+    private FlowSet<Unit> allNodes;
     
     public PostDominatorAnalysis(UnitGraph g)
     {
@@ -56,7 +56,7 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
     }
 
     private void initAllNodes(){
-        allNodes = new ArraySparseSet();
+        allNodes = new ArraySparseSet<Unit>();
         Iterator<Unit> it = g.iterator();
         while (it.hasNext()){
             allNodes.add(it.next());
@@ -68,13 +68,13 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
 // INTERSECTION
 
     @Override
-    protected void merge(FlowSet in1, FlowSet in2, FlowSet out)
+    protected void merge(FlowSet<Unit> in1, FlowSet<Unit> in2, FlowSet<Unit> out)
     {
         in1.intersection(in2, out);	
     }
     
     @Override
-    protected void copy(FlowSet source, FlowSet dest) {        
+    protected void copy(FlowSet<Unit> source, FlowSet<Unit> dest) {        
         source.copy(dest);
 
     }
@@ -84,7 +84,7 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
 // ie: dom(s) = s and whoever dominates all the predeccessors of s
 // 
     @Override
-    protected void flowThrough(FlowSet in, Unit s, FlowSet out)
+    protected void flowThrough(FlowSet<Unit> in, Unit s, FlowSet<Unit> out)
     {
         if (isUnitEndNode(s)){
 //            System.out.println("s: "+s+" is end node");
@@ -103,7 +103,7 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
                 Unit succ = succsIt.next();
                 // get the unitToBeforeFlow and find the intersection
 //                System.out.println("succ: "+succ);
-                FlowSet next = (FlowSet) unitToBeforeFlow.get(succ);
+                FlowSet<Unit> next = getFlowBefore(succ);
 //                System.out.println("next: "+next);
 //                System.out.println("in before intersect: "+in);
                 in.intersection(next, in);
@@ -132,10 +132,10 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
 // dom(node) = allNodes
 //
     @Override
-    protected FlowSet entryInitialFlow()
+    protected FlowSet<Unit> entryInitialFlow()
     {
 
-    	FlowSet fs = new ArraySparseSet();
+    	FlowSet<Unit> fs = new ArraySparseSet<Unit>();
         List<Unit> tails = g.getTails();
 //        if (tails.size() != 1) {
 //            throw new RuntimeException("Expect one end node only.");
@@ -145,7 +145,7 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
     }
 
     @Override
-    protected FlowSet newInitialFlow()
+    protected FlowSet<Unit> newInitialFlow()
     {
         return allNodes.clone();
     }
@@ -154,7 +154,7 @@ public class PostDominatorAnalysis extends BackwardFlowAnalysis<Unit,FlowSet> {
 	 * Returns true if s post-dominates t.
 	 */
 	public boolean postDominates(Stmt s, Stmt t) {
-		return ((FlowSet)getFlowBefore(t)).contains(s);
+		return getFlowBefore(t).contains(s);
 	}
 
         
