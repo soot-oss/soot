@@ -57,15 +57,13 @@ public class ToppedSet<T> extends AbstractFlowSet<T>
 
     public void copy(FlowSet<T> d)
     {
+		if (this == d)
+			return;
+		
         ToppedSet<T> dest = (ToppedSet<T>)d;
-        if (!isTop())
-        {
-            underlyingSet.copy(dest.underlyingSet);
-            dest.setTop(false);
-            return;
-        }
-
-        dest.setTop(true);
+        dest.isTop = isTop;
+        if (!isTop)
+        	underlyingSet.copy(dest.underlyingSet);
     }
 
     public FlowSet<T> emptySet()
