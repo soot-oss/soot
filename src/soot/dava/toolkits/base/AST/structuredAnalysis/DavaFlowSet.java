@@ -306,6 +306,8 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 	}
 
 	public void copy(FlowSet<T> destFlow) {
+		if (this == destFlow)
+			return;
 		if (sameType(destFlow)) {
 			DavaFlowSet<T> dest = (DavaFlowSet<T>) destFlow;
 
