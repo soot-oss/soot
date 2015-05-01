@@ -312,9 +312,6 @@ public class SPhiExpr implements PhiExpr
     
     public boolean addArg(Value arg, Unit predTailUnit)
     {
-        // we have no choice but to flush the cache
-        updateCache();
-
         // we disallow duplicate arguments
         if(predToPair.keySet().contains(predTailUnit))
             return false;
