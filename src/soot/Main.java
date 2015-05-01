@@ -150,10 +150,15 @@ public class Main {
     public static void main(String[] args) {
         try {
             Main.v().run(args);
+        } catch( StackOverflowError e ) {
+            G.v().out.println( "Soot has run out of stack memory." );
+            G.v().out.println( "To allocate more stack memory to Soot, use the -Xss switch to Java." );
+            G.v().out.println( "For example (for 2MB): java -Xss2m soot.Main ..." );
+            throw e;
         } catch( OutOfMemoryError e ) {
             G.v().out.println( "Soot has run out of the memory allocated to it by the Java VM." );
             G.v().out.println( "To allocate more memory to Soot, use the -Xmx switch to Java." );
-            G.v().out.println( "For example (for 400MB): java -Xmx400m soot.Main ..." );
+            G.v().out.println( "For example (for 2GB): java -Xmx2g soot.Main ..." );
             throw e;
         } catch( RuntimeException e ) {
         	e.printStackTrace();
