@@ -73,8 +73,7 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
 
     public int size()
     {
-
-        return bits.size();
+        return bits.cardinality();
     }
 
     public boolean isEmpty()
