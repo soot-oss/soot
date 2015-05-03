@@ -68,6 +68,7 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
 
 	public void clear() {
 		numElements = 0;
+		Arrays.fill(elements, null);
 	}
 
 	public int size() {
@@ -79,11 +80,8 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
 	}
 
 	/** Returns a unbacked list of elements in this set. */
-	public List<T> toList() {
-        @SuppressWarnings("unchecked")
-		T[] copiedElements = (T[]) new Object[numElements];
-        System.arraycopy(elements, 0, copiedElements, 0, numElements);
-        return Arrays.asList(copiedElements);
+	public List<T> toList() {        
+        return Arrays.asList(Arrays.copyOf(elements, numElements));
 	}
 
 	/*

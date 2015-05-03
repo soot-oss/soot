@@ -64,7 +64,7 @@ import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
  * @author Eric Bodden
  * @author Julian Tibble
  */
-public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
+public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis<NullnessAnalysis.AnalysisInfo>
 {
 	/**
 	 * The analysis info is a simple mapping of type {@link Value} to
@@ -75,6 +75,11 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	 */
 	protected class AnalysisInfo extends java.util.BitSet
 	{
+		/**
+		 * 
+		 */
+		private static final long serialVersionUID = -9200043127757823764L;
+
 		public AnalysisInfo() {
 			super(used);
 		}
@@ -133,8 +138,7 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void flowThrough(Object flowin, Unit u, List fallOut, List branchOuts) {
-		AnalysisInfo in = (AnalysisInfo) flowin;
+	protected void flowThrough(AnalysisInfo in, Unit u, List<AnalysisInfo> fallOut, List<AnalysisInfo> branchOuts) {
 		AnalysisInfo out = new AnalysisInfo(in);
 		AnalysisInfo outBranch = new AnalysisInfo(in);
 		
@@ -183,10 +187,10 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 		}
 		
 		// now copy the computed info to all successors
-		for( Iterator it = fallOut.iterator(); it.hasNext(); ) {
+		for( Iterator<AnalysisInfo> it = fallOut.iterator(); it.hasNext(); ) {
 			copy( out, it.next() );
 		}
-		for( Iterator it = branchOuts.iterator(); it.hasNext(); ) {
+		for( Iterator<AnalysisInfo> it = branchOuts.iterator(); it.hasNext(); ) {
 			copy( outBranch, it.next() );
 		}
 	}
@@ -320,9 +324,7 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void copy(Object source, Object dest) {
-		AnalysisInfo s = (AnalysisInfo) source;
-		AnalysisInfo d = (AnalysisInfo) dest;
+	protected void copy(AnalysisInfo s, AnalysisInfo d) {
 		d.clear();
 		d.or(s);
 	}
@@ -331,26 +333,17 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected Object entryInitialFlow() {
-		return new AnalysisInfo();
+	protected void merge(AnalysisInfo in1, AnalysisInfo in2, AnalysisInfo out) {
+		out.clear();
+		out.or(in1);
+		out.or(in2);
 	}
 
 	/**
 	 * {@inheritDoc}
 	 */
 	@Override
-	protected void merge(Object in1, Object in2, Object out) {
-		AnalysisInfo outflow = (AnalysisInfo) out;
-		outflow.clear();
-		outflow.or((AnalysisInfo) in1);
-		outflow.or((AnalysisInfo) in2);
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	@Override
-	protected Object newInitialFlow() {
+	protected AnalysisInfo newInitialFlow() {
 		return new AnalysisInfo();
 	}
 	
@@ -362,8 +355,7 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	 * @return true if i is always null right before this statement
 	 */
 	public boolean isAlwaysNullBefore(Unit s, Immediate i) {
-		AnalysisInfo ai = (AnalysisInfo) getFlowBefore(s);
-		return ai.get(i)==NULL;
+		return getFlowBefore(s).get(i) == NULL;
 	}
 
 	/**
@@ -374,7 +366,6 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis
 	 * @return true if i is always non-null right before this statement
 	 */
 	public boolean isAlwaysNonNullBefore(Unit s, Immediate i) {
-		AnalysisInfo ai = (AnalysisInfo) getFlowBefore(s);
-		return ai.get(i)==NON_NULL;
+		return getFlowBefore(s).get(i) == NON_NULL;
 	}
 }

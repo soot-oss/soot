@@ -1,5 +1,4 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 1997-1999 Raja Vallee-Rai
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -17,450 +16,343 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- */
-
-
-
-
-
-
 package soot.toolkits.scalar;
-import soot.options.*;
 
-import soot.toolkits.graph.*;
-import soot.*;
-import soot.util.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
-
-// FSet version
-
-
+import soot.Local;
+import soot.Timers;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.options.Options;
+import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.UnitGraph;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.unmodifiableList;
 
 /**
- *   Analysis that provides an implementation of the LocalDefs interface.
+ * Analysis that provides an implementation of the LocalDefs interface.
  */
-public class SimpleLocalDefs implements LocalDefs
-{
-    Map<LocalUnitPair, List> localUnitPairToDefs;
-
-
-    /**
-     *   Computes the analysis given a UnitGraph computed from a method body.
-     *   It is recommended that a ExceptionalUnitGraph (or similar) be provided
-     *   for correct results in the case of exceptional control flow.
-     *   @param g a graph on which to compute the analysis.
-     *   
-     *   @see ExceptionalUnitGraph
-     */
-    public SimpleLocalDefs(UnitGraph g)
-    {
-        if(Options.v().time())
-            Timers.v().defsTimer.start();
-        
-        if(Options.v().verbose())
-            G.v().out.println("[" + g.getBody().getMethod().getName() +
-                               "]     Constructing SimpleLocalDefs...");
-    
-        LocalDefsFlowAnalysis analysis = new LocalDefsFlowAnalysis(g);
-        
-        if(Options.v().time())
-            Timers.v().defsPostTimer.start();
-
-        // Build localUnitPairToDefs map
-        {
-            Iterator unitIt = g.iterator();
-
-            localUnitPairToDefs = new HashMap<LocalUnitPair, List>(g.size() * 2 + 1, 0.7f);
-
-            while(unitIt.hasNext())
-                {
-                    Unit s = (Unit) unitIt.next();
-
-                    Iterator boxIt = s.getUseBoxes().iterator();
-
-                    while(boxIt.hasNext())
-                        {
-                            ValueBox box = (ValueBox) boxIt.next();
-
-                            if(box.getValue() instanceof Local)
-                                {
-                                    Local l = (Local) box.getValue();
-                                    LocalUnitPair pair = new LocalUnitPair(l, s);
-
-                                    if(!localUnitPairToDefs.containsKey(pair))
-                                        {
-                                            IntPair intPair = analysis.localToIntPair.get(l);
-					    
-                                            ArrayPackedSet value = (ArrayPackedSet) analysis.getFlowBefore(s);
-
-                                            List unitLocalDefs = value.toList(intPair.op1, intPair.op2);
-
-                                            localUnitPairToDefs.put(pair, Collections.unmodifiableList(unitLocalDefs));
-                                        }
-                                }
-                        }
-                }
-        }
-
-        if(Options.v().time())
-            Timers.v().defsPostTimer.end();
-                
-        if(Options.v().time())
-            Timers.v().defsTimer.end();
-
-	if(Options.v().verbose())
-	    G.v().out.println("[" + g.getBody().getMethod().getName() +
-                               "]     SimpleLocalDefs finished.");
-    }
-
-    public boolean hasDefsAt(Local l, Unit s)
-    {
-        return localUnitPairToDefs.containsKey( new LocalUnitPair(l,s) );
-    }
-    public List<Unit> getDefsOfAt(Local l, Unit s)
-    {
-        LocalUnitPair pair = new LocalUnitPair(l, s);
-
-        List<Unit> toReturn = localUnitPairToDefs.get(pair);
-        
-        if(toReturn == null)
-            throw new RuntimeException("Illegal LocalDefs query; local " + l + " has no definition at " + 
-                                       s.toString());
-               
-        
-        return toReturn;
-    }
-    
-    /*
-      public List getDefsOfBefore(Local l, Unit s)
-      {
-      IntPair pair = (IntPair) analysis.localToIntPair.get(l);
-      FSet value = (FSet) analysis.getValueBeforeUnit(s);
-
-      List unitLocalDefs = value.toList(pair.op1, pair.op2);
-
-      return unitLocalDefs;
-      }*/
-
-    /*
-      Object[] elements = ((FSet) analysis.getValueBeforeUnit(s)).toArray();
-      List listOfDefs = new LinkedList();
-
-      // Extract those defs which correspond to this local
-      {
-      for(int i = 0; i < elements.length; i++)
-      {
-      DefinitionUnit d = (DefinitionUnit) elements[i];
-
-      if(d.getLeftOp() == l)
-      listOfDefs.add(d);
-      }
-      }
-
-      // Convert the array so that it's of an appropriate form
-      {
-      Object[] objects = listOfDefs.toArray();
-      DefinitionUnit[] defs = new DefinitionUnit[objects.length];
-
-      for(int i = 0; i < defs.length; i++)
-      defs[i] = (DefinitionUnit) objects[i];
-
-      return defs;
-      }
-
-      }
-      }
-    */
-
-    /*
-      public DefinitionUnit[] getDefsOfAfter(Local l, Unit s)
-      {
-      Object[] elements = ((FSet) analysis.getValueAfterUnit(s)).toArray();
-      List listOfDefs = new LinkedList();
-
-      // Extract those defs which correspond to this local
-      {
-      for(int i = 0; i < elements.length; i++)
-      {
-      DefinitionUnit d = (DefinitionUnit) elements[i];
-
-      if(d.getLeftOp() == l)
-      listOfDefs.add(d);
-      }
-      }
-
-      // Convert the array so that it's of an appropriate form
-      {
-      Object[] objects = listOfDefs.toArray();
-      DefinitionUnit[] defs = new DefinitionUnit[objects.length];
-
-      for(int i = 0; i < defs.length; i++)
-      defs[i] = (DefinitionUnit) objects[i];
-
-      return defs;
-      }
-      }
-
-      public DefinitionUnit[] getDefsBefore(Unit s)
-      {
-      Object[] elements = ((FSet) analysis.getValueBeforeUnit(s)).toArray();
-      DefinitionUnit[] defs = new DefinitionUnit[elements.length];
-
-      for(int i = 0; i < elements.length; i++)
-      defs[i] = (DefinitionUnit) elements[i];
-
-      return defs;
-      }
-
-      public DefinitionUnit[] getDefsAfter(Unit s)
-      {
-      Object[] elements = ((FSet) analysis.getValueAfterUnit(s)).toArray();
-      DefinitionUnit[] defs = new DefinitionUnit[elements.length];
-
-      for(int i = 0; i < elements.length; i++)
-      defs[i] = (DefinitionUnit) elements[i];
-
-      return defs;
-      }
-    */
-}
-
-class IntPair
-{
-    int op1, op2;
-
-    public IntPair(int op1, int op2)
-    {
-        this.op1 = op1;
-        this.op2 = op2;
-    }
-
-}
-
-class LocalDefsFlowAnalysis extends ForwardFlowAnalysis
-{
-    FlowSet emptySet;
-    Map<Local, BoundedFlowSet> localToPreserveSet;
-    Map<Local, IntPair> localToIntPair;
-
-    public LocalDefsFlowAnalysis(UnitGraph g)
-    {
-        super(g);
-
-        Object[] defs;
-        FlowUniverse defUniverse;
-
-        if(Options.v().time())
-            Timers.v().defsSetupTimer.start();
-
-        // Create a list of all the definitions and group defs of the same local together
-        {
-            Map<Local, ArrayList> localToDefList = new HashMap<Local, ArrayList>(g.getBody().getLocalCount() * 2 + 1, 0.7f);
-
-            // Initialize the set of defs for each local to empty
-            {
-                Iterator localIt = g.getBody().getLocals().iterator();
-
-                while(localIt.hasNext())
-                    {
-                        Local l = (Local) localIt.next();
-
-                        localToDefList.put(l, new ArrayList());
-                    }
-            }
-
-            // Fill the sets up
-            {
-                Iterator it = g.iterator();
-
-                while(it.hasNext())
-                    {
-                        Unit s = (Unit) it.next();
-
-                    
-                        List defBoxes = s.getDefBoxes();
-                        if(!defBoxes.isEmpty()) {
-                            if(!(defBoxes.size() ==1)) 
-                                throw new RuntimeException("invalid number of def boxes");
-                            
-                            if(((ValueBox)defBoxes.get(0)).getValue() instanceof Local) {
-                                Local defLocal = (Local) ((ValueBox)defBoxes.get(0)).getValue();
-                                List<Unit> l = localToDefList.get(defLocal);
-                            
-                                if(l == null)
-                                    throw new RuntimeException("local " + defLocal + " is used but not declared!");
-                                else
-                                    l.add(s);
-                            }
-                        }
-                    
-                    }
-            }
-
-            // Generate the list & localToIntPair
-            {
-                Iterator it = g.getBody().getLocals().iterator();
-                List defList = new LinkedList();
-
-                int startPos = 0;
-
-                localToIntPair = new HashMap<Local, IntPair>(g.getBody().getLocalCount() * 2 + 1, 0.7f);
-
-                // For every local, add all its defs
-                {
-                    while(it.hasNext())
-                        {
-                            Local l = (Local) it.next();
-                            Iterator jt = localToDefList.get(l).iterator();
-
-                            int endPos = startPos - 1;
-
-                            while(jt.hasNext())
-                                {
-                                    defList.add(jt.next());
-                                    endPos++;
-                                }
-
-                            localToIntPair.put(l, new IntPair(startPos, endPos));
-
-                            // G.v().out.println(startPos + ":" + endPos);
-
-                            startPos = endPos + 1;
-                        }
-                }
-
-                defs = defList.toArray();
-                defUniverse = new ArrayFlowUniverse(defs);
-            }
-        }
-
-        emptySet = new ArrayPackedSet(defUniverse);
-
-        // Create the preserve sets for each local.
-        {
-            Map<Local, FlowSet> localToKillSet = new HashMap<Local, FlowSet>(g.getBody().getLocalCount() * 2 + 1, 0.7f);
-            localToPreserveSet = new HashMap<Local, BoundedFlowSet>(g.getBody().getLocalCount() * 2 + 1, 0.7f);
-
-            Chain locals = g.getBody().getLocals();
-
-            // Initialize to empty set
-            {
-                Iterator localIt = locals.iterator();
-
-                while(localIt.hasNext())
-                    {
-                        Local l = (Local) localIt.next();
-
-                        localToKillSet.put(l, emptySet.clone());
-                    }
-            }
-
-            for (Object element : defs) {
-			    Unit s = (Unit) element;
-			    
-			    List defBoxes = s.getDefBoxes();
-			    if(!(defBoxes.size() ==1)) 
-			        throw new RuntimeException("SimpleLocalDefs: invalid number of def boxes");
-			            
-			    if(((ValueBox)defBoxes.get(0)).getValue() instanceof Local) {
-			        Local defLocal = (Local) ((ValueBox)defBoxes.get(0)).getValue();
-			        BoundedFlowSet killSet = (BoundedFlowSet) localToKillSet.get(defLocal);
-			        killSet.add(s, killSet);
-			        
-			    }
+public class SimpleLocalDefs implements LocalDefs {
+	static class Entry {
+		final List<Unit> units;
+		final Local local;
+		
+		Entry(List<Unit> units, Local local) {
+			this.units = units;
+			this.local = local;
+		}
+	}
+	
+	static class FlowBitSet<T> extends BitSet {
+		private static final long serialVersionUID = -8348696077189400377L;
+		
+		final private T[] universe;
+		
+		FlowBitSet (T[] universe) {
+			super(universe.length);
+			this.universe = universe;
+		}
+	    
+	    List<T> asList(int fromIndex, int toIndex) {
+	    	BitSet bits = this;
+	    	if (fromIndex < 0 || toIndex > universe.length || toIndex < fromIndex)
+	    		throw new IndexOutOfBoundsException();
+
+	    	if (fromIndex == toIndex || fromIndex == toIndex - 1) {
+	    		if (bits.get(fromIndex)) {
+	    			return singletonList(universe[fromIndex]);
+	    		}
+	    		return emptyList();
+	    	}
+	    	
+	    	int i = bits.nextSetBit(fromIndex);
+	    	if (i < 0 || i >= toIndex)
+	    		return emptyList();
+	    	
+	    	if (i == toIndex - 1) 
+	    		return singletonList(universe[i]);
+	    	
+	        List<T> elements = new ArrayList<T>(toIndex-i);
+	                		
+			for (;;) {
+				int endOfRun = Math.min(toIndex, bits.nextClearBit(i+1));
+				do { elements.add(universe[i++]); }
+				while (i < endOfRun);
+				if (i >= toIndex)
+					break;
+				i = bits.nextSetBit(i+1);
+				if (i < 0 || i >= toIndex)
+					break;
 			}
-            
-            // Store complement
-            {
-                Iterator localIt = locals.iterator();
+			return elements;
+	    }
+	}	
+	
+	abstract static class Assignment implements LocalDefs {		
+		final Map<ValueBox, Entry> resultValueBoxes;
+	
+		Assignment(int size) {
+			// never keep values longer than required
+			resultValueBoxes = new WeakHashMap<ValueBox, Entry>((size * 7)/2 + 3);
+		}
 
-                while(localIt.hasNext())
-                    {
-                        Local l = (Local) localIt.next();
+		@Override
+		public List<Unit> getDefsOfAt(Local l, Unit s) {
+			for (ValueBox useBox : s.getUseBoxes()) {
+				if (l == useBox.getValue()) {
+					Entry e = resultValueBoxes.get(useBox);
+					// check if local was exchanged!
+					if (e != null && l == e.local) {
+						return unmodifiableList(e.units);
+					}
+				}
+			}
+			return emptyList();
+		}
+		
+		public List<Unit> getDefsOf(ValueBox valueBox) {
+			Entry e = resultValueBoxes.get(valueBox);
+			if (e == null) 
+				return emptyList();
+			
+			return unmodifiableList(e.units);
+		}
+		
+		void putResult(ValueBox useBox, Local local, List<Unit> list) {
+			if (list.isEmpty())
+				return;			
+			// one of the most expensive steps :|
+			resultValueBoxes.put(useBox, new Entry(list, local));
+		}
+	}
+	
+	class StaticSingleAssignment extends Assignment {
+		StaticSingleAssignment(List<Unit>[] unitList) {	
+			// most of the units are like "a := b + c", 
+			// or a invoke like "a := b.foo()"
+			super(g.size());
+			assert localRange[N] == 0;
+			
+			for (Unit s : g) {
+				for (ValueBox useBox : s.getUseBoxes()) {
+					Value v = useBox.getValue();
+					if (v instanceof Local) {
+						Local l = (Local) v;
+						int lno = l.getNumber();
 
-                        BoundedFlowSet killSet = (BoundedFlowSet) localToKillSet.get(l);
+						putResult(useBox, l, unitList[lno]);
+					}
+				}
+			}
+		}
+	}
 
-                        killSet.complement(killSet);
+	class FlowAssignment extends Assignment {				
+		FlowAssignment(List<Unit>[] unitList) {
+			// most of the units are like "a := b + c", 
+			// or a invoke like "a := b.foo()"
+			super(g.size());
 
-                        localToPreserveSet.put(l, killSet);
-                    }
-            }
-        }
+			LocalDefsAnalysis defs = new LocalDefsAnalysis();
 
-        if(Options.v().time())
-            Timers.v().defsSetupTimer.end();
+			for (Unit s : g) {
+				for (ValueBox useBox : s.getUseBoxes()) {
+					Value v = useBox.getValue();
+					if (v instanceof Local) {
+						Local l = (Local) v;
+						int lno = l.getNumber();
 
-        if(Options.v().time())
-            Timers.v().defsAnalysisTimer.start();
+						int from = localRange[lno];
+						int to = localRange[lno + 1];
+						assert from <= to;
+						
+						if (from == to) {
+							putResult(useBox, l, unitList[lno]);
+						} else {							
+							putResult(useBox, l, defs.getFlowBefore(s).asList(from, to));
+						}				
+					}
+				}
+			}
+		}
+	}
 
-        doAnalysis();
-        
-        if(Options.v().time())
-            Timers.v().defsAnalysisTimer.end();
-    }
-    
-    protected Object newInitialFlow()
-    {
-        return emptySet.clone();
-    }
+	private class LocalDefsAnalysis extends ForwardFlowAnalysis<Unit, FlowBitSet<Unit>> {
+		private LocalDefsAnalysis() {
+			super(g);
+			doAnalysis();
+		}
+				
+		@Override
+		protected void flowThrough(FlowBitSet<Unit> in, Unit unit, FlowBitSet<Unit> out) {
+			out.or(in);
+			
+			Integer idx = indexOfUnit.get(unit);
+			if (idx == null) 
+				return;
+			
+			if (!in.isEmpty()) {	
+				// reassign all definitions
+				for (ValueBox vb : unit.getDefBoxes()) {
+					Value v = vb.getValue();
+					if (v instanceof Local) {
+						Local l = (Local) v;
+						int lno = l.getNumber();
+	
+						int from = localRange[lno];
+						int to = localRange[1+lno];
+						assert from <= to;
+	
+						if (from < to) {
+							out.clear(from, to);
+						}
+					}
+				}	
+			}
+			out.set(idx);
+		}
 
-    protected Object entryInitialFlow()
-    {
-        return emptySet.clone();
-    }
+		@Override
+		protected void mergeInto(Unit succNode, FlowBitSet<Unit> inout, FlowBitSet<Unit> in) {
+			inout.or(in);
+		}
 
-    protected void flowThrough(Object inValue, Object d, Object outValue)
-    {
-        FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
-        Unit unit = (Unit)d;
+		@Override
+		protected void copy(FlowBitSet<Unit> source, FlowBitSet<Unit> dest) {
+			dest.clear();
+			dest.or(source);
+		}
 
-        List defBoxes = unit.getDefBoxes();
-        if(!defBoxes.isEmpty()) {
-            if(!(defBoxes.size() ==1)) 
-                throw new RuntimeException("SimpleLocalDefs: invalid number of def boxes");
-                          
-            Value value = ((ValueBox)defBoxes.get(0)).getValue();
-            if(value  instanceof Local) {
-                Local defLocal = (Local) value;
-            
-                // Perform kill on value
-                in.intersection(localToPreserveSet.get(defLocal), out);
+		@Override
+		protected FlowBitSet<Unit> newInitialFlow() {
+			return new FlowBitSet<Unit>(universe);
+		}
 
-                // Perform generation
-                out.add(unit, out);
-            } else { 
-                in.copy(out);
-                return;
-            }
+		@Override
+		protected void merge(FlowBitSet<Unit> in1, FlowBitSet<Unit> in2, FlowBitSet<Unit> out) {
+			throw new UnsupportedOperationException("should never be called");
+		}
+	}
 
+	final private DirectedGraph<Unit> g;
+	final int N;
 
-        
+	private int[] localRange;
 
-        }
-        else
-            in.copy(out);
-    }
+	private Unit[] universe;
+	private Map<Unit, Integer> indexOfUnit;
 
-    protected void copy(Object source, Object dest)
-    {
-        FlowSet sourceSet = (FlowSet) source,
-            destSet = (FlowSet) dest;
-        
-        sourceSet.copy(destSet);
-    }
+	private Assignment assignment;
 
-    protected void merge(Object in1, Object in2, Object out)
-    {
-        FlowSet inSet1 = (FlowSet) in1,
-            inSet2 = (FlowSet) in2;
-        
-        FlowSet outSet = (FlowSet) out;
-        
-        inSet1.union(inSet2, outSet);
-    }
+	public SimpleLocalDefs(UnitGraph graph) {
+		this(graph, false);
+	}
+	
+	public SimpleLocalDefs(UnitGraph graph, boolean omitSSA) {
+		this(graph, graph.getBody().getLocals(), omitSSA);
+	}
+
+	SimpleLocalDefs(DirectedGraph<Unit> graph, Collection<Local> locals, boolean omitSSA) {
+		this(graph, locals.toArray(new Local[locals.size()]), omitSSA);
+	}
+
+	SimpleLocalDefs(DirectedGraph<Unit> graph, Local[] locals, boolean omitSSA) {
+		if (Options.v().time())
+			Timers.v().defsTimer.start();
+
+		this.g = graph;
+		this.N = locals.length;
+		
+		// reassign local numbers
+		int[] oldNumbers = new int[N];
+		for (int i = 0; i < N; i++) {
+			oldNumbers[i] = locals[i].getNumber();
+			locals[i].setNumber(i);
+		}
+
+		init(omitSSA);
+
+		// restore local numbering
+		for (int i = 0; i < N; i++) {
+			locals[i].setNumber(oldNumbers[i]);
+		}
+		
+		// GC help
+		localRange = null;
+		
+		indexOfUnit.clear();
+		indexOfUnit = null;
+		
+		Arrays.fill(universe, null);
+		universe = null;
+		
+		if (Options.v().time())
+			Timers.v().defsTimer.end();
+	}
+
+	private void init(boolean omitSSA) {
+		indexOfUnit = new HashMap<Unit, Integer>(g.size());
+		universe = new Unit[g.size()];
+		localRange = new int[N + 1];
+		
+		@SuppressWarnings("unchecked")
+		List<Unit>[] unitList = (List<Unit>[]) new List[N];
+
+		for (int i = 0; i < N; i++) {
+			unitList[i] = new ArrayList<Unit>();
+		}
+
+		boolean doFlowAnalsis = omitSSA;
+				
+		// collect all live def points
+		for (Unit unit : g) {
+			for (ValueBox box : unit.getDefBoxes()) {
+				Value v = box.getValue();
+				if (v instanceof Local) {
+					Local l = (Local) v;
+					int lno = l.getNumber();
+
+					doFlowAnalsis |= !unitList[lno].isEmpty();
+					unitList[lno].add(unit);
+				}
+			}
+		}
+		
+		if (doFlowAnalsis) {
+			localRange[0] = 0;
+			for (int j = 0, i = 0; i < N; i++) {
+				if (unitList[i].size() >= 2 || omitSSA) {
+					for (Unit u : unitList[i]) {
+						indexOfUnit.put(universe[j] = u, j);
+						j++;
+					}
+				}
+				localRange[i + 1] = j;
+			}
+			assignment = new FlowAssignment(unitList);
+		} else {
+			Arrays.fill(localRange, 0);
+			assignment = new StaticSingleAssignment(unitList);
+		}		
+	}
+
+	@Override
+	public List<Unit> getDefsOfAt(Local l, Unit s) {
+		return assignment.getDefsOfAt(l, s);
+	}
+	
+	
+	public Collection<Unit> getDefsOf(ValueBox valueBox) {
+		return assignment.getDefsOf(valueBox);
+	}
 }

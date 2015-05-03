@@ -1637,8 +1637,8 @@ final class AsmMethodSource implements MethodSource {
 	private void emitLocals() {
 		JimpleBody jb = body;
 		SootMethod m = jb.getMethod();
-		Chain<Local> jbl = jb.getLocals();
-		Chain<Unit> jbu = jb.getUnits();
+		Collection<Local> jbl = jb.getLocals();
+		Collection<Unit> jbu = jb.getUnits();
 		int iloc = 0;
 		if (!m.isStatic()) {
 			Local l = getLocal(iloc++);

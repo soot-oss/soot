@@ -73,7 +73,7 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
 		}
 
 		if (s.branches()) {
-			List<A> l = (unitToAfterBranchFlow.get(s));
+			List<A> l = (getBranchFlowAfter(s));
 			Iterator<A> it = l.iterator();
 
 			while (it.hasNext()) {
@@ -127,7 +127,7 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
 				unitToBeforeFlow.put(s, newInitialFlow());
 
 				if (s.fallsThrough()) {
-					ArrayList<A> fl = new ArrayList<A>();
+					List<A> fl = new ArrayList<A>();
 
 					fl.add((newInitialFlow()));
 					unitToAfterFallFlow.put(s, fl);
@@ -142,8 +142,8 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
 				} else
 					unitToAfterFallFlow.put(s, new ArrayList<A>());
 
+				List<A> l = new ArrayList<A>();
 				if (s.branches()) {
-					ArrayList<A> l = new ArrayList<A>();
 					List<A> incList;
 					for (UnitBox ub : s.getUnitBoxes()) {
 						A f = (newInitialFlow());
@@ -154,9 +154,9 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
 
 						incList.add(f);
 					}
-					unitToAfterBranchFlow.put(s, l);
-				} else
-					unitToAfterBranchFlow.put(s, new ArrayList<A>());
+					
+				}
+				unitToAfterBranchFlow.put(s, l);
 
 				if (s.getUnitBoxes().size() > maxBranchSize)
 					maxBranchSize = s.getUnitBoxes().size();
@@ -203,7 +203,7 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
 				{
 					List<A> preds = unitToIncomingFlowSets.get(s);
 
-					beforeFlow = unitToBeforeFlow.get(s);
+					beforeFlow = getFlowBefore(s);
 
 					if (preds.size() == 1)
 						copy(preds.get(0), beforeFlow);
@@ -226,21 +226,22 @@ public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysi
 
 				// Compute afterFlow and store it.
 				{
-					ArrayList<A> afterFallFlow = unitToAfterFallFlow.get(s);
-					ArrayList<A> afterBranchFlow = unitToAfterBranchFlow.get(s);
+					List<A> afterFallFlow = unitToAfterFallFlow.get(s);
+					List<A> afterBranchFlow = getBranchFlowAfter(s);
 					if (Options.v().interactive_mode()) {
+						InteractionHandler ih = InteractionHandler.v();
 						A savedFlow = newInitialFlow();
 						copy(beforeFlow, savedFlow);
 						FlowInfo<A, Unit> fi = new FlowInfo<A, Unit>(savedFlow, s, true);
-						if (InteractionHandler.v().getStopUnitList() != null
-								&& InteractionHandler.v().getStopUnitList().contains(s)) {
-							InteractionHandler.v().handleStopAtNodeEvent(s);
+						if (ih.getStopUnitList() != null
+								&& ih.getStopUnitList().contains(s)) {
+							ih.handleStopAtNodeEvent(s);
 						}
-						InteractionHandler.v().handleBeforeAnalysisEvent(fi);
+						ih.handleBeforeAnalysisEvent(fi);
 					}
 					flowThrough(beforeFlow, s, afterFallFlow, afterBranchFlow);
 					if (Options.v().interactive_mode()) {
-						ArrayList<A> l = new ArrayList<A>();
+						List<A> l = new ArrayList<A>();
 						if (!afterFallFlow.isEmpty()) {
 							l.addAll(afterFallFlow);
 						}

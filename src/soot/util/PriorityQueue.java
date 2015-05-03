@@ -3,6 +3,7 @@
  */
 package soot.util;
 
+import java.util.AbstractMap;
 import java.util.AbstractQueue;
 import java.util.Arrays;
 import java.util.ConcurrentModificationException;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * A fixed size priority queue based on bitsets. The elements of the priority
@@ -245,11 +247,44 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 			if (ordinalMap.put(e, i++) != null)
 				throw new IllegalArgumentException("duplicate key found");
 		}
+		
+		return newPriorityQueue(universe, ordinalMap);
+	}
+	
+	public static <E extends Numberable> PriorityQueue<E> of(List<? extends E> universe, boolean useNumberInterface) {
+		PriorityQueue<E> q = noneOf(universe, useNumberInterface);
+		q.addAll();
+		return q;
+	}
+	
+	public static <E extends Numberable> PriorityQueue<E> noneOf(final List<? extends E> universe, boolean useNumberInterface) {
+		if (!useNumberInterface)
+			return noneOf(universe);
+		
+		int i = 0;
+		for (E e : universe) {
+			e.setNumber(i++);
+		}
 
+		return newPriorityQueue(universe, new AbstractMap<E, Integer>() {		    
+			@SuppressWarnings("unchecked")
+			@Override
+			public Integer get(Object key) {
+				return ((E) key).getNumber();
+			}
+
+			@Override
+			public Set<java.util.Map.Entry<E, Integer>> entrySet() {
+				throw new UnsupportedOperationException();
+			}
+		});
+	}
+	
+	private static <E> PriorityQueue<E> newPriorityQueue(List<? extends E> universe, Map<E, Integer> ordinalMap) {
 		if (universe.size() <= SmallPriorityQueue.MAX_CAPACITY)
 			return new SmallPriorityQueue<E>(universe, ordinalMap);
 		if (universe.size() <= MediumPriorityQueue.MAX_CAPACITY)
 			return new MediumPriorityQueue<E>(universe, ordinalMap);
 		return new LargePriorityQueue<E>(universe, ordinalMap);
-	}
+	} 
 }
