@@ -112,7 +112,7 @@ public class HashMutableEdgeLabelledDirectedGraph<N,L> implements MutableEdgeLab
         tails.clear();
     }
 
-    public Object clone() {
+    public HashMutableEdgeLabelledDirectedGraph<N, L> clone() {
         HashMutableEdgeLabelledDirectedGraph<N,L> g = new HashMutableEdgeLabelledDirectedGraph<N,L>();
         g.nodeToPreds.putAll(nodeToPreds);
         g.nodeToSuccs.putAll(nodeToSuccs);
