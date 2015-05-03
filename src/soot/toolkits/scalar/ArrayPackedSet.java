@@ -85,7 +85,7 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
 
     public void clear()
     {
-        bits = new int[bits.length];
+        bits.clear();
     }
 
 
