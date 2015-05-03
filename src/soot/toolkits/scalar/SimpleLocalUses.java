@@ -113,13 +113,15 @@ public class SimpleLocalUses implements LocalUses
                                         
                     UnitValueBoxPair newPair = new UnitValueBoxPair(unit, useBox);
                     
-                    for (Unit def : localDefs.getDefsOfAt(l, unit)) {
-                    	List<UnitValueBoxPair> lst = unitToUses.get(def);
-                    	if (lst == null) {
-                    		unitToUses.put(def, lst = new ArrayList<UnitValueBoxPair>());
-                    	}                    	
-                    	lst.add(newPair);
-                    }
+                    List<Unit> defs = localDefs.getDefsOfAt(l, unit);
+                    if (defs != null)
+	                    for (Unit def : defs) {
+	                    	List<UnitValueBoxPair> lst = unitToUses.get(def);
+	                    	if (lst == null) {
+	                    		unitToUses.put(def, lst = new ArrayList<UnitValueBoxPair>());
+	                    	}                    	
+	                    	lst.add(newPair);
+	                    }
                 }
             }
         }
