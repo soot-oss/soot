@@ -100,14 +100,13 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
 
     public void clear()
     {
-        for(int i = 0; i < bits.length; i++)
-            bits[i] = 0;
+        bits = new int[bits.length];
     }
 
 
     public List<T> toList(int low, int high)
     {
-        List<T> elements = new ArrayList<T>();
+        List<T> elements = new LinkedList<T>();
 
         int startWord = low / 32,
             startBit = low % 32;
@@ -168,7 +167,7 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
 
     public List<T> toList()
     {
-        List<T> elements = new ArrayList<T>();
+        List<T> elements = new LinkedList<T>();
 
         for(int i = 0; i < bits.length; i++)
         {

@@ -98,7 +98,7 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N>
 
     public boolean isDominatedBy(N node, N dominator)
     {
-        return getDominators(node).contains(dominator);
+        return nodeToDominators.get(node).contains(dominator);
     }
 
     public boolean isDominatedByAll(N node, Collection<N> dominators)
