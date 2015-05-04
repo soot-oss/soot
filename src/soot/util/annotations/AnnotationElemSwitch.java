@@ -1,5 +1,7 @@
 package soot.util.annotations;
 
+import org.apache.commons.lang3.ClassUtils;
+
 import soot.tagkit.AbstractAnnotationElemTypeSwitch;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
@@ -91,9 +93,8 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
 
 	@Override
 	public void caseAnnotationClassElem(AnnotationClassElem v) {
-		ClassLoader cl = this.getClass().getClassLoader();
 		try {
-			Class<?> clazz = cl.loadClass(toQuallifiedClassName(v.getDesc()));
+			Class<?> clazz = ClassUtils.getClass(v.getDesc());
 			setResult(new AnnotationElemResult<Class<?>>(v.getName(), clazz));
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Could not load class: " + v.getDesc());
@@ -108,9 +109,8 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
 
 	@Override
 	public void caseAnnotationEnumElem(AnnotationEnumElem v) {
-		ClassLoader cl = this.getClass().getClassLoader();
 		try {
-			Class<?> clazz = cl.loadClass(toQuallifiedClassName(v.getTypeName()));
+			Class<?> clazz = ClassUtils.getClass(v.getTypeName());
 
 			// find out which enum constant is used.
 			Enum<?> result = null;
@@ -162,18 +162,5 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
 	public void defaultCase(Object object) {
 		throw new RuntimeException("Unexpected AnnotationElem");
 	}
-
-	/**
-	 * Translates a quallified class name in java bytecode internal form to the
-	 * java internal form using "." for package seperation.
-	 * 
-	 * @param name
-	 *            quallified class name in java bytecode internal form.
-	 * @return Java internal equivalent of <code>name</code>.
-	 */
-	public static String toQuallifiedClassName(String name) {
-		name = name.substring(1, name.length() - 1);
-		name = name.replace('/', '.');
-		return name;
-	}
+	
 }
