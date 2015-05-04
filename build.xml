@@ -38,7 +38,7 @@
            		<pathelement location="${slf4j-api.jar}"/>
            		<pathelement location="${slf4j-simple.jar}"/>
            		<pathelement location="${asm.jar}"/>
-				<pathelement location="${commons-lang.jar"}/>
+				<pathelement location="${commons-lang.jar}"/>
         	</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
