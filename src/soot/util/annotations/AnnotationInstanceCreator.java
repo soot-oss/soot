@@ -13,7 +13,6 @@ import com.google.common.reflect.AbstractInvocationHandler;
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
 import soot.util.annotations.AnnotationElemSwitch.AnnotationElemResult;
-import static soot.util.annotations.AnnotationElemSwitch.toQuallifiedClassName;
 
 /**
  * 
