@@ -38,3 +38,5 @@ junit.jar=libs/junit-4.11.jar
 hamcrest.jar=libs/hamcrest-all-1.3.jar
 
 javacup.jar=libs/java_cup.jar
+
+commons-lang.jar=libs/commons-lang3-3.4.jar
