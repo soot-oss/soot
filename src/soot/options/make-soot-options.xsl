@@ -36,12 +36,15 @@ package soot.options;
 import soot.*;
 import java.util.*;
 import soot.PackManager;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /** Soot command-line options parser.
  * @author Ondrej Lhotak
  */
 
 public class Options extends OptionsBase {
+	final static Logger logger = LoggerFactory.getLogger(Options.class);
+
     public Options(Singletons.Global g) { }
     public static Options v() { return G.v().soot_options_Options(); }
 
@@ -66,7 +69,7 @@ public class Options extends OptionsBase {
             if( false );
 <xsl:apply-templates mode="parse" select="/options/section"/>
             else {
-                G.v().out.println( "Invalid option -"+option );
+                logger.info( "Invalid option -"+option );
                 return false;
             }
         }
@@ -128,7 +131,7 @@ public class Options extends OptionsBase {
     </xsl:for-each>
             ) {
                 if( !hasMoreOptions() ) {
-                    G.v().out.println( "No value given for option -"+option );
+                    logger.info( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -142,14 +145,14 @@ public class Options extends OptionsBase {
                 ) {
                     if( <xsl:copy-of select="$name"/> != 0
                     &#38;&#38; <xsl:copy-of select="$name"/> != <xsl:copy-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/> ) {
-                        G.v().out.println( "Multiple values given for option "+option );
+                        logger.info( "Multiple values given for option "+option );
                         return false;
                     }
                     <xsl:copy-of select="$name"/> = <xsl:copy-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>;
                 }
     </xsl:for-each>
                 else {
-                    G.v().out.println( "Invalid value "+value+" given for option -"+option );
+                    logger.info( "Invalid value "+value+" given for option -"+option );
                     return false;
                 }
            }
@@ -163,7 +166,7 @@ public class Options extends OptionsBase {
     </xsl:for-each>
             ) {
                 if( !hasMoreOptions() ) {
-                    G.v().out.println( "No value given for option -"+option );
+                    logger.info( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -174,7 +177,7 @@ public class Options extends OptionsBase {
                 <xsl:copy-of select="$name"/>.add( value );
                 <xsl:if test="'plugin' = $name">
                 if(!loadPluginConfiguration(value)) {
-                    G.v().out.println( "Failed to load plugin" +value );
+                    logger.info( "Failed to load plugin" +value );
                     return false;
                 }
                 </xsl:if>
@@ -189,12 +192,12 @@ public class Options extends OptionsBase {
     </xsl:for-each>
             ) {
                 if( !hasMoreOptions() ) {
-                    G.v().out.println( "No phase name given for option -"+option );
+                    logger.info( "No phase name given for option -"+option );
                     return false;
                 }
                 String phaseName = nextOption();
                 if( !hasMoreOptions() ) {
-                    G.v().out.println( "No phase option given for option -"+option+" "+phaseName );
+                    logger.info( "No phase option given for option -"+option+" "+phaseName );
                     return false;
                 }
                 String phaseOption = nextOption();
@@ -212,7 +215,7 @@ public class Options extends OptionsBase {
     </xsl:for-each>
             ) {
                 if( !hasMoreOptions() ) {
-                    G.v().out.println( "No value given for option -"+option );
+                    logger.info( "No value given for option -"+option );
                     return false;
                 }
                 String value = nextOption();
@@ -220,7 +223,7 @@ public class Options extends OptionsBase {
                 if( <xsl:copy-of select="$name"/>.length() == 0 )
                     <xsl:copy-of select="$name"/> = value;
                 else {
-                    G.v().out.println( "Duplicate values "+<xsl:copy-of select="$name"/>+" and "+value+" for option -"+option );
+                    logger.info( "Duplicate values "+<xsl:copy-of select="$name"/>+" and "+value+" for option -"+option );
                     return false;
                 }
             }
@@ -546,13 +549,13 @@ public class <xsl:copy-of select="$filename"/><xsl:if test="extends"> extends <x
     <xsl:for-each select="phase|radio_phase|phase/sub_phase|radio_phase/sub_phase"><xsl:text/>
         if( phaseName.equals( "<xsl:value-of select="alias|alias"/>" ) ) return;<xsl:text/>
     </xsl:for-each>
-        G.v().out.println( "Warning: Phase "+phaseName+" is not a standard Soot phase listed in XML files." );
+        logger.info( "Warning: Phase "+phaseName+" is not a standard Soot phase listed in XML files." );
     }
 
     public void warnNonexistentPhase() {
     <xsl:for-each select="phase|radio_phase|phase/sub_phase|radio_phase/sub_phase"><xsl:text/>
         if( !PackManager.v().hasPhase( "<xsl:value-of select="alias|alias"/>" ) )
-            G.v().out.println( "Warning: Options exist for non-existent phase <xsl:value-of select="alias|alias"/>" );<xsl:text/>
+            logger.info( "Warning: Options exist for non-existent phase <xsl:value-of select="alias|alias"/>" );<xsl:text/>
     </xsl:for-each>
     }
   </xsl:template>

@@ -156,12 +156,12 @@ public class AntTask extends MatchingTask {
     </xsl:for-each>
             ) {
                 if( !hasMoreOptions() ) {
-                    G.v().out.println( "No phase name given for option -"+option );
+                    logger.info( "No phase name given for option -"+option );
                     return false;
                 }
                 String phaseName = nextOption();
                 if( !hasMoreOptions() ) {
-                    G.v().out.println( "No phase option given for option -"+option+" "+phaseName );
+                    logger.info( "No phase option given for option -"+option+" "+phaseName );
                     return false;
                 }
                 String phaseOption = nextOption();
