@@ -25,17 +25,27 @@
 
 package soot.tools;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import soot.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.PackManager;
+import soot.PhaseOptions;
+import soot.SootMethod;
+import soot.Transform;
+import soot.Unit;
 import soot.jimple.JimpleBody;
-import soot.toolkits.graph.*;
 import soot.options.Options;
-import soot.util.dot.DotGraph;
+import soot.toolkits.graph.DirectedGraph;
 import soot.util.cfgcmd.AltClassLoader;
 import soot.util.cfgcmd.CFGGraphType;
 import soot.util.cfgcmd.CFGIntermediateRep;
 import soot.util.cfgcmd.CFGToDotGraph;
+import soot.util.dot.DotGraph;
 
 /**
  * A utility class for generating dot graph file for a control flow graph
@@ -225,11 +235,12 @@ public class CFGViewer extends BodyTransformer {
 		DotGraph canvas = graphtype.drawGraph(drawer, graph, body);
 
 		String methodname = body.getMethod().getSubSignature();
+		String classname = body.getMethod().getDeclaringClass().getName().replaceAll("\\$", "\\.");
 		String filename = soot.SourceLocator.v().getOutputDir();
 		if (filename.length() > 0) {
 			filename = filename + java.io.File.separator;
 		}
-		filename = filename + methodname.replace(java.io.File.separatorChar, '.') + DotGraph.DOT_EXTENSION;
+		filename = filename + classname + " " + methodname.replace(java.io.File.separatorChar, '.') + DotGraph.DOT_EXTENSION;
 
 		G.v().out.println("Generate dot file in " + filename);
 		canvas.plot(filename);
