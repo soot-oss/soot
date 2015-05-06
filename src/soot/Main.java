@@ -65,29 +65,29 @@ public class Main {
     private Date finish;
     
     private void printVersion() {
-        logger.info("Soot version " + versionString);
+		System.out.println("Soot version " + versionString);
 
-        logger.info(
+        System.out.println(
             "Copyright (C) 1997-2010 Raja Vallee-Rai and others.");
-        logger.info("All rights reserved.");
-        logger.info("");
-        logger.info(
+        System.out.println("All rights reserved.");
+        System.out.println("");
+        System.out.println(
             "Contributions are copyright (C) 1997-2010 by their respective contributors.");
-        logger.info("See the file 'credits' for a list of contributors.");
-        logger.info("See individual source files for details.");
-        logger.info("");
-        logger.info(
+        System.out.println("See the file 'credits' for a list of contributors.");
+        System.out.println("See individual source files for details.");
+        System.out.println("");
+        System.out.println(
             "Soot comes with ABSOLUTELY NO WARRANTY.  Soot is free software,");
-        logger.info(
+        System.out.println(
             "and you are welcome to redistribute it under certain conditions.");
-        logger.info(
+        System.out.println(
             "See the accompanying file 'COPYING-LESSER.txt' for details.");
         
-        logger.info("Visit the Soot website:");
-        logger.info("  http://www.sable.mcgill.ca/soot/");
+        System.out.println("Visit the Soot website:");
+        System.out.println("  http://www.sable.mcgill.ca/soot/");
         
-        logger.info("For a list of command line options, enter:");
-        logger.info("  java soot.Main --help");
+        System.out.println("For a list of command line options, enter:");
+        System.out.println("  java soot.Main --help");
     }
 
     private void processCmdLine(String[] args) {
@@ -109,19 +109,19 @@ public class Main {
         Options.v().warnNonexistentPhase();
 
         if (Options.v().help()) {
-            logger.info(Options.v().getUsage());
+            System.out.println(Options.v().getUsage());
             throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
         }
 
         if (Options.v().phase_list()) {
-            logger.info(Options.v().getPhaseList());
+            System.out.println(Options.v().getPhaseList());
             throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
         }
 
         if(!Options.v().phase_help().isEmpty()) {
             for( Iterator<String> phaseIt = Options.v().phase_help().iterator(); phaseIt.hasNext(); ) {
                 final String phase = phaseIt.next();
-                logger.info(Options.v().getPhaseHelp(phase));
+                System.out.println(Options.v().getPhaseHelp(phase));
             }
             throw new CompilationDeathException(CompilationDeathException.COMPILATION_SUCCEEDED);
         }
@@ -156,9 +156,9 @@ public class Main {
         try {
             Main.v().run(args);
         } catch( OutOfMemoryError e ) {
-            logger.info( "Soot has run out of the memory allocated to it by the Java VM." );
-            logger.info( "To allocate more memory to Soot, use the -Xmx switch to Java." );
-            logger.info( "For example (for 400MB): java -Xmx400m soot.Main ..." );
+            System.out.println( "Soot has run out of the memory allocated to it by the Java VM." );
+            System.out.println( "To allocate more memory to Soot, use the -Xmx switch to Java." );
+            System.out.println( "For example (for 400MB): java -Xmx400m soot.Main ..." );
             throw e;
         } catch( RuntimeException e ) {
         	e.printStackTrace();
@@ -214,7 +214,7 @@ public class Main {
             
             autoSetOptions();
 
-            logger.info("Soot started on " + start);
+            System.out.println("Soot started on " + start);
 
             Scene.v().loadNecessaryClasses();
 
@@ -266,9 +266,9 @@ public class Main {
 
         finish = new Date();
 
-        logger.info("Soot finished on " + finish);
+        System.out.println("Soot finished on " + finish);
         long runtime = finish.getTime() - start.getTime();
-        logger.info(
+        System.out.println(
             "Soot has run for "
                 + (runtime / 60000)
                 + " min. "
