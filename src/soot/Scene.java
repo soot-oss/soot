@@ -1184,76 +1184,77 @@ public class Scene  //extends AbstractHost
 
     private final Set<String>[] basicclasses=new Set[4];
 
-    private void addSootBasicClasses() {
-        basicclasses[SootClass.HIERARCHY] = new HashSet<String>();
-        basicclasses[SootClass.SIGNATURES] = new HashSet<String>();
-        basicclasses[SootClass.BODIES] = new HashSet<String>();
+	private void addSootBasicClasses() {
+		basicclasses[SootClass.HIERARCHY] = new HashSet<String>();
+		basicclasses[SootClass.SIGNATURES] = new HashSet<String>();
+		basicclasses[SootClass.BODIES] = new HashSet<String>();
 
-	addBasicClass("java.lang.Object");
-	addBasicClass("java.lang.Class", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Object");
+		addBasicClass("java.lang.Class", SootClass.SIGNATURES);
 
-	addBasicClass("java.lang.Void", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Boolean", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Byte", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Character", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Short", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Integer", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Long", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Float", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Double", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Void", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Boolean", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Byte", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Character", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Short", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Integer", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Long", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Float", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Double", SootClass.SIGNATURES);
 
-	addBasicClass("java.lang.String");
-	addBasicClass("java.lang.StringBuffer", SootClass.SIGNATURES);
+		addBasicClass("java.lang.String");
+		addBasicClass("java.lang.StringBuffer", SootClass.SIGNATURES);
 
-	addBasicClass("java.lang.Error");
-	addBasicClass("java.lang.AssertionError", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Throwable", SootClass.SIGNATURES);
-	addBasicClass("java.lang.NoClassDefFoundError", SootClass.SIGNATURES);
-	addBasicClass("java.lang.ExceptionInInitializerError");
-	addBasicClass("java.lang.RuntimeException");
-	addBasicClass("java.lang.ClassNotFoundException");
-	addBasicClass("java.lang.ArithmeticException");
-	addBasicClass("java.lang.ArrayStoreException");
-	addBasicClass("java.lang.ClassCastException");
-	addBasicClass("java.lang.IllegalMonitorStateException");
-	addBasicClass("java.lang.IndexOutOfBoundsException");
-	addBasicClass("java.lang.ArrayIndexOutOfBoundsException");
-	addBasicClass("java.lang.NegativeArraySizeException");
-	addBasicClass("java.lang.NullPointerException");
-	addBasicClass("java.lang.InstantiationError");
-	addBasicClass("java.lang.InternalError");
-	addBasicClass("java.lang.OutOfMemoryError");
-	addBasicClass("java.lang.StackOverflowError");
-	addBasicClass("java.lang.UnknownError");
-	addBasicClass("java.lang.ThreadDeath");
-	addBasicClass("java.lang.ClassCircularityError");
-	addBasicClass("java.lang.ClassFormatError");
-	addBasicClass("java.lang.IllegalAccessError");
-	addBasicClass("java.lang.IncompatibleClassChangeError");
-	addBasicClass("java.lang.LinkageError");
-	addBasicClass("java.lang.VerifyError");
-	addBasicClass("java.lang.NoSuchFieldError");
-	addBasicClass("java.lang.AbstractMethodError");
-	addBasicClass("java.lang.NoSuchMethodError");
-	addBasicClass("java.lang.UnsatisfiedLinkError");
+		addBasicClass("java.lang.Error");
+		addBasicClass("java.lang.AssertionError", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Throwable", SootClass.SIGNATURES);
+		addBasicClass("java.lang.NoClassDefFoundError", SootClass.SIGNATURES);
+		addBasicClass("java.lang.ExceptionInInitializerError");
+		addBasicClass("java.lang.RuntimeException");
+		addBasicClass("java.lang.ClassNotFoundException");
+		addBasicClass("java.lang.ArithmeticException");
+		addBasicClass("java.lang.ArrayStoreException");
+		addBasicClass("java.lang.ClassCastException");
+		addBasicClass("java.lang.IllegalMonitorStateException");
+		addBasicClass("java.lang.IndexOutOfBoundsException");
+		addBasicClass("java.lang.ArrayIndexOutOfBoundsException");
+		addBasicClass("java.lang.NegativeArraySizeException");
+		addBasicClass("java.lang.NullPointerException");
+		addBasicClass("java.lang.InstantiationError");
+		addBasicClass("java.lang.InternalError");
+		addBasicClass("java.lang.OutOfMemoryError");
+		addBasicClass("java.lang.StackOverflowError");
+		addBasicClass("java.lang.UnknownError");
+		addBasicClass("java.lang.ThreadDeath");
+		addBasicClass("java.lang.ClassCircularityError");
+		addBasicClass("java.lang.ClassFormatError");
+		addBasicClass("java.lang.IllegalAccessError");
+		addBasicClass("java.lang.IncompatibleClassChangeError");
+		addBasicClass("java.lang.LinkageError");
+		addBasicClass("java.lang.VerifyError");
+		addBasicClass("java.lang.NoSuchFieldError");
+		addBasicClass("java.lang.AbstractMethodError");
+		addBasicClass("java.lang.NoSuchMethodError");
+		addBasicClass("java.lang.UnsatisfiedLinkError");
 
-	addBasicClass("java.lang.Thread");
-	addBasicClass("java.lang.Runnable");
-	addBasicClass("java.lang.Cloneable");
+		addBasicClass("java.lang.Thread");
+		addBasicClass("java.lang.Runnable");
+		addBasicClass("java.lang.Cloneable");
 
-	addBasicClass("java.io.Serializable");	
+		addBasicClass("java.io.Serializable");
 
-	addBasicClass("java.lang.ref.Finalizer");
-	
-    }
+		addBasicClass("java.lang.ref.Finalizer");
 
-    public void addBasicClass(String name) {
-	addBasicClass(name,SootClass.HIERARCHY);
-    }
-    
-    public void addBasicClass(String name,int level) {
-	basicclasses[level].add(name);
-    }
+		addBasicClass("java.lang.invoke.LambdaMetafactory");
+	}
+
+	public void addBasicClass(String name) {
+		addBasicClass(name, SootClass.HIERARCHY);
+	}
+
+	public void addBasicClass(String name, int level) {
+		basicclasses[level].add(name);
+	}
 
     /** Load just the set of basic classes soot needs, ignoring those
      *  specified on the command-line. You don't need to use both this and 

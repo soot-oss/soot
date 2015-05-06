@@ -38,6 +38,7 @@
            		<pathelement location="${slf4j-api.jar}"/>
            		<pathelement location="${slf4j-simple.jar}"/>
            		<pathelement location="${asm.jar}"/>
+				<pathelement location="${commons-lang.jar}"/>
         	</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
@@ -218,7 +219,7 @@
                 <pathelement location="${jasmin.jar}"/>
                 <pathelement location="${junit.jar}"/>
                 <pathelement location="${hamcrest.jar}"/>
-           	<pathelement location="${dexlib2.jar}"/>
+				<pathelement location="${dexlib2.jar}"/>
                 <pathelement location="${dexlib-utils.jar}"/>
                 <pathelement location="${heros.jar}"/>
            		<pathelement location="${asm.jar}"/>
@@ -334,6 +335,7 @@
             <zipfileset src="${dexlib2.jar}"/>
             <zipfileset src="${dexlib-utils.jar}"/>
             <zipfileset src="${asm.jar}"/>
+			<zipfileset src="${commons-lang.jar}"/>
         </jar>
 		<delete dir="META-INF"/>
     </target>

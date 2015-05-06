@@ -6,12 +6,13 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.commons.lang3.ClassUtils;
+
 import com.google.common.reflect.AbstractInvocationHandler;
 
 import soot.tagkit.AnnotationElem;
 import soot.tagkit.AnnotationTag;
 import soot.util.annotations.AnnotationElemSwitch.AnnotationElemResult;
-import static soot.util.annotations.AnnotationElemSwitch.toQuallifiedClassName;
 
 /**
  * 
@@ -56,7 +57,7 @@ public class AnnotationInstanceCreator {
 		try {
 
 			// load the class of the annotation to be created
-			final Class<?> clazz = cl.loadClass(toQuallifiedClassName(tag.getType()));
+			final Class<?> clazz = ClassUtils.getClass(tag.getType());
 			final Map<String, Object> map = new HashMap<String, Object>();
 
 			// for every element generate the result
