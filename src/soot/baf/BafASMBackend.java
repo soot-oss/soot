@@ -2001,14 +2001,14 @@ public class BafASMBackend extends AbstractASMBackend {
 
 			@Override
 			public void caseLookupSwitchInst(LookupSwitchInst i) {
-				List values = i.getLookupValues();
+				List<IntConstant> values = i.getLookupValues();
 				List<Unit> targets = i.getTargets();
 
 				int[] keys = new int[values.size()];
 				Label[] labels = new Label[values.size()];
 
 				for (int j = 0; j < values.size(); j++) {
-					keys[j] = ((IntConstant) values.get(j)).value;
+					keys[j] = values.get(j).value;
 					labels[j] = branchTargetLabels.get(targets.get(j));
 				}
 
