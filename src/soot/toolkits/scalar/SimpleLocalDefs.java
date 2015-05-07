@@ -232,6 +232,10 @@ public class SimpleLocalDefs implements LocalDefs {
 	
 	private LocalDefs def;
 
+	/**
+	 * 
+	 * @param graph
+	 */
 	public SimpleLocalDefs(UnitGraph graph) {
 		this(graph, false); 
 	}

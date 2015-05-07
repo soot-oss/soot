@@ -54,7 +54,7 @@ public enum UsesValidator implements BodyValidator {
 		
         ThrowAnalysis throwAnalysis = PedanticThrowAnalysis.v();
         UnitGraph g = new ExceptionalUnitGraph(body, throwAnalysis, false);
-        LocalDefs ld = LocalDefs.Factory.newLocalDefs(g);
+        LocalDefs ld = LocalDefs.Factory.newLocalDefs(g, true);
 
         Collection<Local> locals = body.getLocals();
         for (Unit u : body.getUnits()) {
