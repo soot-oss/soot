@@ -30,10 +30,13 @@
 
 package soot.toolkits.scalar;
 
-import soot.*;
-import java.util.*;
+import java.util.List;
 
-
+import soot.Body;
+import soot.Local;
+import soot.Unit;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.UnitGraph;
 
 
 /**
@@ -42,6 +45,27 @@ import java.util.*;
  */
 public interface LocalDefs
 {
+	static final public class Factory {
+		private Factory() {}
+		
+		/**
+		 * Creates a new LocalDefs analysis based on a {@code ExceptionalUnitGraph}
+		 * 
+		 * @see soot.toolkits.graph.ExceptionalUnitGraph#ExceptionalUnitGraph(Body)
+		 * @param body
+		 * @return
+		 */
+		public static LocalDefs newLocalDefs(Body body) {
+			return newLocalDefs(new ExceptionalUnitGraph(body));
+		}
+
+		public static LocalDefs newLocalDefs(UnitGraph graph) {
+			//return new SmartLocalDefs(graph, LiveLocals.Factory.newLiveLocals(graph)); 
+			//return new SimpleLocalDefs(graph, true); // run in panic mode
+			return new SimpleLocalDefs(graph);
+		}
+	}
+	
     /**
      *   Returns the definition sites for a Local at a certain
      *   point (Unit) in a method. 
@@ -53,5 +77,5 @@ public interface LocalDefs
      *            method context.         
      */
     public List<Unit> getDefsOfAt(Local l, Unit s);
-
+    
 }
