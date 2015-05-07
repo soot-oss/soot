@@ -47,27 +47,15 @@ public class SootASMClassWriter extends ClassWriter{
 
 		Type t1 = s1.getType();
 		Type t2 = s2.getType();
+		
+		Type mergedType = t1.merge(t2, Scene.v());
 
-		try {
-			Type mergedType = t1.merge(t2, Scene.v());
-
-			if (mergedType instanceof RefType) {
-				return slashify(((RefType) mergedType).getClassName());
-			} else {
-				throw new RuntimeException(
-						"Could not find common super class");
-			}
-		} catch (NullPointerException e) {
-			/*
-			 *  TODO Currently (2015/03/2) there is a bug in RefType.merge, 
-			 *  throwing a NullPointerException if a (transitive) Superclass
-			 *  is a PhantomClass.
-			 *  In this case we can not determine the common super class 
-			 *  more precisely then java.lang.Object
-			 */
-			return "java/lang/Object";
+		if (mergedType instanceof RefType) {
+			return slashify(((RefType) mergedType).getClassName());
+		} else {
+			throw new RuntimeException(
+					"Could not find common super class");
 		}
-
 	}
 
 }

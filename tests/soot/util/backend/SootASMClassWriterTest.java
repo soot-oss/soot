@@ -87,6 +87,7 @@ public class SootASMClassWriterTest {
 	public void testGetCommonSuperClassPhantomClass() {
 		SootClass sc11 = mockClass("AA");
 		when(sc11.isPhantomClass()).thenReturn(true);
+		when(sc11.hasSuperclass()).thenReturn(false);
 		when(sc11.getSuperclass()).thenReturn(null);
 		
 		when(sc1.getSuperclass()).thenReturn(sc11);
@@ -99,13 +100,14 @@ public class SootASMClassWriterTest {
 	public void testGetCommonSuperClassTransitivePhantomClass() {
 		SootClass sc = mockClass("CC");
 		when(sc.isPhantomClass()).thenReturn(true);
+		when(sc.hasSuperclass()).thenReturn(false);
 		when(sc.getSuperclass()).thenReturn(null);
 		
 		when(sc1.getSuperclass()).thenReturn(commonSuperClass);
 		when(sc2.getSuperclass()).thenReturn(commonSuperClass);
 		when(commonSuperClass.getSuperclass()).thenReturn(sc);
 		
-		assertEquals("java/lang/Object", cw.getCommonSuperClass("A", "B"));
+		assertEquals("C", cw.getCommonSuperClass("A", "B"));
 	}
 	
 	private SootClass mockClass(String name){
@@ -114,6 +116,7 @@ public class SootASMClassWriterTest {
 		
 		when(sc.getName()).thenReturn(name);
 		when(sc.getType()).thenReturn(type);
+		when(sc.hasSuperclass()).thenReturn(true);
 		when(scene.getSootClass(name)).thenReturn(sc);
 		when(RefType.v(name)).thenReturn(type);
 		Whitebox.setInternalState(type, "className", name);
