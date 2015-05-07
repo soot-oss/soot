@@ -16,14 +16,14 @@ import soot.toolkits.graph.*;
  * @author Richard L. Halpert
  * Finds Synchronized Regions and creates a set of CriticalSection objects from them.
  */
-public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
+public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<SynchronizedRegionFlowPair>>
 {
-    FlowSet emptySet = new ArraySparseSet();
+    FlowSet<SynchronizedRegionFlowPair> emptySet = new ArraySparseSet<SynchronizedRegionFlowPair>();
 
     Map unitToGenerateSet;
 
     Body body;
-    Chain units;
+    Chain<Unit> units;
 	SootMethod method;
 	ExceptionalUnitGraph egraph;
 	LocalUses slu;
@@ -53,7 +53,9 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
 		else
 			egraph = new ExceptionalUnitGraph(b);
 				
-		slu = new SimpleLocalUses(egraph, new SmartLocalDefs(egraph, new SimpleLiveLocals(egraph)));
+		
+		slu = LocalUses.Factory.newLocalUses(egraph);
+		
 		
 		if( G.v().Union_factory == null ) {
 		    G.v().Union_factory = new UnionFactory() {
@@ -76,7 +78,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
         doAnalysis();
 		if(method.isSynchronized() && methodTn != null)
 		{
-			for(Iterator tailIt = graph.getTails().iterator(); tailIt.hasNext(); )
+			for(Iterator<Unit> tailIt = graph.getTails().iterator(); tailIt.hasNext(); )
 			{
 				Stmt tail = (Stmt) tailIt.next();
 				methodTn.earlyEnds.add(new Pair(tail, null)); // has no exitmonitor stmt yet
@@ -87,22 +89,9 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
     /**
      * All INs are initialized to the empty set.
      **/
-    protected FlowSet newInitialFlow()
+    protected FlowSet<SynchronizedRegionFlowPair> newInitialFlow()
     {
-		FlowSet ret = emptySet.clone();
-		if(method.isSynchronized() && methodTn != null)
-		{
-			ret.add(new SynchronizedRegionFlowPair(methodTn, true));
-		}
-        return ret;
-    }
-
-    /**
-     * IN(Start) is the empty set
-     **/
-    protected FlowSet entryInitialFlow()
-    {
-		FlowSet ret = emptySet.clone();
+		FlowSet<SynchronizedRegionFlowPair> ret = emptySet.clone();
 		if(method.isSynchronized() && methodTn != null)
 		{
 			ret.add(new SynchronizedRegionFlowPair(methodTn, true));
@@ -113,7 +102,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
     /**
      * OUT is the same as (IN minus killSet) plus the genSet.
      **/
-    protected void flowThrough(FlowSet in, Unit unit, FlowSet out)
+    protected void flowThrough(FlowSet<SynchronizedRegionFlowPair> in, Unit unit, FlowSet<SynchronizedRegionFlowPair> out)
     {
 		Stmt stmt = (Stmt) unit;
 
@@ -128,12 +117,12 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
         if(unit instanceof AssignStmt)
         {
 	        boolean isPrep = true;
-        	Iterator uses = slu.getUsesOf((Unit) unit).iterator();
+        	Iterator<UnitValueBoxPair> uses = slu.getUsesOf((Unit) unit).iterator();
         	if(!uses.hasNext())
         		isPrep = false;
         	while(uses.hasNext())
         	{
-        		UnitValueBoxPair use = (UnitValueBoxPair) uses.next();
+        		UnitValueBoxPair use = uses.next();
         		Unit useStmt = use.getUnit();
         		if( !(useStmt instanceof EnterMonitorStmt) && !(useStmt instanceof ExitMonitorStmt) )
         		{
@@ -157,10 +146,10 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
         
 		// Determine the level of transaction nesting of this statement
 		int nestLevel = 0;
-        Iterator outIt0 = out.iterator();
+        Iterator<SynchronizedRegionFlowPair> outIt0 = out.iterator();
         while(outIt0.hasNext())
         {
-            SynchronizedRegionFlowPair srfp = (SynchronizedRegionFlowPair) outIt0.next();
+            SynchronizedRegionFlowPair srfp = outIt0.next();
             if(srfp.tn.nestLevel > nestLevel && srfp.inside == true)
             	nestLevel = srfp.tn.nestLevel;
         }
@@ -355,7 +344,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
 			{
 				Unit prepUnit = (Unit) prepUnitsIt.next();
 				
-				Iterator uses = slu.getUsesOf(prepUnit).iterator();
+				Iterator<UnitValueBoxPair> uses = slu.getUsesOf(prepUnit).iterator();
 	        	while(uses.hasNext())
 	        	{
 	        		UnitValueBoxPair use = (UnitValueBoxPair) uses.next();
@@ -372,20 +361,20 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet>
     /**
      * union
      **/
-    protected void merge(FlowSet inSet1, FlowSet inSet2, FlowSet outSet)
+    protected void merge(FlowSet<SynchronizedRegionFlowPair> inSet1, FlowSet<SynchronizedRegionFlowPair> inSet2, FlowSet<SynchronizedRegionFlowPair> outSet)
     {
 		inSet1.union(inSet2, outSet);
     }
 
-    protected void copy(FlowSet sourceSet, FlowSet destSet)
+    protected void copy(FlowSet<SynchronizedRegionFlowPair> sourceSet, FlowSet<SynchronizedRegionFlowPair> destSet)
     {
 		destSet.clear();
 
-		Iterator it = sourceSet.iterator();
+		Iterator<SynchronizedRegionFlowPair> it = sourceSet.iterator();
 		while(it.hasNext())
 		{
-			SynchronizedRegionFlowPair tfp = (SynchronizedRegionFlowPair) it.next();
-			destSet.add(tfp.clone());
+			SynchronizedRegionFlowPair tfp = it.next();
+			destSet.add((SynchronizedRegionFlowPair)tfp.clone());
 		}
     }
 }

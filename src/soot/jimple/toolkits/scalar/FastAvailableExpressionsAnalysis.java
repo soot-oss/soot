@@ -52,7 +52,7 @@ public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
         this.st = st;
 
         ExceptionalUnitGraph g = (ExceptionalUnitGraph)dg;
-        LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
+        //LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
         // maps an rhs to its containing stmt.  object equality in rhs.
         rhsToContainingStmt = new HashMap<Value, Unit>();

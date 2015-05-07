@@ -70,7 +70,7 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
 
 	protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {		
 		final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body, DalvikThrowAnalysis.v());
-		final LocalDefs defs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
+		final LocalDefs defs = LocalDefs.Factory.newLocalDefs(g);
 		final LocalCreation lc = new LocalCreation(body.getLocals(), "ex");
 		
 		boolean changed = false;
@@ -150,7 +150,7 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
 				Collections.singletonList((Type) RefType.v("java.lang.String")));
 		
 		// Create the exception instance
-		Stmt newExStmt = Jimple.v().newAssignStmt(lcEx, Jimple.v().newNewExpr(tp));
+		Stmt newExStmt = Jimple.v().newNewStmt(lcEx, tp);
 		body.getUnits().insertBefore(newExStmt, oldStmt);
 		Stmt invConsStmt = Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(lcEx,
 				constructorRef, Collections.singletonList(StringConstant.v(
