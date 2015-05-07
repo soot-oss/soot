@@ -60,7 +60,7 @@ public class Validate {
             }
         }
         
-        final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(b);
+        final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(b, true);
         
         Set<Unit> toReplace = new HashSet<Unit>();
         

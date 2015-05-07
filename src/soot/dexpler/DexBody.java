@@ -475,17 +475,20 @@ public class DexBody  {
          */
 
         Debug.printDbg("body before any transformation : \n", jBody);
+
+        Debug.printDbg("\nbefore splitting");
+        Debug.printDbg("",(Body)jBody);
+        
+        // split first to find undefined uses
+        getLocalSplitter().transform(jBody);
         
 		// Remove dead code and the corresponding locals before assigning types
 		getUnreachableCodeEliminator().transform(jBody);
 		DeadAssignmentEliminator.v().transform(jBody);
 		UnusedLocalEliminator.v().transform(jBody);
 
-        Debug.printDbg("\nbefore splitting");
-        Debug.printDbg("",(Body)jBody);
         
-        DexReturnInliner.v().transform(jBody);        
-        getLocalSplitter().transform(jBody);
+        DexReturnInliner.v().transform(jBody);    
         
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);

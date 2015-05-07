@@ -55,7 +55,7 @@ public enum UsesValidator implements BodyValidator {
         ThrowAnalysis throwAnalysis = PedanticThrowAnalysis.v();
         UnitGraph g = new ExceptionalUnitGraph(body, throwAnalysis, false);
         LocalDefs ld = LocalDefs.Factory.newLocalDefs(g, true);
-
+        
         Collection<Local> locals = body.getLocals();
         for (Unit u : body.getUnits()) {
         	for (ValueBox box : u.getUseBoxes()) {
@@ -70,6 +70,9 @@ public enum UsesValidator implements BodyValidator {
                     }
 										
                     if (ld.getDefsOfAt(l, u).isEmpty()) {
+                    	// abroken graph is also a possible reason for undefined locals!
+                    	assert graphEdgesAreValid(g,u) : "broken graph found: " + u;
+                    	
                         exception.add(new ValidationException(u, "There is no path from a definition of " + v + " to this statement.", 
                         		"("+ body.getMethod() +") no defs for value: " + l + "!"));
                     }
@@ -77,6 +80,14 @@ public enum UsesValidator implements BodyValidator {
             }
         }
     }
+	
+	private boolean graphEdgesAreValid(UnitGraph g, Unit u) {
+		for (Unit p : g.getPredsOf(u)) {
+			if (!g.getSuccsOf(p).contains(u))
+				return false;
+		}
+		return true;
+	}
 
 	@Override
 	public boolean isBasicValidator() {
