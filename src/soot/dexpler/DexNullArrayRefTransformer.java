@@ -46,8 +46,6 @@ import soot.jimple.toolkits.scalar.LocalCreation;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
-import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SmartLocalDefs;
 
 /**
  * If Dalvik bytecode contains statements using a base array which is always
@@ -150,7 +148,7 @@ public class DexNullArrayRefTransformer extends BodyTransformer {
 				Collections.singletonList((Type) RefType.v("java.lang.String")));
 		
 		// Create the exception instance
-		Stmt newExStmt = Jimple.v().newNewStmt(lcEx, tp);
+		Stmt newExStmt = Jimple.v().newAssignStmt(lcEx, Jimple.v().newNewExpr(tp));
 		body.getUnits().insertBefore(newExStmt, oldStmt);
 		Stmt invConsStmt = Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(lcEx,
 				constructorRef, Collections.singletonList(StringConstant.v(
