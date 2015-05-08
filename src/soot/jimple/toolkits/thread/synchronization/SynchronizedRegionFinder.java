@@ -19,7 +19,9 @@ import soot.toolkits.graph.*;
 public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<SynchronizedRegionFlowPair>>
 {
     FlowSet<SynchronizedRegionFlowPair> emptySet = new ArraySparseSet<SynchronizedRegionFlowPair>();
-    
+
+    Map unitToGenerateSet;
+
     Body body;
     Chain<Unit> units;
 	SootMethod method;
@@ -35,8 +37,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 	public boolean optionPrintDebug = false;
 	public boolean optionOpenNesting = true;
 	
-    SynchronizedRegionFinder(UnitGraph graph, Body b, boolean optionPrintDebug,
-    		boolean optionOpenNesting, ThreadLocalObjectsAnalysis tlo)
+    SynchronizedRegionFinder(UnitGraph graph, Body b, boolean optionPrintDebug, boolean optionOpenNesting, ThreadLocalObjectsAnalysis tlo)
 	{
 		super(graph);
 
@@ -52,7 +53,9 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 		else
 			egraph = new ExceptionalUnitGraph(b);
 				
-		slu = new SimpleLocalUses(egraph, new SmartLocalDefs(egraph, new SimpleLiveLocals(egraph)));
+		
+		slu = LocalUses.Factory.newLocalUses(egraph);
+		
 		
 		if( G.v().Union_factory == null ) {
 		    G.v().Union_factory = new UnionFactory() {
@@ -75,8 +78,10 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
         doAnalysis();
 		if(method.isSynchronized() && methodTn != null)
 		{
-			for (Unit tail : graph.getTails()) {
-				methodTn.earlyEnds.add(new Pair<Stmt, Stmt>((Stmt) tail, null)); // has no exitmonitor stmt yet
+			for(Iterator<Unit> tailIt = graph.getTails().iterator(); tailIt.hasNext(); )
+			{
+				Stmt tail = (Stmt) tailIt.next();
+				methodTn.earlyEnds.add(new Pair(tail, null)); // has no exitmonitor stmt yet
 			}
 		}
 	}
@@ -95,23 +100,9 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
     }
 
     /**
-     * IN(Start) is the empty set
-     **/
-    protected FlowSet<SynchronizedRegionFlowPair> entryInitialFlow()
-    {
-		FlowSet<SynchronizedRegionFlowPair> ret = emptySet.clone();
-		if(method.isSynchronized() && methodTn != null)
-		{
-			ret.add(new SynchronizedRegionFlowPair(methodTn, true));
-		}
-        return ret;
-    }
-
-    /**
      * OUT is the same as (IN minus killSet) plus the genSet.
      **/
-    protected void flowThrough(FlowSet<SynchronizedRegionFlowPair> in, 
-    		Unit unit, FlowSet<SynchronizedRegionFlowPair> out)
+    protected void flowThrough(FlowSet<SynchronizedRegionFlowPair> in, Unit unit, FlowSet<SynchronizedRegionFlowPair> out)
     {
 		Stmt stmt = (Stmt) unit;
 
@@ -126,10 +117,12 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
         if(unit instanceof AssignStmt)
         {
 	        boolean isPrep = true;
-        	List<UnitValueBoxPair> uses = slu.getUsesOf(unit);
-        	if(uses.isEmpty())
+        	Iterator<UnitValueBoxPair> uses = slu.getUsesOf((Unit) unit).iterator();
+        	if(!uses.hasNext())
         		isPrep = false;
-        	for (UnitValueBoxPair use : uses) {
+        	while(uses.hasNext())
+        	{
+        		UnitValueBoxPair use = uses.next();
         		Unit useStmt = use.getUnit();
         		if( !(useStmt instanceof EnterMonitorStmt) && !(useStmt instanceof ExitMonitorStmt) )
         		{
@@ -153,7 +146,10 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
         
 		// Determine the level of transaction nesting of this statement
 		int nestLevel = 0;
-		for (SynchronizedRegionFlowPair srfp : out) {
+        Iterator<SynchronizedRegionFlowPair> outIt0 = out.iterator();
+        while(outIt0.hasNext())
+        {
+            SynchronizedRegionFlowPair srfp = outIt0.next();
             if(srfp.tn.nestLevel > nestLevel && srfp.inside == true)
             	nestLevel = srfp.tn.nestLevel;
         }
@@ -161,8 +157,11 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 		// Process this unit's effect on each txn
 		RWSet stmtRead = null;
 		RWSet stmtWrite = null;
+        Iterator outIt = out.iterator();
         boolean printed = false;
-        for (SynchronizedRegionFlowPair srfp : out) {
+        while(outIt.hasNext())
+        {
+            SynchronizedRegionFlowPair srfp = (SynchronizedRegionFlowPair) outIt.next();
             CriticalSection tn = srfp.tn;
             
             // Check if we are revisting the start of this existing transaction
@@ -212,8 +211,8 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 		            	// Debug Output
 	            		if(optionPrintDebug)
 	            		{
-							stmtRead = tasea.readSet(tn.method, stmt, tn, new HashSet<Value>());
-							stmtWrite = tasea.writeSet(tn.method, stmt, tn, new HashSet<Value>());
+							stmtRead = tasea.readSet(tn.method, stmt, tn, new HashSet());
+							stmtWrite = tasea.writeSet(tn.method, stmt, tn, new HashSet());
 
 			           		G.v().out.print("{");
 				           	if(stmtRead != null)
@@ -250,16 +249,16 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
             			nextUnit instanceof ReturnVoidStmt ||
             			nextUnit instanceof ExitMonitorStmt )
             		{
-            			tn.earlyEnds.add(new Pair<Stmt, Stmt>(nextUnit, stmt)); // <early end stmt, exitmonitor stmt>
+            			tn.earlyEnds.add(new Pair(nextUnit, stmt)); // <early end stmt, exitmonitor stmt>
             		}
             		else if( nextUnit instanceof GotoStmt )
             		{
-            			tn.end = new Pair<Stmt, Stmt>(nextUnit, stmt); // <end stmt, exitmonitor stmt>
+            			tn.end = new Pair(nextUnit, stmt); // <end stmt, exitmonitor stmt>
             			tn.after = (Stmt) ((GotoStmt) nextUnit).getTarget();
             		}
             		else if( nextUnit instanceof ThrowStmt )
             		{
-            			tn.exceptionalEnd = new Pair<Stmt, Stmt>(nextUnit, stmt);
+            			tn.exceptionalEnd = new Pair(nextUnit, stmt);
             		}
             		else
             			throw new RuntimeException("Unknown bytecode pattern: exitmonitor not followed by return, exitmonitor, goto, or throw");
@@ -270,7 +269,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 				else
             	{
             		// Add this unit's read and write sets to this transactional region
-            		HashSet<Value> uses = new HashSet<Value>();
+            		HashSet uses = new HashSet();
 	               	stmtRead = tasea.readSet( method, stmt, tn, uses );
 		           	stmtWrite = tasea.writeSet( method, stmt, tn, uses );
 
@@ -345,7 +344,10 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 			{
 				Unit prepUnit = (Unit) prepUnitsIt.next();
 				
-				for (UnitValueBoxPair use : slu.getUsesOf(prepUnit)) {
+				Iterator<UnitValueBoxPair> uses = slu.getUsesOf(prepUnit).iterator();
+	        	while(uses.hasNext())
+	        	{
+	        		UnitValueBoxPair use = (UnitValueBoxPair) uses.next();
 	        		if(use.getUnit() == (Unit) unit)
 	        		{// if this transaction's monitorenter statement is one of the uses of this preparatory unit
 	        			newTn.prepStmt = (Stmt) prepUnit;
@@ -359,20 +361,20 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
     /**
      * union
      **/
-    protected void merge(FlowSet<SynchronizedRegionFlowPair> inSet1,
-    		FlowSet<SynchronizedRegionFlowPair> inSet2,
-    		FlowSet<SynchronizedRegionFlowPair> outSet)
+    protected void merge(FlowSet<SynchronizedRegionFlowPair> inSet1, FlowSet<SynchronizedRegionFlowPair> inSet2, FlowSet<SynchronizedRegionFlowPair> outSet)
     {
 		inSet1.union(inSet2, outSet);
     }
 
-    protected void copy(FlowSet<SynchronizedRegionFlowPair> sourceSet,
-    		FlowSet<SynchronizedRegionFlowPair> destSet)
+    protected void copy(FlowSet<SynchronizedRegionFlowPair> sourceSet, FlowSet<SynchronizedRegionFlowPair> destSet)
     {
 		destSet.clear();
 
-		for (SynchronizedRegionFlowPair tfp : sourceSet) {
-			destSet.add(tfp.clone());
+		Iterator<SynchronizedRegionFlowPair> it = sourceSet.iterator();
+		while(it.hasNext())
+		{
+			SynchronizedRegionFlowPair tfp = it.next();
+			destSet.add((SynchronizedRegionFlowPair)tfp.clone());
 		}
     }
 }

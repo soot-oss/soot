@@ -42,6 +42,12 @@ import soot.util.Cons;
 
 /**
  * Analysis that provides an implementation of the LocalDefs interface.
+ * 
+ * This Analysis calculates only the definitions of the locals used by a unit. 
+ * If you need all definitions of local you should use {@see SimpleLocalDefs}.
+ * 
+ * Be warned: This implementation requires a lot of memory and CPU time, normally
+ * {@see SimpleLocalDefs} is much faster.
  */
 public class SmartLocalDefs implements LocalDefs {
 	private final Map<Cons<Unit, Local>, List<Unit>> answer;
@@ -54,6 +60,7 @@ public class SmartLocalDefs implements LocalDefs {
 	public void printAnswer(){
 		System.out.println(answer.toString());
 	}
+	
 	/**
 	 * Intersects 2 sets and returns the result as a list
 	 * 
@@ -127,12 +134,25 @@ public class SmartLocalDefs implements LocalDefs {
 
 		answer = new HashMap<Cons<Unit, Local>, List<Unit>>();
 		for (Unit u : graph) {
+			Set<Unit> s1 = analysis.getFlowBefore(u);
+			if (s1 == null || s1.isEmpty())
+				continue;
+			
 			for (ValueBox vb : u.getUseBoxes()) {
 				Value v = vb.getValue();
 				if (v instanceof Local) {
-					Cons<Unit, Local> key = new Cons<Unit, Local>(u, (Local) v);
-					if ( !answer.containsKey(key) ) {
-						List<Unit> lst = asList(defsOf((Local) v), analysis.getFlowBefore(u));					
+					Local l = (Local) v;
+					
+					Set<Unit> s2 = defsOf(l);
+					if (s2 == null || s2.isEmpty())
+						continue;
+					
+					List<Unit> lst = asList(s1, s2);
+					if (lst.isEmpty())
+						continue;
+					
+					Cons<Unit, Local> key = new Cons<Unit, Local>(u, l);
+					if ( !answer.containsKey(key) ) {			
 						answer.put(key, lst);
 					}
 				}
@@ -258,7 +278,10 @@ public class SmartLocalDefs implements LocalDefs {
 	}
 
 	public List<Unit> getDefsOfAt(Local l, Unit s) {
-		return answer.get(new Cons<Unit, Local>(s, l));
+		List<Unit> lst = answer.get(new Cons<Unit, Local>(s, l));
+		if (lst == null)
+			return Collections.emptyList();
+		return lst;
 	}
 	
 	/**

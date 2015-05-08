@@ -1,7 +1,6 @@
 package soot.validation;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 import soot.Body;
@@ -14,8 +13,6 @@ import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
-import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SmartLocalDefs;
 
 public enum UsesValidator implements BodyValidator {
 	INSTANCE;	
@@ -57,31 +54,40 @@ public enum UsesValidator implements BodyValidator {
 		
         ThrowAnalysis throwAnalysis = PedanticThrowAnalysis.v();
         UnitGraph g = new ExceptionalUnitGraph(body, throwAnalysis, false);
-        LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
-
+        LocalDefs ld = LocalDefs.Factory.newLocalDefs(g, true);
+        
         Collection<Local> locals = body.getLocals();
         for (Unit u : body.getUnits()) {
-            Iterator<ValueBox> useBoxIt = u.getUseBoxes().iterator();
-            while (useBoxIt.hasNext())
-            {
-                Value v = (useBoxIt.next()).getValue();
+        	for (ValueBox box : u.getUseBoxes()) {
+                Value v = box.getValue();
                 if (v instanceof Local)
                 {
-					if(!locals.contains(v)) {
+                	Local l = (Local) v;
+                	
+					if(!locals.contains(l)) {
                     	String msg = "Local "+v+" is referenced here but not in body's local-chain. ("+body.getMethod()+")";
 						exception.add(new ValidationException(u, msg, msg));
                     }
-                	// This throws an exception if there is
-                    // no def already; we check anyhow.
-                    List<Unit> l = ld.getDefsOfAt((Local)v, u);
-                    if (l.size() == 0){
+										
+                    if (ld.getDefsOfAt(l, u).isEmpty()) {
+                    	// abroken graph is also a possible reason for undefined locals!
+                    	assert graphEdgesAreValid(g,u) : "broken graph found: " + u;
+                    	
                         exception.add(new ValidationException(u, "There is no path from a definition of " + v + " to this statement.", 
-                        		"("+ body.getMethod() +") no defs for value: " + v + "!"));
+                        		"("+ body.getMethod() +") no defs for value: " + l + "!"));
                     }
                 }
             }
         }
     }
+	
+	private boolean graphEdgesAreValid(UnitGraph g, Unit u) {
+		for (Unit p : g.getPredsOf(u)) {
+			if (!g.getSuccsOf(p).contains(u))
+				return false;
+		}
+		return true;
+	}
 
 	@Override
 	public boolean isBasicValidator() {

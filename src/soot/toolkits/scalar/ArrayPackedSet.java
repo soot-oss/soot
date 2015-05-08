@@ -161,7 +161,22 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
     {
     	bits.clear(map.getInt(obj));
     }
-
+    
+	@Override
+	public boolean isSubSet(FlowSet<T> other) {
+		if (other == this)
+			return true;
+		if (sameType(other)) {
+	          ArrayPackedSet<T> o = (ArrayPackedSet<T>) other;
+	          
+	          BitSet tmp = (BitSet) o.bits.clone();
+	          tmp.andNot(bits);
+	          return tmp.isEmpty();
+		}
+		return super.isSubSet(other);
+	}
+	
+	
     public void union(FlowSet<T> otherFlow, FlowSet<T> destFlow)
     {
       if (sameType(otherFlow) &&
@@ -259,10 +274,11 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
     }
 
 	@Override
-	public Iterator<T> iterator() {		
+	public Iterator<T> iterator() {
 		return new Iterator<T>() {
 			
 			int i = bits.nextSetBit(0);		
+			T t;
 			
 			@Override
 			public boolean hasNext() {
@@ -273,14 +289,17 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
 			public T next() {
 				if (i < 0)
 					throw new NoSuchElementException();
-				T t = map.getObject(i);				
+				t = map.getObject(i);				
 				i = bits.nextSetBit(i+1);					
 				return t;
 			}
 
 			@Override
 			public void remove() {
+				if (t == null)
+					throw new IllegalStateException();
 		        bits.clear(i);
+		        t = null;
 			}
 			
 		};
