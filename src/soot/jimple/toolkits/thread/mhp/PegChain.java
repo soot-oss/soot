@@ -23,7 +23,9 @@ import soot.toolkits.graph.*;
 import soot.jimple.toolkits.callgraph.*;
 //import soot.util.cfgcmd.*;
 import soot.util.*;
+
 import java.util.*;
+
 //add for add tag
 import soot.tagkit.*;
 
@@ -230,8 +232,7 @@ public class PegChain extends HashChain{
 			{
 				if (!(invokeExpr instanceof StaticInvokeExpr))
 				{
-					System.err.println("Error: new type of invokeExpre: "+invokeExpr);
-					System.exit(1);
+					throw new RuntimeException("Error: new type of invokeExpre: "+invokeExpr);
 				}
 				else{
 					//static invoke
@@ -293,8 +294,7 @@ public class PegChain extends HashChain{
 					
 					
 					if (pg.getStartToThread().containsKey(pegStmt)){
-						System.err.println(" map startToThread contain duplicated start() method call");
-						System.exit(1);
+						throw new RuntimeException("map startToThread contain duplicated start() method call");
 					}
 					pg.getCanNotBeCompacted().add(pegStmt);
 					addAndPut(unit, pegStmt);
