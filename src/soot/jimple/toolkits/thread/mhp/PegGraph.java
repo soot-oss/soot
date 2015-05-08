@@ -35,6 +35,7 @@ import soot.util.*;
 
 import java.util.*;
 import java.io.*;
+
 //add for add tag
 import soot.tagkit.*;
 
@@ -309,9 +310,8 @@ public class PegGraph implements DirectedGraph
 								}
 							}
 						}
-						if (find == false){
-							System.err.println("fail to find stmt: "+node+" in chains!");
-							System.exit(1);
+						if (!find){
+							throw new RuntimeException("fail to find stmt: "+node+" in chains!"); 
 						}
 						
 						//this.toString();
@@ -622,8 +622,7 @@ public class PegGraph implements DirectedGraph
 					
 				}
 				else{
-					System.err.println("unitToSuccs does not contains key"+s);
-					System.exit(1);
+					throw new RuntimeException("unitToSuccs does not contains key"+s);
 				}
 			}
 		}
@@ -649,8 +648,7 @@ public class PegGraph implements DirectedGraph
 				if(succs.size() == 0)
 					tailList.add(s);
 				if (!unitToPreds.containsKey(s)){
-					System.err.println("unitToPreds does not contain key: "+s);
-					System.exit(1);
+					throw new RuntimeException("unitToPreds does not contain key: "+s);
 				}
 				List preds = unitToPreds.get(s);
 				if(preds.size() == 0)
@@ -702,8 +700,7 @@ public class PegGraph implements DirectedGraph
 			JPegStmt s = (JPegStmt)it.next();
 			//System.out.println("add to allNodes: "+s);
 			if (allNodes.contains(s)){
-				System.err.println("error! allNodes contains: "+s);
-				System.exit(1);
+				throw new RuntimeException("error! allNodes contains: "+s);
 			}
 			else
 				allNodes.add(s);
@@ -732,8 +729,7 @@ public class PegGraph implements DirectedGraph
 			JPegStmt head =(JPegStmt)heads.get(0);
 			//System.out.println("test head: "+head);
 			if (!head.getName().equals("begin")){
-				System.err.println("Error: the head is not begin node!");
-				System.exit(1);
+				throw new RuntimeException("Error: the head is not begin node!");
 			}
 			//remove begin node from heads list
 			heads.remove(0);
@@ -749,12 +745,10 @@ public class PegGraph implements DirectedGraph
 			}
 			//remove begin node from inlinee Peg
 			if (!mainPegChain.remove(head)) {
-				System.err.println("fail to remove begin node in from mainPegChain!");
-				System.exit(1);
+				throw new RuntimeException("fail to remove begin node in from mainPegChain!");
 			}
 			if (!allNodes.contains(head)){
-				System.err.println("fail to find begin node in FlowSet allNodes!");
-				System.exit(1);
+				throw new RuntimeException("fail to find begin node in FlowSet allNodes!");
 			}
 			else{
 				allNodes.remove(head);
@@ -873,8 +867,7 @@ public class PegGraph implements DirectedGraph
 					//remove stmt from the preds list of the succs of itself.
 					List predListOfSucc = getPredsOf(succ);
 					if (predListOfSucc == null){
-						System.err.println("Error: predListOfSucc is null!");
-						System.exit(1);
+						throw new RuntimeException("Error: predListOfSucc is null!");
 					}
 					else{
 						if (predListOfSucc.size() != 0){
@@ -939,8 +932,7 @@ public class PegGraph implements DirectedGraph
 //		testPegChain();
 		
 		if (!allNodes.contains(stmt)){
-			System.err.println("fail to find begin node in  allNodes!");
-			System.exit(1);
+			throw new RuntimeException("fail to find begin node in  allNodes!");
 		}
 		else{
 			allNodes.remove(stmt);
@@ -948,14 +940,12 @@ public class PegGraph implements DirectedGraph
 		}
 		
 		if (!chain.contains(stmt)){
-			System.err.println("Error! Chain does not contains stmt (extending point)!");
-			System.exit(1);
+			throw new RuntimeException("Error! Chain does not contains stmt (extending point)!");
 			
 		}
 		else{
 			if (!chain.remove(stmt)){
-				System.err.println("fail to remove invoke stmt in from Chain!");
-				System.exit(1);
+				throw new RuntimeException("fail to remove invoke stmt in from Chain!");
 			}
 		}
 		/*

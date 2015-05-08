@@ -153,10 +153,9 @@ public class DexAnnotation {
 											else {
 												if (annotationType.equals(sm.getReturnType()))
 													isCorrectType = true;
-											}
-											if (annotationType.equals(ARRAY_TYPE)) {
-												if (sm.getReturnType() instanceof ArrayType)
-													isCorrectType = true;
+												if (annotationType.equals(ARRAY_TYPE))
+													if (sm.getReturnType() instanceof ArrayType)
+														isCorrectType = true;
 											}
 											
 											if (isCorrectType && sm.getParameterCount() == 0) {

@@ -20,6 +20,7 @@
 package soot.jbco.jimpleTransformations;
 
 import java.util.*;
+
 import soot.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.*;
@@ -172,7 +173,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
                 System.out.println("Fields of "+sfr.declaringClass().getName() + ": "+sfr.declaringClass().getFields());
                 //System.out.println("Fields of "+_c.getName() + ": "+_c.getFields());
                 System.out.println(exc);
-                System.exit(1);
+                throw new RuntimeException(exc);
               }
             }
           }
