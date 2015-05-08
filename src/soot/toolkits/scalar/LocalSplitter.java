@@ -47,6 +47,7 @@ import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.util.NumberedSet;
 
 /**
  *    A BodyTransformer that attemps to indentify and separate uses of a local
@@ -119,10 +120,26 @@ public class LocalSplitter extends BodyTransformer
             Timers.v().splitPhase1Timer.end();
         if(Options.v().time())
             Timers.v().splitPhase2Timer.start();
-
-
+        
 		Set<Unit> visited = new HashSet<Unit>();
         
+		// Collect the set of locals that we need to split
+		NumberedSet<Local> localsToSplit = new NumberedSet<Local>(Scene.v().getLocalNumberer());
+		{
+			NumberedSet<Local> localsVisited = new NumberedSet<Local>(Scene.v().getLocalNumberer());
+	        for (Unit s : body.getUnits()) {
+	            if (s.getDefBoxes().isEmpty())
+	                continue;
+	            if (!(s.getDefBoxes().get(0).getValue() instanceof Local))
+	            	continue;
+	            
+	            // If we see a local the second time, we know that we must split it
+	            Local l = (Local) s.getDefBoxes().get(0).getValue();
+	            if (!localsVisited.add(l))
+	            	localsToSplit.add(l);
+	        }
+		}
+		
 		int w = 0;
         for (Unit s : body.getUnits()) {
             if (s.getDefBoxes().isEmpty())
@@ -137,12 +154,13 @@ public class LocalSplitter extends BodyTransformer
             // we don't want to visit a node twice
             if (visited.remove(s))
             	continue;
-
-            
+                        
             // always reassign locals to avoid "use before definition" bugs!
             // unfortunately this creates a lot of new locals, so it's important
             // to remove them afterwards
             Local oldLocal = (Local) s.getDefBoxes().get(0).getValue();  
+            if (!localsToSplit.contains(oldLocal))
+            	continue;
             Local newLocal = (Local) oldLocal.clone();
             
             newLocal.setName(newLocal.getName()+'#'+ ++w); // renaming should not be done here
