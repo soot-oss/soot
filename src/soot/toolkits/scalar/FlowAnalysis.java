@@ -53,10 +53,8 @@ import soot.util.PriorityQueue;
 public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 	static class Entry<D, F> implements Numberable {
 		final D data;
-		int min;
-		
-		int id;
-		
+		int number;
+
 		/**
 		 * This Entry is part of a real scc.
 		 */
@@ -71,7 +69,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 		Entry(D u, Entry<D, F> pred) {
 			in = (Entry<D, F>[]) new Entry[] { pred };
 			data = u;
-			id = min = Integer.MIN_VALUE;
+			number = Integer.MIN_VALUE;
 			isRealStronglyConnected = false;
 		}
 
@@ -82,12 +80,12 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 
 		@Override
 		public void setNumber(int n) {
-			id = n;
+			number = n;
 		}
 
 		@Override
 		public int getNumber() {
-			return id;
+			return number;
 		}
 	}
 	
@@ -104,52 +102,64 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 		 * @param entryFlow
 		 * @return
 		 */
-		<D, F> List<Entry<D, F>> newUniverse(DirectedGraph<D> g, GraphView gv, F entryFlow) {
+		<D, F> List<Entry<D, F>> newUniverse (DirectedGraph<D> g, GraphView gv, F entryFlow) {
 			final int n = g.size();
+
 			Deque<Entry<D, F>> s = new ArrayDeque<Entry<D, F>>(n);
-			Deque<Entry<D, F>> q = new ArrayDeque<Entry<D, F>>(n);
 			List<Entry<D, F>> universe = new ArrayList<Entry<D, F>>(n);
 			Map<D, Entry<D, F>> visited = new HashMap<D, Entry<D, F>>(((n+1) * 4) / 3);
 
 			// out of universe node
 			Entry<D, F> superEntry = new Entry<D, F>(null, null);
+			visitEntry(visited, superEntry, gv.getEntries(g));
 			superEntry.outFlow = entryFlow;
 
-			q.addAll(Arrays.asList(visitEntry(visited, superEntry, gv.getEntries(g))));
-			if (q.isEmpty()) {
-				return Collections.emptyList();
-			}
-
+			
+			@SuppressWarnings("unchecked")
+			Entry<D, F>[] sv = new Entry[g.size()];
+			int[] si = new int[g.size()];
+			int index = 0;
+			
+			int i = 0;
+			Entry<D, F> v = superEntry;
+		
 			for (;;) {
-				Entry<D, F> v = q.peekLast();
-
-				// follow the chain as far as possible without involving peekLast
-				for (boolean follow = (v.min == Integer.MIN_VALUE); follow;) {
-					follow = false;
-					v.id = v.min = s.size();
-					s.add(v);
-
-					for (Entry<D, F> e : visitEntry(visited, v, gv.getOut(g, v.data))) {
-						if (e.min == Integer.MIN_VALUE) {
-							q.addLast(v = e);
-							follow = true;
-						}
+				if (i < v.out.length) {
+					Entry<D, F> w = v.out[i++];
+					
+					// an unvisited child node
+					if (w.number == Integer.MIN_VALUE) {
+						w.number = s.size();
+						s.add(w);
+						
+						visitEntry(visited, w, gv.getOut(g, w.data));
+						
+						// save old
+						si[index] = i;
+						sv[index] = v;
+						index++;
+						
+						i = 0;
+						v = w;
 					}
-				}
-
-				// finally finished
-				if (v.min != Integer.MAX_VALUE) {
+				} else {
+					if (index == 0) {
+						assert universe.size() <= g.size();
+						Collections.reverse(universe);
+						return universe;
+					}
+					
 					universe.add(v);
 					sccPop(s, v);
-				}
-
-				q.removeLast();
-				if (q.isEmpty()) {
-					Collections.reverse(universe);
-					return universe;
+					
+					// restore old
+					index--;
+					v = sv[index];
+					i = si[index];
 				}
 			}
 		}
+		
 
 		@SuppressWarnings("unchecked")
 		private <D, F> Entry<D, F>[] visitEntry(Map<D, Entry<D, F>> visited, Entry<D, F> v, List<D> out) {
@@ -158,9 +168,8 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 
 			assert (out instanceof RandomAccess);
 			
-			// reverse output-order for a better results!
-			for (int i = 0, j = n-1; i < n; i++, j--) {
-				a[i] = getEntryOf(visited, out.get(j), v);
+			for (int i = 0; i < n; i++) {
+				a[i] = getEntryOf(visited, out.get(i), v);
 			}
 
 			return v.out = a;
@@ -194,18 +203,21 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 		}
 
 		private <D, F> void sccPop(Deque<Entry<D, F>> s, Entry<D, F> v) {
+			int min = v.number;
 			for (Entry<D, F> e : v.out) {
-				assert e.min > Integer.MIN_VALUE;
-				v.min = Math.min(v.min, e.min);
+				assert e.number > Integer.MIN_VALUE;
+				min = Math.min(min, e.number);
 			}
-
+			
 			// not our SCC
-			if (v.min != v.id)
+			if (min != v.number) {
+				v.number = min;
 				return;
+			}
 			
 			// we only want real SCCs (size > 1)
 			Entry<D, F> w = s.removeLast();
-			w.min = Integer.MAX_VALUE;
+			w.number = Integer.MAX_VALUE;
 			if (w == v) {
 				return;
 			}
@@ -213,10 +225,11 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 			w.isRealStronglyConnected = true;
 			for (;;) {
 				w = s.removeLast();
-				assert w.min >= v.min;
+				assert w.number >= v.number;
 				w.isRealStronglyConnected = true;
-				w.min = Integer.MAX_VALUE;
+				w.number = Integer.MAX_VALUE;
 				if (w == v) {
+					assert w.in.length >= 2;
 					return;
 				}
 			}
@@ -362,23 +375,23 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 
 		// Furthermore a node can be marked as omissible, this allows us to use
 		// the same "flow-set" for out-flow and in-flow. A merge node with within
-		// a real css cannot be omitted, as it could cause endless loops within
+		// a real scc cannot be omitted, as it could cause endless loops within
 		// the fixpoint-iteration!
 
 		for (Entry<N, A> n : universe) {
-			boolean omit = omissible(n.data);
+			boolean omit = true;
 			if (n.in.length > 1) {
 				n.inFlow = newInitialFlow();
 				
 				// no merge points in loops
-				omit &= !n.isRealStronglyConnected;
+				omit = !n.isRealStronglyConnected;
 			} else {
 				assert n.in.length == 1 : "missing superhead";
 				n.inFlow = n.in[0].outFlow;
 				assert n.inFlow != null : "topological order is broken";
 			}
 
-			if (omit) {
+			if (omit && omissible(n.data)) {
 				// We could recalculate the graph itself but thats more expensive than
 				// just falling through such nodes.
 				n.outFlow = n.inFlow;
