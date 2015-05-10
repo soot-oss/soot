@@ -431,9 +431,6 @@ public abstract class FlowAnalysis<N,A> extends AbstractFlowAnalysis<N,A>
 	}
 	
 	private boolean flowThrough(Entry<N,A> d) {
-		if (d.inFlow == d.outFlow)
-			return true;
-		
 		if (d.isStronglyConnected) {
 			A out = newInitialFlow();
 			flowThrough(d.inFlow, d.data, out);
