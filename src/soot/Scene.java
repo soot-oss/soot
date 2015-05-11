@@ -296,19 +296,40 @@ public class Scene  //extends AbstractHost
         return maxApi;
     }
 
-	public String getAndroidJarPath(String jars, String apk) {
+    public String getAndroidJarPath(String jars, String apk) {
 
-		int APIVersion = getAndroidAPIVersion(jars,apk);
+        int APIVersion = getAndroidAPIVersion(jars, apk);
 
-		String jarPath = jars + File.separator + "android-" + APIVersion + File.separator + "android.jar";
+        // priority target API
+        {
+            final String jarPath = getAndroidJarPath(jars, APIVersion);
+            if (checkJarExist(jarPath)) {
+                return jarPath;
+            }
+        }
+        for (int currentAPI = APIVersion + 1; currentAPI < 100; currentAPI++) {
+            final String jarPath = getAndroidJarPath(jars, currentAPI);
+            if (checkJarExist(jarPath)) {
+                return jarPath;
+            }
 
-		// check that jar exists
-		File f = new File(jarPath);
-		if (!f.isFile())
-		    throw new RuntimeException("error: target android.jar ("+ jarPath +") does not exist.");
+        }
 
-		return jarPath;
-	}
+        throw new RuntimeException("error: target android.jar (" + getAndroidJarPath(jars, APIVersion) + ") does not exist.");
+    }
+
+    public String getAndroidJarPath(String jars, int APIVersion) {
+        return jars + File.separator + "android-" + APIVersion + File.separator + "android.jar";
+    }
+
+    public boolean checkJarExist(String jarPath) {
+        File f = new File(jarPath);
+        if (!f.isFile()) {
+            return false;
+        }
+
+        return true;
+    }
 
 	public int getAndroidAPIVersion(String jars, String apk) {
 		// get path to appropriate android.jar
