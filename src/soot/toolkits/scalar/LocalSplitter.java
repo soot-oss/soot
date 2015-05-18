@@ -29,11 +29,8 @@
 
 package soot.toolkits.scalar;
 import java.util.ArrayDeque;
-import java.util.ArrayList;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -50,12 +47,13 @@ import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.util.Chain;
+import soot.util.NumberedSet;
 
 /**
  *    A BodyTransformer that attemps to indentify and separate uses of a local
- *    varible that are independent of each other. Conceptually the inverse transform
- *    with respect to the LocalPacker transform.
+ *    variable that are independent of each other. Conceptually the inverse transform
+ *    with respect to the LocalPacker transform. 
+ *    
  *
  *    For example the code:
  *
@@ -67,6 +65,7 @@ import soot.util.Chain;
  *    for(int j; j < k; j++);
  *
  *
+ *
  *    @see BodyTransformer
  *    @see LocalPacker
  *    @see Body 
@@ -74,144 +73,137 @@ import soot.util.Chain;
 public class LocalSplitter extends BodyTransformer
 {
 	
-	protected ThrowAnalysis throwAnalysis = null;
-	protected boolean forceOmitExceptingUnitEdges = false;
+	protected ThrowAnalysis throwAnalysis;
+	protected boolean omitExceptingUnitEdges;
 
 	public LocalSplitter( Singletons.Global g ) {
 	}
 	
 	public LocalSplitter( ThrowAnalysis ta ) {
-		this.throwAnalysis = ta;
+		this(ta, false);
 	}
 
-	public LocalSplitter( ThrowAnalysis ta, boolean forceOmitExceptingUnitEdges ) {
+	public LocalSplitter( ThrowAnalysis ta, boolean omitExceptingUnitEdges ) {
 		this.throwAnalysis = ta;
-		this.forceOmitExceptingUnitEdges = forceOmitExceptingUnitEdges;
+		this.omitExceptingUnitEdges = omitExceptingUnitEdges;
 	}
 	
 	public static LocalSplitter v() { return G.v().soot_toolkits_scalar_LocalSplitter(); }
     
 	@Override
     protected void internalTransform(Body body, String phaseName, Map<String, String> options)
-    {
-		if (this.throwAnalysis == null)
-			this.throwAnalysis = Scene.v().getDefaultThrowAnalysis();
-		
-        Chain<Unit> units = body.getUnits();
-        List<List<ValueBox>> webs = new ArrayList<List<ValueBox>>();
-
+    {		
         if(Options.v().verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Splitting locals...");
+        
+		if (Options.v().time()) 
+			Timers.v().splitTimer.start();
+		
 
         if(Options.v().time())
                 Timers.v().splitPhase1Timer.start();
 
+        if (throwAnalysis == null)
+        	throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+        
+        if (omitExceptingUnitEdges == false)
+        	omitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
+                
         // Go through the definitions, building the webs
-        {
-            ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body,this.throwAnalysis,
-            		forceOmitExceptingUnitEdges || Options.v().omit_excepting_unit_edges());
-
-            final LocalDefs localDefs = new SmartLocalDefs(graph,
-    				new SimpleLiveLocals(graph));
-    		final LocalUses localUses = new SimpleLocalUses(graph, localDefs);
-    		
-            if(Options.v().time())
-                Timers.v().splitPhase1Timer.end();
-            if(Options.v().time())
-                Timers.v().splitPhase2Timer.start();
-
-            Set<ValueBox> markedBoxes = new HashSet<ValueBox>();
-            Map<ValueBox, Unit> boxToUnit = new HashMap<ValueBox, Unit>(units.size() * 2 + 1, 0.7f);
+    	ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis, omitExceptingUnitEdges);
+ 	
+    	// run in panic mode on first split (maybe change this depending on the input source)
+		final LocalDefs defs = LocalDefs.Factory.newLocalDefs(graph, true);
+		final LocalUses uses = LocalUses.Factory.newLocalUses(graph, defs);
+		
+        if(Options.v().time())
+            Timers.v().splitPhase1Timer.end();
+        if(Options.v().time())
+            Timers.v().splitPhase2Timer.start();
+        
+		Set<Unit> visited = new HashSet<Unit>();
+        
+		// Collect the set of locals that we need to split
+		NumberedSet<Local> localsToSplit = new NumberedSet<Local>(Scene.v().getLocalNumberer());
+		{
+			NumberedSet<Local> localsVisited = new NumberedSet<Local>(Scene.v().getLocalNumberer());
+	        for (Unit s : body.getUnits()) {
+	            if (s.getDefBoxes().isEmpty())
+	                continue;
+	            if (!(s.getDefBoxes().get(0).getValue() instanceof Local))
+	            	continue;
+	            
+	            // If we see a local the second time, we know that we must split it
+	            Local l = (Local) s.getDefBoxes().get(0).getValue();
+	            if (!localsVisited.add(l))
+	            	localsToSplit.add(l);
+	        }
+		}
+		
+		int w = 0;
+        for (Unit s : body.getUnits()) {
+            if (s.getDefBoxes().isEmpty())
+                continue;
             
-            for (Unit s : units) {
-                if (s.getDefBoxes().size() > 1)
-                    throw new RuntimeException("stmt with more than 1 defbox!");
-                if (s.getDefBoxes().size() < 1)
-                    continue;
-                
-                ValueBox loBox = s.getDefBoxes().get(0);
-                Value lo = loBox.getValue();
-                
-                if(lo instanceof Local && !markedBoxes.contains(loBox))
-                {
-                    Deque<Unit> defsToVisit = new ArrayDeque<Unit>();
-                    Deque<ValueBox> boxesToVisit = new ArrayDeque<ValueBox>();
-
-                    List<ValueBox> web = new ArrayList<ValueBox>();
-                    webs.add(web);
-                    
-                    defsToVisit.add(s);
-                    markedBoxes.add(loBox);
-                    
-                    while(!boxesToVisit.isEmpty() || !defsToVisit.isEmpty())
-                    {
-                        if(!defsToVisit.isEmpty())
-                        {
-                            Unit d = defsToVisit.poll();
-                            web.add(d.getDefBoxes().get(0));
-                            
-                            // Add all the uses of this definition to the queue
-                            for (UnitValueBoxPair use : localUses.getUsesOf(d)) {
-                            	if(!markedBoxes.contains(use.valueBox)) {
-                            		markedBoxes.add(use.valueBox);
-                            		boxesToVisit.add(use.valueBox);
-                            		boxToUnit.put(use.valueBox, use.unit);
-                            	}
-                            }
-                        }
-                        else {
-                            ValueBox box = boxesToVisit.poll();
-                            web.add(box);
-
-                            // Add all the definitions of this use to the queue.
-                            List<Unit> defs = localDefs.getDefsOfAt((Local) box.getValue(),
-                            		boxToUnit.get(box));
-                            for (Unit u : defs) {
-                            	for (ValueBox b : u.getDefBoxes()) {
-                            		if(!markedBoxes.contains(b)) {
-                            			markedBoxes.add(b);
-                            			defsToVisit.add(u);
-                            		}
-                            	}
-                            }
-                        }
-                    }
-                }
-            }
+            if (s.getDefBoxes().size() > 1)
+                throw new RuntimeException("stmt with more than 1 defbox!");
+            
+            if (!(s.getDefBoxes().get(0).getValue() instanceof Local))
+            	continue;
+            
+            // we don't want to visit a node twice
+            if (visited.remove(s))
+            	continue;
+                        
+            // always reassign locals to avoid "use before definition" bugs!
+            // unfortunately this creates a lot of new locals, so it's important
+            // to remove them afterwards
+            Local oldLocal = (Local) s.getDefBoxes().get(0).getValue();  
+            if (!localsToSplit.contains(oldLocal))
+            	continue;
+            Local newLocal = (Local) oldLocal.clone();
+            
+            newLocal.setName(newLocal.getName()+'#'+ ++w); // renaming should not be done here
+    		body.getLocals().add(newLocal);
+            
+    		Deque<Unit> queue = new ArrayDeque<Unit>();
+    		queue.addFirst(s);
+    		do {
+    			final Unit head = queue.removeFirst();
+    			if (visited.add(head)) {
+        			for (UnitValueBoxPair use : uses.getUsesOf(head)) {        				
+        				ValueBox vb = use.valueBox;
+        				Value v = vb.getValue();
+        				
+        				if (v == newLocal)
+        					continue;
+        				
+        				// should always be true - but who knows ...
+        				if (v instanceof Local) {
+        					Local l = (Local) v;        		
+        					queue.addAll(defs.getDefsOfAt(l, use.unit));        					
+	        				vb.setValue(newLocal);
+        				}    				
+        			}
+        			
+    				for (ValueBox vb : head.getDefBoxes()) {
+    					Value v = vb.getValue();
+    					if (v instanceof Local) {        						
+    						vb.setValue(newLocal);
+    					}
+    				}
+    			}
+    		}
+    		while (!queue.isEmpty());
+    		
+    		// keep the set small
+    		visited.remove(s);
         }
-        
-        // Assign locals appropriately.
-        {
-            Map<Local, Integer> localToUseCount = new HashMap<Local, Integer>(body.getLocalCount() * 2 + 1, 0.7f);
 
-            for (List<ValueBox> web : webs) {
-                ValueBox rep = web.get(0);
-                Local desiredLocal = (Local) rep.getValue();
-
-                if(!localToUseCount.containsKey(desiredLocal))
-                {
-                    // claim this local for this set
-                    localToUseCount.put(desiredLocal, new Integer(1));
-                }
-                else {
-                    // generate a new local
-                    int useCount = localToUseCount.get(desiredLocal).intValue() + 1;
-                    localToUseCount.put(desiredLocal, new Integer(useCount));
-        
-                    Local local = (Local) desiredLocal.clone();
-                    local.setName(desiredLocal.getName() + "#" + useCount);
-                    
-                    body.getLocals().add(local);
-
-                    // Change all boxes to point to this new local
-                    for (ValueBox box : web) {
-                    	box.setValue(local);
-                    }
-                }
-            }
-        }
-        
         if(Options.v().time())
             Timers.v().splitPhase2Timer.end();
-    }   
+        
+		if (Options.v().time()) 
+			Timers.v().splitTimer.end();
+    }
 }

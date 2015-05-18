@@ -1,6 +1,7 @@
 package soot.jimple.toolkits.thread.mhp.pegcallgraph;
 
 import soot.jimple.toolkits.thread.mhp.SCC;
+
 import java.util.*;
 
 // *** USE AT YOUR OWN RISK ***
@@ -59,7 +60,7 @@ public class CheckRecursiveCalls{
 						//if (((Boolean)methodsNeedingInlining.get(o)).booleanValue() == true){
 						System.err.println("Fail to compute MHP because interested method call relate to recursive calls!");
 						System.err.println("interested method: " + o);
-						System.exit(1);
+						throw new RuntimeException("Fail to compute MHP because interested method call relate to recursive calls!");
 						// }
 					}
 				}

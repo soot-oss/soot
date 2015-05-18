@@ -27,12 +27,12 @@
 
 package soot.jimple.toolkits.base;
 import soot.options.*;
-
 import soot.*;
 import soot.jimple.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
+
 import java.util.*;
 
 public class Aggregator extends BodyTransformer
@@ -51,11 +51,12 @@ public class Aggregator extends BodyTransformer
         StmtBody body = (StmtBody)b;
         boolean onlyStackVars = PhaseOptions.getBoolean(options, "only-stack-locals"); 
 
+		if (Options.v().time()) 
+			Timers.v().aggregationTimer.start();
+		
         int aggregateCount = 1;
 
-        if(Options.v().time())
-            Timers.v().aggregationTimer.start();
-         boolean changed = false;
+        boolean changed = false;
 
         Map<ValueBox, Zone> boxToZone = new HashMap<ValueBox, Zone>(body.getUnits().size() * 2 + 1, 0.7f);
 
@@ -87,22 +88,20 @@ public class Aggregator extends BodyTransformer
             
             aggregateCount++;
         } while(changed);
+
+		if (Options.v().time()) 
+			Timers.v().aggregationTimer.end();
         
-        if(Options.v().time())
-            Timers.v().aggregationTimer.end();
     }
   
   private static boolean internalAggregate(StmtBody body, Map<ValueBox, Zone> boxToZone, boolean onlyStackVars)
     {
-      LocalUses localUses;
-      LocalDefs localDefs;
-      ExceptionalUnitGraph graph;
       boolean hadAggregation = false;
       Chain<Unit> units = body.getUnits();
       
-      graph = new ExceptionalUnitGraph(body);
-      localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
-      localUses = new SimpleLocalUses(graph, localDefs);
+      ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
+      LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(graph);
+      LocalUses localUses = LocalUses.Factory.newLocalUses(body, localDefs);
       
       List<Unit> unitList = new PseudoTopologicalOrderer<Unit>().newList(graph,false);
       for (Unit u : unitList) {
@@ -143,22 +142,24 @@ public class Aggregator extends BodyTransformer
              to do; if RHS has a method invocation f(a, b,
              c) or field access, we must ban field writes, other method
              calls and (as usual) writes to a, b, c. */
-          
+                      
           boolean cantAggr = false;
           boolean propagatingInvokeExpr = false;
           boolean propagatingFieldRef = false;
           boolean propagatingArrayRef = false;
-          ArrayList<FieldRef> fieldRefList = new ArrayList<FieldRef>();
+          List<FieldRef> fieldRefList = new ArrayList<FieldRef>();
       
-          LinkedList<Value> localsUsed = new LinkedList<Value>();
+          List<Value> localsUsed = new ArrayList<Value>();
           for (ValueBox vb : s.getUseBoxes()) {
               Value v = vb.getValue();
-                if (v instanceof Local)
+                if (v instanceof Local) {
                     localsUsed.add(v);
-                else if (v instanceof InvokeExpr)
+                } else if (v instanceof InvokeExpr) {
                     propagatingInvokeExpr = true;
-                else if(v instanceof ArrayRef)
+                }    
+                else if(v instanceof ArrayRef) {
                     propagatingArrayRef = true;
+                }
                 else if(v instanceof FieldRef)
                 {
                     propagatingFieldRef = true;

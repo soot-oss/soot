@@ -35,9 +35,7 @@ import soot.jimple.StringConstant;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SmartLocalDefs;
+import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 public class Validate {
@@ -62,8 +60,7 @@ public class Validate {
             }
         }
         
-        final ExceptionalUnitGraph g = new ExceptionalUnitGraph(b);
-        final SmartLocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
+        final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(b, true);
         
         Set<Unit> toReplace = new HashSet<Unit>();
         

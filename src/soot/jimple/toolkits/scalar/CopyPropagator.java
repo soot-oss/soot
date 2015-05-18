@@ -126,15 +126,17 @@ public class CopyPropagator extends BodyTransformer {
 					localToDefCount.put(l, new Integer(localToDefCount.get(l).intValue() + 1));
 			}
 		}
+		
+        if (throwAnalysis == null)
+        	throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+        
+        if (forceOmitExceptingUnitEdges == false)
+        	forceOmitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
+        
+        // Go through the definitions, building the webs
+    	UnitGraph graph = new ExceptionalUnitGraph(stmtBody, throwAnalysis, forceOmitExceptingUnitEdges);
 
-		if (this.throwAnalysis == null)
-			this.throwAnalysis = Scene.v().getDefaultThrowAnalysis();
-		ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody, throwAnalysis,
-				forceOmitExceptingUnitEdges || Options.v().omit_excepting_unit_edges());
-
-		LocalDefs localDefs;
-
-		localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
+		LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(graph);
 
 		// Perform a local propagation pass.
 		{
@@ -278,8 +280,6 @@ public class CopyPropagator extends BodyTransformer {
 
 		if (Options.v().time())
 			Timers.v().propagatorTimer.end();
-		
-		SmartLocalDefsPool.v().invalidate(b);
 	}
 
 }

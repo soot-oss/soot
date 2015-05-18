@@ -21,7 +21,6 @@
 package soot.jimple.toolkits.typing.fast;
 
 import java.util.Iterator;
-import java.util.List;
 
 import soot.ArrayType;
 import soot.BooleanType;
@@ -84,13 +83,8 @@ import soot.jimple.TableSwitchStmt;
 import soot.jimple.ThrowStmt;
 import soot.jimple.UshrExpr;
 import soot.jimple.XorExpr;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
-import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SimpleLocalUses;
-import soot.toolkits.scalar.SmartLocalDefs;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
@@ -115,22 +109,17 @@ public class UseChecker extends AbstractStmtSwitch
 
 	public void check(Typing tg, IUseVisitor uv)
 	{
-		try {
-			this.tg = tg;
-			this.uv = uv;
-			if (this.tg == null)
-				throw new RuntimeException("null typing passed to useChecker");
-		} catch (Exception e) {
-			e.printStackTrace();
-			System.exit(1);
-		}
+		this.tg = tg;
+		this.uv = uv;
+		if (this.tg == null)
+			throw new RuntimeException("null typing passed to useChecker");
 
 		for ( Iterator<Unit> i = this.jb.getUnits().snapshotIterator();
 			i.hasNext(); )
 		{
 			if ( uv.finish() )
 				return;
-			((Stmt)i.next()).apply(this);
+			i.next().apply(this);
 		}
 	}
 
@@ -284,15 +273,12 @@ public class UseChecker extends AbstractStmtSwitch
 					if (rt.getSootClass().getName().equals("java.lang.Object")
 							|| rt.getSootClass().getName().equals("java.io.Serializable")
 							|| rt.getSootClass().getName().equals("java.lang.Cloneable")) {
-						if (this.defs == null) {
-							UnitGraph graph = new ExceptionalUnitGraph(jb);
-					        this.defs = new SmartLocalDefs(graph,
-									new SimpleLiveLocals(graph));
-							this.uses = new SimpleLocalUses(graph, this.defs);
+						if (defs == null) {
+					        defs = LocalDefs.Factory.newLocalDefs(jb);
+							uses = LocalUses.Factory.newLocalUses(jb, defs);
 						}
 						
-						List<UnitValueBoxPair> usePairs = this.uses.getUsesOf(stmt);
-						outer: for (UnitValueBoxPair usePair : usePairs) {
+						outer: for (UnitValueBoxPair usePair : uses.getUsesOf(stmt)) {
 							Stmt useStmt = (Stmt) usePair.getUnit();
 							if (useStmt.containsInvokeExpr())
 								for (int i = 0; i < useStmt.getInvokeExpr().getArgCount(); i++)

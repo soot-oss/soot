@@ -968,8 +968,7 @@ public class TypeResolver
 
   private void split_new()
   {
-    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody);
-    LocalDefs defs = new SmartLocalDefs(graph,new SimpleLiveLocals(graph));
+	LocalDefs defs = LocalDefs.Factory.newLocalDefs(stmtBody);
     PatchingChain<Unit> units = stmtBody.getUnits();
     Stmt[] stmts = new Stmt[units.size()];
 
