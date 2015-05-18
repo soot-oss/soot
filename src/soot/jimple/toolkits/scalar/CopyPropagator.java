@@ -25,17 +25,41 @@
 
 package soot.jimple.toolkits.scalar;
 
-import soot.options.*;
-import soot.*;
-import soot.jimple.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.exceptions.ThrowAnalysis;
-import soot.toolkits.graph.*;
-import soot.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
-
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.NullType;
+import soot.RefLikeType;
+import soot.Scene;
+import soot.Singletons;
+import soot.Timers;
+import soot.Unit;
+import soot.ValueBox;
+import soot.jimple.AssignStmt;
+import soot.jimple.CastExpr;
+import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.IntConstant;
+import soot.jimple.LongConstant;
+import soot.jimple.NullConstant;
+import soot.jimple.Stmt;
+import soot.jimple.StmtBody;
 import soot.options.CPOptions;
+import soot.options.Options;
+import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.PseudoTopologicalOrderer;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.SimpleLiveLocals;
+import soot.toolkits.scalar.SmartLocalDefs;
+import soot.toolkits.scalar.SmartLocalDefsPool;
+import soot.util.Chain;
 
 public class CopyPropagator extends BodyTransformer {
 
@@ -176,8 +200,12 @@ public class CopyPropagator extends BodyTransformer {
 											&& ((IntConstant) ce.getOp()).value == 0;
 									isConstNull |= ce.getOp() instanceof LongConstant
 											&& ((LongConstant) ce.getOp()).value == 0;
-									if (isConstNull)
-										useBox.setValue(NullConstant.v());
+									if (isConstNull) {
+										if (useBox.canContainValue(NullConstant.v())) {
+											useBox.setValue(NullConstant.v());
+										}
+									}
+
 								}
 							}
 							else if (def.getRightOp() instanceof Local) {
