@@ -55,10 +55,8 @@ import soot.options.Options;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.PseudoTopologicalOrderer;
+import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
-import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SmartLocalDefs;
-import soot.toolkits.scalar.SmartLocalDefsPool;
 import soot.util.Chain;
 
 public class CopyPropagator extends BodyTransformer {
