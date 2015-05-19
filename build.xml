@@ -204,9 +204,16 @@
         <javac
             srcdir="tests"
             destdir="testclasses"
-            classpath="classes:${polyglot.jar}:${jasmin.jar}:${junit.jar}:${hamcrest.jar}"
-            debug="true"
-            />
+            debug="true">
+        	<classpath>
+        		<pathelement location="classes"/>
+        		<pathelement location="${polyglot.jar}"/>
+        		<pathelement location="${jasmin.jar}"/>
+           		<pathelement location="${asm.jar}"/>
+        		<pathelement location="${junit.jar}"/>
+        		<pathelement location="${hamcrest.jar}"/>
+        	</classpath>
+        </javac>
     </target>
 
     <target name="runtests" depends="buildtests,settings">
