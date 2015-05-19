@@ -234,13 +234,14 @@
            		<pathelement location="${asm.jar}"/>
         		<pathelement location="${mockito.jar}"/>
         		<pathelement location="${powermock-mockito.jar}"/>
-           	</classpath>
+        		<pathelement location="${javassist.jar}"/>
+        	</classpath>
 			
 			<jvmarg value="-ea" />
             
             <formatter type="xml" usefile="true" />
             <batchtest todir="reports">
-                <fileset dir="testclasses" includes="**/Test*.class"/>
+                <fileset dir="testclasses" includes="**/Test*.class" excludes="**/Abstract*.class" />
                 <fileset dir="testclasses" includes="**/*Test.class"/>
             </batchtest>
         </junit>
