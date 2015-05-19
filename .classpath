@@ -18,7 +18,6 @@
 	<classpathentry kind="lib" path="libs/java_cup.jar"/>
 	<classpathentry kind="lib" path="libs/javassist-3.18.2-GA.jar"/>
 	<classpathentry kind="lib" path="libs/mockito-all-1.10.8.jar"/>
-	<classpathentry kind="lib" path="libs/objenesis-2.1.jar"/>
 	<classpathentry kind="lib" path="libs/powermock-mockito-1.6.1-full.jar"/>
 	<classpathentry kind="lib" path="libs/dexlib2-2.0.5-dev.jar"/>
 	<classpathentry kind="lib" path="libs/util-2.0.5-dev.jar"/>

@@ -212,6 +212,8 @@
            		<pathelement location="${asm.jar}"/>
         		<pathelement location="${junit.jar}"/>
         		<pathelement location="${hamcrest.jar}"/>
+        		<pathelement location="${mockito.jar}"/>
+        		<pathelement location="${powermock-mockito.jar}"/>
         	</classpath>
         </javac>
     </target>
@@ -230,7 +232,9 @@
                 <pathelement location="${dexlib-utils.jar}"/>
                 <pathelement location="${heros.jar}"/>
            		<pathelement location="${asm.jar}"/>
-            </classpath>
+        		<pathelement location="${mockito.jar}"/>
+        		<pathelement location="${powermock-mockito.jar}"/>
+           	</classpath>
 			
 			<jvmarg value="-ea" />
             

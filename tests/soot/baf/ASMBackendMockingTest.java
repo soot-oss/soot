@@ -1,10 +1,27 @@
 package soot.baf;
 
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.inOrder;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.objectweb.asm.Opcodes.DUP;
+import static org.objectweb.asm.Opcodes.DUP2;
+import static org.objectweb.asm.Opcodes.DUP2_X1;
+import static org.objectweb.asm.Opcodes.DUP2_X2;
+import static org.objectweb.asm.Opcodes.DUP_X1;
+import static org.objectweb.asm.Opcodes.DUP_X2;
+import static org.objectweb.asm.Opcodes.JSR;
+import static org.objectweb.asm.Opcodes.NOP;
+import static org.objectweb.asm.Opcodes.POP2;
+import static org.objectweb.asm.Opcodes.SWAP;
+import static org.powermock.api.mockito.PowerMockito.doCallRealMethod;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InOrder;
-import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.Label;
 import org.objectweb.asm.MethodVisitor;
 import org.powermock.core.classloader.annotations.PrepareForTest;
@@ -12,12 +29,9 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import soot.IntType;
 import soot.LongType;
-import soot.SootClass;
 import soot.Type;
 import soot.Unit;
 import soot.VoidType;
-import soot.baf.BafASMBackend;
-import soot.baf.Inst;
 import soot.baf.internal.BDup1_x1Inst;
 import soot.baf.internal.BDup1_x2Inst;
 import soot.baf.internal.BDup2Inst;
@@ -28,26 +42,16 @@ import soot.baf.internal.BNopInst;
 import soot.baf.internal.BPopInst;
 import soot.baf.internal.BSwapInst;
 import soot.util.backend.ASMBackendUtils;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.inOrder;
-import static org.mockito.Mockito.times;
-import static org.mockito.Matchers.*;
-import static org.powermock.api.mockito.PowerMockito.*;
-import static org.objectweb.asm.Opcodes.*;
 
 @PrepareForTest(ASMBackendUtils.class)
 @RunWith(PowerMockRunner.class)
 public class ASMBackendMockingTest {
 
-	private SootClass sc;
-	private ClassVisitor cv;
 	private MethodVisitor mv;
 	private BafASMBackend sut;
 
 	@Before
 	public void setUp() throws Exception {
-		sc = mock(SootClass.class);
-		cv = mock(ClassVisitor.class);
 		mv = mock(MethodVisitor.class);
     	sut = mock(BafASMBackend.class);
         
