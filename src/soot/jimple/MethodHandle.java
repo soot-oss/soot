@@ -35,15 +35,17 @@ import soot.util.*;
 public class MethodHandle extends Constant
 {
     public final SootMethodRef methodRef;
+    public int tag;
 
-    private MethodHandle(SootMethodRef ref)
+    private MethodHandle(SootMethodRef ref, int tag)
     {
         this.methodRef = ref;
+        this.tag = tag;
     }
 
-    public static MethodHandle v(SootMethodRef ref)
+    public static MethodHandle v(SootMethodRef ref, int tag)
     {
-        return new MethodHandle(ref);
+        return new MethodHandle(ref, tag);
     }
 
     public String toString()

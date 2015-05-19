@@ -414,6 +414,7 @@ public class SourceLocator
             case Options.output_format_jasmin:   return ".jasmin";
             case Options.output_format_xml:      return ".xml";
             case Options.output_format_template: return ".java";
+            case Options.output_format_asm: 	 return ".asm";
             default:
                 throw new RuntimeException();
         }

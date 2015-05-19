@@ -24,6 +24,7 @@
  */
 
 
+
 package soot.jimple;
 import soot.options.*;
 import soot.*;
@@ -36,6 +37,11 @@ import soot.util.*;
 import java.util.*;
 
 import soot.grimp.*;
+
+
+/*
+ * TODO This is the right JasminClass
+ */
 
 /** Methods for producing Jasmin code from Jimple. */
 public class JasminClass extends AbstractJasminClass
