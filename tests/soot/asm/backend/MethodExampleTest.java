@@ -19,7 +19,8 @@ public class MethodExampleTest extends AbstractASMBackendTest {
 		FieldVisitor fv;
 		MethodVisitor mv;
 
-		visitor.visit(Opcodes.V1_1, Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER, "pkg/Bean", null, "java/lang/Object", null);
+		visitor.visit(Opcodes.V1_1, Opcodes.ACC_PUBLIC + Opcodes.ACC_SUPER,
+				"soot/asm/backend/targets/Bean", null, "java/lang/Object", null);
 		visitor.visitSource("Bean.java", null);
 		{
 		fv = visitor.visitField(Opcodes.ACC_PRIVATE, "f", "I", null, null);
@@ -38,7 +39,7 @@ public class MethodExampleTest extends AbstractASMBackendTest {
 		mv = visitor.visitMethod(Opcodes.ACC_PUBLIC, "getF", "()I", null, null);
 		mv.visitCode();
 		mv.visitVarInsn(Opcodes.ALOAD, 0);
-		mv.visitFieldInsn(Opcodes.GETFIELD, "pkg/Bean", "f", "I");
+		mv.visitFieldInsn(Opcodes.GETFIELD, "soot/asm/backend/targets/Bean", "f", "I");
 		mv.visitInsn(Opcodes.IRETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
@@ -48,7 +49,7 @@ public class MethodExampleTest extends AbstractASMBackendTest {
 		mv.visitCode();
 		mv.visitVarInsn(Opcodes.ALOAD, 0);
 		mv.visitVarInsn(Opcodes.ILOAD, 1);
-		mv.visitFieldInsn(Opcodes.PUTFIELD, "pkg/Bean", "f", "I");
+		mv.visitFieldInsn(Opcodes.PUTFIELD, "soot/asm/backend/targets/Bean", "f", "I");
 		mv.visitInsn(Opcodes.RETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
@@ -61,7 +62,7 @@ public class MethodExampleTest extends AbstractASMBackendTest {
 		mv.visitJumpInsn(Opcodes.IFLT, l0);
 		mv.visitVarInsn(Opcodes.ALOAD, 0);
 		mv.visitVarInsn(Opcodes.ILOAD, 1);
-		mv.visitFieldInsn(Opcodes.PUTFIELD, "pkg/Bean", "f", "I");
+		mv.visitFieldInsn(Opcodes.PUTFIELD, "soot/asm/backend/targets/Bean", "f", "I");
 		Label l1 = new Label();
 		mv.visitJumpInsn(Opcodes.GOTO, l1);
 		mv.visitLabel(l0);
@@ -85,12 +86,12 @@ public class MethodExampleTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

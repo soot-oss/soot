@@ -16,7 +16,7 @@ public class TryCatchTest extends AbstractASMBackendTest {
 	protected void generate(TraceClassVisitor cw) {
 		MethodVisitor mv;
 
-		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "pkg/TryCatch", null, "java/lang/Object", null);
+		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/TryCatch", null, "java/lang/Object", null);
 		cw.visitSource("TryCatch.java", null);
 
 		{
@@ -49,7 +49,7 @@ public class TryCatchTest extends AbstractASMBackendTest {
 		Label l5 = new Label();
 		mv.visitJumpInsn(GOTO, l5);
 		mv.visitLabel(l2);
-		//mv.visitFrame(F_FULL, 3, new Object[] {"pkg/TryCatch", "java/lang/Object", INTEGER}, 1, new Object[] {"java/lang/NullPointerException"});
+		//mv.visitFrame(F_FULL, 3, new Object[] {"soot/asm/backend/targets/TryCatch", "java/lang/Object", INTEGER}, 1, new Object[] {"java/lang/NullPointerException"});
 		mv.visitVarInsn(ASTORE, 1);
 		mv.visitInsn(ICONST_M1);
 		mv.visitVarInsn(ISTORE, 0);
@@ -77,12 +77,12 @@ public class TryCatchTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

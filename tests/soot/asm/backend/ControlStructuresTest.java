@@ -18,7 +18,8 @@ public class ControlStructuresTest extends AbstractASMBackendTest {
 		MethodVisitor mv;
 		FieldVisitor fv;
 
-		cw.visit(V1_6, ACC_PUBLIC + ACC_SUPER, "pkg/ControlStructures", null, "java/lang/Object", null);
+		cw.visit(V1_6, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/ControlStructures",
+				null, "java/lang/Object", null);
 		
 		cw.visitSource("ControlStructures.java", null);
 
@@ -42,7 +43,7 @@ public class ControlStructuresTest extends AbstractASMBackendTest {
 		mv.visitTypeInsn(NEW, "java/util/ArrayList");
 		mv.visitInsn(DUP);
 		mv.visitMethodInsn(INVOKESPECIAL, "java/util/ArrayList", "<init>", "()V", false);
-		mv.visitFieldInsn(PUTFIELD, "pkg/ControlStructures", "result", "Ljava/util/List;");
+		mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ControlStructures", "result", "Ljava/util/List;");
 		mv.visitVarInsn(ILOAD, 1);
 		Label l0 = new Label();
 		Label l1 = new Label();
@@ -51,7 +52,7 @@ public class ControlStructuresTest extends AbstractASMBackendTest {
 		mv.visitTableSwitchInsn(1, 3, l3, new Label[] { l0, l1, l2 });
 		mv.visitLabel(l0);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETFIELD, "pkg/ControlStructures", "result", "Ljava/util/List;");
+		mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ControlStructures", "result", "Ljava/util/List;");
 		mv.visitInsn(ICONST_1);
 		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
 		mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
@@ -60,14 +61,14 @@ public class ControlStructuresTest extends AbstractASMBackendTest {
 		mv.visitJumpInsn(GOTO, l4);
 		mv.visitLabel(l1);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETFIELD, "pkg/ControlStructures", "result", "Ljava/util/List;");
+		mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ControlStructures", "result", "Ljava/util/List;");
 		mv.visitInsn(ICONST_2);
 		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
 		mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
 		mv.visitInsn(POP);
 		mv.visitLabel(l2);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETFIELD, "pkg/ControlStructures", "result", "Ljava/util/List;");
+		mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ControlStructures", "result", "Ljava/util/List;");
 		mv.visitInsn(ICONST_3);
 		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
 		mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
@@ -75,7 +76,7 @@ public class ControlStructuresTest extends AbstractASMBackendTest {
 		mv.visitJumpInsn(GOTO, l4);
 		mv.visitLabel(l3);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETFIELD, "pkg/ControlStructures", "result", "Ljava/util/List;");
+		mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ControlStructures", "result", "Ljava/util/List;");
 		mv.visitInsn(ACONST_NULL);
 		mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
 		mv.visitInsn(POP);
@@ -89,40 +90,40 @@ public class ControlStructuresTest extends AbstractASMBackendTest {
 		mv.visitLookupSwitchInsn(l9, new int[] { 1, 10, 100, 1000 }, new Label[] { l5, l6, l7, l8 });
 		mv.visitLabel(l5);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETFIELD, "pkg/ControlStructures", "result", "Ljava/util/List;");
+		mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ControlStructures", "result", "Ljava/util/List;");
 		mv.visitInsn(ICONST_1);
 		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
 		mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
 		mv.visitInsn(POP);
 		mv.visitLabel(l6);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETFIELD, "pkg/ControlStructures", "result", "Ljava/util/List;");
+		mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ControlStructures", "result", "Ljava/util/List;");
 		mv.visitIntInsn(BIPUSH, 10);
 		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
 		mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
 		mv.visitInsn(POP);
 		mv.visitLabel(l7);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETFIELD, "pkg/ControlStructures", "result", "Ljava/util/List;");
+		mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ControlStructures", "result", "Ljava/util/List;");
 		mv.visitIntInsn(BIPUSH, 100);
 		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
 		mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
 		mv.visitInsn(POP);
 		mv.visitLabel(l8);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETFIELD, "pkg/ControlStructures", "result", "Ljava/util/List;");
+		mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ControlStructures", "result", "Ljava/util/List;");
 		mv.visitIntInsn(SIPUSH, 1000);
 		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf", "(I)Ljava/lang/Integer;", false);
 		mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
 		mv.visitInsn(POP);
 		mv.visitLabel(l9);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETFIELD, "pkg/ControlStructures", "result", "Ljava/util/List;");
+		mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ControlStructures", "result", "Ljava/util/List;");
 		mv.visitInsn(ACONST_NULL);
 		mv.visitMethodInsn(INVOKEINTERFACE, "java/util/List", "add", "(Ljava/lang/Object;)Z", true);
 		mv.visitInsn(POP);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETFIELD, "pkg/ControlStructures", "result", "Ljava/util/List;");
+		mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ControlStructures", "result", "Ljava/util/List;");
 		mv.visitInsn(ARETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
@@ -138,12 +139,12 @@ public class ControlStructuresTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override

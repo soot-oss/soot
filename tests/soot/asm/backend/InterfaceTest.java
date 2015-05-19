@@ -14,8 +14,8 @@ public class InterfaceTest extends AbstractASMBackendTest {
 	@Override
 	protected void generate(TraceClassVisitor visitor) {
 		visitor.visit(Opcodes.V1_1, Opcodes.ACC_PUBLIC + Opcodes.ACC_ABSTRACT + Opcodes.ACC_INTERFACE,
-		"pkg/Comparable", null, "java/lang/Object",
-		new String[] { "pkg/Measurable" });
+				"soot/asm/backend/targets/Comparable", null, "java/lang/Object",
+		new String[] { "soot/asm/backend/targets/Measurable" });
 		visitor.visitSource("Comparable.java", null);
 		visitor.visitField(Opcodes.ACC_PUBLIC + Opcodes.ACC_FINAL + Opcodes.ACC_STATIC, "LESS", "I",
 		null, new Integer(-1)).visitEnd();
@@ -36,12 +36,12 @@ public class InterfaceTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

@@ -15,7 +15,7 @@ public class NullTypesTest extends AbstractASMBackendTest{
 
         MethodVisitor mv;
 
-        cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "pkg/nullTypes", null, "java/lang/Object", null);
+        cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/nullTypes", null, "java/lang/Object", null);
         cw.visitSource("nullTypes.java", null);
 
         {
@@ -53,12 +53,12 @@ public class NullTypesTest extends AbstractASMBackendTest{
 
     @Override
     protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
     }
 
     @Override
     protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
     }
 
 }

@@ -18,48 +18,51 @@ public class EnumTest extends AbstractASMBackendTest {
 		FieldVisitor fv;
 		MethodVisitor mv;
 
-		cw.visit(V1_5, ACC_PUBLIC + ACC_FINAL + ACC_SUPER + ACC_ENUM, "pkg/MyEnum", "Ljava/lang/Enum<Lpkg/MyEnum;>;", "java/lang/Enum", null);
+		cw.visit(V1_5, ACC_PUBLIC + ACC_FINAL + ACC_SUPER + ACC_ENUM,
+				"soot/asm/backend/targets/MyEnum",
+				"Ljava/lang/Enum<Lsoot/asm/backend/targets/MyEnum;>;",
+				"java/lang/Enum", null);
 		cw.visitSource("MyEnum.java", null);
 		{
-		fv = cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC + ACC_ENUM, "JA", "Lpkg/MyEnum;", null, null);
+		fv = cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC + ACC_ENUM, "JA", "Lsoot/asm/backend/targets/MyEnum;", null, null);
 		fv.visitEnd();
 		}
 		{
-		fv = cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC + ACC_ENUM, "NEIN", "Lpkg/MyEnum;", null, null);
+		fv = cw.visitField(ACC_PUBLIC + ACC_FINAL + ACC_STATIC + ACC_ENUM, "NEIN", "Lsoot/asm/backend/targets/MyEnum;", null, null);
 		fv.visitEnd();
 		}
 		{
-		fv = cw.visitField(ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC, "ENUM$VALUES", "[Lpkg/MyEnum;", null, null);
+		fv = cw.visitField(ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC, "ENUM$VALUES", "[Lsoot/asm/backend/targets/MyEnum;", null, null);
 		fv.visitEnd();
 		}
 		{
 		mv = cw.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
 		mv.visitCode();
-		mv.visitTypeInsn(NEW, "pkg/MyEnum");
+		mv.visitTypeInsn(NEW, "soot/asm/backend/targets/MyEnum");
 		mv.visitInsn(DUP);
 		mv.visitLdcInsn("JA");
 		mv.visitInsn(ICONST_0);
-		mv.visitMethodInsn(INVOKESPECIAL, "pkg/MyEnum", "<init>", "(Ljava/lang/String;I)V", false);
-		mv.visitFieldInsn(PUTSTATIC, "pkg/MyEnum", "JA", "Lpkg/MyEnum;");
-		mv.visitTypeInsn(NEW, "pkg/MyEnum");
+		mv.visitMethodInsn(INVOKESPECIAL, "soot/asm/backend/targets/MyEnum", "<init>", "(Ljava/lang/String;I)V", false);
+		mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/MyEnum", "JA", "Lsoot/asm/backend/targets/MyEnum;");
+		mv.visitTypeInsn(NEW, "soot/asm/backend/targets/MyEnum");
 		mv.visitInsn(DUP);
 		mv.visitLdcInsn("NEIN");
 		mv.visitInsn(ICONST_1);
-		mv.visitMethodInsn(INVOKESPECIAL, "pkg/MyEnum", "<init>", "(Ljava/lang/String;I)V", false);
-		mv.visitFieldInsn(PUTSTATIC, "pkg/MyEnum", "NEIN", "Lpkg/MyEnum;");
+		mv.visitMethodInsn(INVOKESPECIAL, "soot/asm/backend/targets/MyEnum", "<init>", "(Ljava/lang/String;I)V", false);
+		mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/MyEnum", "NEIN", "Lsoot/asm/backend/targets/MyEnum;");
 		mv.visitInsn(ICONST_2);
-		mv.visitTypeInsn(ANEWARRAY, "pkg/MyEnum");
+		mv.visitTypeInsn(ANEWARRAY, "soot/asm/backend/targets/MyEnum");
 		mv.visitVarInsn(ASTORE, 0);
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitInsn(ICONST_0);
-		mv.visitFieldInsn(GETSTATIC, "pkg/MyEnum", "JA", "Lpkg/MyEnum;");
+		mv.visitFieldInsn(GETSTATIC, "soot/asm/backend/targets/MyEnum", "JA", "Lsoot/asm/backend/targets/MyEnum;");
 		mv.visitInsn(AASTORE);
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitInsn(ICONST_1);
-		mv.visitFieldInsn(GETSTATIC, "pkg/MyEnum", "NEIN", "Lpkg/MyEnum;");
+		mv.visitFieldInsn(GETSTATIC, "soot/asm/backend/targets/MyEnum", "NEIN", "Lsoot/asm/backend/targets/MyEnum;");
 		mv.visitInsn(AASTORE);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(PUTSTATIC, "pkg/MyEnum", "ENUM$VALUES", "[Lpkg/MyEnum;");
+		mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/MyEnum", "ENUM$VALUES", "[Lsoot/asm/backend/targets/MyEnum;");
 		mv.visitInsn(RETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
@@ -76,14 +79,14 @@ public class EnumTest extends AbstractASMBackendTest {
 		mv.visitEnd();
 		}
 		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "values", "()[Lpkg/MyEnum;", null, null);
+		mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "values", "()[Lsoot/asm/backend/targets/MyEnum;", null, null);
 		mv.visitCode();
-		mv.visitFieldInsn(GETSTATIC, "pkg/MyEnum", "ENUM$VALUES", "[Lpkg/MyEnum;");
+		mv.visitFieldInsn(GETSTATIC, "soot/asm/backend/targets/MyEnum", "ENUM$VALUES", "[Lsoot/asm/backend/targets/MyEnum;");
 		mv.visitInsn(DUP);
 		mv.visitInsn(ARRAYLENGTH);
 		mv.visitInsn(DUP);
 		mv.visitVarInsn(ISTORE, 0);
-		mv.visitTypeInsn(ANEWARRAY, "pkg/MyEnum");
+		mv.visitTypeInsn(ANEWARRAY, "soot/asm/backend/targets/MyEnum");
 		mv.visitVarInsn(ASTORE, 1);
 		mv.visitInsn(ICONST_0);
 		mv.visitVarInsn(ALOAD, 1);
@@ -96,12 +99,12 @@ public class EnumTest extends AbstractASMBackendTest {
 		mv.visitEnd();
 		}
 		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "valueOf", "(Ljava/lang/String;)Lpkg/MyEnum;", null, null);
+		mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "valueOf", "(Ljava/lang/String;)Lsoot/asm/backend/targets/MyEnum;", null, null);
 		mv.visitCode();
-		mv.visitLdcInsn(Type.getType("Lpkg/MyEnum;"));
+		mv.visitLdcInsn(Type.getType("Lsoot/asm/backend/targets/MyEnum;"));
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Enum", "valueOf", "(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;", false);
-		mv.visitTypeInsn(CHECKCAST, "pkg/MyEnum");
+		mv.visitTypeInsn(CHECKCAST, "soot/asm/backend/targets/MyEnum");
 		mv.visitInsn(ARETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
@@ -118,12 +121,12 @@ public class EnumTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

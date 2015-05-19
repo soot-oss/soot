@@ -26,14 +26,14 @@ public class MinimalJavaVersionTest {
 	public void testMinimalVersionAnnotation(){
 		 thrown.expect(IllegalArgumentException.class);
 		 thrown.expectMessage("Enforced Java version 1.3 too low to support required features (1.5 required)");
-		 runSoot("pkg.AnnotatedClass", "1.3");
+		 runSoot("soot.asm.backend.targets.AnnotatedClass", "1.3");
 		 
 	}
 	
 	@Test
 	public void testSufficientUserVersion(){
 		try{
-			runSoot("pkg.AnnotatedClass", "1.7");
+			runSoot("soot.asm.backend.targets.AnnotatedClass", "1.7");
 			return;
 		}
 		catch(RuntimeException e){
@@ -48,7 +48,7 @@ public class MinimalJavaVersionTest {
 
 		// Run Soot and print output to .asm-files. 
 		Main.v().run(new String[] {
-			"-cp", "./testcode_asm_backend"
+			"-cp", "./testclasses"
 					+File.pathSeparator+rtJar,
 			"-src-prec", "only-class",
 			"-output-format", "asm",

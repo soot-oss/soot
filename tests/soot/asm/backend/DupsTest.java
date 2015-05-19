@@ -15,7 +15,7 @@ public class DupsTest extends AbstractASMBackendTest {
 	protected void generate(TraceClassVisitor cw) {
 		MethodVisitor mv;
 
-		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "pkg/Dups", null,
+		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/Dups", null,
 				"java/lang/Object", null);
 		cw.visitSource("Dups.java", null);
 
@@ -59,12 +59,12 @@ public class DupsTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

@@ -55,6 +55,7 @@ public abstract class AbstractASMBackendTestWithSources implements Opcodes {
 			"-src-prec", "java",
 			"-output-format", "asm",
 			"-allow-phantom-refs",
+			"-keep-line-number",
 			"-java-version", getRequiredJavaVersion(),
 			getTargetClass()
 		});

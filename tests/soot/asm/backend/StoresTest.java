@@ -16,7 +16,7 @@ public class StoresTest extends AbstractASMBackendTest {
 	protected void generate(TraceClassVisitor visitor) {
 		MethodVisitor mv;
 
-		visitor.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "pkg/Stores", null, "java/lang/Object", null);
+		visitor.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/Stores", null, "java/lang/Object", null);
 		visitor.visitSource("Stores.java", null);
 		{
 		mv = visitor.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
@@ -48,7 +48,7 @@ public class StoresTest extends AbstractASMBackendTest {
 		Label l1 = new Label();
 		mv.visitJumpInsn(GOTO, l1);
 		mv.visitLabel(l0);
-		//mv.visitFrame(F_FULL, 5, new Object[] {"pkg/Stores", INTEGER, DOUBLE, FLOAT, INTEGER}, 0, new Object[] {});
+		//mv.visitFrame(F_FULL, 5, new Object[] {"soot/asm/backend/targets/Stores", INTEGER, DOUBLE, FLOAT, INTEGER}, 0, new Object[] {});
 		mv.visitInsn(ICONST_0);
         mv.visitVarInsn(ISTORE, 6);
         mv.visitLabel(l1);
@@ -110,12 +110,12 @@ public class StoresTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }
