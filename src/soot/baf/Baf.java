@@ -298,10 +298,10 @@ public class Baf
     {
         return new BNewMultiArrayInst(opType, dimensions);
     }
-
-    public DynamicInvokeInst newDynamicInvokeInst(SootMethodRef bsmMethodRef, List<Value> bsmArgs, SootMethodRef methodRef)
+    
+    public DynamicInvokeInst newDynamicInvokeInst(SootMethodRef bsmMethodRef, List<Value> bsmArgs, SootMethodRef methodRef, int tag)
     {
-    	return new BDynamicInvokeInst(bsmMethodRef,bsmArgs,methodRef);
+    	return new BDynamicInvokeInst(bsmMethodRef,bsmArgs,methodRef, tag);
     }
     
     public StaticInvokeInst newStaticInvokeInst(SootMethodRef methodRef)
