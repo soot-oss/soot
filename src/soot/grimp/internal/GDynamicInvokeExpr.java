@@ -33,8 +33,6 @@ package soot.grimp.internal;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.objectweb.asm.Opcodes;
-
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.UnitPrinter;
