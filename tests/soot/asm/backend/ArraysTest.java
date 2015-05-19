@@ -15,7 +15,7 @@ public class ArraysTest extends AbstractASMBackendTest {
 	protected void generate(TraceClassVisitor cw) {
 		MethodVisitor mv;
 
-		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "pkg/Arrays", null,
+		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/Arrays", null,
 				"java/lang/Object", null);
 		cw.visitSource("Arrays.java", null);
 
@@ -258,12 +258,12 @@ public class ArraysTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

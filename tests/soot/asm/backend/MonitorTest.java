@@ -17,7 +17,7 @@ public class MonitorTest extends AbstractASMBackendTest {
 		FieldVisitor fv;
 		MethodVisitor mv;
 
-		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "pkg/Monitor", null, "java/lang/Object", null);
+		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/Monitor", null, "java/lang/Object", null);
 		cw.visitSource("Monitor.java", null);
 
 		{
@@ -37,7 +37,7 @@ public class MonitorTest extends AbstractASMBackendTest {
 		mv = cw.visitMethod(ACC_PUBLIC, "doSth", "()V", null, null);
 		mv.visitCode();
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(GETFIELD, "pkg/Monitor", "o", "Ljava/lang/Object;");
+		mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/Monitor", "o", "Ljava/lang/Object;");
 		mv.visitInsn(DUP);
 		mv.visitInsn(MONITORENTER);
 		mv.visitInsn(MONITOREXIT);
@@ -58,12 +58,12 @@ public class MonitorTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

@@ -18,7 +18,7 @@ public class ExtendedArithmeticLibTest extends AbstractASMBackendTest {
 		MethodVisitor mv;
 		FieldVisitor fv;
 
-		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "pkg/ExtendedArithmeticLib",
+		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/ExtendedArithmeticLib",
 				null, "java/lang/Object", null);
 		cw.visitSource("ExtendedArithmeticLib.java", null);
 		{
@@ -92,32 +92,32 @@ public class ExtendedArithmeticLibTest extends AbstractASMBackendTest {
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "i2", "I");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "i2", "I");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "i3", "I");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "i3", "I");
 			mv.visitInsn(IREM);
-			mv.visitFieldInsn(PUTFIELD, "pkg/ExtendedArithmeticLib", "i1", "I");
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "i1", "I");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "f2", "F");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "f2", "F");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "f3", "F");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "f3", "F");
 			mv.visitInsn(FREM);
-			mv.visitFieldInsn(PUTFIELD, "pkg/ExtendedArithmeticLib", "f1", "F");
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "f1", "F");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "l2", "J");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "l2", "J");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "l3", "J");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "l3", "J");
 			mv.visitInsn(LREM);
-			mv.visitFieldInsn(PUTFIELD, "pkg/ExtendedArithmeticLib", "l1", "J");
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "l1", "J");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "d2", "D");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "d2", "D");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "d3", "D");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "d3", "D");
 			mv.visitInsn(DREM);
-			mv.visitFieldInsn(PUTFIELD, "pkg/ExtendedArithmeticLib", "d1", "D");
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "d1", "D");
 			mv.visitInsn(RETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
@@ -127,32 +127,32 @@ public class ExtendedArithmeticLibTest extends AbstractASMBackendTest {
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "i2", "I");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "i2", "I");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "i3", "I");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "i3", "I");
 			mv.visitInsn(ISUB);
-			mv.visitFieldInsn(PUTFIELD, "pkg/ExtendedArithmeticLib", "i1", "I");
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "i1", "I");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "f2", "F");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "f2", "F");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "f3", "F");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "f3", "F");
 			mv.visitInsn(FSUB);
-			mv.visitFieldInsn(PUTFIELD, "pkg/ExtendedArithmeticLib", "f1", "F");
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "f1", "F");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "l2", "J");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "l2", "J");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "l3", "J");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "l3", "J");
 			mv.visitInsn(LSUB);
-			mv.visitFieldInsn(PUTFIELD, "pkg/ExtendedArithmeticLib", "l1", "J");
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "l1", "J");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "d2", "D");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "d2", "D");
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "pkg/ExtendedArithmeticLib", "d3", "D");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "d3", "D");
 			mv.visitInsn(DSUB);
-			mv.visitFieldInsn(PUTFIELD, "pkg/ExtendedArithmeticLib", "d1", "D");
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "d1", "D");
 			mv.visitInsn(RETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
@@ -252,12 +252,12 @@ public class ExtendedArithmeticLibTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

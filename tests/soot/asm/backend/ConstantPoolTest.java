@@ -31,7 +31,7 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 		FieldVisitor fv;
 		MethodVisitor mv;
 
-		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "pkg/ConstantPool", null,
+		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/ConstantPool", null,
 				"java/lang/Object", null);
 		cw.visitSource("ConstantPool.java", null);
 
@@ -114,28 +114,28 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 			mv = cw.visitMethod(ACC_STATIC, "<clinit>", "()V", null, null);
 			mv.visitCode();
 			mv.visitInsn(ACONST_NULL);
-			mv.visitFieldInsn(PUTSTATIC, "pkg/ConstantPool", "s2",
+			mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/ConstantPool", "s2",
 					"Ljava/lang/String;");
 			mv.visitLdcInsn("O");
-			mv.visitFieldInsn(PUTSTATIC, "pkg/ConstantPool", "o1",
+			mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/ConstantPool", "o1",
 					"Ljava/lang/Object;");
 			mv.visitInsn(ACONST_NULL);
-			mv.visitFieldInsn(PUTSTATIC, "pkg/ConstantPool", "o2",
+			mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/ConstantPool", "o2",
 					"Ljava/lang/Object;");
 			mv.visitIntInsn(BIPUSH, 123);
 			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Integer", "valueOf",
 					"(I)Ljava/lang/Integer;", false);
-			mv.visitFieldInsn(PUTSTATIC, "pkg/ConstantPool", "o3",
+			mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/ConstantPool", "o3",
 					"Ljava/lang/Object;");
 			mv.visitLdcInsn(new Long(1234L));
 			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Long", "valueOf",
 					"(J)Ljava/lang/Long;", false);
-			mv.visitFieldInsn(PUTSTATIC, "pkg/ConstantPool", "o4",
+			mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/ConstantPool", "o4",
 					"Ljava/lang/Object;");
 			mv.visitLdcInsn(new Double("123.3"));
 			mv.visitMethodInsn(INVOKESTATIC, "java/lang/Double", "valueOf",
 					"(D)Ljava/lang/Double;", false);
-			mv.visitFieldInsn(PUTSTATIC, "pkg/ConstantPool", "o5",
+			mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/ConstantPool", "o5",
 					"Ljava/lang/Object;");
 			mv.visitTypeInsn(NEW, "java/lang/Integer");
 			mv.visitInsn(DUP);
@@ -144,7 +144,7 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 					"(I)V", false);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Integer", "intValue",
 					"()I", false);
-			mv.visitFieldInsn(PUTSTATIC, "pkg/ConstantPool", "i2", "I");
+			mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/ConstantPool", "i2", "I");
 			mv.visitTypeInsn(NEW, "java/lang/Long");
 			mv.visitInsn(DUP);
 			mv.visitLdcInsn(new Long(12341L));
@@ -152,7 +152,7 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 					"(J)V", false);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Long", "longValue",
 					"()J", false);
-			mv.visitFieldInsn(PUTSTATIC, "pkg/ConstantPool", "l3", "J");
+			mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/ConstantPool", "l3", "J");
 			mv.visitTypeInsn(NEW, "java/lang/Double");
 			mv.visitInsn(DUP);
 			mv.visitLdcInsn(new Double("1234.123"));
@@ -160,7 +160,7 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 					"(D)V", false);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Double",
 					"doubleValue", "()D", false);
-			mv.visitFieldInsn(PUTSTATIC, "pkg/ConstantPool", "d3", "D");
+			mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/ConstantPool", "d3", "D");
 			mv.visitInsn(RETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
@@ -226,12 +226,12 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

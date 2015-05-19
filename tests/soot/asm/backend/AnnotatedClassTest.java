@@ -18,12 +18,13 @@ public class AnnotatedClassTest extends AbstractASMBackendTest {
 		MethodVisitor mv;
 		AnnotationVisitor av0;
 
-		cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER, "pkg/AnnotatedClass", null, "java/lang/Object", null);
+		cw.visit(V1_5, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/AnnotatedClass",
+				null, "java/lang/Object", null);
 		
 		cw.visitSource("AnnotatedClass.java", null);
 
 		{
-		av0 = cw.visitAnnotation("Lpkg/MyTestAnnotation;", true);
+		av0 = cw.visitAnnotation("Lsoot/asm/backend/targets/MyTestAnnotation;", true);
 		av0.visit("iVal", new Integer(1));
 		av0.visit("fVal", new Float("1.0"));
 		av0.visit("lVal", new Long(1L));
@@ -32,7 +33,7 @@ public class AnnotatedClassTest extends AbstractASMBackendTest {
 		av0.visit("bVal", new Byte((byte)1));
 		av0.visit("sVal", new Short((short)1));
 		av0.visit("strVal", "1");
-		av0.visit("rVal", Type.getType("Lpkg/AnnotatedClass;"));
+		av0.visit("rVal", Type.getType("Lsoot/asm/backend/targets/AnnotatedClass;"));
 		av0.visit("iAVal", new int[] {1,2,3,4});
 		{
 		AnnotationVisitor av1 = av0.visitArray("sAVal");
@@ -63,12 +64,12 @@ public class AnnotatedClassTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

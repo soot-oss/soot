@@ -16,24 +16,13 @@ public class LineNumbersTest extends AbstractASMBackendTestWithSources {
 	protected void generate(TraceClassVisitor cw) {
 		MethodVisitor mv;
 
-		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "pkg/LineNumbers", null, "java/lang/Object", null);
+		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/LineNumbers",
+				null, "java/lang/Object", null);
 		cw.visitSource("LineNumbers.java", null);
 		
 		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null);
-		mv.visitCode();
-		Label l0 = new Label();
-		mv.visitLabel(l0);
-		mv.visitInsn(RETURN);
-		mv.visitMaxs(0, 0);
-		mv.visitEnd();
-		}
-		{
 		mv = cw.visitMethod(ACC_PUBLIC, "<init>", "()V", null, null);
 		mv.visitCode();
-		Label l0 = new Label();
-		mv.visitLabel(l0);
-		mv.visitLineNumber(3, l0);
 		Label l1 = new Label();
 		mv.visitLabel(l1);
 		mv.visitLineNumber(3, l1);
@@ -49,6 +38,16 @@ public class LineNumbersTest extends AbstractASMBackendTestWithSources {
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
 		}
+		{
+		mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "main", "([Ljava/lang/String;)V", null, null);
+		mv.visitCode();
+		Label l0 = new Label();
+		mv.visitLabel(l0);
+		mv.visitLineNumber(6, l0);
+		mv.visitInsn(RETURN);
+		mv.visitMaxs(0, 0);
+		mv.visitEnd();
+		}
 		cw.visitEnd();
 
 	}
@@ -60,12 +59,12 @@ public class LineNumbersTest extends AbstractASMBackendTestWithSources {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

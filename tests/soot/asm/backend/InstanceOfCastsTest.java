@@ -16,7 +16,8 @@ public class InstanceOfCastsTest extends AbstractASMBackendTest {
 	protected void generate(TraceClassVisitor cw) {
 		MethodVisitor mv;
 
-		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "pkg/InstanceOfCasts", null, "java/lang/Object", null);
+		cw.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/InstanceOfCasts",
+				null, "java/lang/Object", null);
 		cw.visitSource("InstanceOfCasts.java", null);
 		
 		{
@@ -32,20 +33,20 @@ public class InstanceOfCastsTest extends AbstractASMBackendTest {
 			mv = cw.visitMethod(ACC_PUBLIC, "isMeasurable", "(Ljava/lang/Object;)Z", null, null);
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 1);
-			mv.visitTypeInsn(INSTANCEOF, "pkg/Measurable");
+			mv.visitTypeInsn(INSTANCEOF, "soot/asm/backend/targets/Measurable");
 			mv.visitInsn(IRETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
 			}
 			{
-			mv = cw.visitMethod(ACC_PUBLIC, "convertMeasurableArray", "([Ljava/lang/Object;)[Lpkg/Measurable;", null, null);
+			mv = cw.visitMethod(ACC_PUBLIC, "convertMeasurableArray", "([Ljava/lang/Object;)[Lsoot/asm/backend/targets/Measurable;", null, null);
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 1);
-			mv.visitTypeInsn(INSTANCEOF, "[Lpkg/Measurable;");
+			mv.visitTypeInsn(INSTANCEOF, "[Lsoot/asm/backend/targets/Measurable;");
 			Label l0 = new Label();
 			mv.visitJumpInsn(IFEQ, l0);
 			mv.visitVarInsn(ALOAD, 1);
-			mv.visitTypeInsn(CHECKCAST, "[Lpkg/Measurable;");
+			mv.visitTypeInsn(CHECKCAST, "[Lsoot/asm/backend/targets/Measurable;");
 			mv.visitInsn(ARETURN);
 			mv.visitLabel(l0);
 			mv.visitInsn(ACONST_NULL);
@@ -65,12 +66,12 @@ public class InstanceOfCastsTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

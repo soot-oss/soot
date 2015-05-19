@@ -15,7 +15,7 @@ public class ReturnsTest extends AbstractASMBackendTest {
 	protected void generate(TraceClassVisitor visitor) {
 		MethodVisitor mv;
 
-		visitor.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "pkg/Returns", null,
+		visitor.visit(V1_1, ACC_PUBLIC + ACC_SUPER, "soot/asm/backend/targets/Returns", null,
 				"java/lang/Object", null);
 		
 		visitor.visitSource("Returns.java", null);
@@ -70,11 +70,11 @@ public class ReturnsTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 }

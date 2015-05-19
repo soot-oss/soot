@@ -15,7 +15,8 @@ public class ExceptionTest extends AbstractASMBackendTest {
 	protected void generate(TraceClassVisitor cw) {
 		MethodVisitor mv;
 
-		cw.visit(V1_4, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE, "pkg/ExceptionMethods", null,
+		cw.visit(V1_4, ACC_PUBLIC + ACC_ABSTRACT + ACC_INTERFACE,
+				"soot/asm/backend/targets/ExceptionMethods", null,
 				"java/lang/Object", null);
 		
 		cw.visitSource("ExceptionMethods.java", null);
@@ -36,12 +37,12 @@ public class ExceptionTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 	
 	@Override

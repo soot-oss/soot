@@ -17,12 +17,12 @@ public class InnerClassTest extends AbstractASMBackendTest {
 		MethodVisitor mv;
 		FieldVisitor fv;
 
-		visitor.visit(V1_1, ACC_SUPER, "pkg/InnerClass$Inner", null,
+		visitor.visit(V1_1, ACC_SUPER, "soot/asm/backend/targets/InnerClass$Inner", null,
 				"java/lang/Object", null);
 		
 		visitor.visitSource("InnerClass.java", null);
 
-		visitor.visitInnerClass("pkg/InnerClass$Inner", "pkg/InnerClass",
+		visitor.visitInnerClass("soot/asm/backend/targets/InnerClass$Inner", "soot/asm/backend/targets/InnerClass",
 				"Inner", ACC_PRIVATE);
 
 		{
@@ -32,17 +32,17 @@ public class InnerClassTest extends AbstractASMBackendTest {
 		}
 		{
 			fv = visitor.visitField(ACC_FINAL + ACC_SYNTHETIC, "this$0",
-					"Lpkg/InnerClass;", null, null);
+					"Lsoot/asm/backend/targets/InnerClass;", null, null);
 			fv.visitEnd();
 		}
 		{
 			mv = visitor.visitMethod(ACC_PRIVATE, "<init>",
-					"(Lpkg/InnerClass;)V", null, null);
+					"(Lsoot/asm/backend/targets/InnerClass;)V", null, null);
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitVarInsn(ALOAD, 1);
-			mv.visitFieldInsn(PUTFIELD, "pkg/InnerClass$Inner", "this$0",
-					"Lpkg/InnerClass;");
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/InnerClass$Inner", "this$0",
+					"Lsoot/asm/backend/targets/InnerClass;");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>",
 					"()V", false);
@@ -61,12 +61,12 @@ public class InnerClassTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }

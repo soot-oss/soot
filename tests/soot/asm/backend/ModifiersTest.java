@@ -18,7 +18,7 @@ public class ModifiersTest extends AbstractASMBackendTest {
 		FieldVisitor fv;
 		
 
-		cw.visit(V1_3, ACC_PUBLIC + ACC_SUPER + ACC_ABSTRACT, "pkg/Modifiers", null, "java/lang/Object", null);
+		cw.visit(V1_3, ACC_PUBLIC + ACC_SUPER + ACC_ABSTRACT, "soot/asm/backend/targets/Modifiers", null, "java/lang/Object", null);
 		cw.visitSource("Modifiers.java", null);
 
 		{
@@ -40,7 +40,7 @@ public class ModifiersTest extends AbstractASMBackendTest {
 		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitIntInsn(SIPUSH, 213);
-		mv.visitFieldInsn(PUTFIELD, "pkg/Modifiers", "j", "I");
+		mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/Modifiers", "j", "I");
 		mv.visitInsn(RETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
@@ -100,12 +100,12 @@ public class ModifiersTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 	
 	@Override

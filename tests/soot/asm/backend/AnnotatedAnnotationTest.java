@@ -16,11 +16,14 @@ public class AnnotatedAnnotationTest extends AbstractASMBackendTest {
 
 		MethodVisitor mv;
 
-		cw.visit(V1_5, ACC_PUBLIC + ACC_ANNOTATION + ACC_ABSTRACT + ACC_INTERFACE, "pkg/MyAnnotatedAnnotation", null, "java/lang/Object", new String[] { "java/lang/annotation/Annotation" }); //TODO V1_1 seems wrong here
+		cw.visit(V1_5, ACC_PUBLIC + ACC_ANNOTATION + ACC_ABSTRACT + ACC_INTERFACE,
+				"soot/asm/backend/targets/MyAnnotatedAnnotation", null,
+				"java/lang/Object", new String[] { "java/lang/annotation/Annotation" }); //TODO V1_1 seems wrong here
 		cw.visitSource("MyAnnotatedAnnotation.java", null);
 		
 		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "value", "()Lpkg/MyTestAnnotation;", null, null);
+		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "value",
+				"()Lsoot/asm/backend/targets/MyTestAnnotation;", null, null);
 		mv.visitEnd();
 		}
 		cw.visitEnd();
@@ -34,12 +37,12 @@ public class AnnotatedAnnotationTest extends AbstractASMBackendTest {
 
 	@Override
 	protected String getTargetFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 	@Override
 	protected String getClassPathFolder() {
-		return "./testclasses/soot/asm/backend/targets";
+		return "./testclasses";
 	}
 
 }
