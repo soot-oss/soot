@@ -63,48 +63,42 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N>
         return graph;
     }
     
-    public List<N> getDominators(N node)
-    {
-        // non-backed list since FlowSet is an ArrayPackedFlowSet
-        return nodeToDominators.get(node).toList();
-    }
+	public List<N> getDominators(N node) {
+		// non-backed list since FlowSet is an ArrayPackedFlowSet
+		return nodeToDominators.get(node).toList();
+	}
 
-    public N getImmediateDominator(N node)
-    {
-        // root node
-        if(getGraph().getHeads().contains(node))
-            return null;
+	public N getImmediateDominator(N node) {
+		// root node
+		if(getGraph().getHeads().contains(node))
+			return null;
 
-	// could be memoised, I guess
-
-        List<N> dominatorsList = getDominators(node);
-        dominatorsList.remove(node);
-
-        Iterator<N> dominatorsIt = dominatorsList.iterator();
-        N immediateDominator = null;
-
-        while((immediateDominator == null) && dominatorsIt.hasNext()){
-            N dominator = dominatorsIt.next();
-
-            if(isDominatedByAll(dominator, dominatorsList))
-                immediateDominator = dominator;
-        }
-
-        if(immediateDominator == null)
-            throw new RuntimeException("Assertion failed.");
+		// avoid the creation of temp-lists
+		FlowSet<N> head = (FlowSet<N>) nodeToDominators.get(node).clone();
+		head.remove(node);
         
-        return immediateDominator;
-    }
+		for (N dominator : head) {
+			if (nodeToDominators.get(dominator).isSubSet(head)) {
+				return dominator;
+			}
+		}
 
-    public boolean isDominatedBy(N node, N dominator)
-    {
-        return nodeToDominators.get(node).contains(dominator);
-    }
+		throw new RuntimeException("Assertion failed.");
+	}
 
-    public boolean isDominatedByAll(N node, Collection<N> dominators)
-    {
-        return getDominators(node).containsAll(dominators);
-    }
+	public boolean isDominatedBy(N node, N dominator) {
+		// avoid the creation of temp-lists
+		return nodeToDominators.get(node).contains(dominator);
+	}
+
+	public boolean isDominatedByAll(N node, Collection<N> dominators) {
+		FlowSet<N> f = analysis.getFlowAfter(node);
+		for (N n : dominators) {
+			if (!f.contains(n))
+				return false;
+		}
+		return true;
+	}
 }
 
 /**
