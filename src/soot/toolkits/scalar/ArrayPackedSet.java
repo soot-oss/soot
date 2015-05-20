@@ -128,7 +128,7 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
     	if (i == -1)
     		return Collections.emptyList();
     	
-	List<T> elements = new LinkedList<T>();
+	List<T> elements = new ArrayList<T>(bits.cardinality());
 	for (; i >= 0; i = bits.nextSetBit(i+1)) {
 		int endOfRun = bits.nextClearBit(i+1);
 		do { elements.add(map.getObject(i++)); }
