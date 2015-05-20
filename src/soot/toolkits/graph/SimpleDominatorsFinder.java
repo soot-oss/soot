@@ -92,7 +92,7 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N>
 	}
 
 	public boolean isDominatedByAll(N node, Collection<N> dominators) {
-		FlowSet<N> f = analysis.getFlowAfter(node);
+		FlowSet<N> f = nodeToDominators.get(node);
 		for (N n : dominators) {
 			if (!f.contains(n))
 				return false;
