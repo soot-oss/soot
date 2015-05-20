@@ -126,74 +126,6 @@ public class ArraysTest extends AbstractASMBackendTest {
 			mv.visitEnd();
 		}
 		{
-			mv = cw.visitMethod(0, "doLong", "()V", null, null);
-			mv.visitCode();
-			mv.visitIntInsn(BIPUSH, 9);
-			mv.visitIntInsn(NEWARRAY, T_LONG);
-			mv.visitInsn(DUP);
-			mv.visitInsn(ICONST_1);
-			mv.visitInsn(LALOAD);
-			mv.visitVarInsn(LSTORE, 1);
-			mv.visitInsn(ICONST_0);
-			mv.visitVarInsn(LLOAD, 1);
-			mv.visitInsn(LASTORE);
-			mv.visitInsn(RETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(0, "doShort", "()V", null, null);
-			mv.visitCode();
-			mv.visitIntInsn(BIPUSH, 10);
-			mv.visitIntInsn(NEWARRAY, T_SHORT);
-			mv.visitInsn(DUP);
-			mv.visitInsn(ICONST_1);
-			mv.visitInsn(SALOAD);
-			mv.visitVarInsn(ISTORE, 0);
-			mv.visitInsn(ICONST_0);
-			mv.visitVarInsn(ILOAD, 0);
-			mv.visitInsn(SASTORE);
-			mv.visitInsn(RETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(0, "doObject", "()V", null, null);
-			mv.visitCode();
-			mv.visitIntInsn(BIPUSH, 11);
-			mv.visitTypeInsn(ANEWARRAY, "java/lang/Object");
-			mv.visitVarInsn(ASTORE, 0);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(ICONST_0);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(ICONST_1);
-			mv.visitInsn(AALOAD);
-			mv.visitInsn(AASTORE);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(ICONST_3);
-			mv.visitInsn(ACONST_NULL);
-			mv.visitInsn(AASTORE);
-			mv.visitInsn(RETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(0, "doString", "()V", null, null);
-			mv.visitCode();
-			mv.visitIntInsn(BIPUSH, 12);
-			mv.visitTypeInsn(ANEWARRAY, "java/lang/String");
-			mv.visitInsn(DUP);
-			mv.visitInsn(ICONST_1);
-			mv.visitInsn(AALOAD);
-			mv.visitVarInsn(ASTORE, 0);
-			mv.visitInsn(ICONST_0);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(AASTORE);
-			mv.visitInsn(RETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
 			mv = cw.visitMethod(0, "doIntInt", "()V", null, null);
 			mv.visitCode();
 			mv.visitInsn(ICONST_3);
@@ -221,6 +153,42 @@ public class ArraysTest extends AbstractASMBackendTest {
 			mv.visitEnd();
 		}
 		{
+			mv = cw.visitMethod(0, "doLong", "()V", null, null);
+			mv.visitCode();
+			mv.visitIntInsn(BIPUSH, 9);
+			mv.visitIntInsn(NEWARRAY, T_LONG);
+			mv.visitInsn(DUP);
+			mv.visitInsn(ICONST_1);
+			mv.visitInsn(LALOAD);
+			mv.visitVarInsn(LSTORE, 1);
+			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(LLOAD, 1);
+			mv.visitInsn(LASTORE);
+			mv.visitInsn(RETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(0, "doObject", "()V", null, null);
+			mv.visitCode();
+			mv.visitIntInsn(BIPUSH, 11);
+			mv.visitTypeInsn(ANEWARRAY, "java/lang/Object");
+			mv.visitVarInsn(ASTORE, 0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(ICONST_1);
+			mv.visitInsn(AALOAD);
+			mv.visitInsn(AASTORE);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(ICONST_3);
+			mv.visitInsn(ACONST_NULL);
+			mv.visitInsn(AASTORE);
+			mv.visitInsn(RETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
 			mv = cw.visitMethod(0, "doObjectObject", "()V", null, null);
 			mv.visitCode();
 			mv.visitInsn(ICONST_4);
@@ -242,6 +210,38 @@ public class ArraysTest extends AbstractASMBackendTest {
 			mv.visitInsn(AALOAD);
 			mv.visitInsn(ICONST_1);
 			mv.visitInsn(AALOAD);
+			mv.visitInsn(AASTORE);
+			mv.visitInsn(RETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(0, "doShort", "()V", null, null);
+			mv.visitCode();
+			mv.visitIntInsn(BIPUSH, 10);
+			mv.visitIntInsn(NEWARRAY, T_SHORT);
+			mv.visitInsn(DUP);
+			mv.visitInsn(ICONST_1);
+			mv.visitInsn(SALOAD);
+			mv.visitVarInsn(ISTORE, 0);
+			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(ILOAD, 0);
+			mv.visitInsn(SASTORE);
+			mv.visitInsn(RETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(0, "doString", "()V", null, null);
+			mv.visitCode();
+			mv.visitIntInsn(BIPUSH, 12);
+			mv.visitTypeInsn(ANEWARRAY, "java/lang/String");
+			mv.visitInsn(DUP);
+			mv.visitInsn(ICONST_1);
+			mv.visitInsn(AALOAD);
+			mv.visitVarInsn(ASTORE, 0);
+			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(ALOAD, 0);
 			mv.visitInsn(AASTORE);
 			mv.visitInsn(RETURN);
 			mv.visitMaxs(0, 0);

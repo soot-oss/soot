@@ -92,26 +92,26 @@ public class CompareInstructionsTest extends AbstractASMBackendTest {
 			mv.visitEnd();
 		}
 		{
-			mv = cw.visitMethod(0, "comparei", "(I)V", null, null);
+			mv = cw.visitMethod(0, "compareBool", "(Z)V", null, null);
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "i", "I");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "bool", "Z");
 			mv.visitVarInsn(ILOAD, 1);
 			Label l0 = new Label();
 			mv.visitJumpInsn(IF_ICMPNE, l0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(ICONST_2);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "i", "I");
+			mv.visitInsn(ICONST_1);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "bool", "Z");
 			mv.visitLabel(l0);
 			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "i", "I");
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "bool", "Z");
 			mv.visitVarInsn(ILOAD, 1);
 			Label l1 = new Label();
 			mv.visitJumpInsn(IF_ICMPEQ, l1);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(ICONST_1);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "i", "I");
+			mv.visitInsn(ICONST_0);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "bool", "Z");
 			mv.visitLabel(l1);
 			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 			mv.visitInsn(RETURN);
@@ -119,28 +119,53 @@ public class CompareInstructionsTest extends AbstractASMBackendTest {
 			mv.visitEnd();
 		}
 		{
-			mv = cw.visitMethod(0, "comparef", "(F)V", null, null);
+			mv = cw.visitMethod(0, "compareb", "(B)V", null, null);
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "f", "F");
-			mv.visitVarInsn(FLOAD, 1);
-			mv.visitInsn(FCMPL);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "b", "B");
+			mv.visitVarInsn(ILOAD, 1);
 			Label l0 = new Label();
-			mv.visitJumpInsn(IFNE, l0);
+			mv.visitJumpInsn(IF_ICMPNE, l0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(FCONST_0);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "f", "F");
+			mv.visitInsn(ICONST_2);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "b", "B");
 			mv.visitLabel(l0);
 			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "f", "F");
-			mv.visitVarInsn(FLOAD, 1);
-			mv.visitInsn(FCMPL);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "b", "B");
+			mv.visitVarInsn(ILOAD, 1);
 			Label l1 = new Label();
-			mv.visitJumpInsn(IFEQ, l1);
+			mv.visitJumpInsn(IF_ICMPEQ, l1);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(FCONST_1);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "f", "F");
+			mv.visitInsn(ICONST_1);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "b", "B");
+			mv.visitLabel(l1);
+			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+			mv.visitInsn(RETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(0, "comparec", "(C)V", null, null);
+			mv.visitCode();
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "c", "C");
+			mv.visitVarInsn(ILOAD, 1);
+			Label l0 = new Label();
+			mv.visitJumpInsn(IF_ICMPNE, l0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(ICONST_2);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "c", "C");
+			mv.visitLabel(l0);
+			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "c", "C");
+			mv.visitVarInsn(ILOAD, 1);
+			Label l1 = new Label();
+			mv.visitJumpInsn(IF_ICMPEQ, l1);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(ICONST_3);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "c", "C");
 			mv.visitLabel(l1);
 			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 			mv.visitInsn(RETURN);
@@ -177,6 +202,62 @@ public class CompareInstructionsTest extends AbstractASMBackendTest {
 			mv.visitEnd();
 		}
 		{
+			mv = cw.visitMethod(0, "comparef", "(F)V", null, null);
+			mv.visitCode();
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "f", "F");
+			mv.visitVarInsn(FLOAD, 1);
+			mv.visitInsn(FCMPL);
+			Label l0 = new Label();
+			mv.visitJumpInsn(IFNE, l0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(FCONST_0);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "f", "F");
+			mv.visitLabel(l0);
+			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "f", "F");
+			mv.visitVarInsn(FLOAD, 1);
+			mv.visitInsn(FCMPL);
+			Label l1 = new Label();
+			mv.visitJumpInsn(IFEQ, l1);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(FCONST_1);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "f", "F");
+			mv.visitLabel(l1);
+			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+			mv.visitInsn(RETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(0, "comparei", "(I)V", null, null);
+			mv.visitCode();
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "i", "I");
+			mv.visitVarInsn(ILOAD, 1);
+			Label l0 = new Label();
+			mv.visitJumpInsn(IF_ICMPNE, l0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(ICONST_2);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "i", "I");
+			mv.visitLabel(l0);
+			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "i", "I");
+			mv.visitVarInsn(ILOAD, 1);
+			Label l1 = new Label();
+			mv.visitJumpInsn(IF_ICMPEQ, l1);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitInsn(ICONST_1);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "i", "I");
+			mv.visitLabel(l1);
+			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
+			mv.visitInsn(RETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
 			mv = cw.visitMethod(0, "comparel", "(J)V", null, null);
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 0);
@@ -206,82 +287,25 @@ public class CompareInstructionsTest extends AbstractASMBackendTest {
 			mv.visitEnd();
 		}
 		{
-			mv = cw.visitMethod(0, "compareb", "(B)V", null, null);
+			mv = cw.visitMethod(0, "comparenull", "(Ljava/lang/Object;)V", null, null);
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "b", "B");
-			mv.visitVarInsn(ILOAD, 1);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "o", "Ljava/lang/Object;");
 			Label l0 = new Label();
-			mv.visitJumpInsn(IF_ICMPNE, l0);
+			mv.visitJumpInsn(IFNONNULL, l0);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(ICONST_2);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "b", "B");
+			mv.visitTypeInsn(NEW, "java/lang/Object");
+			mv.visitInsn(DUP);
+			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "o", "Ljava/lang/Object;");
 			mv.visitLabel(l0);
-			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "b", "B");
-			mv.visitVarInsn(ILOAD, 1);
+			mv.visitVarInsn(ALOAD, 1);
 			Label l1 = new Label();
-			mv.visitJumpInsn(IF_ICMPEQ, l1);
+			mv.visitJumpInsn(IFNULL, l1);
 			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(ICONST_1);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "b", "B");
+			mv.visitInsn(ACONST_NULL);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "o", "Ljava/lang/Object;");
 			mv.visitLabel(l1);
-			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-			mv.visitInsn(RETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(0, "compareBool", "(Z)V", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "bool", "Z");
-			mv.visitVarInsn(ILOAD, 1);
-			Label l0 = new Label();
-			mv.visitJumpInsn(IF_ICMPNE, l0);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(ICONST_1);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "bool", "Z");
-			mv.visitLabel(l0);
-			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "bool", "Z");
-			mv.visitVarInsn(ILOAD, 1);
-			Label l1 = new Label();
-			mv.visitJumpInsn(IF_ICMPEQ, l1);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(ICONST_0);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "bool", "Z");
-			mv.visitLabel(l1);
-			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-			mv.visitInsn(RETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(0, "comparec", "(C)V", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "c", "C");
-			mv.visitVarInsn(ILOAD, 1);
-			Label l0 = new Label();
-			mv.visitJumpInsn(IF_ICMPNE, l0);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(ICONST_2);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "c", "C");
-			mv.visitLabel(l0);
-			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "c", "C");
-			mv.visitVarInsn(ILOAD, 1);
-			Label l1 = new Label();
-			mv.visitJumpInsn(IF_ICMPEQ, l1);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(ICONST_3);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "c", "C");
-			mv.visitLabel(l1);
-			// mv.visitFrame(Opcodes.F_SAME, 0, null, 0, null);
 			mv.visitInsn(RETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
@@ -313,30 +337,6 @@ public class CompareInstructionsTest extends AbstractASMBackendTest {
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
 		}
-		{
-			mv = cw.visitMethod(0, "comparenull", "(Ljava/lang/Object;)V", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/CompareInstructions", "o", "Ljava/lang/Object;");
-			Label l0 = new Label();
-			mv.visitJumpInsn(IFNONNULL, l0);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitTypeInsn(NEW, "java/lang/Object");
-			mv.visitInsn(DUP);
-			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "o", "Ljava/lang/Object;");
-			mv.visitLabel(l0);
-			mv.visitVarInsn(ALOAD, 1);
-			Label l1 = new Label();
-			mv.visitJumpInsn(IFNULL, l1);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitInsn(ACONST_NULL);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/CompareInstructions", "o", "Ljava/lang/Object;");
-			mv.visitLabel(l1);
-			mv.visitInsn(RETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-			}
 			cw.visitEnd();
 
 	}

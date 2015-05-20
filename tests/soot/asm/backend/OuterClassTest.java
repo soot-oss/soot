@@ -36,14 +36,6 @@ public class OuterClassTest extends AbstractASMBackendTest {
 			mv.visitEnd();
 		}
 		{
-			mv = cw.visitMethod(ACC_PUBLIC, "getA", "()I", null, null);
-			mv.visitCode();
-			mv.visitInsn(ICONST_3);
-			mv.visitInsn(IRETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
 			mv = cw.visitMethod(ACC_PUBLIC, "doInner", "()V", null, null);
 			mv.visitCode();
 			mv.visitTypeInsn(NEW, "soot/asm/backend/targets/InnerClass$1");
@@ -51,6 +43,14 @@ public class OuterClassTest extends AbstractASMBackendTest {
 			mv.visitMethodInsn(INVOKESPECIAL, "soot/asm/backend/targets/InnerClass$1", "<init>",
 					"(Lsoot/asm/backend/targets/InnerClass;)V", false);
 			mv.visitInsn(RETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(ACC_PUBLIC, "getA", "()I", null, null);
+			mv.visitCode();
+			mv.visitInsn(ICONST_3);
+			mv.visitInsn(IRETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
 		}

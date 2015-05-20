@@ -79,6 +79,17 @@ public class EnumTest extends AbstractASMBackendTest {
 		mv.visitEnd();
 		}
 		{
+		mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "valueOf", "(Ljava/lang/String;)Lsoot/asm/backend/targets/MyEnum;", null, null);
+		mv.visitCode();
+		mv.visitLdcInsn(Type.getType("Lsoot/asm/backend/targets/MyEnum;"));
+		mv.visitVarInsn(ALOAD, 0);
+		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Enum", "valueOf", "(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;", false);
+		mv.visitTypeInsn(CHECKCAST, "soot/asm/backend/targets/MyEnum");
+		mv.visitInsn(ARETURN);
+		mv.visitMaxs(0, 0);
+		mv.visitEnd();
+		}
+		{
 		mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "values", "()[Lsoot/asm/backend/targets/MyEnum;", null, null);
 		mv.visitCode();
 		mv.visitFieldInsn(GETSTATIC, "soot/asm/backend/targets/MyEnum", "ENUM$VALUES", "[Lsoot/asm/backend/targets/MyEnum;");
@@ -94,17 +105,6 @@ public class EnumTest extends AbstractASMBackendTest {
 		mv.visitVarInsn(ILOAD, 0);
 		mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "arraycopy", "(Ljava/lang/Object;ILjava/lang/Object;II)V", false);
 		mv.visitVarInsn(ALOAD, 1);
-		mv.visitInsn(ARETURN);
-		mv.visitMaxs(0, 0);
-		mv.visitEnd();
-		}
-		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "valueOf", "(Ljava/lang/String;)Lsoot/asm/backend/targets/MyEnum;", null, null);
-		mv.visitCode();
-		mv.visitLdcInsn(Type.getType("Lsoot/asm/backend/targets/MyEnum;"));
-		mv.visitVarInsn(ALOAD, 0);
-		mv.visitMethodInsn(INVOKESTATIC, "java/lang/Enum", "valueOf", "(Ljava/lang/Class;Ljava/lang/String;)Ljava/lang/Enum;", false);
-		mv.visitTypeInsn(CHECKCAST, "soot/asm/backend/targets/MyEnum");
 		mv.visitInsn(ARETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();

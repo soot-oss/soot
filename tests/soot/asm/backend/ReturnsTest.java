@@ -31,6 +31,16 @@ public class ReturnsTest extends AbstractASMBackendTest {
 			mv.visitEnd();
 		}
 		{
+			mv = visitor.visitMethod(ACC_PUBLIC, "getIntArray", "()[I", null,
+					null);
+			mv.visitCode();
+			mv.visitInsn(ICONST_4);
+			mv.visitIntInsn(NEWARRAY, T_INT);
+			mv.visitInsn(ARETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
 			mv = visitor.visitMethod(ACC_PUBLIC, "getNull",
 					"()Ljava/lang/Object;", null, null);
 			mv.visitCode();
@@ -45,16 +55,6 @@ public class ReturnsTest extends AbstractASMBackendTest {
 			mv.visitCode();
 			mv.visitInsn(ICONST_4);
 			mv.visitTypeInsn(ANEWARRAY, "java/lang/Object");
-			mv.visitInsn(ARETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = visitor.visitMethod(ACC_PUBLIC, "getIntArray", "()[I", null,
-					null);
-			mv.visitCode();
-			mv.visitInsn(ICONST_4);
-			mv.visitIntInsn(NEWARRAY, T_INT);
 			mv.visitInsn(ARETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
