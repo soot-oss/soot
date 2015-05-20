@@ -36,25 +36,6 @@ public class MethodExampleTest extends AbstractASMBackendTest {
 		mv.visitEnd();
 		}
 		{
-		mv = visitor.visitMethod(Opcodes.ACC_PUBLIC, "getF", "()I", null, null);
-		mv.visitCode();
-		mv.visitVarInsn(Opcodes.ALOAD, 0);
-		mv.visitFieldInsn(Opcodes.GETFIELD, "soot/asm/backend/targets/Bean", "f", "I");
-		mv.visitInsn(Opcodes.IRETURN);
-		mv.visitMaxs(0, 0);
-		mv.visitEnd();
-		}
-		{
-		mv = visitor.visitMethod(Opcodes.ACC_PUBLIC, "setF", "(I)V", null, null);
-		mv.visitCode();
-		mv.visitVarInsn(Opcodes.ALOAD, 0);
-		mv.visitVarInsn(Opcodes.ILOAD, 1);
-		mv.visitFieldInsn(Opcodes.PUTFIELD, "soot/asm/backend/targets/Bean", "f", "I");
-		mv.visitInsn(Opcodes.RETURN);
-		mv.visitMaxs(0, 0);
-		mv.visitEnd();
-		}
-		{
 		mv = visitor.visitMethod(Opcodes.ACC_PUBLIC, "checkAndSetF", "(I)V", null, null);
 		mv.visitCode();
 		mv.visitVarInsn(Opcodes.ILOAD, 1);
@@ -71,6 +52,25 @@ public class MethodExampleTest extends AbstractASMBackendTest {
 		mv.visitMethodInsn(Opcodes.INVOKESPECIAL, "java/lang/IllegalArgumentException", "<init>", "()V", false);
 		mv.visitInsn(Opcodes.ATHROW);
 		mv.visitLabel(l1);
+		mv.visitInsn(Opcodes.RETURN);
+		mv.visitMaxs(0, 0);
+		mv.visitEnd();
+		}
+		{
+		mv = visitor.visitMethod(Opcodes.ACC_PUBLIC, "getF", "()I", null, null);
+		mv.visitCode();
+		mv.visitVarInsn(Opcodes.ALOAD, 0);
+		mv.visitFieldInsn(Opcodes.GETFIELD, "soot/asm/backend/targets/Bean", "f", "I");
+		mv.visitInsn(Opcodes.IRETURN);
+		mv.visitMaxs(0, 0);
+		mv.visitEnd();
+		}
+		{
+		mv = visitor.visitMethod(Opcodes.ACC_PUBLIC, "setF", "(I)V", null, null);
+		mv.visitCode();
+		mv.visitVarInsn(Opcodes.ALOAD, 0);
+		mv.visitVarInsn(Opcodes.ILOAD, 1);
+		mv.visitFieldInsn(Opcodes.PUTFIELD, "soot/asm/backend/targets/Bean", "f", "I");
 		mv.visitInsn(Opcodes.RETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();

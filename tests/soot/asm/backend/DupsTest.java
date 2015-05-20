@@ -29,22 +29,22 @@ public class DupsTest extends AbstractASMBackendTest {
 		mv.visitEnd();
 		}
 		{
-		mv = cw.visitMethod(ACC_PUBLIC, "dup", "()Ljava/lang/Object;", null, null);
-		mv.visitCode();
-		mv.visitTypeInsn(NEW, "java/lang/Object");
-		mv.visitInsn(DUP);
-		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
-		mv.visitInsn(ARETURN);
-		mv.visitMaxs(0, 0);
-		mv.visitEnd();
-		}
-		{
 		mv = cw.visitMethod(ACC_PUBLIC, "dubl", "()J", null, null);
 		mv.visitCode();
 		mv.visitLdcInsn(new Long(1234L));
 		mv.visitInsn(DUP2);
 		mv.visitInsn(LADD);
 		mv.visitInsn(LRETURN);
+		mv.visitMaxs(0, 0);
+		mv.visitEnd();
+		}
+		{
+		mv = cw.visitMethod(ACC_PUBLIC, "dup", "()Ljava/lang/Object;", null, null);
+		mv.visitCode();
+		mv.visitTypeInsn(NEW, "java/lang/Object");
+		mv.visitInsn(DUP);
+		mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
+		mv.visitInsn(ARETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
 		}

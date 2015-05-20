@@ -30,15 +30,7 @@ public class AnnotationTest extends AbstractASMBackendTest {
 		av0.visitEnd();
 		}
 		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "iVal", "()I", null, null);
-		mv.visitEnd();
-		}
-		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "fVal", "()F", null, null);
-		mv.visitEnd();
-		}
-		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "lVal", "()J", null, null);
+		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "bVal", "()B", null, null);
 		mv.visitEnd();
 		}
 		{
@@ -46,19 +38,19 @@ public class AnnotationTest extends AbstractASMBackendTest {
 		mv.visitEnd();
 		}
 		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "zVal", "()Z", null, null);
+		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "fVal", "()F", null, null);
 		mv.visitEnd();
 		}
 		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "bVal", "()B", null, null);
+			mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "iAVal", "()[I", null, null);
+			mv.visitEnd();
+		}
+		{
+		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "iVal", "()I", null, null);
 		mv.visitEnd();
 		}
 		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "sVal", "()S", null, null);
-		mv.visitEnd();
-		}
-		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "strVal", "()Ljava/lang/String;", null, null);
+		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "lVal", "()J", null, null);
 		mv.visitEnd();
 		}
 		{
@@ -67,12 +59,22 @@ public class AnnotationTest extends AbstractASMBackendTest {
 		mv.visitEnd();
 		}
 		{
-			mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "iAVal", "()[I", null, null);
+			mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "sAVal", "()[Ljava/lang/String;", null, null);
 			mv.visitEnd();
 		}
-
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "sAVal", "()[Ljava/lang/String;", null, null);
+		{
+			mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "sVal", "()S", null, null);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "strVal", "()Ljava/lang/String;", null, null);
+			mv.visitEnd();
+		}
+		{
+		mv = cw.visitMethod(ACC_PUBLIC + ACC_ABSTRACT, "zVal", "()Z", null, null);
 		mv.visitEnd();
+		}
+
 
 		cw.visitEnd();
 

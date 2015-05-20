@@ -83,6 +83,26 @@ public class LogicalOperationsTest extends AbstractASMBackendTest {
 			mv.visitEnd();
 		}
 		{
+			mv = cw.visitMethod(ACC_PUBLIC, "doInv", "()V", null, null);
+			mv.visitCode();
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "i2", "I");
+			mv.visitInsn(ICONST_M1);
+			mv.visitInsn(IXOR);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "i1", "I");
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "i2", "I");
+			mv.visitInsn(ICONST_M1);
+			mv.visitInsn(IXOR);
+			mv.visitInsn(I2L);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "l1", "J");
+			mv.visitInsn(RETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
 			mv = cw.visitMethod(ACC_PUBLIC, "doOr", "()V", null, null);
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 0);
@@ -106,54 +126,6 @@ public class LogicalOperationsTest extends AbstractASMBackendTest {
 			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "b1", "Z");
 			mv.visitInsn(IOR);
 			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "b1", "Z");
-			mv.visitInsn(RETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, "doXOr", "()V", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "i2", "I");
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "i1", "I");
-			mv.visitInsn(IXOR);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "i1", "I");
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "l2", "J");
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "l1", "J");
-			mv.visitInsn(LXOR);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "l1", "J");
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "b2", "Z");
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "b1", "Z");
-			mv.visitInsn(IXOR);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "b1", "Z");
-			mv.visitInsn(RETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, "doInv", "()V", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "i2", "I");
-			mv.visitInsn(ICONST_M1);
-			mv.visitInsn(IXOR);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "i1", "I");
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitVarInsn(ALOAD, 0);
-			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "i2", "I");
-			mv.visitInsn(ICONST_M1);
-			mv.visitInsn(IXOR);
-			mv.visitInsn(I2L);
-			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "l1", "J");
 			mv.visitInsn(RETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
@@ -220,6 +192,34 @@ public class LogicalOperationsTest extends AbstractASMBackendTest {
 			mv.visitInsn(L2I);
 			mv.visitInsn(LUSHR);
 			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "l1", "J");
+			mv.visitInsn(RETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(ACC_PUBLIC, "doXOr", "()V", null, null);
+			mv.visitCode();
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "i2", "I");
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "i1", "I");
+			mv.visitInsn(IXOR);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "i1", "I");
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "l2", "J");
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "l1", "J");
+			mv.visitInsn(LXOR);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "l1", "J");
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "b2", "Z");
+			mv.visitVarInsn(ALOAD, 0);
+			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/LogicalOperations", "b1", "Z");
+			mv.visitInsn(IXOR);
+			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/LogicalOperations", "b1", "Z");
 			mv.visitInsn(RETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();

@@ -88,6 +88,81 @@ public class ExtendedArithmeticLibTest extends AbstractASMBackendTest {
 			mv.visitEnd();
 		}
 		{
+			mv = cw.visitMethod(ACC_PUBLIC, "doBNeg", "(B)I", null, null);
+			mv.visitCode();
+			mv.visitVarInsn(ILOAD, 1);
+			mv.visitInsn(INEG);
+			mv.visitInsn(IRETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(ACC_PUBLIC, "doCNeg", "(C)I", null, null);
+			mv.visitCode();
+			mv.visitVarInsn(ILOAD, 1);
+			mv.visitInsn(INEG);
+			mv.visitInsn(IRETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(ACC_PUBLIC, "doDNeg", "(D)D", null, null);
+			mv.visitCode();
+			mv.visitVarInsn(DLOAD, 1);
+			mv.visitInsn(DNEG);
+			mv.visitInsn(DRETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(ACC_PUBLIC, "doFNeg", "(F)F", null, null);
+			mv.visitCode();
+			mv.visitVarInsn(FLOAD, 1);
+			mv.visitInsn(FNEG);
+			mv.visitInsn(FRETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(ACC_PUBLIC, "doINeg", "(I)I", null, null);
+			mv.visitCode();
+			mv.visitVarInsn(ILOAD, 1);
+			mv.visitInsn(INEG);
+			mv.visitInsn(IRETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(ACC_PUBLIC, "doInc", "()I", null, null);
+			mv.visitCode();
+			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(ISTORE, 0);
+			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(ISTORE, 1);
+			Label l0 = new Label();
+			mv.visitJumpInsn(GOTO, l0);
+			Label l1 = new Label();
+			mv.visitLabel(l1);
+			mv.visitIincInsn(0, 4);
+			mv.visitIincInsn(1, 1);
+			mv.visitLabel(l0);
+			mv.visitVarInsn(ILOAD, 1);
+			mv.visitIntInsn(BIPUSH, 100);
+			mv.visitJumpInsn(IF_ICMPLT, l1);
+			mv.visitVarInsn(ILOAD, 0);
+			mv.visitInsn(IRETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(ACC_PUBLIC, "doLNeg", "(J)J", null, null);
+			mv.visitCode();
+			mv.visitVarInsn(LLOAD, 1);
+			mv.visitInsn(LRETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
 			mv = cw.visitMethod(ACC_PUBLIC, "doMod", "()V", null, null);
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 0);
@@ -119,6 +194,15 @@ public class ExtendedArithmeticLibTest extends AbstractASMBackendTest {
 			mv.visitInsn(DREM);
 			mv.visitFieldInsn(PUTFIELD, "soot/asm/backend/targets/ExtendedArithmeticLib", "d1", "D");
 			mv.visitInsn(RETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		{
+			mv = cw.visitMethod(ACC_PUBLIC, "doSNeg", "(S)I", null, null);
+			mv.visitCode();
+			mv.visitVarInsn(ILOAD, 1);
+			mv.visitInsn(INEG);
+			mv.visitInsn(IRETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
 		}
@@ -157,91 +241,7 @@ public class ExtendedArithmeticLibTest extends AbstractASMBackendTest {
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
 		}
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, "doINeg", "(I)I", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(ILOAD, 1);
-			mv.visitInsn(INEG);
-			mv.visitInsn(IRETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, "doCNeg", "(C)I", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(ILOAD, 1);
-			mv.visitInsn(INEG);
-			mv.visitInsn(IRETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, "doSNeg", "(S)I", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(ILOAD, 1);
-			mv.visitInsn(INEG);
-			mv.visitInsn(IRETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, "doBNeg", "(B)I", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(ILOAD, 1);
-			mv.visitInsn(INEG);
-			mv.visitInsn(IRETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, "doLNeg", "(J)J", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(LLOAD, 1);
-			mv.visitInsn(LRETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, "doDNeg", "(D)D", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(DLOAD, 1);
-			mv.visitInsn(DNEG);
-			mv.visitInsn(DRETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, "doFNeg", "(F)F", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(FLOAD, 1);
-			mv.visitInsn(FNEG);
-			mv.visitInsn(FRETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-		}
-		{
-			mv = cw.visitMethod(ACC_PUBLIC, "doInc", "()I", null, null);
-			mv.visitCode();
-			mv.visitInsn(ICONST_0);
-			mv.visitVarInsn(ISTORE, 0);
-			mv.visitInsn(ICONST_0);
-			mv.visitVarInsn(ISTORE, 1);
-			Label l0 = new Label();
-			mv.visitJumpInsn(GOTO, l0);
-			Label l1 = new Label();
-			mv.visitLabel(l1);
-			mv.visitIincInsn(0, 4);
-			mv.visitIincInsn(1, 1);
-			mv.visitLabel(l0);
-			mv.visitVarInsn(ILOAD, 1);
-			mv.visitIntInsn(BIPUSH, 100);
-			mv.visitJumpInsn(IF_ICMPLT, l1);
-			mv.visitVarInsn(ILOAD, 0);
-			mv.visitInsn(IRETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-			}
-			cw.visitEnd();
+		cw.visitEnd();
 
 	}
 

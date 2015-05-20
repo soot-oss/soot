@@ -29,28 +29,28 @@ public class InstanceOfCastsTest extends AbstractASMBackendTest {
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
 			}
+		{
+		mv = cw.visitMethod(ACC_PUBLIC, "convertMeasurableArray", "([Ljava/lang/Object;)[Lsoot/asm/backend/targets/Measurable;", null, null);
+		mv.visitCode();
+		mv.visitVarInsn(ALOAD, 1);
+		mv.visitTypeInsn(INSTANCEOF, "[Lsoot/asm/backend/targets/Measurable;");
+		Label l0 = new Label();
+		mv.visitJumpInsn(IFEQ, l0);
+		mv.visitVarInsn(ALOAD, 1);
+		mv.visitTypeInsn(CHECKCAST, "[Lsoot/asm/backend/targets/Measurable;");
+		mv.visitInsn(ARETURN);
+		mv.visitLabel(l0);
+		mv.visitInsn(ACONST_NULL);
+		mv.visitInsn(ARETURN);
+		mv.visitMaxs(0, 0);
+		mv.visitEnd();
+		}
 			{
 			mv = cw.visitMethod(ACC_PUBLIC, "isMeasurable", "(Ljava/lang/Object;)Z", null, null);
 			mv.visitCode();
 			mv.visitVarInsn(ALOAD, 1);
 			mv.visitTypeInsn(INSTANCEOF, "soot/asm/backend/targets/Measurable");
 			mv.visitInsn(IRETURN);
-			mv.visitMaxs(0, 0);
-			mv.visitEnd();
-			}
-			{
-			mv = cw.visitMethod(ACC_PUBLIC, "convertMeasurableArray", "([Ljava/lang/Object;)[Lsoot/asm/backend/targets/Measurable;", null, null);
-			mv.visitCode();
-			mv.visitVarInsn(ALOAD, 1);
-			mv.visitTypeInsn(INSTANCEOF, "[Lsoot/asm/backend/targets/Measurable;");
-			Label l0 = new Label();
-			mv.visitJumpInsn(IFEQ, l0);
-			mv.visitVarInsn(ALOAD, 1);
-			mv.visitTypeInsn(CHECKCAST, "[Lsoot/asm/backend/targets/Measurable;");
-			mv.visitInsn(ARETURN);
-			mv.visitLabel(l0);
-			mv.visitInsn(ACONST_NULL);
-			mv.visitInsn(ARETURN);
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
 			}

@@ -1,12 +1,10 @@
 package soot;
 
-import org.objectweb.asm.*;
-import org.objectweb.asm.util.TraceClassVisitor;
-
-import soot.options.Options;
-import soot.tagkit.*;
-import soot.tagkit.Attribute;
-import soot.util.backend.SootASMClassWriter;
+import static soot.util.backend.ASMBackendUtils.createASMAttribute;
+import static soot.util.backend.ASMBackendUtils.getDefaultValue;
+import static soot.util.backend.ASMBackendUtils.slashify;
+import static soot.util.backend.ASMBackendUtils.toTypeDesc;
+import static soot.util.backend.ASMBackendUtils.translateJavaVersion;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -14,9 +12,44 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
+import java.util.List;
 
-import static soot.util.backend.ASMBackendUtils.*;
+import org.objectweb.asm.AnnotationVisitor;
+import org.objectweb.asm.ClassVisitor;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.FieldVisitor;
+import org.objectweb.asm.MethodVisitor;
+import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.util.TraceClassVisitor;
+
+import soot.options.Options;
+import soot.tagkit.AnnotationAnnotationElem;
+import soot.tagkit.AnnotationArrayElem;
+import soot.tagkit.AnnotationClassElem;
+import soot.tagkit.AnnotationConstants;
+import soot.tagkit.AnnotationDefaultTag;
+import soot.tagkit.AnnotationDoubleElem;
+import soot.tagkit.AnnotationElem;
+import soot.tagkit.AnnotationEnumElem;
+import soot.tagkit.AnnotationFloatElem;
+import soot.tagkit.AnnotationIntElem;
+import soot.tagkit.AnnotationLongElem;
+import soot.tagkit.AnnotationStringElem;
+import soot.tagkit.AnnotationTag;
+import soot.tagkit.Attribute;
+import soot.tagkit.EnclosingMethodTag;
+import soot.tagkit.Host;
+import soot.tagkit.InnerClassAttribute;
+import soot.tagkit.InnerClassTag;
+import soot.tagkit.OuterClassTag;
+import soot.tagkit.SignatureTag;
+import soot.tagkit.SourceFileTag;
+import soot.tagkit.Tag;
+import soot.tagkit.VisibilityAnnotationTag;
+import soot.tagkit.VisibilityParameterAnnotationTag;
+import soot.util.backend.SootASMClassWriter;
 
 /**
  * Abstract super-class for ASM-based back-ends. Generates byte-code for
@@ -208,12 +241,31 @@ public abstract class AbstractASMBackend {
 
 		cv.visitEnd();
 	}
+	
+	/**
+	 * Comparatator that is used to sort the methods before they are written
+	 * out. This is mainly used to enforce a deterministic output between runs
+	 * which we need for testing.
+	 * 
+	 * @author Steven Arzt
+	 *
+	 */
+	private class SootMethodComparator implements Comparator<SootMethod> {
+
+		@Override
+		public int compare(SootMethod o1, SootMethod o2) {
+			return o1.getName().compareTo(o2.getName());
+		}
+		
+	}
 
 	/**
 	 * Emits the bytecode for all methods of the class
 	 */
 	protected void generateMethods() {
-		for (SootMethod sm : sc.getMethods()) {
+		List<SootMethod> sortedMethods = new ArrayList<SootMethod>(sc.getMethods());
+		Collections.sort(sortedMethods, new SootMethodComparator());
+		for (SootMethod sm : sortedMethods) {
 			int access = getModifiers(sm.getModifiers(), sm);
 			String name = sm.getName();
 			StringBuilder descBuilder = new StringBuilder(5);
