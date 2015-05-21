@@ -28,7 +28,7 @@ public class TryCatchTest extends AbstractASMBackendTest {
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
 		}
-		{
+		if (targetCompiler == TargetCompiler.eclipse) {
 		mv = cw.visitMethod(0, "doSth", "(Ljava/lang/Object;)I", null, null);
 		mv.visitCode();
 		Label l0 = new Label();
@@ -64,6 +64,44 @@ public class TryCatchTest extends AbstractASMBackendTest {
 		mv.visitInsn(IRETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
+		}
+		else {
+			mv = cw.visitMethod(0, "doSth", "(Ljava/lang/Object;)I", null, null);
+			mv.visitCode();
+			Label l0 = new Label();
+			Label l1 = new Label();
+			Label l2 = new Label();
+			mv.visitTryCatchBlock(l0, l1, l2, "java/lang/NullPointerException");
+			Label l3 = new Label();
+			mv.visitTryCatchBlock(l0, l1, l3, "java/lang/Throwable");
+			Label l4 = new Label();
+			mv.visitTryCatchBlock(l2, l4, l3, "java/lang/Throwable");
+			Label l5 = new Label();
+			mv.visitTryCatchBlock(l3, l5, l3, "java/lang/Throwable");
+			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(ISTORE, 0);
+			mv.visitLabel(l0);
+			mv.visitVarInsn(ALOAD, 1);
+			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "notify", "()V", false);
+			mv.visitInsn(ICONST_1);
+			mv.visitVarInsn(ISTORE, 0);
+			mv.visitLabel(l1);
+			mv.visitVarInsn(ILOAD, 0);
+			mv.visitInsn(IRETURN);
+			mv.visitLabel(l2);
+			mv.visitVarInsn(ASTORE, 1);
+			mv.visitInsn(ICONST_M1);
+			mv.visitVarInsn(ISTORE, 0);
+			mv.visitLabel(l4);
+			mv.visitVarInsn(ILOAD, 0);
+			mv.visitInsn(IRETURN);
+			mv.visitLabel(l3);
+			mv.visitVarInsn(ASTORE, 1);
+			mv.visitLabel(l5);
+			mv.visitVarInsn(ILOAD, 0);
+			mv.visitInsn(IRETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
 		}
 		cw.visitEnd();
 

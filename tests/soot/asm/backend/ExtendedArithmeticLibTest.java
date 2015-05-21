@@ -132,7 +132,7 @@ public class ExtendedArithmeticLibTest extends AbstractASMBackendTest {
 			mv.visitMaxs(0, 0);
 			mv.visitEnd();
 		}
-		{
+		if (targetCompiler == TargetCompiler.eclipse) {
 			mv = cw.visitMethod(ACC_PUBLIC, "doInc", "()I", null, null);
 			mv.visitCode();
 			mv.visitInsn(ICONST_0);
@@ -149,6 +149,28 @@ public class ExtendedArithmeticLibTest extends AbstractASMBackendTest {
 			mv.visitVarInsn(ILOAD, 1);
 			mv.visitIntInsn(BIPUSH, 100);
 			mv.visitJumpInsn(IF_ICMPLT, l1);
+			mv.visitVarInsn(ILOAD, 0);
+			mv.visitInsn(IRETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		else {
+			mv = cw.visitMethod(ACC_PUBLIC, "doInc", "()I", null, null);
+			mv.visitCode();
+			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(ISTORE, 0);
+			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(ISTORE, 1);
+			Label l0 = new Label();
+			mv.visitLabel(l0);
+			mv.visitVarInsn(ILOAD, 1);
+			mv.visitIntInsn(BIPUSH, 100);
+			Label l1 = new Label();
+			mv.visitJumpInsn(IF_ICMPGE, l1);
+			mv.visitIincInsn(0, 4);
+			mv.visitIincInsn(1, 1);
+			mv.visitJumpInsn(GOTO, l0);
+			mv.visitLabel(l1);
 			mv.visitVarInsn(ILOAD, 0);
 			mv.visitInsn(IRETURN);
 			mv.visitMaxs(0, 0);
