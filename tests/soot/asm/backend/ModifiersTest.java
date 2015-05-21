@@ -85,7 +85,10 @@ public class ModifiersTest extends AbstractASMBackendTest {
 		mv.visitEnd();
 		}
 		{
-		mv = cw.visitMethod(ACC_PRIVATE + ACC_NATIVE, "g", "()V", null, null);
+			if (targetCompiler == TargetCompiler.eclipse)
+				mv = cw.visitMethod(ACC_PRIVATE + ACC_NATIVE, "g", "()V", null, null);
+			else
+				mv = cw.visitMethod(ACC_PRIVATE + ACC_NATIVE + ACC_STRICT, "g", "()V", null, null);
 		mv.visitEnd();
 		}
 		cw.visitEnd();

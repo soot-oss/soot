@@ -32,6 +32,16 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 	
 	private String comparisonOutput;
 	
+	protected TargetCompiler targetCompiler = TargetCompiler.javac;
+	
+	/**
+	 * Enumeration containing the supported Java compilers
+	 */
+	enum TargetCompiler {
+		eclipse,
+		javac
+	}
+	
 	/**
 	 * Sets up everything for testing by generation of Soot's output and reference output
 	 */

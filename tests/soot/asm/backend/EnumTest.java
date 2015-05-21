@@ -12,6 +12,8 @@ import org.objectweb.asm.util.TraceClassVisitor;
  *
  */
 public class EnumTest extends AbstractASMBackendTest {
+	
+	
 
 	@Override
 	protected void generate(TraceClassVisitor cw) {
@@ -32,7 +34,10 @@ public class EnumTest extends AbstractASMBackendTest {
 		fv.visitEnd();
 		}
 		{
-		fv = cw.visitField(ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC, "ENUM$VALUES", "[Lsoot/asm/backend/targets/MyEnum;", null, null);
+			if (targetCompiler == TargetCompiler.eclipse)
+				fv = cw.visitField(ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC, "ENUM$VALUES", "[Lsoot/asm/backend/targets/MyEnum;", null, null);
+			else
+				fv = cw.visitField(ACC_PRIVATE + ACC_FINAL + ACC_STATIC + ACC_SYNTHETIC, "$VALUES", "[Lsoot/asm/backend/targets/MyEnum;", null, null);
 		fv.visitEnd();
 		}
 		{
@@ -62,14 +67,19 @@ public class EnumTest extends AbstractASMBackendTest {
 		mv.visitFieldInsn(GETSTATIC, "soot/asm/backend/targets/MyEnum", "NEIN", "Lsoot/asm/backend/targets/MyEnum;");
 		mv.visitInsn(AASTORE);
 		mv.visitVarInsn(ALOAD, 0);
-		mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/MyEnum", "ENUM$VALUES", "[Lsoot/asm/backend/targets/MyEnum;");
+		if (targetCompiler == TargetCompiler.eclipse)
+			mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/MyEnum", "ENUM$VALUES", "[Lsoot/asm/backend/targets/MyEnum;");
+		else
+			mv.visitFieldInsn(PUTSTATIC, "soot/asm/backend/targets/MyEnum", "$VALUES", "[Lsoot/asm/backend/targets/MyEnum;");
 		mv.visitInsn(RETURN);
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
 		}
 		{
-		mv = cw.visitMethod(ACC_PRIVATE, "<init>", "(Ljava/lang/String;I)V", null, null);
-		mv.visitCode();
+			if (targetCompiler == TargetCompiler.eclipse)
+				mv = cw.visitMethod(ACC_PRIVATE, "<init>", "(Ljava/lang/String;I)V", null, null);
+			else
+				mv = cw.visitMethod(ACC_PRIVATE, "<init>", "(Ljava/lang/String;I)V", "()V", null);
 		mv.visitVarInsn(ALOAD, 0);
 		mv.visitVarInsn(ALOAD, 1);
 		mv.visitVarInsn(ILOAD, 2);
@@ -89,25 +99,36 @@ public class EnumTest extends AbstractASMBackendTest {
 		mv.visitMaxs(0, 0);
 		mv.visitEnd();
 		}
-		{
-		mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "values", "()[Lsoot/asm/backend/targets/MyEnum;", null, null);
-		mv.visitCode();
-		mv.visitFieldInsn(GETSTATIC, "soot/asm/backend/targets/MyEnum", "ENUM$VALUES", "[Lsoot/asm/backend/targets/MyEnum;");
-		mv.visitInsn(DUP);
-		mv.visitInsn(ARRAYLENGTH);
-		mv.visitInsn(DUP);
-		mv.visitVarInsn(ISTORE, 0);
-		mv.visitTypeInsn(ANEWARRAY, "soot/asm/backend/targets/MyEnum");
-		mv.visitVarInsn(ASTORE, 1);
-		mv.visitInsn(ICONST_0);
-		mv.visitVarInsn(ALOAD, 1);
-		mv.visitInsn(ICONST_0);
-		mv.visitVarInsn(ILOAD, 0);
-		mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "arraycopy", "(Ljava/lang/Object;ILjava/lang/Object;II)V", false);
-		mv.visitVarInsn(ALOAD, 1);
-		mv.visitInsn(ARETURN);
-		mv.visitMaxs(0, 0);
-		mv.visitEnd();
+		if (targetCompiler == TargetCompiler.eclipse){
+			mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "values", "()[Lsoot/asm/backend/targets/MyEnum;", null, null);
+			mv.visitCode();
+			mv.visitFieldInsn(GETSTATIC, "soot/asm/backend/targets/MyEnum", "ENUM$VALUES", "[Lsoot/asm/backend/targets/MyEnum;");
+			mv.visitInsn(DUP);
+			mv.visitInsn(ARRAYLENGTH);
+			mv.visitInsn(DUP);
+			mv.visitVarInsn(ISTORE, 0);
+			mv.visitTypeInsn(ANEWARRAY, "soot/asm/backend/targets/MyEnum");
+			mv.visitVarInsn(ASTORE, 1);
+			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(ALOAD, 1);
+			mv.visitInsn(ICONST_0);
+			mv.visitVarInsn(ILOAD, 0);
+			mv.visitMethodInsn(INVOKESTATIC, "java/lang/System", "arraycopy", "(Ljava/lang/Object;ILjava/lang/Object;II)V", false);
+			mv.visitVarInsn(ALOAD, 1);
+			mv.visitInsn(ARETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
+		}
+		else {
+			mv = cw.visitMethod(ACC_PUBLIC + ACC_STATIC, "values", "()[Lsoot/asm/backend/targets/MyEnum;", null, null);
+			mv.visitCode();
+			mv.visitFieldInsn(GETSTATIC, "soot/asm/backend/targets/MyEnum", "$VALUES", "[Lsoot/asm/backend/targets/MyEnum;");
+//			mv.visitMethodInsn(INVOKEVIRTUAL, "[Lsoot/asm/backend/targets/MyEnum;", "clone", "()Ljava/lang/Object;", false);
+			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/Object", "clone", "()Ljava/lang/Object;", false);
+			mv.visitTypeInsn(CHECKCAST, "[Lsoot/asm/backend/targets/MyEnum;");
+			mv.visitInsn(ARETURN);
+			mv.visitMaxs(0, 0);
+			mv.visitEnd();
 		}
 		cw.visitEnd();
 

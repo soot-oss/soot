@@ -38,6 +38,8 @@ public class InstanceOfCastsTest extends AbstractASMBackendTest {
 		mv.visitJumpInsn(IFEQ, l0);
 		mv.visitVarInsn(ALOAD, 1);
 		mv.visitTypeInsn(CHECKCAST, "[Lsoot/asm/backend/targets/Measurable;");
+		if (targetCompiler != TargetCompiler.eclipse)
+			mv.visitTypeInsn(CHECKCAST, "[Lsoot/asm/backend/targets/Measurable;");
 		mv.visitInsn(ARETURN);
 		mv.visitLabel(l0);
 		mv.visitInsn(ACONST_NULL);

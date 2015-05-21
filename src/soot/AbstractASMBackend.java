@@ -357,6 +357,24 @@ public abstract class AbstractASMBackend {
 	}
 
 	/**
+	 * Comparatator that is used to sort the inner class references before they
+	 * are written out. This is mainly used to enforce a deterministic output
+	 * between runs which we need for testing.
+	 * 
+	 * @author Steven Arzt
+	 *
+	 */
+	private class SootInnerClassComparator implements Comparator<InnerClassTag> {
+
+		@Override
+		public int compare(InnerClassTag o1, InnerClassTag o2) {
+			return o1.getInnerClass() == null ? 0
+					: o1.getInnerClass().compareTo(o2.getInnerClass());
+		}
+		
+	}
+	
+	/**
 	 * Emits the bytecode for all references to inner classes if present
 	 */
 	protected void generateInnerClassReferences() {
@@ -364,7 +382,9 @@ public abstract class AbstractASMBackend {
 				&& !Options.v().no_output_inner_classes_attribute()) {
 			InnerClassAttribute ica = (InnerClassAttribute) sc
 					.getTag("InnerClassAttribute");
-			for (InnerClassTag ict : ica.getSpecs()) {
+			List<InnerClassTag> sortedTags = new ArrayList<InnerClassTag>(ica.getSpecs());
+			Collections.sort(sortedTags, new SootInnerClassComparator());
+			for (InnerClassTag ict : sortedTags) {
 				String name = slashify(ict.getInnerClass());
 				String outerClassName = slashify(ict.getOuterClass());
 				String innerName = slashify(ict.getShortName());
