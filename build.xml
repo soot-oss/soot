@@ -204,6 +204,8 @@
     <target name="buildtests" depends="compile,settings">
         <mkdir dir="testclasses"/>
         <javac
+        	source="1.6"
+        	target="1.6"
             srcdir="tests"
             destdir="testclasses"
             debug="true">
