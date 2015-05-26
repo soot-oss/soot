@@ -17,7 +17,6 @@ import org.objectweb.asm.Opcodes;
 
 import soot.AbstractASMBackend;
 import soot.ArrayType;
-import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
@@ -49,7 +48,6 @@ import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
 import soot.jimple.IdentityRef;
 import soot.jimple.IntConstant;
-import soot.jimple.JimpleBody;
 import soot.jimple.LongConstant;
 import soot.jimple.MethodHandle;
 import soot.jimple.NullConstant;
@@ -70,7 +68,7 @@ public class BafASMBackend extends AbstractASMBackend {
 
 	// Contains one Label for every Unit that is the target of a branch or jump
 	protected final Map<Unit, Label> branchTargetLabels = new HashMap<Unit, Label>();
-
+	
 	/**
 	 * Returns the ASM Label for a given Unit that is the target of a branch or jump
 	 * @param target The unit that is the branch target
@@ -91,24 +89,13 @@ public class BafASMBackend extends AbstractASMBackend {
 	public BafASMBackend(SootClass sc, int javaVersion) {
 		super(sc, javaVersion);
 	}
-
+	
 	/* (non-Javadoc)
 	 * @see soot.AbstractASMBackend#getMinJavaVersion(soot.SootMethod)
 	 */
 	@Override
 	protected int getMinJavaVersion(SootMethod method) {
-		Body activeBody = method.getActiveBody();
-		if (!(activeBody instanceof BafBody)) {
-			if (activeBody instanceof JimpleBody) {
-				throw new RuntimeException(
-						"Convert Jimple to Baf before using the Baf-ASM-backend!");
-			} else {
-				throw new RuntimeException(
-						"ASM-backend can only translate Baf- and JimpleBodies!");
-			}
-		}
-		BafBody body = (BafBody) activeBody;
-
+		final BafBody body = getBafBody(method);		
 		int minVersion = Options.java_version_1_1;
 
 		for (Unit u : body.getUnits()) {
@@ -130,17 +117,7 @@ public class BafASMBackend extends AbstractASMBackend {
 	 */
 	@Override
 	protected void generateMethodBody(MethodVisitor mv, SootMethod method) {
-		Body activeBody = method.getActiveBody();
-		if (!(activeBody instanceof BafBody)) {
-			if (activeBody instanceof JimpleBody) {
-				throw new RuntimeException(
-						"Convert Jimple to Baf before using the Baf-ASM-backend!");
-			} else {
-				throw new RuntimeException(
-						"ASM-backend can only translate Baf- and JimpleBodies!");
-			}
-		}
-		BafBody body = (BafBody) activeBody;
+		BafBody body = getBafBody(method);
 		Chain<Unit> instructions = body.getUnits();
 
 		/*

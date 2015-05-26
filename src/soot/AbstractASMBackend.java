@@ -13,8 +13,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.objectweb.asm.AnnotationVisitor;
 import org.objectweb.asm.ClassVisitor;
@@ -24,6 +26,8 @@ import org.objectweb.asm.MethodVisitor;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
 
+import soot.baf.BafBody;
+import soot.jimple.JimpleBody;
 import soot.options.Options;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
@@ -66,6 +70,8 @@ public abstract class AbstractASMBackend {
 	protected SootClass sc;
 	// The Java version to be used for generating this class
 	protected int javaVersion;
+	
+	private final Map<SootMethod, BafBody> bafBodyCache = new HashMap<SootMethod, BafBody>();
 
 	/**
 	 * Creates a new ASM backend
@@ -114,6 +120,33 @@ public abstract class AbstractASMBackend {
 		}
 	}
 
+	/**
+	 * Gets the baf body for the given SootMethod. This method will first check
+	 * whether the method already has a baf body. If not, it will query the local
+	 * cache. If this fails as well, it will construct a new baf body.
+	 * @param method The method for which to obtain a baf body
+	 * @return The baf body for the given method
+	 */
+	protected BafBody getBafBody(SootMethod method) {
+		final Body activeBody = method.getActiveBody();
+		if (activeBody instanceof BafBody)
+			return (BafBody) activeBody;
+
+		BafBody body = bafBodyCache.get(method);
+		if (body != null)
+			return body;
+		
+		if (activeBody instanceof JimpleBody) {
+			body = PackManager.v().convertJimpleBodyToBaf(method);
+		} else {
+			throw new RuntimeException(
+					"ASM-backend can only translate Baf- and JimpleBodies!");
+		}
+		
+		bafBodyCache.put(method, body);
+		return body;
+	}
+	
 	/**
 	 * Determines the minimum Java version required for the bytecode of the given SootClass
 	 * @param sc The SootClass the minimum Java version is to be determined for
@@ -298,18 +331,20 @@ public abstract class AbstractASMBackend {
 						VisibilityParameterAnnotationTag vpt = (VisibilityParameterAnnotationTag) t;
 						ArrayList<VisibilityAnnotationTag> tags = vpt
 								.getVisibilityAnnotations();
-						for (int j = 0; j < tags.size(); ++j) {
-							VisibilityAnnotationTag va = tags.get(j);
-							if (va == null) {
-								continue;
-							}
-							for (AnnotationTag at : va.getAnnotations()) {
-								AnnotationVisitor av = mv
-										.visitParameterAnnotation(
-												j,
-												at.getType(),
-												(va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
-								generateAnnotationElems(av, at.getElems(), true);
+						if (tags != null) {
+							for (int j = 0; j < tags.size(); ++j) {
+								VisibilityAnnotationTag va = tags.get(j);
+								if (va == null) {
+									continue;
+								}
+								for (AnnotationTag at : va.getAnnotations()) {
+									AnnotationVisitor av = mv
+											.visitParameterAnnotation(
+													j,
+													at.getType(),
+													(va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
+									generateAnnotationElems(av, at.getElems(), true);
+								}
 							}
 						}
 					}
