@@ -37,8 +37,6 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 
-import org.objectweb.asm.MethodVisitor;
-
 import soot.baf.Baf;
 import soot.baf.BafASMBackend;
 import soot.baf.BafBody;
