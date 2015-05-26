@@ -19,6 +19,8 @@
 
 package soot.toolkits.graph;
 
+import soot.util.CuckooHashMap;
+
 import java.util.*;
 
 /**
@@ -50,7 +52,7 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>>{
      * "gode" is a node in the original graph, "dode" is a node in the
      * dominator tree.
      **/
-    protected Map<N, DominatorNode<N>> godeToDode;
+    protected CuckooHashMap<N, DominatorNode<N>> godeToDode;
 
     public DominatorTree(DominatorsFinder dominators) {
         // if(Options.v().verbose())
@@ -62,7 +64,7 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>>{
 
         heads = new ArrayList<DominatorNode<N>>();
         tails = new ArrayList<DominatorNode<N>>();
-        godeToDode = new HashMap<N, DominatorNode<N>>();
+        godeToDode = new CuckooHashMap<N, DominatorNode<N>>();
 
         buildTree();
     }
@@ -177,7 +179,7 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>>{
      * @return  the number of nodes in the tree
      **/
     public int size() {
-        return godeToDode.size();
+        return godeToDode.size;
     }
 
     /**
