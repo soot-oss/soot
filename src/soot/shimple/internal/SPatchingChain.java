@@ -198,6 +198,10 @@ public class SPatchingChain extends PatchingChain<Unit>
      * Map from UnitBox to the Phi node owning it.
      **/
     protected Map<UnitBox, Unit> boxToPhiNode = new HashMap<UnitBox, Unit>();
+    /**
+     * Set of the values of boxToPhiNode. Used to allow O(1) contains() on the values.
+     **/
+    protected Set<Unit> phiNodeSet = new HashSet<Unit>();
 
     /**
      * Flag that indicates whether control flow falls through from the
@@ -217,13 +221,14 @@ public class SPatchingChain extends PatchingChain<Unit>
             return;
 
         // already processed previously, unit chain manipulations?
-        if(boxToPhiNode.values().contains(phiNode))
+        if(phiNodeSet.contains(phiNode))
             return;
 
         Iterator boxesIt = phi.getUnitBoxes().iterator();
         while(boxesIt.hasNext()){
             UnitBox box = (UnitBox) boxesIt.next();
             boxToPhiNode.put(box, phiNode);
+            phiNodeSet.add(phiNode);
         }
     }
 
@@ -231,6 +236,7 @@ public class SPatchingChain extends PatchingChain<Unit>
     {
         Set<Unit> phiNodes = new HashSet<Unit>(boxToPhiNode.values());
         boxToPhiNode = new HashMap<UnitBox, Unit>();
+        phiNodeSet = new HashSet<Unit>();
         boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
 
         Iterator<Unit> phiNodesIt = phiNodes.iterator();
