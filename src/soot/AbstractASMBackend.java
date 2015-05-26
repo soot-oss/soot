@@ -331,18 +331,20 @@ public abstract class AbstractASMBackend {
 						VisibilityParameterAnnotationTag vpt = (VisibilityParameterAnnotationTag) t;
 						ArrayList<VisibilityAnnotationTag> tags = vpt
 								.getVisibilityAnnotations();
-						for (int j = 0; j < tags.size(); ++j) {
-							VisibilityAnnotationTag va = tags.get(j);
-							if (va == null) {
-								continue;
-							}
-							for (AnnotationTag at : va.getAnnotations()) {
-								AnnotationVisitor av = mv
-										.visitParameterAnnotation(
-												j,
-												at.getType(),
-												(va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
-								generateAnnotationElems(av, at.getElems(), true);
+						if (tags != null) {
+							for (int j = 0; j < tags.size(); ++j) {
+								VisibilityAnnotationTag va = tags.get(j);
+								if (va == null) {
+									continue;
+								}
+								for (AnnotationTag at : va.getAnnotations()) {
+									AnnotationVisitor av = mv
+											.visitParameterAnnotation(
+													j,
+													at.getType(),
+													(va.getVisibility() == AnnotationConstants.RUNTIME_VISIBLE));
+									generateAnnotationElems(av, at.getElems(), true);
+								}
 							}
 						}
 					}
