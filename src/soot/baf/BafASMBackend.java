@@ -72,8 +72,6 @@ public class BafASMBackend extends AbstractASMBackend {
 	// Contains one Label for every Unit that is the target of a branch or jump
 	protected final Map<Unit, Label> branchTargetLabels = new HashMap<Unit, Label>();
 	
-	private HashMap<SootMethod, BafBody> bafBodyCache = new HashMap<SootMethod, BafBody>();
-
 	/**
 	 * Returns the ASM Label for a given Unit that is the target of a branch or jump
 	 * @param target The unit that is the branch target
@@ -95,33 +93,6 @@ public class BafASMBackend extends AbstractASMBackend {
 		super(sc, javaVersion);
 	}
 	
-	/**
-	 * Gets the baf body for the given SootMethod. This method will first check
-	 * whether the method already has a baf body. If not, it will query the local
-	 * cache. If this fails as well, it will construct a new baf body.
-	 * @param method The method for which to obtain a baf body
-	 * @return The baf body for the given method
-	 */
-	private BafBody getBafBody(SootMethod method) {
-		final Body activeBody = method.getActiveBody();
-		if (activeBody instanceof BafBody)
-			return (BafBody) activeBody;
-
-		BafBody body = bafBodyCache.get(method);
-		if (body != null)
-			return body;
-		
-		if (activeBody instanceof JimpleBody) {
-			body = PackManager.v().convertJimpleBodyToBaf(method);
-		} else {
-			throw new RuntimeException(
-					"ASM-backend can only translate Baf- and JimpleBodies!");
-		}
-		
-		bafBodyCache.put(method, body);
-		return body;
-	}
-
 	/* (non-Javadoc)
 	 * @see soot.AbstractASMBackend#getMinJavaVersion(soot.SootMethod)
 	 */
