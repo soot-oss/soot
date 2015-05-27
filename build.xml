@@ -33,13 +33,15 @@
            		<pathelement location="${jasmin.jar}"/>
            		<pathelement location="${heros.jar}"/>
            		<pathelement location="${axmlprinter2.jar}"/>
-           		<pathelement location="${dexlib2.jar}"/>
-           		<pathelement location="${dexlib-utils.jar}"/>
-           		<pathelement location="${slf4j-api.jar}"/>
-           		<pathelement location="${slf4j-simple.jar}"/>
            		<pathelement location="${asm.jar}"/>
 				<pathelement location="${commons-lang.jar}"/>
-        	</classpath>
+        
+				<pathelement location="${slf4j-api.jar}"/>
+           		<pathelement location="${slf4j-simple.jar}"/>
+           		
+           		<pathelement location="${dexlib2.jar}"/>
+           		<pathelement location="${dexlib-utils.jar}"/>
+			</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
             <src path="generated/sablecc"/>
@@ -202,11 +204,22 @@
     <target name="buildtests" depends="compile,settings">
         <mkdir dir="testclasses"/>
         <javac
+        	source="1.6"
+        	target="1.6"
             srcdir="tests"
             destdir="testclasses"
-            classpath="classes:${polyglot.jar}:${jasmin.jar}:${junit.jar}:${hamcrest.jar}"
-            debug="true"
-            />
+            debug="true">
+        	<classpath>
+        		<pathelement location="classes"/>
+        		<pathelement location="${polyglot.jar}"/>
+        		<pathelement location="${jasmin.jar}"/>
+           		<pathelement location="${asm.jar}"/>
+        		<pathelement location="${junit.jar}"/>
+        		<pathelement location="${hamcrest.jar}"/>
+        		<pathelement location="${mockito.jar}"/>
+        		<pathelement location="${powermock-mockito.jar}"/>
+        	</classpath>
+        </javac>
     </target>
 
     <target name="runtests" depends="buildtests,settings">
@@ -217,20 +230,30 @@
                 <pathelement location="classes"/>
                 <pathelement location="${polyglot.jar}"/>
                 <pathelement location="${jasmin.jar}"/>
-                <pathelement location="${junit.jar}"/>
-                <pathelement location="${hamcrest.jar}"/>
-				<pathelement location="${dexlib2.jar}"/>
+           		<pathelement location="${axmlprinter2.jar}"/>
+                <pathelement location="${dexlib2.jar}"/>
                 <pathelement location="${dexlib-utils.jar}"/>
                 <pathelement location="${heros.jar}"/>
            		<pathelement location="${asm.jar}"/>
-            </classpath>
+        		<pathelement location="${javassist.jar}"/>
+           		<pathelement location="${xmlprinter.jar}"/>
+        		<pathelement location="${commons-lang.jar}"/>
+        				
+           		<pathelement location="${slf4j-api.jar}"/>
+           		<pathelement location="${slf4j-simple.jar}"/>
+        		
+        		<pathelement location="${junit.jar}"/>
+                <pathelement location="${hamcrest.jar}"/>
+        		<pathelement location="${mockito.jar}"/>
+        		<pathelement location="${powermock-mockito.jar}"/>
+        	</classpath>
 			
 			<jvmarg value="-ea" />
             
             <formatter type="xml" usefile="true" />
             <batchtest todir="reports">
-                <fileset dir="testclasses" includes="**/Test*.class"/>
-                <fileset dir="testclasses" includes="**/*Test.class"/>
+                <fileset dir="testclasses" includes="**/Test*.class" excludes="**/Abstract*.class" />
+                <fileset dir="testclasses" includes="**/*Test.class" excludes="**/Abstract*.class" />
             </batchtest>
         </junit>
     </target>

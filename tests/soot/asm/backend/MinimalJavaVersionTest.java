@@ -1,0 +1,62 @@
+package soot.asm.backend;
+
+import static org.junit.Assert.fail;
+
+import java.io.File;
+
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.ExpectedException;
+
+import soot.G;
+import soot.Main;
+
+/**
+ * Test for the correct determination of the required Java version
+ *
+ * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
+ *
+ */
+public class MinimalJavaVersionTest {
+	
+	@Rule
+    public ExpectedException thrown= ExpectedException.none();
+	
+	@Test
+	public void testMinimalVersionAnnotation(){
+		 thrown.expect(IllegalArgumentException.class);
+		 thrown.expectMessage("Enforced Java version 1.3 too low to support required features (1.5 required)");
+		 runSoot("soot.asm.backend.targets.AnnotatedClass", "1.3");
+		 
+	}
+	
+	@Test
+	public void testSufficientUserVersion(){
+		try{
+			runSoot("soot.asm.backend.targets.AnnotatedClass", "1.7");
+			return;
+		}
+		catch(RuntimeException e){
+			fail("Version 1.7 should be sufficient for features of pkg.AnnotatedClass!");
+		}
+	}
+
+	protected void runSoot(String className, String version){
+		G.reset();
+		// Location of the rt.jar
+		String rtJar = System.getProperty("java.home")+File.separator+"lib"+File.separator+"rt.jar";
+
+		// Run Soot and print output to .asm-files. 
+		Main.v().run(new String[] {
+			"-cp", "./testclasses"
+					+File.pathSeparator+rtJar,
+			"-src-prec", "only-class",
+			"-output-format", "asm",
+			"-allow-phantom-refs",
+			"-java-version", version,
+			className
+		});
+	}
+	
+	
+}
