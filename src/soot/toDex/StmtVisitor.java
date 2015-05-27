@@ -338,11 +338,9 @@ public class StmtVisitor implements StmtSwitch {
         exprV.setOrigStmt(stmt);
 		Value lhs = stmt.getLeftOp();
 		if (lhs instanceof ConcreteRef) {
-		    regAlloc.setMultipleConstantsPossible(true); // for array refs (ex: a[2] = 3)
 			// special cases that lead to *put* opcodes
 			Value source = stmt.getRightOp();
             addInsn(buildPutInsn((ConcreteRef) lhs, source), stmt);
-			regAlloc.setMultipleConstantsPossible(false); // for array refs
 			return;
 		}
 		// other cases, where lhs is a local

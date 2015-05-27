@@ -126,12 +126,8 @@ public class RegisterAllocator {
 		    nextRegNum += SootToDexUtils.getDexWords(c.getType());
 		}
 		
-		if (isMultipleConstantsPossible()) {
-		    constantRegister = rArray.get(iI.intValue()).clone();  
-		    iI.set(iI.intValue() + 1);
-		} else {
-		    constantRegister = rArray.get(0).clone();  
-		}
+		constantRegister = rArray.get(iI.intValue()).clone();
+		iI.set(iI.intValue() + 1);
 
 		// "load" constant into the register...
 		constantV.setDestination(constantRegister);
@@ -140,9 +136,7 @@ public class RegisterAllocator {
 		return constantRegister.clone();
 	}
 	
-	private boolean multipleConstantsPossible = false;
-	public void setMultipleConstantsPossible(boolean b) {
-	    multipleConstantsPossible = b;
+	public void resetImmediateConstantsPool() {
 	    classI = new AtomicInteger(0);
 	    nullI = new AtomicInteger(0);
 	    floatI = new AtomicInteger(0);
@@ -150,9 +144,6 @@ public class RegisterAllocator {
 	    longI = new AtomicInteger(0);
 	    doubleI = new AtomicInteger(0);
 	    stringI = new AtomicInteger(0);
-	}
-	public boolean isMultipleConstantsPossible() {
-	    return multipleConstantsPossible;
 	}
 
 	public Map<String, Integer> getLocalToRegisterMapping() {
