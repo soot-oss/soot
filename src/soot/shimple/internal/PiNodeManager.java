@@ -261,7 +261,7 @@ public class PiNodeManager
             PiExpr pi1 = Shimple.v().newPiExpr(local, u, targetKey);
             Unit add1 = Jimple.v().newAssignStmt(local, pi1);
             
-            PatchingChain units = body.getUnits();
+            PatchingChain<Unit> units = body.getUnits();
 
             /* we need to be careful with insertBefore, if target
                already had some other predecessors. */
@@ -297,7 +297,7 @@ public class PiNodeManager
     {
         if(smart){
             Map<Local, Value> newToOld = new HashMap<Local, Value>();
-            List<ValueBox> boxes = new ArrayList();
+            List<ValueBox> boxes = new ArrayList<ValueBox>();
             
             for(Iterator<Unit> unitsIt = body.getUnits().iterator(); unitsIt.hasNext();){
                 Unit u = unitsIt.next();
@@ -324,8 +324,7 @@ public class PiNodeManager
             DeadAssignmentEliminator.v().transform(body);            
         }
         else{
-            for(Iterator unitsIt = body.getUnits().iterator(); unitsIt.hasNext();){
-                Unit u = (Unit) unitsIt.next();
+            for (Unit u : body.getUnits()) {
                 PiExpr pe = Shimple.getPiExpr(u);
                 if(pe != null)
                     ((AssignStmt)u).setRightOp(pe.getValue());
@@ -337,7 +336,7 @@ public class PiNodeManager
     {
         Iterator<Unit> unitsIt = block.iterator();
         
-        List<ValueBox> useBoxesList = new ArrayList();
+        List<ValueBox> useBoxesList = new ArrayList<ValueBox>();
     
         while(unitsIt.hasNext())
             useBoxesList.addAll(unitsIt.next().getUseBoxes());

@@ -119,7 +119,7 @@ public class ShimpleBodyBuilder
 
     public void preElimOpt()
     {
-        boolean optElim = options.node_elim_opt();
+        //boolean optElim = options.node_elim_opt();
 
         // *** FIXME: 89e9a0470601091906j26489960j65290849dbe0481f@mail.gmail.com
         //if(optElim)
