@@ -19,13 +19,29 @@
 
 package soot.shimple;
 
-import soot.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import soot.Body;
+import soot.G;
+import soot.Local;
+import soot.PhaseOptions;
+import soot.Singletons;
+import soot.SootMethod;
+import soot.Unit;
+import soot.UnitBox;
+import soot.Value;
+import soot.jimple.AssignStmt;
+import soot.jimple.JimpleBody;
 import soot.options.Options;
-import soot.jimple.*;
-import soot.shimple.internal.*;
-import soot.util.*;
+import soot.shimple.internal.SPhiExpr;
+import soot.shimple.internal.SPiExpr;
+import soot.toolkits.graph.Block;
 import soot.toolkits.scalar.ValueUnitPair;
-import java.util.*;
+import soot.util.Chain;
 
 /**
  * Contains the constructors for the components of the SSA Shimple
@@ -65,7 +81,7 @@ public class Shimple
      **/
     public ShimpleBody newBody(SootMethod m)
     {
-        Map options = PhaseOptions.v().getPhaseOptions(PHASE);
+        Map<String, String> options = PhaseOptions.v().getPhaseOptions(PHASE);
         return new ShimpleBody(m, options);
     }
 
@@ -73,7 +89,7 @@ public class Shimple
      * Returns an empty ShimpleBody associated with method m, using
      * provided option map.
      **/
-    public ShimpleBody newBody(SootMethod m, Map options)
+    public ShimpleBody newBody(SootMethod m, Map<String, String> options)
     {
         return new ShimpleBody(m, options);
     }
@@ -84,7 +100,7 @@ public class Shimple
      **/
     public ShimpleBody newBody(Body b)
     {
-        Map options = PhaseOptions.v().getPhaseOptions(PHASE);
+        Map<String, String> options = PhaseOptions.v().getPhaseOptions(PHASE);
         return new ShimpleBody(b, options);
     }
 
@@ -92,7 +108,7 @@ public class Shimple
      * Returns a ShimpleBody constructed from b, using provided option
      * Map.
      **/
-    public ShimpleBody newBody(Body b, Map options)
+    public ShimpleBody newBody(Body b, Map<String, String> options)
     {
         return new ShimpleBody(b, options);
     }
@@ -103,7 +119,7 @@ public class Shimple
      * of a list of blocks, you may provide a list of the tail Units
      * from the corresponding blocks.
      **/
-    public PhiExpr newPhiExpr(Local leftLocal, List preds)
+    public PhiExpr newPhiExpr(Local leftLocal, List<Block> preds)
     {
         return new SPhiExpr(leftLocal, preds);
     }
@@ -227,27 +243,19 @@ public class Shimple
         if(body instanceof ShimpleBody)
             debug |= ((ShimpleBody)body).getOptions().debug();
             
-        Chain units = body.getUnits();
+        Chain<Unit> units = body.getUnits();
 
         /* Determine whether we should continue processing or not. */
-
-        Iterator pointersIt = remove.getBoxesPointingToThis().iterator();
-
-        if(!pointersIt.hasNext())
+        List<UnitBox> boxesPointingToThis = remove.getBoxesPointingToThis();
+        if(boxesPointingToThis.isEmpty())
             return;
 
-        while(pointersIt.hasNext()){
-            UnitBox pointer = (UnitBox) pointersIt.next();
-
+        for (UnitBox pointer : boxesPointingToThis) {
             // a PhiExpr may be involved, hence continue processing.
             // note that we will use the value of "pointer" and
             // continue iteration from where we left off.
             if(!pointer.isBranchTarget())
                 break;
-
-            // no PhiExpr's are involved, abort
-            if(!pointersIt.hasNext())
-                return;
         }
 
         /* Ok, continuing... */
@@ -263,13 +271,8 @@ public class Shimple
         }
 
         // find the rest of the preds and all Phi's that point to remove
-        Iterator unitsIt = units.iterator();
-        while(unitsIt.hasNext()){
-            Unit unit = (Unit) unitsIt.next();
-            Iterator targetsIt = unit.getUnitBoxes().iterator();
-            while(targetsIt.hasNext()){
-                UnitBox targetBox = (UnitBox) targetsIt.next();
-                
+        for (Unit unit : units) {
+        	for (UnitBox targetBox : unit.getUnitBoxes()) {
                 if(remove.equals(targetBox.getUnit())){
                     if(targetBox.isBranchTarget())
                         preds.add(unit);
@@ -343,14 +346,11 @@ public class Shimple
      **/
     public static void redirectPointers(Unit oldLocation, Unit newLocation)
     {
-        List boxesPointing = oldLocation.getBoxesPointingToThis();
+        List<UnitBox> boxesPointing = oldLocation.getBoxesPointingToThis();
 
         // important to change this to an array to have a static copy
-        Object[] boxes = boxesPointing.toArray();
-
-        for (Object element : boxes) {
-            UnitBox box = (UnitBox) element;
-
+        UnitBox[] boxes = boxesPointing.toArray(new UnitBox[boxesPointing.size()]);
+        for (UnitBox box : boxes) {
             if(box.getUnit() != oldLocation)
                 throw new RuntimeException("Something weird's happening");
             
