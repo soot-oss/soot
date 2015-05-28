@@ -77,7 +77,8 @@ public class PiNodeManager
         dt = sf.getReverseDominatorTree();
         df = sf.getReverseDominanceFrontier();
     }
-    protected MultiMap varToBlocks;
+    
+    protected MultiMap<Local, Block> varToBlocks;
     
     public boolean insertTrivialPiNodes()
     {
@@ -87,12 +88,8 @@ public class PiNodeManager
         varToBlocks = new HashMultiMap<Local, Block>();    
         
         // compute localsToUsePoints and varToBlocks
-        for(Iterator<Block> blocksIt = cfg.iterator(); blocksIt.hasNext();){
-            Block block = blocksIt.next();
-
-            for(Iterator<Unit> unitsIt = block.iterator(); unitsIt.hasNext();){
-                Unit unit = unitsIt.next();
-
+        for (Block block : cfg) {
+            for(Unit unit : block) {
                 List<ValueBox> useBoxes = unit.getUseBoxes();
                 for(Iterator<ValueBox> useBoxesIt = useBoxes.iterator(); useBoxesIt.hasNext();){
                     Value use = useBoxesIt.next().getValue();
@@ -116,18 +113,12 @@ public class PiNodeManager
         /* Main Cytron algorithm. */
         
         {
-            Iterator<Local> localsIt = localsToUsePoints.keySet().iterator();
-
-            while(localsIt.hasNext()){
-                Local local = localsIt.next();
-
+        	for (Local local : localsToUsePoints.keySet()) {
                 iterCount++;
 
                 // initialise worklist
                 {
-                    Iterator<Block> useNodesIt = localsToUsePoints.get(local).iterator();
-                    while(useNodesIt.hasNext()){
-                        Block block = useNodesIt.next();
+                	for (Block block : localsToUsePoints.get(local)) {
                         workFlags[block.getIndexInMethod()] = iterCount;
                         workList.push(block);
                     }
@@ -136,10 +127,9 @@ public class PiNodeManager
                 while(!workList.empty()){
                     Block block = workList.pop();
                     DominatorNode<Block> node = dt.getDode(block);
-                    Iterator<DominatorNode<Block>> frontierNodes = df.getDominanceFrontierOf(node).iterator();
-
-                    while(frontierNodes.hasNext()){
-                        Block frontierBlock = frontierNodes.next().getGode();
+                    
+                    for (DominatorNode<Block> frontierNode : df.getDominanceFrontierOf(node)) {
+                        Block frontierBlock = frontierNode.getGode();
                         int fBIndex = frontierBlock.getIndexInMethod();
                         
                         if(hasAlreadyFlags[fBIndex] < iterCount){
@@ -173,9 +163,8 @@ public class PiNodeManager
         TRIMMED:
         {
             if(trimmed){
-                for(Iterator<ValueBox> i = u.getUseBoxes().iterator(); i.hasNext();){
-                    Value use = i.next().getValue();
-                    if(use.equals(local))
+            	for (ValueBox vb : u.getUseBoxes()) {
+                    if(vb.getValue().equals(local))
                         break TRIMMED;
                 }
                 return;
