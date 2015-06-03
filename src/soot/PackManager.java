@@ -747,7 +747,7 @@ public class PackManager {
 
             try {
                 if( jarFile != null ) {
-                    JarEntry entry = new JarEntry(fileName.replaceAll("\\","/"));
+                    JarEntry entry = new JarEntry(fileName.replace('\\','/'));
                     jarFile.putNextEntry(entry);
                     streamOut = jarFile;
                 } else {
