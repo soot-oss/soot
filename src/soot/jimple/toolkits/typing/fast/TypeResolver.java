@@ -55,10 +55,7 @@ import soot.jimple.NewExpr;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.typing.Util;
-import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
-import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SmartLocalDefs;
 
 /**
  * New Type Resolver by Ben Bellamy (see 'Efficient Local Type Inference'
@@ -87,7 +84,7 @@ public class TypeResolver
 	{
 		this.jb = jb;
 
-		this.assignments = new LinkedList<DefinitionStmt>();
+		this.assignments = new ArrayList<DefinitionStmt>();
 		this.depends = new HashMap<Local, BitSet>();
 		for ( Local v : this.jb.getLocals() )
 			this.addLocal(v);
@@ -106,8 +103,8 @@ public class TypeResolver
 		Value lhs = ds.getLeftOp(), rhs = ds.getRightOp();
 		if ( lhs instanceof Local || lhs instanceof ArrayRef)
 		{
+			int assignmentIdx = this.assignments.size();
 			this.assignments.add(ds);
-			int assignmentIdx = this.assignments.indexOf(ds);
 			
 			if ( rhs instanceof Local )
 				this.addDepend((Local)rhs, assignmentIdx);
@@ -564,9 +561,8 @@ public class TypeResolver
 	/* Taken from the soot.jimple.toolkits.typing.TypeResolver class of Soot
 	version 2.2.5. */
 	private void split_new()
-	{
-		ExceptionalUnitGraph graph = new ExceptionalUnitGraph(this.jb);
-		LocalDefs defs = new SmartLocalDefs(graph,new SimpleLiveLocals(graph));
+	{		
+		LocalDefs defs = LocalDefs.Factory.newLocalDefs(jb);
 		PatchingChain<Unit> units = this.jb.getUnits();
 		Stmt[] stmts = new Stmt[units.size()];
 		

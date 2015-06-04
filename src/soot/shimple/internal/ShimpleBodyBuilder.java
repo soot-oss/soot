@@ -119,7 +119,7 @@ public class ShimpleBodyBuilder
 
     public void preElimOpt()
     {
-        boolean optElim = options.node_elim_opt();
+        //boolean optElim = options.node_elim_opt();
 
         // *** FIXME: 89e9a0470601091906j26489960j65290849dbe0481f@mail.gmail.com
         //if(optElim)
@@ -215,24 +215,16 @@ public class ShimpleBodyBuilder
         // Step 1 of 4 -- Rename block's uses (ordinary) and defs
         {
             // accumulated and re-processed in a later loop
-            Iterator unitsIt = block.iterator();
-
-            while(unitsIt.hasNext()){
-                Unit unit = (Unit) unitsIt.next();
-
+        	for (Unit unit : block) {
                 // Step 1/2 of 1
                 {
-                    List<ValueBox> useBoxes = new ArrayList();
+                    List<ValueBox> useBoxes = new ArrayList<ValueBox>();
 
                     if(!Shimple.isPhiNode(unit))
                         useBoxes.addAll(unit.getUseBoxes());
 
-                    Iterator<ValueBox> useBoxesIt = useBoxes.iterator();
-                
-                    while(useBoxesIt.hasNext()){
-                        ValueBox useBox = useBoxesIt.next();
+                    for (ValueBox useBox : useBoxes) {
                         Value use = useBox.getValue();
-
                         int localIndex = indexOfLocal(use);
 
                         // not one of our locals
@@ -288,16 +280,12 @@ public class ShimpleBodyBuilder
 
         // Step 2 of 4 -- Rename Phi node uses in Successors
         {
-            Iterator<Block> succsIt = cfg.getSuccsOf(block).iterator();
-
-            while(succsIt.hasNext()){
-                Block succ = succsIt.next();
-
-                Iterator<Unit> unitsIt = succ.iterator();
-
-                while(unitsIt.hasNext()){
-                    Unit unit = unitsIt.next();
-
+        	for (Block succ : cfg.getSuccsOf(block)) {
+        		// Ignore dummy blocks
+        		if (block.getHead() == null && block.getTail() == null)
+        			continue;
+        		
+        		for (Unit unit : succ) {
                     PhiExpr phiExpr = Shimple.getPhiExpr(unit);
 
                     if(phiExpr == null)

@@ -79,14 +79,7 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
       }
     }
     
-    Stack<Type> stack = null;
-    try {
-      stack = StackTypeHeightCalculator.getAfterStack(b,nonTrap);
-    } catch (Exception exc) {
-      out.println(exc);
-      Debugger.printUnits(b, b.getMethod().getSignature());
-      System.exit(1);
-    }
+    Stack<Type> stack = StackTypeHeightCalculator.getAfterStack(b,nonTrap);
     
     ArrayList<Unit> addedUnits = new ArrayList<Unit>();
     Iterator<Unit> it = units.snapshotIterator();

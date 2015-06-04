@@ -21,9 +21,6 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
-import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SimpleLocalUses;
-import soot.toolkits.scalar.SmartLocalDefs;
 
 public class DexReturnValuePropagator extends BodyTransformer {
 	
@@ -34,7 +31,7 @@ public class DexReturnValuePropagator extends BodyTransformer {
 	@Override
 	protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
         ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, DalvikThrowAnalysis.v(), true);
-        LocalDefs localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
+        LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(graph);
         LocalUses localUses = null;
         LocalCreation localCreation = null;
         
@@ -66,7 +63,7 @@ public class DexReturnValuePropagator extends BodyTransformer {
 						// we rename the local to help splitting
 						else if (rightOp instanceof FieldRef) {
 							if (localUses == null)
-								localUses = new SimpleLocalUses(body, localDefs);
+								localUses = LocalUses.Factory.newLocalUses(body, localDefs);
 							if (localUses.getUsesOf(assign).size() == 1) {
 								if (localCreation == null)
 									localCreation = new LocalCreation(body.getLocals(), "ret");

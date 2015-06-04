@@ -24,6 +24,7 @@
  */
 
 
+
 package soot.jimple;
 import soot.options.*;
 import soot.*;
@@ -32,8 +33,15 @@ import soot.tagkit.LineNumberTag;
 import soot.toolkits.graph.*;
 import soot.toolkits.scalar.*;
 import soot.util.*;
+
 import java.util.*;
+
 import soot.grimp.*;
+
+
+/*
+ * TODO This is the right JasminClass
+ */
 
 /** Methods for producing Jasmin code from Jimple. */
 public class JasminClass extends AbstractJasminClass
@@ -116,8 +124,9 @@ public class JasminClass extends AbstractJasminClass
         if (!disablePeephole)
         {
             stmtGraph = new ExceptionalUnitGraph(body);
-            ld = new SmartLocalDefs(stmtGraph, new SimpleLiveLocals(stmtGraph));
-            lu = new SimpleLocalUses(stmtGraph, ld);
+            ld =  LocalDefs.Factory.newLocalDefs(stmtGraph);
+            lu = LocalUses.Factory.newLocalUses(body, ld);
+            
         }
 
         int stackLimitIndex = -1;

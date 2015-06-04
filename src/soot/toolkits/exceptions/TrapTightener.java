@@ -77,8 +77,7 @@ public final class TrapTightener extends TrapTransformer {
 		Chain<Trap> trapChain = body.getTraps();
 		Chain<Unit> unitChain = body.getUnits();
 		if (trapChain.size() > 0) {
-			ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis,
-					Options.v().omit_excepting_unit_edges());
+			ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body, throwAnalysis);
 			Set<Unit> unitsWithMonitor = getUnitsWithMonitor(graph);
 
 			for (Iterator<Trap> trapIt = trapChain.iterator(); trapIt.hasNext();) {

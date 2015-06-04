@@ -1093,7 +1093,7 @@ final class AsmMethodSource implements MethodSource {
 		else if (val instanceof org.objectweb.asm.Type)
 			v = ClassConstant.v(((org.objectweb.asm.Type) val).getInternalName());
 		else if (val instanceof Handle)
-			v = MethodHandle.v(toSootMethodRef((Handle) val));
+			v = MethodHandle.v(toSootMethodRef((Handle) val), ((Handle)val).getTag());
 		else
 			throw new AssertionError("Unknown constant type: " + val.getClass());
 		return v;
@@ -1261,7 +1261,7 @@ final class AsmMethodSource implements MethodSource {
 			// of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
 			SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);		
 			
-			DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, methodArgs);
+			DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
 			
 			for (int i = 0; i < args.length - 1; i++) {
 				boxes[i] = indy.getArgBox(i);

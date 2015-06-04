@@ -77,10 +77,8 @@ public class ConstructorFolder extends BodyTransformer
       stmtList.addAll(units);
 
       Iterator<Unit> it = stmtList.iterator();
-
-      SmartLocalDefs localDefs = SmartLocalDefsPool.v().getSmartLocalDefsFor(b);
-      UnitGraph graph = localDefs.getGraph();
-      LocalUses localUses = new SimpleLocalUses(graph, localDefs);
+      
+      LocalUses localUses = LocalUses.Factory.newLocalUses(b);
 
       /* fold in NewExpr's with specialinvoke's */
       while (it.hasNext())

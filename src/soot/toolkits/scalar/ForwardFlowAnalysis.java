@@ -37,7 +37,7 @@ public abstract class ForwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 	 * Construct the analysis from a DirectedGraph representation of a Body.
 	 */
 	public ForwardFlowAnalysis(DirectedGraph<N> graph) {
-		super(graph, GraphView.FORWARD, InteractionFlowHandler.FORWARD);
+		super(graph);
 	}
 
 	@Override
@@ -46,20 +46,10 @@ public abstract class ForwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 	}
 
 	@Override
-	A getInFlow(N s) {
-		return getFlowBefore(s);
-	}
-
-	@Override
-	A getOutFlow(N s) {
-		return getFlowAfter(s);
-	}
-
-	@Override
 	protected void doAnalysis() {
-		super.doAnalysis();
+		int i = doAnalysis(GraphView.FORWARD, InteractionFlowHandler.FORWARD, unitToBeforeFlow, unitToAfterFlow);
 
 		soot.Timers.v().totalFlowNodes += graph.size();
-		soot.Timers.v().totalFlowComputations += numComputations;
+		soot.Timers.v().totalFlowComputations += i;
 	}
 }

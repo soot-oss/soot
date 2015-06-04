@@ -56,11 +56,8 @@ import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.ReturnStmt;
-import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
-import soot.toolkits.scalar.SimpleLocalUses;
-import soot.toolkits.scalar.SmartLocalDefs;
-import soot.toolkits.scalar.SmartLocalDefsPool;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
@@ -111,11 +108,9 @@ public class DexNumTransformer extends DexTransformer {
 
 	Local l = null;
 
-	protected void internalTransform(final Body body, String phaseName,
-			@SuppressWarnings("rawtypes") Map options) {
-        final SmartLocalDefs localDefs = SmartLocalDefsPool.v().getSmartLocalDefsFor(body);
-        final ExceptionalUnitGraph g = (ExceptionalUnitGraph) localDefs.getGraph();
-		final LocalUses localUses = new SimpleLocalUses(g, localDefs);
+	protected void internalTransform(final Body body, String phaseName, Map<String,String> options) {
+        final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(body);
+		final LocalUses localUses = LocalUses.Factory.newLocalUses(body, localDefs);
 		
         for (Local loc : getNumCandidates(body)) {
             Debug.printDbg("\n[num candidate] ", loc);
@@ -156,7 +151,7 @@ public class DexNumTransformer extends DexTransformer {
 							Type arType = ar.getType();
 							Debug.printDbg("ar: ", r, " ", arType);
 							if (arType instanceof UnknownType) {
-								Type t = findArrayType(g, localDefs, localUses,
+								Type t = findArrayType(/*g,*/ localDefs, localUses,
 										stmt, 0, Collections.<Unit> emptySet()); // TODO:
 																					// check
 																					// where

@@ -27,7 +27,13 @@
 
 package soot.toolkits.scalar;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -128,12 +134,12 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
     	if (i == -1)
     		return Collections.emptyList();
     	
-		List<T> elements = new LinkedList<T>();
-		for (i = bits.nextSetBit(i+1); i >= 0; i = bits.nextSetBit(i+1)) {
-			int endOfRun = bits.nextClearBit(i+1);
-			do { elements.add(map.getObject(i++)); }
-			while (i < endOfRun);
-		}
+	List<T> elements = new ArrayList<T>(bits.cardinality());
+	for (; i >= 0; i = bits.nextSetBit(i+1)) {
+		int endOfRun = bits.nextClearBit(i+1);
+		do { elements.add(map.getObject(i++)); }
+		while (i < endOfRun);
+	}
 
         return elements;
     }
@@ -161,7 +167,22 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
     {
     	bits.clear(map.getInt(obj));
     }
-
+    
+	@Override
+	public boolean isSubSet(FlowSet<T> other) {
+		if (other == this)
+			return true;
+		if (sameType(other)) {
+	          ArrayPackedSet<T> o = (ArrayPackedSet<T>) other;
+	          
+	          BitSet tmp = (BitSet) o.bits.clone();
+	          tmp.andNot(bits);
+	          return tmp.isEmpty();
+		}
+		return super.isSubSet(other);
+	}
+	
+	
     public void union(FlowSet<T> otherFlow, FlowSet<T> destFlow)
     {
       if (sameType(otherFlow) &&
@@ -259,10 +280,11 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
     }
 
 	@Override
-	public Iterator<T> iterator() {		
+	public Iterator<T> iterator() {
 		return new Iterator<T>() {
 			
 			int i = bits.nextSetBit(0);		
+			T t;
 			
 			@Override
 			public boolean hasNext() {
@@ -273,14 +295,17 @@ public class ArrayPackedSet<T> extends AbstractBoundedFlowSet<T>
 			public T next() {
 				if (i < 0)
 					throw new NoSuchElementException();
-				T t = map.getObject(i);				
+				t = map.getObject(i);				
 				i = bits.nextSetBit(i+1);					
 				return t;
 			}
 
 			@Override
 			public void remove() {
+				if (t == null)
+					throw new IllegalStateException();
 		        bits.clear(i);
+		        t = null;
 			}
 			
 		};

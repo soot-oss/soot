@@ -218,6 +218,7 @@ public class TypeAssigner extends BodyTransformer {
 			b.getUnits().remove(u);
 		}
 
+		// should be done on a separate phase
 		DeadAssignmentEliminator.v().transform(b);
 		UnusedLocalEliminator.v().transform(b);
 

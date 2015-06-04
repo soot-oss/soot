@@ -67,10 +67,8 @@ import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
-import soot.toolkits.graph.UnitGraph;
-import soot.toolkits.scalar.SimpleLocalUses;
-import soot.toolkits.scalar.SmartLocalDefs;
-import soot.toolkits.scalar.SmartLocalDefsPool;
+import soot.toolkits.scalar.LocalDefs;
+import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
@@ -92,11 +90,9 @@ public class DexNullTransformer extends AbstractNullTransformer {
 
 	private Local l = null;
 
-	protected void internalTransform(final Body body, String phaseName,
-			@SuppressWarnings("rawtypes") Map options) {
-        SmartLocalDefs localDefs = SmartLocalDefsPool.v().getSmartLocalDefsFor(body);
-        UnitGraph g = localDefs.getGraph();
-		final SimpleLocalUses localUses = new SimpleLocalUses(g, localDefs);
+	protected void internalTransform(final Body body, String phaseName, Map<String,String> options) {
+        final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(body);
+		final LocalUses localUses = LocalUses.Factory.newLocalUses(body, localDefs);
 		
 		for (Local loc : getNullCandidates(body)) {
 			Debug.printDbg("\n[null candidate] ", loc);

@@ -617,17 +617,17 @@ public class LockAllocator extends SceneTransformer
 			CriticalSection tn = tnAIt.next();
 			if(tn.setNumber <= 0)
 				continue;
-			ExceptionalUnitGraph egraph = new ExceptionalUnitGraph(tn.method.retrieveActiveBody());
-			SmartLocalDefs sld = new SmartLocalDefs(egraph, new SimpleLiveLocals(egraph));
+			
+			LocalDefs ld = LocalDefs.Factory.newLocalDefs(tn.method.retrieveActiveBody());
+			
 			if(tn.origLock == null || !(tn.origLock instanceof Local)) // || tn.begin == null)
 				continue;
-			List<Unit> rDefs = sld.getDefsOfAt( (Local) tn.origLock , tn.entermonitor );
+			List<Unit> rDefs = ld.getDefsOfAt( (Local) tn.origLock , tn.entermonitor );
 			if(rDefs == null)
 				continue;
-			Iterator<Unit> rDefsIt = rDefs.iterator();
-			while (rDefsIt.hasNext())
+			for (Unit u : rDefs)
 			{
-				Stmt next = (Stmt) rDefsIt.next();
+				Stmt next = (Stmt) u;
 				if(next instanceof DefinitionStmt)
 				{
 					Value rightOp = ((DefinitionStmt) next).getRightOp();

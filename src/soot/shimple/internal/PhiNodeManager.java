@@ -68,38 +68,34 @@ public class PhiNodeManager
      **/
     public boolean insertTrivialPhiNodes()
     {
-        update();
-        boolean change = false;
-        varToBlocks = new HashMultiMap<Local, Block>();    
-        Map<Local, List<Block>> localsToDefPoints = new HashMap<Local, List<Block>>();
-        
-        // compute localsToDefPoints and varToBlocks
-        for(Iterator<Block> blocksIt = cfg.iterator(); blocksIt.hasNext();){
-            Block block = blocksIt.next();
+		update();
+		boolean change = false;
+		varToBlocks = new HashMultiMap<Local, Block>();
+		Map<Local, List<Block>> localsToDefPoints = new HashMap<Local, List<Block>>();
 
-            for(Iterator<Unit> unitsIt = block.iterator(); unitsIt.hasNext();){
-                Unit unit = unitsIt.next();
+		// compute localsToDefPoints and varToBlocks
+		for (Block block : cfg) {
+			for (Unit unit : block) {
+				List<ValueBox> defBoxes = unit.getDefBoxes();
+				for (ValueBox vb : defBoxes) {
+					Value def = vb.getValue();
+					if (def instanceof Local) {
+						Local local = (Local) def;
+						List<Block> def_points = null;
+						if (localsToDefPoints.containsKey(local)) {
+							def_points = localsToDefPoints.get(local);
+						} else {
+							def_points = new ArrayList<Block>();
+							localsToDefPoints.put(local, def_points);
+						}
+						def_points.add(block);
+					}
+				}
 
-                List<ValueBox> defBoxes = unit.getDefBoxes();
-                for(Iterator<ValueBox> defBoxesIt = defBoxes.iterator(); defBoxesIt.hasNext();){
-                    Value def = defBoxesIt.next().getValue();
-                    if(def instanceof Local){
-                      Local local = (Local) def;
-                      List<Block> def_points = null;
-                      if(localsToDefPoints.containsKey(local)){
-                        def_points = localsToDefPoints.get(local);
-                      } else {
-                        def_points = new ArrayList<Block>();
-                        localsToDefPoints.put(local, def_points);
-                      }
-                      def_points.add(block);
-                    }
-                }
-
-                if(Shimple.isPhiNode(unit))
-                    varToBlocks.put(Shimple.getLhsLocal(unit), block);
-            }
-        }
+				if (Shimple.isPhiNode(unit))
+					varToBlocks.put(Shimple.getLhsLocal(unit), block);
+			}
+		}
 
         /* Routine initialisations. */
         
@@ -116,11 +112,7 @@ public class PhiNodeManager
         /* Main Cytron algorithm. */
         
         {
-            Iterator<Local> localsIt = localsToDefPoints.keySet().iterator();
-
-            while(localsIt.hasNext()){
-                Local local = localsIt.next();
-
+        	for (Local local : localsToDefPoints.keySet()) {
                 iterCount++;
 
                 // initialise worklist
@@ -208,16 +200,10 @@ public class PhiNodeManager
             handlerUnits.add(trap.getHandlerUnit());
         }
 
-        Iterator<Block> blocksIt = cfg.iterator();
-        while(blocksIt.hasNext()){
-            Block block = blocksIt.next();
-
+        for (Block block : cfg) {
             // trim relevant Phi expressions
             if(handlerUnits.contains(block.getHead())){
-                Iterator<Unit> unitsIt = block.iterator();
-                while(unitsIt.hasNext()){
-                    Unit unit = unitsIt.next();
-
+            	for (Unit unit : block) {
                     //if(!(newPhiNodes.contains(unit)))
                     PhiExpr phi = Shimple.getPhiExpr(unit);
 
@@ -240,16 +226,13 @@ public class PhiNodeManager
            build the MultiMap valueToPairs for convenience.  */
 
         MultiMap<Value, ValueUnitPair> valueToPairs = new HashMultiMap<Value, ValueUnitPair>();
-
-        Iterator<ValueUnitPair> argsIt = phiExpr.getArgs().iterator();
-        while(argsIt.hasNext()){
-            ValueUnitPair argPair = argsIt.next();
+        for (ValueUnitPair argPair : phiExpr.getArgs()) {
             Value value = argPair.getValue();
             valueToPairs.put(value, argPair);
         }
 
         /* Consider each value and see if we can find the dominating
-           UnitBoxes.  Once we havpe found all the dominating
+           UnitBoxes.  Once we have found all the dominating
            UnitBoxes, the rest of the redundant arguments can be
            trimmed.  */
         
@@ -418,11 +401,8 @@ public class PhiNodeManager
         // pointers when SPatchingChain moves them.
         List<ValueUnitPair> predBoxes = new ArrayList<ValueUnitPair>();
         
-        Chain units = body.getUnits();
-        Iterator<Unit> unitsIt = units.iterator();
-
-        while(unitsIt.hasNext()){
-            Unit unit = unitsIt.next();
+        Chain<Unit> units = body.getUnits();
+        for (Unit unit : units) {
             PhiExpr phi = Shimple.getPhiExpr(unit);
 
             if(phi == null)

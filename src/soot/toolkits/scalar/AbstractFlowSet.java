@@ -159,6 +159,18 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 		dest.remove(obj);
 	}
 
+	@Override
+	public boolean isSubSet(FlowSet<T> other) {
+		if (other == this)
+			return true;
+		
+		for (T t : other) {
+			if (!contains(t))
+				return false;
+		}
+		return true;
+	}
+
 	public abstract boolean contains(T obj);
 
 	public abstract Iterator<T> iterator();
@@ -187,7 +199,7 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 
 	public String toString() {
 		StringBuffer buffer = new StringBuffer("{");
-		
+
 		boolean isFirst = true;
 		for (T t : this) {
 			if (!isFirst)

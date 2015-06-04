@@ -147,16 +147,16 @@ public class DexAnnotation {
 											//Okay, the name is the same, but is it actually the same type?
 											Type annotationType = getSootType(e);
 											boolean isCorrectType = false;
-											if (annotationType == null)
+											if (annotationType == null) {
 												//we do not know the type of the annotation, so we guess it's the correct type.
 												isCorrectType = true;
-											else {
-												if (annotationType.equals(sm.getReturnType()))
+											} else {
+												if (annotationType.equals(sm.getReturnType())) {
 													isCorrectType = true;
-											}
-											if (annotationType.equals(ARRAY_TYPE)) {
-												if (sm.getReturnType() instanceof ArrayType)
-													isCorrectType = true;
+												} else if (annotationType.equals(ARRAY_TYPE)) {
+													if (sm.getReturnType() instanceof ArrayType)
+														isCorrectType = true;
+												}
 											}
 											
 											if (isCorrectType && sm.getParameterCount() == 0) {

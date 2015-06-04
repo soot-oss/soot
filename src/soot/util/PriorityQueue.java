@@ -272,7 +272,12 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 			public Integer get(Object key) {
 				return ((E) key).getNumber();
 			}
-
+			
+			@Override
+			public int size() {
+				return universe.size();
+			}
+			
 			@Override
 			public Set<java.util.Map.Entry<E, Integer>> entrySet() {
 				throw new UnsupportedOperationException();
