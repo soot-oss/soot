@@ -76,19 +76,19 @@ public class TrapSplitter extends BodyTransformer {
 					} else if (to.t1.getHandlerUnit() != to.t2.getHandlerUnit()) {
 						// Traps t1 and t2 catch the same exception, but have different handlers
 						//
-						// The JVM specification (§2.10 Exceptions) says:
+						// The JVM specification (2.10 Exceptions) says:
 						// "At run time, when an exception is thrown, the Java
 						// Virtual Machine searches the exception handlers of the current method in the order
 						// that they appear in the corresponding exception handler table in the class file,
 						// starting from the beginning of that table. Note that the Java Virtual Machine does
 						// not enforce nesting of or any ordering of the exception table entries of a method.
 						// The exception handling semantics of the Java programming language are implemented
-						// only through cooperation with the compiler (§3.12)."
+						// only through cooperation with the compiler (3.12)."
 						//
-						// §3.12
+						// 3.12
 						// "The nesting of catch clauses is represented only in the exception table. The Java
 						// Virtual Machine does not enforce nesting of or any ordering of the exception table
-						// entries (§2.10). However, because try-catch constructs are structured, a compiler
+						// entries (2.10). However, because try-catch constructs are structured, a compiler
 						// can always order the entries of the exception handler table such that, for any thrown
 						// exception and any program counter value in that method, the first exception handler
 						// that matches the thrown exception corresponds to the innermost matching catch clause."
