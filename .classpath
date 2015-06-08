@@ -21,6 +21,6 @@
 	<classpathentry kind="lib" path="libs/powermock-mockito-1.6.1-full.jar"/>
 	<classpathentry kind="lib" path="libs/dexlib2-2.0.5-dev.jar"/>
 	<classpathentry kind="lib" path="libs/util-2.0.5-dev.jar"/>
-	<classpathentry kind="lib" path="libs/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="libs/jboss-common-core-2.5.0.Final.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

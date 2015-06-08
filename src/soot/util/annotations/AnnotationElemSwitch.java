@@ -1,6 +1,6 @@
 package soot.util.annotations;
 
-import org.apache.commons.lang3.ClassUtils;
+import org.jboss.util.Classes;
 
 import soot.tagkit.AbstractAnnotationElemTypeSwitch;
 import soot.tagkit.AnnotationAnnotationElem;
@@ -14,7 +14,6 @@ import soot.tagkit.AnnotationFloatElem;
 import soot.tagkit.AnnotationIntElem;
 import soot.tagkit.AnnotationLongElem;
 import soot.tagkit.AnnotationStringElem;
-
 /**
  * 
  * An {@link AbstractAnnotationElemTypeSwitch} that converts an
@@ -94,7 +93,7 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
 	@Override
 	public void caseAnnotationClassElem(AnnotationClassElem v) {
 		try {
-			Class<?> clazz = ClassUtils.getClass(v.getDesc());
+			Class<?> clazz = Classes.loadClass(v.getDesc().replace('/', '.'));
 			setResult(new AnnotationElemResult<Class<?>>(v.getName(), clazz));
 		} catch (ClassNotFoundException e) {
 			throw new RuntimeException("Could not load class: " + v.getDesc());
@@ -110,7 +109,8 @@ public class AnnotationElemSwitch extends AbstractAnnotationElemTypeSwitch {
 	@Override
 	public void caseAnnotationEnumElem(AnnotationEnumElem v) {
 		try {
-			Class<?> clazz = ClassUtils.getClass(v.getTypeName());
+			Class<?> clazz = Classes.loadClass(v.getTypeName().replace('/', '.'));
+			
 
 			// find out which enum constant is used.
 			Enum<?> result = null;

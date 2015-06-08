@@ -34,11 +34,11 @@
            		<pathelement location="${heros.jar}"/>
            		<pathelement location="${axmlprinter2.jar}"/>
            		<pathelement location="${asm.jar}"/>
-				<pathelement location="${commons-lang.jar}"/>
-        
+				<pathelement location="${jboss-common-core.jar}"/>
+
 				<pathelement location="${slf4j-api.jar}"/>
            		<pathelement location="${slf4j-simple.jar}"/>
-           		
+
            		<pathelement location="${dexlib2.jar}"/>
            		<pathelement location="${dexlib-utils.jar}"/>
 			</classpath>
@@ -101,7 +101,7 @@
     <target name="sablecc" depends="determine-sablecc-uptodate,settings" unless="sablecc.uptodate">
 
     </target>
-	
+
     <target name="determine-jastadd-uptodate" depends="settings" if="jastaddfrontend.loc">
     	<uptodate property="jastadd.uptodate" targetfile="generated/jastadd/beaver/Action.java">
     	    <srcfiles dir= "${jastaddfrontend.loc}" includes="**/*.jrag,**/*.flex,**/*.parser,**/*.scanner"/>
@@ -237,19 +237,19 @@
            		<pathelement location="${asm.jar}"/>
         		<pathelement location="${javassist.jar}"/>
            		<pathelement location="${xmlprinter.jar}"/>
-        		<pathelement location="${commons-lang.jar}"/>
-        				
+        		<pathelement location="${jboss-common-core.jar}"/>
+
            		<pathelement location="${slf4j-api.jar}"/>
            		<pathelement location="${slf4j-simple.jar}"/>
-        		
+
         		<pathelement location="${junit.jar}"/>
                 <pathelement location="${hamcrest.jar}"/>
         		<pathelement location="${mockito.jar}"/>
         		<pathelement location="${powermock-mockito.jar}"/>
         	</classpath>
-			
+
 			<jvmarg value="-ea" />
-            
+
             <formatter type="xml" usefile="true" />
             <batchtest todir="reports">
                 <fileset dir="testclasses" includes="**/Test*.class" excludes="**/Abstract*.class" />
@@ -284,7 +284,7 @@
 
         <manifest file="META-INF/MANIFEST.MF">
            <attribute name="Main-Class" value="soot.Main"/>
-           <attribute name="Implementation-Version" value="${soot.version}"/> 
+           <attribute name="Implementation-Version" value="${soot.version}"/>
         </manifest>
 
     	<jar destfile="${release.loc}/sootclasses-${soot.version}.jar" manifest="META-INF/MANIFEST.MF">
@@ -337,17 +337,17 @@
         <jar destfile="eclipse/ca.mcgill.sable.graph/graph.jar">
             <fileset dir="eclipse/ca.mcgill.sable.graph/classes"/>
         </jar>
-        
+
     </target>
-		
+
 	<target name="fulljar" depends="classesjar">
     	<mkdir dir="META-INF"/>
 
         <manifest file="META-INF/MANIFEST.MF">
            <attribute name="Main-Class" value="soot.Main"/>
-           <attribute name="Implementation-Version" value="${soot.version}"/> 
+           <attribute name="Implementation-Version" value="${soot.version}"/>
         </manifest>
-		
+
         <jar destfile="${release.loc}/soot-${soot.version}.jar" manifest="META-INF/MANIFEST.MF">
             <zipfileset src="${release.loc}/sootclasses-${soot.version}.jar"/>
             <zipfileset src="${jasmin.jar}"/>
@@ -358,11 +358,11 @@
             <zipfileset src="${dexlib2.jar}"/>
             <zipfileset src="${dexlib-utils.jar}"/>
             <zipfileset src="${asm.jar}"/>
-			<zipfileset src="${commons-lang.jar}"/>
+			<zipfileset src="${jboss-common-core.jar}"/>
         </jar>
 		<delete dir="META-INF"/>
     </target>
-    
+
 	<target name="sourcejar">
         <jar destfile="${release.loc}/sootsources-${soot.version}.jar">
             <fileset dir="src"/>
@@ -372,5 +372,5 @@
             <fileset dir="generated/options"/>
         </jar>
 	</target>
-    
+
 </project>
