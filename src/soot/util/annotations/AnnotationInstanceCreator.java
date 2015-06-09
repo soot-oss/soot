@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.commons.lang3.ClassUtils;
+import org.jboss.util.Classes;
 
 import com.google.common.reflect.AbstractInvocationHandler;
 
@@ -55,9 +55,8 @@ public class AnnotationInstanceCreator {
 		ClassLoader cl = this.getClass().getClassLoader();
 
 		try {
-
 			// load the class of the annotation to be created
-			final Class<?> clazz = ClassUtils.getClass(tag.getType());
+			final Class<?> clazz = Classes.loadClass(tag.getType().replace('/', '.'));
 			final Map<String, Object> map = new HashMap<String, Object>();
 
 			// for every element generate the result
@@ -122,8 +121,8 @@ public class AnnotationInstanceCreator {
 			return result;
 
 		} catch (ClassNotFoundException e) {
+			
 			throw new RuntimeException("Could not load class: " + tag.getType());
 		}
 	}
-
 }

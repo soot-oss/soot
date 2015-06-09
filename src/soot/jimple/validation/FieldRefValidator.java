@@ -4,6 +4,7 @@ import java.util.List;
 
 import soot.Body;
 import soot.ResolutionFailedException;
+import soot.SootField;
 import soot.SootMethod;
 import soot.Unit;
 import soot.jimple.FieldRef;
@@ -12,6 +13,7 @@ import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.util.Chain;
 import soot.validation.BodyValidator;
+import soot.validation.UnitValidationException;
 import soot.validation.ValidationException;
 
 public enum FieldRefValidator implements BodyValidator {
@@ -43,35 +45,29 @@ public enum FieldRefValidator implements BodyValidator {
 			if (fr instanceof StaticFieldRef) {
 				StaticFieldRef v = (StaticFieldRef) fr;
 				try {
-					if (!v.getField().isStatic()) {
-						exception.add(new ValidationException(unit, formatMsg("trying to get a static field which is non-static: " + v, unit, body)));
+					SootField field = v.getField();
+					if (!field.isStatic() && !field.isPhantom()) {
+						exception.add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));
 					}
 				} catch (ResolutionFailedException e) {
-					exception.add(new ValidationException(unit, formatMsg("trying to get a static field which is non-static: " + v, unit, body)));
+					exception.add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));
 				}
 			} else if (fr instanceof InstanceFieldRef) {
 				InstanceFieldRef v = (InstanceFieldRef) fr;
 
 				try {
-					if (v.getField().isStatic()) {
-						exception.add(new ValidationException(unit, formatMsg("trying to get an instance field which is static: " + v, unit, body)));
+					SootField field = v.getField();
+					if (field.isStatic() && !field.isPhantom()) {
+						exception.add(new UnitValidationException(unit, body, "Trying to get an instance field which is static: " + v));
 					}
 				} catch (ResolutionFailedException e) {
-					exception.add(new ValidationException(unit, formatMsg("trying to get an instance field which is static: " + v, unit, body)));
+					exception.add(new UnitValidationException(unit, body, "Trying to get an instance field which is static: " + v));
 				}
 			} else {
 				throw new RuntimeException("unknown field ref");
 			}
 		}
     }
-
-	private String formatMsg(String s, Unit u, Body b) {
-		StringBuilder sb = new StringBuilder();
-		sb.append(s + "\n");
-		sb.append("in unit: " + u + "\n");
-		sb.append("in body: \n " + b + "\n");
-		return sb.toString();
-	}
 
 
 	@Override
