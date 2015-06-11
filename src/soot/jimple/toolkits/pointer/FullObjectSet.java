@@ -19,7 +19,9 @@
 
 package soot.jimple.toolkits.pointer;
 import java.util.*;
+
 import soot.*;
+import soot.jimple.ClassConstant;
 
 public class FullObjectSet extends Union {
     public FullObjectSet( Singletons.Global g ) {
@@ -32,7 +34,7 @@ public class FullObjectSet extends Union {
         }
         return new FullObjectSet( t );
     }
-    private final Set types;
+    private final Set<Type> types;
     private FullObjectSet( RefType declaredType ) {
         AnySubType type = AnySubType.v( declaredType );
         types = Collections.singleton( type );
@@ -49,7 +51,7 @@ public class FullObjectSet extends Union {
 	return other != null;
     }
     /** Set of all possible run-time types of objects in the set. */
-    public Set possibleTypes() {
+    public Set<Type> possibleTypes() {
         return types;
     }
 
@@ -59,8 +61,8 @@ public class FullObjectSet extends Union {
 	return false;
     }
 
-    public Set possibleStringConstants() { return null; }
-    public Set possibleClassConstants() { return null; }
+    public Set<String> possibleStringConstants() { return null; }
+    public Set<ClassConstant> possibleClassConstants() { return null; }
 	
     /**
 	 * {@inheritDoc}
