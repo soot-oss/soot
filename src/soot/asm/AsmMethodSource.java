@@ -1255,13 +1255,17 @@ final class AsmMethodSource implements MethodSource {
 				args[k] = popImmediate(types[k]);
 				methodArgs.add(args[k].stackOrValue());				
 			}
+			if (methodArgs.size() > 1)
+				Collections.reverse(methodArgs);	// Call stack is FIFO, Jimple is linear
+			
 			returnType = types[types.length - 1];
-						
+			
 			// we always model invokeDynamic method refs as static method references
 			// of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
 			SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);		
 			
-			DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
+			DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef,
+					bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
 			
 			for (int i = 0; i < args.length - 1; i++) {
 				boxes[i] = indy.getArgBox(i);
@@ -1793,7 +1797,7 @@ final class AsmMethodSource implements MethodSource {
 		// 	b = (B) a;
 		// 	return b;
 		castAndReturnInliner.transform(jb);
-		
+				
 		try {
 	        PackManager.v().getPack("jb").apply(jb);
 		} catch (Throwable t) {
