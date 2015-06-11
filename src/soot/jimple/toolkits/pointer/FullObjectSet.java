@@ -36,11 +36,11 @@ public class FullObjectSet extends Union {
     }
     private final Set<Type> types;
     private FullObjectSet( RefType declaredType ) {
-        AnySubType type = AnySubType.v( declaredType );
+        Type type = AnySubType.v( declaredType );
         types = Collections.singleton( type );
     }
 
-    public AnySubType type() { return (AnySubType) types.iterator().next(); }
+    public Type type() { return types.iterator().next(); }
 
     /** Returns true if this set contains no run-time objects. */
     public boolean isEmpty() {
@@ -50,7 +50,9 @@ public class FullObjectSet extends Union {
     public boolean hasNonEmptyIntersection( PointsToSet other ) {
 	return other != null;
     }
+    
     /** Set of all possible run-time types of objects in the set. */
+    @Override
     public Set<Type> possibleTypes() {
         return types;
     }
