@@ -79,31 +79,31 @@ public final class CallGraphBuilder
         ofcgb = new OnFlyCallGraphBuilder( cm, reachables, true );
     }
     public void build() {
-        QueueReader worklist = reachables.listener();
+        QueueReader<MethodOrMethodContext> worklist = reachables.listener();
         while(true) {
             ofcgb.processReachables();
             reachables.update();
             if( !worklist.hasNext() ) break;
             MethodOrMethodContext momc = (MethodOrMethodContext) worklist.next();
-            List receivers = (List) ofcgb.methodToReceivers().get(momc.method());
-            if( receivers != null) for( Iterator receiverIt = receivers.iterator(); receiverIt.hasNext(); ) {     
-                final Local receiver = (Local) receiverIt.next();
+            List<Local> receivers = ofcgb.methodToReceivers().get(momc.method());
+            if( receivers != null) for( Iterator<Local> receiverIt = receivers.iterator(); receiverIt.hasNext(); ) {     
+                final Local receiver = receiverIt.next();
                 final PointsToSet p2set = pa.reachingObjects( receiver );
-                for( Iterator typeIt = p2set.possibleTypes().iterator(); typeIt.hasNext(); ) {
-                    final Type type = (Type) typeIt.next();
+                for( Iterator<Type> typeIt = p2set.possibleTypes().iterator(); typeIt.hasNext(); ) {
+                    final Type type = typeIt.next();
                     ofcgb.addType( receiver, momc.context(), type, null );
                 }
             }
-            List stringConstants = (List) ofcgb.methodToStringConstants().get(momc.method());
-            if( stringConstants != null ) for( Iterator stringConstantIt = stringConstants.iterator(); stringConstantIt.hasNext(); ) {     
-                final Local stringConstant = (Local) stringConstantIt.next();
+            List<Local> stringConstants = ofcgb.methodToStringConstants().get(momc.method());
+            if( stringConstants != null ) for( Iterator<Local> stringConstantIt = stringConstants.iterator(); stringConstantIt.hasNext(); ) {     
+                final Local stringConstant = stringConstantIt.next();
                 PointsToSet p2set = pa.reachingObjects( stringConstant );
-                Collection possibleStringConstants = p2set.possibleStringConstants();
+                Collection<String> possibleStringConstants = p2set.possibleStringConstants();
                 if( possibleStringConstants == null ) {
                     ofcgb.addStringConstant( stringConstant, momc.context(), null );
                 } else {
-                    for( Iterator constantIt = possibleStringConstants.iterator(); constantIt.hasNext(); ) {
-                        final String constant = (String) constantIt.next();
+                    for( Iterator<String> constantIt = possibleStringConstants.iterator(); constantIt.hasNext(); ) {
+                        final String constant = constantIt.next();
                         ofcgb.addStringConstant( stringConstant, momc.context(), constant );
                     }
                 }
