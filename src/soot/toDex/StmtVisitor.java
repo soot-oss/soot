@@ -228,11 +228,12 @@ public class StmtVisitor implements StmtSwitch {
 				// state. We cannot remove the first instruction as other
 				// instructions may depend on the register being set.
 				if (origStmt == null || !isJumpTarget(origStmt)) {
+					Insn nextStmt = this.insns.get(nextIndex + 1);
 					insns.remove(nextIndex);
 				
 					if (origStmt != null) {
 						insnStmtMap.remove(nextInsn);
-						insnStmtMap.put(this.insns.get(nextIndex + 1), origStmt);
+						insnStmtMap.put(nextStmt, origStmt);
 					}
 				}
 			}
