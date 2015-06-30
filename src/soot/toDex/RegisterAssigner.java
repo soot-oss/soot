@@ -100,7 +100,7 @@ public class RegisterAssigner {
 		reserveRegisters(insns, insnsStmtMap, parameterInstructionsList);
 		InstructionIterator insnIter = new InstructionIterator(insns, insnsStmtMap, instructionRegisterMap);
 		while (insnIter.hasNext()) {
-			Insn oldInsn = insnIter.next();
+			Insn oldInsn = insnIter.next();			
 			if (oldInsn.hasIncompatibleRegs()) {
 				Insn fittingInsn = findFittingInsn(oldInsn);
 				if (fittingInsn != null) {

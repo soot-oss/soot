@@ -19,7 +19,9 @@ import java.util.zip.ZipFile;
 import java.util.zip.ZipOutputStream;
 
 import org.jf.dexlib2.AnnotationVisibility;
+import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
+import org.jf.dexlib2.builder.BuilderOffsetInstruction;
 import org.jf.dexlib2.builder.Label;
 import org.jf.dexlib2.builder.MethodImplementationBuilder;
 import org.jf.dexlib2.iface.Annotation;
@@ -83,6 +85,8 @@ import soot.Trap;
 import soot.Type;
 import soot.Unit;
 import soot.dexpler.Util;
+import soot.jimple.Jimple;
+import soot.jimple.NopStmt;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.scalar.EmptySwitchEliminator;
 import soot.options.Options;
@@ -117,6 +121,10 @@ import soot.tagkit.StringConstantValueTag;
 import soot.tagkit.Tag;
 import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
+import soot.toDex.instructions.Insn;
+import soot.toDex.instructions.Insn10t;
+import soot.toDex.instructions.Insn30t;
+import soot.toDex.instructions.InsnWithOffset;
 
 /**
  * Main entry point for the "dex" output format.<br>
@@ -1050,7 +1058,8 @@ public class DexPrinter {
 		LabelAssigner labelAssinger = new LabelAssigner(builder);
 		List<BuilderInstruction> instructions = stmtV.getRealInsns(labelAssinger); 
 		
-		Map<Instruction, Stmt> instructionStmtMap = stmtV.getInstructionStmtMap();
+		fixLongJumps(instructions, labelAssinger, stmtV);
+		
 		Map<Local, Integer> seenRegisters = new HashMap<Local, Integer>();
 		Map<Instruction, LocalRegisterAssignmentInformation> instructionRegisterMap = stmtV.getInstructionRegisterMap();
 
@@ -1062,10 +1071,8 @@ public class DexPrinter {
 			addRegisterAssignmentDebugInfo(assignment, seenRegisters, builder);
 		}
     	
-    	 
-    	
         for (BuilderInstruction ins : instructions) {
-            Stmt origStmt = instructionStmtMap.get(ins);
+            Stmt origStmt = stmtV.getStmtForInstruction(ins);
             
             // If this is a switch payload, we need to place the label
             if (stmtV.getInstructionPayloadMap().containsKey(ins))
@@ -1088,7 +1095,7 @@ public class DexPrinter {
 					builder.addLabel(labelName);
 				
 				// Add the tags
-				if (instructionStmtMap.containsKey(ins)) {
+				if (stmtV.getStmtForInstruction(ins) != null) {
 	                List<Tag> tags = origStmt.getTags();
 	                for (Tag t : tags) {
 	                    if (t instanceof LineNumberTag) {
@@ -1124,6 +1131,137 @@ public class DexPrinter {
         		throw new RuntimeException("Label not placed: " + lbl);
         
         return builder.getMethodImplementation();
+	}
+
+	private void fixLongJumps(List<BuilderInstruction> instructions,
+			LabelAssigner labelAssigner, StmtVisitor stmtV) {
+		boolean hasChanged = true;
+		l0 : while (hasChanged) {
+			hasChanged = false;
+			
+			// Build a mapping between labels and offsets
+			Map<Label, Integer> labelToInsOffset = new HashMap<Label, Integer>();
+			for (int i = 0; i < instructions.size(); i++) {
+				BuilderInstruction bi = instructions.get(i);
+	            Stmt origStmt = stmtV.getStmtForInstruction(bi);
+	            if (origStmt != null) {
+	            	Label lbl = labelAssigner.getLabelUnsafe(origStmt);
+	            	if (lbl != null) {
+	            		labelToInsOffset.put(lbl, i);
+	            	}
+	            }
+			}
+			
+	   		// Look for references to labels
+	   		for (int j = 0; j < instructions.size(); j++) {
+	   			BuilderInstruction bj = instructions.get(j);
+	   			if (bj instanceof BuilderOffsetInstruction) {
+	   				BuilderOffsetInstruction boj = (BuilderOffsetInstruction) bj;
+	   				Label targetLbl = boj.getTarget();
+	   				Integer offset = labelToInsOffset.get(targetLbl);
+	   				if (offset == null)
+	   					continue;
+	   				
+	   				// Compute the distance between the instructions
+	   				Insn jumpInsn = stmtV.getInsnForInstruction(boj);
+	   				if (jumpInsn instanceof InsnWithOffset) {
+	   					InsnWithOffset offsetInsn = (InsnWithOffset) jumpInsn;
+	   					int distance = getDistanceBetween(instructions, j, offset);
+	   					if (Math.abs(distance) > offsetInsn.getMaxJumpOffset()) {
+	   						// We need intermediate jumps
+	   						insertIntermediateJump(offset, j, stmtV, instructions,
+	   								labelAssigner);
+	   						hasChanged = true;
+	   						continue l0;
+	   					}
+	   				}
+	   			}
+	   		}
+		}
+	}
+	
+	/**
+	 * Creates an intermediate jump instruction between the original jump
+	 * instruction and its target
+	 * @param targetInsPos The jump target index
+	 * @param jumpInsPos The position of the jump instruction
+	 * @param stmtV The statement visitor used for constructing the instructions
+	 * @param instructions The list of Dalvik instructions
+	 * @param labelAssigner The label assigner to be used for creating new labels
+	 */
+	private void insertIntermediateJump(int targetInsPos, int jumpInsPos,
+			StmtVisitor stmtV, List<BuilderInstruction> instructions,
+			LabelAssigner labelAssigner) {
+		// Get the original jump instruction
+		BuilderInstruction originalJumpInstruction = instructions.get(jumpInsPos);
+		Insn originalJumpInsn = stmtV.getInsnForInstruction(originalJumpInstruction);
+		if (originalJumpInsn == null)
+			return;
+		if (!(originalJumpInsn instanceof InsnWithOffset))
+			throw new RuntimeException("Unexpected jump instruction target");
+		InsnWithOffset offsetInsn = (InsnWithOffset) originalJumpInsn;
+		
+		// Find a position where we can jump to
+		int distance = Math.max(targetInsPos, jumpInsPos) - Math.min(targetInsPos, jumpInsPos);
+		if (distance == 0)
+			return;
+		int newJumpIdx = Math.min(targetInsPos, jumpInsPos) + (distance / 2);
+		int sign = (int) Math.signum(targetInsPos - jumpInsPos);
+		if (distance > offsetInsn.getMaxJumpOffset())
+			newJumpIdx = jumpInsPos + sign;
+		
+		// There must be a statement at the instruction after the jump target
+		while (stmtV.getStmtForInstruction(instructions.get(newJumpIdx + 1)) == null) {
+			 newJumpIdx += sign;
+			 if (newJumpIdx < 0 || newJumpIdx >= instructions.size())
+				 throw new RuntimeException("No position for inserting intermediate "
+						 + "jump instruction found");
+		}
+		
+		// Create a jump instruction from the middle to the end
+		NopStmt nop = Jimple.v().newNopStmt();
+		Insn30t newJump = new Insn30t(Opcode.GOTO_32);
+		newJump.setTarget(stmtV.getStmtForInstruction(instructions.get(targetInsPos)));
+		BuilderInstruction newJumpInstruction = newJump.getRealInsn(labelAssigner);
+		instructions.add(newJumpIdx, newJumpInstruction);
+		stmtV.fakeNewInsn(nop, newJump, newJumpInstruction);
+		
+		// We have added something, so we need to fix indices
+		if (newJumpIdx < jumpInsPos)
+			jumpInsPos++;
+		if (newJumpIdx < targetInsPos)
+			targetInsPos++;
+		newJumpIdx++;
+		
+		// Jump from the original instruction to the new one in the middle
+		offsetInsn.setTarget(nop);
+		BuilderInstruction replacementJumpInstruction = offsetInsn.getRealInsn(labelAssigner);
+		instructions.add(jumpInsPos, replacementJumpInstruction);
+		instructions.remove(originalJumpInstruction);
+		stmtV.fakeNewInsn(stmtV.getStmtForInstruction(originalJumpInstruction),
+				originalJumpInsn, replacementJumpInstruction);
+		
+		// Our indices are still fine, because we just replaced something
+		Stmt afterNewJump = stmtV.getStmtForInstruction(instructions.get(newJumpIdx + 1));
+		
+		// Make the original control flow jump around the new artificial jump instruction
+		Insn10t jumpAround = new Insn10t(Opcode.GOTO);
+		jumpAround.setTarget(afterNewJump);
+		BuilderInstruction jumpAroundInstruction = jumpAround.getRealInsn(labelAssigner);
+		instructions.add(newJumpIdx, jumpAroundInstruction);
+	}
+
+	private int getDistanceBetween(List<BuilderInstruction> instructions,
+			int i, int j) {
+		if (i == j)
+			return 0;
+		
+		int dist = 0;
+		for (int idx = Math.min(i, j); idx < Math.max(i, j); idx++) {
+			BuilderInstruction bi = instructions.get(idx);
+			dist += (bi.getFormat().size / 2);
+		}
+		return dist;
 	}
 
 	private void addRegisterAssignmentDebugInfo(

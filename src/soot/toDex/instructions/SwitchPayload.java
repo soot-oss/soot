@@ -26,5 +26,10 @@ public abstract class SwitchPayload extends InsnWithOffset {
 	public void setSwitchInsn(Insn31t switchInsn) {
 		this.switchInsn = switchInsn;
 	}
+	
+	@Override
+	public int getMaxJumpOffset() {
+		return Short.MAX_VALUE;
+	}
 
 }

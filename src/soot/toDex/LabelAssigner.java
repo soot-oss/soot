@@ -55,10 +55,14 @@ public class LabelAssigner {
 	}
 
 	public Label getLabel(Stmt stmt) {
-		Label lbl = stmtToLabel.get(stmt);
+		Label lbl = getLabelUnsafe(stmt);
 		if (lbl == null)
 			throw new RuntimeException("Statement has no label: " + stmt);
 		return lbl;
+	}
+	
+	public Label getLabelUnsafe(Stmt stmt) {
+		return stmtToLabel.get(stmt);
 	}
 	
 	public Label getLabel(SwitchPayload payload) {
