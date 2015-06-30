@@ -1206,8 +1206,17 @@ public class DexPrinter {
 		if (distance == 0)
 			return;
 		int newJumpIdx = Math.min(targetInsPos, jumpInsPos) + (distance / 2);
+		int sign = (int) Math.signum(targetInsPos - jumpInsPos);
 		if (distance > offsetInsn.getMaxJumpOffset())
-			newJumpIdx = jumpInsPos + (int) Math.signum(targetInsPos - jumpInsPos);
+			newJumpIdx = jumpInsPos + sign;
+		
+		// There must be a statement at the instruction after the jump target
+		while (stmtV.getStmtForInstruction(instructions.get(newJumpIdx + 1)) == null) {
+			 newJumpIdx += sign;
+			 if (newJumpIdx < 0 || newJumpIdx >= instructions.size())
+				 throw new RuntimeException("No position for inserting intermediate "
+						 + "jump instruction found");
+		}
 		
 		// Create a jump instruction from the middle to the end
 		NopStmt nop = Jimple.v().newNopStmt();
@@ -1222,6 +1231,7 @@ public class DexPrinter {
 			jumpInsPos++;
 		if (newJumpIdx < targetInsPos)
 			targetInsPos++;
+		newJumpIdx++;
 		
 		// Jump from the original instruction to the new one in the middle
 		offsetInsn.setTarget(nop);
