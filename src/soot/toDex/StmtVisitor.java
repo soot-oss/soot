@@ -119,7 +119,7 @@ public class StmtVisitor implements StmtSwitch {
     // maps used to map Jimple statements to dalvik instructions
     private Map<Insn, Stmt> insnStmtMap = new HashMap<Insn, Stmt>();
     private Map<Instruction, LocalRegisterAssignmentInformation> instructionRegisterMap = new IdentityHashMap<Instruction, LocalRegisterAssignmentInformation>();
-    private Map<Instruction, Stmt> instructionStmtMap = new IdentityHashMap<Instruction, Stmt>();
+    private Map<Instruction, Insn> instructionInsnMap = new IdentityHashMap<Instruction, Insn>();
     private Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap = new IdentityHashMap<Insn, LocalRegisterAssignmentInformation>();
     private Map<Instruction, SwitchPayload> instructionPayloadMap = new IdentityHashMap<Instruction, SwitchPayload>();
 	private List<LocalRegisterAssignmentInformation> parameterInstructionsList = new ArrayList<LocalRegisterAssignmentInformation>();
@@ -146,8 +146,15 @@ public class StmtVisitor implements StmtSwitch {
 		return belongingMethod.getDeclaringClass();
 	}
 	
-    public Map<Instruction, Stmt> getInstructionStmtMap() {
-        return this.instructionStmtMap;
+    public Stmt getStmtForInstruction(Instruction instruction) {
+        Insn insn = this.instructionInsnMap.get(instruction);
+        if (insn == null)
+        	return null;
+        return this.insnStmtMap.get(insn);
+    }
+    
+    public Insn getInsnForInstruction(Instruction instruction) {
+    	return instructionInsnMap.get(instruction);
     }
 	
     public Map<Instruction, LocalRegisterAssignmentInformation> getInstructionRegisterMap() {
@@ -265,7 +272,7 @@ public class StmtVisitor implements StmtSwitch {
 			BuilderInstruction realInsn = i.getRealInsn(labelAssigner);
 			finalInsns.add(realInsn);
             if (insnStmtMap.containsKey(i)) { // get tags
-                instructionStmtMap.put(realInsn, insnStmtMap.get(i));
+                instructionInsnMap.put(realInsn, i);
             }
             if (insnRegisterMap.containsKey(i)) {
             	instructionRegisterMap.put(realInsn, insnRegisterMap.get(i));
@@ -275,7 +282,12 @@ public class StmtVisitor implements StmtSwitch {
 		}
 		return finalInsns;
 	}
-
+	
+	public void fakeNewInsn(Stmt s, Insn insn, Instruction instruction) {
+		this.insnStmtMap.put(insn, s);
+		this.instructionInsnMap.put(instruction, insn);
+	}
+	
 	private void finishRegs() {
 		// fit registers into insn formats, potentially replacing insns
 		RegisterAssigner regAssigner = new RegisterAssigner(regAlloc);
