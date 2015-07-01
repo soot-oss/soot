@@ -165,4 +165,9 @@ public class ConcurrentHashMultiMap<K,V> implements MultiMap<K,V> {
     public int hashCode() {
         return m.hashCode();
     }
+
+	@Override
+	public int size() {
+		return m.size();
+	}
 }
