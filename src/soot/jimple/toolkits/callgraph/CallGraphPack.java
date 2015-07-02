@@ -51,8 +51,7 @@ public class CallGraphPack extends RadioScenePack
 
         if( options.trim_clinit() ) {
             for (SootClass cl : Scene.v().getClasses(SootClass.BODIES)) {
-                for( Iterator mIt = cl.getMethods().iterator(); mIt.hasNext(); ) {
-                    final SootMethod m = (SootMethod) mIt.next();
+            	for (SootMethod m : cl.getMethods()) {
                     if( m.isConcrete() && m.hasActiveBody() ) {
                         trimmer.transform( m.getActiveBody() );
                     }
