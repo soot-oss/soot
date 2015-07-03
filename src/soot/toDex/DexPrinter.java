@@ -1211,7 +1211,7 @@ public class DexPrinter {
 			newJumpIdx = jumpInsPos + sign;
 		
 		// There must be a statement at the instruction after the jump target
-		while (stmtV.getStmtForInstruction(instructions.get(newJumpIdx + 1)) == null) {
+		while (stmtV.getStmtForInstruction(instructions.get(newJumpIdx)) == null) {
 			 newJumpIdx += sign;
 			 if (newJumpIdx < 0 || newJumpIdx >= instructions.size())
 				 throw new RuntimeException("No position for inserting intermediate "
@@ -1231,7 +1231,6 @@ public class DexPrinter {
 			jumpInsPos++;
 		if (newJumpIdx < targetInsPos)
 			targetInsPos++;
-		newJumpIdx++;
 		
 		// Jump from the original instruction to the new one in the middle
 		offsetInsn.setTarget(nop);
