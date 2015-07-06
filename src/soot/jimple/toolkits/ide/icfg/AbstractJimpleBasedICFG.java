@@ -73,6 +73,8 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 	@Override
 	public List<Unit> getSuccsOf(Unit u) {
 		Body body = unitToOwner.get(u);
+		if (body == null)
+			return Collections.emptyList();
 		DirectedGraph<Unit> unitGraph = getOrCreateUnitGraph(body);
 		return unitGraph.getSuccsOf(u);
 	}

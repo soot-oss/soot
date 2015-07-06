@@ -13,8 +13,10 @@ import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.IntegerType;
+import soot.Local;
 import soot.LongType;
 import soot.NullType;
+import soot.PrimType;
 import soot.SootClass;
 import soot.Type;
 import soot.Value;
@@ -220,7 +222,7 @@ public class ExprVisitor implements ExprSwitch {
 		constantV.setOrigStmt(origStmt);
 		List<Register> argumentRegs = getInvokeArgumentRegs(iie);
 		// always add reference to callee as first parameter (instance != static)
-		Value callee = iie.getBase();
+		Local callee = (Local) iie.getBase();
 		Register calleeRegister = regAlloc.asLocal(callee);
 		argumentRegs.add(0, calleeRegister);
 		return argumentRegs;
@@ -265,7 +267,8 @@ public class ExprVisitor implements ExprSwitch {
         stmtV.addInsn(buildInvokeInsn("INVOKE_STATIC", method, arguments), origStmt);
 	}
 	
-	private Insn buildCalculatingBinaryInsn(String binaryOperation, Value firstOperand, Value secondOperand) {
+	private Insn buildCalculatingBinaryInsn(final String binaryOperation,
+			Value firstOperand, Value secondOperand) {
 		/*
 		 * it is assumed (but not enforced!) that the types of firstOperand, secondOperand and destinationRegister are compatible
 		 */
@@ -286,6 +289,12 @@ public class ExprVisitor implements ExprSwitch {
 			}
 			// constant is too big, so use it as second op and build normally
 		}
+		
+		// Double-check that we are not carrying out any arithmetic operations
+		// on non-primitive values
+		if (!(secondOperand.getType() instanceof PrimType))
+			throw new RuntimeException("Invalid value type for primitibe operation");
+		
 		Register secondOpReg = regAlloc.asImmediate(secondOperand, constantV);
 		// use special "/2addr"-opcodes if destination equals first op
 		if (destinationReg.getNumber() == firstOpReg.getNumber()) {
@@ -302,7 +311,7 @@ public class ExprVisitor implements ExprSwitch {
 		return typeString;
 	}
 
-	private Insn build2AddrBinaryInsn(String binaryOperation, Register secondOpReg) {
+	private Insn build2AddrBinaryInsn(final String binaryOperation, Register secondOpReg) {
 		String localTypeString = destinationReg.getTypeString();
 		localTypeString = fixIntTypeString(localTypeString);
 		Opcode opc = Opcode.valueOf(binaryOperation + "_" + localTypeString.toUpperCase() + "_2ADDR");

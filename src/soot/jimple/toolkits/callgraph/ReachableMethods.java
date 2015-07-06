@@ -63,11 +63,11 @@ public class ReachableMethods
      * that have become reachable since the last call. */
     public void update() {
         while(edgeSource.hasNext()) {
-            Edge e = (Edge) edgeSource.next();
+            Edge e = edgeSource.next();
             if( set.contains( e.getSrc() ) ) addMethod( e.getTgt() );
         }
         while(unprocessedMethods.hasNext()) {
-            MethodOrMethodContext m = (MethodOrMethodContext) unprocessedMethods.next();
+            MethodOrMethodContext m = unprocessedMethods.next();
             Iterator<Edge> targets = cg.edgesOutOf( m );
             if( filter != null ) targets = filter.wrap( targets );
             addMethods( new Targets( targets ) );

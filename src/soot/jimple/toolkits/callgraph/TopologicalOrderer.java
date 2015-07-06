@@ -35,13 +35,14 @@ public class TopologicalOrderer
 {
     CallGraph cg;
     List<SootMethod> order = new ArrayList<SootMethod>();
-    NumberedSet visited = new NumberedSet( Scene.v().getMethodNumberer() );
+    NumberedSet<SootMethod> visited = new NumberedSet<SootMethod>( Scene.v().getMethodNumberer() );
+    
     public TopologicalOrderer( CallGraph cg ) {
         this.cg = cg;
     }
 
     public void go() {
-        Iterator methods = cg.sourceMethods();
+        Iterator<MethodOrMethodContext> methods = cg.sourceMethods();
         while( methods.hasNext() ) {
             SootMethod m = (SootMethod) methods.next();
             dfsVisit( m );
@@ -51,7 +52,7 @@ public class TopologicalOrderer
     private void dfsVisit( SootMethod m ) {
         if( visited.contains( m ) ) return;
         visited.add( m );
-        Iterator targets = new Targets( cg.edgesOutOf(m) );
+        Iterator<MethodOrMethodContext> targets = new Targets( cg.edgesOutOf(m) );
         while( targets.hasNext() ) {
             SootMethod target = (SootMethod) targets.next();
             dfsVisit( target );

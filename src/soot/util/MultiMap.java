@@ -42,4 +42,10 @@ public interface MultiMap<K,V> {
     public Set<V> values();
     public boolean equals( Object o );
     public int hashCode();
+    
+    /**
+     * Gets the number of keys in this MultiMap
+     * @return The number of keys in this MultiMap
+     */
+    public int size();
 }
