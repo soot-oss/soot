@@ -89,9 +89,7 @@ public class RegisterAllocator {
 	AtomicInteger doubleI = new AtomicInteger(0);
 	AtomicInteger stringI = new AtomicInteger(0);
 	
-	private Register asConstant(Value v, ConstantVisitor constantV) {
-		Constant c = (Constant) v;
-		
+	private Register asConstant(Constant c, ConstantVisitor constantV) {
 		Register constantRegister = null;
 		
 		List<Register> rArray = null;
@@ -150,7 +148,7 @@ public class RegisterAllocator {
 		return localToLastRegNum;
 	}
 	
-	public Register asLocal(Value v) {
+	public Register asLocal(Local v) {
 		Local l = (Local) v;
 		String localName = l.getName();
 		Register localRegister;
@@ -215,9 +213,9 @@ public class RegisterAllocator {
 
 	public Register asImmediate(Value v, ConstantVisitor constantV) {
 		if (v instanceof Constant) {
-			 return asConstant(v, constantV);
+			 return asConstant((Constant) v, constantV);
 		} else if (v instanceof Local) {
-			return asLocal(v);
+			return asLocal((Local) v);
 		} else {
 			throw new RuntimeException("expected Immediate (Constant or Local), but was: " + v.getClass());
 		}
