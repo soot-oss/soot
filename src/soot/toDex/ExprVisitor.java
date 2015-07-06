@@ -13,6 +13,7 @@ import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.IntegerType;
+import soot.Local;
 import soot.LongType;
 import soot.NullType;
 import soot.PrimType;
@@ -221,7 +222,7 @@ public class ExprVisitor implements ExprSwitch {
 		constantV.setOrigStmt(origStmt);
 		List<Register> argumentRegs = getInvokeArgumentRegs(iie);
 		// always add reference to callee as first parameter (instance != static)
-		Value callee = iie.getBase();
+		Local callee = (Local) iie.getBase();
 		Register calleeRegister = regAlloc.asLocal(callee);
 		argumentRegs.add(0, calleeRegister);
 		return argumentRegs;

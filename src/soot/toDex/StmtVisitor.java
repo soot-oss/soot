@@ -360,7 +360,9 @@ public class StmtVisitor implements StmtSwitch {
 		if (!(lhs instanceof Local)) {
 			throw new Error("left-hand side of AssignStmt is not a Local: " + lhs.getClass());
 		}
-		Register lhsReg = regAlloc.asLocal(lhs);
+		Local lhsLocal = (Local) lhs;
+		
+		Register lhsReg = regAlloc.asLocal(lhsLocal);
 		
 		Value rhs = stmt.getRightOp();
 		if (rhs instanceof Local) {
@@ -370,7 +372,7 @@ public class StmtVisitor implements StmtSwitch {
 			if (lhsName.equals(rhsName)) {
 				return;
 			}
-			Register sourceReg = regAlloc.asLocal(rhs);
+			Register sourceReg = regAlloc.asLocal((Local) rhs);
             addInsn(buildMoveInsn(lhsReg, sourceReg), stmt);
 		} else if (rhs instanceof Constant) {
 			// move rhs constant into the lhs local
@@ -390,7 +392,7 @@ public class StmtVisitor implements StmtSwitch {
 			}
 		}
 
-		this.insnRegisterMap.put(insns.get(insns.size() - 1), LocalRegisterAssignmentInformation.v(lhsReg, (Local)lhs));
+		this.insnRegisterMap.put(insns.get(insns.size() - 1), LocalRegisterAssignmentInformation.v(lhsReg, lhsLocal));
 	}
 
 	private Insn buildGetInsn(ConcreteRef sourceRef, Register destinationReg) {
@@ -450,7 +452,7 @@ public class StmtVisitor implements StmtSwitch {
 	private Insn buildInstanceFieldPutInsn(InstanceFieldRef destRef, Value source) {
 		SootField destSootField = destRef.getField();
 		BuilderFieldReference destField = DexPrinter.toFieldReference(destSootField, belongingFile);
-		Value instance = destRef.getBase();
+		Local instance = (Local) destRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("iput", destField.getType());
@@ -458,7 +460,7 @@ public class StmtVisitor implements StmtSwitch {
 	}
 
 	private Insn buildArrayPutInsn(ArrayRef destRef, Value source) {
-		Value array = destRef.getBase();
+		Local array = (Local) destRef.getBase();
 		Register arrayReg = regAlloc.asLocal(array);
 		Value index = destRef.getIndex();
 		Register indexReg = regAlloc.asImmediate(index, constantV);
@@ -476,7 +478,7 @@ public class StmtVisitor implements StmtSwitch {
 	}
 	
 	private Insn buildInstanceFieldGetInsn(Register destinationReg, InstanceFieldRef sourceRef) {
-		Value instance = sourceRef.getBase();
+		Local instance = (Local) sourceRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
 		SootField sourceSootField = sourceRef.getField();
 		BuilderFieldReference sourceField = DexPrinter.toFieldReference(sourceSootField, belongingFile);
@@ -487,7 +489,7 @@ public class StmtVisitor implements StmtSwitch {
 	private Insn buildArrayGetInsn(Register destinationReg, ArrayRef sourceRef) {
 		Value index = sourceRef.getIndex();
 		Register indexReg = regAlloc.asImmediate(index, constantV);
-		Value array = sourceRef.getBase();
+		Local array = (Local) sourceRef.getBase();
 		Register arrayReg = regAlloc.asLocal(array);
 		String arrayTypeDescriptor = SootToDexUtils.getArrayTypeDescriptor((ArrayType) array.getType());
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("aget", arrayTypeDescriptor);
@@ -570,7 +572,7 @@ public class StmtVisitor implements StmtSwitch {
 
 	@Override
 	public void caseIdentityStmt(IdentityStmt stmt) {
-		Value lhs = stmt.getLeftOp();
+		Local lhs = (Local) stmt.getLeftOp();
 		Value rhs = stmt.getRightOp();
 		if (rhs instanceof CaughtExceptionRef) {
 			// save the caught exception with move-exception
