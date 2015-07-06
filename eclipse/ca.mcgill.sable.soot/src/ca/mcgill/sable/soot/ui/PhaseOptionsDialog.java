@@ -783,6 +783,9 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkempties_as_allocs_widget(), "empties-as-allocs");
 
 		
+		addToEnableGroup("cg", "cg.spark", getcgcg_sparkallocate_params_widget(), "allocate-params");
+
+		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimple_edges_bidirectional_widget(), "simple-edges-bidirectional");
 
 		
@@ -3142,6 +3145,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkempties_as_allocs_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_sparkallocate_params_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_sparkallocate_params_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_sparksimple_edges_bidirectional_widget().getButton().getSelection();
@@ -7806,6 +7819,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getcgcg_sparkempties_as_allocs_widget() {
 		return cgcg_sparkempties_as_allocs_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_sparkallocate_params_widget;
+	
+	private void setcgcg_sparkallocate_params_widget(BooleanOptionWidget widget) {
+		cgcg_sparkallocate_params_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_sparkallocate_params_widget() {
+		return cgcg_sparkallocate_params_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_sparksimple_edges_bidirectional_widget;
@@ -13525,6 +13548,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setcgcg_sparkempties_as_allocs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Treat EMPTY as Alloc", "p", "cg.spark","empties-as-allocs", "\nWhen this option is set to true, Spark treats references to \nEMPTYSET, EMPTYMAP, and EMPTYLIST as allocation sites for \nHashSet, HashMap and LinkedList objects respectively, and \nreferences to Hashtable.emptyIterator as allocation sites for \nHashtable.EmptyIterator. This enables subsequent analyses to \ndifferentiate different uses of Java's immutable empty \ncollections. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.spark"+" "+"allocate-params";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_sparkallocate_params_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Add Alloc nodes for parameter of accessible methods", "p", "cg.spark","allocate-params", "\nAdd Alloc nodes for parameter of accessible methods. For any \nParameter allocations for any subtype will be added.", defaultBool)));
 		
 		
 		

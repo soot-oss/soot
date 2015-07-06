@@ -1300,6 +1300,12 @@ public class AntTask extends MatchingTask {
             addArg("empties-as-allocs:"+(arg?"true":"false"));
           }
       
+          public void setallocate_params(boolean arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("allocate-params:"+(arg?"true":"false"));
+          }
+      
           public void setsimple_edges_bidirectional(boolean arg) {
             addArg("-p");
             addArg("cg.spark");
