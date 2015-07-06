@@ -1056,7 +1056,7 @@ public class DexPrinter {
 		
 		MethodImplementationBuilder builder = new MethodImplementationBuilder(registerCount);
 		LabelAssigner labelAssinger = new LabelAssigner(builder);
-		List<BuilderInstruction> instructions = stmtV.getRealInsns(labelAssinger); 
+		List<BuilderInstruction> instructions = stmtV.getRealInsns(labelAssinger);
 		
 		fixLongJumps(instructions, labelAssinger, stmtV);
 		
@@ -1132,11 +1132,19 @@ public class DexPrinter {
         
         return builder.getMethodImplementation();
 	}
-
+	
+	/**
+	 * Fixes long jumps that exceed the maximum distance for the respective jump
+	 * type
+	 * @param instructions The list of generated dalvik instructions
+	 * @param labelAssigner The label assigner that maps statements to labels
+	 * @param stmtV The statement visitor used to produce the dalvik instructions
+	 */
 	private void fixLongJumps(List<BuilderInstruction> instructions,
 			LabelAssigner labelAssigner, StmtVisitor stmtV) {
-		boolean hasChanged = true;
-		l0 : while (hasChanged) {
+		boolean hasChanged;
+		l0 : do {
+			// Look for changes anew every time
 			hasChanged = false;
 			
 			// Build a mapping between labels and offsets
@@ -1177,7 +1185,7 @@ public class DexPrinter {
 	   				}
 	   			}
 	   		}
-		}
+		} while (hasChanged);
 	}
 	
 	/**
@@ -1210,13 +1218,22 @@ public class DexPrinter {
 		if (distance > offsetInsn.getMaxJumpOffset())
 			newJumpIdx = jumpInsPos + sign;
 		
-		// There must be a statement at the instruction after the jump target
-		while (stmtV.getStmtForInstruction(instructions.get(newJumpIdx)) == null) {
-			 newJumpIdx += sign;
-			 if (newJumpIdx < 0 || newJumpIdx >= instructions.size())
-				 throw new RuntimeException("No position for inserting intermediate "
-						 + "jump instruction found");
-		}
+		// There must be a statement at the instruction after the jump target.
+		// This statement must not appear at an earlier statement as the jump
+		// label may otherwise be attached to the wrong statement
+		do {
+			Stmt newStmt = stmtV.getStmtForInstruction(instructions.get(newJumpIdx));
+			Stmt prevStmt = newJumpIdx > 0 ? stmtV.getStmtForInstruction(instructions.get(newJumpIdx - 1)) : null;
+			
+			if (newStmt == null || newStmt == prevStmt) {
+				newJumpIdx += sign;
+				if (newJumpIdx < 0 || newJumpIdx >= instructions.size())
+					throw new RuntimeException("No position for inserting intermediate "
+							+ "jump instruction found");
+			}
+			else
+				break;
+		} while (true);
 		
 		// Create a jump instruction from the middle to the end
 		NopStmt nop = Jimple.v().newNopStmt();
@@ -1235,8 +1252,9 @@ public class DexPrinter {
 		// Jump from the original instruction to the new one in the middle
 		offsetInsn.setTarget(nop);
 		BuilderInstruction replacementJumpInstruction = offsetInsn.getRealInsn(labelAssigner);
+		assert instructions.get(jumpInsPos) == originalJumpInstruction;
+		instructions.remove(jumpInsPos);
 		instructions.add(jumpInsPos, replacementJumpInstruction);
-		instructions.remove(originalJumpInstruction);
 		stmtV.fakeNewInsn(stmtV.getStmtForInstruction(originalJumpInstruction),
 				originalJumpInsn, replacementJumpInstruction);
 		
@@ -1248,6 +1266,7 @@ public class DexPrinter {
 		jumpAround.setTarget(afterNewJump);
 		BuilderInstruction jumpAroundInstruction = jumpAround.getRealInsn(labelAssigner);
 		instructions.add(newJumpIdx, jumpAroundInstruction);
+		stmtV.fakeNewInsn(Jimple.v().newNopStmt(), jumpAround, jumpAroundInstruction);
 	}
 
 	private int getDistanceBetween(List<BuilderInstruction> instructions,
