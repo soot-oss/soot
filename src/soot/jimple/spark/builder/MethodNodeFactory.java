@@ -126,6 +126,14 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 		is.getRightOp().apply( MethodNodeFactory.this );
 		Node src = getNode();
 		mpag.addInternalEdge( src, dest );
+		
+	    if(pag.getOpts().allocate_params() && (method.isPublic() || method.isProtected()) 
+	    		&& is.getRightOp() instanceof ParameterRef 
+	    		&& is.getLeftOp().getType() instanceof RefType) {
+	    	RefType leftType = (RefType) is.getLeftOp().getType();
+	    	Node alloc = pag.makeAllocNode((ParameterRef) is.getRightOp(), AnySubType.v(leftType), method);
+	    	mpag.addInternalEdge(alloc, src);
+	    }	    
 	    }
 	    final public void caseThrowStmt(ThrowStmt ts) {
 		ts.getOp().apply( MethodNodeFactory.this );
