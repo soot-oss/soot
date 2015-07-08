@@ -106,8 +106,6 @@ public class ExprVisitor implements ExprSwitch {
 		this.stmtV = stmtV;
 		this.constantV = constantV;
 		this.regAlloc = regAlloc;
-
-		regAlloc.resetImmediateConstantsPool();
 	}
 	
 	public void setDestinationReg(Register destinationReg) {
