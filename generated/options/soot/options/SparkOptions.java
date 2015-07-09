@@ -199,6 +199,18 @@ public class SparkOptions
         return soot.PhaseOptions.getBoolean( options, "empties-as-allocs" );
     }
     
+    /** Add Alloc nodes for parameter of accessible methods --
+    
+     * Add Alloc nodes for parameter of accessible methods. For any 
+     * Parameter allocations for any subtype will be added..
+    
+     * Add Alloc nodes for parameter of accessible methods. For any 
+     * Parameter allocations for any subtype will be added.
+     */
+    public boolean allocate_params() {
+        return soot.PhaseOptions.getBoolean( options, "allocate-params" );
+    }
+    
     /** Simple Edges Bidirectional --
     
      * Equality-based analysis between variable nodes.
