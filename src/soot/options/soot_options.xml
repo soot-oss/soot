@@ -2081,6 +2081,13 @@ When this option is set to true, Spark treats references to <code>EMPTYSET</code
         </long_desc>
 						</boolopt>
 						<boolopt>
+							<name>Add Alloc nodes for parameter of accessible methods</name>
+							<alias>allocate-params</alias>
+							<default>false</default>
+                             <short_desc>Add Alloc nodes for parameter of accessible methods. For any Parameter allocations for any subtype will be added.</short_desc>
+							<long_desc>Add Alloc nodes for parameter of accessible methods. For any Parameter allocations for any subtype will be added.</long_desc>
+						</boolopt>
+						<boolopt>
 							<name>Simple Edges Bidirectional</name>
 							<alias>simple-edges-bidirectional</alias>
 							<default>false</default>

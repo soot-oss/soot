@@ -411,6 +411,15 @@ public class DexAnnotation {
                 	String outerClass = ((TypeEncodedValue) elem.getValue()).getValue();
                 	outerClass = Util.dottedClassName(outerClass);
                 	deps.typesToSignature.add(RefType.v(outerClass));
+                	
+                	// If this APK specifies an invalid outer class, we try to repair it
+                	if (outerClass.equals(clazz.getName())) {
+                		if (outerClass.contains("$")) {
+                			System.out.println("Fixing circular outer class " + outerClass + "...");
+                			outerClass = outerClass.substring(0, outerClass.lastIndexOf("$"));
+                		}
+                	}
+                	
                 	clazz.setOuterClass(SootResolver.v().makeClassRef(outerClass));
                 	assert clazz.getOuterClass() != clazz;
                 }

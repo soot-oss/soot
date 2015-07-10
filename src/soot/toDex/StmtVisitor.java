@@ -132,7 +132,7 @@ public class StmtVisitor implements StmtSwitch {
 		exprV = new ExprVisitor(this, constantV, regAlloc, belongingFile);
 		insns = new ArrayList<Insn>();
 		switchPayloads = new ArrayList<SwitchPayload>();
-	}
+    }
 	
 	protected void setLastReturnTypeDescriptor(String typeDescriptor) {
 		lastReturnTypeDescriptor = typeDescriptor;
@@ -182,7 +182,10 @@ public class StmtVisitor implements StmtSwitch {
 	}
 	
 	protected void beginNewStmt(Stmt s) {
-        addInsn(new AddressInsn(s), null);
+		// It's a new statement, so we can re-use registers
+		regAlloc.resetImmediateConstantsPool();
+		
+		addInsn(new AddressInsn(s), null);
 	}
 	
 	public void finalizeInstructions() {
