@@ -124,10 +124,16 @@ public enum NewValidator implements BodyValidator {
 		{
 			//At least this path does not contain a <init>-method,
 			//as we reach a statement we have already seen.
-			exception.add(new ValidationException(
-					start,
-					errorMsg));
-			return false;
+			//However, if we have a loop like this
+			//x = new X();
+			//label2:
+			//...
+			//if $r0 < 5 goto label2
+			//specialinvoke x.<X: void <init>>();
+			//everything is fine, although we have seen the statement
+			//after label2 already.
+			//Thus we return true, as we have not yet seen a usage of it.
+			return true;
 		}
 		
 		boolean creatingAlias = false;
