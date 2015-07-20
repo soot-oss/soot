@@ -116,9 +116,14 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 					return res;
 				}
 			});
-
+	
 	public JimpleBasedInterproceduralCFG() {
-		cg = Scene.v().getCallGraph();		
+		this(true);
+	}
+	
+	public JimpleBasedInterproceduralCFG(boolean enableExceptions) {
+		super(enableExceptions);
+		cg = Scene.v().getCallGraph();
 		initializeUnitToOwner();
 	}
 
