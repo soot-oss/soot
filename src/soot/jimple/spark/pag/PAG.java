@@ -26,6 +26,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import soot.AnyPossibleSubType;
+import soot.AnySubType;
 import soot.Context;
 import soot.FastHierarchy;
 import soot.G;
@@ -531,6 +533,21 @@ public class PAG implements PointsToAnalysis {
         if( ret == null ) {
             valToGlobalVarNode.put( value, 
                     ret = new GlobalVarNode( this, value, type ) );
+            if(opts.library() != SparkOptions.library_disabled && type instanceof RefType) {
+            	RefType rt = (RefType) type;
+            	if (value instanceof SootField) {
+            		SootField sf = (SootField) value;
+            		if (sf.isPublic() || sf.isProtected())
+    				if (opts.library() == SparkOptions.library_any_subtype) {
+    					Node alloc = makeAllocNode(value, AnySubType.v(rt), null);
+    					addEdge(alloc, ret);
+    				} else if (opts.library() == SparkOptions.library_name_resolution) {
+    					Node alloc = makeAllocNode(value, AnySubType.v(rt), null);
+    					addEdge(alloc, ret);
+    				}
+            	}
+            	
+            }
             addNodeTag( ret, null );
         } else if( !( ret.getType().equals( type ) ) ) {
             throw new RuntimeException( "Value "+value+" of type "+type+
