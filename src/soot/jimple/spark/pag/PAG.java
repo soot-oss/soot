@@ -542,7 +542,7 @@ public class PAG implements PointsToAnalysis {
     					Node alloc = makeAllocNode(value, AnySubType.v(rt), null);
     					addEdge(alloc, ret);
     				} else if (opts.library() == SparkOptions.library_name_resolution) {
-    					Node alloc = makeAllocNode(value, AnySubType.v(rt), null);
+    					Node alloc = makeAllocNode(value, AnyPossibleSubType.v(rt), null);
     					addEdge(alloc, ret);
     				}
             	}
