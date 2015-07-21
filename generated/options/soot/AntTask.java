@@ -1300,12 +1300,6 @@ public class AntTask extends MatchingTask {
             addArg("empties-as-allocs:"+(arg?"true":"false"));
           }
       
-          public void setallocate_params(boolean arg) {
-            addArg("-p");
-            addArg("cg.spark");
-            addArg("allocate-params:"+(arg?"true":"false"));
-          }
-      
           public void setsimple_edges_bidirectional(boolean arg) {
             addArg("-p");
             addArg("cg.spark");
@@ -1424,6 +1418,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg.spark");
             addArg("geom-app-only:"+(arg?"true":"false"));
+          }
+      
+          public void setlibrary(String arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("library:"+arg);
           }
       
           public void setpropagator(String arg) {

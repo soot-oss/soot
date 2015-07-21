@@ -23,6 +23,7 @@ import soot.jimple.*;
 
 import java.util.*;
 
+import soot.toolkits.scalar.Pair;
 import soot.util.*;
 import soot.util.queue.*;
 
@@ -80,6 +81,7 @@ public final class VirtualCalls
     }
 
     private final Map<Type,List<Type>> baseToSubTypes = new HashMap<Type,List<Type>>();
+    private final Map<Pair<Type, NumberedString>, List<Type>> baseToPossibleSubTypes = new HashMap<Pair<Type,NumberedString>, List<Type>>();
 
     public void resolve( Type t, Type declaredType, NumberedString subSig, SootMethod container, ChunkedQueue<SootMethod> targets ) {
         resolve(t, declaredType, null, subSig, container, targets);
@@ -99,6 +101,32 @@ public final class VirtualCalls
         if( t instanceof RefType ) {
             SootMethod target = resolveNonSpecial( (RefType) t, subSig );
             if( target != null ) targets.add( target );
+        } else if( t instanceof AnyPossibleSubType){
+        	RefType base = ((AnyPossibleSubType) t).getBase();
+        	Pair<Type, NumberedString> pair = new Pair<Type, NumberedString>(base, subSig);
+        	List<Type> types = baseToPossibleSubTypes.get(pair);
+        	
+        	if (types != null) {
+        		for(Type st : types) {
+        			resolve( st, declaredType, sigType, subSig, container, targets);
+        		}
+        		return;
+        	}
+        	
+        	baseToPossibleSubTypes.put(pair, types = new ArrayList<Type>());
+        	types.add(base);
+        	
+        	Chain<SootClass> classes = Scene.v().getClasses();
+        	
+        	for(SootClass sc : classes) {
+        		for(SootMethod sm : sc.getMethods()) {
+        			if(sm.isConcrete() && sm.getSubSignature().equals(subSig)) {
+        				resolve(sc.getType(), declaredType, sigType, subSig, container, targets);
+        				types.add(sc.getType());
+        			}
+        		}
+        	}
+        	
         } else if( t instanceof AnySubType ) {
             RefType base = ((AnySubType)t).getBase();
 

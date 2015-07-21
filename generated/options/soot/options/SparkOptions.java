@@ -199,18 +199,6 @@ public class SparkOptions
         return soot.PhaseOptions.getBoolean( options, "empties-as-allocs" );
     }
     
-    /** Add Alloc nodes for parameter of accessible methods --
-    
-     * Add Alloc nodes for parameter of accessible methods. For any 
-     * Parameter allocations for any subtype will be added..
-    
-     * Add Alloc nodes for parameter of accessible methods. For any 
-     * Parameter allocations for any subtype will be added.
-     */
-    public boolean allocate_params() {
-        return soot.PhaseOptions.getBoolean( options, "allocate-params" );
-    }
-    
     /** Simple Edges Bidirectional --
     
      * Equality-based analysis between variable nodes.
@@ -560,6 +548,30 @@ public class SparkOptions
      */
     public String geom_verify_name() {
         return soot.PhaseOptions.getString( options, "geom-verify-name" );
+    }
+    
+    public static final int library_disabled = 1;
+    public static final int library_any_subtype = 2;
+    public static final int library_name_resolution = 3;
+    /** Library --
+    
+     * .
+    
+     * 
+     */
+    public int library() {
+        String s = soot.PhaseOptions.getString( options, "library" );
+        
+        if( s.equalsIgnoreCase( "disabled" ) )
+            return library_disabled;
+        
+        if( s.equalsIgnoreCase( "any-subtype" ) )
+            return library_any_subtype;
+        
+        if( s.equalsIgnoreCase( "name-resolution" ) )
+            return library_name_resolution;
+        
+        throw new RuntimeException( "Invalid value "+s+" of phase option library" );
     }
     
     public static final int propagator_iter = 1;

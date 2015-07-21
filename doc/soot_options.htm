@@ -2176,10 +2176,32 @@ EMPTYLIST as allocation sites for HashSet, HashMap and LinkedList objects respec
         </p>
 </li>
 <li>
-<b>Add Alloc nodes for parameter of accessible methods</b> (allocate-params)
+<b>Library</b> (library)
 		<br>
-			(default value: <span class="value">false</span>)
-		<p>Add Alloc nodes for parameter of accessible methods. For any Parameter allocations for any subtype will be added.</p>
+			(default value: <span class="value">disabled</span>)
+		<p></p>
+<table border="0">
+<th colspan="2">
+					Possible values:
+				</th>
+<tr>
+<td class="value">disabled</td><td>
+									
+								</td>
+</tr>
+<tr>
+<td class="value">any-subtype</td><td>
+									Add Alloc nodes for identities (i.e. parameters, this locals and caught exceptions) of accessible methods. 
+									For any identity an allocation for any subtype will be added.
+								</td>
+</tr>
+<tr>
+<td class="value">name-resolution</td><td>
+									Add Alloc nodes for identities (i.e. parameters, this locals and caught exceptions) of accessible methods. 
+									For any identity an allocation for any possible subtype will be added. 
+								</td>
+</tr>
+</table>
 </li>
 <li>
 <b>Simple Edges Bidirectional</b> (simple-edges-bidirectional)

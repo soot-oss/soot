@@ -2080,13 +2080,44 @@ When this option is set to true, Spark treats references to <code>EMPTYSET</code
 <code>EMPTYLIST</code> as allocation sites for <code>HashSet</code>, <code>HashMap</code> and <code>LinkedList</code> objects respectively, and references to <code>Hashtable.emptyIterator</code> as allocation sites for <code>Hashtable.EmptyIterator</code>. This enables subsequent analyses to differentiate different uses of Java's immutable empty collections.
         </long_desc>
 						</boolopt>
-						<boolopt>
-							<name>Add Alloc nodes for parameter of accessible methods</name>
-							<alias>allocate-params</alias>
-							<default>false</default>
-                             <short_desc>Add Alloc nodes for parameter of accessible methods. For any Parameter allocations for any subtype will be added.</short_desc>
-							<long_desc>Add Alloc nodes for parameter of accessible methods. For any Parameter allocations for any subtype will be added.</long_desc>
-						</boolopt>
+						<multiopt>
+							<name>Library</name>
+							<alias>library</alias>
+							<value>
+								<name>Disabled</name>
+								<alias>disabled</alias>
+								<default/>
+								<short_desc>
+								</short_desc>
+								<long_desc>
+									
+								</long_desc>
+							</value>
+							<value>
+								<name>AnySubtype</name>
+								<alias>any-subtype</alias>
+								<short_desc>
+									Add Alloc nodes for identities (i.e. parameters, this locals and caught exceptions) of accessible methods. 
+									For any identity an allocation for any subtype will be added.
+								</short_desc>
+								<long_desc>
+									Add Alloc nodes for identities (i.e. parameters, this locals and caught exceptions) of accessible methods. 
+									For any identity an allocation for any subtype will be added.
+								</long_desc>
+							</value>
+							<value>
+								<name>By Name resolution</name>
+								<alias>name-resolution</alias>
+								<short_desc>
+									Add Alloc nodes for identities (i.e. parameters, this locals and caught exceptions) of accessible methods. 
+									For any identity an allocation for any possible subtype will be added.
+								</short_desc>
+								<long_desc>
+									Add Alloc nodes for identities (i.e. parameters, this locals and caught exceptions) of accessible methods. 
+									For any identity an allocation for any possible subtype will be added. 
+								</long_desc>
+							</value>
+						</multiopt>
 						<boolopt>
 							<name>Simple Edges Bidirectional</name>
 							<alias>simple-edges-bidirectional</alias>

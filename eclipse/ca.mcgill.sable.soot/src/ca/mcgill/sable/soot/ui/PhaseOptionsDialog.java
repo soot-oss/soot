@@ -783,7 +783,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkempties_as_allocs_widget(), "empties-as-allocs");
 
 		
-		addToEnableGroup("cg", "cg.spark", getcgcg_sparkallocate_params_widget(), "allocate-params");
+		addToEnableGroup("cg", "cg.spark", getcgcg_sparklibrary_widget(), "library");
 
 		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimple_edges_bidirectional_widget(), "simple-edges-bidirectional");
@@ -3147,16 +3147,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getcgcg_sparkempties_as_allocs_widget().getAlias(), new Boolean(boolRes));
 		}
 		
-		boolRes = getcgcg_sparkallocate_params_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_sparkallocate_params_widget().getAlias(), new Boolean(boolRes));
-		}
-		
 		boolRes = getcgcg_sparksimple_edges_bidirectional_widget().getButton().getSelection();
 		
 		
@@ -3175,6 +3165,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkon_fly_cg_widget().getAlias(), new Boolean(boolRes));
+		}
+		 
+		stringRes = getcgcg_sparklibrary_widget().getSelectedAlias();
+
+		
+		defStringRes = "disabled";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getcgcg_sparklibrary_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getcgcg_sparksimplify_offline_widget().getButton().getSelection();
@@ -7821,16 +7821,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return cgcg_sparkempties_as_allocs_widget;
 	}	
 	
-	private BooleanOptionWidget cgcg_sparkallocate_params_widget;
-	
-	private void setcgcg_sparkallocate_params_widget(BooleanOptionWidget widget) {
-		cgcg_sparkallocate_params_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_sparkallocate_params_widget() {
-		return cgcg_sparkallocate_params_widget;
-	}	
-	
 	private BooleanOptionWidget cgcg_sparksimple_edges_bidirectional_widget;
 	
 	private void setcgcg_sparksimple_edges_bidirectional_widget(BooleanOptionWidget widget) {
@@ -7850,6 +7840,18 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	public BooleanOptionWidget getcgcg_sparkon_fly_cg_widget() {
 		return cgcg_sparkon_fly_cg_widget;
 	}	
+	
+	
+	private MultiOptionWidget cgcg_sparklibrary_widget;
+	
+	private void setcgcg_sparklibrary_widget(MultiOptionWidget widget) {
+		cgcg_sparklibrary_widget = widget;
+	}
+	
+	public MultiOptionWidget getcgcg_sparklibrary_widget() {
+		return cgcg_sparklibrary_widget;
+	}	
+	
 	
 	private BooleanOptionWidget cgcg_sparksimplify_offline_widget;
 	
@@ -13551,22 +13553,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		defKey = "p"+" "+"cg.spark"+" "+"allocate-params";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_sparkallocate_params_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Add Alloc nodes for parameter of accessible methods", "p", "cg.spark","allocate-params", "\nAdd Alloc nodes for parameter of accessible methods. For any \nParameter allocations for any subtype will be added.", defaultBool)));
-		
-		
-		
 		defKey = "p"+" "+"cg.spark"+" "+"simple-edges-bidirectional";
 		defKey = defKey.trim();
 
@@ -13596,6 +13582,42 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setcgcg_sparkon_fly_cg_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.spark","on-fly-cg", "\nWhen this option is set to true, the call graph is computed \non-the-fly as points-to information is computed. Otherwise, an \ninitial CHA approximation to the call graph is used. ", defaultBool)));
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Disabled",
+		"disabled",
+		"\n",
+		
+		true),
+		
+		new OptionData("AnySubtype",
+		"any-subtype",
+		"\n									Add Alloc nodes for identities (i.e. parameters, this \nlocals and caught exceptions) of accessible methods. \n									For any identity an allocation for any subtype will be \nadded. 								",
+		
+		false),
+		
+		new OptionData("By Name resolution",
+		"name-resolution",
+		"\n									Add Alloc nodes for identities (i.e. parameters, this \nlocals and caught exceptions) of accessible methods. \n									For any identity an allocation for any possible subtype \nwill be added. 								",
+		
+		false),
+		
+		};
+		
+										
+		setcgcg_sparklibrary_widget(new MultiOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, data, new OptionData("Library", "p", "cg.spark","library", "\n")));
+		
+		defKey = "p"+" "+"cg.spark"+" "+"library";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcgcg_sparklibrary_widget().setDef(defaultString);
+		}
 		
 		
 

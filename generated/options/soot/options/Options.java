@@ -2030,7 +2030,13 @@ public class Options extends OptionsBase {
                 +padOpt( "string-constants (false)", "Propagate all string constants, not just class names" )
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
                 +padOpt( "empties-as-allocs (false)", "Treat singletons for empty sets etc. as allocation sites" )
-                +padOpt( "allocate-params (false)", "Add Alloc nodes for parameter of accessible methods. For any Parameter allocations for any subtype will be added." )
+                +padOpt( "library", "" )
+                +padVal( "disabled (default)", "" )
+                
+                +padVal( "any-subtype", " 									Add Alloc nodes for identities (i.e. parameters, this locals and caught exceptions) of accessible methods.  									For any identity an allocation for any subtype will be added. 								" )
+                
+                +padVal( "name-resolution", " 									Add Alloc nodes for identities (i.e. parameters, this locals and caught exceptions) of accessible methods.  									For any identity an allocation for any possible subtype will be added. 								" )
+                
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
                 +padOpt( "on-fly-cg (true)", "Build call graph as receiver types become known" )
                 +padOpt( "simplify-offline (false)", "Collapse single-entry subgraphs of the PAG" )
@@ -2979,7 +2985,7 @@ public class Options extends OptionsBase {
                 +"string-constants "
                 +"simulate-natives "
                 +"empties-as-allocs "
-                +"allocate-params "
+                +"library "
                 +"simple-edges-bidirectional "
                 +"on-fly-cg "
                 +"simplify-offline "
@@ -3589,7 +3595,7 @@ public class Options extends OptionsBase {
               +"string-constants:false "
               +"simulate-natives:true "
               +"empties-as-allocs:false "
-              +"allocate-params:false "
+              +"library:disabled "
               +"simple-edges-bidirectional:false "
               +"on-fly-cg:true "
               +"simplify-offline:false "

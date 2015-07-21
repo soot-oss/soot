@@ -25,27 +25,47 @@
 
 
 
+
+
 package soot;
 
-/** Describes a switch on internal types. */
-interface ITypeSwitch extends soot.util.Switch
+import soot.util.*;
+
+
+@SuppressWarnings("serial")
+public class AnyPossibleSubType extends RefLikeType
 {
-    void caseArrayType(ArrayType t);
-    void caseBooleanType(BooleanType t);
-    void caseByteType(ByteType t);
-    void caseCharType(CharType t);
-    void caseDoubleType(DoubleType t);
-    void caseFloatType(FloatType t);
-    void caseIntType(IntType t);
-    void caseLongType(LongType t);
-    void caseRefType(RefType t);
-    void caseShortType(ShortType t);
-    void caseStmtAddressType(StmtAddressType t);
-    void caseUnknownType(UnknownType t);
-    void caseVoidType(VoidType t);
-    void caseAnySubType(AnySubType t);
-    void caseAnyPossibleSubType(AnyPossibleSubType t);
-    void caseNullType(NullType t);
-    void caseErroneousType(ErroneousType t);
-    void caseDefault(Type t);
+	private RefType base;
+    private AnyPossibleSubType( RefType base )
+    {
+        this.base = base;
+    }
+
+    public static AnyPossibleSubType v( RefType base ) {
+        if( base.getAnyPossibleSubType() == null ) {
+            base.setAnyPossibleSubType( new AnyPossibleSubType( base ) );
+        }
+        return base.getAnyPossibleSubType();
+    }
+    
+    @Override
+    public String toString()
+    {
+        return "Any_implementing_type_of_"+base;
+    }
+
+    @Override
+    public void apply(Switch sw)
+    {
+        ((TypeSwitch) sw).caseAnyPossibleSubType(this);
+    }
+
+    @Override
+    public Type getArrayElementType() {
+    	throw new RuntimeException( "Attempt to get array base type of a non-array" );  
+    }
+    
+    public RefType getBase() { return base; }
+    
+    public void setBase( RefType base ) { this.base = base; }
 }
