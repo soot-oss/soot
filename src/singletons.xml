@@ -97,6 +97,7 @@
   <class>soot.dava.toolkits.base.AST.TryContentsFinder</class>
   <class>soot.jimple.toolkits.typing.TypeAssigner</class>
   <class>soot.jimple.toolkits.scalar.UnconditionalBranchFolder</class>
+  <class>soot.jimple.toolkits.scalar.ConstantCastEliminator</class>
   <class>soot.UnknownType</class>
   <class>soot.jimple.toolkits.scalar.UnreachableCodeEliminator</class>
   <class>soot.toolkits.scalar.UnusedLocalEliminator</class>
