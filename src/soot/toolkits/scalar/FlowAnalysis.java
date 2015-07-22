@@ -454,12 +454,12 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 		if (e.in.length == 1) {
 			// copy the reference only
 			Entry<N, A> o = e.in[0];
-			e.inFlow = getFlow(o.data, e.data).getFlow(o);
+			e.inFlow = (o.inFlow == o.outFlow) ? o.outFlow : getFlow(o.data, e.data).getFlow(o);
 		} else {
 			A in = newInitialFlow();
 			boolean copy = true;
 			for (Entry<N, A> o : e.in) {
-				A flow = getFlow(o.data, e.data).getFlow(o);
+				A flow = (o.inFlow == o.outFlow) ? o.outFlow : getFlow(o.data, e.data).getFlow(o);
 				if (null == flow)
 					continue;
 
