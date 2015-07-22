@@ -51,6 +51,23 @@ import soot.util.PriorityQueue;
  * corresponding flow analysis.
  */
 public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
+	public enum Flow {
+		IN {
+			@Override
+			public <N, A> A getFlow(Entry<N, A> e) {
+				return e.inFlow;
+			}
+		},
+		OUT {
+			@Override
+			public <N, A> A getFlow(Entry<N, A> e) {
+				return e.outFlow;
+			}
+		};
+
+		abstract public <N, A> A getFlow(Entry<N, A> e);
+	}
+	
 	static class Entry<D, F> implements Numberable {
 		final D data;
 		int number;
@@ -418,7 +435,48 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 	protected boolean omissible(N n) {
 		return false;
 	}
+	
+	/**
+	 * You can specify which flow set you would like to use of node {@code from}
+	 * @param from
+	 * @param mergeNode
+	 * @return Flow.OUT
+	 */
+	protected Flow getFlow(N from, N mergeNode) {
+		return Flow.OUT;
+	}
+	
+	private void meetFlows(Entry<N, A> e) {
+		assert e.in.length >= 1;
 
+		boolean isIdentity = (e.inFlow == e.outFlow);
+
+		if (e.in.length == 1) {
+			// copy the reference only
+			Entry<N, A> o = e.in[0];
+			e.inFlow = getFlow(o.data, e.data).getFlow(o);
+		} else {
+			A in = newInitialFlow();
+			boolean copy = true;
+			for (Entry<N, A> o : e.in) {
+				A flow = getFlow(o.data, e.data).getFlow(o);
+				if (null == flow)
+					continue;
+
+				if (copy) {
+					copy = false;
+					copy(flow, in);
+				} else {
+					mergeInto(e.data, in, flow);
+				}
+			}
+			e.inFlow = in;
+		}
+
+		if ((null != e.outFlow) && isIdentity)
+			e.outFlow = e.inFlow;
+	}
+	
 	final int doAnalysis(GraphView gv, InteractionFlowHandler ifh, Map<N, A> inFlow, Map<N, A> outFlow) {
 		assert gv != null;
 		assert ifh != null;
@@ -437,13 +495,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 			if (e == null)
 				return numComputations;
 
-			Entry<N, A>[] in = e.in;
-			if (in.length > 1) {
-				copy(in[0].outFlow, e.inFlow);
-				for (int i = 1; i < in.length; i++) {
-					mergeInto(e.data, e.inFlow, in[i].outFlow);
-				}
-			}
+			meetFlows(e);
 
 			// Compute beforeFlow and store it.
 			ifh.handleFlowIn(this, e.data);
