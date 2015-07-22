@@ -88,9 +88,7 @@ public class Main {
     private void processCmdLine(String[] args) {
 
         if (!Options.v().parse(args))
-            throw new CompilationDeathException(
-                CompilationDeathException.COMPILATION_ABORTED,
-                "Option parse error");
+            throw new OptionsParseException("Option parse error");
 
         if( PackManager.v().onlyStandardPacks() ) {
             for (Pack pack : PackManager.v().allPacks()) {
@@ -150,6 +148,8 @@ public class Main {
     public static void main(String[] args) {
         try {
             Main.v().run(args);
+        } catch ( OptionsParseException e ) {
+        	// error message has already been printed
         } catch( StackOverflowError e ) {
             G.v().out.println( "Soot has run out of stack memory." );
             G.v().out.println( "To allocate more stack memory to Soot, use the -Xss switch to Java." );
