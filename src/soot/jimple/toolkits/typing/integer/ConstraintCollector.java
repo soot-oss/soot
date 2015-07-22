@@ -437,7 +437,7 @@ class ConstraintCollector extends AbstractStmtSwitch {
 			right = resolver.INT;
 		} else if (r instanceof NegExpr) {
 			NegExpr ne = (NegExpr) r;
-
+			
 			if (ne.getOp() instanceof Local) {
 				Local local = (Local) ne.getOp();
 

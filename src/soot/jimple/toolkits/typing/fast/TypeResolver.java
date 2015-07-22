@@ -144,7 +144,7 @@ public class TypeResolver
 	}
 	
 	public void inferTypes()
-	{
+	{		
 		AugEvalFunction ef = new AugEvalFunction(this.jb);
 		BytecodeHierarchy bh = new BytecodeHierarchy();
 		Collection<Typing> sigma = this.applyAssignmentConstraints(
