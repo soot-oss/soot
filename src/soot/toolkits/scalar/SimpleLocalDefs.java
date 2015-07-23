@@ -18,24 +18,30 @@
 
 package soot.toolkits.scalar;
 
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import soot.IdentityUnit;
 import soot.Local;
 import soot.Timers;
+import soot.Trap;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.ExceptionalGraph;
+import soot.toolkits.graph.ExceptionalGraph.ExceptionDest;
 import soot.toolkits.graph.UnitGraph;
-import static java.util.Collections.singletonList;
-import static java.util.Collections.emptyList;
 
 /**
  * Analysis that provides an implementation of the LocalDefs interface.
@@ -190,7 +196,32 @@ public class SimpleLocalDefs implements LocalDefs {
 			}			
 			return true;
 		}
-		
+
+		@Override
+		protected Flow getFlow(Unit from, Unit to) {
+			//QND
+			if (to instanceof IdentityUnit) {
+				if (graph instanceof ExceptionalGraph) {
+					ExceptionalGraph<Unit> g = (ExceptionalGraph<Unit>) graph;
+					if (!g.getExceptionalPredsOf(to).isEmpty()) {
+						// exception handler reached
+						assert g.getUnexceptionalPredsOf(to).isEmpty();
+
+						// look if there is a real exception edge
+						for (ExceptionDest<Unit> exd : g.getExceptionDests(from)) {
+							Trap trap = exd.getTrap();
+							if (null == trap)
+								continue;
+
+							if (trap.getHandlerUnit() == to)
+								return Flow.IN;
+						}
+					}
+				}
+			}
+			return Flow.OUT;
+		}
+
 		@Override
 		protected void flowThrough(FlowBitSet in, Unit unit, FlowBitSet out) {
 			copy(in, out);
