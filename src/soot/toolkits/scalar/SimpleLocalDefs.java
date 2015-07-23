@@ -33,6 +33,7 @@ import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
+import soot.toolkits.graph.ExceptionalGraph;
 import soot.toolkits.graph.UnitGraph;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.emptyList;
@@ -190,7 +191,19 @@ public class SimpleLocalDefs implements LocalDefs {
 			}			
 			return true;
 		}
-		
+
+		@Override
+		protected Flow getFlow(Unit from, Unit to) {
+			//QND
+			if (graph instanceof ExceptionalGraph) {
+				ExceptionalGraph<Unit> g = (ExceptionalGraph<Unit>) graph;
+				// if this edge is an exceptional edge, use the preflow of node from
+				if (g.getExceptionalPredsOf(to).contains(from))
+					return Flow.IN;
+			}
+			return Flow.OUT;
+		}
+
 		@Override
 		protected void flowThrough(FlowBitSet in, Unit unit, FlowBitSet out) {
 			copy(in, out);
