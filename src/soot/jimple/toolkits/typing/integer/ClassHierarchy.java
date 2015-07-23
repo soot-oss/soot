@@ -34,27 +34,32 @@ import java.util.*;
  *
  * <P> This class is primarily used by the TypeResolver class, to optimize its computation.
  **/
-public class ClassHierarchy
-{
-    public ClassHierarchy( Singletons.Global g )
-  {
-    typeNodeMap.put(BooleanType.v(), BOOLEAN);
-    typeNodeMap.put(ByteType.v(), BYTE);
-    typeNodeMap.put(ShortType.v(), SHORT);
-    typeNodeMap.put(CharType.v(), CHAR);
-    typeNodeMap.put(IntType.v(), INT);
-  }
+public class ClassHierarchy {
+	
+	public ClassHierarchy(Singletons.Global g) {
+		typeNodeMap.put(BooleanType.v(), BOOLEAN);
+		typeNodeMap.put(ByteType.v(), BYTE);
+		typeNodeMap.put(ShortType.v(), SHORT);
+		typeNodeMap.put(CharType.v(), CHAR);
+		typeNodeMap.put(IntType.v(), INT);
+	}
 
-    public static ClassHierarchy v() { return G.v().soot_jimple_toolkits_typing_integer_ClassHierarchy(); }
-  public final TypeNode BOOLEAN = new TypeNode(0, BooleanType.v());
-  public final TypeNode BYTE = new TypeNode(1, ByteType.v());
-  public final TypeNode SHORT = new TypeNode(2, ShortType.v());
-  public final TypeNode CHAR = new TypeNode(3, CharType.v());
-  public final TypeNode INT = new TypeNode(4, IntType.v());
-  public final TypeNode TOP = new TypeNode(5, null);
-  public final TypeNode R0_1 = new TypeNode(6, null); 		//eventually becomes boolean
-  public final TypeNode R0_127 = new TypeNode(7, null); 	//eventually becomes byte
-  public final TypeNode R0_32767 = new TypeNode(8, null);	//eventually becomes short 
+	public static ClassHierarchy v() {
+		return G.v().soot_jimple_toolkits_typing_integer_ClassHierarchy();
+	}
+
+	public final TypeNode BOOLEAN = new TypeNode(0, BooleanType.v());
+	public final TypeNode BYTE = new TypeNode(1, ByteType.v());
+	public final TypeNode SHORT = new TypeNode(2, ShortType.v());
+	public final TypeNode CHAR = new TypeNode(3, CharType.v());
+	public final TypeNode INT = new TypeNode(4, IntType.v());
+	public final TypeNode TOP = new TypeNode(5, null);
+	public final TypeNode R0_1 = new TypeNode(6, null); // eventually becomes
+														// boolean
+	public final TypeNode R0_127 = new TypeNode(7, null); // eventually becomes
+															// byte
+	public final TypeNode R0_32767 = new TypeNode(8, null); // eventually
+															// becomes short
 
   private final boolean[][] ancestors_1 =
   {
@@ -164,70 +169,62 @@ public class ClassHierarchy
   private final Map<Type,TypeNode> typeNodeMap = new HashMap<Type,TypeNode>();
   
   /** Get the type node for the given type. **/
-  public TypeNode typeNode(Type type)
-  {
-    if(type == null || !(type instanceof PrimType || type instanceof RefType))
-      {
-	throw new InternalTypingException(type);
-      }
-    
-    TypeNode typeNode = typeNodeMap.get(type);
+	public TypeNode typeNode(Type type) {
+		if (type == null
+				|| !(type instanceof PrimType || type instanceof RefType)) {
+			throw new InternalTypingException(type);
+		}
 
-    if(typeNode == null)
-      {
-	throw new InternalTypingException();
-      }
+		TypeNode typeNode = typeNodeMap.get(type);
 
-    return typeNode;
-  }
+		if (typeNode == null) {
+			throw new InternalTypingException();
+		}
 
-  public boolean hasAncestor_1(int t1, int t2)
-  {
-    return ancestors_1[t1][t2];
-  }
+		return typeNode;
+	}
 
-  public boolean hasAncestor_2(int t1, int t2)
-  {
-    return ancestors_2[t1][t2];
-  }
+	public boolean hasAncestor_1(int t1, int t2) {
+		return ancestors_1[t1][t2];
+	}
 
-  public boolean hasDescendant_1(int t1, int t2)
-  {
-    return descendants_1[t1][t2];
-  }
+	public boolean hasAncestor_2(int t1, int t2) {
+		return ancestors_2[t1][t2];
+	}
 
-  public boolean hasDescendant_2(int t1, int t2)
-  {
-    return descendants_2[t1][t2];
-  }
+	public boolean hasDescendant_1(int t1, int t2) {
+		return descendants_1[t1][t2];
+	}
 
-  public TypeNode lca_1(int t1, int t2)
-  {
-    return lca_1[t1][t2];
-  }
+	public boolean hasDescendant_2(int t1, int t2) {
+		return descendants_2[t1][t2];
+	}
 
-  private int convert(int n)
-  {
-    switch(n)
-      {
-      case 5: return 4;
-      case 6: return 0;
-      default: return n;
-      }
-  }
+	public TypeNode lca_1(int t1, int t2) {
+		return lca_1[t1][t2];
+	}
 
-  public TypeNode lca_2(int t1, int t2)
-  {
-    return lca_2[convert(t1)][convert(t2)];
-  }
+	private int convert(int n) {
+		switch (n) {
+		case 5:
+			return 4;
+		case 6:
+			return 0;
+		default:
+			return n;
+		}
+	}
 
-  public TypeNode gcd_1(int t1, int t2)
-  {
-    return gcd_1[t1][t2];
-  }
+	public TypeNode lca_2(int t1, int t2) {
+		return lca_2[convert(t1)][convert(t2)];
+	}
 
-  public TypeNode gcd_2(int t1, int t2)
-  {
-    return gcd_2[convert(t1)][convert(t2)];
-  }
+	public TypeNode gcd_1(int t1, int t2) {
+		return gcd_1[t1][t2];
+	}
+
+	public TypeNode gcd_2(int t1, int t2) {
+		return gcd_2[convert(t1)][convert(t2)];
+	}
+	
 }

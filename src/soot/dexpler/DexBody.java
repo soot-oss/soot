@@ -90,6 +90,7 @@ import soot.jimple.NullConstant;
 import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.toolkits.base.Aggregator;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
+import soot.jimple.toolkits.scalar.ConstantCastEliminator;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
@@ -549,7 +550,7 @@ public class DexBody  {
         
         TypeAssigner.v().transform(jBody);
         
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
             for (Unit u: jBody.getUnits()) {
                 if (u instanceof IfStmt) {
                     ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
@@ -642,6 +643,9 @@ public class DexBody  {
         // after we have run the constant propagation as we might not be able
         // to statically decide the conditions earlier.
         ConditionalBranchFolder.v().transform(jBody);
+        
+        // Remove unnecessary typecasts
+        ConstantCastEliminator.v().transform(jBody);
         
         // We need to run this transformer since the conditional branch folder
         // might have rendered some code unreachable (well, it was unreachable

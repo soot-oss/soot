@@ -28,6 +28,7 @@ import java.util.LinkedList;
 import java.util.ListIterator;
 
 import soot.ArrayType;
+import soot.FloatType;
 import soot.IntType;
 import soot.IntegerType;
 import soot.NullType;
@@ -116,12 +117,23 @@ public class BytecodeHierarchy implements IHierarchy
 			return Collections.<Type>singletonList(a);
 		else if ( a instanceof IntegerType && b instanceof IntegerType )
 			return Collections.<Type>singletonList(IntType.v());
+		
+		// Implicit type widening: Integer+Float -> Float
+		else if ( a instanceof IntegerType && b instanceof FloatType )
+			return Collections.<Type>singletonList(FloatType.v());
+		else if ( b instanceof IntegerType && a instanceof FloatType )
+			return Collections.<Type>singletonList(FloatType.v());
+		
+		// Disallow type sharing for primitives in general 
 		else if ( a instanceof PrimType || b instanceof PrimType )
 			return Collections.<Type>emptyList();
+		
+		// Null reference handling
 		else if ( a instanceof NullType )
 			return Collections.<Type>singletonList(b);
 		else if ( b instanceof NullType )
 			return Collections.<Type>singletonList(a);
+		
 		// a and b are both ArrayType or RefType
 		else if ( a instanceof ArrayType && b instanceof ArrayType )
 		{
