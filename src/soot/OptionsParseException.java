@@ -1,5 +1,5 @@
 /* Soot - a J*va Optimization Framework
- * Copyright (C) 2002 Florian Loitsch
+ * Copyright (C) 2015 Steven Arzt
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -15,7 +15,7 @@
  * License along with this library; if not, write to the
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
- */
+ *
 
 /*
  * Modified by the Sable Research Group and others 1997-1999.  
@@ -23,37 +23,17 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
+package soot;
 
-package soot.toolkits.scalar;
+public class OptionsParseException extends RuntimeException {
+	
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -8274657472953193866L;
 
-import java.util.Iterator;
-
-/** 
- * Provides an interface of a flow universe, used by an implementation 
- * of BoundedFlowSet to do complementation.
- */
-public interface FlowUniverse<E> extends Iterable<E> {
-
-  /**
-   * returns the number of elements of the universe.
-   *
-   * @return the size of the universe.
-   */
-  public int size();
-
-  /**
-   * returns an iterator over the elements of the universe.
-   *
-   * @return an Iterator over the elements.
-   */
-  public Iterator<E> iterator();
-
-  /**
-   * returns the elements of the universe in form of an array.<br>
-   * The returned array could be backed or not. If you want to be sure
-   * that it is unbacked, clone() it.
-   *
-   * @return the elements of the universe.
-   */
-  public E[] toArray();
+	public OptionsParseException(String msg) {
+    	super(msg);
+    }
+	
 }

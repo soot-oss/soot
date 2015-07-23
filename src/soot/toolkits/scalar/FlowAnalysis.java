@@ -51,6 +51,23 @@ import soot.util.PriorityQueue;
  * corresponding flow analysis.
  */
 public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
+	public enum Flow {
+		IN {
+			@Override
+			<F> F getFlow(Entry<?, F> e) {
+				return e.inFlow;
+			}
+		},
+		OUT {
+			@Override
+			<F> F getFlow(Entry<?, F> e) {
+				return e.outFlow;
+			}
+		};
+
+		abstract <F> F getFlow(Entry<?, F> e);
+	}
+	
 	static class Entry<D, F> implements Numberable {
 		final D data;
 		int number;
@@ -112,6 +129,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 			// out of universe node
 			Entry<D, F> superEntry = new Entry<D, F>(null, null);
 			visitEntry(visited, superEntry, gv.getEntries(g));
+			superEntry.inFlow = entryFlow;
 			superEntry.outFlow = entryFlow;
 
 			
@@ -387,7 +405,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 				omit = !n.isRealStronglyConnected;
 			} else {
 				assert n.in.length == 1 : "missing superhead";
-				n.inFlow = n.in[0].outFlow;
+				n.inFlow = getFlow(n.in[0], n);
 				assert n.inFlow != null : "topological order is broken";
 			}
 
@@ -418,7 +436,38 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 	protected boolean omissible(N n) {
 		return false;
 	}
+	
+	/**
+	 * You can specify which flow set you would like to use of node {@code from}
+	 * @param from
+	 * @param mergeNode
+	 * @return Flow.OUT
+	 */
+	protected Flow getFlow(N from, N mergeNode) {
+		return Flow.OUT;
+	}
+	
+	private A getFlow(Entry<N, A> o, Entry<N, A> e) {
+		return (o.inFlow == o.outFlow) ? o.outFlow : getFlow(o.data, e.data).getFlow(o);
+	}
+	
+	private void meetFlows(Entry<N, A> e) {
+		assert e.in.length >= 1;
 
+		if (e.in.length > 1) {
+			boolean copy = true;
+			for (Entry<N, A> o : e.in) {
+				A flow = getFlow(o, e);
+				if (copy) {
+					copy = false;
+					copy(flow, e.inFlow);
+				} else {
+					mergeInto(e.data, e.inFlow, flow);
+				}
+			}
+		}
+	}
+	
 	final int doAnalysis(GraphView gv, InteractionFlowHandler ifh, Map<N, A> inFlow, Map<N, A> outFlow) {
 		assert gv != null;
 		assert ifh != null;
@@ -437,13 +486,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 			if (e == null)
 				return numComputations;
 
-			Entry<N, A>[] in = e.in;
-			if (in.length > 1) {
-				copy(in[0].outFlow, e.inFlow);
-				for (int i = 1; i < in.length; i++) {
-					mergeInto(e.data, e.inFlow, in[i].outFlow);
-				}
-			}
+			meetFlows(e);
 
 			// Compute beforeFlow and store it.
 			ifh.handleFlowIn(this, e.data);
