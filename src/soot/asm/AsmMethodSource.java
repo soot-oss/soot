@@ -1797,7 +1797,7 @@ final class AsmMethodSource implements MethodSource {
 		// 	b = (B) a;
 		// 	return b;
 		castAndReturnInliner.transform(jb);
-				
+		
 		try {
 	        PackManager.v().getPack("jb").apply(jb);
 		} catch (Throwable t) {
