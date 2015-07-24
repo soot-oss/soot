@@ -191,15 +191,17 @@ public class FastColorer {
 		
 		// Assign a color for each local.
 		{
+			// Sort the locals first to maximize the locals per color. We first
+			// assign those locals that have many conflicts and then assign the
+			// easier ones to those color groups.
 			List<Local> sortedLocals = new ArrayList<Local>(intGraph.getLocals());
 			Collections.sort(sortedLocals, new Comparator<Local>() {
 
 				@Override
 				public int compare(Local o1, Local o2) {
-					Local[] interferences1 = intGraph.getInterferencesOf(o1);
-					Local[] interferences2 = intGraph.getInterferencesOf(o2);
-					return (interferences2 == null ? 0 : interferences2.length)
-							- (interferences1 == null ? 0 : interferences1.length);
+					int interferences1 = intGraph.getInterferenceCount(o1);
+					int interferences2 = intGraph.getInterferenceCount(o2);
+					return interferences2 - interferences1;
 				}
 				
 			});
@@ -335,6 +337,11 @@ public class FastColorer {
 			locals.add(l1);
 		}
 
+		int getInterferenceCount(Local l) {
+			Set<Local> localSet = localToLocals.get(l);
+			return localSet == null ? 0 : localSet.size();
+		}
+		
 		Local[] getInterferencesOf(Local l) {
 			Set<Local> localSet = localToLocals.get(l);
 			if (localSet == null)
