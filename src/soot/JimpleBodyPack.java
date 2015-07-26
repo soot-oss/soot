@@ -71,13 +71,13 @@ public class JimpleBodyPack extends BodyPack
         {   
             PackManager.v().getTransform( "jb.ulp" ).apply( b );
         }
-        PackManager.v().getTransform( "jb.lns" ).apply( b );
-        PackManager.v().getTransform( "jb.cp" ).apply( b );
-        PackManager.v().getTransform( "jb.dae" ).apply( b );
-        PackManager.v().getTransform( "jb.cp-ule" ).apply( b );
-        PackManager.v().getTransform( "jb.lp" ).apply( b );
-        PackManager.v().getTransform( "jb.ne" ).apply( b );
-        PackManager.v().getTransform( "jb.uce" ).apply( b );
+        PackManager.v().getTransform( "jb.lns" ).apply( b );		// LocalNameStandardizer
+        PackManager.v().getTransform( "jb.cp" ).apply( b );			// CopyPropagator
+        PackManager.v().getTransform( "jb.dae" ).apply( b );		// DeadAssignmentElimintaor
+        PackManager.v().getTransform( "jb.cp-ule" ).apply( b );		// UnusedLocalEliminator
+        PackManager.v().getTransform( "jb.lp" ).apply( b );			// LocalPacker
+        PackManager.v().getTransform( "jb.ne" ).apply( b );			// NopEliminator
+        PackManager.v().getTransform( "jb.uce" ).apply( b );		// UnreachableCodeEliminator
                     
         if(Options.v().time())
             Timers.v().stmtCount += b.getUnits().size();
