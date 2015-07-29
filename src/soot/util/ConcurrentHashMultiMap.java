@@ -74,8 +74,15 @@ public class ConcurrentHashMultiMap<K,V> implements MultiMap<K,V> {
     private Map<V, V> findSet( K key ) {
         Map<V, V> s = m.get( key );
         if( s == null ) {
-            s = newSet();
-            m.put( key, s );
+        	synchronized (this) {
+        		// Better check twice, another thread may have created a set in
+        		// the meantime
+        		s = m.get( key );
+                if( s == null ) {
+                	s = newSet();
+                	m.put( key, s );
+                }
+			}
         }
         return s;
     }
