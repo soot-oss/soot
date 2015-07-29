@@ -30,12 +30,24 @@
 
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import soot.baf.*;
-import soot.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import java.util.*;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.baf.Baf;
+import soot.baf.PlaceholderInst;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.IntConstant;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.LookupSwitchStmt;
+import soot.jimple.StmtSwitch;
+import soot.util.Switch;
 
 public class JLookupSwitchStmt extends AbstractSwitchStmt 
     implements LookupSwitchStmt
@@ -99,14 +111,16 @@ public class JLookupSwitchStmt extends AbstractSwitchStmt
             
         buffer.append("{" + endOfLine);
         
-        for(int i = 0; i < lookupValues.size(); i++)
-        {
-            buffer.append("    " +  Jimple.CASE + " " + lookupValues.get(i) + ": " +  Jimple.GOTO + " " + 
-                getTarget(i) + ";" + endOfLine);
+        for (int i = 0; i < lookupValues.size(); i++) {
+          Unit target = getTarget(i);
+          buffer.append("    " +  Jimple.CASE + " " + lookupValues.get(i) + ": " +
+              Jimple.GOTO + " " + (target == this ? "self" : target) + ";" + endOfLine);
         }
 
-        buffer.append("    " +  Jimple.DEFAULT + ": " +  Jimple.GOTO +
-                      " " + getDefaultTarget() + ";" + endOfLine);
+        Unit target = getDefaultTarget();
+        buffer.append("    " +  Jimple.DEFAULT + ": " +  Jimple.GOTO + " " +
+            (target == this ? "self" : target) + ";" + endOfLine);
+
         buffer.append("}");
 
         return buffer.toString();
