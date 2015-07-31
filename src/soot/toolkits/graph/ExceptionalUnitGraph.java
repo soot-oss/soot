@@ -574,6 +574,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 				this.tail = tail;
 			}
 
+			@Override
 			public boolean equals(Object rhs) {
 				if (rhs == this) {
 					return true;
@@ -585,6 +586,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 				return ((this.head == rhsEdge.head) && (this.tail == rhsEdge.tail));
 			}
 
+			@Override
 			public int hashCode() {
 				// Following Joshua Bloch's recipe in "Effective Java", Item 8:
 				int result = 17;
@@ -724,6 +726,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 	 * escape the method.
 	 * </p>
 	 */
+	@Override
 	protected void buildHeadsAndTails() throws IllegalStateException {
 		throw new IllegalStateException(
 				"ExceptionalUnitGraph uses buildHeadsAndTails(List) instead of buildHeadsAndTails()");
@@ -792,13 +795,22 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 	 *         traps, if any, which catch the exceptions which may be thrown by
 	 *         <code>u</code>.
 	 */
-	public Collection<ExceptionDest> getExceptionDests(Unit u) {
+	@Override
+	public Collection<ExceptionDest> getExceptionDests(final Unit u) {
 		Collection<ExceptionDest> result = unitToExceptionDests.get(u);
-		if (result != null)
-			return result;
-		
-		ThrowableSet ts = throwAnalysis.mightThrow(u);
-		return Collections.singleton(new ExceptionDest(null, ts));
+		if (result == null) {
+			ExceptionDest e = new ExceptionDest(null, null) {
+				private ThrowableSet throwables;
+				@Override
+				public ThrowableSet getThrowables() {
+					if (null == throwables)
+						throwables = throwAnalysis.mightThrow(u);
+					return throwables;
+				}
+			};
+			return Collections.singletonList(e);
+		}
+		return result;
 	}
 
 	public static class ExceptionDest implements
@@ -811,14 +823,17 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 			this.throwables = throwables;
 		}
 
+		@Override
 		public Trap getTrap() {
 			return trap;
 		}
 
+		@Override
 		public ThrowableSet getThrowables() {
 			return throwables;
 		}
 
+		@Override
 		public Unit getHandlerNode() {
 			if (trap == null) {
 				return null;
@@ -827,9 +842,10 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 			}
 		}
 
+		@Override
 		public String toString() {
 			StringBuffer buf = new StringBuffer();
-			buf.append(throwables.toString());
+			buf.append(getThrowables());
 			buf.append(" -> ");
 			if (trap == null) {
 				buf.append("(escapes)");
@@ -840,33 +856,37 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 		}
 	}
 
+	@Override
 	public List<Unit> getUnexceptionalPredsOf(Unit u) {
 		if (!unitToUnexceptionalPreds.containsKey(u))
 			throw new RuntimeException("Invalid unit " + u);
 
-		return (List<Unit>) unitToUnexceptionalPreds.get(u);
+		return unitToUnexceptionalPreds.get(u);
 	}
 
+	@Override
 	public List<Unit> getUnexceptionalSuccsOf(Unit u) {
 		if (!unitToUnexceptionalSuccs.containsKey(u))
 			throw new RuntimeException("Invalid unit " + u);
 
-		return (List<Unit>) unitToUnexceptionalSuccs.get(u);
+		return unitToUnexceptionalSuccs.get(u);
 	}
 
+	@Override
 	public List<Unit> getExceptionalPredsOf(Unit u) {
 		if (!unitToExceptionalPreds.containsKey(u)) {
 			return Collections.emptyList();
 		} else {
-			return (List<Unit>) unitToExceptionalPreds.get(u);
+			return unitToExceptionalPreds.get(u);
 		}
 	}
 
+	@Override
 	public List<Unit> getExceptionalSuccsOf(Unit u) {
 		if (!unitToExceptionalSuccs.containsKey(u)) {
 			return Collections.emptyList();
 		} else {
-			return (List<Unit>) unitToExceptionalSuccs.get(u);
+			return unitToExceptionalSuccs.get(u);
 		}
 	}
 
@@ -895,6 +915,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 		return throwAnalysis;
 	}
 
+	@Override
 	public String toString() {
 		StringBuffer buf = new StringBuffer();
 		for (Unit u : unitChain) {
