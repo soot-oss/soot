@@ -70,7 +70,9 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
                     if (defsOfUse.size() == 1) {
                         DefinitionStmt defStmt = (DefinitionStmt) defsOfUse.get(0);
                         Value rhs = defStmt.getRightOp();
-                        if (rhs instanceof NumericConstant || rhs instanceof StringConstant) {
+                        if (rhs instanceof NumericConstant
+                        		|| rhs instanceof StringConstant
+                        		|| rhs instanceof NullConstant) {
                             if (useBox.canContainValue(rhs)) {
                                 useBox.setValue(rhs);
                                 numPropagated++;
