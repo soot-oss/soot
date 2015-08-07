@@ -140,23 +140,6 @@ public class Hierarchy
             		imp.addAll(s);
                 }
             }
-
-            for (SootClass c : allClasses) {
-                if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
-
-                if (c.isInterface())
-                {
-                    interfaceToDirSubinterfaces.put(c, Collections.unmodifiableList
-                    		(interfaceToDirSubinterfaces.get(c)));
-                    interfaceToDirSuperinterfaces.put(c, Collections.unmodifiableList
-                    		(interfaceToDirSuperinterfaces.get(c)));
-                    interfaceToDirImplementers.put(c, Collections.unmodifiableList
-                    		(interfaceToDirImplementers.get(c)));
-                }
-                else
-                    classToDirSubclasses.put(c, Collections.unmodifiableList
-                                          (classToDirSubclasses.get(c)));
-            }
         }
     }
 
