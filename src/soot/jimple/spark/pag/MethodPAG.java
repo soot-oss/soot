@@ -22,6 +22,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import soot.AnyPossibleSubType;
+import soot.AnySubType;
 import soot.ArrayType;
 import soot.Body;
 import soot.Context;
@@ -37,6 +39,7 @@ import soot.Unit;
 import soot.VoidType;
 import soot.jimple.Stmt;
 import soot.jimple.spark.builder.MethodNodeFactory;
+import soot.options.SparkOptions;
 import soot.util.NumberedString;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
@@ -180,17 +183,29 @@ public final class MethodPAG {
     }
     protected void buildNative() {
         ValNode thisNode = null;
-        ValNode retNode = null; 
+        ValNode retNode = null;
         if( !method.isStatic() ) { 
 	    thisNode = (ValNode) nodeFactory.caseThis();
         }
         if( method.getReturnType() instanceof RefLikeType ) {
 	    retNode = (ValNode) nodeFactory.caseRet();
-	}
+	    Type retType = method.getReturnType();
+	    if(retType instanceof RefType){	    	
+	    	int libraryOptions = pag.getOpts().library();
+	    	if (libraryOptions == SparkOptions.library_any_subtype) {
+	    		Node alloc = pag.makeAllocNode(retNode, AnySubType.v((RefType)retType), method);
+				addInternalEdge(alloc, retNode);
+	    	} else if (libraryOptions == SparkOptions.library_name_resolution) {
+	    		Node alloc = pag.makeAllocNode(retNode, AnyPossibleSubType.v((RefType)retType), method);
+				addInternalEdge(alloc, retNode);
+	    	}
+	    		
+	    }
+        }
         ValNode[] args = new ValNode[ method.getParameterCount() ];
         for( int i = 0; i < method.getParameterCount(); i++ ) {
             if( !( method.getParameterType(i) instanceof RefLikeType ) ) continue;
-	    args[i] = (ValNode) nodeFactory.caseParm(i);
+            args[i] = (ValNode) nodeFactory.caseParm(i);
         }
         pag.nativeMethodDriver.process( method, thisNode, retNode, args );
     }
