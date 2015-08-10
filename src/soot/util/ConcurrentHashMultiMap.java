@@ -23,6 +23,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
 
 /**
  * A concurrent version of the {@link HashMultiMap}
@@ -31,7 +32,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * 
  */
 public class ConcurrentHashMultiMap<K,V> implements MultiMap<K,V> {
-    Map<K,Map<V, V>> m = new ConcurrentHashMap<K,Map<V, V>>(0);
+    Map<K,ConcurrentMap<V, V>> m = new ConcurrentHashMap<K,ConcurrentMap<V, V>>(0);
 
     public ConcurrentHashMultiMap() {}
     
@@ -67,15 +68,22 @@ public class ConcurrentHashMultiMap<K,V> implements MultiMap<K,V> {
         return false;
     }
 
-    protected Map<V,V> newSet() {
+    protected ConcurrentMap<V,V> newSet() {
         return new ConcurrentHashMap<V, V>();
     }
     
-    private Map<V, V> findSet( K key ) {
-        Map<V, V> s = m.get( key );
+    private ConcurrentMap<V, V> findSet( K key ) {
+    	ConcurrentMap<V, V> s = m.get( key );
         if( s == null ) {
-            s = newSet();
-            m.put( key, s );
+        	synchronized (this) {
+        		// Better check twice, another thread may have created a set in
+        		// the meantime
+        		s = m.get( key );
+                if( s == null ) {
+                	s = newSet();
+                	m.put( key, s );
+                }
+			}
         }
         return s;
     }
@@ -84,7 +92,11 @@ public class ConcurrentHashMultiMap<K,V> implements MultiMap<K,V> {
     public boolean put( K key, V value ) {
         return findSet( key ).put( value, value ) == null;
     }
-
+    
+    public V putIfAbsent( K key, V value ) {
+        return findSet( key ).putIfAbsent( value, value );
+    }
+    
     @Override
     public boolean putAll( K key, Set<V> values ) {
         if (values.isEmpty()) return false;
@@ -154,7 +166,7 @@ public class ConcurrentHashMultiMap<K,V> implements MultiMap<K,V> {
         @SuppressWarnings("unchecked")
 		MultiMap<K,V> mm = (MultiMap<K,V>) o;
         if( !keySet().equals( mm.keySet() ) ) return false;
-        for (Map.Entry<K, Map<V,V>> e : m.entrySet()) {
+        for (Map.Entry<K, ConcurrentMap<V,V>> e : m.entrySet()) {
             Map<V, V> s = e.getValue();
             if( !s.equals( mm.get( e.getKey() ) ) ) return false;
         }

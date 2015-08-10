@@ -1,6 +1,5 @@
 package soot.validation;
 
-import java.util.Iterator;
 import java.util.List;
 
 import soot.ArrayType;
@@ -21,8 +20,7 @@ import soot.jimple.CaughtExceptionRef;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InvokeExpr;
-import soot.jimple.InvokeStmt;
-import soot.util.Chain;
+import soot.jimple.Stmt;
 
 public enum CheckTypesValidator implements BodyValidator {
 	INSTANCE;
@@ -33,58 +31,50 @@ public enum CheckTypesValidator implements BodyValidator {
 
 	@Override
 	public void validate(Body body, List<ValidationException> exception) {
-
-		Chain<Unit> units = body.getUnits();
-
-		Iterator<Unit> it = units.iterator();
-		while (it.hasNext()) {
-			Unit stmt = (it.next());
-			InvokeExpr iexpr = null;
-
-			String errorSuffix = " at " + stmt + " in " + body.getMethod();
-
-			if (stmt instanceof DefinitionStmt) {
-				DefinitionStmt astmt = (DefinitionStmt) stmt;
+		for (Unit u : body.getUnits()) {
+			String errorSuffix = " at " + u + " in " + body.getMethod();
+			
+			if (u instanceof DefinitionStmt) {
+				DefinitionStmt astmt = (DefinitionStmt) u;
 				if (!(astmt.getRightOp() instanceof CaughtExceptionRef)) {
 					Type leftType = Type.toMachineType(astmt.getLeftOp()
 							.getType());
 					Type rightType = Type.toMachineType(astmt.getRightOp()
 							.getType());
 
-					checkCopy(stmt, body, exception, leftType, rightType,
+					checkCopy(astmt, body, exception, leftType, rightType,
 							errorSuffix);
-					if (astmt.getRightOp() instanceof InvokeExpr)
-						iexpr = (InvokeExpr) (astmt.getRightOp());
 				}
 			}
-
-			if (stmt instanceof InvokeStmt)
-				iexpr = ((InvokeStmt) stmt).getInvokeExpr();
-
-			if (iexpr != null) {
-				SootMethodRef called = iexpr.getMethodRef();
-
-				if (iexpr instanceof InstanceInvokeExpr) {
-					InstanceInvokeExpr iiexpr = (InstanceInvokeExpr) iexpr;
-					checkCopy(stmt, body, exception, called.declaringClass()
-							.getType(), iiexpr.getBase().getType(),
-							" in receiver of call" + errorSuffix);
+			
+			if (u instanceof Stmt) {
+				Stmt stmt = (Stmt) u;
+				if (stmt.containsInvokeExpr()) {
+					SootMethodRef called = stmt.getInvokeExpr().getMethodRef();
+					InvokeExpr iexpr = stmt.getInvokeExpr();
+					
+					if (iexpr instanceof InstanceInvokeExpr) {
+						InstanceInvokeExpr iiexpr = (InstanceInvokeExpr) iexpr;
+						checkCopy(stmt, body, exception, called.declaringClass()
+								.getType(), iiexpr.getBase().getType(),
+								" in receiver of call" + errorSuffix);
+					}
+	
+					if (called.parameterTypes().size() != iexpr.getArgCount())
+						exception
+								.add(new ValidationException(
+										stmt,
+										"Argument count does not match the signature of the called function",
+										"Warning: Argument count doesn't match up with signature in call"
+												+ errorSuffix + " in "
+												+ body.getMethod()));
+					else
+						for (int i = 0; i < iexpr.getArgCount(); i++)
+							checkCopy(stmt, body, exception,
+									Type.toMachineType(called.parameterType(i)),
+									Type.toMachineType(iexpr.getArg(i).getType()),
+									" in argument " + i + " of call" + errorSuffix);
 				}
-
-				if (called.parameterTypes().size() != iexpr.getArgCount())
-					exception
-							.add(new ValidationException(
-									stmt,
-									"Argument count does not match the signature of the called function",
-									"Warning: Argument count doesn't match up with signature in call"
-											+ errorSuffix + " in "
-											+ body.getMethod()));
-				else
-					for (int i = 0; i < iexpr.getArgCount(); i++)
-						checkCopy(stmt, body, exception,
-								Type.toMachineType(called.parameterType(i)),
-								Type.toMachineType(iexpr.getArg(i).getType()),
-								" in argument " + i + " of call" + errorSuffix);
 			}
 		}
 	}

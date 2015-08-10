@@ -92,7 +92,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 
 		@Override
 		public String toString() {
-			return data.toString();
+			return data == null ? "" : data.toString();
 		}
 
 		@Override

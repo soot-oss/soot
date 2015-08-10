@@ -58,6 +58,9 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
         // Perform a constant/local propagation pass.
         Orderer<Unit> orderer = new PseudoTopologicalOrderer<Unit>();
         
+        if (b.getMethod().getSignature().equals("<java.util.concurrent.ConcurrentSkipListMap: int compare(java.lang.Object,java.lang.Object)>"))
+        	System.out.println("x");
+        
         // go through each use box in each statement
         for (Unit u : orderer.newList(g, false)) {
 
@@ -70,7 +73,9 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
                     if (defsOfUse.size() == 1) {
                         DefinitionStmt defStmt = (DefinitionStmt) defsOfUse.get(0);
                         Value rhs = defStmt.getRightOp();
-                        if (rhs instanceof NumericConstant || rhs instanceof StringConstant) {
+                        if (rhs instanceof NumericConstant
+                        		|| rhs instanceof StringConstant
+                        		|| rhs instanceof NullConstant) {
                             if (useBox.canContainValue(rhs)) {
                                 useBox.setValue(rhs);
                                 numPropagated++;
@@ -78,8 +83,9 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
                         }
                         else if (rhs instanceof CastExpr) {
                         	CastExpr ce = (CastExpr) rhs;
-                        	if (ce.getOp() instanceof NullConstant) {
-                                useBox.setValue(NullConstant.v());
+                        	if (ce.getCastType() instanceof RefType
+                        			&& ce.getOp() instanceof NullConstant) {
+                                defStmt.getRightOpBox().setValue(NullConstant.v());
                                 numPropagated++;
                         	}
                         }

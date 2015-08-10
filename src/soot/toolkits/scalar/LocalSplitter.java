@@ -181,7 +181,7 @@ public class LocalSplitter extends BodyTransformer
         				// should always be true - but who knows ...
         				if (v instanceof Local) {
         					Local l = (Local) v;        		
-        					queue.addAll(defs.getDefsOfAt(l, use.unit));        					
+        					queue.addAll(defs.getDefsOfAt(l, use.unit));
 	        				vb.setValue(newLocal);
         				}    				
         			}

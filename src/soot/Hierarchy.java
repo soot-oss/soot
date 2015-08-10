@@ -26,13 +26,12 @@
 package soot;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.ConcurrentModificationException;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -86,11 +85,8 @@ public class Hierarchy
             	(allClasses.size() * 2 + 1, 0.7f);
             interfaceToDirImplementers = new HashMap<SootClass, List<SootClass>>
                 (allClasses.size() * 2 + 1, 0.7f);
-
-            Iterator<SootClass> classesIt = allClasses.iterator();
-            while (classesIt.hasNext())
-            {
-                SootClass c = classesIt.next();
+            
+            for (SootClass c : allClasses) {
                 if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
 
                 if (c.isInterface())
@@ -103,18 +99,13 @@ public class Hierarchy
                     classToDirSubclasses.put(c, new ArrayList<SootClass>());
             }
 
-            classesIt = allClasses.iterator();
-            while (classesIt.hasNext())
-            {
-                SootClass c = classesIt.next();
+            for (SootClass c : allClasses) {
                 if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
+                
 
-                List<SootClass> l2 = interfaceToDirSuperinterfaces.get(c);
-
-                if (c.hasSuperclass())
-                {
-                    if (c.isInterface())
-                    {
+                if (c.hasSuperclass()) {
+                    if (c.isInterface()) {
+                        List<SootClass> l2 = interfaceToDirSuperinterfaces.get(c);
                         for (SootClass i : c.getInterfaces()) {
                             if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
                             List<SootClass> l = interfaceToDirSubinterfaces.get(i);
@@ -122,17 +113,11 @@ public class Hierarchy
                             if (l2 != null) l2.add(i);
                         }
                     }
-                    else
-                    {
-                        List<SootClass> l = classToDirSubclasses.get(c.getSuperclass());
-                        l.add(c);
+                    else {
+                        List<SootClass> l = classToDirSubclasses.get(c.getSuperclass());                        
+                        if (l != null) l.add(c);
 
-                    
-                        Iterator<SootClass> subIt = c.getInterfaces().iterator();
-
-                        while (subIt.hasNext())
-                        {
-                            SootClass i = subIt.next();
+                        for (SootClass i : c.getInterfaces()) {
                             if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
                             l = interfaceToDirImplementers.get(i);
                             if (l != null) l.add(c);
@@ -142,48 +127,18 @@ public class Hierarchy
             }
 
             // Fill the directImplementers lists with subclasses.
-            {
-                classesIt = allClasses.iterator();
-                while (classesIt.hasNext())
-                {
-                    SootClass c = classesIt.next();
-                    if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
-                    if (c.isInterface())
-                    {
-                        List<SootClass> imp = interfaceToDirImplementers.get(c);
-                        Set<SootClass> s = new ArraySet<SootClass>();
-                        
-                        Iterator<SootClass> impIt = imp.iterator();
-                        while (impIt.hasNext())
-                        {
-                            SootClass c0 = impIt.next();
-                            if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
-                            s.addAll(getSubclassesOfIncluding(c0));
-                        }
-
-                        imp.clear(); imp.addAll(s);
-                    }
+            for (SootClass c : allClasses) {
+            	if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
+            	if (c.isInterface()) {
+            		List<SootClass> imp = interfaceToDirImplementers.get(c);
+            		Set<SootClass> s = new ArraySet<SootClass>();            		
+            		for (SootClass c0 : imp) {
+            			if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
+            			s.addAll(getSubclassesOfIncluding(c0));
+            		}
+            		imp.clear();
+            		imp.addAll(s);
                 }
-            }
-
-            classesIt = allClasses.iterator();
-            while (classesIt.hasNext())
-            {
-                SootClass c = classesIt.next();
-                if( c.resolvingLevel() < SootClass.HIERARCHY ) continue;
-
-                if (c.isInterface())
-                {
-                    interfaceToDirSubinterfaces.put(c, Collections.unmodifiableList
-                    		(interfaceToDirSubinterfaces.get(c)));
-                    interfaceToDirSuperinterfaces.put(c, Collections.unmodifiableList
-                    		(interfaceToDirSuperinterfaces.get(c)));
-                    interfaceToDirImplementers.put(c, Collections.unmodifiableList
-                    		(interfaceToDirImplementers.get(c)));
-                }
-                else
-                    classToDirSubclasses.put(c, Collections.unmodifiableList
-                                          (classToDirSubclasses.get(c)));
             }
         }
     }
@@ -296,10 +251,8 @@ public class Hierarchy
         // Otherwise, build up the hashmap.
         List<SootClass> l = new ArrayList<SootClass>();
 
-        ListIterator<SootClass> it = interfaceToDirSubinterfaces.get(c).listIterator();
-        while (it.hasNext())
-        {
-            l.addAll(getSubinterfacesOfIncluding(it.next()));
+        for (SootClass si : interfaceToDirSubinterfaces.get(c)) {
+            l.addAll(getSubinterfacesOfIncluding(si));
         }
         
         interfaceToSubinterfaces.put(c, Collections.unmodifiableList(l));
@@ -337,10 +290,8 @@ public class Hierarchy
         // Otherwise, build up the hashmap.
         List<SootClass> l = new ArrayList<SootClass>();
 
-        ListIterator<SootClass> it = interfaceToDirSuperinterfaces.get(c).listIterator();
-        while (it.hasNext())
-        {
-            l.addAll(getSuperinterfacesOfIncluding(it.next()));
+        for (SootClass si : interfaceToDirSuperinterfaces.get(c)) {
+            l.addAll(getSuperinterfacesOfIncluding(si));
         }
         
         interfaceToSuperinterfaces.put(c, Collections.unmodifiableList(l));
@@ -649,23 +600,19 @@ public class Hierarchy
         checkState();
 
         Set<SootMethod> s = new ArraySet<SootMethod>();
+        Collection<SootClass> classesIt;
         
-        Iterator<SootClass> classesIt = null;
-
         if (c.isInterface()) {
             Set<SootClass> classes = new HashSet<SootClass>();
             for (SootClass sootClass : getImplementersOf(c)) {
             	classes.addAll(getSubclassesOfIncluding(sootClass));
             }
-            classesIt = classes.iterator();
-        }    
-            
+            classesIt = classes;
+        }
         else
-            classesIt = getSubclassesOfIncluding(c).iterator();
+            classesIt = getSubclassesOfIncluding(c);
 
-        
-        while (classesIt.hasNext()) {
-            SootClass cl = classesIt.next();
+        for (SootClass cl : classesIt) {
             if( !Modifier.isAbstract( cl.getModifiers() ) ) {
             	s.add(resolveConcreteDispatch(cl, m));
             }
