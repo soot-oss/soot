@@ -34,6 +34,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
+
 import soot.Context;
 import soot.G;
 import soot.Local;
@@ -277,8 +278,9 @@ public class GeomPointsTo extends PAG
 				ps = new PrintStream(log_file);
 				G.v().out.println( "[Geom] Analysis log can be found in: " + log_file.toString() );
 			} catch (FileNotFoundException e) {
-				G.v().out.println( "[Geom] The dump file: " + log_file.toString() + " cannot be created. Abort." );
-				System.exit(-1);
+				String msg = "[Geom] The dump file: " + log_file.toString() + " cannot be created. Abort.";
+				G.v().out.println( msg );
+				throw new RuntimeException(msg, e);
 			}
 		}
 		else
@@ -339,7 +341,6 @@ public class GeomPointsTo extends PAG
 	 *  We also construct our own call graph and pointer variables.
 	 *  Return: a set of base pointers for all virtual callsites (including calls in lib)
 	 */
-	@SuppressWarnings("unchecked")
 	private void preprocess() 
 	{
 		int id;

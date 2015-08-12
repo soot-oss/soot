@@ -33,8 +33,10 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis
 
 		doAnalysis();
 
-		List ancestorList = new ArrayList();
-		ancestorList.addAll(((FlowSet) getFlowAfter(s)).toList());
+		FlowSet fs = (FlowSet) getFlowAfter(s);
+		List ancestorList = new ArrayList(fs.size());
+		for (Object o : fs)
+			ancestorList.add(o);
 
 		return ancestorList;
 	}

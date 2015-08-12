@@ -25,7 +25,7 @@ public class CPTuple{
 	 * Dont care about className and variable but the CONSTANT VALUE HAS TO BE A NEW ONE
 	 * otherwise the clone of the flowset keeps pointing to the same bloody constant value
 	 */
-	public Object clone(){			
+	public CPTuple clone(){			
 		if(isTop()){
 			return new CPTuple(sootClass,variable, true);
 		}

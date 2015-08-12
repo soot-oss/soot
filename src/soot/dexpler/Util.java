@@ -26,6 +26,7 @@ package soot.dexpler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import soot.ArrayType;
@@ -56,6 +57,7 @@ import soot.jimple.NullConstant;
 import soot.jimple.ParameterRef;
 import soot.jimple.StringConstant;
 import soot.jimple.ThisRef;
+import soot.jimple.toolkits.scalar.LocalCreation;
 
 public class Util {
     /**
@@ -171,10 +173,7 @@ public class Util {
             break;
 
           default:
-            Debug.printDbg("unknown type: '", type ,"'");
-            Thread.dumpStack();
-            System.exit(-1);
-            break;
+            throw new RuntimeException("unknown type: '" + type + "'");
         }
         idx++;
       }
@@ -284,24 +283,28 @@ public class Util {
      * Insert a runtime exception before unit u of body b. Useful to analyze broken code (which make reference to inexisting class for instance)
      * exceptionType: e.g., "java.lang.RuntimeException"
      */
-    public static void addExceptionAfterUnit (Body b, String exceptionType, Unit u ,String m) {
+	public static void addExceptionAfterUnit(Body b, String exceptionType, Unit u, String m) {
+		LocalCreation lc = new LocalCreation(b.getLocals());
+		Local l = lc.newLocal(RefType.v(exceptionType));
+		
+		List<Unit> newUnits = new ArrayList<Unit>();
+		Unit u1 = Jimple.v().newAssignStmt(l, Jimple.v().newNewExpr(RefType.v(exceptionType)));
+		Unit u2 = Jimple.v().newInvokeStmt(
+				Jimple.v().newSpecialInvokeExpr(
+						l,
+						Scene.v().makeMethodRef(Scene.v().getSootClass(exceptionType),
+								"<init>",
+								Collections.singletonList((Type) RefType.v("java.lang.String")),
+								VoidType.v(),
+								false),
+						StringConstant.v(m)));
+		Unit u3 = Jimple.v().newThrowStmt(l);
+		newUnits.add(u1);
+		newUnits.add(u2);
+		newUnits.add(u3);
 
-      Local l = Jimple.v().newLocal("myException", RefType.v(exceptionType));
-      b.getLocals().add(l);
-      
-      List<Unit> newUnits = new ArrayList<Unit>();
-      Unit u1 = Jimple.v().newAssignStmt (l, Jimple.v().newNewExpr(RefType.v(exceptionType)));
-      Unit u2 = Jimple.v().newInvokeStmt (Jimple.v().newSpecialInvokeExpr(
-          l, 
-          Scene.v().getMethod("<"+ exceptionType +": void <init>(java.lang.String)>").makeRef(),
-          StringConstant.v(m)));
-      Unit u3 = Jimple.v().newThrowStmt(l);
-      newUnits.add(u1);
-      newUnits.add(u2);
-      newUnits.add(u3);
-      
-      b.getUnits().insertBefore(newUnits, u);
-    }
+		b.getUnits().insertBefore(newUnits, u);
+	}
 
     public static List<String> splitParameters(String parameters) {
         List<String> pList = new ArrayList<String>();

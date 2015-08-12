@@ -112,6 +112,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-coffi");
         }
   
+        public void setasm_backend(boolean arg) {
+            if(arg) addArg("-asm-backend");
+        }
+  
         public void sethelp(boolean arg) {
             if(arg) addArg("-help");
         }
@@ -284,6 +288,7 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "X" )
                 || arg.equals( "xml" )
                 || arg.equals( "dex" )
+                || arg.equals( "force-dex" )
                 || arg.equals( "n" )
                 || arg.equals( "none" )
                 || arg.equals( "jasmin" )
@@ -293,11 +298,41 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "dava" )
                 || arg.equals( "t" )
                 || arg.equals( "template" )
+                || arg.equals( "a" )
+                || arg.equals( "asm" )
                 ) {
                 addArg("-output-format");
                 addArg(arg);
             } else {
                 throw new BuildException("Bad value "+arg+" for option output_format");
+            }
+        }
+  
+        public void setjava_version(String arg) {
+            if(false
+    
+                || arg.equals( "default" )
+                || arg.equals( "1.1" )
+                || arg.equals( "1" )
+                || arg.equals( "1.2" )
+                || arg.equals( "2" )
+                || arg.equals( "1.3" )
+                || arg.equals( "3" )
+                || arg.equals( "1.4" )
+                || arg.equals( "4" )
+                || arg.equals( "1.5" )
+                || arg.equals( "5" )
+                || arg.equals( "1.6" )
+                || arg.equals( "6" )
+                || arg.equals( "1.7" )
+                || arg.equals( "7" )
+                || arg.equals( "1.8" )
+                || arg.equals( "8" )
+                ) {
+                addArg("-java-version");
+                addArg(arg);
+            } else {
+                throw new BuildException("Bad value "+arg+" for option java_version");
             }
         }
   
@@ -1263,6 +1298,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg.spark");
             addArg("empties-as-allocs:"+(arg?"true":"false"));
+          }
+      
+          public void setallocate_params(boolean arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("allocate-params:"+(arg?"true":"false"));
           }
       
           public void setsimple_edges_bidirectional(boolean arg) {

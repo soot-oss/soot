@@ -202,8 +202,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 				break;
 
 			default:
-				System.exit(-1);
-				break;
+				throw new RuntimeException("Invalid type");
 			}
 
 			++n_legal_cons;

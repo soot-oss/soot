@@ -37,13 +37,13 @@ public abstract class VarNode extends ValNode implements Comparable {
     public Context context() { return null; }
     /** Returns all field ref nodes having this node as their base. */
     public Collection<FieldRefNode> getAllFieldRefs() { 
-	if( fields == null ) return Collections.EMPTY_LIST;
+	if( fields == null ) return Collections.emptyList();
 	return fields.values(); 
     }
     /** Returns the field ref node having this node as its base,
      * and field as its field; null if nonexistent. */
     public FieldRefNode dot( SparkField field ) 
-    { return fields == null ? null : (FieldRefNode) fields.get( field ); }
+    { return fields == null ? null : fields.get( field ); }
     public int compareTo( Object o ) {
 	VarNode other = (VarNode) o;
         if( other.finishingNumber == finishingNumber && other != this ) {
@@ -111,14 +111,14 @@ public abstract class VarNode extends ValNode implements Comparable {
     }
     /** Registers a frn as having this node as its base. */
     void addField( FieldRefNode frn, SparkField field ) {
-	if( fields == null ) fields = new HashMap();
+	if( fields == null ) fields = new HashMap<SparkField, FieldRefNode>();
 	fields.put( field, frn );
     }
 
     /* End of package methods. */
 
     protected Object variable;
-    protected Map fields;
+    protected Map<SparkField, FieldRefNode> fields;
     protected int finishingNumber = 0;
     protected boolean interProcTarget = false;
     protected boolean interProcSource = false;

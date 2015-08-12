@@ -29,14 +29,40 @@
 
 package soot.jimple.toolkits.typing;
 
-import soot.*;
-import soot.options.*;
-import soot.toolkits.scalar.UnusedLocalEliminator;
-import soot.jimple.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+
+import soot.Body;
+import soot.BodyTransformer;
+import soot.ByteType;
+import soot.CharType;
+import soot.ErroneousType;
+import soot.G;
+import soot.Local;
+import soot.NullType;
+import soot.PhaseOptions;
+import soot.Scene;
+import soot.ShortType;
+import soot.Singletons;
+import soot.Type;
+import soot.Unit;
+import soot.UnknownType;
+import soot.ValueBox;
+import soot.jimple.ArrayRef;
+import soot.jimple.FieldRef;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.JimpleBody;
+import soot.jimple.Stmt;
 import soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
-
-import java.util.*;
+import soot.options.JBTROptions;
+import soot.options.Options;
+import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
  * This transformer assigns types to local variables.
@@ -133,9 +159,7 @@ public class TypeAssigner extends BodyTransformer {
 	private void replaceNullType(Body b) {
 		List<Local> localsToRemove = new ArrayList<Local>();
 		boolean hasNullType = false;
-		
-		ConstantPropagatorAndFolder.v().transform(b);
-		
+
 		// check if any local has null_type
 		for (Local l: b.getLocals()) {
 			if (l.getType() instanceof NullType) {
@@ -148,6 +172,14 @@ public class TypeAssigner extends BodyTransformer {
 		if (!hasNullType)
 			return;
 		
+		// force to propagate null constants
+		Map<String, String> opts = PhaseOptions.v().getPhaseOptions("jop.cpf");
+		if (!opts.containsKey("enabled") || !opts.get("enabled").equals("true")) {
+			G.v().out.println("Warning: Cannot run TypeAssigner.replaceNullType(Body). Try to enable jop.cfg.");
+			return;
+		}
+		ConstantPropagatorAndFolder.v().transform(b);
+
 		List<Unit> unitToReplaceByException = new ArrayList<Unit>();
 		for (Unit u: b.getUnits()) {
 			for (ValueBox vb : u.getUseBoxes()) {
@@ -186,6 +218,7 @@ public class TypeAssigner extends BodyTransformer {
 			b.getUnits().remove(u);
 		}
 
+		// should be done on a separate phase
 		DeadAssignmentEliminator.v().transform(b);
 		UnusedLocalEliminator.v().transform(b);
 

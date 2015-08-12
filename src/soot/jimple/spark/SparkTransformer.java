@@ -19,7 +19,6 @@
 
 package soot.jimple.spark;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.Map;
 
 import soot.G;
@@ -31,6 +30,7 @@ import soot.Singletons;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SourceLocator;
+import soot.Unit;
 import soot.Value;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
@@ -70,7 +70,7 @@ public class SparkTransformer extends SceneTransformer
     public SparkTransformer( Singletons.Global g ) {}
     public static SparkTransformer v() { return G.v().soot_jimple_spark_SparkTransformer(); }
 
-    protected void internalTransform( String phaseName, Map options )
+    protected void internalTransform( String phaseName, Map<String, String> options )
     {
         SparkOptions opts = new SparkOptions( options );
         final String output_dir = SourceLocator.v().getOutputDir();
@@ -202,14 +202,12 @@ public class SparkTransformer extends SceneTransformer
     protected void addTags( PAG pag ) {
         final Tag unknown = new StringTag( "Untagged Spark node" );
         final Map<Node, Tag> nodeToTag = pag.getNodeTags();
-        for( Iterator cIt = Scene.v().getClasses().iterator(); cIt.hasNext(); ) {
-            final SootClass c = (SootClass) cIt.next();
-            for( Iterator mIt = c.methodIterator(); mIt.hasNext(); ) {
-                SootMethod m = (SootMethod) mIt.next();
+        for( final SootClass c : Scene.v().getClasses() ) {
+            for( final SootMethod m : c.getMethods() ) {
                 if( !m.isConcrete() ) continue;
                 if( !m.hasActiveBody() ) continue;
-                for( Iterator sIt = m.getActiveBody().getUnits().iterator(); sIt.hasNext(); ) {
-                    final Stmt s = (Stmt) sIt.next();
+                for( final Unit u : m.getActiveBody().getUnits() ) {
+                    final Stmt s = (Stmt) u;
                     if( s instanceof DefinitionStmt ) {
                         Value lhs = ((DefinitionStmt) s).getLeftOp();
                         VarNode v = null;
@@ -266,27 +264,15 @@ public class SparkTransformer extends SceneTransformer
         int varMass = 0;
         int adfs = 0;
         int scalars = 0;
-        if( false ) {
-            for( Iterator it = Scene.v().getReachableMethods().listener(); it.hasNext(); ) {
-                SootMethod m = (SootMethod) it.next();
-                G.v().out.println( m.getBytecodeSignature() );
-            }
-        }
-
-
-        for( Iterator vIt = pag.getVarNodeNumberer().iterator(); vIt.hasNext(); ) {
-
-
-            final VarNode v = (VarNode) vIt.next();
-                scalars++;
+        
+        for( final VarNode v : pag.getVarNodeNumberer() ) {
+        	scalars++;
             PointsToSetInternal set = v.getP2Set();
             if( set != null ) mass += set.size();
             if( set != null ) varMass += set.size();
         }
-        for( Iterator<Object> anIt = pag.allocSourcesIterator(); anIt.hasNext(); ) {
-            final AllocNode an = (AllocNode) anIt.next();
-            for( Iterator adfIt = an.getFields().iterator(); adfIt.hasNext(); ) {
-                final AllocDotField adf = (AllocDotField) adfIt.next();
+        for( final AllocNode an : pag.allocSources() ) {
+            for( final AllocDotField adf : an.getFields() ) {
                 PointsToSetInternal set = adf.getP2Set();
                 if( set != null ) mass += set.size();
                 if( set != null && set.size() > 0 ) {

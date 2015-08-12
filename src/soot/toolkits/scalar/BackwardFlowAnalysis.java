@@ -25,13 +25,6 @@
 
 package soot.toolkits.scalar;
 
-import java.util.BitSet;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
-import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
 
 /**
@@ -46,100 +39,20 @@ public abstract class BackwardFlowAnalysis<N, A> extends FlowAnalysis<N, A> {
 		super(graph);
 	}
 
+    /** 
+     * Returns <code>false</code> 
+     * @return false
+     **/
+	@Override
 	protected boolean isForward() {
 		return false;
 	}
 
+	@Override
 	protected void doAnalysis() {
-		final boolean interactiveMode = Options.v().interactive_mode();
+		doAnalysis(GraphView.BACKWARD, InteractionFlowHandler.BACKWARD, unitToAfterFlow, unitToBeforeFlow);
 
-		List<N> orderedUnits = constructOrderer().newList(graph, true);
-
-		final int n = orderedUnits.size();
-
-		BitSet tail = new BitSet();
-		BitSet work = new BitSet(n);
-		work.set(0, n);
-
-		final Map<N, Integer> index = new IdentityHashMap<N, Integer>(n * 2 + 1);
-		{
-			int i = 0;
-			for (N s : orderedUnits) {
-				index.put(s, i++);
-
-				// Set initial Flows
-				unitToBeforeFlow.put(s, newInitialFlow());
-				unitToAfterFlow.put(s, newInitialFlow());
-			}
-		}
-
-		// Feng Qian: March 07, 2002
-		// init entry points
-		for (N s : graph.getTails()) {
-			tail.set(index.get(s));
-
-			// this is a backward flow analysis
-			unitToAfterFlow.put(s, entryInitialFlow());
-		}
-
-		// int numComputations = 0;
-
-		// Perform fixed point flow analysis
-		{
-			A previousFlow = newInitialFlow();
-
-			for (int i = work.nextSetBit(0); i >= 0; i = work.nextSetBit(i + 1)) {
-				work.clear(i);
-				N s = orderedUnits.get(i);
-
-				A afterFlow = unitToAfterFlow.get(s);				
-
-				// Compute and store afterFlow
-				{
-					final Iterator<N> it = graph.getSuccsOf(s).iterator();
-
-					if (it.hasNext()) {
-						copy(unitToBeforeFlow.get(it.next()), afterFlow);
-
-						while (it.hasNext()) {
-							mergeInto(s, afterFlow, unitToBeforeFlow.get(it.next()));
-						}
-
-						if (tail.get(i)) {
-							mergeInto(s, afterFlow, entryInitialFlow());
-						}
-					}
-				}
-				
-				A beforeFlow = unitToBeforeFlow.get(s);
-				copy(beforeFlow, previousFlow);
-				
-				// Compute beforeFlow and store it.
-				if (interactiveMode) {
-					afterFlowThrough(s, afterFlow, true);
-					flowThrough(afterFlow, s, beforeFlow);
-					beforeFlowThrough(s, beforeFlow, false);
-				} else {
-					flowThrough(afterFlow, s, beforeFlow);
-				}
-				
-				boolean hasChanged = !previousFlow.equals(beforeFlow);
-
-				// Update queue appropriately
-				if ( hasChanged ) {
-					for (N v : graph.getPredsOf(s)) {
-						int j = index.get(v);
-						work.set(j);
-						i = Math.min(i, j-1);
-					}
-				}
-
-				// numComputations++;
-			}
-		}
-
-		// Timers.v().totalFlowNodes += n;
-		// Timers.v().totalFlowComputations += numComputations;
+		// soot.Timers.v().totalFlowNodes += graph.size();
+		// soot.Timers.v().totalFlowComputations += numComputations;
 	}
 }
-

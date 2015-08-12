@@ -33,6 +33,7 @@ import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Field;
 import org.jf.dexlib2.iface.Method;
 
+import soot.Modifier;
 import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
@@ -104,6 +105,7 @@ public class DexClass {
                     continue;
                 
                 SootClass interfaceClass = SootResolver.v().makeClassRef(interfaceClassName);
+                interfaceClass.setModifiers(interfaceClass.getModifiers() | Modifier.INTERFACE);
                 sc.addInterface(interfaceClass);
                 deps.typesToHierarchy.add(interfaceClass.getType());
             }
@@ -132,14 +134,14 @@ public class DexClass {
         
         // get the methods of the class
         for (Method method : defItem.getDirectMethods()) {
-            SootMethod sm = DexMethod.makeSootMethod(defItem.getSourceFile(), method, sc);
+            SootMethod sm = DexMethod.makeSootMethod(dexFile, method, sc);
             if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
                 continue;
             sc.addMethod(sm);
             da.handleMethodAnnotation(sm, method);
         }
         for (Method method : defItem.getVirtualMethods()) {
-            SootMethod sm = DexMethod.makeSootMethod(defItem.getSourceFile(), method, sc);
+            SootMethod sm = DexMethod.makeSootMethod(dexFile, method, sc);
             if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
                 continue;
             sc.addMethod(sm);
@@ -159,18 +161,27 @@ public class DexClass {
         		if (t instanceof InnerClassTag) {
         			InnerClassTag ict = (InnerClassTag) t;
         			
-        			// Get the outer class
+        			// Check the inner class to make sure that this tag actually
+        			// refers to the current class as the inner class
+        			String inner = ict.getInnerClass().replaceAll("/", ".");
+        			if (!inner.equals(sc.getName()))
+        				continue;
+        			
         			String outer = null;
-        			if (ict.getOuterClass() == null) { // anonymous inner classes
-        				outer = ict.getInnerClass().replaceAll("\\$[0-9]*$", "").replaceAll("/", ".");
+					if (ict.getOuterClass() == null) { // anonymous and local classes
+						outer = ict.getInnerClass().replaceAll("\\$[0-9].*$", "").replaceAll("/", ".");
         			} else {
         				outer = ict.getOuterClass().replaceAll("/", ".");
         			}
         			
-        			// Get the InnerClassAttribute of the outer class
         			SootClass osc = SootResolver.v().makeClassRef(outer);
-        			if (osc == sc)
-        				continue;
+        			if (osc == sc) {
+        				if (!sc.hasOuterClass())
+        					continue;
+        				osc = sc.getOuterClass();
+        			}
+        			
+        			// Get the InnerClassAttribute of the outer class
         			InnerClassAttribute icat = (InnerClassAttribute)osc.getTag("InnerClassAttribute");
         			if (icat == null) {
         				icat = new InnerClassAttribute();
@@ -178,9 +189,14 @@ public class DexClass {
         			}
         			
         			// Transfer the tag from the inner class to the outer class
-        			InnerClassTag newt = new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(), ict.getShortName(), ict.getAccessFlags());
+        			InnerClassTag newt = new InnerClassTag(ict.getInnerClass(), ict.getOuterClass(),
+        					ict.getShortName(), ict.getAccessFlags());
         			icat.add(newt);
-					// innerTagIt.remove();
+        			
+        			// Remove the tag from the inner class as inner classes do
+        			// not have these tags in the Java / Soot semantics. The
+        			// DexPrinter will copy it back if we do dex->dex.
+					innerTagIt.remove();
         		}
         	}
         }

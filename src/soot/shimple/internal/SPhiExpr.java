@@ -22,7 +22,9 @@ package soot.shimple.internal;
 import soot.*;
 import soot.shimple.*;
 import soot.util.*;
+
 import java.util.*;
+
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 
@@ -34,29 +36,20 @@ import soot.toolkits.graph.*;
  **/
 public class SPhiExpr implements PhiExpr
 {
-    protected List<UnitBox> argPairs = new ArrayList<UnitBox>();
-    protected Map predToPair = new HashMap();  // cache
+    protected List<ValueUnitPair> argPairs = new ArrayList<ValueUnitPair>();
+    protected Map<Unit, ValueUnitPair> predToPair = new HashMap<Unit, ValueUnitPair>();  // cache
     protected Type type;
     
     /**
      * Create a trivial Phi expression for leftLocal.  preds is an ordered
      * list of the control flow predecessor Blocks of the PhiExpr.
      **/
-    public SPhiExpr(Local leftLocal, List preds)
+    public SPhiExpr(Local leftLocal, List<Block> preds)
     {
         type = leftLocal.getType();
 
-        Iterator predsIt = preds.iterator();
-        while(predsIt.hasNext())
-        {
-            Object pred = predsIt.next();
-
-            if(pred instanceof Block)
-                addArg(leftLocal, (Block)pred);
-            else if(pred instanceof Unit)
-                addArg(leftLocal, (Unit)pred);
-            else
-                throw new RuntimeException("Must be a CFG block or tail unit.");
+        for (Block pred : preds) {
+        	addArg(leftLocal, pred);
         }
     }
 
@@ -90,7 +83,7 @@ public class SPhiExpr implements PhiExpr
 
     /* get-accessor implementations */
     
-    public List getArgs()
+    public List<ValueUnitPair> getArgs()
     {
         return Collections.unmodifiableList(argPairs);
     }
@@ -98,10 +91,8 @@ public class SPhiExpr implements PhiExpr
     public List<Value> getValues()
     {
         List<Value> args = new ArrayList<Value>();
-        Iterator argPairsIt = argPairs.iterator();
-
-        while(argPairsIt.hasNext()){
-            Value arg = ((ValueUnitPair)argPairsIt.next()).getValue();
+        for (ValueUnitPair vup : argPairs) {
+            Value arg = vup.getValue();
             args.add(arg);
         }
         
@@ -111,10 +102,8 @@ public class SPhiExpr implements PhiExpr
     public List<Unit> getPreds()
     {
         List<Unit> preds = new ArrayList<Unit>();
-        Iterator argPairsIt = argPairs.iterator();
-
-        while(argPairsIt.hasNext()){
-            Unit arg = ((ValueUnitPair)argPairsIt.next()).getUnit();
+        for (ValueUnitPair up : argPairs) {
+            Unit arg = up.getUnit();
             preds.add(arg);
         }
         
@@ -157,13 +146,13 @@ public class SPhiExpr implements PhiExpr
 
     public ValueUnitPair getArgBox(Unit predTailUnit)
     {
-        ValueUnitPair vup = (ValueUnitPair) predToPair.get(predTailUnit);
+        ValueUnitPair vup = predToPair.get(predTailUnit);
 
         // we pay a penalty for misses but hopefully the common case
         // is faster than an iteration over argPairs every time
         if(vup == null || vup.getUnit() != predTailUnit){
             updateCache();
-            vup = (ValueUnitPair) predToPair.get(predTailUnit);
+            vup = predToPair.get(predTailUnit);
             if((vup != null) && (vup.getUnit() != predTailUnit))
                 throw new RuntimeException("Assertion failed.");
         }
@@ -312,9 +301,10 @@ public class SPhiExpr implements PhiExpr
     
     public boolean addArg(Value arg, Unit predTailUnit)
     {
-        // we have no choice but to flush the cache
-        updateCache();
-
+    	// Do not allow phi nodes for dummy blocks
+    	if (predTailUnit == null)
+    		return false;
+    	
         // we disallow duplicate arguments
         if(predToPair.keySet().contains(predTailUnit))
             return false;
@@ -349,10 +339,9 @@ public class SPhiExpr implements PhiExpr
      **/
     protected void updateCache()
     {
-        predToPair = new HashMap();
-        Iterator pairsIt = argPairs.iterator();
-        while(pairsIt.hasNext()){
-            ValueUnitPair vup = (ValueUnitPair) pairsIt.next();
+        int needed = argPairs.size();
+        predToPair = new HashMap<Unit, ValueUnitPair>(needed << 1, 1.0F); //Always attempt to allocate the next power of 2 sized map
+        for (ValueUnitPair vup : argPairs) {
             predToPair.put(vup.getUnit(), vup);
         }
     }
@@ -387,33 +376,32 @@ public class SPhiExpr implements PhiExpr
         return hashcode;
     }
 
+    @Override
     public List<UnitBox> getUnitBoxes()
     {
-        return argPairs;
+    	Set<UnitBox> boxes = new HashSet<UnitBox>(argPairs.size());
+    	for (ValueUnitPair up : argPairs)
+    		boxes.add(up);
+        return new ArrayList<UnitBox>(boxes);
     }
 
     public void clearUnitBoxes()
     {
-        Iterator boxesIt = getUnitBoxes().iterator();
-        while(boxesIt.hasNext()){
-            UnitBox box = (UnitBox) boxesIt.next();
+    	for (UnitBox box : getUnitBoxes()) {
             box.setUnit(null);
         }
     }
     
-    public List getUseBoxes()
+    public List<ValueBox> getUseBoxes()
     {
-        Set set = new HashSet();
+        Set<ValueBox> set = new HashSet<ValueBox>();
 
-        Iterator argPairsIt = argPairs.iterator();
-
-        while(argPairsIt.hasNext()){
-            ValueUnitPair argPair = (ValueUnitPair) argPairsIt.next();
+        for (ValueUnitPair argPair : argPairs) {
             set.addAll(argPair.getValue().getUseBoxes());
             set.add(argPair);
         }
 
-        return new ArrayList(set);
+        return new ArrayList<ValueBox>(set);
     }
 
     public Type getType()
@@ -424,15 +412,13 @@ public class SPhiExpr implements PhiExpr
     public String toString()
     {
         StringBuffer expr = new StringBuffer(Shimple.PHI + "(");
-        Iterator argPairsIt = argPairs.iterator();
-
-        while(argPairsIt.hasNext()){
-            ValueUnitPair vuPair = (ValueUnitPair)argPairsIt.next();
+        boolean isFirst = true;
+        for (ValueUnitPair vuPair : argPairs) {
+            if(!isFirst)
+                expr.append(", ");
             Value arg = vuPair.getValue();
             expr.append(arg.toString());
-
-            if(argPairsIt.hasNext())
-                expr.append(", ");
+            isFirst = false;
         }
 
         expr.append(")");
@@ -444,14 +430,13 @@ public class SPhiExpr implements PhiExpr
     {
         up.literal(Shimple.PHI);
         up.literal("(");
-
-        Iterator argPairsIt = argPairs.iterator();
-        while(argPairsIt.hasNext()){
-            ValueUnitPair vuPair = (ValueUnitPair)argPairsIt.next();
-            vuPair.toString(up);
-
-            if(argPairsIt.hasNext())
+        
+        boolean isFirst = true;
+        for (ValueUnitPair vuPair : argPairs) {
+            if (!isFirst)
                 up.literal(", ");
+            vuPair.toString(up);
+            isFirst = false;
         }
 
         up.literal(")");

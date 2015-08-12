@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.jf.dexlib2.AnnotationVisibility;
@@ -33,6 +34,7 @@ import org.jf.dexlib2.iface.value.ShortEncodedValue;
 import org.jf.dexlib2.iface.value.StringEncodedValue;
 import org.jf.dexlib2.iface.value.TypeEncodedValue;
 
+import soot.ArrayType;
 import soot.RefType;
 import soot.SootClass;
 import soot.SootMethod;
@@ -73,6 +75,7 @@ import soot.toDex.SootToDexUtils;
  */
 public class DexAnnotation {
     
+	private final Type ARRAY_TYPE = RefType.v("Array");
 	private final SootClass clazz;
     private final Dependencies deps;
     
@@ -128,7 +131,7 @@ public class DexAnnotation {
 							for (AnnotationElem ae : a.getElems()) {
 								if (ae instanceof AnnotationAnnotationElem) {
 									AnnotationAnnotationElem aae = (AnnotationAnnotationElem) ae;
-									AnnotationTag at = (AnnotationTag) aae.getValue();
+									AnnotationTag at = aae.getValue();
 									// extract default elements
 									Map<String, AnnotationElem> defaults = new HashMap<String, AnnotationElem>();
 									for (AnnotationElem aelem: at.getElems()) {
@@ -140,9 +143,41 @@ public class DexAnnotation {
 										String methodName = sm.getName();
 										if (defaults.containsKey(methodName)) {
 											AnnotationElem e = defaults.get(methodName);
-											e.setName("default");
-											AnnotationDefaultTag d = new AnnotationDefaultTag(e);
-											sm.addTag(d);
+											
+											//Okay, the name is the same, but is it actually the same type?
+											Type annotationType = getSootType(e);
+											boolean isCorrectType = false;
+											if (annotationType == null) {
+												//we do not know the type of the annotation, so we guess it's the correct type.
+												isCorrectType = true;
+											} else {
+												if (annotationType.equals(sm.getReturnType())) {
+													isCorrectType = true;
+												} else if (annotationType.equals(ARRAY_TYPE)) {
+													if (sm.getReturnType() instanceof ArrayType)
+														isCorrectType = true;
+												}
+											}
+											
+											if (isCorrectType && sm.getParameterCount() == 0) {
+												e.setName("default");
+												AnnotationDefaultTag d = new AnnotationDefaultTag(e);
+												sm.addTag(d);
+												
+												//In case there is more than one matching method, we only use the first one
+												defaults.remove(sm.getName());
+											}
+										}
+									}
+									for (Entry<String, AnnotationElem> leftOverEntry : defaults.entrySet()) {
+										//We were not able to find a matching method for the tag, because the return signature
+										//does not match
+										SootMethod found = clazz.getMethodByNameUnsafe(leftOverEntry.getKey());
+										AnnotationElem element = leftOverEntry.getValue();
+										if (found != null) {
+											element.setName("default");
+											AnnotationDefaultTag d = new AnnotationDefaultTag(element);
+											found.addTag(d);
 										}
 									}
 								}
@@ -158,7 +193,58 @@ public class DexAnnotation {
    			}
     }
 
-    /**
+    private Type getSootType(AnnotationElem e) {
+    	Type annotationType;
+		switch (e.getKind()) {
+		case '[': //array
+			//Until now we only know it's some kind of array.
+			annotationType = ARRAY_TYPE;
+			AnnotationArrayElem array = (AnnotationArrayElem) e;
+			if (array.getNumValues() > 0) {
+				//Try to determine type of the array
+				AnnotationElem firstElement = array.getValueAt(0);
+				Type type = getSootType(firstElement);
+				if (type == null)
+					return null;
+
+				if (type.equals(ARRAY_TYPE))
+					return ARRAY_TYPE;
+				
+				
+				return ArrayType.v(type, 1);
+			}
+			break;
+		case 's': //string
+			annotationType = RefType.v("java.lang.String");
+			break;
+		case 'c': //class
+			annotationType = RefType.v("java.lang.Class");
+			break;
+		case 'e': //enum
+			AnnotationEnumElem enumElem = (AnnotationEnumElem) e;
+			annotationType = Util.getType(enumElem.getTypeName());; 
+			break;
+			
+        case 'L':
+        case 'J':
+        case 'S':
+        case 'D':
+        case 'I':
+        case 'F':
+        case 'B':
+        case 'C':
+        case 'V':
+        case 'Z':
+        	annotationType = Util.getType(String.valueOf(e.getKind()));
+			break;
+		default: 
+			annotationType = null;
+			break;
+		}
+		return annotationType;
+	}
+
+	/**
      * Converts field annotations from Dexlib to Jimple
      * @param h
      * @param f
@@ -325,6 +411,15 @@ public class DexAnnotation {
                 	String outerClass = ((TypeEncodedValue) elem.getValue()).getValue();
                 	outerClass = Util.dottedClassName(outerClass);
                 	deps.typesToSignature.add(RefType.v(outerClass));
+                	
+                	// If this APK specifies an invalid outer class, we try to repair it
+                	if (outerClass.equals(clazz.getName())) {
+                		if (outerClass.contains("$")) {
+                			System.out.println("Fixing circular outer class " + outerClass + "...");
+                			outerClass = outerClass.substring(0, outerClass.lastIndexOf("$"));
+                		}
+                	}
+                	
                 	clazz.setOuterClass(SootResolver.v().makeClassRef(outerClass));
                 	assert clazz.getOuterClass() != clazz;
                 }
@@ -356,9 +451,10 @@ public class DexAnnotation {
             	assert clazz.getOuterClass() != clazz;
 
             } else if (atypes.equals("dalvik.annotation.InnerClass")) {
-                int accessFlags = -1;
-                String name = null;
-                for (AnnotationElem ele : getElements(a.getElements())) {
+				int accessFlags = -1; // access flags of the inner class
+				String name = null; // name of the inner class
+				
+				for (AnnotationElem ele : getElements(a.getElements())) {
                 	if (ele instanceof AnnotationIntElem && ele.getName().equals("accessFlags"))
                 		accessFlags = ((AnnotationIntElem) ele).getValue();
                 	else if (ele instanceof AnnotationStringElem && ele.getName().equals("name"))
@@ -366,35 +462,26 @@ public class DexAnnotation {
                 	else
                 		throw new RuntimeException("Unexpected inner class annotation element");
                 }
-                                
-                String outerClass;
-                String sootOuterClass;
-                if (name == null) {
-                	outerClass = null;
-                	sootOuterClass = classType.replaceAll("\\$[0-9]*;$", ";");
-                } else {
-                    outerClass = classType.replaceFirst("\\$"+ name + ";$", ";");
-                   	sootOuterClass = outerClass;
-                }
-
-				String innerClass = classType;
-
-                // Make sure that no funny business is going on if the
-                // annotation is broken and does not end in $nn.
-				if (sootOuterClass.equals(classType)) {
-					outerClass = null;
-					sootOuterClass = null;
-				}
-
-                Tag innerTag = new InnerClassTag(
-                        DexType.toSootICAT(innerClass), 
-                        outerClass == null ? null : DexType.toSootICAT(outerClass),
-                        name, 
-                        accessFlags);
-                tags.add(innerTag);
                 
-                if (sootOuterClass != null && !clazz.hasOuterClass()) {
-	                sootOuterClass = Util.dottedClassName(sootOuterClass);
+				String outerClass; // outer class name
+				if (name == null)
+					outerClass = classType.replaceAll("\\$[0-9,a-z,A-Z]*;$", ";");
+                else
+                   	outerClass = classType.replaceFirst("\\$" + name + ";$", ";");
+				
+				// Make sure that no funny business is going on if the
+				// annotation is broken and does not end in $nn.
+				if (outerClass.equals(classType)) {
+					outerClass = null;
+				}
+				
+				Tag innerTag = new InnerClassTag(DexType.toSootICAT(classType),
+						outerClass == null ? null : DexType.toSootICAT(outerClass),
+						name, accessFlags);
+				tags.add(innerTag);
+				
+                if (outerClass != null && !clazz.hasOuterClass()) {
+	                String sootOuterClass = Util.dottedClassName(outerClass);
 	            	deps.typesToSignature.add(RefType.v(sootOuterClass));
 	            	clazz.setOuterClass(SootResolver.v().makeClassRef(sootOuterClass));
                 	assert clazz.getOuterClass() != clazz;
@@ -403,22 +490,13 @@ public class DexAnnotation {
             	continue;
                 
             } else if (atypes.equals("dalvik.annotation.MemberClasses")) {
-                
                 AnnotationArrayElem e = (AnnotationArrayElem) getElements(a.getElements()).get(0); 
-                String sig = "";
-                Debug.printDbg("memberclasses size: ", e.getValues().size());
-                for (AnnotationElem ae : e.getValues()) {
-                    Debug.printDbg("annotation ", ae);
-                }
                 for (AnnotationElem ae : e.getValues()) {
                     AnnotationClassElem c = (AnnotationClassElem) ae;
-                    sig += c.getDesc() +" -- "+ c.getName() +" ;; ";
-                    Debug.printDbg("s: ", c.getDesc());
-                    Debug.printDbg("signature: ", sig);
                     String innerClass = c.getDesc();
                     String outerClass = innerClass.replaceAll("\\$[^\\$]*$", "");
-                    String name = innerClass.replaceAll("^.*\\$", "");
-                    if (name.replaceAll("[0-9]*", "").equals("")) { // anonymous inner classes
+					String name = innerClass.replaceAll("^.*\\$", "").replaceAll(";$", "");
+					if (name.replaceAll("[0-9].*", "").equals("")) { // anonymous or local inner classes
                     	name = null;
                     }
                     int accessFlags = 0; // seems like this information is lost during the .class -- dx --> .dex process.

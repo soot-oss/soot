@@ -59,7 +59,7 @@ public class ShimpleBodyBuilder
 {
     protected ShimpleBody body;
     protected ShimpleFactory sf;
-    protected DominatorTree dt;
+    protected DominatorTree<Block> dt;
     protected BlockGraph cfg;
     
     /**
@@ -119,7 +119,7 @@ public class ShimpleBodyBuilder
 
     public void preElimOpt()
     {
-        boolean optElim = options.node_elim_opt();
+        //boolean optElim = options.node_elim_opt();
 
         // *** FIXME: 89e9a0470601091906j26489960j65290849dbe0481f@mail.gmail.com
         //if(optElim)
@@ -173,7 +173,7 @@ public class ShimpleBodyBuilder
     protected Map<Local,Local> newLocalsToOldLocal;
 
     protected int[] assignmentCounters;
-    protected Stack[] namingStacks;
+    protected Stack<Integer>[] namingStacks;
     
     /**
      * Variable Renaming Algorithm from Cytron et al 91, P26-8,
@@ -190,17 +190,17 @@ public class ShimpleBodyBuilder
         namingStacks = new Stack[origLocals.size()];
 
         for(int i = 0; i < namingStacks.length; i++)
-            namingStacks[i] = new Stack();
+            namingStacks[i] = new Stack<Integer>();
 
-        List heads = cfg.getHeads();
+        List<Block> heads = cfg.getHeads();
 
-        if(heads.size() == 0)
+        if(heads.isEmpty())
             return;
 
         if(heads.size() != 1)
             throw new RuntimeException("Assertion failed:  Only one head expected.");
         
-        Block entry = (Block) heads.get(0);
+        Block entry = heads.get(0);
         renameLocalsSearch(entry);
     }
 
@@ -215,24 +215,16 @@ public class ShimpleBodyBuilder
         // Step 1 of 4 -- Rename block's uses (ordinary) and defs
         {
             // accumulated and re-processed in a later loop
-            Iterator unitsIt = block.iterator();
-
-            while(unitsIt.hasNext()){
-                Unit unit = (Unit) unitsIt.next();
-
+        	for (Unit unit : block) {
                 // Step 1/2 of 1
                 {
-                    List useBoxes = new ArrayList();
+                    List<ValueBox> useBoxes = new ArrayList<ValueBox>();
 
                     if(!Shimple.isPhiNode(unit))
                         useBoxes.addAll(unit.getUseBoxes());
 
-                    Iterator useBoxesIt = useBoxes.iterator();
-                
-                    while(useBoxesIt.hasNext()){
-                        ValueBox useBox = (ValueBox) useBoxesIt.next();
+                    for (ValueBox useBox : useBoxes) {
                         Value use = useBox.getValue();
-
                         int localIndex = indexOfLocal(use);
 
                         // not one of our locals
@@ -244,7 +236,7 @@ public class ShimpleBodyBuilder
                         if(namingStacks[localIndex].empty())
                             continue;
 
-                        Integer subscript = (Integer) namingStacks[localIndex].peek();
+                        Integer subscript = namingStacks[localIndex].peek();
 
                         Local renamedLocal = fetchNewLocal(localUse, subscript);
                         useBox.setValue(renamedLocal);
@@ -274,7 +266,7 @@ public class ShimpleBodyBuilder
                     if(localIndex == -1)
                         throw new RuntimeException("Assertion failed.");
                 
-                    Integer subscript = new Integer(assignmentCounters[localIndex]);
+                    Integer subscript = assignmentCounters[localIndex];
 
                     Local newLhsLocal = fetchNewLocal(lhsLocal, subscript);
                     lhsLocalBox.setValue(newLhsLocal);
@@ -288,16 +280,12 @@ public class ShimpleBodyBuilder
 
         // Step 2 of 4 -- Rename Phi node uses in Successors
         {
-            Iterator succsIt = cfg.getSuccsOf(block).iterator();
-
-            while(succsIt.hasNext()){
-                Block succ = (Block) succsIt.next();
-
-                Iterator unitsIt = succ.iterator();
-
-                while(unitsIt.hasNext()){
-                    Unit unit = (Unit) unitsIt.next();
-
+        	for (Block succ : cfg.getSuccsOf(block)) {
+        		// Ignore dummy blocks
+        		if (block.getHead() == null && block.getTail() == null)
+        			continue;
+        		
+        		for (Unit unit : succ) {
                     PhiExpr phiExpr = Shimple.getPhiExpr(unit);
 
                     if(phiExpr == null)
@@ -319,7 +307,7 @@ public class ShimpleBodyBuilder
                     if(namingStacks[localIndex].empty())
                         continue;
 
-                    Integer subscript = (Integer) namingStacks[localIndex].peek();
+                    Integer subscript = namingStacks[localIndex].peek();
                     
                     Local newPhiArg = fetchNewLocal(phiArg, subscript);
                     phiArgBox.setValue(newPhiArg);
@@ -329,16 +317,16 @@ public class ShimpleBodyBuilder
 
         // Step 3 of 4 -- Recurse over children.
         {
-            DominatorNode node = dt.getDode(block);
+            DominatorNode<Block> node = dt.getDode(block);
 
             // now we recurse over children
 
-            Iterator childrenIt = dt.getChildrenOf(node).iterator();
+            Iterator<DominatorNode<Block>> childrenIt = dt.getChildrenOf(node).iterator();
 
             while(childrenIt.hasNext()){
-                DominatorNode childNode = (DominatorNode) childrenIt.next();
+                DominatorNode<Block> childNode = childrenIt.next();
 
-                renameLocalsSearch((Block) childNode.getGode());
+                renameLocalsSearch(childNode.getGode());
             }
         }
 
@@ -423,10 +411,10 @@ public class ShimpleBodyBuilder
         }
 
         Set<String> localNames = new HashSet<String>();
-        Iterator localsIt = body.getLocals().iterator();
+        Iterator<Local> localsIt = body.getLocals().iterator();
 
         while(localsIt.hasNext()){
-            Local local = (Local) localsIt.next();
+            Local local = localsIt.next();
             String localName = local.getName();
             
             if(localNames.contains(localName)){

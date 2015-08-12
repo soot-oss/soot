@@ -42,6 +42,10 @@ public class JInterfaceInvokeExpr extends AbstractInterfaceInvokeExpr
     {
         super(Jimple.v().newLocalBox(base), methodRef, new ValueBox[args.size()]);
 
+        //Check that the method's class is resolved enough
+        //CheckLevel returns without doing anything because we can be not 'done' resolving
+        methodRef.declaringClass().checkLevelIgnoreResolving(SootClass.HIERARCHY);
+        //now check if the class is valid
         if(!methodRef.declaringClass().isInterface() && !methodRef.declaringClass().isPhantom()) {
         	throw new RuntimeException("Trying to create interface invoke expression for non-interface type: " +
         			methodRef.declaringClass() +

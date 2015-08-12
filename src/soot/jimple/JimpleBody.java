@@ -35,8 +35,12 @@ import soot.RefType;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
+import soot.jimple.validation.FieldRefValidator;
 import soot.jimple.validation.IdentityStatementsValidator;
+import soot.jimple.validation.IdentityValidator;
 import soot.jimple.validation.InvokeArgumentValidator;
+import soot.jimple.validation.JimpleTrapValidator;
+import soot.jimple.validation.NewValidator;
 import soot.jimple.validation.ReturnStatementsValidator;
 import soot.jimple.validation.TypesValidator;
 import soot.options.Options;
@@ -60,6 +64,10 @@ public class JimpleBody extends StmtBody
 				TypesValidator.v(),
 				ReturnStatementsValidator.v(),
 				InvokeArgumentValidator.v(),
+ 				FieldRefValidator.v(),
+ 				NewValidator.v(),
+ 				JimpleTrapValidator.v(),
+ 				IdentityValidator.v()
 				//InvokeValidator.v()
 			};
 		}

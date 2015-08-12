@@ -105,8 +105,8 @@ public class InfoFlowAnalysis
 	/** Returns a BACKED MutableDirectedGraph whose nodes are EquivalentValue 
 	  * wrapped Refs. It's perfectly safe to modify this graph, just so long as 
 	  * new nodes are EquivalentValue wrapped Refs. */
-	public HashMutableDirectedGraph getMethodInfoFlowSummary(SootMethod sm) { return getMethodInfoFlowSummary(sm, true); }
-	public HashMutableDirectedGraph getMethodInfoFlowSummary(SootMethod sm, boolean doFullAnalysis)
+	public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(SootMethod sm) { return getMethodInfoFlowSummary(sm, true); }
+	public HashMutableDirectedGraph<EquivalentValue> getMethodInfoFlowSummary(SootMethod sm, boolean doFullAnalysis)
 	{
 		ClassInfoFlowAnalysis cdfa = getClassInfoFlowAnalysis(sm.getDeclaringClass());
 		return cdfa.getMethodInfoFlowSummary(sm, doFullAnalysis);
@@ -190,11 +190,12 @@ public class InfoFlowAnalysis
 		return new CachedEquivalentValue(new ThisRef(sm.getDeclaringClass().getType()));
 	}
 	
-	protected HashMutableDirectedGraph getInvokeInfoFlowSummary(InvokeExpr ie, Stmt is, SootMethod context)
+	protected HashMutableDirectedGraph<EquivalentValue> getInvokeInfoFlowSummary(
+			InvokeExpr ie, Stmt is, SootMethod context)
 	{
 		// get the data flow graph for each possible target of ie,
 		// then combine them conservatively and return the result.
-		HashMutableDirectedGraph ret = null;
+		HashMutableDirectedGraph<EquivalentValue> ret = null;
 		
 		SootMethodRef methodRef = ie.getMethodRef();
 		String subSig = methodRef.resolve().getSubSignature();
@@ -207,16 +208,17 @@ public class InfoFlowAnalysis
 			// and not just a class initializer or other unintended control flow.
 			if(target.getSubSignature().equals(subSig))
 			{
-				HashMutableDirectedGraph ifs = getMethodInfoFlowSummary(target, context.getDeclaringClass().isApplicationClass());
+				HashMutableDirectedGraph<EquivalentValue> ifs = getMethodInfoFlowSummary(
+						target, context.getDeclaringClass().isApplicationClass());
 				if(ret == null)
 					ret = ifs;
 				else
 				{
-					for(Object node : ifs.getNodes())
+					for(EquivalentValue node : ifs.getNodes())
 					{
 						if(!ret.containsNode(node))
 							ret.addNode(node);
-						for(Object succ : ifs.getSuccsOf(node))
+						for(EquivalentValue succ : ifs.getSuccsOf(node))
 							ret.addEdge(node, succ);
 					}
 				}
@@ -227,7 +229,8 @@ public class InfoFlowAnalysis
 //		return getMethodInfoFlowSummary(methodRef.resolve(), context.getDeclaringClass().isApplicationClass());
 	}
 	
-	protected MutableDirectedGraph getInvokeAbbreviatedInfoFlowGraph(InvokeExpr ie, SootMethod context)
+	protected MutableDirectedGraph<EquivalentValue> getInvokeAbbreviatedInfoFlowGraph(
+			InvokeExpr ie, SootMethod context)
 	{
 		// get the data flow graph for each possible target of ie,
 		// then combine them conservatively and return the result.
@@ -235,24 +238,22 @@ public class InfoFlowAnalysis
 		return getMethodInfoFlowAnalysis(methodRef.resolve()).getMethodAbbreviatedInfoFlowGraph();
 	}
 	
-	public static void printInfoFlowSummary(DirectedGraph g)
+	public static void printInfoFlowSummary(DirectedGraph<EquivalentValue> g)
 	{
-		Iterator nodeIt = g.iterator();
-		if(!nodeIt.hasNext())
+		if(g.size() > 0)
 			G.v().out.println("    " + " --> ");
-		while(nodeIt.hasNext())
+		for (EquivalentValue node : g)
 		{
-			Object node = nodeIt.next();
-			List sources = g.getPredsOf(node);
-			Iterator sourcesIt = sources.iterator();
-			if(!sourcesIt.hasNext())
+			List<EquivalentValue> sources = g.getPredsOf(node);
+			if(sources.isEmpty())
 				continue;
 			G.v().out.print("    [ ");
 			int sourcesnamelength = 0;
 			int lastnamelength = 0;
-			while(sourcesIt.hasNext())
+			int idx = 0;
+			for (EquivalentValue t : sources)
 			{
-				Value v = ((EquivalentValue) sourcesIt.next()).getValue();
+				Value v = t.getValue();
 				if(v instanceof FieldRef)
 				{
 					FieldRef fr = (FieldRef) v;
@@ -278,7 +279,7 @@ public class InfoFlowAnalysis
 						sourcesnamelength = lastnamelength;
 					G.v().out.print(name);
 				}
-				if(sourcesIt.hasNext())
+				if((idx++) < sources.size())
 					G.v().out.print("\n      ");
 			}
 			for(int i = 0; i < sourcesnamelength - lastnamelength; i++)
@@ -287,11 +288,11 @@ public class InfoFlowAnalysis
 		}
 	}
 		
-	public static void printGraphToDotFile(String filename, DirectedGraph graph, String graphname, boolean onePage)
+	public static void printGraphToDotFile(String filename,
+			DirectedGraph<EquivalentValue> graph, String graphname, boolean onePage)
 	{
 		// this makes the node name unique
 		nodecount = 0; // reset node counter first.
-		Hashtable nodeindex = new Hashtable(graph.size());
 		
 		// file name is the method name + .dot
 		DotGraph canvas = new DotGraph(filename);
@@ -302,20 +303,13 @@ public class InfoFlowAnalysis
 		canvas.setNodeShape(DotGraphConstants.NODE_SHAPE_BOX);
 		canvas.setGraphLabel(graphname);
 		
-		Iterator nodesIt = graph.iterator();
-		while (nodesIt.hasNext())
+		for (EquivalentValue node : graph)
 		{
-			Object node = nodesIt.next();
-
 			canvas.drawNode(getNodeName(node));
 			canvas.getNode(getNodeName(node)).setLabel(getNodeLabel(node));
 
-			Iterator succsIt = graph.getSuccsOf(node).iterator();
-			
-			while (succsIt.hasNext())
+			for (EquivalentValue s : graph.getSuccsOf(node))
 			{
-				Object s= succsIt.next();
-
 				canvas.drawNode(getNodeName(s));
 				canvas.getNode(getNodeName(s)).setLabel(getNodeLabel(s));
 
@@ -327,7 +321,7 @@ public class InfoFlowAnalysis
 	}
 
 	static int nodecount = 0;
-	static Map nodeToNodeName = new HashMap();
+//	static Map nodeToNodeName = new HashMap();
 	public static String getNodeName(Object o)
 	{
 //		if(!nodeToNodeName.containsKey(o)) // Since this uses all different kinds of objects, we

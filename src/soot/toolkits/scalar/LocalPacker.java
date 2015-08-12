@@ -84,13 +84,13 @@ public class LocalPacker extends BodyTransformer
         {
             for (Local l : body.getLocals())
             {
-                Object g = l.getType();
+            	Type g = l.getType();
                 
                 localToGroup.put(l, g);
                 
                 if(!groupToColorCount.containsKey(g))
                 {
-                    groupToColorCount.put(g, new Integer(0));
+                    groupToColorCount.put(g, 0);
                 }
             }
         }

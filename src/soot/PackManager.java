@@ -38,6 +38,7 @@ import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 
 import soot.baf.Baf;
+import soot.baf.BafASMBackend;
 import soot.baf.BafBody;
 import soot.baf.toolkits.base.LoadStoreOptimizer;
 import soot.baf.toolkits.base.PeepholeOptimizer;
@@ -519,7 +520,9 @@ public class PackManager {
             PhaseDumper.v().dumpBefore("output");
         if( Options.v().output_format() == Options.output_format_dava ) {
             postProcessDAVA();
-        } else if (Options.v().output_format() == Options.output_format_dex) {
+        }
+        else if (Options.v().output_format() == Options.output_format_dex
+        		|| Options.v().output_format() == Options.output_format_force_dex) {
         	writeOutput(reachableClasses());
         	dexPrinter.print();
         } else {
@@ -744,7 +747,7 @@ public class PackManager {
 
             try {
                 if( jarFile != null ) {
-                    JarEntry entry = new JarEntry(fileName.replaceAll("\\","/"));
+                    JarEntry entry = new JarEntry(fileName.replace('\\','/'));
                     jarFile.putNextEntry(entry);
                     streamOut = jarFile;
                 } else {
@@ -830,6 +833,7 @@ public class PackManager {
             case Options.output_format_jimp :
             case Options.output_format_template :
             case Options.output_format_dex :
+            case Options.output_format_force_dex :
                 break;
             case Options.output_format_shimp:
             case Options.output_format_shimple:
@@ -850,6 +854,7 @@ public class PackManager {
                 break;
             case Options.output_format_jasmin :
             case Options.output_format_class :
+            case Options.output_format_asm :
                 produceGrimp = Options.v().via_grimp();
                 produceBaf = !produceGrimp;
                 break;
@@ -988,7 +993,8 @@ public class PackManager {
         final int format = Options.v().output_format();
         if( format == Options.output_format_none ) return;
         if( format == Options.output_format_dava ) return;
-        if (format == Options.output_format_dex) {
+        if (format == Options.output_format_dex
+        		|| format == Options.output_format_force_dex) {
         	// just add the class to the dex printer, writing is done after adding all classes
         	dexPrinter.add(c);
         	return;
@@ -1016,7 +1022,9 @@ public class PackManager {
                 streamOut = new GZIPOutputStream(streamOut);
             }
             if(format == Options.output_format_class) {
-                streamOut = new JasminOutputStream(streamOut);
+            	if(!Options.v().asm_backend()){
+            		streamOut = new JasminOutputStream(streamOut);
+            	}
             }
             writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
             G.v().out.println( "Writing to "+fileName );
@@ -1027,8 +1035,15 @@ public class PackManager {
         if (Options.v().xml_attributes()) {
             Printer.v().setOption(Printer.ADD_JIMPLE_LN);
         }
+        
+        int java_version = Options.v().java_version();
+        
         switch (format) {
             case Options.output_format_class :
+            	if(Options.v().asm_backend()){
+            		new BafASMBackend(c, java_version).generateClassFile(streamOut);
+            		break;
+            	}
             case Options.output_format_jasmin :
                 if (c.containsBafBody())
                     new soot.baf.JasminClass(c).print(writerOut);
@@ -1062,6 +1077,9 @@ public class PackManager {
                     new PrintWriter(
                         new OutputStreamWriter(streamOut));
                 TemplatePrinter.v().printTo(c, writerOut);
+            	break;
+            case Options.output_format_asm :
+            	new BafASMBackend(c, java_version).generateTextualRepresentation(writerOut);
             	break;
             default :
                 throw new RuntimeException();

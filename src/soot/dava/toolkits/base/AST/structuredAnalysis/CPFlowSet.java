@@ -13,7 +13,7 @@ import soot.toolkits.scalar.FlowSet;
  * Really the only reason for needing a specialized flow set is that
  * intersection is done differently for constant propagation
  */
-public class CPFlowSet extends DavaFlowSet{
+public class CPFlowSet extends DavaFlowSet<CPTuple> {
 
 
 	public CPFlowSet(){
@@ -34,10 +34,10 @@ public class CPFlowSet extends DavaFlowSet{
         numElements = other.numElements;
         maxElements = other.maxElements;
         
-        elements = new Object[other.elements.length];
+        elements = new CPTuple[other.elements.length];
         for(int i=0;i < other.elements.length; i++){
         	if ( other.elements[i] != null)
-        		elements[i] = ((CPTuple)other.elements[i]).clone();
+        		elements[i] = other.elements[i].clone();
         	else
         		elements[i] = null;
         }
@@ -49,10 +49,10 @@ public class CPFlowSet extends DavaFlowSet{
          * anything which is in these lists is not being cloned so care should be taken to not modify
          * any value... c
          */
-        breakList = (HashMap<Serializable, List<DavaFlowSet>>)other.breakList.clone();
-        continueList = (HashMap<Serializable, List<DavaFlowSet>>)other.continueList.clone();
-        implicitBreaks = (HashMap<Serializable, List<DavaFlowSet>>)other.implicitBreaks.clone();
-        implicitContinues = (HashMap<Serializable, List<DavaFlowSet>>)other.implicitContinues.clone();
+        breakList = (HashMap<Serializable, List<DavaFlowSet<CPTuple>>>)other.breakList.clone();
+        continueList = (HashMap<Serializable, List<DavaFlowSet<CPTuple>>>)other.continueList.clone();
+        implicitBreaks = (HashMap<Serializable, List<DavaFlowSet<CPTuple>>>)other.implicitBreaks.clone();
+        implicitContinues = (HashMap<Serializable, List<DavaFlowSet<CPTuple>>>)other.implicitContinues.clone();
 
 	}
 	

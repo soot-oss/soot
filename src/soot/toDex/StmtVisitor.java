@@ -119,7 +119,7 @@ public class StmtVisitor implements StmtSwitch {
     // maps used to map Jimple statements to dalvik instructions
     private Map<Insn, Stmt> insnStmtMap = new HashMap<Insn, Stmt>();
     private Map<Instruction, LocalRegisterAssignmentInformation> instructionRegisterMap = new IdentityHashMap<Instruction, LocalRegisterAssignmentInformation>();
-    private Map<Instruction, Stmt> instructionStmtMap = new IdentityHashMap<Instruction, Stmt>();
+    private Map<Instruction, Insn> instructionInsnMap = new IdentityHashMap<Instruction, Insn>();
     private Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap = new IdentityHashMap<Insn, LocalRegisterAssignmentInformation>();
     private Map<Instruction, SwitchPayload> instructionPayloadMap = new IdentityHashMap<Instruction, SwitchPayload>();
 	private List<LocalRegisterAssignmentInformation> parameterInstructionsList = new ArrayList<LocalRegisterAssignmentInformation>();
@@ -132,7 +132,7 @@ public class StmtVisitor implements StmtSwitch {
 		exprV = new ExprVisitor(this, constantV, regAlloc, belongingFile);
 		insns = new ArrayList<Insn>();
 		switchPayloads = new ArrayList<SwitchPayload>();
-	}
+    }
 	
 	protected void setLastReturnTypeDescriptor(String typeDescriptor) {
 		lastReturnTypeDescriptor = typeDescriptor;
@@ -146,8 +146,15 @@ public class StmtVisitor implements StmtSwitch {
 		return belongingMethod.getDeclaringClass();
 	}
 	
-    public Map<Instruction, Stmt> getInstructionStmtMap() {
-        return this.instructionStmtMap;
+    public Stmt getStmtForInstruction(Instruction instruction) {
+        Insn insn = this.instructionInsnMap.get(instruction);
+        if (insn == null)
+        	return null;
+        return this.insnStmtMap.get(insn);
+    }
+    
+    public Insn getInsnForInstruction(Instruction instruction) {
+    	return instructionInsnMap.get(instruction);
     }
 	
     public Map<Instruction, LocalRegisterAssignmentInformation> getInstructionRegisterMap() {
@@ -175,7 +182,10 @@ public class StmtVisitor implements StmtSwitch {
 	}
 	
 	protected void beginNewStmt(Stmt s) {
-        addInsn(new AddressInsn(s), null);
+		// It's a new statement, so we can re-use registers
+		regAlloc.resetImmediateConstantsPool();
+		
+		addInsn(new AddressInsn(s), null);
 	}
 	
 	public void finalizeInstructions() {
@@ -228,11 +238,12 @@ public class StmtVisitor implements StmtSwitch {
 				// state. We cannot remove the first instruction as other
 				// instructions may depend on the register being set.
 				if (origStmt == null || !isJumpTarget(origStmt)) {
+					Insn nextStmt = this.insns.get(nextIndex + 1);
 					insns.remove(nextIndex);
 				
 					if (origStmt != null) {
 						insnStmtMap.remove(nextInsn);
-						insnStmtMap.put(this.insns.get(nextIndex + 1), origStmt);
+						insnStmtMap.put(nextStmt, origStmt);
 					}
 				}
 			}
@@ -264,7 +275,7 @@ public class StmtVisitor implements StmtSwitch {
 			BuilderInstruction realInsn = i.getRealInsn(labelAssigner);
 			finalInsns.add(realInsn);
             if (insnStmtMap.containsKey(i)) { // get tags
-                instructionStmtMap.put(realInsn, insnStmtMap.get(i));
+                instructionInsnMap.put(realInsn, i);
             }
             if (insnRegisterMap.containsKey(i)) {
             	instructionRegisterMap.put(realInsn, insnRegisterMap.get(i));
@@ -274,7 +285,12 @@ public class StmtVisitor implements StmtSwitch {
 		}
 		return finalInsns;
 	}
-
+	
+	public void fakeNewInsn(Stmt s, Insn insn, Instruction instruction) {
+		this.insnStmtMap.put(insn, s);
+		this.instructionInsnMap.put(instruction, insn);
+	}
+	
 	private void finishRegs() {
 		// fit registers into insn formats, potentially replacing insns
 		RegisterAssigner regAssigner = new RegisterAssigner(regAlloc);
@@ -338,18 +354,18 @@ public class StmtVisitor implements StmtSwitch {
         exprV.setOrigStmt(stmt);
 		Value lhs = stmt.getLeftOp();
 		if (lhs instanceof ConcreteRef) {
-		    regAlloc.setMultipleConstantsPossible(true); // for array refs (ex: a[2] = 3)
 			// special cases that lead to *put* opcodes
 			Value source = stmt.getRightOp();
             addInsn(buildPutInsn((ConcreteRef) lhs, source), stmt);
-			regAlloc.setMultipleConstantsPossible(false); // for array refs
 			return;
 		}
 		// other cases, where lhs is a local
 		if (!(lhs instanceof Local)) {
 			throw new Error("left-hand side of AssignStmt is not a Local: " + lhs.getClass());
 		}
-		Register lhsReg = regAlloc.asLocal(lhs);
+		Local lhsLocal = (Local) lhs;
+		
+		Register lhsReg = regAlloc.asLocal(lhsLocal);
 		
 		Value rhs = stmt.getRightOp();
 		if (rhs instanceof Local) {
@@ -359,7 +375,7 @@ public class StmtVisitor implements StmtSwitch {
 			if (lhsName.equals(rhsName)) {
 				return;
 			}
-			Register sourceReg = regAlloc.asLocal(rhs);
+			Register sourceReg = regAlloc.asLocal((Local) rhs);
             addInsn(buildMoveInsn(lhsReg, sourceReg), stmt);
 		} else if (rhs instanceof Constant) {
 			// move rhs constant into the lhs local
@@ -379,7 +395,7 @@ public class StmtVisitor implements StmtSwitch {
 			}
 		}
 
-		this.insnRegisterMap.put(insns.get(insns.size() - 1), LocalRegisterAssignmentInformation.v(lhsReg, (Local)lhs));
+		this.insnRegisterMap.put(insns.get(insns.size() - 1), LocalRegisterAssignmentInformation.v(lhsReg, lhsLocal));
 	}
 
 	private Insn buildGetInsn(ConcreteRef sourceRef, Register destinationReg) {
@@ -439,7 +455,7 @@ public class StmtVisitor implements StmtSwitch {
 	private Insn buildInstanceFieldPutInsn(InstanceFieldRef destRef, Value source) {
 		SootField destSootField = destRef.getField();
 		BuilderFieldReference destField = DexPrinter.toFieldReference(destSootField, belongingFile);
-		Value instance = destRef.getBase();
+		Local instance = (Local) destRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("iput", destField.getType());
@@ -447,7 +463,7 @@ public class StmtVisitor implements StmtSwitch {
 	}
 
 	private Insn buildArrayPutInsn(ArrayRef destRef, Value source) {
-		Value array = destRef.getBase();
+		Local array = (Local) destRef.getBase();
 		Register arrayReg = regAlloc.asLocal(array);
 		Value index = destRef.getIndex();
 		Register indexReg = regAlloc.asImmediate(index, constantV);
@@ -465,7 +481,7 @@ public class StmtVisitor implements StmtSwitch {
 	}
 	
 	private Insn buildInstanceFieldGetInsn(Register destinationReg, InstanceFieldRef sourceRef) {
-		Value instance = sourceRef.getBase();
+		Local instance = (Local) sourceRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
 		SootField sourceSootField = sourceRef.getField();
 		BuilderFieldReference sourceField = DexPrinter.toFieldReference(sourceSootField, belongingFile);
@@ -476,7 +492,7 @@ public class StmtVisitor implements StmtSwitch {
 	private Insn buildArrayGetInsn(Register destinationReg, ArrayRef sourceRef) {
 		Value index = sourceRef.getIndex();
 		Register indexReg = regAlloc.asImmediate(index, constantV);
-		Value array = sourceRef.getBase();
+		Local array = (Local) sourceRef.getBase();
 		Register arrayReg = regAlloc.asLocal(array);
 		String arrayTypeDescriptor = SootToDexUtils.getArrayTypeDescriptor((ArrayType) array.getType());
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("aget", arrayTypeDescriptor);
@@ -559,7 +575,7 @@ public class StmtVisitor implements StmtSwitch {
 
 	@Override
 	public void caseIdentityStmt(IdentityStmt stmt) {
-		Value lhs = stmt.getLeftOp();
+		Local lhs = (Local) stmt.getLeftOp();
 		Value rhs = stmt.getRightOp();
 		if (rhs instanceof CaughtExceptionRef) {
 			// save the caught exception with move-exception
@@ -576,7 +592,7 @@ public class StmtVisitor implements StmtSwitch {
 			Local localForThis = (Local) lhs;
 			regAlloc.asParameter(belongingMethod, localForThis);
 			
-			parameterInstructionsList.add(LocalRegisterAssignmentInformation.v(regAlloc.asLocal(localForThis), localForThis));
+			parameterInstructionsList.add(LocalRegisterAssignmentInformation.v(regAlloc.asLocal(localForThis).clone(), localForThis));
 		} else {
 			throw new Error("unknown Value as right-hand side of IdentityStmt: " + rhs);
 		}

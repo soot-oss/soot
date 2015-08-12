@@ -31,6 +31,7 @@ import java.util.Set;
 
 import org.jf.dexlib2.iface.Annotation;
 import org.jf.dexlib2.iface.AnnotationElement;
+import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.value.ArrayEncodedValue;
 import org.jf.dexlib2.iface.value.EncodedValue;
@@ -62,7 +63,7 @@ public class DexMethod {
      * Retrieve the SootMethod equivalent of this method
      * @return the SootMethod of this method
      */
-    public static SootMethod makeSootMethod(String dexFile, Method method, SootClass declaringClass) {
+    public static SootMethod makeSootMethod(DexFile dexFile, Method method, SootClass declaringClass) {
         Set<Type> types = new HashSet<Type>();
 
         int accessFlags = method.getAccessFlags();
@@ -146,7 +147,7 @@ public class DexMethod {
             public Body getBody(SootMethod m, String phaseName) {
                 Body b = Jimple.v().newBody(m);
                 try {
-                    dexBody.jimplify(b, m);
+					dexBody.jimplify(b, m);
                 } catch (InvalidDalvikBytecodeException e) {
                     String msg = "Warning: Invalid bytecode in method "+ m +": "+ e;
                     G.v().out.println(msg);

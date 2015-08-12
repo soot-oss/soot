@@ -24,9 +24,6 @@
  */
 
 
-
-
-
 package soot.baf;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -469,17 +466,7 @@ public class JasminClass extends AbstractJasminClass
                     else if(v.value == 1)
                         emit("dconst_1");
                     else {
-                        String s = v.toString();
-                        
-                        if(s.equals("#Infinity"))
-                            s="+DoubleInfinity";
-                        
-                        if(s.equals("#-Infinity"))
-                            s="-DoubleInfinity";
-                        
-                        if(s.equals("#NaN"))
-                            s="+DoubleNaN";
-                        
+                        String s = doubleToString(v);
                         emit("ldc2_w " + s);
                     }
                 }
@@ -493,16 +480,7 @@ public class JasminClass extends AbstractJasminClass
                     else if(v.value == 2)
                         emit("fconst_2");
                     else {
-                        String s = v.toString();
-                        
-                        if(s.equals("#InfinityF"))
-                            s="+FloatInfinity";
-                        if(s.equals("#-InfinityF"))
-                            s="-FloatInfinity";
-                        
-                        if(s.equals("#NaNF"))
-                            s="+FloatNaN";
-                        
+                        String s = floatToString(v);
                         emit("ldc " + s);
                     }
                 }
@@ -1675,7 +1653,7 @@ public class JasminClass extends AbstractJasminClass
             {
                 emit("lookupswitch");
 
-                List lookupValues = i.getLookupValues();
+                List<IntConstant> lookupValues = i.getLookupValues();
                 List<Unit> targets = i.getTargets();
 
                 for(int j = 0; j < lookupValues.size(); j++)

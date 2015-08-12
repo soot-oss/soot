@@ -143,8 +143,8 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 	protected void constructPDG()
 	{
 		Hashtable<Block, Region> block2region = this.m_regionAnalysis.getBlock2RegionMap();
-		DominatorTree pdom = this.m_regionAnalysis.getPostDominatorTree();
-		DominatorTree dom = this.m_regionAnalysis.getDominatorTree();
+		DominatorTree<Block> pdom = this.m_regionAnalysis.getPostDominatorTree();
+		DominatorTree<Block> dom = this.m_regionAnalysis.getDominatorTree();
 				
 		List<Region> regions2process = new LinkedList<Region>();
 		Region topLevelRegion = this.m_regionAnalysis.getTopLevelRegion();
@@ -218,17 +218,17 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 						throw new RuntimeException("PDG construction: A and B are not supposed to be the same node!");
 					
 					
-					DominatorNode aDode = pdom.getDode(a);
-					DominatorNode bDode = pdom.getDode(b);
+					DominatorNode<Block> aDode = pdom.getDode(a);
+					DominatorNode<Block> bDode = pdom.getDode(b);
 					
 					//If B post-dominates A, go to the next successor.
 					if(pdom.isDominatorOf(bDode, aDode))
 						continue;
 					
 					//FIXME: what if the parent is null?!!
-					DominatorNode aParentDode = aDode.getParent();
+					DominatorNode<Block> aParentDode = aDode.getParent();
 					
-					DominatorNode dode = bDode;
+					DominatorNode<Block> dode = bDode;
 					while(dode != aParentDode)
 					{
 						dependents.add((Block)dode.getGode());
@@ -472,8 +472,8 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 										Region succR = (Region) succRPDGNode.getNode();
 										Block h = succR.getBlocks().get(0);
 										
-										DominatorNode hdode = dom.getDode(h);
-										DominatorNode adode = dom.getDode(a);
+										DominatorNode<Block> hdode = dom.getDode(h);
+										DominatorNode<Block> adode = dom.getDode(a);
 										
 										if(dom.isDominatorOf(hdode, adode))
 										{

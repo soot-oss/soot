@@ -23,103 +23,105 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple.toolkits.scalar.pre;
+
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import java.util.*;
 
-/** 
- * Performs a Latest-Computation on the given graph.
- * a computation is latest, when we can't delay it anymore. This uses the
- * Delayability-analysis.
- * More precise: The delayability-analysis says us already until which point we
- * can delay a computation from the earliest computation-point. We just have to
+/**
+ * Performs a Latest-Computation on the given graph. a computation is latest,
+ * when we can't delay it anymore. This uses the Delayability-analysis. More
+ * precise: The delayability-analysis says us already until which point we can
+ * delay a computation from the earliest computation-point. We just have to
  * search for points, where there's a computation, or, where we can't delay the
  * computation to one of the successors.
  */
 public class LatestComputation {
-  private Map<Unit, FlowSet> unitToLatest;
+	private Map<Unit, FlowSet<EquivalentValue>> unitToLatest;
 
+	/**
+	 * given a DelayabilityAnalysis and the computations of each unit,
+	 * calculates the latest computation-point for each expression. the
+	 * <code>equivRhsMap</code> could be calculated on the fly, but it is
+	 * <b>very</b> likely that it already exists (as similar maps are used for
+	 * calculating Earliestness, Delayed,...
+	 *
+	 * @param dg
+	 *            a ExceptionalUnitGraph
+	 * @param delayed
+	 *            the delayability-analysis of the same graph.
+	 * @param equivRhsMap
+	 *            all computations of the graph
+	 */
+	public LatestComputation(UnitGraph unitGraph, DelayabilityAnalysis delayed,
+			Map<Unit, EquivalentValue> equivRhsMap) {
+		this(unitGraph, delayed, equivRhsMap, new ArrayPackedSet<EquivalentValue>(
+				new CollectionFlowUniverse<EquivalentValue>(equivRhsMap.values())));
+	}
 
-  /**
-   * given a DelayabilityAnalysis and the computations of each unit, calculates
-   * the latest computation-point for each expression.
-   * the <code>equivRhsMap</code> could be calculated on the fly, but it is
-   * <b>very</b> likely that it already exists (as similar maps are used for
-   * calculating Earliestness, Delayed,...
-   *
-   * @param dg a ExceptionalUnitGraph
-   * @param delayed the delayability-analysis of the same graph.
-   * @param equivRhsMap all computations of the graph
-   */
-  public LatestComputation(UnitGraph unitGraph, DelayabilityAnalysis delayed,
-                           Map equivRhsMap) {
-    this(unitGraph, delayed, equivRhsMap, new
-      ArrayPackedSet(new CollectionFlowUniverse(equivRhsMap.values())));
-  }
+	/**
+	 * given a DelayabilityAnalysis and the computations of each unit,
+	 * calculates the latest computation-point for each expression.<br>
+	 * the <code>equivRhsMap</code> could be calculated on the fly, but it is
+	 * <b>very</b> likely that it already exists (as similar maps are used for
+	 * calculating Earliestness, Delayed,...<br>
+	 * the shared set allows more efficient set-operations, when they the
+	 * computation is merged with other analyses/computations.
+	 *
+	 * @param dg
+	 *            a ExceptionalUnitGraph
+	 * @param delayed
+	 *            the delayability-analysis of the same graph.
+	 * @param equivRhsMap
+	 *            all computations of the graph
+	 * @param set
+	 *            the shared flowSet
+	 */
+	public LatestComputation(UnitGraph unitGraph, DelayabilityAnalysis delayed,
+			Map<Unit, EquivalentValue> equivRhsMap, BoundedFlowSet<EquivalentValue> set) {
+		unitToLatest = new HashMap<Unit, FlowSet<EquivalentValue>>(unitGraph.size() + 1, 0.7f);
 
-  /**
-   * given a DelayabilityAnalysis and the computations of each unit, calculates
-   * the latest computation-point for each expression.<br>
-   * the <code>equivRhsMap</code> could be calculated on the fly, but it is
-   * <b>very</b> likely that it already exists (as similar maps are used for
-   * calculating Earliestness, Delayed,...<br>
-   * the shared set allows more efficient set-operations, when they the
-   * computation is merged with other analyses/computations.
-   *
-   * @param dg a ExceptionalUnitGraph
-   * @param delayed the delayability-analysis of the same graph.
-   * @param equivRhsMap all computations of the graph
-   * @param set the shared flowSet
-   */
-  public LatestComputation(UnitGraph unitGraph, DelayabilityAnalysis delayed,
-                           Map equivRhsMap, BoundedFlowSet set) {
-    unitToLatest = new HashMap<Unit, FlowSet>(unitGraph.size() + 1, 0.7f);
+		for (Unit currentUnit : unitGraph) {
+			/* create a new Earliest-list for each unit */
+			/*
+			 * basically the latest-set is: (delayed) INTERSECT (comp UNION
+			 * (UNION_successors ~Delayed)) = (delayed) MINUS
+			 * ((INTERSECTION_successors Delayed) MINUS comp).
+			 */
 
-    Iterator unitIt = unitGraph.iterator();
-    while (unitIt.hasNext()) {
-      /* create a new Earliest-list for each unit */
-      Unit currentUnit = (Unit)unitIt.next();
+			FlowSet<EquivalentValue> delaySet = delayed.getFlowBefore(currentUnit);
 
-      /* basically the latest-set is: 
-       * (delayed) INTERSECT (comp UNION (UNION_successors ~Delayed)) =
-       * (delayed) MINUS ((INTERSECTION_successors Delayed) MINUS comp).
-       */
+			/* Calculate (INTERSECTION_successors Delayed) */
+			FlowSet<EquivalentValue> succCompSet =  set.topSet();
+			for (Unit successor : unitGraph.getSuccsOf(currentUnit)) {
+				succCompSet.intersection(delayed.getFlowBefore(successor), succCompSet);
+			}
+			/*
+			 * remove the computation of this set: succCompSet is then:
+			 * ((INTERSECTION_successors Delayed) MINUS comp)
+			 */
+			if (equivRhsMap.get(currentUnit) != null)
+				succCompSet.remove(equivRhsMap.get(currentUnit));
 
-      FlowSet delaySet = (FlowSet)delayed.getFlowBefore(currentUnit);
+			/* make the difference: */
+			FlowSet<EquivalentValue> latest = delaySet.emptySet();
+			delaySet.difference(succCompSet, latest);
 
-      /* Calculate (INTERSECTION_successors Delayed) */
-      FlowSet succCompSet = (FlowSet)set.topSet();
-      List succList = unitGraph.getSuccsOf(currentUnit);
-      Iterator succIt = succList.iterator();
-      while(succIt.hasNext()) {
-        Unit successor = (Unit)succIt.next();
-        succCompSet.intersection((FlowSet)delayed.getFlowBefore(successor),
-            succCompSet);
-      }
-      /* remove the computation of this set: succCompSet is then:
-       * ((INTERSECTION_successors Delayed) MINUS comp) */
-      if (equivRhsMap.get(currentUnit) != null)
-        succCompSet.remove(equivRhsMap.get(currentUnit));
+			unitToLatest.put(currentUnit, latest);
+		}
+	}
 
-      /* make the difference: */
-      FlowSet latest = (FlowSet)delaySet.emptySet();
-      delaySet.difference(succCompSet, latest);
-
-      unitToLatest.put(currentUnit, latest);
-    }
-  }
-
-  /**
-   * returns the set of expressions, that have their latest computation just
-   * before <code>node</code>.
-   *
-   * @param node an Object of the flow-graph (in our case always a unit).
-   * @return a FlowSet containing the expressions.
-   */
-  public Object getFlowBefore(Object node) {
-    return unitToLatest.get(node);
-  }
+	/**
+	 * returns the set of expressions, that have their latest computation just
+	 * before <code>node</code>.
+	 *
+	 * @param node
+	 *            an Object of the flow-graph (in our case always a unit).
+	 * @return a FlowSet containing the expressions.
+	 */
+	public FlowSet<EquivalentValue> getFlowBefore(Object node) {
+		return unitToLatest.get(node);
+	}
 }

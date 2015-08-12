@@ -51,18 +51,19 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
 	protected ValueBox[] bsmArgBoxes;
 	private SootMethodRef bsmRef;
 
+	protected int tag;
 
-	public GDynamicInvokeExpr(SootMethodRef bootStrapMethodRef, List<Value> bootstrapArgs, SootMethodRef methodRef, List args)
+	public GDynamicInvokeExpr(SootMethodRef bootStrapMethodRef, List<Value> bootstrapArgs, SootMethodRef methodRef, int tag, List args)
     {
 		super(methodRef, new ValueBox[args.size()]);
 		this.bsmRef = bootStrapMethodRef;
-		
+		this.tag = tag;
         for(int i = 0; i < args.size(); i++)
             this.argBoxes[i] = Grimp.v().newExprBox((Value) args.get(i));
         for(int i = 0; i < bootstrapArgs.size(); i++)
         	this.bsmArgBoxes[i] = Grimp.v().newExprBox((Value) bootstrapArgs.get(i));	
     }    
-    
+	
 	public Object clone() 
     {
         ArrayList clonedArgs = new ArrayList(getArgCount());
@@ -76,7 +77,7 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
             clonedBsmArgs.add(i, getBootstrapArg(i));
         }
 
-        return new  GDynamicInvokeExpr(bsmRef, clonedBsmArgs, methodRef, clonedArgs);
+        return new  GDynamicInvokeExpr(bsmRef, clonedBsmArgs, methodRef, tag, clonedArgs);
     }
 	
 	public Value getBootstrapArg(int i) {
@@ -189,4 +190,9 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
 
 	        up.literal(")");
 	    }
+
+		@Override
+		public int getHandleTag() {
+			return tag;
+		}
 }

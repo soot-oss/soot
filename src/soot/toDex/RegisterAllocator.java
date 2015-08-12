@@ -89,9 +89,7 @@ public class RegisterAllocator {
 	AtomicInteger doubleI = new AtomicInteger(0);
 	AtomicInteger stringI = new AtomicInteger(0);
 	
-	private Register asConstant(Value v, ConstantVisitor constantV) {
-		Constant c = (Constant) v;
-		
+	private Register asConstant(Constant c, ConstantVisitor constantV) {
 		Register constantRegister = null;
 		
 		List<Register> rArray = null;
@@ -126,12 +124,8 @@ public class RegisterAllocator {
 		    nextRegNum += SootToDexUtils.getDexWords(c.getType());
 		}
 		
-		if (isMultipleConstantsPossible()) {
-		    constantRegister = rArray.get(iI.intValue()).clone();  
-		    iI.set(iI.intValue() + 1);
-		} else {
-		    constantRegister = rArray.get(0).clone();  
-		}
+		constantRegister = rArray.get(iI.intValue()).clone();
+		iI.set(iI.intValue() + 1);
 
 		// "load" constant into the register...
 		constantV.setDestination(constantRegister);
@@ -140,9 +134,7 @@ public class RegisterAllocator {
 		return constantRegister.clone();
 	}
 	
-	private boolean multipleConstantsPossible = false;
-	public void setMultipleConstantsPossible(boolean b) {
-	    multipleConstantsPossible = b;
+	public void resetImmediateConstantsPool() {
 	    classI = new AtomicInteger(0);
 	    nullI = new AtomicInteger(0);
 	    floatI = new AtomicInteger(0);
@@ -151,15 +143,12 @@ public class RegisterAllocator {
 	    doubleI = new AtomicInteger(0);
 	    stringI = new AtomicInteger(0);
 	}
-	public boolean isMultipleConstantsPossible() {
-	    return multipleConstantsPossible;
-	}
 
 	public Map<String, Integer> getLocalToRegisterMapping() {
 		return localToLastRegNum;
 	}
 	
-	public Register asLocal(Value v) {
+	public Register asLocal(Local v) {
 		Local l = (Local) v;
 		String localName = l.getName();
 		Register localRegister;
@@ -224,9 +213,9 @@ public class RegisterAllocator {
 
 	public Register asImmediate(Value v, ConstantVisitor constantV) {
 		if (v instanceof Constant) {
-			 return asConstant(v, constantV);
+			 return asConstant((Constant) v, constantV);
 		} else if (v instanceof Local) {
-			return asLocal(v);
+			return asLocal((Local) v);
 		} else {
 			throw new RuntimeException("expected Immediate (Constant or Local), but was: " + v.getClass());
 		}

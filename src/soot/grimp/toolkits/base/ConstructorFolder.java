@@ -29,15 +29,34 @@
 
 
 package soot.grimp.toolkits.base;
-import soot.options.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import soot.*;
-import soot.toolkits.scalar.*;
-import soot.jimple.*;
-import soot.toolkits.graph.*;
-import soot.grimp.*;
-import soot.util.*;
-import java.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.Singletons;
+import soot.Unit;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.grimp.GrimpBody;
+import soot.jimple.AssignStmt;
+import soot.jimple.InvokeStmt;
+import soot.jimple.NewExpr;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.Stmt;
+import soot.options.Options;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.LocalUses;
+import soot.toolkits.scalar.SimpleLocalUses;
+import soot.toolkits.scalar.SmartLocalDefs;
+import soot.toolkits.scalar.SmartLocalDefsPool;
+import soot.toolkits.scalar.UnitValueBoxPair;
+import soot.util.Chain;
 
 public class ConstructorFolder extends BodyTransformer
 {
@@ -58,12 +77,8 @@ public class ConstructorFolder extends BodyTransformer
       stmtList.addAll(units);
 
       Iterator<Unit> it = stmtList.iterator();
-
-      ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
-              
-        
-      LocalDefs localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
-      LocalUses localUses = new SimpleLocalUses(graph, localDefs);
+      
+      LocalUses localUses = LocalUses.Factory.newLocalUses(b);
 
       /* fold in NewExpr's with specialinvoke's */
       while (it.hasNext())

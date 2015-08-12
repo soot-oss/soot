@@ -1093,7 +1093,7 @@ final class AsmMethodSource implements MethodSource {
 		else if (val instanceof org.objectweb.asm.Type)
 			v = ClassConstant.v(((org.objectweb.asm.Type) val).getInternalName());
 		else if (val instanceof Handle)
-			v = MethodHandle.v(toSootMethodRef((Handle) val));
+			v = MethodHandle.v(toSootMethodRef((Handle) val), ((Handle)val).getTag());
 		else
 			throw new AssertionError("Unknown constant type: " + val.getClass());
 		return v;
@@ -1255,13 +1255,17 @@ final class AsmMethodSource implements MethodSource {
 				args[k] = popImmediate(types[k]);
 				methodArgs.add(args[k].stackOrValue());				
 			}
+			if (methodArgs.size() > 1)
+				Collections.reverse(methodArgs);	// Call stack is FIFO, Jimple is linear
+			
 			returnType = types[types.length - 1];
-						
+			
 			// we always model invokeDynamic method refs as static method references
 			// of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
 			SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);		
 			
-			DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef, bsmMethodArgs, methodRef, methodArgs);
+			DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef,
+					bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
 			
 			for (int i = 0; i < args.length - 1; i++) {
 				boxes[i] = indy.getArgBox(i);
@@ -1637,8 +1641,8 @@ final class AsmMethodSource implements MethodSource {
 	private void emitLocals() {
 		JimpleBody jb = body;
 		SootMethod m = jb.getMethod();
-		Chain<Local> jbl = jb.getLocals();
-		Chain<Unit> jbu = jb.getUnits();
+		Collection<Local> jbl = jb.getLocals();
+		Collection<Unit> jbu = jb.getUnits();
 		int iloc = 0;
 		if (!m.isStatic()) {
 			Local l = getLocal(iloc++);

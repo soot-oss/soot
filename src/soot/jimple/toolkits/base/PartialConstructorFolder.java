@@ -30,12 +30,11 @@
 
 package soot.jimple.toolkits.base;
 import soot.options.*;
-
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.*;
-import soot.toolkits.graph.*;
 import soot.util.*;
+
 import java.util.*;
 
 public class PartialConstructorFolder extends BodyTransformer
@@ -43,20 +42,20 @@ public class PartialConstructorFolder extends BodyTransformer
     //public JimpleConstructorFolder( Singletons.Global g ) {}
     //public static JimpleConstructorFolder v() { return G.v().JimpleConstructorFolder(); }
 
-    private List types;
+    private List<Type> types;
 
-    public void setTypes(List t){
+    public void setTypes(List<Type> t){
         types = t;
     }
 
-    public List getTypes(){
+    public List<Type> getTypes(){
         return types;
     }
     
     /** This method pushes all newExpr down to be the stmt directly before every
      * invoke of the init only if they are in the types list*/
     
-    public void internalTransform(Body b, String phaseName, Map options)
+    public void internalTransform(Body b, String phaseName, Map<String,String> options)
     {
         JimpleBody body = (JimpleBody)b;
 
@@ -64,7 +63,7 @@ public class PartialConstructorFolder extends BodyTransformer
             G.v().out.println("[" + body.getMethod().getName() +
                 "] Folding Jimple constructors...");
 
-        Chain units = body.getUnits();
+        Chain<Unit> units = body.getUnits();
         List<Unit> stmtList = new ArrayList<Unit>();
         stmtList.addAll(units);
 
@@ -73,10 +72,7 @@ public class PartialConstructorFolder extends BodyTransformer
         // start ahead one
         nextStmtIt.next();
         
-        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
-        
-        LocalDefs localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
-        LocalUses localUses = new SimpleLocalUses(graph, localDefs);
+        LocalUses localUses = LocalUses.Factory.newLocalUses(body);
 
         /* fold in NewExpr's with specialinvoke's */
         while (it.hasNext())
@@ -119,13 +115,13 @@ public class PartialConstructorFolder extends BodyTransformer
             // check if new is in the types list - only process these
             if (!types.contains(((NewExpr)rhs).getType())) continue;
             
-            List lu = localUses.getUsesOf(s);
-            Iterator luIter = lu.iterator();
+            List<UnitValueBoxPair> lu = localUses.getUsesOf(s);
+            Iterator<UnitValueBoxPair> luIter = lu.iterator();
             boolean MadeNewInvokeExpr = false;
           
             while (luIter.hasNext())
             {
-                Unit use = ((UnitValueBoxPair)(luIter.next())).unit;
+                Unit use = ((luIter.next())).unit;
                 if (!(use instanceof InvokeStmt))
                     continue;
                 InvokeStmt is = (InvokeStmt)use;

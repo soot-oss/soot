@@ -783,6 +783,9 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkempties_as_allocs_widget(), "empties-as-allocs");
 
 		
+		addToEnableGroup("cg", "cg.spark", getcgcg_sparkallocate_params_widget(), "allocate-params");
+
+		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimple_edges_bidirectional_widget(), "simple-edges-bidirectional");
 
 		
@@ -1889,6 +1892,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getGeneral_Optionscoffi_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getGeneral_Optionsasm_backend_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionsasm_backend_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getGeneral_Optionshelp_widget().getButton().getSelection();
 		
 		
@@ -2279,6 +2292,14 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getOutput_Optionsoutput_format_widget().getAlias(), stringRes);
 		}
+		 
+		stringRes = getOutput_Optionsjava_version_widget().getSelectedAlias();
+
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getOutput_Optionsjava_version_widget().getAlias(), stringRes);
+		}
 		
 		boolRes = getProcessing_Optionsoptimize_widget().getButton().getSelection();
 		
@@ -2632,7 +2653,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		boolRes = getjbjb_uceremove_unreachable_traps_widget().getButton().getSelection();
 		
 		
-		defBoolRes = false;
+		defBoolRes = true;
 		
 
 		if (boolRes != defBoolRes) {
@@ -3124,6 +3145,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkempties_as_allocs_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_sparkallocate_params_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_sparkallocate_params_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_sparksimple_edges_bidirectional_widget().getButton().getSelection();
@@ -6484,6 +6515,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return General_Optionscoffi_widget;
 	}	
 	
+	private BooleanOptionWidget General_Optionsasm_backend_widget;
+	
+	private void setGeneral_Optionsasm_backend_widget(BooleanOptionWidget widget) {
+		General_Optionsasm_backend_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionsasm_backend_widget() {
+		return General_Optionsasm_backend_widget;
+	}	
+	
 	private BooleanOptionWidget General_Optionshelp_widget;
 	
 	private void setGeneral_Optionshelp_widget(BooleanOptionWidget widget) {
@@ -6903,6 +6944,18 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public MultiOptionWidget getOutput_Optionsoutput_format_widget() {
 		return Output_Optionsoutput_format_widget;
+	}	
+	
+	
+	
+	private MultiOptionWidget Output_Optionsjava_version_widget;
+	
+	private void setOutput_Optionsjava_version_widget(MultiOptionWidget widget) {
+		Output_Optionsjava_version_widget = widget;
+	}
+	
+	public MultiOptionWidget getOutput_Optionsjava_version_widget() {
+		return Output_Optionsjava_version_widget;
 	}	
 	
 	
@@ -7766,6 +7819,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getcgcg_sparkempties_as_allocs_widget() {
 		return cgcg_sparkempties_as_allocs_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_sparkallocate_params_widget;
+	
+	private void setcgcg_sparkallocate_params_widget(BooleanOptionWidget widget) {
+		cgcg_sparkallocate_params_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_sparkallocate_params_widget() {
+		return cgcg_sparkallocate_params_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_sparksimple_edges_bidirectional_widget;
@@ -10127,6 +10190,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
+		defKey = ""+" "+""+" "+"asm-backend";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionsasm_backend_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("ASM Backend", "", "","asm-backend", "\n", defaultBool)));
+		
+		
+		
 		defKey = ""+" "+""+" "+"h";
 		defKey = defKey.trim();
 
@@ -10847,7 +10926,13 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Dalvik Executable File",
 		"dex",
-		"\nProduce Dalvik Virtual Machine files. If input was an Android \n			Package (APK), a new APK is generated with it's classes.dex \nreplaced. If 			no input APK is found, only a classes.dex is \ngenerated.",
+		"\nProduce Dalvik Virtual Machine files. If input was an Android \nPackage (APK), a new APK is generated with it's classes.dex \nreplaced. If no input APK is found, only a classes.dex is \ngenerated.",
+		
+		false),
+		
+		new OptionData("Dalvik Executable File",
+		"force-dex",
+		"\nProduce Dalvik Virtual Machine files. This option always creates \na stand-alone DEX file, even if the input was read from an \nAndroid Package (APK). ",
 		
 		false),
 		
@@ -10881,6 +10966,12 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		false),
 		
+		new OptionData("ASM File",
+		"a",
+		"\nProduce .asm files as textual bytecode representation generated \nwith the ASM back end. ",
+		
+		false),
+		
 		};
 		
 										
@@ -10893,6 +10984,78 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			defaultString = getStringDef(defKey);
 		
 			getOutput_Optionsoutput_format_widget().setDef(defaultString);
+		}
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Default behavior",
+		"default",
+		"\nLet Soot determine Java version of generated bytecode. ",
+		
+		false),
+		
+		new OptionData("Java 1.1",
+		"1.1",
+		"\nForce Java 1.1 as output version. ",
+		
+		false),
+		
+		new OptionData("Java 1.2",
+		"1.2",
+		"\nForce Java 1.2 as output version. ",
+		
+		false),
+		
+		new OptionData("Java 1.3",
+		"1.3",
+		"\nForce Java 1.3 as output version. ",
+		
+		false),
+		
+		new OptionData("Java 1.4",
+		"1.4",
+		"\nForce Java 1.4 as output version. ",
+		
+		false),
+		
+		new OptionData("Java 1.5",
+		"1.5",
+		"\nForce Java 1.5 as output version. ",
+		
+		false),
+		
+		new OptionData("Java 1.6",
+		"1.6",
+		"\nForce Java 1.6 as output version. ",
+		
+		false),
+		
+		new OptionData("Java 1.7",
+		"1.7",
+		"\nForce Java 1.7 as output version. ",
+		
+		false),
+		
+		new OptionData("Java 1.8",
+		"1.8",
+		"\nForce Java 1.8 as output version. ",
+		
+		false),
+		
+		};
+		
+										
+		setOutput_Optionsjava_version_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Java version", "", "","java-version", "\nForce Java version of bytecode generated by Soot. This option \ncan only be set on output-format class and asm-backend set, or \non output-format asm")));
+		
+		defKey = ""+" "+""+" "+"java-version";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getOutput_Optionsjava_version_widget().setDef(defaultString);
 		}
 		
 		
@@ -11969,7 +12132,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 		else {
 			
-			defaultBool = false;
+			defaultBool = true;
 			
 		}
 
@@ -13385,6 +13548,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setcgcg_sparkempties_as_allocs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Treat EMPTY as Alloc", "p", "cg.spark","empties-as-allocs", "\nWhen this option is set to true, Spark treats references to \nEMPTYSET, EMPTYMAP, and EMPTYLIST as allocation sites for \nHashSet, HashMap and LinkedList objects respectively, and \nreferences to Hashtable.emptyIterator as allocation sites for \nHashtable.EmptyIterator. This enables subsequent analyses to \ndifferentiate different uses of Java's immutable empty \ncollections. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.spark"+" "+"allocate-params";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_sparkallocate_params_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Add Alloc nodes for parameter of accessible methods", "p", "cg.spark","allocate-params", "\nAdd Alloc nodes for parameter of accessible methods. For any \nParameter allocations for any subtype will be added.", defaultBool)));
 		
 		
 		

@@ -68,8 +68,7 @@ public class DavaMonitor
 		wait();
 	    }
 	    catch (InterruptedException e) {
-		e.printStackTrace();
-		System.exit(0);
+			throw new RuntimeException(e);
 	    }
 	    
 	    currentThread = Thread.currentThread();

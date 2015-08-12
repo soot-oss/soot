@@ -103,7 +103,8 @@ public class VisManLauncher implements IWorkbenchWindowActionDelegate {
 		while (it.hasNext()){
 			IFile next = (IFile)it.next();
 			SootAttributesHandler handler;
-			if (next.getFileExtension().equals("java")){
+			String fileExtension = next.getFileExtension();
+			if (fileExtension != null && fileExtension.equals("java")){
 				JavaAttributesComputer jac = new JavaAttributesComputer();
 				jac.setProj(getProj());
 				jac.setRec(getRec());

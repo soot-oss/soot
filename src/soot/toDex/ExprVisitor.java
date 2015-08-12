@@ -13,8 +13,10 @@ import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.IntegerType;
+import soot.Local;
 import soot.LongType;
 import soot.NullType;
+import soot.PrimType;
 import soot.SootClass;
 import soot.Type;
 import soot.Value;
@@ -206,25 +208,21 @@ public class ExprVisitor implements ExprSwitch {
 	
 	private List<Register> getInvokeArgumentRegs(InvokeExpr ie) {
 		constantV.setOrigStmt(origStmt);
-	    regAlloc.setMultipleConstantsPossible(true);
 		List<Register> argumentRegs = new ArrayList<Register>();
 		for (Value arg : ie.getArgs()) {
 			Register currentReg = regAlloc.asImmediate(arg, constantV);
 			argumentRegs.add(currentReg);
 		}
-		regAlloc.setMultipleConstantsPossible(false);
 		return argumentRegs;
 	}
 
 	private List<Register> getInstanceInvokeArgumentRegs(InstanceInvokeExpr iie) {
 		constantV.setOrigStmt(origStmt);
-	    regAlloc.setMultipleConstantsPossible(true);
 		List<Register> argumentRegs = getInvokeArgumentRegs(iie);
 		// always add reference to callee as first parameter (instance != static)
-		Value callee = iie.getBase();
+		Local callee = (Local) iie.getBase();
 		Register calleeRegister = regAlloc.asLocal(callee);
 		argumentRegs.add(0, calleeRegister);
-		regAlloc.setMultipleConstantsPossible(false);
 		return argumentRegs;
 	}
 
@@ -267,7 +265,8 @@ public class ExprVisitor implements ExprSwitch {
         stmtV.addInsn(buildInvokeInsn("INVOKE_STATIC", method, arguments), origStmt);
 	}
 	
-	private Insn buildCalculatingBinaryInsn(String binaryOperation, Value firstOperand, Value secondOperand) {
+	private Insn buildCalculatingBinaryInsn(final String binaryOperation,
+			Value firstOperand, Value secondOperand) {
 		/*
 		 * it is assumed (but not enforced!) that the types of firstOperand, secondOperand and destinationRegister are compatible
 		 */
@@ -288,6 +287,12 @@ public class ExprVisitor implements ExprSwitch {
 			}
 			// constant is too big, so use it as second op and build normally
 		}
+		
+		// Double-check that we are not carrying out any arithmetic operations
+		// on non-primitive values
+		if (!(secondOperand.getType() instanceof PrimType))
+			throw new RuntimeException("Invalid value type for primitibe operation");
+		
 		Register secondOpReg = regAlloc.asImmediate(secondOperand, constantV);
 		// use special "/2addr"-opcodes if destination equals first op
 		if (destinationReg.getNumber() == firstOpReg.getNumber()) {
@@ -304,7 +309,7 @@ public class ExprVisitor implements ExprSwitch {
 		return typeString;
 	}
 
-	private Insn build2AddrBinaryInsn(String binaryOperation, Register secondOpReg) {
+	private Insn build2AddrBinaryInsn(final String binaryOperation, Register secondOpReg) {
 		String localTypeString = destinationReg.getTypeString();
 		localTypeString = fixIntTypeString(localTypeString);
 		Opcode opc = Opcode.valueOf(binaryOperation + "_" + localTypeString.toUpperCase() + "_2ADDR");
@@ -690,13 +695,11 @@ public class ExprVisitor implements ExprSwitch {
 				(arrayType, stmtV.getBelongingFile());
 		// get the dimension size registers
 		List<Register> dimensionSizeRegs = new ArrayList<Register>();
-		regAlloc.setMultipleConstantsPossible(true); // in case there are multiple integer constants
 		for (int i = 0; i < dimensions; i++) {
 			Value currentDimensionSize = nmae.getSize(i);
 			Register currentReg = regAlloc.asImmediate(currentDimensionSize, constantV);
 			dimensionSizeRegs.add(currentReg);
 		}
-		regAlloc.setMultipleConstantsPossible(false); // in case there are multiple integer constants
 		// create filled-new-array instruction, depending on the dimension sizes
 		if (dimensions <= 5) {
 			Register[] paddedRegs = pad35cRegs(dimensionSizeRegs);

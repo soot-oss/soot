@@ -9,14 +9,16 @@ import soot.jimple.*;
 import soot.jimple.toolkits.pointer.*;
 import soot.jimple.toolkits.infoflow.*;
 
-// LocksetAnalysis written by Richard L. Halpert, 2007-04-19
-// Finds the set of local variables and/or references that represent all of
-// the relevant objects used in a synchronized region, as accessible at the
-// start of that region.
-// Basically this is value numbering, done in reverse, interprocedurally, and
-// only tracking the values that contribute to the given set of side effects.
-
-public class LockableReferenceAnalysis extends BackwardFlowAnalysis
+/**
+ * Finds the set of local variables and/or references that represent all of
+ * the relevant objects used in a synchronized region, as accessible at the
+ * start of that region.
+ * Basically this is value numbering, done in reverse, interprocedurally, and
+ * only tracking the values that contribute to the given set of side effects.
+ * @author Richard L. Halpert
+ * @since 2007-04-19
+ */
+public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit,LocksetFlowInfo>
 {
 	UnitGraph graph;
 	SootMethod method;
@@ -30,7 +32,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 	Map<Ref, EquivalentValue> refToBase;
 	Map<Ref, EquivalentValue> refToIndex;
 	
-	static HashSet analyzing = new HashSet();
+	static Set<SootMethod> analyzing = new HashSet<SootMethod>();
 	
 	public LockableReferenceAnalysis(UnitGraph g)
 	{
@@ -83,12 +85,12 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 		Map<soot.EquivalentValue,java.lang.Integer> results = null;
 		if(begin == null)
 		{
-			Iterator it = graph.iterator();
-			if(it.hasNext())
-				resultsInfo = (LocksetFlowInfo) getFlowBefore(it.next()); // flow before first unit
+			for (Unit u : graph) {
+				resultsInfo = getFlowBefore(u); // flow before first unit
+			}
 		}
 		else
-			resultsInfo = (LocksetFlowInfo) getFlowBefore(begin); // flow before begin unit
+			resultsInfo = getFlowBefore(begin); // flow before begin unit
 		if(resultsInfo == null)
 		{
 			analyzing.remove(method);
@@ -98,11 +100,10 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 			
 		// Reverse the results so it maps value->keys instead of key->value
 		// Then we can pick just one object (key) per group (value)
-		HashMap<Integer, List<EquivalentValue>> reversed = new HashMap();
-		for(Iterator resultsIt = results.keySet().iterator(); resultsIt.hasNext(); )
-		{
-			EquivalentValue key = (EquivalentValue) resultsIt.next();
-			Integer value = (Integer) results.get(key);
+		Map<Integer, List<EquivalentValue>> reversed = new HashMap<Integer, List<EquivalentValue>>();
+		for (Map.Entry<EquivalentValue, Integer> e : results.entrySet()) {
+			EquivalentValue key = e.getKey();
+			Integer value = e.getValue();
 			
 			List<EquivalentValue> keys;
 			if(!reversed.containsKey(value))
@@ -127,7 +128,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 					bestLock = object;
 			}
 			
-			Integer group = ((Integer) results.get(bestLock));
+			Integer group = (results.get(bestLock));
 			
 			// record if bestLock is the base or index for a reference
 			for(Ref ref : resultsInfo.refToBaseGroup.keySet())
@@ -173,15 +174,8 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 		return refToIndex.get(ref);
 	}
 	
-	protected void merge(Object in1, Object in2, Object out)
-	{
-		LocksetFlowInfo in1Info = (LocksetFlowInfo) in1;
-		LocksetFlowInfo in2Info = (LocksetFlowInfo) in2;
-		LocksetFlowInfo outInfo = (LocksetFlowInfo) out;
-	
-		Map<EquivalentValue, Integer> inMap1 = in1Info.groups;
-		Map<EquivalentValue, Integer> inMap2 = in2Info.groups;
-		
+	protected void merge(LocksetFlowInfo in1, LocksetFlowInfo in2, LocksetFlowInfo out)
+	{			
 		LocksetFlowInfo tmpInfo = new LocksetFlowInfo();
 		
 		// union of the two maps, 
@@ -189,93 +183,87 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 		
 		// (ensure every new group gets a new number)
 		// copy in1 into out
-		copy(in1Info, outInfo);
+		copy(in1, out);
 		// copy in2 into tmp
-		copy(in2Info, tmpInfo);
+		copy(in2, tmpInfo);
 		// for each tmpentry in tmpMap
 		for(EquivalentValue key : tmpInfo.groups.keySet())
 		{
 			Integer newvalue = tmpInfo.groups.get(key);
 			
 			//  if the key ISN'T in outMap, add it
-			if(!outInfo.groups.containsKey(key))
+			if(!out.groups.containsKey(key))
 			{
-				outInfo.groups.put(key, newvalue);
+				out.groups.put(key, newvalue);
 			}
 			
 			//  if the key IS in outMap with the same value, do nothing
 			
 			//  if the key IS in outMap with a different value,
-			else if(outInfo.groups.get(key) != tmpInfo.groups.get(key))
+			else if(out.groups.get(key) != tmpInfo.groups.get(key))
 			{
 				// replace oldvalue with value in both maps,
 				// and also in the base and index tracker maps
-				Object oldvalue = outInfo.groups.get(key);
+				Object oldvalue = out.groups.get(key);
 				
 				// every entry in outMap with the old value gets the new value
-				for(Object element : outInfo.groups.entrySet())
+				for (Map.Entry<?, Integer> entry : out.groups.entrySet())
 				{
-					Map.Entry entry = (Map.Entry) element;
 					// if the current value == oldvalue, change it to newvalue
 					if(entry.getValue() == oldvalue)
 						entry.setValue(newvalue);
 				}
 				
 				// every entry in tmpMap with the old value gets the new value
-				for(Object element : tmpInfo.groups.entrySet())
+				for (Map.Entry<?, Integer> entry : tmpInfo.groups.entrySet())
 				{
-					Map.Entry entry = (Map.Entry) element;
 					// if the current value == oldvalue, change it to newvalue
 					if(entry.getValue() == oldvalue)
 						entry.setValue(newvalue);
 				}
-				
+								
 				// every entry in refToBaseGroup with the old value gets the new value
-				for(Object element : outInfo.refToBaseGroup.entrySet())
+				for (Map.Entry<?, Integer> entry : out.refToBaseGroup.entrySet())
 				{
-					Map.Entry entry = (Map.Entry) element;
 					// if the current value == oldvalue, change it to newvalue
-					if(entry.getValue() == oldvalue)
+					if (entry.getValue() == oldvalue)
 						entry.setValue(newvalue);
 				}
 
 				// every entry in refToIndexGroup with the old value gets the new value
-				for(Object element : outInfo.refToIndexGroup.entrySet())
+				for (Map.Entry<?, Integer> entry : out.refToIndexGroup.entrySet())
 				{
-					Map.Entry entry = (Map.Entry) element;
 					// if the current value == oldvalue, change it to newvalue
 					if(entry.getValue() == oldvalue)
 						entry.setValue(newvalue);
 				}
 
 				// every entry in refToBaseGroup with the old value gets the new value
-				for(Object element : tmpInfo.refToBaseGroup.entrySet())
+				for (Map.Entry<?, Integer> entry : tmpInfo.refToBaseGroup.entrySet())
 				{
-					Map.Entry entry = (Map.Entry) element;
 					// if the current value == oldvalue, change it to newvalue
-					if(entry.getValue() == oldvalue)
+					if (entry.getValue() == oldvalue)
 						entry.setValue(newvalue);
 				}
 
 				// every entry in refToIndexGroup with the old value gets the new value
-				for(Object element : tmpInfo.refToIndexGroup.entrySet())
+				for (Map.Entry<?, Integer> entry : tmpInfo.refToIndexGroup.entrySet())
 				{
-					Map.Entry entry = (Map.Entry) element;
 					// if the current value == oldvalue, change it to newvalue
-					if(entry.getValue() == oldvalue)
+					if (entry.getValue() == oldvalue)
 						entry.setValue(newvalue);
 				}
 			}
 		}
 		for(Ref ref : tmpInfo.refToBaseGroup.keySet())
 		{
-			if(!outInfo.refToBaseGroup.containsKey(ref))
-				outInfo.refToBaseGroup.put(ref, tmpInfo.refToBaseGroup.get(ref));
+			if(!out.refToBaseGroup.containsKey(ref))
+				out.refToBaseGroup.put(ref, tmpInfo.refToBaseGroup.get(ref));
 		}
 		for(Ref ref : tmpInfo.refToIndexGroup.keySet())
 		{
-			if(!outInfo.refToIndexGroup.containsKey(ref))
-				outInfo.refToIndexGroup.put(ref, tmpInfo.refToIndexGroup.get(ref));
+			if(!out.refToIndexGroup.containsKey(ref))
+				out.refToIndexGroup.put(ref, tmpInfo.refToIndexGroup.get(ref));
 		}
 	}
 	
@@ -290,33 +278,33 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 			Value use = ((InstanceInvokeExpr)ie).getBase();
 			if(!out.containsKey(new EquivalentValue(use)))
 			{
-				Integer newGroup = new Integer(groupNum++);
+				int newGroup = groupNum++;
 				out.put(new EquivalentValue(use), newGroup);
 				return newGroup;
 			}
-			return (Integer) out.get(new EquivalentValue(use));
+			return out.get(new EquivalentValue(use));
 		}
 		else if( lock instanceof ParameterRef )
 		{
 			Value use = ie.getArg( ((ParameterRef)lock).getIndex() );
 			if(!out.containsKey(new EquivalentValue(use)))
 			{
-				Integer newGroup = new Integer(groupNum++);
+				int newGroup = groupNum++;
 				out.put(new EquivalentValue(use), newGroup);
 				return newGroup;
 			}
-			return (Integer) out.get(new EquivalentValue(use));
+			return out.get(new EquivalentValue(use));
 		}
 		else if( lock instanceof StaticFieldRef )
 		{
 			Value use = lock;
 			if(!out.containsKey(new EquivalentValue(use)))
 			{
-				Integer newGroup = new Integer(groupNum++);
+				int newGroup = groupNum++;
 				out.put(new EquivalentValue(use), newGroup);
 				return newGroup;
 			}
-			return (Integer) out.get(new EquivalentValue(use));
+			return out.get(new EquivalentValue(use));
 		}
 		else if( lock instanceof InstanceFieldRef )
 		{
@@ -354,11 +342,11 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 			Value use = lock;
 			if(!out.containsKey(new EquivalentValue(use)))
 			{
-				Integer newGroup = new Integer(groupNum++);
+				int newGroup = groupNum++;
 				out.put(new EquivalentValue(use), newGroup);
 				return newGroup;
 			}
-			return (Integer) out.get(new EquivalentValue(use));
+			return out.get(new EquivalentValue(use));
 		}
 		else if( lock instanceof ArrayRef )
 		{
@@ -413,22 +401,22 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 			Value use = lock;
 			if(!out.containsKey(new EquivalentValue(use)))
 			{
-				Integer newGroup = new Integer(groupNum++);
+				int newGroup = groupNum++;
 				out.put(new EquivalentValue(use), newGroup);
 				return newGroup;
 			}
-			return (Integer) out.get(new EquivalentValue(use));
+			return out.get(new EquivalentValue(use));
 		}
 		else if( lock instanceof Constant )
 		{
 			Value use = lock;
 			if(!out.containsKey(new EquivalentValue(use)))
 			{
-				Integer newGroup = new Integer(groupNum++);
+				int newGroup = groupNum++;
 				out.put(new EquivalentValue(use), newGroup);
 				return newGroup;
 			}
-			return (Integer) out.get(new EquivalentValue(use));
+			return out.get(new EquivalentValue(use));
 		}
 		else
 		{
@@ -439,15 +427,13 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 	
 	static int groupNum = 1;
 	
-	protected void flowThrough(Object inValue, Object unit,
-			Object outValue)
-	{
-		LocksetFlowInfo inInfo = (LocksetFlowInfo) inValue;
-		LocksetFlowInfo outInfo = (LocksetFlowInfo) outValue;
+	@Override
+	protected void flowThrough(LocksetFlowInfo inInfo, Unit u, LocksetFlowInfo outInfo)
+	{		
+		copy(inInfo, outInfo);
 		
-		merge(inInfo, outInfo.clone(), outInfo);
+		Stmt stmt = (Stmt) u;
 		
-		Stmt stmt = (Stmt) unit;
 		Map<EquivalentValue, Integer> out = outInfo.groups;
 
 		// If this statement contains a contributing use
@@ -455,7 +441,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 		{
 			// Prepare the RW set for the statement
 			CodeBlockRWSet stmtRW = null;
-			HashSet allUses = new HashSet();
+			Set<Value> allUses = new HashSet<Value>();
 			RWSet stmtRead = tasea.readSet(method, stmt, tn, allUses);
 			if(stmtRead != null)
 				stmtRW = (CodeBlockRWSet) stmtRead;
@@ -472,10 +458,10 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 			if( stmtRW != null && stmtRW.hasNonEmptyIntersection(contributingRWSet) )
 			{
 				List<Value> uses = new ArrayList<Value>();
-				Iterator allUsesIt = allUses.iterator();
+				Iterator<Value> allUsesIt = allUses.iterator();
 				while(allUsesIt.hasNext())
 				{
-					Value vEqVal = (Value) allUsesIt.next();
+					Value vEqVal = allUsesIt.next();
 					Value v = vEqVal; //((vEqVal instanceof EquivalentValue) ? ((EquivalentValue) vEqVal).getValue() : vEqVal);
 					
 					if(stmt.containsFieldRef())
@@ -566,7 +552,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 				}
 
 				// For each use, either add it to an existing lock, or add a new lock
-				Iterator usesIt = uses.iterator();
+				Iterator<Value> usesIt = uses.iterator();
 
 				while(usesIt.hasNext() && !lostObjects)
 				{
@@ -605,7 +591,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 
 					if(!out.containsKey(new EquivalentValue(use)))
 					{
-						out.put(new EquivalentValue(use), new Integer(groupNum++));
+						out.put(new EquivalentValue(use), groupNum++);
 					}
 				}
 			}
@@ -701,25 +687,22 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 						Integer rvaluevalue = out.get(rvalue);
 						
 						// every entry in 'out' with the left value gets the right value
-						for (Object element : out.entrySet()) {
-							Map.Entry entry = (Map.Entry) element;
+						for (Map.Entry<?,Integer> entry : out.entrySet()) {
 							if(entry.getValue() == lvaluevalue)
 								entry.setValue(rvaluevalue);
 						}
 
 						// every entry in refToBaseGroup with the left value gets the right value
-						for(Object element : outInfo.refToBaseGroup.entrySet())
+						for (Map.Entry<?,Integer> entry : outInfo.refToBaseGroup.entrySet())
 						{
-							Map.Entry entry = (Map.Entry) element;
 							// if the current value == oldvalue, change it to newvalue
 							if(entry.getValue() == lvaluevalue)
 								entry.setValue(rvaluevalue);
 						}
 
 						// every entry in refToIndexGroup with the left value gets the right value
-						for(Object element : outInfo.refToIndexGroup.entrySet())
+						for (Map.Entry<?,Integer> entry : outInfo.refToIndexGroup.entrySet())
 						{
-							Map.Entry entry = (Map.Entry) element;
 							// if the current value == oldvalue, change it to newvalue
 							if(entry.getValue() == lvaluevalue)
 								entry.setValue(rvaluevalue);
@@ -738,25 +721,22 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 						Integer rvaluevalue = out.get(rvalue);
 						
 						// every entry in 'out' with the left value gets the right value
-						for (Object element : out.entrySet()) {
-							Map.Entry entry = (Map.Entry) element;
+						for (Map.Entry<?,Integer> entry : out.entrySet()) {
 							if(entry.getValue() == lvaluevalue)
 								entry.setValue(rvaluevalue);
 						}
 
 						// every entry in refToBaseGroup with the left value gets the right value
-						for(Object element : outInfo.refToBaseGroup.entrySet())
+						for (Map.Entry<?,Integer> entry : outInfo.refToBaseGroup.entrySet())
 						{
-							Map.Entry entry = (Map.Entry) element;
 							// if the current value == oldvalue, change it to newvalue
 							if(entry.getValue() == lvaluevalue)
 								entry.setValue(rvaluevalue);
 						}
 
 						// every entry in refToIndexGroup with the left value gets the right value
-						for(Object element : outInfo.refToIndexGroup.entrySet())
+						for (Map.Entry<?,Integer> entry : outInfo.refToIndexGroup.entrySet())
 						{
-							Map.Entry entry = (Map.Entry) element;
 							// if the current value == oldvalue, change it to newvalue
 							if(entry.getValue() == lvaluevalue)
 								entry.setValue(rvaluevalue);
@@ -780,7 +760,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 
 							Integer baseGroup;
 							if(out.containsKey(new EquivalentValue(oldbase)))
-								baseGroup = (Integer) out.get(new EquivalentValue(oldbase));
+								baseGroup = out.get(new EquivalentValue(oldbase));
 							else
 								baseGroup = new Integer(-(groupNum++));
 							if(!outInfo.refToBaseGroup.containsKey(ifr))
@@ -801,7 +781,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 							
 							Integer indexGroup;
 							if(out.containsKey(new EquivalentValue(oldindex)))
-								indexGroup = (Integer) out.get(new EquivalentValue(oldindex));
+								indexGroup = out.get(new EquivalentValue(oldindex));
 							else
 								indexGroup = new Integer(-(groupNum++));
 							if(!outInfo.refToIndexGroup.containsKey(ar))
@@ -810,7 +790,7 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 
 							Integer baseGroup;
 							if(out.containsKey(new EquivalentValue(oldbase)))
-								baseGroup = (Integer) out.get(new EquivalentValue(oldbase));
+								baseGroup = out.get(new EquivalentValue(oldbase));
 							else
 								baseGroup = new Integer(-(groupNum++));
 							if(!outInfo.refToBaseGroup.containsKey(ar))
@@ -834,11 +814,8 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 		}
 	}
 	
-	protected void copy(Object source, Object dest)
-	{
-		LocksetFlowInfo sourceInfo = (LocksetFlowInfo) source;
-		LocksetFlowInfo destInfo = (LocksetFlowInfo) dest;
-				
+	protected void copy(LocksetFlowInfo sourceInfo, LocksetFlowInfo destInfo)
+	{				
 		destInfo.groups.clear();
 		destInfo.groups.putAll(sourceInfo.groups);
 		
@@ -848,13 +825,8 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis
 		destInfo.refToIndexGroup.clear();
 		destInfo.refToIndexGroup.putAll(sourceInfo.refToIndexGroup);
 	}
-	
-	protected Object entryInitialFlow()
-	{
-		return new LocksetFlowInfo();
-	}
-	
-	protected Object newInitialFlow()
+		
+	protected LocksetFlowInfo newInitialFlow()
 	{
 		return new LocksetFlowInfo();
 	}	

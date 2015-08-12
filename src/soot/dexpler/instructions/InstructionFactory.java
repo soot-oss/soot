@@ -246,6 +246,10 @@ public class InstructionFactory {
         case INVOKE_STATIC:
         case INVOKE_STATIC_RANGE:
             return new InvokeStaticInstruction(instruction, codeAddress);
+        
+        case EXECUTE_INLINE:
+        case EXECUTE_INLINE_RANGE:
+        	return new ExecuteInlineInstruction(instruction, codeAddress);
 
         case NEG_INT:
         case NOT_INT:

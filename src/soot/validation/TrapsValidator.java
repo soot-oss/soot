@@ -7,15 +7,10 @@ import soot.PatchingChain;
 import soot.Trap;
 import soot.Unit;
 
-public class TrapsValidator implements BodyValidator {
-	public static TrapsValidator INSTANCE;
-	
+public enum TrapsValidator implements BodyValidator {
+	INSTANCE;	
 	
 	public static TrapsValidator v() {
-		if (INSTANCE == null)
-		{
-			INSTANCE = new TrapsValidator();
-		}
 		return INSTANCE;
 	}
 

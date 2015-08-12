@@ -81,6 +81,17 @@ public class PhaseOptions {
             options.get(name).equals("true");
     }
 
+    /**
+     * If key "name" is in options, this method returns true iff it maps to
+     * "true". If the key "name" is not in options, the given default value
+     * is returned.
+     */
+    public static boolean getBoolean(Map<String, String> options, String name,
+    		boolean defaultValue) {
+    	if (!options.containsKey(name))
+    		return defaultValue;
+        return options.get(name).equals("true");
+    }
 
 
     /** This method returns the value of "name" in options 
@@ -171,7 +182,7 @@ public class PhaseOptions {
 */
         return true;
     }
-    public boolean setPhaseOption( String phaseName, String option ) {
+    public boolean setPhaseOption( String phaseName, String option ) {    	
         HasPhaseOptions phase = getPM().getPhase( phaseName );
         if( phase == null ) {
             G.v().out.println( "Option "+option+" given for nonexistent"

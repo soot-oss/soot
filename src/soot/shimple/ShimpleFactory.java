@@ -43,13 +43,13 @@ public interface ShimpleFactory
 
     public UnitGraph getUnitGraph();
     public BlockGraph getBlockGraph();
-    public DominatorsFinder getDominatorsFinder();
-    public DominatorTree getDominatorTree();
-    public DominanceFrontier getDominanceFrontier();
+    public DominatorsFinder<Block> getDominatorsFinder();
+    public DominatorTree<Block> getDominatorTree();
+    public DominanceFrontier<Block> getDominanceFrontier();
 
     public GlobalValueNumberer getGlobalValueNumberer();
-    public ReversibleGraph getReverseBlockGraph();
-    public DominatorsFinder getReverseDominatorsFinder();
-    public DominatorTree getReverseDominatorTree();
-    public DominanceFrontier getReverseDominanceFrontier();
+    public ReversibleGraph<Block> getReverseBlockGraph();
+    public DominatorsFinder<Block> getReverseDominatorsFinder();
+    public DominatorTree<Block> getReverseDominatorTree();
+    public DominanceFrontier<Block> getReverseDominanceFrontier();
 }

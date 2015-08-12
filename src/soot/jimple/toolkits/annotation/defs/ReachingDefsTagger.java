@@ -21,40 +21,37 @@ package soot.jimple.toolkits.annotation.defs;
 
 import soot.*;
 import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
 import soot.tagkit.*;
+
 import java.util.*;
-import soot.jimple.*;
 
 public class ReachingDefsTagger extends BodyTransformer {
 
+	public ReachingDefsTagger(Singletons.Global g) {
+	}
 
-    public ReachingDefsTagger(Singletons.Global g) {}
-    public static ReachingDefsTagger v() { return G.v().soot_jimple_toolkits_annotation_defs_ReachingDefsTagger();}
+	public static ReachingDefsTagger v() {
+		return G.v().soot_jimple_toolkits_annotation_defs_ReachingDefsTagger();
+	}
 
-    protected void internalTransform(Body b, String phaseName, Map options){
-    
-        UnitGraph g = new ExceptionalUnitGraph(b);
-        LocalDefs sld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
+	protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 
-        Iterator it = b.getUnits().iterator();
-        while (it.hasNext()){
-            Stmt s = (Stmt)it.next();
-            //System.out.println("stmt: "+s);
-            Iterator usesIt = s.getUseBoxes().iterator();
-            while (usesIt.hasNext()){
-                ValueBox vbox = (ValueBox)usesIt.next();
-                if (vbox.getValue() instanceof Local) {
-                    Local l = (Local)vbox.getValue();
-                    //System.out.println("local: "+l);
-                    Iterator<Unit> rDefsIt = sld.getDefsOfAt(l, s).iterator();
-                    while (rDefsIt.hasNext()){
-                        Stmt next = (Stmt)rDefsIt.next();
-                        String info = l+" has reaching def: "+next.toString();
-                        s.addTag(new LinkTag(info, next, b.getMethod().getDeclaringClass().getName(), "Reaching Defs"));
-                    }
-                }
-            }
-        }
-    }
-}   
+		LocalDefs ld = LocalDefs.Factory.newLocalDefs(b);
+
+		for (Unit s : b.getUnits()) {
+			// System.out.println("stmt: "+s);
+			for (ValueBox vbox : s.getUseBoxes()) {
+				Value v = vbox.getValue();
+				if (v instanceof Local) {
+					Local l = (Local) v;
+					// System.out.println("local: "+l);
+					for (Unit next : ld.getDefsOfAt(l, s)) {
+						String info = l + " has reaching def: " + next;
+						String className =  b.getMethod().getDeclaringClass().getName();
+						s.addTag(new LinkTag(info, next, className, "Reaching Defs"));
+					}
+				}
+			}
+		}
+	}
+}

@@ -389,16 +389,19 @@ public abstract class UnitGraph implements DirectedGraph<Unit>
 
     public List<Unit> getPredsOf(Unit u)
     {
-        if(!unitToPreds.containsKey(u)) 
-	    throw new NoSuchElementException("Invalid unit " + u);
+		List<Unit> l = unitToPreds.get(u);
+        if (l == null) 
+        	throw new NoSuchElementException("Invalid unit " + u);
 
-        return unitToPreds.get(u);
+        return l;
     }
 
     public List<Unit> getSuccsOf(Unit u)
     {
 		List<Unit> l = unitToSuccs.get(u);
-        if (l == null) throw new RuntimeException("Invalid unit " + u);
+        if (l == null) 
+        	throw new NoSuchElementException("Invalid unit " + u);
+        
         return l;
     }
 
@@ -414,11 +417,11 @@ public abstract class UnitGraph implements DirectedGraph<Unit>
 
     public String toString() 
     {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (Unit u : unitChain) {
-            buf.append("// preds: "+getPredsOf(u)+"\n");
-            buf.append(u.toString() + '\n');
-            buf.append("// succs "+getSuccsOf(u)+"\n");
+            buf.append("// preds: ").append(getPredsOf(u)).append('\n');
+            buf.append(u).append('\n');
+            buf.append("// succs ").append(getSuccsOf(u)).append('\n');
         }
         return buf.toString();
     }

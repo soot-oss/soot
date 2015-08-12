@@ -531,8 +531,8 @@ public final class OnFlyCallGraphBuilder
         findReceivers(m, b);
     }
     private void findReceivers(SootMethod m, Body b) {
-        for( Iterator<Unit> sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
-            final Stmt s = (Stmt) sIt.next();
+        for( final Unit u : b.getUnits() ) {
+            final Stmt s = (Stmt) u;
             if (s.containsInvokeExpr()) {
                 InvokeExpr ie = s.getInvokeExpr();
 
@@ -547,7 +547,12 @@ public final class OnFlyCallGraphBuilder
                         addVirtualCallSite( s, m, receiver, iie, sigRun,
                                 Kind.THREAD );
                     }
-                    else if( subSig == sigExecutorExecute  ) {
+                    else if( subSig == sigExecutorExecute 
+                    		|| subSig == sigHandlerPost
+                    		|| subSig == sigHandlerPostAtFrontOfQueue
+                    		|| subSig == sigHandlerPostAtTime
+                    		|| subSig == sigHandlerPostAtTimeWithToken
+                    		|| subSig == sigHandlerPostDelayed ) {
                     	if (iie.getArgCount() > 0) {
                     		Value runnable = iie.getArg(0);
                     		if (runnable instanceof Local)
@@ -716,8 +721,21 @@ public final class OnFlyCallGraphBuilder
         findOrAdd( "void run()" );
     protected final NumberedString sigExecute = Scene.v().getSubSigNumberer().
             findOrAdd( "android.os.AsyncTask execute(java.lang.Object[])" );
+    
     protected final NumberedString sigExecutorExecute = Scene.v().getSubSigNumberer().
             findOrAdd( "void execute(java.lang.Runnable)" );
+    
+    protected final NumberedString sigHandlerPost = Scene.v().getSubSigNumberer().
+            findOrAdd( "boolean post(java.lang.Runnable)" );
+    protected final NumberedString sigHandlerPostAtFrontOfQueue = Scene.v().getSubSigNumberer().
+            findOrAdd( "boolean postAtFrontOfQueue(java.lang.Runnable)" );
+    protected final NumberedString sigHandlerPostAtTime = Scene.v().getSubSigNumberer().
+            findOrAdd( "boolean postAtTime(java.lang.Runnable,long)" );
+    protected final NumberedString sigHandlerPostAtTimeWithToken = Scene.v().getSubSigNumberer().
+            findOrAdd( "boolean postAtTime(java.lang.Runnable,java.lang.Object,long)" );
+    protected final NumberedString sigHandlerPostDelayed = Scene.v().getSubSigNumberer().
+            findOrAdd( "boolean postDelayed(java.lang.Runnable,long)" );
+    
     protected final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Object run()" );
     protected final NumberedString sigDoInBackground = Scene.v().getSubSigNumberer().

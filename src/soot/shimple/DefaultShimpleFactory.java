@@ -34,18 +34,18 @@ public class DefaultShimpleFactory implements ShimpleFactory
     protected Body body;
     protected BlockGraph bg;
     protected UnitGraph ug;
-    protected DominatorsFinder dFinder;
-    protected DominatorTree dTree;
-    protected DominanceFrontier dFrontier;
+    protected DominatorsFinder<Block> dFinder;
+    protected DominatorTree<Block> dTree;
+    protected DominanceFrontier<Block> dFrontier;
     protected PointsToAnalysis pta;
     protected CallGraph cg;
     protected SideEffectAnalysis sea;
     protected GlobalValueNumberer gvn;
 
-    protected ReversibleGraph rbg;
-    protected DominatorTree rdTree;
-    protected DominanceFrontier rdFrontier;
-    protected DominatorsFinder rdFinder;
+    protected ReversibleGraph<Block> rbg;
+    protected DominatorTree<Block> rdTree;
+    protected DominanceFrontier<Block> rdFrontier;
+    protected DominatorsFinder<Block> rdFinder;
     
     public DefaultShimpleFactory()
     {
@@ -82,41 +82,41 @@ public class DefaultShimpleFactory implements ShimpleFactory
         return body;
     }
 
-    public ReversibleGraph getReverseBlockGraph()
+    public ReversibleGraph<Block> getReverseBlockGraph()
     {
         if(rbg != null)
             return rbg;
         
         BlockGraph bg = getBlockGraph();
-        rbg = new HashReversibleGraph(bg);
+        rbg = new HashReversibleGraph<Block>(bg);
         rbg.reverse();
         return rbg;
     }
 
-    public DominatorsFinder getReverseDominatorsFinder()
+    public DominatorsFinder<Block> getReverseDominatorsFinder()
     {
         if(rdFinder != null)
             return rdFinder;
 
-        rdFinder = new SimpleDominatorsFinder(getReverseBlockGraph());
+        rdFinder = new SimpleDominatorsFinder<Block>(getReverseBlockGraph());
         return rdFinder;
     }
 
-    public DominatorTree getReverseDominatorTree()
+    public DominatorTree<Block> getReverseDominatorTree()
     {
         if(rdTree != null)
             return rdTree;
 
-        rdTree = new DominatorTree(getReverseDominatorsFinder());
+        rdTree = new DominatorTree<Block>(getReverseDominatorsFinder());
         return rdTree;
     }
 
-    public DominanceFrontier getReverseDominanceFrontier()
+    public DominanceFrontier<Block> getReverseDominanceFrontier()
     {
         if(rdFrontier != null)
             return rdFrontier;
 
-        rdFrontier = new CytronDominanceFrontier(getReverseDominatorTree());
+        rdFrontier = new CytronDominanceFrontier<Block>(getReverseDominatorTree());
         return rdFrontier;
     }
     
@@ -141,30 +141,30 @@ public class DefaultShimpleFactory implements ShimpleFactory
         return ug;
     }
     
-    public DominatorsFinder getDominatorsFinder()
+    public DominatorsFinder<Block> getDominatorsFinder()
     {
         if(dFinder != null)
             return dFinder;
 
-        dFinder = new SimpleDominatorsFinder(getBlockGraph());
+        dFinder = new SimpleDominatorsFinder<Block>(getBlockGraph());
         return dFinder;
     }
 
-    public DominatorTree getDominatorTree()
+    public DominatorTree<Block> getDominatorTree()
     {
         if(dTree != null)
             return dTree;
 
-        dTree = new DominatorTree(getDominatorsFinder());
+        dTree = new DominatorTree<Block>(getDominatorsFinder());
         return dTree;
     }
     
-    public DominanceFrontier getDominanceFrontier()
+    public DominanceFrontier<Block> getDominanceFrontier()
     {
         if(dFrontier != null)
             return dFrontier;
 
-        dFrontier = new CytronDominanceFrontier(getDominatorTree());
+        dFrontier = new CytronDominanceFrontier<Block>(getDominatorTree());
         return dFrontier;
     }
 

@@ -55,6 +55,8 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 	}
 
 	public void copy(FlowSet<T> dest) {
+		if (this == dest)
+			return;
 		dest.clear();
 		for (T t : this)
 			dest.add(t);
@@ -69,6 +71,8 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 	}
 
 	public void union(FlowSet<T> other) {
+		if (this == other)
+			return;
 		union(other, this);
 	}
 
@@ -88,6 +92,8 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 	}
 
 	public void intersection(FlowSet<T> other) {
+		if (this == other)
+			return;
 		intersection(other, this);
 	}
 
@@ -153,11 +159,21 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 		dest.remove(obj);
 	}
 
+	@Override
+	public boolean isSubSet(FlowSet<T> other) {
+		if (other == this)
+			return true;
+		
+		for (T t : other) {
+			if (!contains(t))
+				return false;
+		}
+		return true;
+	}
+
 	public abstract boolean contains(T obj);
 
-	public Iterator<T> iterator() {
-		return toList().iterator();
-	}
+	public abstract Iterator<T> iterator();
 
 	public abstract List<T> toList();
 
@@ -183,7 +199,7 @@ public abstract class AbstractFlowSet<T> implements FlowSet<T> {
 
 	public String toString() {
 		StringBuffer buffer = new StringBuffer("{");
-		
+
 		boolean isFirst = true;
 		for (T t : this) {
 			if (!isFirst)

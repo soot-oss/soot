@@ -611,6 +611,12 @@ public class Singletons {
         return instance_soot_jimple_toolkits_scalar_UnconditionalBranchFolder;
     }
 
+    private soot.jimple.toolkits.scalar.ConstantCastEliminator instance_soot_jimple_toolkits_scalar_ConstantCastEliminator;
+    public soot.jimple.toolkits.scalar.ConstantCastEliminator soot_jimple_toolkits_scalar_ConstantCastEliminator() {
+        if( instance_soot_jimple_toolkits_scalar_ConstantCastEliminator == null ) instance_soot_jimple_toolkits_scalar_ConstantCastEliminator = new soot.jimple.toolkits.scalar.ConstantCastEliminator( g );
+        return instance_soot_jimple_toolkits_scalar_ConstantCastEliminator;
+    }
+
     private soot.UnknownType instance_soot_UnknownType;
     public soot.UnknownType soot_UnknownType() {
         if( instance_soot_UnknownType == null ) instance_soot_UnknownType = new soot.UnknownType( g );
@@ -951,6 +957,18 @@ public class Singletons {
     public soot.jimple.toolkits.typing.fast.BottomType soot_jimple_toolkits_typing_fast_BottomType() {
         if( instance_soot_jimple_toolkits_typing_fast_BottomType == null ) instance_soot_jimple_toolkits_typing_fast_BottomType = new soot.jimple.toolkits.typing.fast.BottomType( g );
         return instance_soot_jimple_toolkits_typing_fast_BottomType;
+    }
+
+    private soot.dexpler.TrapMinimizer instance_soot_dexpler_TrapMinimizer;
+    public soot.dexpler.TrapMinimizer soot_dexpler_TrapMinimizer() {
+        if( instance_soot_dexpler_TrapMinimizer == null ) instance_soot_dexpler_TrapMinimizer = new soot.dexpler.TrapMinimizer( g );
+        return instance_soot_dexpler_TrapMinimizer;
+    }
+
+    private soot.toolkits.scalar.SmartLocalDefsPool instance_soot_toolkits_scalar_SmartLocalDefsPool;
+    public soot.toolkits.scalar.SmartLocalDefsPool soot_toolkits_scalar_SmartLocalDefsPool() {
+        if( instance_soot_toolkits_scalar_SmartLocalDefsPool == null ) instance_soot_toolkits_scalar_SmartLocalDefsPool = new soot.toolkits.scalar.SmartLocalDefsPool( g );
+        return instance_soot_toolkits_scalar_SmartLocalDefsPool;
     }
 
 }

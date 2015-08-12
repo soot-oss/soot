@@ -35,6 +35,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jf.dexlib2.dexbacked.DexBackedDexFile;
+import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.ExceptionHandler;
 import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.MethodImplementation;
@@ -53,6 +55,7 @@ import soot.Modifier;
 import soot.NullType;
 import soot.PrimType;
 import soot.RefType;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.Trap;
@@ -65,6 +68,7 @@ import soot.dexpler.instructions.DanglingInstruction;
 import soot.dexpler.instructions.DeferableInstruction;
 import soot.dexpler.instructions.DexlibAbstractInstruction;
 import soot.dexpler.instructions.MoveExceptionInstruction;
+import soot.dexpler.instructions.OdexInstruction;
 import soot.dexpler.instructions.PseudoInstruction;
 import soot.dexpler.instructions.RetypeableInstruction;
 import soot.dexpler.typing.DalvikTyper;
@@ -72,8 +76,10 @@ import soot.dexpler.typing.Validate;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ConditionExpr;
 import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.EqExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
@@ -84,6 +90,7 @@ import soot.jimple.NullConstant;
 import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.toolkits.base.Aggregator;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
+import soot.jimple.toolkits.scalar.ConstantCastEliminator;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
@@ -116,14 +123,16 @@ public class DexBody  {
 
     private int numRegisters;
     private int numParameterRegisters;
-    private List<Type> parameterTypes;
+    private final List<Type> parameterTypes;
     private boolean isStatic;
     private String methodSignature = "";
-
+    
     private JimpleBody jBody;
     private List<? extends TryBlock<? extends ExceptionHandler>> tries;
 
     private RefType declaringClassType;
+    
+    private final DexFile dexFile;
 
     // detect array/instructions overlapping obfuscation
     private ArrayList<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
@@ -142,7 +151,7 @@ public class DexBody  {
      * @param code the codeitem that is contained in this body
      * @param method the method that is associated with this body
      */
-    public DexBody(String dexFile, Method method, RefType declaringClassType) {
+    public DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
         MethodImplementation code = method.getImplementation();
         if (code == null)
             throw new RuntimeException("error: no code for method "+ method.getName());
@@ -186,21 +195,7 @@ public class DexBody  {
         if (numParameterRegisters > numRegisters)
         	throw new RuntimeException("Malformed dex file: insSize (" + numParameterRegisters
         			+ ") > registersSize (" + numRegisters + ")");
-
-//        // get addresses of pseudo-instruction data blocks
-//        for(DexlibAbstractInstruction instruction : instructions) {
-//          if (instruction instanceof PseudoInstruction) {
-//            PseudoInstruction pi = (PseudoInstruction)instruction;
-//            try {
-//				pi.computeDataOffsets(this);
-//			} catch (Exception e) {
-//				throw new RuntimeException("exception while computing data offsets: ", e);
-//			}
-//            pseudoInstructionData.add (pi);
-//            Debug.printDbg("add pseudo instruction: 0x" + Integer.toHexString(pi.getDataFirstByte()) ," - 0x", Integer.toHexString(pi.getDataLastByte()) ," : ", pi.getDataSize());
-//          }
-//        }
-
+        
         for (DebugItem di: code.getDebugItems()) {
             if (di instanceof ImmutableLineNumber) {
                 ImmutableLineNumber ln = (ImmutableLineNumber)di;
@@ -215,9 +210,9 @@ public class DexBody  {
             }
         }
 
-
+        this.dexFile = dexFile;
     }
-
+    
     /**
      * Return the types that are used in this body.
      */
@@ -324,24 +319,6 @@ public class DexBody  {
      * @throws RuntimeException if address is not part of this body.
      */
     public DexlibAbstractInstruction instructionAtAddress(int address) {
-//      for (int j=address - 10; j< address+10; j++ ){
-//        Debug.printDbg(" dump2: 0x", Integer.toHexString(j) ," : ",instructionAtAddress.get (j) );
-//      }
-
-      // check if it is a jump to pseudo-instructions data (=obfuscation)
-     /*
-      PseudoInstruction pi = null; // TODO: isAddressInData(address);
-      if (pi != null && !pi.isLoaded()) {
-        System.out.println("warning: attempting to jump to pseudo-instruction data at address 0x"+ Integer.toHexString(address));
-        System.out.println("pseudo instruction: "+ pi);
-        pi.setLoaded(true);
-        instructions.addAll(decodeInstructions(pi)); // TODO: should add a throw instruction here just to be sure...
-        Exception e = new Exception();
-          e.printStackTrace();
-        System.out.println();
-      }
-      */
-
         DexlibAbstractInstruction i = null;
         while (i == null && address >= 0) {
             // catch addresses can be in the middlde of last instruction. Ex. in com.letang.ldzja.en.apk:
@@ -360,33 +337,6 @@ public class DexBody  {
         }
         return i;
     }
-
-    /*
-    private ArrayList<DexlibAbstractInstruction> decodeInstructions(PseudoInstruction pi) {
-      final ArrayList<Instruction> instructionList = new ArrayList<Instruction>();
-      ArrayList<DexlibAbstractInstruction> dexInstructions = new ArrayList<DexlibAbstractInstruction>();
-
-//      InstructionIterator.IterateInstructions(this.dexFile, encodedInstructions,
-//              new InstructionIterator.ProcessInstructionDelegate() {
-//                  public void ProcessInstruction(int codeAddress, Instruction instruction) {
-//                      instructionList.add(instruction);
-//                  }
-//              });
-
-      Instruction[] instructions = new Instruction[instructionList.size()];
-      instructionList.toArray(instructions);
-      System.out.println("instructionList: ");
-      int address = pi.getDataFirstByte();
-      for (Instruction i: instructions) {
-        DexlibAbstractInstruction dexInstruction = fromInstruction(i, address);
-        instructionAtAddress.put(address, dexInstruction);
-        dexInstructions.add(dexInstruction);
-        System.out.println("i = "+ dexInstruction +" @ 0x"+ Integer.toHexString(address));
-        address += i.getCodeUnits();
-      }
-      return dexInstructions;
-    }
-	*/
     
     /**
      * Return the jimple equivalent of this body.
@@ -469,18 +419,29 @@ public class DexBody  {
         jBody.getLocals().add (storeResultLocal);
         
         // process bytecode instructions
+        final boolean isOdex = dexFile instanceof DexBackedDexFile ?
+        		((DexBackedDexFile) dexFile).isOdexFile() : false;
+        
+        int prevLineNumber = -1;
         for(DexlibAbstractInstruction instruction : instructions) {
+        	if (isOdex && instruction instanceof OdexInstruction)
+        		((OdexInstruction) instruction).deOdex(dexFile);
             if (dangling != null) {
                 dangling.finalize(this, instruction);
                 dangling = null;
             }
             //Debug.printDbg(" current op to jimplify: 0x", Integer.toHexString(instruction.getInstruction().opcode.value) ," instruction: ", instruction );
             instruction.jimplify(this);
-            //System.out.println("jimple: "+ jBody.getUnits().getLast());
+            if (instruction.getLineNumber() > 0)
+				prevLineNumber = instruction.getLineNumber();
+			else {
+				instruction.setLineNumber(prevLineNumber);
+			}
         }
         for(DeferableInstruction instruction : deferredInstructions) {
             instruction.deferredJimplify(this);
         }
+        
         if (tries != null)
             addTraps();
         
@@ -495,7 +456,6 @@ public class DexBody  {
         deferredInstructions = null;
         //instructionsToRetype = null;
         dangling = null;
-        parameterTypes = null;
         tries = null;
 
         /* We eliminate dead code. Dead code has been shown to occur under the following
@@ -516,20 +476,24 @@ public class DexBody  {
          */
 
         Debug.printDbg("body before any transformation : \n", jBody);
+
+        Debug.printDbg("\nbefore splitting");
+        Debug.printDbg("",(Body)jBody);
+        
+        // split first to find undefined uses
+        getLocalSplitter().transform(jBody);
         
 		// Remove dead code and the corresponding locals before assigning types
 		getUnreachableCodeEliminator().transform(jBody);
 		DeadAssignmentEliminator.v().transform(jBody);
 		UnusedLocalEliminator.v().transform(jBody);
 
-        Debug.printDbg("\nbefore splitting");
-        Debug.printDbg("",(Body)jBody);
         
-        getLocalSplitter().transform(jBody);
-
+        DexReturnInliner.v().transform(jBody);    
+        
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);
-        
+                
   		for (RetypeableInstruction i : instructionsToRetype)
             i.retype(jBody);
 
@@ -559,19 +523,22 @@ public class DexBody  {
           Debug.printDbg("\nafter Dalvik Typer");
 
         } else {
-          DexNumTransformer.v().transform (jBody);
-          DexNullTransformer.v().transform(jBody);
-          DexIfTransformer.v().transform(jBody);
-          DexReturnInliner.v().transform(jBody);
-          
-          CopyPropagator.v().transform(jBody);
-          DeadAssignmentEliminator.v().transform(jBody);
-          UnusedLocalEliminator.v().transform(jBody);
-          
-          //DexRefsChecker.v().transform(jBody);
-          //DexNullArrayRefTransformer.v().transform(jBody);
-
-          Debug.printDbg("\nafter Num and Null transformers");
+        	DexNumTransformer.v().transform (jBody);
+        	
+        	DexReturnValuePropagator.v().transform(jBody);
+            getCopyPopagator().transform(jBody);
+        	
+        	DexNullThrowTransformer.v().transform(jBody);
+        	DexNullTransformer.v().transform(jBody);
+        	DexIfTransformer.v().transform(jBody);
+        	
+        	DeadAssignmentEliminator.v().transform(jBody);
+        	UnusedLocalEliminator.v().transform(jBody);
+        	
+        	//DexRefsChecker.v().transform(jBody);
+            DexNullArrayRefTransformer.v().transform(jBody);
+        	
+        	Debug.printDbg("\nafter Num and Null transformers");
         }
         Debug.printDbg("",(Body)jBody);
         
@@ -583,7 +550,7 @@ public class DexBody  {
         
         TypeAssigner.v().transform(jBody);
         
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
             for (Unit u: jBody.getUnits()) {
                 if (u instanceof IfStmt) {
                     ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
@@ -659,11 +626,12 @@ public class DexBody  {
 
         Debug.printDbg("\nafter type assigner localpacker and name standardizer");
         Debug.printDbg("",(Body)jBody);
-
+        
         // Inline PackManager.v().getPack("jb").apply(jBody);
         // Keep only transformations that have not been done
         // at this point.
         TrapTightener.v().transform(jBody);
+		TrapMinimizer.v().transform(jBody);
         //LocalSplitter.v().transform(jBody);
         Aggregator.v().transform(jBody);
         //UnusedLocalEliminator.v().transform(jBody);
@@ -675,6 +643,9 @@ public class DexBody  {
         // after we have run the constant propagation as we might not be able
         // to statically decide the conditions earlier.
         ConditionalBranchFolder.v().transform(jBody);
+        
+        // Remove unnecessary typecasts
+        ConstantCastEliminator.v().transform(jBody);
         
         // We need to run this transformer since the conditional branch folder
         // might have rendered some code unreachable (well, it was unreachable
@@ -691,7 +662,10 @@ public class DexBody  {
         DeadAssignmentEliminator.v().transform(jBody);
         UnusedLocalEliminator.v().transform(jBody);
         NopEliminator.v().transform(jBody);
-
+        
+        if (m.toString().equals("<org.apache.log4j.config.PropertySetter: void introspect()>"))
+        	System.out.println("x");
+        
         for (Unit u: jBody.getUnits()) {
             if (u instanceof AssignStmt) {
                 AssignStmt ass = (AssignStmt)u;
@@ -703,8 +677,24 @@ public class DexBody  {
                     }
                 }
             }
+            if (u instanceof DefinitionStmt) {
+            	DefinitionStmt def = (DefinitionStmt) u;
+                // If the body references a phantom class in a CaughtExceptionRef,
+                // we must manually fix the hierarchy
+                if (def.getLeftOp() instanceof Local
+                		&& def.getRightOp() instanceof CaughtExceptionRef) {
+                	Type t = def.getLeftOp().getType();
+                	if (t instanceof RefType) {
+                		RefType rt = (RefType) t;
+                		if (rt.getSootClass().isPhantom()
+                				&& !rt.getSootClass().hasSuperclass()
+                				&& !rt.getSootClass().getName().equals("java.lang.Throwable"))
+                			rt.getSootClass().setSuperclass(Scene.v().getSootClass("java.lang.Throwable"));
+                	}
+                }
+            }
         }
-
+        
         Debug.printDbg("\nafter jb pack");
         Debug.printDbg("",(Body)jBody);
 
@@ -723,7 +713,7 @@ public class DexBody  {
                 l.setType(RefType.v("java.lang.Object"));
             }
         }
-
+        
         return jBody;
     }
 
@@ -747,6 +737,13 @@ public class DexBody  {
     		this.unreachableCodeEliminator =
     			new UnreachableCodeEliminator(DalvikThrowAnalysis.v());
     	return this.unreachableCodeEliminator;
+    }
+
+    private CopyPropagator copyPropagator = null;
+    protected CopyPropagator getCopyPopagator() {
+    	if (this.copyPropagator == null)
+    		this.copyPropagator = new CopyPropagator(DalvikThrowAnalysis.v(), false);
+    	return this.copyPropagator;
     }
 
     /**
@@ -829,7 +826,12 @@ public class DexBody  {
             List<? extends ExceptionHandler> hList = tryItem.getExceptionHandlers();
             for (ExceptionHandler handler: hList) {
               int handlerAddress = handler.getHandlerCodeAddress();
-              Debug.printDbg("handler   (0x", Integer.toHexString(handlerAddress)   ,"): ", instructionAtAddress (handlerAddress).getUnit()  ," --- ", instructionAtAddress (handlerAddress-1).getUnit());
+              Debug.printDbg("handler   (0x",
+            		  Integer.toHexString(handlerAddress),
+            		  "): ",
+            		  instructionAtAddress (handlerAddress).getUnit(),
+            		  " --- ",
+            		  handlerAddress > 0 ? instructionAtAddress (handlerAddress-1).getUnit() : "<unknown>");
               String exceptionType = handler.getExceptionType();
               if (exceptionType == null)
                   exceptionType = "Ljava/lang/Throwable;";

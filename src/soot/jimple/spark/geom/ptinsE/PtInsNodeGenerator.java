@@ -183,8 +183,7 @@ public class PtInsNodeGenerator extends IEncodingBroker
 				break;
 
 			default:
-				System.exit(-1);
-				break;
+				throw new RuntimeException("Invalid node type");
 			}
 
 			++n_legal_cons;

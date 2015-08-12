@@ -317,10 +317,8 @@ public class SootMethod
                 "cannot get resident body for phantom class : "
                     + getSignature()
                     + "; maybe you want to call c.setApplicationClass() on this class!");
-
+        
         if (!hasActiveBody()) {
-            //	    G.v().out.println("Retrieving "+this.getSignature());
-
             setActiveBody(this.getBodyFromMethodSource("jb"));
             ms = null;
         }
@@ -487,13 +485,22 @@ public class SootMethod
 
 	/**
 	 * 
-	 * @return yes, if this function is a constructor.
+	 * @return yes, if this function is a constructor. Please not that <clinit> methods are not treated as constructors in this method.
 	 */
 	public boolean isConstructor()
 	{
 		return name.equals(constructorName);
 	}
 	
+	/**
+	 * 
+	 * @return yes, if this function is a static initializer.
+	 */
+	public boolean isStaticInitializer()
+	{
+		return name.equals(staticInitializerName);
+	}
+
 	/**
 	 * @return yes, if this is a class initializer or main function.
 	 */
@@ -551,9 +558,10 @@ public class SootMethod
     }
     
     public static String getSignature(SootClass cl, String name, List<Type> params, Type returnType) {
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(
-            "<" + Scene.v().quotedNameOf(cl.getName()) + ": ");
+        StringBuilder buffer = new StringBuilder();
+        buffer.append("<");
+        buffer.append(Scene.v().quotedNameOf(cl.getName()));
+        buffer.append(": ");
         buffer.append(getSubSignatureImpl(name, params, returnType));
         buffer.append(">");
 
@@ -584,24 +592,18 @@ public class SootMethod
         String name,
         List<Type> params,
         Type returnType) {
-        StringBuffer buffer = new StringBuffer();
+        StringBuilder buffer = new StringBuilder();
         Type t = returnType;
 
-        buffer.append(t.toString() + " " + Scene.v().quotedNameOf(name) + "(");
+        buffer.append(t.toString());
+        buffer.append(" ");
+        buffer.append(Scene.v().quotedNameOf(name));
+        buffer.append("(");
 
-        Iterator<Type> typeIt = params.iterator();
-
-        if (typeIt.hasNext()) {
-            t = (Type) typeIt.next();
-
-            buffer.append(t);
-
-            while (typeIt.hasNext()) {
+        for (int i = 0; i < params.size(); i++) {
+            buffer.append(params.get(i));
+            if (i < params.size() - 1)
                 buffer.append(",");
-
-                t = (Type) typeIt.next();
-                buffer.append(t);
-            }
         }
         buffer.append(")");
 
@@ -657,7 +659,7 @@ public class SootMethod
              */
             if(hasActiveBody()){
             	DavaBody body = (DavaBody) getActiveBody();
-            	IterableSet importSet = body.getImportList();
+            	IterableSet<String> importSet = body.getImportList();
 
             	if(!importSet.contains(tempString)){
             		body.addToImportList(tempString);
@@ -688,7 +690,7 @@ public class SootMethod
 			 */
 			if(hasActiveBody()){
 				DavaBody body = (DavaBody) getActiveBody();
-				IterableSet importSet = body.getImportList();
+				IterableSet<String> importSet = body.getImportList();
 
 				if(!importSet.contains(tempString)){
 					body.addToImportList(tempString);

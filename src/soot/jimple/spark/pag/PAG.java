@@ -84,6 +84,10 @@ public class PAG implements PointsToAnalysis {
         if( opts.add_tags() ) {
             nodeToTag = new HashMap<Node, Tag>();
         }
+        if (opts.rta() && opts.on_fly_cg()) {
+        	throw new RuntimeException("Incompatible options rta:true and on-fly-cg:true for cg.spark. Use -p cg-"
+        			+ ".spark on-fly-cg:false when using RTA.");
+		}
         typeManager = new TypeManager(this);
         if( !opts.ignore_types() ) {
             typeManager.setFastHierarchy( Scene.v().getOrMakeFastHierarchy() );
@@ -232,18 +236,27 @@ public class PAG implements PointsToAnalysis {
     public P2SetFactory getSetFactory() {
         return setFactory;
     }
+    
+    private <K extends Node> void lookupInMap(Map<K, Object> map) {
+        for (K object : map.keySet()) {
+            lookup( map, object );
+        }
+    }
+    
     public void cleanUpMerges() {
         if( opts.verbose() ) {
             G.v().out.println( "Cleaning up graph for merged nodes" );
         }
-        Map[] maps = { simple, alloc, store, load,
-            simpleInv, allocInv, storeInv, loadInv };
-        for (Map<Object, Object> m : maps) {
-            for (Object object : m.keySet()) {
-                lookup( m, object );
-            }
-        }
-        somethingMerged = false;
+       	lookupInMap(simple);
+       	lookupInMap(alloc);
+       	lookupInMap(store);
+       	lookupInMap(load);
+       	lookupInMap(simpleInv);
+       	lookupInMap(allocInv);
+       	lookupInMap(storeInv);
+       	lookupInMap(loadInv);
+       	
+       	somethingMerged = false;
         if( opts.verbose() ) {
             G.v().out.println( "Done cleaning up graph for merged nodes" );
         }
@@ -330,7 +343,7 @@ public class PAG implements PointsToAnalysis {
         }
     }
     protected final static Node[] EMPTY_NODE_ARRAY = new Node[0];
-    protected Node[] lookup( Map<Object, Object> m, Object key ) {
+    protected <K extends Node> Node[] lookup( Map<K, Object> m, K key ) {
 	Object valueList = m.get( key );
 	if( valueList == null ) {
 	    return EMPTY_NODE_ARRAY;
@@ -400,23 +413,23 @@ public class PAG implements PointsToAnalysis {
     { return lookup( alloc, key ); }
     public Node[] allocInvLookup( VarNode key ) 
     { return lookup( allocInv, key ); }
-    public Set<Object> simpleSources() { return simple.keySet(); }
-    public Set<Object> allocSources() { return alloc.keySet(); }
-    public Set<Object> storeSources() { return store.keySet(); }
-    public Set<Object> loadSources() { return load.keySet(); }
-    public Set<Object> simpleInvSources() { return simpleInv.keySet(); }
-    public Set<Object> allocInvSources() { return allocInv.keySet(); }
-    public Set<Object> storeInvSources() { return storeInv.keySet(); }
-    public Set<Object> loadInvSources() { return loadInv.keySet(); }
+    public Set<VarNode> simpleSources() { return simple.keySet(); }
+    public Set<AllocNode> allocSources() { return alloc.keySet(); }
+    public Set<VarNode> storeSources() { return store.keySet(); }
+    public Set<FieldRefNode> loadSources() { return load.keySet(); }
+    public Set<VarNode> simpleInvSources() { return simpleInv.keySet(); }
+    public Set<VarNode> allocInvSources() { return allocInv.keySet(); }
+    public Set<FieldRefNode> storeInvSources() { return storeInv.keySet(); }
+    public Set<VarNode> loadInvSources() { return loadInv.keySet(); }
 
-    public Iterator<Object> simpleSourcesIterator() { return simple.keySet().iterator(); }
-    public Iterator<Object> allocSourcesIterator() { return alloc.keySet().iterator(); }
-    public Iterator<Object> storeSourcesIterator() { return store.keySet().iterator(); }
-    public Iterator<Object> loadSourcesIterator() { return load.keySet().iterator(); }
-    public Iterator<Object> simpleInvSourcesIterator() { return simpleInv.keySet().iterator(); }
-    public Iterator<Object> allocInvSourcesIterator() { return allocInv.keySet().iterator(); }
-    public Iterator<Object> storeInvSourcesIterator() { return storeInv.keySet().iterator(); }
-    public Iterator<Object> loadInvSourcesIterator() { return loadInv.keySet().iterator(); }
+    public Iterator<VarNode> simpleSourcesIterator() { return simple.keySet().iterator(); }
+    public Iterator<AllocNode> allocSourcesIterator() { return alloc.keySet().iterator(); }
+    public Iterator<VarNode> storeSourcesIterator() { return store.keySet().iterator(); }
+    public Iterator<FieldRefNode> loadSourcesIterator() { return load.keySet().iterator(); }
+    public Iterator<VarNode> simpleInvSourcesIterator() { return simpleInv.keySet().iterator(); }
+    public Iterator<VarNode> allocInvSourcesIterator() { return allocInv.keySet().iterator(); }
+    public Iterator<FieldRefNode> storeInvSourcesIterator() { return storeInv.keySet().iterator(); }
+    public Iterator<VarNode> loadInvSourcesIterator() { return loadInv.keySet().iterator(); }
 
     static private int getSize( Object set ) {
         if( set instanceof Set ) return ((Set) set).size();
@@ -1110,17 +1123,17 @@ public class PAG implements PointsToAnalysis {
 
     protected SparkOptions opts;
 
-    protected Map<Object, Object> simple = new HashMap<Object, Object>();
-    protected Map<Object, Object> load = new HashMap<Object, Object>();
-    protected Map<Object, Object> store = new HashMap<Object, Object>();
-    protected Map<Object, Object> alloc = new HashMap<Object, Object>();
+    protected Map<VarNode, Object> simple = new HashMap<VarNode, Object>();
+    protected Map<FieldRefNode, Object> load = new HashMap<FieldRefNode, Object>();
+    protected Map<VarNode, Object> store = new HashMap<VarNode, Object>();
+    protected Map<AllocNode, Object> alloc = new HashMap<AllocNode, Object>();
 
-    protected Map<Object, Object> simpleInv = new HashMap<Object, Object>();
-    protected Map<Object, Object> loadInv = new HashMap<Object, Object>();
-    protected Map<Object, Object> storeInv = new HashMap<Object, Object>();
-    protected Map<Object, Object> allocInv = new HashMap<Object, Object>();
+    protected Map<VarNode, Object> simpleInv = new HashMap<VarNode, Object>();
+    protected Map<VarNode, Object> loadInv = new HashMap<VarNode, Object>();
+    protected Map<FieldRefNode, Object> storeInv = new HashMap<FieldRefNode, Object>();
+    protected Map<VarNode, Object> allocInv = new HashMap<VarNode, Object>();
 
-    protected boolean addToMap( Map<Object, Object> m, Node key, Node value ) {
+    protected <K extends Node> boolean addToMap( Map<K, Object> m, K key, Node value ) {
 	Object valueList = m.get( key );
 
 	if( valueList == null ) {

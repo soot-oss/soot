@@ -59,15 +59,35 @@ public class Options extends OptionsBase {
     public static final int output_format_X = 9;
     public static final int output_format_xml = 9;
     public static final int output_format_dex = 10;
-    public static final int output_format_n = 11;
-    public static final int output_format_none = 11;
-    public static final int output_format_jasmin = 12;
-    public static final int output_format_c = 13;
-    public static final int output_format_class = 13;
-    public static final int output_format_d = 14;
-    public static final int output_format_dava = 14;
-    public static final int output_format_t = 15;
-    public static final int output_format_template = 15;
+    public static final int output_format_force_dex = 11;
+    public static final int output_format_n = 12;
+    public static final int output_format_none = 12;
+    public static final int output_format_jasmin = 13;
+    public static final int output_format_c = 14;
+    public static final int output_format_class = 14;
+    public static final int output_format_d = 15;
+    public static final int output_format_dava = 15;
+    public static final int output_format_t = 16;
+    public static final int output_format_template = 16;
+    public static final int output_format_a = 17;
+    public static final int output_format_asm = 17;
+    public static final int java_version_default = 1;
+    public static final int java_version_1_1 = 2;
+    public static final int java_version_1 = 2;
+    public static final int java_version_1_2 = 3;
+    public static final int java_version_2 = 3;
+    public static final int java_version_1_3 = 4;
+    public static final int java_version_3 = 4;
+    public static final int java_version_1_4 = 5;
+    public static final int java_version_4 = 5;
+    public static final int java_version_1_5 = 6;
+    public static final int java_version_5 = 6;
+    public static final int java_version_1_6 = 7;
+    public static final int java_version_6 = 7;
+    public static final int java_version_1_7 = 8;
+    public static final int java_version_7 = 8;
+    public static final int java_version_1_8 = 9;
+    public static final int java_version_8 = 9;
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
     public static final int check_init_throw_analysis_auto = 1;
@@ -97,6 +117,11 @@ public class Options extends OptionsBase {
             || option.equals( "coffi" )
             )
                 coffi = true;
+  
+            else if( false 
+            || option.equals( "asm-backend" )
+            )
+                asm_backend = true;
   
             else if( false 
             || option.equals( "h" )
@@ -537,6 +562,17 @@ public class Options extends OptionsBase {
                 }
     
                 else if( false
+                || value.equals( "force-dex" )
+                ) {
+                    if( output_format != 0
+                    && output_format != output_format_force_dex ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    output_format = output_format_force_dex;
+                }
+    
+                else if( false
                 || value.equals( "n" )
                 || value.equals( "none" )
                 ) {
@@ -593,6 +629,142 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     output_format = output_format_template;
+                }
+    
+                else if( false
+                || value.equals( "a" )
+                || value.equals( "asm" )
+                ) {
+                    if( output_format != 0
+                    && output_format != output_format_asm ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    output_format = output_format_asm;
+                }
+    
+                else {
+                    G.v().out.println( "Invalid value "+value+" given for option -"+option );
+                    return false;
+                }
+           }
+  
+            else if( false
+            || option.equals( "java-version" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( false );
+    
+                else if( false
+                || value.equals( "default" )
+                ) {
+                    if( java_version != 0
+                    && java_version != java_version_default ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    java_version = java_version_default;
+                }
+    
+                else if( false
+                || value.equals( "1.1" )
+                || value.equals( "1" )
+                ) {
+                    if( java_version != 0
+                    && java_version != java_version_1 ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    java_version = java_version_1;
+                }
+    
+                else if( false
+                || value.equals( "1.2" )
+                || value.equals( "2" )
+                ) {
+                    if( java_version != 0
+                    && java_version != java_version_2 ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    java_version = java_version_2;
+                }
+    
+                else if( false
+                || value.equals( "1.3" )
+                || value.equals( "3" )
+                ) {
+                    if( java_version != 0
+                    && java_version != java_version_3 ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    java_version = java_version_3;
+                }
+    
+                else if( false
+                || value.equals( "1.4" )
+                || value.equals( "4" )
+                ) {
+                    if( java_version != 0
+                    && java_version != java_version_4 ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    java_version = java_version_4;
+                }
+    
+                else if( false
+                || value.equals( "1.5" )
+                || value.equals( "5" )
+                ) {
+                    if( java_version != 0
+                    && java_version != java_version_5 ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    java_version = java_version_5;
+                }
+    
+                else if( false
+                || value.equals( "1.6" )
+                || value.equals( "6" )
+                ) {
+                    if( java_version != 0
+                    && java_version != java_version_6 ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    java_version = java_version_6;
+                }
+    
+                else if( false
+                || value.equals( "1.7" )
+                || value.equals( "7" )
+                ) {
+                    if( java_version != 0
+                    && java_version != java_version_7 ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    java_version = java_version_7;
+                }
+    
+                else if( false
+                || value.equals( "1.8" )
+                || value.equals( "8" )
+                ) {
+                    if( java_version != 0
+                    && java_version != java_version_8 ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    java_version = java_version_8;
                 }
     
                 else {
@@ -1096,6 +1268,10 @@ public class Options extends OptionsBase {
     private boolean coffi = false;
     public void set_coffi( boolean setting ) { coffi = setting; }
   
+    public boolean asm_backend() { return asm_backend; }
+    private boolean asm_backend = false;
+    public void set_asm_backend( boolean setting ) { asm_backend = setting; }
+  
     public boolean help() { return help; }
     private boolean help = false;
     public void set_help( boolean setting ) { help = setting; }
@@ -1223,6 +1399,11 @@ public class Options extends OptionsBase {
     }
     public void set_output_format( int setting ) { output_format = setting; }
     private int output_format = 0;
+    public int java_version() {
+        return java_version; 
+    }
+    public void set_java_version( int setting ) { java_version = setting; }
+    private int java_version = 0;
     public boolean output_jar() { return output_jar; }
     private boolean output_jar = false;
     public void set_output_jar( boolean setting ) { output_jar = setting; }
@@ -1378,6 +1559,7 @@ public class Options extends OptionsBase {
 +"\nGeneral Options:\n"
       
 +padOpt(" -coffi", "Use the good old Coffi front end for parsing Java bytecode (instead of using ASM)." )
++padOpt(" -asm-backend", "Use the ASM back end for generating Java bytecode (instead of using Jasmin)." )
 +padOpt(" -h -help", "Display help and exit" )
 +padOpt(" -pl -phase-list", "Print list of available phases" )
 +padOpt(" -ph PHASE -phase-help PHASE", "Print help for specified PHASE" )
@@ -1427,11 +1609,23 @@ public class Options extends OptionsBase {
 +padVal(" g grimp", "Produce .grimp (abbreviated Grimp) files" )
 +padVal(" X xml", "Produce .xml Files" )
 +padVal(" dex", "Produce Dalvik Virtual Machine files" )
++padVal(" force-dex", "Produce Dalvik DEX files" )
 +padVal(" n none", "Produce no output" )
 +padVal(" jasmin", "Produce .jasmin files" )
 +padVal(" c class (default)", "Produce .class Files" )
 +padVal(" d dava", "Produce dava-decompiled .java files" )
 +padVal(" t template", "Produce .java files with Jimple templates." )
++padVal(" a asm", "Produce .asm files as textual bytecode representation generated with the ASM back end." )
++padOpt(" -java-version VERSION", "Force Java version of bytecode generated by Soot." )
++padVal(" default", "Let Soot determine Java version of generated bytecode." )
++padVal(" 1.1 1", "Force Java 1.1 as output version." )
++padVal(" 1.2 2", "Force Java 1.2 as output version." )
++padVal(" 1.3 3", "Force Java 1.3 as output version." )
++padVal(" 1.4 4", "Force Java 1.4 as output version." )
++padVal(" 1.5 5", "Force Java 1.5 as output version." )
++padVal(" 1.6 6", "Force Java 1.6 as output version." )
++padVal(" 1.7 7", "Force Java 1.7 as output version." )
++padVal(" 1.8 8", "Force Java 1.8 as output version." )
 +padOpt(" -outjar -output-jar", "Make output dir a Jar file instead of dir" )
 +padOpt(" -xml-attributes", "Save tags to XML attributes for Eclipse" )
 +padOpt(" -print-tags -print-tags-in-output", "Print tags in output files after stmt" )
@@ -1691,7 +1885,7 @@ public class Options extends OptionsBase {
                 "\nThe Unreachable Code Eliminator removes unreachable code and \ntraps whose catch blocks are empty. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "remove-unreachable-traps (false)", "" );
+                +padOpt( "remove-unreachable-traps (true)", "" );
     
         if( phaseName.equals( "jb.tt" ) )
             return "Phase "+phaseName+":\n"+
@@ -1836,6 +2030,7 @@ public class Options extends OptionsBase {
                 +padOpt( "string-constants (false)", "Propagate all string constants, not just class names" )
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
                 +padOpt( "empties-as-allocs (false)", "Treat singletons for empty sets etc. as allocation sites" )
+                +padOpt( "allocate-params (false)", "Add Alloc nodes for parameter of accessible methods. For any Parameter allocations for any subtype will be added." )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
                 +padOpt( "on-fly-cg (true)", "Build call graph as receiver types become known" )
                 +padOpt( "simplify-offline (false)", "Collapse single-entry subgraphs of the PAG" )
@@ -2506,7 +2701,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "bb" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Baf Body Creation phase creates a BafBody from each source \nmethod. It is run if the output format is baf or b, or if class \nfiles are being output and the Via Grimp option has not been \nspecified. "
+                "\nThe Baf Body Creation phase creates a BafBody from each source \nmethod. It is run if the output format is baf or b or asm or a, \nor if class files are being output and the Via Grimp option has \nnot been specified. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -2543,7 +2738,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "bop" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Baf Optimization pack performs optimizations on BafBodys \n(currently there are no optimizations performed specifically on \nBafBodys, and the pack is empty). It is run only if the output \nformat is baf or b, or if class files are being output and the \nVia Grimp option has not been specified. "
+                "\nThe Baf Optimization pack performs optimizations on BafBodys \n(currently there are no optimizations performed specifically on \nBafBodys, and the pack is empty). It is run only if the output \nformat is baf or b or asm or a, or if class files are being \noutput and the Via Grimp option has not been specified. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
@@ -2784,6 +2979,7 @@ public class Options extends OptionsBase {
                 +"string-constants "
                 +"simulate-natives "
                 +"empties-as-allocs "
+                +"allocate-params "
                 +"simple-edges-bidirectional "
                 +"on-fly-cg "
                 +"simplify-offline "
@@ -3287,7 +3483,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.uce" ) )
             return ""
               +"enabled:true "
-              +"remove-unreachable-traps:false ";
+              +"remove-unreachable-traps:true ";
     
         if( phaseName.equals( "jb.tt" ) )
             return ""
@@ -3393,6 +3589,7 @@ public class Options extends OptionsBase {
               +"string-constants:false "
               +"simulate-natives:true "
               +"empties-as-allocs:false "
+              +"allocate-params:false "
               +"simple-edges-bidirectional:false "
               +"on-fly-cg:true "
               +"simplify-offline:false "

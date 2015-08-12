@@ -24,13 +24,9 @@
 
 package soot.dexpler.instructions;
 
-import java.util.List;
-
 import org.jf.dexlib2.iface.instruction.Instruction;
 
-import soot.Local;
 import soot.dexpler.DexBody;
-import soot.jimple.Jimple;
 
 public class InvokeInterfaceInstruction extends MethodInvocationInstruction {
 
@@ -46,11 +42,7 @@ public class InvokeInterfaceInstruction extends MethodInvocationInstruction {
 //        body.add(nop);
 //        beginUnit = nop;
 
-        List<Local> parameters = buildParameters(body, false);
-        invocation = Jimple.v().newInterfaceInvokeExpr(parameters.get(0),
-                                                       getSootMethodRef(),
-                                                       parameters.subList(1, parameters.size()));
-        body.setDanglingInstruction(this);
+    	jimplifyInterface(body);
         // setUnit() is called in MethodInvocationInstruction
     }
 }

@@ -25,8 +25,8 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 
-public final class NumberedSet {
-    public NumberedSet( ArrayNumberer universe ) {
+public final class NumberedSet<N extends Numberable> {
+    public NumberedSet( ArrayNumberer<N> universe ) {
         this.universe = universe;
     }
     public boolean add( Numberable o ) {
@@ -100,30 +100,30 @@ public final class NumberedSet {
             }
         }
     }
-    public Iterator iterator() { 
+    public Iterator<N> iterator() { 
         if( array == null ) return new BitSetIterator( this );
         else return new NumberedSetIterator( this ); 
     }
 
-    class BitSetIterator implements Iterator {
+    class BitSetIterator implements Iterator<N> {
         soot.util.BitSetIterator iter;
-        BitSetIterator( NumberedSet set ) {
+        BitSetIterator( NumberedSet<N> set ) {
             iter = set.bits.iterator();
         }
         public final boolean hasNext() { return iter.hasNext(); }
         public void remove() {
             throw new RuntimeException( "Not implemented." );
         }
-        public final Object next() {
+        public final N next() {
             return universe.get( iter.next() );
         }
 
     }
 
-    class NumberedSetIterator implements Iterator {
-        NumberedSet set;
+    class NumberedSetIterator implements Iterator<N> {
+        NumberedSet<N> set;
         int cur = 0;
-        NumberedSetIterator( NumberedSet set ) {
+        NumberedSetIterator( NumberedSet<N> set ) {
             this.set = set;
             seekNext();
         }
@@ -140,8 +140,9 @@ public final class NumberedSet {
         public void remove() {
             throw new RuntimeException( "Not implemented." );
         }
-        public final Object next() {
-            Numberable ret = set.array[cur];
+        public final N next() {
+            @SuppressWarnings("unchecked")
+			N ret = (N) set.array[cur];
             cur++;
             seekNext();
             return ret;
@@ -152,6 +153,6 @@ public final class NumberedSet {
     private Numberable[] array = new Numberable[8];
     private BitVector bits;
     private int size = 0;
-    private ArrayNumberer universe;
+    private ArrayNumberer<N> universe;
 
 }

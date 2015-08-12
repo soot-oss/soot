@@ -25,6 +25,8 @@
 
 package soot.tagkit;
 
+import soot.util.Switch;
+
 public class AnnotationBooleanElem extends AnnotationElem{
     boolean value;
 
@@ -40,4 +42,9 @@ public class AnnotationBooleanElem extends AnnotationElem{
     public boolean getValue(){
         return value;
     }
+    
+	@Override
+	public void apply(Switch sw) {
+		((IAnnotationElemTypeSwitch) sw).caseAnnotationBooleanElem(this);
+	}
 }

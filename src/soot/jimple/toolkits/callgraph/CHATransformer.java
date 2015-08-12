@@ -27,7 +27,9 @@ package soot.jimple.toolkits.callgraph;
 
 import soot.options.*;
 import soot.*;
+
 import java.util.*;
+
 import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
 
 /** Builds an invoke graph using Class Hierarchy Analysis. */
@@ -36,7 +38,7 @@ public class CHATransformer extends SceneTransformer
     public CHATransformer( Singletons.Global g ) {}
     public static CHATransformer v() { return G.v().soot_jimple_toolkits_callgraph_CHATransformer(); }
 
-    protected void internalTransform(String phaseName, Map opts)
+    protected void internalTransform(String phaseName, Map<String, String> opts)
     {
         CHAOptions options = new CHAOptions( opts );
         CallGraphBuilder cg = new CallGraphBuilder( DumbPointerAnalysis.v() );

@@ -43,7 +43,6 @@ import soot.jimple.IdentityStmt;
 import soot.jimple.InvokeExpr;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.Stmt;
-import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.LocalDefs;
 import soot.toolkits.scalar.LocalUses;
 import soot.toolkits.scalar.UnitValueBoxPair;
@@ -125,7 +124,7 @@ public abstract class DexTransformer extends BodyTransformer {
 		return defs;
 	}
 
-	protected Type findArrayType(ExceptionalUnitGraph g,
+	protected Type findArrayType(/*ExceptionalUnitGraph g,*/
 			LocalDefs localDefs, LocalUses localUses,
 			Stmt arrayStmt, int depth, Set<Unit> alreadyVisitedDefs) {
 		ArrayRef aRef = null;
@@ -139,20 +138,17 @@ public abstract class DexTransformer extends BodyTransformer {
 				AssignStmt stmt = (AssignStmt) arrayStmt;
 				aBase = (Local) stmt.getRightOp();
 			} else {
-				System.out.println("ERROR: not an assign statement: "
+				throw new RuntimeException("ERROR: not an assign statement: "
 						+ arrayStmt);
-				System.exit(-1);
 			}
 		} else {
 			aBase = (Local) aRef.getBase();
 		}
 
 		List<Unit> defsOfaBaseList = localDefs.getDefsOfAt(aBase, arrayStmt);
-		if (defsOfaBaseList == null || defsOfaBaseList.size() == 0) {
-			System.out
-					.println("ERROR: no def statement found for array base local "
+		if (defsOfaBaseList == null || defsOfaBaseList.isEmpty()) {
+			throw new RuntimeException("ERROR: no def statement found for array base local "
 							+ arrayStmt);
-			System.exit(-1);
 		}
 
 		// We should find an answer only by processing the first item of the
@@ -190,7 +186,7 @@ public abstract class DexTransformer extends BodyTransformer {
 																			// ar.getType())
 																			// {
 						System.out.println("second round from stmt: " + stmt);
-						Type t = findArrayType(g, localDefs, localUses, stmt,
+						Type t = findArrayType(/*g,*/ localDefs, localUses, stmt,
 								++depth, newVisitedDefs); // TODO: which type should be
 											// returned?
 						if (t instanceof ArrayType) {
@@ -255,7 +251,7 @@ public abstract class DexTransformer extends BodyTransformer {
 				// information associated with the alias.
 				} else if (r instanceof Local) {
 					Debug.printDbg("atype alias: ", stmt);
-					Type t = findArrayType(g, localDefs, localUses, stmt,
+					Type t = findArrayType(/*g,*/ localDefs, localUses, stmt,
 							++depth, newVisitedDefs);
 					if (depth == 0) {
 						aType = t;

@@ -34,8 +34,10 @@ public class EqualLocalsAnalysis extends ForwardFlowAnalysis
 
 		doAnalysis();
 
-		List aliasList = new ArrayList();
-		aliasList.addAll(((FlowSet) getFlowBefore(s)).toList());
+		FlowSet fs = (FlowSet) getFlowBefore(s);
+		List aliasList = new ArrayList(fs.size());
+		for (Object o : fs)
+			aliasList.add(o);
 
 		if(aliasList.contains(new EquivalentValue(l)))
 			return aliasList;
