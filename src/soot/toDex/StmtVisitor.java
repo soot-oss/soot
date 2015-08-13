@@ -204,7 +204,7 @@ public class StmtVisitor implements StmtSwitch {
 			// Only consider real instructions
 			if (curInsn instanceof AddressInsn)
 				continue;
-			if (!curInsn.getOpcode().name.startsWith("move/"))
+			if (!isReducableMoveInstruction(curInsn.getOpcode().name))
 				continue;
 			
 			// Skip over following address instructions
@@ -218,7 +218,7 @@ public class StmtVisitor implements StmtSwitch {
 				nextIndex = j;
 				break;
 			}
-			if (nextInsn == null || !nextInsn.getOpcode().name.startsWith("move/"))
+			if (nextInsn == null || !isReducableMoveInstruction("move/"))
 				continue;
 			
 			// Do not remove the last instruction in the body as we need to remap
@@ -240,7 +240,7 @@ public class StmtVisitor implements StmtSwitch {
 				if (origStmt == null || !isJumpTarget(origStmt)) {
 					Insn nextStmt = this.insns.get(nextIndex + 1);
 					insns.remove(nextIndex);
-				
+					
 					if (origStmt != null) {
 						insnStmtMap.remove(nextInsn);
 						insnStmtMap.put(nextStmt, origStmt);
@@ -250,6 +250,12 @@ public class StmtVisitor implements StmtSwitch {
 		}
 	}
 	
+	private boolean isReducableMoveInstruction(String name) {
+		return name.startsWith("move/")
+				|| name.startsWith("move-object/")
+				|| name.startsWith("move-wide/");
+	}
+
 	private boolean isJumpTarget(Stmt target) {
 		for (Insn insn : this.insns)
 			if (insn instanceof InsnWithOffset)
