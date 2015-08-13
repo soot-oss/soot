@@ -218,7 +218,7 @@ public class StmtVisitor implements StmtSwitch {
 				nextIndex = j;
 				break;
 			}
-			if (nextInsn == null || !isReducableMoveInstruction("move/"))
+			if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode().name))
 				continue;
 			
 			// Do not remove the last instruction in the body as we need to remap
