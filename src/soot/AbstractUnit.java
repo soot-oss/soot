@@ -114,17 +114,15 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
         List<ValueBox> defBoxes = getDefBoxes();
         if( useBoxes.isEmpty() ) {
         	return defBoxes;
-        } else {
+        }
+        else {
             if( defBoxes.isEmpty() ) {
-                return Collections.unmodifiableList(useBoxes);
-            } else {
+                return useBoxes;
+            }
+            else {
                 valueBoxes = new ArrayList<ValueBox>();
-
                 valueBoxes.addAll(defBoxes);
                 valueBoxes.addAll(useBoxes);
-
-                valueBoxes = Collections.unmodifiableList(valueBoxes);
-
                 return valueBoxes;
             }
         }
