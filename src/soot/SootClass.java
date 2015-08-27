@@ -250,7 +250,8 @@ public class SootClass extends AbstractHost implements Numberable
     */    
     public SootField getFieldUnsafe( String name, Type type ) {
         checkLevel(SIGNATURES);
-        for (SootField field : fields) {
+        for (Iterator<SootField> fieldIt = fields.snapshotIterator(); fieldIt.hasNext(); ) {
+        	SootField field = fieldIt.next();
             if(field.getName().equals(name) && field.getType().equals(type))
                 return field;
         }
