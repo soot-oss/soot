@@ -77,10 +77,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
     
     /** List of UnitBoxes pointing to this Unit. */
     List<UnitBox> boxesPointingToThis = null;
-
-    /** List of ValueBoxes contained in this Unit. */
-    List<ValueBox> valueBoxes = null;
-
+    
     /** Returns a list of Boxes pointing to this Unit. */
     @Override
     public List<UnitBox> getBoxesPointingToThis()
@@ -120,7 +117,7 @@ public abstract class AbstractUnit extends AbstractHost implements Unit
                 return useBoxes;
             }
             else {
-                valueBoxes = new ArrayList<ValueBox>();
+                List<ValueBox> valueBoxes = new ArrayList<ValueBox>();
                 valueBoxes.addAll(defBoxes);
                 valueBoxes.addAll(useBoxes);
                 return valueBoxes;
