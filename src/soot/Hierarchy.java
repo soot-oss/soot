@@ -284,8 +284,9 @@ public class Hierarchy
         checkState();
 
         // If already cached, return the value.
-        if (interfaceToSuperinterfaces.get(c) != null)
-            return interfaceToSuperinterfaces.get(c);
+        List<SootClass> cached = interfaceToSuperinterfaces.get(c);
+        if (cached != null)
+            return cached;
 
         // Otherwise, build up the hashmap.
         List<SootClass> l = new ArrayList<SootClass>();
