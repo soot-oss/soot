@@ -84,6 +84,7 @@ import soot.SourceLocator;
 import soot.Trap;
 import soot.Type;
 import soot.Unit;
+import soot.dexpler.DexType;
 import soot.dexpler.Util;
 import soot.jimple.Jimple;
 import soot.jimple.NopStmt;
@@ -549,6 +550,7 @@ public class DexPrinter {
         	if (memberClassesItem != null)
         	  annotations.addAll(memberClassesItem);
         }
+    	
         
         for (Tag t : c.getTags()) {
             if (t.getName().equals("VisibilityAnnotationTag")){
@@ -585,7 +587,7 @@ public class DexPrinter {
             		(defaultAnnotationTag, skipList);
         	annotations.addAll(visibilityItems);
         }
-		
+        
     	return annotations;
     }
 
@@ -615,6 +617,26 @@ public class DexPrinter {
             	annotations.addAll(visibilityItems);
             }
     	}
+    	List<SootClass> exceptionList = m.getExceptions();
+    	if (exceptionList != null) {
+            Set<ImmutableAnnotationElement> elements = new HashSet<ImmutableAnnotationElement>();
+            List<ImmutableEncodedValue> valueList = new ArrayList<ImmutableEncodedValue>();
+    		for (SootClass exceptionClass : exceptionList) {
+                
+	            valueList.add(new ImmutableTypeEncodedValue(DexType.toDalvikICAT(exceptionClass.getName()).replace(".", "/")));
+	            
+    		}
+            ImmutableArrayEncodedValue valueValue = new ImmutableArrayEncodedValue(valueList);
+            ImmutableAnnotationElement valueElement = new ImmutableAnnotationElement
+            		("value", valueValue);
+            elements.add(valueElement);
+            ImmutableAnnotation ann = new ImmutableAnnotation
+            		(AnnotationVisibility.SYSTEM,
+        			"Ldalvik/annotation/Throws;",
+        			elements);
+        	annotations.add(ann);
+    	}
+
     	
     	return annotations;
     }
@@ -677,7 +699,7 @@ public class DexPrinter {
         			elements);
         	annotations.add(ann);
             skipList.add("Ldalvik/annotation/Signature;");
-        }
+        }        
         
         return annotations;
 	}
