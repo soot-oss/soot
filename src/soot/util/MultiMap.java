@@ -48,4 +48,5 @@ public interface MultiMap<K,V> {
      * @return The number of keys in this MultiMap
      */
     public int size();
+	public void clear();
 }
