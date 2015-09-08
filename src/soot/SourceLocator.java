@@ -422,17 +422,20 @@ public class SourceLocator
 
     public String getOutputDir() {
         String ret = Options.v().output_dir();
-        if( ret.length() == 0 ) {
-        	ret = "sootOutput";
-	        if (Options.v().output_jar())
-	        	ret += File.separatorChar + "out.jar";
+        if (ret.length() == 0) {
+            ret = "sootOutput";
+            if (Options.v().output_jar()) {
+                ret += File.separatorChar + "out.jar";
+            }
         }
-        File dir = new File(ret);
 
+        File dir = new File(ret);
         if (!dir.exists()) {
             try {
-                if( !Options.v().output_jar() ) {
+                if (!Options.v().output_jar()) {
                     dir.mkdirs();
+                } else {
+                    dir.getParentFile().mkdirs();
                 }
             } catch (SecurityException se) {
                 G.v().out.println("Unable to create " + ret);
