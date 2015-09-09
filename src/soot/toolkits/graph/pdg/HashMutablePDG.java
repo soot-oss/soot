@@ -608,7 +608,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 	 */
 	public IRegion GetStartRegion()
 	{
-		return this.m_pdgRegions.get(0);
+	    return (IRegion) GetStartNode().getNode();
 	}
 	
 	/**
