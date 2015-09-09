@@ -324,50 +324,27 @@ public class SourceLocator
 
         return getDavaFilenameFor(c, b);
     }
-    
-	private String getDavaFilenameFor(SootClass c, StringBuffer b) {
-		b.append("dava");
-        b.append(File.separatorChar);
-        {
-            String classPath = b.toString() + "classes";
-            File dir = new File(classPath);
 
-            if (!dir.exists())
-                try {
-                    dir.mkdirs();
-                } catch (SecurityException se) {
-                    G.v().out.println("Unable to create " + classPath);
-                    throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
-                }
-        }
+    private String getDavaFilenameFor(SootClass c, StringBuffer b) {
+        b.append("dava");
+        b.append(File.separatorChar);
+        ensureDirectoryExists(new File(b.toString() + "classes"));
 
         b.append("src");
         b.append(File.separatorChar);
-
         String fixedPackageName = c.getJavaPackageName();
-        if (fixedPackageName.equals("") == false) {
+        if (!fixedPackageName.equals("")) {
             b.append(fixedPackageName.replace('.', File.separatorChar));
             b.append(File.separatorChar);
         }
-
-        {
-            String path = b.toString();
-            File dir = new File(path);
-
-            if (!dir.exists())
-                try {
-                    dir.mkdirs();
-                } catch (SecurityException se) {
-                    G.v().out.println("Unable to create " + path);
-                    throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
-                }
-        }
-
+        
+        ensureDirectoryExists(new File(b.toString()));
+        
         b.append(c.getShortJavaStyleName());
         b.append(".java");
 
         return b.toString();
-	}
+    }
 
     /* This is called after sootClassPath has been defined. */
     public Set<String> classesInDynamicPackage(String str) {
