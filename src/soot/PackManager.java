@@ -539,18 +539,18 @@ public class PackManager {
 
     private DexPrinter dexPrinter = new DexPrinter();
 
-	private void setupJAR() {
-		if( Options.v().output_jar() ) {
-            String outFileName = SourceLocator.v().getOutputDir();
+    private void setupJAR() {
+        if (Options.v().output_jar()) {
+            String outFileName = SourceLocator.v().getOutputJarName();
             try {
                 jarFile = new JarOutputStream(new FileOutputStream(outFileName));
-            } catch( IOException e ) {
+            } catch (IOException e) {
                 throw new CompilationDeathException("Cannot open output Jar file " + outFileName);
             }
         } else {
             jarFile = null;
         }
-	}
+    }
 	
     private void runWholeProgramPacks() {
         if (Options.v().whole_shimple()) {
