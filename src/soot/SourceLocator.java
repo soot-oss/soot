@@ -324,50 +324,27 @@ public class SourceLocator
 
         return getDavaFilenameFor(c, b);
     }
-    
-	private String getDavaFilenameFor(SootClass c, StringBuffer b) {
-		b.append("dava");
-        b.append(File.separatorChar);
-        {
-            String classPath = b.toString() + "classes";
-            File dir = new File(classPath);
 
-            if (!dir.exists())
-                try {
-                    dir.mkdirs();
-                } catch (SecurityException se) {
-                    G.v().out.println("Unable to create " + classPath);
-                    throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
-                }
-        }
+    private String getDavaFilenameFor(SootClass c, StringBuffer b) {
+        b.append("dava");
+        b.append(File.separatorChar);
+        ensureDirectoryExists(new File(b.toString() + "classes"));
 
         b.append("src");
         b.append(File.separatorChar);
-
         String fixedPackageName = c.getJavaPackageName();
-        if (fixedPackageName.equals("") == false) {
+        if (!fixedPackageName.equals("")) {
             b.append(fixedPackageName.replace('.', File.separatorChar));
             b.append(File.separatorChar);
         }
-
-        {
-            String path = b.toString();
-            File dir = new File(path);
-
-            if (!dir.exists())
-                try {
-                    dir.mkdirs();
-                } catch (SecurityException se) {
-                    G.v().out.println("Unable to create " + path);
-                    throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
-                }
-        }
-
+        
+        ensureDirectoryExists(new File(b.toString()));
+        
         b.append(c.getShortJavaStyleName());
         b.append(".java");
 
         return b.toString();
-	}
+    }
 
     /* This is called after sootClassPath has been defined. */
     public Set<String> classesInDynamicPackage(String str) {
@@ -419,30 +396,78 @@ public class SourceLocator
                 throw new RuntimeException();
         }
     }
-
-    public String getOutputDir() {
-        String ret = Options.v().output_dir();
-        if (ret.length() == 0) {
-            ret = "sootOutput";
-            if (Options.v().output_jar()) {
-                ret += File.separatorChar + "out.jar";
-            }
-        }
-
-        File dir = new File(ret);
-        if (!dir.exists()) {
+    
+    /**
+     * Create the given directory and all parent directories if {@code dir} is
+     * non-null.
+     *
+     * @param dir
+     */
+    public static void ensureDirectoryExists(File dir) {
+        if (dir != null && !dir.exists()) {
             try {
-                if (!Options.v().output_jar()) {
-                    dir.mkdirs();
-                } else {
-                    dir.getParentFile().mkdirs();
-                }
+                dir.mkdirs();
             } catch (SecurityException se) {
-                G.v().out.println("Unable to create " + ret);
+                G.v().out.println("Unable to create " + dir);
                 throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
             }
         }
-        return ret;
+    }
+
+    /**
+     * Returns the output directory given by {@link Options} or a default if not
+     * set. Also ensures that all directories in the path exist.
+     *
+     * @return the output directory from {@link Options} or a default if not set
+     */
+    public String getOutputDir() {
+        File dir;
+        if (Options.v().output_dir().length() == 0) {
+            //Default if -output-dir was not set
+            dir = new File("sootOutput");
+        } else {
+            dir = new File(Options.v().output_dir());
+            //If a Jar name was given as the output dir
+            //  get its parent path (possibly empty)
+            if (dir.getPath().endsWith(".jar")) {
+                dir = dir.getParentFile();
+                if (dir == null) {
+                    dir = new File("");
+                }
+            }
+        }
+
+        ensureDirectoryExists(dir);
+        return dir.getPath();
+    }
+
+    /**
+     * If {@link Options#v()#output_jar()} is set, returns the name of the jar
+     * file to which the output will be written. The name of the jar file can be
+     * given with the -output-dir option or a default will be used. Also ensures
+     * that all directories in the path exist.
+     *
+     * @return the name of the Jar file to which outputs are written
+     */
+    public String getOutputJarName() {
+        if (!Options.v().output_jar()) {
+            return "";
+        }
+
+        File dir;
+        if (Options.v().output_dir().length() == 0) {
+            //Default if -output-dir was not set
+            dir = new File("sootOutput/out.jar");
+        } else {
+            dir = new File(Options.v().output_dir());
+            //If a Jar name was not given, then supply default
+            if (!dir.getPath().endsWith(".jar")) {
+                dir = new File(dir.getPath(), "out.jar");
+            }
+        }
+
+        ensureDirectoryExists(dir.getParentFile());
+        return dir.getPath();
     }
 
     /** Explodes a class path into a list of individual class path entries. */
