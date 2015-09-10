@@ -23,111 +23,122 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot;
 
 import soot.util.*;
 import java.util.*;
 
-/** A wrapper object for a pack of optimizations.
- * Provides chain-like operations, except that the key is the phase name. */
-public abstract class Pack implements HasPhaseOptions, Iterable<Transform>
-{
-    final private boolean DEBUG = true;
-    private String name;
-    public String getPhaseName() { return name; }
-    public Pack( String name ) {
-        this.name = name;
-    }
-    Chain<Transform> opts = new HashChain<Transform>();
-    
-    public Iterator<Transform> iterator() { return opts.iterator(); }
+/**
+ * A wrapper object for a pack of optimizations. Provides chain-like operations,
+ * except that the key is the phase name.
+ */
+public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
+	final private boolean DEBUG = true;
+	private String name;
 
-    public void add(Transform t) { 
-    	if(!t.getPhaseName().startsWith(getPhaseName()+".")) {
-    		throw new RuntimeException("Transforms in pack '"+getPhaseName()+"' must have a phase name " +
-    				"that starts with '"+getPhaseName()+".'.");
-    	}    	
-        PhaseOptions.v().getPM().notifyAddPack();
-        if( get( t.getPhaseName() ) != null ) {
-            throw new RuntimeException( "Phase "+t.getPhaseName()+" already "
-                    +"in pack" );
-        }
-        opts.add(t); 
-    }
+	public String getPhaseName() {
+		return name;
+	}
 
-    public void insertAfter(Transform t, String phaseName) 
-    {
-        PhaseOptions.v().getPM().notifyAddPack();
-        for (Transform tr : opts) {
-            if (tr.getPhaseName().equals(phaseName))
-            {
-                opts.insertAfter(t, tr);
-                return;
-            }
-        }
-        throw new RuntimeException("phase "+phaseName+" not found!");
-    }
+	public Pack(String name) {
+		this.name = name;
+	}
 
-    public void insertBefore(Transform t, String phaseName)
-    {
-        PhaseOptions.v().getPM().notifyAddPack();
-        for (Transform tr : opts) {
-            if (tr.getPhaseName().equals(phaseName))
-            {
-                opts.insertBefore(t, tr);
-                return;
-            }
-        }
-        throw new RuntimeException("phase "+phaseName+" not found!");
-    }
+	Chain<Transform> opts = new HashChain<Transform>();
 
-    public Transform get( String phaseName ) {
-        for (Transform tr : opts) {
-            if( tr.getPhaseName().equals(phaseName) ) {
-                return tr;
-            }
-        }
-        return null;
-    }
-    
-    public boolean remove(String phaseName) {
-    	for (Transform tr : opts)
-    		if (tr.getPhaseName().equals(phaseName)) {
-    			opts.remove(tr);
-    			return true;
-    		}
-    	return false;
-    }
+	public Iterator<Transform> iterator() {
+		return opts.iterator();
+	}
 
-    protected void internalApply() {
-        throw new RuntimeException("wrong type of pack");
-    }
+	public void add(Transform t) {
+		if (!t.getPhaseName().startsWith(getPhaseName() + ".")) {
+			throw new RuntimeException("Transforms in pack '" + getPhaseName()
+					+ "' must have a phase name " + "that starts with '"
+					+ getPhaseName() + ".'.");
+		}
+		PhaseOptions.v().getPM().notifyAddPack();
+		if (get(t.getPhaseName()) != null) {
+			throw new RuntimeException("Phase " + t.getPhaseName()
+					+ " already " + "in pack");
+		}
+		opts.add(t);
+	}
 
-    protected void internalApply(Body b) {
-        throw new RuntimeException("wrong type of pack");
-    }
+	public void insertAfter(Transform t, String phaseName) {
+		PhaseOptions.v().getPM().notifyAddPack();
+		for (Transform tr : opts) {
+			if (tr.getPhaseName().equals(phaseName)) {
+				opts.insertAfter(t, tr);
+				return;
+			}
+		}
+		throw new RuntimeException("phase " + phaseName + " not found!");
+	}
 
-    public final void apply() {
-        Map<String, String> options = PhaseOptions.v().getPhaseOptions( this );
-        if( !PhaseOptions.getBoolean( options, "enabled" ) ) return;
-	if (DEBUG)
-	    PhaseDumper.v().dumpBefore(getPhaseName());
-        internalApply();
-	if (DEBUG)
-	    PhaseDumper.v().dumpAfter(getPhaseName());
-    }
+	public void insertBefore(Transform t, String phaseName) {
+		PhaseOptions.v().getPM().notifyAddPack();
+		for (Transform tr : opts) {
+			if (tr.getPhaseName().equals(phaseName)) {
+				opts.insertBefore(t, tr);
+				return;
+			}
+		}
+		throw new RuntimeException("phase " + phaseName + " not found!");
+	}
 
-    public final void apply(Body b) {
-        Map<String, String> options = PhaseOptions.v().getPhaseOptions( this );
-        if( !PhaseOptions.getBoolean( options, "enabled" ) ) return;
-	if (DEBUG)
-	    PhaseDumper.v().dumpBefore(b, getPhaseName());
-        internalApply(b);
-	if (DEBUG)
-	    PhaseDumper.v().dumpAfter(b, getPhaseName());
-    }
+	public Transform get(String phaseName) {
+		for (Transform tr : opts) {
+			if (tr.getPhaseName().equals(phaseName)) {
+				return tr;
+			}
+		}
+		return null;
+	}
 
-    public String getDeclaredOptions() { return soot.options.Options.getDeclaredOptionsForPhase( getPhaseName() ); }
-    public String getDefaultOptions() { return soot.options.Options.getDefaultOptionsForPhase( getPhaseName() ); }
+	public boolean remove(String phaseName) {
+		for (Transform tr : opts)
+			if (tr.getPhaseName().equals(phaseName)) {
+				opts.remove(tr);
+				return true;
+			}
+		return false;
+	}
+
+	protected void internalApply() {
+		throw new RuntimeException("wrong type of pack");
+	}
+
+	protected void internalApply(Body b) {
+		throw new RuntimeException("wrong type of pack");
+	}
+
+	public final void apply() {
+		Map<String, String> options = PhaseOptions.v().getPhaseOptions(this);
+		if (!PhaseOptions.getBoolean(options, "enabled"))
+			return;
+		if (DEBUG)
+			PhaseDumper.v().dumpBefore(getPhaseName());
+		internalApply();
+		if (DEBUG)
+			PhaseDumper.v().dumpAfter(getPhaseName());
+	}
+
+	public final void apply(Body b) {
+		Map<String, String> options = PhaseOptions.v().getPhaseOptions(this);
+		if (!PhaseOptions.getBoolean(options, "enabled"))
+			return;
+		if (DEBUG)
+			PhaseDumper.v().dumpBefore(b, getPhaseName());
+		internalApply(b);
+		if (DEBUG)
+			PhaseDumper.v().dumpAfter(b, getPhaseName());
+	}
+
+	public String getDeclaredOptions() {
+		return soot.options.Options.getDeclaredOptionsForPhase(getPhaseName());
+	}
+
+	public String getDefaultOptions() {
+		return soot.options.Options.getDefaultOptionsForPhase(getPhaseName());
+	}
 }
