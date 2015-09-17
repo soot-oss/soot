@@ -3,7 +3,6 @@ package soot.asm.backend;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -202,15 +201,18 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 			URLClassLoader cl = new URLClassLoader(urls);
 
 			cl.loadClass(getTargetClass());
-
-			Method closeMethod = null;
+			
+			// cl.close();
+			// Java 6 backwards compatibility hack
 			try {
-				closeMethod = URLClassLoader.class.getMethod("close");
-			} catch (Exception e) {
+				for (Method m : URLClassLoader.class.getDeclaredMethods()) {
+					if (m.getName().equals("close")) {
+						m.invoke(cl);
+						break;
+					}
+				}
 			}
-
-			if (closeMethod != null) {
-				closeMethod.invoke(cl);
+			catch (Exception e) {
 			}
 			return;
 
@@ -219,12 +221,6 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		} catch (ClassFormatException e) {
-			e.printStackTrace();
-		} catch (IllegalArgumentException e) {
-			e.printStackTrace();
-		} catch (IllegalAccessException e) {
-			e.printStackTrace();
-		} catch (InvocationTargetException e) {
 			e.printStackTrace();
 		}
 
