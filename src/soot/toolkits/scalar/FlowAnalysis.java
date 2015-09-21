@@ -31,12 +31,16 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Queue;
 import java.util.RandomAccess;
+import java.util.Set;
 
+import soot.baf.GotoInst;
+import soot.jimple.GotoStmt;
 import soot.options.Options;
 import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.interaction.FlowInfo;
@@ -119,7 +123,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 		 * @param entryFlow
 		 * @return
 		 */
-		<D, F> List<Entry<D, F>> newUniverse (DirectedGraph<D> g, GraphView gv, F entryFlow) {
+		<D, F> List<Entry<D, F>> newUniverse (DirectedGraph<D> g, GraphView gv, F entryFlow, boolean isForward) {
 			final int n = g.size();
 
 			Deque<Entry<D, F>> s = new ArrayDeque<Entry<D, F>>(n);
@@ -128,7 +132,66 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 
 			// out of universe node
 			Entry<D, F> superEntry = new Entry<D, F>(null, null);
-			visitEntry(visited, superEntry, gv.getEntries(g));
+
+			List<D> entries = null;
+			List<D> actualEntries = gv.getEntries(g);
+
+			if (!actualEntries.isEmpty()) {
+				// normal cases: there is at least 
+				// one return statement for a backward analysis
+				// or one entry statement for a forward analysis
+				entries = actualEntries;
+			} else {
+				// cases without any entry statement
+
+				if (isForward) {
+					// case of a forward flow analysis on 
+					// a method without any entry point
+					throw new RuntimeException("error: no entry point for method in forward analysis");
+				} else {
+					// case of backward analysis on 
+					// a method which potentially has 
+					// an infinite loop and no return statement
+					entries = new ArrayList<D>();
+
+					// a single head is expected
+					assert g.getHeads().size() == 1;
+					D head = g.getHeads().get(0);
+
+					Set<D> visitedNodes = new HashSet<D>();
+					List<D> workList = new ArrayList<D>();
+					D current = null;
+
+					// collect all 'goto' statements to catch the 'goto'
+					// from the infinite loop
+					workList.add(head);
+					while (!workList.isEmpty()) {
+						current = workList.remove(0);
+						visitedNodes.add(current);
+
+						// only add 'goto' statements
+						if (current instanceof GotoInst || current instanceof GotoStmt) {
+							entries.add(current);
+						}
+
+						for (D next: g.getSuccsOf(current)) {
+							if (visitedNodes.contains(next)) {
+								continue;
+							}
+							workList.add(next);
+						}
+					}
+
+					//
+					if (entries.isEmpty()) {
+						throw new RuntimeException("error: backward analysis on an empty entry set.");
+					}
+
+				}
+
+			}
+
+			visitEntry(visited, superEntry, entries);
 			superEntry.inFlow = entryFlow;
 			superEntry.outFlow = entryFlow;
 
@@ -474,8 +537,7 @@ public abstract class FlowAnalysis<N, A> extends AbstractFlowAnalysis<N, A> {
 
 		ifh = Options.v().interactive_mode() ? ifh : InteractionFlowHandler.NONE;
 
-		final List<Entry<N, A>> universe = Orderer.INSTANCE.newUniverse(graph, gv, entryInitialFlow());
-
+		final List<Entry<N, A>> universe = Orderer.INSTANCE.newUniverse(graph, gv, entryInitialFlow(), isForward());
 		initFlow(universe, inFlow, outFlow);
 
 		Queue<Entry<N, A>> q = PriorityQueue.of(universe, true);
