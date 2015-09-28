@@ -131,7 +131,7 @@ class SootMethodRefImpl implements SootMethodRef {
             {
                 SootMethod m = new SootMethod(name, parameterTypes, returnType, isStatic()?Modifier.STATIC:0);
                 m.setPhantom(true);
-                cl.addMethod(m);
+                m = cl.getOrAddMethod(m);
                 return checkStatic(m);
             }
             if( cl.hasSuperclass() ) cl = cl.getSuperclass();
@@ -219,8 +219,7 @@ class SootMethodRefImpl implements SootMethodRef {
 		//throw exc
 		body.getUnits().insertAfter(Jimple.v().newThrowStmt(exceptionLocal), initStmt);
 
-		declaringClass.addMethod(m);
-		return m;
+		return declaringClass.getOrAddMethod(m);
 	}
     
     public String toString() {

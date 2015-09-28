@@ -33,6 +33,10 @@ import java.util.Stack;
  * 
  * @see DirectedGraph
  * @author Eric Bodden
+ * 
+ * Changes:
+ * 		2015/08/23	Steven Arzt, added an iterative version of Tarjan's
+ * 					algorithm for large graphs
  */
 
 public class StronglyConnectedComponentsFast<N> {
@@ -63,7 +67,13 @@ public class StronglyConnectedComponentsFast<N> {
 
 		for (N head : heads) {
 			if (!indexForNode.containsKey(head)) {
-				recurse(head);
+				// If the graph is too big, we cannot use a recursive algorithm
+				// because it will blow up our stack space. The cut-off value when
+				// to switch is more or less random, though.
+				if (g.size() > 1000)
+					iterate(head);
+				else
+					recurse(head);
 			}
 		}
 
@@ -73,7 +83,7 @@ public class StronglyConnectedComponentsFast<N> {
 		s = null;
 		g = null;
 	}
-
+	
 	protected void recurse(N v) {
 		int lowLinkForNodeV;
 		indexForNode.put(v, index);
@@ -109,7 +119,72 @@ public class StronglyConnectedComponentsFast<N> {
 			}
 		}
 	}
-
+	
+	protected void iterate(N x) {
+		List<N> workList = new ArrayList<N>();
+		List<N> backtrackList = new ArrayList<N>();
+		workList.add(x);
+		while (!workList.isEmpty()) {
+			N v = workList.remove(0);
+			
+			boolean hasChildren = false;
+			boolean isForward = false;
+			if (!indexForNode.containsKey(v)) {
+				indexForNode.put(v, index);
+				lowlinkForNode.put(v, index);
+				index++;
+				s.push(v);
+				isForward = true;
+			}
+			
+			for (N succ : g.getSuccsOf(v)) {
+				Integer indexForNodeSucc = indexForNode.get(succ);
+				if (indexForNodeSucc == null) {
+					// Recursive call
+					workList.add(0, succ);
+					hasChildren = true;
+					break;
+				}
+				else if (!isForward) {
+					// Returned from recursive call
+					int lowLinkForNodeV = lowlinkForNode.get(v);
+					lowlinkForNode.put(v, Math.min(lowLinkForNodeV,
+							lowlinkForNode.get(succ)));
+				}
+				else if (isForward && s.contains(succ)) {
+					int lowLinkForNodeV = lowlinkForNode.get(v);
+					lowlinkForNode.put(v, Math.min(lowLinkForNodeV,
+							indexForNodeSucc));
+				}
+			}
+				
+			if (hasChildren)
+				backtrackList.add(0, v);
+			else {
+				if (!backtrackList.isEmpty())
+					workList.add(0, backtrackList.remove(0));
+				
+				int lowLinkForNodeV = lowlinkForNode.get(v);
+				if (lowLinkForNodeV == indexForNode.get(v).intValue()) {
+					List<N> scc = new ArrayList<N>();
+					N v2;
+					do {
+						v2 = s.pop();
+						scc.add(v2);
+					} while (v != v2);
+					componentList.add(scc);
+					if (scc.size() > 1) {
+						trueComponentList.add(scc);
+					} else {
+						N n = scc.get(0);
+						if (g.getSuccsOf(n).contains(n))
+							trueComponentList.add(scc);
+					}
+				}
+			}
+		}	
+	}
+	
 	/**
 	 * @return the list of the strongly-connected components
 	 */

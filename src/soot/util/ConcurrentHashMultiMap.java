@@ -182,4 +182,9 @@ public class ConcurrentHashMultiMap<K,V> implements MultiMap<K,V> {
 	public int size() {
 		return m.size();
 	}
+
+	@Override
+	public void clear() {
+		m.clear();
+	}
 }

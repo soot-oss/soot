@@ -250,7 +250,8 @@ public class SootClass extends AbstractHost implements Numberable
     */    
     public SootField getFieldUnsafe( String name, Type type ) {
         checkLevel(SIGNATURES);
-        for (SootField field : fields) {
+        for (Iterator<SootField> fieldIt = fields.snapshotIterator(); fieldIt.hasNext(); ) {
+        	SootField field = fieldIt.next();
             if(field.getName().equals(name) && field.getType().equals(type))
                 return field;
         }
@@ -607,9 +608,8 @@ public class SootClass extends AbstractHost implements Numberable
     */
 
     /**
-        Adds the given method to this class.
-    */
-
+     * Adds the given method to this class.
+     */
     public void addMethod(SootMethod m) 
     {
         checkLevel(SIGNATURES);
@@ -628,8 +628,21 @@ public class SootClass extends AbstractHost implements Numberable
         subSigToMethods.put(m.getNumberedSubSignature(),m);
         methodList.add(m);
         m.setDeclared(true);
+        m.setDeclaringClass(this);        
+    }
+
+    synchronized SootMethod getOrAddMethod(SootMethod m) {
+        checkLevel(SIGNATURES);
+        if(m.isDeclared())
+            throw new RuntimeException("already declared: "+m.getName());
+        SootMethod old = subSigToMethods.get(m.getNumberedSubSignature());
+        if (old != null)
+        	return old;
+        subSigToMethods.put(m.getNumberedSubSignature(),m);
+        methodList.add(m);
+        m.setDeclared(true);
         m.setDeclaringClass(this);
-        
+        return m;
     }
 
     /**

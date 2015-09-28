@@ -36,7 +36,7 @@ import soot.*;
 abstract public class AbstractIntLongBinopExpr extends AbstractBinopExpr
 {
 	
-	public boolean isIntLikeType(Type t) {
+	public static boolean isIntLikeType(Type t) {
 		return t.equals(IntType.v())
 				|| t.equals(ByteType.v())
 				|| t.equals(ShortType.v())
