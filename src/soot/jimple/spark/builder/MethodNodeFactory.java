@@ -18,6 +18,7 @@
  */
 
 package soot.jimple.spark.builder;
+import soot.jimple.spark.internal.SparkLibraryHelper;
 import soot.jimple.spark.pag.*;
 import soot.jimple.*;
 import soot.*;
@@ -130,19 +131,11 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 		
 		int libOption = pag.getOpts().library();
 		if(libOption != SparkOptions.library_disabled
-				&& is.getLeftOp().getType() instanceof RefType 
-				&& (method.isPublic() || method.isProtected())) {			
-			RefType leftType = (RefType) is.getLeftOp().getType();
-			if(is.getRightOp() instanceof IdentityRef) {
-				if (libOption == SparkOptions.library_any_subtype) {
-					Node alloc = pag.makeAllocNode(is.getRightOp(), AnySubType.v(leftType), method);
-					mpag.addInternalEdge(alloc, src);
-				} else if (libOption == SparkOptions.library_name_resolution) {
-					Node alloc = pag.makeAllocNode(is.getRightOp(), AnyPossibleSubType.v(leftType), method);
-					mpag.addInternalEdge(alloc, src);
-				}
-
-			}		
+				&& (method.isPublic() || method.isProtected())) {
+			Type lt = is.getLeftOp().getType();
+			if (is.getRightOp() instanceof IdentityRef) {
+				lt.apply(new SparkLibraryHelper(pag, src, method));
+			}
 		}
 	    
 	    }
@@ -191,7 +184,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         return ret;
     }
     final public Node caseArray( VarNode base ) {
-	return pag.makeFieldRefNode( base, ArrayElement.v() );
+    	return pag.makeFieldRefNode( base, ArrayElement.v() );
     }
     /* End of public methods. */
     /* End of package methods. */
@@ -202,7 +195,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     @Override
     final public void caseArrayRef( ArrayRef ar ) {
     	caseLocal( (Local) ar.getBase() );
-	setResult( caseArray( (VarNode) getNode() ) );
+    	setResult( caseArray( (VarNode) getNode() ) );
     }
     final public void caseCastExpr( CastExpr ce ) {
 	Pair<Expr, String> castPair = new Pair<Expr, String>( ce, PointsToAnalysis.CAST_NODE );

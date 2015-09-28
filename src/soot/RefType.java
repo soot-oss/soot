@@ -54,7 +54,6 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
 	private SootClass sootClass;
 	private AnySubType anySubType;
-	private AnyPossibleSubType anyPossibleSubType;
 
 	private RefType(String className) {
 		if (className.startsWith("["))
@@ -250,14 +249,6 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
 	public void setAnySubType(AnySubType anySubType) {
 		this.anySubType = anySubType;
-	}
-	
-	public AnyPossibleSubType getAnyPossibleSubType() {
-		return anyPossibleSubType;
-	}
-
-	public void setAnyPossibleSubType(AnyPossibleSubType anyPossibleSubType) {
-		this.anyPossibleSubType = anyPossibleSubType;
 	}
 
 	public boolean isAllowedInFinalCode() {

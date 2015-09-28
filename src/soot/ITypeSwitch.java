@@ -44,7 +44,6 @@ interface ITypeSwitch extends soot.util.Switch
     void caseUnknownType(UnknownType t);
     void caseVoidType(VoidType t);
     void caseAnySubType(AnySubType t);
-    void caseAnyPossibleSubType(AnyPossibleSubType t);
     void caseNullType(NullType t);
     void caseErroneousType(ErroneousType t);
     void caseDefault(Type t);
