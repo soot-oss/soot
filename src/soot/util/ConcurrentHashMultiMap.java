@@ -31,7 +31,7 @@ import java.util.concurrent.ConcurrentMap;
  * @author Steven Arzt
  * 
  */
-public class ConcurrentHashMultiMap<K,V> implements MultiMap<K,V> {
+public class ConcurrentHashMultiMap<K,V> extends AbstractMultiMap<K, V> {
     Map<K,ConcurrentMap<V, V>> m = new ConcurrentHashMap<K,ConcurrentMap<V, V>>(0);
 
     public ConcurrentHashMultiMap() {}
@@ -39,18 +39,7 @@ public class ConcurrentHashMultiMap<K,V> implements MultiMap<K,V> {
     public ConcurrentHashMultiMap( MultiMap<K,V> m ) {
         putAll( m );
     }
-
-    @Override
-    public void putAll( MultiMap<K,V> m ) {
-        for (K key : m.keySet())
-            putAll(key, m.get(key));
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return numKeys() == 0;
-    }
-
+    
     @Override
     public int numKeys() {
         return m.size();
@@ -187,4 +176,5 @@ public class ConcurrentHashMultiMap<K,V> implements MultiMap<K,V> {
 	public void clear() {
 		m.clear();
 	}
+	
 }

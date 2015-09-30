@@ -25,35 +25,27 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 
-public class HashMultiMap<K,V> implements MultiMap<K,V> {
-    Map<K,Set<V>> m = new HashMap<K,Set<V>>(0);
+public class HashMultiMap<K,V> extends AbstractMultiMap<K, V> {
+    protected final Map<K,Set<V>> m;
 
-    public HashMultiMap() {}
+    protected Map<K, Set<V>> createMap() {
+    	return new HashMap<K,Set<V>>(0);
+    }
+    
+    public HashMultiMap() {
+    	this.m = createMap();
+    }
     
     public HashMultiMap( MultiMap<K,V> m ) {
+    	this.m = createMap();
         putAll( m );
     }
     
     public HashMultiMap( Map<K,Set<V>> m ) {
+    	this.m = createMap();
         putAll( m );
     }
-    
-    @Override
-    public void putAll( MultiMap<K,V> m ) {
-        for (K key : m.keySet())
-            putAll(key, m.get(key));
-    }
-    
-    public void putAll( Map<K,Set<V>> m ) {
-        for (K key : m.keySet())
-            putAll(key, m.get(key));
-    }
-    
-    @Override
-    public boolean isEmpty() {
-        return numKeys() == 0;
-    }
-
+        
     @Override
     public int numKeys() {
         return m.size();
@@ -171,4 +163,5 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
 	public void clear() {
 		m.clear();
 	}
+	
 }
