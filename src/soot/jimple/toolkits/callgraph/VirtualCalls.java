@@ -114,7 +114,11 @@ public final class VirtualCalls
             	
             	if (types != null) {
             		for(Type st : types) {
-            			resolve( st, declaredType, sigType, subSig, container, targets);
+            			if (!Scene.v().getOrMakeFastHierarchy().canStoreType( st, declaredType)) {
+            				resolve( st, st, sigType, subSig, container, targets); //TODO
+            			} else {
+            				resolve (st, declaredType, sigType, subSig, container, targets);
+            			}
             		}
             		return;
             	}
@@ -127,8 +131,13 @@ public final class VirtualCalls
             	for(SootClass sc : classes) {
             		for(SootMethod sm : sc.getMethods()) {
             			if(sm.isConcrete() && sm.getSubSignature().equals(subSig.getString())) {
-            				resolve(sc.getType(), declaredType, sigType, subSig, container, targets);
-            				types.add(sc.getType());
+            				Type st = sc.getType();
+                			if (!Scene.v().getOrMakeFastHierarchy().canStoreType( st, declaredType)) {
+                				resolve( st, st, sigType, subSig, container, targets); //TODO
+                			} else {
+                				resolve (st, declaredType, sigType, subSig, container, targets);
+                			}
+            				types.add(st);
             			}
             		}
             	}
