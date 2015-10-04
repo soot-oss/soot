@@ -28,10 +28,16 @@ public class SparkLibraryHelper extends TypeSwitch {
 	
 	@Override
 	public void caseRefType(RefType t) {
+		// var tmp;
 		VarNode local = pag.makeLocalVarNode(new Object(), t, method);
+		
+		// new T();
 		AllocNode alloc = pag.makeAllocNode(new Object(), AnySubType.v(t), method);
 		
+		// tmp = new T();
 		pag.addAllocEdge(alloc, local);
+		
+		// x = tmp;
 		pag.addEdge(local, node);
 	}
 	
@@ -41,21 +47,36 @@ public class SparkLibraryHelper extends TypeSwitch {
 		for (Type t = type; t instanceof ArrayType; t = ((ArrayType) t).getElementType()) {
     		ArrayType at = (ArrayType) t;
 			if (at.baseType instanceof RefType) {
-				//TODO new Object() or Type?
+				
+				// var tmpArray;
 				LocalVarNode localArray = pag.makeLocalVarNode(new Object(), t, method);
+				
+				// x = tmpArray;
 				pag.addEdge(localArray, array);
 				
+				// new T[]
     			AllocNode newArray = pag.makeAllocNode(new Object(), at, method);
+    			
+    			// tmpArray = new T[]
     			pag.addEdge(newArray, localArray);
     			
+    			// tmpArray[i]
     			FieldRefNode arrayRef = pag.makeFieldRefNode( localArray, ArrayElement.v());
+    			
+    			// var tmp
     			LocalVarNode local = pag.makeLocalVarNode(new Object(), at.getElementType(), method);
+    			
+    			// tmpArray[i] = tmp
     			pag.addEdge(local, arrayRef);
     			
+    			// x = tmp
     			array = local;
 
-    			if (at.numDimensions == 1) {                            				
+    			if (at.numDimensions == 1) {
+    				// new T()
     				AllocNode alloc = pag.makeAllocNode(new Object(), AnySubType.v((RefType)at.baseType), method);
+    				
+    				// tmp = new T()
     				pag.addEdge(alloc, local);
     			}
     		}
