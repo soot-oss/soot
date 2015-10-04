@@ -38,7 +38,7 @@ import soot.VoidType;
 import soot.jimple.Stmt;
 import soot.jimple.spark.builder.MethodNodeFactory;
 import soot.jimple.spark.internal.SparkLibraryHelper;
-import soot.options.SparkOptions;
+import soot.options.CGOptions;
 import soot.util.NumberedString;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
@@ -189,7 +189,7 @@ public final class MethodPAG {
         if(method.getReturnType() instanceof RefLikeType ) {
         	retNode = (ValNode) nodeFactory.caseRet();
         	
-        	if (pag.getOpts().library() != SparkOptions.library_disabled) {        		
+        	if (pag.getCGOpts().library() != CGOptions.library_disabled) {        		
         		Type retType = method.getReturnType();	    	
         		
         		retType.apply(new SparkLibraryHelper(pag, retNode, method));

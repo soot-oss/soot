@@ -698,6 +698,9 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("cg", getcgsafe_newinstance_widget(), "safe-newinstance");
 		
 		
+		addToEnableGroup("cg", getcglibrary_widget(), "library");
+		
+		
 		addToEnableGroup("cg", getcgverbose_widget(), "verbose");
 		
 		
@@ -781,9 +784,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkempties_as_allocs_widget(), "empties-as-allocs");
-
-		
-		addToEnableGroup("cg", "cg.spark", getcgcg_sparklibrary_widget(), "library");
 
 		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimple_edges_bidirectional_widget(), "simple-edges-bidirectional");
@@ -2996,6 +2996,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgguards_widget().getAlias(), stringRes);
 		}
+		 
+		stringRes = getcglibrary_widget().getSelectedAlias();
+
+		
+		defStringRes = "disabled";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getcglibrary_widget().getAlias(), stringRes);
+		}
 		
 		boolRes = getcgcg_chaenabled_widget().getButton().getSelection();
 		
@@ -3165,16 +3175,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkon_fly_cg_widget().getAlias(), new Boolean(boolRes));
-		}
-		 
-		stringRes = getcgcg_sparklibrary_widget().getSelectedAlias();
-
-		
-		defStringRes = "disabled";
-		
-
-		if (!stringRes.equals(defStringRes)) {
-			getConfig().put(getcgcg_sparklibrary_widget().getAlias(), stringRes);
 		}
 		
 		boolRes = getcgcg_sparksimplify_offline_widget().getButton().getSelection();
@@ -7671,6 +7671,18 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	}
 	
 	
+	
+	private MultiOptionWidget cglibrary_widget;
+	
+	private void setcglibrary_widget(MultiOptionWidget widget) {
+		cglibrary_widget = widget;
+	}
+	
+	public MultiOptionWidget getcglibrary_widget() {
+		return cglibrary_widget;
+	}	
+	
+	
 	private BooleanOptionWidget cgcg_chaenabled_widget;
 	
 	private void setcgcg_chaenabled_widget(BooleanOptionWidget widget) {
@@ -7840,18 +7852,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	public BooleanOptionWidget getcgcg_sparkon_fly_cg_widget() {
 		return cgcg_sparkon_fly_cg_widget;
 	}	
-	
-	
-	private MultiOptionWidget cgcg_sparklibrary_widget;
-	
-	private void setcgcg_sparklibrary_widget(MultiOptionWidget widget) {
-		cgcg_sparklibrary_widget = widget;
-	}
-	
-	public MultiOptionWidget getcgcg_sparklibrary_widget() {
-		return cgcg_sparklibrary_widget;
-	}	
-	
 	
 	private BooleanOptionWidget cgcg_sparksimplify_offline_widget;
 	
@@ -13148,6 +13148,42 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
+		data = new OptionData [] {
+		
+		new OptionData("Disabled",
+		"disabled",
+		"\n",
+		
+		true),
+		
+		new OptionData("AnySubtype",
+		"any-subtype",
+		"\n											Add Alloc nodes for identities (i.e. parameters, \nthis locals and caught exceptions) of accessible methods. \n											For any identity an allocation for any subtype will \nbe added. 										",
+		
+		false),
+		
+		new OptionData("By Name resolution",
+		"name-resolution",
+		"\n											Add Alloc nodes for identities (i.e. parameters, \nthis locals and caught exceptions) of accessible methods. \n											For any identity an allocation for any possible \nsubtype will be added. 										",
+		
+		false),
+		
+		};
+		
+										
+		setcglibrary_widget(new MultiOptionWidget(editGroupcg, SWT.NONE, data, new OptionData("Library", "p", "cg","library", "\n")));
+		
+		defKey = "p"+" "+"cg"+" "+"library";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcglibrary_widget().setDef(defaultString);
+		}
+		
+		
+		
 		defKey = "p"+" "+"cg"+" "+"jdkver";
 		defKey = defKey.trim();
 		
@@ -13582,42 +13618,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setcgcg_sparkon_fly_cg_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.spark","on-fly-cg", "\nWhen this option is set to true, the call graph is computed \non-the-fly as points-to information is computed. Otherwise, an \ninitial CHA approximation to the call graph is used. ", defaultBool)));
-		
-		
-		
-		data = new OptionData [] {
-		
-		new OptionData("Disabled",
-		"disabled",
-		"\n",
-		
-		true),
-		
-		new OptionData("AnySubtype",
-		"any-subtype",
-		"\n									Add Alloc nodes for identities (i.e. parameters, this \nlocals and caught exceptions) of accessible methods. \n									For any identity an allocation for any subtype will be \nadded. 								",
-		
-		false),
-		
-		new OptionData("By Name resolution",
-		"name-resolution",
-		"\n									Add Alloc nodes for identities (i.e. parameters, this \nlocals and caught exceptions) of accessible methods. \n									For any identity an allocation for any possible subtype \nwill be added. 								",
-		
-		false),
-		
-		};
-		
-										
-		setcgcg_sparklibrary_widget(new MultiOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, data, new OptionData("Library", "p", "cg.spark","library", "\n")));
-		
-		defKey = "p"+" "+"cg.spark"+" "+"library";
-		defKey = defKey.trim();
-		
-		if (isInDefList(defKey)) {
-			defaultString = getStringDef(defKey);
-		
-			getcgcg_sparklibrary_widget().setDef(defaultString);
-		}
 		
 		
 

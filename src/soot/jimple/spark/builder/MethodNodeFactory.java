@@ -23,7 +23,7 @@ import soot.jimple.spark.pag.*;
 import soot.jimple.*;
 import soot.*;
 import soot.toolkits.scalar.Pair;
-import soot.options.SparkOptions;
+import soot.options.CGOptions;
 import soot.shimple.*;
 
 /** Class implementing builder parameters (this decides
@@ -128,10 +128,9 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 		is.getRightOp().apply( MethodNodeFactory.this );
 		Node src = getNode();
 		mpag.addInternalEdge( src, dest );
-		
-		int libOption = pag.getOpts().library();
-		if(libOption != SparkOptions.library_disabled
-				&& (method.isPublic() || method.isProtected())) {
+
+		int libOption = pag.getCGOpts().library();
+		if(libOption != CGOptions.library_disabled && (method.isPublic() || method.isProtected())) {
 			Type lt = is.getLeftOp().getType();
 			if (is.getRightOp() instanceof IdentityRef) {
 				lt.apply(new SparkLibraryHelper(pag, src, method));

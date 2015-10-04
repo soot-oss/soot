@@ -26,13 +26,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import soot.AnySubType;
-import soot.ArrayType;
 import soot.Context;
 import soot.FastHierarchy;
 import soot.G;
 import soot.Kind;
 import soot.Local;
+import soot.PhaseOptions;
 import soot.PointsToAnalysis;
 import soot.PointsToSet;
 import soot.RefLikeType;
@@ -67,6 +66,7 @@ import soot.jimple.spark.sets.SortedArraySet;
 import soot.jimple.spark.solver.OnFlyCallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
+import soot.options.CGOptions;
 import soot.options.SparkOptions;
 import soot.tagkit.LinkTag;
 import soot.tagkit.StringTag;
@@ -84,6 +84,7 @@ import soot.util.queue.QueueReader;
 public class PAG implements PointsToAnalysis {
     public PAG( final SparkOptions opts ) {
         this.opts = opts;
+        this.cgOpts = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
         if( opts.add_tags() ) {
             nodeToTag = new HashMap<Node, Tag>();
         }
@@ -537,7 +538,7 @@ public class PAG implements PointsToAnalysis {
         if( ret == null ) {
             valToGlobalVarNode.put( value, 
                     ret = new GlobalVarNode( this, value, type ) );
-            if(opts.library() != SparkOptions.library_disabled) {
+            if(cgOpts.library() != CGOptions.library_disabled) {
             	if (value instanceof SootField) {
             		SootField sf = (SootField) value;
             		
@@ -630,7 +631,7 @@ public class PAG implements PointsToAnalysis {
     	FieldRefNode ret = makeFieldRefNode(base, field);
     	
     	
-    	if(opts.library() != SparkOptions.library_disabled) {
+    	if(cgOpts.library() != CGOptions.library_disabled) {
         	if (field instanceof SootField) {
         		SootField sf = (SootField) field;
         		Type type = sf.getType();
@@ -789,6 +790,9 @@ public class PAG implements PointsToAnalysis {
 
     /** Returns SparkOptions for this graph. */
     public SparkOptions getOpts() { return opts; }
+    
+    /** Returns CGOptions for this graph. */
+    public CGOptions getCGOpts() { return cgOpts; }
 
     // Must be simple edges
 	public Pair<Node, Node> addInterproceduralAssignment(Node from, Node to, Edge e) 
@@ -1151,6 +1155,7 @@ public class PAG implements PointsToAnalysis {
     /* End of package methods. */
 
     protected SparkOptions opts;
+    protected CGOptions cgOpts;
 
     protected Map<VarNode, Object> simple = new HashMap<VarNode, Object>();
     protected Map<FieldRefNode, Object> load = new HashMap<FieldRefNode, Object>();

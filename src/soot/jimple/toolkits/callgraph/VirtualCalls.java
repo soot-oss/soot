@@ -20,7 +20,7 @@
 package soot.jimple.toolkits.callgraph;
 import soot.*;
 import soot.jimple.*;
-import soot.options.SparkOptions;
+import soot.options.CGOptions;
 
 import java.util.*;
 
@@ -33,7 +33,7 @@ import soot.util.queue.*;
  */
 public final class VirtualCalls
 { 
-	private SparkOptions options = new SparkOptions( PhaseOptions.v().getPhaseOptions("cg.spark") );
+	private CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
 	
     public VirtualCalls( Singletons.Global g ) {	
     }
@@ -106,7 +106,7 @@ public final class VirtualCalls
             SootMethod target = resolveNonSpecial( (RefType) t, subSig );
             if( target != null ) targets.add( target );
         } else if( t instanceof AnySubType ) {
-        	if (options.library() == SparkOptions.library_name_resolution) {
+        	if (options.library() == CGOptions.library_name_resolution) {
         		RefType base = ((AnySubType) t).getBase();
             	Pair<Type, NumberedString> pair = new Pair<Type, NumberedString>(base, subSig);
             	List<Type> types = baseToPossibleSubTypes.get(pair);

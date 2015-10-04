@@ -550,30 +550,6 @@ public class SparkOptions
         return soot.PhaseOptions.getString( options, "geom-verify-name" );
     }
     
-    public static final int library_disabled = 1;
-    public static final int library_any_subtype = 2;
-    public static final int library_name_resolution = 3;
-    /** Library --
-    
-     * .
-    
-     * 
-     */
-    public int library() {
-        String s = soot.PhaseOptions.getString( options, "library" );
-        
-        if( s.equalsIgnoreCase( "disabled" ) )
-            return library_disabled;
-        
-        if( s.equalsIgnoreCase( "any-subtype" ) )
-            return library_any_subtype;
-        
-        if( s.equalsIgnoreCase( "name-resolution" ) )
-            return library_name_resolution;
-        
-        throw new RuntimeException( "Invalid value "+s+" of phase option library" );
-    }
-    
     public static final int propagator_iter = 1;
     public static final int propagator_worklist = 2;
     public static final int propagator_cycle = 3;
