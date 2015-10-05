@@ -129,7 +129,7 @@ public final class VirtualCalls
             	
             	for(SootClass sc : classes) {
             		for(SootMethod sm : sc.getMethods()) {
-            			if(sm.isConcrete() && sm.getSubSignature().equals(subSig.getString())) {
+            			if((sm.isConcrete() || sm.isNative()) && sm.getSubSignature().equals(subSig.getString())) {
             				Type st = sc.getType();
                 			if (!Scene.v().getOrMakeFastHierarchy().canStoreType( st, declaredType)) {
                 				resolve( st, st, sigType, subSig, container, targets); //TODO
