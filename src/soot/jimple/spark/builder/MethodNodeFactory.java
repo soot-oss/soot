@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.builder;
+import soot.jimple.spark.internal.AccessibleChecker;
+import soot.jimple.spark.internal.PublicProtectedAccesibleChecker;
 import soot.jimple.spark.internal.SparkLibraryHelper;
 import soot.jimple.spark.pag.*;
 import soot.jimple.*;
@@ -130,7 +132,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 		mpag.addInternalEdge( src, dest );
 
 		int libOption = pag.getCGOpts().library();
-		if(libOption != CGOptions.library_disabled && (method.isPublic() || method.isProtected())) {
+		if(libOption != CGOptions.library_disabled && (accessibleChecker.isAccessible(method))) {
 			Type lt = is.getLeftOp().getType();
 			if (is.getRightOp() instanceof IdentityRef) {
 				lt.apply(new SparkLibraryHelper(pag, src, method));
@@ -335,5 +337,6 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     protected PAG pag;
     protected MethodPAG mpag;
     protected SootMethod method;
+    protected AccessibleChecker accessibleChecker = new PublicProtectedAccesibleChecker();
 }
 
