@@ -63,7 +63,7 @@ public class AputInstruction extends FieldInstruction {
 
         Local sourceValue = body.getRegisterLocal(source);
         assign = getAssignStmt(body, sourceValue, arrayRef);
-        if (aPutInstr.getOpcode().value == Opcode.APUT_OBJECT.value)
+        if (aPutInstr.getOpcode() == Opcode.APUT_OBJECT)
           assign.addTag(new ObjectOpTag());
         
         setUnit(assign);

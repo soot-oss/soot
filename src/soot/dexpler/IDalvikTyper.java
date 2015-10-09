@@ -26,7 +26,7 @@ import soot.ValueBox;
 
 public interface IDalvikTyper {
   
-  public static boolean ENABLE_DVKTYPER = false;
+  public static final boolean ENABLE_DVKTYPER = false;
   public static boolean DEBUG = false;
   
   public abstract void setType(ValueBox v, Type type, boolean isUse);

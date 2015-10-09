@@ -1,5 +1,7 @@
 package soot.toDex;
 
+import heros.solver.Pair;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -29,6 +31,7 @@ import org.jf.dexlib2.iface.AnnotationElement;
 import org.jf.dexlib2.iface.ExceptionHandler;
 import org.jf.dexlib2.iface.MethodImplementation;
 import org.jf.dexlib2.iface.MethodParameter;
+import org.jf.dexlib2.iface.TryBlock;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.reference.FieldReference;
 import org.jf.dexlib2.iface.reference.MethodReference;
@@ -1062,6 +1065,9 @@ public class DexPrinter {
 		// register count = parameters + additional registers, depending on the dex instructions generated (e.g. locals used and constants loaded)
 		StmtVisitor stmtV = new StmtVisitor(m, dexFile);
 		
+		if (m.getName().contains("allocArrays"))
+			System.out.println("x");
+		
 		toInstructions(units, stmtV);
 		
 		int registerCount = stmtV.getRegisterCount();
@@ -1145,6 +1151,7 @@ public class DexPrinter {
 		
 		for (int registersLeft : seenRegisters.values())
 				builder.addEndLocal(registersLeft);
+		
 		toTries(activeBody.getTraps(), stmtV, builder, labelAssinger);
         
         // Make sure that all labels have been placed by now
@@ -1390,6 +1397,7 @@ public class DexPrinter {
 		//		(Steven Arzt, 25.09.2013)
 		Map<CodeRange, List<ExceptionHandler>> codeRangesToTryItem =
 				new HashMap<CodeRange, List<ExceptionHandler>>();
+		Set<Pair<CodeRange, ExceptionHandler>> catchAllHandlers = new HashSet<Pair<CodeRange, ExceptionHandler>>();
 		for (Trap t : traps) {
 			// see if there is old handler info at this code range
 			Stmt beginStmt = (Stmt) t.getBeginUnit();
@@ -1397,16 +1405,20 @@ public class DexPrinter {
 			
 			int startCodeAddress = labelAssigner.getLabel(beginStmt).getCodeAddress();
 			int endCodeAddress = labelAssigner.getLabel(endStmt).getCodeAddress();
+			CodeRange range = new CodeRange(startCodeAddress, endCodeAddress);
 			
 	        String exceptionType = SootToDexUtils.getDexTypeDescriptor(t.getException().getType());
 	        
+	        int codeAddress = labelAssigner.getLabel((Stmt) t.getHandlerUnit()).getCodeAddress();
 			ImmutableExceptionHandler exceptionHandler = new ImmutableExceptionHandler
-					(exceptionType, labelAssigner.getLabel((Stmt) t.getHandlerUnit()).getCodeAddress());
+					(exceptionType, codeAddress);
+			
+			if (exceptionType.equals("Ljava/lang/Throwable;")) {
+				catchAllHandlers.add(new Pair<CodeRange, ExceptionHandler>(range, exceptionHandler));
+				continue;
+			}
 			
 			List<ExceptionHandler> newHandlers = new ArrayList<ExceptionHandler>();
-			
-			CodeRange range = new CodeRange(startCodeAddress, endCodeAddress);
-			
 			for (CodeRange r : codeRangesToTryItem.keySet()) {
 				// Check whether this range is contained in some other range. We then extend our
 				// trap over the bigger range containing this range
@@ -1450,6 +1462,11 @@ public class DexPrinter {
 						labelAssigner.getLabelAtAddress(range.endAddress),
 						labelAssigner.getLabelAtAddress(handler.getHandlerCodeAddress()));
 			}
+		for (Pair<CodeRange, ExceptionHandler> handler : catchAllHandlers) {
+			builder.addCatch(labelAssigner.getLabelAtAddress(handler.getO1().startAddress),
+					labelAssigner.getLabelAtAddress(handler.getO1().endAddress),
+					labelAssigner.getLabelAtAddress(handler.getO2().getHandlerCodeAddress()));
+		}
 	}
 	
 	public void add(SootClass c) {

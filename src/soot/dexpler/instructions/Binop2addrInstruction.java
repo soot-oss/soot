@@ -38,7 +38,6 @@ import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.IntOpTag;
 import soot.dexpler.tags.LongOpTag;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.Jimple;
@@ -74,10 +73,12 @@ public class Binop2addrInstruction extends TaggedInstruction {
         if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           BinopExpr bexpr = (BinopExpr)expr;
+          /*
           short op = instruction.getOpcode().value;
           DalvikTyper.v().setType(bexpr.getOp1Box(), op1BinType[op-0xb0], true);
           DalvikTyper.v().setType(bexpr.getOp2Box(), op2BinType[op-0xb0], true);
           DalvikTyper.v().setType(assign.getLeftOpBox(), resBinType[op-0xb0], false);
+          */
         }
     }
 

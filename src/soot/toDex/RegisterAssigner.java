@@ -113,7 +113,8 @@ public class RegisterAssigner {
 		return insns;
 	}
 	
-	private void renumParamRegsToHigh(List<Insn> insns, List<LocalRegisterAssignmentInformation> parameterInstructionsList) {
+	private void renumParamRegsToHigh(List<Insn> insns,
+			List<LocalRegisterAssignmentInformation> parameterInstructionsList) {
 		int regCount = regAlloc.getRegCount();
 		int paramRegCount = regAlloc.getParamRegCount();
 		if (paramRegCount == 0 || paramRegCount == regCount) {
@@ -124,8 +125,7 @@ public class RegisterAssigner {
 				renumParamRegToHigh(r, regCount, paramRegCount);
 			}
 		}
-		for (LocalRegisterAssignmentInformation parameter : parameterInstructionsList)
-		{
+		for (LocalRegisterAssignmentInformation parameter : parameterInstructionsList) {
 			renumParamRegToHigh(parameter.getRegister(), regCount, paramRegCount);
 		}
 	}
