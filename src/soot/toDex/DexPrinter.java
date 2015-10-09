@@ -31,7 +31,6 @@ import org.jf.dexlib2.iface.AnnotationElement;
 import org.jf.dexlib2.iface.ExceptionHandler;
 import org.jf.dexlib2.iface.MethodImplementation;
 import org.jf.dexlib2.iface.MethodParameter;
-import org.jf.dexlib2.iface.TryBlock;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.reference.FieldReference;
 import org.jf.dexlib2.iface.reference.MethodReference;
@@ -151,7 +150,7 @@ public class DexPrinter {
 	private File originalApk;
 	
 	public DexPrinter() {
-		dexFile = DexBuilder.makeDexBuilder(19);
+		dexFile = DexBuilder.makeDexBuilder();
 		//dexAnnotation = new DexAnnotation(dexFile);
 	}
 	
@@ -1064,10 +1063,7 @@ public class DexPrinter {
 		Collection<Unit> units = activeBody.getUnits();
 		// register count = parameters + additional registers, depending on the dex instructions generated (e.g. locals used and constants loaded)
 		StmtVisitor stmtV = new StmtVisitor(m, dexFile);
-		
-		if (m.getName().contains("allocArrays"))
-			System.out.println("x");
-		
+				
 		toInstructions(units, stmtV);
 		
 		int registerCount = stmtV.getRegisterCount();
