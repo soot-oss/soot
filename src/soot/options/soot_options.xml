@@ -539,6 +539,18 @@ the Soot classpath. Fall back to <tt>.class</tt>, <tt>.java</tt> or <tt>.jimple<
 files only when unable to find a class in <tt>.apk</tt> files.
 </long_desc>
 			</value>
+			<value>
+				<name>APK File</name>
+				<alias>apk-class-jimple</alias>
+				<alias>apk-c-j</alias>
+				<short_desc>Favour APK files as Soot source, disregard Java files</short_desc>
+				<long_desc>
+Try to resolve classes first from <tt>.apk</tt> (Android Package) files found in
+the Soot classpath. Fall back to <tt>.class</tt>, or <tt>.jimple</tt>
+files only when unable to find a class in <tt>.apk</tt> files. Never load a <tt>.java</tt>
+file.
+</long_desc>
+			</value>
 		</multiopt>
 		<boolopt>
 			<name>Force complete resolver</name>

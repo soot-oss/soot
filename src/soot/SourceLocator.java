@@ -142,6 +142,11 @@ public class SourceLocator
 				classProviders.add(new JavaClassProvider());
 				classProviders.add(new JimpleClassProvider());
                 break;
+            case Options.src_prec_apk_c_j:
+                classProviders.add(new DexClassProvider());
+				classProviders.add(classFileClassProvider);
+				classProviders.add(new JimpleClassProvider());
+                break;
             default:
                 throw new RuntimeException("Other source precedences are not currently supported.");
         }
