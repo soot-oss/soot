@@ -94,12 +94,11 @@ public final class VirtualCalls
         if( declaredType instanceof ArrayType ) declaredType = RefType.v("java.lang.Object");
         if( sigType instanceof ArrayType ) sigType = RefType.v("java.lang.Object");
         if( t instanceof ArrayType ) t = RefType.v( "java.lang.Object" );
-        if( declaredType != null && !Scene.v().getOrMakeFastHierarchy()
-                .canStoreType( t, declaredType ) ) {
+        FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
+		if( declaredType != null && !fastHierachy.canStoreType( t, declaredType ) ) {
             return;
         }
-        if( sigType != null && !Scene.v().getOrMakeFastHierarchy()
-                .canStoreType( t, sigType ) ) {
+        if( sigType != null && !fastHierachy.canStoreType( t, sigType ) ) {
             return;
         }
         if( t instanceof RefType ) {
@@ -107,14 +106,15 @@ public final class VirtualCalls
             if( target != null ) targets.add( target );
         } else if( t instanceof AnySubType ) {
         	if (options.library() == CGOptions.library_name_resolution) {
+        		assert(declaredType instanceof RefType);
         		RefType base = ((AnySubType) t).getBase();
             	Pair<Type, NumberedString> pair = new Pair<Type, NumberedString>(base, subSig);
             	List<Type> types = baseToPossibleSubTypes.get(pair);
             	
             	if (types != null) {
             		for(Type st : types) {
-            			if (!Scene.v().getOrMakeFastHierarchy().canStoreType( st, declaredType)) {
-            				resolve( st, st, sigType, subSig, container, targets); //TODO
+            			if (!fastHierachy.canStoreType( st, declaredType)) {
+            				resolve( st, st, sigType, subSig, container, targets);
             			} else {
             				resolve (st, declaredType, sigType, subSig, container, targets);
             			}
@@ -125,19 +125,46 @@ public final class VirtualCalls
             	baseToPossibleSubTypes.put(pair, types = new ArrayList<Type>());
             	types.add(base);
             	
+            	String[] split = subSig.getString().replaceAll("(.*) (.*)\\((.*)\\)", "$1;$2;$3").split(";");
+
+            	Type declaredReturnType = Scene.v().getType(split[0]);
+            	String declaredName = split[1];
+            	List<Type> declaredParamTypes = new ArrayList<Type>();
+            	
+            	if (split.length == 3) {
+            		for (String type : split[2].split(",")) {
+            			declaredParamTypes.add(Scene.v().getType(type));
+            		}
+            	}
+            	
             	Chain<SootClass> classes = Scene.v().getClasses();
             	
             	for(SootClass sc : classes) {
             		for(SootMethod sm : sc.getMethods()) {
-            			if((sm.isConcrete() || sm.isNative()) && sm.getSubSignature().equals(subSig.getString())) {
-            				Type st = sc.getType();
-                			if (!Scene.v().getOrMakeFastHierarchy().canStoreType( st, declaredType)) {
-                				resolve( st, st, sigType, subSig, container, targets); //TODO
-                			} else {
-                				resolve (st, declaredType, sigType, subSig, container, targets);
-                			}
-            				types.add(st);
-            			}
+            			if (sm.isConcrete() || sm.isNative()) {
+            				if (!sm.getName().equals(declaredName)) continue;
+            				if (!fastHierachy.canStoreType(sm.getReturnType(), declaredReturnType)) continue;
+            				List<Type> paramTypes = sm.getParameterTypes();
+            				if (declaredParamTypes.size() != paramTypes.size()) continue;
+            				boolean check = true;
+            				for (int i = 0; i < paramTypes.size(); i++) {
+            					if (!fastHierachy.canStoreType(paramTypes.get(i), declaredParamTypes.get(i))) {
+            						check = false;
+            						break;
+            					}
+            				}
+            				
+        					if(check) {
+        						Type st = sc.getType();
+        						if (!fastHierachy.canStoreType( st, declaredType)) {
+        							resolve( st, st, sigType, subSig, container, targets); //TODO
+        						} else {
+        							resolve (st, declaredType, sigType, subSig, container, targets);
+        						}
+        						types.add(st);
+        					}
+        				}
+            			
             		}
             	}
         	} else {
@@ -160,7 +187,7 @@ public final class VirtualCalls
 	
 	            LinkedList<SootClass> worklist = new LinkedList<SootClass>();
 	            HashSet<SootClass> workset = new HashSet<SootClass>();
-	            FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
+	            FastHierarchy fh = fastHierachy;
 	            SootClass cl = base.getSootClass();
 	
 	            if( workset.add( cl ) ) worklist.add( cl );

@@ -714,6 +714,67 @@ public class Scene  //extends AbstractHost
     }
     
     /**
+     * Returns the RefType with the given class name or primitive type.  
+     * @throws RuntimeException if the Type for this name cannot be found.
+     * Use {@link #getRefTypeUnsafe(String)} to check if type is an registered RefType.
+     */
+    public Type getType(String arg) {
+    	String type = arg.replaceAll("(.*)(\\[)(.*)(\\])", "$1");
+    	int arrayCount = arg.contains("[") ? arg.replaceAll("(.*)(\\[)(.*)(\\])", "$2$3$4").length() / 2 : 0;
+    	
+    	Type result = getRefTypeUnsafe(type);
+    	
+    	if (result == null) {
+    		switch(type) {
+            case "long":
+              result = LongType.v();
+              break;
+              
+            case "short":
+              result = ShortType.v();
+              break;
+
+            case "double":
+              result = DoubleType.v();
+              break;
+
+            case "int":
+              result = IntType.v();
+              break;
+
+            case "float":
+              result = FloatType.v();
+              break;
+
+            case "byte":
+              result = ByteType.v();
+              break;
+
+            case "char":
+              result = CharType.v();
+              break;
+
+            case "void":
+              result = VoidType.v();
+              break;
+
+            case "boolean":
+              result = BooleanType.v();
+              break;
+
+            default:
+              throw new RuntimeException("unknown type: '" + type + "'");
+          }
+    		
+    	}
+    	
+    	if (arrayCount != 0) {
+    		result = ArrayType.v(result, arrayCount);
+    	}
+    	return result;
+    }
+    
+    /**
      * Returns the RefType with the given className.  
      * @throws IllegalStateException if the RefType for this class cannot be found.
      * Use {@link #containsType(String)} to check if type is registered
@@ -1380,13 +1441,13 @@ public class Scene  //extends AbstractHost
 
         for( Iterator<String> pathIt = Options.v().dynamic_dir().iterator(); pathIt.hasNext(); ) {
 
-            final String path = (String) pathIt.next();
+            final String path = pathIt.next();
             dynClasses.addAll(SourceLocator.v().getClassesUnder(path));
         }
 
         for( Iterator<String> pkgIt = Options.v().dynamic_package().iterator(); pkgIt.hasNext(); ) {
 
-            final String pkg = (String) pkgIt.next();
+            final String pkg = pkgIt.next();
             dynClasses.addAll(SourceLocator.v().classesInDynamicPackage(pkg));
         }
 
@@ -1506,7 +1567,7 @@ public class Scene  //extends AbstractHost
     public List<SootClass> getClasses(int desiredLevel) {
         List<SootClass> ret = new ArrayList<SootClass>();
         for( Iterator<SootClass> clIt = getClasses().iterator(); clIt.hasNext(); ) {
-            final SootClass cl = (SootClass) clIt.next();
+            final SootClass cl = clIt.next();
             if( cl.resolvingLevel() >= desiredLevel ) ret.add(cl);
         }
         return ret;
@@ -1535,7 +1596,7 @@ public class Scene  //extends AbstractHost
         	
         	// try to infer a main class from the usual classpath if none is given 
         	for (Iterator<SootClass> classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
-                    SootClass c = (SootClass) classIter.next();
+                    SootClass c = classIter.next();
                     if (c.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
                     {
                         G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					

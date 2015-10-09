@@ -125,17 +125,19 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 	    }
 	    final public void caseIdentityStmt(IdentityStmt is) {
 		if( !( is.getLeftOp().getType() instanceof RefLikeType ) ) return;
-		is.getLeftOp().apply( MethodNodeFactory.this );
+		Value leftOp = is.getLeftOp();
+		Value rightOp = is.getRightOp();
+		leftOp.apply( MethodNodeFactory.this );
 		Node dest = getNode();
-		is.getRightOp().apply( MethodNodeFactory.this );
+		rightOp.apply( MethodNodeFactory.this );
 		Node src = getNode();
 		mpag.addInternalEdge( src, dest );
 
 		int libOption = pag.getCGOpts().library();
 		if(libOption != CGOptions.library_disabled && (accessibleChecker.isAccessible(method))) {
-			Type lt = is.getLeftOp().getType();
-			if (is.getRightOp() instanceof IdentityRef) {
-				lt.apply(new SparkLibraryHelper(pag, src, method));
+			if (rightOp instanceof IdentityRef) {
+				Type rt = rightOp.getType();
+				rt.apply(new SparkLibraryHelper(pag, src, method));
 			}
 		}
 	    
