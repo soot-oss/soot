@@ -339,6 +339,6 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     protected PAG pag;
     protected MethodPAG mpag;
     protected SootMethod method;
-    protected ClientAccessibilityOracle accessibleChecker = new PublicAndProtectedAccessibility();
+    protected ClientAccessibilityOracle accessibleChecker = Scene.v().getClientAccessibilityOracle();
 }
 

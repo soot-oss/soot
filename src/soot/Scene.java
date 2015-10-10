@@ -49,6 +49,8 @@ import java.util.zip.ZipFile;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import soot.jimple.spark.internal.ClientAccessibilityOracle;
+import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.ContextSensitiveCallGraph;
@@ -150,6 +152,7 @@ public class Scene  //extends AbstractHost
     private PointsToAnalysis activePointsToAnalysis;
     private SideEffectAnalysis activeSideEffectAnalysis;
     private List<SootMethod> entryPoints;
+    private ClientAccessibilityOracle accessibilityOracle;
 
     boolean allowsPhantomRefs = false;
 
@@ -910,10 +913,10 @@ public class Scene  //extends AbstractHost
     public SideEffectAnalysis getSideEffectAnalysis() 
     {
         if(!hasSideEffectAnalysis()) {
-	    setSideEffectAnalysis( new SideEffectAnalysis(
-			getPointsToAnalysis(),
-			getCallGraph() ) );
-	}
+        	setSideEffectAnalysis( new SideEffectAnalysis(
+        			getPointsToAnalysis(),
+        			getCallGraph() ) );
+        }
             
         return activeSideEffectAnalysis;
     }
@@ -941,12 +944,12 @@ public class Scene  //extends AbstractHost
     /**
         Retrieves the active pointer analysis
      */
-
+    
     public PointsToAnalysis getPointsToAnalysis() 
     {
         if(!hasPointsToAnalysis()) {
-	    return DumbPointerAnalysis.v();
-	}
+        	return DumbPointerAnalysis.v();
+        }
             
         return activePointsToAnalysis;
     }
@@ -970,6 +973,29 @@ public class Scene  //extends AbstractHost
         activePointsToAnalysis = null;
     }
 
+    /****************************************************************************/
+    /**
+     * Retrieves the active client accessibility oracle
+     */
+    public ClientAccessibilityOracle getClientAccessibilityOracle() {
+    	if (!hasClientAccessibilityOracle()) {
+    		return PublicAndProtectedAccessibility.v();
+    	}
+    	
+    	return accessibilityOracle;
+    }
+    
+    public boolean hasClientAccessibilityOracle() {
+    	return accessibilityOracle != null;
+    }
+    
+    public void setClientAccessibilityOracle(ClientAccessibilityOracle oracle) {
+    	accessibilityOracle = oracle;
+    }
+    
+    public void releaseClientAccessibilityOracle() {
+    	accessibilityOracle = null;
+    }
     /****************************************************************************/
     /** Makes a new fast hierarchy is none is active, and returns the active
      * fast hierarchy. */

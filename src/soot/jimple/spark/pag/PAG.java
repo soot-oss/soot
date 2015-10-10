@@ -1158,7 +1158,7 @@ public class PAG implements PointsToAnalysis {
 
     protected SparkOptions opts;
     protected CGOptions cgOpts;
-    protected ClientAccessibilityOracle accessibilityOracle = new PublicAndProtectedAccessibility();
+    protected ClientAccessibilityOracle accessibilityOracle = Scene.v().getClientAccessibilityOracle();
 
     protected Map<VarNode, Object> simple = new HashMap<VarNode, Object>();
     protected Map<FieldRefNode, Object> load = new HashMap<FieldRefNode, Object>();

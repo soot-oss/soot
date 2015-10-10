@@ -971,4 +971,16 @@ public class Singletons {
         return instance_soot_toolkits_scalar_SmartLocalDefsPool;
     }
 
+    private soot.jimple.spark.internal.PublicAndProtectedAccessibility instance_soot_jimple_spark_internal_PublicAndProtectedAccessibility;
+    public soot.jimple.spark.internal.PublicAndProtectedAccessibility soot_jimple_spark_internal_PublicAndProtectedAccessibility() {
+        if( instance_soot_jimple_spark_internal_PublicAndProtectedAccessibility == null ) instance_soot_jimple_spark_internal_PublicAndProtectedAccessibility = new soot.jimple.spark.internal.PublicAndProtectedAccessibility( g );
+        return instance_soot_jimple_spark_internal_PublicAndProtectedAccessibility;
+    }
+
+    private soot.jimple.spark.internal.CompleteAccessibility instance_soot_jimple_spark_internal_CompleteAccessibility;
+    public soot.jimple.spark.internal.CompleteAccessibility soot_jimple_spark_internal_CompleteAccessibility() {
+        if( instance_soot_jimple_spark_internal_CompleteAccessibility == null ) instance_soot_jimple_spark_internal_CompleteAccessibility = new soot.jimple.spark.internal.CompleteAccessibility( g );
+        return instance_soot_jimple_spark_internal_CompleteAccessibility;
+    }
+
 }
