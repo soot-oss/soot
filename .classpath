@@ -20,7 +20,7 @@
 	<classpathentry kind="lib" path="libs/mockito-all-1.10.8.jar"/>
 	<classpathentry kind="lib" path="libs/powermock-mockito-1.6.1-full.jar"/>
 	<classpathentry kind="lib" path="libs/jboss-common-core-2.5.0.Final.jar"/>
-	<classpathentry kind="lib" path="libs/dexlib2-2.0.7-dev.jar"/>
-	<classpathentry kind="lib" path="libs/util-2.0.7-dev.jar"/>
+	<classpathentry kind="lib" path="libs/dexlib2-2.1.0-dev.jar"/>
+	<classpathentry kind="lib" path="libs/util-2.1.0-dev.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>

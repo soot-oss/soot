@@ -57,7 +57,6 @@ public class MoveInstruction extends DexlibAbstractInstruction {
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
-          int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
         }
     }

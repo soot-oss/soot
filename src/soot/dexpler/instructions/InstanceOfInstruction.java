@@ -65,7 +65,6 @@ public class InstanceOfInstruction extends DexlibAbstractInstruction {
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
-          int op = (int)instruction.getOpcode().value;
           //DalvikTyper.v().?
         }
     }

@@ -60,7 +60,6 @@ public class SputInstruction extends FieldInstruction {
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
-          int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().setType(assign.getRightOpBox(), instanceField.getType(), true);
         }
     }

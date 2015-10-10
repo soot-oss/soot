@@ -70,7 +70,6 @@ public class CastInstruction extends TaggedInstruction {
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint cast: "+ assign +" castexpr type: "+ cast.getType()+" cast type: "+ cast.getCastType());
-          int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().setType(assign.getLeftOpBox(), cast.getType(), false);
           //DalvikTyper.v().captureAssign((JAssignStmt)assign, op);
         }

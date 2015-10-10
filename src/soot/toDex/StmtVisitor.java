@@ -123,6 +123,8 @@ public class StmtVisitor implements StmtSwitch {
     private Map<Insn, LocalRegisterAssignmentInformation> insnRegisterMap = new IdentityHashMap<Insn, LocalRegisterAssignmentInformation>();
     private Map<Instruction, SwitchPayload> instructionPayloadMap = new IdentityHashMap<Instruction, SwitchPayload>();
 	private List<LocalRegisterAssignmentInformation> parameterInstructionsList = new ArrayList<LocalRegisterAssignmentInformation>();
+	
+	private Map<Constant, Register> monitorRegs = new HashMap<Constant, Register>();
     
     public StmtVisitor(SootMethod belongingMethod, DexBuilder belongingFile) {
 		this.belongingMethod = belongingMethod;
@@ -342,7 +344,22 @@ public class StmtVisitor implements StmtSwitch {
 	private Insn buildMonitorInsn(MonitorStmt stmt, Opcode opc) {
 		Value lockValue = stmt.getOp();
         constantV.setOrigStmt(stmt);
-		Register lockReg = regAlloc.asImmediate(lockValue, constantV);
+        
+        // When leaving a monitor, we must make sure to re-use the old
+        // register. If we assign the same class constant to a new register
+        // before leaving the monitor, Android's bytecode verifier will assume
+        // that this constant assignment can throw an exception, leaving us
+        // with a dangling monitor. Imprecise static analyzers ftw.
+		Register lockReg = null;
+		if (lockValue instanceof Constant && opc == Opcode.MONITOR_EXIT)
+			if ((lockReg = monitorRegs.get(lockValue)) != null)
+				lockReg = lockReg.clone();
+		if (lockReg == null) {
+			lockReg = regAlloc.asImmediate(lockValue, constantV);
+			regAlloc.lockRegister(lockReg);
+			if (lockValue instanceof Constant)
+				monitorRegs.put((Constant) lockValue, lockReg);
+		}
 		return new Insn11x(opc, lockReg);
 	}
 	

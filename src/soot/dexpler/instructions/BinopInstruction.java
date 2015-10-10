@@ -38,11 +38,8 @@ import soot.dexpler.tags.DoubleOpTag;
 import soot.dexpler.tags.FloatOpTag;
 import soot.dexpler.tags.IntOpTag;
 import soot.dexpler.tags.LongOpTag;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
-import soot.jimple.BinopExpr;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class BinopInstruction extends TaggedInstruction {
 
@@ -74,12 +71,14 @@ public class BinopInstruction extends TaggedInstruction {
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			/*
           int op = (int)instruction.getOpcode().value;
           BinopExpr bexpr = (BinopExpr)expr;
           JAssignStmt jassign = (JAssignStmt)assign;
           DalvikTyper.v().setType(bexpr.getOp1Box(), op1BinType[op-0x90], true);
           DalvikTyper.v().setType(bexpr.getOp2Box(), op2BinType[op-0x90], true);
           DalvikTyper.v().setType(jassign.leftBox, resBinType[op-0x90], false);
+          */
         }
     }
 
