@@ -18,8 +18,8 @@
  */
 
 package soot.jimple.spark.builder;
-import soot.jimple.spark.internal.AccessibleChecker;
-import soot.jimple.spark.internal.PublicProtectedAccesibleChecker;
+import soot.jimple.spark.internal.ClientAccessibilityOracle;
+import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.spark.internal.SparkLibraryHelper;
 import soot.jimple.spark.pag.*;
 import soot.jimple.*;
@@ -339,6 +339,6 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     protected PAG pag;
     protected MethodPAG mpag;
     protected SootMethod method;
-    protected AccessibleChecker accessibleChecker = new PublicProtectedAccesibleChecker();
+    protected ClientAccessibilityOracle accessibleChecker = new PublicAndProtectedAccessibility();
 }
 

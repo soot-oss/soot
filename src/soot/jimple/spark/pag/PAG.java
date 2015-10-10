@@ -50,8 +50,8 @@ import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
 import soot.jimple.spark.builder.GlobalNodeFactory;
 import soot.jimple.spark.builder.MethodNodeFactory;
-import soot.jimple.spark.internal.AccessibleChecker;
-import soot.jimple.spark.internal.PublicProtectedAccesibleChecker;
+import soot.jimple.spark.internal.ClientAccessibilityOracle;
+import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.spark.internal.SparkLibraryHelper;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.sets.BitPointsToSet;
@@ -544,7 +544,7 @@ public class PAG implements PointsToAnalysis {
             	if (value instanceof SootField) {
             		SootField sf = (SootField) value;
             		
-            		if (accessibleChecker.isAccessible(sf)){
+            		if (accessibilityOracle.isAccessible(sf)){
             			type.apply(new SparkLibraryHelper(this, ret, null));
             		}
             	}
@@ -637,7 +637,7 @@ public class PAG implements PointsToAnalysis {
         	if (field instanceof SootField) {
         		SootField sf = (SootField) field;
         		Type type = sf.getType();
-        		if (accessibleChecker.isAccessible(sf)){
+        		if (accessibilityOracle.isAccessible(sf)){
         			type.apply(new SparkLibraryHelper(this, ret, method));
         		}
         	}
@@ -1158,7 +1158,7 @@ public class PAG implements PointsToAnalysis {
 
     protected SparkOptions opts;
     protected CGOptions cgOpts;
-    protected AccessibleChecker accessibleChecker = new PublicProtectedAccesibleChecker();
+    protected ClientAccessibilityOracle accessibilityOracle = new PublicAndProtectedAccessibility();
 
     protected Map<VarNode, Object> simple = new HashMap<VarNode, Object>();
     protected Map<FieldRefNode, Object> load = new HashMap<FieldRefNode, Object>();
