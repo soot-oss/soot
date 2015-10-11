@@ -18,15 +18,34 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import soot.*;
-import soot.jimple.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
+import soot.AnySubType;
+import soot.ArrayType;
+import soot.FastHierarchy;
+import soot.G;
+import soot.NullType;
+import soot.PhaseOptions;
+import soot.RefType;
+import soot.Scene;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Type;
+import soot.jimple.SpecialInvokeExpr;
 import soot.options.CGOptions;
-
-import java.util.*;
-
 import soot.toolkits.scalar.Pair;
-import soot.util.*;
-import soot.util.queue.*;
+import soot.util.Chain;
+import soot.util.LargeNumberedMap;
+import soot.util.NumberedString;
+import soot.util.SmallNumberedMap;
+import soot.util.queue.ChunkedQueue;
 
 /** Resolves virtual calls.
  * @author Ondrej Lhotak
@@ -85,7 +104,7 @@ public final class VirtualCalls
     }
 
     private final Map<Type,List<Type>> baseToSubTypes = new HashMap<Type,List<Type>>();
-    private final Map<Pair<Type, NumberedString>, List<Type>> baseToPossibleSubTypes = new HashMap<Pair<Type,NumberedString>, List<Type>>();
+    private final Map<Pair<Type, NumberedString>, List<Pair<Type,NumberedString>>> baseToPossibleSubTypes = new HashMap<Pair<Type,NumberedString>, List<Pair<Type,NumberedString>>>();
 
     public void resolve( Type t, Type declaredType, NumberedString subSig, SootMethod container, ChunkedQueue<SootMethod> targets ) {
         resolve(t, declaredType, null, subSig, container, targets);
@@ -111,11 +130,12 @@ public final class VirtualCalls
         	if (options.library() == CGOptions.library_name_resolution && base.getSootClass().isInterface()) {
         		assert(declaredType instanceof RefType);
             	Pair<Type, NumberedString> pair = new Pair<Type, NumberedString>(base, subSig);
-            	List<Type> types = baseToPossibleSubTypes.get(pair);
+            	List<Pair<Type, NumberedString>> types = baseToPossibleSubTypes.get(pair);
             	
             	// if this type and method has been resolved earlier we can just retrieve the previous result.
             	if (types != null) {
-            		for(Type st : types) {
+            		for(Pair<Type, NumberedString> tuple : types) {
+            			Type st = tuple.getO1();
             			if (!fastHierachy.canStoreType( st, declaredType)) {
             				resolve( st, st, sigType, subSig, container, targets);
             			} else {
@@ -125,8 +145,7 @@ public final class VirtualCalls
             		return;
             	}
             	
-            	baseToPossibleSubTypes.put(pair, types = new ArrayList<Type>());
-            	types.add(base);
+            	baseToPossibleSubTypes.put(pair, types = new ArrayList<Pair<Type, NumberedString>>());
             	
             	// get return type; method name; parameter types
             	String[] split = subSig.getString().replaceAll("(.*) (.*)\\((.*)\\)", "$1;$2;$3").split(";");
@@ -158,7 +177,7 @@ public final class VirtualCalls
             				if (declaredParamTypes.size() != paramTypes.size()) continue;
             				boolean check = true;
             				for (int i = 0; i < paramTypes.size(); i++) {
-            					if (!fastHierachy.canStoreType(paramTypes.get(i), declaredParamTypes.get(i))) {
+            					if (!fastHierachy.canStoreType(declaredParamTypes.get(i), paramTypes.get(i))) {
             						check = false;
             						break;
             					}
@@ -170,12 +189,12 @@ public final class VirtualCalls
         							// final classes can not be extended and therefore not used in library client
         							if (!sc.isFinal()) {
         								//TODO there might be a more elegant way to do this.
-        								resolve( st, st, sigType, subSig, container, targets);
-        								types.add(st);
+        								resolve( st, st, sigType, sm.getNumberedSubSignature(), container, targets);
+        								types.add(new Pair<Type, NumberedString>(st, sm.getNumberedSubSignature()));
         							}
         						} else {
         							resolve (st, declaredType, sigType, subSig, container, targets);
-        							types.add(st);
+        							types.add(new Pair<Type, NumberedString>(st, subSig));
         						}        						
         					}
         				}            			

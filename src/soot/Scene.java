@@ -722,8 +722,8 @@ public class Scene  //extends AbstractHost
      * Use {@link #getRefTypeUnsafe(String)} to check if type is an registered RefType.
      */
     public Type getType(String arg) {
-    	String type = arg.replaceAll("(.*)(\\[)(.*)(\\])", "$1");
-    	int arrayCount = arg.contains("[") ? arg.replaceAll("(.*)(\\[)(.*)(\\])", "$2$3$4").length() / 2 : 0;
+    	String type = arg.replaceAll("([^\\[\\]]*)(.*)", "$1");
+    	int arrayCount = arg.contains("[") ? arg.replaceAll("([^\\[\\]]*)(.*)", "$2").length() / 2 : 0;
     	
     	Type result = getRefTypeUnsafe(type);
     	
