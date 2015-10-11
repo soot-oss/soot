@@ -167,15 +167,18 @@ public final class VirtualCalls
         					if(check) {
         						Type st = sc.getType();
         						if (!fastHierachy.canStoreType( st, declaredType)) {
-        							//TODO there might be a more elegant way to do this.
-        							resolve( st, st, sigType, subSig, container, targets); 
+        							// final classes can not be extended and therefore not used in library client
+        							if (!sc.isFinal()) {
+        								//TODO there might be a more elegant way to do this.
+        								resolve( st, st, sigType, subSig, container, targets);
+        								types.add(st);
+        							}
         						} else {
         							resolve (st, declaredType, sigType, subSig, container, targets);
-        						}
-        						types.add(st);
+        							types.add(st);
+        						}        						
         					}
-        				}
-            			
+        				}            			
             		}
             	}
         	} else {
