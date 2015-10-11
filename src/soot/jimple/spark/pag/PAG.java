@@ -540,6 +540,8 @@ public class PAG implements PointsToAnalysis {
         if( ret == null ) {
             valToGlobalVarNode.put( value, 
                     ret = new GlobalVarNode( this, value, type ) );
+            
+            // if library mode is activated, add allocation of every possible type to accessible fields
             if(cgOpts.library() != CGOptions.library_disabled) {
             	if (value instanceof SootField) {
             		SootField sf = (SootField) value;
@@ -632,7 +634,7 @@ public class PAG implements PointsToAnalysis {
     	VarNode base = makeLocalVarNode( baseValue, baseType, method );
     	FieldRefNode ret = makeFieldRefNode(base, field);
     	
-    	
+    	// if library mode is activated, add allocation of every possible type to accessible fields
     	if(cgOpts.library() != CGOptions.library_disabled) {
         	if (field instanceof SootField) {
         		SootField sf = (SootField) field;

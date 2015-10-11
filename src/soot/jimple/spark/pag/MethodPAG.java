@@ -189,6 +189,8 @@ public final class MethodPAG {
         if(method.getReturnType() instanceof RefLikeType ) {
         	retNode = (ValNode) nodeFactory.caseRet();
         	
+        	// on library analysis we assume that the return type of an native method can 
+        	// be anything matching to the declared type.
         	if (pag.getCGOpts().library() != CGOptions.library_disabled) {        		
         		Type retType = method.getReturnType();	    	
         		

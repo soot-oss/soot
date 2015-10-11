@@ -19,7 +19,6 @@
 
 package soot.jimple.spark.builder;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
-import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.spark.internal.SparkLibraryHelper;
 import soot.jimple.spark.pag.*;
 import soot.jimple.*;
@@ -123,6 +122,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
                 Node retNode = getNode();
                 mpag.addInternalEdge( retNode, caseRet() );
 	    }
+	    
 	    final public void caseIdentityStmt(IdentityStmt is) {
 		if( !( is.getLeftOp().getType() instanceof RefLikeType ) ) return;
 		Value leftOp = is.getLeftOp();
@@ -133,8 +133,10 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 		Node src = getNode();
 		mpag.addInternalEdge( src, dest );
 
+		// in case library mode is activated add allocations to any possible type of this local and 
+		// parameters of accessible methods
 		int libOption = pag.getCGOpts().library();
-		if(libOption != CGOptions.library_disabled && (accessibleChecker.isAccessible(method))) {
+		if(libOption != CGOptions.library_disabled && (accessibilityOracle.isAccessible(method))) {
 			if (rightOp instanceof IdentityRef) {
 				Type rt = rightOp.getType();
 				rt.apply(new SparkLibraryHelper(pag, src, method));
@@ -339,6 +341,6 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     protected PAG pag;
     protected MethodPAG mpag;
     protected SootMethod method;
-    protected ClientAccessibilityOracle accessibleChecker = Scene.v().getClientAccessibilityOracle();
+    protected ClientAccessibilityOracle accessibilityOracle = Scene.v().getClientAccessibilityOracle();
 }
 

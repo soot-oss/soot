@@ -105,12 +105,15 @@ public final class VirtualCalls
             SootMethod target = resolveNonSpecial( (RefType) t, subSig );
             if( target != null ) targets.add( target );
         } else if( t instanceof AnySubType ) {
-        	if (options.library() == CGOptions.library_name_resolution) {
+        	RefType base = ((AnySubType) t).getBase();
+        
+        	// since java has no multiple inheritance name-resolution is only activated if the base is an interface.
+        	if (options.library() == CGOptions.library_name_resolution && base.getSootClass().isInterface()) {
         		assert(declaredType instanceof RefType);
-        		RefType base = ((AnySubType) t).getBase();
             	Pair<Type, NumberedString> pair = new Pair<Type, NumberedString>(base, subSig);
             	List<Type> types = baseToPossibleSubTypes.get(pair);
             	
+            	// if this type and method has been resolved earlier we can just retrieve the previous result.
             	if (types != null) {
             		for(Type st : types) {
             			if (!fastHierachy.canStoreType( st, declaredType)) {
@@ -125,12 +128,14 @@ public final class VirtualCalls
             	baseToPossibleSubTypes.put(pair, types = new ArrayList<Type>());
             	types.add(base);
             	
+            	// get return type; method name; parameter types
             	String[] split = subSig.getString().replaceAll("(.*) (.*)\\((.*)\\)", "$1;$2;$3").split(";");
 
             	Type declaredReturnType = Scene.v().getType(split[0]);
             	String declaredName = split[1];
             	List<Type> declaredParamTypes = new ArrayList<Type>();
             	
+            	// separate the parameter types
             	if (split.length == 3) {
             		for (String type : split[2].split(",")) {
             			declaredParamTypes.add(Scene.v().getType(type));
@@ -138,13 +143,18 @@ public final class VirtualCalls
             	}
             	
             	Chain<SootClass> classes = Scene.v().getClasses();
-            	
             	for(SootClass sc : classes) {
             		for(SootMethod sm : sc.getMethods()) {
             			if (sm.isConcrete() || sm.isNative()) {
+            				
+            				// method name has to match
             				if (!sm.getName().equals(declaredName)) continue;
+            				
+            				// the return type has to be a the declared return type or a sub type of it
             				if (!fastHierachy.canStoreType(sm.getReturnType(), declaredReturnType)) continue;
             				List<Type> paramTypes = sm.getParameterTypes();
+            				
+            				// method parameters have to match to the declared ones (same type or super type).
             				if (declaredParamTypes.size() != paramTypes.size()) continue;
             				boolean check = true;
             				for (int i = 0; i < paramTypes.size(); i++) {
@@ -157,7 +167,8 @@ public final class VirtualCalls
         					if(check) {
         						Type st = sc.getType();
         						if (!fastHierachy.canStoreType( st, declaredType)) {
-        							resolve( st, st, sigType, subSig, container, targets); //TODO
+        							//TODO there might be a more elegant way to do this.
+        							resolve( st, st, sigType, subSig, container, targets); 
         						} else {
         							resolve (st, declaredType, sigType, subSig, container, targets);
         						}
@@ -168,10 +179,6 @@ public final class VirtualCalls
             		}
             	}
         	} else {
-	            RefType base = ((AnySubType)t).getBase();
-	            
-	            
-	
 	            List<Type> subTypes = baseToSubTypes.get(base);
 	            if( subTypes != null ) {
 	                for( Iterator<Type> stIt = subTypes.iterator(); stIt.hasNext(); ) {
