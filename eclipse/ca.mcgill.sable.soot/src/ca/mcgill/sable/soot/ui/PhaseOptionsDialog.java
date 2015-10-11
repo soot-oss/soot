@@ -13158,26 +13158,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Disabled",
 		"disabled",
-		"\n",
+		"\n											Call(and pointer assignment) graph construction \ntreat the target classes as application starting from the entry \npoints. 										",
 		
 		true),
 		
-		new OptionData("AnySubtype",
+		new OptionData("Any Subtype",
 		"any-subtype",
-		"\n											Add Alloc nodes for identities (i.e. parameters, \nthis locals and caught exceptions) of accessible methods. \n											For any identity an allocation for any subtype will \nbe added. 										",
+		"\n											On library analysis it has to be assumed, that a \npossible client can call any method or access any field, \n											to which he has the access rights (default \npublic/protected but can be set with \nsoot.Scene#setClientAccessibilityOracle). 											In this \nmode types of any accessible field, method parameter, this \nlocal, or caugth exception is set to any possible sub type \n											according to the class hierachy of the target \nlibrary. 											If simulate-natives is also set, the results \nof native methods are also set to any subtype of the declared \nreturn type. 										",
 		
 		false),
 		
 		new OptionData("By Name resolution",
 		"name-resolution",
-		"\n											Add Alloc nodes for identities (i.e. parameters, \nthis locals and caught exceptions) of accessible methods. \n											For any identity an allocation for any possible \nsubtype will be added. 										",
+		"\n											On library analysis it has to be assumed, that a \npossible client can call any method or access any field, \n											to which he has the access rights (default \npublic/protected but can be set with \nsoot.Scene#setClientAccessibilityOracle). 											In this \nmode types of any accessible field, method parameter, this \nlocal, or caugth exception is set to any possible sub type \n											according to a possible extended class hierachy of \nthe target library. Whenever any subtype of a specific type is \nconsidered as 											reciever for a method to call and the \nbase type is an interface, calls to existing methods with \nmatching signature (possible implementation 											of \nmethod to call) are also added. As Javas' subtyping allows \ncontra-variance for return types and co-variance for parameters \nwhen overriding 											a method, these cases are also \nconsidered here. 											 											Example: Classes A, B (B \nsubtype of A), interface I with method public A foo(B b); and a \nclass C with method public B foo(A a) { ... }. 											The \nextended class hierachy will contain C as possible \nimplementation of I. 											 											If simulate-natives \nis also set, the results of native methods are also set to any \npossible subtype of the declared return type. 										",
 		
 		false),
 		
 		};
 		
 										
-		setcglibrary_widget(new MultiOptionWidget(editGroupcg, SWT.NONE, data, new OptionData("Library", "p", "cg","library", "\n")));
+		setcglibrary_widget(new MultiOptionWidget(editGroupcg, SWT.NONE, data, new OptionData("Library mode", "p", "cg","library", "\n										Specifies whether the target classes should be \ntreated as an application or a library. 										If library \nmode is disabled (default), the call graph construction assumes \nthat the target is an application and 										starts the \nconstruction from the specified entry points (main method by \ndefault). 										Under the assumption that the target is a \nlibrary, possible call edges might be missing in the call graph. \n										The two different library modes add theses missing \ncalls to the call graph and differ only in the view of the class \nhierachy 										(hierachy of target library or possible \nextended hierachy). 										If simulate-natives is also set, \nthe results of native methods are also set to any subtype of \nthe declared return type. 									")));
 		
 		defKey = "p"+" "+"cg"+" "+"library";
 		defKey = defKey.trim();

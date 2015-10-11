@@ -192,11 +192,24 @@ public class CGOptions
     public static final int library_disabled = 1;
     public static final int library_any_subtype = 2;
     public static final int library_name_resolution = 3;
-    /** Library --
+    /** Library mode --
     
-     * .
+     * 										Specifies whether the target classes should be 
+     * treated as an application or a library. 									.
     
-     * 
+     * 										Specifies whether the target classes should be 
+     * treated as an application or a library. 										If library 
+     * mode is disabled (default), the call graph construction assumes 
+     * that the target is an application and 										starts the 
+     * construction from the specified entry points (main method by 
+     * default). 										Under the assumption that the target is a 
+     * library, possible call edges might be missing in the call graph. 
+     * 										The two different library modes add theses missing 
+     * calls to the call graph and differ only in the view of the class 
+     * hierachy 										(hierachy of target library or possible 
+     * extended hierachy). 										If simulate-natives is also set, 
+     * the results of native methods are also set to any subtype of 
+     * the declared return type. 									
      */
     public int library() {
         String s = soot.PhaseOptions.getString( options, "library" );
