@@ -1472,13 +1472,18 @@ public class DexPrinter {
 				if (allCaughtForRange)
 					continue;
 				
+				// Normally, we would model catchall as real catchall directives. For
+				// some reason, this however fails with an invalid handler index. We
+				// therefore hack it using java.lang.Throwable.
 				if (handler.getExceptionType().equals("Ljava/lang/Throwable;")) {
+					/*
 					builder.addCatch(labelAssigner.getLabelAtAddress(range.startAddress),
 							labelAssigner.getLabelAtAddress(range.endAddress),
 							labelAssigner.getLabelAtAddress(handler.getHandlerCodeAddress()));
+							*/
 					allCaughtForRange = true;
 				}
-				else
+//				else
 					builder.addCatch(dexFile.internTypeReference(handler.getExceptionType()),
 							labelAssigner.getLabelAtAddress(range.startAddress),
 							labelAssigner.getLabelAtAddress(range.endAddress),
