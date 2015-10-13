@@ -523,8 +523,10 @@ public class PackManager {
         }
         else if (Options.v().output_format() == Options.output_format_dex
         		|| Options.v().output_format() == Options.output_format_force_dex) {
+        	dexPrinter = new DexPrinter();
         	writeOutput(reachableClasses());
         	dexPrinter.print();
+        	dexPrinter = null;
         } else {
             writeOutput( reachableClasses() );
             tearDownJAR();
@@ -537,7 +539,7 @@ public class PackManager {
             PhaseDumper.v().dumpAfter("output");
     }
 
-    private DexPrinter dexPrinter = new DexPrinter();
+    private DexPrinter dexPrinter = null;
 
     private void setupJAR() {
         if (Options.v().output_jar()) {
@@ -984,7 +986,7 @@ public class PackManager {
 		return bafBody;
 	}
 
-    public void writeClass(SootClass c) {
+    private void writeClass(SootClass c) {
         // Create code assignments for those values we only have in code assignments
         if (Options.v().output_format() == Options.output_format_jimple)
         	if (!c.isPhantom)
@@ -1161,7 +1163,4 @@ public class PackManager {
         }
     }
     
-    public void resetDexPrinter() {
-    	this.dexPrinter = new DexPrinter();
-    }
 }
