@@ -1,7 +1,5 @@
 package soot.toDex;
 
-import heros.solver.Pair;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -13,6 +11,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -1355,6 +1354,16 @@ public class DexPrinter {
 			return (r.startAddress >= this.startAddress && r.endAddress <= this.endAddress);
 		}
 		
+		/**
+		 * Checks whether this range overlaps with the given one
+		 * @param r The region to check for overlaps
+		 * @return True if this region has a non-empty overlap with the given one
+		 */
+		public boolean overlaps(CodeRange r) {
+			return (r.startAddress >= this.startAddress && r.startAddress < this.endAddress)
+					|| (r.startAddress <= this.startAddress && r.endAddress > this.startAddress);
+		}
+		
 		@Override
 		public String toString() {
 			return this.startAddress + "-" + this.endAddress;
@@ -1392,8 +1401,7 @@ public class DexPrinter {
 		//		something different. That's why we run the TrapSplitter before we get here.
 		//		(Steven Arzt, 25.09.2013)
 		Map<CodeRange, List<ExceptionHandler>> codeRangesToTryItem =
-				new HashMap<CodeRange, List<ExceptionHandler>>();
-		Set<Pair<CodeRange, ExceptionHandler>> catchAllHandlers = new HashSet<Pair<CodeRange, ExceptionHandler>>();
+				new LinkedHashMap<CodeRange, List<ExceptionHandler>>();
 		for (Trap t : traps) {
 			// see if there is old handler info at this code range
 			Stmt beginStmt = (Stmt) t.getBeginUnit();
@@ -1408,11 +1416,6 @@ public class DexPrinter {
 	        int codeAddress = labelAssigner.getLabel((Stmt) t.getHandlerUnit()).getCodeAddress();
 			ImmutableExceptionHandler exceptionHandler = new ImmutableExceptionHandler
 					(exceptionType, codeAddress);
-			
-			if (exceptionType.equals("Ljava/lang/Throwable;")) {
-				catchAllHandlers.add(new Pair<CodeRange, ExceptionHandler>(range, exceptionHandler));
-				continue;
-			}
 			
 			List<ExceptionHandler> newHandlers = new ArrayList<ExceptionHandler>();
 			for (CodeRange r : codeRangesToTryItem.keySet()) {
@@ -1451,17 +1454,36 @@ public class DexPrinter {
 				newHandlers.add(exceptionHandler);
 			codeRangesToTryItem.put(range, newHandlers);
 		}
-		for (CodeRange range : codeRangesToTryItem.keySet())
-			for (ExceptionHandler handler : codeRangesToTryItem.get(range)) {
-				builder.addCatch(dexFile.internTypeReference(handler.getExceptionType()),
-						labelAssigner.getLabelAtAddress(range.startAddress),
-						labelAssigner.getLabelAtAddress(range.endAddress),
-						labelAssigner.getLabelAtAddress(handler.getHandlerCodeAddress()));
+		
+		// Check for overlaps
+		for (CodeRange r1 : codeRangesToTryItem.keySet()) {
+			for (CodeRange r2 : codeRangesToTryItem.keySet()) {
+				if (r1 != r2 && r1.overlaps(r2))
+					System.out.println("WARNING: Trap region overlap detected");
 			}
-		for (Pair<CodeRange, ExceptionHandler> handler : catchAllHandlers) {
-			builder.addCatch(labelAssigner.getLabelAtAddress(handler.getO1().startAddress),
-					labelAssigner.getLabelAtAddress(handler.getO1().endAddress),
-					labelAssigner.getLabelAtAddress(handler.getO2().getHandlerCodeAddress()));
+		}
+		
+		for (CodeRange range : codeRangesToTryItem.keySet()) {
+			boolean allCaughtForRange = false;
+			for (ExceptionHandler handler : codeRangesToTryItem.get(range)) {
+				// If we have a catchall directive for a range and then some follow-up
+				// exception handler, we can discard the latter as it will never be used
+				// anyway.
+				if (allCaughtForRange)
+					continue;
+				
+				if (handler.getExceptionType().equals("Ljava/lang/Throwable;")) {
+					builder.addCatch(labelAssigner.getLabelAtAddress(range.startAddress),
+							labelAssigner.getLabelAtAddress(range.endAddress),
+							labelAssigner.getLabelAtAddress(handler.getHandlerCodeAddress()));
+					allCaughtForRange = true;
+				}
+				else
+					builder.addCatch(dexFile.internTypeReference(handler.getExceptionType()),
+							labelAssigner.getLabelAtAddress(range.startAddress),
+							labelAssigner.getLabelAtAddress(range.endAddress),
+							labelAssigner.getLabelAtAddress(handler.getHandlerCodeAddress()));
+			}
 		}
 	}
 	
