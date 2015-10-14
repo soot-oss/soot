@@ -2016,9 +2016,9 @@ public class Options extends OptionsBase {
                 +padOpt( "library", " 										Specifies whether the target classes should be treated as an application or a library. 									" )
                 +padVal( "disabled (default)", " 											Call(and pointer assignment) graph construction treat the target classes as application starting from the entry points. 										" )
                 
-                +padVal( "any-subtype", " 											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type  											according to the class hierachy of the target library. 										" )
+                +padVal( "any-subtype", " 											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type  											according to the class hierarchy of the target library. 										" )
                 
-                +padVal( "name-resolution", " 											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type  											according to a possible extended class hierachy of the target library. 										" )
+                +padVal( "signature-resolution", " 											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type  											according to a possible extended class hierarchy of the target library. 										" )
                 
                 +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" )
                 +padOpt( "jdkver (3)", "JDK version for native methods" )

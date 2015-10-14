@@ -125,9 +125,19 @@ public final class VirtualCalls
             if( target != null ) targets.add( target );
         } else if( t instanceof AnySubType ) {
         	RefType base = ((AnySubType) t).getBase();
-        
-        	// since java has no multiple inheritance name-resolution is only activated if the base is an interface.
-        	if (options.library() == CGOptions.library_name_resolution && base.getSootClass().isInterface()) {
+        	
+        	/*
+        	 * Whenever any sub type of a specific type is considered as 
+        	 * receiver for a method to call and the base type is an interface, calls to existing methods with matching signature (possible implementation 
+        	 * of method to call) are also added. As Javas' subtyping allows contra-variance for return types and co-variance for parameters when overriding 
+        	 * a method, these cases are also considered here.
+        	 * 
+        	 * Example: Classes A, B (B sub type of A), interface I with method public A foo(B b); and a class C with method public B foo(A a) { ... }.
+        	 * The extended class hierarchy will contain C as possible implementation of I.
+        	 * 
+        	 * Since Java has no multiple inheritance call by signature resolution is only activated if the base is an interface.
+        	 */
+        	if (options.library() == CGOptions.library_signature_resolution && base.getSootClass().isInterface()) {
         		assert(declaredType instanceof RefType);
             	Pair<Type, NumberedString> pair = new Pair<Type, NumberedString>(base, subSig);
             	List<Pair<Type, NumberedString>> types = baseToPossibleSubTypes.get(pair);
@@ -188,9 +198,9 @@ public final class VirtualCalls
         						if (!fastHierachy.canStoreType( st, declaredType)) {
         							// final classes can not be extended and therefore not used in library client
         							if (!sc.isFinal()) {
-        								//TODO there might be a more elegant way to do this.
-        								resolve( st, st, sigType, sm.getNumberedSubSignature(), container, targets);
-        								types.add(new Pair<Type, NumberedString>(st, sm.getNumberedSubSignature()));
+        								NumberedString newSubSig = sm.getNumberedSubSignature();
+										resolve( st, st, sigType, newSubSig, container, targets);
+        								types.add(new Pair<Type, NumberedString>(st, newSubSig));
         							}
         						} else {
         							resolve (st, declaredType, sigType, subSig, container, targets);

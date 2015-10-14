@@ -191,7 +191,7 @@ public class CGOptions
     
     public static final int library_disabled = 1;
     public static final int library_any_subtype = 2;
-    public static final int library_name_resolution = 3;
+    public static final int library_signature_resolution = 3;
     /** Library mode --
     
      * 										Specifies whether the target classes should be 
@@ -208,7 +208,7 @@ public class CGOptions
      * calls to the call graph and differ only in the view of the class 
      * hierachy 										(hierachy of target library or possible 
      * extended hierachy). 										If simulate-natives is also set, 
-     * the results of native methods are also set to any subtype of 
+     * the results of native methods are also set to any sub type of 
      * the declared return type. 									
      */
     public int library() {
@@ -220,8 +220,8 @@ public class CGOptions
         if( s.equalsIgnoreCase( "any-subtype" ) )
             return library_any_subtype;
         
-        if( s.equalsIgnoreCase( "name-resolution" ) )
-            return library_name_resolution;
+        if( s.equalsIgnoreCase( "signature-resolution" ) )
+            return library_signature_resolution;
         
         throw new RuntimeException( "Invalid value "+s+" of phase option library" );
     }
