@@ -118,7 +118,8 @@ public class FastHierarchy
         this.sc = Scene.v();
 
         /* First build the inverse maps. */
-        for(  final SootClass cl : sc.getClasses() ) {
+        for (final Iterator<SootClass> clIt = sc.getClasses().snapshotIterator(); clIt.hasNext(); ) {
+        	SootClass cl = clIt.next();
             if( cl.resolvingLevel() < SootClass.HIERARCHY ) continue;
             if( !cl.isInterface() && cl.hasSuperclass() ) {
             	classToSubclasses.put(cl.getSuperclass(), cl);
@@ -137,7 +138,9 @@ public class FastHierarchy
         /* also have to traverse for all phantom classes because they also
          * can be roots of the type hierarchy
          */
-        for(SootClass phantomClass: Scene.v().getPhantomClasses()) {
+        for (final Iterator<SootClass> phantomClassIt = Scene.v().getPhantomClasses().snapshotIterator();
+        		phantomClassIt.hasNext(); ) {
+        	SootClass phantomClass = phantomClassIt.next();
         	if(!phantomClass.isInterface())
         		dfsVisit( 0, phantomClass );
         }
