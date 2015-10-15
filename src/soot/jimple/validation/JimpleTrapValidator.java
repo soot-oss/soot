@@ -19,21 +19,15 @@
 
 package soot.jimple.validation;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import soot.*;
-import soot.jimple.*;
-import soot.jimple.internal.JInvokeStmt;
-import soot.jimple.internal.JNewExpr;
-import soot.jimple.internal.JSpecialInvokeExpr;
-import soot.toolkits.graph.BriefUnitGraph;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.graph.UnitGraph;
+import soot.Body;
+import soot.Trap;
+import soot.Unit;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.IdentityStmt;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
