@@ -713,7 +713,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 			region = node2Region.get(node);
 
 		//If there are children, push the children to the stack
-		List<PDGNode> dependents = node.getDependets();
+		List<PDGNode> dependents = node.getDependents();
 		if(!dependents.isEmpty())
 			for(Iterator<PDGNode> itr = dependents.iterator(); itr.hasNext(); )
 			{
@@ -737,7 +737,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 				}
 				else if(curNode instanceof ConditionalPDGNode)
 				{
-					List<PDGNode> childs = curNode.getDependets();
+					List<PDGNode> childs = curNode.getDependents();
 					Iterator<PDGNode> condItr = childs.iterator();
 					while(condItr.hasNext())
 					{
@@ -765,7 +765,7 @@ public class HashMutablePDG extends HashMutableEdgeLabelledDirectedGraph<PDGNode
 	 */
 	public boolean dependentOn(PDGNode node1, PDGNode node2)
 	{
-		return node2.getDependets().contains(node1);
+		return node2.getDependents().contains(node1);
 	}
 	
 	/**

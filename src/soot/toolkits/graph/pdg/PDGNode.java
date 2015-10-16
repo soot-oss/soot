@@ -132,7 +132,7 @@ public class PDGNode {
 		this.m_dependents.remove(node);
 	}
 	
-	public List<PDGNode> getDependets()
+	public List<PDGNode> getDependents()
 	{
 		return this.m_dependents;
 	}
