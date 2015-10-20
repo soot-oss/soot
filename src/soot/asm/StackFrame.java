@@ -102,10 +102,7 @@ final class StackFrame {
 		all_opr:
 		for (int i = 0; i != oprs.length; i++) {
 			Operand newOp = oprs[i];
-			for (int j = 0; j != nrIn; j++) {
-				if (in.get(j)[i].equivTo(newOp))
-					continue all_opr;
-			}
+
 			diff = true;
 			/* merge, since prevOp != newOp */
 			Local stack = inStackLocals[i];
