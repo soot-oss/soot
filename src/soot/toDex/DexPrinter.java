@@ -1239,8 +1239,6 @@ public class DexPrinter {
 			return;
 		int newJumpIdx = Math.min(targetInsPos, jumpInsPos) + (distance / 2);
 		int sign = (int) Math.signum(targetInsPos - jumpInsPos);
-		if (distance > offsetInsn.getMaxJumpOffset())
-			newJumpIdx = jumpInsPos + sign;
 		
 		// There must be a statement at the instruction after the jump target.
 		// This statement must not appear at an earlier statement as the jump
@@ -1250,7 +1248,7 @@ public class DexPrinter {
 			Stmt prevStmt = newJumpIdx > 0 ? stmtV.getStmtForInstruction(instructions.get(newJumpIdx - 1)) : null;
 			
 			if (newStmt == null || newStmt == prevStmt) {
-				newJumpIdx += sign;
+				newJumpIdx -= sign;
 				if (newJumpIdx < 0 || newJumpIdx >= instructions.size())
 					throw new RuntimeException("No position for inserting intermediate "
 							+ "jump instruction found");
