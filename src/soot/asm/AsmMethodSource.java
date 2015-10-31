@@ -1731,7 +1731,7 @@ final class AsmMethodSource implements MethodSource {
 					for (UnitBox box : boxes) {
 						Unit uu = u;
 						while (uu instanceof UnitContainer)
-							uu = ((UnitContainer) u).units[0];
+							uu = ((UnitContainer) uu).units[0];
 						box.setUnit(uu);
 					}
 				}

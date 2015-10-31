@@ -34,14 +34,10 @@ import soot.Value;
 import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.LongConstant;
-import soot.jimple.UnopExpr;
-import soot.jimple.internal.JAssignStmt;
-import soot.jimple.internal.JCastExpr;
 
 public class UnopInstruction extends DexlibAbstractInstruction {
 
@@ -69,11 +65,13 @@ public class UnopInstruction extends DexlibAbstractInstruction {
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			/*
           int op = (int)instruction.getOpcode().value;
           //DalvikTyper.v().captureAssign((JAssignStmt)assign, op);
           JAssignStmt jass = (JAssignStmt)assign;
           DalvikTyper.v().setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() : ((UnopExpr) expr).getOpBox(), opUnType[op - 0x7b], true);
           DalvikTyper.v().setType(jass.leftBox, resUnType[op - 0x7b], false);
+          */
         }
     }
 

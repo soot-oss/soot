@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -148,7 +149,7 @@ public class DexPrinter {
 	private File originalApk;
 	
 	public DexPrinter() {
-		dexFile = DexBuilder.makeDexBuilder(19);
+		dexFile = DexBuilder.makeDexBuilder();
 		//dexAnnotation = new DexAnnotation(dexFile);
 	}
 	
@@ -1061,7 +1062,7 @@ public class DexPrinter {
 		Collection<Unit> units = activeBody.getUnits();
 		// register count = parameters + additional registers, depending on the dex instructions generated (e.g. locals used and constants loaded)
 		StmtVisitor stmtV = new StmtVisitor(m, dexFile);
-		
+				
 		toInstructions(units, stmtV);
 		
 		int registerCount = stmtV.getRegisterCount();
@@ -1145,6 +1146,7 @@ public class DexPrinter {
 		
 		for (int registersLeft : seenRegisters.values())
 				builder.addEndLocal(registersLeft);
+		
 		toTries(activeBody.getTraps(), stmtV, builder, labelAssinger);
         
         // Make sure that all labels have been placed by now
@@ -1237,8 +1239,6 @@ public class DexPrinter {
 			return;
 		int newJumpIdx = Math.min(targetInsPos, jumpInsPos) + (distance / 2);
 		int sign = (int) Math.signum(targetInsPos - jumpInsPos);
-		if (distance > offsetInsn.getMaxJumpOffset())
-			newJumpIdx = jumpInsPos + sign;
 		
 		// There must be a statement at the instruction after the jump target.
 		// This statement must not appear at an earlier statement as the jump
@@ -1248,7 +1248,7 @@ public class DexPrinter {
 			Stmt prevStmt = newJumpIdx > 0 ? stmtV.getStmtForInstruction(instructions.get(newJumpIdx - 1)) : null;
 			
 			if (newStmt == null || newStmt == prevStmt) {
-				newJumpIdx += sign;
+				newJumpIdx -= sign;
 				if (newJumpIdx < 0 || newJumpIdx >= instructions.size())
 					throw new RuntimeException("No position for inserting intermediate "
 							+ "jump instruction found");
@@ -1352,6 +1352,16 @@ public class DexPrinter {
 			return (r.startAddress >= this.startAddress && r.endAddress <= this.endAddress);
 		}
 		
+		/**
+		 * Checks whether this range overlaps with the given one
+		 * @param r The region to check for overlaps
+		 * @return True if this region has a non-empty overlap with the given one
+		 */
+		public boolean overlaps(CodeRange r) {
+			return (r.startAddress >= this.startAddress && r.startAddress < this.endAddress)
+					|| (r.startAddress <= this.startAddress && r.endAddress > this.startAddress);
+		}
+		
 		@Override
 		public String toString() {
 			return this.startAddress + "-" + this.endAddress;
@@ -1389,7 +1399,7 @@ public class DexPrinter {
 		//		something different. That's why we run the TrapSplitter before we get here.
 		//		(Steven Arzt, 25.09.2013)
 		Map<CodeRange, List<ExceptionHandler>> codeRangesToTryItem =
-				new HashMap<CodeRange, List<ExceptionHandler>>();
+				new LinkedHashMap<CodeRange, List<ExceptionHandler>>();
 		for (Trap t : traps) {
 			// see if there is old handler info at this code range
 			Stmt beginStmt = (Stmt) t.getBeginUnit();
@@ -1397,16 +1407,15 @@ public class DexPrinter {
 			
 			int startCodeAddress = labelAssigner.getLabel(beginStmt).getCodeAddress();
 			int endCodeAddress = labelAssigner.getLabel(endStmt).getCodeAddress();
+			CodeRange range = new CodeRange(startCodeAddress, endCodeAddress);
 			
 	        String exceptionType = SootToDexUtils.getDexTypeDescriptor(t.getException().getType());
 	        
+	        int codeAddress = labelAssigner.getLabel((Stmt) t.getHandlerUnit()).getCodeAddress();
 			ImmutableExceptionHandler exceptionHandler = new ImmutableExceptionHandler
-					(exceptionType, labelAssigner.getLabel((Stmt) t.getHandlerUnit()).getCodeAddress());
+					(exceptionType, codeAddress);
 			
 			List<ExceptionHandler> newHandlers = new ArrayList<ExceptionHandler>();
-			
-			CodeRange range = new CodeRange(startCodeAddress, endCodeAddress);
-			
 			for (CodeRange r : codeRangesToTryItem.keySet()) {
 				// Check whether this range is contained in some other range. We then extend our
 				// trap over the bigger range containing this range
@@ -1443,13 +1452,42 @@ public class DexPrinter {
 				newHandlers.add(exceptionHandler);
 			codeRangesToTryItem.put(range, newHandlers);
 		}
-		for (CodeRange range : codeRangesToTryItem.keySet())
-			for (ExceptionHandler handler : codeRangesToTryItem.get(range)) {
-				builder.addCatch(dexFile.internTypeReference(handler.getExceptionType()),
-						labelAssigner.getLabelAtAddress(range.startAddress),
-						labelAssigner.getLabelAtAddress(range.endAddress),
-						labelAssigner.getLabelAtAddress(handler.getHandlerCodeAddress()));
+		
+		// Check for overlaps
+		for (CodeRange r1 : codeRangesToTryItem.keySet()) {
+			for (CodeRange r2 : codeRangesToTryItem.keySet()) {
+				if (r1 != r2 && r1.overlaps(r2))
+					System.out.println("WARNING: Trap region overlap detected");
 			}
+		}
+		
+		for (CodeRange range : codeRangesToTryItem.keySet()) {
+			boolean allCaughtForRange = false;
+			for (ExceptionHandler handler : codeRangesToTryItem.get(range)) {
+				// If we have a catchall directive for a range and then some follow-up
+				// exception handler, we can discard the latter as it will never be used
+				// anyway.
+				if (allCaughtForRange)
+					continue;
+				
+				// Normally, we would model catchall as real catchall directives. For
+				// some reason, this however fails with an invalid handler index. We
+				// therefore hack it using java.lang.Throwable.
+				if (handler.getExceptionType().equals("Ljava/lang/Throwable;")) {
+					/*
+					builder.addCatch(labelAssigner.getLabelAtAddress(range.startAddress),
+							labelAssigner.getLabelAtAddress(range.endAddress),
+							labelAssigner.getLabelAtAddress(handler.getHandlerCodeAddress()));
+							*/
+					allCaughtForRange = true;
+				}
+//				else
+					builder.addCatch(dexFile.internTypeReference(handler.getExceptionType()),
+							labelAssigner.getLabelAtAddress(range.startAddress),
+							labelAssigner.getLabelAtAddress(range.endAddress),
+							labelAssigner.getLabelAtAddress(handler.getHandlerCodeAddress()));
+			}
+		}
 	}
 	
 	public void add(SootClass c) {

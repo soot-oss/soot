@@ -81,7 +81,6 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
-          int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().setType(newArrayExpr.getSizeBox(), IntType.v(), true);
           DalvikTyper.v().setType(assign.getLeftOpBox(), newArrayExpr.getType(), false);
         }

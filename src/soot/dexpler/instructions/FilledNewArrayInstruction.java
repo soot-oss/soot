@@ -92,7 +92,6 @@ System.out.println("array element type: (filled narr)"+ arrayType);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
-          int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().setType(assign.getLeftOpBox(), arrayExpr.getType(), false);
           //DalvikTyper.v().setType(array, arrayType, isUse)
           //DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());

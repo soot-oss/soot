@@ -40,6 +40,7 @@ import soot.LongType;
 import soot.Type;
 import soot.Unit;
 import soot.dexpler.DexBody;
+import soot.options.Options;
 import soot.tagkit.BytecodeOffsetTag;
 import soot.tagkit.Host;
 import soot.tagkit.LineNumberTag;
@@ -158,11 +159,12 @@ public abstract class DexlibAbstractInstruction {
      *            the host to tag
      */
     protected void addTags(Host host) {
-        if (lineNumber != -1) {
+        if (Options.v().keep_line_number() && lineNumber != -1) {
             host.addTag(new LineNumberTag(lineNumber));
             host.addTag(new SourceLineNumberTag(lineNumber));
         }
-        host.addTag(new BytecodeOffsetTag(codeAddress));
+        if (Options.v().keep_offset())
+        	host.addTag(new BytecodeOffsetTag(codeAddress));
     }
 
 //    /**

@@ -1150,7 +1150,7 @@ public class PAG implements PointsToAnalysis {
     }
 	
     private boolean runGeomPTA = false;
-    protected Map<Pair, Set<Edge>> assign2edges = new HashMap<Pair, Set<Edge>>();
+    protected Map<Pair<Node, Node>, Set<Edge>> assign2edges = new HashMap<Pair<Node, Node>, Set<Edge>>();
     private final Map<Object, LocalVarNode> valToLocalVarNode = new HashMap<Object, LocalVarNode>(1000);
     private final Map<Object, GlobalVarNode> valToGlobalVarNode = new HashMap<Object, GlobalVarNode>(1000);
     private final Map<Object, AllocNode> valToAllocNode = new HashMap<Object, AllocNode>(1000);
