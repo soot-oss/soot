@@ -75,10 +75,9 @@ public class PhaseOptions {
 
     /** This method returns true iff key "name" is in options 
         and maps to "true". */
-    public static boolean getBoolean(Map<String, String> options, String name)
-    {
-        return options.containsKey(name) &&
-            options.get(name).equals("true");
+    public static boolean getBoolean(Map<String, String> options, String name) {
+    	String val = options.get(name);
+        return val != null && val.equals("true");
     }
 
     /**
@@ -88,18 +87,18 @@ public class PhaseOptions {
      */
     public static boolean getBoolean(Map<String, String> options, String name,
     		boolean defaultValue) {
-    	if (!options.containsKey(name))
+    	String val = options.get(name);
+    	if (val == null)
     		return defaultValue;
-        return options.get(name).equals("true");
+        return val.equals("true");
     }
 
 
     /** This method returns the value of "name" in options 
         or "" if "name" is not found. */
-    public static String getString(Map<String, String> options, String name)
-    {
-        return options.containsKey(name) ?
-            (String)options.get(name) : "";
+    public static String getString(Map<String, String> options, String name) {
+    	String val = options.get(name);
+        return val != null ? val : "";
     }
 
 
