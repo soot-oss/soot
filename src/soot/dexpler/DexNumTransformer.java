@@ -256,14 +256,26 @@ public class DexNumTransformer extends DexTransformer {
 										|| stmt.hasTag("DoubleOpTag");
 								doBreak = true;
 								return;
-							} else if (left instanceof FieldRef && r instanceof Local
-									&& r == l) {
-								FieldRef fr = (FieldRef) left;
-								if (isFloatingPointLike(fr.getType())) {
-									usedAsFloatingPoint = true;
+							} else if (r instanceof Local && r == l) {
+								if (left instanceof FieldRef) {
+									FieldRef fr = (FieldRef) left;
+									if (isFloatingPointLike(fr.getType())) {
+										usedAsFloatingPoint = true;
+									}
+									doBreak = true;
+									return;
+								} else if (left instanceof ArrayRef) {
+									ArrayRef ar = (ArrayRef) left;
+									Type arType = ar.getType();
+									Debug.printDbg("ar: ", r, " ", arType);
+									if (arType instanceof UnknownType) {
+										arType = findArrayType(/* g, */localDefs, localUses, stmt, 0, Collections.<Unit> emptySet());
+									}
+									Debug.printDbg(" array type:", arType);
+									usedAsFloatingPoint = isFloatingPointLike(arType);
+									doBreak = true;
+									return;
 								}
-								doBreak = true;
-								return;
 							}
 
 						}
