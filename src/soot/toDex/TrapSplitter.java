@@ -60,7 +60,7 @@ public class TrapSplitter extends BodyTransformer {
 				// that.
 				Trap newTrap = Jimple.v().newTrap(to.t1.getException(), to.t1.getBeginUnit(),
 						to.t2Start, to.t1.getHandlerUnit());
-				safeAddTrap(b, newTrap);
+				safeAddTrap(b, newTrap, to.t1);
 				to.t1.setBeginUnit(to.t2Start);
 			}
 			// (t1start, t2start) ... t1end ... t2end
@@ -72,7 +72,7 @@ public class TrapSplitter extends BodyTransformer {
 				if (firstEndUnit == to.t1.getEndUnit()) {
 					if (to.t1.getException() != to.t2.getException()) {
 						Trap newTrap = Jimple.v().newTrap(to.t2.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t2.getHandlerUnit());
-						safeAddTrap(b, newTrap);
+						safeAddTrap(b, newTrap, to.t2);
 					} else if (to.t1.getHandlerUnit() != to.t2.getHandlerUnit()) {
 						// Traps t1 and t2 catch the same exception, but have different handlers
 						//
@@ -96,14 +96,14 @@ public class TrapSplitter extends BodyTransformer {
 						// t1 is first, so it stays the same.
 						// t2 is reduced
 						Trap newTrap = Jimple.v().newTrap(to.t1.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t1.getHandlerUnit());
-						safeAddTrap(b, newTrap);
+						safeAddTrap(b, newTrap, to.t1);
 					}
 					to.t2.setBeginUnit(firstEndUnit);
 				}
 				else if (firstEndUnit == to.t2.getEndUnit()) {
 					if (to.t1.getException() != to.t2.getException()) {
 						Trap newTrap2 = Jimple.v().newTrap(to.t1.getException(), to.t1.getBeginUnit(), firstEndUnit, to.t1.getHandlerUnit());
-						safeAddTrap(b, newTrap2);
+						safeAddTrap(b, newTrap2, to.t1);
 						to.t1.setBeginUnit(firstEndUnit);
 					} else if (to.t1.getHandlerUnit() != to.t2.getHandlerUnit()) {
 						// If t2 ends first, t2 is useless.
@@ -120,11 +120,16 @@ public class TrapSplitter extends BodyTransformer {
 	 * Adds a new trap to the given body only if the given trap is not empty
 	 * @param b The body to which to add the trap
 	 * @param newTrap The trap to add
+	 * @param position The position after which to insert the trap
 	 */
-	private void safeAddTrap(Body b, Trap newTrap) {
+	private void safeAddTrap(Body b, Trap newTrap, Trap position) {
 		// Do not create any empty traps
-		if (newTrap.getBeginUnit() != newTrap.getEndUnit())
-			b.getTraps().add(newTrap);
+		if (newTrap.getBeginUnit() != newTrap.getEndUnit()) {
+			if (position != null)
+				b.getTraps().insertAfter(newTrap, position);
+			else
+				b.getTraps().add(newTrap);
+		}
 	}
 	/**
 	 * Gets two arbitrary overlapping traps in the given method body
