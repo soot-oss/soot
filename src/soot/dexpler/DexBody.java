@@ -663,9 +663,6 @@ public class DexBody  {
         UnusedLocalEliminator.v().transform(jBody);
         NopEliminator.v().transform(jBody);
         
-        if (m.toString().equals("<org.apache.log4j.config.PropertySetter: void introspect()>"))
-        	System.out.println("x");
-        
         for (Unit u: jBody.getUnits()) {
             if (u instanceof AssignStmt) {
                 AssignStmt ass = (AssignStmt)u;
