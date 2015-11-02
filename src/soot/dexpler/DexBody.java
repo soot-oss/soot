@@ -480,6 +480,9 @@ public class DexBody  {
         Debug.printDbg("\nbefore splitting");
         Debug.printDbg("",(Body)jBody);
         
+        // Make sure that we don't have any overlapping uses due to returns
+        DexReturnInliner.v().transform(jBody);    
+        
         // split first to find undefined uses
         getLocalSplitter().transform(jBody);
         
@@ -487,9 +490,6 @@ public class DexBody  {
 		getUnreachableCodeEliminator().transform(jBody);
 		DeadAssignmentEliminator.v().transform(jBody);
 		UnusedLocalEliminator.v().transform(jBody);
-
-        
-        DexReturnInliner.v().transform(jBody);    
         
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);
@@ -508,7 +508,7 @@ public class DexBody  {
 //            instructions.remove(i);
 //          }
 //        }
-
+  		
         if (IDalvikTyper.ENABLE_DVKTYPER) {
           Debug.printDbg("[DalvikTyper] resolving typing constraints...");
           DalvikTyper.v().assignType(jBody);
