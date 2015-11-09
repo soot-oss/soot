@@ -101,24 +101,25 @@ public class ContextInsensitiveBuilder {
 
     /* End of public methods. */
     /* End of package methods. */
-    protected void handleClass( SootClass c ) {
-        boolean incedClasses = false;
-	for (SootMethod m : c.getMethods()) {
-	    if( !m.isConcrete() && !m.isNative() ) continue;
-            totalMethods++;
-            if( reachables.contains( m ) ) {
-                MethodPAG mpag = MethodPAG.v( pag, m );
-                mpag.build();
-                mpag.addToPAG(null);
-                analyzedMethods++;
-                if( !incedClasses ) {
-                    incedClasses = true;
-                    classes++;
-                }
-            }
+	protected void handleClass(SootClass c) {
+		boolean incedClasses = false;
+		if (c.isConcrete())
+			for (SootMethod m : c.getMethods()) {
+				if (!m.isConcrete() && !m.isNative())
+					continue;
+				totalMethods++;
+				if (reachables.contains(m)) {
+					MethodPAG mpag = MethodPAG.v(pag, m);
+					mpag.build();
+					mpag.addToPAG(null);
+					analyzedMethods++;
+					if (!incedClasses) {
+						incedClasses = true;
+						classes++;
+					}
+				}
+			}
 	}
-    }
-
 
     private PAG pag;
     private CallGraphBuilder cgb;
