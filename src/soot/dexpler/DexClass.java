@@ -180,6 +180,8 @@ public class DexClass {
         					continue;
         				osc = sc.getOuterClass();
         			}
+        			else
+        				deps.typesToHierarchy.add(osc.getType());
         			
         			// Get the InnerClassAttribute of the outer class
         			InnerClassAttribute icat = (InnerClassAttribute)osc.getTag("InnerClassAttribute");
