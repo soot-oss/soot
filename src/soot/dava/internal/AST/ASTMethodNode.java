@@ -466,12 +466,12 @@ public class ASTMethodNode extends ASTNode {
 				else
 					b.append("        super(");
 
-				Iterator ait = constructorExpr.getArgs().iterator();
-				while (ait.hasNext()) {
-					b.append(ait.toString());
-
-					if (ait.hasNext())
+				boolean isFirst = true;
+				for (Value val : constructorExpr.getArgs()) {
+					if (!isFirst)
 						b.append(", ");
+					b.append(val.toString());
+					isFirst = false;
 				}
 
 				b.append(");\n\n");
