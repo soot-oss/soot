@@ -31,6 +31,7 @@ import soot.jimple.JimpleBody;
 import soot.options.Options;
 import soot.tagkit.AnnotationAnnotationElem;
 import soot.tagkit.AnnotationArrayElem;
+import soot.tagkit.AnnotationBooleanElem;
 import soot.tagkit.AnnotationClassElem;
 import soot.tagkit.AnnotationConstants;
 import soot.tagkit.AnnotationDefaultTag;
@@ -560,6 +561,9 @@ public abstract class AbstractASMBackend {
 							val = (short) value;
 							break;
 						}
+					} else if (elem instanceof AnnotationBooleanElem) {
+						AnnotationBooleanElem booleanElem = (AnnotationBooleanElem) elem;
+						val = booleanElem.getValue();
 					} else if (elem instanceof AnnotationFloatElem) {
 						AnnotationFloatElem floatElem = (AnnotationFloatElem) elem;
 						val = floatElem.getValue();
