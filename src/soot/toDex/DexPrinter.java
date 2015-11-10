@@ -1062,7 +1062,7 @@ public class DexPrinter {
 		Collection<Unit> units = activeBody.getUnits();
 		// register count = parameters + additional registers, depending on the dex instructions generated (e.g. locals used and constants loaded)
 		StmtVisitor stmtV = new StmtVisitor(m, dexFile);
-				
+		
 		toInstructions(units, stmtV);
 		
 		int registerCount = stmtV.getRegisterCount();
@@ -1145,7 +1145,7 @@ public class DexPrinter {
 		
 		
 		for (int registersLeft : seenRegisters.values())
-				builder.addEndLocal(registersLeft);
+			builder.addEndLocal(registersLeft);
 		
 		toTries(activeBody.getTraps(), stmtV, builder, labelAssinger);
         

@@ -100,7 +100,7 @@ public class RegisterAssigner {
 		reserveRegisters(insns, insnsStmtMap, parameterInstructionsList);
 		InstructionIterator insnIter = new InstructionIterator(insns, insnsStmtMap, instructionRegisterMap);
 		while (insnIter.hasNext()) {
-			Insn oldInsn = insnIter.next();			
+			Insn oldInsn = insnIter.next();
 			if (oldInsn.hasIncompatibleRegs()) {
 				Insn fittingInsn = findFittingInsn(oldInsn);
 				if (fittingInsn != null) {
@@ -221,7 +221,9 @@ public class RegisterAssigner {
 		boolean isResultRegIncompat = incompatRegs.get(0);
 		
 		// is there an incompat result reg which is not also used as a source (like in /2addr)?
-		if (hasResultReg && isResultRegIncompat && !insn.getOpcode().name.endsWith("/2addr")) {
+		if (hasResultReg && isResultRegIncompat
+				&& !insn.getOpcode().name.endsWith("/2addr")
+				&& !insn.getOpcode().name.equals("check-cast")) {
 			// yes, so pretend result reg is compatible, since it will get a special move
 			incompatRegs.clear(0);
 		}
