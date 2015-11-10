@@ -194,6 +194,7 @@ class DummyBlock extends Block
 
     public Iterator<Unit> iterator()
     {
-        return (Collections.<Unit>emptyList()).iterator();
+    	List<Unit> s = Collections.emptyList();
+        return s.iterator();
     }
 }
