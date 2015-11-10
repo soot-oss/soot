@@ -54,7 +54,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 
 	int numElements;
 	int maxElements;
-	public T[] elements;
+	protected T[] elements;
 
 	/**
 	 * Whenever in a structured flow analysis a break or continue stmt is
@@ -763,4 +763,12 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 	 * b.append("EXCEPTION LIST\n");
 	 * b.append("\t"+exceptionList.toString()+"\n"); return b.toString(); }
 	 */
+	
+	public int getElementCount() {
+		return elements.length;
+	}
+	
+	public T getElementAt(int idx) {
+		return elements[idx];
+	}
 }

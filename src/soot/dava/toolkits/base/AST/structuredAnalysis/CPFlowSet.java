@@ -34,10 +34,10 @@ public class CPFlowSet extends DavaFlowSet<CPTuple> {
         numElements = other.numElements;
         maxElements = other.maxElements;
         
-        elements = new CPTuple[other.elements.length];
-        for(int i=0;i < other.elements.length; i++){
-        	if ( other.elements[i] != null)
-        		elements[i] = other.elements[i].clone();
+        elements = new CPTuple[other.getElementCount()];
+        for(int i=0;i < other.getElementCount(); i++){
+        	if ( other.getElementAt(i) != null)
+        		elements[i] = other.getElementAt(i).clone();
         	else
         		elements[i] = null;
         }
