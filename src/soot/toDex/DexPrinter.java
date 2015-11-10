@@ -1266,9 +1266,9 @@ public class DexPrinter {
 		stmtV.fakeNewInsn(nop, newJump, newJumpInstruction);
 		
 		// We have added something, so we need to fix indices
-		if (newJumpIdx < jumpInsPos)
+		if (newJumpIdx <= jumpInsPos)
 			jumpInsPos++;
-		if (newJumpIdx < targetInsPos)
+		if (newJumpIdx <= targetInsPos)
 			targetInsPos++;
 		
 		// Jump from the original instruction to the new one in the middle
