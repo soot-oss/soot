@@ -93,10 +93,7 @@ public class UselessLabelFinder{
     		if(temp instanceof ASTStatementSequenceNode){
     			//if(DEBUG) System.out.println("Stmt seq Node");
     			ASTStatementSequenceNode stmtSeq = (ASTStatementSequenceNode)temp;
-    			List<Object> statements = stmtSeq.getStatements();
-    			Iterator<Object> stmtIt = statements.iterator();
-    			while(stmtIt.hasNext()){
-    				AugmentedStmt as = (AugmentedStmt)stmtIt.next();
+    			for (AugmentedStmt as : stmtSeq.getStatements()){
     				Stmt s = as.get_Stmt();
     				String labelBroken = breaksLabel(s);
     				if(labelBroken != null && outerLabel!=null){//stmt breaks some label

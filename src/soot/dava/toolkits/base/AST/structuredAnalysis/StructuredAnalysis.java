@@ -379,13 +379,9 @@ public abstract class StructuredAnalysis {
 	}
 
 	public DavaFlowSet processASTStatementSequenceNode(ASTStatementSequenceNode node, DavaFlowSet input) {
-		List<Object> statements = node.getStatements();
-		Iterator<Object> it = statements.iterator();
-
 		DavaFlowSet output = cloneFlowSet(input);// needed if there are no stmts
 
-		while (it.hasNext()) {
-			AugmentedStmt as = (AugmentedStmt) it.next();
+		for (AugmentedStmt as : node.getStatements()) {
 			Stmt s = as.get_Stmt();
 			/*
 			 * Since we are processing a list of statements the output of
@@ -557,9 +553,7 @@ public abstract class StructuredAnalysis {
 	}
 
 	public DavaFlowSet processASTForLoopNode(ASTForLoopNode node, DavaFlowSet input) {
-		List<Object> init = node.getInit();
-		for (Object o : init) {
-			AugmentedStmt as = (AugmentedStmt) o;
+		for (AugmentedStmt as : node.getInit()) {
 			Stmt s = as.get_Stmt();
 			input = process(s, input);
 		}
@@ -587,9 +581,7 @@ public abstract class StructuredAnalysis {
 			// handle update
 			output2 = cloneFlowSet(output1);// if there is nothing in update
 
-			List<Object> update = node.getUpdate();
-			for (Object o : update) {
-				AugmentedStmt as = (AugmentedStmt) o;
+			for (AugmentedStmt as : node.getUpdate()) {
 				Stmt s = as.get_Stmt();
 				/*
 				 * Since we are just going over a list of statements the output

@@ -388,14 +388,14 @@ public class OrAggregatorFour extends DepthFirstAdapter{
 	}
 
 	//the only ASTnode is a ASTStatementSequence 
-	List<Object> statements = ((ASTStatementSequenceNode)ifBodysBody).getStatements();
+	List<AugmentedStmt> statements = ((ASTStatementSequenceNode)ifBodysBody).getStatements();
 	if(statements.size()!=1){
 	    //there is more than one statement
 	    return null;
 	}
 
 	//there is only one statement return the statement
-	AugmentedStmt as = (AugmentedStmt)statements.get(0);
+	AugmentedStmt as = statements.get(0);
 	Stmt s = as.get_Stmt();
 	return s;
     }

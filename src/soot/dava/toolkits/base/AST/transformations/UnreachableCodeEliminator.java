@@ -43,11 +43,8 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
 	}
 
 	public void inASTStatementSequenceNode(ASTStatementSequenceNode node){
-		List<Object> toRemove = new ArrayList<Object>();
-		List<Object> stmts = node.getStatements();
-		Iterator<Object> it = stmts.iterator();
-		while(it.hasNext()){
-			AugmentedStmt as = (AugmentedStmt)it.next();
+		List<AugmentedStmt> toRemove = new ArrayList<AugmentedStmt>();
+		for (AugmentedStmt as : node.getStatements()) {
 			Stmt s = as.get_Stmt();
 			//System.out.println("HERE!!!"+s.toString());
 			if(!codeFinder.isConstructReachable(s)){
@@ -55,9 +52,8 @@ public class UnreachableCodeEliminator extends DepthFirstAdapter {
 				//if(DEBUG) System.out.println("Statement "+s.toString()+ " is NOT REACHABLE REMOVE IT");
 			}
 		}
-		it = toRemove.iterator();
-		while(it.hasNext()){
-			stmts.remove(it.next());
+		for (AugmentedStmt as : toRemove){
+			node.getStatements().remove(as);
 		}
 	}
 	

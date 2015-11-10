@@ -275,16 +275,16 @@ public class OrAggregatorThree {
 	ASTStatementSequenceNode stmtSeqOne = (ASTStatementSequenceNode)onlyASTNodeOne;
 	ASTStatementSequenceNode stmtSeqTwo = (ASTStatementSequenceNode)onlyASTNodeTwo;
 
-	List<Object> stmtsOne = stmtSeqOne.getStatements();
-	List<Object> stmtsTwo = stmtSeqTwo.getStatements();
+	List<AugmentedStmt> stmtsOne = stmtSeqOne.getStatements();
+	List<AugmentedStmt> stmtsTwo = stmtSeqTwo.getStatements();
 
 	if(stmtsOne.size()!=1 || stmtsTwo.size()!=1){
 	    //there should only be one statement
 	    return false;
 	}
 
-	AugmentedStmt asOne = (AugmentedStmt)stmtsOne.get(0);
-	AugmentedStmt asTwo = (AugmentedStmt)stmtsTwo.get(0);
+	AugmentedStmt asOne = stmtsOne.get(0);
+	AugmentedStmt asTwo = stmtsTwo.get(0);
 
 
 	Stmt s1 = asOne.get_Stmt();

@@ -26,85 +26,72 @@ import soot.dava.internal.asg.*;
 import soot.dava.toolkits.base.AST.*;
 import soot.dava.toolkits.base.AST.analysis.*;
 
-public class ASTStatementSequenceNode extends ASTNode
-{
-    private List<Object> statementSequence;
+public class ASTStatementSequenceNode extends ASTNode {
+	private List<AugmentedStmt> statementSequence;
 
-    public ASTStatementSequenceNode( List<Object> statementSequence)
-    {
-	super();
+	public ASTStatementSequenceNode(List<AugmentedStmt> statementSequence) {
+		super();
 
-	this.statementSequence = statementSequence;
-    }
-
-    public Object clone()
-    {
-	return new ASTStatementSequenceNode( statementSequence);
-    }
-
-    public void perform_Analysis( ASTAnalysis a)
-    {
-	if (a.getAnalysisDepth() > ASTAnalysis.ANALYSE_AST) {
-
-	    Iterator<Object> it = statementSequence.iterator();
-	    while (it.hasNext())
-		ASTWalker.v().walk_stmt( a, ((AugmentedStmt) it.next()).get_Stmt());
+		this.statementSequence = statementSequence;
 	}
 
-	if (a instanceof TryContentsFinder) {
-	    TryContentsFinder.v().add_ExceptionSet( this, TryContentsFinder.v().remove_CurExceptionSet());
-	}
-    }
-
-    public void toString( UnitPrinter up ) {
-    	Iterator<Object> it = statementSequence.iterator();
-    	while (it.hasNext()) {
-                AugmentedStmt as = (AugmentedStmt) it.next();
-    	    //System.out.println("Stmt is:"+as.get_Stmt());
-                Unit u = as.get_Stmt();
-                up.startUnit( u );
-                u.toString( up );
-                up.literal(";");
-                up.endUnit( u );
-                up.newline();
-            }
-    }
-
-    public String toString()
-    {
-	StringBuffer b = new StringBuffer();
-
-	Iterator<Object> it = statementSequence.iterator();
-	while (it.hasNext()) {
-	    b.append( ((Unit) ((AugmentedStmt) it.next()).get_Stmt()).toString());
-	    b.append( ";");
-	    b.append( NEWLINE);
+	public Object clone() {
+		return new ASTStatementSequenceNode(statementSequence);
 	}
 
-	return b.toString();
-    }
+	public void perform_Analysis(ASTAnalysis a) {
+		if (a.getAnalysisDepth() > ASTAnalysis.ANALYSE_AST) {
 
+			for (AugmentedStmt as : statementSequence)
+				ASTWalker.v().walk_stmt(a, as.get_Stmt());
+		}
 
-    /*
-      Nomair A. Naeem, 7-FEB-05
-      Part of Visitor Design Implementation for AST
-      See: soot.dava.toolkits.base.AST.analysis For details
-    */
-    public List<Object> getStatements(){
-	return statementSequence;
-    }
+		if (a instanceof TryContentsFinder) {
+			TryContentsFinder.v().add_ExceptionSet(this,
+					TryContentsFinder.v().remove_CurExceptionSet());
+		}
+	}
 
-    public void apply(Analysis a){
-	a.caseASTStatementSequenceNode(this);
-    }
+	public void toString(UnitPrinter up) {
+		for (AugmentedStmt as : statementSequence) {
+			// System.out.println("Stmt is:"+as.get_Stmt());
+			Unit u = as.get_Stmt();
+			up.startUnit(u);
+			u.toString(up);
+			up.literal(";");
+			up.endUnit(u);
+			up.newline();
+		}
+	}
 
+	public String toString() {
+		StringBuffer b = new StringBuffer();
 
+		for (AugmentedStmt as : statementSequence) {
+			b.append(as.get_Stmt().toString());
+			b.append(";");
+			b.append(NEWLINE);
+		}
 
+		return b.toString();
+	}
 
-    /*
-      Nomair A. Naeem added 3-MAY-05
-    */
-    public void setStatements(List<Object> statementSequence){
-	this.statementSequence=statementSequence;
-    }
+	/*
+	 * Nomair A. Naeem, 7-FEB-05 Part of Visitor Design Implementation for AST
+	 * See: soot.dava.toolkits.base.AST.analysis For details
+	 */
+	public List<AugmentedStmt> getStatements() {
+		return statementSequence;
+	}
+
+	public void apply(Analysis a) {
+		a.caseASTStatementSequenceNode(this);
+	}
+
+	/*
+	 * Nomair A. Naeem added 3-MAY-05
+	 */
+	public void setStatements(List<AugmentedStmt> statementSequence) {
+		this.statementSequence = statementSequence;
+	}
 }

@@ -19,13 +19,17 @@
 
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.*;
-import soot.*;
-import soot.jimple.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.javaRep.*;
-import soot.dava.internal.AST.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import soot.Value;
+import soot.dava.internal.AST.ASTStatementSequenceNode;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.javaRep.DDecrementStmt;
+import soot.dava.internal.javaRep.DIncrementStmt;
+import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
+import soot.jimple.AddExpr;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.IntConstant;
+import soot.jimple.Stmt;
+import soot.jimple.SubExpr;
 
 /*
  * CHANGELOG: Nomair 9th Feb (For some reason only AddExpr was being checked for i++
@@ -41,13 +45,8 @@ public class DecrementIncrementStmtCreation extends DepthFirstAdapter {
 	}
 
 	public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
-		List<Object> statements = node.getStatements();
-		Iterator<Object> stmtIt = statements.iterator();
-				
-		while (stmtIt.hasNext()) {
-			Object temp = stmtIt.next();
+		for (AugmentedStmt as : node.getStatements()) {
 			//System.out.println(temp);
-			AugmentedStmt as = (AugmentedStmt)temp;
 			Stmt s = as.get_Stmt();
 			if (!( s instanceof DefinitionStmt)) 
 				continue;

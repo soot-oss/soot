@@ -84,8 +84,9 @@ public class CopyPropagation extends DepthFirstAdapter {
 
 	boolean someCopyStmtModified;
 
-	//need to keep track of whenever we modify the AST
-	//this flag is set to true whenever a stmt is removed or a local substituted for another
+	// need to keep track of whenever we modify the AST
+	// this flag is set to true whenever a stmt is removed or a local
+	// substituted for another
 	boolean ASTMODIFIED;
 
 	public CopyPropagation(ASTNode AST) {
@@ -105,20 +106,16 @@ public class CopyPropagation extends DepthFirstAdapter {
 	}
 
 	private void setup() {
-		//create the uD and dU chains
-		if (DEBUG) 
+		// create the uD and dU chains
+		if (DEBUG)
 			System.out.println("computing usesAnd Defs");
 		useDefs = new ASTUsesAndDefs(AST);
 		AST.apply(useDefs);
 
-		
-		
-		if (DEBUG) 
+		if (DEBUG)
 			System.out.println("computing usesAnd Defs....done");
 
-		
-		
-		//apply the reaching copies Structural flow Analysis
+		// apply the reaching copies Structural flow Analysis
 		reachingCopies = new ReachingCopies(AST);
 
 		parentOf = new ASTParentNodeFinder();
@@ -126,17 +123,17 @@ public class CopyPropagation extends DepthFirstAdapter {
 	}
 
 	/*
-	 * If any copy stmt was removed or any substitution made
-	 * we might be able to get better results by redoing the analysis
+	 * If any copy stmt was removed or any substitution made we might be able to
+	 * get better results by redoing the analysis
 	 */
 	public void outASTMethodNode(ASTMethodNode node) {
 		if (ASTMODIFIED) {
-			//need to rerun copy prop
+			// need to rerun copy prop
 
-			//before running a structured flow analysis have to do this one
+			// before running a structured flow analysis have to do this one
 			AST.apply(ClosestAbruptTargetFinder.v());
 
-			//System.out.println("\n\n\nCOPY PROP\n\n\n\n");
+			// System.out.println("\n\n\nCOPY PROP\n\n\n\n");
 
 			CopyPropagation prop1 = new CopyPropagation(AST);
 			AST.apply(prop1);
@@ -144,11 +141,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 	}
 
 	public void inASTStatementSequenceNode(ASTStatementSequenceNode node) {
-		List<Object> statements = node.getStatements();
-		Iterator<Object> it = statements.iterator();
-
-		while (it.hasNext()) {
-			AugmentedStmt as = (AugmentedStmt) it.next();
+		for (AugmentedStmt as : node.getStatements()) {
 			Stmt s = as.get_Stmt();
 			if (isCopyStmt(s)) {
 				handleCopyStmt((DefinitionStmt) s);
@@ -156,23 +149,23 @@ public class CopyPropagation extends DepthFirstAdapter {
 		}
 	}
 
-	
 	/*
-	 * Method returns true if s is a copy stmt i.e. a = b where a and b are both locals
+	 * Method returns true if s is a copy stmt i.e. a = b where a and b are both
+	 * locals
 	 */
 	public boolean isCopyStmt(Stmt s) {
 		if (!(s instanceof DefinitionStmt)) {
-			//only definition stmts can be copy stmts
+			// only definition stmts can be copy stmts
 			return false;
 		}
 
 		// x = expr;
-		//check if expr is a local in which case this is a copy
+		// check if expr is a local in which case this is a copy
 		Value leftOp = ((DefinitionStmt) s).getLeftOp();
 		Value rightOp = ((DefinitionStmt) s).getRightOp();
 
 		if (leftOp instanceof Local && rightOp instanceof Local) {
-			//this is a copy statement
+			// this is a copy statement
 			return true;
 		}
 		return false;
@@ -180,18 +173,17 @@ public class CopyPropagation extends DepthFirstAdapter {
 
 	/*
 	 * Given a copy stmt (a=b) find all uses of local a (using dU chain)
-
-	 * if For ALL uses the ReachingCopies set contains copy stmt (a=b)
-	 * Remove Copy Stmt
-	 * Replace use of a with use of b
+	 * 
+	 * if For ALL uses the ReachingCopies set contains copy stmt (a=b) Remove
+	 * Copy Stmt Replace use of a with use of b
 	 */
 	public void handleCopyStmt(DefinitionStmt copyStmt) {
-		//System.out.println("COPY STMT FOUND-----------------------------------"+copyStmt);
+		// System.out.println("COPY STMT FOUND-----------------------------------"+copyStmt);
 
-		//get defined local...safe to cast since this is copyStmt
+		// get defined local...safe to cast since this is copyStmt
 		Local definedLocal = (Local) copyStmt.getLeftOp();
 
-		//get all uses of this local from the dU chain
+		// get all uses of this local from the dU chain
 		Object temp = useDefs.getDUChain(copyStmt);
 
 		ArrayList uses = new ArrayList();
@@ -199,9 +191,9 @@ public class CopyPropagation extends DepthFirstAdapter {
 			uses = (ArrayList) temp;
 		}
 
-		//the uses list contains all stmts / nodes which use the definedLocal
+		// the uses list contains all stmts / nodes which use the definedLocal
 
-		//check if uses is non-empty
+		// check if uses is non-empty
 		if (uses.size() != 0) {
 			if (DEBUG) {
 				System.out.println(">>>>The defined local:" + definedLocal
@@ -210,33 +202,37 @@ public class CopyPropagation extends DepthFirstAdapter {
 						+ ">>>>>>>>>>>>>>>\n\n");
 			}
 
-			//continuing with copy propagation algorithm
+			// continuing with copy propagation algorithm
 
-			//create localPair for copy stmt in question...same to cast as its a copyStmt
+			// create localPair for copy stmt in question...same to cast as its
+			// a copyStmt
 			Local leftLocal = (Local) copyStmt.getLeftOp();
 			Local rightLocal = (Local) copyStmt.getRightOp();
 
-			ReachingCopies.LocalPair localPair = reachingCopies.new LocalPair(leftLocal, rightLocal);
+			ReachingCopies.LocalPair localPair = reachingCopies.new LocalPair(
+					leftLocal, rightLocal);
 
-			//check for all the non zero uses
+			// check for all the non zero uses
 			Iterator useIt = uses.iterator();
 			while (useIt.hasNext()) {
-				//check that the reaching copies of each use has the copy stmt
-				//a use is either a statement or a node(condition, synch, switch , for etc)
+				// check that the reaching copies of each use has the copy stmt
+				// a use is either a statement or a node(condition, synch,
+				// switch , for etc)
 				Object tempUse = useIt.next();
 
-				DavaFlowSet reaching = reachingCopies.getReachingCopies(tempUse);
+				DavaFlowSet reaching = reachingCopies
+						.getReachingCopies(tempUse);
 
 				if (!reaching.contains(localPair)) {
-					//this copy stmt does not reach this use
-					//no copy elimination can be done 
+					// this copy stmt does not reach this use
+					// no copy elimination can be done
 					return;
 				}
 			}
 
-			//if we get here that means that the copy stmt reached each use
+			// if we get here that means that the copy stmt reached each use
 
-			//replace each use of a with b
+			// replace each use of a with b
 			useIt = uses.iterator();
 			while (useIt.hasNext()) {
 				Object tempUse = useIt.next();
@@ -246,17 +242,18 @@ public class CopyPropagation extends DepthFirstAdapter {
 				replace(leftLocal, rightLocal, tempUse);
 			}
 
-			//remove copy stmt a=b
+			// remove copy stmt a=b
 			removeStmt(copyStmt);
 
 			if (someCopyStmtModified) {
-				//get all the analyses re-set
+				// get all the analyses re-set
 				setup();
 				someCopyStmtModified = false;
 			}
 		} else {
-			//the copy stmt is usesless since the definedLocal is not being used anywhere after definition
-			//System.out.println("The defined local:"+definedLocal+" is not used anywhere");
+			// the copy stmt is usesless since the definedLocal is not being
+			// used anywhere after definition
+			// System.out.println("The defined local:"+definedLocal+" is not used anywhere");
 			removeStmt(copyStmt);
 		}
 	}
@@ -264,33 +261,31 @@ public class CopyPropagation extends DepthFirstAdapter {
 	public void removeStmt(Stmt stmt) {
 		Object tempParent = parentOf.getParentOf(stmt);
 		if (tempParent == null) {
-			//System.out.println("NO PARENT FOUND CANT DO ANYTHING");
+			// System.out.println("NO PARENT FOUND CANT DO ANYTHING");
 			return;
 		}
 
-		//parents are always ASTNodes, hence safe to cast
+		// parents are always ASTNodes, hence safe to cast
 		ASTNode parent = (ASTNode) tempParent;
 
-		//REMOVING STMT 
+		// REMOVING STMT
 		if (!(parent instanceof ASTStatementSequenceNode)) {
-			//parent of a statement should always be a ASTStatementSequenceNode
+			// parent of a statement should always be a ASTStatementSequenceNode
 			throw new RuntimeException(
 					"Found a stmt whose parent is not an ASTStatementSequenceNode");
 		}
 		ASTStatementSequenceNode parentNode = (ASTStatementSequenceNode) parent;
 
-		ArrayList<Object> newSequence = new ArrayList<Object>();
+		ArrayList<AugmentedStmt> newSequence = new ArrayList<AugmentedStmt>();
 
-		Iterator<Object> it = parentNode.getStatements().iterator();
-		while (it.hasNext()) {
-			AugmentedStmt as = (AugmentedStmt) it.next();
+		for (AugmentedStmt as : parentNode.getStatements()) {
 			Stmt s = as.get_Stmt();
 			if (s.toString().compareTo(stmt.toString()) != 0) {
-				//this is not the stmt to be removed
+				// this is not the stmt to be removed
 				newSequence.add(as);
 			}
 		}
-		//System.out.println("STMT REMOVED---------------->"+stmt);
+		// System.out.println("STMT REMOVED---------------->"+stmt);
 		parentNode.setStatements(newSequence);
 
 		ASTMODIFIED = true;
@@ -298,22 +293,23 @@ public class CopyPropagation extends DepthFirstAdapter {
 	}
 
 	/*
-	 * Method goes depth first into the condition tree and finds any use of local "from"
-	 * If it finds the use it replaces it with the use of local "to" 
+	 * Method goes depth first into the condition tree and finds any use of
+	 * local "from" If it finds the use it replaces it with the use of local
+	 * "to"
 	 */
 	public void modifyUses(Local from, Local to, ASTCondition cond) {
 		if (cond instanceof ASTAggregatedCondition) {
-			//ArrayList useList = new ArrayList();
+			// ArrayList useList = new ArrayList();
 			modifyUses(from, to, ((ASTAggregatedCondition) cond).getLeftOp());
 			modifyUses(from, to, ((ASTAggregatedCondition) cond).getRightOp());
 
 		} else if (cond instanceof ASTUnaryCondition) {
-			//get uses from unary condition
+			// get uses from unary condition
 			Value val = ((ASTUnaryCondition) cond).getValue();
 			if (val instanceof Local) {
 				Local local = (Local) val;
 				if (local.getName().compareTo(from.getName()) == 0) {
-					//replace the name with the one in "to"
+					// replace the name with the one in "to"
 					((ASTUnaryCondition) cond).setValue(to);
 					ASTMODIFIED = true;
 				}
@@ -325,16 +321,16 @@ public class CopyPropagation extends DepthFirstAdapter {
 					if (tempVal instanceof Local) {
 						Local local = (Local) tempVal;
 						if (local.getName().compareTo(from.getName()) == 0) {
-							//replace the name with the one in "to"
+							// replace the name with the one in "to"
 							valBox.setValue(to);
 							ASTMODIFIED = true;
 						}
 					}
 				}
 			}
-		}//end unary condition
+		}// end unary condition
 		else if (cond instanceof ASTBinaryCondition) {
-			//get uses from binaryCondition
+			// get uses from binaryCondition
 			Value val = ((ASTBinaryCondition) cond).getConditionExpr();
 			Iterator it = val.getUseBoxes().iterator();
 			while (it.hasNext()) {
@@ -343,7 +339,7 @@ public class CopyPropagation extends DepthFirstAdapter {
 				if (tempVal instanceof Local) {
 					Local local = (Local) tempVal;
 					if (local.getName().compareTo(from.getName()) == 0) {
-						//replace the name with the one in "to"
+						// replace the name with the one in "to"
 						valBox.setValue(to);
 						ASTMODIFIED = true;
 					}
@@ -355,15 +351,8 @@ public class CopyPropagation extends DepthFirstAdapter {
 		}
 	}
 
+	public void modifyUseBoxes(Local from, Local to, List useBoxes) {
 
-	
-	
-	
-	
-	
-	
-	public void modifyUseBoxes(Local from, Local to, List useBoxes){	
-	
 		Iterator it = useBoxes.iterator();
 		while (it.hasNext()) {
 			ValueBox valBox = (ValueBox) it.next();
@@ -371,19 +360,18 @@ public class CopyPropagation extends DepthFirstAdapter {
 			if (tempVal instanceof Local) {
 				Local local = (Local) tempVal;
 				if (local.getName().compareTo(from.getName()) == 0) {
-					//replace the name with the one in "to"
+					// replace the name with the one in "to"
 					valBox.setValue(to);
 					ASTMODIFIED = true;
 				}
 			}
 		}
 	}
-	
-	
+
 	/*
-	 * Invoked by handleCopyStmt to replace the use of local <from>
-	 * to the use of local <to> in <use>
-	 *
+	 * Invoked by handleCopyStmt to replace the use of local <from> to the use
+	 * of local <to> in <use>
+	 * 
 	 * Notice <use> can be a stmt or an ASTNode
 	 */
 
@@ -394,91 +382,78 @@ public class CopyPropagation extends DepthFirstAdapter {
 				someCopyStmtModified = true;
 			}
 			List useBoxes = s.getUseBoxes();
-			if(DEBUG)
-				System.out.println("Printing uses for stmt"+useBoxes);
-			
-			//TODO
-			modifyUseBoxes(from,to,useBoxes);
-			
-		} 
-		else if (use instanceof ASTNode) {
+			if (DEBUG)
+				System.out.println("Printing uses for stmt" + useBoxes);
+
+			// TODO
+			modifyUseBoxes(from, to, useBoxes);
+
+		} else if (use instanceof ASTNode) {
 			if (use instanceof ASTSwitchNode) {
 				ASTSwitchNode temp = (ASTSwitchNode) use;
 				Value val = temp.get_Key();
 				if (val instanceof Local) {
 					if (((Local) val).getName().compareTo(from.getName()) == 0) {
-						//replace the name with the one in "to"
+						// replace the name with the one in "to"
 						ASTMODIFIED = true;
 						temp.set_Key(to);
 					}
-				} 
-				else {
+				} else {
 					List useBoxes = val.getUseBoxes();
-					//TODO
-					modifyUseBoxes(from,to,useBoxes);
+					// TODO
+					modifyUseBoxes(from, to, useBoxes);
 				}
-			} 
-			else if (use instanceof ASTSynchronizedBlockNode) {
+			} else if (use instanceof ASTSynchronizedBlockNode) {
 				ASTSynchronizedBlockNode temp = (ASTSynchronizedBlockNode) use;
 				Local local = temp.getLocal();
 				if (local.getName().compareTo(from.getName()) == 0) {
-					//replace the name with the one in "to"
+					// replace the name with the one in "to"
 					temp.setLocal(to);
 					ASTMODIFIED = true;
 				}
-			} 
-			else if (use instanceof ASTIfNode) {
-				if (DEBUG)	System.out.println("Use is an instanceof if node");
-				
+			} else if (use instanceof ASTIfNode) {
+				if (DEBUG)
+					System.out.println("Use is an instanceof if node");
+
 				ASTIfNode temp = (ASTIfNode) use;
 				ASTCondition cond = temp.get_Condition();
 				modifyUses(from, to, cond);
-			} 
-			else if (use instanceof ASTIfElseNode) {
+			} else if (use instanceof ASTIfElseNode) {
 				ASTIfElseNode temp = (ASTIfElseNode) use;
 				ASTCondition cond = temp.get_Condition();
 				modifyUses(from, to, cond);
-			} 
-			else if (use instanceof ASTWhileNode) {
+			} else if (use instanceof ASTWhileNode) {
 				ASTWhileNode temp = (ASTWhileNode) use;
 				ASTCondition cond = temp.get_Condition();
 				modifyUses(from, to, cond);
-			} 
-			else if (use instanceof ASTDoWhileNode) {
+			} else if (use instanceof ASTDoWhileNode) {
 				ASTDoWhileNode temp = (ASTDoWhileNode) use;
 				ASTCondition cond = temp.get_Condition();
 				modifyUses(from, to, cond);
-			} 
-			else if (use instanceof ASTForLoopNode) {
+			} else if (use instanceof ASTForLoopNode) {
 				ASTForLoopNode temp = (ASTForLoopNode) use;
 
-				//init
-				List<Object> init = temp.getInit();
-				Iterator<Object> it = init.iterator();
-				while (it.hasNext()) {
-					AugmentedStmt as = (AugmentedStmt) it.next();
+				// init
+				for (AugmentedStmt as : temp.getInit()) {
 					Stmt s = as.get_Stmt();
 					replace(from, to, s);
 				}
 
-				//update	
-				List<Object> update = temp.getUpdate();
-				it = update.iterator();
-				while (it.hasNext()) {
-					AugmentedStmt as = (AugmentedStmt) it.next();
+				// update
+				for (AugmentedStmt as : temp.getUpdate()) {
 					Stmt s = as.get_Stmt();
 					replace(from, to, s);
 				}
 
-				//condition
+				// condition
 				ASTCondition cond = temp.get_Condition();
 				modifyUses(from, to, cond);
-			} 
-			else 
-				throw new RuntimeException(	"Encountered an unknown ASTNode in copyPropagation method replace");	
-		} 
-		else 
-			throw new RuntimeException(	"Encountered an unknown use in copyPropagation method replace");
+			} else
+				throw new RuntimeException(
+						"Encountered an unknown ASTNode in copyPropagation method replace");
+		} else
+			throw new RuntimeException(
+					"Encountered an unknown use in copyPropagation method replace");
 
 	}
 

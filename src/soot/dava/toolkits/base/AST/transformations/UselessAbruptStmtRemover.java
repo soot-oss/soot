@@ -86,11 +86,11 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
 	
 	
 	public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
-		Iterator<Object> it = node.getStatements().iterator();
+		Iterator<AugmentedStmt> it = node.getStatements().iterator();
 		AugmentedStmt remove = null;
 		ASTLabeledNode target=null;
 		while (it.hasNext()) {
-			AugmentedStmt as = (AugmentedStmt) it.next();
+			AugmentedStmt as = it.next();
 			Stmt s = as.get_Stmt();
 
 			//we only care about break and continue stmts
@@ -169,7 +169,7 @@ public class UselessAbruptStmtRemover extends DepthFirstAdapter {
 		}//end of while going through the statement sequence
 		
 		if(remove != null){
-			List<Object> stmts = node.getStatements();
+			List<AugmentedStmt> stmts = node.getStatements();
 			stmts.remove(remove);
 			if(DEBUG)
 				System.out.println("\tRemoved abrupt stmt");

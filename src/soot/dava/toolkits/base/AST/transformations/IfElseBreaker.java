@@ -120,13 +120,13 @@ public class IfElseBreaker{
 	}
 	
 	ASTStatementSequenceNode stmtNode=(ASTStatementSequenceNode)onlyNode;
-	List<Object> statements = stmtNode.getStatements();
+	List<AugmentedStmt> statements = stmtNode.getStatements();
 	if(statements.size()!=1){
 	    //need one stmt only
 	    return false;
 	}
 	
-	AugmentedStmt as = (AugmentedStmt)statements.get(0);
+	AugmentedStmt as = statements.get(0);
 	Stmt stmt = as.get_Stmt();
 
 	if(!(stmt instanceof DAbruptStmt)){
