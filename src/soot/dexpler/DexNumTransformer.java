@@ -105,9 +105,7 @@ public class DexNumTransformer extends DexTransformer {
 	public static DexNumTransformer v() {
 		return new DexNumTransformer();
 	}
-
-	Local l = null;
-
+	
 	protected void internalTransform(final Body body, String phaseName, Map<String,String> options) {
         final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(body);
 		final LocalUses localUses = LocalUses.Factory.newLocalUses(body, localDefs);
@@ -122,8 +120,8 @@ public class DexNumTransformer extends DexTransformer {
 			doBreak = false;
 			for (Unit u : defs) {
 				// put correct local in l
-				if (u instanceof DefinitionStmt)
-					l = (Local) ((DefinitionStmt) u).getLeftOp();
+				final Local l = u instanceof DefinitionStmt ? (Local) ((DefinitionStmt) u).getLeftOp()
+						: null;
 				
 		        Debug.printDbg("    def  : ", u);
 				Debug.printDbg("    local: ", l);
@@ -151,7 +149,7 @@ public class DexNumTransformer extends DexTransformer {
 							Type arType = ar.getType();
 							Debug.printDbg("ar: ", r, " ", arType);
 							if (arType instanceof UnknownType) {
-								Type t = findArrayType(/*g,*/ localDefs, localUses,
+								Type t = findArrayType(localDefs, localUses,
 										stmt, 0, Collections.<Unit> emptySet()); // TODO:
 																					// check
 																					// where
@@ -269,7 +267,7 @@ public class DexNumTransformer extends DexTransformer {
 									Type arType = ar.getType();
 									Debug.printDbg("ar: ", r, " ", arType);
 									if (arType instanceof UnknownType) {
-										arType = findArrayType(/* g, */localDefs, localUses, stmt, 0, Collections.<Unit> emptySet());
+										arType = findArrayType(localDefs, localUses, stmt, 0, Collections.<Unit> emptySet());
 									}
 									Debug.printDbg(" array type:", arType);
 									usedAsFloatingPoint = isFloatingPointLike(arType);

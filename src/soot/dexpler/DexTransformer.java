@@ -186,7 +186,7 @@ public abstract class DexTransformer extends BodyTransformer {
 																			// ar.getType())
 																			// {
 						System.out.println("second round from stmt: " + stmt);
-						Type t = findArrayType(/*g,*/ localDefs, localUses, stmt,
+						Type t = findArrayType(localDefs, localUses, stmt,
 								++depth, newVisitedDefs); // TODO: which type should be
 											// returned?
 						if (t instanceof ArrayType) {
@@ -251,7 +251,7 @@ public abstract class DexTransformer extends BodyTransformer {
 				// information associated with the alias.
 				} else if (r instanceof Local) {
 					Debug.printDbg("atype alias: ", stmt);
-					Type t = findArrayType(/*g,*/ localDefs, localUses, stmt,
+					Type t = findArrayType(localDefs, localUses, stmt,
 							++depth, newVisitedDefs);
 					if (depth == 0) {
 						aType = t;
