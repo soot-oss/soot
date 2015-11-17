@@ -257,8 +257,6 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 				size * 2 + 1, 0.7f);
 		buildUnexceptionalEdges(unitToUnexceptionalSuccs,
 				unitToUnexceptionalPreds);
-		makeMappedListsUnmodifiable(unitToUnexceptionalSuccs);
-		makeMappedListsUnmodifiable(unitToUnexceptionalPreds);
 		this.throwAnalysis = throwAnalysis;
 
 		if (body.getTraps().size() == 0) {
@@ -279,8 +277,6 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 			trapUnitsThatAreHeads = buildExceptionalEdges(throwAnalysis,
 					unitToExceptionDests, unitToExceptionalSuccs,
 					unitToExceptionalPreds, omitExceptingUnitEdges);
-			makeMappedListsUnmodifiable(unitToExceptionalSuccs);
-			makeMappedListsUnmodifiable(unitToExceptionalPreds);
 
 			// We'll need separate maps for the combined
 			// exceptional and unexceptional edges:
@@ -742,25 +738,25 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 	 * escape the method.
 	 */
 	private void buildHeadsAndTails(Set<Unit> additionalHeads) {
-		List<Unit> headList = new ArrayList<Unit>(additionalHeads.size() + 1);
-		headList.addAll(additionalHeads);
+		heads = new ArrayList<Unit>(additionalHeads.size() + 1);
+		heads.addAll(additionalHeads);
 
 		if (unitChain.isEmpty())
 			throw new IllegalStateException("No body for method "
 					+ body.getMethod().getSignature());
 
 		Unit entryPoint = unitChain.getFirst();
-		if (!headList.contains(entryPoint)) {
-			headList.add(entryPoint);
+		if (!heads.contains(entryPoint)) {
+			heads.add(entryPoint);
 		}
 
-		List<Unit> tailList = new ArrayList<Unit>();
+		tails = new ArrayList<Unit>();
 		for (Unit u : unitChain) {
 			if (u instanceof soot.jimple.ReturnStmt
 					|| u instanceof soot.jimple.ReturnVoidStmt
 					|| u instanceof soot.baf.ReturnInst
 					|| u instanceof soot.baf.ReturnVoidInst) {
-				tailList.add(u);
+				tails.add(u);
 			} else if (u instanceof soot.jimple.ThrowStmt
 					|| u instanceof soot.baf.ThrowInst) {
 				Collection<ExceptionDest> dests = getExceptionDests(u);
@@ -771,12 +767,10 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 					}
 				}
 				if (escapeMethodCount > 0) {
-					tailList.add(u);
+					tails.add(u);
 				}
 			}
 		}
-		tails = Collections.unmodifiableList(tailList);
-		heads = Collections.unmodifiableList(headList);
 	}
 
 	/**
@@ -858,36 +852,26 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 
 	@Override
 	public List<Unit> getUnexceptionalPredsOf(Unit u) {
-		if (!unitToUnexceptionalPreds.containsKey(u))
-			throw new RuntimeException("Invalid unit " + u);
-
-		return unitToUnexceptionalPreds.get(u);
+		List<Unit> preds = unitToUnexceptionalPreds.get(u);
+		return preds == null ? Collections.<Unit>emptyList() : preds;
 	}
 
 	@Override
 	public List<Unit> getUnexceptionalSuccsOf(Unit u) {
-		if (!unitToUnexceptionalSuccs.containsKey(u))
-			throw new RuntimeException("Invalid unit " + u);
-
-		return unitToUnexceptionalSuccs.get(u);
+		List<Unit> succs = unitToUnexceptionalSuccs.get(u);
+		return succs == null ? Collections.<Unit>emptyList() : succs;
 	}
 
 	@Override
 	public List<Unit> getExceptionalPredsOf(Unit u) {
-		if (!unitToExceptionalPreds.containsKey(u)) {
-			return Collections.emptyList();
-		} else {
-			return unitToExceptionalPreds.get(u);
-		}
+		List<Unit> preds = unitToExceptionalPreds.get(u);
+		return preds == null ? Collections.<Unit>emptyList() : preds;
 	}
 
 	@Override
 	public List<Unit> getExceptionalSuccsOf(Unit u) {
-		if (!unitToExceptionalSuccs.containsKey(u)) {
-			return Collections.emptyList();
-		} else {
-			return unitToExceptionalSuccs.get(u);
-		}
+		List<Unit> succs = unitToExceptionalSuccs.get(u);
+		return succs == null ? Collections.<Unit>emptyList() : succs;
 	}
 
 	/**

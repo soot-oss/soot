@@ -72,6 +72,12 @@ public class SimpleLocalDefs implements LocalDefs {
 			// singleton-lists are immutable
 			return lst;
 		}
+
+		@Override
+		public List<Unit> getDefsOf(Local l) {
+			return getDefsOfAt(l, null);
+		}
+		
 	}
 
 	static private class FlowAssignment extends
@@ -210,9 +216,6 @@ public class SimpleLocalDefs implements LocalDefs {
 				if (graph instanceof ExceptionalGraph) {
 					ExceptionalGraph<Unit> g = (ExceptionalGraph<Unit>) graph;
 					if (!g.getExceptionalPredsOf(to).isEmpty()) {
-						// exception handler reached
-						assert g.getUnexceptionalPredsOf(to).isEmpty();
-
 						// look if there is a real exception edge
 						for (ExceptionDest<Unit> exd : g
 								.getExceptionDests(from)) {
@@ -281,6 +284,18 @@ public class SimpleLocalDefs implements LocalDefs {
 		protected void merge(FlowBitSet in1, FlowBitSet in2, FlowBitSet out) {
 			throw new UnsupportedOperationException("should never be called");
 		}
+
+		@Override
+		public List<Unit> getDefsOf(Local l) {
+			List<Unit> defs = new ArrayList<Unit>();
+			for (Unit u : universe) {
+				List<Unit> defsOf = getDefsOfAt(l, u);
+				if (defsOf != null)
+					defs.addAll(defsOf);
+			}
+			return defs;
+		}
+		
 	}
 
 	private LocalDefs def;
@@ -290,19 +305,42 @@ public class SimpleLocalDefs implements LocalDefs {
 	 * @param graph
 	 */
 	public SimpleLocalDefs(UnitGraph graph) {
-		this(graph, false);
+		this(graph, FlowAnalysisMode.Automatic);
 	}
 
-	public SimpleLocalDefs(UnitGraph graph, boolean omitSSA) {
-		this(graph, graph.getBody().getLocals(), omitSSA);
+	public SimpleLocalDefs(UnitGraph graph, FlowAnalysisMode mode) {
+		this(graph, graph.getBody().getLocals(), mode);
 	}
-
+	
 	SimpleLocalDefs(DirectedGraph<Unit> graph, Collection<Local> locals,
-			boolean omitSSA) {
-		this(graph, locals.toArray(new Local[locals.size()]), omitSSA);
+			FlowAnalysisMode mode) {
+		this(graph, locals.toArray(new Local[locals.size()]), mode);
 	}
 
 	SimpleLocalDefs(DirectedGraph<Unit> graph, Local[] locals, boolean omitSSA) {
+		this(graph, locals, omitSSA ? FlowAnalysisMode.OmitSSA : FlowAnalysisMode.Automatic);
+	}
+	
+	/**
+	 * The different modes in which the flow analysis can run
+	 */
+	enum FlowAnalysisMode {
+		/**
+		 * Automatically detect the mode to use
+		 */
+		Automatic,
+		/**
+		 * Never use the SSA form, even if the unit graph would allow for a
+		 * flow-insensitive analysis without losing precision
+		 */
+		OmitSSA,
+		/**
+		 * Always conduct a flow-insensitive analysis
+		 */
+		FlowInsensitive
+	}
+	
+	SimpleLocalDefs(DirectedGraph<Unit> graph, Local[] locals, FlowAnalysisMode mode) {
 		if (Options.v().time())
 			Timers.v().defsTimer.start();
 
@@ -315,7 +353,7 @@ public class SimpleLocalDefs implements LocalDefs {
 			locals[i].setNumber(i);
 		}
 
-		init(graph, locals, omitSSA);
+		init(graph, locals, mode);
 
 		// restore local numbering
 		for (int i = 0; i < N; i++) {
@@ -326,12 +364,13 @@ public class SimpleLocalDefs implements LocalDefs {
 			Timers.v().defsTimer.end();
 	}
 
-	private void init(DirectedGraph<Unit> graph, Local[] locals, boolean omitSSA) {
+	private void init(DirectedGraph<Unit> graph, Local[] locals, FlowAnalysisMode mode) {
 		@SuppressWarnings("unchecked")
 		List<Unit>[] unitList = (List<Unit>[]) new List[locals.length];
 
 		Arrays.fill(unitList, emptyList());
 
+		boolean omitSSA = mode == FlowAnalysisMode.OmitSSA;
 		boolean doFlowAnalsis = omitSSA;
 
 		int units = 0;
@@ -365,7 +404,7 @@ public class SimpleLocalDefs implements LocalDefs {
 			}
 		}
 
-		if (doFlowAnalsis) {
+		if (doFlowAnalsis && mode != FlowAnalysisMode.FlowInsensitive) {
 			def = new FlowAssignment(graph, locals, unitList, units, omitSSA);
 		} else {
 			def = new StaticSingleAssignment(locals, unitList);
@@ -376,4 +415,10 @@ public class SimpleLocalDefs implements LocalDefs {
 	public List<Unit> getDefsOfAt(Local l, Unit s) {
 		return def.getDefsOfAt(l, s);
 	}
+
+	@Override
+	public List<Unit> getDefsOf(Local l) {
+		return def.getDefsOf(l);
+	}
+	
 }

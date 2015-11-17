@@ -102,12 +102,7 @@ public class DexIfTransformer extends AbstractNullTransformer {
 			for (Local loc : twoIfLocals) {
 				Debug.printDbg("\n[null if with two local candidate] ", loc);
 				List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs, localUses, body);
-				// check if no use
-				for (Unit u : defs) {
-					for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-						Debug.printDbg("[use in u]: ", pair.getUnit());
-					}
-				}
+				
 				// process normally
 				doBreak = false;
 				for (Unit u : defs) {

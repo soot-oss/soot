@@ -1,7 +1,5 @@
 package soot.toolkits.scalar;
 
-import static org.junit.Assert.fail;
-
 import java.util.HashSet;
 import java.util.List;
 
@@ -51,6 +49,16 @@ public class CombinedDUAnalysisTest {
                         "lla of "+u+"\ncombined: "+hs1+"\nsimple: "+hs2);
                 return combined.getLiveLocalsAfter(u);
             }
+
+			@Override
+			public List<Unit> getDefsOf(Local l) {
+                HashSet<Unit> hs1 = new HashSet<Unit>(combined.getDefsOf(l));
+                HashSet<Unit> hs2 = new HashSet<Unit>(defs.getDefsOf(l));
+                if( !hs1.equals(hs2) ) throw new RuntimeException(
+                        "Defs of "+l+"\ncombined: "+hs1+"\nsimple: "+hs2);
+                return combined.getDefsOf(l);
+			}
+			
         }
         ;
     }

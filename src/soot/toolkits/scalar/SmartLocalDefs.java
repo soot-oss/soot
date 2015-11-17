@@ -277,11 +277,21 @@ public class SmartLocalDefs implements LocalDefs {
 		}
 	}
 
+	@Override
 	public List<Unit> getDefsOfAt(Local l, Unit s) {
 		List<Unit> lst = answer.get(new Cons<Unit, Local>(s, l));
 		if (lst == null)
 			return Collections.emptyList();
 		return lst;
+	}
+	
+	@Override
+	public List<Unit> getDefsOf(Local l) {
+		List<Unit> result = new ArrayList<Unit>();
+		for (Cons<Unit, Local> cons : answer.keySet())
+			if (cons.cdr() == l)
+				result.addAll(answer.get(cons));
+		return result;
 	}
 	
 	/**

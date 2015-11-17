@@ -25,7 +25,6 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
-import java.util.Stack;
 
 import soot.ArrayType;
 import soot.Body;
@@ -65,33 +64,33 @@ public abstract class DexTransformer extends BodyTransformer {
 	protected List<Unit> collectDefinitionsWithAliases(Local l,
 			LocalDefs localDefs, LocalUses localUses, Body body) {
 		Set<Local> seenLocals = new HashSet<Local>();
-		Stack<Local> newLocals = new Stack<Local>();
+		List<Local> newLocals = new ArrayList<Local>();
 		List<Unit> defs = new LinkedList<Unit>();
-		newLocals.push(l);
+		newLocals.add(l);
 
-		while (!newLocals.empty()) {
-			Local local = newLocals.pop();
-			Debug.printDbg("[null local] ", local);
+		while (!newLocals.isEmpty()) {
+			Local local = newLocals.remove(0);
 			if (!seenLocals.add(local))
 				continue;
-			for (Unit u : collectDefinitions(local, localDefs, body)) {
+			Debug.printDbg("[null local] ", local);
+			for (Unit u : collectDefinitions(local, localDefs)) {
 				if (u instanceof AssignStmt) {
 					Value r = ((AssignStmt) u).getRightOp();
-					if (r instanceof Local && !seenLocals.contains((Local) r))
-						newLocals.push((Local) r);
+					if (r instanceof Local && !seenLocals.contains(r))
+						newLocals.add((Local) r);
 				}
 				defs.add(u);
 				//
-				List<UnitValueBoxPair> usesOf = (List<UnitValueBoxPair>) localUses
-						.getUsesOf(u);
+				List<UnitValueBoxPair> usesOf = localUses.getUsesOf(u);
 				for (UnitValueBoxPair pair : usesOf) {
 					Unit unit = pair.getUnit();
 					if (unit instanceof AssignStmt) {
-						Value right = ((AssignStmt) unit).getRightOp();
-						Value left = ((AssignStmt) unit).getLeftOp();
+						AssignStmt assignStmt = ((AssignStmt) unit);
+						Value right = assignStmt.getRightOp();
+						Value left = assignStmt.getLeftOp();
 						if (right == local && left instanceof Local
-								&& !seenLocals.contains((Local) left))
-							newLocals.push((Local) left);
+								&& !seenLocals.contains(left))
+							newLocals.add((Local) left);
 					}
 				}
 				//
@@ -110,18 +109,8 @@ public abstract class DexTransformer extends BodyTransformer {
 	 * @param body
 	 *            the body that contains the local
 	 */
-	private List<Unit> collectDefinitions(Local l, LocalDefs localDefs,
-			Body body) {
-		List<Unit> defs = new ArrayList<Unit>();
-		for (Unit u : body.getUnits()) {
-			List<Unit> defsOf = localDefs.getDefsOfAt(l, u);
-			if (defsOf != null)
-				defs.addAll(defsOf);
-		}
-		for (Unit u : defs) {
-			Debug.printDbg("[add def] ", u);
-		}
-		return defs;
+	private List<Unit> collectDefinitions(Local l, LocalDefs localDefs) {
+		return localDefs.getDefsOf(l);
 	}
 
 	protected Type findArrayType(/*ExceptionalUnitGraph g,*/

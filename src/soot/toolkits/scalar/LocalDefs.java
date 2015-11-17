@@ -37,6 +37,7 @@ import soot.Local;
 import soot.Unit;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.SimpleLocalDefs.FlowAnalysisMode;
 
 /**
  *   Provides an interface for querying for the definitions of a Local
@@ -97,7 +98,24 @@ public interface LocalDefs
 		 */
 		public static LocalDefs newLocalDefs(UnitGraph graph, boolean expectUndefined) {
 			//return new SmartLocalDefs(graph, LiveLocals.Factory.newLiveLocals(graph)); 
-			return new SimpleLocalDefs(graph, expectUndefined);
+			return new SimpleLocalDefs(graph, expectUndefined ? FlowAnalysisMode.OmitSSA
+					: FlowAnalysisMode.Automatic);
+		}
+		
+		/**
+		 * Creates a new LocalDefs analysis based on a given {@code UnitGraph}.
+		 * This analysis will be flow-insensitive, i.e., for a given local, it
+		 * will always give all statements that ever write to that local regardless
+		 * of potential redefinitions in between.
+		 * 
+		 * @see soot.toolkits.graph.UnitGraph#UnitGraph(Body)
+		 * @see soot.validation.UsesValidator
+		 * @param graph the graph to work with
+		 * @return a new LocalDefs instance
+		 */
+		public static LocalDefs newLocalDefsFlowInsensitive(UnitGraph graph) {
+			//return new SmartLocalDefs(graph, LiveLocals.Factory.newLiveLocals(graph)); 
+			return new SimpleLocalDefs(graph, FlowAnalysisMode.FlowInsensitive);
 		}
 	}
 	
@@ -114,5 +132,17 @@ public interface LocalDefs
      *            method context. If there are no uses an empty list will returned.
      */
     public List<Unit> getDefsOfAt(Local l, Unit s);
+    
+    /**
+     *   Returns the definition sites for a Local merged over all points
+     *   in a method.
+     *
+     *	 You can assume this method never returns {@code null}.
+     *
+     *   @param l the Local in question.
+     *   @return a list of Units where the local is defined in the current
+     *            method context. If there are no uses an empty list will returned.
+     */
+    public List<Unit> getDefsOf(Local l);
     
 }

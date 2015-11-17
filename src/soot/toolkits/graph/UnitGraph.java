@@ -25,12 +25,21 @@
 
 package soot.toolkits.graph;
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
-import java.util.Map.Entry;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
+import soot.Body;
+import soot.G;
+import soot.SootMethod;
+import soot.Unit;
+import soot.UnitBox;
 import soot.options.Options;
+import soot.util.Chain;
 
 /**
  * <p>
@@ -92,12 +101,6 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
 	 */
 	protected void buildUnexceptionalEdges(Map<Unit, List<Unit>> unitToSuccs,
 			Map<Unit, List<Unit>> unitToPreds) {
-
-		// Initialize the predecessor sets to empty
-		for (Unit u : unitChain) {
-			unitToPreds.put(u, new ArrayList<Unit>());
-		}
-
 		Iterator<Unit> unitIt = unitChain.iterator();
 		Unit currentUnit, nextUnit;
 
@@ -107,13 +110,19 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
 			currentUnit = nextUnit;
 			nextUnit = unitIt.hasNext() ? (Unit) unitIt.next() : null;
 
-			List<Unit> successors = new ArrayList<Unit>();
+			ArrayList<Unit> successors = new ArrayList<Unit>();
 
 			if (currentUnit.fallsThrough()) {
 				// Add the next unit as the successor
 				if (nextUnit != null) {
 					successors.add(nextUnit);
-					unitToPreds.get(nextUnit).add(currentUnit);
+					
+					List<Unit> preds = unitToPreds.get(nextUnit);
+					if (preds == null) {
+						preds = new ArrayList<Unit>();
+						unitToPreds.put(nextUnit, preds);
+					}
+					preds.add(currentUnit);
 				}
 			}
 
@@ -124,17 +133,22 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
 					// target it falls through to, so we screen for duplicates:
 					if (!successors.contains(target)) {
 						successors.add(target);
+						
 						List<Unit> preds = unitToPreds.get(target);
-						if (preds == null)
-							throw new RuntimeException(
-									"Unit graph contains jump to non-existing target");
+						if (preds == null) {
+							preds = new ArrayList<Unit>();
+							unitToPreds.put(target, preds);
+						}
 						preds.add(currentUnit);
 					}
 				}
 			}
 
 			// Store away successors
-			unitToSuccs.put(currentUnit, successors);
+			if (!successors.isEmpty()) {
+				successors.trimToSize();
+				unitToSuccs.put(currentUnit, successors);
+			}
 		}
 	}
 
@@ -155,49 +169,29 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
 	 * </p>
 	 */
 	protected void buildHeadsAndTails() {
-		List<Unit> tailList = new ArrayList<Unit>();
-		List<Unit> headList = new ArrayList<Unit>();
+		tails = new ArrayList<Unit>();
+		heads = new ArrayList<Unit>();
 
 		for (Unit s : unitChain) {
 			List<Unit> succs = unitToSuccs.get(s);
-			if (succs.isEmpty()) {
-				tailList.add(s);
+			if (succs == null || succs.isEmpty()) {
+				tails.add(s);
 			}
 			List<Unit> preds = unitToPreds.get(s);
-			if (preds.isEmpty()) {
-				headList.add(s);
+			if (preds == null || preds.isEmpty()) {
+				heads.add(s);
 			}
 		}
 
 		// Add the first Unit, even if it is the target of
 		// a branch.
 		if (!unitChain.isEmpty()) {
-			Unit entryPoint = (Unit) unitChain.getFirst();
-			if (!headList.contains(entryPoint)) {
-				headList.add(entryPoint);
+			Unit entryPoint = unitChain.getFirst();
+			if (!heads.contains(entryPoint)) {
+				heads.add(entryPoint);
 			}
 		}
 
-		tails = Collections.unmodifiableList(tailList);
-		heads = Collections.unmodifiableList(headList);
-	}
-
-	/**
-	 * Utility method that replaces the values of a {@link Map}, which must be
-	 * instances of {@link List}, with unmodifiable equivalents.
-	 * 
-	 * @param map
-	 *            The map whose values are to be made unmodifiable.
-	 */
-	protected static void makeMappedListsUnmodifiable(Map<?, List<Unit>> map) {
-		for (Entry<?, List<Unit>> entry : map.entrySet()) {
-			List<Unit> value = entry.getValue();
-			if (value.size() == 0) {
-				entry.setValue(Collections.<Unit> emptyList());
-			} else {
-				entry.setValue(Collections.unmodifiableList(value));
-			}
-		}
 	}
 
 	/**
@@ -257,7 +251,7 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
 						resultList.add(element);
 					}
 				}
-				result.put(unit, Collections.unmodifiableList(resultList));
+				result.put(unit, resultList);
 			}
 		}
 		return result;
@@ -386,7 +380,7 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
 	public List<Unit> getPredsOf(Unit u) {
 		List<Unit> l = unitToPreds.get(u);
 		if (l == null)
-			throw new NoSuchElementException("Invalid unit " + u);
+			return Collections.emptyList();
 
 		return l;
 	}
@@ -394,7 +388,7 @@ public abstract class UnitGraph implements DirectedGraph<Unit> {
 	public List<Unit> getSuccsOf(Unit u) {
 		List<Unit> l = unitToSuccs.get(u);
 		if (l == null)
-			throw new NoSuchElementException("Invalid unit " + u);
+			return Collections.emptyList();
 
 		return l;
 	}
