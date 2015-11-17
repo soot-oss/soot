@@ -288,7 +288,7 @@ public class SimpleLocalDefs implements LocalDefs {
 		@Override
 		public List<Unit> getDefsOf(Local l) {
 			List<Unit> defs = new ArrayList<Unit>();
-			for (Unit u : universe) {
+			for (Unit u : graph) {
 				List<Unit> defsOf = getDefsOfAt(l, u);
 				if (defsOf != null)
 					defs.addAll(defsOf);
