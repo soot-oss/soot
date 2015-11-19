@@ -45,8 +45,8 @@ public class DoublePointsToSet extends PointsToSetInternal {
             || newSet.hasNonEmptyIntersection(other);
     }
     /** Set of all possible run-time types of objects in the set. */
-    public Set possibleTypes() {
-        Set ret = new HashSet();
+    public Set<Type> possibleTypes() {
+        Set<Type> ret = new HashSet<Type>();
         ret.addAll(oldSet.possibleTypes());
         ret.addAll(newSet.possibleTypes());
         return ret;

@@ -136,12 +136,11 @@ public class SharedHybridSet extends PointsToSetInternal {
 				if (bitVectorCardinality < AllSharedHybridNodes.v().lookupMap.map.length
 						&& AllSharedHybridNodes.v().lookupMap.map[bitVectorCardinality] != null) 
 				{
-					ListIterator i = AllSharedHybridNodes.v().lookupMap.map[bitVectorCardinality]
-							.listIterator();
-					while (i.hasNext()) {
+					List<PointsToBitVector> lst = AllSharedHybridNodes.v()
+							.lookupMap.map[bitVectorCardinality];
+					for (PointsToBitVector candidate : lst) {
 						// for each existing bit vector with bitVectorCardinality
 						// ones
-						PointsToBitVector candidate = (PointsToBitVector) (i.next());
 						if (candidate.isSubsetOf(newBitVector)) {
 							setNewBitVector(szBitvector, candidate);
 							overflow = remainder(newBitVector, candidate);
