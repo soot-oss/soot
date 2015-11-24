@@ -86,20 +86,21 @@ public class Scene  //extends AbstractHost
         if (scp != null)
             setSootClassPath(scp);
 
-        kindNumberer.add( Kind.INVALID );
-        kindNumberer.add( Kind.STATIC );
-        kindNumberer.add( Kind.VIRTUAL );
-        kindNumberer.add( Kind.INTERFACE );
-        kindNumberer.add( Kind.SPECIAL );
-        kindNumberer.add( Kind.CLINIT );
-        kindNumberer.add( Kind.THREAD );
-        kindNumberer.add( Kind.EXECUTOR );
-        kindNumberer.add( Kind.ASYNCTASK );
-        kindNumberer.add( Kind.FINALIZE );
-        kindNumberer.add( Kind.INVOKE_FINALIZE );
-        kindNumberer.add( Kind.PRIVILEGED );
-        kindNumberer.add( Kind.NEWINSTANCE );
-
+        kindNumberer = new ArrayNumberer<Kind>(new Kind[] {
+        	Kind.INVALID,
+        	Kind.STATIC,
+        	Kind.VIRTUAL,
+        	Kind.INTERFACE,
+        	Kind.SPECIAL,
+        	Kind.CLINIT,
+        	Kind.THREAD,
+        	Kind.EXECUTOR,
+        	Kind.ASYNCTASK,
+        	Kind.FINALIZE,
+        	Kind.INVOKE_FINALIZE,
+        	Kind.PRIVILEGED,
+        	Kind.NEWINSTANCE});
+        
         addSootBasicClasses();
         
         determineExcludedPackages();
@@ -133,7 +134,7 @@ public class Scene  //extends AbstractHost
     
     private final Map<String,RefType> nameToClass = new HashMap<String,RefType>();
 
-    ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<Kind>();
+    final ArrayNumberer<Kind> kindNumberer;
     ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
     ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
     Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
