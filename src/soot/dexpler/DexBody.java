@@ -480,6 +480,12 @@ public class DexBody  {
         Debug.printDbg("\nbefore splitting");
         Debug.printDbg("",(Body)jBody);
         
+        // Fix traps that do not catch exceptions
+        DexTrapStackFixer.v().transform(jBody);
+        
+        // Sort out jump chains
+        DexJumpChainShortener.v().transform(jBody);
+        
         // Make sure that we don't have any overlapping uses due to returns
         DexReturnInliner.v().transform(jBody);    
         
@@ -493,7 +499,7 @@ public class DexBody  {
         
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);
-                
+        
   		for (RetypeableInstruction i : instructionsToRetype)
             i.retype(jBody);
 
