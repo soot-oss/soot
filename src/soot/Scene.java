@@ -1224,7 +1224,7 @@ public class Scene  //extends AbstractHost
 		addBasicClass("java.lang.IndexOutOfBoundsException");
 		addBasicClass("java.lang.ArrayIndexOutOfBoundsException");
 		addBasicClass("java.lang.NegativeArraySizeException");
-		addBasicClass("java.lang.NullPointerException");
+		addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
 		addBasicClass("java.lang.InstantiationError");
 		addBasicClass("java.lang.InternalError");
 		addBasicClass("java.lang.OutOfMemoryError");
