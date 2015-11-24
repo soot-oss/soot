@@ -20,7 +20,6 @@
 
 package soot.dexpler;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -64,12 +63,14 @@ public abstract class DexTransformer extends BodyTransformer {
 	protected List<Unit> collectDefinitionsWithAliases(Local l,
 			LocalDefs localDefs, LocalUses localUses, Body body) {
 		Set<Local> seenLocals = new HashSet<Local>();
-		List<Local> newLocals = new ArrayList<Local>();
+		Set<Local> newLocals = new HashSet<Local>();
 		List<Unit> defs = new LinkedList<Unit>();
 		newLocals.add(l);
 
 		while (!newLocals.isEmpty()) {
-			Local local = newLocals.remove(0);
+
+			Local local = newLocals.iterator().next();
+			newLocals.remove(local);
 			if (!seenLocals.add(local))
 				continue;
 			Debug.printDbg("[null local] ", local);
