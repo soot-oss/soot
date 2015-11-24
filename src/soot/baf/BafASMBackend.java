@@ -95,7 +95,7 @@ public class BafASMBackend extends AbstractASMBackend {
 	 */
 	@Override
 	protected int getMinJavaVersion(SootMethod method) {
-		final BafBody body = getBafBody(method);		
+		final BafBody body = getBafBody(method);
 		int minVersion = Options.java_version_1_1;
 
 		for (Unit u : body.getUnits()) {
@@ -133,6 +133,7 @@ public class BafASMBackend extends AbstractASMBackend {
 		/*
 		 * Handle all TRY-CATCH-blocks
 		 */
+		int idx = 0;
 		for (Trap trap : body.getTraps()) {
 			// Check if the try-block contains any statement
 			if (trap.getBeginUnit() != trap.getEndUnit()) {
