@@ -744,8 +744,7 @@ public class DavaFlowSet<T> extends AbstractFlowSet<T> {
 
 			@Override
 			public void remove() {
-				DavaFlowSet.this.remove(lastIdx);
-				lastIdx--;
+				DavaFlowSet.this.remove(--lastIdx);
 			}
 
 		};

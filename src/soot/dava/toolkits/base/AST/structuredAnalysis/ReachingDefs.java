@@ -23,13 +23,23 @@
 
 package soot.dava.toolkits.base.AST.structuredAnalysis;
 
-import soot.*;
-import java.util.*;
-import soot.jimple.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import soot.Local;
+import soot.Value;
+import soot.dava.internal.AST.ASTDoWhileNode;
+import soot.dava.internal.AST.ASTForLoopNode;
 //import soot.dava.internal.javaRep.*;
-import soot.dava.internal.AST.*;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTUnaryBinaryCondition;
+import soot.dava.internal.AST.ASTUnconditionalLoopNode;
+import soot.dava.internal.AST.ASTWhileNode;
 //import soot.dava.internal.SET.*;
-import soot.dava.toolkits.base.AST.traversals.*;
+import soot.dava.toolkits.base.AST.traversals.AllDefinitionsFinder;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.Stmt;
 
 /**
  * CHANGE LOG: * November 21st Added support for implicit breaks and continues
@@ -60,35 +70,34 @@ import soot.dava.toolkits.base.AST.traversals.*;
  * out(Si) not needed for structured flow analysis
  */
 
-public class ReachingDefs extends StructuredAnalysis {
+public class ReachingDefs extends StructuredAnalysis<Stmt> {
 	Object toAnalyze;
 
 	public ReachingDefs(Object analyze) {
 		super();
 		toAnalyze = analyze;
-		DavaFlowSet temp = (DavaFlowSet) process(analyze, new DavaFlowSet());
+		process(analyze, new DavaFlowSet<Stmt>());
 	}
 
 	@Override
-	public DavaFlowSet emptyFlowSet() {
-		return new DavaFlowSet();
+	public DavaFlowSet<Stmt> emptyFlowSet() {
+		return new DavaFlowSet<Stmt>();
 	}
 
 	/*
 	 * Initial flow into catch statements is empty meaning no definition reaches
 	 */
 	@Override
-	public DavaFlowSet newInitialFlow() {
-		DavaFlowSet initial = new DavaFlowSet();
+	public DavaFlowSet<Stmt> newInitialFlow() {
+		DavaFlowSet<Stmt> initial = new DavaFlowSet<Stmt>();
 		// find all definitions in the program
 		AllDefinitionsFinder defFinder = new AllDefinitionsFinder();
 		((ASTNode) toAnalyze).apply(defFinder);
 		List<DefinitionStmt> allDefs = defFinder.getAllDefs();
 		// all defs is the list of all augmented stmts which contains
 		// DefinitionStmts
-		Iterator<DefinitionStmt> defIt = allDefs.iterator();
-		while (defIt.hasNext())
-			initial.add(defIt.next());
+		for (DefinitionStmt def : allDefs)
+			initial.add(def);
 
 		// initial is not the universal set of all definitions
 		return initial;
@@ -102,8 +111,8 @@ public class ReachingDefs extends StructuredAnalysis {
 	}
 
 	@Override
-	public DavaFlowSet cloneFlowSet(DavaFlowSet flowSet) {
-		return ((DavaFlowSet) flowSet).clone();
+	public DavaFlowSet<Stmt> cloneFlowSet(DavaFlowSet<Stmt> flowSet) {
+		return flowSet.clone();
 	}
 
 	/*
@@ -111,7 +120,8 @@ public class ReachingDefs extends StructuredAnalysis {
 	 * on the reachingDefs
 	 */
 	@Override
-	public DavaFlowSet processUnaryBinaryCondition(ASTUnaryBinaryCondition cond, DavaFlowSet inSet) {
+	public DavaFlowSet<Stmt> processUnaryBinaryCondition(ASTUnaryBinaryCondition cond,
+			DavaFlowSet<Stmt> inSet) {
 		return inSet;
 	}
 
@@ -120,7 +130,7 @@ public class ReachingDefs extends StructuredAnalysis {
 	 * reachingDefs
 	 */
 	@Override
-	public DavaFlowSet processSynchronizedLocal(Local local, DavaFlowSet inSet) {
+	public DavaFlowSet<Stmt> processSynchronizedLocal(Local local, DavaFlowSet<Stmt> inSet) {
 		return inSet;
 	}
 
@@ -128,7 +138,7 @@ public class ReachingDefs extends StructuredAnalysis {
 	 * In the case of reachingDefs a value has no effect on reachingDefs
 	 */
 	@Override
-	public DavaFlowSet processSwitchKey(Value key, DavaFlowSet inSet) {
+	public DavaFlowSet<Stmt> processSwitchKey(Value key, DavaFlowSet<Stmt> inSet) {
 		return inSet;
 	}
 
@@ -137,7 +147,7 @@ public class ReachingDefs extends StructuredAnalysis {
 	 * Statement specialized method to call
 	 */
 	@Override
-	public DavaFlowSet processStatement(Stmt s, DavaFlowSet inSet) {		
+	public DavaFlowSet<Stmt> processStatement(Stmt s, DavaFlowSet<Stmt> inSet) {		
 		/*
 		 * If this path will not be taken return no path straightaway
 		 */
@@ -146,7 +156,7 @@ public class ReachingDefs extends StructuredAnalysis {
 		}
 
 		if (s instanceof DefinitionStmt) {
-			DavaFlowSet toReturn = cloneFlowSet(inSet);
+			DavaFlowSet<Stmt> toReturn = cloneFlowSet(inSet);
 			// d:x = expr
 			// gen is x
 			// kill is all previous defs of x
@@ -164,17 +174,17 @@ public class ReachingDefs extends StructuredAnalysis {
 		return inSet;
 	}
 
-	public void gen(DavaFlowSet in, DefinitionStmt s) {
+	public void gen(DavaFlowSet<Stmt> in, DefinitionStmt s) {
 		// System.out.println("Adding Definition Stmt: "+s);
 		in.add(s);
 	}
 
-	public void kill(DavaFlowSet in, Local redefined) {
+	public void kill(DavaFlowSet<Stmt> in, Local redefined) {
 		String redefinedLocalName = redefined.getName();
 
 		// kill any previous localpairs which have the redefined Local in the
 		// left i.e. previous definitions
-		for (Iterator listIt = in.iterator(); listIt.hasNext(); ) {
+		for (Iterator<Stmt> listIt = in.iterator(); listIt.hasNext(); ) {
 			DefinitionStmt tempStmt = (DefinitionStmt) listIt.next();
 			Value leftOp = tempStmt.getLeftOp();
 			if (leftOp instanceof Local) {
@@ -192,7 +202,7 @@ public class ReachingDefs extends StructuredAnalysis {
 		ArrayList<DefinitionStmt> toReturn = new ArrayList<DefinitionStmt>();
 
 		// get the reaching defs of this node
-		DavaFlowSet beforeSet = null;
+		DavaFlowSet<Stmt> beforeSet = null;
 		/*
 		 * If this object is some sort of loop while, for dowhile, unconditional
 		 * then return after set
@@ -222,10 +232,8 @@ public class ReachingDefs extends StructuredAnalysis {
 	}
 
 	public void reachingDefsToString(Object node) {
-		ArrayList toReturn = new ArrayList();
-
 		// get the reaching defs of this node
-		DavaFlowSet beforeSet = null;
+		DavaFlowSet<Stmt> beforeSet = null;
 		/*
 		 * If this object is some sort of loop while, for dowhile, unconditional
 		 * then return after set
