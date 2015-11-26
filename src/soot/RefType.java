@@ -226,7 +226,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 							"Could not find a common superclass for " + this
 									+ " and " + other);
 
-				return RefType.v(commonClass.getName());
+				return commonClass.getType();
 			}
 		}
 

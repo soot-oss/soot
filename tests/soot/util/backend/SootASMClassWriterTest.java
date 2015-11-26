@@ -27,6 +27,7 @@ public class SootASMClassWriterTest {
 	
 	private RefType type1;
 	private RefType type2;
+	private RefType objectType;
 	
 	SootASMClassWriter cw;
 	
@@ -36,9 +37,8 @@ public class SootASMClassWriterTest {
 		mockStatic(Scene.class);
 		mockStatic(RefType.class);
 		mockStatic(UnknownType.class);
-	
+		
 		scene = mock(Scene.class);
-
 		when(Scene.v()).thenReturn(scene);
 		
 		UnknownType unknown = mock(UnknownType.class);
@@ -46,14 +46,22 @@ public class SootASMClassWriterTest {
 		
 		sc1 = mockClass("A");
 		sc2 = mockClass("B");
+		
 		type1 = RefType.v("A");
 		type2 = RefType.v("B");
 		
-		object = mockClass("java.lang.Object");		
+		object = mockClass("java.lang.Object");
+		
+		objectType = mock(RefType.class);
+		when(object.getType()).thenReturn(objectType);
+		when(Scene.v().getObjectType()).thenReturn(objectType);
+		when(objectType.getSootClass()).thenReturn(object);
+		when(objectType.getClassName()).thenReturn("java.lang.Object");
 		
 		when(type1.merge(type2, scene)).thenCallRealMethod();
 		
 		commonSuperClass = mockClass("C");
+		commonSuperClass.setResolvingLevel(SootClass.HIERARCHY);
 		when(commonSuperClass.getSuperclass()).thenReturn(object);
 		
 		
@@ -117,6 +125,7 @@ public class SootASMClassWriterTest {
 		when(sc.getName()).thenReturn(name);
 		when(sc.getType()).thenReturn(type);
 		when(sc.hasSuperclass()).thenReturn(true);
+		when(sc.resolvingLevel()).thenReturn(SootClass.HIERARCHY);
 		when(scene.getSootClass(name)).thenReturn(sc);
 		when(RefType.v(name)).thenReturn(type);
 		Whitebox.setInternalState(type, "className", name);
