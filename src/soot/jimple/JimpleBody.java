@@ -134,15 +134,19 @@ public class JimpleBody extends StmtBody
     /** Inserts usual statements for handling this & parameters into body. */
     public void insertIdentityStmts()
     {
+    	Unit lastUnit = null;
         int i = 0;
-
-        Iterator<Type> parIt = getMethod().getParameterTypes().iterator();
-        while (parIt.hasNext())
-        {
-            Type t = (Type)parIt.next();
+        for (Type t : getMethod().getParameterTypes()) {
             Local l = Jimple.v().newLocal("parameter"+i, t);
+            Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(l.getType(), i));
+            
             getLocals().add(l);
-            getUnits().addFirst(Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(l.getType(), i)));
+            if (lastUnit == null)
+            	getUnits().addFirst(s);
+            else
+            	getUnits().insertAfter(s, lastUnit);
+            
+            lastUnit = s;
             i++;
         }
         
@@ -151,8 +155,14 @@ public class JimpleBody extends StmtBody
         {
         	Local l = Jimple.v().newLocal("this", 
         			RefType.v(getMethod().getDeclaringClass()));
+        	Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType)l.getType()));
+        	
         	getLocals().add(l);
-        	getUnits().addFirst(Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType)l.getType())));
+            
+        	if (lastUnit == null)
+        		getUnits().addFirst(s);
+        	else
+            	getUnits().insertAfter(s, lastUnit);
         }
     }
 
