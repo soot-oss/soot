@@ -135,6 +135,19 @@ public class JimpleBody extends StmtBody
     public void insertIdentityStmts()
     {
     	Unit lastUnit = null;
+    	
+        //add this-ref before everything else
+        if (!getMethod().isStatic())
+        {
+        	Local l = Jimple.v().newLocal("this", 
+        			RefType.v(getMethod().getDeclaringClass()));
+        	Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType)l.getType()));
+        	
+        	getLocals().add(l);
+        	getUnits().addFirst(s);
+            lastUnit = s;
+        }
+        
         int i = 0;
         for (Type t : getMethod().getParameterTypes()) {
             Local l = Jimple.v().newLocal("parameter"+i, t);
@@ -148,21 +161,6 @@ public class JimpleBody extends StmtBody
             
             lastUnit = s;
             i++;
-        }
-        
-        //add this-ref before everything else
-        if (!getMethod().isStatic())
-        {
-        	Local l = Jimple.v().newLocal("this", 
-        			RefType.v(getMethod().getDeclaringClass()));
-        	Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType)l.getType()));
-        	
-        	getLocals().add(l);
-            
-        	if (lastUnit == null)
-        		getUnits().addFirst(s);
-        	else
-            	getUnits().insertAfter(s, lastUnit);
         }
     }
 
