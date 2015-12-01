@@ -101,20 +101,17 @@ public class SimpleLocalUses implements LocalUses
            Timers.v().usePhase2Timer.start();
     
         // Traverse units and associate uses with definitions
-        for (Unit unit : body.getUnits())
-        {
-            for (ValueBox useBox : unit.getUseBoxes())
-            {
+        for (Unit unit : body.getUnits()) {
+            for (ValueBox useBox : unit.getUseBoxes()) {
             	Value v = useBox.getValue();
-            	if (v instanceof Local)
-                {
+            	if (v instanceof Local) {
                     // Add this statement to the uses of the definition of the local
                     Local l = (Local) v;
                                         
                     UnitValueBoxPair newPair = new UnitValueBoxPair(unit, useBox);
                     
                     List<Unit> defs = localDefs.getDefsOfAt(l, unit);
-                    if (defs != null)
+                    if (defs != null) {
 	                    for (Unit def : defs) {
 	                    	List<UnitValueBoxPair> lst = unitToUses.get(def);
 	                    	if (lst == null) {
@@ -122,7 +119,8 @@ public class SimpleLocalUses implements LocalUses
 	                    	}                    	
 	                    	lst.add(newPair);
 	                    }
-                }
+                    }
+            	}
             }
         }
         
