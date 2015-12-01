@@ -1171,17 +1171,26 @@ public class DexPrinter {
 			// Look for changes anew every time
 			hasChanged = false;
 			
-			// Build a mapping between labels and offsets
-			Map<Label, Integer> labelToInsOffset = new HashMap<Label, Integer>();
-			for (int i = 0; i < instructions.size(); i++) {
-				BuilderInstruction bi = instructions.get(i);
+			// Build a mapping between instructions and offsets
+			Map<Instruction, Integer> instructionsToIndex = new HashMap<Instruction, Integer>();
+			List<Integer> instructionsToOffsets = new ArrayList<Integer>();
+			Map<Label, Integer> labelsToOffsets = new HashMap<Label, Integer>();
+			{
+			int offset = 0;
+			int idx = 0;
+			for (BuilderInstruction bi : instructions) {
+				instructionsToIndex.put(bi, idx);
+				instructionsToOffsets.add(offset);
 	            Stmt origStmt = stmtV.getStmtForInstruction(bi);
 	            if (origStmt != null) {
 	            	Label lbl = labelAssigner.getLabelUnsafe(origStmt);
 	            	if (lbl != null) {
-	            		labelToInsOffset.put(lbl, i);
+	            		labelsToOffsets.put(lbl, offset);
 	            	}
 	            }
+	            offset += (bi.getFormat().size / 2);
+	            idx++;
+			}
 			}
 			
 	   		// Look for references to labels
@@ -1189,19 +1198,19 @@ public class DexPrinter {
 	   			BuilderInstruction bj = instructions.get(j);
 	   			if (bj instanceof BuilderOffsetInstruction) {
 	   				BuilderOffsetInstruction boj = (BuilderOffsetInstruction) bj;
-	   				Label targetLbl = boj.getTarget();
-	   				Integer offset = labelToInsOffset.get(targetLbl);
-	   				if (offset == null)
-	   					continue;
 	   				
 	   				// Compute the distance between the instructions
 	   				Insn jumpInsn = stmtV.getInsnForInstruction(boj);
 	   				if (jumpInsn instanceof InsnWithOffset) {
 	   					InsnWithOffset offsetInsn = (InsnWithOffset) jumpInsn;
-	   					int distance = getDistanceBetween(instructions, j, offset);
+	   					Integer targetOffset = labelsToOffsets.get(boj.getTarget());
+	   					if (targetOffset == null)
+	   						continue;
+	   					
+	   					int distance = instructionsToOffsets.get(j) - targetOffset;
 	   					if (Math.abs(distance) > offsetInsn.getMaxJumpOffset()) {
 	   						// We need intermediate jumps
-	   						insertIntermediateJump(offset, j, stmtV, instructions,
+	   						insertIntermediateJump(targetOffset, j, stmtV, instructions,
 	   								labelAssigner);
 	   						hasChanged = true;
 	   						continue l0;
@@ -1232,6 +1241,20 @@ public class DexPrinter {
 		if (!(originalJumpInsn instanceof InsnWithOffset))
 			throw new RuntimeException("Unexpected jump instruction target");
 		InsnWithOffset offsetInsn = (InsnWithOffset) originalJumpInsn;
+		
+		// If this is goto instruction, we can just replace it
+		if (originalJumpInsn instanceof Insn10t) {
+			if (originalJumpInsn.getOpcode() == Opcode.GOTO) {
+				Insn30t newJump = new Insn30t(Opcode.GOTO_32);
+				newJump.setTarget(((Insn10t) originalJumpInsn).getTarget());
+				BuilderInstruction newJumpInstruction = newJump.getRealInsn(labelAssigner);
+				instructions.remove(jumpInsPos);
+				instructions.add(jumpInsPos, newJumpInstruction);
+				stmtV. fakeNewInsn(stmtV.getStmtForInstruction(originalJumpInstruction),
+						newJump, newJumpInstruction);
+				return;
+			}
+		}
 		
 		// Find a position where we can jump to
 		int distance = Math.max(targetInsPos, jumpInsPos) - Math.min(targetInsPos, jumpInsPos);
@@ -1290,22 +1313,11 @@ public class DexPrinter {
 		instructions.add(newJumpIdx, jumpAroundInstruction);
 		stmtV.fakeNewInsn(Jimple.v().newNopStmt(), jumpAround, jumpAroundInstruction);
 	}
-
-	private int getDistanceBetween(List<BuilderInstruction> instructions,
-			int i, int j) {
-		if (i == j)
-			return 0;
-		
-		int dist = 0;
-		for (int idx = Math.min(i, j); idx < Math.max(i, j); idx++) {
-			BuilderInstruction bi = instructions.get(idx);
-			dist += (bi.getFormat().size / 2);
-		}
-		return dist;
-	}
-
+	
 	private void addRegisterAssignmentDebugInfo(
-			LocalRegisterAssignmentInformation registerAssignment, Map<Local, Integer> seenRegisters, MethodImplementationBuilder builder) {
+			LocalRegisterAssignmentInformation registerAssignment,
+			Map<Local, Integer> seenRegisters,
+			MethodImplementationBuilder builder) {
 		Local local = registerAssignment.getLocal();
 		String dexLocalType = SootToDexUtils.getDexTypeDescriptor(local.getType());
 		StringReference localName = dexFile.internStringReference(local.getName());
