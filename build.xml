@@ -353,7 +353,6 @@
             <zipfileset src="${jasmin.jar}"/>
             <zipfileset src="${heros.jar}"/>
             <zipfileset src="${polyglot.jar}"/>
-            <zipfileset src="${javacup.jar}"/>
             <zipfileset src="${xmlprinter.jar}"/>
             <zipfileset src="${dexlib2.jar}"/>
             <zipfileset src="${dexlib-utils.jar}"/>
