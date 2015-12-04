@@ -1166,15 +1166,19 @@ public class DexPrinter {
 	 */
 	private void fixLongJumps(List<BuilderInstruction> instructions,
 			LabelAssigner labelAssigner, StmtVisitor stmtV) {
+		// Only construct the maps once and update them afterwards
+		Map<Instruction, Integer> instructionsToIndex = new HashMap<Instruction, Integer>();
+		List<Integer> instructionsToOffsets = new ArrayList<Integer>();
+		Map<Label, Integer> labelsToOffsets = new HashMap<Label, Integer>();
+		Map<Label, Integer> labelsToIndex = new HashMap<Label, Integer>();
+		
 		boolean hasChanged;
 		l0 : do {
 			// Look for changes anew every time
 			hasChanged = false;
+			instructionsToOffsets.clear();
 			
 			// Build a mapping between instructions and offsets
-			Map<Instruction, Integer> instructionsToIndex = new HashMap<Instruction, Integer>();
-			List<Integer> instructionsToOffsets = new ArrayList<Integer>();
-			Map<Label, Integer> labelsToOffsets = new HashMap<Label, Integer>();
 			{
 			int offset = 0;
 			int idx = 0;
@@ -1186,6 +1190,7 @@ public class DexPrinter {
 	            	Label lbl = labelAssigner.getLabelUnsafe(origStmt);
 	            	if (lbl != null) {
 	            		labelsToOffsets.put(lbl, offset);
+	            		labelsToIndex.put(lbl, idx);
 	            	}
 	            }
 	            offset += (bi.getFormat().size / 2);
@@ -1210,8 +1215,8 @@ public class DexPrinter {
 	   					int distance = instructionsToOffsets.get(j) - targetOffset;
 	   					if (Math.abs(distance) > offsetInsn.getMaxJumpOffset()) {
 	   						// We need intermediate jumps
-	   						insertIntermediateJump(targetOffset, j, stmtV, instructions,
-	   								labelAssigner);
+	   						insertIntermediateJump(labelsToIndex.get(boj.getTarget()),
+	   								j, stmtV, instructions, labelAssigner);
 	   						hasChanged = true;
 	   						continue l0;
 	   					}
