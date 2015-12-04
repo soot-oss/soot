@@ -619,13 +619,11 @@ public class DexPrinter {
             }
     	}
     	List<SootClass> exceptionList = m.getExceptions();
-    	if (exceptionList != null) {
+    	if (exceptionList != null && !exceptionList.isEmpty()) {
             Set<ImmutableAnnotationElement> elements = new HashSet<ImmutableAnnotationElement>();
             List<ImmutableEncodedValue> valueList = new ArrayList<ImmutableEncodedValue>();
     		for (SootClass exceptionClass : exceptionList) {
-                
 	            valueList.add(new ImmutableTypeEncodedValue(DexType.toDalvikICAT(exceptionClass.getName()).replace(".", "/")));
-	            
     		}
             ImmutableArrayEncodedValue valueValue = new ImmutableArrayEncodedValue(valueList);
             ImmutableAnnotationElement valueElement = new ImmutableAnnotationElement
@@ -637,7 +635,6 @@ public class DexPrinter {
         			elements);
         	annotations.add(ann);
     	}
-
     	
     	return annotations;
     }
@@ -645,7 +642,7 @@ public class DexPrinter {
     private Set<Annotation> buildMethodParameterAnnotations(SootMethod m,
     		final int paramIdx) {
     	Set<String> skipList = new HashSet<String>();
-    	Set<Annotation> annotations = buildCommonAnnotations(m, skipList);
+    	Set<Annotation> annotations = new HashSet<Annotation>();
     	
     	for (Tag t : m.getTags()) {
             if (t.getName().equals("VisibilityParameterAnnotationTag")) {
