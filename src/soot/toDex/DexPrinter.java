@@ -317,7 +317,7 @@ public class DexPrinter {
         }
         case '[': {
             AnnotationArrayElem e = (AnnotationArrayElem)elem;
-            Set<EncodedValue> values = new HashSet<EncodedValue>();
+            List<EncodedValue> values = new ArrayList<EncodedValue>();
             for (int i = 0; i < e.getNumValues(); i++){
                 EncodedValue val = buildEncodedValueForAnnotation(e.getValueAt(i));
                 values.add(val);
