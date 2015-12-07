@@ -28,13 +28,13 @@ public abstract class TrapTransformer extends BodyTransformer {
 			List<Unit> workList = new ArrayList<Unit>();
 			workList.add(head);
 			Set<Unit> doneSet = new HashSet<Unit>();
+			doneSet.add(head);
 			
 			while (!workList.isEmpty()) {
-				Unit curUnit = workList.remove(0);
-				if (!doneSet.add(curUnit))
-					continue;
-				
-				workList.addAll(ug.getSuccsOf(curUnit));
+				Unit curUnit = workList.remove(0);				
+				for (Unit succ : ug.getSuccsOf(curUnit))
+					if (doneSet.add(succ))
+						workList.add(succ);
 				
 				// If this is an "entermonitor" construct,
 				// we're in a monitor from now on
