@@ -104,10 +104,12 @@ public class DexArrayInitReducer extends BodyTransformer {
 						// Get the next statement
 						checkU = b.getUnits().getSuccOf(checkU);
 					}
+					/*
 					if (!foundU1)
 						b.getUnits().remove(u1);
 					if (!foundU2)
 						b.getUnits().remove(u2);
+					*/
 					
 					u1 = null;
 					u2 = null;
