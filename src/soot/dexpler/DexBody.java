@@ -490,7 +490,7 @@ public class DexBody  {
         DexReturnInliner.v().transform(jBody);    
         
         // Shortcut: Reduce array initializations
-//        DexArrayInitReducer.v().transform(jBody);
+        DexArrayInitReducer.v().transform(jBody);
         
         // split first to find undefined uses
         getLocalSplitter().transform(jBody);

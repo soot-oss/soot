@@ -84,17 +84,13 @@ public class DexArrayInitReducer extends BodyTransformer {
 					Unit checkU = u;
 					boolean foundU1 = false, foundU2 = false,
 							doneU1 = false, doneU2 = false;
-					while (!(doneU1 && doneU2) && checkU != null) {
+					while (!(doneU1 && doneU2) && !(foundU1 && foundU2) && checkU != null) {
 						// Does the current statement use the value?
 						for (ValueBox vb : checkU.getUseBoxes()) {
-							if (!doneU1 && vb.getValue() == u1val) {
+							if (!doneU1 && vb.getValue() == u1val)
 								foundU1 = true;
-								break;
-							}
-							if (!doneU2 && vb.getValue() == u2val) {
+							if (!doneU2 && vb.getValue() == u2val)
 								foundU2 = true;
-								break;
-							}
 						}
 						
 						// Does the current statement overwrite the value?
