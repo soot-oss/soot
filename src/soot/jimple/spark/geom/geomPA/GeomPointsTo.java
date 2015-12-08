@@ -407,10 +407,17 @@ public class GeomPointsTo extends PAG
 			else if ( edge.isInstance() && !edge.isSpecial() ) {
 				// We try to refine the virtual callsites (virtual + interface) with multiple call targets				
 				InstanceInvokeExpr expr = (InstanceInvokeExpr)callsite.getInvokeExpr();
-				p.base_var = findLocalVarNode( expr.getBase() );
-				if ( SootInfo.countCallEdgesForCallsite(callsite, true) > 1 &&
-						p.base_var != null ) {
-					multiCallsites.add(callsite);
+				if (expr.getMethodRef().getSignature()
+						.contains("<java.lang.Thread: void start()>")) {
+					// It is a thread start function
+					thread_run_callsites.add(callsite);
+				}
+				else {
+					p.base_var = findLocalVarNode( expr.getBase() );
+					if ( SootInfo.countCallEdgesForCallsite(callsite, true) > 1 &&
+							p.base_var != null ) {
+						multiCallsites.add(callsite);
+					}
 				}
 			}
 			
@@ -975,6 +982,7 @@ public class GeomPointsTo extends PAG
 				}
 				else {
 					// Update the corresponding SOOT call graph
+//					ps.println("%%% Remove an call edge: " + p.toString());
 					cg.removeEdge(p.sootEdge);
 					
 					// We record this obsoleted edge
@@ -1575,9 +1583,8 @@ public class GeomPointsTo extends PAG
 			int id = func2int.get( sm );
 			if ( vis_cg[id] == 0 )
 				ret = Constants.UNKNOWN_FUNCTION;
-			
-			if (ret == -1)
-				System.out.println();
+			else
+				ret = id;
 		}
 		
 		return ret;
