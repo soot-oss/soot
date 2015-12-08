@@ -38,6 +38,7 @@ import soot.util.Numberable;
 import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
 import soot.validation.ClassValidator;
+import soot.validation.MethodDeclarationValidator;
 import soot.validation.OuterClassValidator;
 import soot.validation.ValidationException;
 
@@ -1124,7 +1125,8 @@ public class SootClass extends AbstractHost implements Numberable {
 	 */
 	private synchronized static ClassValidator[] getValidators() {
 		if (validators == null) {
-			validators = new ClassValidator[] { OuterClassValidator.v() };
+			validators = new ClassValidator[] { OuterClassValidator.v(),
+					MethodDeclarationValidator.v() };
 		}
 		return validators;
 	};
