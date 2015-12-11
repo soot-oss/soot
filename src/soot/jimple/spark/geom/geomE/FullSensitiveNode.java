@@ -273,8 +273,9 @@ public class FullSensitiveNode extends IVarAbstraction
 		boolean added, hasNewPointsTo;
 
 		if ( pt_objs.size() == 0 ) return;
+//		System.err.println("+++ Process assignment for: " + toString());
 		
-		// We first build the new flow edges via the field dereferences
+		// We first build the flow edges that flow in to/out of object fields
 		if ( complex_cons != null ) {
 			
 			for ( Map.Entry<AllocNode, GeometricManager> entry : new_pts.entrySet() ) {
@@ -301,6 +302,7 @@ public class FullSensitiveNode extends IVarAbstraction
 					}
 					
 					qn = (FullSensitiveNode) pcons.otherSide;
+//					System.err.println("--load/store-->: " + qn.toString());
 					
 					for ( i = 0; i < GeometricManager.Divisions; ++i ) {
 						pts = entry_pts[i];
@@ -329,12 +331,14 @@ public class FullSensitiveNode extends IVarAbstraction
 		
 		if ( flowto.size() == 0 ) return;
 		
-		// First, we get the flow-to shapes
+		// Next, we process the assignments (e.g. p = q)
 		for (Map.Entry<FullSensitiveNode, GeometricManager> entry1 : flowto.entrySet()) {	
 			added = false;
 			qn = entry1.getKey();
 			gm1 = entry1.getValue();
 			entry_pe = gm1.getFigures();
+			
+//			System.err.println("-assign->: " + qn.toString());
 			
 			// We specialize the two cases that we hope it running faster
 			// We have new flow-to edges
@@ -421,9 +425,10 @@ public class FullSensitiveNode extends IVarAbstraction
 			if ( added )
 				worklist.push( qn );
 		}
+		
+//		System.err.println();
 	}
 
-	
 	
 	@Override
 	public boolean isDeadObject( AllocNode obj )
