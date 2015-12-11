@@ -30,7 +30,7 @@ import soot.util.Switchable;
  * 
  * @see StmtVisitor
  */
-public class ConstantVisitor extends AbstractConstantSwitch {
+class ConstantVisitor extends AbstractConstantSwitch {
 	
 	private final DexBuilder dexFile;
 	private StmtVisitor stmtV;

@@ -1047,6 +1047,11 @@ public class DexPrinter {
 		// would be too expensive for what we need here.
 		FastDexTrapTightener.v().transform(activeBody);
 		
+		// Look for sequences of array element assignments that we can collapse
+		// into bulk initializations
+		DexArrayInitDetector initDetector = new DexArrayInitDetector();
+		initDetector.constructArrayInitializations(activeBody);
+		
 		// Split the tries since Dalvik does not supported nested try/catch blocks
 		TrapSplitter.v().transform(activeBody);
 
@@ -1058,7 +1063,7 @@ public class DexPrinter {
 		// word count of max outgoing parameters
 		Collection<Unit> units = activeBody.getUnits();
 		// register count = parameters + additional registers, depending on the dex instructions generated (e.g. locals used and constants loaded)
-		StmtVisitor stmtV = new StmtVisitor(m, dexFile);
+		StmtVisitor stmtV = new StmtVisitor(m, dexFile, initDetector);
 		
 		toInstructions(units, stmtV);
 		
@@ -1139,7 +1144,6 @@ public class DexPrinter {
         		addRegisterAssignmentDebugInfo(registerAssignmentTag, seenRegisters, builder);
             }
 		}
-		
 		
 		for (int registersLeft : seenRegisters.values())
 			builder.addEndLocal(registersLeft);

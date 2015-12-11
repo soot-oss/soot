@@ -24,7 +24,7 @@ import soot.toDex.instructions.TwoRegInsn;
  * <br>
  * IMPLEMENTATION NOTE: The algorithm is heavily inspired by com.android.dx.dex.code.OutputFinisher.
  */
-public class RegisterAssigner {
+class RegisterAssigner {
 	
 	private class InstructionIterator implements Iterator<Insn> {
 		
