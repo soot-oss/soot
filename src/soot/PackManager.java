@@ -18,6 +18,8 @@
  */
 
 package soot;
+import heros.solver.CountingThreadPoolExecutor;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,6 +34,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPOutputStream;
@@ -1140,6 +1144,11 @@ public class PackManager {
     }
 
     private void retrieveAllBodies() {
+    	int threadNum = Runtime.getRuntime().availableProcessors();
+        CountingThreadPoolExecutor executor =  new CountingThreadPoolExecutor(threadNum,
+        		threadNum, 30, TimeUnit.SECONDS,
+        		new LinkedBlockingQueue<Runnable>());
+    	
         Iterator<SootClass> clIt = reachableClasses();
         while( clIt.hasNext() ) {
             SootClass cl = (SootClass) clIt.next();
@@ -1148,19 +1157,30 @@ public class PackManager {
             //are added during resolution
             Iterator<SootMethod> methodIt = cl.getMethods().iterator();
             while (methodIt.hasNext()) {
-                SootMethod m = (SootMethod) methodIt.next();
-                if(DEBUG && cl.isApplicationClass()){
-                	if(m.getExceptions().size()!=0)
-                		System.out.println("PackManager printing out from within retrieveAllBodies exceptions for method "+m.toString()+" " + m.getExceptions().toString());
-                	else
-                		System.out.println("in retrieveAllBodies......Currently Method "+ m.toString() +" has no exceptions ");
-                }
-
+                final SootMethod m = methodIt.next();
                 if( m.isConcrete() ) {
-                    m.retrieveActiveBody();
+                	executor.execute(new Runnable() {
+						
+						@Override
+						public void run() {
+		                    m.retrieveActiveBody();
+						}
+						
+					});
+                	
                 }
             }
         }
+        
+        // Wait till all method bodies have been loaded
+        try {
+        	executor.awaitCompletion();
+			executor.shutdown();
+		} catch (InterruptedException e) {
+			// Something went horribly wrong
+			throw new RuntimeException("Could not wait for loader threads to "
+					+ "finish: " + e.getMessage(), e);
+		}
     }
     
 }

@@ -1,33 +1,7 @@
-/* Soot - a Java Optimization Framework
- * Copyright (C) 2012 Michael Markert, Frank Hartmann
- *
- * (c) 2012 University of Luxembourg - Interdisciplinary Centre for
- * Security Reliability and Trust (SnT) - All rights reserved
- * Alexandre Bartel
- *
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 2.1 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this library; if not, write to the
- * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
- * Boston, MA 02111-1307, USA.
- */
-
 package soot.dexpler;
 
 import java.util.Iterator;
-import java.util.Set;
 
-import org.jf.dexlib2.iface.Annotation;
 import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Field;
@@ -38,7 +12,6 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.SootResolver;
-import soot.Type;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
 import soot.tagkit.InnerClassAttribute;
@@ -47,35 +20,27 @@ import soot.tagkit.SourceFileTag;
 import soot.tagkit.Tag;
 
 /**
- * DexClass is a container for all relevant information of that class
- * the name of the superclass, interfaces and its annotations, and modifier are stored, as well as all fields, methods, and types that are referenced throughout the class are available here.
- *
+ * Class for loading methods from dex files 
  */
-
-public class DexClass {
-
-    protected String name;
-    protected String type;
-
-    protected String superClassName;
-    protected String[] interfaceNames;
-
-    protected Set<? extends Annotation> annotations;
-    protected Set<SootField> fields;
-    protected Set<SootMethod> soot_methods;
-    protected Set<Type> types;
-
-    protected int accessFlags;
+public class DexClassLoader {
     
+	/**
+	 * Loads a single method from a dex file
+	 * @param dexFile The dex file from which to load the method
+	 * @param method The method to load
+	 * @param declaringClass The class that declares the method to load
+	 * @param annotations The worker object for handling annotations
+	 */
+    private void loadMethod(DexFile dexFile, Method method,
+			SootClass declaringClass, DexAnnotation annotations) {
+        SootMethod sm = DexMethod.makeSootMethod(dexFile, method, declaringClass);
+        if (declaringClass.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
+        	return;
+       	declaringClass.addMethod(sm);
+        annotations.handleMethodAnnotation(sm, method);	
+    }
 
-    /**
-     * The constructor consumes a class definition item of dexlib and retrieves all subsequent methods, types and fields.
-     * @param classDef
-     */
-    private DexClass(ClassDef classDef) {}
-
-
-    public static Dependencies makeSootClass(SootClass sc, ClassDef defItem, DexFile dexFile) {
+    public Dependencies makeSootClass(SootClass sc, ClassDef defItem, DexFile dexFile) {
         String superClass = defItem.getSuperclass();
         Dependencies deps = new Dependencies();
 
@@ -134,20 +99,12 @@ public class DexClass {
         
         // get the methods of the class
         for (Method method : defItem.getDirectMethods()) {
-            SootMethod sm = DexMethod.makeSootMethod(dexFile, method, sc);
-            if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
-                continue;
-            sc.addMethod(sm);
-            da.handleMethodAnnotation(sm, method);
+        	loadMethod(dexFile, method, sc, da);
         }
         for (Method method : defItem.getVirtualMethods()) {
-            SootMethod sm = DexMethod.makeSootMethod(dexFile, method, sc);
-            if (sc.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
-                continue;
-            sc.addMethod(sm);
-            da.handleMethodAnnotation(sm, method);
+        	loadMethod(dexFile, method, sc, da);
         }
-                
+        
         da.handleClassAnnotation(defItem);
                 
         // In contrast to Java, Dalvik associates the InnerClassAttribute
@@ -205,6 +162,5 @@ public class DexClass {
         
         return deps;
     }
-
 
 }

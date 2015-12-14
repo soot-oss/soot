@@ -66,6 +66,7 @@ public class DexlibWrapper {
 	}
 
     private DexFile dexFile;
+    private final DexClassLoader dexLoader = new DexClassLoader();
 
     //private Map<String, ClassDef> dexClasses;
 
@@ -134,7 +135,7 @@ public class DexlibWrapper {
       for (ClassDef defItem : this.dexFile.getClasses()) {
           String forClassName = Util.dottedClassName(defItem.getType());
           if (className.equals(forClassName)) {
-              return DexClass.makeSootClass(sc, defItem, dexFile);
+              return dexLoader.makeSootClass(sc, defItem, dexFile);
           }
       }
       throw new RuntimeException("Error: class not found in classes.dex: "+ className);
