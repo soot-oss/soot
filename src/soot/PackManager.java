@@ -621,7 +621,7 @@ public class PackManager {
            	executor.execute(new Runnable() {
 				
 				@Override
-				public void run() {            
+				public void run() {
 					runBodyPacks(c);
 				}
 				
@@ -637,6 +637,10 @@ public class PackManager {
 			throw new RuntimeException("Could not wait for pack threads to "
 					+ "finish: " + e.getMessage(), e);
 		}
+        
+        // If something went wrong, we tell the world
+        if (executor.getException() != null)
+        	throw (RuntimeException) executor.getException();
     }
 
     private void handleInnerClasses(){
@@ -659,7 +663,7 @@ public class PackManager {
            	executor.execute(new Runnable() {
 				
 				@Override
-				public void run() {            
+				public void run() {
 					writeClass( c );
 				}
 				
@@ -675,6 +679,10 @@ public class PackManager {
 			throw new RuntimeException("Could not wait for writer threads to "
 					+ "finish: " + e.getMessage(), e);
 		}
+        
+        // If something went wrong, we tell the world
+        if (executor.getException() != null)
+        	throw (RuntimeException) executor.getException();
     }
 
 	private void tearDownJAR() {
@@ -1140,7 +1148,7 @@ public class PackManager {
 
         try {
             writerOut.flush();
-            if( jarFile == null ) {            	
+            if( jarFile == null ) {
 	            streamOut.close();
 	            writerOut.close();
             }
@@ -1228,6 +1236,10 @@ public class PackManager {
 			throw new RuntimeException("Could not wait for loader threads to "
 					+ "finish: " + e.getMessage(), e);
 		}
+        
+        // If something went wrong, we tell the world
+        if (executor.getException() != null)
+        	throw (RuntimeException) executor.getException();
     }
     
 }
