@@ -610,10 +610,33 @@ public class PackManager {
         }
     }
 
-    private void runBodyPacks( Iterator<SootClass> classes ) {
+    private void runBodyPacks( final Iterator<SootClass> classes ) {
+    	int threadNum = Runtime.getRuntime().availableProcessors();
+        CountingThreadPoolExecutor executor =  new CountingThreadPoolExecutor(threadNum,
+        		threadNum, 30, TimeUnit.SECONDS,
+        		new LinkedBlockingQueue<Runnable>());
+    	
     	while( classes.hasNext() ) {
-            runBodyPacks(classes.next());
+    		final SootClass c = classes.next();
+           	executor.execute(new Runnable() {
+				
+				@Override
+				public void run() {            
+					runBodyPacks(c);
+				}
+				
+           	});
         }
+    	
+        // Wait till all packs have been executed
+        try {
+        	executor.awaitCompletion();
+			executor.shutdown();
+		} catch (InterruptedException e) {
+			// Something went horribly wrong
+			throw new RuntimeException("Could not wait for pack threads to "
+					+ "finish: " + e.getMessage(), e);
+		}
     }
 
     private void handleInnerClasses(){
@@ -622,9 +645,36 @@ public class PackManager {
     }
 
     private void writeOutput( Iterator<SootClass> classes ) {
+    	// If we're writing individual class files, we can write them
+    	// concurrently. Otherwise, we need to synchronize for not destroying
+    	// the shared output stream.
+    	int threadNum = Options.v().output_format() == Options.output_format_class
+    			&& jarFile == null ? Runtime.getRuntime().availableProcessors() : 1;
+        CountingThreadPoolExecutor executor =  new CountingThreadPoolExecutor(threadNum,
+        		threadNum, 30, TimeUnit.SECONDS,
+        		new LinkedBlockingQueue<Runnable>());
+    	
         while( classes.hasNext() ) {
-            writeClass( classes.next() );
+        	final SootClass c = classes.next();
+           	executor.execute(new Runnable() {
+				
+				@Override
+				public void run() {            
+					writeClass( c );
+				}
+				
+           	});
         }
+        
+        // Wait till all classes have been written
+        try {
+        	executor.awaitCompletion();
+			executor.shutdown();
+		} catch (InterruptedException e) {
+			// Something went horribly wrong
+			throw new RuntimeException("Could not wait for writer threads to "
+					+ "finish: " + e.getMessage(), e);
+		}
     }
 
 	private void tearDownJAR() {
@@ -811,9 +861,6 @@ public class PackManager {
                 throw new CompilationDeathException("Cannot output file " + fileName,e);
         	}
         }
-
-
-
     }
     
     @SuppressWarnings("fallthrough")
@@ -1168,7 +1215,6 @@ public class PackManager {
 						}
 						
 					});
-                	
                 }
             }
         }
