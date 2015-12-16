@@ -476,7 +476,7 @@ public class DexBody  {
          */
 
         Debug.printDbg("body before any transformation : \n", jBody);
-
+        
         Debug.printDbg("\nbefore splitting");
         Debug.printDbg("",(Body)jBody);
         
@@ -488,6 +488,9 @@ public class DexBody  {
         
         // Make sure that we don't have any overlapping uses due to returns
         DexReturnInliner.v().transform(jBody);    
+        
+        // Shortcut: Reduce array initializations
+        DexArrayInitReducer.v().transform(jBody);
         
         // split first to find undefined uses
         getLocalSplitter().transform(jBody);

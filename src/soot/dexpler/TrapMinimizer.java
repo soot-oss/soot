@@ -13,6 +13,7 @@ import soot.Unit;
 import soot.jimple.Jimple;
 import soot.options.Options;
 import soot.toolkits.exceptions.TrapTransformer;
+import soot.toolkits.graph.ExceptionalGraph.ExceptionDest;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 
 /**
@@ -84,10 +85,16 @@ public class TrapMinimizer extends TrapTransformer {
 				
 				// check if the current unit has an edge to the current trap's handler
 				if (!goesToHandler)
-					for (Unit d : eug.getExceptionalSuccsOf(u)) {
-						if (d == tr.getHandlerUnit()) {
-							goesToHandler = true;
-							break;
+					if (DalvikThrowAnalysis.v().mightThrow(u).catchableAs(tr.getException().getType())) {
+						// We need to be careful here. The ExceptionalUnitGraph will
+						// always give us an edge from the predecessor of the excepting
+						// unit to the handler. This predecessor, however, does not need
+						// to be inside the new minimized catch block.
+						for (ExceptionDest<Unit> ed : eug.getExceptionDests(u)) {
+							if (ed.getTrap() == tr) {
+								goesToHandler = true;
+								break;
+							}
 						}
 					}
 				

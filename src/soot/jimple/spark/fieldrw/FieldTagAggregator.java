@@ -20,6 +20,7 @@
 package soot.jimple.spark.fieldrw;
 
 import soot.*;
+
 import java.util.*;
 
 import soot.tagkit.*;
@@ -40,7 +41,8 @@ public class FieldTagAggregator extends TagAggregator
         throw new RuntimeException();
     }
 
-    public void considerTag(Tag t, Unit u)
+    public void considerTag(Tag t, Unit u, LinkedList<Tag> tags,
+			LinkedList<Unit> units)
     {
         throw new RuntimeException();
     }

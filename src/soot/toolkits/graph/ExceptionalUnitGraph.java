@@ -346,6 +346,7 @@ public class ExceptionalUnitGraph extends UnitGraph implements
 				if (thrownSet == null) {
 					thrownSet = throwAnalysis.mightThrow(unit);
 				}
+				
 				ThrowableSet.Pair catchableAs = thrownSet
 						.whichCatchableAs(catcher);
 				if (!catchableAs.getCaught().equals(

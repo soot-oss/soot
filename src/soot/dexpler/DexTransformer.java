@@ -20,8 +20,8 @@
 
 package soot.dexpler;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -63,21 +63,19 @@ public abstract class DexTransformer extends BodyTransformer {
 	protected List<Unit> collectDefinitionsWithAliases(Local l,
 			LocalDefs localDefs, LocalUses localUses, Body body) {
 		Set<Local> seenLocals = new HashSet<Local>();
-		Set<Local> newLocals = new HashSet<Local>();
-		List<Unit> defs = new LinkedList<Unit>();
+		List<Local> newLocals = new ArrayList<Local>();
+		List<Unit> defs = new ArrayList<Unit>();
 		newLocals.add(l);
+		seenLocals.add(l);
 
 		while (!newLocals.isEmpty()) {
-
-			Local local = newLocals.iterator().next();
-			newLocals.remove(local);
-			if (!seenLocals.add(local))
-				continue;
+			Local local = newLocals.remove(0);
 			Debug.printDbg("[null local] ", local);
 			for (Unit u : collectDefinitions(local, localDefs)) {
 				if (u instanceof AssignStmt) {
 					Value r = ((AssignStmt) u).getRightOp();
-					if (r instanceof Local && !seenLocals.contains(r))
+					if (r instanceof Local
+							&& seenLocals.add((Local) r))
 						newLocals.add((Local) r);
 				}
 				defs.add(u);
@@ -89,8 +87,9 @@ public abstract class DexTransformer extends BodyTransformer {
 						AssignStmt assignStmt = ((AssignStmt) unit);
 						Value right = assignStmt.getRightOp();
 						Value left = assignStmt.getLeftOp();
-						if (right == local && left instanceof Local
-								&& !seenLocals.contains(left))
+						if (right == local
+								&& left instanceof Local
+								&& seenLocals.add((Local) left))
 							newLocals.add((Local) left);
 					}
 				}

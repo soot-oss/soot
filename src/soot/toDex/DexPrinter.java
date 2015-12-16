@@ -317,7 +317,7 @@ public class DexPrinter {
         }
         case '[': {
             AnnotationArrayElem e = (AnnotationArrayElem)elem;
-            Set<EncodedValue> values = new HashSet<EncodedValue>();
+            List<EncodedValue> values = new ArrayList<EncodedValue>();
             for (int i = 0; i < e.getNumValues(); i++){
                 EncodedValue val = buildEncodedValueForAnnotation(e.getValueAt(i));
                 values.add(val);
@@ -619,13 +619,11 @@ public class DexPrinter {
             }
     	}
     	List<SootClass> exceptionList = m.getExceptions();
-    	if (exceptionList != null) {
+    	if (exceptionList != null && !exceptionList.isEmpty()) {
             Set<ImmutableAnnotationElement> elements = new HashSet<ImmutableAnnotationElement>();
             List<ImmutableEncodedValue> valueList = new ArrayList<ImmutableEncodedValue>();
     		for (SootClass exceptionClass : exceptionList) {
-                
 	            valueList.add(new ImmutableTypeEncodedValue(DexType.toDalvikICAT(exceptionClass.getName()).replace(".", "/")));
-	            
     		}
             ImmutableArrayEncodedValue valueValue = new ImmutableArrayEncodedValue(valueList);
             ImmutableAnnotationElement valueElement = new ImmutableAnnotationElement
@@ -637,7 +635,6 @@ public class DexPrinter {
         			elements);
         	annotations.add(ann);
     	}
-
     	
     	return annotations;
     }
@@ -645,7 +642,7 @@ public class DexPrinter {
     private Set<Annotation> buildMethodParameterAnnotations(SootMethod m,
     		final int paramIdx) {
     	Set<String> skipList = new HashSet<String>();
-    	Set<Annotation> annotations = buildCommonAnnotations(m, skipList);
+    	Set<Annotation> annotations = new HashSet<Annotation>();
     	
     	for (Tag t : m.getTags()) {
             if (t.getName().equals("VisibilityParameterAnnotationTag")) {
@@ -1050,6 +1047,11 @@ public class DexPrinter {
 		// would be too expensive for what we need here.
 		FastDexTrapTightener.v().transform(activeBody);
 		
+		// Look for sequences of array element assignments that we can collapse
+		// into bulk initializations
+		DexArrayInitDetector initDetector = new DexArrayInitDetector();
+		initDetector.constructArrayInitializations(activeBody);
+		
 		// Split the tries since Dalvik does not supported nested try/catch blocks
 		TrapSplitter.v().transform(activeBody);
 
@@ -1061,7 +1063,7 @@ public class DexPrinter {
 		// word count of max outgoing parameters
 		Collection<Unit> units = activeBody.getUnits();
 		// register count = parameters + additional registers, depending on the dex instructions generated (e.g. locals used and constants loaded)
-		StmtVisitor stmtV = new StmtVisitor(m, dexFile);
+		StmtVisitor stmtV = new StmtVisitor(m, dexFile, initDetector);
 		
 		toInstructions(units, stmtV);
 		
@@ -1143,7 +1145,6 @@ public class DexPrinter {
             }
 		}
 		
-		
 		for (int registersLeft : seenRegisters.values())
 			builder.addEndLocal(registersLeft);
 		
@@ -1166,15 +1167,19 @@ public class DexPrinter {
 	 */
 	private void fixLongJumps(List<BuilderInstruction> instructions,
 			LabelAssigner labelAssigner, StmtVisitor stmtV) {
+		// Only construct the maps once and update them afterwards
+		Map<Instruction, Integer> instructionsToIndex = new HashMap<Instruction, Integer>();
+		List<Integer> instructionsToOffsets = new ArrayList<Integer>();
+		Map<Label, Integer> labelsToOffsets = new HashMap<Label, Integer>();
+		Map<Label, Integer> labelsToIndex = new HashMap<Label, Integer>();
+		
 		boolean hasChanged;
 		l0 : do {
 			// Look for changes anew every time
 			hasChanged = false;
+			instructionsToOffsets.clear();
 			
 			// Build a mapping between instructions and offsets
-			Map<Instruction, Integer> instructionsToIndex = new HashMap<Instruction, Integer>();
-			List<Integer> instructionsToOffsets = new ArrayList<Integer>();
-			Map<Label, Integer> labelsToOffsets = new HashMap<Label, Integer>();
 			{
 			int offset = 0;
 			int idx = 0;
@@ -1186,6 +1191,7 @@ public class DexPrinter {
 	            	Label lbl = labelAssigner.getLabelUnsafe(origStmt);
 	            	if (lbl != null) {
 	            		labelsToOffsets.put(lbl, offset);
+	            		labelsToIndex.put(lbl, idx);
 	            	}
 	            }
 	            offset += (bi.getFormat().size / 2);
@@ -1210,8 +1216,8 @@ public class DexPrinter {
 	   					int distance = instructionsToOffsets.get(j) - targetOffset;
 	   					if (Math.abs(distance) > offsetInsn.getMaxJumpOffset()) {
 	   						// We need intermediate jumps
-	   						insertIntermediateJump(targetOffset, j, stmtV, instructions,
-	   								labelAssigner);
+	   						insertIntermediateJump(labelsToIndex.get(boj.getTarget()),
+	   								j, stmtV, instructions, labelAssigner);
 	   						hasChanged = true;
 	   						continue l0;
 	   					}

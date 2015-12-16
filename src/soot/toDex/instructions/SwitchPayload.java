@@ -2,8 +2,6 @@ package soot.toDex.instructions;
 
 import java.util.List;
 
-import org.jf.dexlib2.Opcode;
-
 import soot.Unit;
 
 /**
@@ -12,14 +10,14 @@ import soot.Unit;
  * <br>
  * Note that this is an {@link InsnWithOffset} with multiple offsets.
  */
-public abstract class SwitchPayload extends InsnWithOffset {
+public abstract class SwitchPayload extends AbstractPayload {
 	
 	protected Insn31t switchInsn;
 	
 	protected List<Unit> targets;
 		
 	public SwitchPayload(List<Unit> targets) {
-		super(Opcode.NOP);
+		super();
 		this.targets = targets;
 	}
 	

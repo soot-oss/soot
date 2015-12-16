@@ -94,6 +94,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 
 			case Constants.ASSIGN_CONS:
 				// Assigning between two pointers
+				
 				if ( cons.interCallEdges != null ) {
 					// Inter-procedural assignment (parameter passing, function return)
 					for ( Iterator<Edge> it = cons.interCallEdges.iterator(); it.hasNext(); ) {

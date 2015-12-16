@@ -84,7 +84,7 @@ import soot.util.Switchable;
  * 
  * @see StmtVisitor
  */
-public class ExprVisitor implements ExprSwitch {
+class ExprVisitor implements ExprSwitch {
 	
 	private final DexBuilder dexFile;
 	

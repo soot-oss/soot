@@ -18,6 +18,8 @@
  */
 
 package soot;
+import heros.solver.CountingThreadPoolExecutor;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -32,6 +34,8 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPOutputStream;
@@ -606,10 +610,37 @@ public class PackManager {
         }
     }
 
-    private void runBodyPacks( Iterator<SootClass> classes ) {
+    private void runBodyPacks( final Iterator<SootClass> classes ) {
+    	int threadNum = Runtime.getRuntime().availableProcessors();
+        CountingThreadPoolExecutor executor =  new CountingThreadPoolExecutor(threadNum,
+        		threadNum, 30, TimeUnit.SECONDS,
+        		new LinkedBlockingQueue<Runnable>());
+    	
     	while( classes.hasNext() ) {
-            runBodyPacks(classes.next());
+    		final SootClass c = classes.next();
+           	executor.execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					runBodyPacks(c);
+				}
+				
+           	});
         }
+    	
+        // Wait till all packs have been executed
+        try {
+        	executor.awaitCompletion();
+			executor.shutdown();
+		} catch (InterruptedException e) {
+			// Something went horribly wrong
+			throw new RuntimeException("Could not wait for pack threads to "
+					+ "finish: " + e.getMessage(), e);
+		}
+        
+        // If something went wrong, we tell the world
+        if (executor.getException() != null)
+        	throw (RuntimeException) executor.getException();
     }
 
     private void handleInnerClasses(){
@@ -618,9 +649,40 @@ public class PackManager {
     }
 
     private void writeOutput( Iterator<SootClass> classes ) {
+    	// If we're writing individual class files, we can write them
+    	// concurrently. Otherwise, we need to synchronize for not destroying
+    	// the shared output stream.
+    	int threadNum = Options.v().output_format() == Options.output_format_class
+    			&& jarFile == null ? Runtime.getRuntime().availableProcessors() : 1;
+        CountingThreadPoolExecutor executor =  new CountingThreadPoolExecutor(threadNum,
+        		threadNum, 30, TimeUnit.SECONDS,
+        		new LinkedBlockingQueue<Runnable>());
+    	
         while( classes.hasNext() ) {
-            writeClass( classes.next() );
+        	final SootClass c = classes.next();
+           	executor.execute(new Runnable() {
+				
+				@Override
+				public void run() {
+					writeClass( c );
+				}
+				
+           	});
         }
+        
+        // Wait till all classes have been written
+        try {
+        	executor.awaitCompletion();
+			executor.shutdown();
+		} catch (InterruptedException e) {
+			// Something went horribly wrong
+			throw new RuntimeException("Could not wait for writer threads to "
+					+ "finish: " + e.getMessage(), e);
+		}
+        
+        // If something went wrong, we tell the world
+        if (executor.getException() != null)
+        	throw (RuntimeException) executor.getException();
     }
 
 	private void tearDownJAR() {
@@ -807,9 +869,6 @@ public class PackManager {
                 throw new CompilationDeathException("Cannot output file " + fileName,e);
         	}
         }
-
-
-
     }
     
     @SuppressWarnings("fallthrough")
@@ -1089,7 +1148,7 @@ public class PackManager {
 
         try {
             writerOut.flush();
-            if( jarFile == null ) {            	
+            if( jarFile == null ) {
 	            streamOut.close();
 	            writerOut.close();
             }
@@ -1140,6 +1199,12 @@ public class PackManager {
     }
 
     private void retrieveAllBodies() {
+    	// The old coffi front-end is not thread-safe
+    	int threadNum = Options.v().coffi() ? 1 : Runtime.getRuntime().availableProcessors();
+        CountingThreadPoolExecutor executor =  new CountingThreadPoolExecutor(threadNum,
+        		threadNum, 30, TimeUnit.SECONDS,
+        		new LinkedBlockingQueue<Runnable>());
+    	
         Iterator<SootClass> clIt = reachableClasses();
         while( clIt.hasNext() ) {
             SootClass cl = (SootClass) clIt.next();
@@ -1148,19 +1213,33 @@ public class PackManager {
             //are added during resolution
             Iterator<SootMethod> methodIt = cl.getMethods().iterator();
             while (methodIt.hasNext()) {
-                SootMethod m = (SootMethod) methodIt.next();
-                if(DEBUG && cl.isApplicationClass()){
-                	if(m.getExceptions().size()!=0)
-                		System.out.println("PackManager printing out from within retrieveAllBodies exceptions for method "+m.toString()+" " + m.getExceptions().toString());
-                	else
-                		System.out.println("in retrieveAllBodies......Currently Method "+ m.toString() +" has no exceptions ");
-                }
-
+                final SootMethod m = methodIt.next();
                 if( m.isConcrete() ) {
-                    m.retrieveActiveBody();
+                	executor.execute(new Runnable() {
+						
+						@Override
+						public void run() {
+		                    m.retrieveActiveBody();
+						}
+						
+					});
                 }
             }
         }
+        
+        // Wait till all method bodies have been loaded
+        try {
+        	executor.awaitCompletion();
+			executor.shutdown();
+		} catch (InterruptedException e) {
+			// Something went horribly wrong
+			throw new RuntimeException("Could not wait for loader threads to "
+					+ "finish: " + e.getMessage(), e);
+		}
+        
+        // If something went wrong, we tell the world
+        if (executor.getException() != null)
+        	throw (RuntimeException) executor.getException();
     }
     
 }

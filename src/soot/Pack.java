@@ -33,7 +33,6 @@ import java.util.*;
  * except that the key is the phase name.
  */
 public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
-	final private boolean DEBUG = true;
 	private String name;
 
 	public String getPhaseName() {
@@ -116,22 +115,14 @@ public abstract class Pack implements HasPhaseOptions, Iterable<Transform> {
 		Map<String, String> options = PhaseOptions.v().getPhaseOptions(this);
 		if (!PhaseOptions.getBoolean(options, "enabled"))
 			return;
-		if (DEBUG)
-			PhaseDumper.v().dumpBefore(getPhaseName());
 		internalApply();
-		if (DEBUG)
-			PhaseDumper.v().dumpAfter(getPhaseName());
 	}
 
 	public final void apply(Body b) {
 		Map<String, String> options = PhaseOptions.v().getPhaseOptions(this);
 		if (!PhaseOptions.getBoolean(options, "enabled"))
 			return;
-		if (DEBUG)
-			PhaseDumper.v().dumpBefore(b, getPhaseName());
 		internalApply(b);
-		if (DEBUG)
-			PhaseDumper.v().dumpAfter(b, getPhaseName());
 	}
 
 	public String getDeclaredOptions() {
