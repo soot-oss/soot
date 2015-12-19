@@ -18,20 +18,44 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import soot.*;
-import soot.jimple.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
-
-import soot.util.*;
-import soot.util.queue.*;
+import soot.AnySubType;
+import soot.ArrayType;
+import soot.FastHierarchy;
+import soot.G;
+import soot.NullType;
+import soot.PhaseOptions;
+import soot.RefType;
+import soot.Scene;
+import soot.Singletons;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Type;
+import soot.jimple.SpecialInvokeExpr;
+import soot.options.CGOptions;
+import soot.toolkits.scalar.Pair;
+import soot.util.Chain;
+import soot.util.LargeNumberedMap;
+import soot.util.NumberedString;
+import soot.util.SmallNumberedMap;
+import soot.util.queue.ChunkedQueue;
 
 /** Resolves virtual calls.
  * @author Ondrej Lhotak
  */
 public final class VirtualCalls
 { 
-    public VirtualCalls( Singletons.Global g ) {}
+	private CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
+	
+    public VirtualCalls( Singletons.Global g ) {	
+    }
     public static VirtualCalls v() { return G.v().soot_jimple_toolkits_callgraph_VirtualCalls(); }
 
     private final LargeNumberedMap<Type, SmallNumberedMap<SootMethod>> typeToVtbl =
@@ -80,6 +104,7 @@ public final class VirtualCalls
     }
 
     private final Map<Type,List<Type>> baseToSubTypes = new HashMap<Type,List<Type>>();
+    private final Map<Pair<Type, NumberedString>, List<Pair<Type,NumberedString>>> baseToPossibleSubTypes = new HashMap<Pair<Type,NumberedString>, List<Pair<Type,NumberedString>>>();
 
     public void resolve( Type t, Type declaredType, NumberedString subSig, SootMethod container, ChunkedQueue<SootMethod> targets ) {
         resolve(t, declaredType, null, subSig, container, targets);
@@ -88,57 +113,142 @@ public final class VirtualCalls
         if( declaredType instanceof ArrayType ) declaredType = RefType.v("java.lang.Object");
         if( sigType instanceof ArrayType ) sigType = RefType.v("java.lang.Object");
         if( t instanceof ArrayType ) t = RefType.v( "java.lang.Object" );
-        if( declaredType != null && !Scene.v().getOrMakeFastHierarchy()
-                .canStoreType( t, declaredType ) ) {
+        FastHierarchy fastHierachy = Scene.v().getOrMakeFastHierarchy();
+		if( declaredType != null && !fastHierachy.canStoreType( t, declaredType ) ) {
             return;
         }
-        if( sigType != null && !Scene.v().getOrMakeFastHierarchy()
-                .canStoreType( t, sigType ) ) {
+        if( sigType != null && !fastHierachy.canStoreType( t, sigType ) ) {
             return;
         }
         if( t instanceof RefType ) {
             SootMethod target = resolveNonSpecial( (RefType) t, subSig );
             if( target != null ) targets.add( target );
         } else if( t instanceof AnySubType ) {
-            RefType base = ((AnySubType)t).getBase();
+        	RefType base = ((AnySubType) t).getBase();
+        	
+        	/*
+        	 * Whenever any sub type of a specific type is considered as 
+        	 * receiver for a method to call and the base type is an interface, calls to existing methods with matching signature (possible implementation 
+        	 * of method to call) are also added. As Javas' subtyping allows contra-variance for return types and co-variance for parameters when overriding 
+        	 * a method, these cases are also considered here.
+        	 * 
+        	 * Example: Classes A, B (B sub type of A), interface I with method public A foo(B b); and a class C with method public B foo(A a) { ... }.
+        	 * The extended class hierarchy will contain C as possible implementation of I.
+        	 * 
+        	 * Since Java has no multiple inheritance call by signature resolution is only activated if the base is an interface.
+        	 */
+        	if (options.library() == CGOptions.library_signature_resolution && base.getSootClass().isInterface()) {
+        		assert(declaredType instanceof RefType);
+            	Pair<Type, NumberedString> pair = new Pair<Type, NumberedString>(base, subSig);
+            	List<Pair<Type, NumberedString>> types = baseToPossibleSubTypes.get(pair);
+            	
+            	// if this type and method has been resolved earlier we can just retrieve the previous result.
+            	if (types != null) {
+            		for(Pair<Type, NumberedString> tuple : types) {
+            			Type st = tuple.getO1();
+            			if (!fastHierachy.canStoreType( st, declaredType)) {
+            				resolve( st, st, sigType, subSig, container, targets);
+            			} else {
+            				resolve (st, declaredType, sigType, subSig, container, targets);
+            			}
+            		}
+            		return;
+            	}
+            	
+            	baseToPossibleSubTypes.put(pair, types = new ArrayList<Pair<Type, NumberedString>>());
+            	
+            	// get return type; method name; parameter types
+            	String[] split = subSig.getString().replaceAll("(.*) (.*)\\((.*)\\)", "$1;$2;$3").split(";");
 
-            List<Type> subTypes = baseToSubTypes.get(base);
-            if( subTypes != null ) {
-                for( Iterator<Type> stIt = subTypes.iterator(); stIt.hasNext(); ) {
-                    final Type st = stIt.next();
-                    resolve( st, declaredType, sigType, subSig, container, targets );
-                }
-                return;
-            }
-
-            baseToSubTypes.put(base, subTypes = new ArrayList<Type>() );
-
-            subTypes.add(base);
-
-            LinkedList<SootClass> worklist = new LinkedList<SootClass>();
-            HashSet<SootClass> workset = new HashSet<SootClass>();
-            FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
-            SootClass cl = base.getSootClass();
-
-            if( workset.add( cl ) ) worklist.add( cl );
-            while( !worklist.isEmpty() ) {
-                cl = worklist.removeFirst();
-                if( cl.isInterface() ) {
-                    for( Iterator<SootClass> cIt = fh.getAllImplementersOfInterface(cl).iterator(); cIt.hasNext(); ) {
-                        final SootClass c = cIt.next();
-                        if( workset.add( c ) ) worklist.add( c );
-                    }
-                } else {
-                    if( cl.isConcrete() ) {
-                        resolve( cl.getType(), declaredType, sigType, subSig, container, targets );
-                        subTypes.add(cl.getType());
-                    }
-                    for( Iterator<SootClass> cIt = fh.getSubclassesOf( cl ).iterator(); cIt.hasNext(); ) {
-                        final SootClass c = cIt.next();
-                        if( workset.add( c ) ) worklist.add( c );
-                    }
-                }
-            }
+            	Type declaredReturnType = Scene.v().getType(split[0]);
+            	String declaredName = split[1];
+            	List<Type> declaredParamTypes = new ArrayList<Type>();
+            	
+            	// separate the parameter types
+            	if (split.length == 3) {
+            		for (String type : split[2].split(",")) {
+            			declaredParamTypes.add(Scene.v().getType(type));
+            		}
+            	}
+            	
+            	Chain<SootClass> classes = Scene.v().getClasses();
+            	for(SootClass sc : classes) {
+            		for(SootMethod sm : sc.getMethods()) {
+            			if (sm.isConcrete() || sm.isNative()) {
+            				
+            				// method name has to match
+            				if (!sm.getName().equals(declaredName)) continue;
+            				
+            				// the return type has to be a the declared return type or a sub type of it
+            				if (!fastHierachy.canStoreType(sm.getReturnType(), declaredReturnType)) continue;
+            				List<Type> paramTypes = sm.getParameterTypes();
+            				
+            				// method parameters have to match to the declared ones (same type or super type).
+            				if (declaredParamTypes.size() != paramTypes.size()) continue;
+            				boolean check = true;
+            				for (int i = 0; i < paramTypes.size(); i++) {
+            					if (!fastHierachy.canStoreType(declaredParamTypes.get(i), paramTypes.get(i))) {
+            						check = false;
+            						break;
+            					}
+            				}
+            				
+        					if(check) {
+        						Type st = sc.getType();
+        						if (!fastHierachy.canStoreType( st, declaredType)) {
+        							// final classes can not be extended and therefore not used in library client
+        							if (!sc.isFinal()) {
+        								NumberedString newSubSig = sm.getNumberedSubSignature();
+										resolve( st, st, sigType, newSubSig, container, targets);
+        								types.add(new Pair<Type, NumberedString>(st, newSubSig));
+        							}
+        						} else {
+        							resolve (st, declaredType, sigType, subSig, container, targets);
+        							types.add(new Pair<Type, NumberedString>(st, subSig));
+        						}        						
+        					}
+        				}            			
+            		}
+            	}
+        	} else {
+	            List<Type> subTypes = baseToSubTypes.get(base);
+	            if( subTypes != null ) {
+	                for( Iterator<Type> stIt = subTypes.iterator(); stIt.hasNext(); ) {
+	                    final Type st = stIt.next();
+	                    resolve( st, declaredType, sigType, subSig, container, targets );
+	                }
+	                return;
+	            }
+	
+	            baseToSubTypes.put(base, subTypes = new ArrayList<Type>() );
+	
+	            subTypes.add(base);
+	
+	            LinkedList<SootClass> worklist = new LinkedList<SootClass>();
+	            HashSet<SootClass> workset = new HashSet<SootClass>();
+	            FastHierarchy fh = fastHierachy;
+	            SootClass cl = base.getSootClass();
+	
+	            if( workset.add( cl ) ) worklist.add( cl );
+	            while( !worklist.isEmpty() ) {
+	                cl = worklist.removeFirst();
+	                if( cl.isInterface() ) {
+	                    for( Iterator<SootClass> cIt = fh.getAllImplementersOfInterface(cl).iterator(); cIt.hasNext(); ) {
+	                        final SootClass c = cIt.next();
+	                        if( workset.add( c ) ) worklist.add( c );
+	                    }
+	                } else {
+	                    if( cl.isConcrete() ) {
+	                        resolve( cl.getType(), declaredType, sigType, subSig, container, targets );
+	                        subTypes.add(cl.getType());
+	                    }
+	                    for( Iterator<SootClass> cIt = fh.getSubclassesOf( cl ).iterator(); cIt.hasNext(); ) {
+	                        final SootClass c = cIt.next();
+	                        if( workset.add( c ) ) worklist.add( c );
+	                    }
+	                }
+	            }
+	        }
         } else if( t instanceof NullType ) {
         } else {
             throw new RuntimeException( "oops "+t );

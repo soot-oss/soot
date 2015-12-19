@@ -54,7 +54,7 @@ public class AllocNode extends Node implements Context {
     /* End of public methods. */
 
     AllocNode( PAG pag, Object newExpr, Type t, SootMethod m ) {
-	super( pag, t );
+    	super( pag, t );
         this.method = m;
         if( t instanceof RefType ) {
             RefType rt = (RefType) t;
@@ -65,13 +65,13 @@ public class AllocNode extends Node implements Context {
 				}
 			}
         }
-	this.newExpr = newExpr;
+        this.newExpr = newExpr;
         if( newExpr instanceof ContextVarNode ) throw new RuntimeException();
         pag.getAllocNodeNumberer().add( this );
     }
     /** Registers a AllocDotField as having this node as its base. */
     void addField( AllocDotField adf, SparkField field ) {
-	if( fields == null ) fields = new HashMap<SparkField, AllocDotField>();
+    	if( fields == null ) fields = new HashMap<SparkField, AllocDotField>();
         fields.put( field, adf );
     }
 

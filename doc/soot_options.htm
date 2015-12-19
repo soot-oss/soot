@@ -1967,6 +1967,55 @@ are assumed not to call the constructor of the created object.
 </p>
 </li>
 <li>
+<b>Library mode</b> (library)
+		<br>
+			(default value: <span class="value">disabled</span>)
+		<p>
+										Specifies whether the target classes should be treated as an application or a library.
+										If library mode is disabled (default), the call graph construction assumes that the target is an application and 
+										starts the construction from the specified entry points (main method by default). 
+										Under the assumption that the target is a library, possible call edges might be missing in the call graph.
+										The two different library modes add theses missing calls to the call graph and differ only in the view of the class hierachy 
+										(hierachy of target library or possible extended hierachy).
+										If simulate-natives is also set, the results of native methods are also set to any  sub type of the declared return type.
+									</p>
+<table border="0">
+<th colspan="2">
+					Possible values:
+				</th>
+<tr>
+<td class="value">disabled</td><td>
+											Call(and pointer assignment) graph construction treat the target classes as application starting from the entry points.
+										</td>
+</tr>
+<tr>
+<td class="value">any-subtype</td><td>
+											On library analysis it has to be assumed, that a possible client can call any method or access any field, 
+											to which he has the access rights (default public/protected but can be set with soot.Scene#setClientAccessibilityOracle).
+											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type 
+											according to the class hierachy of the target library.
+											If simulate-natives is also set, the results of native methods are also set to any sub type of the declared return type.
+										</td>
+</tr>
+<tr>
+<td class="value">signature-resolution</td><td>
+											On library analysis it has to be assumed, that a possible client can call any method or access any field, 
+											to which he has the access rights (default public/protected but can be set with soot.Scene#setClientAccessibilityOracle).
+											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type 
+											according to a possible extended class hierarchy of the target library. Whenever any sub type of a specific type is considered as 
+											receiver for a method to call and the base type is an interface, calls to existing methods with matching signature (possible implementation 
+											of method to call) are also added. As Javas' subtyping allows contra-variance for return types and co-variance for parameters when overriding 
+											a method, these cases are also considered here.
+											
+											Example: Classes A, B (B sub type of A), interface I with method public A foo(B b); and a class C with method public B foo(A a) { ... }.
+											The extended class hierachy will contain C as possible implementation of I.
+											
+											If simulate-natives is also set, the results of native methods are also set to any possible sub type of the declared return type.
+										</td>
+</tr>
+</table>
+</li>
+<li>
 <b>Verbose</b> (verbose)
 		<br>
 			(default value: <span class="value">false</span>)
@@ -2176,12 +2225,6 @@ When this option is set to true, the effects of native methods in the standard J
 When this option is set to true, Spark treats references to EMPTYSET, EMPTYMAP, and 
 EMPTYLIST as allocation sites for HashSet, HashMap and LinkedList objects respectively, and references to Hashtable.emptyIterator as allocation sites for Hashtable.EmptyIterator. This enables subsequent analyses to differentiate different uses of Java's immutable empty collections.
         </p>
-</li>
-<li>
-<b>Add Alloc nodes for parameter of accessible methods</b> (allocate-params)
-		<br>
-			(default value: <span class="value">false</span>)
-		<p>Add Alloc nodes for parameter of accessible methods. For any Parameter allocations for any subtype will be added.</p>
 </li>
 <li>
 <b>Simple Edges Bidirectional</b> (simple-edges-bidirectional)

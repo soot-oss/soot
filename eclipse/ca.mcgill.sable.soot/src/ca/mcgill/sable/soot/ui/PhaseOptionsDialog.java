@@ -698,6 +698,9 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("cg", getcgsafe_newinstance_widget(), "safe-newinstance");
 		
 		
+		addToEnableGroup("cg", getcglibrary_widget(), "library");
+		
+		
 		addToEnableGroup("cg", getcgverbose_widget(), "verbose");
 		
 		
@@ -781,9 +784,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkempties_as_allocs_widget(), "empties-as-allocs");
-
-		
-		addToEnableGroup("cg", "cg.spark", getcgcg_sparkallocate_params_widget(), "allocate-params");
 
 		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimple_edges_bidirectional_widget(), "simple-edges-bidirectional");
@@ -2996,6 +2996,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgguards_widget().getAlias(), stringRes);
 		}
+		 
+		stringRes = getcglibrary_widget().getSelectedAlias();
+
+		
+		defStringRes = "disabled";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getcglibrary_widget().getAlias(), stringRes);
+		}
 		
 		boolRes = getcgcg_chaenabled_widget().getButton().getSelection();
 		
@@ -3145,16 +3155,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkempties_as_allocs_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getcgcg_sparkallocate_params_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getcgcg_sparkallocate_params_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_sparksimple_edges_bidirectional_widget().getButton().getSelection();
@@ -7671,6 +7671,18 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	}
 	
 	
+	
+	private MultiOptionWidget cglibrary_widget;
+	
+	private void setcglibrary_widget(MultiOptionWidget widget) {
+		cglibrary_widget = widget;
+	}
+	
+	public MultiOptionWidget getcglibrary_widget() {
+		return cglibrary_widget;
+	}	
+	
+	
 	private BooleanOptionWidget cgcg_chaenabled_widget;
 	
 	private void setcgcg_chaenabled_widget(BooleanOptionWidget widget) {
@@ -7819,16 +7831,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getcgcg_sparkempties_as_allocs_widget() {
 		return cgcg_sparkempties_as_allocs_widget;
-	}	
-	
-	private BooleanOptionWidget cgcg_sparkallocate_params_widget;
-	
-	private void setcgcg_sparkallocate_params_widget(BooleanOptionWidget widget) {
-		cgcg_sparkallocate_params_widget = widget;
-	}
-	
-	public BooleanOptionWidget getcgcg_sparkallocate_params_widget() {
-		return cgcg_sparkallocate_params_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_sparksimple_edges_bidirectional_widget;
@@ -13152,6 +13154,42 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
+		data = new OptionData [] {
+		
+		new OptionData("Disabled",
+		"disabled",
+		"\n											Call(and pointer assignment) graph construction \ntreat the target classes as application starting from the entry \npoints. 										",
+		
+		true),
+		
+		new OptionData("Any Subtype",
+		"any-subtype",
+		"\n											On library analysis it has to be assumed, that a \npossible client can call any method or access any field, \n											to which he has the access rights (default \npublic/protected but can be set with \nsoot.Scene#setClientAccessibilityOracle). 											In this \nmode types of any accessible field, method parameter, this \nlocal, or caugth exception is set to any possible sub type \n											according to the class hierachy of the target \nlibrary. 											If simulate-natives is also set, the results \nof native methods are also set to any sub type of the declared \nreturn type. 										",
+		
+		false),
+		
+		new OptionData("By Signature resolution",
+		"signature-resolution",
+		"\n											On library analysis it has to be assumed, that a \npossible client can call any method or access any field, \n											to which he has the access rights (default \npublic/protected but can be set with \nsoot.Scene#setClientAccessibilityOracle). 											In this \nmode types of any accessible field, method parameter, this \nlocal, or caugth exception is set to any possible sub type \n											according to a possible extended class hierarchy of \nthe target library. Whenever any sub type of a specific type is \nconsidered as 											receiver for a method to call and the \nbase type is an interface, calls to existing methods with \nmatching signature (possible implementation 											of \nmethod to call) are also added. As Javas' subtyping allows \ncontra-variance for return types and co-variance for parameters \nwhen overriding 											a method, these cases are also \nconsidered here. 											 											Example: Classes A, B (B \nsub type of A), interface I with method public A foo(B b); and a \nclass C with method public B foo(A a) { ... }. 											The \nextended class hierachy will contain C as possible \nimplementation of I. 											 											If simulate-natives \nis also set, the results of native methods are also set to any \npossible sub type of the declared return type. 										",
+		
+		false),
+		
+		};
+		
+										
+		setcglibrary_widget(new MultiOptionWidget(editGroupcg, SWT.NONE, data, new OptionData("Library mode", "p", "cg","library", "\n										Specifies whether the target classes should be \ntreated as an application or a library. 										If library \nmode is disabled (default), the call graph construction assumes \nthat the target is an application and 										starts the \nconstruction from the specified entry points (main method by \ndefault). 										Under the assumption that the target is a \nlibrary, possible call edges might be missing in the call graph. \n										The two different library modes add theses missing \ncalls to the call graph and differ only in the view of the class \nhierachy 										(hierachy of target library or possible \nextended hierachy). 										If simulate-natives is also set, \nthe results of native methods are also set to any sub type of \nthe declared return type. 									")));
+		
+		defKey = "p"+" "+"cg"+" "+"library";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getcglibrary_widget().setDef(defaultString);
+		}
+		
+		
+		
 		defKey = "p"+" "+"cg"+" "+"jdkver";
 		defKey = defKey.trim();
 		
@@ -13554,22 +13592,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setcgcg_sparkempties_as_allocs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Treat EMPTY as Alloc", "p", "cg.spark","empties-as-allocs", "\nWhen this option is set to true, Spark treats references to \nEMPTYSET, EMPTYMAP, and EMPTYLIST as allocation sites for \nHashSet, HashMap and LinkedList objects respectively, and \nreferences to Hashtable.emptyIterator as allocation sites for \nHashtable.EmptyIterator. This enables subsequent analyses to \ndifferentiate different uses of Java's immutable empty \ncollections. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"allocate-params";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setcgcg_sparkallocate_params_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Add Alloc nodes for parameter of accessible methods", "p", "cg.spark","allocate-params", "\nAdd Alloc nodes for parameter of accessible methods. For any \nParameter allocations for any subtype will be added.", defaultBool)));
 		
 		
 		
