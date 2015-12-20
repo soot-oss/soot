@@ -729,47 +729,26 @@ public class Scene  //extends AbstractHost
     	Type result = getRefTypeUnsafe(type);
     	
     	if (result == null) {
-    		switch(type) {
-            case "long":
+    		if (type.equals("long"))
               result = LongType.v();
-              break;
-              
-            case "short":
+    		else if (type.equals("short"))
               result = ShortType.v();
-              break;
-
-            case "double":
+    		else if (type.equals("double"))
               result = DoubleType.v();
-              break;
-
-            case "int":
+    		else if (type.equals("int"))
               result = IntType.v();
-              break;
-
-            case "float":
+    		else if (type.equals("float"))
               result = FloatType.v();
-              break;
-
-            case "byte":
+    		else if (type.equals("byte"))
               result = ByteType.v();
-              break;
-
-            case "char":
+    		else if (type.equals("char"))
               result = CharType.v();
-              break;
-
-            case "void":
+    		else if (type.equals("void"))
               result = VoidType.v();
-              break;
-
-            case "boolean":
+    		else if (type.equals("boolean"))
               result = BooleanType.v();
-              break;
-
-            default:
+    		else
               throw new RuntimeException("unknown type: '" + type + "'");
-          }
-    		
     	}
     	
     	if (arrayCount != 0) {
