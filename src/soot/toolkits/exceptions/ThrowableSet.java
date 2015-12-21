@@ -98,7 +98,7 @@ import com.google.common.cache.CacheBuilder;
 
 public final class ThrowableSet {
 
-	private static final boolean INSTRUMENTING = true;
+	private static final boolean INSTRUMENTING = false;
 
 	/**
 	 * Singleton class for fields and initializers common to all ThrowableSet
