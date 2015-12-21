@@ -642,7 +642,7 @@ public class DexAnnotation {
             {
                 TypeEncodedValue v = (TypeEncodedValue)ev;
                 elem = new AnnotationClassElem(
-                        DexType.toSootAT(v.getValue()), 
+                        v.getValue(), 
                         'c', 
                         ae.getName());
                 break;
