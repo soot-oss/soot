@@ -600,8 +600,8 @@ public final class OnFlyCallGraphBuilder
             handleInit(source, scl);
         }
         Body b = source.retrieveActiveBody();
-        for( Iterator<Unit> sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
-            final Stmt s = (Stmt) sIt.next();
+        for (Unit u : b.getUnits()) {
+            final Stmt s = (Stmt) u;
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = s.getInvokeExpr();
                 final String methRefSig = ie.getMethodRef().getSignature();
