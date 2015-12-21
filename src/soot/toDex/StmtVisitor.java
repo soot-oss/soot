@@ -373,8 +373,10 @@ class StmtVisitor implements StmtSwitch {
 		if (lockReg == null) {
 			lockReg = regAlloc.asImmediate(lockValue, constantV);
 			regAlloc.lockRegister(lockReg);
-			if (lockValue instanceof Constant)
+			if (lockValue instanceof Constant) {
 				monitorRegs.put((Constant) lockValue, lockReg);
+				regAlloc.lockRegister(lockReg);
+			}
 		}
 		return new Insn11x(opc, lockReg);
 	}

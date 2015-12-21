@@ -252,6 +252,6 @@ public class RegisterAllocator {
 	 * @param reg The register to lock
 	 */
 	public void lockRegister(Register reg) {
-		// TODO
+		lockedRegisters.add(reg);
 	}
 }
