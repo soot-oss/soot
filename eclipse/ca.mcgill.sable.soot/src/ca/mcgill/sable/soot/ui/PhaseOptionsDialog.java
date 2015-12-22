@@ -338,6 +338,12 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 			
+		if (isEnableButton("apponly")) {
+			buttonList.add(getcgcg_chaapponly_widget());	
+			getcgcg_chaapponly_widget().getButton().addSelectionListener(this);
+		}
+
+			
 		if (isEnableButton("enabled")) {
 			buttonList.add(getcgcg_sparkenabled_widget());	
 			getcgcg_sparkenabled_widget().getButton().addSelectionListener(this);
@@ -738,9 +744,13 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		addToEnableGroup("cg", "cg.cha", getcgcg_chaverbose_widget(), "verbose");
 		
+		addToEnableGroup("cg", "cg.cha", getcgcg_chaapponly_widget(), "apponly");
+		
 		getcgcg_chaenabled_widget().getButton().addSelectionListener(this);
 		
 		getcgcg_chaverbose_widget().getButton().addSelectionListener(this);
+		
+		getcgcg_chaapponly_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("cg", "cg.spark");
@@ -3025,6 +3035,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_chaverbose_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_chaapponly_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_chaapponly_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_sparkenabled_widget().getButton().getSelection();
@@ -7701,6 +7721,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getcgcg_chaverbose_widget() {
 		return cgcg_chaverbose_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_chaapponly_widget;
+	
+	private void setcgcg_chaapponly_widget(BooleanOptionWidget widget) {
+		cgcg_chaapponly_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_chaapponly_widget() {
+		return cgcg_chaapponly_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_sparkenabled_widget;
@@ -13294,6 +13324,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setcgcg_chaverbose_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("Verbose", "p", "cg.cha","verbose", "\nSetting this option to true causes Soot to print out statistics \nabout the call graph computed by this phase, such as the number \nof methods determined to be reachable.", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.cha"+" "+"apponly";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_chaapponly_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("AppOnly", "p", "cg.cha","apponly", "\nSetting this option to true causes Soot to only consider \napplication classes when building the callgraph. The resulting \ncallgraph will be inherently unsound. Still, this option can \nmake sense if performance optimization and memory reduction are \nyour primary goal.", defaultBool)));
 		
 		
 

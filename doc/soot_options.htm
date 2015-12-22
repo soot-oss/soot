@@ -2092,6 +2092,12 @@ the program throws an Error instead.
 			(default value: <span class="value">false</span>)
 		<p>Setting this option to true causes Soot to print out statistics about the call graph computed by this phase, such as the number of methods determined to be reachable.</p>
 </li>
+<li>
+<b>AppOnly</b> (apponly)
+		<br>
+			(default value: <span class="value">false</span>)
+		<p>Setting this option to true causes Soot to only consider application classes when building the callgraph. The resulting callgraph will be inherently unsound. Still, this option can make sense if performance optimization and memory reduction are your primary goal.</p>
+</li>
 </ul>
 <h2>
 <a name="phase_5_2">Spark (cg.spark)</a>

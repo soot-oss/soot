@@ -2004,6 +2004,13 @@ the program throws an Error instead.
                                                 <short_desc>Print statistics about the resulting call graph</short_desc>
                                                 <long_desc>Setting this option to true causes Soot to print out statistics about the call graph computed by this phase, such as the number of methods determined to be reachable.</long_desc>
 					</boolopt>
+					<boolopt>
+						<name>AppOnly</name>
+						<alias>apponly</alias>
+                                                <default>false</default>
+                                                <short_desc>Consider only application classes</short_desc>
+                                                <long_desc>Setting this option to true causes Soot to only consider application classes when building the callgraph. The resulting callgraph will be inherently unsound. Still, this option can make sense if performance optimization and memory reduction are your primary goal.</long_desc>
+					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Spark</name>

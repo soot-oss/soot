@@ -441,18 +441,20 @@ public final class OnFlyCallGraphBuilder
             	SootMethod target = VirtualCalls.v().resolveSpecial( 
                             (SpecialInvokeExpr) site.iie(),
                             site.subSig(),
-                            site.container() );
+                            site.container(),
+                            appOnly );
             	//if the call target resides in a phantom class then "target" will be null;
             	//simply do not add the target in that case
             	if(target!=null) {
-            		targetsQueue.add( target );            		
-            	} 
+            		targetsQueue.add( target );
+            	}
             } else {
                 VirtualCalls.v().resolve( type,
                         receiver.getType(),
                         site.subSig(),
                         site.container(), 
-                        targetsQueue );
+                        targetsQueue,
+                        appOnly);
             }
             while(targets.hasNext()) {
                 SootMethod target = (SootMethod) targets.next();

@@ -62,6 +62,11 @@ public final class VirtualCalls
         new LargeNumberedMap<Type, SmallNumberedMap<SootMethod>>( Scene.v().getTypeNumberer() );
 
     public SootMethod resolveSpecial( SpecialInvokeExpr iie, NumberedString subSig, SootMethod container ) {
+    	return resolveSpecial(iie, subSig, container, false);
+    }
+    
+    public SootMethod resolveSpecial( SpecialInvokeExpr iie, NumberedString subSig, SootMethod container,
+    		boolean appOnly) {
         SootMethod target = iie.getMethod();
         /* cf. JVM spec, invokespecial instruction */
         if( Scene.v().getOrMakeFastHierarchy()
@@ -74,13 +79,19 @@ public final class VirtualCalls
 
             return resolveNonSpecial(
                     container.getDeclaringClass().getSuperclass().getType(),
-                    subSig );
+                    subSig,
+                    appOnly);
         } else {
             return target;
         }
     }
 
-    public SootMethod resolveNonSpecial( RefType t, NumberedString subSig ) {
+    public SootMethod resolveNonSpecial( RefType t, NumberedString subSig) {
+    	return resolveNonSpecial(t, subSig, false);
+    }
+    
+    public SootMethod resolveNonSpecial( RefType t, NumberedString subSig,
+    		boolean appOnly) {
         SmallNumberedMap<SootMethod> vtbl = typeToVtbl.get( t );
         if( vtbl == null ) {
             typeToVtbl.put( t, vtbl =
@@ -89,6 +100,9 @@ public final class VirtualCalls
         SootMethod ret = vtbl.get( subSig );
         if( ret != null ) return ret;
         SootClass cls = t.getSootClass();
+        if (appOnly && cls.isLibraryClass())
+        	return null;
+        
         SootMethod m = cls.getMethodUnsafe( subSig );
         if( m != null ) {
             if( m.isConcrete() || m.isNative() || m.isPhantom() ) {
@@ -106,10 +120,23 @@ public final class VirtualCalls
     private final Map<Type,List<Type>> baseToSubTypes = new HashMap<Type,List<Type>>();
     private final Map<Pair<Type, NumberedString>, List<Pair<Type,NumberedString>>> baseToPossibleSubTypes = new HashMap<Pair<Type,NumberedString>, List<Pair<Type,NumberedString>>>();
 
-    public void resolve( Type t, Type declaredType, NumberedString subSig, SootMethod container, ChunkedQueue<SootMethod> targets ) {
+    public void resolve( Type t, Type declaredType, NumberedString subSig,
+    		SootMethod container, ChunkedQueue<SootMethod> targets ) {
         resolve(t, declaredType, null, subSig, container, targets);
     }
-    public void resolve( Type t, Type declaredType, Type sigType, NumberedString subSig, SootMethod container, ChunkedQueue<SootMethod> targets ) {
+    
+    public void resolve( Type t, Type declaredType, NumberedString subSig,
+    		SootMethod container, ChunkedQueue<SootMethod> targets, boolean appOnly ) {
+        resolve(t, declaredType, null, subSig, container, targets, appOnly);
+    }
+    
+    public void resolve( Type t, Type declaredType, Type sigType, NumberedString subSig,
+    		SootMethod container, ChunkedQueue<SootMethod> targets ) {
+    	resolve(t, declaredType, sigType, subSig, container, targets, false);
+    }
+    
+    public void resolve( Type t, Type declaredType, Type sigType, NumberedString subSig,
+    		SootMethod container, ChunkedQueue<SootMethod> targets, boolean appOnly ) {
         if( declaredType instanceof ArrayType ) declaredType = RefType.v("java.lang.Object");
         if( sigType instanceof ArrayType ) sigType = RefType.v("java.lang.Object");
         if( t instanceof ArrayType ) t = RefType.v( "java.lang.Object" );
@@ -121,7 +148,7 @@ public final class VirtualCalls
             return;
         }
         if( t instanceof RefType ) {
-            SootMethod target = resolveNonSpecial( (RefType) t, subSig );
+            SootMethod target = resolveNonSpecial( (RefType) t, subSig, appOnly );
             if( target != null ) targets.add( target );
         } else if( t instanceof AnySubType ) {
         	RefType base = ((AnySubType) t).getBase();
@@ -147,9 +174,9 @@ public final class VirtualCalls
             		for(Pair<Type, NumberedString> tuple : types) {
             			Type st = tuple.getO1();
             			if (!fastHierachy.canStoreType( st, declaredType)) {
-            				resolve( st, st, sigType, subSig, container, targets);
+            				resolve( st, st, sigType, subSig, container, targets, appOnly);
             			} else {
-            				resolve (st, declaredType, sigType, subSig, container, targets);
+            				resolve (st, declaredType, sigType, subSig, container, targets, appOnly);
             			}
             		}
             		return;
@@ -199,15 +226,15 @@ public final class VirtualCalls
         							// final classes can not be extended and therefore not used in library client
         							if (!sc.isFinal()) {
         								NumberedString newSubSig = sm.getNumberedSubSignature();
-										resolve( st, st, sigType, newSubSig, container, targets);
+										resolve( st, st, sigType, newSubSig, container, targets, appOnly);
         								types.add(new Pair<Type, NumberedString>(st, newSubSig));
         							}
         						} else {
-        							resolve (st, declaredType, sigType, subSig, container, targets);
+        							resolve (st, declaredType, sigType, subSig, container, targets, appOnly);
         							types.add(new Pair<Type, NumberedString>(st, subSig));
-        						}        						
+        						}
         					}
-        				}            			
+        				}
             		}
             	}
         	} else {
@@ -215,7 +242,7 @@ public final class VirtualCalls
 	            if( subTypes != null ) {
 	                for( Iterator<Type> stIt = subTypes.iterator(); stIt.hasNext(); ) {
 	                    final Type st = stIt.next();
-	                    resolve( st, declaredType, sigType, subSig, container, targets );
+	                    resolve( st, declaredType, sigType, subSig, container, targets, appOnly );
 	                }
 	                return;
 	            }
@@ -239,7 +266,7 @@ public final class VirtualCalls
 	                    }
 	                } else {
 	                    if( cl.isConcrete() ) {
-	                        resolve( cl.getType(), declaredType, sigType, subSig, container, targets );
+	                        resolve( cl.getType(), declaredType, sigType, subSig, container, targets, appOnly );
 	                        subTypes.add(cl.getType());
 	                    }
 	                    for( Iterator<SootClass> cIt = fh.getSubclassesOf( cl ).iterator(); cIt.hasNext(); ) {

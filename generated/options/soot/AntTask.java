@@ -1221,6 +1221,12 @@ public class AntTask extends MatchingTask {
             addArg("verbose:"+(arg?"true":"false"));
           }
       
+          public void setapponly(boolean arg) {
+            addArg("-p");
+            addArg("cg.cha");
+            addArg("apponly:"+(arg?"true":"false"));
+          }
+      
         }
     
         public Object createp_cg_spark() {

@@ -27,6 +27,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.WeakHashMap;
 
 import soot.AnySubType;
 import soot.FastHierarchy;
@@ -111,7 +112,7 @@ public final class ThrowableSet {
 		 * This map stores all referenced <code>ThrowableSet</code>s.
 		 */
 		private final Map<ThrowableSet,ThrowableSet> registry = CacheBuilder
-				.newBuilder().weakKeys().weakValues().<ThrowableSet,ThrowableSet>build().asMap();
+				.newBuilder().weakValues().<ThrowableSet,ThrowableSet>build().asMap();
 
 		/**
 		 * <code>ThrowableSet</code> containing no exception classes.

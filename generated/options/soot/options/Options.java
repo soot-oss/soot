@@ -2033,7 +2033,8 @@ public class Options extends OptionsBase {
                 "\nThis phase uses Class Hierarchy Analysis to generate a call \ngraph."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "verbose (false)", "Print statistics about the resulting call graph" );
+                +padOpt( "verbose (false)", "Print statistics about the resulting call graph" )
+                +padOpt( "apponly (false)", "Consider only application classes" );
     
         if( phaseName.equals( "cg.spark" ) )
             return "Phase "+phaseName+":\n"+
@@ -2984,7 +2985,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg.cha" ) )
             return ""
                 +"enabled "
-                +"verbose ";
+                +"verbose "
+                +"apponly ";
     
         if( phaseName.equals( "cg.spark" ) )
             return ""
@@ -3594,7 +3596,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg.cha" ) )
             return ""
               +"enabled:true "
-              +"verbose:false ";
+              +"verbose:false "
+              +"apponly:false ";
     
         if( phaseName.equals( "cg.spark" ) )
             return ""
