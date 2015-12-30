@@ -1,4 +1,4 @@
-/* Soot - a J*va Optimization Framework
+/* Soot - Java Optimization Framework
  * Copyright (C) 1997-1999 Raja Vallee-Rai
  * Copyright (C) 2004 Ondrej Lhotak
  *
