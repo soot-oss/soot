@@ -157,4 +157,6 @@
   <class>soot.jimple.toolkits.typing.fast.BottomType</class>
   <class>soot.dexpler.TrapMinimizer</class>
   <class>soot.toolkits.scalar.SmartLocalDefsPool</class>
+  <class>soot.jimple.spark.internal.PublicAndProtectedAccessibility</class>
+  <class>soot.jimple.spark.internal.CompleteAccessibility</class>
 </singletons>

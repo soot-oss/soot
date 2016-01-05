@@ -441,18 +441,20 @@ public final class OnFlyCallGraphBuilder
             	SootMethod target = VirtualCalls.v().resolveSpecial( 
                             (SpecialInvokeExpr) site.iie(),
                             site.subSig(),
-                            site.container() );
+                            site.container(),
+                            appOnly );
             	//if the call target resides in a phantom class then "target" will be null;
             	//simply do not add the target in that case
             	if(target!=null) {
-            		targetsQueue.add( target );            		
-            	} 
+            		targetsQueue.add( target );
+            	}
             } else {
                 VirtualCalls.v().resolve( type,
                         receiver.getType(),
                         site.subSig(),
                         site.container(), 
-                        targetsQueue );
+                        targetsQueue,
+                        appOnly);
             }
             while(targets.hasNext()) {
                 SootMethod target = (SootMethod) targets.next();
@@ -600,8 +602,8 @@ public final class OnFlyCallGraphBuilder
             handleInit(source, scl);
         }
         Body b = source.retrieveActiveBody();
-        for( Iterator<Unit> sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
-            final Stmt s = (Stmt) sIt.next();
+        for (Unit u : b.getUnits()) {
+            final Stmt s = (Stmt) u;
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = s.getInvokeExpr();
                 final String methRefSig = ie.getMethodRef().getSignature();

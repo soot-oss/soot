@@ -37,6 +37,8 @@ import soot.Unit;
 import soot.VoidType;
 import soot.jimple.Stmt;
 import soot.jimple.spark.builder.MethodNodeFactory;
+import soot.jimple.spark.internal.SparkLibraryHelper;
+import soot.options.CGOptions;
 import soot.util.NumberedString;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
@@ -180,17 +182,25 @@ public final class MethodPAG {
     }
     protected void buildNative() {
         ValNode thisNode = null;
-        ValNode retNode = null; 
+        ValNode retNode = null;
         if( !method.isStatic() ) { 
 	    thisNode = (ValNode) nodeFactory.caseThis();
         }
-        if( method.getReturnType() instanceof RefLikeType ) {
-	    retNode = (ValNode) nodeFactory.caseRet();
-	}
+        if(method.getReturnType() instanceof RefLikeType ) {
+        	retNode = (ValNode) nodeFactory.caseRet();
+        	
+        	// on library analysis we assume that the return type of an native method can 
+        	// be anything matching to the declared type.
+        	if (pag.getCGOpts().library() != CGOptions.library_disabled) {        		
+        		Type retType = method.getReturnType();	    	
+        		
+        		retType.apply(new SparkLibraryHelper(pag, retNode, method));
+        	}
+        }
         ValNode[] args = new ValNode[ method.getParameterCount() ];
         for( int i = 0; i < method.getParameterCount(); i++ ) {
             if( !( method.getParameterType(i) instanceof RefLikeType ) ) continue;
-	    args[i] = (ValNode) nodeFactory.caseParm(i);
+            args[i] = (ValNode) nodeFactory.caseParm(i);
         }
         pag.nativeMethodDriver.process( method, thisNode, retNode, args );
     }

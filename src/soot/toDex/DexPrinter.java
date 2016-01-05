@@ -313,7 +313,7 @@ public class DexPrinter {
         }
         case 'c': {
             AnnotationClassElem e = (AnnotationClassElem)elem;
-            return new ImmutableTypeEncodedValue(SootToDexUtils.getDexClassName(e.getDesc()));
+            return new ImmutableTypeEncodedValue(e.getDesc());
         }
         case '[': {
             AnnotationArrayElem e = (AnnotationArrayElem)elem;

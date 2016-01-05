@@ -2013,6 +2013,13 @@ public class Options extends OptionsBase {
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "safe-forname (false)", "Handle Class.forName() calls conservatively" )
                 +padOpt( "safe-newinstance (false)", "Handle Class.newInstance() calls conservatively" )
+                +padOpt( "library", " 										Specifies whether the target classes should be treated as an application or a library. 									" )
+                +padVal( "disabled (default)", " 											Call(and pointer assignment) graph construction treat the target classes as application starting from the entry points. 										" )
+                
+                +padVal( "any-subtype", " 											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type  											according to the class hierarchy of the target library. 										" )
+                
+                +padVal( "signature-resolution", " 											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type  											according to a possible extended class hierarchy of the target library. 										" )
+                
                 +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" )
                 +padOpt( "jdkver (3)", "JDK version for native methods" )
                 +padOpt( "all-reachable (false)", "Assume all methods of application classes are reachable." )
@@ -2026,7 +2033,8 @@ public class Options extends OptionsBase {
                 "\nThis phase uses Class Hierarchy Analysis to generate a call \ngraph."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "verbose (false)", "Print statistics about the resulting call graph" );
+                +padOpt( "verbose (false)", "Print statistics about the resulting call graph" )
+                +padOpt( "apponly (false)", "Consider only application classes" );
     
         if( phaseName.equals( "cg.spark" ) )
             return "Phase "+phaseName+":\n"+
@@ -2045,7 +2053,6 @@ public class Options extends OptionsBase {
                 +padOpt( "string-constants (false)", "Propagate all string constants, not just class names" )
                 +padOpt( "simulate-natives (true)", "Simulate effects of native methods in standard class library" )
                 +padOpt( "empties-as-allocs (false)", "Treat singletons for empty sets etc. as allocation sites" )
-                +padOpt( "allocate-params (false)", "Add Alloc nodes for parameter of accessible methods. For any Parameter allocations for any subtype will be added." )
                 +padOpt( "simple-edges-bidirectional (false)", "Equality-based analysis between variable nodes" )
                 +padOpt( "on-fly-cg (true)", "Build call graph as receiver types become known" )
                 +padOpt( "simplify-offline (false)", "Collapse single-entry subgraphs of the PAG" )
@@ -2966,6 +2973,7 @@ public class Options extends OptionsBase {
                 +"enabled "
                 +"safe-forname "
                 +"safe-newinstance "
+                +"library "
                 +"verbose "
                 +"jdkver "
                 +"all-reachable "
@@ -2977,7 +2985,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg.cha" ) )
             return ""
                 +"enabled "
-                +"verbose ";
+                +"verbose "
+                +"apponly ";
     
         if( phaseName.equals( "cg.spark" ) )
             return ""
@@ -2994,7 +3003,6 @@ public class Options extends OptionsBase {
                 +"string-constants "
                 +"simulate-natives "
                 +"empties-as-allocs "
-                +"allocate-params "
                 +"simple-edges-bidirectional "
                 +"on-fly-cg "
                 +"simplify-offline "
@@ -3577,6 +3585,7 @@ public class Options extends OptionsBase {
               +"enabled:true "
               +"safe-forname:false "
               +"safe-newinstance:false "
+              +"library:disabled "
               +"verbose:false "
               +"jdkver:3 "
               +"all-reachable:false "
@@ -3587,7 +3596,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "cg.cha" ) )
             return ""
               +"enabled:true "
-              +"verbose:false ";
+              +"verbose:false "
+              +"apponly:false ";
     
         if( phaseName.equals( "cg.spark" ) )
             return ""
@@ -3604,7 +3614,6 @@ public class Options extends OptionsBase {
               +"string-constants:false "
               +"simulate-natives:true "
               +"empties-as-allocs:false "
-              +"allocate-params:false "
               +"simple-edges-bidirectional:false "
               +"on-fly-cg:true "
               +"simplify-offline:false "

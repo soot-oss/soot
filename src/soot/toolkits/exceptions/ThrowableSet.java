@@ -19,7 +19,6 @@
 
 package soot.toolkits.exceptions;
 
-import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -28,8 +27,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
-import java.util.WeakHashMap;
-import java.lang.ref.Reference;
 
 import soot.AnySubType;
 import soot.FastHierarchy;
@@ -40,6 +37,8 @@ import soot.Scene;
 import soot.Singletons;
 import soot.Unit;
 import soot.options.Options;
+
+import com.google.common.cache.CacheBuilder;
 
 /**
  * <p>
@@ -99,7 +98,7 @@ import soot.options.Options;
 
 public final class ThrowableSet {
 
-	private static final boolean INSTRUMENTING = true;
+	private static final boolean INSTRUMENTING = false;
 
 	/**
 	 * Singleton class for fields and initializers common to all ThrowableSet
@@ -111,7 +110,8 @@ public final class ThrowableSet {
 		/**
 		 * This map stores all referenced <code>ThrowableSet</code>s.
 		 */
-		private final Map<ThrowableSet,Reference<ThrowableSet>> registry = new WeakHashMap<ThrowableSet,Reference<ThrowableSet>>();
+		private final Map<ThrowableSet,ThrowableSet> registry = CacheBuilder
+				.newBuilder().weakValues().<ThrowableSet,ThrowableSet>build().asMap();
 
 		/**
 		 * <code>ThrowableSet</code> containing no exception classes.
@@ -305,13 +305,11 @@ public final class ThrowableSet {
 				registrationCalls++;
 			}
 			ThrowableSet result = new ThrowableSet(include, exclude);
-			Reference<ThrowableSet> ref = registry.get(result);
+			ThrowableSet ref = registry.get(result);
 			if (null != ref) {
-				ThrowableSet old = ref.get();
-				if (null != old)
-					return old;
+				return ref;
 			}
-			registry.put(result, new WeakReference<ThrowableSet>(result));
+			registry.put(result, result);
 			return result;
 		}
 

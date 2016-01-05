@@ -335,7 +335,7 @@ public class DexAnnotation {
                             for (String s : SootToDexUtils.splitSignature(sig.getSignature()))
                             	sigElements.add(new AnnotationStringElem(s, 's', "value"));
                             
-                            AnnotationElem elem = new AnnotationArrayElem(sigElements, 's', "value");
+                            AnnotationElem elem = new AnnotationArrayElem(sigElements, '[', "value");
                             vat = new AnnotationTag("Ldalvik/annotation/Signature;",
                             		Collections.singleton(elem));
                         }
@@ -642,7 +642,7 @@ public class DexAnnotation {
             {
                 TypeEncodedValue v = (TypeEncodedValue)ev;
                 elem = new AnnotationClassElem(
-                        DexType.toSootAT(v.getValue()), 
+                        v.getValue(), 
                         'c', 
                         ae.getName());
                 break;

@@ -18,10 +18,13 @@
  */
 
 package soot.jimple.spark.builder;
+import soot.jimple.spark.internal.ClientAccessibilityOracle;
+import soot.jimple.spark.internal.SparkLibraryHelper;
 import soot.jimple.spark.pag.*;
 import soot.jimple.*;
 import soot.*;
 import soot.toolkits.scalar.Pair;
+import soot.options.CGOptions;
 import soot.shimple.*;
 
 /** Class implementing builder parameters (this decides
@@ -119,21 +122,27 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
                 Node retNode = getNode();
                 mpag.addInternalEdge( retNode, caseRet() );
 	    }
+	    
 	    final public void caseIdentityStmt(IdentityStmt is) {
 		if( !( is.getLeftOp().getType() instanceof RefLikeType ) ) return;
-		is.getLeftOp().apply( MethodNodeFactory.this );
+		Value leftOp = is.getLeftOp();
+		Value rightOp = is.getRightOp();
+		leftOp.apply( MethodNodeFactory.this );
 		Node dest = getNode();
-		is.getRightOp().apply( MethodNodeFactory.this );
+		rightOp.apply( MethodNodeFactory.this );
 		Node src = getNode();
 		mpag.addInternalEdge( src, dest );
-		
-	    if(pag.getOpts().allocate_params() && (method.isPublic() || method.isProtected()) 
-	    		&& is.getRightOp() instanceof ParameterRef 
-	    		&& is.getLeftOp().getType() instanceof RefType) {
-	    	RefType leftType = (RefType) is.getLeftOp().getType();
-	    	Node alloc = pag.makeAllocNode((ParameterRef) is.getRightOp(), AnySubType.v(leftType), method);
-	    	mpag.addInternalEdge(alloc, src);
-	    }	    
+
+		// in case library mode is activated add allocations to any possible type of this local and 
+		// parameters of accessible methods
+		int libOption = pag.getCGOpts().library();
+		if(libOption != CGOptions.library_disabled && (accessibilityOracle.isAccessible(method))) {
+			if (rightOp instanceof IdentityRef) {
+				Type rt = rightOp.getType();
+				rt.apply(new SparkLibraryHelper(pag, src, method));
+			}
+		}
+	    
 	    }
 	    final public void caseThrowStmt(ThrowStmt ts) {
 		ts.getOp().apply( MethodNodeFactory.this );
@@ -180,7 +189,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
         return ret;
     }
     final public Node caseArray( VarNode base ) {
-	return pag.makeFieldRefNode( base, ArrayElement.v() );
+    	return pag.makeFieldRefNode( base, ArrayElement.v() );
     }
     /* End of public methods. */
     /* End of package methods. */
@@ -191,7 +200,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     @Override
     final public void caseArrayRef( ArrayRef ar ) {
     	caseLocal( (Local) ar.getBase() );
-	setResult( caseArray( (VarNode) getNode() ) );
+    	setResult( caseArray( (VarNode) getNode() ) );
     }
     final public void caseCastExpr( CastExpr ce ) {
 	Pair<Expr, String> castPair = new Pair<Expr, String>( ce, PointsToAnalysis.CAST_NODE );
@@ -332,5 +341,6 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
     protected PAG pag;
     protected MethodPAG mpag;
     protected SootMethod method;
+    protected ClientAccessibilityOracle accessibilityOracle = Scene.v().getClientAccessibilityOracle();
 }
 

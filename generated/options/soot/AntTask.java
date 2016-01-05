@@ -1176,6 +1176,12 @@ public class AntTask extends MatchingTask {
             addArg("trim-clinit:"+(arg?"true":"false"));
           }
       
+          public void setlibrary(String arg) {
+            addArg("-p");
+            addArg("cg");
+            addArg("library:"+arg);
+          }
+      
           public void setjdkver(String arg) {
             addArg("-p");
             addArg("cg");
@@ -1213,6 +1219,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg.cha");
             addArg("verbose:"+(arg?"true":"false"));
+          }
+      
+          public void setapponly(boolean arg) {
+            addArg("-p");
+            addArg("cg.cha");
+            addArg("apponly:"+(arg?"true":"false"));
           }
       
         }
@@ -1300,12 +1312,6 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg.spark");
             addArg("empties-as-allocs:"+(arg?"true":"false"));
-          }
-      
-          public void setallocate_params(boolean arg) {
-            addArg("-p");
-            addArg("cg.spark");
-            addArg("allocate-params:"+(arg?"true":"false"));
           }
       
           public void setsimple_edges_bidirectional(boolean arg) {
