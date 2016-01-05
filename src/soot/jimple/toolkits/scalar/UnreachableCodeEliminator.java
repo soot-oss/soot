@@ -111,13 +111,25 @@ public class UnreachableCodeEliminator extends BodyTransformer
 		for (Trap t : body.getTraps())
 			if (t.getEndUnit() == body.getUnits().getLast())
 				reachable.add(t.getEndUnit());
+
+		Set<Unit> notReachable = new HashSet<Unit>();
+		if (Options.v().verbose()) {
+			for (Unit u : units) {
+				if (!reachable.contains(u))
+					notReachable.add(u);
+			}
+		}
 			
 		units.retainAll(reachable);   
 	  	
 		numPruned -= units.size();
 		
 		if (Options.v().verbose()) {
-			G.v().out.println("[" + body.getMethod().getName() + "]	 Removed " + numPruned + " statements...");
+			G.v().out.println("[" + body.getMethod().getName() + "]	 Removed " + numPruned + " statements: ");
+			for (Unit u : notReachable) {
+				G.v().out.println("[" + body.getMethod().getName() + "]	         " + u);
+			}
+
 		}
 	}
 	
