@@ -48,16 +48,16 @@ import soot.util.Chain;
 public class Hierarchy
 {
     // These two maps are not filled in the constructor.
-    Map<SootClass, List<SootClass>> classToSubclasses;
-    Map<SootClass, List<SootClass>> interfaceToSubinterfaces;
-    Map<SootClass, List<SootClass>> interfaceToSuperinterfaces;
+    private Map<SootClass, List<SootClass>> classToSubclasses;
+    private Map<SootClass, List<SootClass>> interfaceToSubinterfaces;
+    private Map<SootClass, List<SootClass>> interfaceToSuperinterfaces;
 
-    Map<SootClass, List<SootClass>> classToDirSubclasses;
-    Map<SootClass, List<SootClass>> interfaceToDirSubinterfaces;
-    Map<SootClass, List<SootClass>> interfaceToDirSuperinterfaces;
+    private Map<SootClass, List<SootClass>> classToDirSubclasses;
+    private Map<SootClass, List<SootClass>> interfaceToDirSubinterfaces;
+    private Map<SootClass, List<SootClass>> interfaceToDirSuperinterfaces;
 
     // This holds the direct implementers.
-    Map<SootClass, List<SootClass>> interfaceToDirImplementers;
+    private Map<SootClass, List<SootClass>> interfaceToDirImplementers;
 
     int state;
     Scene sc;
