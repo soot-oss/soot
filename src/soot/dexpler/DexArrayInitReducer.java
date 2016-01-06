@@ -5,6 +5,8 @@ import java.util.Map;
 
 import soot.Body;
 import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
@@ -12,6 +14,7 @@ import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.Constant;
 import soot.jimple.Stmt;
+import soot.options.Options;
 import soot.toolkits.scalar.UnusedLocalEliminator;
 
 /**
@@ -111,10 +114,24 @@ public class DexArrayInitReducer extends BodyTransformer {
 						// Get the next statement
 						checkU = b.getUnits().getSuccOf(checkU);
 					}
-					if (!foundU1)
-						b.getUnits().remove(u1);
-					if (!foundU2)
-						b.getUnits().remove(u2);
+					if (!foundU1) {
+						// only remove constant assignment if the left value is Local
+						if (u1val instanceof Local) {
+							b.getUnits().remove(u1);
+							if (Options.v().verbose()) {
+								G.v().out.println("[" + b.getMethod().getName() + "]    remove 1 " + u1);
+							}
+						}
+					}
+					if (!foundU2) {
+						// only remove constant assignment if the left value is Local
+						if (u2val instanceof Local) {
+							b.getUnits().remove(u2);
+							if (Options.v().verbose()) {
+								G.v().out.println("[" + b.getMethod().getName() + "]    remove 2 " + u2);
+							}
+						}
+					}
 					
 					u1 = null;
 					u2 = null;
