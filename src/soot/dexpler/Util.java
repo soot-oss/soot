@@ -232,8 +232,6 @@ public class Util {
 	 * @param jBody
 	 */
 	public static void emptyBody(Body jBody) {
-
-		LocalGenerator lg = new LocalGenerator(jBody);
 		// identity statements
 		List<Unit> idStmts = new ArrayList<Unit>();
 		for (Unit u : jBody.getUnits()) {
@@ -246,8 +244,11 @@ public class Util {
 		}
 
 		jBody.getUnits().clear();
+		jBody.getLocals().clear();
 		jBody.getTraps().clear();
 
+		final LocalGenerator lg = new LocalGenerator(jBody);
+		
 		for (Unit u : idStmts)
 			jBody.getUnits().add(u);
 		Type rType = jBody.getMethod().getReturnType();
