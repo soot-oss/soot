@@ -234,12 +234,15 @@ public class Util {
 	public static void emptyBody(Body jBody) {
 		// identity statements
 		List<Unit> idStmts = new ArrayList<Unit>();
+		List<Local> idLocals = new ArrayList<Local>();
 		for (Unit u : jBody.getUnits()) {
 			if (u instanceof IdentityStmt) {
 				IdentityStmt i = (IdentityStmt) u;
 				if (i.getRightOp() instanceof ParameterRef
-						|| i.getRightOp() instanceof ThisRef)
+						|| i.getRightOp() instanceof ThisRef) {
 					idStmts.add(u);
+					idLocals.add((Local) i.getLeftOp());
+				}
 			}
 		}
 
@@ -251,6 +254,9 @@ public class Util {
 		
 		for (Unit u : idStmts)
 			jBody.getUnits().add(u);
+		for (Local l : idLocals)
+			jBody.getLocals().add(l);
+		
 		Type rType = jBody.getMethod().getReturnType();
 
 		jBody.getUnits().add(Jimple.v().newNopStmt());
