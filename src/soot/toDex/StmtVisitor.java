@@ -6,6 +6,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
@@ -33,6 +34,7 @@ import soot.jimple.ArrayRef;
 import soot.jimple.AssignStmt;
 import soot.jimple.BreakpointStmt;
 import soot.jimple.CaughtExceptionRef;
+import soot.jimple.ClassConstant;
 import soot.jimple.ConcreteRef;
 import soot.jimple.Constant;
 import soot.jimple.DoubleConstant;
@@ -367,7 +369,7 @@ class StmtVisitor implements StmtSwitch {
         // that this constant assignment can throw an exception, leaving us
         // with a dangling monitor. Imprecise static analyzers ftw.
 		Register lockReg = null;
-		if (lockValue instanceof Constant && opc == Opcode.MONITOR_EXIT)
+		if (lockValue instanceof Constant)
 			if ((lockReg = monitorRegs.get(lockValue)) != null)
 				lockReg = lockReg.clone();
 		if (lockReg == null) {
@@ -776,5 +778,19 @@ class StmtVisitor implements StmtSwitch {
         exprV.setOrigStmt(stmt);
 		exprV.setTargetForOffset(target);
 		stmt.getCondition().apply(exprV);
+	}
+	
+	/**
+	 * Pre-allocates and locks registers for the constants used in monitor
+	 * expressions
+	 * @param monitorConsts The set of monitor constants fow which to assign
+	 * fixed registers
+	 */
+	public void preAllocateMonitorConsts(Set<ClassConstant> monitorConsts) {
+		for (ClassConstant c : monitorConsts) {
+			Register lhsReg = regAlloc.asImmediate(c, constantV);
+			regAlloc.lockRegister(lhsReg);
+			monitorRegs.put(c, lhsReg);
+		}
 	}
 }

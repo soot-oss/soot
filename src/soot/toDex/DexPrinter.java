@@ -87,7 +87,10 @@ import soot.Type;
 import soot.Unit;
 import soot.dexpler.DexType;
 import soot.dexpler.Util;
+import soot.jimple.ClassConstant;
+import soot.jimple.IdentityStmt;
 import soot.jimple.Jimple;
+import soot.jimple.MonitorStmt;
 import soot.jimple.NopStmt;
 import soot.jimple.Stmt;
 import soot.jimple.toolkits.scalar.EmptySwitchEliminator;
@@ -1343,7 +1346,27 @@ public class DexPrinter {
 	}
 
 	private void toInstructions(Collection<Unit> units, StmtVisitor stmtV) {
+		// Collect all constant arguments to monitor instructions and
+		// pre-alloocate their registers
+		Set<ClassConstant> monitorConsts = new HashSet<ClassConstant>();
 		for (Unit u : units) {
+			if (u instanceof MonitorStmt) {
+				MonitorStmt monitorStmt = (MonitorStmt) u;
+				if (monitorStmt.getOp() instanceof ClassConstant){
+					monitorConsts.add((ClassConstant) monitorStmt.getOp());
+				}
+			}
+		}
+		
+		boolean monitorAllocsMade = false;
+		for (Unit u : units) {
+			if (!monitorAllocsMade
+					&& !monitorConsts.isEmpty()
+					&& !(u instanceof IdentityStmt)) {
+				stmtV.preAllocateMonitorConsts(monitorConsts);
+				monitorAllocsMade = true;
+			}
+			
 			stmtV.beginNewStmt((Stmt) u);
 			u.apply(stmtV);
 		}
