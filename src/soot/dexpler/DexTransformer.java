@@ -113,8 +113,7 @@ public abstract class DexTransformer extends BodyTransformer {
 		return localDefs.getDefsOf(l);
 	}
 
-	protected Type findArrayType(/*ExceptionalUnitGraph g,*/
-			LocalDefs localDefs, LocalUses localUses,
+	protected Type findArrayType(LocalDefs localDefs,
 			Stmt arrayStmt, int depth, Set<Unit> alreadyVisitedDefs) {
 		ArrayRef aRef = null;
 		if (arrayStmt.containsArrayRef()) {
@@ -175,7 +174,7 @@ public abstract class DexTransformer extends BodyTransformer {
 																			// ar.getType())
 																			// {
 						System.out.println("second round from stmt: " + stmt);
-						Type t = findArrayType(localDefs, localUses, stmt,
+						Type t = findArrayType(localDefs, stmt,
 								++depth, newVisitedDefs); // TODO: which type should be
 											// returned?
 						if (t instanceof ArrayType) {
@@ -240,7 +239,7 @@ public abstract class DexTransformer extends BodyTransformer {
 				// information associated with the alias.
 				} else if (r instanceof Local) {
 					Debug.printDbg("atype alias: ", stmt);
-					Type t = findArrayType(localDefs, localUses, stmt,
+					Type t = findArrayType(localDefs, stmt,
 							++depth, newVisitedDefs);
 					if (depth == 0) {
 						aType = t;

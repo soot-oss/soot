@@ -67,9 +67,6 @@ import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
-import soot.toolkits.scalar.LocalDefs;
-import soot.toolkits.scalar.LocalUses;
-import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
  * BodyTransformer to find and change IntConstant(0) to NullConstant where
@@ -91,14 +88,12 @@ public class DexNullTransformer extends AbstractNullTransformer {
 	private Local l = null;
 
 	protected void internalTransform(final Body body, String phaseName, Map<String,String> options) {
-        final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(body);
-		final LocalUses localUses = LocalUses.Factory.newLocalUses(body, localDefs);
+		final DexDefUseAnalysis localDefs = new DexDefUseAnalysis(body);
 		
 		for (Local loc : getNullCandidates(body)) {
 			Debug.printDbg("\n[null candidate] ", loc);
 			usedAsObject = false;
-			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs,
-					localUses, body);
+			Set<Unit> defs = localDefs.collectDefinitionsWithAliases(loc);
 			// process normally
 			doBreak = false;
 			for (Unit u : defs) {
@@ -175,8 +170,7 @@ public class DexNullTransformer extends AbstractNullTransformer {
 					break;
 
 				// check uses
-				for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-					Unit use = pair.getUnit();
+				for (Unit use : localDefs.getUsesOf(l)) {
 					Debug.printDbg("    use: ", use);
 					use.apply(new AbstractStmtSwitch() {
 						private boolean examineInvokeExpr(InvokeExpr e) {
@@ -370,8 +364,9 @@ public class DexNullTransformer extends AbstractNullTransformer {
 					for (ValueBox vb : u.getDefBoxes())
 						defLocals.add(vb.getValue());
 					
-					for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-						Stmt use = (Stmt) pair.getUnit();
+					Local l = (Local) ((DefinitionStmt) u).getLeftOp();
+					for (Unit uuse : localDefs.getUsesOf(l)) {
+						Stmt use = (Stmt) uuse;
 						// If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
 						if (!use.containsArrayRef()
 								|| !defLocals.contains(use.getArrayRef().getBase()))
