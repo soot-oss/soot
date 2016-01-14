@@ -183,15 +183,25 @@ public class Scene  //extends AbstractHost
     }
     
     /**
-        If this name is in the set of reserved names, then return a quoted version of it.  Else pass it through.
+     * If this name is in the set of reserved names, then return a quoted
+     * version of it.  Else pass it through. If the name consists of multiple
+     * parts separated by dots, the individual names are checked as well.
      */
-    
     public String quotedNameOf(String s)
     {
-        if(reservedNames.contains(s))
-            return "\'" + s + "\'";
-        else
-            return s;
+    	StringBuilder res = new StringBuilder(s.length());
+    	for (String part : s.split("\\.")) {
+    		if (res.length() > 0)
+    			res.append('.');
+	        if(reservedNames.contains(part)) {
+	            res.append('\'');
+	            res.append(part);
+	            res.append('\'');
+	        }
+	        else
+	            res.append(part);
+    	}
+    	return res.toString();
     }
     
     public boolean hasMainClass() {
@@ -208,14 +218,19 @@ public class Scene  //extends AbstractHost
             
         return mainClass;
     }
+    
     public SootMethod getMainMethod() {
         if(!hasMainClass()) {
             throw new RuntimeException("There is no main class set!");
-        } 
-        if (!mainClass.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v())) {
+        }
+        
+        SootMethod mainMethod = mainClass.getMethodUnsafe("main",
+        		Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ),
+        		VoidType.v());
+        if (mainMethod == null) {
             throw new RuntimeException("Main class declares no main method!");
         }
-        return mainClass.getMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v());   
+        return mainMethod;   
     }
     
     
