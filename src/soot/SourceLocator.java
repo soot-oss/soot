@@ -161,6 +161,7 @@ public class SourceLocator
     public List<String> classPath() { return classPath; }
     public void invalidateClassPath() {
         classPath = null;
+        dexClassIndex = null;
     }
 
     private List<String> sourcePath;
