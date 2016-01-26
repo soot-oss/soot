@@ -156,8 +156,19 @@ public class DexClassLoader {
         			// not have these tags in the Java / Soot semantics. The
         			// DexPrinter will copy it back if we do dex->dex.
 					innerTagIt.remove();
+
+					// Add the InnerClassTag to the inner class. This tag will be put in an InnerClassAttribute 
+					// within the PackManager in method handleInnerClasses().
+					if (!sc.hasTag("InnerClassTag")) {
+						if (((InnerClassTag) t).getInnerClass().replaceAll("/", ".").equals(sc.toString())) {
+							sc.addTag(t);
+						}
+					}
         		}
         	}
+			// remove tag if empty
+			if (ica.getSpecs().isEmpty())
+				sc.getTags().remove(ica);
         }
         
         return deps;
