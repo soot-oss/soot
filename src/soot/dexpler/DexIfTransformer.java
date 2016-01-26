@@ -43,6 +43,7 @@ import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
 import soot.jimple.ConditionExpr;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.EqExpr;
 import soot.jimple.ExitMonitorStmt;
@@ -63,9 +64,6 @@ import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
-import soot.toolkits.scalar.LocalDefs;
-import soot.toolkits.scalar.LocalUses;
-import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
  * BodyTransformer to find and change definition of locals used within an if
@@ -90,8 +88,7 @@ public class DexIfTransformer extends AbstractNullTransformer {
 	Local l = null;
 
 	protected void internalTransform(final Body body, String phaseName, Map<String,String> options) {
-		final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(body);
-		final LocalUses localUses = LocalUses.Factory.newLocalUses(body, localDefs);
+		final DexDefUseAnalysis localDefs = new DexDefUseAnalysis(body);
 
 		Set<IfStmt> ifSet = getNullIfCandidates(body);
 		for (IfStmt ifs : ifSet) {
@@ -101,18 +98,16 @@ public class DexIfTransformer extends AbstractNullTransformer {
 			usedAsObject = false;
 			for (Local loc : twoIfLocals) {
 				Debug.printDbg("\n[null if with two local candidate] ", loc);
-				List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs, localUses, body);
+				Set<Unit> defs = localDefs.collectDefinitionsWithAliases(loc);
 				
 				// process normally
 				doBreak = false;
 				for (Unit u : defs) {
 
 					// put correct local in l
-					if (u instanceof AssignStmt) {
-						l = (Local) ((AssignStmt) u).getLeftOp();
-					} else if (u instanceof IdentityStmt) {
-						l = (Local) ((IdentityStmt) u).getLeftOp();
-					} else if (u instanceof IfStmt) {
+					if (u instanceof DefinitionStmt) {
+						l = (Local) ((DefinitionStmt) u).getLeftOp();
+					} else {
 						throw new RuntimeException(
 								"ERROR: def can not be something else than Assign or Identity statement! (def: " + u
 										+ " class: " + u.getClass() + "");
@@ -186,8 +181,7 @@ public class DexIfTransformer extends AbstractNullTransformer {
 						break;
 
 					// check uses
-					for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-						Unit use = pair.getUnit();
+					for (Unit use : localDefs.getUsesOf(l)) {
 						Debug.printDbg("    use: ", use);
 						use.apply(new AbstractStmtSwitch() {
 							private boolean examineInvokeExpr(InvokeExpr e) {
@@ -391,8 +385,8 @@ public class DexIfTransformer extends AbstractNullTransformer {
 
 			// change values
 			if (usedAsObject) {
-				List<Unit> defsOp1 = collectDefinitionsWithAliases(twoIfLocals[0], localDefs, localUses, body);
-				List<Unit> defsOp2 = collectDefinitionsWithAliases(twoIfLocals[1], localDefs, localUses, body);
+				Set<Unit> defsOp1 = localDefs.collectDefinitionsWithAliases(twoIfLocals[0]);
+				Set<Unit> defsOp2 = localDefs.collectDefinitionsWithAliases(twoIfLocals[1]);
 				defsOp1.addAll(defsOp2);
 				for (Unit u : defsOp1) {
 					Stmt s = (Stmt) u;
@@ -401,8 +395,9 @@ public class DexIfTransformer extends AbstractNullTransformer {
 							&& !defsOp2.contains(s.getArrayRef().getBase())))
 						replaceWithNull(u);
 					
-					for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-						Stmt use = (Stmt) pair.getUnit();
+					Local l = (Local) ((DefinitionStmt) u).getLeftOp();
+					for (Unit uuse : localDefs.getUsesOf(l)) {
+						Stmt use = (Stmt) uuse;
 						// If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
 						if (!use.containsArrayRef() || (twoIfLocals[0] != use.getArrayRef().getBase())
 								&& twoIfLocals[1] != use.getArrayRef().getBase())

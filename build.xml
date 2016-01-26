@@ -404,11 +404,24 @@
                  uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
     </target>
 
-    <target name="publish-local" depends="init-ivy, fulljar, classesjar, sourcejar, javadoc">
+	<target name="gen-pom" depends="init-ivy">
+		<ivy:makepom ivyfile="ivy.xml" pomfile="${release.loc}/soot-${soot.version}.pom">
+			<mapping conf="default" scope="compile" />
+		</ivy:makepom>
+	</target>
+	
+    <target name="publish-local" depends="init-ivy, gen-pom, fulljar, classesjar, sourcejar, javadoc">
         <ivy:resolve/>
         <ivy:publish pubrevision="${soot.version}" status="release" resolver="local" overwrite="true" >
             <artifacts pattern="${release.loc}/[artifact]-[revision].[ext]"/>
         </ivy:publish>
     </target>
+	
+	<target name="publish-local-maven" depends="init-ivy, gen-pom, fulljar, classesjar, sourcejar, javadoc" description="publish jar/source to maven repo mounted at ~/.m2/repository">
+		<ivy:resolve/>
+		<ivy:publish pubrevision="${soot.version}" resolver="local-m2-publish" forcedeliver="true" overwrite="true" publishivy="false">
+			<artifacts pattern="${release.loc}/[artifact]-[revision].[ext]" />
+		</ivy:publish>
+	</target>
 
 </project>

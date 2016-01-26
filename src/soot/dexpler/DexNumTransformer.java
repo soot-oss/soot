@@ -56,9 +56,6 @@ import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.ReturnStmt;
-import soot.toolkits.scalar.LocalDefs;
-import soot.toolkits.scalar.LocalUses;
-import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
  * BodyTransformer to find and change initialization type of Jimple variables.
@@ -107,14 +104,12 @@ public class DexNumTransformer extends DexTransformer {
 	}
 	
 	protected void internalTransform(final Body body, String phaseName, Map<String,String> options) {
-        final LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(body);
-		final LocalUses localUses = LocalUses.Factory.newLocalUses(body, localDefs);
+		final DexDefUseAnalysis localDefs = new DexDefUseAnalysis(body);
 		
         for (Local loc : getNumCandidates(body)) {
             Debug.printDbg("\n[num candidate] ", loc);
 			usedAsFloatingPoint = false;
-			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs,
-					localUses, body);
+			Set<Unit> defs = localDefs.collectDefinitionsWithAliases(loc);
 			
 	        // process normally
 			doBreak = false;
@@ -149,7 +144,7 @@ public class DexNumTransformer extends DexTransformer {
 							Type arType = ar.getType();
 							Debug.printDbg("ar: ", r, " ", arType);
 							if (arType instanceof UnknownType) {
-								Type t = findArrayType(localDefs, localUses,
+								Type t = findArrayType(localDefs,
 										stmt, 0, Collections.<Unit> emptySet()); // TODO:
 																					// check
 																					// where
@@ -197,8 +192,7 @@ public class DexNumTransformer extends DexTransformer {
 				}
 
 				// check uses
-				for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-					Unit use = pair.getUnit();
+				for (Unit use : localDefs.getUsesOf(l)) {
 					Debug.printDbg("    use: ", use);
 
 					use.apply(new AbstractStmtSwitch() {
@@ -267,7 +261,7 @@ public class DexNumTransformer extends DexTransformer {
 									Type arType = ar.getType();
 									Debug.printDbg("ar: ", r, " ", arType);
 									if (arType instanceof UnknownType) {
-										arType = findArrayType(localDefs, localUses, stmt, 0, Collections.<Unit> emptySet());
+										arType = findArrayType(localDefs, stmt, 0, Collections.<Unit> emptySet());
 									}
 									Debug.printDbg(" array type:", arType);
 									usedAsFloatingPoint = isFloatingPointLike(arType);

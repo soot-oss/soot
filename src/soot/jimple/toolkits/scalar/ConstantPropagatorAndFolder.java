@@ -58,9 +58,6 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
         // Perform a constant/local propagation pass.
         Orderer<Unit> orderer = new PseudoTopologicalOrderer<Unit>();
         
-        if (b.getMethod().getSignature().equals("<java.util.concurrent.ConcurrentSkipListMap: int compare(java.lang.Object,java.lang.Object)>"))
-        	System.out.println("x");
-        
         // go through each use box in each statement
         for (Unit u : orderer.newList(g, false)) {
 
