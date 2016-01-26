@@ -58,6 +58,7 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Timer;
 import soot.Trap;
 import soot.Type;
 import soot.Unit;
@@ -72,7 +73,6 @@ import soot.dexpler.instructions.OdexInstruction;
 import soot.dexpler.instructions.PseudoInstruction;
 import soot.dexpler.instructions.RetypeableInstruction;
 import soot.dexpler.typing.DalvikTyper;
-import soot.dexpler.typing.Validate;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
@@ -87,6 +87,7 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.NeExpr;
 import soot.jimple.NullConstant;
+import soot.jimple.NumericConstant;
 import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.toolkits.base.Aggregator;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
@@ -344,6 +345,13 @@ public class DexBody  {
      * @param m the SootMethod that contains this body
      */
     public Body jimplify(Body b, SootMethod m) {
+
+		Timer t_whole_jimplification = new Timer();
+		Timer t_num = new Timer();
+		Timer t_null = new Timer();
+
+		t_whole_jimplification.start();
+
         jBody = (JimpleBody)b;
         localGenerator = new LocalGenerator(jBody);
         deferredInstructions = new ArrayList<DeferableInstruction>();
@@ -475,7 +483,7 @@ public class DexBody  {
 	       will not be split. Hence we remove all dead code here.
          */
 
-        Debug.printDbg("body before any transformation : \n", jBody);
+		Debug.printDbg("body before any transformation : ", m, "\n", jBody);
         
         Debug.printDbg("\nbefore splitting");
         Debug.printDbg("",(Body)jBody);
@@ -519,6 +527,14 @@ public class DexBody  {
 //        }
   		
         if (IDalvikTyper.ENABLE_DVKTYPER) {
+
+			DexReturnValuePropagator.v().transform(jBody);
+			getCopyPopagator().transform(jBody);
+			DexNullThrowTransformer.v().transform(jBody);
+			DalvikTyper.v().typeUntypedConstrantInDiv(jBody);
+			DeadAssignmentEliminator.v().transform(jBody);
+			UnusedLocalEliminator.v().transform(jBody);
+
           Debug.printDbg("[DalvikTyper] resolving typing constraints...");
           DalvikTyper.v().assignType(jBody);
           Debug.printDbg("[DalvikTyper] resolving typing constraints... done.");
@@ -526,19 +542,25 @@ public class DexBody  {
           jBody.validateUses();
           jBody.validateValueBoxes();
           //jBody.checkInit();
-          Validate.validateArrays(jBody);
+			//Validate.validateArrays(jBody);
           //jBody.checkTypes();
           //jBody.checkLocals();
           Debug.printDbg("\nafter Dalvik Typer");
 
         } else {
+			t_num.start();
         	DexNumTransformer.v().transform (jBody);
+			t_num.end();
         	
         	DexReturnValuePropagator.v().transform(jBody);
             getCopyPopagator().transform(jBody);
         	
         	DexNullThrowTransformer.v().transform(jBody);
+
+			t_null.start();
         	DexNullTransformer.v().transform(jBody);
+			t_null.end();
+
         	DexIfTransformer.v().transform(jBody);
         	
         	DeadAssignmentEliminator.v().transform(jBody);
@@ -591,6 +613,20 @@ public class DexBody  {
                                 continue;
                             expr.setOp2(NullConstant.v());
                         } else if (op1 instanceof Local && op2 instanceof Local) {
+							// nothing to do
+						} else if (op1 instanceof Constant && op2 instanceof Constant) {
+
+							if (op1 instanceof NullConstant && op2 instanceof NumericConstant) {
+								IntConstant nc = (IntConstant) op2;
+								if (nc.value != 0)
+									throw new RuntimeException("expected value 0 for int constant. Got " + expr);
+								expr.setOp2(NullConstant.v());
+							} else if (op2 instanceof NullConstant && op1 instanceof NumericConstant) {
+								IntConstant nc = (IntConstant) op1;
+								if (nc.value != 0)
+									throw new RuntimeException("expected value 0 for int constant. Got " + expr);
+								expr.setOp1(NullConstant.v());
+							}
                         } else {
                             throw new RuntimeException("error: do not handle if: "+ u);
                         }
@@ -720,6 +756,11 @@ public class DexBody  {
             }
         }
         
+		t_whole_jimplification.end();
+		Debug.printDbg("timer whole jimlification: ", t_whole_jimplification.getTime());
+		Debug.printDbg("timer num: ", t_num.getTime());
+		Debug.printDbg("timer null: ", t_null.getTime());
+
         return jBody;
     }
 
