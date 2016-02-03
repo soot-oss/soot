@@ -672,6 +672,9 @@ public class DexBody  {
         UnusedLocalEliminator.v().transform(jBody);
         NopEliminator.v().transform(jBody);
         
+        // Remove unnecessary chains of return statements
+        DexReturnPacker.v().transform(jBody);
+        
         for (Unit u: jBody.getUnits()) {
             if (u instanceof AssignStmt) {
                 AssignStmt ass = (AssignStmt)u;
