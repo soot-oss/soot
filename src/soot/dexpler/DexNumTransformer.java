@@ -334,7 +334,7 @@ public class DexNumTransformer extends DexTransformer {
 				Value r = a.getRightOp();
 				if ((r instanceof IntConstant || r instanceof LongConstant)) {
 					candidates.add(l);
-					Debug.printDbg("[add null candidate: ", u);
+					Debug.printDbg("[add num candidate: ", u);
 				}
 			}
 		}

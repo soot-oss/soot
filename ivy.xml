@@ -1,9 +1,17 @@
 <ivy-module version="2.0">
     <info organisation="ca.mcgill.sable" module="soot"/>
+    
+    <configurations>
+		<conf name="default" />
+ 		<conf name="sources" />
+ 		<conf name="javadoc" />
+	</configurations>
+    
     <publications>
-        <artifact name="soot" type="jar" ext="jar" />
-        <artifact name="sootjavadoc" type="javadoc" ext="jar" />
-        <artifact name="sootsources" type="source" ext="jar" />
+        <artifact name="soot" type="jar" ext="jar" conf="default" />
+        <artifact name="soot" type="pom" ext="pom" conf="default" />
+        <artifact name="sootjavadoc" type="javadoc" ext="jar" conf="javadoc" />
+        <artifact name="sootsources" type="source" ext="jar" conf="sources" />
         <!--
         <artifact name="soot" type="classes" ext="jar" />
         -->
