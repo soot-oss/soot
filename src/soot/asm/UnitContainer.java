@@ -41,6 +41,20 @@ class UnitContainer implements Unit {
 	UnitContainer(Unit... units) {
 		this.units = units;
 	}
+        
+	/**
+	 * Searches the depth of the UnitContainer until the actual first Unit
+	 * represented is found.
+	 *
+	 * @return
+	 */
+	Unit getFirstUnit() {
+		Unit ret = units[0];
+		while (ret instanceof UnitContainer) {
+			ret = ((UnitContainer) ret).units[0];
+		}
+		return ret;
+	}
 
 	@Override
 	public Object clone() {

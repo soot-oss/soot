@@ -140,15 +140,8 @@ final class StackFrame {
 						AssignStmt as = Jimple.v().newAssignStmt(stack, prevOp.value);
 						src.setUnit(prevOp.insn, as);
 					} else {
-						Unit u = src.getUnit(prevOp.insn);		// TODO: Fails with UnitContainers
-						DefinitionStmt as;
-						if (u instanceof UnitContainer) {
-							UnitContainer uc = (UnitContainer) u;
-							as = (DefinitionStmt) uc.units[0];
-						} else {
-							as = (DefinitionStmt) u;
-						}
-						
+						Unit u = src.getUnit(prevOp.insn);
+						DefinitionStmt as = (DefinitionStmt) (u instanceof UnitContainer ? ((UnitContainer) u).getFirstUnit() : u);
 						ValueBox lvb = as.getLeftOpBox();
 						assert lvb.getValue() == prevOp.stack : "Invalid stack local!";
 						lvb.setValue(stack);
@@ -163,14 +156,7 @@ final class StackFrame {
 						src.setUnit(newOp.insn, as);
 					} else {
 						Unit u = src.getUnit(newOp.insn);
-						DefinitionStmt as;
-						if (u instanceof UnitContainer) {
-							UnitContainer uc = (UnitContainer) u;
-							as = (DefinitionStmt) uc.units[0];
-						} else {
-							as = (DefinitionStmt) u;
-						}
-						
+						DefinitionStmt as = (DefinitionStmt) (u instanceof UnitContainer ? ((UnitContainer) u).getFirstUnit() : u);
 						ValueBox lvb = as.getLeftOpBox();
 						assert lvb.getValue() == newOp.stack : "Invalid stack local!";
 						lvb.setValue(stack);
