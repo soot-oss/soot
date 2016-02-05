@@ -97,7 +97,8 @@ public class ContextInsensitiveBuilder {
 		while (callEdges.hasNext()) {
 			Edge e = callEdges.next();
 			if (e.getTgt().method().getDeclaringClass().isConcrete()) {
-				MethodPAG.v(pag, e.tgt()).addToPAG(null);
+				if (e.tgt().isConcrete() || e.tgt().isNative())
+					MethodPAG.v(pag, e.tgt()).addToPAG(null);
 				pag.addCallTarget(e);
 			}
 		}
