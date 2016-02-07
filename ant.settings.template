@@ -1,5 +1,9 @@
-asm.jar=libs/asm-debug-all-5.0.3.jar
+## Location of Java 6 JRE library for the compiler's bootstrap classpath
+## The build should still succeed when not set (properly) such as
+## in case the system has no Java 6.
+jre.lib.loc=/usr/lib/jvm/java-6-openjdk-amd64/jre/lib
 
+asm.jar=libs/asm-debug-all-5.0.3.jar
 xmlprinter.jar=libs/AXMLPrinter2.jar
 
 ## Location of Polyglot classes jar file to link Soot against

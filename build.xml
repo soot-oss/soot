@@ -18,7 +18,8 @@
         />
     </target>
 
-    <target name="compile" depends="settings,sablecc,jastadd,copypeephole,settings,singletons,options">
+    <target name="compile" depends="settings,sablecc,jastadd,copypeephole,settings,singletons,options"
+	    description="Build Soot.">
     	<mkdir dir="classes"/>
         <javac
             destdir="classes"
@@ -29,7 +30,8 @@
         	target="1.6"
         	fork="true"
         	memorymaximumsize="512m"
-        >
+		bootclasspath="${jre.lib.loc}/rt.jar"
+		>
         	<compilerarg value="-Xlint:all"/>
         	<compilerarg value="-Xlint:-unchecked"/>
         	<compilerarg value="-Xlint:-serial"/>
@@ -67,6 +69,7 @@
             out="${basedir}/generated/singletons/soot/Singletons.java"
         />
     </target>
+
     <target name="singletons-dep">
         <uptodate property="singletons-uptodate" targetfile="generated/singletons/soot/Singletons.java">
             <srcfiles dir="src" includes="singletons.xml"/>
@@ -128,7 +131,8 @@
     	</copy>
     </target>
 
-    <target name="javadoc">
+    <target name="javadoc"
+	    description="Build the javadoc.">
         <javadoc
             classpath="classes:${polyglot.jar}:${jasmin.jar}:${heros.jar}"
             sourcepath="src:generated/singletons:generated/sablecc:generated/options"
@@ -144,7 +148,8 @@
 		<jar basedir="javadoc" destfile="${release.loc}/sootjavadoc-${soot.version}.jar" />
 	</target>
 
-    <target name="clean">
+    <target name="clean" depends="clean-reports"
+	    description="Delete the class files and test reports.">
         <delete quiet="true">
             <fileset dir="classes" includes="**/*.class" />
             <fileset dir="testclasses" includes="**/*.class" />
@@ -153,7 +158,14 @@
         </delete>
     </target>
 
-    <target name="veryclean" depends="clean,veryclean-singletons,veryclean-options,veryclean-sablecc,veryclean-jastadd"/>
+    <target name="clean-reports"> 
+        <delete quiet="true" includeEmptyDirs="true">
+            <fileset dir="reports"/>
+        </delete>
+    </target>
+
+    <target name="veryclean" depends="clean,veryclean-singletons,veryclean-options,veryclean-sablecc,veryclean-jastadd"
+	    description="Delete the class files, test reports, and automatically-generated source files."/>
     <target name="veryclean-singletons">
         <delete quiet="true">
             <fileset dir="generated/singletons" includes="**/*" />
@@ -194,7 +206,8 @@
         </delete>
     </target>
 
-    <target name="badfields" depends="compile,settings">
+    <target name="badfields" depends="compile,settings"
+	    description="Build BadFields: a utility for displaying various warnings about a program.">
         <java
             classname="soot.tools.BadFields"
             maxmemory="200m"
@@ -231,7 +244,8 @@
         </javac>
     </target>
 
-    <target name="runtests" depends="buildtests,settings">
+    <target name="runtests" depends="buildtests,settings"
+	    description="Run the regression test suite.">
 	<mkdir dir="reports" />
         <junit printsummary="yes" fork="true">
             <classpath>
@@ -267,7 +281,8 @@
         </junit>
     </target>
 
-    <target name="reporttests" depends="runtests">
+    <target name="reporttests" depends="runtests"
+	    description="Run the regression test suite and create its JUnit reports in reports subdirectory.">
         <junitreport tofile="TESTS-TestSuites.xml" todir="reports">
             <fileset dir="reports">
                 <include name="TEST-*.xml" />
@@ -279,7 +294,8 @@
     <target name="release" depends="barebones,javadoc,settings">
     </target>
 
-    <target name="barebones" depends="clean,options,sablecc,settings">
+    <target name="barebones" depends="clean,options,sablecc,settings"
+	    description="Build a tarball and a jar of the source root directory in the release subdirectory (usually lib).">
         <tar destfile="${release.loc}/sootsrc-${soot.version}.tar.gz" compression="gzip" longfile="gnu">
             <tarfileset dir="."/>
         </tar>
@@ -288,7 +304,8 @@
         </jar>
     </target>
 
-    <target name="classesjar" depends="settings,compile">
+    <target name="classesjar" depends="settings,compile"
+	    description="Build the class files jar in the release subdirectory (usually lib).">
     	<mkdir dir="META-INF"/>
 
         <manifest file="META-INF/MANIFEST.MF">
@@ -302,7 +319,8 @@
 		<delete dir="META-INF"/>
     </target>
 
-    <target name="eclipse-plugin" depends="compile,settings,graph-plugin">
+    <target name="eclipse-plugin" depends="compile,settings,graph-plugin"
+	    description="Build the Eclipse plugin.">
         <xslt
             style="src/soot/options/phase_options_dialog.xsl"
             in="src/soot/options/soot_options.xml"
@@ -349,7 +367,8 @@
 
     </target>
 
-	<target name="fulljar" depends="classesjar">
+	<target name="fulljar" depends="classesjar"
+		description="Build the complete jar file sootclasses-(version).jar that includes Soot's class files and its required libraries, in the release subdirectory (usually lib).">
     	<mkdir dir="META-INF"/>
 
         <manifest file="META-INF/MANIFEST.MF">
@@ -371,7 +390,8 @@
 		<delete dir="META-INF"/>
     </target>
 
-	<target name="sourcejar">
+	<target name="sourcejar"
+		description="Build the jar file sootsources-(version).jar containing only the source files, in the release subdirectory (usually lib)">
         <jar destfile="${release.loc}/sootsources-${soot.version}.jar">
             <fileset dir="src"/>
             <fileset dir="generated/singletons"/>
@@ -381,7 +401,7 @@
         </jar>
 	</target>
 
-    <!-- IVY RELATED TARGETS -->
+    <!-- IVY-RELATED TARGETS -->
 
     <target name="download-ivy" unless="offline">
 
@@ -417,7 +437,7 @@
         </ivy:publish>
     </target>
 	
-	<target name="publish-local-maven" depends="init-ivy, gen-pom, fulljar, classesjar, sourcejar, javadoc" description="publish jar/source to maven repo mounted at ~/.m2/repository">
+	<target name="publish-local-maven" depends="init-ivy, gen-pom, fulljar, classesjar, sourcejar, javadoc" description="Publish jar/source to Maven repository mounted at ~/.m2/repository.">
 		<ivy:resolve/>
 		<ivy:publish pubrevision="${soot.version}" resolver="local-m2-publish" forcedeliver="true" overwrite="true" publishivy="false">
 			<artifacts pattern="${release.loc}/[artifact]-[revision].[ext]" />
