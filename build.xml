@@ -30,7 +30,6 @@
         	target="1.6"
         	fork="true"
         	memorymaximumsize="512m"
-		bootclasspath="${jre.lib.loc}/rt.jar"
 		>
         	<compilerarg value="-Xlint:all"/>
         	<compilerarg value="-Xlint:-unchecked"/>
