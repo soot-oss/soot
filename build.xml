@@ -390,7 +390,7 @@
     </target>
 
 	<target name="sourcejar"
-		description="Build the jar file sootsources-(version).jar containing only the source files, in the release subdirectory (usually lib)">
+		description="Build the jar file sootsources-(version).jar containing only the source files, in the release subdirectory (usually lib).">
         <jar destfile="${release.loc}/sootsources-${soot.version}.jar">
             <fileset dir="src"/>
             <fileset dir="generated/singletons"/>
