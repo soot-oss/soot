@@ -31,7 +31,7 @@ release.loc=lib
 ## URL for Java API documentation, for resolving things like
 ## {@link Iterator} when generating documentation from
 ## javadoc comments.
-javaapi.url=http://java.sun.com/j2se/1.6.0/docs/api/
+javaapi.url=http://docs.oracle.com/javase/6/docs/api/
 
 ## We need a recent version of junit and hamcrest these days.
 junit.jar=libs/junit-4.11.jar
