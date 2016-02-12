@@ -97,7 +97,9 @@ public class Timer {
 		hasStarted = true;
 
 		if (!G.v().Timer_isGarbageCollecting) {
-			G.v().Timer_outstandingTimers.add(this);
+			synchronized(G.v().Timer_outstandingTimers) {
+				G.v().Timer_outstandingTimers.add(this);
+			}
 		}
 	}
 
@@ -116,7 +118,9 @@ public class Timer {
 		duration += nanoTime() - startTime;
 
 		if (!G.v().Timer_isGarbageCollecting) {
-			G.v().Timer_outstandingTimers.remove(this);
+			synchronized(G.v().Timer_outstandingTimers) {
+				G.v().Timer_outstandingTimers.remove(this);
+			}
 		}
 	}
 
