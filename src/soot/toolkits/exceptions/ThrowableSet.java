@@ -394,10 +394,14 @@ public final class ThrowableSet {
 	private Map<Object, ThrowableSet> memoizedAdds;
 
 	private ThrowableSet getMemoizedAdds(Object key) {
+		return memoizedAdds == null ? null : memoizedAdds.get(key);
+	}
+	
+	private void addToMemoizedAdds(Object key, ThrowableSet value) {
 		if (memoizedAdds == null) {
 			memoizedAdds = new HashMap<Object, ThrowableSet>();
 		}
-		return memoizedAdds.get(key);
+		memoizedAdds.put(key, value);
 	}
 
 	/**
@@ -523,7 +527,7 @@ public final class ThrowableSet {
 					RefType incumbentBase = ((AnySubType) incumbent)
 							.getBase();
 					if (hierarchy.canStoreType(e, incumbentBase)) {
-						memoizedAdds.put(e, this);
+						addToMemoizedAdds(e, this);
 						return this;
 					}
 				} else if (!(incumbent instanceof RefType)) {
@@ -537,7 +541,7 @@ public final class ThrowableSet {
 		Set<RefLikeType> resultSet = new HashSet<RefLikeType>(this.exceptionsIncluded);
 		resultSet.add(e);
 		result = Manager.v().registerSetIfNew(resultSet, this.exceptionsExcluded);
-		memoizedAdds.put(e, result);
+		addToMemoizedAdds(e, result);
 		return result;
 	}
 
@@ -687,7 +691,7 @@ public final class ThrowableSet {
 		} else {
 			result = this;
 		}
-		memoizedAdds.put(e, result);
+		addToMemoizedAdds(e, result);
 		return result;
 	}
 
@@ -723,14 +727,14 @@ public final class ThrowableSet {
 				Manager.v().addsExclusionWithoutSearch++;
 			}
 			result = this.add(s.exceptionsIncluded);
-			memoizedAdds.put(s, result);
+			addToMemoizedAdds(s, result);
 		} else if (INSTRUMENTING) {
 			Manager.v().addsInclusionFromMemo++;
 			Manager.v().addsExclusionWithoutSearch++;
 		}
 		return result;
 	}
-
+	
 	/**
 	 * Returns a <code>ThrowableSet</code> which contains all the exceptions in
 	 * <code>addedExceptions</code> in addition to those in this
@@ -833,7 +837,67 @@ public final class ThrowableSet {
 		}
 		return result;
 	}
-
+	
+	/**
+	 * Returns a <code>ThrowableSet</code> which contains all the exceptions in
+	 * this <code>ThrowableSet</code> except for those in <code>removedExceptions</code>. 
+	 *
+	 * @param removedExceptions
+	 *            a set of {@link RefLikeType} and {@link AnySubType} objects to
+	 *            be added to the types included in this
+	 *            <code>ThrowableSet</code>.
+	 *
+	 * @return a set containing all the <code>addedExceptions</code> as well as
+	 *         the exceptions in this set.
+	 */
+	private ThrowableSet remove(Set<RefLikeType> removedExceptions) {
+		// Is there anything to remove?
+		if (removedExceptions.isEmpty())
+			return this;
+		
+		int changes = 0;
+		Set<RefLikeType> resultSet = new HashSet<RefLikeType>(this.exceptionsIncluded);
+		for (RefLikeType tp : removedExceptions) {
+			if (tp instanceof RefType)
+				if (resultSet.remove(tp))
+					changes++;
+		}
+		
+		ThrowableSet result = null;
+		if (changes > 0)
+			result = Manager.v().registerSetIfNew(resultSet, this.exceptionsExcluded);
+		else
+			result = this;
+		return result;
+	}
+	
+	/**
+	 * Returns a <code>ThrowableSet</code> which contains all the exceptions from
+	 * the current set except for those in the given <code>ThrowableSet</code>.
+	 * 
+	 * @param s
+	 * 				The set containing the exceptions to exclude from the new set
+	 * 
+	 * @return
+	 * 				The exceptions that are only in this set, but not in the given set
+	 * 
+	 * @throws ThrowableSet.AlreadyHasExclusionsException
+	 *             if this <code>ThrowableSet</code> or <code>s</code> is the
+	 *             result of a {@link #whichCatchableAs(RefType)} operation, so
+	 *             that it is not possible to represent the addition of
+	 *             <code>s</code> to this <code>ThrowableSet</code>.
+	 */
+	public ThrowableSet remove(ThrowableSet s) {
+		if ((exceptionsExcluded.size() > 0) || (s.exceptionsExcluded.size() > 0)) {
+			throw new AlreadyHasExclusionsException(
+					"ThrowableSet.Add(ThrowableSet): attempt to add to ["
+							+ this.toString() + "] after removals recorded.");
+		}
+		
+		// Remove the exceptions
+		return this.remove(s.exceptionsIncluded);
+	}
+	
 	/**
 	 * Indicates whether this ThrowableSet includes some exception that might be
 	 * caught by a handler argument of the type <code>catcher</code>.

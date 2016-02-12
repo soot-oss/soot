@@ -21,6 +21,7 @@ import soot.IntType;
 import soot.Local;
 import soot.LongType;
 import soot.Modifier;
+import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -62,7 +63,7 @@ public class UnitThrowAnalysisTest {
         // test that individual arguments to invocations are being
         // examined.
 
-        ThrowableSet mightThrow(SootMethod m) {
+        protected ThrowableSet mightThrow(SootMethod m) {
             return ThrowableSet.Manager.v().EMPTY;
         }
     }
@@ -256,10 +257,10 @@ public class UnitThrowAnalysisTest {
         // local2 = local1[0]
         s = Jimple.v().newAssignStmt(scalarRef, arrayRef);
 
-        Set expectedRep = new ExceptionHashSet(utility.VM_ERRORS);
+        Set<RefLikeType> expectedRep = new ExceptionHashSet<RefLikeType>(utility.VM_ERRORS);
         expectedRep.add(utility.NULL_POINTER_EXCEPTION);
         expectedRep.add(utility.ARRAY_INDEX_OUT_OF_BOUNDS_EXCEPTION);
-        assertTrue(ExceptionTestUtility.sameMembers(expectedRep, Collections.EMPTY_SET,
+        assertTrue(ExceptionTestUtility.sameMembers(expectedRep, Collections.<AnySubType>emptySet(),
                     unitAnalysis.mightThrow(s)));
 
         Set expectedCatch = 
