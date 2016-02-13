@@ -7,6 +7,7 @@ import java.util.Set;
 
 import org.junit.Assert;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import soot.AnySubType;
@@ -45,6 +46,7 @@ public class MethodThrowableSetTest {
 	/**
 	 * Derived class to allow access to some protected members
 	 */
+	@Ignore
 	private static class ThrowAnalysisForTest extends UnitThrowAnalysis {
 	    
 		public ThrowAnalysisForTest() {

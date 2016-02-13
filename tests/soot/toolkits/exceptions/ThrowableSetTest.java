@@ -21,6 +21,7 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
 import soot.AnySubType;
+import soot.G;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
@@ -30,6 +31,7 @@ import soot.toolkits.exceptions.ExceptionTestUtility.ExceptionHashSet;
 public class ThrowableSetTest {
 
 	static {
+		G.reset();
 		Scene.v().loadBasicClasses();
 	}
 
