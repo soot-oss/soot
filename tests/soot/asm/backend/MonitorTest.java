@@ -59,8 +59,8 @@ public class MonitorTest extends AbstractASMBackendTest {
 			mv.visitTryCatchBlock(l2, l3, l2, "java/lang/Throwable");
 			mv.visitVarInsn(ALOAD, 0);
 			mv.visitFieldInsn(GETFIELD, "soot/asm/backend/targets/Monitor", "o", "Ljava/lang/Object;");
-			mv.visitInsn(DUP);
 			mv.visitVarInsn(ASTORE, 0);
+			mv.visitVarInsn(ALOAD, 0);
 			mv.visitInsn(MONITORENTER);
 			mv.visitLabel(l0);
 			mv.visitVarInsn(ALOAD, 0);
