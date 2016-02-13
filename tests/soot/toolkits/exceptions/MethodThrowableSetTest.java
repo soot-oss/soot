@@ -45,7 +45,7 @@ public class MethodThrowableSetTest {
 	/**
 	 * Derived class to allow access to some protected members
 	 */
-	private class ThrowAnalysisForTest extends UnitThrowAnalysis {
+	private static class ThrowAnalysisForTest extends UnitThrowAnalysis {
 	    
 		public ThrowAnalysisForTest() {
 			super(true);
