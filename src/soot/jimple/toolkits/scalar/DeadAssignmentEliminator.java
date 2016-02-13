@@ -116,9 +116,6 @@ public class DeadAssignmentEliminator extends BodyTransformer
 				
 		Local thisLocal = null;
 		
-		if (b.getMethod().getName().equals("foo"))
-			System.out.println("x");
-
 		for (Iterator<Unit> it = units.iterator(); it.hasNext(); ) {
 			Unit s = it.next();
 			boolean isEssential = true;
