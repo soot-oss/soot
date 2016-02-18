@@ -19,6 +19,8 @@
 
 package soot.toolkits.exceptions;
 
+import heros.solver.IDESolver;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -190,6 +192,9 @@ import soot.shimple.PhiExpr;
 import soot.shimple.ShimpleValueSwitch;
 import soot.toolkits.exceptions.ThrowableSet.Pair;
 
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+
 /**
  * A {@link ThrowAnalysis} which returns the set of runtime exceptions
  * and errors that might be thrown by the bytecode instructions
@@ -307,9 +312,16 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     protected ThrowableSet mightThrow(SootMethod sm) {
     	if (!isInterproc)
     		return ThrowableSet.Manager.v().ALL_THROWABLES;
-    	
-    	return mightThrow(sm, new HashSet<SootMethod>());
+    	return methodToThrowSet.getUnchecked(sm);
     }
+    
+	protected final LoadingCache<SootMethod,ThrowableSet> methodToThrowSet =
+			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,ThrowableSet>() {
+				@Override
+				public ThrowableSet load(SootMethod sm) throws Exception {
+					return mightThrow(sm, new HashSet<SootMethod>());
+				}
+			});
 
     /**
      * Returns the set of types that might be thrown as a result of
