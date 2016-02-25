@@ -43,6 +43,7 @@ public class Options extends OptionsBase {
     public static final int src_prec_apk = 5;
     public static final int src_prec_apk_class_jimple = 6;
     public static final int src_prec_apk_c_j = 6;
+    public static final int src_prec_cil_only = 7;
     public static final int output_format_J = 1;
     public static final int output_format_jimple = 1;
     public static final int output_format_j = 2;
@@ -377,6 +378,17 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     src_prec = src_prec_apk_c_j;
+                }
+    
+                else if( false
+                || value.equals( "cil-only" )
+                ) {
+                    if( src_prec != 0
+                    && src_prec != src_prec_cil_only ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    src_prec = src_prec_cil_only;
                 }
     
                 else {
@@ -1604,6 +1616,7 @@ public class Options extends OptionsBase {
 +padVal(" java", "Favour Java files as Soot source" )
 +padVal(" apk", "Favour APK files as Soot source" )
 +padVal(" apk-class-jimple apk-c-j", "Favour APK files as Soot source, disregard Java files" )
++padVal(" cil-only", "Take CIL disassembly files only, disregard everything else" )
 +padOpt(" -full-resolver", "Force transitive resolving of referenced classes" )
 +padOpt(" -allow-phantom-refs", "Allow unresolved classes; may cause errors" )
 +padOpt(" -no-bodies-for-excluded", "Do not load bodies for excluded classes" )

@@ -38,6 +38,7 @@ import java.util.zip.ZipFile;
 
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
+import soot.cil.CilClassProvider;
 import soot.options.Options;
 
 /** Provides utility methods to retrieve an input stream for a class name, given
@@ -50,7 +51,7 @@ public class SourceLocator
     protected Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
 	protected Set<String> classesToLoad;
 	
-	private enum ClassSourceType { jar, zip, apk, dex, directory, unknown };
+	private enum ClassSourceType { jar, zip, apk, dex, il, directory, unknown };
     
     /** Given a class name, uses the soot-class-path to return a ClassSource for the given class. */
 	public ClassSource getClassSource(String className) 
@@ -147,6 +148,9 @@ public class SourceLocator
 				classProviders.add(classFileClassProvider);
 				classProviders.add(new JimpleClassProvider());
                 break;
+            case Options.src_prec_cil_only:
+                classProviders.add(new CilClassProvider());
+                break;
             default:
                 throw new RuntimeException("Other source precedences are not currently supported.");
         }
@@ -190,6 +194,8 @@ public class SourceLocator
                 return ClassSourceType.apk;
             else if (path.endsWith(".dex"))
                 return ClassSourceType.dex;
+            else if (path.endsWith(".il"))
+                return ClassSourceType.il;
             else
                 return ClassSourceType.unknown;
         }
@@ -221,6 +227,15 @@ public class SourceLocator
 		else if (cst == ClassSourceType.dex) {
 			try {
 				classes.addAll(DexClassProvider.classesOfDex(new File(aPath)));
+			} catch (IOException e) {
+				G.v().out.println("Error reading " + aPath + ": " + e.toString());
+				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+			}
+		}
+		// Directly load an il file
+		else if (cst == ClassSourceType.il) {
+			try {
+				classes.addAll(CilClassProvider.classesOfIL(new File(aPath)));
 			} catch (IOException e) {
 				G.v().out.println("Error reading " + aPath + ": " + e.toString());
 				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
@@ -277,19 +292,23 @@ public class SourceLocator
 						int index = fileName.lastIndexOf(".class");
 						classes.add(fileName.substring(0, index));
 					}
-
-					if (fileName.endsWith(".jimple")) {
+					else if (fileName.endsWith(".jimple")) {
 						int index = fileName.lastIndexOf(".jimple");
 						classes.add(fileName.substring(0, index));
 					}
-
-					if (fileName.endsWith(".java")) {
+					else if (fileName.endsWith(".java")) {
 						int index = fileName.lastIndexOf(".java");
 						classes.add(fileName.substring(0, index));
 					}
-					if (fileName.endsWith(".dex")) {
+					else if (fileName.endsWith(".dex")) {
 						try {
 							classes.addAll(DexClassProvider.classesOfDex(element));
+						} catch (IOException e) { /* Ignore unreadable files */
+						}
+					}
+					else if (fileName.endsWith(".il")) {
+						try {
+							classes.addAll(CilClassProvider.classesOfIL(element));
 						} catch (IOException e) { /* Ignore unreadable files */
 						}
 					}
@@ -545,11 +564,15 @@ public class SourceLocator
         for (String dir : classPath) {
             FoundFile ret = null;
             ClassSourceType cst = getClassSourceType(dir);
+            File file = new File(dir);
             if(cst == ClassSourceType.zip || cst == ClassSourceType.jar) {
                 ret = lookupInArchive(dir, fileName);
             }
             else if (cst == ClassSourceType.directory) {
                 ret = lookupInDir(dir, fileName);
+            }
+            else if(cst == ClassSourceType.il && file.getName().equals(fileName)) {
+                ret = new FoundFile(file);
             }
             if( ret != null )
             	return ret;

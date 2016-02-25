@@ -159,4 +159,7 @@
   <class>soot.toolkits.scalar.SmartLocalDefsPool</class>
   <class>soot.jimple.spark.internal.PublicAndProtectedAccessibility</class>
   <class>soot.jimple.spark.internal.CompleteAccessibility</class>
+  <class>soot.cil.Cil_GenericHandler</class>
+  <class>soot.cil.CilThrowAnalysis</class>
+  <class>soot.cil.CilNameMangling</class>
 </singletons>

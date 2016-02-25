@@ -1778,4 +1778,37 @@ public class Singletons {
         return instance_soot_jimple_spark_internal_CompleteAccessibility;
     }
 
+    private soot.cil.Cil_GenericHandler instance_soot_cil_Cil_GenericHandler;
+    public soot.cil.Cil_GenericHandler soot_cil_Cil_GenericHandler() {
+        if( instance_soot_cil_Cil_GenericHandler == null ) {
+	       	synchronized (this) {
+		        if( instance_soot_cil_Cil_GenericHandler == null )
+	        		instance_soot_cil_Cil_GenericHandler = new soot.cil.Cil_GenericHandler( g );
+	       	}
+       	}
+        return instance_soot_cil_Cil_GenericHandler;
+    }
+
+    private soot.cil.CilThrowAnalysis instance_soot_cil_CilThrowAnalysis;
+    public soot.cil.CilThrowAnalysis soot_cil_CilThrowAnalysis() {
+        if( instance_soot_cil_CilThrowAnalysis == null ) {
+	       	synchronized (this) {
+		        if( instance_soot_cil_CilThrowAnalysis == null )
+	        		instance_soot_cil_CilThrowAnalysis = new soot.cil.CilThrowAnalysis( g );
+	       	}
+       	}
+        return instance_soot_cil_CilThrowAnalysis;
+    }
+
+    private soot.cil.CilNameMangling instance_soot_cil_CilNameMangling;
+    public soot.cil.CilNameMangling soot_cil_CilNameMangling() {
+        if( instance_soot_cil_CilNameMangling == null ) {
+	       	synchronized (this) {
+		        if( instance_soot_cil_CilNameMangling == null )
+	        		instance_soot_cil_CilNameMangling = new soot.cil.CilNameMangling( g );
+	       	}
+       	}
+        return instance_soot_cil_CilNameMangling;
+    }
+
 }

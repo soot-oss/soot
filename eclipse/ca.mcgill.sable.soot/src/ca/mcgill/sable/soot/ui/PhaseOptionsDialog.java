@@ -10657,6 +10657,12 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		false),
 		
+		new OptionData("CIL Disassembly",
+		"cil-only",
+		"\nTry to load classes from CIL disassembly files (output of \nildasm) and ignore everything else. ",
+		
+		false),
+		
 		};
 		
 										

@@ -551,6 +551,15 @@ files only when unable to find a class in <tt>.apk</tt> files. Never load a <tt>
 file.
 </long_desc>
 			</value>
+			<value>
+				<name>CIL Disassembly</name>
+				<alias>cil-only</alias>
+				<short_desc>Take CIL disassembly files only, disregard everything else</short_desc>
+				<long_desc>
+Try to load classes from CIL disassembly files (output of ildasm) and ignore everything
+else.
+</long_desc>
+			</value>
 		</multiopt>
 		<boolopt>
 			<name>Force complete resolver</name>
