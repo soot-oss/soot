@@ -77,10 +77,6 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 	 * @return a RefType for the given class name.
 	 */
 	public static RefType v(String className) {
-		
-		if (className.contains("....T..MainLaunc"))
-			System.out.println("x");
-		
 		RefType rt = Scene.v().getRefTypeUnsafe(className);
 		if (rt == null) {
 			rt = new RefType(className);
