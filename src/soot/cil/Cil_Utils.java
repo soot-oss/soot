@@ -459,5 +459,32 @@ class Cil_Utils {
 		
 		return list;
 	}
-		
+	
+	/**
+	 * Enumeration representing the different types of tokens that can be loaded
+	 * with the ldtoken opcode
+	 * @author sarzt
+	 *
+	 */
+	public enum TokenType {
+		MethodRef,
+		TypeRef,
+		FieldRef
+	}
+	
+	/**
+	 * Gets the type of a token that is about to be loaded using an ldtoken
+	 * instruction
+	 * @param token
+	 * @return
+	 */
+	public static TokenType getTokenType(String token) {
+		if (token.contains("("))
+			return TokenType.MethodRef;
+		else if (token.contains(":"))
+			return TokenType.FieldRef;
+		else
+			return TokenType.TypeRef;
+	}
+	
 }

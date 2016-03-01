@@ -24,6 +24,8 @@ public class CilNameMangling {
 			new HashMap<String, String>();	// A__T__=A`1<T> and A__Int__=A`1<Int>
 	private Map<String, String> dispatcherNameToMethodSig =
 			new HashMap<String, String>();	// original method signature to generated dispatcher class name
+	private Map<String, String> typeRefNameToClassSig =
+			new HashMap<String, String>();	// original class name to generated type reference struct name
 	
 	public CilNameMangling(Singletons.Global g) {
 		//
@@ -238,6 +240,8 @@ public class CilNameMangling {
 	public String createDispatcherClassName(String targetSig) {
 		String mangled = targetSig.replace(":", "_");
 		mangled = doNameMangling(mangled);
+		mangled = mangled.replace(".", "_");
+		mangled = mangled.replace(" ", "_");
 		String dispatcherClassName = "_cil_dispatch_" + mangled;
 		
 		dispatcherNameToMethodSig.put(dispatcherClassName, targetSig);
@@ -255,4 +259,25 @@ public class CilNameMangling {
 		return dispatcherNameToMethodSig.get(dispatcherClassName);
 	}
 	
+	/**
+	 * This method takes a class name and generates a name for a type reference
+	 * structure from it 
+	 * @param targetSig The target class name
+	 * @return The name of the type reference structure
+	 */
+	public String createTypeRefClassName(String targetSig) {
+		String mangled = targetSig.replace(":", "_");
+		mangled = doNameMangling(mangled);
+		mangled = mangled.replace(".", "_");
+		mangled = mangled.replace(" ", "_");
+		String dispatcherClassName = "_cil_typeref_" + mangled;
+		
+		typeRefNameToClassSig.put(dispatcherClassName, targetSig);
+		return dispatcherClassName;
+	}
+	
+	public String getTypeRefFromMangled(String mangled) {
+		return typeRefNameToClassSig.get(mangled);
+	}
+
 }

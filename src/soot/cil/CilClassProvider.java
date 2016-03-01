@@ -27,6 +27,8 @@ public class CilClassProvider implements ClassProvider {
 		// Do we have a special class?
 		if (CilDelegateClassSource.supportsClass(className))
 			return new CilDelegateClassSource(className);
+		if (CilTokenRefClassSource.supportsClass(className))
+			return new CilTokenRefClassSource(className);
 		
 		// Have we seen this class before in some assembly?
 		String assemblyName = Cil_Utils.getAssemblyForClassName(className);

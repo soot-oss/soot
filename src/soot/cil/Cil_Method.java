@@ -422,6 +422,19 @@ class Cil_Method {
 					.createDispatcherClassName(targetSig);
 			this.dependencies.add(RefType.v(dispatcherClassName));
 		}
+		else if(opcode.equals("ldtoken")) {
+			// We create a custom data structure derived from the CLR's token
+			// data structures to capture the semantics of the constant token
+			switch (Cil_Utils.getTokenType(parameters.get(0))) {
+			case TypeRef:
+				String typeRefClassName = G.v().soot_cil_CilNameMangling()
+						.createTypeRefClassName(parameters.get(0));
+				this.dependencies.add(RefType.v(typeRefClassName));
+				break;
+			default:
+				throw new RuntimeException("Unsupported token type");
+			}
+		}
 	}
 
 	public static List<String> splitMethodArguments(String param) {
