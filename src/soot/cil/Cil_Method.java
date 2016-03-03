@@ -16,6 +16,7 @@ import soot.Type;
 import soot.cil.ast.CilLocal;
 import soot.cil.ast.CilLocal.TypeFlag;
 import soot.cil.ast.CilLocalSet;
+import soot.cil.ast.CilTrap;
 import soot.util.ArraySet;
 
 import com.google.common.collect.Lists;
@@ -91,7 +92,7 @@ class Cil_Method {
 		List<Cil_Instruction> instructions = new LinkedList<Cil_Instruction>();
 		CilLocalSet locals = new CilLocalSet();
 		List<String> opcodes = new LinkedList<String>();
-		List<Cil_Trap> trapList = new LinkedList<Cil_Trap>();
+		List<CilTrap> trapList = new LinkedList<CilTrap>();
 		
 		boolean automaticGeneratedClass = false;
 		
@@ -197,7 +198,7 @@ class Cil_Method {
 		currentMethod.setSource(ms);
 	}
 	
-	private void handleExpanedTryCatch(int linePos, List<String> methodLines,  List<Cil_Trap> trapList) {
+	private void handleExpanedTryCatch(int linePos, List<String> methodLines,  List<CilTrap> trapList) {
 		
 		List<String> tryBlock = Cil_Utils.getCodeBLock(methodLines, linePos);
 		
@@ -213,7 +214,7 @@ class Cil_Method {
 		String[] handler = handlerBlock.get(0).split("\\s+");
 		String catchType = handler.length > 1 ? handler[1].trim(): null;
 		
-		Cil_Trap trap = new Cil_Trap(tryStartLabel, tryEndLablel, catchType,
+		CilTrap trap = new CilTrap(tryStartLabel, tryEndLablel, catchType,
 				handlerStartLabel, handlerEndLabel);
 		trapList.add(trap);
 	}
@@ -238,7 +239,7 @@ class Cil_Method {
 		return findFirstLabelInBlock(block);
 	}
 	
-	private void handleSingleLineTryCatch(String line, List<Cil_Trap> trapList){
+	private void handleSingleLineTryCatch(String line, List<CilTrap> trapList){
 		String[] tmp = line.split("\\s+");
 		List<String> tokens = new ArrayList<String>();
 		
@@ -256,7 +257,7 @@ class Cil_Method {
 		String catchType = tmp.length <10 ? null : tokens.get(5);
 		
 		// TODO: double-check end label
-		Cil_Trap trap = new Cil_Trap(tryStartLabel, tryEndLablel, catchType,
+		CilTrap trap = new CilTrap(tryStartLabel, tryEndLablel, catchType,
 				handlerStartLabel, "");
 		trapList.add(trap);
 	}

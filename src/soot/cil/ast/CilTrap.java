@@ -1,4 +1,4 @@
-package soot.cil;
+package soot.cil.ast;
 
 /**
  * Class representing a trap in CIL disassembly
@@ -7,14 +7,14 @@ package soot.cil;
  * @author Steven Arzt
  *
  */
-class Cil_Trap {
+public class CilTrap {
 	private String tryStartLabel; 
 	private String tryEndLablel;
 	private String catchType;
 	private String handlerStartLabel;
 	private String handlerEndLabel;
 	
-	public Cil_Trap(String tryStartLabel, String tryEndLablel,
+	public CilTrap(String tryStartLabel, String tryEndLablel,
 			String catchType, String handlerStartLabel,
 			String handlerEndLabel) {
 		this.tryStartLabel = tryStartLabel;

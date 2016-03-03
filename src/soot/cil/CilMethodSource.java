@@ -37,6 +37,7 @@ import soot.VoidType;
 import soot.cil.ast.CilLocal;
 import soot.cil.ast.CilLocal.TypeFlag;
 import soot.cil.ast.CilLocalSet;
+import soot.cil.ast.CilTrap;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.DoubleConstant;
@@ -77,14 +78,14 @@ class CilMethodSource implements MethodSource {
 	private final CilLocalSet localVars;
 	private final Map<CilLocal, Local> cilLocalsToLocals = new HashMap<CilLocal, Local>();
 	
-	private final List<Cil_Trap> traps;
+	private final List<CilTrap> traps;
 	private List<Local> parameters = new LinkedList<Local>();
 	private final List<String> paramtersNames;
 	private LocalGenerator localGenerator = null;
 	
 	CilMethodSource(List<Cil_Instruction> insns,
 			CilLocalSet localVars, 
-			List<Cil_Trap> tryCatchBlocks,
+			List<CilTrap> tryCatchBlocks,
 			List<String> paramtersNames, 
 			Map<String, String> genericFunctionType,
 			List<String> genericFunctionTypeList,
@@ -1066,7 +1067,7 @@ class CilMethodSource implements MethodSource {
 		JimpleBody jb = body; 
 		Collection<Trap> traps = jb.getTraps();
 		
-		for(Cil_Trap trap : this.traps) {
+		for(CilTrap trap : this.traps) {
 			Unit start = findNextUnitByLabel(trap.getTryStartLabel());
 			Unit end = findNextUnitByLabel(trap.getTryEndLablel()); 
 			Unit handler = findNextUnitByLabel(trap.getHandlerStartLabel());
