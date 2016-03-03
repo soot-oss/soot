@@ -417,8 +417,8 @@ class Cil_Utils {
 
 		// Extract the method name
 		String methodName = signature.substring(signature.lastIndexOf(":")+1,signature.indexOf("("));		
+		methodName = G.v().soot_cil_CilNameMangling().doNameMangling(methodName);
 		methodName = Cil_Method.renameConstructorName(methodName);
-		methodName = G.v().soot_cil_CilNameMangling().doNameMangling(methodName);		
 		signature = signature.substring(signature.indexOf("(")).trim();
 		
 		// get parameter types
@@ -428,7 +428,7 @@ class Cil_Utils {
 			token = Cil_Utils.replaceGenericPlaceholders(token);
 			parameterTypes.add(Cil_Utils.getSootType(token));
 		}
-						
+		
 		//generate mtehodRef
 		SootMethodRef method = Scene.v().makeMethodRef(declaringClass, methodName,
 				parameterTypes, retType, isStatic);

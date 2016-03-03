@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 
 import soot.G;
+import soot.cil.ast.CilClass;
 
 /**
  * Parser for the global structures in a CIL disassembly file
@@ -24,47 +25,7 @@ public class CilFileParser {
 	
 	private final File file;
 	private Map<String, CilClass> classes = new HashMap<String, CilClass>();
-	
-	/**
-	 * Class for moedellng a class inside a CIL disassembly file
-	 * 
-	 * @author Steven Arzt
-	 *
-	 */
-	class CilClass {
-		private String className;
-		private int startLine;
-		private int endLine;
 		
-		private CilClass(String className, int startLine) {
-			this(className, startLine, -1);
-		}
-		
-		public CilClass(String className, int startLine, int endLine) {
-			this.className = className;
-			this.startLine = startLine;
-			this.endLine = endLine;
-		}
-		
-		public String getClassName() {
-			return this.className;
-		}
-		
-		public int getStartLine() {
-			return this.startLine;
-		}
-		
-		public int getEndLine() {
-			return this.endLine;
-		}
-		
-		@Override
-		public String toString() {
-			return this.className;
-		}
-		
-	}
-	
 	public CilFileParser(File file) throws IOException {
 		this.file = file;
 		parse();
@@ -83,60 +44,60 @@ public class CilFileParser {
 			List<Pair<Integer, CilClass>> classStack = new ArrayList<Pair<Integer, CilClass>>();
 			int levelCounter = 0;
 			while ((line = rdr.readLine()) != null) {
-				lineNum++;
-				line = line.trim();
-				
-				// Remove comments
-				{
-					int cmtIdx = line.indexOf("//");
-					if (cmtIdx >= 0)
-						line = line.substring(0, cmtIdx);
-					if (line.isEmpty())
-						continue;
-				}
-				
-				// Scan for a class definition
-				if (line.startsWith(".class")) {
-					String[] tokens = line.split(" ");
-					for (String token : tokens)
-						if (!isReservedModifier(token)) {
-							// This is a class name. Whatever follows afterwards
-							// no longer belongs to the class name
-							String className = token;
-							if (!classStack.isEmpty() && classStack.get(0).getO1() == levelCounter - 1)
-								className = classStack.get(0).getO2().className + "$" + className;
-							
-							// We need to mangle class names for compiler-generated
-							// inner classes
-							className = G.v().soot_cil_CilNameMangling()
-									.doNameMangling(className);
-							
-							Cil_Utils.addClassToAssemblyMap(className, file.getAbsolutePath());
-							classStack.add(new Pair<Integer, CilClass>(levelCounter,
-									new CilClass(className, lineNum)));
-							break;
-						}
-				}
-				
-				// Keep the scan stack for nesting
-				for (int i = 0; i < line.length(); i++) {
-					if (line.charAt(i) == '{') {
-						if (!classStack.isEmpty() && classStack.get(0).getO1() == levelCounter) {
-							CilClass theClass = classStack.get(0).getO2();
-							theClass.startLine = lineNum + 1;
-						}
-						levelCounter++;
+				try {
+					line = line.trim();
+					
+					// Remove comments
+					{
+						int cmtIdx = line.indexOf("//");
+						if (cmtIdx >= 0)
+							line = line.substring(0, cmtIdx);
+						if (line.isEmpty())
+							continue;
 					}
-					else if (line.charAt(i) == '}') {
-						if (levelCounter == 0)
-							throw new RuntimeException("Stack underrun on line " + lineNum);
-						levelCounter--;
-						if (!classStack.isEmpty() && classStack.get(0).getO1() == levelCounter) {
-							CilClass theClass = classStack.remove(0).getO2();
-							theClass.endLine = lineNum;
-							classes.put(theClass.getClassName(), theClass);
+					
+					// Scan for a class definition
+					if (line.startsWith(".class")) {
+						String[] tokens = line.split(" ");
+						for (String token : tokens)
+							if (!isReservedModifier(token)) {
+								// This is a class name. Whatever follows afterwards
+								// no longer belongs to the class name
+								String className = token;
+								if (!classStack.isEmpty() && classStack.get(0).getO1() == levelCounter - 1)
+									className = classStack.get(0).getO2().getClassName() + "$" + className;
+								
+								// We need to mangle class names for compiler-generated
+								// inner classes
+								className = G.v().soot_cil_CilNameMangling()
+										.doNameMangling(className);
+								
+								Cil_Utils.addClassToAssemblyMap(className, file.getAbsolutePath());
+								classStack.add(new Pair<Integer, CilClass>(levelCounter,
+										new CilClass(className, lineNum)));
+								break;
+							}
+					}
+					
+					// Keep the scan stack for nesting
+					for (int i = 0; i < line.length(); i++) {
+						if (line.charAt(i) == '{') {
+							levelCounter++;
+						}
+						else if (line.charAt(i) == '}') {
+							if (levelCounter == 0)
+								throw new RuntimeException("Stack underrun on line " + lineNum);
+							levelCounter--;
+							if (!classStack.isEmpty() && classStack.get(0).getO1() == levelCounter) {
+								CilClass theClass = classStack.remove(0).getO2();
+								theClass.setEndLine(lineNum + 1);
+								classes.put(theClass.getClassName(), theClass);
+							}
 						}
 					}
+				}
+				finally {
+					lineNum++;
 				}
 			}
 			

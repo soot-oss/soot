@@ -34,6 +34,9 @@ import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
 import soot.VoidType;
+import soot.cil.ast.CilLocal;
+import soot.cil.ast.CilLocal.TypeFlag;
+import soot.cil.ast.CilLocalSet;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.DoubleConstant;
@@ -54,7 +57,6 @@ import soot.jimple.internal.JGtExpr;
 import soot.jimple.internal.JLeExpr;
 import soot.jimple.internal.JLtExpr;
 import soot.jimple.internal.JNeExpr;
-import soot.jimple.internal.JTableSwitchStmt;
 import soot.jimple.internal.JimpleLocal;
 
 import com.google.common.collect.Lists;
@@ -62,7 +64,6 @@ import com.google.common.collect.Lists;
 class CilMethodSource implements MethodSource {
 	
 	/* -state fields- */
-	private Map<Integer, Local> locals;
 	private List<Cil_BranchStmt> jumpList;
 	
 	private Map<String, Unit> units;
@@ -71,31 +72,27 @@ class CilMethodSource implements MethodSource {
 	private JimpleBody body;
 	
 	/* -const fields- */
-	private final int maxLocals;
 	private final List<Cil_Instruction> instructions;
-	private final List<String> localVars;
+	
+	private final CilLocalSet localVars;
+	private final Map<CilLocal, Local> cilLocalsToLocals = new HashMap<CilLocal, Local>();
+	
 	private final List<Cil_Trap> traps;
 	private List<Local> parameters = new LinkedList<Local>();
-	private List<Local> local_vars = new LinkedList<Local>();
-	
 	private final List<String> paramtersNames;
-	private List<String> localNames = new ArrayList<String>();
 	private LocalGenerator localGenerator = null;
 	
-	CilMethodSource(int maxLocals, List<Cil_Instruction> insns,
-			List<String> localVars, 
+	CilMethodSource(List<Cil_Instruction> insns,
+			CilLocalSet localVars, 
 			List<Cil_Trap> tryCatchBlocks,
 			List<String> paramtersNames, 
-			List<String> localNames,
 			Map<String, String> genericFunctionType,
 			List<String> genericFunctionTypeList,
 			Map<String, String> genericClassType) {
-		this.maxLocals = maxLocals;
 		this.instructions = insns;
 		this.localVars = localVars;
 		this.traps = tryCatchBlocks;
 		this.paramtersNames = paramtersNames;
-		this.localNames = localNames;
 	}
 	
 	private void addUnit(Unit unit, String label) {
@@ -103,49 +100,56 @@ class CilMethodSource implements MethodSource {
 		
 		this.body.getUnits().add(unit);
 	}
-	
-	private Local getLocal(int idx) {
-		if (idx >= maxLocals)
-			throw new IllegalArgumentException("Invalid local index: " + idx);
-		Integer i = idx;
-		Local l = locals.get(i);
-		if (l == null) {
-			String name;
-			String type = "";
-			if (localVars != null && !localVars.isEmpty()) {
-				name = "l" + idx;
-				type = localVars.get(idx);
-			} else {
-				name = "l" + idx;
-			}
-			l = Jimple.v().newLocal(name, Cil_Utils.getSootType(type));
-			locals.put(i, l);
-		}
-		return l;
-	}
-	
+		
 	private void emitLocals() {
 		JimpleBody jb = body;
 		SootMethod m = jb.getMethod();
-		Collection<Local> jbl = jb.getLocals();
 		Collection<Unit> jbu = jb.getUnits();
-		int iloc = 0;
+		
+		// Generate the "this" local if necessary. It becomes argument 0.
 		if (!m.isStatic()) {
-			Local l = getLocal(iloc++);
-			jbu.add(Jimple.v().newIdentityStmt(l,Jimple.v().newThisRef(m.getDeclaringClass().getType())));
+			Type thisType = m.getDeclaringClass().getType();
+			Local l = Jimple.v().newLocal("this", thisType);
+			jb.getLocals().add(l);
+
+			jbu.add(Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef(m.getDeclaringClass().getType())));
+			this.parameters.add(l);
 		}
-		int nrp = 0;
-		for (Object ot : m.getParameterTypes()) {
-			Type t = (Type) ot;
-			Local l = getLocal(iloc);
-			jbu.add(Jimple.v().newIdentityStmt(l,Jimple.v().newParameterRef(t, nrp++)));
-			if (Cil_Utils.isDWord(t))
-				iloc += 2; 
-			else
-				iloc++;
-		}
-		for (Local l : locals.values()){
-			jbl.add(l);
+		
+		// Create locals for all the the parameters
+		for (int i=0; i < m.getParameterTypes().size(); i++) {
+			Type type = m.getParameterType(i);
+			String name = this.paramtersNames.get(i);
+			
+			JimpleLocal local = new JimpleLocal(name, type);
+			jb.getLocals().add(local);
+
+			jbu.add(Jimple.v().newIdentityStmt(local, Jimple.v().newParameterRef(type, i)));
+			this.parameters.add(local);
+		} 
+		
+		// TODO: check doubles
+		
+		// Create the remaining locals
+		for (CilLocal local : localVars) {
+			Type type = Cil_Utils.getSootType(local.getType());
+			Local jLocal= new JimpleLocal(local.getName(), type);
+			jb.getLocals().add(jLocal);
+			cilLocalsToLocals.put(local, jLocal);
+			
+			// Value types are implicitly initialized in CIL. In Jimple, we need
+			// to make this explicit. We always call the default constructor. The
+			// CLI would instead zero out all the memory. In C#, you cannot have
+			// a custom parameterless constructor, so we fake one.
+			// Ugly: In CIL, you could have one, but it wouldn't be called on
+			// struct uses without explicitly being called :-(
+			if (type instanceof RefType && local.getTypeFlag() == TypeFlag.ValueType) {
+				RefType refType = (RefType) type;
+				jbu.add(Jimple.v().newAssignStmt(jLocal, Jimple.v().newNewExpr(refType)));
+				jbu.add(Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(jLocal,
+						Scene.v().makeConstructorRef(refType.getSootClass(),
+								Collections.<Type>emptyList()))));
+			}
 		}
 	}
 	
@@ -186,52 +190,34 @@ class CilMethodSource implements MethodSource {
 				
 				if(opcode.equals("stloc.s") || opcode.equals("stloc")) {
 					local_idx = inst.getParameters().get(0);
-					Local variable = null;
-					
-					if(!Cil_Utils.isNumeric(local_idx)){
-						for(int j=0; j<this.localNames.size(); ++j) {
-							String str = localNames.get(j);
-							if(str.equals(local_idx)) {
-								variable = this.local_vars.get(j);
-								break;
-							}
-						}
-					} else {
-						variable = this.local_vars.get(Integer.parseInt(local_idx));
-					}
-				
+					CilLocal cilLocal = Cil_Utils.isNumeric(local_idx)
+							? localVars.getLocalByID(Integer.parseInt(local_idx))
+									: localVars.getLocalByName(local_idx);
+										
+					Local variable = cilLocalsToLocals.get(cilLocal);				
 					this.addUnit(this.handleStore(rvalue, variable),label);
 				} else if (opcode.startsWith("stloc.")) {
-					local_idx = String.valueOf(opcode.charAt(opcode.length()-1)); 
-					Local variable = this.local_vars.get(Integer.parseInt(local_idx));
+					local_idx = String.valueOf(opcode.charAt(opcode.length()-1));
+					CilLocal cilLocal = localVars.getLocalByID(Integer.parseInt(local_idx));
+					Local variable = cilLocalsToLocals.get(cilLocal);
 					this.addUnit(this.handleStore(rvalue, variable),label);
 				} 
 			} else if(opcode.startsWith("ldloc")) {
-				Local l = null;
-				String idx_local;
-				
 				// We do not distinguish between address and content loads yet
 				if(opcode.equals("ldloc.s") || opcode.equals("ldloc")
 						|| opcode.equals("ldloca") || opcode.equals("ldloca.s")) {
-					idx_local = inst.getParameters().get(0);
-					
-					if(!Cil_Utils.isNumeric(idx_local)){
-						for(int j=0; j<this.localNames.size(); ++j) {
-							String s = this.localNames.get(j);
-							if(s.equals(idx_local)) {
-								l = this.local_vars.get(j);
-								break;
-							}
-						}
-					} else {
-						l = this.local_vars.get(Integer.parseInt(idx_local));
-					}
-					stack.push(l);
+					String idx_local = inst.getParameters().get(0);
+					CilLocal cilLocal = Cil_Utils.isNumeric(idx_local)
+							? localVars.getLocalByID(Integer.parseInt(idx_local))
+									: localVars.getLocalByName(idx_local);
+										
+					Local variable = cilLocalsToLocals.get(cilLocal);				
+					stack.push(variable);
 				} else if(opcode.startsWith("ldloc.")) {
-					
-					int idx = Character.getNumericValue(opcode.charAt(opcode.length()-1)); 
-					l = this.local_vars.get(idx);
-					stack.push(l);
+					String local_idx = String.valueOf(opcode.charAt(opcode.length()-1));
+					CilLocal cilLocal = localVars.getLocalByID(Integer.parseInt(local_idx));
+					Local variable = cilLocalsToLocals.get(cilLocal);
+					stack.push(variable);
 				}
 			} else if(opcode.startsWith("ldarg")) {
 				String variable;
@@ -701,14 +687,15 @@ class CilMethodSource implements MethodSource {
 				List<String> targetLabels = getSwitchTargetLabes(parameters.get(0));
 				
 				Value var = stack.pop();
-						
-				List<String> params2 = inst_next.getParameters();
-				String defaultTargetLabel = params2.get(0);
 				
 				Unit placeholderUnit = Jimple.v().newNopStmt();
 				this.addUnit(placeholderUnit, label);
-				 
-				Cil_SwitchStmtWrapper stmt = new Cil_SwitchStmtWrapper(targetLabels, defaultTargetLabel, placeholderUnit, var, label);
+				
+				Unit afterUnit = Jimple.v().newNopStmt();
+				body.getUnits().add(afterUnit);
+				
+				Cil_SwitchStmtWrapper stmt = new Cil_SwitchStmtWrapper(targetLabels,
+						afterUnit, placeholderUnit, var, label);
 				this.switchStmts.add(stmt);
 				
 			} else if(opcode.equals("newarr")) { 
@@ -840,7 +827,6 @@ class CilMethodSource implements MethodSource {
 					stack.push(value); 
 				}
 			} else if(opcode.equals("dup")) {
-				//TODO test
 				Value var = stack.pop();
 				stack.push(var);
 				stack.push(var);
@@ -868,12 +854,9 @@ class CilMethodSource implements MethodSource {
 					Type parameterType = super_method.getParameterType(j-1);
 					if(l.getType().equals(parameterType)) {
 						args.add(l);
-					} else {
-						int idx = this.local_vars.size();
-						Local tmp = Jimple.v().newLocal("l"+idx, parameterType);
-						this.body.getLocals().add(tmp);
-						this.local_vars.add(tmp);
-						
+					}
+					else {
+						Local tmp = localGenerator.generateLocal(parameterType);
 						Value u2 = Jimple.v().newCastExpr(tmp, parameterType);
 						Unit u = Jimple.v().newAssignStmt(tmp, u2);
 						this.addUnit(u, label);
@@ -882,7 +865,7 @@ class CilMethodSource implements MethodSource {
 					}
 				}
 				
-				Local base = this.locals.get(0); 
+				Local base = body.getThisLocal(); 
 				Value value = Jimple.v().newSpecialInvokeExpr(base, methodRef, args);
 				
 				
@@ -892,20 +875,12 @@ class CilMethodSource implements MethodSource {
 					Unit retUnit = Jimple.v().newReturnVoidStmt();
 					this.addUnit(retUnit, label);
 				} else {
-					int idx = this.local_vars.size();
-					Local tmp = Jimple.v().newLocal("l"+idx, method.getReturnType());
-					this.body.getLocals().add(tmp);
-					this.local_vars.add(tmp);
-					
+					Local tmp = localGenerator.generateLocal(method.getReturnType());
 					if(super_method.getReturnType().equals(method.getReturnType())) {						
 						Unit u = Jimple.v().newAssignStmt(tmp, value);
 						this.addUnit(u, label);
 					} else {
-						idx = this.local_vars.size();
-						Local tmp2 = Jimple.v().newLocal("l"+idx, super_method.getReturnType());
-						this.body.getLocals().add(tmp2);
-						this.local_vars.add(tmp2);
-						
+						Local tmp2 = localGenerator.generateLocal(super_method.getReturnType());						
 						Unit u = Jimple.v().newAssignStmt(tmp2, value);
 						Value u2 = Jimple.v().newCastExpr(tmp2, method.getReturnType());
 						Unit u3 = Jimple.v().newAssignStmt(tmp, u2);
@@ -921,6 +896,35 @@ class CilMethodSource implements MethodSource {
 			else if(opcode.equals("ldftn")) {
 				emitUnitsLDFTN(stack, inst);
 			}
+			else if(opcode.equals("ldtoken")) {
+				// Get the target data structure
+				String refClassName = "";
+				switch (Cil_Utils.getTokenType(parameters.get(0))) {
+				case TypeRef:
+					refClassName = G.v().soot_cil_CilNameMangling()
+							.createMethodRefClassName(parameters.get(0));
+					break;
+				case MethodRef:
+					refClassName = G.v().soot_cil_CilNameMangling()
+							.createMethodRefClassName(parameters.get(0));
+					break;
+				case FieldRef:
+					refClassName = G.v().soot_cil_CilNameMangling()
+							.createFieldRefClassName(parameters.get(0));
+					break;
+				default:
+					throw new RuntimeException("Unsupported token type");
+				}
+				
+				// Create an instance of the correct data structure
+				RefType tp = (RefType) Cil_Utils.getSootType(refClassName);
+				Local refLocal = localGenerator.generateLocal(tp);
+				body.getUnits().add(Jimple.v().newAssignStmt(refLocal, Jimple.v().newNewExpr(tp)));
+				body.getUnits().add(Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(refLocal,
+						Scene.v().makeConstructorRef(tp.getSootClass(), Collections.<Type>emptyList()))));
+				stack.push(refLocal);
+			}
+
 			else {
 				System.out.println("Unknown Opcode: " + opcode);
 			}
@@ -975,7 +979,7 @@ class CilMethodSource implements MethodSource {
 			isStatic = false;
 		}
 		
-		SootMethodRef method = getMethodRef(parameters, isStatic); 
+		SootMethodRef method = getMethodRef(parameters, isStatic);
 		int numberOfParameter = method.parameterTypes().size();
 		
 		List<Value> args = new ArrayList<Value>(numberOfParameter);
@@ -984,11 +988,23 @@ class CilMethodSource implements MethodSource {
 			args.add(stack.pop());
 		}
 		
-		//reverse argsList
+		// Reverse argument list
 		args = Lists.reverse(args);
 		Value value = null;
-		if(method.name().equals(".ctor")) {
+		
+		// Special handling for constructors. Classes are created using
+		// "newobj".
+		if (method.name().equals(".ctor")
+				|| method.name().equals("<init>")) {
 			Local base = (Local) stack.pop();
+			
+			// Make sure to also assign the object instance
+			String className = parameters.get(parameters.size() - 1);
+			className = className.substring(0, className.indexOf("::"));
+			body.getUnits().add(Jimple.v().newAssignStmt(base, Jimple.v().newNewExpr(
+					(RefType) Cil_Utils.getSootType(className))));
+			
+			// Then call the constructor
 			value = Jimple.v().newSpecialInvokeExpr(base, method, args);
 		}
 		else if (method.isStatic() || isStatic) {
@@ -1069,15 +1085,11 @@ class CilMethodSource implements MethodSource {
 			traps.add(t);
 			
 			// create caughtException statement
-			Type type = exceptionClass.getType();
-			int idx = this.local_vars.size();
-			Local tmp = Jimple.v().newLocal("ex"+idx, type);
+			Local tmp = localGenerator.generateLocal(exceptionClass.getType());
 			
 			Value a = Jimple.v().newCaughtExceptionRef();
 			Unit u = Jimple.v().newIdentityStmt(tmp, a);
 			this.body.getUnits().insertBefore(u, handler);
-			this.body.getLocals().add(tmp);
-			this.local_vars.add(tmp);
 			
 			// If we have a "finally" block, we need to duplicate it so that
 			// it also gets executed if no exception is thrown
@@ -1122,8 +1134,7 @@ class CilMethodSource implements MethodSource {
 	private void updateSwitch() {
 		for(Cil_SwitchStmtWrapper switchWrapper : this.switchStmts) {
 			Unit placeholderUnit = switchWrapper.getPlaceholder();
-			
-			Unit defaultTarget = findNextUnitByLabel(switchWrapper.getDefaultTarget());
+			Unit defaultTarget = switchWrapper.getDefaultTarget();
 			
 			List<Unit> targetList = new ArrayList<Unit>();
 			for(String targetLabel: switchWrapper.getTargetLabels()) {
@@ -1131,12 +1142,12 @@ class CilMethodSource implements MethodSource {
 				targetList.add(target);
 			}
 			
-			Unit value = new JTableSwitchStmt(switchWrapper.getVariable(), 0, switchWrapper.getTargetLabels().size()-1, targetList, defaultTarget);
+			Unit value = Jimple.v().newTableSwitchStmt(switchWrapper.getVariable(),
+					0, switchWrapper.getTargetLabels().size()-1, targetList, defaultTarget);
 			
 			this.units.put(switchWrapper.getLabel(), value);
 			
-			this.body.getUnits().insertBefore(value, placeholderUnit);
-			this.body.getUnits().remove(placeholderUnit);
+			this.body.getUnits().swapWith(placeholderUnit, value);
 		}
 	}
 	
@@ -1254,13 +1265,8 @@ class CilMethodSource implements MethodSource {
 		return str.trim();
 	}
 		
-	private void createLocalForChainedStamt(Deque<Value> stack, Value v, Type type, String label) {
-		
-		int idx = this.local_vars.size();
-		Local tmp = Jimple.v().newLocal("l"+idx, type);
-		this.body.getLocals().add(tmp);
-		this.local_vars.add(tmp);
-		
+	private void createLocalForChainedStamt(Deque<Value> stack, Value v, Type type, String label) {		
+		Local tmp = localGenerator.generateLocal(type);
 		stack.push(tmp);
 		this.addUnit(this.handleStore(v, tmp),label);
 	}
@@ -1281,42 +1287,7 @@ class CilMethodSource implements MethodSource {
 		u = Jimple.v().newAssignStmt(variable, rvalue);
 		return u;
 	}
-	
-	void convert() {
-		int key = 0;
 		
-		//locals
-		if(!this.body.getMethod().isStatic()) {
-			String name = "this";
-			JimpleLocal local = new JimpleLocal(name, this.body.getMethod().getDeclaringClass().getType());
-			this.locals.put(key, local);
-			this.parameters.add(local);
-			++key;
-		}
-		SootMethod m = this.body.getMethod();
-		
-		
-		for(int i=0; i<m.getParameterTypes().size(); ++i) {
-			Type type = m.getParameterType(i);
-			String name = this.paramtersNames.get(i);
-		
-			JimpleLocal local = new JimpleLocal(name, type);
-			this.locals.put(key, local);
-			this.parameters.add(local);
-			++key;
-		} 
-		
-		for(int i=0; i<this.localVars.size(); ++i) {
-			String local_type = this.localVars.get(i);
-			String name = this.localNames.get(i);
-			Type type = Cil_Utils.getSootType(local_type);
-			JimpleLocal local = new JimpleLocal(name,type);
-			this.locals.put(key, local);
-			this.local_vars.add(local);
-			++key;
-		}
-	}
-	
 	@Override
 	public Body getBody(SootMethod m, String phaseName) {
 		if (!m.isConcrete())
@@ -1325,46 +1296,22 @@ class CilMethodSource implements MethodSource {
 		JimpleBody jb = Jimple.v().newBody(m);
 		/* initialize */
 		int nrInsn = instructions.size();
-		//nextLocal = maxLocals;
-		locals = new HashMap<Integer, Local>(maxLocals + (maxLocals / 2));
-		//labels = new HashMap<String, Unit>();
 		units = new HashMap<String, Unit>(nrInsn);
 		jumpList = new ArrayList<Cil_BranchStmt>();
 		switchStmts = new ArrayList<Cil_SwitchStmtWrapper>();
 		
 		body = jb;
 		localGenerator = new LocalGenerator(jb);
-		/* convert instructions */
-		try {
-			convert();
-		} catch (Throwable t) {
-			throw new RuntimeException("Failed to convert " + m, t);
-		}
 		
 		/* build body (add units, locals, traps, etc.) */
 		emitLocals();
-		
 		emitUnits();
 		emitTraps();
 		
 		/* clean up */
-		locals = null;
-		//labels = null;
-		//units = null;
-		//stack = null;
-		//frames = null;
 		body = null;
 		jumpList = null;
 		switchStmts = null;
-		// Make sure to inline patterns of the form to enable proper variable
-		// splitting and type assignment:
-		// a = new A();
-		// goto l0;
-		// l0:
-		// 	b = (B) a;
-		// 	return b;
-		
-		//castAndReturnInliner.transform(jb);
 		
 		try {
 	       // PackManager.v().getPack("jb").apply(jb);

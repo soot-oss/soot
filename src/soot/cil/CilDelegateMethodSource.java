@@ -61,8 +61,6 @@ class CilDelegateMethodSource implements MethodSource {
 				return null;
 		}
 		
-		// dispatcher: constructor, setter, invoke
-		
 		return jb;
 	}
 

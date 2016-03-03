@@ -8,11 +8,11 @@ import soot.Value;
 class Cil_SwitchStmtWrapper {
 	private List<String> targetLabels;
 	private Unit placeholder;
-	private String defaultTarget;
+	private Unit defaultTarget;
 	private Value variable;
 	private String label;
 	
-	public Cil_SwitchStmtWrapper(List<String> targetLabels, String defaultTarget, Unit placeholder, Value variable, String label) {
+	public Cil_SwitchStmtWrapper(List<String> targetLabels, Unit defaultTarget, Unit placeholder, Value variable, String label) {
 		this.targetLabels = targetLabels;
 		this.placeholder = placeholder;
 		this.defaultTarget = defaultTarget;
@@ -43,11 +43,11 @@ class Cil_SwitchStmtWrapper {
 		this.placeholder = placeholder;
 	}
 
-	public String getDefaultTarget() {
+	public Unit getDefaultTarget() {
 		return defaultTarget;
 	}
 
-	public void setDefaultTarget(String defaultTarget) {
+	public void setDefaultTarget(Unit defaultTarget) {
 		this.defaultTarget = defaultTarget;
 	}
 

@@ -26,6 +26,10 @@ public class CilNameMangling {
 			new HashMap<String, String>();	// original method signature to generated dispatcher class name
 	private Map<String, String> typeRefNameToClassSig =
 			new HashMap<String, String>();	// original class name to generated type reference struct name
+	private Map<String, String> methodRefNameToClassSig =
+			new HashMap<String, String>();	// original class name to generated type reference struct name
+	private Map<String, String> fieldRefNameToClassSig =
+			new HashMap<String, String>();	// original class name to generated type reference struct name
 	
 	public CilNameMangling(Singletons.Global g) {
 		//
@@ -230,6 +234,20 @@ public class CilNameMangling {
 	public String getOriginalNameFromMangled(String mangledName) {
 		return generatedNameToActualNameMap.get(mangledName);
 	}
+	
+	/**
+	 * Performs basic string mangling that is independent of the concrete use
+	 * case
+	 * @param str The input string
+	 * @return The mangled string
+	 */
+	private String doBaseMangling(String str) {
+		String mangled = str.replace(":", "_");
+		mangled = doNameMangling(mangled);
+		mangled = mangled.replace(".", "_");
+		mangled = mangled.replace(" ", "_");
+		return mangled;
+	}
 
 	/**
 	 * This method takes a method signature and creates a valid name for a
@@ -238,10 +256,7 @@ public class CilNameMangling {
 	 * @return The name of the dispatcher class
 	 */
 	public String createDispatcherClassName(String targetSig) {
-		String mangled = targetSig.replace(":", "_");
-		mangled = doNameMangling(mangled);
-		mangled = mangled.replace(".", "_");
-		mangled = mangled.replace(" ", "_");
+		String mangled = doBaseMangling(targetSig);
 		String dispatcherClassName = "_cil_dispatch_" + mangled;
 		
 		dispatcherNameToMethodSig.put(dispatcherClassName, targetSig);
@@ -266,18 +281,69 @@ public class CilNameMangling {
 	 * @return The name of the type reference structure
 	 */
 	public String createTypeRefClassName(String targetSig) {
-		String mangled = targetSig.replace(":", "_");
-		mangled = doNameMangling(mangled);
-		mangled = mangled.replace(".", "_");
-		mangled = mangled.replace(" ", "_");
+		String mangled = doBaseMangling(targetSig);
 		String dispatcherClassName = "_cil_typeref_" + mangled;
 		
 		typeRefNameToClassSig.put(dispatcherClassName, targetSig);
 		return dispatcherClassName;
 	}
 	
+	/**
+	 * Gets the original reference for which the given mangled name was created
+	 * @param mangled The mangled class name
+	 * @return The original reference for which the given mangled name was
+	 * created
+	 */
 	public String getTypeRefFromMangled(String mangled) {
 		return typeRefNameToClassSig.get(mangled);
+	}
+
+	/**
+	 * This method takes a method name and generates a name for a type reference
+	 * structure from it 
+	 * @param targetSig The target method name
+	 * @return The name of the type reference structure
+	 */
+	public String createMethodRefClassName(String targetSig) {
+		String mangled = doBaseMangling(targetSig);
+		String dispatcherClassName = "_cil_methodref_" + mangled;
+		
+		methodRefNameToClassSig.put(dispatcherClassName, targetSig);
+		return dispatcherClassName;
+	}
+	
+	/**
+	 * Gets the original reference for which the given mangled name was created
+	 * @param mangled The mangled class name
+	 * @return The original reference for which the given mangled name was
+	 * created
+	 */
+	public String getMethodRefFromMangled(String mangled) {
+		return methodRefNameToClassSig.get(mangled);
+	}
+
+	/**
+	 * This method takes a field name and generates a name for a type reference
+	 * structure from it 
+	 * @param targetSig The target field name
+	 * @return The name of the type reference structure
+	 */
+	public String createFieldRefClassName(String targetSig) {
+		String mangled = doBaseMangling(targetSig);
+		String dispatcherClassName = "_cil_fieldref_" + mangled;
+		
+		fieldRefNameToClassSig.put(dispatcherClassName, targetSig);
+		return dispatcherClassName;
+	}
+	
+	/**
+	 * Gets the original reference for which the given mangled name was created
+	 * @param mangled The mangled class name
+	 * @return The original reference for which the given mangled name was
+	 * created
+	 */
+	public String getFieldRefFromMangled(String mangled) {
+		return fieldRefNameToClassSig.get(mangled);
 	}
 
 }

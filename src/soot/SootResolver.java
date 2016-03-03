@@ -125,7 +125,7 @@ public class SootResolver {
 	 * */
 	public SootClass resolveClass(String className, int desiredLevel) {
 		SootClass resolvedClass = null;
-		try {
+		try {			
 			resolvedClass = makeClassRef(className);
 			addToResolveWorklist(resolvedClass, desiredLevel);
 			processResolveWorklist();

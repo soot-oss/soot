@@ -352,7 +352,7 @@ public class Cil_GenericHandler {
 			List<String> genericReplacmentTypes = Cil_Method.splitMethodArguments(generic);
 			
 			functionSignature = functionSignature.substring(0, functionSignature.indexOf(" ")) + " " + functionSignature.substring(functionSignature.lastIndexOf(":")+1,functionSignature.length());
-			Cil_Method method = new Cil_Method(genericMap, sootClass, genericReplacmentTypes);
+			Cil_Method method = new Cil_Method(genericMap, genericReplacmentTypes);
 			method.parse(method_lines);
 			sootClass.addMethod(method.getSootMethod());
 		}

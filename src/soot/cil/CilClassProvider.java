@@ -11,7 +11,7 @@ import soot.ClassProvider;
 import soot.ClassSource;
 import soot.SourceLocator;
 import soot.SourceLocator.FoundFile;
-import soot.cil.CilFileParser.CilClass;
+import soot.cil.ast.CilClass;
 
 /**
  * 

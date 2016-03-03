@@ -6,19 +6,21 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import soot.G;
 import soot.RefType;
-import soot.Scene;
-import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
+import soot.cil.ast.CilLocal;
+import soot.cil.ast.CilLocal.TypeFlag;
+import soot.cil.ast.CilLocalSet;
 import soot.util.ArraySet;
 
 import com.google.common.collect.Lists;
 
 class Cil_Method {
-	private SootClass sootClass;
 	private String methodName;
 	private SootMethod currentMethod;
 	private int modifiers = 0;
@@ -29,7 +31,6 @@ class Cil_Method {
 	private List<Type> parameterTypes = new LinkedList<Type>();
 	
 	private List<String> parameterNames = new LinkedList<String>();
-	private List<String> localNames = new LinkedList<String>();
 	
 	private Set<Type> dependencies = new ArraySet<Type>();
 	
@@ -41,16 +42,14 @@ class Cil_Method {
 	
 	boolean generatedMethod = false;
 	
-	public Cil_Method(Map<String, String> genericMap, SootClass sootClass) {
+	public Cil_Method(Map<String, String> genericMap) {
 		this.genericType = genericMap;
-		this.sootClass = sootClass;
 	}
 	
 	// TODO change this function.
 	// genericReplacmentTypes is not used yet
-	public Cil_Method(Map<String, String> genericMap, SootClass sootClass, List<String> genericReplacmentTypes) {
+	public Cil_Method(Map<String, String> genericMap, List<String> genericReplacmentTypes) {
 		this.genericType = genericMap;
-		this.sootClass = sootClass;
 		this.genericReplacmentTypes = genericReplacmentTypes;
 		this.generatedMethod = true;
 	}
@@ -90,7 +89,7 @@ class Cil_Method {
 		List<String> headerLines = Cil_Utils.getHeader(method_lines);
 		this.parseHeader(headerLines);
 		List<Cil_Instruction> instructions = new LinkedList<Cil_Instruction>();
-		List<String> locals = new LinkedList<String>();
+		CilLocalSet locals = new CilLocalSet();
 		List<String> opcodes = new LinkedList<String>();
 		List<Cil_Trap> trapList = new LinkedList<Cil_Trap>();
 		
@@ -107,16 +106,15 @@ class Cil_Method {
 			}
 		}
 		
+		List<String> localLines = new LinkedList<String>();
 		if(!automaticGeneratedClass) {
 			for(int i=headerLines.size(); i<method_lines.size(); ++i) {
 				String line = method_lines.get(i).trim();
 				
-				if(line.startsWith("//")) {
-					// not implemented
-				} else if(line.startsWith(".entrypoint")) {
-					Scene.v().setMainClass(this.sootClass);
+				if(line.startsWith(".entrypoint")) {
+					// ignored
 				} else if(line.startsWith(".maxstack")) {
-					// not implemented
+					// ignored
 				} else if(line.startsWith(".locals")) {
 					int counter = 0;
 					do {
@@ -127,7 +125,7 @@ class Cil_Method {
 						
 						line = Cil_Utils.removeComments(line);
 						if(!line.isEmpty()){
-							locals.add(line);
+							localLines.add(line);
 						}
 						counter++;
 					} while(line.endsWith(","));
@@ -176,11 +174,14 @@ class Cil_Method {
 					}
 				}
 			}
-			localNames = parseLocalNames(locals);
-			locals = parseLocals(locals);
 			
+			// Parse the local definitions
+			locals = parseLocals(localLines);
+			
+			// Parse the actual code
 			instructions = parseOpcodes(opcodes);
-		} else {
+		}
+		else {
 			String label = "IL_0000";
 			String opcode = "generic";
 			List<String> param = new ArrayList<String>();
@@ -190,26 +191,12 @@ class Cil_Method {
 		currentMethod = new SootMethod(methodName, parameterTypes, returnType);
 		currentMethod.setModifiers(modifiers);		
 		
-		CilMethodSource ms = new CilMethodSource(100, instructions, locals,
-				trapList, parameterNames, localNames, this.genericFunctionType,
+		CilMethodSource ms = new CilMethodSource(instructions, locals,
+				trapList, parameterNames, this.genericFunctionType,
 				this.genericFunctionTypeList, this.genericType);
 		currentMethod.setSource(ms);
 	}
 	
-	private List<String> parseLocalNames(List<String> locals) { 
-		List<String> list = new ArrayList<String>();
-		for(String s : locals) {
-			String[] tmp = s.split("\\s+");
-			String name = tmp[tmp.length-1];
-			name = name.replace(",", "");
-			name = name.replace(")", "");
-			name = name.replace("(", "");
-			name = name.trim();
-			list.add(name);
-		}
-		return list;
-	}
-
 	private void handleExpanedTryCatch(int linePos, List<String> methodLines,  List<Cil_Trap> trapList) {
 		
 		List<String> tryBlock = Cil_Utils.getCodeBLock(methodLines, linePos);
@@ -431,9 +418,22 @@ class Cil_Method {
 						.createTypeRefClassName(parameters.get(0));
 				this.dependencies.add(RefType.v(typeRefClassName));
 				break;
+			case MethodRef:
+				String methodRefClassName = G.v().soot_cil_CilNameMangling()
+						.createMethodRefClassName(parameters.get(0));
+				this.dependencies.add(RefType.v(methodRefClassName));
+				break;
+			case FieldRef:
+				String fieldRefClassName = G.v().soot_cil_CilNameMangling()
+						.createFieldRefClassName(parameters.get(0));
+				this.dependencies.add(RefType.v(fieldRefClassName));
+				break;
 			default:
 				throw new RuntimeException("Unsupported token type");
 			}
+		}
+		else if(opcode.equals("box")) {
+			this.dependencies.add(Cil_Utils.getSootType(parameters.get(0)));
 		}
 	}
 
@@ -461,22 +461,32 @@ class Cil_Method {
 		return argmunets;
 	}
 	
-	private List<String> parseLocals(List<String> locals) {
-		List<String> list = new LinkedList<String>();
-		for(String str : locals) {
-			str = Cil_Utils.removeTypePrefixes(str);
-			str = str.replace(")", "");
-			str = str.replace("(", "");
-			str = str.trim();
-			
-			str = Cil_Utils.replaceGenericPlaceholders(str);		
-			String [] tokens = str.split("\\s+");
-			String type;
+	private CilLocalSet parseLocals(List<String> locals) {
+		Pattern pattern = Pattern.compile("[\\.locals init\\s*\\(]?\\s*\\[(\\w+)\\]\\s*(\\w+)\\s+([\\w\\.]+)\\s+(\\w+)\\s*,?");
 		
-			type = tokens[tokens.length-2];
+		CilLocalSet list = new CilLocalSet();
+		for(String str : locals) {
+			str = Cil_Utils.replaceGenericPlaceholders(str);
+			Matcher matcher = pattern.matcher(str);
+			matcher.find();
 			
+			String strId = matcher.group(1);
+			int id = Integer.parseInt(strId);
+			
+			String strTypeFlag = matcher.group(2);
+			TypeFlag flag;
+			if (strTypeFlag.equals("valuetype"))
+				flag = TypeFlag.ValueType;
+			else if (strTypeFlag.equals("class"))
+				flag = TypeFlag.Class;
+			else
+				throw new RuntimeException("Invalid type flag: " + strTypeFlag);
+			
+			String type = matcher.group(3);
+			String name = matcher.group(4);
 			type = G.v().soot_cil_CilNameMangling().doNameMangling(type);
-			list.add(type);
+			
+			list.add(new CilLocal(id, name, type, flag));
 		}
 		return list;
 	}

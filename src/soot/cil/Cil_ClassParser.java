@@ -62,8 +62,10 @@ class Cil_ClassParser {
 		return isGenericClass;
 	}
 
-	public void parseHeader() {
+	private void parseHeader() {
 		List<String> header = Cil_Utils.getHeader(class_lines);
+		if (header.isEmpty())
+			return;
 
 		this.bodyLinesOffset = header.size();
 		int modifiers = 0;
@@ -119,16 +121,7 @@ class Cil_ClassParser {
 //		firstLine = Cil_Utils.removeGenericContrained(firstLine);
 
 		String[] tokens = firstLine.split("\\s+");
-		String className = tokens[tokens.length - 1];
-
-		//
-		if (className.startsWith("'")) {
-			className = className.replace("'", "");
-			className = className.replace("<>", "");
-			//className = className.replace("<", "__");
-			//className = className.replace(">", "__");
-		}
-		
+				
 		// check if class is a generic
 		if (className.contains("`") || className.contains("<")) {
 			this.isGenericClass = true; 
@@ -146,7 +139,6 @@ class Cil_ClassParser {
 		if (this.isGenericClass()) {
 			this.genericMap = generateGenericTypMap();
 		}
-
 		// parse class attributes
 		for (String s : tokens) {
 			s = Cil_Utils.removeComments(s);
@@ -170,7 +162,7 @@ class Cil_ClassParser {
 			// handle generic super class
 			superClassName = G.v().soot_cil_CilNameMangling().doNameMangling(superClassName);
 			
-			SootClass superClass = ((RefType) Cil_Utils.getSootType(className)).getSootClass();
+			SootClass superClass = ((RefType) Cil_Utils.getSootType(superClassName)).getSootClass();
 			this.sootClass.setSuperclass(superClass);
 		}
 		else if (this.isGeneratedGenericClass) {
@@ -240,12 +232,13 @@ class Cil_ClassParser {
 		this.parseBody();
 	}
 
-	public void parseBody() {
+	private void parseBody() {
 		for (int i = bodyLinesOffset; i < class_lines.size(); ++i) {
 			String line = class_lines.get(i).trim();
+			
 			// handle methods
 			if (line.startsWith(".method")) {
-				Cil_Method method = new Cil_Method(genericMap, this.sootClass);
+				Cil_Method method = new Cil_Method(genericMap);
 
 				List<String> method_lines = Cil_Utils.getCodeBLock(class_lines, i);
 				method.parse(method_lines);

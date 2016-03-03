@@ -6,13 +6,16 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import soot.ClassSource;
+import soot.PrimType;
 import soot.SootClass;
 import soot.Type;
-import soot.cil.CilFileParser.CilClass;
+import soot.VoidType;
+import soot.cil.ast.CilClass;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
 
@@ -88,7 +91,7 @@ class CilClassSource extends ClassSource {
 		parser.parse();
 
 		Set<Type> depen = parser.getDependencies();		
-		depen = removePrimitiveTypesFromDependencies(depen);
+		removePrimitiveTypesFromDependencies(depen);
 
 		deps.typesToSignature.addAll(depen);
 		return deps;
@@ -107,30 +110,21 @@ class CilClassSource extends ClassSource {
 		int lineNum = 0;
 		String line;
 		while ((line = br.readLine()) != null) {
-			lineNum++;
 			if (lineNum >= clazz.getStartLine() && lineNum <= clazz.getEndLine())
 				lines.add(line);
 			if (lineNum > clazz.getEndLine())
 				break;
+			lineNum++;
 		}
 		return lines;
 	}
 
-	private Set<Type> removePrimitiveTypesFromDependencies(Set<Type> depen) {
-		if(depen.contains("void")) {
-			depen.remove("void");
+	private void removePrimitiveTypesFromDependencies(Set<Type> depen) {
+		for (Iterator<Type> tpIt = depen.iterator(); tpIt.hasNext(); ) {
+			Type tp = tpIt.next();
+			if (tp instanceof PrimType || tp instanceof VoidType)
+				tpIt.remove();
 		}
-		
-		if(depen.contains("bool")) {
-			depen.remove("bool");
-		}
-		
-		if(depen.contains("uint")) {
-			depen.remove("uint");
-		}
-		
-		return depen;
-		
 	}
 	
 }
