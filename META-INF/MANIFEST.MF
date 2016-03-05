@@ -471,3 +471,4 @@ Export-Package: android.content.res,
  soot.validation,
  soot.xml,
  test
+Require-Bundle: com.google.guava;bundle-version="15.0.0"
