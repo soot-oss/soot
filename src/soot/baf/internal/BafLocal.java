@@ -26,9 +26,14 @@
 
 package soot.baf.internal;
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+
+import soot.Local;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.ValueBox;
+import soot.util.Switch;
 
 public class BafLocal implements Local
 {
@@ -37,6 +42,7 @@ public class BafLocal implements Local
 
     int fixedHashCode;
     boolean isHashCodeChosen;
+	private Local originalLocal;
         
     public BafLocal(String name, Type t)
     {
@@ -45,20 +51,33 @@ public class BafLocal implements Local
     }
 
     /* JimpleLocals are *NOT* equivalent to Baf Locals! */
-    public boolean equivTo(Object o)
+    @Override
+	public boolean equivTo(Object o)
     {
         return this.equals( o );
     }
 
     /** Returns a hash code for this object, consistent with structural equality. */
-    public int equivHashCode() 
+    @Override
+	public int equivHashCode() 
     {
         return name.hashCode() * 101 + type.hashCode() * 17;
     }
 
-    public Object clone()
+    @Override
+	public Object clone()
     {
-        return new BafLocal(name, type);
+        BafLocal baf = new BafLocal(name, type);
+        baf.originalLocal = originalLocal;
+        return baf;
+    }
+    
+    public Local getOriginalLocal() {
+    	return originalLocal;
+    }
+    
+    public void setOriginalLocal(Local l) {
+    	originalLocal = l;
     }
 
     @Override
@@ -85,12 +104,14 @@ public class BafLocal implements Local
         this.type = t;
     }
 
-    public String toString()
+    @Override
+	public String toString()
     {
         return getName();
     }
 
-    public void toString( UnitPrinter up ) {
+    @Override
+	public void toString( UnitPrinter up ) {
         up.local( this );
     }
     
@@ -100,12 +121,15 @@ public class BafLocal implements Local
         return Collections.emptyList();
     }
 
-    public void apply(Switch s)
+    @Override
+	public void apply(Switch s)
     {
         throw new RuntimeException("invalid case switch");
     }
-    public final int getNumber() { return number; }
-    public final void setNumber( int number ) { this.number = number; }
+    @Override
+	public final int getNumber() { return number; }
+    @Override
+	public final void setNumber( int number ) { this.number = number; }
 
     private int number = 0;
 }

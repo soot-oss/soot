@@ -39,7 +39,7 @@ import soot.TypeSwitch;
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
-import soot.ValueBox;
+import soot.baf.internal.BafLocal;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ClassConstant;
 import soot.jimple.Constant;
@@ -95,7 +95,7 @@ public class BafASMBackend extends AbstractASMBackend {
 	 */
 	@Override
 	protected int getMinJavaVersion(SootMethod method) {
-		final BafBody body = getBafBody(method);		
+		final BafBody body = getBafBody(method);
 		int minVersion = Options.java_version_1_1;
 
 		for (Unit u : body.getUnits()) {
@@ -130,6 +130,9 @@ public class BafASMBackend extends AbstractASMBackend {
 			}
 		}
 
+		Label startLabel = new Label();
+		mv.visitLabel(startLabel);
+		
 		/*
 		 * Handle all TRY-CATCH-blocks
 		 */
@@ -195,6 +198,7 @@ public class BafASMBackend extends AbstractASMBackend {
 			}
 		}
 
+		
 		// Generate the code
 		for (Unit u : instructions) {
 			if (branchTargetLabels.containsKey(u)) {
@@ -212,6 +216,22 @@ public class BafASMBackend extends AbstractASMBackend {
 				mv.visitLineNumber(lnt.getLineNumber(), l);
 			}
 			generateInstruction(mv, (Inst) u);
+		}
+		
+		Label endLabel = new Label();
+		mv.visitLabel(endLabel);
+	
+		for (Local local : body.getLocals()) {
+			Integer slot = localToSlot.get(local);
+			if (slot != null) {
+				BafLocal l = (BafLocal) local;
+				if (l.getOriginalLocal() != null)
+				{
+					Local jimpleLocal = l.getOriginalLocal();
+					if (jimpleLocal != null)
+						mv.visitLocalVariable(jimpleLocal.getName(), toTypeDesc(jimpleLocal.getType()), null, startLabel, endLabel, slot);
+				}
+			}
 		}
 	}
 
@@ -1576,8 +1596,8 @@ public class BafASMBackend extends AbstractASMBackend {
 
 			@Override
 			public void caseIncInst(IncInst i) {
-				if (((ValueBox) i.getUseBoxes().get(0)).getValue() != ((ValueBox) i
-						.getDefBoxes().get(0)).getValue()) {
+				if (i.getUseBoxes().get(0).getValue() != i
+						.getDefBoxes().get(0).getValue()) {
 					throw new RuntimeException(
 							"iinc def and use boxes don't match");
 				}
