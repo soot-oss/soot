@@ -28,15 +28,40 @@
 
 
 package soot.baf;
-import soot.options.*;
-import soot.*;
-import soot.jimple.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
+import soot.Body;
+import soot.DoubleType;
+import soot.G;
+import soot.Local;
+import soot.LongType;
+import soot.PackManager;
+import soot.SootMethod;
+import soot.Trap;
+import soot.Type;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnknownType;
+import soot.baf.internal.BafLocal;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.JimpleBody;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.Stmt;
+import soot.options.Options;
 
 public class BafBody extends Body
 {
-    public Object clone()
+    private JimpleToBafContext jimpleToBafContext;
+
+    public JimpleToBafContext getContext() {
+    	return jimpleToBafContext;
+    }
+    
+	@Override
+	public Object clone()
     {
         Body b = new BafBody(getMethod());
         b.importBodyContentsFrom(this);
@@ -63,7 +88,7 @@ public class BafBody extends Body
         jimpleBody.validate();
                
         JimpleToBafContext context = new JimpleToBafContext(jimpleBody.getLocalCount());
-           
+        this.jimpleToBafContext = context;
         // Convert all locals
         {
             for (Local l : jimpleBody.getLocals()) {
@@ -75,7 +100,12 @@ public class BafBody extends Body
                 else
                     newLocal.setType(WordType.v());
         
-                context.setBafLocalOfJimpleLocal(l, newLocal);            
+                context.setBafLocalOfJimpleLocal(l, newLocal);
+                
+                //We cannot use the context for the purpose of saving the old Jimple locals, because
+                //some transformers in the bb-pack, which is called at the end of the method
+                //copy the locals, thus invalidating the information in a map.
+                ((BafLocal) newLocal).setOriginalLocal(l); 
                 getLocals().add(newLocal);
             }
         }
