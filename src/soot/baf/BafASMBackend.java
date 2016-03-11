@@ -136,7 +136,6 @@ public class BafASMBackend extends AbstractASMBackend {
 		/*
 		 * Handle all TRY-CATCH-blocks
 		 */
-		int idx = 0;
 		for (Trap trap : body.getTraps()) {
 			// Check if the try-block contains any statement
 			if (trap.getBeginUnit() != trap.getEndUnit()) {
@@ -221,16 +220,19 @@ public class BafASMBackend extends AbstractASMBackend {
 		
 		Label endLabel = new Label();
 		mv.visitLabel(endLabel);
-	
-		for (Local local : body.getLocals()) {
-			Integer slot = localToSlot.get(local);
-			if (slot != null) {
-				BafLocal l = (BafLocal) local;
-				if (l.getOriginalLocal() != null)
-				{
-					Local jimpleLocal = l.getOriginalLocal();
-					if (jimpleLocal != null)
-						mv.visitLocalVariable(jimpleLocal.getName(), toTypeDesc(jimpleLocal.getType()), null, startLabel, endLabel, slot);
+		
+		// Generate the local annotations
+		if (Options.v().write_local_annotations()) {
+			for (Local local : body.getLocals()) {
+				Integer slot = localToSlot.get(local);
+				if (slot != null) {
+					BafLocal l = (BafLocal) local;
+					if (l.getOriginalLocal() != null)
+					{
+						Local jimpleLocal = l.getOriginalLocal();
+						if (jimpleLocal != null)
+							mv.visitLocalVariable(jimpleLocal.getName(), toTypeDesc(jimpleLocal.getType()), null, startLabel, endLabel, slot);
+					}
 				}
 			}
 		}

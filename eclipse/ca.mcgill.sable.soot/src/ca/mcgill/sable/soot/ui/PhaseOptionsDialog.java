@@ -68,6 +68,8 @@ Composite Application_Mode_OptionsChild = Application_Mode_OptionsCreate(getPage
 
 Composite Input_Attribute_OptionsChild = Input_Attribute_OptionsCreate(getPageContainer());
 
+Composite Output_Attribute_OptionsChild = Output_Attribute_OptionsCreate(getPageContainer());
+
 Composite Annotation_OptionsChild = Annotation_OptionsCreate(getPageContainer());
 
 Composite Miscellaneous_OptionsChild = Miscellaneous_OptionsCreate(getPageContainer());
@@ -5317,6 +5319,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Attribute_Optionskeep_offset_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getOutput_Attribute_Optionswrite_local_annotations_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getOutput_Attribute_Optionswrite_local_annotations_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getAnnotation_Optionsannot_purity_widget().getButton().getSelection();
 		
 		
@@ -6507,6 +6519,10 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		SootOption Input_Attribute_Options_branch = new SootOption("Input Attribute Options", "Input_Attribute_Options");
 		root.addChild(Input_Attribute_Options_branch);
 		parent = Input_Attribute_Options_branch;		
+		
+		SootOption Output_Attribute_Options_branch = new SootOption("Output Attribute Options", "Output_Attribute_Options");
+		root.addChild(Output_Attribute_Options_branch);
+		parent = Output_Attribute_Options_branch;		
 		
 		SootOption Annotation_Options_branch = new SootOption("Annotation Options", "Annotation_Options");
 		root.addChild(Annotation_Options_branch);
@@ -10099,6 +10115,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getInput_Attribute_Optionskeep_offset_widget() {
 		return Input_Attribute_Optionskeep_offset_widget;
+	}	
+	
+	private BooleanOptionWidget Output_Attribute_Optionswrite_local_annotations_widget;
+	
+	private void setOutput_Attribute_Optionswrite_local_annotations_widget(BooleanOptionWidget widget) {
+		Output_Attribute_Optionswrite_local_annotations_widget = widget;
+	}
+	
+	public BooleanOptionWidget getOutput_Attribute_Optionswrite_local_annotations_widget() {
+		return Output_Attribute_Optionswrite_local_annotations_widget;
 	}	
 	
 	private BooleanOptionWidget Annotation_Optionsannot_purity_widget;
@@ -20291,6 +20317,52 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		return editGroupInput_Attribute_Options;
+	}
+
+
+
+	private Composite Output_Attribute_OptionsCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupOutput_Attribute_Options = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupOutput_Attribute_Options.setLayout(layout);
+	
+	 	editGroupOutput_Attribute_Options.setText("Output Attribute Options");
+	 	
+		editGroupOutput_Attribute_Options.setData("id", "Output_Attribute_Options");
+		
+		String descOutput_Attribute_Options = "";	
+		if (descOutput_Attribute_Options.length() > 0) {
+			Label descLabelOutput_Attribute_Options = new Label(editGroupOutput_Attribute_Options, SWT.WRAP);
+			descLabelOutput_Attribute_Options.setText(descOutput_Attribute_Options);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = ""+" "+""+" "+"write-local-annotations";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setOutput_Attribute_Optionswrite_local_annotations_widget(new BooleanOptionWidget(editGroupOutput_Attribute_Options, SWT.NONE, new OptionData("Write Out Local Annotations", "", "","write-local-annotations", "\nWrite out debug tables to indicate which register maps to which \nvariable in the Jimple code. ", defaultBool)));
+		
+		
+
+		
+		return editGroupOutput_Attribute_Options;
 	}
 
 

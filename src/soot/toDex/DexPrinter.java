@@ -1090,13 +1090,15 @@ public class DexPrinter {
 		
 		Map<Local, Integer> seenRegisters = new HashMap<Local, Integer>();
 		Map<Instruction, LocalRegisterAssignmentInformation> instructionRegisterMap = stmtV.getInstructionRegisterMap();
-
-		for (LocalRegisterAssignmentInformation assignment : stmtV.getParameterInstructionsList()) {
-			//The "this" local gets added automatically, so we do not need to add it explicitly
-			//(at least not if it exists with exactly this name)
-			if (assignment.getLocal().getName().equals("this"))
-				continue;
-			addRegisterAssignmentDebugInfo(assignment, seenRegisters, builder);
+		
+		if (Options.v().write_local_annotations()) {
+			for (LocalRegisterAssignmentInformation assignment : stmtV.getParameterInstructionsList()) {
+				//The "this" local gets added automatically, so we do not need to add it explicitly
+				//(at least not if it exists with exactly this name)
+				if (assignment.getLocal().getName().equals("this"))
+					continue;
+				addRegisterAssignmentDebugInfo(assignment, seenRegisters, builder);
+			}
 		}
     	
         for (BuilderInstruction ins : instructions) {
