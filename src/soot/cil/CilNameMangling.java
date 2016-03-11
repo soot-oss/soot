@@ -2,15 +2,12 @@ package soot.cil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import soot.G;
-import soot.RefType;
 import soot.Singletons;
-import soot.Type;
 
 /**
  * Class that performs name mangling for nested and generic classes
@@ -39,100 +36,13 @@ public class CilNameMangling {
 		return G.v().soot_cil_CilNameMangling();
 	}
 	
-	private String getFirstGenericParameter(String generic) {
-		int counter=0;
-		boolean init=false;
-		boolean foundSeperator = false;
-		String param = "";
-		for(int i=0; i<generic.length(); ++i) {
-			char c = generic.charAt(i);
-			if(c=='<') {
-				if(init==false) {
-					init = true;
-				}
-				counter++;
-			} if(c=='>') {
-				counter--;
-			} if(counter==0 && c ==',') {
-				foundSeperator = true;
-			}
-			if(counter == 0 && init && foundSeperator) {
-				param = generic.substring(0, i);
-				break;
-			}
-		}
-		if(param.isEmpty()) {
-			param = generic;
-		}
-		return param;
-	}
-	
-	private List<String> generateGenericParameterList(String generic) {
-		List<String> l = new ArrayList<String>();
-		if (generic.isEmpty())
-			return Collections.emptyList();
-		
-		if(generic.contains("<")) {
-			while(!generic.isEmpty()) {
-				int pos = generic.indexOf(",");
-				int pos2 = generic.indexOf("<");
-				if((pos<pos2 && pos>0)|| (pos>0 && pos2<0)) {
-					String str = generic.substring(0,pos);
-					l.add(str);
-					generic = generic.substring(str.length()+1);
-				} else if(pos2<pos && pos2>0 || (pos2>0 && pos<0)) {
-					String str = getFirstGenericParameter(generic);
-					l.add(str);
-					if(generic.length() > str.length()+1) {
-						generic = generic.substring(str.length()+1);
-					} else {
-						generic = "";
-					}
-				} else {
-					l.add(generic);
-					generic = "";
-				}
-			}
-		} else {
-			l = Arrays.asList(generic.split(","));
-		}
-		return l;
-	}
-	
 	private String generateGenericClassName(String name) {
 		// If this is not a generic class, we return the name as-is
 		if (!name.contains("<"))
 			return name;
 		
-		String baseName = name.substring(0, name.indexOf("<")) + "__";
-		
-		int pos = name.indexOf("<");
-		int pos2 = name.lastIndexOf(">");
-		String generic = name.substring(pos+1, pos2);
-		
-		List<String> paraList = generateGenericParameterList(generic);
-		if (paraList.isEmpty())
-			return name;
-		
-		for(int i=0; i<paraList.size(); ++i) {
-			String element = paraList.get(i);
-			element = element.replace(".", "");
-			element = element.replace("$", "");
-			if(element.contains("`")) {
-				element = generateGenericClassName(element);
-			} else {
-				Type t = Cil_Utils.getSootType(element);
-				if(!(t instanceof RefType)) {
-					element = t.toString();
-				}
-			}
-			baseName = baseName + element;
-			if(i<paraList.size()-1) {
-				baseName = baseName + "_";
-			}
-		}
-		baseName = baseName + "__";
-		baseName = baseName.replace("[]", "_");
+		// Get the base class name
+		String baseName = name.substring(0, name.indexOf("<"));
 		baseName = baseName.replace("`", "__");
 		
 		generatedNameToActualNameMap.put(baseName, name);
@@ -149,11 +59,12 @@ public class CilNameMangling {
 		// Generic classes
 		className = className.replace("'", "");
 		className = className.replace("<>", "");
-		className = generateGenericClassName(className);
+		className = className.replace("`", "__");
+//		className = generateGenericClassName(className);
 		
 		// Inner classes
 		className = className.replace("/", "$");		
-		className = mangleNestedClass(className);
+//		className = mangleNestedClass(className);
 		
 		return className;
 	}

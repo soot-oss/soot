@@ -1,7 +1,6 @@
 package soot.cil;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -13,10 +12,12 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootMethod;
 import soot.SootResolver;
-import soot.Type;
+import soot.cil.ast.CilClass;
+import soot.cil.ast.CilClassReference;
 import soot.util.ArraySet;
 
-class Cil_ClassParser {
+public class Cil_ClassParser {
+	private final CilClass cilClass;
 	private SootClass sootClass;
 	private SootClass nestedSuperClass;
 
@@ -29,9 +30,7 @@ class Cil_ClassParser {
 	private boolean isGeneratedGenericClass = false;
 	
 	private List<SootClass> listNestedClasses = new LinkedList<SootClass>();
-	private List<String> genericParameters = new ArrayList<String>();
-	private List<String> genericReplaceTypes = null;
-	private Set<Type> dependencies = new ArraySet<Type>();
+	private Set<CilClassReference> dependencies = new ArraySet<CilClassReference>();
 
 	private List<String> class_lines;
 	private int bodyLinesOffset = 0;
@@ -40,7 +39,8 @@ class Cil_ClassParser {
 
 	private List<String> constFieldList;
 
-	public Cil_ClassParser(List<String> class_lines, SootClass sootClass, boolean sootClassIsOuterClass) {
+	public Cil_ClassParser(CilClass clazz, List<String> class_lines, SootClass sootClass,
+			boolean sootClassIsOuterClass) {
 		this.class_lines = class_lines;
 		if (sootClassIsOuterClass) {
 			this.nestedSuperClass = sootClass;
@@ -48,6 +48,7 @@ class Cil_ClassParser {
 			this.sootClass = sootClass;
 		}
 		this.constFieldList = new ArrayList<String>();
+		this.cilClass = clazz;
 	}
 
 	public SootClass getSootClass() {
@@ -136,9 +137,6 @@ class Cil_ClassParser {
 			Cil_Utils.addClassToAssemblyMap(this.className, Cil_Utils.getAssemblyForClassName(this.nestedSuperClass.toString()));
 		}
 		
-		if (this.isGenericClass()) {
-			this.genericMap = generateGenericTypMap();
-		}
 		// parse class attributes
 		for (String s : tokens) {
 			s = Cil_Utils.removeComments(s);
@@ -159,15 +157,13 @@ class Cil_ClassParser {
 
 			superClassName = Cil_Utils.removeComments(superClassName);
 			
-			// handle generic super class
-			superClassName = G.v().soot_cil_CilNameMangling().doNameMangling(superClassName);
-			
-			SootClass superClass = ((RefType) Cil_Utils.getSootType(superClassName)).getSootClass();
+			SootClass superClass = ((RefType) Cil_Utils.getSootType(cilClass,
+					new CilClassReference(superClassName))).getSootClass();
 			this.sootClass.setSuperclass(superClass);
 		}
 		else if (this.isGeneratedGenericClass) {
-			superClassName = G.v().soot_cil_CilNameMangling().doNameMangling(superClassName);
-			SootClass superSootClass = SootResolver.v().makeClassRef(superClassName);
+			SootClass superSootClass = ((RefType) Cil_Utils.getSootType(cilClass,
+					new CilClassReference(superClassName))).getSootClass();
 			this.sootClass.setSuperclass(superSootClass);
 
 			// update modifiers of superClass!~
@@ -190,17 +186,13 @@ class Cil_ClassParser {
 				this.sootClass.addInterface(ifaceClass);
 			}
 		}
-
-		if (this.isGenericClass()) {
-			Cil_GenericHandler.v().addGenericClassToMap(className, class_lines);
-		}
 	}
 
 	private List<String> handleGenericInterfacesBaseClasses(List<String> interfaces) {
 		ArrayList<String> list = new ArrayList<String>();
 		for (String line : interfaces) {
-			line = Cil_Utils.removeTypePrefixes(line);
 			line = line.replace("implements ", "");
+			line = Cil_Utils.removeGenericsDeclaration(line);
 			
 			String interfaceName = null;
 
@@ -238,13 +230,12 @@ class Cil_ClassParser {
 			
 			// handle methods
 			if (line.startsWith(".method")) {
-				Cil_Method method = new Cil_Method(genericMap);
+				Cil_Method method = new Cil_Method(cilClass, genericMap);
 
 				List<String> method_lines = Cil_Utils.getCodeBLock(class_lines, i);
 				method.parse(method_lines);
 				i = i + method_lines.size() - 1;
 				
-				//TODO change this back so every method is added.
 				SootMethod m = method.getSootMethod();
 				if(!this.sootClass.declaresMethod(m.getName(), m.getParameterTypes(), m.getReturnType())) {
 					this.sootClass.addMethod(method.getSootMethod());
@@ -255,7 +246,7 @@ class Cil_ClassParser {
 			// handle fields
 			else if (line.startsWith(".field")) {
 				if (!this.isGeneratedGenericClass()) {
-					Cil_FieldParser parser = new Cil_FieldParser(this.constFieldList);
+					Cil_FieldParser parser = new Cil_FieldParser(this.cilClass, this.constFieldList);
 					parser.run(line);
 
 					SootField f = parser.getSootField();
@@ -339,28 +330,7 @@ class Cil_ClassParser {
 			}
 		}
 	}
-
-	private Map<String, String> generateGenericTypMap() {
-		Map<String, String> map = new HashMap<String, String>();
-
-		if (genericReplaceTypes != null) {
-			if (this.genericParameters.size() != genericReplaceTypes.size()) {
-				System.err.println("Error while generating automatic generic class: " + this.className);
-			}
-		}
-
-		for (int i = 0; i < this.genericParameters.size(); ++i) {
-			if (genericReplaceTypes == null) {
-			    map.put(this.genericParameters.get(i), "void");
-				//map.put(this.genericParameters.get(i), "System.Object");
-				// TODO change to System.Object
-			} else {
-				map.put(this.genericParameters.get(i), genericReplaceTypes.get(i));
-			}
-		}
-		return map;
-	}
-
+	
 	public void addClasse() {
 		for (SootClass theClass : this.listNestedClasses)
 			if(this.sootClass.isLibraryClass()) {
@@ -371,7 +341,7 @@ class Cil_ClassParser {
 			
 	}
 
-	public Set<Type> getDependencies() {
+	public Set<CilClassReference> getDependencies() {
 		return this.dependencies;
 	}
 

@@ -2,6 +2,7 @@ package soot.cil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -10,30 +11,35 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import soot.G;
-import soot.RefType;
+import soot.RefLikeType;
 import soot.SootMethod;
 import soot.Type;
+import soot.cil.ast.CilClass;
+import soot.cil.ast.CilClassReference;
+import soot.cil.ast.CilInstruction;
 import soot.cil.ast.CilLocal;
 import soot.cil.ast.CilLocal.TypeFlag;
 import soot.cil.ast.CilLocalSet;
+import soot.cil.ast.CilMethod;
+import soot.cil.ast.CilMethodParameter;
+import soot.cil.ast.CilMethodParameterList;
 import soot.cil.ast.CilTrap;
-import soot.util.ArraySet;
+import soot.cil.sources.CilMethodSource;
 
 import com.google.common.collect.Lists;
 
 class Cil_Method {
+	private final CilClass cilClass;
+	
 	private String methodName;
 	private SootMethod currentMethod;
 	private int modifiers = 0;
 	
 	private Map<String, String> genericType;
+	private Set<CilClassReference> dependencies = new HashSet<CilClassReference>();
 	 
 	private Type returnType;
-	private List<Type> parameterTypes = new LinkedList<Type>();
-	
-	private List<String> parameterNames = new LinkedList<String>();
-	
-	private Set<Type> dependencies = new ArraySet<Type>();
+	private CilMethodParameterList parameters = new CilMethodParameterList();
 	
 	private Map<String, String> genericFunctionType;
 	private List<String> genericFunctionTypeList;
@@ -43,16 +49,19 @@ class Cil_Method {
 	
 	boolean generatedMethod = false;
 	
-	public Cil_Method(Map<String, String> genericMap) {
+	public Cil_Method(CilClass clazz, Map<String, String> genericMap) {
 		this.genericType = genericMap;
+		this.cilClass = clazz;
 	}
 	
 	// TODO change this function.
 	// genericReplacmentTypes is not used yet
-	public Cil_Method(Map<String, String> genericMap, List<String> genericReplacmentTypes) {
+	public Cil_Method(CilClass clazz, Map<String, String> genericMap,
+			List<String> genericReplacmentTypes) {
 		this.genericType = genericMap;
 		this.genericReplacmentTypes = genericReplacmentTypes;
 		this.generatedMethod = true;
+		this.cilClass = clazz;
 	}
 	
 	public void generateFunctionGenericTypMap() {
@@ -89,7 +98,8 @@ class Cil_Method {
 		this.method_lines = method_lines;
 		List<String> headerLines = Cil_Utils.getHeader(method_lines);
 		this.parseHeader(headerLines);
-		List<Cil_Instruction> instructions = new LinkedList<Cil_Instruction>();
+		
+		List<CilInstruction> instructions = new LinkedList<CilInstruction>();
 		CilLocalSet locals = new CilLocalSet();
 		List<String> opcodes = new LinkedList<String>();
 		List<CilTrap> trapList = new LinkedList<CilTrap>();
@@ -186,15 +196,22 @@ class Cil_Method {
 			String label = "IL_0000";
 			String opcode = "generic";
 			List<String> param = new ArrayList<String>();
-			instructions.add(new Cil_Instruction(opcode, param, label));
+			instructions.add(new CilInstruction(opcode, param, label));
 		}
+		
+		// Get the Soot parameter types
+		List<Type> parameterTypes = new ArrayList<Type>();
+		for (CilMethodParameter param : parameters)
+			parameterTypes.add(Cil_Utils.getSootType(cilClass,
+					new CilClassReference(param.getType())));
 		
 		currentMethod = new SootMethod(methodName, parameterTypes, returnType);
 		currentMethod.setModifiers(modifiers);		
 		
-		CilMethodSource ms = new CilMethodSource(instructions, locals,
-				trapList, parameterNames, this.genericFunctionType,
-				this.genericFunctionTypeList, this.genericType);
+		CilMethod method = new CilMethod(cilClass, parameters, instructions, trapList);
+		
+		CilMethodSource ms = new CilMethodSource(method, locals,
+				this.genericFunctionType, this.genericFunctionTypeList, this.genericType);
 		currentMethod.setSource(ms);
 	}
 	
@@ -262,13 +279,17 @@ class Cil_Method {
 		trapList.add(trap);
 	}
 	
-	private List<Cil_Instruction> parseOpcodes(List<String> opcodes) {
-		List<Cil_Instruction> list = new LinkedList<Cil_Instruction>();
-		Cil_Instruction inst;
+	private List<CilInstruction> parseOpcodes(List<String> opcodes) {
+		List<CilInstruction> list = new LinkedList<CilInstruction>();
+		CilInstruction inst;
 		String opcode, label;
 		
 		for(String str : opcodes) {
 			str = Cil_Utils.removeTypePrefixes(str);
+			
+			// If this instruction references a generic type, we need to
+			// replace it with the proper type.
+			str = Cil_Utils.replaceGenericPlaceholders(str);
 			
 			String[] tokens = str.split("(\\s|;)+");
 			if(tokens.length >1) {
@@ -291,7 +312,7 @@ class Cil_Method {
 							inArgList = false;
 					}
 				}
-				inst = new Cil_Instruction(opcode, param, label);
+				inst = new CilInstruction(opcode, param, label);
 				list.add(inst);
 				
 				
@@ -302,7 +323,8 @@ class Cil_Method {
 		return list;
 	}
 	
-	private void parseOpcodesForDependecies(String lable, String opcode, List<String> parameters) {
+	private void parseOpcodesForDependecies(String lable,
+			String opcode, List<String> parameters) {
 		if(opcode.equals("newobj") ||
 				opcode.equals("callvirt") ||
 				opcode.equals("call")) {
@@ -315,51 +337,30 @@ class Cil_Method {
 			signature = Cil_Utils.removeTypePrefixes(signature);
 			signature = Cil_Utils.replaceGenericPlaceholders(signature);
 			
-			boolean isGenericFunction = false;
-			
 			//handle return type
 			String returnType = signature.substring(0, signature.indexOf(" "));
-			signature = signature.substring(signature.indexOf(" "));
-			Type type = Cil_Utils.getSootType(returnType);
+			signature = signature.substring(signature.indexOf(" "));			
+			addDependency(new CilClassReference(returnType));
 			
-			this.dependencies.add(type);
+			// Get generic types. If we reference a generic class, we need to
+			// create its concrete subclass.
+			List<CilClassReference> genericInstances = Cil_Utils.parseGenericInstances(signature);
 			
 			//handle className
 			int pos = signature.indexOf(":");
 			String className = signature.substring(0, pos);
 			className = className.substring(className.lastIndexOf(" ")).trim();
-									
-			this.dependencies.add(Cil_Utils.getSootType(className));
+			addDependency(new CilClassReference(className, genericInstances));
 			
 			//handle parameters
 			String params = signature.substring(signature.indexOf("(")+1,signature.indexOf(")"));
 			params = Cil_Utils.replaceGenericPlaceholders(params);
-			String replacedParams = "(";
 			if(!params.isEmpty()) {
 				List<String> arguments = splitMethodArguments(params);
 				
 				for(String arg : arguments) {
 					arg = G.v().soot_cil_CilNameMangling().doNameMangling(arg);
-
-					type = Cil_Utils.getSootType(arg);
-					this.dependencies.add(type);
-					replacedParams += type + ",";
-				}
-				if(replacedParams.charAt(replacedParams.length()-1)==',') {
-					replacedParams = replacedParams.substring(0,replacedParams.length()-1);
-				}
-			}
-			replacedParams += ")";
-			
-			if(isGenericFunction) {
-				List<String> paraList = splitMethodArguments(replacedParams);
-				List<Type> parameterTypes = new ArrayList<Type>();
-				for(String para : paraList) {
-					para = para.replace("(", "");
-					para = para.replace(")", "");
-					para = para.replace(",", "");
-					
-					parameterTypes.add(Cil_Utils.getSootType(para));
+					addDependency(new CilClassReference(arg));
 				}
 			}
 		}
@@ -369,14 +370,9 @@ class Cil_Method {
 			for(String str : parameters) {
 				signature = signature + str; 
 			}
-			signature = Cil_Utils.removeTypePrefixes(signature);
-			
+			signature = Cil_Utils.removeTypePrefixes(signature);			
 			signature = Cil_Utils.replaceGenericPlaceholders(signature);
-			
-			signature = Cil_Utils.replaceGenericPlaceholders(signature);
-			
-			Type type = Cil_Utils.getSootType(signature);
-			this.dependencies.add(type);
+			addDependency(new CilClassReference(signature));
 		} else if(opcode.equals("isinst")) {
 			//TODO implement
 		} else if(opcode.equals("ldelem")) {
@@ -399,7 +395,7 @@ class Cil_Method {
 		else if(opcode.equals("ldftn")) {
 			// If the code is dealing with function pointers, we need our fake
 			// interface for emulating such pointers.
-			this.dependencies.add(RefType.v("_cil_delegate_"));
+			addDependency(new CilClassReference("_cil_delegate_"));
 			
 			// Create the fake class. Make sure to also include the return type,
 			// because we need the return type afterwards when referencing the
@@ -408,7 +404,7 @@ class Cil_Method {
 					+ parameters.get(parameters.size() - 1);
 			String dispatcherClassName = G.v().soot_cil_CilNameMangling()
 					.createDispatcherClassName(targetSig);
-			this.dependencies.add(RefType.v(dispatcherClassName));
+			addDependency(new CilClassReference(dispatcherClassName));
 		}
 		else if(opcode.equals("ldtoken")) {
 			// We create a custom data structure derived from the CLR's token
@@ -417,25 +413,34 @@ class Cil_Method {
 			case TypeRef:
 				String typeRefClassName = G.v().soot_cil_CilNameMangling()
 						.createTypeRefClassName(parameters.get(0));
-				this.dependencies.add(RefType.v(typeRefClassName));
+				addDependency(new CilClassReference(typeRefClassName));
 				break;
 			case MethodRef:
 				String methodRefClassName = G.v().soot_cil_CilNameMangling()
 						.createMethodRefClassName(parameters.get(0));
-				this.dependencies.add(RefType.v(methodRefClassName));
+				addDependency(new CilClassReference(methodRefClassName));
 				break;
 			case FieldRef:
 				String fieldRefClassName = G.v().soot_cil_CilNameMangling()
 						.createFieldRefClassName(parameters.get(0));
-				this.dependencies.add(RefType.v(fieldRefClassName));
+				addDependency(new CilClassReference(fieldRefClassName));
 				break;
 			default:
 				throw new RuntimeException("Unsupported token type");
 			}
 		}
 		else if(opcode.equals("box")) {
-			this.dependencies.add(Cil_Utils.getSootType(parameters.get(0)));
+			addDependency(new CilClassReference(parameters.get(0)));
 		}
+	}
+	
+	/**
+	 * Adds the given class reference as a dependency of the current method
+	 * @param cilClassReference The dependency to add
+	 */
+	private void addDependency(CilClassReference cilClassReference) {
+		if (Cil_Utils.getSootType(cilClass, cilClassReference) instanceof RefLikeType)
+			dependencies.add(cilClassReference);
 	}
 
 	public static List<String> splitMethodArguments(String param) {
@@ -463,31 +468,66 @@ class Cil_Method {
 	}
 	
 	private CilLocalSet parseLocals(List<String> locals) {
-		Pattern pattern = Pattern.compile("[\\.locals init\\s*\\(]?\\s*\\[(\\w+)\\]\\s*(\\w+)\\s+([\\w\\.]+)\\s+(\\w+)\\s*,?");
+		Pattern pattern = Pattern.compile("(\\.locals init\\s*\\()?"
+				+ "\\s*(\\[[0-9]+\\])?\\s*"
+				+ "(class\\s+|valuetype\\s+)?\\s*"
+				+ "([\\S]+)\\s+"
+				+ "(\\w+)\\s*"
+				+ "[,|\\)]");
 		
 		CilLocalSet list = new CilLocalSet();
+		int autoId = 0;
 		for(String str : locals) {
+			// If we have a generic type, we need to sort that out first for not
+			// confusing the regular expression.
+			List<CilClassReference> genericInstances = Cil_Utils.parseGenericInstances(str);
+			str = Cil_Utils.removeGenericsDeclaration(str);
+			
 			str = Cil_Utils.replaceGenericPlaceholders(str);
 			Matcher matcher = pattern.matcher(str);
 			matcher.find();
 			
-			String strId = matcher.group(1);
-			int id = Integer.parseInt(strId);
+			int id = autoId++;
+			int groupIdx = 1;
 			
-			String strTypeFlag = matcher.group(2);
-			TypeFlag flag;
-			if (strTypeFlag.equals("valuetype"))
+			// We might have the prefix
+			String token = matcher.group(groupIdx++);
+			if (token == null || token.startsWith(".locals"))
+				token = matcher.group(groupIdx++);
+			
+			// Get the variable id. In case we don't have an explicit id, we
+			// automatically generate one
+			token = matcher.group(groupIdx++);
+			if (token == null) {
+				token = matcher.group(groupIdx++);
+			}
+			else if (token.startsWith("[")) {
+				token = token.substring(1, token.length() - 1);
+				id = Integer.parseInt(token);
+				token = matcher.group(groupIdx++);
+			}
+			
+			// Parse the next token. This can be a modifier.
+			TypeFlag flag = TypeFlag.Unspecified;
+			if (token == null) {
+				token = matcher.group(groupIdx++);
+			}
+			else if (token.trim().equals("valuetype")) {
 				flag = TypeFlag.ValueType;
-			else if (strTypeFlag.equals("class"))
+				token = matcher.group(groupIdx++);
+			}
+			else if (token.trim().equals("class")) {
 				flag = TypeFlag.Class;
-			else
-				throw new RuntimeException("Invalid type flag: " + strTypeFlag);
+				token = matcher.group(groupIdx++);
+			}
 			
-			String type = matcher.group(3);
-			String name = matcher.group(4);
+			String type = token.trim();
+			token = matcher.group(groupIdx++);
+			
+			String name = token.trim();
+			
 			type = G.v().soot_cil_CilNameMangling().doNameMangling(type);
-			
-			list.add(new CilLocal(id, name, type, flag));
+			list.add(new CilLocal(id, name, new CilClassReference(type, genericInstances), flag));
 		}
 		return list;
 	}
@@ -586,13 +626,12 @@ class Cil_Method {
 		String modifierLine = line.substring(0, pos);
 		String[] mods = modifierLine.split("\\s+");
 		
+		// Parse the return type
 		String returnType = mods[mods.length-1];
-		
 		returnType = Cil_Utils.clearString(returnType);
-		String generatedClassName = G.v().soot_cil_CilNameMangling().doNameMangling(returnType);
-		returnType = generatedClassName;
-		
-		this.returnType = Cil_Utils.getSootType(returnType.trim());
+		returnType = G.v().soot_cil_CilNameMangling().doNameMangling(returnType);
+		this.returnType = Cil_Utils.getSootType(cilClass,
+				new CilClassReference(returnType.trim()));
 		
 		for(String token : mods) {
 			token = Cil_Utils.removeComments(token);
@@ -620,11 +659,7 @@ class Cil_Method {
 				
 				if(!type.isEmpty()) {
 					type = G.v().soot_cil_CilNameMangling().doNameMangling(type);
-					
-					Type tp = Cil_Utils.getSootType(type);
-					
-					this.parameterTypes.add(tp);
-					this.parameterNames.add(parameterName.trim());
+					this.parameters.add(new CilMethodParameter(i, parameterName.trim(), type));
 				}
 			}
 		}
@@ -634,13 +669,13 @@ class Cil_Method {
  		return this.currentMethod;
 	}
 	
-	public Set<Type> getDependencies() {
+	public Set<CilClassReference> getDependencies() {
 		return this.dependencies;
 	}
 	
 	public static String renameConstructorName(String str) {
 		str = str.replace(".ctor", "<init>");
-		str = str.replace(".cctor", "<cinit>");
+		str = str.replace(".cctor", "<clinit>");
 		return str;
 	}
 	

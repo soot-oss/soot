@@ -1,4 +1,4 @@
-package soot.cil;
+package soot.cil.sources;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedSet;
@@ -34,9 +33,16 @@ import soot.Unit;
 import soot.UnknownType;
 import soot.Value;
 import soot.VoidType;
+import soot.cil.Cil_BranchStmt;
+import soot.cil.Cil_Utils;
+import soot.cil.ast.CilInstruction;
 import soot.cil.ast.CilLocal;
 import soot.cil.ast.CilLocal.TypeFlag;
+import soot.cil.ast.CilClassReference;
 import soot.cil.ast.CilLocalSet;
+import soot.cil.ast.CilMethod;
+import soot.cil.ast.CilMethodParameter;
+import soot.cil.ast.CilSwitchStmt;
 import soot.cil.ast.CilTrap;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
@@ -62,38 +68,34 @@ import soot.jimple.internal.JimpleLocal;
 
 import com.google.common.collect.Lists;
 
-class CilMethodSource implements MethodSource {
+public class CilMethodSource implements MethodSource {
 	
 	/* -state fields- */
 	private List<Cil_BranchStmt> jumpList;
 	
 	private Map<String, Unit> units;
-	private List<Cil_SwitchStmtWrapper> switchStmts;
+	private List<CilSwitchStmt> switchStmts;
 	
 	private JimpleBody body;
 	
 	/* -const fields- */
-	private final List<Cil_Instruction> instructions;
+	private final CilMethod method;
 	
 	private final CilLocalSet localVars;
 	private final Map<CilLocal, Local> cilLocalsToLocals = new HashMap<CilLocal, Local>();
+
+	private final Map<CilMethodParameter, Local> parametersToLocals = new HashMap<CilMethodParameter, Local>();
+	private final List<Local> parameterLocals = new ArrayList<Local>(); // note that 0 = this for instance methods
 	
-	private final List<CilTrap> traps;
-	private List<Local> parameters = new LinkedList<Local>();
-	private final List<String> paramtersNames;
 	private LocalGenerator localGenerator = null;
 	
-	CilMethodSource(List<Cil_Instruction> insns,
-			CilLocalSet localVars, 
-			List<CilTrap> tryCatchBlocks,
-			List<String> paramtersNames, 
+	public CilMethodSource(CilMethod method,
+			CilLocalSet localVars,
 			Map<String, String> genericFunctionType,
 			List<String> genericFunctionTypeList,
 			Map<String, String> genericClassType) {
-		this.instructions = insns;
+		this.method = method;
 		this.localVars = localVars;
-		this.traps = tryCatchBlocks;
-		this.paramtersNames = paramtersNames;
 	}
 	
 	private void addUnit(Unit unit, String label) {
@@ -114,26 +116,31 @@ class CilMethodSource implements MethodSource {
 			jb.getLocals().add(l);
 
 			jbu.add(Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef(m.getDeclaringClass().getType())));
-			this.parameters.add(l);
+			this.parameterLocals.add(l);
 		}
 		
 		// Create locals for all the the parameters
-		for (int i=0; i < m.getParameterTypes().size(); i++) {
+		for (int i=0; i < method.getParameters().size(); i++) {
+			CilMethodParameter param = this.method.getParameters().getAllElements().get(i);
 			Type type = m.getParameterType(i);
-			String name = this.paramtersNames.get(i);
+			String name = param.getName();
 			
 			JimpleLocal local = new JimpleLocal(name, type);
 			jb.getLocals().add(local);
 
 			jbu.add(Jimple.v().newIdentityStmt(local, Jimple.v().newParameterRef(type, i)));
-			this.parameters.add(local);
+			this.parameterLocals.add(local);
+			this.parametersToLocals.put(param, local);
 		} 
 		
 		// TODO: check doubles
 		
 		// Create the remaining locals
 		for (CilLocal local : localVars) {
-			Type type = Cil_Utils.getSootType(local.getType());
+			if (body.getMethod().getName().equals("Main"))
+				System.out.println("x");
+			
+			Type type = Cil_Utils.getSootType(method.getCilClass(), local.getType());
 			Local jLocal= new JimpleLocal(local.getName(), type);
 			jb.getLocals().add(jLocal);
 			cilLocalsToLocals.put(local, jLocal);
@@ -157,16 +164,16 @@ class CilMethodSource implements MethodSource {
 	private void emitUnits() {
 		Deque<Value> stack = new ArrayDeque<Value>(); 
 
-		for(int i=0; i<this.instructions.size(); ++i) {
-			Cil_Instruction inst = this.instructions.get(i);
-			Cil_Instruction inst_next = null;
+		for(int i=0; i<this.method.getInstructions().size(); ++i) {
+			CilInstruction inst = this.method.getInstructions().get(i);
+			CilInstruction inst_next = null;
 			
 			String opcode = inst.getOpcode();
 			String label = inst.getLabel();
 			List<String> parameters = inst.getParameters();
 			
-			if(i<this.instructions.size()-1) {
-				inst_next = this.instructions.get(i+1);
+			if(i<this.method.getInstructions().size()-1) {
+				inst_next = this.method.getInstructions().get(i+1);
 			}
 			
 			if(opcode.equals("nop")
@@ -229,23 +236,19 @@ class CilMethodSource implements MethodSource {
 				if (opcode.equals("ldarg.s") || opcode.equals("ldarg")
 						|| opcode.equals("ldarga") || opcode.equals("ldarga.s")) {
 					variable = inst.getParameters().get(0);
-					if(!Cil_Utils.isNumeric(variable)){
-						for(int j=0; j<this.paramtersNames.size(); ++j) {
-							String s = this.paramtersNames.get(j);
-							if(s.equals(variable)) {
-								l = this.parameters.get(j);
-								break;
-							}
-						}
+					if (!Cil_Utils.isNumeric(variable)){
+						CilMethodParameter param = this.method.getParameters()
+								.getElementByName(variable);
+						l = this.parametersToLocals.get(param);
 					} else {
 						int idx = Integer.parseInt(variable);
-						l = this.parameters.get(idx);
+						l = this.parameterLocals.get(idx);
 					}
 					stack.push(l); 
 				} else if(opcode.startsWith("ldarg.")) {
 					char param = opcode.charAt(opcode.length()-1);
 					int idx = Character.getNumericValue(param);
-					l = this.parameters.get(idx);
+					l = this.parameterLocals.get(idx);
 					stack.push(l); 
 				} 
 			} else if(opcode.startsWith("starg")) {
@@ -254,26 +257,21 @@ class CilMethodSource implements MethodSource {
 				Value rvalue = stack.pop();
 				
 				if(opcode.equals("starg.s") || opcode.equals("starg")) {
-					variable = inst.getParameters().get(0);
-					
+					variable = inst.getParameters().get(0);					
 					if(!Cil_Utils.isNumeric(variable)){
-						for(int j=0; j<this.paramtersNames.size(); ++j) {
-							String s = this.paramtersNames.get(j);
-							if(s.equals(variable)) {
- 								l = this.parameters.get(j);
-								break;
-							}
-						}
+						CilMethodParameter param = this.method.getParameters()
+								.getElementByName(variable);
+						l = this.parametersToLocals.get(param);
 					} else {
 						int idx = Integer.parseInt(variable);
-						l = this.parameters.get(idx);
+						l = this.parameterLocals.get(idx);
 					}
 					this.addUnit(this.handleStore(rvalue, l),label);
 
 				} else if(opcode.startsWith("starg.")) {
 					char param = opcode.charAt(opcode.length()-1);
 					int idx = Character.getNumericValue(param);
-					l = this.parameters.get(idx);
+					l = this.parameterLocals.get(idx);
 					this.addUnit(this.handleStore(rvalue, l),label);
  
 				} 
@@ -417,8 +415,9 @@ class CilMethodSource implements MethodSource {
 				String className = inst.getParameters().get(inst.getParameters().size()-1);
 				int pos = className.indexOf(":");
 				className = className.substring(0, pos);
-								
-				RefType type = (RefType) Cil_Utils.getSootType(className); 
+				
+				RefType type = (RefType) Cil_Utils.getSootType(method.getCilClass(),
+						new CilClassReference(className)); 
 				Value value = Jimple.v().newNewExpr(type);
 				this.createLocalForChainedStamt(stack, value, type, label);
 				
@@ -695,7 +694,7 @@ class CilMethodSource implements MethodSource {
 				Unit afterUnit = Jimple.v().newNopStmt();
 				body.getUnits().add(afterUnit);
 				
-				Cil_SwitchStmtWrapper stmt = new Cil_SwitchStmtWrapper(targetLabels,
+				CilSwitchStmt stmt = new CilSwitchStmt(targetLabels,
 						afterUnit, placeholderUnit, var, label);
 				this.switchStmts.add(stmt);
 				
@@ -703,12 +702,9 @@ class CilMethodSource implements MethodSource {
 				String classs = parameters.get(parameters.size()-1);
 				IntConstant size = (IntConstant) stack.pop();
 				
-				classs = getClassNameFromSignature(classs);
-				if(classs.equals("!T")) {
-					classs = "System.Object";
-				}
-				
-				Type type = Cil_Utils.getSootType(classs); 
+				classs = getClassNameFromSignature(classs);				
+				Type type = Cil_Utils.getSootType(method.getCilClass(),
+						new CilClassReference(classs));
 				Value value = Jimple.v().newNewArrayExpr(type, size);
 				
 				if(!opcodeIsStore(inst_next.getOpcode())) {
@@ -736,11 +732,8 @@ class CilMethodSource implements MethodSource {
 				Type baseType = UnknownType.v();
 				if(!parameters.isEmpty()) {
 					String type = parameters.get(0);
-					
-					if(type.startsWith("!")) {
-						type = "System.Object";
-					}
-					baseType = Cil_Utils.getSootType(type);
+					baseType = Cil_Utils.getSootType(method.getCilClass(),
+							new CilClassReference(type));
 				}
 				
 				if(opcode.equals("ldelem.i1")
@@ -784,8 +777,8 @@ class CilMethodSource implements MethodSource {
 				}
 			} else if(opcode.equals("unbox.any")) {
 				Value val = stack.pop();
-				String t = parameters.get(0);
-				Type type = Cil_Utils.getSootType(Cil_Utils.clearString(t));
+				String t = Cil_Utils.clearString(parameters.get(0));
+				Type type = Cil_Utils.getSootType(method.getCilClass(), new CilClassReference(t));
 				Value value = Jimple.v().newCastExpr(val, type);
 				 
 				if(!opcodeIsStore(inst_next.getOpcode())) {
@@ -795,8 +788,8 @@ class CilMethodSource implements MethodSource {
 				}
 			} else if(opcode.equals("castclass")) {
 				Value var = stack.pop();
-				String typeName = parameters.get(0); 
-				Type type = Cil_Utils.getSootType(Cil_Utils.clearString(typeName));
+				String t = Cil_Utils.clearString(parameters.get(0));
+				Type type = Cil_Utils.getSootType(method.getCilClass(), new CilClassReference(t));
 				Value value = Jimple.v().newCastExpr(var, type);
 				
 				if(!opcodeIsStore(inst_next.getOpcode())) {
@@ -808,8 +801,8 @@ class CilMethodSource implements MethodSource {
 			} else if(opcode.equals("isinst")) {
 				Value var = stack.pop();
 				
-				String typeName = parameters.get(0); 
-				Type type = Cil_Utils.getSootType(Cil_Utils.clearString(typeName));
+				String t = Cil_Utils.clearString(parameters.get(0));
+				Type type = Cil_Utils.getSootType(method.getCilClass(), new CilClassReference(t));
 				Value value = Jimple.v().newInstanceOfExpr(var, type);
 				
 				if(!opcodeIsStore(inst_next.getOpcode())) {
@@ -850,8 +843,8 @@ class CilMethodSource implements MethodSource {
 				
 				List<Value> args = new ArrayList<Value>();
 				
-				for(int j=1; j<this.parameters.size(); ++j) {
-					Local l = this.parameters.get(j);
+				for (int j = 1; j < this.method.getParameters().size(); ++j) {
+					Local l = this.parameterLocals.get(j);
 					Type parameterType = super_method.getParameterType(j-1);
 					if(l.getType().equals(parameterType)) {
 						args.add(l);
@@ -918,7 +911,8 @@ class CilMethodSource implements MethodSource {
 				}
 				
 				// Create an instance of the correct data structure
-				RefType tp = (RefType) Cil_Utils.getSootType(refClassName);
+				RefType tp = (RefType) Cil_Utils.getSootType(method.getCilClass(),
+						new CilClassReference(refClassName));
 				Local refLocal = localGenerator.generateLocal(tp);
 				body.getUnits().add(Jimple.v().newAssignStmt(refLocal, Jimple.v().newNewExpr(tp)));
 				body.getUnits().add(Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(refLocal,
@@ -940,13 +934,14 @@ class CilMethodSource implements MethodSource {
 	 * @param stack The call stack
 	 * @param inst The CIL call instruction
 	 */
-	private void emitUnitsLDFTN(Deque<Value> stack, Cil_Instruction inst) {
+	private void emitUnitsLDFTN(Deque<Value> stack, CilInstruction inst) {
 		// Get the fake dispatcher class
 		String className = inst.getParameters().get(inst.getParameters().size() - 1);
 		className = G.v().soot_cil_CilNameMangling().createDispatcherClassName(className);
 		
 		// Create an instance of our fake dispatcher class
-		RefType tpDispatcher = (RefType) Cil_Utils.getSootType(className);
+		RefType tpDispatcher = (RefType) Cil_Utils.getSootType(method.getCilClass(),
+				new CilClassReference(className));
 		Local locDispatcher = localGenerator.generateLocal(tpDispatcher);
 		NewExpr newExpr = Jimple.v().newNewExpr(tpDispatcher);
 		AssignStmt assign = Jimple.v().newAssignStmt(locDispatcher, newExpr);
@@ -968,7 +963,7 @@ class CilMethodSource implements MethodSource {
 	 * @param forceVirt True if the call is definitely virtual, otherwise false
 	 * to automatically detect whether the call is virtual or static
 	 */
-	private void emitUnitsCall(Deque<Value> stack, Cil_Instruction inst,
+	private void emitUnitsCall(Deque<Value> stack, CilInstruction inst,
 			boolean forceVirt) {
 		final List<String> parameters = new ArrayList<String>(inst.getParameters());
 		final String opcode = inst.getOpcode();
@@ -999,11 +994,15 @@ class CilMethodSource implements MethodSource {
 				|| method.name().equals("<init>")) {
 			Local base = (Local) stack.pop();
 			
-			// Make sure to also assign the object instance
-			String className = parameters.get(parameters.size() - 1);
-			className = className.substring(0, className.indexOf("::"));
-			body.getUnits().add(Jimple.v().newAssignStmt(base, Jimple.v().newNewExpr(
-					(RefType) Cil_Utils.getSootType(className))));
+			// Make sure to also assign the object instance - but not, if we're
+			// only calling the constructor of the superclass
+			if (body.getMethod().isStatic() || base != body.getThisLocal()) {
+				String className = parameters.get(parameters.size() - 1);
+				className = className.substring(0, className.indexOf("::"));
+				body.getUnits().add(Jimple.v().newAssignStmt(base, Jimple.v().newNewExpr(
+						(RefType) Cil_Utils.getSootType(this.method.getCilClass(),
+								new CilClassReference(className)))));
+			}
 			
 			// Then call the constructor
 			value = Jimple.v().newSpecialInvokeExpr(base, method, args);
@@ -1031,7 +1030,7 @@ class CilMethodSource implements MethodSource {
 	 * @param stack The call stack
 	 * @param inst The instruction to convert to Jimple
 	 */
-	private void emitUnitsLDC(Deque<Value> stack, Cil_Instruction inst) {
+	private void emitUnitsLDC(Deque<Value> stack, CilInstruction inst) {
 		final String opcode = inst.getOpcode();
 		
 		if(opcode.equals("ldc.i4.m1") || opcode.equals("ldc.i4.M1")) {
@@ -1067,7 +1066,7 @@ class CilMethodSource implements MethodSource {
 		JimpleBody jb = body; 
 		Collection<Trap> traps = jb.getTraps();
 		
-		for(CilTrap trap : this.traps) {
+		for(CilTrap trap : this.method.getTraps()) {
 			Unit start = findNextUnitByLabel(trap.getTryStartLabel());
 			Unit end = findNextUnitByLabel(trap.getTryEndLablel()); 
 			Unit handler = findNextUnitByLabel(trap.getHandlerStartLabel());
@@ -1133,7 +1132,7 @@ class CilMethodSource implements MethodSource {
 	}
 	
 	private void updateSwitch() {
-		for(Cil_SwitchStmtWrapper switchWrapper : this.switchStmts) {
+		for(CilSwitchStmt switchWrapper : this.switchStmts) {
 			Unit placeholderUnit = switchWrapper.getPlaceholder();
 			Unit defaultTarget = switchWrapper.getDefaultTarget();
 			
@@ -1211,25 +1210,27 @@ class CilMethodSource implements MethodSource {
 	private SootFieldRef getFieldRef(List<String> param, boolean isStatic) {
 		String signature = param.get(param.size()-1);
 		String className = getClassNameFromSignature(signature);
-		SootClass declaringClass = ((RefType) Cil_Utils.getSootType(className)).getSootClass();
+		SootClass declaringClass = ((RefType) Cil_Utils.getSootType(method.getCilClass(),
+				new CilClassReference(className))).getSootClass();
 		
 		int pos = signature.lastIndexOf(":");
 		String fieldName = signature.substring(pos+1);
 		
 		String fieldType = param.get(0);
+		Type type = Cil_Utils.getSootType(method.getCilClass(),
+				new CilClassReference(fieldType));
 		
-		Type type = Cil_Utils.getSootType(fieldType);
 		SootFieldRef ref = Scene.v().makeFieldRef(declaringClass, fieldName, type, isStatic);
 		return ref;
 	}
 	
  	private SootMethodRef getMethodRef(List<String> param, boolean isStatic) {
- 		String signature="";		
+ 		String signature="";
  		for(String str : param) {
  			signature = signature + " "+ str;
  		}
  		
-		return Cil_Utils.getMethodRef(signature, isStatic);
+		return Cil_Utils.getMethodRef(method.getCilClass(), signature, isStatic);
 	}
 	
 	private String getClassNameFromSignature(String str) {
@@ -1295,11 +1296,11 @@ class CilMethodSource implements MethodSource {
 			return null;			
 		
 		JimpleBody jb = Jimple.v().newBody(m);
+		
 		/* initialize */
-		int nrInsn = instructions.size();
-		units = new HashMap<String, Unit>(nrInsn);
+		units = new HashMap<String, Unit>(method.getInstructions().size());
 		jumpList = new ArrayList<Cil_BranchStmt>();
-		switchStmts = new ArrayList<Cil_SwitchStmtWrapper>();
+		switchStmts = new ArrayList<CilSwitchStmt>();
 		
 		body = jb;
 		localGenerator = new LocalGenerator(jb);

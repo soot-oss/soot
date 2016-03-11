@@ -9,20 +9,24 @@ package soot.cil.ast;
 public class CilLocal {
 	
 	public enum TypeFlag {
+		Unspecified,
 		Class,
 		ValueType
 	}
 	
 	private int id;
 	private String name;
-	private String type;
+	private CilClassReference type;
 	private TypeFlag typeFlag;
 	
-	public CilLocal(int id, String name, String type, TypeFlag typeFlag) {
+	public CilLocal(int id, String name, CilClassReference type, TypeFlag typeFlag) {
 		this.id = id;
 		this.name = name;
 		this.type = type;
 		this.typeFlag = typeFlag;
+		
+		if (name == null || name.isEmpty())
+			throw new RuntimeException("Every local must have a name");
 	}
 	
 	public int getID() {
@@ -33,7 +37,7 @@ public class CilLocal {
 		return this.name;
 	}
 	
-	public String getType() {
+	public CilClassReference getType() {
 		return this.type;
 	}
 	

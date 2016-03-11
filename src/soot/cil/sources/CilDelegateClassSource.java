@@ -1,4 +1,4 @@
-package soot.cil;
+package soot.cil.sources;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -13,6 +13,8 @@ import soot.SootField;
 import soot.SootMethod;
 import soot.Type;
 import soot.VoidType;
+import soot.cil.Cil_Utils;
+import soot.cil.ast.CilClassReference;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
 /**
@@ -21,7 +23,7 @@ import soot.javaToJimple.IInitialResolver.Dependencies;
  * @author Steven Arzt
  *
  */
-class CilDelegateClassSource extends ClassSource {
+public class CilDelegateClassSource extends ClassSource {
 
 	private final CilDelegateMethodSource methodSource = new CilDelegateMethodSource();
 	
@@ -70,7 +72,7 @@ class CilDelegateClassSource extends ClassSource {
 		String originalSig = G.v().soot_cil_CilNameMangling()
 				.getTargetSigForDispatcherName(className);
 		String targetClass = Cil_Utils.getClassNameFromMethodSignature(originalSig);
-		Type tpTargetClass = Cil_Utils.getSootType(targetClass);
+		Type tpTargetClass = Cil_Utils.getSootType(null, new CilClassReference(targetClass));
 		
 		// Create a field to store the target object
 		SootField sfTarget = new SootField("target", tpTargetClass);

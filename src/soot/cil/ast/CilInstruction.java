@@ -1,13 +1,20 @@
-package soot.cil;
+package soot.cil.ast;
 
 import java.util.List;
 
-class Cil_Instruction {
+/**
+ * Class representing an instruction in a CIL method
+ * 
+ * @author Tobias Kuﬂmaul
+ * @author Steven Arzt
+ *
+ */
+public class CilInstruction {
 	private String opcode;
 	private List<String> parameters;
 	private String label;
 	
-	public Cil_Instruction(String opcode, List<String> param, String label) {
+	public CilInstruction(String opcode, List<String> param, String label) {
 		this.opcode = opcode;
 		this.parameters = param;
 		this.label = label;

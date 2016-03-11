@@ -1,4 +1,4 @@
-package soot.cil;
+package soot.cil.sources;
 
 import soot.Body;
 import soot.G;

@@ -7,8 +7,11 @@ import soot.SootClass;
 import soot.SootField;
 import soot.SootResolver;
 import soot.Type;
+import soot.cil.ast.CilClass;
+import soot.cil.ast.CilClassReference;
 
 class Cil_FieldParser {
+	private CilClass cilClass;
 	private SootField field;
 	private String fieldName;
 	private Type fieldType;
@@ -16,7 +19,8 @@ class Cil_FieldParser {
 
 	private List<String> classConstFieldList;
 
-	public Cil_FieldParser(List<String> classConstFieldList) {
+	public Cil_FieldParser(CilClass cilClass, List<String> classConstFieldList) {
+		this.cilClass = cilClass;
 		this.classConstFieldList = classConstFieldList;
 	}
 
@@ -29,7 +33,7 @@ class Cil_FieldParser {
 		String value = tmp[2];
 
 		type = Cil_Utils.removeAssemblyRefs(type);
-		type = Cil_Utils.getSootType(type.trim()).toString();
+		type = Cil_Utils.getSootType(cilClass, new CilClassReference(type.trim())).toString();
 
 		if (type.equals("int")) {
 			value = value.substring(value.indexOf("(") + 1, value.lastIndexOf(")"));
@@ -117,11 +121,11 @@ class Cil_FieldParser {
 			
 			SootClass typeClass = SootResolver.v().makeClassRef(typeName);
 			typeName = typeClass.getName() + arrayPart;
-			fieldType = Cil_Utils.getSootType(typeName);
+			fieldType = Cil_Utils.getSootType(cilClass, new CilClassReference(typeName));
 
 		} else {			
 			type = field_tokens[field_tokens.length - 2];
-			fieldType = Cil_Utils.getSootType(type);
+			fieldType = Cil_Utils.getSootType(cilClass, new CilClassReference(type));
 		}
 
 		this.fieldName = field_tokens[field_tokens.length - 1];

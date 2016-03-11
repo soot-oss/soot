@@ -1,4 +1,4 @@
-package soot.cil;
+package soot.cil.sources;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -11,11 +11,17 @@ import java.util.List;
 import java.util.Set;
 
 import soot.ClassSource;
+import soot.Modifier;
 import soot.PrimType;
+import soot.RefType;
 import soot.SootClass;
 import soot.Type;
 import soot.VoidType;
+import soot.cil.CilClassProvider.CilDependencyManager;
+import soot.cil.Cil_ClassParser;
+import soot.cil.Cil_Utils;
 import soot.cil.ast.CilClass;
+import soot.cil.ast.CilClassReference;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
 
@@ -26,36 +32,31 @@ import soot.options.Options;
  *
  */
 
-class CilClassSource extends ClassSource {
+public class CilClassSource extends ClassSource {
 	private final File file;
 	private final CilClass clazz;
-	boolean genericClass = false;
-
+	private final CilDependencyManager dependencyManager;
+	
 	private Dependencies deps = new Dependencies();
 
-	public CilClassSource(File file, CilClass clazz) {
+	public CilClassSource(File file, CilClass clazz,
+			CilDependencyManager dependencyManager) {
 		super(clazz.getClassName());
 		this.file = file;
 		this.clazz = clazz;
+		this.dependencyManager = dependencyManager;
 	}
 	
-	public boolean isGenericClass() {
-		return this.genericClass;
-	}
-
 	@Override
 	public Dependencies resolve(SootClass sc) {
 		// Make sure that we're not loading the wrong class
 		if (!sc.getName().equals(clazz.getClassName()))
 			throw new RuntimeException("Class name mismatch");
 		
-		if (this.isGenericClass()) {
-			// If this is a generic class, we need to generate a fake class
-			// and overwrite all the methods that use the generic.
-			// TODO
-			return new Dependencies();
-		}
-
+		// If this is a generic class, we need to generate a fake class
+		// and overwrite all the methods that use the generic.
+		// TODO
+		
 		// Load the class
 		List<String> lines = null;
 		BufferedReader br = null;
@@ -87,13 +88,21 @@ class CilClassSource extends ClassSource {
 			return deps;
 		}
 		
-		Cil_ClassParser parser = new Cil_ClassParser(lines, sc, false);
+		Cil_ClassParser parser = new Cil_ClassParser(clazz, lines, sc, false);
 		parser.parse();
+		
+		// Mark interfaces as such
+		if (clazz.isInterface())
+			sc.setModifiers(sc.getModifiers() | Modifier.INTERFACE);
 
-		Set<Type> depen = parser.getDependencies();		
-		removePrimitiveTypesFromDependencies(depen);
-
-		deps.typesToSignature.addAll(depen);
+		Set<CilClassReference> depen = parser.getDependencies();
+//		removePrimitiveTypesFromDependencies(depen);
+		for (CilClassReference ref : depen) {
+			RefType tp = (RefType) Cil_Utils.getSootType(clazz, ref);
+			if (ref.isGenericClass())
+				dependencyManager.addReference(tp.getClassName(), ref);
+			deps.typesToSignature.add(tp);
+		}
 		return deps;
 	}
 	

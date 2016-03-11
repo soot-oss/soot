@@ -1,18 +1,18 @@
-package soot.cil;
+package soot.cil.ast;
 
 import java.util.List;
 
 import soot.Unit;
 import soot.Value;
 
-class Cil_SwitchStmtWrapper {
+public class CilSwitchStmt {
 	private List<String> targetLabels;
 	private Unit placeholder;
 	private Unit defaultTarget;
 	private Value variable;
 	private String label;
 	
-	public Cil_SwitchStmtWrapper(List<String> targetLabels, Unit defaultTarget, Unit placeholder, Value variable, String label) {
+	public CilSwitchStmt(List<String> targetLabels, Unit defaultTarget, Unit placeholder, Value variable, String label) {
 		this.targetLabels = targetLabels;
 		this.placeholder = placeholder;
 		this.defaultTarget = defaultTarget;

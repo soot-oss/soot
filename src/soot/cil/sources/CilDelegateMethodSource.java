@@ -1,4 +1,4 @@
-package soot.cil;
+package soot.cil.sources;
 
 import java.util.Collections;
 
@@ -13,6 +13,8 @@ import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.VoidType;
+import soot.cil.Cil_Utils;
+import soot.cil.ast.CilClassReference;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
@@ -77,8 +79,8 @@ class CilDelegateMethodSource implements MethodSource {
 		// Get the original function reference
 		String funcRef = G.v().soot_cil_CilNameMangling().getTargetSigForDispatcherName(
 				jb.getMethod().getDeclaringClass().getName());
-		RefType targetType = (RefType) Cil_Utils.getSootType(
-				Cil_Utils.getClassNameFromMethodSignature(funcRef));
+		RefType targetType = (RefType) Cil_Utils.getSootType(null,
+				new CilClassReference(Cil_Utils.getClassNameFromMethodSignature(funcRef)));
 		
 		// Allocate the "this" local
 		Local locThis = localGenerator.generateLocal(thisType);
@@ -98,7 +100,7 @@ class CilDelegateMethodSource implements MethodSource {
 				Jimple.v().newCastExpr(locTarget, targetType)));
 		
 		// Parse the method signature
-		SootMethodRef targetMethodRef = Cil_Utils.getMethodRef(funcRef, false);		
+		SootMethodRef targetMethodRef = Cil_Utils.getMethodRef(null, funcRef, false);		
 		
 		// Call the target method
 		jb.getUnits().add(Jimple.v().newInvokeStmt(Jimple.v().newVirtualInvokeExpr(

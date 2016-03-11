@@ -14,6 +14,7 @@ import java.util.Map;
 
 import soot.G;
 import soot.cil.ast.CilClass;
+import soot.cil.ast.CilGenericDeclarationList;
 
 /**
  * Parser for the global structures in a CIL disassembly file
@@ -58,9 +59,16 @@ public class CilFileParser {
 					
 					// Scan for a class definition
 					if (line.startsWith(".class")) {
-						String[] tokens = line.split(" ");
-						for (String token : tokens)
-							if (!isReservedModifier(token)) {
+						// Is this a generic class definition?
+						CilGenericDeclarationList generics = Cil_Utils.parseGenericDeclaration(line);
+						
+						// Parse the parameters
+						List<String> tokens = Cil_Utils.split(line, ' ');
+						boolean isInterface = false;
+						for (String token : tokens) {
+							if (token.equals("interface"))
+								isInterface = true;
+							else if (!isReservedModifier(token)) {
 								// This is a class name. Whatever follows afterwards
 								// no longer belongs to the class name
 								String className = token;
@@ -73,10 +81,11 @@ public class CilFileParser {
 										.doNameMangling(className);
 								
 								Cil_Utils.addClassToAssemblyMap(className, file.getAbsolutePath());
-								classStack.add(new Pair<Integer, CilClass>(levelCounter,
-										new CilClass(className, lineNum)));
+								classStack.add(0, new Pair<Integer, CilClass>(levelCounter,
+										new CilClass(className, lineNum, generics, isInterface)));
 								break;
 							}
+						}
 					}
 					
 					// Keep the scan stack for nesting
@@ -121,6 +130,7 @@ public class CilFileParser {
 				|| token.equals("beforefieldinit")
 				|| token.equals("abstract")
 				|| token.equals("extends")
+				|| token.equals("interface")
 				|| token.equals(".class");
 	}
 	

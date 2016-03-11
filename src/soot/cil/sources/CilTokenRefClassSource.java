@@ -1,4 +1,4 @@
-package soot.cil;
+package soot.cil.sources;
 
 import java.lang.reflect.Modifier;
 import java.util.Collections;
@@ -18,7 +18,7 @@ import soot.javaToJimple.IInitialResolver.Dependencies;
  * @author Steven Arzt
  *
  */
-class CilTokenRefClassSource extends ClassSource {
+public class CilTokenRefClassSource extends ClassSource {
 
 	private final CilTokenRefMethodSource methodSource = new CilTokenRefMethodSource();
 	
