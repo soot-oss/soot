@@ -130,8 +130,11 @@ public class BafASMBackend extends AbstractASMBackend {
 			}
 		}
 
-		Label startLabel = new Label();
-		mv.visitLabel(startLabel);
+		Label startLabel = null;
+		if (Options.v().write_local_annotations()) {
+			startLabel = new Label();
+			mv.visitLabel(startLabel);
+		}
 		
 		/*
 		 * Handle all TRY-CATCH-blocks
@@ -217,12 +220,12 @@ public class BafASMBackend extends AbstractASMBackend {
 			}
 			generateInstruction(mv, (Inst) u);
 		}
-		
-		Label endLabel = new Label();
-		mv.visitLabel(endLabel);
-		
+				
 		// Generate the local annotations
 		if (Options.v().write_local_annotations()) {
+			Label endLabel = new Label();
+			mv.visitLabel(endLabel);
+			
 			for (Local local : body.getLocals()) {
 				Integer slot = localToSlot.get(local);
 				if (slot != null) {
@@ -231,7 +234,8 @@ public class BafASMBackend extends AbstractASMBackend {
 					{
 						Local jimpleLocal = l.getOriginalLocal();
 						if (jimpleLocal != null)
-							mv.visitLocalVariable(jimpleLocal.getName(), toTypeDesc(jimpleLocal.getType()), null, startLabel, endLabel, slot);
+							mv.visitLocalVariable(jimpleLocal.getName(), toTypeDesc(jimpleLocal.getType()),
+									null, startLabel, endLabel, slot);
 					}
 				}
 			}
