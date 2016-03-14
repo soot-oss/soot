@@ -64,11 +64,11 @@ public class PiNodeManager
     /**
      * Transforms the provided body to pure SSA form.
      **/
-    public PiNodeManager(ShimpleBody body, boolean trimmed)
+    public PiNodeManager(ShimpleBody body, boolean trimmed, ShimpleFactory sf)
     {
         this.body = body;
         this.trimmed = trimmed;
-        sf = G.v().shimpleFactory;
+        this.sf = sf;
     }
 
     public void update()

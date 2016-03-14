@@ -103,8 +103,6 @@ public class G extends Singletons
     public final Map<Scene, ClassHierarchy> ClassHierarchy_classHierarchyMap = new HashMap<Scene, ClassHierarchy>();
     public final Map<MethodContext, MethodContext> MethodContext_map = new HashMap<MethodContext, MethodContext>();
 
-    public ShimpleFactory shimpleFactory = new DefaultShimpleFactory();
-
     
     public boolean ASTTransformations_modified;
     

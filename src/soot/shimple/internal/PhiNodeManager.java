@@ -44,10 +44,10 @@ public class PhiNodeManager
     protected BlockGraph cfg;
     protected GuaranteedDefs gd;
     
-    public PhiNodeManager(ShimpleBody body)
+    public PhiNodeManager(ShimpleBody body, ShimpleFactory sf)
     {
         this.body = body;
-        sf = G.v().shimpleFactory;
+        this.sf = sf;
     }
 
     public void update()
