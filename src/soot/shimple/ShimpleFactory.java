@@ -28,11 +28,6 @@ import soot.toolkits.graph.*;
  **/
 public interface ShimpleFactory
 {
-    /**
-     * Some constructors may require a body.  If this is not set at
-     * the time of need, an exception will be thrown.
-     **/
-    public void setBody(Body body);
 
     /**
      * Constructors should memoize their return value.  Call clearCache()

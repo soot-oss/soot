@@ -78,11 +78,10 @@ public class ShimpleBodyBuilder
     public ShimpleBodyBuilder(ShimpleBody body)
     {
         this.body = body;
-        sf = G.v().shimpleFactory;
-        sf.setBody(body);
+        sf = new DefaultShimpleFactory(body);
         sf.clearCache();
-        phi = new PhiNodeManager(body);
-        pi = new PiNodeManager(body, false);
+        phi = new PhiNodeManager(body, sf);
+        pi = new PiNodeManager(body, false, sf);
         options = body.getOptions();
         makeUniqueLocalNames();
     }
