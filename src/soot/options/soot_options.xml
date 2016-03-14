@@ -6345,7 +6345,21 @@ transformations.
 			<short_desc>Attach bytecode offset to IR</short_desc>
 			<long_desc>Maintain bytecode offset tables for class files throughout the transformations.</long_desc>
 		</boolopt>
-	</section>cg.spark
+	</section>
+	
+	<section>
+		<name>Output Attribute Options</name>
+		<boolopt>
+			<name>Write Out Local Annotations</name>
+			<alias>write-local-annotations</alias>
+			<default>true</default>
+			<short_desc>Write out debug annotations on local names</short_desc>
+			<long_desc>
+Write out debug tables to indicate which register maps to which variable in the Jimple code.
+</long_desc>
+		</boolopt>
+	</section>
+	
 	<section>
 		<name>Annotation Options</name>
 		<macroopt>

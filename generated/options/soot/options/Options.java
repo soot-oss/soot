@@ -1173,6 +1173,11 @@ public class Options extends OptionsBase {
             )
                 keep_offset = true;
   
+            else if( false 
+            || option.equals( "write-local-annotations" )
+            )
+                write_local_annotations = true;
+  
             else if( false
             || option.equals( "annot-purity" )
             ) {
@@ -1554,6 +1559,10 @@ public class Options extends OptionsBase {
     private boolean keep_offset = false;
     public void set_keep_offset( boolean setting ) { keep_offset = setting; }
   
+    public boolean write_local_annotations() { return write_local_annotations; }
+    private boolean write_local_annotations = false;
+    public void set_write_local_annotations( boolean setting ) { write_local_annotations = setting; }
+  
     public boolean time() { return time; }
     private boolean time = false;
     public void set_time( boolean setting ) { time = setting; }
@@ -1682,6 +1691,9 @@ public class Options extends OptionsBase {
       
 +padOpt(" -keep-line-number", "Keep line number tables" )
 +padOpt(" -keep-bytecode-offset -keep-offset", "Attach bytecode offset to IR" )
++"\nOutput Attribute Options:\n"
+      
++padOpt(" -write-local-annotations", "Write out debug annotations on local names" )
 +"\nAnnotation Options:\n"
       
 +padOpt(" -annot-purity", "Emit purity attributes" )

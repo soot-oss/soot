@@ -534,6 +534,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-keep-offset");
         }
   
+        public void setwrite_local_annotations(boolean arg) {
+            if(arg) addArg("-write-local-annotations");
+        }
+  
         public void setannot_purity(boolean arg) {
             if(arg) addArg("-annot-purity");
         }
