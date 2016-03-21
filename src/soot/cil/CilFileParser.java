@@ -12,7 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import soot.G;
 import soot.cil.ast.CilClass;
 import soot.cil.ast.CilGenericDeclarationList;
 
@@ -75,14 +74,9 @@ public class CilFileParser {
 								if (!classStack.isEmpty() && classStack.get(0).getO1() == levelCounter - 1)
 									className = classStack.get(0).getO2().getClassName() + "$" + className;
 								
-								// We need to mangle class names for compiler-generated
-								// inner classes
-								className = G.v().soot_cil_CilNameMangling()
-										.doNameMangling(className);
-								
-								Cil_Utils.addClassToAssemblyMap(className, file.getAbsolutePath());
-								classStack.add(0, new Pair<Integer, CilClass>(levelCounter,
-										new CilClass(className, lineNum, generics, isInterface)));
+								CilClass clazz = new CilClass(className, lineNum, generics, isInterface);
+								Cil_Utils.addClassToAssemblyMap(clazz.getUniqueClassName(), file.getAbsolutePath());
+								classStack.add(0, new Pair<Integer, CilClass>(levelCounter, clazz));
 								break;
 							}
 						}
@@ -100,7 +94,7 @@ public class CilFileParser {
 							if (!classStack.isEmpty() && classStack.get(0).getO1() == levelCounter) {
 								CilClass theClass = classStack.remove(0).getO2();
 								theClass.setEndLine(lineNum + 1);
-								classes.put(theClass.getClassName(), theClass);
+								classes.put(theClass.getUniqueClassName(), theClass);
 							}
 						}
 					}

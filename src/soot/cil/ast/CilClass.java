@@ -1,5 +1,7 @@
 package soot.cil.ast;
 
+import soot.cil.Cil_Utils;
+
 
 /**
  * Class for moedelling a class inside a CIL disassembly file
@@ -34,15 +36,29 @@ public class CilClass {
 	
 	public CilClass(String className, int startLine, int endLine,
 			CilGenericDeclarationList generics, boolean isInterface) {
-		this.className = className;
+		this.className = Cil_Utils.removeGenericsDeclaration(className);
 		this.startLine = startLine;
 		this.endLine = endLine;
 		this.generics = generics;
 		this.isInterface = isInterface;
 	}
 	
+	/**
+	 * Gets the base class name, ignoring any generics
+	 */
 	public String getClassName() {
 		return this.className;
+	}
+	
+	/**
+	 * Gets the unique name of the class including the number of generics
+	 * @return The uniuque, mangled class name
+	 */
+	public String getUniqueClassName() {
+		String mangledName = className;
+		if (this.generics != null && !this.generics.isEmpty())
+			 mangledName += "__" + this.generics.size();
+		return mangledName;
 	}
 	
 	public int getStartLine() {

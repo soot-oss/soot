@@ -48,5 +48,14 @@ public class NamedElementList<N extends INamedElement> implements Iterable<N> {
 	public Iterator<N> iterator() {
 		return this.elements.iterator();
 	}
+	
+	public boolean isEmpty() {
+		return elements.isEmpty();
+	}
+	
+	@Override
+	public String toString() {
+		return elements.toString();
+	}
 
 }

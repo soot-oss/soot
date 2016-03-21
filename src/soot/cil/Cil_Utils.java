@@ -182,9 +182,7 @@ public class Cil_Utils {
 		}
 		
 		// We may need to do name mangling for generic types
-		String token = toLookup.getMangledName();
-//		String token = G.v().soot_cil_CilNameMangling().doNameMangling(className);
-		Type t = null;
+		String token = toLookup.getMangledShortName();
 		
 		// Get rid of the modifiers
 		token = removeTokenFromString(token, "instance");
@@ -198,14 +196,16 @@ public class Cil_Utils {
 			arrayDimension++;
 			token = token.substring(0, token.length() - 2);
 		}
-	
+		
+		// Handle arrays
 		if(arrayDimension > 0) {
 			Type baseType = Cil_Utils.getSootType(clazz, new CilClassReference(token));
-			t = ArrayType.v(baseType, arrayDimension);
+			Type t = ArrayType.v(baseType, arrayDimension);
 			return t;
 		}
-				
+		
 		// Check for some special data types
+		Type t;
 		if (token.equals("object")) {
 			t = RefType.v("System.Object");
 		}

@@ -19,7 +19,7 @@ public class CilClassReference {
 	private final List<CilClassReference> genericInstances;
 	
 	public CilClassReference(String className) {
-		this(className, null);
+		this(className, Cil_Utils.parseGenericInstances(className));
 	}
 	
 	public CilClassReference(String className, List<CilClassReference> genericInstances) {
@@ -125,6 +125,19 @@ public class CilClassReference {
 		return mangledName;
 	}
 	
+	/**
+	 * Creates a mangled class name for the referenced target class. This name
+	 * is short, i.e., only contains the base name and the number of generics,
+	 * but not the generic names.
+	 * @return The mangled class name representing this reference
+	 */
+	public String getMangledShortName() {
+		String mangledName = className;
+		if (this.genericInstances != null && !this.genericInstances.isEmpty())
+			 mangledName += "__" + this.genericInstances.size();
+		return mangledName;
+	}
+
 	@Override
 	public CilClassReference clone() {
 		List<CilClassReference> generics = new ArrayList<CilClassReference>(genericInstances.size());

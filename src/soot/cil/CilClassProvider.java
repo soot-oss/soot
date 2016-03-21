@@ -16,7 +16,6 @@ import soot.cil.ast.CilClass;
 import soot.cil.ast.CilClassReference;
 import soot.cil.sources.CilClassSource;
 import soot.cil.sources.CilDelegateClassSource;
-import soot.cil.sources.CilGenericsClassSource;
 import soot.cil.sources.CilTokenRefClassSource;
 
 /**
@@ -75,13 +74,11 @@ public class CilClassProvider implements ClassProvider {
 		if (CilTokenRefClassSource.supportsClass(className))
 			return new CilTokenRefClassSource(className);
 		
-		// Do we have a generic class?
-		CilClassReference originalRef = dependencyManager.getOriginalReference(className);
-		if (originalRef != null)
-			return new CilGenericsClassSource(originalRef);
+		// Parse the class name
+		CilClassReference classRef = new CilClassReference(className);
 		
 		// Have we seen this class before in some assembly?
-		String assemblyName = Cil_Utils.getAssemblyForClassName(className);
+		String assemblyName = Cil_Utils.getAssemblyForClassName(classRef.getMangledShortName());
 		if (assemblyName == null)
 			return null;
 		
@@ -120,7 +117,7 @@ public class CilClassProvider implements ClassProvider {
 		CilFileParser parser = new CilFileParser(file);
 		Set<String> classes = new HashSet<String>(parser.getClasses().size());
 		for (CilClass clazz : parser.getClasses())
-			classes.add(clazz.getClassName());
+			classes.add(clazz.getUniqueClassName());
 		return classes;
 	}
 	

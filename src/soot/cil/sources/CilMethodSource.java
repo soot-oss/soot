@@ -137,9 +137,6 @@ public class CilMethodSource implements MethodSource {
 		
 		// Create the remaining locals
 		for (CilLocal local : localVars) {
-			if (body.getMethod().getName().equals("Main"))
-				System.out.println("x");
-			
 			Type type = Cil_Utils.getSootType(method.getCilClass(), local.getType());
 			Local jLocal= new JimpleLocal(local.getName(), type);
 			jb.getLocals().add(jLocal);
