@@ -1054,6 +1054,7 @@ public class DexPrinter {
 		// into bulk initializations
 		DexArrayInitDetector initDetector = new DexArrayInitDetector();
 		initDetector.constructArrayInitializations(activeBody);
+		initDetector.fixTraps(activeBody);
 		
 		// Split the tries since Dalvik does not supported nested try/catch blocks
 		TrapSplitter.v().transform(activeBody);

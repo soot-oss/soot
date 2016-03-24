@@ -3,11 +3,13 @@ package soot.toDex;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import soot.Body;
+import soot.Trap;
 import soot.Unit;
 import soot.Value;
 import soot.jimple.ArrayRef;
@@ -115,6 +117,43 @@ public class DexArrayInitDetector {
 	
 	public Set<Unit> getIgnoreUnits() {
 		return ignoreUnits;
+	}
+	
+	/**
+	 * Fixes the traps in the given body to account for assignments to individual
+	 * array elements being replaced by a single fill instruction. If a trap starts
+	 * or ends in the middle of the replaced instructions, we have to move the trap.
+	 * @param activeBody The body in which to fix the traps
+	 */
+	public void fixTraps(Body activeBody) {
+		traps : for (Iterator<Trap> trapIt = activeBody.getTraps().iterator();
+				trapIt.hasNext(); ) {
+			Trap t = trapIt.next();
+			Unit beginUnit = t.getBeginUnit();
+			Unit endUnit = t.getEndUnit();
+			
+			while (ignoreUnits.contains(beginUnit)) {
+				beginUnit = activeBody.getUnits().getPredOf(beginUnit);
+				if (beginUnit == endUnit) {
+					trapIt.remove();
+					continue traps;
+				}
+				
+				// The trap must start no earlier than the initial array filling
+				if (arrayInitToFillValues.containsKey(beginUnit))
+					break;
+			}
+			while (ignoreUnits.contains(endUnit)) {
+				endUnit = activeBody.getUnits().getSuccOf(endUnit);
+				if (beginUnit == endUnit) {
+					trapIt.remove();
+					continue traps;
+				}
+			}
+			
+			t.setBeginUnit(beginUnit);
+			t.setEndUnit(endUnit);
+		}
 	}
 
 }
