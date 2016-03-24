@@ -1202,7 +1202,7 @@ public class BafASMBackend extends AbstractASMBackend {
 				Type castType = i.getCastType();
 				if (castType instanceof RefType) {
 					mv.visitTypeInsn(Opcodes.CHECKCAST,
-							slashify(castType.toString()));
+							slashify(((RefType)castType).getClassName()));
 				} else if (castType instanceof ArrayType) {
 					mv.visitTypeInsn(Opcodes.CHECKCAST, toTypeDesc(castType));
 				}
@@ -1213,7 +1213,7 @@ public class BafASMBackend extends AbstractASMBackend {
 				Type checkType = i.getCheckType();
 				if (checkType instanceof RefType) {
 					mv.visitTypeInsn(Opcodes.INSTANCEOF,
-							slashify(checkType.toString()));
+							slashify(((RefType)checkType).getClassName()));
 				} else if (checkType instanceof ArrayType) {
 					mv.visitTypeInsn(Opcodes.INSTANCEOF, toTypeDesc(checkType));
 				}
@@ -1801,7 +1801,7 @@ public class BafASMBackend extends AbstractASMBackend {
 			@Override
 			public void caseNewInst(NewInst i) {
 				mv.visitTypeInsn(Opcodes.NEW, slashify(i.getBaseType()
-						.toString()));
+						.getClassName()));
 			}
 
 			@Override
@@ -1969,7 +1969,7 @@ public class BafASMBackend extends AbstractASMBackend {
 			public void caseNewArrayInst(NewArrayInst i) {
 				Type t = i.getBaseType();
 				if (t instanceof RefType) {
-					mv.visitTypeInsn(Opcodes.ANEWARRAY, slashify(t.toString()));
+					mv.visitTypeInsn(Opcodes.ANEWARRAY, slashify(((RefType)t).getClassName()));
 				} else if (t instanceof ArrayType) {
 					mv.visitTypeInsn(Opcodes.ANEWARRAY, toTypeDesc(t));
 				} else {
