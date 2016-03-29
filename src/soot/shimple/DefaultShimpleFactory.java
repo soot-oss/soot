@@ -31,7 +31,7 @@ import soot.toolkits.graph.*;
  **/
 public class DefaultShimpleFactory implements ShimpleFactory
 {
-    protected Body body;
+    protected final Body body;
     protected BlockGraph bg;
     protected UnitGraph ug;
     protected DominatorsFinder<Block> dFinder;
@@ -47,8 +47,9 @@ public class DefaultShimpleFactory implements ShimpleFactory
     protected DominanceFrontier<Block> rdFrontier;
     protected DominatorsFinder<Block> rdFinder;
     
-    public DefaultShimpleFactory()
+    public DefaultShimpleFactory(Body body)
     {
+    	this.body = body;
     }
     
     public void clearCache()
@@ -66,12 +67,6 @@ public class DefaultShimpleFactory implements ShimpleFactory
         rdTree = null;
         rdFinder = null;
         rdFrontier = null;
-    }
-    
-    public void setBody(Body body)
-    {
-        this.body = body;
-        clearCache();        
     }
 
     public Body getBody()
