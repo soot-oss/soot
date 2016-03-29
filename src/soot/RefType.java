@@ -254,5 +254,10 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 	public boolean isAllowedInFinalCode() {
 		return true;
 	}
+	
+	@Override
+    public String getEscapedName() {
+    	return Scene.v().quotedNameOf(getClassName());
+    }
 
 }

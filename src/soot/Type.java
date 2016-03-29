@@ -84,6 +84,15 @@ public abstract class Type implements Switchable, Serializable, Numberable
     public boolean isAllowedInFinalCode() {
     	return false;
     }
+    
+    /**
+     * Gets the escaped name of this type. If the type name is a reserved word, this
+     * method makes sure to properly escape it.
+     * @return The (potentially escaped) type name.
+     */
+    public String getEscapedName() {
+    	return toString();
+    }
 
     public final int getNumber() { return number; }
     public final void setNumber( int number ) { this.number = number; }

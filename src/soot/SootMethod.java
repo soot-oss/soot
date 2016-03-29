@@ -587,21 +587,21 @@ public class SootMethod
         Type returnType) {
         return getSubSignatureImpl(name, params, returnType);
     }
-
+    
     private static String getSubSignatureImpl(
         String name,
         List<Type> params,
         Type returnType) {
         StringBuilder buffer = new StringBuilder();
-        Type t = returnType;
-
-        buffer.append(t.toString());
+        
+        buffer.append(returnType.getEscapedName());
+        
         buffer.append(" ");
         buffer.append(Scene.v().quotedNameOf(name));
         buffer.append("(");
 
         for (int i = 0; i < params.size(); i++) {
-            buffer.append(params.get(i));
+            buffer.append(params.get(i).getEscapedName());
             if (i < params.size() - 1)
                 buffer.append(",");
         }
