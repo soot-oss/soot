@@ -429,6 +429,8 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		addToEnableGroup("jb", "jb.tr", getjbjb_trcompare_type_assigners_widget(), "compare-type-assigners");
 		
+		addToEnableGroup("jb", "jb.tr", getjbjb_trignore_nullpointer_dereferences_widget(), "ignore-nullpointer-dereferences");
+		
 		getjbjb_trenabled_widget().getButton().addSelectionListener(this);
 		
 		getjbjb_trignore_wrong_staticness_widget().getButton().addSelectionListener(this);
@@ -436,6 +438,8 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		getjbjb_truse_older_type_assigner_widget().getButton().addSelectionListener(this);
 		
 		getjbjb_trcompare_type_assigners_widget().getButton().addSelectionListener(this);
+		
+		getjbjb_trignore_nullpointer_dereferences_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jb", "jb.ulp");
@@ -2520,6 +2524,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_trcompare_type_assigners_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_trignore_nullpointer_dereferences_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_trignore_nullpointer_dereferences_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_ulpenabled_widget().getButton().getSelection();
@@ -7211,6 +7225,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return jbjb_trcompare_type_assigners_widget;
 	}	
 	
+	private BooleanOptionWidget jbjb_trignore_nullpointer_dereferences_widget;
+	
+	private void setjbjb_trignore_nullpointer_dereferences_widget(BooleanOptionWidget widget) {
+		jbjb_trignore_nullpointer_dereferences_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_trignore_nullpointer_dereferences_widget() {
+		return jbjb_trignore_nullpointer_dereferences_widget;
+	}	
+	
 	private BooleanOptionWidget jbjb_ulpenabled_widget;
 	
 	private void setjbjb_ulpenabled_widget(BooleanOptionWidget widget) {
@@ -11721,6 +11745,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setjbjb_trcompare_type_assigners_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Compare type assigners", "p", "jb.tr","compare-type-assigners", "\nEnables comparison (both runtime and results) of Ben Bellamy's \ntype assigner with the older type assigner that was in Soot. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jb.tr"+" "+"ignore-nullpointer-dereferences";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbjb_trignore_nullpointer_dereferences_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Ignore Nullpointer Dereferences", "p", "jb.tr","ignore-nullpointer-dereferences", "\n					 If this option is enabled, Soot wiil not check whether \nthe base object of a virtual method 					 call can only be \nnull. This will lead to the null_type pseudo type being used in \nyour Jimple 					 code. ", defaultBool)));
 		
 		
 

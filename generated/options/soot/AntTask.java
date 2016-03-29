@@ -679,6 +679,12 @@ public class AntTask extends MatchingTask {
             addArg("compare-type-assigners:"+(arg?"true":"false"));
           }
       
+          public void setignore_nullpointer_dereferences(boolean arg) {
+            addArg("-p");
+            addArg("jb.tr");
+            addArg("ignore-nullpointer-dereferences:"+(arg?"true":"false"));
+          }
+      
         }
     
         public Object createp_jb_ulp() {

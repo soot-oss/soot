@@ -84,5 +84,19 @@ public class JBTROptions
         return soot.PhaseOptions.getBoolean( options, "compare-type-assigners" );
     }
     
+    /** Ignore Nullpointer Dereferences --
+    
+     * Ignores virtual method calls on base objects that may only be 
+     * null.
+    
+     * 					 If this option is enabled, Soot wiil not check whether 
+     * the base object of a virtual method 					 call can only be 
+     * null. This will lead to the null_type pseudo type being used in 
+     * your Jimple 					 code. 
+     */
+    public boolean ignore_nullpointer_dereferences() {
+        return soot.PhaseOptions.getBoolean( options, "ignore-nullpointer-dereferences" );
+    }
+    
 }
         

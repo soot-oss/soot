@@ -1857,7 +1857,8 @@ public class Options extends OptionsBase {
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "ignore-wrong-staticness (false)", "Ignores errors due to wrong staticness" )
                 +padOpt( "use-older-type-assigner (false)", "Enables the older type assigner" )
-                +padOpt( "compare-type-assigners (false)", "Compares Ben Bellamy's and the older type assigner" );
+                +padOpt( "compare-type-assigners (false)", "Compares Ben Bellamy's and the older type assigner" )
+                +padOpt( "ignore-nullpointer-dereferences (false)", "Ignores virtual method calls on base objects that may only be null" );
     
         if( phaseName.equals( "jb.ulp" ) )
             return "Phase "+phaseName+":\n"+
@@ -2867,7 +2868,8 @@ public class Options extends OptionsBase {
                 +"enabled "
                 +"ignore-wrong-staticness "
                 +"use-older-type-assigner "
-                +"compare-type-assigners ";
+                +"compare-type-assigners "
+                +"ignore-nullpointer-dereferences ";
     
         if( phaseName.equals( "jb.ulp" ) )
             return ""
@@ -3479,7 +3481,8 @@ public class Options extends OptionsBase {
               +"enabled:true "
               +"ignore-wrong-staticness:false "
               +"use-older-type-assigner:false "
-              +"compare-type-assigners:false ";
+              +"compare-type-assigners:false "
+              +"ignore-nullpointer-dereferences:false ";
     
         if( phaseName.equals( "jb.ulp" ) )
             return ""

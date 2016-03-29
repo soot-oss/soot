@@ -141,7 +141,8 @@ public class TypeAssigner extends BodyTransformer {
 					+ mins + " mins and " + secs + " secs.");
 		}
 		
-		replaceNullType(b);
+		if (!opt.ignore_nullpointer_dereferences())
+			replaceNullType(b);
 
 		if (typingFailed((JimpleBody) b))
 			throw new RuntimeException("type inference failed!");

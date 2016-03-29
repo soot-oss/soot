@@ -1225,6 +1225,17 @@ Enables comparison (both runtime and results) of Ben Bellamy's type assigner wit
 older type assigner that was in Soot.
 </long_desc>
 					</boolopt>
+					<boolopt>
+						<name>Ignore Nullpointer Dereferences</name>
+						<alias>ignore-nullpointer-dereferences</alias>
+                        <default>false</default>
+					<short_desc>Ignores virtual method calls on base objects that may only be null</short_desc>
+					<long_desc>
+					    If this option is enabled, Soot wiil not check whether the base object of a virtual method
+					    call can only be null. This will lead to the null_type pseudo type being used in your Jimple
+					    code.
+</long_desc>
+					</boolopt>
 				</sub_phase>
 				<sub_phase>
 					<name>Unsplit-originals Local Packer</name>

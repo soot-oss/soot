@@ -1332,6 +1332,16 @@ Enables comparison (both runtime and results) of Ben Bellamy's type assigner wit
 older type assigner that was in Soot.
 </p>
 </li>
+<li>
+<b>Ignore Nullpointer Dereferences</b> (ignore-nullpointer-dereferences)
+		<br>
+			(default value: <span class="value">false</span>)
+		<p>
+					    If this option is enabled, Soot wiil not check whether the base object of a virtual method
+					    call can only be null. This will lead to the null_type pseudo type being used in your Jimple
+					    code.
+</p>
+</li>
 </ul>
 <h2>
 <a name="phase_1_5">Unsplit-originals Local Packer (jb.ulp)</a>
