@@ -56,7 +56,8 @@ public class ArrayType extends RefLikeType
    
     private ArrayType(Type baseType, int numDimensions)
     {
-        if( !( baseType instanceof PrimType || baseType instanceof RefType ) )
+        if( !( baseType instanceof PrimType || baseType instanceof RefType
+        		|| baseType instanceof NullType ) )
             throw new RuntimeException( "oops,  base type must be PrimType or RefType but not '"+ baseType +"'" );
         if( numDimensions < 1 ) throw new RuntimeException( "attempt to create array with "+numDimensions+" dimensions" );
         this.baseType = baseType;
