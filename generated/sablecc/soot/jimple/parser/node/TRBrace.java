@@ -25,6 +25,7 @@ public final class TRBrace extends Token
       return new TRBrace(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTRBrace(this);

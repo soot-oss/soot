@@ -29,6 +29,7 @@ public final class ASingleArgList extends PArgList
             cloneNode(this._immediate_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseASingleArgList(this);

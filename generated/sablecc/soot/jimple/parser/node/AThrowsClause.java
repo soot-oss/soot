@@ -34,6 +34,7 @@ public final class AThrowsClause extends PThrowsClause
             cloneNode(this._classNameList_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAThrowsClause(this);

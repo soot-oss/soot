@@ -25,6 +25,7 @@ public final class TUnknown extends Token
       return new TUnknown(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTUnknown(this);

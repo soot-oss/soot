@@ -29,6 +29,7 @@ public final class AVoidType extends PType
             cloneNode(this._void_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAVoidType(this);

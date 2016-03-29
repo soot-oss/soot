@@ -25,6 +25,7 @@ public final class TNative extends Token
       return new TNative(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTNative(this);

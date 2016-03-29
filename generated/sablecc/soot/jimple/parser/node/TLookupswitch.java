@@ -25,6 +25,7 @@ public final class TLookupswitch extends Token
       return new TLookupswitch(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTLookupswitch(this);

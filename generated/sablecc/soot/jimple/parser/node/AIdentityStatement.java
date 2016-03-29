@@ -49,6 +49,7 @@ public final class AIdentityStatement extends PStatement
             cloneNode(this._semicolon_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAIdentityStatement(this);

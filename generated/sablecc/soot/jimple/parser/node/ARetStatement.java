@@ -39,6 +39,7 @@ public final class ARetStatement extends PStatement
             cloneNode(this._semicolon_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseARetStatement(this);

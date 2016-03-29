@@ -34,6 +34,7 @@ public final class AFloatConstant extends PConstant
             cloneNode(this._floatConstant_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAFloatConstant(this);

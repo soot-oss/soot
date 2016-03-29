@@ -54,6 +54,7 @@ public final class AUnnamedMethodSignature extends PUnnamedMethodSignature
             cloneNode(this._cmpgt_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAUnnamedMethodSignature(this);

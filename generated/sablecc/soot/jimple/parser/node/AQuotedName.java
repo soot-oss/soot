@@ -29,6 +29,7 @@ public final class AQuotedName extends PName
             cloneNode(this._quotedName_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAQuotedName(this);

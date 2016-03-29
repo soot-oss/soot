@@ -29,6 +29,7 @@ public final class AAndBinop extends PBinop
             cloneNode(this._and_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAAndBinop(this);

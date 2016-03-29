@@ -29,6 +29,7 @@ public final class ASynchronizedModifier extends PModifier
             cloneNode(this._synchronized_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseASynchronizedModifier(this);

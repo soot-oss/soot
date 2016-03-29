@@ -23,7 +23,7 @@ public final class AMethodMember extends PMember
     }
 
     public AMethodMember(
-        @SuppressWarnings("hiding") List<PModifier> _modifier_,
+        @SuppressWarnings("hiding") List<?> _modifier_,
         @SuppressWarnings("hiding") PType _type_,
         @SuppressWarnings("hiding") PName _name_,
         @SuppressWarnings("hiding") TLParen _lParen_,
@@ -65,6 +65,7 @@ public final class AMethodMember extends PMember
             cloneNode(this._methodBody_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAMethodMember(this);
@@ -75,18 +76,24 @@ public final class AMethodMember extends PMember
         return this._modifier_;
     }
 
-    public void setModifier(List<PModifier> list)
+    public void setModifier(List<?> list)
     {
-        this._modifier_.clear();
-        this._modifier_.addAll(list);
-        for(PModifier e : list)
+        for(PModifier e : this._modifier_)
         {
+            e.parent(null);
+        }
+        this._modifier_.clear();
+
+        for(Object obj_e : list)
+        {
+            PModifier e = (PModifier) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
             }
 
             e.parent(this);
+            this._modifier_.add(e);
         }
     }
 

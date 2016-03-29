@@ -29,6 +29,7 @@ public final class AShortBaseType extends PBaseType
             cloneNode(this._short_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAShortBaseType(this);

@@ -25,6 +25,7 @@ public final class TXor extends Token
       return new TXor(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTXor(this);

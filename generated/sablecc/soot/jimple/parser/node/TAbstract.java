@@ -25,6 +25,7 @@ public final class TAbstract extends Token
       return new TAbstract(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTAbstract(this);

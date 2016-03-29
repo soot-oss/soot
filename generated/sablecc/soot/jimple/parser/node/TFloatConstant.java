@@ -25,6 +25,7 @@ public final class TFloatConstant extends Token
       return new TFloatConstant(getText(), getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTFloatConstant(this);

@@ -25,6 +25,7 @@ public final class TQuotedName extends Token
       return new TQuotedName(getText(), getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTQuotedName(this);

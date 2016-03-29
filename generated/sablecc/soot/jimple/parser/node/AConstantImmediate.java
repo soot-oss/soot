@@ -29,6 +29,7 @@ public final class AConstantImmediate extends PImmediate
             cloneNode(this._constant_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAConstantImmediate(this);

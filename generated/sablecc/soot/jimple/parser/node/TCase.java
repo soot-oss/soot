@@ -25,6 +25,7 @@ public final class TCase extends Token
       return new TCase(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTCase(this);

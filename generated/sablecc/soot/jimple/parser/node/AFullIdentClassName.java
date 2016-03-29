@@ -29,6 +29,7 @@ public final class AFullIdentClassName extends PClassName
             cloneNode(this._fullIdentifier_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAFullIdentClassName(this);

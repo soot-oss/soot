@@ -39,6 +39,7 @@ public final class ALocalFieldRef extends PFieldRef
             cloneNode(this._fieldSignature_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseALocalFieldRef(this);

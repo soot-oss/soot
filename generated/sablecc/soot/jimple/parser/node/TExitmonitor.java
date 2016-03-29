@@ -25,6 +25,7 @@ public final class TExitmonitor extends Token
       return new TExitmonitor(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTExitmonitor(this);

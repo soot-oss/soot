@@ -25,6 +25,7 @@ public final class TCmpl extends Token
       return new TCmpl(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTCmpl(this);

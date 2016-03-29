@@ -29,6 +29,7 @@ public final class ALabelName extends PLabelName
             cloneNode(this._identifier_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseALabelName(this);

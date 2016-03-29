@@ -25,6 +25,7 @@ public final class TNewmultiarray extends Token
       return new TNewmultiarray(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTNewmultiarray(this);

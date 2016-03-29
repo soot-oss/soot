@@ -34,6 +34,7 @@ public final class AClzzConstant extends PConstant
             cloneNode(this._stringConstant_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAClzzConstant(this);

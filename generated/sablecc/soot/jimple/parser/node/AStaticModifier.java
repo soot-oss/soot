@@ -29,6 +29,7 @@ public final class AStaticModifier extends PModifier
             cloneNode(this._static_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAStaticModifier(this);

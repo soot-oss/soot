@@ -29,6 +29,7 @@ public final class AEnumModifier extends PModifier
             cloneNode(this._enum_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAEnumModifier(this);

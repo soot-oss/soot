@@ -29,6 +29,7 @@ public final class AShlBinop extends PBinop
             cloneNode(this._shl_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAShlBinop(this);

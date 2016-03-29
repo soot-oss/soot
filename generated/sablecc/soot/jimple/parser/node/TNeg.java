@@ -25,6 +25,7 @@ public final class TNeg extends Token
       return new TNeg(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTNeg(this);

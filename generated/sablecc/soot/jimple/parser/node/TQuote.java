@@ -25,6 +25,7 @@ public final class TQuote extends Token
       return new TQuote(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTQuote(this);

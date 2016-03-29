@@ -18,7 +18,7 @@ public final class AQuotedNonvoidType extends PNonvoidType
 
     public AQuotedNonvoidType(
         @SuppressWarnings("hiding") TQuotedName _quotedName_,
-        @SuppressWarnings("hiding") List<PArrayBrackets> _arrayBrackets_)
+        @SuppressWarnings("hiding") List<?> _arrayBrackets_)
     {
         // Constructor
         setQuotedName(_quotedName_);
@@ -35,6 +35,7 @@ public final class AQuotedNonvoidType extends PNonvoidType
             cloneList(this._arrayBrackets_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAQuotedNonvoidType(this);
@@ -70,18 +71,24 @@ public final class AQuotedNonvoidType extends PNonvoidType
         return this._arrayBrackets_;
     }
 
-    public void setArrayBrackets(List<PArrayBrackets> list)
+    public void setArrayBrackets(List<?> list)
     {
-        this._arrayBrackets_.clear();
-        this._arrayBrackets_.addAll(list);
-        for(PArrayBrackets e : list)
+        for(PArrayBrackets e : this._arrayBrackets_)
         {
+            e.parent(null);
+        }
+        this._arrayBrackets_.clear();
+
+        for(Object obj_e : list)
+        {
+            PArrayBrackets e = (PArrayBrackets) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
             }
 
             e.parent(this);
+            this._arrayBrackets_.add(e);
         }
     }
 

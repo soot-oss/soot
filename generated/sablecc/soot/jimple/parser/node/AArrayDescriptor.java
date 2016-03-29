@@ -39,6 +39,7 @@ public final class AArrayDescriptor extends PArrayDescriptor
             cloneNode(this._rBracket_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAArrayDescriptor(this);

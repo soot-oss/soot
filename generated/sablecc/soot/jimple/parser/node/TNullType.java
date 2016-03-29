@@ -25,6 +25,7 @@ public final class TNullType extends Token
       return new TNullType(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTNullType(this);

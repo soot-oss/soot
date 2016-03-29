@@ -29,6 +29,7 @@ public final class AAbstractModifier extends PModifier
             cloneNode(this._abstract_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAAbstractModifier(this);

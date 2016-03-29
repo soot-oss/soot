@@ -29,6 +29,7 @@ public final class ALocalName extends PLocalName
             cloneNode(this._name_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseALocalName(this);

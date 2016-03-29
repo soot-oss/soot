@@ -29,6 +29,7 @@ public final class AIdentClassName extends PClassName
             cloneNode(this._identifier_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAIdentClassName(this);

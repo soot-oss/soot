@@ -29,6 +29,7 @@ public final class AUnopExpression extends PExpression
             cloneNode(this._unopExpr_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAUnopExpression(this);

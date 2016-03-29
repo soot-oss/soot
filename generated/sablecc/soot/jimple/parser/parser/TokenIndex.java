@@ -562,13 +562,13 @@ class TokenIndex extends AnalysisAdapter
     }
 
     @Override
-    public void caseTFullIdentifier(@SuppressWarnings("unused") TFullIdentifier node)
+    public void caseTQuotedName(@SuppressWarnings("unused") TQuotedName node)
     {
         this.index = 92;
     }
 
     @Override
-    public void caseTQuotedName(@SuppressWarnings("unused") TQuotedName node)
+    public void caseTFullIdentifier(@SuppressWarnings("unused") TFullIdentifier node)
     {
         this.index = 93;
     }

@@ -25,6 +25,7 @@ public final class TLong extends Token
       return new TLong(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTLong(this);

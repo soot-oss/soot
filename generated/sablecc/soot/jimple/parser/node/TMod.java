@@ -25,6 +25,7 @@ public final class TMod extends Token
       return new TMod(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTMod(this);

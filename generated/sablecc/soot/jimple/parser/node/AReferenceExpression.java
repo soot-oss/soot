@@ -29,6 +29,7 @@ public final class AReferenceExpression extends PExpression
             cloneNode(this._reference_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAReferenceExpression(this);

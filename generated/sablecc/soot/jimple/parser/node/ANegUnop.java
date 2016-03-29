@@ -29,6 +29,7 @@ public final class ANegUnop extends PUnop
             cloneNode(this._neg_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseANegUnop(this);

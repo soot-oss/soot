@@ -25,6 +25,7 @@ public final class TCmple extends Token
       return new TCmple(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTCmple(this);

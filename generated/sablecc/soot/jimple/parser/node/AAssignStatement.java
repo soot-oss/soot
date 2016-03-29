@@ -44,6 +44,7 @@ public final class AAssignStatement extends PStatement
             cloneNode(this._semicolon_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAAssignStatement(this);

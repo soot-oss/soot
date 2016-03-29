@@ -25,6 +25,7 @@ public final class TBoolean extends Token
       return new TBoolean(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTBoolean(this);

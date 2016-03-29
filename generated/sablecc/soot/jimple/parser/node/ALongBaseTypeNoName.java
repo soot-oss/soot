@@ -29,6 +29,7 @@ public final class ALongBaseTypeNoName extends PBaseTypeNoName
             cloneNode(this._long_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseALongBaseTypeNoName(this);

@@ -21,9 +21,9 @@ public final class AFullMethodBody extends PMethodBody
 
     public AFullMethodBody(
         @SuppressWarnings("hiding") TLBrace _lBrace_,
-        @SuppressWarnings("hiding") List<PDeclaration> _declaration_,
-        @SuppressWarnings("hiding") List<PStatement> _statement_,
-        @SuppressWarnings("hiding") List<PCatchClause> _catchClause_,
+        @SuppressWarnings("hiding") List<?> _declaration_,
+        @SuppressWarnings("hiding") List<?> _statement_,
+        @SuppressWarnings("hiding") List<?> _catchClause_,
         @SuppressWarnings("hiding") TRBrace _rBrace_)
     {
         // Constructor
@@ -50,6 +50,7 @@ public final class AFullMethodBody extends PMethodBody
             cloneNode(this._rBrace_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAFullMethodBody(this);
@@ -85,18 +86,24 @@ public final class AFullMethodBody extends PMethodBody
         return this._declaration_;
     }
 
-    public void setDeclaration(List<PDeclaration> list)
+    public void setDeclaration(List<?> list)
     {
-        this._declaration_.clear();
-        this._declaration_.addAll(list);
-        for(PDeclaration e : list)
+        for(PDeclaration e : this._declaration_)
         {
+            e.parent(null);
+        }
+        this._declaration_.clear();
+
+        for(Object obj_e : list)
+        {
+            PDeclaration e = (PDeclaration) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
             }
 
             e.parent(this);
+            this._declaration_.add(e);
         }
     }
 
@@ -105,18 +112,24 @@ public final class AFullMethodBody extends PMethodBody
         return this._statement_;
     }
 
-    public void setStatement(List<PStatement> list)
+    public void setStatement(List<?> list)
     {
-        this._statement_.clear();
-        this._statement_.addAll(list);
-        for(PStatement e : list)
+        for(PStatement e : this._statement_)
         {
+            e.parent(null);
+        }
+        this._statement_.clear();
+
+        for(Object obj_e : list)
+        {
+            PStatement e = (PStatement) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
             }
 
             e.parent(this);
+            this._statement_.add(e);
         }
     }
 
@@ -125,18 +138,24 @@ public final class AFullMethodBody extends PMethodBody
         return this._catchClause_;
     }
 
-    public void setCatchClause(List<PCatchClause> list)
+    public void setCatchClause(List<?> list)
     {
-        this._catchClause_.clear();
-        this._catchClause_.addAll(list);
-        for(PCatchClause e : list)
+        for(PCatchClause e : this._catchClause_)
         {
+            e.parent(null);
+        }
+        this._catchClause_.clear();
+
+        for(Object obj_e : list)
+        {
+            PCatchClause e = (PCatchClause) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
             }
 
             e.parent(this);
+            this._catchClause_.add(e);
         }
     }
 

@@ -29,6 +29,7 @@ public final class AFieldReference extends PReference
             cloneNode(this._fieldRef_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAFieldReference(this);

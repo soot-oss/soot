@@ -29,6 +29,7 @@ public final class ATransientModifier extends PModifier
             cloneNode(this._transient_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseATransientModifier(this);

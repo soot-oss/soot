@@ -29,6 +29,7 @@ public final class AAnnotationModifier extends PModifier
             cloneNode(this._annotation_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAAnnotationModifier(this);

@@ -29,6 +29,7 @@ public final class ASigFieldRef extends PFieldRef
             cloneNode(this._fieldSignature_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseASigFieldRef(this);

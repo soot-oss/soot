@@ -34,6 +34,7 @@ public final class AIdentArrayRef extends PArrayRef
             cloneNode(this._fixedArrayDescriptor_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAIdentArrayRef(this);

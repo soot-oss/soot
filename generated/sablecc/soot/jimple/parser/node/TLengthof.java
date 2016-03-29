@@ -25,6 +25,7 @@ public final class TLengthof extends Token
       return new TLengthof(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTLengthof(this);

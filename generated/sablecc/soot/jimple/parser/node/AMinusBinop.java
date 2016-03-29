@@ -29,6 +29,7 @@ public final class AMinusBinop extends PBinop
             cloneNode(this._minus_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAMinusBinop(this);

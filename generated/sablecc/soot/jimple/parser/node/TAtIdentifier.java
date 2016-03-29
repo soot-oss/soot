@@ -25,6 +25,7 @@ public final class TAtIdentifier extends Token
       return new TAtIdentifier(getText(), getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTAtIdentifier(this);

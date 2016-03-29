@@ -29,6 +29,7 @@ public final class ANativeModifier extends PModifier
             cloneNode(this._native_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseANativeModifier(this);

@@ -76,7 +76,7 @@ public class SkeletonExtractorWalker extends Walker
             mSootClass = new SootClass(className);
             mSootClass.setResolvingLevel(SootClass.SIGNATURES);
         } else {
-            if(!className.equals(mSootClass.getName()))
+            if(!className.equals(Scene.v().quotedNameOf(mSootClass.getName())))
                 throw new RuntimeException("expected:  " + className + ", but got: " + mSootClass.getName());
         }
         

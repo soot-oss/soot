@@ -261,8 +261,8 @@ public interface Analysis extends Switch
     void caseTMinus(TMinus node);
     void caseTMult(TMult node);
     void caseTDiv(TDiv node);
-    void caseTFullIdentifier(TFullIdentifier node);
     void caseTQuotedName(TQuotedName node);
+    void caseTFullIdentifier(TFullIdentifier node);
     void caseTIdentifier(TIdentifier node);
     void caseTAtIdentifier(TAtIdentifier node);
     void caseTBoolConstant(TBoolConstant node);

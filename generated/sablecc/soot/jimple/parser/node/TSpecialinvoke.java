@@ -25,6 +25,7 @@ public final class TSpecialinvoke extends Token
       return new TSpecialinvoke(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTSpecialinvoke(this);

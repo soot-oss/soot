@@ -25,6 +25,7 @@ public final class TShl extends Token
       return new TShl(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTShl(this);

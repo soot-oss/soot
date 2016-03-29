@@ -25,6 +25,7 @@ public final class TEnum extends Token
       return new TEnum(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTEnum(this);

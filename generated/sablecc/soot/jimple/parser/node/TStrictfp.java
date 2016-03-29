@@ -25,6 +25,7 @@ public final class TStrictfp extends Token
       return new TStrictfp(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTStrictfp(this);

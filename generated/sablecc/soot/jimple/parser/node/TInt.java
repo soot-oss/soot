@@ -25,6 +25,7 @@ public final class TInt extends Token
       return new TInt(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTInt(this);

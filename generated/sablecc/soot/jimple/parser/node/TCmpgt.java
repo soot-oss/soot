@@ -25,6 +25,7 @@ public final class TCmpgt extends Token
       return new TCmpgt(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTCmpgt(this);

@@ -25,6 +25,7 @@ public final class TSynchronized extends Token
       return new TSynchronized(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTSynchronized(this);

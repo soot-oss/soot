@@ -49,6 +49,7 @@ public final class AArrayNewExpr extends PNewExpr
             cloneNode(this._fixedArrayDescriptor_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAArrayNewExpr(this);

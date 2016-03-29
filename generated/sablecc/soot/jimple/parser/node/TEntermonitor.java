@@ -25,6 +25,7 @@ public final class TEntermonitor extends Token
       return new TEntermonitor(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTEntermonitor(this);

@@ -29,6 +29,7 @@ public final class AGotoStatement extends PStatement
             cloneNode(this._gotoStmt_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAGotoStatement(this);

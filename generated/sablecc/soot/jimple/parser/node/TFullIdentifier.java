@@ -25,6 +25,7 @@ public final class TFullIdentifier extends Token
       return new TFullIdentifier(getText(), getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTFullIdentifier(this);

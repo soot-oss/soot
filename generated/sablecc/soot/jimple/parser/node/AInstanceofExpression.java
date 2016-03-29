@@ -39,6 +39,7 @@ public final class AInstanceofExpression extends PExpression
             cloneNode(this._nonvoidType_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAInstanceofExpression(this);

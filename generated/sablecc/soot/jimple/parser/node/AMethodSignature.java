@@ -69,6 +69,7 @@ public final class AMethodSignature extends PMethodSignature
             cloneNode(this._cmpgt_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAMethodSignature(this);

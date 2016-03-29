@@ -29,6 +29,7 @@ public final class AMultBinop extends PBinop
             cloneNode(this._mult_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAMultBinop(this);

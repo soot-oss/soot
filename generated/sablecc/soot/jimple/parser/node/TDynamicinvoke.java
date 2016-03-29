@@ -25,6 +25,7 @@ public final class TDynamicinvoke extends Token
       return new TDynamicinvoke(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTDynamicinvoke(this);

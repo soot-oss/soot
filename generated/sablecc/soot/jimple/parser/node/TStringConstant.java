@@ -25,6 +25,7 @@ public final class TStringConstant extends Token
       return new TStringConstant(getText(), getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTStringConstant(this);

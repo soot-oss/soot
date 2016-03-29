@@ -29,6 +29,7 @@ public final class AProtectedModifier extends PModifier
             cloneNode(this._protected_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAProtectedModifier(this);

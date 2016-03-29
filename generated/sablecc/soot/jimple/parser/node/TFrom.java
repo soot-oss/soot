@@ -25,6 +25,7 @@ public final class TFrom extends Token
       return new TFrom(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTFrom(this);

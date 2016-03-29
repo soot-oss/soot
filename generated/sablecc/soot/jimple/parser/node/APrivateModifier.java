@@ -29,6 +29,7 @@ public final class APrivateModifier extends PModifier
             cloneNode(this._private_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAPrivateModifier(this);

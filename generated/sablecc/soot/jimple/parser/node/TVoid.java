@@ -25,6 +25,7 @@ public final class TVoid extends Token
       return new TVoid(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTVoid(this);

@@ -69,6 +69,7 @@ public final class ACatchClause extends PCatchClause
             cloneNode(this._semicolon_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseACatchClause(this);

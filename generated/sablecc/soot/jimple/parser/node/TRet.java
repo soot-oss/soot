@@ -25,6 +25,7 @@ public final class TRet extends Token
       return new TRet(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTRet(this);

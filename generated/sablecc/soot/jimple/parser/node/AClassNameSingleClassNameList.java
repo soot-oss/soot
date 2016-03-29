@@ -29,6 +29,7 @@ public final class AClassNameSingleClassNameList extends PClassNameList
             cloneNode(this._className_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAClassNameSingleClassNameList(this);

@@ -54,6 +54,7 @@ public final class AFieldSignature extends PFieldSignature
             cloneNode(this._cmpgt_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAFieldSignature(this);

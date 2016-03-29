@@ -29,6 +29,7 @@ public final class AOrBinop extends PBinop
             cloneNode(this._or_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAOrBinop(this);

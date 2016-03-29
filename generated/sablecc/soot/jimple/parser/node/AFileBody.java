@@ -19,7 +19,7 @@ public final class AFileBody extends PFileBody
 
     public AFileBody(
         @SuppressWarnings("hiding") TLBrace _lBrace_,
-        @SuppressWarnings("hiding") List<PMember> _member_,
+        @SuppressWarnings("hiding") List<?> _member_,
         @SuppressWarnings("hiding") TRBrace _rBrace_)
     {
         // Constructor
@@ -40,6 +40,7 @@ public final class AFileBody extends PFileBody
             cloneNode(this._rBrace_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAFileBody(this);
@@ -75,18 +76,24 @@ public final class AFileBody extends PFileBody
         return this._member_;
     }
 
-    public void setMember(List<PMember> list)
+    public void setMember(List<?> list)
     {
-        this._member_.clear();
-        this._member_.addAll(list);
-        for(PMember e : list)
+        for(PMember e : this._member_)
         {
+            e.parent(null);
+        }
+        this._member_.clear();
+
+        for(Object obj_e : list)
+        {
+            PMember e = (PMember) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
             }
 
             e.parent(this);
+            this._member_.add(e);
         }
     }
 

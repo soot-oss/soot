@@ -29,6 +29,7 @@ public final class AClassFileType extends PFileType
             cloneNode(this._theclass_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAClassFileType(this);

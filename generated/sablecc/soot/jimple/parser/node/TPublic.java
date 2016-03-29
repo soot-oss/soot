@@ -25,6 +25,7 @@ public final class TPublic extends Token
       return new TPublic(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTPublic(this);

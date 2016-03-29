@@ -25,6 +25,7 @@ public final class TPrivate extends Token
       return new TPrivate(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTPrivate(this);

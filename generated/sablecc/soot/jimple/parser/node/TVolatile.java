@@ -25,6 +25,7 @@ public final class TVolatile extends Token
       return new TVolatile(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTVolatile(this);

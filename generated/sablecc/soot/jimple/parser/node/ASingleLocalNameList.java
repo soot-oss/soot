@@ -29,6 +29,7 @@ public final class ASingleLocalNameList extends PLocalNameList
             cloneNode(this._localName_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseASingleLocalNameList(this);

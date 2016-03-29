@@ -29,6 +29,7 @@ public final class AXorBinop extends PBinop
             cloneNode(this._xor_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAXorBinop(this);

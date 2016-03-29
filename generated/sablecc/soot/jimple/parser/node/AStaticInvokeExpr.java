@@ -49,6 +49,7 @@ public final class AStaticInvokeExpr extends PInvokeExpr
             cloneNode(this._rParen_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAStaticInvokeExpr(this);

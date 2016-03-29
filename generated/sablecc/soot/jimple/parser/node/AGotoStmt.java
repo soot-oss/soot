@@ -39,6 +39,7 @@ public final class AGotoStmt extends PGotoStmt
             cloneNode(this._semicolon_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAGotoStmt(this);

@@ -25,6 +25,7 @@ public final class TCmp extends Token
       return new TCmp(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTCmp(this);

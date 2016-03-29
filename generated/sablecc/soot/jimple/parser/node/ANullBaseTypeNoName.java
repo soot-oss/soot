@@ -29,6 +29,7 @@ public final class ANullBaseTypeNoName extends PBaseTypeNoName
             cloneNode(this._nullType_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseANullBaseTypeNoName(this);

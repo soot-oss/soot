@@ -7,9 +7,9 @@ import java.util.ArrayList;
 final class State
 {
     int state;
-    ArrayList nodes;
+    ArrayList<Object> nodes;
 
-    State(@SuppressWarnings("hiding") int state, @SuppressWarnings("hiding") ArrayList nodes)
+    State(@SuppressWarnings("hiding") int state, @SuppressWarnings("hiding") ArrayList<Object> nodes)
     {
         this.state = state;
         this.nodes = nodes;

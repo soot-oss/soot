@@ -29,6 +29,7 @@ public final class ALengthofUnop extends PUnop
             cloneNode(this._lengthof_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseALengthofUnop(this);
