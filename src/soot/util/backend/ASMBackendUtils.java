@@ -10,11 +10,9 @@ import soot.ByteType;
 import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
-import soot.Hierarchy;
 import soot.IntType;
 import soot.LongType;
 import soot.RefType;
-import soot.Scene;
 import soot.ShortType;
 import soot.SootClass;
 import soot.SootField;
@@ -174,11 +172,7 @@ public class ASMBackendUtils {
     public static boolean acceptsStringInitialValue(SootField field){
     	if(field.getType() instanceof RefType){
     		SootClass fieldClass = ((RefType)field.getType()).getSootClass();
-    		SootClass stringClass = Scene.v().getSootClassUnsafe("java.lang.String");
-    		if(stringClass != null){
-    			Hierarchy h = Scene.v().getActiveHierarchy();
-    			return h.isClassSubclassOfIncluding(fieldClass, stringClass);
-    		}
+    		return fieldClass.getName().equals("java.lang.String");
     	}
     	return false;
     }
