@@ -356,7 +356,7 @@ public class GeomPointsTo extends PAG
 		CallGraph soot_callgraph = Scene.v().getCallGraph();
 
 		while (smList.hasNext()) {
-			final SootMethod func = (SootMethod) smList.next();
+			final SootMethod func = smList.next().method();
 			func2int.put(func, id);
 			int2func.put(id, func);
 			
