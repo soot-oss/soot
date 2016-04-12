@@ -43,7 +43,7 @@ The current maintenance is driven by the [Secure Software Engineering Group](htt
 * Def/use chains
 * Template-driven Intra-procedural data-flow analysis
 * Template-driven Inter-procedural data-flow analysis, in combination with [heros](https://github.com/Sable/heros)
-* Taint analysis in combination with [FlowDroid](https://sseblog.ec-spride.de/tools/flowdroid/)
+* Taint analysis in combination with [FlowDroid](https://blogs.uni-paderborn.de/sse/tools/flowdroid/)
 
 # What extensions exist to Soot?
 
