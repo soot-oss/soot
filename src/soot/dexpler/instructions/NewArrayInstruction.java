@@ -68,7 +68,6 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         Type t = DexType.toSoot((TypeReference) newArray.getReference());
         // NewArrayExpr needs the ElementType as it increases the array dimension by 1
         Type arrayType = ((ArrayType) t).getElementType();
-        Debug.printDbg("new array element type: ", arrayType);
         
         NewArrayExpr newArrayExpr = Jimple.v().newNewArrayExpr(arrayType, size);
 

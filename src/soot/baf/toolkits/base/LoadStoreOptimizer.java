@@ -505,7 +505,7 @@ class Instance {
         } 
         
         // find minStackHeightAttained
-        while(currentInst != to) {
+        while(currentInst != to && it.hasNext()) {
             stackHeight -= ((Inst)currentInst).getInCount();
             if(stackHeight < minStackHeightAttained)
                 minStackHeightAttained = stackHeight;
