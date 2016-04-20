@@ -356,7 +356,7 @@ public class GeomPointsTo extends PAG
 		CallGraph soot_callgraph = Scene.v().getCallGraph();
 
 		while (smList.hasNext()) {
-			final SootMethod func = (SootMethod) smList.next();
+			final SootMethod func = smList.next().method();
 			func2int.put(func, id);
 			int2func.put(id, func);
 			
@@ -946,7 +946,7 @@ public class GeomPointsTo extends PAG
 				// We delete the edges that are proven to be spurious
 				while (true) {
 					SootMethod tgt = anyEdge.tgt();
-					if ( !resolvedMethods.contains(tgt) ) {
+					if ( !resolvedMethods.contains(tgt) && !anyEdge.kind().isFake()) {
 						p = edgeMapping.get(anyEdge);
 						p.is_obsoleted = true;
 					}
