@@ -37,6 +37,7 @@ import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
 
 import soot.dexpler.Util;
+import soot.options.Options;
 
 /**
  * Looks for a dex file which includes the definition of a class.
@@ -87,6 +88,7 @@ public class DexClassProvider implements ClassProvider {
             if (dexs != null)
                 for (File dex : dexs)
                     readDexFile(index, dex);
+            if(Options.v().process_multiple_dex()){
                 if(path.endsWith(".apk")){
                 	try{
 	                	ZipFile archive = new ZipFile(path);
@@ -104,9 +106,10 @@ public class DexClassProvider implements ClassProvider {
                 		ex.printStackTrace();
                 	}
                 }
-    			else if (path.endsWith(".dex")){
-    				readDexFile(index, dir);
-    			}            
+            }
+    		else if (path.endsWith(".apk") || path.endsWith(".dex")){
+    			readDexFile(index, dir);
+    		}           
         }
 	}
 

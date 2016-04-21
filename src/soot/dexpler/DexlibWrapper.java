@@ -49,6 +49,7 @@ import soot.SootResolver;
 import soot.Type;
 import soot.VoidType;
 import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.options.Options;
 
 /**
  * DexlibWrapper provides an entry point to the dexlib library from the smali
@@ -99,7 +100,7 @@ public class DexlibWrapper {
 	public void initialize() {
 		try {
 			int api = 1; // TODO:
-			if(inputDexFile.getName().endsWith(".apk")){
+			if(Options.v().process_multiple_dex() && inputDexFile.getName().endsWith(".apk")){
 	            ZipFile archive = new ZipFile(inputDexFile);
 				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
 					ZipEntry entry = entries.nextElement();
