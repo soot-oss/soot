@@ -189,6 +189,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-prepend-classpath");
         }
   
+        public void setprocess_multiple_dex(boolean arg) {
+            if(arg) addArg("-process-multiple-dex");
+        }
+  
         public void setprocess_dir(Path arg) {
             if(process_dir == null )
                 process_dir = new Path(getProject());

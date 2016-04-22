@@ -407,6 +407,17 @@ If whole-program mode is enabled, jce.jar is also appended in the end.
 </p>
 </long_desc>
 		</boolopt>
+		<boolopt>
+			<name>Process all DEX files in APK</name>
+			<alias>process-multiple-dex</alias>
+			<short_desc>Process all DEX files found in APK.</short_desc>
+			<long_desc>
+<p>
+Android APKs can have more than one default classes.dex. By default Soot loads only classes from the default one. This option
+enables loading of all DEX files from an APK.
+</p>
+</long_desc>
+		</boolopt>
 		<listopt>
 			<name>Process Directories</name>
 			<alias>process-path</alias>

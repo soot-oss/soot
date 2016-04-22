@@ -119,11 +119,7 @@ public class Options extends OptionsBase {
             || option.equals( "coffi" )
             )
                 coffi = true;
-            
-            else if( false 
-                    || option.equals( "process-multiple-dex" )
-                    )
-                        process_multiple_dex = true;
+  
             else if( false 
             || option.equals( "asm-backend" )
             )
@@ -241,6 +237,11 @@ public class Options extends OptionsBase {
             || option.equals( "prepend-classpath" )
             )
                 prepend_classpath = true;
+  
+            else if( false 
+            || option.equals( "process-multiple-dex" )
+            )
+                process_multiple_dex = true;
   
             else if( false
             || option.equals( "process-path" )
@@ -1286,13 +1287,7 @@ public class Options extends OptionsBase {
         return true;
     }
 
-    public boolean process_multiple_dex(){
-    	return process_multiple_dex;
-    }
-    private boolean process_multiple_dex = false;
-    public void set_process_multiple_dex(boolean value){
-    	process_multiple_dex = value;
-    }
+
     public boolean coffi() { return coffi; }
     private boolean coffi = false;
     public void set_coffi( boolean setting ) { coffi = setting; }
@@ -1367,6 +1362,10 @@ public class Options extends OptionsBase {
     public boolean prepend_classpath() { return prepend_classpath; }
     private boolean prepend_classpath = false;
     public void set_prepend_classpath( boolean setting ) { prepend_classpath = setting; }
+  
+    public boolean process_multiple_dex() { return process_multiple_dex; }
+    private boolean process_multiple_dex = false;
+    public void set_process_multiple_dex( boolean setting ) { process_multiple_dex = setting; }
   
     public List<String> process_dir() { 
         if( process_dir == null )
