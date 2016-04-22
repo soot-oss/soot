@@ -238,6 +238,11 @@ public class Options extends OptionsBase {
             )
                 prepend_classpath = true;
   
+            else if( false 
+            || option.equals( "process-multiple-dex" )
+            )
+                process_multiple_dex = true;
+  
             else if( false
             || option.equals( "process-path" )
             || option.equals( "process-dir" )
@@ -1358,6 +1363,10 @@ public class Options extends OptionsBase {
     private boolean prepend_classpath = false;
     public void set_prepend_classpath( boolean setting ) { prepend_classpath = setting; }
   
+    public boolean process_multiple_dex() { return process_multiple_dex; }
+    private boolean process_multiple_dex = false;
+    public void set_process_multiple_dex( boolean setting ) { process_multiple_dex = setting; }
+  
     public List<String> process_dir() { 
         if( process_dir == null )
             return java.util.Collections.emptyList();
@@ -1601,6 +1610,7 @@ public class Options extends OptionsBase {
       
 +padOpt(" -cp PATH -soot-class-path PATH -soot-classpath PATH", "Use PATH as the classpath for finding classes." )
 +padOpt(" -pp -prepend-classpath", "Prepend the given soot classpath to the default classpath." )
++padOpt(" -process-multiple-dex", "Process all DEX files found in APK." )
 +padOpt(" -process-path DIR -process-dir DIR", "Process all classes found in DIR" )
 +padOpt(" -oaat", "From the process-dir, processes one class at a time." )
 +padOpt(" -android-jars PATH", "Use PATH as the path for finding the android.jar file" )

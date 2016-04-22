@@ -2067,6 +2067,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionsprepend_classpath_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getInput_Optionsprocess_multiple_dex_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsprocess_multiple_dex_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getInput_Optionsoaat_widget().getButton().getSelection();
 		
 		
@@ -6727,6 +6737,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Input_Optionsprepend_classpath_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionsprocess_multiple_dex_widget;
+	
+	private void setInput_Optionsprocess_multiple_dex_widget(BooleanOptionWidget widget) {
+		Input_Optionsprocess_multiple_dex_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsprocess_multiple_dex_widget() {
+		return Input_Optionsprocess_multiple_dex_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsoaat_widget;
 	
 	private void setInput_Optionsoaat_widget(BooleanOptionWidget widget) {
@@ -10554,6 +10574,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setInput_Optionsprepend_classpath_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Prepend classpath", "", "","pp", "\nInstead of replacing the default soot classpath with the \nclasspath given on the command line, prepent it with that \nclasspath. The default classpath holds whatever is set in the \nCLASSPATH environment variable, followed by rt.jar (resolved \nthrough the JAVA-UNDERSCORE-HOME environment variable). If \nwhole-program mode is enabled, jce.jar is also appended in the \nend. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"process-multiple-dex";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionsprocess_multiple_dex_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process all DEX files in APK", "", "","process-multiple-dex", "\nAndroid APKs can have more than one default classes.dex. By \ndefault Soot loads only classes from the default one. This \noption enables loading of all DEX files from an APK. ", defaultBool)));
 		
 		
 		

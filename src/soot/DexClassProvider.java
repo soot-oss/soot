@@ -23,17 +23,21 @@ package soot;
 import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import org.jf.dexlib2.DexFileFactory;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
 
 import soot.dexpler.Util;
+import soot.options.Options;
 
 /**
  * Looks for a dex file which includes the definition of a class.
@@ -84,13 +88,33 @@ public class DexClassProvider implements ClassProvider {
             if (dexs != null)
                 for (File dex : dexs)
                     readDexFile(index, dex);
-            if (path.endsWith(".dex") || path.endsWith(".apk"))
-                readDexFile(index, dir);
+            if(Options.v().process_multiple_dex()){
+                if(path.endsWith(".apk")){
+                	try{
+	                	ZipFile archive = new ZipFile(path);
+	    				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
+	    					ZipEntry entry = entries.nextElement();
+	    					String entryName = entry.getName();
+	    					// We are dealing with an apk file
+	    					if (entryName.endsWith(".dex")){
+	    						readDexFile(index, dir, entryName);
+	    					}
+	    				}
+	    				archive.close();
+                	}
+                	catch(Exception ex){
+                		ex.printStackTrace();
+                	}
+                }
+            }
+    		else if (path.endsWith(".apk") || path.endsWith(".dex")){
+    			readDexFile(index, dir);
+    		}           
         }
-    }
+	}
 
     /**
-     * Read dex filen into index.
+     * Read dex file  into index.
      */
     private void readDexFile(Map<String, File> index, File dex) {
         try {
@@ -105,6 +129,24 @@ public class DexClassProvider implements ClassProvider {
           G.v().out.println("Exception: "+ e);
         }
     }
+    
+    /**
+     * Read dex files into index.
+     */
+    private void readDexFile(Map<String, File> index, File dex, String dexName) {
+        try {
+            for (String className : classesOfDex(dex, dexName)) {
+                index.put(className, dex);
+            }
+        } catch (IOException e) { 
+          G.v().out.println("Warning: IO error while processing dex file '"+ dex +"'");
+          G.v().out.println("Exception: "+ e);
+        } catch (Exception e) {
+          G.v().out.println("Warning: exception while processing dex file '"+ dex +"'");
+          G.v().out.println("Exception: "+ e);
+        }
+    }
+    
 
 
 	/**
@@ -119,6 +161,27 @@ public class DexClassProvider implements ClassProvider {
 		Set<String> classes = new HashSet<String>();
 		// TODO (SA): Go for API 1 because DexlibWrapper does so, but needs more attention
 		DexBackedDexFile d = DexFileFactory.loadDexFile(file, 1, false);
+		for (ClassDef c : d.getClasses()) {
+			String name = Util.dottedClassName(c.getType());
+			classes.add(name);
+		}
+		return classes;
+	}
+	
+	/**
+	 * Return names of classes in the given dex/apk file.
+	 *
+	 * @param file
+	 *            file to dex/apk file. Can be the path of a zip file.
+	 * @param dexName
+	 * 				a name of a given dex file
+	 *
+	 * @return set of class names
+	 */
+	public static Set<String> classesOfDex(File file, String dexName) throws IOException {
+		Set<String> classes = new HashSet<String>();
+		// TODO (SA): Go for API 1 because DexlibWrapper does so, but needs more attention
+		DexBackedDexFile d = DexFileFactory.loadDexFile(file, dexName, 1, false);
 		for (ClassDef c : d.getClasses()) {
 			String name = Util.dottedClassName(c.getType());
 			classes.add(name);

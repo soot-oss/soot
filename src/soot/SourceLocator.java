@@ -208,7 +208,7 @@ public class SourceLocator
 					ZipEntry entry = entries.nextElement();
 					String entryName = entry.getName();
 					// We are dealing with an apk file
-					if (entryName.equals("classes.dex"))
+					if (entryName.endsWith(".dex"))
 						classes.addAll(DexClassProvider.classesOfDex(new File(aPath)));
 				}
 				archive.close();			
