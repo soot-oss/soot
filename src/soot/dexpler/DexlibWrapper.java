@@ -94,7 +94,7 @@ public class DexlibWrapper {
 
 	public DexlibWrapper(File inputDexFile) {
 		this.inputDexFile = inputDexFile;
-		this.dexFiles = new ArrayList<>();
+		this.dexFiles = new ArrayList<DexFile>();
 	}
 
 	public void initialize() {
