@@ -146,6 +146,21 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
     {
         innerChain.insertBefore(toInsert, point);
     }
+    
+    /** Inserts <code>toInsert</code> on an edge. Such an edge is defined by a source point (<code>point_src</code>) and a target point (<code>point_src</code>) */
+	public void insertOnEdge(E toInsert, E point_src, E point_tgt) {
+		innerChain.insertOnEdge(toInsert, point_src, point_tgt);
+	}
+
+    /** Inserts <code>toInsert</code> on an edge. Such an edge is defined by a source point (<code>point_src</code>) and a target point (<code>point_src</code>) */
+	public void insertOnEdge(List<E> toInsert, E point_src, E point_tgt) {
+		innerChain.insertOnEdge(toInsert, point_src, point_tgt);
+	}
+
+    /** Inserts <code>toInsert</code> on an edge. Such an edge is defined by a source point (<code>point_src</code>) and a target point (<code>point_src</code>) */
+	public void insertOnEdge(Chain<E> toInsert, E point_src, E point_tgt) {
+		innerChain.insertOnEdge(toInsert, point_src, point_tgt);
+	}
 
     /** Returns true if object <code>a</code> follows object <code>b</code> in the Chain. */
     public boolean follows(E a, E b)

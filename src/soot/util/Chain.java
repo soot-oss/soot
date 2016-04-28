@@ -50,7 +50,13 @@ public interface Chain<E> extends Collection<E>, Serializable
     /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. 
      * (It would probably be better to make Chain implement List)*/
     public void insertAfter(Chain<E> toInsert, E point);
-
+    
+    /** Inserts <code>toInsert</code> on an edge. Such an edge is defined by a source point (<code>point_src</code>) and a target point (<code>point_src</code>) */
+    public void insertOnEdge(E toInsert, E point_src, E point_tgt);
+    /** Inserts <code>toInsert</code> on an edge. Such an edge is defined by a source point (<code>point_src</code>) and a target point (<code>point_src</code>) */
+    public void insertOnEdge(List<E> toInsert, E point_src, E point_tgt);
+    /** Inserts <code>toInsert</code> on an edge. Such an edge is defined by a source point (<code>point_src</code>) and a target point (<code>point_src</code>) */
+    public void insertOnEdge(Chain<E> toInsert, E point_src, E point_tgt);
     
     /** Replaces <code>out</code> in the Chain by <code>in</code>. */
     public void swapWith(E out, E in);
