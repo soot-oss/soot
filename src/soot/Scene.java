@@ -244,7 +244,7 @@ public class Scene  //extends AbstractHost
     {
         if( sootClassPath == null ) {
             String optionscp = Options.v().soot_classpath();
-            if( optionscp.length() > 0 )
+            if( optionscp != null && optionscp.length() > 0 )
                 sootClassPath = optionscp;
             
 	        //if no classpath is given on the command line, take the default
