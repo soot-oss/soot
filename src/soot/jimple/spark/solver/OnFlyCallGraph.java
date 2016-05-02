@@ -21,8 +21,8 @@ package soot.jimple.spark.solver;
 import soot.jimple.spark.sets.*;
 import soot.jimple.spark.pag.*;
 import soot.jimple.toolkits.callgraph.*;
+import soot.options.SparkOptions;
 import soot.*;
-
 import soot.util.queue.*;
 
 
@@ -41,13 +41,13 @@ public class OnFlyCallGraph {
     public ReachableMethods reachableMethods() { return reachableMethods; }
     public CallGraph callGraph() { return callGraph; }
 
-    public OnFlyCallGraph( PAG pag ) {
+    public OnFlyCallGraph( PAG pag, boolean appOnly ) {
         this.pag = pag;
         callGraph = new CallGraph();
         Scene.v().setCallGraph( callGraph );
         ContextManager cm = CallGraphBuilder.makeContextManager(callGraph);
         reachableMethods = Scene.v().getReachableMethods();
-        ofcgb = new OnFlyCallGraphBuilder( cm, reachableMethods );
+        ofcgb = new OnFlyCallGraphBuilder( cm, reachableMethods, appOnly );
         reachablesReader = reachableMethods.listener();
         callEdges = cm.callGraph().listener();
     }

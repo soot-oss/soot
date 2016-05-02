@@ -2178,6 +2178,12 @@ rather than only those deemed reachable by the points-to analysis.
         </p>
 </li>
 <li>
+<b>AppOnly</b> (apponly)
+		<br>
+			(default value: <span class="value">false</span>)
+		<p>Setting this option to true causes Soot to only consider application classes when building the callgraph. The resulting callgraph will be inherently unsound. Still, this option can make sense if performance optimization and memory reduction are your primary goal.</p>
+</li>
+<li>
 <b>VTA</b> (vta)
 		<br>
 			(default value: <span class="value">false</span>)

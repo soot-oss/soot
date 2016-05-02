@@ -778,6 +778,9 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkpre_jimplify_widget(), "pre-jimplify");
 
 		
+		addToEnableGroup("cg", "cg.spark", getcgcg_sparkapponly_widget(), "apponly");
+
+		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkvta_widget(), "vta");
 
 		
@@ -3121,6 +3124,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkpre_jimplify_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_sparkapponly_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_sparkapponly_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_sparkvta_widget().getButton().getSelection();
@@ -7841,6 +7854,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getcgcg_sparkpre_jimplify_widget() {
 		return cgcg_sparkpre_jimplify_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_sparkapponly_widget;
+	
+	private void setcgcg_sparkapponly_widget(BooleanOptionWidget widget) {
+		cgcg_sparkapponly_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_sparkapponly_widget() {
+		return cgcg_sparkapponly_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_sparkvta_widget;
@@ -13582,6 +13605,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setcgcg_sparkpre_jimplify_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.spark","pre-jimplify", "\nWhen this option is set to true, Spark converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.spark"+" "+"apponly";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_sparkapponly_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("AppOnly", "p", "cg.spark","apponly", "\nSetting this option to true causes Soot to only consider \napplication classes when building the callgraph. The resulting \ncallgraph will be inherently unsound. Still, this option can \nmake sense if performance optimization and memory reduction are \nyour primary goal.", defaultBool)));
 		
 		
 

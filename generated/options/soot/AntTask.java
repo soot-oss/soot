@@ -1280,6 +1280,12 @@ public class AntTask extends MatchingTask {
             addArg("pre-jimplify:"+(arg?"true":"false"));
           }
       
+          public void setapponly(boolean arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("apponly:"+(arg?"true":"false"));
+          }
+      
           public void setvta(boolean arg) {
             addArg("-p");
             addArg("cg.spark");

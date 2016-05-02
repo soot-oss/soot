@@ -2091,7 +2091,14 @@ total time and memory requirement, because all methods are Jimplified,
 rather than only those deemed reachable by the points-to analysis.
         </long_desc>
 						</boolopt>
-					</section>
+						<boolopt>
+							<name>AppOnly</name>
+							<alias>apponly</alias>
+	                                                <default>false</default>
+	                                                <short_desc>Consider only application classes</short_desc>
+	                                                <long_desc>Setting this option to true causes Soot to only consider application classes when building the callgraph. The resulting callgraph will be inherently unsound. Still, this option can make sense if performance optimization and memory reduction are your primary goal.</long_desc>
+						</boolopt>
+				 	</section>
 					<section>
 						<name>Spark Pointer Assignment Graph Building Options</name>
 						<boolopt>

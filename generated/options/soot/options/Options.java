@@ -2068,6 +2068,7 @@ public class Options extends OptionsBase {
                 +padOpt( "ignore-types (false)", "Make Spark completely ignore declared types of variables" )
                 +padOpt( "force-gc (false)", "Force garbage collection for measuring memory usage" )
                 +padOpt( "pre-jimplify (false)", "Jimplify all methods before starting Spark" )
+                +padOpt( "apponly (false)", "Consider only application classes" )
                 +padOpt( "vta (false)", "Emulate Variable Type Analysis" )
                 +padOpt( "rta (false)", "Emulate Rapid Type Analysis" )
                 +padOpt( "field-based (false)", "Use a field-based rather than field-sensitive representation" )
@@ -3019,6 +3020,7 @@ public class Options extends OptionsBase {
                 +"ignore-types "
                 +"force-gc "
                 +"pre-jimplify "
+                +"apponly "
                 +"vta "
                 +"rta "
                 +"field-based "
@@ -3631,6 +3633,7 @@ public class Options extends OptionsBase {
               +"ignore-types:false "
               +"force-gc:false "
               +"pre-jimplify:false "
+              +"apponly:false "
               +"vta:false "
               +"rta:false "
               +"field-based:false "

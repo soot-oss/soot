@@ -70,7 +70,7 @@ public class ContextInsensitiveBuilder {
 					new SparkNativeHelper(pag));
 		}
 		if (opts.on_fly_cg() && !opts.vta()) {
-			ofcg = new OnFlyCallGraph(pag);
+			ofcg = new OnFlyCallGraph(pag, opts.apponly());
 			pag.setOnFlyCallGraph(ofcg);
 		} else {
 			cgb = new CallGraphBuilder(DumbPointerAnalysis.v());
