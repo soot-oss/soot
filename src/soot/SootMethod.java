@@ -333,7 +333,11 @@ public class SootMethod
             && declaringClass.isPhantomClass())
             throw new RuntimeException(
                 "cannot set active body for phantom class! " + this);
-
+        
+        // If someone sets a body for a phantom method, this method then is no
+        // longer phantom
+        isPhantom = false;
+        
         if (!isConcrete())
             throw new RuntimeException(
                 "cannot set body for non-concrete method! " + this);

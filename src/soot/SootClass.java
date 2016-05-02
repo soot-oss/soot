@@ -979,6 +979,8 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	/** Makes this class an application class. */
 	public void setApplicationClass() {
+		if (isApplicationClass())
+			return;
 		Chain<SootClass> c = Scene.v().getContainingChain(this);
 		if (c != null)
 			c.remove(this);
@@ -998,6 +1000,8 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	/** Makes this class a library class. */
 	public void setLibraryClass() {
+		if (isLibraryClass())
+			return;
 		Chain<SootClass> c = Scene.v().getContainingChain(this);
 		if (c != null)
 			c.remove(this);
