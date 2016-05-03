@@ -189,6 +189,15 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		insertBefore((Collection<E>) toInsert, point);
 	}
 	
+	/**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  the instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
 	public void insertOnEdge(E toInsert, E point_src, E point_tgt) {
 		
 		List<E> o = new ArrayList<E>();
@@ -197,6 +206,15 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		
 	}
 
+	/**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
 	public void insertOnEdge(Collection<? extends E> toInsert, E point_src, E point_tgt) {
 
 		if (toInsert == null)
@@ -297,10 +315,28 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 				"insertOnEdge failed! No such edge found. The edge on which you want to insert an instrumentation is invalid.");
 	}
 
+	/**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
 	public void insertOnEdge(List<E> toInsert, E point_src, E point_tgt) {
 		insertOnEdge((Collection<E>) toInsert, point_src, point_tgt);
 	}
 
+	/**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
 	public void insertOnEdge(Chain<E> toInsert, E point_src, E point_tgt) {
 		insertOnEdge((Collection<E>) toInsert, point_src, point_tgt);
 	}

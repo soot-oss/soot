@@ -51,11 +51,37 @@ public interface Chain<E> extends Collection<E>, Serializable
      * (It would probably be better to make Chain implement List)*/
     public void insertAfter(Chain<E> toInsert, E point);
     
-    /** Inserts <code>toInsert</code> on an edge. Such an edge is defined by a source point (<code>point_src</code>) and a target point (<code>point_src</code>) */
+    /**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  the instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
     public void insertOnEdge(E toInsert, E point_src, E point_tgt);
-    /** Inserts <code>toInsert</code> on an edge. Such an edge is defined by a source point (<code>point_src</code>) and a target point (<code>point_src</code>) */
+    
+    /**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
     public void insertOnEdge(List<E> toInsert, E point_src, E point_tgt);
-    /** Inserts <code>toInsert</code> on an edge. Such an edge is defined by a source point (<code>point_src</code>) and a target point (<code>point_src</code>) */
+    
+    /**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
     public void insertOnEdge(Chain<E> toInsert, E point_src, E point_tgt);
     
     /** Replaces <code>out</code> in the Chain by <code>in</code>. */
