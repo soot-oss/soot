@@ -445,7 +445,29 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	public Iterator<SootMethod> methodIterator() {
 		checkLevel(SIGNATURES);
-		return methodList.iterator();
+		return new Iterator<SootMethod>() {
+			final Iterator<SootMethod> internalIterator = methodList.iterator();
+			private SootMethod currentMethod;
+
+			@Override
+			public boolean hasNext() {
+				return internalIterator.hasNext();
+			}
+
+			@Override
+			public SootMethod next() {
+				currentMethod = internalIterator.next();
+				return currentMethod;
+			}
+			
+			@Override
+			public void remove() {
+				internalIterator.remove();
+
+				subSigToMethods.put(currentMethod.getNumberedSubSignature(), null);
+				currentMethod.setDeclared(false);
+			}
+		}; 
 	}
 
 	public List<SootMethod> getMethods() {
@@ -928,6 +950,7 @@ public class SootClass extends AbstractHost implements Numberable {
 	}
 
 	/** Returns the name of this class. */
+	@Override
 	public String toString() {
 		return getName();
 	}
@@ -1092,10 +1115,12 @@ public class SootClass extends AbstractHost implements Numberable {
 		return Modifier.isStatic(this.getModifiers());
 	}
 
+	@Override
 	public final int getNumber() {
 		return number;
 	}
 
+	@Override
 	public final void setNumber(int number) {
 		this.number = number;
 	}
