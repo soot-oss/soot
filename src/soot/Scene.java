@@ -204,6 +204,26 @@ public class Scene  //extends AbstractHost
     	return res.toString();
     }
     
+    /**
+     * This method is the inverse of quotedNameOf(). It takes a possible escaped
+     * class and reconstructs the original version of it.
+     * @param s The possibly escaped name
+     * @return The original, non-escaped name
+     */
+    public String unescapeName(String s) {
+    	StringBuilder res = new StringBuilder(s.length());
+    	for (String part : s.split("\\.")) {
+    		if (res.length() > 0)
+    			res.append('.');
+	        if(part.startsWith("'") && part.endsWith("'")) {
+	            res.append(part.substring(1, part.length() - 1));
+	        }
+	        else
+	            res.append(part);
+    	}
+    	return res.toString();
+    }
+    
     public boolean hasMainClass() {
         if(mainClass == null) {
         	setMainClassFromOptions();
