@@ -11,7 +11,7 @@ import soot.ValueBox;
 import soot.jimple.SwitchStmt;
 
 @SuppressWarnings("serial")
-abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchStmt {
+public abstract class AbstractSwitchStmt extends AbstractStmt implements SwitchStmt {
 
     final UnitBox defaultTargetBox;
     
