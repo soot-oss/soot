@@ -2159,6 +2159,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionspolyglot_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getInput_Optionspermissive_resolving_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionspermissive_resolving_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		stringRes = getInput_Optionssoot_classpath_widget().getText().getText();
 		
 		defStringRes = "";
@@ -6859,6 +6869,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Input_Optionspolyglot_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionspermissive_resolving_widget;
+	
+	private void setInput_Optionspermissive_resolving_widget(BooleanOptionWidget widget) {
+		Input_Optionspermissive_resolving_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionspermissive_resolving_widget() {
+		return Input_Optionspermissive_resolving_widget;
+	}	
+	
 
 	private ListOptionWidget Input_Optionsprocess_dir_widget;
 	
@@ -10774,6 +10794,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setInput_Optionspolyglot_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use Polyglot frontend", "", "","polyglot", "\nUse Java 1.4 Polyglot frontend instead of JastAdd, which \nsupports Java 5 syntax. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"permissive-resolving";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionspermissive_resolving_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use permissive resolving strategy", "", "","permissive-resolving", "\n			 When this option is enabled, Soot will try to resolve \nclasses using an alternative 			 strategy if the class cannot \nbe found using the default strategy. A class a.b.c 			 will, \nfor instance, also be loaded from a/b/c.jimple instead of only \na.b.c.jimple. 			", defaultBool)));
 		
 		
 		

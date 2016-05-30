@@ -268,6 +268,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-polyglot");
         }
   
+        public void setpermissive_resolving(boolean arg) {
+            if(arg) addArg("-permissive-resolving");
+        }
+  
         public void setoutput_dir(String arg) {
             addArg("-output-dir");
             addArg(arg);

@@ -432,6 +432,11 @@ public class Options extends OptionsBase {
             )
                 polyglot = true;
   
+            else if( false 
+            || option.equals( "permissive-resolving" )
+            )
+                permissive_resolving = true;
+  
             else if( false
             || option.equals( "d" )
             || option.equals( "output-dir" )
@@ -1418,6 +1423,10 @@ public class Options extends OptionsBase {
     private boolean polyglot = false;
     public void set_polyglot( boolean setting ) { polyglot = setting; }
   
+    public boolean permissive_resolving() { return permissive_resolving; }
+    private boolean permissive_resolving = false;
+    public void set_permissive_resolving( boolean setting ) { permissive_resolving = setting; }
+  
     public String output_dir() { return output_dir; }
     public void set_output_dir( String setting ) { output_dir = setting; }
     private String output_dir = "";
@@ -1629,6 +1638,7 @@ public class Options extends OptionsBase {
 +padOpt(" -j2me", "Use J2ME mode; changes assignment of types" )
 +padOpt(" -main-class CLASS", "Sets the main class for whole-program analysis." )
 +padOpt(" -polyglot", "Use Java 1.4 Polyglot frontend instead of JastAdd" )
++padOpt(" -permissive-resolving", "Use alternative sources when classes cannot be found using the normal resolving strategy" )
 +"\nOutput Options:\n"
       
 +padOpt(" -d DIR -output-dir DIR", "Store output files in DIR" )

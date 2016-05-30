@@ -633,6 +633,17 @@ overrides this default.
 Use Java 1.4 Polyglot frontend instead of JastAdd, which supports Java 5 syntax.
 </long_desc>
 		</boolopt>
+		<boolopt>
+			<name>Use permissive resolving strategy</name>
+			<alias>permissive-resolving</alias>
+			<default>false</default>
+			<short_desc>Use alternative sources when classes cannot be found using the normal resolving strategy</short_desc>
+			<long_desc>
+			    When this option is enabled, Soot will try to resolve classes using an alternative
+			    strategy if the class cannot be found using the default strategy. A class a.b.c
+			    will, for instance, also be loaded from a/b/c.jimple instead of only a.b.c.jimple.
+			</long_desc>
+		</boolopt>
 	</section>
 	<section>
 		<name>Output Options</name>

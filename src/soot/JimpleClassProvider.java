@@ -19,6 +19,8 @@
 
 package soot;
 
+import soot.options.Options;
+
 /** A class provider looks for a file of a specific format for a specified
  * class, and returns a ClassSource for it if it finds it.
  */
@@ -32,8 +34,10 @@ public class JimpleClassProvider implements ClassProvider
         SourceLocator.FoundFile file = 
             SourceLocator.v().lookupInClassPath(fileName);
         if( file == null ){
-        	fileName = className.replace('.', '/') + ".jimple";
-        	file = SourceLocator.v().lookupInClassPath(fileName);
+        	if (Options.v().permissive_resolving()) {
+	        	fileName = className.replace('.', '/') + ".jimple";
+	        	file = SourceLocator.v().lookupInClassPath(fileName);
+        	}
         	if( file == null ) return null;
         }
         return new JimpleClassSource(className, file.inputStream());
