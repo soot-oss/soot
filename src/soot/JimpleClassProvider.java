@@ -31,7 +31,11 @@ public class JimpleClassProvider implements ClassProvider
         String fileName = className + ".jimple";
         SourceLocator.FoundFile file = 
             SourceLocator.v().lookupInClassPath(fileName);
-        if( file == null ) return null;
+        if( file == null ){
+        	fileName = className.replace('.', '/') + ".jimple";
+        	file = SourceLocator.v().lookupInClassPath(fileName);
+        	if( file == null ) return null;
+        }
         return new JimpleClassSource(className, file.inputStream());
     }
 }
