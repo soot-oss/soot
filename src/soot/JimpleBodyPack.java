@@ -89,8 +89,11 @@ public class JimpleBodyPack extends BodyPack
         // may end up being eliminated. If we want a stable local iteration
         // order between soot instances, running LocalNameStandardizer
         // again after all other changes is required.
-        PackManager.v().getTransform( "jb.lns" ).apply( b );
-                    
+        if (PhaseOptions.getBoolean(opts, "stabilize-local-names")) {
+        	PhaseOptions.v().setPhaseOption("jb.lns", "sort-locals:true");
+        	PackManager.v().getTransform( "jb.lns" ).apply( b );
+        }
+        
         if(Options.v().time())
             Timers.v().stmtCount += b.getUnits().size();
     }

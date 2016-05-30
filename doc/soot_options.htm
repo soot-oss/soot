@@ -1219,6 +1219,17 @@ Preserves annotations of retention type SOURCE. (for
 everything but package and local variable annotations) 
 </p>
 </li>
+<li>
+<b>Stabilize local names</b> (stabilize-local-names)
+		<br>
+			(default value: <span class="value">false</span>)
+		<p>
+Make sure that local names are stable between runs. This requires re-normalizing all
+local names after the standard transformations and then sorting them which can negatively
+impact performance. This option automatically sets "sort-locals" in "jb.lns" during the
+second re-normalization pass.
+</p>
+</li>
 </ul>
 <h2>
 <a name="phase_1_1">Local Splitter (jb.ls)</a>
@@ -1403,6 +1414,21 @@ locations in the original bytecode. This becomes the default when
 the `use-original-names' option is specified for
 the `jb' phase.
 </p>
+</li>
+<li>
+<b>Sort Locals</b> (sort-locals)
+		<br>
+			(default value: <span class="value">true</span>)
+		<p>
+							First sorts the locals alphabetically by the string representation of
+							their type. Then if there are two locals with the same type, it uses
+							the only other source of structurally stable information (i.e. the 
+							instructions themselves) to produce an ordering for the locals
+							that remains consistent between different soot instances. It achieves
+							this by determining the position of a local's first occurrence in the 
+							instruction's list of definition statements. This position is then used
+							to sort the locals with the same type in an ascending order.
+						</p>
 </li>
 </ul>
 <h2>

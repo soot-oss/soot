@@ -65,5 +65,19 @@ public class JBOptions
         return soot.PhaseOptions.getBoolean( options, "preserve-source-annotations" );
     }
     
+    /** Stabilize local names --
+    
+     * .
+    
+     * Make sure that local names are stable between runs. This 
+     * requires re-normalizing all local names after the standard 
+     * transformations and then sorting them which can negatively 
+     * impact performance. This option automatically sets "sort-locals" 
+     * in "jb.lns" during the second re-normalization pass. 
+     */
+    public boolean stabilize_local_names() {
+        return soot.PhaseOptions.getBoolean( options, "stabilize-local-names" );
+    }
+    
 }
         

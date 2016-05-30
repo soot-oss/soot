@@ -1839,7 +1839,8 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "use-original-names (false)", "" )
-                +padOpt( "preserve-source-annotations (false)", "" );
+                +padOpt( "preserve-source-annotations (false)", "" )
+                +padOpt( "stabilize-local-names (false)", "" );
     
         if( phaseName.equals( "jb.ls" ) )
             return "Phase "+phaseName+":\n"+
@@ -1882,7 +1883,8 @@ public class Options extends OptionsBase {
                 "\nThe Local Name Standardizer assigns generic names to local \nvariables. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "only-stack-locals (false)", "" );
+                +padOpt( "only-stack-locals (false)", "" )
+                +padOpt( "sort-locals (true)", " 						    Specifies whether the locals shall be ordered. 						" );
     
         if( phaseName.equals( "jb.cp" ) )
             return "Phase "+phaseName+":\n"+
@@ -2859,7 +2861,8 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled "
                 +"use-original-names "
-                +"preserve-source-annotations ";
+                +"preserve-source-annotations "
+                +"stabilize-local-names ";
     
         if( phaseName.equals( "jb.ls" ) )
             return ""
@@ -2890,7 +2893,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.lns" ) )
             return ""
                 +"enabled "
-                +"only-stack-locals ";
+                +"only-stack-locals "
+                +"sort-locals ";
     
         if( phaseName.equals( "jb.cp" ) )
             return ""
@@ -3473,7 +3477,8 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true "
               +"use-original-names:false "
-              +"preserve-source-annotations:false ";
+              +"preserve-source-annotations:false "
+              +"stabilize-local-names:false ";
     
         if( phaseName.equals( "jb.ls" ) )
             return ""
@@ -3504,7 +3509,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.lns" ) )
             return ""
               +"enabled:true "
-              +"only-stack-locals:false ";
+              +"only-stack-locals:false "
+              +"sort-locals:true ";
     
         if( phaseName.equals( "jb.cp" ) )
             return ""

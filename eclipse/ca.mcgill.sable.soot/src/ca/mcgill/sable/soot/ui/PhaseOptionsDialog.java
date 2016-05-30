@@ -383,11 +383,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("jb", getjbpreserve_source_annotations_widget(), "preserve-source-annotations");
 		
 		
+		addToEnableGroup("jb", getjbstabilize_local_names_widget(), "stabilize-local-names");
+		
+		
 		getjbenabled_widget().getButton().addSelectionListener(this);
 		
 		getjbuse_original_names_widget().getButton().addSelectionListener(this);
 		
 		getjbpreserve_source_annotations_widget().getButton().addSelectionListener(this);
+		
+		getjbstabilize_local_names_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jb", "jb.ls");
@@ -461,9 +466,13 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		addToEnableGroup("jb", "jb.lns", getjbjb_lnsonly_stack_locals_widget(), "only-stack-locals");
 		
+		addToEnableGroup("jb", "jb.lns", getjbjb_lnssort_locals_widget(), "sort-locals");
+		
 		getjbjb_lnsenabled_widget().getButton().addSelectionListener(this);
 		
 		getjbjb_lnsonly_stack_locals_widget().getButton().addSelectionListener(this);
+		
+		getjbjb_lnssort_locals_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jb", "jb.cp");
@@ -2459,6 +2468,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getjbpreserve_source_annotations_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getjbstabilize_local_names_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbstabilize_local_names_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getjbjb_lsenabled_widget().getButton().getSelection();
 		
 		
@@ -2587,6 +2606,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_lnsonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_lnssort_locals_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_lnssort_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_cpenabled_widget().getButton().getSelection();
@@ -7178,6 +7207,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return jbpreserve_source_annotations_widget;
 	}	
 	
+	private BooleanOptionWidget jbstabilize_local_names_widget;
+	
+	private void setjbstabilize_local_names_widget(BooleanOptionWidget widget) {
+		jbstabilize_local_names_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbstabilize_local_names_widget() {
+		return jbstabilize_local_names_widget;
+	}	
+	
 	private BooleanOptionWidget jbjb_lsenabled_widget;
 	
 	private void setjbjb_lsenabled_widget(BooleanOptionWidget widget) {
@@ -7306,6 +7345,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getjbjb_lnsonly_stack_locals_widget() {
 		return jbjb_lnsonly_stack_locals_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_lnssort_locals_widget;
+	
+	private void setjbjb_lnssort_locals_widget(BooleanOptionWidget widget) {
+		jbjb_lnssort_locals_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_lnssort_locals_widget() {
+		return jbjb_lnssort_locals_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_cpenabled_widget;
@@ -11558,6 +11607,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		setjbpreserve_source_annotations_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Preserve source-level annotations", "p", "jb","preserve-source-annotations", "\nPreserves annotations of retention type SOURCE. (for everything \nbut package and local variable annotations) ", defaultBool)));
 		
 		
+		
+		defKey = "p"+" "+"jb"+" "+"stabilize-local-names";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbstabilize_local_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Stabilize local names", "p", "jb","stabilize-local-names", "\nMake sure that local names are stable between runs. This \nrequires re-normalizing all local names after the standard \ntransformations and then sorting them which can negatively \nimpact performance. This option automatically sets "sort-locals" \nin "jb.lns" during the second re-normalization pass. ", defaultBool)));
+		
+		
 
 		
 		return editGroupjb;
@@ -11944,6 +12009,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setjbjb_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.lns","only-stack-locals", "\nOnly standardizes the names of variables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option is specified for the `jb' \nphase. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jb.lns"+" "+"sort-locals";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjbjb_lnssort_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Sort Locals", "p", "jb.lns","sort-locals", "\n							First sorts the locals alphabetically by the string \nrepresentation of 							their type. Then if there are two \nlocals with the same type, it uses 							the only other source \nof structurally stable information (i.e. the \n							instructions themselves) to produce an ordering for the \nlocals 							that remains consistent between different soot \ninstances. It achieves 							this by determining the position \nof a local's first occurrence in the 							instruction's list \nof definition statements. This position is then used 							to \nsort the locals with the same type in an ascending order. 						", defaultBool)));
 		
 		
 

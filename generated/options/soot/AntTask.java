@@ -599,6 +599,12 @@ public class AntTask extends MatchingTask {
             addArg("preserve-source-annotations:"+(arg?"true":"false"));
           }
       
+          public void setstabilize_local_names(boolean arg) {
+            addArg("-p");
+            addArg("jb");
+            addArg("stabilize-local-names:"+(arg?"true":"false"));
+          }
+      
         }
     
         public Object createp_jb_ls() {
@@ -729,6 +735,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("jb.lns");
             addArg("only-stack-locals:"+(arg?"true":"false"));
+          }
+      
+          public void setsort_locals(boolean arg) {
+            addArg("-p");
+            addArg("jb.lns");
+            addArg("sort-locals:"+(arg?"true":"false"));
           }
       
         }

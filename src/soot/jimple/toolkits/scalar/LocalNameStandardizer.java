@@ -43,8 +43,7 @@ public class LocalNameStandardizer extends BodyTransformer
     protected void internalTransform(Body body, String phaseName, Map<String,String> options)
     {
         boolean onlyStackName = PhaseOptions.getBoolean(options, "only-stack-locals");
-        //boolean sortLocals = PhaseOptions.getBoolean(options, "stabilize-local-order");
-        boolean sortLocals = true;
+        boolean sortLocals = PhaseOptions.getBoolean(options, "sort-locals");
 
         // Change the names to the standard forms now.
         {
@@ -125,11 +124,7 @@ public class LocalNameStandardizer extends BodyTransformer
                 locals.addAll(sortedLocals);
             }
             
-            Iterator<Local> localIt = body.getLocals().iterator();
-
-            while(localIt.hasNext())
-            {
-                Local l = localIt.next();
+            for (Local l : body.getLocals()) {
                 String prefix = "";
                 
                 if(l.getName().startsWith("$"))
