@@ -107,18 +107,18 @@ public class StoresTest extends AbstractASMBackendTest {
 			Label l0 = new Label();
 			mv.visitJumpInsn(IFLE, l0);
 			mv.visitInsn(ICONST_1);
-			mv.visitVarInsn(ISTORE, 1);			
+			mv.visitVarInsn(ISTORE, 0);
 			Label l1 = new Label();
 			mv.visitJumpInsn(GOTO, l1);
 			
 			mv.visitLabel(l0);
 			mv.visitInsn(ICONST_0);
-			mv.visitVarInsn(ISTORE, 1);
+			mv.visitVarInsn(ISTORE, 0);
 
 			mv.visitLabel(l1);
 			mv.visitTypeInsn(NEW, "java/lang/Object");
-			mv.visitVarInsn(ASTORE, 0);
-			mv.visitVarInsn(ALOAD, 0);
+			mv.visitVarInsn(ASTORE, 1);
+			mv.visitVarInsn(ALOAD, 1);
 			mv.visitMethodInsn(INVOKESPECIAL, "java/lang/Object", "<init>", "()V", false);
 			mv.visitInsn(ICONST_3);
 			mv.visitIntInsn(NEWARRAY, T_INT);
@@ -142,7 +142,7 @@ public class StoresTest extends AbstractASMBackendTest {
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(D)Ljava/lang/StringBuilder;", false);
 			mv.visitLdcInsn("");
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Ljava/lang/String;)Ljava/lang/StringBuilder;", false);
-			mv.visitVarInsn(ILOAD, 1);
+			mv.visitVarInsn(ILOAD, 0);
 			mv.visitMethodInsn(INVOKEVIRTUAL, "java/lang/StringBuilder", "append", "(Z)Ljava/lang/StringBuilder;", false);
 			mv.visitLdcInsn(new Integer(2343249));
 			mv.visitInsn(I2B);
