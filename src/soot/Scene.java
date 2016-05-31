@@ -471,6 +471,17 @@ public class Scene  //extends AbstractHost
 	}
 
 	public String defaultClassPath() {
+		// If we have an apk file on the process dir and do not have a src-prec option
+		// that loads APK files, we give a warning
+		if (Options.v().src_prec() != Options.src_prec_apk) {
+			for (String entry : Options.v().process_dir()) {
+				if (entry.toLowerCase().endsWith(".apk")) {
+					System.err.println("APK file on process dir, but chosen src-prec does not support loading APKs");
+					break;
+				}
+			}
+		}
+		
 		if (Options.v().src_prec() == Options.src_prec_apk)
 			return defaultAndroidClassPath();
 		else
