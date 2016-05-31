@@ -147,7 +147,7 @@ public class DexPrinter {
 	
 	private static final String CLASSES_DEX = "classes.dex";
 	
-	private static DexBuilder dexFile;
+	private DexBuilder dexFile;
 	
 	private File originalApk;
 	
