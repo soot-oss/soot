@@ -2621,7 +2621,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		boolRes = getjbjb_lnssort_locals_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
@@ -12056,7 +12056,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 

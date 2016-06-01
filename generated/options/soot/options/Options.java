@@ -1894,7 +1894,7 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "only-stack-locals (false)", "" )
-                +padOpt( "sort-locals (true)", " 						    Specifies whether the locals shall be ordered. 						" );
+                +padOpt( "sort-locals (false)", " 						    Specifies whether the locals shall be ordered. 						" );
     
         if( phaseName.equals( "jb.cp" ) )
             return "Phase "+phaseName+":\n"+
@@ -3520,7 +3520,7 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true "
               +"only-stack-locals:false "
-              +"sort-locals:true ";
+              +"sort-locals:false ";
     
         if( phaseName.equals( "jb.cp" ) )
             return ""

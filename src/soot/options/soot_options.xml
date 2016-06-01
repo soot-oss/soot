@@ -1332,7 +1332,7 @@ the `<tt>jb</tt>&apos; phase.
 					<boolopt>
 						<name>Sort Locals</name>
 						<alias>sort-locals</alias>
-						<default>true</default>
+						<default>false</default>
 						<short_desc>
 						    Specifies whether the locals shall be ordered.
 						</short_desc>
