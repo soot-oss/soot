@@ -416,13 +416,19 @@ public class PackManager {
             //     c) write class
             //     d) remove bodies
             for (String cl : SourceLocator.v().getClassesUnder(path)) {
-
+            	SootClass clazz = null;
                 ClassSource source = SourceLocator.v().getClassSource(cl);
-                if (source == null)
-                	throw new RuntimeException("Could not locate class source");
-                SootClass clazz = Scene.v().getSootClass(cl);
-                clazz.setResolvingLevel(SootClass.BODIES);
-                source.resolve(clazz);
+                try {
+	                if (source == null)
+	                	throw new RuntimeException("Could not locate class source");
+	                clazz = Scene.v().getSootClass(cl);
+	                clazz.setResolvingLevel(SootClass.BODIES);
+	                source.resolve(clazz);
+                }
+                finally {
+                	if (source != null)
+                		source.close();
+                }
                 
             	// Create tags from all values we only have in code assingments now
                 for (SootClass sc : Scene.v().getApplicationClasses()) {

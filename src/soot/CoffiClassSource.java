@@ -21,6 +21,7 @@ package soot;
 import soot.javaToJimple.IInitialResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.*;
+
 import java.io.*;
 import java.util.*;
 
@@ -74,5 +75,16 @@ public class CoffiClassSource extends ClassSource
             tag.setSourceFile(name); 
         }
     }
+    
+	@Override
+	public void close() {
+		try {
+			if (classFile != null)
+				classFile.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }
 

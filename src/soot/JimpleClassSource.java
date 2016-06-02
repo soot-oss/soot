@@ -23,6 +23,7 @@ import soot.jimple.parser.parser.ParserException;
 import soot.options.*;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.jimple.*;
+
 import java.io.*;
 import java.util.*;
 
@@ -62,5 +63,17 @@ public class JimpleClassSource extends ClassSource
           catch (LexerException e){throw new RuntimeException("Error lexing class " + className + " " + e.getMessage(), e);}
     }
     protected InputStream classFile;
+    
+	@Override
+	public void close() {
+		try {
+			if (classFile != null)
+				classFile.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+    
 }
 

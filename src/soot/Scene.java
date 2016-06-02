@@ -715,11 +715,16 @@ public class Scene  //extends AbstractHost
         */
         
         setPhantomRefs(true);
-        //SootResolver resolver = new SootResolver();
-        if( !getPhantomRefs() 
-        && SourceLocator.v().getClassSource(className) == null ) {
-            setPhantomRefs(false);
-            return null;
+        ClassSource source = SourceLocator.v().getClassSource(className);
+        try {
+	        if( !getPhantomRefs() && source == null) {
+	            setPhantomRefs(false);
+	            return null;
+	        }
+        }
+        finally {
+        	if (source != null)
+        		source.close();
         }
         SootResolver resolver = SootResolver.v();
         SootClass toReturn = resolver.resolveClass(className, desiredLevel);
