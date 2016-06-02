@@ -76,3 +76,7 @@ Development happens in the develop branch. To catch the bleeding edge of Soot, c
 You will also need the projects [jasmin](https://github.com/Sable/jasmin) and
 [heros](https://github.com/Sable/heros). In case of any questions, please consult the Soot
 [mailing list](https://github.com/Sable/soot/wiki/Getting-help).
+
+# Acknowledgements
+
+We would like to thank the team of [YourKit](https://www.yourkit.com/) for providing us with free licenses of their profiler to improve the performance of Soot.
