@@ -33,5 +33,13 @@ public interface BiDiInterproceduralCFG<N, M> extends InterproceduralCFG<N, M> {
 	 * @return True if the given statement is a return site, otherwise false
 	 */
 	public boolean isReturnSite(N n);
+	
+	/**
+	 * Checks whether the given statement is rachable from the entry point
+	 * @param u The statement to check
+	 * @return True if there is a control flow path from the entry point of the
+	 * program to the given statement, otherwise false
+	 */
+	public boolean isReachable(N u);
 
 }

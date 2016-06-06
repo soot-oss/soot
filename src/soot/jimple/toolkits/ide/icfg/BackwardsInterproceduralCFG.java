@@ -161,4 +161,10 @@ public class BackwardsInterproceduralCFG implements BiDiInterproceduralCFG<Unit,
 		return false;
 	}
 
+	// same
+	@Override
+	public boolean isReachable(Unit u) {
+		return delegate.isReachable(u);
+	}
+
 }
