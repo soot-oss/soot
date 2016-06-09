@@ -558,13 +558,23 @@ public class Scene  //extends AbstractHost
 	        sb.append("ui.jar");
 	        sb.append(File.pathSeparator);
         }
-        
-        sb.append(System.getProperty("java.home"));
-        sb.append(File.separator);
-        sb.append("lib");
-        sb.append(File.separator);
-        sb.append("rt.jar");
-        
+
+        File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
+        if (rtJar.exists() && rtJar.isFile()) {
+            // G.v().out.println("Using JRE runtime: " + rtJar.getAbsolutePath());
+            sb.append(rtJar.getAbsolutePath());
+        } else {
+            // in case we're not in JRE environment, try JDK
+            rtJar = new File(System.getProperty("java.home") + File.separator + "jre" + File.separator + "lib" + File.separator + "rt.jar");
+            if (rtJar.exists() && rtJar.isFile()) {
+                // G.v().out.println("Using JDK runtime: " + rtJar.getAbsolutePath());
+                sb.append(rtJar.getAbsolutePath());
+            } else {
+                // not in JDK either
+                throw new RuntimeException("Error: cannot find rt.jar.");
+            }
+        }
+
 		if(Options.v().whole_program() || Options.v().output_format()==Options.output_format_dava) {
 			//add jce.jar, which is necessary for whole program mode
 			//(java.security.Signature from rt.jar import javax.crypto.Cipher from jce.jar            	
