@@ -157,7 +157,7 @@ public class DexPrinter {
 	}
 	
 	private void printApk(String outputDir, File originalApk) throws IOException {
-		ZipOutputStream outputApk;
+		ZipOutputStream outputApk = null;
 		if(Options.v().output_jar()) {
 			outputApk = PackManager.v().getJarFile();
 			G.v().out.println("Writing APK to: " + Options.v().output_dir());
@@ -172,9 +172,17 @@ public class DexPrinter {
 			G.v().out.println("Writing APK to: " + outputFileName);
 		}
 		G.v().out.println("do not forget to sign the .apk file with jarsigner and to align it with zipalign");
-		ZipFile original = new ZipFile(originalApk);
-		copyAllButClassesDexAndSigFiles(original, outputApk);
-		original.close();
+		
+		// Copy over additional resources from original APK
+		ZipFile original = null;
+		try {
+			original = new ZipFile(originalApk);
+			copyAllButClassesDexAndSigFiles(original, outputApk);
+		}
+		finally {
+			if (original != null)
+				original.close();
+		}
 		
 		// put our classes.dex into the zip archive
 		File tmpFile = File.createTempFile("toDex", null);
@@ -188,11 +196,12 @@ public class DexPrinter {
 				outputApk.write(data);
 			}
 			outputApk.closeEntry();
-			outputApk.close();
 		}
 		finally {
 			fis.close();
 			tmpFile.delete();
+			if (outputApk != null)
+				outputApk.close();
 		}
 	}
 
