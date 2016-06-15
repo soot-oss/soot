@@ -211,6 +211,10 @@ public class Scene  //extends AbstractHost
      * @return The original, non-escaped name
      */
     public String unescapeName(String s) {
+    	// If the name is not escaped, there is nothing to do here
+    	if (!s.contains("'"))
+    		return s;
+    	
     	StringBuilder res = new StringBuilder(s.length());
     	for (String part : s.split("\\.")) {
     		if (res.length() > 0)
