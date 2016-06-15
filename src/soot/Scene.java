@@ -189,6 +189,17 @@ public class Scene  //extends AbstractHost
      */
     public String quotedNameOf(String s)
     {
+    	// Pre-check: Is there a chance that we need to escape something?
+    	// If not, skip the transformation altogether.
+    	boolean found = false;
+    	for (String token : reservedNames)
+    		if (s.contains(token)) {
+    			found = true;
+    			break;
+    		}
+    	if (!found)
+    		return s;
+    	
     	StringBuilder res = new StringBuilder(s.length());
     	for (String part : s.split("\\.")) {
     		if (res.length() > 0)
