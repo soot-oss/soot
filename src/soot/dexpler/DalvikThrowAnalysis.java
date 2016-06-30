@@ -197,13 +197,14 @@ public class DalvikThrowAnalysis extends UnitThrowAnalysis {
     	super(isInterproc);
     }
     
+    public DalvikThrowAnalysis(Singletons.Global g, boolean isInterproc) {
+    	super(isInterproc);
+    }
+    
     public static DalvikThrowAnalysis interproceduralAnalysis = null;
     
     public static DalvikThrowAnalysis interproc() {
-    	if (interproceduralAnalysis == null) {
-    		interproceduralAnalysis = new DalvikThrowAnalysis(true);
-    	}
-    	return interproceduralAnalysis;
+    	return G.v().interproceduralDalvikThrowAnalysis();
     }
     
     @Override

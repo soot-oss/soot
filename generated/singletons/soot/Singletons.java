@@ -27,7 +27,7 @@ public class Singletons {
     public final class Global {
         private Global() {}
     }
-    private Global g = new Global();
+    protected Global g = new Global();
 
     private soot.PhaseOptions instance_soot_PhaseOptions;
     public soot.PhaseOptions soot_PhaseOptions() {

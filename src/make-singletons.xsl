@@ -33,7 +33,7 @@ public class Singletons {
     public final class Global {
         private Global() {}
     }
-    private Global g = new Global();
+    protected Global g = new Global();
 <xsl:for-each select="/singletons/class">
     <xsl:variable name="class" select="."/>
     <xsl:variable name="undottedClass" select="translate(.,'.','_')"/>
