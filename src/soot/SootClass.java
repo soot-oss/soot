@@ -472,7 +472,7 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	public List<SootMethod> getMethods() {
 		checkLevel(SIGNATURES);
-		return new ArrayList<SootMethod>(methodList);
+		return methodList;
 	}
 
 	/**
