@@ -415,6 +415,7 @@ public class Scene  //extends AbstractHost
 		int maxAPI = getMaxAPIAvailable(platformJARs);
 		int sdkTargetVersion = -1;
 		int minSdkVersion = -1;
+		int platformBuildVersionCode = -1;
 		try {
 			AXmlResourceParser parser = new AXmlResourceParser();
 			parser.open(manifestIS);
@@ -430,7 +431,16 @@ public class Scene  //extends AbstractHost
 					case XmlPullParser.START_TAG: {
 						depth++;
 						String tagName = parser.getName();
-						if (depth == 2 && tagName.equals("uses-sdk")) {
+						if (depth == 1 && tagName.equals("manifest")) {
+							for (int i = 0; i != parser.getAttributeCount(); ++i) {
+								String attributeName = parser.getAttributeName(i);
+								String attributeValue = AXMLPrinter.getAttributeValue(parser, i);
+								if (attributeName.equals("platformBuildVersionCode")) {
+									platformBuildVersionCode = Integer.parseInt(attributeValue);
+								}
+							}
+						}
+						else if (depth == 2 && tagName.equals("uses-sdk")) {
 							for (int i = 0; i != parser.getAttributeCount(); ++i) {
 								String attributeName = parser.getAttributeName(i);
 								String attributeValue = AXMLPrinter.getAttributeValue(parser, i);
@@ -463,6 +473,15 @@ public class Scene  //extends AbstractHost
 			        APIVersion = minSdkVersion;
 			    } else {
 			        APIVersion = sdkTargetVersion;
+			    }
+			} else if (platformBuildVersionCode != -1) {
+			    if (platformBuildVersionCode > maxAPI
+			            && minSdkVersion != -1
+			            && minSdkVersion <= maxAPI) {
+			        G.v().out.println("warning: Android API version '"+ platformBuildVersionCode +"' not available, using minApkVersion '"+ minSdkVersion +"' instead");
+			        APIVersion = minSdkVersion;
+			    } else {
+			        APIVersion = platformBuildVersionCode;
 			    }
 			} else if (minSdkVersion != -1) {
 				APIVersion = minSdkVersion;
