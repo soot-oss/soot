@@ -1043,7 +1043,8 @@ public class SootClass extends AbstractHost implements Numberable {
 	public boolean isJavaLibraryClass() {
 		if (name.startsWith("java.") || name.startsWith("sun.")
 				|| name.startsWith("javax.") || name.startsWith("com.sun.")
-				|| name.startsWith("org.omg.") || name.startsWith("org.xml."))
+				|| name.startsWith("org.omg.") || name.startsWith("org.xml.")
+                || name.startsWith("org.w3c.dom"))
 			return true;
 
 		return false;
