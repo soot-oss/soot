@@ -42,9 +42,6 @@ public class StoreChainOptimizer extends BodyTransformer {
 		Map<Local, Pair<Unit, Unit>> stores = new HashMap<Local, Pair<Unit, Unit>>();
 		Set<Unit> toRemove = new HashSet<Unit>();
 		
-		if (b.getMethod().getName().equals("<init>"))
-			System.out.println("x");
-		
 		Unit lastPush = null;
 		Value lastStackValue = null;
 		for (Unit u : b.getUnits()) {
