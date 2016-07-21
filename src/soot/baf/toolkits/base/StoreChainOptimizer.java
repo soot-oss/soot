@@ -67,9 +67,6 @@ public class StoreChainOptimizer extends BodyTransformer {
 			}
 		}
 		
-		if (!toRemove.isEmpty())
-			System.out.println("x");
-		
 		b.getUnits().removeAll(toRemove);
 	}
 

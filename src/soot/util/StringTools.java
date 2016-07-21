@@ -115,14 +115,12 @@ public class StringTools {
 			 */
 			else if (ch == '\f') {
 				toStringBuffer.append("\\f");
-				continue;
 			}
 			else if (ch >= 32 && ch <= 126) {
 				toStringBuffer.append(ch);
-				continue;
 			}
-
-			toStringBuffer.append(getUnicodeStringFromChar(ch));
+			else
+				toStringBuffer.append(getUnicodeStringFromChar(ch));
 		}
 
 		toStringBuffer.append("\"");
