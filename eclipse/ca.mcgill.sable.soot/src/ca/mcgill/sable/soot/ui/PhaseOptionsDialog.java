@@ -290,6 +290,8 @@ Composite gbgb_uleChild = gbgb_uleCreate(getPageContainer());
 
 Composite bbbb_lsoChild = bbbb_lsoCreate(getPageContainer());
 
+Composite bbbb_scoChild = bbbb_scoCreate(getPageContainer());
+
 Composite bbbb_phoChild = bbbb_phoCreate(getPageContainer());
 
 Composite bbbb_uleChild = bbbb_uleCreate(getPageContainer());
@@ -1748,6 +1750,14 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		getbbbb_lsosll_widget().getButton().addSelectionListener(this);
 		
 		getbbbb_lsosll2_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("bb", "bb.sco");
+		
+		
+		addToEnableGroup("bb", "bb.sco", getbbbb_scoenabled_widget(), "enabled");
+		
+		getbbbb_scoenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("bb", "bb.pho");
@@ -5160,6 +5170,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getbbbb_lsosll2_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getbbbb_scoenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getbbbb_scoenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getbbbb_phoenabled_widget().getButton().getSelection();
 		
 		
@@ -6455,6 +6475,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 			
 			subSectParent = bb_bb_lso_branch;
+			
+			
+			SootOption bb_bb_sco_branch = new SootOption("Store Chain Optimizer", "bbbb_sco");
+			subParent.addChild(bb_bb_sco_branch);
+
+
+			
+
+			
+			subSectParent = bb_bb_sco_branch;
 			
 			
 			SootOption bb_bb_pho_branch = new SootOption("Peephole Optimizer", "bbbb_pho");
@@ -10001,6 +10031,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getbbbb_lsosll2_widget() {
 		return bbbb_lsosll2_widget;
+	}	
+	
+	private BooleanOptionWidget bbbb_scoenabled_widget;
+	
+	private void setbbbb_scoenabled_widget(BooleanOptionWidget widget) {
+		bbbb_scoenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getbbbb_scoenabled_widget() {
+		return bbbb_scoenabled_widget;
 	}	
 	
 	private BooleanOptionWidget bbbb_phoenabled_widget;
@@ -19690,6 +19730,52 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		return editGroupbbbb_lso;
+	}
+
+
+
+	private Composite bbbb_scoCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupbbbb_sco = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupbbbb_sco.setLayout(layout);
+	
+	 	editGroupbbbb_sco.setText("Store Chain Optimizer");
+	 	
+		editGroupbbbb_sco.setData("id", "bbbb_sco");
+		
+		String descbbbb_sco = "Store chain optimizer";	
+		if (descbbbb_sco.length() > 0) {
+			Label descLabelbbbb_sco = new Label(editGroupbbbb_sco, SWT.WRAP);
+			descLabelbbbb_sco.setText(descbbbb_sco);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"bb.sco"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setbbbb_scoenabled_widget(new BooleanOptionWidget(editGroupbbbb_sco, SWT.NONE, new OptionData("Enabled", "p", "bb.sco","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupbbbb_sco;
 	}
 
 

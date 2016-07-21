@@ -3,6 +3,7 @@ package soot.validation;
 import java.util.List;
 
 import soot.Body;
+import soot.SootMethod;
 import soot.Unit;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
@@ -21,8 +22,13 @@ public enum CheckEscapingValidator implements BodyValidator {
 				Stmt stmt = (Stmt) u;
 				if (stmt.containsInvokeExpr()) {
 					InvokeExpr iexpr = stmt.getInvokeExpr();
-					if (iexpr.getMethod().getSignature().contains("'"))
+					SootMethod sm = iexpr.getMethod();
+					if (sm.getName().contains("'")
+							|| sm.getDeclaringClass().getName().contains("'"))
 						throw new ValidationException(stmt, "Escaped name in signature found");
+					for (int i = 0; i < sm.getParameterCount(); i++)
+						if (sm.getParameterType(i).toString().contains("'"))
+							throw new ValidationException(stmt, "Escaped name in signature found");
 				}
 			}
 		}

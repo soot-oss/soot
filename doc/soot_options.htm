@@ -352,13 +352,16 @@
 <a href="#phase_19_1">Load Store Optimizer (bb.lso)</a>
 </li>
 <li>
-<a href="#phase_19_2">Peephole Optimizer (bb.pho)</a>
+<a href="#phase_19_2">Store Chain Optimizer (bb.sco)</a>
 </li>
 <li>
-<a href="#phase_19_3">Unused Local Eliminator (bb.ule)</a>
+<a href="#phase_19_3">Peephole Optimizer (bb.pho)</a>
 </li>
 <li>
-<a href="#phase_19_4">Local Packer (bb.lp)</a>
+<a href="#phase_19_4">Unused Local Eliminator (bb.ule)</a>
+</li>
+<li>
+<a href="#phase_19_5">Local Packer (bb.lp)</a>
 </li>
 </ul>
 </li>
@@ -5406,7 +5409,22 @@ some variant of dup.
 </li>
 </ul>
 <h2>
-<a name="phase_19_2">Peephole Optimizer (bb.pho)</a>
+<a name="phase_19_2">Store Chain Optimizer (bb.sco)</a>
+</h2>
+<p>
+The store chain optimizer detects chains of push/store pairs that write to the same variable and only retains the last store. It removes the unnecessary previous push/stores that are subsequently overwritten.
+</p>
+<h4>Accepted phase options:</h4>
+<ul>
+<li>
+<b>Enabled</b> (enabled)
+		<br>
+			(default value: <span class="value">true</span>)
+		<p></p>
+</li>
+</ul>
+<h2>
+<a name="phase_19_3">Peephole Optimizer (bb.pho)</a>
 </h2>
 <p>
 Applies peephole optimizations to the Baf intermediate
@@ -5434,7 +5452,7 @@ instructions.
 </li>
 </ul>
 <h2>
-<a name="phase_19_3">Unused Local Eliminator (bb.ule)</a>
+<a name="phase_19_4">Unused Local Eliminator (bb.ule)</a>
 </h2>
 <p>
 This phase removes any locals that are unused after load store optimization
@@ -5450,7 +5468,7 @@ and peephole optimization.
 </li>
 </ul>
 <h2>
-<a name="phase_19_4">Local Packer (bb.lp)</a>
+<a name="phase_19_5">Local Packer (bb.lp)</a>
 </h2>
 <p>
 The Local Packer attempts to minimize the number of local

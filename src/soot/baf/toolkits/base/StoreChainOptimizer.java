@@ -11,7 +11,6 @@ import soot.G;
 import soot.Local;
 import soot.Singletons;
 import soot.Unit;
-import soot.Value;
 import soot.baf.PushInst;
 import soot.baf.StoreInst;
 import soot.toolkits.scalar.Pair;
@@ -43,28 +42,15 @@ public class StoreChainOptimizer extends BodyTransformer {
 		Set<Unit> toRemove = new HashSet<Unit>();
 		
 		Unit lastPush = null;
-		Value lastStackValue = null;
 		for (Unit u : b.getUnits()) {
 			// If we can jump here from somewhere, do not modify this code
 			if (!u.getBoxesPointingToThis().isEmpty())
-				lastStackValue = null;
+				stores.clear();
 			// Emulate pushing stuff on the stack
 			else if (u instanceof PushInst) {
-				// If we already have something on the stack, this is no longer
-				// a simple initialization chain and we leave it alone.
-				if (lastStackValue != null)
-					continue;
-				
-				PushInst pi = (PushInst) u;
-				lastStackValue = pi.getConstant();
 				lastPush = u;
 			}
 			else if (u instanceof StoreInst) {
-				// If we don't have anything on the stack, something's seriously
-				// broken
-				if (lastStackValue == null)
-					continue;
-				
 				StoreInst si = (StoreInst) u;
 				Pair<Unit, Unit> pushStorePair = stores.get(si.getLocal());
 				if (pushStorePair != null) {
@@ -74,13 +60,15 @@ public class StoreChainOptimizer extends BodyTransformer {
 				}
 				
 				stores.put(si.getLocal(), new Pair<Unit, Unit>(lastPush, u));
-				lastStackValue = null;
 			}
 			else {
 				// We're outside of the trivial initialization chain
-				lastStackValue = null;
+				stores.clear();
 			}
 		}
+		
+		if (!toRemove.isEmpty())
+			System.out.println("x");
 		
 		b.getUnits().removeAll(toRemove);
 	}

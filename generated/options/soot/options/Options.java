@@ -1825,6 +1825,7 @@ public class Options extends OptionsBase {
         +padOpt("gop", "Grimp optimization pack")
         +padOpt("bb", "Creates Baf bodies")
         +padVal("bb.lso", "Load store optimizer")
+        +padVal("bb.sco", "Store chain optimizer")
         +padVal("bb.pho", "Peephole optimizer")
         +padVal("bb.ule", "Unused local eliminator")
         +padVal("bb.lp", "Local packer: minimizes number of locals")
@@ -2775,6 +2776,12 @@ public class Options extends OptionsBase {
                 +padOpt( "sll (true)", "" )
                 +padOpt( "sll2 (false)", "" );
     
+        if( phaseName.equals( "bb.sco" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nThe store chain optimizer detects chains of push/store pairs \nthat write to the same variable and only retains the last store. \nIt removes the unnecessary previous push/stores that are \nsubsequently overwritten. "
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (true)", "" );
+    
         if( phaseName.equals( "bb.pho" ) )
             return "Phase "+phaseName+":\n"+
                 "\nApplies peephole optimizations to the Baf intermediate \nrepresentation. Individual optimizations must be implemented by \nclasses implementing the Peephole interface. The Peephole \nOptimizer reads the names of the Peephole classes at runtime \nfrom the file peephole.dat and loads them dynamically. Then it \ncontinues to apply the Peepholes repeatedly until none of them \nare able to perform any further optimizations. Soot provides \nonly one Peephole, named ExamplePeephole, which is not enabled \nby the delivered peephole.dat file. ExamplePeephole removes all \ncheckcast instructions."
@@ -3419,6 +3426,10 @@ public class Options extends OptionsBase {
                 +"sll "
                 +"sll2 ";
     
+        if( phaseName.equals( "bb.sco" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "bb.pho" ) )
             return ""
                 +"enabled ";
@@ -4034,6 +4045,10 @@ public class Options extends OptionsBase {
               +"sll:true "
               +"sll2:false ";
     
+        if( phaseName.equals( "bb.sco" ) )
+            return ""
+              +"enabled:true ";
+    
         if( phaseName.equals( "bb.pho" ) )
             return ""
               +"enabled:true ";
@@ -4191,6 +4206,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "gop" ) ) return;
         if( phaseName.equals( "bb" ) ) return;
         if( phaseName.equals( "bb.lso" ) ) return;
+        if( phaseName.equals( "bb.sco" ) ) return;
         if( phaseName.equals( "bb.pho" ) ) return;
         if( phaseName.equals( "bb.ule" ) ) return;
         if( phaseName.equals( "bb.lp" ) ) return;
@@ -4396,6 +4412,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase bb" );
         if( !PackManager.v().hasPhase( "bb.lso" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase bb.lso" );
+        if( !PackManager.v().hasPhase( "bb.sco" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase bb.sco" );
         if( !PackManager.v().hasPhase( "bb.pho" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase bb.pho" );
         if( !PackManager.v().hasPhase( "bb.ule" ) )

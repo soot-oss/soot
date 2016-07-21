@@ -5756,6 +5756,19 @@ some variant of <tt>dup</tt>.
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
+					<name>Store Chain Optimizer</name>
+					<alias>bb.sco</alias>
+					<short_desc>Store chain optimizer</short_desc>
+					<long_desc>
+The store chain optimizer detects chains of push/store pairs that write to the same variable and only retains the last store. It removes the unnecessary previous push/stores that are subsequently overwritten.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
 					<name>Peephole Optimizer</name>
 					<alias>bb.pho</alias>
 					<short_desc>Peephole optimizer</short_desc>
