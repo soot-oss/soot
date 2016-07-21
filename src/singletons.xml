@@ -62,6 +62,7 @@
   <class>soot.tagkit.InnerClassTagAggregator</class>
   <class>soot.jimple.toolkits.annotation.LineNumberAdder</class>
   <class>soot.baf.toolkits.base.LoadStoreOptimizer</class>
+  <class>soot.baf.toolkits.base.StoreChainOptimizer</class>
   <class>soot.jimple.toolkits.scalar.LocalNameStandardizer</class>
   <class>soot.toolkits.scalar.LocalPacker</class>
   <class>soot.toolkits.scalar.LocalSplitter</class>

@@ -46,6 +46,7 @@ import soot.baf.BafASMBackend;
 import soot.baf.BafBody;
 import soot.baf.toolkits.base.LoadStoreOptimizer;
 import soot.baf.toolkits.base.PeepholeOptimizer;
+import soot.baf.toolkits.base.StoreChainOptimizer;
 import soot.dava.Dava;
 import soot.dava.DavaBody;
 import soot.dava.DavaBuildFile;
@@ -311,6 +312,7 @@ public class PackManager {
             p.add(new Transform("bb.pho", PeepholeOptimizer.v()));
             p.add(new Transform("bb.ule", UnusedLocalEliminator.v()));
             p.add(new Transform("bb.lp", LocalPacker.v()));
+            p.add(new Transform("bb.sco", StoreChainOptimizer.v()));
         }
 
         // Baf optimization pack

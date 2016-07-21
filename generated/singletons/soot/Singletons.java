@@ -711,6 +711,17 @@ public class Singletons {
         return instance_soot_baf_toolkits_base_LoadStoreOptimizer;
     }
 
+    private soot.baf.toolkits.base.StoreChainOptimizer instance_soot_baf_toolkits_base_StoreChainOptimizer;
+    public soot.baf.toolkits.base.StoreChainOptimizer soot_baf_toolkits_base_StoreChainOptimizer() {
+        if( instance_soot_baf_toolkits_base_StoreChainOptimizer == null ) {
+	       	synchronized (this) {
+		        if( instance_soot_baf_toolkits_base_StoreChainOptimizer == null )
+	        		instance_soot_baf_toolkits_base_StoreChainOptimizer = new soot.baf.toolkits.base.StoreChainOptimizer( g );
+	       	}
+       	}
+        return instance_soot_baf_toolkits_base_StoreChainOptimizer;
+    }
+
     private soot.jimple.toolkits.scalar.LocalNameStandardizer instance_soot_jimple_toolkits_scalar_LocalNameStandardizer;
     public soot.jimple.toolkits.scalar.LocalNameStandardizer soot_jimple_toolkits_scalar_LocalNameStandardizer() {
         if( instance_soot_jimple_toolkits_scalar_LocalNameStandardizer == null ) {
