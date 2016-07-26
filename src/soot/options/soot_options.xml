@@ -2061,6 +2061,17 @@ print: the program prints a stack trace when reaching a porgram location that wa
 the program throws an Error instead.                                                                                                
 </long_desc>
                                 </stropt>
+								<boolopt>
+								  <name>Types for invoke</name>
+								  <alias>types-for-invoke</alias>
+								  <default>false</default>
+								  <short_desc>Uses reaching types inferred by the pointer analysis to resolve reflective calls.</short_desc>
+								  <long_desc>For each call to Method.invoke(), use the possible types of the first receiver
+								  argument and the possible types stored in the second argument array to resolve calls to
+								  Method.invoke(). This strategy makes no attempt to resolve reflectively invoked static methods.
+								  Currently only works for context insensitive pointer analyses.
+								  </long_desc>
+								</boolopt>
 				<sub_phase>
 					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>
