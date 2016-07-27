@@ -25,6 +25,8 @@
 
 package soot;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -153,5 +155,27 @@ public class G extends Singletons
     
     //ASTMetrics Data
     public ArrayList<ClassData> ASTMetricsData = new ArrayList<ClassData>();
+    
+    public void resetSpark() {
+    	// We reset SPARK the hard way.
+    	for (Method m : getClass().getSuperclass().getDeclaredMethods()) {
+    		if (m.getName().startsWith("release_soot_jimple_spark_"))
+				try {
+					m.invoke(this);
+				} catch (IllegalAccessException e) {
+					throw new RuntimeException(e);
+				} catch (IllegalArgumentException e) {
+					throw new RuntimeException(e);
+				} catch (InvocationTargetException e) {
+					throw new RuntimeException(e);
+				}
+    	}
+    	
+    	// Reset some other stuff directly in this class
+    	MethodPAG_methodToPag.clear();
+    	MethodRWSet_allFields.clear();
+    	MethodRWSet_allGlobals.clear();
+    }
+    
 }
 

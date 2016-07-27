@@ -48,6 +48,9 @@ public class Singletons {
        	}
         return <xsl:value-of select="$instanceName"/>;
     }
+    protected void release_<xsl:value-of select="$undottedClass"/>() {
+    	<xsl:value-of select="$instanceName"/> = null;
+    }
 </xsl:for-each>
 }
 </xsl:template>
