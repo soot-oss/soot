@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>ca.mcgill.sable</groupId>
+  <artifactId>soot</artifactId>
+  
+  <name>Soot</name>
+  <version>2016-07-27</version>
+  <description>A Java Optimization Framework</description>
+  
+  <properties>
+    <maven.compiler.source>1.7</maven.compiler.source>
+    <maven.compiler.target>1.7</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>tests</testSourceDirectory>
+
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals><goal>add-source</goal></goals>
+            <configuration>
+              <sources>
+                <source>${basedir}/generated/singletons</source>
+                <source>${basedir}/generated/sablecc</source>
+                <source>${basedir}/generated/options</source>
+                <source>${basedir}/generated/jastadd</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+
+  <dependencies>
+    <dependency>
+      <groupId>org.smali</groupId>
+      <artifactId>dexlib2</artifactId>
+      <version>2.1.2</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm-debug-all</artifactId>
+      <version>5.1</version>
+    </dependency>
+    <dependency>
+      <groupId>org.javassist</groupId>
+      <artifactId>javassist</artifactId>
+      <version>3.18.2-GA</version>
+    </dependency>
+
+    <dependency>
+      <groupId>xmlpull</groupId>
+      <artifactId>xmlpull</artifactId>
+      <version>1.1.3.4d_b4_min</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.jboss</groupId>
+      <artifactId>jboss-common-core</artifactId>
+      <version>2.5.0.Final</version>
+    </dependency>
+    
+    <dependency>
+      <groupId>org.apache.ant</groupId>
+      <artifactId>ant</artifactId>
+      <version>1.9.7</version>
+    </dependency>
+    
+    
+    <!-- Published from the github repo -->
+    <!-- Built by http://build.renjin.org/job/Soot/job/heros/ -->
+    <dependency>
+      <groupId>heros</groupId>
+      <artifactId>heros</artifactId>
+      <version>0.0.1-b6</version>
+    </dependency>
+
+        
+    <!-- Uploaded to nexus.bedatadriven.com from libs/polyglot.jar -->
+    <dependency>
+      <groupId>ca.mcgill.sable</groupId>
+      <artifactId>polyglot</artifactId>
+      <version>2006</version>
+    </dependency>
+
+    <!-- Uploaded to nexus.bedatadriven.com from the nightly build server -->
+    <dependency>
+      <groupId>ca.mcgill.sable</groupId>
+      <artifactId>jasmin</artifactId>
+      <version>2016-07-27</version>
+    </dependency>
+
+    <!-- Uploaded to nexus.bedatadriven.com from libs/AXMLPrinter2.jar -->
+    <dependency>
+      <groupId>ca.mcgill.sable</groupId>
+      <artifactId>axmlprinter2</artifactId>
+      <version>2016-07-27</version>
+    </dependency>
+    
+    <!-- Testing dependencies -->
+
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.11</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.hamcrest</groupId>
+      <artifactId>hamcrest-all</artifactId>
+      <version>1.3</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-all</artifactId>
+      <version>1.10.8</version>
+      <scope>test</scope>
+    </dependency>
+
+    <dependency>
+      <groupId>org.powermock</groupId>
+      <artifactId>powermock-mockito-release-full</artifactId>
+      <version>1.6.1</version>
+      <type>pom</type>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <repositories>
+    <repository>
+      <id>bedatadriven</id>
+      <name>bedatadriven public repo</name>
+      <url>https://nexus.bedatadriven.com/content/groups/public/</url>
+    </repository>
+  </repositories>
+
+
+</project>
