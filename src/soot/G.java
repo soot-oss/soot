@@ -28,7 +28,6 @@ import java.io.PrintStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -40,12 +39,14 @@ import soot.dava.internal.SET.SETBasicBlock;
 import soot.dava.internal.SET.SETNode;
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.jimple.spark.pag.MethodPAG;
+import soot.jimple.spark.pag.Parm;
 import soot.jimple.spark.sets.P2SetFactory;
 import soot.jimple.toolkits.annotation.arraycheck.Array2ndDimensionSymbol;
 import soot.jimple.toolkits.pointer.UnionFactory;
 import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.toolkits.typing.ClassHierarchy;
 import soot.toolkits.astmetrics.ClassData;
+import soot.toolkits.scalar.Pair;
 
 /** A class to group together all the global variables in Soot. */
 public class G extends Singletons 
@@ -92,7 +93,7 @@ public class G extends Singletons
     public NativeHelper NativeHelper_helper = null;
     public P2SetFactory newSetFactory;
     public P2SetFactory oldSetFactory;
-    public Map Parm_pairToElement = new HashMap();
+    public Map<Pair<SootMethod, Integer>, Parm> Parm_pairToElement = new HashMap<Pair<SootMethod, Integer>, Parm>();
     public int SparkNativeHelper_tempVar = 0;
     public int PaddleNativeHelper_tempVar = 0;
     public boolean PointsToSetInternal_warnedAlready = false;
@@ -102,7 +103,6 @@ public class G extends Singletons
     public int GeneralConstObject_counter = 0;
     public UnionFactory Union_factory = null;
     public HashMap<Object, Array2ndDimensionSymbol> Array2ndDimensionSymbol_pool = new HashMap<Object, Array2ndDimensionSymbol>();
-    public Map AbstractUnit_allMapToUnnamed = Collections.unmodifiableMap(new AbstractUnitAllMapTo("<unnamed>"));
     public List<Timer> Timer_outstandingTimers = new ArrayList<Timer>();
     public boolean Timer_isGarbageCollecting;
     public Timer Timer_forcedGarbageCollectionTimer = new Timer("gc");
@@ -175,6 +175,9 @@ public class G extends Singletons
     	MethodPAG_methodToPag.clear();
     	MethodRWSet_allFields.clear();
     	MethodRWSet_allGlobals.clear();
+    	newSetFactory = null;
+    	oldSetFactory = null;
+    	Parm_pairToElement.clear();
     }
     
 }
