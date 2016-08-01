@@ -44,13 +44,15 @@ public class StoreChainOptimizer extends BodyTransformer {
 		Unit lastPush = null;
 		for (Unit u : b.getUnits()) {
 			// If we can jump here from somewhere, do not modify this code
-			if (!u.getBoxesPointingToThis().isEmpty())
+			if (!u.getBoxesPointingToThis().isEmpty()) {
 				stores.clear();
+				lastPush = null;
+			}
 			// Emulate pushing stuff on the stack
 			else if (u instanceof PushInst) {
 				lastPush = u;
 			}
-			else if (u instanceof StoreInst) {
+			else if (u instanceof StoreInst && lastPush != null) {
 				StoreInst si = (StoreInst) u;
 				Pair<Unit, Unit> pushStorePair = stores.get(si.getLocal());
 				if (pushStorePair != null) {
@@ -64,6 +66,7 @@ public class StoreChainOptimizer extends BodyTransformer {
 			else {
 				// We're outside of the trivial initialization chain
 				stores.clear();
+				lastPush = null;
 			}
 		}
 		
