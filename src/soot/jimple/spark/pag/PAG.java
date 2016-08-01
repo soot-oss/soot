@@ -51,7 +51,6 @@ import soot.jimple.Stmt;
 import soot.jimple.spark.builder.GlobalNodeFactory;
 import soot.jimple.spark.builder.MethodNodeFactory;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
-import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.spark.internal.SparkLibraryHelper;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.sets.BitPointsToSet;

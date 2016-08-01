@@ -91,6 +91,20 @@ public class SparkOptions
         return soot.PhaseOptions.getBoolean( options, "pre-jimplify" );
     }
     
+    /** AppOnly --
+    
+     * Consider only application classes.
+    
+     * Setting this option to true causes Soot to only consider 
+     * application classes when building the callgraph. The resulting 
+     * callgraph will be inherently unsound. Still, this option can 
+     * make sense if performance optimization and memory reduction are 
+     * your primary goal.
+     */
+    public boolean apponly() {
+        return soot.PhaseOptions.getBoolean( options, "apponly" );
+    }
+    
     /** VTA --
     
      * Emulate Variable Type Analysis.

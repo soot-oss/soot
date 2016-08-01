@@ -407,6 +407,17 @@ If whole-program mode is enabled, jce.jar is also appended in the end.
 </p>
 </long_desc>
 		</boolopt>
+		<boolopt>
+			<name>Process all DEX files in APK</name>
+			<alias>process-multiple-dex</alias>
+			<short_desc>Process all DEX files found in APK.</short_desc>
+			<long_desc>
+<p>
+Android APKs can have more than one default classes.dex. By default Soot loads only classes from the default one. This option
+enables loading of all DEX files from an APK.
+</p>
+</long_desc>
+		</boolopt>
 		<listopt>
 			<name>Process Directories</name>
 			<alias>process-path</alias>
@@ -621,6 +632,17 @@ overrides this default.
 			<long_desc>
 Use Java 1.4 Polyglot frontend instead of JastAdd, which supports Java 5 syntax.
 </long_desc>
+		</boolopt>
+		<boolopt>
+			<name>Use permissive resolving strategy</name>
+			<alias>permissive-resolving</alias>
+			<default>false</default>
+			<short_desc>Use alternative sources when classes cannot be found using the normal resolving strategy</short_desc>
+			<long_desc>
+			    When this option is enabled, Soot will try to resolve classes using an alternative
+			    strategy if the class cannot be found using the default strategy. A class a.b.c
+			    will, for instance, also be loaded from a/b/c.jimple instead of only a.b.c.jimple.
+			</long_desc>
 		</boolopt>
 	</section>
 	<section>
@@ -1112,6 +1134,18 @@ Preserves annotations of retention type SOURCE. (for
 everything but package and local variable annotations) 
 </long_desc>
 				</boolopt>
+				<boolopt>
+					<name>Stabilize local names</name>
+					<alias>stabilize-local-names</alias>
+                    <default>false</default>
+					<short_desc/>
+					<long_desc>
+Make sure that local names are stable between runs. This requires re-normalizing all
+local names after the standard transformations and then sorting them which can negatively
+impact performance. This option automatically sets "sort-locals" in "jb.lns" during the
+second re-normalization pass.
+</long_desc>
+				</boolopt>
 				<sub_phase>
 					<name>Local Splitter</name>
 					<alias>jb.ls</alias>
@@ -1294,6 +1328,24 @@ locations in the original bytecode. This becomes the default when
 the `<tt>use-original-names</tt>&apos; option is specified for
 the `<tt>jb</tt>&apos; phase.
 </long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Sort Locals</name>
+						<alias>sort-locals</alias>
+						<default>false</default>
+						<short_desc>
+						    Specifies whether the locals shall be ordered.
+						</short_desc>
+						<long_desc>
+							First sorts the locals alphabetically by the string representation of
+							their type. Then if there are two locals with the same type, it uses
+							the only other source of structurally stable information (i.e. the 
+							instructions themselves) to produce an ordering for the locals
+							that remains consistent between different soot instances. It achieves
+							this by determining the position of a local's first occurrence in the 
+							instruction's list of definition statements. This position is then used
+							to sort the locals with the same type in an ascending order.
+						</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -2080,7 +2132,14 @@ total time and memory requirement, because all methods are Jimplified,
 rather than only those deemed reachable by the points-to analysis.
         </long_desc>
 						</boolopt>
-					</section>
+						<boolopt>
+							<name>AppOnly</name>
+							<alias>apponly</alias>
+	                                                <default>false</default>
+	                                                <short_desc>Consider only application classes</short_desc>
+	                                                <long_desc>Setting this option to true causes Soot to only consider application classes when building the callgraph. The resulting callgraph will be inherently unsound. Still, this option can make sense if performance optimization and memory reduction are your primary goal.</long_desc>
+						</boolopt>
+				 	</section>
 					<section>
 						<name>Spark Pointer Assignment Graph Building Options</name>
 						<boolopt>
@@ -5694,6 +5753,19 @@ Enables an a second pass of the optimization which attempts to
 eliminate <tt>store</tt>/<tt>load</tt>/<tt>load</tt> trios with
 some variant of <tt>dup</tt>.
 </long_desc>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
+					<name>Store Chain Optimizer</name>
+					<alias>bb.sco</alias>
+					<short_desc>Store chain optimizer</short_desc>
+					<long_desc>
+The store chain optimizer detects chains of push/store pairs that write to the same variable and only retains the last store. It removes the unnecessary previous push/stores that are subsequently overwritten.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>

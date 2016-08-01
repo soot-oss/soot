@@ -107,6 +107,9 @@ public class SootResolver {
 	 * SootClass.
 	 * */
 	public SootClass makeClassRef(String className) {
+		// If this class name is escaped, we need to un-escape it
+		className = Scene.v().unescapeName(className);
+		
 		if (Scene.v().containsClass(className))
 			return Scene.v().getSootClass(className);
 
@@ -207,40 +210,46 @@ public class SootResolver {
 
 		String className = sc.getName();
 		ClassSource is = SourceLocator.v().getClassSource(className);
-		boolean modelAsPhantomRef = is == null;
-		// || (
-		// Options.v().no_jrl() &&
-		// Scene.v().isExcluded(sc) &&
-		// !Scene.v().getBasicClasses().contains(sc.getName())
-		// );
-		if (modelAsPhantomRef) {
-			if (!Scene.v().allowsPhantomRefs()) {
-				String suffix = "";
-				if (className.equals("java.lang.Object")) {
-					suffix = " Try adding rt.jar to Soot's classpath, e.g.:\n"
-							+ "java -cp sootclasses.jar soot.Main -cp "
-							+ ".:/path/to/jdk/jre/lib/rt.jar <other options>";
-				} else if (className.equals("javax.crypto.Cipher")) {
-					suffix = " Try adding jce.jar to Soot's classpath, e.g.:\n"
-							+ "java -cp sootclasses.jar soot.Main -cp "
-							+ ".:/path/to/jdk/jre/lib/rt.jar:/path/to/jdk/jre/lib/jce.jar <other options>";
+		try {
+			boolean modelAsPhantomRef = is == null;
+			// || (
+			// Options.v().no_jrl() &&
+			// Scene.v().isExcluded(sc) &&
+			// !Scene.v().getBasicClasses().contains(sc.getName())
+			// );
+			if (modelAsPhantomRef) {
+				if (!Scene.v().allowsPhantomRefs()) {
+					String suffix = "";
+					if (className.equals("java.lang.Object")) {
+						suffix = " Try adding rt.jar to Soot's classpath, e.g.:\n"
+								+ "java -cp sootclasses.jar soot.Main -cp "
+								+ ".:/path/to/jdk/jre/lib/rt.jar <other options>";
+					} else if (className.equals("javax.crypto.Cipher")) {
+						suffix = " Try adding jce.jar to Soot's classpath, e.g.:\n"
+								+ "java -cp sootclasses.jar soot.Main -cp "
+								+ ".:/path/to/jdk/jre/lib/rt.jar:/path/to/jdk/jre/lib/jce.jar <other options>";
+					}
+					throw new SootClassNotFoundException("couldn't find class: "
+							+ className
+							+ " (is your soot-class-path set properly?)" + suffix);
+				} else {
+					G.v().out.println("Warning: " + className
+							+ " is a phantom class!");
+					sc.setPhantomClass();
+					classToTypesSignature.put(sc, Collections.<Type> emptyList());
+					classToTypesHierarchy.put(sc, Collections.<Type> emptyList());
 				}
-				throw new SootClassNotFoundException("couldn't find class: "
-						+ className
-						+ " (is your soot-class-path set properly?)" + suffix);
 			} else {
-				G.v().out.println("Warning: " + className
-						+ " is a phantom class!");
-				sc.setPhantomClass();
-				classToTypesSignature.put(sc, Collections.<Type> emptyList());
-				classToTypesHierarchy.put(sc, Collections.<Type> emptyList());
+				Dependencies dependencies = is.resolve(sc);
+				if (!dependencies.typesToSignature.isEmpty())
+					classToTypesSignature.put(sc, dependencies.typesToSignature);
+				if (!dependencies.typesToHierarchy.isEmpty())
+					classToTypesHierarchy.put(sc, dependencies.typesToHierarchy);
 			}
-		} else {
-			Dependencies dependencies = is.resolve(sc);
-			if (!dependencies.typesToSignature.isEmpty())
-				classToTypesSignature.put(sc, dependencies.typesToSignature);
-			if (!dependencies.typesToHierarchy.isEmpty())
-				classToTypesHierarchy.put(sc, dependencies.typesToHierarchy);
+		}
+		finally {
+			if (is != null)
+				is.close();
 		}
 		reResolveHierarchy(sc);
 	}

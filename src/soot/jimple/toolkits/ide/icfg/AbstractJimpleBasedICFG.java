@@ -218,4 +218,9 @@ public abstract class AbstractJimpleBasedICFG implements BiDiInterproceduralCFG<
 		return false;
 	}
 	
+	@Override
+	public boolean isReachable(Unit u) {
+		return unitToOwner.containsKey(u);
+	}
+	
 }

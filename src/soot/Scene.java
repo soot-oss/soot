@@ -189,6 +189,17 @@ public class Scene  //extends AbstractHost
      */
     public String quotedNameOf(String s)
     {
+    	// Pre-check: Is there a chance that we need to escape something?
+    	// If not, skip the transformation altogether.
+    	boolean found = false;
+    	for (String token : reservedNames)
+    		if (s.contains(token)) {
+    			found = true;
+    			break;
+    		}
+    	if (!found)
+    		return s;
+    	
     	StringBuilder res = new StringBuilder(s.length());
     	for (String part : s.split("\\.")) {
     		if (res.length() > 0)
@@ -197,6 +208,30 @@ public class Scene  //extends AbstractHost
 	            res.append('\'');
 	            res.append(part);
 	            res.append('\'');
+	        }
+	        else
+	            res.append(part);
+    	}
+    	return res.toString();
+    }
+    
+    /**
+     * This method is the inverse of quotedNameOf(). It takes a possible escaped
+     * class and reconstructs the original version of it.
+     * @param s The possibly escaped name
+     * @return The original, non-escaped name
+     */
+    public String unescapeName(String s) {
+    	// If the name is not escaped, there is nothing to do here
+    	if (!s.contains("'"))
+    		return s;
+    	
+    	StringBuilder res = new StringBuilder(s.length());
+    	for (String part : s.split("\\.")) {
+    		if (res.length() > 0)
+    			res.append('.');
+	        if(part.startsWith("'") && part.endsWith("'")) {
+	            res.append(part.substring(1, part.length() - 1));
 	        }
 	        else
 	            res.append(part);
@@ -244,7 +279,7 @@ public class Scene  //extends AbstractHost
     {
         if( sootClassPath == null ) {
             String optionscp = Options.v().soot_classpath();
-            if( optionscp.length() > 0 )
+            if( optionscp != null && optionscp.length() > 0 )
                 sootClassPath = optionscp;
             
 	        //if no classpath is given on the command line, take the default
@@ -380,6 +415,7 @@ public class Scene  //extends AbstractHost
 		int maxAPI = getMaxAPIAvailable(platformJARs);
 		int sdkTargetVersion = -1;
 		int minSdkVersion = -1;
+		int platformBuildVersionCode = -1;
 		try {
 			AXmlResourceParser parser = new AXmlResourceParser();
 			parser.open(manifestIS);
@@ -395,7 +431,16 @@ public class Scene  //extends AbstractHost
 					case XmlPullParser.START_TAG: {
 						depth++;
 						String tagName = parser.getName();
-						if (depth == 2 && tagName.equals("uses-sdk")) {
+						if (depth == 1 && tagName.equals("manifest")) {
+							for (int i = 0; i != parser.getAttributeCount(); ++i) {
+								String attributeName = parser.getAttributeName(i);
+								String attributeValue = AXMLPrinter.getAttributeValue(parser, i);
+								if (attributeName.equals("platformBuildVersionCode")) {
+									platformBuildVersionCode = Integer.parseInt(attributeValue);
+								}
+							}
+						}
+						else if (depth == 2 && tagName.equals("uses-sdk")) {
 							for (int i = 0; i != parser.getAttributeCount(); ++i) {
 								String attributeName = parser.getAttributeName(i);
 								String attributeValue = AXMLPrinter.getAttributeValue(parser, i);
@@ -429,6 +474,15 @@ public class Scene  //extends AbstractHost
 			    } else {
 			        APIVersion = sdkTargetVersion;
 			    }
+			} else if (platformBuildVersionCode != -1) {
+			    if (platformBuildVersionCode > maxAPI
+			            && minSdkVersion != -1
+			            && minSdkVersion <= maxAPI) {
+			        G.v().out.println("warning: Android API version '"+ platformBuildVersionCode +"' not available, using minApkVersion '"+ minSdkVersion +"' instead");
+			        APIVersion = minSdkVersion;
+			    } else {
+			        APIVersion = platformBuildVersionCode;
+			    }
 			} else if (minSdkVersion != -1) {
 				APIVersion = minSdkVersion;
 			} else {
@@ -451,6 +505,17 @@ public class Scene  //extends AbstractHost
 	}
 
 	public String defaultClassPath() {
+		// If we have an apk file on the process dir and do not have a src-prec option
+		// that loads APK files, we give a warning
+		if (Options.v().src_prec() != Options.src_prec_apk) {
+			for (String entry : Options.v().process_dir()) {
+				if (entry.toLowerCase().endsWith(".apk")) {
+					System.err.println("APK file on process dir, but chosen src-prec does not support loading APKs");
+					break;
+				}
+			}
+		}
+		
 		if (Options.v().src_prec() == Options.src_prec_apk)
 			return defaultAndroidClassPath();
 		else
@@ -527,13 +592,23 @@ public class Scene  //extends AbstractHost
 	        sb.append("ui.jar");
 	        sb.append(File.pathSeparator);
         }
-        
-        sb.append(System.getProperty("java.home"));
-        sb.append(File.separator);
-        sb.append("lib");
-        sb.append(File.separator);
-        sb.append("rt.jar");
-        
+
+        File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
+        if (rtJar.exists() && rtJar.isFile()) {
+            // G.v().out.println("Using JRE runtime: " + rtJar.getAbsolutePath());
+            sb.append(rtJar.getAbsolutePath());
+        } else {
+            // in case we're not in JRE environment, try JDK
+            rtJar = new File(System.getProperty("java.home") + File.separator + "jre" + File.separator + "lib" + File.separator + "rt.jar");
+            if (rtJar.exists() && rtJar.isFile()) {
+                // G.v().out.println("Using JDK runtime: " + rtJar.getAbsolutePath());
+                sb.append(rtJar.getAbsolutePath());
+            } else {
+                // not in JDK either
+                throw new RuntimeException("Error: cannot find rt.jar.");
+            }
+        }
+
 		if(Options.v().whole_program() || Options.v().output_format()==Options.output_format_dava) {
 			//add jce.jar, which is necessary for whole program mode
 			//(java.security.Signature from rt.jar import javax.crypto.Cipher from jce.jar            	
@@ -684,11 +759,16 @@ public class Scene  //extends AbstractHost
         */
         
         setPhantomRefs(true);
-        //SootResolver resolver = new SootResolver();
-        if( !getPhantomRefs() 
-        && SourceLocator.v().getClassSource(className) == null ) {
-            setPhantomRefs(false);
-            return null;
+        ClassSource source = SourceLocator.v().getClassSource(className);
+        try {
+	        if( !getPhantomRefs() && source == null) {
+	            setPhantomRefs(false);
+	            return null;
+	        }
+        }
+        finally {
+        	if (source != null)
+        		source.close();
         }
         SootResolver resolver = SootResolver.v();
         SootClass toReturn = resolver.resolveClass(className, desiredLevel);

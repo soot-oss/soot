@@ -445,12 +445,34 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	public Iterator<SootMethod> methodIterator() {
 		checkLevel(SIGNATURES);
-		return methodList.iterator();
+		return new Iterator<SootMethod>() {
+			final Iterator<SootMethod> internalIterator = methodList.iterator();
+			private SootMethod currentMethod;
+
+			@Override
+			public boolean hasNext() {
+				return internalIterator.hasNext();
+			}
+
+			@Override
+			public SootMethod next() {
+				currentMethod = internalIterator.next();
+				return currentMethod;
+			}
+			
+			@Override
+			public void remove() {
+				internalIterator.remove();
+
+				subSigToMethods.put(currentMethod.getNumberedSubSignature(), null);
+				currentMethod.setDeclared(false);
+			}
+		}; 
 	}
 
 	public List<SootMethod> getMethods() {
 		checkLevel(SIGNATURES);
-		return new ArrayList<SootMethod>(methodList);
+		return methodList;
 	}
 
 	/**
@@ -928,6 +950,7 @@ public class SootClass extends AbstractHost implements Numberable {
 	}
 
 	/** Returns the name of this class. */
+	@Override
 	public String toString() {
 		return getName();
 	}
@@ -979,6 +1002,8 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	/** Makes this class an application class. */
 	public void setApplicationClass() {
+		if (isApplicationClass())
+			return;
 		Chain<SootClass> c = Scene.v().getContainingChain(this);
 		if (c != null)
 			c.remove(this);
@@ -998,6 +1023,8 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	/** Makes this class a library class. */
 	public void setLibraryClass() {
+		if (isLibraryClass())
+			return;
 		Chain<SootClass> c = Scene.v().getContainingChain(this);
 		if (c != null)
 			c.remove(this);
@@ -1016,7 +1043,8 @@ public class SootClass extends AbstractHost implements Numberable {
 	public boolean isJavaLibraryClass() {
 		if (name.startsWith("java.") || name.startsWith("sun.")
 				|| name.startsWith("javax.") || name.startsWith("com.sun.")
-				|| name.startsWith("org.omg.") || name.startsWith("org.xml."))
+				|| name.startsWith("org.omg.") || name.startsWith("org.xml.")
+                || name.startsWith("org.w3c.dom"))
 			return true;
 
 		return false;
@@ -1092,10 +1120,12 @@ public class SootClass extends AbstractHost implements Numberable {
 		return Modifier.isStatic(this.getModifiers());
 	}
 
+	@Override
 	public final int getNumber() {
 		return number;
 	}
 
+	@Override
 	public final void setNumber(int number) {
 		this.number = number;
 	}

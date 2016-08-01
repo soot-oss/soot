@@ -280,7 +280,7 @@ class ExprVisitor implements ExprSwitch {
 				return buildLit8BinaryInsn(binaryOperation, firstOpReg, (byte) secondOpConstant);
 			}
 			if (SootToDexUtils.fitsSigned16(secondOpConstant)) {
-				if (!binaryOperation.equals("shl") && !binaryOperation.equals("SHR") && !binaryOperation.equals("USHR")) {
+				if (!binaryOperation.equals("SHL") && !binaryOperation.equals("SHR") && !binaryOperation.equals("USHR")) {
 					// no shift opc available for /lit16
 					return buildLit16BinaryInsn(binaryOperation, firstOpReg, (short) secondOpConstant);
 				}

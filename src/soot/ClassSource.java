@@ -33,5 +33,9 @@ public abstract class ClassSource
      * or Types referenced by the class. */
     public abstract Dependencies resolve( SootClass sc );
     protected String className;
+    
+    public void close() {
+    	
+    }
 }
 

@@ -311,6 +311,11 @@ public class SootMethod
      */
 
     public Body retrieveActiveBody() {
+    	// If we already have a body for some reason, we just take it. In this case,
+    	// we don't care about resolving levels or whatever.
+    	if (hasActiveBody())
+    		return getActiveBody();
+    	
         declaringClass.checkLevel(SootClass.BODIES);
         if (declaringClass.isPhantomClass())
             throw new RuntimeException(
@@ -318,11 +323,9 @@ public class SootMethod
                     + getSignature()
                     + "; maybe you want to call c.setApplicationClass() on this class!");
         
-        if (!hasActiveBody()) {
-            setActiveBody(this.getBodyFromMethodSource("jb"));
-            ms = null;
-        }
-        return getActiveBody();
+        Body b = this.getBodyFromMethodSource("jb");
+        setActiveBody(b);
+        return b;
     }
 
     /**
@@ -333,7 +336,11 @@ public class SootMethod
             && declaringClass.isPhantomClass())
             throw new RuntimeException(
                 "cannot set active body for phantom class! " + this);
-
+        
+        // If someone sets a body for a phantom method, this method then is no
+        // longer phantom
+        isPhantom = false;
+        
         if (!isConcrete())
             throw new RuntimeException(
                 "cannot set body for non-concrete method! " + this);

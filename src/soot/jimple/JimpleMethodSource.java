@@ -41,6 +41,8 @@ public class JimpleMethodSource implements MethodSource
     public Body getBody(SootMethod m, String phaseName)
     {  
         JimpleBody jb = (JimpleBody)mJimpleAST.getBody(m);
+        if (jb == null)
+        	throw new RuntimeException("Could not load body for method " + m.getSignature());
 
         if(Options.v().verbose())
             G.v().out.println("[" + m.getName() + "] Retrieving JimpleBody from AST...");

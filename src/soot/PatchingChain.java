@@ -146,6 +146,45 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
     {
         innerChain.insertBefore(toInsert, point);
     }
+    
+    /**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  the instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
+	public void insertOnEdge(E toInsert, E point_src, E point_tgt) {
+		innerChain.insertOnEdge(toInsert, point_src, point_tgt);
+	}
+
+	/**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
+	public void insertOnEdge(List<E> toInsert, E point_src, E point_tgt) {
+		innerChain.insertOnEdge(toInsert, point_src, point_tgt);
+	}
+
+	/**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
+	public void insertOnEdge(Chain<E> toInsert, E point_src, E point_tgt) {
+		innerChain.insertOnEdge(toInsert, point_src, point_tgt);
+	}
 
     /** Returns true if object <code>a</code> follows object <code>b</code> in the Chain. */
     public boolean follows(E a, E b)

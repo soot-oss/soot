@@ -238,6 +238,11 @@ public class Options extends OptionsBase {
             )
                 prepend_classpath = true;
   
+            else if( false 
+            || option.equals( "process-multiple-dex" )
+            )
+                process_multiple_dex = true;
+  
             else if( false
             || option.equals( "process-path" )
             || option.equals( "process-dir" )
@@ -426,6 +431,11 @@ public class Options extends OptionsBase {
             || option.equals( "polyglot" )
             )
                 polyglot = true;
+  
+            else if( false 
+            || option.equals( "permissive-resolving" )
+            )
+                permissive_resolving = true;
   
             else if( false
             || option.equals( "d" )
@@ -1358,6 +1368,10 @@ public class Options extends OptionsBase {
     private boolean prepend_classpath = false;
     public void set_prepend_classpath( boolean setting ) { prepend_classpath = setting; }
   
+    public boolean process_multiple_dex() { return process_multiple_dex; }
+    private boolean process_multiple_dex = false;
+    public void set_process_multiple_dex( boolean setting ) { process_multiple_dex = setting; }
+  
     public List<String> process_dir() { 
         if( process_dir == null )
             return java.util.Collections.emptyList();
@@ -1408,6 +1422,10 @@ public class Options extends OptionsBase {
     public boolean polyglot() { return polyglot; }
     private boolean polyglot = false;
     public void set_polyglot( boolean setting ) { polyglot = setting; }
+  
+    public boolean permissive_resolving() { return permissive_resolving; }
+    private boolean permissive_resolving = false;
+    public void set_permissive_resolving( boolean setting ) { permissive_resolving = setting; }
   
     public String output_dir() { return output_dir; }
     public void set_output_dir( String setting ) { output_dir = setting; }
@@ -1601,6 +1619,7 @@ public class Options extends OptionsBase {
       
 +padOpt(" -cp PATH -soot-class-path PATH -soot-classpath PATH", "Use PATH as the classpath for finding classes." )
 +padOpt(" -pp -prepend-classpath", "Prepend the given soot classpath to the default classpath." )
++padOpt(" -process-multiple-dex", "Process all DEX files found in APK." )
 +padOpt(" -process-path DIR -process-dir DIR", "Process all classes found in DIR" )
 +padOpt(" -oaat", "From the process-dir, processes one class at a time." )
 +padOpt(" -android-jars PATH", "Use PATH as the path for finding the android.jar file" )
@@ -1619,6 +1638,7 @@ public class Options extends OptionsBase {
 +padOpt(" -j2me", "Use J2ME mode; changes assignment of types" )
 +padOpt(" -main-class CLASS", "Sets the main class for whole-program analysis." )
 +padOpt(" -polyglot", "Use Java 1.4 Polyglot frontend instead of JastAdd" )
++padOpt(" -permissive-resolving", "Use alternative sources when classes cannot be found using the normal resolving strategy" )
 +"\nOutput Options:\n"
       
 +padOpt(" -d DIR -output-dir DIR", "Store output files in DIR" )
@@ -1805,6 +1825,7 @@ public class Options extends OptionsBase {
         +padOpt("gop", "Grimp optimization pack")
         +padOpt("bb", "Creates Baf bodies")
         +padVal("bb.lso", "Load store optimizer")
+        +padVal("bb.sco", "Store chain optimizer")
         +padVal("bb.pho", "Peephole optimizer")
         +padVal("bb.ule", "Unused local eliminator")
         +padVal("bb.lp", "Local packer: minimizes number of locals")
@@ -1829,7 +1850,8 @@ public class Options extends OptionsBase {
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "use-original-names (false)", "" )
-                +padOpt( "preserve-source-annotations (false)", "" );
+                +padOpt( "preserve-source-annotations (false)", "" )
+                +padOpt( "stabilize-local-names (false)", "" );
     
         if( phaseName.equals( "jb.ls" ) )
             return "Phase "+phaseName+":\n"+
@@ -1872,7 +1894,8 @@ public class Options extends OptionsBase {
                 "\nThe Local Name Standardizer assigns generic names to local \nvariables. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "only-stack-locals (false)", "" );
+                +padOpt( "only-stack-locals (false)", "" )
+                +padOpt( "sort-locals (false)", " 						    Specifies whether the locals shall be ordered. 						" );
     
         if( phaseName.equals( "jb.cp" ) )
             return "Phase "+phaseName+":\n"+
@@ -2058,6 +2081,7 @@ public class Options extends OptionsBase {
                 +padOpt( "ignore-types (false)", "Make Spark completely ignore declared types of variables" )
                 +padOpt( "force-gc (false)", "Force garbage collection for measuring memory usage" )
                 +padOpt( "pre-jimplify (false)", "Jimplify all methods before starting Spark" )
+                +padOpt( "apponly (false)", "Consider only application classes" )
                 +padOpt( "vta (false)", "Emulate Variable Type Analysis" )
                 +padOpt( "rta (false)", "Emulate Rapid Type Analysis" )
                 +padOpt( "field-based (false)", "Use a field-based rather than field-sensitive representation" )
@@ -2752,6 +2776,12 @@ public class Options extends OptionsBase {
                 +padOpt( "sll (true)", "" )
                 +padOpt( "sll2 (false)", "" );
     
+        if( phaseName.equals( "bb.sco" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nThe store chain optimizer detects chains of push/store pairs \nthat write to the same variable and only retains the last store. \nIt removes the unnecessary previous push/stores that are \nsubsequently overwritten. "
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (true)", "" );
+    
         if( phaseName.equals( "bb.pho" ) )
             return "Phase "+phaseName+":\n"+
                 "\nApplies peephole optimizations to the Baf intermediate \nrepresentation. Individual optimizations must be implemented by \nclasses implementing the Peephole interface. The Peephole \nOptimizer reads the names of the Peephole classes at runtime \nfrom the file peephole.dat and loads them dynamically. Then it \ncontinues to apply the Peepholes repeatedly until none of them \nare able to perform any further optimizations. Soot provides \nonly one Peephole, named ExamplePeephole, which is not enabled \nby the delivered peephole.dat file. ExamplePeephole removes all \ncheckcast instructions."
@@ -2848,7 +2878,8 @@ public class Options extends OptionsBase {
             return ""
                 +"enabled "
                 +"use-original-names "
-                +"preserve-source-annotations ";
+                +"preserve-source-annotations "
+                +"stabilize-local-names ";
     
         if( phaseName.equals( "jb.ls" ) )
             return ""
@@ -2879,7 +2910,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.lns" ) )
             return ""
                 +"enabled "
-                +"only-stack-locals ";
+                +"only-stack-locals "
+                +"sort-locals ";
     
         if( phaseName.equals( "jb.cp" ) )
             return ""
@@ -3009,6 +3041,7 @@ public class Options extends OptionsBase {
                 +"ignore-types "
                 +"force-gc "
                 +"pre-jimplify "
+                +"apponly "
                 +"vta "
                 +"rta "
                 +"field-based "
@@ -3393,6 +3426,10 @@ public class Options extends OptionsBase {
                 +"sll "
                 +"sll2 ";
     
+        if( phaseName.equals( "bb.sco" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "bb.pho" ) )
             return ""
                 +"enabled ";
@@ -3461,7 +3498,8 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true "
               +"use-original-names:false "
-              +"preserve-source-annotations:false ";
+              +"preserve-source-annotations:false "
+              +"stabilize-local-names:false ";
     
         if( phaseName.equals( "jb.ls" ) )
             return ""
@@ -3492,7 +3530,8 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.lns" ) )
             return ""
               +"enabled:true "
-              +"only-stack-locals:false ";
+              +"only-stack-locals:false "
+              +"sort-locals:false ";
     
         if( phaseName.equals( "jb.cp" ) )
             return ""
@@ -3621,6 +3660,7 @@ public class Options extends OptionsBase {
               +"ignore-types:false "
               +"force-gc:false "
               +"pre-jimplify:false "
+              +"apponly:false "
               +"vta:false "
               +"rta:false "
               +"field-based:false "
@@ -4005,6 +4045,10 @@ public class Options extends OptionsBase {
               +"sll:true "
               +"sll2:false ";
     
+        if( phaseName.equals( "bb.sco" ) )
+            return ""
+              +"enabled:true ";
+    
         if( phaseName.equals( "bb.pho" ) )
             return ""
               +"enabled:true ";
@@ -4162,6 +4206,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "gop" ) ) return;
         if( phaseName.equals( "bb" ) ) return;
         if( phaseName.equals( "bb.lso" ) ) return;
+        if( phaseName.equals( "bb.sco" ) ) return;
         if( phaseName.equals( "bb.pho" ) ) return;
         if( phaseName.equals( "bb.ule" ) ) return;
         if( phaseName.equals( "bb.lp" ) ) return;
@@ -4367,6 +4412,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase bb" );
         if( !PackManager.v().hasPhase( "bb.lso" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase bb.lso" );
+        if( !PackManager.v().hasPhase( "bb.sco" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase bb.sco" );
         if( !PackManager.v().hasPhase( "bb.pho" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase bb.pho" );
         if( !PackManager.v().hasPhase( "bb.ule" ) )

@@ -290,6 +290,8 @@ Composite gbgb_uleChild = gbgb_uleCreate(getPageContainer());
 
 Composite bbbb_lsoChild = bbbb_lsoCreate(getPageContainer());
 
+Composite bbbb_scoChild = bbbb_scoCreate(getPageContainer());
+
 Composite bbbb_phoChild = bbbb_phoCreate(getPageContainer());
 
 Composite bbbb_uleChild = bbbb_uleCreate(getPageContainer());
@@ -383,11 +385,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("jb", getjbpreserve_source_annotations_widget(), "preserve-source-annotations");
 		
 		
+		addToEnableGroup("jb", getjbstabilize_local_names_widget(), "stabilize-local-names");
+		
+		
 		getjbenabled_widget().getButton().addSelectionListener(this);
 		
 		getjbuse_original_names_widget().getButton().addSelectionListener(this);
 		
 		getjbpreserve_source_annotations_widget().getButton().addSelectionListener(this);
+		
+		getjbstabilize_local_names_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jb", "jb.ls");
@@ -461,9 +468,13 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		addToEnableGroup("jb", "jb.lns", getjbjb_lnsonly_stack_locals_widget(), "only-stack-locals");
 		
+		addToEnableGroup("jb", "jb.lns", getjbjb_lnssort_locals_widget(), "sort-locals");
+		
 		getjbjb_lnsenabled_widget().getButton().addSelectionListener(this);
 		
 		getjbjb_lnsonly_stack_locals_widget().getButton().addSelectionListener(this);
+		
+		getjbjb_lnssort_locals_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jb", "jb.cp");
@@ -776,6 +787,9 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkpre_jimplify_widget(), "pre-jimplify");
+
+		
+		addToEnableGroup("cg", "cg.spark", getcgcg_sparkapponly_widget(), "apponly");
 
 		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkvta_widget(), "vta");
@@ -1738,6 +1752,14 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		getbbbb_lsosll2_widget().getButton().addSelectionListener(this);
 		
 		
+		makeNewEnableGroup("bb", "bb.sco");
+		
+		
+		addToEnableGroup("bb", "bb.sco", getbbbb_scoenabled_widget(), "enabled");
+		
+		getbbbb_scoenabled_widget().getButton().addSelectionListener(this);
+		
+		
 		makeNewEnableGroup("bb", "bb.pho");
 		
 		
@@ -2067,6 +2089,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionsprepend_classpath_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getInput_Optionsprocess_multiple_dex_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsprocess_multiple_dex_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getInput_Optionsoaat_widget().getButton().getSelection();
 		
 		
@@ -2135,6 +2167,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionspolyglot_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getInput_Optionspermissive_resolving_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionspermissive_resolving_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getInput_Optionssoot_classpath_widget().getText().getText();
@@ -2446,6 +2488,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getjbpreserve_source_annotations_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getjbstabilize_local_names_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbstabilize_local_names_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getjbjb_lsenabled_widget().getButton().getSelection();
 		
 		
@@ -2574,6 +2626,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_lnsonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_lnssort_locals_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_lnssort_locals_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_cpenabled_widget().getButton().getSelection();
@@ -3111,6 +3173,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkpre_jimplify_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgcg_sparkapponly_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgcg_sparkapponly_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getcgcg_sparkvta_widget().getButton().getSelection();
@@ -5098,6 +5170,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getbbbb_lsosll2_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getbbbb_scoenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getbbbb_scoenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getbbbb_phoenabled_widget().getButton().getSelection();
 		
 		
@@ -6395,6 +6477,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			subSectParent = bb_bb_lso_branch;
 			
 			
+			SootOption bb_bb_sco_branch = new SootOption("Store Chain Optimizer", "bbbb_sco");
+			subParent.addChild(bb_bb_sco_branch);
+
+
+			
+
+			
+			subSectParent = bb_bb_sco_branch;
+			
+			
 			SootOption bb_bb_pho_branch = new SootOption("Peephole Optimizer", "bbbb_pho");
 			subParent.addChild(bb_bb_pho_branch);
 
@@ -6727,6 +6819,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Input_Optionsprepend_classpath_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionsprocess_multiple_dex_widget;
+	
+	private void setInput_Optionsprocess_multiple_dex_widget(BooleanOptionWidget widget) {
+		Input_Optionsprocess_multiple_dex_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsprocess_multiple_dex_widget() {
+		return Input_Optionsprocess_multiple_dex_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsoaat_widget;
 	
 	private void setInput_Optionsoaat_widget(BooleanOptionWidget widget) {
@@ -6795,6 +6897,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getInput_Optionspolyglot_widget() {
 		return Input_Optionspolyglot_widget;
+	}	
+	
+	private BooleanOptionWidget Input_Optionspermissive_resolving_widget;
+	
+	private void setInput_Optionspermissive_resolving_widget(BooleanOptionWidget widget) {
+		Input_Optionspermissive_resolving_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionspermissive_resolving_widget() {
+		return Input_Optionspermissive_resolving_widget;
 	}	
 	
 
@@ -7145,6 +7257,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return jbpreserve_source_annotations_widget;
 	}	
 	
+	private BooleanOptionWidget jbstabilize_local_names_widget;
+	
+	private void setjbstabilize_local_names_widget(BooleanOptionWidget widget) {
+		jbstabilize_local_names_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbstabilize_local_names_widget() {
+		return jbstabilize_local_names_widget;
+	}	
+	
 	private BooleanOptionWidget jbjb_lsenabled_widget;
 	
 	private void setjbjb_lsenabled_widget(BooleanOptionWidget widget) {
@@ -7273,6 +7395,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getjbjb_lnsonly_stack_locals_widget() {
 		return jbjb_lnsonly_stack_locals_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_lnssort_locals_widget;
+	
+	private void setjbjb_lnssort_locals_widget(BooleanOptionWidget widget) {
+		jbjb_lnssort_locals_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_lnssort_locals_widget() {
+		return jbjb_lnssort_locals_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_cpenabled_widget;
@@ -7821,6 +7953,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getcgcg_sparkpre_jimplify_widget() {
 		return cgcg_sparkpre_jimplify_widget;
+	}	
+	
+	private BooleanOptionWidget cgcg_sparkapponly_widget;
+	
+	private void setcgcg_sparkapponly_widget(BooleanOptionWidget widget) {
+		cgcg_sparkapponly_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgcg_sparkapponly_widget() {
+		return cgcg_sparkapponly_widget;
 	}	
 	
 	private BooleanOptionWidget cgcg_sparkvta_widget;
@@ -9891,6 +10033,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return bbbb_lsosll2_widget;
 	}	
 	
+	private BooleanOptionWidget bbbb_scoenabled_widget;
+	
+	private void setbbbb_scoenabled_widget(BooleanOptionWidget widget) {
+		bbbb_scoenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getbbbb_scoenabled_widget() {
+		return bbbb_scoenabled_widget;
+	}	
+	
 	private BooleanOptionWidget bbbb_phoenabled_widget;
 	
 	private void setbbbb_phoenabled_widget(BooleanOptionWidget widget) {
@@ -10557,6 +10709,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
+		defKey = ""+" "+""+" "+"process-multiple-dex";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionsprocess_multiple_dex_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process all DEX files in APK", "", "","process-multiple-dex", "\nAndroid APKs can have more than one default classes.dex. By \ndefault Soot loads only classes from the default one. This \noption enables loading of all DEX files from an APK. ", defaultBool)));
+		
+		
+		
 		defKey = ""+" "+""+" "+"oaat";
 		defKey = defKey.trim();
 
@@ -10666,6 +10834,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setInput_Optionspolyglot_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use Polyglot frontend", "", "","polyglot", "\nUse Java 1.4 Polyglot frontend instead of JastAdd, which \nsupports Java 5 syntax. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"permissive-resolving";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionspermissive_resolving_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use permissive resolving strategy", "", "","permissive-resolving", "\n			 When this option is enabled, Soot will try to resolve \nclasses using an alternative 			 strategy if the class cannot \nbe found using the default strategy. A class a.b.c 			 will, \nfor instance, also be loaded from a/b/c.jimple instead of only \na.b.c.jimple. 			", defaultBool)));
 		
 		
 		
@@ -11499,6 +11683,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		setjbpreserve_source_annotations_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Preserve source-level annotations", "p", "jb","preserve-source-annotations", "\nPreserves annotations of retention type SOURCE. (for everything \nbut package and local variable annotations) ", defaultBool)));
 		
 		
+		
+		defKey = "p"+" "+"jb"+" "+"stabilize-local-names";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbstabilize_local_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Stabilize local names", "p", "jb","stabilize-local-names", "\nMake sure that local names are stable between runs. This \nrequires re-normalizing all local names after the standard \ntransformations and then sorting them which can negatively \nimpact performance. This option automatically sets "sort-locals" \nin "jb.lns" during the second re-normalization pass. ", defaultBool)));
+		
+		
 
 		
 		return editGroupjb;
@@ -11885,6 +12085,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setjbjb_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.lns","only-stack-locals", "\nOnly standardizes the names of variables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option is specified for the `jb' \nphase. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"jb.lns"+" "+"sort-locals";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setjbjb_lnssort_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Sort Locals", "p", "jb.lns","sort-locals", "\n							First sorts the locals alphabetically by the string \nrepresentation of 							their type. Then if there are two \nlocals with the same type, it uses 							the only other source \nof structurally stable information (i.e. the \n							instructions themselves) to produce an ordering for the \nlocals 							that remains consistent between different soot \ninstances. It achieves 							this by determining the position \nof a local's first occurrence in the 							instruction's list \nof definition statements. This position is then used 							to \nsort the locals with the same type in an ascending order. 						", defaultBool)));
 		
 		
 
@@ -13546,6 +13762,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setcgcg_sparkpre_jimplify_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.spark","pre-jimplify", "\nWhen this option is set to true, Spark converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg.spark"+" "+"apponly";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgcg_sparkapponly_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("AppOnly", "p", "cg.spark","apponly", "\nSetting this option to true causes Soot to only consider \napplication classes when building the callgraph. The resulting \ncallgraph will be inherently unsound. Still, this option can \nmake sense if performance optimization and memory reduction are \nyour primary goal.", defaultBool)));
 		
 		
 
@@ -19498,6 +19730,52 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		return editGroupbbbb_lso;
+	}
+
+
+
+	private Composite bbbb_scoCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupbbbb_sco = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupbbbb_sco.setLayout(layout);
+	
+	 	editGroupbbbb_sco.setText("Store Chain Optimizer");
+	 	
+		editGroupbbbb_sco.setData("id", "bbbb_sco");
+		
+		String descbbbb_sco = "Store chain optimizer";	
+		if (descbbbb_sco.length() > 0) {
+			Label descLabelbbbb_sco = new Label(editGroupbbbb_sco, SWT.WRAP);
+			descLabelbbbb_sco.setText(descbbbb_sco);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"bb.sco"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setbbbb_scoenabled_widget(new BooleanOptionWidget(editGroupbbbb_sco, SWT.NONE, new OptionData("Enabled", "p", "bb.sco","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupbbbb_sco;
 	}
 
 

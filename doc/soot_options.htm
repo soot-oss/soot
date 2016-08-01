@@ -352,13 +352,16 @@
 <a href="#phase_19_1">Load Store Optimizer (bb.lso)</a>
 </li>
 <li>
-<a href="#phase_19_2">Peephole Optimizer (bb.pho)</a>
+<a href="#phase_19_2">Store Chain Optimizer (bb.sco)</a>
 </li>
 <li>
-<a href="#phase_19_3">Unused Local Eliminator (bb.ule)</a>
+<a href="#phase_19_3">Peephole Optimizer (bb.pho)</a>
 </li>
 <li>
-<a href="#phase_19_4">Local Packer (bb.lp)</a>
+<a href="#phase_19_4">Unused Local Eliminator (bb.ule)</a>
+</li>
+<li>
+<a href="#phase_19_5">Local Packer (bb.lp)</a>
 </li>
 </ul>
 </li>
@@ -658,6 +661,11 @@ packages in the Java runtime.</p>
 </td><td colspan="2">Prepend the given soot classpath to the default classpath.</td>
 </tr>
 <tr>
+<td><tt>-process-multiple-dex </tt>
+<br>
+</td><td colspan="2">Process all DEX files found in APK.</td>
+</tr>
+<tr>
 <td><tt>-process-path <var>dir</var></tt>
 <br>
 <tt>-process-dir <var>dir</var></tt>
@@ -730,6 +738,11 @@ packages in the Java runtime.</p>
 <td><tt>-polyglot </tt>
 <br>
 </td><td colspan="2">Use Java 1.4 Polyglot frontend instead of JastAdd</td>
+</tr>
+<tr>
+<td><tt>-permissive-resolving </tt>
+<br>
+</td><td colspan="2">Use alternative sources when classes cannot be found using the normal resolving strategy</td>
 </tr>
 </table>
 <H2>
@@ -1214,6 +1227,17 @@ Preserves annotations of retention type SOURCE. (for
 everything but package and local variable annotations) 
 </p>
 </li>
+<li>
+<b>Stabilize local names</b> (stabilize-local-names)
+		<br>
+			(default value: <span class="value">false</span>)
+		<p>
+Make sure that local names are stable between runs. This requires re-normalizing all
+local names after the standard transformations and then sorting them which can negatively
+impact performance. This option automatically sets "sort-locals" in "jb.lns" during the
+second re-normalization pass.
+</p>
+</li>
 </ul>
 <h2>
 <a name="phase_1_1">Local Splitter (jb.ls)</a>
@@ -1398,6 +1422,21 @@ locations in the original bytecode. This becomes the default when
 the `use-original-names' option is specified for
 the `jb' phase.
 </p>
+</li>
+<li>
+<b>Sort Locals</b> (sort-locals)
+		<br>
+			(default value: <span class="value">false</span>)
+		<p>
+							First sorts the locals alphabetically by the string representation of
+							their type. Then if there are two locals with the same type, it uses
+							the only other source of structurally stable information (i.e. the 
+							instructions themselves) to produce an ordering for the locals
+							that remains consistent between different soot instances. It achieves
+							this by determining the position of a local's first occurrence in the 
+							instruction's list of definition statements. This position is then used
+							to sort the locals with the same type in an ascending order.
+						</p>
 </li>
 </ul>
 <h2>
@@ -2171,6 +2210,12 @@ time to be separated from the points-to time. However, it increases the
 total time and memory requirement, because all methods are Jimplified,
 rather than only those deemed reachable by the points-to analysis.
         </p>
+</li>
+<li>
+<b>AppOnly</b> (apponly)
+		<br>
+			(default value: <span class="value">false</span>)
+		<p>Setting this option to true causes Soot to only consider application classes when building the callgraph. The resulting callgraph will be inherently unsound. Still, this option can make sense if performance optimization and memory reduction are your primary goal.</p>
 </li>
 <li>
 <b>VTA</b> (vta)
@@ -5364,7 +5409,22 @@ some variant of dup.
 </li>
 </ul>
 <h2>
-<a name="phase_19_2">Peephole Optimizer (bb.pho)</a>
+<a name="phase_19_2">Store Chain Optimizer (bb.sco)</a>
+</h2>
+<p>
+The store chain optimizer detects chains of push/store pairs that write to the same variable and only retains the last store. It removes the unnecessary previous push/stores that are subsequently overwritten.
+</p>
+<h4>Accepted phase options:</h4>
+<ul>
+<li>
+<b>Enabled</b> (enabled)
+		<br>
+			(default value: <span class="value">true</span>)
+		<p></p>
+</li>
+</ul>
+<h2>
+<a name="phase_19_3">Peephole Optimizer (bb.pho)</a>
 </h2>
 <p>
 Applies peephole optimizations to the Baf intermediate
@@ -5392,7 +5452,7 @@ instructions.
 </li>
 </ul>
 <h2>
-<a name="phase_19_3">Unused Local Eliminator (bb.ule)</a>
+<a name="phase_19_4">Unused Local Eliminator (bb.ule)</a>
 </h2>
 <p>
 This phase removes any locals that are unused after load store optimization
@@ -5408,7 +5468,7 @@ and peephole optimization.
 </li>
 </ul>
 <h2>
-<a name="phase_19_4">Local Packer (bb.lp)</a>
+<a name="phase_19_5">Local Packer (bb.lp)</a>
 </h2>
 <p>
 The Local Packer attempts to minimize the number of local

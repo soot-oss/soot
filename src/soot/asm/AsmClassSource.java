@@ -72,4 +72,15 @@ class AsmClassSource extends ClassSource {
 		deps.typesToSignature.addAll(scb.deps);
 		return deps;
 	}
+
+	@Override
+	public void close() {
+		try {
+			if (data != null)
+				data.close();
+		}
+		catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
 }

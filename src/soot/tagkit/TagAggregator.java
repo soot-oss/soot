@@ -54,10 +54,6 @@ public abstract class TagAggregator extends BodyTransformer {
 		LinkedList<Tag> tags = new LinkedList<Tag>();
 		LinkedList<Unit> units = new LinkedList<Unit>();
 		
-		/* clear the aggregator first. */
-		tags.clear();
-		units.clear();
-
 		/* aggregate all tags */
 		for (Iterator<Unit> unitIt = body.getUnits().iterator(); unitIt
 				.hasNext();) {
