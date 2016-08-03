@@ -239,6 +239,12 @@ public class Options extends OptionsBase {
                 prepend_classpath = true;
   
             else if( false 
+            || option.equals( "ice" )
+            || option.equals( "ignore-classpath-errors" )
+            )
+                ignore_classpath_errors = true;
+  
+            else if( false 
             || option.equals( "process-multiple-dex" )
             )
                 process_multiple_dex = true;
@@ -1368,6 +1374,10 @@ public class Options extends OptionsBase {
     private boolean prepend_classpath = false;
     public void set_prepend_classpath( boolean setting ) { prepend_classpath = setting; }
   
+    public boolean ignore_classpath_errors() { return ignore_classpath_errors; }
+    private boolean ignore_classpath_errors = false;
+    public void set_ignore_classpath_errors( boolean setting ) { ignore_classpath_errors = setting; }
+  
     public boolean process_multiple_dex() { return process_multiple_dex; }
     private boolean process_multiple_dex = false;
     public void set_process_multiple_dex( boolean setting ) { process_multiple_dex = setting; }
@@ -1619,6 +1629,7 @@ public class Options extends OptionsBase {
       
 +padOpt(" -cp PATH -soot-class-path PATH -soot-classpath PATH", "Use PATH as the classpath for finding classes." )
 +padOpt(" -pp -prepend-classpath", "Prepend the given soot classpath to the default classpath." )
++padOpt(" -ice -ignore-classpath-errors", "Ignores invalid entries on the Soot classpath." )
 +padOpt(" -process-multiple-dex", "Process all DEX files found in APK." )
 +padOpt(" -process-path DIR -process-dir DIR", "Process all classes found in DIR" )
 +padOpt(" -oaat", "From the process-dir, processes one class at a time." )

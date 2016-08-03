@@ -408,6 +408,18 @@ If whole-program mode is enabled, jce.jar is also appended in the end.
 </long_desc>
 		</boolopt>
 		<boolopt>
+			<name>Ignore classpath error</name>
+			<alias>ice</alias>
+			<alias>ignore-classpath-errors</alias>
+			<short_desc>Ignores invalid entries on the Soot classpath.</short_desc>
+			<long_desc>
+<p>
+Normally, Soot throws an exception when an invalid classpath entry is detected. To instead silently
+ignore such errors, enable this option.
+</p>
+</long_desc>
+		</boolopt>
+		<boolopt>
 			<name>Process all DEX files in APK</name>
 			<alias>process-multiple-dex</alias>
 			<short_desc>Process all DEX files found in APK.</short_desc>

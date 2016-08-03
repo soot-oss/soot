@@ -189,6 +189,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-prepend-classpath");
         }
   
+        public void setignore_classpath_errors(boolean arg) {
+            if(arg) addArg("-ignore-classpath-errors");
+        }
+  
         public void setprocess_multiple_dex(boolean arg) {
             if(arg) addArg("-process-multiple-dex");
         }
