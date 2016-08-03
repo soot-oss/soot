@@ -1,6 +1,5 @@
 package soot.toolkits.exceptions;
 
-import java.io.File;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -37,8 +36,7 @@ public class MethodThrowableSetTest {
 		Scene.v().addBasicClass(TARGET_CLASS);
 		Scene.v().loadNecessaryClasses();
 		
-		String rtJar = System.getProperty("java.home")+File.separator+"lib"+File.separator+"rt.jar";
-		testUtility = new ExceptionTestUtility(rtJar);
+		testUtility = new ExceptionTestUtility();
 		
 		PackManager.v().runPacks();
     }

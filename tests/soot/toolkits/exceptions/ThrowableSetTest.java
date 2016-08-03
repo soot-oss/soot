@@ -213,7 +213,7 @@ public class ThrowableSetTest {
 	public static void setUp() {
 		expectedSizeToSets = new ExpectedSizeToSets();
 		expectedMemoizations = new ExpectedMemoizations();
-		util = new ExceptionTestUtility(System.getProperty("sun.boot.class.path"));
+		util = new ExceptionTestUtility();
 	}
 
 	/**
