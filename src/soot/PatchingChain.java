@@ -26,6 +26,7 @@
 package soot;
 
 import java.util.AbstractCollection;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
@@ -329,4 +330,9 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
     public long getModificationCount() {
     	return innerChain.getModificationCount();
     }
+
+	@Override
+	public Collection<E> getElementsUnsorted() {
+		return innerChain.getElementsUnsorted();
+	}
 }

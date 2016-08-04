@@ -30,11 +30,11 @@ import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import soot.Unit;
 import soot.UnitBox;
@@ -46,7 +46,7 @@ import soot.jimple.internal.JGotoStmt;
  * underlying structure.
  */
 public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
-	private final Map<E, Link<E>> map = new HashMap<E, Link<E>>();
+	private final Map<E, Link<E>> map = new ConcurrentHashMap<E, Link<E>>();
 	private E firstItem;
 	private E lastItem;
 	private long stateCount = 0;
@@ -67,6 +67,14 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	public boolean add(E item) {
 		addLast(item);
 		return true;
+	}
+	
+	/**
+	 * Gets all elements in the chain. There is no guarantee on sorting.
+	 * @return All elements in the chain in an unsorted collection
+	 */
+	public Collection<E> getElementsUnsorted() {
+		return map.keySet();
 	}
 
 	/**
