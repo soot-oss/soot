@@ -50,6 +50,20 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	private E firstItem;
 	private E lastItem;
 	private long stateCount = 0;
+	
+	private final Iterator<E> emptyIterator = new Iterator<E>() {
+
+		@Override
+		public boolean hasNext() {
+			return false;
+		}
+
+		@Override
+		public E next() {
+			return null;
+		}
+		
+	};
 
 	/** Erases the contents of the current HashChain. */
 	public void clear() {
@@ -489,6 +503,8 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	}
 
 	public Iterator<E> iterator() {
+		if (isEmpty())
+			return emptyIterator;
 		return new LinkIterator<E>(firstItem);
 	}
 
