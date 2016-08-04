@@ -508,12 +508,14 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	}
 
 	public Iterator<E> iterator() {
-		if (isEmpty())
+		if (firstItem == null || isEmpty())
 			return emptyIterator;
 		return new LinkIterator<E>(firstItem);
 	}
 
 	public Iterator<E> iterator(E item) {
+		if (firstItem == null || isEmpty())
+			return emptyIterator;
 		return new LinkIterator<E>(item);
 	}
 
@@ -537,9 +539,10 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 *             if <code>head</code> is not an element of the chain.
 	 */
 	public Iterator<E> iterator(E head, E tail) {
+		if (firstItem == null || isEmpty())
+			return emptyIterator;
 		if (head != null && this.getPredOf(head) == tail) {
-			// special case hack, so empty ranges iterate 0 times
-			return new LinkIterator<E>(null, null);
+			return emptyIterator;
 		}
 		return new LinkIterator<E>(head, tail);
 	}
