@@ -63,6 +63,11 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 			return null;
 		}
 		
+		@Override
+		public void remove() {
+			// do nothing
+		}
+		
 	};
 
 	/** Erases the contents of the current HashChain. */
