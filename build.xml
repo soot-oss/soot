@@ -241,6 +241,7 @@
         		<pathelement location="${hamcrest.jar}"/>
         		<pathelement location="${mockito.jar}"/>
         		<pathelement location="${powermock-mockito.jar}"/>
+           		<pathelement location="${guava.jar}"/>
         	</classpath>
         </javac>
     </target>
@@ -270,6 +271,8 @@
                 <pathelement location="${hamcrest.jar}"/>
         		<pathelement location="${mockito.jar}"/>
         		<pathelement location="${powermock-mockito.jar}"/>
+            	
+           		<pathelement location="${guava.jar}"/>
         	</classpath>
 
 			<jvmarg value="-ea" />
