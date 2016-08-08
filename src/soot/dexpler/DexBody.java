@@ -438,7 +438,7 @@ public class DexBody  {
         ClassPath cp = null;
         if (isOdex) {
 	        String[] sootClasspath = Options.v().soot_classpath().split(File.pathSeparator);
-	        List<String> classpathList = new ArrayList<>();
+	        List<String> classpathList = new ArrayList<String>();
 	        for (String str : sootClasspath)
 	        	classpathList.add(str);
 	        cp = ClassPath.fromClassPath(classpathList, classpathList, dexFile, -1, false);
