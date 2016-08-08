@@ -41,3 +41,7 @@ jboss-common-core.jar=libs/jboss-common-core-2.5.0.Final.jar
 mockito.jar=libs/mockito-all-1.10.8.jar
 powermock-mockito.jar=libs/powermock-mockito-1.6.1-full.jar
 javassist.jar=libs/javassist-3.18.2-GA.jar
+
+# Imported from heros. You only need this in combination with herosclasses.jar.
+# If you are using the full heros JAR file, guava is already packaged.
+guava.jar=

@@ -51,6 +51,8 @@
 
            		<pathelement location="${dexlib2.jar}"/>
            		<pathelement location="${dexlib-utils.jar}"/>
+        		
+           		<pathelement location="${guava.jar}"/>
 			</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
