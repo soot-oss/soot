@@ -16,7 +16,7 @@ jastaddfrontend.loc=../JastAddExtensions/SootJastAddJ
 ## Location of Jasmin jar file
 jasmin.jar=../libs/jasmin-custom.jar
 
-heros.jar=../heros/heros-trunk.jar
+heros.jar=../heros/herosclasses-trunk.jar
 
 ## Location of Eclipse installation.
 ## This should have a directory called plugins in it.

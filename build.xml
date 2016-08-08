@@ -390,6 +390,9 @@
             <zipfileset src="${dexlib-utils.jar}"/>
             <zipfileset src="${asm.jar}"/>
 			<zipfileset src="${jboss-common-core.jar}"/>
+			<zipfileset src="${slf4j-api.jar}"/>
+       		<zipfileset src="${slf4j-simple.jar}"/>
+       		<zipfileset src="${guava.jar}"/>
         </jar>
 		<delete dir="META-INF"/>
     </target>
