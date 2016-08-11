@@ -178,6 +178,9 @@ public class G extends Singletons
     	newSetFactory = null;
     	oldSetFactory = null;
     	Parm_pairToElement.clear();
+    	
+    	// We need to reset the virtual call resolution table
+    	release_soot_jimple_toolkits_callgraph_VirtualCalls();
     }
     
 }
