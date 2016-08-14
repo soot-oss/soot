@@ -601,7 +601,7 @@ public final class OnFlyCallGraphBuilder
 				continue;
 			}
 			if(ics.reachingTypes() != null) {
-				assert ics.nullnessCode() == InvokeCallSite.MUST_NOT_BE_NULL;
+				assert ics.nullnessCode() != InvokeCallSite.MUST_BE_NULL;
 				resolveStaticTypes(s, ics);
 				return;
 			}
@@ -1022,9 +1022,9 @@ public final class OnFlyCallGraphBuilder
     		} else {
     			nullnessCode = InvokeCallSite.MAY_BE_NULL;
     		}
-    		if(nullnessCode != 0 && arrayCache.isConstantBefore(s, argLocal)) {
+    		if(nullnessCode != InvokeCallSite.MUST_BE_NULL && arrayCache.isConstantBefore(s, argLocal)) {
     			ArrayTypes reachingArgTypes = arrayCache.getArrayTypesBefore(s, argLocal);
-    			if(nullnessCode == -1) {
+    			if(nullnessCode == InvokeCallSite.MAY_BE_NULL) {
     				reachingArgTypes.possibleSizes.add(0);
     			}
     			ics = new InvokeCallSite(s, container, d, l, reachingArgTypes, nullnessCode);

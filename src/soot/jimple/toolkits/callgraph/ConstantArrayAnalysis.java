@@ -11,6 +11,7 @@ import java.util.Set;
 import soot.ArrayType;
 import soot.Body;
 import soot.Local;
+import soot.NullType;
 import soot.Type;
 import soot.Unit;
 import soot.Value;
@@ -27,6 +28,7 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArrayAnalysis.ArrayState> {
 	private class ArrayTypesInternal implements Cloneable {
+		BitSet mustAssign;
 		BitSet typeState[];
 		BitSet sizeState = new BitSet(szSize);
 		@Override
@@ -36,6 +38,7 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
 				s = (ArrayTypesInternal) super.clone();
 				s.sizeState = (BitSet) s.sizeState.clone();
 				s.typeState = s.typeState.clone();
+				s.mustAssign = (BitSet) s.mustAssign.clone();
 				return s;
 			} catch (CloneNotSupportedException e) {
 				throw new InternalError();
@@ -48,7 +51,9 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
 				return false;
 			}
 			ArrayTypesInternal otherTypes = (ArrayTypesInternal) obj;
-			return otherTypes.sizeState.equals(sizeState) && Arrays.equals(typeState, otherTypes.typeState);
+			return otherTypes.sizeState.equals(sizeState) && 
+					Arrays.equals(typeState, otherTypes.typeState) && 
+					mustAssign.equals(otherTypes.mustAssign);
 		}
 	}
 	
@@ -73,6 +78,11 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
 			}
 			ArrayState otherState = (ArrayState) obj;
 			return otherState.active.equals(active) && Arrays.equals(state, otherState.state);
+		}
+
+		public void deepCloneLocalValueSlot(int localRef, int index) {
+			this.state[localRef] = (ArrayTypesInternal) this.state[localRef].clone();
+			this.state[localRef].typeState[index] = (BitSet) this.state[localRef].typeState[index].clone();
 		}
 	}
 
@@ -138,6 +148,7 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
 					out.state[varRef] = new ArrayTypesInternal();
 					out.state[varRef].sizeState.set(sizeToInt.get(arraySize));
 					out.state[varRef].typeState = new BitSet[arraySize];
+					out.state[varRef].mustAssign = new BitSet(arraySize);
 					for(int i = 0; i < arraySize; i++) {
 						out.state[varRef].typeState[i] = new BitSet(typeSize);
 					}
@@ -195,10 +206,10 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
 					Type assignType = rhs.getType();
 					int index = ((IntConstant) indexVal).value;
 					assert index < out.state[localRef].typeState.length;
-					out.state[localRef] = (ArrayTypesInternal) out.state[localRef].clone();
-					out.state[localRef].typeState[index] = (BitSet) out.state[localRef].typeState[index].clone();
+					out.deepCloneLocalValueSlot(localRef, index);
 					assert out.state[localRef].typeState[index] != null : d;
 					out.state[localRef].typeState[index].set(typeToInt.get(assignType));
+					out.state[localRef].mustAssign.set(index);
 				}
 			} else {
 				Value leftOp = lhs;
@@ -268,16 +279,20 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
 		toRet.sizeState.or(a2.sizeState);
 		int maxSize = Math.max(a1.typeState.length, a2.typeState.length);
 		int commonSize = Math.min(a1.typeState.length, a2.typeState.length);
+		toRet.mustAssign = new BitSet(maxSize);
 		toRet.typeState = new BitSet[maxSize];
 		for(int i = 0; i < commonSize; i++) {
 			toRet.typeState[i] = new BitSet(typeSize);
 			toRet.typeState[i].or(a1.typeState[i]);
 			toRet.typeState[i].or(a2.typeState[i]);
+			toRet.mustAssign.set(i, a1.mustAssign.get(i) && a2.mustAssign.get(i));
 		}
 		for(int i = commonSize; i < maxSize; i++) {
 			if(a1.typeState.length > i) {
 				toRet.typeState[i] = (BitSet) a1.typeState[i].clone();
+				toRet.mustAssign.set(i, a1.mustAssign.get(i));
 			} else {
+				toRet.mustAssign.set(i, a2.mustAssign.get(i));
 				toRet.typeState[i] = (BitSet) a2.typeState[i].clone();
 			}
 		}
@@ -313,6 +328,9 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
 			toRet.possibleTypes[i] = new HashSet<Type>();
 			for(int j = ati.typeState[i].nextSetBit(0); j >= 0; j = ati.typeState[i].nextSetBit(j + 1)) {
 				toRet.possibleTypes[i].add(rvTypeToInt.get(j));
+			}
+			if(!ati.mustAssign.get(i)) {
+				toRet.possibleTypes[i].add(NullType.v());
 			}
 		}
 		return toRet;
