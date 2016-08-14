@@ -76,13 +76,13 @@ public class ConstantArrayAnalysis extends ForwardFlowAnalysis<Unit, ConstantArr
 		}
 	}
 
-	private Map<Local, Integer> localToInt = new HashMap<>();
-	private Map<Type, Integer> typeToInt = new HashMap<>();
-	private Map<Integer, Integer> sizeToInt = new HashMap<>();
+	private Map<Local, Integer> localToInt = new HashMap<Local, Integer>();
+	private Map<Type, Integer> typeToInt = new HashMap<Type, Integer>();
+	private Map<Integer, Integer> sizeToInt = new HashMap<Integer, Integer>();
 	
 	
-	private Map<Integer, Type> rvTypeToInt = new HashMap<>();
-	private Map<Integer, Integer> rvSizeToInt = new HashMap<>();
+	private Map<Integer, Type> rvTypeToInt = new HashMap<Integer, Type>();
+	private Map<Integer, Integer> rvSizeToInt = new HashMap<Integer, Integer>();
 	
 	private int size;
 	private int typeSize;

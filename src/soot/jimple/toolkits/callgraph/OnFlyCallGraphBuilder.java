@@ -464,17 +464,17 @@ public final class OnFlyCallGraphBuilder
     
     // type based reflection resolution state
     
-    private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases = new LargeNumberedMap<>(Scene.v().getMethodNumberer());
-    private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs = new LargeNumberedMap<>(Scene.v().getMethodNumberer());
+    private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
+    private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
     public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs() { return methodToInvokeArgs; }
     public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases() { return methodToInvokeBases; }
     
-    private final Map<Local, List<InvokeCallSite>> baseToInvokeSite = new IdentityHashMap<>();
-    private final Map<Local, List<InvokeCallSite>> invokeArgsToInvokeSite = new IdentityHashMap<>();
-    private final Map<Local, Set<Integer>> invokeArgsToSize = new IdentityHashMap<>();
-    private final Map<AllocDotField, Set<Local>> allocDotFieldToLocal = new IdentityHashMap<>();
-    private final Map<Local, Set<Type>> reachingArgTypes = new IdentityHashMap<>();
-    private final Map<Local, Set<Type>> reachingBaseTypes = new IdentityHashMap<>();
+    private final Map<Local, List<InvokeCallSite>> baseToInvokeSite = new IdentityHashMap<Local, List<InvokeCallSite>>();
+    private final Map<Local, List<InvokeCallSite>> invokeArgsToInvokeSite = new IdentityHashMap<Local, List<InvokeCallSite>>();
+    private final Map<Local, Set<Integer>> invokeArgsToSize = new IdentityHashMap<Local, Set<Integer>>();
+    private final Map<AllocDotField, Set<Local>> allocDotFieldToLocal = new IdentityHashMap<AllocDotField, Set<Local>>();
+    private final Map<Local, Set<Type>> reachingArgTypes = new IdentityHashMap<Local, Set<Type>>();
+    private final Map<Local, Set<Type>> reachingBaseTypes = new IdentityHashMap<Local, Set<Type>>();
     
     // end type based reflection resolution
     
