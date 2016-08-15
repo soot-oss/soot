@@ -361,7 +361,9 @@ public class SourceLocator
                 Scene.v().getSootClassPath(), String.valueOf(File.pathSeparatorChar));
         while (strtok.hasMoreTokens()) {
             String path = strtok.nextToken();
-
+            if(getClassSourceType(path) != ClassSourceType.directory) {
+            	continue;
+            }
             // For jimple files
             List<String> l = getClassesUnder(path);
             for (String filename : l) {
@@ -370,12 +372,12 @@ public class SourceLocator
             }
 
             // For class files;
-            path = path + File.pathSeparatorChar;
+            path = path + File.separatorChar;
             StringTokenizer tokenizer = new StringTokenizer(str, ".");
             while (tokenizer.hasMoreTokens()) {
                 path = path + tokenizer.nextToken();
                 if (tokenizer.hasMoreTokens())
-                    path = path + File.pathSeparatorChar;
+                    path = path + File.separatorChar;
             }
             l = getClassesUnder(path);
             for (String string : l)
