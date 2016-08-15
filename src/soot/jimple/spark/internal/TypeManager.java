@@ -21,6 +21,7 @@ package soot.jimple.spark.internal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -123,6 +124,14 @@ public final class TypeManager {
         // **
         initClass2allocs();
         makeClassTypeMask(Scene.v().getSootClass("java.lang.Object"));
+        BitVector visitedTypes = new BitVector();
+        {
+        	Iterator<Type> it = typeMask.keyIterator();
+        	while(it.hasNext()) {
+        		Type t = it.next();
+        		visitedTypes.set(t.getNumber());
+        	}
+        }
         // **
         ArrayNumberer<AllocNode> allocNodes = pag.getAllocNodeNumberer();
         for( Type t : Scene.v().getTypeNumberer()) {
@@ -137,6 +146,9 @@ public final class TypeManager {
                 SootClass sc = ((RefType)t).getSootClass();
                 if (sc.isInterface()) {
                     makeMaskOfInterface(sc);
+                }
+                if(!visitedTypes.get(t.getNumber()) && !((RefType)t).getSootClass().isPhantom()) {
+                	makeClassTypeMask(((RefType)t).getSootClass());	
                 }
                 continue;
             }
@@ -197,6 +209,9 @@ public final class TypeManager {
     }
 
     final private BitVector makeClassTypeMask(SootClass clazz) {
+    	if(typeMask.get(clazz.getType()) != null) {
+    		return typeMask.get(clazz.getType());
+    	}
         int nBits = pag.getAllocNodeNumberer().size();
         final BitVector mask = new BitVector(nBits);
         
