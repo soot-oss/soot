@@ -495,7 +495,7 @@ public final class OnFlyCallGraphBuilder
                     }
                 } else {
                     SootClass sootcls = Scene.v().getSootClass( constant );
-                    if( !sootcls.isApplicationClass() ) {
+                    if( !sootcls.isApplicationClass() && !sootcls.isPhantom() ) {
                         sootcls.setLibraryClass();
                     }
                     for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
