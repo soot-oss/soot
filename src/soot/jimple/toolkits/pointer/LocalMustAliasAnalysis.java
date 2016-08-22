@@ -185,10 +185,11 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
 		return usedFieldRefs;
 	}
 
-	protected void merge(Unit succUnit, HashMap<Value,Object> inMap1, HashMap<Value,Object> inMap2, HashMap<Value,Object> outMap)
+    @Override
+	protected void merge(Unit succUnit, HashMap<Value,Integer> inMap1, HashMap<Value,Integer> inMap2, HashMap<Value,Integer> outMap)
     {
         for (Value l : localsAndFieldRefs) {
-            Object i1 = inMap1.get(l), i2 = inMap2.get(l);
+            Integer i1 = inMap1.get(l), i2 = inMap2.get(l);
             if (i1 == null)
             	outMap.put(l, i2);
             else if (i2 == null)
@@ -361,6 +362,17 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
 	@Override
 	protected void merge(HashMap<Value, Integer> in1,
 			HashMap<Value, Integer> in2, HashMap<Value, Integer> out) {
-		throw new UnsupportedOperationException("not implemented; use other merge method instead");
+		// Copy over in1. This will be the baseline
+		out.putAll(in1);
+		
+		// Merge in in2. Make sure that we do not have ambiguous values.
+		for (Value val : in2.keySet()) {
+			Integer i1 = in1.get(val);
+			Integer i2 = in2.get(val);
+			if (i2.equals(i1))
+				out.put(val, i2);
+			else
+				throw new RuntimeException("Merge of different IDs not supported");
+		}
 	}
 }
