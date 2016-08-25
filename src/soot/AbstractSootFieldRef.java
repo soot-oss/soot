@@ -96,43 +96,47 @@ class AbstractSootFieldRef implements SootFieldRef {
             if(trace != null) trace.append(
                     "Looking in "+cl+" which has fields "+cl.getFields()+"\n" );
             
-            // We need to synchronize over the given class. Otherwise, multiple threads
-            // may be requesting the same non-existing field from the same class. We would
-            // then concurrently create the field and inspect the class.
-            synchronized (cl) {
-	            // Check whether we have the field in the current class
-	            SootField clField = cl.getFieldUnsafe(name, type);
-	            if (clField != null) {
-	                return checkStatic(clField);
-	            }
-	            // If we have a phantom class, we directly construct a phantom field
-	            // in it and don't care about superclasses.
-	            else if (Scene.v().allowsPhantomRefs() && cl.isPhantom()) {
+            // Check whether we have the field in the current class
+            SootField clField = cl.getFieldUnsafe(name, type);
+            if (clField != null) {
+                return checkStatic(clField);
+            }
+            // If we have a phantom class, we directly construct a phantom field
+            // in it and don't care about superclasses.
+            else if (Scene.v().allowsPhantomRefs() && cl.isPhantom()) {
+                synchronized (cl) {
+                	// Check that no other thread has created the field in the meantime
+    	            clField = cl.getFieldUnsafe(name, type);
+    	            if (clField != null) {
+    	                return checkStatic(clField);
+    	            }
+    	            
+    	            // Create the phantom field
 	                SootField f = new SootField(name, type, isStatic()?Modifier.STATIC:0);
 	                f.setPhantom(true);
 	                cl.addField(f);
 	                return f;
-	            }
-	            else {
-	            	// Since this class is not phantom, we look at its interfaces
-	                LinkedList<SootClass> queue = new LinkedList<SootClass>();
-	                queue.addAll( cl.getInterfaces() );
-	                while( !queue.isEmpty() ) {
-	                    SootClass iface = queue.removeFirst();
-	                    if(trace != null) trace.append(
-	                            "Looking in "+iface+" which has fields "+iface.getFields()+"\n" );
-	                    SootField ifaceField = iface.getFieldUnsafe(name, type);
-	                    if (ifaceField != null) {
-	                        return checkStatic(ifaceField);
-	                    }
-	                    queue.addAll( iface.getInterfaces() );
-	                }
-	                
-	                // If we have not found a suitable field in the current class,
-	                // try the superclass
-	                if( cl.hasSuperclass() ) cl = cl.getSuperclass();
-	                else break;
-	            }
+                }
+            }
+            else {
+            	// Since this class is not phantom, we look at its interfaces
+                LinkedList<SootClass> queue = new LinkedList<SootClass>();
+                queue.addAll( cl.getInterfaces() );
+                while( !queue.isEmpty() ) {
+                    SootClass iface = queue.removeFirst();
+                    if(trace != null) trace.append(
+                            "Looking in "+iface+" which has fields "+iface.getFields()+"\n" );
+                    SootField ifaceField = iface.getFieldUnsafe(name, type);
+                    if (ifaceField != null) {
+                        return checkStatic(ifaceField);
+                    }
+                    queue.addAll( iface.getInterfaces() );
+                }
+                
+                // If we have not found a suitable field in the current class,
+                // try the superclass
+                if( cl.hasSuperclass() ) cl = cl.getSuperclass();
+                else break;
             }
         }
 
