@@ -217,11 +217,14 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
             	//if there is no such number yet, generate one
             	//then assign the number to l in the outMap
                 Map<Value, Integer> valueToNumber = mergePointToValueToNumber.get(succUnit);
+                Integer number = null;
                 if(valueToNumber==null) {
                 	valueToNumber = new HashMap<Value, Integer>();
                 	mergePointToValueToNumber.put(succUnit, valueToNumber);
                 }
-                Integer number = valueToNumber.get(l);
+                else
+                	number = valueToNumber.get(l);
+                
                 if(number==null) {
                 	number = nextNumber++;
                 	valueToNumber.put(l, number);
