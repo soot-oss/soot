@@ -193,7 +193,14 @@ public class Main {
 				sb.append("    information on how to reproduce the problem. Thanks!");
 
 				System.err.println(sb);
+				
+				// Exit with an exit code 1
+				System.exit(1);
+				
 			} catch (UnsupportedEncodingException e1) {
+				
+				// Exit with an exit code 1
+				System.exit(1);
 			}
 		}
 	}
