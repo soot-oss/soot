@@ -166,7 +166,7 @@ final class AsmMethodSource implements MethodSource {
 	private final InsnList instructions;
 	private final List<LocalVariableNode> localVars;
 	private final List<TryCatchBlockNode> tryCatchBlocks;
-	private final Map<LabelNode, Unit> inlineExceptionHandlers = new HashMap<>();
+	private final Map<LabelNode, Unit> inlineExceptionHandlers = new HashMap<LabelNode, Unit>();
 	
 	private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
 	
