@@ -68,6 +68,11 @@ import org.objectweb.asm.tree.TryCatchBlockNode;
 import org.objectweb.asm.tree.TypeInsnNode;
 import org.objectweb.asm.tree.VarInsnNode;
 
+import com.google.common.collect.ArrayListMultimap;
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Multimap;
+import com.google.common.collect.Table;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -110,6 +115,7 @@ import soot.jimple.DoubleConstant;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.FieldRef;
 import soot.jimple.FloatConstant;
+import soot.jimple.GotoStmt;
 import soot.jimple.IdentityStmt;
 import soot.jimple.InstanceFieldRef;
 import soot.jimple.InstanceInvokeExpr;
@@ -124,6 +130,7 @@ import soot.jimple.MethodHandle;
 import soot.jimple.MonitorStmt;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.NopStmt;
 import soot.jimple.NullConstant;
 import soot.jimple.ReturnStmt;
 import soot.jimple.StringConstant;
@@ -134,13 +141,6 @@ import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
 import soot.util.Chain;
-import soot.util.IdentityHashMultiMap;
-import soot.util.MultiMap;
-
-import com.google.common.collect.ArrayListMultimap;
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Multimap;
-import com.google.common.collect.Table;
 
 /**
  * Generates Jimple bodies from bytecode.
@@ -166,6 +166,7 @@ final class AsmMethodSource implements MethodSource {
 	private final InsnList instructions;
 	private final List<LocalVariableNode> localVars;
 	private final List<TryCatchBlockNode> tryCatchBlocks;
+	private final Map<LabelNode, Unit> inlineExceptionHandlers = new HashMap<>();
 	
 	private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
 	
@@ -901,16 +902,20 @@ final class AsmMethodSource implements MethodSource {
 				setUnit(insn, Jimple.v().newReturnVoidStmt());
 		} else if (op == ATHROW) {
 			StackFrame frame = getFrame(insn);
+			Operand opr;
 			if (!units.containsKey(insn)) {
-				Operand opr = popImmediate();
+				opr = popImmediate();
 				ThrowStmt ts = Jimple.v().newThrowStmt(opr.stackOrValue());
 				opr.addBox(ts.getOpBox());
 				frame.in(opr);
+				frame.out(opr);
 				frame.boxes(ts.getOpBox());
 				setUnit(insn, ts);
 			} else {
-				frame.mergeIn(pop());
+				opr = pop();
+				frame.mergeIn(opr);
 			}
+			push(opr);
 		} else if (op == MONITORENTER || op == MONITOREXIT) {
 			StackFrame frame = getFrame(insn);
 			if (!units.containsKey(insn)) {
@@ -1251,11 +1256,12 @@ final class AsmMethodSource implements MethodSource {
 
 			Operand[] args = new Operand[types.length - 1];
 			ValueBox[] boxes = new ValueBox[args.length];
-			
-			for (int k = 0; k < types.length - 1; k++) {
-				parameterTypes.add(types[k]);
-				args[k] = popImmediate(types[k]);
-				methodArgs.add(args[k].stackOrValue());				
+
+			int nrArgs = args.length;
+			while (nrArgs-- != 0) {
+				parameterTypes.add(types[nrArgs]);
+				args[nrArgs] = popImmediate(types[nrArgs]);
+				methodArgs.add(args[nrArgs].stackOrValue());				
 			}
 			if (methodArgs.size() > 1)
 				Collections.reverse(methodArgs);	// Call stack is FIFO, Jimple is linear
@@ -1290,7 +1296,7 @@ final class AsmMethodSource implements MethodSource {
 				oprs = new Operand[nrArgs + 1];
 			if (oprs != null) {
 				while (nrArgs-- != 0) {
-					oprs[nrArgs] = pop(types.get(nrArgs));
+					oprs[nrArgs] = pop(types.get(types.size() - nrArgs - 1));
 				}
 				if (!expr.getMethodRef().isStatic())
 					oprs[oprs.length - 1] = pop();
@@ -1474,6 +1480,18 @@ final class AsmMethodSource implements MethodSource {
 	private void convertLabel(LabelNode ln) {
 		if (!trapHandlers.containsKey(ln))
 			return;
+		
+		// We create a nop statement as a placeholder so that we can jump
+		// somewhere from the real exception handler in case this is inline
+		// code
+		if (isInlineExceptionHandler(ln)) {
+			if (!units.containsKey(ln)) {
+				NopStmt nop = Jimple.v().newNopStmt();
+				setUnit(ln, nop);
+			}
+			return;
+		}
+		
 		StackFrame frame = getFrame(ln);
 		Operand[] out = frame.out();
 		Operand opr;
@@ -1558,11 +1576,16 @@ final class AsmMethodSource implements MethodSource {
 	
 	private void convert() {
 		ArrayDeque<Edge> worklist = new ArrayDeque<Edge>();
-		for (LabelNode ln : trapHandlers.keySet())
-			worklist.add(new Edge(ln, new ArrayList<Operand>()));
+		for (LabelNode ln : trapHandlers.keySet()) {
+			if (isInlineExceptionHandler(ln))
+				handleInlineExceptionHandler(ln, worklist);
+			else
+				worklist.add(new Edge(ln, new ArrayList<Operand>()));
+		}
 		worklist.add(new Edge(instructions.getFirst(), new ArrayList<Operand>()));
 		conversionWorklist = worklist;
 		edges = HashBasedTable.create(1,1);
+		
 		do {
 			Edge edge = worklist.pollLast();
 			AbstractInsnNode insn = edge.insn;
@@ -1637,8 +1660,45 @@ final class AsmMethodSource implements MethodSource {
 		edges = null;
 	}
 	
-	
+	private void handleInlineExceptionHandler(LabelNode ln, ArrayDeque<Edge> worklist) {
+		// Catch the exception
+		CaughtExceptionRef ref = Jimple.v().newCaughtExceptionRef();
+		Local local = newStackLocal();
+		DefinitionStmt as = Jimple.v().newIdentityStmt(local, ref);
+		
+		Operand opr = new Operand(ln, ref);
+		opr.stack = local;
 
+		ArrayList<Operand> stack = new ArrayList<Operand>();
+		stack.add(opr);
+		worklist.add(new Edge(ln, stack));
+		
+		// Save the statements
+		inlineExceptionHandlers.put(ln, as);
+	}
+
+	private boolean isInlineExceptionHandler(LabelNode ln) {
+		// If this label is reachable through an exception and through normal
+		// code, we have to split the exceptional case (with the exception on
+		// the stack) from the normal fall-through case without anything on the
+		// stack.
+		for (Iterator<AbstractInsnNode> it = instructions.iterator(); it.hasNext(); ) {
+			AbstractInsnNode node = it.next();
+			if (node instanceof JumpInsnNode) {
+				if (((JumpInsnNode) node).label == ln)
+					return true;
+			}
+			else if (node instanceof LookupSwitchInsnNode) {
+				if (((LookupSwitchInsnNode) node).labels.contains(ln))
+					return true;
+			}
+			else if (node instanceof TableSwitchInsnNode) {
+				if (((TableSwitchInsnNode) node).labels.contains(ln))
+					return true;
+			}
+		}
+		return false;
+	}
 
 	private void emitLocals() {
 		JimpleBody jb = body;
@@ -1746,6 +1806,22 @@ final class AsmMethodSource implements MethodSource {
 			}
 			insn = insn.getNext();
 		}
+		
+		// Emit the inline exception handlers
+		for (LabelNode ln : this.inlineExceptionHandlers.keySet()) {
+			Unit handler = this.inlineExceptionHandlers.get(ln);
+			emitUnits(handler);
+			
+			Collection<UnitBox> traps = trapHandlers.get(ln);
+			for (UnitBox ub : traps)
+				ub.setUnit(handler);
+			
+			// We need to jump to the original implementation
+			Unit targetUnit = units.get(ln);
+			GotoStmt gotoImpl = Jimple.v().newGotoStmt(targetUnit);
+			body.getUnits().add(gotoImpl);
+		}
+		
 		/* set remaining labels & boxes to last unit of chain */
 		if (labls.isEmpty())
 			return;
@@ -1822,6 +1898,7 @@ final class AsmMethodSource implements MethodSource {
 		} catch (Throwable t) {
 			throw new RuntimeException("Failed to apply jb to " + m, t);
 		}
+		
  		return jb;
 	}
 }
