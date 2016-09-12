@@ -134,6 +134,8 @@ import soot.options.Options;
 import soot.tagkit.LineNumberTag;
 import soot.tagkit.Tag;
 import soot.util.Chain;
+import soot.util.IdentityHashMultiMap;
+import soot.util.MultiMap;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.HashBasedTable;
@@ -1699,6 +1701,7 @@ final class AsmMethodSource implements MethodSource {
 	private void emitUnits() {
 		AbstractInsnNode insn = instructions.getFirst();
 		ArrayDeque<LabelNode> labls = new ArrayDeque<LabelNode>();
+		
 		while (insn != null) {
 			// Save the label to assign it to the next real unit
 			if (insn instanceof LabelNode)
@@ -1714,13 +1717,21 @@ final class AsmMethodSource implements MethodSource {
 			emitUnits(u);
 			
 			// If this is an exception handler, register the starting unit for it
-			if (insn instanceof LabelNode
-					&& u instanceof IdentityStmt
-					&& ((IdentityStmt) u).getRightOp() instanceof CaughtExceptionRef) {
-				// We directly place this label
-				Collection<UnitBox> traps = trapHandlers.get((LabelNode) insn);
-				for (UnitBox ub : traps)
-					ub.setUnit(u);
+			{
+				IdentityStmt caughtEx = null;
+				if (u instanceof IdentityStmt)
+					caughtEx = (IdentityStmt) u;
+				else if (u instanceof UnitContainer)
+					caughtEx = getIdentityRefFromContrainer((UnitContainer) u);
+				
+				if (insn instanceof LabelNode
+						&& caughtEx != null
+						&& caughtEx.getRightOp() instanceof CaughtExceptionRef) {
+					// We directly place this label
+					Collection<UnitBox> traps = trapHandlers.get((LabelNode) insn);
+					for (UnitBox ub : traps)
+						ub.setUnit(caughtEx);
+				}
 			}
 			
 			// Register this unit for all targets of the labels ending up at it
@@ -1748,6 +1759,17 @@ final class AsmMethodSource implements MethodSource {
 					box.setUnit(end);
 			}
 		}
+	}
+
+	private IdentityStmt getIdentityRefFromContrainer(UnitContainer u) {
+		for (Unit uu : ((UnitContainer) u).units) {
+			if (uu instanceof IdentityStmt) {
+				return (IdentityStmt) uu;
+			}
+			else if (uu instanceof UnitContainer)
+				return getIdentityRefFromContrainer((UnitContainer) uu);
+		}
+		return null;
 	}
 
 	public Body getBody(SootMethod m, String phaseName) {
