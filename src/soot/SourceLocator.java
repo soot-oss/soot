@@ -181,6 +181,8 @@ public class SourceLocator
     
     private ClassSourceType getClassSourceType(String path) {
         File f = new File(path);
+        if (!f.exists() && !Options.v().ignore_classpath_errors())
+        	throw new RuntimeException(path + " does not exists");
         if (f.isFile() && f.canRead()) {
             if (path.endsWith(".zip"))
                 return ClassSourceType.zip;

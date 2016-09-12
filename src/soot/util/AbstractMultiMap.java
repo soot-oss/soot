@@ -6,15 +6,21 @@ import java.util.Set;
 public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
 	
     @Override
-    public void putAll( MultiMap<K,V> m ) {
+    public boolean putAll( MultiMap<K,V> m ) {
+    	boolean hasNew = false;
         for (K key : m.keySet())
-            putAll(key, m.get(key));
+            if (putAll(key, m.get(key)))
+            	hasNew = true;
+        return hasNew;
     }
     
     @Override
-    public void putAll( Map<K,Set<V>> m ) {
+    public boolean putAll( Map<K,Set<V>> m ) {
+    	boolean hasNew = false;
         for (K key : m.keySet())
-            putAll(key, m.get(key));
+            if (putAll(key, m.get(key)))
+            	hasNew = true;
+        return hasNew;
     }
     
     @Override

@@ -1,9 +1,19 @@
 package soot.toolkits.exceptions;
 
-import soot.*;
-import soot.options.Options;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
-import java.util.*;
+import soot.AnySubType;
+import soot.RefLikeType;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.options.Options;
 
 /**
  * Class which packages together some objects useful in unit tests of exception
@@ -84,8 +94,8 @@ public class ExceptionTestUtility {
 	final Set<RefLikeType> VM_AND_RESOLVE_METHOD_ERRORS_REP;
 	final Set<RefLikeType> ALL_ERRORS_REP;
 
-	ExceptionTestUtility(String pathToJavaLib) {
-		Scene.v().setSootClassPath(pathToJavaLib);
+	ExceptionTestUtility() {
+		Options.v().set_prepend_classpath(true);
 
 		THROWABLE = Scene.v().getRefType("java.lang.Throwable");
 

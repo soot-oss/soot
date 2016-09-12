@@ -51,6 +51,8 @@
 
            		<pathelement location="${dexlib2.jar}"/>
            		<pathelement location="${dexlib-utils.jar}"/>
+        		
+           		<pathelement location="${guava.jar}"/>
 			</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
@@ -239,6 +241,7 @@
         		<pathelement location="${hamcrest.jar}"/>
         		<pathelement location="${mockito.jar}"/>
         		<pathelement location="${powermock-mockito.jar}"/>
+           		<pathelement location="${guava.jar}"/>
         	</classpath>
         </javac>
     </target>
@@ -268,6 +271,8 @@
                 <pathelement location="${hamcrest.jar}"/>
         		<pathelement location="${mockito.jar}"/>
         		<pathelement location="${powermock-mockito.jar}"/>
+            	
+           		<pathelement location="${guava.jar}"/>
         	</classpath>
 
 			<jvmarg value="-ea" />
@@ -385,6 +390,9 @@
             <zipfileset src="${dexlib-utils.jar}"/>
             <zipfileset src="${asm.jar}"/>
 			<zipfileset src="${jboss-common-core.jar}"/>
+			<zipfileset src="${slf4j-api.jar}"/>
+       		<zipfileset src="${slf4j-simple.jar}"/>
+       		<zipfileset src="${guava.jar}"/>
         </jar>
 		<delete dir="META-INF"/>
     </target>

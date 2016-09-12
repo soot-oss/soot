@@ -118,8 +118,7 @@ public class FastHierarchy
         this.sc = Scene.v();
 
         /* First build the inverse maps. */
-        for (final Iterator<SootClass> clIt = sc.getClasses().snapshotIterator(); clIt.hasNext(); ) {
-        	SootClass cl = clIt.next();
+        for (SootClass cl : sc.getClasses().getElementsUnsorted()) {
             if( cl.resolvingLevel() < SootClass.HIERARCHY ) continue;
             if( !cl.isInterface() && cl.hasSuperclass() ) {
             	classToSubclasses.put(cl.getSuperclass(), cl);

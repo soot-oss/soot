@@ -89,7 +89,7 @@ public class UnitThrowAnalysisTest {
         immaculateAnalysis = new ImmaculateInvokeUnitThrowAnalysis();
 
         // Ensure the Exception classes we need are represented in Soot:
-        utility = new ExceptionTestUtility(System.getProperty("sun.boot.class.path"));
+        utility = new ExceptionTestUtility();
 
         List voidList = new ArrayList();
         SootClass bogusClass = new SootClass("BogusClass");

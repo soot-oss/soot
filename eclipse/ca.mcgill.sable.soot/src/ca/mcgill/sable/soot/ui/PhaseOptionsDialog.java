@@ -2089,6 +2089,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionsprepend_classpath_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getInput_Optionsignore_classpath_errors_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsignore_classpath_errors_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getInput_Optionsprocess_multiple_dex_widget().getButton().getSelection();
 		
 		
@@ -6819,6 +6829,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Input_Optionsprepend_classpath_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionsignore_classpath_errors_widget;
+	
+	private void setInput_Optionsignore_classpath_errors_widget(BooleanOptionWidget widget) {
+		Input_Optionsignore_classpath_errors_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsignore_classpath_errors_widget() {
+		return Input_Optionsignore_classpath_errors_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsprocess_multiple_dex_widget;
 	
 	private void setInput_Optionsprocess_multiple_dex_widget(BooleanOptionWidget widget) {
@@ -10706,6 +10726,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setInput_Optionsprepend_classpath_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Prepend classpath", "", "","pp", "\nInstead of replacing the default soot classpath with the \nclasspath given on the command line, prepent it with that \nclasspath. The default classpath holds whatever is set in the \nCLASSPATH environment variable, followed by rt.jar (resolved \nthrough the JAVA-UNDERSCORE-HOME environment variable). If \nwhole-program mode is enabled, jce.jar is also appended in the \nend. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"ice";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionsignore_classpath_errors_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Ignore classpath error", "", "","ice", "\nNormally, Soot throws an exception when an invalid classpath \nentry is detected. To instead silently ignore such errors, \nenable this option. ", defaultBool)));
 		
 		
 		

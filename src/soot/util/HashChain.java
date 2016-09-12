@@ -30,11 +30,11 @@ import java.util.AbstractCollection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.concurrent.ConcurrentHashMap;
 
 import soot.Unit;
 import soot.UnitBox;
@@ -46,10 +46,29 @@ import soot.jimple.internal.JGotoStmt;
  * underlying structure.
  */
 public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
-	private final Map<E, Link<E>> map = new HashMap<E, Link<E>>();
+	private final Map<E, Link<E>> map = new ConcurrentHashMap<E, Link<E>>();
 	private E firstItem;
 	private E lastItem;
 	private long stateCount = 0;
+	
+	private final Iterator<E> emptyIterator = new Iterator<E>() {
+
+		@Override
+		public boolean hasNext() {
+			return false;
+		}
+
+		@Override
+		public E next() {
+			return null;
+		}
+		
+		@Override
+		public void remove() {
+			// do nothing
+		}
+		
+	};
 
 	/** Erases the contents of the current HashChain. */
 	public void clear() {
@@ -67,6 +86,14 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	public boolean add(E item) {
 		addLast(item);
 		return true;
+	}
+	
+	/**
+	 * Gets all elements in the chain. There is no guarantee on sorting.
+	 * @return All elements in the chain in an unsorted collection
+	 */
+	public Collection<E> getElementsUnsorted() {
+		return map.keySet();
 	}
 
 	/**
@@ -481,10 +508,14 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	}
 
 	public Iterator<E> iterator() {
+		if (firstItem == null || isEmpty())
+			return emptyIterator;
 		return new LinkIterator<E>(firstItem);
 	}
 
 	public Iterator<E> iterator(E item) {
+		if (firstItem == null || isEmpty())
+			return emptyIterator;
 		return new LinkIterator<E>(item);
 	}
 
@@ -508,9 +539,10 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 *             if <code>head</code> is not an element of the chain.
 	 */
 	public Iterator<E> iterator(E head, E tail) {
+		if (firstItem == null || isEmpty())
+			return emptyIterator;
 		if (head != null && this.getPredOf(head) == tail) {
-			// special case hack, so empty ranges iterate 0 times
-			return new LinkIterator<E>(null, null);
+			return emptyIterator;
 		}
 		return new LinkIterator<E>(head, tail);
 	}
