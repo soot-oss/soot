@@ -42,10 +42,12 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.objectweb.asm.Handle;
 import org.objectweb.asm.tree.AbstractInsnNode;
@@ -166,6 +168,8 @@ final class AsmMethodSource implements MethodSource {
 	private final InsnList instructions;
 	private final List<LocalVariableNode> localVars;
 	private final List<TryCatchBlockNode> tryCatchBlocks;
+	
+	private final Set<LabelNode> inlineExceptionLabels = new HashSet<LabelNode>();
 	private final Map<LabelNode, Unit> inlineExceptionHandlers = new HashMap<LabelNode, Unit>();
 	
 	private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
@@ -1484,7 +1488,7 @@ final class AsmMethodSource implements MethodSource {
 		// We create a nop statement as a placeholder so that we can jump
 		// somewhere from the real exception handler in case this is inline
 		// code
-		if (isInlineExceptionHandler(ln)) {
+		if (inlineExceptionLabels.contains(ln)) {
 			if (!units.containsKey(ln)) {
 				NopStmt nop = Jimple.v().newNopStmt();
 				setUnit(ln, nop);
@@ -1577,7 +1581,7 @@ final class AsmMethodSource implements MethodSource {
 	private void convert() {
 		ArrayDeque<Edge> worklist = new ArrayDeque<Edge>();
 		for (LabelNode ln : trapHandlers.keySet()) {
-			if (isInlineExceptionHandler(ln))
+			if (checkInlineExceptionHandler(ln))
 				handleInlineExceptionHandler(ln, worklist);
 			else
 				worklist.add(new Edge(ln, new ArrayList<Operand>()));
@@ -1677,7 +1681,7 @@ final class AsmMethodSource implements MethodSource {
 		inlineExceptionHandlers.put(ln, as);
 	}
 
-	private boolean isInlineExceptionHandler(LabelNode ln) {
+	private boolean checkInlineExceptionHandler(LabelNode ln) {
 		// If this label is reachable through an exception and through normal
 		// code, we have to split the exceptional case (with the exception on
 		// the stack) from the normal fall-through case without anything on the
@@ -1685,16 +1689,22 @@ final class AsmMethodSource implements MethodSource {
 		for (Iterator<AbstractInsnNode> it = instructions.iterator(); it.hasNext(); ) {
 			AbstractInsnNode node = it.next();
 			if (node instanceof JumpInsnNode) {
-				if (((JumpInsnNode) node).label == ln)
+				if (((JumpInsnNode) node).label == ln) {
+					inlineExceptionLabels.add(ln);
 					return true;
+				}
 			}
 			else if (node instanceof LookupSwitchInsnNode) {
-				if (((LookupSwitchInsnNode) node).labels.contains(ln))
+				if (((LookupSwitchInsnNode) node).labels.contains(ln)) {
+					inlineExceptionLabels.add(ln);
 					return true;
+				}
 			}
 			else if (node instanceof TableSwitchInsnNode) {
-				if (((TableSwitchInsnNode) node).labels.contains(ln))
+				if (((TableSwitchInsnNode) node).labels.contains(ln)) {
+					inlineExceptionLabels.add(ln);
 					return true;
+				}
 			}
 		}
 		return false;
