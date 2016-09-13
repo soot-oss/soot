@@ -21,6 +21,15 @@
     <sourceDirectory>src</sourceDirectory>
     <testSourceDirectory>tests</testSourceDirectory>
 
+    <resources>
+      <resource>
+        <directory>src</directory>
+        <includes>
+          <include>**/*.dat</include>
+        </includes>
+      </resource>
+    </resources>
+    
     <plugins>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
@@ -42,7 +51,6 @@
       </plugin>
     </plugins>
   </build>
-
 
   <dependencies>
     <dependency>
