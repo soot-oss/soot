@@ -14,28 +14,28 @@ public class MethodHandleTest {
   
   @Test
   public void test() throws IOException {
-    
+
     // First generate a classfile with a MethodHnadle
     ClassWriter cv = new ClassWriter(ClassWriter.COMPUTE_FRAMES | ClassWriter.COMPUTE_MAXS);
     cv.visit(Opcodes.V1_7, Opcodes.ACC_PUBLIC, "HelloMethodHandles", null, Type.getInternalName(Object.class), null);
     MethodVisitor mv = cv.visitMethod(Opcodes.ACC_STATIC | Opcodes.ACC_PUBLIC, "getSquareRoot",
         Type.getMethodDescriptor(Type.getType(java.lang.invoke.MethodHandle.class)), null, null);
-    
+
     mv.visitCode();
 
     // Workaround to ensure java.lang.Math is resolved.
     // TODO: MethodHandle constants should be included in HIERARCHY resolution??
-    mv.visitInsn(Opcodes.DCONST_0);
-    mv.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(Math.class), "sqrt", "(D)D", false);
-    mv.visitInsn(Opcodes.POP2);
+//    mv.visitInsn(Opcodes.DCONST_0);
+//    mv.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(Math.class), "sqrt", "(D)D", false);
+//    mv.visitInsn(Opcodes.POP2);
 
-    mv.visitLdcInsn(new Handle(Opcodes.H_INVOKESTATIC, Type.getInternalName(Math.class), "sqrt", 
+    mv.visitLdcInsn(new Handle(Opcodes.H_INVOKESTATIC, Type.getInternalName(Math.class), "sqrt",
         Type.getMethodDescriptor(Type.DOUBLE_TYPE, Type.DOUBLE_TYPE), false));
-    
-    
+
+
     mv.visitInsn(Opcodes.ARETURN);
     mv.visitEnd();
-    
+
     cv.visitEnd();
 
     File tempDir = Files.createTempDir();
@@ -43,12 +43,11 @@ public class MethodHandleTest {
     Files.write(cv.toByteArray(), classFile);
 
     G.reset();
-    
+
     String[] commandLine = {"-asm-backend", "-pp", "-cp", tempDir.getAbsolutePath(), "-O", "HelloMethodHandles", };
-    
+
     System.out.println("Command Line: " + Arrays.toString(commandLine));
-    
+
     Main.main(commandLine);
-    
   }
 }
