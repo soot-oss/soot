@@ -229,6 +229,10 @@ public class AugEvalFunction implements IEvalFunction
 			return RefType.v("java.lang.String");
 		else if ( expr instanceof ClassConstant )
 			return RefType.v("java.lang.Class");
-		else throw new RuntimeException("Unhandled expression: " + expr);
+		else if ( expr instanceof MethodHandle) {
+			return RefType.v("java.lang.invoke.MethodHandle");
+		} else {
+			throw new RuntimeException("Unhandled expression: " + expr);
+		}
 	}
 }

@@ -22,9 +22,17 @@ public class MethodHandleTest {
         Type.getMethodDescriptor(Type.getType(java.lang.invoke.MethodHandle.class)), null, null);
     
     mv.visitCode();
+
+    // Workaround to ensure java.lang.Math is resolved.
+    // TODO: MethodHandle constants should be included in HIERARCHY resolution??
+    mv.visitInsn(Opcodes.DCONST_0);
+    mv.visitMethodInsn(Opcodes.INVOKESTATIC, Type.getInternalName(Math.class), "sqrt", "(D)D", false);
+    mv.visitInsn(Opcodes.POP2);
+
     mv.visitLdcInsn(new Handle(Opcodes.H_INVOKESTATIC, Type.getInternalName(Math.class), "sqrt", 
         Type.getMethodDescriptor(Type.DOUBLE_TYPE, Type.DOUBLE_TYPE), false));
-//    mv.visitInsn(Opcodes.ACONST_NULL);
+    
+    
     mv.visitInsn(Opcodes.ARETURN);
     mv.visitEnd();
     
@@ -36,7 +44,7 @@ public class MethodHandleTest {
 
     G.reset();
     
-    String[] commandLine = {"-pp", "-cp", tempDir.getAbsolutePath(), "-O", "HelloMethodHandles", };
+    String[] commandLine = {"-asm-backend", "-pp", "-cp", tempDir.getAbsolutePath(), "-O", "HelloMethodHandles", };
     
     System.out.println("Command Line: " + Arrays.toString(commandLine));
     
