@@ -26,7 +26,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <dependency>
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
-    <version>RELEASE/version>
+    <version>RELEASE</version>
   </dependency>
 </dependencies>
 <repositories>
