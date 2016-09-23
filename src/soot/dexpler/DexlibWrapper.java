@@ -98,10 +98,12 @@ public class DexlibWrapper {
 	}
 
 	public void initialize() {
+		ZipFile archive = null;
 		try {
-			int api = 1; // TODO:
-			if(Options.v().process_multiple_dex() && inputDexFile.getName().endsWith(".apk")){
-	            ZipFile archive = new ZipFile(inputDexFile);
+			int api = 23; // TODO:
+			if(Options.v().process_multiple_dex() && (inputDexFile.getName().endsWith(".apk") || 
+					inputDexFile.getName().endsWith(".zip") || inputDexFile.getName().endsWith(".jar"))){
+	            archive = new ZipFile(inputDexFile);
 				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
 					ZipEntry entry = entries.nextElement();
 					String entryName = entry.getName();
@@ -110,13 +112,17 @@ public class DexlibWrapper {
 						this.dexFiles.add(DexFileFactory.loadDexFile(inputDexFile, entryName, api, false));
 					}
 				}
-				archive.close();
         	}
         	else{
         		this.dexFiles.add(DexFileFactory.loadDexFile(inputDexFile, api, false));
         	}
 		} catch (Exception e) {
-			throw new RuntimeException(e.toString());
+			throw new RuntimeException(e);
+		}finally{
+			try{
+				if(archive != null)
+					archive.close();
+			}catch(Throwable t) {}
 		}
 
 		for(DexFile dexFile: this.dexFiles){
@@ -125,7 +131,6 @@ public class DexlibWrapper {
 				classesToDefItems.put(forClassName, defItem);
 			}
 		}
-		
 		
 		for(DexFile dexFile: this.dexFiles){
 			if (dexFile instanceof DexBackedDexFile) {
