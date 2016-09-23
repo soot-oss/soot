@@ -27,7 +27,6 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -204,19 +203,23 @@ public class SourceLocator
 		
 		// Get the dex file from an apk
 		if (cst == ClassSourceType.apk) {
+			ZipFile archive = null;
 			try {
-				ZipFile archive = new ZipFile(aPath);
+				archive = new ZipFile(aPath);
 				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
 					ZipEntry entry = entries.nextElement();
 					String entryName = entry.getName();
 					// We are dealing with an apk file
 					if (entryName.endsWith(".dex"))
 						classes.addAll(DexClassProvider.classesOfDex(new File(aPath)));
-				}
-				archive.close();			
+				}		
 			} catch (IOException e) {
-				G.v().out.println("Error reading " + aPath + ": " + e.toString());
-				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+				throw new CompilationDeathException("Error reasing archive '" + aPath + "'",e);
+			}finally{
+				try{
+					if(archive != null)
+						archive.close();
+				}catch(Throwable t) {}
 			}
 		}
 		// Directly load a dex file
@@ -224,35 +227,49 @@ public class SourceLocator
 			try {
 				classes.addAll(DexClassProvider.classesOfDex(new File(aPath)));
 			} catch (IOException e) {
-				G.v().out.println("Error reading " + aPath + ": " + e.toString());
-				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+				throw new CompilationDeathException("Error reasing '" + aPath + "'",e);
 			}
 		}
 		// load Java class files from ZIP and JAR
 		else if (cst == ClassSourceType.jar || cst == ClassSourceType.zip) {
-			List<String> inputExtensions = new ArrayList<String>(3);
-			inputExtensions.add(".class");
-			inputExtensions.add(".jimple");
-
+			Set<String> dexEntryNames = new HashSet<String>();
+			ZipFile archive = null;
 			try {
-				ZipFile archive = new ZipFile(aPath);				
+				archive = new ZipFile(aPath);				
 				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
 					ZipEntry entry = entries.nextElement();
 					String entryName = entry.getName();
-					int extensionIndex = entryName.lastIndexOf('.');
-					if (extensionIndex >= 0) {
-						String entryExtension = entryName.substring(extensionIndex);
-						if (inputExtensions.contains(entryExtension)) {
-							entryName = entryName.substring(0, extensionIndex);
-							entryName = entryName.replace('/', '.');
-							classes.add(entryName);
-						}
+					if(entryName.endsWith(".class") || entryName.endsWith(".jimple")){
+						int extensionIndex = entryName.lastIndexOf('.');
+						entryName = entryName.substring(0, extensionIndex);
+						entryName = entryName.replace('/', '.');
+						classes.add(entryName);
+					}else if(entryName.endsWith(".dex")){
+						dexEntryNames.add(entryName);
 					}
 				}
-				archive.close();
-			} catch (IOException e) {
-				G.v().out.println("Error reading " + aPath + ": " + e.toString());
-				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+			} catch (Throwable e) {
+				throw new CompilationDeathException("Error reading archive '" + aPath + "'", e);
+			}finally{
+				try{
+					if(archive != null)
+						archive.close();
+				}catch(Throwable t) {}
+			}
+			
+			if(!dexEntryNames.isEmpty()){
+				File file = new File(aPath);
+				if(Options.v().process_multiple_dex()){
+					for(String dexEntryName : dexEntryNames){
+						try {
+							classes.addAll(DexClassProvider.classesOfDex(file,dexEntryName));
+						} catch (Throwable e) {} /* Ignore unreadable files */
+					}
+				}else{
+					try {
+						classes.addAll(DexClassProvider.classesOfDex(file));
+					} catch (Throwable e) {} /* Ignore unreadable files */
+				}
 			}
 		}
 		else if (cst == ClassSourceType.directory) {
@@ -266,10 +283,8 @@ public class SourceLocator
 
 			for (File element : files) {
 				if (element.isDirectory()) {
-					List<String> l = getClassesUnder(aPath + File.separatorChar + element.getName());
-					Iterator<String> it = l.iterator();
-					while (it.hasNext()) {
-						String s = it.next();
+					List<String> list = getClassesUnder(aPath + File.separatorChar + element.getName());
+					for(String s : list){
 						classes.add(element.getName() + "." + s);
 					}
 				} else {
@@ -278,18 +293,13 @@ public class SourceLocator
 					if (fileName.endsWith(".class")) {
 						int index = fileName.lastIndexOf(".class");
 						classes.add(fileName.substring(0, index));
-					}
-
-					if (fileName.endsWith(".jimple")) {
+					}else if (fileName.endsWith(".jimple")) {
 						int index = fileName.lastIndexOf(".jimple");
 						classes.add(fileName.substring(0, index));
-					}
-
-					if (fileName.endsWith(".java")) {
+					}else if (fileName.endsWith(".java")) {
 						int index = fileName.lastIndexOf(".java");
 						classes.add(fileName.substring(0, index));
-					}
-					if (fileName.endsWith(".dex")) {
+					}else if (fileName.endsWith(".dex")) {
 						try {
 							classes.addAll(DexClassProvider.classesOfDex(element));
 						} catch (IOException e) { /* Ignore unreadable files */
