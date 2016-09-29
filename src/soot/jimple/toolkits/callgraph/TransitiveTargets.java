@@ -38,7 +38,7 @@ public class TransitiveTargets
     }
     public Iterator<MethodOrMethodContext> iterator( Unit u ) {
         ArrayList<MethodOrMethodContext> methods = new ArrayList<MethodOrMethodContext>();
-        Iterator it = cg.edgesOutOf( u );
+        Iterator<Edge> it = cg.edgesOutOf( u );
         if( filter != null ) it = filter.wrap( it );
         while( it.hasNext() ) {
             Edge e = (Edge) it.next();
@@ -48,7 +48,7 @@ public class TransitiveTargets
     }
     public Iterator<MethodOrMethodContext> iterator( MethodOrMethodContext momc ) {
         ArrayList<MethodOrMethodContext> methods = new ArrayList<MethodOrMethodContext>();
-        Iterator it = cg.edgesOutOf( momc );
+        Iterator<Edge> it = cg.edgesOutOf( momc );
         if( filter != null ) it = filter.wrap( it );
         while( it.hasNext() ) {
             Edge e = (Edge) it.next();
@@ -56,7 +56,7 @@ public class TransitiveTargets
         }
         return iterator( methods.iterator() );
     }
-    public Iterator<MethodOrMethodContext> iterator( Iterator<MethodOrMethodContext> methods ) {
+    public Iterator<MethodOrMethodContext> iterator( Iterator<? extends MethodOrMethodContext> methods ) {
         Set<MethodOrMethodContext> s = new HashSet<MethodOrMethodContext>();
         ArrayList<MethodOrMethodContext> worklist = new ArrayList<MethodOrMethodContext>();
         while( methods.hasNext() ) {
@@ -68,7 +68,7 @@ public class TransitiveTargets
     private Iterator<MethodOrMethodContext> iterator( Set<MethodOrMethodContext> s, ArrayList<MethodOrMethodContext> worklist ) {
         for( int i = 0; i < worklist.size(); i++ ) {
             MethodOrMethodContext method = worklist.get(i);
-            Iterator it = cg.edgesOutOf( method );
+            Iterator<Edge> it = cg.edgesOutOf( method );
             if( filter != null ) it = filter.wrap( it );
             while( it.hasNext() ) {
                 Edge e = (Edge) it.next();

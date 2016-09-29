@@ -36,10 +36,10 @@ public class ReachableMethods
     private QueueReader<MethodOrMethodContext> unprocessedMethods;
     private final QueueReader<MethodOrMethodContext> allReachables = reachables.reader();
     private Filter filter;
-    public ReachableMethods( CallGraph graph, Iterator<MethodOrMethodContext> entryPoints ) {
+    public ReachableMethods( CallGraph graph, Iterator<? extends MethodOrMethodContext> entryPoints ) {
         this( graph, entryPoints, null );
     }
-    public ReachableMethods( CallGraph graph, Iterator<MethodOrMethodContext> entryPoints, Filter filter ) {
+    public ReachableMethods( CallGraph graph, Iterator<? extends MethodOrMethodContext> entryPoints, Filter filter ) {
         this.filter = filter;
         this.cg = graph;
         addMethods( entryPoints );
@@ -50,7 +50,7 @@ public class ReachableMethods
     public ReachableMethods( CallGraph graph, Collection<MethodOrMethodContext> entryPoints ) {
     	this(graph, entryPoints.iterator());
     }
-    private void addMethods( Iterator<MethodOrMethodContext> methods ) {
+    private void addMethods( Iterator<? extends MethodOrMethodContext> methods ) {
         while( methods.hasNext() )
             addMethod( (MethodOrMethodContext) methods.next() );
     }
