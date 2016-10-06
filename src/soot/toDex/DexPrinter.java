@@ -21,6 +21,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.jf.dexlib2.AnnotationVisibility;
 import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.BuilderOffsetInstruction;
 import org.jf.dexlib2.builder.Label;
@@ -152,7 +153,8 @@ public class DexPrinter {
 	private File originalApk;
 	
 	public DexPrinter() {
-		dexFile = DexBuilder.makeDexBuilder();
+		int api = 24; //TODO: this matters so it should be an soot option, set to 24 because DexlibWrapper uses 24
+		dexFile = DexBuilder.makeDexBuilder(Opcodes.forApi(api));
 		//dexAnnotation = new DexAnnotation(dexFile);
 	}
 	

@@ -36,6 +36,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.jf.dexlib2.DexFileFactory;
+import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
 
@@ -194,8 +195,8 @@ public class DexClassProvider implements ClassProvider {
 	 */
 	public static Set<String> classesOfDex(File file) throws IOException {
 		Set<String> classes = new HashSet<String>();
-		// TODO (SA): Go for API 1 because DexlibWrapper does so, but needs more attention
-		DexBackedDexFile d = DexFileFactory.loadDexFile(file, 1, false);
+		int api = 24; //TODO: This should be a soot option not hard coded, it is 24 because DexLibWrapper is 24
+		DexBackedDexFile d = DexFileFactory.loadDexFile(file, Opcodes.forApi(api));
 		for (ClassDef c : d.getClasses()) {
 			String name = Util.dottedClassName(c.getType());
 			classes.add(name);
@@ -215,8 +216,8 @@ public class DexClassProvider implements ClassProvider {
 	 */
 	public static Set<String> classesOfDex(File file, String dexName) throws IOException {
 		Set<String> classes = new HashSet<String>();
-		// TODO (SA): Go for API 1 because DexlibWrapper does so, but needs more attention
-		DexBackedDexFile d = DexFileFactory.loadDexFile(file, dexName, 1, false);
+		int api = 24; //TODO: This should be a soot option not hard coded, it is 24 because DexLibWrapper is 24
+		DexBackedDexFile d = DexFileFactory.loadDexEntry(file, dexName, true, Opcodes.forApi(api));
 		for (ClassDef c : d.getClasses()) {
 			String name = Util.dottedClassName(c.getType());
 			classes.add(name);

@@ -27,6 +27,7 @@ package soot.dexpler;
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -37,6 +38,8 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jf.dexlib2.analysis.ClassPath;
+import org.jf.dexlib2.analysis.ClassPathResolver;
+import org.jf.dexlib2.analysis.ClassProvider;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.ExceptionHandler;
@@ -441,7 +444,12 @@ public class DexBody  {
 	        List<String> classpathList = new ArrayList<String>();
 	        for (String str : sootClasspath)
 	        	classpathList.add(str);
-	        cp = ClassPath.fromClassPath(classpathList, classpathList, dexFile, -1, false);
+	        try{
+	        	ClassPathResolver resolver = new ClassPathResolver(classpathList, classpathList, classpathList, dexFile);
+	        	cp = new ClassPath(resolver.getResolvedClassProviders().toArray(new ClassProvider[0]));
+	        }catch(IOException e){
+	        	throw new RuntimeException(e);
+	        }
         }
 
         int prevLineNumber = -1;

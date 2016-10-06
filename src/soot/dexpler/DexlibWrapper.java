@@ -37,6 +37,7 @@ import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.jf.dexlib2.DexFileFactory;
+import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.DexFile;
@@ -100,7 +101,7 @@ public class DexlibWrapper {
 	public void initialize() {
 		ZipFile archive = null;
 		try {
-			int api = 23; // TODO:
+			int api = 24; // TODO: this matters now so it should be a soot option
 			if(Options.v().process_multiple_dex() && (inputDexFile.getName().endsWith(".apk") || 
 					inputDexFile.getName().endsWith(".zip") || inputDexFile.getName().endsWith(".jar"))){
 	            archive = new ZipFile(inputDexFile);
@@ -109,12 +110,12 @@ public class DexlibWrapper {
 					String entryName = entry.getName();
 					// We are dealing with an apk file
 					if (entryName.endsWith(".dex")){
-						this.dexFiles.add(DexFileFactory.loadDexFile(inputDexFile, entryName, api, false));
+						this.dexFiles.add(DexFileFactory.loadDexEntry(inputDexFile, entryName, true, Opcodes.forApi(api)));
 					}
 				}
         	}
         	else{
-        		this.dexFiles.add(DexFileFactory.loadDexFile(inputDexFile, api, false));
+        		this.dexFiles.add(DexFileFactory.loadDexFile(inputDexFile, Opcodes.forApi(api)));
         	}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
