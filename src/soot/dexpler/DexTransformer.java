@@ -172,7 +172,7 @@ public abstract class DexTransformer extends BodyTransformer {
 				}
 				else if (r instanceof ArrayRef) {
 					ArrayRef ar = (ArrayRef) r;
-					if (ar.getType().equals(".unknown")
+					if (ar.getType().toString().equals(".unknown")
 							|| ar.getType().toString().equals("unknown")) { // ||
 																			// ar.getType())
 																			// {
