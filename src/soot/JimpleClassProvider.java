@@ -40,7 +40,7 @@ public class JimpleClassProvider implements ClassProvider
         	}
         	if( file == null ) return null;
         }
-        return new JimpleClassSource(className, file.inputStream());
+        return new JimpleClassSource(className, file);
     }
 }
 

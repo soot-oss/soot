@@ -27,6 +27,8 @@ import soot.javaToJimple.IInitialResolver.Dependencies;
 public abstract class ClassSource 
 {
     public ClassSource( String className ) {
+    	if(className == null)
+			throw new IllegalStateException("Error: The class name must not be null.");
         this.className = className;
     }
     /** Resolve the class into the SootClass sc. Returns a list of Strings

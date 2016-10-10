@@ -18,6 +18,7 @@
  */
 
 package soot;
+import soot.SourceLocator.FoundFile;
 import soot.javaToJimple.IInitialResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.*;
@@ -29,25 +30,41 @@ import java.util.*;
  */
 public class CoffiClassSource extends ClassSource
 {
-    protected final InputStream classFile;
+	
+	private FoundFile foundFile;
+    private InputStream classFile;
 	private final String fileName;
 	private final String zipFileName;
 	
-    public CoffiClassSource( String className, InputStream classFile, String fileName, String zipFileName ) {
-        super( className );
+	public CoffiClassSource(String className, FoundFile foundFile){
+		super(className);
+		if(foundFile == null)
+			throw new IllegalStateException("Error: The FoundFile must not be null.");
+		this.foundFile = foundFile;
+		this.classFile = foundFile.inputStream();
+		this.fileName = foundFile.inputFile().getAbsolutePath();
+		this.zipFileName = foundFile.zipFile == null ? null : foundFile.zipFile.getName();
+	}
+	
+    public CoffiClassSource(String className, InputStream classFile, String fileName) {
+        super(className);
+        if(classFile == null || fileName == null)
+			throw new IllegalStateException("Error: The class file input strean and file name must not be null.");
         this.classFile = classFile;
         this.fileName = fileName;
-        this.zipFileName = zipFileName;
+        this.zipFileName = null;
+        this.foundFile = null;
     }
     public Dependencies resolve( SootClass sc ) {
         if(Options.v().verbose())
             G.v().out.println("resolving [from .class]: " + className );
         List<Type> references = new ArrayList<Type>();
-        soot.coffi.Util.v().resolveFromClassFile(sc, classFile, fileName, references);
-
-        try {
-            classFile.close();
-        } catch (IOException e) { throw new RuntimeException("!?"); }
+        
+        try{
+        	soot.coffi.Util.v().resolveFromClassFile(sc, classFile, fileName, references);
+        } finally {
+        	close();
+        }
         
         addSourceFileTag(sc);
         
@@ -56,7 +73,7 @@ public class CoffiClassSource extends ClassSource
         return deps;
     }
     
-    protected void addSourceFileTag(soot.SootClass sc){
+    private void addSourceFileTag(soot.SootClass sc){
     	if (fileName == null && zipFileName == null)
     		return;
     	
@@ -79,12 +96,18 @@ public class CoffiClassSource extends ClassSource
 	@Override
 	public void close() {
 		try {
-			if (classFile != null)
+			if(classFile != null){
 				classFile.close();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-		}
+				classFile = null;
+			}
+    	} catch(IOException e) {
+    		throw new RuntimeException("Error: Failed to close source input stream.",e);
+    	} finally {
+    		if (foundFile != null){
+    			foundFile.close();
+    			foundFile = null;
+    		}
+    	}
 	}
 }
 

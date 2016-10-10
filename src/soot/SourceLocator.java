@@ -86,7 +86,7 @@ public class SourceLocator
 				        String fileName = className.replace('.', '/') + ".class";
 						InputStream stream = cl.getResourceAsStream(fileName);
 						if(stream==null) return null;
-						return new CoffiClassSource(className, stream, fileName, null);
+						return new CoffiClassSource(className, stream, fileName);
 					}
 
             	}.find(className);
@@ -103,7 +103,7 @@ public class SourceLocator
 	        	return null;
         	InputStream stream = cl.getResourceAsStream(fileName);
         	if(stream!=null) {
-				return new CoffiClassSource(className, stream, fileName, null);
+				return new CoffiClassSource(className, stream, fileName);
         	}
         }
         return null;
@@ -523,7 +523,7 @@ public class SourceLocator
                 return doJDKBugWorkaround(zipFile.getInputStream(entry),
                         entry.getSize());
             } catch( IOException e ) {
-                throw new RuntimeException( "Caught IOException "+e );
+                throw new RuntimeException("Error: Failed to create input stream for source file.",e);
             }
         }
         public File inputFile(){
@@ -531,6 +531,14 @@ public class SourceLocator
                 return file;
             else
                 return new File(zipFile.getName());
+        }
+        public void close(){
+        	if(zipFile != null)
+        		try{
+        			zipFile.close();
+        		}catch(IOException e){
+        			throw new RuntimeException("Error: Failed to close source archive.",e);
+        		}
         }
     }
 
@@ -576,15 +584,19 @@ public class SourceLocator
         return null;
     }
     private FoundFile lookupInArchive(String archivePath, String fileName) {
+    	ZipFile archive = null;
         try {
-            ZipFile archive = new ZipFile(archivePath);
+            archive = new ZipFile(archivePath);
             ZipEntry entry = archive.getEntry(fileName);
             if( entry == null ) {
             	archive.close();
             	return null;
             }
             return new FoundFile(archive, entry);
-        } catch( IOException e ) {
+        } catch(IOException e) {
+        	try{
+        		archive.close();
+        	} catch(IOException t) {}
             throw new RuntimeException("Caught IOException " + e + " looking in archive file " + archivePath + " for file " + fileName);
         }
     }

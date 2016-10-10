@@ -25,6 +25,7 @@ import org.objectweb.asm.ClassReader;
 
 import soot.ClassSource;
 import soot.SootClass;
+import soot.SourceLocator.FoundFile;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
 /**
@@ -34,38 +35,45 @@ import soot.javaToJimple.IInitialResolver.Dependencies;
  */
 class AsmClassSource extends ClassSource {
 
-	private InputStream data;
+	private FoundFile foundFile;
 	
 	/**
 	 * Constructs a new ASM class source.
 	 * @param cls fully qualified name of the class.
 	 * @param data stream containing data for class.
 	 */
-	AsmClassSource(String cls, InputStream data) {
+	AsmClassSource(String cls, FoundFile foundFile) {
 		super(cls);
-		this.data = data;
+		if(foundFile == null)
+			throw new IllegalStateException("Error: The FoundFile must not be null.");
+		this.foundFile = foundFile;
 	}
 	
-	private ClassReader read() throws IOException {
-		InputStream d = data;
-		if (d == null)
-			throw new IllegalStateException();
-		data = null;
+	private ClassReader read() {
+		InputStream d = null;
 		try {
+			foundFile = null;
+			d = foundFile.inputStream();
 			return new ClassReader(d);
+		} catch(IOException e) {
+			throw new RuntimeException("Error: Failed to create class reader from class source.",e);
 		} finally {
-			d.close();
+			try {
+				if(d != null){
+					d.close();
+					d = null;
+				}
+			} catch(IOException e){
+				throw new RuntimeException("Error: Failed to close source input stream.",e);
+			} finally {
+				close();
+			}
 		}
 	}
 	
 	@Override
 	public Dependencies resolve(SootClass sc) {
-		ClassReader clsr;
-		try {
-			clsr = read();
-		} catch (IOException e) {
-			throw new RuntimeException(e);
-		}
+		ClassReader clsr = read();
 		SootClassBuilder scb = new SootClassBuilder(sc);
 		clsr.accept(scb, ClassReader.SKIP_FRAMES);
 		Dependencies deps = new Dependencies();
@@ -75,12 +83,9 @@ class AsmClassSource extends ClassSource {
 
 	@Override
 	public void close() {
-		try {
-			if (data != null)
-				data.close();
-		}
-		catch (IOException e) {
-			e.printStackTrace();
+		if (foundFile != null){
+			foundFile.close();
+			foundFile = null;
 		}
 	}
 }
