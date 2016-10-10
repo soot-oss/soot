@@ -176,7 +176,7 @@ public abstract class DexTransformer extends BodyTransformer {
 							|| ar.getType().toString().equals("unknown")) { // ||
 																			// ar.getType())
 																			// {
-						System.out.println("second round from stmt: " + stmt);
+						Debug.printDbg("second round from stmt: ",stmt);
 						Type t = findArrayType(localDefs, stmt,
 								++depth, newVisitedDefs); // TODO: which type should be
 											// returned?
