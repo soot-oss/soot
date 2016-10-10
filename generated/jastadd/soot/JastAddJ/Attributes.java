@@ -400,28 +400,28 @@ public class Attributes extends java.lang.Object {
     					  java.io.InputStream is=null;
     					  try{
     						  is = classPath.getInputStream(inner_class_name);
+    						  if(is != null) {
+        						  BytecodeParser p = new BytecodeParser(is, this.p.name);
+        						  p.parse(typeDecl, outer_class_name, classPath, (inner_class_access_flags & Flags.ACC_STATIC) == 0);
+        					  } else {
+        						  p.println("Error: ClassFile " + inner_class_name
+        								  + " not found");
+          					  }
     					  } catch(Error e) {
-    						  if(e.getMessage().startsWith("Could not find nested type")) {
-    							  //ignore
-    						  } else {
-    							  throw e;
+    						  if(!e.getMessage().startsWith("Could not find nested type")) {
+    							 throw e;
+    						  }
+    					  } finally {
+    						  if(is != null){
+    							  is.close();
+    							  is = null;
     						  }
     					  }
-    					  if(is != null) {
-    						  BytecodeParser p = new BytecodeParser(is, this.p.name);
-    						  p.parse(typeDecl, outer_class_name, classPath, (inner_class_access_flags & Flags.ACC_STATIC) == 0);
-    						  is.close();
-    					  }
-    					  else {
-    						  p.println("Error: ClassFile " + inner_class_name
-    								  + " not found");
-      					  }
     				  } catch (FileNotFoundException e) {
     					  System.out.println("Error: " + inner_class_name
     							  + " not found");
     				  } catch (Exception e) {
-    					  e.printStackTrace();
-    					  System.exit(1);
+    					  throw new RuntimeException(e);
     				  }
     				  if(BytecodeParser.VERBOSE)
     					  p.println("End processing: " + inner_class_name);
