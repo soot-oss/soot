@@ -368,7 +368,8 @@ public class Scene  //extends AbstractHost
 	}
 	
 	public int getAndroidAPIVersion() {
-		return androidAPIVersion > 0 ? androidAPIVersion : defaultSdkVersion;
+		return androidAPIVersion > 0 ? androidAPIVersion : (Options.v().android_api_version() > 0 
+				? Options.v().android_api_version() : defaultSdkVersion);
 	}
 
 	private int getAndroidAPIVersion(String jars, String apk) {
