@@ -77,6 +77,7 @@ import soot.G;
 import soot.IntType;
 import soot.Local;
 import soot.PackManager;
+import soot.Scene;
 import soot.ShortType;
 import soot.SootClass;
 import soot.SootField;
@@ -153,9 +154,8 @@ public class DexPrinter {
 	private File originalApk;
 	
 	public DexPrinter() {
-		int api = 24; //TODO: this matters so it should be an soot option, set to 24 because DexlibWrapper uses 24
+		int api = Scene.v().getAndroidAPIVersion();
 		dexFile = DexBuilder.makeDexBuilder(Opcodes.forApi(api));
-		//dexAnnotation = new DexAnnotation(dexFile);
 	}
 	
 	private void printApk(String outputDir, File originalApk) throws IOException {

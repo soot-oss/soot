@@ -49,36 +49,35 @@ class AsmClassSource extends ClassSource {
 		this.foundFile = foundFile;
 	}
 	
-	private ClassReader read() {
+	@Override
+	public Dependencies resolve(SootClass sc) {
 		InputStream d = null;
 		try {
-			foundFile = null;
 			d = foundFile.inputStream();
-			return new ClassReader(d);
-		} catch(IOException e) {
+			ClassReader clsr = new ClassReader(d);
+			SootClassBuilder scb = new SootClassBuilder(sc);
+			clsr.accept(scb, ClassReader.SKIP_FRAMES);
+			Dependencies deps = new Dependencies();
+			deps.typesToSignature.addAll(scb.deps);
+			return deps;
+		}
+		catch(IOException e) {
 			throw new RuntimeException("Error: Failed to create class reader from class source.",e);
-		} finally {
+		}
+		finally {
 			try {
 				if(d != null){
 					d.close();
 					d = null;
 				}
-			} catch(IOException e){
+			}
+			catch(IOException e){
 				throw new RuntimeException("Error: Failed to close source input stream.",e);
-			} finally {
+			}
+			finally {
 				close();
 			}
 		}
-	}
-	
-	@Override
-	public Dependencies resolve(SootClass sc) {
-		ClassReader clsr = read();
-		SootClassBuilder scb = new SootClassBuilder(sc);
-		clsr.accept(scb, ClassReader.SKIP_FRAMES);
-		Dependencies deps = new Dependencies();
-		deps.typesToSignature.addAll(scb.deps);
-		return deps;
 	}
 
 	@Override

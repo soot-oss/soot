@@ -305,6 +305,23 @@ public class Options extends OptionsBase {
                 }
             }
   
+            else if( false
+            || option.equals( "android-api-version" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( android_api_version == -1 )
+                    android_api_version = Integer.valueOf(value);
+                else {
+                    G.v().out.println( "Duplicate values "+android_api_version+" and "+value+" for option -"+option );
+                    return false;
+                }
+            }
+  
             else if( false 
             || option.equals( "ast-metrics" )
             )
@@ -1400,6 +1417,9 @@ public class Options extends OptionsBase {
     public String force_android_jar() { return force_android_jar; }
     public void set_force_android_jar( String setting ) { force_android_jar = setting; }
     private String force_android_jar = "";
+    public int android_api_version() { return android_api_version; }
+    public void set_android_api_version( int setting ) { android_api_version = setting; }
+    private int android_api_version = -1;
     public boolean ast_metrics() { return ast_metrics; }
     private boolean ast_metrics = false;
     public void set_ast_metrics( boolean setting ) { ast_metrics = setting; }

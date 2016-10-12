@@ -195,7 +195,7 @@ public class DexClassProvider implements ClassProvider {
 	 */
 	public static Set<String> classesOfDex(File file) throws IOException {
 		Set<String> classes = new HashSet<String>();
-		int api = 24; //TODO: This should be a soot option not hard coded, it is 24 because DexLibWrapper is 24
+		int api = Scene.v().getAndroidAPIVersion();
 		DexBackedDexFile d = DexFileFactory.loadDexFile(file, Opcodes.forApi(api));
 		for (ClassDef c : d.getClasses()) {
 			String name = Util.dottedClassName(c.getType());
@@ -216,7 +216,7 @@ public class DexClassProvider implements ClassProvider {
 	 */
 	public static Set<String> classesOfDex(File file, String dexName) throws IOException {
 		Set<String> classes = new HashSet<String>();
-		int api = 24; //TODO: This should be a soot option not hard coded, it is 24 because DexLibWrapper is 24
+		int api = Scene.v().getAndroidAPIVersion();
 		DexBackedDexFile d = DexFileFactory.loadDexEntry(file, dexName, true, Opcodes.forApi(api));
 		for (ClassDef c : d.getClasses()) {
 			String name = Util.dottedClassName(c.getType());

@@ -488,9 +488,24 @@ The Android application must contain the AndroidManifest.xml file.
 			<short_desc>Force Soot to use <use_arg_label/> as the path for the android.jar file.</short_desc>
 			<long_desc>
 Use <use_arg_label/> as the path to the android.jar file Soot should use.
-This option overrides the 'android-jars' option.
+This option overrides the 'android-jars' option. If the 'android-api-version' option is not specified,
+Soot will try to parse the API version from the given file path. If that fails, it will fall back to the
+default. If the 'android-api-version' option is specified, the API version used for parsing will be taken
+from there.
 			</long_desc>
 		</stropt>
+		<intopt>
+			<name>Force specific Android API version</name>
+			<alias>android-api-version</alias>
+			<set_arg_label>version</set_arg_label>
+			<short_desc>Force Soot to use <use_arg_label/> as the API version when readin in APK or DEX files.</short_desc>
+			<long_desc>
+Use <use_arg_label/> as the Android API version that Soot should use when processing APK or DEX files.
+When combined with the 'android-jars' option, this value will take precedence over the API version specified in the
+app's manifest file. When combined with the 'force-android-jar' option, the JAR file will be the one from the
+'force-android-jar' option, but the API version used for parsing will be the explicitly given one.
+			</long_desc>
+		</intopt>
 
 		<boolopt>
 			<name>Compute AST Metrics</name>

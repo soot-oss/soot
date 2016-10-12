@@ -196,8 +196,12 @@ public class SourceLocator
         }
         return ClassSourceType.directory;
     }
-        
+    
     public List<String> getClassesUnder(String aPath) {
+    	return getClassesUnder(aPath, "");
+    }
+    
+    private List<String> getClassesUnder(String aPath, String prefix) {
 		List<String> classes = new ArrayList<String>();
 		ClassSourceType cst = getClassSourceType(aPath);
 		
@@ -235,7 +239,7 @@ public class SourceLocator
 			Set<String> dexEntryNames = new HashSet<String>();
 			ZipFile archive = null;
 			try {
-				archive = new ZipFile(aPath);				
+				archive = new ZipFile(aPath);
 				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
 					ZipEntry entry = entries.nextElement();
 					String entryName = entry.getName();
@@ -243,8 +247,9 @@ public class SourceLocator
 						int extensionIndex = entryName.lastIndexOf('.');
 						entryName = entryName.substring(0, extensionIndex);
 						entryName = entryName.replace('/', '.');
-						classes.add(entryName);
-					}else if(entryName.endsWith(".dex")){
+						classes.add(prefix + entryName);
+					}
+					else if(entryName.endsWith(".dex")){
 						dexEntryNames.add(entryName);
 					}
 				}
@@ -283,22 +288,20 @@ public class SourceLocator
 
 			for (File element : files) {
 				if (element.isDirectory()) {
-					List<String> list = getClassesUnder(aPath + File.separatorChar + element.getName());
-					for(String s : list){
-						classes.add(element.getName() + "." + s);
-					}
+					classes.addAll(getClassesUnder(aPath + File.separatorChar + element.getName(),
+							prefix + element.getName() + "."));
 				} else {
 					String fileName = element.getName();
 
 					if (fileName.endsWith(".class")) {
 						int index = fileName.lastIndexOf(".class");
-						classes.add(fileName.substring(0, index));
+						classes.add(prefix + fileName.substring(0, index));
 					}else if (fileName.endsWith(".jimple")) {
 						int index = fileName.lastIndexOf(".jimple");
-						classes.add(fileName.substring(0, index));
+						classes.add(prefix + fileName.substring(0, index));
 					}else if (fileName.endsWith(".java")) {
 						int index = fileName.lastIndexOf(".java");
-						classes.add(fileName.substring(0, index));
+						classes.add(prefix + fileName.substring(0, index));
 					}else if (fileName.endsWith(".dex")) {
 						try {
 							classes.addAll(DexClassProvider.classesOfDex(element));
@@ -619,15 +622,13 @@ public class SourceLocator
             // class is an inner class and will be in
             // Outer of Outer$Inner
             javaClassName = className.substring(0, className.indexOf("$"));
-            //System.out.println("cut off inner class: look for: "+javaClassName);
         }
         // always do this because an inner class could be in a class
         // thats in the map
         if (sourceToClassMap != null) {
-            //System.out.println("in source map: "+sourceToClassMap);
-            if (sourceToClassMap.get(javaClassName) != null) {
-                javaClassName = sourceToClassMap.get(javaClassName);
-            }
+        	String tempName = sourceToClassMap.get(javaClassName);
+        	if (tempName != null)
+        		javaClassName = tempName;
         }
         return javaClassName;
     }
