@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -603,17 +602,7 @@ public class SourceLocator
             throw new RuntimeException("Caught IOException " + e + " looking in archive file " + archivePath + " for file " + fileName);
         }
     }
-    private HashMap<String, String> sourceToClassMap;
-
-    public HashMap<String, String> getSourceToClassMap(){
-        return sourceToClassMap;
-    }
-    public void setSourceToClassMap(HashMap<String, String> map){
-        sourceToClassMap = map;
-    }
-    public void addToSourceToClassMap(String key, String val) {
-        sourceToClassMap.put(key, val);
-    }
+   
     /** Returns the name of the class in which the (possibly inner) class
      * className appears. */
     public String getSourceForClass( String className ) {
@@ -622,13 +611,6 @@ public class SourceLocator
             // class is an inner class and will be in
             // Outer of Outer$Inner
             javaClassName = className.substring(0, className.indexOf("$"));
-        }
-        // always do this because an inner class could be in a class
-        // thats in the map
-        if (sourceToClassMap != null) {
-        	String tempName = sourceToClassMap.get(javaClassName);
-        	if (tempName != null)
-        		javaClassName = tempName;
         }
         return javaClassName;
     }
