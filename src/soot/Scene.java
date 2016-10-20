@@ -195,7 +195,7 @@ public class Scene  //extends AbstractHost
     {
     	// Pre-check: Is there a chance that we need to escape something?
     	// If not, skip the transformation altogether.
-    	boolean found = false;
+    	boolean found = s.contains("-");
     	for (String token : reservedNames)
     		if (s.contains(token)) {
     			found = true;
@@ -208,7 +208,7 @@ public class Scene  //extends AbstractHost
     	for (String part : s.split("\\.")) {
     		if (res.length() > 0)
     			res.append('.');
-	        if(reservedNames.contains(part)) {
+	        if(part.startsWith("-") || reservedNames.contains(part)) {
 	            res.append('\'');
 	            res.append(part);
 	            res.append('\'');
