@@ -76,10 +76,10 @@ public class JavaClassProvider implements ClassProvider
 		        if (file == null)
 		        	return null;         
 		        
-		        if( file.file == null ) {
+		        if( file.isZipFile()) {
 		            throw new JarException(className);
 		        }
-		        return new JavaClassSource(className, file.file);
+		        return new JavaClassSource(className, file.getFile());
 	      	}
 	      	finally {
 	      		if (file != null)

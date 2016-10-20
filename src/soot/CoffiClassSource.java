@@ -42,8 +42,8 @@ public class CoffiClassSource extends ClassSource
 			throw new IllegalStateException("Error: The FoundFile must not be null.");
 		this.foundFile = foundFile;
 		this.classFile = foundFile.inputStream();
-		this.fileName = foundFile.inputFile().getAbsolutePath();
-		this.zipFileName = foundFile.zipFile == null ? null : foundFile.zipFile.getName();
+		this.fileName = foundFile.getFile().getAbsolutePath();
+		this.zipFileName = !foundFile.isZipFile() ? null : foundFile.getFilePath();
 	}
 	
     public CoffiClassSource(String className, InputStream classFile, String fileName) {
