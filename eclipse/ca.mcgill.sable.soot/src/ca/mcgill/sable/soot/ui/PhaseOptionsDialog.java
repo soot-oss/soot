@@ -2225,6 +2225,15 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionsforce_android_jar_widget().getAlias(), stringRes);
 		}
 		
+		stringRes = getInput_Optionsandroid_api_version_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionsandroid_api_version_widget().getAlias(), stringRes);
+		}
+		
 		stringRes = getInput_Optionsmain_class_widget().getText().getText();
 		
 		defStringRes = "";
@@ -6978,6 +6987,18 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	
 	
+	private StringOptionWidget Input_Optionsandroid_api_version_widget;
+	
+	private void setInput_Optionsandroid_api_version_widget(StringOptionWidget widget) {
+		Input_Optionsandroid_api_version_widget = widget;
+	}
+	
+	public StringOptionWidget getInput_Optionsandroid_api_version_widget() {
+		return Input_Optionsandroid_api_version_widget;
+	}
+	
+	
+	
 	private StringOptionWidget Input_Optionsmain_class_widget;
 	
 	private void setInput_Optionsmain_class_widget(StringOptionWidget widget) {
@@ -11000,7 +11021,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsforce_android_jar_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android jar file",  "", "","force-android-jar", "\nUse PATH as the path to the android.jar file Soot should use. \nThis option overrides the 'android-jars' option. 			", defaultString)));
+		setInput_Optionsforce_android_jar_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android jar file",  "", "","force-android-jar", "\nUse PATH as the path to the android.jar file Soot should use. \nThis option overrides the 'android-jars' option. If the \n'android-api-version' option is not specified, Soot will try to \nparse the API version from the given file path. If that fails, \nit will fall back to the default. If the 'android-api-version' \noption is specified, the API version used for parsing will be \ntaken from there. 			", defaultString)));
+		
+		
+		defKey = ""+" "+""+" "+"android-api-version";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setInput_Optionsandroid_api_version_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android API version",  "", "","android-api-version", "\nUse VERSION as the Android API version that Soot should use \nwhen processing APK or DEX files. When combined with the \n'android-jars' option, this value will take precedence over the \nAPI version specified in the app's manifest file. When combined \nwith the 'force-android-jar' option, the JAR file will be the \none from the 'force-android-jar' option, but the API version \nused for parsing will be the explicitly given one. 			", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"main-class";

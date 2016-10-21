@@ -21,18 +21,22 @@ package soot;
 
 
 import java.io.File;
-import java.io.FilenameFilter;
 import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.jf.dexlib2.DexFileFactory;
+import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
 
@@ -68,7 +72,25 @@ public class DexClassProvider implements ClassProvider {
 		return new DexClassSource(className, file);
 	}
 
-
+	private List<File> getAllDexFiles(String path){
+		Queue<File> toVisit = new ArrayDeque<File>();
+		Set<File> visited = new HashSet<File>();
+		List<File> ret = new ArrayList<File>();
+		toVisit.add(new File(path));
+		while(!toVisit.isEmpty()){
+			File cur = toVisit.poll();
+			if(visited.contains(cur))
+				continue;
+			visited.add(cur);
+			if(cur.isDirectory()){
+				toVisit.addAll(Arrays.asList(cur.listFiles()));
+			}else if(cur.isFile() && cur.getName().endsWith(".dex")){
+				ret.add(cur);
+			}
+		}
+		return ret;
+	}
+	
 	/**
 	 * Build index of ClassName-to-File mappings.
 	 *
@@ -79,38 +101,52 @@ public class DexClassProvider implements ClassProvider {
 	 */
 	private void buildDexIndex(Map<String, File> index, List<String> classPath) {
 		for (String path : classPath) {
-			File dir = new File(path);
-            File[] dexs = dir.listFiles(new FilenameFilter() {
-                public boolean accept(File dir, String filename) {
-                    return filename.endsWith(".dex");
-                }
-            });
-            if (dexs != null)
-                for (File dex : dexs)
-                    readDexFile(index, dex);
-            if(Options.v().process_multiple_dex()){
-                if(path.endsWith(".apk")){
-                	try{
-	                	ZipFile archive = new ZipFile(path);
-	    				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
-	    					ZipEntry entry = entries.nextElement();
-	    					String entryName = entry.getName();
-	    					// We are dealing with an apk file
-	    					if (entryName.endsWith(".dex")){
-	    						readDexFile(index, dir, entryName);
-	    					}
-	    				}
-	    				archive.close();
-                	}
-                	catch(Exception ex){
-                		ex.printStackTrace();
-                	}
-                }
-            }
-    		else if (path.endsWith(".apk") || path.endsWith(".dex")){
-    			readDexFile(index, dir);
-    		}           
-        }
+			List<File> allDexFiles = getAllDexFiles(path);
+			if(!allDexFiles.isEmpty()){//path is directory containing dex files or a single dex file
+				for(File dexFile : allDexFiles){
+					readDexFile(index, dexFile);
+				}
+			}else{//path is directory containing no dex files, a apk, jar, or zip
+				File file = new File(path);
+				if(file.isFile()){
+					if(file.getName().endsWith(".apk") || file.getName().endsWith(".jar") || file.getName().endsWith(".zip")){
+						//check if the archive contains dex files and record the names if there are multiple
+						Set<String> entryNames = new HashSet<String>();
+						ZipFile archive = null;
+						try{
+							archive = new ZipFile(file);
+							for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
+								ZipEntry entry = entries.nextElement();
+		    					String entryName = entry.getName();
+		    					if(entryName.endsWith(".dex")){
+		    						entryNames.add(entryName);
+		    						if(!Options.v().process_multiple_dex())
+		    							break;
+		    					}
+							}
+						}catch(Exception e){
+							throw new RuntimeException(e);
+						}finally{
+							try{
+								if(archive != null){
+									archive.close();
+									archive = null;
+								}
+							}catch(Throwable e) {}
+						}
+						if(!entryNames.isEmpty()){
+							if(Options.v().process_multiple_dex()){
+								for(String entryName : entryNames){
+									readDexFile(index, file, entryName);
+								}
+							}else{
+								readDexFile(index, file);
+							}
+						}
+					}
+				}
+			}
+		}
 	}
 
     /**
@@ -159,8 +195,8 @@ public class DexClassProvider implements ClassProvider {
 	 */
 	public static Set<String> classesOfDex(File file) throws IOException {
 		Set<String> classes = new HashSet<String>();
-		// TODO (SA): Go for API 1 because DexlibWrapper does so, but needs more attention
-		DexBackedDexFile d = DexFileFactory.loadDexFile(file, 1, false);
+		int api = Scene.v().getAndroidAPIVersion();
+		DexBackedDexFile d = DexFileFactory.loadDexFile(file, Opcodes.forApi(api));
 		for (ClassDef c : d.getClasses()) {
 			String name = Util.dottedClassName(c.getType());
 			classes.add(name);
@@ -180,8 +216,8 @@ public class DexClassProvider implements ClassProvider {
 	 */
 	public static Set<String> classesOfDex(File file, String dexName) throws IOException {
 		Set<String> classes = new HashSet<String>();
-		// TODO (SA): Go for API 1 because DexlibWrapper does so, but needs more attention
-		DexBackedDexFile d = DexFileFactory.loadDexFile(file, dexName, 1, false);
+		int api = Scene.v().getAndroidAPIVersion();
+		DexBackedDexFile d = DexFileFactory.loadDexEntry(file, dexName, true, Opcodes.forApi(api));
 		for (ClassDef c : d.getClasses()) {
 			String name = Util.dottedClassName(c.getType());
 			classes.add(name);

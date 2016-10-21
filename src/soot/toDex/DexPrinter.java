@@ -21,6 +21,7 @@ import java.util.zip.ZipOutputStream;
 
 import org.jf.dexlib2.AnnotationVisibility;
 import org.jf.dexlib2.Opcode;
+import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.BuilderOffsetInstruction;
 import org.jf.dexlib2.builder.Label;
@@ -76,6 +77,7 @@ import soot.G;
 import soot.IntType;
 import soot.Local;
 import soot.PackManager;
+import soot.Scene;
 import soot.ShortType;
 import soot.SootClass;
 import soot.SootField;
@@ -152,8 +154,8 @@ public class DexPrinter {
 	private File originalApk;
 	
 	public DexPrinter() {
-		dexFile = DexBuilder.makeDexBuilder();
-		//dexAnnotation = new DexAnnotation(dexFile);
+		int api = Scene.v().getAndroidAPIVersion();
+		dexFile = DexBuilder.makeDexBuilder(Opcodes.forApi(api));
 	}
 	
 	private void printApk(String outputDir, File originalApk) throws IOException {

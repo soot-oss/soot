@@ -1,3 +1,5 @@
+[![Build Status](http://build.renjin.org/job/Soot/job/soot/badge/icon)](http://build.renjin.org/job/Soot/job/soot/)
+
 # What is Soot?
 
 Soot is a Java optimization framework. It provides four intermediate representations for analyzing and transforming Java bytecode:
@@ -12,6 +14,29 @@ See http://www.sable.mcgill.ca/soot/ for details.
 # How do I get started with Soot?
 
 We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki) and also a large range of [tutorials](http://www.sable.mcgill.ca/soot/tutorial/index.html) on Soot.
+
+# Including Soot in your Project
+
+A Soot "release" is currently built for each commit to the `develop` branch. You can include Soot as 
+a dependency via Maven, Gradle, SBT, etc using the following coordinates:
+
+
+```.xml
+<dependencies>
+  <dependency>
+    <groupId>ca.mcgill.sable</groupId>
+    <artifactId>soot</artifactId>
+    <version>RELEASE/version>
+  </dependency>
+</dependencies>
+<repositories>
+  <repository>
+    <id>bedatadriven</id>
+    <name>bedatadriven public repo</name>
+    <url>https://nexus.bedatadriven.com/content/groups/public/</url>
+  </repository>
+</repositories>
+```
 
 # How do I obtain the nightly builds
 

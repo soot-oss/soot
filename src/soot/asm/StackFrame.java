@@ -99,7 +99,6 @@ final class StackFrame {
 			throw new IllegalArgumentException("Invalid in operands length!");
 		int nrIn = in.size();
 		boolean diff = false;
-		all_opr:
 		for (int i = 0; i != oprs.length; i++) {
 			Operand newOp = oprs[i];
 

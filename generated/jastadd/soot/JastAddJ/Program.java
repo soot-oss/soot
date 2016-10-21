@@ -1,23 +1,11 @@
 /* This file was generated with JastAdd2 (http://jastadd.org) version R20130212 (r1031) */
 package soot.JastAddJ;
 
-import java.util.HashSet;
 import java.io.File;
 import java.util.*;
-import beaver.*;
 import java.util.ArrayList;
-import java.util.zip.*;
 import java.io.*;
-import java.io.FileNotFoundException;
 import java.util.Collection;
-import soot.*;
-import soot.util.*;
-import soot.jimple.*;
-import soot.coffi.ClassFile;
-import soot.coffi.method_info;
-import soot.coffi.CONSTANT_Utf8_info;
-import soot.tagkit.SourceFileTag;
-import soot.coffi.CoffiMethodSource;
 /**
  * @production Program : {@link ASTNode} ::= <span class="component">{@link CompilationUnit}*</span>;
  * @ast node
@@ -241,11 +229,9 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
       for(Iterator iter = classPath.iterator(); iter.hasNext(); ) {
         PathPart part = (PathPart)iter.next();
         if(part.selectCompilationUnit(name))
-          return part.is;
+          return part.getInputStream();
       }
-    }
-    catch(IOException e) {
-    }
+    } catch(IOException e) {}
     throw new Error("Could not find nested type " + name);
   }
   /**
@@ -423,7 +409,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
    */
   public void addClassPath(PathPart pathPart) {
     classPath.add(pathPart);
-    pathPart.program = this;
+    pathPart.setProgram(this);
   }
   /**
    * Add a path part to the user class path.
@@ -433,7 +419,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
    */
   public void addSourcePath(PathPart pathPart) {
     sourcePath.add(pathPart);
-    pathPart.program = this;
+    pathPart.setProgram(this);
   }
   /**
    * @ast method 
@@ -874,7 +860,7 @@ public class Program extends ASTNode<ASTNode> implements Cloneable {
             return unit;
         }
       }
-      else if(sourcePart != null && (classPart == null || classPart.age <= sourcePart.age)) {
+      else if(sourcePart != null && (classPart == null || classPart.getAge() <= sourcePart.getAge())) {
         CompilationUnit unit = getCachedOrLoadCompilationUnit(new File(sourcePart.pathName).getCanonicalPath());
         int index = name.lastIndexOf('.');
         if(index == -1)
