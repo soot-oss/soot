@@ -104,7 +104,7 @@ public class DexClassProvider implements ClassProvider {
 			List<File> allDexFiles = getAllDexFiles(path);
 			if(!allDexFiles.isEmpty()){//path is directory containing dex files or a single dex file
 				for(File dexFile : allDexFiles){
-					readDexFile(index, dexFile);
+					readDexFile(index, dexFile, null);
 				}
 			}else{//path is directory containing no dex files, a apk, jar, or zip
 				File file = new File(path);
@@ -140,7 +140,7 @@ public class DexClassProvider implements ClassProvider {
 									readDexFile(index, file, entryName);
 								}
 							}else{
-								readDexFile(index, file);
+								readDexFile(index, file, null);
 							}
 						}
 					}
@@ -148,61 +148,25 @@ public class DexClassProvider implements ClassProvider {
 			}
 		}
 	}
-
-    /**
-     * Read dex file  into index.
-     */
-    private void readDexFile(Map<String, File> index, File dex) {
-        try {
-            for (String className : classesOfDex(dex)) {
-                index.put(className, dex);
-            }
-        } catch (IOException e) { 
-          G.v().out.println("Warning: IO error while processing dex file '"+ dex +"'");
-          G.v().out.println("Exception: "+ e);
-        } catch (Exception e) {
-          G.v().out.println("Warning: exception while processing dex file '"+ dex +"'");
-          G.v().out.println("Exception: "+ e);
-        }
-    }
     
     /**
      * Read dex files into index.
+	 *
+	 * @param dexName is optional. If null, all classes inside the file will be loaded.
      */
-    private void readDexFile(Map<String, File> index, File dex, String dexName) {
+    private void readDexFile(Map<String, File> index, File file, String dexName) {
         try {
-            for (String className : classesOfDex(dex, dexName)) {
-                index.put(className, dex);
+            for (String className : classesOfDex(file, dexName)) {
+                index.put(className, file);
             }
         } catch (IOException e) { 
-          G.v().out.println("Warning: IO error while processing dex file '"+ dex +"'");
+          G.v().out.println("Warning: IO error while processing dex file '"+ file +"'");
           G.v().out.println("Exception: "+ e);
         } catch (Exception e) {
-          G.v().out.println("Warning: exception while processing dex file '"+ dex +"'");
+          G.v().out.println("Warning: exception while processing dex file '"+ file +"'");
           G.v().out.println("Exception: "+ e);
         }
     }
-    
-
-
-	/**
-	 * Return names of classes in dex/apk file.
-	 *
-	 * @param file
-	 *            file to dex/apk file. Can be the path of a zip file.
-	 *
-	 * @return set of class names
-	 */
-	public static Set<String> classesOfDex(File file) throws IOException {
-		Set<String> classes = new HashSet<String>();
-		int api = Scene.v().getAndroidAPIVersion();
-		DexBackedDexFile d = DexFileFactory.loadDexFile(file, Opcodes.forApi(api));
-		for (ClassDef c : d.getClasses()) {
-			String name = Util.dottedClassName(c.getType());
-			classes.add(name);
-		}
-		return classes;
-	}
 	
 	/**
 	 * Return names of classes in the given dex/apk file.
@@ -210,14 +174,16 @@ public class DexClassProvider implements ClassProvider {
 	 * @param file
 	 *            file to dex/apk file. Can be the path of a zip file.
 	 * @param dexName
-	 * 				a name of a given dex file
+	 * 				a name of a given dex file. If null, all classes in the given file will be loaded.
 	 *
 	 * @return set of class names
 	 */
 	public static Set<String> classesOfDex(File file, String dexName) throws IOException {
 		Set<String> classes = new HashSet<String>();
 		int api = Scene.v().getAndroidAPIVersion();
-		DexBackedDexFile d = DexFileFactory.loadDexEntry(file, dexName, true, Opcodes.forApi(api));
+		DexBackedDexFile d = dexName != null
+							 ? DexFileFactory.loadDexEntry(file, dexName, true, Opcodes.forApi(api))
+							 : DexFileFactory.loadDexFile(file, Opcodes.forApi(api));
 		for (ClassDef c : d.getClasses()) {
 			String name = Util.dottedClassName(c.getType());
 			classes.add(name);
