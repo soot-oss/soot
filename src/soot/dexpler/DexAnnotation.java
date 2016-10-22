@@ -410,16 +410,26 @@ public class DexAnnotation {
                 for (AnnotationElement elem : a.getElements()) {
                 	String outerClass = ((TypeEncodedValue) elem.getValue()).getValue();
                 	outerClass = Util.dottedClassName(outerClass);
-                	deps.typesToSignature.add(RefType.v(outerClass));
                 	
                 	// If this APK specifies an invalid outer class, we try to repair it
                 	if (outerClass.equals(clazz.getName())) {
-                		if (outerClass.contains("$")) {
-                			System.out.println("Fixing circular outer class " + outerClass + "...");
+                		if(outerClass.contains("$-")) {
+                			/* This is a special case for generated lambda classes of jack and jill compiler.
+							 * Generated lambda classes may contain '$' which do not indicate an inner/outer 
+							 * class separator if the '$' occurs after a inner class with a name starting with
+							 * '-'. Thus we search for '$-' and anything after it including '-' is the inner
+							 * classes name and anything before it is the outer classes name.
+							 */
+                			Debug.printDbg("Fixing circular outer class for the jack and jill generated lambda class ", outerClass, "...");
+							outerClass = outerClass.substring(0, outerClass.indexOf("$-"));
+                		} else if (outerClass.contains("$")) {
+                			//remove everything after the last '$' including the last '$'
+                			Debug.printDbg("Fixing circular outer class ", outerClass, "...");
                 			outerClass = outerClass.substring(0, outerClass.lastIndexOf("$"));
                 		}
                 	}
                 	
+                	deps.typesToSignature.add(RefType.v(outerClass));
                 	clazz.setOuterClass(SootResolver.v().makeClassRef(outerClass));
                 	assert clazz.getOuterClass() != clazz;
                 }
@@ -471,16 +481,22 @@ public class DexAnnotation {
                 }
                 
 				String outerClass; // outer class name
-				if (name == null)
-					outerClass = classType.replaceAll("\\$[0-9,a-z,A-Z]*;$", ";");
-                else
-                   	outerClass = classType.replaceFirst("\\$" + name + ";$", ";");
-				
-				// Make sure that no funny business is going on if the
-				// annotation is broken and does not end in $nn.
-				if (outerClass.equals(classType)) {
-					outerClass = null;
-				}
+				if(classType.contains("$-")) {
+        			/* This is a special case for generated lambda classes of jack and jill compiler.
+					 * Generated lambda classes may contain '$' which do not indicate an inner/outer 
+					 * class separator if the '$' occurs after a inner class with a name starting with
+					 * '-'. Thus we search for '$-' and anything after it including '-' is the inner
+					 * classes name and anything before it is the outer classes name.
+					 */
+					outerClass = classType.substring(0, classType.indexOf("$-"));
+        		} else if (classType.contains("$")) {
+        			//remove everything after the last '$' including the last '$'
+        			outerClass = classType.substring(0, classType.lastIndexOf("$"));
+        		} else {
+        			// Make sure that no funny business is going on if the
+    				// annotation is broken and does not end in $nn.
+        			outerClass = null;
+        		}
 				
 				Tag innerTag = new InnerClassTag(DexType.toSootICAT(classType),
 						outerClass == null ? null : DexType.toSootICAT(outerClass),
@@ -501,15 +517,37 @@ public class DexAnnotation {
                 for (AnnotationElem ae : e.getValues()) {
                     AnnotationClassElem c = (AnnotationClassElem) ae;
                     String innerClass = c.getDesc();
-                    String outerClass = innerClass.replaceAll("\\$[^\\$]*$", "");
-					String name = innerClass.replaceAll("^.*\\$", "").replaceAll(";$", "");
-					if (name.replaceAll("[0-9].*", "").equals("")) { // anonymous or local inner classes
+                    String outerClass;
+                    String name;
+                    if(innerClass.contains("$-")) {
+            			/* This is a special case for generated lambda classes of jack and jill compiler.
+    					 * Generated lambda classes may contain '$' which do not indicate an inner/outer 
+    					 * class separator if the '$' occurs after a inner class with a name starting with
+    					 * '-'. Thus we search for '$-' and anything after it including '-' is the inner
+    					 * classes name and anything before it is the outer classes name.
+    					 */
+                    	int i = innerClass.indexOf("$-");
+    					outerClass = innerClass.substring(0, i);
+    					name = innerClass.substring(i+2).replaceAll(";$", "");
+            		} else if (innerClass.contains("$")) {
+            			//remove everything after the last '$' including the last '$'
+            			int i = innerClass.lastIndexOf("$");
+            			outerClass = innerClass.substring(0, i);
+            			name = innerClass.substring(i+1).replaceAll(";$", "");
+            		} else {
+            			// Make sure that no funny business is going on if the
+        				// annotation is broken and does not end in $nn.
+            			outerClass = null;
+            			name = null;
+            		}
+                    
+                    if(name != null && name.matches("^\\d*$")) // anonymous or local inner classes
                     	name = null;
-                    }
+                    
                     int accessFlags = 0; // seems like this information is lost during the .class -- dx --> .dex process.
                     Tag innerTag = new InnerClassTag(
                             DexType.toSootICAT(innerClass), 
-                            DexType.toSootICAT(outerClass), 
+                            outerClass == null ? null : DexType.toSootICAT(outerClass), 
                             name, 
                             accessFlags);
                     tags.add(innerTag);
