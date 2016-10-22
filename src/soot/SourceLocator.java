@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -748,12 +747,13 @@ public class SourceLocator
    
     /** Returns the name of the class in which the (possibly inner) class
      * className appears. */
-    public String getSourceForClass( String className ) {
+    public String getSourceForClass(String className) {
         String javaClassName = className;
-        if (className.indexOf("$") != -1) {
+        int i = className.indexOf("$");
+        if (i > -1) {
             // class is an inner class and will be in
             // Outer of Outer$Inner
-            javaClassName = className.substring(0, className.indexOf("$"));
+            javaClassName = className.substring(0, i);
         }
         return javaClassName;
     }
