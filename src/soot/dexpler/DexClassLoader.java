@@ -126,7 +126,22 @@ public class DexClassLoader {
         			
         			String outer = null;
 					if (ict.getOuterClass() == null) { // anonymous and local classes
-						outer = ict.getInnerClass().replaceAll("\\$[0-9].*$", "").replaceAll("/", ".");
+						if(inner.contains("$-")) {
+							/* This is a special case for generated lambda classes of jack and jill compiler.
+							 * Generated lambda classes may contain '$' which do not indicate an inner/outer 
+							 * class separator if the '$' occurs after a inner class with a name starting with
+							 * '-'. Thus we search for '$-' and anything after it including '-' is the inner
+							 * classes name and anything before it is the outer classes name.
+							 */
+							outer = inner.substring(0, inner.indexOf("$-"));
+						} else if(inner.contains("$")) {
+							//remove everything after the last '$' including the last '$'
+							outer = inner.substring(0, inner.lastIndexOf('$'));
+						} else {
+							//no '$' in a inner class ???
+							//outer = inner;
+							throw new RuntimeException("Error: Could not identify the outer class of the inner class '" + inner + "'.");
+						}
         			} else {
         				outer = ict.getOuterClass().replaceAll("/", ".");
         			}
