@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
-import java.util.concurrent.ExecutionException;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -603,11 +602,24 @@ public class SourceLocator
         						entryName + "'.",e);
         			}
         		}
+        		
+        		InputStream stream = null;
         		try{
-        			ret = doJDKBugWorkaround(zipFile.getInputStream(zipEntry), zipEntry.getSize());
+        			stream = zipFile.getInputStream(zipEntry);
+        			ret = doJDKBugWorkaround(stream, zipEntry.getSize());
         		} catch(Exception e){
         			throw new RuntimeException("Error: Failed to open a InputStream for the entry '" + zipEntry.getName() + 
         					"' of the archive at path '" + zipFile.getName() + "'.",e);
+        		}
+        		finally {
+        			if (stream != null) {
+						try {
+							stream.close();
+						}
+        				catch (IOException e) {
+							// There's not much we can do here
+						}
+        			}
         		}
         	}
         	
