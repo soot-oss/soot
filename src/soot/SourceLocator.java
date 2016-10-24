@@ -256,7 +256,7 @@ public class SourceLocator
 		// Directly load a dex file
 		else if (cst == ClassSourceType.dex) {
 			try {
-				classes.addAll(DexClassProvider.classesOfDex(new File(aPath), null));
+				classes.addAll(DexClassProvider.classesOfDex(new File(aPath)));
 			} catch (IOException e) {
 				throw new CompilationDeathException("Error reasing '" + aPath + "'",e);
 			}
@@ -288,7 +288,7 @@ public class SourceLocator
 						archive.close();
 				}catch(Throwable t) {}
 			}
-			
+
 			if(!dexEntryNames.isEmpty()){
 				File file = new File(aPath);
 				if(Options.v().process_multiple_dex()){
@@ -299,7 +299,7 @@ public class SourceLocator
 					}
 				}else{
 					try {
-						classes.addAll(DexClassProvider.classesOfDex(file, null));
+						classes.addAll(DexClassProvider.classesOfDex(file));
 					} catch (Throwable e) {} /* Ignore unreadable files */
 				}
 			}
@@ -331,7 +331,7 @@ public class SourceLocator
 						classes.add(prefix + fileName.substring(0, index));
 					}else if (fileName.endsWith(".dex")) {
 						try {
-							classes.addAll(DexClassProvider.classesOfDex(element, null));
+							classes.addAll(DexClassProvider.classesOfDex(element));
 						} catch (IOException e) { /* Ignore unreadable files */
 						}
 					}
