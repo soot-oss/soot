@@ -60,18 +60,7 @@ import soot.TypeSwitch;
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
-import soot.jimple.CaughtExceptionRef;
-import soot.jimple.ClassConstant;
-import soot.jimple.DoubleConstant;
-import soot.jimple.FloatConstant;
-import soot.jimple.IdentityRef;
-import soot.jimple.IntConstant;
-import soot.jimple.JimpleBody;
-import soot.jimple.LongConstant;
-import soot.jimple.NullConstant;
-import soot.jimple.ParameterRef;
-import soot.jimple.StringConstant;
-import soot.jimple.ThisRef;
+import soot.jimple.*;
 import soot.options.Options;
 import soot.tagkit.JasminAttribute;
 import soot.tagkit.LineNumberTag;
@@ -483,8 +472,11 @@ public class JasminClass extends AbstractJasminClass {
 						emit("lconst_1");
 					else
 						emit("ldc2_w " + v.toString());
-				} else if (i.getConstant() instanceof NullConstant)
+				} else if (i.getConstant() instanceof NullConstant) {
 					emit("aconst_null");
+				} else if (i.getConstant() instanceof MethodHandle) {
+					throw new RuntimeException("MethodHandle constants not supported by Jasmin. Please use -asm-backend.");
+				}
 				else
 					throw new RuntimeException("unsupported opcode");
 			}
