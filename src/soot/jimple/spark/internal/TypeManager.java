@@ -219,9 +219,13 @@ public final class TypeManager {
     }
 
     final private BitVector makeClassTypeMask(SootClass clazz) {
-    	if(typeMask.get(clazz.getType()) != null) {
-    		return typeMask.get(clazz.getType());
+    	{
+	    	BitVector cachedMask = typeMask.get(clazz.getType());
+	    	if(cachedMask != null) {
+	    		return cachedMask;
+	    	}
     	}
+    	
         int nBits = pag.getAllocNodeNumberer().size();
         final BitVector mask = new BitVector(nBits);
         
