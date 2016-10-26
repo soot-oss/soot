@@ -87,6 +87,7 @@ import soot.SourceLocator;
 import soot.Trap;
 import soot.Type;
 import soot.Unit;
+import soot.dexpler.DexInnerClassParser;
 import soot.dexpler.DexType;
 import soot.dexpler.Util;
 import soot.jimple.ClassConstant;
@@ -839,7 +840,7 @@ public class DexPrinter {
         	// InnerClass tag are written to the inner class which is different
         	// to Java. We thus check whether this tag actually points to our
     		// outer class.
-    		String outerClass = getOuterClassNameFromTag(icTag);
+    		String outerClass = DexInnerClassParser.getOuterClassNameFromTag(icTag);
 			String innerClass = icTag.getInnerClass().replaceAll("/", ".");
 						
 			// Only write the InnerClass tag to the inner class itself, not
@@ -887,35 +888,7 @@ public class DexPrinter {
     	    	
     	return anns;
     }
-
-	private String getOuterClassNameFromTag(InnerClassTag icTag) {
-		String outerClass;
-		
-		if (icTag.getOuterClass() == null) { // anonymous and local classes
-			String inner = icTag.getInnerClass().replaceAll("/", ".");
-			if(inner.contains("$-")) {
-				/* This is a special case for generated lambda classes of jack and jill compiler.
-				 * Generated lambda classes may contain '$' which do not indicate an inner/outer 
-				 * class separator if the '$' occurs after a inner class with a name starting with
-				 * '-'. Thus we search for '$-' and anything after it including '-' is the inner
-				 * classes name and anything before it is the outer classes name.
-				 */
-				outerClass = inner.substring(0, inner.indexOf("$-"));
-			} else if(inner.contains("$")) {
-				//remove everything after the last '$' including the last '$'
-				outerClass = inner.substring(0, inner.lastIndexOf('$'));
-			} else {
-				//no '$' in a inner class ???
-				//outer = inner;
-				throw new RuntimeException("Error: Could not identify the outer class of the inner class '" + inner + "'.");
-			}
-		} else {
-			outerClass = icTag.getOuterClass().replaceAll("/", ".");
-		}
-		
-		return outerClass;
-	}
-
+    
     private List<Annotation> buildMemberClassesAttribute(SootClass parentClass,
     		InnerClassAttribute t, Set<String> skipList) {
     	List<Annotation> anns = null;
@@ -924,7 +897,7 @@ public class DexPrinter {
     	// Collect the inner classes
     	for (Tag t2 : t.getSpecs()) {
     		InnerClassTag icTag = (InnerClassTag) t2;
-    		String outerClass = getOuterClassNameFromTag(icTag);
+    		String outerClass = DexInnerClassParser.getOuterClassNameFromTag(icTag);
 			
 			// Only classes with names are member classes
 			if (icTag.getOuterClass() != null
