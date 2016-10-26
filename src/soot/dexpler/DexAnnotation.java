@@ -489,9 +489,13 @@ public class DexAnnotation {
 					 * classes name and anything before it is the outer classes name.
 					 */
 					outerClass = classType.substring(0, classType.indexOf("$-"));
+					if (Util.isByteCodeClassName(classType))
+						outerClass += ";";
         		} else if (classType.contains("$")) {
         			//remove everything after the last '$' including the last '$'
-        			outerClass = classType.substring(0, classType.lastIndexOf("$"));
+        			outerClass = classType.substring(0, classType.lastIndexOf("$")) + ";";
+					if (Util.isByteCodeClassName(classType))
+						outerClass += ";";
         		} else {
         			// Make sure that no funny business is going on if the
     				// annotation is broken and does not end in $nn.
