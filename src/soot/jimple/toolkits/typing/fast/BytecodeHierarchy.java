@@ -23,7 +23,6 @@ package soot.jimple.toolkits.typing.fast;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -59,29 +58,30 @@ public class BytecodeHierarchy implements IHierarchy
 	end of a different path from root to Object. */
 	private static Collection<AncestryTreeNode> buildAncestryTree(RefType root)
 	{
+		if (root.getSootClass().isPhantom())
+			return Collections.emptyList();
+		
 		LinkedList<AncestryTreeNode> leafs = new LinkedList<AncestryTreeNode>();
 		leafs.add(new AncestryTreeNode(null, root));
 		
 		LinkedList<AncestryTreeNode> r = new LinkedList<AncestryTreeNode>();
+		final RefType objectType = RefType.v("java.lang.Object");
 		while ( !leafs.isEmpty() )
 		{
 			AncestryTreeNode node = leafs.remove();
-			if ( TypeResolver.typesEqual(
-				node.type, RefType.v("java.lang.Object")) )
+			if ( TypeResolver.typesEqual(node.type, objectType) )
 				r.add(node);
 			else
 			{
 				SootClass sc = node.type.getSootClass();
 				
-				for ( Iterator<SootClass> i = sc.getInterfaces().iterator(); i.hasNext(); )
-					leafs.add(new AncestryTreeNode(
-						node, (i.next()).getType()));
+				for (SootClass i : sc.getInterfaces())
+					leafs.add(new AncestryTreeNode(node, (i).getType()));
 				
 				// The superclass of all interfaces is Object
 				// -- try to discard phantom interfaces.
 				if ( ( !sc.isInterface() || sc.getInterfaceCount() == 0 ) && !sc.isPhantom())
-					leafs.add(new AncestryTreeNode(
-						node, sc.getSuperclass().getType()));
+					leafs.add(new AncestryTreeNode(node, sc.getSuperclass().getType()));
 				
 			}
 		}
