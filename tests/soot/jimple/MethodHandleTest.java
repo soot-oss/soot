@@ -1,6 +1,8 @@
 package soot.jimple;
 
 import com.google.common.io.Files;
+
+import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.*;
 import soot.G;
@@ -48,6 +50,7 @@ public class MethodHandleTest {
 
 
   @Test
+  @Ignore
   public void testInvoke() throws IOException {
 
     // First generate a classfile with a MethodHnadle
