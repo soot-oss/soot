@@ -2093,7 +2093,8 @@ public class Options extends OptionsBase {
                 +padOpt( "implicit-entry (true)", "Include methods called implicitly by the VM as entry points" )
                 +padOpt( "trim-clinit (true)", "Removes redundant static initializer calls" )
                 +padOpt( "reflection-log", "Uses a reflection log to resolve reflective calls." )
-                +padOpt( "guards (ignore)", "Describes how to guard the program from unsound assumptions." );
+                +padOpt( "guards (ignore)", "Describes how to guard the program from unsound assumptions." )
+                +padOpt( "types-for-invoke (false)", "Uses reaching types inferred by the pointer analysis to resolve reflective calls." );
     
         if( phaseName.equals( "cg.cha" ) )
             return "Phase "+phaseName+":\n"+
@@ -3057,7 +3058,8 @@ public class Options extends OptionsBase {
                 +"implicit-entry "
                 +"trim-clinit "
                 +"reflection-log "
-                +"guards ";
+                +"guards "
+                +"types-for-invoke ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
@@ -3676,7 +3678,8 @@ public class Options extends OptionsBase {
               +"all-reachable:false "
               +"implicit-entry:true "
               +"trim-clinit:true "
-              +"guards:ignore ";
+              +"guards:ignore "
+              +"types-for-invoke:false ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""

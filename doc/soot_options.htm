@@ -2147,6 +2147,16 @@ print: the program prints a stack trace when reaching a porgram location that wa
 the program throws an Error instead.                                                                                                
 </p>
 </li>
+<li>
+<b>Types for invoke</b> (types-for-invoke)
+		<br>
+			(default value: <span class="value">false</span>)
+		<p>For each call to Method.invoke(), use the possible types of the first receiver
+								  argument and the possible types stored in the second argument array to resolve calls to
+								  Method.invoke(). This strategy makes no attempt to resolve reflectively invoked static methods.
+								  Currently only works for context insensitive pointer analyses.
+								  </p>
+</li>
 </ul>
 <h2>
 <a name="phase_5_1">Class Hierarchy Analysis (cg.cha)</a>

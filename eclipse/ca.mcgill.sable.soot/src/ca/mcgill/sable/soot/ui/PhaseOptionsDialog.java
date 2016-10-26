@@ -739,6 +739,9 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("cg", getcgtrim_clinit_widget(), "trim-clinit");
 		
 		
+		addToEnableGroup("cg", getcgtypes_for_invoke_widget(), "types-for-invoke");
+		
+		
 		getcgenabled_widget().getButton().addSelectionListener(this);
 		
 		getcgsafe_forname_widget().getButton().addSelectionListener(this);
@@ -752,6 +755,8 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		getcgimplicit_entry_widget().getButton().addSelectionListener(this);
 		
 		getcgtrim_clinit_widget().getButton().addSelectionListener(this);
+		
+		getcgtypes_for_invoke_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("cg", "cg.cha");
@@ -3075,6 +3080,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgtrim_clinit_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getcgtypes_for_invoke_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getcgtypes_for_invoke_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		stringRes = getcgjdkver_widget().getText().getText();
@@ -7866,6 +7881,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getcgtrim_clinit_widget() {
 		return cgtrim_clinit_widget;
+	}	
+	
+	private BooleanOptionWidget cgtypes_for_invoke_widget;
+	
+	private void setcgtypes_for_invoke_widget(BooleanOptionWidget widget) {
+		cgtypes_for_invoke_widget = widget;
+	}
+	
+	public BooleanOptionWidget getcgtypes_for_invoke_widget() {
+		return cgtypes_for_invoke_widget;
 	}	
 	
 	
@@ -13535,6 +13560,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setcgtrim_clinit_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Trim Static Initializer Edges", "p", "cg","trim-clinit", "\nThe call graph contains an edge from each statement that could \ntrigger execution of a static initializer to that static \ninitializer. However, each static initializer is triggered only \nonce. When this option is enabled, after the call graph is \nbuilt, an intra-procedural analysis is performed to detect \nstatic initializer edges leading to methods that must have \nalready been executed. Since these static initializers cannot be \nexecuted again, the corresponding call graph edges are removed \nfrom the call graph. ", defaultBool)));
+		
+		
+		
+		defKey = "p"+" "+"cg"+" "+"types-for-invoke";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setcgtypes_for_invoke_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Types for invoke", "p", "cg","types-for-invoke", "\nFor each call to Method.invoke(), use the possible types of the \nfirst receiver 								 argument and the possible types stored \nin the second argument array to resolve calls to 								 \nMethod.invoke(). This strategy makes no attempt to resolve \nreflectively invoked static methods. 								 Currently only \nworks for context insensitive pointer analyses. 								 ", defaultBool)));
 		
 		
 		

@@ -69,6 +69,9 @@ public final class PropWorklist extends Propagator {
 						public final void visit(Node n) {
 							AllocDotField nDotF = pag.makeAllocDotField(
 									(AllocNode) n, target.getField());
+                            if(ofcg != null) {
+                            	ofcg.updatedFieldRef(nDotF, src.getP2Set());
+                            }
 							nDotF.makeP2Set().addAll(src.getP2Set(), null);
 						}
 					});

@@ -51,6 +51,7 @@ import soot.jimple.internal.JEqExpr;
 import soot.jimple.internal.JIfStmt;
 import soot.jimple.internal.JInstanceOfExpr;
 import soot.jimple.internal.JNeExpr;
+import soot.shimple.PhiExpr;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ForwardBranchedFlowAnalysis;
 
@@ -315,9 +316,39 @@ public class NullnessAnalysis  extends ForwardBranchedFlowAnalysis<NullnessAnaly
 			out.put(left, NULL);
 		} else if(left instanceof Local && right instanceof Local) {
 			out.put(left, out.get(right));
+		} else if(left instanceof Local && right instanceof PhiExpr) {
+			handlePhiExpr(out, left, (PhiExpr)right);
 		} else {
 			out.put(left, TOP);
 		}
+	}
+
+	private void handlePhiExpr(AnalysisInfo out, Value left, PhiExpr right) {
+		int curr = BOTTOM;
+		for(Value v : right.getValues()) {
+			int nullness = out.get(v);
+			if(nullness == BOTTOM) {
+				continue;
+			} else if(nullness == TOP) {
+				out.put(left, TOP);
+				return;
+			} else if(nullness == NULL) {
+				if(curr == BOTTOM) {
+					curr = NULL;
+				} else if(curr != NULL) {
+					out.put(left, TOP);
+					return;
+				}
+			} else if(nullness == NON_NULL) {
+				if(curr == BOTTOM) {
+					curr = NON_NULL;
+				} else if(curr != NON_NULL) {
+					out.put(left, TOP);
+					return;
+				}
+			}
+		}
+		out.put(left, curr);
 	}
 
 	/**

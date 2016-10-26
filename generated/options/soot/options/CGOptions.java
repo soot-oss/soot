@@ -142,6 +142,22 @@ public class CGOptions
         return soot.PhaseOptions.getBoolean( options, "trim-clinit" );
     }
     
+    /** Types for invoke --
+    
+     * Uses reaching types inferred by the pointer analysis to resolve 
+     * reflective calls..
+    
+     * For each call to Method.invoke(), use the possible types of the 
+     * first receiver 								 argument and the possible types stored 
+     * in the second argument array to resolve calls to 								 
+     * Method.invoke(). This strategy makes no attempt to resolve 
+     * reflectively invoked static methods. 								 Currently only 
+     * works for context insensitive pointer analyses. 								 
+     */
+    public boolean types_for_invoke() {
+        return soot.PhaseOptions.getBoolean( options, "types-for-invoke" );
+    }
+    
     /** JDK version --
     
      * JDK version for native methods.

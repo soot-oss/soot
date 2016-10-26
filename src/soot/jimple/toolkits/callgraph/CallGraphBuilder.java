@@ -32,6 +32,14 @@ import soot.PointsToAnalysis;
 import soot.PointsToSet;
 import soot.Scene;
 import soot.Type;
+import soot.Value;
+import soot.jimple.IntConstant;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ArrayElement;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.util.queue.QueueReader;
 
 /**
@@ -97,7 +105,7 @@ public final class CallGraphBuilder {
 			reachables.update();
 			if (!worklist.hasNext())
 				break;
-			MethodOrMethodContext momc = (MethodOrMethodContext) worklist
+			final MethodOrMethodContext momc = worklist
 					.next();
 			List<Local> receivers = ofcgb.methodToReceivers()
 					.get(momc.method());
@@ -112,6 +120,46 @@ public final class CallGraphBuilder {
 						ofcgb.addType(receiver, momc.context(), type, null);
 					}
 				}
+			List<Local> bases = ofcgb.methodToInvokeArgs().get(momc.method());
+			if(bases != null) {
+				for(Local base : bases) {
+					PointsToSet pts = pa.reachingObjects(base);
+					for(Type ty : pts.possibleTypes()) {
+						ofcgb.addBaseType(base, momc.context(), ty);
+					}
+				}
+			}
+			List<Local> argArrays = ofcgb.methodToInvokeBases().get(momc.method());
+			if(argArrays != null) {
+				for(final Local argArray : argArrays) {
+					PointsToSet pts = pa.reachingObjects(argArray);
+					if(pts instanceof PointsToSetInternal) {
+						PointsToSetInternal ptsi = (PointsToSetInternal) pts;
+						ptsi.forall(new P2SetVisitor() {
+							@Override
+							public void visit(Node n) {
+								assert n instanceof AllocNode;
+								AllocNode an = (AllocNode)n;
+								Object newExpr = an.getNewExpr();
+								ofcgb.addInvokeArgDotField(argArray, an.dot(ArrayElement.v()));
+								if(newExpr instanceof NewArrayExpr) {
+									NewArrayExpr nae = (NewArrayExpr) newExpr;
+									Value size = nae.getSize();
+									if(size instanceof IntConstant) {
+										IntConstant arrSize = (IntConstant) size;
+										ofcgb.addPossibleArgArraySize(argArray, arrSize.value, momc.context());
+									} else {
+										ofcgb.setArgArrayNonDetSize(argArray, momc.context());
+									}
+								}
+							}
+						});
+					}
+					for(Type t : pa.reachingObjectsOfArrayElement(pts).possibleTypes()) {
+						ofcgb.addInvokeArgType(argArray, momc.context(), t);
+					}
+				}
+			}
 			List<Local> stringConstants = ofcgb.methodToStringConstants().get(
 					momc.method());
 			if (stringConstants != null)

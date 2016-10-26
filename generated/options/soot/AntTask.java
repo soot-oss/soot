@@ -1210,6 +1210,12 @@ public class AntTask extends MatchingTask {
             addArg("trim-clinit:"+(arg?"true":"false"));
           }
       
+          public void settypes_for_invoke(boolean arg) {
+            addArg("-p");
+            addArg("cg");
+            addArg("types-for-invoke:"+(arg?"true":"false"));
+          }
+      
           public void setlibrary(String arg) {
             addArg("-p");
             addArg("cg");
