@@ -603,7 +603,7 @@ public final class OnFlyCallGraphBuilder
 			if(ics.reachingTypes() != null) {
 				assert ics.nullnessCode() != InvokeCallSite.MUST_BE_NULL;
 				resolveStaticTypes(s, ics);
-				return;
+				continue;
 			}
 			boolean mustNotBeNull = ics.nullnessCode() == InvokeCallSite.MUST_NOT_BE_NULL;
 			boolean mustBeNull = ics.nullnessCode() == InvokeCallSite.MUST_BE_NULL;
