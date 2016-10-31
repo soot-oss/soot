@@ -125,7 +125,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 	}
 	
 	public JimpleBasedInterproceduralCFG(boolean enableExceptions) {
-		this(true, false);
+		this(enableExceptions, false);
 	}
 	
 	public JimpleBasedInterproceduralCFG(boolean enableExceptions,
