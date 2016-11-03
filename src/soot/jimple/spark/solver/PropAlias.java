@@ -185,8 +185,8 @@ public final class PropAlias extends Propagator {
 						addToWorklist(edgeTgt);
 				} else if (addedSrc instanceof NewInstanceNode
 						&& addedTgt instanceof VarNode) {
-					NewInstanceNode edgeSrc = (NewInstanceNode) addedSrc.getReplacement();
-					VarNode edgeTgt = (VarNode) addedTgt.getReplacement();
+					final NewInstanceNode edgeSrc = (NewInstanceNode) addedSrc.getReplacement();
+					final VarNode edgeTgt = (VarNode) addedTgt.getReplacement();
 					addedSrc.getP2Set().forall(new P2SetVisitor() {
 						
 						@Override
