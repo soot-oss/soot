@@ -1436,7 +1436,7 @@ public class PAG implements PointsToAnalysis {
 	protected TypeManager typeManager;
 	private final LargeNumberedMap<Local, LocalVarNode> localToNodeMap = new LargeNumberedMap<Local, LocalVarNode>(
 			Scene.v().getLocalNumberer());
-	private final Map<Value, NewInstanceNode> newInstToNodeMap = new HashMap<>();	// TODO: do we really need this?
+	private final Map<Value, NewInstanceNode> newInstToNodeMap = new HashMap<Value, NewInstanceNode>();
 	public int maxFinishNumber = 0;
 	private Map<Node, Tag> nodeToTag;
 	private final GlobalNodeFactory nodeFactory = new GlobalNodeFactory(this);
