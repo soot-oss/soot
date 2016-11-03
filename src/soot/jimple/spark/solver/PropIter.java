@@ -169,7 +169,7 @@ public final class PropIter extends Propagator {
 	protected final boolean handleNewInstances(NewInstanceNode src) {
 		boolean ret = false;
 		final Node[] newInstances = pag.assignInstanceLookup(src);
-		for (Node instance : newInstances) {
+		for (final Node instance : newInstances) {
 			ret = src.getP2Set().forall(new P2SetVisitor() {
 				
 				@Override
