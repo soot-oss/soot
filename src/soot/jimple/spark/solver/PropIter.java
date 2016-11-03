@@ -166,7 +166,7 @@ public final class PropIter extends Propagator {
 		return ret;
 	}
 	
-	protected final boolean handleNewInstances(NewInstanceNode src) {
+	protected final boolean handleNewInstances(final NewInstanceNode src) {
 		boolean ret = false;
 		final Node[] newInstances = pag.assignInstanceLookup(src);
 		for (final Node instance : newInstances) {
