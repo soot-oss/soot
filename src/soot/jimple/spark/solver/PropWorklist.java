@@ -19,11 +19,29 @@
 
 package soot.jimple.spark.solver;
 
-import soot.jimple.spark.pag.*;
-import soot.jimple.spark.sets.*;
-import soot.*;
-import soot.util.queue.*;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
+import java.util.Set;
+import java.util.TreeSet;
+
+import soot.G;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.Type;
+import soot.jimple.spark.pag.AllocDotField;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ClassConstantNode;
+import soot.jimple.spark.pag.FieldRefNode;
+import soot.jimple.spark.pag.NewInstanceNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.SparkField;
+import soot.jimple.spark.pag.VarNode;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.util.queue.QueueReader;
 
 /**
  * Propagates points-to sets along pointer assignment graph using a worklist.
@@ -141,8 +159,8 @@ public final class PropWorklist extends Propagator {
 				Node addedTgt = (Node) addedEdges.next();
 				ret = true;
 				if (addedSrc instanceof VarNode) {
+					VarNode edgeSrc = (VarNode) addedSrc.getReplacement();
 					if (addedTgt instanceof VarNode) {
-						VarNode edgeSrc = (VarNode) addedSrc.getReplacement();
 						VarNode edgeTgt = (VarNode) addedTgt.getReplacement();
 
 						if (edgeTgt.makeP2Set()
@@ -150,20 +168,57 @@ public final class PropWorklist extends Propagator {
 							varNodeWorkList.add(edgeTgt);
 							if (edgeTgt == src)
 								flush = false;
+						} 
+					} else if (addedTgt instanceof NewInstanceNode) {
+						NewInstanceNode edgeTgt = (NewInstanceNode) addedTgt.getReplacement();
+						if (edgeTgt.makeP2Set().addAll(edgeSrc.getP2Set(), null)) {
+							for (Node element : pag.assignInstanceLookup(edgeTgt)) {
+								varNodeWorkList.add((VarNode) element);
+								if (element == src)
+									flush = false;
+							}
 						}
 					}
 				} else if (addedSrc instanceof AllocNode) {
-					AllocNode edgeSrc = (AllocNode) addedSrc;
 					VarNode edgeTgt = (VarNode) addedTgt.getReplacement();
-					if (edgeTgt.makeP2Set().add(edgeSrc)) {
+					if (edgeTgt.makeP2Set().add(addedSrc)) {
 						varNodeWorkList.add(edgeTgt);
+						if (edgeTgt == src)
+							flush = false;
+					}
+				} else if (addedSrc instanceof NewInstanceNode
+						&& addedTgt instanceof VarNode) {
+					NewInstanceNode edgeSrc = (NewInstanceNode) addedSrc.getReplacement();
+					VarNode edgeTgt = (VarNode) addedTgt.getReplacement();
+					addedSrc.getP2Set().forall(new P2SetVisitor() {
+						
+						@Override
+						public void visit(Node n) {
+							if (n instanceof ClassConstantNode) {
+								ClassConstantNode ccn = (ClassConstantNode) n;
+								Type ccnType = RefType.v(ccn.getClassConstant().getValue().replaceAll("/", "."));
+								
+								// If the referenced class has not been loaded, we do this now
+								SootClass targetClass = ((RefType) ccnType).getSootClass();
+								if (targetClass.resolvingLevel() == SootClass.DANGLING)
+									Scene.v().forceResolve(targetClass.getName(), SootClass.SIGNATURES);
+								
+								// We can only create alloc nodes for types that we know
+								edgeTgt.makeP2Set().add(pag.makeAllocNode(edgeSrc.getValue(),
+										ccnType, ccn.getMethod()));
+								varNodeWorkList.add(edgeTgt);
+							}
+						}
+						
+					});
+					if (edgeTgt.makeP2Set().add(addedSrc)) {
 						if (edgeTgt == src)
 							flush = false;
 					}
 				}
 			}
 		}
-
+		
 		Node[] simpleTargets = pag.simpleLookup(src);
 		for (Node element : simpleTargets) {
 			if (element.makeP2Set().addAll(newP2Set, null)) {

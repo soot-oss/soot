@@ -19,14 +19,56 @@
 
 package soot.jimple.spark.builder;
 
+import soot.ArrayType;
+import soot.Local;
+import soot.PointsToAnalysis;
+import soot.RefLikeType;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootFieldRef;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.Type;
+import soot.Value;
+import soot.jimple.AbstractStmtSwitch;
+import soot.jimple.ArrayRef;
+import soot.jimple.AssignStmt;
+import soot.jimple.CastExpr;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.ClassConstant;
+import soot.jimple.Expr;
+import soot.jimple.IdentityRef;
+import soot.jimple.IdentityStmt;
+import soot.jimple.InstanceFieldRef;
+import soot.jimple.InvokeExpr;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.NewExpr;
+import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.NullConstant;
+import soot.jimple.ParameterRef;
+import soot.jimple.ReturnStmt;
+import soot.jimple.StaticFieldRef;
+import soot.jimple.StaticInvokeExpr;
+import soot.jimple.Stmt;
+import soot.jimple.StringConstant;
+import soot.jimple.ThisRef;
+import soot.jimple.ThrowStmt;
+import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.SparkLibraryHelper;
-import soot.jimple.spark.pag.*;
-import soot.jimple.*;
-import soot.*;
-import soot.toolkits.scalar.Pair;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ArrayElement;
+import soot.jimple.spark.pag.MethodPAG;
+import soot.jimple.spark.pag.NewInstanceNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.Parm;
+import soot.jimple.spark.pag.VarNode;
 import soot.options.CGOptions;
-import soot.shimple.*;
+import soot.shimple.AbstractShimpleValueSwitch;
+import soot.shimple.PhiExpr;
+import soot.toolkits.scalar.Pair;
 
 /**
  * Class implementing builder parameters (this decides what kinds of nodes
@@ -69,9 +111,20 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 
 	/** Adds the edges required for this statement to the graph. */
 	final public void handleStmt(Stmt s) {
+		// We only consider reflective class creation when it is enabled
 		if (s.containsInvokeExpr()) {
-			return;
+			if (!pag.getCGOpts().types_for_invoke())
+				return;
+			
+			InvokeExpr iexpr = s.getInvokeExpr();
+			if (iexpr instanceof VirtualInvokeExpr) {
+				if (!isReflectionNewInstance(iexpr))
+					return;
+			}
+			else if (!(iexpr instanceof StaticInvokeExpr))
+				return;
 		}
+		
 		s.apply(new AbstractStmtSwitch() {
 			final public void caseAssignStmt(AssignStmt as) {
 				Value l = as.getLeftOp();
@@ -92,7 +145,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 					((InstanceFieldRef) r).getBase().apply(MethodNodeFactory.this);
 					pag.addDereference((VarNode) getNode());
 				}
-				if (r instanceof StaticFieldRef) {
+				else if (r instanceof StaticFieldRef) {
 					StaticFieldRef sfr = (StaticFieldRef) r;
 					SootFieldRef s = sfr.getFieldRef();
 					if (pag.getOpts().empties_as_allocs()) {
@@ -158,6 +211,27 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 				mpag.addOutEdge(getNode(), pag.nodeFactory().caseThrow());
 			}
 		});
+	}
+
+	/**
+	 * Checks whether the given invocation is for Class.newInstance()
+	 * @param iexpr The invocation to check
+	 * @return True if the given invocation is for Class.newInstance(), otherwise
+	 * false
+	 */
+	private boolean isReflectionNewInstance(InvokeExpr iexpr) {
+		if (iexpr instanceof VirtualInvokeExpr) {
+			VirtualInvokeExpr vie = (VirtualInvokeExpr) iexpr;
+			if (vie.getBase().getType() instanceof RefType) {
+				RefType rt = (RefType) vie.getBase().getType();
+				if (rt.getSootClass().getName().equals("java.lang.Class"))
+					if (vie.getMethodRef().name().equals("newInstance")
+							&& vie.getMethodRef().parameterTypes().size() == 0) {
+						return true;
+					}
+			}
+		}
+		return false;
 	}
 
 	final public Node getNode() {
@@ -333,6 +407,36 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 	@Override
 	final public void defaultCase(Object v) {
 		throw new RuntimeException("failed to handle " + v);
+	}
+	
+	@Override
+	public void caseStaticInvokeExpr(StaticInvokeExpr v) {
+		SootMethodRef ref = v.getMethodRef();
+		if (v.getArgCount() == 1
+				&& v.getArg(0) instanceof StringConstant
+				&& ref.name().equals("forName")
+				&& ref.declaringClass().getName().equals("java.lang.Class")
+				&& ref.parameterTypes().size() == 1) {
+			// This is a call to Class.forName
+			StringConstant classNameConst = (StringConstant) v.getArg(0);
+			caseClassConstant(ClassConstant.v(classNameConst.value.replaceAll("\\.", "/")));
+		}
+	}
+	
+	@Override
+	public void caseVirtualInvokeExpr(VirtualInvokeExpr v) {
+		if (isReflectionNewInstance(v)) {
+			NewInstanceNode newInstanceNode = pag.makeNewInstanceNode(v,
+					Scene.v().getObjectType(), method);
+			
+			v.getBase().apply(this);
+			Node srcNode = getNode();
+			mpag.addInternalEdge(srcNode, newInstanceNode);
+			
+			setResult(newInstanceNode);
+		}
+		else
+			throw new RuntimeException("Unhandled case of VirtualInvokeExpr");
 	}
 
 	protected PAG pag;

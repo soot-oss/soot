@@ -29,6 +29,7 @@ import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
 import soot.jimple.spark.pag.ArrayElement;
 import soot.jimple.spark.pag.MethodPAG;
+import soot.jimple.spark.pag.NewInstanceNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.StringConstantNode;
@@ -118,8 +119,9 @@ public class OnFlyCallGraph {
         PointsToSetInternal p2set = vn.getP2Set().getNewSet();
         if( ofcgb.wantTypes( receiver ) ) {
             p2set.forall( new P2SetVisitor() {
-            public final void visit( Node n ) { 
-                ofcgb.addType( receiver, context, n.getType(), (AllocNode) n );
+            public final void visit( Node n ) {
+            	if (n instanceof AllocNode)
+            		ofcgb.addType( receiver, context, n.getType(), (AllocNode) n );
             }} );
         }
         if( ofcgb.wantStringConstants( receiver ) ) {
@@ -137,16 +139,18 @@ public class OnFlyCallGraph {
         	p2set.forall(new P2SetVisitor() {
 				@Override
 				public void visit(Node n) {
-					AllocNode an = ((AllocNode)n);
-					ofcgb.addInvokeArgDotField(receiver, an.dot(ArrayElement.v()));
-					assert an.getNewExpr() instanceof NewArrayExpr;
-					NewArrayExpr nae = (NewArrayExpr) an.getNewExpr();
-					if(!(nae.getSize() instanceof IntConstant)) {
-						ofcgb.setArgArrayNonDetSize(receiver, context);
-					} else {
-						IntConstant sizeConstant = (IntConstant) nae.getSize();
-						ofcgb.addPossibleArgArraySize(receiver, sizeConstant.value, context);
-					}
+	            	if (n instanceof AllocNode) {
+						AllocNode an = ((AllocNode)n);
+						ofcgb.addInvokeArgDotField(receiver, an.dot(ArrayElement.v()));
+						assert an.getNewExpr() instanceof NewArrayExpr;
+						NewArrayExpr nae = (NewArrayExpr) an.getNewExpr();
+						if(!(nae.getSize() instanceof IntConstant)) {
+							ofcgb.setArgArrayNonDetSize(receiver, context);
+						} else {
+							IntConstant sizeConstant = (IntConstant) nae.getSize();
+							ofcgb.addPossibleArgArraySize(receiver, sizeConstant.value, context);
+						}
+	            	}
 				}
 			});
         	for(Type ty : pag.reachingObjectsOfArrayElement(p2set).possibleTypes()) {

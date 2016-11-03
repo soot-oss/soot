@@ -29,13 +29,21 @@ public class HashMultiMap<K,V> extends AbstractMultiMap<K, V> {
     protected final Map<K,Set<V>> m;
 
     protected Map<K, Set<V>> createMap() {
-    	return new HashMap<K,Set<V>>(0);
+    	return createMap(0);
     }
     
+    protected Map<K, Set<V>> createMap(int initialSize) {
+    	return new HashMap<K,Set<V>>(initialSize);
+    }
+
     public HashMultiMap() {
     	this.m = createMap();
     }
     
+    public HashMultiMap(int initialSize) {
+    	this.m = createMap(initialSize);
+    }
+
     public HashMultiMap( MultiMap<K,V> m ) {
     	this.m = createMap();
         putAll( m );

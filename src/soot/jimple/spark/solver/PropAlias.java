@@ -164,18 +164,51 @@ public final class PropAlias extends Propagator {
 				Node addedTgt = (Node) addedEdges.next();
 				ret = true;
 				if (addedSrc instanceof VarNode) {
+					VarNode edgeSrc = (VarNode) addedSrc;
 					if (addedTgt instanceof VarNode) {
-						VarNode edgeSrc = (VarNode) addedSrc;
 						VarNode edgeTgt = (VarNode) addedTgt;
 						if (edgeTgt.makeP2Set().addAll(edgeSrc.getP2Set(), null))
 							addToWorklist(edgeTgt);
+					}
+					else if (addedTgt instanceof NewInstanceNode) {
+						NewInstanceNode edgeTgt = (NewInstanceNode) addedTgt.getReplacement();
+						if (edgeTgt.makeP2Set().addAll(edgeSrc.getP2Set(), null)) {
+							for (Node element : pag.assignInstanceLookup(edgeTgt)) {
+								addToWorklist((VarNode) element);
+							}
+						}
 					}
 				} else if (addedSrc instanceof AllocNode) {
 					AllocNode edgeSrc = (AllocNode) addedSrc;
 					VarNode edgeTgt = (VarNode) addedTgt;
 					if (edgeTgt.makeP2Set().add(edgeSrc))
 						addToWorklist(edgeTgt);
+				} else if (addedSrc instanceof NewInstanceNode
+						&& addedTgt instanceof VarNode) {
+					NewInstanceNode edgeSrc = (NewInstanceNode) addedSrc.getReplacement();
+					VarNode edgeTgt = (VarNode) addedTgt.getReplacement();
+					addedSrc.getP2Set().forall(new P2SetVisitor() {
+						
+						@Override
+						public void visit(Node n) {
+							if (n instanceof ClassConstantNode) {
+								ClassConstantNode ccn = (ClassConstantNode) n;
+								Type ccnType = RefType.v(ccn.getClassConstant().getValue().replaceAll("/", "."));
+								
+								// If the referenced class has not been loaded, we do this now
+								SootClass targetClass = ((RefType) ccnType).getSootClass();
+								if (targetClass.resolvingLevel() == SootClass.DANGLING)
+									Scene.v().forceResolve(targetClass.getName(), SootClass.SIGNATURES);
+								
+								edgeTgt.makeP2Set().add(pag.makeAllocNode(edgeSrc.getValue(),
+										ccnType, ccn.getMethod()));
+								addToWorklist(edgeTgt);
+							}
+						}
+						
+					});
 				}
+				
 				FieldRefNode frn = null;
 				if (addedSrc instanceof FieldRefNode)
 					frn = (FieldRefNode) addedSrc;

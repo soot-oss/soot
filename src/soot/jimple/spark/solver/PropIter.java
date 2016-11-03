@@ -47,12 +47,12 @@ public final class PropIter extends Propagator {
 		boolean change;
 		do {
 			change = false;
-			TreeSet<Object> simpleSources = new TreeSet<Object>(pag.simpleSources());
+			TreeSet<VarNode> simpleSources = new TreeSet<VarNode>(pag.simpleSources());
 			if (pag.getOpts().verbose()) {
 				G.v().out.println("Iteration " + (iteration++));
 			}
-			for (Object object : simpleSources) {
-				change = handleSimples((VarNode) object) | change;
+			for (VarNode object : simpleSources) {
+				change = handleSimples(object) | change;
 			}
 			if (ofcg != null) {
 				QueueReader<Node> addedEdges = pag.edgeReader();
@@ -77,11 +77,14 @@ public final class PropIter extends Propagator {
 					new TopoSorter(pag, false).sort();
 				}
 			}
-			for (Object object : pag.loadSources()) {
-				change = handleLoads((FieldRefNode) object) | change;
+			for (FieldRefNode object : pag.loadSources()) {
+				change = handleLoads(object) | change;
 			}
-			for (Object object : pag.storeSources()) {
-				change = handleStores((VarNode) object) | change;
+			for (VarNode object : pag.storeSources()) {
+				change = handleStores(object) | change;
+			}
+			for (NewInstanceNode object : pag.assignInstanceSources()) {
+				change = handleNewInstances(object) | change;
 			}
 		} while (change);
 	}
@@ -110,6 +113,12 @@ public final class PropIter extends Propagator {
 		for (Node element : simpleTargets) {
 			ret = element.makeP2Set().addAll(srcSet, null) | ret;
 		}
+		
+		Node[] newInstances = pag.newInstanceLookup(src);
+		for (Node element : newInstances) {
+			ret = element.makeP2Set().addAll(srcSet, null) | ret;
+		}
+		
 		return ret;
 	}
 
@@ -154,6 +163,32 @@ public final class PropIter extends Propagator {
 				}
 			}
 		}) | ret;
+		return ret;
+	}
+	
+	protected final boolean handleNewInstances(NewInstanceNode src) {
+		boolean ret = false;
+		final Node[] newInstances = pag.assignInstanceLookup(src);
+		for (Node instance : newInstances) {
+			ret = src.getP2Set().forall(new P2SetVisitor() {
+				
+				@Override
+				public void visit(Node n) {
+					if (n instanceof ClassConstantNode) {
+						ClassConstantNode ccn = (ClassConstantNode) n;
+						Type ccnType = RefType.v(ccn.getClassConstant().getValue().replaceAll("/", "."));
+						
+						// If the referenced class has not been loaded, we do this now
+						SootClass targetClass = ((RefType) ccnType).getSootClass();
+						if (targetClass.resolvingLevel() == SootClass.DANGLING)
+							Scene.v().forceResolve(targetClass.getName(), SootClass.SIGNATURES);
+						
+						instance.makeP2Set().add(pag.makeAllocNode(src.getValue(), ccnType, ccn.getMethod()));
+					}
+				}
+				
+			});
+		}
 		return ret;
 	}
 
