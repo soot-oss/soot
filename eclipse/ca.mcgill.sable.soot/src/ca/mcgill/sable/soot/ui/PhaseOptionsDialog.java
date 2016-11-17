@@ -2075,6 +2075,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getGeneral_Optionsdebug_resolver_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getGeneral_Optionsignore_resolving_levels_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getGeneral_Optionsignore_resolving_levels_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		stringRes = getGeneral_Optionsphase_help_widget().getText().getText();
 		
 		defStringRes = "";
@@ -6831,6 +6841,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return General_Optionsdebug_resolver_widget;
 	}	
 	
+	private BooleanOptionWidget General_Optionsignore_resolving_levels_widget;
+	
+	private void setGeneral_Optionsignore_resolving_levels_widget(BooleanOptionWidget widget) {
+		General_Optionsignore_resolving_levels_widget = widget;
+	}
+	
+	public BooleanOptionWidget getGeneral_Optionsignore_resolving_levels_widget() {
+		return General_Optionsignore_resolving_levels_widget;
+	}	
+	
 
 	private ListOptionWidget General_Optionsphase_help_widget;
 	
@@ -10711,6 +10731,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setGeneral_Optionsdebug_resolver_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug Resolver", "", "","debug-resolver", "\nPrint debugging information about class resolving. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"ignore-resolving-levels";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setGeneral_Optionsignore_resolving_levels_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Ignore Resolving Levels", "", "","ignore-resolving-levels", "\nIf this option is set, Soot will not check whether the current \nclass' resolving level is sufficiently high for the operation \nattempted on the class. This allows you to perform any operation \non a class even if the class has not been fully loaded, which \ncan lead to inconsistencies between your Soot scene and the \noriginal classes you loaded. Use this option at your own risk. ", defaultBool)));
 		
 		
 

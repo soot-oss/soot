@@ -142,7 +142,7 @@ public class SootClass extends AbstractHost implements Numberable {
 	 *             if the resolution is at an insufficient level
 	 */
 	public void checkLevel(int level) {
-		if (!Scene.v().doneResolving())
+		if (!Scene.v().doneResolving() || Options.v().ignore_resolving_levels())
 			return;
 		checkLevelIgnoreResolving(level);
 	}

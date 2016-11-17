@@ -362,6 +362,17 @@ from the Baf Body Phase and the Jimple Annotation Pack Phase.
 Print debugging information about class resolving.
 </long_desc>
                 </boolopt>
+                <boolopt>
+			<name>Ignore Resolving Levels</name>
+			<alias>ignore-resolving-levels</alias>
+			<short_desc>Ignore mismatching resolving levels</short_desc>
+			<long_desc>
+If this option is set, Soot will not check whether the current class' resolving level is sufficiently
+high for the operation attempted on the class. This allows you to perform any operation on a class
+even if the class has not been fully loaded, which can lead to inconsistencies between your Soot scene
+and the original classes you loaded. Use this option at your own risk.
+</long_desc>
+                </boolopt>
 	</section>
 	<section>
 		<name>Input Options</name>

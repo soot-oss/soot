@@ -180,6 +180,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-debug-resolver");
         }
   
+        public void setignore_resolving_levels(boolean arg) {
+            if(arg) addArg("-ignore-resolving-levels");
+        }
+  
         public void setsoot_classpath(String arg) {
             addArg("-soot-classpath");
             addArg(arg);
