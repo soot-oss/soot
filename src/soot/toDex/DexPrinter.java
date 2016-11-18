@@ -156,7 +156,7 @@ public class DexPrinter {
 	
 	public DexPrinter() {
 		int api = Scene.v().getAndroidAPIVersion();
-		dexFile = DexBuilder.makeDexBuilder(Opcodes.forApi(api));
+		dexFile = new DexBuilder(Opcodes.forApi(api));
 	}
 	
 	private void printApk(String outputDir, File originalApk) throws IOException {

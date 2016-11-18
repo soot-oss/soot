@@ -242,7 +242,8 @@ public class SourceLocator
 					String entryName = entry.getName();
 					// We are dealing with an apk file
 					if (entryName.endsWith(".dex"))
-						classes.addAll(DexClassProvider.classesOfDex(new File(aPath), entryName));
+						if (Options.v().process_multiple_dex() || entryName.equals("classes.dex"))
+							classes.addAll(DexClassProvider.classesOfDex(new File(aPath), entryName));
 				}		
 			} catch (IOException e) {
 				throw new CompilationDeathException("Error reasing archive '" + aPath + "'",e);
@@ -294,7 +295,8 @@ public class SourceLocator
 				if(Options.v().process_multiple_dex()){
 					for(String dexEntryName : dexEntryNames){
 						try {
-							classes.addAll(DexClassProvider.classesOfDex(file,dexEntryName));
+							classes.addAll(DexClassProvider.classesOfDex(
+									file,dexEntryName));
 						} catch (Throwable e) {} /* Ignore unreadable files */
 					}
 				}else{

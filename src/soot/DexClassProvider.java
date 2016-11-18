@@ -125,10 +125,9 @@ public class DexClassProvider implements ClassProvider {
 							for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
 								ZipEntry entry = entries.nextElement();
 		    					String entryName = entry.getName();
-		    					if(entryName.endsWith(".dex")){
-		    						entryNames.add(entryName);
-		    						if(!Options.v().process_multiple_dex())
-		    							break;
+		    					if(entryName.endsWith(".dex")) {
+		    						if (Options.v().process_multiple_dex() || entryName.equals("classes.dex"))
+		    							entryNames.add(entryName);
 		    					}
 							}
 						}catch(Exception e){
