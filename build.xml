@@ -26,8 +26,8 @@
             debug="true"
 	    includeantruntime="true"
             deprecation="on"
-        	source="1.6"
-        	target="1.6"
+        	source="1.7"
+        	target="1.7"
         	fork="true"
         	memorymaximumsize="512m"
 		>
@@ -227,8 +227,8 @@
     <target name="buildtests" depends="compile,settings">
         <mkdir dir="testclasses"/>
         <javac
-        	source="1.6"
-        	target="1.6"
+        	source="1.7"
+        	target="1.7"
             srcdir="tests"
             destdir="testclasses"
             debug="true">
