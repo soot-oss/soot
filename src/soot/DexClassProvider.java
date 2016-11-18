@@ -64,6 +64,13 @@ public class DexClassProvider implements ClassProvider {
 			buildDexIndex(index, SourceLocator.v().classPath());
 			SourceLocator.v().setDexClassIndex(index);
 		}
+		
+		// Process the classpath extensions
+		if (SourceLocator.v().getDexClassPathExtensions() != null) {
+			buildDexIndex(SourceLocator.v().dexClassIndex(),
+					new ArrayList<>(SourceLocator.v().getDexClassPathExtensions()));
+			SourceLocator.v().clearDexClassPathExtensions();
+		}
 
 		File file = index.get(className);
 		if (file == null)

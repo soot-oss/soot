@@ -279,6 +279,11 @@ public class Scene  //extends AbstractHost
         SourceLocator.v().invalidateClassPath();
     }
     
+    public void extendSootClassPath(String newPathElement){
+    	sootClassPath += File.pathSeparator + newPathElement;
+    	SourceLocator.v().extendClassPath(newPathElement);
+    }
+    
     public String getSootClassPath()
     {
         if( sootClassPath == null ) {

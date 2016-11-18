@@ -772,6 +772,13 @@ public class SourceLocator
         }
         return javaClassName;
     }
+    
+    /**
+     * Set containing all dex files that were appended to the classpath
+     * later on. The classes from these files are not yet loaded and are
+     * still missing from dexClassIndex.
+     */
+    private Set<String> dexClassPathExtensions;
 
     /**
      * The index that maps classes to the files they are defined in.
@@ -796,5 +803,30 @@ public class SourceLocator
     public void setDexClassIndex(Map<String, File> index) {
     	dexClassIndex = index;
     }
+    
+	public void extendClassPath(String newPathElement) {
+		classPath = null;
+		if (newPathElement.endsWith(".dex") || newPathElement.endsWith(".apk")) {
+			if (dexClassPathExtensions == null)
+				dexClassPathExtensions = new HashSet<String>();
+			dexClassPathExtensions.add(newPathElement);
+		}
+	}
+	
+	/**
+	 * Gets all files that were added to the classpath later on and that have
+	 * not yet been processed for the dexClassIndex mapping
+	 * @return The set of dex or apk files that still need to be indexed
+	 */
+	public Set<String> getDexClassPathExtensions() {
+		return this.dexClassPathExtensions;
+	}
+	
+	/**
+	 * Clears the set of dex or apk files that still need to be indexed
+	 */
+	public void clearDexClassPathExtensions() {
+		this.dexClassPathExtensions = null;
+	}
 }
 
