@@ -682,6 +682,19 @@ Use Java 1.4 Polyglot frontend instead of JastAdd, which supports Java 5 syntax.
 			    will, for instance, also be loaded from a/b/c.jimple instead of only a.b.c.jimple.
 			</long_desc>
 		</boolopt>
+		<boolopt>
+			<name>Drop method source after loading bodies</name>
+			<alias>drop-bodies-after-load</alias>
+			<default>true</default>
+			<short_desc>Drop the method source after it has served its purpose of loading the method body</short_desc>
+			<long_desc>
+			    Each method is associated with a method source for loading its body. When this option is disabled,
+			    a reference to this source is kept around even after the body has already been loaded. This is a waste
+			    of memory for most use cases. When this option is enabled, the reference is dropped, allowing for garbage
+			    collection of the method source. On the other hand, if the body is ever released, it cannot easily be
+			    recovered (i.e., loaded again) easily.
+			</long_desc>
+		</boolopt>
 	</section>
 	<section>
 		<name>Output Options</name>
@@ -6211,7 +6224,7 @@ to occur at arbitrary points in the execution of a victim thread.
 								<name>Unit</name>
 								<alias>unit</alias>
 								<short_desc>Unit Throw Analysis</short_desc>
-								<default/>																
+								<default/>
 								<long_desc>
 Says that each statement in the intermediate representation
 may throw those exception types associated with the corresponding
@@ -6219,6 +6232,15 @@ Java bytecode instructions in the JVM Specification.  The
 analysis deals with each statement in isolation, without regard
 to the surrounding program.
 </long_desc>
+							</value>
+							<value>
+								<name>Dalvik</name>
+								<alias>dalvik</alias>
+								<short_desc>Dalvik Throw Analysis</short_desc>
+								<default/>													
+								<long_desc>
+Specialized throw analysis implementation that covers the semantics of the Dalvik
+IR used for Android apps</long_desc>
 							</value>
 						</multiopt>
 						<multiopt>

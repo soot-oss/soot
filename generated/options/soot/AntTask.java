@@ -280,6 +280,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-permissive-resolving");
         }
   
+        public void setdrop_bodies_after_load(boolean arg) {
+            if(arg) addArg("-drop-bodies-after-load");
+        }
+  
         public void setoutput_dir(String arg) {
             addArg("-output-dir");
             addArg(arg);
@@ -443,6 +447,7 @@ public class AntTask extends MatchingTask {
     
                 || arg.equals( "pedantic" )
                 || arg.equals( "unit" )
+                || arg.equals( "dalvik" )
                 ) {
                 addArg("-throw-analysis");
                 addArg(arg);

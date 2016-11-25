@@ -51,6 +51,7 @@ import java.util.zip.ZipFile;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import soot.dexpler.DalvikThrowAnalysis;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.spark.pag.SparkField;
@@ -1298,30 +1299,31 @@ public class Scene  //extends AbstractHost
         contextNumberer = n;
     }
 
-    /**
-     * Returns the {@link ThrowAnalysis} to be used by default when
-     * constructing CFGs which include exceptional control flow.
-     *
-     * @return the default {@link ThrowAnalysis}
-     */
-    public ThrowAnalysis getDefaultThrowAnalysis() 
-    {
-	if( defaultThrowAnalysis == null ) {
-	    int optionsThrowAnalysis = Options.v().throw_analysis();
-	    switch (optionsThrowAnalysis) {
-	    case Options.throw_analysis_pedantic:
-		defaultThrowAnalysis = PedanticThrowAnalysis.v();
-		break;
-	    case Options.throw_analysis_unit:
-		defaultThrowAnalysis = UnitThrowAnalysis.v();
-		break;
-	    default:
-		throw new IllegalStateException("Options.v().throw_analysi() == " +
-						Options.v().throw_analysis());
-	    }
+	/**
+	 * Returns the {@link ThrowAnalysis} to be used by default when constructing
+	 * CFGs which include exceptional control flow.
+	 *
+	 * @return the default {@link ThrowAnalysis}
+	 */
+	public ThrowAnalysis getDefaultThrowAnalysis() {
+		if (defaultThrowAnalysis == null) {
+			int optionsThrowAnalysis = Options.v().throw_analysis();
+			switch (optionsThrowAnalysis) {
+			case Options.throw_analysis_pedantic:
+				defaultThrowAnalysis = PedanticThrowAnalysis.v();
+				break;
+			case Options.throw_analysis_unit:
+				defaultThrowAnalysis = UnitThrowAnalysis.v();
+				break;
+			case Options.throw_analysis_dalvik:
+				defaultThrowAnalysis = DalvikThrowAnalysis.v();
+				break;
+			default:
+				throw new IllegalStateException("Options.v().throw_analysi() == " + Options.v().throw_analysis());
+			}
+		}
+		return defaultThrowAnalysis;
 	}
-	return defaultThrowAnalysis;
-    }
 
     /**
      * Sets the {@link ThrowAnalysis} to be used by default when

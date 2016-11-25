@@ -2204,6 +2204,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionspermissive_resolving_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getInput_Optionsdrop_bodies_after_load_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsdrop_bodies_after_load_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		stringRes = getInput_Optionssoot_classpath_widget().getText().getText();
 		
 		defStringRes = "";
@@ -2476,6 +2486,8 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		defStringRes = "unit";
+		
+		defStringRes = "dalvik";
 		
 
 		if (!stringRes.equals(defStringRes)) {
@@ -6973,6 +6985,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Input_Optionspermissive_resolving_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionsdrop_bodies_after_load_widget;
+	
+	private void setInput_Optionsdrop_bodies_after_load_widget(BooleanOptionWidget widget) {
+		Input_Optionsdrop_bodies_after_load_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsdrop_bodies_after_load_widget() {
+		return Input_Optionsdrop_bodies_after_load_widget;
+	}	
+	
 
 	private ListOptionWidget Input_Optionsprocess_dir_widget;
 	
@@ -10971,6 +10993,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
+		defKey = ""+" "+""+" "+"drop-bodies-after-load";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setInput_Optionsdrop_bodies_after_load_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Drop method source after loading bodies", "", "","drop-bodies-after-load", "\n			 Each method is associated with a method source for \nloading its body. When this option is disabled, 			 a \nreference to this source is kept around even after the body has \nalready been loaded. This is a waste 			 of memory for most \nuse cases. When this option is enabled, the reference is \ndropped, allowing for garbage 			 collection of the method \nsource. On the other hand, if the body is ever released, it \ncannot easily be 			 recovered (i.e., loaded again) easily. \n			", defaultBool)));
+		
+		
+		
 		data = new OptionData [] {
 		
 		new OptionData("Class File",
@@ -11663,6 +11701,12 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		new OptionData("Unit",
 		"unit",
 		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. ",
+		
+		true),
+		
+		new OptionData("Dalvik",
+		"dalvik",
+		"\nSpecialized throw analysis implementation that covers the \nsemantics of the Dalvik IR used for Android apps",
 		
 		true),
 		
