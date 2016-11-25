@@ -25,9 +25,7 @@ package soot.dexpler;
 
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import org.jf.dexlib2.iface.Annotation;
 import org.jf.dexlib2.iface.AnnotationElement;
@@ -64,8 +62,6 @@ public class DexMethod {
      * @return the SootMethod of this method
      */
     public static SootMethod makeSootMethod(DexFile dexFile, Method method, SootClass declaringClass) {
-        Set<Type> types = new HashSet<Type>();
-
         int accessFlags = method.getAccessFlags();
         List<Type> parameterTypes = new ArrayList<Type>();
 
@@ -102,13 +98,11 @@ public class DexMethod {
             for(CharSequence t : parameters) {
                 Type type = DexType.toSoot(t.toString());
                 parameterTypes.add(type);
-                types.add(type);
             }
         }
 
         // retrieve the return type of this method
         Type returnType = DexType.toSoot(method.getReturnType());
-        types.add(returnType);
 
         //Build soot method by all available parameters
         SootMethod sm = declaringClass.getMethodUnsafe(name, parameterTypes, returnType);
@@ -138,9 +132,6 @@ public class DexMethod {
 
         //add the body of this code item
         final DexBody dexBody = new DexBody(dexFile, method, (RefType) declaringClass.getType());
-
-        for (Type t : dexBody.usedTypes())
-            types.add(t);
 
         // sets the method source by adding its body as the active body
         sm.setSource(new MethodSource() {
