@@ -130,14 +130,13 @@ public class DexMethod {
 //	        }
 //        }
 
-        //add the body of this code item
-        final DexBody dexBody = new DexBody(dexFile, method, (RefType) declaringClass.getType());
-
         // sets the method source by adding its body as the active body
         sm.setSource(new MethodSource() {
             public Body getBody(SootMethod m, String phaseName) {
                 Body b = Jimple.v().newBody(m);
                 try {
+                    //add the body of this code item
+                    final DexBody dexBody = new DexBody(dexFile, method, (RefType) declaringClass.getType());
 					dexBody.jimplify(b, m);
                 } catch (InvalidDalvikBytecodeException e) {
                     String msg = "Warning: Invalid bytecode in method "+ m +": "+ e;
