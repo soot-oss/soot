@@ -58,16 +58,4 @@ public class LineNumberTag implements Tag
    	return ""+line_number;
     }
 
-    /*
-    protected void finalize()
-    {	
-	try {
-	    throw new RuntimeException();
-	} catch (RuntimeException re)
-	{
-	    G.v().out.println("I, at line "+line_number+", dead here.");
-	    re.printStackTrace();
-	}
-    }
-    */
 }

@@ -35,12 +35,9 @@ import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.BinopExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JIfStmt;
 
 public class IfTestInstruction extends ConditionalJumpInstruction {
 
-    JIfStmt jif = null;
-  
     public IfTestInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -50,7 +47,7 @@ public class IfTestInstruction extends ConditionalJumpInstruction {
         Local one = body.getRegisterLocal(i.getRegisterA());
         Local other = body.getRegisterLocal(i.getRegisterB());
         BinopExpr condition = getComparisonExpr(one, other);
-        jif = (JIfStmt)Jimple.v().newIfStmt(condition, targetInstruction.getUnit());
+        IfStmt jif = Jimple.v().newIfStmt(condition, targetInstruction.getUnit());
         // setUnit() is called in ConditionalJumpInstruction
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {

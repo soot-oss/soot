@@ -49,8 +49,6 @@ import soot.jimple.CastExpr;
 import soot.jimple.Jimple;
 
 public class CastInstruction extends TaggedInstruction {
-
-    AssignStmt assign = null;
   
     public CastInstruction (Instruction instruction, int codeAddress) {
         super(instruction, codeAddress);
@@ -62,7 +60,7 @@ public class CastInstruction extends TaggedInstruction {
         int source = i.getRegisterB();
         Type targetType = getTargetType();
         CastExpr cast = Jimple.v().newCastExpr(body.getRegisterLocal(source), targetType);
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cast);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cast);
         assign.addTag (getTag());
         setUnit(assign);
         addTags(assign);

@@ -78,7 +78,6 @@ import soot.dexpler.instructions.OdexInstruction;
 import soot.dexpler.instructions.PseudoInstruction;
 import soot.dexpler.instructions.RetypeableInstruction;
 import soot.dexpler.typing.DalvikTyper;
-import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
 import soot.jimple.CaughtExceptionRef;
@@ -122,7 +121,6 @@ public class DexBody  {
     private Local[] registerLocals;
     private Local storeResultLocal;
     private Map<Integer, DexlibAbstractInstruction> instructionAtAddress;
-    private LocalGenerator localGenerator;
 
     private List<DeferableInstruction> deferredInstructions;
     private Set<RetypeableInstruction> instructionsToRetype;
@@ -159,7 +157,7 @@ public class DexBody  {
      * @param code the codeitem that is contained in this body
      * @param method the method that is associated with this body
      */
-    public DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
+    DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
         MethodImplementation code = method.getImplementation();
         if (code == null)
             throw new RuntimeException("error: no code for method "+ method.getName());
@@ -273,16 +271,6 @@ public class DexBody  {
     }
 
     /**
-     * Generate a new local variable.
-     *
-     * @param t the type of the new variable.
-     * @return the generated local.
-     */
-    public Local generateLocal(Type t) {
-        return localGenerator.generateLocal(t);
-    }
-
-    /**
      * Return the associated JimpleBody.
      *
      * @throws RuntimeException if no jimplification happened yet.
@@ -361,7 +349,6 @@ public class DexBody  {
 		t_whole_jimplification.start();
 
         jBody = (JimpleBody)b;
-        localGenerator = new LocalGenerator(jBody);
         deferredInstructions = new ArrayList<DeferableInstruction>();
         instructionsToRetype = new HashSet<RetypeableInstruction>();
 
@@ -795,14 +782,7 @@ public class DexBody  {
     		this.localSplitter = new LocalSplitter(DalvikThrowAnalysis.v());
     	return this.localSplitter;
     }
-
-    private TrapTightener trapTightener = null;
-    protected TrapTightener getTrapTightener() {
-    	if (this.trapTightener == null)
-    		this.trapTightener = new TrapTightener(DalvikThrowAnalysis.v());
-    	return this.trapTightener;
-    }
-
+    
     private UnreachableCodeEliminator unreachableCodeEliminator = null;
     protected UnreachableCodeEliminator getUnreachableCodeEliminator() {
     	if (this.unreachableCodeEliminator == null)

@@ -31,6 +31,7 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction35c;
 import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.ArrayType;
+import soot.Local;
 import soot.Type;
 import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
@@ -44,8 +45,6 @@ import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
 
 public class FilledNewArrayInstruction extends FilledArrayInstruction {
-
-    AssignStmt assign = null;
 
     public FilledNewArrayInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
@@ -72,15 +71,15 @@ public class FilledNewArrayInstruction extends FilledArrayInstruction {
         Type arrayType = ((ArrayType) t).getElementType();
         NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
         // new local generated intentional, will be moved to real register by MoveResult
-        arrayLocal = body.getStoreResultLocal();
-        assign = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
+        Local arrayLocal = body.getStoreResultLocal();
+        AssignStmt assign = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
         body.add (assign);
         for (int i = 0; i < usedRegister; i++) {
           ArrayRef arrayRef = Jimple.v().newArrayRef(arrayLocal, IntConstant.v(i));
 
-          AssignStmt assign = Jimple.v().newAssignStmt(arrayRef, body.getRegisterLocal(regs[i]));
-          addTags(assign);
-          body.add(assign);
+          AssignStmt assign2 = Jimple.v().newAssignStmt(arrayRef, body.getRegisterLocal(regs[i]));
+          addTags(assign2);
+          body.add(assign2);
         }
 //      NopStmt nopStmtEnd = Jimple.v().newNopStmt();
 //      body.add(nopStmtEnd);

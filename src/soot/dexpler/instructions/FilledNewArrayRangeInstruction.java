@@ -31,6 +31,7 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
 import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.ArrayType;
+import soot.Local;
 import soot.Type;
 import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
@@ -63,7 +64,7 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
         // NewArrayExpr needs the ElementType as it increases the array dimension by 1
         Type arrayType = ((ArrayType) t).getElementType();
         NewArrayExpr arrayExpr = Jimple.v().newNewArrayExpr(arrayType, IntConstant.v(usedRegister));
-        arrayLocal = body.getStoreResultLocal();
+        Local arrayLocal = body.getStoreResultLocal();
         AssignStmt assignStmt = Jimple.v().newAssignStmt(arrayLocal, arrayExpr);
         body.add (assignStmt);
 

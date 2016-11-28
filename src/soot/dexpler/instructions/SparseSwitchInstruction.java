@@ -45,8 +45,6 @@ import soot.jimple.Stmt;
 
 public class SparseSwitchInstruction extends SwitchInstruction {
 
-    LookupSwitchStmt switchStmt = null;
-
     public SparseSwitchInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -66,7 +64,7 @@ public class SparseSwitchInstruction extends SwitchInstruction {
           int offset = se.getOffset();
           targets.add(body.instructionAtAddress(codeAddress + offset).getUnit());
         }
-        switchStmt = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
+        LookupSwitchStmt switchStmt = Jimple.v().newLookupSwitchStmt(key, lookupValues, targets, defaultTarget);
         setUnit(switchStmt);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {

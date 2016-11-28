@@ -60,10 +60,12 @@ public abstract class AbstractInstanceInvokeExpr extends AbstractInvokeExpr
     @Override
     public List<ValueBox> getUseBoxes()
     {
-        List<ValueBox> list = new ArrayList<ValueBox>();    
-        Collections.addAll(list, argBoxes);
-        for (ValueBox element : argBoxes) {
-            list.addAll(element.getValue().getUseBoxes());            
+        List<ValueBox> list = new ArrayList<ValueBox>();
+        if (argBoxes != null) {
+        	Collections.addAll(list, argBoxes);
+	        for (ValueBox element : argBoxes) {
+	            list.addAll(element.getValue().getUseBoxes());            
+	        }
         }
         list.addAll(baseBox.getValue().getUseBoxes());
         list.add(baseBox);

@@ -45,8 +45,6 @@ import soot.jimple.LongConstant;
 
 public class ConstInstruction extends DexlibAbstractInstruction {
 
-    AssignStmt assign = null;
-  
     public ConstInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -55,7 +53,7 @@ public class ConstInstruction extends DexlibAbstractInstruction {
         int dest = ((OneRegisterInstruction) instruction).getRegisterA();
 
         Constant cst = getConstant(dest, body);
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cst);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cst);
         setUnit(assign);
         addTags(assign);
         body.add(assign);

@@ -42,9 +42,6 @@ import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 
 public class BinopLitInstruction extends TaggedInstruction {
-
-    Value expr = null;
-    AssignStmt assign = null;
   
     public BinopLitInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
@@ -62,9 +59,9 @@ public class BinopLitInstruction extends TaggedInstruction {
 
         IntConstant constant = IntConstant.v((int)binOpLitInstr.getNarrowLiteral());
 
-        expr = getExpression(source1, constant);
+        Value expr = getExpression(source1, constant);
 
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
         assign.addTag(getTag());
 
         setUnit(assign);
