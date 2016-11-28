@@ -61,7 +61,8 @@ public class DexMethod {
      * Retrieve the SootMethod equivalent of this method
      * @return the SootMethod of this method
      */
-    public static SootMethod makeSootMethod(DexFile dexFile, Method method, SootClass declaringClass) {
+    public static SootMethod makeSootMethod(final DexFile dexFile,
+    		final Method method, final SootClass declaringClass) {
         int accessFlags = method.getAccessFlags();
         List<Type> parameterTypes = new ArrayList<Type>();
 
