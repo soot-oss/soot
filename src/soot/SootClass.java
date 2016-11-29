@@ -1068,18 +1068,6 @@ public class SootClass extends AbstractHost implements Numberable {
 		return isPhantom;
 	}
 
-	/** Marks this class as phantom, without notifying the Scene. */
-	public void setPhantom(boolean value) {
-		if (value == false)
-			if (isPhantom)
-				throw new RuntimeException(
-						"don't know how to de-phantomize this class");
-			else
-				return;
-
-		setPhantomClass();
-	}
-
 	/**
 	 * Convenience method returning true if this class is private.
 	 */
