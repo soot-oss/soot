@@ -681,7 +681,25 @@ public class Scene  //extends AbstractHost
         activePointsToAnalysis = null;
     }
 
+    /**
+     * Adds the given class to the Scene. This method marks the given class
+     * as a library class and invalidates the class hierarchy.
+     * @param c The class to add
+     */
     public void addClass(SootClass c) 
+    {
+    	addClassSilent(c);
+        c.setLibraryClass();
+       	modifyHierarchy();
+    }
+
+    /**
+     * Adds the given class to the Scene. This method does not handle any
+     * dependencies such as invalidating the hierarchy. The class is neither
+     * marked as application class, nor library class.
+     * @param c The class to add
+     */
+    private void addClassSilent(SootClass c) 
     {
         if(c.isInScene())
             throw new RuntimeException("already managed: "+c.getName());
@@ -690,8 +708,6 @@ public class Scene  //extends AbstractHost
             throw new RuntimeException("duplicate class: "+c.getName());
 
         classes.add(c);
-        c.setLibraryClass();
-
         nameToClass.put(c.getName(), c.getType());
         c.getType().setSootClass(c);
         c.setInScene(true);
@@ -962,8 +978,8 @@ public class Scene  //extends AbstractHost
 		if (allowsPhantomRefs() ||
 				   className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
 			SootClass c = new SootClass(className);
-			addClass(c);
-            c.setPhantom(true);
+			addClassSilent(c);
+			c.setPhantomClass();
 			return c;
 		}
 		
