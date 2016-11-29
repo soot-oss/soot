@@ -6485,7 +6485,7 @@ package option multiple times.</p>
 		<boolopt>
 			<name>Keep Line Number</name>
 			<alias>keep-line-number</alias>
-			<default>true</default>
+			<default>false</default>
 			<short_desc>Keep line number tables</short_desc>
 			<long_desc>
 Preserve line number tables for class files throughout the
@@ -6506,7 +6506,7 @@ transformations.
 		<boolopt>
 			<name>Write Out Local Annotations</name>
 			<alias>write-local-annotations</alias>
-			<default>true</default>
+			<default>false</default>
 			<short_desc>Write out debug annotations on local names</short_desc>
 			<long_desc>
 Write out debug tables to indicate which register maps to which variable in the Jimple code.

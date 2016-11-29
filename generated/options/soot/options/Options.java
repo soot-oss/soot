@@ -1218,9 +1218,9 @@ public class Options extends OptionsBase {
             }
   
             else if( false 
-            || option.equals( "no-keep-line-number" )
+            || option.equals( "keep-line-number" )
             )
-                keep_line_number = false;
+                keep_line_number = true;
     	
             else if( false 
             || option.equals( "keep-bytecode-offset" )
@@ -1229,9 +1229,9 @@ public class Options extends OptionsBase {
                 keep_offset = true;
     	
             else if( false 
-            || option.equals( "no-write-local-annotations" )
+            || option.equals( "write-local-annotations" )
             )
-                write_local_annotations = false;
+                write_local_annotations = true;
     	
             else if( false
             || option.equals( "annot-purity" )
@@ -1631,7 +1631,7 @@ public class Options extends OptionsBase {
     public void set_dynamic_package( List<String> setting ) { dynamic_package = setting; }
     private List<String> dynamic_package = null;
     public boolean keep_line_number() { return keep_line_number; }
-    private boolean keep_line_number = true;
+    private boolean keep_line_number = false;
     public void set_keep_line_number( boolean setting ) { keep_line_number = setting; }
   
     public boolean keep_offset() { return keep_offset; }
@@ -1639,7 +1639,7 @@ public class Options extends OptionsBase {
     public void set_keep_offset( boolean setting ) { keep_offset = setting; }
   
     public boolean write_local_annotations() { return write_local_annotations; }
-    private boolean write_local_annotations = true;
+    private boolean write_local_annotations = false;
     public void set_write_local_annotations( boolean setting ) { write_local_annotations = setting; }
   
     public boolean time() { return time; }

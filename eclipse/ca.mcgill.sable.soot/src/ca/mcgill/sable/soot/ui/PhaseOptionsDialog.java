@@ -5454,7 +5454,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		boolRes = getInput_Attribute_Optionskeep_line_number_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
@@ -5474,7 +5474,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		boolRes = getOutput_Attribute_Optionswrite_local_annotations_widget().getButton().getSelection();
 		
 		
-		defBoolRes = true;
+		defBoolRes = false;
 		
 
 		if (boolRes != defBoolRes) {
@@ -20802,7 +20802,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
@@ -20864,7 +20864,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 		else {
 			
-			defaultBool = true;
+			defaultBool = false;
 			
 		}
 
