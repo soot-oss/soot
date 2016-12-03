@@ -43,9 +43,6 @@ import soot.jimple.BinopExpr;
 import soot.jimple.Jimple;
 
 public class Binop2addrInstruction extends TaggedInstruction {
-
-   Value expr = null;
-   AssignStmt assign = null;
   
     public Binop2addrInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
@@ -61,9 +58,9 @@ public class Binop2addrInstruction extends TaggedInstruction {
         Local source1 = body.getRegisterLocal(binOp2AddrInstr.getRegisterA());
         Local source2 = body.getRegisterLocal(binOp2AddrInstr.getRegisterB());
 
-        expr = getExpression(source1, source2);
+        Value expr = getExpression(source1, source2);
 
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
         assign.addTag(getTag());
 
         setUnit(assign);

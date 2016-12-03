@@ -52,7 +52,7 @@ public class ReachableMethods
     }
     private void addMethods( Iterator<MethodOrMethodContext> methods ) {
         while( methods.hasNext() )
-            addMethod( (MethodOrMethodContext) methods.next() );
+            addMethod(methods.next() );
     }
     private void addMethod( MethodOrMethodContext m ) {
             if( set.add( m ) ) {

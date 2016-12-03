@@ -64,6 +64,13 @@ public class DexClassProvider implements ClassProvider {
 			buildDexIndex(index, SourceLocator.v().classPath());
 			SourceLocator.v().setDexClassIndex(index);
 		}
+		
+		// Process the classpath extensions
+		if (SourceLocator.v().getDexClassPathExtensions() != null) {
+			buildDexIndex(SourceLocator.v().dexClassIndex(),
+					new ArrayList<>(SourceLocator.v().getDexClassPathExtensions()));
+			SourceLocator.v().clearDexClassPathExtensions();
+		}
 
 		File file = index.get(className);
 		if (file == null)
@@ -118,10 +125,9 @@ public class DexClassProvider implements ClassProvider {
 							for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
 								ZipEntry entry = entries.nextElement();
 		    					String entryName = entry.getName();
-		    					if(entryName.endsWith(".dex")){
-		    						entryNames.add(entryName);
-		    						if(!Options.v().process_multiple_dex())
-		    							break;
+		    					if(entryName.endsWith(".dex")) {
+		    						if (Options.v().process_multiple_dex() || entryName.equals("classes.dex"))
+		    							entryNames.add(entryName);
 		    					}
 							}
 						}catch(Exception e){

@@ -27,7 +27,9 @@ import soot.BooleanType;
 import soot.IntType;
 import soot.IntegerType;
 import soot.Local;
+import soot.PrimType;
 import soot.RefType;
+import soot.Scene;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
@@ -222,14 +224,40 @@ public class UseChecker extends AbstractStmtSwitch
 		{
 			ArrayRef aref = (ArrayRef) lhs;
 			Local base = (Local) aref.getBase();
-
+			
 			// Try to force Type integrity. The left side must agree on the
 			// element type of the right side array reference.
-			ArrayType at;
-			if (this.tg.get(base) instanceof ArrayType)
-				at = (ArrayType)this.tg.get(base);
-			else
-				at = this.tg.get(base).makeArrayType();
+			ArrayType at = null;
+			Type tgType = this.tg.get(base);
+			if (tgType instanceof ArrayType)
+				at = (ArrayType) tgType;
+			else {
+				// If the right-hand side is a primitive and the left-side type
+				// is java.lang.Object
+				if (tgType == Scene.v().getObjectType() && rhs instanceof Local) {
+					Type rhsType = this.tg.get((Local) rhs);
+					if (rhsType instanceof PrimType) {
+						if (defs == null) {
+					        defs = LocalDefs.Factory.newLocalDefs(jb);
+							uses = LocalUses.Factory.newLocalUses(jb, defs);
+						}
+						
+						// Check the original type of the array from the alloc site
+						for (Unit defU : defs.getDefsOfAt(base, stmt)) {
+							if (defU instanceof AssignStmt) {
+								AssignStmt defUas = (AssignStmt) defU;
+								if (defUas.getRightOp() instanceof NewArrayExpr) {
+									at = (ArrayType) defUas.getRightOp().getType();
+									break;
+								}
+							}
+						}
+					}
+				}
+				
+				if (at == null)
+					at = tgType.makeArrayType();
+			}
 			tlhs = ((ArrayType)at).getElementType();
 
 			this.handleArrayRef(aref, stmt);

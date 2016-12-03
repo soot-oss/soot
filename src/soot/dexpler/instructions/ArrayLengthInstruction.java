@@ -39,8 +39,6 @@ import soot.jimple.Jimple;
 import soot.jimple.LengthExpr;
 
 public class ArrayLengthInstruction extends DexlibAbstractInstruction {
-
-    AssignStmt assign = null;
   
     public ArrayLengthInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
@@ -57,7 +55,7 @@ public class ArrayLengthInstruction extends DexlibAbstractInstruction {
 
         LengthExpr lengthExpr = Jimple.v().newLengthExpr(arrayReference);
 
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), lengthExpr);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), lengthExpr);
 
         setUnit(assign);
         addTags(assign);

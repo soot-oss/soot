@@ -45,8 +45,6 @@ import soot.jimple.LongConstant;
 
 public class UnopInstruction extends TaggedInstruction {
 
-    AssignStmt assign = null;
-  
     public UnopInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -61,7 +59,7 @@ public class UnopInstruction extends TaggedInstruction {
         Local source = body.getRegisterLocal(cmpInstr.getRegisterB());
         Value expr = getExpression(source);
 
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
 		assign.addTag(getTag());
 
         setUnit(assign);

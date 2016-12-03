@@ -25,85 +25,87 @@ import java.util.*;
 import soot.grimp.*;
 import soot.grimp.internal.*;
 
-public class DInterfaceInvokeExpr extends GInterfaceInvokeExpr
-{
-    public DInterfaceInvokeExpr( Value base, SootMethodRef methodRef, java.util.List args) 
-    {
-	super( base, methodRef, args);
-    }
-
-    public void toString( UnitPrinter up ) {
-	if (getBase().getType() instanceof NullType) {
-        // OL: I don't know what this is for; I'm just refactoring the
-        // original code. An explanation here would be welcome.
-            up.literal( "((" );
-            up.type( getMethodRef().declaringClass().getType() );
-            up.literal( ") " );
-	    
-            if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal("(");
-            baseBox.toString( up );
-            if( PrecedenceTest.needsBrackets( baseBox, this ) ) up.literal(")");
-
-	    up.literal( ")" );
-            up.literal( "." );
-
-            up.methodRef( methodRef );
-            up.literal( "(" );
-
-	    for (int i=0; i<argBoxes.length; i++) {
-		if(i != 0)
-                    up.literal( ", " );
-		
-                argBoxes[i].toString(up);
-	    }
-
-            up.literal( ")" );
-	} else {
-            super.toString( up );
-        }
-    }
-
-    public String toString()
-    {
-	if (getBase().getType() instanceof NullType) {
-	    StringBuffer b = new StringBuffer();
-
-	    b.append( "((");
-	    b.append( getMethodRef().declaringClass().getJavaStyleName());
-	    b.append( ") ");
-	    
-	    String baseStr = ( getBase()).toString();
-	    if ((getBase() instanceof Precedence) && ( ((Precedence) getBase()).getPrecedence() < getPrecedence()))
-		baseStr = "(" + baseStr + ")";
-
-	    b.append( baseStr);
-	    b.append( ").");
-
-	    b.append( getMethodRef().name());
-	    b.append( "(");
-
-	    for (int i=0; i<argBoxes.length; i++) {
-		if(i != 0)
-		    b.append(", ");
-		
-		b.append( ( argBoxes[i].getValue()).toString());
-	    }
-
-	    b.append(")");
-
-	    return b.toString();
+public class DInterfaceInvokeExpr extends GInterfaceInvokeExpr {
+	public DInterfaceInvokeExpr(Value base, SootMethodRef methodRef, java.util.List args) {
+		super(base, methodRef, args);
 	}
 
-	return super.toString();
-    }
+	public void toString(UnitPrinter up) {
+		if (getBase().getType() instanceof NullType) {
+			// OL: I don't know what this is for; I'm just refactoring the
+			// original code. An explanation here would be welcome.
+			up.literal("((");
+			up.type(getMethodRef().declaringClass().getType());
+			up.literal(") ");
 
-    public Object clone() 
-    {
-        ArrayList clonedArgs = new ArrayList( getArgCount());
+			if (PrecedenceTest.needsBrackets(baseBox, this))
+				up.literal("(");
+			baseBox.toString(up);
+			if (PrecedenceTest.needsBrackets(baseBox, this))
+				up.literal(")");
 
-        for(int i = 0; i < getArgCount(); i++) 
-            clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
-        
-        return new DInterfaceInvokeExpr( getBase(), methodRef, clonedArgs);
-    }
+			up.literal(")");
+			up.literal(".");
+
+			up.methodRef(methodRef);
+			up.literal("(");
+
+			if (argBoxes != null) {
+				for (int i = 0; i < argBoxes.length; i++) {
+					if (i != 0)
+						up.literal(", ");
+	
+					argBoxes[i].toString(up);
+				}
+			}
+
+			up.literal(")");
+		} else {
+			super.toString(up);
+		}
+	}
+
+	public String toString() {
+		if (getBase().getType() instanceof NullType) {
+			StringBuffer b = new StringBuffer();
+
+			b.append("((");
+			b.append(getMethodRef().declaringClass().getJavaStyleName());
+			b.append(") ");
+
+			String baseStr = (getBase()).toString();
+			if ((getBase() instanceof Precedence) && (((Precedence) getBase()).getPrecedence() < getPrecedence()))
+				baseStr = "(" + baseStr + ")";
+
+			b.append(baseStr);
+			b.append(").");
+
+			b.append(getMethodRef().name());
+			b.append("(");
+
+			if (argBoxes != null) {
+				for (int i = 0; i < argBoxes.length; i++) {
+					if (i != 0)
+						b.append(", ");
+
+					b.append((argBoxes[i].getValue()).toString());
+				}
+			}
+
+			b.append(")");
+
+			return b.toString();
+		}
+
+		return super.toString();
+	}
+
+	public Object clone() {
+		ArrayList clonedArgs = new ArrayList(getArgCount());
+
+		for (int i = 0; i < getArgCount(); i++)
+			clonedArgs.add(i, Grimp.cloneIfNecessary(getArg(i)));
+
+		return new DInterfaceInvokeExpr(getBase(), methodRef, clonedArgs);
+	}
 }

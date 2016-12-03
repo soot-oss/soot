@@ -99,11 +99,13 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
         {
             GDynamicInvokeExpr ie = (GDynamicInvokeExpr)o;
             if (!(getMethod().equals(ie.getMethod()) && 
-                    argBoxes.length == ie.argBoxes.length))
+                    (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length)))
                 return false;
-            for (ValueBox element : argBoxes)
-				if (!(element.getValue().equivTo(element.getValue())))
-                    return false;
+            if (argBoxes != null) {
+	            for (ValueBox element : argBoxes)
+					if (!(element.getValue().equivTo(element.getValue())))
+	                    return false;
+            }
             if(!methodRef.equals(ie.methodRef)) return false;
             if(!bsmRef.equals(ie.bsmRef)) return false;
             return true;
@@ -139,12 +141,14 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
 	        buffer.append(SootMethod.getSubSignature(""/* no method name here*/, methodRef.parameterTypes(), methodRef.returnType()));
 	        buffer.append(">(");
 
-	        for(int i = 0; i < argBoxes.length; i++)
-	        {
-	            if(i != 0)
-	                buffer.append(", ");
-
-	            buffer.append(argBoxes[i].getValue().toString());
+	        if (argBoxes != null) {
+		        for(int i = 0; i < argBoxes.length; i++)
+		        {
+		            if(i != 0)
+		                buffer.append(", ");
+	
+		            buffer.append(argBoxes[i].getValue().toString());
+		        }
 	        }
 
 	        buffer.append(") ");
@@ -168,12 +172,14 @@ public class GDynamicInvokeExpr extends AbstractInvokeExpr implements DynamicInv
 	        up.literal(Jimple.DYNAMICINVOKE);        
 	        up.literal(" \"" + methodRef.name() + "\" <" + SootMethod.getSubSignature(""/* no method name here*/, methodRef.parameterTypes(), methodRef.returnType()) +">(");        
 	        
-	        for(int i = 0; i < argBoxes.length; i++)
-	        {
-	            if(i != 0)
-	                up.literal(", ");
-	                
-	            argBoxes[i].toString(up);
+	        if (argBoxes != null) {
+		        for(int i = 0; i < argBoxes.length; i++)
+		        {
+		            if(i != 0)
+		                up.literal(", ");
+		                
+		            argBoxes[i].toString(up);
+		        }
 	        }
 
 	        up.literal(") ");

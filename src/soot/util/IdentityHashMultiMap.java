@@ -31,8 +31,8 @@ import java.util.Set;
 public class IdentityHashMultiMap<K,V> extends HashMultiMap<K, V> {
 	
 	@Override
-    protected Map<K, Set<V>> createMap() {
-    	return new IdentityHashMap<K, Set<V>>();
+    protected Map<K, Set<V>> createMap(int initialSize) {
+    	return new IdentityHashMap<K, Set<V>>(initialSize);
     }
 	
 	@SuppressWarnings("deprecation")

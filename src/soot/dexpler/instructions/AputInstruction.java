@@ -43,8 +43,6 @@ import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 
 public class AputInstruction extends FieldInstruction {
-
-    AssignStmt assign = null;
   
     public AputInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
@@ -62,7 +60,7 @@ public class AputInstruction extends FieldInstruction {
         ArrayRef arrayRef = Jimple.v().newArrayRef(arrayBase, index);
 
         Local sourceValue = body.getRegisterLocal(source);
-        assign = getAssignStmt(body, sourceValue, arrayRef);
+        AssignStmt assign = getAssignStmt(body, sourceValue, arrayRef);
         if (aPutInstr.getOpcode() == Opcode.APUT_OBJECT)
           assign.addTag(new ObjectOpTag());
         

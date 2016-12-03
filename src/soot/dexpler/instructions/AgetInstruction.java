@@ -42,8 +42,6 @@ import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 
 public class AgetInstruction extends DexlibAbstractInstruction {
-
-    AssignStmt assign = null;
   
     public AgetInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
@@ -62,7 +60,7 @@ public class AgetInstruction extends DexlibAbstractInstruction {
         ArrayRef arrayRef = Jimple.v().newArrayRef(arrayBase, index);
         Local l = body.getRegisterLocal(dest);
         
-        assign = Jimple.v().newAssignStmt(l, arrayRef);
+        AssignStmt assign = Jimple.v().newAssignStmt(l, arrayRef);
         if (aGetInstr.getOpcode() == Opcode.AGET_OBJECT)
           assign.addTag(new ObjectOpTag());
 

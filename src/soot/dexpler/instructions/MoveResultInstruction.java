@@ -34,15 +34,11 @@ import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
 import soot.jimple.Jimple;
 import soot.jimple.internal.JAssignStmt;
-import soot.tagkit.Tag;
 
 public class MoveResultInstruction extends DexlibAbstractInstruction {
 //    private Local local;
 //    private Expr expr;
-    private Tag tag;
     
-    AssignStmt assign = null;
-
     public MoveResultInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -59,11 +55,9 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
 //            assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
 //        else
 //            throw new RuntimeException("Neither local and expr are set to move.");
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), body.getStoreResultLocal());
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), body.getStoreResultLocal());
         setUnit(assign);
         addTags(assign);
-        if (tag != null)
-            assign.addTag(tag);
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
@@ -79,9 +73,6 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
 //    public void setExpr(Expr e) {
 //        expr = e;
 //    }
-    public void setTag(Tag t) {
-        tag = t;
-    }
 
     @Override
     boolean overridesRegister(int register) {

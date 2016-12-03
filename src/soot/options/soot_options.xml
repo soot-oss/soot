@@ -362,6 +362,17 @@ from the Baf Body Phase and the Jimple Annotation Pack Phase.
 Print debugging information about class resolving.
 </long_desc>
                 </boolopt>
+                <boolopt>
+			<name>Ignore Resolving Levels</name>
+			<alias>ignore-resolving-levels</alias>
+			<short_desc>Ignore mismatching resolving levels</short_desc>
+			<long_desc>
+If this option is set, Soot will not check whether the current class' resolving level is sufficiently
+high for the operation attempted on the class. This allows you to perform any operation on a class
+even if the class has not been fully loaded, which can lead to inconsistencies between your Soot scene
+and the original classes you loaded. Use this option at your own risk.
+</long_desc>
+                </boolopt>
 	</section>
 	<section>
 		<name>Input Options</name>
@@ -669,6 +680,19 @@ Use Java 1.4 Polyglot frontend instead of JastAdd, which supports Java 5 syntax.
 			    When this option is enabled, Soot will try to resolve classes using an alternative
 			    strategy if the class cannot be found using the default strategy. A class a.b.c
 			    will, for instance, also be loaded from a/b/c.jimple instead of only a.b.c.jimple.
+			</long_desc>
+		</boolopt>
+		<boolopt>
+			<name>Drop method source after loading bodies</name>
+			<alias>drop-bodies-after-load</alias>
+			<default>true</default>
+			<short_desc>Drop the method source after it has served its purpose of loading the method body</short_desc>
+			<long_desc>
+			    Each method is associated with a method source for loading its body. When this option is disabled,
+			    a reference to this source is kept around even after the body has already been loaded. This is a waste
+			    of memory for most use cases. When this option is enabled, the reference is dropped, allowing for garbage
+			    collection of the method source. On the other hand, if the body is ever released, it cannot easily be
+			    recovered (i.e., loaded again) easily.
 			</long_desc>
 		</boolopt>
 	</section>
@@ -2076,6 +2100,17 @@ print: the program prints a stack trace when reaching a porgram location that wa
 the program throws an Error instead.                                                                                                
 </long_desc>
                                 </stropt>
+								<boolopt>
+								  <name>Types for invoke</name>
+								  <alias>types-for-invoke</alias>
+								  <default>false</default>
+								  <short_desc>Uses reaching types inferred by the pointer analysis to resolve reflective calls.</short_desc>
+								  <long_desc>For each call to Method.invoke(), use the possible types of the first receiver
+								  argument and the possible types stored in the second argument array to resolve calls to
+								  Method.invoke(). This strategy makes no attempt to resolve reflectively invoked static methods.
+								  Currently only works for context insensitive pointer analyses.
+								  </long_desc>
+								</boolopt>
 				<sub_phase>
 					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>
@@ -6189,7 +6224,7 @@ to occur at arbitrary points in the execution of a victim thread.
 								<name>Unit</name>
 								<alias>unit</alias>
 								<short_desc>Unit Throw Analysis</short_desc>
-								<default/>																
+								<default/>
 								<long_desc>
 Says that each statement in the intermediate representation
 may throw those exception types associated with the corresponding
@@ -6197,6 +6232,15 @@ Java bytecode instructions in the JVM Specification.  The
 analysis deals with each statement in isolation, without regard
 to the surrounding program.
 </long_desc>
+							</value>
+							<value>
+								<name>Dalvik</name>
+								<alias>dalvik</alias>
+								<short_desc>Dalvik Throw Analysis</short_desc>
+								<default/>													
+								<long_desc>
+Specialized throw analysis implementation that covers the semantics of the Dalvik
+IR used for Android apps</long_desc>
 							</value>
 						</multiopt>
 						<multiopt>
@@ -6441,7 +6485,7 @@ package option multiple times.</p>
 		<boolopt>
 			<name>Keep Line Number</name>
 			<alias>keep-line-number</alias>
-			<default>true</default>
+			<default>false</default>
 			<short_desc>Keep line number tables</short_desc>
 			<long_desc>
 Preserve line number tables for class files throughout the
@@ -6462,7 +6506,7 @@ transformations.
 		<boolopt>
 			<name>Write Out Local Annotations</name>
 			<alias>write-local-annotations</alias>
-			<default>true</default>
+			<default>false</default>
 			<short_desc>Write out debug annotations on local names</short_desc>
 			<long_desc>
 Write out debug tables to indicate which register maps to which variable in the Jimple code.

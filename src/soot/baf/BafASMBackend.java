@@ -414,6 +414,20 @@ public class BafASMBackend extends AbstractASMBackend {
 					}
 				} else if (c instanceof NullConstant) {
 					mv.visitInsn(Opcodes.ACONST_NULL);
+				} else if (c instanceof MethodHandle) {
+					SootMethodRef ref = ((MethodHandle) c).getMethodRef();
+					int tag;
+					if(ref.isStatic()) {
+						tag = Opcodes.H_INVOKESTATIC;
+					} else if(ref.declaringClass().isInterface()) {
+						tag = Opcodes.H_INVOKEINTERFACE;
+					} else {
+						tag = Opcodes.H_INVOKEVIRTUAL;
+					}
+					Handle handle = new Handle(tag, ref.declaringClass().getName(), ref.name(), ref.getSignature(), 
+							ref.declaringClass().isInnerClass());
+					
+					mv.visitLdcInsn(handle);
 				} else {
 					throw new RuntimeException("unsupported opcode");
 				}

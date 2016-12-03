@@ -33,11 +33,8 @@ import soot.dexpler.IDalvikTyper;
 import soot.jimple.BinopExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JIfStmt;
 
 public class IfTestzInstruction extends ConditionalJumpInstruction {
-
-    JIfStmt jif = null;
   
     public IfTestzInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
@@ -46,7 +43,7 @@ public class IfTestzInstruction extends ConditionalJumpInstruction {
     protected IfStmt ifStatement(DexBody body) {
         Instruction21t i = (Instruction21t) instruction;
         BinopExpr condition = getComparisonExpr(body, i.getRegisterA());
-        jif = (JIfStmt) Jimple.v().newIfStmt(condition,
+        IfStmt jif = Jimple.v().newIfStmt(condition,
                                     targetInstruction.getUnit());
         // setUnit() is called in ConditionalJumpInstruction
         

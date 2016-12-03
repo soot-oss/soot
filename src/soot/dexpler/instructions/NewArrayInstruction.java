@@ -49,8 +49,6 @@ import soot.jimple.NewArrayExpr;
 
 public class NewArrayInstruction extends DexlibAbstractInstruction {
 
-    AssignStmt assign = null;
-
     public NewArrayInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -72,7 +70,7 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         NewArrayExpr newArrayExpr = Jimple.v().newNewArrayExpr(arrayType, size);
 
         Local l = body.getRegisterLocal(dest);
-        assign = Jimple.v().newAssignStmt(l, newArrayExpr);
+        AssignStmt assign = Jimple.v().newAssignStmt(l, newArrayExpr);
 
         setUnit(assign);
         addTags(assign);

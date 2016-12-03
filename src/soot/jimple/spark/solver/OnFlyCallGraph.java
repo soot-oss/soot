@@ -22,8 +22,14 @@ import soot.Context;
 import soot.Local;
 import soot.MethodOrMethodContext;
 import soot.Scene;
+import soot.Type;
+import soot.jimple.IntConstant;
+import soot.jimple.NewArrayExpr;
+import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ArrayElement;
 import soot.jimple.spark.pag.MethodPAG;
+import soot.jimple.spark.pag.NewInstanceNode;
 import soot.jimple.spark.pag.Node;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.pag.StringConstantNode;
@@ -72,7 +78,7 @@ public class OnFlyCallGraph {
     private void processReachables() {
         reachableMethods.update();
         while(reachablesReader.hasNext()) {
-            MethodOrMethodContext m = (MethodOrMethodContext) reachablesReader.next();
+            MethodOrMethodContext m = reachablesReader.next();
             MethodPAG mpag = MethodPAG.v( pag, m.method() );
             mpag.build();
             mpag.addToPAG(m.context());
@@ -80,7 +86,7 @@ public class OnFlyCallGraph {
     }
     private void processCallEdges() {
         while(callEdges.hasNext()) {
-            Edge e = (Edge) callEdges.next();
+            Edge e = callEdges.next();
             MethodPAG amp = MethodPAG.v( pag, e.tgt() );
             amp.build();
             amp.addToPAG( e.tgtCtxt() );
@@ -89,6 +95,20 @@ public class OnFlyCallGraph {
     }
 
     public OnFlyCallGraphBuilder ofcgb() { return ofcgb; }
+    
+    public void updatedFieldRef(final AllocDotField df, PointsToSetInternal ptsi) {
+    	if(df.getField() != ArrayElement.v()) {
+    		return;
+    	}
+    	if(ofcgb.wantArrayField(df)) {
+    		ptsi.forall(new P2SetVisitor() {
+				@Override
+				public void visit(Node n) {
+					ofcgb.addInvokeArgType(df, null, n.getType());
+				}
+			});
+    	}
+    }
 
     public void updatedNode( VarNode vn ) {
         Object r = vn.getVariable();
@@ -99,8 +119,9 @@ public class OnFlyCallGraph {
         PointsToSetInternal p2set = vn.getP2Set().getNewSet();
         if( ofcgb.wantTypes( receiver ) ) {
             p2set.forall( new P2SetVisitor() {
-            public final void visit( Node n ) { 
-                ofcgb.addType( receiver, context, n.getType(), (AllocNode) n );
+            public final void visit( Node n ) {
+            	if (n instanceof AllocNode)
+            		ofcgb.addType( receiver, context, n.getType(), (AllocNode) n );
             }} );
         }
         if( ofcgb.wantStringConstants( receiver ) ) {
@@ -113,6 +134,28 @@ public class OnFlyCallGraph {
                     ofcgb.addStringConstant( receiver, context, null );
                 }
             }} );
+        }
+        if(ofcgb.wantInvokeArg(receiver)) {
+        	p2set.forall(new P2SetVisitor() {
+				@Override
+				public void visit(Node n) {
+	            	if (n instanceof AllocNode) {
+						AllocNode an = ((AllocNode)n);
+						ofcgb.addInvokeArgDotField(receiver, an.dot(ArrayElement.v()));
+						assert an.getNewExpr() instanceof NewArrayExpr;
+						NewArrayExpr nae = (NewArrayExpr) an.getNewExpr();
+						if(!(nae.getSize() instanceof IntConstant)) {
+							ofcgb.setArgArrayNonDetSize(receiver, context);
+						} else {
+							IntConstant sizeConstant = (IntConstant) nae.getSize();
+							ofcgb.addPossibleArgArraySize(receiver, sizeConstant.value, context);
+						}
+	            	}
+				}
+			});
+        	for(Type ty : pag.reachingObjectsOfArrayElement(p2set).possibleTypes()) {
+        		ofcgb.addInvokeArgType(receiver, context, ty);
+        	}
         }
     }
 

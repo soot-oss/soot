@@ -55,14 +55,17 @@ import com.google.common.cache.LoadingCache;
 @ThreadSafe
 public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 	
+	protected boolean includeReflectiveCalls = false;
+	
 	//retains only callers that are explicit call sites or Thread.start()
-	public static class EdgeFilter extends Filter {		
+	public class EdgeFilter extends Filter {		
 		protected EdgeFilter() {
 			super(new EdgePredicate() {
 				@Override
 				public boolean want(Edge e) {				
 					return e.kind().isExplicit() || e.kind().isThread() || e.kind().isExecutor()
-							|| e.kind().isAsyncTask() || e.kind().isClinit() || e.kind().isPrivileged();
+							|| e.kind().isAsyncTask() || e.kind().isClinit() || e.kind().isPrivileged()
+							|| (includeReflectiveCalls && e.kind().isReflection());
 				}
 			});
 		}
@@ -122,7 +125,14 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 	}
 	
 	public JimpleBasedInterproceduralCFG(boolean enableExceptions) {
+		this(enableExceptions, false);
+	}
+	
+	public JimpleBasedInterproceduralCFG(boolean enableExceptions,
+			boolean includeReflectiveCalls) {
 		super(enableExceptions);
+		this.includeReflectiveCalls = includeReflectiveCalls;
+		
 		cg = Scene.v().getCallGraph();
 		initializeUnitToOwner();
 	}

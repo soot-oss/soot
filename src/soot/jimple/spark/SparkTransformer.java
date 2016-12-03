@@ -149,6 +149,7 @@ public class SparkTransformer extends SceneTransformer
             default:
                 throw new RuntimeException();
         }
+
         if( propagator[0] != null ) propagator[0].propagate();
         Date endProp = new Date();
         reportTime( "Propagation", startProp, endProp );

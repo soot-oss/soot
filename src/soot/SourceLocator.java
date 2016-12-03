@@ -242,7 +242,8 @@ public class SourceLocator
 					String entryName = entry.getName();
 					// We are dealing with an apk file
 					if (entryName.endsWith(".dex"))
-						classes.addAll(DexClassProvider.classesOfDex(new File(aPath), entryName));
+						if (Options.v().process_multiple_dex() || entryName.equals("classes.dex"))
+							classes.addAll(DexClassProvider.classesOfDex(new File(aPath), entryName));
 				}		
 			} catch (IOException e) {
 				throw new CompilationDeathException("Error reasing archive '" + aPath + "'",e);
@@ -294,7 +295,8 @@ public class SourceLocator
 				if(Options.v().process_multiple_dex()){
 					for(String dexEntryName : dexEntryNames){
 						try {
-							classes.addAll(DexClassProvider.classesOfDex(file,dexEntryName));
+							classes.addAll(DexClassProvider.classesOfDex(
+									file,dexEntryName));
 						} catch (Throwable e) {} /* Ignore unreadable files */
 					}
 				}else{
@@ -401,7 +403,9 @@ public class SourceLocator
                 Scene.v().getSootClassPath(), String.valueOf(File.pathSeparatorChar));
         while (strtok.hasMoreTokens()) {
             String path = strtok.nextToken();
-
+            if(getClassSourceType(path) != ClassSourceType.directory) {
+            	continue;
+            }
             // For jimple files
             List<String> l = getClassesUnder(path);
             for (String filename : l) {
@@ -410,12 +414,12 @@ public class SourceLocator
             }
 
             // For class files;
-            path = path + File.pathSeparatorChar;
+            path = path + File.separatorChar;
             StringTokenizer tokenizer = new StringTokenizer(str, ".");
             while (tokenizer.hasMoreTokens()) {
                 path = path + tokenizer.nextToken();
                 if (tokenizer.hasMoreTokens())
-                    path = path + File.pathSeparatorChar;
+                    path = path + File.separatorChar;
             }
             l = getClassesUnder(path);
             for (String string : l)
@@ -770,6 +774,13 @@ public class SourceLocator
         }
         return javaClassName;
     }
+    
+    /**
+     * Set containing all dex files that were appended to the classpath
+     * later on. The classes from these files are not yet loaded and are
+     * still missing from dexClassIndex.
+     */
+    private Set<String> dexClassPathExtensions;
 
     /**
      * The index that maps classes to the files they are defined in.
@@ -794,5 +805,30 @@ public class SourceLocator
     public void setDexClassIndex(Map<String, File> index) {
     	dexClassIndex = index;
     }
+    
+	public void extendClassPath(String newPathElement) {
+		classPath = null;
+		if (newPathElement.endsWith(".dex") || newPathElement.endsWith(".apk")) {
+			if (dexClassPathExtensions == null)
+				dexClassPathExtensions = new HashSet<String>();
+			dexClassPathExtensions.add(newPathElement);
+		}
+	}
+	
+	/**
+	 * Gets all files that were added to the classpath later on and that have
+	 * not yet been processed for the dexClassIndex mapping
+	 * @return The set of dex or apk files that still need to be indexed
+	 */
+	public Set<String> getDexClassPathExtensions() {
+		return this.dexClassPathExtensions;
+	}
+	
+	/**
+	 * Clears the set of dex or apk files that still need to be indexed
+	 */
+	public void clearDexClassPathExtensions() {
+		this.dexClassPathExtensions = null;
+	}
 }
 

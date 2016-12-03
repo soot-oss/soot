@@ -180,6 +180,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-debug-resolver");
         }
   
+        public void setignore_resolving_levels(boolean arg) {
+            if(arg) addArg("-ignore-resolving-levels");
+        }
+  
         public void setsoot_classpath(String arg) {
             addArg("-soot-classpath");
             addArg(arg);
@@ -274,6 +278,10 @@ public class AntTask extends MatchingTask {
   
         public void setpermissive_resolving(boolean arg) {
             if(arg) addArg("-permissive-resolving");
+        }
+  
+        public void setdrop_bodies_after_load(boolean arg) {
+            if(arg) addArg("-drop-bodies-after-load");
         }
   
         public void setoutput_dir(String arg) {
@@ -439,6 +447,7 @@ public class AntTask extends MatchingTask {
     
                 || arg.equals( "pedantic" )
                 || arg.equals( "unit" )
+                || arg.equals( "dalvik" )
                 ) {
                 addArg("-throw-analysis");
                 addArg(arg);
@@ -1208,6 +1217,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg");
             addArg("trim-clinit:"+(arg?"true":"false"));
+          }
+      
+          public void settypes_for_invoke(boolean arg) {
+            addArg("-p");
+            addArg("cg");
+            addArg("types-for-invoke:"+(arg?"true":"false"));
           }
       
           public void setlibrary(String arg) {

@@ -481,7 +481,12 @@ public class DexAnnotation {
                 }
                 
 				String outerClass; // outer class name
-				if(classType.contains("$-")) {
+				if (clazz.hasOuterClass()) {
+					// If we have already set an outer class from some other annotation, we use that
+					// one.
+					outerClass = clazz.getOuterClass().getName();
+				}
+				else if(classType.contains("$-")) {
         			/* This is a special case for generated lambda classes of jack and jill compiler.
 					 * Generated lambda classes may contain '$' which do not indicate an inner/outer 
 					 * class separator if the '$' occurs after a inner class with a name starting with
@@ -489,9 +494,13 @@ public class DexAnnotation {
 					 * classes name and anything before it is the outer classes name.
 					 */
 					outerClass = classType.substring(0, classType.indexOf("$-"));
+					if (Util.isByteCodeClassName(classType))
+						outerClass += ";";
         		} else if (classType.contains("$")) {
         			//remove everything after the last '$' including the last '$'
-        			outerClass = classType.substring(0, classType.lastIndexOf("$"));
+        			outerClass = classType.substring(0, classType.lastIndexOf("$")) + ";";
+					if (Util.isByteCodeClassName(classType))
+						outerClass += ";";
         		} else {
         			// Make sure that no funny business is going on if the
     				// annotation is broken and does not end in $nn.

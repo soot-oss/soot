@@ -42,8 +42,6 @@ import soot.jimple.Jimple;
 
 public class IputInstruction extends FieldInstruction {
 
-    AssignStmt assign = null;
-
     public IputInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -56,7 +54,7 @@ public class IputInstruction extends FieldInstruction {
         InstanceFieldRef instanceField = Jimple.v().newInstanceFieldRef(body.getRegisterLocal(object),
                              getSootFieldRef(f));
         Local sourceValue = body.getRegisterLocal(source);
-        assign = getAssignStmt(body, sourceValue, instanceField);
+        AssignStmt assign = getAssignStmt(body, sourceValue, instanceField);
         setUnit(assign);
         addTags(assign);
         body.add(assign);

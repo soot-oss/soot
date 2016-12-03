@@ -92,6 +92,7 @@ public class Options extends OptionsBase {
     public static final int java_version_8 = 9;
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
+    public static final int throw_analysis_dalvik = 3;
     public static final int check_init_throw_analysis_auto = 1;
     public static final int check_init_throw_analysis_pedantic = 2;
     public static final int check_init_throw_analysis_unit = 3;
@@ -119,24 +120,24 @@ public class Options extends OptionsBase {
             || option.equals( "coffi" )
             )
                 coffi = true;
-  
+    	
             else if( false 
             || option.equals( "asm-backend" )
             )
                 asm_backend = true;
-  
+    	
             else if( false 
             || option.equals( "h" )
             || option.equals( "help" )
             )
                 help = true;
-  
+    	
             else if( false 
             || option.equals( "pl" )
             || option.equals( "phase-list" )
             )
                 phase_list = true;
-  
+    	
             else if( false
             || option.equals( "ph" )
             || option.equals( "phase-help" )
@@ -158,61 +159,66 @@ public class Options extends OptionsBase {
             || option.equals( "version" )
             )
                 version = true;
-  
+    	
             else if( false 
             || option.equals( "v" )
             || option.equals( "verbose" )
             )
                 verbose = true;
-  
+    	
             else if( false 
             || option.equals( "interactive-mode" )
             )
                 interactive_mode = true;
-  
+    	
             else if( false 
             || option.equals( "unfriendly-mode" )
             )
                 unfriendly_mode = true;
-  
+    	
             else if( false 
             || option.equals( "app" )
             )
                 app = true;
-  
+    	
             else if( false 
             || option.equals( "w" )
             || option.equals( "whole-program" )
             )
                 whole_program = true;
-  
+    	
             else if( false 
             || option.equals( "ws" )
             || option.equals( "whole-shimple" )
             )
                 whole_shimple = true;
-  
+    	
             else if( false 
             || option.equals( "fly" )
             || option.equals( "on-the-fly" )
             )
                 on_the_fly = true;
-  
+    	
             else if( false 
             || option.equals( "validate" )
             )
                 validate = true;
-  
+    	
             else if( false 
             || option.equals( "debug" )
             )
                 debug = true;
-  
+    	
             else if( false 
             || option.equals( "debug-resolver" )
             )
                 debug_resolver = true;
-  
+    	
+            else if( false 
+            || option.equals( "ignore-resolving-levels" )
+            )
+                ignore_resolving_levels = true;
+    	
             else if( false
             || option.equals( "cp" )
             || option.equals( "soot-class-path" )
@@ -237,18 +243,18 @@ public class Options extends OptionsBase {
             || option.equals( "prepend-classpath" )
             )
                 prepend_classpath = true;
-  
+    	
             else if( false 
             || option.equals( "ice" )
             || option.equals( "ignore-classpath-errors" )
             )
                 ignore_classpath_errors = true;
-  
+    	
             else if( false 
             || option.equals( "process-multiple-dex" )
             )
                 process_multiple_dex = true;
-  
+    	
             else if( false
             || option.equals( "process-path" )
             || option.equals( "process-dir" )
@@ -270,7 +276,7 @@ public class Options extends OptionsBase {
             || option.equals( "oaat" )
             )
                 oaat = true;
-  
+    	
             else if( false
             || option.equals( "android-jars" )
             ) {
@@ -326,7 +332,7 @@ public class Options extends OptionsBase {
             || option.equals( "ast-metrics" )
             )
                 ast_metrics = true;
-  
+    	
             else if( false
             || option.equals( "src-prec" )
             ) {
@@ -417,22 +423,22 @@ public class Options extends OptionsBase {
             || option.equals( "full-resolver" )
             )
                 full_resolver = true;
-  
+    	
             else if( false 
             || option.equals( "allow-phantom-refs" )
             )
                 allow_phantom_refs = true;
-  
+    	
             else if( false 
             || option.equals( "no-bodies-for-excluded" )
             )
                 no_bodies_for_excluded = true;
-  
+    	
             else if( false 
             || option.equals( "j2me" )
             )
                 j2me = true;
-  
+    	
             else if( false
             || option.equals( "main-class" )
             ) {
@@ -454,12 +460,17 @@ public class Options extends OptionsBase {
             || option.equals( "polyglot" )
             )
                 polyglot = true;
-  
+    	
             else if( false 
             || option.equals( "permissive-resolving" )
             )
                 permissive_resolving = true;
-  
+    	
+            else if( false 
+            || option.equals( "no-drop-bodies-after-load" )
+            )
+                drop_bodies_after_load = false;
+    	
             else if( false
             || option.equals( "d" )
             || option.equals( "output-dir" )
@@ -825,28 +836,28 @@ public class Options extends OptionsBase {
             || option.equals( "output-jar" )
             )
                 output_jar = true;
-  
+    	
             else if( false 
             || option.equals( "xml-attributes" )
             )
                 xml_attributes = true;
-  
+    	
             else if( false 
             || option.equals( "print-tags" )
             || option.equals( "print-tags-in-output" )
             )
                 print_tags_in_output = true;
-  
+    	
             else if( false 
             || option.equals( "no-output-source-file-attribute" )
             )
                 no_output_source_file_attribute = true;
-  
+    	
             else if( false 
             || option.equals( "no-output-inner-classes-attribute" )
             )
                 no_output_inner_classes_attribute = true;
-  
+    	
             else if( false
             || option.equals( "dump-body" )
             ) {
@@ -880,20 +891,20 @@ public class Options extends OptionsBase {
             }
   
             else if( false 
-            || option.equals( "show-exception-dests" )
+            || option.equals( "no-show-exception-dests" )
             )
-                show_exception_dests = true;
-  
+                show_exception_dests = false;
+    	
             else if( false 
             || option.equals( "gzip" )
             )
                 gzip = true;
-  
+    	
             else if( false 
             || option.equals( "force-overwrite" )
             )
                 force_overwrite = true;
-  
+    	
             else if( false
             || option.equals( "plugin" )
             ) {
@@ -978,12 +989,12 @@ public class Options extends OptionsBase {
             || option.equals( "via-grimp" )
             )
                 via_grimp = true;
-  
+    	
             else if( false 
             || option.equals( "via-shimple" )
             )
                 via_shimple = true;
-  
+    	
             else if( false
             || option.equals( "throw-analysis" )
             ) {
@@ -1015,6 +1026,17 @@ public class Options extends OptionsBase {
                         return false;
                     }
                     throw_analysis = throw_analysis_unit;
+                }
+    
+                else if( false
+                || value.equals( "dalvik" )
+                ) {
+                    if( throw_analysis != 0
+                    && throw_analysis != throw_analysis_dalvik ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    throw_analysis = throw_analysis_dalvik;
                 }
     
                 else {
@@ -1089,7 +1111,7 @@ public class Options extends OptionsBase {
             || option.equals( "omit-excepting-unit-edges" )
             )
                 omit_excepting_unit_edges = true;
-  
+    	
             else if( false
             || option.equals( "trim-cfgs" )
             ) {
@@ -1107,7 +1129,7 @@ public class Options extends OptionsBase {
             || option.equals( "ignore-resolution-errors" )
             )
                 ignore_resolution_errors = true;
-  
+    	
             else if( false
             || option.equals( "i" )
             || option.equals( "include" )
@@ -1146,7 +1168,7 @@ public class Options extends OptionsBase {
             || option.equals( "include-all" )
             )
                 include_all = true;
-  
+    	
             else if( false
             || option.equals( "dynamic-class" )
             ) {
@@ -1199,18 +1221,18 @@ public class Options extends OptionsBase {
             || option.equals( "keep-line-number" )
             )
                 keep_line_number = true;
-  
+    	
             else if( false 
             || option.equals( "keep-bytecode-offset" )
             || option.equals( "keep-offset" )
             )
                 keep_offset = true;
-  
+    	
             else if( false 
             || option.equals( "write-local-annotations" )
             )
                 write_local_annotations = true;
-  
+    	
             else if( false
             || option.equals( "annot-purity" )
             ) {
@@ -1281,17 +1303,17 @@ public class Options extends OptionsBase {
             || option.equals( "time" )
             )
                 time = true;
-  
+    	
             else if( false 
             || option.equals( "subtract-gc" )
             )
                 subtract_gc = true;
-  
+    	
             else if( false 
             || option.equals( "no-writeout-body-releasing" )
             )
                 no_writeout_body_releasing = true;
-  
+    	
             else {
                 G.v().out.println( "Invalid option -"+option );
                 return false;
@@ -1384,6 +1406,10 @@ public class Options extends OptionsBase {
     private boolean debug_resolver = false;
     public void set_debug_resolver( boolean setting ) { debug_resolver = setting; }
   
+    public boolean ignore_resolving_levels() { return ignore_resolving_levels; }
+    private boolean ignore_resolving_levels = false;
+    public void set_ignore_resolving_levels( boolean setting ) { ignore_resolving_levels = setting; }
+  
     public String soot_classpath() { return soot_classpath; }
     public void set_soot_classpath( String setting ) { soot_classpath = setting; }
     private String soot_classpath = "";
@@ -1457,6 +1483,10 @@ public class Options extends OptionsBase {
     private boolean permissive_resolving = false;
     public void set_permissive_resolving( boolean setting ) { permissive_resolving = setting; }
   
+    public boolean drop_bodies_after_load() { return drop_bodies_after_load; }
+    private boolean drop_bodies_after_load = true;
+    public void set_drop_bodies_after_load( boolean setting ) { drop_bodies_after_load = setting; }
+  
     public String output_dir() { return output_dir; }
     public void set_output_dir( String setting ) { output_dir = setting; }
     private String output_dir = "";
@@ -1508,7 +1538,7 @@ public class Options extends OptionsBase {
     public void set_dump_cfg( List<String> setting ) { dump_cfg = setting; }
     private List<String> dump_cfg = null;
     public boolean show_exception_dests() { return show_exception_dests; }
-    private boolean show_exception_dests = false;
+    private boolean show_exception_dests = true;
     public void set_show_exception_dests( boolean setting ) { show_exception_dests = setting; }
   
     public boolean gzip() { return gzip; }
@@ -1537,6 +1567,7 @@ public class Options extends OptionsBase {
   
     public int throw_analysis() {
         if( throw_analysis == 0 ) return throw_analysis_unit;
+        if( throw_analysis == 0 ) return throw_analysis_dalvik;
         return throw_analysis; 
     }
     public void set_throw_analysis( int setting ) { throw_analysis = setting; }
@@ -1645,6 +1676,7 @@ public class Options extends OptionsBase {
 +padOpt(" -validate", "Run internal validation on bodies" )
 +padOpt(" -debug", "Print various Soot debugging info" )
 +padOpt(" -debug-resolver", "Print debugging info from SootResolver" )
++padOpt(" -ignore-resolving-levels", "Ignore mismatching resolving levels" )
 +"\nInput Options:\n"
       
 +padOpt(" -cp PATH -soot-class-path PATH -soot-classpath PATH", "Use PATH as the classpath for finding classes." )
@@ -1670,6 +1702,7 @@ public class Options extends OptionsBase {
 +padOpt(" -main-class CLASS", "Sets the main class for whole-program analysis." )
 +padOpt(" -polyglot", "Use Java 1.4 Polyglot frontend instead of JastAdd" )
 +padOpt(" -permissive-resolving", "Use alternative sources when classes cannot be found using the normal resolving strategy" )
++padOpt(" -drop-bodies-after-load", "Drop the method source after it has served its purpose of loading the method body" )
 +"\nOutput Options:\n"
       
 +padOpt(" -d DIR -output-dir DIR", "Store output files in DIR" )
@@ -1722,6 +1755,7 @@ public class Options extends OptionsBase {
 +padOpt(" -throw-analysis ARG", "" )
 +padVal(" pedantic", "Pedantically conservative throw analysis" )
 +padVal(" unit (default)", "Unit Throw Analysis" )
++padVal(" dalvik (default)", "Dalvik Throw Analysis" )
 +padOpt(" -check-init-ta ARG -check-init-throw-analysis ARG", "" )
 +padVal(" auto (default)", "Automatically select a throw analysis" )
 +padVal(" pedantic", "Pedantically conservative throw analysis" )
@@ -2093,7 +2127,8 @@ public class Options extends OptionsBase {
                 +padOpt( "implicit-entry (true)", "Include methods called implicitly by the VM as entry points" )
                 +padOpt( "trim-clinit (true)", "Removes redundant static initializer calls" )
                 +padOpt( "reflection-log", "Uses a reflection log to resolve reflective calls." )
-                +padOpt( "guards (ignore)", "Describes how to guard the program from unsound assumptions." );
+                +padOpt( "guards (ignore)", "Describes how to guard the program from unsound assumptions." )
+                +padOpt( "types-for-invoke (false)", "Uses reaching types inferred by the pointer analysis to resolve reflective calls." );
     
         if( phaseName.equals( "cg.cha" ) )
             return "Phase "+phaseName+":\n"+
@@ -3057,7 +3092,8 @@ public class Options extends OptionsBase {
                 +"implicit-entry "
                 +"trim-clinit "
                 +"reflection-log "
-                +"guards ";
+                +"guards "
+                +"types-for-invoke ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""
@@ -3676,7 +3712,8 @@ public class Options extends OptionsBase {
               +"all-reachable:false "
               +"implicit-entry:true "
               +"trim-clinit:true "
-              +"guards:ignore ";
+              +"guards:ignore "
+              +"types-for-invoke:false ";
     
         if( phaseName.equals( "cg.cha" ) )
             return ""

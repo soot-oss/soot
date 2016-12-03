@@ -125,5 +125,14 @@ public final class Kind implements Numberable
     public boolean isPrivileged() {
     	return this == PRIVILEGED;
     }
+    
+    public boolean isReflection() {
+    	return this == REFL_CLASS_NEWINSTANCE || this == REFL_CONSTR_NEWINSTANCE
+    			|| this == REFL_INVOKE;
+    }
+    
+    public boolean isReflInvoke() {
+    	return this == REFL_INVOKE;
+    }
 }
 

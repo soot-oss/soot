@@ -142,7 +142,7 @@ public class SootClass extends AbstractHost implements Numberable {
 	 *             if the resolution is at an insufficient level
 	 */
 	public void checkLevel(int level) {
-		if (!Scene.v().doneResolving())
+		if (!Scene.v().doneResolving() || Options.v().ignore_resolving_levels())
 			return;
 		checkLevelIgnoreResolving(level);
 	}
@@ -1066,18 +1066,6 @@ public class SootClass extends AbstractHost implements Numberable {
 	/** Convenience method returning true if this class is phantom. */
 	public boolean isPhantom() {
 		return isPhantom;
-	}
-
-	/** Marks this class as phantom, without notifying the Scene. */
-	public void setPhantom(boolean value) {
-		if (value == false)
-			if (isPhantom)
-				throw new RuntimeException(
-						"don't know how to de-phantomize this class");
-			else
-				return;
-
-		setPhantomClass();
 	}
 
 	/**

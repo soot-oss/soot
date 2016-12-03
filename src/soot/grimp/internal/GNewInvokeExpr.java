@@ -96,12 +96,14 @@ public class GNewInvokeExpr extends AbstractInvokeExpr
 
         buffer.append("new " + type.toString() + "(");
 
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            if(i != 0)
-                buffer.append(", ");
-
-            buffer.append(argBoxes[i].getValue().toString());
+        if (argBoxes != null) {
+	        for(int i = 0; i < argBoxes.length; i++)
+	        {
+	            if(i != 0)
+	                buffer.append(", ");
+	
+	            buffer.append(argBoxes[i].getValue().toString());
+	        }
         }
 
         buffer.append(")");
@@ -116,12 +118,14 @@ public class GNewInvokeExpr extends AbstractInvokeExpr
         up.type(type);
         up.literal("(");
 
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            if(i != 0)
-                up.literal(", ");
-
-            argBoxes[i].toString(up);
+        if (argBoxes != null) {
+	        for(int i = 0; i < argBoxes.length; i++)
+	        {
+	            if(i != 0)
+	                up.literal(", ");
+	
+	            argBoxes[i].toString(up);
+	        }
         }
 
         up.literal(")");
@@ -149,11 +153,13 @@ public class GNewInvokeExpr extends AbstractInvokeExpr
         {
             GNewInvokeExpr ie = (GNewInvokeExpr)o;
             if (!(getMethod().equals(ie.getMethod()) && 
-                  argBoxes.length == ie.argBoxes.length))
+                  (argBoxes == null ? 0 : argBoxes.length) == (ie.argBoxes == null ? 0 : ie.argBoxes.length)))
                 return false;
-            for (ValueBox element : argBoxes)
-				if (!(element.getValue().equivTo(element.getValue())))
-                    return false;
+            if (argBoxes != null) {
+	            for (ValueBox element : argBoxes)
+					if (!(element.getValue().equivTo(element.getValue())))
+	                    return false;
+            }
             if( !type.equals(ie.type) ) return false;
             return true;
         }

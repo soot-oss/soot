@@ -67,12 +67,14 @@ public class GVirtualInvokeExpr extends AbstractVirtualInvokeExpr
 
         buffer.append("." + methodRef.getSignature() + "(");
 
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            if(i != 0)
-                buffer.append(", ");
-
-            buffer.append(argBoxes[i].getValue().toString());
+        if (argBoxes != null) {
+	        for(int i = 0; i < argBoxes.length; i++)
+	        {
+	            if(i != 0)
+	                buffer.append(", ");
+	
+	            buffer.append(argBoxes[i].getValue().toString());
+	        }
         }
 
         buffer.append(")");
@@ -90,12 +92,14 @@ public class GVirtualInvokeExpr extends AbstractVirtualInvokeExpr
         up.methodRef(methodRef);
         up.literal("(");
 
-        for(int i = 0; i < argBoxes.length; i++)
-        {
-            if(i != 0)
-                up.literal(", ");
-
-            argBoxes[i].toString(up);
+        if (argBoxes != null) {
+	        for(int i = 0; i < argBoxes.length; i++)
+	        {
+	            if(i != 0)
+	                up.literal(", ");
+	
+	            argBoxes[i].toString(up);
+	        }
         }
 
         up.literal(")");

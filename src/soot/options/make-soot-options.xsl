@@ -113,11 +113,22 @@ public class Options extends OptionsBase {
 <!--* BOOLEAN_OPTION *******************************************************-->
   <xsl:template mode="parse" match="boolopt">
             else if( false <xsl:text/>
+    <xsl:choose>
+    	<xsl:when test="default='true'">
+    <xsl:for-each select="alias">
+            || option.equals( "no-<xsl:value-of select="."/>" )<xsl:text/>
+    </xsl:for-each>
+            )
+                <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = false;
+    	</xsl:when>
+    	<xsl:otherwise>
     <xsl:for-each select="alias">
             || option.equals( "<xsl:value-of select="."/>" )<xsl:text/>
     </xsl:for-each>
             )
                 <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = true;
+    	</xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 <!--* MULTI_OPTION *******************************************************-->
@@ -273,7 +284,7 @@ public class Options extends OptionsBase {
 <!--* BOOLEAN_OPTION *******************************************************-->
   <xsl:template mode="vars" match="boolopt">
     public boolean <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() { return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>; }
-    private boolean <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = false;<xsl:text/>
+    private boolean <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = <xsl:choose> <xsl:when test="default"><xsl:value-of select="default"/></xsl:when><xsl:otherwise>false</xsl:otherwise></xsl:choose>;<xsl:text/>
     public void set_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>( boolean setting ) { <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = setting; }
   </xsl:template>
 

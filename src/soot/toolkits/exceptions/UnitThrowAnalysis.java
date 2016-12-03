@@ -295,8 +295,14 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
     }
 
     protected ThrowableSet mightThrow(SootMethodRef m) {
-    	SootMethod sm = m.resolve();
-    	return mightThrow(sm);
+    	// The throw analysis is used in the front-ends. Conseqeuently, some
+    	// methods might not yet be loaded. If this is the case, we make
+    	// conservative assumptions.
+    	SootMethod sm = m.tryResolve();
+    	if (sm != null)
+    		return mightThrow(sm);
+    	else
+    		return mgr.ALL_THROWABLES;
     }
     
     /**

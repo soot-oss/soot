@@ -34,6 +34,7 @@ import java.util.StringTokenizer;
 import soot.dava.DavaBody;
 import soot.dava.toolkits.base.renamer.RemoveFullyQualifiedName;
 import soot.jimple.toolkits.callgraph.VirtualCalls;
+import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.IterableSet;
 import soot.util.Numberable;
@@ -325,6 +326,11 @@ public class SootMethod
         
         Body b = this.getBodyFromMethodSource("jb");
         setActiveBody(b);
+        
+        // If configured, we drop the method source to save memory
+        if (Options.v().drop_bodies_after_load())
+        	ms = null;
+        
         return b;
     }
 
