@@ -30,13 +30,33 @@ import java.io.*;
 
 public class DotGraphUtility {
 
-    /* replace any " to \" in the string */
+    /**
+     * Replace any {@code "} with {@code \"}. If the {@code "} character was
+     * already escaped (i.e. {@code \"}), then the escape character is also
+     * escaped (i.e. {@code \\\"}).
+     *
+     * @param original
+     *
+     * @return
+     */
     public static String replaceQuotes(String original) {
         byte[] ord = original.getBytes();
         int quotes = 0;
+        boolean escapeActive = false;
         for (byte element : ord) {
-            if (element == '\"') {
-                quotes++;
+            switch (element) {
+                case '\\':
+                    escapeActive = true;
+                    break;
+                case '\"':
+                    quotes++;
+                    if (escapeActive) {
+                        quotes++;
+                    }
+                //fallthrough
+                default:
+                    escapeActive = false;
+                    break;
             }
         }
 
@@ -47,6 +67,9 @@ public class DotGraphUtility {
         byte[] newsrc = new byte[ord.length + quotes];
         for (int i = 0, j = 0, n = ord.length; i < n; i++, j++) {
             if (ord[i] == '\"') {
+                if (i > 0 && ord[i - 1] == '\\') {
+                    newsrc[j++] = (byte) '\\';
+                }
                 newsrc[j++] = (byte) '\\';
             }
             newsrc[j] = ord[i];
