@@ -424,6 +424,19 @@ public class DexNullTransformer extends AbstractNullTransformer {
 						stmt.setOp(NullConstant.v());
 					}
 				}
+				
+				@Override
+				public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
+					if (stmt.getOp() instanceof IntConstant && ((IntConstant) stmt.getOp()).value == 0)
+						stmt.setOp(NullConstant.v());
+				}
+				
+				@Override
+				public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
+					if (stmt.getOp() instanceof IntConstant && ((IntConstant) stmt.getOp()).value == 0)
+						stmt.setOp(NullConstant.v());
+				}
+				
 			});
 			if (u instanceof Stmt) {
 				Stmt stmt = (Stmt) u;
