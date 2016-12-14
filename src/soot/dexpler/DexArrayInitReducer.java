@@ -65,7 +65,8 @@ public class DexArrayInitReducer extends BodyTransformer {
 			// preceding constant assignments
 			AssignStmt assignStmt = (AssignStmt) u;
 			if (assignStmt.getLeftOp() instanceof ArrayRef) {
-				if (u1 != null && u2 != null) {
+				if (u1 != null && u2 != null && u2.getBoxesPointingToThis().isEmpty()
+						&& assignStmt.getBoxesPointingToThis().isEmpty()) {
 					ArrayRef arrayRef = (ArrayRef) assignStmt.getLeftOp();
 					
 					Value u1val = u1.getDefBoxes().get(0).getValue();
@@ -157,6 +158,15 @@ public class DexArrayInitReducer extends BodyTransformer {
 			}
 			else if (u2 == null) {
 				u2 = assignStmt;
+
+				// If the last value is overwritten again, we start again at the beginning
+				if (u1 != null) {
+					Value op1 = ((AssignStmt) u1).getLeftOp();
+					if (op1 == ((AssignStmt) u2).getLeftOp()) {
+						u1 = u2;
+						u2 = null;
+					}
+				}
 			}
 			else {
 				u1 = u2;

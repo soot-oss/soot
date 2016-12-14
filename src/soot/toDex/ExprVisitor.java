@@ -17,6 +17,7 @@ import soot.Local;
 import soot.LongType;
 import soot.NullType;
 import soot.PrimType;
+import soot.RefType;
 import soot.SootClass;
 import soot.Type;
 import soot.Value;
@@ -591,7 +592,10 @@ class ExprVisitor implements ExprSwitch {
 			source = IntConstant.v(0);
 		
 		// select fitting conversion opcode, depending on the source and cast type
-		PrimitiveType sourceType = PrimitiveType.getByName(source.getType().toString());
+		Type srcType = source.getType();
+		if (srcType instanceof RefType)
+			throw new RuntimeException("Trying to cast reference type " + srcType + " to a primitive");
+		PrimitiveType sourceType = PrimitiveType.getByName(srcType.toString());
 		if (castType == PrimitiveType.BOOLEAN) {
 			// there is no "-to-boolean" opcode, so just pretend to move an int to an int
 			castType = PrimitiveType.INT;
