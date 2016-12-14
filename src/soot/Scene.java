@@ -978,6 +978,7 @@ public class Scene  //extends AbstractHost
 		if (allowsPhantomRefs() ||
 				   className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
 			SootClass c = new SootClass(className);
+            c.isPhantom = true;
 			addClassSilent(c);
 			c.setPhantomClass();
 			return c;
