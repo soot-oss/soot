@@ -3,6 +3,14 @@ layout: post
 title: A framework for analyzing and transforming Java and Android Applications
 ---
 
+# Please help us improve Soot!
+You are using Soot and would like to help us support it in the future? Then please support us by filling out [this little web form](https://goo.gl/forms/rk1oSxFIxAH0xaf52).
+
+That way you can help us in two ways:
+* By letting us know how we can improve Soot you can directly help us prioritize newly planned features.
+* By stating your name and affiliation you help us showcasing Soot’s large user base.
+Thanks!
+
 # What is Soot?
 
 <img align="right" src="http://sable.github.io/soot/logo/soot-logo.png" width="150">
