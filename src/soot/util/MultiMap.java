@@ -20,12 +20,14 @@
 package soot.util;
 import java.util.*;
 
+import heros.solver.Pair;
+
 /** A map with sets as values.
  *
  * @author Ondrej Lhotak
  */
 
-public interface MultiMap<K,V> {
+public interface MultiMap<K,V> extends Iterable<Pair<K, V>> {
     public boolean isEmpty();
     public int numKeys();
     public boolean contains( K key, V value );
