@@ -61,6 +61,7 @@ import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 import soot.toDex.instructions.Insn;
+import soot.toDex.instructions.Insn10x;
 import soot.toDex.instructions.Insn11x;
 import soot.toDex.instructions.Insn12x;
 import soot.toDex.instructions.Insn21c;
@@ -613,6 +614,9 @@ class ExprVisitor implements ExprSwitch {
 			if (destinationReg.getNumber() != sourceReg.getNumber()) {
                 stmtV.addInsn(StmtVisitor.buildMoveInsn(destinationReg, sourceReg), origStmt);
 			}
+			// Make sure that we have at least some statement in case we need one for jumps
+			else if (!origStmt.getBoxesPointingToThis().isEmpty())
+				stmtV.addInsn(new Insn10x(Opcode.NOP), origStmt);
 		} else if (needsCastThroughInt(sourceType, castType)) {
 			/* 
 			 * an unsupported "dest = (cast) src" is broken down to

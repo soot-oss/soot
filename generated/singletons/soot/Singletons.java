@@ -1415,6 +1415,20 @@ public class Singletons {
     	instance_soot_jimple_toolkits_scalar_ConstantCastEliminator = null;
     }
 
+    private soot.jimple.toolkits.scalar.IdentityCastEliminator instance_soot_jimple_toolkits_scalar_IdentityCastEliminator;
+    public soot.jimple.toolkits.scalar.IdentityCastEliminator soot_jimple_toolkits_scalar_IdentityCastEliminator() {
+        if( instance_soot_jimple_toolkits_scalar_IdentityCastEliminator == null ) {
+	       	synchronized (this) {
+		        if( instance_soot_jimple_toolkits_scalar_IdentityCastEliminator == null )
+	        		instance_soot_jimple_toolkits_scalar_IdentityCastEliminator = new soot.jimple.toolkits.scalar.IdentityCastEliminator( g );
+	       	}
+       	}
+        return instance_soot_jimple_toolkits_scalar_IdentityCastEliminator;
+    }
+    protected void release_soot_jimple_toolkits_scalar_IdentityCastEliminator() {
+    	instance_soot_jimple_toolkits_scalar_IdentityCastEliminator = null;
+    }
+
     private soot.UnknownType instance_soot_UnknownType;
     public soot.UnknownType soot_UnknownType() {
         if( instance_soot_UnknownType == null ) {
