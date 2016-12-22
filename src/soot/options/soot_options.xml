@@ -1132,6 +1132,48 @@ try to pass options to the loaded plugins.</p>
 </long_desc>
 		</listopt>
 		
+		<multiopt>
+			<name>Handling of Wrong Staticness</name>
+			<alias>wrong-staticness</alias>
+			<short_desc>Ignores or fixes errors due to wrong staticness</short_desc>
+			<long_desc>
+Some projects have been shown to contain invalid bytecode that tries to access
+a static field or method in a non-static way or the other way around. The VM's bytecode
+verifier will reject such bytecode when loaded into the VM. This option, depending on
+then chosen value, either causes to create Jimple bodies in such cases nontheless, ignoring
+the error, or automatically fixes the error when possible. 
+</long_desc>
+				<value>
+					<name>Fail</name>
+					<alias>fail</alias>
+					<short_desc>Raise an error when wrong staticness is detected</short_desc>
+					<long_desc>
+When this value is used, the analysis raises an error when code that accesses a static
+field using instance field operations is detected.
+</long_desc>
+				</value>
+				<value>
+					<name>Ignore</name>
+					<alias>ignore</alias>
+					<short_desc>Ignore errors caused by wrong staticness</short_desc>
+					<long_desc>
+When this option is enabled, Soot will accept field accesses when in the case of wrong
+staticness and will create the Jimple code equivalent to the (broken) input code nevertheless.
+The Jimple code will then be invalid, but will exactly resemble the input code.
+</long_desc>
+				</value>
+				<value>
+					<name>Fix</name>
+					<alias>fix</alias>
+					<short_desc>Transparently fix staticness errors</short_desc>
+					<default/>													
+					<long_desc>
+When Soot detects a case in which a static field is accessed as if it were an instance field, Soot
+will transparently fix the error and generate Jimple code for the fixed program.
+</long_desc>
+				</value>
+		</multiopt>
+				
 		<phaseopt>
 			<name>Phase Options</name>
 			<alias>p</alias>
@@ -1273,18 +1315,6 @@ method.
 						<name>Enabled</name>
 						<alias>enabled</alias>
                                                 <default>true</default>
-					</boolopt>
-					<boolopt>
-						<name>Ignore wrong static-ness</name>
-						<alias>ignore-wrong-staticness</alias>
-                        <default>false</default>
-					<short_desc>Ignores errors due to wrong staticness</short_desc>
-					<long_desc>
-Some projects have been shown to contain invalid bytecode that tries to access
-a static field or method in a non-static way or the other way around. The VM's bytecode
-verifier will reject such bytecode when loaded into the VM. This option, when enabled,
-causes to create Jimple bodies in such cases nontheless, ignoring the error.
-</long_desc>
 					</boolopt>
 					<boolopt>
 						<name>Use older type assigner</name>
@@ -6237,7 +6267,6 @@ to the surrounding program.
 								<name>Dalvik</name>
 								<alias>dalvik</alias>
 								<short_desc>Dalvik Throw Analysis</short_desc>
-								<default/>													
 								<long_desc>
 Specialized throw analysis implementation that covers the semantics of the Dalvik
 IR used for Android apps</long_desc>

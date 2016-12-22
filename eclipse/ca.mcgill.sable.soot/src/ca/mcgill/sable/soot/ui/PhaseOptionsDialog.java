@@ -430,8 +430,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		addToEnableGroup("jb", "jb.tr", getjbjb_trenabled_widget(), "enabled");
 		
-		addToEnableGroup("jb", "jb.tr", getjbjb_trignore_wrong_staticness_widget(), "ignore-wrong-staticness");
-		
 		addToEnableGroup("jb", "jb.tr", getjbjb_truse_older_type_assigner_widget(), "use-older-type-assigner");
 		
 		addToEnableGroup("jb", "jb.tr", getjbjb_trcompare_type_assigners_widget(), "compare-type-assigners");
@@ -439,8 +437,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		addToEnableGroup("jb", "jb.tr", getjbjb_trignore_nullpointer_dereferences_widget(), "ignore-nullpointer-dereferences");
 		
 		getjbjb_trenabled_widget().getButton().addSelectionListener(this);
-		
-		getjbjb_trignore_wrong_staticness_widget().getButton().addSelectionListener(this);
 		
 		getjbjb_truse_older_type_assigner_widget().getButton().addSelectionListener(this);
 		
@@ -2482,12 +2478,20 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getProcessing_Optionsplugin_widget().getAlias(), stringRes);
 		}
 		 
+		stringRes = getProcessing_Optionswrong_staticness_widget().getSelectedAlias();
+
+		
+		defStringRes = "fix";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getProcessing_Optionswrong_staticness_widget().getAlias(), stringRes);
+		}
+		 
 		stringRes = getProcessing_Optionsthrow_analysis_widget().getSelectedAlias();
 
 		
 		defStringRes = "unit";
-		
-		defStringRes = "dalvik";
 		
 
 		if (!stringRes.equals(defStringRes)) {
@@ -2592,16 +2596,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_trenabled_widget().getAlias(), new Boolean(boolRes));
-		}
-		
-		boolRes = getjbjb_trignore_wrong_staticness_widget().getButton().getSelection();
-		
-		
-		defBoolRes = false;
-		
-
-		if (boolRes != defBoolRes) {
-			getConfig().put(getjbjb_trignore_wrong_staticness_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_truse_older_type_assigner_widget().getButton().getSelection();
@@ -7302,6 +7296,18 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	
 	
+	private MultiOptionWidget Processing_Optionswrong_staticness_widget;
+	
+	private void setProcessing_Optionswrong_staticness_widget(MultiOptionWidget widget) {
+		Processing_Optionswrong_staticness_widget = widget;
+	}
+	
+	public MultiOptionWidget getProcessing_Optionswrong_staticness_widget() {
+		return Processing_Optionswrong_staticness_widget;
+	}	
+	
+	
+	
 	private MultiOptionWidget Processing_Optionsthrow_analysis_widget;
 	
 	private void setProcessing_Optionsthrow_analysis_widget(MultiOptionWidget widget) {
@@ -7413,16 +7419,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getjbjb_trenabled_widget() {
 		return jbjb_trenabled_widget;
-	}	
-	
-	private BooleanOptionWidget jbjb_trignore_wrong_staticness_widget;
-	
-	private void setjbjb_trignore_wrong_staticness_widget(BooleanOptionWidget widget) {
-		jbjb_trignore_wrong_staticness_widget = widget;
-	}
-	
-	public BooleanOptionWidget getjbjb_trignore_wrong_staticness_widget() {
-		return jbjb_trignore_wrong_staticness_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_truse_older_type_assigner_widget;
@@ -11692,6 +11688,42 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		data = new OptionData [] {
 		
+		new OptionData("Fail",
+		"fail",
+		"\nWhen this value is used, the analysis raises an error when code \nthat accesses a static field using instance field operations is \ndetected. ",
+		
+		false),
+		
+		new OptionData("Ignore",
+		"ignore",
+		"\nWhen this option is enabled, Soot will accept field accesses \nwhen in the case of wrong staticness and will create the Jimple \ncode equivalent to the (broken) input code nevertheless. The \nJimple code will then be invalid, but will exactly resemble the \ninput code. ",
+		
+		false),
+		
+		new OptionData("Fix",
+		"fix",
+		"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. ",
+		
+		true),
+		
+		};
+		
+										
+		setProcessing_Optionswrong_staticness_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Handling of Wrong Staticness", "", "","wrong-staticness", "\nSome projects have been shown to contain invalid bytecode that \ntries to access a static field or method in a non-static way or \nthe other way around. The VM's bytecode verifier will reject \nsuch bytecode when loaded into the VM. This option, depending on \nthen chosen value, either causes to create Jimple bodies in such \ncases nontheless, ignoring the error, or automatically fixes the \nerror when possible. ")));
+		
+		defKey = ""+" "+""+" "+"wrong-staticness";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getProcessing_Optionswrong_staticness_widget().setDef(defaultString);
+		}
+		
+		
+		
+		data = new OptionData [] {
+		
 		new OptionData("Pedantic",
 		"pedantic",
 		"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, since the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread. ",
@@ -11708,7 +11740,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		"dalvik",
 		"\nSpecialized throw analysis implementation that covers the \nsemantics of the Dalvik IR used for Android apps",
 		
-		true),
+		false),
 		
 		};
 		
@@ -12074,22 +12106,6 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setjbjb_trenabled_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Enabled", "p", "jb.tr","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.tr"+" "+"ignore-wrong-staticness";
-		defKey = defKey.trim();
-
-		if (isInDefList(defKey)) {
-			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
-			defaultBool = false;
-			
-		}
-
-		setjbjb_trignore_wrong_staticness_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Ignore wrong static-ness", "p", "jb.tr","ignore-wrong-staticness", "\nSome projects have been shown to contain invalid bytecode that \ntries to access a static field or method in a non-static way or \nthe other way around. The VM's bytecode verifier will reject \nsuch bytecode when loaded into the VM. This option, when \nenabled, causes to create Jimple bodies in such cases \nnontheless, ignoring the error. ", defaultBool)));
 		
 		
 		

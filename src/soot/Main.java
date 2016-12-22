@@ -320,7 +320,7 @@ public class Main {
 
 		//if phantom refs enabled,  ignore wrong staticness in type assigner
 		if(Options.v().allow_phantom_refs()) {
-			PhaseOptions.v().setPhaseOption("jb.tr", "ignore-wrong-staticness:true");
+			Options.v().set_wrong_staticness(Options.wrong_staticness_fix);
 		}
 	}
 }

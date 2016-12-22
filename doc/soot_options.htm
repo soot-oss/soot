@@ -907,6 +907,17 @@ packages in the Java runtime.</p>
 </td><td colspan="2">Load all plugins found in <var>file</var></td>
 </tr>
 <tr>
+<td><tt>-wrong-staticness <var>arg</var></tt>
+<br>
+</td><td><tt>fail&nbsp;</tt>
+<br>
+<tt>ignore&nbsp;</tt>
+<br>
+<tt>fix&nbsp;</tt>
+<br>
+</td><td colspan="1">Ignores or fixes errors due to wrong staticness</td>
+</tr>
+<tr>
 <td><tt>-p <var>phase opt:val</var></tt>
 <br>
 <tt>-phase-option <var>phase opt:val</var></tt>
@@ -1346,17 +1357,6 @@ method.
 		<br>
 			(default value: <span class="value">true</span>)
 		<p></p>
-</li>
-<li>
-<b>Ignore wrong static-ness</b> (ignore-wrong-staticness)
-		<br>
-			(default value: <span class="value">false</span>)
-		<p>
-Some projects have been shown to contain invalid bytecode that tries to access
-a static field or method in a non-static way or the other way around. The VM's bytecode
-verifier will reject such bytecode when loaded into the VM. This option, when enabled,
-causes to create Jimple bodies in such cases nontheless, ignoring the error.
-</p>
 </li>
 <li>
 <b>Use older type assigner</b> (use-older-type-assigner)

@@ -90,6 +90,9 @@ public class Options extends OptionsBase {
     public static final int java_version_7 = 8;
     public static final int java_version_1_8 = 9;
     public static final int java_version_8 = 9;
+    public static final int wrong_staticness_fail = 1;
+    public static final int wrong_staticness_ignore = 2;
+    public static final int wrong_staticness_fix = 3;
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
     public static final int throw_analysis_dalvik = 3;
@@ -927,6 +930,56 @@ public class Options extends OptionsBase {
             }
   
             else if( false
+            || option.equals( "wrong-staticness" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( false );
+    
+                else if( false
+                || value.equals( "fail" )
+                ) {
+                    if( wrong_staticness != 0
+                    && wrong_staticness != wrong_staticness_fail ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    wrong_staticness = wrong_staticness_fail;
+                }
+    
+                else if( false
+                || value.equals( "ignore" )
+                ) {
+                    if( wrong_staticness != 0
+                    && wrong_staticness != wrong_staticness_ignore ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    wrong_staticness = wrong_staticness_ignore;
+                }
+    
+                else if( false
+                || value.equals( "fix" )
+                ) {
+                    if( wrong_staticness != 0
+                    && wrong_staticness != wrong_staticness_fix ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    wrong_staticness = wrong_staticness_fix;
+                }
+    
+                else {
+                    G.v().out.println( "Invalid value "+value+" given for option -"+option );
+                    return false;
+                }
+           }
+  
+            else if( false
             || option.equals( "p" )
             || option.equals( "phase-option" )
             ) {
@@ -1557,6 +1610,12 @@ public class Options extends OptionsBase {
     }
     public void set_plugin( List<String> setting ) { plugin = setting; }
     private List<String> plugin = null;
+    public int wrong_staticness() {
+        if( wrong_staticness == 0 ) return wrong_staticness_fix;
+        return wrong_staticness; 
+    }
+    public void set_wrong_staticness( int setting ) { wrong_staticness = setting; }
+    private int wrong_staticness = 0;
     public boolean via_grimp() { return via_grimp; }
     private boolean via_grimp = false;
     public void set_via_grimp( boolean setting ) { via_grimp = setting; }
@@ -1567,7 +1626,6 @@ public class Options extends OptionsBase {
   
     public int throw_analysis() {
         if( throw_analysis == 0 ) return throw_analysis_unit;
-        if( throw_analysis == 0 ) return throw_analysis_dalvik;
         return throw_analysis; 
     }
     public void set_throw_analysis( int setting ) { throw_analysis = setting; }
@@ -1747,6 +1805,10 @@ public class Options extends OptionsBase {
 +"\nProcessing Options:\n"
       
 +padOpt(" -plugin FILE", "Load all plugins found in FILE" )
++padOpt(" -wrong-staticness ARG", "Ignores or fixes errors due to wrong staticness" )
++padVal(" fail", "Raise an error when wrong staticness is detected" )
++padVal(" ignore", "Ignore errors caused by wrong staticness" )
++padVal(" fix (default)", "Transparently fix staticness errors" )
 +padOpt(" -p PHASE OPT:VAL -phase-option PHASE OPT:VAL", "Set PHASE's OPT option to VALUE" )
 +padOpt(" -O -optimize", "Perform intraprocedural optimizations" )
 +padOpt(" -W -whole-optimize", "Perform whole program optimizations" )
@@ -1755,7 +1817,7 @@ public class Options extends OptionsBase {
 +padOpt(" -throw-analysis ARG", "" )
 +padVal(" pedantic", "Pedantically conservative throw analysis" )
 +padVal(" unit (default)", "Unit Throw Analysis" )
-+padVal(" dalvik (default)", "Dalvik Throw Analysis" )
++padVal(" dalvik", "Dalvik Throw Analysis" )
 +padOpt(" -check-init-ta ARG -check-init-throw-analysis ARG", "" )
 +padVal(" auto (default)", "Automatically select a throw analysis" )
 +padVal(" pedantic", "Pedantically conservative throw analysis" )
@@ -1942,7 +2004,6 @@ public class Options extends OptionsBase {
                 "\nThe Type Assigner gives local variables types which will \naccommodate the values stored in them over the course of the \nmethod. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
-                +padOpt( "ignore-wrong-staticness (false)", "Ignores errors due to wrong staticness" )
                 +padOpt( "use-older-type-assigner (false)", "Enables the older type assigner" )
                 +padOpt( "compare-type-assigners (false)", "Compares Ben Bellamy's and the older type assigner" )
                 +padOpt( "ignore-nullpointer-dereferences (false)", "Ignores virtual method calls on base objects that may only be null" );
@@ -2963,7 +3024,6 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.tr" ) )
             return ""
                 +"enabled "
-                +"ignore-wrong-staticness "
                 +"use-older-type-assigner "
                 +"compare-type-assigners "
                 +"ignore-nullpointer-dereferences ";
@@ -3584,7 +3644,6 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.tr" ) )
             return ""
               +"enabled:true "
-              +"ignore-wrong-staticness:false "
               +"use-older-type-assigner:false "
               +"compare-type-assigners:false "
               +"ignore-nullpointer-dereferences:false ";

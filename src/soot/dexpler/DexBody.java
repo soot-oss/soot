@@ -98,6 +98,7 @@ import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
 import soot.jimple.toolkits.scalar.ConstantCastEliminator;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.jimple.toolkits.scalar.FieldStaticnessCorrector;
 import soot.jimple.toolkits.scalar.IdentityCastEliminator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.jimple.toolkits.scalar.NopEliminator;
@@ -678,7 +679,12 @@ public class DexBody  {
         LocalPacker.v().transform(jBody);
         UnusedLocalEliminator.v().transform(jBody);
         LocalNameStandardizer.v().transform(jBody);
-
+        
+        // Some apps reference static fields as instance fields. We fix this
+        // on the fly.
+        if (Options.v().wrong_staticness() == Options.wrong_staticness_fix)
+        	FieldStaticnessCorrector.v().transform(jBody);
+        
         Debug.printDbg("\nafter type assigner localpacker and name standardizer");
         Debug.printDbg("",(Body)jBody);
         

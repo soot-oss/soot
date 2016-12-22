@@ -426,6 +426,20 @@ public class AntTask extends MatchingTask {
             return plugin.createPath();
         }
   
+        public void setwrong_staticness(String arg) {
+            if(false
+    
+                || arg.equals( "fail" )
+                || arg.equals( "ignore" )
+                || arg.equals( "fix" )
+                ) {
+                addArg("-wrong-staticness");
+                addArg(arg);
+            } else {
+                throw new BuildException("Bad value "+arg+" for option wrong_staticness");
+            }
+        }
+  
         public void setoptimize(boolean arg) {
             if(arg) addArg("-optimize");
         }
@@ -686,12 +700,6 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("jb.tr");
             addArg("enabled:"+(arg?"true":"false"));
-          }
-      
-          public void setignore_wrong_staticness(boolean arg) {
-            addArg("-p");
-            addArg("jb.tr");
-            addArg("ignore-wrong-staticness:"+(arg?"true":"false"));
           }
       
           public void setuse_older_type_assigner(boolean arg) {

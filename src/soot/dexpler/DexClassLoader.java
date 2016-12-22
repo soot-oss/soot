@@ -83,18 +83,18 @@ public class DexClassLoader {
         
         // get the fields of the class
         for (Field sf : defItem.getStaticFields()) {
-            if (sc.declaresField(sf.getName(), DexType.toSoot(sf.getType())))
-                continue;
-            SootField sootField = DexField.makeSootField(sf);
-            sc.addField(sootField);
-            da.handleFieldAnnotation(sootField, sf);
+        	if (sc.declaresField(sf.getName(), DexType.toSoot(sf.getType())))
+        		continue;
+        	SootField sootField = DexField.makeSootField(sf);
+        	sc.addField(sootField);
+        	da.handleFieldAnnotation(sootField, sf);
         }
         for (Field f: defItem.getInstanceFields()) {
-            if (sc.declaresField(f.getName(), DexType.toSoot(f.getType())))
-                continue;
-            SootField sootField = DexField.makeSootField(f);
-            sc.addField(sootField);
-            da.handleFieldAnnotation(sootField, f);
+        	if (sc.declaresField(f.getName(), DexType.toSoot(f.getType())))
+        		continue;
+        	SootField sootField = DexField.makeSootField(f);
+        	sc.addField(sootField);
+        	da.handleFieldAnnotation(sootField, f);
         }
         
         // get the methods of the class

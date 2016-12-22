@@ -20,7 +20,6 @@
 package soot;
 import java.util.LinkedList;
 
-import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
 
 /** Representation of a reference to a field as it appears in a class file.
@@ -82,8 +81,8 @@ class AbstractSootFieldRef implements SootFieldRef {
     }
     
     private SootField checkStatic(SootField ret) {
-        if( ret.isStatic() != isStatic() && !ret.isPhantom()) {
-        	if(!TypeAssigner.v().ignoreWrongStaticNess()) {
+    	if(Options.v().wrong_staticness() == Options.wrong_staticness_fail) {
+    		if( ret.isStatic() != isStatic() && !ret.isPhantom()) {
         		throw new ResolutionFailedException( "Resolved "+this+" to "+ret+" which has wrong static-ness" );
         	}
         }
@@ -147,7 +146,7 @@ class AbstractSootFieldRef implements SootFieldRef {
         	synchronized (declaringClass) {
         		// Be careful: Another thread may have already created this
         		// field in the meantime, so better check twice.
-        		SootField clField = cl.getFieldUnsafe(name, type);
+        		SootField clField = declaringClass.getFieldUnsafe(name, type);
                 if (clField != null)
                     return checkStatic(clField);
                 else {
