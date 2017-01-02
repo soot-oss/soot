@@ -184,6 +184,8 @@ public class DexType {
      * @return
      */
     public static String toSootICAT(String type) {
+    	type = type.replace(".", "/");
+    	
         String r = "";
         String[] split1 = type.split(";");
         for (String s : split1) {

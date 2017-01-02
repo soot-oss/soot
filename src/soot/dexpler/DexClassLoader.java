@@ -106,7 +106,7 @@ public class DexClassLoader {
         }
         
         da.handleClassAnnotation(defItem);
-                
+        
         // In contrast to Java, Dalvik associates the InnerClassAttribute
         // with the inner class, not the outer one. We need to copy the
         // tags over to correspond to the Soot semantics.
