@@ -40,7 +40,7 @@ Soot can go from any input format to any output format, i.e., for instance, allo
 # Who develops and maintains Soot?
 
 Soot was originally developed by the [**Sable Research Group**](http://www.sable.mcgill.ca/soot/) of [McGill University](http://www.mcgill.ca/). The [first publication on Soot](resources/sable-paper-1999-1.pdf) appeared at CASCON 1999. Since then, Soot has seen contributions from many people inside and outside the research community. 
-The current maintenance is driven by the [Secure Software Engineering Group](http://sse.ec-spride.de/) at [Technische Universität Darmstadt](http://www.tu-darmstadt.de).
+The current maintenance is driven by the [Software Engineering Group](https://www.hni.uni-paderborn.de/en/software-engineering/) at [Heinz Nixdorf Institute](https://www.hni.uni-paderborn.de/swt/) of [Paderborn University](https://www.uni-paderborn.de/).
 
 [This publication](resources/lblh11soot.pdf) provides an insight into the first ten years of Soot's development.
 
