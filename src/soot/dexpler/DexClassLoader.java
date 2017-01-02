@@ -118,20 +118,26 @@ public class DexClassLoader {
         		if (t instanceof InnerClassTag) {
         			InnerClassTag ict = (InnerClassTag) t;
         			
-        			// Check the inner class to make sure that this tag actually
-        			// refers to the current class as the inner class
-        			String inner = ict.getInnerClass().replaceAll("/", ".");
-        			if (!inner.equals(sc.getName())) {
-						innerTagIt.remove();
-        				continue;
-        			}
-        			
+        			// Get the outer class name
         			String outer = DexInnerClassParser.getOuterClassNameFromTag(ict);
         			if (outer == null) {
 						// If we don't have any clue what the outer class is, we just remove
 						// the reference entirely
 						innerTagIt.remove();
 						continue;
+        			}
+        			
+        			// If the tag is already associated with the outer class,
+        			// we leave it as it is
+        			if (outer.equals(sc.getName()))
+        				continue;
+
+        			// Check the inner class to make sure that this tag actually
+        			// refers to the current class as the inner class
+        			String inner = ict.getInnerClass().replaceAll("/", ".");
+        			if (!inner.equals(sc.getName())) {
+						innerTagIt.remove();
+        				continue;
         			}
         			
         			SootClass osc = SootResolver.v().makeClassRef(outer);
@@ -170,8 +176,9 @@ public class DexClassLoader {
         		}
         	}
 			// remove tag if empty
-			if (ica.getSpecs().isEmpty())
+			if (ica.getSpecs().isEmpty()) {
 				sc.getTags().remove(ica);
+			}
         }
         
         return deps;
