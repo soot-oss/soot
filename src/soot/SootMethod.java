@@ -87,9 +87,31 @@ public class SootMethod
      *
      * @param phaseName       Phase name for body loading. */
     private Body getBodyFromMethodSource(String phaseName) {
-    	if (ms == null)
-    		throw new RuntimeException("No method source set for method " + this.getSignature());
-        return ms.getBody(this, phaseName);
+    	// We get a copy of the field value just in case another thread
+    	// overwrites the method source in the meantime. We then check
+    	// again whether we really need to load anything.
+    	//
+    	// The loader does something like this:
+    	//		(1) <a lot of stuff>
+    	// 		(2) activeBody = ...;
+    	//		(3) ms = null;
+    	//
+    	// We need to avoid the situation in which we don't have a body yet,
+    	// trigger the loader, and then another thread triggers
+    	// retrieveActiveBody() again. If the first loader is between
+    	// statements (2) and (3), we would pass the check on the body, but
+    	// but then find that the method source is already gone when the other
+    	// thread finally passes statement (3) before we attempt to use the
+    	// method source here.
+    	
+    	MethodSource ms = this.ms;
+    	if (this.activeBody == null) {
+	    	if (ms == null)
+	    		throw new RuntimeException("No method source set for method " + this.getSignature());
+	        return ms.getBody(this, phaseName);
+    	}
+    	else
+    		return this.activeBody;
     }
 
     /** Sets the MethodSource of the current SootMethod. */
