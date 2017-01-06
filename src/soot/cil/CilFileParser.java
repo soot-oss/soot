@@ -4,16 +4,35 @@ import heros.solver.Pair;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.antlr.v4.runtime.ANTLRFileStream;
+import org.antlr.v4.runtime.ANTLRInputStream;
+import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.Lexer;
+import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.antlr.v4.codegen.LexerFactory;
+
+import soot.Modifier;
 import soot.cil.ast.CilClass;
 import soot.cil.ast.CilGenericDeclarationList;
+import soot.cil.ast.CilTypeRef;
+import soot.cil.parser.cilBaseListener;
+import soot.cil.parser.cilLexer;
+import soot.cil.parser.cilParser;
+import soot.cil.parser.cilParser.AccessModifierContext;
+import soot.cil.parser.cilParser.ClassDefContext;
+import soot.cil.parser.cilParser.CompileUnitContext;
+import soot.cil.parser.cilParser.TypeRefContext;
 
 /**
  * Parser for the global structures in a CIL disassembly file
@@ -32,10 +51,69 @@ public class CilFileParser {
 	}
 	
 	/**
+	 * Listener class for parsing cil code and transforming it into an AST
+	 * 
+	 * @author Steven Arzt
+	 *
+	 */
+	private class CilListener extends cilBaseListener {
+		
+		@Override
+		public void enterClassDef(ClassDefContext ctx) {
+			super.enterClassDef(ctx);
+			
+			String className = ctx.className().getText();
+			int accessModifiers = 0;
+			for (AccessModifierContext amc : ctx.accessModifier()) {
+				if (amc.getText().equals("private"))
+					accessModifiers |= Modifier.PRIVATE;
+				else if (amc.getText().equals("public"))
+					accessModifiers |= Modifier.PUBLIC;
+
+			}
+			
+			CilClass clazz = new CilClass(className, null, false, accessModifiers);
+			classes.put(className, clazz);
+			
+			if (ctx.classExtension() != null)
+				clazz.setSuperclass(parseTypeRef(ctx.classExtension().typeRef()));
+			if (ctx.classImplements() != null)
+				for (TypeRefContext tref : ctx.classImplements().typeRef())
+					clazz.addInterface(parseTypeRef(tref));
+		}
+
+		private CilTypeRef parseTypeRef(TypeRefContext typeRef) {
+			String assemblyName = typeRef.assemblyName().getText();
+			String className = typeRef.className().getText();
+			
+			// TODO: Parse generics list
+			
+			return new CilTypeRef(assemblyName, className);
+		}
+		
+	}
+	
+	/**
 	 * Parses the current CIL disassembly file and creates a list of classes
 	 * @throws IOException Thrown if the file could not be read
 	 */
 	private void parse() throws IOException {
+		// TODO: remove comments before parsing
+		
+		// Run the lexer and the parser
+		ANTLRFileStream fis = new ANTLRFileStream(file.getAbsolutePath());
+		cilLexer lexer = new cilLexer(fis);
+		CommonTokenStream tokenStream = new CommonTokenStream(lexer);
+		cilParser cilParser = new cilParser(tokenStream);
+		
+		// Compile the document
+		CompileUnitContext context = cilParser.compileUnit();
+		cilBaseListener listener = new CilListener();
+
+		// Invoke the listener
+		ParseTreeWalker walker = new ParseTreeWalker();
+		walker.walk(listener, context);
+		/*
 		BufferedReader rdr = null;
 		try {
 			int lineNum = 0;
@@ -111,6 +189,7 @@ public class CilFileParser {
 			if (rdr != null)
 				rdr.close();
 		}
+		*/
 	}
 	
 	private boolean isReservedModifier(String token) {

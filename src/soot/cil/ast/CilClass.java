@@ -1,5 +1,8 @@
 package soot.cil.ast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import soot.cil.Cil_Utils;
 
 
@@ -11,36 +14,21 @@ import soot.cil.Cil_Utils;
  */
 public class CilClass {
 	private String className;
-	private int startLine;
-	private int endLine;
 	private CilGenericDeclarationList generics;
 	private boolean isInterface;
+	private int accessModifiers;
 	
-	public CilClass(String className, int startLine) {
-		this(className, startLine, -1);
-	}
+	private CilTypeRef superclass;
+	private List<CilTypeRef> interfaces = null;
 	
-	public CilClass(String className, int startLine,
-			CilGenericDeclarationList generics) {
-		this(className, startLine, -1, generics, false);
-	}
-	
-	public CilClass(String className, int startLine,
-			CilGenericDeclarationList generics, boolean isInterface) {
-		this(className, startLine, -1, generics, isInterface);
-	}
-	
-	public CilClass(String className, int startLine, int endLine) {
-		this(className, startLine, endLine, null, false);
-	}
-	
-	public CilClass(String className, int startLine, int endLine,
-			CilGenericDeclarationList generics, boolean isInterface) {
+	public CilClass(String className,
+			CilGenericDeclarationList generics,
+			boolean isInterface,
+			int accessModifiers) {
 		this.className = Cil_Utils.removeGenericsDeclaration(className);
-		this.startLine = startLine;
-		this.endLine = endLine;
 		this.generics = generics;
 		this.isInterface = isInterface;
+		this.accessModifiers = accessModifiers;
 	}
 	
 	/**
@@ -61,24 +49,34 @@ public class CilClass {
 		return mangledName;
 	}
 	
-	public int getStartLine() {
-		return this.startLine;
-	}
-	
-	public int getEndLine() {
-		return this.endLine;
-	}
-	
-	public void setEndLine(int endLine) {
-		this.endLine = endLine;
-	}
-	
 	public CilGenericDeclarationList getGenericParams() {
 		return this.generics;
 	}
 	
 	public boolean isInterface() {
 		return this.isInterface;
+	}
+	
+	public int getAccessModifiers() {
+		return this.accessModifiers;
+	}
+	
+	public void setSuperclass(CilTypeRef superclass) {
+		this.superclass = superclass;
+	}
+	
+	public CilTypeRef getSuperclass() {
+		return this.superclass;
+	}
+	
+	public List<CilTypeRef> getInterfaces() {
+		return this.interfaces;
+	}
+	
+	public void addInterface(CilTypeRef ifc) {
+		if (this.interfaces == null)
+			this.interfaces = new ArrayList<>();
+		this.interfaces.add(ifc);
 	}
 	
 	@Override

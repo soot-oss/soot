@@ -90,6 +90,7 @@ primType : 'void'
 	;
 	
 methodName : (ID | QUOTEDID);
+assemblyName : (ID | QUOTEDID);
 className : (ID | QUOTEDID);
 fieldName : (ID | QUOTEDID);
 eventName : (ID | QUOTEDID);
@@ -799,7 +800,7 @@ pointerType : (primType | typeRef | genericRef) ('*')*;
 primOrTypeRef : primType | typeRef | genericRef | arrayType | pointerType;
 
 typeFlags : 'class' | 'valuetype';
-typeRef : typeFlags? ('[' ID ']')? className (genericsList)? ('[]')*;
+typeRef : typeFlags? ('[' assemblyName ']')? className (genericsList)? ('[]')*;
 
 argList : '(' ((primOrTypeRef ',')* primOrTypeRef)? ')';
 
