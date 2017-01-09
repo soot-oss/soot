@@ -1,13 +1,7 @@
 package soot.cil;
 
-import heros.solver.Pair;
-
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.IOException;
-import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -15,23 +9,37 @@ import java.util.List;
 import java.util.Map;
 
 import org.antlr.v4.runtime.ANTLRFileStream;
-import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
-import org.antlr.v4.codegen.LexerFactory;
 
 import soot.Modifier;
 import soot.cil.ast.CilClass;
-import soot.cil.ast.CilGenericDeclarationList;
-import soot.cil.ast.CilTypeRef;
+import soot.cil.ast.CilEvent;
+import soot.cil.ast.CilField;
+import soot.cil.ast.CilMethod;
+import soot.cil.ast.CilMethodParameter;
+import soot.cil.ast.CilProperty;
+import soot.cil.ast.types.CilArrayTypeRef;
+import soot.cil.ast.types.CilObjectTypeRef;
+import soot.cil.ast.types.CilPointerTypeRef;
+import soot.cil.ast.types.CilPrimType;
+import soot.cil.ast.types.CilPrimTypeRef;
+import soot.cil.ast.types.CilTypeRef;
 import soot.cil.parser.cilBaseListener;
 import soot.cil.parser.cilLexer;
 import soot.cil.parser.cilParser;
 import soot.cil.parser.cilParser.AccessModifierContext;
+import soot.cil.parser.cilParser.ArrayTypeContext;
 import soot.cil.parser.cilParser.ClassDefContext;
 import soot.cil.parser.cilParser.CompileUnitContext;
+import soot.cil.parser.cilParser.EventDefContext;
+import soot.cil.parser.cilParser.FieldDefContext;
+import soot.cil.parser.cilParser.MethodDefContext;
+import soot.cil.parser.cilParser.ParameterContext;
+import soot.cil.parser.cilParser.PointerTypeContext;
+import soot.cil.parser.cilParser.PrimOrTypeRefContext;
+import soot.cil.parser.cilParser.PrimTypeContext;
+import soot.cil.parser.cilParser.PropertyDefContext;
 import soot.cil.parser.cilParser.TypeRefContext;
 
 /**
@@ -62,6 +70,11 @@ public class CilFileParser {
 		public void enterClassDef(ClassDefContext ctx) {
 			super.enterClassDef(ctx);
 			
+			CilClass clazz = parseClassDef(ctx);
+			classes.put(clazz.getClassName(), clazz);
+		}
+		
+		private CilClass parseClassDef(ClassDefContext ctx) {
 			String className = ctx.className().getText();
 			int accessModifiers = 0;
 			for (AccessModifierContext amc : ctx.accessModifier()) {
@@ -73,22 +86,177 @@ public class CilFileParser {
 			}
 			
 			CilClass clazz = new CilClass(className, null, false, accessModifiers);
-			classes.put(className, clazz);
 			
+			// Parse superclass and implemented interfaces
 			if (ctx.classExtension() != null)
 				clazz.setSuperclass(parseTypeRef(ctx.classExtension().typeRef()));
 			if (ctx.classImplements() != null)
 				for (TypeRefContext tref : ctx.classImplements().typeRef())
 					clazz.addInterface(parseTypeRef(tref));
+			
+			// Parse fields
+			for (FieldDefContext fld : ctx.fieldDef())
+				clazz.addField(parseFieldDef(fld));
+			
+			// Parse events
+			for (EventDefContext event : ctx.eventDef())
+				clazz.addEvent(parseEventDef(event));
+			
+			// Parse methods
+			for (MethodDefContext method : ctx.methodDef())
+				clazz.addMethod(parseMethodDef(clazz, method));
+			
+			// Parse inner classes
+			for (ClassDefContext innerClass : ctx.classDef())
+				clazz.addInnerClass(parseClassDef(innerClass));
+			
+			// Parse properties
+			for (PropertyDefContext property : ctx.propertyDef())
+				clazz.addProperty(parsePropertyDef(property));
+			
+			return clazz;
+		}
+		
+		private CilProperty parsePropertyDef(PropertyDefContext propertyDef) {
+			String propertyName = propertyDef.propertyName().getText();
+			CilProperty property = new CilProperty(propertyName);
+			return property;
 		}
 
-		private CilTypeRef parseTypeRef(TypeRefContext typeRef) {
-			String assemblyName = typeRef.assemblyName().getText();
+		private CilMethod parseMethodDef(CilClass parentClass,
+				MethodDefContext methodDef) {
+			String methodName = methodDef.methodName().getText();
+			
+			// Parse the parameter list
+			List<CilMethodParameter> parameters = new ArrayList<>();
+			if (methodDef.parameterList() != null) {
+				int i = 0;
+				for (ParameterContext paramDef : methodDef.parameterList().parameter())
+					parameters.add(parseMethodParameter(i++, paramDef));
+			}	
+			
+			// TODO: nulls
+			CilMethod method = new CilMethod(parentClass, methodName, parameters, null, null);
+			return method;
+		}
+
+		private CilMethodParameter parseMethodParameter(int paramIdx, ParameterContext paramDef) {
+			String parameterName = paramDef.parameterName().getText();
+			CilTypeRef parameterType = parseTypeRef(paramDef.parameterType().primOrTypeRef());
+			
+			CilMethodParameter param = new CilMethodParameter(paramIdx, parameterName, parameterType);
+			return param;
+		}
+
+		private CilField parseFieldDef(FieldDefContext fieldDef) {
+			String fieldName = fieldDef.fieldName().getText();
+			
+			CilField fld = new CilField(fieldName);
+			return fld;
+		}
+		
+		private CilEvent parseEventDef(EventDefContext eventDef) {
+			String eventName = eventDef.eventName().getText();
+			
+			CilEvent event = new CilEvent(eventName);
+			return event;
+		}
+
+		private CilTypeRef parseTypeRef(PrimOrTypeRefContext typeRef) {
+			if (typeRef.typeRef() != null)
+				return parseTypeRef(typeRef.typeRef());
+			else if (typeRef.primType() != null)
+				return parseTypeRef(typeRef.primType());
+			else if (typeRef.arrayType() != null)
+				return parseTypeRef(typeRef.arrayType());
+			else if (typeRef.pointerType() != null)
+				return parseTypeRef(typeRef.pointerType());
+			else
+				throw new RuntimeException("Unsupported type reference");
+		}
+		
+		private CilTypeRef parseTypeRef(PointerTypeContext pointerTypeDef) {
+			CilTypeRef baseType;
+			if (pointerTypeDef.primType() != null)
+				baseType = parseTypeRef(pointerTypeDef.primType());
+			else if (pointerTypeDef.typeRef() != null)
+				baseType = parseTypeRef(pointerTypeDef.typeRef());
+			else
+				throw new RuntimeException("Unsupported array base type");
+			
+			CilPointerTypeRef arrayType = new CilPointerTypeRef(baseType);
+			return arrayType;
+		}
+
+		private CilTypeRef parseTypeRef(ArrayTypeContext arrayTypeDef) {
+			CilTypeRef baseType;
+			if (arrayTypeDef.primType() != null)
+				baseType = parseTypeRef(arrayTypeDef.primType());
+			else if (arrayTypeDef.typeRef() != null)
+				baseType = parseTypeRef(arrayTypeDef.typeRef());
+			else
+				throw new RuntimeException("Unsupported array base type");
+			
+			CilArrayTypeRef arrayType = new CilArrayTypeRef(baseType);
+			return arrayType;
+		}
+
+		private CilTypeRef parseTypeRef(PrimTypeContext primTypeDef) {
+			
+			CilPrimType primType;
+			if (primTypeDef.getText().equals("void"))
+				primType = CilPrimType.cilVoid;
+			else if (primTypeDef.getText().equals("char"))
+				primType = CilPrimType.cilChar;
+			else if (primTypeDef.getText().equals("string"))
+				primType = CilPrimType.cilString;
+			else if (primTypeDef.getText().equals("object"))
+				primType = CilPrimType.cilObject;
+			else if (primTypeDef.getText().equals("bool"))
+				primType = CilPrimType.cilBool;
+			
+			else if (primTypeDef.getText().equals("int"))
+				primType = CilPrimType.cilInt;
+			else if (primTypeDef.getText().equals("int8"))
+				primType = CilPrimType.cilInt8;
+			else if (primTypeDef.getText().equals("int16"))
+				primType = CilPrimType.cilInt16;
+			else if (primTypeDef.getText().equals("int32"))
+				primType = CilPrimType.cilInt32;
+
+			else if (primTypeDef.getText().equals("float32"))
+				primType = CilPrimType.cilFloat32;
+			else if (primTypeDef.getText().equals("float64"))
+				primType = CilPrimType.cilFloat64;
+			
+			else if (primTypeDef.getText().equals("uint"))
+				primType = CilPrimType.cilUInt;
+			else if (primTypeDef.getText().equals("uint8"))
+				primType = CilPrimType.cilUInt8;
+			else if (primTypeDef.getText().equals("uint16"))
+				primType = CilPrimType.cilUInt16;
+			else if (primTypeDef.getText().equals("uint32"))
+				primType = CilPrimType.cilUInt32;
+			else if (primTypeDef.getText().equals("uint64"))
+				primType = CilPrimType.cilUInt64;
+
+			else if (primTypeDef.getText().equals("decimal"))
+				primType = CilPrimType.cilDecimal;
+
+			else
+				throw new RuntimeException("Unsupported primitive type: " + primTypeDef.getText());
+			
+			CilPrimTypeRef typeRef = new CilPrimTypeRef(primType);
+			return typeRef;
+		}
+
+		private CilObjectTypeRef parseTypeRef(TypeRefContext typeRef) {
+			String assemblyName = typeRef.assemblyName() == null ? "" : typeRef.assemblyName().getText();
 			String className = typeRef.className().getText();
 			
 			// TODO: Parse generics list
 			
-			return new CilTypeRef(assemblyName, className);
+			return new CilObjectTypeRef(assemblyName, className);
 		}
 		
 	}

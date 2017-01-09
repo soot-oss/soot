@@ -1,6 +1,7 @@
 package soot.cil.ast;
 
 import soot.cil.ast.base.INamedElement;
+import soot.cil.ast.types.CilTypeRef;
 
 /**
  * Class representing a formal parameter in a CIL method
@@ -12,9 +13,9 @@ public class CilMethodParameter implements INamedElement {
 	
 	private int id;
 	private String name;
-	private String type;
+	private CilTypeRef type;
 	
-	public CilMethodParameter(int id, String name, String type) {
+	public CilMethodParameter(int id, String name, CilTypeRef type) {
 		this.id = id;
 		this.name = name;
 		this.type = type;
@@ -29,7 +30,7 @@ public class CilMethodParameter implements INamedElement {
 		return this.name;
 	}
 	
-	public String getType() {
+	public CilTypeRef getType() {
 		return this.type;
 	}
 

@@ -152,7 +152,7 @@ fieldDef : '.field'
 		'assembly'
 	)*
 	primOrTypeRef
-	(ID | QUOTEDID)
+	fieldName
 	fieldInitialization?;
 
 fieldInitialization : 'at'
@@ -190,11 +190,15 @@ methodDef : '.method'
 		)*
 		instruction*
 	'}';
-	
+
+parameterType : primOrTypeRef;
+parameterName : ID | QUOTEDID;
+parameter : parameterType parameterName;
+
 parameterList : '('
 	(
-		(primOrTypeRef (ID | QUOTEDID) ',')*
-		(primOrTypeRef (ID | QUOTEDID))
+		(parameter ',')*
+		(parameter)
 	)?
 	')';
 

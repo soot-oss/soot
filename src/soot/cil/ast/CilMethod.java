@@ -11,15 +11,18 @@ import java.util.List;
 public class CilMethod {
 	
 	private final CilClass clazz;
-	private final CilMethodParameterList parameters;
+	private final String methodName;
+	private final List<CilMethodParameter> parameters;
 	private final List<CilInstruction> instructions;
 	private final List<CilTrap> traps;
 	
 	public CilMethod(CilClass clazz,
-			CilMethodParameterList parameters,
+			String methodName,
+			List<CilMethodParameter> parameters,
 			List<CilInstruction> instructions,
 			List<CilTrap> traps) {
 		this.clazz = clazz;
+		this.methodName = methodName;
 		this.parameters = parameters;
 		this.instructions = instructions;
 		this.traps = traps;
@@ -29,7 +32,11 @@ public class CilMethod {
 		return this.clazz;
 	}
 	
-	public CilMethodParameterList getParameters() {
+	public String getMethodName() {
+		return this.methodName;
+	}
+	
+	public List<CilMethodParameter> getParameters() {
 		return this.parameters;
 	}
 	
