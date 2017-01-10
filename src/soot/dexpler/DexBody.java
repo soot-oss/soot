@@ -100,6 +100,7 @@ import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
 import soot.jimple.toolkits.scalar.FieldStaticnessCorrector;
 import soot.jimple.toolkits.scalar.IdentityCastEliminator;
+import soot.jimple.toolkits.scalar.IdentityOperationEliminator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
@@ -708,6 +709,9 @@ public class DexBody  {
         // Remove unnecessary typecasts
         ConstantCastEliminator.v().transform(jBody);
         IdentityCastEliminator.v().transform(jBody);
+        
+        // Remove unnecessary logic operations
+        IdentityOperationEliminator.v().transform(jBody);
         
         // We need to run this transformer since the conditional branch folder
         // might have rendered some code unreachable (well, it was unreachable

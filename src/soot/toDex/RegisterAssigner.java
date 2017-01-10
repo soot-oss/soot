@@ -101,6 +101,10 @@ class RegisterAssigner {
 		InstructionIterator insnIter = new InstructionIterator(insns, insnsStmtMap, instructionRegisterMap);
 		while (insnIter.hasNext()) {
 			Insn oldInsn = insnIter.next();
+			
+			if (oldInsn.toString().equals("XOR_INT [reg(18):int, reg(15):byte, reg(12):int]"))
+				System.out.println("x");
+			
 			if (oldInsn.hasIncompatibleRegs()) {
 				Insn fittingInsn = findFittingInsn(oldInsn);
 				if (fittingInsn != null) {
