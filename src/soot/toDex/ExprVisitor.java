@@ -9,7 +9,6 @@ import org.jf.dexlib2.writer.builder.BuilderReference;
 import org.jf.dexlib2.writer.builder.DexBuilder;
 
 import soot.ArrayType;
-import soot.ByteType;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
@@ -304,9 +303,12 @@ class ExprVisitor implements ExprSwitch {
 		// load INT constants and then need to typecast.
 		Register secondOpReg = regAlloc.asImmediate(secondOperand, constantV);
 		Register orgDestReg = destinationReg;
-		if (isBiggerThan(PrimitiveType.getByName(secondOpReg.getType().toString()),
-				PrimitiveType.getByName(destinationReg.getType().toString()))) {
+		PrimitiveType destRegType = PrimitiveType.getByName(destinationReg.getType().toString());
+		if (isBiggerThan(PrimitiveType.getByName(secondOpReg.getType().toString()), destRegType)) {
 			destinationReg = regAlloc.asTmpReg(secondOpReg.getType());
+		}
+		else if (isBiggerThan(PrimitiveType.getByName(firstOpReg.getType().toString()), destRegType)) {
+			destinationReg = regAlloc.asTmpReg(firstOpReg.getType());
 		}
 		
 		// use special "/2addr"-opcodes if destination equals first op
