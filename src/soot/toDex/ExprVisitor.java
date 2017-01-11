@@ -297,18 +297,25 @@ class ExprVisitor implements ExprSwitch {
 		// on non-primitive values
 		if (!(secondOperand.getType() instanceof PrimType))
 			throw new RuntimeException("Invalid value type for primitibe operation");
-		
-		// If the second register is not of the precise target type, we need to
-		// cast. This can happen, because we cannot load BYTE values. We instead
-		// load INT constants and then need to typecast.
+
+		// For some data types, there are no calculating opcodes in Dalvik. In
+		// this case, we need to use a bigger opcode and cast the result back.
+		PrimitiveType destRegType = PrimitiveType.getByName(destinationReg.getType().toString());
 		Register secondOpReg = regAlloc.asImmediate(secondOperand, constantV);
 		Register orgDestReg = destinationReg;
-		PrimitiveType destRegType = PrimitiveType.getByName(destinationReg.getType().toString());
-		if (isBiggerThan(PrimitiveType.getByName(secondOpReg.getType().toString()), destRegType)) {
-			destinationReg = regAlloc.asTmpReg(secondOpReg.getType());
+		if (isSmallerThan(destRegType, PrimitiveType.INT)) {
+			destinationReg = regAlloc.asTmpReg(IntType.v());
 		}
-		else if (isBiggerThan(PrimitiveType.getByName(firstOpReg.getType().toString()), destRegType)) {
-			destinationReg = regAlloc.asTmpReg(firstOpReg.getType());
+		else {
+			// If the second register is not of the precise target type, we need to
+			// cast. This can happen, because we cannot load BYTE values. We instead
+			// load INT constants and then need to typecast.
+			if (isBiggerThan(PrimitiveType.getByName(secondOpReg.getType().toString()), destRegType)) {
+				destinationReg = regAlloc.asTmpReg(secondOpReg.getType());
+			}
+			else if (isBiggerThan(PrimitiveType.getByName(firstOpReg.getType().toString()), destRegType)) {
+				destinationReg = regAlloc.asTmpReg(firstOpReg.getType());
+			}
 		}
 		
 		// use special "/2addr"-opcodes if destination equals first op
@@ -696,6 +703,10 @@ class ExprVisitor implements ExprSwitch {
 
 	private boolean isBiggerThan(PrimitiveType type, PrimitiveType relativeTo) {
 		return type.compareTo(relativeTo) > 0;
+	}
+
+	private boolean isSmallerThan(PrimitiveType type, PrimitiveType relativeTo) {
+		return type.compareTo(relativeTo) < 0;
 	}
 
 	private Opcode getCastOpc(PrimitiveType sourceType, PrimitiveType castType) {
