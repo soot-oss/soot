@@ -29,6 +29,9 @@ import soot.cil.ast.CilClass;
 import soot.cil.ast.CilClassReference;
 import soot.cil.ast.CilGenericDeclaration;
 import soot.cil.ast.CilGenericDeclarationList;
+import soot.cil.ast.types.CilArrayTypeRef;
+import soot.cil.ast.types.CilPrimTypeRef;
+import soot.cil.ast.types.CilTypeRef;
 
 public class Cil_Utils { 
 	
@@ -598,6 +601,60 @@ public class Cil_Utils {
 		}
 		else
 			return new CilGenericDeclaration(decl.replace("class ", ""), new CilClassReference("System.Object"));
+	}
+	
+	/**
+	 * Converts the given CIL into a Soot type
+	 * @param cilType The CIL type to convert
+	 * @return The Soot type that corresponds to the given CIL type
+	 */
+	public static Type getSootTypeForCilType(CilTypeRef cilType) {
+		if (cilType instanceof CilPrimTypeRef) {
+			CilPrimTypeRef cilPrimType = (CilPrimTypeRef) cilType;
+			switch (cilPrimType.getPrimType()) {
+				case cilBool:
+					return BooleanType.v();
+				case cilChar:
+					return CharType.v();
+				case cilDecimal:
+				case cilInt:
+				case cilInt8:
+				case cilInt16:
+				case cilInt32:
+				case cilUInt:
+				case cilUInt8:
+				case cilUInt16:
+				case cilUInt32:
+					return IntType.v();
+				case cilFloat32:
+					return FloatType.v();
+				case cilFloat64:
+					return DoubleType.v();
+				case cilObject:
+					return RefType.v("System.Object");
+				case cilString:
+					return RefType.v("System.String");
+				case cilUInt64:
+					return LongType.v();
+				case cilVoid:
+					return VoidType.v();
+				default:
+					throw new RuntimeException("Unexpected CIL primitive type");
+						
+			}
+		}
+		else if (cilType instanceof CilArrayTypeRef) {
+			CilArrayTypeRef arrayType = (CilArrayTypeRef) cilType;
+			Type tp = getSootTypeForCilType(arrayType.getBaseType());
+			if (tp instanceof ArrayType) {
+				ArrayType atp = (ArrayType) tp;
+				return ArrayType.v(atp.getElementType(), atp.numDimensions + 1);
+			}
+			else
+				return ArrayType.v(tp, 1);
+		}
+		else
+			throw new RuntimeException("Unexpected CIL type reference");
 	}
 	
 }

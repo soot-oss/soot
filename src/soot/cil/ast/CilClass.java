@@ -14,6 +14,7 @@ import soot.cil.ast.types.CilObjectTypeRef;
  *
  */
 public class CilClass {
+	private String assemblyName;
 	private String className;
 	private CilGenericDeclarationList generics;
 	private boolean isInterface;
@@ -28,7 +29,8 @@ public class CilClass {
 	private List<CilClass> innerClasses = null;
 	private List<CilProperty> properties = null;
 	
-	public CilClass(String className,
+	public CilClass(String assemblyName,
+			String className,
 			CilGenericDeclarationList generics,
 			boolean isInterface,
 			int accessModifiers) {
@@ -36,6 +38,14 @@ public class CilClass {
 		this.generics = generics;
 		this.isInterface = isInterface;
 		this.accessModifiers = accessModifiers;
+	}
+	
+	/**
+	 * Gets the name of the assembly in which this class is declared
+	 * @return The name of the assembly in which this class is declared
+	 */
+	public String getAssemblyName() {
+		return this.assemblyName;
 	}
 	
 	/**

@@ -15,8 +15,6 @@ import soot.SourceLocator.FoundFile;
 import soot.cil.ast.CilClass;
 import soot.cil.ast.CilClassReference;
 import soot.cil.sources.CilClassSource;
-import soot.cil.sources.CilDelegateClassSource;
-import soot.cil.sources.CilTokenRefClassSource;
 
 /**
  * Entry class for resolving and enumerating classes in a CIL disassembly file
@@ -27,52 +25,23 @@ import soot.cil.sources.CilTokenRefClassSource;
  */
 public class CilClassProvider implements ClassProvider {
 	
-	private final CilDependencyManager dependencyManager = new CilDependencyManager();
-	private Map<File, CilFileParser> cache = new ConcurrentHashMap<File, CilFileParser>();
+	private static Map<String, CilClass> cache = new ConcurrentHashMap<String, CilClass>();
 	
-	/**
-	 * Class for managing dependencies between classes in CIL disassembly files
-	 * 
-	 * @author Steven Arzt
-	 *
-	 */
-	public class CilDependencyManager {
-		
-		// Map mangled class names to original references
-		private Map<String, CilClassReference> classNameToReference = new HashMap<String, CilClassReference>();
-		
-		public CilDependencyManager() {
-			
-		}
-		
-		/**
-		 * Adds a new mapping between mangled class name and original reference
-		 * @param mangledClassName The mangled class name used for identifying a generic
-		 * class
-		 * @param originalReference The original reference containing all the generic
-		 * information
-		 */
-		public void addReference(String mangledClassName,
-				CilClassReference originalReference) {
-			this.classNameToReference.put(mangledClassName, originalReference);
-			
-			if (mangledClassName.equals("GenericsTest.A__2__class GenericsTest.A__2__!T_int32_GenericsTest.Z"))
-				System.out.println("x");
-		}
-		
-		public CilClassReference getOriginalReference(String mangledClassName) {
-			return this.classNameToReference.get(mangledClassName);
-		}
-		
-	}
 	
 	@Override
 	public ClassSource find(String className) {
+		/*
 		// Do we have a special class?
 		if (CilDelegateClassSource.supportsClass(className))
 			return new CilDelegateClassSource(className);
 		if (CilTokenRefClassSource.supportsClass(className))
 			return new CilTokenRefClassSource(className);
+		*/
+
+		// Have we already seen this class?
+		CilClass clazz = cache.get(className);
+		if (clazz != null)
+			return new CilClassSource(clazz);
 		
 		// Parse the class name
 		CilClassReference classRef = new CilClassReference(className);
@@ -96,28 +65,25 @@ public class CilClassProvider implements ClassProvider {
 			return null;
 		
 		// Once we know the class file, we can load it
-		CilFileParser parser = cache.get(assemblyFile.file);
-		if (parser == null) {
-			try {
-				parser = new CilFileParser(assemblyFile.file);
-			} catch (IOException e) {
-				// Could not load the CIL file
-				return null;
-			}
-			cache.put(assemblyFile.file, parser);
-		}
-		
-		CilClass clazz = parser.findClass(className);
-		if (clazz == null)
+		try {
+			CilFileParser parser = new CilFileParser(assemblyFile.file);
+			for (CilClass clazz2 : parser.getClasses())
+				cache.put(className, clazz2);
+			clazz = parser.findClass(className);				
+			return new CilClassSource(clazz);
+		} catch (IOException e) {
+			// Could not load the CIL file
 			return null;
-		return new CilClassSource(assemblyFile.file, clazz, dependencyManager);
+		}
 	}
 	
 	public static Set<String> classesOfIL(File file) throws IOException {
 		CilFileParser parser = new CilFileParser(file);
 		Set<String> classes = new HashSet<String>(parser.getClasses().size());
-		for (CilClass clazz : parser.getClasses())
+		for (CilClass clazz : parser.getClasses()) {
 			classes.add(clazz.getUniqueClassName());
+			cache.put(clazz.getUniqueClassName(), clazz);
+		}
 		return classes;
 	}
 	

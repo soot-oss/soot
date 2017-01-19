@@ -119,6 +119,7 @@ classDef :
 			accessModifier |
 			classFlag
 		)*
+	('[' assemblyName ']')?
 	className
 	classExtension?
 	classImplements?
@@ -538,7 +539,10 @@ il_inst_ldvirtftn : 'ldvirtftn'
 	methodRef;
 
 il_inst_ldtoken : 'ldtoken'
-	('field' staticFieldRef) | typeRef;
+	(
+		('field' staticFieldRef) |
+		typeRef
+	);
 
 il_inst_ldobj : 'ldobj'
 	typeRef;

@@ -75,6 +75,7 @@ public class CilFileParser {
 		}
 		
 		private CilClass parseClassDef(ClassDefContext ctx) {
+			String assemblyName = ctx.assemblyName() == null ? "" : ctx.assemblyName().getText();
 			String className = ctx.className().getText();
 			int accessModifiers = 0;
 			for (AccessModifierContext amc : ctx.accessModifier()) {
@@ -85,7 +86,7 @@ public class CilFileParser {
 
 			}
 			
-			CilClass clazz = new CilClass(className, null, false, accessModifiers);
+			CilClass clazz = new CilClass(assemblyName, className, null, false, accessModifiers);
 			
 			// Parse superclass and implemented interfaces
 			if (ctx.classExtension() != null)
@@ -133,10 +134,12 @@ public class CilFileParser {
 				int i = 0;
 				for (ParameterContext paramDef : methodDef.parameterList().parameter())
 					parameters.add(parseMethodParameter(i++, paramDef));
-			}	
+			}
+			
+			CilTypeRef returnType = parseTypeRef(methodDef.returnType().primOrTypeRef());
 			
 			// TODO: nulls
-			CilMethod method = new CilMethod(parentClass, methodName, parameters, null, null);
+			CilMethod method = new CilMethod(parentClass, methodName, parameters, returnType, null, null);
 			return method;
 		}
 
@@ -358,21 +361,6 @@ public class CilFileParser {
 				rdr.close();
 		}
 		*/
-	}
-	
-	private boolean isReservedModifier(String token) {
-		return token.equals("private")
-				|| token.equals("public")
-				|| token.equals("sealed")
-				|| token.equals("nested")
-				|| token.equals("ansi")
-				|| token.equals("sequential")
-				|| token.equals("auto")
-				|| token.equals("beforefieldinit")
-				|| token.equals("abstract")
-				|| token.equals("extends")
-				|| token.equals("interface")
-				|| token.equals(".class");
 	}
 	
 	/**
