@@ -1308,7 +1308,7 @@ public class BafASMBackend extends AbstractASMBackend {
 
 					@Override
 					public void defaultCase(Type t) {
-						throw new RuntimeException("invalid from-type");
+						throw new RuntimeException("invalid from-type: " + t);
 					}
 
 					private void emitIntToTypeCast() {

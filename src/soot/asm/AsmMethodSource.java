@@ -1261,14 +1261,15 @@ final class AsmMethodSource implements MethodSource {
 			Operand[] args = new Operand[types.length - 1];
 			ValueBox[] boxes = new ValueBox[args.length];
 
+			// Beware: Call stack is FIFO, Jimple is linear
 			int nrArgs = args.length;
 			while (nrArgs-- != 0) {
 				parameterTypes.add(types[nrArgs]);
-				args[nrArgs] = popImmediate(types[nrArgs]);
-				methodArgs.add(args[nrArgs].stackOrValue());				
+				
+				Operand curOperand = popImmediate(types[nrArgs]);
+				args[args.length - nrArgs - 1] = curOperand;
+				methodArgs.add(curOperand.stackOrValue());				
 			}
-			if (methodArgs.size() > 1)
-				Collections.reverse(methodArgs);	// Call stack is FIFO, Jimple is linear
 			
 			returnType = types[types.length - 1];
 			
