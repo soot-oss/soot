@@ -13,3 +13,4 @@
 # Eclipse settings directory
 /.settings
 
+/src/soot/cil/parser/*.class
