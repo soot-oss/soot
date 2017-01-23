@@ -407,14 +407,33 @@ class ExprVisitor implements ExprSwitch {
 		Value firstOperand = xe.getOp1();
 		Value secondOperand = xe.getOp2();
 		constantV.setOrigStmt(origStmt);
+		
 		// see for unary ones-complement shortcut, may be a result of Dexpler's conversion
-		if (secondOperand.equals(IntConstant.v(-1))) {
-			Register sourceReg = regAlloc.asImmediate(firstOperand, constantV);
-            stmtV.addInsn(new Insn12x(Opcode.NOT_INT, destinationReg, sourceReg), origStmt);
-		} else if (secondOperand.equals(LongConstant.v(-1))) {
-			Register sourceReg = regAlloc.asImmediate(firstOperand, constantV);
-            stmtV.addInsn(new Insn12x(Opcode.NOT_LONG, destinationReg, sourceReg), origStmt);
+		if (secondOperand.equals(IntConstant.v(-1)) || secondOperand.equals(LongConstant.v(-1))) {
+			PrimitiveType destRegType = PrimitiveType.getByName(destinationReg.getType().toString());
+			Register orgDestReg = destinationReg;
+
+			// We may need a temporary register if we need a typecast
+			if (isBiggerThan(PrimitiveType.getByName(secondOperand.getType().toString()), destRegType)) {
+				destinationReg = regAlloc.asTmpReg(IntType.v());
+			}
+			
+			if (secondOperand.equals(IntConstant.v(-1))) {
+				Register sourceReg = regAlloc.asImmediate(firstOperand, constantV);
+	            stmtV.addInsn(new Insn12x(Opcode.NOT_INT, destinationReg, sourceReg), origStmt);
+			} else if (secondOperand.equals(LongConstant.v(-1))) {
+				Register sourceReg = regAlloc.asImmediate(firstOperand, constantV);
+	            stmtV.addInsn(new Insn12x(Opcode.NOT_LONG, destinationReg, sourceReg), origStmt);
+			}
+			
+			// If we have used a temporary register, we must copy over the result
+			if (orgDestReg != destinationReg) {
+				Register tempReg = destinationReg.clone();
+				destinationReg = orgDestReg.clone();
+				castPrimitive(tempReg, secondOperand, destinationReg.getType());
+			}
 		} else {
+			// No shortcut, create normal binary operation
             buildCalculatingBinaryInsn("XOR", firstOperand, secondOperand, xe);
 		}
 	}
