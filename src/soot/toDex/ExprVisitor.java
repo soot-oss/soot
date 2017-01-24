@@ -19,6 +19,7 @@ import soot.NullType;
 import soot.PrimType;
 import soot.RefType;
 import soot.SootClass;
+import soot.SootMethod;
 import soot.Type;
 import soot.Value;
 import soot.jimple.AddExpr;
@@ -175,7 +176,7 @@ class ExprVisitor implements ExprSwitch {
 	}
 
 	private boolean isCallToConstructor(SpecialInvokeExpr sie) {
-		return sie.getMethod().isConstructor();
+		return sie.getMethodRef().name().equals(SootMethod.constructorName);
 	}
 
 	private boolean isCallToSuper(SpecialInvokeExpr sie) {
