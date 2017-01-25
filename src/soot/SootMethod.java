@@ -77,10 +77,10 @@ public class SootMethod
     private List<SootClass> exceptions = null;
 
     /** Active body associated with this method. */
-    private Body activeBody;
+    private volatile Body activeBody;
 
     /** Tells this method how to find out where its body lives. */
-    protected MethodSource ms;
+    protected volatile MethodSource ms;
 
     /** Uses methodSource to retrieve the method body in question; does not set it
      * to be the active body.
