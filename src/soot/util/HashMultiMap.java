@@ -131,7 +131,7 @@ public class HashMultiMap<K,V> extends AbstractMultiMap<K, V> {
     public Set<V> get( K o ) {
         Set<V> ret = m.get( o );
         if( ret == null ) return Collections.emptySet();
-        return Collections.unmodifiableSet(ret);
+        else return ret;
     }
 
     @Override
