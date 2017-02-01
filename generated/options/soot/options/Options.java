@@ -1338,6 +1338,7 @@ public class Options extends OptionsBase {
         +padVal("jb.a", "Aggregator: removes some unnecessary copies")
         +padVal("jb.ule", "Unused local eliminator")
         +padVal("jb.tr", "Assigns types to locals")
+        +padVal("jb.onp", "Fixes up the names from use-original-names")
         +padVal("jb.ulp", "Local packer: minimizes number of locals")
         +padVal("jb.lns", "Local name standardizer")
         +padVal("jb.cp", "Copy propagator")
@@ -1478,6 +1479,12 @@ public class Options extends OptionsBase {
                 +padOpt( "ignore-wrong-staticness (false)", "Ignores errors due to wrong staticness" )
                 +padOpt( "use-older-type-assigner (false)", "Enables the older type assigner" )
                 +padOpt( "compare-type-assigners (false)", "Compares Ben Bellamy's and the older type assigner" );
+    
+        if( phaseName.equals( "jb.onp" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nThe OriginalNamePacker renames variables numbered with # \naccording to their type. It also combines \nsimilar integer types. So a boolean and integer of the same name \nare combined "
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "jb.ulp" ) )
             return "Phase "+phaseName+":\n"+
@@ -2473,6 +2480,10 @@ public class Options extends OptionsBase {
                 +"use-older-type-assigner "
                 +"compare-type-assigners ";
     
+        if( phaseName.equals( "jb.onp" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "jb.ulp" ) )
             return ""
                 +"enabled "
@@ -3077,6 +3088,10 @@ public class Options extends OptionsBase {
               +"use-older-type-assigner:false "
               +"compare-type-assigners:false ";
     
+        if( phaseName.equals( "jb.onp" ) )
+            return ""
+              +"enabled:true ";
+    
         if( phaseName.equals( "jb.ulp" ) )
             return ""
               +"enabled:true "
@@ -3660,6 +3675,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jb.a" ) ) return;
         if( phaseName.equals( "jb.ule" ) ) return;
         if( phaseName.equals( "jb.tr" ) ) return;
+        if( phaseName.equals( "jb.onp" ) ) return;
         if( phaseName.equals( "jb.ulp" ) ) return;
         if( phaseName.equals( "jb.lns" ) ) return;
         if( phaseName.equals( "jb.cp" ) ) return;
@@ -3776,6 +3792,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jb.ule" );
         if( !PackManager.v().hasPhase( "jb.tr" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jb.tr" );
+        if( !PackManager.v().hasPhase( "jb.onp" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.onp" );
         if( !PackManager.v().hasPhase( "jb.ulp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jb.ulp" );
         if( !PackManager.v().hasPhase( "jb.lns" ) )

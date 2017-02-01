@@ -124,6 +124,8 @@ Composite jbjb_uleChild = jbjb_uleCreate(getPageContainer());
 
 Composite jbjb_trChild = jbjb_trCreate(getPageContainer());
 
+Composite jbjb_onpChild = jbjb_onpCreate(getPageContainer());
+
 Composite jbjb_ulpChild = jbjb_ulpCreate(getPageContainer());
 
 Composite jbjb_lnsChild = jbjb_lnsCreate(getPageContainer());
@@ -426,6 +428,14 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		getjbjb_truse_older_type_assigner_widget().getButton().addSelectionListener(this);
 		
 		getjbjb_trcompare_type_assigners_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jb", "jb.onp");
+		
+		
+		addToEnableGroup("jb", "jb.onp", getjbjb_onpenabled_widget(), "enabled");
+		
+		getjbjb_onpenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jb", "jb.ulp");
@@ -2425,6 +2435,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_trcompare_type_assigners_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_onpenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_onpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_ulpenabled_widget().getButton().getSelection();
@@ -5343,6 +5363,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			subSectParent = jb_jb_tr_branch;
 			
 			
+			SootOption jb_jb_onp_branch = new SootOption("Original Name Packer", "jbjb_onp");
+			subParent.addChild(jb_jb_onp_branch);
+
+
+			
+
+			
+			subSectParent = jb_jb_onp_branch;
+			
+			
 			SootOption jb_jb_ulp_branch = new SootOption("Unsplit-originals Local Packer", "jbjb_ulp");
 			subParent.addChild(jb_jb_ulp_branch);
 
@@ -6955,6 +6985,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getjbjb_trcompare_type_assigners_widget() {
 		return jbjb_trcompare_type_assigners_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_onpenabled_widget;
+	
+	private void setjbjb_onpenabled_widget(BooleanOptionWidget widget) {
+		jbjb_onpenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_onpenabled_widget() {
+		return jbjb_onpenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_ulpenabled_widget;
@@ -11187,6 +11227,52 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		return editGroupjbjb_tr;
+	}
+
+
+
+	private Composite jbjb_onpCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjbjb_onp = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjbjb_onp.setLayout(layout);
+	
+	 	editGroupjbjb_onp.setText("Original Name Packer");
+	 	
+		editGroupjbjb_onp.setData("id", "jbjb_onp");
+		
+		String descjbjb_onp = "Fixes up the names from use-original-names";	
+		if (descjbjb_onp.length() > 0) {
+			Label descLabeljbjb_onp = new Label(editGroupjbjb_onp, SWT.WRAP);
+			descLabeljbjb_onp.setText(descjbjb_onp);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jb.onp"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjbjb_onpenabled_widget(new BooleanOptionWidget(editGroupjbjb_onp, SWT.NONE, new OptionData("Enabled", "p", "jb.onp","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjbjb_onp;
 	}
 
 

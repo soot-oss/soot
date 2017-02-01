@@ -94,6 +94,7 @@ public class PackManager {
             p.add(new Transform("jb.a", Aggregator.v()));
             p.add(new Transform("jb.ule", UnusedLocalEliminator.v()));
             p.add(new Transform("jb.tr", TypeAssigner.v()));
+            p.add(new Transform("jb.onp", OriginalNamePacker.v()));
             p.add(new Transform("jb.ulp", LocalPacker.v()));
             p.add(new Transform("jb.lns", LocalNameStandardizer.v()));
             p.add(new Transform("jb.cp", CopyPropagator.v()));

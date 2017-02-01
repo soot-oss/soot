@@ -593,6 +593,21 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_jb_onp() {
+            Object ret = new PhaseOptjb_onp();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjb_onp {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jb.onp");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
         public Object createp_jb_ulp() {
             Object ret = new PhaseOptjb_ulp();
             phaseopts.add(ret);
