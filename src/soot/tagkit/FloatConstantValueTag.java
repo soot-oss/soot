@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import soot.jimple.Constant;
+import soot.jimple.FloatConstant;
+
 public class FloatConstantValueTag extends ConstantValueTag
 {
     private final float value;
@@ -64,5 +67,10 @@ public class FloatConstantValueTag extends ConstantValueTag
     public String toString() {
         return "ConstantValue: "+Float.toString(value);
     }
+
+	@Override
+	public FloatConstant getConstant() {
+		return FloatConstant.v(value);
+	}
 }
 

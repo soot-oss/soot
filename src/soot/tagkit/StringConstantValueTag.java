@@ -26,21 +26,26 @@
 package soot.tagkit;
 
 import soot.coffi.CONSTANT_Utf8_info;
+import soot.jimple.StringConstant;
 
-public class StringConstantValueTag extends ConstantValueTag
-{
-    private final String value;
+public class StringConstantValueTag extends ConstantValueTag {
+	private final String value;
 
-    public StringConstantValueTag(String value) {
-	this.value = value;
-	this.bytes = CONSTANT_Utf8_info.toUtf8(value);
-    }
+	public StringConstantValueTag(String value) {
+		this.value = value;
+		this.bytes = CONSTANT_Utf8_info.toUtf8(value);
+	}
 
-    public String getStringValue() {
-	return value;
-    }
-    public String toString() {
-        return "ConstantValue: "+value;
-    }
+	public String getStringValue() {
+		return value;
+	}
+
+	public String toString() {
+		return "ConstantValue: " + value;
+	}
+
+	@Override
+	public StringConstant getConstant() {
+		return StringConstant.v(value);
+	}
 }
-
