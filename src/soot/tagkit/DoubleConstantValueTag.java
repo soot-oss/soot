@@ -25,6 +25,9 @@
 
 package soot.tagkit;
 
+import soot.jimple.Constant;
+import soot.jimple.DoubleConstant;
+
 public class DoubleConstantValueTag extends ConstantValueTag
 {
     private final double value;
@@ -72,5 +75,10 @@ public class DoubleConstantValueTag extends ConstantValueTag
     public String toString() {
         return "ConstantValue: "+Double.toString(value);
     }
+
+	@Override
+	public DoubleConstant getConstant() {
+		return DoubleConstant.v(value);
+	}
 }
 

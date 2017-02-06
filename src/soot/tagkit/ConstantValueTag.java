@@ -25,21 +25,24 @@
 
 package soot.tagkit;
 
-public abstract class ConstantValueTag implements Tag
-{
-    protected byte[] bytes;			// encoded constant
+import soot.jimple.Constant;
 
-    protected ConstantValueTag() {
-    }
+public abstract class ConstantValueTag implements Tag {
+	protected byte[] bytes; // encoded constant
 
-    public String getName() {
-	String className = getClass().getName();
-	return className.substring(className.lastIndexOf('.') + 1);
-    }
+	protected ConstantValueTag() {
+	}
 
-    public byte[] getValue() {
-	return bytes;
-    }
-    public abstract String toString();
+	public String getName() {
+		String className = getClass().getName();
+		return className.substring(className.lastIndexOf('.') + 1);
+	}
+
+	public byte[] getValue() {
+		return bytes;
+	}
+
+	public abstract Constant getConstant();
+
+	public abstract String toString();
 }
-
