@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Set;
 
 import soot.BodyTransformer;
-import soot.Local;
 import soot.Unit;
+import soot.Value;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.ExitMonitorStmt;
 import soot.toolkits.graph.UnitGraph;
@@ -26,7 +26,7 @@ public abstract class TrapTransformer extends BodyTransformer {
 	public Set<Unit> getUnitsWithMonitor(UnitGraph ug) {
 		// Idea: Associate each unit with a set of monitors held at that
 		// statement
-		MultiMap<Unit, Local> unitMonitors = new HashMultiMap<>();
+		MultiMap<Unit, Value> unitMonitors = new HashMultiMap<>();
 		
 		// Start at the heads of the unit graph
 		List<Unit> workList = new ArrayList<>();
@@ -39,25 +39,23 @@ public abstract class TrapTransformer extends BodyTransformer {
 			Unit curUnit = workList.remove(0);
 			
 			boolean hasChanged = false;
-			Local exitLocal = null;
+			Value exitValue = null;
 			if (curUnit instanceof EnterMonitorStmt) {
 				// We enter a new monitor
 				EnterMonitorStmt ems = (EnterMonitorStmt) curUnit;
-				if (ems.getOp() instanceof Local)
-					hasChanged = unitMonitors.put(curUnit, (Local) ems.getOp());
+				hasChanged = unitMonitors.put(curUnit, ems.getOp());
 			}
 			else if (curUnit instanceof ExitMonitorStmt) {
-				// We leave a minitor
+				// We leave a monitor
 				ExitMonitorStmt ems = (ExitMonitorStmt) curUnit;
-				if (ems.getOp() instanceof Local)
-					exitLocal = (Local) ems.getOp();
+				exitValue = ems.getOp();
 			}
 			
 			// Copy over the monitors from the predecessors
 			for (Unit pred : ug.getPredsOf(curUnit))
-				for (Local l : unitMonitors.get(pred))
-					if (l != exitLocal)
-						if (unitMonitors.put(curUnit, l))
+				for (Value v : unitMonitors.get(pred))
+					if (v != exitValue)
+						if (unitMonitors.put(curUnit, v))
 							hasChanged = true;
 			
 			// Work on the successors
