@@ -689,8 +689,12 @@ public class PackManager {
 		}
         
         // If something went wrong, we tell the world
-        if (executor.getException() != null)
-        	throw new RuntimeException(executor.getException());
+        if (executor.getException() != null) {
+        	if (executor.getException() instanceof RuntimeException)
+        		throw (RuntimeException) executor.getException();
+        	else
+        		throw new RuntimeException(executor.getException());
+        }
     }
 
 	private void tearDownJAR() {
