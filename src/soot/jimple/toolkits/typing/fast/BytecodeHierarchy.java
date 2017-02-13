@@ -254,16 +254,24 @@ public class BytecodeHierarchy implements IHierarchy
 			child, ancestor);
 	}
 	
-	private static Deque<RefType> superclassPath(RefType t)
+	private static Deque<RefType> superclassPath(RefType t, RefType anchor)
 	{
 		Deque<RefType> r = new LinkedList<RefType>();
 		r.addFirst(t);
+		if (t.getSootClass().isPhantom() && anchor != null) {
+			r.addFirst(anchor);
+			return r;
+		}
 		
 		SootClass sc = t.getSootClass();
 		while ( sc.hasSuperclass() )
 		{
 			sc = sc.getSuperclass();
 			r.addFirst(sc.getType());
+			if (sc.isPhantom() && anchor != null) {
+				r.addFirst(anchor);
+				break;
+			}
 		}
 		
 		return r;
@@ -274,8 +282,8 @@ public class BytecodeHierarchy implements IHierarchy
 		if (a == b)
 			return a;
 		
-		Deque<RefType> pathA = superclassPath(a);
-		Deque<RefType> pathB = superclassPath(b);
+		Deque<RefType> pathA = superclassPath(a, null);
+		Deque<RefType> pathB = superclassPath(b, null);
 		RefType r = null;
 		while ( !(pathA.isEmpty() || pathB.isEmpty()) 
 			&& TypeResolver.typesEqual(pathA.getFirst(), pathB.getFirst()) )
@@ -285,4 +293,22 @@ public class BytecodeHierarchy implements IHierarchy
 		}
 		return r;
 	}
+
+	public static RefType lcsc(RefType a, RefType b, RefType anchor)
+	{
+		if (a == b)
+			return a;
+		
+		Deque<RefType> pathA = superclassPath(a, anchor);
+		Deque<RefType> pathB = superclassPath(b, anchor);
+		RefType r = null;
+		while ( !(pathA.isEmpty() || pathB.isEmpty()) 
+			&& TypeResolver.typesEqual(pathA.getFirst(), pathB.getFirst()) )
+		{
+			r = pathA.removeFirst();
+			pathB.removeFirst();
+		}
+		return r;
+	}
+
 }
