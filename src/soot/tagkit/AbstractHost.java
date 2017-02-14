@@ -71,7 +71,7 @@ public class AbstractHost implements Host
         Iterator<Tag> it = mTagList.iterator();
         while(it.hasNext()) {
             Tag tag = it.next();
-            if(tag.getName().equals(aName))
+            if(tag != null && tag.getName().equals(aName))
                 return i;
             i++;
         }
