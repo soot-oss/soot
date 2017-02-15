@@ -1,10 +1,11 @@
-package soot.asm;
+package soot.toolkits.exceptions;
 
 import java.util.Iterator;
 import java.util.Map;
 
 import soot.Body;
 import soot.BodyTransformer;
+import soot.Singletons;
 import soot.Trap;
 import soot.Unit;
 
@@ -42,6 +43,13 @@ import soot.Unit;
  *
  */
 public class DuplicateCatchAllTrapRemover extends BodyTransformer {
+
+	public DuplicateCatchAllTrapRemover(Singletons.Global g) {
+	}
+
+	public static DuplicateCatchAllTrapRemover v() {
+		return soot.G.v().soot_toolkits_exceptions_DuplicateCatchAllTrapRemover();
+	}
 
 	@Override
 	protected void internalTransform(Body b, String phaseName, Map<String, String> options) {

@@ -1877,6 +1877,20 @@ public class Singletons {
     	instance_soot_toolkits_exceptions_TrapTightener = null;
     }
 
+    private soot.toolkits.exceptions.DuplicateCatchAllTrapRemover instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover;
+    public soot.toolkits.exceptions.DuplicateCatchAllTrapRemover soot_toolkits_exceptions_DuplicateCatchAllTrapRemover() {
+        if( instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover == null ) {
+	       	synchronized (this) {
+		        if( instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover == null )
+	        		instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover = new soot.toolkits.exceptions.DuplicateCatchAllTrapRemover( g );
+	       	}
+       	}
+        return instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover;
+    }
+    protected void release_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover() {
+    	instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover = null;
+    }
+
     private soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher;
     public soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher() {
         if( instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher == null ) {

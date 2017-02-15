@@ -118,6 +118,7 @@ import soot.sootify.TemplatePrinter;
 import soot.tagkit.InnerClassTagAggregator;
 import soot.tagkit.LineNumberTagAggregator;
 import soot.toDex.DexPrinter;
+import soot.toolkits.exceptions.DuplicateCatchAllTrapRemover;
 import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.graph.interaction.InteractionHandler;
 import soot.toolkits.scalar.ConstantInitializerToTagTransformer;
@@ -152,6 +153,7 @@ public class PackManager {
         addPack(p = new JimpleBodyPack());
         {
             p.add(new Transform("jb.tt", TrapTightener.v()));
+            p.add(new Transform("jb.dtr", DuplicateCatchAllTrapRemover.v()));
             p.add(new Transform("jb.ls", LocalSplitter.v()));
             p.add(new Transform("jb.a", Aggregator.v()));
             p.add(new Transform("jb.ule", UnusedLocalEliminator.v()));

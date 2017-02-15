@@ -53,7 +53,8 @@ public class JimpleBodyPack extends BodyPack
         
         if(Options.v().time()) Timers.v().splitTimer.start();
 
-        PackManager.v().getTransform( "jb.tt" ).apply( b );
+        PackManager.v().getTransform( "jb.tt" ).apply( b );		// TrapTigthener
+        PackManager.v().getTransform( "jb.dtr" ).apply( b );	// DuplicateCatchAllTrapRemover
         
         // UnreachableCodeEliminator: We need to do this before splitting
         // locals for not creating disconnected islands of useless assignments

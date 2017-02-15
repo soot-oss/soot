@@ -173,7 +173,6 @@ final class AsmMethodSource implements MethodSource {
 	private final Map<LabelNode, Unit> inlineExceptionHandlers = new HashMap<LabelNode, Unit>();
 	
 	private final CastAndReturnInliner castAndReturnInliner = new CastAndReturnInliner();
-	private final DuplicateCatchAllTrapRemover duplicateCatchAllTrapRemover = new DuplicateCatchAllTrapRemover();
 	
 	AsmMethodSource(int maxLocals, InsnList insns,
 			List<LocalVariableNode> localVars,
@@ -1888,10 +1887,6 @@ final class AsmMethodSource implements MethodSource {
 		emitTraps();
 		emitUnits();
 		
-		if (m.getDeclaringClass().getName().equals("com.google.common.io.ByteSink")
-				&& m.getName().equals("write"))
-			System.out.println("x");
-		
 		/* clean up */
 		locals = null;
 		labels = null;
@@ -1908,7 +1903,6 @@ final class AsmMethodSource implements MethodSource {
 		// 	b = (B) a;
 		// 	return b;
 		castAndReturnInliner.transform(jb);
-		duplicateCatchAllTrapRemover.transform(jb);
 		
 		try {
 	        PackManager.v().getPack("jb").apply(jb);
