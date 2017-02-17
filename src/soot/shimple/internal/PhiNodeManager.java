@@ -329,7 +329,7 @@ public class PhiNodeManager
         */
     }
     
-    protected Map<Unit, Block> unitToBlock;
+    protected CuckooHashMap<Unit, Block> unitToBlock;
 
     /**
      * Returns true if champ dominates challenger.  Note that false
@@ -482,9 +482,9 @@ public class PhiNodeManager
      * Convenience function that maps units to blocks.  Should
      * probably be in BlockGraph.
      **/
-    public Map<Unit, Block> getUnitToBlockMap(BlockGraph blocks)
+    public CuckooHashMap<Unit, Block> getUnitToBlockMap(BlockGraph blocks)
     {
-        Map<Unit, Block> unitToBlock = new HashMap<Unit, Block>();
+        CuckooHashMap<Unit, Block> unitToBlock = new CuckooHashMap<Unit, Block>();
 
         Iterator<Block> blocksIt = blocks.iterator();
         while(blocksIt.hasNext()){

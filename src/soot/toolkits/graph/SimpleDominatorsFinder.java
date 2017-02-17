@@ -32,6 +32,7 @@ import soot.toolkits.scalar.CollectionFlowUniverse;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.FlowUniverse;
 import soot.toolkits.scalar.ForwardFlowAnalysis;
+import soot.util.CuckooHashMap;
 
 /**
  * Wrapper class for a simple dominators analysis based on a simple
@@ -43,7 +44,7 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 public class SimpleDominatorsFinder<N> implements DominatorsFinder<N>
 {
     protected DirectedGraph<N> graph;
-    protected Map<N, FlowSet<N>> nodeToDominators;
+    protected CuckooHashMap<N, FlowSet<N>> nodeToDominators;
 
     /**
      * Compute dominators for provided singled-headed directed graph.
@@ -59,7 +60,7 @@ public class SimpleDominatorsFinder<N> implements DominatorsFinder<N>
 
         // build node to dominators map
         {
-            nodeToDominators = new HashMap<N, FlowSet<N>>(graph.size() * 2 + 1, 0.7f);
+            nodeToDominators = new CuckooHashMap<N, FlowSet<N>>(graph.size() * 2 + 1, 0.7f);
             
             for(Iterator<N> nodeIt = graph.iterator(); nodeIt.hasNext();) {
                 N node = nodeIt.next();
