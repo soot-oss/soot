@@ -71,7 +71,7 @@ Jimple is Soot's primary IR and most analyses are implemented on the Jimple leve
 
 # How do I get started with Soot?
 
-We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki), including a large range of [tutorials](https://github.com/Sable/soot/wiki/Tutorials) on Soot. We also have a [JavaDoc documentation](https://ssebuild.cased.de/nightly/soot/javadoc/).
+We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki), including a large range of [tutorials](https://github.com/Sable/soot/wiki/Tutorials) on Soot. We also have a [JavaDoc documentation](http://soot-build.cs.uni-paderborn.de/doc/soot/) and a reference on the [command line options](http://soot-build.cs.uni-paderborn.de/doc/sootoptions/).
 
 # How do I obtain the nightly builds?
 
