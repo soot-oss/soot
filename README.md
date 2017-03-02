@@ -34,23 +34,24 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <dependency>
     <groupId>ca.mcgill.sable</groupId>
     <artifactId>soot</artifactId>
-    <version>RELEASE</version>
+    <version>3.0.0-SNAPSHOT</version>
   </dependency>
 </dependencies>
 <repositories>
   <repository>
-    <id>bedatadriven</id>
-    <name>bedatadriven public repo</name>
-    <url>https://nexus.bedatadriven.com/content/groups/public/</url>
+    <id>soot-snapshot</id>
+    <name>soot snapshots</name>
+    <url>http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/</url>
   </repository>
-</repositories>
+</repositories>	
+
 ```
 
 # How do I obtain the nightly builds
 
 **Note that the nightly build server has moved**
 
-Nightly builds of soot can be obtained from [nightly build](https://ssebuild.cased.de/nightly/soot/). The "soot-trunk.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to use manually pick dependencies as you need them.
+Nightly builds of soot can be obtained from [nightly build](http://soot-build.cs.uni-paderborn.de/nightly/soot/). The "soot-trunk.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to use manually pick dependencies as you need them.
 
 # About Soot's source code
 
