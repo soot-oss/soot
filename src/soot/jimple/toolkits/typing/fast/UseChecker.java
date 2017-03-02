@@ -27,6 +27,7 @@ import soot.BooleanType;
 import soot.IntType;
 import soot.IntegerType;
 import soot.Local;
+import soot.NullType;
 import soot.PrimType;
 import soot.RefType;
 import soot.Scene;
@@ -285,13 +286,12 @@ public class UseChecker extends AbstractStmtSwitch
 			Local base = (Local) aref.getBase();
 
 			//try to force Type integrity
-			ArrayType at;
+			ArrayType at = null;
 			Type et = null;
 			if (this.tg.get(base) instanceof ArrayType)
 				at = (ArrayType)this.tg.get(base);
 			else {
 				Type bt = this.tg.get(base);
-				at = bt.makeArrayType();
 				
 				// If we have a type of java.lang.Object and access it like an object,
 				// this could lead to any kind of object, so we have to look at the uses.
@@ -308,16 +308,58 @@ public class UseChecker extends AbstractStmtSwitch
 						
 						outer: for (UnitValueBoxPair usePair : uses.getUsesOf(stmt)) {
 							Stmt useStmt = (Stmt) usePair.getUnit();
-							if (useStmt.containsInvokeExpr())
-								for (int i = 0; i < useStmt.getInvokeExpr().getArgCount(); i++)
+							// Is the array element used in an invocation for which we have a type
+							// from the callee's signature=
+							if (useStmt.containsInvokeExpr()) {
+								for (int i = 0; i < useStmt.getInvokeExpr().getArgCount(); i++) {
 									if (useStmt.getInvokeExpr().getArg(i) == usePair.getValueBox().getValue()) {
 										et = useStmt.getInvokeExpr().getMethod().getParameterType(i);
 										at = et.makeArrayType();
 										break outer;
 									}
+								}
+							}
+							// If we have a comparison, we look at the other value. Using the type
+							// of the value is at least closer to the truth than java.lang.Object
+							// if the other value is a primitive.
+							else if (useStmt instanceof IfStmt) {
+								IfStmt ifStmt = (IfStmt) useStmt;
+								if (ifStmt.getCondition() instanceof EqExpr) {
+									EqExpr expr = (EqExpr) ifStmt.getCondition();
+									final Value other;
+									if (expr.getOp1() == usePair.getValueBox().getValue())
+										other = expr.getOp2();
+									else
+										other = expr.getOp1();
+									
+									Type newEt = getTargetType(other);
+									if (newEt != null)
+										et = newEt;
+								}
+							}
+							else if (useStmt instanceof AssignStmt) {
+								// For binary expressions, we can look for type information in the
+								// other operands
+								AssignStmt useAssignStmt = (AssignStmt) useStmt;
+								if (useAssignStmt.getRightOp() instanceof BinopExpr) {
+									BinopExpr binOp = (BinopExpr) useAssignStmt.getRightOp();
+									final Value other;
+									if (binOp.getOp1() == usePair.getValueBox().getValue())
+										other = binOp.getOp2();
+									else
+										other = binOp.getOp1();
+									
+									Type newEt = getTargetType(other);
+									if (newEt != null)
+										et = newEt;
+								}
+							}
 						}
 					}
 				}
+				
+				if (at == null)
+					at = et.makeArrayType();
 			}
 			Type trhs = ((ArrayType)at).getElementType();
 
@@ -373,6 +415,21 @@ public class UseChecker extends AbstractStmtSwitch
 		else if ( rhs instanceof Constant )
 			if (!(rhs instanceof NullConstant))
 				stmt.setRightOp(this.uv.visit(rhs, tlhs, stmt));
+	}
+
+	private Type getTargetType(final Value other) {
+		if (other instanceof Constant) {
+			if (other.getType() != NullType.v()) {
+				return other.getType();
+			}
+		}
+		else if (other instanceof Local) {
+			Type tgTp = tg.get((Local) other);
+			if (tgTp instanceof PrimType) {
+				return tgTp;
+			}
+		}
+		return null;
 	}
 
 	public void caseIdentityStmt(IdentityStmt stmt) { }
