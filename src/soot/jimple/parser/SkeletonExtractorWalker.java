@@ -71,7 +71,7 @@ public class SkeletonExtractorWalker extends Walker
         
 
 	String className = (String) mProductions.removeLast();
-	className = Scene.v().unescapeName(className);
+
         if(mSootClass == null) {
             mSootClass = new SootClass(className);
             mSootClass.setResolvingLevel(SootClass.SIGNATURES);

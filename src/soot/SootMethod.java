@@ -623,20 +623,17 @@ public class SootMethod
         return getSubSignatureImpl(name, params, returnType);
     }
     
-    private static String getSubSignatureImpl(
-        String name,
-        List<Type> params,
-        Type returnType) {
+	private static String getSubSignatureImpl(String name, List<Type> params, Type returnType) {
         StringBuilder buffer = new StringBuilder();
         
-        buffer.append(returnType.getEscapedName());
+        buffer.append(returnType.toQuotedString());
         
         buffer.append(" ");
         buffer.append(Scene.v().quotedNameOf(name));
         buffer.append("(");
 
         for (int i = 0; i < params.size(); i++) {
-            buffer.append(params.get(i).getEscapedName());
+            buffer.append(params.get(i).toQuotedString());
             if (i < params.size() - 1)
                 buffer.append(",");
         }
@@ -812,7 +809,7 @@ public class SootMethod
 
         // return type + name
 
-        buffer.append(this.getReturnType() + " ");
+        buffer.append(this.getReturnType().toQuotedString() + " ");
         buffer.append(Scene.v().quotedNameOf(this.getName()));
 
         buffer.append("(");
@@ -823,7 +820,7 @@ public class SootMethod
         while (typeIt.hasNext()) {
             Type t = (Type) typeIt.next();
 
-            buffer.append(t);
+            buffer.append(t.toQuotedString());
 
             if (typeIt.hasNext())
                 buffer.append(", ");
@@ -838,11 +835,11 @@ public class SootMethod
 
             if (exceptionIt.hasNext()) {
                 buffer.append(
-                    " throws " + exceptionIt.next().getName());
+                    " throws " + Scene.v().quotedNameOf(exceptionIt.next().getName()));
 
                 while (exceptionIt.hasNext()) {
                     buffer.append(
-                        ", " + exceptionIt.next().getName());
+                        ", " + Scene.v().quotedNameOf(exceptionIt.next().getName()));
                 }
             }
         }

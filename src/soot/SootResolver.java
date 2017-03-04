@@ -107,9 +107,6 @@ public class SootResolver {
 	 * SootClass.
 	 * */
 	public SootClass makeClassRef(String className) {
-		// If this class name is escaped, we need to un-escape it
-		className = Scene.v().unescapeName(className);
-		
 		if (Scene.v().containsClass(className))
 			return Scene.v().getSootClass(className);
 

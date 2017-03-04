@@ -81,7 +81,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
         StringBuffer buffer = new StringBuffer();
 
         buffer.append("<" + Scene.v().quotedNameOf(cl.getName()) + ": ");
-        buffer.append(type + " " + Scene.v().quotedNameOf(name) + ">");
+        buffer.append(type.toQuotedString() + " " + Scene.v().quotedNameOf(name) + ">");
 
         return buffer.toString().intern();
 
@@ -204,7 +204,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
     private String getOriginalStyleDeclaration()
     {
-        String qualifiers = Modifier.toString(modifiers) + " " + type.toString();
+        String qualifiers = Modifier.toString(modifiers) + " " + type.toQuotedString();
         qualifiers = qualifiers.trim();
 
         if(qualifiers.equals(""))

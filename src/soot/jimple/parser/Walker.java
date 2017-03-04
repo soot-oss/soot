@@ -1412,6 +1412,8 @@ public class Walker extends DepthFirstAdapter {
 			if (node instanceof TStringConstant || node instanceof TQuotedName) {
 				tokenString = tokenString
 						.substring(1, tokenString.length() - 1);
+			} else if (node instanceof TFullIdentifier) {
+				tokenString = Scene.v().unescapeName(tokenString);
 			}
 
 			if (node instanceof TIdentifier || node instanceof TFullIdentifier

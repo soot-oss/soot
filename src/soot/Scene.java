@@ -942,7 +942,7 @@ public class Scene  //extends AbstractHost
      */
     public RefType getRefTypeUnsafe(String className) 
     {
-        RefType refType = nameToClass.get(unescapeName(className));
+        RefType refType = nameToClass.get(className);
 		return refType;
     }
     
