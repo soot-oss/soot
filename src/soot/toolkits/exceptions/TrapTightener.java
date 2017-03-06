@@ -108,8 +108,10 @@ public final class TrapTightener extends TrapTransformer {
 						
 						// If this is the catch-all block and the current unit has an,
 						// active monitor, we need to keep the block
-						if (isCatchAll && unitsWithMonitor.contains(u))
+						if (isCatchAll && unitsWithMonitor.contains(u)) {
+							lastTrappedThrower = u;
 							break;
+						}
 					}
 				}
 				// If no statement inside the trap can throw an exception, we
