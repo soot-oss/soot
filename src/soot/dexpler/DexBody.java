@@ -591,6 +591,9 @@ public class DexBody  {
             }
         }
         
+        // Remove "instanceof" checks on the null constant
+        DexNullInstanceofTransformer.v().transform(jBody);
+        
         TypeAssigner.v().transform(jBody);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
