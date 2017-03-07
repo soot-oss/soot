@@ -105,13 +105,19 @@ public class SootMethod
     	// method source here.
     	
     	MethodSource ms = this.ms;
-    	if (this.activeBody == null) {
-	    	if (ms == null)
-	    		throw new RuntimeException("No method source set for method " + this.getSignature());
-	        return ms.getBody(this, phaseName);
+    	
+    	// Method sources are not expected to be thread safe
+    	synchronized (this) {
+	    	if (this.activeBody == null) {
+		    	if (ms == null)
+		    		throw new RuntimeException("No method source set for method " + this.getSignature());
+		    	
+		    	// Method sources are not expected to be thread safe
+	    		return ms.getBody(this, phaseName);
+	    	}
+	    	else
+	    		return this.activeBody;
     	}
-    	else
-    		return this.activeBody;
     }
 
     /** Sets the MethodSource of the current SootMethod. */

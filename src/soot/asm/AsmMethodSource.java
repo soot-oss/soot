@@ -1859,6 +1859,7 @@ final class AsmMethodSource implements MethodSource {
 		return null;
 	}
 
+	@Override
 	public Body getBody(SootMethod m, String phaseName) {
 		if (!m.isConcrete())
 			return null;
