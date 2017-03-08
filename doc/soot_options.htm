@@ -56,43 +56,49 @@
 <a href="#phase_1">Jimple Body Creation (jb)</a>
 <ul>
 <li>
-<a href="#phase_1_1">Local Splitter (jb.ls)</a>
+<a href="#phase_1_1">Duplicate CatchAll Trap Remover (jb.dtr)</a>
 </li>
 <li>
-<a href="#phase_1_2">Jimple Local Aggregator (jb.a)</a>
+<a href="#phase_1_2">Empty Switch Eliminator (jb.ese)</a>
 </li>
 <li>
-<a href="#phase_1_3">Unused Local Eliminator (jb.ule)</a>
+<a href="#phase_1_3">Local Splitter (jb.ls)</a>
 </li>
 <li>
-<a href="#phase_1_4">Type Assigner (jb.tr)</a>
+<a href="#phase_1_4">Jimple Local Aggregator (jb.a)</a>
 </li>
 <li>
-<a href="#phase_1_5">Unsplit-originals Local Packer (jb.ulp)</a>
+<a href="#phase_1_5">Unused Local Eliminator (jb.ule)</a>
 </li>
 <li>
-<a href="#phase_1_6">Local Name Standardizer (jb.lns)</a>
+<a href="#phase_1_6">Type Assigner (jb.tr)</a>
 </li>
 <li>
-<a href="#phase_1_7">Copy Propagator (jb.cp)</a>
+<a href="#phase_1_7">Unsplit-originals Local Packer (jb.ulp)</a>
 </li>
 <li>
-<a href="#phase_1_8">Dead Assignment Eliminator (jb.dae)</a>
+<a href="#phase_1_8">Local Name Standardizer (jb.lns)</a>
 </li>
 <li>
-<a href="#phase_1_9">Post-copy propagation Unused Local Eliminator (jb.cp-ule)</a>
+<a href="#phase_1_9">Copy Propagator (jb.cp)</a>
 </li>
 <li>
-<a href="#phase_1_10">Local Packer (jb.lp)</a>
+<a href="#phase_1_10">Dead Assignment Eliminator (jb.dae)</a>
 </li>
 <li>
-<a href="#phase_1_11">Nop Eliminator (jb.ne)</a>
+<a href="#phase_1_11">Post-copy propagation Unused Local Eliminator (jb.cp-ule)</a>
 </li>
 <li>
-<a href="#phase_1_12">Unreachable Code Eliminator (jb.uce)</a>
+<a href="#phase_1_12">Local Packer (jb.lp)</a>
 </li>
 <li>
-<a href="#phase_1_13">Trap Tightener (jb.tt)</a>
+<a href="#phase_1_13">Nop Eliminator (jb.ne)</a>
+</li>
+<li>
+<a href="#phase_1_14">Unreachable Code Eliminator (jb.uce)</a>
+</li>
+<li>
+<a href="#phase_1_15">Trap Tightener (jb.tt)</a>
 </li>
 </ul>
 </li>
@@ -1275,7 +1281,42 @@ second re-normalization pass.
 </li>
 </ul>
 <h2>
-<a name="phase_1_1">Local Splitter (jb.ls)</a>
+<a name="phase_1_1">Duplicate CatchAll Trap Remover (jb.dtr)</a>
+</h2>
+<p>
+This transformer detects cases in which the same code block is covered by two different
+catch all traps with different exception handlers (A and B), and if there is at the
+same time a third catch all trap that covers the second handler B and jumps to A, then
+the second trap is unnecessary, because it is already covered by a combination of the
+other two traps. This transformer removes the unnecessary trap.
+</p>
+<h4>Accepted phase options:</h4>
+<ul>
+<li>
+<b>Enabled</b> (enabled)
+		<br>
+			(default value: <span class="value">true</span>)
+		<p></p>
+</li>
+</ul>
+<h2>
+<a name="phase_1_2">Empty Switch Eliminator (jb.ese)</a>
+</h2>
+<p>
+The Empty Switch Eliminator detects and removes switch statements that have no data labels.
+Instead, the code is transformed to contain a single jump statement to the default label.
+</p>
+<h4>Accepted phase options:</h4>
+<ul>
+<li>
+<b>Enabled</b> (enabled)
+		<br>
+			(default value: <span class="value">true</span>)
+		<p></p>
+</li>
+</ul>
+<h2>
+<a name="phase_1_3">Local Splitter (jb.ls)</a>
 </h2>
 <p>
 The Local Splitter identifies DU-UD webs for local variables and
@@ -1292,7 +1333,7 @@ with a single local.
 </li>
 </ul>
 <h2>
-<a name="phase_1_2">Jimple Local Aggregator (jb.a)</a>
+<a name="phase_1_4">Jimple Local Aggregator (jb.a)</a>
 </h2>
 <p>
 
@@ -1327,7 +1368,7 @@ by the  character with which their names begin.)
 </li>
 </ul>
 <h2>
-<a name="phase_1_3">Unused Local Eliminator (jb.ule)</a>
+<a name="phase_1_5">Unused Local Eliminator (jb.ule)</a>
 </h2>
 <p>
 The Unused Local Eliminator removes any unused locals from the
@@ -1343,7 +1384,7 @@ method.
 </li>
 </ul>
 <h2>
-<a name="phase_1_4">Type Assigner (jb.tr)</a>
+<a name="phase_1_6">Type Assigner (jb.tr)</a>
 </h2>
 <p>
 The Type Assigner gives local variables types which will
@@ -1392,7 +1433,7 @@ older type assigner that was in Soot.
 </li>
 </ul>
 <h2>
-<a name="phase_1_5">Unsplit-originals Local Packer (jb.ulp)</a>
+<a name="phase_1_7">Unsplit-originals Local Packer (jb.ulp)</a>
 </h2>
 <p>
 The Unsplit-originals Local Packer executes only when the
@@ -1423,7 +1464,7 @@ the Local Splitter.
 </li>
 </ul>
 <h2>
-<a name="phase_1_6">Local Name Standardizer (jb.lns)</a>
+<a name="phase_1_8">Local Name Standardizer (jb.lns)</a>
 </h2>
 <p>
 The Local Name Standardizer assigns generic names to local variables.
@@ -1464,7 +1505,7 @@ the `jb' phase.
 </li>
 </ul>
 <h2>
-<a name="phase_1_7">Copy Propagator (jb.cp)</a>
+<a name="phase_1_9">Copy Propagator (jb.cp)</a>
 </h2>
 <p>
 This phase performs cascaded copy propagation.  
@@ -1515,7 +1556,7 @@ the original bytecode.
 </li>
 </ul>
 <h2>
-<a name="phase_1_8">Dead Assignment Eliminator (jb.dae)</a>
+<a name="phase_1_10">Dead Assignment Eliminator (jb.dae)</a>
 </h2>
 <p>
 The Dead Assignment Eliminator eliminates assignment statements
@@ -1542,7 +1583,7 @@ locations in the original bytecode.
 </li>
 </ul>
 <h2>
-<a name="phase_1_9">Post-copy propagation Unused Local Eliminator (jb.cp-ule)</a>
+<a name="phase_1_11">Post-copy propagation Unused Local Eliminator (jb.cp-ule)</a>
 </h2>
 <p>
 This phase removes any locals that are unused after copy propagation.
@@ -1557,7 +1598,7 @@ This phase removes any locals that are unused after copy propagation.
 </li>
 </ul>
 <h2>
-<a name="phase_1_10">Local Packer (jb.lp)</a>
+<a name="phase_1_12">Local Packer (jb.lp)</a>
 </h2>
 <p>
 The Local Packer attempts to minimize the number of local
@@ -1586,7 +1627,7 @@ the Local Splitter.
 </li>
 </ul>
 <h2>
-<a name="phase_1_11">Nop Eliminator (jb.ne)</a>
+<a name="phase_1_13">Nop Eliminator (jb.ne)</a>
 </h2>
 <p>
 The Nop Eliminator removes nop statements from the method.
@@ -1601,7 +1642,7 @@ The Nop Eliminator removes nop statements from the method.
 </li>
 </ul>
 <h2>
-<a name="phase_1_12">Unreachable Code Eliminator (jb.uce)</a>
+<a name="phase_1_14">Unreachable Code Eliminator (jb.uce)</a>
 </h2>
 <p>
 The Unreachable Code Eliminator removes unreachable code and
@@ -1626,7 +1667,7 @@ throw the exception being caught.
 </li>
 </ul>
 <h2>
-<a name="phase_1_13">Trap Tightener (jb.tt)</a>
+<a name="phase_1_15">Trap Tightener (jb.tt)</a>
 </h2>
 <p>
 The Trap Tightener changes the area protected by each exception handler,

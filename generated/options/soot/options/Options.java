@@ -1860,6 +1860,8 @@ public class Options extends OptionsBase {
         return ""
     
         +padOpt("jb", "Creates a JimpleBody for each method")
+        +padVal("jb.dtr", "Reduces chains of catch-all traps")
+        +padVal("jb.ese", "Removes empty switch statements")
         +padVal("jb.ls", "Local splitter: one local per DU-UD web")
         +padVal("jb.a", "Aggregator: removes some unnecessary copies")
         +padVal("jb.ule", "Unused local eliminator")
@@ -1979,6 +1981,18 @@ public class Options extends OptionsBase {
                 +padOpt( "use-original-names (false)", "" )
                 +padOpt( "preserve-source-annotations (false)", "" )
                 +padOpt( "stabilize-local-names (false)", "" );
+    
+        if( phaseName.equals( "jb.dtr" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nThis transformer detects cases in which the same code block is \ncovered by two different catch all traps with different \nexception handlers (A and B), and if there is at the same time a \nthird catch all trap that covers the second handler B and jumps \nto A, then the second trap is unnecessary, because it is already \ncovered by a combination of the other two traps. This \ntransformer removes the unnecessary trap. "
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (true)", "" );
+    
+        if( phaseName.equals( "jb.ese" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nThe Empty Switch Eliminator detects and removes switch \nstatements that have no data labels. Instead, the code is \ntransformed to contain a single jump statement to the default \nlabel. "
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "jb.ls" ) )
             return "Phase "+phaseName+":\n"+
@@ -3008,6 +3022,14 @@ public class Options extends OptionsBase {
                 +"preserve-source-annotations "
                 +"stabilize-local-names ";
     
+        if( phaseName.equals( "jb.dtr" ) )
+            return ""
+                +"enabled ";
+    
+        if( phaseName.equals( "jb.ese" ) )
+            return ""
+                +"enabled ";
+    
         if( phaseName.equals( "jb.ls" ) )
             return ""
                 +"enabled ";
@@ -3628,6 +3650,14 @@ public class Options extends OptionsBase {
               +"preserve-source-annotations:false "
               +"stabilize-local-names:false ";
     
+        if( phaseName.equals( "jb.dtr" ) )
+            return ""
+              +"enabled:true ";
+    
+        if( phaseName.equals( "jb.ese" ) )
+            return ""
+              +"enabled:true ";
+    
         if( phaseName.equals( "jb.ls" ) )
             return ""
               +"enabled:true ";
@@ -4241,6 +4271,8 @@ public class Options extends OptionsBase {
     public void warnForeignPhase( String phaseName ) {
     
         if( phaseName.equals( "jb" ) ) return;
+        if( phaseName.equals( "jb.dtr" ) ) return;
+        if( phaseName.equals( "jb.ese" ) ) return;
         if( phaseName.equals( "jb.ls" ) ) return;
         if( phaseName.equals( "jb.a" ) ) return;
         if( phaseName.equals( "jb.ule" ) ) return;
@@ -4355,6 +4387,10 @@ public class Options extends OptionsBase {
     
         if( !PackManager.v().hasPhase( "jb" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jb" );
+        if( !PackManager.v().hasPhase( "jb.dtr" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.dtr" );
+        if( !PackManager.v().hasPhase( "jb.ese" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase jb.ese" );
         if( !PackManager.v().hasPhase( "jb.ls" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase jb.ls" );
         if( !PackManager.v().hasPhase( "jb.a" ) )

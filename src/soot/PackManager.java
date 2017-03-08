@@ -18,8 +18,6 @@
  */
 
 package soot;
-import heros.solver.CountingThreadPoolExecutor;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -41,6 +39,7 @@ import java.util.jar.JarOutputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 
+import heros.solver.CountingThreadPoolExecutor;
 import soot.baf.Baf;
 import soot.baf.BafASMBackend;
 import soot.baf.BafBody;
@@ -100,6 +99,7 @@ import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
 import soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.jimple.toolkits.scalar.EmptySwitchEliminator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
@@ -154,6 +154,7 @@ public class PackManager {
         {
             p.add(new Transform("jb.tt", TrapTightener.v()));
             p.add(new Transform("jb.dtr", DuplicateCatchAllTrapRemover.v()));
+            p.add(new Transform("jb.ese", EmptySwitchEliminator.v()));
             p.add(new Transform("jb.ls", LocalSplitter.v()));
             p.add(new Transform("jb.a", Aggregator.v()));
             p.add(new Transform("jb.ule", UnusedLocalEliminator.v()));

@@ -118,6 +118,10 @@ Composite tagChild = tagCreate(getPageContainer());
 
 Composite dbChild = dbCreate(getPageContainer());
 
+Composite jbjb_dtrChild = jbjb_dtrCreate(getPageContainer());
+
+Composite jbjb_eseChild = jbjb_eseCreate(getPageContainer());
+
 Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
 
 Composite jbjb_aChild = jbjb_aCreate(getPageContainer());
@@ -395,6 +399,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		getjbpreserve_source_annotations_widget().getButton().addSelectionListener(this);
 		
 		getjbstabilize_local_names_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jb", "jb.dtr");
+		
+		
+		addToEnableGroup("jb", "jb.dtr", getjbjb_dtrenabled_widget(), "enabled");
+		
+		getjbjb_dtrenabled_widget().getButton().addSelectionListener(this);
+		
+		
+		makeNewEnableGroup("jb", "jb.ese");
+		
+		
+		addToEnableGroup("jb", "jb.ese", getjbjb_eseenabled_widget(), "enabled");
+		
+		getjbjb_eseenabled_widget().getButton().addSelectionListener(this);
 		
 		
 		makeNewEnableGroup("jb", "jb.ls");
@@ -2546,6 +2566,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbstabilize_local_names_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_dtrenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_dtrenabled_widget().getAlias(), new Boolean(boolRes));
+		}
+		
+		boolRes = getjbjb_eseenabled_widget().getButton().getSelection();
+		
+		
+		defBoolRes = true;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getjbjb_eseenabled_widget().getAlias(), new Boolean(boolRes));
 		}
 		
 		boolRes = getjbjb_lsenabled_widget().getButton().getSelection();
@@ -5613,6 +5653,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 
 			
+			SootOption jb_jb_dtr_branch = new SootOption("Duplicate CatchAll Trap Remover", "jbjb_dtr");
+			subParent.addChild(jb_jb_dtr_branch);
+
+
+			
+
+			
+			subSectParent = jb_jb_dtr_branch;
+			
+			
+			SootOption jb_jb_ese_branch = new SootOption("Empty Switch Eliminator", "jbjb_ese");
+			subParent.addChild(jb_jb_ese_branch);
+
+
+			
+
+			
+			subSectParent = jb_jb_ese_branch;
+			
+			
 			SootOption jb_jb_ls_branch = new SootOption("Local Splitter", "jbjb_ls");
 			subParent.addChild(jb_jb_ls_branch);
 
@@ -7369,6 +7429,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	public BooleanOptionWidget getjbstabilize_local_names_widget() {
 		return jbstabilize_local_names_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_dtrenabled_widget;
+	
+	private void setjbjb_dtrenabled_widget(BooleanOptionWidget widget) {
+		jbjb_dtrenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_dtrenabled_widget() {
+		return jbjb_dtrenabled_widget;
+	}	
+	
+	private BooleanOptionWidget jbjb_eseenabled_widget;
+	
+	private void setjbjb_eseenabled_widget(BooleanOptionWidget widget) {
+		jbjb_eseenabled_widget = widget;
+	}
+	
+	public BooleanOptionWidget getjbjb_eseenabled_widget() {
+		return jbjb_eseenabled_widget;
 	}	
 	
 	private BooleanOptionWidget jbjb_lsenabled_widget;
@@ -11911,6 +11991,98 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		
 		return editGroupjb;
+	}
+
+
+
+	private Composite jbjb_dtrCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjbjb_dtr = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjbjb_dtr.setLayout(layout);
+	
+	 	editGroupjbjb_dtr.setText("Duplicate CatchAll Trap Remover");
+	 	
+		editGroupjbjb_dtr.setData("id", "jbjb_dtr");
+		
+		String descjbjb_dtr = "Reduces chains of catch-all traps";	
+		if (descjbjb_dtr.length() > 0) {
+			Label descLabeljbjb_dtr = new Label(editGroupjbjb_dtr, SWT.WRAP);
+			descLabeljbjb_dtr.setText(descjbjb_dtr);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jb.dtr"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjbjb_dtrenabled_widget(new BooleanOptionWidget(editGroupjbjb_dtr, SWT.NONE, new OptionData("Enabled", "p", "jb.dtr","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjbjb_dtr;
+	}
+
+
+
+	private Composite jbjb_eseCreate(Composite parent) {
+		String defKey;
+		String defaultString;
+		boolean defaultBool = false;
+	    String defaultArray;
+       
+		Group editGroupjbjb_ese = new Group(parent, SWT.NONE);
+		GridLayout layout = new GridLayout();
+		editGroupjbjb_ese.setLayout(layout);
+	
+	 	editGroupjbjb_ese.setText("Empty Switch Eliminator");
+	 	
+		editGroupjbjb_ese.setData("id", "jbjb_ese");
+		
+		String descjbjb_ese = "Removes empty switch statements";	
+		if (descjbjb_ese.length() > 0) {
+			Label descLabeljbjb_ese = new Label(editGroupjbjb_ese, SWT.WRAP);
+			descLabeljbjb_ese.setText(descjbjb_ese);
+		}
+		OptionData [] data;	
+		
+		
+		
+		
+		defKey = "p"+" "+"jb.ese"+" "+"enabled";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = true;
+			
+		}
+
+		setjbjb_eseenabled_widget(new BooleanOptionWidget(editGroupjbjb_ese, SWT.NONE, new OptionData("Enabled", "p", "jb.ese","enabled", "\n", defaultBool)));
+		
+		
+
+		
+		return editGroupjbjb_ese;
 	}
 
 

@@ -638,6 +638,36 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_jb_dtr() {
+            Object ret = new PhaseOptjb_dtr();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjb_dtr {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jb.dtr");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_jb_ese() {
+            Object ret = new PhaseOptjb_ese();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjb_ese {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jb.ese");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
         public Object createp_jb_ls() {
             Object ret = new PhaseOptjb_ls();
             phaseopts.add(ret);

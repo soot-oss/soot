@@ -2038,7 +2038,7 @@ public class BafASMBackend extends AbstractASMBackend {
 			@Override
 			public void caseTableSwitchInst(TableSwitchInst i) {
 				List<Unit> targets = i.getTargets();
-
+				
 				Label[] labels = new Label[targets.size()];
 
 				for (int j = 0; j < targets.size(); j++) {

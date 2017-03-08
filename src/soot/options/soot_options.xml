@@ -1240,6 +1240,37 @@ second re-normalization pass.
 </long_desc>
 				</boolopt>
 				<sub_phase>
+					<name>Duplicate CatchAll Trap Remover</name>
+					<alias>jb.dtr</alias>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+					<short_desc>Reduces chains of catch-all traps</short_desc>
+					<long_desc>
+This transformer detects cases in which the same code block is covered by two different
+catch all traps with different exception handlers (A and B), and if there is at the
+same time a third catch all trap that covers the second handler B and jumps to A, then
+the second trap is unnecessary, because it is already covered by a combination of the
+other two traps. This transformer removes the unnecessary trap.
+</long_desc>
+				</sub_phase>
+				<sub_phase>
+					<name>Empty Switch Eliminator</name>
+					<alias>jb.ese</alias>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+					<short_desc>Removes empty switch statements</short_desc>
+					<long_desc>
+The Empty Switch Eliminator detects and removes switch statements that have no data labels.
+Instead, the code is transformed to contain a single jump statement to the default label.
+</long_desc>
+				</sub_phase>
+				<sub_phase>
 					<name>Local Splitter</name>
 					<alias>jb.ls</alias>
 					<boolopt>
