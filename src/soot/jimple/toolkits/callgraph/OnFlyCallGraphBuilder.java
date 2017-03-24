@@ -163,7 +163,7 @@ public final class OnFlyCallGraphBuilder
 	        if( className instanceof StringConstant ) {
 	            String cls = ((StringConstant) className ).value;
 	            constantForName( cls, source, s );
-	        } else {
+	        } else if (className instanceof Local) {
 	            Local constant = (Local) className;
 	            if( options.safe_forname() ) {
 	                for (SootMethod tgt : EntryPoints.v().clinits()) {
