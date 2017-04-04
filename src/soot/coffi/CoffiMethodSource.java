@@ -30,6 +30,7 @@ import soot.options.*;
 import soot.*;
 import java.util.*;
 import soot.jimple.*;
+import java.util.Collections;
 
 public class CoffiMethodSource implements MethodSource
 {
@@ -75,7 +76,54 @@ public class CoffiMethodSource implements MethodSource
 
              coffiClass.parseMethod(coffiMethod);
         }
-                
+
+        //If the body is empty, generate a dummy body
+        if (coffiMethod.instructions == null){
+
+            //Generate this local
+            if (!coffiMethod.jmethod.isStatic()){
+                RefType typ = coffiMethod.jmethod.getDeclaringClass().getType();
+                Local l = Jimple.v().newLocal("this", typ);
+                Unit stmt = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef(typ));
+                jb.getUnits().addFirst(stmt);
+            }
+
+            //Generate parameter refs
+            Local[] argLocals = new Local[coffiMethod.jmethod.getParameterCount()];
+            for (int i = 0; i < coffiMethod.jmethod.getParameterCount(); i++){
+                Type t = coffiMethod.jmethod.getParameterType(i);
+
+                //The name of the local should be based on the types - that gets handled later
+                Local l = Jimple.v().newLocal("$r"+i, t);
+                jb.getLocals().addLast(l);
+
+                Unit stmt = Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(t,i));
+                jb.getUnits().addLast(stmt);
+            }
+
+            //Generate exception
+            SootClass exClass = Scene.v().getSootClass("java.lang.RuntimeException");
+            SootMethodRef ctorRef = Scene.v().makeConstructorRef(exClass, Collections.<Type>emptyList());
+            RefType exceptionType = exClass.getType();
+            Local ex = Jimple.v().newLocal("$rException", exceptionType);
+            jb.getLocals().addLast(ex);
+
+            Unit newStmt = Jimple.v().newAssignStmt(ex, Jimple.v().newNewExpr(exceptionType));
+            Unit ctor = Jimple.v().newInvokeStmt(Jimple.v().newSpecialInvokeExpr(ex, ctorRef));
+            Unit throwStmt = Jimple.v().newThrowStmt(ex);
+
+            jb.getUnits().addLast(newStmt);
+            jb.getUnits().addLast(ctor);
+            jb.getUnits().addLast(throwStmt);
+
+            //This will get the variable names fixed
+            //PackManager.v().getPack("jb").apply(jb);
+
+            soot.jimple.toolkits.scalar.LocalNameStandardizer.v().transform(jb);
+
+            return jb;
+        }
+
         if(coffiMethod.cfg == null)
         {
             if(Options.v().verbose())
@@ -95,7 +143,8 @@ public class CoffiMethodSource implements MethodSource
          boolean oldPhantomValue = Scene.v().getPhantomRefs();
 
          Scene.v().setPhantomRefs(true);
-         coffiMethod.cfg.jimplify(coffiClass.constant_pool,
+        if (coffiMethod.cfg != null)
+            coffiMethod.cfg.jimplify(coffiClass.constant_pool,
              coffiClass.this_class, coffiClass.bootstrap_methods_attribute, jb);
          Scene.v().setPhantomRefs(oldPhantomValue);
 
@@ -111,7 +160,7 @@ public class CoffiMethodSource implements MethodSource
 
          coffiMethod = null;
          coffiClass = null;
-         
+
          PackManager.v().getPack("jb").apply(jb);
          return jb;
     }
