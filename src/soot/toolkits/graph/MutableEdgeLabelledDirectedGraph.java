@@ -24,8 +24,6 @@
  */
 package soot.toolkits.graph;
 
-import java.util.List;
-
 /**
  * Defines a DirectedGraph which is modifiable and associates a label object
  * with every edge. Provides an interface to add/delete nodes and edges.
@@ -33,7 +31,7 @@ import java.util.List;
  * @param <N>
  * @param <L>
  */
-public interface MutableEdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N> {
+public interface MutableEdgeLabelledDirectedGraph<N, L> extends EdgeLabelledDirectedGraph<N, L> {
 
     /**
      * Adds an edge to the graph between 2 nodes. If the edge is already present
@@ -44,27 +42,6 @@ public interface MutableEdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N>
      * @param label label for the edge.
      */
     public void addEdge(N from, N to, L label);
-
-    /**
-     * Returns a list of labels for which an edge exists between from and to
-     *
-     * @param from out node for the edges to remove.
-     * @param to   in node for the edges to remove.
-     *
-     * @return
-     */
-    public List<L> getLabelsForEdges(N from, N to);
-
-    /**
-     * Returns a MutableDirectedGraph consisting of all edges with the given
-     * label and their nodes. Nodes without edges are not included in the new
-     * graph.
-     *
-     * @param label label for the edge to remove.
-     *
-     * @return
-     */
-    public MutableDirectedGraph<N> getEdgesForLabel(L label);
 
     /**
      * Removes an edge between 2 nodes in the graph. If the edge is not present
@@ -94,39 +71,6 @@ public interface MutableEdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N>
     public void removeAllEdges(L label);
 
     /**
-     * @param from
-     * @param to
-     * @param label
-     *
-     * @return true if the graph contains an edge between the 2 nodes with the
-     *         given label, otherwise return false.
-     */
-    public boolean containsEdge(N from, N to, L label);
-
-    /**
-     * @return true if the graph contains any edges between the 2 nodes,
-     *         otherwise return false.
-     *
-     * @param from out node for the edges.
-     * @param to   in node for the edges.
-     */
-    public boolean containsAnyEdge(N from, N to);
-
-    /**
-     * @return true if the graph contains any edges with the given label,
-     *         otherwise return false.
-     *
-     * @param label label for the edges.
-     */
-    public boolean containsAnyEdge(L label);
-
-    /**
-     * @return a list of the nodes that compose the graph. No ordering is
-     *         implied.
-     */
-    public List<N> getNodes();
-
-    /**
      * Adds a node to the graph. Initially the added node has no successors or
      * predecessors. ; as a consequence it is considered both a head and tail
      * for the graph.
@@ -145,11 +89,4 @@ public interface MutableEdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N>
      * @param node the node to be removed.
      */
     public void removeNode(N node);
-
-    /**
-     * @param node node that we want to know if the graph constains.
-     *
-     * @return true if the graph contains the node. false otherwise.
-     */
-    public boolean containsNode(N node);
 }

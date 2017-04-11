@@ -351,11 +351,6 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
     }
 
     @Override
-    public List<N> getNodes() {
-        return getCopy(nodeToPreds.keySet());
-    }
-
-    @Override
     public void addNode(N node) {
         if (containsNode(node)) {
             throw new RuntimeException("Node already in graph");

@@ -19,6 +19,7 @@ import soot.jimple.spark.sets.HashPointsToSet;
 import soot.jimple.spark.sets.PointsToSetInternal;
 import soot.jimple.toolkits.callgraph.Filter;
 import soot.jimple.toolkits.callgraph.TransitiveTargets;
+import soot.toolkits.graph.DirectedGraph;
 import soot.toolkits.graph.HashMutableDirectedGraph;
 import soot.toolkits.graph.HashMutableEdgeLabelledDirectedGraph;
 import soot.toolkits.graph.MutableDirectedGraph;
@@ -378,8 +379,8 @@ public class DeadlockDetector {
                     if (!tnsShareAStaticLock || tn == otherTn) // if tns don't share any static lock, or if tns are the same one
                     {
                         // add these orderings to tn's visible order
-                        MutableDirectedGraph<Integer> orderings = lockOrder.getEdgesForLabel(otherTn);
-                        for (Integer node1 : orderings.getNodes()) {
+                        DirectedGraph<Integer> orderings = lockOrder.getEdgesForLabel(otherTn);
+                        for (Integer node1 : orderings) {
                             if (!visibleOrder.containsNode(node1)) {
                                 visibleOrder.addNode(node1);
                             }
