@@ -298,7 +298,7 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
             throw new RuntimeException("edge " + edge + " not in graph!");
         }
 
-        for (L label : labels) {
+        for (L label : getCopy(labels)) {
             removeEdge(from, to, label);
         }
     }
@@ -314,35 +314,30 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
             throw new RuntimeException("label " + label + " not in graph!");
         }
 
-        for (DGEdge<N> edge : edges) {
+        for (DGEdge<N> edge : getCopy(edges)) {
             removeEdge(edge.from(), edge.to(), label);
         }
     }
 
     @Override
+
     public boolean containsEdge(N from, N to, L label) {
-        DGEdge<N> edge = new DGEdge<N>(from, to);
-        if (edgeToLabels.get(edge) != null && edgeToLabels.get(edge).contains(label)) {
-            return true;
-        }
-        return false;
+        List<L> labels = edgeToLabels.get(new DGEdge<>(from, to));
+        return labels != null && labels.contains(label);
     }
 
     @Override
+
     public boolean containsAnyEdge(N from, N to) {
-        DGEdge<N> edge = new DGEdge<N>(from, to);
-        if (edgeToLabels.get(edge) != null && edgeToLabels.get(edge).isEmpty()) {
-            return false;
-        }
-        return true;
+        List<L> labels = edgeToLabels.get(new DGEdge<>(from, to));
+        return labels != null && !labels.isEmpty();
     }
 
     @Override
+
     public boolean containsAnyEdge(L label) {
-        if (labelToEdges.get(label) != null && labelToEdges.get(label).isEmpty()) {
-            return false;
-        }
-        return true;
+        List<DGEdge<N>> edges = labelToEdges.get(label);
+        return edges != null && !edges.isEmpty();
     }
 
     @Override
