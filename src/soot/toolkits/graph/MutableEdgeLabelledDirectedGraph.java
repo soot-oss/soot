@@ -24,11 +24,14 @@
  */
 package soot.toolkits.graph;
 
-import java.util.*;
+import java.util.List;
 
 /**
  * Defines a DirectedGraph which is modifiable and associates a label object
  * with every edge. Provides an interface to add/delete nodes and edges.
+ *
+ * @param <N>
+ * @param <L>
  */
 public interface MutableEdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N> {
 
@@ -47,6 +50,8 @@ public interface MutableEdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N>
      *
      * @param from out node for the edges to remove.
      * @param to   in node for the edges to remove.
+     *
+     * @return
      */
     public List<L> getLabelsForEdges(N from, N to);
 
@@ -56,6 +61,8 @@ public interface MutableEdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N>
      * graph.
      *
      * @param label label for the edge to remove.
+     *
+     * @return
      */
     public MutableDirectedGraph<N> getEdgesForLabel(L label);
 
@@ -87,6 +94,10 @@ public interface MutableEdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N>
     public void removeAllEdges(L label);
 
     /**
+     * @param from
+     * @param to
+     * @param label
+     *
      * @return true if the graph contains an edge between the 2 nodes with the
      *         given label, otherwise return false.
      */
@@ -110,7 +121,8 @@ public interface MutableEdgeLabelledDirectedGraph<N, L> extends DirectedGraph<N>
     public boolean containsAnyEdge(L label);
 
     /**
-     * @return a list of the nodes that compose the graph. No ordering is implied.
+     * @return a list of the nodes that compose the graph. No ordering is
+     *         implied.
      */
     public List<N> getNodes();
 

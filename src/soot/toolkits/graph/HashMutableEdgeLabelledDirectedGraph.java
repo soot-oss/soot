@@ -27,13 +27,16 @@ package soot.toolkits.graph;
 
 import java.util.*;
 
-import soot.*;
+import soot.G;
 
+/**
+ * HashMap based implementation of a MutableEdgeLabelledDirectedGraph.
+ *
+ * @param <N>
+ * @param <L>
+ */
 public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLabelledDirectedGraph<N, L> {
 
-    /**
-     * HashMap based implementation of a MutableEdgeLabelledDirectedGraph.
-     */
     private static class DGEdge<N> {
 
         N from;
@@ -52,6 +55,7 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
             return to;
         }
 
+        @Override
         public boolean equals(Object o) {
             if (o instanceof DGEdge) {
                 DGEdge<?> other = (DGEdge<?>) o;
@@ -60,6 +64,7 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
             return false;
         }
 
+        @Override
         public int hashCode() {
             return Arrays.hashCode(new Object[]{from, to});
         }
@@ -99,6 +104,7 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
         tails.clear();
     }
 
+    @Override
     public HashMutableEdgeLabelledDirectedGraph<N, L> clone() {
         HashMutableEdgeLabelledDirectedGraph<N, L> g = new HashMutableEdgeLabelledDirectedGraph<N, L>();
         g.nodeToPreds.putAll(nodeToPreds);
@@ -197,9 +203,9 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
         }
         List<DGEdge<N>> edges = labelToEdges.get(label);
 
-//		if(!labels.contains(label))
+        //if(!labels.contains(label))
         labels.add(label);
-//		if(!edges.contains(edge))
+        //if(!edges.contains(edge))
         edges.add(edge);
     }
 
@@ -396,5 +402,4 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
             }
         }
     }
-
 }
