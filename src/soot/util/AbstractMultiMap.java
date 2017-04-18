@@ -1,14 +1,17 @@
 package soot.util;
 
+import java.io.Serializable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
 import heros.solver.Pair;
 
-public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V> {
+public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializable {
 	
-    private class EntryIterator implements Iterator<Pair<K,V>> {
+	private static final long serialVersionUID = 4558567794548019671L;
+
+	private class EntryIterator implements Iterator<Pair<K,V>> {
 
     	Iterator<K> keyIterator = keySet().iterator();
     	Iterator<V> valueIterator = null;

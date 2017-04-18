@@ -30,6 +30,8 @@ import java.util.Set;
 
 public class IdentityHashMultiMap<K,V> extends HashMultiMap<K, V> {
 	
+	private static final long serialVersionUID = 4960774381646981495L;
+
 	@Override
     protected Map<K, Set<V>> createMap(int initialSize) {
     	return new IdentityHashMap<K, Set<V>>(initialSize);

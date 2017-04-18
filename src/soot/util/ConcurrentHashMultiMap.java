@@ -32,7 +32,10 @@ import java.util.concurrent.ConcurrentMap;
  * 
  */
 public class ConcurrentHashMultiMap<K,V> extends AbstractMultiMap<K, V> {
-    Map<K,ConcurrentMap<V, V>> m = new ConcurrentHashMap<K,ConcurrentMap<V, V>>(0);
+
+	private static final long serialVersionUID = -3182515910302586044L;
+	
+	Map<K,ConcurrentMap<V, V>> m = new ConcurrentHashMap<K,ConcurrentMap<V, V>>(0);
 
     public ConcurrentHashMultiMap() {}
     
