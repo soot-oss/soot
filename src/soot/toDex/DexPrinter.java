@@ -77,6 +77,7 @@ import soot.G;
 import soot.IntType;
 import soot.Local;
 import soot.PackManager;
+import soot.RefType;
 import soot.Scene;
 import soot.ShortType;
 import soot.SootClass;
@@ -453,7 +454,13 @@ public class DexPrinter {
             return new ImmutableFloatEncodedValue(f.getFloatValue());
         } else if (t instanceof StringConstantValueTag) {
             StringConstantValueTag s = (StringConstantValueTag) t;
-            return new ImmutableStringEncodedValue(s.getStringValue());
+            if (sf.getType().equals(RefType.v("java.lang.String")))
+            	return new ImmutableStringEncodedValue(s.getStringValue());
+            else
+            	//Not supported in Dalvik
+            	//See https://android.googlesource.com/platform/dalvik.git/+/android-4.3_r3/vm/oo/Class.cpp
+            	//Results in "Bogus static initialization"
+            	return null;
         } else
         	throw new RuntimeException("Unexpected constant type");
     }
