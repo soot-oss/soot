@@ -36,7 +36,8 @@ public class StringNumberer extends ArrayNumberer<NumberedString> {
     public synchronized NumberedString findOrAdd( String s ) {
             NumberedString ret = stringToNumbered.get(s);
             if( ret == null ) {
-                ret = stringToNumbered.put(s, new NumberedString(s));
+                ret = new NumberedString(s);
+                stringToNumbered.put(s, ret);
                 add(ret);
             }
             return ret;
