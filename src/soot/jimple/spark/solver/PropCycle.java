@@ -103,8 +103,12 @@ public final class PropCycle extends Propagator {
 			return false;
 		}
 
-		if (currentIteration == varNodeToIteration.get(v))
+		final Integer vnIteration = varNodeToIteration.get(v);
+		if (currentIteration != null && vnIteration != null && 
+				currentIteration.intValue() == vnIteration.intValue()){
 			return false;
+		}
+		
 		varNodeToIteration.put(v, currentIteration);
 
 		path.add(v);
