@@ -22,6 +22,12 @@
           <include>**/*.dat</include>
         </includes>
       </resource>
+      <resource>
+        <directory>generated/sablecc</directory>
+        <includes>
+          <include>**/*.dat</include>
+        </includes>
+     </resource>
     </resources>
 
     <plugins>

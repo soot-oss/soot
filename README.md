@@ -41,7 +41,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
   <repository>
     <id>soot-snapshot</id>
     <name>soot snapshots</name>
-    <url>http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/</url>
+    <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/</url>
   </repository>
 </repositories>	
 
@@ -51,7 +51,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
 **Note that the nightly build server has moved**
 
-Nightly builds of soot can be obtained from [nightly build](http://soot-build.cs.uni-paderborn.de/nightly/soot/). The "soot-trunk.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to use manually pick dependencies as you need them.
+Nightly builds of soot can be obtained from [nightly build](https://soot-build.cs.uni-paderborn.de/nightly/soot/). The "soot-trunk.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to use manually pick dependencies as you need them.
 
 # About Soot's source code
 

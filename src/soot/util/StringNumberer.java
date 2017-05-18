@@ -34,12 +34,12 @@ public class StringNumberer extends ArrayNumberer<NumberedString> {
     		new HashMap<String, NumberedString>(1024);
     
     public synchronized NumberedString findOrAdd( String s ) {
-    	NumberedString numStr = new NumberedString(s);
-        NumberedString ret = stringToNumbered.putIfAbsent(s, numStr);
-        if( ret == null ) {
-            add(numStr);
-            return numStr;
-        }
-        return ret;
+            NumberedString ret = stringToNumbered.get(s);
+            if( ret == null ) {
+                ret = new NumberedString(s);
+                stringToNumbered.put(s, ret);
+                add(ret);
+            }
+            return ret;
     }
 }
