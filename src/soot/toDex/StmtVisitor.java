@@ -427,12 +427,14 @@ class StmtVisitor implements StmtSwitch {
 		Value rhs = stmt.getRightOp();
 		if (rhs instanceof Local) {
 			// move rhs local to lhs local, if different
+			Local rhsLocal = (Local) rhs;
+			
 			String lhsName = ((Local)lhs).getName();
-			String rhsName = ((Local)rhs).getName();
+			String rhsName = rhsLocal.getName();
 			if (lhsName.equals(rhsName)) {
 				return;
 			}
-			Register sourceReg = regAlloc.asLocal((Local) rhs);
+			Register sourceReg = regAlloc.asLocal(rhsLocal);
             addInsn(buildMoveInsn(lhsReg, sourceReg), stmt);
 		} else if (rhs instanceof Constant) {
 			// move rhs constant into the lhs local

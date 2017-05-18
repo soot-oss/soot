@@ -69,6 +69,7 @@ public class UnusedLocalEliminator extends BodyTransformer {
 				Value v = vb.getValue();
 				if (v instanceof Local) {
 					Local l = (Local) v;
+					assert arrayContains(locals, l);
 					usedLocals[l.getNumber()] = true;
 				}
 			}
@@ -76,6 +77,7 @@ public class UnusedLocalEliminator extends BodyTransformer {
 				Value v = vb.getValue();
 				if (v instanceof Local) {
 					Local l = (Local) v;
+					assert arrayContains(locals, l);
 					usedLocals[l.getNumber()] = true;
 				}
 			}
@@ -93,4 +95,13 @@ public class UnusedLocalEliminator extends BodyTransformer {
 		body.getLocals().clear();
 		body.getLocals().addAll(keep);
 	}
+	
+	private <T> boolean arrayContains(T[] array, T element) {
+		for (T t : array) {
+			if (t == element)
+				return true;
+		}
+		return false;
+	}
+	
 }
