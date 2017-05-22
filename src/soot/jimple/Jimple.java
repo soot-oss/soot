@@ -396,6 +396,19 @@ public class Jimple {
 		return new JDynamicInvokeExpr(bootstrapMethodRef, bootstrapArgs,
 				methodRef, args);
 	}
+	
+	/**
+	 * Constructs a NewDynamicInvokeExpr(SootMethodRef bootstrapMethodRef, List
+	 * bootstrapArgs, SootMethodRef methodRef, List args) grammar chunk.
+	 */
+	public DynamicInvokeExpr newDynamicInvokeExpr(
+			SootMethodRef bootstrapMethodRef,
+			List<? extends Value> bootstrapArgs, SootMethodRef methodRef,
+			int tag,
+			List<? extends Value> args) {
+		return new JDynamicInvokeExpr(bootstrapMethodRef, bootstrapArgs,
+				methodRef, tag, args);
+	}
 
 	/**
 	 * Constructs a NewVirtualInvokeExpr(Local base, SootMethodRef method, List

@@ -339,10 +339,7 @@ public class infoGatheringAnalysis extends DepthFirstAdapter {
 	 */
 	public void inASTForLoopNode(ASTForLoopNode node) {
 		inFor = true;
-
-		Iterator<Object> updateIt = node.getUpdate().iterator();
-		while (updateIt.hasNext()) {
-			AugmentedStmt as = (AugmentedStmt) updateIt.next();
+		for (AugmentedStmt as : node.getUpdate()) {
 			Stmt s = as.get_Stmt();
 			if (s instanceof GAssignStmt) {
 				Value leftOp = ((GAssignStmt) s).getLeftOp();

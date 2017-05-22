@@ -25,6 +25,7 @@ public final class TColon extends Token
       return new TColon(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTColon(this);

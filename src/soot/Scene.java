@@ -44,11 +44,16 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
 import org.xmlpull.v1.XmlPullParser;
 
+import soot.dexpler.DalvikThrowAnalysis;
+import soot.jimple.spark.internal.ClientAccessibilityOracle;
+import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
 import soot.jimple.spark.pag.SparkField;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.ContextSensitiveCallGraph;
@@ -86,20 +91,21 @@ public class Scene  //extends AbstractHost
         if (scp != null)
             setSootClassPath(scp);
 
-        kindNumberer.add( Kind.INVALID );
-        kindNumberer.add( Kind.STATIC );
-        kindNumberer.add( Kind.VIRTUAL );
-        kindNumberer.add( Kind.INTERFACE );
-        kindNumberer.add( Kind.SPECIAL );
-        kindNumberer.add( Kind.CLINIT );
-        kindNumberer.add( Kind.THREAD );
-        kindNumberer.add( Kind.EXECUTOR );
-        kindNumberer.add( Kind.ASYNCTASK );
-        kindNumberer.add( Kind.FINALIZE );
-        kindNumberer.add( Kind.INVOKE_FINALIZE );
-        kindNumberer.add( Kind.PRIVILEGED );
-        kindNumberer.add( Kind.NEWINSTANCE );
-
+        kindNumberer = new ArrayNumberer<Kind>(new Kind[] {
+        	Kind.INVALID,
+        	Kind.STATIC,
+        	Kind.VIRTUAL,
+        	Kind.INTERFACE,
+        	Kind.SPECIAL,
+        	Kind.CLINIT,
+        	Kind.THREAD,
+        	Kind.EXECUTOR,
+        	Kind.ASYNCTASK,
+        	Kind.FINALIZE,
+        	Kind.INVOKE_FINALIZE,
+        	Kind.PRIVILEGED,
+        	Kind.NEWINSTANCE});
+        
         addSootBasicClasses();
         
         determineExcludedPackages();
@@ -111,16 +117,17 @@ public class Scene  //extends AbstractHost
 
         // do not kill contents of the APK if we want a working new APK afterwards
         if( !Options.v().include_all()
-        		&& Options.v().output_format() != Options.output_format_dex) {
-            excludedPackages.add("java.");
-            excludedPackages.add("sun.");
-            excludedPackages.add("javax.");
-            excludedPackages.add("com.sun.");
-            excludedPackages.add("com.ibm.");
-            excludedPackages.add("org.xml.");
-            excludedPackages.add("org.w3c.");
-            excludedPackages.add("apple.awt.");
-            excludedPackages.add("com.apple.");
+        		&& Options.v().output_format() != Options.output_format_dex
+        		&& Options.v().output_format() != Options.output_format_force_dex) {
+            excludedPackages.add("java.*");
+            excludedPackages.add("sun.*");
+            excludedPackages.add("javax.*");
+            excludedPackages.add("com.sun.*");
+            excludedPackages.add("com.ibm.*");
+            excludedPackages.add("org.xml.*");
+            excludedPackages.add("org.w3c.*");
+            excludedPackages.add("apple.awt.*");
+            excludedPackages.add("com.apple.*");
         }
 	}
     public static Scene  v() { return G.v().soot_Scene (); }
@@ -132,7 +139,7 @@ public class Scene  //extends AbstractHost
     
     private final Map<String,RefType> nameToClass = new HashMap<String,RefType>();
 
-    ArrayNumberer<Kind> kindNumberer = new ArrayNumberer<Kind>();
+    final ArrayNumberer<Kind> kindNumberer;
     ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
     ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
     Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
@@ -149,6 +156,7 @@ public class Scene  //extends AbstractHost
     private PointsToAnalysis activePointsToAnalysis;
     private SideEffectAnalysis activeSideEffectAnalysis;
     private List<SootMethod> entryPoints;
+    private ClientAccessibilityOracle accessibilityOracle;
 
     boolean allowsPhantomRefs = false;
 
@@ -157,6 +165,8 @@ public class Scene  //extends AbstractHost
 
     // Two default values for constructing ExceptionalUnitGraphs:
     private ThrowAnalysis defaultThrowAnalysis = null;
+    
+    private int androidAPIVersion = -1;
     
     public void setMainClass(SootClass m)
     {
@@ -178,15 +188,60 @@ public class Scene  //extends AbstractHost
     }
     
     /**
-        If this name is in the set of reserved names, then return a quoted version of it.  Else pass it through.
+     * If this name is in the set of reserved names, then return a quoted
+     * version of it.  Else pass it through. If the name consists of multiple
+     * parts separated by dots, the individual names are checked as well.
      */
-    
     public String quotedNameOf(String s)
     {
-        if(reservedNames.contains(s))
-            return "\'" + s + "\'";
-        else
-            return s;
+    	// Pre-check: Is there a chance that we need to escape something?
+    	// If not, skip the transformation altogether.
+    	boolean found = s.contains("-");
+    	for (String token : reservedNames)
+    		if (s.contains(token)) {
+    			found = true;
+    			break;
+    		}
+    	if (!found)
+    		return s;
+    	
+    	StringBuilder res = new StringBuilder(s.length());
+    	for (String part : s.split("\\.")) {
+    		if (res.length() > 0)
+    			res.append('.');
+	        if(part.startsWith("-") || reservedNames.contains(part)) {
+	            res.append('\'');
+	            res.append(part);
+	            res.append('\'');
+	        }
+	        else
+	            res.append(part);
+    	}
+    	return res.toString();
+    }
+    
+    /**
+     * This method is the inverse of quotedNameOf(). It takes a possible escaped
+     * class and reconstructs the original version of it.
+     * @param s The possibly escaped name
+     * @return The original, non-escaped name
+     */
+    public String unescapeName(String s) {
+    	// If the name is not escaped, there is nothing to do here
+    	if (!s.contains("'"))
+    		return s;
+    	
+    	StringBuilder res = new StringBuilder(s.length());
+    	for (String part : s.split("\\.")) {
+    		if (res.length() > 0)
+    			res.append('.');
+	        if(part.startsWith("'") && part.endsWith("'")) {
+	            res.append(part.substring(1, part.length() - 1));
+	        }
+	        else
+	            res.append(part);
+    	}
+    	return res.toString();
     }
     
     public boolean hasMainClass() {
@@ -203,14 +258,19 @@ public class Scene  //extends AbstractHost
             
         return mainClass;
     }
+    
     public SootMethod getMainMethod() {
         if(!hasMainClass()) {
             throw new RuntimeException("There is no main class set!");
-        } 
-        if (!mainClass.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v())) {
+        }
+        
+        SootMethod mainMethod = mainClass.getMethodUnsafe("main",
+        		Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ),
+        		VoidType.v());
+        if (mainMethod == null) {
             throw new RuntimeException("Main class declares no main method!");
         }
-        return mainClass.getMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v());   
+        return mainMethod;   
     }
     
     
@@ -220,23 +280,26 @@ public class Scene  //extends AbstractHost
         SourceLocator.v().invalidateClassPath();
     }
     
+    public void extendSootClassPath(String newPathElement){
+    	sootClassPath += File.pathSeparator + newPathElement;
+    	SourceLocator.v().extendClassPath(newPathElement);
+    }
+    
     public String getSootClassPath()
     {
         if( sootClassPath == null ) {
             String optionscp = Options.v().soot_classpath();
-            if( optionscp.length() > 0 )
+            if( optionscp != null && optionscp.length() > 0 )
                 sootClassPath = optionscp;
-
-            String defaultSootClassPath = defaultClassPath();
-	
+            
 	        //if no classpath is given on the command line, take the default
-	        if( sootClassPath == null ) {
-	        	sootClassPath = defaultSootClassPath;
+	        if( sootClassPath == null || sootClassPath.isEmpty() ) {
+	        	sootClassPath = defaultClassPath();
 	        } else {
 	        	//if one is given...
 	            if(Options.v().prepend_classpath()) {
 	            	//if the prepend flag is set, append the default classpath
-	            	sootClassPath += File.pathSeparator + defaultSootClassPath;
+	            	sootClassPath += File.pathSeparator + defaultClassPath();
 	            } 
 	            //else, leave it as it is
 	        }   
@@ -298,24 +361,8 @@ public class Scene  //extends AbstractHost
     }
 
 	public String getAndroidJarPath(String jars, String apk) {
-		File jarsF = new File(jars);
-		File apkF = new File(apk);
-		
-		if (!jarsF.exists())
-			throw new RuntimeException("file '" + jars + "' does not exist!");
+		int APIVersion = getAndroidAPIVersion(jars,apk);
 
-		if (!apkF.exists())
-			throw new RuntimeException("file '" + apk + "' does not exist!");
-
-
-		// get path to appropriate android.jar
-		int APIVersion = defaultSdkVersion;
-		if (apk.toLowerCase().endsWith(".apk"))
-			APIVersion = getTargetSDKVersion(apk, jars);
-		final int maxAPI = getMaxAPIAvailable(jars);
-		if (APIVersion > maxAPI)
-			APIVersion = maxAPI;
-		
 		String jarPath = jars + File.separator + "android-" + APIVersion + File.separator + "android.jar";
 
 		// check that jar exists
@@ -324,6 +371,46 @@ public class Scene  //extends AbstractHost
 		    throw new RuntimeException("error: target android.jar ("+ jarPath +") does not exist.");
 
 		return jarPath;
+	}
+	
+	public int getAndroidAPIVersion() {
+		return androidAPIVersion > 0 ? androidAPIVersion : (Options.v().android_api_version() > 0 
+				? Options.v().android_api_version() : defaultSdkVersion);
+	}
+
+	private int getAndroidAPIVersion(String jars, String apk) {
+		// Do we already have an API version?
+		if (androidAPIVersion > 0)
+			return androidAPIVersion;
+		
+		// get path to appropriate android.jar
+		File jarsF = new File(jars);
+		File apkF = apk == null ? null : new File(apk);
+
+		if (!jarsF.exists())
+			throw new RuntimeException("file '" + jars + "' does not exist!");
+
+		if (apkF != null && !apkF.exists())
+			throw new RuntimeException("file '" + apk + "' does not exist!");
+
+		// Use the default if we don't have any other information
+		androidAPIVersion = defaultSdkVersion;
+
+		// Do we have an explicit API version?
+		if (Options.v().android_api_version() > 0)
+			androidAPIVersion = Options.v().android_api_version();
+		// Look into the manifest file
+		else if (apk != null)
+			if (apk.toLowerCase().endsWith(".apk"))
+				androidAPIVersion = getTargetSDKVersion(apk, jars);
+		
+		// If we don't have that API version installed, we take the most recent
+		// one we have
+		final int maxAPI = getMaxAPIAvailable(jars);
+		if (androidAPIVersion > maxAPI)
+			androidAPIVersion = maxAPI;
+		
+		return androidAPIVersion;
 	}
 	
 	private int getTargetSDKVersion(String apkFile, String platformJARs) {
@@ -355,6 +442,7 @@ public class Scene  //extends AbstractHost
 		int maxAPI = getMaxAPIAvailable(platformJARs);
 		int sdkTargetVersion = -1;
 		int minSdkVersion = -1;
+		int platformBuildVersionCode = -1;
 		try {
 			AXmlResourceParser parser = new AXmlResourceParser();
 			parser.open(manifestIS);
@@ -370,7 +458,16 @@ public class Scene  //extends AbstractHost
 					case XmlPullParser.START_TAG: {
 						depth++;
 						String tagName = parser.getName();
-						if (depth == 2 && tagName.equals("uses-sdk")) {
+						if (depth == 1 && tagName.equals("manifest")) {
+							for (int i = 0; i != parser.getAttributeCount(); ++i) {
+								String attributeName = parser.getAttributeName(i);
+								String attributeValue = AXMLPrinter.getAttributeValue(parser, i);
+								if (attributeName.equals("platformBuildVersionCode")) {
+									platformBuildVersionCode = Integer.parseInt(attributeValue);
+								}
+							}
+						}
+						else if (depth == 2 && tagName.equals("uses-sdk")) {
 							for (int i = 0; i != parser.getAttributeCount(); ++i) {
 								String attributeName = parser.getAttributeName(i);
 								String attributeValue = AXMLPrinter.getAttributeValue(parser, i);
@@ -404,6 +501,15 @@ public class Scene  //extends AbstractHost
 			    } else {
 			        APIVersion = sdkTargetVersion;
 			    }
+			} else if (platformBuildVersionCode != -1) {
+			    if (platformBuildVersionCode > maxAPI
+			            && minSdkVersion != -1
+			            && minSdkVersion <= maxAPI) {
+			        G.v().out.println("warning: Android API version '"+ platformBuildVersionCode +"' not available, using minApkVersion '"+ minSdkVersion +"' instead");
+			        APIVersion = minSdkVersion;
+			    } else {
+			        APIVersion = platformBuildVersionCode;
+			    }
 			} else if (minSdkVersion != -1) {
 				APIVersion = minSdkVersion;
 			} else {
@@ -426,7 +532,98 @@ public class Scene  //extends AbstractHost
 	}
 
 	public String defaultClassPath() {
-		StringBuffer sb = new StringBuffer();
+		// If we have an apk file on the process dir and do not have a src-prec option
+		// that loads APK files, we give a warning
+		if (Options.v().src_prec() != Options.src_prec_apk) {
+			for (String entry : Options.v().process_dir()) {
+				if (entry.toLowerCase().endsWith(".apk")) {
+					System.err.println("APK file on process dir, but chosen src-prec does not support loading APKs");
+					break;
+				}
+			}
+		}
+		
+		if (Options.v().src_prec() == Options.src_prec_apk)
+			return defaultAndroidClassPath();
+		else
+			return defaultJavaClassPath();
+	}
+
+
+    private String defaultAndroidClassPath() {
+		// check that android.jar is not in classpath
+		String androidJars = Options.v().android_jars();
+		String forceAndroidJar = Options.v().force_android_jar();
+		if ((androidJars == null || androidJars.equals(""))
+				&& (forceAndroidJar == null || forceAndroidJar.equals(""))) {
+			throw new RuntimeException("You are analyzing an Android application but did "
+					+ "not define android.jar. Options -android-jars or -force-android-jar should be used.");
+		}
+		
+		// Get the platform JAR file. It either directly specified, or
+		// we detect it from the target version of the APK we are
+		// analyzing
+		String jarPath = "";
+		if (forceAndroidJar != null && !forceAndroidJar.isEmpty()) {
+			jarPath = forceAndroidJar;
+			
+			if (Options.v().android_api_version() > 0)
+				androidAPIVersion = Options.v().android_api_version();
+			else if (forceAndroidJar.contains("android-")) {
+				Pattern pt = Pattern.compile("\\" + File.separatorChar + "android-(\\d+)"
+						+ "\\" + File.separatorChar);
+				Matcher m = pt.matcher(forceAndroidJar);
+				if (m.find())
+					androidAPIVersion = Integer.valueOf(m.group(1));
+			}
+			else
+				androidAPIVersion = defaultSdkVersion;
+		}
+		else if (androidJars != null && !androidJars.isEmpty()) {
+			List<String> classPathEntries = new LinkedList<String>(Arrays.asList(
+					Options.v().soot_classpath().split(File.pathSeparator)));
+			classPathEntries.addAll(Options.v().process_dir());
+			
+			String targetApk = "";
+			Set<String> targetDexs = new HashSet<String>();
+			for (String entry : classPathEntries) {
+				if(entry.toLowerCase().endsWith(".apk")) {	// on Windows, file names are case-insensitive
+					// We cannot have multiple APKs, because this would give us multiple
+					// manifests which we do not support right now
+					if (targetApk != null && !targetApk.isEmpty())
+						throw new RuntimeException("only one Android application can be analyzed when using option -android-jars.");
+					targetApk = entry;
+				}
+				if(entry.toLowerCase().endsWith(".dex"))	// on Windows, file names are case-insensitive
+					targetDexs.add(entry);
+			}
+			
+			// We need at least one file to process
+			if (targetApk == null || targetApk.isEmpty()) {
+				if (targetDexs.isEmpty())
+					throw new RuntimeException("no apk file given");
+				jarPath = getAndroidJarPath(androidJars, null);
+			}
+			else
+				jarPath = getAndroidJarPath(androidJars, targetApk);
+		}
+		
+		// We must have a platform JAR file when analyzing Android apps
+		if (jarPath.equals(""))
+			throw new RuntimeException("android.jar not found.");
+		
+		// Check the platform JAR file
+		File f = new File (jarPath);
+		if (!f.exists())
+			throw new RuntimeException("file '"+ jarPath +"' does not exist!");
+		else
+			G.v().out.println("Using '"+ jarPath +"' as android.jar");
+		
+		return jarPath;
+	}
+    
+	private String defaultJavaClassPath() {
+		StringBuilder sb = new StringBuilder();
         if(System.getProperty("os.name").equals("Mac OS X")) {
 	        //in older Mac OS X versions, rt.jar was split into classes.jar and ui.jar
 	        sb.append(System.getProperty("java.home"));
@@ -447,69 +644,34 @@ public class Scene  //extends AbstractHost
 	        sb.append("ui.jar");
 	        sb.append(File.pathSeparator);
         }
-        
-        sb.append(System.getProperty("java.home"));
-        sb.append(File.separator);
-        sb.append("lib");
-        sb.append(File.separator);
-        sb.append("rt.jar");
-        
+
+        File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
+        if (rtJar.exists() && rtJar.isFile()) {
+            // G.v().out.println("Using JRE runtime: " + rtJar.getAbsolutePath());
+            sb.append(rtJar.getAbsolutePath());
+        } else {
+            // in case we're not in JRE environment, try JDK
+            rtJar = new File(System.getProperty("java.home") + File.separator + "jre" + File.separator + "lib" + File.separator + "rt.jar");
+            if (rtJar.exists() && rtJar.isFile()) {
+                // G.v().out.println("Using JDK runtime: " + rtJar.getAbsolutePath());
+                sb.append(rtJar.getAbsolutePath());
+            } else {
+                // not in JDK either
+                throw new RuntimeException("Error: cannot find rt.jar.");
+            }
+        }
+
 		if(Options.v().whole_program() || Options.v().output_format()==Options.output_format_dava) {
 			//add jce.jar, which is necessary for whole program mode
 			//(java.security.Signature from rt.jar import javax.crypto.Cipher from jce.jar            	
 			sb.append(File.pathSeparator+
 				System.getProperty("java.home")+File.separator+"lib"+File.separator+"jce.jar");
 		}
-
-		String defaultClassPath = sb.toString();
 		
-		if (Options.v().src_prec() == Options.src_prec_apk) {
-			// check that android.jar is not in classpath
-			if (!defaultClassPath.contains ("android.jar")) {
-				String androidJars = Options.v().android_jars();
-				String forceAndroidJar = Options.v().force_android_jar();
-				if ((androidJars == null || androidJars.equals(""))
-						&& (forceAndroidJar == null || forceAndroidJar.equals(""))) {
-					throw new RuntimeException("You are analyzing an Android application but did not define android.jar. Options -android-jars or -force-android-jar should be used.");
-				}
-
-				String jarPath = "";
-				if (forceAndroidJar != null && !forceAndroidJar.equals("")) {
-					jarPath = forceAndroidJar;
-				} else if (androidJars != null && !androidJars.equals("")) {
-					List<String> classPathEntries = new LinkedList<String>(Arrays.asList(Options.v().soot_classpath().split(File.pathSeparator)));
-					classPathEntries.addAll(Options.v().process_dir());
-					Set<String> targetApks = new HashSet<String>();
-					for (String entry : classPathEntries) {
-						if(entry.toLowerCase().endsWith(".apk")
-								|| entry.toLowerCase().endsWith(".dex"))	// on Windows, file names are case-insensitive
-							targetApks.add(entry);
-					}					
-					if (targetApks.size() == 0)
-						throw new RuntimeException("no apk file given");
-					else if (targetApks.size() > 1)
-						throw new RuntimeException("only one Android application can be analyzed when using option -android-jars.");
-					jarPath = getAndroidJarPath (androidJars, (String)targetApks.toArray()[0]);
-				}
-				if (jarPath.equals(""))
-					throw new RuntimeException("android.jar not found.");
-				File f = new File (jarPath);
-				if (!f.exists())
-					throw new RuntimeException("file '"+ jarPath +"' does not exist!");
-				else
-					G.v().out.println("Using '"+ jarPath +"' as android.jar");
-				defaultClassPath = jarPath + File.pathSeparator + defaultClassPath;
-
-			} else {
-				G.v().out.println("warning: defaultClassPath contains android.jar! Options -android-jars and -force-android-jar are ignored!");
-			}
-		}
-
-		return defaultClassPath;
+		return sb.toString();
 	}
 
-
-    private int stateCount;
+	private int stateCount;
     public int getState() { return this.stateCount; }
     private void modifyHierarchy() {
         stateCount++;
@@ -519,7 +681,25 @@ public class Scene  //extends AbstractHost
         activePointsToAnalysis = null;
     }
 
+    /**
+     * Adds the given class to the Scene. This method marks the given class
+     * as a library class and invalidates the class hierarchy.
+     * @param c The class to add
+     */
     public void addClass(SootClass c) 
+    {
+    	addClassSilent(c);
+        c.setLibraryClass();
+       	modifyHierarchy();
+    }
+
+    /**
+     * Adds the given class to the Scene. This method does not handle any
+     * dependencies such as invalidating the hierarchy. The class is neither
+     * marked as application class, nor library class.
+     * @param c The class to add
+     */
+    private void addClassSilent(SootClass c) 
     {
         if(c.isInScene())
             throw new RuntimeException("already managed: "+c.getName());
@@ -528,12 +708,14 @@ public class Scene  //extends AbstractHost
             throw new RuntimeException("duplicate class: "+c.getName());
 
         classes.add(c);
-        c.setLibraryClass();
-
         nameToClass.put(c.getName(), c.getType());
         c.getType().setSootClass(c);
         c.setInScene(true);
-        modifyHierarchy();
+        
+        // Phantom classes are not really part of the hierarchy anyway, so
+        // we can keep the old one
+        if (!c.isPhantom)
+        	modifyHierarchy();
     }
 
     public void removeClass(SootClass c)
@@ -586,7 +768,7 @@ public class Scene  //extends AbstractHost
         return sig.substring(index+2,sig.length()-1);
     }
 
-    private SootField grabField(String fieldSignature)
+    public SootField grabField(String fieldSignature)
     {
         String cname = signatureToClass( fieldSignature );
         String fname = signatureToSubsignature( fieldSignature );
@@ -600,7 +782,7 @@ public class Scene  //extends AbstractHost
         return grabField(fieldSignature) != null;
     }
     
-    private SootMethod grabMethod(String methodSignature)
+    public SootMethod grabMethod(String methodSignature)
     {
         String cname = signatureToClass( methodSignature );
         String mname = signatureToSubsignature( methodSignature );
@@ -645,11 +827,16 @@ public class Scene  //extends AbstractHost
         */
         
         setPhantomRefs(true);
-        //SootResolver resolver = new SootResolver();
-        if( !getPhantomRefs() 
-        && SourceLocator.v().getClassSource(className) == null ) {
-            setPhantomRefs(false);
-            return null;
+        ClassSource source = SourceLocator.v().getClassSource(className);
+        try {
+	        if( !getPhantomRefs() && source == null) {
+	            setPhantomRefs(false);
+	            return null;
+	        }
+        }
+        finally {
+        	if (source != null)
+        		source.close();
         }
         SootResolver resolver = SootResolver.v();
         SootClass toReturn = resolver.resolveClass(className, desiredLevel);
@@ -694,6 +881,46 @@ public class Scene  //extends AbstractHost
     }
     
     /**
+     * Returns the RefType with the given class name or primitive type.  
+     * @throws RuntimeException if the Type for this name cannot be found.
+     * Use {@link #getRefTypeUnsafe(String)} to check if type is an registered RefType.
+     */
+    public Type getType(String arg) {
+    	String type = arg.replaceAll("([^\\[\\]]*)(.*)", "$1");
+    	int arrayCount = arg.contains("[") ? arg.replaceAll("([^\\[\\]]*)(.*)", "$2").length() / 2 : 0;
+    	
+    	Type result = getRefTypeUnsafe(type);
+    	
+    	if (result == null) {
+    		if (type.equals("long"))
+              result = LongType.v();
+    		else if (type.equals("short"))
+              result = ShortType.v();
+    		else if (type.equals("double"))
+              result = DoubleType.v();
+    		else if (type.equals("int"))
+              result = IntType.v();
+    		else if (type.equals("float"))
+              result = FloatType.v();
+    		else if (type.equals("byte"))
+              result = ByteType.v();
+    		else if (type.equals("char"))
+              result = CharType.v();
+    		else if (type.equals("void"))
+              result = VoidType.v();
+    		else if (type.equals("boolean"))
+              result = BooleanType.v();
+    		else
+              throw new RuntimeException("unknown type: '" + type + "'");
+    	}
+    	
+    	if (arrayCount != 0) {
+    		result = ArrayType.v(result, arrayCount);
+    	}
+    	return result;
+    }
+    
+    /**
      * Returns the RefType with the given className.  
      * @throws IllegalStateException if the RefType for this class cannot be found.
      * Use {@link #containsType(String)} to check if type is registered
@@ -715,7 +942,7 @@ public class Scene  //extends AbstractHost
      */
     public RefType getRefTypeUnsafe(String className) 
     {
-        RefType refType = nameToClass.get(className);
+        RefType refType = nameToClass.get(unescapeName(className));
 		return refType;
     }
     
@@ -751,8 +978,9 @@ public class Scene  //extends AbstractHost
 		if (allowsPhantomRefs() ||
 				   className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
 			SootClass c = new SootClass(className);
-			addClass(c);
-            c.setPhantom(true);
+            c.isPhantom = true;
+			addClassSilent(c);
+			c.setPhantomClass();
 			return c;
 		}
 		
@@ -829,10 +1057,10 @@ public class Scene  //extends AbstractHost
     public SideEffectAnalysis getSideEffectAnalysis() 
     {
         if(!hasSideEffectAnalysis()) {
-	    setSideEffectAnalysis( new SideEffectAnalysis(
-			getPointsToAnalysis(),
-			getCallGraph() ) );
-	}
+        	setSideEffectAnalysis( new SideEffectAnalysis(
+        			getPointsToAnalysis(),
+        			getCallGraph() ) );
+        }
             
         return activeSideEffectAnalysis;
     }
@@ -860,12 +1088,12 @@ public class Scene  //extends AbstractHost
     /**
         Retrieves the active pointer analysis
      */
-
+    
     public PointsToAnalysis getPointsToAnalysis() 
     {
         if(!hasPointsToAnalysis()) {
-	    return DumbPointerAnalysis.v();
-	}
+        	return DumbPointerAnalysis.v();
+        }
             
         return activePointsToAnalysis;
     }
@@ -889,6 +1117,29 @@ public class Scene  //extends AbstractHost
         activePointsToAnalysis = null;
     }
 
+    /****************************************************************************/
+    /**
+     * Retrieves the active client accessibility oracle
+     */
+    public ClientAccessibilityOracle getClientAccessibilityOracle() {
+    	if (!hasClientAccessibilityOracle()) {
+    		return PublicAndProtectedAccessibility.v();
+    	}
+    	
+    	return accessibilityOracle;
+    }
+    
+    public boolean hasClientAccessibilityOracle() {
+    	return accessibilityOracle != null;
+    }
+    
+    public void setClientAccessibilityOracle(ClientAccessibilityOracle oracle) {
+    	accessibilityOracle = oracle;
+    }
+    
+    public void releaseClientAccessibilityOracle() {
+    	accessibilityOracle = null;
+    }
     /****************************************************************************/
     /** Makes a new fast hierarchy is none is active, and returns the active
      * fast hierarchy. */
@@ -1065,30 +1316,31 @@ public class Scene  //extends AbstractHost
         contextNumberer = n;
     }
 
-    /**
-     * Returns the {@link ThrowAnalysis} to be used by default when
-     * constructing CFGs which include exceptional control flow.
-     *
-     * @return the default {@link ThrowAnalysis}
-     */
-    public ThrowAnalysis getDefaultThrowAnalysis() 
-    {
-	if( defaultThrowAnalysis == null ) {
-	    int optionsThrowAnalysis = Options.v().throw_analysis();
-	    switch (optionsThrowAnalysis) {
-	    case Options.throw_analysis_pedantic:
-		defaultThrowAnalysis = PedanticThrowAnalysis.v();
-		break;
-	    case Options.throw_analysis_unit:
-		defaultThrowAnalysis = UnitThrowAnalysis.v();
-		break;
-	    default:
-		throw new IllegalStateException("Options.v().throw_analysi() == " +
-						Options.v().throw_analysis());
-	    }
+	/**
+	 * Returns the {@link ThrowAnalysis} to be used by default when constructing
+	 * CFGs which include exceptional control flow.
+	 *
+	 * @return the default {@link ThrowAnalysis}
+	 */
+	public ThrowAnalysis getDefaultThrowAnalysis() {
+		if (defaultThrowAnalysis == null) {
+			int optionsThrowAnalysis = Options.v().throw_analysis();
+			switch (optionsThrowAnalysis) {
+			case Options.throw_analysis_pedantic:
+				defaultThrowAnalysis = PedanticThrowAnalysis.v();
+				break;
+			case Options.throw_analysis_unit:
+				defaultThrowAnalysis = UnitThrowAnalysis.v();
+				break;
+			case Options.throw_analysis_dalvik:
+				defaultThrowAnalysis = DalvikThrowAnalysis.v();
+				break;
+			default:
+				throw new IllegalStateException("Options.v().throw_analysi() == " + Options.v().throw_analysis());
+			}
+		}
+		return defaultThrowAnalysis;
 	}
-	return defaultThrowAnalysis;
-    }
 
     /**
      * Sets the {@link ThrowAnalysis} to be used by default when
@@ -1133,6 +1385,7 @@ public class Scene  //extends AbstractHost
         rn.add("catch");
         rn.add("char");
         rn.add("class");
+        rn.add("enum");
         rn.add("final");
         rn.add("native");
         rn.add("public");
@@ -1167,76 +1420,77 @@ public class Scene  //extends AbstractHost
 
     private final Set<String>[] basicclasses=new Set[4];
 
-    private void addSootBasicClasses() {
-        basicclasses[SootClass.HIERARCHY] = new HashSet<String>();
-        basicclasses[SootClass.SIGNATURES] = new HashSet<String>();
-        basicclasses[SootClass.BODIES] = new HashSet<String>();
+	private void addSootBasicClasses() {
+		basicclasses[SootClass.HIERARCHY] = new HashSet<String>();
+		basicclasses[SootClass.SIGNATURES] = new HashSet<String>();
+		basicclasses[SootClass.BODIES] = new HashSet<String>();
 
-	addBasicClass("java.lang.Object");
-	addBasicClass("java.lang.Class", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Object");
+		addBasicClass("java.lang.Class", SootClass.SIGNATURES);
 
-	addBasicClass("java.lang.Void", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Boolean", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Byte", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Character", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Short", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Integer", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Long", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Float", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Double", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Void", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Boolean", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Byte", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Character", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Short", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Integer", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Long", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Float", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Double", SootClass.SIGNATURES);
 
-	addBasicClass("java.lang.String");
-	addBasicClass("java.lang.StringBuffer", SootClass.SIGNATURES);
+		addBasicClass("java.lang.String");
+		addBasicClass("java.lang.StringBuffer", SootClass.SIGNATURES);
 
-	addBasicClass("java.lang.Error");
-	addBasicClass("java.lang.AssertionError", SootClass.SIGNATURES);
-	addBasicClass("java.lang.Throwable", SootClass.SIGNATURES);
-	addBasicClass("java.lang.NoClassDefFoundError", SootClass.SIGNATURES);
-	addBasicClass("java.lang.ExceptionInInitializerError");
-	addBasicClass("java.lang.RuntimeException");
-	addBasicClass("java.lang.ClassNotFoundException");
-	addBasicClass("java.lang.ArithmeticException");
-	addBasicClass("java.lang.ArrayStoreException");
-	addBasicClass("java.lang.ClassCastException");
-	addBasicClass("java.lang.IllegalMonitorStateException");
-	addBasicClass("java.lang.IndexOutOfBoundsException");
-	addBasicClass("java.lang.ArrayIndexOutOfBoundsException");
-	addBasicClass("java.lang.NegativeArraySizeException");
-	addBasicClass("java.lang.NullPointerException");
-	addBasicClass("java.lang.InstantiationError");
-	addBasicClass("java.lang.InternalError");
-	addBasicClass("java.lang.OutOfMemoryError");
-	addBasicClass("java.lang.StackOverflowError");
-	addBasicClass("java.lang.UnknownError");
-	addBasicClass("java.lang.ThreadDeath");
-	addBasicClass("java.lang.ClassCircularityError");
-	addBasicClass("java.lang.ClassFormatError");
-	addBasicClass("java.lang.IllegalAccessError");
-	addBasicClass("java.lang.IncompatibleClassChangeError");
-	addBasicClass("java.lang.LinkageError");
-	addBasicClass("java.lang.VerifyError");
-	addBasicClass("java.lang.NoSuchFieldError");
-	addBasicClass("java.lang.AbstractMethodError");
-	addBasicClass("java.lang.NoSuchMethodError");
-	addBasicClass("java.lang.UnsatisfiedLinkError");
+		addBasicClass("java.lang.Error");
+		addBasicClass("java.lang.AssertionError", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Throwable", SootClass.SIGNATURES);
+		addBasicClass("java.lang.NoClassDefFoundError", SootClass.SIGNATURES);
+		addBasicClass("java.lang.ExceptionInInitializerError");
+		addBasicClass("java.lang.RuntimeException");
+		addBasicClass("java.lang.ClassNotFoundException");
+		addBasicClass("java.lang.ArithmeticException");
+		addBasicClass("java.lang.ArrayStoreException");
+		addBasicClass("java.lang.ClassCastException");
+		addBasicClass("java.lang.IllegalMonitorStateException");
+		addBasicClass("java.lang.IndexOutOfBoundsException");
+		addBasicClass("java.lang.ArrayIndexOutOfBoundsException");
+		addBasicClass("java.lang.NegativeArraySizeException");
+		addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
+		addBasicClass("java.lang.InstantiationError");
+		addBasicClass("java.lang.InternalError");
+		addBasicClass("java.lang.OutOfMemoryError");
+		addBasicClass("java.lang.StackOverflowError");
+		addBasicClass("java.lang.UnknownError");
+		addBasicClass("java.lang.ThreadDeath");
+		addBasicClass("java.lang.ClassCircularityError");
+		addBasicClass("java.lang.ClassFormatError");
+		addBasicClass("java.lang.IllegalAccessError");
+		addBasicClass("java.lang.IncompatibleClassChangeError");
+		addBasicClass("java.lang.LinkageError");
+		addBasicClass("java.lang.VerifyError");
+		addBasicClass("java.lang.NoSuchFieldError");
+		addBasicClass("java.lang.AbstractMethodError");
+		addBasicClass("java.lang.NoSuchMethodError");
+		addBasicClass("java.lang.UnsatisfiedLinkError");
 
-	addBasicClass("java.lang.Thread");
-	addBasicClass("java.lang.Runnable");
-	addBasicClass("java.lang.Cloneable");
+		addBasicClass("java.lang.Thread");
+		addBasicClass("java.lang.Runnable");
+		addBasicClass("java.lang.Cloneable");
 
-	addBasicClass("java.io.Serializable");	
+		addBasicClass("java.io.Serializable");
 
-	addBasicClass("java.lang.ref.Finalizer");
-	
-    }
+		addBasicClass("java.lang.ref.Finalizer");
 
-    public void addBasicClass(String name) {
-	addBasicClass(name,SootClass.HIERARCHY);
-    }
-    
-    public void addBasicClass(String name,int level) {
-	basicclasses[level].add(name);
-    }
+		addBasicClass("java.lang.invoke.LambdaMetafactory");
+	}
+
+	public void addBasicClass(String name) {
+		addBasicClass(name, SootClass.HIERARCHY);
+	}
+
+	public void addBasicClass(String name, int level) {
+		basicclasses[level].add(name);
+	}
 
     /** Load just the set of basic classes soot needs, ignoring those
      *  specified on the command-line. You don't need to use both this and 
@@ -1342,7 +1596,8 @@ public class Scene  //extends AbstractHost
 	        for( final String path : Options.v().process_dir() ) {
 	            for (String cl : SourceLocator.v().getClassesUnder(path)) {
 	            	SootClass theClass = loadClassAndSupport(cl);
-	            	theClass.setApplicationClass();
+	            	if (!theClass.isPhantom)
+	            		theClass.setApplicationClass();
 	            }
 	        }
         }
@@ -1358,13 +1613,13 @@ public class Scene  //extends AbstractHost
 
         for( Iterator<String> pathIt = Options.v().dynamic_dir().iterator(); pathIt.hasNext(); ) {
 
-            final String path = (String) pathIt.next();
+            final String path = pathIt.next();
             dynClasses.addAll(SourceLocator.v().getClassesUnder(path));
         }
 
         for( Iterator<String> pkgIt = Options.v().dynamic_package().iterator(); pkgIt.hasNext(); ) {
 
-            final String pkg = (String) pkgIt.next();
+            final String pkg = pkgIt.next();
             dynClasses.addAll(SourceLocator.v().classesInDynamicPackage(pkg));
         }
 
@@ -1406,17 +1661,11 @@ public class Scene  //extends AbstractHost
                     s.setApplicationClass();
                     continue;
                 }
-                for( Iterator<String> pkgIt = excludedPackages.iterator(); pkgIt.hasNext(); ) {
-                    final String pkg = (String) pkgIt.next();
-                    if (s.isApplicationClass()
-                    && (s.getPackageName()+".").startsWith(pkg)) {
-                            s.setLibraryClass();
-                    }
+                if(s.isApplicationClass() && isExcluded(s)){
+                    s.setLibraryClass();
                 }
-                for( Iterator<String> pkgIt = Options.v().include().iterator(); pkgIt.hasNext(); ) {
-                    final String pkg = (String) pkgIt.next();
-                    if ((s.getPackageName()+".").startsWith(pkg))
-                        s.setApplicationClass();
+                if(isIncluded(s)){
+                    s.setApplicationClass();
                 }
                 if(s.isApplicationClass()) {
                     // make sure we have the support
@@ -1425,23 +1674,28 @@ public class Scene  //extends AbstractHost
             }
         }
     }
+    
+    public boolean isExcluded(SootClass sc){
+        String name = sc.getName();
+        for (String pkg : excludedPackages) {
+        	if(name.equals(pkg) || ((pkg.endsWith(".*") || pkg.endsWith("$*")) && name.startsWith(pkg.substring(0, pkg.length() - 1)))){
+        		return !isIncluded(sc);
+        	}
+        }
+        return false;
+    }
+    
+    public boolean isIncluded(SootClass sc){
+        String name = sc.getName();
+        for (String inc : (List<String>) Options.v().include()) {
+            if (name.equals(inc) || ((inc.endsWith(".*") || inc.endsWith("$*")) && name.startsWith(inc.substring(0, inc.length() - 1)))) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	public boolean isExcluded(SootClass sc) {
-		String name = sc.getName();
-		for (String pkg : excludedPackages) {
-			if (name.startsWith(pkg)) {
-				for (String inc : (List<String>) Options.v().include()) {
-					if (name.startsWith(inc)) {
-						return false;
-					}
-				}
-				return true;
-			}
-		}
-		return false;
-	}
-
-	List<String> pkgList;
+    List<String> pkgList;
 
     public void setPkgList(List<String> list){
         pkgList = list;
@@ -1485,7 +1739,7 @@ public class Scene  //extends AbstractHost
     public List<SootClass> getClasses(int desiredLevel) {
         List<SootClass> ret = new ArrayList<SootClass>();
         for( Iterator<SootClass> clIt = getClasses().iterator(); clIt.hasNext(); ) {
-            final SootClass cl = (SootClass) clIt.next();
+            final SootClass cl = clIt.next();
             if( cl.resolvingLevel() >= desiredLevel ) ret.add(cl);
         }
         return ret;
@@ -1514,7 +1768,7 @@ public class Scene  //extends AbstractHost
         	
         	// try to infer a main class from the usual classpath if none is given 
         	for (Iterator<SootClass> classIter = getApplicationClasses().iterator(); classIter.hasNext();) {
-                    SootClass c = (SootClass) classIter.next();
+                    SootClass c = classIter.next();
                     if (c.declaresMethod ("main", Collections.<Type>singletonList( ArrayType.v(RefType.v("java.lang.String"), 1) ), VoidType.v()))
                     {
                         G.v().out.println("No main class given. Inferred '"+c.getName()+"' as main class.");					

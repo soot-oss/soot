@@ -25,6 +25,7 @@ public final class TAnd extends Token
       return new TAnd(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTAnd(this);

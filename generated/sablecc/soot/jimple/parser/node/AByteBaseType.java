@@ -29,6 +29,7 @@ public final class AByteBaseType extends PBaseType
             cloneNode(this._byte_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAByteBaseType(this);

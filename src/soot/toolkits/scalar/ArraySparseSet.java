@@ -27,6 +27,7 @@ package soot.toolkits.scalar;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -67,6 +68,7 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
 
 	public void clear() {
 		numElements = 0;
+		Arrays.fill(elements, null);
 	}
 
 	public int size() {
@@ -78,11 +80,8 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
 	}
 
 	/** Returns a unbacked list of elements in this set. */
-	public List<T> toList() {
-        @SuppressWarnings("unchecked")
-		T[] copiedElements = (T[]) new Object[numElements];
-        System.arraycopy(elements, 0, copiedElements, 0, numElements);
-        return Arrays.asList(copiedElements);
+	public List<T> toList() {        
+        return Arrays.asList(Arrays.copyOf(elements, numElements));
 	}
 
 	/*
@@ -112,20 +111,22 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
 	}
 
 	public void remove(Object obj) {
-		int i = 0;
-		while (i < this.numElements) {
+		for (int i = 0; i < numElements; i++)
 			if (elements[i].equals(obj)) {
-				numElements--;
-				// copy last element to deleted position
-				elements[i] = elements[numElements];
-				// delete reference in last cell so that
-				// we only retain a single reference to the
-				// "old last" element, for memory safety
-				elements[numElements] = null;
-				return;
-			} else
-				i++;
-		}
+				remove(i);
+				break;
+			}
+	}
+
+	public void remove(int idx) {
+		numElements--;
+		// copy last element to deleted position
+		elements[idx] = elements[numElements];
+		// delete reference in last cell so that
+		// we only retain a single reference to the
+		// "old last" element, for memory safety
+		elements[numElements] = null;
+		return;
 	}
 
 	public void union(FlowSet<T> otherFlow, FlowSet<T> destFlow) {
@@ -254,6 +255,31 @@ public class ArraySparseSet<T> extends AbstractFlowSet<T> {
 					this.numElements);
 		} else
 			super.copy(destFlow);
+	}
+
+	@Override
+	public Iterator<T> iterator() {
+		return new Iterator<T>() {
+			
+			int lastIdx = 0;
+			
+			@Override
+			public boolean hasNext() {
+				return lastIdx < numElements;
+			}
+
+			@Override
+			public T next() {
+				return elements[lastIdx++];
+			}
+
+			@Override
+			public void remove() {
+				ArraySparseSet.this.remove(lastIdx);
+				lastIdx--;
+			}
+			
+		};
 	}
 
 }

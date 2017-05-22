@@ -29,6 +29,7 @@ public final class AImmediateExpression extends PExpression
             cloneNode(this._immediate_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAImmediateExpression(this);

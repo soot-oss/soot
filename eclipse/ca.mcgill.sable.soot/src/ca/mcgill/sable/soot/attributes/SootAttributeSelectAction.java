@@ -186,7 +186,8 @@ public abstract class SootAttributeSelectAction extends ResourceAction {
 
 	
 	public String removeExt(String fileName){
-		return fileName.substring(0, fileName.lastIndexOf("."));
+		int dotIndex = fileName.lastIndexOf(".");
+		return dotIndex < 0 ? fileName : fileName.substring(0, dotIndex);
 	}
 	
 	public abstract ArrayList getMarkerLinks();

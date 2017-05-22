@@ -12,12 +12,12 @@ import java.util.*;
 
 public class CallLocalityContext
 {
-	List<Object> nodes;
+	List<EquivalentValue> nodes;
 	List<Boolean> isNodeLocal;
 
-	public CallLocalityContext(List<Object> nodes)
+	public CallLocalityContext(List<EquivalentValue> nodes)
 	{
-		this.nodes = new ArrayList<Object>();
+		this.nodes = new ArrayList<EquivalentValue>();
 		this.nodes.addAll(nodes);
 
 		isNodeLocal = new ArrayList<Boolean>(nodes.size());
@@ -29,7 +29,6 @@ public class CallLocalityContext
 	
 	public void setFieldLocal(EquivalentValue fieldRef)
 	{
-		List ret = new ArrayList();
 		for(int i = 0; i < nodes.size(); i++)
 		{
 			if( fieldRef.equals(nodes.get(i)) )
@@ -47,7 +46,6 @@ public class CallLocalityContext
 	
 	public void setFieldShared(EquivalentValue fieldRef)
 	{
-		List ret = new ArrayList();
 		for(int i = 0; i < nodes.size(); i++)
 		{
 			if( fieldRef.equals(nodes.get(i)) )
@@ -217,7 +215,6 @@ public class CallLocalityContext
 	
 	public boolean isFieldLocal(EquivalentValue fieldRef)
 	{
-		List ret = new ArrayList();
 		for(int i = 0; i < nodes.size(); i++)
 		{
 			if( fieldRef.equals(nodes.get(i)) )
@@ -230,7 +227,6 @@ public class CallLocalityContext
 	
 	public boolean containsField(EquivalentValue fieldRef)
 	{
-		List ret = new ArrayList();
 		for(int i = 0; i < nodes.size(); i++)
 		{
 			if( fieldRef.equals(nodes.get(i)) )

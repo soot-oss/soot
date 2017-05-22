@@ -29,6 +29,7 @@ public final class AReferenceVariable extends PVariable
             cloneNode(this._reference_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAReferenceVariable(this);

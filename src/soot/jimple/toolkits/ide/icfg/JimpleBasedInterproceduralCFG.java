@@ -26,6 +26,7 @@ import heros.solver.IDESolver;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 
 import soot.Body;
@@ -54,14 +55,17 @@ import com.google.common.cache.LoadingCache;
 @ThreadSafe
 public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 	
+	protected boolean includeReflectiveCalls = false;
+	
 	//retains only callers that are explicit call sites or Thread.start()
-	public static class EdgeFilter extends Filter {		
+	public class EdgeFilter extends Filter {		
 		protected EdgeFilter() {
 			super(new EdgePredicate() {
 				@Override
 				public boolean want(Edge e) {				
 					return e.kind().isExplicit() || e.kind().isThread() || e.kind().isExecutor()
-							|| e.kind().isAsyncTask() || e.kind().isClinit() || e.kind().isPrivileged();
+							|| e.kind().isAsyncTask() || e.kind().isClinit() || e.kind().isPrivileged()
+							|| (includeReflectiveCalls && e.kind().isReflection());
 				}
 			});
 		}
@@ -75,19 +79,27 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<Unit,Collection<SootMethod>>() {
 				@Override
 				public Collection<SootMethod> load(Unit u) throws Exception {
-					ArrayList<SootMethod> res = new ArrayList<SootMethod>();
+					ArrayList<SootMethod> res = null;
 					//only retain callers that are explicit call sites or Thread.start()
 					Iterator<Edge> edgeIter = new EdgeFilter().wrap(cg.edgesOutOf(u));					
 					while(edgeIter.hasNext()) {
 						Edge edge = edgeIter.next();
 						SootMethod m = edge.getTgt().method();
-						if(m.hasActiveBody())
+						if(m.hasActiveBody()) {
+							if (res == null)
+								res = new ArrayList<SootMethod>();
 							res.add(m);
+						}
 						else if(IDESolver.DEBUG) 
 							System.err.println("Method "+m.getSignature()+" is referenced but has no body!");
 					}
-					res.trimToSize();
-					return res; 
+					
+					if (res != null) {
+						res.trimToSize();
+						return res;
+					}
+					else
+						return Collections.emptySet();
 				}
 			});
 
@@ -107,9 +119,21 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 					return res;
 				}
 			});
-
+	
 	public JimpleBasedInterproceduralCFG() {
-		cg = Scene.v().getCallGraph();		
+		this(true);
+	}
+	
+	public JimpleBasedInterproceduralCFG(boolean enableExceptions) {
+		this(enableExceptions, false);
+	}
+	
+	public JimpleBasedInterproceduralCFG(boolean enableExceptions,
+			boolean includeReflectiveCalls) {
+		super(enableExceptions);
+		this.includeReflectiveCalls = includeReflectiveCalls;
+		
+		cg = Scene.v().getCallGraph();
 		initializeUnitToOwner();
 	}
 

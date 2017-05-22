@@ -8,6 +8,7 @@ import org.jf.dexlib2.builder.Label;
 import org.jf.dexlib2.builder.MethodImplementationBuilder;
 
 import soot.jimple.Stmt;
+import soot.toDex.instructions.AbstractPayload;
 import soot.toDex.instructions.SwitchPayload;
 
 public class LabelAssigner {
@@ -19,8 +20,8 @@ public class LabelAssigner {
 	private Map<Stmt, Label> stmtToLabel = new HashMap<Stmt, Label>();
 	private Map<Stmt, String> stmtToLabelName = new HashMap<Stmt, String>();
 	
-	private Map<SwitchPayload, Label> payloadToLabel = new HashMap<SwitchPayload, Label>();
-	private Map<SwitchPayload, String> payloadToLabelName = new HashMap<SwitchPayload, String>();
+	private Map<AbstractPayload, Label> payloadToLabel = new HashMap<AbstractPayload, Label>();
+	private Map<AbstractPayload, String> payloadToLabelName = new HashMap<AbstractPayload, String>();
 	
 	public LabelAssigner(MethodImplementationBuilder builder) {
 		this.builder = builder;
@@ -40,7 +41,7 @@ public class LabelAssigner {
 		return lbl;
 	}
 
-	public Label getOrCreateLabel(SwitchPayload payload) {
+	public Label getOrCreateLabel(AbstractPayload payload) {
 		if (payload == null)
 			throw new RuntimeException("Cannot create label for NULL payload");
 		
@@ -55,10 +56,14 @@ public class LabelAssigner {
 	}
 
 	public Label getLabel(Stmt stmt) {
-		Label lbl = stmtToLabel.get(stmt);
+		Label lbl = getLabelUnsafe(stmt);
 		if (lbl == null)
 			throw new RuntimeException("Statement has no label: " + stmt);
 		return lbl;
+	}
+	
+	public Label getLabelUnsafe(Stmt stmt) {
+		return stmtToLabel.get(stmt);
 	}
 	
 	public Label getLabel(SwitchPayload payload) {
@@ -72,7 +77,7 @@ public class LabelAssigner {
 		return stmtToLabelName.get(stmt);
 	}
 	
-	public String getLabelName(SwitchPayload payload) {
+	public String getLabelName(AbstractPayload payload) {
 		return payloadToLabelName.get(payload);
 	}
 

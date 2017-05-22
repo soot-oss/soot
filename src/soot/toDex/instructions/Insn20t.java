@@ -22,5 +22,10 @@ public class Insn20t extends InsnWithOffset {
 	protected BuilderInstruction getRealInsn0(LabelAssigner assigner) {
 		return new BuilderInstruction20t(opc, assigner.getOrCreateLabel(target));
 	}
+
+	@Override
+	public int getMaxJumpOffset() {
+		return Short.MAX_VALUE;
+	}
 	
 }

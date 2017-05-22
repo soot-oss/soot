@@ -37,17 +37,11 @@ import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.IntOpTag;
-import soot.dexpler.typing.DalvikTyper;
 import soot.jimple.AssignStmt;
-import soot.jimple.BinopExpr;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
-import soot.jimple.internal.JAssignStmt;
 
 public class BinopLitInstruction extends TaggedInstruction {
-
-    Value expr = null;
-    AssignStmt assign = null;
   
     public BinopLitInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
@@ -65,9 +59,9 @@ public class BinopLitInstruction extends TaggedInstruction {
 
         IntConstant constant = IntConstant.v((int)binOpLitInstr.getNarrowLiteral());
 
-        expr = getExpression(source1, constant);
+        Value expr = getExpression(source1, constant);
 
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
         assign.addTag(getTag());
 
         setUnit(assign);
@@ -76,6 +70,7 @@ public class BinopLitInstruction extends TaggedInstruction {
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			/*
             int op = (int)instruction.getOpcode().value;
           if (op >= 0xd8) {
             op -= 0xd8;
@@ -85,6 +80,7 @@ public class BinopLitInstruction extends TaggedInstruction {
           BinopExpr bexpr = (BinopExpr)expr;
           //body.dvkTyper.setType((op == 1) ? bexpr.getOp2Box() : bexpr.getOp1Box(), op1BinType[op]);
           DalvikTyper.v().setType(((JAssignStmt)assign).leftBox, op1BinType[op], false);
+          */
         }
     }
 

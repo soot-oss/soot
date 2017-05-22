@@ -20,7 +20,6 @@
 package soot;
 import java.util.LinkedList;
 
-import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
 
 /** Representation of a reference to a field as it appears in a class file.
@@ -82,8 +81,8 @@ class AbstractSootFieldRef implements SootFieldRef {
     }
     
     private SootField checkStatic(SootField ret) {
-        if( ret.isStatic() != isStatic() && !ret.isPhantom()) {
-        	if(!TypeAssigner.v().ignoreWrongStaticNess()) {
+    	if(Options.v().wrong_staticness() == Options.wrong_staticness_fail) {
+    		if( ret.isStatic() != isStatic() && !ret.isPhantom()) {
         		throw new ResolutionFailedException( "Resolved "+this+" to "+ret+" which has wrong static-ness" );
         	}
         }
@@ -104,19 +103,19 @@ class AbstractSootFieldRef implements SootFieldRef {
             // If we have a phantom class, we directly construct a phantom field
             // in it and don't care about superclasses.
             else if (Scene.v().allowsPhantomRefs() && cl.isPhantom()) {
-                SootField f = new SootField(name, type, isStatic()?Modifier.STATIC:0);
-                f.setPhantom(true);
-            	synchronized (cl) {
-            		// Be careful: Another thread may have already created this
-            		// field in the meantime, so better check twice.
-            		clField = cl.getFieldUnsafe(name, type);
-                    if (clField != null)
-                        return checkStatic(clField);
-                    else {
-                    	cl.addField(f);
-                    	return f;
-                    }
-				}
+                synchronized (cl) {
+                	// Check that no other thread has created the field in the meantime
+    	            clField = cl.getFieldUnsafe(name, type);
+    	            if (clField != null) {
+    	                return checkStatic(clField);
+    	            }
+    	            
+    	            // Create the phantom field
+	                SootField f = new SootField(name, type, isStatic()?Modifier.STATIC:0);
+	                f.setPhantom(true);
+	                cl.addField(f);
+	                return f;
+                }
             }
             else {
             	// Since this class is not phantom, we look at its interfaces
@@ -147,7 +146,7 @@ class AbstractSootFieldRef implements SootFieldRef {
         	synchronized (declaringClass) {
         		// Be careful: Another thread may have already created this
         		// field in the meantime, so better check twice.
-        		SootField clField = cl.getFieldUnsafe(name, type);
+        		SootField clField = declaringClass.getFieldUnsafe(name, type);
                 if (clField != null)
                     return checkStatic(clField);
                 else {

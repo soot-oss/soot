@@ -24,7 +24,6 @@
 
 package soot.dexpler;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -44,6 +43,7 @@ import soot.jimple.AssignStmt;
 import soot.jimple.BinopExpr;
 import soot.jimple.CastExpr;
 import soot.jimple.ConditionExpr;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.EnterMonitorStmt;
 import soot.jimple.EqExpr;
 import soot.jimple.ExitMonitorStmt;
@@ -59,17 +59,11 @@ import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.ReturnStmt;
 import soot.jimple.StaticFieldRef;
+import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.ThrowStmt;
 import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.LocalDefs;
-import soot.toolkits.scalar.LocalUses;
-import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SimpleLocalUses;
-import soot.toolkits.scalar.SmartLocalDefs;
-import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
  * BodyTransformer to find and change definition of locals used within an if
@@ -93,40 +87,27 @@ public class DexIfTransformer extends AbstractNullTransformer {
 
 	Local l = null;
 
-	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
-		final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
-
-		final LocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
-		final LocalUses localUses = new SimpleLocalUses(g, localDefs);
+	protected void internalTransform(final Body body, String phaseName, Map<String,String> options) {
+		final DexDefUseAnalysis localDefs = new DexDefUseAnalysis(body);
 
 		Set<IfStmt> ifSet = getNullIfCandidates(body);
 		for (IfStmt ifs : ifSet) {
-			List<Local> twoIfLocals = new ArrayList<Local>();
 			ConditionExpr ifCondition = (ConditionExpr) ifs.getCondition();
-			Local lOp1 = (Local) ifCondition.getOp1();
-			Local lOp2 = (Local) ifCondition.getOp2();
-			twoIfLocals.add(lOp1);
-			twoIfLocals.add(lOp2);
+			Local[] twoIfLocals = new Local[] { (Local) ifCondition.getOp1(),
+					(Local) ifCondition.getOp2() };
 			usedAsObject = false;
 			for (Local loc : twoIfLocals) {
 				Debug.printDbg("\n[null if with two local candidate] ", loc);
-				List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs, localUses, body);
-				// check if no use
-				for (Unit u : defs) {
-					for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-						Debug.printDbg("[use in u]: ", pair.getUnit());
-					}
-				}
+				Set<Unit> defs = localDefs.collectDefinitionsWithAliases(loc);
+				
 				// process normally
 				doBreak = false;
 				for (Unit u : defs) {
 
 					// put correct local in l
-					if (u instanceof AssignStmt) {
-						l = (Local) ((AssignStmt) u).getLeftOp();
-					} else if (u instanceof IdentityStmt) {
-						l = (Local) ((IdentityStmt) u).getLeftOp();
-					} else if (u instanceof IfStmt) {
+					if (u instanceof DefinitionStmt) {
+						l = (Local) ((DefinitionStmt) u).getLeftOp();
+					} else {
 						throw new RuntimeException(
 								"ERROR: def can not be something else than Assign or Identity statement! (def: " + u
 										+ " class: " + u.getClass() + "");
@@ -200,8 +181,7 @@ public class DexIfTransformer extends AbstractNullTransformer {
 						break;
 
 					// check uses
-					for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-						Unit use = pair.getUnit();
+					for (Unit use : localDefs.getUsesOf(l)) {
 						Debug.printDbg("    use: ", use);
 						use.apply(new AbstractStmtSwitch() {
 							private boolean examineInvokeExpr(InvokeExpr e) {
@@ -321,12 +301,7 @@ public class DexIfTransformer extends AbstractNullTransformer {
 										doBreak = true;
 									return;
 								} else if (r instanceof StringConstant || r instanceof NewExpr) {
-									Debug.printDbg("NOT POSSIBLE StringConstant or NewExpr! ", stmt);
-									System.exit(-1);
-									usedAsObject = true;
-									if (usedAsObject)
-										doBreak = true;
-									return;
+									throw new RuntimeException("NOT POSSIBLE StringConstant or NewExpr at "  + stmt);
 								} else if (r instanceof NewArrayExpr) {
 									usedAsObject = false;
 									if (usedAsObject)
@@ -357,11 +332,8 @@ public class DexIfTransformer extends AbstractNullTransformer {
 							}
 
 							public void caseIdentityStmt(IdentityStmt stmt) {
-								if (stmt.getLeftOp() == l) {
-									Debug.printDbg("IMPOSSIBLE 0");
-									System.exit(-1);
-									usedAsObject = isObject(stmt.getRightOp().getType());
-								}
+								if (stmt.getLeftOp() == l)
+									throw new RuntimeException("IMPOSSIBLE 0");
 							}
 
 							public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
@@ -413,14 +385,23 @@ public class DexIfTransformer extends AbstractNullTransformer {
 
 			// change values
 			if (usedAsObject) {
-				List<Unit> defsOp1 = collectDefinitionsWithAliases(lOp1, localDefs, localUses, body);
-				List<Unit> defsOp2 = collectDefinitionsWithAliases(lOp1, localDefs, localUses, body);
+				Set<Unit> defsOp1 = localDefs.collectDefinitionsWithAliases(twoIfLocals[0]);
+				Set<Unit> defsOp2 = localDefs.collectDefinitionsWithAliases(twoIfLocals[1]);
 				defsOp1.addAll(defsOp2);
 				for (Unit u : defsOp1) {
-					replaceWithNull(u);
-					for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-						Unit use = pair.getUnit();
-						replaceWithNull(use);
+					Stmt s = (Stmt) u;
+					// If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
+					if (!s.containsArrayRef() || (!defsOp1.contains(s.getArrayRef().getBase())
+							&& !defsOp2.contains(s.getArrayRef().getBase())))
+						replaceWithNull(u);
+					
+					Local l = (Local) ((DefinitionStmt) u).getLeftOp();
+					for (Unit uuse : localDefs.getUsesOf(l)) {
+						Stmt use = (Stmt) uuse;
+						// If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
+						if (!use.containsArrayRef() || (twoIfLocals[0] != use.getArrayRef().getBase())
+								&& twoIfLocals[1] != use.getArrayRef().getBase())
+							replaceWithNull(use);
 					}
 				}
 			} // end if

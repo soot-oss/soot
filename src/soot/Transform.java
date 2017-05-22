@@ -107,4 +107,10 @@ public class Transform implements HasPhaseOptions
 	if (DEBUG)
 	    PhaseDumper.v().dumpAfter(b, getPhaseName());
     }
+    
+    @Override
+    public String toString() {
+    	return phaseName;
+    }
+    
 }

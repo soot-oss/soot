@@ -4,6 +4,7 @@ package soot.jimple.toolkits.thread.mhp;
 import soot.toolkits.scalar.*; 
 import soot.toolkits.graph.*;
 import soot.util.*;
+
 import java.util.*;
 
 // *** USE AT YOUR OWN RISK ***
@@ -47,8 +48,7 @@ public class DominatorsFinder{
 		
 		List heads = peg.getHeads();
 		if (heads.size() != 1){
-			System.err.println("The size of heads of peg is not equal to 1!");
-			System.exit(1);
+			throw new RuntimeException("The size of heads of peg is not equal to 1!");
 		}
 		else{
 			FlowSet dominators = new ArraySparseSet();

@@ -506,12 +506,7 @@ public class StackTypeHeightCalculator {
         
         inst.apply(sw);
 
-        try {
-          stack = updateStack(sw,(Stack<Type>)results.get(inst));
-        } catch (RuntimeException rexc) {
-          printStack(b.getUnits(),results,false);
-          System.exit(1);
-        }
+        stack = updateStack(sw,(Stack<Type>)results.get(inst));
         Iterator<Unit> lit = bug.getSuccsOf(inst).iterator();
         while (lit.hasNext()) {
           Unit next = lit.next();

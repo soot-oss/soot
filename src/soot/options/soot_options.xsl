@@ -75,7 +75,7 @@ use to replace the <I>sootOption</I> placeholder which appears in the SYNOPSIS.<
 <H2><a name="section_{$sectionId}"><xsl:value-of select="name"/></a></H2> 
 <table border="3">
 
-<xsl:for-each select="boolopt|listopt|multiopt|stropt|macroopt|phaseopt">
+<xsl:for-each select="boolopt|listopt|multiopt|stropt|intopt|macroopt|phaseopt">
 
 <tr>
 <td>
@@ -185,7 +185,7 @@ use to replace the <I>sootOption</I> placeholder which appears in the SYNOPSIS.<
 <xsl:template name="format_arg">
   <xsl:choose>
     <xsl:when test="../set_arg_label"><var><xsl:value-of select="../set_arg_label"/></var></xsl:when>
-    <xsl:when test="parent::listopt | parent::multiopt | parent::stropt | parent::phaseopt"><var>arg</var></xsl:when>
+    <xsl:when test="parent::listopt | parent::multiopt | parent::stropt | parent::intopt | parent::phaseopt"><var>arg</var></xsl:when>
   </xsl:choose>
 </xsl:template>
 

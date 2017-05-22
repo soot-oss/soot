@@ -26,16 +26,40 @@
 
 package soot.jimple.toolkits.typing;
 
-import soot.*;
-import soot.jimple.*;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
+
+import soot.ArrayType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.G;
+import soot.IntType;
+import soot.Local;
+import soot.LongType;
+import soot.NullType;
+import soot.PatchingChain;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.Type;
+import soot.Unit;
+import soot.jimple.AssignStmt;
+import soot.jimple.InvokeStmt;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleBody;
+import soot.jimple.NewExpr;
+import soot.jimple.SpecialInvokeExpr;
+import soot.jimple.Stmt;
 import soot.options.Options;
-
-import java.util.*;
-
-import soot.toolkits.graph.*;
-import soot.toolkits.scalar.*;
-
-import java.io.*;
+import soot.toolkits.scalar.LocalDefs;
 
 /**
  * This class resolves the type of local variables.
@@ -968,8 +992,7 @@ public class TypeResolver
 
   private void split_new()
   {
-    ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody);
-    LocalDefs defs = new SmartLocalDefs(graph,new SimpleLiveLocals(graph));
+	LocalDefs defs = LocalDefs.Factory.newLocalDefs(stmtBody);
     PatchingChain<Unit> units = stmtBody.getUnits();
     Stmt[] stmts = new Stmt[units.size()];
 

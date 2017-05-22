@@ -39,8 +39,6 @@ import soot.jimple.Jimple;
 
 public class IgetInstruction extends FieldInstruction {
 
-    AssignStmt assign = null;
-  
     public IgetInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -52,14 +50,13 @@ public class IgetInstruction extends FieldInstruction {
         FieldReference f = (FieldReference)((ReferenceInstruction)instruction).getReference();
         InstanceFieldRef r = Jimple.v().newInstanceFieldRef(body.getRegisterLocal(object),
                                                             getSootFieldRef(f));
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), r);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), r);
         setUnit(assign);
         addTags(assign);
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
-          int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().setType(assign.getLeftOpBox(), r.getType(), false);
         }
     }

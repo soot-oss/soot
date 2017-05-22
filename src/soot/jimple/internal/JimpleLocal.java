@@ -23,129 +23,101 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple.internal;
 
-import soot.tagkit.*;
 import soot.*;
 import soot.jimple.*;
 import soot.baf.*;
 import soot.util.*;
+
 import java.util.*;
 
-public class JimpleLocal implements Local, ConvertToBaf
-{
-    String name;
-    Type type;
+public class JimpleLocal implements Local, ConvertToBaf {
+	String name;
+	Type type;
 
-    int fixedHashCode;
-    boolean isHashCodeChosen;
+	/** Constructs a JimpleLocal of the given name and type. */
+	public JimpleLocal(String name, Type type) {
+		setName(name);
+		setType(type);
+		Scene.v().getLocalNumberer().add(this);
+	}
 
-    /** Constructs a JimpleLocal of the given name and type. */
-    public JimpleLocal(String name, Type type)
-    {
-        setName(name);
-        setType(type);
-        Scene.v().getLocalNumberer().add( this );
-    }
+	/** Returns true if the given object is structurally equal to this one. */
+	public boolean equivTo(Object o) {
+		return this.equals(o);
+	}
 
-    /** Returns true if the given object is structurally equal to this one. */
-    public boolean equivTo(Object o)
-    {
-        return this.equals( o );
-    }
+	/**
+	 * Returns a hash code for this object, consistent with structural equality.
+	 */
+	public int equivHashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
 
-    /** Returns a hash code for this object, consistent with structural equality. */
-    public int equivHashCode() 
-    {
-        return name.hashCode() * 101 + type.hashCode() * 17;
-    }
+	/** Returns a clone of the current JimpleLocal. */
+	public Object clone() {
+		// do not intern the name again
+		JimpleLocal local = new JimpleLocal(null, type);
+		local.name = name;
+		return local;
+	}
 
-    /** Returns a clone of the current JimpleLocal. */
-    public Object clone()
-    {
-    	// do not intern the name again
-        JimpleLocal local = new JimpleLocal(null, type);
-        local.name = name;
-        return local;
-    }
+	/** Returns the name of this object. */
+	public String getName() {
+		return name;
+	}
 
-    /** Returns the name of this object. */
-    public String getName()
-    {
-        return name;
-    }
+	/** Sets the name of this object as given. */
+	public void setName(String name) {
+		this.name = (name == null) ? null : name.intern();
+	}
 
-    /** Sets the name of this object as given. */
-    public void setName(String name)
-    {
-    	this.name = (name == null) ? null : name.intern();
-    }
+	/** Returns the type of this local. */
+	public Type getType() {
+		return type;
+	}
 
-    /** Returns a hashCode consistent with object equality. */
-    public int hashCode()
-    {
-        if(!isHashCodeChosen)
-        {
-            // Set the hash code for this object
-            
-            if(name != null & type != null)
-                fixedHashCode = name.hashCode() + 19 * type.hashCode();
-            else if(name != null)
-                fixedHashCode = name.hashCode();
-            else if(type != null)
-                fixedHashCode = type.hashCode();
-            else
-                fixedHashCode = 1;
-                
-            isHashCodeChosen = true;
-        }
-        
-        return fixedHashCode;
-    }
-    
-    /** Returns the type of this local. */
-    public Type getType()
-    {
-        return type;
-    }
+	/** Sets the type of this local. */
+	public void setType(Type t) {
+		this.type = t;
+	}
 
-    /** Sets the type of this local. */
-    public void setType(Type t)
-    {
-        this.type = t;
-    }
+	public String toString() {
+		return getName();
+	}
 
-    public String toString()
-    {
-        return getName();
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.local(this);
-    }
+	public void toString(UnitPrinter up) {
+		up.local(this);
+	}
 
-    @Override
-    public final List<ValueBox> getUseBoxes()
-    {
-        return Collections.emptyList();
-    }
+	@Override
+	public final List<ValueBox> getUseBoxes() {
+		return Collections.emptyList();
+	}
 
-    public void apply(Switch sw)
-    {
-        ((JimpleValueSwitch) sw).caseLocal(this);
-    }
+	public void apply(Switch sw) {
+		((JimpleValueSwitch) sw).caseLocal(this);
+	}
 
-    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
-    {
-    	Unit u = Baf.v().newLoadInst(getType(), context.getBafLocalOfJimpleLocal(this));
-    	u.addAllTagsOf(context.getCurrentUnit());
-        out.add(u);
-    }
-    
-    public final int getNumber() { return number; }
-    public final void setNumber( int number ) { this.number = number; }
+	public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
+		Unit u = Baf.v().newLoadInst(getType(),
+				context.getBafLocalOfJimpleLocal(this));
+		u.addAllTagsOf(context.getCurrentUnit());
+		out.add(u);
+	}
 
-    private int number = 0;
+	public final int getNumber() {
+		return number;
+	}
+
+	public final void setNumber(int number) {
+		this.number = number;
+	}
+
+	private int number = 0;
 }
-

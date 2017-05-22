@@ -29,6 +29,7 @@ public final class ACharBaseType extends PBaseType
             cloneNode(this._char_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseACharBaseType(this);

@@ -12,15 +12,10 @@ import soot.jimple.ThrowStmt;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
-public class ReturnStatementsValidator implements BodyValidator {
-	public static ReturnStatementsValidator INSTANCE;
-	
+public enum ReturnStatementsValidator implements BodyValidator {
+	INSTANCE;	
 	
 	public static ReturnStatementsValidator v() {
-		if (INSTANCE == null)
-		{
-			INSTANCE = new ReturnStatementsValidator();
-		}
 		return INSTANCE;
 	}
 

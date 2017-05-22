@@ -29,6 +29,7 @@ public final class AVirtualNonstaticInvoke extends PNonstaticInvoke
             cloneNode(this._virtualinvoke_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAVirtualNonstaticInvoke(this);

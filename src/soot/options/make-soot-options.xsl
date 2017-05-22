@@ -107,17 +107,28 @@ public class Options extends OptionsBase {
 <!--*************************************************************************-->
 
   <xsl:template mode="parse" match="section">
-      <xsl:apply-templates mode="parse" select="boolopt|multiopt|listopt|phaseopt|stropt|macroopt"/>
+      <xsl:apply-templates mode="parse" select="boolopt|multiopt|listopt|phaseopt|intopt|stropt|macroopt"/>
   </xsl:template>
 
 <!--* BOOLEAN_OPTION *******************************************************-->
   <xsl:template mode="parse" match="boolopt">
             else if( false <xsl:text/>
+    <xsl:choose>
+    	<xsl:when test="default='true'">
+    <xsl:for-each select="alias">
+            || option.equals( "no-<xsl:value-of select="."/>" )<xsl:text/>
+    </xsl:for-each>
+            )
+                <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = false;
+    	</xsl:when>
+    	<xsl:otherwise>
     <xsl:for-each select="alias">
             || option.equals( "<xsl:value-of select="."/>" )<xsl:text/>
     </xsl:for-each>
             )
                 <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = true;
+    	</xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 <!--* MULTI_OPTION *******************************************************-->
@@ -226,6 +237,28 @@ public class Options extends OptionsBase {
             }
   </xsl:template>
 
+<!--* INT_OPTION *******************************************************-->
+  <xsl:template mode="parse" match="intopt">
+            else if( false<xsl:text/>
+    <xsl:for-each select="alias">
+            || option.equals( "<xsl:value-of select="."/>" )<xsl:text/>
+    </xsl:for-each>
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    <xsl:variable name="name" select="translate(alias[last()],'-. ','___')"/>
+                if( <xsl:copy-of select="$name"/> == -1 )
+                    <xsl:copy-of select="$name"/> = Integer.valueOf(value);
+                else {
+                    G.v().out.println( "Duplicate values "+<xsl:copy-of select="$name"/>+" and "+value+" for option -"+option );
+                    return false;
+                }
+            }
+  </xsl:template>
+
 <!--* MACRO_OPTION *******************************************************-->
   <xsl:template mode="parse" match="macroopt">
             else if( false<xsl:text/>
@@ -245,13 +278,13 @@ public class Options extends OptionsBase {
 <!--*************************************************************************-->
 
   <xsl:template mode="vars" match="section">
-      <xsl:apply-templates mode="vars" select="boolopt|multiopt|listopt|phaseopt|stropt|macroopt"/>
+      <xsl:apply-templates mode="vars" select="boolopt|multiopt|listopt|phaseopt|stropt|intopt|macroopt"/>
   </xsl:template>
 
 <!--* BOOLEAN_OPTION *******************************************************-->
   <xsl:template mode="vars" match="boolopt">
     public boolean <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() { return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>; }
-    private boolean <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = false;<xsl:text/>
+    private boolean <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = <xsl:choose> <xsl:when test="default"><xsl:value-of select="default"/></xsl:when><xsl:otherwise>false</xsl:otherwise></xsl:choose>;<xsl:text/>
     public void set_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>( boolean setting ) { <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = setting; }
   </xsl:template>
 
@@ -291,6 +324,13 @@ public class Options extends OptionsBase {
     public String <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() { return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>; }
     public void set_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>( String setting ) { <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = setting; }
     private String <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = "";<xsl:text/>
+  </xsl:template>
+
+<!--* INT_OPTION *******************************************************-->
+  <xsl:template mode="vars" match="intopt">
+    public int <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() { return <xsl:value-of select="translate(alias[last()],'-. ','___')"/>; }
+    public void set_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>( int setting ) { <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = setting; }
+    private int <xsl:value-of select="translate(alias[last()],'-. ','___')"/> = -1;<xsl:text/>
   </xsl:template>
 
 <!--* MACRO_OPTION *******************************************************-->
@@ -349,6 +389,11 @@ public class Options extends OptionsBase {
   </xsl:template>
 
 <!--* STRING_OPTION *******************************************************-->
+  <xsl:template mode="usage" match="stropt">
++padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/><xsl:text> </xsl:text><xsl:call-template name="arg-label"/></xsl:for-each>", "<xsl:apply-templates select="short_desc"/>" )<xsl:text/>
+  </xsl:template>
+
+<!--* INT_OPTION *******************************************************-->
   <xsl:template mode="usage" match="stropt">
 +padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/><xsl:text> </xsl:text><xsl:call-template name="arg-label"/></xsl:for-each>", "<xsl:apply-templates select="short_desc"/>" )<xsl:text/>
   </xsl:template>

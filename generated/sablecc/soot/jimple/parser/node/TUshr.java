@@ -25,6 +25,7 @@ public final class TUshr extends Token
       return new TUshr(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTUshr(this);

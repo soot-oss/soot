@@ -33,6 +33,6 @@ public class AsmClassProvider implements ClassProvider {
 		String clsFile = cls.replace('.', '/') + ".class";
 		SourceLocator.FoundFile file =
 				SourceLocator.v().lookupInClassPath(clsFile);
-		return file == null ? null : new AsmClassSource(cls, file.inputStream());
+		return file == null ? null : new AsmClassSource(cls, file);
 	}
 }

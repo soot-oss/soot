@@ -28,6 +28,8 @@ package soot.baf.internal;
 
 import java.util.List;
 
+import org.objectweb.asm.Opcodes;
+
 import soot.*;
 import soot.baf.*;
 import soot.jimple.Jimple;
@@ -38,13 +40,15 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
 {	
     protected final SootMethodRef bsmRef;
 	private final List<Value> bsmArgs;
+	protected int tag;
 
-	public BDynamicInvokeInst(SootMethodRef bsmMethodRef, List<Value> bsmArgs, SootMethodRef methodRef) { 
+	public BDynamicInvokeInst(SootMethodRef bsmMethodRef, List<Value> bsmArgs, SootMethodRef methodRef, int tag) { 
         this.bsmRef = bsmMethodRef;
 		this.bsmArgs = bsmArgs;
 		this.methodRef = methodRef;
+		this.tag = tag;
     }
-
+	
     public int getInCount()
     {
         return methodRef.parameterTypes().size();
@@ -53,7 +57,7 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
 
     public Object clone() 
     {
-        return new  BDynamicInvokeInst(bsmRef, bsmArgs, methodRef);
+        return new  BDynamicInvokeInst(bsmRef, bsmArgs, methodRef, tag);
     }
    
     public int getOutCount()
@@ -120,4 +124,9 @@ public class BDynamicInvokeInst extends AbstractInvokeInst implements DynamicInv
 
         up.literal(")");
     }
+
+	@Override
+	public int getHandleTag() {
+		return tag;
+	}
 }

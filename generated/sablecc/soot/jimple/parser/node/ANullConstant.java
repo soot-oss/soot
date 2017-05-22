@@ -29,6 +29,7 @@ public final class ANullConstant extends PConstant
             cloneNode(this._null_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseANullConstant(this);

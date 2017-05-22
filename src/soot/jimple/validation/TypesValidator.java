@@ -14,15 +14,10 @@ import soot.validation.ValidationException;
  * return values are allowed in final Jimple code. This reports an error
  * if a method uses e.g., null_type.
  */
-public class TypesValidator implements BodyValidator {
-	public static TypesValidator INSTANCE;
-	
+public enum TypesValidator implements BodyValidator {
+	INSTANCE;	
 	
 	public static TypesValidator v() {
-		if (INSTANCE == null)
-		{
-			INSTANCE = new TypesValidator();
-		}
 		return INSTANCE;
 	}
 

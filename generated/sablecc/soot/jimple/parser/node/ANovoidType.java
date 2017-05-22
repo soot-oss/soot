@@ -29,6 +29,7 @@ public final class ANovoidType extends PType
             cloneNode(this._nonvoidType_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseANovoidType(this);

@@ -75,6 +75,10 @@ public final class Kind implements Numberable
             this == REFL_INVOKE || this == REFL_CONSTR_NEWINSTANCE || this == REFL_CLASS_NEWINSTANCE;
     }
 
+    public boolean isFake() {
+        return this == THREAD || this == EXECUTOR || this == ASYNCTASK || this == PRIVILEGED;
+    }
+
     /** Returns true if the call is due to an explicit invoke statement. */
     public boolean isExplicit() {
         return isInstance() || isStatic();
@@ -120,6 +124,15 @@ public final class Kind implements Numberable
     
     public boolean isPrivileged() {
     	return this == PRIVILEGED;
+    }
+    
+    public boolean isReflection() {
+    	return this == REFL_CLASS_NEWINSTANCE || this == REFL_CONSTR_NEWINSTANCE
+    			|| this == REFL_INVOKE;
+    }
+    
+    public boolean isReflInvoke() {
+    	return this == REFL_INVOKE;
     }
 }
 

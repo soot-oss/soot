@@ -129,7 +129,7 @@ public class TagCollector {
 			collectHostTags(sm);			
     }
     
-    public void collectBodyTags(Body b){
+    public synchronized void collectBodyTags(Body b){
 		for (Unit u : b.getUnits()) {
             Attribute ua = new Attribute();
             JimpleLineNumberTag jlnt = null;

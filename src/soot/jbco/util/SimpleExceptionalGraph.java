@@ -45,8 +45,6 @@ public class SimpleExceptionalGraph extends TrapUnitGraph {
 	buildUnexceptionalEdges(unitToSuccs, unitToPreds);
 	buildSimpleExceptionalEdges(unitToSuccs, unitToPreds);
 	
-	makeMappedListsUnmodifiable(unitToSuccs);
-	makeMappedListsUnmodifiable(unitToPreds);
 	buildHeadsAndTails();
   }
 

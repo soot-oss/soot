@@ -29,23 +29,23 @@ import java.util.*;
  *
  * @author Navindra Umanee
  **/
-public class DominatorNode
+public class DominatorNode<N>
 {
-    protected Object gode;
-    protected DominatorNode parent;
-    protected List<DominatorNode> children;
+    protected N gode;
+    protected DominatorNode<N> parent;
+    protected List<DominatorNode<N>> children;
 
-    protected DominatorNode(Object gode)
+    protected DominatorNode(N gode)
     {
         this.gode = gode;
-        children = new ArrayList<DominatorNode>();
+        children = new ArrayList<DominatorNode<N>>();
     }
 
     /**
      * Sets the parent of this node in the DominatorTree.  Usually
      * called internally.
      **/
-    public void setParent(DominatorNode parent)
+    public void setParent(DominatorNode<N> parent)
     {
         this.parent = parent;
     }
@@ -54,7 +54,7 @@ public class DominatorNode
      * Adds a child to the internal list of children of this node in
      * tree.  Usually called internally.
      **/
-    public boolean addChild(DominatorNode child)
+    public boolean addChild(DominatorNode<N> child)
     {
         if(children.contains(child)){
             return false;
@@ -69,7 +69,7 @@ public class DominatorNode
      * Returns the node (from the original DirectedGraph) encapsulated
      * by this DominatorNode.
      **/
-    public Object getGode()
+    public N getGode()
     {
         return gode;
     }
@@ -77,7 +77,7 @@ public class DominatorNode
     /**
      * Returns the parent of the node in the DominatorTree.
      **/
-    public DominatorNode getParent()
+    public DominatorNode<N> getParent()
     {
         return parent;
     }
@@ -86,7 +86,7 @@ public class DominatorNode
      * Returns a backed list of the children of this node in the
      * DominatorTree.
      **/
-    public List<DominatorNode> getChildren()
+    public List<DominatorNode<N>> getChildren()
     {
         return children;
     }
@@ -96,10 +96,7 @@ public class DominatorNode
      **/
     public boolean isHead()
     {
-        if(parent == null)
-            return true;
-        else
-            return false;
+        return parent == null;
     }
 
     /**
@@ -107,10 +104,7 @@ public class DominatorNode
      **/
     public boolean isTail()
     {
-        if(children.size() == 0)
-            return true;
-        else
-            return false;
+        return children.isEmpty();
     }
 
     public String toString()

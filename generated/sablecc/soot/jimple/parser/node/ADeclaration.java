@@ -39,6 +39,7 @@ public final class ADeclaration extends PDeclaration
             cloneNode(this._semicolon_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseADeclaration(this);

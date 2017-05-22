@@ -29,6 +29,7 @@ public final class AFinalModifier extends PModifier
             cloneNode(this._final_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAFinalModifier(this);

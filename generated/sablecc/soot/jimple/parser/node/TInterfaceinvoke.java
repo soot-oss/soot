@@ -25,6 +25,7 @@ public final class TInterfaceinvoke extends Token
       return new TInterfaceinvoke(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTInterfaceinvoke(this);

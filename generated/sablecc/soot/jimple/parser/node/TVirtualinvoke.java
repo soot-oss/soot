@@ -25,6 +25,7 @@ public final class TVirtualinvoke extends Token
       return new TVirtualinvoke(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTVirtualinvoke(this);

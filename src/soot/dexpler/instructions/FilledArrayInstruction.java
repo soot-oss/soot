@@ -31,14 +31,12 @@ import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.reference.TypeReference;
 
-import soot.Local;
 import soot.Type;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 
 public abstract class FilledArrayInstruction extends DexlibAbstractInstruction implements DanglingInstruction {
-    protected Local arrayLocal;
-
+    
     public FilledArrayInstruction(Instruction instruction, int codeAddress) {
         super(instruction, codeAddress);
     }

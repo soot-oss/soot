@@ -53,7 +53,7 @@ public class CriticalEdgeRemover extends BodyTransformer {
   /**
    * performs critical edge-removing.
    */
-  protected void internalTransform(Body b, String phaseName, Map options) {
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     if(Options.v().verbose())
       G.v().out.println("[" + b.getMethod().getName() +
                          "]     Removing Critical Edges...");
@@ -74,7 +74,7 @@ public class CriticalEdgeRemover extends BodyTransformer {
    * @param target is the Unit the <code>goto</code> will jump to.
    * @return the newly inserted <code>Goto</code>
    */
-  private static Unit insertGotoAfter(Chain unitChain, Unit node, Unit target) {
+  private static Unit insertGotoAfter(Chain<Unit> unitChain, Unit node, Unit target) {
     Unit newGoto = Jimple.v().newGotoStmt(target);
     unitChain.insertAfter(newGoto, node);
     return newGoto;
@@ -91,7 +91,7 @@ public class CriticalEdgeRemover extends BodyTransformer {
    * @return the newly inserted <code>Goto</code>
    */
   /*note, that this method has slightly more overhead than the insertGotoAfter*/
-  private static Unit insertGotoBefore(Chain unitChain, Unit node, Unit target)
+  private static Unit insertGotoBefore(Chain<Unit> unitChain, Unit node, Unit target)
   {
     Unit newGoto = Jimple.v().newGotoStmt(target);
     unitChain.insertBefore(newGoto, node);
@@ -131,20 +131,20 @@ public class CriticalEdgeRemover extends BodyTransformer {
      Our algorithm will *not* take into account exceptions. (this is nearly
      impossible anyways) */
   private void removeCriticalEdges(Body b) {
-    Chain unitChain = b.getUnits();
+    Chain<Unit> unitChain = b.getUnits();
     int size = unitChain.size();
-    Map<Unit, List> predecessors = new HashMap<Unit, List>(2 * size + 1, 0.7f);
+    Map<Unit, List<Unit>> predecessors = new HashMap<Unit, List<Unit>>(2 * size + 1, 0.7f);
 
     /* First get the predecessors of each node (although direct predecessors are
      * predecessors too, we'll not include them in the lists) */
     {
-      Iterator unitIt = unitChain.snapshotIterator();
+      Iterator<Unit> unitIt = unitChain.snapshotIterator();
       while (unitIt.hasNext()) {
         Unit currentUnit = (Unit)unitIt.next();
 
-        Iterator succsIt = currentUnit.getUnitBoxes().iterator();
+        Iterator<UnitBox> succsIt = currentUnit.getUnitBoxes().iterator();
         while (succsIt.hasNext()) {
-          Unit target = ((UnitBox)succsIt.next()).getUnit();
+          Unit target = succsIt.next().getUnit();
           List<Unit> predList = predecessors.get(target);
           if (predList == null) {
             predList = new ArrayList<Unit>();
@@ -162,15 +162,15 @@ public class CriticalEdgeRemover extends BodyTransformer {
        * if the node at the other end has more than one successor. */
 
       /* we need a snapshotIterator, as we'll modify the structure */
-      Iterator unitIt = unitChain.snapshotIterator();
+      Iterator<Unit> unitIt = unitChain.snapshotIterator();
 
       Unit currentUnit = null;
       Unit directPredecessor;
       while (unitIt.hasNext()) {
         directPredecessor = currentUnit;
-        currentUnit = (Unit)unitIt.next();
+        currentUnit = unitIt.next();
 
-        List predList = predecessors.get(currentUnit);
+        List<Unit> predList = predecessors.get(currentUnit);
         int nbPreds = (predList == null)? 0: predList.size();
         if (directPredecessor != null && directPredecessor.fallsThrough())
           nbPreds++;
@@ -188,9 +188,9 @@ public class CriticalEdgeRemover extends BodyTransformer {
 
           /* if the predecessors have more than one successor insert the synthetic
            * node. */
-          Iterator predIt = predList.iterator();
+          Iterator<Unit> predIt = predList.iterator();
           while (predIt.hasNext()) {
-            Unit predecessor = (Unit)predIt.next();
+            Unit predecessor = predIt.next();
             /* Although in Jimple there should be only two ways of having more
              * than one successor (If and Case) we'll do it the hard way:) */
             int nbSuccs = predecessor.getUnitBoxes().size();

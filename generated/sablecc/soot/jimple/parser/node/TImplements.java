@@ -25,6 +25,7 @@ public final class TImplements extends Token
       return new TImplements(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTImplements(this);

@@ -26,26 +26,18 @@ package soot.dexpler;
 
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import soot.Body;
-import soot.Local;
 import soot.Trap;
 import soot.Unit;
 import soot.UnitBox;
-import soot.jimple.AssignStmt;
-import soot.jimple.Constant;
 import soot.jimple.GotoStmt;
 import soot.jimple.IfStmt;
 import soot.jimple.ReturnStmt;
 import soot.jimple.ReturnVoidStmt;
 import soot.jimple.Stmt;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.LocalDefs;
-import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SmartLocalDefs;
 
 /**
  * BodyTransformer to inline jumps to return statements. Take the following code:
@@ -79,7 +71,7 @@ public class DexReturnInliner extends DexTransformer {
 	}
 
 	@Override
-	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
+	protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {
     	Set<Unit> duplicateIfTargets = getFallThroughReturns(body);
     	
 		Iterator<Unit> it = body.getUnits().snapshotIterator();
@@ -92,16 +84,16 @@ public class DexReturnInliner extends DexTransformer {
 					GotoStmt gtStmt = (GotoStmt) u;
 					if (isInstanceofReturn(gtStmt.getTarget())) {
 						Stmt stmt = (Stmt) gtStmt.getTarget().clone();
-
+						
 						for (Trap t : body.getTraps())
 							for (UnitBox ubox : t.getUnitBoxes())
 								if (ubox.getUnit() == u)
 									ubox.setUnit(stmt);
-
+						
 						while (!u.getBoxesPointingToThis().isEmpty())
 							u.getBoxesPointingToThis().get(0).setUnit(stmt);
 						body.getUnits().swapWith(u, stmt);
-
+						
 						mayBeMore = true;
 					}
 				} else if (u instanceof IfStmt) {
@@ -122,28 +114,9 @@ public class DexReturnInliner extends DexTransformer {
 				}
 			}
 		} while (mayBeMore);
-
-        ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
-        LocalDefs localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
-        
-		// If a return statement's operand has only one definition and this is
-		// a copy statement, we take the original operand
-		for (Unit u : body.getUnits())
-			if (u instanceof ReturnStmt) {
-				ReturnStmt retStmt = (ReturnStmt) u;
-				if (retStmt.getOp() instanceof Local) {
-					List<Unit> defs = localDefs.getDefsOfAt((Local) retStmt.getOp(), retStmt);
-					if (defs.size() == 1 && defs.get(0) instanceof AssignStmt) {
-						AssignStmt assign = (AssignStmt) defs.get(0);
-						if (assign.getRightOp() instanceof Local
-								|| assign.getRightOp() instanceof Constant)
-							retStmt.setOp(assign.getRightOp());
-					}
-				}
-			}
     }
     
-    /**
+	/**
      * Gets the set of return statements that can be reached via fall-throughs,
      * i.e. normal sequential code execution. Dually, these are the statements
      * that can be reached without jumping there.

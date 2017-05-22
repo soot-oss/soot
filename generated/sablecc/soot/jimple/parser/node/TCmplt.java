@@ -25,6 +25,7 @@ public final class TCmplt extends Token
       return new TCmplt(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTCmplt(this);

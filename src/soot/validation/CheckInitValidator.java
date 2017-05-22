@@ -12,15 +12,10 @@ import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.scalar.FlowSet;
 import soot.toolkits.scalar.InitAnalysis;
 
-public class CheckInitValidator implements BodyValidator {
-	public static CheckInitValidator INSTANCE;
-	
+public enum CheckInitValidator implements BodyValidator {
+	INSTANCE;
 	
 	public static CheckInitValidator v() {
-		if (INSTANCE == null)
-		{
-			INSTANCE = new CheckInitValidator();
-		}
 		return INSTANCE;
 	}
 

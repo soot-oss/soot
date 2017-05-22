@@ -25,29 +25,28 @@
 
 package soot.tagkit;
 
-public class LongConstantValueTag extends ConstantValueTag
-{
-    private final long value;
+import soot.jimple.LongConstant;
 
-    public LongConstantValueTag(long value) {
-	this.value = value;
-	this.bytes = new byte[] {
-	  (byte)((value >> 56) & 0xff),
-	  (byte)((value >> 48) & 0xff),
-	  (byte)((value >> 40) & 0xff),
-	  (byte)((value >> 32) & 0xff),
-	  (byte)((value >> 24) & 0xff),
-	  (byte)((value >> 16) & 0xff),
-	  (byte)((value >>  8) & 0xff),
-	  (byte)((value      ) & 0xff)
-	};
-    }
+public class LongConstantValueTag extends ConstantValueTag {
+	private final long value;
 
-    public long getLongValue() {
-	return value;
-    }
-    public String toString() {
-        return "ConstantValue: "+Long.toString(value);
-    }
+	public LongConstantValueTag(long value) {
+		this.value = value;
+		this.bytes = new byte[] { (byte) ((value >> 56) & 0xff), (byte) ((value >> 48) & 0xff),
+				(byte) ((value >> 40) & 0xff), (byte) ((value >> 32) & 0xff), (byte) ((value >> 24) & 0xff),
+				(byte) ((value >> 16) & 0xff), (byte) ((value >> 8) & 0xff), (byte) ((value) & 0xff) };
+	}
+
+	public long getLongValue() {
+		return value;
+	}
+
+	public String toString() {
+		return "ConstantValue: " + Long.toString(value);
+	}
+
+	@Override
+	public LongConstant getConstant() {
+		return LongConstant.v(value);
+	}
 }
-

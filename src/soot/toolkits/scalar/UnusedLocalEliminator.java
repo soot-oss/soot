@@ -26,7 +26,6 @@
 package soot.toolkits.scalar;
 
 import soot.options.*;
-
 import soot.*;
 
 import java.util.*;
@@ -62,33 +61,47 @@ public class UnusedLocalEliminator extends BodyTransformer {
 			i++;
 		}
 		
-		BitSet usedLocals = new BitSet(n);
+		boolean[] usedLocals = new boolean[n];
 
 		// Traverse statements noting all the uses and defs
 		for (Unit s : body.getUnits()) {
-			for (ValueBox vb : s.getDefBoxes()) {
-				Value v = vb.getValue();
-				if (v instanceof Local) {
-					Local l = (Local) v;
-					usedLocals.set(l.getNumber());
-				}
-			}
 			for (ValueBox vb : s.getUseBoxes()) {
 				Value v = vb.getValue();
 				if (v instanceof Local) {
 					Local l = (Local) v;
-					usedLocals.set(l.getNumber());
+					assert arrayContains(locals, l);
+					usedLocals[l.getNumber()] = true;
+				}
+			}
+			for (ValueBox vb : s.getDefBoxes()) {
+				Value v = vb.getValue();
+				if (v instanceof Local) {
+					Local l = (Local) v;
+					assert arrayContains(locals, l);
+					usedLocals[l.getNumber()] = true;
 				}
 			}
 		}
 
 		// Remove all locals that are unused.
+		List<Local> keep = new ArrayList<Local>(locals.length);
 		for ( Local local : locals ) {
 			int lno = local.getNumber();
 			local.setNumber(oldNumbers[lno]);
-			if ( !usedLocals.get(lno) ) {
-				body.getLocals().remove(local);
+			if ( usedLocals[lno] ) {
+				keep.add(local);
 			}
 		}
+		body.getLocals().clear();
+		body.getLocals().addAll(keep);
 	}
+	
+	private <T> boolean arrayContains(T[] array, T element) {
+		for (T t : array) {
+			if (t == element)
+				return true;
+		}
+		return false;
+	}
+	
 }

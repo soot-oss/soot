@@ -75,20 +75,30 @@ public class PhaseOptions {
 
     /** This method returns true iff key "name" is in options 
         and maps to "true". */
-    public static boolean getBoolean(Map<String, String> options, String name)
-    {
-        return options.containsKey(name) &&
-            options.get(name).equals("true");
+    public static boolean getBoolean(Map<String, String> options, String name) {
+    	String val = options.get(name);
+        return val != null && val.equals("true");
     }
 
+    /**
+     * If key "name" is in options, this method returns true iff it maps to
+     * "true". If the key "name" is not in options, the given default value
+     * is returned.
+     */
+    public static boolean getBoolean(Map<String, String> options, String name,
+    		boolean defaultValue) {
+    	String val = options.get(name);
+    	if (val == null)
+    		return defaultValue;
+        return val.equals("true");
+    }
 
 
     /** This method returns the value of "name" in options 
         or "" if "name" is not found. */
-    public static String getString(Map<String, String> options, String name)
-    {
-        return options.containsKey(name) ?
-            (String)options.get(name) : "";
+    public static String getString(Map<String, String> options, String name) {
+    	String val = options.get(name);
+        return val != null ? val : "";
     }
 
 
@@ -171,7 +181,7 @@ public class PhaseOptions {
 */
         return true;
     }
-    public boolean setPhaseOption( String phaseName, String option ) {
+    public boolean setPhaseOption( String phaseName, String option ) {    	
         HasPhaseOptions phase = getPM().getPhase( phaseName );
         if( phase == null ) {
             G.v().out.println( "Option "+option+" given for nonexistent"

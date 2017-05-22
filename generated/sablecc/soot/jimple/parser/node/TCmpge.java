@@ -25,6 +25,7 @@ public final class TCmpge extends Token
       return new TCmpge(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTCmpge(this);

@@ -39,6 +39,7 @@ public final class ACaseStmt extends PCaseStmt
             cloneNode(this._gotoStmt_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseACaseStmt(this);

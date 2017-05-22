@@ -39,6 +39,7 @@ public final class AMultiLocalNameList extends PLocalNameList
             cloneNode(this._localNameList_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAMultiLocalNameList(this);

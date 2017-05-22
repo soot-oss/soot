@@ -34,6 +34,7 @@ public final class AIntegerConstant extends PConstant
             cloneNode(this._integerConstant_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAIntegerConstant(this);

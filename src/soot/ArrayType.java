@@ -56,7 +56,8 @@ public class ArrayType extends RefLikeType
    
     private ArrayType(Type baseType, int numDimensions)
     {
-        if( !( baseType instanceof PrimType || baseType instanceof RefType ) )
+        if( !( baseType instanceof PrimType || baseType instanceof RefType
+        		|| baseType instanceof NullType ) )
             throw new RuntimeException( "oops,  base type must be PrimType or RefType but not '"+ baseType +"'" );
         if( numDimensions < 1 ) throw new RuntimeException( "attempt to create array with "+numDimensions+" dimensions" );
         this.baseType = baseType;
@@ -71,22 +72,22 @@ public class ArrayType extends RefLikeType
      */
     public static ArrayType v(Type baseType, int numDimensions)
     {
-        Type elementType;
-        if( numDimensions == 1 ) {
-            elementType = baseType;
-        }
-        else if (numDimensions > 1) {
-            elementType = ArrayType.v( baseType, numDimensions-1 );
-        }
-        else
+    	if (numDimensions < 0)
         	throw new RuntimeException("Invalid number of array dimensions: " + numDimensions);
-        
-        ArrayType ret = elementType.getArrayType();
-        if( ret == null ) {
-            ret = new ArrayType(baseType, numDimensions);
-            elementType.setArrayType( ret );
-        }
-        return ret;
+    	
+    	int orgDimensions = numDimensions;
+    	Type elementType = baseType;
+    	while (numDimensions > 0) {
+            ArrayType ret = elementType.getArrayType();
+            if( ret == null ) {
+                ret = new ArrayType(baseType, orgDimensions - numDimensions + 1);
+                elementType.setArrayType( ret );
+            }
+            elementType = ret;
+            numDimensions--;
+    	}
+    	
+        return (ArrayType) elementType;
     }
 
     /**

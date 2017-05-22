@@ -30,12 +30,22 @@
 
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import soot.baf.*;
-import soot.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
-import java.util.*;
+import soot.Unit;
+import soot.UnitBox;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.baf.Baf;
+import soot.baf.PlaceholderInst;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.StmtSwitch;
+import soot.jimple.TableSwitchStmt;
+import soot.util.Switch;
 
 public class JTableSwitchStmt extends AbstractSwitchStmt 
     implements TableSwitchStmt
@@ -98,20 +108,21 @@ public class JTableSwitchStmt extends AbstractSwitchStmt
         
         // In this for-loop, we cannot use "<=" since 'i' would wrap around.
         // The case for "i == highIndex" is handled separately after the loop.
-        for(int i = lowIndex; i < highIndex; i++)
-        {
-            buffer.append(
-                          "    " + Jimple.CASE + " " + i + ": " + Jimple.GOTO +
-                          " " + getTarget(i - lowIndex) + ";" + endOfLine);
+        for (int i = lowIndex; i < highIndex; i++) {
+          Unit target = getTarget(i - lowIndex);
+          buffer.append("    " + Jimple.CASE + " " + i + ": " +
+              Jimple.GOTO + " " + (target == this ? "self" : target) + ";" +
+              endOfLine);
         }
-        buffer.append(
-                  "    " + Jimple.CASE + " " + highIndex + ": " + Jimple.GOTO +
-                  " " + getTarget(highIndex - lowIndex) + ";" + endOfLine);
+        Unit target = getTarget(highIndex - lowIndex);
+        buffer.append("    " + Jimple.CASE + " " + highIndex + ": " +
+            Jimple.GOTO + " " + (target == this ? "self" : target) + ";" +
+            endOfLine);
 
-        buffer.append("    " +  Jimple.DEFAULT + 
-                      ": " +  Jimple.GOTO + " " 
-                      + getDefaultTarget() + ";" + endOfLine);
-        
+        target = getDefaultTarget();
+        buffer.append("    " +  Jimple.DEFAULT + ": " + Jimple.GOTO + " " +
+            (target == this ? "self" : target) + ";" + endOfLine);
+
         buffer.append("}");
 
         return buffer.toString();

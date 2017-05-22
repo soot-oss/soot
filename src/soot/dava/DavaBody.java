@@ -94,6 +94,7 @@ import soot.dava.toolkits.base.AST.traversals.CopyPropagation;
 import soot.dava.toolkits.base.finders.AbruptEdgeFinder;
 import soot.dava.toolkits.base.finders.CycleFinder;
 import soot.dava.toolkits.base.finders.ExceptionFinder;
+import soot.dava.toolkits.base.finders.ExceptionNode;
 import soot.dava.toolkits.base.finders.IfFinder;
 import soot.dava.toolkits.base.finders.LabeledBlockFinder;
 import soot.dava.toolkits.base.finders.SequenceFinder;
@@ -184,13 +185,15 @@ import soot.util.Switchable;
 public class DavaBody extends Body {
 
 	public boolean DEBUG = false;
-	private Map pMap;
+	private Map<Integer, Value> pMap;
 
 	private HashSet<Object> consumedConditions, thisLocals;
 
-	private IterableSet synchronizedBlockFacts, exceptionFacts, monitorFacts;
+	private IterableSet<ExceptionNode> synchronizedBlockFacts;
+	private IterableSet<ExceptionNode> exceptionFacts;
+	private IterableSet<AugmentedStmt> monitorFacts;
 	
-	private IterableSet importList;
+	private IterableSet<String> importList;
 	
 	private Local controlLocal;
 
@@ -198,7 +201,7 @@ public class DavaBody extends Body {
 
 	private Unit constructorUnit; //holds a stmt (this.init<>)
 
-	private List caughtrefs;
+	private List<CaughtExceptionRef> caughtrefs;
 
 	/**
 	 *  Construct an empty DavaBody 
@@ -207,15 +210,15 @@ public class DavaBody extends Body {
 	DavaBody(SootMethod m) {
 		super(m);
 
-		pMap = new HashMap();
+		pMap = new HashMap<Integer, Value>();
 		consumedConditions = new HashSet<Object>();
 		thisLocals = new HashSet<Object>();
-		synchronizedBlockFacts = new IterableSet();
-		exceptionFacts = new IterableSet();
-		monitorFacts = new IterableSet();
-		importList = new IterableSet();
+		synchronizedBlockFacts = new IterableSet<ExceptionNode>();
+		exceptionFacts = new IterableSet<ExceptionNode>();
+		monitorFacts = new IterableSet<AugmentedStmt>();
+		importList = new IterableSet<String>();
 		//packagesUsed = new IterableSet();
-		caughtrefs = new LinkedList();
+		caughtrefs = new LinkedList<CaughtExceptionRef>();
 
 		controlLocal = null;
 		constructorExpr = null;
@@ -225,7 +228,7 @@ public class DavaBody extends Body {
 		return constructorUnit;
 	}
 
-	public List get_CaughtRefs() {
+	public List<CaughtExceptionRef> get_CaughtRefs() {
 		return caughtrefs;
 	}
 
@@ -241,11 +244,11 @@ public class DavaBody extends Body {
 		constructorUnit = s;
 	}
 
-	public Map get_ParamMap() {
+	public Map<Integer, Value> get_ParamMap() {
 		return pMap;
 	}
 
-	public void set_ParamMap(Map map) {
+	public void set_ParamMap(Map<Integer, Value> map) {
 		pMap = map;
 	}
 
@@ -276,19 +279,19 @@ public class DavaBody extends Body {
 		return b;
 	}
 
-	public IterableSet get_SynchronizedBlockFacts() {
+	public IterableSet<ExceptionNode> get_SynchronizedBlockFacts() {
 		return synchronizedBlockFacts;
 	}
 
-	public IterableSet get_ExceptionFacts() {
+	public IterableSet<ExceptionNode> get_ExceptionFacts() {
 		return exceptionFacts;
 	}
 
-	public IterableSet get_MonitorFacts() {
+	public IterableSet<AugmentedStmt> get_MonitorFacts() {
 		return monitorFacts;
 	}
 	
-	public IterableSet getImportList(){
+	public IterableSet<String> getImportList(){
 		return importList;
 	}
 	
@@ -468,7 +471,6 @@ public class DavaBody extends Body {
 		debug("applyASTAnalyses","initial one time analyses completed");
 		
 		boolean flag = true;
-		int times = 0;
 
 		G.v().ASTTransformations_modified = false;
 		G.v().ASTIfElseFlipped = false;
@@ -480,8 +482,6 @@ public class DavaBody extends Body {
 			do {
 				debug("applyASTAnalyses","ITERATION");
 				G.v().ASTTransformations_modified = false;
-				times++;
-
 				
 				
 				AST.apply(new AndAggregator());
@@ -945,7 +945,7 @@ public class DavaBody extends Body {
 								.getIndex(), ds.getLeftOp());
 
 					if (rightOp instanceof CaughtExceptionRef)
-						caughtrefs.add(ds.getLeftOp());
+						caughtrefs.add((CaughtExceptionRef) rightOp);
 				}
 			}
 		}
@@ -1270,14 +1270,8 @@ public class DavaBody extends Body {
 
 	
 	public void addToImportList(String className){
-		if(className.equals(""))
-			return;
-		
-		if(!importList.contains(className)){
+		if(!className.isEmpty())
 			importList.add(className);
-			if(DEBUG) 
-				System.out.println("Adding to import list: "+className);
-		}
 	}
 	
 	public void debug(String methodName, String debug){		

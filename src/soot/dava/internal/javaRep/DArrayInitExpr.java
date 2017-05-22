@@ -26,11 +26,10 @@ public class DArrayInitExpr implements Value {
 	
 	/*
 	 * go through the elements array
-	 * return useBoxes of each value plus the valubox itself
+	 * return useBoxes of each value plus the valuebox itself
 	 */
-	public List getUseBoxes() {
-		// TODO Auto-generated method stub
-        List list = new ArrayList();
+	public List<ValueBox> getUseBoxes() {
+        List<ValueBox> list = new ArrayList<ValueBox>();
 
         for (ValueBox element : elements) {
         	list.addAll(element.getValue().getUseBoxes());
@@ -91,5 +90,10 @@ public class DArrayInitExpr implements Value {
 		
 		return toReturn;
 	}
+	
+	public ValueBox[] getElements() {
+		return elements;
+	}
+	
 
 }

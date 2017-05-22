@@ -25,6 +25,7 @@ public final class TCatch extends Token
       return new TCatch(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTCatch(this);

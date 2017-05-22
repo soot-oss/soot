@@ -21,7 +21,7 @@ public final class AFile extends PFile
     }
 
     public AFile(
-        @SuppressWarnings("hiding") List<PModifier> _modifier_,
+        @SuppressWarnings("hiding") List<?> _modifier_,
         @SuppressWarnings("hiding") PFileType _fileType_,
         @SuppressWarnings("hiding") PClassName _className_,
         @SuppressWarnings("hiding") PExtendsClause _extendsClause_,
@@ -55,6 +55,7 @@ public final class AFile extends PFile
             cloneNode(this._fileBody_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAFile(this);
@@ -65,18 +66,24 @@ public final class AFile extends PFile
         return this._modifier_;
     }
 
-    public void setModifier(List<PModifier> list)
+    public void setModifier(List<?> list)
     {
-        this._modifier_.clear();
-        this._modifier_.addAll(list);
-        for(PModifier e : list)
+        for(PModifier e : this._modifier_)
         {
+            e.parent(null);
+        }
+        this._modifier_.clear();
+
+        for(Object obj_e : list)
+        {
+            PModifier e = (PModifier) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
             }
 
             e.parent(this);
+            this._modifier_.add(e);
         }
     }
 

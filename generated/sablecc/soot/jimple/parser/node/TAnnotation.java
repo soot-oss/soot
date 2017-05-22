@@ -25,6 +25,7 @@ public final class TAnnotation extends Token
       return new TAnnotation(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTAnnotation(this);

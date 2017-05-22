@@ -24,21 +24,29 @@
  */
 
 package soot;
-import soot.coffi.*;
+import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import soot.coffi.Utf8_Enumeration;
 import soot.dava.internal.SET.SETBasicBlock;
 import soot.dava.internal.SET.SETNode;
-
-import java.io.PrintStream;
-import java.util.*;
-
-import soot.jimple.toolkits.pointer.util.NativeHelper;
+import soot.dexpler.DalvikThrowAnalysis;
 import soot.jimple.spark.pag.MethodPAG;
+import soot.jimple.spark.pag.Parm;
 import soot.jimple.spark.sets.P2SetFactory;
 import soot.jimple.toolkits.annotation.arraycheck.Array2ndDimensionSymbol;
 import soot.jimple.toolkits.pointer.UnionFactory;
+import soot.jimple.toolkits.pointer.util.NativeHelper;
 import soot.jimple.toolkits.typing.ClassHierarchy;
-import soot.shimple.*;
 import soot.toolkits.astmetrics.ClassData;
+import soot.toolkits.scalar.Pair;
 
 /** A class to group together all the global variables in Soot. */
 public class G extends Singletons 
@@ -85,7 +93,7 @@ public class G extends Singletons
     public NativeHelper NativeHelper_helper = null;
     public P2SetFactory newSetFactory;
     public P2SetFactory oldSetFactory;
-    public Map Parm_pairToElement = new HashMap();
+    public Map<Pair<SootMethod, Integer>, Parm> Parm_pairToElement = new HashMap<Pair<SootMethod, Integer>, Parm>();
     public int SparkNativeHelper_tempVar = 0;
     public int PaddleNativeHelper_tempVar = 0;
     public boolean PointsToSetInternal_warnedAlready = false;
@@ -95,16 +103,19 @@ public class G extends Singletons
     public int GeneralConstObject_counter = 0;
     public UnionFactory Union_factory = null;
     public HashMap<Object, Array2ndDimensionSymbol> Array2ndDimensionSymbol_pool = new HashMap<Object, Array2ndDimensionSymbol>();
-    public Map AbstractUnit_allMapToUnnamed = Collections.unmodifiableMap(new AbstractUnitAllMapTo("<unnamed>"));
     public List<Timer> Timer_outstandingTimers = new ArrayList<Timer>();
     public boolean Timer_isGarbageCollecting;
     public Timer Timer_forcedGarbageCollectionTimer = new Timer("gc");
     public int Timer_count;
     public final Map<Scene, ClassHierarchy> ClassHierarchy_classHierarchyMap = new HashMap<Scene, ClassHierarchy>();
     public final Map<MethodContext, MethodContext> MethodContext_map = new HashMap<MethodContext, MethodContext>();
-
-    public ShimpleFactory shimpleFactory = new DefaultShimpleFactory();
-
+    
+    public DalvikThrowAnalysis interproceduralDalvikThrowAnalysis = null;
+    public DalvikThrowAnalysis interproceduralDalvikThrowAnalysis() {
+    	if (this.interproceduralDalvikThrowAnalysis == null)
+    		this.interproceduralDalvikThrowAnalysis = new DalvikThrowAnalysis(g, true);
+    	return this.interproceduralDalvikThrowAnalysis;
+    }
     
     public boolean ASTTransformations_modified;
     
@@ -144,5 +155,33 @@ public class G extends Singletons
     
     //ASTMetrics Data
     public ArrayList<ClassData> ASTMetricsData = new ArrayList<ClassData>();
+    
+    public void resetSpark() {
+    	// We reset SPARK the hard way.
+    	for (Method m : getClass().getSuperclass().getDeclaredMethods()) {
+    		if (m.getName().startsWith("release_soot_jimple_spark_"))
+				try {
+					m.invoke(this);
+				} catch (IllegalAccessException e) {
+					throw new RuntimeException(e);
+				} catch (IllegalArgumentException e) {
+					throw new RuntimeException(e);
+				} catch (InvocationTargetException e) {
+					throw new RuntimeException(e);
+				}
+    	}
+    	
+    	// Reset some other stuff directly in this class
+    	MethodPAG_methodToPag.clear();
+    	MethodRWSet_allFields.clear();
+    	MethodRWSet_allGlobals.clear();
+    	newSetFactory = null;
+    	oldSetFactory = null;
+    	Parm_pairToElement.clear();
+    	
+    	// We need to reset the virtual call resolution table
+    	release_soot_jimple_toolkits_callgraph_VirtualCalls();
+    }
+    
 }
 

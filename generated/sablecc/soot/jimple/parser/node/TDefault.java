@@ -25,6 +25,7 @@ public final class TDefault extends Token
       return new TDefault(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTDefault(this);

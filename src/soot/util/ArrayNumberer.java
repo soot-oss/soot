@@ -27,17 +27,25 @@ import java.util.*;
  */
 
 public class ArrayNumberer<E extends Numberable> implements IterableNumberer<E> {
-    @SuppressWarnings("unchecked")
-    protected E[] numberToObj = (E[]) new Numberable[1024];
-    protected int lastNumber = 0;
+    protected E[] numberToObj;
+    protected int lastNumber;
     
-    private void resize(int n) {
-    	E[] old = numberToObj;    	
-    	numberToObj = Arrays.copyOf(numberToObj, n);
-    	Arrays.fill(old, null);
+    @SuppressWarnings("unchecked")
+    public ArrayNumberer() {
+    	numberToObj = (E[]) new Numberable[1024];
+    	lastNumber = 0;
     }
     
-    public void add( E o ) {
+    public ArrayNumberer(E[] elements) {
+    	numberToObj = elements;
+    	lastNumber = elements.length;
+    }
+    
+    private void resize(int n) {
+    	numberToObj = Arrays.copyOf(numberToObj, n);
+    }
+    
+    public synchronized void add( E o ) {
         if( o.getNumber() != 0 ) return;
         
         ++lastNumber;

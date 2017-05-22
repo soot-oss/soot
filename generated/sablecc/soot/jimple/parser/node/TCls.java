@@ -25,6 +25,7 @@ public final class TCls extends Token
       return new TCls(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTCls(this);

@@ -79,7 +79,7 @@ public class VoidReturnRemover{
 	    	
 	    	
 	    //get last statement
-	    List<Object> stmts = ((ASTStatementSequenceNode)last).getStatements();
+	    List<AugmentedStmt> stmts = ((ASTStatementSequenceNode)last).getStatements();
 	    if(stmts.size()==0){
 	    	//no stmts inside statement sequence node
 	    	subBody.remove(subBody.size()-1);

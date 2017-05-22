@@ -39,6 +39,7 @@ public final class AConstantCaseLabel extends PCaseLabel
             cloneNode(this._integerConstant_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAConstantCaseLabel(this);

@@ -29,6 +29,7 @@ public final class AUnknownJimpleType extends PJimpleType
             cloneNode(this._unknown_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAUnknownJimpleType(this);

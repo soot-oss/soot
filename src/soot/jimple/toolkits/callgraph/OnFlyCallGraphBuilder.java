@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -30,19 +31,30 @@ import java.util.Set;
 
 import soot.ArrayType;
 import soot.Body;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
 import soot.Context;
+import soot.DoubleType;
 import soot.EntryPoints;
 import soot.FastHierarchy;
+import soot.FloatType;
 import soot.G;
+import soot.IntType;
 import soot.Kind;
 import soot.Local;
+import soot.LongType;
 import soot.MethodContext;
 import soot.MethodOrMethodContext;
+import soot.NullType;
 import soot.PackManager;
 import soot.PhaseOptions;
+import soot.PrimType;
+import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
 import soot.SceneTransformer;
+import soot.ShortType;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootMethodRef;
@@ -61,16 +73,22 @@ import soot.jimple.Jimple;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.NewMultiArrayExpr;
+import soot.jimple.NullConstant;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.StaticInvokeExpr;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.PAG;
+import soot.jimple.toolkits.annotation.nullcheck.NullnessAnalysis;
+import soot.jimple.toolkits.callgraph.ConstantArrayAnalysis.ArrayTypes;
 import soot.jimple.toolkits.reflection.ReflectionTraceInfo;
 import soot.options.CGOptions;
 import soot.options.Options;
+import soot.options.SparkOptions;
+import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.util.LargeNumberedMap;
 import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
@@ -82,12 +100,60 @@ import soot.util.queue.QueueReader;
  */
 public final class OnFlyCallGraphBuilder
 { 
+	private static final PrimType[] CHAR_NARROWINGS = new PrimType[]{
+		CharType.v()
+	};
+	private static final PrimType[] INT_NARROWINGS = new PrimType[]{
+		IntType.v(),
+		CharType.v(),
+		ShortType.v(),
+		ByteType.v(),
+		ShortType.v()
+	};
+	private static final PrimType[] SHORT_NARROWINGS = new PrimType[]{
+		ShortType.v(),
+		ByteType.v()
+	};
+	private static final PrimType[] LONG_NARROWINGS = new PrimType[]{
+		LongType.v(),
+		IntType.v(),
+		CharType.v(),
+		ShortType.v(),
+		ByteType.v(),
+		ShortType.v()
+	};
+	private static final ByteType[] BYTE_NARROWINGS = new ByteType[]{
+		ByteType.v()
+	};
+	private static final PrimType[] FLOAT_NARROWINGS = new PrimType[]{
+		FloatType.v(),
+		LongType.v(),
+		IntType.v(),
+		CharType.v(),
+		ShortType.v(),
+		ByteType.v(),
+		ShortType.v(),
+	};
+	private static final PrimType[] BOOLEAN_NARROWINGS = new PrimType[]{
+		BooleanType.v()
+	};
+	private static final PrimType[] DOUBLE_NARROWINGS = new PrimType[]{
+		DoubleType.v(),
+		FloatType.v(),
+		LongType.v(),
+		IntType.v(),
+		CharType.v(),
+		ShortType.v(),
+		ByteType.v(),
+		ShortType.v(),	
+	};
 	public class DefaultReflectionModel implements ReflectionModel {
 		
 	    protected CGOptions options = new CGOptions( PhaseOptions.v().getPhaseOptions("cg") );
 	    
 	    protected HashSet<SootMethod> warnedAlready = new HashSet<SootMethod>();
 
+		@Override
 		public void classForName(SootMethod source, Stmt s) {
 	        List<Local> stringConstants = methodToStringConstants.get(source);
 	        if( stringConstants == null )
@@ -97,7 +163,7 @@ public final class OnFlyCallGraphBuilder
 	        if( className instanceof StringConstant ) {
 	            String cls = ((StringConstant) className ).value;
 	            constantForName( cls, source, s );
-	        } else {
+	        } else if (className instanceof Local) {
 	            Local constant = (Local) className;
 	            if( options.safe_forname() ) {
 	                for (SootMethod tgt : EntryPoints.v().clinits()) {
@@ -120,6 +186,7 @@ public final class OnFlyCallGraphBuilder
 	        }        
 		}
 
+		@Override
 		public void classNewInstance(SootMethod source, Stmt s) {
 			if( options.safe_newinstance() ) {
 				for (SootMethod tgt : EntryPoints.v().inits()) {
@@ -142,6 +209,7 @@ public final class OnFlyCallGraphBuilder
 			} 
 		}
 
+		@Override
 		public void contructorNewInstance(SootMethod source, Stmt s) {
 			if( options.safe_newinstance() ) {
 				for (SootMethod tgt : EntryPoints.v().allInits()) {
@@ -164,6 +232,7 @@ public final class OnFlyCallGraphBuilder
 			} 
 		}
 
+		@Override
 		public void methodInvoke(SootMethod container, Stmt invokeStmt) {
 			if( !warnedAlready(container) ) {
 				if( options.verbose() ) {
@@ -182,7 +251,25 @@ public final class OnFlyCallGraphBuilder
 		private boolean warnedAlready(SootMethod m) {
 			return warnedAlready.contains(m);
 		}
-
+	}
+	
+	public class TypeBasedReflectionModel extends DefaultReflectionModel {
+		@Override
+		public void methodInvoke(SootMethod container, Stmt invokeStmt) {
+			if(container.getDeclaringClass().isJavaLibraryClass()) {
+				super.methodInvoke(container, invokeStmt);
+				return;
+			}
+			InstanceInvokeExpr d = (InstanceInvokeExpr) invokeStmt.getInvokeExpr();
+			Value base = d.getArg(0);
+			// no support for statics at the moment
+			if(base instanceof NullConstant) {
+				super.methodInvoke(container, invokeStmt);
+				return;
+			}
+			assert base instanceof Local;
+			addInvokeCallSite(invokeStmt, container, d);
+		}
 	}
 
 	
@@ -220,6 +307,7 @@ public final class OnFlyCallGraphBuilder
 		 * Adds an edge to all class initializers of all possible receivers
 		 * of Class.forName() calls within source.
 		 */
+		@Override
 		public void classForName(SootMethod container, Stmt forNameInvokeStmt) {
 			Set<String> classNames = reflectionInfo.classForNameClassNames(container);
 			if(classNames==null || classNames.isEmpty()) {
@@ -235,6 +323,7 @@ public final class OnFlyCallGraphBuilder
 		 * Adds an edge to the constructor of the target class from this call to
 		 * {@link Class#newInstance()}.
 		 */
+		@Override
 		public void classNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
 			Set<String> classNames = reflectionInfo.classNewInstanceClassNames(container);
 			if(classNames==null || classNames.isEmpty()) {
@@ -258,6 +347,7 @@ public final class OnFlyCallGraphBuilder
 		 * {@link Constructor#newInstance(Object...)}.
 		 * @see PAG#addCallTarget(Edge) 
 		 */
+		@Override
 		public void contructorNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
 			Set<String> constructorSignatures = reflectionInfo.constructorNewInstanceSignatures(container);
 			if(constructorSignatures==null || constructorSignatures.isEmpty()) {
@@ -278,6 +368,7 @@ public final class OnFlyCallGraphBuilder
 		 * {@link Method#invoke(Object, Object...)}.
 		 * @see PAG#addCallTarget(Edge) 
 		 */
+		@Override
 		public void methodInvoke(SootMethod container, Stmt invokeStmt) {
 			Set<String> methodSignatures = reflectionInfo.methodInvokeSignatures(container);
 			if (methodSignatures == null || methodSignatures.isEmpty()) {
@@ -370,7 +461,23 @@ public final class OnFlyCallGraphBuilder
     private final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites = new LargeNumberedMap<Local, List<VirtualCallSite>>( Scene.v().getLocalNumberer() ); // Local -> List(VirtualCallSite)
     private final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers = new LargeNumberedMap<SootMethod, List<Local>>( Scene.v().getMethodNumberer() ); // SootMethod -> List(Local)
     public LargeNumberedMap<SootMethod, List<Local>> methodToReceivers() { return methodToReceivers; }
-
+    
+    // type based reflection resolution state
+    
+    private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
+    private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs = new LargeNumberedMap<SootMethod, List<Local>>(Scene.v().getMethodNumberer());
+    public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs() { return methodToInvokeArgs; }
+    public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases() { return methodToInvokeBases; }
+    
+    private final Map<Local, List<InvokeCallSite>> baseToInvokeSite = new IdentityHashMap<Local, List<InvokeCallSite>>();
+    private final Map<Local, List<InvokeCallSite>> invokeArgsToInvokeSite = new IdentityHashMap<Local, List<InvokeCallSite>>();
+    private final Map<Local, Set<Integer>> invokeArgsToSize = new IdentityHashMap<Local, Set<Integer>>();
+    private final Map<AllocDotField, Set<Local>> allocDotFieldToLocal = new IdentityHashMap<AllocDotField, Set<Local>>();
+    private final Map<Local, Set<Type>> reachingArgTypes = new IdentityHashMap<Local, Set<Type>>();
+    private final Map<Local, Set<Type>> reachingBaseTypes = new IdentityHashMap<Local, Set<Type>>();
+    
+    // end type based reflection resolution
+    
     private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites = new SmallNumberedMap<List<VirtualCallSite>>( Scene.v().getLocalNumberer() ); // Local -> List(VirtualCallSite)
     private final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants = new LargeNumberedMap<SootMethod, List<Local>>( Scene.v().getMethodNumberer() ); // SootMethod -> List(Local)
     public LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants() { return methodToStringConstants; }
@@ -387,6 +494,7 @@ public final class OnFlyCallGraphBuilder
 
     private final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
     private final QueueReader<SootMethod> targets = targetsQueue.reader();
+	private FastHierarchy fh;
 
 
     public OnFlyCallGraphBuilder( ContextManager cm, ReachableMethods rm ) {
@@ -399,10 +507,15 @@ public final class OnFlyCallGraphBuilder
         }
         
         if(options.reflection_log()==null || options.reflection_log().length()==0) {
-        	reflectionModel = new DefaultReflectionModel();
+        	if(options.types_for_invoke() && new SparkOptions(PhaseOptions.v().getPhaseOptions("cg.spark")).enabled()) {
+        		reflectionModel = new TypeBasedReflectionModel();
+        	} else {
+        		reflectionModel = new DefaultReflectionModel();
+        	}
         } else {
         	reflectionModel = new TraceBasedReflectionModel();
         }
+        this.fh = Scene.v().getOrMakeFastHierarchy();
     }
     public OnFlyCallGraphBuilder( ContextManager cm, ReachableMethods rm, boolean appOnly ) {
         this( cm, rm );
@@ -414,7 +527,7 @@ public final class OnFlyCallGraphBuilder
                 rm.update();
                 if( !worklist.hasNext() ) break;
             }
-            MethodOrMethodContext momc = (MethodOrMethodContext) worklist.next();
+            MethodOrMethodContext momc = worklist.next();
             SootMethod m = momc.method();
             if( appOnly && !m.getDeclaringClass().isApplicationClass() ) continue;
             if( analyzedMethods.add( m ) ) processNewMethod( m );
@@ -422,47 +535,367 @@ public final class OnFlyCallGraphBuilder
         }
     }
     public boolean wantTypes( Local receiver ) {
-        return receiverToSites.get(receiver) != null;
+        return receiverToSites.get(receiver) != null || baseToInvokeSite.get(receiver) != null;
     }
-    public void addType( Local receiver, Context srcContext, Type type, Context typeContext ) {
-        FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
-        for( Iterator<VirtualCallSite> siteIt = receiverToSites.get( receiver ).iterator(); siteIt.hasNext(); ) {
-            final VirtualCallSite site = siteIt.next();
-            if( site.kind() == Kind.THREAD && !fh.canStoreType( type, clRunnable))
-                continue;
-            if( site.kind() == Kind.EXECUTOR && !fh.canStoreType( type, clRunnable))
-                continue;
-            if( site.kind() == Kind.ASYNCTASK && !fh.canStoreType( type, clAsyncTask ))
-                continue;
+    
+    public void addBaseType(Local base, Context context, Type ty) {
+		assert context == null;
+		if(!baseToInvokeSite.containsKey(base)) {
+			return;
+		}
+		if(!reachingBaseTypes.containsKey(base)) {
+			reachingBaseTypes.put(base, new HashSet<Type>());
+		}
+		if(reachingBaseTypes.get(base).add(ty)) {
+			resolveInvoke(baseToInvokeSite.get(base));
+		}
+	}
+    
+    public void addInvokeArgType(Local argArray, Context context, Type t) {
+		assert context == null;
+		if(!invokeArgsToInvokeSite.containsKey(argArray)) {
+			return;
+		}
+		if(!reachingArgTypes.containsKey(argArray)) {
+			reachingArgTypes.put(argArray, new HashSet<Type>());
+		}
+		if(reachingArgTypes.get(argArray).add(t)) {
+			resolveInvoke(invokeArgsToInvokeSite.get(argArray));
+		}
+	}
+    
+    public void setArgArrayNonDetSize(Local argArray, Context context) {
+    	assert context == null;
+    	if(!invokeArgsToInvokeSite.containsKey(argArray)) {
+    		return;
+    	}
+    	if(invokeArgsToSize.containsKey(argArray) && invokeArgsToInvokeSite.get(argArray) == null) {
+    		return;
+    	}
+    	invokeArgsToSize.put(argArray, null);
+    	resolveInvoke(invokeArgsToInvokeSite.get(argArray));
+	}
+    
+    public void addPossibleArgArraySize(Local argArray, int value, Context context) {
+		assert context == null;
+		if(!invokeArgsToInvokeSite.containsKey(argArray)) {
+			return;
+		}
+		// non-det size
+		if(invokeArgsToSize.containsKey(argArray) && invokeArgsToSize.get(argArray) == null) {
+			return;
+		} else {
+			if(!invokeArgsToSize.containsKey(argArray)) {
+				invokeArgsToSize.put(argArray, new HashSet<Integer>());
+			}
+			if(invokeArgsToSize.get(argArray).add(value)) {
+				resolveInvoke(invokeArgsToInvokeSite.get(argArray));
+			}
+		}
+	}
+    
+    private void resolveInvoke(List<InvokeCallSite> list) {
+		for(InvokeCallSite ics : list) {
+			Set<Type> s = reachingBaseTypes.get(ics.base());
+			if(s == null || s.isEmpty()) {
+				continue;
+			}
+			if(ics.reachingTypes() != null) {
+				assert ics.nullnessCode() != InvokeCallSite.MUST_BE_NULL;
+				resolveStaticTypes(s, ics);
+				continue;
+			}
+			boolean mustNotBeNull = ics.nullnessCode() == InvokeCallSite.MUST_NOT_BE_NULL;
+			boolean mustBeNull = ics.nullnessCode() == InvokeCallSite.MUST_BE_NULL;
+			//  if the arg array may be null and we haven't seen a size or type yet, then generate nullary methods
+			if(mustBeNull || (ics.nullnessCode() == InvokeCallSite.MAY_BE_NULL && (!invokeArgsToSize.containsKey(ics.argArray()) || !reachingArgTypes.containsKey(ics.argArray())))) {
+				for(Type bType : s) {
+					assert bType instanceof RefType;
+					SootClass baseClass = ((RefType) bType).getSootClass();
+					assert !baseClass.isInterface();
+					Iterator<SootMethod> mIt = getPublicNullaryMethodIterator(baseClass);
+					while(mIt.hasNext()) {
+						SootMethod sm = mIt.next();
+						cm.addVirtualEdge(ics.container(), ics.stmt(), sm, Kind.REFL_INVOKE, null);
+					}
+				}
+			} else {
+				/*
+				 * In this branch, either the invoke arg must not be null, or may be null and we have size and type information.
+				 * Invert the above condition:
+				 * ~mustBeNull && (~mayBeNull || (has-size && has-type)) 
+				 * => (~mustBeNull && ~mayBeNull) || (~mustBeNull && has-size && has-type)
+				 * => mustNotBeNull || (~mustBeNull && has-types && has-size)
+				 * => mustNotBeNull || (mayBeNull && has-types && has-size) 
+				 */
+				Set<Type> reachingTypes = reachingArgTypes.get(ics.argArray());
+				/* 
+				 * the path condition allows must-not-be null without type and size info.
+				 * Do nothing in this case. THIS IS UNSOUND if default null values in
+				 * an argument array are used.
+				 */
+				if(reachingTypes == null || !invokeArgsToSize.containsKey(ics.argArray())) {
+					assert ics.nullnessCode() == InvokeCallSite.MUST_NOT_BE_NULL : ics;
+					return;
+				}
+				assert reachingTypes != null && invokeArgsToSize.containsKey(ics.argArray());
+				Set<Integer> methodSizes = invokeArgsToSize.get(ics.argArray());
+				for(Type bType : s) {
+					assert bType instanceof RefLikeType;
+					// we do not handle static methods or array reflection
+					if(bType instanceof NullType || bType instanceof ArrayType) {
+						continue;
+					} else {
+						SootClass baseClass = ((RefType)bType).getSootClass();
+						Iterator<SootMethod> mIt = getPublicMethodIterator(baseClass, reachingTypes, methodSizes, mustNotBeNull);
+						while(mIt.hasNext()) {
+							SootMethod sm = mIt.next();
+							cm.addVirtualEdge(ics.container(), ics.stmt(), sm, Kind.REFL_INVOKE, null);
+						}
+					}
+				}
+			}
+		}
+	}
+    
+    private void resolveStaticTypes(Set<Type> s, InvokeCallSite ics) {
+    	ArrayTypes at = ics.reachingTypes();
+		for(Type bType : s) {
+			SootClass baseClass = ((RefType)bType).getSootClass();
+			Iterator<SootMethod> mIt = getPublicMethodIterator(baseClass, at);
+			while(mIt.hasNext()) {
+				SootMethod sm = mIt.next();
+				cm.addVirtualEdge(ics.container(), ics.stmt(), sm, Kind.REFL_INVOKE, null);
+			}
+		}
+	}
+	private Iterator<SootMethod> getPublicMethodIterator(SootClass baseClass, final ArrayTypes at) {
+		return new AbstractMethodIterator(baseClass) {
+			@Override
+			protected boolean acceptMethod(SootMethod m) {
+				if(!at.possibleSizes.contains(m.getParameterCount())) {
+					return false;
+				}
+				for(int i = 0; i < m.getParameterCount(); i++) {
+					if(at.possibleTypes[i].isEmpty()) {
+						continue;
+					}
+					if(!isReflectionCompatible(m.getParameterType(i), at.possibleTypes[i])) {
+						return false;
+					}
+				}
+				return true;
+			}
+			
+		};
+	}
+	
+	private PrimType[] narrowings(PrimType f) {
+		if(f instanceof IntType) {
+			return INT_NARROWINGS;
+		} else if(f instanceof ShortType) {
+			return SHORT_NARROWINGS;
+		} else if(f instanceof LongType) {
+			return LONG_NARROWINGS;
+		} else if(f instanceof ByteType) {
+			return BYTE_NARROWINGS;
+		} else if(f instanceof FloatType) {
+			return FLOAT_NARROWINGS;
+		} else if(f instanceof BooleanType) {
+			return BOOLEAN_NARROWINGS;
+		} else if(f instanceof DoubleType) {
+			return DOUBLE_NARROWINGS;
+		} else if(f instanceof CharType) {
+			return CHAR_NARROWINGS;
+		} else {
+			throw new RuntimeException("Unexpected primitive type: " + f);
+		}
+	}
 
-            if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD
-            		&& site.kind != Kind.EXECUTOR
-            		&& site.kind != Kind.ASYNCTASK ) {
-            	SootMethod target = VirtualCalls.v().resolveSpecial( 
-                            (SpecialInvokeExpr) site.iie(),
-                            site.subSig(),
-                            site.container() );
-            	//if the call target resides in a phantom class then "target" will be null;
-            	//simply do not add the target in that case
-            	if(target!=null) {
-            		targetsQueue.add( target );            		
-            	} 
-            } else {
-                VirtualCalls.v().resolve( type,
-                        receiver.getType(),
-                        site.subSig(),
-                        site.container(), 
-                        targetsQueue );
-            }
-            while(targets.hasNext()) {
-                SootMethod target = (SootMethod) targets.next();
-                cm.addVirtualEdge(
-                        MethodContext.v( site.container(), srcContext ),
-                        site.stmt(),
-                        target,
-                        site.kind(),
-                        typeContext );
-            }
+	private boolean isReflectionCompatible(Type paramType, Set<Type> reachingTypes) {
+		/* 
+		 * attempting to pass in a null will match any type (although attempting to pass it
+		 * to a primitive arg will give an NPE)
+		 */
+		if(reachingTypes.contains(NullType.v())) {
+			return true;
+		}
+		if(paramType instanceof RefLikeType) {
+			for(Type rType : reachingTypes) {
+				if(fh.canStoreType(paramType, rType)) {
+					return true;
+				}
+			}
+			return false;
+		} else if(paramType instanceof PrimType) {
+			PrimType primType = (PrimType) paramType;
+			/*
+			 * It appears, java reflection allows for unboxing followed by widening, so if 
+			 * there is a wrapper type that whose corresponding primitive type
+			 * can be widened into the expected primitive type, we're set
+			 */
+			for(PrimType narrowings : narrowings(primType)) {
+				if(reachingTypes.contains(narrowings.boxedType())) {
+					return true;
+				}
+			}
+			return false;
+		} else {
+			// impossible?
+			return false;
+		}
+	}
+
+	
+	private abstract class AbstractMethodIterator implements Iterator<SootMethod> {
+		private SootMethod next;
+		private SootClass currClass;
+		private Iterator<SootMethod> methodIterator;
+
+		AbstractMethodIterator(SootClass baseClass) {
+			this.currClass = baseClass;
+			this.next = null;
+			this.methodIterator = baseClass.methodIterator();
+			this.findNextMethod();
+		}
+		
+		protected void findNextMethod() {
+			next = null;
+			if(methodIterator == null) {
+				return;
+			}
+			do {
+				while(methodIterator.hasNext()) {
+					SootMethod n = methodIterator.next();
+					if (!n.isPublic()) {
+						continue;
+					}
+					if (n.isStatic() || n.isConstructor() || n.isStaticInitializer() || !n.isConcrete()) {
+						continue;
+					}
+					if(!acceptMethod(n)) {
+						continue;
+					}
+					next = n;
+					return;
+				}
+				if(currClass.hasSuperclass() && !currClass.getSuperclass().isPhantom() && !currClass.getSuperclass().getName().equals("java.lang.Object")) {
+					currClass = currClass.getSuperclass();
+					methodIterator = currClass.methodIterator();
+					continue;
+				} else {
+					methodIterator = null;
+					return;
+				}
+			} while(true);
+		}
+		
+		@Override
+		public boolean hasNext() {
+			return next != null;
+		}
+
+		@Override
+		public SootMethod next() {
+			SootMethod toRet = next;
+			findNextMethod();
+			return toRet;
+		}
+
+		@Override
+		public void remove() {
+			throw new UnsupportedOperationException();
+		}
+		
+		protected abstract boolean acceptMethod(SootMethod m);
+	}
+	
+	private Iterator<SootMethod> getPublicMethodIterator(final SootClass baseClass, final Set<Type> reachingTypes, final Set<Integer> methodSizes, final boolean mustNotBeNull) {
+    	if(baseClass.isPhantom()) {
+    		return Collections.emptyIterator();
+    	}
+    	return new AbstractMethodIterator(baseClass) {
+			@Override
+			protected boolean acceptMethod(SootMethod n) {
+				int nParams = n.getParameterCount();
+				if(methodSizes != null) {
+					// if the arg array can be null we have to still allow for nullary methods
+					boolean compatibleSize = methodSizes.contains(nParams) || (!mustNotBeNull && nParams == 0);
+					if(!compatibleSize) {
+						return false;
+					}
+				}
+				List<Type> t = n.getParameterTypes();
+				for(Type pTy : t) {
+					if(!isReflectionCompatible(pTy, reachingTypes)) {
+						return false;
+					}
+				}
+				return true;
+			}
+    		
+    	};
+	}
+	
+	private Iterator<SootMethod> getPublicNullaryMethodIterator(final SootClass baseClass) {
+    	if(baseClass.isPhantom()) {
+    		return Collections.emptyIterator();
+    	}
+    	return new AbstractMethodIterator(baseClass) {
+			@Override
+			protected boolean acceptMethod(SootMethod n) {
+				int nParams = n.getParameterCount();
+				return nParams == 0;
+			}
+    	};
+	}
+	
+	public void addType( Local receiver, Context srcContext, Type type, Context typeContext ) {
+        FastHierarchy fh = Scene.v().getOrMakeFastHierarchy();
+        if(receiverToSites.get(receiver) != null) {
+	        for( Iterator<VirtualCallSite> siteIt = receiverToSites.get( receiver ).iterator(); siteIt.hasNext(); ) {
+	            final VirtualCallSite site = siteIt.next();
+	            if( site.kind() == Kind.THREAD && !fh.canStoreType( type, clRunnable))
+	                continue;
+	            if( site.kind() == Kind.EXECUTOR && !fh.canStoreType( type, clRunnable))
+	                continue;
+	            if( site.kind() == Kind.ASYNCTASK && !fh.canStoreType( type, clAsyncTask ))
+	                continue;
+	
+	            if( site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD
+	            		&& site.kind != Kind.EXECUTOR
+	            		&& site.kind != Kind.ASYNCTASK ) {
+	            	SootMethod target = VirtualCalls.v().resolveSpecial( 
+	                            (SpecialInvokeExpr) site.iie(),
+	                            site.subSig(),
+	                            site.container(),
+	                            appOnly );
+	            	//if the call target resides in a phantom class then "target" will be null;
+	            	//simply do not add the target in that case
+	            	if(target!=null) {
+	            		targetsQueue.add( target );
+	            	}
+	            } else {
+	                VirtualCalls.v().resolve( type,
+	                        receiver.getType(),
+	                        site.subSig(),
+	                        site.container(), 
+	                        targetsQueue,
+	                        appOnly);
+	            }
+	            while(targets.hasNext()) {
+	                SootMethod target = targets.next();
+	                cm.addVirtualEdge(
+	                        MethodContext.v( site.container(), srcContext ),
+	                        site.stmt(),
+	                        target,
+	                        site.kind(),
+	                        typeContext );
+	            }
+	        }
+        }
+        if(baseToInvokeSite.get(receiver) != null) {
+        	addBaseType(receiver, srcContext, type);
         }
     }
     public boolean wantStringConstants( Local stringConst ) {
@@ -493,7 +926,7 @@ public final class OnFlyCallGraphBuilder
                     }
                 } else {
                     SootClass sootcls = Scene.v().getSootClass( constant );
-                    if( !sootcls.isApplicationClass() ) {
+                    if( !sootcls.isApplicationClass() && !sootcls.isPhantom() ) {
                         sootcls.setLibraryClass();
                     }
                     for (SootMethod clinit : EntryPoints.v().clinitsOf(sootcls)) {
@@ -507,15 +940,111 @@ public final class OnFlyCallGraphBuilder
             }
         }
     }
+    
+    public boolean wantArrayField(AllocDotField df) {
+    	return allocDotFieldToLocal.containsKey(df);
+	}
+    
+    public void addInvokeArgType(AllocDotField df, Context context, Type type) {
+		if(!allocDotFieldToLocal.containsKey(df)) {
+			return;
+		}
+		for(Local l : allocDotFieldToLocal.get(df)) {
+			addInvokeArgType(l, context, type);
+		}
+	}
+    
+	public boolean wantInvokeArg(Local receiver) {
+		return invokeArgsToInvokeSite.containsKey(receiver);
+	}
+	
+	public void addInvokeArgDotField(Local receiver, AllocDotField dot) {
+		if(!allocDotFieldToLocal.containsKey(dot)) {
+			allocDotFieldToLocal.put(dot, new HashSet<Local>());
+		}
+		allocDotFieldToLocal.get(dot).add(receiver);
+	}
+	
+	private NullnessAnalysis nullnessCache = null;
+	private ConstantArrayAnalysis arrayCache = null;
+	private SootMethod analysisKey = null;
 
     /* End of public methods. */
-
-    private void addVirtualCallSite( Stmt s, SootMethod m, Local receiver,
+    
+    /*
+     * How type based reflection resolution works:
+     * 
+     * In general, for each call to invoke(), we record the local of the 
+     * receiver argument and the argument array. Whenever a new type is added 
+     * to the points to set of the receiver argument we add that type to the reachingBaseTypes
+     * and try to resolve the reflective method call (see addType, addBaseType, and updatedNode() in OnFlyCallGraph).
+     * 
+     * For added precision, we also record the second argument to invoke. If it is always null, this means the
+     * invoke() call resolves only to nullary methods.
+     * 
+     * When the second argument is a variable that must not be null we can narrow down the called method based
+     * on the possible sizes of the argument array and the types it contains. Whenever a new allocation reaches
+     * this variable we record the possible size of the array (by looking at the allocation site) and the possible
+     * types stored in the array (see updatedNode in OnFlyCallGraph in the branch wantInvokeArg()). If the size of the array
+     * isn't statically known, the analysis considers methods of all possible arities.
+     * In addition, we track the PAG node
+     * corresponding to the array contents. If a new type reaches this node, we update the possible
+     * argument types. (see propagate() in PropWorklist and the visitor, and updatedFieldRef in OnFlyCallGraph).
+     * 
+     * For details on the method resolution process, see resolveInvoke()
+     * 
+     * Finally, for cases like o.invoke(b, foo, bar, baz); it is very easy to statically determine
+     * precisely which types are in which argument positions. This is computed using the
+     * ConstantArrayAnalysis and are resolved using resolveStaticTypes().
+     */
+    private void addInvokeCallSite(Stmt s, SootMethod container, InstanceInvokeExpr d) {
+    	Local l = (Local) d.getArg(0);
+    	Value argArray = d.getArg(1);
+    	InvokeCallSite ics;
+    	if(argArray instanceof NullConstant) {
+    		ics = new InvokeCallSite(s, container, d, l);
+    	} else {
+    		if(analysisKey != container) {
+    			ExceptionalUnitGraph graph = new ExceptionalUnitGraph(container.getActiveBody());
+				nullnessCache = new NullnessAnalysis(graph);
+    			arrayCache = new ConstantArrayAnalysis(graph, container.getActiveBody());
+    			analysisKey = container;
+    		}
+    		Local argLocal = (Local) argArray;
+    		int nullnessCode;
+    		if(nullnessCache.isAlwaysNonNullBefore(s, argLocal)) {
+    			nullnessCode = InvokeCallSite.MUST_NOT_BE_NULL;
+    		} else if(nullnessCache.isAlwaysNullBefore(s, argLocal)) {
+    			nullnessCode = InvokeCallSite.MUST_BE_NULL;
+    		} else {
+    			nullnessCode = InvokeCallSite.MAY_BE_NULL;
+    		}
+    		if(nullnessCode != InvokeCallSite.MUST_BE_NULL && arrayCache.isConstantBefore(s, argLocal)) {
+    			ArrayTypes reachingArgTypes = arrayCache.getArrayTypesBefore(s, argLocal);
+    			if(nullnessCode == InvokeCallSite.MAY_BE_NULL) {
+    				reachingArgTypes.possibleSizes.add(0);
+    			}
+    			ics = new InvokeCallSite(s, container, d, l, reachingArgTypes, nullnessCode);
+    		} else {
+	    		ics = new InvokeCallSite(s, container, d, l, argLocal, nullnessCode);
+	    		if(!invokeArgsToInvokeSite.containsKey(argLocal)) {
+	    			invokeArgsToInvokeSite.put(argLocal, new ArrayList<InvokeCallSite>());
+	    		}
+	    		invokeArgsToInvokeSite.get(argLocal).add(ics);
+    		}
+    	}
+    	if(!baseToInvokeSite.containsKey(l)) {
+    		baseToInvokeSite.put(l, new ArrayList<InvokeCallSite>());
+    	}
+    	baseToInvokeSite.get(l).add(ics);
+    }
+    
+	private void addVirtualCallSite( Stmt s, SootMethod m, Local receiver,
             InstanceInvokeExpr iie, NumberedString subSig, Kind kind ) {
-        List<VirtualCallSite> sites = (List<VirtualCallSite>) receiverToSites.get(receiver);
+        List<VirtualCallSite> sites = receiverToSites.get(receiver);
         if (sites == null) {
             receiverToSites.put(receiver, sites = new ArrayList<VirtualCallSite>());
-            List<Local> receivers = (List<Local>) methodToReceivers.get(m);
+            List<Local> receivers = methodToReceivers.get(m);
             if( receivers == null )
                 methodToReceivers.put(m, receivers = new ArrayList<Local>());
             receivers.add(receiver);
@@ -547,7 +1076,12 @@ public final class OnFlyCallGraphBuilder
                         addVirtualCallSite( s, m, receiver, iie, sigRun,
                                 Kind.THREAD );
                     }
-                    else if( subSig == sigExecutorExecute  ) {
+                    else if( subSig == sigExecutorExecute 
+                    		|| subSig == sigHandlerPost
+                    		|| subSig == sigHandlerPostAtFrontOfQueue
+                    		|| subSig == sigHandlerPostAtTime
+                    		|| subSig == sigHandlerPostAtTimeWithToken
+                    		|| subSig == sigHandlerPostDelayed ) {
                     	if (iie.getArgCount() > 0) {
                     		Value runnable = iie.getArg(0);
                     		if (runnable instanceof Local)
@@ -595,8 +1129,8 @@ public final class OnFlyCallGraphBuilder
             handleInit(source, scl);
         }
         Body b = source.retrieveActiveBody();
-        for( Iterator<Unit> sIt = b.getUnits().iterator(); sIt.hasNext(); ) {
-            final Stmt s = (Stmt) sIt.next();
+        for (Unit u : b.getUnits()) {
+            final Stmt s = (Stmt) u;
             if( s.containsInvokeExpr() ) {
                 InvokeExpr ie = s.getInvokeExpr();
                 final String methRefSig = ie.getMethodRef().getSignature();
@@ -654,7 +1188,7 @@ public final class OnFlyCallGraphBuilder
         SootMethod m = momc.method();
         Iterator<Edge> it = cicg.edgesOutOf(m);
         while( it.hasNext() ) {
-            Edge e = (Edge) it.next();
+            Edge e = it.next();
             cm.addStaticEdge( momc, e.srcUnit(), e.tgt(), e.kind() );
         }
     }
@@ -716,8 +1250,21 @@ public final class OnFlyCallGraphBuilder
         findOrAdd( "void run()" );
     protected final NumberedString sigExecute = Scene.v().getSubSigNumberer().
             findOrAdd( "android.os.AsyncTask execute(java.lang.Object[])" );
+    
     protected final NumberedString sigExecutorExecute = Scene.v().getSubSigNumberer().
             findOrAdd( "void execute(java.lang.Runnable)" );
+    
+    protected final NumberedString sigHandlerPost = Scene.v().getSubSigNumberer().
+            findOrAdd( "boolean post(java.lang.Runnable)" );
+    protected final NumberedString sigHandlerPostAtFrontOfQueue = Scene.v().getSubSigNumberer().
+            findOrAdd( "boolean postAtFrontOfQueue(java.lang.Runnable)" );
+    protected final NumberedString sigHandlerPostAtTime = Scene.v().getSubSigNumberer().
+            findOrAdd( "boolean postAtTime(java.lang.Runnable,long)" );
+    protected final NumberedString sigHandlerPostAtTimeWithToken = Scene.v().getSubSigNumberer().
+            findOrAdd( "boolean postAtTime(java.lang.Runnable,java.lang.Object,long)" );
+    protected final NumberedString sigHandlerPostDelayed = Scene.v().getSubSigNumberer().
+            findOrAdd( "boolean postDelayed(java.lang.Runnable,long)" );
+    
     protected final NumberedString sigObjRun = Scene.v().getSubSigNumberer().
         findOrAdd( "java.lang.Object run()" );
     protected final NumberedString sigDoInBackground = Scene.v().getSubSigNumberer().
@@ -726,6 +1273,5 @@ public final class OnFlyCallGraphBuilder
         findOrAdd( "java.lang.Class forName(java.lang.String)" );
     protected final RefType clRunnable = RefType.v("java.lang.Runnable");
     protected final RefType clAsyncTask = RefType.v("android.os.AsyncTask");
-    
 }
 

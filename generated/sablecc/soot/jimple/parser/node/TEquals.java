@@ -25,6 +25,7 @@ public final class TEquals extends Token
       return new TEquals(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTEquals(this);

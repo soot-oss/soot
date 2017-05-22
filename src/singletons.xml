@@ -62,6 +62,7 @@
   <class>soot.tagkit.InnerClassTagAggregator</class>
   <class>soot.jimple.toolkits.annotation.LineNumberAdder</class>
   <class>soot.baf.toolkits.base.LoadStoreOptimizer</class>
+  <class>soot.baf.toolkits.base.StoreChainOptimizer</class>
   <class>soot.jimple.toolkits.scalar.LocalNameStandardizer</class>
   <class>soot.toolkits.scalar.LocalPacker</class>
   <class>soot.toolkits.scalar.LocalSplitter</class>
@@ -97,6 +98,10 @@
   <class>soot.dava.toolkits.base.AST.TryContentsFinder</class>
   <class>soot.jimple.toolkits.typing.TypeAssigner</class>
   <class>soot.jimple.toolkits.scalar.UnconditionalBranchFolder</class>
+  <class>soot.jimple.toolkits.scalar.ConstantCastEliminator</class>
+  <class>soot.jimple.toolkits.scalar.IdentityCastEliminator</class>
+  <class>soot.jimple.toolkits.scalar.FieldStaticnessCorrector</class>
+  <class>soot.jimple.toolkits.scalar.IdentityOperationEliminator</class>
   <class>soot.UnknownType</class>
   <class>soot.jimple.toolkits.scalar.UnreachableCodeEliminator</class>
   <class>soot.toolkits.scalar.UnusedLocalEliminator</class>
@@ -127,6 +132,7 @@
   <class>soot.dexpler.DalvikThrowAnalysis</class>
   <class>soot.toolkits.exceptions.PedanticThrowAnalysis</class>
   <class>soot.toolkits.exceptions.TrapTightener</class>
+  <class>soot.toolkits.exceptions.DuplicateCatchAllTrapRemover</class>
   <class>soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher</class>
   <class>soot.SootResolver</class>
   <class>soot.javaToJimple.InitialResolver</class>
@@ -155,4 +161,7 @@
   <class>soot.jimple.toolkits.typing.fast.Integer32767Type</class>
   <class>soot.jimple.toolkits.typing.fast.BottomType</class>
   <class>soot.dexpler.TrapMinimizer</class>
+  <class>soot.toolkits.scalar.SmartLocalDefsPool</class>
+  <class>soot.jimple.spark.internal.PublicAndProtectedAccessibility</class>
+  <class>soot.jimple.spark.internal.CompleteAccessibility</class>
 </singletons>

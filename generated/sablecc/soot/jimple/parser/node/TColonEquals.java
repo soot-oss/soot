@@ -25,6 +25,7 @@ public final class TColonEquals extends Token
       return new TColonEquals(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTColonEquals(this);

@@ -83,7 +83,9 @@ public class JimpleScanner extends RuleBasedScanner {
   		"null",
 		"from",
 		"to",
-		"with"
+		"with",
+		"annotation",
+		"enum"
         };
         
 

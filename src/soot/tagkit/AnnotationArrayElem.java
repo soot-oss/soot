@@ -26,6 +26,8 @@
 package soot.tagkit;
 import java.util.*;
 
+import soot.util.Switch;
+
 /** 
  * Represents the base class of annotation elements
  * each annotation can have several elements 
@@ -58,5 +60,10 @@ public class AnnotationArrayElem extends AnnotationElem
     public AnnotationElem getValueAt(int i){
         return values.get(i);
     }
+    
+	@Override
+	public void apply(Switch sw) {
+		((IAnnotationElemTypeSwitch) sw).caseAnnotationArrayElem(this);
+	}
 }
 

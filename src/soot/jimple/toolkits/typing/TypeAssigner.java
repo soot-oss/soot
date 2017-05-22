@@ -71,17 +71,12 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  * @author Eric Bodden 
  */
 public class TypeAssigner extends BodyTransformer {
-	private boolean ignoreWrongStaticNess;
-
+	
 	public TypeAssigner(Singletons.Global g) {
 	}
 
 	public static TypeAssigner v() {
 		return G.v().soot_jimple_toolkits_typing_TypeAssigner();
-	}
-	
-	public boolean ignoreWrongStaticNess() {
-		return ignoreWrongStaticNess;
 	}
 
 	/** Assign types to local variables. * */
@@ -97,9 +92,7 @@ public class TypeAssigner extends BodyTransformer {
 					+ start);
 
 		JBTROptions opt = new JBTROptions(options);
-		
-		ignoreWrongStaticNess = opt.ignore_wrong_staticness();
-		
+				
 		/*
 		 * Setting this guard to true enables comparison of the original and new
 		 * type assigners. This will be slow since type assignment will always
@@ -141,7 +134,8 @@ public class TypeAssigner extends BodyTransformer {
 					+ mins + " mins and " + secs + " secs.");
 		}
 		
-		replaceNullType(b);
+		if (!opt.ignore_nullpointer_dereferences())
+			replaceNullType(b);
 
 		if (typingFailed((JimpleBody) b))
 			throw new RuntimeException("type inference failed!");
@@ -218,6 +212,7 @@ public class TypeAssigner extends BodyTransformer {
 			b.getUnits().remove(u);
 		}
 
+		// should be done on a separate phase
 		DeadAssignmentEliminator.v().transform(b);
 		UnusedLocalEliminator.v().transform(b);
 

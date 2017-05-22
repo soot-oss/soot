@@ -40,5 +40,10 @@ public class Insn21t extends InsnWithOffset implements OneRegInsn {
 		}
 		return incompatRegs;
 	}
+
+	@Override
+	public int getMaxJumpOffset() {
+		return Short.MAX_VALUE;
+	}
 	
 }

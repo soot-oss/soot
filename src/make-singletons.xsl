@@ -33,15 +33,23 @@ public class Singletons {
     public final class Global {
         private Global() {}
     }
-    private Global g = new Global();
+    protected Global g = new Global();
 <xsl:for-each select="/singletons/class">
     <xsl:variable name="class" select="."/>
     <xsl:variable name="undottedClass" select="translate(.,'.','_')"/>
     <xsl:variable name="instanceName">instance_<xsl:value-of select="$undottedClass"/></xsl:variable>
     private <xsl:value-of select="$class"/><xsl:text> </xsl:text><xsl:value-of select="$instanceName"/>;
     public <xsl:value-of select="$class"/><xsl:text> </xsl:text><xsl:value-of select="$undottedClass"/>() {
-        if( <xsl:value-of select="$instanceName"/> == null ) <xsl:value-of select="$instanceName"/> = new <xsl:value-of select="$class"/>( g );
+        if( <xsl:value-of select="$instanceName"/> == null ) {
+	       	synchronized (this) {
+		        if( <xsl:value-of select="$instanceName"/> == null )
+	        		<xsl:value-of select="$instanceName"/> = new <xsl:value-of select="$class"/>( g );
+	       	}
+       	}
         return <xsl:value-of select="$instanceName"/>;
+    }
+    protected void release_<xsl:value-of select="$undottedClass"/>() {
+    	<xsl:value-of select="$instanceName"/> = null;
     }
 </xsl:for-each>
 }

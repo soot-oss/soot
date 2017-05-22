@@ -203,6 +203,11 @@ options.
 		<short_desc>Use the good old Coffi front end for parsing Java bytecode (instead of using ASM).</short_desc>		
 		</boolopt>
 		<boolopt>
+		<name>ASM Backend</name>
+		<alias>asm-backend</alias>
+		<short_desc>Use the ASM back end for generating Java bytecode (instead of using Jasmin).</short_desc>		
+		</boolopt>
+		<boolopt>
 			<name>Help</name>
 			<alias>h</alias>
 			<alias>help</alias>
@@ -357,6 +362,17 @@ from the Baf Body Phase and the Jimple Annotation Pack Phase.
 Print debugging information about class resolving.
 </long_desc>
                 </boolopt>
+                <boolopt>
+			<name>Ignore Resolving Levels</name>
+			<alias>ignore-resolving-levels</alias>
+			<short_desc>Ignore mismatching resolving levels</short_desc>
+			<long_desc>
+If this option is set, Soot will not check whether the current class' resolving level is sufficiently
+high for the operation attempted on the class. This allows you to perform any operation on a class
+even if the class has not been fully loaded, which can lead to inconsistencies between your Soot scene
+and the original classes you loaded. Use this option at your own risk.
+</long_desc>
+                </boolopt>
 	</section>
 	<section>
 		<name>Input Options</name>
@@ -399,6 +415,29 @@ prepent it with that classpath.
 The default classpath holds whatever is set in the CLASSPATH environment variable,
 followed by rt.jar (resolved through the JAVA-UNDERSCORE-HOME environment variable).
 If whole-program mode is enabled, jce.jar is also appended in the end.
+</p>
+</long_desc>
+		</boolopt>
+		<boolopt>
+			<name>Ignore classpath error</name>
+			<alias>ice</alias>
+			<alias>ignore-classpath-errors</alias>
+			<short_desc>Ignores invalid entries on the Soot classpath.</short_desc>
+			<long_desc>
+<p>
+Normally, Soot throws an exception when an invalid classpath entry is detected. To instead silently
+ignore such errors, enable this option.
+</p>
+</long_desc>
+		</boolopt>
+		<boolopt>
+			<name>Process all DEX files in APK</name>
+			<alias>process-multiple-dex</alias>
+			<short_desc>Process all DEX files found in APK.</short_desc>
+			<long_desc>
+<p>
+Android APKs can have more than one default classes.dex. By default Soot loads only classes from the default one. This option
+enables loading of all DEX files from an APK.
 </p>
 </long_desc>
 		</boolopt>
@@ -460,9 +499,24 @@ The Android application must contain the AndroidManifest.xml file.
 			<short_desc>Force Soot to use <use_arg_label/> as the path for the android.jar file.</short_desc>
 			<long_desc>
 Use <use_arg_label/> as the path to the android.jar file Soot should use.
-This option overrides the 'android-jars' option.
+This option overrides the 'android-jars' option. If the 'android-api-version' option is not specified,
+Soot will try to parse the API version from the given file path. If that fails, it will fall back to the
+default. If the 'android-api-version' option is specified, the API version used for parsing will be taken
+from there.
 			</long_desc>
 		</stropt>
+		<intopt>
+			<name>Force specific Android API version</name>
+			<alias>android-api-version</alias>
+			<set_arg_label>version</set_arg_label>
+			<short_desc>Force Soot to use <use_arg_label/> as the API version when readin in APK or DEX files.</short_desc>
+			<long_desc>
+Use <use_arg_label/> as the Android API version that Soot should use when processing APK or DEX files.
+When combined with the 'android-jars' option, this value will take precedence over the API version specified in the
+app's manifest file. When combined with the 'force-android-jar' option, the JAR file will be the one from the
+'force-android-jar' option, but the API version used for parsing will be the explicitly given one.
+			</long_desc>
+		</intopt>
 
 		<boolopt>
 			<name>Compute AST Metrics</name>
@@ -532,6 +586,18 @@ unable to find a <tt>.java</tt> file.
 Try to resolve classes first from <tt>.apk</tt> (Android Package) files found in
 the Soot classpath. Fall back to <tt>.class</tt>, <tt>.java</tt> or <tt>.jimple</tt>
 files only when unable to find a class in <tt>.apk</tt> files.
+</long_desc>
+			</value>
+			<value>
+				<name>APK File</name>
+				<alias>apk-class-jimple</alias>
+				<alias>apk-c-j</alias>
+				<short_desc>Favour APK files as Soot source, disregard Java files</short_desc>
+				<long_desc>
+Try to resolve classes first from <tt>.apk</tt> (Android Package) files found in
+the Soot classpath. Fall back to <tt>.class</tt>, or <tt>.jimple</tt>
+files only when unable to find a class in <tt>.apk</tt> files. Never load a <tt>.java</tt>
+file.
 </long_desc>
 			</value>
 		</multiopt>
@@ -604,6 +670,30 @@ overrides this default.
 			<long_desc>
 Use Java 1.4 Polyglot frontend instead of JastAdd, which supports Java 5 syntax.
 </long_desc>
+		</boolopt>
+		<boolopt>
+			<name>Use permissive resolving strategy</name>
+			<alias>permissive-resolving</alias>
+			<default>false</default>
+			<short_desc>Use alternative sources when classes cannot be found using the normal resolving strategy</short_desc>
+			<long_desc>
+			    When this option is enabled, Soot will try to resolve classes using an alternative
+			    strategy if the class cannot be found using the default strategy. A class a.b.c
+			    will, for instance, also be loaded from a/b/c.jimple instead of only a.b.c.jimple.
+			</long_desc>
+		</boolopt>
+		<boolopt>
+			<name>Drop method source after loading bodies</name>
+			<alias>drop-bodies-after-load</alias>
+			<default>true</default>
+			<short_desc>Drop the method source after it has served its purpose of loading the method body</short_desc>
+			<long_desc>
+			    Each method is associated with a method source for loading its body. When this option is disabled,
+			    a reference to this source is kept around even after the body has already been loaded. This is a waste
+			    of memory for most use cases. When this option is enabled, the reference is dropped, allowing for garbage
+			    collection of the method source. On the other hand, if the body is ever released, it cannot easily be
+			    recovered (i.e., loaded again) easily.
+			</long_desc>
 		</boolopt>
 	</section>
 	<section>
@@ -732,10 +822,18 @@ version of the Soot's Jimple internal representation.
 			<alias>dex</alias>
 			<short_desc>Produce Dalvik Virtual Machine files</short_desc>
 			<long_desc>Produce Dalvik Virtual Machine files. If input was an Android
-			Package (APK), a new APK is generated with it's classes.dex replaced. If
-			no input APK is found, only a classes.dex is generated.</long_desc>
+Package (APK), a new APK is generated with it's classes.dex replaced. If
+no input APK is found, only a classes.dex is generated.</long_desc>
 			</value>
-				<value>
+			<value>
+			<name>Dalvik Executable File</name>
+			<alias>force-dex</alias>
+			<short_desc>Produce Dalvik DEX files</short_desc>
+			<long_desc>Produce Dalvik Virtual Machine files. This option always creates
+a stand-alone DEX file, even if the input was read from an Android Package (APK).
+</long_desc>
+			</value>
+			<value>
 				<name>No Output File</name>
 				<alias>n</alias>
 				<alias>none</alias>
@@ -780,6 +878,110 @@ Produce <tt>.java</tt> files generated by the Dava decompiler.
 				<short_desc>Produce <tt>.java</tt> files with Jimple templates.</short_desc>
 				<long_desc>
 Produce <tt>.java</tt> files with Jimple templates.
+</long_desc>
+			</value>
+			<value>
+				<name>ASM File</name>
+				<alias>a</alias>
+				<alias>asm</alias>
+				<short_desc>Produce <tt>.asm</tt> files as textual bytecode representation generated with the ASM back end.</short_desc>
+				<long_desc>
+Produce <tt>.asm</tt> files as textual bytecode representation generated with the ASM back end.
+</long_desc>
+			</value>
+		</multiopt>
+		<multiopt>
+			<name>Java version</name>
+			<alias>java-version</alias>
+			<default>default</default>
+			<set_arg_label>version</set_arg_label>
+			<short_desc>Force Java version of bytecode generated by Soot.</short_desc>
+			<long_desc>
+<p>
+Force Java version of bytecode generated by Soot.</p>
+<p>
+This option can only be set on <tt>output-format class</tt> 
+and <tt>asm-backend</tt> set, or on <tt>output-format asm</tt>
+</p>
+</long_desc>
+			<value>
+				<name>Default behavior</name>
+				<alias>default</alias>
+				<short_desc>Let Soot determine Java version of generated bytecode.</short_desc>
+                <long_desc>
+Let Soot determine Java version of generated bytecode.
+</long_desc>
+			</value>
+			<value>
+				<name>Java 1.1</name>
+				<alias>1.1</alias>
+				<alias>1</alias>
+				<short_desc>Force Java 1.1 as output version.</short_desc>
+                <long_desc>
+Force Java 1.1 as output version.
+</long_desc>
+			</value>
+			<value>
+				<name>Java 1.2</name>
+				<alias>1.2</alias>
+				<alias>2</alias>
+				<short_desc>Force Java 1.2 as output version.</short_desc>
+                <long_desc>
+Force Java 1.2 as output version.
+</long_desc>
+			</value>
+			<value>
+				<name>Java 1.3</name>
+				<alias>1.3</alias>
+				<alias>3</alias>
+				<short_desc>Force Java 1.3 as output version.</short_desc>
+                <long_desc>
+Force Java 1.3 as output version.
+</long_desc>
+			</value>
+			<value>
+				<name>Java 1.4</name>
+				<alias>1.4</alias>
+				<alias>4</alias>
+				<short_desc>Force Java 1.4 as output version.</short_desc>
+                <long_desc>
+Force Java 1.4 as output version.
+</long_desc>
+			</value>
+			<value>
+				<name>Java 1.5</name>
+				<alias>1.5</alias>
+				<alias>5</alias>
+				<short_desc>Force Java 1.5 as output version.</short_desc>
+                <long_desc>
+Force Java 1.5 as output version.
+</long_desc>
+			</value>
+			<value>
+				<name>Java 1.6</name>
+				<alias>1.6</alias>
+				<alias>6</alias>
+				<short_desc>Force Java 1.6 as output version.</short_desc>
+                <long_desc>
+Force Java 1.6 as output version.
+</long_desc>
+			</value>
+			<value>
+				<name>Java 1.7</name>
+				<alias>1.7</alias>
+				<alias>7</alias>
+				<short_desc>Force Java 1.7 as output version.</short_desc>
+                <long_desc>
+Force Java 1.7 as output version.
+</long_desc>
+			</value>
+			<value>
+				<name>Java 1.8</name>
+				<alias>1.8</alias>
+				<alias>8</alias>
+				<short_desc>Force Java 1.8 as output version.</short_desc>
+                <long_desc>
+Force Java 1.8 as output version.
 </long_desc>
 			</value>
 		</multiopt>
@@ -930,6 +1132,48 @@ try to pass options to the loaded plugins.</p>
 </long_desc>
 		</listopt>
 		
+		<multiopt>
+			<name>Handling of Wrong Staticness</name>
+			<alias>wrong-staticness</alias>
+			<short_desc>Ignores or fixes errors due to wrong staticness</short_desc>
+			<long_desc>
+Some projects have been shown to contain invalid bytecode that tries to access
+a static field or method in a non-static way or the other way around. The VM's bytecode
+verifier will reject such bytecode when loaded into the VM. This option, depending on
+then chosen value, either causes to create Jimple bodies in such cases nontheless, ignoring
+the error, or automatically fixes the error when possible. 
+</long_desc>
+				<value>
+					<name>Fail</name>
+					<alias>fail</alias>
+					<short_desc>Raise an error when wrong staticness is detected</short_desc>
+					<long_desc>
+When this value is used, the analysis raises an error when code that accesses a static
+field using instance field operations is detected.
+</long_desc>
+				</value>
+				<value>
+					<name>Ignore</name>
+					<alias>ignore</alias>
+					<short_desc>Ignore errors caused by wrong staticness</short_desc>
+					<long_desc>
+When this option is enabled, Soot will accept field accesses when in the case of wrong
+staticness and will create the Jimple code equivalent to the (broken) input code nevertheless.
+The Jimple code will then be invalid, but will exactly resemble the input code.
+</long_desc>
+				</value>
+				<value>
+					<name>Fix</name>
+					<alias>fix</alias>
+					<short_desc>Transparently fix staticness errors</short_desc>
+					<default/>													
+					<long_desc>
+When Soot detects a case in which a static field is accessed as if it were an instance field, Soot
+will transparently fix the error and generate Jimple code for the fixed program.
+</long_desc>
+				</value>
+		</multiopt>
+				
 		<phaseopt>
 			<name>Phase Options</name>
 			<alias>p</alias>
@@ -983,6 +1227,49 @@ Preserves annotations of retention type SOURCE. (for
 everything but package and local variable annotations) 
 </long_desc>
 				</boolopt>
+				<boolopt>
+					<name>Stabilize local names</name>
+					<alias>stabilize-local-names</alias>
+                    <default>false</default>
+					<short_desc/>
+					<long_desc>
+Make sure that local names are stable between runs. This requires re-normalizing all
+local names after the standard transformations and then sorting them which can negatively
+impact performance. This option automatically sets "sort-locals" in "jb.lns" during the
+second re-normalization pass.
+</long_desc>
+				</boolopt>
+				<sub_phase>
+					<name>Duplicate CatchAll Trap Remover</name>
+					<alias>jb.dtr</alias>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+					<short_desc>Reduces chains of catch-all traps</short_desc>
+					<long_desc>
+This transformer detects cases in which the same code block is covered by two different
+catch all traps with different exception handlers (A and B), and if there is at the
+same time a third catch all trap that covers the second handler B and jumps to A, then
+the second trap is unnecessary, because it is already covered by a combination of the
+other two traps. This transformer removes the unnecessary trap.
+</long_desc>
+				</sub_phase>
+				<sub_phase>
+					<name>Empty Switch Eliminator</name>
+					<alias>jb.ese</alias>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+					<short_desc>Removes empty switch statements</short_desc>
+					<long_desc>
+The Empty Switch Eliminator detects and removes switch statements that have no data labels.
+Instead, the code is transformed to contain a single jump statement to the default label.
+</long_desc>
+				</sub_phase>
 				<sub_phase>
 					<name>Local Splitter</name>
 					<alias>jb.ls</alias>
@@ -1061,18 +1348,6 @@ method.
                                                 <default>true</default>
 					</boolopt>
 					<boolopt>
-						<name>Ignore wrong static-ness</name>
-						<alias>ignore-wrong-staticness</alias>
-                        <default>false</default>
-					<short_desc>Ignores errors due to wrong staticness</short_desc>
-					<long_desc>
-Some projects have been shown to contain invalid bytecode that tries to access
-a static field or method in a non-static way or the other way around. The VM's bytecode
-verifier will reject such bytecode when loaded into the VM. This option, when enabled,
-causes to create Jimple bodies in such cases nontheless, ignoring the error.
-</long_desc>
-					</boolopt>
-					<boolopt>
 						<name>Use older type assigner</name>
 						<alias>use-older-type-assigner</alias>
                         <default>false</default>
@@ -1094,6 +1369,17 @@ this option causes the older type assigner to execute first.
 					<long_desc>
 Enables comparison (both runtime and results) of Ben Bellamy's type assigner with the
 older type assigner that was in Soot.
+</long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Ignore Nullpointer Dereferences</name>
+						<alias>ignore-nullpointer-dereferences</alias>
+                        <default>false</default>
+					<short_desc>Ignores virtual method calls on base objects that may only be null</short_desc>
+					<long_desc>
+					    If this option is enabled, Soot wiil not check whether the base object of a virtual method
+					    call can only be null. This will lead to the null_type pseudo type being used in your Jimple
+					    code.
 </long_desc>
 					</boolopt>
 				</sub_phase>
@@ -1154,6 +1440,24 @@ locations in the original bytecode. This becomes the default when
 the `<tt>use-original-names</tt>&apos; option is specified for
 the `<tt>jb</tt>&apos; phase.
 </long_desc>
+					</boolopt>
+					<boolopt>
+						<name>Sort Locals</name>
+						<alias>sort-locals</alias>
+						<default>false</default>
+						<short_desc>
+						    Specifies whether the locals shall be ordered.
+						</short_desc>
+						<long_desc>
+							First sorts the locals alphabetically by the string representation of
+							their type. Then if there are two locals with the same type, it uses
+							the only other source of structurally stable information (i.e. the 
+							instructions themselves) to produce an ordering for the locals
+							that remains consistent between different soot instances. It achieves
+							this by determining the position of a local's first occurrence in the 
+							instruction's list of definition statements. This position is then used
+							to sort the locals with the same type in an ascending order.
+						</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -1306,7 +1610,7 @@ traps whose catch blocks are empty.
 					<boolopt>
 						<name>Remove unreachable traps</name>
 						<alias>remove-unreachable-traps</alias>
-                                                <default>false</default>
+                                                <default>true</default>
 	  					<long_desc>
 Remove exception table entries when none of the protected instructions can
 throw the exception being caught.
@@ -1727,6 +2031,70 @@ When this option is set to false, any calls to Class.newInstance()
 are assumed not to call the constructor of the created object.
 </long_desc>
                                 </boolopt>
+                               	<multiopt>
+									<name>Library mode</name>
+									<alias>library</alias>
+									<short_desc>
+										Specifies whether the target classes should be treated as an application or a library.
+									</short_desc>
+									<long_desc>
+										Specifies whether the target classes should be treated as an application or a library.
+										If library mode is disabled (default), the call graph construction assumes that the target is an application and 
+										starts the construction from the specified entry points (main method by default). 
+										Under the assumption that the target is a library, possible call edges might be missing in the call graph.
+										The two different library modes add theses missing calls to the call graph and differ only in the view of the class hierachy 
+										(hierachy of target library or possible extended hierachy).
+										If simulate-natives is also set, the results of native methods are also set to any  sub type of the declared return type.
+									</long_desc>
+									<value>
+										<name>Disabled</name>
+										<alias>disabled</alias>
+										<default/>
+										<short_desc>
+											Call(and pointer assignment) graph construction treat the target classes as application starting from the entry points.
+										</short_desc>
+										<long_desc>
+											Call(and pointer assignment) graph construction treat the target classes as application starting from the entry points.
+										</long_desc>
+									</value>
+									<value>
+										<name>Any Subtype</name>
+										<alias>any-subtype</alias>
+										<short_desc>
+											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type 
+											according to the class hierarchy of the target library.
+										</short_desc>
+										<long_desc>
+											On library analysis it has to be assumed, that a possible client can call any method or access any field, 
+											to which he has the access rights (default public/protected but can be set with soot.Scene#setClientAccessibilityOracle).
+											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type 
+											according to the class hierachy of the target library.
+											If simulate-natives is also set, the results of native methods are also set to any sub type of the declared return type.
+										</long_desc>
+									</value>
+									<value>
+										<name>By Signature resolution</name>
+										<alias>signature-resolution</alias>
+										<short_desc>
+											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type 
+											according to a possible extended class hierarchy of the target library.
+										</short_desc>
+										<long_desc>
+											On library analysis it has to be assumed, that a possible client can call any method or access any field, 
+											to which he has the access rights (default public/protected but can be set with soot.Scene#setClientAccessibilityOracle).
+											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type 
+											according to a possible extended class hierarchy of the target library. Whenever any sub type of a specific type is considered as 
+											receiver for a method to call and the base type is an interface, calls to existing methods with matching signature (possible implementation 
+											of method to call) are also added. As Javas' subtyping allows contra-variance for return types and co-variance for parameters when overriding 
+											a method, these cases are also considered here.
+											
+											Example: Classes A, B (B sub type of A), interface I with method public A foo(B b); and a class C with method public B foo(A a) { ... }.
+											The extended class hierachy will contain C as possible implementation of I.
+											
+											If simulate-natives is also set, the results of native methods are also set to any possible sub type of the declared return type.
+										</long_desc>
+									</value>
+								</multiopt>
                                 <boolopt>
                                         <name>Verbose</name>
                                         <alias>verbose</alias>
@@ -1793,6 +2161,17 @@ print: the program prints a stack trace when reaching a porgram location that wa
 the program throws an Error instead.                                                                                                
 </long_desc>
                                 </stropt>
+								<boolopt>
+								  <name>Types for invoke</name>
+								  <alias>types-for-invoke</alias>
+								  <default>false</default>
+								  <short_desc>Uses reaching types inferred by the pointer analysis to resolve reflective calls.</short_desc>
+								  <long_desc>For each call to Method.invoke(), use the possible types of the first receiver
+								  argument and the possible types stored in the second argument array to resolve calls to
+								  Method.invoke(). This strategy makes no attempt to resolve reflectively invoked static methods.
+								  Currently only works for context insensitive pointer analyses.
+								  </long_desc>
+								</boolopt>
 				<sub_phase>
 					<name>Class Hierarchy Analysis</name>
 					<alias>cg.cha</alias>
@@ -1810,6 +2189,13 @@ the program throws an Error instead.
                                                 <default>false</default>
                                                 <short_desc>Print statistics about the resulting call graph</short_desc>
                                                 <long_desc>Setting this option to true causes Soot to print out statistics about the call graph computed by this phase, such as the number of methods determined to be reachable.</long_desc>
+					</boolopt>
+					<boolopt>
+						<name>AppOnly</name>
+						<alias>apponly</alias>
+                                                <default>false</default>
+                                                <short_desc>Consider only application classes</short_desc>
+                                                <long_desc>Setting this option to true causes Soot to only consider application classes when building the callgraph. The resulting callgraph will be inherently unsound. Still, this option can make sense if performance optimization and memory reduction are your primary goal.</long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -1869,7 +2255,14 @@ total time and memory requirement, because all methods are Jimplified,
 rather than only those deemed reachable by the points-to analysis.
         </long_desc>
 						</boolopt>
-					</section>
+						<boolopt>
+							<name>AppOnly</name>
+							<alias>apponly</alias>
+	                                                <default>false</default>
+	                                                <short_desc>Consider only application classes</short_desc>
+	                                                <long_desc>Setting this option to true causes Soot to only consider application classes when building the callgraph. The resulting callgraph will be inherently unsound. Still, this option can make sense if performance optimization and memory reduction are your primary goal.</long_desc>
+						</boolopt>
+				 	</section>
 					<section>
 						<name>Spark Pointer Assignment Graph Building Options</name>
 						<boolopt>
@@ -5395,7 +5788,7 @@ Grimp option has been specified.
 				<long_desc>
 The Baf Body Creation phase creates a
 <tt>BafBody</tt> from each source method. It is
-run if the output format is <tt>baf</tt> or <tt>b</tt>, or
+run if the output format is <tt>baf</tt> or <tt>b</tt> or <tt>asm</tt> or <tt>a</tt>, or
 if class files are being output and the Via Grimp option
 has not been specified.
 </long_desc>
@@ -5486,6 +5879,19 @@ some variant of <tt>dup</tt>.
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
+					<name>Store Chain Optimizer</name>
+					<alias>bb.sco</alias>
+					<short_desc>Store chain optimizer</short_desc>
+					<long_desc>
+The store chain optimizer detects chains of push/store pairs that write to the same variable and only retains the last store. It removes the unnecessary previous push/stores that are subsequently overwritten.
+</long_desc>
+					<boolopt>
+						<name>Enabled</name>
+						<alias>enabled</alias>
+                                                <default>true</default>
+					</boolopt>
+				</sub_phase>
+				<sub_phase>
 					<name>Peephole Optimizer</name>
 					<alias>bb.pho</alias>
 					<short_desc>Peephole optimizer</short_desc>
@@ -5561,7 +5967,7 @@ the Local Splitter.
 The Baf Optimization pack performs optimizations on
 <tt>BafBody</tt>s (currently there are no optimizations performed
 specifically on <tt>BafBody</tt>s, and the pack is empty). It is
-run only if the output format is <tt>baf</tt> or <tt>b</tt>, or
+run only if the output format is <tt>baf</tt> or <tt>b</tt> or <tt>asm</tt> or <tt>a</tt>, or
 if class files are being output and the Via Grimp option
 has not been specified.
 </long_desc>
@@ -5879,7 +6285,7 @@ to occur at arbitrary points in the execution of a victim thread.
 								<name>Unit</name>
 								<alias>unit</alias>
 								<short_desc>Unit Throw Analysis</short_desc>
-								<default/>																
+								<default/>
 								<long_desc>
 Says that each statement in the intermediate representation
 may throw those exception types associated with the corresponding
@@ -5887,6 +6293,14 @@ Java bytecode instructions in the JVM Specification.  The
 analysis deals with each statement in isolation, without regard
 to the surrounding program.
 </long_desc>
+							</value>
+							<value>
+								<name>Dalvik</name>
+								<alias>dalvik</alias>
+								<short_desc>Dalvik Throw Analysis</short_desc>
+								<long_desc>
+Specialized throw analysis implementation that covers the semantics of the Dalvik
+IR used for Android apps</long_desc>
 							</value>
 						</multiopt>
 						<multiopt>
@@ -6131,7 +6545,7 @@ package option multiple times.</p>
 		<boolopt>
 			<name>Keep Line Number</name>
 			<alias>keep-line-number</alias>
-			<default>true</default>
+			<default>false</default>
 			<short_desc>Keep line number tables</short_desc>
 			<long_desc>
 Preserve line number tables for class files throughout the
@@ -6145,7 +6559,21 @@ transformations.
 			<short_desc>Attach bytecode offset to IR</short_desc>
 			<long_desc>Maintain bytecode offset tables for class files throughout the transformations.</long_desc>
 		</boolopt>
-	</section>cg.spark
+	</section>
+	
+	<section>
+		<name>Output Attribute Options</name>
+		<boolopt>
+			<name>Write Out Local Annotations</name>
+			<alias>write-local-annotations</alias>
+			<default>false</default>
+			<short_desc>Write out debug annotations on local names</short_desc>
+			<long_desc>
+Write out debug tables to indicate which register maps to which variable in the Jimple code.
+</long_desc>
+		</boolopt>
+	</section>
+	
 	<section>
 		<name>Annotation Options</name>
 		<macroopt>

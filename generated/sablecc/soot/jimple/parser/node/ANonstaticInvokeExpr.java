@@ -59,6 +59,7 @@ public final class ANonstaticInvokeExpr extends PInvokeExpr
             cloneNode(this._rParen_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseANonstaticInvokeExpr(this);

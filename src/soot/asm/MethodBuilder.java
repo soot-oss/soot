@@ -18,13 +18,11 @@
  */
 package soot.asm;
 
-import org.objectweb.asm.AnnotationVisitor;
-import org.objectweb.asm.Attribute;
-import org.objectweb.asm.Label;
-import org.objectweb.asm.Opcodes;
+import org.objectweb.asm.*;
 import org.objectweb.asm.commons.JSRInlinerAdapter;
 
 import soot.*;
+import soot.Type;
 import soot.tagkit.AnnotationConstants;
 import soot.tagkit.AnnotationDefaultTag;
 import soot.tagkit.AnnotationTag;
@@ -141,13 +139,31 @@ class MethodBuilder extends JSRInlinerAdapter {
 	public void visitMethodInsn(int opcode, String owner, String name, String desc, boolean isInterf) {
 		super.visitMethodInsn(opcode, owner, name, desc, isInterf);
 		for (Type t : AsmUtil.toJimpleDesc(desc)) {
-			if (t instanceof RefType)
-				scb.addDep(t);
+			addDeps(t);
 		}
 		
 		scb.addDep(AsmUtil.toBaseType(owner));
 	}
-	
+
+	@Override
+	public void visitLdcInsn(Object cst) {
+		super.visitLdcInsn(cst);
+		
+		if(cst instanceof Handle) {
+			Handle methodHandle = (Handle) cst;
+			scb.addDep(AsmUtil.toBaseType(methodHandle.getOwner()));
+		}
+	}
+
+	private void addDeps(Type t) {
+		if (t instanceof RefType)
+			scb.addDep(t);
+		else if (t instanceof ArrayType) {
+			ArrayType at = (ArrayType) t;
+			addDeps(at.getElementType());
+		}
+	}
+
 	@Override
 	public void visitTryCatchBlock(Label start, Label end,
 			Label handler, String type) {

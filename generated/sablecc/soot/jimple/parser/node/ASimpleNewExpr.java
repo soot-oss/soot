@@ -34,6 +34,7 @@ public final class ASimpleNewExpr extends PNewExpr
             cloneNode(this._baseType_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseASimpleNewExpr(this);

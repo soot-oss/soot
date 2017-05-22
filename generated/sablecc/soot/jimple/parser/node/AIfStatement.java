@@ -39,6 +39,7 @@ public final class AIfStatement extends PStatement
             cloneNode(this._gotoStmt_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAIfStatement(this);

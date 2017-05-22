@@ -17,7 +17,7 @@ import soot.toDex.Register;
  */
 public class Insn31t extends InsnWithOffset implements OneRegInsn {
 	
-	public SwitchPayload payload = null;
+	public AbstractPayload payload = null;
 	
 	public Insn31t(Opcode opc, Register regA) {
 		super(opc);
@@ -28,7 +28,7 @@ public class Insn31t extends InsnWithOffset implements OneRegInsn {
 		return regs.get(REG_A_IDX);
 	}
 	
-	public void setPayload(SwitchPayload payload) {
+	public void setPayload(AbstractPayload payload) {
 		this.payload = payload;
 	}
 
@@ -45,6 +45,11 @@ public class Insn31t extends InsnWithOffset implements OneRegInsn {
 			incompatRegs.set(REG_A_IDX);
 		}
 		return incompatRegs;
+	}
+
+	@Override
+	public int getMaxJumpOffset() {
+		return Short.MAX_VALUE;
 	}
 
 }

@@ -34,6 +34,7 @@ public final class AImplementsClause extends PImplementsClause
             cloneNode(this._classNameList_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAImplementsClause(this);

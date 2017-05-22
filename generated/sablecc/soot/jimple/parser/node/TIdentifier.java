@@ -25,6 +25,7 @@ public final class TIdentifier extends Token
       return new TIdentifier(getText(), getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTIdentifier(this);

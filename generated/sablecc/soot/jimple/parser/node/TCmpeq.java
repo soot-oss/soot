@@ -25,6 +25,7 @@ public final class TCmpeq extends Token
       return new TCmpeq(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTCmpeq(this);

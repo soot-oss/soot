@@ -29,6 +29,7 @@ public final class AModBinop extends PBinop
             cloneNode(this._mod_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAModBinop(this);

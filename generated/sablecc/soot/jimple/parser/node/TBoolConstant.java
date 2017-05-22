@@ -25,6 +25,7 @@ public final class TBoolConstant extends Token
       return new TBoolConstant(getText(), getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTBoolConstant(this);

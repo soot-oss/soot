@@ -12,15 +12,10 @@ import soot.util.Chain;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
-public class IdentityStatementsValidator implements BodyValidator {
-	public static IdentityStatementsValidator INSTANCE;
-	
+public enum IdentityStatementsValidator implements BodyValidator {
+	INSTANCE;	
 	
 	public static IdentityStatementsValidator v() {
-		if (INSTANCE == null)
-		{
-			INSTANCE = new IdentityStatementsValidator();
-		}
 		return INSTANCE;
 	}
 

@@ -46,8 +46,6 @@ import soot.jimple.Jimple;
 
 public class ConstClassInstruction extends DexlibAbstractInstruction {
 
-    AssignStmt assign = null;
-
     public ConstClassInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -65,14 +63,13 @@ public class ConstClassInstruction extends DexlibAbstractInstruction {
 
         int dest = ((OneRegisterInstruction) instruction).getRegisterA();
         Constant cst = ClassConstant.v(type);
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cst);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cst);
         setUnit(assign);
         addTags(assign);
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
-          int op = (int)instruction.getOpcode().value;
           //DalvikTyper.v().captureAssign((JAssignStmt)assign, op); //TODO: classtype could be null!
           DalvikTyper.v().setType(assign.getLeftOpBox(), cst.getType(), false);
         }

@@ -23,162 +23,128 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple.toolkits.scalar;
+
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.jimple.*;
 import java.util.*;
 
-/** Implements an available expressions analysis on local variables. 
- * The current implementation is slow but correct.
- * A better implementation would use an implicit universe and
- * the kill rule would be computed on-the-fly for each statement. */
-public class FastAvailableExpressionsAnalysis extends ForwardFlowAnalysis
-{
-    SideEffectTester st;
+/**
+ * Implements an available expressions analysis on local variables. The current
+ * implementation is slow but correct. A better implementation would use an
+ * implicit universe and the kill rule would be computed on-the-fly for each
+ * statement.
+ */
+public class FastAvailableExpressionsAnalysis extends
+		ForwardFlowAnalysis<Unit, FlowSet<Value>> {
+	SideEffectTester st;
 
-    Map<Unit, FlowSet> unitToGenerateSet;
-    Map unitToPreserveSet;
-    Map<Value, Unit> rhsToContainingStmt;
+	Map<Unit, FlowSet<Value>> unitToGenerateSet;
+	Map<Unit, FlowSet<Value>> unitToPreserveSet;
+	Map<Value, Unit> rhsToContainingStmt;
 
-    FlowSet emptySet;
+	FlowSet<Value> emptySet;
 
-    public FastAvailableExpressionsAnalysis(DirectedGraph dg, SootMethod m,
-            SideEffectTester st)
-    {
-        super(dg);
-        this.st = st;
+	public FastAvailableExpressionsAnalysis(DirectedGraph<Unit> dg,
+			SootMethod m, SideEffectTester st) {
+		super(dg);
+		this.st = st;
 
         ExceptionalUnitGraph g = (ExceptionalUnitGraph)dg;
-        LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
+        //LocalDefs ld = new SmartLocalDefs(g, new SimpleLiveLocals(g));
 
-        // maps an rhs to its containing stmt.  object equality in rhs.
-        rhsToContainingStmt = new HashMap<Value, Unit>();
+		// maps an rhs to its containing stmt. object equality in rhs.
+		rhsToContainingStmt = new HashMap<Value, Unit>();
 
-        emptySet = new ToppedSet(new ArraySparseSet());
+		emptySet = new ToppedSet<Value>(new ArraySparseSet<Value>());
 
-        // Create generate sets
-        {
-            unitToGenerateSet = new HashMap<Unit, FlowSet>(g.size() * 2 + 1, 0.7f);
+		// Create generate sets
+		{
+			unitToGenerateSet = new HashMap<Unit, FlowSet<Value>>(
+					g.size() * 2 + 1, 0.7f);
 
-            Iterator unitIt = g.iterator();
+			for (Unit s : g) {
+				FlowSet<Value> genSet = emptySet.clone();
+				// In Jimple, expressions only occur as the RHS of an
+				// AssignStmt.
+				if (s instanceof AssignStmt) {
+					AssignStmt as = (AssignStmt) s;
+					if (as.getRightOp() instanceof Expr
+							|| as.getRightOp() instanceof FieldRef) {
+						Value gen = as.getRightOp();
+						rhsToContainingStmt.put(gen, s);
 
-            while(unitIt.hasNext())
-            {
-                Unit s = (Unit) unitIt.next();
+						boolean cantAdd = false;
+						if (gen instanceof NewExpr
+								|| gen instanceof NewArrayExpr
+								|| gen instanceof NewMultiArrayExpr)
+							cantAdd = true;
+						if (gen instanceof InvokeExpr)
+							cantAdd = true;
 
-                FlowSet genSet = emptySet.clone();
-                // In Jimple, expressions only occur as the RHS of an AssignStmt.
-                if (s instanceof AssignStmt)
-                {
-                    AssignStmt as = (AssignStmt)s;
-                    if (as.getRightOp() instanceof Expr ||
-                        as.getRightOp() instanceof FieldRef)
-                    {
-                        Value gen = as.getRightOp();
-                        rhsToContainingStmt.put(gen, s);
+						// Whee, double negative!
+						if (!cantAdd)
+							genSet.add(gen, genSet);
+					}
+				}
 
-                        boolean cantAdd = false;
-                        if (gen instanceof NewExpr || 
-                               gen instanceof NewArrayExpr || 
-                               gen instanceof NewMultiArrayExpr)
-                            cantAdd = true;
-                        if (gen instanceof InvokeExpr)
-                            cantAdd = true;
+				unitToGenerateSet.put(s, genSet);
+			}
+		}
 
-                        // Whee, double negative!
-                        if (!cantAdd)
-                            genSet.add(gen, genSet);
-                    }
-                }
+		doAnalysis();
+	}
 
-                unitToGenerateSet.put(s, genSet);
-            }
-        }
+	protected FlowSet<Value> newInitialFlow() {
+		FlowSet<Value> newSet = emptySet.clone();
+		((ToppedSet<Value>) newSet).setTop(true);
+		return newSet;
+	}
 
-        doAnalysis();
-    }
+	protected FlowSet<Value> entryInitialFlow() {
+		return emptySet.clone();
+	}
 
-    protected Object newInitialFlow()
-    {
-        Object newSet = emptySet.clone();
-        ((ToppedSet)newSet).setTop(true);
-        return newSet;
-    }
+	protected void flowThrough(FlowSet<Value> in, Unit u, FlowSet<Value> out) {
+		in.copy(out);
+		if (((ToppedSet<Value>) in).isTop())
+			return;
 
-    protected Object entryInitialFlow()
-    {
-        return emptySet.clone();
-    }
+		// Perform generation
+		out.union(unitToGenerateSet.get(u), out);
 
-    protected void flowThrough(Object inValue, Object unit, Object outValue)
-    {
-        FlowSet in = (FlowSet) inValue, out = (FlowSet) outValue;
+		// Perform kill.
+		if (((ToppedSet<Value>) out).isTop()) {
+			throw new RuntimeException("trying to kill on topped set!");
+		}
+		
+		List<Value> l = new LinkedList<Value>(out.toList());
 
-        in.copy(out);
-        if (((ToppedSet)in).isTop())
-            return;
+		// iterate over things (avail) in out set.
+		for (Value avail : l) {
+			if (avail instanceof FieldRef) {
+				if (st.unitCanWriteTo(u, avail)) {
+					out.remove(avail, out);
+				}
+			} else {
+				for (ValueBox vb : avail.getUseBoxes()) {
+					Value use = vb.getValue();
+					if (st.unitCanWriteTo(u, use)) {
+						out.remove(avail, out);
+					}
+				}
+			}
+		}
+	}
 
-        // Perform generation
-            out.union(unitToGenerateSet.get(unit), out);
+	protected void merge(FlowSet<Value> inSet1, FlowSet<Value> inSet2,
+			FlowSet<Value> outSet) {
+		inSet1.intersection(inSet2, outSet);
+	}
 
-        // Perform kill.
-	    Unit u = (Unit)unit;
-	    List toRemove = new ArrayList();
-
-            if (((ToppedSet)out).isTop())
-            {
-                throw new RuntimeException("trying to kill on topped set!");
-            }
-	    List l = new LinkedList();
-            l.addAll((out).toList());
-            Iterator it = l.iterator();
-
-            // iterate over things (avail) in out set.
-            while (it.hasNext())
-            {
-                Value avail = (Value) it.next();
-                if (avail instanceof FieldRef)
-                {
-                    if (st.unitCanWriteTo(u, avail)) {
-                        out.remove(avail, out);
-                    }
-                }
-                else
-                {
-                    Iterator usesIt = avail.getUseBoxes().iterator();
-
-                    // iterate over uses in each avail.
-                    while (usesIt.hasNext())
-                    {
-                        Value use = ((ValueBox)usesIt.next()).getValue();
-                        
-                        if (st.unitCanWriteTo(u, use)) {
-                            out.remove(avail, out);
-                        }
-                    }
-                }
-            }
-    }
-
-    protected void merge(Object in1, Object in2, Object out)
-    {
-        FlowSet inSet1 = (FlowSet) in1,
-            inSet2 = (FlowSet) in2;
-
-        FlowSet outSet = (FlowSet) out;
-
-        inSet1.intersection(inSet2, outSet);
-    }
-    
-    protected void copy(Object source, Object dest)
-    {
-        FlowSet sourceSet = (FlowSet) source,
-            destSet = (FlowSet) dest;
-            
-        sourceSet.copy(destSet);
-    }
+	protected void copy(FlowSet<Value> sourceSet, FlowSet<Value> destSet) {
+		sourceSet.copy(destSet);
+	}
 }
-

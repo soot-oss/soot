@@ -25,6 +25,7 @@ public final class TStatic extends Token
       return new TStatic(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTStatic(this);

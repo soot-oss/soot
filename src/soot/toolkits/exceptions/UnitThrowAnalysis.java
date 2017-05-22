@@ -19,19 +19,31 @@
 
 package soot.toolkits.exceptions;
 
-import java.util.Iterator;
+import heros.solver.IDESolver;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+
+import soot.Body;
 import soot.FastHierarchy;
 import soot.G;
 import soot.IntegerType;
 import soot.Local;
 import soot.LongType;
 import soot.NullType;
+import soot.PatchingChain;
 import soot.RefLikeType;
 import soot.RefType;
 import soot.Scene;
 import soot.Singletons;
+import soot.SootMethod;
 import soot.SootMethodRef;
+import soot.Trap;
 import soot.Type;
 import soot.Unit;
 import soot.UnknownType;
@@ -139,6 +151,7 @@ import soot.jimple.InstanceInvokeExpr;
 import soot.jimple.InstanceOfExpr;
 import soot.jimple.IntConstant;
 import soot.jimple.InterfaceInvokeExpr;
+import soot.jimple.InvokeExpr;
 import soot.jimple.InvokeStmt;
 import soot.jimple.LeExpr;
 import soot.jimple.LengthExpr;
@@ -165,6 +178,7 @@ import soot.jimple.ShrExpr;
 import soot.jimple.SpecialInvokeExpr;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.StaticInvokeExpr;
+import soot.jimple.Stmt;
 import soot.jimple.StmtSwitch;
 import soot.jimple.StringConstant;
 import soot.jimple.SubExpr;
@@ -176,7 +190,10 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 import soot.shimple.PhiExpr;
 import soot.shimple.ShimpleValueSwitch;
-import soot.toolkits.exceptions.ThrowableSet;
+import soot.toolkits.exceptions.ThrowableSet.Pair;
+
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 /**
  * A {@link ThrowAnalysis} which returns the set of runtime exceptions
@@ -210,12 +227,16 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
      * @param g guarantees that the constructor may only be called
      * from {@link Singletons}.
      */
-    public UnitThrowAnalysis(Singletons.Global g) {}
-
+    public UnitThrowAnalysis(Singletons.Global g) {
+    	this(false);
+    }
+    
     /**
      * A protected constructor for use by unit tests.
      */
-    protected UnitThrowAnalysis() {}
+    protected UnitThrowAnalysis() {
+    	this(false);
+    }
 
     /**
      * Returns the single instance of <code>UnitThrowAnalysis</code>.
@@ -223,6 +244,21 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
      * @return Soot's <code>UnitThrowAnalysis</code>.
      */
     public static UnitThrowAnalysis v() { return G.v().soot_toolkits_exceptions_UnitThrowAnalysis(); }
+    
+    protected final boolean isInterproc;
+    
+    protected UnitThrowAnalysis(boolean isInterproc) {
+    	this.isInterproc = isInterproc;
+    }
+    
+    public static UnitThrowAnalysis interproceduralAnalysis = null;
+    
+    public static UnitThrowAnalysis interproc() {
+    	if (interproceduralAnalysis == null) {
+    		interproceduralAnalysis = new UnitThrowAnalysis(true);
+    	}
+    	return interproceduralAnalysis;
+    }
 
 	protected ThrowableSet defaultResult() {
 		return mgr.VM_ERRORS;
@@ -258,22 +294,111 @@ public class UnitThrowAnalysis extends AbstractThrowAnalysis {
 	return sw.getResult();
     }
 
+    protected ThrowableSet mightThrow(SootMethodRef m) {
+    	// The throw analysis is used in the front-ends. Conseqeuently, some
+    	// methods might not yet be loaded. If this is the case, we make
+    	// conservative assumptions.
+    	SootMethod sm = m.tryResolve();
+    	if (sm != null)
+    		return mightThrow(sm);
+    	else
+    		return mgr.ALL_THROWABLES;
+    }
+    
     /**
      * Returns the set of types that might be thrown as a result of
      * calling the specified method.
      *
-     * @param m method whose exceptions are to be returned.
+     * @param sm method whose exceptions are to be returned.
      *
      * @return a representation of the set of {@link
      * java.lang.Throwable Throwable} types that <code>m</code> might
      * throw.
      */
-    protected ThrowableSet mightThrow(SootMethodRef m) {
-	// In the absence of an interprocedural analysis,
-	// m could throw anything.
-	return ThrowableSet.Manager.v().ALL_THROWABLES;
+    protected ThrowableSet mightThrow(SootMethod sm) {
+    	if (!isInterproc)
+    		return ThrowableSet.Manager.v().ALL_THROWABLES;
+    	return methodToThrowSet.getUnchecked(sm);
     }
+    
+	protected final LoadingCache<SootMethod,ThrowableSet> methodToThrowSet =
+			IDESolver.DEFAULT_CACHE_BUILDER.build( new CacheLoader<SootMethod,ThrowableSet>() {
+				@Override
+				public ThrowableSet load(SootMethod sm) throws Exception {
+					return mightThrow(sm, new HashSet<SootMethod>());
+				}
+			});
 
+    /**
+     * Returns the set of types that might be thrown as a result of
+     * calling the specified method.
+     *
+     * @param sm method whose exceptions are to be returned.
+     * @param doneSet The set of methods that were already processed
+     *
+     * @return a representation of the set of {@link
+     * java.lang.Throwable Throwable} types that <code>m</code> might
+     * throw.
+     */
+    private ThrowableSet mightThrow(SootMethod sm, Set<SootMethod> doneSet) {
+    	// Do not run in loops
+    	if (!doneSet.add(sm))
+    		return ThrowableSet.Manager.v().EMPTY;
+    	
+    	// If we don't have body, we silently ignore the method. This is
+    	// unsound, but would otherwise always bloat our result set.
+    	if (!sm.hasActiveBody())
+    		return ThrowableSet.Manager.v().EMPTY;
+    	
+    	// We need a mapping between unit and exception
+    	final PatchingChain<Unit> units = sm.getActiveBody().getUnits();
+    	Map<Unit, Collection<Trap>> unitToTraps = sm.getActiveBody().getTraps().isEmpty()
+    			? null : new HashMap<Unit, Collection<Trap>>();
+    	for (Trap t : sm.getActiveBody().getTraps()) {
+			for (Iterator<Unit> unitIt = units.iterator(t.getBeginUnit(),
+					units.getPredOf(t.getEndUnit())); unitIt.hasNext();) {
+				Unit unit = unitIt.next();
+				
+	    		Collection<Trap> unitsForTrap = unitToTraps.get(unit);
+	    		if (unitsForTrap == null) {
+	    			unitsForTrap = new ArrayList<Trap>();
+	    			unitToTraps.put(unit, unitsForTrap);
+	    		}
+	    		unitsForTrap.add(t);
+			}
+    	}
+    	
+    	ThrowableSet methodSet = ThrowableSet.Manager.v().EMPTY;
+		if(sm.hasActiveBody()){
+			Body methodBody = sm.getActiveBody();
+			
+			for(Unit u: methodBody.getUnits()) {
+				if (u instanceof Stmt) {
+			    	Stmt stmt = (Stmt) u;
+			    	ThrowableSet curStmtSet;
+					if (stmt.containsInvokeExpr()) {
+						InvokeExpr inv = stmt.getInvokeExpr();
+						curStmtSet = mightThrow(inv.getMethod(), doneSet);
+					}
+					else
+						curStmtSet = mightThrow(u);
+					
+					// The exception might be caught along the way
+					if (unitToTraps != null) {
+						Collection<Trap> trapsForUnit = unitToTraps.get(stmt);
+						if (trapsForUnit != null)
+							for (Trap t : trapsForUnit) {
+								Pair p = curStmtSet.whichCatchableAs(t.getException().getType());
+								curStmtSet = curStmtSet.remove(p.getCaught());
+							}
+					}
+					
+					methodSet = methodSet.add(curStmtSet);
+				}
+			}
+		}
+		return methodSet;
+    }
 
     private static final IntConstant INT_CONSTANT_ZERO = IntConstant.v(0);
     private static final LongConstant LONG_CONSTANT_ZERO = LongConstant.v(0);

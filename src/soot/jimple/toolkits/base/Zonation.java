@@ -32,6 +32,7 @@ package soot.jimple.toolkits.base;
 import soot.*;
 import soot.jimple.*;
 import soot.util.*;
+
 import java.util.*;
 
 public class Zonation
@@ -41,68 +42,35 @@ public class Zonation
     
     public Zonation(StmtBody body)
     {
-        Chain units = body.getUnits();
-        Map<Unit, ArrayList> unitToTrapBoundaries = new HashMap<Unit, ArrayList>();
-        
-        // Initialize each unit to an empty set
-        {
-            Iterator unitIt = units.iterator();
-            
-            while(unitIt.hasNext())
-            {
-                Unit u = (Unit) unitIt.next();
-                
-                unitToTrapBoundaries.put(u, new ArrayList());
-            }
-        }
-            
+        Chain<Unit> units = body.getUnits();
+        Map<Unit, List<Trap>> unitToTrapBoundaries = new HashMap<Unit, List<Trap>>();
+                    
         // Build trap boundaries
-        {
-            Iterator trapIt = body.getTraps().iterator();
-            
-            while(trapIt.hasNext())
-            {
-                Trap t = (Trap) trapIt.next();
-                
-                List<Trap> boundary = unitToTrapBoundaries.get(t.getBeginUnit());
-                boundary.add(t);
-                
-                boundary = unitToTrapBoundaries.get(t.getEndUnit());
-                boundary.add(t);
-            }
+        for (Trap t : body.getTraps()) {
+        	addTrapBoundary(t.getBeginUnit(), t, unitToTrapBoundaries);
+        	addTrapBoundary(t.getEndUnit(), t, unitToTrapBoundaries);
         }
         
         // Traverse units, assigning each to a zone
         {
-            Map<List, Zone> trapListToZone = new HashMap<List, Zone>(10, 0.7f);
+            Map<List<Trap>, Zone> trapListToZone = new HashMap<List<Trap>, Zone>(10, 0.7f);
             List<Trap> currentTraps = new ArrayList<Trap>();
             Zone currentZone;
             
             zoneCount = 0;
             unitToZone = new HashMap<Unit, Zone>(units.size() * 2 + 1, 0.7f);
-                        
+            
             // Initialize first empty zone
                 currentZone = new Zone("0");
-                trapListToZone.put(new ArrayList(), currentZone);
-                
-            Iterator unitIt = units.iterator();
+                trapListToZone.put(new ArrayList<Trap>(), currentZone);
             
-            while(unitIt.hasNext())
-            {
-                Unit u = (Unit) unitIt.next();
-                
+            for (Unit u : units) {
                 // Process trap boundaries
                 {
-                    List trapBoundaries = unitToTrapBoundaries.get(u);
-
-                    if(trapBoundaries.size() != 0)
-                    {                        
-                        Iterator trapIt = trapBoundaries.iterator();
-                        
-                        while(trapIt.hasNext())
-                        {
-                            Trap trap = (Trap) trapIt.next();
-                            
+                    List<Trap> trapBoundaries = unitToTrapBoundaries.get(u);
+                    if(trapBoundaries != null && !trapBoundaries.isEmpty())
+                    {
+                    	for (Trap trap : trapBoundaries) {
                             if(currentTraps.contains(trap))
                                 currentTraps.remove(trap);
                             else
@@ -114,7 +82,6 @@ public class Zonation
                         else
                         {   
                             // Create a new zone
-                            
                             zoneCount++;
                             currentZone = new Zone(new Integer(zoneCount).toString());
                             
@@ -130,7 +97,16 @@ public class Zonation
         
     }
     
-    public Zone getZoneOf(Unit u)
+    private void addTrapBoundary(Unit unit, Trap t, Map<Unit, List<Trap>> unitToTrapBoundaries) {
+        List<Trap> boundary = unitToTrapBoundaries.get(unit);
+        if (boundary == null) {
+        	boundary = new ArrayList<Trap>();
+        	unitToTrapBoundaries.put(unit, boundary);
+        }
+        boundary.add(t);
+	}
+
+	public Zone getZoneOf(Unit u)
     {
         Zone z = unitToZone.get(u);
         

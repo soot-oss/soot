@@ -23,39 +23,35 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
 package soot.tagkit;
 
+import java.util.LinkedList;
 
 import soot.*;
 
 /** The aggregator for LineNumberTable attribute. */
-public class LineNumberTagAggregator extends FirstTagAggregator
-{    
-    public LineNumberTagAggregator( Singletons.Global g ) {}
-    public static LineNumberTagAggregator v() { return G.v().soot_tagkit_LineNumberTagAggregator(); }
+public class LineNumberTagAggregator extends FirstTagAggregator {
+	public LineNumberTagAggregator(Singletons.Global g) {
+	}
 
-    /** Decide whether this tag should be aggregated by this aggregator. */
-    public boolean wantTag(Tag t)
-    {
-	return (t instanceof LineNumberTag) || (t instanceof SourceLnPosTag);
-    }
-    
-    public String aggregatedName()
-    {
-        return "LineNumberTable";
-    }
+	public static LineNumberTagAggregator v() {
+		return G.v().soot_tagkit_LineNumberTagAggregator();
+	}
 
-    public void considerTag(Tag t, Unit u){
-        //System.out.println("consider tag for unit: "+u.getClass());
-        if (!(u instanceof IdentityUnit)) super.considerTag(t, u);
-    }
+	/** Decide whether this tag should be aggregated by this aggregator. */
+	public boolean wantTag(Tag t) {
+		return (t instanceof LineNumberTag) || (t instanceof SourceLnPosTag);
+	}
+
+	public String aggregatedName() {
+		return "LineNumberTable";
+	}
+
+	@Override
+	public void considerTag(Tag t, Unit u, LinkedList<Tag> tags,
+			LinkedList<Unit> units) {
+		// System.out.println("consider tag for unit: "+u.getClass());
+		if (!(u instanceof IdentityUnit))
+			super.considerTag(t, u, tags, units);
+	}
 }
-
-
-
-
-
-
-

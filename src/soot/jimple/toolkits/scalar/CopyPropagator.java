@@ -25,18 +25,55 @@
 
 package soot.jimple.toolkits.scalar;
 
-import soot.options.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import soot.*;
-import soot.jimple.*;
-import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
-import soot.util.*;
-import java.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.NullType;
+import soot.RefLikeType;
+import soot.Scene;
+import soot.Singletons;
+import soot.Timers;
+import soot.Unit;
+import soot.ValueBox;
+import soot.jimple.AssignStmt;
+import soot.jimple.CastExpr;
+import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
+import soot.jimple.IntConstant;
+import soot.jimple.LongConstant;
+import soot.jimple.NullConstant;
+import soot.jimple.Stmt;
+import soot.jimple.StmtBody;
 import soot.options.CPOptions;
+import soot.options.Options;
+import soot.toolkits.exceptions.ThrowAnalysis;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.PseudoTopologicalOrderer;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.LocalDefs;
+import soot.util.Chain;
 
 public class CopyPropagator extends BodyTransformer {
+
+	protected ThrowAnalysis throwAnalysis = null;
+	protected boolean forceOmitExceptingUnitEdges = false;
+	
 	public CopyPropagator(Singletons.Global g) {
+	}
+	
+	public CopyPropagator(ThrowAnalysis ta) {
+		this.throwAnalysis = ta;
+	}
+	
+	public CopyPropagator(ThrowAnalysis ta, boolean forceOmitExceptingUnitEdges) {
+		this.throwAnalysis = ta;
+		this.forceOmitExceptingUnitEdges = forceOmitExceptingUnitEdges;
 	}
 
 	public static CopyPropagator v() {
@@ -87,25 +124,30 @@ public class CopyPropagator extends BodyTransformer {
 					localToDefCount.put(l, new Integer(localToDefCount.get(l).intValue() + 1));
 			}
 		}
+		
+        if (throwAnalysis == null)
+        	throwAnalysis = Scene.v().getDefaultThrowAnalysis();
+        
+        if (forceOmitExceptingUnitEdges == false)
+        	forceOmitExceptingUnitEdges = Options.v().omit_excepting_unit_edges();
+        
+        // Go through the definitions, building the webs
+    	UnitGraph graph = new ExceptionalUnitGraph(stmtBody, throwAnalysis, forceOmitExceptingUnitEdges);
 
-		ExceptionalUnitGraph graph = new ExceptionalUnitGraph(stmtBody);
-
-		LocalDefs localDefs;
-
-		localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
+		LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(graph);
 
 		// Perform a local propagation pass.
 		{
 			Iterator<Unit> stmtIt = (new PseudoTopologicalOrderer<Unit>()).newList(graph, false).iterator();
 			while (stmtIt.hasNext()) {
 				Stmt stmt = (Stmt) stmtIt.next();
+				
 				for (ValueBox useBox : stmt.getUseBoxes()) {
 					if (useBox.getValue() instanceof Local) {
 						Local l = (Local) useBox.getValue();
 
 						// We force propagating nulls. If a target can only be
-						// null due to
-						// typing, we always inline that constant.
+						// null due to typing, we always inline that constant.
 						if (!(l.getType() instanceof NullType)) {
 							if (options.only_regular_locals() && l.getName().startsWith("$"))
 								continue;
@@ -158,8 +200,12 @@ public class CopyPropagator extends BodyTransformer {
 											&& ((IntConstant) ce.getOp()).value == 0;
 									isConstNull |= ce.getOp() instanceof LongConstant
 											&& ((LongConstant) ce.getOp()).value == 0;
-									if (isConstNull)
-										useBox.setValue(NullConstant.v());
+									if (isConstNull) {
+										if (useBox.canContainValue(NullConstant.v())) {
+											useBox.setValue(NullConstant.v());
+										}
+									}
+
 								}
 							}
 							else if (def.getRightOp() instanceof Local) {
@@ -232,7 +278,6 @@ public class CopyPropagator extends BodyTransformer {
 
 		if (Options.v().time())
 			Timers.v().propagatorTimer.end();
-
 	}
 
 }

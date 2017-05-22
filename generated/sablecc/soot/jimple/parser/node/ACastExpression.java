@@ -44,6 +44,7 @@ public final class ACastExpression extends PExpression
             cloneNode(this._immediate_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseACastExpression(this);

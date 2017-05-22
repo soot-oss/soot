@@ -1,7 +1,16 @@
 <?xml version="1.0"?>
 
-<project default="compile" name="Soot Build File">
+<project xmlns:ivy="antlib:org.apache.ivy.ant" default="compile" name="Soot Build File">
     <property file="ant.settings"/>
+
+    <property name="ivy.install.version" value="2.1.0-rc2" />
+    <condition property="ivy.home" value="${env.IVY_HOME}">
+        <isset property="env.IVY_HOME" />
+    </condition>
+    <property name="ivy.home" value="${user.home}/.ivy2" />
+    <property name="ivy.jar.dir" value="${ivy.home}/lib" />
+    <property name="ivy.jar.file" value="${ivy.jar.dir}/ivy.jar" />
+
     <target name="settings">
         <fail
             message="Please copy ant.settings.template to ant.settings, and set the variables in it."
@@ -9,18 +18,19 @@
         />
     </target>
 
-    <target name="compile" depends="settings,sablecc,jastadd,copypeephole,settings,singletons,options">
+    <target name="compile" depends="settings,sablecc,jastadd,copypeephole,settings,singletons,options"
+	    description="Build Soot.">
     	<mkdir dir="classes"/>
         <javac
             destdir="classes"
             debug="true"
 	    includeantruntime="true"
             deprecation="on"
-        	source="1.6"
-        	target="1.6"
+        	source="1.7"
+        	target="1.7"
         	fork="true"
         	memorymaximumsize="512m"
-        >
+		>
         	<compilerarg value="-Xlint:all"/>
         	<compilerarg value="-Xlint:-unchecked"/>
         	<compilerarg value="-Xlint:-serial"/>
@@ -33,12 +43,17 @@
            		<pathelement location="${jasmin.jar}"/>
            		<pathelement location="${heros.jar}"/>
            		<pathelement location="${axmlprinter2.jar}"/>
+           		<pathelement location="${asm.jar}"/>
+				<pathelement location="${jboss-common-core.jar}"/>
+
+				<pathelement location="${slf4j-api.jar}"/>
+           		<pathelement location="${slf4j-simple.jar}"/>
+
            		<pathelement location="${dexlib2.jar}"/>
            		<pathelement location="${dexlib-utils.jar}"/>
-           		<pathelement location="${slf4j-api.jar}"/>
-           		<pathelement location="${slf4j-simple.jar}"/>
-           		<pathelement location="${asm.jar}"/>
-        	</classpath>
+        		
+           		<pathelement location="${guava.jar}"/>
+			</classpath>
             <src path="src"/>
             <src path="generated/singletons"/>
             <src path="generated/sablecc"/>
@@ -55,6 +70,7 @@
             out="${basedir}/generated/singletons/soot/Singletons.java"
         />
     </target>
+
     <target name="singletons-dep">
         <uptodate property="singletons-uptodate" targetfile="generated/singletons/soot/Singletons.java">
             <srcfiles dir="src" includes="singletons.xml"/>
@@ -98,7 +114,7 @@
     <target name="sablecc" depends="determine-sablecc-uptodate,settings" unless="sablecc.uptodate">
 
     </target>
-	
+
     <target name="determine-jastadd-uptodate" depends="settings" if="jastaddfrontend.loc">
     	<uptodate property="jastadd.uptodate" targetfile="generated/jastadd/beaver/Action.java">
     	    <srcfiles dir= "${jastaddfrontend.loc}" includes="**/*.jrag,**/*.flex,**/*.parser,**/*.scanner"/>
@@ -116,7 +132,8 @@
     	</copy>
     </target>
 
-    <target name="javadoc">
+    <target name="javadoc"
+	    description="Build the javadoc.">
         <javadoc
             classpath="classes:${polyglot.jar}:${jasmin.jar}:${heros.jar}"
             sourcepath="src:generated/singletons:generated/sablecc:generated/options"
@@ -132,7 +149,8 @@
 		<jar basedir="javadoc" destfile="${release.loc}/sootjavadoc-${soot.version}.jar" />
 	</target>
 
-    <target name="clean">
+    <target name="clean" depends="clean-reports"
+	    description="Delete the class files and test reports.">
         <delete quiet="true">
             <fileset dir="classes" includes="**/*.class" />
             <fileset dir="testclasses" includes="**/*.class" />
@@ -141,7 +159,14 @@
         </delete>
     </target>
 
-    <target name="veryclean" depends="clean,veryclean-singletons,veryclean-options,veryclean-sablecc,veryclean-jastadd"/>
+    <target name="clean-reports"> 
+        <delete quiet="true" includeEmptyDirs="true">
+            <fileset dir="reports"/>
+        </delete>
+    </target>
+
+    <target name="veryclean" depends="clean,veryclean-singletons,veryclean-options,veryclean-sablecc,veryclean-jastadd"
+	    description="Delete the class files, test reports, and automatically-generated source files."/>
     <target name="veryclean-singletons">
         <delete quiet="true">
             <fileset dir="generated/singletons" includes="**/*" />
@@ -182,7 +207,8 @@
         </delete>
     </target>
 
-    <target name="badfields" depends="compile,settings">
+    <target name="badfields" depends="compile,settings"
+	    description="Build BadFields: a utility for displaying various warnings about a program.">
         <java
             classname="soot.tools.BadFields"
             maxmemory="200m"
@@ -201,14 +227,27 @@
     <target name="buildtests" depends="compile,settings">
         <mkdir dir="testclasses"/>
         <javac
+        	source="1.7"
+        	target="1.7"
             srcdir="tests"
             destdir="testclasses"
-            classpath="classes:${polyglot.jar}:${jasmin.jar}:${junit.jar}:${hamcrest.jar}"
-            debug="true"
-            />
+            debug="true">
+        	<classpath>
+        		<pathelement location="classes"/>
+        		<pathelement location="${polyglot.jar}"/>
+        		<pathelement location="${jasmin.jar}"/>
+           		<pathelement location="${asm.jar}"/>
+        		<pathelement location="${junit.jar}"/>
+        		<pathelement location="${hamcrest.jar}"/>
+        		<pathelement location="${mockito.jar}"/>
+        		<pathelement location="${powermock-mockito.jar}"/>
+           		<pathelement location="${guava.jar}"/>
+        	</classpath>
+        </javac>
     </target>
 
-    <target name="runtests" depends="buildtests,settings">
+    <target name="runtests" depends="buildtests,settings"
+	    description="Run the regression test suite.">
 	<mkdir dir="reports" />
         <junit printsummary="yes" fork="true">
             <classpath>
@@ -216,25 +255,38 @@
                 <pathelement location="classes"/>
                 <pathelement location="${polyglot.jar}"/>
                 <pathelement location="${jasmin.jar}"/>
-                <pathelement location="${junit.jar}"/>
-                <pathelement location="${hamcrest.jar}"/>
-           	<pathelement location="${dexlib2.jar}"/>
+           		<pathelement location="${axmlprinter2.jar}"/>
+                <pathelement location="${dexlib2.jar}"/>
                 <pathelement location="${dexlib-utils.jar}"/>
                 <pathelement location="${heros.jar}"/>
            		<pathelement location="${asm.jar}"/>
-            </classpath>
-			
+        		<pathelement location="${javassist.jar}"/>
+           		<pathelement location="${xmlprinter.jar}"/>
+        		<pathelement location="${jboss-common-core.jar}"/>
+
+           		<pathelement location="${slf4j-api.jar}"/>
+           		<pathelement location="${slf4j-simple.jar}"/>
+
+        		<pathelement location="${junit.jar}"/>
+                <pathelement location="${hamcrest.jar}"/>
+        		<pathelement location="${mockito.jar}"/>
+        		<pathelement location="${powermock-mockito.jar}"/>
+            	
+           		<pathelement location="${guava.jar}"/>
+        	</classpath>
+
 			<jvmarg value="-ea" />
-            
+
             <formatter type="xml" usefile="true" />
             <batchtest todir="reports">
-                <fileset dir="testclasses" includes="**/Test*.class"/>
-                <fileset dir="testclasses" includes="**/*Test.class"/>
+                <fileset dir="testclasses" includes="**/Test*.class" excludes="**/Abstract*.class" />
+                <fileset dir="testclasses" includes="**/*Test.class" excludes="**/Abstract*.class" />
             </batchtest>
         </junit>
     </target>
 
-    <target name="reporttests" depends="runtests">
+    <target name="reporttests" depends="runtests"
+	    description="Run the regression test suite and create its JUnit reports in reports subdirectory.">
         <junitreport tofile="TESTS-TestSuites.xml" todir="reports">
             <fileset dir="reports">
                 <include name="TEST-*.xml" />
@@ -246,7 +298,8 @@
     <target name="release" depends="barebones,javadoc,settings">
     </target>
 
-    <target name="barebones" depends="clean,options,sablecc,settings">
+    <target name="barebones" depends="clean,options,sablecc,settings"
+	    description="Build a tarball and a jar of the source root directory in the release subdirectory (usually lib).">
         <tar destfile="${release.loc}/sootsrc-${soot.version}.tar.gz" compression="gzip" longfile="gnu">
             <tarfileset dir="."/>
         </tar>
@@ -255,12 +308,13 @@
         </jar>
     </target>
 
-    <target name="classesjar" depends="settings,compile">
+    <target name="classesjar" depends="settings,compile"
+	    description="Build the class files jar in the release subdirectory (usually lib).">
     	<mkdir dir="META-INF"/>
 
         <manifest file="META-INF/MANIFEST.MF">
            <attribute name="Main-Class" value="soot.Main"/>
-           <attribute name="Implementation-Version" value="${soot.version}"/> 
+           <attribute name="Implementation-Version" value="${soot.version}"/>
         </manifest>
 
     	<jar destfile="${release.loc}/sootclasses-${soot.version}.jar" manifest="META-INF/MANIFEST.MF">
@@ -269,7 +323,8 @@
 		<delete dir="META-INF"/>
     </target>
 
-    <target name="eclipse-plugin" depends="compile,settings,graph-plugin">
+    <target name="eclipse-plugin" depends="compile,settings,graph-plugin"
+	    description="Build the Eclipse plugin.">
         <xslt
             style="src/soot/options/phase_options_dialog.xsl"
             in="src/soot/options/soot_options.xml"
@@ -313,32 +368,37 @@
         <jar destfile="eclipse/ca.mcgill.sable.graph/graph.jar">
             <fileset dir="eclipse/ca.mcgill.sable.graph/classes"/>
         </jar>
-        
+
     </target>
-		
-	<target name="fulljar" depends="classesjar">
+
+	<target name="fulljar" depends="classesjar"
+		description="Build the complete jar file sootclasses-(version).jar that includes Soot's class files and its required libraries, in the release subdirectory (usually lib).">
     	<mkdir dir="META-INF"/>
 
         <manifest file="META-INF/MANIFEST.MF">
            <attribute name="Main-Class" value="soot.Main"/>
-           <attribute name="Implementation-Version" value="${soot.version}"/> 
+           <attribute name="Implementation-Version" value="${soot.version}"/>
         </manifest>
-		
+
         <jar destfile="${release.loc}/soot-${soot.version}.jar" manifest="META-INF/MANIFEST.MF">
             <zipfileset src="${release.loc}/sootclasses-${soot.version}.jar"/>
             <zipfileset src="${jasmin.jar}"/>
             <zipfileset src="${heros.jar}"/>
             <zipfileset src="${polyglot.jar}"/>
-            <zipfileset src="${javacup.jar}"/>
             <zipfileset src="${xmlprinter.jar}"/>
             <zipfileset src="${dexlib2.jar}"/>
             <zipfileset src="${dexlib-utils.jar}"/>
             <zipfileset src="${asm.jar}"/>
+			<zipfileset src="${jboss-common-core.jar}"/>
+			<zipfileset src="${slf4j-api.jar}"/>
+       		<zipfileset src="${slf4j-simple.jar}"/>
+       		<zipfileset src="${guava.jar}"/>
         </jar>
 		<delete dir="META-INF"/>
     </target>
-    
-	<target name="sourcejar">
+
+	<target name="sourcejar"
+		description="Build the jar file sootsources-(version).jar containing only the source files, in the release subdirectory (usually lib).">
         <jar destfile="${release.loc}/sootsources-${soot.version}.jar">
             <fileset dir="src"/>
             <fileset dir="generated/singletons"/>
@@ -347,5 +407,48 @@
             <fileset dir="generated/options"/>
         </jar>
 	</target>
-    
+
+    <!-- IVY-RELATED TARGETS -->
+
+    <target name="download-ivy" unless="offline">
+
+        <mkdir dir="${ivy.jar.dir}"/>
+        <!-- download Ivy from web site so that it can be used even without any special installation -->
+        <get src="https://repo1.maven.org/maven2/org/apache/ivy/ivy/${ivy.install.version}/ivy-${ivy.install.version}.jar"
+             dest="${ivy.jar.file}" usetimestamp="true"/>
+    </target>
+
+    <target name="init-ivy" depends="download-ivy">
+        <!-- try to load ivy here from ivy home, in case the user has not already dropped
+                it into ant's lib dir (note that the latter copy will always take precedence).
+                We will not fail as long as local lib dir exists (it may be empty) and
+                ivy is in at least one of ant's lib dir or the local lib dir. -->
+        <path id="ivy.lib.path">
+            <fileset dir="${ivy.jar.dir}" includes="*.jar"/>
+
+        </path>
+        <taskdef resource="org/apache/ivy/ant/antlib.xml"
+                 uri="antlib:org.apache.ivy.ant" classpathref="ivy.lib.path"/>
+    </target>
+
+	<target name="gen-pom" depends="init-ivy">
+		<ivy:makepom ivyfile="ivy.xml" pomfile="${release.loc}/soot-${soot.version}.pom">
+			<mapping conf="default" scope="compile" />
+		</ivy:makepom>
+	</target>
+	
+    <target name="publish-local" depends="init-ivy, gen-pom, fulljar, classesjar, sourcejar, javadoc">
+        <ivy:resolve/>
+        <ivy:publish pubrevision="${soot.version}" status="release" resolver="local" overwrite="true" >
+            <artifacts pattern="${release.loc}/[artifact]-[revision].[ext]"/>
+        </ivy:publish>
+    </target>
+	
+	<target name="publish-local-maven" depends="init-ivy, gen-pom, fulljar, classesjar, sourcejar, javadoc" description="Publish jar/source to Maven repository mounted at ~/.m2/repository.">
+		<ivy:resolve/>
+		<ivy:publish pubrevision="${soot.version}" resolver="local-m2-publish" forcedeliver="true" overwrite="true" publishivy="false">
+			<artifacts pattern="${release.loc}/[artifact]-[revision].[ext]" />
+		</ivy:publish>
+	</target>
+
 </project>

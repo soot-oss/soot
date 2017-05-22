@@ -93,7 +93,7 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
         Object l1n = getFlowBefore(s1).get(l1);
         Object l2n = getFlowBefore(s2).get(l2);
 
-        if (l1n == UNKNOWN || l2n == UNKNOWN ||
+        if (l1n == null || l2n == null ||
             invalidInstanceKeys.contains(l1n) || invalidInstanceKeys.contains(l2n))
             return false;
 
@@ -107,7 +107,7 @@ public class StrongLocalMustAliasAnalysis extends LocalMustAliasAnalysis {
     public String instanceKeyString(Local l, Stmt s) {
         Object ln = getFlowBefore(s).get(l);
         if(invalidInstanceKeys.contains(ln)) {
-            return UNKNOWN_LABEL;
+            return "UNKNOWN";
         }
         return super.instanceKeyString(l, s);
     }

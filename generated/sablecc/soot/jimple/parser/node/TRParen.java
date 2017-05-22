@@ -25,6 +25,7 @@ public final class TRParen extends Token
       return new TRParen(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTRParen(this);

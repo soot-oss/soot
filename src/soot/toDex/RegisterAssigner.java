@@ -24,7 +24,7 @@ import soot.toDex.instructions.TwoRegInsn;
  * <br>
  * IMPLEMENTATION NOTE: The algorithm is heavily inspired by com.android.dx.dex.code.OutputFinisher.
  */
-public class RegisterAssigner {
+class RegisterAssigner {
 	
 	private class InstructionIterator implements Iterator<Insn> {
 		
@@ -101,6 +101,10 @@ public class RegisterAssigner {
 		InstructionIterator insnIter = new InstructionIterator(insns, insnsStmtMap, instructionRegisterMap);
 		while (insnIter.hasNext()) {
 			Insn oldInsn = insnIter.next();
+			
+			if (oldInsn.toString().equals("XOR_INT [reg(18):int, reg(15):byte, reg(12):int]"))
+				System.out.println("x");
+			
 			if (oldInsn.hasIncompatibleRegs()) {
 				Insn fittingInsn = findFittingInsn(oldInsn);
 				if (fittingInsn != null) {
@@ -113,7 +117,8 @@ public class RegisterAssigner {
 		return insns;
 	}
 	
-	private void renumParamRegsToHigh(List<Insn> insns, List<LocalRegisterAssignmentInformation> parameterInstructionsList) {
+	private void renumParamRegsToHigh(List<Insn> insns,
+			List<LocalRegisterAssignmentInformation> parameterInstructionsList) {
 		int regCount = regAlloc.getRegCount();
 		int paramRegCount = regAlloc.getParamRegCount();
 		if (paramRegCount == 0 || paramRegCount == regCount) {
@@ -124,8 +129,7 @@ public class RegisterAssigner {
 				renumParamRegToHigh(r, regCount, paramRegCount);
 			}
 		}
-		for (LocalRegisterAssignmentInformation parameter : parameterInstructionsList)
-		{
+		for (LocalRegisterAssignmentInformation parameter : parameterInstructionsList) {
 			renumParamRegToHigh(parameter.getRegister(), regCount, paramRegCount);
 		}
 	}
@@ -221,7 +225,9 @@ public class RegisterAssigner {
 		boolean isResultRegIncompat = incompatRegs.get(0);
 		
 		// is there an incompat result reg which is not also used as a source (like in /2addr)?
-		if (hasResultReg && isResultRegIncompat && !insn.getOpcode().name.endsWith("/2addr")) {
+		if (hasResultReg && isResultRegIncompat
+				&& !insn.getOpcode().name.endsWith("/2addr")
+				&& !insn.getOpcode().name.equals("check-cast")) {
 			// yes, so pretend result reg is compatible, since it will get a special move
 			incompatRegs.clear(0);
 		}

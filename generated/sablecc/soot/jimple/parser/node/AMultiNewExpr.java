@@ -24,7 +24,7 @@ public final class AMultiNewExpr extends PNewExpr
         @SuppressWarnings("hiding") TLParen _lParen_,
         @SuppressWarnings("hiding") PBaseType _baseType_,
         @SuppressWarnings("hiding") TRParen _rParen_,
-        @SuppressWarnings("hiding") List<PArrayDescriptor> _arrayDescriptor_)
+        @SuppressWarnings("hiding") List<?> _arrayDescriptor_)
     {
         // Constructor
         setNewmultiarray(_newmultiarray_);
@@ -50,6 +50,7 @@ public final class AMultiNewExpr extends PNewExpr
             cloneList(this._arrayDescriptor_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAMultiNewExpr(this);
@@ -160,18 +161,24 @@ public final class AMultiNewExpr extends PNewExpr
         return this._arrayDescriptor_;
     }
 
-    public void setArrayDescriptor(List<PArrayDescriptor> list)
+    public void setArrayDescriptor(List<?> list)
     {
-        this._arrayDescriptor_.clear();
-        this._arrayDescriptor_.addAll(list);
-        for(PArrayDescriptor e : list)
+        for(PArrayDescriptor e : this._arrayDescriptor_)
         {
+            e.parent(null);
+        }
+        this._arrayDescriptor_.clear();
+
+        for(Object obj_e : list)
+        {
+            PArrayDescriptor e = (PArrayDescriptor) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
             }
 
             e.parent(this);
+            this._arrayDescriptor_.add(e);
         }
     }
 

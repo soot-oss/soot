@@ -26,7 +26,7 @@ Helpers
 
   alpha_char = ['a' .. 'z'] | ['A' .. 'Z']; 
   
-  simple_id_char = alpha_char | dec_digit | '_' | '$';
+  simple_id_char = alpha_char | dec_digit | '_' | '$' | '-';
 
   first_id_char = alpha_char | '_' | '$';
   
@@ -143,9 +143,11 @@ Tokens
   mult = '*';
   div = '/';
 
-  full_identifier = 
-      ((first_id_char | escape_char) (simple_id_char | escape_char)* '.')+  (first_id_char | escape_char) (simple_id_char | escape_char)*; 
   quoted_name = quote quotable_char+ quote;
+  
+  full_identifier = 
+      ((first_id_char | escape_char | quote) (simple_id_char | escape_char)* (quote)? '.')+ 
+      (first_id_char | escape_char | quote) (simple_id_char | escape_char)* (quote)?; 
   identifier = 
       (first_id_char | escape_char) (simple_id_char | escape_char)* | '<clinit>' | '<init>';
  

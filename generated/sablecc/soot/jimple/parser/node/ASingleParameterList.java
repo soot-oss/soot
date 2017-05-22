@@ -29,6 +29,7 @@ public final class ASingleParameterList extends PParameterList
             cloneNode(this._parameter_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseASingleParameterList(this);

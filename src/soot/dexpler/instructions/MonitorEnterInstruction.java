@@ -38,8 +38,6 @@ import soot.jimple.Jimple;
 
 public class MonitorEnterInstruction extends DexlibAbstractInstruction {
 
-    EnterMonitorStmt enterMonitorStmt = null;
-  
     public MonitorEnterInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -47,7 +45,7 @@ public class MonitorEnterInstruction extends DexlibAbstractInstruction {
     public void jimplify (DexBody body) {
         int reg = ((OneRegisterInstruction) instruction).getRegisterA();
         Local object = body.getRegisterLocal(reg);
-        enterMonitorStmt = Jimple.v().newEnterMonitorStmt(object);
+        EnterMonitorStmt enterMonitorStmt = Jimple.v().newEnterMonitorStmt(object);
         setUnit(enterMonitorStmt);
         addTags(enterMonitorStmt);
         body.add(enterMonitorStmt);

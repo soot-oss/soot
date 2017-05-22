@@ -39,6 +39,7 @@ public final class AReturnStatement extends PStatement
             cloneNode(this._semicolon_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAReturnStatement(this);

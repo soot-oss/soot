@@ -25,6 +25,7 @@ public final class TNop extends Token
       return new TNop(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTNop(this);

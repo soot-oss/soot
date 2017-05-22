@@ -2,8 +2,10 @@ package soot.toDex;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import soot.Local;
@@ -74,24 +76,24 @@ public class RegisterAllocator {
 	// - array reference in assignment (ex: a[1] = 2)
 	// - multi-dimension array initialization (ex: a = new int[1][2][3])
 	//
-	List<Register> classConstantReg = new ArrayList<Register>();
-	List<Register> nullConstantReg = new ArrayList<Register>();
-	List<Register> floatConstantReg = new ArrayList<Register>();
-	List<Register> intConstantReg = new ArrayList<Register>();
-	List<Register> longConstantReg = new ArrayList<Register>();
-	List<Register> doubleConstantReg = new ArrayList<Register>();
-	List<Register> stringConstantReg = new ArrayList<Register>();
-	AtomicInteger classI = new AtomicInteger(0);
-	AtomicInteger nullI = new AtomicInteger(0);
-	AtomicInteger floatI = new AtomicInteger(0);
-	AtomicInteger intI = new AtomicInteger(0);
-	AtomicInteger longI = new AtomicInteger(0);
-	AtomicInteger doubleI = new AtomicInteger(0);
-	AtomicInteger stringI = new AtomicInteger(0);
+	private List<Register> classConstantReg = new ArrayList<Register>();
+	private List<Register> nullConstantReg = new ArrayList<Register>();
+	private List<Register> floatConstantReg = new ArrayList<Register>();
+	private List<Register> intConstantReg = new ArrayList<Register>();
+	private List<Register> longConstantReg = new ArrayList<Register>();
+	private List<Register> doubleConstantReg = new ArrayList<Register>();
+	private List<Register> stringConstantReg = new ArrayList<Register>();
+	private AtomicInteger classI = new AtomicInteger(0);
+	private AtomicInteger nullI = new AtomicInteger(0);
+	private AtomicInteger floatI = new AtomicInteger(0);
+	private AtomicInteger intI = new AtomicInteger(0);
+	private AtomicInteger longI = new AtomicInteger(0);
+	private AtomicInteger doubleI = new AtomicInteger(0);
+	private AtomicInteger stringI = new AtomicInteger(0);
 	
-	private Register asConstant(Value v, ConstantVisitor constantV) {
-		Constant c = (Constant) v;
-		
+	private Set<Register> lockedRegisters = new HashSet<Register>();
+	
+	private Register asConstant(Constant c, ConstantVisitor constantV) {
 		Register constantRegister = null;
 		
 		List<Register> rArray = null;
@@ -121,28 +123,26 @@ public class RegisterAllocator {
             throw new RuntimeException("Error. Unknown constant type: '"+ c.getType() +"'");
         }
 		
-		if (rArray.size() == 0 || iI.intValue() >= rArray.size()) {
-		    rArray.add(new Register(c.getType(), nextRegNum));
-		    nextRegNum += SootToDexUtils.getDexWords(c.getType());
+		boolean inConflict = true;
+		while (inConflict) {
+			if (rArray.size() == 0 || iI.intValue() >= rArray.size()) {
+			    rArray.add(new Register(c.getType(), nextRegNum));
+			    nextRegNum += SootToDexUtils.getDexWords(c.getType());
+			}
+			
+			constantRegister = rArray.get(iI.intValue()).clone();
+			iI.set(iI.intValue() + 1);
+			inConflict = lockedRegisters.contains(constantRegister);
 		}
 		
-		if (isMultipleConstantsPossible()) {
-		    constantRegister = rArray.get(iI.intValue()).clone();  
-		    iI.set(iI.intValue() + 1);
-		} else {
-		    constantRegister = rArray.get(0).clone();  
-		}
-
 		// "load" constant into the register...
 		constantV.setDestination(constantRegister);
 		c.apply(constantV);
-		// ...but return an independent register object
+		// get an independent clone in case we got a cached reguster
 		return constantRegister.clone();
 	}
 	
-	private boolean multipleConstantsPossible = false;
-	public void setMultipleConstantsPossible(boolean b) {
-	    multipleConstantsPossible = b;
+	public void resetImmediateConstantsPool() {
 	    classI = new AtomicInteger(0);
 	    nullI = new AtomicInteger(0);
 	    floatI = new AtomicInteger(0);
@@ -151,15 +151,12 @@ public class RegisterAllocator {
 	    doubleI = new AtomicInteger(0);
 	    stringI = new AtomicInteger(0);
 	}
-	public boolean isMultipleConstantsPossible() {
-	    return multipleConstantsPossible;
-	}
 
 	public Map<String, Integer> getLocalToRegisterMapping() {
 		return localToLastRegNum;
 	}
 	
-	public Register asLocal(Value v) {
+	public Register asLocal(Local v) {
 		Local l = (Local) v;
 		String localName = l.getName();
 		Register localRegister;
@@ -224,9 +221,9 @@ public class RegisterAllocator {
 
 	public Register asImmediate(Value v, ConstantVisitor constantV) {
 		if (v instanceof Constant) {
-			 return asConstant(v, constantV);
+			 return asConstant((Constant) v, constantV);
 		} else if (v instanceof Local) {
-			return asLocal(v);
+			return asLocal((Local) v);
 		} else {
 			throw new RuntimeException("expected Immediate (Constant or Local), but was: " + v.getClass());
 		}
@@ -247,5 +244,14 @@ public class RegisterAllocator {
 	
 	public int getRegCount() {
 		return nextRegNum;
+	}
+	
+	/**
+	 * Locks the given register. This prevents the register from being re-used
+	 * for storing constants.
+	 * @param reg The register to lock
+	 */
+	public void lockRegister(Register reg) {
+		lockedRegisters.add(reg);
 	}
 }

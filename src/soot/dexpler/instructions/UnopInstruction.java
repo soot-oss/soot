@@ -34,19 +34,17 @@ import soot.Value;
 import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
-import soot.dexpler.typing.DalvikTyper;
+import soot.dexpler.tags.DoubleOpTag;
+import soot.dexpler.tags.FloatOpTag;
+import soot.dexpler.tags.IntOpTag;
+import soot.dexpler.tags.LongOpTag;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
 import soot.jimple.Jimple;
 import soot.jimple.LongConstant;
-import soot.jimple.UnopExpr;
-import soot.jimple.internal.JAssignStmt;
-import soot.jimple.internal.JCastExpr;
 
-public class UnopInstruction extends DexlibAbstractInstruction {
+public class UnopInstruction extends TaggedInstruction {
 
-    AssignStmt assign = null;
-  
     public UnopInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -61,7 +59,8 @@ public class UnopInstruction extends DexlibAbstractInstruction {
         Local source = body.getRegisterLocal(cmpInstr.getRegisterB());
         Value expr = getExpression(source);
 
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), expr);
+		assign.addTag(getTag());
 
         setUnit(assign);
         addTags(assign);
@@ -69,11 +68,13 @@ public class UnopInstruction extends DexlibAbstractInstruction {
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			/*
           int op = (int)instruction.getOpcode().value;
           //DalvikTyper.v().captureAssign((JAssignStmt)assign, op);
           JAssignStmt jass = (JAssignStmt)assign;
           DalvikTyper.v().setType((expr instanceof JCastExpr) ? ((JCastExpr) expr).getOpBox() : ((UnopExpr) expr).getOpBox(), opUnType[op - 0x7b], true);
           DalvikTyper.v().setType(jass.leftBox, resUnType[op - 0x7b], false);
+          */
         }
     }
 
@@ -84,13 +85,22 @@ public class UnopInstruction extends DexlibAbstractInstruction {
         Opcode opcode = instruction.getOpcode();
         switch(opcode) {
         case NEG_INT:
+			setTag(new IntOpTag());
+			return Jimple.v().newNegExpr(source);
         case NEG_LONG:
+			setTag(new LongOpTag());
+			return Jimple.v().newNegExpr(source);
         case NEG_FLOAT:
+			setTag(new FloatOpTag());
+			return Jimple.v().newNegExpr(source);
         case NEG_DOUBLE:
+			setTag(new DoubleOpTag());
             return Jimple.v().newNegExpr(source);
         case NOT_LONG:
+			setTag(new LongOpTag());
             return getNotLongExpr(source);
         case NOT_INT:
+			setTag(new IntOpTag());
             return getNotIntExpr(source);
         default:
             throw new RuntimeException("Invalid Opcode: " + opcode);

@@ -142,6 +142,22 @@ public class CGOptions
         return soot.PhaseOptions.getBoolean( options, "trim-clinit" );
     }
     
+    /** Types for invoke --
+    
+     * Uses reaching types inferred by the pointer analysis to resolve 
+     * reflective calls..
+    
+     * For each call to Method.invoke(), use the possible types of the 
+     * first receiver 								 argument and the possible types stored 
+     * in the second argument array to resolve calls to 								 
+     * Method.invoke(). This strategy makes no attempt to resolve 
+     * reflectively invoked static methods. 								 Currently only 
+     * works for context insensitive pointer analyses. 								 
+     */
+    public boolean types_for_invoke() {
+        return soot.PhaseOptions.getBoolean( options, "types-for-invoke" );
+    }
+    
     /** JDK version --
     
      * JDK version for native methods.
@@ -187,6 +203,43 @@ public class CGOptions
      */
     public String guards() {
         return soot.PhaseOptions.getString( options, "guards" );
+    }
+    
+    public static final int library_disabled = 1;
+    public static final int library_any_subtype = 2;
+    public static final int library_signature_resolution = 3;
+    /** Library mode --
+    
+     * 										Specifies whether the target classes should be 
+     * treated as an application or a library. 									.
+    
+     * 										Specifies whether the target classes should be 
+     * treated as an application or a library. 										If library 
+     * mode is disabled (default), the call graph construction assumes 
+     * that the target is an application and 										starts the 
+     * construction from the specified entry points (main method by 
+     * default). 										Under the assumption that the target is a 
+     * library, possible call edges might be missing in the call graph. 
+     * 										The two different library modes add theses missing 
+     * calls to the call graph and differ only in the view of the class 
+     * hierachy 										(hierachy of target library or possible 
+     * extended hierachy). 										If simulate-natives is also set, 
+     * the results of native methods are also set to any sub type of 
+     * the declared return type. 									
+     */
+    public int library() {
+        String s = soot.PhaseOptions.getString( options, "library" );
+        
+        if( s.equalsIgnoreCase( "disabled" ) )
+            return library_disabled;
+        
+        if( s.equalsIgnoreCase( "any-subtype" ) )
+            return library_any_subtype;
+        
+        if( s.equalsIgnoreCase( "signature-resolution" ) )
+            return library_signature_resolution;
+        
+        throw new RuntimeException( "Invalid value "+s+" of phase option library" );
     }
     
 }

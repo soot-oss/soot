@@ -254,11 +254,11 @@ public class IfElseSplitter extends DepthFirstAdapter {
 			return null;
 		
 		ASTStatementSequenceNode stmtNode = (ASTStatementSequenceNode)lastNode;
-		List<Object> stmts = stmtNode.getStatements();
+		List<AugmentedStmt> stmts = stmtNode.getStatements();
 		if(stmts.size()==0)
 			return null;
 		
-		AugmentedStmt lastStmt = (AugmentedStmt)stmts.get(stmts.size()-1);
+		AugmentedStmt lastStmt = stmts.get(stmts.size()-1);
 		return lastStmt.get_Stmt();						
 	}
 }

@@ -29,6 +29,7 @@ public final class ABinopExpression extends PExpression
             cloneNode(this._binopExpr_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseABinopExpression(this);

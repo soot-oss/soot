@@ -55,30 +55,36 @@ public class JavaClassProvider implements ClassProvider
 			 */
 	      	boolean checkAgain = className.indexOf('$') >= 0;
 	      	
-	        String javaClassName = SourceLocator.v().getSourceForClass(className);
-	        String fileName = javaClassName.replace('.', '/') + ".java";
-	        SourceLocator.FoundFile file = 
-	            SourceLocator.v().lookupInClassPath(fileName);
-	
-	        /* 04.04.2006 mbatch	if inner class not found,
-		     *						check if it's a real file							
-			 */
-	        if( file == null) {
-	        
-	          if (checkAgain) {
-	            fileName = className.replace('.', '/') + ".java";
-	            file = SourceLocator.v().lookupInClassPath(fileName);
-	          }
-	        }
-	        /* 04.04.2006 mbatch	end */
-	
-	        if (file == null)
-	        	return null;         
-	        
-	        if( file.file == null ) {
-	            throw new JarException(className);
-	        }
-	        return new JavaClassSource(className, file.file);
+	      	SourceLocator.FoundFile file = null;
+	      	try {
+		        String javaClassName = SourceLocator.v().getSourceForClass(className);
+		        String fileName = javaClassName.replace('.', '/') + ".java";
+		        file = SourceLocator.v().lookupInClassPath(fileName);
+		
+		        /* 04.04.2006 mbatch	if inner class not found,
+			     *						check if it's a real file							
+				 */
+		        if( file == null) {
+		        
+		          if (checkAgain) {
+		            fileName = className.replace('.', '/') + ".java";
+		            file = SourceLocator.v().lookupInClassPath(fileName);
+		          }
+		        }
+		        /* 04.04.2006 mbatch	end */
+		
+		        if (file == null)
+		        	return null;         
+		        
+		        if( file.isZipFile()) {
+		            throw new JarException(className);
+		        }
+		        return new JavaClassSource(className, file.getFile());
+	      	}
+	      	finally {
+	      		if (file != null)
+	      			file.close();
+	      	}
     	}
 
     }

@@ -39,6 +39,7 @@ public final class AFixedArrayDescriptor extends PFixedArrayDescriptor
             cloneNode(this._rBracket_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAFixedArrayDescriptor(this);

@@ -62,8 +62,8 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 
 			my_lhs = cons.getLHS().getRepresentative();
 			my_rhs = cons.getRHS().getRepresentative();
-			nf1 = ptAnalyzer.getMappedMethodID(my_lhs);
-			nf2 = ptAnalyzer.getMappedMethodID(my_rhs);
+			nf1 = ptAnalyzer.getMethodIDFromPtr(my_lhs);
+			nf2 = ptAnalyzer.getMethodIDFromPtr(my_rhs);
 			
 			// Test how many globals are in this constraint
 			code = ((nf1==Constants.SUPER_MAIN ? 1 : 0) << 1) |
@@ -94,6 +94,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 
 			case Constants.ASSIGN_CONS:
 				// Assigning between two pointers
+				
 				if ( cons.interCallEdges != null ) {
 					// Inter-procedural assignment (parameter passing, function return)
 					for ( Iterator<Edge> it = cons.interCallEdges.iterator(); it.hasNext(); ) {
@@ -202,8 +203,7 @@ public class FullSensitiveNodeGenerator extends IEncodingBroker
 				break;
 
 			default:
-				System.exit(-1);
-				break;
+				throw new RuntimeException("Invalid type");
 			}
 
 			++n_legal_cons;

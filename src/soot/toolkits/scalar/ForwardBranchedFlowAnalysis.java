@@ -23,23 +23,21 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 /*
-    2000, March 20 - Updated code provided by Patrick Lam
-                            <plam@sable.mcgill.ca>
-                     from 1.beta.4.dev.60
-                     to 1.beta.6.dev.34
-                     Plus some bug fixes.
-                     -- Janus <janus@place.org>
+ 2000, March 20 - Updated code provided by Patrick Lam
+ <plam@sable.mcgill.ca>
+ from 1.beta.4.dev.60
+ to 1.beta.6.dev.34
+ Plus some bug fixes.
+ -- Janus <janus@place.org>
 
 
-     KNOWN LIMITATION: the analysis doesn't handle traps since traps
-               handler statements have predecessors, but they
-               don't have the trap handler as successor.  This
-               might be a limitation of the CompleteUnitGraph
-               tho.
-*/
-
+ KNOWN LIMITATION: the analysis doesn't handle traps since traps
+ handler statements have predecessors, but they
+ don't have the trap handler as successor.  This
+ might be a limitation of the CompleteUnitGraph
+ tho.
+ */
 
 package soot.toolkits.scalar;
 
@@ -51,275 +49,237 @@ import java.util.*;
 import soot.toolkits.graph.interaction.*;
 import soot.options.*;
 
-/** Abstract class providing an engine for branched forward flow analysis.
- *  WARNING: This does not handle exceptional flow as branches! 
+/**
+ * Abstract class providing an engine for branched forward flow analysis.
+ * WARNING: This does not handle exceptional flow as branches!
  * */
-public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysis<Unit, A>
-{
-    public ForwardBranchedFlowAnalysis(UnitGraph graph)
-    {
-        super(graph);
-    }
+public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysis<Unit, A> {
+	public ForwardBranchedFlowAnalysis(UnitGraph graph) {
+		super(graph);
+	}
 
-    protected boolean isForward()
-    {
-        return true;
-    }
+	protected boolean isForward() {
+		return true;
+	}
 
-    // Accumulate the previous afterFlow sets.
-    private void accumulateAfterFlowSets(Unit s, A[] flowRepositories, List<Object> previousAfterFlows)
-    {
-        int repCount = 0;
-        
-        previousAfterFlows.clear();
-        if (s.fallsThrough())
-        {
-            copy(unitToAfterFallFlow.get(s).get(0), flowRepositories[repCount]);
-            previousAfterFlows.add(flowRepositories[repCount++]);
-        }
-        
-        if (s.branches())
-        {
-            List<A> l = (unitToAfterBranchFlow.get(s));
-            Iterator<A> it = l.iterator();
+	// Accumulate the previous afterFlow sets.
+	private void accumulateAfterFlowSets(Unit s, A[] flowRepositories, List<Object> previousAfterFlows) {
+		int repCount = 0;
 
-            while (it.hasNext())
-            {
-                A fs = (it.next());
-                copy(fs, flowRepositories[repCount]);
-                previousAfterFlows.add(flowRepositories[repCount++]);
-            }
-        }
-    } // end accumulateAfterFlowSets
+		previousAfterFlows.clear();
+		if (s.fallsThrough()) {
+			copy(unitToAfterFallFlow.get(s).get(0), flowRepositories[repCount]);
+			previousAfterFlows.add(flowRepositories[repCount++]);
+		}
 
+		if (s.branches()) {
+			List<A> l = (getBranchFlowAfter(s));
+			Iterator<A> it = l.iterator();
 
-    protected void doAnalysis()
-    {
-        final Map<Unit, Integer> numbers = new HashMap<Unit, Integer>();
-        List orderedUnits = new PseudoTopologicalOrderer().newList(graph,false);
-        {
-            int i = 1;
-            for( Iterator uIt = orderedUnits.iterator(); uIt.hasNext(); ) {
-                final Unit u = (Unit) uIt.next();
-                numbers.put(u, new Integer(i));
-                i++;
-            }
-        }
+			while (it.hasNext()) {
+				A fs = (it.next());
+				copy(fs, flowRepositories[repCount]);
+				previousAfterFlows.add(flowRepositories[repCount++]);
+			}
+		}
+	} // end accumulateAfterFlowSets
 
-        TreeSet<Unit> changedUnits = new TreeSet<Unit>( new Comparator() {
-            public int compare(Object o1, Object o2) {
-                Integer i1 = numbers.get(o1);
-                Integer i2 = numbers.get(o2);
-                return (i1.intValue() - i2.intValue());
-            }
-        } );
+	@Override
+	protected void doAnalysis() {
+		final Map<Unit, Integer> numbers = new HashMap<Unit, Integer>();
+		List<Unit> orderedUnits = new PseudoTopologicalOrderer<Unit>().newList(graph, false);
+		{
+			int i = 1;
+			for (Unit u : orderedUnits) {
+				numbers.put(u, new Integer(i));
+				i++;
+			}
+		}
 
-        Map<Unit, ArrayList> unitToIncomingFlowSets = new HashMap<Unit, ArrayList>(graph.size() * 2 + 1, 0.7f);
-        List heads = graph.getHeads();
-        int numNodes = graph.size();
-        int numComputations = 0;
-        int maxBranchSize = 0;
-        
-        // initialize unitToIncomingFlowSets
-        {
-            Iterator it = graph.iterator();
+		TreeSet<Unit> changedUnits = new TreeSet<Unit>(new Comparator<Unit>() {
+			public int compare(Unit o1, Unit o2) {
+				Integer i1 = numbers.get(o1);
+				Integer i2 = numbers.get(o2);
+				return (i1.intValue() - i2.intValue());
+			}
+		});
 
-            while (it.hasNext())
-            {
-                Unit s = (Unit) it.next();
+		Map<Unit, ArrayList<A>> unitToIncomingFlowSets = new HashMap<Unit, ArrayList<A>>(graph.size() * 2 + 1, 0.7f);
+		List<Unit> heads = graph.getHeads();
+		int numNodes = graph.size();
+		int numComputations = 0;
+		int maxBranchSize = 0;
 
-                unitToIncomingFlowSets.put(s, new ArrayList());
-            }
-        }
+		// initialize unitToIncomingFlowSets
+		{
+			for (Unit s : graph) {
+				unitToIncomingFlowSets.put(s, new ArrayList<A>());
+			}
+		}
 
-        // Set initial values and nodes to visit.
-        // WARNING: DO NOT HANDLE THE CASE OF THE TRAPS
-        {
-            Chain sl = ((UnitGraph)graph).getBody().getUnits();
-            Iterator it = graph.iterator();
+		// Set initial values and nodes to visit.
+		// WARNING: DO NOT HANDLE THE CASE OF THE TRAPS
+		{
+			Chain<Unit> sl = ((UnitGraph) graph).getBody().getUnits();
+			for (Unit s : graph) {
+				changedUnits.add(s);
 
-            while(it.hasNext())
-            {
-                Unit s = (Unit) it.next();
+				unitToBeforeFlow.put(s, newInitialFlow());
 
-                changedUnits.add(s);
+				if (s.fallsThrough()) {
+					List<A> fl = new ArrayList<A>();
 
-                unitToBeforeFlow.put(s, newInitialFlow());
+					fl.add((newInitialFlow()));
+					unitToAfterFallFlow.put(s, fl);
 
-                if (s.fallsThrough())
-                {
-                    ArrayList<A> fl = new ArrayList<A>();
+					Unit succ = sl.getSuccOf(s);
+					// it's possible for someone to insert some (dead)
+					// fall through code at the very end of a method body
+					if (succ != null) {
+						List<A> l = (unitToIncomingFlowSets.get(sl.getSuccOf(s)));
+						l.addAll(fl);
+					}
+				} else
+					unitToAfterFallFlow.put(s, new ArrayList<A>());
 
-                    fl.add((newInitialFlow()));
-                    unitToAfterFallFlow.put(s, fl);
+				List<A> l = new ArrayList<A>();
+				if (s.branches()) {
+					List<A> incList;
+					for (UnitBox ub : s.getUnitBoxes()) {
+						A f = (newInitialFlow());
 
-		    Unit succ=(Unit) sl.getSuccOf(s);
-		    // it's possible for someone to insert some (dead) 
-		    // fall through code at the very end of a method body
-		    if(succ!=null) {
-			List<Object> l = (unitToIncomingFlowSets.get(sl.getSuccOf(s)));
-			l.addAll(fl);
-		    }
-                }
-                else
-                    unitToAfterFallFlow.put(s, new ArrayList<A>());
+						l.add(f);
+						Unit ss = ub.getUnit();
+						incList = (unitToIncomingFlowSets.get(ss));
 
-                if (s.branches())
-                {
-                    ArrayList<A> l = new ArrayList<A>();
-                    List<A> incList;
-                    Iterator boxIt = s.getUnitBoxes().iterator();
+						incList.add(f);
+					}
+					
+				}
+				unitToAfterBranchFlow.put(s, l);
 
-                    while (boxIt.hasNext())
-                    {
-                        A f = (newInitialFlow());
+				if (s.getUnitBoxes().size() > maxBranchSize)
+					maxBranchSize = s.getUnitBoxes().size();
+			}
+		}
 
-                        l.add(f);
-                        Unit ss = ((UnitBox) (boxIt.next())).getUnit();
-                        incList = (unitToIncomingFlowSets.get(ss));
-                                          
-                        incList.add(f);
-                    }
-                    unitToAfterBranchFlow.put(s, l);
-                }
-                else
-                    unitToAfterBranchFlow.put(s, new ArrayList<A>());
+		// Feng Qian: March 07, 2002
+		// init entry points
+		{
+			for (Unit s : heads) {
+				// this is a forward flow analysis
+				unitToBeforeFlow.put(s, entryInitialFlow());
+			}
+		}
 
-                if (s.getUnitBoxes().size() > maxBranchSize)
-                    maxBranchSize = s.getUnitBoxes().size();
-            }
-        }
+		if (treatTrapHandlersAsEntries()) {
+			for (Trap trap : ((UnitGraph) graph).getBody().getTraps()) {
+				Unit handler = trap.getHandlerUnit();
+				unitToBeforeFlow.put(handler, entryInitialFlow());
+			}
+		}
 
-        // Feng Qian: March 07, 2002
-        // init entry points
-        {
-            Iterator<Unit> it = heads.iterator();
+		// Perform fixed point flow analysis
+		{
+			List<Object> previousAfterFlows = new ArrayList<Object>();
+			List<Object> afterFlows = new ArrayList<Object>();
+			A[] flowRepositories = (A[]) new Object[maxBranchSize + 1];
+			for (int i = 0; i < maxBranchSize + 1; i++)
+				flowRepositories[i] = newInitialFlow();
+			A[] previousFlowRepositories = (A[]) new Object[maxBranchSize + 1];
+			for (int i = 0; i < maxBranchSize + 1; i++)
+				previousFlowRepositories[i] = newInitialFlow();
 
-            while (it.hasNext()) {
-                Unit s = it.next();
-                // this is a forward flow analysis
-                unitToBeforeFlow.put(s, entryInitialFlow());
-            }
-        }
+			while (!changedUnits.isEmpty()) {
+				A beforeFlow;
 
-        if (treatTrapHandlersAsEntries())
-        {
-            Iterator trapIt = ((UnitGraph)graph).getBody().
-                                   getTraps().iterator();
-            while(trapIt.hasNext()) {
-                Trap trap = (Trap) trapIt.next();
-                Unit handler = trap.getHandlerUnit();
-                unitToBeforeFlow.put(handler, entryInitialFlow());
-            }
-        }
+				Unit s = changedUnits.first();
+				changedUnits.remove(s);
+				boolean isHead = heads.contains(s);
 
-        // Perform fixed point flow analysis
-        {
-            List<Object> previousAfterFlows = new ArrayList<Object>(); 
-            List<Object> afterFlows = new ArrayList<Object>();
-            A[] flowRepositories = (A[]) new Object[maxBranchSize+1];
-            for (int i = 0; i < maxBranchSize+1; i++)
-                flowRepositories[i] = newInitialFlow();
-            A[] previousFlowRepositories = (A[])new Object[maxBranchSize+1];
-            for (int i = 0; i < maxBranchSize+1; i++)
-                previousFlowRepositories[i] = newInitialFlow();
+				accumulateAfterFlowSets(s, previousFlowRepositories, previousAfterFlows);
 
-            while(!changedUnits.isEmpty())
-            {
-                A beforeFlow;
+				// Compute and store beforeFlow
+				{
+					List<A> preds = unitToIncomingFlowSets.get(s);
 
-                Unit s = changedUnits.first();
-                changedUnits.remove(s);
-                boolean isHead = heads.contains(s);
+					beforeFlow = getFlowBefore(s);
 
-                accumulateAfterFlowSets(s, previousFlowRepositories, previousAfterFlows);
+					if (preds.size() == 1)
+						copy(preds.get(0), beforeFlow);
+					else if (preds.size() != 0) {
+						Iterator<A> predIt = preds.iterator();
 
-                // Compute and store beforeFlow
-                {
-                    List<A> preds = unitToIncomingFlowSets.get(s);
+						copy(predIt.next(), beforeFlow);
 
-                    beforeFlow = unitToBeforeFlow.get(s);
+						while (predIt.hasNext()) {
+							A otherBranchFlow = predIt.next();
+							A newBeforeFlow = newInitialFlow();
+							merge(s, beforeFlow, otherBranchFlow, newBeforeFlow);
+							copy(newBeforeFlow, beforeFlow);
+						}
+					}
 
-                    if(preds.size() == 1)
-                        copy(preds.get(0), beforeFlow);
-                    else if(preds.size() != 0)
-                    {
-                        Iterator<A> predIt = preds.iterator();
+					if (isHead && preds.size() != 0)
+						mergeInto(s, beforeFlow, entryInitialFlow());
+				}
 
-                        copy(predIt.next(), beforeFlow);
+				// Compute afterFlow and store it.
+				{
+					List<A> afterFallFlow = unitToAfterFallFlow.get(s);
+					List<A> afterBranchFlow = getBranchFlowAfter(s);
+					if (Options.v().interactive_mode()) {
+						InteractionHandler ih = InteractionHandler.v();
+						A savedFlow = newInitialFlow();
+						copy(beforeFlow, savedFlow);
+						FlowInfo<A, Unit> fi = new FlowInfo<A, Unit>(savedFlow, s, true);
+						if (ih.getStopUnitList() != null
+								&& ih.getStopUnitList().contains(s)) {
+							ih.handleStopAtNodeEvent(s);
+						}
+						ih.handleBeforeAnalysisEvent(fi);
+					}
+					flowThrough(beforeFlow, s, afterFallFlow, afterBranchFlow);
+					if (Options.v().interactive_mode()) {
+						List<A> l = new ArrayList<A>();
+						if (!afterFallFlow.isEmpty()) {
+							l.addAll(afterFallFlow);
+						}
+						if (!afterBranchFlow.isEmpty()) {
+							l.addAll(afterBranchFlow);
+						}
 
-                        while(predIt.hasNext())
-                        {
-                            A otherBranchFlow = predIt.next();
-                            A newBeforeFlow = newInitialFlow();
-                            merge(s, beforeFlow, otherBranchFlow, newBeforeFlow);
-                            copy(newBeforeFlow, beforeFlow);
-                        }
-                    }
+						/*
+						 * if (s instanceof soot.jimple.IfStmt){
+						 * l.addAll((List)afterFallFlow);
+						 * l.addAll((List)afterBranchFlow); } else {
+						 * l.addAll((List)afterFallFlow); }
+						 */
+						FlowInfo<List<A>, Unit> fi = new FlowInfo<List<A>, Unit>(l, s, false);
+						InteractionHandler.v().handleAfterAnalysisEvent(fi);
+					}
+					numComputations++;
+				}
 
-                    if(isHead && preds.size() != 0)
-                        mergeInto(s, beforeFlow, entryInitialFlow());
-                }
+				accumulateAfterFlowSets(s, flowRepositories, afterFlows);
 
-                // Compute afterFlow and store it.
-                {
-                    ArrayList<A> afterFallFlow = unitToAfterFallFlow.get(s);
-                    ArrayList<A> afterBranchFlow = unitToAfterBranchFlow.get(s);
-                    if (Options.v().interactive_mode()){
-                        A savedFlow = newInitialFlow();
-                        copy(beforeFlow, savedFlow);
-                        FlowInfo fi = new FlowInfo(savedFlow, s, true);
-                        if (InteractionHandler.v().getStopUnitList() != null && InteractionHandler.v().getStopUnitList().contains(s)){
-                            InteractionHandler.v().handleStopAtNodeEvent(s);
-                        }
-                        InteractionHandler.v().handleBeforeAnalysisEvent(fi);
-                    }
-                    flowThrough(beforeFlow, s, (List) afterFallFlow, (List) afterBranchFlow);
-                    if (Options.v().interactive_mode()){
-                        ArrayList l = new ArrayList();
-                        if (!((List)afterFallFlow).isEmpty()){
-                            l.addAll((List)afterFallFlow);
-                        }
-                        if (!((List)afterBranchFlow).isEmpty()){
-                            l.addAll((List)afterBranchFlow);
-                        }
-                        
-                        /*if (s instanceof soot.jimple.IfStmt){
-                            l.addAll((List)afterFallFlow);
-                            l.addAll((List)afterBranchFlow);
-                        }
-                        else {
-                            l.addAll((List)afterFallFlow);
-                        }*/
-                        FlowInfo fi = new FlowInfo(l, s, false);
-                        InteractionHandler.v().handleAfterAnalysisEvent(fi);
-                    }
-                    numComputations++;
-                }
+				// Update queue appropriately
+				if (!afterFlows.equals(previousAfterFlows)) {
+					for (Unit succ : graph.getSuccsOf(s)) {
+						changedUnits.add(succ);
+					}
+				}
+			}
+		}
 
-                accumulateAfterFlowSets(s, flowRepositories, afterFlows);
+		// G.v().out.println(graph.getBody().getMethod().getSignature() +
+		// " numNodes: " + numNodes +
+		// " numComputations: " + numComputations + " avg: " +
+		// Main.truncatedOf((double) numComputations / numNodes, 2));
 
-                // Update queue appropriately
-                if(!afterFlows.equals(previousAfterFlows))
-                {
-                    Iterator succIt = graph.getSuccsOf(s).iterator();
+		Timers.v().totalFlowNodes += numNodes;
+		Timers.v().totalFlowComputations += numComputations;
 
-                    while(succIt.hasNext())
-                    {
-                        Unit succ = (Unit) succIt.next();
-                            
-                        changedUnits.add(succ);
-                    }
-                }
-            }
-        }
-        
-        // G.v().out.println(graph.getBody().getMethod().getSignature() + " numNodes: " + numNodes + 
-        //    " numComputations: " + numComputations + " avg: " + Main.truncatedOf((double) numComputations / numNodes, 2));
-        
-        Timers.v().totalFlowNodes += numNodes;
-        Timers.v().totalFlowComputations += numComputations;
-
-    } // end doAnalysis
+	} // end doAnalysis
 
 } // end class ForwardBranchedFlowAnalysis

@@ -29,6 +29,7 @@ public final class APublicModifier extends PModifier
             cloneNode(this._public_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAPublicModifier(this);

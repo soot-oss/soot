@@ -4,7 +4,9 @@ import java.util.List;
 
 import org.jf.dexlib2.AccessFlags;
 import org.jf.dexlib2.analysis.AnalyzedInstruction;
+import org.jf.dexlib2.analysis.ClassPath;
 import org.jf.dexlib2.analysis.InlineMethodResolver;
+import org.jf.dexlib2.analysis.MethodAnalyzer;
 import org.jf.dexlib2.dexbacked.DexBackedOdexFile;
 import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.Method;
@@ -24,14 +26,15 @@ public class ExecuteInlineInstruction extends MethodInvocationInstruction implem
 	}
 	
 	@Override
-	public void deOdex(DexFile parentFile) {
+	public void deOdex(DexFile parentFile, Method method, ClassPath cp) {
 		if (!(parentFile instanceof DexBackedOdexFile))
 			throw new RuntimeException("ODEX instruction in non-ODEX file");
 		DexBackedOdexFile odexFile = (DexBackedOdexFile) parentFile;
+		
 		InlineMethodResolver inlineMethodResolver = InlineMethodResolver.createInlineMethodResolver(
 				odexFile.getOdexVersion());
-		targetMethod = inlineMethodResolver.resolveExecuteInline(
-				new AnalyzedInstruction(instruction, -1, -1));
+		MethodAnalyzer analyzer = new MethodAnalyzer(cp, method, inlineMethodResolver, false);
+		targetMethod = inlineMethodResolver.resolveExecuteInline(new AnalyzedInstruction(analyzer, instruction, -1, -1));
 	}
 	
 	@Override

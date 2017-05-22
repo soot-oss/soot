@@ -26,13 +26,13 @@
 
 package soot.toolkits.scalar;
 
-import java.util.*;
+import java.util.Iterator;
 
 /** 
  * Provides an interface of a flow universe, used by an implementation 
  * of BoundedFlowSet to do complementation.
  */
-public interface FlowUniverse<E> {
+public interface FlowUniverse<E> extends Iterable<E> {
 
   /**
    * returns the number of elements of the universe.

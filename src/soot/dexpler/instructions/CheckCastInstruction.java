@@ -46,8 +46,6 @@ import soot.jimple.Jimple;
 
 public class CheckCastInstruction extends DexlibAbstractInstruction {
 
-    AssignStmt assign = null;
-
     public CheckCastInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -65,7 +63,7 @@ public class CheckCastInstruction extends DexlibAbstractInstruction {
 
         //generate "x = (Type) x"
         //splitter will take care of the rest
-        assign = Jimple.v().newAssignStmt(castValue, castExpr);
+        AssignStmt assign = Jimple.v().newAssignStmt(castValue, castExpr);
 
         setUnit(assign);
         addTags(assign);

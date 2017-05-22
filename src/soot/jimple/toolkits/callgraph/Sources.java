@@ -20,21 +20,23 @@
 package soot.jimple.toolkits.callgraph;
 import java.util.*;
 
+import soot.MethodOrMethodContext;
+
 /** Adapts an iterator over a collection of Edge's to be an iterator
  * over the source methods of the edges.
  * @author Ondrej Lhotak
  */
-public final class Sources implements Iterator
+public final class Sources implements Iterator<MethodOrMethodContext>
 { 
-    Iterator edges;
-    public Sources( Iterator edges ) {
+    Iterator<Edge> edges;
+    public Sources( Iterator<Edge> edges ) {
         this.edges = edges;
     }
     public boolean hasNext() {
         return edges.hasNext();
     }
-    public Object next() {
-        Edge e = (Edge) edges.next();
+    public MethodOrMethodContext next() {
+        Edge e = edges.next();
         return e.getSrc();
     }
     public void remove() { throw new UnsupportedOperationException(); }

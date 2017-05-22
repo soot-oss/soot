@@ -25,6 +25,7 @@ public final class TTransient extends Token
       return new TTransient(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTTransient(this);

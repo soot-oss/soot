@@ -23,43 +23,35 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
 package soot.tagkit;
 
+import java.util.LinkedList;
 
 import soot.*;
 import soot.baf.*;
 
-/** A tag aggregator that associates a tag with the <b>most important</b>
- * instruction that is tagged with it. An instruction is important if
- * it contains a field or array reference, a method invocation, or an
- * object allocation.
+/**
+ * A tag aggregator that associates a tag with the <b>most important</b>
+ * instruction that is tagged with it. An instruction is important if it
+ * contains a field or array reference, a method invocation, or an object
+ * allocation.
  */
-public abstract class ImportantTagAggregator extends TagAggregator
-{    
-    /** Decide whether this tag should be aggregated by this aggregator. */
-    public abstract boolean wantTag( Tag t );
+public abstract class ImportantTagAggregator extends TagAggregator {
+	/** Decide whether this tag should be aggregated by this aggregator. */
+	public abstract boolean wantTag(Tag t);
 
-    /** Return name of the resulting aggregated tag. */
-    public abstract String aggregatedName();
+	/** Return name of the resulting aggregated tag. */
+	public abstract String aggregatedName();
 
-    /** Decide whether this tag should be aggregated by this aggregator. */
-    public void considerTag(Tag t, Unit u)
-    {
-        Inst i = (Inst) u;
-        if(! ( i.containsInvokeExpr()
-            || i.containsFieldRef()
-            || i.containsArrayRef()
-            || i.containsNewExpr() ) ) return;
-        units.add(u);
-        tags.add(t);
-    }
+	/** Decide whether this tag should be aggregated by this aggregator. */
+	@Override
+	public void considerTag(Tag t, Unit u, LinkedList<Tag> tags,
+			LinkedList<Unit> units) {
+		Inst i = (Inst) u;
+		if (!(i.containsInvokeExpr() || i.containsFieldRef()
+				|| i.containsArrayRef() || i.containsNewExpr()))
+			return;
+		units.add(u);
+		tags.add(t);
+	}
 }
-
-
-
-
-
-
-

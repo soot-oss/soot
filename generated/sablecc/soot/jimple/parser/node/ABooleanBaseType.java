@@ -29,6 +29,7 @@ public final class ABooleanBaseType extends PBaseType
             cloneNode(this._boolean_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseABooleanBaseType(this);

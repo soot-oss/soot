@@ -26,6 +26,8 @@ package soot.dexpler;
 
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -35,6 +37,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.jf.dexlib2.analysis.ClassPath;
+import org.jf.dexlib2.analysis.ClassPathResolver;
+import org.jf.dexlib2.analysis.ClassProvider;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.ExceptionHandler;
@@ -55,8 +60,10 @@ import soot.Modifier;
 import soot.NullType;
 import soot.PrimType;
 import soot.RefType;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Timer;
 import soot.Trap;
 import soot.Type;
 import soot.Unit;
@@ -71,12 +78,12 @@ import soot.dexpler.instructions.OdexInstruction;
 import soot.dexpler.instructions.PseudoInstruction;
 import soot.dexpler.instructions.RetypeableInstruction;
 import soot.dexpler.typing.DalvikTyper;
-import soot.dexpler.typing.Validate;
-import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.CastExpr;
+import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ConditionExpr;
 import soot.jimple.Constant;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.EqExpr;
 import soot.jimple.IfStmt;
 import soot.jimple.IntConstant;
@@ -84,15 +91,21 @@ import soot.jimple.Jimple;
 import soot.jimple.JimpleBody;
 import soot.jimple.NeExpr;
 import soot.jimple.NullConstant;
+import soot.jimple.NumericConstant;
 import soot.jimple.internal.JIdentityStmt;
 import soot.jimple.toolkits.base.Aggregator;
 import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
+import soot.jimple.toolkits.scalar.ConstantCastEliminator;
 import soot.jimple.toolkits.scalar.CopyPropagator;
 import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.jimple.toolkits.scalar.FieldStaticnessCorrector;
+import soot.jimple.toolkits.scalar.IdentityCastEliminator;
+import soot.jimple.toolkits.scalar.IdentityOperationEliminator;
 import soot.jimple.toolkits.scalar.LocalNameStandardizer;
 import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.TypeAssigner;
+import soot.options.Options;
 import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
@@ -111,7 +124,6 @@ public class DexBody  {
     private Local[] registerLocals;
     private Local storeResultLocal;
     private Map<Integer, DexlibAbstractInstruction> instructionAtAddress;
-    private LocalGenerator localGenerator;
 
     private List<DeferableInstruction> deferredInstructions;
     private Set<RetypeableInstruction> instructionsToRetype;
@@ -129,6 +141,7 @@ public class DexBody  {
     private RefType declaringClassType;
     
     private final DexFile dexFile;
+    private final Method method;
 
     // detect array/instructions overlapping obfuscation
     private ArrayList<PseudoInstruction> pseudoInstructionData = new ArrayList<PseudoInstruction>();
@@ -147,7 +160,7 @@ public class DexBody  {
      * @param code the codeitem that is contained in this body
      * @param method the method that is associated with this body
      */
-    public DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
+    DexBody(DexFile dexFile, Method method, RefType declaringClassType) {
         MethodImplementation code = method.getImplementation();
         if (code == null)
             throw new RuntimeException("error: no code for method "+ method.getName());
@@ -207,6 +220,7 @@ public class DexBody  {
         }
 
         this.dexFile = dexFile;
+        this.method = method;
     }
     
     /**
@@ -257,16 +271,6 @@ public class DexBody  {
      */
     public void addRetype(RetypeableInstruction i) {
         instructionsToRetype.add(i);
-    }
-
-    /**
-     * Generate a new local variable.
-     *
-     * @param t the type of the new variable.
-     * @return the generated local.
-     */
-    public Local generateLocal(Type t) {
-        return localGenerator.generateLocal(t);
     }
 
     /**
@@ -340,8 +344,14 @@ public class DexBody  {
      * @param m the SootMethod that contains this body
      */
     public Body jimplify(Body b, SootMethod m) {
+
+		Timer t_whole_jimplification = new Timer();
+		Timer t_num = new Timer();
+		Timer t_null = new Timer();
+
+		t_whole_jimplification.start();
+
         jBody = (JimpleBody)b;
-        localGenerator = new LocalGenerator(jBody);
         deferredInstructions = new ArrayList<DeferableInstruction>();
         instructionsToRetype = new HashSet<RetypeableInstruction>();
 
@@ -418,10 +428,24 @@ public class DexBody  {
         final boolean isOdex = dexFile instanceof DexBackedDexFile ?
         		((DexBackedDexFile) dexFile).isOdexFile() : false;
         
+        ClassPath cp = null;
+        if (isOdex) {
+	        String[] sootClasspath = Options.v().soot_classpath().split(File.pathSeparator);
+	        List<String> classpathList = new ArrayList<String>();
+	        for (String str : sootClasspath)
+	        	classpathList.add(str);
+	        try{
+	        	ClassPathResolver resolver = new ClassPathResolver(classpathList, classpathList, classpathList, dexFile);
+	        	cp = new ClassPath(resolver.getResolvedClassProviders().toArray(new ClassProvider[0]));
+	        }catch(IOException e){
+	        	throw new RuntimeException(e);
+	        }
+        }
+
         int prevLineNumber = -1;
         for(DexlibAbstractInstruction instruction : instructions) {
         	if (isOdex && instruction instanceof OdexInstruction)
-        		((OdexInstruction) instruction).deOdex(dexFile);
+        		((OdexInstruction) instruction).deOdex(dexFile, method, cp);
             if (dangling != null) {
                 dangling.finalize(this, instruction);
                 dangling = null;
@@ -433,11 +457,11 @@ public class DexBody  {
 			else {
 				instruction.setLineNumber(prevLineNumber);
 			}
-            //System.out.println("jimple: "+ jBody.getUnits().getLast());
         }
         for(DeferableInstruction instruction : deferredInstructions) {
             instruction.deferredJimplify(this);
         }
+        
         if (tries != null)
             addTraps();
         
@@ -471,18 +495,31 @@ public class DexBody  {
 	       will not be split. Hence we remove all dead code here.
          */
 
-        Debug.printDbg("body before any transformation : \n", jBody);
+		Debug.printDbg("body before any transformation : ", m, "\n", jBody);
+        
+        Debug.printDbg("\nbefore splitting");
+        Debug.printDbg("",(Body)jBody);
+        
+        // Fix traps that do not catch exceptions
+        DexTrapStackFixer.v().transform(jBody);
+        
+        // Sort out jump chains
+        DexJumpChainShortener.v().transform(jBody);
+        
+        // Make sure that we don't have any overlapping uses due to returns
+        DexReturnInliner.v().transform(jBody);    
+        
+        // Shortcut: Reduce array initializations
+        DexArrayInitReducer.v().transform(jBody);
+        
+        // split first to find undefined uses
+        getLocalSplitter().transform(jBody);
         
 		// Remove dead code and the corresponding locals before assigning types
 		getUnreachableCodeEliminator().transform(jBody);
 		DeadAssignmentEliminator.v().transform(jBody);
 		UnusedLocalEliminator.v().transform(jBody);
-
-        Debug.printDbg("\nbefore splitting");
-        Debug.printDbg("",(Body)jBody);
         
-        getLocalSplitter().transform(jBody);
-
         Debug.printDbg("\nafter splitting");
         Debug.printDbg("",(Body)jBody);
         
@@ -500,8 +537,16 @@ public class DexBody  {
 //            instructions.remove(i);
 //          }
 //        }
-
+  		
         if (IDalvikTyper.ENABLE_DVKTYPER) {
+
+			DexReturnValuePropagator.v().transform(jBody);
+			getCopyPopagator().transform(jBody);
+			DexNullThrowTransformer.v().transform(jBody);
+			DalvikTyper.v().typeUntypedConstrantInDiv(jBody);
+			DeadAssignmentEliminator.v().transform(jBody);
+			UnusedLocalEliminator.v().transform(jBody);
+
           Debug.printDbg("[DalvikTyper] resolving typing constraints...");
           DalvikTyper.v().assignType(jBody);
           Debug.printDbg("[DalvikTyper] resolving typing constraints... done.");
@@ -509,25 +554,32 @@ public class DexBody  {
           jBody.validateUses();
           jBody.validateValueBoxes();
           //jBody.checkInit();
-          Validate.validateArrays(jBody);
+			//Validate.validateArrays(jBody);
           //jBody.checkTypes();
           //jBody.checkLocals();
           Debug.printDbg("\nafter Dalvik Typer");
 
         } else {
+			t_num.start();
         	DexNumTransformer.v().transform (jBody);
-          
-        	DexReturnInliner.v().transform(jBody);
-        	CopyPropagator.v().transform(jBody);
+			t_num.end();
         	
+        	DexReturnValuePropagator.v().transform(jBody);
+            getCopyPopagator().transform(jBody);
+        	
+        	DexNullThrowTransformer.v().transform(jBody);
+
+			t_null.start();
         	DexNullTransformer.v().transform(jBody);
+			t_null.end();
+
         	DexIfTransformer.v().transform(jBody);
         	
         	DeadAssignmentEliminator.v().transform(jBody);
         	UnusedLocalEliminator.v().transform(jBody);
         	
         	//DexRefsChecker.v().transform(jBody);
-        	//DexNullArrayRefTransformer.v().transform(jBody);
+            DexNullArrayRefTransformer.v().transform(jBody);
         	
         	Debug.printDbg("\nafter Num and Null transformers");
         }
@@ -539,9 +591,12 @@ public class DexBody  {
             }
         }
         
+        // Remove "instanceof" checks on the null constant
+        DexNullInstanceofTransformer.v().transform(jBody);
+        
         TypeAssigner.v().transform(jBody);
         
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+		if (IDalvikTyper.ENABLE_DVKTYPER) {
             for (Unit u: jBody.getUnits()) {
                 if (u instanceof IfStmt) {
                     ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
@@ -573,6 +628,20 @@ public class DexBody  {
                                 continue;
                             expr.setOp2(NullConstant.v());
                         } else if (op1 instanceof Local && op2 instanceof Local) {
+							// nothing to do
+						} else if (op1 instanceof Constant && op2 instanceof Constant) {
+
+							if (op1 instanceof NullConstant && op2 instanceof NumericConstant) {
+								IntConstant nc = (IntConstant) op2;
+								if (nc.value != 0)
+									throw new RuntimeException("expected value 0 for int constant. Got " + expr);
+								expr.setOp2(NullConstant.v());
+							} else if (op2 instanceof NullConstant && op1 instanceof NumericConstant) {
+								IntConstant nc = (IntConstant) op1;
+								if (nc.value != 0)
+									throw new RuntimeException("expected value 0 for int constant. Got " + expr);
+								expr.setOp1(NullConstant.v());
+							}
                         } else {
                             throw new RuntimeException("error: do not handle if: "+ u);
                         }
@@ -614,10 +683,15 @@ public class DexBody  {
         LocalPacker.v().transform(jBody);
         UnusedLocalEliminator.v().transform(jBody);
         LocalNameStandardizer.v().transform(jBody);
-
+        
+        // Some apps reference static fields as instance fields. We fix this
+        // on the fly.
+        if (Options.v().wrong_staticness() == Options.wrong_staticness_fix)
+        	FieldStaticnessCorrector.v().transform(jBody);
+        
         Debug.printDbg("\nafter type assigner localpacker and name standardizer");
         Debug.printDbg("",(Body)jBody);
-
+        
         // Inline PackManager.v().getPack("jb").apply(jBody);
         // Keep only transformations that have not been done
         // at this point.
@@ -635,6 +709,13 @@ public class DexBody  {
         // to statically decide the conditions earlier.
         ConditionalBranchFolder.v().transform(jBody);
         
+        // Remove unnecessary typecasts
+        ConstantCastEliminator.v().transform(jBody);
+        IdentityCastEliminator.v().transform(jBody);
+        
+        // Remove unnecessary logic operations
+        IdentityOperationEliminator.v().transform(jBody);
+        
         // We need to run this transformer since the conditional branch folder
         // might have rendered some code unreachable (well, it was unreachable
         // before as well, but we didn't know).
@@ -651,6 +732,9 @@ public class DexBody  {
         UnusedLocalEliminator.v().transform(jBody);
         NopEliminator.v().transform(jBody);
         
+        // Remove unnecessary chains of return statements
+        DexReturnPacker.v().transform(jBody);
+        
         for (Unit u: jBody.getUnits()) {
             if (u instanceof AssignStmt) {
                 AssignStmt ass = (AssignStmt)u;
@@ -662,8 +746,24 @@ public class DexBody  {
                     }
                 }
             }
+            if (u instanceof DefinitionStmt) {
+            	DefinitionStmt def = (DefinitionStmt) u;
+                // If the body references a phantom class in a CaughtExceptionRef,
+                // we must manually fix the hierarchy
+                if (def.getLeftOp() instanceof Local
+                		&& def.getRightOp() instanceof CaughtExceptionRef) {
+                	Type t = def.getLeftOp().getType();
+                	if (t instanceof RefType) {
+                		RefType rt = (RefType) t;
+                		if (rt.getSootClass().isPhantom()
+                				&& !rt.getSootClass().hasSuperclass()
+                				&& !rt.getSootClass().getName().equals("java.lang.Throwable"))
+                			rt.getSootClass().setSuperclass(Scene.v().getSootClass("java.lang.Throwable"));
+                	}
+                }
+            }
         }
-
+        
         Debug.printDbg("\nafter jb pack");
         Debug.printDbg("",(Body)jBody);
 
@@ -682,6 +782,11 @@ public class DexBody  {
                 l.setType(RefType.v("java.lang.Object"));
             }
         }
+        
+		t_whole_jimplification.end();
+		Debug.printDbg("timer whole jimlification: ", t_whole_jimplification.getTime());
+		Debug.printDbg("timer num: ", t_num.getTime());
+		Debug.printDbg("timer null: ", t_null.getTime());
 
         return jBody;
     }
@@ -692,20 +797,20 @@ public class DexBody  {
     		this.localSplitter = new LocalSplitter(DalvikThrowAnalysis.v());
     	return this.localSplitter;
     }
-
-    private TrapTightener trapTightener = null;
-    protected TrapTightener getTrapTightener() {
-    	if (this.trapTightener == null)
-    		this.trapTightener = new TrapTightener(DalvikThrowAnalysis.v());
-    	return this.trapTightener;
-    }
-
+    
     private UnreachableCodeEliminator unreachableCodeEliminator = null;
     protected UnreachableCodeEliminator getUnreachableCodeEliminator() {
     	if (this.unreachableCodeEliminator == null)
     		this.unreachableCodeEliminator =
     			new UnreachableCodeEliminator(DalvikThrowAnalysis.v());
     	return this.unreachableCodeEliminator;
+    }
+
+    private CopyPropagator copyPropagator = null;
+    protected CopyPropagator getCopyPopagator() {
+    	if (this.copyPropagator == null)
+    		this.copyPropagator = new CopyPropagator(DalvikThrowAnalysis.v(), false);
+    	return this.copyPropagator;
     }
 
     /**
@@ -788,7 +893,12 @@ public class DexBody  {
             List<? extends ExceptionHandler> hList = tryItem.getExceptionHandlers();
             for (ExceptionHandler handler: hList) {
               int handlerAddress = handler.getHandlerCodeAddress();
-              Debug.printDbg("handler   (0x", Integer.toHexString(handlerAddress)   ,"): ", instructionAtAddress (handlerAddress).getUnit()  ," --- ", instructionAtAddress (handlerAddress-1).getUnit());
+              Debug.printDbg("handler   (0x",
+            		  Integer.toHexString(handlerAddress),
+            		  "): ",
+            		  instructionAtAddress (handlerAddress).getUnit(),
+            		  " --- ",
+            		  handlerAddress > 0 ? instructionAtAddress (handlerAddress-1).getUnit() : "<unknown>");
               String exceptionType = handler.getExceptionType();
               if (exceptionType == null)
                   exceptionType = "Ljava/lang/Throwable;";

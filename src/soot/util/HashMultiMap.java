@@ -18,32 +18,50 @@
  */
 
 package soot.util;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
 
 /** A map with sets as values, HashMap implementation.
  *
  * @author Ondrej Lhotak
  */
 
-public class HashMultiMap<K,V> implements MultiMap<K,V> {
-    Map<K,Set<V>> m = new HashMap<K,Set<V>>(0);
+public class HashMultiMap<K,V> extends AbstractMultiMap<K, V> {
+	
+	private static final long serialVersionUID = -1928446853508616896L;
+	
+	protected final Map<K,Set<V>> m;
+    
+    protected Map<K, Set<V>> createMap() {
+    	return createMap(0);
+    }
+    
+    protected Map<K, Set<V>> createMap(int initialSize) {
+    	return new HashMap<K,Set<V>>(initialSize);
+    }
 
-    public HashMultiMap() {}
+    public HashMultiMap() {
+    	this.m = createMap();
+    }
+    
+    public HashMultiMap(int initialSize) {
+    	this.m = createMap(initialSize);
+    }
+
     public HashMultiMap( MultiMap<K,V> m ) {
+    	this.m = createMap();
         putAll( m );
     }
-
-    @Override
-    public void putAll( MultiMap<K,V> m ) {
-        for (K key : m.keySet())
-            putAll(key, m.get(key));
+    
+    public HashMultiMap( Map<K,Set<V>> m ) {
+    	this.m = createMap();
+        putAll( m );
     }
-
-    @Override
-    public boolean isEmpty() {
-        return numKeys() == 0;
-    }
-
+        
     @Override
     public int numKeys() {
         return m.size();
@@ -61,11 +79,12 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
         return false;
     }
 
-    protected Set newSet() {
-        return new HashSet(4);
+    protected Set<V> newSet() {
+        return new HashSet<V>(4);
     }
-    private Set findSet( K key ) {
-        Set s = m.get( key );
+    
+    private Set<V> findSet( K key ) {
+        Set<V> s = m.get( key );
         if( s == null ) {
             s = newSet();
             m.put( key, s );
@@ -86,7 +105,7 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
 
     @Override
     public boolean remove( K key, V value ) {
-        Set s = m.get( key );
+        Set<V> s = m.get( key );
         if( s == null ) return false;
         boolean ret = s.remove( value );
         if( s.isEmpty() ) {
@@ -102,7 +121,7 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
 
     @Override
     public boolean removeAll( K key, Set<V> values ) {
-        Set s = m.get( key );
+        Set<V> s = m.get( key );
         if( s == null ) return false;
         boolean ret = s.removeAll( values );
         if( s.isEmpty() ) {
@@ -112,10 +131,10 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
     }
 
     @Override
-    public Set get( K o ) {
-        Set ret = m.get( o );
-        if( ret == null ) return Collections.EMPTY_SET;
-        return Collections.unmodifiableSet(ret);
+    public Set<V> get( K o ) {
+        Set<V> ret = m.get( o );
+        if( ret == null ) return Collections.emptySet();
+        else return ret;
     }
 
     @Override
@@ -125,7 +144,7 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
 
     @Override
     public Set<V> values() {
-        Set ret = new HashSet(0);
+        Set<V> ret = new HashSet<V>(m.size());
         for (Set<V> s : m.values())
             ret.addAll(s);
         return ret;
@@ -134,12 +153,13 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
     @Override
     public boolean equals( Object o ) {
         if( ! (o instanceof MultiMap) ) return false;
-        MultiMap mm = (MultiMap) o;
+        @SuppressWarnings("unchecked")
+		MultiMap<K,V> mm = (MultiMap<K,V>) o;
         if( !keySet().equals( mm.keySet() ) ) return false;
-        Iterator it = m.entrySet().iterator();
+        Iterator<Map.Entry<K, Set<V>>> it = m.entrySet().iterator();
         while( it.hasNext() ) {
-            Map.Entry e = (Map.Entry) it.next();
-            Set s = (Set) e.getValue();
+            Map.Entry<K, Set<V>> e = it.next();
+            Set<V> s = e.getValue();
             if( !s.equals( mm.get( e.getKey() ) ) ) return false;
         }
         return true;
@@ -149,4 +169,15 @@ public class HashMultiMap<K,V> implements MultiMap<K,V> {
     public int hashCode() {
         return m.hashCode();
     }
+
+	@Override
+	public int size() {
+		return m.size();
+	}
+
+	@Override
+	public void clear() {
+		m.clear();
+	}
+	
 }

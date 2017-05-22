@@ -144,15 +144,18 @@ public class AugEvalFunction implements IEvalFunction
 		else if ( expr instanceof CaughtExceptionRef )
 		{
 			RefType r = null;
+			RefType throwableType = Scene.v().getRefType("java.lang.Throwable");
 			
 			for (RefType t : TrapManager.getExceptionTypesOf(stmt, jb))
 			{
 				if ( r == null )
 					r = t;
+				else if (t.getSootClass().isPhantom() || r.getSootClass().isPhantom())
+					r = throwableType;
 				else
 					/* In theory, we could have multiple exception types 
 					pointing here. The JLS requires the exception parameter be a *subclass* of Throwable, so we do not need to worry about multiple inheritance. */
-					r = BytecodeHierarchy.lcsc(r, t);
+					r = BytecodeHierarchy.lcsc(r, t, throwableType);
 			}
 			
 			if ( r == null )
@@ -227,6 +230,10 @@ public class AugEvalFunction implements IEvalFunction
 			return RefType.v("java.lang.String");
 		else if ( expr instanceof ClassConstant )
 			return RefType.v("java.lang.Class");
-		else throw new RuntimeException("Unhandled expression: " + expr);
+		else if ( expr instanceof MethodHandle) {
+			return RefType.v("java.lang.invoke.MethodHandle");
+		} else {
+			throw new RuntimeException("Unhandled expression: " + expr);
+		}
 	}
 }

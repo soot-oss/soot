@@ -45,21 +45,19 @@ import soot.toolkits.graph.pdg.MHGDominatorTree;
 
 public class TestDominance {
 
-    public Set<Integer> kid_ids(DominatorNode dn) {
+    public Set<Integer> kid_ids(DominatorNode<Node> dn) {
         Set<Integer> kids = new HashSet<Integer>();
-        for (Object o : dn.getChildren()) {
-            DominatorNode dkid = (DominatorNode)o;
-            Node kid = (Node)dkid.getGode();
+        for (DominatorNode<Node> dkid : dn.getChildren()) {
+            Node kid = dkid.getGode();
             kids.add(kid.id);
         }
         return kids;
     }
 
-    public Map<Integer,DominatorNode> kid_map(DominatorNode dn) {
-        Map<Integer,DominatorNode> kids = new HashMap<Integer,DominatorNode>();
-        for (Object o : dn.getChildren()) {
-            DominatorNode dkid = (DominatorNode)o;
-            Node kid = (Node)dkid.getGode();
+    public Map<Integer,DominatorNode<Node>> kid_map(DominatorNode<Node> dn) {
+        Map<Integer,DominatorNode<Node>> kids = new HashMap<Integer,DominatorNode<Node>>();
+        for (DominatorNode<Node> dkid : dn.getChildren()) {
+            Node kid = dkid.getGode();
             kids.put(kid.id, dkid);
         }
         return kids;
@@ -71,11 +69,11 @@ public class TestDominance {
         Node n = new Node(1).addkid((new Node(2)).addkid(x)).addkid((new Node(3)).addkid(x));
         Graph g = new Graph(n);
         MHGDominatorsFinder<Node> finder = new MHGDominatorsFinder<Node>(g);
-        DominatorTree tree = new DominatorTree(finder);
+        DominatorTree<Node> tree = new DominatorTree<Node>(finder);
         assertThat(tree.getHeads().size(), is(1));
 
-        DominatorNode head = tree.getHeads().get(0);
-        assertThat(((Node)head.getGode()).id, is(1));
+        DominatorNode<Node> head = tree.getHeads().get(0);
+        assertThat(head.getGode().id, is(1));
 
         Set<Integer> kids = kid_ids(head);
         assertThat(kids.size(), is(3));
@@ -108,17 +106,17 @@ public class TestDominance {
         Graph g = new Graph(n1);
 
         MHGDominatorsFinder<Node> finder = new MHGDominatorsFinder<Node>(g);
-        DominatorTree tree = new DominatorTree(finder);
+        DominatorTree<Node> tree = new DominatorTree<Node>(finder);
         assertThat(tree.getHeads().size(), is(1));
 
-        DominatorNode n = tree.getHeads().get(0);
-        assertThat(((Node)n.getGode()).id, is(1));
+        DominatorNode<Node> n = tree.getHeads().get(0);
+        assertThat(n.getGode().id, is(1));
         Set<Integer> kids = kid_ids(n);
         assertThat(kids.size(), is(4));
         assertThat(kids, contains(2, 3, 9, 11));
 
-        Map<Integer, DominatorNode> KM = kid_map(n);
-        DominatorNode m = KM.get(2);
+        Map<Integer, DominatorNode<Node>> KM = kid_map(n);
+        DominatorNode<Node> m = KM.get(2);
         kids = kid_ids(m);
         assertThat(kids.size(), is(0));
 
@@ -180,17 +178,17 @@ public class TestDominance {
         Graph g = new Graph(n1);
 
         MHGDominatorsFinder<Node> finder = new MHGDominatorsFinder<Node>(g);
-        MHGDominatorTree tree = new MHGDominatorTree(finder);
+        MHGDominatorTree<Node> tree = new MHGDominatorTree<Node>(finder);
         assertThat(tree.getHeads().size(), is(1));
 
-        DominatorNode n = tree.getHeads().get(0);
-        assertThat(((Node)n.getGode()).id, is(1));
+        DominatorNode<Node> n = tree.getHeads().get(0);
+        assertThat(n.getGode().id, is(1));
         Set<Integer> kids = kid_ids(n);
         assertThat(kids.size(), is(2));
         assertThat(kids, contains(2, 3));
 
-        Map<Integer, DominatorNode> KM = kid_map(n);
-        DominatorNode m = KM.get(2);
+        Map<Integer, DominatorNode<Node>> KM = kid_map(n);
+        DominatorNode<Node> m = KM.get(2);
         kids = kid_ids(m);
         assertThat(kids.size(), is(0));
 
@@ -215,12 +213,11 @@ public class TestDominance {
         // ---------- now post-dom --------------
 
         MHGPostDominatorsFinder<Node> pfinder = new MHGPostDominatorsFinder<Node>(g);
-        tree = new MHGDominatorTree(pfinder);
+        tree = new MHGDominatorTree<Node>(pfinder);
 
-        Map<Integer,DominatorNode> heads = new HashMap<Integer,DominatorNode>();
-        for (Object o : tree.getHeads()) {
-            DominatorNode dhead = (DominatorNode)o;
-            Node head = (Node)dhead.getGode();
+        Map<Integer,DominatorNode<Node>> heads = new HashMap<Integer,DominatorNode<Node>>();
+        for (DominatorNode<Node> dhead : tree.getHeads()) {
+            Node head = dhead.getGode();
             heads.put(head.id, dhead);
         }
 

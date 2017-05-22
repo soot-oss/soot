@@ -50,7 +50,39 @@ public interface Chain<E> extends Collection<E>, Serializable
     /** Inserts <code>toInsert</code> in the Chain after <code>point</code>. 
      * (It would probably be better to make Chain implement List)*/
     public void insertAfter(Chain<E> toInsert, E point);
-
+    
+    /**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  the instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
+    public void insertOnEdge(E toInsert, E point_src, E point_tgt);
+    
+    /**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
+    public void insertOnEdge(List<E> toInsert, E point_src, E point_tgt);
+    
+    /**
+	 * Inserts instrumentation in a manner such that the resulting control flow
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
+	 * that is defined by <code>point_source</code> and <code>point_target</code>.
+	 * 
+	 * @param toInsert  instrumentation to be added in the Chain
+	 * @param point_src the source point of an edge in CFG
+	 * @param point_tgt the target point of an edge
+	 */
+    public void insertOnEdge(Chain<E> toInsert, E point_src, E point_tgt);
     
     /** Replaces <code>out</code> in the Chain by <code>in</code>. */
     public void swapWith(E out, E in);
@@ -103,6 +135,18 @@ public interface Chain<E> extends Collection<E>, Serializable
     public Iterator<E> iterator(E head, E tail);
 
     /** Returns the size of this Chain. */
-    public int size();   
+    public int size();
+    
+    /** Returns the number of times this chain has been modified. */
+	long getModificationCount();
+	
+	/**
+	 * Gets all elements in the chain. There is no guarantee on sorting. On the other
+	 * hand, the collection returned by this method is thread-safe. You can iterate
+	 * over it even in the case of concurrent modifications to the underlying chain.
+	 * @return All elements in the chain in an unsorted collection
+	 */
+	public Collection<E> getElementsUnsorted();
+	
 }
 

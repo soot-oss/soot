@@ -29,6 +29,7 @@ public final class ACmpgBinop extends PBinop
             cloneNode(this._cmpg_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseACmpgBinop(this);

@@ -25,6 +25,7 @@ public final class TFloat extends Token
       return new TFloat(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTFloat(this);

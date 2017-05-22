@@ -34,6 +34,7 @@ public final class AArrayBrackets extends PArrayBrackets
             cloneNode(this._rBracket_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAArrayBrackets(this);

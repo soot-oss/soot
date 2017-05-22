@@ -29,6 +29,7 @@ public final class AClassNameBaseType extends PBaseType
             cloneNode(this._className_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAClassNameBaseType(this);

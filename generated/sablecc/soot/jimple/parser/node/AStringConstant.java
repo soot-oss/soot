@@ -29,6 +29,7 @@ public final class AStringConstant extends PConstant
             cloneNode(this._stringConstant_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAStringConstant(this);

@@ -62,7 +62,7 @@ public interface PhiExpr extends ShimpleExpr
      *
      * @see soot.toolkits.scalar.ValueUnitPair
      **/
-    public List getArgs();
+    public List<ValueUnitPair> getArgs();
 
     /**
      * Returns a list of the values used by this PhiExpr.

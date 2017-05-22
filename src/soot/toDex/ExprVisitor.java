@@ -13,9 +13,13 @@ import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
 import soot.IntegerType;
+import soot.Local;
 import soot.LongType;
 import soot.NullType;
+import soot.PrimType;
+import soot.RefType;
 import soot.SootClass;
+import soot.SootMethod;
 import soot.Type;
 import soot.Value;
 import soot.jimple.AddExpr;
@@ -27,6 +31,7 @@ import soot.jimple.CmplExpr;
 import soot.jimple.DivExpr;
 import soot.jimple.DynamicInvokeExpr;
 import soot.jimple.EqExpr;
+import soot.jimple.Expr;
 import soot.jimple.ExprSwitch;
 import soot.jimple.GeExpr;
 import soot.jimple.GtExpr;
@@ -58,6 +63,7 @@ import soot.jimple.UshrExpr;
 import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.XorExpr;
 import soot.toDex.instructions.Insn;
+import soot.toDex.instructions.Insn10x;
 import soot.toDex.instructions.Insn11x;
 import soot.toDex.instructions.Insn12x;
 import soot.toDex.instructions.Insn21c;
@@ -82,7 +88,7 @@ import soot.util.Switchable;
  * 
  * @see StmtVisitor
  */
-public class ExprVisitor implements ExprSwitch {
+class ExprVisitor implements ExprSwitch {
 	
 	private final DexBuilder dexFile;
 	
@@ -170,7 +176,7 @@ public class ExprVisitor implements ExprSwitch {
 	}
 
 	private boolean isCallToConstructor(SpecialInvokeExpr sie) {
-		return sie.getMethod().isConstructor();
+		return sie.getMethodRef().name().equals(SootMethod.constructorName);
 	}
 
 	private boolean isCallToSuper(SpecialInvokeExpr sie) {
@@ -206,25 +212,21 @@ public class ExprVisitor implements ExprSwitch {
 	
 	private List<Register> getInvokeArgumentRegs(InvokeExpr ie) {
 		constantV.setOrigStmt(origStmt);
-	    regAlloc.setMultipleConstantsPossible(true);
 		List<Register> argumentRegs = new ArrayList<Register>();
 		for (Value arg : ie.getArgs()) {
 			Register currentReg = regAlloc.asImmediate(arg, constantV);
 			argumentRegs.add(currentReg);
 		}
-		regAlloc.setMultipleConstantsPossible(false);
 		return argumentRegs;
 	}
 
 	private List<Register> getInstanceInvokeArgumentRegs(InstanceInvokeExpr iie) {
 		constantV.setOrigStmt(origStmt);
-	    regAlloc.setMultipleConstantsPossible(true);
 		List<Register> argumentRegs = getInvokeArgumentRegs(iie);
 		// always add reference to callee as first parameter (instance != static)
-		Value callee = iie.getBase();
+		Local callee = (Local) iie.getBase();
 		Register calleeRegister = regAlloc.asLocal(callee);
 		argumentRegs.add(0, calleeRegister);
-		regAlloc.setMultipleConstantsPossible(false);
 		return argumentRegs;
 	}
 
@@ -267,34 +269,72 @@ public class ExprVisitor implements ExprSwitch {
         stmtV.addInsn(buildInvokeInsn("INVOKE_STATIC", method, arguments), origStmt);
 	}
 	
-	private Insn buildCalculatingBinaryInsn(String binaryOperation, Value firstOperand, Value secondOperand) {
-		/*
-		 * it is assumed (but not enforced!) that the types of firstOperand, secondOperand and destinationRegister are compatible
-		 */
+	private void buildCalculatingBinaryInsn(final String binaryOperation,
+			Value firstOperand, Value secondOperand, Expr originalExpr) {
 		constantV.setOrigStmt(origStmt);
 		Register firstOpReg = regAlloc.asImmediate(firstOperand, constantV);
 		
-		// use special "/lit"-opcodes if int is the destination's type, the second op is an integer literal and the opc is not sub (no sub*/lit opc available)
-		if (destinationReg.getType() instanceof IntType && secondOperand instanceof IntConstant && !binaryOperation.equals("SUB")) {
+		// use special "/lit"-opcodes if int is the destination's type, the second op is
+		// an integer literal and the opc is not sub (no sub*/lit opc available)
+		if (destinationReg.getType() instanceof IntType
+				&& secondOperand instanceof IntConstant
+				&& !binaryOperation.equals("SUB")) {
 			int secondOpConstant = ((IntConstant) secondOperand).value;
 			if (SootToDexUtils.fitsSigned8(secondOpConstant)) {
-				return buildLit8BinaryInsn(binaryOperation, firstOpReg, (byte) secondOpConstant);
+				stmtV.addInsn(buildLit8BinaryInsn(binaryOperation, firstOpReg, (byte) secondOpConstant), origStmt);
+				return;
 			}
 			if (SootToDexUtils.fitsSigned16(secondOpConstant)) {
-				if (!binaryOperation.equals("shl") && !binaryOperation.equals("SHR") && !binaryOperation.equals("USHR")) {
+				if (!binaryOperation.equals("SHL") && !binaryOperation.equals("SHR") && !binaryOperation.equals("USHR")) {
 					// no shift opc available for /lit16
-					return buildLit16BinaryInsn(binaryOperation, firstOpReg, (short) secondOpConstant);
+					stmtV.addInsn(buildLit16BinaryInsn(binaryOperation, firstOpReg, (short) secondOpConstant), origStmt);
+					return;
 				}
 			}
 			// constant is too big, so use it as second op and build normally
 		}
+		
+		// Double-check that we are not carrying out any arithmetic operations
+		// on non-primitive values
+		if (!(secondOperand.getType() instanceof PrimType))
+			throw new RuntimeException("Invalid value type for primitibe operation");
+
+		// For some data types, there are no calculating opcodes in Dalvik. In
+		// this case, we need to use a bigger opcode and cast the result back.
+		PrimitiveType destRegType = PrimitiveType.getByName(destinationReg.getType().toString());
 		Register secondOpReg = regAlloc.asImmediate(secondOperand, constantV);
+		Register orgDestReg = destinationReg;
+		if (isSmallerThan(destRegType, PrimitiveType.INT)) {
+			destinationReg = regAlloc.asTmpReg(IntType.v());
+		}
+		else {
+			// If the second register is not of the precise target type, we need to
+			// cast. This can happen, because we cannot load BYTE values. We instead
+			// load INT constants and then need to typecast.
+			if (isBiggerThan(PrimitiveType.getByName(secondOpReg.getType().toString()), destRegType)) {
+				destinationReg = regAlloc.asTmpReg(secondOpReg.getType());
+			}
+			else if (isBiggerThan(PrimitiveType.getByName(firstOpReg.getType().toString()), destRegType)) {
+				destinationReg = regAlloc.asTmpReg(firstOpReg.getType());
+			}
+		}
+		
 		// use special "/2addr"-opcodes if destination equals first op
 		if (destinationReg.getNumber() == firstOpReg.getNumber()) {
-			return build2AddrBinaryInsn(binaryOperation, secondOpReg);
+			stmtV.addInsn(build2AddrBinaryInsn(binaryOperation, secondOpReg), origStmt);
 		}
-		// no optimized binary opcode possible
-		return buildNormalBinaryInsn(binaryOperation, firstOpReg, secondOpReg);
+		else {
+			// no optimized binary opcode possible
+			stmtV.addInsn(buildNormalBinaryInsn(binaryOperation, firstOpReg, secondOpReg), origStmt);
+		}
+		
+		// If we have used a temporary register, we must copy over the result
+		if (orgDestReg != destinationReg) {
+			Register tempReg = destinationReg.clone();
+			destinationReg = orgDestReg.clone();
+			castPrimitive(tempReg, originalExpr, destinationReg.getType());
+		}
+
 	}
 
 	private String fixIntTypeString(String typeString) {
@@ -304,7 +344,7 @@ public class ExprVisitor implements ExprSwitch {
 		return typeString;
 	}
 
-	private Insn build2AddrBinaryInsn(String binaryOperation, Register secondOpReg) {
+	private Insn build2AddrBinaryInsn(final String binaryOperation, Register secondOpReg) {
 		String localTypeString = destinationReg.getTypeString();
 		localTypeString = fixIntTypeString(localTypeString);
 		Opcode opc = Opcode.valueOf(binaryOperation + "_" + localTypeString.toUpperCase() + "_2ADDR");
@@ -330,37 +370,37 @@ public class ExprVisitor implements ExprSwitch {
 
 	@Override
 	public void caseAddExpr(AddExpr ae) {
-        stmtV.addInsn(buildCalculatingBinaryInsn("ADD", ae.getOp1(), ae.getOp2()), origStmt);
+        buildCalculatingBinaryInsn("ADD", ae.getOp1(), ae.getOp2(), ae);
 	}
 	
 	@Override
 	public void caseSubExpr(SubExpr se) {
-        stmtV.addInsn(buildCalculatingBinaryInsn("SUB", se.getOp1(), se.getOp2()), origStmt);
+        buildCalculatingBinaryInsn("SUB", se.getOp1(), se.getOp2(), se);
 	}
 	
 	@Override
 	public void caseMulExpr(MulExpr me) {
-        stmtV.addInsn(buildCalculatingBinaryInsn("MUL", me.getOp1(), me.getOp2()), origStmt);
+        buildCalculatingBinaryInsn("MUL", me.getOp1(), me.getOp2(), me);
 	}
 	
 	@Override
 	public void caseDivExpr(DivExpr de) {
-        stmtV.addInsn(buildCalculatingBinaryInsn("DIV", de.getOp1(), de.getOp2()), origStmt);
+        buildCalculatingBinaryInsn("DIV", de.getOp1(), de.getOp2(), de);
 	}
 	
 	@Override
 	public void caseRemExpr(RemExpr re) {
-        stmtV.addInsn(buildCalculatingBinaryInsn("REM", re.getOp1(), re.getOp2()), origStmt);
+        buildCalculatingBinaryInsn("REM", re.getOp1(), re.getOp2(), re);
 	}
 	
 	@Override
 	public void caseAndExpr(AndExpr ae) {
-        stmtV.addInsn(buildCalculatingBinaryInsn("AND", ae.getOp1(), ae.getOp2()), origStmt);
+        buildCalculatingBinaryInsn("AND", ae.getOp1(), ae.getOp2(), ae);
 	}
 	
 	@Override
 	public void caseOrExpr(OrExpr oe) {
-        stmtV.addInsn(buildCalculatingBinaryInsn("OR", oe.getOp1(), oe.getOp2()), origStmt);
+        buildCalculatingBinaryInsn("OR", oe.getOp1(), oe.getOp2(), oe);
 	}
 	
 	@Override
@@ -368,31 +408,50 @@ public class ExprVisitor implements ExprSwitch {
 		Value firstOperand = xe.getOp1();
 		Value secondOperand = xe.getOp2();
 		constantV.setOrigStmt(origStmt);
+		
 		// see for unary ones-complement shortcut, may be a result of Dexpler's conversion
-		if (secondOperand.equals(IntConstant.v(-1))) {
-			Register sourceReg = regAlloc.asImmediate(firstOperand, constantV);
-            stmtV.addInsn(new Insn12x(Opcode.NOT_INT, destinationReg, sourceReg), origStmt);
-		} else if (secondOperand.equals(LongConstant.v(-1))) {
-			Register sourceReg = regAlloc.asImmediate(firstOperand, constantV);
-            stmtV.addInsn(new Insn12x(Opcode.NOT_LONG, destinationReg, sourceReg), origStmt);
+		if (secondOperand.equals(IntConstant.v(-1)) || secondOperand.equals(LongConstant.v(-1))) {
+			PrimitiveType destRegType = PrimitiveType.getByName(destinationReg.getType().toString());
+			Register orgDestReg = destinationReg;
+
+			// We may need a temporary register if we need a typecast
+			if (isBiggerThan(PrimitiveType.getByName(secondOperand.getType().toString()), destRegType)) {
+				destinationReg = regAlloc.asTmpReg(IntType.v());
+			}
+			
+			if (secondOperand.equals(IntConstant.v(-1))) {
+				Register sourceReg = regAlloc.asImmediate(firstOperand, constantV);
+	            stmtV.addInsn(new Insn12x(Opcode.NOT_INT, destinationReg, sourceReg), origStmt);
+			} else if (secondOperand.equals(LongConstant.v(-1))) {
+				Register sourceReg = regAlloc.asImmediate(firstOperand, constantV);
+	            stmtV.addInsn(new Insn12x(Opcode.NOT_LONG, destinationReg, sourceReg), origStmt);
+			}
+			
+			// If we have used a temporary register, we must copy over the result
+			if (orgDestReg != destinationReg) {
+				Register tempReg = destinationReg.clone();
+				destinationReg = orgDestReg.clone();
+				castPrimitive(tempReg, secondOperand, destinationReg.getType());
+			}
 		} else {
-            stmtV.addInsn(buildCalculatingBinaryInsn("XOR", firstOperand, secondOperand), origStmt);
+			// No shortcut, create normal binary operation
+            buildCalculatingBinaryInsn("XOR", firstOperand, secondOperand, xe);
 		}
 	}
 	
 	@Override
 	public void caseShlExpr(ShlExpr sle) {
-        stmtV.addInsn(buildCalculatingBinaryInsn("SHL", sle.getOp1(), sle.getOp2()), origStmt);
+        buildCalculatingBinaryInsn("SHL", sle.getOp1(), sle.getOp2(), sle);
 	}
 	
 	@Override
 	public void caseShrExpr(ShrExpr sre) {
-        stmtV.addInsn(buildCalculatingBinaryInsn("SHR", sre.getOp1(), sre.getOp2()), origStmt);
+        buildCalculatingBinaryInsn("SHR", sre.getOp1(), sre.getOp2(), sre);
 	}
 
 	@Override
 	public void caseUshrExpr(UshrExpr usre) {
-        stmtV.addInsn(buildCalculatingBinaryInsn("USHR", usre.getOp1(), usre.getOp2()), origStmt);
+        buildCalculatingBinaryInsn("USHR", usre.getOp1(), usre.getOp2(), usre);
 	}
 	
 	private Insn buildComparingBinaryInsn(String binaryOperation, Value firstOperand, Value secondOperand) {
@@ -586,7 +645,10 @@ public class ExprVisitor implements ExprSwitch {
 			source = IntConstant.v(0);
 		
 		// select fitting conversion opcode, depending on the source and cast type
-		PrimitiveType sourceType = PrimitiveType.getByName(source.getType().toString());
+		Type srcType = source.getType();
+		if (srcType instanceof RefType)
+			throw new RuntimeException("Trying to cast reference type " + srcType + " to a primitive");
+		PrimitiveType sourceType = PrimitiveType.getByName(srcType.toString());
 		if (castType == PrimitiveType.BOOLEAN) {
 			// there is no "-to-boolean" opcode, so just pretend to move an int to an int
 			castType = PrimitiveType.INT;
@@ -604,6 +666,9 @@ public class ExprVisitor implements ExprSwitch {
 			if (destinationReg.getNumber() != sourceReg.getNumber()) {
                 stmtV.addInsn(StmtVisitor.buildMoveInsn(destinationReg, sourceReg), origStmt);
 			}
+			// Make sure that we have at least some statement in case we need one for jumps
+			else if (!origStmt.getBoxesPointingToThis().isEmpty())
+				stmtV.addInsn(new Insn10x(Opcode.NOP), origStmt);
 		} else if (needsCastThroughInt(sourceType, castType)) {
 			/* 
 			 * an unsupported "dest = (cast) src" is broken down to
@@ -633,7 +698,7 @@ public class ExprVisitor implements ExprSwitch {
 			// at this point, the types are "bigger" or equal to int, so no "should cast from int" is needed 
 			return true;
 		}
-		if (castType == PrimitiveType.INT && !isEqualOrBigger(sourceType, PrimitiveType.INT)) {
+		if (castType == PrimitiveType.INT && !isBiggerThan(sourceType, PrimitiveType.INT)) {
 			// there is no "upgrade" cast from "smaller than int" to int, so move it
 			return true;
 		}
@@ -654,6 +719,14 @@ public class ExprVisitor implements ExprSwitch {
 
 	private boolean isEqualOrBigger(PrimitiveType type, PrimitiveType relativeTo) {
 		return type.compareTo(relativeTo) >= 0;
+	}
+
+	private boolean isBiggerThan(PrimitiveType type, PrimitiveType relativeTo) {
+		return type.compareTo(relativeTo) > 0;
+	}
+
+	private boolean isSmallerThan(PrimitiveType type, PrimitiveType relativeTo) {
+		return type.compareTo(relativeTo) < 0;
 	}
 
 	private Opcode getCastOpc(PrimitiveType sourceType, PrimitiveType castType) {
@@ -690,13 +763,11 @@ public class ExprVisitor implements ExprSwitch {
 				(arrayType, stmtV.getBelongingFile());
 		// get the dimension size registers
 		List<Register> dimensionSizeRegs = new ArrayList<Register>();
-		regAlloc.setMultipleConstantsPossible(true); // in case there are multiple integer constants
 		for (int i = 0; i < dimensions; i++) {
 			Value currentDimensionSize = nmae.getSize(i);
 			Register currentReg = regAlloc.asImmediate(currentDimensionSize, constantV);
 			dimensionSizeRegs.add(currentReg);
 		}
-		regAlloc.setMultipleConstantsPossible(false); // in case there are multiple integer constants
 		// create filled-new-array instruction, depending on the dimension sizes
 		if (dimensions <= 5) {
 			Register[] paddedRegs = pad35cRegs(dimensionSizeRegs);

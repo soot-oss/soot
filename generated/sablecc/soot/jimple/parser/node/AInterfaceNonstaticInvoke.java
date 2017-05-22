@@ -29,6 +29,7 @@ public final class AInterfaceNonstaticInvoke extends PNonstaticInvoke
             cloneNode(this._interfaceinvoke_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAInterfaceNonstaticInvoke(this);

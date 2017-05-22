@@ -24,6 +24,7 @@ import soot.Local;
 import soot.Unit;
 import soot.ValueBox;
 import soot.jimple.AssignStmt;
+import soot.jimple.DefinitionStmt;
 import soot.jimple.Jimple;
 
 /**
@@ -98,13 +99,9 @@ final class StackFrame {
 			throw new IllegalArgumentException("Invalid in operands length!");
 		int nrIn = in.size();
 		boolean diff = false;
-		all_opr:
 		for (int i = 0; i != oprs.length; i++) {
 			Operand newOp = oprs[i];
-			for (int j = 0; j != nrIn; j++) {
-				if (in.get(j)[i].equivTo(newOp))
-					continue all_opr;
-			}
+
 			diff = true;
 			/* merge, since prevOp != newOp */
 			Local stack = inStackLocals[i];
@@ -142,15 +139,8 @@ final class StackFrame {
 						AssignStmt as = Jimple.v().newAssignStmt(stack, prevOp.value);
 						src.setUnit(prevOp.insn, as);
 					} else {
-						Unit u = src.getUnit(prevOp.insn);		// TODO: Fails with UnitContainers
-						AssignStmt as;
-						if (u instanceof UnitContainer) {
-							UnitContainer uc = (UnitContainer) u;
-							as = (AssignStmt) uc.units[0];
-						}
-						else
-							as = (AssignStmt) u;
-						
+						Unit u = src.getUnit(prevOp.insn);
+						DefinitionStmt as = (DefinitionStmt) (u instanceof UnitContainer ? ((UnitContainer) u).getFirstUnit() : u);
 						ValueBox lvb = as.getLeftOpBox();
 						assert lvb.getValue() == prevOp.stack : "Invalid stack local!";
 						lvb.setValue(stack);
@@ -165,14 +155,7 @@ final class StackFrame {
 						src.setUnit(newOp.insn, as);
 					} else {
 						Unit u = src.getUnit(newOp.insn);
-						AssignStmt as;
-						if (u instanceof UnitContainer) {
-							UnitContainer uc = (UnitContainer) u;
-							as = (AssignStmt) uc.units[0];
-						}
-						else
-							as = (AssignStmt) u;
-						
+						DefinitionStmt as = (DefinitionStmt) (u instanceof UnitContainer ? ((UnitContainer) u).getFirstUnit() : u);
 						ValueBox lvb = as.getLeftOpBox();
 						assert lvb.getValue() == newOp.stack : "Invalid stack local!";
 						lvb.setValue(stack);

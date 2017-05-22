@@ -187,10 +187,8 @@ public class ClassLocalObjectsAnalysis
 		// Get list of reachable methods declared in this class
 		// Also get list of fields declared in this class
 		List<SootField> allFields = new ArrayList<SootField>();
-		Iterator fieldsIt = sc.getFields().iterator();
-		while(fieldsIt.hasNext())
+		for (SootField field : sc.getFields())
 		{
-			SootField field = (SootField) fieldsIt.next();
 			allFields.add(field);
 		}
 		
@@ -200,10 +198,8 @@ public class ClassLocalObjectsAnalysis
 			superclass = superclass.getSuperclass();
 		while(superclass.hasSuperclass()) // we don't want to process Object
 		{
-	        Iterator scFieldsIt = superclass.getFields().iterator();
-	        while(scFieldsIt.hasNext())
+			for (SootField scField : superclass.getFields())
 	        {
-				SootField scField = (SootField) scFieldsIt.next();
 				allFields.add(scField);
 	        }
 			superclass = superclass.getSuperclass();

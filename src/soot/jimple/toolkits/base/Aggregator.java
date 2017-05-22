@@ -27,12 +27,12 @@
 
 package soot.jimple.toolkits.base;
 import soot.options.*;
-
 import soot.*;
 import soot.jimple.*;
 import soot.toolkits.scalar.*;
 import soot.toolkits.graph.*;
 import soot.util.*;
+
 import java.util.*;
 
 public class Aggregator extends BodyTransformer
@@ -46,16 +46,17 @@ public class Aggregator extends BodyTransformer
       * 
       * option: only-stack-locals; if this is true, only aggregate variables
                         starting with $ */
-    protected void internalTransform(Body b, String phaseName, Map options)
+    protected void internalTransform(Body b, String phaseName, Map<String, String> options)
     {
         StmtBody body = (StmtBody)b;
         boolean onlyStackVars = PhaseOptions.getBoolean(options, "only-stack-locals"); 
 
+		if (Options.v().time()) 
+			Timers.v().aggregationTimer.start();
+		
         int aggregateCount = 1;
 
-        if(Options.v().time())
-            Timers.v().aggregationTimer.start();
-         boolean changed = false;
+        boolean changed = false;
 
         Map<ValueBox, Zone> boxToZone = new HashMap<ValueBox, Zone>(body.getUnits().size() * 2 + 1, 0.7f);
 
@@ -63,23 +64,14 @@ public class Aggregator extends BodyTransformer
         {
             Zonation zonation = new Zonation(body);
             
-            Iterator unitIt = body.getUnits().iterator();
-            
-            while(unitIt.hasNext())
-            {
-                Unit u = (Unit) unitIt.next();
+            for (Unit u : body.getUnits()) {
                 Zone zone = zonation.getZoneOf(u);
                 
-                Iterator boxIt = u.getUseBoxes().iterator();
-                while(boxIt.hasNext())
-                {
-                    ValueBox box = (ValueBox) boxIt.next();                    
+                for (ValueBox box : u.getUseBoxes()) {
                     boxToZone.put(box, zone);
-                }   
-                boxIt = u.getDefBoxes().iterator();
-                while(boxIt.hasNext())
-                {
-                    ValueBox box = (ValueBox) boxIt.next();                    
+                }
+                
+                for (ValueBox box : u.getDefBoxes()) {
                     boxToZone.put(box, zone);
                 }   
             }
@@ -96,55 +88,49 @@ public class Aggregator extends BodyTransformer
             
             aggregateCount++;
         } while(changed);
+
+		if (Options.v().time()) 
+			Timers.v().aggregationTimer.end();
         
-        if(Options.v().time())
-            Timers.v().aggregationTimer.end();
-            
     }
   
   private static boolean internalAggregate(StmtBody body, Map<ValueBox, Zone> boxToZone, boolean onlyStackVars)
     {
-      Iterator stmtIt;
-      LocalUses localUses;
-      LocalDefs localDefs;
-      ExceptionalUnitGraph graph;
       boolean hadAggregation = false;
-      Chain units = body.getUnits();
+      Chain<Unit> units = body.getUnits();
       
-      graph = new ExceptionalUnitGraph(body);
-      localDefs = new SmartLocalDefs(graph, new SimpleLiveLocals(graph));
-      localUses = new SimpleLocalUses(graph, localDefs);
-          
-      stmtIt = (new PseudoTopologicalOrderer()).newList(graph,false).iterator();
+      ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
+      LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(graph);
+      LocalUses localUses = LocalUses.Factory.newLocalUses(body, localDefs);
       
-      while (stmtIt.hasNext())
-        {
-          Stmt s = (Stmt)(stmtIt.next());
-              
-          if (!(s instanceof AssignStmt))
+      List<Unit> unitList = new PseudoTopologicalOrderer<Unit>().newList(graph,false);
+      for (Unit u : unitList) {
+          if (!(u instanceof AssignStmt))
             continue;
+          AssignStmt s = (AssignStmt) u;
           
-          Value lhs = ((AssignStmt)s).getLeftOp();
+          Value lhs = s.getLeftOp();
           if (!(lhs instanceof Local))
             continue;
+          Local lhsLocal = (Local) lhs;
     
-          if(onlyStackVars && !((Local) lhs).getName().startsWith("$"))
+          if(onlyStackVars && !lhsLocal.getName().startsWith("$"))
             continue;
             
-          List lu = localUses.getUsesOf(s);
+          List<UnitValueBoxPair> lu = localUses.getUsesOf(s);
           if (lu.size() != 1)
             continue;
-            
-          UnitValueBoxPair usepair = (UnitValueBoxPair)lu.get(0);
+          
+          UnitValueBoxPair usepair = lu.get(0);
           Unit use = usepair.unit;
           ValueBox useBox = usepair.valueBox;
               
-          List<Unit> ld = localDefs.getDefsOfAt((Local)lhs, use);
+          List<Unit> ld = localDefs.getDefsOfAt(lhsLocal, use);
           if (ld.size() != 1)
             continue;
    
           // Check to make sure aggregation pair in the same zone
-            if(boxToZone.get(((AssignStmt) s).getRightOpBox()) != boxToZone.get(usepair.valueBox))
+            if(boxToZone.get(s.getRightOpBox()) != boxToZone.get(usepair.valueBox))
             {
                 continue;
             }  
@@ -156,28 +142,28 @@ public class Aggregator extends BodyTransformer
              to do; if RHS has a method invocation f(a, b,
              c) or field access, we must ban field writes, other method
              calls and (as usual) writes to a, b, c. */
-          
+                      
           boolean cantAggr = false;
           boolean propagatingInvokeExpr = false;
           boolean propagatingFieldRef = false;
           boolean propagatingArrayRef = false;
-          ArrayList<Value> fieldRefList = new ArrayList<Value>();
+          List<FieldRef> fieldRefList = new ArrayList<FieldRef>();
       
-          LinkedList<Value> localsUsed = new LinkedList<Value>();
-          for (Iterator useIt = (s.getUseBoxes()).iterator();
-               useIt.hasNext(); )
-            {
-              Value v = ((ValueBox)(useIt.next())).getValue();
-                if (v instanceof Local)
+          List<Value> localsUsed = new ArrayList<Value>();
+          for (ValueBox vb : s.getUseBoxes()) {
+              Value v = vb.getValue();
+                if (v instanceof Local) {
                     localsUsed.add(v);
-                else if (v instanceof InvokeExpr)
+                } else if (v instanceof InvokeExpr) {
                     propagatingInvokeExpr = true;
-                else if(v instanceof ArrayRef)
+                }    
+                else if(v instanceof ArrayRef) {
                     propagatingArrayRef = true;
+                }
                 else if(v instanceof FieldRef)
                 {
                     propagatingFieldRef = true;
-                    fieldRefList.add(v);
+                    fieldRefList.add((FieldRef) v);
                 }
             }
           
@@ -203,10 +189,8 @@ public class Aggregator extends BodyTransformer
               {
                 // Check for killing definitions
                 
-                for (Iterator it = between.getDefBoxes().iterator();
-                       it.hasNext(); )
-                  {
-                      Value v = ((ValueBox)(it.next())).getValue();
+            	  for (ValueBox vb : between.getDefBoxes()) {
+                      Value v = vb.getValue();
                       if (localsUsed.contains(v))
                       { 
                             cantAggr = true; 
@@ -226,11 +210,7 @@ public class Aggregator extends BodyTransformer
                               {
                                   // Can't aggregate a field access if passing a definition of a field 
                                   // with the same name, because they might be aliased
-
-                                  Iterator<Value> frIt = fieldRefList.iterator();
-                                  while (frIt.hasNext())
-                                  {
-                                      FieldRef fieldRef = (FieldRef) frIt.next();
+                            	  for (FieldRef fieldRef : fieldRefList) {
                                       if(((FieldRef) v).getField() == fieldRef.getField())
                                       {
                                           cantAggr = true;
@@ -268,9 +248,7 @@ public class Aggregator extends BodyTransformer
               // Check for intervening side effects due to method calls
                 if(propagatingInvokeExpr || propagatingFieldRef || propagatingArrayRef)
                     {
-                      for( Iterator boxIt = (between.getUseBoxes()).iterator(); boxIt.hasNext(); ) {
-                          final ValueBox box = (ValueBox) boxIt.next();
-                          
+                      for( final ValueBox box : between.getUseBoxes() ) {
                           if(between == use && box == useBox)
                           {
                                 // Reached use point, stop looking for
@@ -299,7 +277,7 @@ public class Aggregator extends BodyTransformer
           /* assuming that the d-u chains are correct, */
           /* we need not check the actual contents of ld */
           
-          Value aggregatee = ((AssignStmt)s).getRightOp();
+          Value aggregatee = s.getRightOp();
           
           if (usepair.valueBox.canContainValue(aggregatee))
             {

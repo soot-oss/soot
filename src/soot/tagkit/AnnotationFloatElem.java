@@ -25,6 +25,8 @@
 
 package soot.tagkit;
 
+import soot.util.Switch;
+
 
 /** 
  * Represents the int annotation element
@@ -49,5 +51,10 @@ public class AnnotationFloatElem extends AnnotationElem
     public float getValue(){
         return value;
     }
+    
+	@Override
+	public void apply(Switch sw) {
+		((IAnnotationElemTypeSwitch) sw).caseAnnotationFloatElem(this);
+	}
 }
 

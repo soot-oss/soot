@@ -29,6 +29,7 @@ public final class ALocalImmediate extends PImmediate
             cloneNode(this._localName_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseALocalImmediate(this);

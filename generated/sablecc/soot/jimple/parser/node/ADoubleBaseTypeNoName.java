@@ -29,6 +29,7 @@ public final class ADoubleBaseTypeNoName extends PBaseTypeNoName
             cloneNode(this._double_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseADoubleBaseTypeNoName(this);

@@ -49,8 +49,6 @@ import soot.jimple.NewArrayExpr;
 
 public class NewArrayInstruction extends DexlibAbstractInstruction {
 
-    AssignStmt assign = null;
-
     public NewArrayInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -68,12 +66,11 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         Type t = DexType.toSoot((TypeReference) newArray.getReference());
         // NewArrayExpr needs the ElementType as it increases the array dimension by 1
         Type arrayType = ((ArrayType) t).getElementType();
-        Debug.printDbg("new array element type: ", arrayType);
         
         NewArrayExpr newArrayExpr = Jimple.v().newNewArrayExpr(arrayType, size);
 
         Local l = body.getRegisterLocal(dest);
-        assign = Jimple.v().newAssignStmt(l, newArrayExpr);
+        AssignStmt assign = Jimple.v().newAssignStmt(l, newArrayExpr);
 
         setUnit(assign);
         addTags(assign);
@@ -81,7 +78,6 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
-          int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().setType(newArrayExpr.getSizeBox(), IntType.v(), true);
           DalvikTyper.v().setType(assign.getLeftOpBox(), newArrayExpr.getType(), false);
         }

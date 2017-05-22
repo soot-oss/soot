@@ -21,6 +21,7 @@ package soot.jimple.spark.internal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +101,23 @@ public final class TypeManager {
             }
         }
         BitVector ret = (BitVector) typeMask.get( type );
-        if( ret == null && fh != null ) throw new RuntimeException( "Type mask not found for type "+type );
+        if( ret == null && fh != null ) {
+        	// If we have a phantom class and have no type mask, we assume that
+        	// it is not cast-compatible to anything
+    		SootClass curClass = ((RefType) type).getSootClass();
+        	if (type instanceof RefType && curClass.isPhantom())
+        		return new BitVector();
+        	else {
+        		// Scan through the hierarchy. We might have a phantom class higher up
+        		while (curClass.hasSuperclass()) {
+        			curClass = curClass.getSuperclass();
+                	if (type instanceof RefType && curClass.isPhantom())
+                		return new BitVector();
+        		}
+        		
+        		throw new RuntimeException( "Type mask not found for type "+type );
+        	}
+        }
         return ret;
     }
     final public void clearTypeMask() {
@@ -117,6 +134,14 @@ public final class TypeManager {
         // **
         initClass2allocs();
         makeClassTypeMask(Scene.v().getSootClass("java.lang.Object"));
+        BitVector visitedTypes = new BitVector();
+        {
+        	Iterator<Type> it = typeMask.keyIterator();
+        	while(it.hasNext()) {
+        		Type t = it.next();
+        		visitedTypes.set(t.getNumber());
+        	}
+        }
         // **
         ArrayNumberer<AllocNode> allocNodes = pag.getAllocNodeNumberer();
         for( Type t : Scene.v().getTypeNumberer()) {
@@ -131,6 +156,9 @@ public final class TypeManager {
                 SootClass sc = ((RefType)t).getSootClass();
                 if (sc.isInterface()) {
                     makeMaskOfInterface(sc);
+                }
+                if(!visitedTypes.get(t.getNumber()) && !((RefType)t).getSootClass().isPhantom()) {
+                	makeClassTypeMask(((RefType)t).getSootClass());	
                 }
                 continue;
             }
@@ -191,6 +219,13 @@ public final class TypeManager {
     }
 
     final private BitVector makeClassTypeMask(SootClass clazz) {
+    	{
+	    	BitVector cachedMask = typeMask.get(clazz.getType());
+	    	if(cachedMask != null) {
+	    		return cachedMask;
+	    	}
+    	}
+    	
         int nBits = pag.getAllocNodeNumberer().size();
         final BitVector mask = new BitVector(nBits);
         

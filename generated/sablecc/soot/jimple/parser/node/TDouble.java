@@ -25,6 +25,7 @@ public final class TDouble extends Token
       return new TDouble(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTDouble(this);

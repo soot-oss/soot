@@ -45,8 +45,8 @@ public class DoublePointsToSet extends PointsToSetInternal {
             || newSet.hasNonEmptyIntersection(other);
     }
     /** Set of all possible run-time types of objects in the set. */
-    public Set possibleTypes() {
-        Set ret = new HashSet();
+    public Set<Type> possibleTypes() {
+        Set<Type> ret = new HashSet<Type>();
         ret.addAll(oldSet.possibleTypes());
         ret.addAll(newSet.possibleTypes());
         return ret;
@@ -112,16 +112,18 @@ public class DoublePointsToSet extends PointsToSetInternal {
     public boolean contains( Node n ) {
         return oldSet.contains( n ) || newSet.contains( n );
     }
+    
+    private static P2SetFactory defaultP2SetFactory = new P2SetFactory() {
+        public PointsToSetInternal newSet( Type type, PAG pag ) {
+            return new DoublePointsToSet( type, pag );
+        }
+    };
 
     public static P2SetFactory getFactory( P2SetFactory newFactory,
             P2SetFactory oldFactory ) {
         G.v().newSetFactory = newFactory;
         G.v().oldSetFactory = oldFactory;
-        return new P2SetFactory() {
-            public PointsToSetInternal newSet( Type type, PAG pag ) {
-                return new DoublePointsToSet( type, pag );
-            }
-        };
+        return defaultP2SetFactory;
     }
 
     /* End of public methods. */

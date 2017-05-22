@@ -255,10 +255,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
 		/*
 		 Apply on init
 		 */
-		List<Object> init = node.getInit();
-		Iterator<Object> it = init.iterator();
-		while (it.hasNext()) {
-			AugmentedStmt as = (AugmentedStmt) it.next();
+		for (AugmentedStmt as : node.getInit()) {
 			Stmt s = as.get_Stmt();
 			if (s instanceof DefinitionStmt)
 				caseDefinitionStmt((DefinitionStmt) s);
@@ -281,10 +278,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
 		/*
 		 Apply on update
 		 */
-		List<Object> update = node.getUpdate();
-		it = update.iterator();
-		while (it.hasNext()) {
-			AugmentedStmt as = (AugmentedStmt) it.next();
+		for (AugmentedStmt as : node.getUpdate()) {
 			Stmt s = as.get_Stmt();
 
 			if (s instanceof DefinitionStmt)
@@ -507,9 +501,7 @@ public class DepthFirstAdapter extends AnalysisAdapter {
 
 	public void caseASTStatementSequenceNode(ASTStatementSequenceNode node) {
 		inASTStatementSequenceNode(node);
-		Iterator<Object> it = node.getStatements().iterator();
-		while (it.hasNext()) {
-			AugmentedStmt as = (AugmentedStmt) it.next();
+		for (AugmentedStmt as : node.getStatements()) {
 			Stmt s = as.get_Stmt();
 			/*
 			 Do a case by case check of possible statements and invoke

@@ -24,7 +24,7 @@ class SynchronizedRegionFlowPair
 		tfp.inside = this.inside;
 	}
 
-	public Object clone()
+	public SynchronizedRegionFlowPair clone()
 	{
 		return new SynchronizedRegionFlowPair(tn, inside);
 	}

@@ -39,7 +39,7 @@ public class SPatchingChain extends PatchingChain<Unit>
     Body body = null;
     boolean debug;
     
-    public SPatchingChain(Body aBody, Chain aChain)
+    public SPatchingChain(Body aBody, Chain<Unit> aChain)
     {
         super(aChain);
         this.body = aBody;
@@ -88,7 +88,7 @@ public class SPatchingChain extends PatchingChain<Unit>
 
             // move pointers unconditionally, needed as a special case
             if(!unit.branches()){
-                Set trappedUnits = Collections.EMPTY_SET;
+                Set<Unit> trappedUnits = Collections.emptySet();
                 if(body != null)
                     trappedUnits = TrapManager.getTrappedUnitsOf(body);
                 if(!trappedUnits.contains(unit)){
@@ -143,7 +143,7 @@ public class SPatchingChain extends PatchingChain<Unit>
                     }
                 }
                     
-                if(needsPatching.booleanValue()){
+                if(needsPatching){
                     box.setUnit((Unit)toInsert);
                     box.setUnitChanged(false);
                 }
@@ -198,6 +198,10 @@ public class SPatchingChain extends PatchingChain<Unit>
      * Map from UnitBox to the Phi node owning it.
      **/
     protected Map<UnitBox, Unit> boxToPhiNode = new HashMap<UnitBox, Unit>();
+    /**
+     * Set of the values of boxToPhiNode. Used to allow O(1) contains() on the values.
+     **/
+    protected Set<Unit> phiNodeSet = new HashSet<Unit>();
 
     /**
      * Flag that indicates whether control flow falls through from the
@@ -217,13 +221,12 @@ public class SPatchingChain extends PatchingChain<Unit>
             return;
 
         // already processed previously, unit chain manipulations?
-        if(boxToPhiNode.values().contains(phiNode))
+        if(phiNodeSet.contains(phiNode))
             return;
 
-        Iterator boxesIt = phi.getUnitBoxes().iterator();
-        while(boxesIt.hasNext()){
-            UnitBox box = (UnitBox) boxesIt.next();
+        for (UnitBox box : phi.getUnitBoxes()) {
             boxToPhiNode.put(box, phiNode);
+            phiNodeSet.add(phiNode);
         }
     }
 
@@ -231,6 +234,7 @@ public class SPatchingChain extends PatchingChain<Unit>
     {
         Set<Unit> phiNodes = new HashSet<Unit>(boxToPhiNode.values());
         boxToPhiNode = new HashMap<UnitBox, Unit>();
+        phiNodeSet = new HashSet<Unit>();
         boxToNeedsPatching = new HashMap<SUnitBox, Boolean>();
 
         Iterator<Unit> phiNodesIt = phiNodes.iterator();
@@ -256,7 +260,7 @@ public class SPatchingChain extends PatchingChain<Unit>
         // we track the fallthrough control flow from boxes to the
         // corresponding Phi statements.  trackedPhi provides a
         // mapping from the Phi being tracked to its relevant boxes.
-        MultiMap trackedPhiToBoxes = new HashMultiMap();
+        MultiMap<Unit, UnitBox> trackedPhiToBoxes = new HashMultiMap<Unit, UnitBox>();
 
         // consider:
         //
@@ -266,19 +270,12 @@ public class SPatchingChain extends PatchingChain<Unit>
         // Here control flow both fallsthrough and branches to label1.
         // If such an if statement is encountered, we do not want to
         // move any UnitBox pointers beyond the if statement.
-        Set trackedBranchTargets = new HashSet();
-        
-        Iterator unitsIt = iterator();
-        while(unitsIt.hasNext()){
-            Unit u = (Unit) unitsIt.next();
-
+        Set<UnitBox> trackedBranchTargets = new HashSet<UnitBox>();
+        for (Unit u : this) {
             // update trackedPhiToBoxes
-            List boxesToTrack = u.getBoxesPointingToThis();
+            List<UnitBox> boxesToTrack = u.getBoxesPointingToThis();
             if(boxesToTrack != null){
-                Iterator boxesToTrackIt = boxesToTrack.iterator();
-                while(boxesToTrackIt.hasNext()){
-                    UnitBox boxToTrack = (UnitBox) boxesToTrackIt.next();
-
+            	for (UnitBox boxToTrack : boxesToTrack) {
                     if(!boxToTrack.isBranchTarget())
                         trackedPhiToBoxes.put(boxToPhiNode.get(boxToTrack),
                                               boxToTrack);
@@ -301,16 +298,15 @@ public class SPatchingChain extends PatchingChain<Unit>
                     box.setUnitChanged(false);
                 }
 
-                trackedPhiToBoxes = new HashMultiMap();
+                trackedPhiToBoxes = new HashMultiMap<Unit, UnitBox>();
                 continue;
             }
 
             // we found one of the Phi nodes pointing to a Unit
-            Set boxes = trackedPhiToBoxes.get(u);
+            Set<UnitBox> boxes = trackedPhiToBoxes.get(u);
             if(boxes != null){
-                Iterator<UnitBox> boxesIt = boxes.iterator();
-                while(boxesIt.hasNext()){
-                    SUnitBox box = getSBox(boxesIt.next());
+            	for (UnitBox ub : boxes) {
+                    SUnitBox box = getSBox(ub);
 
                     // falls through
                     boxToNeedsPatching.put(box, Boolean.TRUE);
@@ -340,17 +336,17 @@ public class SPatchingChain extends PatchingChain<Unit>
 
     protected class SPatchingIterator extends PatchingIterator
     {
-        SPatchingIterator(Chain innerChain)
+        SPatchingIterator(Chain<Unit> innerChain)
         {
             super(innerChain);
         }
 
-        SPatchingIterator(Chain innerChain, Unit u)
+        SPatchingIterator(Chain<Unit> innerChain, Unit u)
         {
             super(innerChain, u);
         }
 
-        SPatchingIterator(Chain innerChain, Unit head, Unit tail)
+        SPatchingIterator(Chain<Unit> innerChain, Unit head, Unit tail)
         {
             super(innerChain, head, tail);
         }
@@ -375,17 +371,17 @@ public class SPatchingChain extends PatchingChain<Unit>
         }
     }
 
-    public Iterator iterator()
+    public Iterator<Unit> iterator()
     {
         return new SPatchingIterator(innerChain);
     }
 
-    public Iterator iterator(Unit u)
+    public Iterator<Unit> iterator(Unit u)
     {
         return new SPatchingIterator(innerChain, u);
     }
 
-    public Iterator iterator(Unit head, Unit tail)
+    public Iterator<Unit> iterator(Unit head, Unit tail)
     {
         return new SPatchingIterator(innerChain, head, tail);
     }

@@ -41,15 +41,10 @@ public abstract class AbstractDefinitionStmt extends AbstractStmt
 	public final ValueBox leftBox;
 	public final ValueBox rightBox;
 	
-	private final List<ValueBox> defBoxes; 
-
 	protected AbstractDefinitionStmt(ValueBox leftBox, ValueBox rightBox) {
 		this.leftBox = leftBox;
-		this.rightBox = rightBox;    	
-		
-		this.defBoxes = Collections.singletonList(leftBox); 
+		this.rightBox = rightBox;
 	}
-
     
     @Override
     public final Value getLeftOp()
@@ -78,7 +73,7 @@ public abstract class AbstractDefinitionStmt extends AbstractStmt
 	@Override
     public final List<ValueBox> getDefBoxes()
     {
-        return defBoxes;
+        return Collections.singletonList(leftBox);
     }
 
     @Override

@@ -25,4 +25,9 @@ public class Insn10t extends InsnWithOffset {
 		return new BuilderInstruction10t(opc, assigner.getOrCreateLabel(target));
 	}
 
+	@Override
+	public int getMaxJumpOffset() {
+		return Byte.MAX_VALUE;
+	}
+
 }

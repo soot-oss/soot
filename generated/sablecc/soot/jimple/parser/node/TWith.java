@@ -25,6 +25,7 @@ public final class TWith extends Token
       return new TWith(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTWith(this);

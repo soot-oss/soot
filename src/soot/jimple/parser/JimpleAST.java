@@ -86,8 +86,12 @@ public class JimpleAST
      */
     public Body getBody(SootMethod m)
     {
-        if (methodToParsedBodyMap == null)
-            stashBodiesForClass(m.getDeclaringClass());
+        if (methodToParsedBodyMap == null) {
+        	synchronized (this) {
+                if (methodToParsedBodyMap == null)
+                	stashBodiesForClass(m.getDeclaringClass());
+        	}
+        }
         return methodToParsedBodyMap.get(m);
     } 
 
@@ -112,15 +116,17 @@ public class JimpleAST
      * The SootClass which we want bodies for is passed as the argument. 
      */
     private void stashBodiesForClass(SootClass sc) 
-    {          
-        methodToParsedBodyMap = new HashMap<SootMethod, JimpleBody>();
+    {
+    	HashMap<SootMethod, JimpleBody> methodToBodyMap = new HashMap<SootMethod, JimpleBody>();
 
-        Walker w = new BodyExtractorWalker(sc, SootResolver.v(), methodToParsedBodyMap);
+        Walker w = new BodyExtractorWalker(sc, SootResolver.v(), methodToBodyMap);
 
         boolean oldPhantomValue = Scene.v().getPhantomRefs();
 
         Scene.v().setPhantomRefs(true);
         mTree.apply(w);
         Scene.v().setPhantomRefs(oldPhantomValue);
+        
+        methodToParsedBodyMap = methodToBodyMap;
     }    
 } // Parse

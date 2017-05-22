@@ -47,32 +47,41 @@ import soot.jimple.toolkits.callgraph.Edge;
  */
 public class GeomQueries 
 {
-	protected GeomPointsTo geomPts = null;
+	protected GeomPointsTo geomPTA = null;
 	
 	// Call graph information
 	protected int n_func;
+	
+	// A reduced call graph that does not have SCC internal edges
 	protected CgEdge call_graph[];
-	protected int vis_cg[], rep_cg[], top_rank[];
+	
+	// Basic call graph info copied from geomPTA
+	protected int vis_cg[], rep_cg[], scc_size[];
 	protected int block_num[];
 	protected long max_context_size_block[];
 	
+	// Topological order of the call graph SCC representative nodes
+	protected int top_rank[];
+	
+	// Temporary data structures reused across queries
 	private boolean prop_initialized = false;
-	protected Queue<Integer> topQ;
-	protected int in_degree[];
-	protected ContextsCollector[] contextsForMethods;
+	private Queue<Integer> topQ;
+	private int in_degree[];
+	private ContextsCollector[] contextsForMethods;
 	
 	/**
 	 * We copy and make a condensed version of call graph.
 	 * @param geom_pts
 	 */
-	public GeomQueries(GeomPointsTo geom_pts)
+	public GeomQueries(GeomPointsTo geom_pta)
 	{
-		geomPts = geom_pts;
-		n_func = geomPts.n_func;
-		vis_cg = geomPts.vis_cg;
-		rep_cg = geomPts.rep_cg;
-		block_num = geomPts.block_num;
-		max_context_size_block = geomPts.max_context_size_block;
+		geomPTA = geom_pta;
+		n_func = geomPTA.n_func;
+		vis_cg = geomPTA.vis_cg;
+		rep_cg = geomPTA.rep_cg;
+		scc_size = geomPTA.scc_size;
+		block_num = geomPTA.block_num;
+		max_context_size_block = geomPTA.max_context_size_block;
 		
 		// Initialize an empty call graph
 		call_graph = new CgEdge[n_func];
@@ -82,7 +91,7 @@ public class GeomQueries
 		in_degree = new int[n_func];
 		Arrays.fill(in_degree, 0);
 		
-		CgEdge[] raw_call_graph = geomPts.call_graph;
+		CgEdge[] raw_call_graph = geomPTA.call_graph;
 		for (int i = 0; i < n_func; ++i) {
 			if ( vis_cg[i] == 0 ) continue;
 			CgEdge p = raw_call_graph[i];
@@ -199,8 +208,14 @@ public class GeomQueries
 	protected void transferInSCC(int s, int t, long L, long R, ContextsCollector tContexts)
 	{
 		if ( s == t ) {
-			tContexts.insert(L, R);
-			return;
+			if (scc_size[s] == 1) {
+				/*
+				 * If s is not a member of mutually recursive call SCC,
+				 * it's unnecessary to pollute all blocks of t.
+				 */
+				tContexts.insert(L, R);
+				return;
+			}
 		}
 		
 		/*
@@ -309,10 +324,12 @@ public class GeomQueries
 	}
 	
 	/**
+	 * Answer contexts-go-by query.
+	 * 
 	 * Usually, users specify the last K paths as the context. We call it k-CFA context.
-	 * However, k-CFA is too restrictive, users want to specify the call edges anywhere in the context path.
-	 * A common usage is specifying only one edge in the context path.
-	 * We implement this common usage here.
+	 * However, k-CFA is too restrictive. 
+	 * In contexts-go-by query, user specifies arbitrary call edge in the call graph.
+	 * The query searches for all contexts induced by the specified call edge and collect points-to results under these contexts.
 	 * 
 	 * @param sootEdge: the specified context edge in soot edge format
 	 * @param l: the querying pointer
@@ -320,21 +337,21 @@ public class GeomQueries
 	 * @return false, l does not have points-to information under the contexts induced by the given call edge
 	 */
 	@SuppressWarnings("rawtypes")
-	public boolean contexsByAnyCallEdge( Edge sootEdge, Local l, PtSensVisitor visitor )
+	public boolean contextsGoBy( Edge sootEdge, Local l, PtSensVisitor visitor )
 	{
 		// Obtain the internal representation of specified context
-		CgEdge ctxt = geomPts.getInternalEdgeFromSootEdge(sootEdge);
+		CgEdge ctxt = geomPTA.getInternalEdgeFromSootEdge(sootEdge);
 		if ( ctxt == null ||
 				ctxt.is_obsoleted == true ) return false;
 				
 		// Obtain the internal representation for querying pointer
-		LocalVarNode vn = geomPts.findLocalVarNode(l);
+		LocalVarNode vn = geomPTA.findLocalVarNode(l);
 		if ( vn == null ) {
 			// Normally this could not happen, perhaps it's a bug
 			return false;
 		}
 		
-		IVarAbstraction pn = geomPts.findInternalNode(vn);
+		IVarAbstraction pn = geomPTA.findInternalNode(vn);
 		if ( pn == null ) {
 			// This pointer is no longer reachable
 			return false;
@@ -345,7 +362,7 @@ public class GeomQueries
 		
 		// Obtain the internal representation of the method that encloses the querying pointer
 		SootMethod sm = vn.getMethod();
-		int target = geomPts.getIDFromSootMethod(sm);
+		int target = geomPTA.getIDFromSootMethod(sm);
 		if ( target == -1 ) return false;
 		
 		// Start call graph traversal
@@ -372,6 +389,13 @@ public class GeomQueries
 		return visitor.numOfDiffObjects() != 0;
 	}
 	
+	@Deprecated
+	@SuppressWarnings("rawtypes")
+	public boolean contexsByAnyCallEdge( Edge sootEdge, Local l, PtSensVisitor visitor )
+	{
+		return contextsGoBy(sootEdge, l, visitor);
+	}
+	
 	/**
 	 * Searching the points-to results for field expression such as p.f.
 	 * 
@@ -382,18 +406,18 @@ public class GeomQueries
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	public boolean contextsByAnyCallEdge(Edge sootEdge, Local l, SparkField field, PtSensVisitor visitor)
+	public boolean contextsGoBy(Edge sootEdge, Local l, SparkField field, PtSensVisitor visitor)
 	{
 		Obj_full_extractor pts_l = new Obj_full_extractor();
-		if ( contexsByAnyCallEdge(sootEdge, l, pts_l) == false )
+		if ( contextsGoBy(sootEdge, l, pts_l) == false )
 			return false;
 		
 		visitor.prepare();
 		for ( IntervalContextVar icv : pts_l.outList ) {
 			AllocNode obj = (AllocNode)icv.var;
-			AllocDotField obj_f = geomPts.findAllocDotField(obj, field);
+			AllocDotField obj_f = geomPTA.findAllocDotField(obj, field);
 			if ( obj_f == null ) continue;
-			IVarAbstraction objField = geomPts.findInternalNode(obj_f);
+			IVarAbstraction objField = geomPTA.findInternalNode(obj_f);
 			if ( objField == null ) continue;
 			
 			long L = icv.L;
@@ -408,6 +432,12 @@ public class GeomQueries
 		return visitor.numOfDiffObjects() != 0;
 	}
 	
+	@Deprecated
+	@SuppressWarnings("rawtypes")
+	public boolean contextsByAnyCallEdge(Edge sootEdge, Local l, SparkField field, PtSensVisitor visitor)
+	{
+		return contextsGoBy(sootEdge, l, visitor);
+	}
 	
 	/**
 	 * Standard K-CFA querying for arbitrary K.
@@ -418,21 +448,21 @@ public class GeomQueries
 	 * @return false, l does not have points-to information under the given context
 	 */
 	@SuppressWarnings("rawtypes")
-	public boolean contextsByCallChain(Edge[] callEdgeChain, Local l, PtSensVisitor visitor)
+	public boolean kCFA(Edge[] callEdgeChain, Local l, PtSensVisitor visitor)
 	{
 		// Prepare for initial contexts
 		SootMethod firstMethod = callEdgeChain[0].src();
-		int firstMethodID = geomPts.getIDFromSootMethod(firstMethod);
+		int firstMethodID = geomPTA.getIDFromSootMethod(firstMethod);
 		if ( firstMethodID == -1 ) return false;
 				
 		// Obtain the internal representation for querying pointer
-		LocalVarNode vn = geomPts.findLocalVarNode(l);
+		LocalVarNode vn = geomPTA.findLocalVarNode(l);
 		if ( vn == null ) {
 			// Normally this could not happen, perhaps it's a bug
 			return false;
 		}
 		
-		IVarAbstraction pn = geomPts.findInternalNode(vn);
+		IVarAbstraction pn = geomPTA.findInternalNode(vn);
 		if (pn == null) {
 			// This pointer is no longer reachable
 			return false;
@@ -442,7 +472,7 @@ public class GeomQueries
 		if ( !pn.hasPTResult() ) return false;
 		
 		SootMethod sm = vn.getMethod();
-		if ( geomPts.getIDFromSootMethod(sm) == -1 )
+		if ( geomPTA.getIDFromSootMethod(sm) == -1 )
 			return false;
 		
 		// Iterate the call edges and compute the contexts mapping iteratively
@@ -451,13 +481,13 @@ public class GeomQueries
 		long L = 1;
 		for ( int i = 0; i < callEdgeChain.length; ++i ) {
 			Edge sootEdge = callEdgeChain[i];
-			CgEdge ctxt = geomPts.getInternalEdgeFromSootEdge(sootEdge);
+			CgEdge ctxt = geomPTA.getInternalEdgeFromSootEdge(sootEdge);
 			if ( ctxt == null ||
 					ctxt.is_obsoleted == true ) return false;
 			
 			// Following searching procedure works for both methods in SCC and out of SCC
 			// with blocking scheme or without blocking scheme
-			int caller = geomPts.getIDFromSootMethod(sootEdge.src());
+			int caller = geomPTA.getIDFromSootMethod(sootEdge.src());
 			
 			// We obtain the block that contains current offset L
 			long block_size = max_context_size_block[rep_cg[caller]];
@@ -474,6 +504,13 @@ public class GeomQueries
 		return visitor.numOfDiffObjects() != 0;
 	}
 	
+	@Deprecated
+	@SuppressWarnings("rawtypes")
+	public boolean contextsByCallChain(Edge[] callEdgeChain, Local l, PtSensVisitor visitor)
+	{
+		return kCFA(callEdgeChain, l, visitor);
+	}
+	
 	/**
 	 * Standard K-CFA querying for field expression.
 	 * 
@@ -484,11 +521,11 @@ public class GeomQueries
 	 * @return
 	 */
 	@SuppressWarnings("rawtypes")
-	public boolean contextByCallChain(Edge[] callEdgeChain, Local l, SparkField field, PtSensVisitor visitor)
+	public boolean kCFA(Edge[] callEdgeChain, Local l, SparkField field, PtSensVisitor visitor)
 	{
 		// We first obtain the points-to information for l
 		Obj_full_extractor pts_l = new Obj_full_extractor();
-		if ( contextsByCallChain(callEdgeChain, l, pts_l) == false )
+		if ( kCFA(callEdgeChain, l, pts_l) == false )
 			return false;
 		
 		// We compute the points-to information for l.field
@@ -496,9 +533,9 @@ public class GeomQueries
 		
 		for ( IntervalContextVar icv : pts_l.outList ) {
 			AllocNode obj = (AllocNode)icv.var;
-			AllocDotField obj_f = geomPts.findAllocDotField(obj, field);
+			AllocDotField obj_f = geomPTA.findAllocDotField(obj, field);
 			if ( obj_f == null ) continue;
-			IVarAbstraction objField = geomPts.findInternalNode(obj_f);
+			IVarAbstraction objField = geomPTA.findInternalNode(obj_f);
 			if ( objField == null ) continue;
 			
 			long L = icv.L;
@@ -513,13 +550,20 @@ public class GeomQueries
 		return visitor.numOfDiffObjects() != 0;
 	}
 	
+	@Deprecated
+	@SuppressWarnings("rawtypes")
+	public boolean contextsByCallChain(Edge[] callEdgeChain, Local l, SparkField field, PtSensVisitor visitor)
+	{
+		return kCFA(callEdgeChain, l, field, visitor);
+	}
+	
 	/**
 	 * Are the two pointers an alias with context insensitive points-to information?
 	 */
 	public boolean isAliasCI(Local l1, Local l2)
 	{
-		PointsToSet pts1 = geomPts.reachingObjects(l1);
-		PointsToSet pts2 = geomPts.reachingObjects(l2);
+		PointsToSet pts1 = geomPTA.reachingObjects(l1);
+		PointsToSet pts2 = geomPTA.reachingObjects(l2);
 		return pts1.hasNonEmptyIntersection(pts2);
 	}
 	
@@ -548,15 +592,15 @@ public class GeomQueries
 	public boolean isAlias(Local l1, Local l2)
 	{
 		// Obtain the internal representation for querying pointers
-		LocalVarNode vn1 = geomPts.findLocalVarNode(l1);
-		LocalVarNode vn2 = geomPts.findLocalVarNode(l2);
+		LocalVarNode vn1 = geomPTA.findLocalVarNode(l1);
+		LocalVarNode vn2 = geomPTA.findLocalVarNode(l2);
 		if (vn1 == null || vn2 == null) {
 			// Normally this could not happen, perhaps it's a bug
 			return false;
 		}
 
-		IVarAbstraction pn1 = geomPts.findInternalNode(vn1);
-		IVarAbstraction pn2 = geomPts.findInternalNode(vn2);
+		IVarAbstraction pn1 = geomPTA.findInternalNode(vn1);
+		IVarAbstraction pn2 = geomPTA.findInternalNode(vn2);
 		if (pn1 == null || pn2 == null) {
 			return isAliasCI(l1, l2);
 		}

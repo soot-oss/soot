@@ -137,6 +137,11 @@ public interface FlowSet<T> extends Iterable<T> {
   public boolean contains(T obj);
 
   /**
+   * Returns true if the <code>other</code> FlowSet is a subset of <code>this</code> FlowSet.
+   */
+  public boolean isSubSet(FlowSet<T> other);
+  
+  /**
    * returns an iterator over the elements of the flowSet. Note that the
    * iterator might be backed, and hence be faster in the creation, than doing
    * <code>toList().iterator()</code>.

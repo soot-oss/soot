@@ -7,15 +7,10 @@ import soot.Local;
 import soot.Value;
 import soot.ValueBox;
 
-public class LocalsValidator implements BodyValidator {
-	public static LocalsValidator INSTANCE;
-	
+public enum LocalsValidator implements BodyValidator {
+	INSTANCE;	
 	
 	public static LocalsValidator v() {
-		if (INSTANCE == null)
-		{
-			INSTANCE = new LocalsValidator();
-		}
 		return INSTANCE;
 	}
 

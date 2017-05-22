@@ -25,6 +25,7 @@ public final class TFinal extends Token
       return new TFinal(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTFinal(this);

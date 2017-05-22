@@ -56,13 +56,6 @@ import soot.jimple.LengthExpr;
 import soot.jimple.LongConstant;
 import soot.jimple.NewArrayExpr;
 import soot.jimple.ReturnStmt;
-import soot.toolkits.graph.ExceptionalUnitGraph;
-import soot.toolkits.scalar.LocalDefs;
-import soot.toolkits.scalar.LocalUses;
-import soot.toolkits.scalar.SimpleLiveLocals;
-import soot.toolkits.scalar.SimpleLocalUses;
-import soot.toolkits.scalar.SmartLocalDefs;
-import soot.toolkits.scalar.UnitValueBoxPair;
 
 /**
  * BodyTransformer to find and change initialization type of Jimple variables.
@@ -109,29 +102,21 @@ public class DexNumTransformer extends DexTransformer {
 	public static DexNumTransformer v() {
 		return new DexNumTransformer();
 	}
-
-	Local l = null;
-
-	protected void internalTransform(final Body body, String phaseName,
-			@SuppressWarnings("rawtypes") Map options) {
-		final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
-		
-        final LocalDefs localDefs = new SmartLocalDefs(g,
-				new SimpleLiveLocals(g));
-		final LocalUses localUses = new SimpleLocalUses(g, localDefs);
+	
+	protected void internalTransform(final Body body, String phaseName, Map<String,String> options) {
+		final DexDefUseAnalysis localDefs = new DexDefUseAnalysis(body);
 		
         for (Local loc : getNumCandidates(body)) {
             Debug.printDbg("\n[num candidate] ", loc);
 			usedAsFloatingPoint = false;
-			List<Unit> defs = collectDefinitionsWithAliases(loc, localDefs,
-					localUses, body);
+			Set<Unit> defs = localDefs.collectDefinitionsWithAliases(loc);
 			
 	        // process normally
 			doBreak = false;
 			for (Unit u : defs) {
 				// put correct local in l
-				if (u instanceof DefinitionStmt)
-					l = (Local) ((DefinitionStmt) u).getLeftOp();
+				final Local l = u instanceof DefinitionStmt ? (Local) ((DefinitionStmt) u).getLeftOp()
+						: null;
 				
 		        Debug.printDbg("    def  : ", u);
 				Debug.printDbg("    local: ", l);
@@ -159,7 +144,7 @@ public class DexNumTransformer extends DexTransformer {
 							Type arType = ar.getType();
 							Debug.printDbg("ar: ", r, " ", arType);
 							if (arType instanceof UnknownType) {
-								Type t = findArrayType(g, localDefs, localUses,
+								Type t = findArrayType(localDefs,
 										stmt, 0, Collections.<Unit> emptySet()); // TODO:
 																					// check
 																					// where
@@ -207,8 +192,7 @@ public class DexNumTransformer extends DexTransformer {
 				}
 
 				// check uses
-				for (UnitValueBoxPair pair : localUses.getUsesOf(u)) {
-					Unit use = pair.getUnit();
+				for (Unit use : localDefs.getUsesOf(l)) {
 					Debug.printDbg("    use: ", use);
 
 					use.apply(new AbstractStmtSwitch() {
@@ -264,14 +248,26 @@ public class DexNumTransformer extends DexTransformer {
 										|| stmt.hasTag("DoubleOpTag");
 								doBreak = true;
 								return;
-							} else if (left instanceof FieldRef && r instanceof Local
-									&& r == l) {
-								FieldRef fr = (FieldRef) left;
-								if (isFloatingPointLike(fr.getType())) {
-									usedAsFloatingPoint = true;
+							} else if (r instanceof Local && r == l) {
+								if (left instanceof FieldRef) {
+									FieldRef fr = (FieldRef) left;
+									if (isFloatingPointLike(fr.getType())) {
+										usedAsFloatingPoint = true;
+									}
+									doBreak = true;
+									return;
+								} else if (left instanceof ArrayRef) {
+									ArrayRef ar = (ArrayRef) left;
+									Type arType = ar.getType();
+									Debug.printDbg("ar: ", r, " ", arType);
+									if (arType instanceof UnknownType) {
+										arType = findArrayType(localDefs, stmt, 0, Collections.<Unit> emptySet());
+									}
+									Debug.printDbg(" array type:", arType);
+									usedAsFloatingPoint = isFloatingPointLike(arType);
+									doBreak = true;
+									return;
 								}
-								doBreak = true;
-								return;
 							}
 
 						}
@@ -338,7 +334,7 @@ public class DexNumTransformer extends DexTransformer {
 				Value r = a.getRightOp();
 				if ((r instanceof IntConstant || r instanceof LongConstant)) {
 					candidates.add(l);
-					Debug.printDbg("[add null candidate: ", u);
+					Debug.printDbg("[add num candidate: ", u);
 				}
 			}
 		}

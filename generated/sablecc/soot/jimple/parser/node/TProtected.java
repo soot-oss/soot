@@ -25,6 +25,7 @@ public final class TProtected extends Token
       return new TProtected(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTProtected(this);

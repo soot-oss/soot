@@ -54,13 +54,11 @@ public class SootAttributeJimpleSelectAction
 		setLinkToEditor(getEditor());		
 		String resource = removeExt(getResource(getEditor()).getName());
 		String ext = getResource(getEditor()).getFileExtension();
-	
-		IProject proj = getResource(getEditor()).getProject();
-		String slashedClassName = className.replaceAll("\\.", System.getProperty("file.separator"));
-		String classNameToFind = slashedClassName+"."+ext;
+		
+		String classNameToFind = (ext == null) ? className : className+"."+ext;
 		if (!resource.equals(className)){
 			IContainer parent = getResource(getEditor()).getParent();
-			IResource file = parent.findMember(className+"."+ext);
+			IResource file = parent.findMember(classNameToFind);
 			try {
 				setLinkToEditor((AbstractTextEditor)SootPlugin.getDefault().getWorkbench().getActiveWorkbenchWindow().getActivePage().openEditor(new FileEditorInput((IFile)file), file.getName()));
 			}

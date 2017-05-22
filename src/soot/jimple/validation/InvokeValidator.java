@@ -16,15 +16,10 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
-public class InvokeValidator implements BodyValidator {
-	public static InvokeValidator INSTANCE;
-	
+public enum InvokeValidator implements BodyValidator {
+	INSTANCE;
 	
 	public static InvokeValidator v() {
-		if (INSTANCE == null)
-		{
-			INSTANCE = new InvokeValidator();
-		}
 		return INSTANCE;
 	}
 

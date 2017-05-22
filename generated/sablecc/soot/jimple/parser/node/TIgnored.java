@@ -25,6 +25,7 @@ public final class TIgnored extends Token
       return new TIgnored(getText(), getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTIgnored(this);

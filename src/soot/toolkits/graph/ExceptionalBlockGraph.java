@@ -26,10 +26,17 @@
 
 package soot.toolkits.graph;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import soot.*;
-
+import soot.Body;
+import soot.Trap;
+import soot.Unit;
 import soot.toolkits.exceptions.ThrowAnalysis;
 import soot.toolkits.exceptions.ThrowableSet;
 
@@ -114,7 +121,8 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
      * @return {@inheritDoc}
      */
 
-    protected Map<Unit,Block> buildBlocks(Set<Unit> leaders, UnitGraph uncastUnitGraph) {
+    @Override
+	protected Map<Unit,Block> buildBlocks(Set<Unit> leaders, UnitGraph uncastUnitGraph) {
 	ExceptionalUnitGraph unitGraph = (ExceptionalUnitGraph) uncastUnitGraph;
 	Map<Unit,Block> unitToBlock = super.buildBlocks(leaders, unitGraph);
 
@@ -133,9 +141,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 	    blockToExceptionalPreds = new HashMap<Block, List<Block>>(initialMapSize);
 	    blockToExceptionalSuccs = new HashMap<Block, List<Block>>(initialMapSize);
 
-	    for (Iterator<Block> blockIt = mBlocks.iterator(); blockIt.hasNext(); ) {
-		Block block = blockIt.next();
-
+	    for (Block block : mBlocks) {
 		Unit blockHead = block.getHead();
 		List<Unit> exceptionalPredUnits = unitGraph.getExceptionalPredsOf(blockHead);
 		if (exceptionalPredUnits.size() != 0) {
@@ -194,8 +200,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
      */
     private <K,V> List<V> mappedValues(List<K> keys, Map<K,V> keyToValue) {
 	List<V> result = new ArrayList<V>(keys.size());
-	for (Iterator<K> it = keys.iterator(); it.hasNext(); ) {
-	    K key = it.next();
+	for (K key : keys) {
 	    V value = keyToValue.get(key);
 	    if (value == null) {
 		throw new IllegalStateException("No value corresponding to key: " + key.toString());
@@ -208,8 +213,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
     private Map<Block, Collection<ExceptionDest>> buildExceptionDests(ExceptionalUnitGraph unitGraph, 
 				    Map<Unit,Block> unitToBlock) {
 	Map<Block, Collection<ExceptionDest>> result = new HashMap<Block, Collection<ExceptionDest>>(mBlocks.size() * 2 + 1, 0.7f);
-	for (Iterator<Block> blockIt = mBlocks.iterator(); blockIt.hasNext(); ) {
-	    Block block = blockIt.next();
+	for (Block block : mBlocks) {
 	    result.put(block, collectDests(block, unitGraph, unitToBlock));
 	}
 	return result;
@@ -243,15 +247,13 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 	Map<Trap, ThrowableSet> trapToThrowables = null;	// Don't allocate unless we need it.
 	int caughtCount = 0;
 
-	for (Iterator<Unit> unitIt = block.iterator(); unitIt.hasNext(); ) {
-	    Unit unit = (Unit) unitIt.next();
+	for (Unit unit2 : block) {
+	    Unit unit = unit2;
 	    Collection<ExceptionalUnitGraph.ExceptionDest> unitDests = unitGraph.getExceptionDests(unit);
 	    if (unitDests.size() != 1 && unit != blockHead && unit != blockTail) {
 		throw new IllegalStateException("Multiple ExceptionDests associated with a unit which does not begin or end its block.");
 	    }
-	    for (Iterator<ExceptionalUnitGraph.ExceptionDest> destIt = unitDests.iterator(); destIt.hasNext(); ) {
-		ExceptionalUnitGraph.ExceptionDest unitDest 
-		    = destIt.next();
+	    for (soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest unitDest : unitDests) {
 		if (unitDest.getTrap() == null) {
 		    try {
 			escapingThrowables = escapingThrowables.add(unitDest.getThrowables());
@@ -309,7 +311,7 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 	if (trapToThrowables != null) {
 	    for (Map.Entry<Trap,ThrowableSet> entry : trapToThrowables.entrySet()) {
 		Trap trap = entry.getKey();
-		Block trapBlock = (Block) unitToBlock.get(trap.getHandlerUnit());
+		Block trapBlock = unitToBlock.get(trap.getHandlerUnit());
 		if (trapBlock == null) {
 		    throw new IllegalStateException("catching unit is not recorded as a block leader.");
 		}
@@ -322,10 +324,11 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
     }
 
 								  
-    public List<Block> getUnexceptionalPredsOf(Block b) {
+    @Override
+	public List<Block> getUnexceptionalPredsOf(Block b) {
 	if ((blockToUnexceptionalPreds == null) 
 	    || (! blockToUnexceptionalPreds.containsKey(b))) {
-	    Block block = (Block) b;
+	    Block block = b;
 	    return block.getPreds();
 	} else {
 	    return blockToUnexceptionalPreds.get(b);
@@ -333,10 +336,11 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
     }
 
 
-    public List<Block> getUnexceptionalSuccsOf(Block b) {
+    @Override
+	public List<Block> getUnexceptionalSuccsOf(Block b) {
 	if ((blockToUnexceptionalSuccs == null) 
 	    || (! blockToUnexceptionalSuccs.containsKey(b))) {
-	    Block block = (Block) b;
+	    Block block = b;
 	    return block.getSuccs();
 	} else {
 	    return blockToUnexceptionalSuccs.get(b);
@@ -344,7 +348,8 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
     }
 
 
-    public List<Block> getExceptionalPredsOf(Block  b) {
+    @Override
+	public List<Block> getExceptionalPredsOf(Block  b) {
 	if (blockToExceptionalPreds == null ||
 	    (!blockToExceptionalPreds.containsKey(b))) {
 	    return Collections.emptyList();
@@ -354,7 +359,8 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
     }
 
 
-    public List<Block> getExceptionalSuccsOf(Block b) {
+    @Override
+	public List<Block> getExceptionalSuccsOf(Block b) {
 	if (blockToExceptionalSuccs == null ||
 	    (!blockToExceptionalSuccs.containsKey(b))) {
 	    return Collections.emptyList();
@@ -364,22 +370,27 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
     }
 
 
-    public Collection<ExceptionDest> getExceptionDests(Block b) {
-	if (blockToExceptionDests == null) {
-	    Block block = (Block) b;
-	    Collection<ExceptionDest> result = new ArrayList<ExceptionDest>(1);
-	    ThrowableSet throwables = ThrowableSet.Manager.v().EMPTY;
-	    for (Iterator<Unit> unitIt = block.iterator(); unitIt.hasNext(); ) {
-		Unit unit = unitIt.next();
-		throwables = throwables.add(throwAnalysis.mightThrow(unit));
-	    }
-	    result.add(new ExceptionalBlockGraph.ExceptionDest(null, throwables,
-							       null));
-	    return result;
-	} else {
-	    return blockToExceptionDests.get(b);
+	@Override
+	public Collection<ExceptionDest> getExceptionDests(final Block b) {
+		if (blockToExceptionDests == null) {
+			ExceptionDest e = new ExceptionDest(null, null, null) {
+				private ThrowableSet throwables;
+				
+				@Override
+				public ThrowableSet getThrowables() {
+					if (null == throwables) {
+						throwables = ThrowableSet.Manager.v().EMPTY;
+						for (Unit unit : b) {
+							throwables = throwables.add(throwAnalysis.mightThrow(unit));
+						}
+					}
+					return throwables;
+				}
+			};
+			return Collections.singletonList(e);
+		}
+		return blockToExceptionDests.get(b);
 	}
-    }
 
 
     public static class ExceptionDest implements ExceptionalGraph.ExceptionDest<Block> {
@@ -393,21 +404,25 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 	    this.handler = handler;
 	}
 	
+	@Override
 	public Trap getTrap() {
 	    return trap;
 	}
 
+	@Override
 	public ThrowableSet getThrowables() {
 	    return throwables;
 	}
 
+	@Override
 	public Block getHandlerNode() {
 	    return handler;
 	}
 
+	@Override
 	public String toString() {
 	    StringBuffer buf = new StringBuffer();
-	    buf.append(throwables.toString());
+	    buf.append(getThrowables());
 	    buf.append(" -> ");
 	    if (trap == null) {
 		buf.append("(escapes)");
@@ -420,5 +435,4 @@ public class ExceptionalBlockGraph extends BlockGraph implements ExceptionalGrap
 	}
     }
 }
-
 

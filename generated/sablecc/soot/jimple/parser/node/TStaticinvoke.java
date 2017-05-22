@@ -25,6 +25,7 @@ public final class TStaticinvoke extends Token
       return new TStaticinvoke(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTStaticinvoke(this);

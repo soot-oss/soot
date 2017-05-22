@@ -38,8 +38,6 @@ import soot.jimple.Jimple;
 
 public class MonitorExitInstruction extends DexlibAbstractInstruction {
 
-    ExitMonitorStmt exitMonitorStmt = null;
-  
     public MonitorExitInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -47,7 +45,7 @@ public class MonitorExitInstruction extends DexlibAbstractInstruction {
     public void jimplify (DexBody body) {
         int reg = ((OneRegisterInstruction) instruction).getRegisterA();
         Local object = body.getRegisterLocal(reg);
-        exitMonitorStmt = Jimple.v().newExitMonitorStmt(object);
+        ExitMonitorStmt exitMonitorStmt = Jimple.v().newExitMonitorStmt(object);
         setUnit(exitMonitorStmt);
         addTags(exitMonitorStmt);
         body.add(exitMonitorStmt);

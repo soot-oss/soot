@@ -51,7 +51,7 @@ public class CastCheckEliminator extends ForwardBranchedFlowAnalysis<LocalTypeSe
                     if( t instanceof RefType ) {
                         if( cast.getOp() instanceof Local ) {
                             Local l = (Local) cast.getOp(); 
-                            LocalTypeSet set = (LocalTypeSet) unitToBeforeFlow.get(s);
+                            LocalTypeSet set = (LocalTypeSet) getFlowBefore(s);
                             s.addTag( new CastCheckTag( set.get( set.indexOf(
                                     l, (RefType) t ) ) ) );
                         } else {

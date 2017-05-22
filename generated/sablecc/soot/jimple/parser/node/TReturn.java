@@ -25,6 +25,7 @@ public final class TReturn extends Token
       return new TReturn(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTReturn(this);

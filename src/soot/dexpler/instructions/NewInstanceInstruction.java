@@ -48,8 +48,6 @@ import soot.jimple.NewExpr;
 
 public class NewInstanceInstruction extends DexlibAbstractInstruction {
 
-    AssignStmt assign = null;
-
     public NewInstanceInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -60,14 +58,13 @@ public class NewInstanceInstruction extends DexlibAbstractInstruction {
         String className = dottedClassName(((TypeReference)(i.getReference())).toString());
         RefType type = RefType.v(className);
         NewExpr n = Jimple.v().newNewExpr(type);
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), n);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), n);
         setUnit(assign);
         addTags(assign);
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
-          int op = (int)instruction.getOpcode().value;
           //DalvikTyper.v().captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
           DalvikTyper.v().setType(assign.getLeftOpBox(), type, false);
         }

@@ -34,6 +34,7 @@ public final class AUnopExpr extends PUnopExpr
             cloneNode(this._immediate_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAUnopExpr(this);

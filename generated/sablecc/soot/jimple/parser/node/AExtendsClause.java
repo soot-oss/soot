@@ -34,6 +34,7 @@ public final class AExtendsClause extends PExtendsClause
             cloneNode(this._className_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAExtendsClause(this);

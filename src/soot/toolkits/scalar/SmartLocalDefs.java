@@ -35,14 +35,22 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.options.Options;
+import soot.toolkits.graph.ExceptionalUnitGraph;
+import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
 import soot.toolkits.graph.UnitGraph;
 import soot.util.Cons;
 
 /**
  * Analysis that provides an implementation of the LocalDefs interface.
+ * 
+ * This Analysis calculates only the definitions of the locals used by a unit. 
+ * If you need all definitions of local you should use {@see SimpleLocalDefs}.
+ * 
+ * Be warned: This implementation requires a lot of memory and CPU time, normally
+ * {@see SimpleLocalDefs} is much faster.
  */
 public class SmartLocalDefs implements LocalDefs {
-	private final Map<Cons, List<Unit>> answer;
+	private final Map<Cons<Unit, Local>, List<Unit>> answer;
 
 	private final Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined
 	private final UnitGraph graph;
@@ -52,6 +60,7 @@ public class SmartLocalDefs implements LocalDefs {
 	public void printAnswer(){
 		System.out.println(answer.toString());
 	}
+	
 	/**
 	 * Intersects 2 sets and returns the result as a list
 	 * 
@@ -109,8 +118,8 @@ public class SmartLocalDefs implements LocalDefs {
 			Local l = localDef(u);
 			if (l == null)
 				continue;
-			Set<Unit> s = defsOf(l);
-			s.add(u);
+			
+			addDefOf(l, u);
 		}
 
 		if (Options.v().verbose())
@@ -123,14 +132,27 @@ public class SmartLocalDefs implements LocalDefs {
 
 		analysis = new LocalDefsAnalysis(graph);
 
-		answer = new HashMap<Cons, List<Unit>>();
+		answer = new HashMap<Cons<Unit, Local>, List<Unit>>();
 		for (Unit u : graph) {
+			Set<Unit> s1 = analysis.getFlowBefore(u);
+			if (s1 == null || s1.isEmpty())
+				continue;
+			
 			for (ValueBox vb : u.getUseBoxes()) {
 				Value v = vb.getValue();
 				if (v instanceof Local) {
-					Cons key = new Cons(u, v);
-					if ( !answer.containsKey(key) ) {
-						List<Unit> lst = asList(defsOf((Local) v), analysis.getFlowBefore(u));					
+					Local l = (Local) v;
+					
+					Set<Unit> s2 = defsOf(l);
+					if (s2 == null || s2.isEmpty())
+						continue;
+					
+					List<Unit> lst = asList(s1, s2);
+					if (lst.isEmpty())
+						continue;
+					
+					Cons<Unit, Local> key = new Cons<Unit, Local>(u, l);
+					if ( !answer.containsKey(key) ) {			
 						answer.put(key, lst);
 					}
 				}
@@ -165,13 +187,20 @@ public class SmartLocalDefs implements LocalDefs {
 	}
 
 	private Set<Unit> defsOf(Local l) {
-		Set<Unit> ret = localToDefs.get(l);
-		if (ret == null)
-			localToDefs.put(l, ret = new HashSet<Unit>());
-		return ret;
+		Set<Unit> s = localToDefs.get(l);
+		if (s == null)
+			return Collections.emptySet();
+		return s;
+	}
+	
+	private void addDefOf(Local l, Unit u) {
+		Set<Unit> s = localToDefs.get(l);
+		if (s == null)
+			localToDefs.put(l, s = new HashSet<Unit>());
+		s.add(u);
 	}
 
-	class LocalDefsAnalysis extends ForwardFlowAnalysis<Unit, Set<Unit>> {
+	class LocalDefsAnalysis extends ForwardFlowAnalysisExtended<Unit, Set<Unit>> {
 		LocalDefsAnalysis(UnitGraph g) {
 			super(g);
 			doAnalysis();
@@ -189,7 +218,9 @@ public class SmartLocalDefs implements LocalDefs {
 		}
 
 		@Override
-		protected void flowThrough(Set<Unit> in, Unit u, Set<Unit> out) {
+		protected void flowThrough(Set<Unit> in, Unit u, Unit succ, Set<Unit> out) {
+			final ExceptionalUnitGraph exGraph = graph instanceof ExceptionalUnitGraph
+					? (ExceptionalUnitGraph) graph : null;
 			out.clear();
 
 			BitSet liveLocals = liveLocalsAfter.get(u);
@@ -204,18 +235,27 @@ public class SmartLocalDefs implements LocalDefs {
 			} else {// check unit whether contained in allDefUnits before add
 					// into out set.
 				Set<Unit> allDefUnits = defsOf(l);
-
+				
+				boolean isExceptionalTarget = false;
+				if (exGraph != null) {
+					for (ExceptionDest ed : exGraph.getExceptionDests(u))
+						if (ed.getTrap() != null && ed.getTrap().getHandlerUnit() == succ)
+							isExceptionalTarget = true;
+				}
+				
 				for (Unit inU : in) {
-					if (liveLocals.get(localDef(inU).getNumber())
-							&& !allDefUnits.contains(inU)) {
-						out.add(inU);
-					}
+					if (liveLocals.get(localDef(inU).getNumber()))
+						// If we have a = foo and foo can throw an exception, we
+						// must keep the old definition of a.
+						if (isExceptionalTarget || !allDefUnits.contains(inU))
+							out.add(inU);
 				}
 
-				assert false == out.removeAll(allDefUnits);
+				assert isExceptionalTarget || !out.removeAll(allDefUnits);
 
 				if (liveLocals.get(l.getNumber())) {
-					out.add(u);
+					if (!isExceptionalTarget)
+						out.add(u);
 				}
 			}
 		}
@@ -237,8 +277,28 @@ public class SmartLocalDefs implements LocalDefs {
 		}
 	}
 
+	@Override
 	public List<Unit> getDefsOfAt(Local l, Unit s) {
-		return answer.get(new Cons(s, l));
+		List<Unit> lst = answer.get(new Cons<Unit, Local>(s, l));
+		if (lst == null)
+			return Collections.emptyList();
+		return lst;
+	}
+	
+	@Override
+	public List<Unit> getDefsOf(Local l) {
+		List<Unit> result = new ArrayList<Unit>();
+		for (Cons<Unit, Local> cons : answer.keySet())
+			if (cons.cdr() == l)
+				result.addAll(answer.get(cons));
+		return result;
+	}
+	
+	/**
+	 * Returns the associated unit graph.
+	 */
+	public UnitGraph getGraph() {
+		return graph;
 	}
 
 }

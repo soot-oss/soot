@@ -29,6 +29,7 @@ public final class ALocalVariable extends PVariable
             cloneNode(this._localName_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseALocalVariable(this);

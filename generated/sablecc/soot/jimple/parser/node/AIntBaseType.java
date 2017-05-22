@@ -29,6 +29,7 @@ public final class AIntBaseType extends PBaseType
             cloneNode(this._int_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAIntBaseType(this);

@@ -39,8 +39,6 @@ import soot.jimple.Jimple;
 import soot.jimple.StringConstant;
 
 public class ConstStringInstruction extends DexlibAbstractInstruction {
-
-    AssignStmt assign = null;
   
     public ConstStringInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
@@ -58,7 +56,7 @@ public class ConstStringInstruction extends DexlibAbstractInstruction {
         } else
             throw new IllegalArgumentException("Expected Instruction21c or Instruction31c but got neither.");
         StringConstant sc = StringConstant.v(s);
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), sc);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), sc);
         setUnit(assign);
         addTags(assign);
         body.add(assign);

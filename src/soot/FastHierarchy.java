@@ -19,19 +19,17 @@
 
 package soot;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import soot.jimple.SpecialInvokeExpr;
-import soot.util.HashMultiMap;
+import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
 
 
@@ -43,39 +41,38 @@ import soot.util.MultiMap;
  * @author Ondrej Lhotak
  */
 public class FastHierarchy
-{
-    private static void put( Map<SootClass, List<SootClass>> m, SootClass key, SootClass value ) {
-        List<SootClass> l = m.get( key );
-        if( l == null ) m.put( key, l = new ArrayList<SootClass>() );
-        l.add( value );
-    }
-    
+{    
     /** This map holds all key,value pairs such that 
      * value.getSuperclass() == key. This is one of the three maps that hold
      * the inverse of the relationships given by the getSuperclass and
      * getInterfaces methods of SootClass. */
-    protected Map<SootClass, List<SootClass>> classToSubclasses = new HashMap<SootClass, List<SootClass>>();
+    protected MultiMap<SootClass,SootClass> classToSubclasses =
+    		new ConcurrentHashMultiMap<SootClass,SootClass>();
 
     /** This map holds all key,value pairs such that value is an interface 
      * and key is in value.getInterfaces(). This is one of the three maps 
      * that hold the inverse of the relationships given by the getSuperclass 
      * and getInterfaces methods of SootClass. */
-    protected MultiMap<SootClass,SootClass> interfaceToSubinterfaces = new HashMultiMap<SootClass,SootClass>();
+    protected MultiMap<SootClass,SootClass> interfaceToSubinterfaces =
+    		new ConcurrentHashMultiMap<SootClass,SootClass>();
 
     /** This map holds all key,value pairs such that value is a class 
      * (NOT an interface) and key is in value.getInterfaces(). This is one of 
      * the three maps that hold the inverse of the relationships given by the 
      * getSuperclass and getInterfaces methods of SootClass. */
-    protected MultiMap<SootClass,SootClass> interfaceToImplementers = new HashMultiMap<SootClass,SootClass>();
+    protected MultiMap<SootClass,SootClass> interfaceToImplementers =
+    		new ConcurrentHashMultiMap<SootClass,SootClass>();
 
     /** This map is a transitive closure of interfaceToSubinterfaces,
      * and each set contains its superinterface itself. */
-    protected MultiMap<SootClass,SootClass> interfaceToAllSubinterfaces = new HashMultiMap<SootClass,SootClass>();
+    protected MultiMap<SootClass,SootClass> interfaceToAllSubinterfaces =
+    		new ConcurrentHashMultiMap<SootClass,SootClass>();
 
     /** This map gives, for an interface, all concrete classes that
      * implement that interface and all its subinterfaces, but
      * NOT their subclasses. */
-    protected MultiMap <SootClass,SootClass>interfaceToAllImplementers = new HashMultiMap<SootClass,SootClass>();
+    protected MultiMap<SootClass,SootClass> interfaceToAllImplementers =
+    		new ConcurrentHashMultiMap<SootClass,SootClass>();
 
     /** For each class (NOT interface), this map contains a Interval, which is
      * a pair of numbers giving a preorder and postorder ordering of classes
@@ -88,6 +85,7 @@ public class FastHierarchy
         int lower;
         int upper;
         boolean isSubrange( Interval potentialSubrange ) {
+        	if (potentialSubrange == null) return false;
             if( lower > potentialSubrange.lower ) return false;
             if( upper < potentialSubrange.upper ) return false;
             return true;
@@ -96,7 +94,7 @@ public class FastHierarchy
     protected int dfsVisit( int start, SootClass c ) {
         Interval r = new Interval();
         r.lower = start++;
-        List<SootClass> col = classToSubclasses.get(c);
+        Collection<SootClass> col = classToSubclasses.get(c);
         if( col != null ) {
             for (SootClass sc : col) {
                 // For some awful reason, Soot thinks interface are subclasses
@@ -120,10 +118,10 @@ public class FastHierarchy
         this.sc = Scene.v();
 
         /* First build the inverse maps. */
-        for(  final SootClass cl : sc.getClasses() ) {
+        for (SootClass cl : sc.getClasses().getElementsUnsorted()) {
             if( cl.resolvingLevel() < SootClass.HIERARCHY ) continue;
             if( !cl.isInterface() && cl.hasSuperclass() ) {
-                put( classToSubclasses, cl.getSuperclass(), cl );
+            	classToSubclasses.put(cl.getSuperclass(), cl);
             }
             for( final SootClass supercl : cl.getInterfaces() ) {
                 if( cl.isInterface() ) {
@@ -139,20 +137,24 @@ public class FastHierarchy
         /* also have to traverse for all phantom classes because they also
          * can be roots of the type hierarchy
          */
-        for(SootClass phantomClass: Scene.v().getPhantomClasses()) {
+        for (final Iterator<SootClass> phantomClassIt = Scene.v().getPhantomClasses().snapshotIterator();
+        		phantomClassIt.hasNext(); ) {
+        	SootClass phantomClass = phantomClassIt.next();
         	if(!phantomClass.isInterface())
         		dfsVisit( 0, phantomClass );
         }
     }
 
     /** Return true if class child is a subclass of class parent, neither of
-     * them being allowed to be interfaces. */
+     * them being allowed to be interfaces. If we don't know any of the
+     * classes, we always return false */
     public boolean isSubclass( SootClass child, SootClass parent ) {
         child.checkLevel(SootClass.HIERARCHY);
         parent.checkLevel(SootClass.HIERARCHY);
         Interval parentInterval = classToInterval.get( parent );
         Interval childInterval = classToInterval.get( child );
-        return parentInterval.isSubrange( childInterval );
+        return parentInterval != null && childInterval != null
+        		&& parentInterval.isSubrange( childInterval );
     }
 
     /** For an interface parent (MUST be an interface), returns set of all
@@ -515,7 +517,7 @@ public class FastHierarchy
    */
     public Collection<SootClass> getSubclassesOf( SootClass c ) {
         c.checkLevel(SootClass.HIERARCHY);
-        List<SootClass> ret = classToSubclasses.get(c);
+        Collection<SootClass> ret = classToSubclasses.get(c);
         if( ret == null ) return Collections.emptyList();
         return ret;
     }

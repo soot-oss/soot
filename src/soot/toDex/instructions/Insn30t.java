@@ -23,4 +23,9 @@ public class Insn30t extends InsnWithOffset {
 		return new BuilderInstruction30t(opc, assigner.getOrCreateLabel(target));
 	}
 
+	@Override
+	public int getMaxJumpOffset() {
+		return Integer.MAX_VALUE;
+	}
+
 }

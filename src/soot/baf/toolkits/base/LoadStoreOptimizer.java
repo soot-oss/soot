@@ -82,7 +82,6 @@ class Instance {
     // Instance vars.
     private Chain<Unit> mUnits;
     private Body mBody;
-    private ExceptionalUnitGraph mExceptionalUnitGraph;
     private LocalDefs mLocalDefs;
     private LocalUses mLocalUses;
     private Map<Unit, Block> mUnitToBlockMap;     // maps a unit it's containing block
@@ -162,9 +161,8 @@ class Instance {
     
     private void computeLocalDefsAndLocalUsesInfo() 
     {        
-        mExceptionalUnitGraph =  new ExceptionalUnitGraph(mBody);
-        mLocalDefs = new SmartLocalDefs(mExceptionalUnitGraph, new SimpleLiveLocals(mExceptionalUnitGraph));
-        mLocalUses = new SimpleLocalUses(mExceptionalUnitGraph, mLocalDefs);
+        mLocalDefs = LocalDefs.Factory.newLocalDefs(mBody);
+        mLocalUses = LocalUses.Factory.newLocalUses(mBody, mLocalDefs);
     }
    
 
@@ -507,7 +505,7 @@ class Instance {
         } 
         
         // find minStackHeightAttained
-        while(currentInst != to) {
+        while(currentInst != to && it.hasNext()) {
             stackHeight -= ((Inst)currentInst).getInCount();
             if(stackHeight < minStackHeightAttained)
                 minStackHeightAttained = stackHeight;

@@ -2,6 +2,7 @@ package soot.jimple.toolkits.thread.mhp;
 
 import soot.jimple.toolkits.thread.mhp.stmt.JPegStmt;
 import soot.util.*;
+
 import java.util.*;
 
 // *** USE AT YOUR OWN RISK ***
@@ -47,8 +48,7 @@ public class MethodInliner
 		//System.out.println("==inside inline===");	
 //		PegToDotFile printer = new PegToDotFile(inlinee, false, "before_addPeg_inlinee"+invokeStmt.getName());
 		if (!container.addPeg(inlinee, chain)) {
-			System.out.println("heads >1 stm: "+invokeStmt);
-			System.exit(1);
+			throw new RuntimeException("heads >1 stm: "+invokeStmt);
 		}
 		
 //		printer = new PegToDotFile(container, false, "after_addPeg_"+invokeStmt);

@@ -34,6 +34,7 @@ public final class ALabelStatement extends PStatement
             cloneNode(this._colon_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseALabelStatement(this);

@@ -49,15 +49,15 @@ import java.util.*;
 public abstract class BranchedFlowAnalysis<N extends Unit,A> extends AbstractFlowAnalysis<N,A>
 {
     /** Maps graph nodes to OUT sets. */
-    protected Map<Unit, ArrayList<A>> unitToAfterFallFlow;
-    protected Map<Unit, ArrayList<A>> unitToAfterBranchFlow;
+    protected Map<Unit, List<A>> unitToAfterFallFlow;
+    protected Map<Unit, List<A>> unitToAfterBranchFlow;
 
     public BranchedFlowAnalysis(DirectedGraph<N> graph)
     {
         super(graph);
 
-        unitToAfterFallFlow = new HashMap<Unit, ArrayList<A>>(graph.size() * 2 + 1, 0.7f);
-        unitToAfterBranchFlow = new HashMap<Unit, ArrayList<A>>(graph.size() * 2 + 1, 0.7f);
+        unitToAfterFallFlow = new HashMap<Unit, List<A>>(graph.size() * 2 + 1, 0.7f);
+        unitToAfterBranchFlow = new HashMap<Unit, List<A>>(graph.size() * 2 + 1, 0.7f);
     }
 
     /** Given the merge of the <code>in</code> sets, 
@@ -82,9 +82,5 @@ public abstract class BranchedFlowAnalysis<N extends Unit,A> extends AbstractFlo
         return (unitToAfterBranchFlow.get(s));
     }
 
-    public A getFlowBefore(Unit s)
-    {
-        return unitToBeforeFlow.get(s);
-    }
 } // end class BranchedFlowAnalysis
 

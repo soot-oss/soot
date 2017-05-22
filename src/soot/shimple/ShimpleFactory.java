@@ -28,11 +28,6 @@ import soot.toolkits.graph.*;
  **/
 public interface ShimpleFactory
 {
-    /**
-     * Some constructors may require a body.  If this is not set at
-     * the time of need, an exception will be thrown.
-     **/
-    public void setBody(Body body);
 
     /**
      * Constructors should memoize their return value.  Call clearCache()
@@ -43,13 +38,13 @@ public interface ShimpleFactory
 
     public UnitGraph getUnitGraph();
     public BlockGraph getBlockGraph();
-    public DominatorsFinder getDominatorsFinder();
-    public DominatorTree getDominatorTree();
-    public DominanceFrontier getDominanceFrontier();
+    public DominatorsFinder<Block> getDominatorsFinder();
+    public DominatorTree<Block> getDominatorTree();
+    public DominanceFrontier<Block> getDominanceFrontier();
 
     public GlobalValueNumberer getGlobalValueNumberer();
-    public ReversibleGraph getReverseBlockGraph();
-    public DominatorsFinder getReverseDominatorsFinder();
-    public DominatorTree getReverseDominatorTree();
-    public DominanceFrontier getReverseDominanceFrontier();
+    public ReversibleGraph<Block> getReverseBlockGraph();
+    public DominatorsFinder<Block> getReverseDominatorsFinder();
+    public DominatorTree<Block> getReverseDominatorTree();
+    public DominanceFrontier<Block> getReverseDominanceFrontier();
 }

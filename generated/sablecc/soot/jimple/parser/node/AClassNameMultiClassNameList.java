@@ -39,6 +39,7 @@ public final class AClassNameMultiClassNameList extends PClassNameList
             cloneNode(this._classNameList_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAClassNameMultiClassNameList(this);

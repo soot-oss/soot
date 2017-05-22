@@ -29,6 +29,7 @@ public final class ANonvoidJimpleType extends PJimpleType
             cloneNode(this._nonvoidType_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseANonvoidJimpleType(this);

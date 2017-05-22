@@ -29,6 +29,7 @@ public final class ABinopBoolExpr extends PBoolExpr
             cloneNode(this._binopExpr_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseABinopBoolExpr(this);

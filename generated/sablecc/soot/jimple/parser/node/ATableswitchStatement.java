@@ -28,7 +28,7 @@ public final class ATableswitchStatement extends PStatement
         @SuppressWarnings("hiding") PImmediate _immediate_,
         @SuppressWarnings("hiding") TRParen _rParen_,
         @SuppressWarnings("hiding") TLBrace _lBrace_,
-        @SuppressWarnings("hiding") List<PCaseStmt> _caseStmt_,
+        @SuppressWarnings("hiding") List<?> _caseStmt_,
         @SuppressWarnings("hiding") TRBrace _rBrace_,
         @SuppressWarnings("hiding") TSemicolon _semicolon_)
     {
@@ -65,6 +65,7 @@ public final class ATableswitchStatement extends PStatement
             cloneNode(this._semicolon_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseATableswitchStatement(this);
@@ -200,18 +201,24 @@ public final class ATableswitchStatement extends PStatement
         return this._caseStmt_;
     }
 
-    public void setCaseStmt(List<PCaseStmt> list)
+    public void setCaseStmt(List<?> list)
     {
-        this._caseStmt_.clear();
-        this._caseStmt_.addAll(list);
-        for(PCaseStmt e : list)
+        for(PCaseStmt e : this._caseStmt_)
         {
+            e.parent(null);
+        }
+        this._caseStmt_.clear();
+
+        for(Object obj_e : list)
+        {
+            PCaseStmt e = (PCaseStmt) obj_e;
             if(e.parent() != null)
             {
                 e.parent().removeChild(e);
             }
 
             e.parent(this);
+            this._caseStmt_.add(e);
         }
     }
 

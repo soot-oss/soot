@@ -25,6 +25,7 @@ public final class TCmpne extends Token
       return new TCmpne(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTCmpne(this);

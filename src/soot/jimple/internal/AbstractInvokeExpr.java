@@ -50,7 +50,7 @@ abstract public class AbstractInvokeExpr implements InvokeExpr
     
     protected AbstractInvokeExpr(SootMethodRef methodRef, ValueBox[] argBoxes) {
         this.methodRef = methodRef;
-    	this.argBoxes = argBoxes;
+    	this.argBoxes = argBoxes.length == 0 ? null : argBoxes;
     }
 
 	public void setMethodRef(SootMethodRef methodRef) {
@@ -76,6 +76,9 @@ abstract public class AbstractInvokeExpr implements InvokeExpr
 
     public List<Value> getArgs()
     {
+    	if (argBoxes == null)
+    		return Collections.emptyList();
+    	
         List<Value> l = new ArrayList<Value>();
         for (ValueBox element : argBoxes)
 			l.add(element.getValue());
@@ -85,7 +88,7 @@ abstract public class AbstractInvokeExpr implements InvokeExpr
 
     public int getArgCount()
     {
-        return argBoxes.length;
+        return argBoxes == null ? 0 : argBoxes.length;
     }
 
     public void setArg(int index, Value arg)
@@ -106,7 +109,10 @@ abstract public class AbstractInvokeExpr implements InvokeExpr
     @Override
     public List<ValueBox> getUseBoxes()
     {    	
-        List<ValueBox> list = new ArrayList<ValueBox>();      
+    	if (argBoxes == null)
+    		return Collections.emptyList();
+    	
+    	List<ValueBox> list = new ArrayList<ValueBox>();      
         Collections.addAll(list, argBoxes);
         
         for (ValueBox element : argBoxes) {

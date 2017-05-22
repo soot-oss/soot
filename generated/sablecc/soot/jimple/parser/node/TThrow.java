@@ -25,6 +25,7 @@ public final class TThrow extends Token
       return new TThrow(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTThrow(this);

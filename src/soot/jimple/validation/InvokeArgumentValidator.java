@@ -15,13 +15,10 @@ import soot.validation.ValidationException;
  * 
  * @author Steven Arzt
  */
-public class InvokeArgumentValidator implements BodyValidator {
-
-	private static InvokeArgumentValidator INSTANCE;
+public enum InvokeArgumentValidator implements BodyValidator {
+	INSTANCE;
 	
 	public static InvokeArgumentValidator v() {
-		if (INSTANCE == null)
-			INSTANCE = new InvokeArgumentValidator();
 		return INSTANCE;
 	}
 	

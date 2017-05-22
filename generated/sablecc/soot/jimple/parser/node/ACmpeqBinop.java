@@ -29,6 +29,7 @@ public final class ACmpeqBinop extends PBinop
             cloneNode(this._cmpeq_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseACmpeqBinop(this);

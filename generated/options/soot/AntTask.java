@@ -112,6 +112,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-coffi");
         }
   
+        public void setasm_backend(boolean arg) {
+            if(arg) addArg("-asm-backend");
+        }
+  
         public void sethelp(boolean arg) {
             if(arg) addArg("-help");
         }
@@ -176,6 +180,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-debug-resolver");
         }
   
+        public void setignore_resolving_levels(boolean arg) {
+            if(arg) addArg("-ignore-resolving-levels");
+        }
+  
         public void setsoot_classpath(String arg) {
             addArg("-soot-classpath");
             addArg(arg);
@@ -183,6 +191,14 @@ public class AntTask extends MatchingTask {
   
         public void setprepend_classpath(boolean arg) {
             if(arg) addArg("-prepend-classpath");
+        }
+  
+        public void setignore_classpath_errors(boolean arg) {
+            if(arg) addArg("-ignore-classpath-errors");
+        }
+  
+        public void setprocess_multiple_dex(boolean arg) {
+            if(arg) addArg("-process-multiple-dex");
         }
   
         public void setprocess_dir(Path arg) {
@@ -225,6 +241,8 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "jimple" )
                 || arg.equals( "java" )
                 || arg.equals( "apk" )
+                || arg.equals( "apk-class-jimple" )
+                || arg.equals( "apk-c-j" )
                 ) {
                 addArg("-src-prec");
                 addArg(arg);
@@ -258,6 +276,14 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-polyglot");
         }
   
+        public void setpermissive_resolving(boolean arg) {
+            if(arg) addArg("-permissive-resolving");
+        }
+  
+        public void setdrop_bodies_after_load(boolean arg) {
+            if(arg) addArg("-drop-bodies-after-load");
+        }
+  
         public void setoutput_dir(String arg) {
             addArg("-output-dir");
             addArg(arg);
@@ -284,6 +310,7 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "X" )
                 || arg.equals( "xml" )
                 || arg.equals( "dex" )
+                || arg.equals( "force-dex" )
                 || arg.equals( "n" )
                 || arg.equals( "none" )
                 || arg.equals( "jasmin" )
@@ -293,11 +320,41 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "dava" )
                 || arg.equals( "t" )
                 || arg.equals( "template" )
+                || arg.equals( "a" )
+                || arg.equals( "asm" )
                 ) {
                 addArg("-output-format");
                 addArg(arg);
             } else {
                 throw new BuildException("Bad value "+arg+" for option output_format");
+            }
+        }
+  
+        public void setjava_version(String arg) {
+            if(false
+    
+                || arg.equals( "default" )
+                || arg.equals( "1.1" )
+                || arg.equals( "1" )
+                || arg.equals( "1.2" )
+                || arg.equals( "2" )
+                || arg.equals( "1.3" )
+                || arg.equals( "3" )
+                || arg.equals( "1.4" )
+                || arg.equals( "4" )
+                || arg.equals( "1.5" )
+                || arg.equals( "5" )
+                || arg.equals( "1.6" )
+                || arg.equals( "6" )
+                || arg.equals( "1.7" )
+                || arg.equals( "7" )
+                || arg.equals( "1.8" )
+                || arg.equals( "8" )
+                ) {
+                addArg("-java-version");
+                addArg(arg);
+            } else {
+                throw new BuildException("Bad value "+arg+" for option java_version");
             }
         }
   
@@ -369,6 +426,20 @@ public class AntTask extends MatchingTask {
             return plugin.createPath();
         }
   
+        public void setwrong_staticness(String arg) {
+            if(false
+    
+                || arg.equals( "fail" )
+                || arg.equals( "ignore" )
+                || arg.equals( "fix" )
+                ) {
+                addArg("-wrong-staticness");
+                addArg(arg);
+            } else {
+                throw new BuildException("Bad value "+arg+" for option wrong_staticness");
+            }
+        }
+  
         public void setoptimize(boolean arg) {
             if(arg) addArg("-optimize");
         }
@@ -390,6 +461,7 @@ public class AntTask extends MatchingTask {
     
                 || arg.equals( "pedantic" )
                 || arg.equals( "unit" )
+                || arg.equals( "dalvik" )
                 ) {
                 addArg("-throw-analysis");
                 addArg(arg);
@@ -497,6 +569,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-keep-offset");
         }
   
+        public void setwrite_local_annotations(boolean arg) {
+            if(arg) addArg("-write-local-annotations");
+        }
+  
         public void setannot_purity(boolean arg) {
             if(arg) addArg("-annot-purity");
         }
@@ -552,6 +628,42 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("jb");
             addArg("preserve-source-annotations:"+(arg?"true":"false"));
+          }
+      
+          public void setstabilize_local_names(boolean arg) {
+            addArg("-p");
+            addArg("jb");
+            addArg("stabilize-local-names:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_jb_dtr() {
+            Object ret = new PhaseOptjb_dtr();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjb_dtr {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jb.dtr");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_jb_ese() {
+            Object ret = new PhaseOptjb_ese();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptjb_ese {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("jb.ese");
+            addArg("enabled:"+(arg?"true":"false"));
           }
       
         }
@@ -620,12 +732,6 @@ public class AntTask extends MatchingTask {
             addArg("enabled:"+(arg?"true":"false"));
           }
       
-          public void setignore_wrong_staticness(boolean arg) {
-            addArg("-p");
-            addArg("jb.tr");
-            addArg("ignore-wrong-staticness:"+(arg?"true":"false"));
-          }
-      
           public void setuse_older_type_assigner(boolean arg) {
             addArg("-p");
             addArg("jb.tr");
@@ -636,6 +742,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("jb.tr");
             addArg("compare-type-assigners:"+(arg?"true":"false"));
+          }
+      
+          public void setignore_nullpointer_dereferences(boolean arg) {
+            addArg("-p");
+            addArg("jb.tr");
+            addArg("ignore-nullpointer-dereferences:"+(arg?"true":"false"));
           }
       
         }
@@ -678,6 +790,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("jb.lns");
             addArg("only-stack-locals:"+(arg?"true":"false"));
+          }
+      
+          public void setsort_locals(boolean arg) {
+            addArg("-p");
+            addArg("jb.lns");
+            addArg("sort-locals:"+(arg?"true":"false"));
           }
       
         }
@@ -1139,6 +1257,18 @@ public class AntTask extends MatchingTask {
             addArg("trim-clinit:"+(arg?"true":"false"));
           }
       
+          public void settypes_for_invoke(boolean arg) {
+            addArg("-p");
+            addArg("cg");
+            addArg("types-for-invoke:"+(arg?"true":"false"));
+          }
+      
+          public void setlibrary(String arg) {
+            addArg("-p");
+            addArg("cg");
+            addArg("library:"+arg);
+          }
+      
           public void setjdkver(String arg) {
             addArg("-p");
             addArg("cg");
@@ -1178,6 +1308,12 @@ public class AntTask extends MatchingTask {
             addArg("verbose:"+(arg?"true":"false"));
           }
       
+          public void setapponly(boolean arg) {
+            addArg("-p");
+            addArg("cg.cha");
+            addArg("apponly:"+(arg?"true":"false"));
+          }
+      
         }
     
         public Object createp_cg_spark() {
@@ -1215,6 +1351,12 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("cg.spark");
             addArg("pre-jimplify:"+(arg?"true":"false"));
+          }
+      
+          public void setapponly(boolean arg) {
+            addArg("-p");
+            addArg("cg.spark");
+            addArg("apponly:"+(arg?"true":"false"));
           }
       
           public void setvta(boolean arg) {
@@ -2964,6 +3106,21 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("bb.lso");
             addArg("sll2:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_bb_sco() {
+            Object ret = new PhaseOptbb_sco();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptbb_sco {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("bb.sco");
+            addArg("enabled:"+(arg?"true":"false"));
           }
       
         }

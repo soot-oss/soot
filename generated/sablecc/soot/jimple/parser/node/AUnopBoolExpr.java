@@ -29,6 +29,7 @@ public final class AUnopBoolExpr extends PBoolExpr
             cloneNode(this._unopExpr_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAUnopBoolExpr(this);

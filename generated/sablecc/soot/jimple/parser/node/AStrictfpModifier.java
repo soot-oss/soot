@@ -29,6 +29,7 @@ public final class AStrictfpModifier extends PModifier
             cloneNode(this._strictfp_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAStrictfpModifier(this);

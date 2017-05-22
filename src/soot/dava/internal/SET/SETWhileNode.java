@@ -24,35 +24,31 @@ import soot.jimple.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
 
-public class SETWhileNode extends SETCycleNode
-{
-    public SETWhileNode( AugmentedStmt characterizingStmt, IterableSet body)
-    {
-	super( characterizingStmt, body);
+public class SETWhileNode extends SETCycleNode {
+	public SETWhileNode(AugmentedStmt characterizingStmt, IterableSet body) {
+		super(characterizingStmt, body);
 
-	IterableSet subBody = (IterableSet) body.clone();
-	subBody.remove( characterizingStmt);
-	add_SubBody( subBody);
-    }
+		IterableSet subBody = (IterableSet) body.clone();
+		subBody.remove(characterizingStmt);
+		add_SubBody(subBody);
+	}
 
-    public IterableSet get_NaturalExits()
-    {
-	IterableSet c = new IterableSet();
+	public IterableSet get_NaturalExits() {
+		IterableSet c = new IterableSet();
 
-	c.add( get_CharacterizingStmt());
-	
-	return c;
-    }
-    
-    public ASTNode emit_AST()
-    {
-	return new ASTWhileNode( get_Label(), 
-				 (ConditionExpr) ((IfStmt) get_CharacterizingStmt().get_Stmt()).getCondition(), 
-				 emit_ASTBody( body2childChain.get( subBodies.get(0))));
-    }
-    
-    public AugmentedStmt get_EntryStmt()
-    {
-	return get_CharacterizingStmt();
-    }
+		c.add(get_CharacterizingStmt());
+
+		return c;
+	}
+
+	public ASTNode emit_AST() {
+		return new ASTWhileNode(get_Label(),
+				(ConditionExpr) ((IfStmt) get_CharacterizingStmt().get_Stmt())
+						.getCondition(),
+				emit_ASTBody(body2childChain.get(subBodies.get(0))));
+	}
+
+	public AugmentedStmt get_EntryStmt() {
+		return get_CharacterizingStmt();
+	}
 }

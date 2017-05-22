@@ -29,6 +29,7 @@ package soot.jimple.internal;
 
 import soot.*;
 import soot.jimple.*;
+import soot.options.Options;
 import soot.tagkit.SourceFileTag;
 
 import java.util.*;
@@ -39,14 +40,16 @@ public class JVirtualInvokeExpr extends AbstractVirtualInvokeExpr
     {
         super(Jimple.v().newLocalBox(base), methodRef, new ValueBox[args.size()]);
 
-        //Check that the method's class is resolved enough
-        methodRef.declaringClass().checkLevelIgnoreResolving(SootClass.HIERARCHY);
-        //now check if the class is valid
-        if(methodRef.declaringClass().isInterface()) {
-            SootClass sc = methodRef.declaringClass();
-            String path = sc.hasTag("SourceFileTag")? ((SourceFileTag)sc.getTag("SourceFileTag")).getAbsolutePath() : "uknown";
-            throw new RuntimeException("Trying to create virtual invoke expression for interface type ("+
-                    methodRef.declaringClass().getName()+" in file "+path+"). Use JInterfaceInvokeExpr instead!");
+        if (!Options.v().ignore_resolution_errors()) {
+	        //Check that the method's class is resolved enough
+	        methodRef.declaringClass().checkLevelIgnoreResolving(SootClass.HIERARCHY);
+	        //now check if the class is valid
+	        if(methodRef.declaringClass().isInterface()) {
+	            SootClass sc = methodRef.declaringClass();
+	            String path = sc.hasTag("SourceFileTag")? ((SourceFileTag)sc.getTag("SourceFileTag")).getAbsolutePath() : "uknown";
+	            throw new RuntimeException("Trying to create virtual invoke expression for interface type ("+
+	                    methodRef.declaringClass().getName()+" in file "+path+"). Use JInterfaceInvokeExpr instead!");
+	        }
         }
 
         for(int i = 0; i < args.size(); i++)

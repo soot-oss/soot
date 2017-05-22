@@ -29,6 +29,7 @@ public final class AEmptyMethodBody extends PMethodBody
             cloneNode(this._semicolon_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAEmptyMethodBody(this);

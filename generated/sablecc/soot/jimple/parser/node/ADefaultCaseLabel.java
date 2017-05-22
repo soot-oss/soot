@@ -29,6 +29,7 @@ public final class ADefaultCaseLabel extends PCaseLabel
             cloneNode(this._default_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseADefaultCaseLabel(this);

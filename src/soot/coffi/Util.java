@@ -90,7 +90,7 @@ public class Util
                         throw new RuntimeException("Could not load classfile: " + bclass.getName());
                     else {                        
                         G.v().out.println("Warning: " + className + " is a phantom class!");
-                        bclass.setPhantom(true);                                                                
+                        bclass.setPhantomClass();                                                                
                         return;
                     } 
                     
@@ -140,6 +140,7 @@ public class Util
     
                     references.add(RefType.v(interfaceName));
                     SootClass interfaceClass = SootResolver.v().makeClassRef(interfaceName);
+                    interfaceClass.setModifiers(interfaceClass.getModifiers() | Modifier.INTERFACE);
                     bclass.addInterface(interfaceClass);
                 }
         }

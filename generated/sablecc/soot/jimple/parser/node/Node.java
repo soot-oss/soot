@@ -40,11 +40,11 @@ public abstract class Node implements Switchable, Cloneable
         return "";
     }
 
-    protected String toString(List list)
+    protected String toString(List<?> list)
     {
         StringBuffer s = new StringBuffer();
 
-        for(Iterator i = list.iterator(); i.hasNext();)
+        for(Iterator<?> i = list.iterator(); i.hasNext();)
         {
             s.append(i.next());
         }
@@ -63,13 +63,14 @@ public abstract class Node implements Switchable, Cloneable
         return null;
     }
 
-    protected <T> List<T> cloneList(List<T> list)
+    @SuppressWarnings("unchecked")
+    protected <T extends Node> List<T> cloneList(List<T> list)
     {
         List<T> clone = new LinkedList<T>();
 
         for(T n : list)
         {
-            clone.add(n);
+            clone.add((T) n.clone());
         }
 
         return clone;

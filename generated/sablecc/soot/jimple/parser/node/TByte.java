@@ -25,6 +25,7 @@ public final class TByte extends Token
       return new TByte(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTByte(this);

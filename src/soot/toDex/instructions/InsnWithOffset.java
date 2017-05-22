@@ -25,4 +25,10 @@ public abstract class InsnWithOffset extends AbstractInsn {
 		return this.target;
 	}
 	
+	/**
+	 * Gets the maximum number of words available for the jump offset
+	 * @return The maximum number of words available for the jump offset
+	 */
+	public abstract int getMaxJumpOffset();
+	
 }

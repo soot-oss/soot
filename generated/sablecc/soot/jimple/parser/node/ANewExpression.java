@@ -29,6 +29,7 @@ public final class ANewExpression extends PExpression
             cloneNode(this._newExpr_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseANewExpression(this);

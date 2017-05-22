@@ -91,7 +91,11 @@ class SootMethodRefImpl implements SootMethodRef {
     }
 
     public class ClassResolutionFailedException extends ResolutionFailedException {
-        public ClassResolutionFailedException() {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 5430199603403917938L;
+		public ClassResolutionFailedException() {
             super("Class "+declaringClass+" doesn't have method "+name+
                     "("+parameterTypes+")"+" : "+returnType+
                     "; failed to resolve in superclasses and interfaces" );
@@ -109,14 +113,19 @@ class SootMethodRefImpl implements SootMethodRef {
         return resolve(null);
     }
     
-    private SootMethod checkStatic(SootMethod ret) {
+	@Override
+	public SootMethod tryResolve() {
+		return tryResolve(null);
+	}
+
+	private SootMethod checkStatic(SootMethod ret) {
         if( ret.isStatic() != isStatic()) {
             throw new ResolutionFailedException( "Resolved "+this+" to "+ret+" which has wrong static-ness" );
         }
         return ret;
     }
     
-    private SootMethod resolve(StringBuffer trace) {
+    private SootMethod tryResolve(StringBuffer trace) {
     	if(declaringClass.getName().equals("java.dyn.InvokeDynamic")) {
     		throw new IllegalStateException("Cannot resolve invokedynamic method references at compile time!");
     	}
@@ -131,7 +140,7 @@ class SootMethodRefImpl implements SootMethodRef {
             {
                 SootMethod m = new SootMethod(name, parameterTypes, returnType, isStatic()?Modifier.STATIC:0);
                 m.setPhantom(true);
-                cl.addMethod(m);
+                m = cl.getOrAddMethod(m);
                 return checkStatic(m);
             }
             if( cl.hasSuperclass() ) cl = cl.getSuperclass();
@@ -153,6 +162,13 @@ class SootMethodRefImpl implements SootMethodRef {
             if( cl.hasSuperclass() ) cl = cl.getSuperclass();
             else break;
         }
+        return null;
+    }
+    
+    private SootMethod resolve(StringBuffer trace) {
+        SootMethod resolved = tryResolve(trace);
+        if (resolved != null)
+        	return resolved;
         
         //when allowing phantom refs we also allow for references to non-existing methods;
         //we simply create the methods on the fly; the method body will throw an appropriate
@@ -209,19 +225,21 @@ class SootMethodRefImpl implements SootMethodRef {
 		body.getUnits().add(assignStmt);
 		
 		//exc.<init>(message)
-		SootMethodRef cref = runtimeExceptionType.getSootClass().getMethod("<init>", Collections.<Type>singletonList(RefType.v("java.lang.String"))).makeRef();
-		SpecialInvokeExpr constructorInvokeExpr = Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref, StringConstant.v("Unresolved compilation error: Method "+getSignature()+" does not exist!"));
+		SootMethodRef cref = Scene.v().makeConstructorRef(runtimeExceptionType.getSootClass(),
+				Collections.<Type>singletonList(RefType.v("java.lang.String")));
+		SpecialInvokeExpr constructorInvokeExpr = Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref,
+				StringConstant.v("Unresolved compilation error: Method "+getSignature()+" does not exist!"));
 		InvokeStmt initStmt = Jimple.v().newInvokeStmt(constructorInvokeExpr);
 		body.getUnits().insertAfter(initStmt, assignStmt);
 		
 		//throw exc
 		body.getUnits().insertAfter(Jimple.v().newThrowStmt(exceptionLocal), initStmt);
 
-		declaringClass.addMethod(m);
-		return m;
+		return declaringClass.getOrAddMethod(m);
 	}
     
     public String toString() {
         return getSignature();
     }
+    
 }

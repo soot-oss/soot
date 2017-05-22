@@ -50,10 +50,6 @@ import soot.jimple.internal.JAssignStmt;
 
 public class CmpInstruction extends TaggedInstruction {
 
-    AssignStmt assign = null;
-    Expr cmpExpr = null;
-    Type type = null;
-  
     public CmpInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -71,6 +67,8 @@ public class CmpInstruction extends TaggedInstruction {
         //Expr cmpExpr;
         //Type type = null
         Opcode opcode = instruction.getOpcode();
+        Expr cmpExpr = null;
+        Type type = null;
         switch (opcode) {
         case CMPL_DOUBLE:
           setTag (new DoubleOpTag());
@@ -98,12 +96,10 @@ public class CmpInstruction extends TaggedInstruction {
           cmpExpr = Jimple.v().newCmpExpr(first, second);
           break;
         default:
-            System.out.println ("no opcode for CMP: 0x"+ Integer.toHexString(opcode.value));
-            System.exit(-1);
-            cmpExpr = Jimple.v().newCmpExpr(first, second);
+            throw new RuntimeException("no opcode for CMP: " + opcode);
         }
 
-        assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cmpExpr);
+        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), cmpExpr);
         assign.addTag(getTag());
 
         setUnit(assign);

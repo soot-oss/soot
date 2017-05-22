@@ -25,6 +25,7 @@ public final class TIntegerConstant extends Token
       return new TIntegerConstant(getText(), getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTIntegerConstant(this);

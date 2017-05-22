@@ -25,6 +25,7 @@ public final class TIf extends Token
       return new TIf(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTIf(this);

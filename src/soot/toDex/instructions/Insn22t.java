@@ -48,5 +48,10 @@ public class Insn22t extends InsnWithOffset implements TwoRegInsn {
 		}
 		return incompatRegs;
 	}
+
+	@Override
+	public int getMaxJumpOffset() {
+		return Short.MAX_VALUE;
+	}
 	
 }

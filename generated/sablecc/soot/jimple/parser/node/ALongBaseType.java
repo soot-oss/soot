@@ -29,6 +29,7 @@ public final class ALongBaseType extends PBaseType
             cloneNode(this._long_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseALongBaseType(this);

@@ -29,6 +29,7 @@ public final class AArrayReference extends PReference
             cloneNode(this._arrayRef_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAArrayReference(this);

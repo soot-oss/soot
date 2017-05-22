@@ -27,11 +27,12 @@
 
 package soot.jimple.toolkits.scalar;
 import soot.options.*;
-
 import soot.*;
 import soot.toolkits.scalar.*;
 import soot.jimple.*;
+
 import java.util.*;
+
 import soot.toolkits.graph.*;
 
 /** Does constant propagation and folding. 
@@ -51,14 +52,14 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
             G.v().out.println("[" + b.getMethod().getName() +
                                "] Propagating and folding constants...");
 
-        ExceptionalUnitGraph unitGraph = new ExceptionalUnitGraph(b);
-        LocalDefs localDefs = new SmartLocalDefs(unitGraph, new SimpleLiveLocals(unitGraph));
+        UnitGraph g = new ExceptionalUnitGraph(b);
+        LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(g);
 
         // Perform a constant/local propagation pass.
         Orderer<Unit> orderer = new PseudoTopologicalOrderer<Unit>();
         
         // go through each use box in each statement
-        for (Unit u : orderer.newList(unitGraph, false)) {
+        for (Unit u : orderer.newList(g, false)) {
 
             // propagation pass
             for (ValueBox useBox : u.getUseBoxes()) {
@@ -69,11 +70,21 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
                     if (defsOfUse.size() == 1) {
                         DefinitionStmt defStmt = (DefinitionStmt) defsOfUse.get(0);
                         Value rhs = defStmt.getRightOp();
-                        if (rhs instanceof NumericConstant || rhs instanceof StringConstant) {
+                        if (rhs instanceof NumericConstant
+                        		|| rhs instanceof StringConstant
+                        		|| rhs instanceof NullConstant) {
                             if (useBox.canContainValue(rhs)) {
                                 useBox.setValue(rhs);
                                 numPropagated++;
                             }
+                        }
+                        else if (rhs instanceof CastExpr) {
+                        	CastExpr ce = (CastExpr) rhs;
+                        	if (ce.getCastType() instanceof RefType
+                        			&& ce.getOp() instanceof NullConstant) {
+                                defStmt.getRightOpBox().setValue(NullConstant.v());
+                                numPropagated++;
+                        	}
                         }
                     }
                 }

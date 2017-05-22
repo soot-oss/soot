@@ -48,16 +48,23 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
 		implements CombinedAnalysis, LocalDefs, LocalUses, LiveLocals
 {
     // Implementations of our interfaces...
-    private final Map<Cons, List<Unit>> defsOfAt = new HashMap<Cons, List<Unit>>();
+    private final Map<Cons<Local, Unit>, List<Unit>> defsOfAt = new HashMap<Cons<Local, Unit>, List<Unit>>();
     
+    @Override
     public List<Unit> getDefsOfAt(Local l, Unit s) {
-        Cons cons = new Cons(l, s);
+        Cons<Local, Unit> cons = new Cons<Local, Unit>(l, s);
         List<Unit> ret = defsOfAt.get(cons);
         if(ret == null) {
             defsOfAt.put(cons, ret = new ArrayList<Unit>());
         }
         return ret;
     }
+    
+    @Override
+    public List<Unit> getDefsOf(Local l) {
+    	throw new RuntimeException("Not implemented");
+    }
+    
     private final Map<Unit, List<UnitValueBoxPair>> usesOf = new HashMap<Unit, List<UnitValueBoxPair>>();
     
     public List<UnitValueBoxPair> getUsesOf(Unit u) {

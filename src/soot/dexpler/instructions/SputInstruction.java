@@ -42,8 +42,6 @@ import soot.jimple.StaticFieldRef;
 
 public class SputInstruction extends FieldInstruction {
 
-    AssignStmt assign = null;
-
     public SputInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
@@ -53,14 +51,13 @@ public class SputInstruction extends FieldInstruction {
         FieldReference f = (FieldReference)((ReferenceInstruction)instruction).getReference();
         StaticFieldRef instanceField = Jimple.v().newStaticFieldRef(getStaticSootFieldRef(f));
         Local sourceValue = body.getRegisterLocal(source);
-        assign = getAssignStmt(body, sourceValue, instanceField);
+        AssignStmt assign = getAssignStmt(body, sourceValue, instanceField);
         setUnit(assign);
         addTags(assign);
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
-          int op = (int)instruction.getOpcode().value;
           DalvikTyper.v().setType(assign.getRightOpBox(), instanceField.getType(), true);
         }
     }

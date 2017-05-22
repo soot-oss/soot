@@ -1,8 +1,5 @@
 package soot.dava.toolkits.base.AST.transformations;
 
-import java.util.Iterator;
-import java.util.List;
-
 import soot.ByteType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -31,10 +28,7 @@ public class TypeCastingError extends DepthFirstAdapter {
 	}
 	
 	public void inASTStatementSequenceNode(ASTStatementSequenceNode node){
-		List<Object> stmts = node.getStatements();
-		Iterator<Object> stmtIt = stmts.iterator();
-		while(stmtIt.hasNext()){
-			AugmentedStmt as = (AugmentedStmt)stmtIt.next();
+		for (AugmentedStmt as : node.getStatements())  {
 			Stmt s = as.get_Stmt();
 			if(! (s instanceof DefinitionStmt))
 				continue;

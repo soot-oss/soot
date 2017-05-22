@@ -230,7 +230,7 @@ otherwise quite harmless.
 
 To understand what's really going on when Shimple eliminates Phi
 nodes, you can tell it to eliminate them naively with `{\tt soot.Main
--f jimple --via-shimple -p shimple phi-elim-opt:none ShimpleTest}':
+-f jimple --via-shimple -p shimple ShimpleTest}':
 
 \begin{verbatim}
         i0 = 100;
@@ -325,7 +325,7 @@ eliminated.
 To understand what is really going on, you can look at the output from
 `{\tt soot.Main -f shimple -p sop on}', `{\tt soot.Main -f shimple -p sop
 on -p sop.cpf prune-cfg:false}' and `{\tt soot.Main -f jimple
---via-shimple -p shimple phi-elim-opt:none -p sop on -p sop.cpf
+--via-shimple -p shimple -p sop on -p sop.cpf
 prune-cfg:false}' on this and other examples:
 
 \begin{verbatim}

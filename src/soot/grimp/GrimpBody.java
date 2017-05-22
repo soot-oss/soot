@@ -77,7 +77,7 @@ public class GrimpBody extends StmtBody
         Iterator<Unit> it = jBody.getUnits().iterator();
 
         final HashMap<Stmt, Stmt> oldToNew = new HashMap<Stmt, Stmt>(getUnits().size() * 2 + 1, 0.7f);
-        LinkedList updates = new LinkedList();
+        List<Unit> updates = new LinkedList<Unit>();
 
         /* we should Grimpify the Stmt's here... */
         while (it.hasNext())
@@ -155,17 +155,17 @@ public class GrimpBody extends StmtBody
 
             /* map old Expr's to new Expr's. */
             Stmt newStmt = (Stmt)(newStmtBox.getUnit());
-            Iterator useBoxesIt;
+            Iterator<ValueBox> useBoxesIt;
             useBoxesIt = newStmt.getUseBoxes().iterator();
             while(useBoxesIt.hasNext())
                 {
-                    ValueBox b = (ValueBox) (useBoxesIt.next());
+                    ValueBox b = (useBoxesIt.next());
                     b.setValue(Grimp.v().newExpr(b.getValue()));
                 }
             useBoxesIt = newStmt.getDefBoxes().iterator();
             while(useBoxesIt.hasNext())
                 {
-                    ValueBox b = (ValueBox) (useBoxesIt.next());
+                    ValueBox b = (useBoxesIt.next());
                     b.setValue(Grimp.v().newExpr(b.getValue()));
                 }
 

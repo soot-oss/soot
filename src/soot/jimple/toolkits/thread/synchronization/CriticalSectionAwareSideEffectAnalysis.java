@@ -367,7 +367,7 @@ public class CriticalSectionAwareSideEffectAnalysis {
 		return ret;
 	}
 	
-	public RWSet readSet( SootMethod method, Stmt stmt, CriticalSection tn, HashSet uses )
+	public RWSet readSet( SootMethod method, Stmt stmt, CriticalSection tn, Set uses )
 	{
 		boolean ignore = false;
 		if(stmt.containsInvokeExpr())

@@ -29,6 +29,7 @@ public final class ASpecialNonstaticInvoke extends PNonstaticInvoke
             cloneNode(this._specialinvoke_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseASpecialNonstaticInvoke(this);

@@ -29,6 +29,7 @@ public final class AFloatBaseTypeNoName extends PBaseTypeNoName
             cloneNode(this._float_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAFloatBaseTypeNoName(this);

@@ -92,8 +92,8 @@ public class ShimpleLocalDefs implements LocalDefs
      * <p> This method is currently not required by the LocalDefs
      * interface.
      **/
-    public List<Unit> getDefsOf(Local l)
-    {
+    @Override
+    public List<Unit> getDefsOf(Local l) {
         List<Unit> defs = localToDefs.get(l);
 
         if(defs == null)
@@ -111,8 +111,8 @@ public class ShimpleLocalDefs implements LocalDefs
      * query for the definitions of the Local.
      * @return a singleton list containing the definition site.
      **/
-    public List<Unit> getDefsOfAt(Local l, Unit s)
-    {
+    @Override
+    public List<Unit> getDefsOfAt(Local l, Unit s) {
         // For consistency with SimpleLocalDefs, check that the local
         // is indeed used in the given Unit.  This neatly sidesteps
         // the problem of checking whether the local is actually

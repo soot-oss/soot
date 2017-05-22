@@ -39,6 +39,7 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction3rc;
 import org.jf.dexlib2.iface.reference.MethodReference;
 
 import soot.Local;
+import soot.Modifier;
 import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
@@ -57,10 +58,18 @@ import soot.jimple.InvokeStmt;
 import soot.jimple.Jimple;
 
 public abstract class MethodInvocationInstruction extends DexlibAbstractInstruction implements DanglingInstruction {
+	private enum InvocationType {
+		Static,
+		Interface,
+		Virtual
+	}
+	
     // stores the dangling InvokeExpr
     protected InvokeExpr invocation;
     protected AssignStmt assign = null;
-
+    
+    private SootMethodRef methodRef = null;
+    
     public MethodInvocationInstruction(Instruction instruction, int codeAddress) {
         super(instruction, codeAddress);
     }
@@ -98,7 +107,6 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
           for (Type pt: (List<Type>)invocation.getMethodRef().parameterTypes()) {
             DalvikTyper.v().setType(invocation.getArgBox(i++), pt, true);
           }
-          int op = (int)instruction.getOpcode().value;
           if (assign != null) {
               DalvikTyper.v().setType(assign.getLeftOpBox(), invocation.getType(), false);
           }
@@ -190,7 +198,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
      *
      */
     protected SootMethodRef getSootMethodRef() {
-        return getSootMethodRef(false);
+        return getSootMethodRef(InvocationType.Virtual);
     }
 
     /**
@@ -198,15 +206,18 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
      *
      */
     protected SootMethodRef getStaticSootMethodRef() {
-        return getSootMethodRef(true);
+        return getSootMethodRef(InvocationType.Static);
     }
 
     /**
      * Return the SootMethodRef for the invoked method.
      *
-     * @param isStatic for a static method ref
+     * @param invType The invocation type
      */
-    private SootMethodRef getSootMethodRef(boolean isStatic) {
+    private SootMethodRef getSootMethodRef(InvocationType invType) {
+    	if (methodRef != null)
+    		return methodRef;
+    	
         MethodReference mItem = (MethodReference) ((ReferenceInstruction) instruction).getReference();
         String tItem = mItem.getDefiningClass();
 
@@ -219,6 +230,8 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
           }
 
         SootClass sc = SootResolver.v().makeClassRef(className);
+        if (invType == InvocationType.Interface && sc.isPhantom())
+        	sc.setModifiers(sc.getModifiers() | Modifier.INTERFACE);
         String methodName = mItem.getName();
 
         Type returnType = DexType.toSoot(mItem.getReturnType());
@@ -234,8 +247,11 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         for (Type t: parameterTypes)
           Debug.printDbg(" t: ", t);
         Debug.printDbg("returnType: ", returnType);
-        Debug.printDbg("isStatic: ", isStatic);
-        return Scene.v().makeMethodRef(sc, methodName, parameterTypes, returnType, isStatic);
+        Debug.printDbg("isStatic: ", invType == InvocationType.Static);
+        methodRef = Scene.v().makeMethodRef(sc, methodName, parameterTypes, returnType,
+        		invType == InvocationType.Static);
+        
+        return methodRef;
     }
     
     /**
@@ -316,10 +332,13 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
     	// We fix this silently
     	SootMethodRef ref = getSootMethodRef();
     	if (ref.declaringClass().isInterface()) {
+    		// Force re-resolving. Otherwise, if this created a phantom class,
+    		// it would not be marked as an interface.
+    		methodRef = null;
     		jimplifyInterface(body);
     		return;
     	}
-
+    	
    		// This is actually a VirtualInvoke
         List<Local> parameters = buildParameters(body, false);
         invocation = Jimple.v().newVirtualInvokeExpr(parameters.get(0),
@@ -332,9 +351,17 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
      * Executes the "jimplify" operation for an interface invocation
      */
     protected void jimplifyInterface(DexBody body) {
-        List<Local> parameters = buildParameters(body, false);
+    	// In some applications, VirtualInvokes are disguised as InterfaceInvokes.
+    	// We fix this silently
+        SootMethodRef ref = getSootMethodRef(InvocationType.Interface);
+    	if (!ref.declaringClass().isInterface()) {
+    		jimplifyVirtual(body);
+    		return;
+    	}
+    	
+    	List<Local> parameters = buildParameters(body, false);
         invocation = Jimple.v().newInterfaceInvokeExpr(parameters.get(0),
-                                                       getSootMethodRef(),
+                                                       getSootMethodRef(InvocationType.Interface),
                                                        parameters.subList(1, parameters.size()));
         body.setDanglingInstruction(this);
     }

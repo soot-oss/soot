@@ -37,15 +37,13 @@ import soot.jimple.ThrowStmt;
 
 public class ThrowInstruction extends DexlibAbstractInstruction {
 
-    ThrowStmt throwStmt = null;
-  
     public ThrowInstruction (Instruction instruction, int codeAdress) {
         super(instruction, codeAdress);
     }
 
     public void jimplify (DexBody body) {
         Instruction11x throwInstruction = (Instruction11x)instruction;
-        throwStmt = Jimple.v().newThrowStmt(body.getRegisterLocal(throwInstruction.getRegisterA()));
+        ThrowStmt throwStmt = Jimple.v().newThrowStmt(body.getRegisterLocal(throwInstruction.getRegisterA()));
         setUnit(throwStmt);
         addTags(throwStmt);
         body.add(throwStmt);

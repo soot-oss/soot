@@ -25,6 +25,7 @@ public final class TInterface extends Token
       return new TInterface(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTInterface(this);

@@ -35,6 +35,9 @@ import java.util.*;
 
 public abstract class BodyTransformer extends Transformer
 {
+	
+	private Map<String, String> enabledOnlyMap = Collections.singletonMap("enabled", "true");
+	
     /** 
      *  Called by clients of the transformation. Acts as a generic interface
      *  for BodyTransformers.
@@ -53,14 +56,12 @@ public abstract class BodyTransformer extends Transformer
 
     public final void transform(Body b, String phaseName)
     {
-        HashMap<String, String> dummyOptions = new HashMap<String, String>();
-        dummyOptions.put( "enabled", "true" );
-        transform(b, phaseName, dummyOptions);
+        internalTransform(b, phaseName, enabledOnlyMap);
     }
 
     public final void transform(Body b)
     {
-	transform(b, "");
+    	transform(b, "");
     }
 
     /**

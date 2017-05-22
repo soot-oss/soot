@@ -69,7 +69,8 @@ public class VisManContentProvider implements ITreeContentProvider {
 						}
 					}
 					else if (mems[i] instanceof IFile){
-						if (((IFile)mems[i]).getFileExtension().equals("jimple") || ((IFile)mems[i]).getFileExtension().equals("java")){
+						String fileExtension = ((IFile)mems[i]).getFileExtension();
+						if (fileExtension != null && (fileExtension.equals("jimple") || fileExtension.equals("java"))){
 							list.add(mems[i]);
 						}
 					}		

@@ -28,7 +28,6 @@ import soot.options.*;
 import soot.*;
 import soot.jimple.*;
 import soot.toolkits.scalar.*;
-import soot.toolkits.graph.*;
 
 import java.util.*;
 
@@ -227,8 +226,7 @@ public class ClassFieldAnalysis
 
 	/* build D/U web, find the value of each candidate */
 	{
-            UnitGraph g = new ExceptionalUnitGraph(body);
-	    LocalDefs localDefs = new SmartLocalDefs(g, new SimpleLiveLocals(g));
+	    LocalDefs localDefs = LocalDefs.Factory.newLocalDefs(body);
 	    
 	    Set<Map.Entry<Stmt,SootField>> entries = stmtfield.entrySet();
 

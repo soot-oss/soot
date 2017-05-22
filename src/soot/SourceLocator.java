@@ -19,13 +19,15 @@
 
 package soot;
 import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -35,6 +37,10 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
+
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
@@ -87,7 +93,7 @@ public class SourceLocator
 				        String fileName = className.replace('.', '/') + ".class";
 						InputStream stream = cl.getResourceAsStream(fileName);
 						if(stream==null) return null;
-						return new CoffiClassSource(className, stream, fileName, null);
+						return new CoffiClassSource(className, stream, fileName);
 					}
 
             	}.find(className);
@@ -104,7 +110,7 @@ public class SourceLocator
 	        	return null;
         	InputStream stream = cl.getResourceAsStream(fileName);
         	if(stream!=null) {
-				return new CoffiClassSource(className, stream, fileName, null);
+				return new CoffiClassSource(className, stream, fileName);
         	}
         }
         return null;
@@ -142,6 +148,11 @@ public class SourceLocator
 				classProviders.add(new JavaClassProvider());
 				classProviders.add(new JimpleClassProvider());
                 break;
+            case Options.src_prec_apk_c_j:
+                classProviders.add(new DexClassProvider());
+				classProviders.add(classFileClassProvider);
+				classProviders.add(new JimpleClassProvider());
+                break;
             default:
                 throw new RuntimeException("Other source precedences are not currently supported.");
         }
@@ -156,6 +167,7 @@ public class SourceLocator
     public List<String> classPath() { return classPath; }
     public void invalidateClassPath() {
         classPath = null;
+        dexClassIndex = null;
     }
 
     private List<String> sourcePath;
@@ -173,42 +185,73 @@ public class SourceLocator
         return sourcePath;
     }
     
+    private LoadingCache<String, ClassSourceType> pathToSourceType = CacheBuilder.newBuilder()
+    		.initialCapacity(60)
+    		.maximumSize(500)
+    		.softValues()
+    		.concurrencyLevel(Runtime.getRuntime().availableProcessors())
+    		.build(
+    				new CacheLoader<String, ClassSourceType>(){
+						@Override
+						public ClassSourceType load(String path) throws Exception {
+							File f = new File(path);
+							if(!f.exists() && !Options.v().ignore_classpath_errors())
+								throw new Exception("Error: The path '" + path + "' does not exist.");
+							if(!f.canRead() && !Options.v().ignore_classpath_errors())
+								throw new Exception("Error: The path '" + path + "' exists but is not readable.");
+							if(f.isFile()) {
+								if (path.endsWith(".zip"))
+					                return ClassSourceType.zip;
+					            else if (path.endsWith(".jar"))
+					                return ClassSourceType.jar;
+					            else if (path.endsWith(".apk"))
+					                return ClassSourceType.apk;
+					            else if (path.endsWith(".dex"))
+					                return ClassSourceType.dex;
+					            else
+					                return ClassSourceType.unknown;
+							}
+							return ClassSourceType.directory;
+						}
+    				}
+    );
+    
     private ClassSourceType getClassSourceType(String path) {
-        File f = new File(path);
-        if (f.isFile() && f.canRead()) {
-            if (path.endsWith(".zip"))
-                return ClassSourceType.zip;
-            else if (path.endsWith(".jar"))
-                return ClassSourceType.jar;
-            else if (path.endsWith(".apk"))
-                return ClassSourceType.apk;
-            else if (path.endsWith(".dex"))
-                return ClassSourceType.dex;
-            else
-                return ClassSourceType.unknown;
-        }
-        return ClassSourceType.directory;
+    	try {
+			return pathToSourceType.get(path);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
     }
-        
+    
     public List<String> getClassesUnder(String aPath) {
+    	return getClassesUnder(aPath, "");
+    }
+    
+    private List<String> getClassesUnder(String aPath, String prefix) {
 		List<String> classes = new ArrayList<String>();
 		ClassSourceType cst = getClassSourceType(aPath);
 		
 		// Get the dex file from an apk
 		if (cst == ClassSourceType.apk) {
+			ZipFile archive = null;
 			try {
-				ZipFile archive = new ZipFile(aPath);
+				archive = new ZipFile(aPath);
 				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
 					ZipEntry entry = entries.nextElement();
 					String entryName = entry.getName();
 					// We are dealing with an apk file
-					if (entryName.equals("classes.dex"))
-						classes.addAll(DexClassProvider.classesOfDex(new File(aPath)));
-				}
-				archive.close();			
+					if (entryName.endsWith(".dex"))
+						if (Options.v().process_multiple_dex() || entryName.equals("classes.dex"))
+							classes.addAll(DexClassProvider.classesOfDex(new File(aPath), entryName));
+				}		
 			} catch (IOException e) {
-				G.v().out.println("Error reading " + aPath + ": " + e.toString());
-				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+				throw new CompilationDeathException("Error reasing archive '" + aPath + "'",e);
+			}finally{
+				try{
+					if(archive != null)
+						archive.close();
+				}catch(Throwable t) {}
 			}
 		}
 		// Directly load a dex file
@@ -216,35 +259,51 @@ public class SourceLocator
 			try {
 				classes.addAll(DexClassProvider.classesOfDex(new File(aPath)));
 			} catch (IOException e) {
-				G.v().out.println("Error reading " + aPath + ": " + e.toString());
-				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+				throw new CompilationDeathException("Error reasing '" + aPath + "'",e);
 			}
 		}
 		// load Java class files from ZIP and JAR
 		else if (cst == ClassSourceType.jar || cst == ClassSourceType.zip) {
-			List<String> inputExtensions = new ArrayList<String>(3);
-			inputExtensions.add(".class");
-			inputExtensions.add(".jimple");
-
+			Set<String> dexEntryNames = new HashSet<String>();
+			ZipFile archive = null;
 			try {
-				ZipFile archive = new ZipFile(aPath);				
+				archive = new ZipFile(aPath);
 				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
 					ZipEntry entry = entries.nextElement();
 					String entryName = entry.getName();
-					int extensionIndex = entryName.lastIndexOf('.');
-					if (extensionIndex >= 0) {
-						String entryExtension = entryName.substring(extensionIndex);
-						if (inputExtensions.contains(entryExtension)) {
-							entryName = entryName.substring(0, extensionIndex);
-							entryName = entryName.replace('/', '.');
-							classes.add(entryName);
-						}
+					if(entryName.endsWith(".class") || entryName.endsWith(".jimple")){
+						int extensionIndex = entryName.lastIndexOf('.');
+						entryName = entryName.substring(0, extensionIndex);
+						entryName = entryName.replace('/', '.');
+						classes.add(prefix + entryName);
+					}
+					else if(entryName.endsWith(".dex")){
+						dexEntryNames.add(entryName);
 					}
 				}
-				archive.close();
-			} catch (IOException e) {
-				G.v().out.println("Error reading " + aPath + ": " + e.toString());
-				throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+			} catch (Throwable e) {
+				throw new CompilationDeathException("Error reading archive '" + aPath + "'", e);
+			}finally{
+				try{
+					if(archive != null)
+						archive.close();
+				}catch(Throwable t) {}
+			}
+			
+			if(!dexEntryNames.isEmpty()){
+				File file = new File(aPath);
+				if(Options.v().process_multiple_dex()){
+					for(String dexEntryName : dexEntryNames){
+						try {
+							classes.addAll(DexClassProvider.classesOfDex(
+									file,dexEntryName));
+						} catch (Throwable e) {} /* Ignore unreadable files */
+					}
+				}else{
+					try {
+						classes.addAll(DexClassProvider.classesOfDex(file));
+					} catch (Throwable e) {} /* Ignore unreadable files */
+				}
 			}
 		}
 		else if (cst == ClassSourceType.directory) {
@@ -258,30 +317,21 @@ public class SourceLocator
 
 			for (File element : files) {
 				if (element.isDirectory()) {
-					List<String> l = getClassesUnder(aPath + File.separatorChar + element.getName());
-					Iterator<String> it = l.iterator();
-					while (it.hasNext()) {
-						String s = it.next();
-						classes.add(element.getName() + "." + s);
-					}
+					classes.addAll(getClassesUnder(aPath + File.separatorChar + element.getName(),
+							prefix + element.getName() + "."));
 				} else {
 					String fileName = element.getName();
 
 					if (fileName.endsWith(".class")) {
 						int index = fileName.lastIndexOf(".class");
-						classes.add(fileName.substring(0, index));
-					}
-
-					if (fileName.endsWith(".jimple")) {
+						classes.add(prefix + fileName.substring(0, index));
+					}else if (fileName.endsWith(".jimple")) {
 						int index = fileName.lastIndexOf(".jimple");
-						classes.add(fileName.substring(0, index));
-					}
-
-					if (fileName.endsWith(".java")) {
+						classes.add(prefix + fileName.substring(0, index));
+					}else if (fileName.endsWith(".java")) {
 						int index = fileName.lastIndexOf(".java");
-						classes.add(fileName.substring(0, index));
-					}
-					if (fileName.endsWith(".dex")) {
+						classes.add(prefix + fileName.substring(0, index));
+					}else if (fileName.endsWith(".dex")) {
 						try {
 							classes.addAll(DexClassProvider.classesOfDex(element));
 						} catch (IOException e) { /* Ignore unreadable files */
@@ -324,50 +374,27 @@ public class SourceLocator
 
         return getDavaFilenameFor(c, b);
     }
-    
-	private String getDavaFilenameFor(SootClass c, StringBuffer b) {
-		b.append("dava");
-        b.append(File.separatorChar);
-        {
-            String classPath = b.toString() + "classes";
-            File dir = new File(classPath);
 
-            if (!dir.exists())
-                try {
-                    dir.mkdirs();
-                } catch (SecurityException se) {
-                    G.v().out.println("Unable to create " + classPath);
-                    throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
-                }
-        }
+    private String getDavaFilenameFor(SootClass c, StringBuffer b) {
+        b.append("dava");
+        b.append(File.separatorChar);
+        ensureDirectoryExists(new File(b.toString() + "classes"));
 
         b.append("src");
         b.append(File.separatorChar);
-
         String fixedPackageName = c.getJavaPackageName();
-        if (fixedPackageName.equals("") == false) {
+        if (!fixedPackageName.equals("")) {
             b.append(fixedPackageName.replace('.', File.separatorChar));
             b.append(File.separatorChar);
         }
-
-        {
-            String path = b.toString();
-            File dir = new File(path);
-
-            if (!dir.exists())
-                try {
-                    dir.mkdirs();
-                } catch (SecurityException se) {
-                    G.v().out.println("Unable to create " + path);
-                    throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
-                }
-        }
-
+        
+        ensureDirectoryExists(new File(b.toString()));
+        
         b.append(c.getShortJavaStyleName());
         b.append(".java");
 
         return b.toString();
-	}
+    }
 
     /* This is called after sootClassPath has been defined. */
     public Set<String> classesInDynamicPackage(String str) {
@@ -376,7 +403,9 @@ public class SourceLocator
                 Scene.v().getSootClassPath(), String.valueOf(File.pathSeparatorChar));
         while (strtok.hasMoreTokens()) {
             String path = strtok.nextToken();
-
+            if(getClassSourceType(path) != ClassSourceType.directory) {
+            	continue;
+            }
             // For jimple files
             List<String> l = getClassesUnder(path);
             for (String filename : l) {
@@ -385,12 +414,12 @@ public class SourceLocator
             }
 
             // For class files;
-            path = path + File.pathSeparatorChar;
+            path = path + File.separatorChar;
             StringTokenizer tokenizer = new StringTokenizer(str, ".");
             while (tokenizer.hasMoreTokens()) {
                 path = path + tokenizer.nextToken();
                 if (tokenizer.hasMoreTokens())
-                    path = path + File.pathSeparatorChar;
+                    path = path + File.separatorChar;
             }
             l = getClassesUnder(path);
             for (String string : l)
@@ -414,31 +443,83 @@ public class SourceLocator
             case Options.output_format_jasmin:   return ".jasmin";
             case Options.output_format_xml:      return ".xml";
             case Options.output_format_template: return ".java";
+            case Options.output_format_asm: 	 return ".asm";
             default:
                 throw new RuntimeException();
         }
     }
-
-    public String getOutputDir() {
-        String ret = Options.v().output_dir();
-        if( ret.length() == 0 ) {
-        	ret = "sootOutput";
-	        if (Options.v().output_jar())
-	        	ret += File.separatorChar + "out.jar";
-        }
-        File dir = new File(ret);
-
-        if (!dir.exists()) {
+    
+    /**
+     * Create the given directory and all parent directories if {@code dir} is
+     * non-null.
+     *
+     * @param dir
+     */
+    public static void ensureDirectoryExists(File dir) {
+        if (dir != null && !dir.exists()) {
             try {
-                if( !Options.v().output_jar() ) {
-                    dir.mkdirs();
-                }
+                dir.mkdirs();
             } catch (SecurityException se) {
-                G.v().out.println("Unable to create " + ret);
+                G.v().out.println("Unable to create " + dir);
                 throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
             }
         }
-        return ret;
+    }
+
+    /**
+     * Returns the output directory given by {@link Options} or a default if not
+     * set. Also ensures that all directories in the path exist.
+     *
+     * @return the output directory from {@link Options} or a default if not set
+     */
+    public String getOutputDir() {
+        File dir;
+        if (Options.v().output_dir().length() == 0) {
+            //Default if -output-dir was not set
+            dir = new File("sootOutput");
+        } else {
+            dir = new File(Options.v().output_dir());
+            //If a Jar name was given as the output dir
+            //  get its parent path (possibly empty)
+            if (dir.getPath().endsWith(".jar")) {
+                dir = dir.getParentFile();
+                if (dir == null) {
+                    dir = new File("");
+                }
+            }
+        }
+
+        ensureDirectoryExists(dir);
+        return dir.getPath();
+    }
+
+    /**
+     * If {@link Options#v()#output_jar()} is set, returns the name of the jar
+     * file to which the output will be written. The name of the jar file can be
+     * given with the -output-dir option or a default will be used. Also ensures
+     * that all directories in the path exist.
+     *
+     * @return the name of the Jar file to which outputs are written
+     */
+    public String getOutputJarName() {
+        if (!Options.v().output_jar()) {
+            return "";
+        }
+
+        File dir;
+        if (Options.v().output_dir().length() == 0) {
+            //Default if -output-dir was not set
+            dir = new File("sootOutput/out.jar");
+        } else {
+            dir = new File(Options.v().output_dir());
+            //If a Jar name was not given, then supply default
+            if (!dir.getPath().endsWith(".jar")) {
+                dir = new File(dir.getPath(), "out.jar");
+            }
+        }
+
+        ensureDirectoryExists(dir.getParentFile());
+        return dir.getPath();
     }
 
     /** Explodes a class path into a list of individual class path entries. */
@@ -459,51 +540,164 @@ public class SourceLocator
         }
         return ret;
     }
+    
     public static class FoundFile {
-        FoundFile( ZipFile zipFile, ZipEntry entry ) {
-            this.zipFile = zipFile;
-            this.entry = entry;
+    	private File file;
+        private String entryName;
+        private ZipFile zipFile;
+        private ZipEntry zipEntry;
+        private List<InputStream> openedInputStreams;
+        
+        FoundFile(String archivePath, String entryName) {
+        	this();
+        	if(archivePath == null || entryName == null)
+        		throw new IllegalArgumentException("Error: The archive path and entry name cannot be null.");
+        	this.file = new File(archivePath);
+        	this.entryName = entryName;
         }
-        FoundFile( File file ) {
+    	
+        FoundFile(File file) {
+        	this();
+        	if(file == null)
+        		throw new IllegalArgumentException("Error: The file cannot be null.");
             this.file = file;
+            this.entryName = null;
         }
-        public File file;
-        public ZipFile zipFile;
-        public ZipEntry entry;
+        
+        private FoundFile() {
+        	this.zipFile = null;
+        	this.zipEntry = null;
+        	this.openedInputStreams = new ArrayList<InputStream>();
+        }
+        
+        public String getFilePath() {
+        	return file.getPath();
+        }
+        
+        public boolean isZipFile() {
+        	return entryName != null;
+        }
+        
+        public File getFile() {
+        	return file;
+        }
+        
         public InputStream inputStream() {
-            try {
-                if( file != null ) return new FileInputStream(file);
-                return doJDKBugWorkaround(zipFile.getInputStream(entry),
-                        entry.getSize());
-            } catch( IOException e ) {
-                throw new RuntimeException( "Caught IOException "+e );
-            }
+        	InputStream ret = null;
+        	if(!isZipFile()) {
+        		try{
+        			ret = new FileInputStream(file);
+        		} catch(Exception e) {
+        			throw new RuntimeException("Error: Failed to open a InputStream for the file at path '" + file.getPath() + "'.",e);
+        		}
+        	} else {
+        		if(zipFile == null) {
+        			try {
+        				zipFile = new ZipFile(file);
+        				zipEntry = zipFile.getEntry(entryName);
+        				if(zipEntry == null) {
+        					silentClose();
+        					throw new RuntimeException("Error: Failed to find entry '" + entryName + "' in the archive file at path '" + 
+        							file.getPath() + "'.");
+        				}
+        			} catch(Exception e) {
+        				silentClose();
+        				throw new RuntimeException("Error: Failed to open the archive file at path '" + file.getPath() + "' for entry '" + 
+        						entryName + "'.",e);
+        			}
+        		}
+        		
+        		InputStream stream = null;
+        		try{
+        			stream = zipFile.getInputStream(zipEntry);
+        			ret = doJDKBugWorkaround(stream, zipEntry.getSize());
+        		} catch(Exception e){
+        			throw new RuntimeException("Error: Failed to open a InputStream for the entry '" + zipEntry.getName() + 
+        					"' of the archive at path '" + zipFile.getName() + "'.",e);
+        		}
+        		finally {
+        			if (stream != null) {
+						try {
+							stream.close();
+						}
+        				catch (IOException e) {
+							// There's not much we can do here
+						}
+        			}
+        		}
+        	}
+        	
+        	openedInputStreams.add(ret);
+        	return ret;
         }
-        public File inputFile(){
-            if (file != null)
-                return file;
-            else
-                return new File(zipFile.getName());
+        
+        public void silentClose() {
+        	try {
+        		close();
+        	} catch(Exception e) {}
         }
+        
+        public void close(){
+        	//Try to close all opened input streams
+        	List<Exception> errs = new ArrayList<Exception>();
+        	for(Iterator<InputStream> it = openedInputStreams.iterator(); it.hasNext();){
+        		InputStream is = it.next();
+        		try {
+        			is.close();
+        		} catch(Exception e) {
+        			errs.add(e);//record errors for later
+        		}
+        		it.remove();//remove the stream no matter what
+        	}
+        	//Try to close the opened zip file if it exists
+        	if(zipFile != null) {
+        		try {
+        			zipFile.close();
+        			errs.clear();//Successfully closed the archive so all input streams were closed successfully also
+        		} catch(Exception e) {
+        			errs.add(e);
+        		}
+        		zipFile = null;//set to null no matter what
+        		zipEntry = null;//set to null no matter what
+        	}
+        	//Throw single exception combining all errors
+        	if(!errs.isEmpty()) {
+        		String msg = null;
+    			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+    			PrintStream ps = null;
+    			try {
+    				ps = new PrintStream(baos,true,"utf-8");
+    				ps.println("Error: Failed to close all opened resources. The following exceptions were thrown in the process: ");
+    				int i = 0;
+    				for(Throwable t : errs){
+    					ps.print("Exception ");
+    					ps.print(i++);
+    					ps.print(": ");
+    					t.printStackTrace(ps);
+    				}
+    				msg = new String(baos.toByteArray(), StandardCharsets.UTF_8);
+    			} catch(Exception e) {
+    				//Do nothing as this will never occur
+    			} finally {
+    				ps.close();
+    			}
+    			throw new RuntimeException(msg);
+        	}
+        }
+        
+        private InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {
+    		int sz = (int) size;
+    		byte[] buf = new byte[sz];					
+    		final int N = 1024;
+    		int ln = 0;
+    		int count = 0;
+    		while (sz > 0 && (ln = is.read(buf, count, Math.min(N, sz))) != -1) {
+    			count += ln;
+    			sz -= ln;
+    		}
+    		return  new ByteArrayInputStream(buf);		
+    	}
     }
-
-    private static InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {
-	
-	int sz = (int) size;
-	byte[] buf = new byte[sz];					
-				
-				    
-	final int N = 1024;
-	int ln = 0;
-	int count = 0;
-	while (sz > 0 &&  
-	       (ln = is.read(buf, count, Math.min(N, sz))) != -1) {
-	    count += ln;
-	    sz -= ln;
-	}
-	return  new ByteArrayInputStream(buf);		
-    }
-
 
     /** Searches for a file with the given name in the exploded classPath. */
     public FoundFile lookupInClassPath( String fileName ) {
@@ -528,50 +722,65 @@ public class SourceLocator
         }
         return null;
     }
+    
+    private LoadingCache<String, Set<String>> archivePathsToEntriesCache = CacheBuilder.newBuilder()
+    		.initialCapacity(60)
+    		.maximumSize(500)
+    		.softValues()
+    		.concurrencyLevel(Runtime.getRuntime().availableProcessors())
+    		.build(
+    				new CacheLoader<String, Set<String>>(){
+						@Override
+						public Set<String> load(String archivePath) throws Exception {
+							ZipFile archive = null;
+							try {
+								archive = new ZipFile(archivePath);
+								Set<String> ret = new HashSet<String>();
+								Enumeration<? extends ZipEntry> it = archive.entries();
+								while(it.hasMoreElements()){
+									ret.add(it.nextElement().getName());
+								}
+								return ret;
+							} finally {
+								if(archive != null)
+									archive.close();
+							}
+						}
+    				}
+    );
+    
     private FoundFile lookupInArchive(String archivePath, String fileName) {
-        try {
-            ZipFile archive = new ZipFile(archivePath);
-            ZipEntry entry = archive.getEntry(fileName);
-            if( entry == null ) {
-            	archive.close();
-            	return null;
-            }
-            return new FoundFile(archive, entry);
-        } catch( IOException e ) {
-            throw new RuntimeException("Caught IOException " + e + " looking in archive file " + archivePath + " for file " + fileName);
-        }
+    	Set<String> entryNames = null;
+    	try {
+    		entryNames = archivePathsToEntriesCache.get(archivePath);
+    	} catch(Exception e) {
+    		throw new RuntimeException("Error: Failed to retrieve the archive entries list for the archive at path '" + archivePath + "'.",e);
+    	}
+    	if(entryNames.contains(fileName)){
+    		return new FoundFile(archivePath, fileName);
+    	}
+    	return null;
     }
-    private HashMap<String, String> sourceToClassMap;
-
-    public HashMap<String, String> getSourceToClassMap(){
-        return sourceToClassMap;
-    }
-    public void setSourceToClassMap(HashMap<String, String> map){
-        sourceToClassMap = map;
-    }
-    public void addToSourceToClassMap(String key, String val) {
-        sourceToClassMap.put(key, val);
-    }
+   
     /** Returns the name of the class in which the (possibly inner) class
      * className appears. */
-    public String getSourceForClass( String className ) {
+    public String getSourceForClass(String className) {
         String javaClassName = className;
-        if (className.indexOf("$") != -1) {
+        int i = className.indexOf("$");
+        if (i > -1) {
             // class is an inner class and will be in
             // Outer of Outer$Inner
-            javaClassName = className.substring(0, className.indexOf("$"));
-            //System.out.println("cut off inner class: look for: "+javaClassName);
-        }
-        // always do this because an inner class could be in a class
-        // thats in the map
-        if (sourceToClassMap != null) {
-            //System.out.println("in source map: "+sourceToClassMap);
-            if (sourceToClassMap.get(javaClassName) != null) {
-                javaClassName = sourceToClassMap.get(javaClassName);
-            }
+            javaClassName = className.substring(0, i);
         }
         return javaClassName;
     }
+    
+    /**
+     * Set containing all dex files that were appended to the classpath
+     * later on. The classes from these files are not yet loaded and are
+     * still missing from dexClassIndex.
+     */
+    private Set<String> dexClassPathExtensions;
 
     /**
      * The index that maps classes to the files they are defined in.
@@ -596,5 +805,30 @@ public class SourceLocator
     public void setDexClassIndex(Map<String, File> index) {
     	dexClassIndex = index;
     }
+    
+	public void extendClassPath(String newPathElement) {
+		classPath = null;
+		if (newPathElement.endsWith(".dex") || newPathElement.endsWith(".apk")) {
+			if (dexClassPathExtensions == null)
+				dexClassPathExtensions = new HashSet<String>();
+			dexClassPathExtensions.add(newPathElement);
+		}
+	}
+	
+	/**
+	 * Gets all files that were added to the classpath later on and that have
+	 * not yet been processed for the dexClassIndex mapping
+	 * @return The set of dex or apk files that still need to be indexed
+	 */
+	public Set<String> getDexClassPathExtensions() {
+		return this.dexClassPathExtensions;
+	}
+	
+	/**
+	 * Clears the set of dex or apk files that still need to be indexed
+	 */
+	public void clearDexClassPathExtensions() {
+		this.dexClassPathExtensions = null;
+	}
 }
 

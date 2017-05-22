@@ -35,8 +35,12 @@ import soot.RefType;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
+import soot.jimple.validation.FieldRefValidator;
 import soot.jimple.validation.IdentityStatementsValidator;
+import soot.jimple.validation.IdentityValidator;
 import soot.jimple.validation.InvokeArgumentValidator;
+import soot.jimple.validation.JimpleTrapValidator;
+import soot.jimple.validation.NewValidator;
 import soot.jimple.validation.ReturnStatementsValidator;
 import soot.jimple.validation.TypesValidator;
 import soot.options.Options;
@@ -60,6 +64,10 @@ public class JimpleBody extends StmtBody
 				TypesValidator.v(),
 				ReturnStatementsValidator.v(),
 				InvokeArgumentValidator.v(),
+ 				FieldRefValidator.v(),
+ 				NewValidator.v(),
+ 				JimpleTrapValidator.v(),
+ 				IdentityValidator.v()
 				//InvokeValidator.v()
 			};
 		}
@@ -126,25 +134,33 @@ public class JimpleBody extends StmtBody
     /** Inserts usual statements for handling this & parameters into body. */
     public void insertIdentityStmts()
     {
-        int i = 0;
-
-        Iterator<Type> parIt = getMethod().getParameterTypes().iterator();
-        while (parIt.hasNext())
-        {
-            Type t = (Type)parIt.next();
-            Local l = Jimple.v().newLocal("parameter"+i, t);
-            getLocals().add(l);
-            getUnits().addFirst(Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(l.getType(), i)));
-            i++;
-        }
-        
+    	Unit lastUnit = null;
+    	
         //add this-ref before everything else
         if (!getMethod().isStatic())
         {
         	Local l = Jimple.v().newLocal("this", 
         			RefType.v(getMethod().getDeclaringClass()));
+        	Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType)l.getType()));
+        	
         	getLocals().add(l);
-        	getUnits().addFirst(Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType)l.getType())));
+        	getUnits().addFirst(s);
+            lastUnit = s;
+        }
+        
+        int i = 0;
+        for (Type t : getMethod().getParameterTypes()) {
+            Local l = Jimple.v().newLocal("parameter"+i, t);
+            Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(l.getType(), i));
+            
+            getLocals().add(l);
+            if (lastUnit == null)
+            	getUnits().addFirst(s);
+            else
+            	getUnits().insertAfter(s, lastUnit);
+            
+            lastUnit = s;
+            i++;
         }
     }
 

@@ -31,36 +31,36 @@ import java.util.*;
  *
  * @author Navindra Umanee
  **/
-public class DominatorTreeAdapter implements DirectedGraph<DominatorNode>
+public class DominatorTreeAdapter<N> implements DirectedGraph<DominatorNode<N>>
 {
-    DominatorTree dt;
+    DominatorTree<N> dt;
     
-    public DominatorTreeAdapter(DominatorTree dt)
+    public DominatorTreeAdapter(DominatorTree<N> dt)
     {
         this.dt = dt;
     }
 
-    public List<DominatorNode> getHeads()
+    public List<DominatorNode<N>> getHeads()
     {
         return dt.getHeads();
     }
 
-    public List<DominatorNode> getTails()
+    public List<DominatorNode<N>> getTails()
     {
         return dt.getTails();
     }
 
-    public List<DominatorNode> getPredsOf(DominatorNode node)
+    public List<DominatorNode<N>> getPredsOf(DominatorNode<N> node)
     {
         return Collections.singletonList(dt.getParentOf(node));
     }
 
-    public List<DominatorNode> getSuccsOf(DominatorNode node)
+    public List<DominatorNode<N>> getSuccsOf(DominatorNode<N> node)
     {
         return dt.getChildrenOf(node);
     }
 
-    public Iterator<DominatorNode> iterator()
+    public Iterator<DominatorNode<N>> iterator()
     {
         return dt.iterator();
     }

@@ -170,14 +170,14 @@ public class OrAggregatorTwo extends DepthFirstAdapter{
 	    return;
 	}
 	ASTStatementSequenceNode stmtNode=(ASTStatementSequenceNode)onlyNode;
-	List<Object> statements = stmtNode.getStatements();
+	List<AugmentedStmt> statements = stmtNode.getStatements();
 	if(statements.size()!=1){
 	    //there is more than one statement
 	    return;
 	}
 
 	//there is only one statement 
-	AugmentedStmt as = (AugmentedStmt)statements.get(0);
+	AugmentedStmt as = statements.get(0);
 	Stmt stmt = as.get_Stmt();
 
 	if(!(stmt instanceof DAbruptStmt)){

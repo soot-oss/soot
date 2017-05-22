@@ -29,6 +29,7 @@ public final class AVolatileModifier extends PModifier
             cloneNode(this._volatile_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAVolatileModifier(this);

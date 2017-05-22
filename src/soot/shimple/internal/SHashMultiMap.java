@@ -26,20 +26,23 @@ import soot.util.*;
  *
  * @author Navindra Umanee
  **/
-public class SHashMultiMap extends HashMultiMap
+public class SHashMultiMap<K,V> extends HashMultiMap<K,V>
 {
-    public SHashMultiMap()
+
+	private static final long serialVersionUID = -860669798578291979L;
+
+	public SHashMultiMap()
     {
         super();
     }
 
-    public SHashMultiMap(MultiMap m)
+    public SHashMultiMap(MultiMap<K,V> m)
     {
 	super( m );
     }
 
-    protected Set newSet()
+    protected Set<V> newSet()
     {
-	return new LinkedHashSet(4);
+	return new LinkedHashSet<V>(4);
     }
 }

@@ -19,31 +19,31 @@
 
 package soot.toolkits.graph.interaction;
 
-public class FlowInfo {
+public class FlowInfo<I, U> {
 
-    private Object info;
-    private Object unit;
+    private I info;
+    private U unit;
     private boolean before;
 
-    public FlowInfo(Object info, Object unit, boolean b){
+    public FlowInfo(I info, U unit, boolean b){
         info(info);
         unit(unit);
         setBefore(b);
     }
     
-    public Object unit(){
+    public U unit(){
         return unit;
     }
 
-    public void unit(Object u){
+    public void unit(U u){
         unit = u;
     }
     
-    public Object info(){
+    public I info(){
         return info;
     }
 
-    public void info(Object i){
+    public void info(I i){
         info = i;
     }
 

@@ -25,6 +25,7 @@ public final class TNewarray extends Token
       return new TNewarray(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTNewarray(this);

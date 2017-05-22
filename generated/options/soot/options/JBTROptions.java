@@ -42,21 +42,6 @@ public class JBTROptions
         return soot.PhaseOptions.getBoolean( options, "enabled" );
     }
     
-    /** Ignore wrong static-ness --
-    
-     * Ignores errors due to wrong staticness.
-    
-     * Some projects have been shown to contain invalid bytecode that 
-     * tries to access a static field or method in a non-static way or 
-     * the other way around. The VM's bytecode verifier will reject 
-     * such bytecode when loaded into the VM. This option, when 
-     * enabled, causes to create Jimple bodies in such cases 
-     * nontheless, ignoring the error. 
-     */
-    public boolean ignore_wrong_staticness() {
-        return soot.PhaseOptions.getBoolean( options, "ignore-wrong-staticness" );
-    }
-    
     /** Use older type assigner --
     
      * Enables the older type assigner.
@@ -82,6 +67,20 @@ public class JBTROptions
      */
     public boolean compare_type_assigners() {
         return soot.PhaseOptions.getBoolean( options, "compare-type-assigners" );
+    }
+    
+    /** Ignore Nullpointer Dereferences --
+    
+     * Ignores virtual method calls on base objects that may only be 
+     * null.
+    
+     * 					 If this option is enabled, Soot wiil not check whether 
+     * the base object of a virtual method 					 call can only be 
+     * null. This will lead to the null_type pseudo type being used in 
+     * your Jimple 					 code. 
+     */
+    public boolean ignore_nullpointer_dereferences() {
+        return soot.PhaseOptions.getBoolean( options, "ignore-nullpointer-dereferences" );
     }
     
 }

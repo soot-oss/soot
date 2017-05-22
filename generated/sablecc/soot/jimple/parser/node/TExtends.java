@@ -25,6 +25,7 @@ public final class TExtends extends Token
       return new TExtends(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTExtends(this);

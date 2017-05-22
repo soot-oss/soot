@@ -18,30 +18,28 @@
  */
 
 package soot.util;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+
+import heros.ThreadSafe;
 
 /** A class that numbers strings, so they can be placed in bitsets.
  *
  * @author Ondrej Lhotak
  */
 
+@ThreadSafe
 public class StringNumberer extends ArrayNumberer<NumberedString> {
-    HashMap<String, NumberedString> stringToNumbered = new HashMap<String, NumberedString>(1024);
-
-    public NumberedString find( String s ) {
-        NumberedString ret = stringToNumbered.get( s );
-        if( ret == null ) {
-            stringToNumbered.put( s, ret = new NumberedString(s) );
-            add( ret );
-        }
-        return ret;
-    }
-    public NumberedString findOrAdd( String s ) {
-        NumberedString ret = stringToNumbered.get( s );
-        if( ret == null ) {
-            stringToNumbered.put( s, ret = new NumberedString(s) );
-            add( ret );
-        }
-        return ret;
+    private Map<String, NumberedString> stringToNumbered =
+    		new HashMap<String, NumberedString>(1024);
+    
+    public synchronized NumberedString findOrAdd( String s ) {
+            NumberedString ret = stringToNumbered.get(s);
+            if( ret == null ) {
+                ret = new NumberedString(s);
+                stringToNumbered.put(s, ret);
+                add(ret);
+            }
+            return ret;
     }
 }

@@ -39,6 +39,7 @@ public final class AMultiNameList extends PNameList
             cloneNode(this._nameList_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseAMultiNameList(this);

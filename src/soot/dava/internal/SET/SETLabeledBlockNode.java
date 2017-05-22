@@ -23,31 +23,29 @@ import soot.util.*;
 import soot.dava.internal.asg.*;
 import soot.dava.internal.AST.*;
 
-public class SETLabeledBlockNode extends SETNode
-{
-    public SETLabeledBlockNode( IterableSet body)
-    {
-	super( body);
-	add_SubBody( body);
-    }
+public class SETLabeledBlockNode extends SETNode {
+	public SETLabeledBlockNode(IterableSet body) {
+		super(body);
+		add_SubBody(body);
+	}
 
-    public IterableSet get_NaturalExits()
-    {
-	return ((SETNode) body2childChain.get( subBodies.get(0)).getLast()).get_NaturalExits();
-    }
+	public IterableSet get_NaturalExits() {
+		return ((SETNode) body2childChain.get(subBodies.get(0)).getLast())
+				.get_NaturalExits();
+	}
 
-    public ASTNode emit_AST()
-    {
-        return new ASTLabeledBlockNode( get_Label(), emit_ASTBody( body2childChain.get( subBodies.get(0))));
-    }
+	public ASTNode emit_AST() {
+		return new ASTLabeledBlockNode(get_Label(),
+				emit_ASTBody(body2childChain.get(subBodies.get(0))));
+	}
 
-    public AugmentedStmt get_EntryStmt()
-    {
-	return ((SETNode) body2childChain.get( subBodies.get(0)).getFirst()).get_EntryStmt();
-    }
+	public AugmentedStmt get_EntryStmt() {
+		return ((SETNode) body2childChain.get(subBodies.get(0)).getFirst())
+				.get_EntryStmt();
+	}
 
-    protected boolean resolve( SETNode parent)
-    {
-	throw new RuntimeException( "Attempting auto-nest a SETLabeledBlockNode.");
-    }
+	protected boolean resolve(SETNode parent) {
+		throw new RuntimeException(
+				"Attempting auto-nest a SETLabeledBlockNode.");
+	}
 }

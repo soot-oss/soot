@@ -27,8 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import org.omg.CORBA.UNKNOWN;
-
 import soot.EquivalentValue;
 import soot.Local;
 import soot.MethodOrMethodContext;
@@ -75,18 +73,9 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  * @author Eric Bodden
  * @see StrongLocalMustAliasAnalysis
  * */
-public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Value,Object>>
+public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Value,Integer>>
 {
 	
-	public static final String UNKNOWN_LABEL = "UNKNOWN";
-	
-	protected static final Object UNKNOWN = new Object() {
-    	public String toString() { return UNKNOWN_LABEL; }
-    };
-    protected static final Object NOTHING = new Object() {
-    	public String toString() { return "NOTHING"; }
-    };
-    
     /**
      * The set of all local variables and field references that we track.
      * This set contains objects of type {@link Local} and, if tryTrackFieldAssignments is
@@ -196,16 +185,17 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
 		return usedFieldRefs;
 	}
 
-	protected void merge(Unit succUnit, HashMap<Value,Object> inMap1, HashMap<Value,Object> inMap2, HashMap<Value,Object> outMap)
+    @Override
+	protected void merge(Unit succUnit, HashMap<Value,Integer> inMap1, HashMap<Value,Integer> inMap2, HashMap<Value,Integer> outMap)
     {
         for (Value l : localsAndFieldRefs) {
-            Object i1 = inMap1.get(l), i2 = inMap2.get(l);
-            if (i1.equals(i2)) 
-                outMap.put(l, i1);
-            else if (i1 == NOTHING)
+            Integer i1 = inMap1.get(l), i2 = inMap2.get(l);
+            if (i1 == null)
             	outMap.put(l, i2);
-            else if (i2 == NOTHING)
+            else if (i2 == null)
             	outMap.put(l, i1);
+            else if (i1.equals(i2)) 
+                outMap.put(l, i1);
             else {
                 /* Merging two different values is tricky...
                  * A naive approach would be to assign UNKNOWN. However, that would lead to imprecision in the following case:
@@ -227,11 +217,14 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
             	//if there is no such number yet, generate one
             	//then assign the number to l in the outMap
                 Map<Value, Integer> valueToNumber = mergePointToValueToNumber.get(succUnit);
+                Integer number = null;
                 if(valueToNumber==null) {
                 	valueToNumber = new HashMap<Value, Integer>();
                 	mergePointToValueToNumber.put(succUnit, valueToNumber);
                 }
-                Integer number = valueToNumber.get(l);
+                else
+                	number = valueToNumber.get(l);
+                
                 if(number==null) {
                 	number = nextNumber++;
                 	valueToNumber.put(l, number);
@@ -241,8 +234,8 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
         }
     }
     
-
-    protected void flowThrough(HashMap<Value,Object> in, Unit u, HashMap<Value,Object> out) {
+	@Override
+    protected void flowThrough(HashMap<Value,Integer> in, Unit u, HashMap<Value,Integer> out) {
     	Stmt s = (Stmt)u;
         out.clear();
 
@@ -264,7 +257,9 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
             	&& lhs.getType() instanceof RefLikeType) {
                 if (rhs instanceof Local) {
                 	//local-assignment - must be aliased...
-                    out.put(lhs, in.get(rhs));
+                	Integer val = in.get(rhs);
+                	if (val != null)
+                		out.put(lhs, val);
                 } else if(rhs instanceof ThisRef) {
                 	//ThisRef can never change; assign unique number
                 	out.put(lhs, thisRefNumber());
@@ -282,7 +277,7 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
         }
     }
 
-    private Object numberOfRhs(Value rhs) {
+    private Integer numberOfRhs(Value rhs) {
    		EquivalentValue equivValue = new EquivalentValue(rhs);
    		if(localsAndFieldRefs.contains(equivValue)){
    			rhs = equivValue;
@@ -305,65 +300,51 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
 		return -1 - r.getIndex();
 	}
 
-	protected void copy(HashMap<Value,Object> sourceMap, HashMap<Value,Object> destMap)
+    @Override
+	protected void copy(HashMap<Value,Integer> sourceMap, HashMap<Value,Integer> destMap)
     {
         destMap.clear();
         destMap.putAll(sourceMap);
     }
 
-    /** Initial most conservative value: has to be {@link UNKNOWN} (top). */
-    protected HashMap<Value,Object> entryInitialFlow()
+    /** Initial most conservative value: We leave it away to save memory, implicitly UNKNOWN. */
+    @Override
+    protected HashMap<Value,Integer> entryInitialFlow()
     {
-    	HashMap<Value,Object> m = new HashMap<Value,Object>();
-        for (Value l : (Collection<Value>) localsAndFieldRefs) {
-            m.put(l, UNKNOWN);
-        }
-        return m;
+    	return new HashMap<Value,Integer>();
     }
 
     /** Initial bottom value: objects have no definitions. */
-    protected HashMap<Value,Object> newInitialFlow()
+    @Override
+    protected HashMap<Value,Integer> newInitialFlow()
     {
-    	HashMap<Value,Object> m = new HashMap<Value,Object>();
-        for (Value l : (Collection<Value>) localsAndFieldRefs) {
-            m.put(l, NOTHING);
-        }
-        return m;
+    	return new HashMap<Value,Integer>();
     }
     
     /**
      * Returns a string (natural number) representation of the instance key associated with l
-     * at statement s or <code>null</code> if there is no such key associated or <code>UNKNOWN</code> if 
-     * the value of l at s is {@link #UNKNOWN}. 
+     * at statement s or <code>null</code> if there is no such key associated.
      * @param l any local of the associated method
      * @param s the statement at which to check
      */
     public String instanceKeyString(Local l, Stmt s) {
         Object ln = getFlowBefore(s).get(l);
-        if(ln==null) {
+        if(ln==null)
         	return null;
-        } else  if(ln==UNKNOWN) {
-        	return UNKNOWN.toString();
-        }
         return ln.toString();
     }
     
     /**
      * Returns true if this analysis has any information about local l
-     * at statement s (i.e. it is not {@link #UNKNOWN}).
+     * at statement s.
      * In particular, it is safe to pass in locals/statements that are not
      * even part of the right method. In those cases <code>false</code>
      * will be returned.
      * Permits s to be <code>null</code>, in which case <code>false</code> will be returned.
      */
     public boolean hasInfoOn(Local l, Stmt s) {
-    	HashMap<Value,Object> flowBefore = getFlowBefore(s);
-    	if(flowBefore==null) {
-    		return false;
-    	} else {
-    		Object info = flowBefore.get(l);
-    		return info!=null && info!=UNKNOWN;
-    	}
+    	HashMap<Value,Integer> flowBefore = getFlowBefore(s);
+    	return flowBefore !=null;
     }
     
     /**
@@ -375,15 +356,26 @@ public class LocalMustAliasAnalysis extends ForwardFlowAnalysis<Unit,HashMap<Val
         Object l1n = getFlowBefore(s1).get(l1);
         Object l2n = getFlowBefore(s2).get(l2);
 
-        if (l1n == UNKNOWN || l2n == UNKNOWN)
+        if (l1n == null || l2n == null)
             return false;
 
         return l1n == l2n;
     }
 
 	@Override
-	protected void merge(HashMap<Value, Object> in1,
-			HashMap<Value, Object> in2, HashMap<Value, Object> out) {
-		throw new UnsupportedOperationException("not implemented; use other merge method instead");
+	protected void merge(HashMap<Value, Integer> in1,
+			HashMap<Value, Integer> in2, HashMap<Value, Integer> out) {
+		// Copy over in1. This will be the baseline
+		out.putAll(in1);
+		
+		// Merge in in2. Make sure that we do not have ambiguous values.
+		for (Value val : in2.keySet()) {
+			Integer i1 = in1.get(val);
+			Integer i2 = in2.get(val);
+			if (i2.equals(i1))
+				out.put(val, i2);
+			else
+				throw new RuntimeException("Merge of different IDs not supported");
+		}
 	}
 }

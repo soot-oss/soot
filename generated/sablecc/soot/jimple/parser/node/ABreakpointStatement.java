@@ -34,6 +34,7 @@ public final class ABreakpointStatement extends PStatement
             cloneNode(this._semicolon_));
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseABreakpointStatement(this);

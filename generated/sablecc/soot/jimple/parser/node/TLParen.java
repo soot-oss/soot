@@ -25,6 +25,7 @@ public final class TLParen extends Token
       return new TLParen(getLine(), getPos());
     }
 
+    @Override
     public void apply(Switch sw)
     {
         ((Analysis) sw).caseTLParen(this);
