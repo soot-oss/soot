@@ -17,83 +17,113 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/*
+ /*
  * Modified by the Sable Research Group and others 1997-1999.  
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+ *
+ * @author Feng Qian 
  */
-
-
-/* @author Feng Qian */
-
 package soot.util.dot;
+
 import java.io.*;
 
 public class DotGraphUtility {
 
-  /* replace any " to \" in the string */
-  public static String replaceQuotes(String original){
-    byte[] ord = original.getBytes();
-    int quotes = 0;
-    for (byte element : ord) {
-      if (element == '\"') quotes++;
+    /**
+     * Replace any {@code "} with {@code \"}. If the {@code "} character was
+     * already escaped (i.e. {@code \"}), then the escape character is also
+     * escaped (i.e. {@code \\\"}).
+     *
+     * @param original
+     *
+     * @return
+     */
+    public static String replaceQuotes(String original) {
+        byte[] ord = original.getBytes();
+        int quotes = 0;
+        boolean escapeActive = false;
+        for (byte element : ord) {
+            switch (element) {
+                case '\\':
+                    escapeActive = true;
+                    break;
+                case '\"':
+                    quotes++;
+                    if (escapeActive) {
+                        quotes++;
+                    }
+                //fallthrough
+                default:
+                    escapeActive = false;
+                    break;
+            }
+        }
+
+        if (quotes == 0) {
+            return original;
+        }
+
+        byte[] newsrc = new byte[ord.length + quotes];
+        for (int i = 0, j = 0, n = ord.length; i < n; i++, j++) {
+            if (ord[i] == '\"') {
+                if (i > 0 && ord[i - 1] == '\\') {
+                    newsrc[j++] = (byte) '\\';
+                }
+                newsrc[j++] = (byte) '\\';
+            }
+            newsrc[j] = ord[i];
+        }
+
+        /*
+        G.v().out.println("before "+original);
+        G.v().out.println("after  "+(new String(newsrc)));
+         */
+        return new String(newsrc);
     }
 
-    if (quotes == 0) return original;
+    /**
+     * Replace any return ({@code \n}) with {@code \\n}.
+     *
+     * @param original
+     *
+     * @return
+     */
+    public static String replaceReturns(String original) {
+        byte[] ord = original.getBytes();
+        int quotes = 0;
+        for (byte element : ord) {
+            if (element == '\n') {
+                quotes++;
+            }
+        }
 
-    byte[] newsrc = new byte[ord.length+quotes];
-    for (int i=0, j=0, n=ord.length; i<n; i++, j++){
-      if (ord[i] == '\"') {
-	newsrc[j++] = (byte) '\\';
-      }
-      newsrc[j] = ord[i];
+        if (quotes == 0) {
+            return original;
+        }
+
+        byte[] newsrc = new byte[ord.length + quotes];
+        for (int i = 0, j = 0, n = ord.length; i < n; i++, j++) {
+            if (ord[i] == '\n') {
+                newsrc[j++] = (byte) '\\';
+                newsrc[j] = (byte) 'n';
+            } else {
+                newsrc[j] = ord[i];
+            }
+        }
+
+        /*
+        G.v().out.println("before "+original);
+        G.v().out.println("after  "+(new String(newsrc)));
+         */
+        return new String(newsrc);
     }
 
-    /*
-    G.v().out.println("before "+original);
-    G.v().out.println("after  "+(new String(newsrc)));
-    */
-
-    return new String(newsrc);
-  }
-
-  /* replace any return by to "\n" */
-  public static String replaceReturns(String original){
-    byte[] ord = original.getBytes();
-    int quotes = 0;
-    for (byte element : ord) {
-      if (element == '\n') quotes++;
+    public static void renderLine(OutputStream out, String content, int indent) throws IOException {
+        for (int i = 0; i < indent; i++) {
+            out.write(' ');
+        }
+        content += "\n";
+        out.write(content.getBytes());
     }
-
-    if (quotes == 0) return original;
-
-    byte[] newsrc = new byte[ord.length+quotes];
-    for (int i=0, j=0, n=ord.length; i<n; i++, j++){
-      if (ord[i] == '\n') {
-	newsrc[j++] = (byte) '\\';
-	newsrc[j] = (byte) 'n';
-      } else {
-	newsrc[j] = ord[i];
-      }
-    }
-
-    /*
-    G.v().out.println("before "+original);
-    G.v().out.println("after  "+(new String(newsrc)));
-    */
-
-    return new String(newsrc);    
-  }
-
-  public static void renderLine(OutputStream out,
-		      String content, 
-		      int indent) throws IOException {
-    for (int i=0; i<indent; i++) {
-      out.write(' ');
-    }
-    
-    content = content + "\n";
-
-    out.write(content.getBytes());
-  }
 }
