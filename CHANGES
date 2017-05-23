@@ -92,7 +92,7 @@ Improvements and API changes in version 2.5.0
    new phase options in cg.spark to enable and configure this
    analysis.   
 8. Improved support for custom entry points in the points-to analysis.
-9. Added option allowing putiry analysis to add a "Pure" bytecode
+9. Added option allowing purity analysis to add a "Pure" bytecode
    attribute for pure methods.
 10.GenericAttribute instances are now automatically read from class
    files and stored in class files.
@@ -284,7 +284,7 @@ Improvements in version 2.2 (Fri, Dec 17, 2004)
    exception control flow see: 
    http://svn.sable.mcgill.ca/wiki/index.php/CFG%20Reorganization
 3. complete and stable JavaToJimple module
-4. Java 1.4 sytle handling of method and field references see:
+4. Java 1.4 style handling of method and field references see:
    http://svn.sable.mcgill.ca/wiki/index.php/MethodAndFieldReferences
 5. minor fixes and cleanup of Shimple
    * made dominator analysis and structure classes public
