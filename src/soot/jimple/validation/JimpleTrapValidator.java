@@ -55,12 +55,12 @@ public enum JimpleTrapValidator implements BodyValidator {
 			caughtUnits.add(trap.getHandlerUnit());
 			
 			if (!(trap.getHandlerUnit() instanceof IdentityStmt))
-				exception.add(new ValidationException(trap, "Trap handler does start with caught "
+				exception.add(new ValidationException(trap, "Trap handler does not start with caught "
 						+ "exception reference"));
 			else {
 				IdentityStmt is = (IdentityStmt) trap.getHandlerUnit();
 				if (!(is.getRightOp() instanceof CaughtExceptionRef))
-					exception.add(new ValidationException(trap, "Trap handler does start with caught "
+					exception.add(new ValidationException(trap, "Trap handler does not start with caught "
 							+ "exception reference"));
 			}
 		}
