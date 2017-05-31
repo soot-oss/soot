@@ -286,11 +286,6 @@ public class CompareArithmeticInstructionsTest extends AbstractASMBackendTest {
     }
 
     @Override
-    protected String getTargetFolder() {
-		return "./testclasses";
-    }
-
-    @Override
     protected String getClassPathFolder() {
 		return "./testclasses";
     }

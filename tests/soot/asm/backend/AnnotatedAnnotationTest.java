@@ -36,11 +36,6 @@ public class AnnotatedAnnotationTest extends AbstractASMBackendTest {
 	}
 
 	@Override
-	protected String getTargetFolder() {
-		return "./testclasses";
-	}
-
-	@Override
 	protected String getClassPathFolder() {
 		return "./testclasses";
 	}

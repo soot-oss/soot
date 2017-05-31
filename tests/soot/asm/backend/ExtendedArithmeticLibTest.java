@@ -273,11 +273,6 @@ public class ExtendedArithmeticLibTest extends AbstractASMBackendTest {
 	}
 
 	@Override
-	protected String getTargetFolder() {
-		return "./testclasses";
-	}
-
-	@Override
 	protected String getClassPathFolder() {
 		return "./testclasses";
 	}

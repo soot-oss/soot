@@ -132,7 +132,12 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 	 * Return a folder for the process-dir option of Soot
 	 * @return The location of the process-dir folder
 	 */
-	protected abstract String getTargetFolder();
+	protected String getTargetFolder() {
+		File f = new File("./testclasses");
+		if (!f.exists())
+			f = new File("./target/test-classes");
+		return f.getAbsolutePath();
+	}
 	
 	/**
 	 * Returns the folder that is to be added to the class path for running soot

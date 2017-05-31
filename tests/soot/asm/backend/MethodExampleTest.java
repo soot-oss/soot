@@ -85,11 +85,6 @@ public class MethodExampleTest extends AbstractASMBackendTest {
 	}
 
 	@Override
-	protected String getTargetFolder() {
-		return "./testclasses";
-	}
-
-	@Override
 	protected String getClassPathFolder() {
 		return "./testclasses";
 	}
