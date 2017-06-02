@@ -1542,6 +1542,25 @@ public class Scene  //extends AbstractHost
 						classNames.add(signatureToClass(target));
 					} else if(kind.equals("Field.set*") || kind.equals("Field.get*")) {
 						classNames.add(signatureToClass(target));
+					} else if(kind.startsWith("Field.get")) {
+						classNames.add(signatureToClass(target));
+          } else if(kind.equals("Array.newInstance")) {
+            classNames.add(target.substring(0,target.indexOf("[")));
+          } else if(kind.equals("Class.getDeclaredField")
+            || kind.equals("Class.getMethod")
+            || kind.equals("Class.getDeclaredMethod")) {
+            classNames.add(signatureToClass(target));
+          } else if(kind.equals("Constructor.getModifiers")) {
+            classNames.add(signatureToClass(target));
+          } else if(kind.equals("Class.getDeclaredMethods") 
+            || kind.equals("Class.getFields")
+            || kind.equals("Class.getMethods") 
+            || kind.equals("Class.getDeclaredFields")) {
+            classNames.add(target);
+          } else if(kind.equals("Method.getDeclaringClass") 
+            || kind.equals("Method.getModifiers")
+            || kind.equals("Method.getName")) {
+            classNames.add(signatureToClass(target));
 					} else throw new RuntimeException("Unknown entry kind: "+kind);
 				}
 			} catch (Exception e) {
