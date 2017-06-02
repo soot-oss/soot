@@ -71,9 +71,4 @@ public class AnnotatedMethodTest extends AbstractASMBackendTest {
 		return "soot.asm.backend.targets.AnnotatedMethod";
 	}
 
-	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
 }

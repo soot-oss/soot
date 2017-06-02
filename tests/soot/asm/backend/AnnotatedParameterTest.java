@@ -72,9 +72,4 @@ public class AnnotatedParameterTest extends AbstractASMBackendTest {
 		return "soot.asm.backend.targets.AnnotatedParameter";
 	}
 
-	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
 }

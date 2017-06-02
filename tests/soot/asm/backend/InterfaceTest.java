@@ -34,9 +34,4 @@ public class InterfaceTest extends AbstractASMBackendTest {
 		return "soot.asm.backend.targets.Comparable";
 	}
 
-	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
 }

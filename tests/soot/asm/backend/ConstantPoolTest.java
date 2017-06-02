@@ -233,9 +233,4 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 		return "soot.asm.backend.targets.ConstantPool";
 	}
 
-	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
 }

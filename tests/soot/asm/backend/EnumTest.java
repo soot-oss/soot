@@ -140,9 +140,4 @@ public class EnumTest extends AbstractASMBackendTest {
 		return "soot.asm.backend.targets.MyEnum";
 	}
 
-	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
 }

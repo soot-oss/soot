@@ -233,9 +233,4 @@ public class LogicalOperationsTest extends AbstractASMBackendTest {
 		return "soot.asm.backend.targets.LogicalOperations";
 	}
 
-	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
 }

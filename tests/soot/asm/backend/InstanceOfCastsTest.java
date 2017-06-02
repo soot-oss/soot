@@ -66,9 +66,4 @@ public class InstanceOfCastsTest extends AbstractASMBackendTest {
 		return "soot.asm.backend.targets.InstanceOfCasts";
 	}
 
-	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
 }

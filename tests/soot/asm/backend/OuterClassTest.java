@@ -63,9 +63,4 @@ public class OuterClassTest extends AbstractASMBackendTest {
 		return "soot.asm.backend.targets.InnerClass";
 	}
 
-	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
 }

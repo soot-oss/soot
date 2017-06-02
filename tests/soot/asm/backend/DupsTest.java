@@ -57,9 +57,4 @@ public class DupsTest extends AbstractASMBackendTest {
 		return "soot.asm.backend.targets.Dups";
 	}
 
-	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
 }

@@ -346,9 +346,4 @@ public class CompareInstructionsTest extends AbstractASMBackendTest {
 		return "soot.asm.backend.targets.CompareInstructions";
 	}
 
-	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
 }

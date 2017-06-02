@@ -172,9 +172,4 @@ public class StoresTest extends AbstractASMBackendTest {
 		return "soot.asm.backend.targets.Stores";
 	}
 
-	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
 }

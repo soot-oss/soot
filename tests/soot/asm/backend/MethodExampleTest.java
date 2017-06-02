@@ -84,9 +84,4 @@ public class MethodExampleTest extends AbstractASMBackendTest {
 		return "soot.asm.backend.targets.Bean";
 	}
 
-	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
 }

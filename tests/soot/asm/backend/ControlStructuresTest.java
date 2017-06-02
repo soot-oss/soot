@@ -138,11 +138,6 @@ public class ControlStructuresTest extends AbstractASMBackendTest {
 	}
 
 	@Override
-	protected String getClassPathFolder() {
-		return "./testclasses";
-	}
-
-	@Override
 	protected String getRequiredJavaVersion(){
 		return "1.6";
 	}

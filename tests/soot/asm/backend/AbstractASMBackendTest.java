@@ -143,13 +143,18 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 	 * Returns the folder that is to be added to the class path for running soot
 	 * @return The location of the folder containing the test files
 	 */
-	protected abstract String getClassPathFolder();
+	protected String getClassPathFolder() {
+		File f = new File("./testclasses");
+		if (!f.exists())
+			f = new File("./target/test-classes");
+		return f.getAbsolutePath();
+	}
 	
 	/**
 	 * Returns the Java version required, can be overridden by individual tests if needed
 	 * @return The required Java version, "default" by default
 	 */
-	protected String getRequiredJavaVersion(){
+	protected String getRequiredJavaVersion() {
 		return "default";
 	}
 	
