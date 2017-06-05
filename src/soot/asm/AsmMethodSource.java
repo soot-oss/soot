@@ -1102,7 +1102,7 @@ final class AsmMethodSource implements MethodSource {
 		else if (val instanceof String)
 			v = StringConstant.v(val.toString());
 		else if (val instanceof org.objectweb.asm.Type)
-			v = ClassConstant.v(((org.objectweb.asm.Type) val).getInternalName());
+			v = ClassConstant.v(((org.objectweb.asm.Type) val).getDescriptor());
 		else if (val instanceof Handle)
 			v = MethodHandle.v(toSootMethodRef((Handle) val), ((Handle)val).getTag());
 		else
