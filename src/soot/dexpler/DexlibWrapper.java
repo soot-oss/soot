@@ -25,6 +25,7 @@
 package soot.dexpler;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -43,6 +44,7 @@ import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.DexFile;
 
 import soot.ArrayType;
+import soot.G;
 import soot.PrimType;
 import soot.Scene;
 import soot.SootClass;
@@ -99,31 +101,24 @@ public class DexlibWrapper {
 	}
 
 	public void initialize() {
-		ZipFile archive = null;
 		try {
-			int api = 24; // TODO: this matters now so it should be a soot option
-			if(Options.v().process_multiple_dex() && (inputDexFile.getName().endsWith(".apk") || 
-					inputDexFile.getName().endsWith(".zip") || inputDexFile.getName().endsWith(".jar"))){
-	            archive = new ZipFile(inputDexFile);
-				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
-					ZipEntry entry = entries.nextElement();
-					String entryName = entry.getName();
-					// We are dealing with an apk file
-					if (entryName.endsWith(".dex")){
-						this.dexFiles.add(DexFileFactory.loadDexEntry(inputDexFile, entryName, true, Opcodes.forApi(api)));
+			if (Options.v().process_multiple_dex() && (inputDexFile.getName().endsWith(".apk")
+					|| inputDexFile.getName().endsWith(".zip") || inputDexFile.getName().endsWith(".jar"))) {
+				try (ZipFile archive = new ZipFile(inputDexFile)) {
+					for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
+						ZipEntry entry = entries.nextElement();
+						String entryName = entry.getName();
+						// We are dealing with an apk file
+						if (!entryName.endsWith(".dex"))
+							continue;
+						this.dexFiles.add(DexlibWrapper.loadDex(inputDexFile, entryName));
 					}
 				}
-        	}
-        	else{
-        		this.dexFiles.add(DexFileFactory.loadDexFile(inputDexFile, Opcodes.forApi(api)));
-        	}
+			} else {
+				this.dexFiles.add(DexlibWrapper.loadDex(inputDexFile, null));
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}finally{
-			try{
-				if(archive != null)
-					archive.close();
-			}catch(Throwable t) {}
 		}
 
 		for(DexFile dexFile: this.dexFiles){
@@ -133,7 +128,7 @@ public class DexlibWrapper {
 			}
 		}
 		
-		for(DexFile dexFile: this.dexFiles){
+		for (DexFile dexFile : this.dexFiles) {
 			if (dexFile instanceof DexBackedDexFile) {
 				DexBackedDexFile dbdf = (DexBackedDexFile) dexFile;
 				for (int i = 0; i < dbdf.getTypeCount(); i++) {
@@ -185,6 +180,51 @@ public class DexlibWrapper {
 		
 		throw new RuntimeException("Error: class not found in DEX files: "
 					+ className);
+	}
+	
+	/**
+	 * The central implementation for loading a dex file (stand-alone or from
+	 * within a zip/apk file
+	 * 
+	 * @param file
+	 *            apk/zip file containing DEX file(s) or a stand-alone dex file
+	 * @param dexName
+	 *            if <code>null</code> the file specifies a dex file.
+	 * @return {@link DexFile}. If the option ignore_dex_loading_errors
+	 *         is true and there was an error loading the dex file the returned DexFile is a dummy
+	 * @throws IOException
+	 */
+	public static DexFile loadDex(File file, String dexName) throws IOException {
+		int api = Scene.v().getAndroidAPIVersion();
+		try {
+			Opcodes opcodes = Opcodes.forApi(api);
+			if (dexName == null) {
+				return DexFileFactory.loadDexFile(file, opcodes);
+			}
+			return DexFileFactory.loadDexEntry(file, dexName, true, opcodes);
+		} catch (IOException e) {
+			throw e;
+		} catch (Throwable e) {
+			if (Options.v().ignore_dex_loading_errors()) {
+				G.v().out.println("Failed to load dex entry " + dexName + " in " + file + " - ignoring this entry");
+				return new DummyDexFile(); // better to return a dummy than null
+			}
+			throw e;
+		}
+	}
+	
+	private static class DummyDexFile implements DexFile{
+
+		@Override
+		public Set<? extends ClassDef> getClasses() {
+			return new HashSet<>();
+		}
+
+		@Override
+		public Opcodes getOpcodes() {
+			return Opcodes.getDefault();
+		}
+		
 	}
 
 }

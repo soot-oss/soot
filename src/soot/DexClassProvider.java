@@ -35,11 +35,10 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.jf.dexlib2.DexFileFactory;
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
+import org.jf.dexlib2.iface.DexFile;
 
+import soot.dexpler.DexlibWrapper;
 import soot.dexpler.Util;
 import soot.options.Options;
 
@@ -198,9 +197,10 @@ public class DexClassProvider implements ClassProvider {
 	 *            file to dex/apk file. Can be the path of a zip file.
 	 *
 	 * @return set of class names
+	 * @throws IOException
 	 */
 	public static Set<String> classesOfDex(File file) throws IOException {
-		return classesOfDex(file, null);
+		return classesOfDex(DexlibWrapper.loadDex(file, null));
 	}
 	
 	/**
@@ -212,14 +212,23 @@ public class DexClassProvider implements ClassProvider {
 	 * 				a name of a given dex file
 	 *
 	 * @return set of class names
+	 * @throws IOException
 	 */
 	public static Set<String> classesOfDex(File file, String dexName) throws IOException {
-		Set<String> classes = new HashSet<String>();
-		int api = Scene.v().getAndroidAPIVersion();
-		DexBackedDexFile d = dexName != null  
-				? DexFileFactory.loadDexEntry(file, dexName, true, Opcodes.forApi(api))  
-				: DexFileFactory.loadDexFile(file, Opcodes.forApi(api));  
-		for (ClassDef c : d.getClasses()) {
+			return classesOfDex(DexlibWrapper.loadDex(file, null));
+	}
+
+	/**
+	 * Return names of classes in the given {@link DexFile}.
+	 * 
+	 * @param dexFile
+	 * @return set of class names
+	 * @throws IOException
+	 */
+	public static Set<String> classesOfDex(DexFile dexFile) throws IOException {
+		Set<? extends ClassDef> dexClasses = dexFile.getClasses();
+		Set<String> classes = new HashSet<String>(dexClasses.size());
+		for (ClassDef c : dexClasses) {
 			String name = Util.dottedClassName(c.getType());
 			classes.add(name);
 		}

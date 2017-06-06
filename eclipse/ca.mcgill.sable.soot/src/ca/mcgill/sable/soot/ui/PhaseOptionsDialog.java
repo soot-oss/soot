@@ -2140,6 +2140,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionsprocess_multiple_dex_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getInput_Optionsignore_dex_loading_errors_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionsignore_dex_loading_errors_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getInput_Optionsoaat_widget().getButton().getSelection();
 		
 		
@@ -6959,6 +6969,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Input_Optionsprocess_multiple_dex_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionsignore_dex_loading_errors_widget;
+	
+	private void setInput_Optionsignore_dex_loading_errors_widget(BooleanOptionWidget widget) {
+		Input_Optionsignore_dex_loading_errors_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionsignore_dex_loading_errors_widget() {
+		return Input_Optionsignore_dex_loading_errors_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsoaat_widget;
 	
 	private void setInput_Optionsoaat_widget(BooleanOptionWidget widget) {
@@ -10938,6 +10958,22 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setInput_Optionsprocess_multiple_dex_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process all DEX files in APK", "", "","process-multiple-dex", "\nAndroid APKs can have more than one default classes.dex. By \ndefault Soot loads only classes from the default one. This \noption enables loading of all DEX files from an APK. ", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"ignore-dex-loading-errors";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionsignore_dex_loading_errors_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Ignore DEX loading errors", "", "","ignore-dex-loading-errors", "\nAndroid APKs can have more than one default classes.dex. If the \noption process-multiple-dex is set Soot tries to load all of \nthem, however sometimes files with the file extension .dex can \nnot be loaded for different reasons. In such a case loading the \nAPK file will completely fail if the option \nignore-dex-loading-errors is not set to true. If it is set only \nthe DEX file that can not be loaded will be ignored. ", defaultBool)));
 		
 		
 		
