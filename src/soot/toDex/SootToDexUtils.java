@@ -68,10 +68,25 @@ public class SootToDexUtils {
 		if (dottedClassName == null || dottedClassName.isEmpty())
 			throw new RuntimeException("Empty class name detected");
 		
-		String slashedName = dottedClassName.replace('.', '/');
-		if (slashedName.startsWith("L") && slashedName.endsWith(";"))
-			return slashedName;
-		return "L" + slashedName + ";";
+		if (isPrimitiveTypeOrArray(dottedClassName))
+			return dottedClassName;
+		else {
+			String slashedName = dottedClassName.replace('.', '/');
+			if (slashedName.startsWith("L") && slashedName.endsWith(";"))
+				return slashedName;
+			return "L" + slashedName + ";";
+		}
+	}
+
+	private static boolean isPrimitiveTypeOrArray(String dottedClassName) {
+		String tmpClassName = dottedClassName;
+		while (!tmpClassName.isEmpty() && tmpClassName.startsWith("[")) {
+			tmpClassName = tmpClassName.substring(1);
+		}
+		return tmpClassName.equals("Z") || tmpClassName.equals("B")
+				|| tmpClassName.equals("C") || tmpClassName.equals("S")
+				|| tmpClassName.equals("I") || tmpClassName.equals("J")
+				|| tmpClassName.equals("F") || tmpClassName.equals("D");
 	}
 
 	public static int getDexAccessFlags(SootMethod m) {

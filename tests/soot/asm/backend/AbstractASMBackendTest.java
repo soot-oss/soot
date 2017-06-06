@@ -58,11 +58,12 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 		G.reset();
 		// Location of the rt.jar
 		String rtJar = System.getProperty("java.home")+File.separator+"lib"+File.separator+"rt.jar";
-
+		String classpath = getClassPathFolder() + File.pathSeparator + rtJar;
+		System.out.println("Class path: " + classpath);
+		
 		// Run Soot and print output to .asm-files. 
 		Main.main(new String[] {
-			"-cp", getClassPathFolder()
-					+File.pathSeparator+rtJar,
+			"-cp", classpath,
 			"-src-prec", "only-class",
 			"-output-format", "asm",
 			"-allow-phantom-refs",
