@@ -9,7 +9,6 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.Scanner;
 
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
@@ -33,8 +32,6 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 
 	private final TraceClassVisitor visitor = new TraceClassVisitor(pw);
 
-	private String comparisonOutput;
-
 	protected TargetCompiler targetCompiler = TargetCompiler.javac;
 
 	/**
@@ -42,16 +39,6 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 	 */
 	enum TargetCompiler {
 		eclipse, javac
-	}
-
-	/**
-	 * Sets up everything for testing by generation of Soot's output and
-	 * reference output
-	 */
-	@Before
-	public void setupTest() {
-		runSoot();
-		createComparison();
 	}
 
 	/**
@@ -72,9 +59,9 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 	/**
 	 * Generates the textual output and saves it for later for comparison
 	 */
-	private void createComparison() {
+	private String createComparison() {
 		generate(visitor);
-		comparisonOutput = sw.toString();
+		return sw.toString();
 	}
 
 	/**
@@ -86,7 +73,10 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 	 *             soot output could not be opened
 	 */
 	@Test
-	public void compareOutput() throws FileNotFoundException {
+	public void runTestAndCompareOutput() throws FileNotFoundException {
+		runSoot();
+		String comparisonOutput = createComparison();
+
 		/*
 		 * Print output for comparison to file for debugging purposes.
 		 */
@@ -107,8 +97,9 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 			int line = 1;
 			while (compareOutput.hasNextLine()) {
 				// Soot-output must have as much lines as the compared output.
-				assertTrue(String.format("Too few lines in Soot-output for class %s! Current line: %d",
-						getTargetClass(), line), sootOutput.hasNextLine());
+				assertTrue(String.format(
+						"Too few lines in Soot-output for class %s! Current line: %d. Comparison output: %s",
+						getTargetClass(), line, comparisonOutput), sootOutput.hasNextLine());
 
 				// Get both lines
 				String compare = compareOutput.nextLine();
