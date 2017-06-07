@@ -234,24 +234,27 @@ public class SourceLocator
 		
 		// Get the dex file from an apk
 		if (cst == ClassSourceType.apk) {
-			ZipFile archive = null;
-			try {
-				archive = new ZipFile(aPath);
+			try (ZipFile archive = new ZipFile(aPath)) {
+				/*
+				 * JPS: This is the first time we enumerate all entries in a
+				 * zip/apk file. The second time is done in
+				 * DexlibWrapper.initialize() and a third time in
+				 * DexClassProvider.buildDexIndex() It really looks like someone
+				 * loves the copy-and-paste anti-pattern! May be it would be
+				 * better to implement it only once?
+				 */
 				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
 					ZipEntry entry = entries.nextElement();
 					String entryName = entry.getName();
 					// We are dealing with an apk file
-					if (entryName.endsWith(".dex"))
-						if (Options.v().process_multiple_dex() || entryName.equals("classes.dex"))
+					if (entryName.endsWith(".dex")) {
+						if (Options.v().process_multiple_dex() || entryName.equals("classes.dex")) {
 							classes.addAll(DexClassProvider.classesOfDex(new File(aPath), entryName));
-				}		
+						}
+					}
+				}
 			} catch (IOException e) {
-				throw new CompilationDeathException("Error reasing archive '" + aPath + "'",e);
-			}finally{
-				try{
-					if(archive != null)
-						archive.close();
-				}catch(Throwable t) {}
+				throw new CompilationDeathException("Error reading archive '" + aPath + "'", e);
 			}
 		}
 		// Directly load a dex file

@@ -441,6 +441,19 @@ enables loading of all DEX files from an APK.
 </p>
 </long_desc>
 		</boolopt>
+		<boolopt>
+			<name>Ignore DEX loading errors</name>
+			<alias>ignore-dex-loading-errors</alias>
+			<short_desc>Ignore errors when loading DEX files found in APK/ZIP</short_desc>
+			<long_desc>
+<p>
+Android APKs can have more than one default classes.dex. If the option process-multiple-dex is set Soot tries to load 
+all of them, however sometimes files with the file extension .dex can not be loaded for different reasons.
+In such a case loading the APK file will completely fail if the option ignore-dex-loading-errors is not set to true.
+If it is set only the DEX file that can not be loaded will be ignored. 
+</p>
+</long_desc>
+		</boolopt>
 		<listopt>
 			<name>Process Directories</name>
 			<alias>process-path</alias>
