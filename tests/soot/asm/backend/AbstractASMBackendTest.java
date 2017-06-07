@@ -10,6 +10,7 @@ import java.io.StringWriter;
 import java.util.Scanner;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.util.TraceClassVisitor;
@@ -24,6 +25,7 @@ import soot.Main;
  * @author Tobias Hamann, Florian Kuebler, Dominik Helm, Lukas Sommer
  *
  */
+@Ignore("Abstract base class")
 public abstract class AbstractASMBackendTest implements Opcodes {
 
 	private final StringWriter sw = new StringWriter();
@@ -98,26 +100,32 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 		Scanner sootOutput = new Scanner(targetFile);
 		Scanner compareOutput = new Scanner(comparisonOutput);
 
-		System.out.println(String.format("Comparing files %s and %s...", compareFile, targetFile));
-		int line = 1;
-		while (compareOutput.hasNextLine()) {
-			// Soot-output must have as much lines as the compared output.
-			assertTrue(String.format("Too few lines in Soot-output! Current line: ", line), sootOutput.hasNextLine());
+		try {
+			System.out.println(String.format("Comparing files %s and %s...", compareFile.getAbsolutePath(),
+					targetFile.getAbsolutePath()));
+			int line = 1;
+			while (compareOutput.hasNextLine()) {
+				// Soot-output must have as much lines as the compared output.
+				assertTrue(String.format("Too few lines in Soot-output for class %s! Current line: %d",
+						getTargetClass(), line), sootOutput.hasNextLine());
 
-			// Get both lines
-			String compare = compareOutput.nextLine();
-			String output = sootOutput.nextLine();
+				// Get both lines
+				String compare = compareOutput.nextLine();
+				String output = sootOutput.nextLine();
 
-			// Compare lines
-			assertTrue("Expected line " + compare.trim() + " but got " + output.trim() + " in line " + line,
-					compare.equals(output));
-			++line;
+				// Compare lines
+				assertTrue(String.format("Expected line %s, but got %s in line %d for class %s", compare.trim(),
+						output.trim(), line, getTargetClass()), compare.equals(output));
+				++line;
+			}
+
+			assertFalse(String.format("Too many lines in Soot-output for class %s!", getTargetClass()),
+					sootOutput.hasNextLine());
+			System.out.println("File comparison successful.");
+		} finally {
+			sootOutput.close();
+			compareOutput.close();
 		}
-
-		assertFalse("Too many lines in Soot-output!", sootOutput.hasNextLine());
-
-		sootOutput.close();
-		compareOutput.close();
 	}
 
 	/**
