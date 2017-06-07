@@ -97,6 +97,7 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 		ow.close();
 
 		File targetFile = new File("sootOutput/" + getTargetClass() + ".asm");
+		assertTrue(String.format("Soot output file %s not found", targetFile.getAbsolutePath()), targetFile.exists());
 		Scanner sootOutput = new Scanner(targetFile);
 		Scanner compareOutput = new Scanner(comparisonOutput);
 
