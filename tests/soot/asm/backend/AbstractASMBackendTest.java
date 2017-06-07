@@ -88,18 +88,21 @@ public abstract class AbstractASMBackendTest implements Opcodes {
 		/*
 		 * Print output for comparison to file for debugging purposes.
 		 */
-		PrintWriter ow = new PrintWriter(new File("sootOutput/" + getTargetClass() + ".asm.compare"));
+		File compareFile = new File("sootOutput/" + getTargetClass() + ".asm.compare");
+		PrintWriter ow = new PrintWriter(compareFile);
 		ow.print(comparisonOutput);
 		ow.flush();
 		ow.close();
 
-		Scanner sootOutput = new Scanner(new File("sootOutput/" + getTargetClass() + ".asm"));
+		File targetFile = new File("sootOutput/" + getTargetClass() + ".asm");
+		Scanner sootOutput = new Scanner(targetFile);
 		Scanner compareOutput = new Scanner(comparisonOutput);
 
+		System.out.println(String.format("Comparing files %s and %s...", compareFile, targetFile));
 		int line = 1;
 		while (compareOutput.hasNextLine()) {
 			// Soot-output must have as much lines as the compared output.
-			assertTrue("Too few lines in Soot-output!", sootOutput.hasNextLine());
+			assertTrue(String.format("Too few lines in Soot-output! Current line: ", line), sootOutput.hasNextLine());
 
 			// Get both lines
 			String compare = compareOutput.nextLine();
