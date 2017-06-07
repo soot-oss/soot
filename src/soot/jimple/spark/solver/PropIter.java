@@ -19,11 +19,25 @@
 
 package soot.jimple.spark.solver;
 
-import soot.jimple.spark.pag.*;
-import soot.jimple.spark.sets.*;
-import soot.*;
-import soot.util.queue.*;
-import java.util.*;
+import java.util.TreeSet;
+
+import soot.G;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.Type;
+import soot.jimple.spark.pag.AllocDotField;
+import soot.jimple.spark.pag.AllocNode;
+import soot.jimple.spark.pag.ClassConstantNode;
+import soot.jimple.spark.pag.FieldRefNode;
+import soot.jimple.spark.pag.NewInstanceNode;
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.SparkField;
+import soot.jimple.spark.pag.VarNode;
+import soot.jimple.spark.sets.P2SetVisitor;
+import soot.jimple.spark.sets.PointsToSetInternal;
+import soot.util.queue.QueueReader;
 
 /**
  * Propagates points-to sets along pointer assignment graph using iteration.
@@ -113,12 +127,12 @@ public final class PropIter extends Propagator {
 		for (Node element : simpleTargets) {
 			ret = element.makeP2Set().addAll(srcSet, null) | ret;
 		}
-		
+
 		Node[] newInstances = pag.newInstanceLookup(src);
 		for (Node element : newInstances) {
 			ret = element.makeP2Set().addAll(srcSet, null) | ret;
 		}
-		
+
 		return ret;
 	}
 
@@ -165,28 +179,29 @@ public final class PropIter extends Propagator {
 		}) | ret;
 		return ret;
 	}
-	
+
 	protected final boolean handleNewInstances(final NewInstanceNode src) {
 		boolean ret = false;
 		final Node[] newInstances = pag.assignInstanceLookup(src);
 		for (final Node instance : newInstances) {
 			ret = src.getP2Set().forall(new P2SetVisitor() {
-				
+
 				@Override
 				public void visit(Node n) {
 					if (n instanceof ClassConstantNode) {
 						ClassConstantNode ccn = (ClassConstantNode) n;
-						Type ccnType = RefType.v(ccn.getClassConstant().getValue().replaceAll("/", "."));
-						
-						// If the referenced class has not been loaded, we do this now
+						Type ccnType = ccn.getClassConstant().toSootType();
+
+						// If the referenced class has not been loaded, we do
+						// this now
 						SootClass targetClass = ((RefType) ccnType).getSootClass();
 						if (targetClass.resolvingLevel() == SootClass.DANGLING)
 							Scene.v().forceResolve(targetClass.getName(), SootClass.SIGNATURES);
-						
+
 						instance.makeP2Set().add(pag.makeAllocNode(src.getValue(), ccnType, ccn.getMethod()));
 					}
 				}
-				
+
 			});
 		}
 		return ret;

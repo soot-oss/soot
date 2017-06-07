@@ -419,7 +419,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 				&& ref.parameterTypes().size() == 1) {
 			// This is a call to Class.forName
 			StringConstant classNameConst = (StringConstant) v.getArg(0);
-			caseClassConstant(ClassConstant.v(classNameConst.value.replaceAll("\\.", "/")));
+			caseClassConstant(ClassConstant.v("L" + classNameConst.value.replaceAll("\\.", "/") + ";"));
 		}
 	}
 	
