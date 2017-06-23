@@ -101,6 +101,7 @@
   <class>soot.jimple.toolkits.scalar.ConstantCastEliminator</class>
   <class>soot.jimple.toolkits.scalar.IdentityCastEliminator</class>
   <class>soot.jimple.toolkits.scalar.FieldStaticnessCorrector</class>
+  <class>soot.jimple.toolkits.scalar.MethodStaticnessCorrector</class>
   <class>soot.jimple.toolkits.scalar.IdentityOperationEliminator</class>
   <class>soot.UnknownType</class>
   <class>soot.jimple.toolkits.scalar.UnreachableCodeEliminator</class>

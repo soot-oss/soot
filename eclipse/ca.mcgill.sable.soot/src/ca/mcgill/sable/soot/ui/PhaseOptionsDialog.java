@@ -2503,6 +2503,8 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		defStringRes = "fix";
 		
+		defStringRes = "fixstrict";
+		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getProcessing_Optionswrong_staticness_widget().getAlias(), stringRes);
@@ -11782,7 +11784,13 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Fix",
 		"fix",
-		"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. ",
+		"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. If a \nproblem cannot be fixed, an access to that method or field will \nnot throw an exception. ",
+		
+		true),
+		
+		new OptionData("FixStrict",
+		"fixstrict",
+		"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. If a \nproblem cannot be fixed, an access to that method or field will \nstill throw an exception. This makes sure that problems cannot \nsilently disappear and cause invalid Jimple code. ",
 		
 		true),
 		

@@ -1169,7 +1169,20 @@ The Jimple code will then be invalid, but will exactly resemble the input code.
 					<default/>													
 					<long_desc>
 When Soot detects a case in which a static field is accessed as if it were an instance field, Soot
-will transparently fix the error and generate Jimple code for the fixed program.
+will transparently fix the error and generate Jimple code for the fixed program. If a problem cannot
+be fixed, an access to that method or field will not throw an exception.
+</long_desc>
+				</value>
+				<value>
+					<name>FixStrict</name>
+					<alias>fixstrict</alias>
+					<short_desc>Transparently fix staticness errors, but do not ignore remaining errors</short_desc>
+					<default/>													
+					<long_desc>
+When Soot detects a case in which a static field is accessed as if it were an instance field, Soot
+will transparently fix the error and generate Jimple code for the fixed program. If a problem cannot
+be fixed, an access to that method or field will still throw an exception. This makes sure that problems
+cannot silently disappear and cause invalid Jimple code.
 </long_desc>
 				</value>
 		</multiopt>

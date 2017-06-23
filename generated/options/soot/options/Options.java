@@ -93,6 +93,7 @@ public class Options extends OptionsBase {
     public static final int wrong_staticness_fail = 1;
     public static final int wrong_staticness_ignore = 2;
     public static final int wrong_staticness_fix = 3;
+    public static final int wrong_staticness_fixstrict = 4;
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
     public static final int throw_analysis_dalvik = 3;
@@ -973,6 +974,17 @@ public class Options extends OptionsBase {
                     wrong_staticness = wrong_staticness_fix;
                 }
     
+                else if( false
+                || value.equals( "fixstrict" )
+                ) {
+                    if( wrong_staticness != 0
+                    && wrong_staticness != wrong_staticness_fixstrict ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    wrong_staticness = wrong_staticness_fixstrict;
+                }
+    
                 else {
                     G.v().out.println( "Invalid value "+value+" given for option -"+option );
                     return false;
@@ -1612,6 +1624,7 @@ public class Options extends OptionsBase {
     private List<String> plugin = null;
     public int wrong_staticness() {
         if( wrong_staticness == 0 ) return wrong_staticness_fix;
+        if( wrong_staticness == 0 ) return wrong_staticness_fixstrict;
         return wrong_staticness; 
     }
     public void set_wrong_staticness( int setting ) { wrong_staticness = setting; }
@@ -1809,6 +1822,7 @@ public class Options extends OptionsBase {
 +padVal(" fail", "Raise an error when wrong staticness is detected" )
 +padVal(" ignore", "Ignore errors caused by wrong staticness" )
 +padVal(" fix (default)", "Transparently fix staticness errors" )
++padVal(" fixstrict (default)", "Transparently fix staticness errors, but do not ignore remaining errors" )
 +padOpt(" -p PHASE OPT:VAL -phase-option PHASE OPT:VAL", "Set PHASE's OPT option to VALUE" )
 +padOpt(" -O -optimize", "Perform intraprocedural optimizations" )
 +padOpt(" -W -whole-optimize", "Perform whole program optimizations" )

@@ -432,6 +432,7 @@ public class AntTask extends MatchingTask {
                 || arg.equals( "fail" )
                 || arg.equals( "ignore" )
                 || arg.equals( "fix" )
+                || arg.equals( "fixstrict" )
                 ) {
                 addArg("-wrong-staticness");
                 addArg(arg);
