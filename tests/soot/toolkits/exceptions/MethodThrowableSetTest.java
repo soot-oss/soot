@@ -1,5 +1,7 @@
 package soot.toolkits.exceptions;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -27,13 +29,17 @@ public class MethodThrowableSetTest {
 	private static ExceptionTestUtility testUtility;
 
 	@BeforeClass
-	public static void setUp() {
+	public static void setUp() throws IOException {
 		// Initialize Soot
 		G.reset();
 
 		List<String> processDir = new ArrayList<>();
-		processDir.add("./testclasses");
-		processDir.add("./target/test-classes");
+		File f = new File("./testclasses");
+		if (f.exists())
+			processDir.add(f.getCanonicalPath());
+		f = new File("./testclasses");
+		if (f.exists())
+			processDir.add(f.getCanonicalPath());
 		Options.v().set_process_dir(processDir);
 
 		Options.v().set_src_prec(Options.src_prec_only_class);

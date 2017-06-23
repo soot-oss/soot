@@ -40,16 +40,26 @@ public class MinimalJavaVersionTest {
 		}
 	}
 
+	/**
+	 * Returns the folder that is to be added to the class path for running soot
+	 * 
+	 * @return The location of the folder containing the test files
+	 */
+	protected String getClassPathFolder() {
+		File f = new File("./target/test-classes");
+		if (!f.exists() || f.list().length == 0)
+			f = new File("./testclasses");
+		return f.getAbsolutePath();
+	}
+
 	protected void runSoot(String className, String version) {
 		G.reset();
 		// Location of the rt.jar
 		String rtJar = System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar";
 
 		// Run Soot and print output to .asm-files.
-		Main.v().run(new String[] { "-cp",
-				"./testclasses" + File.pathSeparator + "./target/test-classes" + File.pathSeparator + rtJar,
-				"-src-prec", "only-class", "-output-format", "asm", "-allow-phantom-refs", "-java-version", version,
-				className });
+		Main.v().run(new String[] { "-cp", getClassPathFolder() + File.pathSeparator + rtJar, "-src-prec", "only-class",
+				"-output-format", "asm", "-allow-phantom-refs", "-java-version", version, className });
 	}
 
 }
