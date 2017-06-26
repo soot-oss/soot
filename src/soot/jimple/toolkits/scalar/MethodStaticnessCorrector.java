@@ -50,7 +50,7 @@ public class MethodStaticnessCorrector extends BodyTransformer {
 						SootMethod target = Scene.v().grabMethod(iexpr.getMethodRef().getSignature());
 						if (target != null && !target.isStatic()) {
 							if (canBeMadeStatic(target))
-								target.setModifiers(target.getModifiers() & ~Modifier.STATIC);
+								target.setModifiers(target.getModifiers() | Modifier.STATIC);
 						}
 					}
 				}
