@@ -95,7 +95,7 @@ public class SootResolver {
 	}
 
 	/** Returns true if we are resolving all class refs recursively. */
-	private boolean resolveEverything() {
+	protected boolean resolveEverything() {
 		if (Options.v().on_the_fly())
 			return false;
 		return (Options.v().whole_program() || Options.v().whole_shimple() || Options.v().full_resolver()
