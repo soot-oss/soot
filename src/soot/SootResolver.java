@@ -145,7 +145,7 @@ public class SootResolver {
 	}
 
 	/** Resolve all classes on toResolveWorklist. */
-	private void processResolveWorklist() {
+	protected void processResolveWorklist() {
 		for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
 			while (!worklist[i].isEmpty()) {
 				SootClass sc = worklist[i].pop();
@@ -180,7 +180,7 @@ public class SootResolver {
 		}
 	}
 
-	private void addToResolveWorklist(Type type, int level) {
+	protected void addToResolveWorklist(Type type, int level) {
 		// We go from Type -> SootClass directly, since RefType.getSootClass
 		// calls makeClassRef anyway
 		if (type instanceof RefType)
@@ -190,7 +190,7 @@ public class SootResolver {
 		// Other types ignored
 	}
 
-	private void addToResolveWorklist(SootClass sc, int desiredLevel) {
+	protected void addToResolveWorklist(SootClass sc, int desiredLevel) {
 		if (sc.resolvingLevel() >= desiredLevel)
 			return;
 		worklist[desiredLevel].add(sc);
@@ -200,7 +200,7 @@ public class SootResolver {
 	 * Hierarchy - we know the hierarchy of the class and that's it requires at
 	 * least Hierarchy for all supertypes and enclosing types.
 	 */
-	private void bringToHierarchy(SootClass sc) {
+	protected void bringToHierarchy(SootClass sc) {
 		if (sc.resolvingLevel() >= SootClass.HIERARCHY)
 			return;
 		if (Options.v().debug_resolver())
@@ -260,7 +260,7 @@ public class SootResolver {
 	 * Signatures - we know the signatures of all methods and fields requires at
 	 * least Hierarchy for all referred to types in these signatures.
 	 */
-	private void bringToSignatures(SootClass sc) {
+	protected void bringToSignatures(SootClass sc) {
 		if (sc.resolvingLevel() >= SootClass.SIGNATURES)
 			return;
 		bringToHierarchy(sc);
@@ -298,7 +298,7 @@ public class SootResolver {
 	 * conservative and brings all of them to signatures. But this could/should
 	 * be improved.
 	 */
-	private void bringToBodies(SootClass sc) {
+	protected void bringToBodies(SootClass sc) {
 		if (sc.resolvingLevel() >= SootClass.BODIES)
 			return;
 		bringToSignatures(sc);
