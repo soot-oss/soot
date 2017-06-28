@@ -207,6 +207,10 @@ public class SootResolver {
 			G.v().out.println("bringing to HIERARCHY: " + sc);
 		sc.setResolvingLevel(SootClass.HIERARCHY);
 
+		bringToHierarchyUnchecked(sc);
+	}
+
+	protected void bringToHierarchyUnchecked(SootClass sc) {
 		String className = sc.getName();
 		ClassSource is = SourceLocator.v().getClassSource(className);
 		try {
@@ -268,6 +272,10 @@ public class SootResolver {
 			G.v().out.println("bringing to SIGNATURES: " + sc);
 		sc.setResolvingLevel(SootClass.SIGNATURES);
 
+		bringToSignaturesUnchecked(sc);
+	}
+
+	protected void bringToSignaturesUnchecked(SootClass sc) {
 		for (SootField f : sc.getFields()) {
 			addToResolveWorklist(f.getType(), SootClass.HIERARCHY);
 		}
@@ -306,6 +314,10 @@ public class SootResolver {
 			G.v().out.println("bringing to BODIES: " + sc);
 		sc.setResolvingLevel(SootClass.BODIES);
 
+		bringToBodiesUnchecked(sc);
+	}
+
+	protected void bringToBodiesUnchecked(SootClass sc) {
 		{
 			Collection<Type> references = classToTypesHierarchy.get(sc);
 			if (references != null) {
