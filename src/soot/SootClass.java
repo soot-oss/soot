@@ -113,7 +113,7 @@ public class SootClass extends AbstractHost implements Numberable {
 	public final static int BODIES = 3;
 	private volatile int resolvingLevel = DANGLING;
 
-	private String levelToString(int level) {
+	protected String levelToString(int level) {
 		switch (level) {
 		case DANGLING:
 			return "DANGLING";
@@ -155,12 +155,13 @@ public class SootClass extends AbstractHost implements Numberable {
 	 *             if the resolution is at an insufficient level
 	 */
 	public void checkLevelIgnoreResolving(int level) {
-		if (resolvingLevel < level) {
+		int currentLevel = resolvingLevel();
+		if (currentLevel < level) {
 			String hint = "\nIf you are extending Soot, try to add the following call before calling soot.Main.main(..):\n"
 					+ "Scene.v().addBasicClass(" + getName() + "," + levelToString(level) + ");\n"
 					+ "Otherwise, try whole-program mode (-w).";
 			throw new RuntimeException("This operation requires resolving level " + levelToString(level) + " but "
-					+ name + " is at resolving level " + levelToString(resolvingLevel) + hint);
+					+ name + " is at resolving level " + levelToString(currentLevel) + hint);
 		}
 	}
 
