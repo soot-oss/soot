@@ -612,7 +612,7 @@ public class SootClass extends AbstractHost implements Numberable {
 		m.setDeclaringClass(this);
 	}
 
-	synchronized SootMethod getOrAddMethod(SootMethod m) {
+	public synchronized SootMethod getOrAddMethod(SootMethod m) {
 		checkLevel(SIGNATURES);
 		if (m.isDeclared())
 			throw new RuntimeException("already declared: " + m.getName());

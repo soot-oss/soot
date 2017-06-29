@@ -1821,4 +1821,18 @@ public class Scene // extends AbstractHost
 		}
 		return c;
 	}
+
+	public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType) {
+		return new SootMethod(name, parameterTypes, returnType);
+	}
+
+	public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers) {
+		return new SootMethod(name, parameterTypes, returnType, modifiers);
+	}
+
+	public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers,
+			List<SootClass> thrownExceptions) {
+		return new SootMethod(name, parameterTypes, returnType, modifiers, thrownExceptions);
+	}
+
 }

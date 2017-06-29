@@ -23,7 +23,6 @@
  */
 package soot.dexpler;
 
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,6 +39,7 @@ import soot.G;
 import soot.MethodSource;
 import soot.Modifier;
 import soot.RefType;
+import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
 import soot.SootResolver;
@@ -49,110 +49,118 @@ import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
 
 /**
- * DexMethod is a container for all methods that are declared in a class.
- * It holds information about its name, the class it belongs to, its access flags, thrown exceptions, the return type and parameter types as well as the encoded method itself.
+ * DexMethod is a container for all methods that are declared in a class. It
+ * holds information about its name, the class it belongs to, its access flags,
+ * thrown exceptions, the return type and parameter types as well as the encoded
+ * method itself.
  *
  */
 public class DexMethod {
 
-    private DexMethod() {}
+	private DexMethod() {
+	}
 
-    /**
-     * Retrieve the SootMethod equivalent of this method
-     * @return the SootMethod of this method
-     */
-    public static SootMethod makeSootMethod(final DexFile dexFile,
-    		final Method method, final SootClass declaringClass) {
-        int accessFlags = method.getAccessFlags();
-        List<Type> parameterTypes = new ArrayList<Type>();
+	/**
+	 * Retrieve the SootMethod equivalent of this method
+	 * 
+	 * @return the SootMethod of this method
+	 */
+	public static SootMethod makeSootMethod(final DexFile dexFile, final Method method,
+			final SootClass declaringClass) {
+		int accessFlags = method.getAccessFlags();
+		List<Type> parameterTypes = new ArrayList<Type>();
 
-        // get the name of the method
-        String name = method.getName();
-        Debug.printDbg("processing method '", method.getDefiningClass() ,": ", method.getReturnType(), " ", method.getName(), " p: ", method.getParameters(), "'");
+		// get the name of the method
+		String name = method.getName();
+		Debug.printDbg("processing method '", method.getDefiningClass(), ": ", method.getReturnType(), " ",
+				method.getName(), " p: ", method.getParameters(), "'");
 
-        // the following snippet retrieves all exceptions that this method throws by analyzing its annotations
-        List<SootClass> thrownExceptions = new ArrayList<SootClass>();
-        for (Annotation a : method.getAnnotations()) {
-            Type atype = DexType.toSoot(a.getType());
-            String atypes = atype.toString();
-            if (!(atypes.equals("dalvik.annotation.Throws")))
-                continue;
-            for (AnnotationElement ae : a.getElements()) {
-                EncodedValue ev = ae.getValue();
-                if(ev instanceof ArrayEncodedValue) {
-                    for(EncodedValue evSub : ((ArrayEncodedValue) ev).getValue()) {
-                        if(evSub instanceof TypeEncodedValue) {
-                            TypeEncodedValue valueType = (TypeEncodedValue) evSub;
-                            String exceptionName = valueType.getValue();
-                            String dottedName = Util.dottedClassName(exceptionName);
-                            thrownExceptions.add(SootResolver.v().makeClassRef(dottedName));
-                        }
-                    }
-                }
-            }
-        }
+		// the following snippet retrieves all exceptions that this method
+		// throws by analyzing its annotations
+		List<SootClass> thrownExceptions = new ArrayList<SootClass>();
+		for (Annotation a : method.getAnnotations()) {
+			Type atype = DexType.toSoot(a.getType());
+			String atypes = atype.toString();
+			if (!(atypes.equals("dalvik.annotation.Throws")))
+				continue;
+			for (AnnotationElement ae : a.getElements()) {
+				EncodedValue ev = ae.getValue();
+				if (ev instanceof ArrayEncodedValue) {
+					for (EncodedValue evSub : ((ArrayEncodedValue) ev).getValue()) {
+						if (evSub instanceof TypeEncodedValue) {
+							TypeEncodedValue valueType = (TypeEncodedValue) evSub;
+							String exceptionName = valueType.getValue();
+							String dottedName = Util.dottedClassName(exceptionName);
+							thrownExceptions.add(SootResolver.v().makeClassRef(dottedName));
+						}
+					}
+				}
+			}
+		}
 
-        // retrieve all parameter types
-        if (method.getParameters() != null) {
-            List<? extends CharSequence> parameters = method.getParameterTypes();
+		// retrieve all parameter types
+		if (method.getParameters() != null) {
+			List<? extends CharSequence> parameters = method.getParameterTypes();
 
-            for(CharSequence t : parameters) {
-                Type type = DexType.toSoot(t.toString());
-                parameterTypes.add(type);
-            }
-        }
+			for (CharSequence t : parameters) {
+				Type type = DexType.toSoot(t.toString());
+				parameterTypes.add(type);
+			}
+		}
 
-        // retrieve the return type of this method
-        Type returnType = DexType.toSoot(method.getReturnType());
+		// retrieve the return type of this method
+		Type returnType = DexType.toSoot(method.getReturnType());
 
-        //Build soot method by all available parameters
-        SootMethod sm = declaringClass.getMethodUnsafe(name, parameterTypes, returnType);
-        if (sm == null) {
-            sm = new SootMethod(name, parameterTypes, returnType, accessFlags, thrownExceptions);
-        }
+		// Build soot method by all available parameters
+		SootMethod sm = declaringClass.getMethodUnsafe(name, parameterTypes, returnType);
+		if (sm == null) {
+			sm = Scene.v().makeSootMethod(name, parameterTypes, returnType, accessFlags, thrownExceptions);
+		}
 
-        // if the method is abstract or native, no code needs to be transformed
-        int flags = method.getAccessFlags();
-        if (Modifier.isAbstract(flags)|| Modifier.isNative(flags))
-            return sm;
+		// if the method is abstract or native, no code needs to be transformed
+		int flags = method.getAccessFlags();
+		if (Modifier.isAbstract(flags) || Modifier.isNative(flags))
+			return sm;
 
-        if (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES)
-            return sm;
+		if (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES)
+			return sm;
 
-//        // retrieve all local types of the method
-//        DebugInfoItem debugInfo = method.g.codeItem.getDebugInfo();
-//        if(debugInfo!=null) {
-//			for(Item<?> item : debugInfo.getReferencedItems()) {
-//	            if (item instanceof TypeIdItem) {
-//	                Type type = DexType.toSoot((TypeIdItem) item);
-//	                dexClass.types.add(type);
-//	            }
-//
-//	        }
-//        }
+		// // retrieve all local types of the method
+		// DebugInfoItem debugInfo = method.g.codeItem.getDebugInfo();
+		// if(debugInfo!=null) {
+		// for(Item<?> item : debugInfo.getReferencedItems()) {
+		// if (item instanceof TypeIdItem) {
+		// Type type = DexType.toSoot((TypeIdItem) item);
+		// dexClass.types.add(type);
+		// }
+		//
+		// }
+		// }
 
-        // sets the method source by adding its body as the active body
-        sm.setSource(new MethodSource() {
-            
-            public Body getBody(SootMethod m, String phaseName) {
-                Body b = Jimple.v().newBody(m);
-                try {
-                    //add the body of this code item
-                	DexBody dexBody = new DexBody(dexFile, method, (RefType) declaringClass.getType());                	
+		// sets the method source by adding its body as the active body
+		sm.setSource(new MethodSource() {
+
+			public Body getBody(SootMethod m, String phaseName) {
+				Body b = Jimple.v().newBody(m);
+				try {
+					// add the body of this code item
+					DexBody dexBody = new DexBody(dexFile, method, (RefType) declaringClass.getType());
 					dexBody.jimplify(b, m);
-                } catch (InvalidDalvikBytecodeException e) {
-                    String msg = "Warning: Invalid bytecode in method "+ m +": "+ e;
-                    G.v().out.println(msg);
-                    Util.emptyBody(b);
-                    Util.addExceptionAfterUnit(b, "java.lang.RuntimeException", b.getUnits().getLast(), "Soot has detected that this method contains invalid Dalvik bytecode which would have throw an exception at runtime. ["+ msg +"]");
-                    TypeAssigner.v().transform(b);
-                }
-                m.setActiveBody(b);
-                
-                return m.getActiveBody();
-            }
-        });
+				} catch (InvalidDalvikBytecodeException e) {
+					String msg = "Warning: Invalid bytecode in method " + m + ": " + e;
+					G.v().out.println(msg);
+					Util.emptyBody(b);
+					Util.addExceptionAfterUnit(b, "java.lang.RuntimeException", b.getUnits().getLast(),
+							"Soot has detected that this method contains invalid Dalvik bytecode which would have throw an exception at runtime. ["
+									+ msg + "]");
+					TypeAssigner.v().transform(b);
+				}
+				m.setActiveBody(b);
 
-        return sm;
-    }
+				return m.getActiveBody();
+			}
+		});
+
+		return sm;
+	}
 }

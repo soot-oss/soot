@@ -43,6 +43,7 @@ import soot.util.NumberedString;
  */
 
 class SootMethodRefImpl implements SootMethodRef {
+
 	public SootMethodRefImpl(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
 			boolean isStatic) {
 		this.declaringClass = declaringClass;
@@ -267,6 +268,58 @@ class SootMethodRefImpl implements SootMethodRef {
 
 	public String toString() {
 		return getSignature();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((declaringClass == null) ? 0 : declaringClass.hashCode());
+		result = prime * result + (isStatic ? 1231 : 1237);
+		result = prime * result + ((name == null) ? 0 : name.hashCode());
+		result = prime * result + ((parameterTypes == null) ? 0 : parameterTypes.hashCode());
+		result = prime * result + ((returnType == null) ? 0 : returnType.hashCode());
+		result = prime * result + ((subsig == null) ? 0 : subsig.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		SootMethodRefImpl other = (SootMethodRefImpl) obj;
+		if (declaringClass == null) {
+			if (other.declaringClass != null)
+				return false;
+		} else if (!declaringClass.equals(other.declaringClass))
+			return false;
+		if (isStatic != other.isStatic)
+			return false;
+		if (name == null) {
+			if (other.name != null)
+				return false;
+		} else if (!name.equals(other.name))
+			return false;
+		if (parameterTypes == null) {
+			if (other.parameterTypes != null)
+				return false;
+		} else if (!parameterTypes.equals(other.parameterTypes))
+			return false;
+		if (returnType == null) {
+			if (other.returnType != null)
+				return false;
+		} else if (!returnType.equals(other.returnType))
+			return false;
+		if (subsig == null) {
+			if (other.subsig != null)
+				return false;
+		} else if (!subsig.equals(other.subsig))
+			return false;
+		return true;
 	}
 
 }
