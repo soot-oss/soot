@@ -82,6 +82,7 @@ import soot.Scene;
 import soot.ShortType;
 import soot.SootClass;
 import soot.SootField;
+import soot.SootFieldRef;
 import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.SourceLocator;
@@ -959,6 +960,13 @@ public class DexPrinter {
 		FieldReference fieldRef = new ImmutableFieldReference(
 				SootToDexUtils.getDexClassName(f.getDeclaringClass().getName()), f.getName(),
 				SootToDexUtils.getDexTypeDescriptor(f.getType()));
+		return belongingDexFile.internFieldReference(fieldRef);
+	}
+
+	protected static BuilderFieldReference toFieldReference(SootFieldRef ref, DexBuilder belongingDexFile) {
+		FieldReference fieldRef = new ImmutableFieldReference(
+				SootToDexUtils.getDexClassName(ref.declaringClass().getName()), ref.name(),
+				SootToDexUtils.getDexTypeDescriptor(ref.type()));
 		return belongingDexFile.internFieldReference(fieldRef);
 	}
 
