@@ -49,7 +49,7 @@ public final class NumberedString implements Numberable {
 	}
 
 	final private String s;
-	private int number;
+	private volatile int number;
 
 	@Override
 	public int hashCode() {
