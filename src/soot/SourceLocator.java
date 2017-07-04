@@ -60,7 +60,6 @@ public class SourceLocator {
 	}
 
 	protected Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
-	protected Set<String> classesToLoad;
 
 	private enum ClassSourceType {
 		jar, zip, apk, dex, directory, unknown
@@ -71,14 +70,6 @@ public class SourceLocator {
 	 * the given class.
 	 */
 	public ClassSource getClassSource(String className) {
-		if (classesToLoad == null) {
-			classesToLoad = new HashSet<String>();
-			classesToLoad.addAll(Scene.v().getBasicClasses());
-			for (SootClass c : Scene.v().getApplicationClasses()) {
-				classesToLoad.add(c.getName());
-			}
-		}
-
 		if (classPath == null) {
 			classPath = explodeClassPath(Scene.v().getSootClassPath());
 		}
@@ -135,7 +126,7 @@ public class SourceLocator {
 		additionalClassLoaders.add(c);
 	}
 
-	private void setupClassProviders() {
+	protected void setupClassProviders() {
 		classProviders = new LinkedList<ClassProvider>();
 		ClassProvider classFileClassProvider = Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
 		switch (Options.v().src_prec()) {
@@ -173,13 +164,13 @@ public class SourceLocator {
 		}
 	}
 
-	private List<ClassProvider> classProviders;
+	protected List<ClassProvider> classProviders;
 
 	public void setClassProviders(List<ClassProvider> classProviders) {
 		this.classProviders = classProviders;
 	}
 
-	private List<String> classPath;
+	protected List<String> classPath;
 
 	public List<String> classPath() {
 		return classPath;
@@ -745,8 +736,8 @@ public class SourceLocator {
 	}
 
 	private FoundFile lookupInDir(String dir, String fileName) {
-		File f = new File(dir + File.separatorChar + fileName);
-		if (f.canRead()) {
+		File f = new File(dir, fileName);
+		if (f.exists() && f.canRead()) {
 			return new FoundFile(f);
 		}
 		return null;

@@ -125,7 +125,7 @@ class AbstractSootFieldRef implements SootFieldRef {
 					}
 
 					// Create the phantom field
-					SootField f = new SootField(name, type, isStatic() ? Modifier.STATIC : 0);
+					SootField f = Scene.v().makeSootField(name, type, isStatic() ? Modifier.STATIC : 0);
 					f.setPhantom(true);
 					cl.addField(f);
 					return f;
@@ -156,7 +156,7 @@ class AbstractSootFieldRef implements SootFieldRef {
 
 		// If we allow phantom refs, we construct phantom fields
 		if (Options.v().allow_phantom_refs()) {
-			SootField sf = new SootField(name, type, isStatic ? Modifier.STATIC : 0);
+			SootField sf = Scene.v().makeSootField(name, type, isStatic ? Modifier.STATIC : 0);
 			sf.setPhantom(true);
 			synchronized (declaringClass) {
 				// Be careful: Another thread may have already created this

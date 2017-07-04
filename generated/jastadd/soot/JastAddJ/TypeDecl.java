@@ -5964,7 +5964,7 @@ public abstract class TypeDecl extends ASTNode<ASTNode> implements Cloneable, Si
 	 * @apilevel internal
 	 */
 	private SootField getSootField_compute(String name, TypeDecl type) {
-		SootField f = new SootField(name, type.getSootType(), 0);
+		SootField f = Scene.v().makeSootField(name, type.getSootType(), 0);
 		getSootClassDecl().addField(f);
 		return f;
 	}

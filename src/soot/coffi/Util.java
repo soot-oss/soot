@@ -202,7 +202,7 @@ public class Util {
 			int modifiers = fieldInfo.access_flags;
 			Type fieldType = jimpleTypeOfFieldDescriptor(fieldDescriptor);
 
-			SootField field = new SootField(fieldName, fieldType, modifiers);
+			SootField field = Scene.v().makeSootField(fieldName, fieldType, modifiers);
 			bclass.addField(field);
 
 			references.add(fieldType);

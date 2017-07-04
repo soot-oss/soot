@@ -1835,4 +1835,20 @@ public class Scene // extends AbstractHost
 		return new SootMethod(name, parameterTypes, returnType, modifiers, thrownExceptions);
 	}
 
+	public SootField makeSootField(String name, Type type, int modifiers) {
+		return new SootField(name, type, modifiers);
+	}
+
+	public SootField makeSootField(String name, Type type) {
+		return new SootField(name, type);
+	}
+
+	public RefType getOrAddRefType(RefType tp) {
+		RefType existing = nameToClass.get(tp.getClassName());
+		if (existing != null)
+			return existing;
+		nameToClass.put(tp.getClassName(), tp);
+		return tp;
+	}
+
 }

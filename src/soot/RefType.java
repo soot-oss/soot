@@ -25,9 +25,9 @@
 
 package soot;
 
-import soot.util.*;
+import java.util.LinkedList;
 
-import java.util.*;
+import soot.util.Switch;
 
 /**
  * A class that models Java's reference types. RefTypes are parametrized by a
@@ -57,15 +57,11 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
 	private RefType(String className) {
 		if (className.startsWith("["))
-			throw new RuntimeException(
-					"Attempt to create RefType whose name starts with [ --> "
-							+ className);
+			throw new RuntimeException("Attempt to create RefType whose name starts with [ --> " + className);
 		if (className.indexOf("/") >= 0)
-			throw new RuntimeException(
-					"Attempt to create RefType containing a / --> " + className);
+			throw new RuntimeException("Attempt to create RefType containing a / --> " + className);
 		if (className.indexOf(";") >= 0)
-			throw new RuntimeException(
-					"Attempt to create RefType containing a ; --> " + className);
+			throw new RuntimeException("Attempt to create RefType containing a ; --> " + className);
 		this.className = className;
 	}
 
@@ -80,7 +76,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 		RefType rt = Scene.v().getRefTypeUnsafe(className);
 		if (rt == null) {
 			rt = new RefType(className);
-			Scene.v().addRefType(rt);
+			return Scene.v().getOrAddRefType(rt);
 		}
 		return rt;
 	}
@@ -140,8 +136,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 	 *            RefType parametrized by the same name as this.
 	 */
 	public boolean equals(Object t) {
-		return ((t instanceof RefType) && className
-				.equals(((RefType) t).className));
+		return ((t instanceof RefType) && className.equals(((RefType) t).className));
 	}
 
 	public String toString() {
@@ -162,8 +157,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 			return this;
 
 		if (!(other instanceof RefType))
-			throw new RuntimeException("illegal type merge: " + this + " and "
-					+ other);
+			throw new RuntimeException("illegal type merge: " + this + " and " + other);
 
 		{
 			// Return least common superclass
@@ -213,18 +207,14 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 			{
 				SootClass commonClass = null;
 
-				while (!otherHierarchy.isEmpty()
-						&& !thisHierarchy.isEmpty()
-						&& otherHierarchy.getFirst() == thisHierarchy
-								.getFirst()) {
+				while (!otherHierarchy.isEmpty() && !thisHierarchy.isEmpty()
+						&& otherHierarchy.getFirst() == thisHierarchy.getFirst()) {
 					commonClass = otherHierarchy.removeFirst();
 					thisHierarchy.removeFirst();
 				}
 
 				if (commonClass == null)
-					throw new RuntimeException(
-							"Could not find a common superclass for " + this
-									+ " and " + other);
+					throw new RuntimeException("Could not find a common superclass for " + this + " and " + other);
 
 				return commonClass.getType();
 			}
@@ -233,13 +223,11 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 	}
 
 	public Type getArrayElementType() {
-		if (className.equals("java.lang.Object")
-				|| className.equals("java.io.Serializable")
+		if (className.equals("java.lang.Object") || className.equals("java.io.Serializable")
 				|| className.equals("java.lang.Cloneable")) {
 			return RefType.v("java.lang.Object");
 		}
-		throw new RuntimeException(
-				"Attempt to get array base type of a non-array");
+		throw new RuntimeException("Attempt to get array base type of a non-array");
 
 	}
 
@@ -254,10 +242,10 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 	public boolean isAllowedInFinalCode() {
 		return true;
 	}
-	
+
 	@Override
-    public String getEscapedName() {
-    	return Scene.v().quotedNameOf(getClassName());
-    }
+	public String getEscapedName() {
+		return Scene.v().quotedNameOf(getClassName());
+	}
 
 }

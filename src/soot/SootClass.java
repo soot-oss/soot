@@ -626,6 +626,20 @@ public class SootClass extends AbstractHost implements Numberable {
 		return m;
 	}
 
+	public synchronized SootField getOrAddField(SootField f) {
+		checkLevel(SIGNATURES);
+		if (f.isDeclared())
+			throw new RuntimeException("already declared: " + f.getName());
+		SootField old = getFieldUnsafe(f.getName(), f.getType());
+		if (old != null)
+			return old;
+
+		fields.add(f);
+		f.isDeclared = true;
+		f.declaringClass = this;
+		return f;
+	}
+
 	/**
 	 * Removes the given method from this class.
 	 */

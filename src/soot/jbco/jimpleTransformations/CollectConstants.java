@@ -147,7 +147,8 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
 					rand = (SootClass) classes[Rand.getInt(classes.length)];
 				} while (rand.isInterface());
 
-				SootField newf = new SootField(FieldRenamer.getNewName(), t, Modifier.STATIC ^ Modifier.PUBLIC);
+				SootField newf = Scene.v().makeSootField(FieldRenamer.getNewName(), t,
+						Modifier.STATIC ^ Modifier.PUBLIC);
 				rand.addField(newf);
 				FieldRenamer.sootFieldsRenamed.add(newf);
 				FieldRenamer.addOldAndNewName(name, newf.getName());
