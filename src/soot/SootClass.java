@@ -90,13 +90,25 @@ public class SootClass extends AbstractHost implements Numberable {
 			throw new RuntimeException("Attempt to make a class whose name starts with [");
 		setName(name);
 		this.modifiers = modifiers;
-		refType = RefType.v(name);
-		refType.setSootClass(this);
+		initializeRefType(name);
 		if (Options.v().debug_resolver())
 			G.v().out.println("created " + name + " with modifiers " + modifiers);
 		setResolvingLevel(BODIES);
 
 		Scene.v().getClassNumberer().add(this);
+	}
+
+	/**
+	 * Makes sure that there is a RefType pointing to this SootClass. Client
+	 * code that provides its own SootClass implementation can override and
+	 * modify this behavior.
+	 * 
+	 * @param name
+	 *            The name of the new class
+	 */
+	protected void initializeRefType(String name) {
+		refType = RefType.v(name);
+		refType.setSootClass(this);
 	}
 
 	/**
