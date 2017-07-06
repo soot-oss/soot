@@ -1822,6 +1822,10 @@ public class Scene // extends AbstractHost
 		return c;
 	}
 
+	public SootClass makeSootClass(String name) {
+		return new SootClass(name);
+	}
+
 	public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType) {
 		return new SootMethod(name, parameterTypes, returnType);
 	}
