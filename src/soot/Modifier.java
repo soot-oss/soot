@@ -63,6 +63,13 @@ public class Modifier
     public static final int DECLARED_SYNCHRONIZED = 0x20000;
     // add
 
+
+    // modifier for java 9 modules
+    public static final int REQUIRES_TRANSITIVE = 0x0020;
+    public static final int REQUIRES_STATIC = 0x0040;
+    public static final int REQUIRES_SYNTHETIC = 0x1000;
+    public static final int REQUIRES_MANDATED = 0x8000;
+
     private Modifier()
     {
     }
