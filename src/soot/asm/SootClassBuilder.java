@@ -68,7 +68,7 @@ class SootClassBuilder extends ClassVisitor {
 	 *            Soot class to build.
 	 */
 	SootClassBuilder(SootClass klass) {
-		super(Opcodes.ASM5);
+        super(Opcodes.ASM6);
 		this.klass = klass;
 		this.deps = new HashSet();
 	}
@@ -81,7 +81,7 @@ class SootClassBuilder extends ClassVisitor {
 	}
 
 	void addDep(String s) {
-		addDep(RefType.v(AsmUtil.baseTypeName(s)));
+        addDep(RefType.v(AsmUtil.baseTypeName(s), Optional.fromNullable(this.klass.moduleName)));
 	}
 
 	/**
@@ -96,20 +96,43 @@ class SootClassBuilder extends ClassVisitor {
 
 	@Override
 	public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
+
+
+        //resolve module Info first
+        //FIXME: check if class is  a module-info,
+        // if not add the module information to it
+        if (access != Opcodes.ACC_MODULE) {
+            SootModuleInfo moduleInfo = null;
+            //if we are in module mode
+            if (Options.v().module_mode()) {
+                moduleInfo = (SootModuleInfo) SootResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.fromNullable(this.klass.moduleName));
+            } else {
+                //FIXME: this wont work, we have to use a class reference here,
+                //FIXME: the empty module name will throw an error if not created properly
+                //TODO: hint create unamed module at startUp of Soot as Dummy Class via load dummy Classes in Soot (load necessaryClasses)
+                //moduleInfo = (SootModuleInfo) SootResolver.v().makeClassRef(":"+"module-info");
+            }
+            klass.setModuleInformation(moduleInfo);
+        }
+
+
+        //FIXME: the name for module-info files is different
 		name = AsmUtil.toQualifiedName(name);
-		if (!name.equals(klass.getName()))
-			throw new RuntimeException("Class names not equal! " + name + " != " + klass.getName());
+        //FIXME: look if this works
+        if (!name.equals(klass.getName()) && Options.v().verbose())
+            System.err.println("Class names not equal! " + name + " != " + klass.getName());
+        //	throw new RuntimeException("Class names not equal! "+name+" != "+klass.getName());
 		klass.setModifiers(access & ~Opcodes.ACC_SUPER);
 		if (superName != null) {
 			superName = AsmUtil.toQualifiedName(superName);
-			addDep(RefType.v(superName));
-			klass.setSuperclass(SootResolver.v().makeClassRef(superName));
+            addDep(RefType.v(superName, Optional.fromNullable(this.klass.moduleName)));
+            klass.setSuperclass(SootResolver.v().makeClassRef(superName, Optional.fromNullable(this.klass.moduleName)));
 		}
 		for (String intrf : interfaces) {
 			intrf = AsmUtil.toQualifiedName(intrf);
-			addDep(RefType.v(intrf));
+            addDep(RefType.v(intrf, Optional.fromNullable(this.klass.moduleName)));
 
-			SootClass interfaceClass = SootResolver.v().makeClassRef(intrf);
+            SootClass interfaceClass = SootResolver.v().makeClassRef(intrf, Optional.fromNullable(this.klass.moduleName));
 			interfaceClass.setModifiers(interfaceClass.getModifiers() | Modifier.INTERFACE);
 			klass.addInterface(interfaceClass);
 		}
@@ -119,7 +142,7 @@ class SootClassBuilder extends ClassVisitor {
 
 	@Override
 	public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
-		soot.Type type = AsmUtil.toJimpleType(desc);
+        soot.Type type = AsmUtil.toJimpleType(desc, Optional.fromNullable(this.klass.moduleName));
 		addDep(type);
 		SootField field = Scene.v().makeSootField(name, type, access);
 		Tag tag;
@@ -153,11 +176,11 @@ class SootClassBuilder extends ClassVisitor {
 			thrownExceptions = new ArrayList<SootClass>(len);
 			for (int i = 0; i != len; i++) {
 				String ex = AsmUtil.toQualifiedName(exceptions[i]);
-				addDep(RefType.v(ex));
-				thrownExceptions.add(SootResolver.v().makeClassRef(ex));
+                addDep(RefType.v(ex, Optional.fromNullable(this.klass.moduleName)));
+                thrownExceptions.add(SootResolver.v().makeClassRef(ex, Optional.fromNullable(this.klass.moduleName)));
 			}
 		}
-		List<soot.Type> sigTypes = AsmUtil.toJimpleDesc(desc);
+        List<soot.Type> sigTypes = AsmUtil.toJimpleDesc(desc, Optional.fromNullable(this.klass.moduleName));
 		for (soot.Type type : sigTypes)
 			addDep(type);
 		SootMethod method = Scene.v().makeSootMethod(name, sigTypes, sigTypes.remove(sigTypes.size() - 1), access,
@@ -177,6 +200,13 @@ class SootClassBuilder extends ClassVisitor {
 	@Override
 	public void visitInnerClass(String name, String outerName, String innerName, int access) {
 		klass.addTag(new InnerClassTag(name, outerName, innerName, access));
+
+
+        //FIXME; hack o resovle inner Classes (e.g. java.util.stream.FindOps$FindSink$... is not resolved
+        if (!(this.klass instanceof SootModuleInfo)) {
+            String innerClassname = AsmUtil.toQualifiedName(name);
+            deps.add(RefType.v(innerClassname, Optional.fromNullable(this.klass.getModuleInformation().getModuleName())));
+        }
 	}
 
 	@Override
@@ -186,8 +216,8 @@ class SootClassBuilder extends ClassVisitor {
 			klass.addTag(new EnclosingMethodTag(owner, name, desc));
 
 		owner = AsmUtil.toQualifiedName(owner);
-		deps.add(RefType.v(owner));
-		klass.setOuterClass(SootResolver.v().makeClassRef(owner));
+        deps.add(RefType.v(owner, Optional.fromNullable(this.klass.getModuleInformation().getModuleName())));
+        klass.setOuterClass(SootResolver.v().makeClassRef(owner, Optional.fromNullable(this.klass.getModuleInformation().getModuleName())));
 	}
 
 	@Override
@@ -199,4 +229,10 @@ class SootClassBuilder extends ClassVisitor {
 	public void visitAttribute(Attribute attr) {
 		getTagBuilder().visitAttribute(attr);
 	}
+
+
+    @Override
+    public ModuleVisitor visitModule(String name, int access, String version) {
+        return new SootModuleInfoBuilder(name, (SootModuleInfo) this.klass, this);
+    }
 }

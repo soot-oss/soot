@@ -26,9 +26,11 @@
 package soot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import com.google.common.base.Optional;
 import soot.dava.toolkits.base.misc.PackageNamer;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
@@ -79,24 +81,38 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	protected boolean isPhantom;
 
-	public final static String INVOKEDYNAMIC_DUMMY_CLASS_NAME = "soot.dummy.InvokeDynamic";
+    public String moduleName = null;
+
+    protected SootModuleInfo moduleInformation;
+
+
+
+    public final static String INVOKEDYNAMIC_DUMMY_CLASS_NAME = "soot.dummy.InvokeDynamic";
 
 	/**
 	 * Constructs an empty SootClass with the given name and modifiers.
 	 */
 
 	public SootClass(String name, int modifiers) {
+		this(name,modifiers,null);
+	}
+
+
+	public SootClass(String name, int modifiers, String moduleName){
 		if (name.charAt(0) == '[')
 			throw new RuntimeException("Attempt to make a class whose name starts with [");
+		this.moduleName = moduleName;
 		setName(name);
 		this.modifiers = modifiers;
-		initializeRefType(name);
+		initializeRefType(name, null);
 		if (Options.v().debug_resolver())
 			G.v().out.println("created " + name + " with modifiers " + modifiers);
 		setResolvingLevel(BODIES);
 
 		Scene.v().getClassNumberer().add(this);
 	}
+
+
 
 	/**
 	 * Makes sure that there is a RefType pointing to this SootClass. Client
@@ -111,6 +127,13 @@ public class SootClass extends AbstractHost implements Numberable {
 		refType.setSootClass(this);
 	}
 
+	protected void initializeRefType(String name, String moduleName){
+		//FIXME: if modulename null and not in module mode dispatch to org method
+		refType = RefType.v(name, Optional.fromNullable(moduleName));
+
+		refType.setSootClass(this);
+	}
+
 	/**
 	 * Constructs an empty SootClass with the given name and no modifiers.
 	 */
@@ -119,11 +142,16 @@ public class SootClass extends AbstractHost implements Numberable {
 		this(name, 0);
 	}
 
-	public final static int DANGLING = 0;
-	public final static int HIERARCHY = 1;
-	public final static int SIGNATURES = 2;
-	public final static int BODIES = 3;
-	private volatile int resolvingLevel = DANGLING;
+
+    public SootClass(String name, String moduleName) {
+        this(name, 0, moduleName);
+    }
+
+    public final static int DANGLING = 0;
+    public final static int HIERARCHY = 1;
+    public final static int SIGNATURES = 2;
+    public final static int BODIES = 3;
+    private int resolvingLevel = DANGLING;
 
 	protected String levelToString(int level) {
 		switch (level) {
@@ -465,6 +493,13 @@ public class SootClass extends AbstractHost implements Numberable {
 		checkLevel(SIGNATURES);
 		return methodList;
 	}
+
+
+    //added Snapshot to avoid ConcurrentModifications
+    public List<SootMethod> getMethodsSnapshot() {
+        checkLevel(SIGNATURES);
+        return Collections.unmodifiableList(new ArrayList<SootMethod>(methodList));
+    }
 
 	/**
 	 * Attempts to retrieve the method with the given name, parameters and
@@ -1110,7 +1145,7 @@ public class SootClass extends AbstractHost implements Numberable {
 		if (this.refType != null) {
 			refType.setClassName(name);
 		} else {
-			refType = RefType.v(name);
+            refType = RefType.v(name, Optional.fromNullable(this.moduleName));
 		}
 		Scene.v().addRefType(refType);
 
@@ -1129,7 +1164,7 @@ public class SootClass extends AbstractHost implements Numberable {
 			validators = new ClassValidator[] { OuterClassValidator.v(), MethodDeclarationValidator.v() };
 		}
 		return validators;
-	};
+    }
 
 	/**
 	 * Validates this SootClass for logical errors. Note that this does not
@@ -1155,5 +1190,64 @@ public class SootClass extends AbstractHost implements Numberable {
 			validator.validate(this, exceptionList);
 		}
 	}
+
+
+
+    public SootModuleInfo getModuleInformation() {
+        return moduleInformation;
+    }
+
+
+	/**
+	 * Checks if this class is exported by it's module
+	 * @return true if the class is public exported
+	 */
+	public boolean isExportedByModule() {
+        if (this.getModuleInformation() == null && Options.v().module_mode()) {
+            //we are in module mode and obviously the class has not been resolved, therefore we have to resolve it
+            Scene.v().forceResolve(this.getName(), SootClass.BODIES);
+        }
+        //for dummy classes moduleInfo could be null
+        if (this.getModuleInformation() == null) {
+            return true;
+        }
+        return this.getModuleInformation().exportsPackagePublic(this.getJavaPackageName());
+
+
+    }
+
+
+    public boolean isOpenedByModule() {
+        if (this.getModuleInformation() == null && Options.v().module_mode()) {
+            //we are in module mode and obviously the class has not been resolved, therefore we have to resolve it
+            Scene.v().forceResolve(this.getName(), SootClass.BODIES);
+        }
+        if (this.getModuleInformation() == null) {
+            return true;
+        }
+        return this.getModuleInformation().openPackagePublic(this.getJavaPackageName());
+
+    }
+
+    public boolean isExportedByModule(String toModule) {
+        if (this.getModuleInformation() == null && Options.v().module_mode()) {
+            //we are in module mode and obvoiusly the class has not been resolved, therefore we have to resolve it
+            Scene.v().forceResolve(this.getName(), SootClass.BODIES);
+        }
+        return this.getModuleInformation().exportsPackage(this.getJavaPackageName(), toModule);
+
+    }
+
+
+    public void setModuleInformation(SootModuleInfo moduleInformation) {
+        this.moduleInformation = moduleInformation;
+    }
+
+
+    public String getFilePath() {
+        if (Options.v().module_mode())
+            return moduleName + ":" + this.getName();
+        return this.getName();
+    }
 
 }
