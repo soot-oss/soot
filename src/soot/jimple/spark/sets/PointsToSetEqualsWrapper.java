@@ -37,6 +37,9 @@ public class PointsToSetEqualsWrapper implements PointsToSet {
         this.pts = pts;
     }
     
+    public EqualsSupportingPointsToSet unwarp(){
+        return  this.pts;
+    }
     /**
      * {@inheritDoc}
      */
