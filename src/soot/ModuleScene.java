@@ -493,10 +493,15 @@ public class ModuleScene extends Scene  //extends AbstractHost
 
     @Override
     public SootClass getSootClass(String className) {
-        if (Options.v().module_mode() && Options.v().verbose()) {
-            G.v().out.println("[Warning] getSootClass called with empty module for class: " + className);
+
+        String moduleName = null;
+        String refinedClassName = className;
+        if (className.contains(":")) {
+            String split[] = className.split(":");
+            refinedClassName = split[1];
+            moduleName = split[0];
         }
-        return getSootClass(className, Optional.fromNullable(null));
+        return getSootClass(refinedClassName, Optional.fromNullable(moduleName));
     }
 
 
@@ -742,7 +747,15 @@ public class ModuleScene extends Scene  //extends AbstractHost
     @Override
     public SootClass forceResolve(String className, int level) {
 
-        return forceResolve(className, level, Optional.fromNullable(null));
+        String moduleName = null;
+        String refinedClassName = className;
+        if (className.contains(":")) {
+            String split[] = className.split(":");
+            refinedClassName = split[1];
+            moduleName = split[0];
+        }
+
+        return forceResolve(refinedClassName, level, Optional.fromNullable(moduleName));
     }
 
     public SootClass forceResolve(String className, int level, Optional<String> moduleName) {
@@ -759,8 +772,17 @@ public class ModuleScene extends Scene  //extends AbstractHost
 
     //FIXME: find usages
     @Override
-    public SootClass makeSootClass(String name) {
-        return new SootClass(name);
+    public SootClass makeSootClass(String className) {
+
+        String moduleName = null;
+        String refinedClassName = className;
+        if (className.contains(":")) {
+            String split[] = className.split(":");
+            refinedClassName = split[1];
+            moduleName = split[0];
+        }
+
+        return makeSootClass(refinedClassName, moduleName);
     }
 
     public SootClass makeSootClass(String name, String moduleName) {
