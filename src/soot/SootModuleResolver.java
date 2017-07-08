@@ -71,15 +71,10 @@ public class SootModuleResolver extends SootResolver {
     }
 
     public SootClass makeClassRef(String className) {
-        String moduleName = null;
-        String refinedClassName = className;
-        if (className.contains(":")) {
-            String split[] = className.split(":");
-            refinedClassName = split[1];
-            moduleName = split[0];
-        }
+        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
 
-        return makeClassRef(refinedClassName, Optional.fromNullable(moduleName));
+
+        return makeClassRef(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
 
     /**
@@ -105,14 +100,9 @@ public class SootModuleResolver extends SootResolver {
     }
 
     public SootClass resolveClass(String className, int desiredLevel) {
-        String moduleName = null;
-        String refinedClassName = className;
-        if (className.contains(":")) {
-            String split[] = className.split(":");
-            refinedClassName = split[1];
-            moduleName = split[0];
-        }
-        return resolveClass(refinedClassName, desiredLevel, Optional.fromNullable(moduleName));
+        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
+
+        return resolveClass(wrapper.getClassName(), desiredLevel, wrapper.getModuleNameOptional());
     }
 
 

@@ -62,7 +62,6 @@ public class ModuleScene extends Scene  //extends AbstractHost
     private final Map<String, Map<String, RefType>> nameToClass = new HashMap<String, Map<String, RefType>>();
 
 
-    SootClass mainClass;
     String modulePath = null;
 
 
@@ -175,15 +174,9 @@ public class ModuleScene extends Scene  //extends AbstractHost
 
 
     public boolean containsClass(String className) {
-        String moduleName = null;
-        String refinedClassName = className;
-        if (className.contains(":")) {
-            String split[] = className.split(":");
-            refinedClassName = split[1];
-            moduleName = split[0];
-        }
+        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
 
-        return containsClass(refinedClassName, Optional.fromNullable(moduleName));
+        return containsClass(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
 
 
@@ -383,16 +376,9 @@ public class ModuleScene extends Scene  //extends AbstractHost
     @Override
     public RefType getRefType(String className) {
 
+        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
 
-        String moduleName = null;
-        String refinedClassName = className;
-        if (className.contains(":")) {
-            String split[] = className.split(":");
-            refinedClassName = split[1];
-            moduleName = split[0];
-        }
-
-        return getRefType(refinedClassName, Optional.fromNullable(moduleName));
+        return getRefType(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
 
 
@@ -442,15 +428,9 @@ public class ModuleScene extends Scene  //extends AbstractHost
     @Override
     public SootClass getSootClassUnsafe(String className) {
 
-        String moduleName = null;
-        String refinedClassName = className;
-        if (className.contains(":")) {
-            String split[] = className.split(":");
-            refinedClassName = split[1];
-            moduleName = split[0];
-        }
+        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
 
-        return getSootClassUnsafe(refinedClassName, Optional.fromNullable(moduleName));
+        return getSootClassUnsafe(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
 
 
@@ -494,14 +474,9 @@ public class ModuleScene extends Scene  //extends AbstractHost
     @Override
     public SootClass getSootClass(String className) {
 
-        String moduleName = null;
-        String refinedClassName = className;
-        if (className.contains(":")) {
-            String split[] = className.split(":");
-            refinedClassName = split[1];
-            moduleName = split[0];
-        }
-        return getSootClass(refinedClassName, Optional.fromNullable(moduleName));
+        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
+
+        return getSootClass(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
 
 
@@ -747,15 +722,10 @@ public class ModuleScene extends Scene  //extends AbstractHost
     @Override
     public SootClass forceResolve(String className, int level) {
 
-        String moduleName = null;
-        String refinedClassName = className;
-        if (className.contains(":")) {
-            String split[] = className.split(":");
-            refinedClassName = split[1];
-            moduleName = split[0];
-        }
+        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
 
-        return forceResolve(refinedClassName, level, Optional.fromNullable(moduleName));
+
+        return forceResolve(wrapper.getClassName(), level, wrapper.getModuleNameOptional());
     }
 
     public SootClass forceResolve(String className, int level, Optional<String> moduleName) {
@@ -774,15 +744,9 @@ public class ModuleScene extends Scene  //extends AbstractHost
     @Override
     public SootClass makeSootClass(String className) {
 
-        String moduleName = null;
-        String refinedClassName = className;
-        if (className.contains(":")) {
-            String split[] = className.split(":");
-            refinedClassName = split[1];
-            moduleName = split[0];
-        }
+        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
 
-        return makeSootClass(refinedClassName, moduleName);
+        return makeSootClass(wrapper.getClassName(), wrapper.getModuleName());
     }
 
     public SootClass makeSootClass(String name, String moduleName) {

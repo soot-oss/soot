@@ -59,15 +59,10 @@ public class ModulePathSourceLocator extends SourceLocator {
     @Override
     public ClassSource getClassSource(String className) {
 
-        String moduleName = null;
-        String refinedClassName = className;
-        if (className.contains(":")) {
-            String split[] = className.split(":");
-            refinedClassName = split[1];
-            moduleName = split[0];
-        }
+        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
 
-        return getClassSource(refinedClassName, Optional.fromNullable(moduleName));
+
+        return getClassSource(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
 
     /**
@@ -147,10 +142,9 @@ public class ModulePathSourceLocator extends SourceLocator {
 
     @Override
     /**
-     * for backward compability returns classes in the form of
+     * for backward compatibility returns classes in the form of
      * module:classname
      */
-    //FIXME: check for caller, to handle appropiate when this name style is loaded
     public List<String> getClassesUnder(String aPath) {
 
         Map<String, List<String>> moduleClasses = getClassUnderModulePath(aPath);
