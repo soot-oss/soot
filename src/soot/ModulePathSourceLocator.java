@@ -21,9 +21,7 @@ package soot;
 
 import com.google.common.base.Optional;
 import soot.JavaClassProvider.JarException;
-import soot.asm.AsmClassProvider;
 import soot.asm.AsmModuleClassProvider;
-import soot.options.Options;
 
 import java.io.File;
 import java.io.IOException;
@@ -36,19 +34,15 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * Provides utility methods to retrieve an input stream for a class name, given
- * a classfile, or jimple or baf output files.
+ * Provides utility methods to retrieve an input stream for a class name of a module, given
+ * a classfile.
  */
 public class ModulePathSourceLocator extends SourceLocator {
 
     public static final String DUMMY_CLASSPATH_JDK9_FS = "VIRTUAL_FS_FOR_JDK9";
 
     protected List<String> sourcePath;
-    /**
-     * The index that maps classes to the files they are defined in.
-     * This is necessary because a dex file can hold multiple classes.
-     */
-    private Map<String, File> dexClassIndex;
+
     protected Set<String> classesToLoad;
 
 
@@ -64,7 +58,16 @@ public class ModulePathSourceLocator extends SourceLocator {
 
     @Override
     public ClassSource getClassSource(String className) {
-        return getClassSource(className, Optional.fromNullable(null));
+
+        String moduleName = null;
+        String refinedClassName = className;
+        if (className.contains(":")) {
+            String split[] = className.split(":");
+            refinedClassName = split[1];
+            moduleName = split[0];
+        }
+
+        return getClassSource(refinedClassName, Optional.fromNullable(moduleName));
     }
 
     /**
@@ -106,6 +109,12 @@ public class ModulePathSourceLocator extends SourceLocator {
     }
 
     private List<String> modulePath;
+    private int next = 0;
+
+    private boolean modulePathHasNextEntry() {
+        return this.next < this.modulePath.size();
+    }
+
 
     @Override
     public List<String> classPath() {
@@ -115,7 +124,7 @@ public class ModulePathSourceLocator extends SourceLocator {
     @Override
     public void invalidateClassPath() {
         modulePath = null;
-        dexClassIndex = null;
+        super.invalidateClassPath();
     }
 
     @Override
@@ -194,7 +203,7 @@ public class ModulePathSourceLocator extends SourceLocator {
             Path mi = path.resolve(SootModuleInfo.MODULE_INFO_FILE);
             if (!Files.exists(mi)) {
                 // assume a directory of modules
-                mapModuleClasses.putAll(findModulesInDir(path));
+                mapModuleClasses.putAll(discoverModulesIn(path));
             } else {
                 //we have an exploded module
                 mapModuleClasses.putAll(buildModuleForExplodedModule(path));
@@ -214,7 +223,7 @@ public class ModulePathSourceLocator extends SourceLocator {
      * @param path
      * @return
      */
-    private Map<String, List<String>> findModulesInDir(Path path) {
+    private Map<String, List<String>> discoverModulesIn(Path path) {
         Map<String, List<String>> mapModuleClasses = new HashMap<>();
 
         try (DirectoryStream<Path> stream = Files.newDirectoryStream(path)) {
@@ -439,7 +448,7 @@ public class ModulePathSourceLocator extends SourceLocator {
         }
 
         //look if we know where the module is
-        Path foundModulePath = findModule(moduleName, modulePath);
+        Path foundModulePath = discoverModule(moduleName);
 
 
         FoundFile ret = null;
@@ -456,7 +465,7 @@ public class ModulePathSourceLocator extends SourceLocator {
         } else if (cst == ClassSourceType.directory) {
             ret = lookupInDir(dir, className);
         } else if (cst == ClassSourceType.jrt) {
-            ret = lookUpInFS(dir, className);
+            ret = lookUpInVirtuellFileSystem(dir, className);
         }
 
         if (ret != null)
@@ -466,16 +475,17 @@ public class ModulePathSourceLocator extends SourceLocator {
     }
 
 
-    private Path findModule(String moduleName, List<String> paths) {
-        Path modulePath = moduleNameToPath.get(moduleName);
-        if (modulePath != null)
-            return modulePath;
+    private Path discoverModule(String moduleName) {
+        Path pathToModule = moduleNameToPath.get(moduleName);
+        if (pathToModule != null)
+            return pathToModule;
         //FIXME: do while has nex tlikne modulpath finder in jd
-        for (String path : paths) {
+        while (modulePathHasNextEntry()) {
+            String path = modulePath.get(next);
             lookUpInModulePath(path);
-            modulePath = moduleNameToPath.get(moduleName);
-            if (modulePath != null)
-                return modulePath;
+            pathToModule = moduleNameToPath.get(moduleName);
+            if (pathToModule != null)
+                return pathToModule;
         }
         return null;
     }
@@ -506,7 +516,14 @@ public class ModulePathSourceLocator extends SourceLocator {
         }
     }
 
-    private FoundFile lookUpInFS(String archivePath, String fileName) {
+    /**
+     * Looks up classes in the virtual Java 9 filesystem jrt:/
+     *
+     * @param archivePath
+     * @param fileName
+     * @return
+     */
+    private FoundFile lookUpInVirtuellFileSystem(String archivePath, String fileName) {
         //  FileSystem fs = FileSystems.getFileSystem(URI.create(archivePath));
         Path foundFile = Paths.get(URI.create(archivePath)).resolve(fileName);
         if (foundFile != null && Files.isRegularFile(foundFile)) {
@@ -516,15 +533,6 @@ public class ModulePathSourceLocator extends SourceLocator {
         return null;
     }
 
-    @Override
-    public Map<String, File> dexClassIndex() {
-        return dexClassIndex;
-    }
-
-    @Override
-    public void setDexClassIndex(Map<String, File> index) {
-        dexClassIndex = index;
-    }
 
     @Override
     protected void setupClassProviders() {
