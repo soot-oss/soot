@@ -1191,6 +1191,20 @@ public class Singletons {
     	instance_soot_ModuleScene = null;
     }
 
+    private soot.ModuleUtil instance_soot_ModuleUtil;
+    public soot.ModuleUtil soot_ModuleUtil() {
+        if( instance_soot_ModuleUtil == null ) {
+	       	synchronized (this) {
+		        if( instance_soot_ModuleUtil == null )
+	        		instance_soot_ModuleUtil = new soot.ModuleUtil( g );
+	       	}
+       	}
+        return instance_soot_ModuleUtil;
+    }
+    protected void release_soot_ModuleUtil() {
+    	instance_soot_ModuleUtil = null;
+    }
+
     private soot.dava.toolkits.base.finders.SequenceFinder instance_soot_dava_toolkits_base_finders_SequenceFinder;
     public soot.dava.toolkits.base.finders.SequenceFinder soot_dava_toolkits_base_finders_SequenceFinder() {
         if( instance_soot_dava_toolkits_base_finders_SequenceFinder == null ) {

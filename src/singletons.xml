@@ -83,6 +83,7 @@
   <class>soot.ModuleRefType</class>
   <class>soot.Scene</class>
   <class>soot.ModuleScene</class>
+  <class>soot.ModuleUtil</class>
   <class>soot.dava.toolkits.base.finders.SequenceFinder</class>
   <class>soot.shimple.Shimple</class>
   <class>soot.shimple.ShimpleTransformer</class>
