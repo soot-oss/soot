@@ -1149,6 +1149,20 @@ public class Singletons {
     	instance_soot_RefType = null;
     }
 
+    private soot.ModuleRefType instance_soot_ModuleRefType;
+    public soot.ModuleRefType soot_ModuleRefType() {
+        if( instance_soot_ModuleRefType == null ) {
+	       	synchronized (this) {
+		        if( instance_soot_ModuleRefType == null )
+	        		instance_soot_ModuleRefType = new soot.ModuleRefType( g );
+	       	}
+       	}
+        return instance_soot_ModuleRefType;
+    }
+    protected void release_soot_ModuleRefType() {
+    	instance_soot_ModuleRefType = null;
+    }
+
     private soot.Scene instance_soot_Scene;
     public soot.Scene soot_Scene() {
         if( instance_soot_Scene == null ) {

@@ -80,6 +80,7 @@
   <class>soot.jimple.toolkits.annotation.profiling.ProfilingGenerator</class>
   <class>soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder</class>
   <class>soot.RefType</class>
+  <class>soot.ModuleRefType</class>
   <class>soot.Scene</class>
   <class>soot.ModuleScene</class>
   <class>soot.dava.toolkits.base.finders.SequenceFinder</class>
