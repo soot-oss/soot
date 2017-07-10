@@ -2239,6 +2239,15 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionssoot_classpath_widget().getAlias(), stringRes);
 		}
 		
+		stringRes = getInput_Optionssoot_modulepath_widget().getText().getText();
+		
+		defStringRes = "";
+		
+
+	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+			getConfig().put(getInput_Optionssoot_modulepath_widget().getAlias(), stringRes);
+		}
+		
 		stringRes = getInput_Optionsprocess_dir_widget().getText().getText();
 		
 		defStringRes = "";
@@ -7076,6 +7085,18 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	
 	
+	private StringOptionWidget Input_Optionssoot_modulepath_widget;
+	
+	private void setInput_Optionssoot_modulepath_widget(StringOptionWidget widget) {
+		Input_Optionssoot_modulepath_widget = widget;
+	}
+	
+	public StringOptionWidget getInput_Optionssoot_modulepath_widget() {
+		return Input_Optionssoot_modulepath_widget;
+	}
+	
+	
+	
 	private StringOptionWidget Input_Optionsandroid_jars_widget;
 	
 	private void setInput_Optionsandroid_jars_widget(StringOptionWidget widget) {
@@ -11169,6 +11190,21 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		}
 
 		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "\nUse PATH as the list of directories in which Soot should search \nfor classes. PATH should be a series of directories, separated \nby the path separator character for your system. If no classpath \nis set on the command line, but the system property \nsoot.class.path has been set, Soot uses its value as the \nclasspath. If neither the command line nor the system properties \nspecify a Soot classpath, Soot falls back on a default classpath \nconsisting of the value of the system property java.class.path \nfollowed java.home/lib/rt.jar, where java.home stands for the \ncontents of the system property java.home and / stands for the \nsystem file separator.", defaultString)));
+		
+		
+		defKey = ""+" "+""+" "+"soot-modulepath";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);	
+		}
+		else {
+			
+			defaultString = "";
+			
+		}
+
+		setInput_Optionssoot_modulepath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Modulepath",  "", "","soot-modulepath", "\n					Use MODULEPATH as the list of directories in which Soot \n					should search for classes. MODULEPATH should be a series of \n					directories, separated by the path separator character for \nyour 					system. 					If no modulepath is set on the command \nline, but the system 					property soot.module.path has been \nset, Soot uses its 					value as the modulepath. 					If neither \nthe command line nor the system properties specify a 					Soot \nclasspath, Soot falls back on a default modulepath jrt:.", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"android-jars";

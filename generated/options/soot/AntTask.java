@@ -189,6 +189,11 @@ public class AntTask extends MatchingTask {
             addArg(arg);
         }
   
+        public void setsoot_modulepath(String arg) {
+            addArg("-soot-modulepath");
+            addArg(arg);
+        }
+  
         public void setprepend_classpath(boolean arg) {
             if(arg) addArg("-prepend-classpath");
         }
