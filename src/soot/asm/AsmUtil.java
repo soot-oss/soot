@@ -23,7 +23,6 @@ import java.util.List;
 
 import com.google.common.base.Optional;
 import soot.*;
-import soot.options.Options;
 
 /**
  * Contains static utility methods.
@@ -38,7 +37,7 @@ class AsmUtil {
 
 
     private static RefType makeRefType(String className, Optional<String> moduleName) {
-        if (ModuleGraphUtil.module_mode()) {
+        if (ModuleUtil.module_mode()) {
             return ModuleRefType.v(className, moduleName);
         }
         return RefType.v(className);
