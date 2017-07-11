@@ -123,7 +123,7 @@ public class Scene // extends AbstractHost
     }
 
     public static Scene v() {
-        if (Options.v().module_mode())
+        if (ModuleUtil.module_mode())
             return G.v().soot_ModuleScene();
         return G.v().soot_Scene();
     }
@@ -818,7 +818,7 @@ public class Scene // extends AbstractHost
 
     public SootClass tryLoadClass(String className, int desiredLevel) {
         /*
-		 * if(Options.v().time()) Main.v().resolveTimer.start();
+         * if(Options.v().time()) Main.v().resolveTimer.start();
 		 */
 
         setPhantomRefs(true);

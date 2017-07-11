@@ -58,7 +58,7 @@ public class SourceLocator {
     }
 
     public static SourceLocator v() {
-        if (Options.v().module_mode())
+        if (ModuleUtil.module_mode())
             return G.v().soot_ModulePathSourceLocator();
 
         return G.v().soot_SourceLocator();

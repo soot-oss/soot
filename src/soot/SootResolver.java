@@ -91,7 +91,7 @@ public class SootResolver {
     }
 
     public static SootResolver v() {
-        if (Options.v().module_mode())
+        if (ModuleUtil.module_mode())
             return G.v().soot_SootModuleResolver();
         return G.v().soot_SootResolver();
     }
