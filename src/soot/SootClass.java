@@ -83,7 +83,7 @@ public class SootClass extends AbstractHost implements Numberable {
 
     public final String moduleName;
 
-    protected final SootModuleInfo moduleInformation = null;
+    protected SootModuleInfo moduleInformation;
 
 
     public final static String INVOKEDYNAMIC_DUMMY_CLASS_NAME = "soot.dummy.InvokeDynamic";
@@ -103,7 +103,7 @@ public class SootClass extends AbstractHost implements Numberable {
         this.moduleName = moduleName;
         setName(name);
         this.modifiers = modifiers;
-        initializeRefType(name, null);
+        initializeRefType(name, moduleName);
         if (Options.v().debug_resolver())
             G.v().out.println("created " + name + " with modifiers " + modifiers);
         setResolvingLevel(BODIES);
@@ -119,15 +119,13 @@ public class SootClass extends AbstractHost implements Numberable {
      *
      * @param name The name of the new class
      */
-    protected void initializeRefType(String name) {
-        refType = RefType.v(name);
-        refType.setSootClass(this);
-    }
-
     protected void initializeRefType(String name, String moduleName) {
-        //FIXME: if modulename null and not in module mode dispatch to org method
-        refType = RefType.v(name, Optional.fromNullable(moduleName));
+        if (ModuleUtil.module_mode()) {
+            refType = ModuleRefType.v(name, Optional.fromNullable(this.moduleName));
 
+        } else {
+            refType = RefType.v(name);
+        }
         refType.setSootClass(this);
     }
 
@@ -1160,7 +1158,12 @@ public class SootClass extends AbstractHost implements Numberable {
         if (this.refType != null) {
             refType.setClassName(name);
         } else {
-            refType = RefType.v(name, Optional.fromNullable(this.moduleName));
+            if (ModuleUtil.module_mode()) {
+                refType = ModuleRefType.v(name, Optional.fromNullable(this.moduleName));
+
+            } else {
+                refType = RefType.v(name);
+            }
         }
         Scene.v().addRefType(refType);
 
@@ -1218,7 +1221,7 @@ public class SootClass extends AbstractHost implements Numberable {
      * @return true if the class is public exported
      */
     public boolean isExportedByModule() {
-        if (this.getModuleInformation() == null && Options.v().module_mode()) {
+        if (this.getModuleInformation() == null && ModuleUtil.module_mode()) {
             //we are in module mode and obviously the class has not been resolved, therefore we have to resolve it
             Scene.v().forceResolve(this.getName(), SootClass.BODIES);
         }
@@ -1233,7 +1236,7 @@ public class SootClass extends AbstractHost implements Numberable {
 
 
     public boolean isOpenedByModule() {
-        if (this.getModuleInformation() == null && Options.v().module_mode()) {
+        if (this.getModuleInformation() == null && ModuleUtil.module_mode()) {
             //we are in module mode and obviously the class has not been resolved, therefore we have to resolve it
             Scene.v().forceResolve(this.getName(), SootClass.BODIES);
         }
@@ -1245,9 +1248,9 @@ public class SootClass extends AbstractHost implements Numberable {
     }
 
     public boolean isExportedByModule(String toModule) {
-        if (this.getModuleInformation() == null && Options.v().module_mode()) {
-            //we are in module mode and obvoiusly the class has not been resolved, therefore we have to resolve it
-            Scene.v().forceResolve(this.getName(), SootClass.BODIES);
+        if (this.getModuleInformation() == null && ModuleUtil.module_mode()) {
+            //we are in module mode and obviously the class has not been resolved, therefore we have to resolve it
+            ModuleScene.v().forceResolve(this.getName(), SootClass.BODIES, Optional.of(this.moduleName));
         }
         return this.getModuleInformation().exportsPackage(this.getJavaPackageName(), toModule);
 
@@ -1260,7 +1263,7 @@ public class SootClass extends AbstractHost implements Numberable {
 
 
     public String getFilePath() {
-        if (Options.v().module_mode())
+        if (ModuleUtil.module_mode())
             return moduleName + ":" + this.getName();
         return this.getName();
     }
