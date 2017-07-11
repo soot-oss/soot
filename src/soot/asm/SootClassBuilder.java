@@ -28,7 +28,6 @@ import com.google.common.base.Optional;
 import org.objectweb.asm.*;
 
 import soot.*;
-import soot.Type;
 import soot.options.Options;
 import soot.tagkit.DoubleConstantValueTag;
 import soot.tagkit.EnclosingMethodTag;
@@ -76,7 +75,9 @@ class SootClassBuilder extends ClassVisitor {
     }
 
     void addDep(String s) {
-        addDep(RefType.v(AsmUtil.baseTypeName(s), Optional.fromNullable(this.klass.moduleName)));
+        String className = AsmUtil.baseTypeName(s);
+        RefType refType = makeRefType(className);
+        addDep(refType);
     }
 
     /**
@@ -91,15 +92,13 @@ class SootClassBuilder extends ClassVisitor {
     @Override
     public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
 
-
-        //resolve module Info first
-        //FIXME: check if class is  a module-info,
-        // if not add the module information to it
+        /* check if class is  a module-info,
+         * if not add the module information to it
+         */
         if (access != Opcodes.ACC_MODULE) {
-            SootModuleInfo moduleInfo = null;
             //if we are in module mode
-            if (Options.v().module_mode()) {
-                moduleInfo = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.fromNullable(this.klass.moduleName));
+            if (ModuleUtil.module_mode()) {
+                SootModuleInfo moduleInfo = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.fromNullable(this.klass.moduleName));
                 klass.setModuleInformation(moduleInfo);
 
             }
@@ -115,18 +114,14 @@ class SootClassBuilder extends ClassVisitor {
         klass.setModifiers(access & ~Opcodes.ACC_SUPER);
         if (superName != null) {
             superName = AsmUtil.toQualifiedName(superName);
-            addDep(RefType.v(superName, Optional.fromNullable(this.klass.moduleName)));
-            klass.setSuperclass(SootResolver.v().makeClassRef(superName, Optional.fromNullable(this.klass.moduleName)));
+            addDep(makeRefType(superName));
+            SootClass superClass = makeClassRef(superName);
+            klass.setSuperclass(superClass);
         }
         for (String intrf : interfaces) {
             intrf = AsmUtil.toQualifiedName(intrf);
-            addDep(RefType.v(intrf, Optional.fromNullable(this.klass.moduleName)));
-            SootClass interfaceClass;
-            if (Options.v().module_mode()) {
-                interfaceClass = SootModuleResolver.v().makeClassRef(intrf, Optional.fromNullable(this.klass.moduleName))
-            } else {
-                interfaceClass = SootResolver.v().makeClassRef(intrf);
-            }
+            addDep(makeRefType(intrf));
+            SootClass interfaceClass = makeClassRef(intrf);
             interfaceClass.setModifiers(interfaceClass.getModifiers() | Modifier.INTERFACE);
             klass.addInterface(interfaceClass);
         }
@@ -170,13 +165,8 @@ class SootClassBuilder extends ClassVisitor {
             thrownExceptions = new ArrayList<SootClass>(len);
             for (int i = 0; i != len; i++) {
                 String ex = AsmUtil.toQualifiedName(exceptions[i]);
-                addDep(RefType.v(ex, Optional.fromNullable(this.klass.moduleName)));
-                SootClass thrownException;
-                if (Options.v().module_mode()) {
-                    thrownException = SootModuleResolver.v().makeClassRef(ex, Optional.fromNullable(this.klass.moduleName));
-                } else {
-                    thrownException = SootResolver.v().makeClassRef(ex);
-                }
+                addDep(makeRefType(ex));
+                SootClass thrownException = makeClassRef(ex);
                 thrownExceptions.add(thrownException);
             }
         }
@@ -205,7 +195,7 @@ class SootClassBuilder extends ClassVisitor {
         //FIXME; hack o resovle inner Classes (e.g. java.util.stream.FindOps$FindSink$... is not resolved
         if (!(this.klass instanceof SootModuleInfo)) {
             String innerClassname = AsmUtil.toQualifiedName(name);
-            deps.add(RefType.v(innerClassname, Optional.fromNullable(this.klass.getModuleInformation().getModuleName())));
+            deps.add(makeRefType(innerClassname));
         }
     }
 
@@ -216,13 +206,8 @@ class SootClassBuilder extends ClassVisitor {
             klass.addTag(new EnclosingMethodTag(owner, name, desc));
 
         owner = AsmUtil.toQualifiedName(owner);
-        deps.add(RefType.v(owner, Optional.fromNullable(this.klass.getModuleInformation().getModuleName())));
-        SootClass outerClass;
-        if (Options.v().module_mode()) {
-            outerClass = SootModuleResolver.v().makeClassRef(owner, Optional.fromNullable(this.klass.getModuleInformation().getModuleName()));
-        } else {
-            outerClass = SootResolver.v().makeClassRef(owner);
-        }
+        deps.add(makeRefType(owner));
+        SootClass outerClass = makeClassRef(owner);
         klass.setOuterClass(outerClass);
     }
 
@@ -242,5 +227,18 @@ class SootClassBuilder extends ClassVisitor {
         return new SootModuleInfoBuilder(name, (SootModuleInfo) this.klass, this);
     }
 
+
+    private SootClass makeClassRef(String className) {
+        if (ModuleUtil.module_mode())
+            return SootModuleResolver.v().makeClassRef(className, Optional.fromNullable(this.klass.moduleName));
+        return SootResolver.v().makeClassRef(className);
+    }
+
+    private RefType makeRefType(String className) {
+        if (ModuleUtil.module_mode()) {
+            return ModuleRefType.v(className, Optional.fromNullable(this.klass.moduleName));
+        }
+        return RefType.v(className);
+    }
 
 }
