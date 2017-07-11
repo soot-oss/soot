@@ -41,9 +41,9 @@ public class ModulePathSourceLocator extends SourceLocator {
 
     public static final String DUMMY_CLASSPATH_JDK9_FS = "VIRTUAL_FS_FOR_JDK9";
 
-    protected List<String> sourcePath;
+    private List<String> sourcePath;
 
-    protected Set<String> classesToLoad;
+    private Set<String> classesToLoad;
 
 
     public ModulePathSourceLocator(Singletons.Global g) {
@@ -59,7 +59,7 @@ public class ModulePathSourceLocator extends SourceLocator {
     @Override
     public ClassSource getClassSource(String className) {
 
-        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
 
 
         return getClassSource(wrapper.getClassName(), wrapper.getModuleNameOptional());
@@ -138,7 +138,7 @@ public class ModulePathSourceLocator extends SourceLocator {
     }
 
 
-    private HashMap<String, Path> moduleNameToPath = new HashMap<>();
+    private final HashMap<String, Path> moduleNameToPath = new HashMap<>();
 
     @Override
     /**
@@ -250,7 +250,7 @@ public class ModulePathSourceLocator extends SourceLocator {
     private Map<String, List<String>> buildModuleForJar(Path jar) {
         Map<String, List<String>> moduleClassMape = new HashMap<>();
 
-        try (FileSystem zipFileSystem = FileSystems.newFileSystem(jar, null);) {
+        try (FileSystem zipFileSystem = FileSystems.newFileSystem(jar, null)) {
             Path mi = zipFileSystem.getPath(SootModuleInfo.MODULE_INFO_FILE);
             if (Files.exists(mi)) {
                 //we hava a modular jar
@@ -283,8 +283,7 @@ public class ModulePathSourceLocator extends SourceLocator {
                 //cut of the file extension
                 String moduleName = createModuleNameForAutomaticModule(filename);
                 if (!ModuleScene.v().containsClass(SootModuleInfo.MODULE_INFO, Optional.of(moduleName))) {
-                    SootModuleInfo moduleInfo = (SootModuleInfo)
-                            new SootModuleInfo(SootModuleInfo.MODULE_INFO, moduleName, true);
+                    SootModuleInfo moduleInfo = new SootModuleInfo(SootModuleInfo.MODULE_INFO, moduleName, true);
                     Scene.v().addClass(moduleInfo);
                     moduleInfo.setApplicationClass();
 
@@ -319,7 +318,6 @@ public class ModulePathSourceLocator extends SourceLocator {
 
         // drop .jar
         String mn = filename.substring(0, filename.length() - 4);
-        String vs = null;
 
         // find first occurrence of -${NUMBER}. or -${NUMBER}$
         Matcher matcher = Pattern.compile("-(\\d+(\\.|$))").matcher(mn);
@@ -356,12 +354,7 @@ public class ModulePathSourceLocator extends SourceLocator {
                     String moduleName = ((AsmModuleClassProvider) cp).getModuleName(in);
                     SootModuleInfo moduleInfo = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
                     this.moduleNameToPath.put(moduleName, dir);
-                    //FIXME make this nice later
-                 /*   String path = dir.toAbsolutePath().toString();
-                    if (dir.toUri().toString().startsWith("jrt:/")) {
-                        path = dir.toUri().toString();
-                    } */
-                    //FIXME: does not work, with virtual fileSystem
+
                     List<String> classes = getClassesUnderDirectory(dir);
                     for (String foundClass : classes) {
                         int index = foundClass.lastIndexOf('.');
@@ -473,10 +466,10 @@ public class ModulePathSourceLocator extends SourceLocator {
         Path pathToModule = moduleNameToPath.get(moduleName);
         if (pathToModule != null)
             return pathToModule;
-        //FIXME: do while has nex tlikne modulpath finder in jd
         while (modulePathHasNextEntry()) {
             String path = modulePath.get(next);
             lookUpInModulePath(path);
+            next++;
             pathToModule = moduleNameToPath.get(moduleName);
             if (pathToModule != null)
                 return pathToModule;
@@ -498,7 +491,7 @@ public class ModulePathSourceLocator extends SourceLocator {
 
     private FoundFile lookupInArchive(String archivePath, String fileName) {
         Path archive = Paths.get(archivePath);
-        try (FileSystem zipFileSystem = FileSystems.newFileSystem(archive, null);) {
+        try (FileSystem zipFileSystem = FileSystems.newFileSystem(archive, null)) {
             Path entry = zipFileSystem.getPath(fileName);
             if (entry == null || !Files.isRegularFile(entry)) {
                 return null;
@@ -547,15 +540,7 @@ public class ModulePathSourceLocator extends SourceLocator {
         ClassSourceType cst = getClassSourceType(aPath.toUri().toString());
 
         if (cst == ClassSourceType.directory || cst == ClassSourceType.jrt) {
-            Path path = aPath;
-            /*if (cst == ClassSourceType.directory) {
-                path = Paths.get(aPath);
 
-            } else if (cst == ClassSourceType.jrt) {
-                path = Paths.get(URI.create(aPath));
-            }*/
-
-            Path finalPath = path;
             FileVisitor<Path> fileVisitor = new FileVisitor<Path>() {
 
                 @Override
@@ -566,7 +551,7 @@ public class ModulePathSourceLocator extends SourceLocator {
                 @Override
                 public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) throws IOException {
 
-                    String fileName = finalPath.relativize(file).toString().replace(File.separatorChar, '.');
+                    String fileName = aPath.relativize(file).toString().replace(File.separatorChar, '.');
 
                     if (fileName.endsWith(".class")) {
                         int index = fileName.lastIndexOf(".class");
@@ -598,7 +583,7 @@ public class ModulePathSourceLocator extends SourceLocator {
 
             };
             try {
-                Files.walkFileTree(path, fileVisitor);
+                Files.walkFileTree(aPath, fileVisitor);
             } catch (IOException e) {
                 e.printStackTrace();
             }
