@@ -51,7 +51,7 @@ public class SootModuleResolver extends SootResolver {
 
         String module = null;
         if (moduleName.isPresent()) {
-            module = ModuleGraphUtil.findModuleThatExports(className, moduleName.get());
+            module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
         }
 
         //if no module return first one found
@@ -71,7 +71,7 @@ public class SootModuleResolver extends SootResolver {
     }
 
     public SootClass makeClassRef(String className) {
-        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
 
 
         return makeClassRef(wrapper.getClassName(), wrapper.getModuleNameOptional());
@@ -100,7 +100,7 @@ public class SootModuleResolver extends SootResolver {
     }
 
     public SootClass resolveClass(String className, int desiredLevel) {
-        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
 
         return resolveClass(wrapper.getClassName(), desiredLevel, wrapper.getModuleNameOptional());
     }
