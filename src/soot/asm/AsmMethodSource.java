@@ -170,7 +170,7 @@ final class AsmMethodSource implements MethodSource {
     }
 
     private SootClass getClassFromScene(String className) {
-        if (ModuleGraphUtil.module_mode())
+        if (ModuleUtil.module_mode())
             return ModuleScene.v().getSootClassUnsafe(className, Optional.fromNullable(this.module));
 
         return Scene.v().getSootClass(className);
