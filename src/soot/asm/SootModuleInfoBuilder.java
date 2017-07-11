@@ -24,14 +24,13 @@ public class SootModuleInfoBuilder extends ModuleVisitor {
     @Override
     public void visitRequire(String module, int access, String version) {
        // SootClass moduleInfo = SootResolver.v().resolveClass("module-info", SootClass.SIGNATURES, Optional.of(module));
-         SootClass moduleInfo = SootResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO,Optional.of(module));
+         SootClass moduleInfo = SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO,Optional.of(module));
         klass.getRequiredModules().put((SootModuleInfo) moduleInfo, access);
         scb.addDep(RefType.v(moduleInfo));
     }
 
     @Override
     public void visitExport(String packaze, int access, String... modules) {
-        //FIXME: what to do with modules
         if (packaze != null) {
             klass.addExportedPackage(packaze, modules);
         }

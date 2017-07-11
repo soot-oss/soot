@@ -1,5 +1,6 @@
 package soot;
 
+import com.google.common.base.Optional;
 import soot.dava.toolkits.base.misc.PackageNamer;
 
 import java.util.*;
@@ -13,7 +14,6 @@ public class SootModuleInfo extends SootClass {
     public static final String MODULE_INFO = "module-info";
     private HashSet<String> modulePackages = new HashSet<>();
 
-    //FIXME: replace with moduleInfo later
     private static final String EVERYONE_MODULE = "EVERYONE_MODULE";
 
     public boolean isAutomaticModule() {
@@ -52,7 +52,6 @@ public class SootModuleInfo extends SootClass {
         return openedPackages;
     }
 
-    //TODO: think about caching them
     public Set<String> getPublicExportedPackages() {
         Set<String> publicExportedPackages = new HashSet<>();
         for (String packaze : modulePackages) {
@@ -89,10 +88,8 @@ public class SootModuleInfo extends SootClass {
             }
         }
 
-
         for (SootModuleInfo moduleInfo : moduleInfos.keySet()) {
-            //if (!moduleInfo.isPhantom())
-            SootResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES, com.google.common.base.Optional.fromNullable(moduleInfo.moduleName));
+            SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES, Optional.fromNullable(moduleInfo.moduleName));
         }
         return moduleInfos;
     }
@@ -124,11 +121,6 @@ public class SootModuleInfo extends SootClass {
         return this.moduleName;
     }
 
-    //FIXME: currently just a dirty hack
- /*   @Override
-    public boolean isPhantom() {
-        return true;
-    }*/
 
     @Override
     public boolean isConcrete() {
@@ -159,17 +151,11 @@ public class SootModuleInfo extends SootClass {
 
 
     public boolean openPackagePublic(String packaze) {
-
-
         return opensPackage(packaze, EVERYONE_MODULE);
-
-
     }
 
     public boolean opensPackage(String packaze, String toModule) {
 
-
-        //TODO check if this code is actually called
         if (packaze.equalsIgnoreCase(SootModuleInfo.MODULE_INFO))
             return true;
 
@@ -196,7 +182,6 @@ public class SootModuleInfo extends SootClass {
 
     public boolean exportsPackage(String packaze, String toModule) {
 
-        //TODO check if this code is actually called
         if (packaze.equalsIgnoreCase(SootModuleInfo.MODULE_INFO))
             return true;
 
@@ -204,7 +189,7 @@ public class SootModuleInfo extends SootClass {
         if (this.getModuleName().equals(toModule))
             return this.modulePackages.contains(packaze);
 
-        //a automatic module exports all packages
+        //a automatic module exports all its packages
         if (this.isAutomaticModule())
             return this.modulePackages.contains(packaze);
 
@@ -232,7 +217,6 @@ public class SootModuleInfo extends SootClass {
             }
 
         }
-
 
         return requiredPublic;
     }
