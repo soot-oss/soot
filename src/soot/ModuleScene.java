@@ -38,14 +38,20 @@ import java.util.*;
 
 
 /**
- * Manages the SootClasses of the application being analyzed.
+ * Manages the SootClasses of the application being analyzed for Java 9 modules
+ *
+ * @author adann
  */
-public class ModuleScene extends Scene  //extends AbstractHost
+public class ModuleScene extends Scene  //extends original Scene
 {
 
 
     public ModuleScene(Singletons.Global g) {
         super(g);
+        String smp = System.getProperty("soot.module.path");
+
+        if (smp != null)
+            setSootModulePath(smp);
     }
 
 
@@ -56,13 +62,15 @@ public class ModuleScene extends Scene  //extends AbstractHost
 
     /* holds the references to SootClass
      * 1: String the class name
-     * 2: Map<String, RefType>: The String represents the Module that holds the corresponding RefType
-     * since multiple modules may contain the same class this is a map (for fast lookups)
+     * 2: Map<String, RefType>: The String represents the module that holds the corresponding RefType
+     * since multiple modules may contain the same class this is a map (for fast look ups)
+     * TODO: evaluate if Guava's multimap is faster
      */
     private final Map<String, Map<String, RefType>> nameToClass = new HashMap<String, Map<String, RefType>>();
 
 
-    String modulePath = null;
+    //instead of using a class path, java 9 uses a module path
+    private String modulePath = null;
 
 
     public SootMethod getMainMethod() {
@@ -71,7 +79,7 @@ public class ModuleScene extends Scene  //extends AbstractHost
         }
 
         SootMethod mainMethod = mainClass.getMethodUnsafe("main",
-                Collections.singletonList(ArrayType.v(RefType.v("java.lang.String", Optional.of("java.base")), 1)),
+                Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1)),
                 VoidType.v());
         if (mainMethod == null) {
             throw new RuntimeException("Main class declares no main method!");
@@ -80,40 +88,43 @@ public class ModuleScene extends Scene  //extends AbstractHost
     }
 
 
+    @Override
     public void setSootClassPath(String p) {
-        this.getSootModulePath(p);
+        this.setSootModulePath(p);
     }
 
-    public void getSootModulePath(String p) {
-        modulePath = p;
+    public void setSootModulePath(String p) {
         ModulePathSourceLocator.v().invalidateClassPath();
+        modulePath = p;
+
     }
 
+    @Override
     public String getSootClassPath() {
         return getSootModulePath();
     }
 
     public String getSootModulePath() {
         if (modulePath == null) {
-            String optionscp = Options.v().soot_modulepath();
-            if (optionscp != null && optionscp.length() > 0)
-                modulePath = optionscp;
+            String optionsmp = Options.v().soot_modulepath();
+            if (optionsmp != null && optionsmp.length() > 0)
+                modulePath = optionsmp;
 
             //if no classpath is given on the command line, take the default
             if (modulePath == null) {
-                modulePath = defaultClassPath();
+                modulePath = defaultJavaModulePath();
             } else {
                 //if one is given...
                 if (Options.v().prepend_classpath()) {
                     //if the prepend flag is set, append the default classpath
-                    modulePath += File.pathSeparator + defaultClassPath();
+                    modulePath += File.pathSeparator + defaultJavaModulePath();
                 }
                 //else, leave it as it is
             }
 
             //add process-dirs
             List<String> process_dir = Options.v().process_dir();
-            StringBuffer pds = new StringBuffer();
+            StringBuilder pds = new StringBuilder();
             for (String path : process_dir) {
                 if (!modulePath.contains(path)) {
                     pds.append(path);
@@ -123,7 +134,6 @@ public class ModuleScene extends Scene  //extends AbstractHost
             modulePath = pds + modulePath;
         }
 
-
         return modulePath;
     }
 
@@ -131,9 +141,8 @@ public class ModuleScene extends Scene  //extends AbstractHost
     private String defaultJavaModulePath() {
         StringBuilder sb = new StringBuilder();
 
-        File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
-        // test for jdk 9
-        rtJar = Paths.get(System.getProperty("java.home"), "lib", "jrt-fs.jar").toFile();
+        // test for java 9
+        File rtJar = Paths.get(System.getProperty("java.home"), "lib", "jrt-fs.jar").toFile();
         if (rtJar.exists() && rtJar.isFile())
             sb.append(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS);
 
@@ -174,7 +183,7 @@ public class ModuleScene extends Scene  //extends AbstractHost
 
 
     public boolean containsClass(String className) {
-        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
 
         return containsClass(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
@@ -186,14 +195,14 @@ public class ModuleScene extends Scene  //extends AbstractHost
         Map<String, RefType> map = nameToClass.get(className);
         if (map != null && !map.isEmpty()) {
             if (moduleName.isPresent()) {
-                String module = ModuleGraphUtil.findModuleThatExports(className, moduleName.get());
+                String module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
 
                 type = map.get(module);
             }
             //return first element
             else {
                 type = map.values().iterator().next();
-                if (Options.v().module_mode() && Options.v().verbose()) {
+                if (ModuleUtil.module_mode() && Options.v().verbose()) {
                     G.v().out.println("[Warning] containsClass called with empty module for: " + className);
                 }
             }
@@ -237,26 +246,6 @@ public class ModuleScene extends Scene  //extends AbstractHost
 
     }
 
-    /**
-     * FIXME: adapt this to handle jar modules, as well
-     *
-     * @see java.lang.module.ModuleFinder
-     *//*
-    public void loadModuleInformation(String modulePath) {
-
-        Map<String, List<String>> classes = SourceLocator.v().getClassesUnderModulePath(modulePath);
-        for (String module : classes.keySet()) {
-            for (String klass : classes.get(module)) {
-                if (klass.endsWith("module-info")) {
-                    loadClassAndSupport(klass, Optional.of(module));
-                }
-            }
-        }
-        for (SootClass cl : Scene.v().getClasses()) {
-            SootResolver.v().reResolve(cl);
-        }
-    }*/
-
 
     /**
      * Loads the given class and all of the required support classes.  Returns the first class.
@@ -264,15 +253,10 @@ public class ModuleScene extends Scene  //extends AbstractHost
 
     public SootClass loadClassAndSupport(String className) {
 
-        String moduleName = null;
-        String refinedClassName = className;
-        if (className.contains(":")) {
-            String split[] = className.split(":");
-            refinedClassName = split[1];
-            moduleName = split[0];
-        }
+        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
 
-        return loadClassAndSupport(refinedClassName, Optional.fromNullable(moduleName));
+
+        return loadClassAndSupport(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
 
     public SootClass loadClassAndSupport(String className, Optional<String> moduleName) {
@@ -284,15 +268,10 @@ public class ModuleScene extends Scene  //extends AbstractHost
 
     public SootClass loadClass(String className, int desiredLevel) {
 
-        String moduleName = null;
-        String refinedClassName = className;
-        if (className.contains(":")) {
-            String split[] = className.split(":");
-            refinedClassName = split[1];
-            moduleName = split[0];
-        }
+        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
 
-        return loadClass(refinedClassName, desiredLevel, Optional.fromNullable(moduleName));
+
+        return loadClass(wrapper.getClassName(), desiredLevel, wrapper.getModuleNameOptional());
     }
 
     public SootClass loadClass(String className, int desiredLevel, Optional<String> moduleName) {
@@ -376,7 +355,7 @@ public class ModuleScene extends Scene  //extends AbstractHost
     @Override
     public RefType getRefType(String className) {
 
-        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
 
         return getRefType(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
@@ -403,8 +382,8 @@ public class ModuleScene extends Scene  //extends AbstractHost
             //return first element
             else {
                 refType = map.values().iterator().next();
-                if (Options.v().verbose() && Options.v().module_mode()) {
-                    G.v().out.println("[Warning] getRefTypeUnsafe called with empty for: " + className);
+                if (Options.v().verbose() && ModuleUtil.module_mode()) {
+                    G.v().out.println("[Warning] getRefTypeUnsafe called with empty module for: " + className);
                 }
             }
         }
@@ -421,14 +400,14 @@ public class ModuleScene extends Scene  //extends AbstractHost
             nameToClass.put(type.getClassName(), new HashMap<String, RefType>());
         }
         Map<String, RefType> map = nameToClass.get(type.getClassName());
-        map.put(type.moduleName, type);
+        map.put(((ModuleRefType) type).getModuleName(), type);
 
     }
 
     @Override
     public SootClass getSootClassUnsafe(String className) {
 
-        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
 
         return getSootClassUnsafe(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
@@ -441,13 +420,13 @@ public class ModuleScene extends Scene  //extends AbstractHost
         String module = "";
         if (map != null && !map.isEmpty()) {
             if (moduleName.isPresent()) {
-                module = ModuleGraphUtil.findModuleThatExports(className, moduleName.get());
+                module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
                 type = map.get(module);
             }
             //return first element
             else {
                 type = map.values().iterator().next();
-                if (Options.v().verbose() && Options.v().module_mode()) {
+                if (Options.v().verbose() && ModuleUtil.module_mode()) {
                     G.v().out.println("[Warning] getSootClassUnsafe called with empty for: " + className);
                 }
             }
@@ -474,7 +453,7 @@ public class ModuleScene extends Scene  //extends AbstractHost
     @Override
     public SootClass getSootClass(String className) {
 
-        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
 
         return getSootClass(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
@@ -566,10 +545,9 @@ public class ModuleScene extends Scene  //extends AbstractHost
 
         for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
             for (String name : basicclasses[i]) {
-                Optional<String> module = Optional.fromNullable(null);
-                if (Options.v().module_mode())
-                    module = Optional.of("java.base");
-                tryLoadClass(name, i, module);
+                ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(name);
+
+                tryLoadClass(wrapper.getClassName(), i, wrapper.getModuleNameOptional());
             }
         }
     }
@@ -699,7 +677,7 @@ public class ModuleScene extends Scene  //extends AbstractHost
             // try to infer a main class from the command line if none is given
             for (Iterator<String> classIter = Options.v().classes().iterator(); classIter.hasNext(); ) {
                 SootClass c = getSootClass(classIter.next(), null);
-                if (c.declaresMethod("main", Collections.singletonList(ArrayType.v(RefType.v("java.lang.String", Optional.fromNullable(null)), 1)), VoidType.v())) {
+                if (c.declaresMethod("main", Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.fromNullable("java.base")), 1)), VoidType.v())) {
                     G.v().out.println("No main class given. Inferred '" + c.getName() + "' as main class.");
                     setMainClass(c);
                     return;
@@ -709,7 +687,7 @@ public class ModuleScene extends Scene  //extends AbstractHost
             // try to infer a main class from the usual classpath if none is given
             for (Iterator<SootClass> classIter = getApplicationClasses().iterator(); classIter.hasNext(); ) {
                 SootClass c = classIter.next();
-                if (c.declaresMethod("main", Collections.singletonList(ArrayType.v(RefType.v("java.lang.String", Optional.fromNullable(null)), 1)), VoidType.v())) {
+                if (c.declaresMethod("main", Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.fromNullable("java.base")), 1)), VoidType.v())) {
                     G.v().out.println("No main class given. Inferred '" + c.getName() + "' as main class.");
                     setMainClass(c);
                     return;
@@ -722,7 +700,7 @@ public class ModuleScene extends Scene  //extends AbstractHost
     @Override
     public SootClass forceResolve(String className, int level) {
 
-        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
 
 
         return forceResolve(wrapper.getClassName(), level, wrapper.getModuleNameOptional());
@@ -740,11 +718,10 @@ public class ModuleScene extends Scene  //extends AbstractHost
         return c;
     }
 
-    //FIXME: find usages
     @Override
     public SootClass makeSootClass(String className) {
 
-        ModuleGraphUtil.ModuleClassNameWrapper wrapper = new ModuleGraphUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
 
         return makeSootClass(wrapper.getClassName(), wrapper.getModuleName());
     }
@@ -754,7 +731,7 @@ public class ModuleScene extends Scene  //extends AbstractHost
     }
 
     public RefType getOrAddRefType(RefType tp) {
-        RefType existing = getRefType(tp.getClassName(), tp.getModuleName());
+        RefType existing = getRefType(tp.getClassName(), Optional.fromNullable(((ModuleRefType) tp).getModuleName()));
         if (existing != null)
             return existing;
         this.addRefType(tp);
