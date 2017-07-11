@@ -1187,6 +1187,48 @@ cannot silently disappear and cause invalid Jimple code.
 				</value>
 		</multiopt>
 				
+		<multiopt>
+			<name>Handling of Field Type Mismatches</name>
+			<alias>field-type-mismatches</alias>
+			<short_desc>Specifies how errors shall be handled when resolving field references with mismatching types</short_desc>
+			<long_desc>
+Some source files contain invalid bytecode. As a consequence, resolving field references may fail due to mismatching types.
+In other words, the expected type in the field reference does not match the type of the actually declared field. With this
+option, the user can specify how Soot shall react to such issues.
+</long_desc>
+				<value>
+					<name>Fail</name>
+					<alias>fail</alias>
+					<short_desc>Raise an error when a field type mismatch is detected</short_desc>
+					<long_desc>
+When resolving a field reference and the expected type does not match the declared type of the actual field,
+an exception will be thrown.
+</long_desc>
+				</value>
+				<value>
+					<name>Ignore</name>
+					<alias>ignore</alias>
+					<short_desc>Ignore field type mismatches</short_desc>
+					<long_desc>
+With this option, Soot will not check whether there is a mismatch between the requested and the declared field
+type. Instead, it will return the declared field with a matching name regardless of the field's type. This means that
+field reference resolving will never fail because of mismatching types, but the returned field might not be what
+the user code expects.
+</long_desc>
+				</value>
+				<value>
+					<name>ReturnNull</name>
+					<alias>null</alias>
+					<short_desc>Return null in case of type mismatch</short_desc>
+					<default/>													
+					<long_desc>
+When resolving a field reference for which the declared field type and the expected type from the reference do not
+match, Soot will return null with this option. The user code that invokes getField() is responsible for correctly
+handling these null references.
+</long_desc>
+				</value>
+		</multiopt>
+
 		<phaseopt>
 			<name>Phase Options</name>
 			<alias>p</alias>

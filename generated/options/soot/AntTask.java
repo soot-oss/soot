@@ -441,6 +441,20 @@ public class AntTask extends MatchingTask {
             }
         }
   
+        public void setfield_type_mismatches(String arg) {
+            if(false
+    
+                || arg.equals( "fail" )
+                || arg.equals( "ignore" )
+                || arg.equals( "null" )
+                ) {
+                addArg("-field-type-mismatches");
+                addArg(arg);
+            } else {
+                throw new BuildException("Bad value "+arg+" for option field_type_mismatches");
+            }
+        }
+  
         public void setoptimize(boolean arg) {
             if(arg) addArg("-optimize");
         }

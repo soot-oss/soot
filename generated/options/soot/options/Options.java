@@ -94,6 +94,9 @@ public class Options extends OptionsBase {
     public static final int wrong_staticness_ignore = 2;
     public static final int wrong_staticness_fix = 3;
     public static final int wrong_staticness_fixstrict = 4;
+    public static final int field_type_mismatches_fail = 1;
+    public static final int field_type_mismatches_ignore = 2;
+    public static final int field_type_mismatches_null = 3;
     public static final int throw_analysis_pedantic = 1;
     public static final int throw_analysis_unit = 2;
     public static final int throw_analysis_dalvik = 3;
@@ -992,6 +995,56 @@ public class Options extends OptionsBase {
            }
   
             else if( false
+            || option.equals( "field-type-mismatches" )
+            ) {
+                if( !hasMoreOptions() ) {
+                    G.v().out.println( "No value given for option -"+option );
+                    return false;
+                }
+                String value = nextOption();
+    
+                if( false );
+    
+                else if( false
+                || value.equals( "fail" )
+                ) {
+                    if( field_type_mismatches != 0
+                    && field_type_mismatches != field_type_mismatches_fail ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    field_type_mismatches = field_type_mismatches_fail;
+                }
+    
+                else if( false
+                || value.equals( "ignore" )
+                ) {
+                    if( field_type_mismatches != 0
+                    && field_type_mismatches != field_type_mismatches_ignore ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    field_type_mismatches = field_type_mismatches_ignore;
+                }
+    
+                else if( false
+                || value.equals( "null" )
+                ) {
+                    if( field_type_mismatches != 0
+                    && field_type_mismatches != field_type_mismatches_null ) {
+                        G.v().out.println( "Multiple values given for option "+option );
+                        return false;
+                    }
+                    field_type_mismatches = field_type_mismatches_null;
+                }
+    
+                else {
+                    G.v().out.println( "Invalid value "+value+" given for option -"+option );
+                    return false;
+                }
+           }
+  
+            else if( false
             || option.equals( "p" )
             || option.equals( "phase-option" )
             ) {
@@ -1629,6 +1682,12 @@ public class Options extends OptionsBase {
     }
     public void set_wrong_staticness( int setting ) { wrong_staticness = setting; }
     private int wrong_staticness = 0;
+    public int field_type_mismatches() {
+        if( field_type_mismatches == 0 ) return field_type_mismatches_null;
+        return field_type_mismatches; 
+    }
+    public void set_field_type_mismatches( int setting ) { field_type_mismatches = setting; }
+    private int field_type_mismatches = 0;
     public boolean via_grimp() { return via_grimp; }
     private boolean via_grimp = false;
     public void set_via_grimp( boolean setting ) { via_grimp = setting; }
@@ -1823,6 +1882,10 @@ public class Options extends OptionsBase {
 +padVal(" ignore", "Ignore errors caused by wrong staticness" )
 +padVal(" fix (default)", "Transparently fix staticness errors" )
 +padVal(" fixstrict (default)", "Transparently fix staticness errors, but do not ignore remaining errors" )
++padOpt(" -field-type-mismatches ARG", "Specifies how errors shall be handled when resolving field references with mismatching types" )
++padVal(" fail", "Raise an error when a field type mismatch is detected" )
++padVal(" ignore", "Ignore field type mismatches" )
++padVal(" null (default)", "Return null in case of type mismatch" )
 +padOpt(" -p PHASE OPT:VAL -phase-option PHASE OPT:VAL", "Set PHASE's OPT option to VALUE" )
 +padOpt(" -O -optimize", "Perform intraprocedural optimizations" )
 +padOpt(" -W -whole-optimize", "Perform whole program optimizations" )
