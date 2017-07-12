@@ -593,6 +593,7 @@ public class SourceLocator {
         }
 
         FoundFile(Path path) {
+            this();
             this.path = path;
         }
 
