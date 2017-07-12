@@ -28,13 +28,7 @@ package soot;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayDeque;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 import soot.JastAddJ.BytecodeParser;
 import soot.JastAddJ.CompilationUnit;
@@ -46,13 +40,13 @@ import soot.options.Options;
 
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver {
-	/** Maps each resolved class to a list of all references in it. */
+    /** Maps each resolved class to a list of all references in it.     */
     private final Map<SootClass, Collection<Type>> classToTypesSignature = new HashMap<SootClass, Collection<Type>>();
 
-	/** Maps each resolved class to a list of all references in it. */
+    /** Maps each resolved class to a list of all references in it. */
     private final Map<SootClass, Collection<Type>> classToTypesHierarchy = new HashMap<SootClass, Collection<Type>>();
 
-	/** SootClasses waiting to be resolved. */
+    /** SootClasses waiting to be resolved. */
     @SuppressWarnings("unchecked")
     private final Deque<SootClass>[] worklist = new Deque[4];
 
@@ -96,7 +90,7 @@ public class SootResolver {
         return G.v().soot_SootResolver();
     }
 
-	/** Returns true if we are resolving all class refs recursively. */
+    /**  Returns true if we are resolving all class refs recursively.     */
     protected boolean resolveEverything() {
         if (Options.v().on_the_fly())
             return false;
@@ -146,7 +140,7 @@ public class SootResolver {
         }
     }
 
-	/** Resolve all classes on toResolveWorklist. */
+    /** Resolve all classes on toResolveWorklist. */
     protected void processResolveWorklist() {
         for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
             while (!worklist[i].isEmpty()) {
@@ -214,7 +208,12 @@ public class SootResolver {
 
     protected void bringToHierarchyUnchecked(SootClass sc) {
         String className = sc.getName();
-        ClassSource is = SourceLocator.v().getClassSource(className);
+        ClassSource is;
+        if (ModuleUtil.module_mode()) {
+            is = ModulePathSourceLocator.v().getClassSource(className, com.google.common.base.Optional.fromNullable(sc.moduleName));
+        } else {
+            is = SourceLocator.v().getClassSource(className);
+        }
         try {
             boolean modelAsPhantomRef = is == null;
             if (modelAsPhantomRef) {
