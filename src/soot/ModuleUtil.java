@@ -3,13 +3,15 @@ package soot;
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.LoadingCache;
 import soot.options.Options;
 
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.*;
+import java.net.URISyntaxException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.regex.Pattern;
 
 /**
  * Created by ralle on 18.08.16.
@@ -21,8 +23,7 @@ import java.util.Map;
 public final class ModuleUtil {
 
     public ModuleUtil(Singletons.Global g) {
-        modulePackageCache =
-                modulePackageCache = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(500).concurrencyLevel(Runtime.getRuntime().availableProcessors()).build();
+        modulePackageCache = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(800).concurrencyLevel(Runtime.getRuntime().availableProcessors()).build();
     }
 
     public static ModuleUtil v() {
@@ -40,7 +41,7 @@ public final class ModuleUtil {
      * @param toModuleName the module from which the request is made
      * @return the module's name that exports the class to the given module
      */
-    public  String findModuleThatExports(String className, String toModuleName) {
+    public String findModuleThatExports(String className, String toModuleName) {
 
         if (className.equalsIgnoreCase(SootModuleInfo.MODULE_INFO)) {
             return toModuleName;
@@ -53,7 +54,7 @@ public final class ModuleUtil {
             return null;
         }
         String moduleName = modulePackageCache.getIfPresent(modInfo.getModuleName() + "/" + packageName);
-        if (moduleName==null) {
+        if (moduleName != null) {
             return moduleName;
         }
 
@@ -64,7 +65,9 @@ public final class ModuleUtil {
         if (modInfo.isAutomaticModule()) {
             //shortcut, an automatic module is allowed to access any other class
             if (ModuleScene.v().containsClass(className)) {
-                return ModuleScene.v().getSootClass(className).getModuleInformation().getModuleName();
+                String foundModuleName = ModuleScene.v().getSootClass(className).getModuleInformation().getModuleName();
+                modulePackageCache.put(modInfo.getModuleName() + "/" + packageName, foundModuleName);
+                return foundModuleName;
             }
         }
 
@@ -121,7 +124,34 @@ public final class ModuleUtil {
     }
 
     /* In Soot are a hard coded class names as string contanstants that are now contained in the java.base module, this list serves as a lookup for these string constant    */
-    private static List<String> packagesJavaBaseModule = Arrays.asList("java.lang", "java.io", "java.math", "java.net", "java.nio", "java.security", "java.text", "java.time", "java.util");
+    private static List<String> packagesJavaBaseModule = parseJavaBasePackage();
+
+
+    private static List<String> parseJavaBasePackage() {
+        List<String> packages = new ArrayList<String>();
+        Path excludeFile = Paths.get("javabase.txt");
+        if (!Files.exists(excludeFile)) {
+            //else take the one package
+            try {
+                excludeFile = Paths.get(ModuleUtil.class.getResource(File.separator + "javabase.txt").toURI());
+            } catch (URISyntaxException e) {
+                e.printStackTrace();
+            }
+
+        }
+        //read file into stream, try-with-resources
+        try (InputStream in = Files.newInputStream(excludeFile);
+             BufferedReader reader =
+                     new BufferedReader(new InputStreamReader(in))) {
+            String line = null;
+            while ((line = reader.readLine()) != null) {
+                packages.add(line);
+            }
+        } catch (IOException x) {
+            G.v().out.println("[WARN] No files for java.base packages");
+        }
+        return packages;
+    }
 
     /**
      * Wrapper class for backward compatibility with existing soot code
@@ -133,16 +163,29 @@ public final class ModuleUtil {
         private String moduleName;
 
 
+        //check for occurrence of full qualified class names
+        private static String fullQualifiedName = "([a-zA-Z_$][a-zA-Z\\d_$]*\\.)+[a-zA-Z_$][a-zA-Z\\d_$]*";
+        private static Pattern fqnClassNamePattern = Pattern.compile("([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*");
+
+        //check for occurrence of module name
+        private static String qualifiedModuleName = "([a-zA-Z_$])([a-zA-Z\\d_$\\.]*)+";
+        private static Pattern moduleClassNamePattern = Pattern.compile(qualifiedModuleName + "(:)" + fullQualifiedName);
+
+
         public ModuleClassNameWrapper(String className) {
+
             String refinedClassName = className;
             String refinedModuleName = null;
-            if (className.contains(":")) {
+            if (className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
+                this.className = refinedClassName;
+                return;
+            } else if (moduleClassNamePattern.matcher(className).matches()) {
                 String split[] = className.split(":");
                 refinedModuleName = split[0];
                 refinedClassName = split[1];
-            } else {
+            } else if (fqnClassNamePattern.matcher(className).matches()) {
                 for (String packageName : packagesJavaBaseModule) {
-                    if (className.startsWith(packageName)) {
+                    if (packageName.equals(ModuleUtil.getPackageName(className))) {
                         refinedModuleName = "java.base";
                         break;
                     }
