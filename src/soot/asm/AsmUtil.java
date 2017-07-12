@@ -76,7 +76,7 @@ class AsmUtil {
                 internal = internal.substring(1, internal.length());
             }
             internal = toQualifiedName(internal);
-            return RefType.v(internal);
+            return makeRefType(internal,moduleName);
         }
         switch (internal.charAt(0)) {
             case 'Z':
