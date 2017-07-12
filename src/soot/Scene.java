@@ -839,7 +839,7 @@ public class Scene // extends AbstractHost
         return toReturn;
 
 		/*
-		 * if(Options.v().time()) Main.v().resolveTimer.end();
+         * if(Options.v().time()) Main.v().resolveTimer.end();
 		 */
     }
 
@@ -1518,6 +1518,10 @@ public class Scene // extends AbstractHost
                 all.addAll(classes);
         }
         return all;
+    }
+
+    protected Set<String>[] getBasicClassesIncludingResolveLevel(){
+        return this.basicclasses;
     }
 
     protected void addReflectionTraceClasses() {

@@ -52,6 +52,10 @@ public class ModuleScene extends Scene  //extends original Scene
 
         if (smp != null)
             setSootModulePath(smp);
+
+        // this is a new Class in JAVA 9; that shall be added to Soot Basic Classes in loadNecessaryClasses mehtod
+        addBasicClass("java.lang.invoke.StringConcatFactory");
+
     }
 
 
@@ -158,7 +162,7 @@ public class ModuleScene extends Scene  //extends original Scene
         if (c.isInScene())
             throw new RuntimeException("already managed: " + c.getName());
 
-        if (containsClass(c.getName()))
+        if (containsClass(c.getName(), Optional.fromNullable(c.moduleName)))
             throw new RuntimeException("duplicate class: " + c.getName());
 
         classes.add(c);
@@ -183,6 +187,8 @@ public class ModuleScene extends Scene  //extends original Scene
 
 
     public boolean containsClass(String className) {
+        //TODO: since this code is called from MethodNodeFactory.caseStringConstants
+        // check if the wrapper is actually required
         ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
 
         return containsClass(wrapper.getClassName(), wrapper.getModuleNameOptional());
@@ -341,8 +347,7 @@ public class ModuleScene extends Scene  //extends original Scene
      *                               Use {@link #containsType(String)} to check if type is registered
      */
     public RefType getRefType(String className, Optional<String> moduleName) {
-        if (!moduleName.isPresent() && className.startsWith("java.lang"))
-            moduleName = Optional.of("java.base");
+
         RefType refType = getRefTypeUnsafe(className, moduleName);
         if (refType == null) {
             throw new IllegalStateException("RefType " + className + " not loaded. " +
@@ -469,91 +474,24 @@ public class ModuleScene extends Scene  //extends original Scene
     }
 
 
-    private final Set<String>[] basicclasses = new Set[4];
 
-    private void addSootBasicClasses() {
-        basicclasses[SootClass.HIERARCHY] = new HashSet<String>();
-        basicclasses[SootClass.SIGNATURES] = new HashSet<String>();
-        basicclasses[SootClass.BODIES] = new HashSet<String>();
 
-        addBasicClass("java.lang.Object");
-        addBasicClass("java.lang.Class", SootClass.SIGNATURES);
 
-        addBasicClass("java.lang.Void", SootClass.SIGNATURES);
-        addBasicClass("java.lang.Boolean", SootClass.SIGNATURES);
-        addBasicClass("java.lang.Byte", SootClass.SIGNATURES);
-        addBasicClass("java.lang.Character", SootClass.SIGNATURES);
-        addBasicClass("java.lang.Short", SootClass.SIGNATURES);
-        addBasicClass("java.lang.Integer", SootClass.SIGNATURES);
-        addBasicClass("java.lang.Long", SootClass.SIGNATURES);
-        addBasicClass("java.lang.Float", SootClass.SIGNATURES);
-        addBasicClass("java.lang.Double", SootClass.SIGNATURES);
-
-        addBasicClass("java.lang.String");
-        addBasicClass("java.lang.StringBuffer", SootClass.SIGNATURES);
-
-        addBasicClass("java.lang.Error");
-        addBasicClass("java.lang.AssertionError", SootClass.SIGNATURES);
-        addBasicClass("java.lang.Throwable", SootClass.SIGNATURES);
-        addBasicClass("java.lang.NoClassDefFoundError", SootClass.SIGNATURES);
-        addBasicClass("java.lang.ExceptionInInitializerError");
-        addBasicClass("java.lang.RuntimeException");
-        addBasicClass("java.lang.ClassNotFoundException");
-        addBasicClass("java.lang.ArithmeticException");
-        addBasicClass("java.lang.ArrayStoreException");
-        addBasicClass("java.lang.ClassCastException");
-        addBasicClass("java.lang.IllegalMonitorStateException");
-        addBasicClass("java.lang.IndexOutOfBoundsException");
-        addBasicClass("java.lang.ArrayIndexOutOfBoundsException");
-        addBasicClass("java.lang.NegativeArraySizeException");
-        addBasicClass("java.lang.NullPointerException", SootClass.SIGNATURES);
-        addBasicClass("java.lang.InstantiationError");
-        addBasicClass("java.lang.InternalError");
-        addBasicClass("java.lang.OutOfMemoryError");
-        addBasicClass("java.lang.StackOverflowError");
-        addBasicClass("java.lang.UnknownError");
-        addBasicClass("java.lang.ThreadDeath");
-        addBasicClass("java.lang.ClassCircularityError");
-        addBasicClass("java.lang.ClassFormatError");
-        addBasicClass("java.lang.IllegalAccessError");
-        addBasicClass("java.lang.IncompatibleClassChangeError");
-        addBasicClass("java.lang.LinkageError");
-        addBasicClass("java.lang.VerifyError");
-        addBasicClass("java.lang.NoSuchFieldError");
-        addBasicClass("java.lang.AbstractMethodError");
-        addBasicClass("java.lang.NoSuchMethodError");
-        addBasicClass("java.lang.UnsatisfiedLinkError");
-
-        addBasicClass("java.lang.Thread");
-        addBasicClass("java.lang.Runnable");
-        addBasicClass("java.lang.Cloneable");
-
-        addBasicClass("java.io.Serializable");
-
-        addBasicClass("java.lang.ref.Finalizer");
-
-        addBasicClass("java.lang.invoke.LambdaMetafactory");
-
-        // this is a new Class in JAVA 9; that shall be added to Soot Basic Classes in loadNecessaryClasses mehtod
-        addBasicClass("java.lang.invoke.StringConcatFactory");
-    }
 
 
     @Override
     public void loadBasicClasses() {
-        super.addReflectionTraceClasses();
-
+        addReflectionTraceClasses();
+        Set<String>[] basicclasses = getBasicClassesIncludingResolveLevel();
         for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
             for (String name : basicclasses[i]) {
                 ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(name);
-
                 tryLoadClass(wrapper.getClassName(), i, wrapper.getModuleNameOptional());
             }
         }
     }
 
 
-    //FIXME check where called
     private void loadNecessaryClass(String name) {
         SootClass c;
         c = loadClassAndSupport(name);
@@ -632,6 +570,14 @@ public class ModuleScene extends Scene  //extends original Scene
         }
     }
 
+    //the field is private in superclass Scene thus, these methods needs to be overwritten
+    @Override
+    public Collection<SootClass> dynamicClasses() {
+        if (dynamicClasses == null) {
+            throw new IllegalStateException("Have to call loadDynamicClasses() first!");
+        }
+        return dynamicClasses;
+    }
 
     /* Generate classes to process, adding or removing package marked by
      * command line options. 
