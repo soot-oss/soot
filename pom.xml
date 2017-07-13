@@ -63,6 +63,9 @@
           <include>**/*.dat</include>
         </includes>
      </resource>
+            <resource>
+                <directory>resources</directory>
+            </resource>
     </resources>
 
     <plugins>
