@@ -71,7 +71,7 @@ public class SootModuleResolver extends SootResolver {
     }
 
     public SootClass makeClassRef(String className) {
-        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
 
 
         return makeClassRef(wrapper.getClassName(), wrapper.getModuleNameOptional());
@@ -100,7 +100,7 @@ public class SootModuleResolver extends SootResolver {
     }
 
     public SootClass resolveClass(String className, int desiredLevel) {
-        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
 
         return resolveClass(wrapper.getClassName(), desiredLevel, wrapper.getModuleNameOptional());
     }

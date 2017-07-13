@@ -3,6 +3,8 @@ package soot;
 import com.google.common.base.Optional;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import soot.options.Options;
 
 import java.io.*;
@@ -11,19 +13,19 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 
-/**
- * Created by ralle on 18.08.16.
- */
 
 /**
  * A utility class for dealing with java 9 modules and module dependencies
+ *
+ * @author adann
  */
 public final class ModuleUtil {
 
     public ModuleUtil(Singletons.Global g) {
-        modulePackageCache = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(800).concurrencyLevel(Runtime.getRuntime().availableProcessors()).build();
+
     }
 
     public static ModuleUtil v() {
@@ -31,8 +33,34 @@ public final class ModuleUtil {
         return G.v().soot_ModuleUtil();
     }
 
-    private Cache<String, String> modulePackageCache;
 
+    private final Cache<String, String> modulePackageCache = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(800).concurrencyLevel(Runtime.getRuntime().availableProcessors()).build();
+    private final LoadingCache<String, ModuleClassNameWrapper> wrapperCache = CacheBuilder.newBuilder().initialCapacity(100).maximumSize(1000).concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(
+            new CacheLoader<String, ModuleClassNameWrapper>() {
+                @Override
+                public ModuleClassNameWrapper load(String key) throws Exception {
+                    return new ModuleClassNameWrapper(key);
+                }
+            }
+    );
+
+
+    public final ModuleClassNameWrapper makeWrapper(String className) {
+        try {
+            return wrapperCache.get(className);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Check if Soot is run with module mode enables
+     *
+     * @return true, if module mode is used
+     */
+    public static boolean module_mode() {
+        return !Options.v().soot_modulepath().isEmpty();
+    }
 
     /**
      * Finds the module that exports the given class to the given module
@@ -41,7 +69,7 @@ public final class ModuleUtil {
      * @param toModuleName the module from which the request is made
      * @return the module's name that exports the class to the given module
      */
-    public String findModuleThatExports(String className, String toModuleName) {
+    public final String findModuleThatExports(String className, String toModuleName) {
 
         if (className.equalsIgnoreCase(SootModuleInfo.MODULE_INFO)) {
             return toModuleName;
@@ -114,26 +142,18 @@ public final class ModuleUtil {
         return packageName;
     }
 
-    /**
-     * Check if Soot is run with module mode enables
-     *
-     * @return true, if module mode is used
-     */
-    public static boolean module_mode() {
-        return !Options.v().soot_modulepath().isEmpty();
-    }
 
-    /* In Soot are a hard coded class names as string contanstants that are now contained in the java.base module, this list serves as a lookup for these string constant    */
-    private static List<String> packagesJavaBaseModule = parseJavaBasePackage();
-
+    /* In Soot are a hard coded class names as string constants that are now contained in the java.base module, this list serves as a lookup for these string constant    */
+    private static final List<String> packagesJavaBaseModule = parseJavaBasePackage();
+    private static final String JAVABASEFILE = "javabase.txt";
 
     private static List<String> parseJavaBasePackage() {
-        List<String> packages = new ArrayList<String>();
-        Path excludeFile = Paths.get("javabase.txt");
+        List<String> packages = new ArrayList<>();
+        Path excludeFile = Paths.get(JAVABASEFILE);
         if (!Files.exists(excludeFile)) {
             //else take the one package
             try {
-                excludeFile = Paths.get(ModuleUtil.class.getResource(File.separator + "javabase.txt").toURI());
+                excludeFile = Paths.get(ModuleUtil.class.getResource(File.separator + JAVABASEFILE).toURI());
             } catch (URISyntaxException e) {
                 e.printStackTrace();
             }
@@ -143,12 +163,12 @@ public final class ModuleUtil {
         try (InputStream in = Files.newInputStream(excludeFile);
              BufferedReader reader =
                      new BufferedReader(new InputStreamReader(in))) {
-            String line = null;
+            String line;
             while ((line = reader.readLine()) != null) {
                 packages.add(line);
             }
         } catch (IOException x) {
-            G.v().out.println("[WARN] No files for java.base packages");
+            G.v().out.println("[WARN] No files specifying the packages of module java.base");
         }
         return packages;
     }
@@ -158,21 +178,22 @@ public final class ModuleUtil {
      * In existing soot code classes are resolved based on their name without specifying a module
      * to avoid changing all occurrences of String constants in Soot this classes deals with these String constants
      */
-    public static class ModuleClassNameWrapper {
-        private String className;
-        private String moduleName;
+    public static final class ModuleClassNameWrapper {
 
 
         //check for occurrence of full qualified class names
-        private static String fullQualifiedName = "([a-zA-Z_$][a-zA-Z\\d_$]*\\.)+[a-zA-Z_$][a-zA-Z\\d_$]*";
-        private static Pattern fqnClassNamePattern = Pattern.compile("([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*");
+        private static final String fullQualifiedName = "([a-zA-Z_$][a-zA-Z\\d_$]*\\.)+[a-zA-Z_$][a-zA-Z\\d_$]*";
+        private static final Pattern fqnClassNamePattern = Pattern.compile("([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*");
 
         //check for occurrence of module name
-        private static String qualifiedModuleName = "([a-zA-Z_$])([a-zA-Z\\d_$\\.]*)+";
-        private static Pattern moduleClassNamePattern = Pattern.compile(qualifiedModuleName + "(:)" + fullQualifiedName);
+        private static final String qualifiedModuleName = "([a-zA-Z_$])([a-zA-Z\\d_$\\.]*)+";
+        private static final Pattern moduleClassNamePattern = Pattern.compile(qualifiedModuleName + "(:)" + fullQualifiedName);
 
 
-        public ModuleClassNameWrapper(String className) {
+        private final String className;
+        private String moduleName;
+
+        private ModuleClassNameWrapper(String className) {
 
             String refinedClassName = className;
             String refinedModuleName = null;
@@ -193,6 +214,7 @@ public final class ModuleUtil {
             }
             this.className = refinedClassName;
             this.moduleName = refinedModuleName;
+            ModuleUtil.v().wrapperCache.put(className, this);
         }
 
         public String getClassName() {

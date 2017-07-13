@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -33,21 +33,21 @@ import java.util.LinkedList;
 /**
  * A class that models Java's reference types. RefTypes are parametrized by a
  * class name. Two RefType are equal iff they are parametrized by the same class
- * name as a String.
+ * name as a String. Extends RefType in order to deal with Java 9 modules.
+ * @author adann
  */
 
 @SuppressWarnings("serial")
 public class ModuleRefType extends RefType {
     public ModuleRefType(Singletons.Global g) {
         super(g);
-        moduleName = null;
     }
 
     public String getModuleName() {
         return moduleName;
     }
 
-    private String moduleName;
+    private  String moduleName;
 
     protected ModuleRefType(String className, String moduleName) {
         super(className);
@@ -56,7 +56,7 @@ public class ModuleRefType extends RefType {
 
 
     public static RefType v(String className) {
-        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
         return v(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
 
@@ -67,7 +67,7 @@ public class ModuleRefType extends RefType {
             module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
         }
         if (!moduleName.isPresent() && Options.v().verbose()) {
-            G.v().out.println("Warning RefType called with  empty module for: " + className);
+            G.v().out.println("[WARN] ModuleRefType called with empty module for: " + className);
         }
         RefType rt = ModuleScene.v().getRefTypeUnsafe(className, Optional.fromNullable(module));
         if (rt == null) {
@@ -81,15 +81,6 @@ public class ModuleRefType extends RefType {
         return rt;
     }
 
-    /**
-     * Create a RefType for a class.
-     *
-     * @param c A SootClass for which to create a RefType.
-     * @return a RefType for the given SootClass..
-     */
-    public static RefType v(soot.SootClass c) {
-        return v(c.getName(), Optional.fromNullable(c.moduleName));
-    }
 
     /**
      * Get the SootClass object corresponding to this RefType.
@@ -99,7 +90,6 @@ public class ModuleRefType extends RefType {
     @Override
     public SootClass getSootClass() {
         if (super.sootClass == null) {
-            // System.out.println( "wrning: "+this+" has no sootclass" );
             sootClass = SootModuleResolver.v().makeClassRef(getClassName(), Optional.fromNullable(this.moduleName));
         }
         return sootClass;
@@ -125,8 +115,8 @@ public class ModuleRefType extends RefType {
             SootClass otherClass = ((ModuleScene) cm).getSootClass(((RefType) other).getClassName(), Optional.fromNullable(this.moduleName));
             SootClass javalangObject = cm.getObjectType().getSootClass();
 
-            LinkedList<SootClass> thisHierarchy = new LinkedList<SootClass>();
-            LinkedList<SootClass> otherHierarchy = new LinkedList<SootClass>();
+            LinkedList<SootClass> thisHierarchy = new LinkedList<>();
+            LinkedList<SootClass> otherHierarchy = new LinkedList<>();
 
             // Build thisHierarchy
             {
