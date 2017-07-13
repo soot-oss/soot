@@ -1237,22 +1237,24 @@ final class AsmMethodSource implements MethodSource {
 
             // Generate parameters & returnType & parameterTypes
             Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
-            List<Type> parameterTypes = new ArrayList<Type>(types.length);
-            List<Value> methodArgs = new ArrayList<Value>(types.length);
+            int nrArgs = types.length-1;
+            List<Type> parameterTypes = new ArrayList<Type>(nrArgs);
+            List<Value> methodArgs = new ArrayList<Value>(nrArgs);
 
-            Operand[] args = new Operand[types.length - 1];
-            ValueBox[] boxes = new ValueBox[args.length];
+            Operand[] args = new Operand[nrArgs];
+            ValueBox[] boxes = new ValueBox[nrArgs];
 
             // Beware: Call stack is FIFO, Jimple is linear
-            int nrArgs = args.length;
+
             while (nrArgs-- != 0) {
                 parameterTypes.add(types[nrArgs]);
-
-                Operand curOperand = popImmediate(types[nrArgs]);
-                args[args.length - nrArgs - 1] = curOperand;
-                methodArgs.add(curOperand.stackOrValue());
+                args[nrArgs] = popImmediate(types[nrArgs]);
+                methodArgs.add(args[nrArgs].stackOrValue());
             }
-
+            if (methodArgs.size() > 1) {
+                Collections.reverse(methodArgs);    // Call stack is FIFO, Jimple is linear
+                Collections.reverse(parameterTypes);
+            }
             returnType = types[types.length - 1];
 
             // we always model invokeDynamic method refs as static method references
@@ -1261,17 +1263,19 @@ final class AsmMethodSource implements MethodSource {
 
             DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef,
                     bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
+            //FIXME: adapted code here since invocation was wrong
+            if (boxes != null) {
+                for (int i = 0; i < types.length - 1; i++) {
+                    boxes[i] = indy.getArgBox(i);
+                    args[i].addBox(boxes[i]);
+                }
 
-            for (int i = 0; i < args.length - 1; i++) {
-                boxes[i] = indy.getArgBox(i);
-                args[i].addBox(boxes[i]);
+                frame.boxes(boxes);
+                frame.in(args);
             }
-
-            opr = new Operand(insn, indy);
-            frame.boxes(boxes);
-            frame.in(args);
-            frame.out(opr);
-        } else {
+                opr = new Operand(insn, indy);
+                frame.out(opr);
+            } else {
             opr = out[0];
             InvokeExpr expr = (InvokeExpr) opr.value;
             List<Type> types = expr.getMethodRef().parameterTypes();
@@ -1283,7 +1287,7 @@ final class AsmMethodSource implements MethodSource {
                 oprs = new Operand[nrArgs + 1];
             if (oprs != null) {
                 while (nrArgs-- != 0) {
-                    oprs[nrArgs] = pop(types.get(types.size() - nrArgs - 1));
+                    oprs[nrArgs] = pop(types.get(nrArgs));
                 }
                 if (!expr.getMethodRef().isStatic())
                     oprs[oprs.length - 1] = pop();
