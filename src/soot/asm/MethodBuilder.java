@@ -119,7 +119,7 @@ class MethodBuilder extends JSRInlinerAdapter {
 	@Override
 	public void visitTypeInsn(int op, String t) {
 		super.visitTypeInsn(op, t);
-		Type rt = AsmUtil.toJimpleRefType(t, Optional.fromNullable(this.scb.getKlass().getModuleInformation().getModuleName()));
+		Type rt = AsmUtil.toJimpleRefType(t, Optional.fromNullable(this.scb.getKlass().moduleName));
 		if (rt instanceof ArrayType)
 			scb.addDep(((ArrayType) rt).baseType);
 		else
