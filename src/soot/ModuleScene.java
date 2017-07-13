@@ -53,7 +53,7 @@ public class ModuleScene extends Scene  //extends original Scene
         if (smp != null)
             setSootModulePath(smp);
 
-        // this is a new Class in JAVA 9; that shall be added to Soot Basic Classes in loadNecessaryClasses mehtod
+        // this is a new Class in JAVA 9; that is added to Soot Basic Classes in loadNecessaryClasses method
         addBasicClass("java.lang.invoke.StringConcatFactory");
 
     }
@@ -70,7 +70,7 @@ public class ModuleScene extends Scene  //extends original Scene
      * since multiple modules may contain the same class this is a map (for fast look ups)
      * TODO: evaluate if Guava's multimap is faster
      */
-    private final Map<String, Map<String, RefType>> nameToClass = new HashMap<String, Map<String, RefType>>();
+    private final Map<String, Map<String, RefType>> nameToClass = new HashMap<>();
 
 
     //instead of using a class path, java 9 uses a module path
@@ -151,7 +151,7 @@ public class ModuleScene extends Scene  //extends original Scene
             sb.append(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS);
 
         else {
-            throw new RuntimeException("Error: cannot find rt.jar.");
+            throw new RuntimeException("Error: cannot find jrt-fs.jar.");
         }
         return sb.toString();
     }
@@ -169,7 +169,7 @@ public class ModuleScene extends Scene  //extends original Scene
 
 
         if (!nameToClass.containsKey(c.getName())) {
-            nameToClass.put(c.getName(), new HashMap<String, RefType>());
+            nameToClass.put(c.getName(), new HashMap<>());
         }
         Map<String, RefType> map = nameToClass.get(c.getName());
         map.put(c.moduleName, c.getType());
@@ -189,7 +189,7 @@ public class ModuleScene extends Scene  //extends original Scene
     public boolean containsClass(String className) {
         //TODO: since this code is called from MethodNodeFactory.caseStringConstants
         // check if the wrapper is actually required
-        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
 
         return containsClass(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
@@ -209,7 +209,7 @@ public class ModuleScene extends Scene  //extends original Scene
             else {
                 type = map.values().iterator().next();
                 if (ModuleUtil.module_mode() && Options.v().verbose()) {
-                    G.v().out.println("[Warning] containsClass called with empty module for: " + className);
+                    G.v().out.println("[WARN] containsClass called with empty module for: " + className);
                 }
             }
         }
@@ -259,7 +259,7 @@ public class ModuleScene extends Scene  //extends original Scene
 
     public SootClass loadClassAndSupport(String className) {
 
-        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
 
 
         return loadClassAndSupport(wrapper.getClassName(), wrapper.getModuleNameOptional());
@@ -274,7 +274,7 @@ public class ModuleScene extends Scene  //extends original Scene
 
     public SootClass loadClass(String className, int desiredLevel) {
 
-        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
 
 
         return loadClass(wrapper.getClassName(), desiredLevel, wrapper.getModuleNameOptional());
@@ -360,7 +360,7 @@ public class ModuleScene extends Scene  //extends original Scene
     @Override
     public RefType getRefType(String className) {
 
-        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
 
         return getRefType(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
@@ -402,7 +402,7 @@ public class ModuleScene extends Scene  //extends original Scene
     public void addRefType(RefType type) {
 
         if (!nameToClass.containsKey(type.getClassName())) {
-            nameToClass.put(type.getClassName(), new HashMap<String, RefType>());
+            nameToClass.put(type.getClassName(), new HashMap<>());
         }
         Map<String, RefType> map = nameToClass.get(type.getClassName());
         map.put(((ModuleRefType) type).getModuleName(), type);
@@ -412,7 +412,7 @@ public class ModuleScene extends Scene  //extends original Scene
     @Override
     public SootClass getSootClassUnsafe(String className) {
 
-        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
 
         return getSootClassUnsafe(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
@@ -422,7 +422,7 @@ public class ModuleScene extends Scene  //extends original Scene
         RefType type = null;
         Map<String, RefType> map = nameToClass.get(className);
 
-        String module = "";
+        String module;
         if (map != null && !map.isEmpty()) {
             if (moduleName.isPresent()) {
                 module = ModuleUtil.v().findModuleThatExports(className, moduleName.get());
@@ -458,7 +458,7 @@ public class ModuleScene extends Scene  //extends original Scene
     @Override
     public SootClass getSootClass(String className) {
 
-        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
 
         return getSootClass(wrapper.getClassName(), wrapper.getModuleNameOptional());
     }
@@ -485,7 +485,7 @@ public class ModuleScene extends Scene  //extends original Scene
         Set<String>[] basicclasses = getBasicClassesIncludingResolveLevel();
         for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
             for (String name : basicclasses[i]) {
-                ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(name);
+                ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(name);
                 tryLoadClass(wrapper.getClassName(), i, wrapper.getModuleNameOptional());
             }
         }
@@ -535,19 +535,17 @@ public class ModuleScene extends Scene  //extends original Scene
     private List<SootClass> dynamicClasses = null;
 
     public void loadDynamicClasses() {
-        dynamicClasses = new ArrayList<SootClass>();
+        dynamicClasses = new ArrayList<>();
         Map<String, List<String>> dynClasses = new HashMap<>();
         dynClasses.put(null, Options.v().dynamic_class());
 
-        for (Iterator<String> pathIt = Options.v().dynamic_dir().iterator(); pathIt.hasNext(); ) {
+        for (final String path : Options.v().dynamic_dir()) {
 
-            final String path = pathIt.next();
             dynClasses.putAll(ModulePathSourceLocator.v().getClassUnderModulePath(path));
         }
 
-        for (Iterator<String> pkgIt = Options.v().dynamic_package().iterator(); pkgIt.hasNext(); ) {
+        for (final String pkg : Options.v().dynamic_package()) {
 
-            final String pkg = pkgIt.next();
             List<String> classPathClasses = dynClasses.get(null);
             classPathClasses.addAll(SourceLocator.v().classesInDynamicPackage(pkg));
         }
@@ -584,9 +582,9 @@ public class ModuleScene extends Scene  //extends original Scene
      */
     private void prepareClasses() {
         // Remove/add all classes from packageInclusionMask as per -i option
-        Chain<SootClass> processedClasses = new HashChain<SootClass>();
+        Chain<SootClass> processedClasses = new HashChain<>();
         while (true) {
-            Chain<SootClass> unprocessedClasses = new HashChain<SootClass>(getClasses());
+            Chain<SootClass> unprocessedClasses = new HashChain<>(getClasses());
             unprocessedClasses.removeAll(processedClasses);
             if (unprocessedClasses.isEmpty()) break;
             processedClasses.addAll(unprocessedClasses);
@@ -621,9 +619,9 @@ public class ModuleScene extends Scene  //extends original Scene
             setMainClass(getSootClass(Options.v().main_class(), null));
         } else {
             // try to infer a main class from the command line if none is given
-            for (Iterator<String> classIter = Options.v().classes().iterator(); classIter.hasNext(); ) {
-                SootClass c = getSootClass(classIter.next(), null);
-                if (c.declaresMethod("main", Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.fromNullable("java.base")), 1)), VoidType.v())) {
+            for (String s : Options.v().classes()) {
+                SootClass c = getSootClass(s, null);
+                if (c.declaresMethod("main", Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1)), VoidType.v())) {
                     G.v().out.println("No main class given. Inferred '" + c.getName() + "' as main class.");
                     setMainClass(c);
                     return;
@@ -631,9 +629,8 @@ public class ModuleScene extends Scene  //extends original Scene
             }
 
             // try to infer a main class from the usual classpath if none is given
-            for (Iterator<SootClass> classIter = getApplicationClasses().iterator(); classIter.hasNext(); ) {
-                SootClass c = classIter.next();
-                if (c.declaresMethod("main", Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.fromNullable("java.base")), 1)), VoidType.v())) {
+            for (SootClass c : getApplicationClasses()) {
+                if (c.declaresMethod("main", Collections.singletonList(ArrayType.v(ModuleRefType.v("java.lang.String", Optional.of("java.base")), 1)), VoidType.v())) {
                     G.v().out.println("No main class given. Inferred '" + c.getName() + "' as main class.");
                     setMainClass(c);
                     return;
@@ -646,7 +643,7 @@ public class ModuleScene extends Scene  //extends original Scene
     @Override
     public SootClass forceResolve(String className, int level) {
 
-        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
 
 
         return forceResolve(wrapper.getClassName(), level, wrapper.getModuleNameOptional());
@@ -667,7 +664,7 @@ public class ModuleScene extends Scene  //extends original Scene
     @Override
     public SootClass makeSootClass(String className) {
 
-        ModuleUtil.ModuleClassNameWrapper wrapper = new ModuleUtil.ModuleClassNameWrapper(className);
+        ModuleUtil.ModuleClassNameWrapper wrapper = ModuleUtil.v().makeWrapper(className);
 
         return makeSootClass(wrapper.getClassName(), wrapper.getModuleName());
     }
