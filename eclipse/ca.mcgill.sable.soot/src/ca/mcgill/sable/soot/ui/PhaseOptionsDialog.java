@@ -2519,6 +2519,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getProcessing_Optionswrong_staticness_widget().getAlias(), stringRes);
 		}
 		 
+		stringRes = getProcessing_Optionsfield_type_mismatches_widget().getSelectedAlias();
+
+		
+		defStringRes = "null";
+		
+
+		if (!stringRes.equals(defStringRes)) {
+			getConfig().put(getProcessing_Optionsfield_type_mismatches_widget().getAlias(), stringRes);
+		}
+		 
 		stringRes = getProcessing_Optionsthrow_analysis_widget().getSelectedAlias();
 
 		
@@ -7391,6 +7401,18 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	
 	
 	
+	private MultiOptionWidget Processing_Optionsfield_type_mismatches_widget;
+	
+	private void setProcessing_Optionsfield_type_mismatches_widget(MultiOptionWidget widget) {
+		Processing_Optionsfield_type_mismatches_widget = widget;
+	}
+	
+	public MultiOptionWidget getProcessing_Optionsfield_type_mismatches_widget() {
+		return Processing_Optionsfield_type_mismatches_widget;
+	}	
+	
+	
+	
 	private MultiOptionWidget Processing_Optionsthrow_analysis_widget;
 	
 	private void setProcessing_Optionsthrow_analysis_widget(MultiOptionWidget widget) {
@@ -11842,6 +11864,42 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			defaultString = getStringDef(defKey);
 		
 			getProcessing_Optionswrong_staticness_widget().setDef(defaultString);
+		}
+		
+		
+		
+		data = new OptionData [] {
+		
+		new OptionData("Fail",
+		"fail",
+		"\nWhen resolving a field reference and the expected type does not \nmatch the declared type of the actual field, an exception will \nbe thrown. ",
+		
+		false),
+		
+		new OptionData("Ignore",
+		"ignore",
+		"\nWith this option, Soot will not check whether there is a \nmismatch between the requested and the declared field type. \nInstead, it will return the declared field with a matching name \nregardless of the field's type. This means that field reference \nresolving will never fail because of mismatching types, but the \nreturned field might not be what the user code expects. ",
+		
+		false),
+		
+		new OptionData("ReturnNull",
+		"null",
+		"\nWhen resolving a field reference for which the declared field \ntype and the expected type from the reference do not match, Soot \nwill return null with this option. The user code that invokes \ngetField() is responsible for correctly handling these null \nreferences. ",
+		
+		true),
+		
+		};
+		
+										
+		setProcessing_Optionsfield_type_mismatches_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Handling of Field Type Mismatches", "", "","field-type-mismatches", "\nSome source files contain invalid bytecode. As a consequence, \nresolving field references may fail due to mismatching types. In \nother words, the expected type in the field reference does not \nmatch the type of the actually declared field. With this option, \nthe user can specify how Soot shall react to such issues. ")));
+		
+		defKey = ""+" "+""+" "+"field-type-mismatches";
+		defKey = defKey.trim();
+		
+		if (isInDefList(defKey)) {
+			defaultString = getStringDef(defKey);
+		
+			getProcessing_Optionsfield_type_mismatches_widget().setDef(defaultString);
 		}
 		
 		

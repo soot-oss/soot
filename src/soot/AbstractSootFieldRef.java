@@ -124,6 +124,11 @@ class AbstractSootFieldRef implements SootFieldRef {
 						return checkStatic(clField);
 					}
 
+					// Make sure that we don't have a conflicting field
+					SootField existingField = cl.getFieldByNameUnsafe(name);
+					if (existingField != null)
+						return handleFieldTypeMismatch(clField);
+
 					// Create the phantom field
 					SootField f = Scene.v().makeSootField(name, type, isStatic() ? Modifier.STATIC : 0);
 					f.setPhantom(true);
@@ -161,10 +166,14 @@ class AbstractSootFieldRef implements SootFieldRef {
 			synchronized (declaringClass) {
 				// Be careful: Another thread may have already created this
 				// field in the meantime, so better check twice.
-				SootField clField = declaringClass.getFieldUnsafe(name, type);
-				if (clField != null)
-					return checkStatic(clField);
-				else {
+				SootField clField = declaringClass.getFieldByNameUnsafe(name);
+				if (clField != null) {
+					if (clField.getType().equals(type))
+						return checkStatic(clField);
+					else
+						return handleFieldTypeMismatch(clField);
+				} else {
+					// Add the new phantom field
 					declaringClass.addField(sf);
 					return sf;
 				}
@@ -179,6 +188,19 @@ class AbstractSootFieldRef implements SootFieldRef {
 				throw e;
 		}
 		return null;
+	}
+
+	protected SootField handleFieldTypeMismatch(SootField clField) {
+		switch (Options.v().field_type_mismatches()) {
+		case Options.field_type_mismatches_fail:
+			throw new ConflictingFieldRefException(clField, type);
+		case Options.field_type_mismatches_ignore:
+			return checkStatic(clField);
+		case Options.field_type_mismatches_null:
+			return null;
+		}
+		throw new RuntimeException(String.format("Unsupported option for handling field type mismatches: %d",
+				Options.v().field_type_mismatches()));
 	}
 
 	public String toString() {
