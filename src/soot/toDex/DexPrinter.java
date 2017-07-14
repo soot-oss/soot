@@ -492,6 +492,10 @@ public class DexPrinter {
 		if (!c.getFields().isEmpty()) {
 			fields = new ArrayList<BuilderField>();
 			for (SootField f : c.getFields()) {
+				// We do not want to write out phantom fields 
+				if (f.isPhantom())
+					continue;
+				
 				// Look for a static initializer
 				EncodedValue staticInit = null;
 				for (Tag t : f.getTags()) {
