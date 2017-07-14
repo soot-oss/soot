@@ -609,23 +609,14 @@ public class Scene // extends AbstractHost
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			// in older Mac OS X versions, rt.jar was split into classes.jar and
 			// ui.jar
-			sb.append(System.getProperty("java.home"));
-			sb.append(File.separator);
-			sb.append("..");
-			sb.append(File.separator);
-			sb.append("Classes");
-			sb.append(File.separator);
-			sb.append("classes.jar");
+			String prefix = System.getProperty("java.home") + File.separator + ".." + File.separator + "Classes" + File.separator;
+			File classesJar = new File(prefix + "classes.jar");
+			if (classesJar.exists())
+			    sb.append(classesJar.getAbsolutePath() + File.pathSeparator);
 
-			sb.append(File.pathSeparator);
-			sb.append(System.getProperty("java.home"));
-			sb.append(File.separator);
-			sb.append("..");
-			sb.append(File.separator);
-			sb.append("Classes");
-			sb.append(File.separator);
-			sb.append("ui.jar");
-			sb.append(File.pathSeparator);
+			File uiJar = new File(prefix + "ui.jar");
+			if (uiJar.exists())
+			    sb.append(uiJar.getAbsolutePath() + File.pathSeparator);
 		}
 
 		File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
