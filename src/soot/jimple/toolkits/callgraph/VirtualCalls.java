@@ -54,7 +54,7 @@ import soot.util.queue.ChunkedQueue;
  * 
  * @author Ondrej Lhotak
  */
-public final class VirtualCalls {
+public class VirtualCalls {
 	private CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
 
 	public VirtualCalls(Singletons.Global g) {
