@@ -198,8 +198,8 @@ public class ModulePathSourceLocator extends SourceLocator {
         if (classProviders == null) {
             setupClassProviders();
         }
-        if(path==null)
-            throw new RuntimeException("[Error] The path "+ aPath+"is not a valid path.");
+        if (path == null)
+            throw new RuntimeException("[Error] The path " + aPath + "is not a valid path.");
 
         BasicFileAttributes attrs = null;
         try {
@@ -330,7 +330,8 @@ public class ModulePathSourceLocator extends SourceLocator {
 
     /**
      * Creates a name for an automatic module based on the name of a jar file
-     * this is similar to the jdk parsing of module name JDK 9{@link ModulePathFinder}
+     * this is based on  the jdk parsing of module name in the JDK 9{@link ModulePathFinder}
+     * at least the patterns are the same
      *
      * @param filename the name of the jar file
      * @return the name of the automatic module
@@ -340,10 +341,11 @@ public class ModulePathSourceLocator extends SourceLocator {
         if (i != -1)
             filename = filename.substring(i + 1);
 
-        // drop .jar
+        // drop teh file extension .jar
         String moduleName = filename.substring(0, filename.length() - 4);
 
         // find first occurrence of -${NUMBER}. or -${NUMBER}$
+        // according to the java 9 spec and current implementation, version numbers are ignored when naming automatic modules
         Matcher matcher = Pattern.compile("-(\\d+(\\.|$))").matcher(moduleName);
         if (matcher.find()) {
             int start = matcher.start();
@@ -351,15 +353,16 @@ public class ModulePathSourceLocator extends SourceLocator {
         }
         moduleName = Pattern.compile("[^A-Za-z0-9]").matcher(moduleName).replaceAll(".");
 
-        // collapse repeating dots
+        // remove all repeating dots
         moduleName = Pattern.compile("(\\.)(\\1)+").matcher(moduleName).replaceAll(".");
 
-        // drop leading dots
-        if (moduleName.length() > 0 && moduleName.charAt(0) == '.')
+        // remove leading dots
+        int len = moduleName.length();
+        if (len > 0 && moduleName.charAt(0) == '.')
             moduleName = Pattern.compile("^\\.").matcher(moduleName).replaceAll("");
 
-        // drop trailing dots
-        int len = moduleName.length();
+        // remove trailing dots
+        len = moduleName.length();
         if (len > 0 && moduleName.charAt(len - 1) == '.')
             moduleName = Pattern.compile("\\.$").matcher(moduleName).replaceAll("");
 
