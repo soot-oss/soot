@@ -109,7 +109,7 @@
           <descriptorRefs>
             <descriptorRef>jar-with-dependencies</descriptorRef>
           </descriptorRefs>
-          <finalName>soot-trunk</finalName>
+          <finalName>soot-trunk-j9</finalName>
          <appendAssemblyId>false</appendAssemblyId> 
           <archive>
             <manifest>
