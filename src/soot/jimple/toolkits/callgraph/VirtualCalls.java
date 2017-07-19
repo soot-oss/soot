@@ -116,8 +116,8 @@ public class VirtualCalls {
 		return ret;
 	}
 
-	protected final MultiMap<Type, Type> baseToSubTypes = new HashMultiMap<Type, Type>();
-	protected final MultiMap<Pair<Type, NumberedString>, Pair<Type, NumberedString>> baseToPossibleSubTypes = new HashMultiMap<Pair<Type, NumberedString>, Pair<Type, NumberedString>>();
+	protected MultiMap<Type, Type> baseToSubTypes = new HashMultiMap<Type, Type>();
+	protected MultiMap<Pair<Type, NumberedString>, Pair<Type, NumberedString>> baseToPossibleSubTypes = new HashMultiMap<Pair<Type, NumberedString>, Pair<Type, NumberedString>>();
 
 	public void resolve(Type t, Type declaredType, NumberedString subSig, SootMethod container,
 			ChunkedQueue<SootMethod> targets) {
