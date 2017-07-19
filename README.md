@@ -1,4 +1,4 @@
-[![Build Status](http://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-build/badge/icon)](http://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-build/)
+[![Build Status](http://soot-build.cs.uni-paderborn.de/jenkins/buildStatus/icon?job=soot/soot-build-j9)](http://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-build-j9/)
 
 # Please help us improve Soot!
 You are using Soot and would like to help us support it in the future? Then please support us by filling out [this little web form](https://goo.gl/forms/rk1oSxFIxAH0xaf52).
