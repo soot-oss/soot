@@ -34,10 +34,9 @@ public class MethodThrowableSetTest {
 		G.reset();
 
 		List<String> processDir = new ArrayList<>();
-		File f = new File("./testclasses");
-		if (f.exists())
-			processDir.add(f.getCanonicalPath());
-		f = new File("./testclasses");
+        File f = new File("./target/test-classes");
+        if (!f.exists() || f.list().length == 0)
+            f = new File("./testclasses");
 		if (f.exists())
 			processDir.add(f.getCanonicalPath());
 		Options.v().set_process_dir(processDir);
