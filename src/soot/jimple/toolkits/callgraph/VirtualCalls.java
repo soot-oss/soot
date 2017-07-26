@@ -93,7 +93,7 @@ public class VirtualCalls {
 	public SootMethod resolveNonSpecial(RefType t, NumberedString subSig, boolean appOnly) {
 		SmallNumberedMap<SootMethod> vtbl = typeToVtbl.get(t);
 		if (vtbl == null) {
-			typeToVtbl.put(t, vtbl = new SmallNumberedMap<SootMethod>(Scene.v().getMethodNumberer()));
+			typeToVtbl.put(t, vtbl = new SmallNumberedMap<SootMethod>());
 		}
 		SootMethod ret = vtbl.get(subSig);
 		if (ret != null)
