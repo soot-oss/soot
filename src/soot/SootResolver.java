@@ -40,16 +40,16 @@ import soot.JastAddJ.JavaParser;
 import soot.JastAddJ.Program;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
-import soot.util.HashMultiMap;
+import soot.util.ConcurrentHashMultiMap;
 import soot.util.MultiMap;
 
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver {
 	/** Maps each resolved class to a list of all references in it. */
-	protected MultiMap<SootClass, Type> classToTypesSignature = new HashMultiMap<SootClass, Type>();
+	protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<SootClass, Type>();
 
 	/** Maps each resolved class to a list of all references in it. */
-	protected MultiMap<SootClass, Type> classToTypesHierarchy = new HashMultiMap<SootClass, Type>();
+	protected MultiMap<SootClass, Type> classToTypesHierarchy = new ConcurrentHashMultiMap<SootClass, Type>();
 
 	/** SootClasses waiting to be resolved. */
 	@SuppressWarnings("unchecked")
