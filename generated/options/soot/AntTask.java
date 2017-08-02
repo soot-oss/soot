@@ -1208,6 +1208,21 @@ public class AntTask extends MatchingTask {
       
         }
     
+        public Object createp_wjpp_cimbt() {
+            Object ret = new PhaseOptwjpp_cimbt();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptwjpp_cimbt {
+      
+          public void set(boolean arg) {
+            addArg("-p");
+            addArg("wjpp.cimbt");
+            addArg(":"+(arg?"true":"false"));
+          }
+      
+        }
+    
         public Object createp_wspp() {
             Object ret = new PhaseOptwspp();
             phaseopts.add(ret);

@@ -419,7 +419,7 @@ public class SparkOptions
      * then automatically refined with context information when 
      * necessary, i.e. when we try to determine the intersection with 
      * another points-to set and this intersection seems to be 
-     * non-empty.							 					
+     * non-empty. 					
      */
     public boolean lazy_pts() {
         return soot.PhaseOptions.getBoolean( options, "lazy-pts" );

@@ -1966,6 +1966,7 @@ public class Options extends OptionsBase {
         +padVal("jj.ne", "Nop eliminator")
         +padVal("jj.uce", "Unreachable code eliminator")
         +padOpt("wjpp", "Whole Jimple Pre-processing Pack")
+        +padVal("wjpp.cimbt", "Replaces base objects of calls to Method.invoke() that are string constants by locals")
         +padOpt("wspp", "Whole Shimple Pre-processing Pack")
         +padOpt("cg", "Call graph constructor")
         +padVal("cg.cha", "Builds call graph using Class Hierarchy Analysis")
@@ -2249,9 +2250,15 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjpp" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThis pack allows you to insert pre-processors that are run \nbefore call-graph construction. Only enabled in whole-program \nmode. In an unmodified copy of Soot, this pack is empty."
+                "\nThis pack allows you to insert pre-processors that are run \nbefore call-graph construction. Only enabled in whole-program \nmode."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
+    
+        if( phaseName.equals( "wjpp.cimbt" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nWhen using the types-for-invoke option of the cg phase, problems \nmight occur if the 			 base object of a call to Method.invoke() \n(the first argument) is a string constant. This option replaces \nall 			 string constants of such calls by locals referencing \nthe string constant."
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "", "" );
     
         if( phaseName.equals( "wspp" ) )
             return "Phase "+phaseName+":\n"+
@@ -2269,9 +2276,9 @@ public class Options extends OptionsBase {
                 +padOpt( "library", " 										Specifies whether the target classes should be treated as an application or a library. 									" )
                 +padVal( "disabled (default)", " 											Call(and pointer assignment) graph construction treat the target classes as application starting from the entry points. 										" )
                 
-                +padVal( "any-subtype", " 											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type  											according to the class hierarchy of the target library. 										" )
+                +padVal( "any-subtype", " 											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type 											according to the class hierarchy of the target library. 										" )
                 
-                +padVal( "signature-resolution", " 											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type  											according to a possible extended class hierarchy of the target library. 										" )
+                +padVal( "signature-resolution", " 											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type 											according to a possible extended class hierarchy of the target library. 										" )
                 
                 +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" )
                 +padOpt( "jdkver (3)", "JDK version for native methods" )
@@ -3076,7 +3083,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "db.deobfuscate" ) )
             return "Phase "+phaseName+":\n"+
-                "\nCertain analyses make sense only when the bytecode is obfuscated \ncode. There are plans to implement such analyses and apply them \non methods only if this flag is set. Dead Code elimination \nwhich includes removing code guarded by some condition which is \nalways false or always true is one such analysis. Another \nsuggested analysis is giving default names to classes and \nfields. Onfuscators love to use weird names for fields and \nclasses and even a simple re-naming of these could be a good \nhelp to the user. Another more advanced analysis would be to \ncheck for redundant constant fields added by obfuscators and \nthen remove uses of these constant fields from the code."
+                "\nCertain analyses make sense only when the bytecode is obfuscated \ncode. There are plans to implement such analyses and apply them \non methods only if this flag is set. Dead Code elimination which \nincludes removing code guarded by some condition which is always \nfalse or always true is one such analysis. Another suggested \nanalysis is giving default names to classes and fields. \nOnfuscators love to use weird names for fields and classes and \neven a simple re-naming of these could be a good help to the \nuser. Another more advanced analysis would be to check for \nredundant constant fields added by obfuscators and then remove \nuses of these constant fields from the code."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -3234,6 +3241,10 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjpp" ) )
             return ""
                 +"enabled ";
+    
+        if( phaseName.equals( "wjpp.cimbt" ) )
+            return ""
+                +" ";
     
         if( phaseName.equals( "wspp" ) )
             return ""
@@ -3863,6 +3874,9 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true ";
     
+        if( phaseName.equals( "wjpp.cimbt" ) )
+            return "";
+    
         if( phaseName.equals( "wspp" ) )
             return ""
               +"enabled:true ";
@@ -4377,6 +4391,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jj.ne" ) ) return;
         if( phaseName.equals( "jj.uce" ) ) return;
         if( phaseName.equals( "wjpp" ) ) return;
+        if( phaseName.equals( "wjpp.cimbt" ) ) return;
         if( phaseName.equals( "wspp" ) ) return;
         if( phaseName.equals( "cg" ) ) return;
         if( phaseName.equals( "cg.cha" ) ) return;
@@ -4522,6 +4537,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jj.uce" );
         if( !PackManager.v().hasPhase( "wjpp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjpp" );
+        if( !PackManager.v().hasPhase( "wjpp.cimbt" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjpp.cimbt" );
         if( !PackManager.v().hasPhase( "wspp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wspp" );
         if( !PackManager.v().hasPhase( "cg" ) )

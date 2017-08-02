@@ -199,7 +199,6 @@ public class CGOptions
      * trace when reaching a porgram location that was not traced but 
      * continues to run. throw (default): the program throws an Error 
      * instead. 
-     * 
      */
     public String guards() {
         return soot.PhaseOptions.getString( options, "guards" );
