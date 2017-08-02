@@ -66,7 +66,7 @@ public class TypeBasedReflectionModelTest {
         Options.v().setPhaseOption("cg", "types-for-invoke:true");
         // this option is necessary to get constant bases working
         Options.v().setPhaseOption("wjpp.cimbt", "enabled:true");
-        //Options.v().setPhaseOption("wjpp.cimbt","verbose:true");
+        Options.v().setPhaseOption("wjpp.cimbt","verbose:true");
         PackManager.v().getPack("wjpp").apply();
         PackManager.v().getPack("cg").apply();
 

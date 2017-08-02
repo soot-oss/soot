@@ -1215,10 +1215,16 @@ public class AntTask extends MatchingTask {
         }
         public class PhaseOptwjpp_cimbt {
       
-          public void set(boolean arg) {
+          public void setenabled(boolean arg) {
             addArg("-p");
             addArg("wjpp.cimbt");
-            addArg(":"+(arg?"true":"false"));
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+          public void setverbose(boolean arg) {
+            addArg("-p");
+            addArg("wjpp.cimbt");
+            addArg("verbose:"+(arg?"true":"false"));
           }
       
         }
