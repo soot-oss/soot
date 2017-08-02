@@ -19,68 +19,9 @@
 
 package soot.jimple.toolkits.callgraph;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import soot.ArrayType;
-import soot.Body;
-import soot.BooleanType;
-import soot.ByteType;
-import soot.CharType;
-import soot.Context;
-import soot.DoubleType;
-import soot.EntryPoints;
-import soot.FastHierarchy;
-import soot.FloatType;
-import soot.G;
-import soot.IntType;
-import soot.Kind;
-import soot.Local;
-import soot.LongType;
-import soot.MethodContext;
-import soot.MethodOrMethodContext;
-import soot.NullType;
-import soot.PackManager;
-import soot.PhaseOptions;
-import soot.PrimType;
-import soot.RefLikeType;
-import soot.RefType;
-import soot.Scene;
-import soot.SceneTransformer;
-import soot.ShortType;
-import soot.SootClass;
-import soot.SootMethod;
-import soot.SootMethodRef;
-import soot.Transform;
-import soot.Type;
-import soot.Unit;
-import soot.Value;
+import soot.*;
 import soot.javaToJimple.LocalGenerator;
-import soot.jimple.AssignStmt;
-import soot.jimple.DynamicInvokeExpr;
-import soot.jimple.FieldRef;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.InvokeExpr;
-import soot.jimple.InvokeStmt;
-import soot.jimple.Jimple;
-import soot.jimple.NewArrayExpr;
-import soot.jimple.NewExpr;
-import soot.jimple.NewMultiArrayExpr;
-import soot.jimple.NullConstant;
-import soot.jimple.SpecialInvokeExpr;
-import soot.jimple.StaticFieldRef;
-import soot.jimple.StaticInvokeExpr;
-import soot.jimple.Stmt;
-import soot.jimple.StringConstant;
-import soot.jimple.VirtualInvokeExpr;
+import soot.jimple.*;
 import soot.jimple.spark.pag.AllocDotField;
 import soot.jimple.spark.pag.PAG;
 import soot.jimple.toolkits.annotation.nullcheck.NullnessAnalysis;
@@ -96,9 +37,13 @@ import soot.util.SmallNumberedMap;
 import soot.util.queue.ChunkedQueue;
 import soot.util.queue.QueueReader;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.*;
+
 /**
  * Models the call graph.
- * 
+ *
  * @author Ondrej Lhotak
  */
 public final class OnFlyCallGraphBuilder {
@@ -114,383 +59,70 @@ public final class OnFlyCallGraphBuilder {
 	private static final PrimType[] BOOLEAN_NARROWINGS = new PrimType[] { BooleanType.v() };
 	private static final PrimType[] DOUBLE_NARROWINGS = new PrimType[] { DoubleType.v(), FloatType.v(), LongType.v(),
 			IntType.v(), CharType.v(), ShortType.v(), ByteType.v(), ShortType.v(), };
+    protected final NumberedString sigFinalize = Scene.v().getSubSigNumberer().findOrAdd("void finalize()");
+    protected final NumberedString sigInit = Scene.v().getSubSigNumberer().findOrAdd("void <init>()");
+    protected final NumberedString sigStart = Scene.v().getSubSigNumberer().findOrAdd("void start()");
+    protected final NumberedString sigRun = Scene.v().getSubSigNumberer().findOrAdd("void run()");
+    protected final NumberedString sigExecute = Scene.v().getSubSigNumberer()
+            .findOrAdd("android.os.AsyncTask execute(java.lang.Object[])");
+    protected final NumberedString sigExecutorExecute = Scene.v().getSubSigNumberer()
+            .findOrAdd("void execute(java.lang.Runnable)");
+    protected final NumberedString sigHandlerPost = Scene.v().getSubSigNumberer()
+            .findOrAdd("boolean post(java.lang.Runnable)");
+    protected final NumberedString sigHandlerPostAtFrontOfQueue = Scene.v().getSubSigNumberer()
+            .findOrAdd("boolean postAtFrontOfQueue(java.lang.Runnable)");
 
-	public class DefaultReflectionModel implements ReflectionModel {
-
-		protected CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
-
-		protected HashSet<SootMethod> warnedAlready = new HashSet<SootMethod>();
-
-		@Override
-		public void classForName(SootMethod source, Stmt s) {
-			List<Local> stringConstants = methodToStringConstants.get(source);
-			if (stringConstants == null)
-				methodToStringConstants.put(source, stringConstants = new ArrayList<Local>());
-			InvokeExpr ie = s.getInvokeExpr();
-			Value className = ie.getArg(0);
-			if (className instanceof StringConstant) {
-				String cls = ((StringConstant) className).value;
-				constantForName(cls, source, s);
-			} else if (className instanceof Local) {
-				Local constant = (Local) className;
-				if (options.safe_forname()) {
-					for (SootMethod tgt : EntryPoints.v().clinits()) {
-						addEdge(source, s, tgt, Kind.CLINIT);
-					}
-				} else {
-					for (SootClass cls : Scene.v().dynamicClasses()) {
-						for (SootMethod clinit : EntryPoints.v().clinitsOf(cls)) {
-							addEdge(source, s, clinit, Kind.CLINIT);
-						}
-					}
-					VirtualCallSite site = new VirtualCallSite(s, source, null, null, Kind.CLINIT);
-					List<VirtualCallSite> sites = stringConstToSites.get(constant);
-					if (sites == null) {
-						stringConstToSites.put(constant, sites = new ArrayList<VirtualCallSite>());
-						stringConstants.add(constant);
-					}
-					sites.add(site);
-				}
-			}
-		}
-
-		@Override
-		public void classNewInstance(SootMethod source, Stmt s) {
-			if (options.safe_newinstance()) {
-				for (SootMethod tgt : EntryPoints.v().inits()) {
-					addEdge(source, s, tgt, Kind.NEWINSTANCE);
-				}
-			} else {
-				for (SootClass cls : Scene.v().dynamicClasses()) {
-					SootMethod sm = cls.getMethodUnsafe(sigInit);
-					if (sm != null) {
-						addEdge(source, s, sm, Kind.NEWINSTANCE);
-					}
-				}
-
-				if (options.verbose()) {
-					G.v().out.println("Warning: Method " + source + " is reachable, and calls Class.newInstance;"
-							+ " graph will be incomplete!" + " Use safe-newinstance option for a conservative result.");
-				}
-			}
-		}
-
-		@Override
-		public void contructorNewInstance(SootMethod source, Stmt s) {
-			if (options.safe_newinstance()) {
-				for (SootMethod tgt : EntryPoints.v().allInits()) {
-					addEdge(source, s, tgt, Kind.NEWINSTANCE);
-				}
-			} else {
-				for (SootClass cls : Scene.v().dynamicClasses()) {
-					for (SootMethod m : cls.getMethods()) {
-						if (m.getName().equals("<init>")) {
-							addEdge(source, s, m, Kind.NEWINSTANCE);
-						}
-					}
-				}
-				if (options.verbose()) {
-					G.v().out.println("Warning: Method " + source + " is reachable, and calls Constructor.newInstance;"
-							+ " graph will be incomplete!" + " Use safe-newinstance option for a conservative result.");
-				}
-			}
-		}
-
-		@Override
-		public void methodInvoke(SootMethod container, Stmt invokeStmt) {
-			if (!warnedAlready(container)) {
-				if (options.verbose()) {
-					G.v().out.println("Warning: call to " + "java.lang.reflect.Method: invoke() from " + container
-							+ "; graph will be incomplete!");
-				}
-				markWarned(container);
-			}
-		}
-
-		private void markWarned(SootMethod m) {
-			warnedAlready.add(m);
-		}
-
-		private boolean warnedAlready(SootMethod m) {
-			return warnedAlready.contains(m);
-		}
-	}
-
-	public class TypeBasedReflectionModel extends DefaultReflectionModel {
-		@Override
-		public void methodInvoke(SootMethod container, Stmt invokeStmt) {
-			if (container.getDeclaringClass().isJavaLibraryClass()) {
-				super.methodInvoke(container, invokeStmt);
-				return;
-			}
-			InstanceInvokeExpr d = (InstanceInvokeExpr) invokeStmt.getInvokeExpr();
-			Value base = d.getArg(0);
-			// no support for statics at the moment
-			if (base instanceof NullConstant) {
-				super.methodInvoke(container, invokeStmt);
-				return;
-			}
-			assert base instanceof Local;
-			addInvokeCallSite(invokeStmt, container, d);
-		}
-	}
-
-	public class TraceBasedReflectionModel implements ReflectionModel {
-
-		class Guard {
-			public Guard(SootMethod container, Stmt stmt, String message) {
-				this.container = container;
-				this.stmt = stmt;
-				this.message = message;
-			}
-
-			final SootMethod container;
-			final Stmt stmt;
-			final String message;
-		}
-
-		protected Set<Guard> guards;
-
-		protected ReflectionTraceInfo reflectionInfo;
-
-		private boolean registeredTransformation = false;
-
-		private TraceBasedReflectionModel() {
-			guards = new HashSet<Guard>();
-
-			String logFile = options.reflection_log();
-			if (logFile == null) {
-				throw new InternalError("Trace based refection model enabled but no trace file given!?");
-			} else {
-				reflectionInfo = new ReflectionTraceInfo(logFile);
-			}
-		}
-
-		/**
-		 * Adds an edge to all class initializers of all possible receivers of
-		 * Class.forName() calls within source.
-		 */
-		@Override
-		public void classForName(SootMethod container, Stmt forNameInvokeStmt) {
-			Set<String> classNames = reflectionInfo.classForNameClassNames(container);
-			if (classNames == null || classNames.isEmpty()) {
-				registerGuard(container, forNameInvokeStmt,
-						"Class.forName() call site; Soot did not expect this site to be reached");
-			} else {
-				for (String clsName : classNames) {
-					constantForName(clsName, container, forNameInvokeStmt);
-				}
-			}
-		}
-
-		/**
-		 * Adds an edge to the constructor of the target class from this call to
-		 * {@link Class#newInstance()}.
-		 */
-		@Override
-		public void classNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
-			Set<String> classNames = reflectionInfo.classNewInstanceClassNames(container);
-			if (classNames == null || classNames.isEmpty()) {
-				registerGuard(container, newInstanceInvokeStmt,
-						"Class.newInstance() call site; Soot did not expect this site to be reached");
-			} else {
-				for (String clsName : classNames) {
-					SootClass cls = Scene.v().getSootClass(clsName);
-					SootMethod constructor = cls.getMethodUnsafe(sigInit);
-					if (constructor != null) {
-						addEdge(container, newInstanceInvokeStmt, constructor, Kind.REFL_CLASS_NEWINSTANCE);
-					}
-				}
-			}
-		}
-
-		/**
-		 * Adds a special edge of kind {@link Kind#REFL_CONSTR_NEWINSTANCE} to
-		 * all possible target constructors of this call to
-		 * {@link Constructor#newInstance(Object...)}. Those kinds of edges are
-		 * treated specially in terms of how parameters are assigned, as
-		 * parameters to the reflective call are passed into the argument array
-		 * of {@link Constructor#newInstance(Object...)}.
-		 * 
-		 * @see PAG#addCallTarget(Edge)
-		 */
-		@Override
-		public void contructorNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
-			Set<String> constructorSignatures = reflectionInfo.constructorNewInstanceSignatures(container);
-			if (constructorSignatures == null || constructorSignatures.isEmpty()) {
-				registerGuard(container, newInstanceInvokeStmt,
-						"Constructor.newInstance(..) call site; Soot did not expect this site to be reached");
-			} else {
-				for (String constructorSignature : constructorSignatures) {
-					SootMethod constructor = Scene.v().getMethod(constructorSignature);
-					addEdge(container, newInstanceInvokeStmt, constructor, Kind.REFL_CONSTR_NEWINSTANCE);
-				}
-			}
-		}
-
-		/**
-		 * Adds a special edge of kind {@link Kind#REFL_INVOKE} to all possible
-		 * target methods of this call to
-		 * {@link Method#invoke(Object, Object...)}. Those kinds of edges are
-		 * treated specially in terms of how parameters are assigned, as
-		 * parameters to the reflective call are passed into the argument array
-		 * of {@link Method#invoke(Object, Object...)}.
-		 * 
-		 * @see PAG#addCallTarget(Edge)
-		 */
-		@Override
-		public void methodInvoke(SootMethod container, Stmt invokeStmt) {
-			Set<String> methodSignatures = reflectionInfo.methodInvokeSignatures(container);
-			if (methodSignatures == null || methodSignatures.isEmpty()) {
-				registerGuard(container, invokeStmt,
-						"Method.invoke(..) call site; Soot did not expect this site to be reached");
-			} else {
-				for (String methodSignature : methodSignatures) {
-					SootMethod method = Scene.v().getMethod(methodSignature);
-					addEdge(container, invokeStmt, method, Kind.REFL_INVOKE);
-				}
-			}
-		}
-
-		private void registerGuard(SootMethod container, Stmt stmt, String string) {
-			guards.add(new Guard(container, stmt, string));
-
-			if (options.verbose()) {
-				G.v().out.println("Incomplete trace file: Class.forName() is called in method '" + container
-						+ "' but trace contains no information about the receiver class of this call.");
-				if (options.guards().equals("ignore")) {
-					G.v().out.println("Guarding strategy is set to 'ignore'. Will ignore this problem.");
-				} else if (options.guards().equals("print")) {
-					G.v().out.println("Guarding strategy is set to 'print'. "
-							+ "Program will print a stack trace if this location is reached during execution.");
-				} else if (options.guards().equals("throw")) {
-					G.v().out.println("Guarding strategy is set to 'throw'. Program will throw an "
-							+ "Error if this location is reached during execution.");
-				} else {
-					throw new RuntimeException("Invalid value for phase option (guarding): " + options.guards());
-				}
-			}
-
-			if (!registeredTransformation) {
-				registeredTransformation = true;
-				PackManager.v().getPack("wjap").add(new Transform("wjap.guards", new SceneTransformer() {
-
-					@Override
-					protected void internalTransform(String phaseName, Map<String, String> options) {
-						for (Guard g : guards) {
-							insertGuard(g);
-						}
-					}
-				}));
-				PhaseOptions.v().setPhaseOption("wjap.guards", "enabled");
-			}
-		}
-
-		private void insertGuard(Guard guard) {
-			if (options.guards().equals("ignore"))
-				return;
-
-			SootMethod container = guard.container;
-			Stmt insertionPoint = guard.stmt;
-			if (!container.hasActiveBody()) {
-				G.v().out.println("WARNING: Tried to insert guard into " + container
-						+ " but couldn't because method has no body.");
-			} else {
-				Body body = container.getActiveBody();
-
-				// exc = new Error
-				RefType runtimeExceptionType = RefType.v("java.lang.Error");
-				NewExpr newExpr = Jimple.v().newNewExpr(runtimeExceptionType);
-				LocalGenerator lg = new LocalGenerator(body);
-				Local exceptionLocal = lg.generateLocal(runtimeExceptionType);
-				AssignStmt assignStmt = Jimple.v().newAssignStmt(exceptionLocal, newExpr);
-				body.getUnits().insertBefore(assignStmt, insertionPoint);
-
-				// exc.<init>(message)
-				SootMethodRef cref = runtimeExceptionType.getSootClass()
-						.getMethod("<init>", Collections.<Type>singletonList(RefType.v("java.lang.String"))).makeRef();
-				SpecialInvokeExpr constructorInvokeExpr = Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref,
-						StringConstant.v(guard.message));
-				InvokeStmt initStmt = Jimple.v().newInvokeStmt(constructorInvokeExpr);
-				body.getUnits().insertAfter(initStmt, assignStmt);
-
-				if (options.guards().equals("print")) {
-					// exc.printStackTrace();
-					VirtualInvokeExpr printStackTraceExpr = Jimple.v().newVirtualInvokeExpr(exceptionLocal,
-							Scene.v().getSootClass("java.lang.Throwable")
-									.getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
-					InvokeStmt printStackTraceStmt = Jimple.v().newInvokeStmt(printStackTraceExpr);
-					body.getUnits().insertAfter(printStackTraceStmt, initStmt);
-				} else if (options.guards().equals("throw")) {
-					body.getUnits().insertAfter(Jimple.v().newThrowStmt(exceptionLocal), initStmt);
-				} else {
-					throw new RuntimeException("Invalid value for phase option (guarding): " + options.guards());
-				}
-			}
-		}
-
-	}
-
-	/** context-insensitive stuff */
+    // type based reflection resolution state
+    protected final NumberedString sigHandlerPostAtTime = Scene.v().getSubSigNumberer()
+            .findOrAdd("boolean postAtTime(java.lang.Runnable,long)");
+    protected final NumberedString sigHandlerPostAtTimeWithToken = Scene.v().getSubSigNumberer()
+            .findOrAdd("boolean postAtTime(java.lang.Runnable,java.lang.Object,long)");
+    protected final NumberedString sigHandlerPostDelayed = Scene.v().getSubSigNumberer()
+            .findOrAdd("boolean postDelayed(java.lang.Runnable,long)");
+    protected final NumberedString sigObjRun = Scene.v().getSubSigNumberer().findOrAdd("java.lang.Object run()");
+    protected final NumberedString sigDoInBackground = Scene.v().getSubSigNumberer()
+            .findOrAdd("java.lang.Object doInBackground(java.lang.Object[])");
+    protected final NumberedString sigForName = Scene.v().getSubSigNumberer()
+            .findOrAdd("java.lang.Class forName(java.lang.String)");
+    protected final RefType clRunnable = RefType.v("java.lang.Runnable");
+    protected final RefType clAsyncTask = RefType.v("android.os.AsyncTask");
+    /** context-insensitive stuff */
 	private final CallGraph cicg = new CallGraph();
 	private final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
 
-	private final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites = new LargeNumberedMap<Local, List<VirtualCallSite>>(
-			Scene.v().getLocalNumberer()); // Local -> List(VirtualCallSite)
+    // end type based reflection resolution
+    private final LargeNumberedMap<Local, List<VirtualCallSite>> receiverToSites = new LargeNumberedMap<Local, List<VirtualCallSite>>(
+            Scene.v().getLocalNumberer()); // Local -> List(VirtualCallSite)
 	private final LargeNumberedMap<SootMethod, List<Local>> methodToReceivers = new LargeNumberedMap<SootMethod, List<Local>>(
 			Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
-
-	public LargeNumberedMap<SootMethod, List<Local>> methodToReceivers() {
-		return methodToReceivers;
-	}
-
-	// type based reflection resolution state
-
 	private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases = new LargeNumberedMap<SootMethod, List<Local>>(
 			Scene.v().getMethodNumberer());
 	private final LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs = new LargeNumberedMap<SootMethod, List<Local>>(
 			Scene.v().getMethodNumberer());
-
-	public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs() {
-		return methodToInvokeArgs;
-	}
-
-	public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases() {
-		return methodToInvokeBases;
-	}
-
 	private final Map<Local, List<InvokeCallSite>> baseToInvokeSite = new IdentityHashMap<Local, List<InvokeCallSite>>();
 	private final Map<Local, List<InvokeCallSite>> invokeArgsToInvokeSite = new IdentityHashMap<Local, List<InvokeCallSite>>();
 	private final Map<Local, Set<Integer>> invokeArgsToSize = new IdentityHashMap<Local, Set<Integer>>();
 	private final Map<AllocDotField, Set<Local>> allocDotFieldToLocal = new IdentityHashMap<AllocDotField, Set<Local>>();
 	private final Map<Local, Set<Type>> reachingArgTypes = new IdentityHashMap<Local, Set<Type>>();
 	private final Map<Local, Set<Type>> reachingBaseTypes = new IdentityHashMap<Local, Set<Type>>();
-
-	// end type based reflection resolution
-
 	private final SmallNumberedMap<List<VirtualCallSite>> stringConstToSites = new SmallNumberedMap<List<VirtualCallSite>>(); // Local
 																																// ->
 																																// List(VirtualCallSite)
 	private final LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants = new LargeNumberedMap<SootMethod, List<Local>>(
 			Scene.v().getMethodNumberer()); // SootMethod -> List(Local)
-
-	public LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants() {
-		return methodToStringConstants;
-	}
-
-	private CGOptions options;
-
+    private final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
+    private final QueueReader<SootMethod> targets = targetsQueue.reader();
+    ReflectionModel reflectionModel;
+    private CGOptions options;
 	private boolean appOnly;
-
 	/** context-sensitive stuff */
 	private ReachableMethods rm;
 	private QueueReader<MethodOrMethodContext> worklist;
-
 	private ContextManager cm;
-
-	private final ChunkedQueue<SootMethod> targetsQueue = new ChunkedQueue<SootMethod>();
-	private final QueueReader<SootMethod> targets = targetsQueue.reader();
 	private FastHierarchy fh;
+    private NullnessAnalysis nullnessCache = null;
+    private ConstantArrayAnalysis arrayCache = null;
+    private SootMethod analysisKey = null;
 
 	public OnFlyCallGraphBuilder(ContextManager cm, ReachableMethods rm) {
 		this.cm = cm;
@@ -519,6 +151,22 @@ public final class OnFlyCallGraphBuilder {
 		this(cm, rm);
 		this.appOnly = appOnly;
 	}
+
+    public LargeNumberedMap<SootMethod, List<Local>> methodToReceivers() {
+        return methodToReceivers;
+    }
+
+    public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeArgs() {
+        return methodToInvokeArgs;
+    }
+
+    public LargeNumberedMap<SootMethod, List<Local>> methodToInvokeBases() {
+        return methodToInvokeBases;
+    }
+
+    public LargeNumberedMap<SootMethod, List<Local>> methodToStringConstants() {
+        return methodToStringConstants;
+    }
 
 	public void processReachables() {
 		while (true) {
@@ -666,6 +314,8 @@ public final class OnFlyCallGraphBuilder {
 		}
 	}
 
+	/* End of public methods. */
+
 	private void resolveStaticTypes(Set<Type> s, InvokeCallSite ics) {
 		ArrayTypes at = ics.reachingTypes();
 		for (Type bType : s) {
@@ -754,70 +404,6 @@ public final class OnFlyCallGraphBuilder {
 			// impossible?
 			return false;
 		}
-	}
-
-	private abstract class AbstractMethodIterator implements Iterator<SootMethod> {
-		private SootMethod next;
-		private SootClass currClass;
-		private Iterator<SootMethod> methodIterator;
-
-		AbstractMethodIterator(SootClass baseClass) {
-			this.currClass = baseClass;
-			this.next = null;
-			this.methodIterator = baseClass.methodIterator();
-			this.findNextMethod();
-		}
-
-		protected void findNextMethod() {
-			next = null;
-			if (methodIterator == null) {
-				return;
-			}
-			do {
-				while (methodIterator.hasNext()) {
-					SootMethod n = methodIterator.next();
-					if (!n.isPublic()) {
-						continue;
-					}
-					if (n.isStatic() || n.isConstructor() || n.isStaticInitializer() || !n.isConcrete()) {
-						continue;
-					}
-					if (!acceptMethod(n)) {
-						continue;
-					}
-					next = n;
-					return;
-				}
-				if (currClass.hasSuperclass() && !currClass.getSuperclass().isPhantom()
-						&& !currClass.getSuperclass().getName().equals("java.lang.Object")) {
-					currClass = currClass.getSuperclass();
-					methodIterator = currClass.methodIterator();
-					continue;
-				} else {
-					methodIterator = null;
-					return;
-				}
-			} while (true);
-		}
-
-		@Override
-		public boolean hasNext() {
-			return next != null;
-		}
-
-		@Override
-		public SootMethod next() {
-			SootMethod toRet = next;
-			findNextMethod();
-			return toRet;
-		}
-
-		@Override
-		public void remove() {
-			throw new UnsupportedOperationException();
-		}
-
-		protected abstract boolean acceptMethod(SootMethod m);
 	}
 
 	private Iterator<SootMethod> getPublicMethodIterator(final SootClass baseClass, final Set<Type> reachingTypes,
@@ -966,25 +552,19 @@ public final class OnFlyCallGraphBuilder {
 		allocDotFieldToLocal.get(dot).add(receiver);
 	}
 
-	private NullnessAnalysis nullnessCache = null;
-	private ConstantArrayAnalysis arrayCache = null;
-	private SootMethod analysisKey = null;
-
-	/* End of public methods. */
-
 	/*
-	 * How type based reflection resolution works:
-	 * 
+     * How type based reflection resolution works:
+	 *
 	 * In general, for each call to invoke(), we record the local of the
 	 * receiver argument and the argument array. Whenever a new type is added to
 	 * the points to set of the receiver argument we add that type to the
 	 * reachingBaseTypes and try to resolve the reflective method call (see
 	 * addType, addBaseType, and updatedNode() in OnFlyCallGraph).
-	 * 
+	 *
 	 * For added precision, we also record the second argument to invoke. If it
 	 * is always null, this means the invoke() call resolves only to nullary
 	 * methods.
-	 * 
+	 *
 	 * When the second argument is a variable that must not be null we can
 	 * narrow down the called method based on the possible sizes of the argument
 	 * array and the types it contains. Whenever a new allocation reaches this
@@ -996,9 +576,9 @@ public final class OnFlyCallGraphBuilder {
 	 * the array contents. If a new type reaches this node, we update the
 	 * possible argument types. (see propagate() in PropWorklist and the
 	 * visitor, and updatedFieldRef in OnFlyCallGraph).
-	 * 
+	 *
 	 * For details on the method resolution process, see resolveInvoke()
-	 * 
+	 *
 	 * Finally, for cases like o.invoke(b, foo, bar, baz); it is very easy to
 	 * statically determine precisely which types are in which argument
 	 * positions. This is computed using the ConstantArrayAnalysis and are
@@ -1124,8 +704,6 @@ public final class OnFlyCallGraphBuilder {
 		}
 	}
 
-	ReflectionModel reflectionModel;
-
 	private void getImplicitTargets(SootMethod source) {
 		final SootClass scl = source.getDeclaringClass();
 		if (source.isNative() || source.isPhantom())
@@ -1246,32 +824,381 @@ public final class OnFlyCallGraphBuilder {
 		addEdge(src, stmt, tgt, Edge.ieToKind(ie));
 	}
 
-	protected final NumberedString sigFinalize = Scene.v().getSubSigNumberer().findOrAdd("void finalize()");
-	protected final NumberedString sigInit = Scene.v().getSubSigNumberer().findOrAdd("void <init>()");
-	protected final NumberedString sigStart = Scene.v().getSubSigNumberer().findOrAdd("void start()");
-	protected final NumberedString sigRun = Scene.v().getSubSigNumberer().findOrAdd("void run()");
-	protected final NumberedString sigExecute = Scene.v().getSubSigNumberer()
-			.findOrAdd("android.os.AsyncTask execute(java.lang.Object[])");
+    public class DefaultReflectionModel implements ReflectionModel {
 
-	protected final NumberedString sigExecutorExecute = Scene.v().getSubSigNumberer()
-			.findOrAdd("void execute(java.lang.Runnable)");
+        protected CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
 
-	protected final NumberedString sigHandlerPost = Scene.v().getSubSigNumberer()
-			.findOrAdd("boolean post(java.lang.Runnable)");
-	protected final NumberedString sigHandlerPostAtFrontOfQueue = Scene.v().getSubSigNumberer()
-			.findOrAdd("boolean postAtFrontOfQueue(java.lang.Runnable)");
-	protected final NumberedString sigHandlerPostAtTime = Scene.v().getSubSigNumberer()
-			.findOrAdd("boolean postAtTime(java.lang.Runnable,long)");
-	protected final NumberedString sigHandlerPostAtTimeWithToken = Scene.v().getSubSigNumberer()
-			.findOrAdd("boolean postAtTime(java.lang.Runnable,java.lang.Object,long)");
-	protected final NumberedString sigHandlerPostDelayed = Scene.v().getSubSigNumberer()
-			.findOrAdd("boolean postDelayed(java.lang.Runnable,long)");
+        protected HashSet<SootMethod> warnedAlready = new HashSet<SootMethod>();
 
-	protected final NumberedString sigObjRun = Scene.v().getSubSigNumberer().findOrAdd("java.lang.Object run()");
-	protected final NumberedString sigDoInBackground = Scene.v().getSubSigNumberer()
-			.findOrAdd("java.lang.Object doInBackground(java.lang.Object[])");
-	protected final NumberedString sigForName = Scene.v().getSubSigNumberer()
-			.findOrAdd("java.lang.Class forName(java.lang.String)");
-	protected final RefType clRunnable = RefType.v("java.lang.Runnable");
-	protected final RefType clAsyncTask = RefType.v("android.os.AsyncTask");
+        @Override
+        public void classForName(SootMethod source, Stmt s) {
+            List<Local> stringConstants = methodToStringConstants.get(source);
+            if (stringConstants == null)
+                methodToStringConstants.put(source, stringConstants = new ArrayList<Local>());
+            InvokeExpr ie = s.getInvokeExpr();
+            Value className = ie.getArg(0);
+            if (className instanceof StringConstant) {
+                String cls = ((StringConstant) className).value;
+                constantForName(cls, source, s);
+            } else if (className instanceof Local) {
+                Local constant = (Local) className;
+                if (options.safe_forname()) {
+                    for (SootMethod tgt : EntryPoints.v().clinits()) {
+                        addEdge(source, s, tgt, Kind.CLINIT);
+                    }
+                } else {
+                    for (SootClass cls : Scene.v().dynamicClasses()) {
+                        for (SootMethod clinit : EntryPoints.v().clinitsOf(cls)) {
+                            addEdge(source, s, clinit, Kind.CLINIT);
+                        }
+                    }
+                    VirtualCallSite site = new VirtualCallSite(s, source, null, null, Kind.CLINIT);
+                    List<VirtualCallSite> sites = stringConstToSites.get(constant);
+                    if (sites == null) {
+                        stringConstToSites.put(constant, sites = new ArrayList<VirtualCallSite>());
+                        stringConstants.add(constant);
+                    }
+                    sites.add(site);
+                }
+            }
+        }
+
+        @Override
+        public void classNewInstance(SootMethod source, Stmt s) {
+            if (options.safe_newinstance()) {
+                for (SootMethod tgt : EntryPoints.v().inits()) {
+                    addEdge(source, s, tgt, Kind.NEWINSTANCE);
+                }
+            } else {
+                for (SootClass cls : Scene.v().dynamicClasses()) {
+                    SootMethod sm = cls.getMethodUnsafe(sigInit);
+                    if (sm != null) {
+                        addEdge(source, s, sm, Kind.NEWINSTANCE);
+                    }
+                }
+
+                if (options.verbose()) {
+                    G.v().out.println("Warning: Method " + source + " is reachable, and calls Class.newInstance;"
+                            + " graph will be incomplete!" + " Use safe-newinstance option for a conservative result.");
+                }
+            }
+        }
+
+        @Override
+        public void contructorNewInstance(SootMethod source, Stmt s) {
+            if (options.safe_newinstance()) {
+                for (SootMethod tgt : EntryPoints.v().allInits()) {
+                    addEdge(source, s, tgt, Kind.NEWINSTANCE);
+                }
+            } else {
+                for (SootClass cls : Scene.v().dynamicClasses()) {
+                    for (SootMethod m : cls.getMethods()) {
+                        if (m.getName().equals("<init>")) {
+                            addEdge(source, s, m, Kind.NEWINSTANCE);
+                        }
+                    }
+                }
+                if (options.verbose()) {
+                    G.v().out.println("Warning: Method " + source + " is reachable, and calls Constructor.newInstance;"
+                            + " graph will be incomplete!" + " Use safe-newinstance option for a conservative result.");
+                }
+            }
+        }
+
+        @Override
+        public void methodInvoke(SootMethod container, Stmt invokeStmt) {
+            if (!warnedAlready(container)) {
+                if (options.verbose()) {
+                    G.v().out.println("Warning: call to " + "java.lang.reflect.Method: invoke() from " + container
+                            + "; graph will be incomplete!");
+                }
+                markWarned(container);
+            }
+        }
+
+        private void markWarned(SootMethod m) {
+            warnedAlready.add(m);
+        }
+
+        private boolean warnedAlready(SootMethod m) {
+            return warnedAlready.contains(m);
+        }
+    }
+
+    public class TypeBasedReflectionModel extends DefaultReflectionModel {
+        @Override
+        public void methodInvoke(SootMethod container, Stmt invokeStmt) {
+            if (container.getDeclaringClass().isJavaLibraryClass()) {
+                super.methodInvoke(container, invokeStmt);
+                return;
+            }
+            InstanceInvokeExpr d = (InstanceInvokeExpr) invokeStmt.getInvokeExpr();
+            Value base = d.getArg(0);
+            //TODO no support for statics at the moment
+            if (base instanceof NullConstant) {
+                super.methodInvoke(container, invokeStmt);
+                return;
+            }
+            assert base instanceof Local;
+            addInvokeCallSite(invokeStmt, container, d);
+        }
+    }
+
+    public class TraceBasedReflectionModel implements ReflectionModel {
+
+        protected Set<Guard> guards;
+        protected ReflectionTraceInfo reflectionInfo;
+        private boolean registeredTransformation = false;
+
+        private TraceBasedReflectionModel() {
+            guards = new HashSet<Guard>();
+
+            String logFile = options.reflection_log();
+            if (logFile == null) {
+                throw new InternalError("Trace based refection model enabled but no trace file given!?");
+            } else {
+                reflectionInfo = new ReflectionTraceInfo(logFile);
+            }
+        }
+
+        /**
+         * Adds an edge to all class initializers of all possible receivers of
+         * Class.forName() calls within source.
+         */
+        @Override
+        public void classForName(SootMethod container, Stmt forNameInvokeStmt) {
+            Set<String> classNames = reflectionInfo.classForNameClassNames(container);
+            if (classNames == null || classNames.isEmpty()) {
+                registerGuard(container, forNameInvokeStmt,
+                        "Class.forName() call site; Soot did not expect this site to be reached");
+            } else {
+                for (String clsName : classNames) {
+                    constantForName(clsName, container, forNameInvokeStmt);
+                }
+            }
+        }
+
+        /**
+         * Adds an edge to the constructor of the target class from this call to
+         * {@link Class#newInstance()}.
+         */
+        @Override
+        public void classNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
+            Set<String> classNames = reflectionInfo.classNewInstanceClassNames(container);
+            if (classNames == null || classNames.isEmpty()) {
+                registerGuard(container, newInstanceInvokeStmt,
+                        "Class.newInstance() call site; Soot did not expect this site to be reached");
+            } else {
+                for (String clsName : classNames) {
+                    SootClass cls = Scene.v().getSootClass(clsName);
+                    SootMethod constructor = cls.getMethodUnsafe(sigInit);
+                    if (constructor != null) {
+                        addEdge(container, newInstanceInvokeStmt, constructor, Kind.REFL_CLASS_NEWINSTANCE);
+                    }
+                }
+            }
+        }
+
+        /**
+         * Adds a special edge of kind {@link Kind#REFL_CONSTR_NEWINSTANCE} to
+         * all possible target constructors of this call to
+         * {@link Constructor#newInstance(Object...)}. Those kinds of edges are
+         * treated specially in terms of how parameters are assigned, as
+         * parameters to the reflective call are passed into the argument array
+         * of {@link Constructor#newInstance(Object...)}.
+         *
+         * @see PAG#addCallTarget(Edge)
+         */
+        @Override
+        public void contructorNewInstance(SootMethod container, Stmt newInstanceInvokeStmt) {
+            Set<String> constructorSignatures = reflectionInfo.constructorNewInstanceSignatures(container);
+            if (constructorSignatures == null || constructorSignatures.isEmpty()) {
+                registerGuard(container, newInstanceInvokeStmt,
+                        "Constructor.newInstance(..) call site; Soot did not expect this site to be reached");
+            } else {
+                for (String constructorSignature : constructorSignatures) {
+                    SootMethod constructor = Scene.v().getMethod(constructorSignature);
+                    addEdge(container, newInstanceInvokeStmt, constructor, Kind.REFL_CONSTR_NEWINSTANCE);
+                }
+            }
+        }
+
+        /**
+         * Adds a special edge of kind {@link Kind#REFL_INVOKE} to all possible
+         * target methods of this call to
+         * {@link Method#invoke(Object, Object...)}. Those kinds of edges are
+         * treated specially in terms of how parameters are assigned, as
+         * parameters to the reflective call are passed into the argument array
+         * of {@link Method#invoke(Object, Object...)}.
+         *
+         * @see PAG#addCallTarget(Edge)
+         */
+        @Override
+        public void methodInvoke(SootMethod container, Stmt invokeStmt) {
+            Set<String> methodSignatures = reflectionInfo.methodInvokeSignatures(container);
+            if (methodSignatures == null || methodSignatures.isEmpty()) {
+                registerGuard(container, invokeStmt,
+                        "Method.invoke(..) call site; Soot did not expect this site to be reached");
+            } else {
+                for (String methodSignature : methodSignatures) {
+                    SootMethod method = Scene.v().getMethod(methodSignature);
+                    addEdge(container, invokeStmt, method, Kind.REFL_INVOKE);
+                }
+            }
+        }
+
+        private void registerGuard(SootMethod container, Stmt stmt, String string) {
+            guards.add(new Guard(container, stmt, string));
+
+            if (options.verbose()) {
+                G.v().out.println("Incomplete trace file: Class.forName() is called in method '" + container
+                        + "' but trace contains no information about the receiver class of this call.");
+                if (options.guards().equals("ignore")) {
+                    G.v().out.println("Guarding strategy is set to 'ignore'. Will ignore this problem.");
+                } else if (options.guards().equals("print")) {
+                    G.v().out.println("Guarding strategy is set to 'print'. "
+                            + "Program will print a stack trace if this location is reached during execution.");
+                } else if (options.guards().equals("throw")) {
+                    G.v().out.println("Guarding strategy is set to 'throw'. Program will throw an "
+                            + "Error if this location is reached during execution.");
+                } else {
+                    throw new RuntimeException("Invalid value for phase option (guarding): " + options.guards());
+                }
+            }
+
+            if (!registeredTransformation) {
+                registeredTransformation = true;
+                PackManager.v().getPack("wjap").add(new Transform("wjap.guards", new SceneTransformer() {
+
+                    @Override
+                    protected void internalTransform(String phaseName, Map<String, String> options) {
+                        for (Guard g : guards) {
+                            insertGuard(g);
+                        }
+                    }
+                }));
+                PhaseOptions.v().setPhaseOption("wjap.guards", "enabled");
+            }
+        }
+
+        private void insertGuard(Guard guard) {
+            if (options.guards().equals("ignore"))
+                return;
+
+            SootMethod container = guard.container;
+            Stmt insertionPoint = guard.stmt;
+            if (!container.hasActiveBody()) {
+                G.v().out.println("WARNING: Tried to insert guard into " + container
+                        + " but couldn't because method has no body.");
+            } else {
+                Body body = container.getActiveBody();
+
+                // exc = new Error
+                RefType runtimeExceptionType = RefType.v("java.lang.Error");
+                NewExpr newExpr = Jimple.v().newNewExpr(runtimeExceptionType);
+                LocalGenerator lg = new LocalGenerator(body);
+                Local exceptionLocal = lg.generateLocal(runtimeExceptionType);
+                AssignStmt assignStmt = Jimple.v().newAssignStmt(exceptionLocal, newExpr);
+                body.getUnits().insertBefore(assignStmt, insertionPoint);
+
+                // exc.<init>(message)
+                SootMethodRef cref = runtimeExceptionType.getSootClass()
+                        .getMethod("<init>", Collections.<Type>singletonList(RefType.v("java.lang.String"))).makeRef();
+                SpecialInvokeExpr constructorInvokeExpr = Jimple.v().newSpecialInvokeExpr(exceptionLocal, cref,
+                        StringConstant.v(guard.message));
+                InvokeStmt initStmt = Jimple.v().newInvokeStmt(constructorInvokeExpr);
+                body.getUnits().insertAfter(initStmt, assignStmt);
+
+                if (options.guards().equals("print")) {
+                    // exc.printStackTrace();
+                    VirtualInvokeExpr printStackTraceExpr = Jimple.v().newVirtualInvokeExpr(exceptionLocal,
+                            Scene.v().getSootClass("java.lang.Throwable")
+                                    .getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());
+                    InvokeStmt printStackTraceStmt = Jimple.v().newInvokeStmt(printStackTraceExpr);
+                    body.getUnits().insertAfter(printStackTraceStmt, initStmt);
+                } else if (options.guards().equals("throw")) {
+                    body.getUnits().insertAfter(Jimple.v().newThrowStmt(exceptionLocal), initStmt);
+                } else {
+                    throw new RuntimeException("Invalid value for phase option (guarding): " + options.guards());
+                }
+            }
+        }
+
+        class Guard {
+            final SootMethod container;
+            final Stmt stmt;
+            final String message;
+
+            public Guard(SootMethod container, Stmt stmt, String message) {
+                this.container = container;
+                this.stmt = stmt;
+                this.message = message;
+            }
+        }
+
+    }
+
+    private abstract class AbstractMethodIterator implements Iterator<SootMethod> {
+        private SootMethod next;
+        private SootClass currClass;
+        private Iterator<SootMethod> methodIterator;
+
+        AbstractMethodIterator(SootClass baseClass) {
+            this.currClass = baseClass;
+            this.next = null;
+            this.methodIterator = baseClass.methodIterator();
+            this.findNextMethod();
+        }
+
+        protected void findNextMethod() {
+            next = null;
+            if (methodIterator == null) {
+                return;
+            }
+            do {
+                while (methodIterator.hasNext()) {
+                    SootMethod n = methodIterator.next();
+                    if (!n.isPublic()) {
+                        continue;
+                    }
+                    if (n.isStatic() || n.isConstructor() || n.isStaticInitializer() || !n.isConcrete()) {
+                        continue;
+                    }
+                    if (!acceptMethod(n)) {
+                        continue;
+                    }
+                    next = n;
+                    return;
+                }
+                if (currClass.hasSuperclass() && !currClass.getSuperclass().isPhantom()
+                        && !currClass.getSuperclass().getName().equals("java.lang.Object")) {
+                    currClass = currClass.getSuperclass();
+                    methodIterator = currClass.methodIterator();
+                    continue;
+                } else {
+                    methodIterator = null;
+                    return;
+                }
+            } while (true);
+        }
+
+        @Override
+        public boolean hasNext() {
+            return next != null;
+        }
+
+        @Override
+        public SootMethod next() {
+            SootMethod toRet = next;
+            findNextMethod();
+            return toRet;
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        protected abstract boolean acceptMethod(SootMethod m);
+    }
 }
