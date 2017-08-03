@@ -300,6 +300,9 @@ public abstract class AbstractASMBackend {
 		List<SootMethod> sortedMethods = new ArrayList<SootMethod>(sc.getMethods());
 		Collections.sort(sortedMethods, new SootMethodComparator());
 		for (SootMethod sm : sortedMethods) {
+			if (sm.isPhantom())
+				continue;
+				
 			int access = getModifiers(sm.getModifiers(), sm);
 			String name = sm.getName();
 			StringBuilder descBuilder = new StringBuilder(5);
@@ -373,6 +376,8 @@ public abstract class AbstractASMBackend {
 	 */
 	protected void generateFields() {
         for (SootField f : sc.getFields()) {
+        	if (f.isPhantom())
+        		continue;
             String name = f.getName();
             String desc = toTypeDesc(f.getType());
             String sig = null;
