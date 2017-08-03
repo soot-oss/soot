@@ -138,7 +138,8 @@ public class SIOptions
     
      * .
     
-     * Specify which changes in visibility modifiers are allowed. 
+     * Specify which changes in visibility modifiers 
+     * are allowed. 
      */
     public int allowed_modifier_changes() {
         String s = soot.PhaseOptions.getString( options, "allowed-modifier-changes" );

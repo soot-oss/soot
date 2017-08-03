@@ -197,8 +197,8 @@ public class CGOptions
      * ignore: no guard is inserted, the program executes normally but 
      * under unsound assumptions. print: the program prints a stack 
      * trace when reaching a porgram location that was not traced but 
-     * continues to run. throw (default): the program throws an Error 
-     * instead. 
+     * continues to run. throw (default): 
+     * the program throws an Error instead. 
      */
     public String guards() {
         return soot.PhaseOptions.getString( options, "guards" );
@@ -213,18 +213,21 @@ public class CGOptions
      * treated as an application or a library. 									.
     
      * 										Specifies whether the target classes should be 
-     * treated as an application or a library. 										If library 
-     * mode is disabled (default), the call graph construction assumes 
-     * that the target is an application and 										starts the 
-     * construction from the specified entry points (main method by 
+     * treated as an application or a library. 
+     * If library mode is disabled (default), the call 
+     * graph construction assumes that 
+     * the target is an application and 
+     * starts the construction from the specified entry 
+     * points (main method by 
      * default). 										Under the assumption that the target is a 
      * library, possible call edges might be missing in the call graph. 
-     * 										The two different library modes add theses missing 
-     * calls to the call graph and differ only in the view of the class 
-     * hierachy 										(hierachy of target library or possible 
-     * extended hierachy). 										If simulate-natives is also set, 
-     * the results of native methods are also set to any sub type of 
-     * the declared return type. 									
+     * The two different 
+     * library modes add theses missing calls to the call graph and 
+     * differ only in the view of 
+     * the class hierachy 										(hierachy of target library or 
+     * possible extended hierachy). 										If simulate-natives is 
+     * also set, the results of native methods are also set to any sub 
+     * type of the declared return type. 									
      */
     public int library() {
         String s = soot.PhaseOptions.getString( options, "library" );
