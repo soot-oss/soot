@@ -93,6 +93,17 @@ public class ModuleScene extends Scene  //extends original Scene
 
 
     @Override
+    public void extendSootClassPath(String newPathElement) {
+        this.extendSootModulePath(newPathElement);
+    }
+
+
+    public void extendSootModulePath(String newPathElement) {
+        modulePath += File.pathSeparator + newPathElement;
+        ModulePathSourceLocator.v().extendClassPath(newPathElement);
+    }
+
+    @Override
     public void setSootClassPath(String p) {
         this.setSootModulePath(p);
     }
@@ -147,7 +158,7 @@ public class ModuleScene extends Scene  //extends original Scene
 
         // test for java 9
         File rtJar = Paths.get(System.getProperty("java.home"), "lib", "jrt-fs.jar").toFile();
-        if (rtJar.exists() && rtJar.isFile())
+        if ((rtJar.exists() && rtJar.isFile()) || !Options.v().soot_modulepath().isEmpty())
             sb.append(ModulePathSourceLocator.DUMMY_CLASSPATH_JDK9_FS);
 
         else {
@@ -472,11 +483,6 @@ public class ModuleScene extends Scene  //extends original Scene
         throw new RuntimeException(System.getProperty("line.separator")
                 + "Aborting: can't find classfile " + className);
     }
-
-
-
-
-
 
 
     @Override
