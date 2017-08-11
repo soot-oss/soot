@@ -183,11 +183,11 @@ public final class ModuleUtil {
 
         //check for occurrence of full qualified class names
         private static final String fullQualifiedName = "([a-zA-Z_$][a-zA-Z\\d_$]*\\.)+[a-zA-Z_$][a-zA-Z\\d_$]*";
-        private static final Pattern fqnClassNamePattern = Pattern.compile("([a-zA-Z_$][a-zA-Z\\d_$]*\\.)*[a-zA-Z_$][a-zA-Z\\d_$]*");
+        private static final Pattern fqnClassNamePattern = Pattern.compile(fullQualifiedName);
 
         //check for occurrence of module name
         private static final String qualifiedModuleName = "([a-zA-Z_$])([a-zA-Z\\d_$\\.]*)+";
-        private static final Pattern moduleClassNamePattern = Pattern.compile(qualifiedModuleName + "(:)" + fullQualifiedName);
+        private static final Pattern qualifiedModuleNamePattern = Pattern.compile(qualifiedModuleName);
 
 
         private final String className;
@@ -200,11 +200,19 @@ public final class ModuleUtil {
             if (className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
                 this.className = refinedClassName;
                 return;
-            } else if (moduleClassNamePattern.matcher(className).matches()) {
+            } else if (className.contains(":")) {
                 String split[] = className.split(":");
-                refinedModuleName = split[0];
-                refinedClassName = split[1];
-            } else if (fqnClassNamePattern.matcher(className).matches()) {
+                if (split.length == 2) {
+                    //check if first is valid module name
+                    if (qualifiedModuleNamePattern.matcher(split[0]).matches()) {
+                        //check if second is fq classname
+                        if (fqnClassNamePattern.matcher(split[1]).matches()) {
+                            refinedModuleName = split[0];
+                            refinedClassName = split[1];
+                        }
+                    }
+                }
+            }  else if (fqnClassNamePattern.matcher(className).matches()) {
                 for (String packageName : packagesJavaBaseModule) {
                     if (packageName.equals(ModuleUtil.getPackageName(className))) {
                         refinedModuleName = "java.base";
