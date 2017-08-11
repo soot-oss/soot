@@ -28,7 +28,11 @@ package soot;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+
+import java.util.ArrayDeque;
+import java.util.Collection;
+import java.util.Deque;
+import java.util.Iterator;
 
 import soot.JastAddJ.BytecodeParser;
 import soot.JastAddJ.CompilationUnit;
@@ -37,16 +41,26 @@ import soot.JastAddJ.JavaParser;
 import soot.JastAddJ.Program;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
+import soot.util.ConcurrentHashMultiMap;
+import soot.util.MultiMap;
 
-/** Loads symbols for SootClasses from either class files or jimple files. */
+/**
+ * Loads symbols for SootClasses from either class files or jimple files.
+ */
 public class SootResolver {
-    /** Maps each resolved class to a list of all references in it.     */
-    private final Map<SootClass, Collection<Type>> classToTypesSignature = new HashMap<SootClass, Collection<Type>>();
+    /**
+     * Maps each resolved class to a list of all references in it.
+     */
+    protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<SootClass, Type>();
 
-    /** Maps each resolved class to a list of all references in it. */
-    private final Map<SootClass, Collection<Type>> classToTypesHierarchy = new HashMap<SootClass, Collection<Type>>();
+    /**
+     * Maps each resolved class to a list of all references in it.
+     */
+    protected MultiMap<SootClass, Type> classToTypesHierarchy = new ConcurrentHashMultiMap<SootClass, Type>();
 
-    /** SootClasses waiting to be resolved. */
+    /**
+     * SootClasses waiting to be resolved.
+     */
     @SuppressWarnings("unchecked")
     private final Deque<SootClass>[] worklist = new Deque[4];
 
@@ -90,7 +104,9 @@ public class SootResolver {
         return G.v().soot_SootResolver();
     }
 
-    /**  Returns true if we are resolving all class refs recursively.     */
+    /**
+     * Returns true if we are resolving all class refs recursively.
+     */
     protected boolean resolveEverything() {
         if (Options.v().on_the_fly())
             return false;
@@ -140,7 +156,9 @@ public class SootResolver {
         }
     }
 
-    /** Resolve all classes on toResolveWorklist. */
+    /**
+     * Resolve all classes on toResolveWorklist.
+     */
     protected void processResolveWorklist() {
         for (int i = SootClass.BODIES; i >= SootClass.HIERARCHY; i--) {
             while (!worklist[i].isEmpty()) {
@@ -233,15 +251,13 @@ public class SootResolver {
                 } else {
                     G.v().out.println("Warning: " + className + " is a phantom class!");
                     sc.setPhantomClass();
-                    classToTypesSignature.put(sc, Collections.<Type>emptyList());
-                    classToTypesHierarchy.put(sc, Collections.<Type>emptyList());
                 }
             } else {
                 Dependencies dependencies = is.resolve(sc);
                 if (!dependencies.typesToSignature.isEmpty())
-                    classToTypesSignature.put(sc, dependencies.typesToSignature);
+                    classToTypesSignature.putAll(sc, dependencies.typesToSignature);
                 if (!dependencies.typesToHierarchy.isEmpty())
-                    classToTypesHierarchy.put(sc, dependencies.typesToHierarchy);
+                    classToTypesHierarchy.putAll(sc, dependencies.typesToHierarchy);
             }
         } finally {
             if (is != null)
@@ -376,4 +392,5 @@ public class SootResolver {
             super(s);
         }
     }
+
 }

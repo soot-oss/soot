@@ -1987,6 +1987,7 @@ public class Options extends OptionsBase {
         +padVal("jj.ne", "Nop eliminator")
         +padVal("jj.uce", "Unreachable code eliminator")
         +padOpt("wjpp", "Whole Jimple Pre-processing Pack")
+        +padVal("wjpp.cimbt", "Replaces base objects of calls to Method.invoke() that are string constants by locals")
         +padOpt("wspp", "Whole Shimple Pre-processing Pack")
         +padOpt("cg", "Call graph constructor")
         +padVal("cg.cha", "Builds call graph using Class Hierarchy Analysis")
@@ -2137,7 +2138,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jb.cp" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThis phase performs cascaded copy propagation. If the \npropagator encounters situations of the form: A: a = ...; \n... B: x = a; ... C: ... = ... x; where a and x are \neach defined only once (at A and B, respectively), then it can \npropagate immediately without checking between B and C for \nredefinitions of a. In this case the propagator is global. \nOtherwise, if a has multiple definitions then the propagator \nchecks for redefinitions and propagates copies only within \nextended basic blocks. "
+                "\nThis phase performs cascaded copy \npropagation. If the propagator \nencounters situations of the form: A: a = ...; ... B: \nx = a; ... C: ... = ... x; where a and x are each \ndefined only once (at A and B, respectively), then it can \npropagate immediately without checking between B and C for \nredefinitions of a. In this case the propagator is global. \nOtherwise, if a has multiple definitions then the propagator \nchecks for redefinitions and propagates copies only within \nextended basic blocks. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "only-regular-locals (false)", "" )
@@ -2230,7 +2231,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "jj.cp" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThis phase performs cascaded copy propagation. If the \npropagator encounters situations of the form: A: a = ...; \n... B: x = a; ... C: ... = ... x; where a and x are \neach defined only once (at A and B, respectively), then it can \npropagate immediately without checking between B and C for \nredefinitions of a. In this case the propagator is global. \nOtherwise, if a has multiple definitions then the propagator \nchecks for redefinitions and propagates copies only within \nextended basic blocks. "
+                "\nThis phase performs cascaded copy \npropagation. If the propagator \nencounters situations of the form: A: a = ...; ... B: \nx = a; ... C: ... = ... x; where a and x are each \ndefined only once (at A and B, respectively), then it can \npropagate immediately without checking between B and C for \nredefinitions of a. In this case the propagator is global. \nOtherwise, if a has multiple definitions then the propagator \nchecks for redefinitions and propagates copies only within \nextended basic blocks. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "only-regular-locals (false)", "" )
@@ -2270,9 +2271,16 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjpp" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThis pack allows you to insert pre-processors that are run \nbefore call-graph construction. Only enabled in whole-program \nmode. In an unmodified copy of Soot, this pack is empty."
+                "\nThis pack allows you to insert pre-processors that are run \nbefore call-graph construction. Only enabled in whole-program \nmode."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
+    
+        if( phaseName.equals( "wjpp.cimbt" ) )
+            return "Phase "+phaseName+":\n"+
+                "\nWhen using the types-for-invoke option of the cg phase, problems \nmight occur if the base object of a call to \nMethod.invoke() (the first argument) is a string constant. 				 \nThis option replaces all string constants of \nsuch calls by locals and, therefore, allows the \nstatic resolution of reflective call targets on constant string \nobjects. "
+                +"\n\nRecognized options (with default values):\n"
+                +padOpt( "enabled (false)", "" )
+                +padOpt( "verbose (false)", "" );
     
         if( phaseName.equals( "wspp" ) )
             return "Phase "+phaseName+":\n"+
@@ -2290,9 +2298,9 @@ public class Options extends OptionsBase {
                 +padOpt( "library", " 										Specifies whether the target classes should be treated as an application or a library. 									" )
                 +padVal( "disabled (default)", " 											Call(and pointer assignment) graph construction treat the target classes as application starting from the entry points. 										" )
                 
-                +padVal( "any-subtype", " 											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type  											according to the class hierarchy of the target library. 										" )
+                +padVal( "any-subtype", "                                             In this mode types of any accessible field, method parameter, this local, or                                             caugth exception is set to any possible sub type 											according to the class hierarchy of the target library. 										" )
                 
-                +padVal( "signature-resolution", " 											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type  											according to a possible extended class hierarchy of the target library. 										" )
+                +padVal( "signature-resolution", "                                             In this mode types of any accessible field, method parameter, this local, or                                             caugth exception is set to any possible sub type 											according to a possible extended class hierarchy of the target library. 										" )
                 
                 +padOpt( "verbose (false)", "Print warnings about where the call graph may be incomplete" )
                 +padOpt( "jdkver (3)", "JDK version for native methods" )
@@ -2668,19 +2676,19 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjap.umt" ) )
             return "Phase "+phaseName+":\n"+
-                "\nUses the call graph to determine which methods are unreachable \nand adds color tags so they can be highlighted in a source \nbrowser."
+                "\nUses the call graph to determine which methods are unreachable \nand adds color tags so they can be \nhighlighted in a source browser. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "wjap.uft" ) )
             return "Phase "+phaseName+":\n"+
-                "\nUses the call graph to determine which fields are unreachable \nand adds color tags so they can be highlighted in a source \nbrowser."
+                "\nUses the call graph to determine which fields are unreachable \nand adds color tags so they can be \nhighlighted in a source browser. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
         if( phaseName.equals( "wjap.tqt" ) )
             return "Phase "+phaseName+":\n"+
-                "\nDetermines which methods and fields have qualifiers that could \nbe tightened. For example: if a field or method has the \nqualifier of public but is only used within the declaring class \nit could be private. This, this field or method is tagged with \ncolor tags so that the results can be highlighted in a source \nbrowser."
+                "\nDetermines which methods and fields have qualifiers that could \nbe tightened. For example: if a \nfield or method has the qualifier of public but is only used \nwithin the declaring class it could \nbe private. This, this field or method is tagged with color tags \nso that the results can be \nhighlighted in a source browser. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" );
     
@@ -2693,7 +2701,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "wjap.purity" ) )
             return "Phase "+phaseName+":\n"+
-                "\nPurity anaysis implemented by Antoine Mine and based on the \npaper A Combined Pointer and Purity Analysis for Java Programs \nby Alexandru Salcianu and Martin Rinard. "
+                "\nPurity anaysis implemented by Antoine Mine and based on the \npaper A Combined Pointer and Purity Analysis for \nJava Programs by Alexandru Salcianu and Martin Rinard. \n"
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (false)", "" )
                 +padOpt( "dump-summaries (true)", "" )
@@ -2980,7 +2988,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "gb.a2" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Grimp Post-folding Aggregator combines local variables \nafter constructors have been folded. Constructor folding \ntypically introduces new opportunities for aggregation, since \nwhen a sequence of instructions like r2 = new \njava.util.ArrayList; r2.init(); r3 = r2 is replaced by r2 = new \njava.util.ArrayList(); r3 = r2 the invocation of init no longer \nrepresents a potential side-effect separating the two \ndefinitions, so they can be combined into r3 = new \njava.util.ArrayList(); (assuming there are no subsequent uses of \nr2). "
+                "\nThe Grimp Post-folding Aggregator combines local variables \nafter constructors have been folded. Constructor folding \ntypically introduces new opportunities for aggregation, since \nwhen a sequence of instructions like r2 = new \njava.util.ArrayList; r2.init(); r3 = r2 is replaced by r2 = new \njava.util.ArrayList(); r3 = r2 the invocation of \ninit \nno longer represents a potential side-effect separating the two \ndefinitions, so they can be combined into r3 = new \njava.util.ArrayList(); (assuming there are no subsequent uses of \nr2). "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "only-stack-locals (true)", "" );
@@ -3005,7 +3013,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "bb.lso" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe Load Store Optimizer replaces some combinations of loads to \nand stores from local variables with stack instructions. A \nsimple example would be the replacement of store.r $r2; load.r \n$r2; with dup1.r in cases where the value of r2 is not used \nsubsequently. "
+                "\nThe Load Store Optimizer replaces some combinations of loads to \nand stores from local variables with stack instructions. A \nsimple example would be the replacement of store.r $r2; load.r \n$r2; with dup1.r in cases where the \nvalue of r2 is not used subsequently. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "debug (false)", "" )
@@ -3078,7 +3086,7 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "db" ) )
             return "Phase "+phaseName+":\n"+
-                "\nThe decompile (Dava) option is set using the -f dava options in \nSoot. Options provided by Dava are added to this dummy phase so \nas not to clutter the soot general arguments. -p db (option \nname):(value) will be used to set all required values for Dava. \n"
+                "\nThe decompile (Dava) option is set using the -f dava options in \nSoot. Options provided by Dava are added to this dummy phase so \nas not to clutter the soot general arguments. \n-p db (option name):(value) will be used to set all required \nvalues for Dava. "
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" )
                 +padOpt( "source-is-javac (true)", "" );
@@ -3097,13 +3105,13 @@ public class Options extends OptionsBase {
     
         if( phaseName.equals( "db.deobfuscate" ) )
             return "Phase "+phaseName+":\n"+
-                "\nCertain analyses make sense only when the bytecode is obfuscated \ncode. There are plans to implement such analyses and apply them \non methods only if this flag is set. Dead Code elimination \nwhich includes removing code guarded by some condition which is \nalways false or always true is one such analysis. Another \nsuggested analysis is giving default names to classes and \nfields. Onfuscators love to use weird names for fields and \nclasses and even a simple re-naming of these could be a good \nhelp to the user. Another more advanced analysis would be to \ncheck for redundant constant fields added by obfuscators and \nthen remove uses of these constant fields from the code."
+                "\nCertain analyses make sense only when the bytecode is obfuscated \ncode. There are plans to implement such \nanalyses and apply them on methods only if this flag is set. \nDead Code elimination which includes removing code guarded by \nsome condition which is always false or always true is one such \nanalysis. Another suggested analysis is giving default names to \nclasses and fields. Onfuscators love to use weird names \nfor fields and classes and even a simple \nre-naming of these could be a good help to the user. \nAnother more advanced analysis would be to check for \nredundant constant fields added by \nobfuscators and then remove uses of these constant fields from \nthe code."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
         if( phaseName.equals( "db.force-recompile" ) )
             return "Phase "+phaseName+":\n"+
-                "\nWhile decompiling we have to be clear what our aim is: do we \nwant to convert bytecode to Java syntax and stay as close to the \nactual execution of bytecode or do we want recompilably Java \nsource representing the bytecode. This distinction is important \nbecause some restrictions present in Java source are absent from \nthe bytecode. Examples of this include that fact that in Java a \ncall to a constructor or super needs to be the first statement \nin a constructors body. This restriction is absent from the \nbytecode. Similarly final fields HAVE to be initialized once and \nonly once in either the static initializer (static fields) or \nall the constructors (non-static fields). Additionally the \nfields should be initialized on all possible execution paths. \nThese restrictions are again absent from the bytecode. In doing \na one-one conversion of bytecode to Java source then no attempt \nshould be made to fix any of these and similar problems in the \nJava source. However, if the aim is to get recompilable code \nthen these and similar issues need to be fixed. Setting the \nforce-recompilability flag will ensure that the decompiler tries \nits best to produce recompilable Java source."
+                "\nWhile decompiling we have to be clear what our aim is: do we \nwant to convert bytecode to Java syntax and stay as close to the \nactual execution of bytecode or do we want recompilably Java \nsource representing the bytecode. This distinction is important \nbecause some restrictions present in Java source are absent from \nthe bytecode. Examples of this include that fact that in Java a \ncall to a constructor or super needs to be the first statement \nin a constructors body. This restriction is absent from the \nbytecode. Similarly final fields HAVE to be initialized once and \nonly once in either the static initializer (static fields) or \nall the constructors (non-static fields). Additionally the \nfields should be initialized on all possible execution paths. \nThese restrictions are again absent from the bytecode. In doing \na one-one conversion of bytecode to Java source then no attempt \nshould be made to fix any of these and similar problems \nin the Java source. However, if the aim is to get \nrecompilable code then these and similar \nissues need to be fixed. Setting the force-recompilability flag \nwill ensure that the decompiler tries its best to produce \nrecompilable Java source."
                 +"\n\nRecognized options (with default values):\n"
                 +padOpt( "enabled (true)", "" );
     
@@ -3255,6 +3263,11 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "wjpp" ) )
             return ""
                 +"enabled ";
+    
+        if( phaseName.equals( "wjpp.cimbt" ) )
+            return ""
+                +"enabled "
+                +"verbose ";
     
         if( phaseName.equals( "wspp" ) )
             return ""
@@ -3884,6 +3897,11 @@ public class Options extends OptionsBase {
             return ""
               +"enabled:true ";
     
+        if( phaseName.equals( "wjpp.cimbt" ) )
+            return ""
+              +"enabled:false "
+              +"verbose:false ";
+    
         if( phaseName.equals( "wspp" ) )
             return ""
               +"enabled:true ";
@@ -4398,6 +4416,7 @@ public class Options extends OptionsBase {
         if( phaseName.equals( "jj.ne" ) ) return;
         if( phaseName.equals( "jj.uce" ) ) return;
         if( phaseName.equals( "wjpp" ) ) return;
+        if( phaseName.equals( "wjpp.cimbt" ) ) return;
         if( phaseName.equals( "wspp" ) ) return;
         if( phaseName.equals( "cg" ) ) return;
         if( phaseName.equals( "cg.cha" ) ) return;
@@ -4543,6 +4562,8 @@ public class Options extends OptionsBase {
             G.v().out.println( "Warning: Options exist for non-existent phase jj.uce" );
         if( !PackManager.v().hasPhase( "wjpp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wjpp" );
+        if( !PackManager.v().hasPhase( "wjpp.cimbt" ) )
+            G.v().out.println( "Warning: Options exist for non-existent phase wjpp.cimbt" );
         if( !PackManager.v().hasPhase( "wspp" ) )
             G.v().out.println( "Warning: Options exist for non-existent phase wspp" );
         if( !PackManager.v().hasPhase( "cg" ) )

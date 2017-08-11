@@ -170,4 +170,5 @@
   <class>soot.toolkits.scalar.SmartLocalDefsPool</class>
   <class>soot.jimple.spark.internal.PublicAndProtectedAccessibility</class>
   <class>soot.jimple.spark.internal.CompleteAccessibility</class>
+  <class>soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer</class>
 </singletons>

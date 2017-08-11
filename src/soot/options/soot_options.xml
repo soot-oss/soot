@@ -66,7 +66,7 @@ class TextUI implements UI {
 }
 </pre></p>
 <p>
-If you run 
+    If you run
 <pre>
 java soot.Main HelloWorld
 </pre>
@@ -78,7 +78,7 @@ host of other classes from the Java runtime system that get
 dragged in indirectly by the references to <tt>String</tt> and
 <tt>System.out</tt>.</p>
 <p>
-If you run 
+    If you run
 <pre>
 java soot.Main --app HelloWorld
 </pre>
@@ -88,7 +88,7 @@ and <tt>TextUI</tt> as well as <tt>HelloWorld</tt>.
 <tt>java.lang.System</tt> et. al. remain library classes.
 </p>
 <p>
-If you run 
+    If you run
 <pre>
 java soot.Main -i java. --app HelloWorld
 </pre>
@@ -116,7 +116,10 @@ variables (<TT>jb.a</TT>).
 <P>
 Phase options provide a way for you to
 change the behaviour of a phase from the Soot command-line.  They take
-the form <TT>-p </TT><EM>phase</EM>.<EM>name</EM> 
+    the form
+    <TT>-p</TT>
+    <EM>phase</EM>.
+    <EM>name</EM>
 <EM>option</EM>:<EM>value</EM>.  For instance,
 to instruct Soot to use original names in Jimple, we would invoke Soot
 like this:
@@ -142,10 +145,10 @@ There are five types of phase options:
 specific to that option.
 </LI>
 <LI>Integer options
-take an integer value. 
+    take an integer value.
 </LI>
-<LI>Floating point options take a 
-floating point number as their value. 
+    <LI>Floating point options take a
+        floating point number as their value.
 </LI>
 <LI>String options take an arbitrary
 string as their value.
@@ -176,7 +179,7 @@ called, it executes each of its transformers in order.
 </P>
 
 <P>
-Soot transformers are usually instances of classes that extend 
+    Soot transformers are usually instances of classes that extend
 <TT>BodyTransformer</TT> or <TT>SceneTransformer</TT>.  In either case, the
 transformer class must override the <TT>internalTransform</TT> method,
 providing an implementation which carries out some transformation on
@@ -200,12 +203,12 @@ options.
 		<boolopt>
 		<name>Coffi Frontend</name>
 		<alias>coffi</alias>
-		<short_desc>Use the good old Coffi front end for parsing Java bytecode (instead of using ASM).</short_desc>		
+            <short_desc>Use the good old Coffi front end for parsing Java bytecode (instead of using ASM).</short_desc>
 		</boolopt>
 		<boolopt>
 		<name>ASM Backend</name>
 		<alias>asm-backend</alias>
-		<short_desc>Use the ASM back end for generating Java bytecode (instead of using Jasmin).</short_desc>		
+            <short_desc>Use the ASM back end for generating Java bytecode (instead of using Jasmin).</short_desc>
 		</boolopt>
 		<boolopt>
 			<name>Help</name>
@@ -286,7 +289,7 @@ argument classes.</p>
 			<name>Whole-Program Mode</name>
 			<alias>w</alias>
 			<alias>whole-program</alias>
-			<short_desc>Run in whole-program mode</short_desc> 
+                    <short_desc>Run in whole-program mode</short_desc>
 			<long_desc>
 <p>
 Run in whole program mode, taking into consideration the whole
@@ -306,7 +309,7 @@ specify the Whole Program Optimize option.</p>
       <name>Whole-Shimple Mode</name>
       <alias>ws</alias>
       <alias>whole-shimple</alias>
-      <short_desc>Run in whole-shimple mode</short_desc> 
+        <short_desc>Run in whole-shimple mode</short_desc>
       <long_desc>
 <p>
 Run in whole shimple mode, taking into consideration the whole program
@@ -326,12 +329,12 @@ specify the Whole Program Optimize option.</p>
 			<alias>fly</alias>
 			<alias>on-the-fly</alias>
 			<default>false</default>
-			<short_desc>Run in on-the-fly mode</short_desc> 
+                    <short_desc>Run in on-the-fly mode</short_desc>
 			<long_desc>
 <p>
 This enables whole-program mode but uses a less agressive class loading.
 By default, classes will be loaded without bodies unless otherwise requested.
-The cg pack is disabled in this mode. 
+    The cg pack is disabled in this mode.
 </p>
 </long_desc>
                 </boolopt>
@@ -493,7 +496,7 @@ instance, then Soot assumes <tt>MyClass</tt> is in package
 This option is meant to keep memory consumption low. If enabled, the
 -process-dir option must be used as well. From the process-dir, Soot
 will process one class at a time. Only body packs are run,
-no whole-program packs. 			
+                no whole-program packs.
 </long_desc>
 		</boolopt>
 		<stropt>
@@ -502,12 +505,14 @@ no whole-program packs.
 			<set_arg_label>path</set_arg_label>
 			<short_desc>Use <use_arg_label/> as the path for finding the android.jar file</short_desc>
 			<long_desc>
-Use <use_arg_label/> as the directory in which Soot should search for the appropriate 
+                Use
+                <use_arg_label/>
+                as the directory in which Soot should search for the appropriate
 android.jar file to use.
 The directory must contain subdirectories named after the Android SDK version. Those
 subdirectories must each contain one android.jar file.
-For instance if the target directory is /home/user/androidSDK/platforms/ subdirectories 
-containing android.jar for Android SDK 8 and 13 must be named android-8/ and android-13/ 
+                For instance if the target directory is /home/user/androidSDK/platforms/ subdirectories
+                containing android.jar for Android SDK 8 and 13 must be named android-8/ and android-13/
 respectively.
 
 Note, that this options requires that only one Android application is analyzed at a time.
@@ -668,7 +673,7 @@ You get what you are asking for.
 			<short_desc>Use J2ME mode; changes assignment of types</short_desc>
 			<long_desc>
 Use J2ME mode. J2ME does not have class Cloneable nor Serializable, so we have
-to change type assignment to not refer to those classes.			
+                to change type assignment to not refer to those classes.
 </long_desc>
 		</boolopt>
 		<stropt>
@@ -806,7 +811,7 @@ Soot's Baf internal representation.
 				<alias>b</alias>
 				<short_desc>Produce <tt>.b</tt> (abbreviated Baf) files</short_desc>
 				<long_desc>
-Produce <tt>.b</tt> files, which contain an abbreviated form of Baf. 
+                    Produce <tt>.b</tt> files, which contain an abbreviated form of Baf.
 </long_desc>
 			</value>
 			<value>
@@ -922,7 +927,8 @@ Produce <tt>.asm</tt> files as textual bytecode representation generated with th
 <p>
 Force Java version of bytecode generated by Soot.</p>
 <p>
-This option can only be set on <tt>output-format class</tt> 
+    This option can only be set on
+    <tt>output-format class</tt>
 and <tt>asm-backend</tt> set, or on <tt>output-format asm</tt>
 </p>
 </long_desc>
@@ -1153,7 +1159,7 @@ all plugins. Make sure that the option is specified before you
 try to pass options to the loaded plugins.</p>
 </long_desc>
 		</listopt>
-		
+
 		<multiopt>
 			<name>Handling of Wrong Staticness</name>
 			<alias>wrong-staticness</alias>
@@ -1163,7 +1169,7 @@ Some projects have been shown to contain invalid bytecode that tries to access
 a static field or method in a non-static way or the other way around. The VM's bytecode
 verifier will reject such bytecode when loaded into the VM. This option, depending on
 then chosen value, either causes to create Jimple bodies in such cases nontheless, ignoring
-the error, or automatically fixes the error when possible. 
+                the error, or automatically fixes the error when possible.
 </long_desc>
 				<value>
 					<name>Fail</name>
@@ -1188,7 +1194,7 @@ The Jimple code will then be invalid, but will exactly resemble the input code.
 					<name>Fix</name>
 					<alias>fix</alias>
 					<short_desc>Transparently fix staticness errors</short_desc>
-					<default/>													
+                    <default/>
 					<long_desc>
 When Soot detects a case in which a static field is accessed as if it were an instance field, Soot
 will transparently fix the error and generate Jimple code for the fixed program. If a problem cannot
@@ -1199,7 +1205,7 @@ be fixed, an access to that method or field will not throw an exception.
 					<name>FixStrict</name>
 					<alias>fixstrict</alias>
 					<short_desc>Transparently fix staticness errors, but do not ignore remaining errors</short_desc>
-					<default/>													
+                    <default/>
 					<long_desc>
 When Soot detects a case in which a static field is accessed as if it were an instance field, Soot
 will transparently fix the error and generate Jimple code for the fixed program. If a problem cannot
@@ -1208,7 +1214,7 @@ cannot silently disappear and cause invalid Jimple code.
 </long_desc>
 				</value>
 		</multiopt>
-				
+
 		<multiopt>
 			<name>Handling of Field Type Mismatches</name>
 			<alias>field-type-mismatches</alias>
@@ -1242,7 +1248,7 @@ the user code expects.
 					<name>ReturnNull</name>
 					<alias>null</alias>
 					<short_desc>Return null in case of type mismatch</short_desc>
-					<default/>													
+                    <default/>
 					<long_desc>
 When resolving a field reference for which the declared field type and the expected type from the reference do not
 match, Soot will return null with this option. The user code that invokes getField() is responsible for correctly
@@ -1301,7 +1307,7 @@ names based on their types.
 					<short_desc/>
 					<long_desc>
 Preserves annotations of retention type SOURCE. (for
-everything but package and local variable annotations) 
+                        everything but package and local variable annotations)
 </long_desc>
 				</boolopt>
 				<boolopt>
@@ -1528,10 +1534,10 @@ the `<tt>jb</tt>&apos; phase.
 						<long_desc>
 							First sorts the locals alphabetically by the string representation of
 							their type. Then if there are two locals with the same type, it uses
-							the only other source of structurally stable information (i.e. the 
+                            the only other source of structurally stable information (i.e. the
 							instructions themselves) to produce an ordering for the locals
 							that remains consistent between different soot instances. It achieves
-							this by determining the position of a local's first occurrence in the 
+                            this by determining the position of a local's first occurrence in the
 							instruction's list of definition statements. This position is then used
 							to sort the locals with the same type in an ascending order.
 						</long_desc>
@@ -1542,22 +1548,22 @@ the `<tt>jb</tt>&apos; phase.
 					<alias>jb.cp</alias>
 					<short_desc>Copy propagator</short_desc>
 					<long_desc>
-This phase performs cascaded copy propagation.  
-    
-If the propagator encounters situations of the form: 
+                        This phase performs cascaded copy propagation.
+
+                        If the propagator encounters situations of the form:
 <pre>
-  A: a = ...; 
+    A: a = ...;
     ...
   B:  x = a;
     ...
-  C: ... = ... x; 
+    C: ... = ... x;
 </pre>
 where <tt>a</tt> and <tt>x</tt> are each defined only once (at
 <tt>A</tt> and <tt>B</tt>, respectively), then it can propagate
 immediately without checking between <tt>B</tt> and <tt>C</tt>
 for redefinitions of <tt>a</tt>.  In
 this case the propagator is global.
-        
+
 Otherwise, if <tt>a</tt> has multiple definitions then the
 propagator checks for redefinitions and propagates copies
 only within extended basic blocks.
@@ -1654,7 +1660,7 @@ Local Splitter.
 Use the variable names in the original source as a guide when
 determining how to share local variables across non-interfering
 variable usages. This recombines named locals which were split by
-the Local Splitter. 
+                            the Local Splitter.
 </long_desc>
 					</boolopt>
 				</sub_phase>
@@ -1882,22 +1888,22 @@ the `<tt>jb</tt>&apos; phase.
 					<alias>jj.cp</alias>
 					<short_desc>Copy propagator</short_desc>
 					<long_desc>
-This phase performs cascaded copy propagation.  
-    
-If the propagator encounters situations of the form: 
+                        This phase performs cascaded copy propagation.
+
+                        If the propagator encounters situations of the form:
 <pre>
-  A: a = ...; 
+    A: a = ...;
     ...
   B:  x = a;
     ...
-  C: ... = ... x; 
+    C: ... = ... x;
 </pre>
 where <tt>a</tt> and <tt>x</tt> are each defined only once (at
 <tt>A</tt> and <tt>B</tt>, respectively), then it can propagate
 immediately without checking between <tt>B</tt> and <tt>C</tt>
 for redefinitions of <tt>a</tt>.  In
 this case the propagator is global.
-        
+
 Otherwise, if <tt>a</tt> has multiple definitions then the
 propagator checks for redefinitions and propagates copies
 only within extended basic blocks.
@@ -1994,7 +2000,7 @@ Local Splitter.
 Use the variable names in the original source as a guide when
 determining how to share local variables across non-interfering
 variable usages. This recombines named locals which were split by
-the Local Splitter. 
+                            the Local Splitter.
 </long_desc>
 					</boolopt>
 				</sub_phase>
@@ -2034,14 +2040,33 @@ traps whose catch blocks are empty.
 <p>
 This pack allows you to insert pre-processors that are run before
 call-graph construction. Only enabled in whole-program mode.</p>
-<p>
-In an unmodified copy of Soot, this pack is empty.</p>
-        </long_desc>        
+        </long_desc>
         <boolopt>
           <name>Enabled</name>
           <alias>enabled</alias>
           <default>true</default>
         </boolopt>
+          <sub_phase>
+              <name>Constant reflective method invocation base transformer</name>
+              <alias>wjpp.cimbt</alias>
+              <short_desc>Replaces base objects of calls to Method.invoke() that are string constants by locals</short_desc>
+              <long_desc>When using the <tt>types-for-invoke</tt> option of the <b>cg</b> phase, problems might
+                  occur if the base object of a call to Method.invoke() (the first argument) is a string constant.
+				  This option replaces all
+                  string constants of such calls by locals and, therefore, allows the
+                  static resolution of reflective call targets on constant string objects.
+              </long_desc>
+              <boolopt>
+                  <name>Enabled</name>
+                  <alias>enabled</alias>
+                  <default>false</default>
+              </boolopt>
+              <boolopt>
+                  <name>Verbose</name>
+                  <alias>verbose</alias>
+                  <default>false</default>
+              </boolopt>
+          </sub_phase>
       </phase>
       <phase>
         <name>Whole Shimple Pre-processing Pack</name>
@@ -2053,13 +2078,13 @@ This pack allows you to insert pre-processors that are run before
 call-graph construction. Only enabled in whole-program Shimple mode.</p>
 <p>
 In an unmodified copy of Soot, this pack is empty.</p>
-        </long_desc>        
+        </long_desc>
         <boolopt>
           <name>Enabled</name>
           <alias>enabled</alias>
           <default>true</default>
         </boolopt>
-      </phase>      			
+      </phase>
       <radio_phase>
 				<name>Call Graph Constructor</name>
 				<alias>cg</alias>
@@ -2116,10 +2141,13 @@ are assumed not to call the constructor of the created object.
 									</short_desc>
 									<long_desc>
 										Specifies whether the target classes should be treated as an application or a library.
-										If library mode is disabled (default), the call graph construction assumes that the target is an application and 
-										starts the construction from the specified entry points (main method by default). 
+                                        If library mode is disabled (default), the call graph construction assumes that
+                                        the target is an application and
+                                        starts the construction from the specified entry points (main method by
+                                        default).
 										Under the assumption that the target is a library, possible call edges might be missing in the call graph.
-										The two different library modes add theses missing calls to the call graph and differ only in the view of the class hierachy 
+                                        The two different library modes add theses missing calls to the call graph and
+                                        differ only in the view of the class hierachy
 										(hierachy of target library or possible extended hierachy).
 										If simulate-natives is also set, the results of native methods are also set to any  sub type of the declared return type.
 									</long_desc>
@@ -2138,13 +2166,16 @@ are assumed not to call the constructor of the created object.
 										<name>Any Subtype</name>
 										<alias>any-subtype</alias>
 										<short_desc>
-											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type 
+                                            In this mode types of any accessible field, method parameter, this local, or
+                                            caugth exception is set to any possible sub type
 											according to the class hierarchy of the target library.
 										</short_desc>
 										<long_desc>
-											On library analysis it has to be assumed, that a possible client can call any method or access any field, 
+                                            On library analysis it has to be assumed, that a possible client can call
+                                            any method or access any field,
 											to which he has the access rights (default public/protected but can be set with soot.Scene#setClientAccessibilityOracle).
-											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type 
+                                            In this mode types of any accessible field, method parameter, this local, or
+                                            caugth exception is set to any possible sub type
 											according to the class hierachy of the target library.
 											If simulate-natives is also set, the results of native methods are also set to any sub type of the declared return type.
 										</long_desc>
@@ -2153,21 +2184,28 @@ are assumed not to call the constructor of the created object.
 										<name>By Signature resolution</name>
 										<alias>signature-resolution</alias>
 										<short_desc>
-											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type 
+                                            In this mode types of any accessible field, method parameter, this local, or
+                                            caugth exception is set to any possible sub type
 											according to a possible extended class hierarchy of the target library.
 										</short_desc>
 										<long_desc>
-											On library analysis it has to be assumed, that a possible client can call any method or access any field, 
+                                            On library analysis it has to be assumed, that a possible client can call
+                                            any method or access any field,
 											to which he has the access rights (default public/protected but can be set with soot.Scene#setClientAccessibilityOracle).
-											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type 
-											according to a possible extended class hierarchy of the target library. Whenever any sub type of a specific type is considered as 
-											receiver for a method to call and the base type is an interface, calls to existing methods with matching signature (possible implementation 
-											of method to call) are also added. As Javas' subtyping allows contra-variance for return types and co-variance for parameters when overriding 
+                                            In this mode types of any accessible field, method parameter, this local, or
+                                            caugth exception is set to any possible sub type
+                                            according to a possible extended class hierarchy of the target library.
+                                            Whenever any sub type of a specific type is considered as
+                                            receiver for a method to call and the base type is an interface, calls to
+                                            existing methods with matching signature (possible implementation
+                                            of method to call) are also added. As Javas' subtyping allows
+                                            contra-variance for return types and co-variance for parameters when
+                                            overriding
 											a method, these cases are also considered here.
-											
+
 											Example: Classes A, B (B sub type of A), interface I with method public A foo(B b); and a class C with method public B foo(A a) { ... }.
 											The extended class hierachy will contain C as possible implementation of I.
-											
+
 											If simulate-natives is also set, the results of native methods are also set to any possible sub type of the declared return type.
 										</long_desc>
 									</value>
@@ -2222,7 +2260,7 @@ executed again, the corresponding call graph edges are removed from the call gra
                                         <long_desc>Load a reflection log
 from the given file and use this log to resolve reflective call sites. Note that
 when a log is given, the following other options have no effect: safe-forname,
-safe-newinstance.                                         
+                                            safe-newinstance.
 </long_desc>
                                 </stropt>
                                 <stropt>
@@ -2235,7 +2273,7 @@ Executing the program differently may be unsound. Soot can insert guards at prog
 contains no information. When these points are reached (because the program is executed differently) then the follwing will happen,
 depending on the value of this flag. ignore: no guard is inserted, the program executes normally but under unsound assumptions.
 print: the program prints a stack trace when reaching a porgram location that was not traced but continues to run. throw (default):
-the program throws an Error instead.                                                                                                
+                                            the program throws an Error instead.
 </long_desc>
                                 </stropt>
 								<boolopt>
@@ -2429,7 +2467,8 @@ When this option is set to true, the effects of native methods in the standard J
 							<default>false</default>
                                                         <short_desc>Treat singletons for empty sets etc. as allocation sites</short_desc>
 							<long_desc>
-When this option is set to true, Spark treats references to <code>EMPTYSET</code>, <code>EMPTYMAP</code>, and 
+                                When this option is set to true, Spark treats references to <code>
+                                EMPTYSET</code>, <code>EMPTYMAP</code>, and
 <code>EMPTYLIST</code> as allocation sites for <code>HashSet</code>, <code>HashMap</code> and <code>LinkedList</code> objects respectively, and references to <code>Hashtable.emptyIterator</code> as allocation sites for <code>Hashtable.EmptyIterator</code>. This enables subsequent analyses to differentiate different uses of Java's immutable empty collections.
         </long_desc>
 						</boolopt>
@@ -2910,7 +2949,7 @@ When this option is disabled, context information is computed for every query to
 When it is enabled, a call to reachingObjects returns a lazy wrapper object that contains a context-insensitive
 points-to set. This set is then automatically refined with context information when necessary, i.e.
 when we try to determine the intersection with another points-to set and this intersection seems to be
-non-empty.							
+                                non-empty.
         					</long_desc>
 						</boolopt>
 						<intopt>
@@ -2951,11 +2990,11 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						  <default>Geom</default>
 						  <short_desc>Encoding methodology</short_desc>
 						  <long_desc>
-						    This switch specifies the encoding methodology used in the analysis. 
+                              This switch specifies the encoding methodology used in the analysis.
 						    All possible options are: Geom, HeapIns, PtIns. The efficiency order
 						    is (from slow to fast) Geom - HeapIns - PtIns, but the precision order is
 						    the reverse.
-						  </long_desc>        					
+                          </long_desc>
 						  <value>
 						    <name>Geometric</name>
 						    <alias>Geom</alias>
@@ -2982,7 +3021,7 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						    </long_desc>
 						  </value>
 						</multiopt>
-						
+
 						<multiopt>
 						  <name>Worklist type</name>
 						  <alias>geom-worklist</alias>
@@ -2990,7 +3029,7 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						  <short_desc>Worklist type</short_desc>
 						  <long_desc>
 						    Specifies the worklist used for selecting the next propagation pointer. All possible options are: PQ, FIFO. They stand for the priority queue (sorted by the last fire time and topology order) and FIFO queue.
-						  </long_desc>        					
+                          </long_desc>
 						  <value>
 						    <name>Priority Queue</name>
 						    <alias>PQ</alias>
@@ -3008,9 +3047,9 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						      FIFO Queue
 						    </long_desc>
 						  </value>
-						</multiopt>						
-						
-						<stropt>
+                        </multiopt>
+
+                        <stropt>
 						  <name>Verbose dump file</name>
 						  <alias>geom-dump-verbose</alias>
 						  <default></default>
@@ -3020,7 +3059,7 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						    If you want to save the geomPTA analysis information for future analysis, please provide a file name.
 						  </long_desc>
 						</stropt>
-						
+
 						<stropt>
 						  <name>Verification file</name>
 						  <alias>geom-verify-name</alias>
@@ -3031,7 +3070,7 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						    If you want to compare the precision of the points-to results with other solvers (e.g. Paddle), you can use the 'verify-file' to specify the list of methods (soot method signature format) that are reachable by that solver. During the internal evaluations (see the option geom-eval), we only consider the methods that are common to both solvers.
 						  </long_desc>
 						</stropt>
-						
+
 						<intopt>
 						  <name>Precision evaluation methodologies</name>
 						  <alias>geom-eval</alias>
@@ -3041,7 +3080,7 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						    We internally provide some precision evaluation methodologies and classify the evaluation strength into three levels. If level is 0, we do nothing. If level is 1, we report the statistical information about the points-to result. If level is 2, we perform the virtual callsite resolution, static cast safety and all-pairs alias evaluations.
 						  </long_desc>
 						</intopt>
-						
+
 						<boolopt>
 						  <name>Transform to context-insensitive result</name>
 						  <alias>geom-trans</alias>
@@ -3050,9 +3089,9 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						  <long_desc>
 						    If you stick to working with SPARK, you can use this option to transform the context sensitive result to insensitive result. After the transformation, the context sensitive points-to quries cannot be answered.
 						  </long_desc>
-						</boolopt>		
-						
-						<intopt>
+                        </boolopt>
+
+                        <intopt>
 						  <name>Fractional parameter</name>
 						  <alias>geom-frac-base</alias>
 						  <default>40</default>
@@ -3060,9 +3099,9 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						  <long_desc>
 						    This option specifies the fractional parameter, which manually balances the precision and the performance. Smaller value means better performance and worse precision.
 						  </long_desc>
-						</intopt>	
-						
-						<boolopt>
+                        </intopt>
+
+                        <boolopt>
 						  <name>Blocking strategy for recursive calls</name>
 						  <alias>geom-blocking</alias>
 						  <default>true</default>
@@ -3070,9 +3109,9 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						  <long_desc>
 						    Blocking strategy is a 1CFA model for recursive calls. This model significantly improves the precision.
 						  </long_desc>
-						</boolopt>		
-						
-						<intopt>
+                        </boolopt>
+
+                        <intopt>
 						  <name>Iterations</name>
 						  <alias>geom-runs</alias>
 						  <default>1</default>
@@ -3091,8 +3130,8 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 						    When this option is true, geomPTA only processes the pointers in library functions ( java.*, sun.*, and etc.) that potentially impact the points-to information of pointers in application code, the pointers in application code, and the base pointers at virtual callsites.
 						  </long_desc>
 						</boolopt>
-						
--->																					
+
+                        -->
 					</section>
 				</sub_phase>
 				<sub_phase>
@@ -3965,7 +4004,7 @@ Transformations.</p>
 <p>
 In an unmodified copy of Soot the Whole-Shimple Optimization
 Pack is empty.</p>
-        </long_desc>        
+        </long_desc>
         <boolopt>
           <name>Enabled</name>
           <alias>enabled</alias>
@@ -4040,7 +4079,7 @@ locks.
 							<long_desc>
 Try to identify transactional regions that can employ fine-grained locking to
 increase parallelism.  All side effects must be protected by a single object.
-This locking scheme aims to achieve simple fine-grained locking. 
+This locking scheme aims to achieve simple fine-grained locking.
 </long_desc>
 						</value> -->
 						<value>
@@ -4289,7 +4328,7 @@ Change no modifiers whatsoever.
 						<short_desc/>
 						<long_desc>
 Specify which changes in visibility modifiers
-are allowed.  
+                            are allowed.
 </long_desc>
 					</multiopt>
 				</sub_phase>
@@ -4393,7 +4432,7 @@ Change no modifiers whatsoever.
 						<short_desc/>
 						<long_desc>
 Specify which changes in visibility modifiers
-are allowed.  
+                            are allowed.
 </long_desc>
 					</multiopt>
 					<flopt>
@@ -4450,7 +4489,7 @@ a place for annotation-oriented analyses in whole program mode.</p>
 					<name>Rectangular Array Finder</name>
 					<alias>wjap.ra</alias>
 					<short_desc>Rectangular array finder</short_desc>
-					<long_desc> 
+                    <long_desc>
 <p>
 The Rectangular Array Finder traverses Jimple statements
 based on the static call graph, and finds array variables which always
@@ -4476,7 +4515,11 @@ Checker.</p>
 					<name>Unreachable Method Tagger</name>
 					<alias>wjap.umt</alias>
 					<short_desc>Tags all unreachable methods</short_desc>
-					<long_desc><p>Uses the call graph to determine which methods are unreachable and adds color tags so they can be highlighted in a source browser.</p></long_desc> 
+                    <long_desc>
+                        <p>Uses the call graph to determine which methods are unreachable and adds color tags so they
+                            can be highlighted in a source browser.
+                        </p>
+                    </long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -4487,7 +4530,11 @@ Checker.</p>
 					<name>Unreachable Fields Tagger</name>
 					<alias>wjap.uft</alias>
 					<short_desc>Tags all unreachable fields</short_desc>
-					<long_desc><p>Uses the call graph to determine which fields are unreachable and adds color tags so they can be highlighted in a source browser.</p></long_desc> 
+                    <long_desc>
+                        <p>Uses the call graph to determine which fields are unreachable and adds color tags so they can
+                            be highlighted in a source browser.
+                        </p>
+                    </long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -4498,7 +4545,13 @@ Checker.</p>
 					<name>Tightest Qualifiers Tagger</name>
 					<alias>wjap.tqt</alias>
 					<short_desc>Tags all qualifiers that could be tighter</short_desc>
-					<long_desc><p>Determines which methods and fields have qualifiers that could be tightened. For example: if a field or method has the qualifier of public but is only used within the declaring class it could be private. This, this field or method is tagged with color tags so that the results can be highlighted in a source browser.</p></long_desc> 
+                    <long_desc>
+                        <p>Determines which methods and fields have qualifiers that could be tightened. For example: if
+                            a field or method has the qualifier of public but is only used within the declaring class it
+                            could be private. This, this field or method is tagged with color tags so that the results
+                            can be highlighted in a source browser.
+                        </p>
+                    </long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -4510,7 +4563,9 @@ Checker.</p>
 					<class>CGGOptions</class>
                     <alias>wjap.cgg</alias>
 					<short_desc>Creates graphical call graph.</short_desc>
-					<long_desc><p>Creates graphical call graph.</p></long_desc> 
+                    <long_desc>
+                        <p>Creates graphical call graph.</p>
+                    </long_desc>
 					<boolopt>
 						<name>Enabled</name>
 						<alias>enabled</alias>
@@ -4529,7 +4584,7 @@ Checker.</p>
 	            <short_desc>Emit purity attributes</short_desc>
   		    <long_desc>
 Purity anaysis implemented by Antoine Mine and based on the paper
-A Combined Pointer and Purity Analysis for Java Programs by 
+                A Combined Pointer and Purity Analysis for Java Programs by
 Alexandru Salcianu and Martin Rinard.
                     </long_desc>
    	   	    <boolopt>
@@ -5261,7 +5316,7 @@ highlight null and non-null references.
 						<name>Enabled</name>
 						<alias>enabled</alias>
                                                 <default>false</default>
-						<long_desc></long_desc>	
+                    <long_desc></long_desc>
 					</boolopt>
 				</sub_phase>
 				<sub_phase>
@@ -5498,7 +5553,7 @@ produced for it, in order to keep the size of the tags reasonable.
 				<sub_phase>
 					<name>Call Graph Tagger</name>
 					<alias>jap.cgtagger</alias>
-					<short_desc>Call graph tagger</short_desc> 
+                    <short_desc>Call graph tagger</short_desc>
 					<long_desc>
 The Call Graph Tagger produces LinkTags based on the call
 graph. The Eclipse plugin uses these tags to produce
@@ -5657,7 +5712,7 @@ information in these tags.  For example, even variables (such as
                         <short_desc/>
                         <long_desc/>
                     </boolopt>
-                    
+
                     <multiopt>
                         <name>Graph Type</name>
                         <alias>graph-type</alias>
@@ -5802,7 +5857,11 @@ r3 = r2
 <pre>
 r2 = new java.util.ArrayList();
 r3 = r2
-</pre>the invocation of <tt><lt/>init<gt/></tt> no longer represents a potential side-effect 
+</pre>the invocation of
+                        <tt><lt/>init
+                            <gt/>
+                        </tt>
+                        no longer represents a potential side-effect
 separating the two definitions, so they can be combined into
 <pre>
 r3 = new java.util.ArrayList();
@@ -5884,7 +5943,7 @@ The Load Store Optimizer replaces some combinations of loads to and stores from 
 store.r $r2;
 load.r $r2;
 </pre>
-with 
+                        with
 <pre>
 dup1.r
 </pre>
@@ -5939,7 +5998,7 @@ eliminate <tt>store</tt>/<tt>load</tt> pairs.
 						<alias>sll</alias>
 						<default>true</default>
 	    					<long_desc>
-Enables an optimization which attempts to eliminate 
+                                Enables an optimization which attempts to eliminate
 <tt>store</tt>/<tt>load</tt>/<tt>load</tt>
 trios with some variant of <tt>dup</tt>.
 </long_desc>
@@ -6031,7 +6090,7 @@ Local Splitter.
 Use the variable names in the original source as a guide when
 determining how to share local variables across non-interfering
 variable usages. This recombines named locals which were split by
-the Local Splitter. 
+                            the Local Splitter.
 </long_desc>
 					</boolopt>
 				</sub_phase>
@@ -6156,7 +6215,7 @@ tags produced by the Field Read/Write Tagger, phase
 				<long_desc>
 The decompile (Dava) option is set using the -f dava options in Soot.
 Options provided by Dava are added to this dummy phase so as not to clutter the soot general arguments.
--p db (option name):(value) will be used to set all required values for Dava. 
+                    -p db (option name):(value) will be used to set all required values for Dava.
                                 </long_desc>
 				<boolopt>
 					<name>Enabled</name>
@@ -6166,9 +6225,9 @@ Options provided by Dava are added to this dummy phase so as not to clutter the 
 					<short_desc/>
 					<long_desc/>
 				</boolopt>
-				
-				
-				<boolopt>
+
+
+                           <boolopt>
 					<name>Source</name>
 
 					<alias>source-is-javac</alias>
@@ -6176,12 +6235,13 @@ Options provided by Dava are added to this dummy phase so as not to clutter the 
 					<short_desc/>
 					<long_desc>
 					check out soot.dava.toolkits.base.misc.ThrowFinder
-					In short we want to ensure that if there are throw exception info in the class file dava uses this info.					
+                        In short we want to ensure that if there are throw exception info in the class file dava uses
+                        this info.
 					</long_desc>
 				</boolopt>
-				
-				
-				<sub_phase>
+
+
+                           <sub_phase>
 					<name>Transformations</name>
 					<alias>db.transformations</alias>
 					<short_desc>The Dava back-end with all its transformations</short_desc>
@@ -6220,12 +6280,13 @@ Options provided by Dava are added to this dummy phase so as not to clutter the 
 					<name>De-obfuscate</name>
 					<alias>db.deobfuscate</alias>
 					<short_desc> Apply de-obfuscation analyses</short_desc>
-					<long_desc>Certain analyses make sense only when the bytecode is obfuscated code. 
-There are plans to implement such analyses and apply them on methods only if this flag is set. 
+                    <long_desc>Certain analyses make sense only when the bytecode is obfuscated code.
+                        There are plans to implement such analyses and apply them on methods only if this flag is set.
 Dead Code elimination which includes removing code guarded by some condition which is always false or always true is one such
 analysis. Another suggested analysis is giving default names to classes and fields. Onfuscators love to use weird names
-for fields and classes and even a simple re-naming of these could be a good help to the user. 
-Another more advanced analysis would be to check for redundant constant fields added by obfuscators and then remove uses 
+                        for fields and classes and even a simple re-naming of these could be a good help to the user.
+                        Another more advanced analysis would be to check for redundant constant fields added by
+                        obfuscators and then remove uses
 of these constant fields from the code.</long_desc>
 
 				<boolopt>
@@ -6252,7 +6313,8 @@ a constructors body. This restriction is absent from the bytecode. Similarly fin
 once and only once in either the static initializer (static fields) or all the constructors (non-static fields). Additionally
 the fields should be initialized on all possible execution paths. These restrictions are again absent from the bytecode.
 In doing a one-one conversion of bytecode to Java source then no attempt should be made to fix any of these and similar problems
-in the Java source. However, if the aim is to get recompilable code then these and similar issues need to be fixed. 
+                        in the Java source. However, if the aim is to get recompilable code then these and similar
+                        issues need to be fixed.
 Setting the force-recompilability flag will ensure that the decompiler tries its best to produce recompilable Java source.</long_desc>
 				<boolopt>
 					<name>Enabled</name>
@@ -6385,7 +6447,7 @@ IR used for Android apps</long_desc>
 							<alias>check-init-ta</alias>
 							<alias>check-init-throw-analysis</alias>
 							<long_desc>
-This option specifies which throw analysis to use during local initialization 
+                                This option specifies which throw analysis to use during local initialization
 checking inside soot.Body.
         </long_desc>
 							<value>
@@ -6394,9 +6456,9 @@ checking inside soot.Body.
 								<default/>
 								<short_desc>Automatically select a throw analysis</short_desc>
 								<long_desc>
-Selects the throw analysis to use for local initialization checking based on 
-information from other options. In particular, it will use 'dalvik' when 
-it detects it is analyzing an Android application (e.g. when --android-jars or 
+                                    Selects the throw analysis to use for local initialization checking based on
+                                    information from other options. In particular, it will use 'dalvik' when
+                                    it detects it is analyzing an Android application (e.g. when --android-jars or
 --force-android-jar are set) and 'pedantic' otherwise. This is the default.
 </long_desc>
 							</value>
@@ -6416,7 +6478,7 @@ to occur at arbitrary points in the execution of a victim thread.
 							<value>
 								<name>Unit</name>
 								<alias>unit</alias>
-								<short_desc>Unit Throw Analysis</short_desc>															
+                                <short_desc>Unit Throw Analysis</short_desc>
 								<long_desc>
 Says that each statement in the intermediate representation
 may throw those exception types associated with the corresponding
@@ -6428,13 +6490,13 @@ to the surrounding program.
 							<value>
 								<name>Dalvik</name>
 								<alias>dalvik</alias>
-								<short_desc>Dalvik Throw Analysis</short_desc>								
+                                <short_desc>Dalvik Throw Analysis</short_desc>
 								<long_desc>
 Says that each statement in the intermediate representation
 may throw those exception types associated with the corresponding
 Java bytecode instructions in the Dalvik Specification.  The
 analysis deals with each statement in isolation, without regard
-to the surrounding program. This is the equivalent of Unit above, but targeting 
+                                    to the surrounding program. This is the equivalent of Unit above, but targeting
 the Dalvik VM semantics as opposed to those of the JVM.
 </long_desc>
 							</value>
@@ -6503,7 +6565,7 @@ unit -omit-excepting-unit-edges -p jb.tt enabled:true</code>.</p>
 <p>
 Some programs may contain dead code that references fields or methods that do not exist.
 By default, Soot exists with an exception when this happens. If this option is enabled,
-Soot only prints a warning but does not exit. 
+    Soot only prints a warning but does not exit.
 </p>
 </long_desc>
 		</boolopt>
@@ -6594,7 +6656,8 @@ times to specify more than one dynamic class.</p>
 			<long_desc>
 <p>Mark all class files in <use_arg_label/> as classes that may
 be loaded dynamically. Soot will read them as library classes
-even if they are not referenced from the argument classes.</p> 
+    even if they are not referenced from the argument classes.
+</p>
 <p>
 You can specify more than one directory of potentially dynamic
 classes by specifying multiple dynamic directory options.</p>
@@ -6611,7 +6674,8 @@ Marks all class files belonging to the package <use_arg_label/>
 or any of its subpackages as classes which the application may
 load dynamically. Soot will read all classes in <use_arg_label/> as
 library classes, even if they are not referenced by any of the
-argument classes.</p> 
+    argument classes.
+</p>
 <p>To specify more than one dynamic package, use the dynamic
 package option multiple times.</p>
 </long_desc>
@@ -6637,8 +6701,8 @@ transformations.
 			<long_desc>Maintain bytecode offset tables for class files throughout the transformations.</long_desc>
 		</boolopt>
 	</section>
-	
-	<section>
+
+    <section>
 		<name>Output Attribute Options</name>
 		<boolopt>
 			<name>Write Out Local Annotations</name>
@@ -6650,8 +6714,8 @@ Write out debug tables to indicate which register maps to which variable in the 
 </long_desc>
 		</boolopt>
 	</section>
-	
-	<section>
+
+    <section>
 		<name>Annotation Options</name>
 		<macroopt>
 			<name>Purity Annotation [AM]</name>
@@ -6683,8 +6747,8 @@ by Alexandru Salcianu and Martin Rinard.
 			<long_desc>
 Perform a static analysis of which dereferenced pointers may have
 null values, and annotate class files with attributes
-encoding the results of the analysis.  For details, see the 
-documentation for Null Pointer Annotation and for the 
+                encoding the results of the analysis. For details, see the
+                documentation for Null Pointer Annotation and for the
 Array Bounds and Null Pointer Check Tag Aggregator.
 </long_desc>
 		</macroopt>
@@ -6757,8 +6821,8 @@ Attempt to subtract time spent in garbage collection from
 the reports of times required for transformations.
 </long_desc>
 		</boolopt>
-		
-		<boolopt>
+
+        <boolopt>
 			<name>No body releasing after writeout</name>
 			<alias>no-writeout-body-releasing</alias>
 			<short_desc>Disables the release of method bodies after writeout. This flag is used internally.</short_desc>
