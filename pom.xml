@@ -192,13 +192,10 @@
             <artifactId>dexlib2</artifactId>
       <version>2.2b4</version>
         </dependency>
-        <!--  Own build (in folder libs) build from source code of the ASM repository. The current (July 2017) version in maven central is deprecated. -->
         <dependency>
             <groupId>org.ow2.asm</groupId>
             <artifactId>asm-debug-all</artifactId>
-            <version>6.1.0</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/libs/asm-debug-all-6.1.0.jar</systemPath>
+            <version>6.0_BETA</version>
         </dependency>
         <dependency>
             <groupId>org.javassist</groupId>
