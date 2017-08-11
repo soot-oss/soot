@@ -219,7 +219,7 @@ public class ModulePathSourceLocator extends SourceLocator {
         }
         //found a jar that is either a modular jar or a simple jar that must be transformed to an automatic module
         else if (attrs.isRegularFile() && path.getFileName().toString().endsWith(".jar")) {
-            buildModuleForJar(path);
+            mapModuleClasses.putAll(buildModuleForJar(path));
         }
         return mapModuleClasses;
 
@@ -269,7 +269,7 @@ public class ModulePathSourceLocator extends SourceLocator {
      * @return the module and its containing classes
      */
     private Map<String, List<String>> buildModuleForJar(Path jar) {
-        Map<String, List<String>> moduleClassMape = new HashMap<>();
+        Map<String, List<String>> moduleClassMap = new HashMap<>();
 
         try (FileSystem zipFileSystem = FileSystems.newFileSystem(jar, null)) {
             Path mi = zipFileSystem.getPath(SootModuleInfo.MODULE_INFO_FILE);
@@ -289,7 +289,7 @@ public class ModulePathSourceLocator extends SourceLocator {
                                     moduleInfo.addModulePackage(packageName);
                                 }
                             }
-                            moduleClassMape.put(moduleName, classesInJar);
+                            moduleClassMap.put(moduleName, classesInJar);
 
                         }
                     }
@@ -318,14 +318,14 @@ public class ModulePathSourceLocator extends SourceLocator {
                         }
                     }
                     this.moduleNameToPath.put(moduleName, jar);
-                    moduleClassMape.put(moduleName, classesInJar);
+                    moduleClassMap.put(moduleName, classesInJar);
                 }
             }
 
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return moduleClassMape;
+        return moduleClassMap;
     }
 
     /**
