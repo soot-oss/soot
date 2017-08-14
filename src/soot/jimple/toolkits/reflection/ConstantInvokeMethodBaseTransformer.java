@@ -3,6 +3,7 @@ package soot.jimple.toolkits.reflection;
 import soot.*;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
+import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
 import soot.jimple.internal.JInvokeStmt;
 
@@ -37,10 +38,10 @@ public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
                 Body body = sootMethod.retrieveActiveBody();
 
                 for (Iterator<Unit> iterator = body.getUnits().snapshotIterator(); iterator.hasNext(); ) {
-                    Unit u = iterator.next();
+                    Stmt u = (Stmt) iterator.next();
 
-                    if (u instanceof JInvokeStmt) {
-                        InvokeExpr invokeExpr = ((JInvokeStmt) u).getInvokeExpr();
+                    if (u.containsInvokeExpr()) {
+                        InvokeExpr invokeExpr = u.getInvokeExpr();
                         if (invokeExpr.getMethod().getSignature().equals(INVOKE_SIG)) {
                             if (invokeExpr.getArg(0) instanceof StringConstant) {
 
