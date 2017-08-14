@@ -5,7 +5,6 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.Jimple;
 import soot.jimple.Stmt;
 import soot.jimple.StringConstant;
-import soot.jimple.internal.JInvokeStmt;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -16,7 +15,7 @@ import java.util.Map;
  * for edges to the specific java.lang.String method invoked by the reflective call.
  *
  * @author Manuel Benz
- *         created on 02.08.17
+ * created on 02.08.17
  */
 public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
 
@@ -34,6 +33,9 @@ public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
         boolean verbose = options.containsKey("verbose");
 
         for (SootClass sootClass : Scene.v().getApplicationClasses()) {
+            // In some rare cases we will have application classes that are not resolved due to being located in excluded packages (e.g., the ServiceConnection class constructed by FlowDroid: soot.jimple.infoflow.cfg.LibraryClassPatcher#patchServiceConnection)
+            if (sootClass.resolvingLevel() < SootClass.BODIES)
+                continue;
             for (SootMethod sootMethod : sootClass.getMethods()) {
                 Body body = sootMethod.retrieveActiveBody();
 
