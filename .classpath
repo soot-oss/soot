@@ -19,5 +19,6 @@
 	<classpathentry kind="lib" path="libs/asm-debug-all-5.1.jar"/>
 	<classpathentry kind="lib" path="libs/dexlib2-2.2b4-adb12356.jar"/>
 	<classpathentry kind="lib" path="libs/util-2.2b4-adb12356.jar"/>
+	<classpathentry kind="lib" path="libs/javassist-3.18.2-GA.jar"/>
 	<classpathentry kind="output" path="classes"/>
 </classpath>
