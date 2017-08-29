@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -544,13 +545,11 @@ public class SourceLocator {
 	/** Explodes a class path into a list of individual class path entries. */
 	public static List<String> explodeClassPath(String classPath) {
 		List<String> ret = new ArrayList<String>();
-
-		StringTokenizer tokenizer = new StringTokenizer(classPath, File.pathSeparator);
-		while (tokenizer.hasMoreTokens()) {
-			String originalDir = tokenizer.nextToken();
-			String canonicalDir;
+		// the classpath is split at every path separator which is not escaped
+		String regex = "(?<!\\\\)" + Pattern.quote(File.pathSeparator);
+		for (String originalDir : classPath.split(regex)) {
 			try {
-				canonicalDir = new File(originalDir).getCanonicalPath();
+				String canonicalDir = new File(originalDir).getCanonicalPath();
 				ret.add(canonicalDir);
 			} catch (IOException e) {
 				throw new CompilationDeathException("Couldn't resolve classpath entry " + originalDir + ": " + e);
