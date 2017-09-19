@@ -51,7 +51,7 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
 **Note that the nightly build server has moved**
 
-Nightly builds of soot can be obtained from [nightly build](https://soot-build.cs.uni-paderborn.de/nightly/soot/). The "sootclasses-trunk-jar-with-dependencies.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
+Nightly builds of Soot can be obtained from [nightly build](https://soot-build.cs.uni-paderborn.de/nightly/soot/). The "sootclasses-trunk-jar-with-dependencies.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
 
 # Building Soot yourself
 
