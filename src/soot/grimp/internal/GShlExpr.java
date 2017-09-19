@@ -42,6 +42,23 @@ public class GShlExpr extends AbstractGrimpIntLongBinopExpr implements ShlExpr
     public int getPrecedence() { return 650; }
     public void apply(Switch sw) { ((ExprSwitch) sw).caseShlExpr(this); }
 
+    @Override
+    public Type getType()
+    {
+        Value op1 = op1Box.getValue();
+        Value op2 = op2Box.getValue();
+
+        if (!isIntLikeType(op2.getType()))
+            return UnknownType.v();
+
+        if (isIntLikeType(op1.getType()))
+            return IntType.v();
+        if (op1.getType().equals(LongType.v()))
+            return LongType.v();
+
+        return UnknownType.v();
+    }
+
     public Object clone() 
     {
         return new GShlExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
