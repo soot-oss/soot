@@ -47,6 +47,8 @@ a dependency via Maven, Gradle, SBT, etc using the following coordinates:
 
 ```
 
+**Please make sure that your Java version is up to date to avoid problems with our SSL certificate**
+
 # How do I obtain the nightly builds
 
 **Note that the nightly build server has moved**
