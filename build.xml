@@ -258,6 +258,7 @@
            		<pathelement location="${axmlprinter2.jar}"/>
                 <pathelement location="${dexlib2.jar}"/>
                 <pathelement location="${dexlib-utils.jar}"/>
+                <pathelement location="${multidexlib2.jar}"/>
                 <pathelement location="${heros.jar}"/>
            		<pathelement location="${asm.jar}"/>
         		<pathelement location="${javassist.jar}"/>
