@@ -94,13 +94,16 @@ public class DexlibWrapper {
             dexContainer = MultiDexIO.readMultiDexContainer(inputDexFile, new BasicDexFileNamer(), Opcodes.forApi(api), logger);
 
             List<String> dexEntries = dexContainer.getDexEntryNames();
+            int num_dex_files = dexEntries.size();
 
-            if (!multiDex && dexEntries.size() > 1) {
-                G.v().out.println("WARNING: Multiple dex files detected, only processing first dex file (" + dexContainer.getDexEntryNames().get(0) + "). Use '-process-multiple-dex' option to process them all.");
+            if (!multiDex && num_dex_files > 1) {
+                G.v().out.println("WARNING: Multiple dex files detected, only processing first dex file (" + dexEntries.get(0) + "). Use '-process-multiple-dex' option to process them all.");
+                // restrict processed dex files to the first
+                num_dex_files = 1;
             }
 
-            for (String dexEntry : dexEntries) {
-                DexFile dexFile = dexContainer.getEntry(dexEntry);
+            for (int dexIndex = 0; dexIndex < num_dex_files; dexIndex++) {
+                DexFile dexFile = dexContainer.getEntry(dexEntries.get(dexIndex));
                 for (ClassDef defItem : dexFile.getClasses()) {
                     String forClassName = Util.dottedClassName(defItem.getType());
                     classesToDefItems.put(forClassName, defItem);
@@ -108,9 +111,9 @@ public class DexlibWrapper {
             }
 
             // It is important to first resolve the classes, otherwise we will produce an error during type resolution.
-            for (String dexEntry : dexEntries) {
-                // FIXME super hack to get the DexBackedDexFile out of the BasicMultiDexFileImplementation
-                DexFile dexFile = dexBackedDexFileHack(dexContainer.getEntry(dexEntry));
+            for (int dexIndex = 0; dexIndex < num_dex_files; dexIndex++) {
+                // FIXME reflection hack to get the DexBackedDexFile out of the BasicMultiDexFileImplementation
+                DexFile dexFile = dexBackedDexFileHack(dexContainer.getEntry(dexEntries.get(dexIndex)));
 
                 if (dexFile instanceof DexBackedDexFile) {
                     DexBackedDexFile dbdf = (DexBackedDexFile) dexFile;
@@ -148,10 +151,6 @@ public class DexlibWrapper {
                     System.out.println("Warning: DexFile not instance of DexBackedDexFile! Not resolving types!");
                     System.out.println("type: " + dexFile.getClass());
                 }
-
-                // we are finished after first dex file if not in multi dex mode
-                if (!multiDex)
-                    break;
             }
         } catch (IOException e) {
             throw new RuntimeException(e);
