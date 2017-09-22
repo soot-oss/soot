@@ -4,11 +4,16 @@
   <groupId>ca.mcgill.sable</groupId>
   <artifactId>soot-j9</artifactId>
   <name>Soot-j9</name>
+  <version>3.0.0-SNAPSHOT</version>
+  <description>A Java Optimization Framework</description>
+  <properties>
       <!-- adann: officially the jrt filesystem used for modules in Java 9 requires at least java 8
       there exists unoffical backport of rt.jar, but I've not tested them yet
       see http://openjdk.java.net/jeps/220 -->
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
 
     <profiles>
         <profile>
@@ -41,108 +46,151 @@
         </profile>
     </profiles>
 
+  <build>
+   <finalName>sootclasses_j9-trunk</finalName>
+    <sourceDirectory>src</sourceDirectory>
+    <testSourceDirectory>tests</testSourceDirectory>
+    <resources>
+      <resource>
+        <directory>src</directory>
+        <includes>
+          <include>**/*.dat</include>
+        </includes>
+      </resource>
+      <resource>
+        <directory>generated/sablecc</directory>
+        <includes>
+          <include>**/*.dat</include>
+        </includes>
+     </resource>
+            <resource>
+                <directory>resources</directory>
+            </resource>
+    </resources>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.smali</groupId>
-			<artifactId>dexlib2</artifactId>
-			<version>2.2b4</version>
-		</dependency>
-		<dependency>
-			<groupId>org.ow2.asm</groupId>
-			<artifactId>asm-debug-all</artifactId>
-			<version>5.1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.18.2-GA</version>
-			<scope>provided</scope>
-		</dependency>
-		<dependency>
-			<groupId>xmlpull</groupId>
-			<artifactId>xmlpull</artifactId>
-			<version>1.1.3.4d_b4_min</version>
-		</dependency>
-		<dependency>
-			<groupId>org.jboss</groupId>
-			<artifactId>jboss-common-core</artifactId>
-			<version>2.5.0.Final</version>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.ant</groupId>
-			<artifactId>ant</artifactId>
-			<version>1.9.7</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- Published from the github repo -->
-		<!-- Built by http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/ -->
-		<dependency>
-			<groupId>heros</groupId>
-			<artifactId>heros</artifactId>
-			<version>0.0.1-SNAPSHOT</version>
-		</dependency>
-		<!-- Local dependency -->
-		<dependency>
-			<groupId>ca.mcgill.sable</groupId>
-			<artifactId>polyglot</artifactId>
-			<version>2006</version>
-		</dependency>
-		<!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/ 
-			from the nightly build server -->
-		<dependency>
-			<groupId>ca.mcgill.sable</groupId>
-			<artifactId>jasmin</artifactId>
-			<version>2.5.0-SNAPSHOT</version>
-		</dependency>
-		<!-- local dependency -->
-		<dependency>
-			<groupId>ca.mcgill.sable</groupId>
-			<artifactId>axmlprinter</artifactId>
-			<version>2016-07-27</version>
-		</dependency>
-		<!-- Testing dependencies -->
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>4.11</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.hamcrest</groupId>
-			<artifactId>hamcrest-all</artifactId>
-			<version>1.3</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.mockito</groupId>
-			<artifactId>mockito-all</artifactId>
-			<version>1.10.8</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.powermock</groupId>
-			<artifactId>powermock-mockito-release-full</artifactId>
-			<version>1.6.1</version>
-			<type>pom</type>
-			<scope>test</scope>
-		</dependency>
+    <plugins>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <phase>generate-sources</phase>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <configuration>
+              <sources>
+                <source>${basedir}/generated/singletons</source>
+                <source>${basedir}/generated/sablecc</source>
+                <source>${basedir}/generated/options</source>
+                <source>${basedir}/generated/jastadd</source>
+              </sources>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.6.1</version>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>2.17</version>
+        <configuration>
+          <reuseForks>false</reuseForks>
+          <forkCount>1</forkCount>
+        </configuration>
+      </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <configuration>
+          <descriptorRefs>
+            <descriptorRef>jar-with-dependencies</descriptorRef>
+          </descriptorRefs>
+          <finalName>soot-trunk-j9</finalName>
+         <appendAssemblyId>false</appendAssemblyId>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>soot.Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <configuration>
+          <archive>
+            <manifest>
+              <addClasspath>true</addClasspath>
+              <mainClass>soot.Main</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-sources</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>attach-javadocs</id>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <failOnError>false</failOnError>
+        </configuration>
+      </plugin>
 
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.5</version>
-		</dependency>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-antrun-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>createTestclassesDir</id>
+            <phase>process-resources</phase>
+            <configuration>
+              <tasks>
+                <delete dir="testclasses"/>
+                <mkdir dir="testclasses"/>
+              </tasks>
+            </configuration>
+            <goals>
+              <goal>run</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
 
     <dependencies>
         <dependency>
             <groupId>org.smali</groupId>
             <artifactId>dexlib2</artifactId>
+            <version>2.2b4</version>
         </dependency>
         <dependency>
             <groupId>org.ow2.asm</groupId>

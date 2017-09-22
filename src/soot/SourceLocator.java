@@ -27,6 +27,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
@@ -36,6 +38,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -63,9 +66,11 @@ public class SourceLocator {
 
 	protected Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
 
-	private enum ClassSourceType {
-		jar, zip, apk, dex, directory, unknown
-	};
+    protected enum ClassSourceType {
+        jar, zip, apk, dex, directory, jrt, unknown
+    }
+
+    ;
 
 	/**
 	 * Given a class name, uses the soot-class-path to return a ClassSource for
@@ -223,7 +228,7 @@ public class SourceLocator {
 				}
 			});
 
-	private ClassSourceType getClassSourceType(String path) {
+	protected ClassSourceType getClassSourceType(String path) {
 		try {
 			return pathToSourceType.get(path);
 		} catch (Exception e) {
@@ -559,12 +564,13 @@ public class SourceLocator {
 		return ret;
 	}
 
-	public static class FoundFile {
-		private File file;
-		private String entryName;
-		private ZipFile zipFile;
-		private ZipEntry zipEntry;
-		private List<InputStream> openedInputStreams;
+    public static class FoundFile {
+        private Path path;
+        private File file;
+        private String entryName;
+        private ZipFile zipFile;
+        private ZipEntry zipEntry;
+        private List<InputStream> openedInputStreams;
 
 		FoundFile(String archivePath, String entryName) {
 			this();
@@ -582,11 +588,16 @@ public class SourceLocator {
 			this.entryName = null;
 		}
 
-		private FoundFile() {
-			this.zipFile = null;
-			this.zipEntry = null;
-			this.openedInputStreams = new ArrayList<InputStream>();
-		}
+        FoundFile(Path path) {
+            this();
+            this.path = path;
+        }
+
+        private FoundFile() {
+            this.zipFile = null;
+            this.zipEntry = null;
+            this.openedInputStreams = new ArrayList<InputStream>();
+        }
 
 		public String getFilePath() {
 			return file.getPath();
@@ -602,7 +613,14 @@ public class SourceLocator {
 
 		public InputStream inputStream() {
 			InputStream ret = null;
-			if (!isZipFile()) {
+			if (path != null) {
+				try {
+					ret = Files.newInputStream(path);
+				} catch (IOException e) {
+					throw new RuntimeException(
+							"Error: Failed to open a InputStream for the file at path '" + path.toAbsolutePath().toString() + "'.", e);
+				}
+			} else if (!isZipFile()) {
 				try {
 					ret = new FileInputStream(file);
 				} catch (Exception e) {

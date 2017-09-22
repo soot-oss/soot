@@ -369,7 +369,7 @@ public class SootResolver {
 		return program;
 	}
 
-	private class SootClassNotFoundException extends RuntimeException {
+	protected class SootClassNotFoundException extends RuntimeException {
 		/**
 		 * 
 		 */

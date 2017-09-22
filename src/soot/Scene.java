@@ -1511,7 +1511,11 @@ public class Scene // extends AbstractHost
 		return all;
 	}
 
-	private void addReflectionTraceClasses() {
+    protected Set<String>[] getBasicClassesIncludingResolveLevel() {
+        return this.basicclasses;
+    }
+
+	protected void addReflectionTraceClasses() {
 		CGOptions options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
 		String log = options.reflection_log();
 
@@ -1750,6 +1754,10 @@ public class Scene // extends AbstractHost
 	public void setDoneResolving() {
 		doneResolving = true;
 	}
+
+    void setResolving(boolean value) {
+        doneResolving = value;
+    }
 
 	public void setMainClassFromOptions() {
 		if (mainClass != null)
