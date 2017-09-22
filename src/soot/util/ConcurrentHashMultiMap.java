@@ -210,4 +210,9 @@ public class ConcurrentHashMultiMap<K, V> extends AbstractMultiMap<K, V> {
 		m.clear();
 	}
 
+	@Override
+	public String toString() {
+		return m.toString();
+	}
+
 }
