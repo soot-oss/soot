@@ -46,7 +46,7 @@ public class AsmModuleClassProvider implements ClassProvider {
     }
 
 
-    public String getModuleName(InputStream data) {
+    public String getModuleName(SourceLocator.FoundFile file) {
         final String[] moduleName = {null};
         org.objectweb.asm.ClassVisitor visitor = new org.objectweb.asm.ClassVisitor(Opcodes.ASM6) {
 
@@ -57,11 +57,29 @@ public class AsmModuleClassProvider implements ClassProvider {
                 return null;
             }
         };
+        InputStream d = null;
         try {
-            new ClassReader(data).accept(visitor, ClassReader.SKIP_FRAMES);
+            d = file.inputStream();
+
+            new ClassReader(d).accept(visitor, ClassReader.SKIP_FRAMES);
+            return moduleName[0];
         } catch (IOException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                if (d != null) {
+                    d.close();
+                    d = null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            if (file != null) {
+                file.close();
+                file = null;
+            }
+
         }
-        return moduleName[0];
+        return null;
     }
 }

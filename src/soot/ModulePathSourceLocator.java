@@ -274,28 +274,30 @@ public class ModulePathSourceLocator extends SourceLocator {
         try (FileSystem zipFileSystem = FileSystems.newFileSystem(jar, null)) {
             Path mi = zipFileSystem.getPath(SootModuleInfo.MODULE_INFO_FILE);
             if (Files.exists(mi)) {
-                //we hava a modular jar
-                try (InputStream in = Files.newInputStream(mi)) {
-                    for (ClassProvider cp : classProviders) {
-                        if (cp instanceof AsmModuleClassProvider) {
-                            String moduleName = ((AsmModuleClassProvider) cp).getModuleName(in);
-                            SootModuleInfo moduleInfo = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
-                            this.moduleNameToPath.put(moduleName, jar);
-                            List<String> classesInJar = super.getClassesUnder(jar.toAbsolutePath().toString());
-                            for (String foundClass : classesInJar) {
-                                int index = foundClass.lastIndexOf('.');
-                                if (index > 0) {
-                                    String packageName = foundClass.substring(0, index);
-                                    moduleInfo.addModulePackage(packageName);
-                                }
-                            }
-                            moduleClassMap.put(moduleName, classesInJar);
+                FoundFile foundFile = new FoundFile(mi);
 
+                //we hava a modular jar
+                //  try (InputStream in = Files.newInputStream(mi)) {
+                for (ClassProvider cp : classProviders) {
+                    if (cp instanceof AsmModuleClassProvider) {
+                        String moduleName = ((AsmModuleClassProvider) cp).getModuleName(foundFile);
+                        SootModuleInfo moduleInfo = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
+                        this.moduleNameToPath.put(moduleName, jar);
+                        List<String> classesInJar = super.getClassesUnder(jar.toAbsolutePath().toString());
+                        for (String foundClass : classesInJar) {
+                            int index = foundClass.lastIndexOf('.');
+                            if (index > 0) {
+                                String packageName = foundClass.substring(0, index);
+                                moduleInfo.addModulePackage(packageName);
+                            }
                         }
+                        moduleClassMap.put(moduleName, classesInJar);
+
                     }
-                } catch (IOException e) {
-                    e.printStackTrace();
                 }
+              /*  } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
             } else {
                 //no module-info treat as automatic module
                 //create module name from jar
@@ -379,29 +381,34 @@ public class ModulePathSourceLocator extends SourceLocator {
     private Map<String, List<String>> buildModuleForExplodedModule(Path dir) {
         Map<String, List<String>> moduleClassesMap = new HashMap<>();
         Path mi = dir.resolve(SootModuleInfo.MODULE_INFO_FILE);
-        try (InputStream in = Files.newInputStream(mi)) {
-            for (ClassProvider cp : classProviders) {
-                if (cp instanceof AsmModuleClassProvider) {
-                    String moduleName = ((AsmModuleClassProvider) cp).getModuleName(in);
-                    SootModuleInfo moduleInfo = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
-                    this.moduleNameToPath.put(moduleName, dir);
 
-                    List<String> classes = getClassesUnderDirectory(dir);
-                    for (String foundClass : classes) {
-                        int index = foundClass.lastIndexOf('.');
-                        if (index > 0) {
 
-                            String packageName = foundClass.substring(0, index);
-                            moduleInfo.addModulePackage(packageName);
-                        }
+        for (ClassProvider cp : classProviders) {
+            if (cp instanceof AsmModuleClassProvider) {
+
+                FoundFile foundFile = new FoundFile(mi);
+                //  try (InputStream in = Files.newInputStream(mi)) {
+
+                String moduleName = ((AsmModuleClassProvider) cp).getModuleName(foundFile);
+                SootModuleInfo moduleInfo = (SootModuleInfo) SootModuleResolver.v().makeClassRef(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
+                this.moduleNameToPath.put(moduleName, dir);
+
+                List<String> classes = getClassesUnderDirectory(dir);
+                for (String foundClass : classes) {
+                    int index = foundClass.lastIndexOf('.');
+                    if (index > 0) {
+
+                        String packageName = foundClass.substring(0, index);
+                        moduleInfo.addModulePackage(packageName);
                     }
-
-                    moduleClassesMap.put(moduleName, classes);
-
                 }
+
+                moduleClassesMap.put(moduleName, classes);
+
+              /*  } catch (IOException e) {
+                    e.printStackTrace();
+                }*/
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
         return moduleClassesMap;
     }
