@@ -129,18 +129,16 @@ public class DexlibWrapper {
                         if (!Scene.v().containsClass(sootTypeName)) {
                             if (st instanceof PrimType || st instanceof VoidType
                                     || systemAnnotationNames.contains(sootTypeName)) {
-                                // dex files contain references to the Type IDs of
-                                // void
-                                // / primitive types - we obviously do not want them
-                                // to
-                                // be resolved
-                            /*
-                             * dex files contain references to the Type IDs of
-							 * the system annotations. They are only visible to
-							 * the Dalvik VM (for reflection, see
-							 * vm/reflect/Annotations.cpp), and not to the user
-							 * - so we do not want them to be resolved.
-							 */
+                                // dex files contain references to the Type IDs of void
+                                // primitive types - we obviously do not want them
+                                // to be resolved
+                                /*
+                                 * dex files contain references to the Type IDs of
+                                 * the system annotations. They are only visible to
+                                 * the Dalvik VM (for reflection, see
+                                 * vm/reflect/Annotations.cpp), and not to the user
+                                 * - so we do not want them to be resolved.
+                                 */
                                 continue;
                             }
                             SootResolver.v().makeClassRef(sootTypeName);
@@ -183,7 +181,8 @@ public class DexlibWrapper {
             for (String dexEntry : dexContainer.getDexEntryNames()) {
                 DexFile dexFile = dexContainer.getEntry(dexEntry);
                 ClassDef defItem = classesToDefItems.get(className);
-                return dexLoader.makeSootClass(sc, defItem, dexFile);
+                if (dexFile.getClasses().contains(defItem))
+                    return dexLoader.makeSootClass(sc, defItem, dexFile);
             }
         } catch (IOException e) {
             // happens when dex file is not available
