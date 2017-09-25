@@ -30,11 +30,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Deque;
-import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 
 import soot.JastAddJ.BytecodeParser;
 import soot.JastAddJ.CompilationUnit;
@@ -43,14 +40,16 @@ import soot.JastAddJ.JavaParser;
 import soot.JastAddJ.Program;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
+import soot.util.ConcurrentHashMultiMap;
+import soot.util.MultiMap;
 
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver {
 	/** Maps each resolved class to a list of all references in it. */
-	private final Map<SootClass, Collection<Type>> classToTypesSignature = new HashMap<SootClass, Collection<Type>>();
+	protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<SootClass, Type>();
 
 	/** Maps each resolved class to a list of all references in it. */
-	private final Map<SootClass, Collection<Type>> classToTypesHierarchy = new HashMap<SootClass, Collection<Type>>();
+	protected MultiMap<SootClass, Type> classToTypesHierarchy = new ConcurrentHashMultiMap<SootClass, Type>();
 
 	/** SootClasses waiting to be resolved. */
 	@SuppressWarnings("unchecked")
@@ -230,17 +229,15 @@ public class SootResolver {
 					throw new SootClassNotFoundException(
 							"couldn't find class: " + className + " (is your soot-class-path set properly?)" + suffix);
 				} else {
-					G.v().out.println("Warning: " + className + " is a phantom class!");
+					//G.v().out.println("Warning: " + className + " is a phantom class!");
 					sc.setPhantomClass();
-					classToTypesSignature.put(sc, Collections.<Type>emptyList());
-					classToTypesHierarchy.put(sc, Collections.<Type>emptyList());
 				}
 			} else {
 				Dependencies dependencies = is.resolve(sc);
 				if (!dependencies.typesToSignature.isEmpty())
-					classToTypesSignature.put(sc, dependencies.typesToSignature);
+					classToTypesSignature.putAll(sc, dependencies.typesToSignature);
 				if (!dependencies.typesToHierarchy.isEmpty())
-					classToTypesHierarchy.put(sc, dependencies.typesToHierarchy);
+					classToTypesHierarchy.putAll(sc, dependencies.typesToHierarchy);
 			}
 		} finally {
 			if (is != null)

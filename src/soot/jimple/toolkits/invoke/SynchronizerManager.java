@@ -97,7 +97,7 @@ public class SynchronizerManager {
 			while (sc.declaresFieldByName(n))
 				n = "_" + n;
 
-			classCacher = new SootField(n, RefType.v("java.lang.Class"), Modifier.STATIC);
+			classCacher = Scene.v().makeSootField(n, RefType.v("java.lang.Class"), Modifier.STATIC);
 			sc.addField(classCacher);
 			classToClassField.put(sc, classCacher);
 		}

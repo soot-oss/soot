@@ -64,23 +64,20 @@ public class DexlibWrapper {
 	static {
 		Set<String> systemAnnotationNamesModifiable = new HashSet<String>();
 		// names as defined in the ".dex - Dalvik Executable Format" document
-		systemAnnotationNamesModifiable
-				.add("dalvik.annotation.AnnotationDefault");
+		systemAnnotationNamesModifiable.add("dalvik.annotation.AnnotationDefault");
 		systemAnnotationNamesModifiable.add("dalvik.annotation.EnclosingClass");
-		systemAnnotationNamesModifiable
-				.add("dalvik.annotation.EnclosingMethod");
+		systemAnnotationNamesModifiable.add("dalvik.annotation.EnclosingMethod");
 		systemAnnotationNamesModifiable.add("dalvik.annotation.InnerClass");
 		systemAnnotationNamesModifiable.add("dalvik.annotation.MemberClasses");
 		systemAnnotationNamesModifiable.add("dalvik.annotation.Signature");
 		systemAnnotationNamesModifiable.add("dalvik.annotation.Throws");
-		systemAnnotationNames = Collections
-				.unmodifiableSet(systemAnnotationNamesModifiable);
+		systemAnnotationNames = Collections.unmodifiableSet(systemAnnotationNamesModifiable);
 	}
 
 	private List<DexFile> dexFiles;
 	private final DexClassLoader dexLoader = new DexClassLoader();
 	private final Map<String, ClassDef> classesToDefItems = new HashMap<String, ClassDef>();
-	
+
 	private final static Set<String> systemAnnotationNames;
 
 	private final File inputDexFile;
@@ -101,44 +98,46 @@ public class DexlibWrapper {
 	public void initialize() {
 		ZipFile archive = null;
 		try {
-			int api = 24; // TODO: this matters now so it should be a soot option
-			if(Options.v().process_multiple_dex() && (inputDexFile.getName().endsWith(".apk") || 
-					inputDexFile.getName().endsWith(".zip") || inputDexFile.getName().endsWith(".jar"))){
-	            archive = new ZipFile(inputDexFile);
+			int api = 24; // TODO: this matters now so it should be a soot
+							// option
+			if (Options.v().process_multiple_dex() && (inputDexFile.getName().endsWith(".apk")
+					|| inputDexFile.getName().endsWith(".zip") || inputDexFile.getName().endsWith(".jar"))) {
+				archive = new ZipFile(inputDexFile);
 				for (Enumeration<? extends ZipEntry> entries = archive.entries(); entries.hasMoreElements();) {
 					ZipEntry entry = entries.nextElement();
 					String entryName = entry.getName();
 					// We are dealing with an apk file
-					if (entryName.endsWith(".dex")){
-						this.dexFiles.add(DexFileFactory.loadDexEntry(inputDexFile, entryName, true, Opcodes.forApi(api)));
+					if (entryName.endsWith(".dex")) {
+						this.dexFiles
+								.add(DexFileFactory.loadDexEntry(inputDexFile, entryName, true, Opcodes.forApi(api)));
 					}
 				}
-        	}
-        	else{
-        		this.dexFiles.add(DexFileFactory.loadDexFile(inputDexFile, Opcodes.forApi(api)));
-        	}
+			} else {
+				this.dexFiles.add(DexFileFactory.loadDexFile(inputDexFile, Opcodes.forApi(api)));
+			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-		}finally{
-			try{
-				if(archive != null)
+		} finally {
+			try {
+				if (archive != null)
 					archive.close();
-			}catch(Throwable t) {}
+			} catch (Throwable t) {
+			}
 		}
 
-		for(DexFile dexFile: this.dexFiles){
+		for (DexFile dexFile : this.dexFiles) {
 			for (ClassDef defItem : dexFile.getClasses()) {
 				String forClassName = Util.dottedClassName(defItem.getType());
 				classesToDefItems.put(forClassName, defItem);
 			}
 		}
-		
-		for(DexFile dexFile: this.dexFiles){
+
+		for (DexFile dexFile : this.dexFiles) {
 			if (dexFile instanceof DexBackedDexFile) {
 				DexBackedDexFile dbdf = (DexBackedDexFile) dexFile;
 				for (int i = 0; i < dbdf.getTypeCount(); i++) {
 					String t = dbdf.getType(i);
-	
+
 					Type st = DexType.toSoot(t);
 					if (st instanceof ArrayType) {
 						st = ((ArrayType) st).baseType;
@@ -148,26 +147,26 @@ public class DexlibWrapper {
 					if (!Scene.v().containsClass(sootTypeName)) {
 						if (st instanceof PrimType || st instanceof VoidType
 								|| systemAnnotationNames.contains(sootTypeName)) {
-							// dex files contain references to the Type IDs of void
-							// / primitive types - we obviously do not want them to
+							// dex files contain references to the Type IDs of
+							// void
+							// / primitive types - we obviously do not want them
+							// to
 							// be resolved
 							/*
-							 * dex files contain references to the Type IDs of the
-							 * system annotations. They are only visible to the
-							 * Dalvik VM (for reflection, see
-							 * vm/reflect/Annotations.cpp), and not to the user - so
-							 * we do not want them to be resolved.
+							 * dex files contain references to the Type IDs of
+							 * the system annotations. They are only visible to
+							 * the Dalvik VM (for reflection, see
+							 * vm/reflect/Annotations.cpp), and not to the user
+							 * - so we do not want them to be resolved.
 							 */
 							continue;
 						}
 						SootResolver.v().makeClassRef(sootTypeName);
 					}
-					SootResolver.v().resolveClass(sootTypeName,
-							SootClass.SIGNATURES);
+					SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
 				}
 			} else {
-				System.out
-						.println("Warning: DexFile not instance of DexBackedDexFile! Not resolving types!");
+				System.out.println("Warning: DexFile not instance of DexBackedDexFile! Not resolving types!");
 				System.out.println("type: " + dexFile.getClass());
 			}
 		}
@@ -178,13 +177,12 @@ public class DexlibWrapper {
 			className = Util.dottedClassName(className);
 		}
 
-		for(DexFile dexFile: this.dexFiles){
-			ClassDef defItem = classesToDefItems.get(className);			
+		for (DexFile dexFile : this.dexFiles) {
+			ClassDef defItem = classesToDefItems.get(className);
 			return dexLoader.makeSootClass(sc, defItem, dexFile);
 		}
-		
-		throw new RuntimeException("Error: class not found in DEX files: "
-					+ className);
+
+		throw new RuntimeException("Error: class not found in DEX files: " + className);
 	}
 
 }

@@ -609,23 +609,15 @@ public class Scene // extends AbstractHost
 		if (System.getProperty("os.name").equals("Mac OS X")) {
 			// in older Mac OS X versions, rt.jar was split into classes.jar and
 			// ui.jar
-			sb.append(System.getProperty("java.home"));
-			sb.append(File.separator);
-			sb.append("..");
-			sb.append(File.separator);
-			sb.append("Classes");
-			sb.append(File.separator);
-			sb.append("classes.jar");
+			String prefix = System.getProperty("java.home") + File.separator + ".." + File.separator + "Classes"
+					+ File.separator;
+			File classesJar = new File(prefix + "classes.jar");
+			if (classesJar.exists())
+				sb.append(classesJar.getAbsolutePath() + File.pathSeparator);
 
-			sb.append(File.pathSeparator);
-			sb.append(System.getProperty("java.home"));
-			sb.append(File.separator);
-			sb.append("..");
-			sb.append(File.separator);
-			sb.append("Classes");
-			sb.append(File.separator);
-			sb.append("ui.jar");
-			sb.append(File.pathSeparator);
+			File uiJar = new File(prefix + "ui.jar");
+			if (uiJar.exists())
+				sb.append(uiJar.getAbsolutePath() + File.pathSeparator);
 		}
 
 		File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
@@ -1822,6 +1814,14 @@ public class Scene // extends AbstractHost
 		return c;
 	}
 
+	public SootClass makeSootClass(String name) {
+		return new SootClass(name);
+	}
+
+	public SootClass makeSootClass(String name, int modifiers) {
+		return new SootClass(name, modifiers);
+	}
+
 	public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType) {
 		return new SootMethod(name, parameterTypes, returnType);
 	}
@@ -1833,6 +1833,22 @@ public class Scene // extends AbstractHost
 	public SootMethod makeSootMethod(String name, List<Type> parameterTypes, Type returnType, int modifiers,
 			List<SootClass> thrownExceptions) {
 		return new SootMethod(name, parameterTypes, returnType, modifiers, thrownExceptions);
+	}
+
+	public SootField makeSootField(String name, Type type, int modifiers) {
+		return new SootField(name, type, modifiers);
+	}
+
+	public SootField makeSootField(String name, Type type) {
+		return new SootField(name, type);
+	}
+
+	public RefType getOrAddRefType(RefType tp) {
+		RefType existing = nameToClass.get(tp.getClassName());
+		if (existing != null)
+			return existing;
+		nameToClass.put(tp.getClassName(), tp);
+		return tp;
 	}
 
 }

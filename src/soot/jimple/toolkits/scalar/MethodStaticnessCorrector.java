@@ -4,7 +4,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import soot.Body;
-import soot.BodyTransformer;
 import soot.G;
 import soot.Modifier;
 import soot.Scene;
@@ -29,7 +28,7 @@ import soot.jimple.Stmt;
  * @author Steven Arzt
  *
  */
-public class MethodStaticnessCorrector extends BodyTransformer {
+public class MethodStaticnessCorrector extends AbstractStaticnessCorrector {
 
 	public MethodStaticnessCorrector(Singletons.Global g) {
 	}
@@ -47,10 +46,12 @@ public class MethodStaticnessCorrector extends BodyTransformer {
 				if (s.containsInvokeExpr()) {
 					InvokeExpr iexpr = s.getInvokeExpr();
 					if (iexpr instanceof StaticInvokeExpr) {
-						SootMethod target = Scene.v().grabMethod(iexpr.getMethodRef().getSignature());
-						if (target != null && !target.isStatic()) {
-							if (canBeMadeStatic(target))
-								target.setModifiers(target.getModifiers() | Modifier.STATIC);
+						if (isClassLoaded(iexpr.getMethodRef().declaringClass())) {
+							SootMethod target = Scene.v().grabMethod(iexpr.getMethodRef().getSignature());
+							if (target != null && !target.isStatic()) {
+								if (canBeMadeStatic(target))
+									target.setModifiers(target.getModifiers() | Modifier.STATIC);
+							}
 						}
 					}
 				}

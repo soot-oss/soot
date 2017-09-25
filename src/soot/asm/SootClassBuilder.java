@@ -121,7 +121,7 @@ class SootClassBuilder extends ClassVisitor {
 	public FieldVisitor visitField(int access, String name, String desc, String signature, Object value) {
 		soot.Type type = AsmUtil.toJimpleType(desc);
 		addDep(type);
-		SootField field = new SootField(name, type, access);
+		SootField field = Scene.v().makeSootField(name, type, access);
 		Tag tag;
 		if (value instanceof Integer)
 			tag = new IntegerConstantValueTag((Integer) value);
@@ -139,7 +139,7 @@ class SootClassBuilder extends ClassVisitor {
 			field.addTag(tag);
 		if (signature != null)
 			field.addTag(new SignatureTag(signature));
-		klass.addField(field);
+		field = klass.getOrAddField(field);
 		return new FieldBuilder(field, this);
 	}
 
@@ -164,7 +164,7 @@ class SootClassBuilder extends ClassVisitor {
 				thrownExceptions);
 		if (signature != null)
 			method.addTag(new SignatureTag(signature));
-		klass.addMethod(method);
+		method = klass.getOrAddMethod(method);
 		return new MethodBuilder(method, this, desc, exceptions);
 	}
 

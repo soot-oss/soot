@@ -227,7 +227,7 @@ public class Walker extends DepthFirstAdapter {
 
 		modifier = processModifiers(node.getModifier());
 
-		SootField f = new SootField(name, type, modifier);
+		SootField f = Scene.v().makeSootField(name, type, modifier);
 		mSootClass.addField(f);
 	}
 

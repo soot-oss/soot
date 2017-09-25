@@ -36,6 +36,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
@@ -60,7 +61,6 @@ public class SourceLocator {
 	}
 
 	protected Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
-	protected Set<String> classesToLoad;
 
 	private enum ClassSourceType {
 		jar, zip, apk, dex, directory, unknown
@@ -71,14 +71,6 @@ public class SourceLocator {
 	 * the given class.
 	 */
 	public ClassSource getClassSource(String className) {
-		if (classesToLoad == null) {
-			classesToLoad = new HashSet<String>();
-			classesToLoad.addAll(Scene.v().getBasicClasses());
-			for (SootClass c : Scene.v().getApplicationClasses()) {
-				classesToLoad.add(c.getName());
-			}
-		}
-
 		if (classPath == null) {
 			classPath = explodeClassPath(Scene.v().getSootClassPath());
 		}
@@ -135,7 +127,7 @@ public class SourceLocator {
 		additionalClassLoaders.add(c);
 	}
 
-	private void setupClassProviders() {
+	protected void setupClassProviders() {
 		classProviders = new LinkedList<ClassProvider>();
 		ClassProvider classFileClassProvider = Options.v().coffi() ? new CoffiClassProvider() : new AsmClassProvider();
 		switch (Options.v().src_prec()) {
@@ -173,13 +165,13 @@ public class SourceLocator {
 		}
 	}
 
-	private List<ClassProvider> classProviders;
+	protected List<ClassProvider> classProviders;
 
 	public void setClassProviders(List<ClassProvider> classProviders) {
 		this.classProviders = classProviders;
 	}
 
-	private List<String> classPath;
+	protected List<String> classPath;
 
 	public List<String> classPath() {
 		return classPath;
@@ -553,13 +545,11 @@ public class SourceLocator {
 	/** Explodes a class path into a list of individual class path entries. */
 	public static List<String> explodeClassPath(String classPath) {
 		List<String> ret = new ArrayList<String>();
-
-		StringTokenizer tokenizer = new StringTokenizer(classPath, File.pathSeparator);
-		while (tokenizer.hasMoreTokens()) {
-			String originalDir = tokenizer.nextToken();
-			String canonicalDir;
+		// the classpath is split at every path separator which is not escaped
+		String regex = "(?<!\\\\)" + Pattern.quote(File.pathSeparator);
+		for (String originalDir : classPath.split(regex)) {
 			try {
-				canonicalDir = new File(originalDir).getCanonicalPath();
+				String canonicalDir = new File(originalDir).getCanonicalPath();
 				ret.add(canonicalDir);
 			} catch (IOException e) {
 				throw new CompilationDeathException("Couldn't resolve classpath entry " + originalDir + ": " + e);
@@ -745,8 +735,8 @@ public class SourceLocator {
 	}
 
 	private FoundFile lookupInDir(String dir, String fileName) {
-		File f = new File(dir + File.separatorChar + fileName);
-		if (f.canRead()) {
+		File f = new File(dir, fileName);
+		if (f.exists() && f.canRead()) {
 			return new FoundFile(f);
 		}
 		return null;

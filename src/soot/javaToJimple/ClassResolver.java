@@ -238,7 +238,8 @@ public class ClassResolver {
 
 	private void addOuterClassThisRefField(polyglot.types.Type outerType) {
 		soot.Type outerSootType = Util.getSootType(outerType);
-		soot.SootField field = new soot.SootField("this$0", outerSootType, soot.Modifier.PRIVATE | soot.Modifier.FINAL);
+		soot.SootField field = Scene.v().makeSootField("this$0", outerSootType,
+				soot.Modifier.PRIVATE | soot.Modifier.FINAL);
 		sootClass.addField(field);
 		field.addTag(new soot.tagkit.SyntheticTag());
 	}
@@ -274,7 +275,7 @@ public class ClassResolver {
 		}
 
 		// add field
-		soot.SootField sf = new soot.SootField("val$" + li.name(), Util.getSootType(li.type()),
+		soot.SootField sf = Scene.v().makeSootField("val$" + li.name(), Util.getSootType(li.type()),
 				soot.Modifier.FINAL | soot.Modifier.PRIVATE);
 		sootClass.addField(sf);
 		finalFields.add(sf);
@@ -540,7 +541,7 @@ public class ClassResolver {
 		String fieldName = "$assertionsDisabled";
 		soot.Type fieldType = soot.BooleanType.v();
 		if (!sootClass.declaresField(fieldName, fieldType)) {
-			soot.SootField assertionsDisabledField = new soot.SootField(fieldName, fieldType,
+			soot.SootField assertionsDisabledField = Scene.v().makeSootField(fieldName, fieldType,
 					soot.Modifier.STATIC | soot.Modifier.FINAL);
 			sootClass.addField(assertionsDisabledField);
 			assertionsDisabledField.addTag(new soot.tagkit.SyntheticTag());
@@ -567,7 +568,7 @@ public class ClassResolver {
 		fieldType = soot.RefType.v("java.lang.Class");
 
 		if (!addToClass.declaresField(fieldName, fieldType)) {
-			soot.SootField classField = new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC);
+			soot.SootField classField = Scene.v().makeSootField(fieldName, fieldType, soot.Modifier.STATIC);
 			addToClass.addField(classField);
 			classField.addTag(new soot.tagkit.SyntheticTag());
 		}
@@ -723,7 +724,7 @@ public class ClassResolver {
 				String fieldName = Util.getFieldNameForClassLit(classLit.typeNode().type());
 				soot.Type fieldType = soot.RefType.v("java.lang.Class");
 
-				soot.SootField sootField = new soot.SootField(fieldName, fieldType, soot.Modifier.STATIC);
+				soot.SootField sootField = Scene.v().makeSootField(fieldName, fieldType, soot.Modifier.STATIC);
 				if (!addToClass.declaresField(fieldName, fieldType)) {
 					addToClass.addField(sootField);
 					sootField.addTag(new soot.tagkit.SyntheticTag());
@@ -924,7 +925,7 @@ public class ClassResolver {
 		int modifiers = Util.getModifier(field.fieldInstance().flags());
 		String name = field.fieldInstance().name();
 		soot.Type sootType = Util.getSootType(field.fieldInstance().type());
-		soot.SootField sootField = new soot.SootField(name, sootType, modifiers);
+		soot.SootField sootField = Scene.v().makeSootField(name, sootType, modifiers);
 		sootClass.addField(sootField);
 
 		if (field.fieldInstance().flags().isStatic()) {

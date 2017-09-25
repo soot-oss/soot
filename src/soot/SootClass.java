@@ -66,8 +66,7 @@ public class SootClass extends AbstractHost implements Numberable {
 	protected String name, shortName, fixedShortName, packageName, fixedPackageName;
 	protected int modifiers;
 	protected Chain<SootField> fields = new HashChain<SootField>();
-	protected SmallNumberedMap<SootMethod> subSigToMethods = new SmallNumberedMap<SootMethod>(
-			Scene.v().getSubSigNumberer());
+	protected SmallNumberedMap<SootMethod> subSigToMethods = new SmallNumberedMap<SootMethod>();
 	// methodList is just for keeping the methods in a consistent order. It
 	// needs to be kept consistent with subSigToMethods.
 	protected List<SootMethod> methodList = new ArrayList<SootMethod>();
@@ -90,13 +89,25 @@ public class SootClass extends AbstractHost implements Numberable {
 			throw new RuntimeException("Attempt to make a class whose name starts with [");
 		setName(name);
 		this.modifiers = modifiers;
-		refType = RefType.v(name);
-		refType.setSootClass(this);
+		initializeRefType(name);
 		if (Options.v().debug_resolver())
 			G.v().out.println("created " + name + " with modifiers " + modifiers);
 		setResolvingLevel(BODIES);
 
 		Scene.v().getClassNumberer().add(this);
+	}
+
+	/**
+	 * Makes sure that there is a RefType pointing to this SootClass. Client
+	 * code that provides its own SootClass implementation can override and
+	 * modify this behavior.
+	 * 
+	 * @param name
+	 *            The name of the new class
+	 */
+	protected void initializeRefType(String name) {
+		refType = RefType.v(name);
+		refType.setSootClass(this);
 	}
 
 	/**
@@ -624,6 +635,20 @@ public class SootClass extends AbstractHost implements Numberable {
 		m.setDeclared(true);
 		m.setDeclaringClass(this);
 		return m;
+	}
+
+	public synchronized SootField getOrAddField(SootField f) {
+		checkLevel(SIGNATURES);
+		if (f.isDeclared())
+			throw new RuntimeException("already declared: " + f.getName());
+		SootField old = getFieldUnsafe(f.getName(), f.getType());
+		if (old != null)
+			return old;
+
+		fields.add(f);
+		f.isDeclared = true;
+		f.declaringClass = this;
+		return f;
 	}
 
 	/**
