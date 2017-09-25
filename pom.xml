@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ca.mcgill.sable</groupId>
 	<artifactId>soot</artifactId>
@@ -30,8 +29,115 @@
 				</includes>
 			</resource>
 		</resources>
-
 		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>xml-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<goals>
+							<goal>transform</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<transformationSets>
+						<!-- make soot singletons -->
+						<transformationSet>
+							<outputDir>${basedir}/generated/singletons/soot/</outputDir>
+							<dir>${basedir}/src/</dir>
+							<includes>
+								<include>singletons.xml</include>
+							</includes>
+							<stylesheet>${basedir}/src/make-singletons.xsl</stylesheet>
+							<fileMappers>
+								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+									<targetName>Singletons.java</targetName>
+								</fileMapper>
+							</fileMappers>
+						</transformationSet>
+						<!-- make soot options -->
+						<transformationSet>
+							<outputDir>${basedir}/generated/options/soot/options/</outputDir>
+							<dir>${basedir}/src/soot/options/</dir>
+							<includes>
+								<include>soot_options.xml</include>
+							</includes>
+							<stylesheet>${basedir}/src/soot/options/make-soot-options.xsl</stylesheet>
+							<fileMappers>
+								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+									<targetName>Options.java</targetName>
+								</fileMapper>
+							</fileMappers>
+						</transformationSet>
+						<transformationSet>
+							<outputDir>${basedir}/generated/options/soot/</outputDir>
+							<dir>${basedir}/src/soot/options/</dir>
+							<includes>
+								<include>soot_options.xml</include>
+							</includes>
+							<stylesheet>${basedir}/src/soot/options/ant-task.xsl</stylesheet>
+							<fileMappers>
+								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+									<targetName>AntTask.java</targetName>
+								</fileMapper>
+							</fileMappers>
+						</transformationSet>
+						<transformationSet>
+							<outputDir>${basedir}/eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/</outputDir>
+							<dir>${basedir}/src/soot/options/</dir>
+							<includes>
+								<include>soot_options.xml</include>
+							</includes>
+							<stylesheet>${basedir}/src/soot/options/phase_options_dialog.xsl</stylesheet>
+							<fileMappers>
+								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+									<targetName>PhaseOptionsDialog.java</targetName>
+								</fileMapper>
+							</fileMappers>
+						</transformationSet>
+						<transformationSet>
+							<outputDir>${basedir}/doc/</outputDir>
+							<dir>${basedir}/src/soot/options/</dir>
+							<includes>
+								<include>soot_options.xml</include>
+							</includes>
+							<stylesheet>${basedir}/src/soot/options/soot_options.xsl</stylesheet>
+							<fileMappers>
+								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
+									<targetName>soot_options.htm</targetName>
+								</fileMapper>
+							</fileMappers>
+						</transformationSet>
+					</transformationSets>
+				</configuration>
+			</plugin>
+			<!-- copy the soot_options.css -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.0.2</version>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<!-- here the phase you need -->
+						<phase>validate</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<outputDirectory>${basedir}/doc</outputDirectory>
+							<resources>
+								<resource>
+									<directory>${basedir}/src/soot/options/</directory>
+									<includes>
+										<include>soot_options.css</include>
+									</includes>
+								</resource>
+							</resources>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
@@ -129,7 +235,6 @@
 					</execution>
 				</executions>
 			</plugin>
-
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
@@ -139,8 +244,8 @@
 						<phase>process-resources</phase>
 						<configuration>
 							<tasks>
-								<delete dir="testclasses" />
-								<mkdir dir="testclasses" />
+								<delete dir="testclasses"/>
+								<mkdir dir="testclasses"/>
 							</tasks>
 						</configuration>
 						<goals>
@@ -151,7 +256,6 @@
 			</plugin>
 		</plugins>
 	</build>
-
 	<dependencies>
 		<dependency>
 			<groupId>org.smali</groupId>
@@ -242,7 +346,6 @@
 			<type>pom</type>
 			<scope>test</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -253,9 +356,7 @@
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.7.5</version>
 		</dependency>
-
 	</dependencies>
-
 	<repositories>
 		<repository>
 			<id>soot-snapshot</id>
