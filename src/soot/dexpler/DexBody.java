@@ -107,6 +107,8 @@ import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.SourceLineNumberTag;
 import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;

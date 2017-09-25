@@ -510,7 +510,7 @@ class TextUI implements UI {
 </p>
 
 <p>
-If you run
+    If you run
 <pre>
 java soot.Main HelloWorld
 </pre>
@@ -524,7 +524,7 @@ dragged in indirectly by the references to <tt>String</tt> and
 <tt>System.out</tt>.</p>
 
 <p>
-If you run
+    If you run
 <pre>
 java soot.Main --app HelloWorld
 </pre>
@@ -536,7 +536,7 @@ and <tt>TextUI</tt> as well as <tt>HelloWorld</tt>.
 </p>
 
 <p>
-If you run
+    If you run
 <pre>
 java soot.Main -i java. --app HelloWorld
 </pre>
@@ -1155,7 +1155,10 @@ variables (<TT>jb.a</TT>).
 <P>
 Phase options provide a way for you to
 change the behaviour of a phase from the Soot command-line.  They take
-the form <TT>-p </TT><EM>phase</EM>.<EM>name</EM>
+    the form
+    <TT>-p</TT>
+    <EM>phase</EM>.
+    <EM>name</EM>
 <EM>option</EM>:<EM>value</EM>.  For instance,
 to instruct Soot to use original names in Jimple, we would invoke Soot
 like this:
@@ -1187,11 +1190,11 @@ specific to that option.
 </LI>
 
 <LI>Integer options
-take an integer value.
+    take an integer value.
 </LI>
-
+    
 <LI>Floating point options take a
-floating point number as their value.
+        floating point number as their value.
 </LI>
 
 <LI>String options take an arbitrary
@@ -1229,7 +1232,7 @@ called, it executes each of its transformers in order.
 
 
 <P>
-Soot transformers are usually instances of classes that extend
+    Soot transformers are usually instances of classes that extend
 <TT>BodyTransformer</TT> or <TT>SceneTransformer</TT>.  In either case, the
 transformer class must override the <TT>internalTransform</TT> method,
 providing an implementation which carries out some transformation on
@@ -1283,7 +1286,7 @@ names based on their types.
 			(default value: <span class="value">false</span>)
 		<p>
 Preserves annotations of retention type SOURCE. (for
-everything but package and local variable annotations)
+                        everything but package and local variable annotations)
 </p>
 </li>
 <li>
@@ -1513,10 +1516,10 @@ the `jb' phase.
 		<p>
 							First sorts the locals alphabetically by the string representation of
 							their type. Then if there are two locals with the same type, it uses
-							the only other source of structurally stable information (i.e. the
+                            the only other source of structurally stable information (i.e. the
 							instructions themselves) to produce an ordering for the locals
 							that remains consistent between different soot instances. It achieves
-							this by determining the position of a local's first occurrence in the
+                            this by determining the position of a local's first occurrence in the
 							instruction's list of definition statements. This position is then used
 							to sort the locals with the same type in an ascending order.
 						</p>
@@ -1526,15 +1529,15 @@ the `jb' phase.
 <a name="phase_1_9">Copy Propagator (jb.cp)</a>
 </h2>
 <p>
-This phase performs cascaded copy propagation.
+                        This phase performs cascaded copy propagation.
 
-If the propagator encounters situations of the form:
+                        If the propagator encounters situations of the form:
 
-  A: a = ...;
+    A: a = ...;
     ...
   B:  x = a;
     ...
-  C: ... = ... x;
+    C: ... = ... x;
 
 where a and x are each defined only once (at
 A and B, respectively), then it can propagate
@@ -1640,7 +1643,7 @@ Local Splitter.
 Use the variable names in the original source as a guide when
 determining how to share local variables across non-interfering
 variable usages. This recombines named locals which were split by
-the Local Splitter.
+                            the Local Splitter.
 </p>
 </li>
 </ul>
@@ -1877,15 +1880,15 @@ the `jb' phase.
 <a name="phase_2_7">Copy Propagator (jj.cp)</a>
 </h2>
 <p>
-This phase performs cascaded copy propagation.
+                        This phase performs cascaded copy propagation.
 
-If the propagator encounters situations of the form:
+                        If the propagator encounters situations of the form:
 
-  A: a = ...;
+    A: a = ...;
     ...
   B:  x = a;
     ...
-  C: ... = ... x;
+    C: ... = ... x;
 
 where a and x are each defined only once (at
 A and B, respectively), then it can propagate
@@ -1991,7 +1994,7 @@ Local Splitter.
 Use the variable names in the original source as a guide when
 determining how to share local variables across non-interfering
 variable usages. This recombines named locals which were split by
-the Local Splitter.
+                            the Local Splitter.
 </p>
 </li>
 </ul>
@@ -2046,13 +2049,24 @@ call-graph construction. Only enabled in whole-program mode.
 <h2>
 <a name="phase_3_1">Constant reflective method invocation base transformer (wjpp.cimbt)</a>
 </h2>
-<p>When using the types-for-invoke option of the cg phase, problems might occur if the
-			  base object of a call to Method.invoke() (the first argument) is a string constant. This option replaces all
-			  string constants of such calls by locals referencing the string constant.</p>
+<p>When using the types-for-invoke option of the cg phase, problems might
+                  occur if the base object of a call to Method.invoke() (the first argument) is a string constant.
+				  This option replaces all
+                  string constants of such calls by locals and, therefore, allows the
+                  static resolution of reflective call targets on constant string objects.
+              </p>
 <h4>Accepted phase options:</h4>
 <ul>
 <li>
-<b></b> ()
+<b>Enabled</b> (enabled)
+		<br>
+			(default value: <span class="value">false</span>)
+		<p></p>
+</li>
+<li>
+<b>Verbose</b> (verbose)
+		<br>
+			(default value: <span class="value">false</span>)
 		<p></p>
 </li>
 </ul>
@@ -2128,10 +2142,13 @@ are assumed not to call the constructor of the created object.
 			(default value: <span class="value">disabled</span>)
 		<p>
 										Specifies whether the target classes should be treated as an application or a library.
-										If library mode is disabled (default), the call graph construction assumes that the target is an application and
-										starts the construction from the specified entry points (main method by default).
+                                        If library mode is disabled (default), the call graph construction assumes that
+                                        the target is an application and
+                                        starts the construction from the specified entry points (main method by
+                                        default).
 										Under the assumption that the target is a library, possible call edges might be missing in the call graph.
-										The two different library modes add theses missing calls to the call graph and differ only in the view of the class hierachy
+                                        The two different library modes add theses missing calls to the call graph and
+                                        differ only in the view of the class hierachy
 										(hierachy of target library or possible extended hierachy).
 										If simulate-natives is also set, the results of native methods are also set to any  sub type of the declared return type.
 									</p>
@@ -2146,21 +2163,29 @@ are assumed not to call the constructor of the created object.
 </tr>
 <tr>
 <td class="value">any-subtype</td><td>
-											On library analysis it has to be assumed, that a possible client can call any method or access any field,
+                                            On library analysis it has to be assumed, that a possible client can call
+                                            any method or access any field,
 											to which he has the access rights (default public/protected but can be set with soot.Scene#setClientAccessibilityOracle).
-											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type
+                                            In this mode types of any accessible field, method parameter, this local, or
+                                            caugth exception is set to any possible sub type
 											according to the class hierachy of the target library.
 											If simulate-natives is also set, the results of native methods are also set to any sub type of the declared return type.
 										</td>
 </tr>
 <tr>
 <td class="value">signature-resolution</td><td>
-											On library analysis it has to be assumed, that a possible client can call any method or access any field,
+                                            On library analysis it has to be assumed, that a possible client can call
+                                            any method or access any field,
 											to which he has the access rights (default public/protected but can be set with soot.Scene#setClientAccessibilityOracle).
-											In this mode types of any accessible field, method parameter, this local, or caugth exception is set to any possible sub type
-											according to a possible extended class hierarchy of the target library. Whenever any sub type of a specific type is considered as
-											receiver for a method to call and the base type is an interface, calls to existing methods with matching signature (possible implementation
-											of method to call) are also added. As Javas' subtyping allows contra-variance for return types and co-variance for parameters when overriding
+                                            In this mode types of any accessible field, method parameter, this local, or
+                                            caugth exception is set to any possible sub type
+                                            according to a possible extended class hierarchy of the target library.
+                                            Whenever any sub type of a specific type is considered as
+                                            receiver for a method to call and the base type is an interface, calls to
+                                            existing methods with matching signature (possible implementation
+                                            of method to call) are also added. As Javas' subtyping allows
+                                            contra-variance for return types and co-variance for parameters when
+                                            overriding
 											a method, these cases are also considered here.
 
 											Example: Classes A, B (B sub type of A), interface I with method public A foo(B b); and a class C with method public B foo(A a) { ... }.
@@ -2214,7 +2239,7 @@ executed again, the corresponding call graph edges are removed from the call gra
 		<p>Load a reflection log
 from the given file and use this log to resolve reflective call sites. Note that
 when a log is given, the following other options have no effect: safe-forname,
-safe-newinstance.
+                                            safe-newinstance.
 </p>
 </li>
 <li>
@@ -2226,7 +2251,7 @@ Executing the program differently may be unsound. Soot can insert guards at prog
 contains no information. When these points are reached (because the program is executed differently) then the follwing will happen,
 depending on the value of this flag. ignore: no guard is inserted, the program executes normally but under unsound assumptions.
 print: the program prints a stack trace when reaching a porgram location that was not traced but continues to run. throw (default):
-the program throws an Error instead.
+                                            the program throws an Error instead.
 </p>
 </li>
 <li>
@@ -2400,7 +2425,8 @@ When this option is set to true, the effects of native methods in the standard J
 		<br>
 			(default value: <span class="value">false</span>)
 		<p>
-When this option is set to true, Spark treats references to EMPTYSET, EMPTYMAP, and
+                                When this option is set to true, Spark treats references to 
+                                EMPTYSET, EMPTYMAP, and
 EMPTYLIST as allocation sites for HashSet, HashMap and LinkedList objects respectively, and references to Hashtable.emptyIterator as allocation sites for Hashtable.EmptyIterator. This enables subsequent analyses to differentiate different uses of Java's immutable empty collections.
         </p>
 </li>
@@ -2789,7 +2815,7 @@ When this option is disabled, context information is computed for every query to
 When it is enabled, a call to reachingObjects returns a lazy wrapper object that contains a context-insensitive
 points-to set. This set is then automatically refined with context information when necessary, i.e.
 when we try to determine the intersection with another points-to set and this intersection seems to be
-non-empty.
+                                non-empty.
         					</p>
 </li>
 <li>
@@ -2823,11 +2849,11 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 		<br>
 			(default value: <span class="value">Geom</span>)
 		<p>
-						    This switch specifies the encoding methodology used in the analysis.
+                              This switch specifies the encoding methodology used in the analysis.
 						    All possible options are: Geom, HeapIns, PtIns. The efficiency order
 						    is (from slow to fast) Geom - HeapIns - PtIns, but the precision order is
 						    the reverse.
-						  </p>
+                          </p>
 <table border="0">
 <th colspan="2">
 					Possible values:
@@ -2855,7 +2881,7 @@ Each iteration traverses at most ( traverse / passes ) nodes.
 			(default value: <span class="value">PQ</span>)
 		<p>
 						    Specifies the worklist used for selecting the next propagation pointer. All possible options are: PQ, FIFO. They stand for the priority queue (sorted by the last fire time and topology order) and FIFO queue.
-						  </p>
+                          </p>
 <table border="0">
 <th colspan="2">
 					Possible values:
@@ -3902,7 +3928,7 @@ Bird type, to prevent complaints from the verifier.
 			(default value: <span class="value">unsafe</span>)
 		<p>
 Specify which changes in visibility modifiers
-are allowed.
+                            are allowed.
 </p>
 <table border="0">
 <th colspan="2">
@@ -3997,7 +4023,7 @@ of Bird.sing().
 			(default value: <span class="value">unsafe</span>)
 		<p>
 Specify which changes in visibility modifiers
-are allowed.
+                            are allowed.
 </p>
 <table border="0">
 <th colspan="2">
@@ -4100,7 +4126,11 @@ Checker.
 <h2>
 <a name="phase_10_2">Unreachable Method Tagger (wjap.umt)</a>
 </h2>
-<p>Uses the call graph to determine which methods are unreachable and adds color tags so they can be highlighted in a source browser.</p>
+<p>
+                        Uses the call graph to determine which methods are unreachable and adds color tags so they
+                            can be highlighted in a source browser.
+                        
+                    </p>
 <h4>Accepted phase options:</h4>
 <ul>
 <li>
@@ -4113,7 +4143,11 @@ Checker.
 <h2>
 <a name="phase_10_3">Unreachable Fields Tagger (wjap.uft)</a>
 </h2>
-<p>Uses the call graph to determine which fields are unreachable and adds color tags so they can be highlighted in a source browser.</p>
+<p>
+                        Uses the call graph to determine which fields are unreachable and adds color tags so they can
+                            be highlighted in a source browser.
+                        
+                    </p>
 <h4>Accepted phase options:</h4>
 <ul>
 <li>
@@ -4126,7 +4160,13 @@ Checker.
 <h2>
 <a name="phase_10_4">Tightest Qualifiers Tagger (wjap.tqt)</a>
 </h2>
-<p>Determines which methods and fields have qualifiers that could be tightened. For example: if a field or method has the qualifier of public but is only used within the declaring class it could be private. This, this field or method is tagged with color tags so that the results can be highlighted in a source browser.</p>
+<p>
+                        Determines which methods and fields have qualifiers that could be tightened. For example: if
+                            a field or method has the qualifier of public but is only used within the declaring class it
+                            could be private. This, this field or method is tagged with color tags so that the results
+                            can be highlighted in a source browser.
+                        
+                    </p>
 <h4>Accepted phase options:</h4>
 <ul>
 <li>
@@ -4139,7 +4179,9 @@ Checker.
 <h2>
 <a name="phase_10_5">Call Graph Grapher (wjap.cgg)</a>
 </h2>
-<p>Creates graphical call graph.</p>
+<p>
+                        Creates graphical call graph.
+                    </p>
 <h4>Accepted phase options:</h4>
 <ul>
 <li>
@@ -4160,7 +4202,7 @@ Checker.
 </h2>
 <p>
 Purity anaysis implemented by Antoine Mine and based on the paper
-A Combined Pointer and Purity Analysis for Java Programs by
+                A Combined Pointer and Purity Analysis for Java Programs by
 Alexandru Salcianu and Martin Rinard.
                     </p>
 <h4>Accepted phase options:</h4>
@@ -5351,7 +5393,11 @@ is replaced by
 
 r2 = new java.util.ArrayList();
 r3 = r2
-the invocation of init no longer represents a potential side-effect
+the invocation of
+                        init
+                            
+                        
+                        no longer represents a potential side-effect
 separating the two definitions, so they can be combined into
 
 r3 = new java.util.ArrayList();
@@ -5438,7 +5484,7 @@ The Load Store Optimizer replaces some combinations of loads to and stores from 
 store.r $r2;
 load.r $r2;
 
-with
+                        with
 
 dup1.r
 
@@ -5496,7 +5542,7 @@ eliminate store/load pairs.
 		<br>
 			(default value: <span class="value">true</span>)
 		<p>
-Enables an optimization which attempts to eliminate
+                                Enables an optimization which attempts to eliminate
 store/load/load
 trios with some variant of dup.
 </p>
@@ -5596,7 +5642,7 @@ Local Splitter.
 Use the variable names in the original source as a guide when
 determining how to share local variables across non-interfering
 variable usages. This recombines named locals which were split by
-the Local Splitter.
+                            the Local Splitter.
 </p>
 </li>
 </ul>
@@ -5712,7 +5758,7 @@ jap.fieldrw.
 <p>
 The decompile (Dava) option is set using the -f dava options in Soot.
 Options provided by Dava are added to this dummy phase so as not to clutter the soot general arguments.
--p db (option name):(value) will be used to set all required values for Dava.
+                    -p db (option name):(value) will be used to set all required values for Dava.
                                 </p>
 <h4>Accepted phase options:</h4>
 <ul>
@@ -5728,7 +5774,8 @@ Options provided by Dava are added to this dummy phase so as not to clutter the 
 			(default value: <span class="value">true</span>)
 		<p>
 					check out soot.dava.toolkits.base.misc.ThrowFinder
-					In short we want to ensure that if there are throw exception info in the class file dava uses this info.
+                        In short we want to ensure that if there are throw exception info in the class file dava uses
+                        this info.
 					</p>
 </li>
 </ul>
@@ -5765,11 +5812,12 @@ Options provided by Dava are added to this dummy phase so as not to clutter the 
 <a name="phase_22_3">De-obfuscate (db.deobfuscate)</a>
 </h2>
 <p>Certain analyses make sense only when the bytecode is obfuscated code.
-There are plans to implement such analyses and apply them on methods only if this flag is set.
+                        There are plans to implement such analyses and apply them on methods only if this flag is set.
 Dead Code elimination which includes removing code guarded by some condition which is always false or always true is one such
 analysis. Another suggested analysis is giving default names to classes and fields. Onfuscators love to use weird names
-for fields and classes and even a simple re-naming of these could be a good help to the user.
-Another more advanced analysis would be to check for redundant constant fields added by obfuscators and then remove uses
+                        for fields and classes and even a simple re-naming of these could be a good help to the user.
+                        Another more advanced analysis would be to check for redundant constant fields added by
+                        obfuscators and then remove uses
 of these constant fields from the code.</p>
 <h4>Accepted phase options:</h4>
 <ul>
@@ -5791,7 +5839,8 @@ a constructors body. This restriction is absent from the bytecode. Similarly fin
 once and only once in either the static initializer (static fields) or all the constructors (non-static fields). Additionally
 the fields should be initialized on all possible execution paths. These restrictions are again absent from the bytecode.
 In doing a one-one conversion of bytecode to Java source then no attempt should be made to fix any of these and similar problems
-in the Java source. However, if the aim is to get recompilable code then these and similar issues need to be fixed.
+                        in the Java source. However, if the aim is to get recompilable code then these and similar
+                        issues need to be fixed.
 Setting the force-recompilability flag will ensure that the decompiler tries its best to produce recompilable Java source.</p>
 <h4>Accepted phase options:</h4>
 <ul>
