@@ -102,7 +102,7 @@
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/phase_options_dialog.xsl</stylesheet>
+							<stylesheet>${basedir}/src/soot/options/soot_options.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>soot_options.htm</targetName>
