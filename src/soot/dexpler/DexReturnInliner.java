@@ -76,6 +76,7 @@ public class DexReturnInliner extends DexTransformer {
     	
 		Iterator<Unit> it = body.getUnits().snapshotIterator();
 		boolean mayBeMore = false;
+		Unit last = null;
 		do {
 			mayBeMore = false;
 			while (it.hasNext()) {
@@ -121,7 +122,7 @@ public class DexReturnInliner extends DexTransformer {
 						u.addAllTagsOf(last);
 					}
 				}
-				last = (Stmt) u;
+				last =  u;
 			}
 		} while (mayBeMore);
     }
