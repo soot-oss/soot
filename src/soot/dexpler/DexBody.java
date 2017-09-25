@@ -533,8 +533,11 @@ public class DexBody {
 			Unit unit = instruction.getUnit();
 			int lineNumber = unit.getJavaSourceStartLineNumber();
 			if (Options.v().keep_line_number() && lineNumber < 0) {
-				unit.addTag(new LineNumberTag(prevLn));
-				unit.addTag(new SourceLineNumberTag(prevLn));
+				if(prevLn>=0)
+				{
+					unit.addTag(new LineNumberTag(prevLn));
+					unit.addTag(new SourceLineNumberTag(prevLn));
+				}
 			} else {
 				prevLn = lineNumber;
 			}
