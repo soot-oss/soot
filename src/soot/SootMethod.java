@@ -373,7 +373,7 @@ public class SootMethod
         
         // If someone sets a body for a phantom method, this method then is no
         // longer phantom
-        isPhantom = false;
+        setPhantom(false);
         
         if (!isConcrete())
             throw new RuntimeException(
