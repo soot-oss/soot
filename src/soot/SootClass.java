@@ -778,6 +778,18 @@ public class SootClass extends AbstractHost implements Numberable {
 	}
 
 	/**
+	 * This method returns the superclass, or null if no superclass has been specified for this class.
+	 * 
+	 * WARNING: interfaces are subclasses of the java.lang.Object class! Returns
+	 * the superclass of this class. (see hasSuperclass())
+	 */
+
+	public SootClass getSuperclassUnsafe() {
+		checkLevel(HIERARCHY);
+		return superClass;
+	}
+
+	/**
 	 * Sets the superclass of this class. Note that passing a null will cause
 	 * the class to have no superclass.
 	 */
