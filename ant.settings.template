@@ -6,7 +6,6 @@ polyglot.jar=libs/polyglot.jar
 
 dexlib2.jar=libs/dexlib2-2.2.1.jar
 dexlib-utils.jar=libs/util-2.2.1.jar
-multidexlib2.jar=libs/multidexlib2-2.2.1.jar
 
 slf4j-api.jar=libs/slf4j-api-1.7.5.jar
 slf4j-simple.jar=libs/slf4j-simple-1.7.5.jar

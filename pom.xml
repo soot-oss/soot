@@ -263,11 +263,6 @@
 			<version>2.2.1</version>
 		</dependency>
 		<dependency>
-			<groupId>com.github.lanchon.dexpatcher</groupId>
-			<artifactId>multidexlib2</artifactId>
-			<version>2.2.1.r2</version>
-		</dependency>
-		<dependency>
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm-debug-all</artifactId>
 			<version>5.1</version>

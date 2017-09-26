@@ -24,10 +24,7 @@
 
 package soot.dexpler;
 
-import lanchon.multidexlib2.BasicDexFileNamer;
-import lanchon.multidexlib2.DexIO;
-import lanchon.multidexlib2.MultiDexIO;
-import lanchon.multidexlib2.WrappingMultiDexFile;
+import org.jf.dexlib2.DexFileFactory;
 import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
@@ -67,7 +64,7 @@ public class DexlibWrapper {
     private final DexClassLoader dexLoader = new DexClassLoader();
     private final Map<String, ClassDef> classesToDefItems = new HashMap<String, ClassDef>();
     private final File inputDexFile;
-    private MultiDexContainer<WrappingMultiDexFile<DexBackedDexFile>> dexContainer;
+    private List<DexBackedDexFile> dexList;
 
     /**
      * Construct a DexlibWrapper from a dex file and stores its classes
@@ -83,26 +80,31 @@ public class DexlibWrapper {
     public void initialize() {
         try {
             int api = Scene.v().getAndroidAPIVersion();
-            boolean multiDex = Options.v().process_multiple_dex();
-            DexIO.Logger logger = new DexIO.Logger() {
-                @Override
-                public void log(File file, String entryName, int typeCount) {
-                    G.v().out.println(String.format("Found dex file '%s' with %d classes in '%s'", entryName, typeCount, file.getName()));
-                }
-            };
-            dexContainer = MultiDexIO.readMultiDexContainer(inputDexFile, new BasicDexFileNamer(), Opcodes.forApi(api), logger);
+            // load dex files from apk or single dex file
+            MultiDexContainer<? extends DexBackedDexFile> dexContainer = DexFileFactory.loadDexContainer(inputDexFile, Opcodes.forApi(api));
 
-            List<String> dexEntries = dexContainer.getDexEntryNames();
-            int num_dex_files = dexEntries.size();
+            int dexFileCount = dexContainer.getDexEntryNames().size();
 
-            if (!multiDex && num_dex_files > 1) {
-                G.v().out.println("WARNING: Multiple dex files detected, only processing first dex file (" + dexEntries.get(0) + "). Use '-process-multiple-dex' option to process them all.");
-                // restrict processed dex files to the first
-                num_dex_files = 1;
+            if (dexFileCount < 1)
+                throw new RuntimeException(String.format("No dex file found in '%s'", inputDexFile));
+
+            dexList = new ArrayList<>(dexFileCount);
+
+            // report found dex files and add to list
+            for (String dexEntry : dexContainer.getDexEntryNames()) {
+                DexBackedDexFile entry = dexContainer.getEntry(dexEntry);
+                dexList.add(entry);
+                G.v().out.println(String.format("Found dex file '%s' with %d classes in '%s'", dexEntry, entry.getClasses().size(), inputDexFile.getName()));
             }
 
-            for (int dexIndex = 0; dexIndex < num_dex_files; dexIndex++) {
-                DexFile dexFile = dexContainer.getEntry(dexEntries.get(dexIndex));
+            if (!Options.v().process_multiple_dex() && dexFileCount > 1) {
+                G.v().out.println("WARNING: Multiple dex files detected, only processing first dex file (" + dexList.get(0) + "). Use '-process-multiple-dex' option to process them all.");
+                // restrict processed dex files to the first
+                dexList = Collections.singletonList(dexList.get(0));
+            }
+
+            // resolve classes in dex files
+            for (DexBackedDexFile dexFile : dexList) {
                 for (ClassDef defItem : dexFile.getClasses()) {
                     String forClassName = Util.dottedClassName(defItem.getType());
                     classesToDefItems.put(forClassName, defItem);
@@ -110,9 +112,7 @@ public class DexlibWrapper {
             }
 
             // It is important to first resolve the classes, otherwise we will produce an error during type resolution.
-            for (int dexIndex = 0; dexIndex < num_dex_files; dexIndex++) {
-                DexBackedDexFile dexFile = dexContainer.getEntry(dexContainer.getDexEntryNames().get(dexIndex)).getWrappedDexFile();
-
+            for (DexBackedDexFile dexFile : dexList) {
                 for (int i = 0; i < dexFile.getTypeCount(); i++) {
                     String t = dexFile.getType(i);
 
@@ -153,16 +153,10 @@ public class DexlibWrapper {
             className = Util.dottedClassName(className);
         }
 
-        try {
-            for (String dexEntry : dexContainer.getDexEntryNames()) {
-                DexFile dexFile = dexContainer.getEntry(dexEntry);
-                ClassDef defItem = classesToDefItems.get(className);
-                if (dexFile.getClasses().contains(defItem))
-                    return dexLoader.makeSootClass(sc, defItem, dexFile);
-            }
-        } catch (IOException e) {
-            // happens when dex file is not available
-            throw new RuntimeException(e);
+        for (DexFile dexFile : dexList) {
+            ClassDef defItem = classesToDefItems.get(className);
+            if (dexFile.getClasses().contains(defItem))
+                return dexLoader.makeSootClass(sc, defItem, dexFile);
         }
 
         throw new RuntimeException("Error: class not found in DEX files: " + className);
