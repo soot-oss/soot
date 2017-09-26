@@ -25,9 +25,9 @@
 package soot.dexpler;
 
 import lanchon.multidexlib2.BasicDexFileNamer;
-import lanchon.multidexlib2.BasicMultiDexFile;
 import lanchon.multidexlib2.DexIO;
 import lanchon.multidexlib2.MultiDexIO;
+import lanchon.multidexlib2.WrappingMultiDexFile;
 import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
@@ -39,7 +39,6 @@ import soot.options.Options;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -68,7 +67,7 @@ public class DexlibWrapper {
     private final DexClassLoader dexLoader = new DexClassLoader();
     private final Map<String, ClassDef> classesToDefItems = new HashMap<String, ClassDef>();
     private final File inputDexFile;
-    private MultiDexContainer<? extends DexFile> dexContainer;
+    private MultiDexContainer<WrappingMultiDexFile<DexBackedDexFile>> dexContainer;
 
     /**
      * Construct a DexlibWrapper from a dex file and stores its classes
@@ -112,26 +111,23 @@ public class DexlibWrapper {
 
             // It is important to first resolve the classes, otherwise we will produce an error during type resolution.
             for (int dexIndex = 0; dexIndex < num_dex_files; dexIndex++) {
-                // FIXME reflection hack to get the DexBackedDexFile out of the BasicMultiDexFileImplementation
-                DexFile dexFile = dexBackedDexFileHack(dexContainer.getEntry(dexEntries.get(dexIndex)));
+                DexBackedDexFile dexFile = dexContainer.getEntry(dexContainer.getDexEntryNames().get(dexIndex)).getWrappedDexFile();
 
-                if (dexFile instanceof DexBackedDexFile) {
-                    DexBackedDexFile dbdf = (DexBackedDexFile) dexFile;
-                    for (int i = 0; i < dbdf.getTypeCount(); i++) {
-                        String t = dbdf.getType(i);
+                for (int i = 0; i < dexFile.getTypeCount(); i++) {
+                    String t = dexFile.getType(i);
 
-                        Type st = DexType.toSoot(t);
-                        if (st instanceof ArrayType) {
-                            st = ((ArrayType) st).baseType;
-                        }
-                        Debug.printDbg("Type: ", t, " soot type:", st);
-                        String sootTypeName = st.toString();
-                        if (!Scene.v().containsClass(sootTypeName)) {
-                            if (st instanceof PrimType || st instanceof VoidType
-                                    || systemAnnotationNames.contains(sootTypeName)) {
-                                // dex files contain references to the Type IDs of void
-                                // primitive types - we obviously do not want them
-                                // to be resolved
+                    Type st = DexType.toSoot(t);
+                    if (st instanceof ArrayType) {
+                        st = ((ArrayType) st).baseType;
+                    }
+                    Debug.printDbg("Type: ", t, " soot type:", st);
+                    String sootTypeName = st.toString();
+                    if (!Scene.v().containsClass(sootTypeName)) {
+                        if (st instanceof PrimType || st instanceof VoidType
+                                || systemAnnotationNames.contains(sootTypeName)) {
+                            // dex files contain references to the Type IDs of void
+                            // primitive types - we obviously do not want them
+                            // to be resolved
                                 /*
                                  * dex files contain references to the Type IDs of
                                  * the system annotations. They are only visible to
@@ -139,15 +135,11 @@ public class DexlibWrapper {
                                  * vm/reflect/Annotations.cpp), and not to the user
                                  * - so we do not want them to be resolved.
                                  */
-                                continue;
-                            }
-                            SootResolver.v().makeClassRef(sootTypeName);
+                            continue;
                         }
-                        SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
+                        SootResolver.v().makeClassRef(sootTypeName);
                     }
-                } else {
-                    System.out.println("Warning: DexFile not instance of DexBackedDexFile! Not resolving types!");
-                    System.out.println("type: " + dexFile.getClass());
+                    SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
                 }
             }
         } catch (IOException e) {
@@ -155,22 +147,6 @@ public class DexlibWrapper {
         }
     }
 
-    private DexFile dexBackedDexFileHack(DexFile dexFile) {
-        if (!(dexFile instanceof BasicMultiDexFile))
-            return dexFile;
-
-        try {
-            Field internalDexFile = BasicMultiDexFile.class.getDeclaredField("dexFile");
-            internalDexFile.setAccessible(true);
-            dexFile = (DexFile) internalDexFile.get(dexFile);
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-
-        return dexFile;
-    }
 
     public Dependencies makeSootClass(SootClass sc, String className) {
         if (Util.isByteCodeClassName(className)) {
