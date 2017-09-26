@@ -21,8 +21,6 @@ import org.jf.dexlib2.immutable.reference.ImmutableStringReference;
 import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
 import org.jf.dexlib2.immutable.value.*;
 import org.jf.dexlib2.writer.builder.BuilderEncodedValues;
-import org.jf.dexlib2.writer.io.FileDataStore;
-import org.jf.dexlib2.writer.pool.DexPool;
 import soot.*;
 import soot.dexpler.DexInnerClassParser;
 import soot.dexpler.DexType;
@@ -68,15 +66,12 @@ import java.util.zip.ZipOutputStream;
 public class DexPrinter {
 
 
-    private DexPool curPool;
-    private List<DexPool> dexPools = new LinkedList<>();
-
+    private MultiDexBuilder dexBuilder;
     private File originalApk;
 
     public DexPrinter() {
         int api = Scene.v().getAndroidAPIVersion();
-        curPool = new DexPool(Opcodes.forApi(api));
-        dexPools.add(curPool);
+        dexBuilder = new MultiDexBuilder(Opcodes.forApi(api));
     }
 
     private static boolean isSignatureFile(String fileName) {
@@ -108,39 +103,40 @@ public class DexPrinter {
         throw new RuntimeException("Unknown annotation visibility: '" + visibility + "'");
     }
 
-    protected static FieldReference toFieldReference(SootField f, DexPool belongingDexFile) {
+    protected static FieldReference toFieldReference(SootField f, MultiDexBuilder builder) {
         FieldReference fieldRef = new ImmutableFieldReference(
                 SootToDexUtils.getDexClassName(f.getDeclaringClass().getName()), f.getName(),
                 SootToDexUtils.getDexTypeDescriptor(f.getType()));
-        // TODO pass?
+        builder.internField(fieldRef);
         return fieldRef;
         // return belongingDexFile.internFieldReference(fieldRef);
     }
 
-    protected static FieldReference toFieldReference(SootFieldRef ref, DexPool belongingDexFile) {
+    protected static FieldReference toFieldReference(SootFieldRef ref, MultiDexBuilder builder) {
         FieldReference fieldRef = new ImmutableFieldReference(
                 SootToDexUtils.getDexClassName(ref.declaringClass().getName()), ref.name(),
                 SootToDexUtils.getDexTypeDescriptor(ref.type()));
-        // TODO pass?
+        builder.internField(fieldRef);
         return fieldRef;
         //  return belongingDexFile.internFieldReference(fieldRef);
     }
 
-    protected static MethodReference toMethodReference(SootMethodRef m, DexPool belongingDexFile) {
+    protected static MethodReference toMethodReference(SootMethodRef m, MultiDexBuilder builder) {
         List<String> parameters = new ArrayList<String>();
         for (Type t : m.parameterTypes())
             parameters.add(SootToDexUtils.getDexTypeDescriptor(t));
         MethodReference methodRef = new ImmutableMethodReference(
                 SootToDexUtils.getDexClassName(m.declaringClass().getName()), m.name(), parameters,
                 SootToDexUtils.getDexTypeDescriptor(m.returnType()));
-        // TODO pass
+        builder.internMethod(methodRef);
         return methodRef;
         //return belongingDexFile.internMethodReference(methodRef);
     }
 
-    protected static TypeReference toTypeReference(Type t, DexPool belongingDexFile) {
-        // TODO pass?
-        return new ImmutableTypeReference(SootToDexUtils.getDexTypeDescriptor(t));
+    protected static TypeReference toTypeReference(Type t, MultiDexBuilder builder) {
+        ImmutableTypeReference tRef = new ImmutableTypeReference(SootToDexUtils.getDexTypeDescriptor(t));
+        builder.internType(tRef);
+        return tRef;
         //  return belongingDexFile.internTypeReference(SootToDexUtils.getDexTypeDescriptor(t));
     }
 
@@ -157,8 +153,10 @@ public class DexPrinter {
                 if (outputFile.exists()) {
                     if (!Options.v().force_overwrite())
                         throw new CompilationDeathException("Output file " + outputFile + " exists. Not overwriting.");
-                    else
-                        outputFile.delete();
+                    else {
+                        if (!outputFile.delete())
+                            throw new RuntimeException("Removing " + outputFileName + " failed. Not writing out anything.");
+                    }
                 }
                 outputApk = new ZipOutputStream(new FileOutputStream(outputFile));
                 G.v().out.println("Writing APK to: " + outputFileName);
@@ -178,8 +176,8 @@ public class DexPrinter {
             // put our dex files into the zip archive
             Path tempPath = Files.createTempDirectory(Long.toString(System.nanoTime()));
             File tempDirectory = tempPath.toFile();
-            writeTo(tempDirectory.getAbsolutePath());
-            for (File file : tempDirectory.listFiles()) {
+            List<File> files = dexBuilder.writeTo(tempDirectory.getAbsolutePath());
+            for (File file : files) {
                 try (FileInputStream fis = new FileInputStream(file)) {
                     outputApk.putNextEntry(new ZipEntry(file.getName()));
                     while (fis.available() > 0) {
@@ -241,21 +239,6 @@ public class DexPrinter {
         }
     }
 
-    /**
-     * Writes all dex files to the given folder.
-     *
-     * @param folder
-     * @throws IOException
-     */
-    private void writeTo(String folder) throws IOException {
-        int count = 0;
-        for (DexPool dexPool : dexPools) {
-            count++;
-            FileDataStore fds = new FileDataStore(new File(folder, "classes" + (count == 1 ? "" : count) + ".dex"));
-            dexPool.writeTo(fds);
-            fds.close();
-        }
-    }
 
     /**
      * Encodes Annotations Elements from Jimple to Dexlib
@@ -322,9 +305,9 @@ public class DexPrinter {
                 String classT = SootToDexUtils.getDexClassName(e.getTypeName());
                 String fieldT = classT;
 
-                // TODO pass?
                 FieldReference fref =
                         new ImmutableFieldReference(classT, e.getConstantName(), fieldT);
+                dexBuilder.internField(fref);
 
                 return new ImmutableEnumEncodedValue(fref);
             }
@@ -376,8 +359,8 @@ public class DexPrinter {
 
                 String fieldName = sp[2];
 
-                // TODO pass?
                 FieldReference fref = new ImmutableFieldReference(classString, fieldName, typeString);
+                dexBuilder.internField(fref);
 
                 return new ImmutableFieldEncodedValue(fref);
             }
@@ -403,9 +386,9 @@ public class DexPrinter {
                         }
                 }
 
-                // TODO pass?
                 MethodReference mref =
                         new ImmutableMethodReference(classString, methodNameString, paramTypeList, returnType);
+                dexBuilder.internMethod(mref);
 
                 return new ImmutableMethodEncodedValue(mref);
             }
@@ -522,34 +505,7 @@ public class DexPrinter {
         Collection<Method> methods = toMethods(c);
 
         ClassDef classDef = new ImmutableClassDef(classType, accessFlags, superClass, interfaces, sourceFile, buildClassAnnotations(c), fields, methods);
-        curPool.mark();
-        curPool.internClass(classDef);
-
-        if (curPool.hasOverflowed())
-            handleDexOverflow();
-    }
-
-    private void handleDexOverflow() {
-        // We only support splitting for api versions since Lollipop (22).
-        // Since Api 22, Art runtime is used which needs to extract all dex files anyways. Thus,
-        // we can pack classes arbitrarily and do not need to care about which classes need to go together in
-        // the same dex file.
-        // For Dalvik (pre 22), it is important that at least the main dex file (classes.dex) contains all needed
-        // dependencies of the Main activity, which means that one would have to determine necessary dependencies and
-        // pack those explicitly in the first dex file. (https://developer.android.com/studio/build/multidex.html, http://www.fasteque.com/deep-dive-into-android-multidex/)
-        if (Scene.v().getAndroidAPIVersion() < 22)
-            throw new RuntimeException("Dex file overflow. Splitting not support for pre Lollipop Android (Api 22).");
-
-        //TODO add multidex write option
-        if (false)
-            throw new RuntimeException("Dex file overflow. Splitting into multiple dex files required. Consider using the '-output-multi-dex' option.");
-
-        // reset to state before overflow occurred
-        curPool.reset();
-
-        // we need a new dexpool
-        curPool = new DexPool(Opcodes.forApi(Scene.v().getAndroidAPIVersion()));
-        dexPools.add(curPool);
+        dexBuilder.internClass(classDef);
     }
 
     private Set<Annotation> buildClassAnnotations(SootClass c) {
@@ -824,9 +780,9 @@ public class DexPrinter {
             }
         }
 
-        //TODO pass?
         ImmutableMethodReference mRef = new ImmutableMethodReference(
                 SootToDexUtils.getDexClassName(t.getEnclosingClass()), t.getEnclosingMethod(), typeList, returnTypeS);
+        dexBuilder.internMethod(mRef);
         ImmutableMethodEncodedValue methodRef = new ImmutableMethodEncodedValue(mRef);
         AnnotationElement methodElement = new ImmutableAnnotationElement("value", methodRef);
 
@@ -1021,7 +977,7 @@ public class DexPrinter {
         Collection<Unit> units = activeBody.getUnits();
         // register count = parameters + additional registers, depending on the
         // dex instructions generated (e.g. locals used and constants loaded)
-        StmtVisitor stmtV = new StmtVisitor(m, curPool, initDetector);
+        StmtVisitor stmtV = new StmtVisitor(m, dexBuilder, initDetector);
 
         toInstructions(units, stmtV);
 
@@ -1091,8 +1047,8 @@ public class DexPrinter {
                             builder.addLineNumber(lnt.getLineNumber());
                         } else if (t instanceof SourceFileTag) {
                             SourceFileTag sft = (SourceFileTag) t;
-                            //TODO pass?
                             StringReference sref = new ImmutableStringReference(sft.getSourceFile());
+                            dexBuilder.internString(sref);
                             builder.addSetSourceFile(sref);
                         }
                     }
@@ -1286,8 +1242,8 @@ public class DexPrinter {
                                                 Map<Local, Integer> seenRegisters, MethodImplementationBuilder builder) {
         Local local = registerAssignment.getLocal();
         String dexLocalType = SootToDexUtils.getDexTypeDescriptor(local.getType());
-        // TODO pass
         StringReference localName = new ImmutableStringReference(local.getName());
+        dexBuilder.internString(localName);
         Register reg = registerAssignment.getRegister();
         int register = reg.getNumber();
 
@@ -1298,9 +1254,11 @@ public class DexPrinter {
                 return;
             builder.addEndLocal(beforeRegister);
         }
-        // TODO pass?
-        builder.addStartLocal(register, localName, new ImmutableTypeReference(dexLocalType),
-                new ImmutableStringReference(""));
+        ImmutableTypeReference typeRef = new ImmutableTypeReference(dexLocalType);
+        ImmutableStringReference stringRef = new ImmutableStringReference("");
+        dexBuilder.internType(typeRef);
+        dexBuilder.internString(stringRef);
+        builder.addStartLocal(register, localName, typeRef, stringRef);
         seenRegisters.put(local, register);
     }
 
@@ -1447,8 +1405,9 @@ public class DexPrinter {
                     allCaughtForRange = true;
                 }
                 // else
-                // TODO pass?
-                builder.addCatch(new ImmutableTypeReference(handler.getExceptionType()),
+                ImmutableTypeReference tRef = new ImmutableTypeReference(handler.getExceptionType());
+                dexBuilder.internType(tRef);
+                builder.addCatch(tRef,
                         labelAssigner.getLabelAtAddress(range.startAddress),
                         labelAssigner.getLabelAtAddress(range.endAddress),
                         labelAssigner.getLabelAtAddress(handler.getHandlerCodeAddress()));
@@ -1486,7 +1445,7 @@ public class DexPrinter {
             } else {
                 String fileName = outputDir;
                 G.v().out.println("Writing dex files to: " + fileName);
-                writeTo(fileName);
+                dexBuilder.writeTo(fileName);
             }
         } catch (IOException e) {
             throw new CompilationDeathException("I/O exception while printing dex", e);

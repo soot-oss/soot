@@ -5,8 +5,6 @@ import org.jf.dexlib2.iface.reference.StringReference;
 import org.jf.dexlib2.iface.reference.TypeReference;
 import org.jf.dexlib2.immutable.reference.ImmutableStringReference;
 import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
-import org.jf.dexlib2.writer.builder.BuilderReference;
-import org.jf.dexlib2.writer.builder.DexBuilder;
 
 import org.jf.dexlib2.writer.pool.DexPool;
 import soot.jimple.AbstractConstantSwitch;
@@ -40,16 +38,16 @@ import soot.util.Switchable;
  */
 class ConstantVisitor extends AbstractConstantSwitch {
 
-	private final DexPool dexFile;
+	private final MultiDexBuilder builder;
 	private StmtVisitor stmtV;
 
 	private Register destinationReg;
 
 	private Stmt origStmt;
 
-	public ConstantVisitor(DexPool dexFile, StmtVisitor stmtV) {
+	public ConstantVisitor(MultiDexBuilder builder, StmtVisitor stmtV) {
 		this.stmtV = stmtV;
-		this.dexFile = dexFile;
+		this.builder = builder;
 	}
 
 	public void setDestination(Register destinationReg) {
@@ -67,16 +65,14 @@ class ConstantVisitor extends AbstractConstantSwitch {
 	}
 
 	public void caseStringConstant(StringConstant s) {
-		//TODO pass?
 		StringReference ref = new ImmutableStringReference(s.value);
+		builder.internString(ref);
 		stmtV.addInsn(new Insn21c(Opcode.CONST_STRING, destinationReg, ref), origStmt);
 	}
 
 	public void caseClassConstant(ClassConstant c) {
-		// "array class" types are unmodified
-		boolean classIsArray = c.value.startsWith("[");
-		// TODO pass?
 		TypeReference referencedClass = new ImmutableTypeReference(c.getValue());
+		builder.internType(referencedClass);
 		stmtV.addInsn(new Insn21c(Opcode.CONST_CLASS, destinationReg, referencedClass), origStmt);
 	}
 

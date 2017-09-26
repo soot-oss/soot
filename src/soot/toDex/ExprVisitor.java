@@ -6,11 +6,7 @@ import java.util.List;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.iface.reference.MethodReference;
 import org.jf.dexlib2.iface.reference.TypeReference;
-import org.jf.dexlib2.writer.builder.BuilderMethodReference;
-import org.jf.dexlib2.writer.builder.BuilderReference;
-import org.jf.dexlib2.writer.builder.DexBuilder;
 
-import org.jf.dexlib2.writer.pool.DexPool;
 import soot.ArrayType;
 import soot.DoubleType;
 import soot.FloatType;
@@ -93,7 +89,7 @@ import soot.util.Switchable;
  */
 class ExprVisitor implements ExprSwitch {
 	
-	private final DexPool dexFile;
+	private final MultiDexBuilder builder;
 	
 	private StmtVisitor stmtV;
 	
@@ -108,8 +104,8 @@ class ExprVisitor implements ExprSwitch {
     private Stmt origStmt;
 
 	public ExprVisitor(StmtVisitor stmtV, ConstantVisitor constantV,
-			RegisterAllocator regAlloc, DexPool dexFile) {
-		this.dexFile = dexFile;
+			RegisterAllocator regAlloc, MultiDexBuilder builder) {
+		this.builder = builder;
 		this.stmtV = stmtV;
 		this.constantV = constantV;
 		this.regAlloc = regAlloc;
@@ -141,7 +137,7 @@ class ExprVisitor implements ExprSwitch {
 	@Override
 	public void caseSpecialInvokeExpr(SpecialInvokeExpr sie) {
 		MethodReference method = DexPrinter.toMethodReference
-				(sie.getMethodRef(), dexFile);
+				(sie.getMethodRef(), builder);
 		List<Register> arguments = getInstanceInvokeArgumentRegs(sie);
 		if (isCallToConstructor(sie) || isCallToPrivate(sie)) {
             stmtV.addInsn(buildInvokeInsn("INVOKE_DIRECT", method, arguments), origStmt);
@@ -208,7 +204,7 @@ class ExprVisitor implements ExprSwitch {
 		 * An alternative would be the invoke-direct opcode, but this is inconsistent with dx's output...
 		 */
 		MethodReference method = DexPrinter.toMethodReference
-				(vie.getMethodRef(), dexFile);
+				(vie.getMethodRef(), builder);
 		List<Register> argumentRegs = getInstanceInvokeArgumentRegs(vie);
         stmtV.addInsn(buildInvokeInsn("INVOKE_VIRTUAL", method, argumentRegs), origStmt);
 	}
@@ -259,7 +255,7 @@ class ExprVisitor implements ExprSwitch {
 	@Override
 	public void caseInterfaceInvokeExpr(InterfaceInvokeExpr iie) {
 		MethodReference method = DexPrinter.toMethodReference
-				(iie.getMethodRef(), dexFile);
+				(iie.getMethodRef(), builder);
 		List<Register> arguments = getInstanceInvokeArgumentRegs(iie);
         stmtV.addInsn(buildInvokeInsn("INVOKE_INTERFACE", method, arguments), origStmt);
 	}
@@ -267,7 +263,7 @@ class ExprVisitor implements ExprSwitch {
 	@Override
 	public void caseStaticInvokeExpr(StaticInvokeExpr sie) {
 		MethodReference method = DexPrinter.toMethodReference
-				(sie.getMethodRef(), dexFile);
+				(sie.getMethodRef(), builder);
 		List<Register> arguments = getInvokeArgumentRegs(sie);
         stmtV.addInsn(buildInvokeInsn("INVOKE_STATIC", method, arguments), origStmt);
 	}

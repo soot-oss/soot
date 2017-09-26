@@ -121,7 +121,7 @@ class StmtVisitor implements StmtSwitch {
 	}
 
 	private final SootMethod belongingMethod;
-	private final DexPool belongingFile;
+	private final MultiDexBuilder belongingFile;
 	private final DexArrayInitDetector arrayInitDetector;
 
 	private ConstantVisitor constantV;
@@ -146,13 +146,13 @@ class StmtVisitor implements StmtSwitch {
 
 	private Map<Constant, Register> monitorRegs = new HashMap<Constant, Register>();
 
-	public StmtVisitor(SootMethod belongingMethod, DexPool belongingFile, DexArrayInitDetector arrayInitDetector) {
+	public StmtVisitor(SootMethod belongingMethod, MultiDexBuilder builder, DexArrayInitDetector arrayInitDetector) {
 		this.belongingMethod = belongingMethod;
-		this.belongingFile = belongingFile;
+		this.belongingFile = builder;
 		this.arrayInitDetector = arrayInitDetector;
-		constantV = new ConstantVisitor(belongingFile, this);
+		constantV = new ConstantVisitor(builder, this);
 		regAlloc = new RegisterAllocator();
-		exprV = new ExprVisitor(this, constantV, regAlloc, belongingFile);
+		exprV = new ExprVisitor(this, constantV, regAlloc, builder);
 		insns = new ArrayList<Insn>();
 		payloads = new ArrayList<AbstractPayload>();
 	}
@@ -161,7 +161,7 @@ class StmtVisitor implements StmtSwitch {
 		lastReturnTypeDescriptor = typeDescriptor;
 	}
 
-	protected DexPool getBelongingFile() {
+	protected MultiDexBuilder getBelongingFile() {
 		return belongingFile;
 	}
 
