@@ -202,7 +202,8 @@ public class SootMethod
     }
     
     /** Returns the class which declares the current <code>SootMethod</code>. */
-    public SootClass getDeclaringClass() {
+    @Override
+	public SootClass getDeclaringClass() {
         if (!isDeclared)
             throw new RuntimeException("not declared: " + getName());
 
@@ -214,7 +215,8 @@ public class SootMethod
     }
 
     /** Returns true when some <code>SootClass</code> object declares this <code>SootMethod</code> object. */
-    public boolean isDeclared() {
+    @Override
+	public boolean isDeclared() {
         return isDeclared;
     }
 
@@ -257,13 +259,15 @@ public class SootMethod
 
     /** Gets the modifiers of this method.
      * @see soot.Modifier */
-    public int getModifiers() {
+    @Override
+	public int getModifiers() {
         return modifiers;
     }
 
     /** Sets the modifiers of this method.
      * @see soot.Modifier */
-    public void setModifiers(int modifiers) {
+    @Override
+	public void setModifiers(int modifiers) {
         if ((declaringClass != null) && (!declaringClass.isApplicationClass()))
             throw new RuntimeException("Cannot set modifiers of a method from a non-app class!");
         this.modifiers = modifiers;
@@ -456,28 +460,32 @@ public class SootMethod
     /**
      * Convenience method returning true if this method is static.
      */
-    public boolean isStatic() {
+    @Override
+	public boolean isStatic() {
         return Modifier.isStatic(this.getModifiers());
     }
 
     /**
      * Convenience method returning true if this method is private.
      */
-    public boolean isPrivate() {
+    @Override
+	public boolean isPrivate() {
         return Modifier.isPrivate(this.getModifiers());
     }
 
     /**
      * Convenience method returning true if this method is public.
      */
-    public boolean isPublic() {
+    @Override
+	public boolean isPublic() {
         return Modifier.isPublic(this.getModifiers());
     }
 
     /**
      * Convenience method returning true if this method is protected.
      */
-    public boolean isProtected() {
+    @Override
+	public boolean isProtected() {
         return Modifier.isProtected(this.getModifiers());
     }
 
@@ -657,7 +665,8 @@ public class SootMethod
     }
 
     /** Returns the signature of this method. */
-    public String toString() {
+    @Override
+	public String toString() {
         return getSignature();
     }
 
@@ -719,7 +728,7 @@ public class SootMethod
         Iterator<Type> typeIt = this.getParameterTypes().iterator();
         int count = 0;
         while (typeIt.hasNext()) {
-            Type t = (Type) typeIt.next();
+            Type t = typeIt.next();
 			String tempString = t.toString();
             
             /*
@@ -827,7 +836,7 @@ public class SootMethod
         Iterator<Type> typeIt = this.getParameterTypes().iterator();
         //int count = 0;
         while (typeIt.hasNext()) {
-            Type t = (Type) typeIt.next();
+            Type t = typeIt.next();
 
             buffer.append(t);
 
@@ -855,15 +864,19 @@ public class SootMethod
 
         return buffer.toString().intern();
     }
-    public final int getNumber() {
+    @Override
+	public final int getNumber() {
         return number;
     }
-    public final void setNumber(int number) {
+    @Override
+	public final void setNumber(int number) {
         this.number = number;
     }
     private int number = 0;
-    public SootMethod method() { return this; }
-    public Context context() { return null; }
+    @Override
+	public SootMethod method() { return this; }
+    @Override
+	public Context context() { return null; }
     public SootMethodRef makeRef() {
         return Scene.v().makeMethodRef( declaringClass, name, parameterTypes, returnType, isStatic() );
     }
