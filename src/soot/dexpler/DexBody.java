@@ -107,6 +107,8 @@ import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.SourceLineNumberTag;
 import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
@@ -522,10 +524,25 @@ public class DexBody {
 		for (DeferableInstruction instruction : deferredInstructions) {
 			instruction.deferredJimplify(this);
 		}
-
+		
 		if (tries != null)
 			addTraps();
 
+		int prevLn = -1;
+		for (DexlibAbstractInstruction instruction : instructions) {
+			Unit unit = instruction.getUnit();
+			int lineNumber = unit.getJavaSourceStartLineNumber();
+			if (Options.v().keep_line_number() && lineNumber < 0) {
+				if(prevLn>=0)
+				{
+					unit.addTag(new LineNumberTag(prevLn));
+					unit.addTag(new SourceLineNumberTag(prevLn));
+				}
+			} else {
+				prevLn = lineNumber;
+			}
+		}
+		
 		// At this point Jimple code is generated
 		// Cleaning...
 

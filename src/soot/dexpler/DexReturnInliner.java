@@ -76,6 +76,7 @@ public class DexReturnInliner extends DexTransformer {
     	
 		Iterator<Unit> it = body.getUnits().snapshotIterator();
 		boolean mayBeMore = false;
+		Unit last = null;
 		do {
 			mayBeMore = false;
 			while (it.hasNext()) {
@@ -92,6 +93,8 @@ public class DexReturnInliner extends DexTransformer {
 						
 						while (!u.getBoxesPointingToThis().isEmpty())
 							u.getBoxesPointingToThis().get(0).setUnit(stmt);
+						//the cloned return stmt gets the tags of u
+						stmt.addAllTagsOf(u);
 						body.getUnits().swapWith(u, stmt);
 						
 						mayBeMore = true;
@@ -111,7 +114,15 @@ public class DexReturnInliner extends DexTransformer {
 							ifstmt.setTarget(newTarget);
 						}
 					}
+				}else if(isInstanceofReturn(u))
+				{
+					//the original return stmt gets the tags of its predecessor
+					if (last != null) {
+						u.removeAllTags();
+						u.addAllTagsOf(last);
+					}
 				}
+				last =  u;
 			}
 		} while (mayBeMore);
     }
