@@ -11,9 +11,11 @@ import java.util.Set;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.reference.FieldReference;
 import org.jf.dexlib2.writer.builder.BuilderFieldReference;
 import org.jf.dexlib2.writer.builder.DexBuilder;
 
+import org.jf.dexlib2.writer.pool.DexPool;
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -119,7 +121,7 @@ class StmtVisitor implements StmtSwitch {
 	}
 
 	private final SootMethod belongingMethod;
-	private final DexBuilder belongingFile;
+	private final DexPool belongingFile;
 	private final DexArrayInitDetector arrayInitDetector;
 
 	private ConstantVisitor constantV;
@@ -144,7 +146,7 @@ class StmtVisitor implements StmtSwitch {
 
 	private Map<Constant, Register> monitorRegs = new HashMap<Constant, Register>();
 
-	public StmtVisitor(SootMethod belongingMethod, DexBuilder belongingFile, DexArrayInitDetector arrayInitDetector) {
+	public StmtVisitor(SootMethod belongingMethod, DexPool belongingFile, DexArrayInitDetector arrayInitDetector) {
 		this.belongingMethod = belongingMethod;
 		this.belongingFile = belongingFile;
 		this.arrayInitDetector = arrayInitDetector;
@@ -159,7 +161,7 @@ class StmtVisitor implements StmtSwitch {
 		lastReturnTypeDescriptor = typeDescriptor;
 	}
 
-	protected DexBuilder getBelongingFile() {
+	protected DexPool getBelongingFile() {
 		return belongingFile;
 	}
 
@@ -509,13 +511,13 @@ class StmtVisitor implements StmtSwitch {
 
 	private Insn buildStaticFieldPutInsn(StaticFieldRef destRef, Value source) {
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
-		BuilderFieldReference destField = DexPrinter.toFieldReference(destRef.getFieldRef(), belongingFile);
+		FieldReference destField = DexPrinter.toFieldReference(destRef.getFieldRef(), belongingFile);
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("sput", destField.getType());
 		return new Insn21c(opc, sourceReg, destField);
 	}
 
 	private Insn buildInstanceFieldPutInsn(InstanceFieldRef destRef, Value source) {
-		BuilderFieldReference destField = DexPrinter.toFieldReference(destRef.getFieldRef(), belongingFile);
+		FieldReference destField = DexPrinter.toFieldReference(destRef.getFieldRef(), belongingFile);
 		Local instance = (Local) destRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
@@ -584,7 +586,7 @@ class StmtVisitor implements StmtSwitch {
 	}
 
 	private Insn buildStaticFieldGetInsn(Register destinationReg, StaticFieldRef sourceRef) {
-		BuilderFieldReference sourceField = DexPrinter.toFieldReference(sourceRef.getFieldRef(), belongingFile);
+		FieldReference sourceField = DexPrinter.toFieldReference(sourceRef.getFieldRef(), belongingFile);
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("sget", sourceField.getType());
 		return new Insn21c(opc, destinationReg, sourceField);
 	}
@@ -592,7 +594,7 @@ class StmtVisitor implements StmtSwitch {
 	private Insn buildInstanceFieldGetInsn(Register destinationReg, InstanceFieldRef sourceRef) {
 		Local instance = (Local) sourceRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
-		BuilderFieldReference sourceField = DexPrinter.toFieldReference(sourceRef.getFieldRef(), belongingFile);
+		FieldReference sourceField = DexPrinter.toFieldReference(sourceRef.getFieldRef(), belongingFile);
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("iget", sourceField.getType());
 		return new Insn22c(opc, destinationReg, instanceReg, sourceField);
 	}
