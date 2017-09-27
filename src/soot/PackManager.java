@@ -633,8 +633,12 @@ public class PackManager {
 		}
 
 		// If something went wrong, we tell the world
-		if (executor.getException() != null)
-			throw (RuntimeException) executor.getException();
+		if (executor.getException() != null) {
+			if (executor.getException() instanceof RuntimeException)
+				throw (RuntimeException) executor.getException();
+			else
+				throw new RuntimeException(executor.getException());
+		}
 	}
 
 	private void handleInnerClasses() {
@@ -1225,10 +1229,14 @@ public class PackManager {
 			// Something went horribly wrong
 			throw new RuntimeException("Could not wait for loader threads to " + "finish: " + e.getMessage(), e);
 		}
-
+	
 		// If something went wrong, we tell the world
-		if (executor.getException() != null)
-			throw (RuntimeException) executor.getException();
+		if (executor.getException() != null) {
+			if (executor.getException() instanceof RuntimeException)
+				throw (RuntimeException) executor.getException();
+			else
+				throw new RuntimeException(executor.getException());
+		}
 	}
 
 }
