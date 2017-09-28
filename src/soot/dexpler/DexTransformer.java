@@ -71,7 +71,6 @@ public abstract class DexTransformer extends BodyTransformer {
 
 		while (!newLocals.isEmpty()) {
 			Local local = newLocals.remove(0);
-			Debug.printDbg("[null local] ", local);
 			for (Unit u : collectDefinitions(local, localDefs)) {
 				if (u instanceof AssignStmt) {
 					Value r = ((AssignStmt) u).getRightOp();
@@ -145,7 +144,6 @@ public abstract class DexTransformer extends BodyTransformer {
 		Type aType = null;
 		int nullDefCount = 0;
 		for (Unit baseDef : defsOfaBaseList) {
-			Debug.printDbg("dextransformer: ", baseDef);
 			if (alreadyVisitedDefs.contains(baseDef))
 				continue;
 			Set<Unit> newVisitedDefs = new HashSet<Unit>(alreadyVisitedDefs);
@@ -162,7 +160,6 @@ public abstract class DexTransformer extends BodyTransformer {
 						ArrayType at = (ArrayType) t;
 						t = at.getArrayElementType();
 					}
-					Debug.printDbg("atype fieldref: ", t);
 					if (depth == 0) {
 						aType = t;
 						break;
@@ -176,7 +173,6 @@ public abstract class DexTransformer extends BodyTransformer {
 							|| ar.getType().toString().equals("unknown")) { // ||
 																			// ar.getType())
 																			// {
-						Debug.printDbg("second round from stmt: ",stmt);
 						Type t = findArrayType(localDefs, stmt,
 								++depth, newVisitedDefs); // TODO: which type should be
 											// returned?
@@ -191,8 +187,6 @@ public abstract class DexTransformer extends BodyTransformer {
 							return t;
 						}
 					} else {
-						Debug.printDbg("atype arrayref: ", ar.getType()
-								.toString());
 						ArrayType at = (ArrayType) stmt.getRightOp().getType();
 						Type t = at.getArrayElementType();
 						if (depth == 0) {
@@ -206,7 +200,6 @@ public abstract class DexTransformer extends BodyTransformer {
 				else if (r instanceof NewArrayExpr) {
 					NewArrayExpr expr = (NewArrayExpr) r;
 					Type t = expr.getBaseType();
-					Debug.printDbg("atype newarrayexpr: ", t);
 					if (depth == 0) {
 						aType = t;
 						break;
@@ -215,8 +208,7 @@ public abstract class DexTransformer extends BodyTransformer {
 					}
 				}
 				else if (r instanceof CastExpr) {
-					Type t = (((CastExpr) r).getCastType());
-					Debug.printDbg("atype cast: ", t);					
+					Type t = (((CastExpr) r).getCastType());		
 					if (t instanceof ArrayType) {
 						ArrayType at = (ArrayType) t;
 						t = at.getArrayElementType();
@@ -230,7 +222,6 @@ public abstract class DexTransformer extends BodyTransformer {
 				}
 				else if (r instanceof InvokeExpr) {
 					Type t = ((InvokeExpr) r).getMethodRef().returnType();
-					Debug.printDbg("atype invoke: ", t);
 					if (t instanceof ArrayType) {
 						ArrayType at = (ArrayType) t;
 						t = at.getArrayElementType();
@@ -245,7 +236,6 @@ public abstract class DexTransformer extends BodyTransformer {
 				// information associated with the alias.
 				}
 				else if (r instanceof Local) {
-					Debug.printDbg("atype alias: ", stmt);
 					Type t = findArrayType(localDefs, stmt,
 							++depth, newVisitedDefs);
 					if (depth == 0) {

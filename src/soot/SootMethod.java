@@ -174,9 +174,10 @@ public class SootMethod
             DEBUG=false;
             */
         }
-        Scene.v().getMethodNumberer().add(this);
+        final Scene scene = Scene.v();
+        scene.getMethodNumberer().add(this);
         subsignature =
-            Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
+            scene.getSubSigNumberer().findOrAdd(getSubSignature());
         
         
     }
@@ -323,7 +324,10 @@ public class SootMethod
         Retrieves the active body for this method.
      */
     public Body getActiveBody() {
-        if (declaringClass!=null && declaringClass.isPhantomClass())
+    	if (activeBody != null)
+    		return activeBody;
+
+    	if (declaringClass!=null && declaringClass.isPhantomClass())
             throw new RuntimeException(
                 "cannot get active body for phantom class: " + getSignature());
 

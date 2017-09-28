@@ -150,6 +150,11 @@ public class SootClass extends AbstractHost implements Numberable {
 	 *             if the resolution is at an insufficient level
 	 */
 	public void checkLevel(int level) {
+		//Fast check: e.g. FastHierarchy.canStoreClass calls this method quite often
+		int currentLevel = resolvingLevel();
+		if (currentLevel >= level)
+			return;
+		
 		if (!Scene.v().doneResolving() || Options.v().ignore_resolving_levels())
 			return;
 		checkLevelIgnoreResolving(level);

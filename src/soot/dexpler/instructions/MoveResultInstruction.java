@@ -27,7 +27,6 @@ package soot.dexpler.instructions;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -43,7 +42,8 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
 //        if (local != null && expr != null)
 //            throw new RuntimeException("Both local and expr are set to move.");
 
@@ -61,7 +61,6 @@ public class MoveResultInstruction extends DexlibAbstractInstruction {
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           JAssignStmt jassign = (JAssignStmt)assign;
           DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
         }

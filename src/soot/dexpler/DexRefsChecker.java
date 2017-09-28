@@ -52,6 +52,7 @@ public class DexRefsChecker extends DexTransformer {
 
 	Local l = null;
 
+	@Override
 	protected void internalTransform(final Body body, String phaseName, @SuppressWarnings("rawtypes") Map options) {
 		// final ExceptionalUnitGraph g = new ExceptionalUnitGraph(body);
 		// final SmartLocalDefs localDefs = new SmartLocalDefs(g, new
@@ -74,7 +75,6 @@ public class DexRefsChecker extends DexTransformer {
 			}
 
 			if (!hasField) {
-				Debug.printDbg("field ", fr, " '", fr, "' has not been found!");
 				System.out.println("Warning: add missing field '" + fr + "' to class!");
 				SootClass sc = null;
 				String frStr = fr.toString();
@@ -86,8 +86,6 @@ public class DexRefsChecker extends DexTransformer {
 				String fname = fr.toString().split(">")[0].split(" ")[2];
 				int modifiers = soot.Modifier.PUBLIC;
 				Type ftype = fr.getType();
-				Debug.printDbg("missing field: to class '", sc, "' field name '", fname, "' field modifiers '",
-						modifiers, "' field type '", ftype, "'");
 				sc.addField(Scene.v().makeSootField(fname, ftype, modifiers));
 			} else {
 				// System.out.println("field "+ sf.getName() +" '"+ sf +"'

@@ -30,7 +30,6 @@ import org.jf.dexlib2.iface.instruction.NarrowLiteralInstruction;
 import org.jf.dexlib2.iface.instruction.OneRegisterInstruction;
 import org.jf.dexlib2.iface.instruction.WideLiteralInstruction;
 
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -49,7 +48,8 @@ public class ConstInstruction extends DexlibAbstractInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
         int dest = ((OneRegisterInstruction) instruction).getRegisterA();
 
         Constant cst = getConstant(dest, body);
@@ -59,7 +59,6 @@ public class ConstInstruction extends DexlibAbstractInstruction {
         body.add(assign);
 
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-            Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
             if (cst instanceof UntypedConstant) {
                 DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
             } else {
@@ -115,7 +114,7 @@ public class ConstInstruction extends DexlibAbstractInstruction {
                 //return UntypedLongOrDoubleConstant.v((long)literal<<48).toDoubleConstant();
                 // seems that dexlib correctly puts the 16bits into the topmost bits.
                 //
-                return UntypedLongOrDoubleConstant.v((long)literal);//.toDoubleConstant();
+                return UntypedLongOrDoubleConstant.v(literal);//.toDoubleConstant();
             } else {
             	return LongConstant.v(literal);
             }

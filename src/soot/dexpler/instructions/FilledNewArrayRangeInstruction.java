@@ -33,7 +33,6 @@ import org.jf.dexlib2.iface.reference.TypeReference;
 import soot.ArrayType;
 import soot.Local;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -50,7 +49,8 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
         if(!(instruction instanceof Instruction3rc))
             throw new IllegalArgumentException("Expected Instruction3rc but got: "+instruction.getClass());
 
@@ -84,7 +84,7 @@ public class FilledNewArrayRangeInstruction extends FilledArrayInstruction {
 //        body.setDanglingInstruction(this);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-            Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assignStmt);
+            //Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assignStmt);
           DalvikTyper.v().setType(assignStmt.getLeftOpBox(), arrayExpr.getType(), false);
           //DalvikTyper.v().addConstraint(assignStmt.getLeftOpBox(), assignStmt.getRightOpBox());
         }

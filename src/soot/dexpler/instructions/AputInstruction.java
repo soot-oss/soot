@@ -33,7 +33,6 @@ import soot.IntType;
 import soot.Local;
 import soot.Type;
 import soot.UnknownType;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.ObjectOpTag;
@@ -48,7 +47,8 @@ public class AputInstruction extends FieldInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
         if(!(instruction instanceof Instruction23x))
             throw new IllegalArgumentException("Expected Instruction23x but got: "+instruction.getClass());
 
@@ -69,7 +69,6 @@ public class AputInstruction extends FieldInstruction {
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
           DalvikTyper.v().setType(arrayRef.getIndexBox(), IntType.v(), true);
         }

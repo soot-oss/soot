@@ -85,7 +85,7 @@ public class TypeResolver
 		this.jb = jb;
 
 		this.assignments = new ArrayList<DefinitionStmt>();
-		this.depends = new HashMap<Local, BitSet>();
+		this.depends = new HashMap<Local, BitSet>(jb.getLocalCount());
 		for ( Local v : this.jb.getLocals() )
 			this.addLocal(v);
 		this.initAssignments();
@@ -165,13 +165,15 @@ public class TypeResolver
 		}
 		this.insertCasts(tg, bh, false);
 		
+		final IntType inttype = IntType.v();
+		final BottomType bottom = BottomType.v();
 		for ( Local v : this.jb.getLocals() )
 		{
 			Type t = tg.get(v);
 			if ( t instanceof IntegerType )
 			{
-				t = IntType.v();
-				tg.set(v, BottomType.v());
+				t = inttype;
+				tg.set(v, bottom);
 			}
 			v.setType(t);
 		}
@@ -205,8 +207,10 @@ public class TypeResolver
 			this.count = 0;
 		}
 		
+		@Override
 		public Value visit(Value op, Type useType, Stmt stmt)
 		{
+			final Jimple jimple = Jimple.v();
 			Type t = AugEvalFunction.eval_(this.tg, op, stmt, this.jb);
 			
 			if ( this.h.ancestor(useType, t) )
@@ -227,9 +231,10 @@ public class TypeResolver
 					DefinitionStmt defStmt = (DefinitionStmt) stmt;
 					if (baseType instanceof RefType && defStmt.getLeftOp() instanceof Local) {
 						RefType rt = (RefType) baseType;
-						if (rt.getSootClass().getName().equals("java.lang.Object")
-								|| rt.getSootClass().getName().equals("java.io.Serializable")
-								|| rt.getSootClass().getName().equals("java.lang.Cloneable"))
+						final String name = rt.getSootClass().getName();
+						if (name.equals("java.lang.Object")
+								|| name.equals("java.io.Serializable")
+								|| name.equals("java.lang.Cloneable"))
 							tg.set((Local) ((DefinitionStmt) stmt).getLeftOp(), ((ArrayType) useType).getElementType());
 					}
 				}
@@ -240,31 +245,32 @@ public class TypeResolver
 					/* By the time we have countOnly == false, all variables
 					must by typed with concrete Jimple types, and never [0..1],
 					[0..127] or [0..32767]. */
-					vold = Jimple.v().newLocal("tmp", t);
+					vold = jimple.newLocal("tmp", t);
 					vold.setName("tmp$" + System.identityHashCode(vold));
 					this.tg.set(vold, t);
 					this.jb.getLocals().add(vold);
 					Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
 					this.jb.getUnits().insertBefore(
-						Jimple.v().newAssignStmt(vold, op), u);
+						jimple.newAssignStmt(vold, op), u);
 				}
 				else
 					vold = (Local)op;
 				
-				Local vnew = Jimple.v().newLocal("tmp", useType);
+				Local vnew = jimple.newLocal("tmp", useType);
 				vnew.setName("tmp$" + System.identityHashCode(vnew));
 				this.tg.set(vnew, useType);
 				this.jb.getLocals().add(vnew);
 				Unit u = Util.findFirstNonIdentityUnit(jb, stmt);
 				this.jb.getUnits().insertBefore(
-					Jimple.v().newAssignStmt(vnew,
-					Jimple.v().newCastExpr(vold, useType)), u);
+					jimple.newAssignStmt(vnew,
+					jimple.newCastExpr(vold, useType)), u);
 				return vnew;
 			}
 		}
 		
 		public int getCount() { return this.count; }
 		
+		@Override
 		public boolean finish() { return false; }
 	}
 	
@@ -275,6 +281,10 @@ public class TypeResolver
 		
 		public boolean fail;
 		public boolean typingChanged;
+		
+		private final ByteType byteType = ByteType.v();
+		private final Integer32767Type integer32767Type = Integer32767Type.v();
+		private final Integer127Type integer127Type = Integer127Type.v();
 		
 		public TypePromotionUseVisitor(JimpleBody jb, Typing tg)
 		{
@@ -292,7 +302,7 @@ public class TypeResolver
 				if ( thigh instanceof IntType )
 					return Integer127Type.v();
 				else if ( thigh instanceof ShortType )
-					return ByteType.v();
+					return byteType;
 				else if ( thigh instanceof BooleanType
 					|| thigh instanceof ByteType
 					|| thigh instanceof CharType
@@ -304,9 +314,9 @@ public class TypeResolver
 			else if ( tlow instanceof Integer127Type )
 			{
 				if ( thigh instanceof ShortType )
-					return ByteType.v();
+					return byteType;
 				else if ( thigh instanceof IntType )
-					return Integer127Type.v();
+					return integer127Type;
 				else if ( thigh instanceof ByteType
 					|| thigh instanceof CharType
 					|| thigh instanceof Integer32767Type )
@@ -316,7 +326,7 @@ public class TypeResolver
 			else if ( tlow instanceof Integer32767Type )
 			{
 				if ( thigh instanceof IntType )
-					return Integer32767Type.v();
+					return integer32767Type;
 				else if ( thigh instanceof ShortType
 					|| thigh instanceof CharType )
 					return thigh;
@@ -325,6 +335,7 @@ public class TypeResolver
 			else throw new RuntimeException();
 		}
 		
+		@Override
 		public Value visit(Value op, Type useType, Stmt stmt)
 		{
 			if ( this.finish() )
@@ -354,11 +365,15 @@ public class TypeResolver
 			return op;
 		}
 		
+		@Override
 		public boolean finish() { return this.typingChanged || this.fail; }
 	}
 	
 	private Typing typePromotion(Typing tg)
 	{
+		final BooleanType booleanType = BooleanType.v();
+		final ByteType byteType = ByteType.v();
+		final ShortType shortType = ShortType.v();
 		boolean conversionDone;
 		do {
 			AugEvalFunction ef = new AugEvalFunction(this.jb);
@@ -384,17 +399,17 @@ public class TypeResolver
 				Type t = tg.get(v);
 				if ( t instanceof Integer1Type )
 				{
-					tg.set(v, BooleanType.v());
+					tg.set(v, booleanType);
 					conversionDone = true;
 				}
 				else if ( t instanceof Integer127Type )
 				{
-					tg.set(v, ByteType.v());
+					tg.set(v, byteType);
 					conversionDone = true;
 				}
 				else if ( t instanceof Integer32767Type )
 				{
-					tg.set(v, ShortType.v());
+					tg.set(v, shortType);
 					conversionDone = true;
 				}
 			}
@@ -567,6 +582,7 @@ public class TypeResolver
 		Stmt[] stmts = new Stmt[units.size()];
 		
 		units.toArray(stmts);
+		final Jimple jimple = Jimple.v();
 		
 		for ( Stmt stmt : stmts )
 		{
@@ -601,7 +617,7 @@ public class TypeResolver
 								else if ( assign.getRightOp()
 									instanceof NewExpr )
 								{
-									Local newlocal = Jimple.v().newLocal(
+									Local newlocal = jimple.newLocal(
 										"tmp", null);
 									newlocal.setName("tmp$" + System.identityHashCode(newlocal));
 									this.jb.getLocals().add(newlocal);
@@ -609,7 +625,7 @@ public class TypeResolver
 									special.setBase(newlocal);
 									
 									DefinitionStmt assignStmt
-										= Jimple.v().newAssignStmt(
+										= jimple.newAssignStmt(
 										assign.getLeftOp(), newlocal);
 									Unit u = Util.findLastIdentityUnit(jb, assign);
 									units.insertAfter(assignStmt, u);

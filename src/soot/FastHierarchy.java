@@ -144,12 +144,12 @@ public class FastHierarchy {
 		}
 
 		/* Now do a dfs traversal to get the Interval numbers. */
-		dfsVisit(0, Scene.v().getSootClass("java.lang.Object"));
+		dfsVisit(0, sc.getSootClass("java.lang.Object"));
 		/*
 		 * also have to traverse for all phantom classes because they also can
 		 * be roots of the type hierarchy
 		 */
-		for (final Iterator<SootClass> phantomClassIt = Scene.v().getPhantomClasses().snapshotIterator(); phantomClassIt
+		for (final Iterator<SootClass> phantomClassIt = sc.getPhantomClasses().snapshotIterator(); phantomClassIt
 				.hasNext();) {
 			SootClass phantomClass = phantomClassIt.next();
 			if (!phantomClass.isInterface())
@@ -225,7 +225,7 @@ public class FastHierarchy {
 			return parent instanceof RefLikeType;
 		}
 		if (child instanceof RefType) {
-			if (parent.equals(Scene.v().getObjectType()))
+			if (parent.equals(sc.getObjectType()))
 				return true;
 			if (parent instanceof RefType) {
 				return canStoreClass(((RefType) child).getSootClass(), ((RefType) parent).getSootClass());
@@ -238,7 +238,7 @@ public class FastHierarchy {
 			} else if (parent instanceof ArrayType) {
 				Type base = ((AnySubType) child).getBase();
 				// From Java Language Spec 2nd ed., Chapter 10, Arrays
-				return base.equals(Scene.v().getObjectType()) || base.equals(RefType.v("java.io.Serializable"))
+				return base.equals(sc.getObjectType()) || base.equals(RefType.v("java.io.Serializable"))
 						|| base.equals(RefType.v("java.lang.Cloneable"));
 			} else {
 				SootClass base = ((AnySubType) child).getBase().getSootClass();
@@ -263,7 +263,7 @@ public class FastHierarchy {
 			ArrayType achild = (ArrayType) child;
 			if (parent instanceof RefType) {
 				// From Java Language Spec 2nd ed., Chapter 10, Arrays
-				return parent.equals(Scene.v().getObjectType()) || parent.equals(RefType.v("java.io.Serializable"))
+				return parent.equals(sc.getObjectType()) || parent.equals(RefType.v("java.io.Serializable"))
 						|| parent.equals(RefType.v("java.lang.Cloneable"));
 			}
 			if (!(parent instanceof ArrayType))
@@ -281,7 +281,7 @@ public class FastHierarchy {
 					return false;
 				return canStoreType(achild.baseType, aparent.baseType);
 			} else if (achild.numDimensions > aparent.numDimensions) {
-				if (aparent.baseType.equals(Scene.v().getObjectType()))
+				if (aparent.baseType.equals(sc.getObjectType()))
 					return true;
 				if (aparent.baseType.equals(RefType.v("java.io.Serializable")))
 					return true;
@@ -311,7 +311,7 @@ public class FastHierarchy {
 		}
 		if (childInterval == null) { // child is interface
 			if (parentInterval != null) { // parent is not interface
-				return parent.equals(Scene.v().getObjectType().getSootClass());
+				return parent.equals(sc.getObjectType().getSootClass());
 			} else {
 				return getAllSubinterfaces(parent).contains(child);
 			}
@@ -338,7 +338,7 @@ public class FastHierarchy {
 				HashSet<SootClass> s = new HashSet<SootClass>();
 				s.add(declaringClass);
 				while (!s.isEmpty()) {
-					SootClass c = (SootClass) s.iterator().next();
+					SootClass c = s.iterator().next();
 					s.remove(c);
 					if (!c.isInterface() && !c.isAbstract() && canStoreClass(c, declaringClass)) {
 						SootMethod concreteM = resolveConcreteDispatch(c, m);
@@ -396,7 +396,7 @@ public class FastHierarchy {
 				HashSet<SootClass> s = new HashSet<SootClass>();
 				s.add(declaringClass);
 				while (!s.isEmpty()) {
-					SootClass c = (SootClass) s.iterator().next();
+					SootClass c = s.iterator().next();
 					s.remove(c);
 					if (!c.isInterface() && !c.isAbstract() && canStoreClass(c, declaringClass)) {
 						SootMethod concreteM = resolveConcreteDispatch(c, m);
@@ -462,7 +462,7 @@ public class FastHierarchy {
 		LinkedList<SootClass> worklist = new LinkedList<SootClass>();
 		worklist.add(abstractType);
 		while (!worklist.isEmpty()) {
-			SootClass concreteType = (SootClass) worklist.removeFirst();
+			SootClass concreteType = worklist.removeFirst();
 			SootClass savedConcreteType = concreteType;
 			if (concreteType.isInterface()) {
 				worklist.addAll(getAllImplementersOfInterface(concreteType));
