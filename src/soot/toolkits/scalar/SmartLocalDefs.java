@@ -87,10 +87,11 @@ public class SmartLocalDefs implements LocalDefs {
 	public SmartLocalDefs(UnitGraph g, LiveLocals live) {
 		this.graph = g;
 
-		if (Options.v().time())
+		final Options options = Options.v();
+		if (options.time())
 			Timers.v().defsTimer.start();
 
-		if (Options.v().verbose())
+		if (options.verbose())
 			G.v().out.println("[" + g.getBody().getMethod().getName()
 					+ "]     Constructing SmartLocalDefs...");
 
@@ -122,13 +123,14 @@ public class SmartLocalDefs implements LocalDefs {
 			addDefOf(l, u);
 		}
 
-		if (Options.v().verbose())
+		if (options.verbose())
+		{
 			G.v().out.println("[" + g.getBody().getMethod().getName()
 					+ "]        done localToDefs map...");
 
-		if (Options.v().verbose())
 			G.v().out.println("[" + g.getBody().getMethod().getName()
 					+ "]        done unitToMask map...");
+		}
 
 		analysis = new LocalDefsAnalysis(graph);
 
@@ -164,10 +166,10 @@ public class SmartLocalDefs implements LocalDefs {
 			locals[i].setNumber(oldNumbers[i]);
 		}
 
-		if (Options.v().time())
+		if (options.time())
 			Timers.v().defsTimer.end();
 
-		if (Options.v().verbose())
+		if (options.verbose())
 			G.v().out.println("[" + g.getBody().getMethod().getName()
 					+ "]     SmartLocalDefs finished.");
 	}

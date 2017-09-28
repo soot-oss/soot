@@ -27,7 +27,6 @@ package soot.dexpler.instructions;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -40,11 +39,11 @@ public class MoveInstruction extends DexlibAbstractInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
        
         TwoRegisterInstruction i = (TwoRegisterInstruction) instruction;
         
-        Debug.printDbg("moveInstruction: ", i);
         
         int dest = i.getRegisterA();
         int source = i.getRegisterB();
@@ -54,7 +53,6 @@ public class MoveInstruction extends DexlibAbstractInstruction {
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           DalvikTyper.v().addConstraint(assign.getLeftOpBox(), assign.getRightOpBox());
         }
     }

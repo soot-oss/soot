@@ -33,9 +33,7 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction22s;
 
 import soot.Local;
 import soot.Value;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
-import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.IntOpTag;
 import soot.jimple.AssignStmt;
 import soot.jimple.IntConstant;
@@ -47,7 +45,8 @@ public class BinopLitInstruction extends TaggedInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
         if(!(instruction instanceof Instruction22s) && !(instruction instanceof Instruction22b))
             throw new IllegalArgumentException("Expected Instruction22s or Instruction22b but got: "+instruction.getClass());
 
@@ -57,7 +56,7 @@ public class BinopLitInstruction extends TaggedInstruction {
 
         Local source1 = body.getRegisterLocal(source);
 
-        IntConstant constant = IntConstant.v((int)binOpLitInstr.getNarrowLiteral());
+        IntConstant constant = IntConstant.v(binOpLitInstr.getNarrowLiteral());
 
         Value expr = getExpression(source1, constant);
 
@@ -68,9 +67,9 @@ public class BinopLitInstruction extends TaggedInstruction {
         addTags(assign);
         body.add(assign);
         
-        if (IDalvikTyper.ENABLE_DVKTYPER) {
+        /*if (IDalvikTyper.ENABLE_DVKTYPER) {
 			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
-			/*
+			
             int op = (int)instruction.getOpcode().value;
           if (op >= 0xd8) {
             op -= 0xd8;
@@ -80,8 +79,8 @@ public class BinopLitInstruction extends TaggedInstruction {
           BinopExpr bexpr = (BinopExpr)expr;
           //body.dvkTyper.setType((op == 1) ? bexpr.getOp2Box() : bexpr.getOp1Box(), op1BinType[op]);
           DalvikTyper.v().setType(((JAssignStmt)assign).leftBox, op1BinType[op], false);
-          */
-        }
+          
+        }*/
     }
 
     @SuppressWarnings("fallthrough")

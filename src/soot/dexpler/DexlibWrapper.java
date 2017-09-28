@@ -142,7 +142,6 @@ public class DexlibWrapper {
 					if (st instanceof ArrayType) {
 						st = ((ArrayType) st).baseType;
 					}
-					Debug.printDbg("Type: ", t, " soot type:", st);
 					String sootTypeName = st.toString();
 					if (!Scene.v().containsClass(sootTypeName)) {
 						if (st instanceof PrimType || st instanceof VoidType

@@ -31,7 +31,6 @@ import org.jf.dexlib2.iface.reference.FieldReference;
 
 import soot.Local;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -46,7 +45,8 @@ public class IputInstruction extends FieldInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
         TwoRegisterInstruction i = (TwoRegisterInstruction)instruction;
         int source = i.getRegisterA();
         int object = i.getRegisterB();
@@ -60,7 +60,7 @@ public class IputInstruction extends FieldInstruction {
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
+			//Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           DalvikTyper.v().setType(assign.getRightOpBox(), instanceField.getType(), true);
         }
     }
