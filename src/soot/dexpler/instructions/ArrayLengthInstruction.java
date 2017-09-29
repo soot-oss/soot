@@ -30,7 +30,6 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction12x;
 
 import soot.IntType;
 import soot.Local;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -44,7 +43,8 @@ public class ArrayLengthInstruction extends DexlibAbstractInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
         if(!(instruction instanceof Instruction12x))
             throw new IllegalArgumentException("Expected Instruction12x but got: "+instruction.getClass());
 
@@ -62,7 +62,6 @@ public class ArrayLengthInstruction extends DexlibAbstractInstruction {
         body.add(assign);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           DalvikTyper.v().setType(assign.getLeftOpBox(), IntType.v(), false);      
         }
     }

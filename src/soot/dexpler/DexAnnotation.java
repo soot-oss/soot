@@ -189,7 +189,6 @@ public class DexAnnotation {
    				} else {
    					clazz.addTag(t);
    				}
-   				Debug.printDbg("add class annotation: ", t, " type: ", t.getClass());
    			}
     }
 
@@ -257,7 +256,6 @@ public class DexAnnotation {
         		for (Tag t : tags)
 	            	if (t != null) {
 		                h.addTag(t);
-		                Debug.printDbg("add field annotation: ", t);
 		            }
         }
     }
@@ -275,7 +273,6 @@ public class DexAnnotation {
 	            for (Tag t : tags)
 	            	if (t != null) {
 		                h.addTag(t);
-		                Debug.printDbg("add method annotation: ", t);
 		            }
 		}
 
@@ -295,7 +292,6 @@ public class DexAnnotation {
         boolean doParam = false;
         List<? extends MethodParameter> parameters = method.getParameters();
         for (MethodParameter p : parameters) {
-            Debug.printDbg("parameter ", p, " annotations: ", p.getAnnotations());
             if (p.getAnnotations().size() > 0) {
                 doParam = true;
                 break;
@@ -348,7 +344,6 @@ public class DexAnnotation {
                         vat = ((VisibilityAnnotationTag) t).getAnnotations().get(0);
                     }
 
-                    Debug.printDbg("add parameter annotation: ", t);
                     paramVat.addAnnotation(vat);
                 }
             }
@@ -390,7 +385,6 @@ public class DexAnnotation {
             Type atype = DexType.toSoot(a.getType());
             String atypes = atype.toString();
             int eSize = a.getElements().size();
-            Debug.printDbg("annotation type: ", atypes ," elements: ", eSize);
 
             if (atypes.equals("dalvik.annotation.AnnotationDefault")) {
                 if (eSize != 1)
@@ -420,11 +414,9 @@ public class DexAnnotation {
 							 * '-'. Thus we search for '$-' and anything after it including '-' is the inner
 							 * classes name and anything before it is the outer classes name.
 							 */
-                			Debug.printDbg("Fixing circular outer class for the jack and jill generated lambda class ", outerClass, "...");
 							outerClass = outerClass.substring(0, outerClass.indexOf("$-"));
                 		} else if (outerClass.contains("$")) {
                 			//remove everything after the last '$' including the last '$'
-                			Debug.printDbg("Fixing circular outer class ", outerClass, "...");
                 			outerClass = outerClass.substring(0, outerClass.lastIndexOf("$"));
                 		}
                 	}
@@ -590,8 +582,6 @@ public class DexAnnotation {
 				vatg[v].addAnnotation(adt);
                 
             } else {
-                Debug.printDbg("read visibility tag: ", a.getType());
-
                 if (vatg[v] == null)
                     vatg[v] = new VisibilityAnnotationTag(v);
 
@@ -620,7 +610,6 @@ public class DexAnnotation {
             //Debug.printDbg("element: ", ae.getName() ," ", ae.getValue() ," type: ", ae.getClass());
             //Debug.printDbg("value type: ", ae.getValue().getValueType() ," class: ", ae.getValue().getClass());
 
-            Debug.printDbg("   element type: ", ae.getValue().getClass());
             List<AnnotationElem> eList = handleAnnotationElement(ae, Collections.singletonList(ae.getValue()));
             if (eList != null)
             	aelemList.addAll(eList);
@@ -634,7 +623,6 @@ public class DexAnnotation {
         for (EncodedValue ev: evList) {
             int type = ev.getValueType();
             AnnotationElem elem = null;
-            Debug.printDbg("encoded value type: ", type);
             switch (type) {
             case 0x00: // BYTE
             {
@@ -682,7 +670,6 @@ public class DexAnnotation {
             {
                 StringEncodedValue v = (StringEncodedValue)ev;
                 elem = new AnnotationStringElem(v.getValue(), 's', ae.getName());
-                Debug.printDbg("value for string: ", v.getValue());
                 break;
             }
             case 0x18: // TYPE
@@ -702,7 +689,6 @@ public class DexAnnotation {
                 fieldSig += DexType.toSootAT(fr.getDefiningClass()) +": ";
                 fieldSig += DexType.toSootAT(fr.getType()) +" ";
                 fieldSig += fr.getName();
-                Debug.printDbg("FIELD: ", fieldSig);
                 elem = new AnnotationStringElem(fieldSig, 'f', ae.getName());
                 break;
             }

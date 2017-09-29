@@ -341,7 +341,8 @@ public class SimpleLocalDefs implements LocalDefs {
 	}
 	
 	SimpleLocalDefs(DirectedGraph<Unit> graph, Local[] locals, FlowAnalysisMode mode) {
-		if (Options.v().time())
+		final Options options = Options.v();
+		if (options.time())
 			Timers.v().defsTimer.start();
 
 		final int N = locals.length;
@@ -360,13 +361,13 @@ public class SimpleLocalDefs implements LocalDefs {
 			locals[i].setNumber(oldNumbers[i]);
 		}
 
-		if (Options.v().time())
+		if (options.time())
 			Timers.v().defsTimer.end();
 	}
 
 	private void init(DirectedGraph<Unit> graph, Local[] locals, FlowAnalysisMode mode) {
 		@SuppressWarnings("unchecked")
-		List<Unit>[] unitList = (List<Unit>[]) new List[locals.length];
+		List<Unit>[] unitList = new List[locals.length];
 
 		Arrays.fill(unitList, emptyList());
 

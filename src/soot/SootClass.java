@@ -150,6 +150,11 @@ public class SootClass extends AbstractHost implements Numberable {
 	 *             if the resolution is at an insufficient level
 	 */
 	public void checkLevel(int level) {
+		//Fast check: e.g. FastHierarchy.canStoreClass calls this method quite often
+		int currentLevel = resolvingLevel();
+		if (currentLevel >= level)
+			return;
+		
 		if (!Scene.v().doneResolving() || Options.v().ignore_resolving_levels())
 			return;
 		checkLevelIgnoreResolving(level);
@@ -775,6 +780,18 @@ public class SootClass extends AbstractHost implements Numberable {
 			throw new RuntimeException("no superclass for " + getName());
 		else
 			return superClass;
+	}
+
+	/**
+	 * This method returns the superclass, or null if no superclass has been specified for this class.
+	 * 
+	 * WARNING: interfaces are subclasses of the java.lang.Object class! Returns
+	 * the superclass of this class. (see hasSuperclass())
+	 */
+
+	public SootClass getSuperclassUnsafe() {
+		checkLevel(HIERARCHY);
+		return superClass;
 	}
 
 	/**

@@ -182,7 +182,6 @@ public class Util {
 		if (returnType != null && arraySize > 0) {
 			returnType = ArrayType.v(returnType, arraySize);
 		}
-		Debug.printDbg("casttype i:", returnType);
 		return returnType;
 	}
 

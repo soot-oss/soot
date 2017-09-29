@@ -93,15 +93,15 @@ public class LocalSplitter extends BodyTransformer
 	@Override
     protected void internalTransform(Body body, String phaseName, Map<String, String> options)
     {		
-        if(Options.v().verbose())
+        final Options sootOptions = Options.v();
+        if(sootOptions.verbose())
             G.v().out.println("[" + body.getMethod().getName() + "] Splitting locals...");
         
-		if (Options.v().time()) 
+		if (sootOptions.time())
+		{
 			Timers.v().splitTimer.start();
-		
-
-        if(Options.v().time())
-                Timers.v().splitPhase1Timer.start();
+            Timers.v().splitPhase1Timer.start();
+		}
 
         if (throwAnalysis == null)
         	throwAnalysis = Scene.v().getDefaultThrowAnalysis();
@@ -116,10 +116,10 @@ public class LocalSplitter extends BodyTransformer
 		final LocalDefs defs = LocalDefs.Factory.newLocalDefs(graph, true);
 		final LocalUses uses = LocalUses.Factory.newLocalUses(graph, defs);
 		
-        if(Options.v().time())
+        if (sootOptions.time()) {
             Timers.v().splitPhase1Timer.end();
-        if(Options.v().time())
             Timers.v().splitPhase2Timer.start();
+        }
         
 		Set<Unit> visited = new HashSet<Unit>();
         
@@ -200,10 +200,9 @@ public class LocalSplitter extends BodyTransformer
     		visited.remove(s);
         }
 
-        if(Options.v().time())
+        if(sootOptions.time()) {
             Timers.v().splitPhase2Timer.end();
-        
-		if (Options.v().time()) 
 			Timers.v().splitTimer.end();
+        }
     }
 }

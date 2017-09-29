@@ -34,7 +34,6 @@ import org.jf.dexlib2.iface.instruction.formats.SparseSwitchPayload;
 import soot.IntType;
 import soot.Local;
 import soot.Unit;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -49,7 +48,8 @@ public class SparseSwitchInstruction extends SwitchInstruction {
         super(instruction, codeAdress);
     }
 
-    protected Stmt switchStatement(DexBody body, Instruction targetData, Local key) {
+    @Override
+	protected Stmt switchStatement(DexBody body, Instruction targetData, Local key) {
         SparseSwitchPayload i = (SparseSwitchPayload) targetData;
         List<? extends SwitchElement> seList = i.getSwitchElements();
 
@@ -68,7 +68,6 @@ public class SparseSwitchInstruction extends SwitchInstruction {
         setUnit(switchStmt);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ switchStmt);
             DalvikTyper.v().setType(switchStmt.getKeyBox(), IntType.v(), true);
         }
         

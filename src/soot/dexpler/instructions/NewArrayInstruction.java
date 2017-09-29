@@ -38,7 +38,6 @@ import soot.IntType;
 import soot.Local;
 import soot.Type;
 import soot.Value;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -53,7 +52,8 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
 
         if(!(instruction instanceof Instruction22c))
             throw new IllegalArgumentException("Expected Instruction22c but got: "+instruction.getClass());
@@ -77,7 +77,6 @@ public class NewArrayInstruction extends DexlibAbstractInstruction {
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           DalvikTyper.v().setType(newArrayExpr.getSizeBox(), IntType.v(), true);
           DalvikTyper.v().setType(assign.getLeftOpBox(), newArrayExpr.getType(), false);
         }
