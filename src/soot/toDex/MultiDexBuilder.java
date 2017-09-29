@@ -89,7 +89,7 @@ public class MultiDexBuilder {
         if (!curPool.hasOverflowed())
             return false;
         // We only support splitting for api versions since Lollipop (22).
-        // Since Api 22, Art runtime is used which needs to extract all dex files anyways. Thus,
+        // Since Api 22, Art runtime is used which needs to extract all dex files anyway. Thus,
         // we can pack classes arbitrarily and do not need to care about which classes need to go together in
         // the same dex file.
         // For Dalvik (pre 22), it is important that at least the main dex file (classes.dex) contains all needed
@@ -97,10 +97,6 @@ public class MultiDexBuilder {
         // pack those explicitly in the first dex file. (https://developer.android.com/studio/build/multidex.html, http://www.fasteque.com/deep-dive-into-android-multidex/)
         if (Scene.v().getAndroidAPIVersion() < 22)
             throw new RuntimeException("Dex file overflow. Splitting not support for pre Lollipop Android (Api 22).");
-
-        //TODO add multidex write option
-        if (false)
-            throw new RuntimeException("Dex file overflow. Splitting into multiple dex files required. Consider using the '-output-multi-dex' option.");
 
         // reset to state before overflow occurred
         curPool.reset();
