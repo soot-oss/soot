@@ -109,7 +109,6 @@ public class DexPrinter {
                 SootToDexUtils.getDexTypeDescriptor(f.getType()));
         builder.internField(fieldRef);
         return fieldRef;
-        // return belongingDexFile.internFieldReference(fieldRef);
     }
 
     protected static FieldReference toFieldReference(SootFieldRef ref, MultiDexBuilder builder) {
@@ -118,7 +117,6 @@ public class DexPrinter {
                 SootToDexUtils.getDexTypeDescriptor(ref.type()));
         builder.internField(fieldRef);
         return fieldRef;
-        //  return belongingDexFile.internFieldReference(fieldRef);
     }
 
     protected static MethodReference toMethodReference(SootMethodRef m, MultiDexBuilder builder) {
@@ -130,14 +128,12 @@ public class DexPrinter {
                 SootToDexUtils.getDexTypeDescriptor(m.returnType()));
         builder.internMethod(methodRef);
         return methodRef;
-        //return belongingDexFile.internMethodReference(methodRef);
     }
 
     protected static TypeReference toTypeReference(Type t, MultiDexBuilder builder) {
         ImmutableTypeReference tRef = new ImmutableTypeReference(SootToDexUtils.getDexTypeDescriptor(t));
         builder.internType(tRef);
         return tRef;
-        //  return belongingDexFile.internTypeReference(SootToDexUtils.getDexTypeDescriptor(t));
     }
 
     private void printApk(String outputDir, File originalApk) throws IOException {
