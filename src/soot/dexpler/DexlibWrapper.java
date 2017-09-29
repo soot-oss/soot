@@ -80,7 +80,9 @@ public class DexlibWrapper {
     public void initialize() {
         try {
             int api = Scene.v().getAndroidAPIVersion();
-            // load dex files from apk or single dex file
+            boolean multiple_dex = Options.v().process_multiple_dex();
+
+            // load dex files from apk/folder/file
             MultiDexContainer<? extends DexBackedDexFile> dexContainer = DexFileFactory.loadDexContainer(inputDexFile, Opcodes.forApi(api));
 
             int dexFileCount = dexContainer.getDexEntryNames().size();
@@ -90,17 +92,23 @@ public class DexlibWrapper {
 
             dexList = new ArrayList<>(dexFileCount);
 
-            // report found dex files and add to list
-            for (String dexEntry : dexContainer.getDexEntryNames()) {
-                DexBackedDexFile entry = dexContainer.getEntry(dexEntry);
-                dexList.add(entry);
-                G.v().out.println(String.format("Found dex file '%s' with %d classes in '%s'", dexEntry, entry.getClasses().size(), inputDexFile.getName()));
-            }
+            // report found dex files and add to list.
+            // We do this in reverse order to make sure that we add the first entry if there is no classes.dex file in single dex mode
+            ListIterator<String> entryNames = dexContainer.getDexEntryNames().listIterator(dexFileCount);
+            while (entryNames.hasPrevious()) {
+                String entryName = entryNames.previous();
+                DexBackedDexFile entry = dexContainer.getEntry(entryName);
+                G.v().out.println(String.format("Found dex file '%s' with %d classes in '%s'", entryName, entry.getClasses().size(), inputDexFile.getName()));
 
-            if (!Options.v().process_multiple_dex() && dexFileCount > 1) {
-                G.v().out.println("WARNING: Multiple dex files detected, only processing first dex file (" + dexList.get(0) + "). Use '-process-multiple-dex' option to process them all.");
-                // restrict processed dex files to the first
-                dexList = Collections.singletonList(dexList.get(0));
+                if (multiple_dex)
+                    dexList.add(entry);
+                else if (entryName.equals("classes.dex") || !entryNames.hasPrevious()) {
+                    // We prefer to have classes.dex in single dex mode.
+                    // If we haven't found a classes.dex until the last element, take the last!
+                    dexList = Collections.singletonList(entry);
+                    G.v().out.println("WARNING: Multiple dex files detected, only processing '" + entryName + "'. Use '-process-multiple-dex' option to process them all.");
+                    break;
+                }
             }
 
             // resolve classes in dex files
