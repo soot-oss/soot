@@ -95,7 +95,7 @@ public class MultiDexBuilder {
         // For Dalvik (pre 22), it is important that at least the main dex file (classes.dex) contains all needed
         // dependencies of the Main activity, which means that one would have to determine necessary dependencies and
         // pack those explicitly in the first dex file. (https://developer.android.com/studio/build/multidex.html, http://www.fasteque.com/deep-dive-into-android-multidex/)
-        if (Scene.v().getAndroidAPIVersion() < 22)
+        if (!opcodes.isArt())
             throw new RuntimeException("Dex file overflow. Splitting not support for pre Lollipop Android (Api 22).");
 
         // reset to state before overflow occurred
