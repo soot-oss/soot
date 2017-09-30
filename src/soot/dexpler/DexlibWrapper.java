@@ -102,12 +102,11 @@ public class DexlibWrapper {
 
                 if (multiple_dex)
                     dexList.add(entry);
-                else if (entryName.equals("classes.dex") || !entryNames.hasPrevious()) {
+                else if (dexList.isEmpty() && (entryName.equals("classes.dex") || !entryNames.hasPrevious())) {
                     // We prefer to have classes.dex in single dex mode.
                     // If we haven't found a classes.dex until the last element, take the last!
                     dexList = Collections.singletonList(entry);
                     G.v().out.println("WARNING: Multiple dex files detected, only processing '" + entryName + "'. Use '-process-multiple-dex' option to process them all.");
-                    break;
                 }
             }
 
