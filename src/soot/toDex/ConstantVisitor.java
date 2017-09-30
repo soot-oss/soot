@@ -38,16 +38,14 @@ import soot.util.Switchable;
  */
 class ConstantVisitor extends AbstractConstantSwitch {
 
-	private final MultiDexBuilder builder;
 	private StmtVisitor stmtV;
 
 	private Register destinationReg;
 
 	private Stmt origStmt;
 
-	public ConstantVisitor(MultiDexBuilder builder, StmtVisitor stmtV) {
+	public ConstantVisitor(StmtVisitor stmtV) {
 		this.stmtV = stmtV;
-		this.builder = builder;
 	}
 
 	public void setDestination(Register destinationReg) {
@@ -66,13 +64,11 @@ class ConstantVisitor extends AbstractConstantSwitch {
 
 	public void caseStringConstant(StringConstant s) {
 		StringReference ref = new ImmutableStringReference(s.value);
-		builder.internString(ref);
 		stmtV.addInsn(new Insn21c(Opcode.CONST_STRING, destinationReg, ref), origStmt);
 	}
 
 	public void caseClassConstant(ClassConstant c) {
 		TypeReference referencedClass = new ImmutableTypeReference(c.getValue());
-		builder.internType(referencedClass);
 		stmtV.addInsn(new Insn21c(Opcode.CONST_CLASS, destinationReg, referencedClass), origStmt);
 	}
 

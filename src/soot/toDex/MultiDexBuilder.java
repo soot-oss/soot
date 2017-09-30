@@ -2,13 +2,8 @@ package soot.toDex;
 
 import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.iface.reference.FieldReference;
-import org.jf.dexlib2.iface.reference.MethodReference;
-import org.jf.dexlib2.iface.reference.StringReference;
-import org.jf.dexlib2.iface.reference.TypeReference;
 import org.jf.dexlib2.writer.io.FileDataStore;
 import org.jf.dexlib2.writer.pool.DexPool;
-import soot.Scene;
 
 import java.io.File;
 import java.io.IOException;
@@ -23,66 +18,34 @@ import java.util.List;
 public class MultiDexBuilder {
 
     private final Opcodes opcodes;
+    private final List<DexPool> dexPools = new LinkedList<>();
     private DexPool curPool;
-    private List<DexPool> dexPools = new LinkedList<>();
 
     public MultiDexBuilder(Opcodes opcodes) {
         this.opcodes = opcodes;
+        newDexPool();
+    }
+
+    private void newDexPool() {
         curPool = new DexPool(opcodes);
         dexPools.add(curPool);
     }
 
     public void internClass(final ClassDef clz) {
-        safeIntern(new Executor() {
-            @Override
-            public void execute(DexPool pool) {
-                pool.internClass(clz);
-            }
-        });
-    }
-
-    public void internMethod(final MethodReference mRef) {
-        safeIntern(new Executor() {
-            @Override
-            public void execute(DexPool pool) {
-                pool.methodSection.intern(mRef);
-            }
-        });
-    }
-
-    public void internType(final TypeReference tRef) {
-        safeIntern(new Executor() {
-            @Override
-            public void execute(DexPool pool) {
-                pool.typeSection.intern(tRef);
-            }
-        });
-    }
-
-    public void internString(final StringReference ref) {
-        safeIntern(new Executor() {
-            @Override
-            public void execute(DexPool pool) {
-                pool.stringSection.intern(ref);
-            }
-        });
-    }
-
-
-    public void internField(final FieldReference fieldRef) {
-        safeIntern(new Executor() {
-            @Override
-            public void execute(DexPool pool) {
-                pool.fieldSection.intern(fieldRef);
-            }
-        });
-    }
-
-    private void safeIntern(Executor e) {
         curPool.mark();
-        e.execute(curPool);
-        if (hasOverflowed())
-            e.execute(curPool); // execute on new pool since the last execution was dropped
+        curPool.internClass(clz);
+        if (hasOverflowed()) {
+            // reset to state before overflow occurred
+            curPool.reset();
+
+            // we need a new dexpool
+            newDexPool();
+
+            // re-execute on new pool since the last execution was dropped
+            // NOTE: We do not want to call internClass recursively here, this might end in an endless loop
+            // if the class is to large for a single dex file!
+            curPool.internClass(clz);
+        }
     }
 
     private boolean hasOverflowed() {
@@ -98,12 +61,6 @@ public class MultiDexBuilder {
         if (!opcodes.isArt())
             throw new RuntimeException("Dex file overflow. Splitting not support for pre Lollipop Android (Api 22).");
 
-        // reset to state before overflow occurred
-        curPool.reset();
-
-        // we need a new dexpool
-        curPool = new DexPool(opcodes);
-        dexPools.add(curPool);
         return true;
     }
 
@@ -126,9 +83,5 @@ public class MultiDexBuilder {
             fds.close();
         }
         return res;
-    }
-
-    private interface Executor {
-        void execute(DexPool pool);
     }
 }

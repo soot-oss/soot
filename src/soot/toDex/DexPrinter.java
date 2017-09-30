@@ -103,36 +103,32 @@ public class DexPrinter {
         throw new RuntimeException("Unknown annotation visibility: '" + visibility + "'");
     }
 
-    protected static FieldReference toFieldReference(SootField f, MultiDexBuilder builder) {
+    protected static FieldReference toFieldReference(SootField f) {
         FieldReference fieldRef = new ImmutableFieldReference(
                 SootToDexUtils.getDexClassName(f.getDeclaringClass().getName()), f.getName(),
                 SootToDexUtils.getDexTypeDescriptor(f.getType()));
-        builder.internField(fieldRef);
         return fieldRef;
     }
 
-    protected static FieldReference toFieldReference(SootFieldRef ref, MultiDexBuilder builder) {
+    protected static FieldReference toFieldReference(SootFieldRef ref) {
         FieldReference fieldRef = new ImmutableFieldReference(
                 SootToDexUtils.getDexClassName(ref.declaringClass().getName()), ref.name(),
                 SootToDexUtils.getDexTypeDescriptor(ref.type()));
-        builder.internField(fieldRef);
         return fieldRef;
     }
 
-    protected static MethodReference toMethodReference(SootMethodRef m, MultiDexBuilder builder) {
+    protected static MethodReference toMethodReference(SootMethodRef m) {
         List<String> parameters = new ArrayList<String>();
         for (Type t : m.parameterTypes())
             parameters.add(SootToDexUtils.getDexTypeDescriptor(t));
         MethodReference methodRef = new ImmutableMethodReference(
                 SootToDexUtils.getDexClassName(m.declaringClass().getName()), m.name(), parameters,
                 SootToDexUtils.getDexTypeDescriptor(m.returnType()));
-        builder.internMethod(methodRef);
         return methodRef;
     }
 
-    protected static TypeReference toTypeReference(Type t, MultiDexBuilder builder) {
+    protected static TypeReference toTypeReference(Type t) {
         ImmutableTypeReference tRef = new ImmutableTypeReference(SootToDexUtils.getDexTypeDescriptor(t));
-        builder.internType(tRef);
         return tRef;
     }
 
@@ -300,12 +296,7 @@ public class DexPrinter {
 
                 String classT = SootToDexUtils.getDexClassName(e.getTypeName());
                 String fieldT = classT;
-
-                FieldReference fref =
-                        new ImmutableFieldReference(classT, e.getConstantName(), fieldT);
-                dexBuilder.internField(fref);
-
-                return new ImmutableEnumEncodedValue(fref);
+                return new ImmutableEnumEncodedValue(new ImmutableFieldReference(classT, e.getConstantName(), fieldT));
             }
             case 'c': {
                 AnnotationClassElem e = (AnnotationClassElem) elem;
@@ -355,10 +346,7 @@ public class DexPrinter {
 
                 String fieldName = sp[2];
 
-                FieldReference fref = new ImmutableFieldReference(classString, fieldName, typeString);
-                dexBuilder.internField(fref);
-
-                return new ImmutableFieldEncodedValue(fref);
+                return new ImmutableFieldEncodedValue(new ImmutableFieldReference(classString, fieldName, typeString));
             }
             case 'M': { // method (Dalvik specific?)
                 AnnotationStringElem e = (AnnotationStringElem) elem;
@@ -382,11 +370,7 @@ public class DexPrinter {
                         }
                 }
 
-                MethodReference mref =
-                        new ImmutableMethodReference(classString, methodNameString, paramTypeList, returnType);
-                dexBuilder.internMethod(mref);
-
-                return new ImmutableMethodEncodedValue(mref);
+                return new ImmutableMethodEncodedValue(new ImmutableMethodReference(classString, methodNameString, paramTypeList, returnType));
             }
             case 'N': { // null (Dalvik specific?)
                 return ImmutableNullEncodedValue.INSTANCE;
@@ -778,7 +762,6 @@ public class DexPrinter {
 
         ImmutableMethodReference mRef = new ImmutableMethodReference(
                 SootToDexUtils.getDexClassName(t.getEnclosingClass()), t.getEnclosingMethod(), typeList, returnTypeS);
-        dexBuilder.internMethod(mRef);
         ImmutableMethodEncodedValue methodRef = new ImmutableMethodEncodedValue(mRef);
         AnnotationElement methodElement = new ImmutableAnnotationElement("value", methodRef);
 
@@ -973,7 +956,7 @@ public class DexPrinter {
         Collection<Unit> units = activeBody.getUnits();
         // register count = parameters + additional registers, depending on the
         // dex instructions generated (e.g. locals used and constants loaded)
-        StmtVisitor stmtV = new StmtVisitor(m, dexBuilder, initDetector);
+        StmtVisitor stmtV = new StmtVisitor(m, initDetector);
 
         toInstructions(units, stmtV);
 
@@ -1043,9 +1026,7 @@ public class DexPrinter {
                             builder.addLineNumber(lnt.getLineNumber());
                         } else if (t instanceof SourceFileTag) {
                             SourceFileTag sft = (SourceFileTag) t;
-                            StringReference sref = new ImmutableStringReference(sft.getSourceFile());
-                            dexBuilder.internString(sref);
-                            builder.addSetSourceFile(sref);
+                            builder.addSetSourceFile(new ImmutableStringReference(sft.getSourceFile()));
                         }
                     }
                 }
@@ -1239,7 +1220,6 @@ public class DexPrinter {
         Local local = registerAssignment.getLocal();
         String dexLocalType = SootToDexUtils.getDexTypeDescriptor(local.getType());
         StringReference localName = new ImmutableStringReference(local.getName());
-        dexBuilder.internString(localName);
         Register reg = registerAssignment.getRegister();
         int register = reg.getNumber();
 
@@ -1250,11 +1230,7 @@ public class DexPrinter {
                 return;
             builder.addEndLocal(beforeRegister);
         }
-        ImmutableTypeReference typeRef = new ImmutableTypeReference(dexLocalType);
-        ImmutableStringReference stringRef = new ImmutableStringReference("");
-        dexBuilder.internType(typeRef);
-        dexBuilder.internString(stringRef);
-        builder.addStartLocal(register, localName, typeRef, stringRef);
+        builder.addStartLocal(register, localName, new ImmutableTypeReference(dexLocalType), new ImmutableStringReference(""));
         seenRegisters.put(local, register);
     }
 
@@ -1401,9 +1377,7 @@ public class DexPrinter {
                     allCaughtForRange = true;
                 }
                 // else
-                ImmutableTypeReference tRef = new ImmutableTypeReference(handler.getExceptionType());
-                dexBuilder.internType(tRef);
-                builder.addCatch(tRef,
+                builder.addCatch(new ImmutableTypeReference(handler.getExceptionType()),
                         labelAssigner.getLabelAtAddress(range.startAddress),
                         labelAssigner.getLabelAtAddress(range.endAddress),
                         labelAssigner.getLabelAtAddress(handler.getHandlerCodeAddress()));

@@ -89,8 +89,6 @@ import soot.util.Switchable;
  */
 class ExprVisitor implements ExprSwitch {
 	
-	private final MultiDexBuilder builder;
-	
 	private StmtVisitor stmtV;
 	
 	private ConstantVisitor constantV;
@@ -104,8 +102,7 @@ class ExprVisitor implements ExprSwitch {
     private Stmt origStmt;
 
 	public ExprVisitor(StmtVisitor stmtV, ConstantVisitor constantV,
-			RegisterAllocator regAlloc, MultiDexBuilder builder) {
-		this.builder = builder;
+			RegisterAllocator regAlloc) {
 		this.stmtV = stmtV;
 		this.constantV = constantV;
 		this.regAlloc = regAlloc;
@@ -137,7 +134,7 @@ class ExprVisitor implements ExprSwitch {
 	@Override
 	public void caseSpecialInvokeExpr(SpecialInvokeExpr sie) {
 		MethodReference method = DexPrinter.toMethodReference
-				(sie.getMethodRef(), builder);
+				(sie.getMethodRef());
 		List<Register> arguments = getInstanceInvokeArgumentRegs(sie);
 		if (isCallToConstructor(sie) || isCallToPrivate(sie)) {
             stmtV.addInsn(buildInvokeInsn("INVOKE_DIRECT", method, arguments), origStmt);
@@ -204,7 +201,7 @@ class ExprVisitor implements ExprSwitch {
 		 * An alternative would be the invoke-direct opcode, but this is inconsistent with dx's output...
 		 */
 		MethodReference method = DexPrinter.toMethodReference
-				(vie.getMethodRef(), builder);
+				(vie.getMethodRef());
 		List<Register> argumentRegs = getInstanceInvokeArgumentRegs(vie);
         stmtV.addInsn(buildInvokeInsn("INVOKE_VIRTUAL", method, argumentRegs), origStmt);
 	}
@@ -255,7 +252,7 @@ class ExprVisitor implements ExprSwitch {
 	@Override
 	public void caseInterfaceInvokeExpr(InterfaceInvokeExpr iie) {
 		MethodReference method = DexPrinter.toMethodReference
-				(iie.getMethodRef(), builder);
+				(iie.getMethodRef());
 		List<Register> arguments = getInstanceInvokeArgumentRegs(iie);
         stmtV.addInsn(buildInvokeInsn("INVOKE_INTERFACE", method, arguments), origStmt);
 	}
@@ -263,7 +260,7 @@ class ExprVisitor implements ExprSwitch {
 	@Override
 	public void caseStaticInvokeExpr(StaticInvokeExpr sie) {
 		MethodReference method = DexPrinter.toMethodReference
-				(sie.getMethodRef(), builder);
+				(sie.getMethodRef());
 		List<Register> arguments = getInvokeArgumentRegs(sie);
         stmtV.addInsn(buildInvokeInsn("INVOKE_STATIC", method, arguments), origStmt);
 	}
@@ -590,8 +587,7 @@ class ExprVisitor implements ExprSwitch {
 		constantV.setOrigStmt(origStmt);
 		Register referenceToCheckReg = regAlloc.asImmediate(referenceToCheck, constantV);
 		
-		TypeReference checkType = DexPrinter.toTypeReference(ioe.getCheckType(),
-				stmtV.getBelongingFile());
+		TypeReference checkType = DexPrinter.toTypeReference(ioe.getCheckType());
         stmtV.addInsn(new Insn22c(Opcode.INSTANCE_OF, destinationReg, referenceToCheckReg,
                 checkType), origStmt);
 	}
@@ -621,8 +617,7 @@ class ExprVisitor implements ExprSwitch {
 		 * b) is relevant for exceptional control flow: if we move to the new reg and do the check-cast there, an exception between the end of
 		 * the move's execution and the end of the check-cast execution leaves the new reg with the type of the old reg.
 		 */
-		TypeReference castTypeItem = DexPrinter.toTypeReference
-				(castType, stmtV.getBelongingFile());
+		TypeReference castTypeItem = DexPrinter.toTypeReference(castType);
 		if (sourceReg.getNumber() == destinationReg.getNumber()) {
 			// simplyfied case if reg numbers do not differ
             stmtV.addInsn(new Insn21c(Opcode.CHECK_CAST, destinationReg, castTypeItem), origStmt);
@@ -744,7 +739,7 @@ class ExprVisitor implements ExprSwitch {
 		Register sizeReg = regAlloc.asImmediate(size, constantV);
 		ArrayType arrayType = nae.getBaseType().getArrayType();
 		TypeReference arrayTypeItem = DexPrinter.toTypeReference
-				(arrayType, stmtV.getBelongingFile());
+				(arrayType);
         stmtV.addInsn(new Insn22c(Opcode.NEW_ARRAY, destinationReg, sizeReg, arrayTypeItem), origStmt);
 	}
 	
@@ -759,7 +754,7 @@ class ExprVisitor implements ExprSwitch {
 		// get array base type
 		ArrayType arrayType = ArrayType.v(nmae.getBaseType().baseType, dimensions);
 		TypeReference arrayTypeItem = DexPrinter.toTypeReference
-				(arrayType, stmtV.getBelongingFile());
+				(arrayType);
 		// get the dimension size registers
 		List<Register> dimensionSizeRegs = new ArrayList<Register>();
 		for (int i = 0; i < dimensions; i++) {
@@ -784,7 +779,7 @@ class ExprVisitor implements ExprSwitch {
 	@Override
 	public void caseNewExpr(NewExpr ne) {
 		TypeReference baseType = DexPrinter.toTypeReference
-				(ne.getBaseType(), stmtV.getBelongingFile());
+				(ne.getBaseType());
         stmtV.addInsn(new Insn21c(Opcode.NEW_INSTANCE, destinationReg, baseType), origStmt);
 	}
 }
