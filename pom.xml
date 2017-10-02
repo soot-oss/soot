@@ -153,11 +153,7 @@
 	</build>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.smali</groupId>
-			<artifactId>dexlib2</artifactId>
-			<version>2.2b4</version>
-		</dependency>
+
 		<dependency>
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm-debug-all</artifactId>
