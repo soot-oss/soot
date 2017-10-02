@@ -35,7 +35,6 @@ import soot.IntType;
 import soot.Local;
 import soot.LongType;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
@@ -54,7 +53,8 @@ public class CmpInstruction extends TaggedInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
         if(!(instruction instanceof Instruction23x))
             throw new IllegalArgumentException("Expected Instruction23x but got: "+instruction.getClass());
 
@@ -107,7 +107,6 @@ public class CmpInstruction extends TaggedInstruction {
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           getTag().getName();
           BinopExpr bexpr = (BinopExpr)cmpExpr;
           DalvikTyper.v().setType(bexpr.getOp1Box(), type, true);

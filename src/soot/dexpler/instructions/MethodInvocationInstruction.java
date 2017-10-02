@@ -46,7 +46,6 @@ import soot.SootClass;
 import soot.SootMethodRef;
 import soot.SootResolver;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -74,7 +73,8 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         super(instruction, codeAddress);
     }
 
-    public void finalize(DexBody body, DexlibAbstractInstruction successor) {
+    @Override
+	public void finalize(DexBody body, DexlibAbstractInstruction successor) {
         // defer final jimplification to move result
         if (successor instanceof MoveResultInstruction) {
 //            MoveResultInstruction i = (MoveResultInstruction)successor;
@@ -96,7 +96,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         }
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint special invoke: "+ assign);
+			//Debug.printDbg(IDalvikTyper.DEBUG, "constraint special invoke: "+ assign);
 			
           if (invocation instanceof InstanceInvokeExpr) {
             Type t = invocation.getMethodRef().declaringClass().getType();
@@ -104,7 +104,7 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             //DalvikTyper.v().setObjectType(assign.getLeftOpBox());
           }
           int i = 0;
-          for (Type pt: (List<Type>)invocation.getMethodRef().parameterTypes()) {
+          for (Type pt: invocation.getMethodRef().parameterTypes()) {
             DalvikTyper.v().setType(invocation.getArgBox(i++), pt, true);
           }
           if (assign != null) {
@@ -114,7 +114,8 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         }
     }
 
-    public Set<Type> introducedTypes() {
+    @Override
+	public Set<Type> introducedTypes() {
         Set<Type> types = new HashSet<Type>();
         MethodReference method = (MethodReference) (((ReferenceInstruction) instruction).getReference());
 
@@ -222,7 +223,6 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         String tItem = mItem.getDefiningClass();
 
         String className = tItem;
-        Debug.printDbg("tItem: ", tItem ," class name: ", className);
           if (className.startsWith("[")) {
             className = "java.lang.Object";
           } else {
@@ -241,13 +241,6 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
             for (CharSequence type : paramTypes)
                 parameterTypes.add(DexType.toSoot(type.toString()));
 
-        Debug.printDbg("sc: ", sc);
-        Debug.printDbg("methodName: ", methodName);
-        Debug.printDbg("parameterTypes: ");
-        for (Type t: parameterTypes)
-          Debug.printDbg(" t: ", t);
-        Debug.printDbg("returnType: ", returnType);
-        Debug.printDbg("isStatic: ", invType == InvocationType.Static);
         methodRef = Scene.v().makeMethodRef(sc, methodName, parameterTypes, returnType,
         		invType == InvocationType.Static);
         
@@ -279,17 +272,6 @@ public abstract class MethodInvocationInstruction extends DexlibAbstractInstruct
         List<Local> parameters = new ArrayList<Local>();
         List<Integer> regs = getUsedRegistersNums();
 
-        Debug.printDbg(" [methodIdItem]: ", item);
-        Debug.printDbg(" params types:");
-        if (paramTypes != null) {
-          for (CharSequence t: paramTypes) {
-            Debug.printDbg(" t: ", t);
-          }
-        }
-        Debug.printDbg(" used registers (", regs.size() ,"): ");
-        for (int i: regs) {
-          Debug.printDbg( " r: ", i);
-        }
         // i: index for register
         // j: index for parameter type
         for (int i = 0, j = 0; i < regs.size(); i++, j++) {

@@ -37,7 +37,6 @@ import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.RefType;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.dexpler.IDalvikTyper;
@@ -52,7 +51,8 @@ public class NewInstanceInstruction extends DexlibAbstractInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
         Instruction21c i = (Instruction21c)instruction;
         int dest = i.getRegisterA();
         String className = dottedClassName(((TypeReference)(i.getReference())).toString());
@@ -64,7 +64,6 @@ public class NewInstanceInstruction extends DexlibAbstractInstruction {
         body.add(assign);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           //DalvikTyper.v().captureAssign((JAssignStmt)assign, op); // TODO: ref. type may be null!
           DalvikTyper.v().setType(assign.getLeftOpBox(), type, false);
         }

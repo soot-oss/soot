@@ -80,6 +80,7 @@ public class TypeAssigner extends BodyTransformer {
 	}
 
 	/** Assign types to local variables. * */
+	@Override
 	protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
 		if (b == null) {
 			throw new NullPointerException();
@@ -265,11 +266,13 @@ public class TypeAssigner extends BodyTransformer {
 		{
 			Iterator<Local> localIt = b.getLocals().iterator();
 
+			final UnknownType unknownType = UnknownType.v();
+			final ErroneousType errornousType = ErroneousType.v();
 			while (localIt.hasNext()) {
 				Local l = localIt.next();
 
-				if (l.getType().equals(UnknownType.v())
-						|| l.getType().equals(ErroneousType.v())) {
+				if (l.getType().equals(unknownType)
+						|| l.getType().equals(errornousType)) {
 					return true;
 				}
 			}

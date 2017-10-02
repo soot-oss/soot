@@ -5,6 +5,7 @@ import java.util.BitSet;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction35c;
+import org.jf.dexlib2.iface.reference.Reference;
 import org.jf.dexlib2.writer.builder.BuilderReference;
 
 import soot.toDex.LabelAssigner;
@@ -26,10 +27,10 @@ public class Insn35c extends AbstractInsn implements FiveRegInsn {
 	
 	private int regCount;
 	
-	private final BuilderReference referencedItem;
+	private final Reference referencedItem;
 
 	public Insn35c(Opcode opc, int regCount, Register regD, Register regE,
-			Register regF, Register regG, Register regA, BuilderReference referencedItem) {
+			Register regF, Register regG, Register regA, Reference referencedItem) {
 		super(opc);
 		this.regCount = regCount;
 		regs.add(regD);

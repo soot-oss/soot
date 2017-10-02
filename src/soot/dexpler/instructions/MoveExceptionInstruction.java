@@ -31,7 +31,6 @@ import soot.Body;
 import soot.Local;
 import soot.RefType;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -47,7 +46,8 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction implemen
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
         int dest = ((OneRegisterInstruction)instruction).getRegisterA();
         Local l = body.getRegisterLocal(dest);
         stmtToRetype = Jimple.v().newIdentityStmt(l, Jimple.v().newCaughtExceptionRef());
@@ -56,17 +56,18 @@ public class MoveExceptionInstruction extends DexlibAbstractInstruction implemen
         body.add(stmtToRetype);
         
         if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ stmtToRetype);
             DalvikTyper.v().setType(stmtToRetype.getLeftOpBox(), RefType.v("java.lang.Throwable"), false);
         }
     }
 
-    public void setRealType(DexBody body, Type t) {
+    @Override
+	public void setRealType(DexBody body, Type t) {
         realType = t;
         body.addRetype(this);
     }
 
-    public void retype(Body body) {
+    @Override
+	public void retype(Body body) {
         if (realType == null)
             throw new RuntimeException("Real type of this instruction has not been set or was already retyped: " + this);
         if (body.getUnits().contains(stmtToRetype)) {

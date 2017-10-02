@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.writer.builder.BuilderMethodReference;
-import org.jf.dexlib2.writer.builder.BuilderReference;
-import org.jf.dexlib2.writer.builder.DexBuilder;
+import org.jf.dexlib2.iface.reference.MethodReference;
+import org.jf.dexlib2.iface.reference.TypeReference;
 
 import soot.ArrayType;
 import soot.DoubleType;
@@ -90,8 +89,6 @@ import soot.util.Switchable;
  */
 class ExprVisitor implements ExprSwitch {
 	
-	private final DexBuilder dexFile;
-	
 	private StmtVisitor stmtV;
 	
 	private ConstantVisitor constantV;
@@ -105,8 +102,7 @@ class ExprVisitor implements ExprSwitch {
     private Stmt origStmt;
 
 	public ExprVisitor(StmtVisitor stmtV, ConstantVisitor constantV,
-			RegisterAllocator regAlloc, DexBuilder dexFile) {
-		this.dexFile = dexFile;
+			RegisterAllocator regAlloc) {
 		this.stmtV = stmtV;
 		this.constantV = constantV;
 		this.regAlloc = regAlloc;
@@ -137,8 +133,8 @@ class ExprVisitor implements ExprSwitch {
 	
 	@Override
 	public void caseSpecialInvokeExpr(SpecialInvokeExpr sie) {
-		BuilderMethodReference method = DexPrinter.toMethodReference
-				(sie.getMethodRef(), dexFile);
+		MethodReference method = DexPrinter.toMethodReference
+				(sie.getMethodRef());
 		List<Register> arguments = getInstanceInvokeArgumentRegs(sie);
 		if (isCallToConstructor(sie) || isCallToPrivate(sie)) {
             stmtV.addInsn(buildInvokeInsn("INVOKE_DIRECT", method, arguments), origStmt);
@@ -151,7 +147,7 @@ class ExprVisitor implements ExprSwitch {
 		}
 	}
 
-	private Insn buildInvokeInsn(String invokeOpcode, BuilderMethodReference method,
+	private Insn buildInvokeInsn(String invokeOpcode, MethodReference method,
 			List<Register> argumentRegs) {
 		Insn invokeInsn;
 		int regCountForArguments = SootToDexUtils.getRealRegCount(argumentRegs);
@@ -204,8 +200,8 @@ class ExprVisitor implements ExprSwitch {
 		 * for final methods we build an invoke-virtual opcode, too, although the dex spec says that a virtual method is not final.
 		 * An alternative would be the invoke-direct opcode, but this is inconsistent with dx's output...
 		 */
-		BuilderMethodReference method = DexPrinter.toMethodReference
-				(vie.getMethodRef(), dexFile);
+		MethodReference method = DexPrinter.toMethodReference
+				(vie.getMethodRef());
 		List<Register> argumentRegs = getInstanceInvokeArgumentRegs(vie);
         stmtV.addInsn(buildInvokeInsn("INVOKE_VIRTUAL", method, argumentRegs), origStmt);
 	}
@@ -255,16 +251,16 @@ class ExprVisitor implements ExprSwitch {
 
 	@Override
 	public void caseInterfaceInvokeExpr(InterfaceInvokeExpr iie) {
-		BuilderMethodReference method = DexPrinter.toMethodReference
-				(iie.getMethodRef(), dexFile);
+		MethodReference method = DexPrinter.toMethodReference
+				(iie.getMethodRef());
 		List<Register> arguments = getInstanceInvokeArgumentRegs(iie);
         stmtV.addInsn(buildInvokeInsn("INVOKE_INTERFACE", method, arguments), origStmt);
 	}
 
 	@Override
 	public void caseStaticInvokeExpr(StaticInvokeExpr sie) {
-		BuilderMethodReference method = DexPrinter.toMethodReference
-				(sie.getMethodRef(), dexFile);
+		MethodReference method = DexPrinter.toMethodReference
+				(sie.getMethodRef());
 		List<Register> arguments = getInvokeArgumentRegs(sie);
         stmtV.addInsn(buildInvokeInsn("INVOKE_STATIC", method, arguments), origStmt);
 	}
@@ -591,8 +587,7 @@ class ExprVisitor implements ExprSwitch {
 		constantV.setOrigStmt(origStmt);
 		Register referenceToCheckReg = regAlloc.asImmediate(referenceToCheck, constantV);
 		
-		BuilderReference checkType = DexPrinter.toTypeReference(ioe.getCheckType(),
-				stmtV.getBelongingFile());
+		TypeReference checkType = DexPrinter.toTypeReference(ioe.getCheckType());
         stmtV.addInsn(new Insn22c(Opcode.INSTANCE_OF, destinationReg, referenceToCheckReg,
                 checkType), origStmt);
 	}
@@ -622,8 +617,7 @@ class ExprVisitor implements ExprSwitch {
 		 * b) is relevant for exceptional control flow: if we move to the new reg and do the check-cast there, an exception between the end of
 		 * the move's execution and the end of the check-cast execution leaves the new reg with the type of the old reg.
 		 */
-		BuilderReference castTypeItem = DexPrinter.toTypeReference
-				(castType, stmtV.getBelongingFile());
+		TypeReference castTypeItem = DexPrinter.toTypeReference(castType);
 		if (sourceReg.getNumber() == destinationReg.getNumber()) {
 			// simplyfied case if reg numbers do not differ
             stmtV.addInsn(new Insn21c(Opcode.CHECK_CAST, destinationReg, castTypeItem), origStmt);
@@ -744,8 +738,8 @@ class ExprVisitor implements ExprSwitch {
 		constantV.setOrigStmt(origStmt);
 		Register sizeReg = regAlloc.asImmediate(size, constantV);
 		ArrayType arrayType = nae.getBaseType().getArrayType();
-		BuilderReference arrayTypeItem = DexPrinter.toTypeReference
-				(arrayType, stmtV.getBelongingFile());
+		TypeReference arrayTypeItem = DexPrinter.toTypeReference
+				(arrayType);
         stmtV.addInsn(new Insn22c(Opcode.NEW_ARRAY, destinationReg, sizeReg, arrayTypeItem), origStmt);
 	}
 	
@@ -759,8 +753,8 @@ class ExprVisitor implements ExprSwitch {
 		short dimensions = (short) nmae.getSizeCount();
 		// get array base type
 		ArrayType arrayType = ArrayType.v(nmae.getBaseType().baseType, dimensions);
-		BuilderReference arrayTypeItem = DexPrinter.toTypeReference
-				(arrayType, stmtV.getBelongingFile());
+		TypeReference arrayTypeItem = DexPrinter.toTypeReference
+				(arrayType);
 		// get the dimension size registers
 		List<Register> dimensionSizeRegs = new ArrayList<Register>();
 		for (int i = 0; i < dimensions; i++) {
@@ -784,8 +778,8 @@ class ExprVisitor implements ExprSwitch {
 
 	@Override
 	public void caseNewExpr(NewExpr ne) {
-		BuilderReference baseType = DexPrinter.toTypeReference
-				(ne.getBaseType(), stmtV.getBelongingFile());
+		TypeReference baseType = DexPrinter.toTypeReference
+				(ne.getBaseType());
         stmtV.addInsn(new Insn21c(Opcode.NEW_INSTANCE, destinationReg, baseType), origStmt);
 	}
 }
