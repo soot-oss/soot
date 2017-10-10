@@ -428,7 +428,8 @@ public class SootMethod
     		System.out.println("Removing exception "+e);
 
         if (exceptions == null)
-            exceptions = new ArrayList<SootClass>();
+            throw new RuntimeException(
+                    "does not throw exception " + e.getName());
 
         if (!exceptions.contains(e))
             throw new RuntimeException(
@@ -458,6 +459,10 @@ public class SootMethod
         if (exceptions == null)
             exceptions = new ArrayList<SootClass>();
 
+        return exceptions;
+    }
+    
+    public List<SootClass> getExceptionsUnsafe() {
         return exceptions;
     }
 
