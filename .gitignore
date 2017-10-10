@@ -13,3 +13,4 @@
 # Eclipse settings directory
 /.settings
 
+/target

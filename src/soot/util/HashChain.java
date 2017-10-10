@@ -49,9 +49,10 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	protected final Map<E, Link<E>> map = new ConcurrentHashMap<E, Link<E>>();
 	protected E firstItem;
 	protected E lastItem;
-	protected long stateCount = 0;
+	protected int stateCount = 0;
 
-	protected final Iterator<E> emptyIterator = new Iterator<E>() {
+	@SuppressWarnings("rawtypes")
+	protected static final Iterator<?> emptyIterator = new Iterator() {
 
 		@Override
 		public boolean hasNext() {
@@ -59,7 +60,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		}
 
 		@Override
-		public E next() {
+		public Object next() {
 			return null;
 		}
 
@@ -215,9 +216,8 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
 	/**
 	 * Inserts instrumentation in a manner such that the resulting control flow
-	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
-	 * that is defined by <code>point_source</code> and
-	 * <code>point_target</code>.
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge that
+	 * is defined by <code>point_source</code> and <code>point_target</code>.
 	 * 
 	 * @param toInsert
 	 *            the instrumentation to be added in the Chain
@@ -236,9 +236,8 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
 	/**
 	 * Inserts instrumentation in a manner such that the resulting control flow
-	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
-	 * that is defined by <code>point_source</code> and
-	 * <code>point_target</code>.
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge that
+	 * is defined by <code>point_source</code> and <code>point_target</code>.
 	 * 
 	 * @param toInsert
 	 *            instrumentation to be added in the Chain
@@ -356,9 +355,8 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
 	/**
 	 * Inserts instrumentation in a manner such that the resulting control flow
-	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
-	 * that is defined by <code>point_source</code> and
-	 * <code>point_target</code>.
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge that
+	 * is defined by <code>point_source</code> and <code>point_target</code>.
 	 * 
 	 * @param toInsert
 	 *            instrumentation to be added in the Chain
@@ -373,9 +371,8 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
 	/**
 	 * Inserts instrumentation in a manner such that the resulting control flow
-	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge
-	 * that is defined by <code>point_source</code> and
-	 * <code>point_target</code>.
+	 * graph (CFG) of the program will contain <code>toInsert</code> on an edge that
+	 * is defined by <code>point_source</code> and <code>point_target</code>.
 	 * 
 	 * @param toInsert
 	 *            instrumentation to be added in the Chain
@@ -402,8 +399,8 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
 		stateCount++;
 		/*
-		 * 4th April 2005 Nomair A Naeem map.get(obj) can return null only
-		 * return true if this is non null else return false
+		 * 4th April 2005 Nomair A Naeem map.get(obj) can return null only return true
+		 * if this is non null else return false
 		 */
 		if (map.get(item) != null) {
 			Link<E> link = map.get(item);
@@ -524,15 +521,17 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		return l.iterator();
 	}
 
+	@SuppressWarnings("unchecked")
 	public Iterator<E> iterator() {
 		if (firstItem == null || isEmpty())
-			return emptyIterator;
+			return (Iterator<E>) emptyIterator;
 		return new LinkIterator<E>(firstItem);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Iterator<E> iterator(E item) {
 		if (firstItem == null || isEmpty())
-			return emptyIterator;
+			return (Iterator<E>) emptyIterator;
 		return new LinkIterator<E>(item);
 	}
 
@@ -543,23 +542,23 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * </p>
 	 * 
 	 * <p>
-	 * If <code>tail</code> is the element immediately preceding
-	 * <code>head</code> in this <code>HashChain</code>, the returned iterator
-	 * will iterate 0 times (a special case to allow the specification of an
-	 * empty range of elements). Otherwise if <code>tail</code> is not one of
-	 * the elements following <code>head</code>, the returned iterator will
-	 * iterate past the end of the <code>HashChain</code>, provoking a
-	 * {@link NoSuchElementException}.
+	 * If <code>tail</code> is the element immediately preceding <code>head</code>
+	 * in this <code>HashChain</code>, the returned iterator will iterate 0 times (a
+	 * special case to allow the specification of an empty range of elements).
+	 * Otherwise if <code>tail</code> is not one of the elements following
+	 * <code>head</code>, the returned iterator will iterate past the end of the
+	 * <code>HashChain</code>, provoking a {@link NoSuchElementException}.
 	 * </p>
 	 * 
 	 * @throws NoSuchElementException
 	 *             if <code>head</code> is not an element of the chain.
 	 */
+	@SuppressWarnings("unchecked")
 	public Iterator<E> iterator(E head, E tail) {
 		if (firstItem == null || isEmpty())
-			return emptyIterator;
+			return (Iterator<E>) emptyIterator;
 		if (head != null && this.getPredOf(head) == tail) {
-			return emptyIterator;
+			return (Iterator<E>) emptyIterator;
 		}
 		return new LinkIterator<E>(head, tail);
 	}
@@ -666,7 +665,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		// (in accordance w/ iterator semantics)
 
 		private X destination;
-		private long iteratorStateCount;
+		private int iteratorStateCount;
 
 		public LinkIterator(X item) {
 			Link<E> nextLink = map.get(item);
