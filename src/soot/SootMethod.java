@@ -26,6 +26,7 @@
 
 package soot;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -54,9 +55,9 @@ public class SootMethod
     /** Name of the current method. */
     private String name;
 
-    /** A list of parameter types taken by this <code>SootMethod</code> object, 
+    /** An array of parameter types taken by this <code>SootMethod</code> object, 
       * in declaration order. */
-    private List<Type> parameterTypes;
+    protected Type[] parameterTypes;
 
     /** The return type of this object. */
     private Type returnType;
@@ -158,9 +159,7 @@ public class SootMethod
         int modifiers,
         List<SootClass> thrownExceptions) {
         this.name = name;
-        this.parameterTypes = new ArrayList<Type>();
-        this.parameterTypes.addAll(parameterTypes);
-        this.parameterTypes = Collections.unmodifiableList(this.parameterTypes);
+        this.parameterTypes = parameterTypes.toArray(new Type[parameterTypes.size()]);
 
         this.returnType = returnType;
         this.modifiers = modifiers;
@@ -292,19 +291,19 @@ public class SootMethod
 
     /** Returns the number of parameters taken by this method. */
     public int getParameterCount() {
-        return parameterTypes.size();
+        return parameterTypes.length;
     }
 
     /** Gets the type of the <i>n</i>th parameter of this method. */
     public Type getParameterType(int n) {
-        return parameterTypes.get(n);
+        return parameterTypes[n];
     }
 
     /**
      * Returns a read-only list of the parameter types of this method.
      */
     public List<Type> getParameterTypes() {
-        return parameterTypes;
+        return Arrays.asList(parameterTypes);
     }
 
     /**
@@ -314,7 +313,7 @@ public class SootMethod
         boolean wasDeclared = isDeclared;
         SootClass oldDeclaringClass = declaringClass;
         if( wasDeclared ) oldDeclaringClass.removeMethod(this);
-        this.parameterTypes = Collections.unmodifiableList(new ArrayList<Type>(l));
+        this.parameterTypes = l.toArray(new Type[l.size()]);
         subsignature =
             Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
         if( wasDeclared) oldDeclaringClass.addMethod(this);
@@ -887,7 +886,7 @@ public class SootMethod
     @Override
 	public Context context() { return null; }
     public SootMethodRef makeRef() {
-        return Scene.v().makeMethodRef( declaringClass, name, parameterTypes, returnType, isStatic() );
+        return Scene.v().makeMethodRef( declaringClass, name, Arrays.asList(parameterTypes), returnType, isStatic() );
     }
     
     @Override

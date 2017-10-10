@@ -46,7 +46,7 @@ import soot.jimple.internal.JGotoStmt;
  * underlying structure.
  */
 public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
-	protected final Map<E, Link<E>> map = new ConcurrentHashMap<E, Link<E>>();
+	protected Map<E, Link<E>> map = new ConcurrentHashMap<E, Link<E>>();
 	protected E firstItem;
 	protected E lastItem;
 	protected int stateCount = 0;
@@ -72,18 +72,21 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	};
 
 	/** Erases the contents of the current HashChain. */
+	@Override
 	public void clear() {
 		stateCount++;
 		firstItem = lastItem = null;
 		map.clear();
 	}
 
+	@Override
 	public void swapWith(E out, E in) {
 		insertBefore(in, out);
 		remove(out);
 	}
 
 	/** Adds the given object to this HashChain. */
+	@Override
 	public boolean add(E item) {
 		addLast(item);
 		return true;
@@ -94,6 +97,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * 
 	 * @return All elements in the chain in an unsorted collection
 	 */
+	@Override
 	public Collection<E> getElementsUnsorted() {
 		return map.keySet();
 	}
@@ -119,6 +123,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		addAll(src);
 	}
 
+	@Override
 	public boolean follows(E someObject, E someReferenceObject) {
 		Iterator<E> it = iterator(someObject);
 		while (it.hasNext()) {
@@ -128,10 +133,12 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		return true;
 	}
 
+	@Override
 	public boolean contains(Object o) {
 		return map.containsKey(o);
 	}
 
+	@Override
 	public boolean containsAll(Collection<?> c) {
 		Iterator<?> it = c.iterator();
 		while (it.hasNext())
@@ -141,6 +148,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		return true;
 	}
 
+	@Override
 	public void insertAfter(E toInsert, E point) {
 		if (toInsert == null)
 			throw new RuntimeException("Bad idea! You tried to insert " + " a null object into a Chain!");
@@ -171,14 +179,17 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		}
 	}
 
+	@Override
 	public void insertAfter(List<E> toInsert, E point) {
 		insertAfter((Collection<? extends E>) toInsert, point);
 	}
 
+	@Override
 	public void insertAfter(Chain<E> toInsert, E point) {
 		insertAfter((Collection<? extends E>) toInsert, point);
 	}
 
+	@Override
 	public void insertBefore(E toInsert, E point) {
 		if (toInsert == null)
 			throw new RuntimeException("Bad idea! You tried to insert " + "a null object into a Chain!");
@@ -206,10 +217,12 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		}
 	}
 
+	@Override
 	public void insertBefore(List<E> toInsert, E point) {
 		insertBefore((Collection<E>) toInsert, point);
 	}
 
+	@Override
 	public void insertBefore(Chain<E> toInsert, E point) {
 		insertBefore((Collection<E>) toInsert, point);
 	}
@@ -226,6 +239,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @param point_tgt
 	 *            the target point of an edge
 	 */
+	@Override
 	public void insertOnEdge(E toInsert, E point_src, E point_tgt) {
 
 		List<E> o = new ArrayList<E>();
@@ -365,6 +379,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @param point_tgt
 	 *            the target point of an edge
 	 */
+	@Override
 	public void insertOnEdge(List<E> toInsert, E point_src, E point_tgt) {
 		insertOnEdge((Collection<E>) toInsert, point_src, point_tgt);
 	}
@@ -381,6 +396,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @param point_tgt
 	 *            the target point of an edge
 	 */
+	@Override
 	public void insertOnEdge(Chain<E> toInsert, E point_src, E point_tgt) {
 		insertOnEdge((Collection<E>) toInsert, point_src, point_tgt);
 	}
@@ -393,6 +409,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		return c;
 	}
 
+	@Override
 	public boolean remove(Object item) {
 		if (item == null)
 			throw new RuntimeException("Bad idea! You tried to remove " + " a null object from a Chain!");
@@ -412,6 +429,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		return false;
 	}
 
+	@Override
 	public void addFirst(E item) {
 		if (item == null)
 			throw new RuntimeException("Bad idea!  You tried to insert " + "a null object into a Chain!");
@@ -432,6 +450,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		map.put(item, newLink);
 	}
 
+	@Override
 	public void addLast(E item) {
 		if (item == null)
 			throw new RuntimeException("Bad idea! You tried to insert " + " a null object into a Chain!");
@@ -451,6 +470,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		map.put(item, newLink);
 	}
 
+	@Override
 	public void removeFirst() {
 		stateCount++;
 		Object item = firstItem;
@@ -458,6 +478,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		map.remove(item);
 	}
 
+	@Override
 	public void removeLast() {
 		stateCount++;
 		Object item = lastItem;
@@ -465,18 +486,21 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		map.remove(item);
 	}
 
+	@Override
 	public E getFirst() {
 		if (firstItem == null)
 			throw new NoSuchElementException();
 		return firstItem;
 	}
 
+	@Override
 	public E getLast() {
 		if (lastItem == null)
 			throw new NoSuchElementException();
 		return lastItem;
 	}
 
+	@Override
 	public E getSuccOf(E point) throws NoSuchElementException {
 		Link<E> link = map.get(point);
 		try {
@@ -490,6 +514,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		return link.getItem();
 	}
 
+	@Override
 	public E getPredOf(E point) throws NoSuchElementException {
 		Link<E> link = map.get(point);
 		if (point == null)
@@ -507,6 +532,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 			return link.getItem();
 	}
 
+	@Override
 	public Iterator<E> snapshotIterator() {
 		return (new ArrayList<E>(this)).iterator();
 	}
@@ -521,6 +547,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		return l.iterator();
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Iterator<E> iterator() {
 		if (firstItem == null || isEmpty())
@@ -528,6 +555,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		return new LinkIterator<E>(firstItem);
 	}
 
+	@Override
 	@SuppressWarnings("unchecked")
 	public Iterator<E> iterator(E item) {
 		if (firstItem == null || isEmpty())
@@ -553,6 +581,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	 * @throws NoSuchElementException
 	 *             if <code>head</code> is not an element of the chain.
 	 */
+	@Override
 	@SuppressWarnings("unchecked")
 	public Iterator<E> iterator(E head, E tail) {
 		if (firstItem == null || isEmpty())
@@ -563,11 +592,13 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		return new LinkIterator<E>(head, tail);
 	}
 
+	@Override
 	public int size() {
 		return map.size();
 	}
 
 	/** Returns a textual representation of the contents of this Chain. */
+	@Override
 	public String toString() {
 		StringBuilder strBuf = new StringBuilder();
 
@@ -649,6 +680,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 			return item;
 		}
 
+		@Override
 		public String toString() {
 			if (item != null)
 				return item.toString();
@@ -684,6 +716,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 			destination = to;
 		}
 
+		@Override
 		public boolean hasNext() {
 			if (stateCount != iteratorStateCount) {
 				throw new ConcurrentModificationException();
@@ -698,6 +731,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 				return (destination != currentLink.getItem());
 		}
 
+		@Override
 		public E next() throws NoSuchElementException {
 			if (stateCount != iteratorStateCount)
 				throw new ConcurrentModificationException();
@@ -717,6 +751,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 			return currentLink.getItem();
 		}
 
+		@Override
 		public void remove() throws IllegalStateException {
 			if (stateCount != iteratorStateCount)
 				throw new ConcurrentModificationException();
@@ -733,6 +768,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
 		}
 
+		@Override
 		public String toString() {
 			if (currentLink == null)
 				return "Current object under iterator is null" + super.toString();
@@ -743,6 +779,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 	}
 
 	/** Returns the number of times this chain has been modified. */
+	@Override
 	public long getModificationCount() {
 		return stateCount;
 	}
