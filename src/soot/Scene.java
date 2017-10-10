@@ -131,15 +131,15 @@ public class Scene // extends AbstractHost
 
 	private final Map<String, RefType> nameToClass = new HashMap<String, RefType>();
 
-	final ArrayNumberer<Kind> kindNumberer;
-	ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
-	ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
-	Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
-	Numberer<Context> contextNumberer = null;
-	Numberer<SparkField> fieldNumberer = new ArrayNumberer<SparkField>();
-	ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
-	StringNumberer subSigNumberer = new StringNumberer();
-	ArrayNumberer<Local> localNumberer = new ArrayNumberer<Local>();
+	protected final ArrayNumberer<Kind> kindNumberer;
+	protected ArrayNumberer<Type> typeNumberer = new ArrayNumberer<Type>();
+	protected ArrayNumberer<SootMethod> methodNumberer = new ArrayNumberer<SootMethod>();
+	protected Numberer<Unit> unitNumberer = new MapNumberer<Unit>();
+	protected Numberer<Context> contextNumberer = null;
+	protected Numberer<SparkField> fieldNumberer = new ArrayNumberer<SparkField>();
+	protected ArrayNumberer<SootClass> classNumberer = new ArrayNumberer<SootClass>();
+	protected StringNumberer subSigNumberer = new StringNumberer();
+	protected ArrayNumberer<Local> localNumberer = new ArrayNumberer<Local>();
 
 	private Hierarchy activeHierarchy;
 	private FastHierarchy activeFastHierarchy;
