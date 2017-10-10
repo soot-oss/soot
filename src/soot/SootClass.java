@@ -66,12 +66,12 @@ import soot.validation.ValidationException;
 public class SootClass extends AbstractHost implements Numberable {
 	protected String name, shortName, fixedShortName, packageName, fixedPackageName;
 	protected int modifiers;
-	protected Chain<SootField> fields = new HashChain<>();
+	protected Chain<SootField> fields;
 	protected SmallNumberedMap<SootMethod> subSigToMethods = new SmallNumberedMap<>();
 	// methodList is just for keeping the methods in a consistent order. It
 	// needs to be kept consistent with subSigToMethods.
 	protected List<SootMethod> methodList = new ArrayList<>();
-	protected Chain<SootClass> interfaces = new HashChain<>();
+	protected Chain<SootClass> interfaces;
 
 	protected boolean isInScene;
 	protected SootClass superClass;
@@ -206,16 +206,17 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	public int getFieldCount() {
 		checkLevel(SIGNATURES);
-		return fields.size();
+		return fields == null ? 0 : fields.size();
 	}
 
 	/**
 	 * Returns a backed Chain of fields.
 	 */
 
+	@SuppressWarnings("unchecked")
 	public Chain<SootField> getFields() {
 		checkLevel(SIGNATURES);
-		return fields;
+		return fields == null ? EmptyChain.v() : fields;
 	}
 
 	/*
@@ -235,10 +236,12 @@ public class SootClass extends AbstractHost implements Numberable {
 		if (declaresField(f.getName(), f.getType()))
 			throw new RuntimeException("Field already exists : " + f.getName() + " of type " + f.getType());
 
+		if (fields == null)
+			fields = new HashChain<>();
+
 		fields.add(f);
 		f.isDeclared = true;
 		f.declaringClass = this;
-
 	}
 
 	/**
@@ -250,7 +253,8 @@ public class SootClass extends AbstractHost implements Numberable {
 		if (!f.isDeclared() || f.getDeclaringClass() != this)
 			throw new RuntimeException("did not declare: " + f.getName());
 
-		fields.remove(f);
+		if (fields != null)
+			fields.remove(f);
 		f.isDeclared = false;
 	}
 
@@ -271,6 +275,8 @@ public class SootClass extends AbstractHost implements Numberable {
 	 */
 	public SootField getFieldUnsafe(String name, Type type) {
 		checkLevel(SIGNATURES);
+		if (fields == null)
+			return null;
 		for (SootField field : fields.getElementsUnsorted()) {
 			if (field.getName().equals(name) && field.getType().equals(type))
 				return field;
@@ -297,8 +303,10 @@ public class SootClass extends AbstractHost implements Numberable {
 	 */
 	public SootField getFieldByNameUnsafe(String name) {
 		checkLevel(SIGNATURES);
-		SootField foundField = null;
+		if (fields == null)
+			return null;
 
+		SootField foundField = null;
 		for (SootField field : fields.getElementsUnsorted()) {
 			if (field.getName().equals(name)) {
 				if (foundField == null)
@@ -327,6 +335,8 @@ public class SootClass extends AbstractHost implements Numberable {
 	 */
 	public SootField getFieldUnsafe(String subsignature) {
 		checkLevel(SIGNATURES);
+		if (fields == null)
+			return null;
 		for (SootField field : fields.getElementsUnsorted()) {
 			if (field.getSubSignature().equals(subsignature))
 				return field;
@@ -406,6 +416,8 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	public boolean declaresFieldByName(String name) {
 		checkLevel(SIGNATURES);
+		if (fields == null)
+			return false;
 		for (SootField field : fields) {
 			if (field.getName().equals(name))
 				return true;
@@ -419,6 +431,8 @@ public class SootClass extends AbstractHost implements Numberable {
 	 */
 	public boolean declaresField(String name, Type type) {
 		checkLevel(SIGNATURES);
+		if (fields == null)
+			return false;
 		for (SootField field : fields) {
 			if (field.getName().equals(name) && field.getType().equals(type))
 				return true;
@@ -651,6 +665,9 @@ public class SootClass extends AbstractHost implements Numberable {
 		SootField old = getFieldUnsafe(f.getName(), f.getType());
 		if (old != null)
 			return old;
+
+		if (fields == null)
+			fields = new HashChain<>();
 
 		fields.add(f);
 		f.isDeclared = true;

@@ -27,6 +27,7 @@
 package soot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -54,10 +55,10 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 	private String name;
 
 	/**
-	 * A list of parameter types taken by this <code>SootMethod</code> object,
+	 * An array of parameter types taken by this <code>SootMethod</code> object,
 	 * in declaration order.
 	 */
-	private List<Type> parameterTypes;
+	protected Type[] parameterTypes;
 
 	/** The return type of this object. */
 	private Type returnType;
@@ -169,11 +170,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 			List<SootClass> thrownExceptions) {
 		this.name = name;
 
-		if (parameterTypes != null && !parameterTypes.isEmpty()) {
-			this.parameterTypes = new ArrayList<Type>();
-			this.parameterTypes.addAll(parameterTypes);
-			this.parameterTypes = Collections.unmodifiableList(this.parameterTypes);
-		}
+		if (parameterTypes != null && !parameterTypes.isEmpty())
+			this.parameterTypes = parameterTypes.toArray(new Type[parameterTypes.size()]);
 
 		this.returnType = returnType;
 		this.modifiers = modifiers;
@@ -317,19 +315,19 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 
 	/** Returns the number of parameters taken by this method. */
 	public int getParameterCount() {
-		return parameterTypes == null ? 0 : parameterTypes.size();
+		return parameterTypes == null ? 0 : parameterTypes.length;
 	}
 
 	/** Gets the type of the <i>n</i>th parameter of this method. */
 	public Type getParameterType(int n) {
-		return parameterTypes.get(n);
+		return parameterTypes[n];
 	}
 
 	/**
 	 * Returns a read-only list of the parameter types of this method.
 	 */
 	public List<Type> getParameterTypes() {
-		return parameterTypes == null ? Collections.<Type>emptyList() : parameterTypes;
+		return parameterTypes == null ? Collections.<Type>emptyList() : Arrays.asList(parameterTypes);
 	}
 
 	/**
@@ -340,7 +338,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 		SootClass oldDeclaringClass = declaringClass;
 		if (wasDeclared)
 			oldDeclaringClass.removeMethod(this);
-		this.parameterTypes = Collections.unmodifiableList(new ArrayList<Type>(l));
+		this.parameterTypes = l.toArray(new Type[l.size()]);
 		subsignature = Scene.v().getSubSigNumberer().findOrAdd(getSubSignature());
 		if (wasDeclared)
 			oldDeclaringClass.addMethod(this);
@@ -676,7 +674,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 		buffer.append(Scene.v().quotedNameOf(name));
 		buffer.append("(");
 
-		if (params != null && !params.isEmpty()) {
+		if (params != null) {
 			for (int i = 0; i < params.size(); i++) {
 				buffer.append(params.get(i).getEscapedName());
 				if (i < params.size() - 1)
@@ -909,7 +907,8 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 	}
 
 	public SootMethodRef makeRef() {
-		return Scene.v().makeMethodRef(declaringClass, name, parameterTypes, returnType, isStatic());
+		return Scene.v().makeMethodRef(declaringClass, name,
+				parameterTypes == null ? null : Arrays.asList(parameterTypes), returnType, isStatic());
 	}
 
 	@Override
