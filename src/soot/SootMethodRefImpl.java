@@ -48,17 +48,21 @@ class SootMethodRefImpl implements SootMethodRef {
 			boolean isStatic) {
 		this.declaringClass = declaringClass;
 		this.name = name;
-		List<Type> l = new ArrayList<Type>();
-		l.addAll(parameterTypes);
-		this.parameterTypes = Collections.unmodifiableList(l);
+
+		if (parameterTypes == null)
+			this.parameterTypes = null;
+		else {
+			List<Type> l = new ArrayList<Type>();
+			l.addAll(parameterTypes);
+			this.parameterTypes = Collections.unmodifiableList(l);
+		}
+
 		this.returnType = returnType;
 		this.isStatic = isStatic;
 		if (declaringClass == null)
 			throw new RuntimeException("Attempt to create SootMethodRef with null class");
 		if (name == null)
 			throw new RuntimeException("Attempt to create SootMethodRef with null name");
-		if (parameterTypes == null)
-			throw new RuntimeException("Attempt to create SootMethodRef with null parameterTypes");
 		if (returnType == null)
 			throw new RuntimeException("Attempt to create SootMethodRef with null returnType");
 	}
@@ -80,7 +84,7 @@ class SootMethodRefImpl implements SootMethodRef {
 	}
 
 	public List<Type> parameterTypes() {
-		return parameterTypes;
+		return parameterTypes == null ? Collections.<Type>emptyList() : parameterTypes;
 	}
 
 	public Type returnType() {
@@ -114,8 +118,9 @@ class SootMethodRefImpl implements SootMethodRef {
 		private static final long serialVersionUID = 5430199603403917938L;
 
 		public ClassResolutionFailedException() {
-			super("Class " + declaringClass + " doesn't have method " + name + "(" + parameterTypes + ")" + " : "
-					+ returnType + "; failed to resolve in superclasses and interfaces");
+			super("Class " + declaringClass + " doesn't have method " + name + "("
+					+ (parameterTypes == null ? "" : parameterTypes) + ")" + " : " + returnType
+					+ "; failed to resolve in superclasses and interfaces");
 		}
 
 		public String toString() {

@@ -33,6 +33,7 @@ import soot.dava.toolkits.base.misc.PackageNamer;
 import soot.options.Options;
 import soot.tagkit.AbstractHost;
 import soot.util.Chain;
+import soot.util.EmptyChain;
 import soot.util.HashChain;
 import soot.util.Numberable;
 import soot.util.NumberedString;
@@ -65,12 +66,12 @@ import soot.validation.ValidationException;
 public class SootClass extends AbstractHost implements Numberable {
 	protected String name, shortName, fixedShortName, packageName, fixedPackageName;
 	protected int modifiers;
-	protected Chain<SootField> fields = new HashChain<SootField>();
-	protected SmallNumberedMap<SootMethod> subSigToMethods = new SmallNumberedMap<SootMethod>();
+	protected Chain<SootField> fields = new HashChain<>();
+	protected SmallNumberedMap<SootMethod> subSigToMethods = new SmallNumberedMap<>();
 	// methodList is just for keeping the methods in a consistent order. It
 	// needs to be kept consistent with subSigToMethods.
-	protected List<SootMethod> methodList = new ArrayList<SootMethod>();
-	protected Chain<SootClass> interfaces = new HashChain<SootClass>();
+	protected List<SootMethod> methodList = new ArrayList<>();
+	protected Chain<SootClass> interfaces = new HashChain<>();
 
 	protected boolean isInScene;
 	protected SootClass superClass;
@@ -150,11 +151,12 @@ public class SootClass extends AbstractHost implements Numberable {
 	 *             if the resolution is at an insufficient level
 	 */
 	public void checkLevel(int level) {
-		//Fast check: e.g. FastHierarchy.canStoreClass calls this method quite often
+		// Fast check: e.g. FastHierarchy.canStoreClass calls this method quite
+		// often
 		int currentLevel = resolvingLevel();
 		if (currentLevel >= level)
 			return;
-		
+
 		if (!Scene.v().doneResolving() || Options.v().ignore_resolving_levels())
 			return;
 		checkLevelIgnoreResolving(level);
@@ -700,7 +702,7 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	public int getInterfaceCount() {
 		checkLevel(HIERARCHY);
-		return interfaces.size();
+		return interfaces == null ? 0 : interfaces.size();
 	}
 
 	/**
@@ -708,9 +710,10 @@ public class SootClass extends AbstractHost implements Numberable {
 	 * this class. (see getInterfaceCount())
 	 */
 
+	@SuppressWarnings("unchecked")
 	public Chain<SootClass> getInterfaces() {
 		checkLevel(HIERARCHY);
-		return interfaces;
+		return interfaces == null ? EmptyChain.v() : interfaces;
 	}
 
 	/**
@@ -720,15 +723,13 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	public boolean implementsInterface(String name) {
 		checkLevel(HIERARCHY);
-		Iterator<SootClass> interfaceIt = getInterfaces().iterator();
+		if (interfaces == null)
+			return false;
 
-		while (interfaceIt.hasNext()) {
-			SootClass SootClass = interfaceIt.next();
-
-			if (SootClass.getName().equals(name))
+		for (SootClass sc : interfaces) {
+			if (sc.getName().equals(name))
 				return true;
 		}
-
 		return false;
 	}
 
@@ -741,6 +742,8 @@ public class SootClass extends AbstractHost implements Numberable {
 		checkLevel(HIERARCHY);
 		if (implementsInterface(interfaceClass.getName()))
 			throw new RuntimeException("duplicate interface: " + interfaceClass.getName());
+		if (interfaces == null)
+			interfaces = new HashChain<>();
 		interfaces.add(interfaceClass);
 	}
 
@@ -783,7 +786,8 @@ public class SootClass extends AbstractHost implements Numberable {
 	}
 
 	/**
-	 * This method returns the superclass, or null if no superclass has been specified for this class.
+	 * This method returns the superclass, or null if no superclass has been
+	 * specified for this class.
 	 * 
 	 * WARNING: interfaces are subclasses of the java.lang.Object class! Returns
 	 * the superclass of this class. (see hasSuperclass())
