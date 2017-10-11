@@ -17,6 +17,9 @@ public class EmptyChain implements Chain {
 	private static final Iterator emptyIterator = new Iterator() {
 
 		@Override
+		public void remove() { throw new NoSuchElementException(); }
+
+		@Override
 		public boolean hasNext() {
 			return false;
 		}
