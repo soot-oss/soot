@@ -30,32 +30,37 @@ public class LineNumberTag implements Tag
 {
     /* it is a u2 value representing line number. */
     int line_number;
+    
     public LineNumberTag(int ln)
     {
-	line_number = ln;
+    	line_number = ln;
     }
 
     public String getName()
     {
-	return "LineNumberTag";
+    	return "LineNumberTag";
     }
 
     public byte[] getValue()
     {
-	byte[] v = new byte[2];
-	v[0] = (byte)(line_number/256);
-	v[1] = (byte)(line_number%256);
-	return v;
+		byte[] v = new byte[2];
+		v[0] = (byte)(line_number/256);
+		v[1] = (byte)(line_number%256);
+		return v;
     }
 
     public int getLineNumber()
     {
-	return line_number;
+    	return line_number;
+    }
+    
+    public void setLineNumber(int value) {
+    	line_number = value;
     }
 
     public String toString()
     {
-   	return ""+line_number;
+    	return String.valueOf(line_number);
     }
 
 }
