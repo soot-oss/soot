@@ -42,7 +42,7 @@ import soot.util.NumberedString;
  * in the Java Virtual Machine Specification, 2nd ed, section 5.4.3.3.
  */
 
-class SootMethodRefImpl implements SootMethodRef {
+public class SootMethodRefImpl implements SootMethodRef {
 
 	public SootMethodRefImpl(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
 			boolean isStatic) {
@@ -69,32 +69,38 @@ class SootMethodRefImpl implements SootMethodRef {
 
 	private final SootClass declaringClass;
 	private final String name;
-	private final List<Type> parameterTypes;
+	protected List<Type> parameterTypes;
 	private final Type returnType;
 	private final boolean isStatic;
 
 	private NumberedString subsig;
 
+	@Override
 	public SootClass declaringClass() {
 		return declaringClass;
 	}
 
+	@Override
 	public String name() {
 		return name;
 	}
 
+	@Override
 	public List<Type> parameterTypes() {
 		return parameterTypes == null ? Collections.<Type>emptyList() : parameterTypes;
 	}
 
+	@Override
 	public Type returnType() {
 		return returnType;
 	}
 
+	@Override
 	public boolean isStatic() {
 		return isStatic;
 	}
 
+	@Override
 	public NumberedString getSubSignature() {
 		if (subsig == null) {
 			subsig = Scene.v().getSubSigNumberer()
@@ -103,12 +109,14 @@ class SootMethodRefImpl implements SootMethodRef {
 		return subsig;
 	}
 
+	@Override
 	public String getSignature() {
 		return SootMethod.getSignature(declaringClass, name, parameterTypes, returnType);
 	}
 
+	@Override
 	public Type parameterType(int i) {
-		return (Type) parameterTypes.get(i);
+		return parameterTypes.get(i);
 	}
 
 	public class ClassResolutionFailedException extends ResolutionFailedException {
@@ -123,6 +131,7 @@ class SootMethodRefImpl implements SootMethodRef {
 					+ "; failed to resolve in superclasses and interfaces");
 		}
 
+		@Override
 		public String toString() {
 			StringBuffer ret = new StringBuffer();
 			ret.append(super.toString());
@@ -271,6 +280,7 @@ class SootMethodRefImpl implements SootMethodRef {
 		return declaringClass.getOrAddMethod(m);
 	}
 
+	@Override
 	public String toString() {
 		return getSignature();
 	}
