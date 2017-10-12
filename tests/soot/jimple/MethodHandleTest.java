@@ -50,7 +50,6 @@ public class MethodHandleTest {
 
 
   @Test
-  @Ignore
   public void testInvoke() throws IOException {
 
     // First generate a classfile with a MethodHnadle

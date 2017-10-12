@@ -24,6 +24,7 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import fj.P;
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
 import soot.jimple.InvokeStmt;
@@ -141,6 +142,16 @@ class SootMethodRefImpl implements SootMethodRef {
 		return tryResolve(null);
 	}
 
+	public boolean isSignaturePolymorphic() {
+		if(!isStatic() && declaringClass.getName().equals("java.lang.invoke.MethodHandle")) {
+			if(name().equals("invoke") || name.equals("invokeExact")) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	private SootMethod checkStatic(SootMethod ret) {
 		if (ret.isStatic() != isStatic()) {
 			if (Options.v().wrong_staticness() != Options.wrong_staticness_ignore
@@ -152,6 +163,11 @@ class SootMethodRefImpl implements SootMethodRef {
 	}
 
 	private SootMethod tryResolve(StringBuffer trace) {
+
+		if(isSignaturePolymorphic()) {
+			return new SootMethod(name(), parameterTypes(), returnType(), Modifier.PUBLIC);
+		}
+
 		if (declaringClass.getName().equals("java.dyn.InvokeDynamic")) {
 			throw new IllegalStateException("Cannot resolve invokedynamic method references at compile time!");
 		}
