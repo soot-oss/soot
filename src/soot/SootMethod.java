@@ -873,11 +873,11 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 			Iterator<SootClass> exceptionIt = this.getExceptions().iterator();
 
 			if (exceptionIt.hasNext()) {
-				buffer.append(" throws " + exceptionIt.next().getName());
+				buffer.append(
                     " throws " + Scene.v().quotedNameOf(exceptionIt.next().getName()));
 
 				while (exceptionIt.hasNext()) {
-					buffer.append(", " + exceptionIt.next().getName());
+					buffer.append(
                         ", " + Scene.v().quotedNameOf(exceptionIt.next().getName()));
 				}
 			}

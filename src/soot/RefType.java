@@ -234,9 +234,6 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 			return RefType.v("java.lang.Object");
 		}
 		throw new RuntimeException("Attempt to get array base type of a non-array");
-		throw new RuntimeException(
-				"Attempt to get array base type of a non-array");
-
 	}
 
 	public AnySubType getAnySubType() {
