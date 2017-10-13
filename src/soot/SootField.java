@@ -49,8 +49,6 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 		this.name = name;
 		this.type = type;
 		this.modifiers = modifiers;
-		if (type instanceof RefLikeType)
-			Scene.v().getFieldNumberer().add(this);
 	}
 
 	/** Constructs a Soot field with the given name, type and no modifiers. */
@@ -58,8 +56,6 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 		this.name = name;
 		this.type = type;
 		this.modifiers = 0;
-		if (type instanceof RefLikeType)
-			Scene.v().getFieldNumberer().add(this);
 	}
 
 	public int equivHashCode() {
@@ -183,7 +179,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 		String qualifiers = Modifier.toString(modifiers) + " " + type.toString();
 		qualifiers = qualifiers.trim();
 
-		if (qualifiers.equals(""))
+		if (qualifiers.isEmpty())
 			return Scene.v().quotedNameOf(name);
 		else
 			return qualifiers + " " + Scene.v().quotedNameOf(name) + "";
@@ -214,5 +210,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
 	public void setDeclaringClass(SootClass sc) {
 		this.declaringClass = sc;
+		if (type instanceof RefLikeType)
+			Scene.v().getFieldNumberer().add(this);
 	}
 }
