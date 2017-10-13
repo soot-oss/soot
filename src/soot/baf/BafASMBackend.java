@@ -23,6 +23,7 @@ import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
+import soot.JastAddJ.Opt;
 import soot.Local;
 import soot.LongType;
 import soot.NullType;
@@ -39,6 +40,7 @@ import soot.TypeSwitch;
 import soot.Unit;
 import soot.UnitBox;
 import soot.Value;
+import soot.baf.internal.BPushInst;
 import soot.baf.internal.BafLocal;
 import soot.jimple.CaughtExceptionRef;
 import soot.jimple.ClassConstant;
@@ -118,6 +120,11 @@ public class BafASMBackend extends AbstractASMBackend {
 		}
 
 		for (Unit u : body.getUnits()) {
+			if (u instanceof PushInst) {
+				if(((PushInst) u).getConstant().getType().getEscapedName().equals("java.lang.invoke.MethodHandle")) {
+					return Options.java_version_1_7;
+				}
+			}
 			if (u instanceof DynamicInvokeInst) {
 				return Options.java_version_1_7;
 			}
@@ -441,8 +448,8 @@ public class BafASMBackend extends AbstractASMBackend {
 					} else {
 						tag = Opcodes.H_INVOKEVIRTUAL;
 					}
-					Handle handle = new Handle(tag, ref.declaringClass().getName(), ref.name(), ref.getSignature(),
-							ref.declaringClass().isInnerClass());
+					Handle handle = new Handle(tag, slashify(ref.declaringClass().getName()), ref.name(), toTypeDesc(ref),
+							ref.declaringClass().isInterface());
 
 					mv.visitLdcInsn(handle);
 				} else {
