@@ -40,6 +40,11 @@ public abstract class Type implements Switchable, Serializable, Numberable
     /** Returns a textual representation of this type. */
     public abstract String toString();
     
+    /** Returns a textual (and quoted as needed) representation of this type for serialization, e.g. to .jimple format */
+    public String toQuotedString() {
+    	return toString();
+    }
+    
     /** Converts the int-like types (short, byte, boolean and char) to IntType. */
     public static Type toMachineType(Type t)
     {
@@ -85,15 +90,6 @@ public abstract class Type implements Switchable, Serializable, Numberable
     	return false;
     }
     
-    /**
-     * Gets the escaped name of this type. If the type name is a reserved word, this
-     * method makes sure to properly escape it.
-     * @return The (potentially escaped) type name.
-     */
-    public String getEscapedName() {
-    	return toString();
-    }
-
     public final int getNumber() { return number; }
     public final void setNumber( int number ) { this.number = number; }
 
