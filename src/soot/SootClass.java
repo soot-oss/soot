@@ -95,8 +95,6 @@ public class SootClass extends AbstractHost implements Numberable {
 		if (Options.v().debug_resolver())
 			G.v().out.println("created " + name + " with modifiers " + modifiers);
 		setResolvingLevel(BODIES);
-
-		Scene.v().getClassNumberer().add(this);
 	}
 
 	/**
@@ -199,6 +197,8 @@ public class SootClass extends AbstractHost implements Numberable {
 	/** Tells this class if it is being managed by a Scene. */
 	public void setInScene(boolean isInScene) {
 		this.isInScene = isInScene;
+
+		Scene.v().getClassNumberer().add(this);
 	}
 
 	/**

@@ -32,12 +32,12 @@ public class RegisterAllocator {
 	
 	private int nextRegNum;
 	
-	private Map<String, Integer> localToLastRegNum;
+	private Map<Local, Integer> localToLastRegNum;
 	
 	private int paramRegCount;
 	
 	public RegisterAllocator() {
-		localToLastRegNum = new HashMap<String, Integer>();
+		localToLastRegNum = new HashMap<Local, Integer>();
 	}
 	
 	//
@@ -92,6 +92,10 @@ public class RegisterAllocator {
 	private AtomicInteger stringI = new AtomicInteger(0);
 	
 	private Set<Register> lockedRegisters = new HashSet<Register>();
+
+	private int lastReg;
+
+	private Register currentLocalRegister;
 	
 	private Register asConstant(Constant c, ConstantVisitor constantV) {
 		Register constantRegister = null;
@@ -130,8 +134,7 @@ public class RegisterAllocator {
 			    nextRegNum += SootToDexUtils.getDexWords(c.getType());
 			}
 			
-			constantRegister = rArray.get(iI.intValue()).clone();
-			iI.set(iI.intValue() + 1);
+			constantRegister = rArray.get(iI.getAndIncrement()).clone();
 			inConflict = lockedRegisters.contains(constantRegister);
 		}
 		
@@ -152,23 +155,21 @@ public class RegisterAllocator {
 	    stringI = new AtomicInteger(0);
 	}
 
-	public Map<String, Integer> getLocalToRegisterMapping() {
+	public Map<Local, Integer> getLocalToRegisterMapping() {
 		return localToLastRegNum;
 	}
 	
-	public Register asLocal(Local v) {
-		Local l = (Local) v;
-		String localName = l.getName();
+	public Register asLocal(Local local) {
 		Register localRegister;
-		if (localToLastRegNum.containsKey(localName)) {
+		Integer oldRegNum = localToLastRegNum.get(local);
+		if (oldRegNum != null) {
 			// reuse the reg num last seen for this local, since this is where the content is
-			int oldRegNum = localToLastRegNum.get(localName);
-			localRegister = new Register(l.getType(), oldRegNum);
+ 			localRegister = new Register(local.getType(), oldRegNum);
 		} else {
 			// use a new reg num for this local
-			localRegister = new Register(l.getType(), nextRegNum);
-			localToLastRegNum.put(localName, nextRegNum);
-			nextRegNum += SootToDexUtils.getDexWords(l.getType());
+			localRegister = new Register(local.getType(), nextRegNum);
+			localToLastRegNum.put(local, nextRegNum);
+			nextRegNum += SootToDexUtils.getDexWords(local.getType());
 		}
 		return localRegister;
 	}
@@ -176,7 +177,7 @@ public class RegisterAllocator {
 	public void asParameter(SootMethod sm, Local l) {
 		// If we already have a register for this parameter, there is nothing
 		// more to be done here.
-		if (localToLastRegNum.containsKey(l.getName()))
+		if (localToLastRegNum.containsKey(l))
 			return;
 		
 		// since a parameter in dex always has a register, we handle it like a new local without the need of a new register
@@ -213,7 +214,7 @@ public class RegisterAllocator {
 		if(!found)
 			throw new RuntimeException("Parameter local not found");
 		
-		localToLastRegNum.put(l.getName(), paramRegNum);
+		localToLastRegNum.put(l, paramRegNum);
 		int wordsforParameters = SootToDexUtils.getDexWords(l.getType());
 		nextRegNum = Math.max(nextRegNum + wordsforParameters, paramRegNum + wordsforParameters);
 		paramRegCount += wordsforParameters;
@@ -230,8 +231,15 @@ public class RegisterAllocator {
 	}
 	
 	public Register asTmpReg(Type regType) {
-		String tmpRegName = "tmp" + getRegCount();
-		return asLocal(new JimpleLocal(tmpRegName, regType));
+		
+		int newRegCount = getRegCount();
+		if (lastReg == newRegCount)
+		{
+			return currentLocalRegister;
+		}
+		currentLocalRegister = asLocal(new TemporaryRegisterLocal(regType));
+		lastReg = newRegCount;
+		return currentLocalRegister;
 	}
 	
 	public void increaseRegCount(int amount) {

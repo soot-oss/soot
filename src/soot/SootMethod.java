@@ -186,7 +186,6 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 			 */
 		}
 		final Scene scene = Scene.v();
-		scene.getMethodNumberer().add(this);
 		subsignature = scene.getSubSigNumberer().findOrAdd(getSubSignature());
 
 	}
@@ -211,6 +210,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 			declaringClass = declClass;
 			// setDeclared(true);
 		}
+		Scene.v().getMethodNumberer().add(this);
 	}
 
 	/** Returns the class which declares the current <code>SootMethod</code>. */
