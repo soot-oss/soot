@@ -928,7 +928,7 @@ public class Scene // extends AbstractHost
 	 * with the given name can be found.
 	 */
 	public RefType getRefTypeUnsafe(String className) {
-		RefType refType = nameToClass.get(unescapeName(className));
+        RefType refType = nameToClass.get(className);
 		return refType;
 	}
 
@@ -961,8 +961,9 @@ public class Scene // extends AbstractHost
 			if (tsc != null)
 				return tsc;
 		}
-
-		if (allowsPhantomRefs() || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
+		
+		if (allowsPhantomRefs() ||
+				   className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
 			SootClass c = new SootClass(className);
 			c.isPhantom = true;
 			addClassSilent(c);

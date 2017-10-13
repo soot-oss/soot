@@ -30,8 +30,7 @@ public class NormalUnitPrinter extends LabeledUnitPrinter {
 
     public void type( Type t ) { 
         handleIndent();
-        String s = t==null ? "<null>"  : t.toString();
-        if( t instanceof RefType ) s = Scene.v().quotedNameOf(s);
+        String s = t==null ? "<null>"  : t.toQuotedString();
         output.append( s );
     }
     public void methodRef( SootMethodRef m ) {

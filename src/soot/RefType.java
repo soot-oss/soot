@@ -143,6 +143,12 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 		return className;
 	}
 
+    /** Returns a textual representation, quoted as needed, of this type for serialization, e.g. to .jimple format */
+	@Override
+    public String toQuotedString() {
+    	return Scene.v().quotedNameOf(className);
+    }
+
 	public int hashCode() {
 		return className.hashCode();
 	}
@@ -228,7 +234,6 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 			return RefType.v("java.lang.Object");
 		}
 		throw new RuntimeException("Attempt to get array base type of a non-array");
-
 	}
 
 	public AnySubType getAnySubType() {
@@ -242,10 +247,5 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 	public boolean isAllowedInFinalCode() {
 		return true;
 	}
-
-	@Override
-	public String getEscapedName() {
-		return Scene.v().quotedNameOf(getClassName());
-	}
-
+	
 }
