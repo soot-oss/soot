@@ -131,6 +131,7 @@
   <class>soot.toolkits.exceptions.ThrowableSet.Manager</class>
   <class>soot.toolkits.exceptions.UnitThrowAnalysis</class>
   <class>soot.dexpler.DalvikThrowAnalysis</class>
+  <class>soot.dexpler.DexFileProvider</class>
   <class>soot.toolkits.exceptions.PedanticThrowAnalysis</class>
   <class>soot.toolkits.exceptions.TrapTightener</class>
   <class>soot.toolkits.exceptions.DuplicateCatchAllTrapRemover</class>

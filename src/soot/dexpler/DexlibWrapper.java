@@ -24,18 +24,13 @@
 
 package soot.dexpler;
 
-import org.jf.dexlib2.DexFileFactory;
-import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
 import org.jf.dexlib2.iface.DexFile;
-import org.jf.dexlib2.iface.MultiDexContainer;
 import soot.*;
 import soot.javaToJimple.IInitialResolver.Dependencies;
-import soot.options.Options;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.*;
 
 /**
@@ -63,77 +58,43 @@ public class DexlibWrapper {
 
     private final DexClassLoader dexLoader = new DexClassLoader();
     private final Map<String, ClassDef> classesToDefItems = new HashMap<String, ClassDef>();
-    private final File inputDexFile;
-    private List<DexBackedDexFile> dexList;
+    private final Collection<DexBackedDexFile> dexFiles;
+
 
     /**
      * Construct a DexlibWrapper from a dex file and stores its classes
      * referenced by their name. No further process is done here.
-     *
-     * @param inputDexFile the dex file or an apk/zip/jar with multiple dex files.
      */
 
-    public DexlibWrapper(File inputDexFile) {
-        this.inputDexFile = inputDexFile;
+    public DexlibWrapper(File dexSource) {
+        this.dexFiles = DexFileProvider.v().getDexFiles(dexSource);
     }
 
     public void initialize() {
-        try {
-            int api = Scene.v().getAndroidAPIVersion();
-            boolean multiple_dex = Options.v().process_multiple_dex();
-
-            // load dex files from apk/folder/file
-            MultiDexContainer<? extends DexBackedDexFile> dexContainer = DexFileFactory.loadDexContainer(inputDexFile, Opcodes.forApi(api));
-
-            int dexFileCount = dexContainer.getDexEntryNames().size();
-
-            if (dexFileCount < 1)
-                throw new RuntimeException(String.format("No dex file found in '%s'", inputDexFile));
-
-            dexList = new ArrayList<>(dexFileCount);
-
-            // report found dex files and add to list.
-            // We do this in reverse order to make sure that we add the first entry if there is no classes.dex file in single dex mode
-            ListIterator<String> entryNames = dexContainer.getDexEntryNames().listIterator(dexFileCount);
-            while (entryNames.hasPrevious()) {
-                String entryName = entryNames.previous();
-                DexBackedDexFile entry = dexContainer.getEntry(entryName);
-                G.v().out.println(String.format("Found dex file '%s' with %d classes in '%s'", entryName, entry.getClasses().size(), inputDexFile.getName()));
-
-                if (multiple_dex)
-                    dexList.add(entry);
-                else if (dexList.isEmpty() && (entryName.equals("classes.dex") || !entryNames.hasPrevious())) {
-                    // We prefer to have classes.dex in single dex mode.
-                    // If we haven't found a classes.dex until the last element, take the last!
-                    dexList = Collections.singletonList(entry);
-                    G.v().out.println("WARNING: Multiple dex files detected, only processing '" + entryName + "'. Use '-process-multiple-dex' option to process them all.");
-                }
+        // resolve classes in dex files
+        for (DexBackedDexFile dexFile : dexFiles) {
+            for (ClassDef defItem : dexFile.getClasses()) {
+                String forClassName = Util.dottedClassName(defItem.getType());
+                classesToDefItems.put(forClassName, defItem);
             }
+        }
 
-            // resolve classes in dex files
-            for (DexBackedDexFile dexFile : dexList) {
-                for (ClassDef defItem : dexFile.getClasses()) {
-                    String forClassName = Util.dottedClassName(defItem.getType());
-                    classesToDefItems.put(forClassName, defItem);
+        // It is important to first resolve the classes, otherwise we will produce an error during type resolution.
+        for (DexBackedDexFile dexFile : dexFiles) {
+            for (int i = 0; i < dexFile.getTypeCount(); i++) {
+                String t = dexFile.getType(i);
+
+                Type st = DexType.toSoot(t);
+                if (st instanceof ArrayType) {
+                    st = ((ArrayType) st).baseType;
                 }
-            }
-
-            // It is important to first resolve the classes, otherwise we will produce an error during type resolution.
-            for (DexBackedDexFile dexFile : dexList) {
-                for (int i = 0; i < dexFile.getTypeCount(); i++) {
-                    String t = dexFile.getType(i);
-
-                    Type st = DexType.toSoot(t);
-                    if (st instanceof ArrayType) {
-                        st = ((ArrayType) st).baseType;
-                    }
-                    String sootTypeName = st.toString();
-                    if (!Scene.v().containsClass(sootTypeName)) {
-                        if (st instanceof PrimType || st instanceof VoidType
-                                || systemAnnotationNames.contains(sootTypeName)) {
-                            // dex files contain references to the Type IDs of void
-                            // primitive types - we obviously do not want them
-                            // to be resolved
+                String sootTypeName = st.toString();
+                if (!Scene.v().containsClass(sootTypeName)) {
+                    if (st instanceof PrimType || st instanceof VoidType
+                            || systemAnnotationNames.contains(sootTypeName)) {
+                        // dex files contain references to the Type IDs of void
+                        // primitive types - we obviously do not want them
+                        // to be resolved
                                 /*
                                  * dex files contain references to the Type IDs of
                                  * the system annotations. They are only visible to
@@ -141,15 +102,12 @@ public class DexlibWrapper {
                                  * vm/reflect/Annotations.cpp), and not to the user
                                  * - so we do not want them to be resolved.
                                  */
-                            continue;
-                        }
-                        SootResolver.v().makeClassRef(sootTypeName);
+                        continue;
                     }
-                    SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
+                    SootResolver.v().makeClassRef(sootTypeName);
                 }
+                SootResolver.v().resolveClass(sootTypeName, SootClass.SIGNATURES);
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -159,7 +117,7 @@ public class DexlibWrapper {
             className = Util.dottedClassName(className);
         }
 
-        for (DexFile dexFile : dexList) {
+        for (DexFile dexFile : dexFiles) {
             ClassDef defItem = classesToDefItems.get(className);
             if (dexFile.getClasses().contains(defItem))
                 return dexLoader.makeSootClass(sc, defItem, dexFile);
