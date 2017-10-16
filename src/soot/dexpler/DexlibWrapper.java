@@ -31,6 +31,7 @@ import soot.*;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -67,7 +68,11 @@ public class DexlibWrapper {
      */
 
     public DexlibWrapper(File dexSource) {
-        this.dexFiles = DexFileProvider.v().getDexFiles(dexSource);
+        try {
+            this.dexFiles = DexFileProvider.v().getDexFiles(dexSource);
+        } catch (IOException e) {
+            throw new CompilationDeathException("IOException during dex parsing", e);
+        }
     }
 
     public void initialize() {

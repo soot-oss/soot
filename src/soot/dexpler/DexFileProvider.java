@@ -38,8 +38,8 @@ public class DexFileProvider {
      * @param dexSourceFile Path to a jar, apk, dex, odex, etc. file
      * @return List of dex files derived from source file
      */
-    public Map<String, DexBackedDexFile> getDexNameToFileMapping(File dexSourceFile) {
-        String key = dexSourceFile.getAbsolutePath();
+    public Map<String, DexBackedDexFile> getDexNameToFileMapping(File dexSourceFile) throws IOException {
+        String key = dexSourceFile.getCanonicalPath();
 
         Map<String, DexBackedDexFile> dexFiles = dexMap.get(key);
         if (dexFiles == null) {
@@ -57,11 +57,11 @@ public class DexFileProvider {
      * @param dexSourceFile Path to a jar, apk, dex, odex, etc. file
      * @return List of dex files derived from source file
      */
-    public Collection<DexBackedDexFile> getDexFiles(File dexSourceFile) {
+    public Collection<DexBackedDexFile> getDexFiles(File dexSourceFile) throws IOException {
         return getDexNameToFileMapping(dexSourceFile).values();
     }
 
-    public DexBackedDexFile getDexInFile(File dexSourceFile, String fileName) {
+    public DexBackedDexFile getDexInFile(File dexSourceFile, String fileName) throws IOException {
         DexBackedDexFile dexFile = getDexNameToFileMapping(dexSourceFile).get(fileName);
         if (dexFile == null)
             throw new CompilationDeathException("Dex file with name '" + fileName + "' not found in " + dexSourceFile);
@@ -75,7 +75,8 @@ public class DexFileProvider {
         // load dex files from apk/folder/file
         MultiDexContainer<? extends DexBackedDexFile> dexContainer = DexFileFactory.loadDexContainer(dexSourceFile, Opcodes.forApi(api));
 
-        int dexFileCount = dexContainer.getDexEntryNames().size();
+        List<String> dexEntryNameList = dexContainer.getDexEntryNames();
+        int dexFileCount = dexEntryNameList.size();
 
         if (dexFileCount < 1)
             throw new RuntimeException(String.format("No dex file found in '%s'", dexSourceFile));
@@ -84,15 +85,15 @@ public class DexFileProvider {
 
         // report found dex files and add to list.
         // We do this in reverse order to make sure that we add the first entry if there is no classes.dex file in single dex mode
-        ListIterator<String> entryNames = dexContainer.getDexEntryNames().listIterator(dexFileCount);
-        while (entryNames.hasPrevious()) {
-            String entryName = entryNames.previous();
+        ListIterator<String> entryNameIterator = dexEntryNameList.listIterator(dexFileCount);
+        while (entryNameIterator.hasPrevious()) {
+            String entryName = entryNameIterator.previous();
             DexBackedDexFile entry = dexContainer.getEntry(entryName);
             G.v().out.println(String.format("Found dex file '%s' with %d classes in '%s'", entryName, entry.getClasses().size(), dexSourceFile.getName()));
 
             if (multiple_dex)
                 dexMap.put(entryName, entry);
-            else if (dexMap.isEmpty() && (entryName.equals("classes.dex") || !entryNames.hasPrevious())) {
+            else if (dexMap.isEmpty() && (entryName.equals("classes.dex") || !entryNameIterator.hasPrevious())) {
                 // We prefer to have classes.dex in single dex mode.
                 // If we haven't found a classes.dex until the last element, take the last!
                 dexMap = Collections.singletonMap(entryName, entry);
