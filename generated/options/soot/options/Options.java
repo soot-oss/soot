@@ -262,11 +262,6 @@ public class Options extends OptionsBase {
             )
                 process_multiple_dex = true;
     	
-            else if( false 
-            || option.equals( "ignore-dex-loading-errors" )
-            )
-                ignore_dex_loading_errors = true;
-    	
             else if( false
             || option.equals( "process-path" )
             || option.equals( "process-dir" )
@@ -1548,10 +1543,6 @@ public class Options extends OptionsBase {
     private boolean process_multiple_dex = false;
     public void set_process_multiple_dex( boolean setting ) { process_multiple_dex = setting; }
   
-    public boolean ignore_dex_loading_errors() { return ignore_dex_loading_errors; }
-    private boolean ignore_dex_loading_errors = false;
-    public void set_ignore_dex_loading_errors( boolean setting ) { ignore_dex_loading_errors = setting; }
-  
     public List<String> process_dir() { 
         if( process_dir == null )
             return java.util.Collections.emptyList();
@@ -1822,7 +1813,6 @@ public class Options extends OptionsBase {
 +padOpt(" -pp -prepend-classpath", "Prepend the given soot classpath to the default classpath." )
 +padOpt(" -ice -ignore-classpath-errors", "Ignores invalid entries on the Soot classpath." )
 +padOpt(" -process-multiple-dex", "Process all DEX files found in APK." )
-+padOpt(" -ignore-dex-loading-errors", "Ignore errors when loading DEX files found in APK/ZIP" )
 +padOpt(" -process-path DIR -process-dir DIR", "Process all classes found in DIR" )
 +padOpt(" -oaat", "From the process-dir, processes one class at a time." )
 +padOpt(" -android-jars PATH", "Use PATH as the path for finding the android.jar file" )

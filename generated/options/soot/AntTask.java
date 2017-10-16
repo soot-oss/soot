@@ -201,10 +201,6 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-process-multiple-dex");
         }
   
-        public void setignore_dex_loading_errors(boolean arg) {
-            if(arg) addArg("-ignore-dex-loading-errors");
-        }
-  
         public void setprocess_dir(Path arg) {
             if(process_dir == null )
                 process_dir = new Path(getProject());
