@@ -69,7 +69,11 @@ public class DexlibWrapper {
 
     public DexlibWrapper(File dexSource) {
         try {
-            this.dexFiles = DexFileProvider.v().getDexFiles(dexSource);
+            List<DexFileProvider.DexContainer> containers = DexFileProvider.v().getDexFromSource(dexSource);
+            this.dexFiles = new ArrayList<>(containers.size());
+            for (DexFileProvider.DexContainer container : containers) {
+                this.dexFiles.add(container.getBase());
+            }
         } catch (IOException e) {
             throw new CompilationDeathException("IOException during dex parsing", e);
         }

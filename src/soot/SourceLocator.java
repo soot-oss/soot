@@ -24,6 +24,7 @@ import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
+import soot.dexpler.DexFileProvider;
 import soot.options.Options;
 
 import java.io.*;
@@ -286,14 +287,15 @@ public class SourceLocator {
         // Get the dex file from an apk
         if (cst == ClassSourceType.apk || cst == ClassSourceType.dex) {
             try {
-                classes.addAll(DexClassProvider.classesOfDex(new File(aPath)));
+                for (DexFileProvider.DexContainer dex : DexFileProvider.v().getDexFromSource(new File(aPath))) {
+                    classes.addAll(DexClassProvider.classesOfDex(dex.getBase()));
+                }
             } catch (IOException e) {
                 throw new CompilationDeathException("Error reading dex source", e);
             }
         }
         // load Java class files from ZIP and JAR
         else if (cst == ClassSourceType.jar || cst == ClassSourceType.zip) {
-            Set<String> dexEntryNames = new HashSet<String>();
             ZipFile archive = null;
             try {
                 archive = new ZipFile(aPath);
@@ -305,8 +307,6 @@ public class SourceLocator {
                         entryName = entryName.substring(0, extensionIndex);
                         entryName = entryName.replace('/', '.');
                         classes.add(prefix + entryName);
-                    } else if (entryName.endsWith(".dex")) {
-                        dexEntryNames.add(entryName);
                     }
                 }
             } catch (Throwable e) {
@@ -319,21 +319,13 @@ public class SourceLocator {
                 }
             }
 
-            if (!dexEntryNames.isEmpty()) {
-                File file = new File(aPath);
-                if (Options.v().process_multiple_dex()) {
-                    for (String dexEntryName : dexEntryNames) {
-                        try {
-                            classes.addAll(DexClassProvider.classesOfDex(file, dexEntryName));
-                        } catch (Throwable e) {
-                        } /* Ignore unreadable files */
-                    }
-                } else {
-                    try {
-                        classes.addAll(DexClassProvider.classesOfDex(file));
-                    } catch (Throwable e) {
-                    } /* Ignore unreadable files */
+            // we might have dex files inside the archive
+            try {
+                for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(new File(aPath))) {
+                    classes.addAll(DexClassProvider.classesOfDex(container.getBase()));
                 }
+            } catch (IOException e) {
+                /* Ignore unreadable files */
             }
         } else if (cst == ClassSourceType.directory) {
             File file = new File(aPath);
@@ -362,7 +354,9 @@ public class SourceLocator {
                         classes.add(prefix + fileName.substring(0, index));
                     } else if (fileName.endsWith(".dex")) {
                         try {
-                            classes.addAll(DexClassProvider.classesOfDex(element));
+                            for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(element)) {
+                                classes.addAll(DexClassProvider.classesOfDex(container.getBase()));
+                            }
                         } catch (IOException e) { /* Ignore unreadable files */
                         }
                     }

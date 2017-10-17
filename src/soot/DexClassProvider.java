@@ -22,6 +22,7 @@ import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
 import soot.dexpler.DexFileProvider;
 import soot.dexpler.Util;
+import soot.options.Options;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,34 +33,11 @@ import java.util.*;
  */
 public class DexClassProvider implements ClassProvider {
 
-    /**
-     * Return names of classes in dex/apk file.
-     *
-     * @param file file to dex/apk file. Can be the path of a zip file.
-     * @return set of class names
-     */
-    public static Set<String> classesOfDex(File file) throws IOException {
-        return classesOfDex(DexFileProvider.v().getDexFiles(file));
-    }
-
-    /**
-     * Return names of classes in the given dex/apk file.
-     *
-     * @param file    file to dex/apk file. Can be the path of a zip file.
-     * @param dexName a name of a given dex file
-     * @return set of class names
-     */
-    public static Set<String> classesOfDex(File file, String dexName) throws IOException {
-        return classesOfDex(Collections.singletonList(DexFileProvider.v().getDexInFile(file, dexName)));
-    }
-
-    public static Set<String> classesOfDex(Collection<DexBackedDexFile> dexFiles) {
+    public static Set<String> classesOfDex(DexBackedDexFile dexFile) {
         Set<String> classes = new HashSet<String>();
-        for (DexBackedDexFile dexFile : dexFiles) {
-            for (ClassDef c : dexFile.getClasses()) {
-                String name = Util.dottedClassName(c.getType());
-                classes.add(name);
-            }
+        for (ClassDef c : dexFile.getClasses()) {
+            String name = Util.dottedClassName(c.getType());
+            classes.add(name);
         }
         return classes;
     }
@@ -101,26 +79,6 @@ public class DexClassProvider implements ClassProvider {
         }
     }
 
-    private List<File> getAllPossibleDexSources(String path) {
-        Queue<File> toVisit = new ArrayDeque<File>();
-        Set<File> visited = new HashSet<File>();
-        List<File> ret = new ArrayList<File>();
-        toVisit.add(new File(path));
-        while (!toVisit.isEmpty()) {
-            File cur = toVisit.poll();
-            if (visited.contains(cur))
-                continue;
-            visited.add(cur);
-            if (cur.isDirectory()) {
-                toVisit.addAll(Arrays.asList(cur.listFiles()));
-            } else if (cur.isFile() && !cur.getName().equals("android.jar") && (cur.getName().endsWith(".dex") || cur.getName().endsWith(".apk") ||
-                    cur.getName().endsWith(".zip") || cur.getName().endsWith(".jar"))) {
-                ret.add(cur);
-            }
-        }
-        return ret;
-    }
-
     /**
      * Build index of ClassName-to-File mappings.
      *
@@ -129,21 +87,28 @@ public class DexClassProvider implements ClassProvider {
      */
     private void buildDexIndex(Map<String, File> index, List<String> classPath) {
         for (String path : classPath) {
-            List<File> dexSources = getAllPossibleDexSources(path);
-            for (File dexSource : dexSources) {
-                try {
-                    for (String className : classesOfDex(dexSource)) {
-                        index.put(className, dexSource);
+            try {
+                if(path.contains(Options.v().android_jars()))
+                    break;
+
+                for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(new File(path))) {
+                    for (String className : classesOfDex(container.getBase())) {
+                        if (!index.containsKey(className))
+                            index.put(className, container.getFilePath());
+                        else
+                            G.v().out.println(String.format("Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.",
+                                    className, container.getDexName(), container.getFilePath().getCanonicalPath()));
                     }
-                } catch (IOException e) {
-                    G.v().out.println("Warning: IO error while processing dex file '" + dexSource + "'");
-                    G.v().out.println("Exception: " + e);
-                } catch (Exception e) {
-                    G.v().out.println("Warning: exception while processing dex file '" + dexSource + "'");
-                    G.v().out.println("Exception: " + e);
                 }
+            } catch (IOException e) {
+                G.v().out.println("Warning: IO error while processing dex file '" + path + "'");
+                G.v().out.println("Exception: " + e);
+            } catch (Exception e) {
+                G.v().out.println("Warning: exception while processing dex file '" + path + "'");
+                G.v().out.println("Exception: " + e);
             }
         }
+
     }
 }
 
