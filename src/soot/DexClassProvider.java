@@ -88,9 +88,6 @@ public class DexClassProvider implements ClassProvider {
     private void buildDexIndex(Map<String, File> index, List<String> classPath) {
         for (String path : classPath) {
             try {
-                if(path.contains(Options.v().android_jars()))
-                    break;
-
                 for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(new File(path))) {
                     for (String className : classesOfDex(container.getBase())) {
                         if (!index.containsKey(className))
