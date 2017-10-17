@@ -95,7 +95,7 @@ public class DexClassProvider implements ClassProvider {
                     for (String className : classesOfDex(container.getBase())) {
                         if (!index.containsKey(className))
                             index.put(className, container.getFilePath());
-                        else
+                        else if(Options.v().verbose())
                             G.v().out.println(String.format("Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.",
                                     className, container.getDexName(), container.getFilePath().getCanonicalPath()));
                     }

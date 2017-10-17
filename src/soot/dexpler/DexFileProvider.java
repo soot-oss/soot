@@ -86,7 +86,7 @@ public class DexFileProvider {
         }
 
         if (resultList.size() > 1)
-            Collections.sort(resultList, prioritizer);
+            Collections.sort(resultList, Collections.reverseOrder(prioritizer));
         return resultList;
     }
 
@@ -164,7 +164,8 @@ public class DexFileProvider {
         while (entryNameIterator.hasPrevious()) {
             String entryName = entryNameIterator.previous();
             DexBackedDexFile entry = dexContainer.getEntry(entryName);
-            G.v().out.println(String.format("Found dex file '%s' with %d classes in '%s'", entryName, entry.getClasses().size(), dexSourceFile.getName()));
+            entryName = deriveDexName(entryName);
+            G.v().out.println(String.format("Found dex file '%s' with %d classes in '%s'", entryName, entry.getClasses().size(), dexSourceFile.getCanonicalPath()));
 
             if (multiple_dex)
                 dexMap.put(entryName, new DexContainer(entry, entryName, dexSourceFile));
@@ -176,6 +177,10 @@ public class DexFileProvider {
             }
         }
         return Collections.unmodifiableMap(dexMap);
+    }
+
+    private String deriveDexName(String entryName) {
+        return new File(entryName).getName();
     }
 
     private List<File> getAllDexFilesInDirectory(File path) {
