@@ -19,20 +19,35 @@
 
 package soot;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Enumeration;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.StringTokenizer;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
+
 import soot.JavaClassProvider.JarException;
 import soot.asm.AsmClassProvider;
 import soot.dexpler.DexFileProvider;
 import soot.options.Options;
-
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.regex.Pattern;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
 
 /**
  * Provides utility methods to retrieve an input stream for a class name, given
@@ -171,7 +186,8 @@ public class SourceLocator {
             try {
                 ClassSource ret = new ClassProvider() {
 
-                    public ClassSource find(String className) {
+                    @Override
+					public ClassSource find(String className) {
                         String fileName = className.replace('.', '/') + ".class";
                         InputStream stream = cl.getResourceAsStream(fileName);
                         if (stream == null)
@@ -324,6 +340,8 @@ public class SourceLocator {
                 for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(new File(aPath))) {
                     classes.addAll(DexClassProvider.classesOfDex(container.getBase()));
                 }
+            } catch (CompilationDeathException e) 
+            { //There might be cases where there is no dex file within a JAR or ZIP file...
             } catch (IOException e) {
                 /* Ignore unreadable files */
             }
