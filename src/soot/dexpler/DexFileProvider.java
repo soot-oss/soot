@@ -1,18 +1,30 @@
 package soot.dexpler;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayDeque;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.ListIterator;
+import java.util.Map;
+import java.util.Queue;
+import java.util.Set;
+
 import org.jf.dexlib2.DexFileFactory;
 import org.jf.dexlib2.Opcodes;
 import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.MultiDexContainer;
+
 import soot.CompilationDeathException;
 import soot.G;
 import soot.Scene;
 import soot.Singletons;
 import soot.options.Options;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
 
 /**
  * Class providing dex files from a given source, e.g., jar, apk, dex, folder containing multiple dex files
@@ -154,7 +166,7 @@ public class DexFileProvider {
         int dexFileCount = dexEntryNameList.size();
 
         if (dexFileCount < 1)
-            throw new RuntimeException(String.format("No dex file found in '%s'", dexSourceFile));
+            throw new IOException(String.format("No dex file found in '%s'", dexSourceFile));
 
         Map<String, DexContainer> dexMap = new HashMap<>(dexFileCount);
 
