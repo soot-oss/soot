@@ -434,15 +434,25 @@ ignore such errors, enable this option.
 </long_desc>
 		</boolopt>
 		<boolopt>
-			<name>Process all DEX files in APK</name>
-			<alias>process-multiple-dex</alias>
-			<short_desc>Process all DEX files found in APK.</short_desc>
+		<name>Process all DEX files in APK</name>
+		<alias>process-multiple-dex</alias>
+		<short_desc>Process all DEX files found in APK.</short_desc>
+		<long_desc>
+			<p>
+				Android APKs can have more than one default classes.dex. By default Soot loads only classes from the default one. This option
+				enables loading of all DEX files from an APK.
+			</p>
+		</long_desc>
+	</boolopt>
+		<boolopt>
+			<name>Search DEX files in Jar and Zip files</name>
+			<alias>search-dex-in-archives</alias>
+			<short_desc>Also includes Jar and Zip files when searching for DEX files under the provided classpath.</short_desc>
 			<long_desc>
-<p>
-Android APKs can have more than one default classes.dex. By default Soot loads only classes from the default one. This option
-enables loading of all DEX files from an APK.
-</p>
-</long_desc>
+				<p>
+					By default, Soot searches for DEX files in APKs and folders. This option instructs Soot to also search for DEX files in Zip and Jar files on the classpath.
+				</p>
+			</long_desc>
 		</boolopt>
 		<listopt>
 			<name>Process Directories</name>

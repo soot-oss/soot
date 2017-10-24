@@ -201,6 +201,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-process-multiple-dex");
         }
   
+        public void setsearch_dex_in_archives(boolean arg) {
+            if(arg) addArg("-search-dex-in-archives");
+        }
+  
         public void setprocess_dir(Path arg) {
             if(process_dir == null )
                 process_dir = new Path(getProject());

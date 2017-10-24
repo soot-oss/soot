@@ -74,7 +74,7 @@ public enum IdentityValidator implements BodyValidator {
 			}
 		}
 		
-		if (!body.getMethod().isStatic() && !hasThisLocal) {
+		if (!(body.getMethod().isStatic() || body.getMethod().isStaticInitializer()) && !hasThisLocal) {
 			exception.add(new ValidationException(body, String.format("The method %s is not static, but does not have a this local", body.getMethod().getSignature())));
 		}
 		

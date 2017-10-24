@@ -2154,6 +2154,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			getConfig().put(getInput_Optionsprocess_multiple_dex_widget().getAlias(), new Boolean(boolRes));
 		}
 		
+		boolRes = getInput_Optionssearch_dex_in_archives_widget().getButton().getSelection();
+		
+		
+		defBoolRes = false;
+		
+
+		if (boolRes != defBoolRes) {
+			getConfig().put(getInput_Optionssearch_dex_in_archives_widget().getAlias(), new Boolean(boolRes));
+		}
+		
 		boolRes = getInput_Optionsoaat_widget().getButton().getSelection();
 		
 		
@@ -7015,6 +7025,16 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		return Input_Optionsprocess_multiple_dex_widget;
 	}	
 	
+	private BooleanOptionWidget Input_Optionssearch_dex_in_archives_widget;
+	
+	private void setInput_Optionssearch_dex_in_archives_widget(BooleanOptionWidget widget) {
+		Input_Optionssearch_dex_in_archives_widget = widget;
+	}
+	
+	public BooleanOptionWidget getInput_Optionssearch_dex_in_archives_widget() {
+		return Input_Optionssearch_dex_in_archives_widget;
+	}	
+	
 	private BooleanOptionWidget Input_Optionsoaat_widget;
 	
 	private void setInput_Optionsoaat_widget(BooleanOptionWidget widget) {
@@ -11025,7 +11045,23 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsprocess_multiple_dex_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process all DEX files in APK", "", "","process-multiple-dex", "\nAndroid APKs can have more than one default classes.dex. By \ndefault Soot loads only classes from the default one. This \noption enables loading of all DEX files from an APK. ", defaultBool)));
+		setInput_Optionsprocess_multiple_dex_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process all DEX files in APK", "", "","process-multiple-dex", "\n				Android APKs can have more than one default classes.dex. By \ndefault Soot loads only classes from the default one. This \noption 				enables loading of all DEX files from an APK. 			", defaultBool)));
+		
+		
+		
+		defKey = ""+" "+""+" "+"search-dex-in-archives";
+		defKey = defKey.trim();
+
+		if (isInDefList(defKey)) {
+			defaultBool = getBoolDef(defKey);	
+		}
+		else {
+			
+			defaultBool = false;
+			
+		}
+
+		setInput_Optionssearch_dex_in_archives_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Search DEX files in Jar and Zip files", "", "","search-dex-in-archives", "\n					By default, Soot searches for DEX files in APKs and \nfolders. This option instructs Soot to also search for DEX files \nin Zip and Jar files on the classpath. 				", defaultBool)));
 		
 		
 		
