@@ -19,11 +19,29 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.*;
-import soot.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+import soot.Body;
+import soot.FastHierarchy;
+import soot.G;
+import soot.Hierarchy;
+import soot.Scene;
+import soot.SceneTransformer;
+import soot.SootClass;
+import soot.SootField;
+import soot.SootMethod;
+import soot.SootMethodRef;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
 import soot.jbco.IJbcoTransform;
-import soot.jbco.util.*;
-import soot.jimple.*;
+import soot.jbco.util.BodyBuilder;
+import soot.jbco.util.Rand;
+import soot.jimple.InvokeExpr;
 
 /**
  * @author Michael Batchelder
@@ -74,7 +92,8 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 				fields.add(fIt.next().getName());
 			}
 
-			for (SootMethod m : c.getMethods()) {
+            final List<SootMethod> methods = new ArrayList<>(c.getMethods());
+            for (SootMethod m : methods) {
 				String subSig = m.getSubSignature();
 
 				if (!allowsRename(c, m))
@@ -119,7 +138,8 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 		}
 
 		for (SootClass c : scene.getApplicationClasses()) {
-			for (SootMethod m : c.getMethods()) {
+            final List<SootMethod> methods = new ArrayList<>(c.getMethods());
+            for (SootMethod m : methods) {
 				if (!m.isConcrete() || m.getDeclaringClass().isLibraryClass())
 					continue;
 				Body aBody = null;
