@@ -243,7 +243,7 @@ public class Scene // extends AbstractHost
 
 	public SootClass getMainClass() {
 		if (!hasMainClass())
-			throw new RuntimeException("There is no main class set!");
+			return null;
 
 		return mainClass;
 	}
