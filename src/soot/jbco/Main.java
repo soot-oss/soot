@@ -20,6 +20,8 @@
 package soot.jbco;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import soot.*;
 import soot.jbco.bafTransformations.*;
@@ -36,14 +38,14 @@ public class Main {
   public static boolean jbcoVerbose = false;
   public static boolean metrics = false;
   
-  public static Map<String, Integer> transformsToWeights = new HashMap<String, Integer>();
-  public static Map<String, Map<Object, Integer>> transformsToMethodsToWeights = new HashMap<String, Map<Object, Integer>>();
-  public static Map method2Locals2REALTypes = new HashMap();
-  public static Map<SootMethod, Map<Local, Local>> methods2Baf2JLocals = new HashMap<SootMethod, Map<Local, Local>>();
-  public static Map<SootMethod, List<Local>> methods2JLocals = new HashMap<SootMethod, List<Local>>();
-  public static List<SootClass> IntermediateAppClasses = new ArrayList<SootClass>();
+  public static Map<String, Integer> transformsToWeights = new ConcurrentHashMap<>();
+  public static Map<String, Map<Object, Integer>> transformsToMethodsToWeights = new ConcurrentHashMap<>();
+  public static Map method2Locals2REALTypes = new ConcurrentHashMap();
+  public static Map<SootMethod, Map<Local, Local>> methods2Baf2JLocals = new ConcurrentHashMap<>();
+  public static Map<SootMethod, List<Local>> methods2JLocals = new ConcurrentHashMap<>();
+  public static List<SootClass> IntermediateAppClasses = new CopyOnWriteArrayList<>();
   
-  static List<Transformer> jbcotransforms = new ArrayList<Transformer>();
+  static List<Transformer> jbcotransforms = new CopyOnWriteArrayList<>();
   
   static String[][] optionStrings = new String[][] { {"Rename Classes","Rename Methods","Rename Fields","Build API Buffer Methods","Build Library Buffer Classes","Goto Instruction Augmentation","Add Dead Switche Statements","Convert Arith. Expr. To Bitshifting Ops","Convert Branches to JSR Instructions","Disobey Constructor Conventions","Reuse Duplicate Sequences","Replace If(Non)Nulls with Try-Catch","Indirect If Instructions","Pack Locals into Bitfields","Reorder Loads Above Ifs","Combine Try and Catch Blocks","Embed Constants in Fields","Partially Trap Switches"}, 
     {"wjtp.jbco_cr",  "wjtp.jbco_mr",  "wjtp.jbco_fr", "wjtp.jbco_blbc",                "wjtp.jbco_bapibm",                        "jtp.jbco_gia",                  "jtp.jbco_adss",        "jtp.jbco_cae2bo",                     "bb.jbco_cb2ji",          "bb.jbco_dcc",               "bb.jbco_rds",                       "bb.jbco_riitcb",                                         "bb.jbco_iii",                                        "bb.jbco_plvb",               "bb.jbco_rlaii",                                "bb.jbco_ctbcb",                          "bb.jbco_ecvf",              "bb.jbco_ptss"                         }};
