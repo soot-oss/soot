@@ -200,10 +200,9 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
 
   private static SootClass getMainClassSafely()
   {
-      try {
+      if (Scene.v().hasMainClass()) {
           return Scene.v().getMainClass();
-      } catch (RuntimeException e) {
-          //catch non-existent main class exception and return null
+      } else {
           return null;
       }
   }
