@@ -95,7 +95,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 							res.add(m);
 						}
 						else if(IDESolver.DEBUG) 
-							System.err.println("Method "+m.getSignature()+" is referenced but has no body!");
+							logger.error(String.format("Method %s is referenced but has no body!", m.getSignature(), new Exception()));
 					}
 					
 					if (res != null) {
