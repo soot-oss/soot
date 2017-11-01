@@ -1175,7 +1175,7 @@ public class SootClass extends AbstractHost implements Numberable {
 	}
 
 	@Override
-	public final void setNumber(int number) {
+	public void setNumber(int number) {
 		this.number = number;
 	}
 
