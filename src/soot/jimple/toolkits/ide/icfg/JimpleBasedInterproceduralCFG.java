@@ -18,17 +18,22 @@
  */
 package soot.jimple.toolkits.ide.icfg;
 
-import heros.DontSynchronize;
-import heros.InterproceduralCFG;
-import heros.SynchronizedBy;
-import heros.ThreadSafe;
-import heros.solver.IDESolver;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
+
+import heros.DontSynchronize;
+import heros.InterproceduralCFG;
+import heros.SynchronizedBy;
+import heros.ThreadSafe;
+import heros.solver.IDESolver;
 import soot.Body;
 import soot.MethodOrMethodContext;
 import soot.PatchingChain;
@@ -39,9 +44,6 @@ import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.callgraph.Edge;
 import soot.jimple.toolkits.callgraph.EdgePredicate;
 import soot.jimple.toolkits.callgraph.Filter;
-
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
 
 
 /**
@@ -54,7 +56,9 @@ import com.google.common.cache.LoadingCache;
  */
 @ThreadSafe
 public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
-	
+
+    protected static final Logger logger = LoggerFactory.getLogger(IDESolver.class);
+
 	protected boolean includeReflectiveCalls = false;
 	
 	//retains only callers that are explicit call sites or Thread.start()
@@ -91,7 +95,7 @@ public class JimpleBasedInterproceduralCFG extends AbstractJimpleBasedICFG {
 							res.add(m);
 						}
 						else if(IDESolver.DEBUG) 
-							System.err.println("Method "+m.getSignature()+" is referenced but has no body!");
+							logger.error(String.format("Method %s is referenced but has no body!", m.getSignature(), new Exception()));
 					}
 					
 					if (res != null) {
