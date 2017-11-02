@@ -1082,7 +1082,27 @@ public class PAG implements PointsToAnalysis {
 			if (virtualCall && !virtualCallsToReceivers.containsKey(ie)) {
 				virtualCallsToReceivers.put(ie, parm);
 			}
-		} else if (e.kind() == Kind.PRIVILEGED) {
+		} else if {
+			InvokeExpr ie = e.srcStmt().getInvokeExpr();
+			boolean virtualCall = callAssigns.containsKey(ie);
+			assert virtualCall == true;
+
+			Node base = srcmpag.nodeFactory().getNode(((VirtualInvokeExpr) ie).getBase());
+			base = srcmpag.parameterize(base, e.srcCtxt());
+			base = base.getReplacement();
+
+			Node thiz = tgtmpag.nodeFactory().caseThis();
+			thiz = tgtmpag.parameterize(thiz, e.tgtCtxt());
+			thiz = thiz.getReplacement();
+
+			addEdge(base, thiz);
+			pval = addInterproceduralAssignment(base, thiz, e);
+			callAssigns.put(ie, pval);
+			callToMethod.put(ie, srcmpag.getMethod());
+			
+			virtualCallsToReceivers.put(ie, base);
+		}
+		else if (e.kind() == Kind.PRIVILEGED) {
 			// Flow from first parameter of doPrivileged() invocation
 			// to this of target, and from return of target to the
 			// return of doPrivileged()

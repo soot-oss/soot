@@ -42,6 +42,8 @@ public final class Kind implements Numberable
     public static final Kind EXECUTOR = new Kind( "EXECUTOR" );
     /** Implicit call to AsyncTask.doInBackground() due to AsyncTask.execute() call. */
     public static final Kind ASYNCTASK = new Kind( "ASYNCTASK" );
+    /** Implicit call to Handler.handleMessage(android.os.Message) due to Handler.sendxxxxMessagexxxx() call. */
+    public static final Kind HANDLER = new Kind( "HANDLER" );
     /** Implicit call to java.lang.ref.Finalizer.register from new bytecode. */
     public static final Kind FINALIZE = new Kind( "FINALIZE" );
     /** Implicit call to finalize() from java.lang.ref.Finalizer.invokeFinalizeMethod(). */
@@ -76,7 +78,7 @@ public final class Kind implements Numberable
     }
 
     public boolean isFake() {
-        return this == THREAD || this == EXECUTOR || this == ASYNCTASK || this == PRIVILEGED;
+        return this == THREAD || this == EXECUTOR || this == ASYNCTASK || this == PRIVILEGED || this == HANDLER;
     }
 
     /** Returns true if the call is due to an explicit invoke statement. */
@@ -118,6 +120,10 @@ public final class Kind implements Numberable
     	return this == EXECUTOR;
     }
 
+    public boolean isAsyncTask() {
+    	return this == ASYNCTASK;
+    }
+    
     public boolean isAsyncTask() {
     	return this == ASYNCTASK;
     }
