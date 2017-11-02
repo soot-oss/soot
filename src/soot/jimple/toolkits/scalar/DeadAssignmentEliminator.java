@@ -92,15 +92,17 @@ public class DeadAssignmentEliminator extends BodyTransformer
 	 * Does not work on grimp code because of the check on the right hand
 	 * side for side effects. 
 	 */
+	@Override
 	protected void internalTransform(Body b, String phaseName, Map<String, String> options)
 	{
 		boolean eliminateOnlyStackLocals = PhaseOptions.getBoolean(options, "only-stack-locals");
 
-		if (Options.v().verbose()) {
+		final Options soptions = Options.v();
+		if (soptions.verbose()) {
 			G.v().out.println("[" + b.getMethod().getName() + "] Eliminating dead code...");
 		}
 		
-		if (Options.v().time()) {
+		if (soptions.time()) {
 			Timers.v().deadCodeTimer.start();
 		}
 
@@ -161,7 +163,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
 					isEssential = false;
 					
 					if ( !checkInvoke ) {
-						checkInvoke |= as.containsInvokeExpr();
+						checkInvoke = as.containsInvokeExpr();
 					}
 					
 					if (rhs instanceof CastExpr) {
@@ -169,7 +171,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
 						CastExpr ce = (CastExpr) rhs;
 						Type t = ce.getCastType();
 						Value v = ce.getOp();
-						isEssential = !(t instanceof RefType && v == NullConstant.v());
+						isEssential = !(v instanceof NullConstant && t instanceof RefType);
 					}
 					else if (rhs instanceof InvokeExpr || 
 					    rhs instanceof ArrayRef || 
@@ -208,11 +210,14 @@ public class DeadAssignmentEliminator extends BodyTransformer
 						Type t2 = expr.getOp2().getType();
 
 						// Can trigger a division by zero
-						isEssential  = IntType.v().equals(t1) || LongType.v().equals(t1)
-						            || IntType.v().equals(t2) || LongType.v().equals(t2)
-						            || UnknownType.v().equals(t1) || UnknownType.v().equals(t2);	
 						
-						if (isEssential && IntType.v().equals(t2)) {
+						boolean t2Int = t2 instanceof IntType;
+						
+						isEssential  = t2Int || t1 instanceof IntType || t1 instanceof LongType
+						             || t2 instanceof LongType
+						            || t1 instanceof UnknownType || t2 instanceof UnknownType;	
+						
+						if (isEssential && t2Int) {
 							Value v = expr.getOp2();
 							if (v instanceof IntConstant) {
 								IntConstant i = (IntConstant) v;
@@ -221,7 +226,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
 							else
 								isEssential = true; // could be 0, we don't know
 						}
-						if (isEssential && LongType.v().equals(t2)) {
+						if (isEssential && t2 instanceof LongType) {
 							Value v = expr.getOp2();
 							if (v instanceof LongConstant) {
 								LongConstant l = (LongConstant) v;
@@ -292,9 +297,10 @@ public class DeadAssignmentEliminator extends BodyTransformer
 					}
 				}
 		
+				final Jimple jimple = Jimple.v();
 				for ( AssignStmt s : postProcess ) {
 					// Transform it into a simple invoke.		 
-					Stmt newInvoke = Jimple.v().newInvokeStmt(s.getInvokeExpr());
+					Stmt newInvoke = jimple.newInvokeStmt(s.getInvokeExpr());
 					newInvoke.addAllTagsOf(s);					
 					units.swapWith(s, newInvoke);
 					
@@ -304,7 +310,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
 				}
 			}
 		}
-		if (Options.v().time()) {
+		if (soptions.time()) {
 			Timers.v().deadCodeTimer.end();
 		}
 	}
