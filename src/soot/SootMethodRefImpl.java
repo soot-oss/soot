@@ -164,10 +164,6 @@ class SootMethodRefImpl implements SootMethodRef {
 
 	private SootMethod tryResolve(StringBuffer trace) {
 
-		if(isSignaturePolymorphic()) {
-			return new SootMethod(name(), parameterTypes(), returnType(), Modifier.PUBLIC);
-		}
-
 		if (declaringClass.getName().equals("java.dyn.InvokeDynamic")) {
 			throw new IllegalStateException("Cannot resolve invokedynamic method references at compile time!");
 		}
@@ -178,6 +174,13 @@ class SootMethodRefImpl implements SootMethodRef {
 			SootMethod sm = cl.getMethodUnsafe(getSubSignature());
 			if (sm != null)
 				return checkStatic(sm);
+
+			if (isSignaturePolymorphic()) {
+				SootMethod dummyMethod = new SootMethod(name(), parameterTypes(), returnType(), Modifier.PUBLIC);
+				cl.addMethod(dummyMethod);
+				return dummyMethod;
+			}
+
 			if (Scene.v().allowsPhantomRefs() && (cl.isPhantom() || Options.v().ignore_resolution_errors())) {
 				SootMethod m = new SootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
 				m.setPhantom(true);
