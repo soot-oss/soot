@@ -744,11 +744,11 @@ public final class OnFlyCallGraphBuilder {
 								addVirtualCallSite(s, m, (Local) runnable, iie, sigRun, Kind.EXECUTOR);
 						}
 					} else if (subSig == sigHandlerSendEmptyMessage || subSig == sigHandlerSendEmptyMessageAtTime
- +						|| subSig == sigHandlerSendEmptyMessageDelayed || subSig == sigHandlerSendMessage
- +						|| subSig == sigHandlerSendMessageAtFrontOfQueue || subSig == sigHandlerSendMessageAtTime
- +						|| subSig == sigHandlerSendMessageDelayed) {
- +						addVirtualCallSite(s, m, receiver, iie, sigHandlerHandleMessage, Kind.HANDLER);
- +					} else if (subSig == sigExecute) {
+							|| subSig == sigHandlerSendEmptyMessageDelayed || subSig == sigHandlerSendMessage
+							|| subSig == sigHandlerSendMessageAtFrontOfQueue || subSig == sigHandlerSendMessageAtTime
+							|| subSig == sigHandlerSendMessageDelayed) {
+						addVirtualCallSite(s, m, receiver, iie, sigHandlerHandleMessage, Kind.HANDLER);
+					} else if (subSig == sigExecute) {
 						addVirtualCallSite(s, m, receiver, iie, sigDoInBackground, Kind.ASYNCTASK);
 					}
 				} else if (ie instanceof DynamicInvokeExpr) {

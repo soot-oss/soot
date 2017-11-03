@@ -53,6 +53,7 @@ import soot.jimple.InvokeExpr;
 import soot.jimple.NewExpr;
 import soot.jimple.NullConstant;
 import soot.jimple.Stmt;
+import soot.jimple.VirtualInvokeExpr;
 import soot.jimple.spark.builder.GlobalNodeFactory;
 import soot.jimple.spark.builder.MethodNodeFactory;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
@@ -453,7 +454,7 @@ public class PAG implements PointsToAnalysis {
 	public Node[] storeLookup(VarNode key) {
 		return lookup(store, key);
 	}
-	
+
 	public Node[] newInstanceLookup(VarNode key) {
 		return lookup(newInstance, key);
 	}
@@ -589,7 +590,7 @@ public class PAG implements PointsToAnalysis {
 	public AllocNode makeAllocNode(Object newExpr, Type type, SootMethod m) {
 		if (opts.types_for_sites() || opts.vta())
 			newExpr = type;
-		
+
 		AllocNode ret = valToAllocNode.get(newExpr);
 		if (newExpr instanceof NewExpr) {
 			// Do we need to create a new allocation node?
@@ -910,7 +911,7 @@ public class PAG implements PointsToAnalysis {
 		}
 		return false;
 	}
-	
+
 	public boolean addNewInstanceEdge(VarNode from, NewInstanceNode to) {
 		if (!opts.rta()) {
 			if (doAddNewInstanceEdge(from, to)) {
@@ -944,8 +945,7 @@ public class PAG implements PointsToAnalysis {
 				return addStoreEdge((VarNode) from, (FieldRefNode) to);
 			} else if (to instanceof NewInstanceNode) {
 				return addNewInstanceEdge((VarNode) from, (NewInstanceNode) to);
-			}
-			else
+			} else
 				throw new RuntimeException("Invalid node type");
 		} else if (from instanceof FieldRefNode) {
 			return addLoadEdge((FieldRefNode) from, (VarNode) to);
@@ -1082,6 +1082,25 @@ public class PAG implements PointsToAnalysis {
 			if (virtualCall && !virtualCallsToReceivers.containsKey(ie)) {
 				virtualCallsToReceivers.put(ie, parm);
 			}
+		} else if (e.kind() == Kind.HANDLER) {
+			InvokeExpr ie = e.srcStmt().getInvokeExpr();
+			boolean virtualCall = callAssigns.containsKey(ie);
+			assert virtualCall == true;
+
+			Node base = srcmpag.nodeFactory().getNode(((VirtualInvokeExpr) ie).getBase());
+			base = srcmpag.parameterize(base, e.srcCtxt());
+			base = base.getReplacement();
+
+			Node thiz = tgtmpag.nodeFactory().caseThis();
+			thiz = tgtmpag.parameterize(thiz, e.tgtCtxt());
+			thiz = thiz.getReplacement();
+
+			addEdge(base, thiz);
+			pval = addInterproceduralAssignment(base, thiz, e);
+			callAssigns.put(ie, pval);
+			callToMethod.put(ie, srcmpag.getMethod());
+
+			virtualCallsToReceivers.put(ie, base);
 		} else if (e.kind() == Kind.PRIVILEGED) {
 			// Flow from first parameter of doPrivileged() invocation
 			// to this of target, and from return of target to the
