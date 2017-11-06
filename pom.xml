@@ -13,22 +13,7 @@
 	</properties>
 	<build>
 		<finalName>sootclasses-trunk</finalName>
-		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>tests</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<includes>
-					<include>**/*.dat</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>generated/sablecc</directory>
-				<includes>
-					<include>**/*.dat</include>
-				</includes>
-			</resource>
-		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
@@ -44,12 +29,12 @@
 					<transformationSets>
 						<!-- make soot singletons -->
 						<transformationSet>
-							<outputDir>${basedir}/generated/singletons/soot/</outputDir>
-							<dir>${basedir}/src/</dir>
+							<outputDir>${basedir}/src/main/generated/singletons/soot/</outputDir>
+							<dir>${basedir}/src/main/xml/singletons</dir>
 							<includes>
 								<include>singletons.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/make-singletons.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/singletons/make-singletons.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>Singletons.java</targetName>
@@ -58,12 +43,12 @@
 						</transformationSet>
 						<!-- make soot options -->
 						<transformationSet>
-							<outputDir>${basedir}/generated/options/soot/options/</outputDir>
-							<dir>${basedir}/src/soot/options/</dir>
+							<outputDir>${basedir}/src/main/generated/options/soot/options/</outputDir>
+							<dir>${basedir}/src/main/xml/options/</dir>
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/make-soot-options.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/options/make-soot-options.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>Options.java</targetName>
@@ -71,12 +56,12 @@
 							</fileMappers>
 						</transformationSet>
 						<transformationSet>
-							<outputDir>${basedir}/generated/options/soot/</outputDir>
-							<dir>${basedir}/src/soot/options/</dir>
+							<outputDir>${basedir}/src/main/generated/options/soot/</outputDir>
+							<dir>${basedir}/src/main/xml/options/</dir>
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/ant-task.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/options/ant-task.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>AntTask.java</targetName>
@@ -85,11 +70,11 @@
 						</transformationSet>
 						<transformationSet>
 							<outputDir>${basedir}/eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/</outputDir>
-							<dir>${basedir}/src/soot/options/</dir>
+							<dir>${basedir}/src/main/xml/options/</dir>
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/phase_options_dialog.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/options/phase_options_dialog.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>PhaseOptionsDialog.java</targetName>
@@ -98,11 +83,11 @@
 						</transformationSet>
 						<transformationSet>
 							<outputDir>${basedir}/doc/</outputDir>
-							<dir>${basedir}/src/soot/options/</dir>
+							<dir>${basedir}/src/main/xml/options/</dir>
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/soot_options.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/options/soot_options.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>soot_options.htm</targetName>
@@ -128,7 +113,7 @@
 							<outputDirectory>${basedir}/doc</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${basedir}/src/soot/options/</directory>
+									<directory>${basedir}/src/main/xml/options/</directory>
 									<includes>
 										<include>soot_options.css</include>
 									</includes>
@@ -149,10 +134,10 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${basedir}/generated/singletons</source>
-								<source>${basedir}/generated/sablecc</source>
-								<source>${basedir}/generated/options</source>
-								<source>${basedir}/generated/jastadd</source>
+								<source>${basedir}/src/main/generated/singletons</source>
+								<source>${basedir}/src/main/generated/sablecc</source>
+								<source>${basedir}/src/main/generated/options</source>
+								<source>${basedir}/src/main/generated/jastadd</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -244,8 +229,8 @@
 						<phase>process-resources</phase>
 						<configuration>
 							<tasks>
-								<delete dir="testclasses"/>
-								<mkdir dir="testclasses"/>
+								<delete dir="target/testclasses"/>
+								<mkdir dir="target/testclasses"/>
 							</tasks>
 						</configuration>
 						<goals>
