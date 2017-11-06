@@ -1,4 +1,4 @@
-[![Build Status](http://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-build/badge/icon)](http://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-build/)
+[![Build Status](http://soot-build.cs.uni-paderborn.de/jenkins/buildStatus/icon?job=soot/soot-develop)](http://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-develop/)
 
 # Soot supports Java 9 modules now!
 Try and get involved in Soot's Java 9 bleeding edge developement. Check out the [Soot-j9](https://github.com/sable/soot/tree/java9) branch.
