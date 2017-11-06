@@ -129,8 +129,6 @@ public abstract class AbstractASMBackendTestWithSources implements Opcodes {
 	 */
 	protected String getTargetFolder() {
 		File f = new File("./target/test-classes");
-		if (!f.exists() || f.list().length == 0)
-			f = new File("./testclasses");
 		return f.getAbsolutePath();
 	}
 
@@ -141,8 +139,6 @@ public abstract class AbstractASMBackendTestWithSources implements Opcodes {
 	 */
 	protected String getClassPathFolder() {
 		File f = new File("./target/test-classes");
-		if (!f.exists() || f.list().length == 0)
-			f = new File("./testclasses");
 		return f.getAbsolutePath();
 	}
 

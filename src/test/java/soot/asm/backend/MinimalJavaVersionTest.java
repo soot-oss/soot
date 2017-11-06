@@ -47,8 +47,6 @@ public class MinimalJavaVersionTest {
 	 */
 	protected String getClassPathFolder() {
 		File f = new File("./target/test-classes");
-		if (!f.exists() || f.list().length == 0)
-			f = new File("./testclasses");
 		return f.getAbsolutePath();
 	}
 
