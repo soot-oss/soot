@@ -66,7 +66,7 @@ public class PeepholeOptimizer extends BodyTransformer {
 					
 					InputStream peepholeListingStream = null;
 					peepholeListingStream = PeepholeOptimizer.class
-							.getResourceAsStream("peephole.dat");
+							.getResourceAsStream("/peephole.dat");
 					if (peepholeListingStream == null)
 						throw new RuntimeException("could not open file peephole.dat!");
 					BufferedReader reader = new BufferedReader(
