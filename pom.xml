@@ -274,11 +274,6 @@
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
-			<groupId>xmlpull</groupId>
-			<artifactId>xmlpull</artifactId>
-			<version>1.1.3.4d_b4_min</version>
-		</dependency>
-		<dependency>
 			<groupId>org.jboss</groupId>
 			<artifactId>jboss-common-core</artifactId>
 			<version>2.5.0.Final</version>
@@ -312,8 +307,8 @@
 		<!-- local dependency -->
 		<dependency>
 			<groupId>ca.mcgill.sable</groupId>
-			<artifactId>axmlprinter</artifactId>
-			<version>2016-07-27</version>
+			<artifactId>soot-axml</artifactId>
+			<version>2.0</version>
 		</dependency>
 		<!-- Testing dependencies -->
 		<dependency>
