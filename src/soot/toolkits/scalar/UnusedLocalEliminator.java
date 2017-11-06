@@ -25,10 +25,20 @@
 
 package soot.toolkits.scalar;
 
-import soot.options.*;
-import soot.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.G;
+import soot.Local;
+import soot.Singletons;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.options.Options;
+import soot.util.Chain;
 
 /**
  * A BodyTransformer that removes all unused local variables from a given Body.
@@ -45,6 +55,7 @@ public class UnusedLocalEliminator extends BodyTransformer {
 		return G.v().soot_toolkits_scalar_UnusedLocalEliminator();
 	}
 
+	@Override
 	protected void internalTransform(Body body, String phaseName, Map<String,String> options) {
 		if (Options.v().verbose())
 			G.v().out.println("[" + body.getMethod().getName()
@@ -54,7 +65,7 @@ public class UnusedLocalEliminator extends BodyTransformer {
 		int i = 0;
 		int n = body.getLocals().size();
 		int[] oldNumbers = new int[n];
-		Local[] locals = body.getLocals().toArray(new Local[n]);
+		Chain<Local> locals = body.getLocals();
 		for ( Local local :locals ) {
 			oldNumbers[i] = local.getNumber();
 			local.setNumber(i);		
@@ -69,7 +80,7 @@ public class UnusedLocalEliminator extends BodyTransformer {
 				Value v = vb.getValue();
 				if (v instanceof Local) {
 					Local l = (Local) v;
-					assert arrayContains(locals, l);
+					assert locals.contains(l);
 					usedLocals[l.getNumber()] = true;
 				}
 			}
@@ -77,14 +88,14 @@ public class UnusedLocalEliminator extends BodyTransformer {
 				Value v = vb.getValue();
 				if (v instanceof Local) {
 					Local l = (Local) v;
-					assert arrayContains(locals, l);
+					assert locals.contains(l);
 					usedLocals[l.getNumber()] = true;
 				}
 			}
 		}
 
 		// Remove all locals that are unused.
-		List<Local> keep = new ArrayList<Local>(locals.length);
+		List<Local> keep = new ArrayList<Local>(body.getLocalCount());
 		for ( Local local : locals ) {
 			int lno = local.getNumber();
 			local.setNumber(oldNumbers[lno]);
@@ -96,12 +107,5 @@ public class UnusedLocalEliminator extends BodyTransformer {
 		body.getLocals().addAll(keep);
 	}
 	
-	private <T> boolean arrayContains(T[] array, T element) {
-		for (T t : array) {
-			if (t == element)
-				return true;
-		}
-		return false;
-	}
 	
 }

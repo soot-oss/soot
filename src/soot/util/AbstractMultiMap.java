@@ -40,11 +40,14 @@ public abstract class AbstractMultiMap<K, V> implements MultiMap<K, V>, Serializ
 		
 		@Override
 		public void remove() {
+			if (valueIterator == null)
+			  //Removing an element twice or removing no valid element does not make sense
+			  return;
 			valueIterator.remove();
 
 			if (get(currentKey).isEmpty()) {
 				keyIterator.remove();
-				keyIterator = null;
+				valueIterator = null;
 				currentKey = null;
 			}
 		}
