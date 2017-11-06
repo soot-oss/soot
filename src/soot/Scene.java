@@ -49,9 +49,11 @@ import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.xmlpull.v1.XmlPullParser;
+import org.apache.commons.io.IOUtils;
 
-import android.content.res.AXmlResourceParser;
+import pxb.android.axml.AxmlReader;
+import pxb.android.axml.AxmlVisitor;
+import pxb.android.axml.NodeVisitor;
 import soot.dexpler.DalvikThrowAnalysis;
 import soot.jimple.spark.internal.ClientAccessibilityOracle;
 import soot.jimple.spark.internal.PublicAndProtectedAccessibility;
@@ -72,7 +74,6 @@ import soot.util.HashChain;
 import soot.util.MapNumberer;
 import soot.util.Numberer;
 import soot.util.StringNumberer;
-import test.AXMLPrinter;
 
 /** Manages the SootClasses of the application being analyzed. */
 public class Scene // extends AbstractHost
@@ -395,6 +396,14 @@ public class Scene // extends AbstractHost
 		return androidAPIVersion;
 	}
 
+	private static class AndroidVersionInfo {
+
+		public int sdkTargetVersion = -1;
+		public int minSdkVersion = -1;
+		public int platformBuildVersionCode = -1;
+
+	}
+
 	private int getTargetSDKVersion(String apkFile, String platformJARs) {
 		// get AndroidManifest
 		InputStream manifestIS = null;
@@ -423,75 +432,63 @@ public class Scene // extends AbstractHost
 
 			// process AndroidManifest.xml
 			int maxAPI = getMaxAPIAvailable(platformJARs);
-			int sdkTargetVersion = -1;
-			int minSdkVersion = -1;
-			int platformBuildVersionCode = -1;
+			final AndroidVersionInfo versionInfo = new AndroidVersionInfo();
 			try {
-				AXmlResourceParser parser = new AXmlResourceParser();
-				parser.open(manifestIS);
-				int depth = 0;
-				loop: while (true) {
-					int type = parser.next();
-					switch (type) {
-					case XmlPullParser.START_DOCUMENT: {
-						break;
-					}
-					case XmlPullParser.END_DOCUMENT:
-						break loop;
-					case XmlPullParser.START_TAG: {
-						depth++;
-						String tagName = parser.getName();
-						if (depth == 1 && tagName.equals("manifest")) {
-							for (int i = 0; i != parser.getAttributeCount(); ++i) {
-								String attributeName = parser.getAttributeName(i);
-								String attributeValue = AXMLPrinter.getAttributeValue(parser, i);
-								if (attributeName.equals("platformBuildVersionCode")) {
-									platformBuildVersionCode = Integer.parseInt(attributeValue);
-								}
-							}
-						} else if (depth == 2 && tagName.equals("uses-sdk")) {
-							for (int i = 0; i != parser.getAttributeCount(); ++i) {
-								String attributeName = parser.getAttributeName(i);
-								String attributeValue = AXMLPrinter.getAttributeValue(parser, i);
-								if (attributeName.equals("targetSdkVersion")) {
-									sdkTargetVersion = Integer.parseInt(attributeValue);
-								} else if (attributeName.equals("minSdkVersion")) {
-									minSdkVersion = Integer.parseInt(attributeValue);
-								}
+				AxmlReader xmlReader = new AxmlReader(IOUtils.toByteArray(manifestIS));
+				xmlReader.accept(new AxmlVisitor() {
+
+					private String nodeName = null;
+
+					@Override
+					public void attr(String ns, String name, int resourceId, int type, Object obj) {
+						super.attr(ns, name, resourceId, type, obj);
+
+						if (nodeName != null && name != null) {
+							if (nodeName.equals("manifest")) {
+								if (name.equals("platformBuildVersionCode"))
+									versionInfo.platformBuildVersionCode = Integer.valueOf("" + obj);
+							} else if (nodeName.equals("uses-sdk")) {
+								if (name.equals("targetSdkVersion"))
+									versionInfo.sdkTargetVersion = Integer.valueOf("" + obj);
+								else if (name.equals("minSdkVersion"))
+									versionInfo.minSdkVersion = Integer.valueOf("" + obj);
 							}
 						}
-						break;
 					}
-					case XmlPullParser.END_TAG:
-						depth--;
-						break;
-					case XmlPullParser.TEXT:
-						break;
+
+					@Override
+					public NodeVisitor child(String ns, String name) {
+						nodeName = name;
+
+						return this;
 					}
-				}
+
+				});
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 
 			int APIVersion = -1;
-			if (sdkTargetVersion != -1) {
-				if (sdkTargetVersion > maxAPI && minSdkVersion != -1 && minSdkVersion <= maxAPI) {
-					G.v().out.println("warning: Android API version '" + sdkTargetVersion
-							+ "' not available, using minApkVersion '" + minSdkVersion + "' instead");
-					APIVersion = minSdkVersion;
+			if (versionInfo.sdkTargetVersion != -1) {
+				if (versionInfo.sdkTargetVersion > maxAPI && versionInfo.minSdkVersion != -1
+						&& versionInfo.minSdkVersion <= maxAPI) {
+					G.v().out.println("warning: Android API version '" + versionInfo.sdkTargetVersion
+							+ "' not available, using minApkVersion '" + versionInfo.minSdkVersion + "' instead");
+					APIVersion = versionInfo.minSdkVersion;
 				} else {
-					APIVersion = sdkTargetVersion;
+					APIVersion = versionInfo.sdkTargetVersion;
 				}
-			} else if (platformBuildVersionCode != -1) {
-				if (platformBuildVersionCode > maxAPI && minSdkVersion != -1 && minSdkVersion <= maxAPI) {
-					G.v().out.println("warning: Android API version '" + platformBuildVersionCode
-							+ "' not available, using minApkVersion '" + minSdkVersion + "' instead");
-					APIVersion = minSdkVersion;
+			} else if (versionInfo.platformBuildVersionCode != -1) {
+				if (versionInfo.platformBuildVersionCode > maxAPI && versionInfo.minSdkVersion != -1
+						&& versionInfo.minSdkVersion <= maxAPI) {
+					G.v().out.println("warning: Android API version '" + versionInfo.platformBuildVersionCode
+							+ "' not available, using minApkVersion '" + versionInfo.minSdkVersion + "' instead");
+					APIVersion = versionInfo.minSdkVersion;
 				} else {
-					APIVersion = platformBuildVersionCode;
+					APIVersion = versionInfo.platformBuildVersionCode;
 				}
-			} else if (minSdkVersion != -1) {
-				APIVersion = minSdkVersion;
+			} else if (versionInfo.minSdkVersion != -1) {
+				APIVersion = versionInfo.minSdkVersion;
 			} else {
 				G.v().out
 						.println("Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
@@ -928,7 +925,7 @@ public class Scene // extends AbstractHost
 	 * with the given name can be found.
 	 */
 	public RefType getRefTypeUnsafe(String className) {
-        RefType refType = nameToClass.get(className);
+		RefType refType = nameToClass.get(className);
 		return refType;
 	}
 
@@ -961,9 +958,8 @@ public class Scene // extends AbstractHost
 			if (tsc != null)
 				return tsc;
 		}
-		
-		if (allowsPhantomRefs() ||
-				   className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
+
+		if (allowsPhantomRefs() || className.equals(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME)) {
 			SootClass c = new SootClass(className);
 			c.isPhantom = true;
 			addClassSilent(c);
