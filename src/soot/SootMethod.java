@@ -668,7 +668,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 	private static String getSubSignatureImpl(String name, List<Type> params, Type returnType) {
 		StringBuilder buffer = new StringBuilder();
 
-        buffer.append(returnType.toQuotedString());
+		buffer.append(returnType.toQuotedString());
 
 		buffer.append(" ");
 		buffer.append(Scene.v().quotedNameOf(name));
@@ -676,7 +676,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 
 		if (params != null) {
 			for (int i = 0; i < params.size(); i++) {
-            buffer.append(params.get(i).toQuotedString());
+				buffer.append(params.get(i).toQuotedString());
 				if (i < params.size() - 1)
 					buffer.append(",");
 			}
@@ -848,7 +848,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 
 		// return type + name
 
-        buffer.append(this.getReturnType().toQuotedString() + " ");
+		buffer.append(this.getReturnType().toQuotedString() + " ");
 		buffer.append(Scene.v().quotedNameOf(this.getName()));
 
 		buffer.append("(");
@@ -859,7 +859,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 		while (typeIt.hasNext()) {
 			Type t = typeIt.next();
 
-            buffer.append(t.toQuotedString());
+			buffer.append(t.toQuotedString());
 
 			if (typeIt.hasNext())
 				buffer.append(", ");
@@ -873,12 +873,10 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 			Iterator<SootClass> exceptionIt = this.getExceptions().iterator();
 
 			if (exceptionIt.hasNext()) {
-				buffer.append(
-                    " throws " + Scene.v().quotedNameOf(exceptionIt.next().getName()));
+				buffer.append(" throws " + Scene.v().quotedNameOf(exceptionIt.next().getName()));
 
 				while (exceptionIt.hasNext()) {
-					buffer.append(
-                        ", " + Scene.v().quotedNameOf(exceptionIt.next().getName()));
+					buffer.append(", " + Scene.v().quotedNameOf(exceptionIt.next().getName()));
 				}
 			}
 		}

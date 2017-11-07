@@ -228,7 +228,8 @@ public class SootResolver {
 					throw new SootClassNotFoundException(
 							"couldn't find class: " + className + " (is your soot-class-path set properly?)" + suffix);
 				} else {
-					//G.v().out.println("Warning: " + className + " is a phantom class!");
+					// G.v().out.println("Warning: " + className + " is a
+					// phantom class!");
 					sc.setPhantomClass();
 				}
 			} else {
