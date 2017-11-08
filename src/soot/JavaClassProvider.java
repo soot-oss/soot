@@ -55,7 +55,7 @@ public class JavaClassProvider implements ClassProvider
 			 */
 	      	boolean checkAgain = className.indexOf('$') >= 0;
 	      	
-	      	SourceLocator.FoundFile file = null;
+	      	FoundFile file = null;
 	      	try {
 		        String javaClassName = SourceLocator.v().getSourceForClass(className);
 		        String fileName = javaClassName.replace('.', '/') + ".java";

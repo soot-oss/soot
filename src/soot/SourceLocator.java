@@ -19,18 +19,12 @@
 
 package soot;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintStream;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -585,7 +579,7 @@ public class SourceLocator {
         return null;
     }
 
-    private FoundFile lookupInArchive(String archivePath, String fileName) {
+    protected FoundFile lookupInArchive(String archivePath, String fileName) {
         Set<String> entryNames = null;
         try {
             entryNames = archivePathsToEntriesCache.get(archivePath);
@@ -661,165 +655,5 @@ public class SourceLocator {
 
     private enum ClassSourceType {
         jar, zip, apk, dex, directory, unknown
-    }
-
-    public static class FoundFile {
-        private File file;
-        private String entryName;
-        private ZipFile zipFile;
-        private ZipEntry zipEntry;
-        private List<InputStream> openedInputStreams;
-
-        FoundFile(String archivePath, String entryName) {
-            this();
-            if (archivePath == null || entryName == null)
-                throw new IllegalArgumentException("Error: The archive path and entry name cannot be null.");
-            this.file = new File(archivePath);
-            this.entryName = entryName;
-        }
-
-        FoundFile(File file) {
-            this();
-            if (file == null)
-                throw new IllegalArgumentException("Error: The file cannot be null.");
-            this.file = file;
-            this.entryName = null;
-        }
-
-        private FoundFile() {
-            this.zipFile = null;
-            this.zipEntry = null;
-            this.openedInputStreams = new ArrayList<InputStream>();
-        }
-
-        public String getFilePath() {
-            return file.getPath();
-        }
-
-        public boolean isZipFile() {
-            return entryName != null;
-        }
-
-        public File getFile() {
-            return file;
-        }
-
-        public InputStream inputStream() {
-            InputStream ret = null;
-            if (!isZipFile()) {
-                try {
-                    ret = new FileInputStream(file);
-                } catch (Exception e) {
-                    throw new RuntimeException(
-                            "Error: Failed to open a InputStream for the file at path '" + file.getPath() + "'.", e);
-                }
-            } else {
-                if (zipFile == null) {
-                    try {
-                        zipFile = new ZipFile(file);
-                        zipEntry = zipFile.getEntry(entryName);
-                        if (zipEntry == null) {
-                            silentClose();
-                            throw new RuntimeException("Error: Failed to find entry '" + entryName
-                                    + "' in the archive file at path '" + file.getPath() + "'.");
-                        }
-                    } catch (Exception e) {
-                        silentClose();
-                        throw new RuntimeException("Error: Failed to open the archive file at path '" + file.getPath()
-                                + "' for entry '" + entryName + "'.", e);
-                    }
-                }
-
-                InputStream stream = null;
-                try {
-                    stream = zipFile.getInputStream(zipEntry);
-                    ret = doJDKBugWorkaround(stream, zipEntry.getSize());
-                } catch (Exception e) {
-                    throw new RuntimeException("Error: Failed to open a InputStream for the entry '"
-                            + zipEntry.getName() + "' of the archive at path '" + zipFile.getName() + "'.", e);
-                } finally {
-                    if (stream != null) {
-                        try {
-                            stream.close();
-                        } catch (IOException e) {
-                            // There's not much we can do here
-                        }
-                    }
-                }
-            }
-
-            openedInputStreams.add(ret);
-            return ret;
-        }
-
-        public void silentClose() {
-            try {
-                close();
-            } catch (Exception e) {
-            }
-        }
-
-        public void close() {
-            // Try to close all opened input streams
-            List<Exception> errs = new ArrayList<Exception>();
-            for (Iterator<InputStream> it = openedInputStreams.iterator(); it.hasNext(); ) {
-                InputStream is = it.next();
-                try {
-                    is.close();
-                } catch (Exception e) {
-                    errs.add(e);// record errors for later
-                }
-                it.remove();// remove the stream no matter what
-            }
-            // Try to close the opened zip file if it exists
-            if (zipFile != null) {
-                try {
-                    zipFile.close();
-                    errs.clear();// Successfully closed the archive so all input
-                    // streams were closed successfully also
-                } catch (Exception e) {
-                    errs.add(e);
-                }
-                zipFile = null;// set to null no matter what
-                zipEntry = null;// set to null no matter what
-            }
-            // Throw single exception combining all errors
-            if (!errs.isEmpty()) {
-                String msg = null;
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                PrintStream ps = null;
-                try {
-                    ps = new PrintStream(baos, true, "utf-8");
-                    ps.println(
-                            "Error: Failed to close all opened resources. The following exceptions were thrown in the process: ");
-                    int i = 0;
-                    for (Throwable t : errs) {
-                        ps.print("Exception ");
-                        ps.print(i++);
-                        ps.print(": ");
-                        t.printStackTrace(ps);
-                    }
-                    msg = new String(baos.toByteArray(), StandardCharsets.UTF_8);
-                } catch (Exception e) {
-                    // Do nothing as this will never occur
-                } finally {
-                    ps.close();
-                }
-                throw new RuntimeException(msg);
-            }
-        }
-
-        private InputStream doJDKBugWorkaround(InputStream is, long size) throws IOException {
-            int sz = (int) size;
-            byte[] buf = new byte[sz];
-            final int N = 1024;
-            int ln = 0;
-            int count = 0;
-            while (sz > 0 && (ln = is.read(buf, count, Math.min(N, sz))) != -1) {
-                count += ln;
-                sz -= ln;
-            }
-            return new ByteArrayInputStream(buf);
-        }
     }
 }
