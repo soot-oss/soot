@@ -1,8 +1,3 @@
----
-layout: post
-title: A framework for analyzing and transforming Java and Android Applications
----
-
 # Please help us improve Soot!
 You are using Soot and would like to help us support it in the future? Then please support us by filling out [this little web form](https://goo.gl/forms/rk1oSxFIxAH0xaf52).
 
