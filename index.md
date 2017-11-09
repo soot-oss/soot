@@ -73,17 +73,51 @@ Jimple is Soot's primary IR and most analyses are implemented on the Jimple leve
 
 We have some documentation on Soot in the [wiki](https://github.com/Sable/soot/wiki), including a large range of [tutorials](https://github.com/Sable/soot/wiki/Tutorials) on Soot. We also have a [JavaDoc documentation](http://soot-build.cs.uni-paderborn.de/doc/soot/) and a reference on the [command line options](http://soot-build.cs.uni-paderborn.de/doc/sootoptions/).
 
-# How do I obtain the nightly builds?
+# Including Soot in your Project
 
-Nightly builds of soot can be obtained from [nightly build](http://soot-build.cs.uni-paderborn.de/nightly/). The "soot-trunk.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to use manually pick dependencies as you need them. If you want to build your project with Maven, you can use our [Nexus repository](http://soot-build.cs.uni-paderborn.de/nexus/).
+A Soot snapshot release is currently built for each commit to the `develop` branch. You can include Soot as 
+a dependency via Maven, Gradle, SBT, etc using the following coordinates:
+
+
+```.xml
+<dependencies>
+  <dependency>
+    <groupId>ca.mcgill.sable</groupId>
+    <artifactId>soot</artifactId>
+    <version>3.0.0-SNAPSHOT</version>
+  </dependency>
+</dependencies>
+<repositories>
+  <repository>
+    <id>soot-snapshot</id>
+    <name>soot snapshots</name>
+    <url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/</url>
+  </repository>
+</repositories>	
+
+```
+
+**Please make sure that your Java version is up to date to avoid problems with our SSL certificate**
+
+You can also obtain older builds of the `develop` branch. A complete listing of builds can be found in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse/components:soot-snapshot).
+
+# How do I obtain Soot without Maven?
+
+**Note that the nightly build server has moved**
+
+All of our Soot builds for the `develop` branch are stored up to one month in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse/components:soot-snapshot) and can be obtained from there.
+The latest snapshot build of Soot can also be obtained [directly](https://soot-build.cs.uni-paderborn.de/public/origin/develop/soot/soot-develop/build/). The "sootclasses-trunk-jar-with-dependencies.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
+
+# Building Soot yourself
+
+If you cannot work with the prebuild versions and need to build Soot on your own, please consider the [wiki](https://github.com/Sable/soot/wiki/Building-Soot-from-the-Command-Line-(Recommended)) for further steps.
 
 # About Soot's source code
 
-Soot follows the [git-flow convention](http://nvie.com/posts/a-successful-git-branching-model/). Releases and hotfixes are maintained in the master branch.
+Soot follows the git-flow convention. Releases and hotfixes are maintained in the master branch.
 Development happens in the develop branch. To catch the bleeding edge of Soot, check out the latter.
-You will also need the projects [jasmin](https://github.com/Sable/jasmin) and
-[heros](https://github.com/Sable/heros). In case of any questions, please consult the Soot
-[mailing list](https://github.com/Sable/soot/wiki/Getting-help).
+In case of any questions, please consult the Soot
+mailing list at: http://www.sable.mcgill.ca/mailman/listinfo/soot-list/
 
 # Acknowledgements
 
