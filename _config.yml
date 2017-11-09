@@ -1,4 +1,4 @@
-highlighter: pygments
+highlighter: rouge
 baseurl: /soot
 
 title: Soot
