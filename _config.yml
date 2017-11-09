@@ -4,5 +4,5 @@ baseurl: /soot
 title: Soot
 description: Soot - A framework for analyzing and transforming Java and Android applications
 google_analytics: UA-53612145-1
-show_downloads: true
+show_downloads: false
 theme: jekyll-theme-slate
