@@ -18,7 +18,6 @@
  */
 
 package soot;
-import soot.SourceLocator.FoundFile;
 import soot.jimple.parser.lexer.LexerException;
 import soot.jimple.parser.parser.ParserException;
 import soot.options.*;
