@@ -44,16 +44,18 @@ public class AbstractHost implements Host
 
     // avoid creating an empty list for each element, when it is not used
     // use lazy instantiation (in addTag) instead
-    private List<Tag> mTagList = null;
+    protected List<Tag> mTagList = null;
     
     /** get the list of tags. This list should not be modified! */
-    public List<Tag> getTags()
+    @Override
+	public List<Tag> getTags()
     {
         return (mTagList == null) ? Collections.<Tag>emptyList() : mTagList;
     }
 
     /** remove the tag named <code>aName</code> */
-    public void removeTag(String aName)
+    @Override
+	public void removeTag(String aName)
     {
         int tagIndex;
         if((tagIndex = searchForTag(aName)) != -1) {
@@ -79,7 +81,8 @@ public class AbstractHost implements Host
     }
 
     /** get the Tag object named <code>aName</code> */
-   public Tag getTag(String aName)
+   @Override
+public Tag getTag(String aName)
     {      
         int tagIndex;
         if((tagIndex = searchForTag(aName)) != -1) {
@@ -90,13 +93,15 @@ public class AbstractHost implements Host
     }
 
     /** look if this host has a tag named <code>aName</code> */ 
-    public boolean hasTag(String aName)
+    @Override
+	public boolean hasTag(String aName)
     {
         return (searchForTag(aName) != -1);
     }
     
     /** add tag <code>t</code> to this host */
-    public void addTag(Tag t)
+    @Override
+	public void addTag(Tag t)
     {
         if (mTagList == null) 
             mTagList = new ArrayList<Tag>(1);
@@ -104,12 +109,14 @@ public class AbstractHost implements Host
     }
 
     /** Removes all the tags from this host. */
-    public void removeAllTags() {
+    @Override
+	public void removeAllTags() {
         mTagList = null;
     }
 
     /** Adds all the tags from h to this host. */
-    public void addAllTagsOf( Host h ) {
+    @Override
+	public void addAllTagsOf( Host h ) {
     	List<Tag> tags = h.getTags();
     	if ( tags.isEmpty() )
     		return;    	
@@ -121,7 +128,8 @@ public class AbstractHost implements Host
         mTagList.addAll(tags);
     }
     
-    public int getJavaSourceStartLineNumber() {
+    @Override
+	public int getJavaSourceStartLineNumber() {
     	if(line==0) {
     		//get line from source
 	    	SourceLnPosTag tag = (SourceLnPosTag) getTag("SourceLnPosTag");
@@ -139,7 +147,8 @@ public class AbstractHost implements Host
     	return line;    		
     }
     
-    public int getJavaSourceStartColumnNumber() {
+    @Override
+	public int getJavaSourceStartColumnNumber() {
     	if(col==0) {
     		//get line from source
 	    	SourceLnPosTag tag = (SourceLnPosTag) getTag("SourceLnPosTag");

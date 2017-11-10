@@ -1,9 +1,12 @@
 package soot.toDex;
 
 import org.jf.dexlib2.Opcode;
-import org.jf.dexlib2.writer.builder.BuilderReference;
-import org.jf.dexlib2.writer.builder.DexBuilder;
+import org.jf.dexlib2.iface.reference.StringReference;
+import org.jf.dexlib2.iface.reference.TypeReference;
+import org.jf.dexlib2.immutable.reference.ImmutableStringReference;
+import org.jf.dexlib2.immutable.reference.ImmutableTypeReference;
 
+import org.jf.dexlib2.writer.pool.DexPool;
 import soot.jimple.AbstractConstantSwitch;
 import soot.jimple.ClassConstant;
 import soot.jimple.DoubleConstant;
@@ -35,16 +38,14 @@ import soot.util.Switchable;
  */
 class ConstantVisitor extends AbstractConstantSwitch {
 
-	private final DexBuilder dexFile;
 	private StmtVisitor stmtV;
 
 	private Register destinationReg;
 
 	private Stmt origStmt;
 
-	public ConstantVisitor(DexBuilder dexFile, StmtVisitor stmtV) {
+	public ConstantVisitor(StmtVisitor stmtV) {
 		this.stmtV = stmtV;
-		this.dexFile = dexFile;
 	}
 
 	public void setDestination(Register destinationReg) {
@@ -62,14 +63,12 @@ class ConstantVisitor extends AbstractConstantSwitch {
 	}
 
 	public void caseStringConstant(StringConstant s) {
-		BuilderReference ref = dexFile.internStringReference(s.value);
+		StringReference ref = new ImmutableStringReference(s.value);
 		stmtV.addInsn(new Insn21c(Opcode.CONST_STRING, destinationReg, ref), origStmt);
 	}
 
 	public void caseClassConstant(ClassConstant c) {
-		// "array class" types are unmodified
-		boolean classIsArray = c.value.startsWith("[");
-		BuilderReference referencedClass = dexFile.internTypeReference(c.getValue());
+		TypeReference referencedClass = new ImmutableTypeReference(c.getValue());
 		stmtV.addInsn(new Insn21c(Opcode.CONST_CLASS, destinationReg, referencedClass), origStmt);
 	}
 

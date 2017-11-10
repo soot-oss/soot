@@ -24,8 +24,8 @@ import java.io.InputStream;
 import org.objectweb.asm.ClassReader;
 
 import soot.ClassSource;
+import soot.FoundFile;
 import soot.SootClass;
-import soot.SourceLocator.FoundFile;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
 /**
@@ -36,19 +36,22 @@ import soot.javaToJimple.IInitialResolver.Dependencies;
 class AsmClassSource extends ClassSource {
 
 	private FoundFile foundFile;
-	
+
 	/**
 	 * Constructs a new ASM class source.
-	 * @param cls fully qualified name of the class.
-	 * @param data stream containing data for class.
+	 * 
+	 * @param cls
+	 *            fully qualified name of the class.
+	 * @param data
+	 *            stream containing data for class.
 	 */
 	AsmClassSource(String cls, FoundFile foundFile) {
 		super(cls);
-		if(foundFile == null)
+		if (foundFile == null)
 			throw new IllegalStateException("Error: The FoundFile must not be null.");
 		this.foundFile = foundFile;
 	}
-	
+
 	@Override
 	public Dependencies resolve(SootClass sc) {
 		InputStream d = null;
@@ -60,21 +63,17 @@ class AsmClassSource extends ClassSource {
 			Dependencies deps = new Dependencies();
 			deps.typesToSignature.addAll(scb.deps);
 			return deps;
-		}
-		catch(IOException e) {
-			throw new RuntimeException("Error: Failed to create class reader from class source.",e);
-		}
-		finally {
+		} catch (IOException e) {
+			throw new RuntimeException("Error: Failed to create class reader from class source.", e);
+		} finally {
 			try {
-				if(d != null){
+				if (d != null) {
 					d.close();
 					d = null;
 				}
-			}
-			catch(IOException e){
-				throw new RuntimeException("Error: Failed to close source input stream.",e);
-			}
-			finally {
+			} catch (IOException e) {
+				throw new RuntimeException("Error: Failed to close source input stream.", e);
+			} finally {
 				close();
 			}
 		}
@@ -82,7 +81,7 @@ class AsmClassSource extends ClassSource {
 
 	@Override
 	public void close() {
-		if (foundFile != null){
+		if (foundFile != null) {
 			foundFile.close();
 			foundFile = null;
 		}

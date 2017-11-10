@@ -126,6 +126,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 		}
 		
 		s.apply(new AbstractStmtSwitch() {
+			@Override
 			final public void caseAssignStmt(AssignStmt as) {
 				Value l = as.getLeftOp();
 				Value r = as.getRightOp();
@@ -174,6 +175,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 				mpag.addInternalEdge(src, dest);
 			}
 
+			@Override
 			final public void caseReturnStmt(ReturnStmt rs) {
 				if (!(rs.getOp().getType() instanceof RefLikeType))
 					return;
@@ -182,6 +184,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 				mpag.addInternalEdge(retNode, caseRet());
 			}
 
+			@Override
 			final public void caseIdentityStmt(IdentityStmt is) {
 				if (!(is.getLeftOp().getType() instanceof RefLikeType))
 					return;
@@ -206,6 +209,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 
 			}
 
+			@Override
 			final public void caseThrowStmt(ThrowStmt ts) {
 				ts.getOp().apply(MethodNodeFactory.this);
 				mpag.addOutEdge(getNode(), pag.nodeFactory().caseThrow());
@@ -252,6 +256,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 		return ret;
 	}
 
+	@Override
 	final public void casePhiExpr(PhiExpr e) {
 		Pair<Expr, String> phiPair = new Pair<Expr, String>(e, PointsToAnalysis.PHI_NODE);
 		Node phiNode = pag.makeLocalVarNode(phiPair, e.getType(), method);
@@ -285,6 +290,7 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 		setResult(caseArray((VarNode) getNode()));
 	}
 
+	@Override
 	final public void caseCastExpr(CastExpr ce) {
 		Pair<Expr, String> castPair = new Pair<Expr, String>(ce, PointsToAnalysis.CAST_NODE);
 		ce.getOp().apply(this);
@@ -439,8 +445,8 @@ public class MethodNodeFactory extends AbstractShimpleValueSwitch {
 			throw new RuntimeException("Unhandled case of VirtualInvokeExpr");
 	}
 
-	protected PAG pag;
-	protected MethodPAG mpag;
+	protected final PAG pag;
+	protected final MethodPAG mpag;
 	protected SootMethod method;
 	protected ClientAccessibilityOracle accessibilityOracle = Scene.v().getClientAccessibilityOracle();
 }

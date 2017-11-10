@@ -73,7 +73,7 @@ public enum CheckTypesValidator implements BodyValidator {
 							checkCopy(stmt, body, exception,
 									Type.toMachineType(called.parameterType(i)),
 									Type.toMachineType(iexpr.getArg(i).getType()),
-									" in argument " + i + " of call" + errorSuffix);
+									" in argument " + i + " of call" + errorSuffix + " (Note: Parameters are zero-indexed)");
 				}
 			}
 		}

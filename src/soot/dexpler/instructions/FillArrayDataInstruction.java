@@ -46,7 +46,6 @@ import soot.Local;
 import soot.LongType;
 import soot.ShortType;
 import soot.Type;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.DexType;
 import soot.jimple.ArrayRef;
@@ -65,7 +64,8 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     super(instruction, codeAdress);
   }
 
-  public void jimplify (DexBody body) {
+  @Override
+public void jimplify (DexBody body) {
     if(!(instruction instanceof Instruction31t))
       throw new IllegalArgumentException("Expected Instruction31t but got: "+instruction.getClass());
 
@@ -168,8 +168,8 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     if (elementType instanceof BooleanType) {
       value = IntConstant.v(element.intValue());
       IntConstant ic = (IntConstant)value;
-      if (!(ic.value == 0 || ic.value == 1)) {
-        throw new RuntimeException("ERROR: Invalid value for boolean: "+ value);
+      if (ic.value != 0) {
+        value = IntConstant.v(1);
       }
     } else if(elementType instanceof ByteType) {
       value = IntConstant.v(element.byteValue());
@@ -186,14 +186,12 @@ public class FillArrayDataInstruction extends PseudoInstruction {
     } else {
       throw new RuntimeException("Invalid Array Type occured in FillArrayDataInstruction: "+ elementType);
     }
-    Debug.printDbg("array element: ", value);
     return value;
 
   }
 
   @Override
   public void computeDataOffsets(DexBody body) {
-    Debug.printDbg("compute data offset");
     if(!(instruction instanceof Instruction31t))
       throw new IllegalArgumentException("Expected Instruction31t but got: "+instruction.getClass());
 

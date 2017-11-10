@@ -91,7 +91,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
 					} catch (RuntimeException re) {
 						// field does not yet exist (or, as a pre-existing
 						// error, there is more than one field by this name)
-						globalLockObj[i] = new SootField("globalLockObj" + i, RefType.v("java.lang.Object"),
+						globalLockObj[i] = Scene.v().makeSootField("globalLockObj" + i, RefType.v("java.lang.Object"),
 								Modifier.STATIC | Modifier.PUBLIC);
 						Scene.v().getMainClass().addField(globalLockObj[i]);
 					}
@@ -626,8 +626,8 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
 
 			// copy new object to global static lock object (for use by other
 			// fns)
-			SootField actualLockObject = new SootField("objectLockGlobal" + lockNumber, RefType.v("java.lang.Object"),
-					Modifier.STATIC | Modifier.PUBLIC);
+			SootField actualLockObject = Scene.v().makeSootField("objectLockGlobal" + lockNumber,
+					RefType.v("java.lang.Object"), Modifier.STATIC | Modifier.PUBLIC);
 			lockNumber++;
 			lockClass.addField(actualLockObject);
 

@@ -19,11 +19,30 @@
 
 package soot.jimple.toolkits.base;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
-import java.util.*;
-import soot.tagkit.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Vector;
+
+import soot.ArrayType;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.FastHierarchy;
+import soot.RefType;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
+import soot.Trap;
+import soot.jimple.AssignStmt;
+import soot.jimple.InstanceInvokeExpr;
+import soot.jimple.InterfaceInvokeExpr;
+import soot.jimple.InvokeExpr;
+import soot.jimple.InvokeStmt;
+import soot.jimple.Stmt;
+import soot.jimple.ThrowStmt;
+import soot.tagkit.SourceLnPosTag;
+import soot.util.NumberedString;
 
 public class ExceptionChecker extends BodyTransformer{
 
@@ -34,7 +53,8 @@ public class ExceptionChecker extends BodyTransformer{
         this.reporter = r;
     }
 
-    protected void internalTransform(Body b, String phaseName, Map options){
+    @Override
+	protected void internalTransform(Body b, String phaseName, Map options){
 
         Iterator it = b.getUnits().iterator();
         while (it.hasNext()){
@@ -78,10 +98,13 @@ public class ExceptionChecker extends BodyTransformer{
         if (b.getMethod().throwsException(throwClass)) return true;
 
         // handles case when a super type of the exception is thrown
-        Iterator<SootClass> it = b.getMethod().getExceptions().iterator();
-        while (it.hasNext()){
-            SootClass nextEx = it.next();
-            if (hierarchy.isSubclass(throwClass, nextEx)) return true;
+        List<SootClass> exceptions = b.getMethod().getExceptionsUnsafe();
+        if (exceptions != null) {
+	        Iterator<SootClass> it = exceptions.iterator();
+	        while (it.hasNext()){
+	            SootClass nextEx = it.next();
+	            if (hierarchy.isSubclass(throwClass, nextEx)) return true;
+	        }
         }
         return false;
     }
@@ -132,6 +155,8 @@ public class ExceptionChecker extends BodyTransformer{
         List<SootClass> result=null;
         SootClass obj=Scene.v().getSootClass("java.lang.Object");
         sm = obj.getMethodUnsafe(sig);
+        if (sm.getExceptionsUnsafe() == null)
+        	return Collections.emptyList();
         if(sm != null) result=new Vector<SootClass>(sm.getExceptions());
         for (SootClass suprintr : intrface.getInterfaces() ) {
             List<SootClass> other=getExceptionSpec(suprintr,sig);
@@ -161,7 +186,9 @@ public class ExceptionChecker extends BodyTransformer{
             ? getExceptionSpec(ie.getMethodRef().declaringClass(),
                                ie.getMethodRef().getSubSignature())
             // Otherwise, we just do normal resolution.
-            : ie.getMethod().getExceptions();
+            : ie.getMethod().getExceptionsUnsafe();
+	    if (exceptions == null)
+	    	return;
         Iterator it = exceptions.iterator();
         while (it.hasNext()){
             SootClass sc = (SootClass)it.next();

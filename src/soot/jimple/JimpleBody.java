@@ -48,135 +48,116 @@ import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
 /** Implementation of the Body class for the Jimple IR. */
-public class JimpleBody extends StmtBody
-{
+public class JimpleBody extends StmtBody {
 	private static BodyValidator[] validators;
-	
+
 	/**
-	 * Returns an array containing some validators in order to validate the JimpleBody
+	 * Returns an array containing some validators in order to validate the
+	 * JimpleBody
+	 * 
 	 * @return the array containing validators
 	 */
 	private synchronized static BodyValidator[] getValidators() {
-		if (validators == null)
-		{
-			validators = new BodyValidator[] {
-				IdentityStatementsValidator.v(),
-				TypesValidator.v(),
-				ReturnStatementsValidator.v(),
-				InvokeArgumentValidator.v(),
- 				FieldRefValidator.v(),
- 				NewValidator.v(),
- 				JimpleTrapValidator.v(),
- 				IdentityValidator.v()
-				//InvokeValidator.v()
+		if (validators == null) {
+			validators = new BodyValidator[] { IdentityStatementsValidator.v(), TypesValidator.v(),
+					ReturnStatementsValidator.v(), InvokeArgumentValidator.v(), FieldRefValidator.v(), NewValidator.v(),
+					JimpleTrapValidator.v(), IdentityValidator.v()
+					// InvokeValidator.v()
 			};
 		}
 		return validators;
 	};
-	
-    /**
-        Construct an empty JimpleBody 
-     **/
-    
-    JimpleBody(SootMethod m)
-    {
-        super(m);
-    }
 
-    /**
-       Construct an extremely empty JimpleBody, for parsing into.
-    **/
+	/**
+	 * Construct an empty JimpleBody
+	 */
+	public JimpleBody(SootMethod m) {
+		super(m);
+	}
 
-    JimpleBody() 
-    {
-    }
+	/**
+	 * Construct an extremely empty JimpleBody, for parsing into.
+	 */
+	public JimpleBody() {
+	}
 
-    /** Clones the current body, making deep copies of the contents. */
-    public Object clone()
-    {
-        Body b = new JimpleBody(getMethod());
-        b.importBodyContentsFrom(this);
-        return b;
-    }
+	/** Clones the current body, making deep copies of the contents. */
+	public Object clone() {
+		Body b = new JimpleBody(getMethod());
+		b.importBodyContentsFrom(this);
+		return b;
+	}
 
+	/**
+	 * Make sure that the JimpleBody is well formed. If not, throw an exception.
+	 * Right now, performs only a handful of checks.
+	 */
+	public void validate() {
+		final List<ValidationException> exceptionList = new ArrayList<ValidationException>();
+		validate(exceptionList);
+		if (!exceptionList.isEmpty())
+			throw exceptionList.get(0);
+	}
 
+	/**
+	 * Validates the jimple body and saves a list of all validation errors
+	 * 
+	 * @param exceptionList
+	 *            the list of validation errors
+	 */
+	public void validate(List<ValidationException> exceptionList) {
+		super.validate(exceptionList);
+		final boolean runAllValidators = Options.v().debug() || Options.v().validate();
+		for (BodyValidator validator : getValidators()) {
+			if (!validator.isBasicValidator() && !runAllValidators)
+				continue;
+			validator.validate(this, exceptionList);
+		}
+	}
 
-    /** Make sure that the JimpleBody is well formed.  If not, throw
-     *  an exception.  Right now, performs only a handful of checks.  
-     */
-    public void validate()
-    {
-        final List<ValidationException> exceptionList = new ArrayList<ValidationException>();
-        validate(exceptionList);
-        if (!exceptionList.isEmpty())
-        	throw exceptionList.get(0);
-    }
-    
-    /**
-     * Validates the jimple body and saves a list of all validation errors 
-     * @param exceptionList the list of validation errors
-     */
-    public void validate(List<ValidationException> exceptionList) {
-        super.validate(exceptionList);
-        final boolean runAllValidators = Options.v().debug() || Options.v().validate();
-    	for (BodyValidator validator : getValidators()) {
-    		if (!validator.isBasicValidator() && !runAllValidators)
-    			continue;
-    		validator.validate(this, exceptionList);
-    	}
-    }
-    
-    public void validateIdentityStatements() {
-    	runValidation(IdentityStatementsValidator.v());
-    }
-    
-    
-    /** Inserts usual statements for handling this & parameters into body. */
-    public void insertIdentityStmts()
-    {
-    	Unit lastUnit = null;
-    	
-        //add this-ref before everything else
-        if (!getMethod().isStatic())
-        {
-        	Local l = Jimple.v().newLocal("this", 
-        			RefType.v(getMethod().getDeclaringClass()));
-        	Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType)l.getType()));
-        	
-        	getLocals().add(l);
-        	getUnits().addFirst(s);
-            lastUnit = s;
-        }
-        
-        int i = 0;
-        for (Type t : getMethod().getParameterTypes()) {
-            Local l = Jimple.v().newLocal("parameter"+i, t);
-            Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(l.getType(), i));
-            
-            getLocals().add(l);
-            if (lastUnit == null)
-            	getUnits().addFirst(s);
-            else
-            	getUnits().insertAfter(s, lastUnit);
-            
-            lastUnit = s;
-            i++;
-        }
-    }
+	public void validateIdentityStatements() {
+		runValidation(IdentityStatementsValidator.v());
+	}
 
-    /** Returns the first non-identity stmt in this body. */
-    public Stmt getFirstNonIdentityStmt()
-    {
-        Iterator<Unit> it = getUnits().iterator();
-        Object o = null;
-        while (it.hasNext())
-            if (!((o = it.next()) instanceof IdentityStmt))
-                break;
-        if (o == null)
-            throw new RuntimeException("no non-id statements!");
-        return (Stmt)o;
-    }
+	/** Inserts usual statements for handling this & parameters into body. */
+	public void insertIdentityStmts() {
+		Unit lastUnit = null;
+
+		// add this-ref before everything else
+		if (!getMethod().isStatic()) {
+			Local l = Jimple.v().newLocal("this", RefType.v(getMethod().getDeclaringClass()));
+			Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType) l.getType()));
+
+			getLocals().add(l);
+			getUnits().addFirst(s);
+			lastUnit = s;
+		}
+
+		int i = 0;
+		for (Type t : getMethod().getParameterTypes()) {
+			Local l = Jimple.v().newLocal("parameter" + i, t);
+			Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(l.getType(), i));
+
+			getLocals().add(l);
+			if (lastUnit == null)
+				getUnits().addFirst(s);
+			else
+				getUnits().insertAfter(s, lastUnit);
+
+			lastUnit = s;
+			i++;
+		}
+	}
+
+	/** Returns the first non-identity stmt in this body. */
+	public Stmt getFirstNonIdentityStmt() {
+		Iterator<Unit> it = getUnits().iterator();
+		Object o = null;
+		while (it.hasNext())
+			if (!((o = it.next()) instanceof IdentityStmt))
+				break;
+		if (o == null)
+			throw new RuntimeException("no non-id statements!");
+		return (Stmt) o;
+	}
 }
-
-
-

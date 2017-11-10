@@ -286,11 +286,11 @@ public class ReflectiveCallsInliner extends SceneTransformer {
 
 	private void addCaching() {
 		SootClass method = Scene.v().getSootClass("java.lang.reflect.Method");
-		method.addField(new SootField(ALREADY_CHECKED_FIELDNAME, BooleanType.v()));
+		method.addField(Scene.v().makeSootField(ALREADY_CHECKED_FIELDNAME, BooleanType.v()));
 		SootClass constructor = Scene.v().getSootClass("java.lang.reflect.Constructor");
-		constructor.addField(new SootField(ALREADY_CHECKED_FIELDNAME, BooleanType.v()));
+		constructor.addField(Scene.v().makeSootField(ALREADY_CHECKED_FIELDNAME, BooleanType.v()));
 		SootClass clazz = Scene.v().getSootClass("java.lang.Class");
-		clazz.addField(new SootField(ALREADY_CHECKED_FIELDNAME, BooleanType.v()));
+		clazz.addField(Scene.v().makeSootField(ALREADY_CHECKED_FIELDNAME, BooleanType.v()));
 
 		for (Kind k : Kind.values()) {
 			addCaching(k);

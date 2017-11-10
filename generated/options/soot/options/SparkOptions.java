@@ -201,7 +201,8 @@ public class SparkOptions
     
      * Treat singletons for empty sets etc. as allocation sites.
     
-     * When this option is set to true, Spark treats references to 
+     * When this option is set to 
+     * true, Spark treats references to 
      * EMPTYSET, EMPTYMAP, and EMPTYLIST as allocation sites for 
      * HashSet, HashMap and LinkedList objects respectively, and 
      * references to Hashtable.emptyIterator as allocation sites for 
@@ -419,7 +420,7 @@ public class SparkOptions
      * then automatically refined with context information when 
      * necessary, i.e. when we try to determine the intersection with 
      * another points-to set and this intersection seems to be 
-     * non-empty.							 					
+     * non-empty. 					
      */
     public boolean lazy_pts() {
         return soot.PhaseOptions.getBoolean( options, "lazy-pts" );
@@ -726,11 +727,12 @@ public class SparkOptions
     
      * Encoding methodology.
     
-     * 						 This switch specifies the encoding methodology used 
-     * in the analysis. 						 All possible options are: Geom, 
-     * HeapIns, PtIns. The efficiency order 						 is (from slow to 
-     * fast) Geom - HeapIns - PtIns, but the precision order is 						 
-     * the reverse. 						 
+     * This switch specifies the 
+     * encoding methodology used in the analysis. 						 All 
+     * possible options are: Geom, HeapIns, PtIns. The efficiency order 
+     * 						 is (from slow to fast) Geom - HeapIns - PtIns, but the 
+     * precision order is 						 the reverse. 
+     * 
      */
     public int geom_encoding() {
         String s = soot.PhaseOptions.getString( options, "geom-encoding" );
@@ -756,7 +758,7 @@ public class SparkOptions
      * 						 Specifies the worklist used for selecting the next 
      * propagation pointer. All possible options are: PQ, FIFO. They 
      * stand for the priority queue (sorted by the last fire time and 
-     * topology order) and FIFO queue. 						 
+     * topology order) and FIFO queue. 
      */
     public int geom_worklist() {
         String s = soot.PhaseOptions.getString( options, "geom-worklist" );

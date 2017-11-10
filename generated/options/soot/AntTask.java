@@ -201,6 +201,10 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-process-multiple-dex");
         }
   
+        public void setsearch_dex_in_archives(boolean arg) {
+            if(arg) addArg("-search-dex-in-archives");
+        }
+  
         public void setprocess_dir(Path arg) {
             if(process_dir == null )
                 process_dir = new Path(getProject());
@@ -438,6 +442,20 @@ public class AntTask extends MatchingTask {
                 addArg(arg);
             } else {
                 throw new BuildException("Bad value "+arg+" for option wrong_staticness");
+            }
+        }
+  
+        public void setfield_type_mismatches(String arg) {
+            if(false
+    
+                || arg.equals( "fail" )
+                || arg.equals( "ignore" )
+                || arg.equals( "null" )
+                ) {
+                addArg("-field-type-mismatches");
+                addArg(arg);
+            } else {
+                throw new BuildException("Bad value "+arg+" for option field_type_mismatches");
             }
         }
   
@@ -1190,6 +1208,27 @@ public class AntTask extends MatchingTask {
             addArg("-p");
             addArg("wjpp");
             addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+        }
+    
+        public Object createp_wjpp_cimbt() {
+            Object ret = new PhaseOptwjpp_cimbt();
+            phaseopts.add(ret);
+            return ret;
+        }
+        public class PhaseOptwjpp_cimbt {
+      
+          public void setenabled(boolean arg) {
+            addArg("-p");
+            addArg("wjpp.cimbt");
+            addArg("enabled:"+(arg?"true":"false"));
+          }
+      
+          public void setverbose(boolean arg) {
+            addArg("-p");
+            addArg("wjpp.cimbt");
+            addArg("verbose:"+(arg?"true":"false"));
           }
       
         }

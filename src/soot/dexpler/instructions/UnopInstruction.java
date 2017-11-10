@@ -31,7 +31,6 @@ import org.jf.dexlib2.iface.instruction.formats.Instruction12x;
 
 import soot.Local;
 import soot.Value;
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.tags.DoubleOpTag;
@@ -49,7 +48,8 @@ public class UnopInstruction extends TaggedInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
         if(!(instruction instanceof Instruction12x))
             throw new IllegalArgumentException("Expected Instruction12x but got: "+instruction.getClass());
 
@@ -67,7 +67,6 @@ public class UnopInstruction extends TaggedInstruction {
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
 			/*
           int op = (int)instruction.getOpcode().value;
           //DalvikTyper.v().captureAssign((JAssignStmt)assign, op);

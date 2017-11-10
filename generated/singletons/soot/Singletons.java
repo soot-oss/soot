@@ -1863,6 +1863,20 @@ public class Singletons {
     	instance_soot_dexpler_DalvikThrowAnalysis = null;
     }
 
+    private soot.dexpler.DexFileProvider instance_soot_dexpler_DexFileProvider;
+    public soot.dexpler.DexFileProvider soot_dexpler_DexFileProvider() {
+        if( instance_soot_dexpler_DexFileProvider == null ) {
+	       	synchronized (this) {
+		        if( instance_soot_dexpler_DexFileProvider == null )
+	        		instance_soot_dexpler_DexFileProvider = new soot.dexpler.DexFileProvider( g );
+	       	}
+       	}
+        return instance_soot_dexpler_DexFileProvider;
+    }
+    protected void release_soot_dexpler_DexFileProvider() {
+    	instance_soot_dexpler_DexFileProvider = null;
+    }
+
     private soot.toolkits.exceptions.PedanticThrowAnalysis instance_soot_toolkits_exceptions_PedanticThrowAnalysis;
     public soot.toolkits.exceptions.PedanticThrowAnalysis soot_toolkits_exceptions_PedanticThrowAnalysis() {
         if( instance_soot_toolkits_exceptions_PedanticThrowAnalysis == null ) {
@@ -2337,6 +2351,20 @@ public class Singletons {
     }
     protected void release_soot_jimple_spark_internal_CompleteAccessibility() {
     	instance_soot_jimple_spark_internal_CompleteAccessibility = null;
+    }
+
+    private soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer;
+    public soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer() {
+        if( instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer == null ) {
+	       	synchronized (this) {
+		        if( instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer == null )
+	        		instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer = new soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer( g );
+	       	}
+       	}
+        return instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer;
+    }
+    protected void release_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer() {
+    	instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer = null;
     }
 
 }

@@ -88,7 +88,8 @@ public abstract class Body extends AbstractHost implements Serializable
 	private static BodyValidator[] validators;
 
     /** Creates a deep copy of this Body. */
-    abstract public Object clone();
+    @Override
+	abstract public Object clone();
 
 	/**
 	 * Returns an array containing some validators in order to validate the JimpleBody

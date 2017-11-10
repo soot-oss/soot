@@ -6,6 +6,7 @@ import java.util.List;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction3rc;
+import org.jf.dexlib2.iface.reference.Reference;
 import org.jf.dexlib2.writer.builder.BuilderReference;
 
 import soot.toDex.LabelAssigner;
@@ -23,9 +24,9 @@ public class Insn3rc extends AbstractInsn {
 	
 	private short regCount;
 	
-	private BuilderReference referencedItem;
+	private Reference referencedItem;
 
-	public Insn3rc(Opcode opc, List<Register> regs, short regCount, BuilderReference referencedItem) {
+	public Insn3rc(Opcode opc, List<Register> regs, short regCount, Reference referencedItem) {
 		super(opc);
 		this.regs = regs;
 		this.regCount = regCount;

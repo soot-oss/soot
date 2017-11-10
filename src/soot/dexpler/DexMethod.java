@@ -38,7 +38,6 @@ import soot.Body;
 import soot.G;
 import soot.MethodSource;
 import soot.Modifier;
-import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -72,8 +71,6 @@ public class DexMethod {
 
 		// get the name of the method
 		String name = method.getName();
-		Debug.printDbg("processing method '", method.getDefiningClass(), ": ", method.getReturnType(), " ",
-				method.getName(), " p: ", method.getParameters(), "'");
 
 		// the following snippet retrieves all exceptions that this method
 		// throws by analyzing its annotations
@@ -140,11 +137,12 @@ public class DexMethod {
 		// sets the method source by adding its body as the active body
 		sm.setSource(new MethodSource() {
 
+			@Override
 			public Body getBody(SootMethod m, String phaseName) {
 				Body b = Jimple.v().newBody(m);
 				try {
 					// add the body of this code item
-					DexBody dexBody = new DexBody(dexFile, method, (RefType) declaringClass.getType());
+					DexBody dexBody = new DexBody(dexFile, method, declaringClass.getType());
 					dexBody.jimplify(b, m);
 				} catch (InvalidDalvikBytecodeException e) {
 					String msg = "Warning: Invalid bytecode in method " + m + ": " + e;

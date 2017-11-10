@@ -45,7 +45,6 @@ import org.jf.dexlib2.iface.DexFile;
 import org.jf.dexlib2.iface.ExceptionHandler;
 import org.jf.dexlib2.iface.Method;
 import org.jf.dexlib2.iface.MethodImplementation;
-import org.jf.dexlib2.iface.MethodParameter;
 import org.jf.dexlib2.iface.TryBlock;
 import org.jf.dexlib2.iface.debug.DebugItem;
 import org.jf.dexlib2.iface.instruction.Instruction;
@@ -54,6 +53,7 @@ import org.jf.dexlib2.util.MethodUtil;
 
 import soot.Body;
 import soot.DoubleType;
+import soot.G;
 import soot.Local;
 import soot.LongType;
 import soot.Modifier;
@@ -63,7 +63,6 @@ import soot.RefType;
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
-import soot.Timer;
 import soot.Trap;
 import soot.Type;
 import soot.Unit;
@@ -107,6 +106,8 @@ import soot.jimple.toolkits.scalar.NopEliminator;
 import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.typing.TypeAssigner;
 import soot.options.Options;
+import soot.tagkit.LineNumberTag;
+import soot.tagkit.SourceLineNumberTag;
 import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.scalar.LocalPacker;
 import soot.toolkits.scalar.LocalSplitter;
@@ -135,7 +136,6 @@ public class DexBody {
 	private int numParameterRegisters;
 	private final List<Type> parameterTypes;
 	private boolean isStatic;
-	private String methodSignature = "";
 
 	private JimpleBody jBody;
 	private List<? extends TryBlock<? extends ExceptionHandler>> tries;
@@ -170,9 +170,6 @@ public class DexBody {
 			throw new RuntimeException("error: no code for method " + method.getName());
 		this.declaringClassType = declaringClassType;
 		tries = code.getTryBlocks();
-		methodSignature = method.getDefiningClass() + ": " + method.getReturnType() + " " + method.getName() + "(";
-		for (MethodParameter mp : method.getParameters())
-			methodSignature += mp.getType() + ",";
 
 		List<? extends CharSequence> paramTypes = method.getParameterTypes();
 		if (paramTypes != null) {
@@ -200,7 +197,6 @@ public class DexBody {
 			DexlibAbstractInstruction dexInstruction = fromInstruction(instruction, address);
 			instructions.add(dexInstruction);
 			instructionAtAddress.put(address, dexInstruction);
-			Debug.printDbg(" put instruction '", dexInstruction, "' at 0x", Integer.toHexString(address));
 			address += instruction.getCodeUnits();
 		}
 
@@ -214,12 +210,10 @@ public class DexBody {
 				ImmutableLineNumber ln = (ImmutableLineNumber) di;
 				DexlibAbstractInstruction ins = instructionAtAddress(ln.getCodeAddress());
 				if (ins == null) {
-					Debug.printDbg("Line number tag pointing to invalid offset: " + ln.getCodeAddress());
+					//Debug.printDbg("Line number tag pointing to invalid offset: " + ln.getCodeAddress());
 					continue;
 				}
 				ins.setLineNumber(ln.getLineNumber());
-				Debug.printDbg("Add line number tag " + ln.getLineNumber() + " for instruction: "
-						+ instructionAtAddress(ln.getCodeAddress()));
 			}
 		}
 
@@ -363,22 +357,25 @@ public class DexBody {
 	 */
 	public Body jimplify(Body b, SootMethod m) {
 
-		Timer t_whole_jimplification = new Timer();
+		final Jimple jimple = Jimple.v();
+		final UnknownType unknownType = UnknownType.v();
+		final NullConstant nullConstant = NullConstant.v();
+		final Options options = Options.v();
+		
+		/*Timer t_whole_jimplification = new Timer();
 		Timer t_num = new Timer();
 		Timer t_null = new Timer();
 
-		t_whole_jimplification.start();
+		t_whole_jimplification.start();*/
 
 		jBody = (JimpleBody) b;
 		deferredInstructions = new ArrayList<DeferableInstruction>();
 		instructionsToRetype = new HashSet<RetypeableInstruction>();
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "clear dalvik typer");
 			DalvikTyper.v().clear();
 		}
 
-		Debug.printDbg("\n[jimplify] start for: ", methodSignature);
 
 		// process method parameters and generate Jimple locals from Dalvik
 		// registers
@@ -386,16 +383,15 @@ public class DexBody {
 		if (!isStatic) {
 			int thisRegister = numRegisters - numParameterRegisters - 1;
 
-			Local thisLocal = Jimple.v().newLocal("$u" + thisRegister, UnknownType.v()); // generateLocal(UnknownType.v());
+			Local thisLocal = jimple.newLocal("$u" + thisRegister, unknownType); // generateLocal(UnknownType.v());
 			jBody.getLocals().add(thisLocal);
 
 			registerLocals[thisRegister] = thisLocal;
-			JIdentityStmt idStmt = (JIdentityStmt) Jimple.v().newIdentityStmt(thisLocal,
-					Jimple.v().newThisRef(declaringClassType));
+			JIdentityStmt idStmt = (JIdentityStmt) jimple.newIdentityStmt(thisLocal,
+					jimple.newThisRef(declaringClassType));
 			add(idStmt);
 			paramLocals.add(thisLocal);
 			if (IDalvikTyper.ENABLE_DVKTYPER) {
-				Debug.printDbg(IDalvikTyper.DEBUG, "constraint: ", idStmt);
 				DalvikTyper.v().setType(idStmt.leftBox, jBody.getMethod().getDeclaringClass().getType(), false);
 			}
 
@@ -408,7 +404,7 @@ public class DexBody {
 																			// register
 			for (Type t : parameterTypes) {
 
-				Local gen = Jimple.v().newLocal("$u" + parameterRegister, UnknownType.v()); // may
+				Local gen = jimple.newLocal("$u" + parameterRegister, unknownType); // may
 																							// only
 																							// use
 																							// UnknownType
@@ -428,14 +424,12 @@ public class DexBody {
 																							// splitting)
 				jBody.getLocals().add(gen);
 
-				Debug.printDbg("add local for parameter register number: ", parameterRegister);
 				registerLocals[parameterRegister] = gen;
-				JIdentityStmt idStmt = (JIdentityStmt) Jimple.v().newIdentityStmt(gen,
-						Jimple.v().newParameterRef(t, i++));
+				JIdentityStmt idStmt = (JIdentityStmt) jimple.newIdentityStmt(gen,
+						jimple.newParameterRef(t, i++));
 				add(idStmt);
 				paramLocals.add(gen);
 				if (IDalvikTyper.ENABLE_DVKTYPER) {
-					Debug.printDbg(IDalvikTyper.DEBUG, "constraint: " + idStmt);
 					DalvikTyper.v().setType(idStmt.leftBox, t, false);
 				}
 
@@ -447,7 +441,7 @@ public class DexBody {
 				// used later in the Dalvik bytecode
 				if (t instanceof LongType || t instanceof DoubleType) {
 					parameterRegister++;
-					Local g = Jimple.v().newLocal("$u" + parameterRegister, UnknownType.v()); // may
+					Local g = jimple.newLocal("$u" + parameterRegister, unknownType); // may
 																								// only
 																								// use
 																								// UnknownType
@@ -474,13 +468,12 @@ public class DexBody {
 		}
 
 		for (int i = 0; i < (numRegisters - numParameterRegisters - (isStatic ? 0 : 1)); i++) {
-			Debug.printDbg("add local for register number: ", i);
-			registerLocals[i] = Jimple.v().newLocal("$u" + i, UnknownType.v());
+			registerLocals[i] = jimple.newLocal("$u" + i, unknownType);
 			jBody.getLocals().add(registerLocals[i]);
 		}
 
 		// add local to store intermediate results
-		storeResultLocal = Jimple.v().newLocal("$u-1", UnknownType.v());
+		storeResultLocal = jimple.newLocal("$u-1", unknownType);
 		jBody.getLocals().add(storeResultLocal);
 
 		// process bytecode instructions
@@ -488,7 +481,7 @@ public class DexBody {
 
 		ClassPath cp = null;
 		if (isOdex) {
-			String[] sootClasspath = Options.v().soot_classpath().split(File.pathSeparator);
+			String[] sootClasspath = options.soot_classpath().split(File.pathSeparator);
 			List<String> classpathList = new ArrayList<String>();
 			for (String str : sootClasspath)
 				classpathList.add(str);
@@ -509,9 +502,6 @@ public class DexBody {
 				dangling.finalize(this, instruction);
 				dangling = null;
 			}
-			// Debug.printDbg(" current op to jimplify: 0x",
-			// Integer.toHexString(instruction.getInstruction().opcode.value) ,"
-			// instruction: ", instruction );
 			instruction.jimplify(this);
 			if (instruction.getLineNumber() > 0)
 				prevLineNumber = instruction.getLineNumber();
@@ -522,10 +512,26 @@ public class DexBody {
 		for (DeferableInstruction instruction : deferredInstructions) {
 			instruction.deferredJimplify(this);
 		}
-
+		
 		if (tries != null)
 			addTraps();
 
+		int prevLn = -1;
+		final boolean keepLineNumber = options.keep_line_number();
+		for (DexlibAbstractInstruction instruction : instructions) {
+			Unit unit = instruction.getUnit();
+			int lineNumber = unit.getJavaSourceStartLineNumber();
+			if (keepLineNumber && lineNumber < 0) {
+				if(prevLn>=0)
+				{
+					unit.addTag(new LineNumberTag(prevLn));
+					unit.addTag(new SourceLineNumberTag(prevLn));
+				}
+			} else {
+				prevLn = lineNumber;
+			}
+		}
+		
 		// At this point Jimple code is generated
 		// Cleaning...
 
@@ -553,11 +559,6 @@ public class DexBody {
 		 * code will not be split. Hence we remove all dead code here.
 		 */
 
-		Debug.printDbg("body before any transformation : ", m, "\n", jBody);
-
-		Debug.printDbg("\nbefore splitting");
-		Debug.printDbg("", (Body) jBody);
-
 		// Fix traps that do not catch exceptions
 		DexTrapStackFixer.v().transform(jBody);
 
@@ -578,8 +579,6 @@ public class DexBody {
 		DeadAssignmentEliminator.v().transform(jBody);
 		UnusedLocalEliminator.v().transform(jBody);
 
-		Debug.printDbg("\nafter splitting");
-		Debug.printDbg("", (Body) jBody);
 
 		for (RetypeableInstruction i : instructionsToRetype)
 			i.retype(jBody);
@@ -607,9 +606,7 @@ public class DexBody {
 			DeadAssignmentEliminator.v().transform(jBody);
 			UnusedLocalEliminator.v().transform(jBody);
 
-			Debug.printDbg("[DalvikTyper] resolving typing constraints...");
 			DalvikTyper.v().assignType(jBody);
-			Debug.printDbg("[DalvikTyper] resolving typing constraints... done.");
 			// jBody.validate();
 			jBody.validateUses();
 			jBody.validateValueBoxes();
@@ -617,21 +614,20 @@ public class DexBody {
 			// Validate.validateArrays(jBody);
 			// jBody.checkTypes();
 			// jBody.checkLocals();
-			Debug.printDbg("\nafter Dalvik Typer");
 
 		} else {
-			t_num.start();
+			//t_num.start();
 			DexNumTransformer.v().transform(jBody);
-			t_num.end();
+			//t_num.end();
 
 			DexReturnValuePropagator.v().transform(jBody);
 			getCopyPopagator().transform(jBody);
 
 			DexNullThrowTransformer.v().transform(jBody);
 
-			t_null.start();
+			//t_null.start();
 			DexNullTransformer.v().transform(jBody);
-			t_null.end();
+			//t_null.end();
 
 			DexIfTransformer.v().transform(jBody);
 
@@ -640,14 +636,11 @@ public class DexBody {
 
 			// DexRefsChecker.v().transform(jBody);
 			DexNullArrayRefTransformer.v().transform(jBody);
-
-			Debug.printDbg("\nafter Num and Null transformers");
 		}
-		Debug.printDbg("", (Body) jBody);
 
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			for (Local l : jBody.getLocals()) {
-				l.setType(UnknownType.v());
+				l.setType(unknownType);
 			}
 		}
 
@@ -656,6 +649,7 @@ public class DexBody {
 
 		TypeAssigner.v().transform(jBody);
 
+		final RefType objectType = RefType.v("java.lang.Object");
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			for (Unit u : jBody.getUnits()) {
 				if (u instanceof IfStmt) {
@@ -677,7 +671,7 @@ public class DexBody {
 							int val = icst.value;
 							if (val != 0)
 								continue;
-							expr.setOp1(NullConstant.v());
+							expr.setOp1(nullConstant);
 						} else if (op1 instanceof Local && op2 instanceof Constant) {
 							Local l = (Local) op1;
 							Type ltype = l.getType();
@@ -692,7 +686,7 @@ public class DexBody {
 							int val = icst.value;
 							if (val != 0)
 								continue;
-							expr.setOp2(NullConstant.v());
+							expr.setOp2(nullConstant);
 						} else if (op1 instanceof Local && op2 instanceof Local) {
 							// nothing to do
 						} else if (op1 instanceof Constant && op2 instanceof Constant) {
@@ -706,7 +700,7 @@ public class DexBody {
 								IntConstant nc = (IntConstant) op1;
 								if (nc.value != 0)
 									throw new RuntimeException("expected value 0 for int constant. Got " + expr);
-								expr.setOp1(NullConstant.v());
+								expr.setOp1(nullConstant);
 							}
 						} else {
 							throw new RuntimeException("error: do not handle if: " + u);
@@ -734,11 +728,11 @@ public class DexBody {
 			}
 			for (ValueBox vb : toNullConstantify) {
 				System.out.println("replace valuebox '" + vb + " with null constant");
-				vb.setValue(NullConstant.v());
+				vb.setValue(nullConstant);
 			}
 			for (Local l : toRemove) {
 				System.out.println("removing null_type local " + l);
-				l.setType(RefType.v("java.lang.Object"));
+				l.setType(objectType);
 			}
 
 		}
@@ -751,13 +745,10 @@ public class DexBody {
 
 		// Some apps reference static fields as instance fields. We fix this
 		// on the fly.
-		if (Options.v().wrong_staticness() == Options.wrong_staticness_fix) {
+		if (options.wrong_staticness() == Options.wrong_staticness_fix) {
 			FieldStaticnessCorrector.v().transform(jBody);
 			MethodStaticnessCorrector.v().transform(jBody);
 		}
-
-		Debug.printDbg("\nafter type assigner localpacker and name standardizer");
-		Debug.printDbg("", (Body) jBody);
 
 		// Inline PackManager.v().getPack("jb").apply(jBody);
 		// Keep only transformations that have not been done
@@ -808,8 +799,7 @@ public class DexBody {
 				if (ass.getRightOp() instanceof CastExpr) {
 					CastExpr c = (CastExpr) ass.getRightOp();
 					if (c.getType() instanceof NullType) {
-						Debug.printDbg("replacing cast to null_type by nullConstant assignment in ", u);
-						ass.setRightOp(NullConstant.v());
+						ass.setRightOp(nullConstant);
 					}
 				}
 			}
@@ -830,8 +820,6 @@ public class DexBody {
 			}
 		}
 
-		Debug.printDbg("\nafter jb pack");
-		Debug.printDbg("", (Body) jBody);
 
 		// Replace local type null_type by java.lang.Object.
 		//
@@ -845,15 +833,11 @@ public class DexBody {
 		for (Local l : jBody.getLocals()) {
 			Type t = l.getType();
 			if (t instanceof NullType) {
-				Debug.printDbg("replacing null_type by java.lang.Object for local ", l);
-				l.setType(RefType.v("java.lang.Object"));
+				l.setType(objectType);
 			}
 		}
 
-		t_whole_jimplification.end();
-		Debug.printDbg("timer whole jimlification: ", t_whole_jimplification.getTime());
-		Debug.printDbg("timer num: ", t_num.getTime());
-		Debug.printDbg("timer null: ", t_null.getTime());
+		//t_whole_jimplification.end();
 
 		return jBody;
 	}
@@ -932,12 +916,10 @@ public class DexBody {
 	 * Should only be called at the end jimplify.
 	 */
 	private void addTraps() {
+		final Jimple jimple = Jimple.v();
 		for (TryBlock<? extends ExceptionHandler> tryItem : tries) {
 			int startAddress = tryItem.getStartCodeAddress();
-			Debug.printDbg(" start : 0x", Integer.toHexString(startAddress));
 			int length = tryItem.getCodeUnitCount();// .getTryLength();
-			Debug.printDbg(" length: 0x", Integer.toHexString(length));
-			Debug.printDbg(" end   : 0x", Integer.toHexString(startAddress + length));
 			int endAddress = startAddress + length;// - 1;
 			Unit beginStmt = instructionAtAddress(startAddress).getUnit();
 			// (startAddress + length) typically points to the first byte of the
@@ -953,21 +935,13 @@ public class DexBody {
 			// nop instruction so Soot can include
 			// the last instruction in the try block.
 			if (jBody.getUnits().getLast() == endStmt && instructionAtAddress(endAddress - 1).getUnit() == endStmt) {
-				Unit nop = Jimple.v().newNopStmt();
+				Unit nop = jimple.newNopStmt();
 				jBody.getUnits().insertAfter(nop, endStmt);
 				endStmt = nop;
 			}
-			Debug.printDbg("begin instruction (0x", Integer.toHexString(startAddress), "): ",
-					instructionAtAddress(startAddress).getUnit(), " --- ", beginStmt);
-			Debug.printDbg("end instruction   (0x", Integer.toHexString(endAddress), "): ",
-					instructionAtAddress(endAddress).getUnit(), " --- ", endStmt);
 
 			List<? extends ExceptionHandler> hList = tryItem.getExceptionHandlers();
 			for (ExceptionHandler handler : hList) {
-				int handlerAddress = handler.getHandlerCodeAddress();
-				Debug.printDbg("handler   (0x", Integer.toHexString(handlerAddress), "): ",
-						instructionAtAddress(handlerAddress).getUnit(), " --- ",
-						handlerAddress > 0 ? instructionAtAddress(handlerAddress - 1).getUnit() : "<unknown>");
 				String exceptionType = handler.getExceptionType();
 				if (exceptionType == null)
 					exceptionType = "Ljava/lang/Throwable;";
@@ -977,12 +951,12 @@ public class DexBody {
 					SootClass exception = ((RefType) t).getSootClass();
 					DexlibAbstractInstruction instruction = instructionAtAddress(handler.getHandlerCodeAddress());
 					if (!(instruction instanceof MoveExceptionInstruction))
-						Debug.printDbg("First instruction of trap handler unit not MoveException but ",
-								instruction.getClass());
+						G.v().out.println(String.format("First instruction of trap handler unit not MoveException but %s",
+								instruction.getClass().getName()));
 					else
 						((MoveExceptionInstruction) instruction).setRealType(this, exception.getType());
 
-					Trap trap = Jimple.v().newTrap(exception, beginStmt, endStmt, instruction.getUnit());
+					Trap trap = jimple.newTrap(exception, beginStmt, endStmt, instruction.getUnit());
 					jBody.getTraps().add(trap);
 				}
 			}

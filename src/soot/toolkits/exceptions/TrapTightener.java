@@ -93,21 +93,25 @@ public final class TrapTightener extends TrapTransformer {
 						firstTrappedThrower = u;
 						break;
 					}
-					
-					// If this is the catch-all block and the current unit has an,
+
+					// If this is the catch-all block and the current unit has
+					// an,
 					// active monitor, we need to keep the block
-					if (isCatchAll && unitsWithMonitor.contains(u))
+					if (isCatchAll && unitsWithMonitor.contains(u)) {
+						if (firstTrappedThrower == null)
+							firstTrappedThrower = u;
 						break;
+					}
 				}
 				if (firstTrappedThrower != null) {
-					for (Unit u = lastTrappedUnit; u != null; u = unitChain.getPredOf(u)) {						
+					for (Unit u = lastTrappedUnit; u != null; u = unitChain.getPredOf(u)) {
 						if (mightThrowTo(graph, u, trap)) {
 							lastTrappedThrower = u;
 							break;
 						}
-						
-						// If this is the catch-all block and the current unit has an,
-						// active monitor, we need to keep the block
+
+						// If this is the catch-all block and the current unit
+						// has an, active monitor, we need to keep the block
 						if (isCatchAll && unitsWithMonitor.contains(u)) {
 							lastTrappedThrower = u;
 							break;
@@ -115,8 +119,7 @@ public final class TrapTightener extends TrapTransformer {
 					}
 				}
 				// If no statement inside the trap can throw an exception, we
-				// remove the
-				// complete trap.
+				// remove the complete trap.
 				if (firstTrappedThrower == null)
 					trapIt.remove();
 				else {

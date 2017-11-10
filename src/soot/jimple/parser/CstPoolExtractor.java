@@ -29,6 +29,7 @@ package soot.jimple.parser;
 import soot.util.*;
 
 import soot.jimple.parser.node.*;
+import soot.Scene;
 import soot.jimple.parser.analysis.*;
 
 import java.util.*;
@@ -95,6 +96,7 @@ class CstPoolExtractor
         public void outAFullIdentClassName(AFullIdentClassName node)
         {
 	    String tokenString = node.getFullIdentifier().getText();
+	    tokenString = Scene.v().unescapeName(tokenString);
 	    tokenString = StringTools.getUnEscapedStringOf(tokenString);
 	    
             mRefTypes.add(tokenString);
@@ -112,6 +114,7 @@ class CstPoolExtractor
         public void outAFullIdentNonvoidType(AFullIdentNonvoidType node)
         {
 	    String tokenString = node.getFullIdentifier().getText();
+	    tokenString = Scene.v().unescapeName(tokenString);
 	    tokenString = StringTools.getUnEscapedStringOf(tokenString);
 
             mRefTypes.add(tokenString);
