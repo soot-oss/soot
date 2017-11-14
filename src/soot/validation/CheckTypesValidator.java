@@ -1,166 +1,206 @@
-package soot.validation;
+/* Soot - a J*va Optimization Framework
+ * Copyright (C) 1997-1999 Raja Vallee-Rai
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the
+ * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ * Boston, MA 02111-1307, USA.
+ */
 
-import java.util.List;
+package soot.jimple.validation;
 
-import soot.ArrayType;
-import soot.Body;
-import soot.DoubleType;
-import soot.FloatType;
-import soot.IntType;
-import soot.LongType;
-import soot.NullType;
-import soot.PrimType;
-import soot.RefType;
-import soot.Scene;
-import soot.SootClass;
-import soot.SootMethodRef;
-import soot.Type;
-import soot.Unit;
-import soot.jimple.CaughtExceptionRef;
-import soot.jimple.DefinitionStmt;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.InvokeExpr;
-import soot.jimple.Stmt;
+import soot.*;
+import soot.jimple.*;
+import soot.toolkits.graph.BriefUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.validation.BodyValidator;
+import soot.validation.ValidationException;
 
-public enum CheckTypesValidator implements BodyValidator {
+import java.util.*;
+
+/**
+ * A relatively simple validator. It tries to check whether
+ * after each new-expression-statement there is a corresponding
+ * call to the &lt;init&gt; method before a use or the end of the method.
+ *
+ * @author Marc Miltenberger
+ * @author Steven Arzt
+ */
+public enum NewValidator implements BodyValidator {
 	INSTANCE;
 
-	public static CheckTypesValidator v() {
+	public static NewValidator v() {
 		return INSTANCE;
 	}
 
 	@Override
+	/**
+	 * Checks whether after each new-instruction a constructor call
+	 * follows.
+	 */
 	public void validate(Body body, List<ValidationException> exception) {
+		UnitGraph g = new BriefUnitGraph(body);
 		for (Unit u : body.getUnits()) {
-			String errorSuffix = " at " + u + " in " + body.getMethod();
-			
-			if (u instanceof DefinitionStmt) {
-				DefinitionStmt astmt = (DefinitionStmt) u;
-				if (!(astmt.getRightOp() instanceof CaughtExceptionRef)) {
-					Type leftType = Type.toMachineType(astmt.getLeftOp()
-							.getType());
-					Type rightType = Type.toMachineType(astmt.getRightOp()
-							.getType());
+			if (u instanceof AssignStmt) {
+				AssignStmt assign = (AssignStmt) u;
 
-					checkCopy(astmt, body, exception, leftType, rightType,
-							errorSuffix);
-				}
-			}
-			
-			if (u instanceof Stmt) {
-				Stmt stmt = (Stmt) u;
-				if (stmt.containsInvokeExpr()) {
-					SootMethodRef called = stmt.getInvokeExpr().getMethodRef();
-					InvokeExpr iexpr = stmt.getInvokeExpr();
-					
-					if (iexpr instanceof InstanceInvokeExpr) {
-						InstanceInvokeExpr iiexpr = (InstanceInvokeExpr) iexpr;
-						checkCopy(stmt, body, exception, called.declaringClass()
-								.getType(), iiexpr.getBase().getType(),
-								" in receiver of call" + errorSuffix);
-					}
-	
-					if (called.parameterTypes().size() != iexpr.getArgCount())
+				// First seek for a JNewExpr.
+				if (assign.getRightOp() instanceof NewExpr) {
+					if (!(assign.getLeftOp().getType() instanceof RefType)) {
 						exception
 								.add(new ValidationException(
-										stmt,
-										"Argument count does not match the signature of the called function",
-										"Warning: Argument count doesn't match up with signature in call"
-												+ errorSuffix + " in "
-												+ body.getMethod()));
-					else
-						for (int i = 0; i < iexpr.getArgCount(); i++)
-							checkCopy(stmt, body, exception,
-									Type.toMachineType(called.parameterType(i)),
-									Type.toMachineType(iexpr.getArg(i).getType()),
-									" in argument " + i + " of call" + errorSuffix + " (Note: Parameters are zero-indexed)");
+										u,
+										"A new-expression must be used on reference type locals",
+										"Body of method "
+												+ body.getMethod()
+												.getSignature()
+												+ " contains a new-expression, which is assigned to a non-reference local"));
+						return;
+					}
+
+					// We search for a JSpecialInvokeExpr on the local.
+					LinkedHashSet<Local> locals = new LinkedHashSet<Local>();
+					locals.add((Local) assign.getLeftOp());
+
+					checkForInitializerOnPath(g, (Local) assign.getLeftOp(), assign, exception);
 				}
 			}
 		}
 	}
 
-	private void checkCopy(Unit stmt, Body body,
-			List<ValidationException> exception, Type leftType, Type rightType,
-			String errorSuffix) {
-		if (leftType instanceof PrimType || rightType instanceof PrimType) {
-			if (leftType instanceof IntType && rightType instanceof IntType)
-				return;
-			if (leftType instanceof LongType && rightType instanceof LongType)
-				return;
-			if (leftType instanceof FloatType && rightType instanceof FloatType)
-				return;
-			if (leftType instanceof DoubleType
-					&& rightType instanceof DoubleType)
-				return;
-			exception.add(new ValidationException(stmt, "",
-					"Warning: Bad use of primitive type" + errorSuffix + " in "
-							+ body.getMethod()));
-		}
+	/**
+	 * <p>Checks whether all pathes from start to the end of the method
+	 * have a call to the &lt;init&gt; method in between.</p>
+	 * <code>
+	 * $r0 = new X;<br>
+	 * ...<br>
+	 * specialinvoke $r0.<X: void <init>()>; //validator checks whether this statement is missing
+	 * </code>
+	 * <p>
+	 * Regarding <i>aliasingLocals</i>:<br>
+	 * The first local in the set
+	 * is always the local on the LHS of the new-expression-assignment (called: original local;
+	 * in the example <code>$r0</code>).
+	 * </p>
+	 *
+	 * @param g              the unit graph of the method
+	 * @param exception      the list of all collected exceptions
+	 * @return true if a call to a &lt;init&gt;-Method has been found on this way.
+	 */
+	private boolean checkForInitializerOnPath(UnitGraph g, Local initLocal,
+											  Unit stmt, List<ValidationException> exception) {
+		final String errorMsg = "There is a path from '" + stmt + "' to the usage '%s' where <init> does not get called in between.";
 
-		if (rightType instanceof NullType)
-			return;
-		if (leftType instanceof RefType
-				&& ((RefType) leftType).getClassName().equals(
-						"java.lang.Object"))
-			return;
+		List<Unit> workList = new ArrayList<Unit>();
+		Set<Unit> doneSet = new HashSet<Unit>();
+		workList.add(stmt);
 
-		if (leftType instanceof ArrayType || rightType instanceof ArrayType) {
-			if (leftType instanceof ArrayType && rightType instanceof ArrayType)
-				return;
-			// it is legal to assign arrays to variables of type Serializable,
-			// Cloneable or Object
-			if (rightType instanceof ArrayType) {
-				if (leftType.equals(RefType.v("java.io.Serializable"))
-						|| leftType.equals(RefType.v("java.lang.Cloneable"))
-						|| leftType.equals(RefType.v("java.lang.Object")))
-					return;
-			}
+		Set<Local> aliasingLocals = new HashSet<Local>();
+		aliasingLocals.add(initLocal);
 
-			exception.add(new ValidationException(stmt,
-					"Warning: Bad use of array type" + errorSuffix + " in "
-							+ body.getMethod()));
-		}
+		while (!workList.isEmpty()) {
+			Stmt curStmt = (Stmt) workList.remove(0);
+			if (!doneSet.add(curStmt))
+				continue;
+			if (!stmt.equals(curStmt)) {
+				if (curStmt.containsInvokeExpr()) {
+					InvokeExpr expr = curStmt.getInvokeExpr();
+					if (expr.getMethod().isConstructor()) {
+						if (!(expr instanceof SpecialInvokeExpr)) {
+							exception.add(new ValidationException(
+									curStmt, "<init> method calls may only be used with specialinvoke."));
+							//At least we found an initializer, so we return true...
+							return true;
+						}
+						if (!(curStmt instanceof InvokeStmt)) {
+							exception.add(new ValidationException(
+									curStmt, "<init> methods may only be called with invoke statements."));
+							//At least we found an initializer, so we return true...
+							return true;
+						}
 
-		if (leftType instanceof RefType && rightType instanceof RefType) {
-			SootClass leftClass = ((RefType) leftType).getSootClass();
-			SootClass rightClass = ((RefType) rightType).getSootClass();
-			if (leftClass.isPhantom() || rightClass.isPhantom()) {
-				return;
-			}
-
-			if (leftClass.isInterface()) {
-				if (rightClass.isInterface()) {
-					if (!(leftClass.getName().equals(rightClass.getName()) || Scene
-							.v().getActiveHierarchy()
-							.isInterfaceSubinterfaceOf(rightClass, leftClass)))
-						exception.add(new ValidationException(stmt,
-								"Warning: Bad use of interface type"
-										+ errorSuffix + " in "
-										+ body.getMethod()));
-				} else {
-					// No quick way to check this for now.
+						SpecialInvokeExpr invoke = (SpecialInvokeExpr) expr;
+						if (aliasingLocals.contains(invoke.getBase())) {
+							//We are happy now, continue the
+							//loop and check other
+							//pathes
+							continue;
+						}
+					}
 				}
-			} else {
-				if (rightClass.isInterface()) {
-					exception.add(new ValidationException(stmt,
-							"Warning: trying to use interface type where non-Object class expected"
-									+ errorSuffix + " in " + body.getMethod()));
-				} else {
-					if (!Scene.v().getActiveHierarchy()
-							.isClassSubclassOfIncluding(rightClass, leftClass))
-						exception.add(new ValidationException(stmt,
-								"Warning: Bad use of class type" + errorSuffix
-										+ " in " + body.getMethod()));
+
+				// We are still in the loop, so this was not the constructor call we
+				// were looking for
+				boolean creatingAlias = false;
+				if (curStmt instanceof AssignStmt) {
+					AssignStmt assignCheck = (AssignStmt) curStmt;
+					if (aliasingLocals.contains(assignCheck.getRightOp())) {
+						if (assignCheck.getLeftOp() instanceof Local) {
+							//A new alias is created.
+							aliasingLocals.add((Local) assignCheck.getLeftOp());
+							creatingAlias = true;
+						}
+					}
+					Local originalLocal = aliasingLocals.iterator().next();
+					if (originalLocal.equals(assignCheck.getLeftOp())) {
+						//In case of dead assignments:
+
+						//Handles cases like
+						//$r0 = new x;
+						//$r0 = null;
+
+						//But not cases like
+						//$r0 = new x;
+						//$r1 = $r0;
+						//$r1 = null;
+						//Because we check for the original local
+						continue;
+					} else {
+						//Since the local on the left hand side gets overwritten
+						//even if it was aliasing with our original local,
+						//now it does not any more...
+						aliasingLocals.remove(assignCheck.getLeftOp());
+					}
+				}
+
+				if (!creatingAlias) {
+					for (ValueBox box : curStmt.getUseBoxes()) {
+						Value used = box.getValue();
+						if (aliasingLocals.contains(used)) {
+							//The current unit uses one of the aliasing locals, but
+							//there was no initializer in between.
+							//However, when creating such an alias, the use is okay.
+							exception.add(new ValidationException(stmt,String.format(errorMsg, curStmt)));
+							return false;
+						}
+					}
 				}
 			}
-			return;
+			// Enqueue the successors
+			List<Unit> successors = g.getSuccsOf(curStmt);
+			if (successors.isEmpty()) {
+				//This means that we are e.g. at the end of the method
+				//There was no <init> call on our way...
+				exception.add(new ValidationException(stmt, String.format(errorMsg, curStmt)));
+				return false;
+			}
+			workList.addAll(successors);
 		}
-		exception.add(new ValidationException(stmt, "Warning: Bad types"
-				+ errorSuffix + " in " + body.getMethod()));
+		return true;
 	}
 
 	@Override
 	public boolean isBasicValidator() {
-		return false;
+		return true;
 	}
 }
