@@ -200,6 +200,6 @@ public enum NewValidator implements BodyValidator {
 
     @Override
     public boolean isBasicValidator() {
-        return true;
+        return false;
     }
 }
