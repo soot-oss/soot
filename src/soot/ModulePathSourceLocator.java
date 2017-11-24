@@ -305,24 +305,35 @@ public class ModulePathSourceLocator extends SourceLocator {
 
                 //make module base on the filname of the jar
                 String moduleName = createModuleNameForAutomaticModule(filename);
-                if (!ModuleScene.v().containsClass(SootModuleInfo.MODULE_INFO, Optional.of(moduleName))) {
-                    SootModuleInfo moduleInfo = new SootModuleInfo(SootModuleInfo.MODULE_INFO, moduleName, true);
+                boolean containsClass = ModuleScene.v().containsClass(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
+                SootModuleInfo moduleInfo;
+                if (!containsClass) {
+                    moduleInfo = new SootModuleInfo(SootModuleInfo.MODULE_INFO, moduleName, true);
                     Scene.v().addClass(moduleInfo);
                     moduleInfo.setApplicationClass();
-
-                    //collect the packages in this jar and add them to the exported
-                    List<String> classesInJar = super.getClassesUnder(jar.toAbsolutePath().toString());
-                    for (String foundClass : classesInJar) {
-                        int index = foundClass.lastIndexOf('.');
-                        if (index > 0) {
-                            String packageName = foundClass.substring(0, index);
-                            moduleInfo.addModulePackage(packageName);
-                        }
+                } else {
+                    moduleInfo = (SootModuleInfo) ModuleScene.v().getSootClass(SootModuleInfo.MODULE_INFO, Optional.of(moduleName));
+                    if ( !(moduleInfo.resolvingLevel() == SootClass.DANGLING)) {
+                        return moduleClassMap;
                     }
-                    this.moduleNameToPath.put(moduleName, jar);
-                    moduleClassMap.put(moduleName, classesInJar);
                 }
+
+
+                //collect the packages in this jar and add them to the exported
+                List<String> classesInJar = super.getClassesUnder(jar.toAbsolutePath().toString());
+                for (String foundClass : classesInJar) {
+                    int index = foundClass.lastIndexOf('.');
+                    if (index > 0) {
+                        String packageName = foundClass.substring(0, index);
+                        moduleInfo.addModulePackage(packageName);
+                    }
+                }
+                moduleInfo.setResolvingLevel(SootClass.BODIES);
+                moduleInfo.setAutomaticModule(true);
+                this.moduleNameToPath.put(moduleName, jar);
+                moduleClassMap.put(moduleName, classesInJar);
             }
+
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -486,6 +497,8 @@ public class ModulePathSourceLocator extends SourceLocator {
 
 
         FoundFile ret = null;
+        if (foundModulePath == null)
+            return null;
         //transform the path to a String to reuse the
         String dir = foundModulePath.toAbsolutePath().toString();
         if (foundModulePath.toUri().toString().startsWith("jrt:/")) {

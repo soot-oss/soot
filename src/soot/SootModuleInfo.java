@@ -2,6 +2,7 @@ package soot;
 
 import com.google.common.base.Optional;
 import soot.dava.toolkits.base.misc.PackageNamer;
+import soot.util.Chain;
 
 import java.util.*;
 
@@ -18,6 +19,10 @@ public class SootModuleInfo extends SootClass {
 
     public boolean isAutomaticModule() {
         return isAutomaticModule;
+    }
+
+    public void setAutomaticModule(boolean automaticModule) {
+        isAutomaticModule = automaticModule;
     }
 
     private boolean isAutomaticModule;

@@ -74,7 +74,16 @@ public final class ModuleUtil {
         if (className.equalsIgnoreCase(SootModuleInfo.MODULE_INFO)) {
             return toModuleName;
         }
-        SootModuleInfo modInfo = (SootModuleInfo) SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES, Optional.fromNullable(toModuleName));
+        SootModuleInfo modInfo;
+        if (ModuleScene.v().containsClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName))) {
+            modInfo = (SootModuleInfo) ModuleScene.v().getSootClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName));
+            if (modInfo.resolvingLevel() < SootClass.BODIES){
+                modInfo = (SootModuleInfo) SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES, Optional.fromNullable(toModuleName));
+            }
+        }
+        else {
+            modInfo = (SootModuleInfo) SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES, Optional.fromNullable(toModuleName));
+        }
 
         String packageName = getPackageName(className);
 
@@ -212,7 +221,7 @@ public final class ModuleUtil {
                         }
                     }
                 }
-            }  else if (fqnClassNamePattern.matcher(className).matches()) {
+            } else if (fqnClassNamePattern.matcher(className).matches()) {
                 for (String packageName : packagesJavaBaseModule) {
                     if (packageName.equals(ModuleUtil.getPackageName(className))) {
                         refinedModuleName = "java.base";
