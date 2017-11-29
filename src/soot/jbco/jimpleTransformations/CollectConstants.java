@@ -97,7 +97,7 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
 
 		for (SootClass cl : appClasses) {
 			for (SootMethod m : cl.getMethods()) {
-				if (!m.hasActiveBody() || m.getName().indexOf("<clinit>") >= 0)
+				if (!m.hasActiveBody() || m.getName().contains(SootMethod.staticInitializerName))
 					continue;
 
 				for (ValueBox useBox : m.getActiveBody().getUseBoxes()) {
@@ -181,16 +181,17 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
 				return;
 		}
 
-		Body b = null;
+		Body b;
 		boolean newInit = false;
-		if (!clas.declaresMethodByName("<clinit>")) {
-			SootMethod m = Scene.v().makeSootMethod("<clinit>", Collections.<Type>emptyList(), VoidType.v());
+		if (!clas.declaresMethodByName(SootMethod.staticInitializerName)) {
+			SootMethod m = Scene.v().makeSootMethod(SootMethod.staticInitializerName,
+                    Collections.<Type>emptyList(), VoidType.v(), Modifier.STATIC);
 			clas.addMethod(m);
 			b = Jimple.v().newBody(m);
 			m.setActiveBody(b);
 			newInit = true;
 		} else {
-			SootMethod m = clas.getMethodByName("<clinit>");
+			SootMethod m = clas.getMethodByName(SootMethod.staticInitializerName);
 			if (!m.hasActiveBody()) {
 				b = Jimple.v().newBody(m);
 				m.setActiveBody(b);

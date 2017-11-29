@@ -53,7 +53,7 @@ import soot.jimple.Jimple;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 26-Jan-2006
  */
 public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
@@ -207,16 +207,17 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
 		if (!value && f.getType() instanceof IntegerType && Rand.getInt() % 2 > 0)
 			return;
 
-		Body b = null;
+		Body b;
 		boolean newInit = false;
-		if (!c.declaresMethodByName("<clinit>")) {
-			SootMethod m = Scene.v().makeSootMethod("<clinit>", Collections.<Type>emptyList(), VoidType.v());
+		if (!c.declaresMethodByName(SootMethod.staticInitializerName)) {
+			SootMethod m = Scene.v().makeSootMethod(SootMethod.staticInitializerName,
+                    Collections.<Type>emptyList(), VoidType.v(), Modifier.STATIC);
 			c.addMethod(m);
 			b = Jimple.v().newBody(m);
 			m.setActiveBody(b);
 			newInit = true;
 		} else {
-			SootMethod m = c.getMethodByName("<clinit>");
+			SootMethod m = c.getMethodByName(SootMethod.staticInitializerName);
 			b = m.getActiveBody();
 		}
 
