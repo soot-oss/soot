@@ -270,7 +270,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		// Insert 'toInsert' before 'target' point in chain if the source point
 		// is null
 		if (point_src == null && point_tgt != null) {
-			((Unit) point_tgt).redirectJumpsToThisTo((Unit) toInsert.toArray()[0]);
+			((Unit) point_tgt).redirectJumpsToThisTo((Unit) toInsert.iterator().next());
 			insertBefore(toInsert, point_tgt);
 			return;
 		}
@@ -296,7 +296,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 			List<UnitBox> boxes = ((Unit) point_src).getUnitBoxes();
 			for (UnitBox box : boxes) {
 				if (box.getUnit() == point_tgt) {
-					box.setUnit((Unit) toInsert.toArray()[0]);
+					box.setUnit((Unit) toInsert.iterator().next());
 				}
 			}
 			insertAfter(toInsert, point_src);
@@ -321,15 +321,21 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 
 				if (point_src instanceof GotoStmt) {
 
-					box.setUnit((Unit) toInsert.toArray()[0]);
+					box.setUnit((Unit) toInsert.iterator().next());
 					insertAfter(toInsert, point_src);
 
 					E goto_unit = (E) new JGotoStmt((Unit) point_tgt);
-					insertAfter(goto_unit, (E) toInsert.toArray()[toInsert.size() - 1]);
+					if (toInsert instanceof List)
+					{
+						List l = ((List)toInsert);
+						insertAfter(goto_unit, (E) l.get(l.size() - 1));
+					}
+					else
+						insertAfter(goto_unit, (E) toInsert.toArray()[toInsert.size() - 1]);
 					return;
 				}
 
-				box.setUnit((Unit) toInsert.toArray()[0]);
+				box.setUnit((Unit) toInsert.iterator().next());
 
 				validEdgeFound = true;
 			}
@@ -342,7 +348,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 					return;
 
 				E goto_unit = (E) new JGotoStmt((Unit) point_tgt);
-				insertBefore(goto_unit, (E) toInsert.toArray()[0]);
+				insertBefore(goto_unit, (E) toInsert.iterator().next());
 			}
 			return;
 		}
@@ -355,7 +361,7 @@ public class HashChain<E> extends AbstractCollection<E> implements Chain<E> {
 		if (getSuccOf(point_src) instanceof GotoStmt) {
 			if (((Unit) getSuccOf(point_src)).getUnitBoxes().get(0).getUnit() == point_tgt) {
 
-				((Unit) getSuccOf(point_src)).redirectJumpsToThisTo((Unit) toInsert.toArray()[0]);
+				((Unit) getSuccOf(point_src)).redirectJumpsToThisTo((Unit) toInsert.iterator().next());
 				insertBefore(toInsert, getSuccOf(point_src));
 
 				return;

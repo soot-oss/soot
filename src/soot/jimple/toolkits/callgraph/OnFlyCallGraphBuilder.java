@@ -795,17 +795,22 @@ public final class OnFlyCallGraphBuilder {
 			final Stmt s = (Stmt) u;
 			if (s.containsInvokeExpr()) {
 				InvokeExpr ie = s.getInvokeExpr();
-				final String methRefSig = ie.getMethodRef().getSignature();
-				if (methRefSig.equals(
-						"<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>")) {
-					reflectionModel.methodInvoke(source, s);
-				} else if (methRefSig.equals("<java.lang.Class: java.lang.Object newInstance()>")) {
-					reflectionModel.classNewInstance(source, s);
-				} else if (methRefSig
-						.equals("<java.lang.reflect.Constructor: java.lang.Object newInstance(java.lang.Object[])>")) {
-					reflectionModel.contructorNewInstance(source, s);
+				SootMethodRef methodRef = ie.getMethodRef();
+				switch (methodRef.declaringClass().getName()) {
+				case "java.lang.reflect.Method":
+					if (methodRef.getSubSignature().getString().equals("java.lang.Object invoke(java.lang.Object,java.lang.Object[])"))
+						reflectionModel.methodInvoke(source, s);
+					break;
+				case "java.lang.Class":
+					if (methodRef.getSubSignature().getString().equals("java.lang.Object newInstance()"))
+						reflectionModel.classNewInstance(source, s);
+					break;
+				case "java.lang.reflect.Constructor":
+					if (methodRef.getSubSignature().getString().equals("java.lang.Object newInstance(java.lang.Object[]))"))
+						reflectionModel.contructorNewInstance(source, s);
+					break;
 				}
-				if (ie.getMethodRef().getSubSignature() == sigForName) {
+				if (methodRef.getSubSignature() == sigForName) {
 					reflectionModel.classForName(source, s);
 				}
 				if (ie instanceof StaticInvokeExpr) {

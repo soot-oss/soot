@@ -19,7 +19,7 @@
 
 package soot;
 
-import java.util.LinkedList;
+import java.util.ArrayDeque;
 
 import soot.options.Options;
 
@@ -137,10 +137,13 @@ class AbstractSootFieldRef implements SootFieldRef {
 				}
 			} else {
 				// Since this class is not phantom, we look at its interfaces
-				LinkedList<SootClass> queue = new LinkedList<SootClass>();
+				ArrayDeque<SootClass> queue = new ArrayDeque<SootClass>();
 				queue.addAll(cl.getInterfaces());
-				while (!queue.isEmpty()) {
-					SootClass iface = queue.removeFirst();
+				while (true) {
+					SootClass iface = queue.poll();
+					if (iface == null)
+						break;
+					
 					if (trace != null)
 						trace.append("Looking in " + iface + " which has fields " + iface.getFields() + "\n");
 					SootField ifaceField = iface.getFieldUnsafe(name, type);
