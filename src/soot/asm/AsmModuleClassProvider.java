@@ -21,10 +21,7 @@ package soot.asm;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ModuleVisitor;
 import org.objectweb.asm.Opcodes;
-import soot.ClassProvider;
-import soot.ClassSource;
-import soot.ModulePathSourceLocator;
-import soot.SourceLocator;
+import soot.*;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,13 +37,13 @@ public class AsmModuleClassProvider implements ClassProvider {
         String clsFileName = cls.substring(cls.lastIndexOf(":") + 1, cls.length()).replace('.', '/') + ".class";
         String modules = cls.substring(0, cls.lastIndexOf(":") + 1);
         String clsFile = modules + clsFileName;
-        ModulePathSourceLocator.FoundFile file =
+        FoundFile file =
                 ModulePathSourceLocator.v().lookUpInModulePath(clsFile);
         return file == null ? null : new AsmClassSource(cls, file);
     }
 
 
-    public String getModuleName(SourceLocator.FoundFile file) {
+    public String getModuleName(FoundFile file) {
         final String[] moduleName = {null};
         org.objectweb.asm.ClassVisitor visitor = new org.objectweb.asm.ClassVisitor(Opcodes.ASM6) {
 

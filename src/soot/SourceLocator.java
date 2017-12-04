@@ -116,11 +116,11 @@ public class SourceLocator {
     public SourceLocator(Singletons.Global g) {
     }
 
-   	public static SourceLocator v() {
-		 if (ModuleUtil.module_mode())
-           		return G.v().soot_ModulePathSourceLocator();
-        	return G.v().soot_SourceLocator();
-	}
+    public static SourceLocator v() {
+        if (ModuleUtil.module_mode())
+            return G.v().soot_ModulePathSourceLocator();
+        return G.v().soot_SourceLocator();
+    }
 
     /**
      * Create the given directory and all parent directories if {@code dir} is
@@ -185,7 +185,7 @@ public class SourceLocator {
                 ClassSource ret = new ClassProvider() {
 
                     @Override
-					public ClassSource find(String className) {
+                    public ClassSource find(String className) {
                         String fileName = className.replace('.', '/') + ".class";
                         InputStream stream = cl.getResourceAsStream(fileName);
                         if (stream == null)
@@ -282,7 +282,7 @@ public class SourceLocator {
         return sourcePath;
     }
 
-    private ClassSourceType getClassSourceType(String path) {
+    protected ClassSourceType getClassSourceType(String path) {
         try {
             return pathToSourceType.get(path);
         } catch (Exception e) {
@@ -338,8 +338,7 @@ public class SourceLocator {
                 for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(new File(aPath))) {
                     classes.addAll(DexClassProvider.classesOfDex(container.getBase()));
                 }
-            } catch (CompilationDeathException e) 
-            { //There might be cases where there is no dex file within a JAR or ZIP file...
+            } catch (CompilationDeathException e) { //There might be cases where there is no dex file within a JAR or ZIP file...
             } catch (IOException e) {
                 /* Ignore unreadable files */
             }
@@ -657,7 +656,7 @@ public class SourceLocator {
         this.dexClassPathExtensions = null;
     }
 
-     protected enum ClassSourceType {
+    protected enum ClassSourceType {
         jar, zip, apk, dex, directory, jrt, unknown
     }
 }

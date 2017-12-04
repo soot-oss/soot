@@ -67,6 +67,9 @@ public class ModulePathSourceLocator extends SourceLocator {
         if (modulePath == null) {
             modulePath = explodeModulePath(ModuleScene.v().getSootModulePath());
         }
+        if (classProviders == null) {
+            setupClassProviders();
+        }
 
         JarException ex = null;
         for (ClassProvider cp : classProviders) {
@@ -562,7 +565,7 @@ public class ModulePathSourceLocator extends SourceLocator {
      * @param fileName    the filename to search
      * @return the FoundFile
      */
-    private FoundFile lookupInArchive(String archivePath, String fileName) {
+    protected FoundFile lookupInArchive(String archivePath, String fileName) {
         Path archive = Paths.get(archivePath);
         try (FileSystem zipFileSystem = FileSystems.newFileSystem(archive, null)) {
             Path entry = zipFileSystem.getPath(fileName);
