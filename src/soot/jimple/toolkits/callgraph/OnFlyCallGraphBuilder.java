@@ -134,6 +134,22 @@ public final class OnFlyCallGraphBuilder {
 			.findOrAdd("boolean postAtTime(java.lang.Runnable,java.lang.Object,long)");
 	protected final NumberedString sigHandlerPostDelayed = Scene.v().getSubSigNumberer()
 			.findOrAdd("boolean postDelayed(java.lang.Runnable,long)");
+	protected final NumberedString sigHandlerSendEmptyMessage = Scene.v().getSubSigNumberer()
+			.findOrAdd("boolean sendEmptyMessage(int)");
+	protected final NumberedString sigHandlerSendEmptyMessageAtTime = Scene.v().getSubSigNumberer()
+			.findOrAdd("boolean sendEmptyMessageAtTime(int,long)");
+	protected final NumberedString sigHandlerSendEmptyMessageDelayed = Scene.v().getSubSigNumberer()
+			.findOrAdd("boolean sendEmptyMessageDelayed(int,long)");
+	protected final NumberedString sigHandlerSendMessage = Scene.v().getSubSigNumberer()
+			.findOrAdd("boolean postAtTime(java.lang.Runnable,long)");
+	protected final NumberedString sigHandlerSendMessageAtFrontOfQueue = Scene.v().getSubSigNumberer()
+			.findOrAdd("boolean sendMessageAtFrontOfQueue(android.os.Message)");
+	protected final NumberedString sigHandlerSendMessageAtTime = Scene.v().getSubSigNumberer()
+			.findOrAdd("boolean sendMessageAtTime(android.os.Message,long)");
+	protected final NumberedString sigHandlerSendMessageDelayed = Scene.v().getSubSigNumberer()
+			.findOrAdd("boolean sendMessageDelayed(android.os.Message,long)");
+	protected final NumberedString sigHandlerHandleMessage = Scene.v().getSubSigNumberer()
+			.findOrAdd("void handleMessage(android.os.Message)");
 	protected final NumberedString sigObjRun = Scene.v().getSubSigNumberer().findOrAdd("java.lang.Object run()");
 	protected final NumberedString sigDoInBackground = Scene.v().getSubSigNumberer()
 			.findOrAdd("java.lang.Object doInBackground(java.lang.Object[])");
@@ -141,6 +157,7 @@ public final class OnFlyCallGraphBuilder {
 			.findOrAdd("java.lang.Class forName(java.lang.String)");
 	protected final RefType clRunnable = RefType.v("java.lang.Runnable");
 	protected final RefType clAsyncTask = RefType.v("android.os.AsyncTask");
+	protected final RefType clHandler = RefType.v("android.os.Handler");
 	/** context-insensitive stuff */
 	private final CallGraph cicg = new CallGraph();
 	private final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
@@ -514,6 +531,8 @@ public final class OnFlyCallGraphBuilder {
 					continue;
 				if (site.kind() == Kind.ASYNCTASK && !fh.canStoreType(type, clAsyncTask))
 					continue;
+				if (site.kind() == Kind.HANDLER && !fh.canStoreType(type, clHandler))
+					continue;
 
 				if (site.iie() instanceof SpecialInvokeExpr && site.kind != Kind.THREAD && site.kind != Kind.EXECUTOR
 						&& site.kind != Kind.ASYNCTASK) {
@@ -724,6 +743,11 @@ public final class OnFlyCallGraphBuilder {
 							if (runnable instanceof Local)
 								addVirtualCallSite(s, m, (Local) runnable, iie, sigRun, Kind.EXECUTOR);
 						}
+					} else if (subSig == sigHandlerSendEmptyMessage || subSig == sigHandlerSendEmptyMessageAtTime
+							|| subSig == sigHandlerSendEmptyMessageDelayed || subSig == sigHandlerSendMessage
+							|| subSig == sigHandlerSendMessageAtFrontOfQueue || subSig == sigHandlerSendMessageAtTime
+							|| subSig == sigHandlerSendMessageDelayed) {
+						addVirtualCallSite(s, m, receiver, iie, sigHandlerHandleMessage, Kind.HANDLER);
 					} else if (subSig == sigExecute) {
 						addVirtualCallSite(s, m, receiver, iie, sigDoInBackground, Kind.ASYNCTASK);
 					}

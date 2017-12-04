@@ -80,13 +80,14 @@ public class SimpleLocalUses implements LocalUses
     public SimpleLocalUses(Body body, LocalDefs localDefs)
     {
     	this.body = body;
-        if(Options.v().time())
+    	final Options options = Options.v();
+        if(options.time())
+        {
            Timers.v().usesTimer.start();
-    
-        if(Options.v().time())
            Timers.v().usePhase1Timer.start();
+        }
         
-        if(Options.v().verbose())
+        if(options.verbose())
             G.v().out.println("[" + body.getMethod().getName() +
                 "]     Constructing SimpleLocalUses...");
         
@@ -94,11 +95,11 @@ public class SimpleLocalUses implements LocalUses
     
         // Initialize this map to empty sets
 
-        if(Options.v().time())
+        if(options.time())
+        {
            Timers.v().usePhase1Timer.end();
-    
-        if(Options.v().time())
            Timers.v().usePhase2Timer.start();
+        }
     
         // Traverse units and associate uses with definitions
         for (Unit unit : body.getUnits()) {
@@ -125,13 +126,13 @@ public class SimpleLocalUses implements LocalUses
         }
         
 
-        if(Options.v().time())
+        if(options.time())
+        {
            Timers.v().usePhase2Timer.end();
-        
-        if(Options.v().time())
             Timers.v().usesTimer.end();
+        }
 
-        if(Options.v().verbose())
+        if(options.verbose())
             G.v().out.println("[" + body.getMethod().getName() +
                 "]     finished SimpleLocalUses...");
     }

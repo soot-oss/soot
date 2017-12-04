@@ -320,12 +320,18 @@ public abstract class AbstractASMBackend {
 				sig = genericSignature.getSignature();
 			}
 
-			String[] exceptions = new String[sm.getExceptions().size()];
-			int i = 0;
-			for (SootClass exc : sm.getExceptions()) {
-				exceptions[i] = slashify(exc.getName());
-				++i;
-			}
+			List<SootClass> exceptionList = sm.getExceptionsUnsafe();
+			String[] exceptions;
+			if (exceptionList != null)
+			{
+				exceptions = new String[exceptionList.size()];
+				int i = 0;
+				for (SootClass exc : sm.getExceptions()) {
+					exceptions[i] = slashify(exc.getName());
+					++i;
+				}
+			} else
+				exceptions = new String[0];
 			MethodVisitor mv = cv.visitMethod(access, name,
 					descBuilder.toString(), sig, exceptions);
 			if (mv != null) {

@@ -29,7 +29,6 @@ import org.jf.dexlib2.iface.instruction.ReferenceInstruction;
 import org.jf.dexlib2.iface.instruction.TwoRegisterInstruction;
 import org.jf.dexlib2.iface.reference.FieldReference;
 
-import soot.dexpler.Debug;
 import soot.dexpler.DexBody;
 import soot.dexpler.IDalvikTyper;
 import soot.dexpler.typing.DalvikTyper;
@@ -43,20 +42,21 @@ public class IgetInstruction extends FieldInstruction {
         super(instruction, codeAdress);
     }
 
-    public void jimplify (DexBody body) {
+    @Override
+	public void jimplify (DexBody body) {
         TwoRegisterInstruction i = (TwoRegisterInstruction)instruction;
         int dest = i.getRegisterA();
         int object = i.getRegisterB();
         FieldReference f = (FieldReference)((ReferenceInstruction)instruction).getReference();
-        InstanceFieldRef r = Jimple.v().newInstanceFieldRef(body.getRegisterLocal(object),
+        final Jimple jimple = Jimple.v();
+        InstanceFieldRef r = jimple.newInstanceFieldRef(body.getRegisterLocal(object),
                                                             getSootFieldRef(f));
-        AssignStmt assign = Jimple.v().newAssignStmt(body.getRegisterLocal(dest), r);
+        AssignStmt assign = jimple.newAssignStmt(body.getRegisterLocal(dest), r);
         setUnit(assign);
         addTags(assign);
         body.add(assign);
         
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
-			Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ assign);
           DalvikTyper.v().setType(assign.getLeftOpBox(), r.getType(), false);
         }
     }

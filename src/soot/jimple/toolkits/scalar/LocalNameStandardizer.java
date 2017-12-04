@@ -30,20 +30,58 @@
 
 package soot.jimple.toolkits.scalar;
 
-import soot.*;
-import soot.util.Chain;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
+import soot.Body;
+import soot.BodyTransformer;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.ErroneousType;
+import soot.FloatType;
+import soot.G;
+import soot.IntType;
+import soot.Local;
+import soot.LongType;
+import soot.NullType;
+import soot.PhaseOptions;
+import soot.ShortType;
+import soot.Singletons;
+import soot.StmtAddressType;
+import soot.Type;
+import soot.UnknownType;
+import soot.Value;
+import soot.ValueBox;
+import soot.util.Chain;
 
 public class LocalNameStandardizer extends BodyTransformer
 {
     public LocalNameStandardizer( Singletons.Global g ) {}
     public static LocalNameStandardizer v() { return G.v().soot_jimple_toolkits_scalar_LocalNameStandardizer(); }
 
-    protected void internalTransform(Body body, String phaseName, Map<String,String> options)
+    @Override
+	protected void internalTransform(Body body, String phaseName, Map<String,String> options)
     {
         boolean onlyStackName = PhaseOptions.getBoolean(options, "only-stack-locals");
         boolean sortLocals = PhaseOptions.getBoolean(options, "sort-locals");
+        final BooleanType booleanType = BooleanType.v();
+        final ByteType byteType = ByteType.v();
+        final ShortType shortType = ShortType.v();
+        final CharType charType = CharType.v();
+        final IntType intType = IntType.v();
+        final LongType longType = LongType.v();
+        final DoubleType doubleType = DoubleType.v();
+        final FloatType floatType = FloatType.v();
+        final ErroneousType erroneousType = ErroneousType.v();
+        final UnknownType unknownType = UnknownType.v();
+        final StmtAddressType stmtAddressType = StmtAddressType.v();
+        final NullType nullType = NullType.v();
 
         // Change the names to the standard forms now.
         {
@@ -93,7 +131,8 @@ public class LocalNameStandardizer extends BodyTransformer
                 
                 Collections.sort(sortedLocals, new Comparator<Local>(){
                     private Map<Local, Integer> firstOccuranceCache = new HashMap<Local, Integer>();
-                    public int compare(Local arg0, Local arg1) {
+                    @Override
+					public int compare(Local arg0, Local arg1) {
                         int ret = arg0.getType().toString().compareTo(arg1.getType().toString());
                         if(ret == 0){
                             ret = Integer.compare(getFirstOccurance(arg0), getFirstOccurance(arg1));
@@ -134,31 +173,33 @@ public class LocalNameStandardizer extends BodyTransformer
                     if (onlyStackName)
                         continue;
                 }
-                    
-                if(l.getType().equals(BooleanType.v()))
+                   
+                final Type type = l.getType();
+                
+                if(type.equals(booleanType))
                     l.setName(prefix + "z" + intCount++);
-                else if(l.getType().equals(ByteType.v()))
+                else if(type.equals(byteType))
                     l.setName(prefix + "b" + longCount++);
-                else if(l.getType().equals(ShortType.v()))
+                else if(type.equals(shortType))
                     l.setName(prefix + "s" + longCount++);
-                else if(l.getType().equals(CharType.v()))
+                else if(type.equals(charType))
                     l.setName(prefix + "c" + longCount++);
-                else if(l.getType().equals(IntType.v()))
+                else if(type.equals(intType))
                     l.setName(prefix + "i" + longCount++);
-                else if(l.getType().equals(LongType.v()))
+                else if(type.equals(longType))
                     l.setName(prefix + "l" + longCount++);
-                else if(l.getType().equals(DoubleType.v()))
+                else if(type.equals(doubleType))
                     l.setName(prefix + "d" + doubleCount++);
-                else if(l.getType().equals(FloatType.v()))
+                else if(type.equals(floatType))
                     l.setName(prefix + "f" + floatCount++);
-                else if(l.getType().equals(StmtAddressType.v()))
+                else if(type.equals(stmtAddressType))
                     l.setName(prefix + "a" + addressCount++);
-                else if(l.getType().equals(ErroneousType.v()) ||
-                    l.getType().equals(UnknownType.v()))
+                else if(type.equals(erroneousType) ||
+                    type.equals(unknownType))
                 {
                     l.setName(prefix + "e" + errorCount++);
                 }
-                else if(l.getType().equals(NullType.v()))
+                else if(type.equals(nullType))
                     l.setName(prefix + "n" + nullCount++);
                 else
                     l.setName(prefix + "r" + objectCount++);

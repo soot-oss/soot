@@ -49,8 +49,6 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 		this.name = name;
 		this.type = type;
 		this.modifiers = modifiers;
-		if (type instanceof RefLikeType)
-			Scene.v().getFieldNumberer().add(this);
 	}
 
 	/** Constructs a Soot field with the given name, type and no modifiers. */
@@ -58,8 +56,6 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 		this.name = name;
 		this.type = type;
 		this.modifiers = 0;
-		if (type instanceof RefLikeType)
-			Scene.v().getFieldNumberer().add(this);
 	}
 
 	public int equivHashCode() {
@@ -78,7 +74,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 		StringBuffer buffer = new StringBuffer();
 
 		buffer.append("<" + Scene.v().quotedNameOf(cl.getName()) + ": ");
-		buffer.append(type + " " + Scene.v().quotedNameOf(name) + ">");
+        buffer.append(type.toQuotedString() + " " + Scene.v().quotedNameOf(name) + ">");
 
 		return buffer.toString().intern();
 
@@ -180,10 +176,10 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 	}
 
 	private String getOriginalStyleDeclaration() {
-		String qualifiers = Modifier.toString(modifiers) + " " + type.toString();
+        String qualifiers = Modifier.toString(modifiers) + " " + type.toQuotedString();
 		qualifiers = qualifiers.trim();
 
-		if (qualifiers.equals(""))
+		if (qualifiers.isEmpty())
 			return Scene.v().quotedNameOf(name);
 		else
 			return qualifiers + " " + Scene.v().quotedNameOf(name) + "";
@@ -214,5 +210,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 
 	public void setDeclaringClass(SootClass sc) {
 		this.declaringClass = sc;
+		if (type instanceof RefLikeType)
+			Scene.v().getFieldNumberer().add(this);
 	}
 }

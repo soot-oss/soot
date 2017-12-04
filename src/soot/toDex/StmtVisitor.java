@@ -11,9 +11,11 @@ import java.util.Set;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.iface.instruction.Instruction;
+import org.jf.dexlib2.iface.reference.FieldReference;
 import org.jf.dexlib2.writer.builder.BuilderFieldReference;
 import org.jf.dexlib2.writer.builder.DexBuilder;
 
+import org.jf.dexlib2.writer.pool.DexPool;
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -91,7 +93,7 @@ import soot.util.Switchable;
  * <br>
  * These final instructions do have correct offsets, jump targets and register
  * numbers.
- * 
+ *
  * @see Insn intermediate representation of an instruction
  * @see Instruction final representation of an instruction
  */
@@ -119,7 +121,6 @@ class StmtVisitor implements StmtSwitch {
 	}
 
 	private final SootMethod belongingMethod;
-	private final DexBuilder belongingFile;
 	private final DexArrayInitDetector arrayInitDetector;
 
 	private ConstantVisitor constantV;
@@ -144,13 +145,12 @@ class StmtVisitor implements StmtSwitch {
 
 	private Map<Constant, Register> monitorRegs = new HashMap<Constant, Register>();
 
-	public StmtVisitor(SootMethod belongingMethod, DexBuilder belongingFile, DexArrayInitDetector arrayInitDetector) {
+	public StmtVisitor(SootMethod belongingMethod,   DexArrayInitDetector arrayInitDetector) {
 		this.belongingMethod = belongingMethod;
-		this.belongingFile = belongingFile;
 		this.arrayInitDetector = arrayInitDetector;
-		constantV = new ConstantVisitor(belongingFile, this);
+		constantV = new ConstantVisitor( this);
 		regAlloc = new RegisterAllocator();
-		exprV = new ExprVisitor(this, constantV, regAlloc, belongingFile);
+		exprV = new ExprVisitor(this, constantV, regAlloc);
 		insns = new ArrayList<Insn>();
 		payloads = new ArrayList<AbstractPayload>();
 	}
@@ -159,9 +159,6 @@ class StmtVisitor implements StmtSwitch {
 		lastReturnTypeDescriptor = typeDescriptor;
 	}
 
-	protected DexBuilder getBelongingFile() {
-		return belongingFile;
-	}
 
 	protected SootClass getBelongingClass() {
 		return belongingMethod.getDeclaringClass();
@@ -509,13 +506,13 @@ class StmtVisitor implements StmtSwitch {
 
 	private Insn buildStaticFieldPutInsn(StaticFieldRef destRef, Value source) {
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
-		BuilderFieldReference destField = DexPrinter.toFieldReference(destRef.getFieldRef(), belongingFile);
+		FieldReference destField = DexPrinter.toFieldReference(destRef.getFieldRef());
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("sput", destField.getType());
 		return new Insn21c(opc, sourceReg, destField);
 	}
 
 	private Insn buildInstanceFieldPutInsn(InstanceFieldRef destRef, Value source) {
-		BuilderFieldReference destField = DexPrinter.toFieldReference(destRef.getFieldRef(), belongingFile);
+		FieldReference destField = DexPrinter.toFieldReference(destRef.getFieldRef());
 		Local instance = (Local) destRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
@@ -584,7 +581,7 @@ class StmtVisitor implements StmtSwitch {
 	}
 
 	private Insn buildStaticFieldGetInsn(Register destinationReg, StaticFieldRef sourceRef) {
-		BuilderFieldReference sourceField = DexPrinter.toFieldReference(sourceRef.getFieldRef(), belongingFile);
+		FieldReference sourceField = DexPrinter.toFieldReference(sourceRef.getFieldRef());
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("sget", sourceField.getType());
 		return new Insn21c(opc, destinationReg, sourceField);
 	}
@@ -592,7 +589,7 @@ class StmtVisitor implements StmtSwitch {
 	private Insn buildInstanceFieldGetInsn(Register destinationReg, InstanceFieldRef sourceRef) {
 		Local instance = (Local) sourceRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
-		BuilderFieldReference sourceField = DexPrinter.toFieldReference(sourceRef.getFieldRef(), belongingFile);
+		FieldReference sourceField = DexPrinter.toFieldReference(sourceRef.getFieldRef());
 		Opcode opc = getPutGetOpcodeWithTypeSuffix("iget", sourceField.getType());
 		return new Insn22c(opc, destinationReg, instanceReg, sourceField);
 	}
@@ -783,7 +780,7 @@ class StmtVisitor implements StmtSwitch {
 	/**
 	 * Pre-allocates and locks registers for the constants used in monitor
 	 * expressions
-	 * 
+	 *
 	 * @param monitorConsts
 	 *            The set of monitor constants fow which to assign fixed
 	 *            registers

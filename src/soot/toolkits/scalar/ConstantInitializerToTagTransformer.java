@@ -44,9 +44,10 @@ import soot.tagkit.Tag;
  * @author Steven Arzt
  */
 public class ConstantInitializerToTagTransformer extends SceneTransformer {
+	private static final ConstantInitializerToTagTransformer INSTANCE = new ConstantInitializerToTagTransformer();
 
 	public static ConstantInitializerToTagTransformer v() {
-		return new ConstantInitializerToTagTransformer();
+		return INSTANCE;
 	}
 
 	@Override
@@ -70,7 +71,7 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 	public void transformClass(SootClass sc, boolean removeAssignments) {
 		// If this class has no <clinit> method, we're done
 		SootMethod smInit = sc.getMethodByNameUnsafe("<clinit>");
-		if (smInit == null)
+		if (smInit == null || !smInit.isConcrete())
 			return;
 
 		Set<SootField> nonConstantFields = new HashSet<SootField>();
@@ -112,9 +113,9 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 									if (removeAssignments)
 										itU.remove();
 								} else {
-									G.v().out.println("WARNING: Constant value for field '" + field
-											+ "' mismatch between code (" + (Constant) assign.getRightOp()
-											+ ") and constant table (" + t + ")");
+									G.v().out.println(
+											"WARNING: Constant value for field '" + field + "' mismatch between code ("
+													+ assign.getRightOp() + ") and constant table (" + t + ")");
 									removeTagList.add(field);
 								}
 								found = true;

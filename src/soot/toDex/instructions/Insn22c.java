@@ -5,6 +5,8 @@ import java.util.BitSet;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.builder.instruction.BuilderInstruction22c;
+import org.jf.dexlib2.iface.reference.FieldReference;
+import org.jf.dexlib2.iface.reference.Reference;
 import org.jf.dexlib2.writer.builder.BuilderReference;
 
 import soot.toDex.LabelAssigner;
@@ -18,9 +20,9 @@ import soot.toDex.Register;
  */
 public class Insn22c extends AbstractInsn implements TwoRegInsn {
 	
-	private BuilderReference referencedItem;
+	private Reference referencedItem;
 
-	public Insn22c(Opcode opc, Register regA, Register regB, BuilderReference referencedItem) {
+	public Insn22c(Opcode opc, Register regA, Register regB, Reference referencedItem) {
 		super(opc);
 		regs.add(regA);
 		regs.add(regB);

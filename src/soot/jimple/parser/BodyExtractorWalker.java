@@ -76,7 +76,7 @@ public class BodyExtractorWalker extends Walker {
 		}
 
 		String className = (String) mProductions.removeLast();
-		if (!className.equals(Scene.v().quotedNameOf(mSootClass.getName())))
+		if (!className.equals(mSootClass.getName()))
 			throw new RuntimeException("expected:  " + className
 					+ ", but got: " + mSootClass.getName());
 
