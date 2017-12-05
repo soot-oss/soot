@@ -77,8 +77,8 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 		if (output)
 			out.println("Transforming Method Names...");
 
-		soot.jbco.util.BodyBuilder.retrieveAllBodies();
-		soot.jbco.util.BodyBuilder.retrieveAllNames();
+		BodyBuilder.retrieveAllBodies();
+		BodyBuilder.retrieveAllNames();
 
 		Scene scene = G.v().soot_Scene();
 		scene.releaseActiveHierarchy();
@@ -159,24 +159,22 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 							continue;
 
 						InvokeExpr ie = (InvokeExpr) v;
+                        SootMethodRef methodRef = ie.getMethodRef();
 
-						try {
-							// if the method won't resolve, then we know it's
-							// not a lib method
-							ie.getMethod();
-							continue;
-						} catch (Exception e) {
-						}
+                        // if the method won't be resolved in declaring class by subsignature of method ref,
+                        // then we know it was renamed and update that method ref with new name
+                        if (methodRef.declaringClass().getMethodUnsafe(methodRef.getSubSignature()) != null) {
+                            continue;
+                        }
 
-						SootMethodRef r = ie.getMethodRef();
-						String newName = oldToNewMethodNames.get(r.name());
+						String newName = oldToNewMethodNames.get(methodRef.name());
 						if (newName == null)
 							continue;
 
-						r = scene.makeMethodRef(r.declaringClass(), newName,
-								r.parameterTypes(), r.returnType(),
-								r.isStatic());
-						ie.setMethodRef(r);
+						methodRef = scene.makeMethodRef(methodRef.declaringClass(), newName,
+								methodRef.parameterTypes(), methodRef.returnType(),
+								methodRef.isStatic());
+						ie.setMethodRef(methodRef);
 					}
 				}
 			}
