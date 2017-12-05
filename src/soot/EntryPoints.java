@@ -20,8 +20,10 @@
 package soot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 import soot.util.NumberedString;
 
@@ -177,14 +179,52 @@ public class EntryPoints {
 	}
 
 	/** Returns a list of all clinits of class cl and its superclasses. */
-	public List<SootMethod> clinitsOf(SootClass cl) {
-		List<SootMethod> ret = new ArrayList<SootMethod>();
-		while (true) {
-			addMethod(ret, cl, sigClinit);
-			if (!cl.hasSuperclass())
-				break;
-			cl = cl.getSuperclass();
-		}
-		return ret;
+	public Iterable<SootMethod> clinitsOf(SootClass cl) {
+		//Do not create an actual list, since this method gets called quite often
+		//Instead, callers usually just want to iterate over the result.
+		final SootMethod initStart = cl.getMethodUnsafe(sigClinit);
+		if (initStart == null)
+			return Collections.emptyList();
+		return new Iterable<SootMethod>() {
+			
+			@Override
+			public Iterator<SootMethod> iterator() {
+				return new Iterator<SootMethod>() {
+					SootMethod current = initStart;
+					SootMethod next = null;
+					
+					@Override
+					public SootMethod next() {
+						if (!hasNext())
+							throw new NoSuchElementException();
+						SootMethod n = next;
+						next = null;
+						return n;
+					}
+					
+					@Override
+					public boolean hasNext() {
+						if (next != null)
+							return true;
+						
+						SootClass currentClass = current.getDeclaringClass();
+						while (true) {
+							SootClass superClass = currentClass.getSuperclassUnsafe();
+							if (superClass == null)
+								return false;
+							
+							SootMethod m = superClass.getMethodUnsafe(sigClinit);
+							if (m != null)
+							{
+								next = m;
+								current = m;
+								return true;
+							}
+							currentClass = superClass;
+						}
+					}
+				};
+			}
+		};
 	}
 }

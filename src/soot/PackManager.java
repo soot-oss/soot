@@ -927,7 +927,7 @@ public class PackManager {
 		// such adding of methods happens in rare occasions: for instance when
 		// resolving a method reference to a non-existing method, then this
 		// method is created as a phantom method when phantom-refs are enabled
-		LinkedList<SootMethod> methodsCopy = new LinkedList<SootMethod>(c.getMethods());
+		ArrayList<SootMethod> methodsCopy = new ArrayList<SootMethod>(c.getMethods());
 		for (SootMethod m : methodsCopy) {
 			if (DEBUG) {
 				if (m.getExceptions().size() != 0)

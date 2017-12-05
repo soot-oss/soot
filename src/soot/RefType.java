@@ -25,6 +25,7 @@
 
 package soot;
 
+import java.util.ArrayDeque;
 import java.util.LinkedList;
 
 import soot.util.Switch;
@@ -172,8 +173,8 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 			SootClass otherClass = cm.getSootClass(((RefType) other).className);
 			SootClass javalangObject = cm.getObjectType().getSootClass();
 
-			LinkedList<SootClass> thisHierarchy = new LinkedList<SootClass>();
-			LinkedList<SootClass> otherHierarchy = new LinkedList<SootClass>();
+			ArrayDeque<SootClass> thisHierarchy = new ArrayDeque<SootClass>();
+			ArrayDeque<SootClass> otherHierarchy = new ArrayDeque<SootClass>();
 
 			// Build thisHierarchy
 			{
