@@ -4,7 +4,7 @@
 	<groupId>ca.mcgill.sable</groupId>
 	<artifactId>soot</artifactId>
 	<name>Soot</name>
-	<version>3.0.0</version>
+	<version>3.0.1</version>
 	<description>A Java Optimization Framework</description>
 	<properties>
 		<maven.compiler.source>1.7</maven.compiler.source>
