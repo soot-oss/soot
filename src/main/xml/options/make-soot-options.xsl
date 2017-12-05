@@ -412,7 +412,7 @@ public class Options extends OptionsBase {
       <xsl:if test="class">
         <xsl:variable name="filename" select="class"/>
         <xsl:variable name="fullname" select="concat($filename,'.java')"/>
-        <xsl:variable name="fullpath" select="concat('generated/options/soot/options/',$fullname)"/>
+        <xsl:variable name="fullpath" select="concat('src/main/generated/options/soot/options/',$fullname)"/>
         <redirect:write file="{$fullpath}">
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2003 Ondrej Lhotak
