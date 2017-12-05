@@ -183,7 +183,8 @@ public class DexFileProvider {
                 // We prefer to have classes.dex in single dex mode.
                 // If we haven't found a classes.dex until the last element, take the last!
                 dexMap = Collections.singletonMap(entryName, new DexContainer(entry, entryName, dexSourceFile));
-                G.v().out.println("WARNING: Multiple dex files detected, only processing '" + entryName + "'. Use '-process-multiple-dex' option to process them all.");
+                if (dexFileCount > 1)
+                    G.v().out.println("WARNING: Multiple dex files detected, only processing '" + entryName + "'. Use '-process-multiple-dex' option to process them all.");
             }
         }
         return Collections.unmodifiableMap(dexMap);

@@ -24,8 +24,8 @@ import java.io.InputStream;
 import org.objectweb.asm.ClassReader;
 
 import soot.ClassSource;
+import soot.FoundFile;
 import soot.SootClass;
-import soot.SourceLocator.FoundFile;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 
 /**

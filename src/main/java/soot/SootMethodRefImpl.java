@@ -19,6 +19,7 @@
 
 package soot;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
@@ -184,10 +185,12 @@ public class SootMethodRefImpl implements SootMethodRef {
 		}
 		cl = declaringClass;
 		while (true) {
-			LinkedList<SootClass> queue = new LinkedList<SootClass>();
+			ArrayDeque<SootClass> queue = new ArrayDeque<SootClass>();
 			queue.addAll(cl.getInterfaces());
-			while (!queue.isEmpty()) {
-				SootClass iface = queue.removeFirst();
+			while (true) {
+				SootClass iface = queue.poll();
+				if (iface == null)
+					break;
 				if (trace != null)
 					trace.append("Looking in " + iface + " which has methods " + iface.getMethods() + "\n");
 				SootMethod sm = iface.getMethodUnsafe(getSubSignature());

@@ -19,13 +19,16 @@
 
 package soot;
 
+import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Queue;
 import java.util.Set;
 
 import soot.jimple.SpecialInvokeExpr;
@@ -243,14 +246,16 @@ public class FastHierarchy {
 			} else {
 				SootClass base = ((AnySubType) child).getBase().getSootClass();
 				SootClass parentClass = ((RefType) parent).getSootClass();
-				LinkedList<SootClass> worklist = new LinkedList<SootClass>();
+				ArrayDeque<SootClass> worklist = new ArrayDeque<SootClass>();
 				if (base.isInterface())
 					worklist.addAll(getAllImplementersOfInterface(base));
 				else
 					worklist.add(base);
 				Set<SootClass> workset = new HashSet<>();
-				while (!worklist.isEmpty()) {
-					SootClass cl = worklist.removeFirst();
+				while (true) {
+					SootClass cl = worklist.poll();
+					if (cl == null)
+						break;
 					if (!workset.add(cl))
 						continue;
 					if (cl.isConcrete() && canStoreClass(cl, parentClass))
@@ -459,10 +464,12 @@ public class FastHierarchy {
 		String methodSig = m.getSubSignature();
 		HashSet<SootClass> resolved = new HashSet<SootClass>();
 		HashSet<SootMethod> ret = new HashSet<SootMethod>();
-		LinkedList<SootClass> worklist = new LinkedList<SootClass>();
+		ArrayDeque<SootClass> worklist = new ArrayDeque<SootClass>();
 		worklist.add(abstractType);
-		while (!worklist.isEmpty()) {
-			SootClass concreteType = worklist.removeFirst();
+		while (true) {
+			SootClass concreteType = worklist.poll();
+			if (concreteType == null)
+				break;
 			SootClass savedConcreteType = concreteType;
 			if (concreteType.isInterface()) {
 				worklist.addAll(getAllImplementersOfInterface(concreteType));

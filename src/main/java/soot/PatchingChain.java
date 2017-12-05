@@ -93,20 +93,11 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
     public void insertBefore(List<E> toInsert, E point)
     {
-        LinkedList<E> backwardList = new LinkedList<E>();
-        // Insert toInsert backwards into the list
-        {
-            Iterator<E> it = toInsert.iterator();
-            
-            while(it.hasNext())
-                backwardList.addFirst(it.next());
-        }
-                
         E previousPoint = point;
-        Iterator<E> it = backwardList.iterator();
-        while (it.hasNext())
+        
+        for (int i = toInsert.size() - 1; i >= 0; i--)
         {
-            E o = it.next();
+			E o = toInsert.get(i);
             insertBeforeNoRedirect(o, previousPoint);
             previousPoint = o;
         }
@@ -116,20 +107,11 @@ public class PatchingChain<E extends Unit> extends AbstractCollection<E> impleme
     /** Inserts <code>toInsert</code> in the Chain before <code>point</code>. */
     public void insertBefore(Chain<E> toInsert, E point)
     {
-        LinkedList<E> backwardList = new LinkedList<E>();
-        // Insert toInsert backwards into the list
-        {
-            Iterator<E> it = toInsert.iterator();
-            
-            while(it.hasNext())
-                backwardList.addFirst(it.next());
-        }
-                
+    	Object[] obj = toInsert.toArray();
         E previousPoint = point;
-        Iterator<E> it = backwardList.iterator();
-        while (it.hasNext())
-        {
-            E o = it.next();
+        for (int i = obj.length - 1; i >= 0; i--) {
+            @SuppressWarnings("unchecked")
+			E o = (E) obj[i];
             insertBefore(o, previousPoint);
             previousPoint = o;
         }

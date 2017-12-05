@@ -28,7 +28,7 @@ public class CoffiClassProvider implements ClassProvider
      * or null if it was not found. */
     public ClassSource find( String className ) {
         String fileName = className.replace('.', '/') + ".class";
-        SourceLocator.FoundFile file = 
+        FoundFile file = 
             SourceLocator.v().lookupInClassPath(fileName);
         if( file == null ) return null;
         return new CoffiClassSource(className, file);

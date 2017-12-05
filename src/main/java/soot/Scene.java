@@ -180,9 +180,9 @@ public class Scene // extends AbstractHost
 	}
 
 	/**
-	 * If this name is in the set of reserved names, then return a quoted
-	 * version of it. Else pass it through. If the name consists of multiple
-	 * parts separated by dots, the individual names are checked as well.
+	 * If this name is in the set of reserved names, then return a quoted version of
+	 * it. Else pass it through. If the name consists of multiple parts separated by
+	 * dots, the individual names are checked as well.
 	 */
 	public String quotedNameOf(String s) {
 		// Pre-check: Is there a chance that we need to escape something?
@@ -318,8 +318,8 @@ public class Scene // extends AbstractHost
 
 		File d = new File(dir);
 		if (!d.exists())
-			throw new RuntimeException("The Android platform directory you have" + "specified (" + dir
-					+ ") does not exist. Please check.");
+			throw new AndroidPlatformException(String.format(
+					"The Android platform directory you have specified (%s) does not exist. Please check.", dir));
 
 		File[] files = d.listFiles();
 		if (files == null)
@@ -351,7 +351,7 @@ public class Scene // extends AbstractHost
 		// check that jar exists
 		File f = new File(jarPath);
 		if (!f.isFile())
-			throw new RuntimeException("error: target android.jar (" + jarPath + ") does not exist.");
+			throw new AndroidPlatformException(String.format("error: target android.jar %s does not exist.", jarPath));
 
 		return jarPath;
 	}
@@ -371,7 +371,8 @@ public class Scene // extends AbstractHost
 		File apkF = apk == null ? null : new File(apk);
 
 		if (!jarsF.exists())
-			throw new RuntimeException("file '" + jars + "' does not exist!");
+			throw new AndroidPlatformException(
+					String.format("Android platform directory '%s' does not exist!", jarsF.getAbsolutePath()));
 
 		if (apkF != null && !apkF.exists())
 			throw new RuntimeException("file '" + apk + "' does not exist!");
@@ -390,8 +391,16 @@ public class Scene // extends AbstractHost
 		// If we don't have that API version installed, we take the most recent
 		// one we have
 		final int maxAPI = getMaxAPIAvailable(jars);
-		if (androidAPIVersion > maxAPI)
+		if (maxAPI > 0 && androidAPIVersion > maxAPI)
 			androidAPIVersion = maxAPI;
+
+		// If the platform version is missing in the middle, we take the next one
+		while (androidAPIVersion < maxAPI) {
+			String jarPath = jars + File.separator + "android-" + androidAPIVersion + File.separator + "android.jar";
+			if (new File(jarPath).exists())
+				break;
+			androidAPIVersion++;
+		}
 
 		return androidAPIVersion;
 	}
@@ -676,8 +685,8 @@ public class Scene // extends AbstractHost
 
 	/**
 	 * Adds the given class to the Scene. This method does not handle any
-	 * dependencies such as invalidating the hierarchy. The class is neither
-	 * marked as application class, nor library class.
+	 * dependencies such as invalidating the hierarchy. The class is neither marked
+	 * as application class, nor library class.
 	 * 
 	 * @param c
 	 *            The class to add
@@ -831,8 +840,8 @@ public class Scene // extends AbstractHost
 	}
 
 	/**
-	 * Loads the given class and all of the required support classes. Returns
-	 * the first class.
+	 * Loads the given class and all of the required support classes. Returns the
+	 * first class.
 	 */
 
 	public SootClass loadClassAndSupport(String className) {
@@ -921,8 +930,8 @@ public class Scene // extends AbstractHost
 	}
 
 	/**
-	 * Returns the RefType with the given className. Returns null if no type
-	 * with the given name can be found.
+	 * Returns the RefType with the given className. Returns null if no type with
+	 * the given name can be found.
 	 */
 	public RefType getRefTypeUnsafe(String className) {
 		RefType refType = nameToClass.get(className);
@@ -944,8 +953,8 @@ public class Scene // extends AbstractHost
 	}
 
 	/**
-	 * Returns the SootClass with the given className. If no class with the
-	 * given name exists, null is returned
+	 * Returns the SootClass with the given className. If no class with the given
+	 * name exists, null is returned
 	 * 
 	 * @param className
 	 *            The name of the class to get
@@ -993,16 +1002,16 @@ public class Scene // extends AbstractHost
 	/* The four following chains are mutually disjoint. */
 
 	/**
-	 * Returns a chain of the application classes in this scene. These classes
-	 * are the ones which can be freely analysed & modified.
+	 * Returns a chain of the application classes in this scene. These classes are
+	 * the ones which can be freely analysed & modified.
 	 */
 	public Chain<SootClass> getApplicationClasses() {
 		return applicationClasses;
 	}
 
 	/**
-	 * Returns a chain of the library classes in this scene. These classes can
-	 * be analysed but not modified.
+	 * Returns a chain of the library classes in this scene. These classes can be
+	 * analysed but not modified.
 	 */
 	public Chain<SootClass> getLibraryClasses() {
 		return libraryClasses;
@@ -1334,8 +1343,8 @@ public class Scene // extends AbstractHost
 	}
 
 	/**
-	 * Sets the {@link ThrowAnalysis} to be used by default when constructing
-	 * CFGs which include exceptional control flow.
+	 * Sets the {@link ThrowAnalysis} to be used by default when constructing CFGs
+	 * which include exceptional control flow.
 	 *
 	 * @param ta
 	 *            the default {@link ThrowAnalysis}.
@@ -1484,9 +1493,9 @@ public class Scene // extends AbstractHost
 	}
 
 	/**
-	 * Load just the set of basic classes soot needs, ignoring those specified
-	 * on the command-line. You don't need to use both this and
-	 * loadNecessaryClasses, though it will only waste time.
+	 * Load just the set of basic classes soot needs, ignoring those specified on
+	 * the command-line. You don't need to use both this and loadNecessaryClasses,
+	 * though it will only waste time.
 	 */
 	public void loadBasicClasses() {
 		addReflectionTraceClasses();
@@ -1572,8 +1581,8 @@ public class Scene // extends AbstractHost
 
 	/**
 	 * Load the set of classes that soot needs, including those specified on the
-	 * command-line. This is the standard way of initialising the list of
-	 * classes soot should use.
+	 * command-line. This is the standard way of initialising the list of classes
+	 * soot should use.
 	 */
 	public void loadNecessaryClasses() {
 		loadBasicClasses();
@@ -1723,8 +1732,8 @@ public class Scene // extends AbstractHost
 	}
 
 	/**
-	 * Returns the list of SootClasses that have been resolved at least to the
-	 * level specified.
+	 * Returns the list of SootClasses that have been resolved at least to the level
+	 * specified.
 	 */
 	public List<SootClass> getClasses(int desiredLevel) {
 		List<SootClass> ret = new ArrayList<SootClass>();
@@ -1780,9 +1789,9 @@ public class Scene // extends AbstractHost
 	}
 
 	/**
-	 * This method returns true when in incremental build mode. Other classes
-	 * can query this flag and change the way in which they use the Scene,
-	 * depending on the flag's value.
+	 * This method returns true when in incremental build mode. Other classes can
+	 * query this flag and change the way in which they use the Scene, depending on
+	 * the flag's value.
 	 */
 	public boolean isIncrementalBuild() {
 		return incrementalBuild;
@@ -1797,8 +1806,8 @@ public class Scene // extends AbstractHost
 	}
 
 	/*
-	 * Forces Soot to resolve the class with the given name to the given level,
-	 * even if resolving has actually already finished.
+	 * Forces Soot to resolve the class with the given name to the given level, even
+	 * if resolving has actually already finished.
 	 */
 	public SootClass forceResolve(String className, int level) {
 		boolean tmp = doneResolving;

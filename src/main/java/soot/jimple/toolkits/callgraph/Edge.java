@@ -119,9 +119,9 @@ public final class Edge
     }
 
     public int hashCode() {
-        int ret = tgt.hashCode() + kind.getNumber();
-        if( src != null ) ret += src.hashCode();
-        if( srcUnit != null ) ret += srcUnit.hashCode();
+        int ret = (tgt.hashCode() + 20) + kind.getNumber();
+        if( src != null ) ret = ret * 32 + src.hashCode();
+        if( srcUnit != null ) ret = ret * 32 + srcUnit.hashCode();
         return ret;
     }
     public boolean equals( Object other ) {

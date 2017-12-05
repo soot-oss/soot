@@ -16,11 +16,7 @@ import soot.SootClass;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Unit;
-import soot.jimple.CaughtExceptionRef;
-import soot.jimple.DefinitionStmt;
-import soot.jimple.InstanceInvokeExpr;
-import soot.jimple.InvokeExpr;
-import soot.jimple.Stmt;
+import soot.jimple.*;
 
 public enum CheckTypesValidator implements BodyValidator {
 	INSTANCE;
@@ -33,7 +29,7 @@ public enum CheckTypesValidator implements BodyValidator {
 	public void validate(Body body, List<ValidationException> exception) {
 		for (Unit u : body.getUnits()) {
 			String errorSuffix = " at " + u + " in " + body.getMethod();
-			
+
 			if (u instanceof DefinitionStmt) {
 				DefinitionStmt astmt = (DefinitionStmt) u;
 				if (!(astmt.getRightOp() instanceof CaughtExceptionRef)) {
@@ -46,20 +42,20 @@ public enum CheckTypesValidator implements BodyValidator {
 							errorSuffix);
 				}
 			}
-			
+
 			if (u instanceof Stmt) {
 				Stmt stmt = (Stmt) u;
 				if (stmt.containsInvokeExpr()) {
 					SootMethodRef called = stmt.getInvokeExpr().getMethodRef();
 					InvokeExpr iexpr = stmt.getInvokeExpr();
-					
+
 					if (iexpr instanceof InstanceInvokeExpr) {
 						InstanceInvokeExpr iiexpr = (InstanceInvokeExpr) iexpr;
 						checkCopy(stmt, body, exception, called.declaringClass()
 								.getType(), iiexpr.getBase().getType(),
 								" in receiver of call" + errorSuffix);
 					}
-	
+
 					if (called.parameterTypes().size() != iexpr.getArgCount())
 						exception
 								.add(new ValidationException(
