@@ -60,20 +60,19 @@ public class StronglyConnectedComponentsFast<N> {
 	public StronglyConnectedComponentsFast(DirectedGraph<N> g) {
 		this.g = g;
 		s = new Stack<N>();
-		List<N> heads = g.getHeads();
 
 		indexForNode = new HashMap<N, Integer>();
 		lowlinkForNode = new HashMap<N, Integer>();
 
-		for (N head : heads) {
-			if (!indexForNode.containsKey(head)) {
+		for (N node : g) {
+			if (!indexForNode.containsKey(node)) {
 				// If the graph is too big, we cannot use a recursive algorithm
 				// because it will blow up our stack space. The cut-off value when
 				// to switch is more or less random, though.
 				if (g.size() > 1000)
-					iterate(head);
+					iterate(node);
 				else
-					recurse(head);
+					recurse(node);
 			}
 		}
 
