@@ -13,26 +13,12 @@
 	</properties>
 	<build>
 		<finalName>sootclasses-trunk</finalName>
-		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>tests</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<includes>
-					<include>**/*.dat</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>generated/sablecc</directory>
-				<includes>
-					<include>**/*.dat</include>
-				</includes>
-			</resource>
-		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>xml-maven-plugin</artifactId>
+				<version>1.0.1</version>
 				<executions>
 					<execution>
 						<goals>
@@ -44,12 +30,12 @@
 					<transformationSets>
 						<!-- make soot singletons -->
 						<transformationSet>
-							<outputDir>${basedir}/generated/singletons/soot/</outputDir>
-							<dir>${basedir}/src/</dir>
+							<outputDir>${basedir}/src/main/generated/singletons/soot/</outputDir>
+							<dir>${basedir}/src/main/xml/singletons</dir>
 							<includes>
 								<include>singletons.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/make-singletons.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/singletons/make-singletons.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>Singletons.java</targetName>
@@ -58,12 +44,12 @@
 						</transformationSet>
 						<!-- make soot options -->
 						<transformationSet>
-							<outputDir>${basedir}/generated/options/soot/options/</outputDir>
-							<dir>${basedir}/src/soot/options/</dir>
+							<outputDir>${basedir}/src/main/generated/options/soot/options/</outputDir>
+							<dir>${basedir}/src/main/xml/options/</dir>
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/make-soot-options.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/options/make-soot-options.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>Options.java</targetName>
@@ -71,12 +57,12 @@
 							</fileMappers>
 						</transformationSet>
 						<transformationSet>
-							<outputDir>${basedir}/generated/options/soot/</outputDir>
-							<dir>${basedir}/src/soot/options/</dir>
+							<outputDir>${basedir}/src/main/generated/options/soot/</outputDir>
+							<dir>${basedir}/src/main/xml/options/</dir>
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/ant-task.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/options/ant-task.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>AntTask.java</targetName>
@@ -85,11 +71,11 @@
 						</transformationSet>
 						<transformationSet>
 							<outputDir>${basedir}/eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/</outputDir>
-							<dir>${basedir}/src/soot/options/</dir>
+							<dir>${basedir}/src/main/xml/options/</dir>
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/phase_options_dialog.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/options/phase_options_dialog.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>PhaseOptionsDialog.java</targetName>
@@ -98,11 +84,11 @@
 						</transformationSet>
 						<transformationSet>
 							<outputDir>${basedir}/doc/</outputDir>
-							<dir>${basedir}/src/soot/options/</dir>
+							<dir>${basedir}/src/main/xml/options/</dir>
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/soot_options.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/options/soot_options.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>soot_options.htm</targetName>
@@ -128,7 +114,7 @@
 							<outputDirectory>${basedir}/doc</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${basedir}/src/soot/options/</directory>
+									<directory>${basedir}/src/main/xml/options/</directory>
 									<includes>
 										<include>soot_options.css</include>
 									</includes>
@@ -141,6 +127,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>3.0.0</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -149,10 +136,10 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${basedir}/generated/singletons</source>
-								<source>${basedir}/generated/sablecc</source>
-								<source>${basedir}/generated/options</source>
-								<source>${basedir}/generated/jastadd</source>
+								<source>${basedir}/src/main/generated/singletons</source>
+								<source>${basedir}/src/main/generated/sablecc</source>
+								<source>${basedir}/src/main/generated/options</source>
+								<source>${basedir}/src/main/generated/jastadd</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -161,7 +148,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.2</version>
+				<version>3.7.0</version>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -175,6 +162,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>3.1.0</version>
 				<configuration>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -191,12 +179,13 @@
 						<id>simple-command</id>
 						<phase>package</phase>
 						<goals>
-							<goal>attached</goal>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
 			<plugin>
+				<version>3.0.2</version>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
@@ -211,6 +200,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>3.0.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -223,6 +213,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>3.0.0-M1</version>
 				<configuration>
 					<failOnError>false</failOnError>
 				</configuration>
@@ -231,25 +222,6 @@
 						<id>attach-javadocs</id>
 						<goals>
 							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>createTestclassesDir</id>
-						<phase>process-resources</phase>
-						<configuration>
-							<tasks>
-								<delete dir="testclasses"/>
-								<mkdir dir="testclasses"/>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
 						</goals>
 					</execution>
 				</executions>
