@@ -33,27 +33,28 @@ import soot.jimple.ClassConstant;
  */
 public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
 
-  public void outputSummary() {}
+  public static boolean removePackages = false;
 
+  public static String name = "wjtp.jbco_cr";
   public static String dependancies[] = new String[] { "wjtp.jbco_cr" };
+
+  private static final char stringChars[][] = { {'S','5','$'},
+          {'l','1','I'},
+          {'_'}
+  };
+
+  public static HashMap<String, String> oldToNewClassNames = new HashMap<>();
+  public static HashMap<String, SootClass> newNameToClass = new HashMap<>();
+
+  public String getName() {
+        return name;
+    }
 
   public String[] getDependancies() {
     return dependancies;
   }
 
-  public static String name = "wjtp.jbco_cr";
-
-  public String getName() {
-    return name;
-  }
-
-  private static final char stringChars[][] = { {'S','5','$'},
-      {'l','1','I'},
-      {'_'}
-  };
-
-  public static HashMap<String, String> oldToNewClassNames = new HashMap<String, String>();
-  public static HashMap<String, SootClass> newNameToClass = new HashMap<String, SootClass>();
+  public void outputSummary() {}
 
   protected void internalTransform(String phaseName, Map<String,String> options)
   {
@@ -190,7 +191,8 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
 	    int rand = Rand.getInt(length);
 	    cNewName[i] = stringChars[index][rand];
 	  }
-      result = prefix + String.copyValueOf(cNewName);
+      String newName = String.copyValueOf(cNewName);
+      result = removePackages ? newName : prefix + newName;
       tries++;
     } while (oldToNewClassNames.containsValue(result) || BodyBuilder.nameList.contains(result));
 
