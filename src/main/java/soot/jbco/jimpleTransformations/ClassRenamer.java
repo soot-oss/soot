@@ -24,6 +24,8 @@ import java.util.*;
 import soot.*;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.*;
+import soot.jimple.ClassConstant;
+
 /**
  * @author Michael Batchelder
  *
@@ -118,8 +120,16 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
          Iterator<ValueBox> udbIt = u.getUseAndDefBoxes().iterator();
           while (udbIt.hasNext())
           {
-            Value v = udbIt.next().getValue();
-            if (v instanceof soot.jimple.Ref)
+            ValueBox vb = udbIt.next();
+            Value v = vb.getValue();
+            if (v instanceof soot.jimple.ClassConstant)
+            {
+                ClassConstant constant = (ClassConstant) v;
+                RefType type = (RefType) constant.toSootType();
+                RefType updatedType = type.getSootClass().getType();
+                vb.setValue(ClassConstant.fromType(updatedType));
+            }
+            else if (v instanceof soot.jimple.Ref)
             {
               if (v.getType() instanceof soot.RefType)
               {
