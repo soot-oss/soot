@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>ca.mcgill.sable</groupId>
-	<artifactId>soot</artifactId>
+	<artifactId>soot-j9</artifactId>
 	<name>Soot</name>
-	<version>3.0.0-SNAPSHOT</version>
+	<version>4.0.0-SNAPSHOT</version>
 	<description>A Java Optimization Framework</description>
 	<properties>
 		<!-- adann: officially the jrt filesystem used for modules in Java 9 requires at least java 8
@@ -250,7 +250,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
-				<version>4.0.0-M1</version>
+				<version>3.0.0-M1</version>
 				<configuration>
 					<failOnError>false</failOnError>
 				</configuration>
@@ -280,7 +280,7 @@
 		<dependency>
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm-debug-all</artifactId>
-			<version>5.1</version>
+			<version>6.0_BETA</version>
 		</dependency>
 		<dependency>
 			<groupId>org.javassist</groupId>
