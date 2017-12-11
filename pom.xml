@@ -17,7 +17,7 @@
 		<jdk9.jrtjar>/opt/jdk-9/jrt-fs.jar</jdk9.jrtjar>
 	</properties>
 	<build>
-		<finalName>sootclasses-trunk</finalName>
+		<finalName>sootclasses_j9-trunk</finalName>
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
