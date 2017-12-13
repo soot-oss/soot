@@ -181,13 +181,13 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
 						Collection<Local> locals = body.getLocals();
 						PatchingChain<Unit> units = body.getUnits();
 
+                        BodyBuilder.buildThisLocal(units, thisRef, locals);
 						BodyBuilder.buildParameterLocals(units, locals, paramTypes);
-						BodyBuilder.buildThisLocal(units, thisRef, locals);
 
 						if (rType instanceof VoidType) {
 							units.add(Jimple.v().newReturnVoidStmt());
 						} else if (rType instanceof PrimType) {
-							units.add(Jimple.v().newReturnStmt(Jimple.v().newCastExpr(IntConstant.v(0), rType)));
+                            units.add(Jimple.v().newReturnStmt(IntConstant.v(0)));
 						} else {
 							units.add(Jimple.v().newReturnStmt(NullConstant.v()));
 						}
@@ -204,8 +204,8 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
 						Collection<Local> locals = body.getLocals();
 						PatchingChain<Unit> units = body.getUnits();
 
+                        Local ths = BodyBuilder.buildThisLocal(units, thisRef, locals);
 						List<Local> args = BodyBuilder.buildParameterLocals(units, locals, paramTypes);
-						Local ths = BodyBuilder.buildThisLocal(units, thisRef, locals);
 
 						if (rType instanceof VoidType) {
 							units.add(Jimple.v()
@@ -254,9 +254,9 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
 										PatchingChain<Unit> initUnits = body.getUnits();
 										Collection<Local> locals = body.getLocals();
 
+                                        Local ths = BodyBuilder.buildThisLocal(initUnits, thisRef, locals);
 										List<Local> args = BodyBuilder.buildParameterLocals(initUnits, locals,
 												paramTypes);
-										Local ths = BodyBuilder.buildThisLocal(initUnits, thisRef, locals);
 
 										initUnits.add(Jimple.v()
 												.newInvokeStmt(Jimple.v().newSpecialInvokeExpr(ths, smr, args)));

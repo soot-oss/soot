@@ -76,13 +76,11 @@ abstract public class AbstractInvokeExpr implements InvokeExpr
 
     public List<Value> getArgs()
     {
-    	if (argBoxes == null)
-    		return Collections.emptyList();
-    	
-        List<Value> l = new ArrayList<Value>();
-        for (ValueBox element : argBoxes)
-			l.add(element.getValue());
-
+        List<Value> l = new ArrayList<>();
+        if (argBoxes != null) {
+            for (ValueBox element : argBoxes)
+                l.add(element.getValue());
+        }
         return l;
     }
 
