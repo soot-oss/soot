@@ -40,6 +40,7 @@ import soot.jimple.validation.IdentityStatementsValidator;
 import soot.jimple.validation.IdentityValidator;
 import soot.jimple.validation.InvokeArgumentValidator;
 import soot.jimple.validation.JimpleTrapValidator;
+import soot.jimple.validation.MethodValidator;
 import soot.jimple.validation.NewValidator;
 import soot.jimple.validation.ReturnStatementsValidator;
 import soot.jimple.validation.TypesValidator;
@@ -61,7 +62,7 @@ public class JimpleBody extends StmtBody {
 		if (validators == null) {
 			validators = new BodyValidator[] { IdentityStatementsValidator.v(), TypesValidator.v(),
 					ReturnStatementsValidator.v(), InvokeArgumentValidator.v(), FieldRefValidator.v(), NewValidator.v(),
-					JimpleTrapValidator.v(), IdentityValidator.v()
+					JimpleTrapValidator.v(), IdentityValidator.v(), MethodValidator.v()
 					// InvokeValidator.v()
 			};
 		}
