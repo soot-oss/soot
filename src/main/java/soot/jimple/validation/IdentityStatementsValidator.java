@@ -3,6 +3,7 @@ package soot.jimple.validation;
 import java.util.List;
 
 import soot.Body;
+import soot.Modifier;
 import soot.SootMethod;
 import soot.Unit;
 import soot.jimple.IdentityStmt;
@@ -20,7 +21,6 @@ public enum IdentityStatementsValidator implements BodyValidator {
 	}
 
 
-	@Override
 	/**
      * Checks the following invariants on this Jimple body:
      * <ol>
@@ -30,10 +30,12 @@ public enum IdentityStatementsValidator implements BodyValidator {
      *      if they occur at all
      * </ol>
      */
-	public void validate(Body body, List<ValidationException> exception) {
+    @Override
+	public void validate(Body body, List<ValidationException> exceptions) {
 		SootMethod method = body.getMethod();
-		if (method.isAbstract())
-			return;
+		if (method.isAbstract()) {
+		    return;
+        }
 		
 		Chain<Unit> units=body.getUnits().getNonPatchingChain();
 
@@ -45,15 +47,15 @@ public enum IdentityStatementsValidator implements BodyValidator {
 				IdentityStmt identityStmt = (IdentityStmt) unit;
 				if(identityStmt.getRightOp() instanceof ThisRef) {					
 					if(method.isStatic()) {
-						exception.add(new ValidationException(identityStmt, "@this-assignment in a static method!"));
+						exceptions.add(new ValidationException(identityStmt, "@this-assignment in a static method!"));
 					}					
 					if(!firstStatement) {
-						exception.add(new ValidationException(identityStmt, "@this-assignment statement should precede all other statements"
+						exceptions.add(new ValidationException(identityStmt, "@this-assignment statement should precede all other statements"
 						        +"\n method: "+ method));
 					}
 				} else if(identityStmt.getRightOp() instanceof ParameterRef) {
 					if(foundNonThisOrParamIdentityStatement) {
-						exception.add(new ValidationException(identityStmt, "@param-assignment statements should precede all non-identity statements"
+						exceptions.add(new ValidationException(identityStmt, "@param-assignment statements should precede all non-identity statements"
 						        +"\n method: "+ method));
 					}
 				} else {

@@ -45,22 +45,22 @@ public enum JimpleTrapValidator implements BodyValidator {
 		return INSTANCE;
 	}
 
-	@Override
 	/**
 	 * Checks whether all Caught-Exception-References are associated to traps.
 	 */
-	public void validate(Body body, List<ValidationException> exception) {
+    @Override
+	public void validate(Body body, List<ValidationException> exceptions) {
 		Set<Unit> caughtUnits = new HashSet<Unit>();
 		for (Trap trap : body.getTraps()) {
 			caughtUnits.add(trap.getHandlerUnit());
 			
 			if (!(trap.getHandlerUnit() instanceof IdentityStmt))
-				exception.add(new ValidationException(trap, "Trap handler does not start with caught "
+				exceptions.add(new ValidationException(trap, "Trap handler does not start with caught "
 						+ "exception reference"));
 			else {
 				IdentityStmt is = (IdentityStmt) trap.getHandlerUnit();
 				if (!(is.getRightOp() instanceof CaughtExceptionRef))
-					exception.add(new ValidationException(trap, "Trap handler does not start with caught "
+					exceptions.add(new ValidationException(trap, "Trap handler does not start with caught "
 							+ "exception reference"));
 			}
 		}
@@ -70,7 +70,7 @@ public enum JimpleTrapValidator implements BodyValidator {
 				if (id.getRightOp() instanceof CaughtExceptionRef) {
 					if (!caughtUnits.contains(id)) 
 					{
-						exception
+						exceptions
 						.add(new ValidationException(
 								id,
 								"Could not find a corresponding trap using this statement as handler",

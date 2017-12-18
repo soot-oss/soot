@@ -61,11 +61,11 @@ public enum NewValidator implements BodyValidator {
 		return INSTANCE;
 	}
 
-	@Override
 	/**
 	 * Checks whether after each new-instruction a constructor call follows.
 	 */
-	public void validate(Body body, List<ValidationException> exception) {
+    @Override
+	public void validate(Body body, List<ValidationException> exceptions) {
 		UnitGraph g = new BriefUnitGraph(body);
 		for (Unit u : body.getUnits()) {
 			if (u instanceof AssignStmt) {
@@ -74,7 +74,7 @@ public enum NewValidator implements BodyValidator {
 				// First seek for a JNewExpr.
 				if (assign.getRightOp() instanceof NewExpr) {
 					if (!(assign.getLeftOp().getType() instanceof RefType)) {
-						exception.add(new ValidationException(u,
+						exceptions.add(new ValidationException(u,
 								"A new-expression must be used on reference type locals",
 								String.format(
 										"Body of method %s contains a new-expression, which is assigned to a non-reference local",
@@ -86,7 +86,7 @@ public enum NewValidator implements BodyValidator {
 					LinkedHashSet<Local> locals = new LinkedHashSet<Local>();
 					locals.add((Local) assign.getLeftOp());
 
-					checkForInitializerOnPath(g, assign, exception);
+					checkForInitializerOnPath(g, assign, exceptions);
 				}
 			}
 		}

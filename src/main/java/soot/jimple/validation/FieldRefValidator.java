@@ -24,11 +24,11 @@ public enum FieldRefValidator implements BodyValidator {
 	}
 
 
-	@Override
 	/**
 	 * Checks the consistency of field references.
 	 */
-	public void validate(Body body, List<ValidationException> exception) {
+    @Override
+	public void validate(Body body, List<ValidationException> exceptions) {
 		SootMethod method = body.getMethod();
 		if (method.isAbstract())
 			return;
@@ -47,13 +47,13 @@ public enum FieldRefValidator implements BodyValidator {
 				try {
 					SootField field = v.getField();
 					if (field == null)
-						exception.add(new UnitValidationException(unit, body, "Resolved field is null: " + fr.toString()));
+						exceptions.add(new UnitValidationException(unit, body, "Resolved field is null: " + fr.toString()));
 
 					if (!field.isStatic() && !field.isPhantom()) {
-						exception.add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));
+						exceptions.add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));
 					}
 				} catch (ResolutionFailedException e) {
-					exception.add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));
+					exceptions.add(new UnitValidationException(unit, body, "Trying to get a static field which is non-static: " + v));
 				}
 			} else if (fr instanceof InstanceFieldRef) {
 				InstanceFieldRef v = (InstanceFieldRef) fr;
@@ -61,13 +61,13 @@ public enum FieldRefValidator implements BodyValidator {
 				try {
 					SootField field = v.getField();
 					if (field == null)
-						exception.add(new UnitValidationException(unit, body, "Resolved field is null: " + fr.toString()));
+						exceptions.add(new UnitValidationException(unit, body, "Resolved field is null: " + fr.toString()));
 					
 					if (field.isStatic() && !field.isPhantom()) {
-						exception.add(new UnitValidationException(unit, body, "Trying to get an instance field which is static: " + v));
+						exceptions.add(new UnitValidationException(unit, body, "Trying to get an instance field which is static: " + v));
 					}
 				} catch (ResolutionFailedException e) {
-					exception.add(new UnitValidationException(unit, body, "Trying to get an instance field which is static: " + v));
+					exceptions.add(new UnitValidationException(unit, body, "Trying to get an instance field which is static: " + v));
 				}
 			} else {
 				throw new RuntimeException("unknown field ref");
