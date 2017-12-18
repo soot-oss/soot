@@ -31,29 +31,32 @@ import soot.jimple.ClassConstant;
  *
  * Created on 26-Jan-2006
  */
-public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
+public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
-  public void outputSummary() {}
+  public static boolean removePackages = false;
+  public static boolean renamePackages = false;
 
+  public static String name = "wjtp.jbco_cr";
   public static String dependancies[] = new String[] { "wjtp.jbco_cr" };
+
+  private static final char stringChars[][] = { {'S','5','$'},
+          {'l','1','I'},
+          {'_'}
+  };
+
+  public static Map<String, String> oldToNewPackageNames = new HashMap<>();
+  public static Map<String, String> oldToNewClassNames = new HashMap<>();
+  public static Map<String, SootClass> newNameToClass = new HashMap<>();
+
+  public String getName() {
+        return name;
+    }
 
   public String[] getDependancies() {
     return dependancies;
   }
 
-  public static String name = "wjtp.jbco_cr";
-
-  public String getName() {
-    return name;
-  }
-
-  private static final char stringChars[][] = { {'S','5','$'},
-      {'l','1','I'},
-      {'_'}
-  };
-
-  public static HashMap<String, String> oldToNewClassNames = new HashMap<String, String>();
-  public static HashMap<String, SootClass> newNameToClass = new HashMap<String, SootClass>();
+  public void outputSummary() {}
 
   protected void internalTransform(String phaseName, Map<String,String> options)
   {
@@ -169,28 +172,15 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
   {
     int size = 5;
     int tries = 0;
-    int index = Rand.getInt(stringChars.length);
-    int length = stringChars[index].length;
 
-    String result = null;
-    char cNewName[] = new char[size];
+    String result;
     do {
       if (tries == size)
       {
-        cNewName = new char[++size];
-        tries = 0;
+          size++;
       }
-
-      do {
-        cNewName[0] = stringChars[index][Rand.getInt(length)];
-	  } while (!Character.isJavaIdentifierStart(cNewName[0]));
-
-	  // generate random string
-	  for (int i = 1; i < cNewName.length; i++){
-	    int rand = Rand.getInt(length);
-	    cNewName[i] = stringChars[index][rand];
-	  }
-      result = prefix + String.copyValueOf(cNewName);
+      String newName = generateJunkName(size);
+      result = removePackages ? newName : (renamePackages ? getNewPrefixName(prefix) : prefix) + newName;
       tries++;
     } while (oldToNewClassNames.containsValue(result) || BodyBuilder.nameList.contains(result));
 
@@ -215,5 +205,44 @@ public class ClassRenamer extends SceneTransformer  implements IJbcoTransform {
       } else {
           return null;
       }
+  }
+
+  private static String getNewPrefixName(String oldPrefix) {
+      String newPrefix = "";
+      String[] oldPrefixParts = oldPrefix.split("\\.");
+
+      int size = 5;
+      int tries = 0;
+      for (String oldPrefixPart : oldPrefixParts) {
+          String junkName;
+          do {
+              if (tries == size)
+              {
+                  size++;
+              }
+              junkName = generateJunkName(size);
+              tries++;
+          } while (oldToNewPackageNames.containsValue(junkName) || oldToNewPackageNames.containsKey(junkName));
+          oldToNewPackageNames.put(oldPrefixPart, junkName);
+          newPrefix += junkName + ".";
+      }
+      return newPrefix;
+  }
+
+  private static String generateJunkName(int size) {
+      int index = Rand.getInt(stringChars.length);
+      int length = stringChars[index].length;
+
+      char newName[] = new char[size];
+      do {
+          newName[0] = stringChars[index][Rand.getInt(length)];
+      } while (!Character.isJavaIdentifierStart(newName[0]));
+
+      // generate random string
+      for (int i = 1; i < newName.length; i++){
+          int rand = Rand.getInt(length);
+          newName[i] = stringChars[index][rand];
+      }
+      return String.copyValueOf(newName);
   }
 }

@@ -152,8 +152,8 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
 				if (output)
 					out.println("\tBuilding " + fullName);
 
-				// make class but can't be final
-				SootClass iC = new SootClass(fullName, c.getModifiers() & (Modifier.FINAL ^ 0xFFFF));
+				// make non-final soot class
+				SootClass iC = new SootClass(fullName, c.getModifiers() & (~Modifier.FINAL));
 				Main.IntermediateAppClasses.add(iC);
 				iC.setSuperclass(cOrigSuperclass);
 
