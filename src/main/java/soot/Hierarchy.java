@@ -531,7 +531,6 @@ public class Hierarchy {
 		}
 		// m is package
 		return from.getJavaPackageName().equals(m.getDeclaringClass().getJavaPackageName());
-		// || isClassSubclassOfIncluding( from, m.getDeclaringClass() );
 	}
 
 	/**
