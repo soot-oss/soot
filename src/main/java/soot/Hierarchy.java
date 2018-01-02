@@ -527,11 +527,11 @@ public class Hierarchy {
 			return from.equals(m.getDeclaringClass());
 		}
 		if (m.isProtected()) {
-			return isClassSubclassOfIncluding(from, m.getDeclaringClass());
+			return isClassSubclassOfIncluding(from, m.getDeclaringClass())
+					|| from.getJavaPackageName().equals(m.getDeclaringClass().getJavaPackageName());
 		}
 		// m is package
 		return from.getJavaPackageName().equals(m.getDeclaringClass().getJavaPackageName());
-		// || isClassSubclassOfIncluding( from, m.getDeclaringClass() );
 	}
 
 	/**
