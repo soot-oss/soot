@@ -113,6 +113,8 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 				}
 
 				if (rename) {
+					// TODO: This is flawed since it all methods of a similar
+					// name will get same name
 					String newName = oldToNewMethodNames.get(method.getName());
 					if (newName == null) {
 						if (!fieldNames.isEmpty()) {
