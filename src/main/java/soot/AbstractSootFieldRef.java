@@ -30,7 +30,7 @@ import soot.options.Options;
  * Java Virtual Machine Specification, 2nd ed, section 5.4.3.2.
  */
 
-class AbstractSootFieldRef implements SootFieldRef {
+public class AbstractSootFieldRef implements SootFieldRef {
 	public AbstractSootFieldRef(SootClass declaringClass, String name, Type type, boolean isStatic) {
 		this.declaringClass = declaringClass;
 		this.name = name;
@@ -49,22 +49,27 @@ class AbstractSootFieldRef implements SootFieldRef {
 	private final Type type;
 	private final boolean isStatic;
 
+	@Override
 	public SootClass declaringClass() {
 		return declaringClass;
 	}
 
+	@Override
 	public String name() {
 		return name;
 	}
 
+	@Override
 	public Type type() {
 		return type;
 	}
 
+	@Override
 	public boolean isStatic() {
 		return isStatic;
 	}
 
+	@Override
 	public String getSignature() {
 		return SootField.getSignature(declaringClass, name, type);
 	}
@@ -80,6 +85,7 @@ class AbstractSootFieldRef implements SootFieldRef {
 					+ "; failed to resolve in superclasses and interfaces");
 		}
 
+		@Override
 		public String toString() {
 			StringBuffer ret = new StringBuffer();
 			ret.append(super.toString());
@@ -88,6 +94,7 @@ class AbstractSootFieldRef implements SootFieldRef {
 		}
 	}
 
+	@Override
 	public SootField resolve() {
 		return resolve(null);
 	}
@@ -206,6 +213,7 @@ class AbstractSootFieldRef implements SootFieldRef {
 				Options.v().field_type_mismatches()));
 	}
 
+	@Override
 	public String toString() {
 		return getSignature();
 	}
