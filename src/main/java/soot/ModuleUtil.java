@@ -77,11 +77,10 @@ public final class ModuleUtil {
         SootModuleInfo modInfo;
         if (ModuleScene.v().containsClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName))) {
             modInfo = (SootModuleInfo) ModuleScene.v().getSootClass(SootModuleInfo.MODULE_INFO, Optional.fromNullable(toModuleName));
-            if (modInfo.resolvingLevel() < SootClass.BODIES){
+            if (modInfo.resolvingLevel() < SootClass.BODIES) {
                 modInfo = (SootModuleInfo) SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES, Optional.fromNullable(toModuleName));
             }
-        }
-        else {
+        } else {
             modInfo = (SootModuleInfo) SootModuleResolver.v().resolveClass(SootModuleInfo.MODULE_INFO, SootClass.BODIES, Optional.fromNullable(toModuleName));
         }
 
@@ -158,25 +157,36 @@ public final class ModuleUtil {
 
     private static List<String> parseJavaBasePackage() {
         List<String> packages = new ArrayList<>();
+        InputStream in = null;
         Path excludeFile = Paths.get(JAVABASEFILE);
-        if (!Files.exists(excludeFile)) {
-            //else take the one package
-            try {
-                excludeFile = Paths.get(ModuleUtil.class.getResource(File.separator + JAVABASEFILE).toURI());
-            } catch (URISyntaxException e) {
-                e.printStackTrace();
-            }
+        try {
+            if (!Files.exists(excludeFile)) {
+                //else take the one package
 
+                in = ModuleUtil.class.getResourceAsStream(File.separator + JAVABASEFILE);
+            } else {
+
+                in = Files.newInputStream(excludeFile);
+
+
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
         //read file into stream, try-with-resources
-        try (InputStream in = Files.newInputStream(excludeFile);
-             BufferedReader reader =
-                     new BufferedReader(new InputStreamReader(in))) {
+        try (
+                BufferedReader reader =
+                        new BufferedReader(new InputStreamReader(in)))
+
+        {
             String line;
             while ((line = reader.readLine()) != null) {
                 packages.add(line);
             }
-        } catch (IOException x) {
+        } catch (
+                IOException x)
+
+        {
             G.v().out.println("[WARN] No files specifying the packages of module java.base");
         }
         return packages;
