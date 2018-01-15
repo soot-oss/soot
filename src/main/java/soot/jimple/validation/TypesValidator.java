@@ -23,25 +23,25 @@ public enum TypesValidator implements BodyValidator {
 
 
 	@Override
-	public void validate(Body body, List<ValidationException> exception) {
+	public void validate(Body body, List<ValidationException> exceptions) {
 		SootMethod method = body.getMethod();
 		
-		if(method!=null) {
-			if(!method.getReturnType().isAllowedInFinalCode()) {
-				exception.add(new ValidationException(method, "Return type not allowed in final code: " + method.getReturnType(), "return type not allowed in final code:"+method.getReturnType()
+		if (method != null) {
+			if (!method.getReturnType().isAllowedInFinalCode()) {
+				exceptions.add(new ValidationException(method, "Return type not allowed in final code: " + method.getReturnType(), "return type not allowed in final code:"+method.getReturnType()
 				        +"\n method: "+ method));
 			}
-			for(Type t: method.getParameterTypes()) {
-				if(!t.isAllowedInFinalCode()) {
-					exception.add(new ValidationException(method, "Parameter type not allowed in final code: " + t, "parameter type not allowed in final code:"+t
+			for (Type t: method.getParameterTypes()) {
+				if (!t.isAllowedInFinalCode()) {
+					exceptions.add(new ValidationException(method, "Parameter type not allowed in final code: " + t, "parameter type not allowed in final code:"+t
 					        +"\n method: "+ method));
 				}
 			}
 		}
-		for(Local l: body.getLocals()) {
+		for (Local l: body.getLocals()) {
 			Type t = l.getType();
-			if(!t.isAllowedInFinalCode()) {
-				exception.add(new ValidationException(l, "Local type not allowed in final code: " + t, "(" + method + ") local type not allowed in final code: " + t +" local: "+l));
+			if (!t.isAllowedInFinalCode()) {
+				exceptions.add(new ValidationException(l, "Local type not allowed in final code: " + t, "(" + method + ") local type not allowed in final code: " + t +" local: "+l));
 			}
 		}
     }

@@ -20,7 +20,6 @@ public enum ReturnStatementsValidator implements BodyValidator {
 	}
 
 
-	@Override
 	/**
      * Checks the following invariants on this Jimple body:
      * <ol>
@@ -30,10 +29,9 @@ public enum ReturnStatementsValidator implements BodyValidator {
      *      if they occur at all
      * </ol>
      */
-	public void validate(Body body, List<ValidationException> exception) {
-	    /**
-	     * Checks that this Jimple body actually contains a return statement
-	     */
+    @Override
+	public void validate(Body body, List<ValidationException> exceptions) {
+        //Checks that this Jimple body actually contains a return statement
 		for (Unit u : body.getUnits())
 			if ((u instanceof ReturnStmt) || (u instanceof ReturnVoidStmt)
 					|| (u instanceof RetStmt)
@@ -53,7 +51,7 @@ public enum ReturnStatementsValidator implements BodyValidator {
         if (last instanceof GotoStmt || last instanceof ThrowStmt)
             return;
 
-        exception.add(new ValidationException(body.getMethod(), "The method does not contain a return statement", "Body of method " + body.getMethod().getSignature()
+        exceptions.add(new ValidationException(body.getMethod(), "The method does not contain a return statement", "Body of method " + body.getMethod().getSignature()
 				+ " does not contain a return statement"));
     }
 

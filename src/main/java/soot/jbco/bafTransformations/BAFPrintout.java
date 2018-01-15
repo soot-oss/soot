@@ -36,7 +36,7 @@ import soot.Unit;
  */
 public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
   
-  private String name = "bb.printout";
+  public static String name = "bb.printout";
   
   public void outputSummary() {}
   public String[] getDependancies() {return new String[0];}

@@ -9,8 +9,6 @@ For Soot details see http://www.sable.mcgill.ca/soot/.
 
 **Note that Soot-j9 is not yet stable nor complete.**
 
-
-
 # How do I obtain Soot-j9 nightly builds
 
 Nightly builds of Soot can be obtained from [nightly build](https://soot-build.cs.uni-paderborn.de/nightly/soot/). The "sootj9-trunk.jar" file is an all-in-one file that also contains all the required libraries. 
@@ -67,7 +65,6 @@ Options.v().set_soot_modulepath(modulePath);
 
 ```
 
-
 ## Use from the Command Line
 To load modules and classes in Soot using java 1.8 run:
 
@@ -76,3 +73,18 @@ To load modules and classes in Soot using java 1.8 run:
 
 Please replace `PATH_TO_JAVA9` with the path to your local installation of java 9.
 The `jrt-fs.jar` is a built-in NIO FileSystem provider for the jrt:// filesystem java 9 uses that replaces `rt.jar`. 
+
+
+# About Soot's source code
+
+Soot follows the git-flow convention. Releases and hotfixes are maintained in the master branch.
+Development happens in the develop branch. To catch the bleeding edge of Soot, check out the latter.
+In case of any questions, please consult the Soot
+mailing list at: http://www.sable.mcgill.ca/mailman/listinfo/soot-list/
+
+# What extensions exist to Soot?
+
+We maintain a [list of extensions that can be used in combination with Soot](https://github.com/Sable/soot/wiki/Extensions-to-Soot). Feel free to add your own!
+
+# Please help us improve Soot!
+You are using Soot and would like to help us support it in the future? Then please support us by filling out [this little web form](https://goo.gl/forms/rk1oSxFIxAH0xaf52).

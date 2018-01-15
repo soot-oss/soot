@@ -96,7 +96,8 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
 				if (initStmt != null) {
 					if (smInit == null)
 						smInit = getOrCreateInitializer(sc, alreadyInitialized);
-					smInit.getActiveBody().getUnits().addFirst(initStmt);
+					if (smInit != null)
+						smInit.getActiveBody().getUnits().addFirst(initStmt);
 				}
 			}
 		}
@@ -117,7 +118,9 @@ public class ConstantValueToInitializerTransformer extends SceneTransformer {
 			smInit.setActiveBody(Jimple.v().newBody(smInit));
 			sc.addMethod(smInit);
 			smInit.setModifiers(Modifier.PUBLIC | Modifier.STATIC);
-		} else {
+		} else if (smInit.isPhantom())
+			return null;
+		else {
 			smInit.retrieveActiveBody();
 
 			// We need to collect those variables that are already initialized
