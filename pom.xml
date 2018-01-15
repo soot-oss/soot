@@ -211,15 +211,6 @@
 						</manifest>
 					</archive>
 				</configuration>
-				<executions>
-					<execution>
-						<id>simple-command</id>
-						<phase>package</phase>
-						<goals>
-							<goal>single</goal>
-						</goals>
-					</execution>
-				</executions>
 			</plugin>
 			<plugin>
 				<version>3.0.2</version>
