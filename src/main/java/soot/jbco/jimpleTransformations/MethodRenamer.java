@@ -119,12 +119,15 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 					if (newName == null) {
 						if (!fieldNames.isEmpty()) {
 							int rand = Rand.getInt(fieldNames.size());
-							newName = fieldNames.remove(rand);
-							//check both key and value, if class already contains method and field with same name
-                            //then we likely will fall in trouble when renaming this method before previous
-							if (oldToNewMethodNames.containsKey(newName) || oldToNewMethodNames.containsValue(newName)) {
+                            final String randomFieldName = fieldNames.remove(rand);
+							//check both value and existing methods, if class already contains method and field with
+                            // same name then we likely will fall in trouble when renaming this method before previous
+							if (oldToNewMethodNames.containsValue(randomFieldName)
+                                    || sc.getMethods().stream().anyMatch(m -> randomFieldName.equals(m.getName()))) {
 								newName = getNewName();
-							}
+							} else {
+                                newName = randomFieldName;
+                            }
 						} else {
 							newName = getNewName();
 						}
