@@ -46,8 +46,9 @@ public class LockAllocator
     
      * Perform Deadlock Avoidance.
     
-     * Perform Deadlock Avoidance by enforcing a lock ordering where 
-     * necessary. 
+     * Perform Deadlock Avoidance by 
+     * enforcing a lock ordering where necessary. 
+     * 
      */
     public boolean avoid_deadlock() {
         return soot.PhaseOptions.getBoolean( options, "avoid-deadlock" );
@@ -57,8 +58,10 @@ public class LockAllocator
     
      * Use an open nesting model.
     
-     * Use an open nesting model, where inner transactions are allowed 
-     * to commit independently of any outer transaction. 
+     * Use an open nesting model, where 
+     * inner transactions are allowed to commit 
+     * independently of any outer transaction. 
+     * 
      */
     public boolean open_nesting() {
         return soot.PhaseOptions.getBoolean( options, "open-nesting" );
@@ -68,8 +71,8 @@ public class LockAllocator
     
      * Perform a May-Happen-in-Parallel analysis.
     
-     * Perform a May-Happen-in-Parallel analysis to assist in 
-     * allocating locks. 
+     * Perform a May-Happen-in-Parallel 
+     * analysis to assist in allocating locks. 
      */
     public boolean do_mhp() {
         return soot.PhaseOptions.getBoolean( options, "do-mhp" );
@@ -79,8 +82,8 @@ public class LockAllocator
     
      * Perform a Local-Objects analysis.
     
-     * Perform a Local-Objects analysis to assist in allocating locks. 
-     * 
+     * Perform a Local-Objects analysis to 
+     * assist in allocating locks. 
      */
     public boolean do_tlo() {
         return soot.PhaseOptions.getBoolean( options, "do-tlo" );
@@ -90,8 +93,9 @@ public class LockAllocator
     
      * Print topological graph of transactions.
     
-     * Print a topological graph of the program's transactions in the 
-     * format used by the graphviz package. 
+     * Print a topological graph of the 
+     * program's transactions in the format used by the graphviz 
+     * package. 
      */
     public boolean print_graph() {
         return soot.PhaseOptions.getBoolean( options, "print-graph" );
@@ -101,7 +105,8 @@ public class LockAllocator
     
      * Print table of transactions.
     
-     * Print a table of information about the program's transactions. 
+     * Print a table of information about 
+     * the program's transactions. 
      */
     public boolean print_table() {
         return soot.PhaseOptions.getBoolean( options, "print-table" );
@@ -111,7 +116,8 @@ public class LockAllocator
     
      * Print debugging info.
     
-     * Print debugging info, including every statement visited. 
+     * Print debugging info, including 
+     * every statement visited. 
      */
     public boolean print_debug() {
         return soot.PhaseOptions.getBoolean( options, "print-debug" );

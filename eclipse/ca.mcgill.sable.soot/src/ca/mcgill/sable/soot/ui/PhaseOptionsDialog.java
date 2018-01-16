@@ -10765,7 +10765,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionshelp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Help", "", "","h", "\nDisplay the textual help message and exit immediately without \nfurther processing. ", defaultBool)));
+		setGeneral_Optionshelp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Help", "", "","h", "\nDisplay the textual help message and exit \nimmediately without further processing. \n", defaultBool)));
 		
 		
 		
@@ -10781,7 +10781,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionsphase_list_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase List", "", "","pl", "\nPrint a list of the available phases and sub-phases, then exit. \n", defaultBool)));
+		setGeneral_Optionsphase_list_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase List", "", "","pl", "\nPrint a list of the available phases and \nsub-phases, then exit. ", defaultBool)));
 		
 		
 		
@@ -10797,7 +10797,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionsversion_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Version", "", "","version", "\nDisplay information about the version of Soot being run, then \nexit without further processing. ", defaultBool)));
+		setGeneral_Optionsversion_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Version", "", "","version", "\nDisplay information about the version of Soot \nbeing run, then exit without further processing. \n", defaultBool)));
 		
 		
 		
@@ -10813,7 +10813,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionsverbose_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Verbose", "", "","v", "\nProvide detailed information about what Soot is doing as it \nruns. ", defaultBool)));
+		setGeneral_Optionsverbose_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Verbose", "", "","v", "\nProvide detailed information about what Soot is \ndoing as it runs. ", defaultBool)));
 		
 		
 		
@@ -10829,7 +10829,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionsinteractive_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Interactive Mode", "", "","interactive-mode", "\nRuns interactively, with Soot providing detailed information as \nit iterates through intra-procedural analyses. ", defaultBool)));
+		setGeneral_Optionsinteractive_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Interactive Mode", "", "","interactive-mode", "\nRuns interactively, with Soot providing \ndetailed information as it iterates through intra-procedural \nanalyses. ", defaultBool)));
 		
 		
 		
@@ -10845,7 +10845,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionsunfriendly_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Unfriendly Mode", "", "","unfriendly-mode", "\nWith this option, Soot does not stop even if it received no \ncommand-line options. Useful when setting Soot options \nprogrammatically and then calling soot.Main.main() with an empty \nlist. ", defaultBool)));
+		setGeneral_Optionsunfriendly_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Unfriendly Mode", "", "","unfriendly-mode", "\nWith this option, Soot does not stop even if it \nreceived no command-line options. Useful when setting \nSoot options programmatically and then calling \nsoot.Main.main() with an empty list. ", defaultBool)));
 		
 		
 		
@@ -10861,7 +10861,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionsapp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Application Mode", "", "","app", "\nRun in application mode, processing all classes referenced by \nargument classes.", defaultBool)));
+		setGeneral_Optionsapp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Application Mode", "", "","app", "\nRun in application mode, processing all \nclasses referenced by argument classes. \n", defaultBool)));
 		
 		
 		
@@ -10877,7 +10877,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionswhole_program_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Program Mode", "", "","w", "\nRun in whole program mode, taking into consideration the whole \nprogram when performing analyses and transformations. Soot uses \nthe Call Graph Constructor to build a call graph for the \nprogram, then applies enabled transformations in the \nWhole-Jimple Transformation, Whole-Jimple Optimization, and \nWhole-Jimple Annotation packs before applying enabled \nintraprocedural transformations. Note that the Whole-Jimple \nOptimization pack is normally disabled (and thus not applied by \nwhole program mode), unless you also specify the Whole Program \nOptimize option.", defaultBool)));
+		setGeneral_Optionswhole_program_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Program Mode", "", "","w", "\nRun in whole program mode, taking into \nconsideration the whole program when \nperforming analyses and transformations. Soot \nuses the Call Graph Constructor to build a call graph for the \nprogram, then applies enabled transformations \nin the Whole-Jimple Transformation, \nWhole-Jimple Optimization, and Whole-Jimple \nAnnotation packs before applying enabled intraprocedural \ntransformations. \nNote that the Whole-Jimple Optimization pack is normally \ndisabled (and thus not applied by whole \nprogram mode), unless you also specify the \nWhole Program Optimize option. ", defaultBool)));
 		
 		
 		
@@ -10893,7 +10893,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionswhole_shimple_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Shimple Mode", "", "","ws", "\nRun in whole shimple mode, taking into consideration the whole \nprogram when performing Shimple analyses and transformations. \nSoot uses the Call Graph Constructor to build a call graph for \nthe program, then applies enabled transformations in the \nWhole-Shimple Transformation and Whole-Shimple Optimization \nbefore applying enabled intraprocedural transformations. Note \nthat the Whole-Shimple Optimization pack is normally disabled \n(and thus not applied by whole shimple mode), unless you also \nspecify the Whole Program Optimize option.", defaultBool)));
+		setGeneral_Optionswhole_shimple_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Shimple Mode", "", "","ws", "\nRun in whole shimple mode, taking into \nconsideration the whole program when \nperforming Shimple analyses and transformations. Soot uses the \nCall Graph Constructor to build a call graph \nfor the program, then applies enabled \ntransformations in the Whole-Shimple Transformation \nand Whole-Shimple Optimization before applying enabled \nintraprocedural transformations. \nNote that the Whole-Shimple \nOptimization pack is normally disabled (and \nthus not applied by whole shimple mode), unless you also \nspecify the Whole Program Optimize option. \n", defaultBool)));
 		
 		
 		
@@ -10909,7 +10909,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionson_the_fly_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("On-the-fly Mode", "", "","fly", "\nThis enables whole-program mode but uses a less agressive class \nloading. By default, classes will be loaded without bodies \nunless otherwise requested. The cg pack is disabled in this \nmode. ", defaultBool)));
+		setGeneral_Optionson_the_fly_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("On-the-fly Mode", "", "","fly", "\nThis enables whole-program mode but uses a \nless agressive class loading. By default, \nclasses will be loaded without bodies unless otherwise \nrequested. The cg pack is disabled in this \nmode. ", defaultBool)));
 		
 		
 		
@@ -10925,7 +10925,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionsvalidate_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Validate", "", "","validate", "\nCauses internal checks to be done on bodies in the various Soot \nIRs, to make sure the transformations have not done something \nstrange. This option may degrade Soot's performance. ", defaultBool)));
+		setGeneral_Optionsvalidate_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Validate", "", "","validate", "\nCauses internal checks to be done on bodies in \nthe various Soot IRs, to make sure the \ntransformations have not done something strange. \nThis option may degrade Soot's performance. ", defaultBool)));
 		
 		
 		
@@ -10941,7 +10941,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionsdebug_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug", "", "","debug", "\nPrint various debugging information as Soot runs, particularly \nfrom the Baf Body Phase and the Jimple Annotation Pack Phase. ", defaultBool)));
+		setGeneral_Optionsdebug_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug", "", "","debug", "\nPrint various debugging information as Soot \nruns, particularly from the Baf Body Phase and \nthe Jimple Annotation Pack Phase. ", defaultBool)));
 		
 		
 		
@@ -10957,7 +10957,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionsdebug_resolver_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug Resolver", "", "","debug-resolver", "\nPrint debugging information about class resolving. ", defaultBool)));
+		setGeneral_Optionsdebug_resolver_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug Resolver", "", "","debug-resolver", "\nPrint debugging information about class \nresolving. ", defaultBool)));
 		
 		
 		
@@ -10973,7 +10973,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionsignore_resolving_levels_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Ignore Resolving Levels", "", "","ignore-resolving-levels", "\nIf this option is set, Soot will not check whether the current \nclass' resolving level is sufficiently high for the operation \nattempted on the class. This allows you to perform any operation \non a class even if the class has not been fully loaded, which \ncan lead to inconsistencies between your Soot scene and the \noriginal classes you loaded. Use this option at your own risk. ", defaultBool)));
+		setGeneral_Optionsignore_resolving_levels_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Ignore Resolving Levels", "", "","ignore-resolving-levels", "\nIf this option is set, Soot will not check \nwhether the current class' resolving level is sufficiently \nhigh for the operation attempted on the class. This \nallows you to perform any operation on a class \neven if the class has not been fully loaded, which can lead to \ninconsistencies between your Soot scene and the \noriginal classes you loaded. Use this option at your own risk. \n", defaultBool)));
 		
 		
 
@@ -10989,7 +10989,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setGeneral_Optionsphase_help_widget(new ListOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase Help",  "", "","ph", "\nPrint a help message about the phase or sub-phase named PHASE, \nthen exit. To see the help message of more than one phase, \nspecify multiple phase-help options. ", defaultString)));
+		setGeneral_Optionsphase_help_widget(new ListOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase Help",  "", "","ph", "\nPrint a help message about the phase or \nsub-phase named PHASE, then exit. To see the \nhelp message of more than one phase, specify \nmultiple phase-help options. ", defaultString)));
 		
 
 		
@@ -11034,7 +11034,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsprepend_classpath_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Prepend classpath", "", "","pp", "\nInstead of replacing the default soot classpath with the \nclasspath given on the command line, prepent it with that \nclasspath. The default classpath holds whatever is set in the \nCLASSPATH environment variable, followed by rt.jar (resolved \nthrough the JAVA-UNDERSCORE-HOME environment variable). If \nwhole-program mode is enabled, jce.jar is also appended in the \nend. ", defaultBool)));
+		setInput_Optionsprepend_classpath_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Prepend classpath", "", "","pp", "\nInstead of replacing the default soot \nclasspath with the classpath given on the command line, \nprepent it with that classpath. \nThe default classpath holds whatever is set in the CLASSPATH \nenvironment variable, followed by rt.jar \n(resolved through the JAVA-UNDERSCORE-HOME environment \nvariable). If whole-program mode is enabled, \njce.jar is also appended in the end. ", defaultBool)));
 		
 		
 		
@@ -11050,7 +11050,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsignore_classpath_errors_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Ignore classpath error", "", "","ice", "\nNormally, Soot throws an exception when an invalid classpath \nentry is detected. To instead silently ignore such errors, \nenable this option. ", defaultBool)));
+		setInput_Optionsignore_classpath_errors_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Ignore classpath error", "", "","ice", "\nNormally, Soot throws an exception when an \ninvalid classpath entry is detected. To instead silently \nignore such errors, enable this option. \n", defaultBool)));
 		
 		
 		
@@ -11066,7 +11066,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsprocess_multiple_dex_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process all DEX files in APK", "", "","process-multiple-dex", "\n				Android APKs can have more than one default classes.dex. By \ndefault Soot loads only classes from the default one. This \noption 				enables loading of all DEX files from an APK. 			", defaultBool)));
+		setInput_Optionsprocess_multiple_dex_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process all DEX files in APK", "", "","process-multiple-dex", "\nAndroid APKs can have more than one default \nclasses.dex. By default Soot loads only classes from the \ndefault one. This option enables \nloading of all DEX files from an APK. ", defaultBool)));
 		
 		
 		
@@ -11082,7 +11082,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionssearch_dex_in_archives_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Search DEX files in Jar and Zip files", "", "","search-dex-in-archives", "\n					By default, Soot searches for DEX files in APKs and \nfolders. This option instructs Soot to also search for DEX files \nin Zip and Jar files on the classpath. 				", defaultBool)));
+		setInput_Optionssearch_dex_in_archives_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Search DEX files in Jar and Zip files", "", "","search-dex-in-archives", "\nBy default, Soot searches for DEX files in \nAPKs and folders. This option instructs Soot to also \nsearch for DEX files in Zip and Jar files on the \nclasspath. ", defaultBool)));
 		
 		
 		
@@ -11098,7 +11098,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsoaat_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("One at a time", "", "","oaat", "\nThis option is meant to keep memory consumption low. If \nenabled, the -process-dir option must be used as well. From the \nprocess-dir, Soot will process one class at a time. Only body \npacks are run, no whole-program packs. ", defaultBool)));
+		setInput_Optionsoaat_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("One at a time", "", "","oaat", "\nThis option is meant to keep memory consumption \nlow. If enabled, the -process-dir option must be \nused as well. From the process-dir, Soot will \nprocess one class at a time. Only body packs are run, \nno whole-program packs. ", defaultBool)));
 		
 		
 		
@@ -11114,7 +11114,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsast_metrics_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Compute AST Metrics", "", "","ast-metrics", "\n			If this flag is set and soot converts java to jimple then \nAST metrics will be computed. 	", defaultBool)));
+		setInput_Optionsast_metrics_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Compute AST Metrics", "", "","ast-metrics", "\nIf this flag is set and soot converts java to \njimple then AST metrics will be computed. ", defaultBool)));
 		
 		
 		
@@ -11130,7 +11130,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsfull_resolver_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force complete resolver", "", "","full-resolver", "\nNormally, Soot resolves only that application classes and any \nclasses that they refer to, along with any classes it needs for \nthe Jimple typing, but it does not transitively resolve \nreferences in these additional classes that were resolved only \nbecause they were referenced. This switch forces full transitive \nresolution of all references found in all classes that are \nresolved, regardless of why they were resolved. In \nwhole-program mode, class resolution is always fully transitive. \nTherefore, in whole-program mode, this switch has no effect, and \nclass resolution is always performed as if it were turned on. ", defaultBool)));
+		setInput_Optionsfull_resolver_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force complete resolver", "", "","full-resolver", "\nNormally, Soot resolves only that application \nclasses and any classes that they refer to, \nalong with any classes it needs for the Jimple typing, but it \ndoes not transitively resolve references in \nthese additional classes that were resolved only \nbecause they were referenced. This switch forces full transitive \nresolution of all references found in all \nclasses that are resolved, regardless of why they \nwere resolved. In whole-program mode, class \nresolution is always fully transitive. Therefore, \nin whole-program mode, this switch has no effect, and class \nresolution is always performed as if it were \nturned on. ", defaultBool)));
 		
 		
 		
@@ -11146,7 +11146,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsallow_phantom_refs_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","allow-phantom-refs", "\nAllow Soot to process a class even if it cannot find all \nclasses referenced by that class. This may cause Soot to produce \nincorrect results. ", defaultBool)));
+		setInput_Optionsallow_phantom_refs_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","allow-phantom-refs", "\nAllow Soot to process a class even if it cannot \nfind all classes referenced by that class. This \nmay cause Soot to produce incorrect results. \n", defaultBool)));
 		
 		
 		
@@ -11162,7 +11162,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsno_bodies_for_excluded_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","no-bodies-for-excluded", "\nPrevents Soot from loading method bodies for all excluded \nclasses (see exclude option), even when running in whole-program \nmode. This is useful for computing a shallow points-to analysis \nthat does not, for instance, take into account the JDK. Of \ncourse, such analyses may be unsound. You get what you are \nasking for. ", defaultBool)));
+		setInput_Optionsno_bodies_for_excluded_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","no-bodies-for-excluded", "\nPrevents Soot from loading method bodies for \nall excluded classes (see exclude option), even \nwhen running in whole-program mode. This is useful for computing \na shallow points-to analysis that does not, for \ninstance, take into account the JDK. Of course, such analyses \nmay be unsound. You get what you are asking for. \n", defaultBool)));
 		
 		
 		
@@ -11178,7 +11178,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsj2me_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use J2ME mode", "", "","j2me", "\nUse J2ME mode. J2ME does not have class Cloneable nor \nSerializable, so we have to change type \nassignment to not refer to those classes. ", defaultBool)));
+		setInput_Optionsj2me_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use J2ME mode", "", "","j2me", "\nUse J2ME mode. J2ME does not have class \nCloneable nor Serializable, so we have to change \ntype assignment to not refer to those classes. ", defaultBool)));
 		
 		
 		
@@ -11194,7 +11194,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionspolyglot_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use Polyglot frontend", "", "","polyglot", "\nUse Java 1.4 Polyglot frontend instead of JastAdd, which \nsupports Java 5 syntax. ", defaultBool)));
+		setInput_Optionspolyglot_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use Polyglot frontend", "", "","polyglot", "\nUse Java 1.4 Polyglot frontend instead of \nJastAdd, which supports Java 5 syntax. ", defaultBool)));
 		
 		
 		
@@ -11210,7 +11210,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionspermissive_resolving_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use permissive resolving strategy", "", "","permissive-resolving", "\n			 When this option is enabled, Soot will try to resolve \nclasses using an alternative 			 strategy if the class cannot \nbe found using the default strategy. A class a.b.c 			 will, \nfor instance, also be loaded from a/b/c.jimple instead of only \na.b.c.jimple. 			", defaultBool)));
+		setInput_Optionspermissive_resolving_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use permissive resolving strategy", "", "","permissive-resolving", "\nWhen this option is enabled, Soot will try to \nresolve classes using an alternative strategy if \nthe class cannot be found using the default strategy. A class \na.b.c will, for instance, also be loaded from \na/b/c.jimple instead of only a.b.c.jimple. ", defaultBool)));
 		
 		
 		
@@ -11226,7 +11226,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsdrop_bodies_after_load_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Drop method source after loading bodies", "", "","drop-bodies-after-load", "\n			 Each method is associated with a method source for \nloading its body. When this option is disabled, 			 a \nreference to this source is kept around even after the body has \nalready been loaded. This is a waste 			 of memory for most \nuse cases. When this option is enabled, the reference is \ndropped, allowing for garbage 			 collection of the method \nsource. On the other hand, if the body is ever released, it \ncannot easily be 			 recovered (i.e., loaded again) easily. \n			", defaultBool)));
+		setInput_Optionsdrop_bodies_after_load_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Drop method source after loading bodies", "", "","drop-bodies-after-load", "\nEach method is associated with a method source \nfor loading its body. When this option is disabled, \na reference to this source is kept around even after the body \nhas already been loaded. This is a waste of \nmemory for most use cases. When this option is enabled, the \nreference is dropped, allowing for garbage \ncollection of the method source. On the other hand, if \nthe body is ever released, it cannot easily be \nrecovered (i.e., loaded again) easily. ", defaultBool)));
 		
 		
 		
@@ -11234,44 +11234,44 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Class File",
 		"c",
-		"\nTry to resolve classes first from .class files found in the \nSoot classpath. Fall back to .jimple files only when unable to \nfind a .class file. ",
+		"\nTry to resolve classes first from .class \nfiles found in the Soot classpath. Fall back \nto .jimple files only when unable to find a \n.class file. ",
 		
 		true),
 		
 		new OptionData("Only Class File",
 		"only-class",
-		"\nTry to resolve classes first from .class files found in the \nSoot classpath. Do not try any other types of files even when \nunable to find a .class file. ",
+		"\nTry to resolve classes first from .class \nfiles found in the Soot classpath. Do not \ntry any other types of files even when \nunable to find a .class file. ",
 		
 		false),
 		
 		new OptionData("Jimple File",
 		"J",
-		"\nTry to resolve classes first from .jimple files found in the \nSoot classpath. Fall back to .class files only when unable to \nfind a .jimple file. ",
+		"\nTry to resolve classes first from .jimple \nfiles found in the Soot classpath. Fall back \nto .class files only when unable to find a \n.jimple file. ",
 		
 		false),
 		
 		new OptionData("Java File",
 		"java",
-		"\nTry to resolve classes first from .java files found in the Soot \nclasspath. Fall back to .class files only when unable to find a \n.java file. ",
+		"\nTry to resolve classes first from .java \nfiles found in the Soot classpath. Fall back \nto .class files only when unable to find a \n.java file. ",
 		
 		false),
 		
 		new OptionData("APK File",
 		"apk",
-		"\nTry to resolve classes first from .apk (Android Package) files \nfound in the Soot classpath. Fall back to .class, .java or \n.jimple files only when unable to find a class in .apk files. ",
+		"\nTry to resolve classes first from .apk \n(Android Package) files found in the Soot \nclasspath. Fall back to .class, .java or \n.jimple files only when unable to find a \nclass in .apk files. ",
 		
 		false),
 		
 		new OptionData("APK File",
 		"apk-class-jimple",
-		"\nTry to resolve classes first from .apk (Android Package) files \nfound in the Soot classpath. Fall back to .class, or .jimple \nfiles only when unable to find a class in .apk files. Never load \na .java file. ",
+		"\nTry to resolve classes first from .apk \n(Android Package) files found in the Soot \nclasspath. Fall back to .class, or .jimple \nfiles only when unable to find a class in .apk \nfiles. Never load a .java \nfile. ",
 		
 		false),
 		
 		};
 		
 										
-		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroupInput_Options, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "\nSets FORMAT as Soot's preference for the type of source files \nto read when it looks for a class. ")));
+		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroupInput_Options, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "\nSets FORMAT as \nSoot's preference for the type of source files to read when \nit looks for a class. ")));
 		
 		defKey = ""+" "+""+" "+"src-prec";
 		defKey = defKey.trim();
@@ -11296,7 +11296,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsprocess_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-path", "\nAdd all classes found in DIR to the set of argument classes \nwhich is analyzed and transformed by Soot. You can specify the \noption more than once, to add argument classes from multiple \ndirectories. You can also state JAR files. If subdirectories of \nDIR contain .class or .jimple files, Soot assumes that the \nsubdirectory names correspond to components of the classes' \npackage names. If DIR contains subA/subB/MyClass.class, for \ninstance, then Soot assumes MyClass is in package subA.subB.", defaultString)));
+		setInput_Optionsprocess_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-path", "\nAdd all classes found in \nDIR to the set of argument classes \nwhich is analyzed and transformed by Soot. You can \nspecify the option more than once, to add \nargument classes from multiple directories. \nYou can also state JAR files. \nIf subdirectories of DIR \ncontain .class or .jimple \nfiles, Soot assumes that the subdirectory names \ncorrespond to components of the classes' package names. If \nDIR contains \nsubA/subB/MyClass.class, for instance, then \nSoot assumes MyClass is in package \nsubA.subB. ", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"cp";
@@ -11311,7 +11311,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "\nUse PATH as the list of directories in which Soot should search \nfor classes. PATH should be a series of directories, separated \nby the path separator character for your system. If no classpath \nis set on the command line, but the system property \nsoot.class.path has been set, Soot uses its value as the \nclasspath. If neither the command line nor the system properties \nspecify a Soot classpath, Soot falls back on a default classpath \nconsisting of the value of the system property java.class.path \nfollowed java.home/lib/rt.jar, where java.home stands for the \ncontents of the system property java.home and / stands for the \nsystem file separator.", defaultString)));
+		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "\nUse PATH \nas the list of directories in which Soot \nshould search for classes. PATH \nshould be a series of directories, \nseparated by the path separator character for your \nsystem. If no \nclasspath is set on the command line, but the system \nproperty soot.class.path has been set, Soot uses its \nvalue as the classpath. \nIf neither the command line nor the system \nproperties specify a Soot classpath, Soot \nfalls back on a default classpath consisting \nof the value of the system property \njava.class.path followed \njava.home/lib/rt.jar, where java.home \nstands for the contents of the system property \njava.home and / stands for \nthe system file separator. ", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"soot-modulepath";
@@ -11341,7 +11341,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsandroid_jars_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Path to Android jar files",  "", "","android-jars", "\nUse PATH as the \ndirectory in which Soot should search for the appropriate \nandroid.jar file to use. The directory must contain \nsubdirectories named after the Android SDK version. Those \nsubdirectories must each contain one android.jar file. \nFor instance if the target directory is \n/home/user/androidSDK/platforms/ subdirectories \ncontaining android.jar for Android SDK 8 and 13 must be named \nandroid-8/ and android-13/ respectively. Note, that this \noptions requires that only one Android application is analyzed \nat a time. The Android application must contain the \nAndroidManifest.xml file. 			", defaultString)));
+		setInput_Optionsandroid_jars_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Path to Android jar files",  "", "","android-jars", "\nUse PATH as the \ndirectory in which Soot should search for the appropriate \nandroid.jar file to use. The directory \nmust contain subdirectories named after the Android SDK version. \nThose subdirectories must each contain one \nandroid.jar file. For instance if the target \ndirectory is /home/user/androidSDK/platforms/ subdirectories \ncontaining android.jar for Android SDK 8 and 13 must \nbe named android-8/ and android-13/ \nrespectively. Note, that this options requires \nthat only one Android application is analyzed at a time. \nThe Android application must contain the \nAndroidManifest.xml file. ", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"force-android-jar";
@@ -11356,7 +11356,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsforce_android_jar_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android jar file",  "", "","force-android-jar", "\nUse PATH as the path to the android.jar file Soot should use. \nThis option overrides the 'android-jars' option. If the \n'android-api-version' option is not specified, Soot will try to \nparse the API version from the given file path. If that fails, \nit will fall back to the default. If the 'android-api-version' \noption is specified, the API version used for parsing will be \ntaken from there. 			", defaultString)));
+		setInput_Optionsforce_android_jar_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android jar file",  "", "","force-android-jar", "\nUse PATH as the \npath to the android.jar file Soot should use. \nThis option overrides the 'android-jars' option. If the \n'android-api-version' option is not specified, \nSoot will try to parse the API version from the given file path. \nIf that fails, it will fall back to the default. \nIf the 'android-api-version' option is specified, the API \nversion used for parsing will be taken \nfrom there. ", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"android-api-version";
@@ -11371,7 +11371,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsandroid_api_version_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android API version",  "", "","android-api-version", "\nUse VERSION as the Android API version that Soot should use \nwhen processing APK or DEX files. When combined with the \n'android-jars' option, this value will take precedence over the \nAPI version specified in the app's manifest file. When combined \nwith the 'force-android-jar' option, the JAR file will be the \none from the 'force-android-jar' option, but the API version \nused for parsing will be the explicitly given one. 			", defaultString)));
+		setInput_Optionsandroid_api_version_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android API version",  "", "","android-api-version", "\nUse VERSION as \nthe Android API version that Soot should use when processing APK \nor DEX files. When combined with the \n'android-jars' option, this value will take precedence over the \nAPI version specified in the \napp's manifest file. When combined with the 'force-android-jar' \noption, the JAR file will be the one from the \n'force-android-jar' option, but the API version \nused for parsing will be the explicitly given one. ", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"main-class";
@@ -11386,7 +11386,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Optionsmain_class_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Main Class",  "", "","main-class", "\nBy default, the first class encountered with a main method is \ntreated as the main class (entry point) in whole-program \nanalysis. This option overrides this default. ", defaultString)));
+		setInput_Optionsmain_class_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Main Class",  "", "","main-class", "\nBy default, the first class encountered \nwith a main method is treated as the main \nclass (entry point) in whole-program analysis. This option \noverrides this default. ", defaultString)));
 		
 
 		
@@ -11431,7 +11431,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setOutput_Optionsoutput_jar_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Jar File", "", "","outjar", "\nSaves output files into a Jar file instead of a directory. The \noutput Jar file name should be specified using the Output \nDirectory (output-dir) option. Note that if the output Jar file \nexists before Soot runs, any files inside it will first be \nremoved. ", defaultBool)));
+		setOutput_Optionsoutput_jar_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Jar File", "", "","outjar", "\nSaves output files into a Jar file instead of a \ndirectory. The output Jar file name should be \nspecified using the Output Directory \n(output-dir) option. Note that if the output Jar file exists \nbefore Soot runs, any files inside it will first be \nremoved. ", defaultBool)));
 		
 		
 		
@@ -11447,7 +11447,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setOutput_Optionsxml_attributes_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Save Tags to XML", "", "","xml-attributes", "\nSave in XML format a variety of tags which Soot has attached to \nits internal representations of the application classes. The XML \nfile can then be read by the Soot plug-in for the Eclipse IDE, \nwhich can display the annotations together with the program \nsource, to aid program understanding. ", defaultBool)));
+		setOutput_Optionsxml_attributes_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Save Tags to XML", "", "","xml-attributes", "\nSave in XML format a variety of tags which Soot \nhas attached to its internal representations of \nthe application classes. The XML file can then \nbe read by the Soot plug-in for the Eclipse IDE, \nwhich can display the annotations together with the program \nsource, to aid program understanding. ", defaultBool)));
 		
 		
 		
@@ -11463,7 +11463,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setOutput_Optionsprint_tags_in_output_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Print Tags in Output", "", "","print-tags", "\nPrint in output files (either in Jimple or Dave) a variety of \ntags which Soot has attached to its internal representations of \nthe application classes. The tags will be printed on the line \nsucceeding the stmt that they are attached to. ", defaultBool)));
+		setOutput_Optionsprint_tags_in_output_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Print Tags in Output", "", "","print-tags", "\nPrint in output files (either in Jimple or \nDave) a variety of tags which Soot has attached \nto its internal representations of the \napplication classes. The tags will be printed on \nthe line succeeding the stmt that they are attached to. \n", defaultBool)));
 		
 		
 		
@@ -11479,7 +11479,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setOutput_Optionsno_output_source_file_attribute_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Don't Output Source File Attribute", "", "","no-output-source-file-attribute", "\nDon't output Source File Attribute when producing class files. ", defaultBool)));
+		setOutput_Optionsno_output_source_file_attribute_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Don't Output Source File Attribute", "", "","no-output-source-file-attribute", "\nDon't output Source File Attribute when \nproducing class files. ", defaultBool)));
 		
 		
 		
@@ -11511,7 +11511,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setOutput_Optionsshow_exception_dests_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Show Exception Destinations", "", "","show-exception-dests", "\nIndicate whether to show exception destination edges as well as \ncontrol flow edges in dumps of exceptional control flow graphs. ", defaultBool)));
+		setOutput_Optionsshow_exception_dests_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Show Exception Destinations", "", "","show-exception-dests", "\nIndicate whether to show exception destination \nedges as well as control flow edges in \ndumps of exceptional control flow graphs. ", defaultBool)));
 		
 		
 		
@@ -11527,7 +11527,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setOutput_Optionsgzip_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("GZipped IR output", "", "","gzip", "\nThis option causes Soot to compress output files of \nintermediate representations with GZip. It does not apply to \nclass files output by Soot. ", defaultBool)));
+		setOutput_Optionsgzip_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("GZipped IR output", "", "","gzip", "\nThis option causes Soot to compress output \nfiles of intermediate representations with GZip. \nIt does not apply to class files output by Soot. ", defaultBool)));
 		
 		
 		
@@ -11543,7 +11543,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setOutput_Optionsforce_overwrite_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Force Overwrite Output Files", "", "","force-overwrite", "\n	 If this option is set to true, the output files will be \noverwritten 	 if they already exist and no further warning \nwill be issued. 		", defaultBool)));
+		setOutput_Optionsforce_overwrite_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Force Overwrite Output Files", "", "","force-overwrite", "\nIf this option is set to true, the output files \nwill be overwritten if they already exist and no \nfurther warning will be issued. ", defaultBool)));
 		
 		
 		
@@ -11551,31 +11551,31 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Jimple File",
 		"J",
-		"\nProduce .jimple files, which contain a textual form of Soot's \nJimple internal representation. ",
+		"\nProduce .jimple files, which contain a \ntextual form of Soot's Jimple internal \nrepresentation. ",
 		
 		false),
 		
 		new OptionData("Jimp File",
 		"j",
-		"\nProduce .jimp files, which contain an abbreviated form of \nJimple. ",
+		"\nProduce .jimp files, which contain an \nabbreviated form of Jimple. ",
 		
 		false),
 		
 		new OptionData("Shimple File",
 		"S",
-		"\nProduce .shimple files, containing a textual form of Soot's SSA \nShimple internal representation. Shimple adds Phi nodes to \nJimple. ",
+		"\nProduce .shimple files, containing a \ntextual form of Soot's SSA Shimple internal \nrepresentation. Shimple adds Phi nodes to \nJimple. ",
 		
 		false),
 		
 		new OptionData("Shimp File",
 		"s",
-		"\nProduce .shimp files, which contain an abbreviated form of \nShimple. ",
+		"\nProduce .shimp files, which contain an \nabbreviated form of Shimple. \n",
 		
 		false),
 		
 		new OptionData("Baf File",
 		"B",
-		"\nProduce .baf files, which contain a textual form of Soot's Baf \ninternal representation. ",
+		"\nProduce .baf files, which contain a textual \nform of Soot's Baf internal representation. \n",
 		
 		false),
 		
@@ -11587,31 +11587,31 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Grimp File",
 		"G",
-		"\nProduce .grimple files, which contain a textual form of Soot's \nGrimp internal representation. ",
+		"\nProduce .grimple files, which contain a \ntextual form of Soot's Grimp internal \nrepresentation. ",
 		
 		false),
 		
 		new OptionData("Abbreviated Grimp File",
 		"g",
-		"\nProduce .grimp files, which contain an abbreviated form of \nGrimp. ",
+		"\nProduce .grimp files, which contain an \nabbreviated form of Grimp. ",
 		
 		false),
 		
 		new OptionData("Xml File",
 		"X",
-		"\nProduce .xml files containing an annotated version of the \nSoot's Jimple internal representation. ",
+		"\nProduce .xml files containing an annotated \nversion of the Soot's Jimple internal \nrepresentation. ",
 		
 		false),
 		
 		new OptionData("Dalvik Executable File",
 		"dex",
-		"\nProduce Dalvik Virtual Machine files. If input was an Android \nPackage (APK), a new APK is generated with it's classes.dex \nreplaced. If no input APK is found, only a classes.dex is \ngenerated.",
+		"\nProduce Dalvik Virtual Machine files. If input was an Android \nPackage (APK), a new APK is generated with it's \nclasses.dex replaced. If no input APK is \nfound, only a classes.dex is generated. ",
 		
 		false),
 		
 		new OptionData("Dalvik Executable File",
 		"force-dex",
-		"\nProduce Dalvik Virtual Machine files. This option always creates \na stand-alone DEX file, even if the input was read from an \nAndroid Package (APK). ",
+		"\nProduce Dalvik Virtual Machine files. This option always creates \na stand-alone DEX file, even if the input \nwas read from an Android Package (APK). ",
 		
 		false),
 		
@@ -11623,38 +11623,38 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Jasmin File",
 		"jasmin",
-		"\nProduce .jasmin files, suitable as input to the jasmin bytecode \nassembler. ",
+		"\nProduce .jasmin files, suitable as input to \nthe jasmin bytecode assembler. \n",
 		
 		false),
 		
 		new OptionData("Class File",
 		"c",
-		"\nProduce Java .class files, executable by any Java Virtual \nMachine. ",
+		"\nProduce Java .class files, executable by \nany Java Virtual Machine. ",
 		
 		true),
 		
 		new OptionData("Dava Decompiled File",
 		"d",
-		"\nProduce .java files generated by the Dava decompiler. ",
+		"\nProduce .java files generated by the Dava \ndecompiler. ",
 		
 		false),
 		
 		new OptionData("Jimle Template File",
 		"t",
-		"\nProduce .java files with Jimple templates. ",
+		"\nProduce .java files with Jimple templates. \n",
 		
 		false),
 		
 		new OptionData("ASM File",
 		"a",
-		"\nProduce .asm files as textual bytecode representation generated \nwith the ASM back end. ",
+		"\nProduce .asm files as textual bytecode \nrepresentation generated with the ASM back end. ",
 		
 		false),
 		
 		};
 		
 										
-		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Output Format", "", "","f", "\nSpecify the format of output files Soot should produce, if any. \nNote that while the abbreviated formats (jimp, shimp, b, and \ngrimp) are easier to read than their unabbreviated counterparts \n(jimple, shimple, baf, and grimple), they may contain \nambiguities. Method signatures in the abbreviated formats, for \ninstance, are not uniquely determined.")));
+		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Output Format", "", "","f", "\nSpecify the format of output files Soot \nshould produce, if any. \nNote that while the abbreviated formats (jimp, \nshimp, b, and grimp) are easier to \nread than their unabbreviated counterparts (jimple, \nshimple, baf, and grimple), they may \ncontain ambiguities. Method signatures in the abbreviated \nformats, for instance, are not uniquely \ndetermined. ")));
 		
 		defKey = ""+" "+""+" "+"f";
 		defKey = defKey.trim();
@@ -11671,62 +11671,62 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Default behavior",
 		"default",
-		"\nLet Soot determine Java version of generated bytecode. ",
+		"\nLet Soot determine Java version of \ngenerated bytecode. ",
 		
 		false),
 		
 		new OptionData("Java 1.1",
 		"1.1",
-		"\nForce Java 1.1 as output version. ",
+		"\nForce Java 1.1 as output version. \n",
 		
 		false),
 		
 		new OptionData("Java 1.2",
 		"1.2",
-		"\nForce Java 1.2 as output version. ",
+		"\nForce Java 1.2 as output version. \n",
 		
 		false),
 		
 		new OptionData("Java 1.3",
 		"1.3",
-		"\nForce Java 1.3 as output version. ",
+		"\nForce Java 1.3 as output version. \n",
 		
 		false),
 		
 		new OptionData("Java 1.4",
 		"1.4",
-		"\nForce Java 1.4 as output version. ",
+		"\nForce Java 1.4 as output version. \n",
 		
 		false),
 		
 		new OptionData("Java 1.5",
 		"1.5",
-		"\nForce Java 1.5 as output version. ",
+		"\nForce Java 1.5 as output version. \n",
 		
 		false),
 		
 		new OptionData("Java 1.6",
 		"1.6",
-		"\nForce Java 1.6 as output version. ",
+		"\nForce Java 1.6 as output version. \n",
 		
 		false),
 		
 		new OptionData("Java 1.7",
 		"1.7",
-		"\nForce Java 1.7 as output version. ",
+		"\nForce Java 1.7 as output version. \n",
 		
 		false),
 		
 		new OptionData("Java 1.8",
 		"1.8",
-		"\nForce Java 1.8 as output version. ",
+		"\nForce Java 1.8 as output version. \n",
 		
 		false),
 		
 		};
 		
 										
-		setOutput_Optionsjava_version_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Java version", "", "","java-version", "\nForce Java version of bytecode generated by Soot. This \noption can only be set on output-format class and \nasm-backend set, or on output-format asm")));
+		setOutput_Optionsjava_version_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Java version", "", "","java-version", "\nForce Java version of bytecode generated by \nSoot. This option can only \nbe set on output-format class \nand asm-backend set, or on \noutput-format asm")));
 		
 		defKey = ""+" "+""+" "+"java-version";
 		defKey = defKey.trim();
@@ -11751,7 +11751,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setOutput_Optionsdump_body_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Body Dumping Phases",  "", "","dump-body", "\nSpecify that PHASENAME is one of the phases to be dumped. For \nexample -dump-body jb -dump-body jb.a would dump each method \nbefore and after the jb and jb.a phases. The pseudo phase name \n``ALL'' causes all phases to be dumped. Output files appear in \nsubdirectories under the soot output directory, with names like \nclassName/methodSignature/phasename-graphType-number.in and \nclassName/methodSignature/phasename-graphType-number.out. The \n``in'' and ``out'' suffixes distinguish the internal \nrepresentations of the method before and after the phase \nexecuted.", defaultString)));
+		setOutput_Optionsdump_body_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Body Dumping Phases",  "", "","dump-body", "\nSpecify that PHASENAME \nis one of the phases to be dumped. \nFor example -dump-body jb -dump-body jb.a would dump \neach method before and after the jb and \njb.a phases. The pseudo phase \nname ``ALL'' causes all phases to be dumped. \nOutput files appear in \nsubdirectories under the soot output \ndirectory, with names like \nclassName/methodSignature/phasename-graphType-number.in \nand \nclassName/methodSignature/phasename-graphType-number.out. \nThe ``in'' and ``out'' suffixes \ndistinguish the internal representations of \nthe method before and after the phase \nexecuted. ", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dump-cfg";
@@ -11766,7 +11766,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setOutput_Optionsdump_cfg_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("CFG Dumping Phases",  "", "","dump-cfg", "\nSpecify that any control flow graphs constructed during the \nPHASENAME phases should be dumped. For example -dump-cfg jb \n-dump-cfg bb.lso would dump all CFGs constructed during the jb \nand bb.lso phases. The pseudo phase name ``ALL'' causes CFGs \nconstructed in all phases to be dumped.The control flow graphs \nare dumped in the form of a file containing input to dot graph \nvisualization tool. Output dot files are stored beneath the \nsoot output directory, in files with names like: \nclassName/methodSignature/phasename-graphType-number.dot, where \nnumber serves to distinguish graphs in phases that produce more \nthan one (for example, the Aggregator may produce multiple \nExceptionalUnitGraphs).", defaultString)));
+		setOutput_Optionsdump_cfg_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("CFG Dumping Phases",  "", "","dump-cfg", "\nSpecify that any control flow graphs \nconstructed during the PHASENAME \nphases should be dumped. For example \n-dump-cfg jb -dump-cfg bb.lso would dump all \nCFGs constructed during the jb and \nbb.lso phases. The pseudo phase \nname ``ALL'' causes CFGs constructed in all \nphases to be dumped. The control flow graphs are \ndumped in the form of a file containing \ninput to dot graph visualization tool. \nOutput dot files are stored beneath the soot \noutput directory, in files with names like: \nclassName/methodSignature/phasename-graphType-number.dot, \nwhere number serves to distinguish graphs in phases \nthat produce more than one (for example, the \nAggregator may produce multiple \nExceptionalUnitGraphs). ", defaultString)));
 		
 		
 		defKey = ""+" "+""+" "+"d";
@@ -11781,7 +11781,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setOutput_Optionsoutput_dir_widget(new StringOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Directory",  "", "","d", "\nStore output files in DIR. DIR may be relative to the working \ndirectory. ", defaultString)));
+		setOutput_Optionsoutput_dir_widget(new StringOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Directory",  "", "","d", "\nStore output files inDIR. DIR \nmay be relative to the working \ndirectory. ", defaultString)));
 		
 
 		
@@ -11826,7 +11826,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setProcessing_Optionsoptimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Optimize", "", "","O", "\nPerform intraprocedural optimizations on the application \nclasses. ", defaultBool)));
+		setProcessing_Optionsoptimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Optimize", "", "","O", "\nPerform intraprocedural optimizations on the \napplication classes. ", defaultBool)));
 		
 		
 		
@@ -11842,7 +11842,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setProcessing_Optionswhole_optimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Whole Program Optimize", "", "","W", "\nPerform whole program optimizations on the application classes. \nThis enables the Whole-Jimple Optimization pack as well as whole \nprogram mode and intraprocedural optimizations. ", defaultBool)));
+		setProcessing_Optionswhole_optimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Whole Program Optimize", "", "","W", "\nPerform whole program optimizations on the \napplication classes. This enables the \nWhole-Jimple Optimization pack as well as whole \nprogram mode and intraprocedural optimizations. ", defaultBool)));
 		
 		
 		
@@ -11858,7 +11858,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setProcessing_Optionsvia_grimp_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Grimp", "", "","via-grimp", "\nConvert Jimple to bytecode via the Grimp intermediate \nrepresentation instead of via the Baf intermediate \nrepresentation. ", defaultBool)));
+		setProcessing_Optionsvia_grimp_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Grimp", "", "","via-grimp", "\nConvert Jimple to bytecode via the Grimp \nintermediate representation instead of via the \nBaf intermediate representation. ", defaultBool)));
 		
 		
 		
@@ -11874,7 +11874,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setProcessing_Optionsvia_shimple_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Shimple", "", "","via-shimple", "\nEnable Shimple, Soot's SSA representation. This generates \nShimple bodies for the application classes, optionally \ntransforms them with analyses that run on SSA form, then turns \nthem back into Jimple for processing by the rest of Soot. For \nmore information, see the documentation for the shimp, stp, and \nsop phases. ", defaultBool)));
+		setProcessing_Optionsvia_shimple_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Shimple", "", "","via-shimple", "\nEnable Shimple, Soot's SSA representation. This \ngenerates Shimple bodies for the application \nclasses, optionally transforms them with \nanalyses that run on SSA form, then turns them back into \nJimple for processing by the rest of Soot. For more \ninformation, see the documentation for the \nshimp, stp, and sop phases. \n", defaultBool)));
 		
 		
 		
@@ -11890,7 +11890,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setProcessing_Optionsomit_excepting_unit_edges_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Omit Excepting Unit Edges", "", "","omit-excepting-unit-edges", "\nWhen constructing an ExceptionalUnitGraph or \nExceptionalBlockGraph, include edges to an exception handler \nonly from the predecessors of an instruction which may throw an \nexception to the handler, and not from the excepting instruction \nitself, unless the excepting instruction has potential side \neffects. Omitting edges from excepting units allows more \naccurate flow analyses (since if an instruction without side \neffects throws an exception, it has not changed the state of the \ncomputation). This accuracy, though, could lead optimizations to \ngenerate unverifiable code, since the dataflow analyses \nperformed by bytecode verifiers might include paths to exception \nhandlers from all protected instructions, regardless of whether \nthe instructions have side effects. (In practice, the pedantic \nthrow analysis suffices to pass verification in all VMs tested \nwith Soot to date, but the JVM specification does allow for less \ndiscriminating verifiers which would reject some code that might \nbe generated using the pedantic throw analysis without also \nadding edges from all excepting units.)", defaultBool)));
+		setProcessing_Optionsomit_excepting_unit_edges_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Omit Excepting Unit Edges", "", "","omit-excepting-unit-edges", "\nWhen constructing an ExceptionalUnitGraph \nor ExceptionalBlockGraph, include edges to \nan exception handler only from the \npredecessors of an instruction which may \nthrow an exception to the handler, and not from the excepting \ninstruction itself, unless the excepting \ninstruction has potential side effects. \nOmitting edges from excepting \nunits allows more accurate flow analyses \n(since if an instruction without side effects throws an \nexception, it has not changed the state of the \ncomputation). This accuracy, though, could \nlead optimizations to generate unverifiable \ncode, since the dataflow analyses performed by \nbytecode verifiers might include paths to exception handlers \nfrom all protected instructions, regardless \nof whether the instructions have side \neffects. (In practice, the pedantic throw \nanalysis suffices to pass verification in all VMs tested with \nSoot to date, but the JVM specification does \nallow for less discriminating verifiers \nwhich would reject some code that might be \ngenerated using the pedantic throw analysis without also \nadding edges from all excepting units.) \n", defaultBool)));
 		
 		
 		
@@ -11906,7 +11906,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setProcessing_Optionstrim_cfgs_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Trim CFGs", "", "","trim-cfgs", "\nWhen constructing CFGs which include exceptional edges, \nminimize the number of edges leading to exception handlers by \nanalyzing which instructions might actually be executed before \nan exception is thrown, instead of assuming that every \ninstruction protected by a handler has the potential to throw an \nexception the handler catches. -trim-cfgs is shorthand for \n-throw-analysis unit -omit-excepting-unit-edges -p jb.tt \nenabled:true.", defaultBool)));
+		setProcessing_Optionstrim_cfgs_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Trim CFGs", "", "","trim-cfgs", "\nWhen constructing CFGs which include \nexceptional edges, minimize the number of \nedges leading to exception handlers by analyzing \nwhich instructions might actually be executed before an \nexception is thrown, instead of assuming \nthat every instruction protected by a \nhandler has the potential to throw an exception the handler \ncatches. -trim-cfgs \nis shorthand for -throw-analysis unit \n-omit-excepting-unit-edges -p jb.tt enabled:true. \n", defaultBool)));
 		
 		
 		
@@ -11922,7 +11922,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setProcessing_Optionsignore_resolution_errors_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Ignore reolution errors", "", "","ire", "\nSome programs may contain dead code that references fields or \nmethods that do not exist. By default, Soot exists with an \nexception when this happens. If this option is enabled, Soot \nonly prints a warning but does not exit. ", defaultBool)));
+		setProcessing_Optionsignore_resolution_errors_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Ignore reolution errors", "", "","ire", "\nSome programs may contain dead code that \nreferences fields or methods that do not exist. \nBy default, Soot exists with an exception when this happens. \nIf this option is enabled, Soot only prints \na warning but does not exit. ", defaultBool)));
 		
 		
 		
@@ -11930,32 +11930,32 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Fail",
 		"fail",
-		"\nWhen this value is used, the analysis raises an error when code \nthat accesses a static field using instance field operations is \ndetected. ",
+		"\nWhen this value is used, the analysis \nraises an error when code that accesses a static \nfield using instance field operations is detected. \n",
 		
 		false),
 		
 		new OptionData("Ignore",
 		"ignore",
-		"\nWhen this option is enabled, Soot will accept field accesses \nwhen in the case of wrong staticness and will create the Jimple \ncode equivalent to the (broken) input code nevertheless. The \nJimple code will then be invalid, but will exactly resemble the \ninput code. ",
+		"\nWhen this option is enabled, Soot will \naccept field accesses when in the case of wrong \nstaticness and will create the Jimple code equivalent to the \n(broken) input code nevertheless. The Jimple \ncode will then be invalid, but will exactly resemble the input \ncode. ",
 		
 		false),
 		
 		new OptionData("Fix",
 		"fix",
-		"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. If a \nproblem cannot be fixed, an access to that method or field will \nnot throw an exception. ",
+		"\nWhen Soot detects a case in which a static \nfield is accessed as if it were an instance field, Soot \nwill transparently fix the error and generate Jimple \ncode for the fixed program. If a problem cannot \nbe fixed, an access to that method or field will not throw an \nexception. ",
 		
 		true),
 		
 		new OptionData("FixStrict",
 		"fixstrict",
-		"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. If a \nproblem cannot be fixed, an access to that method or field will \nstill throw an exception. This makes sure that problems cannot \nsilently disappear and cause invalid Jimple code. ",
+		"\nWhen Soot detects a case in which a static \nfield is accessed as if it were an instance field, Soot \nwill transparently fix the error and generate Jimple \ncode for the fixed program. If a problem cannot \nbe fixed, an access to that method or field will still throw \nan exception. This makes sure that problems \ncannot silently disappear and cause invalid \nJimple code. ",
 		
 		true),
 		
 		};
 		
 										
-		setProcessing_Optionswrong_staticness_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Handling of Wrong Staticness", "", "","wrong-staticness", "\nSome projects have been shown to contain invalid bytecode that \ntries to access a static field or method in a non-static way or \nthe other way around. The VM's bytecode verifier will reject \nsuch bytecode when loaded into the VM. This option, depending on \nthen chosen value, either causes to create Jimple bodies in such \ncases nontheless, ignoring the error, or \nautomatically fixes the error when possible. ")));
+		setProcessing_Optionswrong_staticness_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Handling of Wrong Staticness", "", "","wrong-staticness", "\nSome projects have been shown to contain \ninvalid bytecode that tries to access a static \nfield or method in a non-static way or the other way around. The \nVM's bytecode verifier will reject such bytecode \nwhen loaded into the VM. This option, depending on \nthen chosen value, either causes to create Jimple bodies in \nsuch cases nontheless, ignoring the error, or \nautomatically fixes the error when possible. ")));
 		
 		defKey = ""+" "+""+" "+"wrong-staticness";
 		defKey = defKey.trim();
@@ -11972,26 +11972,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Fail",
 		"fail",
-		"\nWhen resolving a field reference and the expected type does not \nmatch the declared type of the actual field, an exception will \nbe thrown. ",
+		"\nWhen resolving a field reference and the \nexpected type does not match the declared type of the \nactual field, an exception will be \nthrown. ",
 		
 		false),
 		
 		new OptionData("Ignore",
 		"ignore",
-		"\nWith this option, Soot will not check whether there is a \nmismatch between the requested and the declared field type. \nInstead, it will return the declared field with a matching name \nregardless of the field's type. This means that field reference \nresolving will never fail because of mismatching types, but the \nreturned field might not be what the user code expects. ",
+		"\nWith this option, Soot will not check \nwhether there is a mismatch between the requested and the \ndeclared field type. Instead, \nit will return the declared field with a matching name \nregardless of the field's type. This means \nthat field reference resolving will never \nfail because of mismatching types, but the returned field might \nnot be what the user code \nexpects. ",
 		
 		false),
 		
 		new OptionData("ReturnNull",
 		"null",
-		"\nWhen resolving a field reference for which the declared field \ntype and the expected type from the reference do not match, Soot \nwill return null with this option. The user code that invokes \ngetField() is responsible for correctly handling these null \nreferences. ",
+		"\nWhen resolving a field reference for which \nthe declared field type and the expected type from the \nreference do not match, Soot will \nreturn null with this option. The user code that invokes \ngetField() is responsible for correctly \nhandling these null references. ",
 		
 		true),
 		
 		};
 		
 										
-		setProcessing_Optionsfield_type_mismatches_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Handling of Field Type Mismatches", "", "","field-type-mismatches", "\nSome source files contain invalid bytecode. As a consequence, \nresolving field references may fail due to mismatching types. In \nother words, the expected type in the field reference does not \nmatch the type of the actually declared field. With this option, \nthe user can specify how Soot shall react to such issues. ")));
+		setProcessing_Optionsfield_type_mismatches_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Handling of Field Type Mismatches", "", "","field-type-mismatches", "\nSome source files contain invalid bytecode. As \na consequence, resolving field references may fail due to \nmismatching types. In other words, the \nexpected type in the field reference does not match the type of \nthe actually declared field. With this \noption, the user can specify how Soot shall react to such \nissues. ")));
 		
 		defKey = ""+" "+""+" "+"field-type-mismatches";
 		defKey = defKey.trim();
@@ -12008,26 +12008,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Pedantic",
 		"pedantic",
-		"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, since the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread. ",
+		"\nSays that any instruction may throw any \nThrowable whatsoever. \nStrictly speaking this is correct, since the \nJava libraries include the \nThread.stop(Throwable) method, which allows \nother threads to cause arbitrary exceptions \nto occur at arbitrary points in the execution of a victim \nthread. ",
 		
 		false),
 		
 		new OptionData("Unit",
 		"unit",
-		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. ",
+		"\nSays that each statement in the \nintermediate representation may throw those \nexception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in \nisolation, without regard to the surrounding \nprogram. ",
 		
 		true),
 		
 		new OptionData("Dalvik",
 		"dalvik",
-		"\nSpecialized throw analysis implementation that covers the \nsemantics of the Dalvik IR used for Android apps",
+		"\nSpecialized throw analysis implementation \nthat covers the semantics of the Dalvik IR \nused for Android apps ",
 		
 		false),
 		
 		};
 		
 										
-		setProcessing_Optionsthrow_analysis_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Default ThrowAnalysis", "", "","throw-analysis", "\nThis option specifies how to estimate the exceptions which each \nstatement may throw when constructing exceptional CFGs. ")));
+		setProcessing_Optionsthrow_analysis_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Default ThrowAnalysis", "", "","throw-analysis", "\nThis option specifies how to estimate the \nexceptions which each statement may throw when \nconstructing exceptional CFGs. ")));
 		
 		defKey = ""+" "+""+" "+"throw-analysis";
 		defKey = defKey.trim();
@@ -12044,32 +12044,32 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Select Automatically",
 		"auto",
-		"\nSelects the throw analysis \nto use for local initialization checking based on \ninformation from other options. In \nparticular, it will use 'dalvik' when \nit detects it is analyzing an Android application (e.g. \nwhen --android-jars or --force-android-jar are set) and \n'pedantic' otherwise. This is the default. ",
+		"\nSelects the throw analysis to use for local \ninitialization checking based on information \nfrom other options. In particular, it will use 'dalvik' when \nit detects it is analyzing an Android \napplication (e.g. when --android-jars or \n--force-android-jar are set) and 'pedantic' otherwise. This is \nthe default. ",
 		
 		true),
 		
 		new OptionData("Pedantic",
 		"pedantic",
-		"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, since the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread. ",
+		"\nSays that any instruction may throw any \nThrowable whatsoever. \nStrictly speaking this is correct, since the \nJava libraries include the \nThread.stop(Throwable) method, which allows \nother threads to cause arbitrary exceptions \nto occur at arbitrary points in the execution of a victim \nthread. ",
 		
 		false),
 		
 		new OptionData("Unit",
 		"unit",
-		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. ",
+		"\nSays that each statement in the \nintermediate representation may throw those \nexception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in \nisolation, without regard to the surrounding \nprogram. ",
 		
 		false),
 		
 		new OptionData("Dalvik",
 		"dalvik",
-		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the Dalvik Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. \nThis is the equivalent of Unit above, but targeting the Dalvik \nVM semantics as opposed to those of the JVM. ",
+		"\nSays that each statement in the \nintermediate representation may throw those \nexception types associated with the corresponding \nJava bytecode instructions in the Dalvik Specification. The \nanalysis deals with each statement in \nisolation, without regard to the surrounding \nprogram. This is the equivalent of Unit above, but targeting \nthe Dalvik VM semantics as opposed to those of \nthe JVM. ",
 		
 		false),
 		
 		};
 		
 										
-		setProcessing_Optionscheck_init_throw_analysis_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Local Initialization ThrowAnalysis", "", "","check-init-ta", "\nThis option specifies which \nthrow analysis to use during local initialization checking \ninside soot.Body. ")));
+		setProcessing_Optionscheck_init_throw_analysis_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Local Initialization ThrowAnalysis", "", "","check-init-ta", "\nThis option specifies which throw analysis to \nuse during local initialization checking inside \nsoot.Body. ")));
 		
 		defKey = ""+" "+""+" "+"check-init-ta";
 		defKey = defKey.trim();
@@ -12094,7 +12094,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setProcessing_Optionsplugin_widget(new ListOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Plugin Configuration",  "", "","plugin", "\nLoads the plugin configuration FILE and registers all plugins. \nMake sure that the option is specified before you try to pass \noptions to the loaded plugins.", defaultString)));
+		setProcessing_Optionsplugin_widget(new ListOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Plugin Configuration",  "", "","plugin", "\nLoads the plugin configuration \nFILE and registers \nall plugins. Make sure that the option is specified before you \ntry to pass options to the loaded plugins. \n", defaultString)));
 		
 
 		
@@ -12117,7 +12117,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	 	
 		editGroupjb.setData("id", "jb");
 		
-		String descjb = "Creates a JimpleBody for each method";	
+		String descjb = "Creates a JimpleBody for each method\n                ";	
 		if (descjb.length() > 0) {
 			Label descLabeljb = new Label(editGroupjb, SWT.WRAP);
 			descLabeljb.setText(descjb);
@@ -12155,7 +12155,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbuse_original_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Use Original Names", "p", "jb","use-original-names", "\nRetain the original names for local variables when the source \nincludes those names. Otherwise, Soot gives variables generic \nnames based on their types. ", defaultBool)));
+		setjbuse_original_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Use Original Names", "p", "jb","use-original-names", "\nRetain the original names for local \nvariables when the source includes those \nnames. Otherwise, Soot gives variables generic \nnames based on their types. ", defaultBool)));
 		
 		
 		
@@ -12171,7 +12171,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbpreserve_source_annotations_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Preserve source-level annotations", "p", "jb","preserve-source-annotations", "\nPreserves annotations of retention type SOURCE. (for \neverything but package and local variable \nannotations) ", defaultBool)));
+		setjbpreserve_source_annotations_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Preserve source-level annotations", "p", "jb","preserve-source-annotations", "\nPreserves annotations of retention type \nSOURCE. (for everything but package and \nlocal variable annotations) ", defaultBool)));
 		
 		
 		
@@ -12187,7 +12187,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbstabilize_local_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Stabilize local names", "p", "jb","stabilize-local-names", "\nMake sure that local names are stable between runs. This \nrequires re-normalizing all local names after the standard \ntransformations and then sorting them which can negatively \nimpact performance. This option automatically sets "sort-locals" \nin "jb.lns" during the second re-normalization pass. ", defaultBool)));
+		setjbstabilize_local_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Stabilize local names", "p", "jb","stabilize-local-names", "\nMake sure that local names are stable \nbetween runs. This requires re-normalizing all \nlocal names after the standard transformations and then \nsorting them which can negatively impact \nperformance. This option automatically sets "sort-locals" in \n"jb.lns" during the second \nre-normalization pass. ", defaultBool)));
 		
 		
 
@@ -12387,7 +12387,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_aonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_a, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.a","only-stack-locals", "\nOnly aggregate locals that represent stack locations in the \noriginal bytecode. (Stack locals can be distinguished in Jimple \nby the character with which their names begin.) ", defaultBool)));
+		setjbjb_aonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_a, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.a","only-stack-locals", "\nOnly aggregate locals that \nrepresent stack locations in the \noriginal bytecode. (Stack locals can be distinguished in Jimple \nby the \ncharacter with which their names \nbegin.) ", defaultBool)));
 		
 		
 
@@ -12495,7 +12495,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_truse_older_type_assigner_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Use older type assigner", "p", "jb.tr","use-older-type-assigner", "\nThis enables the older type assigner that was in use until May \n2008. The current type assigner is a reimplementation by Ben \nBellamy that uses an entirely new and faster algorithm which \nalways assigns the most narrow type possible. If \ncompare-type-assigners is on, this option causes the older type \nassigner to execute first. (Otherwise the newer one is executed \nfirst.) ", defaultBool)));
+		setjbjb_truse_older_type_assigner_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Use older type assigner", "p", "jb.tr","use-older-type-assigner", "\nThis enables the older type \nassigner that was in use until May 2008. \nThe current type assigner is a reimplementation by Ben \nBellamy that uses an entirely new \nand faster algorithm which always assigns \nthe most narrow type possible. If compare-type-assigners is \non, this option causes the older \ntype assigner to execute first. \n(Otherwise the newer one is executed first.) \n", defaultBool)));
 		
 		
 		
@@ -12511,7 +12511,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_trcompare_type_assigners_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Compare type assigners", "p", "jb.tr","compare-type-assigners", "\nEnables comparison (both runtime and results) of Ben Bellamy's \ntype assigner with the older type assigner that was in Soot. ", defaultBool)));
+		setjbjb_trcompare_type_assigners_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Compare type assigners", "p", "jb.tr","compare-type-assigners", "\nEnables comparison (both runtime \nand results) of Ben Bellamy's type assigner with the \nolder type assigner that was in Soot. \n", defaultBool)));
 		
 		
 		
@@ -12527,7 +12527,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_trignore_nullpointer_dereferences_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Ignore Nullpointer Dereferences", "p", "jb.tr","ignore-nullpointer-dereferences", "\n					 If this option is enabled, Soot wiil not check whether \nthe base object of a virtual method 					 call can only be \nnull. This will lead to the null_type pseudo type being used in \nyour Jimple 					 code. ", defaultBool)));
+		setjbjb_trignore_nullpointer_dereferences_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Ignore Nullpointer Dereferences", "p", "jb.tr","ignore-nullpointer-dereferences", "\nIf this option is enabled, Soot \nwiil not check whether the base object of a virtual method \ncall can only be null. This will lead to \nthe null_type pseudo type being used in your Jimple \ncode. ", defaultBool)));
 		
 		
 
@@ -12589,7 +12589,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_ulpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_ulp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jb.ulp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables among non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
+		setjbjb_ulpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_ulp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jb.ulp","unsplit-original-locals", "\nUse the variable names in the \noriginal source as a guide when \ndetermining how to share local variables among non-interfering \nvariable usages. This recombines named \nlocals which were split by the Local \nSplitter. ", defaultBool)));
 		
 		
 
@@ -12651,7 +12651,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.lns","only-stack-locals", "\nOnly standardizes the names of variables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option is specified for the `jb' \nphase. ", defaultBool)));
+		setjbjb_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.lns","only-stack-locals", "\nOnly standardizes the names of \nvariables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option \nis specified for the `jb' phase. \n", defaultBool)));
 		
 		
 		
@@ -12667,7 +12667,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_lnssort_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Sort Locals", "p", "jb.lns","sort-locals", "\n							First sorts the locals alphabetically by the string \nrepresentation of 							their type. Then if there are two \nlocals with the same type, it uses \nthe only other source of structurally stable information (i.e. \nthe 							instructions themselves) to produce an ordering for \nthe locals 							that remains consistent between different soot \ninstances. It achieves this by \ndetermining the position of a local's first occurrence in the \n							instruction's list of definition statements. This \nposition is then used 							to sort the locals with the same \ntype in an ascending order. 						", defaultBool)));
+		setjbjb_lnssort_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Sort Locals", "p", "jb.lns","sort-locals", "\nFirst sorts the locals \nalphabetically by the string representation of \ntheir type. Then if there are two locals with the same \ntype, it uses the only other source \nof structurally stable information (i.e. the \ninstructions themselves) to produce an ordering for the \nlocals that remains consistent \nbetween different soot instances. It achieves \nthis by determining the position of a local's first \noccurrence in the instruction's list \nof definition statements. This position is then used \nto sort the locals with the same type in an \nascending order. ", defaultBool)));
 		
 		
 
@@ -12729,7 +12729,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jb.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, \nthose declared in the source bytecode. ", defaultBool)));
+		setjbjb_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jb.cp","only-regular-locals", "\nOnly propagate copies through \n``regular'' locals, that is, those \ndeclared in the source bytecode. ", defaultBool)));
 		
 		
 		
@@ -12745,7 +12745,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
+		setjbjb_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.cp","only-stack-locals", "\nOnly propagate copies through \nlocals that represent stack locations in \nthe original bytecode. ", defaultBool)));
 		
 		
 
@@ -12807,7 +12807,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
+		setjbjb_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.dae","only-stack-locals", "\nOnly eliminate dead assignments to \nlocals that represent stack \nlocations in the original bytecode. ", defaultBool)));
 		
 		
 
@@ -12915,7 +12915,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jb.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
+		setjbjb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jb.lp","unsplit-original-locals", "\nUse the variable names in the \noriginal source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines \nnamed locals which were split by the \nLocal Splitter. ", defaultBool)));
 		
 		
 
@@ -13023,7 +13023,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjbjb_uceremove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjbjb_uce, SWT.NONE, new OptionData("Remove unreachable traps", "p", "jb.uce","remove-unreachable-traps", "\nRemove exception table entries when none of the protected \ninstructions can throw the exception being caught. ", defaultBool)));
+		setjbjb_uceremove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjbjb_uce, SWT.NONE, new OptionData("Remove unreachable traps", "p", "jb.uce","remove-unreachable-traps", "\nRemove exception table entries when \nnone of the protected instructions can \nthrow the exception being caught. ", defaultBool)));
 		
 		
 
@@ -13093,7 +13093,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	 	
 		editGroupjj.setData("id", "jj");
 		
-		String descjj = "Creates a JimpleBody for each method directly from source";	
+		String descjj = "Creates a JimpleBody for each method directly from source\n                ";	
 		if (descjj.length() > 0) {
 			Label descLabeljj = new Label(editGroupjj, SWT.WRAP);
 			descLabeljj.setText(descjj);
@@ -13131,7 +13131,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjjuse_original_names_widget(new BooleanOptionWidget(editGroupjj, SWT.NONE, new OptionData("Use Original Names", "p", "jj","use-original-names", "\nRetain the original names for local variables when the source \nincludes those names. Otherwise, Soot gives variables generic \nnames based on their types. ", defaultBool)));
+		setjjuse_original_names_widget(new BooleanOptionWidget(editGroupjj, SWT.NONE, new OptionData("Use Original Names", "p", "jj","use-original-names", "\nRetain the original names for local \nvariables when the source includes those \nnames. Otherwise, Soot gives variables generic \nnames based on their types. ", defaultBool)));
 		
 		
 
@@ -13239,7 +13239,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjjjj_aonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_a, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.a","only-stack-locals", "\nOnly aggregate locals that represent stack locations in the \noriginal bytecode. (Stack locals can be distinguished in Jimple \nby the character with which their names begin.) ", defaultBool)));
+		setjjjj_aonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_a, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.a","only-stack-locals", "\nOnly aggregate locals that \nrepresent stack locations in the \noriginal bytecode. (Stack locals can be distinguished in Jimple \nby the \ncharacter with which their names \nbegin.) ", defaultBool)));
 		
 		
 
@@ -13393,7 +13393,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjjjj_ulpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjjjj_ulp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jj.ulp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables among non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
+		setjjjj_ulpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjjjj_ulp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jj.ulp","unsplit-original-locals", "\nUse the variable names in the \noriginal source as a guide when \ndetermining how to share local variables among non-interfering \nvariable usages. This recombines named \nlocals which were split by the Local \nSplitter. ", defaultBool)));
 		
 		
 
@@ -13455,7 +13455,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjjjj_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_lns, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.lns","only-stack-locals", "\nOnly standardizes the names of variables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option is specified for the `jb' \nphase. ", defaultBool)));
+		setjjjj_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_lns, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.lns","only-stack-locals", "\nOnly standardizes the names of \nvariables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option \nis specified for the `jb' phase. \n", defaultBool)));
 		
 		
 
@@ -13517,7 +13517,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjjjj_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jj.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, \nthose declared in the source bytecode. ", defaultBool)));
+		setjjjj_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jj.cp","only-regular-locals", "\nOnly propagate copies through \n``regular'' locals, that is, those \ndeclared in the source bytecode. ", defaultBool)));
 		
 		
 		
@@ -13533,7 +13533,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjjjj_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
+		setjjjj_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.cp","only-stack-locals", "\nOnly propagate copies through \nlocals that represent stack locations in \nthe original bytecode. ", defaultBool)));
 		
 		
 
@@ -13595,7 +13595,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjjjj_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
+		setjjjj_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.dae","only-stack-locals", "\nOnly eliminate dead assignments to \nlocals that represent stack \nlocations in the original bytecode. ", defaultBool)));
 		
 		
 
@@ -13703,7 +13703,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjjjj_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjjjj_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jj.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
+		setjjjj_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjjjj_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jj.lp","unsplit-original-locals", "\nUse the variable names in the \noriginal source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines \nnamed locals which were split by the \nLocal Splitter. ", defaultBool)));
 		
 		
 
@@ -13865,7 +13865,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	 	
 		editGroupwjppwjpp_cimbt.setData("id", "wjppwjpp_cimbt");
 		
-		String descwjppwjpp_cimbt = "Replaces base objects of calls to Method.invoke() that are string constants by locals";	
+		String descwjppwjpp_cimbt = "Replaces base objects of calls to Method.invoke() that are string constants by locals\n                    ";	
 		if (descwjppwjpp_cimbt.length() > 0) {
 			Label descLabelwjppwjpp_cimbt = new Label(editGroupwjppwjpp_cimbt, SWT.WRAP);
 			descLabelwjppwjpp_cimbt.setText(descwjppwjpp_cimbt);
@@ -14011,7 +14011,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgsafe_forname_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe forName", "p", "cg","safe-forname", "\nWhen a program calls Class.forName(), the named class is \nresolved, and its static initializer executed. In many cases, it \ncannot be determined statically which class will be loaded, and \nwhich static initializer executed. When this option is set to \ntrue, Soot will conservatively assume that any static \ninitializer could be executed. This may make the call graph very \nlarge. When this option is set to false, any calls to \nClass.forName() for which the class cannot be determined \nstatically are assumed to call no static initializers. ", defaultBool)));
+		setcgsafe_forname_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe forName", "p", "cg","safe-forname", "\nWhen a program calls Class.forName(), \nthe named class is resolved, and its static initializer \nexecuted. In many cases, it cannot be determined \nstatically which class will be loaded, \nand which static initializer executed. When this \noption is set to true, Soot will conservatively assume \nthat any static initializer could be \nexecuted. This may make the call graph very large. \nWhen this option is set to false, any calls to \nClass.forName() for which the class \ncannot be determined statically are assumed to call no \nstatic initializers. ", defaultBool)));
 		
 		
 		
@@ -14027,7 +14027,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgsafe_newinstance_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe newInstance", "p", "cg","safe-newinstance", "\nWhen a program calls Class.newInstance(), a new object is \ncreated and its constructor executed. Soot does not determine \nstatically which type of object will be created, and which \nconstructor executed. When this option is set to true, Soot will \nconservatively assume that any constructor could be executed. \nThis may make the call graph very large. When this option is set \nto false, any calls to Class.newInstance() are assumed not to \ncall the constructor of the created object. ", defaultBool)));
+		setcgsafe_newinstance_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe newInstance", "p", "cg","safe-newinstance", "\nWhen a program calls \nClass.newInstance(), a new object is created and its constructor \nexecuted. Soot does not determine \nstatically which type of object will be \ncreated, and which constructor executed. When this \noption is set to true, Soot will conservatively assume \nthat any constructor could be executed. \nThis may make the call graph very large. \nWhen this option is set to false, any calls to \nClass.newInstance() are assumed not to \ncall the constructor of the created object. ", defaultBool)));
 		
 		
 		
@@ -14043,7 +14043,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgverbose_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Verbose", "p", "cg","verbose", "\nDue to the effects of native methods and reflection, it may not \nalways be possible to construct a fully conservative call graph. \nSetting this option to true causes Soot to point out the parts \nof the call graph that may be incomplete, so that they can be \nchecked by hand. ", defaultBool)));
+		setcgverbose_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Verbose", "p", "cg","verbose", "\nDue to the effects of native methods and reflection, it may not \nalways be possible to construct a fully \nconservative call graph. Setting this option to true causes Soot \nto point out the parts of the call graph \nthat may be incomplete, so that they can be checked by hand. \n", defaultBool)));
 		
 		
 		
@@ -14059,7 +14059,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgall_reachable_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("All Application Class Methods Reachable", "p", "cg","all-reachable", "\nWhen this option is false, the call graph is built starting at a \nset of entry points, and only methods reachable from those entry \npoints are processed. Unreachable methods will not have any call \ngraph edges generated out of them. Setting this option to true \nmakes Soot consider all methods of application classes to be \nreachable, so call edges are generated for all of them. This \nleads to a larger call graph. For program visualization \npurposes, it is sometimes desirable to include edges from \nunreachable methods; although these methods are unreachable in \nthe version being analyzed, they may become reachable if the \nprogram is modified.", defaultBool)));
+		setcgall_reachable_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("All Application Class Methods Reachable", "p", "cg","all-reachable", "\nWhen this option is false, the call graph is built starting at a \nset of entry points, and only methods \nreachable from those entry points are processed. Unreachable \nmethods will not have any call graph \nedges generated out of them. Setting this option to true makes \nSoot consider all methods of application \nclasses to be reachable, so call edges are generated for all of \nthem. This leads to a larger call graph. \nFor program visualization purposes, it is sometimes desirable \nto include edges from unreachable methods; \nalthough these methods are unreachable in the version \nbeing analyzed, they may become reachable if the \nprogram is modified. ", defaultBool)));
 		
 		
 		
@@ -14075,7 +14075,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgimplicit_entry_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Implicit Entry Points", "p", "cg","implicit-entry", "\nWhen this option is true, methods that are called implicitly by \nthe VM are considered entry points of the call graph. When it is \nfalse, these methods are not considered entry points, leading to \na possibly incomplete call graph.", defaultBool)));
+		setcgimplicit_entry_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Implicit Entry Points", "p", "cg","implicit-entry", "\nWhen this option is true, methods that are called implicitly by \nthe VM are considered entry points of \nthe call graph. When it is false, these methods are not \nconsidered entry points, leading to a \npossibly incomplete call graph. ", defaultBool)));
 		
 		
 		
@@ -14091,7 +14091,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgtrim_clinit_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Trim Static Initializer Edges", "p", "cg","trim-clinit", "\nThe call graph contains an edge from each statement that could \ntrigger execution of a static initializer to that static \ninitializer. However, each static initializer is triggered only \nonce. When this option is enabled, after the call graph is \nbuilt, an intra-procedural analysis is performed to detect \nstatic initializer edges leading to methods that must have \nalready been executed. Since these static initializers cannot be \nexecuted again, the corresponding call graph edges are removed \nfrom the call graph. ", defaultBool)));
+		setcgtrim_clinit_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Trim Static Initializer Edges", "p", "cg","trim-clinit", "\nThe call graph contains an edge from \neach statement that could trigger execution of a static \ninitializer to that static initializer. \nHowever, each static initializer is triggered only once. \nWhen this option is enabled, after the call \ngraph is built, an intra-procedural \nanalysis is performed to detect static initializer edges leading \nto methods that must have already been \nexecuted. Since these static initializers cannot be \nexecuted again, the corresponding call graph edges \nare removed from the call graph. ", defaultBool)));
 		
 		
 		
@@ -14107,7 +14107,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgtypes_for_invoke_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Types for invoke", "p", "cg","types-for-invoke", "\nFor each call to Method.invoke(), use the possible types of the \nfirst receiver 								 argument and the possible types stored \nin the second argument array to resolve calls to 								 \nMethod.invoke(). This strategy makes no attempt to resolve \nreflectively invoked static methods. 								 Currently only \nworks for context insensitive pointer analyses. 								 ", defaultBool)));
+		setcgtypes_for_invoke_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Types for invoke", "p", "cg","types-for-invoke", "\nFor each call to Method.invoke(), use the possible types of the \nfirst receiver argument and the possible \ntypes stored in the second argument array to resolve calls to \nMethod.invoke(). This strategy makes no \nattempt to resolve reflectively invoked static methods. \nCurrently only works for context insensitive \npointer analyses. ", defaultBool)));
 		
 		
 		
@@ -14115,26 +14115,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Disabled",
 		"disabled",
-		"\n											Call(and pointer assignment) graph construction \ntreat the target classes as application starting from the entry \npoints. 										",
+		"\nCall(and pointer assignment) graph \nconstruction treat the target classes as application \nstarting from the entry points. \n",
 		
 		true),
 		
 		new OptionData("Any Subtype",
 		"any-subtype",
-		"\nOn library analysis \nit has to be assumed, that a possible client can call \nany method or access any field, \n											to which he has the access rights (default \npublic/protected but can be set with \nsoot.Scene#setClientAccessibilityOracle). \nIn this mode types of any accessible field, \nmethod parameter, this local, or \ncaugth exception is set to any possible sub type \n											according to the class hierachy of the target \nlibrary. 											If simulate-natives is also set, the results \nof native methods are also set to any sub type of the declared \nreturn type. 										",
+		"\nOn library analysis it has to be \nassumed, that a possible client can call \nany method or access any field, \nto which he has the access rights (default public/protected but \ncan be set with \nsoot.Scene#setClientAccessibilityOracle). \nIn this mode types of any accessible field, method \nparameter, this local, or caugth \nexception is set to any possible sub type \naccording to the class hierachy of the target library. \nIf simulate-natives is also set, the \nresults of native methods are also set to any sub type \nof the declared return type. \n",
 		
 		false),
 		
 		new OptionData("By Signature resolution",
 		"signature-resolution",
-		"\nOn library analysis \nit has to be assumed, that a possible client can call \nany method or access any field, \n											to which he has the access rights (default \npublic/protected but can be set with \nsoot.Scene#setClientAccessibilityOracle). \nIn this mode types of any accessible field, \nmethod parameter, this local, or \ncaugth exception is set to any possible sub type \naccording to a possible \nextended class hierarchy of the target library. \nWhenever any sub type of a specific \ntype is considered as \nreceiver for a method to call and the base type is an \ninterface, calls to \nexisting methods with matching signature (possible \nimplementation of \nmethod to call) are also added. As Javas' subtyping allows \ncontra-variance for return \ntypes and co-variance for parameters when \noverriding 											a method, these cases \nare also considered here. 											Example: Classes A, B (B \nsub type of A), interface I with method public A foo(B b); and a \nclass C with method public B foo(A a) { ... }. 											The \nextended class hierachy will contain C as possible \nimplementation of I. 											If simulate-natives is also \nset, the results of native methods are also set to any possible \nsub type of the declared return type. 										",
+		"\nOn library analysis it has to be \nassumed, that a possible client can call \nany method or access any field, \nto which he has the access rights (default public/protected but \ncan be set with \nsoot.Scene#setClientAccessibilityOracle). \nIn this mode types of any accessible field, method \nparameter, this local, or caugth \nexception is set to any possible sub type \naccording to a possible extended class hierarchy of the \ntarget library. Whenever any sub \ntype of a specific type is considered as \nreceiver for a method to call and the base type is an \ninterface, calls to existing methods \nwith matching signature (possible implementation \nof method to call) are also added. As Javas' \nsubtyping allows contra-variance for \nreturn types and co-variance for parameters when \noverriding a method, \nthese cases are also considered here. \nExample: Classes A, B (B sub type of A), interface I with \nmethod public A foo(B b); and a \nclass C with method public B foo(A a) { ... }. \nThe extended class hierachy will contain C as possible \nimplementation of I. If \nsimulate-natives is also set, the results of native methods are \nalso set to any possible sub type of \nthe declared return type. ",
 		
 		false),
 		
 		};
 		
 										
-		setcglibrary_widget(new MultiOptionWidget(editGroupcg, SWT.NONE, data, new OptionData("Library mode", "p", "cg","library", "\n										Specifies whether the target classes should be \ntreated as an application or a library. \nIf library mode is disabled (default), the call \ngraph construction assumes that \nthe target is an application and \nstarts the construction from the specified entry \npoints (main method by \ndefault). 										Under the assumption that the target is a \nlibrary, possible call edges might be missing in the call graph. \nThe two different \nlibrary modes add theses missing calls to the call graph and \ndiffer only in the view of \nthe class hierachy 										(hierachy of target library or \npossible extended hierachy). 										If simulate-natives is \nalso set, the results of native methods are also set to any sub \ntype of the declared return type. 									")));
+		setcglibrary_widget(new MultiOptionWidget(editGroupcg, SWT.NONE, data, new OptionData("Library mode", "p", "cg","library", "\nSpecifies whether the target classes \nshould be treated as an application or a library. \nIf library mode is disabled (default), the call graph \nconstruction assumes that the target is \nan application and starts the \nconstruction from the specified entry points (main method by \ndefault). Under the \nassumption that the target is a library, possible call edges \nmight be missing in the call graph. \nThe two different library modes add theses \nmissing calls to the call graph and \ndiffer only in the view of the class hierachy \n(hierachy of target library or possible extended hierachy). \nIf simulate-natives is also set, the \nresults of native methods are also set to any sub type of \nthe declared return type. ")));
 		
 		defKey = "p"+" "+"cg"+" "+"library";
 		defKey = defKey.trim();
@@ -14159,7 +14159,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgjdkver_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("JDK version",  "p", "cg","jdkver", "\nThis option sets the JDK version of the standard library being \nanalyzed so that Soot can simulate the native methods in the \nspecific version of the library. The default, 3, refers to Java \n1.3.x.", defaultString)));
+		setcgjdkver_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("JDK version",  "p", "cg","jdkver", "\nThis option sets the JDK version of the standard library being \nanalyzed so that Soot can simulate the \nnative methods in the specific version of the library. The \ndefault, 3, refers to Java 1.3.x. \n", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg"+" "+"reflection-log";
@@ -14174,7 +14174,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgreflection_log_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Reflection Log",  "p", "cg","reflection-log", "\nLoad a reflection log from the given file and use this log to \nresolve reflective call sites. Note that when a log is given, \nthe following other options have no effect: safe-forname, \nsafe-newinstance. ", defaultString)));
+		setcgreflection_log_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Reflection Log",  "p", "cg","reflection-log", "\nLoad a reflection log from the given \nfile and use this log to resolve reflective call sites. Note \nthat when a log is given, the following \nother options have no effect: safe-forname, \nsafe-newinstance. ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg"+" "+"guards";
@@ -14189,7 +14189,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgguards_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Guarding strategy",  "p", "cg","guards", "\nUsing a reflection log is only sound for method executions that \nwere logged. Executing the program differently may be unsound. \nSoot can insert guards at program points for which the \nreflection log contains no information. When these points are \nreached (because the program is executed differently) then the \nfollwing will happen, depending on the value of this flag. \nignore: no guard is inserted, the program executes normally but \nunder unsound assumptions. print: the program prints a stack \ntrace when reaching a porgram location that was not traced but \ncontinues to run. throw (default): \nthe program throws an Error instead. ", defaultString)));
+		setcgguards_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Guarding strategy",  "p", "cg","guards", "\nUsing a reflection log is only sound for method executions that \nwere logged. Executing the program \ndifferently may be unsound. Soot can insert guards at program \npoints for which the reflection log \ncontains no information. When these points \nare reached (because the program is executed \ndifferently) then the follwing will happen, \ndepending on the value of this flag. ignore: no guard is \ninserted, the program executes normally \nbut under unsound assumptions. print: \nthe program prints a stack trace when reaching a porgram \nlocation that was not traced but \ncontinues to run. throw (default): the \nprogram throws an Error instead. ", defaultString)));
 		
 
 		
@@ -14250,7 +14250,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_chaverbose_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("Verbose", "p", "cg.cha","verbose", "\nSetting this option to true causes Soot to print out statistics \nabout the call graph computed by this phase, such as the number \nof methods determined to be reachable.", defaultBool)));
+		setcgcg_chaverbose_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("Verbose", "p", "cg.cha","verbose", "\nSetting this option to true causes Soot to print out statistics \nabout the call graph computed by \nthis phase, such as the number of methods determined to be \nreachable. ", defaultBool)));
 		
 		
 		
@@ -14266,7 +14266,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_chaapponly_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("AppOnly", "p", "cg.cha","apponly", "\nSetting this option to true causes Soot to only consider \napplication classes when building the callgraph. The resulting \ncallgraph will be inherently unsound. Still, this option can \nmake sense if performance optimization and memory reduction are \nyour primary goal.", defaultBool)));
+		setcgcg_chaapponly_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("AppOnly", "p", "cg.cha","apponly", "\nSetting this option to true causes Soot to only consider \napplication classes when building \nthe callgraph. The resulting callgraph will be inherently \nunsound. Still, this option can make \nsense if performance optimization and memory reduction are your \nprimary goal. \n", defaultBool)));
 		
 		
 
@@ -14358,7 +14358,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkverbose_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Verbose", "p", "cg.spark","verbose", "\nWhen this option is set to true, Spark prints detailed \ninformation about its execution. ", defaultBool)));
+		setcgcg_sparkverbose_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Verbose", "p", "cg.spark","verbose", "\nWhen this option is set to \ntrue, Spark prints detailed information about its execution. \n", defaultBool)));
 		
 		
 		
@@ -14374,7 +14374,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkignore_types_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.spark","ignore-types", "\nWhen this option is set to true, all parts of Spark completely \nignore declared types of variables and casts. ", defaultBool)));
+		setcgcg_sparkignore_types_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.spark","ignore-types", "\nWhen this option is set to \ntrue, all parts of Spark completely ignore \ndeclared types of variables and casts. \n", defaultBool)));
 		
 		
 		
@@ -14390,7 +14390,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkforce_gc_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Force Garbage Collections", "p", "cg.spark","force-gc", "\nWhen this option is set to true, calls to System.gc() will be \nmade at various points to allow memory usage to be measured. \n", defaultBool)));
+		setcgcg_sparkforce_gc_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Force Garbage Collections", "p", "cg.spark","force-gc", "\nWhen this option is set to \ntrue, calls to System.gc() will be made at \nvarious points to allow memory usage to be measured. \n", defaultBool)));
 		
 		
 		
@@ -14406,7 +14406,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkpre_jimplify_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.spark","pre-jimplify", "\nWhen this option is set to true, Spark converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis. ", defaultBool)));
+		setcgcg_sparkpre_jimplify_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.spark","pre-jimplify", "\nWhen this option is set to \ntrue, Spark converts all available methods to Jimple \nbefore starting the points-to analysis. This \nallows the Jimplification time \nto be separated from the points-to time. However, it increases \nthe total time and memory \nrequirement, because all methods are Jimplified, \nrather than only those deemed reachable by the \npoints-to analysis. ", defaultBool)));
 		
 		
 		
@@ -14422,7 +14422,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkapponly_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("AppOnly", "p", "cg.spark","apponly", "\nSetting this option to true causes Soot to only consider \napplication classes when building the callgraph. The resulting \ncallgraph will be inherently unsound. Still, this option can \nmake sense if performance optimization and memory reduction are \nyour primary goal.", defaultBool)));
+		setcgcg_sparkapponly_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("AppOnly", "p", "cg.spark","apponly", "\nSetting this option to true causes Soot to only consider \napplication classes when \nbuilding the callgraph. The resulting callgraph will be \ninherently unsound. Still, this \noption can make sense if performance optimization and memory \nreduction are your primary goal. \n", defaultBool)));
 		
 		
 
@@ -14468,7 +14468,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkvta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("VTA", "p", "cg.spark","vta", "\nSetting VTA to true has the effect of setting field-based, \ntypes-for-sites, and simplify-sccs to true, and on-fly-cg to \nfalse, to simulate Variable Type Analysis, described in our \nOOPSLA 2000 paper. Note that the algorithm differs from the \noriginal VTA in that it handles array elements more precisely. \n", defaultBool)));
+		setcgcg_sparkvta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("VTA", "p", "cg.spark","vta", "\nSetting VTA to true has the \neffect of setting field-based, \ntypes-for-sites, and simplify-sccs to true, and on-fly-cg to \nfalse, to simulate Variable Type \nAnalysis, described in our \nOOPSLA 2000 paper. Note that the \nalgorithm differs from the \noriginal VTA in that it handles array \nelements more precisely. ", defaultBool)));
 		
 		
 		
@@ -14484,7 +14484,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkrta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p", "cg.spark","rta", "\nSetting RTA to true sets types-for-sites to true, and causes \nSpark to use a single points-to set for all variables, giving \nRapid Type Analysis. ", defaultBool)));
+		setcgcg_sparkrta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p", "cg.spark","rta", "\nSetting RTA to true sets \ntypes-for-sites to true, and causes Spark to use \na single points-to set for all variables, giving \nRapid Type Analysis. \n", defaultBool)));
 		
 		
 		
@@ -14500,7 +14500,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkfield_based_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p", "cg.spark","field-based", "\nWhen this option is set to true, fields are represented by \nvariable (Green) nodes, and the object that the field belongs to \nis ignored (all objects are lumped together), giving a \nfield-based analysis. Otherwise, fields are represented by field \nreference (Red) nodes, and the objects that they belong to are \ndistinguished, giving a field-sensitive analysis. ", defaultBool)));
+		setcgcg_sparkfield_based_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p", "cg.spark","field-based", "\nWhen this option is set to \ntrue, fields are represented by variable \n(Green) nodes, and the object that the field belongs to \nis ignored (all objects are \nlumped together), giving a field-based analysis. Otherwise, \nfields are represented by \nfield reference (Red) nodes, and the \nobjects that they belong to are \ndistinguished, giving a field-sensitive analysis. \n", defaultBool)));
 		
 		
 		
@@ -14516,7 +14516,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparktypes_for_sites_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p", "cg.spark","types-for-sites", "\nWhen this option is set to true, types rather than allocation \nsites are used as the elements of the points-to sets. ", defaultBool)));
+		setcgcg_sparktypes_for_sites_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p", "cg.spark","types-for-sites", "\nWhen this option is set to \ntrue, types rather than allocation sites are \nused as the elements of the points-to sets. \n", defaultBool)));
 		
 		
 		
@@ -14532,7 +14532,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkmerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.spark","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site. ", defaultBool)));
+		setcgcg_sparkmerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.spark","merge-stringbuffer", "\nWhen this option is set to \ntrue, all allocation sites creating \njava.lang.StringBuffer \nobjects are grouped together as a single \nallocation site. ", defaultBool)));
 		
 		
 		
@@ -14548,7 +14548,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkstring_constants_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Propagate All String Constants", "p", "cg.spark","string-constants", "\nWhen this option is set to false, Spark only distinguishes \nstring constants that may be the name of a class loaded \ndynamically using reflection, and all other string constants are \nlumped together into a single string constant node. Setting this \noption to true causes all string constants to be propagated \nindividually. ", defaultBool)));
+		setcgcg_sparkstring_constants_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Propagate All String Constants", "p", "cg.spark","string-constants", "\nWhen this option is set to \nfalse, Spark only distinguishes string constants that \nmay be the name of a class loaded \ndynamically using reflection, and all other \nstring constants are lumped together into a single \nstring constant node. Setting \nthis option to true causes all string constants to be propagated \nindividually. \n", defaultBool)));
 		
 		
 		
@@ -14564,7 +14564,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparksimulate_natives_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.spark","simulate-natives", "\nWhen this option is set to true, the effects of native methods \nin the standard Java class library are simulated. ", defaultBool)));
+		setcgcg_sparksimulate_natives_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.spark","simulate-natives", "\nWhen this option is set to \ntrue, the effects of native methods in the standard Java \nclass library are simulated. \n", defaultBool)));
 		
 		
 		
@@ -14580,7 +14580,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkempties_as_allocs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Treat EMPTY as Alloc", "p", "cg.spark","empties-as-allocs", "\nWhen this option is set to \ntrue, Spark treats references to \nEMPTYSET, EMPTYMAP, and EMPTYLIST as allocation sites for \nHashSet, HashMap and LinkedList objects respectively, and \nreferences to Hashtable.emptyIterator as allocation sites for \nHashtable.EmptyIterator. This enables subsequent analyses to \ndifferentiate different uses of Java's immutable empty \ncollections. ", defaultBool)));
+		setcgcg_sparkempties_as_allocs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Treat EMPTY as Alloc", "p", "cg.spark","empties-as-allocs", "\nWhen this option is set to \ntrue, Spark treats references to \nEMPTYSET, EMPTYMAP, and \nEMPTYLIST as allocation sites \nfor HashSet, HashMap and \nLinkedList objects respectively, \nand references to Hashtable.emptyIterator as \nallocation sites for Hashtable.EmptyIterator. This \nenables subsequent analyses to \ndifferentiate different uses of Java's immutable empty \ncollections. ", defaultBool)));
 		
 		
 		
@@ -14596,7 +14596,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparksimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.spark","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable \n(Green) nodes are made bidirectional, as in Steensgaard's \nanalysis. ", defaultBool)));
+		setcgcg_sparksimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.spark","simple-edges-bidirectional", "\nWhen this option is set to \ntrue, all edges connecting variable (Green) \nnodes are made bidirectional, as in \nSteensgaard's analysis. \n", defaultBool)));
 		
 		
 		
@@ -14612,7 +14612,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkon_fly_cg_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.spark","on-fly-cg", "\nWhen this option is set to true, the call graph is computed \non-the-fly as points-to information is computed. Otherwise, an \ninitial CHA approximation to the call graph is used. ", defaultBool)));
+		setcgcg_sparkon_fly_cg_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.spark","on-fly-cg", "\nWhen this option is set to \ntrue, the call graph is computed on-the-fly \nas points-to information is computed. Otherwise, an \ninitial CHA approximation to the \ncall graph is used. ", defaultBool)));
 		
 		
 
@@ -14658,7 +14658,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparksimplify_offline_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.spark","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which \nform single-entry subgraphs (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
+		setcgcg_sparksimplify_offline_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.spark","simplify-offline", "\nWhen this option is set to \ntrue, variable (Green) nodes which form \nsingle-entry subgraphs (so they must have the same \npoints-to set) are merged before \npropagation begins. ", defaultBool)));
 		
 		
 		
@@ -14674,7 +14674,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparksimplify_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.spark","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which \nform strongly-connected components (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
+		setcgcg_sparksimplify_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.spark","simplify-sccs", "\nWhen this option is set to \ntrue, variable (Green) nodes which form \nstrongly-connected components (so they must have the same \npoints-to set) are merged before \npropagation begins. ", defaultBool)));
 		
 		
 		
@@ -14690,7 +14690,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkignore_types_for_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Ignore Types For SCCs", "p", "cg.spark","ignore-types-for-sccs", "\nWhen this option is set to true, when collapsing \nstrongly-connected components, nodes forming SCCs are collapsed \nregardless of their declared type. The collapsed SCC is given \nthe most general type of all the nodes in the component. When \nthis option is set to false, only edges connecting nodes of the \nsame type are considered when detecting SCCs. This option has \nno effect unless simplify-sccs is true. ", defaultBool)));
+		setcgcg_sparkignore_types_for_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Ignore Types For SCCs", "p", "cg.spark","ignore-types-for-sccs", "\nWhen this option is set to \ntrue, when collapsing strongly-connected \ncomponents, nodes forming SCCs are collapsed regardless \nof their declared type. The \ncollapsed SCC is given the most general type of all the nodes in \nthe component. \nWhen this option is set to false, only edges \nconnecting nodes of the same \ntype are considered when detecting SCCs. \nThis option has no effect unless simplify-sccs is true. \n", defaultBool)));
 		
 		
 
@@ -14728,44 +14728,44 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Iter",
 		"iter",
-		"\nIter is a simple, iterative algorithm, which propagates \neverything until the graph does not change. ",
+		"\nIter is a simple, iterative \nalgorithm, which propagates everything until the \ngraph does not change. \n",
 		
 		false),
 		
 		new OptionData("Worklist",
 		"worklist",
-		"\nWorklist is a worklist-based algorithm that tries to do as \nlittle work as possible. This is currently the fastest \nalgorithm. ",
+		"\nWorklist is a \nworklist-based algorithm that tries \nto do as little work as possible. This is currently the \nfastest algorithm. ",
 		
 		true),
 		
 		new OptionData("Cycle",
 		"cycle",
-		"\nThis algorithm finds cycles in the PAG on-the-fly. It is not yet \nfinished.",
+		"\nThis algorithm finds cycles in the PAG on-the-fly. It is not yet \nfinished. ",
 		
 		false),
 		
 		new OptionData("Merge",
 		"merge",
-		"\nMerge is an algorithm that merges all concrete field (yellow) \nnodes with their corresponding field reference (red) nodes. This \nalgorithm is not yet finished. ",
+		"\nMerge is an algorithm that \nmerges all concrete field (yellow) nodes with their \ncorresponding \nfield reference (red) nodes. This algorithm is not yet \nfinished. ",
 		
 		false),
 		
 		new OptionData("Alias",
 		"alias",
-		"\nAlias is an alias-edge based algorithm. This algorithm tends to \ntake the least memory for very large problems, because it does \nnot represent explicitly points-to sets of fields of heap \nobjects. ",
+		"\nAlias is an alias-edge \nbased algorithm. This algorithm tends to take \nthe least memory for very large problems, \nbecause it does not represent \nexplicitly points-to sets of fields of heap objects. \n",
 		
 		false),
 		
 		new OptionData("None",
 		"none",
-		"\nNone means that propagation is not done; the graph is only \nbuilt and simplified. This is useful if an external solver is \nbeing used to perform the propagation. ",
+		"\nNone means that propagation \nis not done; the graph is only built and \nsimplified. This is useful if an external solver is \nbeing used to perform the \npropagation. ",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_sparkpropagator_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Propagator", "p", "cg.spark","propagator", "\nThis option tells Spark which propagation algorithm to use. \n")));
+		setcgcg_sparkpropagator_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Propagator", "p", "cg.spark","propagator", "\nThis option tells Spark which \npropagation algorithm to use. ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"propagator";
 		defKey = defKey.trim();
@@ -14782,50 +14782,50 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Hash set",
 		"hash",
-		"\nHash is an implementation based on Java's built-in hash-set. ",
+		"\nHash is an implementation \nbased on Java's built-in hash-set. \n",
 		
 		false),
 		
 		new OptionData("Bit-vector",
 		"bit",
-		"\nBit is an implementation using a bit vector. ",
+		"\nBit is an implementation \nusing a bit vector. ",
 		
 		false),
 		
 		new OptionData("Hybrid",
 		"hybrid",
-		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
+		"\nHybrid is an implementation \nthat keeps an explicit list of up to \n16 elements, and switches to a bit-vector when the set \ngets larger than this. \n",
 		
 		false),
 		
 		new OptionData("Sorted array",
 		"array",
-		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
+		"\nArray is an implementation \nthat keeps the elements of the \npoints-to set in a sorted array. Set membership is tested \nusing binary search, and set \nunion and intersection are computed using \nan algorithm based on the merge step from merge \nsort. ",
 		
 		false),
 		
 		new OptionData("Heintze",
 		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small \n'overflow' list of some maximum number of elements. The \nbit-vectors can be shared by \nmultiple points-to sets, while the overflow lists are not. \n",
 		
 		false),
 		
 		new OptionData("Shared List",
 		"sharedlist",
-		"\nShared List stores its elements in a linked list, and might \nshare 									its tail with other similar points-to sets. \n								",
+		"\nShared List stores its elements in a linked list, and might \nshare its tail with other \nsimilar points-to sets. ",
 		
 		false),
 		
 		new OptionData("Double",
 		"double",
-		"\nDouble is an implementation that itself uses a pair of sets for \neach points-to set. The first set in the pair stores new \npointed-to objects that have not yet been propagated, while the \nsecond set stores old pointed-to objects that have been \npropagated and need not be reconsidered. This allows the \npropagation algorithms to be incremental, often speeding them up \nsignificantly. ",
+		"\nDouble is an implementation \nthat itself uses a pair of sets for \neach points-to set. The first set in the pair stores new \npointed-to objects that have \nnot yet been propagated, while the second set stores \nold pointed-to objects that have been \npropagated and need not be \nreconsidered. This allows the propagation algorithms to be \nincremental, often speeding \nthem up significantly. ",
 		
 		true),
 		
 		};
 		
 										
-		setcgcg_sparkset_impl_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.spark","set-impl", "\nSelect an implementation of points-to sets for Spark to use. ")));
+		setcgcg_sparkset_impl_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.spark","set-impl", "\nSelect an implementation of \npoints-to sets for Spark to use. ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"set-impl";
 		defKey = defKey.trim();
@@ -14842,44 +14842,44 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Hash set",
 		"hash",
-		"\nHash is an implementation based on Java's built-in hash-set. ",
+		"\nHash is an implementation \nbased on Java's built-in hash-set. \n",
 		
 		false),
 		
 		new OptionData("Bit-vector",
 		"bit",
-		"\nBit is an implementation using a bit vector. ",
+		"\nBit is an implementation \nusing a bit vector. ",
 		
 		false),
 		
 		new OptionData("Hybrid",
 		"hybrid",
-		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
+		"\nHybrid is an implementation \nthat keeps an explicit list of up to \n16 elements, and switches to a bit-vector when the set \ngets larger than this. \n",
 		
 		true),
 		
 		new OptionData("Sorted array",
 		"array",
-		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
+		"\nArray is an implementation \nthat keeps the elements of the \npoints-to set in a sorted array. Set membership is tested \nusing binary search, and set \nunion and intersection are computed using \nan algorithm based on the merge step from merge \nsort. ",
 		
 		false),
 		
 		new OptionData("Heintze",
 		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small \n'overflow' list of some maximum number of elements. The \nbit-vectors can be shared by \nmultiple points-to sets, while the overflow lists are not. \n",
 		
 		false),
 		
 		new OptionData("Shared List",
 		"sharedlist",
-		"\nShared List stores its elements in a linked list, and might \nshare 									its tail with other similar points-to sets. \n								",
+		"\nShared List stores its elements in a linked list, and might \nshare its tail with other \nsimilar points-to sets. ",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_sparkdouble_set_old_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.spark","double-set-old", "\nSelect an implementation for sets of old objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double. ")));
+		setcgcg_sparkdouble_set_old_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.spark","double-set-old", "\nSelect an implementation for \nsets of old objects in the double \npoints-to set implementation. \nThis option has no effect unless Set Implementation is set to \ndouble. ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"double-set-old";
 		defKey = defKey.trim();
@@ -14896,44 +14896,44 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Hash set",
 		"hash",
-		"\nHash is an implementation based on Java's built-in hash-set. ",
+		"\nHash is an implementation \nbased on Java's built-in hash-set. \n",
 		
 		false),
 		
 		new OptionData("Bit-vector",
 		"bit",
-		"\nBit is an implementation using a bit vector. ",
+		"\nBit is an implementation \nusing a bit vector. ",
 		
 		false),
 		
 		new OptionData("Hybrid",
 		"hybrid",
-		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
+		"\nHybrid is an implementation \nthat keeps an explicit list of up to \n16 elements, and switches to a bit-vector when the set \ngets larger than this. \n",
 		
 		true),
 		
 		new OptionData("Sorted array",
 		"array",
-		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
+		"\nArray is an implementation \nthat keeps the elements of the \npoints-to set in a sorted array. Set membership is tested \nusing binary search, and set \nunion and intersection are computed using \nan algorithm based on the merge step from merge \nsort. ",
 		
 		false),
 		
 		new OptionData("Heintze",
 		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small \n'overflow' list of some maximum number of elements. The \nbit-vectors can be shared by \nmultiple points-to sets, while the overflow lists are not. \n",
 		
 		false),
 		
 		new OptionData("Shared List",
 		"sharedlist",
-		"\nShared List stores its elements in a linked list, and might \nshare 									its tail with other similar points-to sets. \n								",
+		"\nShared List stores its elements in a linked list, and might \nshare its tail with other \nsimilar points-to sets. ",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_sparkdouble_set_new_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.spark","double-set-new", "\nSelect an implementation for sets of new objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double. ")));
+		setcgcg_sparkdouble_set_new_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.spark","double-set-new", "\nSelect an implementation for \nsets of new objects in the double \npoints-to set implementation. \nThis option has no effect unless Set Implementation is set to \ndouble. ")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"double-set-new";
 		defKey = defKey.trim();
@@ -14988,7 +14988,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkdump_html_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump HTML", "p", "cg.spark","dump-html", "\nWhen this option is set to true, a browseable HTML \nrepresentation of the pointer assignment graph is output to a \nfile called pag.jar after the analysis completes. Note that this \nrepresentation is typically very large. ", defaultBool)));
+		setcgcg_sparkdump_html_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump HTML", "p", "cg.spark","dump-html", "\nWhen this option is set to \ntrue, a browseable HTML representation of the \npointer assignment graph is output to a file called \npag.jar after the analysis \ncompletes. Note that this \nrepresentation is typically very large. \n", defaultBool)));
 		
 		
 		
@@ -15004,7 +15004,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkdump_pag_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump PAG", "p", "cg.spark","dump-pag", "\nWhen this option is set to true, a representation of the \npointer assignment graph suitable for processing with other \nsolvers (such as the BDD-based solver) is output before the \nanalysis begins. ", defaultBool)));
+		setcgcg_sparkdump_pag_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump PAG", "p", "cg.spark","dump-pag", "\nWhen this option is set to \ntrue, a representation of the pointer assignment graph \nsuitable for processing with other solvers \n(such as the BDD-based solver) is \noutput before the analysis begins. ", defaultBool)));
 		
 		
 		
@@ -15020,7 +15020,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkdump_solution_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Solution", "p", "cg.spark","dump-solution", "\nWhen this option is set to true, a representation of the \nresulting points-to sets is dumped. The format is similar to \nthat of the Dump PAG option, and is therefore suitable for \ncomparison with the results of other solvers. ", defaultBool)));
+		setcgcg_sparkdump_solution_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Solution", "p", "cg.spark","dump-solution", "\nWhen this option is set to \ntrue, a representation of the resulting points-to \nsets is dumped. The format is similar to that \nof the Dump PAG option, and is \ntherefore suitable for comparison with the results of other \nsolvers. ", defaultBool)));
 		
 		
 		
@@ -15036,7 +15036,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparktopo_sort_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Topological Sort", "p", "cg.spark","topo-sort", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option is dumped with the variable (green) nodes in \n(pseudo-)topological order. This option has no effect unless \nDump PAG is true. ", defaultBool)));
+		setcgcg_sparktopo_sort_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Topological Sort", "p", "cg.spark","topo-sort", "\nWhen this option is set to \ntrue, the representation dumped by the \nDump PAG option is dumped \nwith the variable (green) nodes in (pseudo-)topological order. \nThis option has no effect unless \nDump PAG is true. ", defaultBool)));
 		
 		
 		
@@ -15052,7 +15052,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkdump_types_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Types", "p", "cg.spark","dump-types", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option includes type information for all nodes. \nThis option has no effect unless Dump PAG is true. ", defaultBool)));
+		setcgcg_sparkdump_types_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Types", "p", "cg.spark","dump-types", "\nWhen this option is set to \ntrue, the representation dumped by the \nDump PAG option includes \ntype information for all nodes. \nThis option has no effect unless Dump PAG is true. \n", defaultBool)));
 		
 		
 		
@@ -15068,7 +15068,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkclass_method_var_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Class Method Var", "p", "cg.spark","class-method-var", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option represents nodes by numbering each class, \nmethod, and variable within the method separately, rather than \nassigning a single integer to each node. This option has no \neffect unless Dump PAG is true. Setting Class Method Var to \ntrue has the effect of setting Topological Sort to false. \n", defaultBool)));
+		setcgcg_sparkclass_method_var_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Class Method Var", "p", "cg.spark","class-method-var", "\nWhen this option is set to \ntrue, the representation dumped by the \nDump PAG option represents \nnodes by numbering each class, method, and variable within \nthe method separately, rather than \nassigning a single integer to each \nnode. This option has no \neffect unless Dump PAG is true. Setting Class \nMethod Var to true has the effect of setting \nTopological Sort to false. \n", defaultBool)));
 		
 		
 		
@@ -15084,7 +15084,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkdump_answer_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Answer", "p", "cg.spark","dump-answer", "\nWhen this option is set to true, the computed reaching types \nfor each variable are dumped to a file, so that they can be \ncompared with the results of other analyses (such as the old \nVTA). ", defaultBool)));
+		setcgcg_sparkdump_answer_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Answer", "p", "cg.spark","dump-answer", "\nWhen this option is set to \ntrue, the computed reaching types for each variable are \ndumped to a file, so that they can be \ncompared with the results of \nother analyses (such as the old VTA). \n", defaultBool)));
 		
 		
 		
@@ -15100,7 +15100,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkadd_tags_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Add Tags", "p", "cg.spark","add-tags", "\nWhen this option is set to true, the results of the \nanalysis are encoded within tags and printed with the resulting \nJimple code. ", defaultBool)));
+		setcgcg_sparkadd_tags_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Add Tags", "p", "cg.spark","add-tags", "\nWhen this option is set to \ntrue, the results of the analysis are encoded within \ntags and printed with the resulting Jimple \ncode. ", defaultBool)));
 		
 		
 		
@@ -15116,7 +15116,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkset_mass_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p", "cg.spark","set-mass", "\nWhen this option is set to true, Spark computes and prints \nvarious cryptic statistics about the size of the points-to sets \ncomputed. ", defaultBool)));
+		setcgcg_sparkset_mass_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p", "cg.spark","set-mass", "\nWhen this option is set to \ntrue, Spark computes and prints various \ncryptic statistics about the size of the points-to sets \ncomputed. ", defaultBool)));
 		
 		
 
@@ -15162,7 +15162,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkcs_demand_widget(new BooleanOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Demand-driven refinement-based context-sensitive points-to analysis", "p", "cg.spark","cs-demand", "\nWhen this option is set to true, Manu Sridharan's \ndemand-driven, refinement-based points-to analysis (PLDI 06) is \napplied after Spark was run. 					", defaultBool)));
+		setcgcg_sparkcs_demand_widget(new BooleanOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Demand-driven refinement-based context-sensitive points-to analysis", "p", "cg.spark","cs-demand", "\nWhen this option is set to \ntrue, Manu Sridharan's demand-driven, \nrefinement-based points-to analysis (PLDI 06) is applied \nafter Spark was run. \n", defaultBool)));
 		
 		
 		
@@ -15178,7 +15178,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparklazy_pts_widget(new BooleanOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Create lazy points-to sets", "p", "cg.spark","lazy-pts", "\nWhen this option is disabled, context information is computed \nfor every query to the reachingObjects method. When it is \nenabled, a call to reachingObjects returns a lazy wrapper object \nthat contains a context-insensitive points-to set. This set is \nthen automatically refined with context information when \nnecessary, i.e. when we try to determine the intersection with \nanother points-to set and this intersection seems to be \nnon-empty. 					", defaultBool)));
+		setcgcg_sparklazy_pts_widget(new BooleanOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Create lazy points-to sets", "p", "cg.spark","lazy-pts", "\nWhen this option is disabled, \ncontext information is computed for every query to the \nreachingObjects method. \nWhen it is enabled, a call to reachingObjects \nreturns a lazy wrapper object that \ncontains a context-insensitive \npoints-to set. This set is then automatically refined with \ncontext information when \nnecessary, i.e. when we try to \ndetermine the intersection with another points-to set and this \nintersection seems to be \nnon-empty. ", defaultBool)));
 		
 		
 		
@@ -15194,7 +15194,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparktraversal_widget(new StringOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Maximal traversal",  "p", "cg.spark","traversal", "\nMake the analysis traverse at most this number of nodes per \nquery. This quota is evenly shared between multiple passes (see \nnext option). 					", defaultString)));
+		setcgcg_sparktraversal_widget(new StringOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Maximal traversal",  "p", "cg.spark","traversal", "\nMake the analysis traverse at \nmost this number of nodes per query. \nThis quota is evenly shared between multiple passes (see \nnext option). ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"passes";
@@ -15209,7 +15209,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkpasses_widget(new StringOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Maximal number of passes",  "p", "cg.spark","passes", "\nPerform at most this number of refinement iterations. Each \niteration traverses at most ( traverse / passes ) nodes. \n					", defaultString)));
+		setcgcg_sparkpasses_widget(new StringOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Maximal number of passes",  "p", "cg.spark","passes", "\nPerform at most this number of \nrefinement iterations. Each \niteration traverses at most ( traverse / passes ) nodes. \n", defaultString)));
 		
 
 		
@@ -15254,7 +15254,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_pta_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Geometric, context-sensitive points-to analysis", "p", "cg.spark","geom-pta", "\n						 This switch enables/disables the geometric analysis. \n						 ", defaultBool)));
+		setcgcg_sparkgeom_pta_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Geometric, context-sensitive points-to analysis", "p", "cg.spark","geom-pta", "\nThis switch enables/disables \nthe geometric analysis. ", defaultBool)));
 		
 		
 		
@@ -15270,7 +15270,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_trans_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Transform to context-insensitive result", "p", "cg.spark","geom-trans", "\n						 If you stick to working with SPARK, you can use this \noption to transform the context sensitive result to insensitive \nresult. After the transformation, the context sensitive \npoints-to quries cannot be answered. 						 ", defaultBool)));
+		setcgcg_sparkgeom_trans_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Transform to context-insensitive result", "p", "cg.spark","geom-trans", "\nIf you stick to working with \nSPARK, you can use this option to transform the context \nsensitive result to insensitive result. \nAfter the transformation, the context sensitive \npoints-to quries cannot be answered. \n", defaultBool)));
 		
 		
 		
@@ -15286,7 +15286,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_blocking_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Blocking strategy for recursive calls", "p", "cg.spark","geom-blocking", "\n						 Blocking strategy is a 1CFA model for recursive \ncalls. This model significantly improves the precision. 						 ", defaultBool)));
+		setcgcg_sparkgeom_blocking_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Blocking strategy for recursive calls", "p", "cg.spark","geom-blocking", "\nBlocking strategy is a 1CFA \nmodel for recursive calls. This model significantly improves \nthe precision. \n", defaultBool)));
 		
 		
 		
@@ -15302,7 +15302,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_app_only_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Pointers processed by geomPTA", "p", "cg.spark","geom-app-only", "\n						 When this option is true, geomPTA only processes the \npointers in library functions ( java.*, sun.*, and etc.) that \npotentially impact the points-to information of pointers in \napplication code, the pointers in application code, and the base \npointers at virtual callsites. 						 ", defaultBool)));
+		setcgcg_sparkgeom_app_only_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Pointers processed by geomPTA", "p", "cg.spark","geom-app-only", "\nWhen this option is true, \ngeomPTA only processes the pointers in library functions ( \njava.*, sun.*, and etc.) that \npotentially impact the points-to information of pointers \nin application code, the pointers in \napplication code, and the base pointers at virtual \ncallsites. ", defaultBool)));
 		
 		
 		
@@ -15310,26 +15310,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Geometric",
 		"Geom",
-		"\n						 Geometric Encoding. 						 ",
+		"\nGeometric Encoding. \n",
 		
 		true),
 		
 		new OptionData("Heap Insensitive",
 		"HeapIns",
-		"\n						 Heap Insensitive Encoding. Omit the heap context \nrange term in the encoded representation, and in turn, we assume \nall the contexts for this heap object are used. 						 ",
+		"\nHeap Insensitive Encoding. \nOmit the heap context range term in the encoded \nrepresentation, and in turn, we assume all \nthe contexts for this heap object are \nused. ",
 		
 		false),
 		
 		new OptionData("Pointer Insensitive",
 		"PtIns",
-		"\n						 Pointer Insensitive Encoding. Similar to HeapIns, \nbut we omit the pointer context range term. 						 ",
+		"\nPointer Insensitive \nEncoding. Similar to HeapIns, but we omit the pointer context \nrange term. \n",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_sparkgeom_encoding_widget(new MultiOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, data, new OptionData("Encoding methodology used", "p", "cg.spark","geom-encoding", "\nThis switch specifies the \nencoding methodology used in the analysis. 						 All \npossible options are: Geom, HeapIns, PtIns. The efficiency order \n						 is (from slow to fast) Geom - HeapIns - PtIns, but the \nprecision order is 						 the reverse. \n")));
+		setcgcg_sparkgeom_encoding_widget(new MultiOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, data, new OptionData("Encoding methodology used", "p", "cg.spark","geom-encoding", "\nThis switch specifies the \nencoding methodology used in the analysis. \nAll possible options are: Geom, HeapIns, PtIns. The \nefficiency order is (from slow \nto fast) Geom - HeapIns - PtIns, but the precision order is \nthe reverse. \n")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-encoding";
 		defKey = defKey.trim();
@@ -15346,20 +15346,20 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Priority Queue",
 		"PQ",
-		"\n						 Priority Queue (sorted by the last fire time and \ntopology order) 						 ",
+		"\nPriority Queue (sorted by \nthe last fire time and topology order) \n",
 		
 		true),
 		
 		new OptionData("FIFO Queue",
 		"FIFO",
-		"\n						 FIFO Queue 						 ",
+		"\nFIFO Queue \n",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_sparkgeom_worklist_widget(new MultiOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, data, new OptionData("Worklist type", "p", "cg.spark","geom-worklist", "\n						 Specifies the worklist used for selecting the next \npropagation pointer. All possible options are: PQ, FIFO. They \nstand for the priority queue (sorted by the last fire time and \ntopology order) and FIFO queue. ")));
+		setcgcg_sparkgeom_worklist_widget(new MultiOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, data, new OptionData("Worklist type", "p", "cg.spark","geom-worklist", "\nSpecifies the worklist used for \nselecting the next propagation pointer. All possible \noptions are: PQ, FIFO. They stand for the \npriority queue (sorted by the last fire time \nand topology order) and FIFO queue. \n")));
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-worklist";
 		defKey = defKey.trim();
@@ -15384,7 +15384,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_dump_verbose_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verbose dump file",  "p", "cg.spark","geom-dump-verbose", "\n						 If you want to save the geomPTA analysis information \nfor future analysis, please provide a file name. 						 ", defaultString)));
+		setcgcg_sparkgeom_dump_verbose_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verbose dump file",  "p", "cg.spark","geom-dump-verbose", "\nIf you want to save the geomPTA \nanalysis information for future analysis, please provide \na file name. \n", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-verify-name";
@@ -15399,7 +15399,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_verify_name_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verification file",  "p", "cg.spark","geom-verify-name", "\n						 If you want to compare the precision of the points-to \nresults with other solvers (e.g. Paddle), you can use the \n'verify-file' to specify the list of methods (soot method \nsignature format) that are reachable by that solver. During the \ninternal evaluations (see the option geom-eval), we only \nconsider the methods that are common to both solvers. 						 ", defaultString)));
+		setcgcg_sparkgeom_verify_name_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verification file",  "p", "cg.spark","geom-verify-name", "\nIf you want to compare the \nprecision of the points-to results with other solvers (e.g. \nPaddle), you can use the \n'verify-file' to specify the list of methods (soot method \nsignature format) that are reachable by \nthat solver. During the internal evaluations \n(see the option geom-eval), we only consider the \nmethods that are common to both \nsolvers. ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-eval";
@@ -15414,7 +15414,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_eval_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Precision evaluation methodologies",  "p", "cg.spark","geom-eval", "\n						 We internally provide some precision evaluation \nmethodologies and classify the evaluation strength into three \nlevels. If level is 0, we do nothing. If level is 1, we report \nthe statistical information about the points-to result. If level \nis 2, we perform the virtual callsite resolution, static cast \nsafety and all-pairs alias evaluations. 						 ", defaultString)));
+		setcgcg_sparkgeom_eval_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Precision evaluation methodologies",  "p", "cg.spark","geom-eval", "\nWe internally provide some \nprecision evaluation methodologies and classify the \nevaluation strength into three levels. If \nlevel is 0, we do nothing. If level is 1, we \nreport the statistical information about the \npoints-to result. If level is 2, we perform \nthe virtual callsite resolution, static cast safety \nand all-pairs alias evaluations. ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-frac-base";
@@ -15429,7 +15429,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_frac_base_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Fractional parameter",  "p", "cg.spark","geom-frac-base", "\n						 This option specifies the fractional parameter, which \nmanually balances the precision and the performance. Smaller \nvalue means better performance and worse precision. 						 ", defaultString)));
+		setcgcg_sparkgeom_frac_base_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Fractional parameter",  "p", "cg.spark","geom-frac-base", "\nThis option specifies the \nfractional parameter, which manually balances the precision \nand the performance. Smaller value \nmeans better performance and worse precision. \n", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.spark"+" "+"geom-runs";
@@ -15444,7 +15444,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_sparkgeom_runs_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Iterations",  "p", "cg.spark","geom-runs", "\n						 We can run multiple times of the geometric analysis \nto continuously improve the analysis precision. 						 ", defaultString)));
+		setcgcg_sparkgeom_runs_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Iterations",  "p", "cg.spark","geom-runs", "\nWe can run multiple times of \nthe geometric analysis to continuously improve the analysis \nprecision. \n", defaultString)));
 		
 
 		
@@ -15535,7 +15535,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddleverbose_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Verbose", "p", "cg.paddle","verbose", "\nWhen this option is set to true, Paddle prints detailed \ninformation about its execution. ", defaultBool)));
+		setcgcg_paddleverbose_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Verbose", "p", "cg.paddle","verbose", "\nWhen this option is set to \ntrue, Paddle prints detailed information about its execution. \n", defaultBool)));
 		
 		
 		
@@ -15551,7 +15551,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlebdd_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Use BDDs", "p", "cg.paddle","bdd", "\nCauses \nPaddle to use BDD versions of its components ", defaultBool)));
+		setcgcg_paddlebdd_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Use BDDs", "p", "cg.paddle","bdd", "\nCauses Paddle to use BDD \nversions of its components ", defaultBool)));
 		
 		
 		
@@ -15567,7 +15567,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddledynamic_order_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Dynamic reordering", "p", "cg.paddle","dynamic-order", "\nAllows the BDD package \nto perform dynamic variable ordering. ", defaultBool)));
+		setcgcg_paddledynamic_order_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Dynamic reordering", "p", "cg.paddle","dynamic-order", "\nAllows the BDD package to \nperform dynamic variable ordering. ", defaultBool)));
 		
 		
 		
@@ -15583,7 +15583,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddleprofile_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Profile", "p", "cg.paddle","profile", "\nTurns on JeddProfiler for profiling BDD operations. ", defaultBool)));
+		setcgcg_paddleprofile_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Profile", "p", "cg.paddle","profile", "\nTurns on JeddProfiler for \nprofiling BDD operations. ", defaultBool)));
 		
 		
 		
@@ -15599,7 +15599,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddleverbosegc_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Verbose GC", "p", "cg.paddle","verbosegc", "\nPrint memory usage at each BDD garbage collection. ", defaultBool)));
+		setcgcg_paddleverbosegc_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Verbose GC", "p", "cg.paddle","verbosegc", "\nPrint memory usage at each BDD \ngarbage collection. ", defaultBool)));
 		
 		
 		
@@ -15615,7 +15615,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddleignore_types_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.paddle","ignore-types", "\nWhen this option is set to true, all parts of Paddle completely \nignore declared types of variables and casts. ", defaultBool)));
+		setcgcg_paddleignore_types_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.paddle","ignore-types", "\nWhen this option is set to \ntrue, all parts of Paddle completely ignore \ndeclared types of variables and casts. \n", defaultBool)));
 		
 		
 		
@@ -15631,7 +15631,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlepre_jimplify_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.paddle","pre-jimplify", "\nWhen this option is set to true, Paddle converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis. ", defaultBool)));
+		setcgcg_paddlepre_jimplify_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.paddle","pre-jimplify", "\nWhen this option is set to \ntrue, Paddle converts all available methods to Jimple \nbefore starting the points-to analysis. \nThis allows the Jimplification \ntime to be separated from the points-to time. However, it \nincreases the total time and \nmemory requirement, because all methods are Jimplified, \nrather than only those deemed reachable \nby the points-to analysis. ", defaultBool)));
 		
 		
 		
@@ -15639,56 +15639,56 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("On-the fly call graph",
 		"ofcg",
-		"\nPerforms points-to analysis and builds call graph together, \non-the-fly. ",
+		"\nPerforms points-to analysis \nand builds call graph together, on-the-fly. \n",
 		
 		true),
 		
 		new OptionData("CHA only",
 		"cha",
-		"\nBuilds only a call graph using Class Hieararchy Analysis, and \nperforms no points-to analysis. ",
+		"\nBuilds only a call graph \nusing Class Hieararchy Analysis, and performs no \npoints-to analysis. \n",
 		
 		false),
 		
 		new OptionData("CHA ahead-of-time call graph",
 		"cha-aot",
-		"\nFirst builds a call graph using CHA, then uses the call graph \nin a fixed-call-graph points-to analysis. ",
+		"\nFirst builds a call graph \nusing CHA, then uses the call graph in a fixed-call-graph \npoints-to analysis. \n",
 		
 		false),
 		
 		new OptionData("OFCG-AOT",
 		"ofcg-aot",
-		"\nFirst builds a call graph on-the-fly during a points-to \nanalysis, then uses the resulting call graph to perform a second \npoints-to analysis with a fixed call graph. ",
+		"\nFirst builds a call graph \non-the-fly during a points-to analysis, then \nuses the resulting call graph to perform a \nsecond points-to analysis \nwith a fixed call graph. ",
 		
 		false),
 		
 		new OptionData("CHA-Context-AOT call graph",
 		"cha-context-aot",
-		"\nFirst builds a call graph using CHA, then makes it \ncontext-sensitive using the technique described by Calman and \nZhu in PLDI 04, then uses the call graph in a fixed-call-graph \npoints-to analysis. ",
+		"\nFirst builds a call graph \nusing CHA, then makes it context-sensitive using \nthe technique described by Calman and Zhu in \nPLDI 04, then uses the call \ngraph in a fixed-call-graph points-to analysis. \n",
 		
 		false),
 		
 		new OptionData("OFCG-Context-AOT",
 		"ofcg-context-aot",
-		"\nFirst builds a call graph on-the-fly during a points-to \nanalysis, then makes it context-sensitive using the technique \ndescribed by Calman and Zhu in PLDI 04, then uses the resulting \ncall graph to perform a second points-to analysis with a fixed \ncall graph. ",
+		"\nFirst builds a call graph \non-the-fly during a points-to analysis, then \nmakes it context-sensitive using the technique \ndescribed by Calman and Zhu \nin PLDI 04, then uses the resulting call graph to perform a \nsecond points-to analysis \nwith a fixed call graph. ",
 		
 		false),
 		
 		new OptionData("CHA-Context call graph",
 		"cha-context",
-		"\nFirst builds a call graph using CHA, then makes it \ncontext-sensitive using the technique described by Calman and \nZhu in PLDI 04. Does not produce points-to information. ",
+		"\nFirst builds a call graph \nusing CHA, then makes it context-sensitive using \nthe technique described by Calman and Zhu in \nPLDI 04. Does not produce \npoints-to information. ",
 		
 		false),
 		
 		new OptionData("OFCG-Context",
 		"ofcg-context",
-		"\nFirst builds a call graph on-the-fly during a points-to \nanalysis, then makes it context-sensitive using the technique \ndescribed by Calman and Zhu in PLDI 04. Does not perform a \nsubsequent points-to analysis. ",
+		"\nFirst builds a call graph \non-the-fly during a points-to analysis, then \nmakes it context-sensitive using the technique \ndescribed by Calman and Zhu \nin PLDI 04. Does not perform a subsequent points-to analysis. \n",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_paddleconf_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Configuration", "p", "cg.paddle","conf", "\nSelects the configuration of points-to analysis and call graph \nconstruction to be used in Paddle. ")));
+		setcgcg_paddleconf_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Configuration", "p", "cg.paddle","conf", "\nSelects the configuration of \npoints-to analysis and call graph construction \nto be used in Paddle. ")));
 		
 		defKey = "p"+" "+"cg.paddle"+" "+"conf";
 		defKey = defKey.trim();
@@ -15705,44 +15705,44 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Select Automatically",
 		"auto",
-		"\nWhen the bdd option is true, the BDD-based worklist \nimplementation will be used. When the bdd option is false, the \nTraditional worklist implementation will be used. ",
+		"\nWhen the bdd option is \ntrue, the BDD-based worklist implementation will be used. \nWhen the bdd option is false, the \nTraditional worklist implementation will be used. \n",
 		
 		true),
 		
 		new OptionData("Traditional",
 		"trad",
-		"\nNormal worklist queue implementation ",
+		"\nNormal worklist queue \nimplementation ",
 		
 		false),
 		
 		new OptionData("BDD",
 		"bdd",
-		"\nBDD-based queue implementation ",
+		"\nBDD-based queue \nimplementation ",
 		
 		false),
 		
 		new OptionData("Debug",
 		"debug",
-		"\nAn implementation of worklists that includes both traditional \nand BDD-based implementations, and signals an error whenever \ntheir contents differ. ",
+		"\nAn implementation of \nworklists that includes both traditional and BDD-based \nimplementations, and signals an error \nwhenever their contents differ. ",
 		
 		false),
 		
 		new OptionData("Trace",
 		"trace",
-		"\nA worklist implementation that prints out all tuples added to \nevery worklist. ",
+		"\nA worklist implementation \nthat prints out all tuples added to every worklist. \n",
 		
 		false),
 		
 		new OptionData("Number Trace",
 		"numtrace",
-		"\nA worklist implementation that prints out the number of tuples \nadded to each worklist after each operation. ",
+		"\nA worklist implementation \nthat prints out the number of tuples added to \neach worklist after each operation. \n",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_paddleq_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Worklist Implementation", "p", "cg.paddle","q", "\nSelect the implementation of worklists to be used in Paddle. \n")));
+		setcgcg_paddleq_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Worklist Implementation", "p", "cg.paddle","q", "\nSelect the implementation of \nworklists to be used in Paddle. ")));
 		
 		defKey = "p"+" "+"cg.paddle"+" "+"q";
 		defKey = defKey.trim();
@@ -15759,19 +15759,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Select Automatically",
 		"auto",
-		"\nWhen the bdd option is true, the BuDDy backend will be used. \nWhen the bdd option is false, the backend will be set to none, \nto avoid loading any BDD backend. ",
+		"\nWhen the bdd option is \ntrue, the BuDDy backend will be used. \nWhen the bdd option is false, the backend will be set \nto none, to avoid loading \nany BDD backend. ",
 		
 		true),
 		
 		new OptionData("BuDDy",
 		"buddy",
-		"\nUse BuDDy implementation of BDDs. ",
+		"\nUse BuDDy implementation of \nBDDs. ",
 		
 		false),
 		
 		new OptionData("CUDD",
 		"cudd",
-		"\nUse CUDD implementation of BDDs. ",
+		"\nUse CUDD implementation of \nBDDs. ",
 		
 		false),
 		
@@ -15783,20 +15783,20 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("JavaBDD",
 		"javabdd",
-		"\nUse JavaBDD implementation of BDDs. ",
+		"\nUse JavaBDD implementation \nof BDDs. ",
 		
 		false),
 		
 		new OptionData("None",
 		"none",
-		"\nDon't use any BDD backend. Any attempted use of BDDs will cause \nPaddle to crash. ",
+		"\nDon't use any BDD backend. \nAny attempted use of BDDs will cause Paddle to crash. \n",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_paddlebackend_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Backend", "p", "cg.paddle","backend", "\nThis option tells Paddle which implementation of BDDs to use. \n")));
+		setcgcg_paddlebackend_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Backend", "p", "cg.paddle","backend", "\nThis option tells Paddle which \nimplementation of BDDs to use. ")));
 		
 		defKey = "p"+" "+"cg.paddle"+" "+"backend";
 		defKey = defKey.trim();
@@ -15821,7 +15821,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddleorder_widget(new StringOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Variable ordering",  "p", "cg.paddle","order", "\nSelects one of the BDD \nvariable orderings hard-coded in Paddle. ", defaultString)));
+		setcgcg_paddleorder_widget(new StringOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Variable ordering",  "p", "cg.paddle","order", "\nSelects one of the BDD variable \norderings hard-coded in Paddle. ", defaultString)));
 		
 		
 		defKey = "p"+" "+"cg.paddle"+" "+"bdd-nodes";
@@ -15836,7 +15836,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlebdd_nodes_widget(new StringOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("BDD Nodes",  "p", "cg.paddle","bdd-nodes", "\nThis option specifies the number of BDD nodes to be used by the \nBDD backend. A value of 0 causes the backend to start with one \nmillion nodes, and allocate more as required. A value other than \nzero causes the backend to start with the specified size, and \nprevents it from ever allocating any more nodes. ", defaultString)));
+		setcgcg_paddlebdd_nodes_widget(new StringOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("BDD Nodes",  "p", "cg.paddle","bdd-nodes", "\nThis option specifies the \nnumber of BDD nodes to be used by the BDD backend. \nA value of 0 causes the backend to start with \none million nodes, and allocate \nmore as required. A value other than zero causes the backend to \nstart with the specified size, \nand prevents it from ever allocating any more nodes. \n", defaultString)));
 		
 
 		
@@ -15881,7 +15881,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlecontext_heap_widget(new BooleanOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, new OptionData("Context-sensitive Heap Locations", "p", "cg.paddle","context-heap", "\nWhen this option is set to true, the context-sensitivity level \nthat is set for the context-sensitive call graph and for pointer \nvariables is also used to model heap locations \ncontext-sensitively. When this option is false, heap locations \nare modelled context-insensitively regardless of the \ncontext-sensitivity level. ", defaultBool)));
+		setcgcg_paddlecontext_heap_widget(new BooleanOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, new OptionData("Context-sensitive Heap Locations", "p", "cg.paddle","context-heap", "\nWhen this option is set to \ntrue, the context-sensitivity level that is set \nfor the context-sensitive call graph and for \npointer variables is also used \nto model heap locations context-sensitively. When this option is \nfalse, heap locations are \nmodelled context-insensitively regardless of the \ncontext-sensitivity level. \n", defaultBool)));
 		
 		
 		
@@ -15889,50 +15889,50 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Context-insensitive",
 		"insens",
-		"\nBuilds a context-insensitive call graph. ",
+		"\nBuilds a \ncontext-insensitive call graph. ",
 		
 		true),
 		
 		new OptionData("1-CFA",
 		"1cfa",
-		"\nBuilds a 1-CFA call graph. ",
+		"\nBuilds a 1-CFA call graph. \n",
 		
 		false),
 		
 		new OptionData("k-CFA",
 		"kcfa",
-		"\nBuilds a k-CFA call graph. ",
+		"\nBuilds a k-CFA call graph. \n",
 		
 		false),
 		
 		new OptionData("Object Sensitive",
 		"objsens",
-		"\nBuilds an object-sensitive call graph. ",
+		"\nBuilds an object-sensitive \ncall graph. ",
 		
 		false),
 		
 		new OptionData("k-Object Sensitive",
 		"kobjsens",
-		"\nBuilds a context-sensitive call graph where the context is a \nstring of up to k receiver objects. ",
+		"\nBuilds a context-sensitive \ncall graph where the context is a string of up to \nk receiver objects. \n",
 		
 		false),
 		
 		new OptionData("Unique k-Object Sensitive",
 		"uniqkobjsens",
-		"\nBuilds a context-sensitive call graph where the context is a \nstring of up to k unique receiver objects. If the receiver of a \ncall already appears in the context string, the context string \nis just reused as is. ",
+		"\nBuilds a context-sensitive \ncall graph where the context is a string of up to \nk unique receiver objects. If the receiver \nof a call already appears in the \ncontext string, the context string is just reused as is. \n",
 		
 		false),
 		
 		new OptionData("Thread k-Object Sensitive",
 		"threadkobjsens",
-		"\nExperimental option for thread-entry-point sensitivity. ",
+		"\nExperimental option for \nthread-entry-point sensitivity. ",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_paddlecontext_widget(new MultiOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, data, new OptionData("Context abstraction", "p", "cg.paddle","context", "\nThis option tells Paddle which level of context-sensitivity to \nuse in constructing the call graph. ")));
+		setcgcg_paddlecontext_widget(new MultiOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, data, new OptionData("Context abstraction", "p", "cg.paddle","context", "\nThis option tells Paddle which \nlevel of context-sensitivity to use in constructing the \ncall graph. ")));
 		
 		defKey = "p"+" "+"cg.paddle"+" "+"context";
 		defKey = defKey.trim();
@@ -15957,7 +15957,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlek_widget(new StringOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, new OptionData("Context length (k)",  "p", "cg.paddle","k", "\nThe maximum length of \ncall string or receiver object string used as context. \n", defaultString)));
+		setcgcg_paddlek_widget(new StringOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, new OptionData("Context length (k)",  "p", "cg.paddle","k", "\nThe maximum length of call \nstring or receiver object string used as context. \n", defaultString)));
 		
 
 		
@@ -16002,7 +16002,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlerta_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p", "cg.paddle","rta", "\nSetting RTA to true sets types-for-sites to true, and causes \nPaddle to use a single points-to set for all variables, giving \nRapid Type Analysis. ", defaultBool)));
+		setcgcg_paddlerta_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p", "cg.paddle","rta", "\nSetting RTA to true sets \ntypes-for-sites to true, and causes Paddle to use \na single points-to set for all variables, \ngiving Rapid Type Analysis. \n", defaultBool)));
 		
 		
 		
@@ -16018,7 +16018,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlefield_based_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p", "cg.paddle","field-based", "\nWhen this option is set to true, fields are represented by \nvariable (Green) nodes, and the object that the field belongs to \nis ignored (all objects are lumped together), giving a \nfield-based analysis. Otherwise, fields are represented by field \nreference (Red) nodes, and the objects that they belong to are \ndistinguished, giving a field-sensitive analysis. ", defaultBool)));
+		setcgcg_paddlefield_based_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p", "cg.paddle","field-based", "\nWhen this option is set to \ntrue, fields are represented by variable \n(Green) nodes, and the object that the field belongs to \nis ignored (all objects are \nlumped together), giving a field-based analysis. Otherwise, \nfields are represented by \nfield reference (Red) nodes, and the \nobjects that they belong to are \ndistinguished, giving a field-sensitive analysis. \n", defaultBool)));
 		
 		
 		
@@ -16034,7 +16034,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddletypes_for_sites_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p", "cg.paddle","types-for-sites", "\nWhen this option is set to true, types rather than allocation \nsites are used as the elements of the points-to sets. ", defaultBool)));
+		setcgcg_paddletypes_for_sites_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p", "cg.paddle","types-for-sites", "\nWhen this option is set to \ntrue, types rather than allocation sites are \nused as the elements of the points-to sets. \n", defaultBool)));
 		
 		
 		
@@ -16050,7 +16050,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlemerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.paddle","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site. Allocation sites creating a \njava.lang.StringBuilder object are also grouped together as a \nsingle allocation site. ", defaultBool)));
+		setcgcg_paddlemerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.paddle","merge-stringbuffer", "\nWhen this option is set to \ntrue, all allocation sites creating \njava.lang.StringBuffer \nobjects are grouped together as a single \nallocation site. Allocation sites creating a \njava.lang.StringBuilder \nobject are also grouped together as a single \nallocation site. ", defaultBool)));
 		
 		
 		
@@ -16066,7 +16066,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlestring_constants_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Propagate All String Constants", "p", "cg.paddle","string-constants", "\nWhen this option is set to false, Paddle only distinguishes \nstring constants that may be the name of a class loaded \ndynamically using reflection, and all other string constants are \nlumped together into a single string constant node. Setting this \noption to true causes all string constants to be propagated \nindividually. ", defaultBool)));
+		setcgcg_paddlestring_constants_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Propagate All String Constants", "p", "cg.paddle","string-constants", "\nWhen this option is set to \nfalse, Paddle only distinguishes string constants that \nmay be the name of a class loaded \ndynamically using reflection, and all other \nstring constants are lumped together into a single \nstring constant node. Setting \nthis option to true causes all string constants to be propagated \nindividually. \n", defaultBool)));
 		
 		
 		
@@ -16082,7 +16082,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlesimulate_natives_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.paddle","simulate-natives", "\nWhen this option is set to true, the effects of native methods \nin the standard Java class library are simulated. ", defaultBool)));
+		setcgcg_paddlesimulate_natives_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.paddle","simulate-natives", "\nWhen this option is set to \ntrue, the effects of native methods in the standard Java \nclass library are simulated. \n", defaultBool)));
 		
 		
 		
@@ -16098,7 +16098,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddleglobal_nodes_in_natives_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Global Nodes in Simulated Natives", "p", "cg.paddle","global-nodes-in-natives", "\nThe simulations of native methods such as System.arraycopy() \nuse temporary local variable nodes. Setting this switch to true \ncauses them to use global variable nodes instead, reducing \nprecision. The switch exists only to make it possible to measure \nthis effect on precision; there is no other practical reason to \nset it to true. ", defaultBool)));
+		setcgcg_paddleglobal_nodes_in_natives_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Global Nodes in Simulated Natives", "p", "cg.paddle","global-nodes-in-natives", "\nThe simulations of native \nmethods such as System.arraycopy() use \ntemporary local variable nodes. Setting this switch to \ntrue causes them to use global \nvariable nodes instead, reducing precision. The switch \nexists only to make it possible to measure \nthis effect on precision; there \nis no other practical reason to set it to true. \n", defaultBool)));
 		
 		
 		
@@ -16114,7 +16114,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlesimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.paddle","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable \n(Green) nodes are made bidirectional, as in Steensgaard's \nanalysis. ", defaultBool)));
+		setcgcg_paddlesimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.paddle","simple-edges-bidirectional", "\nWhen this option is set to \ntrue, all edges connecting variable (Green) \nnodes are made bidirectional, as in \nSteensgaard's analysis. \n", defaultBool)));
 		
 		
 		
@@ -16130,7 +16130,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlethis_edges_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("this Pointer Assignment Edge", "p", "cg.paddle","this-edges", "\nWhen constructing a call graph on-the-fly during points-to \nanalysis, Paddle normally propagates only those receivers that \ncause a method to be invoked to the this pointer of the method. \nWhen this option is set to true, however, Paddle instead models \nflow of receivers as an assignnment edge from the receiver at \nthe call site to the this pointer of the method, reducing \nprecision. ", defaultBool)));
+		setcgcg_paddlethis_edges_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("this Pointer Assignment Edge", "p", "cg.paddle","this-edges", "\nWhen constructing a call graph \non-the-fly during points-to analysis, Paddle \nnormally propagates only those receivers that cause \na method to be invoked to the \nthis pointer of the method. When this option is set to true, \nhowever, Paddle instead models \nflow of receivers as an assignnment edge from the \nreceiver at the call site to the this pointer \nof the method, reducing \nprecision. ", defaultBool)));
 		
 		
 		
@@ -16146,7 +16146,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddleprecise_newinstance_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Precise newInstance", "p", "cg.paddle","precise-newinstance", "\nNormally, newInstance() calls are treated as if they may \nreturn an object of any type. Setting this option to true \ncauses them to be treated as if they return only objects of \nthe type of some dynamic class. ", defaultBool)));
+		setcgcg_paddleprecise_newinstance_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Precise newInstance", "p", "cg.paddle","precise-newinstance", "\nNormally, newInstance() calls \nare treated as if they may return an object \nof any type. Setting this option to true causes them \nto be treated as if they return \nonly objects of the type of some dynamic class. \n", defaultBool)));
 		
 		
 
@@ -16184,44 +16184,44 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Select Automatically",
 		"auto",
-		"\nWhen the bdd option is true, the Incremental BDD propagation \nalgorithm will be used. When the bdd option is false, the \nWorklist propagation algorithm will be used. ",
+		"\nWhen the bdd option is \ntrue, the Incremental BDD propagation algorithm will be used. \nWhen the bdd option is false, \nthe Worklist propagation algorithm will be used. \n",
 		
 		true),
 		
 		new OptionData("Iter",
 		"iter",
-		"\nIter is a simple, iterative algorithm, which propagates \neverything until the graph does not change. ",
+		"\nIter is a simple, iterative \nalgorithm, which propagates everything until the \ngraph does not change. \n",
 		
 		false),
 		
 		new OptionData("Worklist",
 		"worklist",
-		"\nWorklist is a worklist-based algorithm that tries to do as \nlittle work as possible. This is currently the fastest \nalgorithm. ",
+		"\nWorklist is a \nworklist-based algorithm that tries \nto do as little work as possible. This is currently the \nfastest algorithm. ",
 		
 		false),
 		
 		new OptionData("Alias",
 		"alias",
-		"\nAlias is an alias-edge based algorithm. This algorithm tends to \ntake the least memory for very large problems, because it does \nnot represent explicitly points-to sets of fields of heap \nobjects. ",
+		"\nAlias is an alias-edge \nbased algorithm. This algorithm tends to take \nthe least memory for very large problems, \nbecause it does not represent \nexplicitly points-to sets of fields of heap objects. \n",
 		
 		false),
 		
 		new OptionData("BDD",
 		"bdd",
-		"\nBDD is a propagator that stores points-to sets in binary \ndecision diagrams. ",
+		"\nBDD is a propagator that \nstores points-to sets in binary decision diagrams. \n",
 		
 		false),
 		
 		new OptionData("Incrementalized BDD",
 		"incbdd",
-		"\nA propagator that stores points-to sets in binary decision \ndiagrams, and propagates them incrementally. ",
+		"\nA propagator that stores \npoints-to sets in binary decision diagrams, and propagates \nthem incrementally. \n",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_paddlepropagator_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Propagator", "p", "cg.paddle","propagator", "\nThis option tells Paddle which propagation algorithm to use. \n")));
+		setcgcg_paddlepropagator_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Propagator", "p", "cg.paddle","propagator", "\nThis option tells Paddle which \npropagation algorithm to use. ")));
 		
 		defKey = "p"+" "+"cg.paddle"+" "+"propagator";
 		defKey = defKey.trim();
@@ -16238,44 +16238,44 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Hash set",
 		"hash",
-		"\nHash is an implementation based on Java's built-in hash-set. ",
+		"\nHash is an implementation \nbased on Java's built-in hash-set. \n",
 		
 		false),
 		
 		new OptionData("Bit-vector",
 		"bit",
-		"\nBit is an implementation using a bit vector. ",
+		"\nBit is an implementation \nusing a bit vector. ",
 		
 		false),
 		
 		new OptionData("Hybrid",
 		"hybrid",
-		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
+		"\nHybrid is an implementation \nthat keeps an explicit list of up to \n16 elements, and switches to a bit-vector when the set \ngets larger than this. \n",
 		
 		false),
 		
 		new OptionData("Sorted array",
 		"array",
-		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
+		"\nArray is an implementation \nthat keeps the elements of the \npoints-to set in a sorted array. Set membership is tested \nusing binary search, and set \nunion and intersection are computed using \nan algorithm based on the merge step from merge \nsort. ",
 		
 		false),
 		
 		new OptionData("Heintze",
 		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small \n'overflow' list of some maximum number of elements. The \nbit-vectors can be shared by \nmultiple points-to sets, while the overflow lists are not. \n",
 		
 		false),
 		
 		new OptionData("Double",
 		"double",
-		"\nDouble is an implementation that itself uses a pair of sets for \neach points-to set. The first set in the pair stores new \npointed-to objects that have not yet been propagated, while the \nsecond set stores old pointed-to objects that have been \npropagated and need not be reconsidered. This allows the \npropagation algorithms to be incremental, often speeding them up \nsignificantly. ",
+		"\nDouble is an implementation \nthat itself uses a pair of sets for \neach points-to set. The first set in the pair stores new \npointed-to objects that have \nnot yet been propagated, while the second set stores \nold pointed-to objects that have been \npropagated and need not be \nreconsidered. This allows the propagation algorithms to be \nincremental, often speeding \nthem up significantly. ",
 		
 		true),
 		
 		};
 		
 										
-		setcgcg_paddleset_impl_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.paddle","set-impl", "\nSelect an implementation of points-to sets for Paddle to use. ")));
+		setcgcg_paddleset_impl_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.paddle","set-impl", "\nSelect an implementation of \npoints-to sets for Paddle to use. ")));
 		
 		defKey = "p"+" "+"cg.paddle"+" "+"set-impl";
 		defKey = defKey.trim();
@@ -16292,38 +16292,38 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Hash set",
 		"hash",
-		"\nHash is an implementation based on Java's built-in hash-set. ",
+		"\nHash is an implementation \nbased on Java's built-in hash-set. \n",
 		
 		false),
 		
 		new OptionData("Bit-vector",
 		"bit",
-		"\nBit is an implementation using a bit vector. ",
+		"\nBit is an implementation \nusing a bit vector. ",
 		
 		false),
 		
 		new OptionData("Hybrid",
 		"hybrid",
-		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
+		"\nHybrid is an implementation \nthat keeps an explicit list of up to \n16 elements, and switches to a bit-vector when the set \ngets larger than this. \n",
 		
 		true),
 		
 		new OptionData("Sorted array",
 		"array",
-		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
+		"\nArray is an implementation \nthat keeps the elements of the \npoints-to set in a sorted array. Set membership is tested \nusing binary search, and set \nunion and intersection are computed using \nan algorithm based on the merge step from merge \nsort. ",
 		
 		false),
 		
 		new OptionData("Heintze",
 		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small \n'overflow' list of some maximum number of elements. The \nbit-vectors can be shared by \nmultiple points-to sets, while the overflow lists are not. \n",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_paddledouble_set_old_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.paddle","double-set-old", "\nSelect an implementation for sets of old objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double. ")));
+		setcgcg_paddledouble_set_old_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.paddle","double-set-old", "\nSelect an implementation for \nsets of old objects in the double \npoints-to set implementation. \nThis option has no effect unless Set Implementation is set to \ndouble. ")));
 		
 		defKey = "p"+" "+"cg.paddle"+" "+"double-set-old";
 		defKey = defKey.trim();
@@ -16340,38 +16340,38 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Hash set",
 		"hash",
-		"\nHash is an implementation based on Java's built-in hash-set. ",
+		"\nHash is an implementation \nbased on Java's built-in hash-set. \n",
 		
 		false),
 		
 		new OptionData("Bit-vector",
 		"bit",
-		"\nBit is an implementation using a bit vector. ",
+		"\nBit is an implementation \nusing a bit vector. ",
 		
 		false),
 		
 		new OptionData("Hybrid",
 		"hybrid",
-		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
+		"\nHybrid is an implementation \nthat keeps an explicit list of up to \n16 elements, and switches to a bit-vector when the set \ngets larger than this. \n",
 		
 		true),
 		
 		new OptionData("Sorted array",
 		"array",
-		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
+		"\nArray is an implementation \nthat keeps the elements of the \npoints-to set in a sorted array. Set membership is tested \nusing binary search, and set \nunion and intersection are computed using \nan algorithm based on the merge step from merge \nsort. ",
 		
 		false),
 		
 		new OptionData("Heintze",
 		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
+		"\nHeintze's representation has elements represented by a \nbit-vector + a small \n'overflow' list of some maximum number of elements. The \nbit-vectors can be shared by \nmultiple points-to sets, while the overflow lists are not. \n",
 		
 		false),
 		
 		};
 		
 										
-		setcgcg_paddledouble_set_new_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.paddle","double-set-new", "\nSelect an implementation for sets of new objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double. ")));
+		setcgcg_paddledouble_set_new_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.paddle","double-set-new", "\nSelect an implementation for \nsets of new objects in the double \npoints-to set implementation. \nThis option has no effect unless Set Implementation is set to \ndouble. ")));
 		
 		defKey = "p"+" "+"cg.paddle"+" "+"double-set-new";
 		defKey = defKey.trim();
@@ -16426,7 +16426,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlecontext_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Print Context Counts", "p", "cg.paddle","context-counts", "\nCauses Paddle to print the number of contexts for each method \nand call edge, and the number of equivalence classes of contexts \nfor each variable node. ", defaultBool)));
+		setcgcg_paddlecontext_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Print Context Counts", "p", "cg.paddle","context-counts", "\nCauses Paddle to print the \nnumber of contexts for each method and \ncall edge, and the number of equivalence classes of \ncontexts for each variable node. \n", defaultBool)));
 		
 		
 		
@@ -16442,7 +16442,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddletotal_context_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Print Context Counts (Totals only)", "p", "cg.paddle","total-context-counts", "\nCauses Paddle to print the number of contexts and number of \ncontext equivalence classes. ", defaultBool)));
+		setcgcg_paddletotal_context_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Print Context Counts (Totals only)", "p", "cg.paddle","total-context-counts", "\nCauses Paddle to print the \nnumber of contexts and number of context \nequivalence classes. ", defaultBool)));
 		
 		
 		
@@ -16458,7 +16458,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlemethod_context_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Method Context Counts (Totals only)", "p", "cg.paddle","method-context-counts", "\nCauses Paddle to print the number of contexts and number of \ncontext equivalence classes split out by method. Requires \ntotal-context-counts to also be turned on. ", defaultBool)));
+		setcgcg_paddlemethod_context_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Method Context Counts (Totals only)", "p", "cg.paddle","method-context-counts", "\nCauses Paddle to print the \nnumber of contexts and number of context \nequivalence classes split out by method. Requires \ntotal-context-counts to also be turned \non. ", defaultBool)));
 		
 		
 		
@@ -16474,7 +16474,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddleset_mass_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p", "cg.paddle","set-mass", "\nWhen this option is set to true, Paddle computes and prints \nvarious cryptic statistics about the size of the points-to sets \ncomputed. ", defaultBool)));
+		setcgcg_paddleset_mass_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p", "cg.paddle","set-mass", "\nWhen this option is set to \ntrue, Paddle computes and prints various \ncryptic statistics about the size of the points-to sets \ncomputed. ", defaultBool)));
 		
 		
 		
@@ -16490,7 +16490,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setcgcg_paddlenumber_nodes_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Number nodes", "p", "cg.paddle","number-nodes", "\nWhen printing debug information about nodes, this option causes \nthe node number of each node to be printed. ", defaultBool)));
+		setcgcg_paddlenumber_nodes_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Number nodes", "p", "cg.paddle","number-nodes", "\nWhen printing debug information \nabout nodes, this option causes the node number \nof each node to be printed. \n", defaultBool)));
 		
 		
 
@@ -16736,7 +16736,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjtpwjtp_tnavoid_deadlock_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform Deadlock Avoidance", "p", "wjtp.tn","avoid-deadlock", "\nPerform Deadlock Avoidance by enforcing a lock ordering where \nnecessary. ", defaultBool)));
+		setwjtpwjtp_tnavoid_deadlock_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform Deadlock Avoidance", "p", "wjtp.tn","avoid-deadlock", "\nPerform Deadlock Avoidance by \nenforcing a lock ordering where necessary. \n", defaultBool)));
 		
 		
 		
@@ -16752,7 +16752,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjtpwjtp_tnopen_nesting_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Use Open Nesting", "p", "wjtp.tn","open-nesting", "\nUse an open nesting model, where inner transactions are allowed \nto commit independently of any outer transaction. ", defaultBool)));
+		setwjtpwjtp_tnopen_nesting_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Use Open Nesting", "p", "wjtp.tn","open-nesting", "\nUse an open nesting model, where \ninner transactions are allowed to commit \nindependently of any outer transaction. \n", defaultBool)));
 		
 		
 		
@@ -16768,7 +16768,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjtpwjtp_tndo_mhp_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform May-Happen-in-Parallel Analysis", "p", "wjtp.tn","do-mhp", "\nPerform a May-Happen-in-Parallel analysis to assist in \nallocating locks. ", defaultBool)));
+		setwjtpwjtp_tndo_mhp_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform May-Happen-in-Parallel Analysis", "p", "wjtp.tn","do-mhp", "\nPerform a May-Happen-in-Parallel \nanalysis to assist in allocating locks. ", defaultBool)));
 		
 		
 		
@@ -16784,7 +16784,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjtpwjtp_tndo_tlo_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform Local Objects Analysis", "p", "wjtp.tn","do-tlo", "\nPerform a Local-Objects analysis to assist in allocating locks. \n", defaultBool)));
+		setwjtpwjtp_tndo_tlo_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform Local Objects Analysis", "p", "wjtp.tn","do-tlo", "\nPerform a Local-Objects analysis to \nassist in allocating locks. ", defaultBool)));
 		
 		
 		
@@ -16800,7 +16800,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjtpwjtp_tnprint_graph_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Topological Graph", "p", "wjtp.tn","print-graph", "\nPrint a topological graph of the program's transactions in the \nformat used by the graphviz package. ", defaultBool)));
+		setwjtpwjtp_tnprint_graph_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Topological Graph", "p", "wjtp.tn","print-graph", "\nPrint a topological graph of the \nprogram's transactions in the format used by the graphviz \npackage. ", defaultBool)));
 		
 		
 		
@@ -16816,7 +16816,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjtpwjtp_tnprint_table_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Table", "p", "wjtp.tn","print-table", "\nPrint a table of information about the program's transactions. ", defaultBool)));
+		setwjtpwjtp_tnprint_table_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Table", "p", "wjtp.tn","print-table", "\nPrint a table of information about \nthe program's transactions. ", defaultBool)));
 		
 		
 		
@@ -16832,7 +16832,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjtpwjtp_tnprint_debug_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Debugging Info", "p", "wjtp.tn","print-debug", "\nPrint debugging info, including every statement visited. ", defaultBool)));
+		setwjtpwjtp_tnprint_debug_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Debugging Info", "p", "wjtp.tn","print-debug", "\nPrint debugging info, including \nevery statement visited. ", defaultBool)));
 		
 		
 		
@@ -16840,25 +16840,25 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Medium Grained",
 		"medium-grained",
-		"\nTry to identify transactional regions that can employ a dynamic \nlock to increase parallelism. All side effects must be \nprotected by a single object. This locking scheme aims to \napproximate typical Java Monitor usage. ",
+		"\nTry to identify transactional \nregions that can employ a dynamic lock to \nincrease parallelism. All side effects must be \nprotected by a single object. \nThis locking scheme aims to approximate typical Java Monitor \nusage. ",
 		
 		true),
 		
 		new OptionData("Coarse Grained",
 		"coarse-grained",
-		"\nInsert static objects into the program for synchronization. \nOne object will be used for each group of conflicting \nsynchronized regions. This locking scheme achieves code-level \nlocking. ",
+		"\nInsert static objects into the \nprogram for synchronization. One object will be \nused for each group of conflicting synchronized \nregions. This locking scheme \nachieves code-level locking. ",
 		
 		false),
 		
 		new OptionData("Single Static Lock",
 		"single-static",
-		"\nInsert one static object into the program for synchronization \nfor all transactional regions. This locking scheme is for \nresearch purposes. ",
+		"\nInsert one static object into \nthe program for synchronization for all \ntransactional regions. This locking scheme is for \nresearch purposes. ",
 		
 		false),
 		
 		new OptionData("Leave Original Locks",
 		"leave-original",
-		"\nAnalyse the existing lock structure of the program, but do not \nchange it. With one of the print options, this can be useful \nfor comparison between the original program and one of the \ngenerated locking schemes. ",
+		"\nAnalyse the existing lock \nstructure of the program, but do not change it. With \none of the print options, this can be useful \nfor comparison between the original \nprogram and one of the generated locking schemes. \n",
 		
 		false),
 		
@@ -16936,7 +16936,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjtpwjtp_rdcfixed_class_names_widget(new StringOptionWidget(editGroupwjtpwjtp_rdc, SWT.NONE, new OptionData("FixedClassNames",  "p", "wjtp.rdc","fcn", "\n							Use this parameter to set some class names unchangable \neven they are duplicated. 							The fixed class name list \ncannot contain duplicated class names. 							Using '-' to split \nmultiple class names (e.g., fcn:a.b.c-a.b.d). 						", defaultString)));
+		setwjtpwjtp_rdcfixed_class_names_widget(new StringOptionWidget(editGroupwjtpwjtp_rdc, SWT.NONE, new OptionData("FixedClassNames",  "p", "wjtp.rdc","fcn", "\nUse this parameter to set some \nclass names unchangable even they are duplicated. \nThe fixed class name list cannot contain duplicated \nclass names. Using '-' to split \nmultiple class names (e.g., fcn:a.b.c-a.b.d). \n", defaultString)));
 		
 
 		
@@ -17043,7 +17043,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjopwjop_smbinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.smb","insert-null-checks", "\nInsert a check that, before invoking the static copy of the \ntarget method, throws a NullPointerException if the receiver \nobject is null. This ensures that static method binding does \nnot eliminate exceptions which would have occurred in its \nabsence. ", defaultBool)));
+		setwjopwjop_smbinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.smb","insert-null-checks", "\nInsert a check that, before \ninvoking the static copy of the \ntarget method, throws a NullPointerException if the \nreceiver object is null. This ensures that static \nmethod binding does not eliminate \nexceptions which would have occurred in its absence. \n", defaultBool)));
 		
 		
 		
@@ -17059,7 +17059,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjopwjop_smbinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.smb","insert-redundant-casts", "\nInsert extra casts for the Java bytecode verifier. If the \ntarget method uses its this parameter, a reference to the \nreceiver object must be passed to the static copy of the target \nmethod. The verifier may complain if the declared type of the \nreceiver parameter does not match the type implementing the \ntarget method. Say, for example, that Singer is an interface \ndeclaring the sing() method and that the call graph shows all \nreceiver objects at a particular call site, singer.sing() (with \nsinger declared as a Singer) are in fact Bird objects (Bird \nbeing a class that implements Singer). The virtual call \nsinger.sing() is effectively replaced with the static call \nBird.staticsing(singer). Bird.staticsing() may perform \noperations on its parameter which are only allowed on Birds, \nrather than Singers. The Insert Redundant Casts option inserts \na cast of singer to the Bird type, to prevent complaints from \nthe verifier.", defaultBool)));
+		setwjopwjop_smbinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.smb","insert-redundant-casts", "\nInsert extra casts for the Java \nbytecode verifier. If the target \nmethod uses its this parameter, a reference to the \nreceiver object must be passed to the static \ncopy of the target method. The \nverifier may complain if the declared type of the \nreceiver parameter does not match the type \nimplementing the target method. \nSay, \nfor example, that Singer is an interface declaring \nthe sing() method and that the call graph \nshows all receiver objects at a \nparticular call site, \nsinger.sing() (with singer \ndeclared as a Singer) are in \nfact Bird objects ( Bird \nbeing a class that implements Singer). \nThe virtual call singer.sing() \nis effectively replaced with the \nstatic call \nBird.staticsing(singer). \nBird.staticsing() may perform \noperations on its parameter which are only allowed on \nBirds, rather than Singers. The Insert \nRedundant Casts option inserts a cast \nof singer to the Bird \ntype, to prevent complaints from the \nverifier. ", defaultBool)));
 		
 		
 		
@@ -17067,26 +17067,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Unsafe",
 		"unsafe",
-		"\nModify the visibility on code so that all inlining is \npermitted. ",
+		"\nModify the visibility on code \nso that all inlining is permitted. ",
 		
 		true),
 		
 		new OptionData("Safe",
 		"safe",
-		"\nPreserve the exact meaning of the analyzed program. ",
+		"\nPreserve the exact meaning of \nthe analyzed program. ",
 		
 		false),
 		
 		new OptionData("None",
 		"none",
-		"\nChange no modifiers whatsoever. ",
+		"\nChange no modifiers whatsoever. \n",
 		
 		false),
 		
 		};
 		
 										
-		setwjopwjop_smballowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_smb, SWT.NONE, data, new OptionData("Allowed Modifier Changes", "p", "wjop.smb","allowed-modifier-changes", "\nSpecify which changes in visibility modifiers \nare allowed. ")));
+		setwjopwjop_smballowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_smb, SWT.NONE, data, new OptionData("Allowed Modifier Changes", "p", "wjop.smb","allowed-modifier-changes", "\nSpecify which changes in visibility \nmodifiers are allowed. \n")));
 		
 		defKey = "p"+" "+"wjop.smb"+" "+"allowed-modifier-changes";
 		defKey = defKey.trim();
@@ -17157,7 +17157,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjopwjop_sirerun_jb_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Reconstruct Jimple body after inlining", "p", "wjop.si","rerun-jb", "\nWhen a method with array parameters is inlined, its variables \nmay need to be assigned different types than they had in the \noriginal method to produce compilable code. When this option is \nset, Soot re-runs the Jimple Body pack on each method body which \nhas had another method inlined into it so that the typing \nalgorithm can reassign the types. ", defaultBool)));
+		setwjopwjop_sirerun_jb_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Reconstruct Jimple body after inlining", "p", "wjop.si","rerun-jb", "\nWhen a method with array parameters \nis inlined, its variables may need to \nbe assigned different types than they had in the original \nmethod to produce compilable code. \nWhen this option is set, Soot re-runs the Jimple Body pack \non each method body which has had another \nmethod inlined into it so that the \ntyping algorithm can reassign the types. \n", defaultBool)));
 		
 		
 		
@@ -17173,7 +17173,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjopwjop_siinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.si","insert-null-checks", "\nInsert, before the inlined body of the target method, a check \nthat throws a NullPointerException if the receiver object is \nnull. This ensures that inlining will not eliminate exceptions \nwhich would have occurred in its absence. ", defaultBool)));
+		setwjopwjop_siinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.si","insert-null-checks", "\nInsert, before the inlined body of \nthe target method, a check that \nthrows a NullPointerException if the receiver \nobject is null. This ensures that inlining will not \neliminate exceptions which would \nhave occurred in its absence. ", defaultBool)));
 		
 		
 		
@@ -17189,7 +17189,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjopwjop_siinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.si","insert-redundant-casts", "\nInsert extra casts for the Java bytecode verifier. The \nverifier may complain if the inlined method uses this and the \ndeclared type of the receiver of the call being inlined is \ndifferent from the type implementing the target method being \ninlined. Say, for example, that Singer is an interface declaring \nthe sing() method and that the call graph shows that all \nreceiver objects at a particular call site, singer.sing() (with \nsinger declared as a Singer) are in fact Bird objects (Bird \nbeing a class that implements Singer). The implementation of \nBird.sing() may perform operations on this which are only \nallowed on Birds, rather than Singers. The Insert Redundant \nCasts option ensures that this cannot lead to verification \nerrors, by inserting a cast of bird to the Bird type before \ninlining the body of Bird.sing().", defaultBool)));
+		setwjopwjop_siinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.si","insert-redundant-casts", "\nInsert extra casts for the Java \nbytecode verifier. The verifier \nmay complain if the inlined method uses this and the \ndeclared type of the receiver of the call \nbeing inlined is different from \nthe type implementing the target method being \ninlined. \nSay, for example, that Singer is an interface \ndeclaring the sing() method and \nthat the call graph shows that all \nreceiver objects at a particular call site, \nsinger.sing() (with \nsinger declared as a Singer) are \nin fact Bird objects ( Bird \nbeing a class that implements \nSinger). The implementation of \nBird.sing() may perform operations on \nthis which are only allowed \non Birds, rather than Singers. \nThe Insert Redundant Casts option ensures that \nthis cannot lead to verification errors, by \ninserting a cast of bird \nto the Bird type before inlining the \nbody of Bird.sing(). \n", defaultBool)));
 		
 		
 		
@@ -17197,26 +17197,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Unsafe",
 		"unsafe",
-		"\nModify the visibility on code so that all inlining is \npermitted. ",
+		"\nModify the visibility on code \nso that all inlining is permitted. ",
 		
 		true),
 		
 		new OptionData("Safe",
 		"safe",
-		"\nPreserve the exact meaning of the analyzed program. ",
+		"\nPreserve the exact meaning of \nthe analyzed program. ",
 		
 		false),
 		
 		new OptionData("None",
 		"none",
-		"\nChange no modifiers whatsoever. ",
+		"\nChange no modifiers whatsoever. \n",
 		
 		false),
 		
 		};
 		
 										
-		setwjopwjop_siallowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_si, SWT.NONE, data, new OptionData("Allowed Modifier Changes", "p", "wjop.si","allowed-modifier-changes", "\nSpecify which changes in visibility modifiers \nare allowed. ")));
+		setwjopwjop_siallowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_si, SWT.NONE, data, new OptionData("Allowed Modifier Changes", "p", "wjop.si","allowed-modifier-changes", "\nSpecify which changes in visibility \nmodifiers are allowed. \n")));
 		
 		defKey = "p"+" "+"wjop.si"+" "+"allowed-modifier-changes";
 		defKey = defKey.trim();
@@ -17241,7 +17241,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjopwjop_siexpansion_factor_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Expansion Factor",  "p", "wjop.si","expansion-factor", "\nDetermines the maximum allowed expansion of a method. Inlining \nwill cause the method to grow by a factor of no more than the \nExpansion Factor. ", defaultString)));
+		setwjopwjop_siexpansion_factor_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Expansion Factor",  "p", "wjop.si","expansion-factor", "\nDetermines the maximum allowed \nexpansion of a method. Inlining will \ncause the method to grow by a factor of no more than \nthe Expansion Factor. ", defaultString)));
 		
 		
 		defKey = "p"+" "+"wjop.si"+" "+"max-container-size";
@@ -17256,7 +17256,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjopwjop_simax_container_size_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Max Container Size",  "p", "wjop.si","max-container-size", "\nDetermines the maximum number of Jimple statements for a \ncontainer method. If a method has more than this number of \nJimple statements, then no methods will be inlined into it. \n", defaultString)));
+		setwjopwjop_simax_container_size_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Max Container Size",  "p", "wjop.si","max-container-size", "\nDetermines the maximum number of \nJimple statements for a container \nmethod. If a method has more than this number of Jimple \nstatements, then no methods will be \ninlined into it. ", defaultString)));
 		
 		
 		defKey = "p"+" "+"wjop.si"+" "+"max-inlinee-size";
@@ -17271,7 +17271,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setwjopwjop_simax_inlinee_size_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Max Inlinee Size",  "p", "wjop.si","max-inlinee-size", "\nDetermines the maximum number of Jimple statements for an \ninlinee method. If a method has more than this number of Jimple \nstatements, then it will not be inlined into other methods. \n", defaultString)));
+		setwjopwjop_simax_inlinee_size_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Max Inlinee Size",  "p", "wjop.si","max-inlinee-size", "\nDetermines the maximum number of \nJimple statements for an inlinee \nmethod. If a method has more than this number of Jimple \nstatements, then it will not be \ninlined into other methods. ", defaultString)));
 		
 
 		
@@ -17766,7 +17766,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setshimplenode_elim_opt_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Shimple Node Elimination Optimizations", "p", "shimple","node-elim-opt", "\nPerform some optimizations, such as dead code \nelimination and local aggregation, before/after \neliminating nodes. ", defaultBool)));
+		setshimplenode_elim_opt_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Shimple Node Elimination Optimizations", "p", "shimple","node-elim-opt", "\nPerform some optimizations, such as \ndead code elimination and local \naggregation, before/after eliminating nodes. \n", defaultBool)));
 		
 		
 		
@@ -17782,7 +17782,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setshimplestandard_local_names_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Local Name Standardization", "p", "shimple","standard-local-names", "\nIf enabled, the Local Name Standardizer is applied \nwhenever Shimple creates new locals. Normally, \nShimple will retain the original local names as far \nas possible and use an underscore notation to denote \nSSA subscripts. This transformation does not \notherwise affect Shimple behaviour. ", defaultBool)));
+		setshimplestandard_local_names_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Local Name Standardization", "p", "shimple","standard-local-names", "\nIf enabled, the Local Name Standardizer \nis applied whenever Shimple creates new \nlocals. Normally, Shimple will retain \nthe original local names as far as possible and use an \nunderscore notation to denote SSA subscripts. This \ntransformation does not otherwise affect \nShimple behaviour. ", defaultBool)));
 		
 		
 		
@@ -17798,7 +17798,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setshimpleextended_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Extended SSA (SSI)", "p", "shimple","extended", "\nIf enabled, Shimple will created extended SSA (SSI) \nform. ", defaultBool)));
+		setshimpleextended_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Extended SSA (SSI)", "p", "shimple","extended", "\nIf enabled, Shimple will created \nextended SSA (SSI) form. ", defaultBool)));
 		
 		
 		
@@ -17814,7 +17814,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setshimpledebug_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Debugging Output", "p", "shimple","debug", "\nIf enabled, Soot may print out warnings and \nmessages useful for debugging the Shimple module. \nAutomatically enabled by the global debug switch. \n", defaultBool)));
+		setshimpledebug_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Debugging Output", "p", "shimple","debug", "\nIf enabled, Soot may print out warnings \nand messages useful for debugging the \nShimple module. Automatically enabled by \nthe global debug switch. ", defaultBool)));
 		
 		
 
@@ -17968,7 +17968,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setsopsop_cpfprune_cfg_widget(new BooleanOptionWidget(editGroupsopsop_cpf, SWT.NONE, new OptionData("Prune Control Flow Graph", "p", "sop.cpf","prune-cfg", "\nConditional branching statements that are found \nto branch unconditionally (or fall through) are \nreplaced with unconditional branches (or \nremoved). This transformation exposes more \nopportunities for dead code removal. \n", defaultBool)));
+		setsopsop_cpfprune_cfg_widget(new BooleanOptionWidget(editGroupsopsop_cpf, SWT.NONE, new OptionData("Prune Control Flow Graph", "p", "sop.cpf","prune-cfg", "\nConditional branching \nstatements that are found to \nbranch unconditionally (or fall through) are replaced \nwith unconditional branches (or removed). \nThis transformation exposes more \nopportunities for dead code \nremoval. ", defaultBool)));
 		
 		
 
@@ -18122,7 +18122,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjopjop_csenaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_cse, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.cse","naive-side-effect", "\nIf Naive Side Effect Tester is true, the Common Subexpression \nEliminator uses the conservative side effect information \nprovided by the NaiveSideEffectTester class, even if \ninterprocedural information about side effects is available. The \nnaive side effect analysis is based solely on the information \navailable locally about a statement. It assumes, for example, \nthat any method call has the potential to write and read all \ninstance and static fields in the program. If Naive Side Effect \nTester is set to false and Soot is in whole program mode, then \nthe Common Subexpression Eliminator uses the side effect \ninformation provided by the PASideEffectTester class. \nPASideEffectTester uses a points-to analysis to determine which \nfields and statics may be written or read by a given statement. \nIf whole program analysis is not performed, naive side effect \ninformation is used regardless of the setting of Naive Side \nEffect Tester. ", defaultBool)));
+		setjopjop_csenaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_cse, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.cse","naive-side-effect", "\nIf Naive Side Effect Tester is \ntrue, the Common Subexpression \nEliminator uses the conservative side effect \ninformation provided by the NaiveSideEffectTester \nclass, even if interprocedural \ninformation about side effects is \navailable. \nThe naive side effect analysis is based solely on the \ninformation available locally \nabout a statement. It assumes, for example, \nthat any method call has the potential to write and \nread all instance and static \nfields in the program. \nIf Naive Side Effect Tester is set to false \nand Soot is in whole program \nmode, then the Common Subexpression \nEliminator uses the side effect information provided by the \nPASideEffectTester \nclass. \nPASideEffectTester uses a \npoints-to analysis to determine \nwhich fields and statics may be written or read by a \ngiven statement. \nIf whole program analysis is \nnot performed, naive side effect \ninformation is used regardless of the setting of \nNaive Side Effect Tester. \n", defaultBool)));
 		
 		
 
@@ -18184,7 +18184,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjopjop_bcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_bcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.bcm","naive-side-effect", "\nIf Naive Side Effect Tester is set to true, Busy Code Motion \nuses the conservative side effect information provided by the \nNaiveSideEffectTester class, even if interprocedural information \nabout side effects is available. The naive side effect analysis \nis based solely on the information available locally about a \nstatement. It assumes, for example, that any method call has the \npotential to write and read all instance and static fields in \nthe program. If Naive Side Effect Tester is set to false and \nSoot is in whole program mode, then Busy Code Motion uses the \nside effect information provided by the PASideEffectTester \nclass. PASideEffectTester uses a points-to analysis to determine \nwhich fields and statics may be written or read by a given \nstatement. If whole program analysis is not performed, naive \nside effect information is used regardless of the setting of \nNaive Side Effect Tester. ", defaultBool)));
+		setjopjop_bcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_bcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.bcm","naive-side-effect", "\nIf Naive Side Effect Tester is \nset to true, Busy Code Motion \nuses the conservative side effect information provided by \nthe NaiveSideEffectTester class, even \nif interprocedural information \nabout side effects is available. \nThe naive side effect analysis is \nbased solely on the information \navailable locally about a statement. It assumes, for example, \nthat any method call has the \npotential to write and read all \ninstance and static fields in the program. \nIf Naive Side Effect \nTester is set to false and Soot is \nin whole program mode, then Busy Code Motion uses the side \neffect information provided by \nthe PASideEffectTester \nclass. PASideEffectTester uses a points-to \nanalysis to determine which \nfields and statics may be written or read by a \ngiven statement. \nIf whole program analysis is not \nperformed, naive side effect \ninformation is used regardless of the setting of \nNaive Side Effect Tester. \n", defaultBool)));
 		
 		
 
@@ -18246,7 +18246,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjopjop_lcmunroll_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Unroll", "p", "jop.lcm","unroll", "\nIf true, perform loop inversion before doing the \ntransformation. ", defaultBool)));
+		setjopjop_lcmunroll_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Unroll", "p", "jop.lcm","unroll", "\nIf true, perform loop inversion \nbefore doing the transformation. \n", defaultBool)));
 		
 		
 		
@@ -18262,7 +18262,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjopjop_lcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.lcm","naive-side-effect", "\nIf Naive Side Effect Tester is set to true, Lazy Code Motion \nuses the conservative side effect information provided by the \nNaiveSideEffectTester class, even if interprocedural information \nabout side effects is available. The naive side effect analysis \nis based solely on the information available locally about a \nstatement. It assumes, for example, that any method call has the \npotential to write and read all instance and static fields in \nthe program. If Naive Side Effect Tester is set to false and \nSoot is in whole program mode, then Lazy Code Motion uses the \nside effect information provided by the PASideEffectTester \nclass. PASideEffectTester uses a points-to analysis to determine \nwhich fields and statics may be written or read by a given \nstatement. If whole program analysis is not performed, naive \nside effect information is used regardless of the setting of \nNaive Side Effect Tester. ", defaultBool)));
+		setjopjop_lcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.lcm","naive-side-effect", "\nIf Naive Side Effect Tester is \nset to true, Lazy Code Motion \nuses the conservative side effect information provided by \nthe NaiveSideEffectTester class, even \nif interprocedural information \nabout side effects is available. \nThe naive side effect analysis is \nbased solely on the information \navailable locally about a statement. It assumes, for example, \nthat any method call has the \npotential to write and read all \ninstance and static fields in the program. \nIf Naive Side Effect \nTester is set to false and Soot is \nin whole program mode, then Lazy Code Motion uses the side \neffect information provided by \nthe PASideEffectTester \nclass. PASideEffectTester uses a points-to \nanalysis to determine which \nfields and statics may be written or read by a \ngiven statement. \nIf whole program analysis is not \nperformed, naive side effect \ninformation is used regardless of the setting of \nNaive Side Effect Tester. \n", defaultBool)));
 		
 		
 		
@@ -18270,26 +18270,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		new OptionData("Safe",
 		"safe",
-		"\nSafe, but only considers moving additions, subtractions and \nmultiplications. ",
+		"\nSafe, but only considers moving \nadditions, subtractions and \nmultiplications. ",
 		
 		true),
 		
 		new OptionData("Medium",
 		"medium",
-		"\nUnsafe in multi-threaded programs, as it may reuse the values \nread from field accesses. ",
+		"\nUnsafe in multi-threaded \nprograms, as it may reuse the values \nread from field accesses. ",
 		
 		false),
 		
 		new OptionData("Unsafe",
 		"unsafe",
-		"\nMay violate Java's exception semantics, as it may move or \nreorder exception-throwing statements, potentially outside of \ntry-catch blocks. ",
+		"\nMay violate Java's exception \nsemantics, as it may move or reorder \nexception-throwing statements, potentially outside of \ntry-catch \nblocks. ",
 		
 		false),
 		
 		};
 		
 										
-		setjopjop_lcmsafety_widget(new MultiOptionWidget(editGroupjopjop_lcm, SWT.NONE, data, new OptionData("Safety", "p", "jop.lcm","safety", "\nThis option controls which fields and statements are candidates \nfor code motion. ")));
+		setjopjop_lcmsafety_widget(new MultiOptionWidget(editGroupjopjop_lcm, SWT.NONE, data, new OptionData("Safety", "p", "jop.lcm","safety", "\nThis option controls which fields \nand statements are candidates for \ncode motion. ")));
 		
 		defKey = "p"+" "+"jop.lcm"+" "+"safety";
 		defKey = defKey.trim();
@@ -18360,7 +18360,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjopjop_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jop.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, \nthose declared in the source bytecode. ", defaultBool)));
+		setjopjop_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jop.cp","only-regular-locals", "\nOnly propagate copies through \n``regular'' locals, that is, those \ndeclared in the source bytecode. ", defaultBool)));
 		
 		
 		
@@ -18376,7 +18376,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjopjop_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jop.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
+		setjopjop_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jop.cp","only-stack-locals", "\nOnly propagate copies through \nlocals that represent stack locations in \nthe original bytecode. ", defaultBool)));
 		
 		
 
@@ -18530,7 +18530,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjopjop_daeonly_tag_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Tag Dead Code", "p", "jop.dae","only-tag", "\nOnly tag dead assignment statements instead of eliminaing them. \n", defaultBool)));
+		setjopjop_daeonly_tag_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Tag Dead Code", "p", "jop.dae","only-tag", "\nOnly tag dead assignment statements \ninstead of eliminaing them. ", defaultBool)));
 		
 		
 		
@@ -18546,7 +18546,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjopjop_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jop.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
+		setjopjop_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jop.dae","only-stack-locals", "\nOnly eliminate dead assignments to \nlocals that represent stack \nlocations in the original bytecode. ", defaultBool)));
 		
 		
 
@@ -18654,7 +18654,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjopjop_uce1remove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjopjop_uce1, SWT.NONE, new OptionData("Remove unreachable traps", "p", "jop.uce1","remove-unreachable-traps", "\nRemove exception table entries when none of the protected \ninstructions can throw the exception being caught. ", defaultBool)));
+		setjopjop_uce1remove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjopjop_uce1, SWT.NONE, new OptionData("Remove unreachable traps", "p", "jop.uce1","remove-unreachable-traps", "\nRemove exception table entries when \nnone of the protected instructions can \nthrow the exception being caught. ", defaultBool)));
 		
 		
 
@@ -18762,7 +18762,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjopjop_uce2remove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjopjop_uce2, SWT.NONE, new OptionData("Remove unreachable traps", "p", "jop.uce2","remove-unreachable-traps", "\nRemove exception table entries when none of the protected \ninstructions can throw the exception being caught. ", defaultBool)));
+		setjopjop_uce2remove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjopjop_uce2, SWT.NONE, new OptionData("Remove unreachable traps", "p", "jop.uce2","remove-unreachable-traps", "\nRemove exception table entries when \nnone of the protected instructions can \nthrow the exception being caught. ", defaultBool)));
 		
 		
 
@@ -18962,7 +18962,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjapjap_npconly_array_ref_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Only Array Ref", "p", "jap.npc","only-array-ref", "\nAnnotate only array-referencing instructions, instead of all \ninstructions that need null pointer checks. ", defaultBool)));
+		setjapjap_npconly_array_ref_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Only Array Ref", "p", "jap.npc","only-array-ref", "\nAnnotate only array-referencing \ninstructions, instead of all \ninstructions that need null pointer checks. \n", defaultBool)));
 		
 		
 		
@@ -18978,7 +18978,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjapjap_npcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Profiling", "p", "jap.npc","profiling", "\nInsert profiling instructions that at runtime count the number \nof eliminated safe null pointer checks. The inserted profiling \ncode assumes the existence of a MultiCounter class implementing \nthe methods invoked. For details, see the NullPointerChecker \nsource code.", defaultBool)));
+		setjapjap_npcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Profiling", "p", "jap.npc","profiling", "\nInsert profiling instructions \nthat at runtime count the number of \neliminated safe null pointer checks. The inserted profiling \ncode assumes the existence of a \nMultiCounter class implementing \nthe methods invoked. For details, see the \nNullPointerChecker \nsource code. ", defaultBool)));
 		
 		
 
@@ -19086,7 +19086,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjapjap_abcwith_all_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With All", "p", "jap.abc","with-all", "\nSetting the With All option to true is equivalent to setting \neach of With CSE, With Array Ref, With Field Ref, With Class \nField, and With Rectangular Array to true.", defaultBool)));
+		setjapjap_abcwith_all_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With All", "p", "jap.abc","with-all", "\nSetting the With All option to \ntrue is equivalent to setting each \nof With CSE, With Array Ref, With Field Ref, \nWith Class Field, and With Rectangular Array to \ntrue. ", defaultBool)));
 		
 		
 		
@@ -19102,7 +19102,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjapjap_abcwith_cse_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Common Sub-expressions", "p", "jap.abc","with-cse", "\nThe analysis will consider common subexpressions. For example, \nconsider the situation where r1 is assigned a*b; later, r2 is \nassigned a*b, where neither a nor b have changed between the two \nstatements. The analysis can conclude that r2 has the same value \nas r1. Experiments show that this option can improve the result \nslightly.", defaultBool)));
+		setjapjap_abcwith_cse_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Common Sub-expressions", "p", "jap.abc","with-cse", "\nThe analysis will consider \ncommon subexpressions. For example, \nconsider the situation where r1 is assigned \na*b; later, r2 is assigned a*b, where \nneither a nor b have changed between the two \nstatements. The analysis can \nconclude that r2 has the same \nvalue as r1. Experiments show that this option can \nimprove the result slightly. \n", defaultBool)));
 		
 		
 		
@@ -19118,7 +19118,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjapjap_abcwith_arrayref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Array References", "p", "jap.abc","with-arrayref", "\nWith this option enabled, array references can be considered as \ncommon subexpressions; however, we are more conservative when \nwriting into an array, because array objects may be aliased. We \nalso assume that the application is single-threaded or that the \narray references occur in a synchronized block. That is, we \nassume that an array element may not be changed by other threads \nbetween two array references.", defaultBool)));
+		setjapjap_abcwith_arrayref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Array References", "p", "jap.abc","with-arrayref", "\nWith this option enabled, array \nreferences can be considered as \ncommon subexpressions; however, we are more conservative when \nwriting into an array, because \narray objects may be aliased. We \nalso assume that the application is single-threaded or that the \narray references occur in a \nsynchronized block. That is, we \nassume that an array element may not be changed by other threads \nbetween two array references. \n", defaultBool)));
 		
 		
 		
@@ -19134,7 +19134,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjapjap_abcwith_fieldref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Field References", "p", "jap.abc","with-fieldref", "\nThe analysis treats field references (static and instance) as \ncommon subexpressions; however, we are more conservative when \nwriting to a field, because the base of the field reference may \nbe aliased. We also assume that the application is \nsingle-threaded or that the field references occur in a \nsynchronized block. That is, we assume that a field may not be \nchanged by other threads between two field references.", defaultBool)));
+		setjapjap_abcwith_fieldref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Field References", "p", "jap.abc","with-fieldref", "\nThe analysis treats field \nreferences (static and instance) as \ncommon subexpressions; however, we are more conservative when \nwriting to a field, because the \nbase of the field reference may \nbe aliased. We also assume that the application is \nsingle-threaded or that the field references \noccur in a synchronized block. \nThat is, we assume that a field may \nnot be changed by other threads between two field references. \n", defaultBool)));
 		
 		
 		
@@ -19150,7 +19150,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjapjap_abcwith_classfield_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Class Field", "p", "jap.abc","with-classfield", "\nThis option makes the analysis work on the class level. The \nalgorithm analyzes final or private class fields first. It can \nrecognize the fields that hold array objects of constant length. \nIn an application using lots of array fields, this option can \nimprove the analysis results dramatically.", defaultBool)));
+		setjapjap_abcwith_classfield_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Class Field", "p", "jap.abc","with-classfield", "\nThis option makes the analysis \nwork on the class level. The \nalgorithm analyzes final or private class \nfields first. It can recognize the fields that hold \narray objects of constant \nlength. In an application using lots of array \nfields, this option can improve the analysis \nresults dramatically. \n", defaultBool)));
 		
 		
 		
@@ -19166,7 +19166,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjapjap_abcwith_rectarray_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Rectangular Array", "p", "jap.abc","with-rectarray", "\nThis option is used together with wjap.ra to make Soot run the \nwhole-program analysis for rectangular array objects. This \nanalysis is based on the call graph, and it usually takes a long \ntime. If the application uses rectangular arrays, these options \ncan improve the analysis result. ", defaultBool)));
+		setjapjap_abcwith_rectarray_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Rectangular Array", "p", "jap.abc","with-rectarray", "\nThis option is used together with \nwjap.ra to make Soot run the whole-program \nanalysis for rectangular array objects. This analysis is \nbased on the call graph, and it \nusually takes a long time. If the application uses \nrectangular arrays, these options can improve the \nanalysis result. \n", defaultBool)));
 		
 		
 		
@@ -19182,7 +19182,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjapjap_abcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Profiling", "p", "jap.abc","profiling", "\nProfile the results of array bounds check analysis. The \ninserted profiling code assumes the existence of a MultiCounter \nclass implementing the methods invoked. For details, see the \nArrayBoundsChecker source code.", defaultBool)));
+		setjapjap_abcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Profiling", "p", "jap.abc","profiling", "\nProfile the results of array \nbounds check analysis. The inserted \nprofiling code assumes the existence of a \nMultiCounter class \nimplementing the methods invoked. For details, see the \nArrayBoundsChecker \nsource code. ", defaultBool)));
 		
 		
 		
@@ -19260,7 +19260,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjapjap_profilingnotmainentry_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Not Main Entry", "p", "jap.profiling","notmainentry", "\nInsert the calls to the MultiCounter at the beginning and end \nof methods with the signature long \nrunBenchmark(java.lang.String[]) instead of the signature void \nmain(java.lang.String[]).", defaultBool)));
+		setjapjap_profilingnotmainentry_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Not Main Entry", "p", "jap.profiling","notmainentry", "\nInsert the calls to the \nMultiCounter at the beginning \nand end of methods with the signature \nlong runBenchmark(java.lang.String[]) \ninstead of the signature \nvoid main(java.lang.String[]). ", defaultBool)));
 		
 		
 
@@ -19322,7 +19322,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjapjap_seanaive_widget(new BooleanOptionWidget(editGroupjapjap_sea, SWT.NONE, new OptionData("Build naive dependence graph", "p", "jap.sea","naive", "\nWhen set to true, the dependence graph is built with a node for \neach statement, without merging the nodes for equivalent \nstatements. This makes it possible to measure the effect of \nmerging nodes for equivalent statements on the size of the \ndependence graph.", defaultBool)));
+		setjapjap_seanaive_widget(new BooleanOptionWidget(editGroupjapjap_sea, SWT.NONE, new OptionData("Build naive dependence graph", "p", "jap.sea","naive", "\nWhen set to true, the \ndependence graph is built with a node for \neach statement, without merging the nodes for \nequivalent statements. This \nmakes it possible to measure the effect of \nmerging nodes for equivalent statements on the size of \nthe dependence graph. \n", defaultBool)));
 		
 		
 
@@ -19384,7 +19384,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setjapjap_fieldrwthreshold_widget(new StringOptionWidget(editGroupjapjap_fieldrw, SWT.NONE, new OptionData("Maximum number of fields",  "p", "jap.fieldrw","threshold", "\nIf a statement reads/writes more than this number of fields, no \ntag will be produced for it, in order to keep the size of the \ntags reasonable. ", defaultString)));
+		setjapjap_fieldrwthreshold_widget(new StringOptionWidget(editGroupjapjap_fieldrw, SWT.NONE, new OptionData("Maximum number of fields",  "p", "jap.fieldrw","threshold", "\nIf a statement reads/writes more \nthan this number of fields, no tag will be \nproduced for it, in order to keep the size of the tags \nreasonable. ", defaultString)));
 		
 
 		
@@ -19981,7 +19981,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setgbgb_a1only_stack_locals_widget(new BooleanOptionWidget(editGroupgbgb_a1, SWT.NONE, new OptionData("Only Stack Locals", "p", "gb.a1","only-stack-locals", "\nAggregate only values stored in stack locals. ", defaultBool)));
+		setgbgb_a1only_stack_locals_widget(new BooleanOptionWidget(editGroupgbgb_a1, SWT.NONE, new OptionData("Only Stack Locals", "p", "gb.a1","only-stack-locals", "\nAggregate only values stored in \nstack locals. ", defaultBool)));
 		
 		
 
@@ -20089,7 +20089,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setgbgb_a2only_stack_locals_widget(new BooleanOptionWidget(editGroupgbgb_a2, SWT.NONE, new OptionData("Only Stack Locals", "p", "gb.a2","only-stack-locals", "\nAggregate only values stored in stack locals. ", defaultBool)));
+		setgbgb_a2only_stack_locals_widget(new BooleanOptionWidget(editGroupgbgb_a2, SWT.NONE, new OptionData("Only Stack Locals", "p", "gb.a2","only-stack-locals", "\nAggregate only values stored in \nstack locals. ", defaultBool)));
 		
 		
 
@@ -20289,7 +20289,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setbbbb_lsodebug_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Debug", "p", "bb.lso","debug", "\nProduces voluminous debugging output describing the progress of \nthe load store optimizer. ", defaultBool)));
+		setbbbb_lsodebug_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Debug", "p", "bb.lso","debug", "\nProduces voluminous debugging \noutput describing the progress of \nthe load store optimizer. ", defaultBool)));
 		
 		
 		
@@ -20305,7 +20305,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setbbbb_lsointer_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Inter", "p", "bb.lso","inter", "\nEnables two simple inter-block optimizations which attempt to \nkeep some variables on the stack between blocks. Both are \nintended to catch if-like constructions where control flow \nbranches temporarily into two paths that converge at a later \npoint. ", defaultBool)));
+		setbbbb_lsointer_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Inter", "p", "bb.lso","inter", "\nEnables two simple inter-block \noptimizations which attempt to keep \nsome variables on the stack between blocks. Both are \nintended to catch if-like constructions where \ncontrol flow branches temporarily \ninto two paths that converge at a later \npoint. ", defaultBool)));
 		
 		
 		
@@ -20321,7 +20321,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setbbbb_lsosl_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sl", "p", "bb.lso","sl", "\nEnables an optimization which attempts to eliminate store/load \npairs. ", defaultBool)));
+		setbbbb_lsosl_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sl", "p", "bb.lso","sl", "\nEnables an optimization which \nattempts to eliminate store/load \npairs. ", defaultBool)));
 		
 		
 		
@@ -20337,7 +20337,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setbbbb_lsosl2_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sl2", "p", "bb.lso","sl2", "\nEnables an a second pass of the optimization which attempts to \neliminate store/load pairs. ", defaultBool)));
+		setbbbb_lsosl2_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sl2", "p", "bb.lso","sl2", "\nEnables an a second pass of the \noptimization which attempts to \neliminate store/load pairs. ", defaultBool)));
 		
 		
 		
@@ -20353,7 +20353,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setbbbb_lsosll_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sll", "p", "bb.lso","sll", "\nEnables an optimization which \nattempts to eliminate store/load/load trios with some variant of \ndup. ", defaultBool)));
+		setbbbb_lsosll_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sll", "p", "bb.lso","sll", "\nEnables an optimization which \nattempts to eliminate store/load/ \nload trios \nwith some variant of dup. ", defaultBool)));
 		
 		
 		
@@ -20369,7 +20369,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setbbbb_lsosll2_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sll2", "p", "bb.lso","sll2", "\nEnables an a second pass of the optimization which attempts to \neliminate store/load/load trios with some variant of dup. ", defaultBool)));
+		setbbbb_lsosll2_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sll2", "p", "bb.lso","sll2", "\nEnables an a second pass of the \noptimization which attempts to \neliminate store/load/load trios with \nsome variant of dup. ", defaultBool)));
 		
 		
 
@@ -20569,7 +20569,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setbbbb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupbbbb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "bb.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
+		setbbbb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupbbbb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "bb.lp","unsplit-original-locals", "\nUse the variable names in the \noriginal source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines \nnamed locals which were split by the \nLocal Splitter. ", defaultBool)));
 		
 		
 
@@ -20907,7 +20907,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setdbsource_is_javac_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Source", "p", "db","source-is-javac", "\n					check out soot.dava.toolkits.base.misc.ThrowFinder \nIn short we want to ensure that if there are \nthrow exception info in the class file dava uses \nthis info. 					", defaultBool)));
+		setdbsource_is_javac_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Source", "p", "db","source-is-javac", "\ncheck out \nsoot.dava.toolkits.base.misc.ThrowFinder \nIn short we want to ensure that if there are throw exception \ninfo in the class file dava uses this \ninfo. ", defaultBool)));
 		
 		
 
@@ -21023,7 +21023,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	 	
 		editGroupdbdb_deobfuscate.setData("id", "dbdb_deobfuscate");
 		
-		String descdbdb_deobfuscate = " Apply de-obfuscation analyses";	
+		String descdbdb_deobfuscate = "Apply de-obfuscation analyses";	
 		if (descdbdb_deobfuscate.length() > 0) {
 			Label descLabeldbdb_deobfuscate = new Label(editGroupdbdb_deobfuscate, SWT.WRAP);
 			descLabeldbdb_deobfuscate.setText(descdbdb_deobfuscate);
@@ -21069,7 +21069,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	 	
 		editGroupdbdb_force_recompile.setData("id", "dbdb_force_recompile");
 		
-		String descdbdb_force_recompile = " Try to get recompilable code.";	
+		String descdbdb_force_recompile = "Try to get recompilable code.";	
 		if (descdbdb_force_recompile.length() > 0) {
 			Label descLabeldbdb_force_recompile = new Label(editGroupdbdb_force_recompile, SWT.WRAP);
 			descLabeldbdb_force_recompile.setText(descdbdb_force_recompile);
@@ -21137,7 +21137,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setApplication_Mode_Optionsinclude_all_widget(new BooleanOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include All Packages", "", "","include-all", "\nSoot uses a default list of packages (such as java.) which are \ndeemed to contain library classes. This switch removes the \ndefault packages from the list of packages containing library \nclasses. Individual packages can then be added using the exclude \noption. ", defaultBool)));
+		setApplication_Mode_Optionsinclude_all_widget(new BooleanOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include All Packages", "", "","include-all", "\nSoot uses a default list of packages (such as \njava.) which are deemed to contain library \nclasses. This switch removes the default packages from the \nlist of packages containing library classes. \nIndividual packages can then be added using the exclude \noption. ", defaultBool)));
 		
 		
 
@@ -21153,7 +21153,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setApplication_Mode_Optionsinclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include Package",  "", "","i", "\nDesignate classes in packages whose names begin with PKG (e.g. \njava.util.) as application classes which should be analyzed and \noutput. This option allows you to selectively analyze classes in \nsome packages that Soot normally treats as library classes. You \ncan use the include option multiple times, to designate the \nclasses of multiple packages as application classes. If you \nspecify both include and exclude options, first the classes from \nall excluded packages are marked as library classes, then the \nclasses from all included packages are marked as application \nclasses.", defaultString)));
+		setApplication_Mode_Optionsinclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include Package",  "", "","i", "\nDesignate classes in packages whose names \nbegin with PKG (e.g. \njava.util.) as application classes which \nshould be analyzed and output. This option allows \nyou to selectively analyze classes in some packages that \nSoot normally treats as library classes. \nYou can use the include option \nmultiple times, to designate the classes of \nmultiple packages as application classes. \nIf you specify both include and exclude options, \nfirst the classes from all excluded packages \nare marked as library classes, then the \nclasses from all included packages are marked as \napplication classes. ", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"x";
@@ -21168,7 +21168,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setApplication_Mode_Optionsexclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Exclude Package",  "", "","x", "\nExcludes any classes in packages whose names begin with PKG \nfrom the set of application classes which are analyzed and \noutput, treating them as library classes instead. This option \nallows you to selectively exclude classes which would normally \nbe treated as application classes You can use the exclude \noption multiple times, to designate the classes of multiple \npackages as library classes. If you specify both include and \nexclude options, first the classes from all excluded packages \nare marked as library classes, then the classes from all \nincluded packages are marked as application classes.", defaultString)));
+		setApplication_Mode_Optionsexclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Exclude Package",  "", "","x", "\nExcludes any classes in packages whose \nnames begin with PKG \nfrom the set of application classes which are \nanalyzed and output, treating them as library classes instead. \nThis option allows you to selectively exclude \nclasses which would normally be treated as \napplication classes You can \nuse the exclude option multiple times, to designate \nthe classes of multiple packages as library classes. \nIf you specify both include and \nexclude options, first the classes from all \nexcluded packages are marked as library classes, \nthen the classes from all included packages are marked as \napplication classes. ", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dynamic-class";
@@ -21183,7 +21183,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setApplication_Mode_Optionsdynamic_class_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Classes",  "", "","dynamic-class", "\nMark CLASS as a class which the application may load \ndynamically. Soot will read it as a library class even if it is \nnot referenced from the argument classes. This permits whole \nprogram optimizations on programs which load classes dynamically \nif the set of classes that can be loaded is known at compile \ntime. You can use the dynamic class option multiple times to \nspecify more than one dynamic class.", defaultString)));
+		setApplication_Mode_Optionsdynamic_class_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Classes",  "", "","dynamic-class", "\nMark CLASS \nas a class which the application may load \ndynamically. Soot will read it as a library class even if it \nis not referenced from the argument classes. \nThis permits whole program optimizations on \nprograms which load classes dynamically if \nthe set of classes that can be loaded is known at compile \ntime. You can \nuse the dynamic class option multiple times \nto specify more than one dynamic class. ", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dynamic-dir";
@@ -21198,7 +21198,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setApplication_Mode_Optionsdynamic_dir_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Directories",  "", "","dynamic-dir", "\nMark all class files in DIR as classes that may be loaded \ndynamically. Soot will read them as library classes even if \nthey are not referenced from the argument classes. You can \nspecify more than one directory of potentially dynamic classes \nby specifying multiple dynamic directory options.", defaultString)));
+		setApplication_Mode_Optionsdynamic_dir_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Directories",  "", "","dynamic-dir", "\nMark all class files in DIR \nas classes that may be loaded \ndynamically. Soot will read them as library classes \neven if they are not referenced from the argument \nclasses. You can specify \nmore than one directory of potentially dynamic \nclasses by specifying multiple dynamic directory options. \n", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dynamic-package";
@@ -21213,7 +21213,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setApplication_Mode_Optionsdynamic_package_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Package",  "", "","dynamic-package", "\nMarks all class files belonging to the package PKG or any of \nits subpackages as classes which the application may load \ndynamically. Soot will read all classes in PKG as library \nclasses, even if they are not referenced by any of the \nargument classes. To specify more than one dynamic package, use \nthe dynamic package option multiple times.", defaultString)));
+		setApplication_Mode_Optionsdynamic_package_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Package",  "", "","dynamic-package", "\nMarks all class files belonging to the \npackage PKG or any of \nits subpackages as classes which the application may \nload dynamically. Soot will read all classes in \nPKG as \nlibrary classes, even if they are not referenced by any of the \nargument classes. To specify \nmore than one dynamic package, use the dynamic \npackage option multiple times. ", defaultString)));
 		
 
 		
@@ -21258,7 +21258,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setInput_Attribute_Optionskeep_line_number_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Line Number", "", "","keep-line-number", "\nPreserve line number tables for class files throughout the \ntransformations. ", defaultBool)));
+		setInput_Attribute_Optionskeep_line_number_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Line Number", "", "","keep-line-number", "\nPreserve line number tables for class files \nthroughout the transformations. ", defaultBool)));
 		
 		
 		
@@ -21320,7 +21320,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setOutput_Attribute_Optionswrite_local_annotations_widget(new BooleanOptionWidget(editGroupOutput_Attribute_Options, SWT.NONE, new OptionData("Write Out Local Annotations", "", "","write-local-annotations", "\nWrite out debug tables to indicate which register maps to which \nvariable in the Jimple code. ", defaultBool)));
+		setOutput_Attribute_Optionswrite_local_annotations_widget(new BooleanOptionWidget(editGroupOutput_Attribute_Options, SWT.NONE, new OptionData("Write Out Local Annotations", "", "","write-local-annotations", "\nWrite out debug tables to indicate which \nregister maps to which variable in the Jimple code. ", defaultBool)));
 		
 		
 
@@ -21366,7 +21366,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setAnnotation_Optionsannot_purity_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Purity Annotation [AM]", "", "","annot-purity", "\nPurity anaysis implemented by Antoine Mine and based on the \npaper A Combined Pointer and Purity Analysis Java Programs by \nAlexandru Salcianu and Martin Rinard. ", defaultBool)));
+		setAnnotation_Optionsannot_purity_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Purity Annotation [AM]", "", "","annot-purity", "\nPurity anaysis implemented by Antoine Mine and \nbased on the paper A Combined Pointer and Purity \nAnalysis Java Programs by Alexandru Salcianu and \nMartin Rinard. ", defaultBool)));
 		
 		
 		
@@ -21382,7 +21382,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setAnnotation_Optionsannot_nullpointer_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Null Pointer Annotation", "", "","annot-nullpointer", "\nPerform a static analysis of which dereferenced pointers may \nhave null values, and annotate class files with attributes \nencoding the results of the analysis. For details, see \nthe documentation for Null Pointer Annotation \nand for the Array Bounds and Null Pointer Check Tag Aggregator. ", defaultBool)));
+		setAnnotation_Optionsannot_nullpointer_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Null Pointer Annotation", "", "","annot-nullpointer", "\nPerform a static analysis of which dereferenced \npointers may have null values, and annotate \nclass files with attributes encoding the results \nof the analysis. For details, see the \ndocumentation for Null Pointer Annotation and for the \nArray Bounds and Null Pointer Check Tag Aggregator. \n", defaultBool)));
 		
 		
 		
@@ -21398,7 +21398,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setAnnotation_Optionsannot_arraybounds_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Array Bounds Annotation", "", "","annot-arraybounds", "\nPerform a static analysis of which array bounds checks may \nsafely be eliminated and annotate output class files with \nattributes encoding the results of the analysis. For details, \nsee the documentation for Array Bounds Annotation and for the \nArray Bounds and Null Pointer Check Tag Aggregator. ", defaultBool)));
+		setAnnotation_Optionsannot_arraybounds_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Array Bounds Annotation", "", "","annot-arraybounds", "\nPerform a static analysis of which array bounds \nchecks may safely be eliminated and annotate \noutput class files with attributes encoding the \nresults of the analysis. For details, see the \ndocumentation for Array Bounds Annotation and for the Array \nBounds and Null Pointer Check Tag Aggregator. \n", defaultBool)));
 		
 		
 		
@@ -21414,7 +21414,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setAnnotation_Optionsannot_side_effect_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Side effect annotation", "", "","annot-side-effect", "\nEnable the generation of side-effect attributes. ", defaultBool)));
+		setAnnotation_Optionsannot_side_effect_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Side effect annotation", "", "","annot-side-effect", "\nEnable the generation of side-effect \nattributes. ", defaultBool)));
 		
 		
 		
@@ -21476,7 +21476,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setMiscellaneous_Optionstime_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Time", "", "","time", "\nReport the time required to perform some of Soot's \ntransformations. ", defaultBool)));
+		setMiscellaneous_Optionstime_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Time", "", "","time", "\nReport the time required to perform some of \nSoot's transformations. ", defaultBool)));
 		
 		
 		
@@ -21492,7 +21492,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setMiscellaneous_Optionssubtract_gc_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Subtract Garbage Collection Time", "", "","subtract-gc", "\nAttempt to subtract time spent in garbage collection from the \nreports of times required for transformations. ", defaultBool)));
+		setMiscellaneous_Optionssubtract_gc_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Subtract Garbage Collection Time", "", "","subtract-gc", "\nAttempt to subtract time spent in garbage \ncollection from the reports of times required \nfor transformations. ", defaultBool)));
 		
 		
 		
@@ -21508,7 +21508,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 			
 		}
 
-		setMiscellaneous_Optionsno_writeout_body_releasing_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("No body releasing after writeout", "", "","no-writeout-body-releasing", "\nBy default soot releases the method bodies of all reachable \nclasses after the final writeout. This option deactivates this \nbehaviour. This flag should not affect end users at all. ", defaultBool)));
+		setMiscellaneous_Optionsno_writeout_body_releasing_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("No body releasing after writeout", "", "","no-writeout-body-releasing", "\nBy default soot releases the method bodies of \nall reachable classes after the final writeout. This \noption deactivates this behaviour. This flag should not \naffect end users at all. ", defaultBool)));
 		
 		
 

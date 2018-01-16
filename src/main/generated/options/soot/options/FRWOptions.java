@@ -46,9 +46,10 @@ public class FRWOptions
     
      * .
     
-     * If a statement reads/writes more than this number of fields, no 
-     * tag will be produced for it, in order to keep the size of the 
-     * tags reasonable. 
+     * If a statement reads/writes more 
+     * than this number of fields, no tag will be 
+     * produced for it, in order to keep the size of the tags 
+     * reasonable. 
      */
     public int threshold() {
         return soot.PhaseOptions.getInt( options, "threshold" );

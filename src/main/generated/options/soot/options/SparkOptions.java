@@ -46,8 +46,9 @@ public class SparkOptions
     
      * Print detailed information about the execution of Spark.
     
-     * When this option is set to true, Spark prints detailed 
-     * information about its execution. 
+     * When this option is set to 
+     * true, Spark prints detailed information about its execution. 
+     * 
      */
     public boolean verbose() {
         return soot.PhaseOptions.getBoolean( options, "verbose" );
@@ -57,8 +58,10 @@ public class SparkOptions
     
      * Make Spark completely ignore declared types of variables.
     
-     * When this option is set to true, all parts of Spark completely 
-     * ignore declared types of variables and casts. 
+     * When this option is set to 
+     * true, all parts of Spark completely ignore 
+     * declared types of variables and casts. 
+     * 
      */
     public boolean ignore_types() {
         return soot.PhaseOptions.getBoolean( options, "ignore-types" );
@@ -68,8 +71,9 @@ public class SparkOptions
     
      * Force garbage collection for measuring memory usage.
     
-     * When this option is set to true, calls to System.gc() will be 
-     * made at various points to allow memory usage to be measured. 
+     * When this option is set to 
+     * true, calls to System.gc() will be made at 
+     * various points to allow memory usage to be measured. 
      * 
      */
     public boolean force_gc() {
@@ -80,12 +84,15 @@ public class SparkOptions
     
      * Jimplify all methods before starting Spark.
     
-     * When this option is set to true, Spark converts all available 
-     * methods to Jimple before starting the points-to analysis. This 
-     * allows the Jimplification time to be separated from the 
-     * points-to time. However, it increases the total time and memory 
-     * requirement, because all methods are Jimplified, rather than 
-     * only those deemed reachable by the points-to analysis. 
+     * When this option is set to 
+     * true, Spark converts all available methods to Jimple 
+     * before starting the points-to analysis. This 
+     * allows the Jimplification time 
+     * to be separated from the points-to time. However, it increases 
+     * the total time and memory 
+     * requirement, because all methods are Jimplified, 
+     * rather than only those deemed reachable by the 
+     * points-to analysis. 
      */
     public boolean pre_jimplify() {
         return soot.PhaseOptions.getBoolean( options, "pre-jimplify" );
@@ -96,10 +103,12 @@ public class SparkOptions
      * Consider only application classes.
     
      * Setting this option to true causes Soot to only consider 
-     * application classes when building the callgraph. The resulting 
-     * callgraph will be inherently unsound. Still, this option can 
-     * make sense if performance optimization and memory reduction are 
-     * your primary goal.
+     * application classes when 
+     * building the callgraph. The resulting callgraph will be 
+     * inherently unsound. Still, this 
+     * option can make sense if performance optimization and memory 
+     * reduction are your primary goal. 
+     * 
      */
     public boolean apponly() {
         return soot.PhaseOptions.getBoolean( options, "apponly" );
@@ -109,12 +118,15 @@ public class SparkOptions
     
      * Emulate Variable Type Analysis.
     
-     * Setting VTA to true has the effect of setting field-based, 
+     * Setting VTA to true has the 
+     * effect of setting field-based, 
      * types-for-sites, and simplify-sccs to true, and on-fly-cg to 
-     * false, to simulate Variable Type Analysis, described in our 
-     * OOPSLA 2000 paper. Note that the algorithm differs from the 
-     * original VTA in that it handles array elements more precisely. 
-     * 
+     * false, to simulate Variable Type 
+     * Analysis, described in our 
+     * OOPSLA 2000 paper. Note that the 
+     * algorithm differs from the 
+     * original VTA in that it handles array 
+     * elements more precisely. 
      */
     public boolean vta() {
         return soot.PhaseOptions.getBoolean( options, "vta" );
@@ -124,9 +136,11 @@ public class SparkOptions
     
      * Emulate Rapid Type Analysis.
     
-     * Setting RTA to true sets types-for-sites to true, and causes 
-     * Spark to use a single points-to set for all variables, giving 
+     * Setting RTA to true sets 
+     * types-for-sites to true, and causes Spark to use 
+     * a single points-to set for all variables, giving 
      * Rapid Type Analysis. 
+     * 
      */
     public boolean rta() {
         return soot.PhaseOptions.getBoolean( options, "rta" );
@@ -136,12 +150,16 @@ public class SparkOptions
     
      * Use a field-based rather than field-sensitive representation.
     
-     * When this option is set to true, fields are represented by 
-     * variable (Green) nodes, and the object that the field belongs to 
-     * is ignored (all objects are lumped together), giving a 
-     * field-based analysis. Otherwise, fields are represented by field 
-     * reference (Red) nodes, and the objects that they belong to are 
+     * When this option is set to 
+     * true, fields are represented by variable 
+     * (Green) nodes, and the object that the field belongs to 
+     * is ignored (all objects are 
+     * lumped together), giving a field-based analysis. Otherwise, 
+     * fields are represented by 
+     * field reference (Red) nodes, and the 
+     * objects that they belong to are 
      * distinguished, giving a field-sensitive analysis. 
+     * 
      */
     public boolean field_based() {
         return soot.PhaseOptions.getBoolean( options, "field-based" );
@@ -152,8 +170,10 @@ public class SparkOptions
      * Represent objects by their actual type rather than allocation 
      * site.
     
-     * When this option is set to true, types rather than allocation 
-     * sites are used as the elements of the points-to sets. 
+     * When this option is set to 
+     * true, types rather than allocation sites are 
+     * used as the elements of the points-to sets. 
+     * 
      */
     public boolean types_for_sites() {
         return soot.PhaseOptions.getBoolean( options, "types-for-sites" );
@@ -163,8 +183,10 @@ public class SparkOptions
     
      * Represent all StringBuffers as one object.
     
-     * When this option is set to true, all allocation sites creating 
-     * java.lang.StringBuffer objects are grouped together as a single 
+     * When this option is set to 
+     * true, all allocation sites creating 
+     * java.lang.StringBuffer 
+     * objects are grouped together as a single 
      * allocation site. 
      */
     public boolean merge_stringbuffer() {
@@ -175,12 +197,15 @@ public class SparkOptions
     
      * Propagate all string constants, not just class names.
     
-     * When this option is set to false, Spark only distinguishes 
-     * string constants that may be the name of a class loaded 
-     * dynamically using reflection, and all other string constants are 
-     * lumped together into a single string constant node. Setting this 
-     * option to true causes all string constants to be propagated 
+     * When this option is set to 
+     * false, Spark only distinguishes string constants that 
+     * may be the name of a class loaded 
+     * dynamically using reflection, and all other 
+     * string constants are lumped together into a single 
+     * string constant node. Setting 
+     * this option to true causes all string constants to be propagated 
      * individually. 
+     * 
      */
     public boolean string_constants() {
         return soot.PhaseOptions.getBoolean( options, "string-constants" );
@@ -190,8 +215,10 @@ public class SparkOptions
     
      * Simulate effects of native methods in standard class library.
     
-     * When this option is set to true, the effects of native methods 
-     * in the standard Java class library are simulated. 
+     * When this option is set to 
+     * true, the effects of native methods in the standard Java 
+     * class library are simulated. 
+     * 
      */
     public boolean simulate_natives() {
         return soot.PhaseOptions.getBoolean( options, "simulate-natives" );
@@ -203,10 +230,13 @@ public class SparkOptions
     
      * When this option is set to 
      * true, Spark treats references to 
-     * EMPTYSET, EMPTYMAP, and EMPTYLIST as allocation sites for 
-     * HashSet, HashMap and LinkedList objects respectively, and 
-     * references to Hashtable.emptyIterator as allocation sites for 
-     * Hashtable.EmptyIterator. This enables subsequent analyses to 
+     * EMPTYSET, EMPTYMAP, and 
+     * EMPTYLIST as allocation sites 
+     * for HashSet, HashMap and 
+     * LinkedList objects respectively, 
+     * and references to Hashtable.emptyIterator as 
+     * allocation sites for Hashtable.EmptyIterator. This 
+     * enables subsequent analyses to 
      * differentiate different uses of Java's immutable empty 
      * collections. 
      */
@@ -218,9 +248,11 @@ public class SparkOptions
     
      * Equality-based analysis between variable nodes.
     
-     * When this option is set to true, all edges connecting variable 
-     * (Green) nodes are made bidirectional, as in Steensgaard's 
-     * analysis. 
+     * When this option is set to 
+     * true, all edges connecting variable (Green) 
+     * nodes are made bidirectional, as in 
+     * Steensgaard's analysis. 
+     * 
      */
     public boolean simple_edges_bidirectional() {
         return soot.PhaseOptions.getBoolean( options, "simple-edges-bidirectional" );
@@ -230,9 +262,11 @@ public class SparkOptions
     
      * Build call graph as receiver types become known.
     
-     * When this option is set to true, the call graph is computed 
-     * on-the-fly as points-to information is computed. Otherwise, an 
-     * initial CHA approximation to the call graph is used. 
+     * When this option is set to 
+     * true, the call graph is computed on-the-fly 
+     * as points-to information is computed. Otherwise, an 
+     * initial CHA approximation to the 
+     * call graph is used. 
      */
     public boolean on_fly_cg() {
         return soot.PhaseOptions.getBoolean( options, "on-fly-cg" );
@@ -242,9 +276,11 @@ public class SparkOptions
     
      * Collapse single-entry subgraphs of the PAG.
     
-     * When this option is set to true, variable (Green) nodes which 
-     * form single-entry subgraphs (so they must have the same 
-     * points-to set) are merged before propagation begins. 
+     * When this option is set to 
+     * true, variable (Green) nodes which form 
+     * single-entry subgraphs (so they must have the same 
+     * points-to set) are merged before 
+     * propagation begins. 
      */
     public boolean simplify_offline() {
         return soot.PhaseOptions.getBoolean( options, "simplify-offline" );
@@ -254,9 +290,11 @@ public class SparkOptions
     
      * Collapse strongly-connected components of the PAG.
     
-     * When this option is set to true, variable (Green) nodes which 
-     * form strongly-connected components (so they must have the same 
-     * points-to set) are merged before propagation begins. 
+     * When this option is set to 
+     * true, variable (Green) nodes which form 
+     * strongly-connected components (so they must have the same 
+     * points-to set) are merged before 
+     * propagation begins. 
      */
     public boolean simplify_sccs() {
         return soot.PhaseOptions.getBoolean( options, "simplify-sccs" );
@@ -266,13 +304,17 @@ public class SparkOptions
     
      * Ignore declared types when determining node equivalence for SCCs.
     
-     * When this option is set to true, when collapsing 
-     * strongly-connected components, nodes forming SCCs are collapsed 
-     * regardless of their declared type. The collapsed SCC is given 
-     * the most general type of all the nodes in the component. When 
-     * this option is set to false, only edges connecting nodes of the 
-     * same type are considered when detecting SCCs. This option has 
-     * no effect unless simplify-sccs is true. 
+     * When this option is set to 
+     * true, when collapsing strongly-connected 
+     * components, nodes forming SCCs are collapsed regardless 
+     * of their declared type. The 
+     * collapsed SCC is given the most general type of all the nodes in 
+     * the component. 
+     * When this option is set to false, only edges 
+     * connecting nodes of the same 
+     * type are considered when detecting SCCs. 
+     * This option has no effect unless simplify-sccs is true. 
+     * 
      */
     public boolean ignore_types_for_sccs() {
         return soot.PhaseOptions.getBoolean( options, "ignore-types-for-sccs" );
@@ -282,10 +324,13 @@ public class SparkOptions
     
      * Dump pointer assignment graph to HTML for debugging.
     
-     * When this option is set to true, a browseable HTML 
-     * representation of the pointer assignment graph is output to a 
-     * file called pag.jar after the analysis completes. Note that this 
+     * When this option is set to 
+     * true, a browseable HTML representation of the 
+     * pointer assignment graph is output to a file called 
+     * pag.jar after the analysis 
+     * completes. Note that this 
      * representation is typically very large. 
+     * 
      */
     public boolean dump_html() {
         return soot.PhaseOptions.getBoolean( options, "dump-html" );
@@ -295,10 +340,11 @@ public class SparkOptions
     
      * Dump pointer assignment graph for other solvers.
     
-     * When this option is set to true, a representation of the 
-     * pointer assignment graph suitable for processing with other 
-     * solvers (such as the BDD-based solver) is output before the 
-     * analysis begins. 
+     * When this option is set to 
+     * true, a representation of the pointer assignment graph 
+     * suitable for processing with other solvers 
+     * (such as the BDD-based solver) is 
+     * output before the analysis begins. 
      */
     public boolean dump_pag() {
         return soot.PhaseOptions.getBoolean( options, "dump-pag" );
@@ -308,10 +354,12 @@ public class SparkOptions
     
      * Dump final solution for comparison with other solvers.
     
-     * When this option is set to true, a representation of the 
-     * resulting points-to sets is dumped. The format is similar to 
-     * that of the Dump PAG option, and is therefore suitable for 
-     * comparison with the results of other solvers. 
+     * When this option is set to 
+     * true, a representation of the resulting points-to 
+     * sets is dumped. The format is similar to that 
+     * of the Dump PAG option, and is 
+     * therefore suitable for comparison with the results of other 
+     * solvers. 
      */
     public boolean dump_solution() {
         return soot.PhaseOptions.getBoolean( options, "dump-solution" );
@@ -321,9 +369,11 @@ public class SparkOptions
     
      * Sort variable nodes in dump.
     
-     * When this option is set to true, the representation dumped by 
-     * the Dump PAG option is dumped with the variable (green) nodes in 
-     * (pseudo-)topological order. This option has no effect unless 
+     * When this option is set to 
+     * true, the representation dumped by the 
+     * Dump PAG option is dumped 
+     * with the variable (green) nodes in (pseudo-)topological order. 
+     * This option has no effect unless 
      * Dump PAG is true. 
      */
     public boolean topo_sort() {
@@ -334,9 +384,12 @@ public class SparkOptions
     
      * Include declared types in dump.
     
-     * When this option is set to true, the representation dumped by 
-     * the Dump PAG option includes type information for all nodes. 
+     * When this option is set to 
+     * true, the representation dumped by the 
+     * Dump PAG option includes 
+     * type information for all nodes. 
      * This option has no effect unless Dump PAG is true. 
+     * 
      */
     public boolean dump_types() {
         return soot.PhaseOptions.getBoolean( options, "dump-types" );
@@ -346,12 +399,16 @@ public class SparkOptions
     
      * In dump, label variables by class and method.
     
-     * When this option is set to true, the representation dumped by 
-     * the Dump PAG option represents nodes by numbering each class, 
-     * method, and variable within the method separately, rather than 
-     * assigning a single integer to each node. This option has no 
-     * effect unless Dump PAG is true. Setting Class Method Var to 
-     * true has the effect of setting Topological Sort to false. 
+     * When this option is set to 
+     * true, the representation dumped by the 
+     * Dump PAG option represents 
+     * nodes by numbering each class, method, and variable within 
+     * the method separately, rather than 
+     * assigning a single integer to each 
+     * node. This option has no 
+     * effect unless Dump PAG is true. Setting Class 
+     * Method Var to true has the effect of setting 
+     * Topological Sort to false. 
      * 
      */
     public boolean class_method_var() {
@@ -362,10 +419,12 @@ public class SparkOptions
     
      * Dump computed reaching types for comparison with other solvers.
     
-     * When this option is set to true, the computed reaching types 
-     * for each variable are dumped to a file, so that they can be 
-     * compared with the results of other analyses (such as the old 
-     * VTA). 
+     * When this option is set to 
+     * true, the computed reaching types for each variable are 
+     * dumped to a file, so that they can be 
+     * compared with the results of 
+     * other analyses (such as the old VTA). 
+     * 
      */
     public boolean dump_answer() {
         return soot.PhaseOptions.getBoolean( options, "dump-answer" );
@@ -375,9 +434,10 @@ public class SparkOptions
     
      * Output points-to results in tags for viewing with the Jimple.
     
-     * When this option is set to true, the results of the 
-     * analysis are encoded within tags and printed with the resulting 
-     * Jimple code. 
+     * When this option is set to 
+     * true, the results of the analysis are encoded within 
+     * tags and printed with the resulting Jimple 
+     * code. 
      */
     public boolean add_tags() {
         return soot.PhaseOptions.getBoolean( options, "add-tags" );
@@ -387,8 +447,9 @@ public class SparkOptions
     
      * Calculate statistics about points-to set sizes.
     
-     * When this option is set to true, Spark computes and prints 
-     * various cryptic statistics about the size of the points-to sets 
+     * When this option is set to 
+     * true, Spark computes and prints various 
+     * cryptic statistics about the size of the points-to sets 
      * computed. 
      */
     public boolean set_mass() {
@@ -398,11 +459,13 @@ public class SparkOptions
     /** Demand-driven refinement-based context-sensitive points-to analysis --
     
      * After running Spark, refine points-to sets on demand with 
-     * context information.
+     * context information .
     
-     * When this option is set to true, Manu Sridharan's 
-     * demand-driven, refinement-based points-to analysis (PLDI 06) is 
-     * applied after Spark was run. 					
+     * When this option is set to 
+     * true, Manu Sridharan's demand-driven, 
+     * refinement-based points-to analysis (PLDI 06) is applied 
+     * after Spark was run. 
+     * 
      */
     public boolean cs_demand() {
         return soot.PhaseOptions.getBoolean( options, "cs-demand" );
@@ -411,16 +474,20 @@ public class SparkOptions
     /** Create lazy points-to sets --
     
      * Create lazy points-to sets that create context information only 
-     * when needed..
+     * when needed. .
     
-     * When this option is disabled, context information is computed 
-     * for every query to the reachingObjects method. When it is 
-     * enabled, a call to reachingObjects returns a lazy wrapper object 
-     * that contains a context-insensitive points-to set. This set is 
-     * then automatically refined with context information when 
-     * necessary, i.e. when we try to determine the intersection with 
-     * another points-to set and this intersection seems to be 
-     * non-empty. 					
+     * When this option is disabled, 
+     * context information is computed for every query to the 
+     * reachingObjects method. 
+     * When it is enabled, a call to reachingObjects 
+     * returns a lazy wrapper object that 
+     * contains a context-insensitive 
+     * points-to set. This set is then automatically refined with 
+     * context information when 
+     * necessary, i.e. when we try to 
+     * determine the intersection with another points-to set and this 
+     * intersection seems to be 
+     * non-empty. 
      */
     public boolean lazy_pts() {
         return soot.PhaseOptions.getBoolean( options, "lazy-pts" );
@@ -430,8 +497,8 @@ public class SparkOptions
     
      * This switch enables/disables the geometric analysis..
     
-     * 						 This switch enables/disables the geometric analysis. 
-     * 						 
+     * This switch enables/disables 
+     * the geometric analysis. 
      */
     public boolean geom_pta() {
         return soot.PhaseOptions.getBoolean( options, "geom-pta" );
@@ -441,10 +508,12 @@ public class SparkOptions
     
      * Transform to context-insensitive result.
     
-     * 						 If you stick to working with SPARK, you can use this 
-     * option to transform the context sensitive result to insensitive 
-     * result. After the transformation, the context sensitive 
-     * points-to quries cannot be answered. 						 
+     * If you stick to working with 
+     * SPARK, you can use this option to transform the context 
+     * sensitive result to insensitive result. 
+     * After the transformation, the context sensitive 
+     * points-to quries cannot be answered. 
+     * 
      */
     public boolean geom_trans() {
         return soot.PhaseOptions.getBoolean( options, "geom-trans" );
@@ -454,8 +523,10 @@ public class SparkOptions
     
      * Enable blocking strategy for recursive calls.
     
-     * 						 Blocking strategy is a 1CFA model for recursive 
-     * calls. This model significantly improves the precision. 						 
+     * Blocking strategy is a 1CFA 
+     * model for recursive calls. This model significantly improves 
+     * the precision. 
+     * 
      */
     public boolean geom_blocking() {
         return soot.PhaseOptions.getBoolean( options, "geom-blocking" );
@@ -466,11 +537,13 @@ public class SparkOptions
      * Processing pointers that impact pointers in application code 
      * only.
     
-     * 						 When this option is true, geomPTA only processes the 
-     * pointers in library functions ( java.*, sun.*, and etc.) that 
-     * potentially impact the points-to information of pointers in 
-     * application code, the pointers in application code, and the base 
-     * pointers at virtual callsites. 						 
+     * When this option is true, 
+     * geomPTA only processes the pointers in library functions ( 
+     * java.*, sun.*, and etc.) that 
+     * potentially impact the points-to information of pointers 
+     * in application code, the pointers in 
+     * application code, and the base pointers at virtual 
+     * callsites. 
      */
     public boolean geom_app_only() {
         return soot.PhaseOptions.getBoolean( options, "geom-app-only" );
@@ -481,9 +554,10 @@ public class SparkOptions
      * Make the analysis traverse at most this number of nodes per 
      * query..
     
-     * Make the analysis traverse at most this number of nodes per 
-     * query. This quota is evenly shared between multiple passes (see 
-     * next option). 					
+     * Make the analysis traverse at 
+     * most this number of nodes per query. 
+     * This quota is evenly shared between multiple passes (see 
+     * next option). 
      */
     public int traversal() {
         return soot.PhaseOptions.getInt( options, "traversal" );
@@ -493,9 +567,10 @@ public class SparkOptions
     
      * Perform at most this number of refinement iterations..
     
-     * Perform at most this number of refinement iterations. Each 
+     * Perform at most this number of 
+     * refinement iterations. Each 
      * iteration traverses at most ( traverse / passes ) nodes. 
-     * 					
+     * 
      */
     public int passes() {
         return soot.PhaseOptions.getInt( options, "passes" );
@@ -505,12 +580,14 @@ public class SparkOptions
     
      * Precision evaluation methodologies.
     
-     * 						 We internally provide some precision evaluation 
-     * methodologies and classify the evaluation strength into three 
-     * levels. If level is 0, we do nothing. If level is 1, we report 
-     * the statistical information about the points-to result. If level 
-     * is 2, we perform the virtual callsite resolution, static cast 
-     * safety and all-pairs alias evaluations. 						 
+     * We internally provide some 
+     * precision evaluation methodologies and classify the 
+     * evaluation strength into three levels. If 
+     * level is 0, we do nothing. If level is 1, we 
+     * report the statistical information about the 
+     * points-to result. If level is 2, we perform 
+     * the virtual callsite resolution, static cast safety 
+     * and all-pairs alias evaluations. 
      */
     public int geom_eval() {
         return soot.PhaseOptions.getInt( options, "geom-eval" );
@@ -520,9 +597,11 @@ public class SparkOptions
     
      * Fractional parameter for precision/performance trade-off.
     
-     * 						 This option specifies the fractional parameter, which 
-     * manually balances the precision and the performance. Smaller 
-     * value means better performance and worse precision. 						 
+     * This option specifies the 
+     * fractional parameter, which manually balances the precision 
+     * and the performance. Smaller value 
+     * means better performance and worse precision. 
+     * 
      */
     public int geom_frac_base() {
         return soot.PhaseOptions.getInt( options, "geom-frac-base" );
@@ -532,8 +611,10 @@ public class SparkOptions
     
      * Iterations of analysis.
     
-     * 						 We can run multiple times of the geometric analysis 
-     * to continuously improve the analysis precision. 						 
+     * We can run multiple times of 
+     * the geometric analysis to continuously improve the analysis 
+     * precision. 
+     * 
      */
     public int geom_runs() {
         return soot.PhaseOptions.getInt( options, "geom-runs" );
@@ -543,8 +624,10 @@ public class SparkOptions
     
      * Filename for detailed execution log.
     
-     * 						 If you want to save the geomPTA analysis information 
-     * for future analysis, please provide a file name. 						 
+     * If you want to save the geomPTA 
+     * analysis information for future analysis, please provide 
+     * a file name. 
+     * 
      */
     public String geom_dump_verbose() {
         return soot.PhaseOptions.getString( options, "geom-dump-verbose" );
@@ -554,12 +637,15 @@ public class SparkOptions
     
      * Filename for verification file.
     
-     * 						 If you want to compare the precision of the points-to 
-     * results with other solvers (e.g. Paddle), you can use the 
+     * If you want to compare the 
+     * precision of the points-to results with other solvers (e.g. 
+     * Paddle), you can use the 
      * 'verify-file' to specify the list of methods (soot method 
-     * signature format) that are reachable by that solver. During the 
-     * internal evaluations (see the option geom-eval), we only 
-     * consider the methods that are common to both solvers. 						 
+     * signature format) that are reachable by 
+     * that solver. During the internal evaluations 
+     * (see the option geom-eval), we only consider the 
+     * methods that are common to both 
+     * solvers. 
      */
     public String geom_verify_name() {
         return soot.PhaseOptions.getString( options, "geom-verify-name" );
@@ -575,8 +661,8 @@ public class SparkOptions
     
      * Select propagation algorithm.
     
-     * This option tells Spark which propagation algorithm to use. 
-     * 
+     * This option tells Spark which 
+     * propagation algorithm to use. 
      */
     public int propagator() {
         String s = soot.PhaseOptions.getString( options, "propagator" );
@@ -613,7 +699,8 @@ public class SparkOptions
     
      * Select points-to set implementation.
     
-     * Select an implementation of points-to sets for Spark to use. 
+     * Select an implementation of 
+     * points-to sets for Spark to use. 
      */
     public int set_impl() {
         String s = soot.PhaseOptions.getString( options, "set-impl" );
@@ -653,9 +740,11 @@ public class SparkOptions
      * Select implementation of points-to set for old part of double 
      * set.
     
-     * Select an implementation for sets of old objects in the double 
-     * points-to set implementation. This option has no effect unless 
-     * Set Implementation is set to double. 
+     * Select an implementation for 
+     * sets of old objects in the double 
+     * points-to set implementation. 
+     * This option has no effect unless Set Implementation is set to 
+     * double. 
      */
     public int double_set_old() {
         String s = soot.PhaseOptions.getString( options, "double-set-old" );
@@ -692,9 +781,11 @@ public class SparkOptions
      * Select implementation of points-to set for new part of double 
      * set.
     
-     * Select an implementation for sets of new objects in the double 
-     * points-to set implementation. This option has no effect unless 
-     * Set Implementation is set to double. 
+     * Select an implementation for 
+     * sets of new objects in the double 
+     * points-to set implementation. 
+     * This option has no effect unless Set Implementation is set to 
+     * double. 
      */
     public int double_set_new() {
         String s = soot.PhaseOptions.getString( options, "double-set-new" );
@@ -728,10 +819,11 @@ public class SparkOptions
      * Encoding methodology.
     
      * This switch specifies the 
-     * encoding methodology used in the analysis. 						 All 
-     * possible options are: Geom, HeapIns, PtIns. The efficiency order 
-     * 						 is (from slow to fast) Geom - HeapIns - PtIns, but the 
-     * precision order is 						 the reverse. 
+     * encoding methodology used in the analysis. 
+     * All possible options are: Geom, HeapIns, PtIns. The 
+     * efficiency order is (from slow 
+     * to fast) Geom - HeapIns - PtIns, but the precision order is 
+     * the reverse. 
      * 
      */
     public int geom_encoding() {
@@ -755,10 +847,12 @@ public class SparkOptions
     
      * Worklist type.
     
-     * 						 Specifies the worklist used for selecting the next 
-     * propagation pointer. All possible options are: PQ, FIFO. They 
-     * stand for the priority queue (sorted by the last fire time and 
-     * topology order) and FIFO queue. 
+     * Specifies the worklist used for 
+     * selecting the next propagation pointer. All possible 
+     * options are: PQ, FIFO. They stand for the 
+     * priority queue (sorted by the last fire time 
+     * and topology order) and FIFO queue. 
+     * 
      */
     public int geom_worklist() {
         String s = soot.PhaseOptions.getString( options, "geom-worklist" );

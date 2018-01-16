@@ -44,12 +44,15 @@ public class RenameDuplicatedClasses
     
     /** FixedClassNames --
     
-     * Set for the fixed class names..
+     * Set for 
+     * the fixed class names. .
     
-     * 							Use this parameter to set some class names unchangable 
-     * even they are duplicated. 							The fixed class name list 
-     * cannot contain duplicated class names. 							Using '-' to split 
-     * multiple class names (e.g., fcn:a.b.c-a.b.d). 						
+     * Use this parameter to set some 
+     * class names unchangable even they are duplicated. 
+     * The fixed class name list cannot contain duplicated 
+     * class names. Using '-' to split 
+     * multiple class names (e.g., fcn:a.b.c-a.b.d). 
+     * 
      */
     public String fixed_class_names() {
         return soot.PhaseOptions.getString( options, "fcn" );

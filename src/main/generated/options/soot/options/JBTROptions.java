@@ -46,13 +46,16 @@ public class JBTROptions
     
      * Enables the older type assigner.
     
-     * This enables the older type assigner that was in use until May 
-     * 2008. The current type assigner is a reimplementation by Ben 
-     * Bellamy that uses an entirely new and faster algorithm which 
-     * always assigns the most narrow type possible. If 
-     * compare-type-assigners is on, this option causes the older type 
-     * assigner to execute first. (Otherwise the newer one is executed 
-     * first.) 
+     * This enables the older type 
+     * assigner that was in use until May 2008. 
+     * The current type assigner is a reimplementation by Ben 
+     * Bellamy that uses an entirely new 
+     * and faster algorithm which always assigns 
+     * the most narrow type possible. If compare-type-assigners is 
+     * on, this option causes the older 
+     * type assigner to execute first. 
+     * (Otherwise the newer one is executed first.) 
+     * 
      */
     public boolean use_older_type_assigner() {
         return soot.PhaseOptions.getBoolean( options, "use-older-type-assigner" );
@@ -62,8 +65,10 @@ public class JBTROptions
     
      * Compares Ben Bellamy's and the older type assigner.
     
-     * Enables comparison (both runtime and results) of Ben Bellamy's 
-     * type assigner with the older type assigner that was in Soot. 
+     * Enables comparison (both runtime 
+     * and results) of Ben Bellamy's type assigner with the 
+     * older type assigner that was in Soot. 
+     * 
      */
     public boolean compare_type_assigners() {
         return soot.PhaseOptions.getBoolean( options, "compare-type-assigners" );
@@ -74,10 +79,11 @@ public class JBTROptions
      * Ignores virtual method calls on base objects that may only be 
      * null.
     
-     * 					 If this option is enabled, Soot wiil not check whether 
-     * the base object of a virtual method 					 call can only be 
-     * null. This will lead to the null_type pseudo type being used in 
-     * your Jimple 					 code. 
+     * If this option is enabled, Soot 
+     * wiil not check whether the base object of a virtual method 
+     * call can only be null. This will lead to 
+     * the null_type pseudo type being used in your Jimple 
+     * code. 
      */
     public boolean ignore_nullpointer_dereferences() {
         return soot.PhaseOptions.getBoolean( options, "ignore-nullpointer-dereferences" );

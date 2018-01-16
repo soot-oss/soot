@@ -47,8 +47,9 @@ public class CHAOptions
      * Print statistics about the resulting call graph.
     
      * Setting this option to true causes Soot to print out statistics 
-     * about the call graph computed by this phase, such as the number 
-     * of methods determined to be reachable.
+     * about the call graph computed by 
+     * this phase, such as the number of methods determined to be 
+     * reachable. 
      */
     public boolean verbose() {
         return soot.PhaseOptions.getBoolean( options, "verbose" );
@@ -59,10 +60,12 @@ public class CHAOptions
      * Consider only application classes.
     
      * Setting this option to true causes Soot to only consider 
-     * application classes when building the callgraph. The resulting 
-     * callgraph will be inherently unsound. Still, this option can 
-     * make sense if performance optimization and memory reduction are 
-     * your primary goal.
+     * application classes when building 
+     * the callgraph. The resulting callgraph will be inherently 
+     * unsound. Still, this option can make 
+     * sense if performance optimization and memory reduction are your 
+     * primary goal. 
+     * 
      */
     public boolean apponly() {
         return soot.PhaseOptions.getBoolean( options, "apponly" );
