@@ -19,6 +19,29 @@
 
 package soot;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
+// [AM]
+//import soot.javaToJimple.toolkits.*;
+
 import heros.solver.CountingThreadPoolExecutor;
 import soot.baf.Baf;
 import soot.baf.BafASMBackend;
@@ -26,7 +49,11 @@ import soot.baf.BafBody;
 import soot.baf.toolkits.base.LoadStoreOptimizer;
 import soot.baf.toolkits.base.PeepholeOptimizer;
 import soot.baf.toolkits.base.StoreChainOptimizer;
-import soot.dava.*;
+import soot.dava.Dava;
+import soot.dava.DavaBody;
+import soot.dava.DavaBuildFile;
+import soot.dava.DavaPrinter;
+import soot.dava.DavaStaticBlockCleaner;
 import soot.dava.toolkits.base.AST.interProcedural.InterProceduralAnalyses;
 import soot.dava.toolkits.base.AST.transformations.RemoveEmptyBodyDefaultConstructor;
 import soot.dava.toolkits.base.AST.transformations.VoidReturnRemover;
@@ -71,7 +98,16 @@ import soot.jimple.toolkits.pointer.DependenceTagAggregator;
 import soot.jimple.toolkits.pointer.ParameterAliasTagger;
 import soot.jimple.toolkits.pointer.SideEffectTagger;
 import soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer;
-import soot.jimple.toolkits.scalar.*;
+import soot.jimple.toolkits.scalar.CommonSubexpressionEliminator;
+import soot.jimple.toolkits.scalar.ConditionalBranchFolder;
+import soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder;
+import soot.jimple.toolkits.scalar.CopyPropagator;
+import soot.jimple.toolkits.scalar.DeadAssignmentEliminator;
+import soot.jimple.toolkits.scalar.EmptySwitchEliminator;
+import soot.jimple.toolkits.scalar.LocalNameStandardizer;
+import soot.jimple.toolkits.scalar.NopEliminator;
+import soot.jimple.toolkits.scalar.UnconditionalBranchFolder;
+import soot.jimple.toolkits.scalar.UnreachableCodeEliminator;
 import soot.jimple.toolkits.scalar.pre.BusyCodeMotion;
 import soot.jimple.toolkits.scalar.pre.LazyCodeMotion;
 import soot.jimple.toolkits.thread.mhp.MhpTransformer;
@@ -89,7 +125,11 @@ import soot.toDex.DexPrinter;
 import soot.toolkits.exceptions.DuplicateCatchAllTrapRemover;
 import soot.toolkits.exceptions.TrapTightener;
 import soot.toolkits.graph.interaction.InteractionHandler;
-import soot.toolkits.scalar.*;
+import soot.toolkits.scalar.ConstantInitializerToTagTransformer;
+import soot.toolkits.scalar.ConstantValueToInitializerTransformer;
+import soot.toolkits.scalar.LocalPacker;
+import soot.toolkits.scalar.LocalSplitter;
+import soot.toolkits.scalar.UnusedLocalEliminator;
 import soot.util.Chain;
 import soot.util.EscapedWriter;
 import soot.util.JasminOutputStream;
@@ -97,34 +137,23 @@ import soot.util.PhaseDumper;
 import soot.xml.TagCollector;
 import soot.xml.XMLPrinter;
 
-import java.io.*;
-import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.jar.JarEntry;
-import java.util.jar.JarOutputStream;
-import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipEntry;
-// [AM]
-//import soot.javaToJimple.toolkits.*;
-
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
 	public static boolean DEBUG = false;
-    private final Map<String, Pack> packNameToPack = new HashMap<String, Pack>();
-    private final List<Pack> packList = new LinkedList<Pack>();
-    private boolean onlyStandardPacks = false;
-    private JarOutputStream jarFile = null;
-    private DexPrinter dexPrinter = null;
+	private final Map<String, Pack> packNameToPack = new HashMap<String, Pack>();
+	private final List<Pack> packList = new LinkedList<Pack>();
+	private boolean onlyStandardPacks = false;
+	private JarOutputStream jarFile = null;
+	protected DexPrinter dexPrinter = null;
 
 	public PackManager(Singletons.Global g) {
 		PhaseOptions.v().setPackManager(this);
 		init();
 	}
 
-    public static PackManager v() {
-        return G.v().soot_PackManager();
-    }
+	public static PackManager v() {
+		return G.v().soot_PackManager();
+	}
 
 	public boolean onlyStandardPacks() {
 		return onlyStandardPacks;
@@ -178,9 +207,9 @@ public class PackManager {
 
 		// Whole-Jimple Pre-processing Pack
 		addPack(p = new ScenePack("wjpp"));
-        {
-            p.add(new Transform("wjpp.cimbt", ConstantInvokeMethodBaseTransformer.v()));
-        }
+		{
+			p.add(new Transform("wjpp.cimbt", ConstantInvokeMethodBaseTransformer.v()));
+		}
 
 		// Whole-Shimple Pre-processing Pack
 		addPack(p = new ScenePack("wspp"));
@@ -392,8 +421,8 @@ public class PackManager {
 		}
 
 		setupJAR();
-        for (String path : Options.v().process_dir()) {
-            // hack1: resolve to signatures only
+		for (String path : Options.v().process_dir()) {
+			// hack1: resolve to signatures only
 			for (String cl : SourceLocator.v().getClassesUnder(path)) {
 				SootClass clazz = Scene.v().forceResolve(cl, SootClass.SIGNATURES);
 				clazz.setApplicationClass();
@@ -646,7 +675,7 @@ public class PackManager {
 		agg.internalTransform("", null);
 	}
 
-	private void writeOutput(Iterator<SootClass> classes) {
+	protected void writeOutput(Iterator<SootClass> classes) {
 		// If we're writing individual class files, we can write them
 		// concurrently. Otherwise, we need to synchronize for not destroying
 		// the shared output stream.
@@ -791,7 +820,7 @@ public class PackManager {
 		ArrayList<String> decompiledClasses = new ArrayList<String>();
 		Iterator<SootClass> classIt = appClasses.iterator();
 		while (classIt.hasNext()) {
-            SootClass s = classIt.next();
+			SootClass s = classIt.next();
 
 			OutputStream streamOut = null;
 			PrintWriter writerOut = null;
@@ -1017,8 +1046,8 @@ public class PackManager {
 				ArrayList<SootMethod> sootMethodsAdded = G.v().SootMethodsAdded;
 				Iterator<SootMethod> it = sootMethodsAdded.iterator();
 				while (it.hasNext()) {
-                    c.addMethod(it.next());
-                }
+					c.addMethod(it.next());
+				}
 				G.v().SootMethodsAdded = new ArrayList<SootMethod>();
 				G.v().SootMethodAddedByDava = false;
 			}
@@ -1159,8 +1188,8 @@ public class PackManager {
 		if (Options.v().output_format() != Options.output_format_jimple)
 			return;
 		while (classes.hasNext()) {
-            SootClass c = classes.next();
-            processXMLForClass(c);
+			SootClass c = classes.next();
+			processXMLForClass(c);
 		}
 	}
 
@@ -1201,8 +1230,8 @@ public class PackManager {
 
 		Iterator<SootClass> clIt = reachableClasses();
 		while (clIt.hasNext()) {
-            SootClass cl = clIt.next();
-            // note: the following is a snapshot iterator;
+			SootClass cl = clIt.next();
+			// note: the following is a snapshot iterator;
 			// this is necessary because it can happen that phantom methods
 			// are added during resolution
 			Iterator<SootMethod> methodIt = cl.getMethods().iterator();
@@ -1229,7 +1258,7 @@ public class PackManager {
 			// Something went horribly wrong
 			throw new RuntimeException("Could not wait for loader threads to " + "finish: " + e.getMessage(), e);
 		}
-	
+
 		// If something went wrong, we tell the world
 		if (executor.getException() != null) {
 			if (executor.getException() instanceof RuntimeException)
