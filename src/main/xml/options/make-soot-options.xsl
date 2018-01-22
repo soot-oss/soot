@@ -6,6 +6,17 @@
   <xsl:output method="text" indent="no"/>
   <xsl:strip-space elements="*"/>
 
+  <xsl:template match="@*|node()">
+       <xsl:copy>
+          <xsl:apply-templates select="@*|node()"/>
+      </xsl:copy>
+  </xsl:template>
+
+  <!--perform normalize-space for text in node-->
+  <xsl:template match="long_desc/text()|short_desc/text()">
+      <xsl:value-of select="normalize-space(.)"/>
+  </xsl:template>
+
 <!--*************************************************************************-->
 <!--* ROOT TEMPLATE *********************************************************-->
 <!--*************************************************************************-->
@@ -374,7 +385,7 @@ public class Options extends OptionsBase {
   <xsl:template mode="usage" match="multiopt">
 +padOpt("<xsl:for-each select="alias"> -<xsl:value-of select="."/><xsl:text> </xsl:text><xsl:call-template name="arg-label"/></xsl:for-each>", "<xsl:apply-templates select="short_desc"/>" )<xsl:text/>
     <xsl:for-each select="value">
-+padVal("<xsl:for-each select="alias"><xsl:value-of select="string(' ')"/><xsl:value-of select="."/></xsl:for-each><xsl:if test="default"> (default)</xsl:if>", "<xsl:value-of select="translate(short_desc,'&#10;',' ')"/>" )<xsl:text/>
++padVal("<xsl:for-each select="alias"><xsl:value-of select="string(' ')"/><xsl:value-of select="."/></xsl:for-each><xsl:if test="default"> (default)</xsl:if>", "<xsl:apply-templates select="short_desc"/>" )<xsl:text/>
       </xsl:for-each>
   </xsl:template>
 
@@ -517,9 +528,9 @@ public class <xsl:copy-of select="$filename"/><xsl:if test="extends"> extends <x
     public String getPhaseList() {
         return ""
     <xsl:for-each select="phase|radio_phase"><xsl:text/>
-        +padOpt("<xsl:value-of select="alias"/>", "<xsl:value-of select="short_desc"/>")<xsl:text/>
+        +padOpt("<xsl:value-of select="alias"/>", "<xsl:apply-templates select="short_desc"/>")<xsl:text/>
       <xsl:for-each select="sub_phase"><xsl:text/>
-        +padVal("<xsl:value-of select="alias"/>", "<xsl:value-of select="short_desc"/>")<xsl:text/>
+        +padVal("<xsl:value-of select="alias"/>", "<xsl:apply-templates select="short_desc"/>")<xsl:text/>
       </xsl:for-each>
     </xsl:for-each>;
     }
@@ -531,10 +542,10 @@ public class <xsl:copy-of select="$filename"/><xsl:if test="extends"> extends <x
                 "<xsl:call-template name="wrap-string"><xsl:with-param name="text" select="long_desc"/></xsl:call-template>"<xsl:text/>
                 +"\n\nRecognized options (with default values):\n"<xsl:text/>
       <xsl:for-each select="boolopt|multiopt|intopt|flopt|stropt|section/boolopt|section/multiopt|section/intopt|section/flopt|section/stropt"><xsl:text/>
-                +padOpt( "<xsl:value-of select="alias"/><xsl:if test="default"> (<xsl:value-of select="default"/>)</xsl:if>", "<xsl:value-of select="translate(short_desc,'&#10;',' ')"/>" )<xsl:text/>
+                +padOpt( "<xsl:value-of select="alias"/><xsl:if test="default"> (<xsl:value-of select="default"/>)</xsl:if>", "<xsl:apply-templates select="short_desc"/>" )<xsl:text/>
         <xsl:if test="value">
                 <xsl:for-each select="value">
-                +padVal( "<xsl:value-of select="alias"/><xsl:if test="default"> (default)</xsl:if>", "<xsl:value-of select="translate(short_desc,'&#10;',' ')"/>" )
+                +padVal( "<xsl:value-of select="alias"/><xsl:if test="default"> (default)</xsl:if>", "<xsl:apply-templates select="short_desc"/>" )
                 </xsl:for-each>
         </xsl:if>
       </xsl:for-each>;
@@ -663,7 +674,9 @@ public class <xsl:copy-of select="$filename"/><xsl:if test="extends"> extends <x
   </xsl:template>
 
   <xsl:template match="use_arg_label">
+    <xsl:text> </xsl:text>
     <xsl:call-template name="arg-label"/>
+    <xsl:text> </xsl:text>
   </xsl:template>
 
   <!-- Factored out so it can be used to print the argument labels in
@@ -681,8 +694,16 @@ public class <xsl:copy-of select="$filename"/><xsl:if test="extends"> extends <x
   </xsl:template>
 
   <xsl:template match="var">
+  <xsl:text> </xsl:text>
   <xsl:value-of select="translate(string(),
                             'abcdefghijklmnopqrstuvwxyz',
                             'ABCDEFGHIJKLMNOPQRSTUVWXYZ')"/>
+  <xsl:text> </xsl:text>
+  </xsl:template>
+
+  <xsl:template match="tt">
+    <xsl:text> </xsl:text>
+    <xsl:value-of select="string()"/>
+    <xsl:text> </xsl:text>
   </xsl:template>
 </xsl:stylesheet>
