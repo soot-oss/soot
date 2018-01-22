@@ -683,7 +683,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 		}
 		buffer.append(")");
 
-		return buffer.toString().intern();
+		return buffer.toString();
 	}
 
 	private NumberedString subsignature;

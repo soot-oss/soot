@@ -394,7 +394,10 @@ public class SootClass extends AbstractHost implements Numberable {
 	 */
 	public SootMethod getMethod(String subsignature) {
 		checkLevel(SIGNATURES);
-		return getMethod(Scene.v().getSubSigNumberer().findOrAdd(subsignature));
+		NumberedString numberedString = Scene.v().getSubSigNumberer().find(subsignature);
+		if (numberedString == null)
+			throw new RuntimeException("No method " + subsignature + " in class " + getName());
+		return getMethod(numberedString);
 	}
 
 	/*
@@ -403,7 +406,8 @@ public class SootClass extends AbstractHost implements Numberable {
 	 */
 	public SootMethod getMethodUnsafe(String subsignature) {
 		checkLevel(SIGNATURES);
-		return getMethodUnsafe(Scene.v().getSubSigNumberer().findOrAdd(subsignature));
+		NumberedString numberedString = Scene.v().getSubSigNumberer().find(subsignature);
+		return numberedString == null ? null : getMethodUnsafe(numberedString);
 	}
 
 	/**
@@ -412,7 +416,8 @@ public class SootClass extends AbstractHost implements Numberable {
 
 	public boolean declaresMethod(String subsignature) {
 		checkLevel(SIGNATURES);
-		return declaresMethod(Scene.v().getSubSigNumberer().findOrAdd(subsignature));
+		NumberedString numberedString = Scene.v().getSubSigNumberer().find(subsignature);
+		return numberedString == null ? false : declaresMethod(numberedString);
 	}
 
 	/**
@@ -465,7 +470,7 @@ public class SootClass extends AbstractHost implements Numberable {
 		checkLevel(SIGNATURES);
 		if (methodList == null)
 			return Collections.emptyIterator();
-					
+
 		return new Iterator<SootMethod>() {
 			final Iterator<SootMethod> internalIterator = methodList.iterator();
 			private SootMethod currentMethod;
@@ -519,7 +524,7 @@ public class SootClass extends AbstractHost implements Numberable {
 		checkLevel(SIGNATURES);
 		if (methodList == null)
 			return null;
-		
+
 		for (SootMethod method : methodList) {
 			if (method.getName().equals(name) && parameterTypes.equals(method.getParameterTypes())
 					&& returnType.equals(method.getReturnType())) {
@@ -538,7 +543,7 @@ public class SootClass extends AbstractHost implements Numberable {
 	public SootMethod getMethod(String name, List<Type> parameterTypes) {
 		checkLevel(SIGNATURES);
 		SootMethod foundMethod = null;
-		
+
 		if (methodList == null)
 			return null;
 
@@ -567,7 +572,7 @@ public class SootClass extends AbstractHost implements Numberable {
 
 		if (methodList == null)
 			return null;
-		
+
 		for (SootMethod method : methodList) {
 			if (method.getName().equals(name)) {
 				if (foundMethod == null)
@@ -600,7 +605,7 @@ public class SootClass extends AbstractHost implements Numberable {
 		checkLevel(SIGNATURES);
 		if (methodList == null)
 			return false;
-		
+
 		for (SootMethod method : methodList) {
 			if (method.getName().equals(name) && method.getParameterTypes().equals(parameterTypes))
 				return true;
@@ -618,7 +623,7 @@ public class SootClass extends AbstractHost implements Numberable {
 		checkLevel(SIGNATURES);
 		if (methodList == null)
 			return false;
-		
+
 		for (SootMethod method : methodList) {
 			if (method.getName().equals(name) && method.getParameterTypes().equals(parameterTypes)
 					&& method.getReturnType().equals(returnType))
@@ -637,7 +642,7 @@ public class SootClass extends AbstractHost implements Numberable {
 		checkLevel(SIGNATURES);
 		if (methodList == null)
 			return false;
-		
+
 		for (SootMethod method : methodList) {
 			if (method.getName().equals(name))
 				return true;
@@ -663,7 +668,7 @@ public class SootClass extends AbstractHost implements Numberable {
 		 * if(declaresMethod(m.getName(), m.getParameterTypes())) throw new
 		 * RuntimeException("duplicate signature for: " + m.getName());
 		 */
-		
+
 		if (methodList == null) {
 			methodList = new ArrayList<>();
 			subSigToMethods = new SmallNumberedMap<>();
@@ -683,7 +688,7 @@ public class SootClass extends AbstractHost implements Numberable {
 		checkLevel(SIGNATURES);
 		if (m.isDeclared())
 			throw new RuntimeException("already declared: " + m.getName());
-		
+
 		if (methodList == null) {
 			methodList = new ArrayList<>();
 			subSigToMethods = new SmallNumberedMap<>();

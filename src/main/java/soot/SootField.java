@@ -74,16 +74,16 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 		StringBuffer buffer = new StringBuffer();
 
 		buffer.append("<" + Scene.v().quotedNameOf(cl.getName()) + ": ");
-        buffer.append(type.toQuotedString() + " " + Scene.v().quotedNameOf(name) + ">");
+		buffer.append(type.toQuotedString() + " " + Scene.v().quotedNameOf(name) + ">");
 
-		return buffer.toString().intern();
+		return buffer.toString();
 
 	}
 
 	public String getSubSignature() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append(getType() + " " + Scene.v().quotedNameOf(getName()));
-		return buffer.toString().intern();
+		return buffer.toString();
 	}
 
 	public SootClass getDeclaringClass() {
@@ -176,7 +176,7 @@ public class SootField extends AbstractHost implements ClassMember, SparkField, 
 	}
 
 	private String getOriginalStyleDeclaration() {
-        String qualifiers = Modifier.toString(modifiers) + " " + type.toQuotedString();
+		String qualifiers = Modifier.toString(modifiers) + " " + type.toQuotedString();
 		qualifiers = qualifiers.trim();
 
 		if (qualifiers.isEmpty())
