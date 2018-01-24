@@ -18,7 +18,7 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
@@ -54,12 +54,12 @@ public class ClassConstant extends Constant {
 	}
 
 	public static ClassConstant fromType(Type tp) {
-		return new ClassConstant(sootTypeToString(tp));
+		return v(sootTypeToString(tp));
 	}
 
 	private static String sootTypeToString(Type tp) {
 		if (tp instanceof RefType)
-			return "L" + tp.toString().replaceAll("\\.", "/") + ";";
+			return "L" + ((RefType) tp).getClassName().replaceAll("\\.", "/") + ";";
 		else if (tp instanceof ArrayType) {
 			ArrayType at = (ArrayType) tp;
 			return "[" + sootTypeToString(at.getElementType());
@@ -89,7 +89,7 @@ public class ClassConstant extends Constant {
 	/**
 	 * Gets whether this class constant denotes a reference type. This does not
 	 * check for arrays.
-	 * 
+	 *
 	 * @return True if this class constant denotes a reference type, otherwise
 	 *         false
 	 */
