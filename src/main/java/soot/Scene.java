@@ -783,9 +783,7 @@ public class Scene // extends AbstractHost
 		if (!containsClass(cname))
 			return null;
 		SootClass c = getSootClass(cname);
-		if (!c.declaresMethod(mname))
-			return null;
-		return c.getMethod(mname);
+		return c.getMethodUnsafe(mname);
 	}
 
 	public boolean containsMethod(String methodSignature) {
@@ -1696,7 +1694,7 @@ public class Scene // extends AbstractHost
 
 	public boolean isIncluded(SootClass sc) {
 		String name = sc.getName();
-		for (String inc : (List<String>) Options.v().include()) {
+		for (String inc : Options.v().include()) {
 			if (name.equals(inc) || ((inc.endsWith(".*") || inc.endsWith("$*"))
 					&& name.startsWith(inc.substring(0, inc.length() - 1)))) {
 				return true;
