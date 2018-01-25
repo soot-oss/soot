@@ -108,8 +108,9 @@ public class VirtualCalls {
 				ret = m;
 			}
 		} else {
-			if (cls.hasSuperclass()) {
-				ret = resolveNonSpecial(cls.getSuperclass().getType(), subSig);
+			SootClass c = cls.getSuperclassUnsafe();
+			if (c != null) {
+				ret = resolveNonSpecial(c.getType(), subSig);
 			}
 		}
 		vtbl.put(subSig, ret);

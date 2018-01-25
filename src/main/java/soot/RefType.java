@@ -26,7 +26,6 @@
 package soot;
 
 import java.util.ArrayDeque;
-import java.util.LinkedList;
 
 import soot.util.Switch;
 
@@ -82,6 +81,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 		return rt;
 	}
 
+	@Override
 	public int compareTo(RefType t) {
 		return this.toString().compareTo(t.toString());
 	}
@@ -136,10 +136,12 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 	 *            an object to test for equality. @ return true if t is a
 	 *            RefType parametrized by the same name as this.
 	 */
+	@Override
 	public boolean equals(Object t) {
 		return ((t instanceof RefType) && className.equals(((RefType) t).className));
 	}
 
+	@Override
 	public String toString() {
 		return className;
 	}
@@ -150,15 +152,18 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
     	return Scene.v().quotedNameOf(className);
     }
 
+	@Override
 	public int hashCode() {
 		return className.hashCode();
 	}
 
+	@Override
 	public void apply(Switch sw) {
 		((TypeSwitch) sw).caseRefType(this);
 	}
 
 	/** Returns the least common superclass of this type and other. */
+	@Override
 	public Type merge(Type other, Scene cm) {
 		if (other.equals(UnknownType.v()) || this.equals(other))
 			return this;
@@ -186,9 +191,8 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 					if (SootClass == javalangObject)
 						break;
 
-					if (SootClass.hasSuperclass())
-						SootClass = SootClass.getSuperclass();
-					else
+					SootClass = SootClass.getSuperclassUnsafe();
+					if (sootClass == null)
 						SootClass = javalangObject;
 				}
 			}
@@ -229,6 +233,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
 	}
 
+	@Override
 	public Type getArrayElementType() {
 		if (className.equals("java.lang.Object") || className.equals("java.io.Serializable")
 				|| className.equals("java.lang.Cloneable")) {
@@ -245,6 +250,7 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 		this.anySubType = anySubType;
 	}
 
+	@Override
 	public boolean isAllowedInFinalCode() {
 		return true;
 	}
