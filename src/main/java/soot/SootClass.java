@@ -982,6 +982,12 @@ public class SootClass extends AbstractHost implements Numberable {
 		return Modifier.isEnum(this.getModifiers());
 	}
 
+	/** Convenience method; returns true if this class is synchronized. */
+	public boolean isSynchronized() {
+		checkLevel(HIERARCHY);
+		return Modifier.isSynchronized(this.getModifiers());
+	}
+
 	/** Returns true if this class is not an interface and not abstract. */
 	public boolean isConcrete() {
 		return !isInterface() && !isAbstract();

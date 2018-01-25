@@ -45,6 +45,10 @@ public class MultiDexBuilder {
 			// might end in an endless loop
 			// if the class is to large for a single dex file!
 			curPool.internClass(clz);
+
+			// If a single class causes an overflow, we're really out of luck
+			if (curPool.hasOverflowed())
+				throw new RuntimeException("Class is bigger than a single dex file can be");
 		}
 	}
 
