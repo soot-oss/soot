@@ -39,6 +39,7 @@ import soot.util.HashChain;
 import soot.util.Numberable;
 import soot.util.NumberedString;
 import soot.util.SmallNumberedMap;
+import soot.validation.ClassFlagsValidator;
 import soot.validation.ClassValidator;
 import soot.validation.MethodDeclarationValidator;
 import soot.validation.OuterClassValidator;
@@ -975,6 +976,12 @@ public class SootClass extends AbstractHost implements Numberable {
 		return Modifier.isInterface(this.getModifiers());
 	}
 
+	/** Convenience method; returns true if this class is an enumeration. */
+	public boolean isEnum() {
+		checkLevel(HIERARCHY);
+		return Modifier.isEnum(this.getModifiers());
+	}
+
 	/** Returns true if this class is not an interface and not abstract. */
 	public boolean isConcrete() {
 		return !isInterface() && !isAbstract();
@@ -1209,7 +1216,8 @@ public class SootClass extends AbstractHost implements Numberable {
 	 */
 	private synchronized static ClassValidator[] getValidators() {
 		if (validators == null) {
-			validators = new ClassValidator[] { OuterClassValidator.v(), MethodDeclarationValidator.v() };
+			validators = new ClassValidator[] { OuterClassValidator.v(), MethodDeclarationValidator.v(),
+					ClassFlagsValidator.v() };
 		}
 		return validators;
 	};
