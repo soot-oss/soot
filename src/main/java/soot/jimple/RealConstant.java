@@ -18,17 +18,37 @@
  */
 
 /*
- * Modified by the Sable Research Group and others 1997-1999.  
+ * Modified by the Sable Research Group and others 1997-1999.
  * See the 'credits' file distributed with Soot for the complete list of
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
 package soot.jimple;
 
-public abstract class RealConstant extends NumericConstant
-{
-    // PTC 1999/06/28
-    public abstract IntConstant cmpl(RealConstant c);
+/**
+ * Base type for floating point constants.
+ *
+ * @see DoubleConstant
+ * @see FloatConstant
+ */
+public abstract class RealConstant extends NumericConstant {
 
-    public abstract IntConstant cmpg(RealConstant c);
+    /**
+     * Performs the indicated floating point comparison. For {@code NaN} comparisons {@code -1} is returned.
+     *
+     * @param constant the value to compare with
+     * @return {@code 0} if values are equal, {@code 1} if passed value less, or {@code -1} if passed value greater.
+     * When any of the values is {@code NaN} method returns {@code -1}.
+     */
+    public abstract IntConstant cmpl(RealConstant constant);
+
+    /**
+     * Performs the indicated floating point comparison. For {@code NaN} comparisons {@code 1} is returned.
+     *
+     * @param constant the value to compare with
+     * @return {@code 0} if values are equal, {@code 1} if passed value less, or {@code -1} if passed value greater.
+     * When any of the values is {@code NaN} method returns {@code 1}.
+     */
+    public abstract IntConstant cmpg(RealConstant constant);
+
 }
