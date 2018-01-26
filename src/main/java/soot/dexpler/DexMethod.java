@@ -56,7 +56,12 @@ import soot.options.Options;
  */
 public class DexMethod {
 
-	private DexMethod() {
+	protected final DexFile dexFile;
+	protected final SootClass declaringClass;
+
+	public DexMethod(final DexFile dexFile, final SootClass declaringClass) {
+		this.dexFile = dexFile;
+		this.declaringClass = declaringClass;
 	}
 
 	/**
@@ -64,14 +69,79 @@ public class DexMethod {
 	 * 
 	 * @return the SootMethod of this method
 	 */
-	public static SootMethod makeSootMethod(final DexFile dexFile, final Method method,
-			final SootClass declaringClass) {
+	public SootMethod makeSootMethod(final Method method) {
 		int accessFlags = method.getAccessFlags();
-		List<Type> parameterTypes = new ArrayList<Type>();
 
 		// get the name of the method
 		String name = method.getName();
 
+		List<SootClass> thrownExceptions = getThrownExceptions(method);
+		List<Type> parameterTypes = getParameterTypes(method);
+
+		// retrieve the return type of this method
+		Type returnType = DexType.toSoot(method.getReturnType());
+
+		// Build soot method by all available parameters
+		SootMethod sm = declaringClass.getMethodUnsafe(name, parameterTypes, returnType);
+		if (sm == null) {
+			sm = Scene.v().makeSootMethod(name, parameterTypes, returnType, accessFlags, thrownExceptions);
+		}
+
+		// if the method is abstract or native, no code needs to be transformed
+		int flags = method.getAccessFlags();
+		if (Modifier.isAbstract(flags) || Modifier.isNative(flags))
+			return sm;
+
+		if (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES)
+			return sm;
+
+		// sets the method source by adding its body as the active body
+		sm.setSource(createMethodSource(method));
+
+		return sm;
+	}
+
+	protected MethodSource createMethodSource(final Method method) {
+		return new MethodSource() {
+
+			@Override
+			public Body getBody(SootMethod m, String phaseName) {
+				Body b = Jimple.v().newBody(m);
+				try {
+					// add the body of this code item
+					DexBody dexBody = new DexBody(dexFile, method, declaringClass.getType());
+					dexBody.jimplify(b, m);
+				} catch (InvalidDalvikBytecodeException e) {
+					String msg = "Warning: Invalid bytecode in method " + m + ": " + e;
+					G.v().out.println(msg);
+					Util.emptyBody(b);
+					Util.addExceptionAfterUnit(b, "java.lang.RuntimeException", b.getUnits().getLast(),
+							"Soot has detected that this method contains invalid Dalvik bytecode which would have throw an exception at runtime. ["
+									+ msg + "]");
+					TypeAssigner.v().transform(b);
+				}
+				m.setActiveBody(b);
+
+				return m.getActiveBody();
+			}
+		};
+	}
+
+	protected List<Type> getParameterTypes(final Method method) {
+		// retrieve all parameter types
+		List<Type> parameterTypes = new ArrayList<Type>();
+		if (method.getParameters() != null) {
+			List<? extends CharSequence> parameters = method.getParameterTypes();
+
+			for (CharSequence t : parameters) {
+				Type type = DexType.toSoot(t.toString());
+				parameterTypes.add(type);
+			}
+		}
+		return parameterTypes;
+	}
+
+	protected List<SootClass> getThrownExceptions(final Method method) {
 		// the following snippet retrieves all exceptions that this method
 		// throws by analyzing its annotations
 		List<SootClass> thrownExceptions = new ArrayList<SootClass>();
@@ -94,71 +164,6 @@ public class DexMethod {
 				}
 			}
 		}
-
-		// retrieve all parameter types
-		if (method.getParameters() != null) {
-			List<? extends CharSequence> parameters = method.getParameterTypes();
-
-			for (CharSequence t : parameters) {
-				Type type = DexType.toSoot(t.toString());
-				parameterTypes.add(type);
-			}
-		}
-
-		// retrieve the return type of this method
-		Type returnType = DexType.toSoot(method.getReturnType());
-
-		// Build soot method by all available parameters
-		SootMethod sm = declaringClass.getMethodUnsafe(name, parameterTypes, returnType);
-		if (sm == null) {
-			sm = Scene.v().makeSootMethod(name, parameterTypes, returnType, accessFlags, thrownExceptions);
-		}
-
-		// if the method is abstract or native, no code needs to be transformed
-		int flags = method.getAccessFlags();
-		if (Modifier.isAbstract(flags) || Modifier.isNative(flags))
-			return sm;
-
-		if (Options.v().oaat() && declaringClass.resolvingLevel() <= SootClass.SIGNATURES)
-			return sm;
-
-		// // retrieve all local types of the method
-		// DebugInfoItem debugInfo = method.g.codeItem.getDebugInfo();
-		// if(debugInfo!=null) {
-		// for(Item<?> item : debugInfo.getReferencedItems()) {
-		// if (item instanceof TypeIdItem) {
-		// Type type = DexType.toSoot((TypeIdItem) item);
-		// dexClass.types.add(type);
-		// }
-		//
-		// }
-		// }
-
-		// sets the method source by adding its body as the active body
-		sm.setSource(new MethodSource() {
-
-			@Override
-			public Body getBody(SootMethod m, String phaseName) {
-				Body b = Jimple.v().newBody(m);
-				try {
-					// add the body of this code item
-					DexBody dexBody = new DexBody(dexFile, method, declaringClass.getType());
-					dexBody.jimplify(b, m);
-				} catch (InvalidDalvikBytecodeException e) {
-					String msg = "Warning: Invalid bytecode in method " + m + ": " + e;
-					G.v().out.println(msg);
-					Util.emptyBody(b);
-					Util.addExceptionAfterUnit(b, "java.lang.RuntimeException", b.getUnits().getLast(),
-							"Soot has detected that this method contains invalid Dalvik bytecode which would have throw an exception at runtime. ["
-									+ msg + "]");
-					TypeAssigner.v().transform(b);
-				}
-				m.setActiveBody(b);
-
-				return m.getActiveBody();
-			}
-		});
-
-		return sm;
+		return thrownExceptions;
 	}
 }

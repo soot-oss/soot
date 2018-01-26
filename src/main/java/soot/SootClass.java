@@ -1197,7 +1197,7 @@ public class SootClass extends AbstractHost implements Numberable {
 		this.number = number;
 	}
 
-	private int number = 0;
+	protected int number = 0;
 
 	public void rename(String newName) {
 		this.name = newName;

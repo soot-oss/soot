@@ -27,17 +27,18 @@ public class DexClassLoader {
 	/**
 	 * Loads a single method from a dex file
 	 * 
-	 * @param dexFile
-	 *            The dex file from which to load the method
 	 * @param method
 	 *            The method to load
 	 * @param declaringClass
 	 *            The class that declares the method to load
 	 * @param annotations
 	 *            The worker object for handling annotations
+	 * @param dexMethodFactory
+	 *            The factory method for creating dex methods
 	 */
-	private void loadMethod(DexFile dexFile, Method method, SootClass declaringClass, DexAnnotation annotations) {
-		SootMethod sm = DexMethod.makeSootMethod(dexFile, method, declaringClass);
+	protected void loadMethod(Method method, SootClass declaringClass, DexAnnotation annotations,
+			DexMethod dexMethodFactory) {
+		SootMethod sm = dexMethodFactory.makeSootMethod(method);
 		if (declaringClass.declaresMethod(sm.getName(), sm.getParameterTypes(), sm.getReturnType()))
 			return;
 		declaringClass.addMethod(sm);
@@ -87,26 +88,19 @@ public class DexClassLoader {
 
 		// get the fields of the class
 		for (Field sf : defItem.getStaticFields()) {
-			if (sc.declaresField(sf.getName(), DexType.toSoot(sf.getType())))
-				continue;
-			SootField sootField = DexField.makeSootField(sf);
-			sootField = sc.getOrAddField(sootField);
-			da.handleFieldAnnotation(sootField, sf);
+			loadField(sc, da, sf);
 		}
 		for (Field f : defItem.getInstanceFields()) {
-			if (sc.declaresField(f.getName(), DexType.toSoot(f.getType())))
-				continue;
-			SootField sootField = DexField.makeSootField(f);
-			sootField = sc.getOrAddField(sootField);
-			da.handleFieldAnnotation(sootField, f);
+			loadField(sc, da, f);
 		}
 
 		// get the methods of the class
+		DexMethod dexMethod = createDexMethodFactory(dexFile, sc);
 		for (Method method : defItem.getDirectMethods()) {
-			loadMethod(dexFile, method, sc, da);
+			loadMethod(method, sc, da, dexMethod);
 		}
 		for (Method method : defItem.getVirtualMethods()) {
-			loadMethod(dexFile, method, sc, da);
+			loadMethod(method, sc, da, dexMethod);
 		}
 
 		da.handleClassAnnotation(defItem);
@@ -187,6 +181,36 @@ public class DexClassLoader {
 		}
 
 		return deps;
+	}
+
+	/**
+	 * Allow custom implementations to use different dex method factories
+	 * 
+	 * @param dexFile
+	 * @param sc
+	 * @return
+	 */
+	protected DexMethod createDexMethodFactory(DexFile dexFile, SootClass sc) {
+		return new DexMethod(dexFile, sc);
+	}
+
+	/**
+	 * Loads a single field from a dex file
+	 * 
+	 * @param declaringClass
+	 *            The class that declares the method to load
+	 * @param annotations
+	 *            The worker object for handling annotations
+	 * @param field
+	 *            The field to load
+	 */
+	protected void loadField(SootClass declaringClass, DexAnnotation annotations, Field sf) {
+		if (declaringClass.declaresField(sf.getName(), DexType.toSoot(sf.getType())))
+			return;
+
+		SootField sootField = DexField.makeSootField(sf);
+		sootField = declaringClass.getOrAddField(sootField);
+		annotations.handleFieldAnnotation(sootField, sf);
 	}
 
 }
