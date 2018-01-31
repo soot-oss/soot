@@ -1,29 +1,5 @@
 package soot.toDex;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
-
 import org.jf.dexlib2.AnnotationVisibility;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.Opcodes;
@@ -74,13 +50,13 @@ import org.jf.dexlib2.immutable.value.ImmutableShortEncodedValue;
 import org.jf.dexlib2.immutable.value.ImmutableStringEncodedValue;
 import org.jf.dexlib2.immutable.value.ImmutableTypeEncodedValue;
 import org.jf.dexlib2.writer.builder.BuilderEncodedValues;
-
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
 import soot.CharType;
 import soot.CompilationDeathException;
-import soot.G;
 import soot.IntType;
 import soot.Local;
 import soot.PackManager;
@@ -144,28 +120,63 @@ import soot.toDex.instructions.Insn30t;
 import soot.toDex.instructions.InsnWithOffset;
 import soot.util.Chain;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
 /**
- * Main entry point for the "dex" output format.<br>
- * <br>
- * Use {@link #add(SootClass)} to add classes that should be printed as dex
- * output and {@link #print()} to finally print the classes.<br>
- * If the printer has found the original APK of an added class (via
- * {@link SourceLocator#dexClassIndex()}), the files in the APK are copied to a
- * new one, replacing it's classes.dex and excluding the signature files. Note
- * that you have to sign and align the APK yourself, with jarsigner and
- * zipalign, respectively.<br>
- * If there is no original APK, the printer just emits a classes.dex.
+ * <p>Creates {@code apk} or {@code jar} file with compiled {@code dex} classes.
+ * Main entry point for the "dex" output format.</p>
+ * <p>Use {@link #add(SootClass)} to add classes that should be printed as dex
+ * output and {@link #print()} to finally print the classes.</p>
+ * <p>If the printer has found the original {@code APK} of an added class (via
+ * {@link SourceLocator#dexClassIndex()}), the files in the {@code APK} are copied to a
+ * new one, replacing it's {@code classes.dex} and excluding the signature files. Note
+ * that you have to sign and align the APK yourself, with jarsigner and zipalign, respectively.</p>
+ * <p>If {@link Options#output_jar} flag is set, the printer produces {@code JAR} file.</p>
+ * <p>If there is no original {@code APK} and {@link Options#output_jar} flag is not set
+ * the printer just emits a {@code classes.dex}.</p>
  *
- * @see <a href=
- *      "http://docs.oracle.com/javase/7/docs/technotes/tools/windows/jarsigner.html">jarsigner
- *      documentation</a>
- * @see <a href="http://developer.android.com/tools/help/zipalign.html">zipalign
- *      documentation</a>
+ * @see <a href="https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jarsigner.html">jarsigner
+ * documentation</a>
+ * @see <a href="http://developer.android.com/tools/help/zipalign.html">zipalign documentation</a>
  */
 public class DexPrinter {
 
-	protected MultiDexBuilder dexBuilder;
-	protected File originalApk;
+	private static final Logger LOGGER = LoggerFactory.getLogger(DexPrinter.class);
+
+	public static final Pattern SIGNATURE_FILE_PATTERN = Pattern.compile("META-INF/[^/]+(\\.SF|\\.DSA|\\.RSA|\\.EC)$");
+
+	private MultiDexBuilder dexBuilder;
+	private File originalApk;
 
 	public DexPrinter() {
 		dexBuilder = createDexBuilder();
@@ -175,32 +186,22 @@ public class DexPrinter {
 	 * Creates the {@link MultiDexBuilder} that shall be used for creating
 	 * potentially multiple dex files. This method makes sure that users of Soot
 	 * can overwrite the {@link MultiDexBuilder} with custom strategies.
-	 * 
+	 *
 	 * @return The new {@link MultiDexBuilder}
 	 */
-	protected MultiDexBuilder createDexBuilder() {
+	private MultiDexBuilder createDexBuilder() {
 		int api = Scene.v().getAndroidAPIVersion();
 		return new MultiDexBuilder(Opcodes.forApi(api));
 	}
 
-	private static boolean isSignatureFile(String fileName) {
-		StringBuilder sigFileRegex = new StringBuilder();
-		// file name must start with META-INF...
-		sigFileRegex.append("META\\-INF");
-		// ...followed by a zip file separator...
-		sigFileRegex.append('/');
-		// ...followed by anything but a zip file separator...
-		sigFileRegex.append("[^/]+");
-		// ...ending with .SF, .DSA, .RSA or .EC
-		sigFileRegex.append("(\\.SF|\\.DSA|\\.RSA|\\.EC)$");
-		return fileName.matches(sigFileRegex.toString());
-	}
+    private static boolean isSignatureFile(String fileName) {
+        return SIGNATURE_FILE_PATTERN.matcher(fileName).matches();
+    }
 
 	/**
 	 * Converts Jimple visibility to Dexlib visibility
 	 *
-	 * @param visibility
-	 *            Jimple visibility
+	 * @param visibility Jimple visibility
 	 * @return Dexlib visibility
 	 */
 	private static int getVisibility(int visibility) {
@@ -242,54 +243,39 @@ public class DexPrinter {
 		return tRef;
 	}
 
-	private void printApk(String outputDir, File originalApk) throws IOException {
-		ZipOutputStream outputApk = null;
-		try {
-			if (Options.v().output_jar()) {
-				outputApk = PackManager.v().getJarFile();
-				G.v().out.println("Writing APK to: " + Options.v().output_dir());
-			} else {
-				String outputFileName = outputDir + File.separatorChar + originalApk.getName();
+	private void printZip() throws IOException {
+		try (final ZipOutputStream outputZip = getZipOutputStream()) {
 
-				File outputFile = new File(outputFileName);
-				if (outputFile.exists()) {
-					if (!Options.v().force_overwrite())
-						throw new CompilationDeathException("Output file " + outputFile + " exists. Not overwriting.");
-					else {
-						if (!outputFile.delete())
-							throw new RuntimeException(
-									"Removing " + outputFileName + " failed. Not writing out anything.");
-					}
+			LOGGER.info("Do not forget to sign the .apk file with jarsigner and to align it with zipalign");
+
+			if (originalApk != null) {
+				// Copy over additional resources from original APK
+				try (ZipFile original = new ZipFile(originalApk)) {
+					copyAllButClassesDexAndSigFiles(original, outputZip);
 				}
-				outputApk = new ZipOutputStream(new FileOutputStream(outputFile));
-				G.v().out.println("Writing APK to: " + outputFileName);
-			}
-			G.v().out.println("do not forget to sign the .apk file with jarsigner and to align it with zipalign");
-
-			// Copy over additional resources from original APK
-			ZipFile original = null;
-			try {
-				original = new ZipFile(originalApk);
-				copyAllButClassesDexAndSigFiles(original, outputApk);
-			} finally {
-				if (original != null)
-					original.close();
 			}
 
 			// put our dex files into the zip archive
-			Path tempPath = Files.createTempDirectory(Long.toString(System.nanoTime()));
-			File tempDirectory = tempPath.toFile();
-			List<File> files = dexBuilder.writeTo(tempDirectory.getAbsolutePath());
+			final Path tempPath = Files.createTempDirectory(Long.toString(System.nanoTime()));
+			final List<File> files = dexBuilder.writeTo(tempPath.toString());
 			for (File file : files) {
-				try (FileInputStream fis = new FileInputStream(file)) {
-					outputApk.putNextEntry(new ZipEntry(file.getName()));
-					while (fis.available() > 0) {
-						byte[] data = new byte[fis.available()];
-						fis.read(data);
-						outputApk.write(data);
+
+				try (InputStream is = Files.newInputStream(file.toPath())) {
+					outputZip.putNextEntry(new ZipEntry(file.getName()));
+
+					final byte[] buffer = new byte[16_384];
+					int read = 0;
+					while ((read = is.read(buffer)) > 0) {
+						outputZip.write(buffer, 0, read);
 					}
-					outputApk.closeEntry();
+
+					outputZip.closeEntry();
 				}
+			}
+
+			if (Options.v().output_jar()) {
+				// if we create JAR file, MANIFEST.MF is preferred
+				addManifest(outputZip, files);
 			}
 
 			// remove tmp dir and contents
@@ -306,10 +292,36 @@ public class DexPrinter {
 					return FileVisitResult.CONTINUE;
 				}
 			});
-		} finally {
-			if (outputApk != null)
-				outputApk.close();
 		}
+	}
+
+	private ZipOutputStream getZipOutputStream() throws IOException {
+		if (Options.v().output_jar()) {
+			LOGGER.info("Writing JAR to \"{}\"", Options.v().output_dir());
+			return PackManager.v().getJarFile();
+		}
+
+		final String name = originalApk == null ? "out.apk" : originalApk.getName();
+		if (originalApk == null) {
+			LOGGER.warn("Setting output file name to \"{}\" as original APK has not been found.", name);
+		}
+
+		final Path outputFile = Paths.get(SourceLocator.v().getOutputDir(), name);
+
+		if (Files.exists(outputFile, LinkOption.NOFOLLOW_LINKS)) {
+			if (!Options.v().force_overwrite())
+				throw new CompilationDeathException("Output file \"" + outputFile + "\" exists. Not overwriting.");
+
+			try {
+				Files.delete(outputFile);
+			} catch (IOException exception) {
+				throw new IllegalStateException(
+						"Removing \"" + outputFile + "\" failed. Not writing out anything.", exception);
+			}
+		}
+
+		LOGGER.info("Writing APK to \"{}\".", outputFile);
+		return new ZipOutputStream(Files.newOutputStream(outputFile, StandardOpenOption.CREATE_NEW));
 	}
 
 	private void copyAllButClassesDexAndSigFiles(ZipFile source, ZipOutputStream destination) throws IOException {
@@ -339,6 +351,22 @@ public class DexPrinter {
 			}
 			zipEntryInput.close();
 		}
+	}
+
+	private void addManifest(ZipOutputStream destination, Collection<File> dexFiles) throws IOException {
+		final Manifest manifest = new Manifest();
+		manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
+		manifest.getMainAttributes().put(new Attributes.Name("Created-By"), "Soot Dex Printer");
+
+		if (dexFiles != null && !dexFiles.isEmpty()) {
+			manifest.getMainAttributes().put(new Attributes.Name("Dex-Location"),
+					dexFiles.stream().map(File::getName).collect(Collectors.joining(" ")));
+		}
+
+		final ZipEntry manifestEntry = new ZipEntry(JarFile.MANIFEST_NAME);
+		destination.putNextEntry(manifestEntry);
+		manifest.write(new BufferedOutputStream(destination));
+		destination.closeEntry();
 	}
 
 	/**
@@ -471,14 +499,7 @@ public class DexPrinter {
 			String methodNameString = sp2[0];
 
 			String parameters = sp2[1].replaceAll("\\)", "");
-			List<String> paramTypeList = null;
-			if (!parameters.isEmpty()) {
-				paramTypeList = new ArrayList<String>();
-				if (parameters.length() > 0)
-					for (String p : parameters.split(",")) {
-						paramTypeList.add(p);
-					}
-			}
+			List<String> paramTypeList = parameters.isEmpty() ? null : Arrays.asList(parameters.split(","));
 
 			return new ImmutableMethodEncodedValue(
 					new ImmutableMethodReference(classString, methodNameString, paramTypeList, returnType));
@@ -551,11 +572,7 @@ public class DexPrinter {
 
 		String classType = SootToDexUtils.getDexTypeDescriptor(c.getType());
 		int accessFlags = c.getModifiers();
-		SootClass csuperClass = c.getSuperclassUnsafe();
-		String superClass = null;
-
-		if (csuperClass != null)
-			superClass = SootToDexUtils.getDexTypeDescriptor(csuperClass.getType());
+		String superClass = c.hasSuperclass() ? SootToDexUtils.getDexTypeDescriptor(c.getSuperclass().getType()) : null;
 
 		List<String> interfaces = null;
 		if (!c.getInterfaces().isEmpty()) {
@@ -577,7 +594,7 @@ public class DexPrinter {
 				for (Tag t : f.getTags()) {
 					if (t instanceof ConstantValueTag) {
 						if (staticInit != null) {
-							G.v().out.println("warning: more than one constant tag for field: " + f + ": " + t);
+							LOGGER.warn("More than one constant tag for field \"{}\": \"{}\"", f, t);
 						} else {
 							staticInit = makeConstantItem(f, t);
 						}
@@ -783,7 +800,7 @@ public class DexPrinter {
 				ImmutableAnnotationElement valueElement = new ImmutableAnnotationElement("value", valueValue);
 				elements = Collections.singleton(valueElement);
 			} else
-				G.v().out.println("Signature annotation without value detected");
+				LOGGER.info("Signature annotation without value detected");
 
 			ImmutableAnnotation ann = new ImmutableAnnotation(AnnotationVisibility.SYSTEM,
 					"Ldalvik/annotation/Signature;", elements);
@@ -1102,7 +1119,7 @@ public class DexPrinter {
 			 * body, see e.g. the handling of phantom refs in
 			 * SootMethodRefImpl.resolve(StringBuffer): the body has no locals
 			 * for the ParameterRefs, it just throws an error.
-			 * 
+			 *
 			 * we satisfy the verifier by just increasing the register count,
 			 * since calling phantom refs will lead to an error anyway.
 			 */
@@ -1483,7 +1500,7 @@ public class DexPrinter {
 		for (CodeRange r1 : codeRangesToTryItem.keySet()) {
 			for (CodeRange r2 : codeRangesToTryItem.keySet()) {
 				if (r1 != r2 && r1.overlaps(r2))
-					System.out.println("WARNING: Trap region overlap detected");
+					LOGGER.warn("Trap region overlaps detected");
 			}
 		}
 
@@ -1498,12 +1515,10 @@ public class DexPrinter {
 				if (allCaughtForRange)
 					continue;
 
-				// Normally, we would model catchall as real catchall
-				// directives. For
-				// some reason, this however fails with an invalid handler
-				// index. We
+				// Normally, we would model catchall as real catchall directives. For
+				// some reason, this however fails with an invalid handler index. We
 				// therefore hack it using java.lang.Throwable.
-				if (handler.getExceptionType().equals("Ljava/lang/Throwable;")) {
+				if ("Ljava/lang/Throwable;".equals(handler.getExceptionType())) {
 					/*
 					 * builder.addCatch(labelAssigner.getLabelAtAddress(range.
 					 * startAddress),
@@ -1545,14 +1560,14 @@ public class DexPrinter {
 	}
 
 	public void print() {
-		String outputDir = SourceLocator.v().getOutputDir();
 		try {
-			if (originalApk != null && Options.v().output_format() != Options.output_format_force_dex) {
-				printApk(outputDir, originalApk);
+			if (Options.v().output_jar()
+					|| (originalApk != null && Options.v().output_format() != Options.output_format_force_dex)) {
+				printZip();
 			} else {
-				String fileName = outputDir;
-				G.v().out.println("Writing dex files to: " + fileName);
-				dexBuilder.writeTo(fileName);
+				final String outputDir = SourceLocator.v().getOutputDir();
+				LOGGER.info("Writing dex files to \"{}\" folder.", outputDir);
+				dexBuilder.writeTo(outputDir);
 			}
 		} catch (IOException e) {
 			throw new CompilationDeathException("I/O exception while printing dex", e);
@@ -1603,7 +1618,7 @@ public class DexPrinter {
 		public boolean equals(Object other) {
 			if (other == this)
 				return true;
-			if (other == null && !(other instanceof CodeRange))
+			if (other == null || !(other instanceof CodeRange))
 				return false;
 			CodeRange cr = (CodeRange) other;
 			return (this.startAddress == cr.startAddress && this.endAddress == cr.endAddress);
