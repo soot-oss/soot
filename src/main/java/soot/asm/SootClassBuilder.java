@@ -51,10 +51,10 @@ import soot.tagkit.Tag;
 
 /**
  * Constructs a Soot class from a visited class.
- *
+ * 
  * @author Aaloan Miftah
  */
-@SuppressWarnings({"unchecked", "rawtypes"})
+@SuppressWarnings({ "unchecked", "rawtypes" })
 class SootClassBuilder extends ClassVisitor {
 
 	private TagBuilder tb;
@@ -64,7 +64,8 @@ class SootClassBuilder extends ClassVisitor {
 	/**
 	 * Constructs a new Soot class builder.
 	 *
-	 * @param klass Soot class to build.
+	 * @param klass
+	 *            Soot class to build.
 	 */
 	SootClassBuilder(SootClass klass) {
 		super(Opcodes.ASM5);
@@ -85,8 +86,9 @@ class SootClassBuilder extends ClassVisitor {
 
 	/**
 	 * Adds a dependency of the target class.
-	 *
-	 * @param s name, or type of class.
+	 * 
+	 * @param s
+	 *            name, or type of class.
 	 */
 	void addDep(soot.Type s) {
 		deps.add(s);
@@ -175,11 +177,6 @@ class SootClassBuilder extends ClassVisitor {
 	@Override
 	public void visitInnerClass(String name, String outerName, String innerName, int access) {
 		klass.addTag(new InnerClassTag(name, outerName, innerName, access));
-
-	   //soot does not resolve all inner classes, e.g., java.util.stream.FindOps$FindSink$... is not resolved
-		String innerClassname = AsmUtil.toQualifiedName(name);
-		deps.add(RefType.v(innerClassname));
-
 	}
 
 	@Override

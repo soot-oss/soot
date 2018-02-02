@@ -1246,51 +1246,48 @@ final class AsmMethodSource implements MethodSource {
 			//convert info on bootstrap method
 			SootMethodRef bsmMethodRef = toSootMethodRef(insn.bsm);
 			List<Value> bsmMethodArgs = new ArrayList<Value>(insn.bsmArgs.length);
-			for (Object bsmArg : insn.bsmArgs) {
+			for(Object bsmArg: insn.bsmArgs) {
 				bsmMethodArgs.add(toSootValue(bsmArg));
 			}
-
+			
 			// create ref to actual method
 			SootClass bclass = Scene.v().getSootClass(SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME);
-
+			
 			// Generate parameters & returnType & parameterTypes
 			Type[] types = Util.v().jimpleTypesOfFieldOrMethodDescriptor(insn.desc);
-			int nrArgs = types.length-1;
-			List<Type> parameterTypes = new ArrayList<Type>(nrArgs);
-			List<Value> methodArgs = new ArrayList<Value>(nrArgs);
+			List<Type> parameterTypes = new ArrayList<Type>(types.length);
+			List<Value> methodArgs = new ArrayList<Value>(types.length);
 
-			Operand[] args = new Operand[nrArgs];
-			ValueBox[] boxes = new ValueBox[nrArgs];
+			Operand[] args = new Operand[types.length - 1];
+			ValueBox[] boxes = new ValueBox[args.length];
 
 			// Beware: Call stack is FIFO, Jimple is linear
-
+			int nrArgs = args.length;
 			while (nrArgs-- != 0) {
 				parameterTypes.add(types[nrArgs]);
-				args[nrArgs] = popImmediate(types[nrArgs]);
-				methodArgs.add(args[nrArgs].stackOrValue());
+				
+				Operand curOperand = popImmediate(types[nrArgs]);
+				args[args.length - nrArgs - 1] = curOperand;
+				methodArgs.add(curOperand.stackOrValue());				
 			}
-			if (methodArgs.size() > 1) {
-				Collections.reverse(methodArgs);    // Call stack is FIFO, Jimple is linear
-				Collections.reverse(parameterTypes);
-			}
+			
 			returnType = types[types.length - 1];
-
+			
 			// we always model invokeDynamic method refs as static method references
 			// of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
-			SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);
-
+			SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);		
+			
 			DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef,
 					bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
-			if (boxes != null) {
-				for (int i = 0; i < types.length - 1; i++) {
-					boxes[i] = indy.getArgBox(i);
-					args[i].addBox(boxes[i]);
-				}
-
-				frame.boxes(boxes);
-				frame.in(args);
+			
+			for (int i = 0; i < args.length - 1; i++) {
+				boxes[i] = indy.getArgBox(i);
+				args[i].addBox(boxes[i]);
 			}
-			opr = new Operand(insn, indy);
+			
+			opr = new Operand(insn,indy);
+			frame.boxes(boxes);
+			frame.in(args);
 			frame.out(opr);
 		} else {
 			opr = out[0];
@@ -1304,7 +1301,7 @@ final class AsmMethodSource implements MethodSource {
 				oprs = new Operand[nrArgs + 1];
 			if (oprs != null) {
 				while (nrArgs-- != 0) {
-					oprs[nrArgs] = pop(types.get(nrArgs));
+					oprs[nrArgs] = pop(types.get(types.size() - nrArgs - 1));
 				}
 				if (!expr.getMethodRef().isStatic())
 					oprs[oprs.length - 1] = pop();

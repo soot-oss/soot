@@ -22,6 +22,7 @@ package soot;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 import soot.javaToJimple.LocalGenerator;
@@ -172,8 +173,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 			if (sm != null)
 				return checkStatic(sm);
 			if (Scene.v().allowsPhantomRefs() && (cl.isPhantom() || Options.v().ignore_resolution_errors())) {
-				SootMethod m = Scene.v().makeSootMethod(name, parameterTypes, returnType,
-						isStatic() ? Modifier.STATIC : 0);
+				SootMethod m = new SootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
 				m.setPhantom(true);
 				m = cl.getOrAddMethod(m);
 				return checkStatic(m);
@@ -239,7 +239,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 	 * @return The created SootMethod
 	 */
 	private SootMethod createUnresolvedErrorMethod(SootClass declaringClass) {
-		SootMethod m = Scene.v().makeSootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
+		SootMethod m = new SootMethod(name, parameterTypes, returnType, isStatic() ? Modifier.STATIC : 0);
 		int modifiers = Modifier.PUBLIC; // we don't know who will be calling us
 		if (isStatic())
 			modifiers |= Modifier.STATIC;

@@ -52,7 +52,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 	public static final String staticInitializerName = "<clinit>";
 	public static boolean DEBUG = false;
 	/** Name of the current method. */
-	protected String name;
+	private String name;
 
 	/**
 	 * An array of parameter types taken by this <code>SootMethod</code> object,
@@ -61,30 +61,30 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 	protected Type[] parameterTypes;
 
 	/** The return type of this object. */
-	protected Type returnType;
+	private Type returnType;
 
 	/**
 	 * True when some <code>SootClass</code> object declares this
 	 * <code>SootMethod</code> object.
 	 */
-	protected boolean isDeclared;
+	private boolean isDeclared;
 
 	/** Holds the class which declares this <code>SootClass</code> method. */
-	protected SootClass declaringClass;
+	private SootClass declaringClass;
 
 	/**
 	 * Modifiers associated with this SootMethod (e.g. private, protected, etc.)
 	 */
-	protected int modifiers;
+	private int modifiers;
 
 	/** Is this method a phantom method? */
-	protected boolean isPhantom = false;
+	private boolean isPhantom = false;
 
 	/** Declared exceptions thrown by this method. Created upon demand. */
-	protected List<SootClass> exceptions = null;
+	private List<SootClass> exceptions = null;
 
 	/** Active body associated with this method. */
-	protected volatile Body activeBody;
+	private volatile Body activeBody;
 
 	/** Tells this method how to find out where its body lives. */
 	protected volatile MethodSource ms;
@@ -686,7 +686,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 		return buffer.toString();
 	}
 
-	protected NumberedString subsignature;
+	private NumberedString subsignature;
 
 	public NumberedString getNumberedSubSignature() {
 		return subsignature;
@@ -894,7 +894,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 		this.number = number;
 	}
 
-	protected int number = 0;
+	private int number = 0;
 
 	@Override
 	public SootMethod method() {

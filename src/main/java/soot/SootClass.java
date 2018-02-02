@@ -885,6 +885,15 @@ public class SootClass extends AbstractHost implements Numberable {
 			return outerClass;
 	}
 
+	/**
+	 * This method returns the outer class, or null if no outer class has been
+	 * specified for this class.
+	 */
+	public SootClass getOuterClassUnsafe() {
+		checkLevel(HIERARCHY);
+		return outerClass;
+	}
+
 	public void setOuterClass(SootClass c) {
 		checkLevel(HIERARCHY);
 		outerClass = c;
@@ -980,12 +989,6 @@ public class SootClass extends AbstractHost implements Numberable {
 	public boolean isEnum() {
 		checkLevel(HIERARCHY);
 		return Modifier.isEnum(this.getModifiers());
-	}
-
-	/** Convenience method; returns true if this class is synchronized. */
-	public boolean isSynchronized() {
-		checkLevel(HIERARCHY);
-		return Modifier.isSynchronized(this.getModifiers());
 	}
 
 	/** Returns true if this class is not an interface and not abstract. */
@@ -1197,7 +1200,7 @@ public class SootClass extends AbstractHost implements Numberable {
 		this.number = number;
 	}
 
-	protected int number = 0;
+	private int number = 0;
 
 	public void rename(String newName) {
 		this.name = newName;

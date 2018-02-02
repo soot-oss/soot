@@ -36,12 +36,12 @@ import soot.util.Numberable;
  * SootClass.
  */
 public class SootField extends AbstractHost implements ClassMember, SparkField, Numberable, PaddleField {
-	protected String name;
-	protected Type type;
-	protected int modifiers;
+	String name;
+	Type type;
+	int modifiers;
 
-	protected boolean isDeclared = false;
-	protected SootClass declaringClass;
+	boolean isDeclared = false;
+	SootClass declaringClass;
 	protected boolean isPhantom = false;
 
 	/** Constructs a Soot field with the given name, type and modifiers. */

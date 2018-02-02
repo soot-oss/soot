@@ -1071,7 +1071,7 @@ public class PackManager {
 		return bafBody;
 	}
 
-	protected void writeClass(SootClass c) {
+	private void writeClass(SootClass c) {
 		// Create code assignments for those values we only have in code
 		// assignments
 		if (Options.v().output_format() == Options.output_format_jimple)

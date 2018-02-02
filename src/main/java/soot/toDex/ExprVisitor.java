@@ -184,8 +184,9 @@ class ExprVisitor implements ExprSwitch {
 		while (currentClass != null) {
 			currentClass = currentClass.getSuperclassUnsafe();
 			if (currentClass != null) {
-				if (currentClass == classWithInvokation)
+				if (currentClass.equals(classWithInvokation)) {
 					return true;
+				}
 
 				// If we're dealing with phantom classes, we might not actually
 				// arrive at java.lang.Object. In this case, we should not fail
