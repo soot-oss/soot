@@ -112,7 +112,7 @@ public class BafASMBackend extends AbstractASMBackend {
 
 		// http://hg.openjdk.java.net/jdk8/jdk8/hotspot/file/87ee5ee27509/src/share/vm/classfile/classFileParser.cpp
 		if (method.getDeclaringClass().isInterface()) {
-			if (method.isStatic()) {
+			if (method.isStatic() && !method.isStaticInitializer()) {
 				return Options.java_version_1_8;
 			}
 		}
