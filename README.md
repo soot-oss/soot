@@ -1,15 +1,13 @@
 [![Build Status](http://soot-build.cs.uni-paderborn.de/jenkins/buildStatus/icon?job=soot/soot-develop)](http://soot-build.cs.uni-paderborn.de/jenkins/job/soot/job/soot-develop/)
 
+# Looking for PostDoc or Ph.D. student to work on Soot!
+
+The [research group of Eric Bodden](https://www.hni.uni-paderborn.de/en/software-engineering/) has acquired funding for a three-year project that will fund a PostDoc or Ph.D. student with the goal of applying major upgrades to Soot to make it sustainable for the future. The position is fully funded and does not include any teaching or administrative duties (although teaching is possible if desired). We will assure that at least 50% of the time can also be spent on personal research.
+
+As Soot is one of the most widely used research infrastructures worldwide, this position will give you a great opportunity to obtain wide exposition in the research community. In case you are interested in applying, please [contact Eric Bodden directly](https://www.hni.uni-paderborn.de/en/software-engineering/staff/bodden/).
+
 # Soot supports Java 9 modules now!
 Try and get involved in Soot's Java 9 bleeding edge developement. Check out the [Soot-j9](https://github.com/sable/soot/tree/java9) branch.
-
-# Please help us improve Soot!
-You are using Soot and would like to help us support it in the future? Then please support us by filling out [this little web form](https://goo.gl/forms/rk1oSxFIxAH0xaf52).
-
-That way you can help us in two ways:
-* By letting us know how we can improve Soot you can directly help us prioritize newly planned features.
-* By stating your name and affiliation you help us showcasing Soot’s large user base.
-Thanks!
 
 # What is Soot?
 
@@ -56,8 +54,6 @@ You can also obtain older builds of the `develop` branch. A complete listing of 
 
 # How do I obtain Soot without Maven?
 
-**Note that the nightly build server has moved**
-
 All of our Soot builds for the `develop` branch are stored up to one month in our [Nexus repository](https://soot-build.cs.uni-paderborn.de/nexus/#browse/browse/components:soot-snapshot) and can be obtained from there.
 The latest snapshot build of Soot can also be obtained [directly](https://soot-build.cs.uni-paderborn.de/public/origin/develop/soot/soot-develop/build/). The "sootclasses-trunk-jar-with-dependencies.jar" file is an all-in-one file that also contains all the required libraries. The "sootclasses-trunk.jar" file contains only Soot, allowing you to manually pick dependencies as you need them. If you do not want to bother with dependencies, we recommend using the former.
 
@@ -71,3 +67,15 @@ Soot follows the git-flow convention. Releases and hotfixes are maintained in th
 Development happens in the develop branch. To catch the bleeding edge of Soot, check out the latter.
 In case of any questions, please consult the Soot
 mailing list at: http://www.sable.mcgill.ca/mailman/listinfo/soot-list/
+
+# What extensions exist to Soot?
+
+We maintain a [list of extensions that can be used in combination with Soot](https://github.com/Sable/soot/wiki/Extensions-to-Soot). Feel free to add your own!
+
+# Please help us improve Soot!
+You are using Soot and would like to help us support it in the future? Then please support us by filling out [this little web form](https://goo.gl/forms/rk1oSxFIxAH0xaf52).
+
+That way you can help us in two ways:
+* By letting us know how we can improve Soot you can directly help us prioritize newly planned features.
+* By stating your name and affiliation you help us showcasing Soot’s large user base.
+Thanks!

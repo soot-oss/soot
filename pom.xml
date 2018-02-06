@@ -7,32 +7,27 @@
 	<version>3.0.0-SNAPSHOT</version>
 	<description>A Java Optimization Framework</description>
 	<properties>
-		<maven.compiler.source>1.7</maven.compiler.source>
-		<maven.compiler.target>1.7</maven.compiler.target>
+		<maven.compiler.source>1.8</maven.compiler.source>
+		<maven.compiler.target>1.8</maven.compiler.target>
+		<xml-maven-plugin.version>1.0.1</xml-maven-plugin.version>
+		<maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
+		<build-helper-maven-plugin.version>3.0.0</build-helper-maven-plugin.version>
+		<maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
+		<maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
+		<maven-assembly-plugin.version>3.1.0</maven-assembly-plugin.version>
+		<maven-jar-plugin.version>3.0.2</maven-jar-plugin.version>
+		<maven-source-plugin.version>3.0.1</maven-source-plugin.version>
+		<maven-javadoc-plugin.version>3.0.0</maven-javadoc-plugin.version>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 	</properties>
 	<build>
 		<finalName>sootclasses-trunk</finalName>
-		<sourceDirectory>src</sourceDirectory>
-		<testSourceDirectory>tests</testSourceDirectory>
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<includes>
-					<include>**/*.dat</include>
-				</includes>
-			</resource>
-			<resource>
-				<directory>generated/sablecc</directory>
-				<includes>
-					<include>**/*.dat</include>
-				</includes>
-			</resource>
-		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>xml-maven-plugin</artifactId>
+				<version>${xml-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<goals>
@@ -44,12 +39,12 @@
 					<transformationSets>
 						<!-- make soot singletons -->
 						<transformationSet>
-							<outputDir>${basedir}/generated/singletons/soot/</outputDir>
-							<dir>${basedir}/src/</dir>
+							<outputDir>${basedir}/src/main/generated/singletons/soot/</outputDir>
+							<dir>${basedir}/src/main/xml/singletons</dir>
 							<includes>
 								<include>singletons.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/make-singletons.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/singletons/make-singletons.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>Singletons.java</targetName>
@@ -58,12 +53,12 @@
 						</transformationSet>
 						<!-- make soot options -->
 						<transformationSet>
-							<outputDir>${basedir}/generated/options/soot/options/</outputDir>
-							<dir>${basedir}/src/soot/options/</dir>
+							<outputDir>${basedir}/src/main/generated/options/soot/options/</outputDir>
+							<dir>${basedir}/src/main/xml/options/</dir>
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/make-soot-options.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/options/make-soot-options.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>Options.java</targetName>
@@ -71,12 +66,12 @@
 							</fileMappers>
 						</transformationSet>
 						<transformationSet>
-							<outputDir>${basedir}/generated/options/soot/</outputDir>
-							<dir>${basedir}/src/soot/options/</dir>
+							<outputDir>${basedir}/src/main/generated/options/soot/</outputDir>
+							<dir>${basedir}/src/main/xml/options/</dir>
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/ant-task.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/options/ant-task.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>AntTask.java</targetName>
@@ -85,11 +80,11 @@
 						</transformationSet>
 						<transformationSet>
 							<outputDir>${basedir}/eclipse/ca.mcgill.sable.soot/src/ca/mcgill/sable/soot/ui/</outputDir>
-							<dir>${basedir}/src/soot/options/</dir>
+							<dir>${basedir}/src/main/xml/options/</dir>
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/phase_options_dialog.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/options/phase_options_dialog.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>PhaseOptionsDialog.java</targetName>
@@ -98,11 +93,11 @@
 						</transformationSet>
 						<transformationSet>
 							<outputDir>${basedir}/doc/</outputDir>
-							<dir>${basedir}/src/soot/options/</dir>
+							<dir>${basedir}/src/main/xml/options/</dir>
 							<includes>
 								<include>soot_options.xml</include>
 							</includes>
-							<stylesheet>${basedir}/src/soot/options/soot_options.xsl</stylesheet>
+							<stylesheet>${basedir}/src/main/xml/options/soot_options.xsl</stylesheet>
 							<fileMappers>
 								<fileMapper implementation="org.codehaus.plexus.components.io.filemappers.MergeFileMapper">
 									<targetName>soot_options.htm</targetName>
@@ -115,7 +110,7 @@
 			<!-- copy the soot_options.css -->
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
-				<version>3.0.2</version>
+				<version>${maven-resources-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>copy-resources</id>
@@ -128,7 +123,7 @@
 							<outputDirectory>${basedir}/doc</outputDirectory>
 							<resources>
 								<resource>
-									<directory>${basedir}/src/soot/options/</directory>
+									<directory>${basedir}/src/main/xml/options/</directory>
 									<includes>
 										<include>soot_options.css</include>
 									</includes>
@@ -141,6 +136,7 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>build-helper-maven-plugin</artifactId>
+				<version>${build-helper-maven-plugin.version}</version>
 				<executions>
 					<execution>
 						<phase>generate-sources</phase>
@@ -149,10 +145,10 @@
 						</goals>
 						<configuration>
 							<sources>
-								<source>${basedir}/generated/singletons</source>
-								<source>${basedir}/generated/sablecc</source>
-								<source>${basedir}/generated/options</source>
-								<source>${basedir}/generated/jastadd</source>
+								<source>${basedir}/src/main/generated/singletons</source>
+								<source>${basedir}/src/main/generated/sablecc</source>
+								<source>${basedir}/src/main/generated/options</source>
+								<source>${basedir}/src/main/generated/jastadd</source>
 							</sources>
 						</configuration>
 					</execution>
@@ -161,12 +157,16 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.2</version>
+				<version>${maven-compiler-plugin.version}</version>
+				<configuration>
+					<source>${maven.compiler.source}</source>
+					<target>${maven.compiler.target}</target>
+				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.20.1</version>
+				<version>${maven-surefire-plugin.version}</version>
 				<configuration>
 					<reuseForks>false</reuseForks>
 					<forkCount>1</forkCount>
@@ -175,6 +175,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-assembly-plugin</artifactId>
+				<version>${maven-assembly-plugin.version}</version>
 				<configuration>
 					<descriptorRefs>
 						<descriptorRef>jar-with-dependencies</descriptorRef>
@@ -191,7 +192,7 @@
 						<id>simple-command</id>
 						<phase>package</phase>
 						<goals>
-							<goal>attached</goal>
+							<goal>single</goal>
 						</goals>
 					</execution>
 				</executions>
@@ -199,6 +200,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
+				<version>${maven-jar-plugin.version}</version>
 				<configuration>
 					<archive>
 						<manifest>
@@ -211,6 +213,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>${maven-source-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -223,6 +226,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>${maven-javadoc-plugin.version}</version>
 				<configuration>
 					<failOnError>false</failOnError>
 				</configuration>
@@ -235,43 +239,24 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>createTestclassesDir</id>
-						<phase>process-resources</phase>
-						<configuration>
-							<tasks>
-								<delete dir="testclasses"/>
-								<mkdir dir="testclasses"/>
-							</tasks>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
 		</plugins>
 	</build>
 	<dependencies>
 		<!-- https://mvnrepository.com/artifact/commons-io/commons-io -->
 		<dependency>
-		    <groupId>commons-io</groupId>
-		    <artifactId>commons-io</artifactId>
-		    <version>2.6</version>
+			<groupId>commons-io</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>2.6</version>
 		</dependency>
 		<dependency>
 			<groupId>org.smali</groupId>
 			<artifactId>dexlib2</artifactId>
-			<version>2.2.1</version>
+			<version>2.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm-debug-all</artifactId>
-			<version>5.1</version>
+			<version>5.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.javassist</groupId>
@@ -292,9 +277,22 @@
 		<dependency>
 			<groupId>org.apache.ant</groupId>
 			<artifactId>ant</artifactId>
-			<version>1.9.7</version>
+			<version>1.10.1</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<!-- Local dependencies -->
+		<dependency>
+			<groupId>pxb.android</groupId>
+			<artifactId>axml</artifactId>
+			<version>2.0.0-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>ca.mcgill.sable</groupId>
+			<artifactId>polyglot</artifactId>
+			<version>2006</version>
+		</dependency>
+
 		<!-- Published from the github repo -->
 		<!-- Built by http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/ -->
 		<dependency>
@@ -302,25 +300,27 @@
 			<artifactId>heros</artifactId>
 			<version>1.0.0-SNAPSHOT</version>
 		</dependency>
-		<!-- Local dependency -->
-		<dependency>
-			<groupId>ca.mcgill.sable</groupId>
-			<artifactId>polyglot</artifactId>
-			<version>2006</version>
-		</dependency>
-		<!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/ 
+
+		<!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/
 			from the nightly build server -->
 		<dependency>
 			<groupId>ca.mcgill.sable</groupId>
 			<artifactId>jasmin</artifactId>
 			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
-		<!-- local dependency -->
+
+		<!-- Logging dependencies -->
 		<dependency>
-			<groupId>pxb.android</groupId>
-			<artifactId>axml</artifactId>
-			<version>2.0.0-SNAPSHOT</version>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+			<version>1.7.5</version>
 		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+			<version>1.7.5</version>
+		</dependency>
+
 		<!-- Testing dependencies -->
 		<dependency>
 			<groupId>junit</groupId>
@@ -347,17 +347,8 @@
 			<type>pom</type>
 			<scope>test</scope>
 		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.7.5</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-simple</artifactId>
-			<version>1.7.5</version>
-		</dependency>
 	</dependencies>
+
 	<repositories>
 		<repository>
 			<id>soot-snapshot</id>
@@ -370,4 +361,5 @@
 			<url>https://soot-build.cs.uni-paderborn.de/nexus/repository/soot-release/</url>
 		</repository>
 	</repositories>
+
 </project>
