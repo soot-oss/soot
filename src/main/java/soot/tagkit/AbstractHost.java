@@ -130,7 +130,7 @@ public Tag getTag(String aName)
     
     @Override
 	public int getJavaSourceStartLineNumber() {
-    	if(line==0) {
+    	if(line<=0) {
     		//get line from source
 	    	SourceLnPosTag tag = (SourceLnPosTag) getTag("SourceLnPosTag");
 	    	if(tag!=null) {
@@ -149,7 +149,7 @@ public Tag getTag(String aName)
     
     @Override
 	public int getJavaSourceStartColumnNumber() {
-    	if(col==0) {
+    	if(col<=0) {
     		//get line from source
 	    	SourceLnPosTag tag = (SourceLnPosTag) getTag("SourceLnPosTag");
 	    	if(tag!=null) {
