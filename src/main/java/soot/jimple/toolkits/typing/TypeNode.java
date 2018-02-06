@@ -26,10 +26,20 @@
 
 package soot.jimple.toolkits.typing;
 
-import soot.*;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import soot.ArrayType;
+import soot.G;
+import soot.NullType;
+import soot.PrimType;
+import soot.RefType;
+import soot.SootClass;
+import soot.Type;
 import soot.options.Options;
-import soot.util.*;
-import java.util.*;
+import soot.util.BitVector;
 
 /**
  * Each instance of this class represents one type in the class hierarchy (or basic types).
@@ -84,7 +94,8 @@ class TypeNode
       if(sClass.isPhantomClass()) throw new RuntimeException("Jimplification requires "+sClass+", but it is a phantom ref.");
       List<TypeNode> plist = new LinkedList<TypeNode>();
       
-      if(sClass.hasSuperclass() && 
+      SootClass superclass = sClass.getSuperclassUnsafe();
+      if(superclass != null &&  
 	 !sClass.getName().equals("java.lang.Object"))
 	{
 	  TypeNode parent = hierarchy.typeNode(RefType.v(sClass.getSuperclass().getName()));
@@ -147,7 +158,8 @@ class TypeNode
 	{
 	  RefType baseType = (RefType) type.baseType;
 	  SootClass sClass = baseType.getSootClass();
-	  if(sClass.hasSuperclass() && !sClass.getName().equals("java.lang.Object"))
+	  SootClass superClass = sClass.getSuperclassUnsafe();
+	  if(superClass != null && !superClass.getName().equals("java.lang.Object"))
 	    {
 	      TypeNode parent = hierarchy.typeNode(ArrayType.v(RefType.v(sClass.getSuperclass().getName()), type.numDimensions));
 	      plist.add(parent);
@@ -288,7 +300,8 @@ class TypeNode
     return parentClass;
   }
 
-  public String toString()
+  @Override
+public String toString()
   {
     return type.toString()+ "(" + id + ")";
   }
@@ -365,7 +378,7 @@ class TypeNode
       {
 	if(type.parents.size() == 1)
 	  {
-	    type = (TypeNode) type.parents.get(0);
+	    type = type.parents.get(0);
 	  }
 	else
 	  {
