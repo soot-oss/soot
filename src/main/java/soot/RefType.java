@@ -81,7 +81,6 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 		return rt;
 	}
 
-	@Override
 	public int compareTo(RefType t) {
 		return this.toString().compareTo(t.toString());
 	}
@@ -136,34 +135,32 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 	 *            an object to test for equality. @ return true if t is a
 	 *            RefType parametrized by the same name as this.
 	 */
-	@Override
 	public boolean equals(Object t) {
 		return ((t instanceof RefType) && className.equals(((RefType) t).className));
 	}
 
-	@Override
 	public String toString() {
 		return className;
 	}
 
-    /** Returns a textual representation, quoted as needed, of this type for serialization, e.g. to .jimple format */
+	/**
+	 * Returns a textual representation, quoted as needed, of this type for
+	 * serialization, e.g. to .jimple format
+	 */
 	@Override
-    public String toQuotedString() {
-    	return Scene.v().quotedNameOf(className);
-    }
+	public String toQuotedString() {
+		return Scene.v().quotedNameOf(className);
+	}
 
-	@Override
 	public int hashCode() {
 		return className.hashCode();
 	}
 
-	@Override
 	public void apply(Switch sw) {
 		((TypeSwitch) sw).caseRefType(this);
 	}
 
 	/** Returns the least common superclass of this type and other. */
-	@Override
 	public Type merge(Type other, Scene cm) {
 		if (other.equals(UnknownType.v()) || this.equals(other))
 			return this;
@@ -178,39 +175,40 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 			SootClass otherClass = cm.getSootClass(((RefType) other).className);
 			SootClass javalangObject = cm.getObjectType().getSootClass();
 
-			ArrayDeque<SootClass> thisHierarchy = new ArrayDeque<SootClass>();
-			ArrayDeque<SootClass> otherHierarchy = new ArrayDeque<SootClass>();
+			ArrayDeque<SootClass> thisHierarchy = new ArrayDeque<>();
+			ArrayDeque<SootClass> otherHierarchy = new ArrayDeque<>();
 
 			// Build thisHierarchy
 			{
-				SootClass SootClass = thisClass;
+				SootClass sootClass = thisClass;
 
-				for (;;) {
-					thisHierarchy.addFirst(SootClass);
-
-					if (SootClass == javalangObject)
+				// This should never be null, so we could also use "while
+				// (true)"; but better be safe than sorry.
+				while (sootClass != null) {
+					thisHierarchy.addFirst(sootClass);
+					if (sootClass == javalangObject)
 						break;
 
-					SootClass = SootClass.getSuperclassUnsafe();
+					sootClass = sootClass.getSuperclassUnsafe();
 					if (sootClass == null)
-						SootClass = javalangObject;
+						sootClass = javalangObject;
 				}
 			}
 
 			// Build otherHierarchy
 			{
-				SootClass SootClass = otherClass;
+				SootClass sootClass = otherClass;
 
-				for (;;) {
-					otherHierarchy.addFirst(SootClass);
-
-					if (SootClass == javalangObject)
+				// This should never be null, so we could also use "while
+				// (true)"; but better be safe than sorry.
+				while (sootClass != null) {
+					otherHierarchy.addFirst(sootClass);
+					if (sootClass == javalangObject)
 						break;
 
-					if (SootClass.hasSuperclass())
-						SootClass = SootClass.getSuperclass();
-					else
-						SootClass = javalangObject;
+					sootClass = sootClass.getSuperclassUnsafe();
+					if (sootClass == null)
+						sootClass = javalangObject;
 				}
 			}
 
@@ -233,7 +231,6 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 
 	}
 
-	@Override
 	public Type getArrayElementType() {
 		if (className.equals("java.lang.Object") || className.equals("java.io.Serializable")
 				|| className.equals("java.lang.Cloneable")) {
@@ -250,9 +247,8 @@ public class RefType extends RefLikeType implements Comparable<RefType> {
 		this.anySubType = anySubType;
 	}
 
-	@Override
 	public boolean isAllowedInFinalCode() {
 		return true;
 	}
-	
+
 }
