@@ -19,18 +19,12 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-
 import soot.Body;
-import soot.G;
+import soot.Hierarchy;
 import soot.Modifier;
 import soot.NullType;
 import soot.PatchingChain;
+import soot.RefType;
 import soot.Scene;
 import soot.SceneTransformer;
 import soot.SootClass;
@@ -42,7 +36,9 @@ import soot.Value;
 import soot.ValueBox;
 import soot.VoidType;
 import soot.jbco.IJbcoTransform;
+import soot.jbco.util.BodyBuilder;
 import soot.jbco.util.Rand;
+import soot.jimple.ClassConstant;
 import soot.jimple.Constant;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
@@ -52,6 +48,13 @@ import soot.jimple.LongConstant;
 import soot.jimple.NullConstant;
 import soot.jimple.StringConstant;
 import soot.util.Chain;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static java.util.Collections.emptyList;
 
 /**
  * @author Michael Batchelder
@@ -86,43 +89,30 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
 	public static SootField field = null;
 
 	protected void internalTransform(String phaseName, Map<String, String> options) {
-		Scene scene = G.v().soot_Scene();
+		if (output) {
+            out.println("Collecting Constant Data");
+        }
 
-		if (output)
-			out.println("Collecting Constant Data");
+		BodyBuilder.retrieveAllNames();
 
-		soot.jbco.util.BodyBuilder.retrieveAllNames();
+		Chain<SootClass> appClasses = Scene.v().getApplicationClasses();
 
-		Chain<SootClass> appClasses = scene.getApplicationClasses();
-
-		for (SootClass cl : appClasses) {
-			for (SootMethod m : cl.getMethods()) {
-				if (!m.hasActiveBody() || m.getName().contains(SootMethod.staticInitializerName))
-					continue;
+		for (SootClass sc : appClasses) {
+			for (SootMethod m : sc.getMethods()) {
+				if (!m.hasActiveBody() || m.getName().contains(SootMethod.staticInitializerName)) {
+                    continue;
+                }
 
 				for (ValueBox useBox : m.getActiveBody().getUseBoxes()) {
 					Value v = useBox.getValue();
 					if (v instanceof Constant) {
-						Constant c = (Constant) v;
-						Type t = c.getType();
-						List<Constant> values = typesToValues.get(t);
-						if (values == null) {
-							values = new ArrayList<Constant>();
-							typesToValues.put(t, values);
-						}
+						Constant constant = (Constant) v;
+						Type type = constant.getType();
+                        List<Constant> constants = typesToValues.computeIfAbsent(type, t -> new ArrayList<>());
 
-						boolean found = false;
-						Iterator<Constant> vit = values.iterator();
-						while (vit.hasNext()) {
-							if (vit.next().equals(c)) {
-								found = true;
-								break;
-							}
-						}
-
-						if (!found) {
-							constants++;
-							values.add(c);
+						if (!constants.contains(constant)) {
+							this.constants++;
+							constants.add(constant);
 						}
 					}
 				}
@@ -131,67 +121,77 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
 
 		int count = 0;
 		String name = "newConstantJbcoName";
-		Object classes[] = appClasses.toArray();
-		Iterator<Type> it = typesToValues.keySet().iterator();
-		while (it.hasNext()) {
-			Type t = it.next();
-			if (t instanceof NullType)
-				continue; // t = RefType.v("java.lang.Object");
-			Iterator<Constant> cit = typesToValues.get(t).iterator();
-			while (cit.hasNext()) {
-				Constant c = cit.next();
+		SootClass[] classes = appClasses.toArray(new SootClass[appClasses.size()]);
+        for (Type type : typesToValues.keySet()) {
+            if (type instanceof NullType) {
+                continue; // type = RefType.v("java.lang.Object");
+            }
+            for (Constant constant : typesToValues.get(type)) {
+                name += "_";
+                SootClass randomClass;
+                do {
+                    randomClass = classes[Rand.getInt(classes.length)];
+                } while (!isSuitableClassToAddFieldConstant(randomClass, constant));
 
-				name += "_";
-				SootClass rand = null;
-				do {
-					rand = (SootClass) classes[Rand.getInt(classes.length)];
-				} while (rand.isInterface());
-
-				SootField newf = Scene.v().makeSootField(FieldRenamer.getNewName(), t,
-						Modifier.STATIC ^ Modifier.PUBLIC);
-				rand.addField(newf);
-				FieldRenamer.sootFieldsRenamed.add(newf);
-				FieldRenamer.addOldAndNewName(name, newf.getName());
-				constantsToFields.put(c, newf);
-				addInitializingValue(rand, newf, c);
-				FieldRenamer.addOldAndNewName("addedConstant" + count++, newf.getName());
-			}
-		}
+                SootField newField = Scene.v().makeSootField(FieldRenamer.getNewName(), type,
+                        Modifier.STATIC ^ Modifier.PUBLIC);
+                randomClass.addField(newField);
+                FieldRenamer.sootFieldsRenamed.add(newField);
+                FieldRenamer.addOldAndNewName(name, newField.getName());
+                constantsToFields.put(constant, newField);
+                addInitializingValue(randomClass, newField, constant);
+                FieldRenamer.addOldAndNewName("addedConstant" + count++, newField.getName());
+            }
+        }
 
 		updatedConstants += count;
 	}
 
-	private void addInitializingValue(SootClass clas, SootField f, Constant con) {
-		if (con instanceof NullConstant) {
+	private boolean isSuitableClassToAddFieldConstant(SootClass sc, Constant constant) {
+	    if (sc.isInterface()) {
+	        return false;
+        }
+        if (constant instanceof ClassConstant) {
+            ClassConstant classConstant = (ClassConstant) constant;
+            RefType type = (RefType) classConstant.toSootType();
+            SootClass classFromConstant = type.getSootClass();
+            Hierarchy hierarchy = Scene.v().getActiveHierarchy();
+            return hierarchy.isVisible(sc, classFromConstant);
+        }
+        return true;
+    }
+
+	private void addInitializingValue(SootClass sc, SootField f, Constant constant) {
+		if (constant instanceof NullConstant) {
 			return;
-		} else if (con instanceof IntConstant) {
-			if (((IntConstant) con).value == 0)
+		} else if (constant instanceof IntConstant) {
+			if (((IntConstant) constant).value == 0)
 				return;
-		} else if (con instanceof LongConstant) {
-			if (((LongConstant) con).value == 0)
+		} else if (constant instanceof LongConstant) {
+			if (((LongConstant) constant).value == 0)
 				return;
-		} else if (con instanceof StringConstant) {
-			if (((StringConstant) con).value == null)
+		} else if (constant instanceof StringConstant) {
+			if (((StringConstant) constant).value == null)
 				return;
-		} else if (con instanceof DoubleConstant) {
-			if (((DoubleConstant) con).value == 0)
+		} else if (constant instanceof DoubleConstant) {
+			if (((DoubleConstant) constant).value == 0)
 				return;
-		} else if (con instanceof FloatConstant) {
-			if (((FloatConstant) con).value == 0)
+		} else if (constant instanceof FloatConstant) {
+			if (((FloatConstant) constant).value == 0)
 				return;
 		}
 
 		Body b;
 		boolean newInit = false;
-		if (!clas.declaresMethodByName(SootMethod.staticInitializerName)) {
+		if (!sc.declaresMethodByName(SootMethod.staticInitializerName)) {
 			SootMethod m = Scene.v().makeSootMethod(SootMethod.staticInitializerName,
-                    Collections.<Type>emptyList(), VoidType.v(), Modifier.STATIC);
-			clas.addMethod(m);
+                    emptyList(), VoidType.v(), Modifier.STATIC);
+			sc.addMethod(m);
 			b = Jimple.v().newBody(m);
 			m.setActiveBody(b);
 			newInit = true;
 		} else {
-			SootMethod m = clas.getMethodByName(SootMethod.staticInitializerName);
+			SootMethod m = sc.getMethodByName(SootMethod.staticInitializerName);
 			if (!m.hasActiveBody()) {
 				b = Jimple.v().newBody(m);
 				m.setActiveBody(b);
@@ -203,7 +203,7 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
 
 		PatchingChain<Unit> units = b.getUnits();
 
-		units.addFirst(Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(f.makeRef()), con));
+		units.addFirst(Jimple.v().newAssignStmt(Jimple.v().newStaticFieldRef(f.makeRef()), constant));
 		if (newInit)
 			units.addLast(Jimple.v().newReturnVoidStmt());
 	}
