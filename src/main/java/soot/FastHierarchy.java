@@ -22,13 +22,10 @@ package soot;
 import java.util.ArrayDeque;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Deque;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.Map;
-import java.util.Queue;
 import java.util.Set;
 
 import soot.jimple.SpecialInvokeExpr;
@@ -134,8 +131,10 @@ public class FastHierarchy {
 		for (SootClass cl : sc.getClasses().getElementsUnsorted()) {
 			if (cl.resolvingLevel() < SootClass.HIERARCHY)
 				continue;
-			if (!cl.isInterface() && cl.hasSuperclass()) {
-				classToSubclasses.put(cl.getSuperclass(), cl);
+			if (!cl.isInterface()) {
+				SootClass superClass=  cl.getSuperclassUnsafe();
+				if (superClass != null)
+					classToSubclasses.put(superClass, cl);
 			}
 			for (final SootClass supercl : cl.getInterfaces()) {
 				if (cl.isInterface()) {
@@ -496,14 +495,15 @@ public class FastHierarchy {
 							}
 						}
 					}
-					if (!concreteType.hasSuperclass()) {
+					SootClass superClass = concreteType.getSuperclassUnsafe();
+					if (superClass == null) {
 						if (concreteType.isPhantom())
 							break;
 						else
 							throw new RuntimeException("could not resolve abstract dispatch!\nAbstract Type: "
 									+ abstractType + "\nConcrete Type: " + savedConcreteType + "\nMethod: " + m);
 					}
-					concreteType = concreteType.getSuperclass();
+					concreteType = superClass;
 				}
 			}
 		}
@@ -531,9 +531,9 @@ public class FastHierarchy {
 					return method;
 				}
 			}
-			if (!concreteType.hasSuperclass())
+			concreteType = concreteType.getSuperclassUnsafe();
+			if (concreteType == null)
 				break;
-			concreteType = concreteType.getSuperclass();
 		}
 		// When there is no proper dispatch found, we simply return null to let
 		// the caller decide what to do

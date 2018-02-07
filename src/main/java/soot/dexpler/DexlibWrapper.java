@@ -73,7 +73,17 @@ public class DexlibWrapper {
 	}
 
 	private final DexClassLoader dexLoader = createDexClassLoader();
-	private final Map<String, ClassDef> classesToDefItems = new HashMap<String, ClassDef>();
+	private static class ClassInformation {
+		public DexFile dexFile;
+		public ClassDef classDefinition;
+		
+		public ClassInformation(DexFile file, ClassDef classDef) {
+			this.dexFile = file;
+			this.classDefinition = classDef;
+		}
+	}
+	
+	private final Map<String, ClassInformation> classesToDefItems = new HashMap<String, ClassInformation>();
 	private final Collection<DexBackedDexFile> dexFiles;
 
 	/**
@@ -108,7 +118,7 @@ public class DexlibWrapper {
 		for (DexBackedDexFile dexFile : dexFiles) {
 			for (ClassDef defItem : dexFile.getClasses()) {
 				String forClassName = Util.dottedClassName(defItem.getType());
-				classesToDefItems.put(forClassName, defItem);
+				classesToDefItems.put(forClassName, new ClassInformation(dexFile, defItem));
 			}
 		}
 
@@ -150,11 +160,9 @@ public class DexlibWrapper {
 			className = Util.dottedClassName(className);
 		}
 
-		for (DexFile dexFile : dexFiles) {
-			ClassDef defItem = classesToDefItems.get(className);
-			if (dexFile.getClasses().contains(defItem))
-				return dexLoader.makeSootClass(sc, defItem, dexFile);
-		}
+		ClassInformation defItem = classesToDefItems.get(className);
+		if (defItem != null)
+			return dexLoader.makeSootClass(sc, defItem.classDefinition, defItem.dexFile);
 
 		throw new RuntimeException("Error: class not found in DEX files: " + className);
 	}

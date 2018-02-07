@@ -885,6 +885,15 @@ public class SootClass extends AbstractHost implements Numberable {
 			return outerClass;
 	}
 
+	/**
+	 * This method returns the outer class, or null if no outer class has been
+	 * specified for this class.
+	 */
+	public SootClass getOuterClassUnsafe() {
+		checkLevel(HIERARCHY);
+		return outerClass;
+	}
+
 	public void setOuterClass(SootClass c) {
 		checkLevel(HIERARCHY);
 		outerClass = c;

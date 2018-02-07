@@ -652,8 +652,9 @@ public abstract class AbstractASMBackend {
 		 * default is java.lang.Object.
 		 */
 		String superClass = "java/lang/Object";
-		if (sc.hasSuperclass()) {
-			superClass = slashify(sc.getSuperclass().getName());
+		SootClass csuperClass = sc.getSuperclassUnsafe();
+		if (csuperClass != null) {
+			superClass = slashify(csuperClass.getName());
 		}
 
 		// Retrieve directly implemented interfaces

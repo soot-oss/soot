@@ -248,10 +248,12 @@ public class SootResolver {
 
 	public void reResolveHierarchy(SootClass sc) {
 		// Bring superclasses to hierarchy
-		if (sc.hasSuperclass())
-			addToResolveWorklist(sc.getSuperclass(), SootClass.HIERARCHY);
-		if (sc.hasOuterClass())
-			addToResolveWorklist(sc.getOuterClass(), SootClass.HIERARCHY);
+		SootClass superClass = sc.getSuperclassUnsafe();
+		if (superClass != null)
+			addToResolveWorklist(superClass, SootClass.HIERARCHY);
+		SootClass outerClass = sc.getOuterClassUnsafe();
+		if (outerClass != null)
+			addToResolveWorklist(outerClass, SootClass.HIERARCHY);
 		for (SootClass iface : sc.getInterfaces()) {
 			addToResolveWorklist(iface, SootClass.HIERARCHY);
 		}
@@ -290,8 +292,9 @@ public class SootResolver {
 		}
 
 		// Bring superclasses to signatures
-		if (sc.hasSuperclass())
-			addToResolveWorklist(sc.getSuperclass(), SootClass.SIGNATURES);
+		SootClass s = sc.getSuperclassUnsafe();
+		if (s != null)
+			addToResolveWorklist(s, SootClass.SIGNATURES);
 		for (SootClass iface : sc.getInterfaces()) {
 			addToResolveWorklist(iface, SootClass.SIGNATURES);
 		}

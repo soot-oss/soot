@@ -550,7 +550,11 @@ public class DexPrinter {
 
 		String classType = SootToDexUtils.getDexTypeDescriptor(c.getType());
 		int accessFlags = c.getModifiers();
-		String superClass = c.hasSuperclass() ? SootToDexUtils.getDexTypeDescriptor(c.getSuperclass().getType()) : null;
+		SootClass csuperClass = c.getSuperclassUnsafe();
+		String superClass = null;
+		
+		if (csuperClass != null)
+			superClass = SootToDexUtils.getDexTypeDescriptor(csuperClass.getType());
 
 		List<String> interfaces = null;
 		if (!c.getInterfaces().isEmpty()) {
