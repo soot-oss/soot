@@ -59,103 +59,103 @@ import static soot.SootMethod.constructorName;
 
 /**
  * @author Michael Batchelder
- * 
- *         Created on 1-Feb-2006
- * 
- *         This class builds buffer classes between Application classes and
- *         their corresponding library superclasses. This allows for the hiding
- *         of all library method overrides to be hidden in a different class,
- *         thereby cloaking somewhat the mechanisms.
+ * <p>
+ * Created on 1-Feb-2006
+ * <p>
+ * This class builds buffer classes between Application classes and
+ * their corresponding library superclasses. This allows for the hiding
+ * of all library method overrides to be hidden in a different class,
+ * thereby cloaking somewhat the mechanisms.
  */
 public class BuildIntermediateAppClasses extends SceneTransformer implements IJbcoTransform {
 
-	private static int newclasses = 0;
-	private static int newmethods = 0;
+    private static int newclasses = 0;
+    private static int newmethods = 0;
 
-	public void outputSummary() {
-		out.println("New buffer classes created: " + newclasses);
-		out.println("New buffer class methods created: " + newmethods);
-	}
+    public void outputSummary() {
+        out.println("New buffer classes created: " + newclasses);
+        out.println("New buffer class methods created: " + newmethods);
+    }
 
-	public static String dependancies[] = new String[] { "wjtp.jbco_bapibm" };
+    public static String dependancies[] = new String[]{"wjtp.jbco_bapibm"};
 
-	public String[] getDependancies() {
-		return dependancies;
-	}
+    public String[] getDependancies() {
+        return dependancies;
+    }
 
-	public static String name = "wjtp.jbco_bapibm";
+    public static String name = "wjtp.jbco_bapibm";
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	protected void internalTransform(String phaseName, Map<String, String> options) {
-		if (output) {
-		    out.println("Building Intermediate Classes...");
+    protected void internalTransform(String phaseName, Map<String, String> options) {
+        if (output) {
+            out.println("Building Intermediate Classes...");
         }
 
-		BodyBuilder.retrieveAllBodies();
+        BodyBuilder.retrieveAllBodies();
 
-		// iterate through application classes, build intermediate classes
-		Iterator<SootClass> it = Scene.v().getApplicationClasses().snapshotIterator();
-		while (it.hasNext()) {
-			List<SootMethod> initMethodsToRewrite = new ArrayList<>();
-			Map<String, SootMethod> methodsToAdd = new HashMap<>();
-			SootClass sc = it.next();
-			SootClass originalSuperclass = sc.getSuperclass();
+        // iterate through application classes, build intermediate classes
+        Iterator<SootClass> it = Scene.v().getApplicationClasses().snapshotIterator();
+        while (it.hasNext()) {
+            List<SootMethod> initMethodsToRewrite = new ArrayList<>();
+            Map<String, SootMethod> methodsToAdd = new HashMap<>();
+            SootClass sc = it.next();
+            SootClass originalSuperclass = sc.getSuperclass();
 
-			if (output) {
-			    out.println("Processing " + sc.getName() + " with super " + originalSuperclass.getName());
+            if (output) {
+                out.println("Processing " + sc.getName() + " with super " + originalSuperclass.getName());
             }
 
-			Iterator<SootMethod> methodIterator = sc.methodIterator();
-			while (methodIterator.hasNext()) {
-				SootMethod method = methodIterator.next();
-				if (!method.isConcrete()) {
-				    continue;
+            Iterator<SootMethod> methodIterator = sc.methodIterator();
+            while (methodIterator.hasNext()) {
+                SootMethod method = methodIterator.next();
+                if (!method.isConcrete()) {
+                    continue;
                 }
 
-				try {
-					method.getActiveBody();
-				} catch (Exception e) {
-					if (method.retrieveActiveBody() == null)
-						throw new RuntimeException(method.getSignature() + " has no body. This was not expected dude.");
-				}
+                try {
+                    method.getActiveBody();
+                } catch (Exception e) {
+                    if (method.retrieveActiveBody() == null)
+                        throw new RuntimeException(method.getSignature() + " has no body. This was not expected dude.");
+                }
 
-				String subSig = method.getSubSignature();
-				if (subSig.equals("void main(java.lang.String[])") && method.isPublic() && method.isStatic()) {
-					continue; // skip the main method - it needs to be named 'main'
-				} else if (subSig.indexOf("init>(") > 0) {
-					if (subSig.startsWith("void <init>(")) {
-						initMethodsToRewrite.add(method);
-					}
-					continue; // skip constructors, just add for rewriting at the end
-				} else {
-					Scene.v().releaseActiveHierarchy();
+                String subSig = method.getSubSignature();
+                if (subSig.equals("void main(java.lang.String[])") && method.isPublic() && method.isStatic()) {
+                    continue; // skip the main method - it needs to be named 'main'
+                } else if (subSig.indexOf("init>(") > 0) {
+                    if (subSig.startsWith("void <init>(")) {
+                        initMethodsToRewrite.add(method);
+                    }
+                    continue; // skip constructors, just add for rewriting at the end
+                } else {
+                    Scene.v().releaseActiveHierarchy();
 
                     findAccessibleInSuperClassesBySubSig(sc, subSig).ifPresent(m -> methodsToAdd.put(subSig, m));
-				}
-			}
+                }
+            }
 
-			if (methodsToAdd.size() > 0) {
-				String newName = ClassRenamer.getNewName("");
-				ClassRenamer.oldToNewClassNames.put(newName, newName);
-				String fullName = ClassRenamer.getNamePrefix(sc.getName()) + newName;
+            if (methodsToAdd.size() > 0) {
+                String newName = ClassRenamer.getNewName("");
+                ClassRenamer.oldToNewClassNames.put(newName, newName);
+                String fullName = ClassRenamer.getNamePrefix(sc.getName()) + newName;
 
-				if (output) {
-				    out.println("\tBuilding " + fullName);
+                if (output) {
+                    out.println("\tBuilding " + fullName);
                 }
 
-				// make non-final soot class
-				SootClass mediatingClass = new SootClass(fullName, sc.getModifiers() & (~Modifier.FINAL));
-				Main.IntermediateAppClasses.add(mediatingClass);
-				mediatingClass.setSuperclass(originalSuperclass);
+                // make non-final soot class
+                SootClass mediatingClass = new SootClass(fullName, sc.getModifiers() & (~Modifier.FINAL));
+                Main.IntermediateAppClasses.add(mediatingClass);
+                mediatingClass.setSuperclass(originalSuperclass);
 
-				Scene.v().addClass(mediatingClass);
-				mediatingClass.setApplicationClass();
-				mediatingClass.setInScene(true);
+                Scene.v().addClass(mediatingClass);
+                mediatingClass.setApplicationClass();
+                mediatingClass.setInScene(true);
 
-				ThisRef thisRef = new ThisRef(mediatingClass.getType());
+                ThisRef thisRef = new ThisRef(mediatingClass.getType());
 
                 for (String subSig : methodsToAdd.keySet()) {
                     SootMethod originalSuperclassMethod = methodsToAdd.get(subSig);
@@ -218,16 +218,16 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
                         newmethods++;
                     } // end build copy of old method
                 }
-				sc.setSuperclass(mediatingClass);
+                sc.setSuperclass(mediatingClass);
 
-				// rewrite class init methods to call the proper superclass inits
-				int i = initMethodsToRewrite.size();
-				while (i-- > 0) {
-					SootMethod im = initMethodsToRewrite.remove(i);
-					Body b = im.getActiveBody();
-					Local thisLocal = b.getThisLocal();
-					Iterator<Unit> uIt = b.getUnits().snapshotIterator();
-					while (uIt.hasNext()) {
+                // rewrite class init methods to call the proper superclass inits
+                int i = initMethodsToRewrite.size();
+                while (i-- > 0) {
+                    SootMethod im = initMethodsToRewrite.remove(i);
+                    Body b = im.getActiveBody();
+                    Local thisLocal = b.getThisLocal();
+                    Iterator<Unit> uIt = b.getUnits().snapshotIterator();
+                    while (uIt.hasNext()) {
                         for (ValueBox valueBox : uIt.next().getUseBoxes()) {
                             Value v = valueBox.getValue();
                             if (v instanceof SpecialInvokeExpr) {
@@ -262,19 +262,19 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
                                 }
                             }
                         }
-					}
-				} // end of rewrite class init methods to call the proper superclass inits
-			}
-		}
+                    }
+                } // end of rewrite class init methods to call the proper superclass inits
+            }
+        }
 
-		newclasses = Main.IntermediateAppClasses.size();
+        newclasses = Main.IntermediateAppClasses.size();
 
-		Scene.v().releaseActiveHierarchy();
-		Scene.v().getActiveHierarchy();
-		Scene.v().setFastHierarchy(new FastHierarchy());
-	}
+        Scene.v().releaseActiveHierarchy();
+        Scene.v().getActiveHierarchy();
+        Scene.v().setFastHierarchy(new FastHierarchy());
+    }
 
-	private Optional<SootMethod> findAccessibleInSuperClassesBySubSig(SootClass base, String subSig) {
+    private Optional<SootMethod> findAccessibleInSuperClassesBySubSig(SootClass base, String subSig) {
         Hierarchy hierarchy = Scene.v().getActiveHierarchy();
         for (SootClass superClass : hierarchy.getSuperclassesOfIncluding(base.getSuperclass())) {
             if (superClass.isLibraryClass() && superClass.declaresMethod(subSig)) {
