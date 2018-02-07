@@ -69,52 +69,52 @@ import java.util.Map;
 
 /**
  * @author Michael Batchelder
- *
- *         Created on 7-Feb-2006
+ * <p>
+ * Created on 7-Feb-2006
  */
 public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJbcoTransform {
 
-	public static String dependancies[] = new String[] { "wjtp.jbco_blbc" };
+    public static String dependancies[] = new String[]{"wjtp.jbco_blbc"};
 
-	public String[] getDependancies() {
-		return dependancies;
-	}
+    public String[] getDependancies() {
+        return dependancies;
+    }
 
-	public static String name = "wjtp.jbco_blbc";
+    public static String name = "wjtp.jbco_blbc";
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	private static int newmethods = 0;
-	private static int methodcalls = 0;
+    private static int newmethods = 0;
+    private static int methodcalls = 0;
 
-	public void outputSummary() {
-		out.println("New Methods Created: " + newmethods);
-		out.println("Method Calls Replaced: " + methodcalls);
-	}
+    public void outputSummary() {
+        out.println("New Methods Created: " + newmethods);
+        out.println("Method Calls Replaced: " + methodcalls);
+    }
 
-	private static final Map<SootClass, Map<SootMethod, SootMethodRef>> libClassesToMethods = new HashMap<>();
+    private static final Map<SootClass, Map<SootMethod, SootMethodRef>> libClassesToMethods = new HashMap<>();
 
-	public static List<SootMethod> builtByMe = new ArrayList<>();
+    public static List<SootMethod> builtByMe = new ArrayList<>();
 
-	protected void internalTransform(String phaseName, Map<String, String> options) {
-		if (output) {
-		    out.println("Building Library Wrapper Methods...");
+    protected void internalTransform(String phaseName, Map<String, String> options) {
+        if (output) {
+            out.println("Building Library Wrapper Methods...");
         }
 
-		BodyBuilder.retrieveAllBodies();
-		// iterate through application classes to find library calls
-		Iterator<SootClass> it = Scene.v().getApplicationClasses().snapshotIterator();
-		while (it.hasNext()) {
-			SootClass sc = it.next();
+        BodyBuilder.retrieveAllBodies();
+        // iterate through application classes to find library calls
+        Iterator<SootClass> it = Scene.v().getApplicationClasses().snapshotIterator();
+        while (it.hasNext()) {
+            SootClass sc = it.next();
 
-			if (output) {
-			    out.println("\r\tProcessing " + sc.getName() + "\r");
+            if (output) {
+                out.println("\r\tProcessing " + sc.getName() + "\r");
             }
 
-			List<SootMethod> methods = sc.getMethods();
-			// do not replace with foreach loop as it will cause java.util.ConcurrentModificationException
+            List<SootMethod> methods = sc.getMethods();
+            // do not replace with foreach loop as it will cause java.util.ConcurrentModificationException
             for (int i = 0; i < methods.size(); i++) {
                 SootMethod method = methods.get(i);
                 if (!method.isConcrete() || builtByMe.contains(method)) {
@@ -216,28 +216,28 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
                     }
                 }
             }
-		}
+        }
 
-		Scene.v().releaseActiveHierarchy();
-		Scene.v().getActiveHierarchy();
-		Scene.v().setFastHierarchy(new FastHierarchy());
-	}
+        Scene.v().releaseActiveHierarchy();
+        Scene.v().getActiveHierarchy();
+        Scene.v().setFastHierarchy(new FastHierarchy());
+    }
 
-	private SootMethodRef getNewMethodRef(SootClass libClass, SootMethod sm) {
+    private SootMethodRef getNewMethodRef(SootClass libClass, SootMethod sm) {
         Map<SootMethod, SootMethodRef> methods = libClassesToMethods.computeIfAbsent(libClass, key -> new HashMap<>());
-		return methods.get(sm);
-	}
+        return methods.get(sm);
+    }
 
-	private void setNewMethodRef(SootClass libClass, SootMethod sm, SootMethodRef smr) {
+    private void setNewMethodRef(SootClass libClass, SootMethod sm, SootMethodRef smr) {
         Map<SootMethod, SootMethodRef> methods = libClassesToMethods.computeIfAbsent(libClass, key -> new HashMap<>());
         methods.put(sm, smr);
-	}
+    }
 
-	private SootMethodRef buildNewMethod(SootClass fromC, SootClass libClass, SootMethod sm, InvokeExpr origIE) {
-		SootClass randClass;
-		List<SootMethod> methods;
-		SootMethod randMethod;
-		String newName;
+    private SootMethodRef buildNewMethod(SootClass fromC, SootClass libClass, SootMethod sm, InvokeExpr origIE) {
+        SootClass randClass;
+        List<SootMethod> methods;
+        SootMethod randMethod;
+        String newName;
 
         List<SootClass> availableClasses = new ArrayList<>();
         for (SootClass c : Scene.v().getApplicationClasses()) {
@@ -246,148 +246,146 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
             }
         }
 
-		int classCount = availableClasses.size();
-		if (classCount == 0) {
-		    throw new RuntimeException("There appears to be no public non-interface Application classes!");
+        int classCount = availableClasses.size();
+        if (classCount == 0) {
+            throw new RuntimeException("There appears to be no public non-interface Application classes!");
         }
 
-		do {
-			int index = Rand.getInt(classCount);
-			if ((randClass = availableClasses.get(index)) == fromC && classCount > 1) {
-				index = Rand.getInt(classCount);
-				randClass = availableClasses.get(index);
-			}
+        do {
+            int index = Rand.getInt(classCount);
+            if ((randClass = availableClasses.get(index)) == fromC && classCount > 1) {
+                index = Rand.getInt(classCount);
+                randClass = availableClasses.get(index);
+            }
 
-			methods = randClass.getMethods();
-			index = Rand.getInt(methods.size());
-			randMethod = methods.get(index);
-			newName = randMethod.getName();
-		} while (newName.endsWith("init>"));
+            methods = randClass.getMethods();
+            index = Rand.getInt(methods.size());
+            randMethod = methods.get(index);
+            newName = randMethod.getName();
+        } while (newName.endsWith("init>"));
 
-		List<Type> smParamTypes = sm.getParameterTypes();
-		List<Type> tmp = new ArrayList<>();
-		if (!sm.isStatic()) {
+        List<Type> smParamTypes = sm.getParameterTypes();
+        List<Type> tmp = new ArrayList<>();
+        if (!sm.isStatic()) {
             tmp.addAll(smParamTypes);
-			tmp.add(libClass.getType());
-			smParamTypes = tmp;
-		} else {
-			tmp.addAll(smParamTypes);
-			smParamTypes = tmp;
-		}
+            tmp.add(libClass.getType());
+            smParamTypes = tmp;
+        } else {
+            tmp.addAll(smParamTypes);
+            smParamTypes = tmp;
+        }
 
-		// add random class params until we don't match any other method
-		int extraParams = 0;
-		SootMethod similarM;
-		do {
-			similarM = null;
-			try {
-				similarM = randClass.getMethod(newName, smParamTypes);
-			} catch (RuntimeException e) {
-			    continue;
-			}
+        // add random class params until we don't match any other method
+        int extraParams = 0;
+        SootMethod similarM;
+        do {
+            similarM = null;
+            try {
+                similarM = randClass.getMethod(newName, smParamTypes);
+            } catch (RuntimeException e) {
+                continue;
+            }
 
-			if (similarM != null) {
-				int rtmp = Rand.getInt(classCount + 7);
-				if (rtmp >= classCount) {
-					rtmp -= classCount;
-					smParamTypes.add(getPrimType(rtmp));
-				} else {
-					smParamTypes.add(availableClasses.get(rtmp).getType());
-				}
-				extraParams++;
-			}
-		} while (similarM != null);
+            if (similarM != null) {
+                int rtmp = Rand.getInt(classCount + 7);
+                if (rtmp >= classCount) {
+                    rtmp -= classCount;
+                    smParamTypes.add(getPrimType(rtmp));
+                } else {
+                    smParamTypes.add(availableClasses.get(rtmp).getType());
+                }
+                extraParams++;
+            }
+        } while (similarM != null);
 
-		int mods = ((((sm.getModifiers() | Modifier.STATIC | Modifier.PUBLIC) & (Modifier.ABSTRACT ^ 0xFFFF))
-				& (Modifier.NATIVE ^ 0xFFFF)) & (Modifier.SYNCHRONIZED ^ 0xFFFF));
-		SootMethod newMethod = Scene.v().makeSootMethod(newName, smParamTypes, sm.getReturnType(), mods);
-		randClass.addMethod(newMethod);
+        int mods = ((((sm.getModifiers() | Modifier.STATIC | Modifier.PUBLIC) & (Modifier.ABSTRACT ^ 0xFFFF))
+                & (Modifier.NATIVE ^ 0xFFFF)) & (Modifier.SYNCHRONIZED ^ 0xFFFF));
+        SootMethod newMethod = Scene.v().makeSootMethod(newName, smParamTypes, sm.getReturnType(), mods);
+        randClass.addMethod(newMethod);
 
-		JimpleBody body = Jimple.v().newBody(newMethod);
-		newMethod.setActiveBody(body);
+        JimpleBody body = Jimple.v().newBody(newMethod);
+        newMethod.setActiveBody(body);
         Chain<Local> locals = body.getLocals();
-		PatchingChain<Unit> units = body.getUnits();
+        PatchingChain<Unit> units = body.getUnits();
 
-		InvokeExpr ie = null;
-		List<Local> args = BodyBuilder.buildParameterLocals(units, locals, smParamTypes);
-		while (extraParams-- > 0) {
-		    args.remove(args.size() - 1);
+        InvokeExpr ie = null;
+        List<Local> args = BodyBuilder.buildParameterLocals(units, locals, smParamTypes);
+        while (extraParams-- > 0) {
+            args.remove(args.size() - 1);
         }
 
-		if (sm.isStatic()) {
-			ie = Jimple.v().newStaticInvokeExpr(sm.makeRef(), args);
-		} else {
-			Local libObj = args.remove(args.size() - 1);
-			if (origIE instanceof InterfaceInvokeExpr) {
-			    ie = Jimple.v().newInterfaceInvokeExpr(libObj, sm.makeRef(), args);
+        if (sm.isStatic()) {
+            ie = Jimple.v().newStaticInvokeExpr(sm.makeRef(), args);
+        } else {
+            Local libObj = args.remove(args.size() - 1);
+            if (origIE instanceof InterfaceInvokeExpr) {
+                ie = Jimple.v().newInterfaceInvokeExpr(libObj, sm.makeRef(), args);
+            } else if (origIE instanceof SpecialInvokeExpr) {
+                ie = Jimple.v().newSpecialInvokeExpr(libObj, sm.makeRef(), args);
+            } else if (origIE instanceof VirtualInvokeExpr) {
+                ie = Jimple.v().newVirtualInvokeExpr(libObj, sm.makeRef(), args);
             }
-			else if (origIE instanceof SpecialInvokeExpr) {
-			    ie = Jimple.v().newSpecialInvokeExpr(libObj, sm.makeRef(), args);
-            }
-			else if (origIE instanceof VirtualInvokeExpr) {
-			    ie = Jimple.v().newVirtualInvokeExpr(libObj, sm.makeRef(), args);
-            }
-		}
-		if (sm.getReturnType() instanceof VoidType) {
-			units.add(Jimple.v().newInvokeStmt(ie));
-			units.add(Jimple.v().newReturnVoidStmt());
-		} else {
-			Local assign = Jimple.v().newLocal("returnValue", sm.getReturnType());
-			locals.add(assign);
-			units.add(Jimple.v().newAssignStmt(assign, ie));
-			units.add(Jimple.v().newReturnStmt(assign));
-		}
-
-		if (output) {
-		    out.println("\r" + sm.getName() + " was replaced by \r\t" + newMethod.getName() + " which calls \r\t\t" + ie);
+        }
+        if (sm.getReturnType() instanceof VoidType) {
+            units.add(Jimple.v().newInvokeStmt(ie));
+            units.add(Jimple.v().newReturnVoidStmt());
+        } else {
+            Local assign = Jimple.v().newLocal("returnValue", sm.getReturnType());
+            locals.add(assign);
+            units.add(Jimple.v().newAssignStmt(assign, ie));
+            units.add(Jimple.v().newReturnStmt(assign));
         }
 
-		if (units.size() < 2) {
-		    out.println("\r\rTHERE AREN'T MANY UNITS IN THIS METHOD " + units);
+        if (output) {
+            out.println("\r" + sm.getName() + " was replaced by \r\t" + newMethod.getName() + " which calls \r\t\t" + ie);
         }
 
-		builtByMe.add(newMethod);
+        if (units.size() < 2) {
+            out.println("\r\rTHERE AREN'T MANY UNITS IN THIS METHOD " + units);
+        }
 
-		return newMethod.makeRef();
-	}
+        builtByMe.add(newMethod);
 
-	private static Type getPrimType(int idx) {
-		switch (idx) {
-		case 0:
-			return IntType.v();
-		case 1:
-			return CharType.v();
-		case 2:
-			return ByteType.v();
-		case 3:
-			return LongType.v();
-		case 4:
-			return BooleanType.v();
-		case 5:
-			return DoubleType.v();
-		case 6:
-			return FloatType.v();
-		default:
-			return IntType.v();
-		}
-	}
+        return newMethod.makeRef();
+    }
 
-	private static Value getConstantType(Type t) {
-		if (t instanceof BooleanType)
-			return IntConstant.v(Rand.getInt(1));
-		if (t instanceof IntType)
-			return IntConstant.v(Rand.getInt());
-		if (t instanceof CharType)
-			return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), CharType.v());
-		if (t instanceof ByteType)
-			return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), ByteType.v());
-		if (t instanceof LongType)
-			return LongConstant.v(Rand.getLong());
-		if (t instanceof FloatType)
-			return FloatConstant.v(Rand.getFloat());
-		if (t instanceof DoubleType)
-			return DoubleConstant.v(Rand.getDouble());
+    private static Type getPrimType(int idx) {
+        switch (idx) {
+            case 0:
+                return IntType.v();
+            case 1:
+                return CharType.v();
+            case 2:
+                return ByteType.v();
+            case 3:
+                return LongType.v();
+            case 4:
+                return BooleanType.v();
+            case 5:
+                return DoubleType.v();
+            case 6:
+                return FloatType.v();
+            default:
+                return IntType.v();
+        }
+    }
 
-		return Jimple.v().newCastExpr(NullConstant.v(), t);
-	}
+    private static Value getConstantType(Type t) {
+        if (t instanceof BooleanType)
+            return IntConstant.v(Rand.getInt(1));
+        if (t instanceof IntType)
+            return IntConstant.v(Rand.getInt());
+        if (t instanceof CharType)
+            return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), CharType.v());
+        if (t instanceof ByteType)
+            return Jimple.v().newCastExpr(IntConstant.v(Rand.getInt()), ByteType.v());
+        if (t instanceof LongType)
+            return LongConstant.v(Rand.getLong());
+        if (t instanceof FloatType)
+            return FloatConstant.v(Rand.getFloat());
+        if (t instanceof DoubleType)
+            return DoubleConstant.v(Rand.getDouble());
+
+        return Jimple.v().newCastExpr(NullConstant.v(), t);
+    }
 }
