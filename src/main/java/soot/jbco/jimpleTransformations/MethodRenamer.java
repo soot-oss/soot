@@ -19,13 +19,6 @@
 
 package soot.jbco.jimpleTransformations;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Stream;
-
 import soot.Body;
 import soot.FastHierarchy;
 import soot.G;
@@ -41,14 +34,20 @@ import soot.Value;
 import soot.ValueBox;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.BodyBuilder;
+import soot.jbco.util.HierarchyUtils;
 import soot.jbco.util.Rand;
 import soot.jimple.InvokeExpr;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static java.util.stream.Collectors.toList;
 
 /**
  * @author Michael Batchelder
- * 
+ *
  *         Created on 24-Jan-2006
  */
 public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
@@ -251,20 +250,9 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
     }
 
     private static boolean isOverriddenLibraryInterfaceMethod(SootClass sc, SootMethod method) {
-        return getAllInterfacesOf(sc).stream()
+        return HierarchyUtils.getAllInterfacesOf(sc).stream()
                 .filter(SootClass::isLibraryClass)
                 .anyMatch(c -> c.declaresMethod(method.getName(), method.getParameterTypes(), method.getReturnType()));
-    }
-
-    private static List<SootClass> getAllInterfacesOf(SootClass sc) {
-        Stream<SootClass> superClassInterfaces = sc.isInterface() ? Stream.empty() : hierarchy.getSuperclassesOf(sc)
-                .stream()
-                .map(MethodRenamer::getAllInterfacesOf)
-                .flatMap(Collection::stream);
-        Stream<SootClass> directInterfaces = Stream.concat(sc.getInterfaces().stream(), sc.getInterfaces().stream()
-                .map(MethodRenamer::getAllInterfacesOf)
-                .flatMap(Collection::stream));
-        return Stream.concat(superClassInterfaces, directInterfaces).collect(toList());
     }
 
 }
