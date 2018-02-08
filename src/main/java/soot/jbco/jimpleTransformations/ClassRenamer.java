@@ -28,13 +28,18 @@ import soot.Scene;
 import soot.SceneTransformer;
 import soot.SootClass;
 import soot.SootMethod;
+import soot.Type;
 import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.BodyBuilder;
 import soot.jbco.util.Rand;
+import soot.jimple.CastExpr;
 import soot.jimple.ClassConstant;
+import soot.jimple.Expr;
+import soot.jimple.InstanceOfExpr;
+import soot.jimple.Ref;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -74,11 +79,12 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
     }
 
     protected void internalTransform(String phaseName, Map<String, String> options) {
-        if (output)
+        if (output) {
             G.v().out.println("Transforming Class Names...");
+        }
 
-        soot.jbco.util.BodyBuilder.retrieveAllBodies();
-        soot.jbco.util.BodyBuilder.retrieveAllNames();
+        BodyBuilder.retrieveAllBodies();
+        BodyBuilder.retrieveAllNames();
 
         Scene scene = G.v().soot_Scene();
         // iterate through application classes, rename classes with junk
@@ -105,27 +111,32 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
             newNameToClass.put(newName, c);
 
-            if (output)
+            if (output) {
                 out.println("\tRenaming " + oldName + " to " + newName);
+            }
         }
 
         scene.releaseActiveHierarchy();
         scene.getActiveHierarchy();
         scene.setFastHierarchy(new FastHierarchy());
 
-        if (output)
+        if (output) {
             out.println("\r\tUpdating bytecode class references");
+        }
 
         for (SootClass c : scene.getApplicationClasses()) {
             for (SootMethod m : c.getMethods()) {
-                if (!m.isConcrete()) continue;
+                if (!m.isConcrete()) {
+                    continue;
+                }
 
-                if (output)
+                if (output) {
                     out.println("\t\t" + m.getSignature());
-                Body aBody = null;
+                }
+                Body aBody;
                 try {
                     aBody = m.getActiveBody();
-                } catch (Exception exc) {
+                } catch (Exception e) {
                     continue;
                 }
                 for (Unit u : aBody.getUnits()) {
@@ -133,27 +144,21 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
                     while (udbIt.hasNext()) {
                         ValueBox vb = udbIt.next();
                         Value v = vb.getValue();
-                        if (v instanceof soot.jimple.ClassConstant) {
+                        if (v instanceof ClassConstant) {
                             ClassConstant constant = (ClassConstant) v;
                             RefType type = (RefType) constant.toSootType();
                             RefType updatedType = type.getSootClass().getType();
                             vb.setValue(ClassConstant.fromType(updatedType));
-                        } else if (v instanceof soot.jimple.Ref) {
-                            if (v.getType() instanceof soot.RefType) {
-                                RefType rt = (RefType) v.getType();
-
-                                if (!rt.getSootClass().isLibraryClass() && oldToNewClassNames.containsKey(rt.getClassName())) {
-                                    rt.setSootClass(newNameToClass.get(oldToNewClassNames.get(rt.getClassName())));
-                                    rt.setClassName(oldToNewClassNames.get(rt.getClassName()));
-                                }
-                            } else if (v.getType() instanceof ArrayType) {
-                                ArrayType at = (ArrayType) v.getType();
-                                if (at.baseType instanceof RefType) {
-                                    RefType rt = (RefType) at.baseType;
-                                    if (!rt.getSootClass().isLibraryClass() && oldToNewClassNames.containsKey(rt.getClassName()))
-                                        rt.setSootClass(newNameToClass.get(oldToNewClassNames.get(rt.getClassName())));
-                                }
+                        } else if (v instanceof Expr) {
+                            if (v instanceof CastExpr) {
+                                CastExpr castExpr = (CastExpr) v;
+                                updateType(castExpr.getCastType());
+                            } else if (v instanceof InstanceOfExpr) {
+                                InstanceOfExpr instanceOfExpr = (InstanceOfExpr) v;
+                                updateType(instanceOfExpr.getCheckType());
                             }
+                        } else if (v instanceof Ref) {
+                            updateType(v.getType());
                         }
                     }
                 }
@@ -163,6 +168,25 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
         scene.releaseActiveHierarchy();
         scene.getActiveHierarchy();
         scene.setFastHierarchy(new FastHierarchy());
+    }
+
+    private void updateType(Type type) {
+        if (type instanceof RefType) {
+            RefType rt = (RefType) type;
+
+            if (!rt.getSootClass().isLibraryClass() && oldToNewClassNames.containsKey(rt.getClassName())) {
+                rt.setSootClass(newNameToClass.get(oldToNewClassNames.get(rt.getClassName())));
+                rt.setClassName(oldToNewClassNames.get(rt.getClassName()));
+            }
+        } else if (type instanceof ArrayType) {
+            ArrayType at = (ArrayType) type;
+            if (at.baseType instanceof RefType) {
+                RefType rt = (RefType) at.baseType;
+                if (!rt.getSootClass().isLibraryClass() && oldToNewClassNames.containsKey(rt.getClassName())) {
+                    rt.setSootClass(newNameToClass.get(oldToNewClassNames.get(rt.getClassName())));
+                }
+            }
+        }
     }
 
     /*
