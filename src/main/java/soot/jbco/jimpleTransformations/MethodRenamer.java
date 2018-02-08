@@ -55,7 +55,7 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
     public static String name = "wjtp.jbco_mr";
     public static String dependancies[] = new String[]{"wjtp.jbco_mr"};
 
-    public static HashMap<String, String> oldToNewMethodNames = new HashMap<>();
+    public static Map<String, String> oldToNewMethodNames = new HashMap<>();
 
     private static final char stringChars[][] = {{'S', '5', '$'}, {'l', '1', 'I'}, {'_'}};
     private static Hierarchy hierarchy;
@@ -130,8 +130,8 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
                         } else {
                             newName = getNewName();
                         }
+                        oldToNewMethodNames.put(method.getName(), newName);
                     }
-                    oldToNewMethodNames.put(method.getName(), newName);
                     if (output) {
                         out.println("\tChanged " + method.getSignature() + " to " + newName);
                     }
@@ -166,7 +166,7 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 
                         // if the method won't be resolved in declaring class by subsignature of method ref,
                         // then we know it was renamed and update that method ref with new name
-                        if (methodRef.declaringClass().getMethodUnsafe(methodRef.getSubSignature()) != null) {
+                        if (isAbleToResolve(methodRef)) {
                             continue;
                         }
 
@@ -233,11 +233,21 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
         String subSig = method.getSubSignature();
         if ("void main(java.lang.String[])".equals(subSig) && method.isPublic() && method.isStatic()) {
             return false; // skip the main method - it needs to be named 'main'
-        } else if (subSig.contains(SootMethod.constructorName) || subSig.equals(SootMethod.staticInitializerName)) {
+        } else if (subSig.contains(SootMethod.constructorName) || subSig.contains(SootMethod.staticInitializerName)) {
             return false; // skip constructors for now
         } else {
             return !(isOverriddenLibraryInterfaceMethod(sc, method) || isOverriddenLibrarySuperclassMethod(sc, method));
         }
+    }
+
+    private static boolean isAbleToResolve(SootMethodRef methodRef) {
+        SootClass declaringClass = methodRef.declaringClass();
+        return declaringClass.getMethodUnsafe(methodRef.getSubSignature()) != null
+                || hierarchy.getSuperclassesOfIncluding(declaringClass.getSuperclass()).stream()
+                .filter(c -> c.declaresMethod(methodRef.getSubSignature()))
+                .anyMatch(c -> hierarchy.isVisible(declaringClass, c.getMethod(methodRef.getSubSignature())))
+                || HierarchyUtils.getAllInterfacesOf(declaringClass).stream()
+                .anyMatch(c -> c.declaresMethod(methodRef.name(), methodRef.parameterTypes(), methodRef.returnType()));
     }
 
     private static boolean isOverriddenLibrarySuperclassMethod(SootClass sc, SootMethod method) {
