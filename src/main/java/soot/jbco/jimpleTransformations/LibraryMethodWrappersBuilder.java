@@ -43,7 +43,6 @@ import soot.ValueBox;
 import soot.VoidType;
 import soot.jbco.IJbcoTransform;
 import soot.jbco.util.BodyBuilder;
-import soot.jbco.util.HierarchyUtils;
 import soot.jbco.util.Rand;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
@@ -164,7 +163,9 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
                             continue;
                         }
                         SootClass invokedMethodClass = invokedMethod.getDeclaringClass();
-                        if (invokedMethod.getName().endsWith("init>") || !invokedMethodClass.isLibraryClass()) {
+                        //filter out protected methods as their calls from another classes/instances likely will fail
+                        if (invokedMethod.getName().endsWith("init>") || !invokedMethodClass.isLibraryClass()
+                                || invokedMethod.isProtected()) {
                             continue;
                         }
 
@@ -179,11 +180,8 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
                                 setNewMethodRef(invokedMethodClass, invokedMethod, invokedMethodRef);
                                 newmethods++;
                             } catch (Exception e) {
-                                invokedMethodRef = null;
+                                continue;
                             }
-                        }
-                        if (invokedMethodRef == null) {
-                            continue;
                         }
 
                         if (output) {
@@ -241,7 +239,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
 
         List<SootClass> availableClasses = new ArrayList<>();
         for (SootClass c : Scene.v().getApplicationClasses()) {
-            if (c.isConcrete() && !c.isInterface() && c.isPublic() && HierarchyUtils.isVisible(c, sm)) {
+            if (c.isConcrete() && !c.isInterface() && c.isPublic() && Scene.v().getActiveHierarchy().isVisible(c, sm)) {
                 availableClasses.add(c);
             }
         }
