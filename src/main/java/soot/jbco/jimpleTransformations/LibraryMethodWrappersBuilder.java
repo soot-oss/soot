@@ -275,26 +275,16 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
 
         // add random class params until we don't match any other method
         int extraParams = 0;
-        SootMethod similarM;
-        do {
-            similarM = null;
-            try {
-                similarM = randClass.getMethod(newName, smParamTypes);
-            } catch (RuntimeException e) {
-                continue;
+        if (randClass.declaresMethod(newName, smParamTypes)) {
+            int rtmp = Rand.getInt(classCount + 7);
+            if (rtmp >= classCount) {
+                rtmp -= classCount;
+                smParamTypes.add(getPrimType(rtmp));
+            } else {
+                smParamTypes.add(availableClasses.get(rtmp).getType());
             }
-
-            if (similarM != null) {
-                int rtmp = Rand.getInt(classCount + 7);
-                if (rtmp >= classCount) {
-                    rtmp -= classCount;
-                    smParamTypes.add(getPrimType(rtmp));
-                } else {
-                    smParamTypes.add(availableClasses.get(rtmp).getType());
-                }
-                extraParams++;
-            }
-        } while (similarM != null);
+            extraParams++;
+        }
 
         int mods = ((((sm.getModifiers() | Modifier.STATIC | Modifier.PUBLIC) & (Modifier.ABSTRACT ^ 0xFFFF))
                 & (Modifier.NATIVE ^ 0xFFFF)) & (Modifier.SYNCHRONIZED ^ 0xFFFF));
