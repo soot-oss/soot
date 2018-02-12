@@ -25,7 +25,7 @@ public class MultiDexBuilder {
 		newDexPool();
 	}
 
-	private void newDexPool() {
+	protected void newDexPool() {
 		curPool = new DexPool(opcodes);
 		dexPools.add(curPool);
 	}
