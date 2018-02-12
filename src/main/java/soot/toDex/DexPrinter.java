@@ -163,8 +163,8 @@ import soot.toDex.instructions.InsnWithOffset;
  */
 public class DexPrinter {
 
-	private MultiDexBuilder dexBuilder;
-	private File originalApk;
+	protected MultiDexBuilder dexBuilder;
+	protected File originalApk;
 
 	public DexPrinter() {
 		dexBuilder = createDexBuilder();
@@ -552,7 +552,7 @@ public class DexPrinter {
 		int accessFlags = c.getModifiers();
 		SootClass csuperClass = c.getSuperclassUnsafe();
 		String superClass = null;
-		
+
 		if (csuperClass != null)
 			superClass = SootToDexUtils.getDexTypeDescriptor(csuperClass.getType());
 
