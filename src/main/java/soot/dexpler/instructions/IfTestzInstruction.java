@@ -48,6 +48,7 @@ public class IfTestzInstruction extends ConditionalJumpInstruction {
         // setUnit() is called in ConditionalJumpInstruction
         
         
+        addTags(jif);
 		if (IDalvikTyper.ENABLE_DVKTYPER) {
 			//Debug.printDbg(IDalvikTyper.DEBUG, "constraint: "+ jif);
 			/*
