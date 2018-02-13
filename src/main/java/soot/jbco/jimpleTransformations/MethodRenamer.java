@@ -236,7 +236,9 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
         } else if (subSig.contains(SootMethod.constructorName) || subSig.contains(SootMethod.staticInitializerName)) {
             return false; // skip constructors for now
         } else {
-            return !(isOverriddenLibraryInterfaceMethod(sc, method) || isOverriddenLibrarySuperclassMethod(sc, method));
+            return !(isOverriddenLibraryInterfaceMethod(sc, method)
+                    || isOverriddenLibrarySuperclassMethod(sc, method)
+                    || isOverriddenLibraryMethodWithinAllChildren(sc, method));
         }
     }
 
@@ -263,6 +265,13 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
         return HierarchyUtils.getAllInterfacesOf(sc).stream()
                 .filter(SootClass::isLibraryClass)
                 .anyMatch(c -> c.declaresMethod(method.getName(), method.getParameterTypes(), method.getReturnType()));
+    }
+
+    private static boolean isOverriddenLibraryMethodWithinAllChildren(SootClass sc, SootMethod method) {
+        final List<SootClass> subClasses = sc.isInterface()
+                ? hierarchy.getImplementersOf(sc) : hierarchy.getSubclassesOf(sc);
+        return subClasses.stream().anyMatch(
+                c -> isOverriddenLibraryInterfaceMethod(c, method) || isOverriddenLibrarySuperclassMethod(c, method));
     }
 
 }
