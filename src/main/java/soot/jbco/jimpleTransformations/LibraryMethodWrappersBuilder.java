@@ -151,7 +151,9 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
                     List<ValueBox> uses = unit.getUseBoxes();
                     for (ValueBox valueBox : uses) {
                         Value value = valueBox.getValue();
-                        if (!(value instanceof InvokeExpr)) {
+                        // skip calls to 'super' as they cannot be called from static method and/or on object from the
+                        // outside (this is prohibited on language level as that would violate encapsulation)
+                        if (!(value instanceof InvokeExpr) || value instanceof SpecialInvokeExpr) {
                             continue;
                         }
 
@@ -163,9 +165,7 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
                             continue;
                         }
                         SootClass invokedMethodClass = invokedMethod.getDeclaringClass();
-                        //filter out protected methods as their calls from another classes/instances likely will fail
-                        if (invokedMethod.getName().endsWith("init>") || !invokedMethodClass.isLibraryClass()
-                                || invokedMethod.isProtected()) {
+                        if (invokedMethod.getName().endsWith("init>") || !invokedMethodClass.isLibraryClass()) {
                             continue;
                         }
 
@@ -308,8 +308,6 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
             Local libObj = args.remove(args.size() - 1);
             if (origIE instanceof InterfaceInvokeExpr) {
                 ie = Jimple.v().newInterfaceInvokeExpr(libObj, sm.makeRef(), args);
-            } else if (origIE instanceof SpecialInvokeExpr) {
-                ie = Jimple.v().newSpecialInvokeExpr(libObj, sm.makeRef(), args);
             } else if (origIE instanceof VirtualInvokeExpr) {
                 ie = Jimple.v().newVirtualInvokeExpr(libObj, sm.makeRef(), args);
             }

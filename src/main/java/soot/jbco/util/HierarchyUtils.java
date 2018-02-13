@@ -1,6 +1,5 @@
 package soot.jbco.util;
 
-import soot.ClassMember;
 import soot.Hierarchy;
 import soot.Scene;
 import soot.SootClass;
@@ -38,27 +37,6 @@ public final class HierarchyUtils {
                 .map(HierarchyUtils::getAllInterfacesOf)
                 .flatMap(Collection::stream));
         return Stream.concat(superClassInterfaces, directInterfaces).collect(toList());
-    }
-
-    /**
-     * Returns true if the class member is visible from code in the provided class.
-     * Phantom superclasses and interfaces are ignored.
-     *
-     * @param from   any class from which class member visibility/availability should be checked
-     * @param member any class member
-     * @return returns {@code true} if the {@code member } is visible from code in the provided class {@code from}.
-     */
-    public static boolean isVisible(SootClass from, ClassMember member) {
-        from.checkLevel(SootClass.HIERARCHY);
-        member.getDeclaringClass().checkLevel(SootClass.HIERARCHY);
-
-        Hierarchy hierarchy = Scene.v().getActiveHierarchy();
-        if (member.isProtected()) {
-            List<SootClass> superclasses = hierarchy.getSuperclassesOfIncluding(from);
-            return superclasses.contains(member.getDeclaringClass())
-                    || from.getJavaPackageName().equals(member.getDeclaringClass().getJavaPackageName());
-        }
-        return hierarchy.isVisible(from, member);
     }
 
 }
