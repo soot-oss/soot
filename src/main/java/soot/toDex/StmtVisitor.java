@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -96,27 +95,6 @@ import soot.util.Switchable;
  */
 class StmtVisitor implements StmtSwitch {
 
-	private static final Map<Opcode, Opcode> oppositeIfs;
-
-	static {
-		oppositeIfs = new HashMap<Opcode, Opcode>();
-
-		oppositeIfs.put(Opcode.IF_EQ, Opcode.IF_NE);
-		oppositeIfs.put(Opcode.IF_NE, Opcode.IF_EQ);
-		oppositeIfs.put(Opcode.IF_EQZ, Opcode.IF_NEZ);
-		oppositeIfs.put(Opcode.IF_NEZ, Opcode.IF_EQZ);
-
-		oppositeIfs.put(Opcode.IF_GT, Opcode.IF_LE);
-		oppositeIfs.put(Opcode.IF_LE, Opcode.IF_GT);
-		oppositeIfs.put(Opcode.IF_GTZ, Opcode.IF_LEZ);
-		oppositeIfs.put(Opcode.IF_LEZ, Opcode.IF_GTZ);
-
-		oppositeIfs.put(Opcode.IF_GE, Opcode.IF_LT);
-		oppositeIfs.put(Opcode.IF_LT, Opcode.IF_GE);
-		oppositeIfs.put(Opcode.IF_GEZ, Opcode.IF_LTZ);
-		oppositeIfs.put(Opcode.IF_LTZ, Opcode.IF_GEZ);
-	}
-
 	private final SootMethod belongingMethod;
 	private final DexArrayInitDetector arrayInitDetector;
 
@@ -184,6 +162,10 @@ class StmtVisitor implements StmtSwitch {
 		return this.instructionPayloadMap;
 	}
 
+	public int getInstructionCount() {
+		return insns.size();
+	}
+	
 	protected void addInsn(Insn insn, Stmt s) {
 		insns.add(insn);
 		if (s != null)
@@ -216,7 +198,7 @@ class StmtVisitor implements StmtSwitch {
 			// Only consider real instructions
 			if (curInsn instanceof AddressInsn)
 				continue;
-			if (!isReducableMoveInstruction(curInsn.getOpcode().name))
+			if (!isReducableMoveInstruction(curInsn.getOpcode()))
 				continue;
 
 			// Skip over following address instructions
@@ -230,7 +212,7 @@ class StmtVisitor implements StmtSwitch {
 				nextIndex = j;
 				break;
 			}
-			if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode().name))
+			if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode()))
 				continue;
 
 			// Do not remove the last instruction in the body as we need to
@@ -263,8 +245,23 @@ class StmtVisitor implements StmtSwitch {
 		}
 	}
 
-	private boolean isReducableMoveInstruction(String name) {
-		return name.startsWith("move/") || name.startsWith("move-object/") || name.startsWith("move-wide/");
+	private boolean isReducableMoveInstruction(Opcode opcode) {
+		switch (opcode) {
+		case MOVE:
+		case MOVE_16:
+		case MOVE_FROM16:
+		case MOVE_OBJECT:
+		case MOVE_OBJECT_16:
+		case MOVE_OBJECT_FROM16:
+		case MOVE_WIDE:
+		case MOVE_WIDE_16:
+		case MOVE_WIDE_FROM16:
+			return true;
+		default:
+			return false;
+		}
+		//Should be equivalent to
+		//return opcode.startsWith("move/") || opcode.startsWith("move-object/") || opcode.startsWith("move-wide/");
 	}
 
 	private boolean isJumpTarget(Stmt target) {
@@ -441,7 +438,10 @@ class StmtVisitor implements StmtSwitch {
 				// do the actual "assignment" for an invocation: move its result
 				// to the lhs reg (it was not used yet)
 				Insn moveResultInsn = buildMoveResultInsn(lhsReg);
-				int invokeInsnIndex = insns.indexOf(getLastInvokeInsn());
+				int invokeInsnIndex = exprV.getLastInvokeInstructionPosition();
+				if (!(insns.get(invokeInsnIndex)).getOpcode().toString().toLowerCase().startsWith("invoke_"))
+					System.err.println("Error");
+
 				insns.add(invokeInsnIndex + 1, moveResultInsn);
 			}
 		}
@@ -615,18 +615,6 @@ class StmtVisitor implements StmtSwitch {
 		} else {
 			throw new RuntimeException("unsupported field type for *put*/*get* opcode: " + fieldType);
 		}
-	}
-
-	private Insn getLastInvokeInsn() {
-		// traverse backwards through the instructions, searching for "invoke-"
-		ListIterator<Insn> listIterator = insns.listIterator(insns.size());
-		while (listIterator.hasPrevious()) {
-			Insn inst = listIterator.previous();
-			if (inst.getOpcode().name.startsWith("invoke-")) {
-				return inst;
-			}
-		}
-		throw new Error("tried to get last invoke-* instruction, but there was none!");
 	}
 
 	private Insn buildMoveResultInsn(Register destinationReg) {
