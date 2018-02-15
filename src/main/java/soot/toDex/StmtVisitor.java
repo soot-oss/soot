@@ -439,8 +439,6 @@ class StmtVisitor implements StmtSwitch {
 				// to the lhs reg (it was not used yet)
 				Insn moveResultInsn = buildMoveResultInsn(lhsReg);
 				int invokeInsnIndex = exprV.getLastInvokeInstructionPosition();
-				if (!(insns.get(invokeInsnIndex)).getOpcode().toString().toLowerCase().startsWith("invoke_"))
-					System.err.println("Error");
 
 				insns.add(invokeInsnIndex + 1, moveResultInsn);
 			}
