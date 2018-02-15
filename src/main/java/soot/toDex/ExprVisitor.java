@@ -104,6 +104,8 @@ class ExprVisitor implements ExprSwitch {
 
 	private Stmt origStmt;
 
+	private int lastInvokeInstructionPosition;
+
 	public ExprVisitor(StmtVisitor stmtV, ConstantVisitor constantV, RegisterAllocator regAlloc) {
 		this.stmtV = stmtV;
 		this.constantV = constantV;
@@ -138,6 +140,7 @@ class ExprVisitor implements ExprSwitch {
 	public void caseSpecialInvokeExpr(SpecialInvokeExpr sie) {
 		MethodReference method = DexPrinter.toMethodReference(sie.getMethodRef());
 		List<Register> arguments = getInstanceInvokeArgumentRegs(sie);
+		lastInvokeInstructionPosition = stmtV.getInstructionCount();
 		if (isCallToConstructor(sie) || isCallToPrivate(sie)) {
 			stmtV.addInsn(buildInvokeInsn("INVOKE_DIRECT", method, arguments), origStmt);
 		} else if (isCallToSuper(sie)) {
@@ -209,6 +212,7 @@ class ExprVisitor implements ExprSwitch {
 		 */
 		MethodReference method = DexPrinter.toMethodReference(vie.getMethodRef());
 		List<Register> argumentRegs = getInstanceInvokeArgumentRegs(vie);
+		lastInvokeInstructionPosition = stmtV.getInstructionCount();
 		stmtV.addInsn(buildInvokeInsn("INVOKE_VIRTUAL", method, argumentRegs), origStmt);
 	}
 
@@ -261,6 +265,7 @@ class ExprVisitor implements ExprSwitch {
 	public void caseInterfaceInvokeExpr(InterfaceInvokeExpr iie) {
 		MethodReference method = DexPrinter.toMethodReference(iie.getMethodRef());
 		List<Register> arguments = getInstanceInvokeArgumentRegs(iie);
+		lastInvokeInstructionPosition = stmtV.getInstructionCount();
 		stmtV.addInsn(buildInvokeInsn("INVOKE_INTERFACE", method, arguments), origStmt);
 	}
 
@@ -268,6 +273,7 @@ class ExprVisitor implements ExprSwitch {
 	public void caseStaticInvokeExpr(StaticInvokeExpr sie) {
 		MethodReference method = DexPrinter.toMethodReference(sie.getMethodRef());
 		List<Register> arguments = getInvokeArgumentRegs(sie);
+		lastInvokeInstructionPosition = stmtV.getInstructionCount();
 		stmtV.addInsn(buildInvokeInsn("INVOKE_STATIC", method, arguments), origStmt);
 	}
 
@@ -799,5 +805,9 @@ class ExprVisitor implements ExprSwitch {
 	public void caseNewExpr(NewExpr ne) {
 		TypeReference baseType = DexPrinter.toTypeReference(ne.getBaseType());
 		stmtV.addInsn(new Insn21c(Opcode.NEW_INSTANCE, destinationReg, baseType), origStmt);
+	}
+
+	public int getLastInvokeInstructionPosition() {
+		return lastInvokeInstructionPosition;
 	}
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 
@@ -12,10 +11,7 @@ import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.reference.FieldReference;
-import org.jf.dexlib2.writer.builder.BuilderFieldReference;
-import org.jf.dexlib2.writer.builder.DexBuilder;
 
-import org.jf.dexlib2.writer.pool.DexPool;
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -99,27 +95,6 @@ import soot.util.Switchable;
  */
 class StmtVisitor implements StmtSwitch {
 
-	private static final Map<Opcode, Opcode> oppositeIfs;
-
-	static {
-		oppositeIfs = new HashMap<Opcode, Opcode>();
-
-		oppositeIfs.put(Opcode.IF_EQ, Opcode.IF_NE);
-		oppositeIfs.put(Opcode.IF_NE, Opcode.IF_EQ);
-		oppositeIfs.put(Opcode.IF_EQZ, Opcode.IF_NEZ);
-		oppositeIfs.put(Opcode.IF_NEZ, Opcode.IF_EQZ);
-
-		oppositeIfs.put(Opcode.IF_GT, Opcode.IF_LE);
-		oppositeIfs.put(Opcode.IF_LE, Opcode.IF_GT);
-		oppositeIfs.put(Opcode.IF_GTZ, Opcode.IF_LEZ);
-		oppositeIfs.put(Opcode.IF_LEZ, Opcode.IF_GTZ);
-
-		oppositeIfs.put(Opcode.IF_GE, Opcode.IF_LT);
-		oppositeIfs.put(Opcode.IF_LT, Opcode.IF_GE);
-		oppositeIfs.put(Opcode.IF_GEZ, Opcode.IF_LTZ);
-		oppositeIfs.put(Opcode.IF_LTZ, Opcode.IF_GEZ);
-	}
-
 	private final SootMethod belongingMethod;
 	private final DexArrayInitDetector arrayInitDetector;
 
@@ -145,6 +120,24 @@ class StmtVisitor implements StmtSwitch {
 
 	private Map<Constant, Register> monitorRegs = new HashMap<Constant, Register>();
 
+	private static final Opcode[] OPCODES = Opcode.values();
+	
+	//The following are the base opcode values
+	private static final int AGET_OPCODE = Opcode.AGET.ordinal();
+	private static final int APUT_OPCODE = Opcode.APUT.ordinal();
+	private static final int IGET_OPCODE = Opcode.IGET.ordinal();
+	private static final int IPUT_OPCODE = Opcode.IPUT.ordinal();
+	private static final int SGET_OPCODE = Opcode.SGET.ordinal();
+	private static final int SPUT_OPCODE = Opcode.SPUT.ordinal();
+
+	//The following modifiers can be added to the opcodes above:
+	private static final int WIDE_OFFSET = 1; //e.g., AGET_WIDE is AGET_OPCODE + 1
+	private static final int OBJECT_OFFSET = 2; //e.g., AGET_OBJECT is AGET_OPCODE + 2
+	private static final int BOOLEAN_OFFSET = 3;
+	private static final int BYTE_OFFSET = 4;
+	private static final int CHAR_OFFSET = 5;
+	private static final int SHORT_OFFSET = 6;
+	
 	public StmtVisitor(SootMethod belongingMethod,   DexArrayInitDetector arrayInitDetector) {
 		this.belongingMethod = belongingMethod;
 		this.arrayInitDetector = arrayInitDetector;
@@ -187,17 +180,17 @@ class StmtVisitor implements StmtSwitch {
 		return this.instructionPayloadMap;
 	}
 
+	public int getInstructionCount() {
+		return insns.size();
+	}
+	
 	protected void addInsn(Insn insn, Stmt s) {
-		int highestIndex = insns.size();
-		addInsn(highestIndex, insn);
+		insns.add(insn);
 		if (s != null)
 			if (insnStmtMap.put(insn, s) != null)
 				throw new RuntimeException("Duplicate instruction");
 	}
 
-	private void addInsn(int positionInList, Insn insn) {
-		insns.add(positionInList, insn);
-	}
 
 	protected void beginNewStmt(Stmt s) {
 		// It's a new statement, so we can re-use registers
@@ -206,23 +199,24 @@ class StmtVisitor implements StmtSwitch {
 		addInsn(new AddressInsn(s), null);
 	}
 
-	public void finalizeInstructions() {
+	public void finalizeInstructions(Set<Unit> trapReferences) {
 		addPayloads();
 		finishRegs();
-		reduceInstructions();
+		reduceInstructions(trapReferences);
 	}
 
 	/**
 	 * Reduces the instruction list by removing unnecessary instruction pairs
 	 * such as move v0 v1; move v1 v0;
+	 * @param trapReferences 
 	 */
-	private void reduceInstructions() {
+	private void reduceInstructions(Set<Unit> trapReferences) {
 		for (int i = 0; i < this.insns.size() - 1; i++) {
 			Insn curInsn = this.insns.get(i);
 			// Only consider real instructions
 			if (curInsn instanceof AddressInsn)
 				continue;
-			if (!isReducableMoveInstruction(curInsn.getOpcode().name))
+			if (!isReducableMoveInstruction(curInsn.getOpcode()))
 				continue;
 
 			// Skip over following address instructions
@@ -236,7 +230,7 @@ class StmtVisitor implements StmtSwitch {
 				nextIndex = j;
 				break;
 			}
-			if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode().name))
+			if (nextInsn == null || !isReducableMoveInstruction(nextInsn.getOpcode()))
 				continue;
 
 			// Do not remove the last instruction in the body as we need to
@@ -251,26 +245,41 @@ class StmtVisitor implements StmtSwitch {
 			Register secondTarget = nextInsn.getRegs().get(0);
 			Register secondSource = nextInsn.getRegs().get(1);
 			if (firstTarget.equals(secondSource) && secondTarget.equals(firstSource)) {
-				Stmt origStmt = insnStmtMap.get(nextInsn);
+				Stmt nextStmt = insnStmtMap.get(nextInsn);
 
 				// Remove the second instruction as it does not change any
 				// state. We cannot remove the first instruction as other
 				// instructions may depend on the register being set.
-				if (origStmt == null || !isJumpTarget(origStmt)) {
-					Insn nextStmt = this.insns.get(nextIndex + 1);
+				if (nextStmt == null || (!isJumpTarget(nextStmt) && !trapReferences.contains(nextStmt))) {
 					insns.remove(nextIndex);
 
-					if (origStmt != null) {
+					if (nextStmt != null) {
+						Insn nextInst = this.insns.get(nextIndex + 1);
 						insnStmtMap.remove(nextInsn);
-						insnStmtMap.put(nextStmt, origStmt);
+						insnStmtMap.put(nextInst, nextStmt);
 					}
 				}
 			}
 		}
 	}
 
-	private boolean isReducableMoveInstruction(String name) {
-		return name.startsWith("move/") || name.startsWith("move-object/") || name.startsWith("move-wide/");
+	private boolean isReducableMoveInstruction(Opcode opcode) {
+		switch (opcode) {
+		case MOVE:
+		case MOVE_16:
+		case MOVE_FROM16:
+		case MOVE_OBJECT:
+		case MOVE_OBJECT_16:
+		case MOVE_OBJECT_FROM16:
+		case MOVE_WIDE:
+		case MOVE_WIDE_16:
+		case MOVE_WIDE_FROM16:
+			return true;
+		default:
+			return false;
+		}
+		//Should be equivalent to
+		//return opcode.startsWith("move/") || opcode.startsWith("move-object/") || opcode.startsWith("move-wide/");
 	}
 
 	private boolean isJumpTarget(Stmt target) {
@@ -428,9 +437,7 @@ class StmtVisitor implements StmtSwitch {
 			// move rhs local to lhs local, if different
 			Local rhsLocal = (Local) rhs;
 
-			String lhsName = ((Local) lhs).getName();
-			String rhsName = rhsLocal.getName();
-			if (lhsName.equals(rhsName)) {
+			if (lhsLocal == rhsLocal) {
 				return;
 			}
 			Register sourceReg = regAlloc.asLocal(rhsLocal);
@@ -449,8 +456,9 @@ class StmtVisitor implements StmtSwitch {
 				// do the actual "assignment" for an invocation: move its result
 				// to the lhs reg (it was not used yet)
 				Insn moveResultInsn = buildMoveResultInsn(lhsReg);
-				int invokeInsnIndex = insns.indexOf(getLastInvokeInsn());
-				addInsn(invokeInsnIndex + 1, moveResultInsn);
+				int invokeInsnIndex = exprV.getLastInvokeInstructionPosition();
+
+				insns.add(invokeInsnIndex + 1, moveResultInsn);
 			}
 		}
 
@@ -482,32 +490,40 @@ class StmtVisitor implements StmtSwitch {
 	}
 
 	protected static Insn buildMoveInsn(Register destinationReg, Register sourceReg) {
-		// get the opcode type, depending on the source reg (we assume that the
-		// destination has the same type)
-		String opcType;
-		if (sourceReg.isObject()) {
-			opcType = "MOVE_OBJECT";
-		} else if (sourceReg.isWide()) {
-			opcType = "MOVE_WIDE";
-		} else {
-			opcType = "MOVE";
-		}
 		// get the optional opcode suffix, depending on the sizes of the regs
 		if (!destinationReg.fitsShort()) {
-			Opcode opc = Opcode.valueOf(opcType + "_16");
+			Opcode opc;
+			if (sourceReg.isObject())
+				opc = Opcode.MOVE_OBJECT_16;
+			else if (sourceReg.isWide())
+				opc = Opcode.MOVE_WIDE_16;
+			else
+				opc = Opcode.MOVE_16;
 			return new Insn32x(opc, destinationReg, sourceReg);
 		} else if (!destinationReg.fitsByte() || !sourceReg.fitsByte()) {
-			Opcode opc = Opcode.valueOf(opcType + "_FROM16");
+			Opcode opc;
+			if (sourceReg.isObject())
+				opc = Opcode.MOVE_OBJECT_FROM16;
+			else if (sourceReg.isWide())
+				opc = Opcode.MOVE_WIDE_FROM16;
+			else
+				opc = Opcode.MOVE_FROM16;
 			return new Insn22x(opc, destinationReg, sourceReg);
 		}
-		Opcode opc = Opcode.valueOf(opcType);
+		Opcode opc;
+		if (sourceReg.isObject())
+			opc = Opcode.MOVE_OBJECT;
+		else if (sourceReg.isWide())
+			opc = Opcode.MOVE_WIDE;
+		else
+			opc = Opcode.MOVE;
 		return new Insn12x(opc, destinationReg, sourceReg);
 	}
 
 	private Insn buildStaticFieldPutInsn(StaticFieldRef destRef, Value source) {
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
 		FieldReference destField = DexPrinter.toFieldReference(destRef.getFieldRef());
-		Opcode opc = getPutGetOpcodeWithTypeSuffix("sput", destField.getType());
+		Opcode opc = getPutGetOpcodeWithTypeSuffix(SPUT_OPCODE, destField.getType());
 		return new Insn21c(opc, sourceReg, destField);
 	}
 
@@ -516,7 +532,7 @@ class StmtVisitor implements StmtSwitch {
 		Local instance = (Local) destRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
-		Opcode opc = getPutGetOpcodeWithTypeSuffix("iput", destField.getType());
+		Opcode opc = getPutGetOpcodeWithTypeSuffix(IPUT_OPCODE, destField.getType());
 		return new Insn22c(opc, sourceReg, instanceReg, destField);
 	}
 
@@ -527,7 +543,7 @@ class StmtVisitor implements StmtSwitch {
 		Register indexReg = regAlloc.asImmediate(index, constantV);
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
 		String arrayTypeDescriptor = SootToDexUtils.getArrayTypeDescriptor((ArrayType) array.getType());
-		Opcode opc = getPutGetOpcodeWithTypeSuffix("aput", arrayTypeDescriptor);
+		Opcode opc = getPutGetOpcodeWithTypeSuffix(APUT_OPCODE, arrayTypeDescriptor);
 		return new Insn23x(opc, sourceReg, arrayReg, indexReg);
 	}
 
@@ -582,7 +598,7 @@ class StmtVisitor implements StmtSwitch {
 
 	private Insn buildStaticFieldGetInsn(Register destinationReg, StaticFieldRef sourceRef) {
 		FieldReference sourceField = DexPrinter.toFieldReference(sourceRef.getFieldRef());
-		Opcode opc = getPutGetOpcodeWithTypeSuffix("sget", sourceField.getType());
+		Opcode opc = getPutGetOpcodeWithTypeSuffix(SGET_OPCODE, sourceField.getType());
 		return new Insn21c(opc, destinationReg, sourceField);
 	}
 
@@ -590,7 +606,7 @@ class StmtVisitor implements StmtSwitch {
 		Local instance = (Local) sourceRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
 		FieldReference sourceField = DexPrinter.toFieldReference(sourceRef.getFieldRef());
-		Opcode opc = getPutGetOpcodeWithTypeSuffix("iget", sourceField.getType());
+		Opcode opc = getPutGetOpcodeWithTypeSuffix(IGET_OPCODE, sourceField.getType());
 		return new Insn22c(opc, destinationReg, instanceReg, sourceField);
 	}
 
@@ -600,41 +616,28 @@ class StmtVisitor implements StmtSwitch {
 		Local array = (Local) sourceRef.getBase();
 		Register arrayReg = regAlloc.asLocal(array);
 		String arrayTypeDescriptor = SootToDexUtils.getArrayTypeDescriptor((ArrayType) array.getType());
-		Opcode opc = getPutGetOpcodeWithTypeSuffix("aget", arrayTypeDescriptor);
+		Opcode opc = getPutGetOpcodeWithTypeSuffix(AGET_OPCODE, arrayTypeDescriptor);
 		return new Insn23x(opc, destinationReg, arrayReg, indexReg);
 	}
 
-	private Opcode getPutGetOpcodeWithTypeSuffix(String prefix, String fieldType) {
-		prefix = prefix.toUpperCase();
+	private Opcode getPutGetOpcodeWithTypeSuffix(int opcodeBase, String fieldType) {
 		if (fieldType.equals("Z")) {
-			return Opcode.valueOf(prefix + "_BOOLEAN");
+			return OPCODES[opcodeBase + BOOLEAN_OFFSET];
 		} else if (fieldType.equals("I") || fieldType.equals("F")) {
-			return Opcode.valueOf(prefix);
+			return OPCODES[opcodeBase];
 		} else if (fieldType.equals("B")) {
-			return Opcode.valueOf(prefix + "_BYTE");
+			return OPCODES[opcodeBase + BYTE_OFFSET];
 		} else if (fieldType.equals("C")) {
-			return Opcode.valueOf(prefix + "_CHAR");
+			return OPCODES[opcodeBase + CHAR_OFFSET];
 		} else if (fieldType.equals("S")) {
-			return Opcode.valueOf(prefix + "_SHORT");
+			return OPCODES[opcodeBase + SHORT_OFFSET];
 		} else if (SootToDexUtils.isWide(fieldType)) {
-			return Opcode.valueOf(prefix + "_WIDE");
+			return OPCODES[opcodeBase + WIDE_OFFSET];
 		} else if (SootToDexUtils.isObject(fieldType)) {
-			return Opcode.valueOf(prefix + "_OBJECT");
+			return OPCODES[opcodeBase + OBJECT_OFFSET];
 		} else {
 			throw new RuntimeException("unsupported field type for *put*/*get* opcode: " + fieldType);
 		}
-	}
-
-	private Insn getLastInvokeInsn() {
-		// traverse backwards through the instructions, searching for "invoke-"
-		ListIterator<Insn> listIterator = insns.listIterator(insns.size());
-		while (listIterator.hasPrevious()) {
-			Insn inst = listIterator.previous();
-			if (inst.getOpcode().name.startsWith("invoke-")) {
-				return inst;
-			}
-		}
-		throw new Error("tried to get last invoke-* instruction, but there was none!");
 	}
 
 	private Insn buildMoveResultInsn(Register destinationReg) {
@@ -690,14 +693,14 @@ class StmtVisitor implements StmtSwitch {
 			addInsn(new Insn11x(Opcode.MOVE_EXCEPTION, localReg), stmt);
 
 			this.insnRegisterMap.put(insns.get(insns.size() - 1),
-					LocalRegisterAssignmentInformation.v(localReg, (Local) lhs));
+					LocalRegisterAssignmentInformation.v(localReg, lhs));
 		} else if (rhs instanceof ThisRef || rhs instanceof ParameterRef) {
 			/*
 			 * do not save the ThisRef or ParameterRef in a local, because it
 			 * always has a parameter register already. at least use the local
 			 * for further reference in the statements
 			 */
-			Local localForThis = (Local) lhs;
+			Local localForThis = lhs;
 			regAlloc.asParameter(belongingMethod, localForThis);
 
 			parameterInstructionsList

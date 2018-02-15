@@ -142,6 +142,7 @@ import soot.toDex.instructions.Insn;
 import soot.toDex.instructions.Insn10t;
 import soot.toDex.instructions.Insn30t;
 import soot.toDex.instructions.InsnWithOffset;
+import soot.util.Chain;
 
 /**
  * Main entry point for the "dex" output format.<br>
@@ -711,15 +712,14 @@ public class DexPrinter {
 		}
 		List<SootClass> exceptionList = m.getExceptionsUnsafe();
 		if (exceptionList != null && !exceptionList.isEmpty()) {
-			Set<ImmutableAnnotationElement> elements = new HashSet<ImmutableAnnotationElement>();
-			List<ImmutableEncodedValue> valueList = new ArrayList<ImmutableEncodedValue>();
+			List<ImmutableEncodedValue> valueList = new ArrayList<ImmutableEncodedValue>(exceptionList.size());
 			for (SootClass exceptionClass : exceptionList) {
 				valueList.add(new ImmutableTypeEncodedValue(
 						DexType.toDalvikICAT(exceptionClass.getName()).replace(".", "/")));
 			}
 			ImmutableArrayEncodedValue valueValue = new ImmutableArrayEncodedValue(valueList);
 			ImmutableAnnotationElement valueElement = new ImmutableAnnotationElement("value", valueValue);
-			elements.add(valueElement);
+			Set<ImmutableAnnotationElement> elements = Collections.singleton(valueElement);
 			ImmutableAnnotation ann = new ImmutableAnnotation(AnnotationVisibility.SYSTEM, "Ldalvik/annotation/Throws;",
 					elements);
 			annotations.add(ann);
@@ -728,13 +728,24 @@ public class DexPrinter {
 		return annotations;
 	}
 
+	/**
+	 * Returns all method parameter annotations (or null) for a specific parameter
+	 * @param m the method
+	 * @param paramIdx the parameter index
+	 * @return the annotations (or null)
+	 */
 	private Set<Annotation> buildMethodParameterAnnotations(SootMethod m, final int paramIdx) {
-		Set<String> skipList = new HashSet<String>();
-		Set<Annotation> annotations = new HashSet<Annotation>();
+		Set<String> skipList = null;
+		Set<Annotation> annotations = null;
 
 		for (Tag t : m.getTags()) {
 			if (t.getName().equals("VisibilityParameterAnnotationTag")) {
 				VisibilityParameterAnnotationTag vat = (VisibilityParameterAnnotationTag) t;
+				if (skipList == null)
+				{
+					skipList = new HashSet<String>();
+					annotations = new HashSet<Annotation>();
+				}
 				List<ImmutableAnnotation> visibilityItems = buildVisibilityParameterAnnotationTag(vat, skipList,
 						paramIdx);
 				annotations.addAll(visibilityItems);
@@ -762,7 +773,6 @@ public class DexPrinter {
 
 			Set<ImmutableAnnotationElement> elements = null;
 			if (splitSignature != null && splitSignature.size() > 0) {
-				elements = new HashSet<ImmutableAnnotationElement>();
 
 				List<ImmutableEncodedValue> valueList = new ArrayList<ImmutableEncodedValue>();
 				for (String s : splitSignature) {
@@ -771,7 +781,7 @@ public class DexPrinter {
 				}
 				ImmutableArrayEncodedValue valueValue = new ImmutableArrayEncodedValue(valueList);
 				ImmutableAnnotationElement valueElement = new ImmutableAnnotationElement("value", valueValue);
-				elements.add(valueElement);
+				elements = Collections.singleton(valueElement);
 			} else
 				G.v().out.println("Signature annotation without value detected");
 
@@ -1073,7 +1083,15 @@ public class DexPrinter {
 		// dex instructions generated (e.g. locals used and constants loaded)
 		StmtVisitor stmtV = new StmtVisitor(m, initDetector);
 
-		toInstructions(units, stmtV);
+		Chain<Trap> traps = activeBody.getTraps();
+		Set<Unit> trapReferences = new HashSet<Unit>(traps.size() * 3);
+		for (Trap t : activeBody.getTraps()) {
+			trapReferences.add(t.getBeginUnit());
+			trapReferences.add(t.getEndUnit());
+			trapReferences.add(t.getHandlerUnit());
+		}
+
+		toInstructions(units, stmtV, trapReferences);
 
 		int registerCount = stmtV.getRegisterCount();
 		if (inWords > registerCount) {
@@ -1120,12 +1138,8 @@ public class DexPrinter {
 
 			if (origStmt != null) {
 				// Do we need a label here because this a trap handler?
-				for (Trap t : m.getActiveBody().getTraps()) {
-					if (t.getBeginUnit() == origStmt || t.getEndUnit() == origStmt || t.getHandlerUnit() == origStmt) {
-						labelAssinger.getOrCreateLabel(origStmt);
-						break;
-					}
-				}
+				if (trapReferences.contains(origStmt))
+					labelAssinger.getOrCreateLabel(origStmt);
 
 				// Add the label if the statement has one
 				String labelName = labelAssinger.getLabelName(origStmt);
@@ -1357,7 +1371,7 @@ public class DexPrinter {
 		seenRegisters.put(local, register);
 	}
 
-	private void toInstructions(Collection<Unit> units, StmtVisitor stmtV) {
+	private void toInstructions(Collection<Unit> units, StmtVisitor stmtV, Set<Unit> trapReferences) {
 		// Collect all constant arguments to monitor instructions and
 		// pre-alloocate their registers
 		Set<ClassConstant> monitorConsts = new HashSet<ClassConstant>();
@@ -1380,7 +1394,7 @@ public class DexPrinter {
 			stmtV.beginNewStmt((Stmt) u);
 			u.apply(stmtV);
 		}
-		stmtV.finalizeInstructions();
+		stmtV.finalizeInstructions(trapReferences);
 	}
 
 	private void toTries(Collection<Trap> traps, StmtVisitor stmtV, MethodImplementationBuilder builder,
