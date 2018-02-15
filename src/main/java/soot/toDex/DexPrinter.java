@@ -712,15 +712,14 @@ public class DexPrinter {
 		}
 		List<SootClass> exceptionList = m.getExceptionsUnsafe();
 		if (exceptionList != null && !exceptionList.isEmpty()) {
-			Set<ImmutableAnnotationElement> elements = new HashSet<ImmutableAnnotationElement>();
-			List<ImmutableEncodedValue> valueList = new ArrayList<ImmutableEncodedValue>();
+			List<ImmutableEncodedValue> valueList = new ArrayList<ImmutableEncodedValue>(exceptionList.size());
 			for (SootClass exceptionClass : exceptionList) {
 				valueList.add(new ImmutableTypeEncodedValue(
 						DexType.toDalvikICAT(exceptionClass.getName()).replace(".", "/")));
 			}
 			ImmutableArrayEncodedValue valueValue = new ImmutableArrayEncodedValue(valueList);
 			ImmutableAnnotationElement valueElement = new ImmutableAnnotationElement("value", valueValue);
-			elements.add(valueElement);
+			Set<ImmutableAnnotationElement> elements = Collections.singleton(valueElement);
 			ImmutableAnnotation ann = new ImmutableAnnotation(AnnotationVisibility.SYSTEM, "Ldalvik/annotation/Throws;",
 					elements);
 			annotations.add(ann);
@@ -730,18 +729,26 @@ public class DexPrinter {
 	}
 
 	private Set<Annotation> buildMethodParameterAnnotations(SootMethod m, final int paramIdx) {
-		Set<String> skipList = new HashSet<String>();
-		Set<Annotation> annotations = new HashSet<Annotation>();
+		Set<String> skipList = null;
+		Set<Annotation> annotations = null;
 
 		for (Tag t : m.getTags()) {
 			if (t.getName().equals("VisibilityParameterAnnotationTag")) {
 				VisibilityParameterAnnotationTag vat = (VisibilityParameterAnnotationTag) t;
+				if (skipList == null)
+				{
+					skipList = new HashSet<String>();
+					annotations = new HashSet<Annotation>();
+				}
 				List<ImmutableAnnotation> visibilityItems = buildVisibilityParameterAnnotationTag(vat, skipList,
 						paramIdx);
 				annotations.addAll(visibilityItems);
 			}
 		}
 
+		if (annotations == null)
+			return Collections.emptySet();
+		
 		return annotations;
 	}
 
@@ -763,7 +770,6 @@ public class DexPrinter {
 
 			Set<ImmutableAnnotationElement> elements = null;
 			if (splitSignature != null && splitSignature.size() > 0) {
-				elements = new HashSet<ImmutableAnnotationElement>();
 
 				List<ImmutableEncodedValue> valueList = new ArrayList<ImmutableEncodedValue>();
 				for (String s : splitSignature) {
@@ -772,7 +778,7 @@ public class DexPrinter {
 				}
 				ImmutableArrayEncodedValue valueValue = new ImmutableArrayEncodedValue(valueList);
 				ImmutableAnnotationElement valueElement = new ImmutableAnnotationElement("value", valueValue);
-				elements.add(valueElement);
+				elements = Collections.singleton(valueElement);
 			} else
 				G.v().out.println("Signature annotation without value detected");
 
