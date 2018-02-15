@@ -431,6 +431,7 @@ class StmtVisitor implements StmtSwitch {
 		}
 		Local lhsLocal = (Local) lhs;
 
+		final Insn newStmt;
 		Register lhsReg = regAlloc.asLocal(lhsLocal);
 
 		Value rhs = stmt.getRightOp();
@@ -442,13 +443,16 @@ class StmtVisitor implements StmtSwitch {
 				return;
 			}
 			Register sourceReg = regAlloc.asLocal(rhsLocal);
-			addInsn(buildMoveInsn(lhsReg, sourceReg), stmt);
+			newStmt = buildMoveInsn(lhsReg, sourceReg);
+			addInsn(newStmt, stmt);
 		} else if (rhs instanceof Constant) {
 			// move rhs constant into the lhs local
 			constantV.setDestination(lhsReg);
 			rhs.apply(constantV);
+			newStmt = insns.get(insns.size() - 1);
 		} else if (rhs instanceof ConcreteRef) {
-			addInsn(buildGetInsn((ConcreteRef) rhs, lhsReg), stmt);
+			newStmt = buildGetInsn((ConcreteRef) rhs, lhsReg);
+			addInsn(newStmt, stmt);
 		} else {
 			// evaluate rhs expression, saving the result in the lhs local
 			exprV.setDestinationReg(lhsReg);
@@ -461,9 +465,10 @@ class StmtVisitor implements StmtSwitch {
 
 				insns.add(invokeInsnIndex + 1, moveResultInsn);
 			}
+			newStmt = insns.get(insns.size() - 1);
 		}
 
-		this.insnRegisterMap.put(insns.get(insns.size() - 1), LocalRegisterAssignmentInformation.v(lhsReg, lhsLocal));
+		this.insnRegisterMap.put(newStmt, LocalRegisterAssignmentInformation.v(lhsReg, lhsLocal));
 	}
 
 	private Insn buildGetInsn(ConcreteRef sourceRef, Register destinationReg) {
