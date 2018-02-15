@@ -116,7 +116,10 @@ public class SootToDexUtils {
 	}
 	
 	public static boolean isObject(String typeDescriptor) {
-		return typeDescriptor.startsWith("L") || typeDescriptor.startsWith("[");
+		if (typeDescriptor.length() == 0)
+			return false;
+		char first = typeDescriptor.charAt(0);
+		return first == 'L' || first == '[';
 	}
 	
 	public static boolean isObject(Type sootType) {
