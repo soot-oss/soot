@@ -142,6 +142,7 @@ import soot.toDex.instructions.Insn;
 import soot.toDex.instructions.Insn10t;
 import soot.toDex.instructions.Insn30t;
 import soot.toDex.instructions.InsnWithOffset;
+import soot.util.Chain;
 
 /**
  * Main entry point for the "dex" output format.<br>
@@ -1073,7 +1074,15 @@ public class DexPrinter {
 		// dex instructions generated (e.g. locals used and constants loaded)
 		StmtVisitor stmtV = new StmtVisitor(m, initDetector);
 
-		toInstructions(units, stmtV);
+		Chain<Trap> traps = activeBody.getTraps();
+		Set<Unit> trapReferences = new HashSet<Unit>(traps.size() * 3);
+		for (Trap t : activeBody.getTraps()) {
+			trapReferences.add(t.getBeginUnit());
+			trapReferences.add(t.getEndUnit());
+			trapReferences.add(t.getHandlerUnit());
+		}
+
+		toInstructions(units, stmtV, trapReferences);
 
 		int registerCount = stmtV.getRegisterCount();
 		if (inWords > registerCount) {
@@ -1120,12 +1129,8 @@ public class DexPrinter {
 
 			if (origStmt != null) {
 				// Do we need a label here because this a trap handler?
-				for (Trap t : m.getActiveBody().getTraps()) {
-					if (t.getBeginUnit() == origStmt || t.getEndUnit() == origStmt || t.getHandlerUnit() == origStmt) {
-						labelAssinger.getOrCreateLabel(origStmt);
-						break;
-					}
-				}
+				if (trapReferences.contains(origStmt))
+					labelAssinger.getOrCreateLabel(origStmt);
 
 				// Add the label if the statement has one
 				String labelName = labelAssinger.getLabelName(origStmt);
@@ -1357,7 +1362,7 @@ public class DexPrinter {
 		seenRegisters.put(local, register);
 	}
 
-	private void toInstructions(Collection<Unit> units, StmtVisitor stmtV) {
+	private void toInstructions(Collection<Unit> units, StmtVisitor stmtV, Set<Unit> trapReferences) {
 		// Collect all constant arguments to monitor instructions and
 		// pre-alloocate their registers
 		Set<ClassConstant> monitorConsts = new HashSet<ClassConstant>();
@@ -1380,7 +1385,7 @@ public class DexPrinter {
 			stmtV.beginNewStmt((Stmt) u);
 			u.apply(stmtV);
 		}
-		stmtV.finalizeInstructions();
+		stmtV.finalizeInstructions(trapReferences);
 	}
 
 	private void toTries(Collection<Trap> traps, StmtVisitor stmtV, MethodImplementationBuilder builder,
