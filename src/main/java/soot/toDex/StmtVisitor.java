@@ -120,6 +120,24 @@ class StmtVisitor implements StmtSwitch {
 
 	private Map<Constant, Register> monitorRegs = new HashMap<Constant, Register>();
 
+	private static final Opcode[] OPCODES = Opcode.values();
+	
+	//The following are the base opcode values
+	private static final int AGET_OPCODE = Opcode.AGET.ordinal();
+	private static final int APUT_OPCODE = Opcode.APUT.ordinal();
+	private static final int IGET_OPCODE = Opcode.IGET.ordinal();
+	private static final int IPUT_OPCODE = Opcode.IPUT.ordinal();
+	private static final int SGET_OPCODE = Opcode.SGET.ordinal();
+	private static final int SPUT_OPCODE = Opcode.SPUT.ordinal();
+
+	//The following modifiers can be added to the opcodes above:
+	private static final int WIDE_OFFSET = 1; //e.g., AGET_WIDE is AGET_OPCODE + 1
+	private static final int OBJECT_OFFSET = 2; //e.g., AGET_OBJECT is AGET_OPCODE + 2
+	private static final int BOOLEAN_OFFSET = 3;
+	private static final int BYTE_OFFSET = 4;
+	private static final int CHAR_OFFSET = 5;
+	private static final int SHORT_OFFSET = 6;
+	
 	public StmtVisitor(SootMethod belongingMethod,   DexArrayInitDetector arrayInitDetector) {
 		this.belongingMethod = belongingMethod;
 		this.arrayInitDetector = arrayInitDetector;
@@ -505,7 +523,7 @@ class StmtVisitor implements StmtSwitch {
 	private Insn buildStaticFieldPutInsn(StaticFieldRef destRef, Value source) {
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
 		FieldReference destField = DexPrinter.toFieldReference(destRef.getFieldRef());
-		Opcode opc = getPutGetOpcodeWithTypeSuffix("sput", destField.getType());
+		Opcode opc = getPutGetOpcodeWithTypeSuffix(SPUT_OPCODE, destField.getType());
 		return new Insn21c(opc, sourceReg, destField);
 	}
 
@@ -514,7 +532,7 @@ class StmtVisitor implements StmtSwitch {
 		Local instance = (Local) destRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
-		Opcode opc = getPutGetOpcodeWithTypeSuffix("iput", destField.getType());
+		Opcode opc = getPutGetOpcodeWithTypeSuffix(IPUT_OPCODE, destField.getType());
 		return new Insn22c(opc, sourceReg, instanceReg, destField);
 	}
 
@@ -525,7 +543,7 @@ class StmtVisitor implements StmtSwitch {
 		Register indexReg = regAlloc.asImmediate(index, constantV);
 		Register sourceReg = regAlloc.asImmediate(source, constantV);
 		String arrayTypeDescriptor = SootToDexUtils.getArrayTypeDescriptor((ArrayType) array.getType());
-		Opcode opc = getPutGetOpcodeWithTypeSuffix("aput", arrayTypeDescriptor);
+		Opcode opc = getPutGetOpcodeWithTypeSuffix(APUT_OPCODE, arrayTypeDescriptor);
 		return new Insn23x(opc, sourceReg, arrayReg, indexReg);
 	}
 
@@ -580,7 +598,7 @@ class StmtVisitor implements StmtSwitch {
 
 	private Insn buildStaticFieldGetInsn(Register destinationReg, StaticFieldRef sourceRef) {
 		FieldReference sourceField = DexPrinter.toFieldReference(sourceRef.getFieldRef());
-		Opcode opc = getPutGetOpcodeWithTypeSuffix("sget", sourceField.getType());
+		Opcode opc = getPutGetOpcodeWithTypeSuffix(SGET_OPCODE, sourceField.getType());
 		return new Insn21c(opc, destinationReg, sourceField);
 	}
 
@@ -588,7 +606,7 @@ class StmtVisitor implements StmtSwitch {
 		Local instance = (Local) sourceRef.getBase();
 		Register instanceReg = regAlloc.asLocal(instance);
 		FieldReference sourceField = DexPrinter.toFieldReference(sourceRef.getFieldRef());
-		Opcode opc = getPutGetOpcodeWithTypeSuffix("iget", sourceField.getType());
+		Opcode opc = getPutGetOpcodeWithTypeSuffix(IGET_OPCODE, sourceField.getType());
 		return new Insn22c(opc, destinationReg, instanceReg, sourceField);
 	}
 
@@ -598,26 +616,25 @@ class StmtVisitor implements StmtSwitch {
 		Local array = (Local) sourceRef.getBase();
 		Register arrayReg = regAlloc.asLocal(array);
 		String arrayTypeDescriptor = SootToDexUtils.getArrayTypeDescriptor((ArrayType) array.getType());
-		Opcode opc = getPutGetOpcodeWithTypeSuffix("aget", arrayTypeDescriptor);
+		Opcode opc = getPutGetOpcodeWithTypeSuffix(AGET_OPCODE, arrayTypeDescriptor);
 		return new Insn23x(opc, destinationReg, arrayReg, indexReg);
 	}
 
-	private Opcode getPutGetOpcodeWithTypeSuffix(String prefix, String fieldType) {
-		prefix = prefix.toUpperCase();
+	private Opcode getPutGetOpcodeWithTypeSuffix(int opcodeBase, String fieldType) {
 		if (fieldType.equals("Z")) {
-			return Opcode.valueOf(prefix + "_BOOLEAN");
+			return OPCODES[opcodeBase + BOOLEAN_OFFSET];
 		} else if (fieldType.equals("I") || fieldType.equals("F")) {
-			return Opcode.valueOf(prefix);
+			return OPCODES[opcodeBase];
 		} else if (fieldType.equals("B")) {
-			return Opcode.valueOf(prefix + "_BYTE");
+			return OPCODES[opcodeBase + BYTE_OFFSET];
 		} else if (fieldType.equals("C")) {
-			return Opcode.valueOf(prefix + "_CHAR");
+			return OPCODES[opcodeBase + CHAR_OFFSET];
 		} else if (fieldType.equals("S")) {
-			return Opcode.valueOf(prefix + "_SHORT");
+			return OPCODES[opcodeBase + SHORT_OFFSET];
 		} else if (SootToDexUtils.isWide(fieldType)) {
-			return Opcode.valueOf(prefix + "_WIDE");
+			return OPCODES[opcodeBase + WIDE_OFFSET];
 		} else if (SootToDexUtils.isObject(fieldType)) {
-			return Opcode.valueOf(prefix + "_OBJECT");
+			return OPCODES[opcodeBase + OBJECT_OFFSET];
 		} else {
 			throw new RuntimeException("unsupported field type for *put*/*get* opcode: " + fieldType);
 		}
