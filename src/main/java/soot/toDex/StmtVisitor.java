@@ -12,10 +12,7 @@ import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.builder.BuilderInstruction;
 import org.jf.dexlib2.iface.instruction.Instruction;
 import org.jf.dexlib2.iface.reference.FieldReference;
-import org.jf.dexlib2.writer.builder.BuilderFieldReference;
-import org.jf.dexlib2.writer.builder.DexBuilder;
 
-import org.jf.dexlib2.writer.pool.DexPool;
 import soot.ArrayType;
 import soot.BooleanType;
 import soot.ByteType;
@@ -188,16 +185,12 @@ class StmtVisitor implements StmtSwitch {
 	}
 
 	protected void addInsn(Insn insn, Stmt s) {
-		int highestIndex = insns.size();
-		addInsn(highestIndex, insn);
+		insns.add(insn);
 		if (s != null)
 			if (insnStmtMap.put(insn, s) != null)
 				throw new RuntimeException("Duplicate instruction");
 	}
 
-	private void addInsn(int positionInList, Insn insn) {
-		insns.add(positionInList, insn);
-	}
 
 	protected void beginNewStmt(Stmt s) {
 		// It's a new statement, so we can re-use registers
@@ -206,17 +199,18 @@ class StmtVisitor implements StmtSwitch {
 		addInsn(new AddressInsn(s), null);
 	}
 
-	public void finalizeInstructions() {
+	public void finalizeInstructions(Set<Unit> trapReferences) {
 		addPayloads();
 		finishRegs();
-		reduceInstructions();
+		reduceInstructions(trapReferences);
 	}
 
 	/**
 	 * Reduces the instruction list by removing unnecessary instruction pairs
 	 * such as move v0 v1; move v1 v0;
+	 * @param trapReferences 
 	 */
-	private void reduceInstructions() {
+	private void reduceInstructions(Set<Unit> trapReferences) {
 		for (int i = 0; i < this.insns.size() - 1; i++) {
 			Insn curInsn = this.insns.get(i);
 			// Only consider real instructions
@@ -251,18 +245,18 @@ class StmtVisitor implements StmtSwitch {
 			Register secondTarget = nextInsn.getRegs().get(0);
 			Register secondSource = nextInsn.getRegs().get(1);
 			if (firstTarget.equals(secondSource) && secondTarget.equals(firstSource)) {
-				Stmt origStmt = insnStmtMap.get(nextInsn);
+				Stmt nextStmt = insnStmtMap.get(nextInsn);
 
 				// Remove the second instruction as it does not change any
 				// state. We cannot remove the first instruction as other
 				// instructions may depend on the register being set.
-				if (origStmt == null || !isJumpTarget(origStmt)) {
-					Insn nextStmt = this.insns.get(nextIndex + 1);
+				if (nextStmt == null || (!isJumpTarget(nextStmt) && !trapReferences.contains(nextStmt))) {
 					insns.remove(nextIndex);
 
-					if (origStmt != null) {
+					if (nextStmt != null) {
+						Insn nextInst = this.insns.get(nextIndex + 1);
 						insnStmtMap.remove(nextInsn);
-						insnStmtMap.put(nextStmt, origStmt);
+						insnStmtMap.put(nextInst, nextStmt);
 					}
 				}
 			}
@@ -428,9 +422,7 @@ class StmtVisitor implements StmtSwitch {
 			// move rhs local to lhs local, if different
 			Local rhsLocal = (Local) rhs;
 
-			String lhsName = ((Local) lhs).getName();
-			String rhsName = rhsLocal.getName();
-			if (lhsName.equals(rhsName)) {
+			if (lhsLocal == rhsLocal) {
 				return;
 			}
 			Register sourceReg = regAlloc.asLocal(rhsLocal);
@@ -450,7 +442,7 @@ class StmtVisitor implements StmtSwitch {
 				// to the lhs reg (it was not used yet)
 				Insn moveResultInsn = buildMoveResultInsn(lhsReg);
 				int invokeInsnIndex = insns.indexOf(getLastInvokeInsn());
-				addInsn(invokeInsnIndex + 1, moveResultInsn);
+				insns.add(invokeInsnIndex + 1, moveResultInsn);
 			}
 		}
 
@@ -690,14 +682,14 @@ class StmtVisitor implements StmtSwitch {
 			addInsn(new Insn11x(Opcode.MOVE_EXCEPTION, localReg), stmt);
 
 			this.insnRegisterMap.put(insns.get(insns.size() - 1),
-					LocalRegisterAssignmentInformation.v(localReg, (Local) lhs));
+					LocalRegisterAssignmentInformation.v(localReg, lhs));
 		} else if (rhs instanceof ThisRef || rhs instanceof ParameterRef) {
 			/*
 			 * do not save the ThisRef or ParameterRef in a local, because it
 			 * always has a parameter register already. at least use the local
 			 * for further reference in the statements
 			 */
-			Local localForThis = (Local) lhs;
+			Local localForThis = lhs;
 			regAlloc.asParameter(belongingMethod, localForThis);
 
 			parameterInstructionsList
