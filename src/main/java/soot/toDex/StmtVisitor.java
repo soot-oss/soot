@@ -474,25 +474,33 @@ class StmtVisitor implements StmtSwitch {
 	}
 
 	protected static Insn buildMoveInsn(Register destinationReg, Register sourceReg) {
-		// get the opcode type, depending on the source reg (we assume that the
-		// destination has the same type)
-		String opcType;
-		if (sourceReg.isObject()) {
-			opcType = "MOVE_OBJECT";
-		} else if (sourceReg.isWide()) {
-			opcType = "MOVE_WIDE";
-		} else {
-			opcType = "MOVE";
-		}
 		// get the optional opcode suffix, depending on the sizes of the regs
 		if (!destinationReg.fitsShort()) {
-			Opcode opc = Opcode.valueOf(opcType + "_16");
+			Opcode opc;
+			if (sourceReg.isObject())
+				opc = Opcode.MOVE_OBJECT_16;
+			else if (sourceReg.isWide())
+				opc = Opcode.MOVE_WIDE_16;
+			else
+				opc = Opcode.MOVE_16;
 			return new Insn32x(opc, destinationReg, sourceReg);
 		} else if (!destinationReg.fitsByte() || !sourceReg.fitsByte()) {
-			Opcode opc = Opcode.valueOf(opcType + "_FROM16");
+			Opcode opc;
+			if (sourceReg.isObject())
+				opc = Opcode.MOVE_OBJECT_FROM16;
+			else if (sourceReg.isWide())
+				opc = Opcode.MOVE_WIDE_FROM16;
+			else
+				opc = Opcode.MOVE_FROM16;
 			return new Insn22x(opc, destinationReg, sourceReg);
 		}
-		Opcode opc = Opcode.valueOf(opcType);
+		Opcode opc;
+		if (sourceReg.isObject())
+			opc = Opcode.MOVE_OBJECT;
+		else if (sourceReg.isWide())
+			opc = Opcode.MOVE_WIDE;
+		else
+			opc = Opcode.MOVE;
 		return new Insn12x(opc, destinationReg, sourceReg);
 	}
 
