@@ -728,6 +728,12 @@ public class DexPrinter {
 		return annotations;
 	}
 
+	/**
+	 * Returns all method parameter annotations (or null) for a specific parameter
+	 * @param m the method
+	 * @param paramIdx the parameter index
+	 * @return the annotations (or null)
+	 */
 	private Set<Annotation> buildMethodParameterAnnotations(SootMethod m, final int paramIdx) {
 		Set<String> skipList = null;
 		Set<Annotation> annotations = null;
@@ -746,9 +752,6 @@ public class DexPrinter {
 			}
 		}
 
-		if (annotations == null)
-			return Collections.emptySet();
-		
 		return annotations;
 	}
 
