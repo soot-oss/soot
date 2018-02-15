@@ -309,9 +309,10 @@ class StmtVisitor implements StmtSwitch {
 			if (insnStmtMap.containsKey(i)) { // get tags
 				instructionInsnMap.put(realInsn, i);
 			}
-			if (insnRegisterMap.containsKey(i)) {
-				instructionRegisterMap.put(realInsn, insnRegisterMap.get(i));
-			}
+			LocalRegisterAssignmentInformation assignmentInfo = insnRegisterMap.get(i);
+			if (assignmentInfo != null)
+				instructionRegisterMap.put(realInsn, assignmentInfo);
+			
 			if (i instanceof AbstractPayload)
 				instructionPayloadMap.put(realInsn, (AbstractPayload) i);
 		}
