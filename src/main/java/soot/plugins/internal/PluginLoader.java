@@ -21,6 +21,7 @@
 package soot.plugins.internal;
 
 import java.io.File;
+import java.security.InvalidParameterException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -40,6 +41,90 @@ import soot.plugins.model.Plugins;
  * @author Bernhard J. Berger
  */
 public class PluginLoader {
+
+	private static ClassLoadingStrategy loadStrategy = new ReflectionClassLoadingStrategy();
+
+	/**
+	 * Each phase has to support the enabled option. We will add it if necessary.
+	 * @param declaredOptions Options declared by the plugin.
+	 * @return option list definitly containing enabled.
+	 */
+	private static String[] appendEnabled(final String [] options) {
+		for(final String option : options) {
+			if(option.equals("enabled")) {
+				return options;
+			}
+		}
+		
+		String [] result = new String[options.length + 1];
+		result[0] = "enabled";
+		System.arraycopy(options, 0, result, 1, options.length);
+
+		return result;
+	}
+
+	/**
+	 * Creates a space separated list from {@code declaredOptions}.
+	 * @param options the list to transform.
+	 * @return a string containing all options separated by a space.
+	 */
+	private static String concat(final String[] options) {
+		StringBuilder sb = new StringBuilder();
+		boolean first = true;
+		
+		for(final String option : options) {
+			if(!first) {
+				sb.append(" ");
+			}
+			first = false;
+			sb.append(option);
+		}
+
+		return sb.toString();
+	}
+
+	/**
+	 * Splits a phase name and returns the pack name.
+	 * 
+	 * @param phaseName Name of the phase.
+	 * @return the name of the pack.
+	 */
+	private static String getPackName(final String phaseName) {
+		if(!phaseName.contains(".")) {
+			throw new RuntimeException("Name of phase '" + phaseName + "'does not contain a dot.");
+		}
+		
+		return phaseName.substring(0, phaseName.indexOf('.'));
+	}
+
+	/**
+	 * Loads the phase plugin and adds it to PackManager.
+	 * @param pluginDescription the plugin description instance read from configuration file.
+	 */
+	private static void handlePhasePlugin(final PhasePluginDescription pluginDescription) {
+		try {
+			final Object instance = PluginLoader.loadStrategy.create(pluginDescription.getClassName());
+			
+			if(!(instance instanceof SootPhasePlugin)) {
+				throw new RuntimeException("The plugin class '" + pluginDescription.getClassName() + "' does not implement SootPhasePlugin.");
+			}
+			
+			final SootPhasePlugin phasePlugin = (SootPhasePlugin)instance;
+			phasePlugin.setDescription(pluginDescription);
+			
+			final String packName = getPackName(pluginDescription.getPhaseName());
+			
+			Transform transform = new Transform(pluginDescription.getPhaseName(), phasePlugin.getTransformer());
+			transform.setDeclaredOptions(concat(appendEnabled(phasePlugin.getDeclaredOptions())));
+			transform.setDefaultOptions(concat(phasePlugin.getDefaultOptions()));
+			PackManager.v().getPack(packName).add(transform);
+			
+		} catch (final ClassNotFoundException e) {
+			throw new RuntimeException("Failed to load plugin class for " + pluginDescription + ".", e);
+		} catch (final InstantiationException e) {
+			throw new RuntimeException("Failed to instanciate plugin class for " + pluginDescription + ".", e);
+		}	
+	}
 
 	/**
 	 * Loads the plugin configuration file {@code file} and registers the plugins.
@@ -101,87 +186,18 @@ public class PluginLoader {
 	}
 
 	/**
-	 * Loads the phase plugin and adds it to PackManager.
-	 * @param pluginDescription the plugin description instance read from configuration file.
+	 * Changes the class loading strategy used by Soot.
+	 *
+	 * @param strategy The new class loading strategy to use.
 	 */
-	private static void handlePhasePlugin(final PhasePluginDescription pluginDescription) {
-		try {
-			Class<?> clazz = Class.forName(pluginDescription.getClassName());
-			Object instance = clazz.newInstance();
-			
-			if(!(instance instanceof SootPhasePlugin)) {
-				throw new RuntimeException("The plugin class '" + pluginDescription.getClassName() + "' does not implement SootPhasePlugin.");
-			}
-			
-			final SootPhasePlugin phasePlugin = (SootPhasePlugin)instance;
-			phasePlugin.setDescription(pluginDescription);
-			
-			final String packName = getPackName(pluginDescription.getPhaseName());
-			
-			Transform transform = new Transform(pluginDescription.getPhaseName(), phasePlugin.getTransformer());
-			transform.setDeclaredOptions(concat(appendEnabled(phasePlugin.getDeclaredOptions())));
-			transform.setDefaultOptions(concat(phasePlugin.getDefaultOptions()));
-			PackManager.v().getPack(packName).add(transform);
-			
-		} catch (final ClassNotFoundException e) {
-			throw new RuntimeException("Failed to load plugin class for " + pluginDescription + ".", e);
-		} catch (final InstantiationException e) {
-			throw new RuntimeException("Failed to instanciate plugin class for " + pluginDescription + ".", e);
-		} catch (final IllegalAccessException e) {
-			throw new RuntimeException("Not allowed to access plugin class for " + pluginDescription + ".", e);
-		}		
-	}
-
-	/**
-	 * Each phase has to support the enabled option. We will add it if necessary.
-	 * @param declaredOptions Options declared by the plugin.
-	 * @return option list definitly containing enabled.
-	 */
-	private static String[] appendEnabled(final String [] options) {
-		for(final String option : options) {
-			if(option.equals("enabled")) {
-				return options;
-			}
-		}
-		
-		String [] result = new String[options.length + 1];
-		result[0] = "enabled";
-		System.arraycopy(options, 0, result, 1, options.length);
-
-		return result;
-	}
-
-	/**
-	 * Creates a space separated list from {@code declaredOptions}.
-	 * @param options the list to transform.
-	 * @return a string containing all options separated by a space.
-	 */
-	private static String concat(final String[] options) {
-		StringBuilder sb = new StringBuilder();
-		boolean first = true;
-		
-		for(final String option : options) {
-			if(!first) {
-				sb.append(" ");
-			}
-			first = false;
-			sb.append(option);
+	public static void setClassLoadingStrategy(final ClassLoadingStrategy strategy) {
+		if(strategy == null) {
+			throw new InvalidParameterException("Class loading strategy is not allowed to be null.");
 		}
 
-		return sb.toString();
+		PluginLoader.loadStrategy = strategy;
 	}
 
-	/**
-	 * Splits a phase name and returns the pack name.
-	 * 
-	 * @param phaseName Name of the phase.
-	 * @return the name of the pack.
-	 */
-	private static String getPackName(final String phaseName) {
-		if(!phaseName.contains(".")) {
-			throw new RuntimeException("Name of phase '" + phaseName + "'does not contain a dot.");
-		}
-		
-		return phaseName.substring(0, phaseName.indexOf('.'));
+	private PluginLoader() {
 	}
 }
