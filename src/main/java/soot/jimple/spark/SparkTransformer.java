@@ -18,6 +18,7 @@
  */
 
 package soot.jimple.spark;
+
 import java.util.Date;
 import java.util.Map;
 
@@ -62,248 +63,277 @@ import soot.tagkit.Host;
 import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
 
-/** Main entry point for Spark.
+/**
+ * Main entry point for Spark.
+ * 
  * @author Ondrej Lhotak
  */
-public class SparkTransformer extends SceneTransformer
-{ 
-    public SparkTransformer( Singletons.Global g ) {}
-    public static SparkTransformer v() { return G.v().soot_jimple_spark_SparkTransformer(); }
+public class SparkTransformer extends SceneTransformer {
+	public SparkTransformer(Singletons.Global g) {
+	}
 
-    protected void internalTransform( String phaseName, Map<String, String> options )
-    {
-        SparkOptions opts = new SparkOptions( options );
-        final String output_dir = SourceLocator.v().getOutputDir();
+	public static SparkTransformer v() {
+		return G.v().soot_jimple_spark_SparkTransformer();
+	}
 
-        // Build pointer assignment graph
-        ContextInsensitiveBuilder b = new ContextInsensitiveBuilder();
-        if( opts.pre_jimplify() ) b.preJimplify();
-        if( opts.force_gc() ) doGC();
-        Date startBuild = new Date();
-        final PAG pag = b.setup( opts );
-        b.build();
-        Date endBuild = new Date();
-        reportTime( "Pointer Assignment Graph", startBuild, endBuild );
-        if( opts.force_gc() ) doGC();
+	protected void internalTransform(String phaseName, Map<String, String> options) {
+		SparkOptions opts = new SparkOptions(options);
+		final String output_dir = SourceLocator.v().getOutputDir();
 
-        // Build type masks
-        Date startTM = new Date();
-        pag.getTypeManager().makeTypeMask();
-        Date endTM = new Date();
-        reportTime( "Type masks", startTM, endTM );
-        if( opts.force_gc() ) doGC();
+		// Build pointer assignment graph
+		ContextInsensitiveBuilder b = new ContextInsensitiveBuilder();
+		if (opts.pre_jimplify())
+			b.preJimplify();
+		if (opts.force_gc())
+			doGC();
+		Date startBuild = new Date();
+		final PAG pag = b.setup(opts);
+		b.build();
+		Date endBuild = new Date();
+		reportTime("Pointer Assignment Graph", startBuild, endBuild);
+		if (opts.force_gc())
+			doGC();
 
-        if( opts.verbose() ) {
-            G.v().out.println( "VarNodes: "+pag.getVarNodeNumberer().size() );
-            G.v().out.println( "FieldRefNodes: "+pag.getFieldRefNodeNumberer().size() );
-            G.v().out.println( "AllocNodes: "+pag.getAllocNodeNumberer().size() );
-        }
+		// Build type masks
+		Date startTM = new Date();
+		pag.getTypeManager().makeTypeMask();
+		Date endTM = new Date();
+		reportTime("Type masks", startTM, endTM);
+		if (opts.force_gc())
+			doGC();
 
-        // Simplify pag
-        Date startSimplify = new Date();
+		if (opts.verbose()) {
+			G.v().out.println("VarNodes: " + pag.getVarNodeNumberer().size());
+			G.v().out.println("FieldRefNodes: " + pag.getFieldRefNodeNumberer().size());
+			G.v().out.println("AllocNodes: " + pag.getAllocNodeNumberer().size());
+		}
 
-        // We only simplify if on_fly_cg is false. But, if vta is true, it
-        // overrides on_fly_cg, so we can still simplify. Something to handle
-        // these option interdependencies more cleanly would be nice...
-        if( ( opts.simplify_sccs() && !opts.on_fly_cg() ) || opts.vta() ) {
-                new SCCCollapser( pag, opts.ignore_types_for_sccs() ).collapse();
-        }
-        if( opts.simplify_offline() && !opts.on_fly_cg() ) {
-            new EBBCollapser( pag ).collapse();
-        }
-        if( true || opts.simplify_sccs() || opts.vta() || opts.simplify_offline() ) {
-            pag.cleanUpMerges();
-        }
-        Date endSimplify = new Date();
-        reportTime( "Pointer Graph simplified", startSimplify, endSimplify );
-        if( opts.force_gc() ) doGC();
+		// Simplify pag
+		Date startSimplify = new Date();
 
-        // Dump pag
-        PAGDumper dumper = null;
-        if( opts.dump_pag() || opts.dump_solution() ) {
-            dumper = new PAGDumper( pag, output_dir );
-        }
-        if( opts.dump_pag() ) dumper.dump();
+		// We only simplify if on_fly_cg is false. But, if vta is true, it
+		// overrides on_fly_cg, so we can still simplify. Something to handle
+		// these option interdependencies more cleanly would be nice...
+		if ((opts.simplify_sccs() && !opts.on_fly_cg()) || opts.vta()) {
+			new SCCCollapser(pag, opts.ignore_types_for_sccs()).collapse();
+		}
+		if (opts.simplify_offline() && !opts.on_fly_cg()) {
+			new EBBCollapser(pag).collapse();
+		}
+		if (true || opts.simplify_sccs() || opts.vta() || opts.simplify_offline()) {
+			pag.cleanUpMerges();
+		}
+		Date endSimplify = new Date();
+		reportTime("Pointer Graph simplified", startSimplify, endSimplify);
+		if (opts.force_gc())
+			doGC();
 
-        // Propagate
-        Date startProp = new Date();
-        final Propagator[] propagator = new Propagator[1];
-        switch( opts.propagator() ) {
-            case SparkOptions.propagator_iter:
-                propagator[0] = new PropIter( pag );
-                break;
-            case SparkOptions.propagator_worklist:
-                propagator[0] = new PropWorklist( pag );
-                break;
-            case SparkOptions.propagator_cycle:
-                propagator[0] = new PropCycle( pag );
-                break;
-            case SparkOptions.propagator_merge:
-                propagator[0] = new PropMerge( pag );
-                break;
-            case SparkOptions.propagator_alias:
-                propagator[0] = new PropAlias( pag );
-                break;
-            case SparkOptions.propagator_none:
-                break;
-            default:
-                throw new RuntimeException();
-        }
+		// Dump pag
+		PAGDumper dumper = null;
+		if (opts.dump_pag() || opts.dump_solution()) {
+			dumper = new PAGDumper(pag, output_dir);
+		}
+		if (opts.dump_pag())
+			dumper.dump();
 
-        if( propagator[0] != null ) propagator[0].propagate();
-        Date endProp = new Date();
-        reportTime( "Propagation", startProp, endProp );
-        reportTime( "Solution found", startSimplify, endProp );
+		// Propagate
+		Date startProp = new Date();
+		propagatePAG(opts, pag);
+		Date endProp = new Date();
+		reportTime("Propagation", startProp, endProp);
+		reportTime("Solution found", startSimplify, endProp);
 
-        if( opts.force_gc() ) doGC();
-        
-        if( !opts.on_fly_cg() || opts.vta() ) {
-            CallGraphBuilder cgb = new CallGraphBuilder( pag );
-            cgb.build();
-        }
+		if (opts.force_gc())
+			doGC();
 
-        if( opts.verbose() ) {
-            G.v().out.println( "[Spark] Number of reachable methods: "
-                    +Scene.v().getReachableMethods().size() );
-        }
+		if (!opts.on_fly_cg() || opts.vta()) {
+			CallGraphBuilder cgb = new CallGraphBuilder(pag);
+			cgb.build();
+		}
 
-        if( opts.set_mass() ) findSetMass( pag );
+		if (opts.verbose()) {
+			G.v().out.println("[Spark] Number of reachable methods: " + Scene.v().getReachableMethods().size());
+		}
 
-        if( opts.dump_answer() ) new ReachingTypeDumper( pag, output_dir ).dump();
-        if( opts.dump_solution() ) dumper.dumpPointsToSets();
-        if( opts.dump_html() ) new PAG2HTML( pag, output_dir ).dump();
-        Scene.v().setPointsToAnalysis( pag );
-        if( opts.add_tags() ) {
-            addTags( pag );
-        }
+		if (opts.set_mass())
+			findSetMass(pag);
 
-        if ( opts.geom_pta() ) {
-        	if ( opts.simplify_offline() || opts.simplify_sccs() ) {
-        		G.v().out.println( "Please turn off the simplify-offline and simplify-sccs to run the geometric points-to analysis" );
-        		G.v().out.println( "Now, we keep the SPARK result for querying." );
-        	}
-        	else {
-        		// We perform the geometric points-to analysis
-        		GeomPointsTo geomPTA = (GeomPointsTo)pag;
-        		geomPTA.parametrize( endProp.getTime() - startSimplify.getTime() );
-        		geomPTA.solve();
-        	}
-        }
-        
-        if(opts.cs_demand()) {
-        		//replace by demand-driven refinement-based context-sensitive analysis
-        		Date startOnDemand = new Date();
-        		PointsToAnalysis onDemandAnalysis = DemandCSPointsTo.makeWithBudget(opts.traversal(), opts.passes(), opts.lazy_pts());
-        		Date endOndemand = new Date();
-        		reportTime( "Initialized on-demand refinement-based context-sensitive analysis", startOnDemand, endOndemand );
-        		Scene.v().setPointsToAnalysis(onDemandAnalysis);
-        }
-    }
-    
-    protected void addTags( PAG pag ) {
-        final Tag unknown = new StringTag( "Untagged Spark node" );
-        final Map<Node, Tag> nodeToTag = pag.getNodeTags();
-        for( final SootClass c : Scene.v().getClasses() ) {
-            for( final SootMethod m : c.getMethods() ) {
-                if( !m.isConcrete() ) continue;
-                if( !m.hasActiveBody() ) continue;
-                for( final Unit u : m.getActiveBody().getUnits() ) {
-                    final Stmt s = (Stmt) u;
-                    if( s instanceof DefinitionStmt ) {
-                        Value lhs = ((DefinitionStmt) s).getLeftOp();
-                        VarNode v = null;
-                        if( lhs instanceof Local ) {
-                            v = pag.findLocalVarNode( lhs );
-                        } else if( lhs instanceof FieldRef ) {
-                            v = pag.findGlobalVarNode( ((FieldRef) lhs).getField() );
-                        }
-                        if( v != null ) {
-                            PointsToSetInternal p2set = v.getP2Set();
-                            p2set.forall( new P2SetVisitor() {
-                            public final void visit( Node n ) {
-                                addTag( s, n, nodeToTag, unknown );
-                            }} );
-                            Node[] simpleSources = pag.simpleInvLookup(v);
-                            for (Node element : simpleSources) {
-                                addTag( s, element, nodeToTag, unknown );
-                            }
-                            simpleSources = pag.allocInvLookup(v);
-                            for (Node element : simpleSources) {
-                                addTag( s, element, nodeToTag, unknown );
-                            }
-                            simpleSources = pag.loadInvLookup(v);
-                            for (Node element : simpleSources) {
-                                addTag( s, element, nodeToTag, unknown );
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    protected static void reportTime( String desc, Date start, Date end ) {
-        long time = end.getTime()-start.getTime();
-        G.v().out.println( "[Spark] "+desc+" in "+time/1000+"."+(time/100)%10+" seconds." );
-    }
-    protected static void doGC() {
-        // Do 5 times because the garbage collector doesn't seem to always collect
-        // everything on the first try.
-        System.gc();
-        System.gc();
-        System.gc();
-        System.gc();
-        System.gc();
-    }
+		if (opts.dump_answer())
+			new ReachingTypeDumper(pag, output_dir).dump();
+		if (opts.dump_solution())
+			dumper.dumpPointsToSets();
+		if (opts.dump_html())
+			new PAG2HTML(pag, output_dir).dump();
+		Scene.v().setPointsToAnalysis(pag);
+		if (opts.add_tags()) {
+			addTags(pag);
+		}
 
-    protected void addTag( Host h, Node n, Map<Node, Tag> nodeToTag, Tag unknown ) {
-        if( nodeToTag.containsKey( n ) ) h.addTag( nodeToTag.get(n) );
-        else h.addTag( unknown );
-    }
+		if (opts.geom_pta()) {
+			if (opts.simplify_offline() || opts.simplify_sccs()) {
+				G.v().out.println(
+						"Please turn off the simplify-offline and simplify-sccs to run the geometric points-to analysis");
+				G.v().out.println("Now, we keep the SPARK result for querying.");
+			} else {
+				// We perform the geometric points-to analysis
+				GeomPointsTo geomPTA = (GeomPointsTo) pag;
+				geomPTA.parametrize(endProp.getTime() - startSimplify.getTime());
+				geomPTA.solve();
+			}
+		}
 
-    protected void findSetMass( PAG pag ) {
-        int mass = 0;
-        int varMass = 0;
-        int adfs = 0;
-        int scalars = 0;
-        
-        for( final VarNode v : pag.getVarNodeNumberer() ) {
-        	scalars++;
-            PointsToSetInternal set = v.getP2Set();
-            if( set != null ) mass += set.size();
-            if( set != null ) varMass += set.size();
-        }
-        for( final AllocNode an : pag.allocSources() ) {
-            for( final AllocDotField adf : an.getFields() ) {
-                PointsToSetInternal set = adf.getP2Set();
-                if( set != null ) mass += set.size();
-                if( set != null && set.size() > 0 ) {
-                    adfs++;
-                }
-            }
-        }
-        G.v().out.println( "Set mass: " + mass );
-        G.v().out.println( "Variable mass: " + varMass );
-        G.v().out.println( "Scalars: "+scalars );
-        G.v().out.println( "adfs: "+adfs );
-        // Compute points-to set sizes of dereference sites BEFORE
-        // trimming sets by declared type
-        int[] deRefCounts = new int[30001];
-        for (VarNode v : pag.getDereferences()) {
-            PointsToSetInternal set = v.getP2Set();
-            int size = 0;
-            if( set != null ) size = set.size();
-            deRefCounts[size]++;
-        }
-        int total = 0;
-        for (int element : deRefCounts)
-			total+= element;
-        G.v().out.println( "Dereference counts BEFORE trimming (total = "+total+"):" );
-        for( int i=0; i < deRefCounts.length; i++ ) {
-            if( deRefCounts[i] > 0 ) {
-                G.v().out.println( ""+i+" "+deRefCounts[i]+" "+(deRefCounts[i]*100.0/total)+"%" );
-            }
-        }
-    }
+		if (opts.cs_demand()) {
+			// replace by demand-driven refinement-based context-sensitive analysis
+			Date startOnDemand = new Date();
+			PointsToAnalysis onDemandAnalysis = DemandCSPointsTo.makeWithBudget(opts.traversal(), opts.passes(),
+					opts.lazy_pts());
+			Date endOndemand = new Date();
+			reportTime("Initialized on-demand refinement-based context-sensitive analysis", startOnDemand, endOndemand);
+			Scene.v().setPointsToAnalysis(onDemandAnalysis);
+		}
+	}
+
+	private void propagatePAG(SparkOptions opts, final PAG pag) {
+		Propagator propagator = null;
+		switch (opts.propagator()) {
+		case SparkOptions.propagator_iter:
+			propagator = new PropIter(pag);
+			break;
+		case SparkOptions.propagator_worklist:
+			propagator = new PropWorklist(pag);
+			break;
+		case SparkOptions.propagator_cycle:
+			propagator = new PropCycle(pag);
+			break;
+		case SparkOptions.propagator_merge:
+			propagator = new PropMerge(pag);
+			break;
+		case SparkOptions.propagator_alias:
+			propagator = new PropAlias(pag);
+			break;
+		case SparkOptions.propagator_none:
+			break;
+		default:
+			throw new RuntimeException();
+		}
+
+		if (propagator != null)
+			propagator.propagate();
+	}
+
+	protected void addTags(PAG pag) {
+		final Tag unknown = new StringTag("Untagged Spark node");
+		final Map<Node, Tag> nodeToTag = pag.getNodeTags();
+		for (final SootClass c : Scene.v().getClasses()) {
+			for (final SootMethod m : c.getMethods()) {
+				if (!m.isConcrete())
+					continue;
+				if (!m.hasActiveBody())
+					continue;
+				for (final Unit u : m.getActiveBody().getUnits()) {
+					final Stmt s = (Stmt) u;
+					if (s instanceof DefinitionStmt) {
+						Value lhs = ((DefinitionStmt) s).getLeftOp();
+						VarNode v = null;
+						if (lhs instanceof Local) {
+							v = pag.findLocalVarNode(lhs);
+						} else if (lhs instanceof FieldRef) {
+							v = pag.findGlobalVarNode(((FieldRef) lhs).getField());
+						}
+						if (v != null) {
+							PointsToSetInternal p2set = v.getP2Set();
+							p2set.forall(new P2SetVisitor() {
+								public final void visit(Node n) {
+									addTag(s, n, nodeToTag, unknown);
+								}
+							});
+							Node[] simpleSources = pag.simpleInvLookup(v);
+							for (Node element : simpleSources) {
+								addTag(s, element, nodeToTag, unknown);
+							}
+							simpleSources = pag.allocInvLookup(v);
+							for (Node element : simpleSources) {
+								addTag(s, element, nodeToTag, unknown);
+							}
+							simpleSources = pag.loadInvLookup(v);
+							for (Node element : simpleSources) {
+								addTag(s, element, nodeToTag, unknown);
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	protected static void reportTime(String desc, Date start, Date end) {
+		long time = end.getTime() - start.getTime();
+		G.v().out.println("[Spark] " + desc + " in " + time / 1000 + "." + (time / 100) % 10 + " seconds.");
+	}
+
+	protected static void doGC() {
+		// Do 5 times because the garbage collector doesn't seem to always collect
+		// everything on the first try.
+		System.gc();
+		System.gc();
+		System.gc();
+		System.gc();
+		System.gc();
+	}
+
+	protected void addTag(Host h, Node n, Map<Node, Tag> nodeToTag, Tag unknown) {
+		if (nodeToTag.containsKey(n))
+			h.addTag(nodeToTag.get(n));
+		else
+			h.addTag(unknown);
+	}
+
+	protected void findSetMass(PAG pag) {
+		int mass = 0;
+		int varMass = 0;
+		int adfs = 0;
+		int scalars = 0;
+
+		for (final VarNode v : pag.getVarNodeNumberer()) {
+			scalars++;
+			PointsToSetInternal set = v.getP2Set();
+			if (set != null)
+				mass += set.size();
+			if (set != null)
+				varMass += set.size();
+		}
+		for (final AllocNode an : pag.allocSources()) {
+			for (final AllocDotField adf : an.getFields()) {
+				PointsToSetInternal set = adf.getP2Set();
+				if (set != null)
+					mass += set.size();
+				if (set != null && set.size() > 0) {
+					adfs++;
+				}
+			}
+		}
+		G.v().out.println("Set mass: " + mass);
+		G.v().out.println("Variable mass: " + varMass);
+		G.v().out.println("Scalars: " + scalars);
+		G.v().out.println("adfs: " + adfs);
+		// Compute points-to set sizes of dereference sites BEFORE
+		// trimming sets by declared type
+		int[] deRefCounts = new int[30001];
+		for (VarNode v : pag.getDereferences()) {
+			PointsToSetInternal set = v.getP2Set();
+			int size = 0;
+			if (set != null)
+				size = set.size();
+			deRefCounts[size]++;
+		}
+		int total = 0;
+		for (int element : deRefCounts)
+			total += element;
+		G.v().out.println("Dereference counts BEFORE trimming (total = " + total + "):");
+		for (int i = 0; i < deRefCounts.length; i++) {
+			if (deRefCounts[i] > 0) {
+				G.v().out.println("" + i + " " + deRefCounts[i] + " " + (deRefCounts[i] * 100.0 / total) + "%");
+			}
+		}
+	}
 }
-
-
