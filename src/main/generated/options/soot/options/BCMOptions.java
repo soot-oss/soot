@@ -21,32 +21,31 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+
 import java.util.*;
 
 /** Option parser for Busy Code Motion. */
-public class BCMOptions
-{
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-25T22:17:11.362+03:00", comments = "from soot_options.xml")
+public class BCMOptions {
+
     private Map<String, String> options;
 
-    public BCMOptions( Map<String, String> options ) {
+    public BCMOptions(Map<String, String> options) {
         this.options = options;
     }
-    
-    /** Enabled --
-    
-     * .
-    
-     * 
+
+    /**
+     * Enabled
      */
     public boolean enabled() {
-        return soot.PhaseOptions.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean(options, "enabled");
     }
-    
-    /** Naive Side Effect Tester --
-    
+
+    /**
+     * Naive Side Effect Tester --
      * Use a naive side effect analysis even if interprocedural 
      * information is available.
-    
+     *
      * If Naive Side Effect Tester is set to true, Busy Code Motion 
      * uses the conservative side effect information provided by the 
      * NaiveSideEffectTester class, even if interprocedural information 
@@ -61,11 +60,10 @@ public class BCMOptions
      * which fields and statics may be written or read by a given 
      * statement. If whole program analysis is not performed, naive 
      * side effect information is used regardless of the setting of 
-     * Naive Side Effect Tester. 
+     * Naive Side Effect Tester.
      */
     public boolean naive_side_effect() {
-        return soot.PhaseOptions.getBoolean( options, "naive-side-effect" );
+        return soot.PhaseOptions.getBoolean(options, "naive-side-effect");
     }
-    
+
 }
-        

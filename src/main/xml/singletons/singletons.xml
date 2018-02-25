@@ -1,4 +1,4 @@
-<?xml-stylesheet type="text/xsl" href="soot_options.xsl"  ?>
+<?xml-stylesheet type="text/xsl" href="make-singletons.xsl"  ?>
 <singletons>
   <class>soot.PhaseOptions</class>
   <class>soot.jimple.toolkits.callgraph.VirtualCalls</class>

@@ -21,26 +21,24 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+
 import java.util.*;
 
 /** Option parser for May Happen in Parallel Analyses. */
-public class MhpTransformer
-{
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-25T22:17:11.362+03:00", comments = "from soot_options.xml")
+public class MhpTransformer {
+
     private Map<String, String> options;
 
-    public MhpTransformer( Map<String, String> options ) {
+    public MhpTransformer(Map<String, String> options) {
         this.options = options;
     }
-    
-    /** Enabled --
-    
-     * .
-    
-     * 
+
+    /**
+     * Enabled
      */
     public boolean enabled() {
-        return soot.PhaseOptions.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean(options, "enabled");
     }
-    
+
 }
-        

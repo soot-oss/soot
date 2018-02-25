@@ -1,16 +1,13 @@
 <?xml version="1.0"?>
-<xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:redirect="http://xml.apache.org/xalan/redirect"
-    extension-element-prefixes="redirect"
->
-  <xsl:output method="text" indent="no"/>
-  <xsl:strip-space elements="*"/>
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
+    <xsl:output method="text" indent="no"/>
+    <xsl:strip-space elements="*"/>
 
 <!--*************************************************************************-->
 <!--* ROOT TEMPLATE *********************************************************-->
 <!--*************************************************************************-->
 
-  <xsl:template match="/options">
+    <xsl:template match="/options">
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2004 Ondrej Lhotak
  *
@@ -34,17 +31,18 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot;
+
+import soot.*;
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.*;
-import soot.*;
 import java.util.*;
-import java.io.*;
 
-/** Soot ant task.
+/**
+ * Soot ant task.
  * @author Ondrej Lhotak
  */
-
+@javax.annotation.Generated(value = "<xsl:copy-of select="system-property('xsl:vendor')"/> v<xsl:copy-of select="system-property('xsl:version')"/>", date = "<xsl:value-of select="current-dateTime()"/>", comments = "from <xsl:value-of select="tokenize(base-uri(), '/')[last()]"/>")
 public class AntTask extends MatchingTask {
     public static final boolean DEBUG = true;
     private void debug(String s) {
@@ -148,29 +146,6 @@ public class AntTask extends MatchingTask {
         }
   </xsl:template>
 
-<!--* PHASE_OPTION *******************************************************-->
-  <xsl:template mode="parse" match="phaseopt">
-            else if( false<xsl:text/>
-    <xsl:for-each select="alias">
-            || option.equals( "<xsl:value-of select="."/>" )<xsl:text/>
-    </xsl:for-each>
-            ) {
-                if( !hasMoreOptions() ) {
-                    G.v().out.println( "No phase name given for option -"+option );
-                    return false;
-                }
-                String phaseName = nextOption();
-                if( !hasMoreOptions() ) {
-                    G.v().out.println( "No phase option given for option -"+option+" "+phaseName );
-                    return false;
-                }
-                String phaseOption = nextOption();
-    <xsl:variable name="name" select="translate(alias[last()],'-. ','___')"/>
-                phaseOptions.add( phaseName );
-                phaseOptions.add( phaseOption );
-            }
-  </xsl:template>
-
 <!--* STRING_OPTION *******************************************************-->
   <xsl:template mode="parse" match="stropt">
         public void set<xsl:value-of select="translate(alias[last()],'-. ','___')"/>(String arg) {
@@ -181,6 +156,7 @@ public class AntTask extends MatchingTask {
 
 <!--* PHASE_OPTION *******************************************************-->
   <xsl:template mode="parse" match="phaseopt">
+      <!--<xsl:value-of select="."/>***-->
   </xsl:template>
 
 <!--*************************************************************************-->
