@@ -1,15 +1,15 @@
 package soot.toDex;
 
+import org.jf.dexlib2.Opcodes;
+import org.jf.dexlib2.iface.ClassDef;
+import org.jf.dexlib2.writer.io.FileDataStore;
+import org.jf.dexlib2.writer.pool.DexPool;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
-
-import org.jf.dexlib2.Opcodes;
-import org.jf.dexlib2.iface.ClassDef;
-import org.jf.dexlib2.writer.io.FileDataStore;
-import org.jf.dexlib2.writer.pool.DexPool;
 
 /**
  * @author Manuel Benz created on 26.09.17
@@ -77,21 +77,21 @@ public class MultiDexBuilder {
 	/**
 	 * Writes all built dex files to the given folder.
 	 *
-	 * @param folder
+	 * @param folder the output folder
 	 * @return File handles to all written dex files
-	 * @throws IOException
+	 * @throws IOException when failed to create {@link FileDataStore}
 	 */
 	public List<File> writeTo(String folder) throws IOException {
-		List<File> res = new ArrayList<>(dexPools.size());
+		final List<File> result = new ArrayList<>(dexPools.size());
 		for (DexPool dexPool : dexPools) {
-			int count = res.size();
+			int count = result.size();
 			// name dex files: classes.dex, classes2.dex, classes3.dex, etc.
 			File file = new File(folder, "classes" + (count == 0 ? "" : count + 1) + ".dex");
-			res.add(file);
+			result.add(file);
 			FileDataStore fds = new FileDataStore(file);
 			dexPool.writeTo(fds);
 			fds.close();
 		}
-		return res;
+		return result;
 	}
 }

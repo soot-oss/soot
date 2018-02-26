@@ -935,7 +935,8 @@
                 <short_desc>Produce Dalvik Virtual Machine files</short_desc>
                 <long_desc>Produce Dalvik Virtual Machine files. If input was an Android
                     Package (APK), a new APK is generated with it's classes.dex replaced. If
-                    no input APK is found, only a classes.dex is generated.
+                    no input APK is found, only a classes.dex is generated. If no input APK is found
+                    and <tt>outjar</tt> is set, generated classes.dex are placed in out <tt>.jar</tt>.
                 </long_desc>
             </value>
             <value>

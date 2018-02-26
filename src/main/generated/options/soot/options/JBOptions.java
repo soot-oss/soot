@@ -21,64 +21,55 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+
 import java.util.*;
 
 /** Option parser for Jimple Body Creation. */
-public class JBOptions
-{
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-25T22:17:11.362+03:00", comments = "from soot_options.xml")
+public class JBOptions {
+
     private Map<String, String> options;
 
-    public JBOptions( Map<String, String> options ) {
+    public JBOptions(Map<String, String> options) {
         this.options = options;
     }
-    
-    /** Enabled --
-    
-     * .
-    
-     * 
+
+    /**
+     * Enabled
      */
     public boolean enabled() {
-        return soot.PhaseOptions.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean(options, "enabled");
     }
-    
-    /** Use Original Names --
-    
-     * .
-    
+
+    /**
+     * Use Original Names
      * Retain the original names for local variables when the source 
      * includes those names. Otherwise, Soot gives variables generic 
-     * names based on their types. 
+     * names based on their types.
      */
     public boolean use_original_names() {
-        return soot.PhaseOptions.getBoolean( options, "use-original-names" );
+        return soot.PhaseOptions.getBoolean(options, "use-original-names");
     }
-    
-    /** Preserve source-level annotations --
-    
-     * .
-    
-     * Preserves annotations of retention type SOURCE. (for 
-     * everything but package and local variable 
-     * annotations) 
+
+    /**
+     * Preserve source-level annotations
+     * Preserves annotations of retention type SOURCE. (for everything 
+     * but package and local variable annotations)
      */
     public boolean preserve_source_annotations() {
-        return soot.PhaseOptions.getBoolean( options, "preserve-source-annotations" );
+        return soot.PhaseOptions.getBoolean(options, "preserve-source-annotations");
     }
-    
-    /** Stabilize local names --
-    
-     * .
-    
+
+    /**
+     * Stabilize local names
      * Make sure that local names are stable between runs. This 
      * requires re-normalizing all local names after the standard 
      * transformations and then sorting them which can negatively 
      * impact performance. This option automatically sets "sort-locals" 
-     * in "jb.lns" during the second re-normalization pass. 
+     * in "jb.lns" during the second re-normalization pass.
      */
     public boolean stabilize_local_names() {
-        return soot.PhaseOptions.getBoolean( options, "stabilize-local-names" );
+        return soot.PhaseOptions.getBoolean(options, "stabilize-local-names");
     }
-    
+
 }
-        

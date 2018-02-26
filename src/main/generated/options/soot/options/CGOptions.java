@@ -21,31 +21,30 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+
 import java.util.*;
 
 /** Option parser for Call Graph Constructor. */
-public class CGOptions
-{
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-25T22:17:11.362+03:00", comments = "from soot_options.xml")
+public class CGOptions {
+
     private Map<String, String> options;
 
-    public CGOptions( Map<String, String> options ) {
+    public CGOptions(Map<String, String> options) {
         this.options = options;
     }
-    
-    /** Enabled --
-    
-     * .
-    
-     * 
+
+    /**
+     * Enabled
      */
     public boolean enabled() {
-        return soot.PhaseOptions.getBoolean( options, "enabled" );
+        return soot.PhaseOptions.getBoolean(options, "enabled");
     }
-    
-    /** Safe forName --
-    
+
+    /**
+     * Safe forName --
      * Handle Class.forName() calls conservatively.
-    
+     *
      * When a program calls Class.forName(), the named class is 
      * resolved, and its static initializer executed. In many cases, it 
      * cannot be determined statically which class will be loaded, and 
@@ -54,16 +53,16 @@ public class CGOptions
      * initializer could be executed. This may make the call graph very 
      * large. When this option is set to false, any calls to 
      * Class.forName() for which the class cannot be determined 
-     * statically are assumed to call no static initializers. 
+     * statically are assumed to call no static initializers.
      */
     public boolean safe_forname() {
-        return soot.PhaseOptions.getBoolean( options, "safe-forname" );
+        return soot.PhaseOptions.getBoolean(options, "safe-forname");
     }
-    
-    /** Safe newInstance --
-    
+
+    /**
+     * Safe newInstance --
      * Handle Class.newInstance() calls conservatively.
-    
+     *
      * When a program calls Class.newInstance(), a new object is 
      * created and its constructor executed. Soot does not determine 
      * statically which type of object will be created, and which 
@@ -71,30 +70,30 @@ public class CGOptions
      * conservatively assume that any constructor could be executed. 
      * This may make the call graph very large. When this option is set 
      * to false, any calls to Class.newInstance() are assumed not to 
-     * call the constructor of the created object. 
+     * call the constructor of the created object.
      */
     public boolean safe_newinstance() {
-        return soot.PhaseOptions.getBoolean( options, "safe-newinstance" );
+        return soot.PhaseOptions.getBoolean(options, "safe-newinstance");
     }
-    
-    /** Verbose --
-    
+
+    /**
+     * Verbose --
      * Print warnings about where the call graph may be incomplete.
-    
+     *
      * Due to the effects of native methods and reflection, it may not 
      * always be possible to construct a fully conservative call graph. 
      * Setting this option to true causes Soot to point out the parts 
      * of the call graph that may be incomplete, so that they can be 
-     * checked by hand. 
+     * checked by hand.
      */
     public boolean verbose() {
-        return soot.PhaseOptions.getBoolean( options, "verbose" );
+        return soot.PhaseOptions.getBoolean(options, "verbose");
     }
-    
-    /** All Application Class Methods Reachable --
-    
-     * Assume all methods of application classes are reachable..
-    
+
+    /**
+     * All Application Class Methods Reachable --
+     * Assume all methods of application classes are reachable.
+     *
      * When this option is false, the call graph is built starting at a 
      * set of entry points, and only methods reachable from those entry 
      * points are processed. Unreachable methods will not have any call 
@@ -108,26 +107,26 @@ public class CGOptions
      * program is modified.
      */
     public boolean all_reachable() {
-        return soot.PhaseOptions.getBoolean( options, "all-reachable" );
+        return soot.PhaseOptions.getBoolean(options, "all-reachable");
     }
-    
-    /** Implicit Entry Points --
-    
+
+    /**
+     * Implicit Entry Points --
      * Include methods called implicitly by the VM as entry points.
-    
+     *
      * When this option is true, methods that are called implicitly by 
      * the VM are considered entry points of the call graph. When it is 
      * false, these methods are not considered entry points, leading to 
      * a possibly incomplete call graph.
      */
     public boolean implicit_entry() {
-        return soot.PhaseOptions.getBoolean( options, "implicit-entry" );
+        return soot.PhaseOptions.getBoolean(options, "implicit-entry");
     }
-    
-    /** Trim Static Initializer Edges --
-    
+
+    /**
+     * Trim Static Initializer Edges --
      * Removes redundant static initializer calls.
-    
+     *
      * The call graph contains an edge from each statement that could 
      * trigger execution of a static initializer to that static 
      * initializer. However, each static initializer is triggered only 
@@ -136,58 +135,58 @@ public class CGOptions
      * static initializer edges leading to methods that must have 
      * already been executed. Since these static initializers cannot be 
      * executed again, the corresponding call graph edges are removed 
-     * from the call graph. 
+     * from the call graph.
      */
     public boolean trim_clinit() {
-        return soot.PhaseOptions.getBoolean( options, "trim-clinit" );
+        return soot.PhaseOptions.getBoolean(options, "trim-clinit");
     }
-    
-    /** Types for invoke --
-    
+
+    /**
+     * Types for invoke --
      * Uses reaching types inferred by the pointer analysis to resolve 
      * reflective calls..
-    
+     *
      * For each call to Method.invoke(), use the possible types of the 
-     * first receiver 								 argument and the possible types stored 
-     * in the second argument array to resolve calls to 								 
-     * Method.invoke(). This strategy makes no attempt to resolve 
-     * reflectively invoked static methods. 								 Currently only 
-     * works for context insensitive pointer analyses. 								 
+     * first receiver argument and the possible types stored in the 
+     * second argument array to resolve calls to Method.invoke(). This 
+     * strategy makes no attempt to resolve reflectively invoked static 
+     * methods. Currently only works for context insensitive pointer 
+     * analyses.
      */
     public boolean types_for_invoke() {
-        return soot.PhaseOptions.getBoolean( options, "types-for-invoke" );
+        return soot.PhaseOptions.getBoolean(options, "types-for-invoke");
     }
-    
-    /** JDK version --
-    
+
+    /**
+     * JDK version --
      * JDK version for native methods.
-    
+     *
      * This option sets the JDK version of the standard library being 
      * analyzed so that Soot can simulate the native methods in the 
      * specific version of the library. The default, 3, refers to Java 
      * 1.3.x.
      */
     public int jdkver() {
-        return soot.PhaseOptions.getInt( options, "jdkver" );
+        return soot.PhaseOptions.getInt(options, "jdkver");
     }
-    
-    /** Reflection Log --
-    
-     * Uses a reflection log to resolve reflective calls..
-    
+
+    /**
+     * Reflection Log --
+     * Uses a reflection log to resolve reflective calls.
+     *
      * Load a reflection log from the given file and use this log to 
      * resolve reflective call sites. Note that when a log is given, 
      * the following other options have no effect: safe-forname, 
-     * safe-newinstance. 
+     * safe-newinstance.
      */
     public String reflection_log() {
-        return soot.PhaseOptions.getString( options, "reflection-log" );
+        return soot.PhaseOptions.getString(options, "reflection-log");
     }
-    
-    /** Guarding strategy --
-    
-     * Describes how to guard the program from unsound assumptions..
-    
+
+    /**
+     * Guarding strategy --
+     * Describes how to guard the program from unsound assumptions.
+     *
      * Using a reflection log is only sound for method executions that 
      * were logged. Executing the program differently may be unsound. 
      * Soot can insert guards at program points for which the 
@@ -197,52 +196,46 @@ public class CGOptions
      * ignore: no guard is inserted, the program executes normally but 
      * under unsound assumptions. print: the program prints a stack 
      * trace when reaching a porgram location that was not traced but 
-     * continues to run. throw (default): 
-     * the program throws an Error instead. 
+     * continues to run. throw (default): the program throws an Error 
+     * instead.
      */
     public String guards() {
-        return soot.PhaseOptions.getString( options, "guards" );
+        return soot.PhaseOptions.getString(options, "guards");
     }
-    
+
     public static final int library_disabled = 1;
     public static final int library_any_subtype = 2;
     public static final int library_signature_resolution = 3;
-    /** Library mode --
-    
-     * 										Specifies whether the target classes should be 
-     * treated as an application or a library. 									.
-    
-     * 										Specifies whether the target classes should be 
-     * treated as an application or a library. 
-     * If library mode is disabled (default), the call 
-     * graph construction assumes that 
-     * the target is an application and 
-     * starts the construction from the specified entry 
-     * points (main method by 
-     * default). 										Under the assumption that the target is a 
-     * library, possible call edges might be missing in the call graph. 
-     * The two different 
-     * library modes add theses missing calls to the call graph and 
-     * differ only in the view of 
-     * the class hierachy 										(hierachy of target library or 
-     * possible extended hierachy). 										If simulate-natives is 
-     * also set, the results of native methods are also set to any sub 
-     * type of the declared return type. 									
+
+    /**
+     * Library mode --
+     * Specifies whether the target classes should be treated as an 
+     * application or a library..
+     *
+     * Specifies whether the target classes should be treated as an 
+     * application or a library. If library mode is disabled (default), 
+     * the call graph construction assumes that the target is an 
+     * application and starts the construction from the specified entry 
+     * points (main method by default). Under the assumption that the 
+     * target is a library, possible call edges might be missing in the 
+     * call graph. The two different library modes add theses missing 
+     * calls to the call graph and differ only in the view of the class 
+     * hierachy (hierachy of target library or possible extended 
+     * hierachy). If simulate-natives is also set, the results of 
+     * native methods are also set to any sub type of the declared 
+     * return type.
      */
     public int library() {
-        String s = soot.PhaseOptions.getString( options, "library" );
-        
-        if( s.equalsIgnoreCase( "disabled" ) )
+        String s = soot.PhaseOptions.getString(options, "library");
+
+        if (s.equalsIgnoreCase("disabled"))
             return library_disabled;
-        
-        if( s.equalsIgnoreCase( "any-subtype" ) )
+        if (s.equalsIgnoreCase("any-subtype"))
             return library_any_subtype;
-        
-        if( s.equalsIgnoreCase( "signature-resolution" ) )
+        if (s.equalsIgnoreCase("signature-resolution"))
             return library_signature_resolution;
-        
-        throw new RuntimeException( "Invalid value "+s+" of phase option library" );
+
+        throw new RuntimeException("Invalid value " + s + " of phase option library");
     }
-    
+
 }
-        

@@ -34,13 +34,12 @@
 
 package ca.mcgill.sable.soot.ui;
 
-import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.swt.widgets.*;
-import org.eclipse.swt.*;
-import org.eclipse.swt.layout.*;
 import ca.mcgill.sable.soot.SootPlugin;
-import java.util.*;
+import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.swt.*;
 import org.eclipse.swt.events.*;
+import org.eclipse.swt.layout.*;
+import org.eclipse.swt.widgets.*;
 
 public class PhaseOptionsDialog extends AbstractOptionsDialog implements SelectionListener {
 
@@ -49,1886 +48,904 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 	}
 	
 	/**
-	 * each section gets initialize as a stack layer in pageContainer
-	 * the area containing the options
+	 * Each section gets initialize as a stack layer in pageContainer
+	 * the area containing the options.
 	 */ 
 	protected void initializePageContainer() {
-
-
-		
-Composite General_OptionsChild = General_OptionsCreate(getPageContainer());
-
-Composite Input_OptionsChild = Input_OptionsCreate(getPageContainer());
-
-Composite Output_OptionsChild = Output_OptionsCreate(getPageContainer());
-
-Composite Processing_OptionsChild = Processing_OptionsCreate(getPageContainer());
-
-Composite Application_Mode_OptionsChild = Application_Mode_OptionsCreate(getPageContainer());
-
-Composite Input_Attribute_OptionsChild = Input_Attribute_OptionsCreate(getPageContainer());
-
-Composite Output_Attribute_OptionsChild = Output_Attribute_OptionsCreate(getPageContainer());
-
-Composite Annotation_OptionsChild = Annotation_OptionsCreate(getPageContainer());
-
-Composite Miscellaneous_OptionsChild = Miscellaneous_OptionsCreate(getPageContainer());
-
-Composite jbChild = jbCreate(getPageContainer());
-
-Composite jjChild = jjCreate(getPageContainer());
-
-Composite wjppChild = wjppCreate(getPageContainer());
-
-Composite wsppChild = wsppCreate(getPageContainer());
-
-Composite cgChild = cgCreate(getPageContainer());
-
-Composite wstpChild = wstpCreate(getPageContainer());
-
-Composite wsopChild = wsopCreate(getPageContainer());
-
-Composite wjtpChild = wjtpCreate(getPageContainer());
-
-Composite wjopChild = wjopCreate(getPageContainer());
-
-Composite wjapChild = wjapCreate(getPageContainer());
-
-Composite shimpleChild = shimpleCreate(getPageContainer());
-
-Composite stpChild = stpCreate(getPageContainer());
-
-Composite sopChild = sopCreate(getPageContainer());
-
-Composite jtpChild = jtpCreate(getPageContainer());
-
-Composite jopChild = jopCreate(getPageContainer());
-
-Composite japChild = japCreate(getPageContainer());
-
-Composite gbChild = gbCreate(getPageContainer());
-
-Composite gopChild = gopCreate(getPageContainer());
-
-Composite bbChild = bbCreate(getPageContainer());
-
-Composite bopChild = bopCreate(getPageContainer());
-
-Composite tagChild = tagCreate(getPageContainer());
-
-Composite dbChild = dbCreate(getPageContainer());
-
-Composite jbjb_dtrChild = jbjb_dtrCreate(getPageContainer());
-
-Composite jbjb_eseChild = jbjb_eseCreate(getPageContainer());
-
-Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
-
-Composite jbjb_aChild = jbjb_aCreate(getPageContainer());
-
-Composite jbjb_uleChild = jbjb_uleCreate(getPageContainer());
-
-Composite jbjb_trChild = jbjb_trCreate(getPageContainer());
-
-Composite jbjb_ulpChild = jbjb_ulpCreate(getPageContainer());
-
-Composite jbjb_lnsChild = jbjb_lnsCreate(getPageContainer());
-
-Composite jbjb_cpChild = jbjb_cpCreate(getPageContainer());
-
-Composite jbjb_daeChild = jbjb_daeCreate(getPageContainer());
-
-Composite jbjb_cp_uleChild = jbjb_cp_uleCreate(getPageContainer());
-
-Composite jbjb_lpChild = jbjb_lpCreate(getPageContainer());
-
-Composite jbjb_neChild = jbjb_neCreate(getPageContainer());
-
-Composite jbjb_uceChild = jbjb_uceCreate(getPageContainer());
-
-Composite jbjb_ttChild = jbjb_ttCreate(getPageContainer());
-
-Composite jjjj_lsChild = jjjj_lsCreate(getPageContainer());
-
-Composite jjjj_aChild = jjjj_aCreate(getPageContainer());
-
-Composite jjjj_uleChild = jjjj_uleCreate(getPageContainer());
-
-Composite jjjj_trChild = jjjj_trCreate(getPageContainer());
-
-Composite jjjj_ulpChild = jjjj_ulpCreate(getPageContainer());
-
-Composite jjjj_lnsChild = jjjj_lnsCreate(getPageContainer());
-
-Composite jjjj_cpChild = jjjj_cpCreate(getPageContainer());
-
-Composite jjjj_daeChild = jjjj_daeCreate(getPageContainer());
-
-Composite jjjj_cp_uleChild = jjjj_cp_uleCreate(getPageContainer());
-
-Composite jjjj_lpChild = jjjj_lpCreate(getPageContainer());
-
-Composite jjjj_neChild = jjjj_neCreate(getPageContainer());
-
-Composite jjjj_uceChild = jjjj_uceCreate(getPageContainer());
-
-Composite wjppwjpp_cimbtChild = wjppwjpp_cimbtCreate(getPageContainer());
-
-Composite cgcg_chaChild = cgcg_chaCreate(getPageContainer());
-
-Composite cgcg_sparkChild = cgcg_sparkCreate(getPageContainer());
-
-Composite cgcg_paddleChild = cgcg_paddleCreate(getPageContainer());
-
-Composite cgSpark_General_OptionsChild = cgSpark_General_OptionsCreate(getPageContainer());
-
-Composite cgSpark_Pointer_Assignment_Graph_Building_OptionsChild = cgSpark_Pointer_Assignment_Graph_Building_OptionsCreate(getPageContainer());
-
-Composite cgSpark_Pointer_Assignment_Graph_Simplification_OptionsChild = cgSpark_Pointer_Assignment_Graph_Simplification_OptionsCreate(getPageContainer());
-
-Composite cgSpark_Points_To_Set_Flowing_OptionsChild = cgSpark_Points_To_Set_Flowing_OptionsCreate(getPageContainer());
-
-Composite cgSpark_Output_OptionsChild = cgSpark_Output_OptionsCreate(getPageContainer());
-
-Composite cgContext_sensitive_refinementChild = cgContext_sensitive_refinementCreate(getPageContainer());
-
-Composite cgGeometric_context_sensitive_analysis_from_ISSTA_2011Child = cgGeometric_context_sensitive_analysis_from_ISSTA_2011Create(getPageContainer());
-
-Composite cgPaddle_General_OptionsChild = cgPaddle_General_OptionsCreate(getPageContainer());
-
-Composite cgPaddle_Context_Sensitivity_OptionsChild = cgPaddle_Context_Sensitivity_OptionsCreate(getPageContainer());
-
-Composite cgPaddle_Pointer_Assignment_Graph_Building_OptionsChild = cgPaddle_Pointer_Assignment_Graph_Building_OptionsCreate(getPageContainer());
-
-Composite cgPaddle_Points_To_Set_Flowing_OptionsChild = cgPaddle_Points_To_Set_Flowing_OptionsCreate(getPageContainer());
-
-Composite cgPaddle_Output_OptionsChild = cgPaddle_Output_OptionsCreate(getPageContainer());
-
-Composite wjtpwjtp_mhpChild = wjtpwjtp_mhpCreate(getPageContainer());
-
-Composite wjtpwjtp_tnChild = wjtpwjtp_tnCreate(getPageContainer());
-
-Composite wjtpwjtp_rdcChild = wjtpwjtp_rdcCreate(getPageContainer());
-
-Composite wjopwjop_smbChild = wjopwjop_smbCreate(getPageContainer());
-
-Composite wjopwjop_siChild = wjopwjop_siCreate(getPageContainer());
-
-Composite wjapwjap_raChild = wjapwjap_raCreate(getPageContainer());
-
-Composite wjapwjap_umtChild = wjapwjap_umtCreate(getPageContainer());
-
-Composite wjapwjap_uftChild = wjapwjap_uftCreate(getPageContainer());
-
-Composite wjapwjap_tqtChild = wjapwjap_tqtCreate(getPageContainer());
-
-Composite wjapwjap_cggChild = wjapwjap_cggCreate(getPageContainer());
-
-Composite wjapwjap_purityChild = wjapwjap_purityCreate(getPageContainer());
-
-Composite sopsop_cpfChild = sopsop_cpfCreate(getPageContainer());
-
-Composite jopjop_cseChild = jopjop_cseCreate(getPageContainer());
-
-Composite jopjop_bcmChild = jopjop_bcmCreate(getPageContainer());
-
-Composite jopjop_lcmChild = jopjop_lcmCreate(getPageContainer());
-
-Composite jopjop_cpChild = jopjop_cpCreate(getPageContainer());
-
-Composite jopjop_cpfChild = jopjop_cpfCreate(getPageContainer());
-
-Composite jopjop_cbfChild = jopjop_cbfCreate(getPageContainer());
-
-Composite jopjop_daeChild = jopjop_daeCreate(getPageContainer());
-
-Composite jopjop_nceChild = jopjop_nceCreate(getPageContainer());
-
-Composite jopjop_uce1Child = jopjop_uce1Create(getPageContainer());
-
-Composite jopjop_ubf1Child = jopjop_ubf1Create(getPageContainer());
-
-Composite jopjop_uce2Child = jopjop_uce2Create(getPageContainer());
-
-Composite jopjop_ubf2Child = jopjop_ubf2Create(getPageContainer());
-
-Composite jopjop_uleChild = jopjop_uleCreate(getPageContainer());
-
-Composite japjap_npcChild = japjap_npcCreate(getPageContainer());
-
-Composite japjap_npcolorerChild = japjap_npcolorerCreate(getPageContainer());
-
-Composite japjap_abcChild = japjap_abcCreate(getPageContainer());
-
-Composite japjap_profilingChild = japjap_profilingCreate(getPageContainer());
-
-Composite japjap_seaChild = japjap_seaCreate(getPageContainer());
-
-Composite japjap_fieldrwChild = japjap_fieldrwCreate(getPageContainer());
-
-Composite japjap_cgtaggerChild = japjap_cgtaggerCreate(getPageContainer());
-
-Composite japjap_parityChild = japjap_parityCreate(getPageContainer());
-
-Composite japjap_patChild = japjap_patCreate(getPageContainer());
-
-Composite japjap_lvtaggerChild = japjap_lvtaggerCreate(getPageContainer());
-
-Composite japjap_rdtaggerChild = japjap_rdtaggerCreate(getPageContainer());
-
-Composite japjap_cheChild = japjap_cheCreate(getPageContainer());
-
-Composite japjap_umtChild = japjap_umtCreate(getPageContainer());
-
-Composite japjap_litChild = japjap_litCreate(getPageContainer());
-
-Composite japjap_aetChild = japjap_aetCreate(getPageContainer());
-
-Composite japjap_dmtChild = japjap_dmtCreate(getPageContainer());
-
-Composite gbgb_a1Child = gbgb_a1Create(getPageContainer());
-
-Composite gbgb_cfChild = gbgb_cfCreate(getPageContainer());
-
-Composite gbgb_a2Child = gbgb_a2Create(getPageContainer());
-
-Composite gbgb_uleChild = gbgb_uleCreate(getPageContainer());
-
-Composite bbbb_lsoChild = bbbb_lsoCreate(getPageContainer());
-
-Composite bbbb_scoChild = bbbb_scoCreate(getPageContainer());
-
-Composite bbbb_phoChild = bbbb_phoCreate(getPageContainer());
-
-Composite bbbb_uleChild = bbbb_uleCreate(getPageContainer());
-
-Composite bbbb_lpChild = bbbb_lpCreate(getPageContainer());
-
-Composite tagtag_lnChild = tagtag_lnCreate(getPageContainer());
-
-Composite tagtag_anChild = tagtag_anCreate(getPageContainer());
-
-Composite tagtag_depChild = tagtag_depCreate(getPageContainer());
-
-Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
-
-Composite dbdb_transformationsChild = dbdb_transformationsCreate(getPageContainer());
-
-Composite dbdb_renamerChild = dbdb_renamerCreate(getPageContainer());
-
-Composite dbdb_deobfuscateChild = dbdb_deobfuscateCreate(getPageContainer());
-
-Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContainer());
-
+		Composite General_OptionsChild = General_OptionsCreate(getPageContainer());
+		Composite Input_OptionsChild = Input_OptionsCreate(getPageContainer());
+		Composite Output_OptionsChild = Output_OptionsCreate(getPageContainer());
+		Composite Processing_OptionsChild = Processing_OptionsCreate(getPageContainer());
+		Composite Application_Mode_OptionsChild = Application_Mode_OptionsCreate(getPageContainer());
+		Composite Input_Attribute_OptionsChild = Input_Attribute_OptionsCreate(getPageContainer());
+		Composite Output_Attribute_OptionsChild = Output_Attribute_OptionsCreate(getPageContainer());
+		Composite Annotation_OptionsChild = Annotation_OptionsCreate(getPageContainer());
+		Composite Miscellaneous_OptionsChild = Miscellaneous_OptionsCreate(getPageContainer());
+		Composite jbChild = jbCreate(getPageContainer());
+		Composite jjChild = jjCreate(getPageContainer());
+		Composite wjppChild = wjppCreate(getPageContainer());
+		Composite wsppChild = wsppCreate(getPageContainer());
+		Composite cgChild = cgCreate(getPageContainer());
+		Composite wstpChild = wstpCreate(getPageContainer());
+		Composite wsopChild = wsopCreate(getPageContainer());
+		Composite wjtpChild = wjtpCreate(getPageContainer());
+		Composite wjopChild = wjopCreate(getPageContainer());
+		Composite wjapChild = wjapCreate(getPageContainer());
+		Composite shimpleChild = shimpleCreate(getPageContainer());
+		Composite stpChild = stpCreate(getPageContainer());
+		Composite sopChild = sopCreate(getPageContainer());
+		Composite jtpChild = jtpCreate(getPageContainer());
+		Composite jopChild = jopCreate(getPageContainer());
+		Composite japChild = japCreate(getPageContainer());
+		Composite gbChild = gbCreate(getPageContainer());
+		Composite gopChild = gopCreate(getPageContainer());
+		Composite bbChild = bbCreate(getPageContainer());
+		Composite bopChild = bopCreate(getPageContainer());
+		Composite tagChild = tagCreate(getPageContainer());
+		Composite dbChild = dbCreate(getPageContainer());
+		Composite jbjb_dtrChild = jbjb_dtrCreate(getPageContainer());
+		Composite jbjb_eseChild = jbjb_eseCreate(getPageContainer());
+		Composite jbjb_lsChild = jbjb_lsCreate(getPageContainer());
+		Composite jbjb_aChild = jbjb_aCreate(getPageContainer());
+		Composite jbjb_uleChild = jbjb_uleCreate(getPageContainer());
+		Composite jbjb_trChild = jbjb_trCreate(getPageContainer());
+		Composite jbjb_ulpChild = jbjb_ulpCreate(getPageContainer());
+		Composite jbjb_lnsChild = jbjb_lnsCreate(getPageContainer());
+		Composite jbjb_cpChild = jbjb_cpCreate(getPageContainer());
+		Composite jbjb_daeChild = jbjb_daeCreate(getPageContainer());
+		Composite jbjb_cp_uleChild = jbjb_cp_uleCreate(getPageContainer());
+		Composite jbjb_lpChild = jbjb_lpCreate(getPageContainer());
+		Composite jbjb_neChild = jbjb_neCreate(getPageContainer());
+		Composite jbjb_uceChild = jbjb_uceCreate(getPageContainer());
+		Composite jbjb_ttChild = jbjb_ttCreate(getPageContainer());
+		Composite jjjj_lsChild = jjjj_lsCreate(getPageContainer());
+		Composite jjjj_aChild = jjjj_aCreate(getPageContainer());
+		Composite jjjj_uleChild = jjjj_uleCreate(getPageContainer());
+		Composite jjjj_trChild = jjjj_trCreate(getPageContainer());
+		Composite jjjj_ulpChild = jjjj_ulpCreate(getPageContainer());
+		Composite jjjj_lnsChild = jjjj_lnsCreate(getPageContainer());
+		Composite jjjj_cpChild = jjjj_cpCreate(getPageContainer());
+		Composite jjjj_daeChild = jjjj_daeCreate(getPageContainer());
+		Composite jjjj_cp_uleChild = jjjj_cp_uleCreate(getPageContainer());
+		Composite jjjj_lpChild = jjjj_lpCreate(getPageContainer());
+		Composite jjjj_neChild = jjjj_neCreate(getPageContainer());
+		Composite jjjj_uceChild = jjjj_uceCreate(getPageContainer());
+		Composite wjppwjpp_cimbtChild = wjppwjpp_cimbtCreate(getPageContainer());
+		Composite cgcg_chaChild = cgcg_chaCreate(getPageContainer());
+		Composite cgcg_sparkChild = cgcg_sparkCreate(getPageContainer());
+		Composite cgcg_paddleChild = cgcg_paddleCreate(getPageContainer());
+		Composite cgSpark_General_OptionsChild = cgSpark_General_OptionsCreate(getPageContainer());
+		Composite cgSpark_Pointer_Assignment_Graph_Building_OptionsChild = cgSpark_Pointer_Assignment_Graph_Building_OptionsCreate(getPageContainer());
+		Composite cgSpark_Pointer_Assignment_Graph_Simplification_OptionsChild = cgSpark_Pointer_Assignment_Graph_Simplification_OptionsCreate(getPageContainer());
+		Composite cgSpark_Points_To_Set_Flowing_OptionsChild = cgSpark_Points_To_Set_Flowing_OptionsCreate(getPageContainer());
+		Composite cgSpark_Output_OptionsChild = cgSpark_Output_OptionsCreate(getPageContainer());
+		Composite cgContext_sensitive_refinementChild = cgContext_sensitive_refinementCreate(getPageContainer());
+		Composite cgGeometric_context_sensitive_analysis_from_ISSTA_2011Child = cgGeometric_context_sensitive_analysis_from_ISSTA_2011Create(getPageContainer());
+		Composite cgPaddle_General_OptionsChild = cgPaddle_General_OptionsCreate(getPageContainer());
+		Composite cgPaddle_Context_Sensitivity_OptionsChild = cgPaddle_Context_Sensitivity_OptionsCreate(getPageContainer());
+		Composite cgPaddle_Pointer_Assignment_Graph_Building_OptionsChild = cgPaddle_Pointer_Assignment_Graph_Building_OptionsCreate(getPageContainer());
+		Composite cgPaddle_Points_To_Set_Flowing_OptionsChild = cgPaddle_Points_To_Set_Flowing_OptionsCreate(getPageContainer());
+		Composite cgPaddle_Output_OptionsChild = cgPaddle_Output_OptionsCreate(getPageContainer());
+		Composite wjtpwjtp_mhpChild = wjtpwjtp_mhpCreate(getPageContainer());
+		Composite wjtpwjtp_tnChild = wjtpwjtp_tnCreate(getPageContainer());
+		Composite wjtpwjtp_rdcChild = wjtpwjtp_rdcCreate(getPageContainer());
+		Composite wjopwjop_smbChild = wjopwjop_smbCreate(getPageContainer());
+		Composite wjopwjop_siChild = wjopwjop_siCreate(getPageContainer());
+		Composite wjapwjap_raChild = wjapwjap_raCreate(getPageContainer());
+		Composite wjapwjap_umtChild = wjapwjap_umtCreate(getPageContainer());
+		Composite wjapwjap_uftChild = wjapwjap_uftCreate(getPageContainer());
+		Composite wjapwjap_tqtChild = wjapwjap_tqtCreate(getPageContainer());
+		Composite wjapwjap_cggChild = wjapwjap_cggCreate(getPageContainer());
+		Composite wjapwjap_purityChild = wjapwjap_purityCreate(getPageContainer());
+		Composite sopsop_cpfChild = sopsop_cpfCreate(getPageContainer());
+		Composite jopjop_cseChild = jopjop_cseCreate(getPageContainer());
+		Composite jopjop_bcmChild = jopjop_bcmCreate(getPageContainer());
+		Composite jopjop_lcmChild = jopjop_lcmCreate(getPageContainer());
+		Composite jopjop_cpChild = jopjop_cpCreate(getPageContainer());
+		Composite jopjop_cpfChild = jopjop_cpfCreate(getPageContainer());
+		Composite jopjop_cbfChild = jopjop_cbfCreate(getPageContainer());
+		Composite jopjop_daeChild = jopjop_daeCreate(getPageContainer());
+		Composite jopjop_nceChild = jopjop_nceCreate(getPageContainer());
+		Composite jopjop_uce1Child = jopjop_uce1Create(getPageContainer());
+		Composite jopjop_ubf1Child = jopjop_ubf1Create(getPageContainer());
+		Composite jopjop_uce2Child = jopjop_uce2Create(getPageContainer());
+		Composite jopjop_ubf2Child = jopjop_ubf2Create(getPageContainer());
+		Composite jopjop_uleChild = jopjop_uleCreate(getPageContainer());
+		Composite japjap_npcChild = japjap_npcCreate(getPageContainer());
+		Composite japjap_npcolorerChild = japjap_npcolorerCreate(getPageContainer());
+		Composite japjap_abcChild = japjap_abcCreate(getPageContainer());
+		Composite japjap_profilingChild = japjap_profilingCreate(getPageContainer());
+		Composite japjap_seaChild = japjap_seaCreate(getPageContainer());
+		Composite japjap_fieldrwChild = japjap_fieldrwCreate(getPageContainer());
+		Composite japjap_cgtaggerChild = japjap_cgtaggerCreate(getPageContainer());
+		Composite japjap_parityChild = japjap_parityCreate(getPageContainer());
+		Composite japjap_patChild = japjap_patCreate(getPageContainer());
+		Composite japjap_lvtaggerChild = japjap_lvtaggerCreate(getPageContainer());
+		Composite japjap_rdtaggerChild = japjap_rdtaggerCreate(getPageContainer());
+		Composite japjap_cheChild = japjap_cheCreate(getPageContainer());
+		Composite japjap_umtChild = japjap_umtCreate(getPageContainer());
+		Composite japjap_litChild = japjap_litCreate(getPageContainer());
+		Composite japjap_aetChild = japjap_aetCreate(getPageContainer());
+		Composite japjap_dmtChild = japjap_dmtCreate(getPageContainer());
+		Composite gbgb_a1Child = gbgb_a1Create(getPageContainer());
+		Composite gbgb_cfChild = gbgb_cfCreate(getPageContainer());
+		Composite gbgb_a2Child = gbgb_a2Create(getPageContainer());
+		Composite gbgb_uleChild = gbgb_uleCreate(getPageContainer());
+		Composite bbbb_lsoChild = bbbb_lsoCreate(getPageContainer());
+		Composite bbbb_scoChild = bbbb_scoCreate(getPageContainer());
+		Composite bbbb_phoChild = bbbb_phoCreate(getPageContainer());
+		Composite bbbb_uleChild = bbbb_uleCreate(getPageContainer());
+		Composite bbbb_lpChild = bbbb_lpCreate(getPageContainer());
+		Composite tagtag_lnChild = tagtag_lnCreate(getPageContainer());
+		Composite tagtag_anChild = tagtag_anCreate(getPageContainer());
+		Composite tagtag_depChild = tagtag_depCreate(getPageContainer());
+		Composite tagtag_fieldrwChild = tagtag_fieldrwCreate(getPageContainer());
+		Composite dbdb_transformationsChild = dbdb_transformationsCreate(getPageContainer());
+		Composite dbdb_renamerChild = dbdb_renamerCreate(getPageContainer());
+		Composite dbdb_deobfuscateChild = dbdb_deobfuscateCreate(getPageContainer());
+		Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContainer());
 
 		addOtherPages(getPageContainer());
 		initializeRadioGroups();
 		initializeEnableGroups();
-		
 	}
 
-	private void initializeRadioGroups(){
-		setRadioGroups(new HashMap());
+	private void initializeRadioGroups() {
+		setRadioGroups(new HashMap<>());
 		int counter = 0;
 		ArrayList buttonList;
-
-		
 		buttonList = new ArrayList();
-
-			
 		if (isEnableButton("enabled")) {
 			buttonList.add(getcgcg_chaenabled_widget());	
 			getcgcg_chaenabled_widget().getButton().addSelectionListener(this);
 		}
-
-			
 		if (isEnableButton("verbose")) {
 			buttonList.add(getcgcg_chaverbose_widget());	
 			getcgcg_chaverbose_widget().getButton().addSelectionListener(this);
 		}
-
-			
 		if (isEnableButton("apponly")) {
 			buttonList.add(getcgcg_chaapponly_widget());	
 			getcgcg_chaapponly_widget().getButton().addSelectionListener(this);
 		}
-
-			
 		if (isEnableButton("enabled")) {
 			buttonList.add(getcgcg_sparkenabled_widget());	
 			getcgcg_sparkenabled_widget().getButton().addSelectionListener(this);
 		}
-
-			
 		if (isEnableButton("enabled")) {
 			buttonList.add(getcgcg_paddleenabled_widget());	
 			getcgcg_paddleenabled_widget().getButton().addSelectionListener(this);
 		}
-
-		
 		getRadioGroups().put(new Integer(counter), buttonList);
 
 		counter++;
-		
 	}
 
-	
-	
-	private void initializeEnableGroups(){
+	private void initializeEnableGroups() {
 		setEnableGroups(new ArrayList());
-		
-		
-		
+
+	
+
 		makeNewEnableGroup("jb");
-		
-		
 		addToEnableGroup("jb", getjbenabled_widget(), "enabled");
-		
-		
 		addToEnableGroup("jb", getjbuse_original_names_widget(), "use-original-names");
-		
-		
 		addToEnableGroup("jb", getjbpreserve_source_annotations_widget(), "preserve-source-annotations");
-		
-		
 		addToEnableGroup("jb", getjbstabilize_local_names_widget(), "stabilize-local-names");
-		
-		
 		getjbenabled_widget().getButton().addSelectionListener(this);
-		
 		getjbuse_original_names_widget().getButton().addSelectionListener(this);
-		
 		getjbpreserve_source_annotations_widget().getButton().addSelectionListener(this);
-		
 		getjbstabilize_local_names_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.dtr");
-		
-		
 		addToEnableGroup("jb", "jb.dtr", getjbjb_dtrenabled_widget(), "enabled");
-		
 		getjbjb_dtrenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.ese");
-		
-		
 		addToEnableGroup("jb", "jb.ese", getjbjb_eseenabled_widget(), "enabled");
-		
 		getjbjb_eseenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.ls");
-		
-		
 		addToEnableGroup("jb", "jb.ls", getjbjb_lsenabled_widget(), "enabled");
-		
 		getjbjb_lsenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.a");
-		
-		
 		addToEnableGroup("jb", "jb.a", getjbjb_aenabled_widget(), "enabled");
-		
 		addToEnableGroup("jb", "jb.a", getjbjb_aonly_stack_locals_widget(), "only-stack-locals");
-		
 		getjbjb_aenabled_widget().getButton().addSelectionListener(this);
-		
 		getjbjb_aonly_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.ule");
-		
-		
 		addToEnableGroup("jb", "jb.ule", getjbjb_uleenabled_widget(), "enabled");
-		
 		getjbjb_uleenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.tr");
-		
-		
 		addToEnableGroup("jb", "jb.tr", getjbjb_trenabled_widget(), "enabled");
-		
 		addToEnableGroup("jb", "jb.tr", getjbjb_truse_older_type_assigner_widget(), "use-older-type-assigner");
-		
 		addToEnableGroup("jb", "jb.tr", getjbjb_trcompare_type_assigners_widget(), "compare-type-assigners");
-		
 		addToEnableGroup("jb", "jb.tr", getjbjb_trignore_nullpointer_dereferences_widget(), "ignore-nullpointer-dereferences");
-		
 		getjbjb_trenabled_widget().getButton().addSelectionListener(this);
-		
 		getjbjb_truse_older_type_assigner_widget().getButton().addSelectionListener(this);
-		
 		getjbjb_trcompare_type_assigners_widget().getButton().addSelectionListener(this);
-		
 		getjbjb_trignore_nullpointer_dereferences_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.ulp");
-		
-		
 		addToEnableGroup("jb", "jb.ulp", getjbjb_ulpenabled_widget(), "enabled");
-		
 		addToEnableGroup("jb", "jb.ulp", getjbjb_ulpunsplit_original_locals_widget(), "unsplit-original-locals");
-		
 		getjbjb_ulpenabled_widget().getButton().addSelectionListener(this);
-		
 		getjbjb_ulpunsplit_original_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.lns");
-		
-		
 		addToEnableGroup("jb", "jb.lns", getjbjb_lnsenabled_widget(), "enabled");
-		
 		addToEnableGroup("jb", "jb.lns", getjbjb_lnsonly_stack_locals_widget(), "only-stack-locals");
-		
 		addToEnableGroup("jb", "jb.lns", getjbjb_lnssort_locals_widget(), "sort-locals");
-		
 		getjbjb_lnsenabled_widget().getButton().addSelectionListener(this);
-		
 		getjbjb_lnsonly_stack_locals_widget().getButton().addSelectionListener(this);
-		
 		getjbjb_lnssort_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.cp");
-		
-		
 		addToEnableGroup("jb", "jb.cp", getjbjb_cpenabled_widget(), "enabled");
-		
 		addToEnableGroup("jb", "jb.cp", getjbjb_cponly_regular_locals_widget(), "only-regular-locals");
-		
 		addToEnableGroup("jb", "jb.cp", getjbjb_cponly_stack_locals_widget(), "only-stack-locals");
-		
 		getjbjb_cpenabled_widget().getButton().addSelectionListener(this);
-		
 		getjbjb_cponly_regular_locals_widget().getButton().addSelectionListener(this);
-		
 		getjbjb_cponly_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.dae");
-		
-		
 		addToEnableGroup("jb", "jb.dae", getjbjb_daeenabled_widget(), "enabled");
-		
 		addToEnableGroup("jb", "jb.dae", getjbjb_daeonly_stack_locals_widget(), "only-stack-locals");
-		
 		getjbjb_daeenabled_widget().getButton().addSelectionListener(this);
-		
 		getjbjb_daeonly_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.cp-ule");
-		
-		
 		addToEnableGroup("jb", "jb.cp-ule", getjbjb_cp_uleenabled_widget(), "enabled");
-		
 		getjbjb_cp_uleenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.lp");
-		
-		
 		addToEnableGroup("jb", "jb.lp", getjbjb_lpenabled_widget(), "enabled");
-		
 		addToEnableGroup("jb", "jb.lp", getjbjb_lpunsplit_original_locals_widget(), "unsplit-original-locals");
-		
 		getjbjb_lpenabled_widget().getButton().addSelectionListener(this);
-		
 		getjbjb_lpunsplit_original_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.ne");
-		
-		
 		addToEnableGroup("jb", "jb.ne", getjbjb_neenabled_widget(), "enabled");
-		
 		getjbjb_neenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.uce");
-		
-		
 		addToEnableGroup("jb", "jb.uce", getjbjb_uceenabled_widget(), "enabled");
-		
 		addToEnableGroup("jb", "jb.uce", getjbjb_uceremove_unreachable_traps_widget(), "remove-unreachable-traps");
-		
 		getjbjb_uceenabled_widget().getButton().addSelectionListener(this);
-		
 		getjbjb_uceremove_unreachable_traps_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jb", "jb.tt");
-		
-		
 		addToEnableGroup("jb", "jb.tt", getjbjb_ttenabled_widget(), "enabled");
-		
 		getjbjb_ttenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj");
-		
-		
 		addToEnableGroup("jj", getjjenabled_widget(), "enabled");
-		
-		
 		addToEnableGroup("jj", getjjuse_original_names_widget(), "use-original-names");
-		
-		
 		getjjenabled_widget().getButton().addSelectionListener(this);
-		
 		getjjuse_original_names_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj", "jj.ls");
-		
-		
 		addToEnableGroup("jj", "jj.ls", getjjjj_lsenabled_widget(), "enabled");
-		
 		getjjjj_lsenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj", "jj.a");
-		
-		
 		addToEnableGroup("jj", "jj.a", getjjjj_aenabled_widget(), "enabled");
-		
 		addToEnableGroup("jj", "jj.a", getjjjj_aonly_stack_locals_widget(), "only-stack-locals");
-		
 		getjjjj_aenabled_widget().getButton().addSelectionListener(this);
-		
 		getjjjj_aonly_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj", "jj.ule");
-		
-		
 		addToEnableGroup("jj", "jj.ule", getjjjj_uleenabled_widget(), "enabled");
-		
 		getjjjj_uleenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj", "jj.tr");
-		
-		
 		addToEnableGroup("jj", "jj.tr", getjjjj_trenabled_widget(), "enabled");
-		
 		getjjjj_trenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj", "jj.ulp");
-		
-		
 		addToEnableGroup("jj", "jj.ulp", getjjjj_ulpenabled_widget(), "enabled");
-		
 		addToEnableGroup("jj", "jj.ulp", getjjjj_ulpunsplit_original_locals_widget(), "unsplit-original-locals");
-		
 		getjjjj_ulpenabled_widget().getButton().addSelectionListener(this);
-		
 		getjjjj_ulpunsplit_original_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj", "jj.lns");
-		
-		
 		addToEnableGroup("jj", "jj.lns", getjjjj_lnsenabled_widget(), "enabled");
-		
 		addToEnableGroup("jj", "jj.lns", getjjjj_lnsonly_stack_locals_widget(), "only-stack-locals");
-		
 		getjjjj_lnsenabled_widget().getButton().addSelectionListener(this);
-		
 		getjjjj_lnsonly_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj", "jj.cp");
-		
-		
 		addToEnableGroup("jj", "jj.cp", getjjjj_cpenabled_widget(), "enabled");
-		
 		addToEnableGroup("jj", "jj.cp", getjjjj_cponly_regular_locals_widget(), "only-regular-locals");
-		
 		addToEnableGroup("jj", "jj.cp", getjjjj_cponly_stack_locals_widget(), "only-stack-locals");
-		
 		getjjjj_cpenabled_widget().getButton().addSelectionListener(this);
-		
 		getjjjj_cponly_regular_locals_widget().getButton().addSelectionListener(this);
-		
 		getjjjj_cponly_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj", "jj.dae");
-		
-		
 		addToEnableGroup("jj", "jj.dae", getjjjj_daeenabled_widget(), "enabled");
-		
 		addToEnableGroup("jj", "jj.dae", getjjjj_daeonly_stack_locals_widget(), "only-stack-locals");
-		
 		getjjjj_daeenabled_widget().getButton().addSelectionListener(this);
-		
 		getjjjj_daeonly_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj", "jj.cp-ule");
-		
-		
 		addToEnableGroup("jj", "jj.cp-ule", getjjjj_cp_uleenabled_widget(), "enabled");
-		
 		getjjjj_cp_uleenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj", "jj.lp");
-		
-		
 		addToEnableGroup("jj", "jj.lp", getjjjj_lpenabled_widget(), "enabled");
-		
 		addToEnableGroup("jj", "jj.lp", getjjjj_lpunsplit_original_locals_widget(), "unsplit-original-locals");
-		
 		getjjjj_lpenabled_widget().getButton().addSelectionListener(this);
-		
 		getjjjj_lpunsplit_original_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj", "jj.ne");
-		
-		
 		addToEnableGroup("jj", "jj.ne", getjjjj_neenabled_widget(), "enabled");
-		
 		getjjjj_neenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jj", "jj.uce");
-		
-		
 		addToEnableGroup("jj", "jj.uce", getjjjj_uceenabled_widget(), "enabled");
-		
 		getjjjj_uceenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjpp");
-		
-		
 		addToEnableGroup("wjpp", getwjppenabled_widget(), "enabled");
-		
-		
 		getwjppenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjpp", "wjpp.cimbt");
-		
-		
 		addToEnableGroup("wjpp", "wjpp.cimbt", getwjppwjpp_cimbtenabled_widget(), "enabled");
-		
 		addToEnableGroup("wjpp", "wjpp.cimbt", getwjppwjpp_cimbtverbose_widget(), "verbose");
-		
 		getwjppwjpp_cimbtenabled_widget().getButton().addSelectionListener(this);
-		
 		getwjppwjpp_cimbtverbose_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wspp");
-		
-		
 		addToEnableGroup("wspp", getwsppenabled_widget(), "enabled");
-		
-		
 		getwsppenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("cg");
-		
-		
 		addToEnableGroup("cg", getcgenabled_widget(), "enabled");
-		
-		
 		addToEnableGroup("cg", getcgsafe_forname_widget(), "safe-forname");
-		
-		
 		addToEnableGroup("cg", getcgsafe_newinstance_widget(), "safe-newinstance");
-		
-		
 		addToEnableGroup("cg", getcglibrary_widget(), "library");
-		
-		
 		addToEnableGroup("cg", getcgverbose_widget(), "verbose");
-		
-		
 		addToEnableGroup("cg", getcgjdkver_widget(), "jdkver");
-		
-		
 		addToEnableGroup("cg", getcgall_reachable_widget(), "all-reachable");
-		
-		
 		addToEnableGroup("cg", getcgimplicit_entry_widget(), "implicit-entry");
-		
-		
 		addToEnableGroup("cg", getcgtrim_clinit_widget(), "trim-clinit");
-		
-		
 		addToEnableGroup("cg", getcgtypes_for_invoke_widget(), "types-for-invoke");
-		
-		
 		getcgenabled_widget().getButton().addSelectionListener(this);
-		
 		getcgsafe_forname_widget().getButton().addSelectionListener(this);
-		
 		getcgsafe_newinstance_widget().getButton().addSelectionListener(this);
-		
 		getcgverbose_widget().getButton().addSelectionListener(this);
-		
 		getcgall_reachable_widget().getButton().addSelectionListener(this);
-		
 		getcgimplicit_entry_widget().getButton().addSelectionListener(this);
-		
 		getcgtrim_clinit_widget().getButton().addSelectionListener(this);
-		
 		getcgtypes_for_invoke_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("cg", "cg.cha");
-		
-		
 		addToEnableGroup("cg", "cg.cha", getcgcg_chaenabled_widget(), "enabled");
-		
 		addToEnableGroup("cg", "cg.cha", getcgcg_chaverbose_widget(), "verbose");
-		
 		addToEnableGroup("cg", "cg.cha", getcgcg_chaapponly_widget(), "apponly");
-		
 		getcgcg_chaenabled_widget().getButton().addSelectionListener(this);
-		
 		getcgcg_chaverbose_widget().getButton().addSelectionListener(this);
-		
 		getcgcg_chaapponly_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("cg", "cg.spark");
-		
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkenabled_widget(), "enabled");
-		
 		getcgcg_sparkenabled_widget().getButton().addSelectionListener(this);
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkverbose_widget(), "verbose");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkignore_types_widget(), "ignore-types");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkforce_gc_widget(), "force-gc");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkpre_jimplify_widget(), "pre-jimplify");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkapponly_widget(), "apponly");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkvta_widget(), "vta");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkrta_widget(), "rta");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkfield_based_widget(), "field-based");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparktypes_for_sites_widget(), "types-for-sites");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkmerge_stringbuffer_widget(), "merge-stringbuffer");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkstring_constants_widget(), "string-constants");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimulate_natives_widget(), "simulate-natives");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkempties_as_allocs_widget(), "empties-as-allocs");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimple_edges_bidirectional_widget(), "simple-edges-bidirectional");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkon_fly_cg_widget(), "on-fly-cg");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimplify_offline_widget(), "simplify-offline");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparksimplify_sccs_widget(), "simplify-sccs");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkignore_types_for_sccs_widget(), "ignore-types-for-sccs");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkpropagator_widget(), "propagator");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkset_impl_widget(), "set-impl");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkdouble_set_old_widget(), "double-set-old");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkdouble_set_new_widget(), "double-set-new");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkdump_html_widget(), "dump-html");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkdump_pag_widget(), "dump-pag");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkdump_solution_widget(), "dump-solution");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparktopo_sort_widget(), "topo-sort");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkdump_types_widget(), "dump-types");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkclass_method_var_widget(), "class-method-var");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkdump_answer_widget(), "dump-answer");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkadd_tags_widget(), "add-tags");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkset_mass_widget(), "set-mass");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkcs_demand_widget(), "cs-demand");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparklazy_pts_widget(), "lazy-pts");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparktraversal_widget(), "traversal");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkpasses_widget(), "passes");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkgeom_pta_widget(), "geom-pta");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkgeom_encoding_widget(), "geom-encoding");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkgeom_worklist_widget(), "geom-worklist");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkgeom_eval_widget(), "geom-eval");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkgeom_trans_widget(), "geom-trans");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkgeom_frac_base_widget(), "geom-frac-base");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkgeom_blocking_widget(), "geom-blocking");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkgeom_runs_widget(), "geom-runs");
-
-		
 		addToEnableGroup("cg", "cg.spark", getcgcg_sparkgeom_app_only_widget(), "geom-app-only");
 
-		
-		
 		makeNewEnableGroup("cg", "cg.paddle");
-		
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleenabled_widget(), "enabled");
-		
 		getcgcg_paddleenabled_widget().getButton().addSelectionListener(this);
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleverbose_widget(), "verbose");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleconf_widget(), "conf");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlebdd_widget(), "bdd");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleorder_widget(), "order");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledynamic_order_widget(), "dynamic-order");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleprofile_widget(), "profile");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleverbosegc_widget(), "verbosegc");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleq_widget(), "q");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlebackend_widget(), "backend");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlebdd_nodes_widget(), "bdd-nodes");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleignore_types_widget(), "ignore-types");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlepre_jimplify_widget(), "pre-jimplify");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlecontext_widget(), "context");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlek_widget(), "k");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlecontext_heap_widget(), "context-heap");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlerta_widget(), "rta");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlefield_based_widget(), "field-based");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddletypes_for_sites_widget(), "types-for-sites");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlemerge_stringbuffer_widget(), "merge-stringbuffer");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlestring_constants_widget(), "string-constants");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlesimulate_natives_widget(), "simulate-natives");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleglobal_nodes_in_natives_widget(), "global-nodes-in-natives");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlesimple_edges_bidirectional_widget(), "simple-edges-bidirectional");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlethis_edges_widget(), "this-edges");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleprecise_newinstance_widget(), "precise-newinstance");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlepropagator_widget(), "propagator");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleset_impl_widget(), "set-impl");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledouble_set_old_widget(), "double-set-old");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddledouble_set_new_widget(), "double-set-new");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlecontext_counts_widget(), "context-counts");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddletotal_context_counts_widget(), "total-context-counts");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlemethod_context_counts_widget(), "method-context-counts");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddleset_mass_widget(), "set-mass");
-
-		
 		addToEnableGroup("cg", "cg.paddle", getcgcg_paddlenumber_nodes_widget(), "number-nodes");
 
-		
-		
 		makeNewEnableGroup("wstp");
-		
-		
 		addToEnableGroup("wstp", getwstpenabled_widget(), "enabled");
-		
-		
 		getwstpenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wsop");
-		
-		
 		addToEnableGroup("wsop", getwsopenabled_widget(), "enabled");
-		
-		
 		getwsopenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjtp");
-		
-		
 		addToEnableGroup("wjtp", getwjtpenabled_widget(), "enabled");
-		
-		
 		getwjtpenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjtp", "wjtp.mhp");
-		
-		
 		addToEnableGroup("wjtp", "wjtp.mhp", getwjtpwjtp_mhpenabled_widget(), "enabled");
-		
 		getwjtpwjtp_mhpenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjtp", "wjtp.tn");
-		
-		
 		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnenabled_widget(), "enabled");
-		
 		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnlocking_scheme_widget(), "locking-scheme");
-		
 		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnavoid_deadlock_widget(), "avoid-deadlock");
-		
 		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnopen_nesting_widget(), "open-nesting");
-		
 		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tndo_mhp_widget(), "do-mhp");
-		
 		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tndo_tlo_widget(), "do-tlo");
-		
 		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnprint_graph_widget(), "print-graph");
-		
 		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnprint_table_widget(), "print-table");
-		
 		addToEnableGroup("wjtp", "wjtp.tn", getwjtpwjtp_tnprint_debug_widget(), "print-debug");
-		
 		getwjtpwjtp_tnenabled_widget().getButton().addSelectionListener(this);
-		
 		getwjtpwjtp_tnavoid_deadlock_widget().getButton().addSelectionListener(this);
-		
 		getwjtpwjtp_tnopen_nesting_widget().getButton().addSelectionListener(this);
-		
 		getwjtpwjtp_tndo_mhp_widget().getButton().addSelectionListener(this);
-		
 		getwjtpwjtp_tndo_tlo_widget().getButton().addSelectionListener(this);
-		
 		getwjtpwjtp_tnprint_graph_widget().getButton().addSelectionListener(this);
-		
 		getwjtpwjtp_tnprint_table_widget().getButton().addSelectionListener(this);
-		
 		getwjtpwjtp_tnprint_debug_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjtp", "wjtp.rdc");
-		
-		
 		addToEnableGroup("wjtp", "wjtp.rdc", getwjtpwjtp_rdcenabled_widget(), "enabled");
-		
 		getwjtpwjtp_rdcenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjop");
-		
-		
 		addToEnableGroup("wjop", getwjopenabled_widget(), "enabled");
-		
-		
 		getwjopenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjop", "wjop.smb");
-		
-		
 		addToEnableGroup("wjop", "wjop.smb", getwjopwjop_smbenabled_widget(), "enabled");
-		
 		addToEnableGroup("wjop", "wjop.smb", getwjopwjop_smbinsert_null_checks_widget(), "insert-null-checks");
-		
 		addToEnableGroup("wjop", "wjop.smb", getwjopwjop_smbinsert_redundant_casts_widget(), "insert-redundant-casts");
-		
 		addToEnableGroup("wjop", "wjop.smb", getwjopwjop_smballowed_modifier_changes_widget(), "allowed-modifier-changes");
-		
 		getwjopwjop_smbenabled_widget().getButton().addSelectionListener(this);
-		
 		getwjopwjop_smbinsert_null_checks_widget().getButton().addSelectionListener(this);
-		
 		getwjopwjop_smbinsert_redundant_casts_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjop", "wjop.si");
-		
-		
 		addToEnableGroup("wjop", "wjop.si", getwjopwjop_sienabled_widget(), "enabled");
-		
 		addToEnableGroup("wjop", "wjop.si", getwjopwjop_sirerun_jb_widget(), "rerun-jb");
-		
 		addToEnableGroup("wjop", "wjop.si", getwjopwjop_siinsert_null_checks_widget(), "insert-null-checks");
-		
 		addToEnableGroup("wjop", "wjop.si", getwjopwjop_siinsert_redundant_casts_widget(), "insert-redundant-casts");
-		
 		addToEnableGroup("wjop", "wjop.si", getwjopwjop_siallowed_modifier_changes_widget(), "allowed-modifier-changes");
-		
 		addToEnableGroup("wjop", "wjop.si", getwjopwjop_siexpansion_factor_widget(), "expansion-factor");
-		
 		addToEnableGroup("wjop", "wjop.si", getwjopwjop_simax_container_size_widget(), "max-container-size");
-		
 		addToEnableGroup("wjop", "wjop.si", getwjopwjop_simax_inlinee_size_widget(), "max-inlinee-size");
-		
 		getwjopwjop_sienabled_widget().getButton().addSelectionListener(this);
-		
 		getwjopwjop_sirerun_jb_widget().getButton().addSelectionListener(this);
-		
 		getwjopwjop_siinsert_null_checks_widget().getButton().addSelectionListener(this);
-		
 		getwjopwjop_siinsert_redundant_casts_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjap");
-		
-		
 		addToEnableGroup("wjap", getwjapenabled_widget(), "enabled");
-		
-		
 		getwjapenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjap", "wjap.ra");
-		
-		
 		addToEnableGroup("wjap", "wjap.ra", getwjapwjap_raenabled_widget(), "enabled");
-		
 		getwjapwjap_raenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjap", "wjap.umt");
-		
-		
 		addToEnableGroup("wjap", "wjap.umt", getwjapwjap_umtenabled_widget(), "enabled");
-		
 		getwjapwjap_umtenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjap", "wjap.uft");
-		
-		
 		addToEnableGroup("wjap", "wjap.uft", getwjapwjap_uftenabled_widget(), "enabled");
-		
 		getwjapwjap_uftenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjap", "wjap.tqt");
-		
-		
 		addToEnableGroup("wjap", "wjap.tqt", getwjapwjap_tqtenabled_widget(), "enabled");
-		
 		getwjapwjap_tqtenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjap", "wjap.cgg");
-		
-		
 		addToEnableGroup("wjap", "wjap.cgg", getwjapwjap_cggenabled_widget(), "enabled");
-		
 		addToEnableGroup("wjap", "wjap.cgg", getwjapwjap_cggshow_lib_meths_widget(), "show-lib-meths");
-		
 		getwjapwjap_cggenabled_widget().getButton().addSelectionListener(this);
-		
 		getwjapwjap_cggshow_lib_meths_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("wjap", "wjap.purity");
-		
-		
 		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_purityenabled_widget(), "enabled");
-		
 		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_puritydump_summaries_widget(), "dump-summaries");
-		
 		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_puritydump_cg_widget(), "dump-cg");
-		
 		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_puritydump_intra_widget(), "dump-intra");
-		
 		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_purityprint_widget(), "print");
-		
 		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_purityannotate_widget(), "annotate");
-		
 		addToEnableGroup("wjap", "wjap.purity", getwjapwjap_purityverbose_widget(), "verbose");
-		
 		getwjapwjap_purityenabled_widget().getButton().addSelectionListener(this);
-		
 		getwjapwjap_puritydump_summaries_widget().getButton().addSelectionListener(this);
-		
 		getwjapwjap_puritydump_cg_widget().getButton().addSelectionListener(this);
-		
 		getwjapwjap_puritydump_intra_widget().getButton().addSelectionListener(this);
-		
 		getwjapwjap_purityprint_widget().getButton().addSelectionListener(this);
-		
 		getwjapwjap_purityannotate_widget().getButton().addSelectionListener(this);
-		
 		getwjapwjap_purityverbose_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("shimple");
-		
-		
 		addToEnableGroup("shimple", getshimpleenabled_widget(), "enabled");
-		
-		
 		addToEnableGroup("shimple", getshimplenode_elim_opt_widget(), "node-elim-opt");
-		
-		
 		addToEnableGroup("shimple", getshimplestandard_local_names_widget(), "standard-local-names");
-		
-		
 		addToEnableGroup("shimple", getshimpleextended_widget(), "extended");
-		
-		
 		addToEnableGroup("shimple", getshimpledebug_widget(), "debug");
-		
-		
 		getshimpleenabled_widget().getButton().addSelectionListener(this);
-		
 		getshimplenode_elim_opt_widget().getButton().addSelectionListener(this);
-		
 		getshimplestandard_local_names_widget().getButton().addSelectionListener(this);
-		
 		getshimpleextended_widget().getButton().addSelectionListener(this);
-		
 		getshimpledebug_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("stp");
-		
-		
 		addToEnableGroup("stp", getstpenabled_widget(), "enabled");
-		
-		
 		getstpenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("sop");
-		
-		
 		addToEnableGroup("sop", getsopenabled_widget(), "enabled");
-		
-		
 		getsopenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("sop", "sop.cpf");
-		
-		
 		addToEnableGroup("sop", "sop.cpf", getsopsop_cpfenabled_widget(), "enabled");
-		
 		addToEnableGroup("sop", "sop.cpf", getsopsop_cpfprune_cfg_widget(), "prune-cfg");
-		
 		getsopsop_cpfenabled_widget().getButton().addSelectionListener(this);
-		
 		getsopsop_cpfprune_cfg_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jtp");
-		
-		
 		addToEnableGroup("jtp", getjtpenabled_widget(), "enabled");
-		
-		
 		getjtpenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop");
-		
-		
 		addToEnableGroup("jop", getjopenabled_widget(), "enabled");
-		
-		
 		getjopenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.cse");
-		
-		
 		addToEnableGroup("jop", "jop.cse", getjopjop_cseenabled_widget(), "enabled");
-		
 		addToEnableGroup("jop", "jop.cse", getjopjop_csenaive_side_effect_widget(), "naive-side-effect");
-		
 		getjopjop_cseenabled_widget().getButton().addSelectionListener(this);
-		
 		getjopjop_csenaive_side_effect_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.bcm");
-		
-		
 		addToEnableGroup("jop", "jop.bcm", getjopjop_bcmenabled_widget(), "enabled");
-		
 		addToEnableGroup("jop", "jop.bcm", getjopjop_bcmnaive_side_effect_widget(), "naive-side-effect");
-		
 		getjopjop_bcmenabled_widget().getButton().addSelectionListener(this);
-		
 		getjopjop_bcmnaive_side_effect_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.lcm");
-		
-		
 		addToEnableGroup("jop", "jop.lcm", getjopjop_lcmenabled_widget(), "enabled");
-		
 		addToEnableGroup("jop", "jop.lcm", getjopjop_lcmsafety_widget(), "safety");
-		
 		addToEnableGroup("jop", "jop.lcm", getjopjop_lcmunroll_widget(), "unroll");
-		
 		addToEnableGroup("jop", "jop.lcm", getjopjop_lcmnaive_side_effect_widget(), "naive-side-effect");
-		
 		getjopjop_lcmenabled_widget().getButton().addSelectionListener(this);
-		
 		getjopjop_lcmunroll_widget().getButton().addSelectionListener(this);
-		
 		getjopjop_lcmnaive_side_effect_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.cp");
-		
-		
 		addToEnableGroup("jop", "jop.cp", getjopjop_cpenabled_widget(), "enabled");
-		
 		addToEnableGroup("jop", "jop.cp", getjopjop_cponly_regular_locals_widget(), "only-regular-locals");
-		
 		addToEnableGroup("jop", "jop.cp", getjopjop_cponly_stack_locals_widget(), "only-stack-locals");
-		
 		getjopjop_cpenabled_widget().getButton().addSelectionListener(this);
-		
 		getjopjop_cponly_regular_locals_widget().getButton().addSelectionListener(this);
-		
 		getjopjop_cponly_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.cpf");
-		
-		
 		addToEnableGroup("jop", "jop.cpf", getjopjop_cpfenabled_widget(), "enabled");
-		
 		getjopjop_cpfenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.cbf");
-		
-		
 		addToEnableGroup("jop", "jop.cbf", getjopjop_cbfenabled_widget(), "enabled");
-		
 		getjopjop_cbfenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.dae");
-		
-		
 		addToEnableGroup("jop", "jop.dae", getjopjop_daeenabled_widget(), "enabled");
-		
 		addToEnableGroup("jop", "jop.dae", getjopjop_daeonly_tag_widget(), "only-tag");
-		
 		addToEnableGroup("jop", "jop.dae", getjopjop_daeonly_stack_locals_widget(), "only-stack-locals");
-		
 		getjopjop_daeenabled_widget().getButton().addSelectionListener(this);
-		
 		getjopjop_daeonly_tag_widget().getButton().addSelectionListener(this);
-		
 		getjopjop_daeonly_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.nce");
-		
-		
 		addToEnableGroup("jop", "jop.nce", getjopjop_nceenabled_widget(), "enabled");
-		
 		getjopjop_nceenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.uce1");
-		
-		
 		addToEnableGroup("jop", "jop.uce1", getjopjop_uce1enabled_widget(), "enabled");
-		
 		addToEnableGroup("jop", "jop.uce1", getjopjop_uce1remove_unreachable_traps_widget(), "remove-unreachable-traps");
-		
 		getjopjop_uce1enabled_widget().getButton().addSelectionListener(this);
-		
 		getjopjop_uce1remove_unreachable_traps_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.ubf1");
-		
-		
 		addToEnableGroup("jop", "jop.ubf1", getjopjop_ubf1enabled_widget(), "enabled");
-		
 		getjopjop_ubf1enabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.uce2");
-		
-		
 		addToEnableGroup("jop", "jop.uce2", getjopjop_uce2enabled_widget(), "enabled");
-		
 		addToEnableGroup("jop", "jop.uce2", getjopjop_uce2remove_unreachable_traps_widget(), "remove-unreachable-traps");
-		
 		getjopjop_uce2enabled_widget().getButton().addSelectionListener(this);
-		
 		getjopjop_uce2remove_unreachable_traps_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.ubf2");
-		
-		
 		addToEnableGroup("jop", "jop.ubf2", getjopjop_ubf2enabled_widget(), "enabled");
-		
 		getjopjop_ubf2enabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jop", "jop.ule");
-		
-		
 		addToEnableGroup("jop", "jop.ule", getjopjop_uleenabled_widget(), "enabled");
-		
 		getjopjop_uleenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap");
-		
-		
 		addToEnableGroup("jap", getjapenabled_widget(), "enabled");
-		
-		
 		getjapenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.npc");
-		
-		
 		addToEnableGroup("jap", "jap.npc", getjapjap_npcenabled_widget(), "enabled");
-		
 		addToEnableGroup("jap", "jap.npc", getjapjap_npconly_array_ref_widget(), "only-array-ref");
-		
 		addToEnableGroup("jap", "jap.npc", getjapjap_npcprofiling_widget(), "profiling");
-		
 		getjapjap_npcenabled_widget().getButton().addSelectionListener(this);
-		
 		getjapjap_npconly_array_ref_widget().getButton().addSelectionListener(this);
-		
 		getjapjap_npcprofiling_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.npcolorer");
-		
-		
 		addToEnableGroup("jap", "jap.npcolorer", getjapjap_npcolorerenabled_widget(), "enabled");
-		
 		getjapjap_npcolorerenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.abc");
-		
-		
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcenabled_widget(), "enabled");
-		
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_all_widget(), "with-all");
-		
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_cse_widget(), "with-cse");
-		
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_arrayref_widget(), "with-arrayref");
-		
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_fieldref_widget(), "with-fieldref");
-		
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_classfield_widget(), "with-classfield");
-		
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcwith_rectarray_widget(), "with-rectarray");
-		
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcprofiling_widget(), "profiling");
-		
 		addToEnableGroup("jap", "jap.abc", getjapjap_abcadd_color_tags_widget(), "add-color-tags");
-		
 		getjapjap_abcenabled_widget().getButton().addSelectionListener(this);
-		
 		getjapjap_abcwith_all_widget().getButton().addSelectionListener(this);
-		
 		getjapjap_abcwith_cse_widget().getButton().addSelectionListener(this);
-		
 		getjapjap_abcwith_arrayref_widget().getButton().addSelectionListener(this);
-		
 		getjapjap_abcwith_fieldref_widget().getButton().addSelectionListener(this);
-		
 		getjapjap_abcwith_classfield_widget().getButton().addSelectionListener(this);
-		
 		getjapjap_abcwith_rectarray_widget().getButton().addSelectionListener(this);
-		
 		getjapjap_abcprofiling_widget().getButton().addSelectionListener(this);
-		
 		getjapjap_abcadd_color_tags_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.profiling");
-		
-		
 		addToEnableGroup("jap", "jap.profiling", getjapjap_profilingenabled_widget(), "enabled");
-		
 		addToEnableGroup("jap", "jap.profiling", getjapjap_profilingnotmainentry_widget(), "notmainentry");
-		
 		getjapjap_profilingenabled_widget().getButton().addSelectionListener(this);
-		
 		getjapjap_profilingnotmainentry_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.sea");
-		
-		
 		addToEnableGroup("jap", "jap.sea", getjapjap_seaenabled_widget(), "enabled");
-		
 		addToEnableGroup("jap", "jap.sea", getjapjap_seanaive_widget(), "naive");
-		
 		getjapjap_seaenabled_widget().getButton().addSelectionListener(this);
-		
 		getjapjap_seanaive_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.fieldrw");
-		
-		
 		addToEnableGroup("jap", "jap.fieldrw", getjapjap_fieldrwenabled_widget(), "enabled");
-		
 		addToEnableGroup("jap", "jap.fieldrw", getjapjap_fieldrwthreshold_widget(), "threshold");
-		
 		getjapjap_fieldrwenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.cgtagger");
-		
-		
 		addToEnableGroup("jap", "jap.cgtagger", getjapjap_cgtaggerenabled_widget(), "enabled");
-		
 		getjapjap_cgtaggerenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.parity");
-		
-		
 		addToEnableGroup("jap", "jap.parity", getjapjap_parityenabled_widget(), "enabled");
-		
 		getjapjap_parityenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.pat");
-		
-		
 		addToEnableGroup("jap", "jap.pat", getjapjap_patenabled_widget(), "enabled");
-		
 		getjapjap_patenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.lvtagger");
-		
-		
 		addToEnableGroup("jap", "jap.lvtagger", getjapjap_lvtaggerenabled_widget(), "enabled");
-		
 		getjapjap_lvtaggerenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.rdtagger");
-		
-		
 		addToEnableGroup("jap", "jap.rdtagger", getjapjap_rdtaggerenabled_widget(), "enabled");
-		
 		getjapjap_rdtaggerenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.che");
-		
-		
 		addToEnableGroup("jap", "jap.che", getjapjap_cheenabled_widget(), "enabled");
-		
 		getjapjap_cheenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.umt");
-		
-		
 		addToEnableGroup("jap", "jap.umt", getjapjap_umtenabled_widget(), "enabled");
-		
 		getjapjap_umtenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.lit");
-		
-		
 		addToEnableGroup("jap", "jap.lit", getjapjap_litenabled_widget(), "enabled");
-		
 		getjapjap_litenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.aet");
-		
-		
 		addToEnableGroup("jap", "jap.aet", getjapjap_aetenabled_widget(), "enabled");
-		
 		addToEnableGroup("jap", "jap.aet", getjapjap_aetkind_widget(), "kind");
-		
 		getjapjap_aetenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("jap", "jap.dmt");
-		
-		
 		addToEnableGroup("jap", "jap.dmt", getjapjap_dmtenabled_widget(), "enabled");
-		
 		getjapjap_dmtenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("gb");
-		
-		
 		addToEnableGroup("gb", getgbenabled_widget(), "enabled");
-		
-		
 		getgbenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("gb", "gb.a1");
-		
-		
 		addToEnableGroup("gb", "gb.a1", getgbgb_a1enabled_widget(), "enabled");
-		
 		addToEnableGroup("gb", "gb.a1", getgbgb_a1only_stack_locals_widget(), "only-stack-locals");
-		
 		getgbgb_a1enabled_widget().getButton().addSelectionListener(this);
-		
 		getgbgb_a1only_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("gb", "gb.cf");
-		
-		
 		addToEnableGroup("gb", "gb.cf", getgbgb_cfenabled_widget(), "enabled");
-		
 		getgbgb_cfenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("gb", "gb.a2");
-		
-		
 		addToEnableGroup("gb", "gb.a2", getgbgb_a2enabled_widget(), "enabled");
-		
 		addToEnableGroup("gb", "gb.a2", getgbgb_a2only_stack_locals_widget(), "only-stack-locals");
-		
 		getgbgb_a2enabled_widget().getButton().addSelectionListener(this);
-		
 		getgbgb_a2only_stack_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("gb", "gb.ule");
-		
-		
 		addToEnableGroup("gb", "gb.ule", getgbgb_uleenabled_widget(), "enabled");
-		
 		getgbgb_uleenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("gop");
-		
-		
 		addToEnableGroup("gop", getgopenabled_widget(), "enabled");
-		
-		
 		getgopenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("bb");
-		
-		
 		addToEnableGroup("bb", getbbenabled_widget(), "enabled");
-		
-		
 		getbbenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("bb", "bb.lso");
-		
-		
 		addToEnableGroup("bb", "bb.lso", getbbbb_lsoenabled_widget(), "enabled");
-		
 		addToEnableGroup("bb", "bb.lso", getbbbb_lsodebug_widget(), "debug");
-		
 		addToEnableGroup("bb", "bb.lso", getbbbb_lsointer_widget(), "inter");
-		
 		addToEnableGroup("bb", "bb.lso", getbbbb_lsosl_widget(), "sl");
-		
 		addToEnableGroup("bb", "bb.lso", getbbbb_lsosl2_widget(), "sl2");
-		
 		addToEnableGroup("bb", "bb.lso", getbbbb_lsosll_widget(), "sll");
-		
 		addToEnableGroup("bb", "bb.lso", getbbbb_lsosll2_widget(), "sll2");
-		
 		getbbbb_lsoenabled_widget().getButton().addSelectionListener(this);
-		
 		getbbbb_lsodebug_widget().getButton().addSelectionListener(this);
-		
 		getbbbb_lsointer_widget().getButton().addSelectionListener(this);
-		
 		getbbbb_lsosl_widget().getButton().addSelectionListener(this);
-		
 		getbbbb_lsosl2_widget().getButton().addSelectionListener(this);
-		
 		getbbbb_lsosll_widget().getButton().addSelectionListener(this);
-		
 		getbbbb_lsosll2_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("bb", "bb.sco");
-		
-		
 		addToEnableGroup("bb", "bb.sco", getbbbb_scoenabled_widget(), "enabled");
-		
 		getbbbb_scoenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("bb", "bb.pho");
-		
-		
 		addToEnableGroup("bb", "bb.pho", getbbbb_phoenabled_widget(), "enabled");
-		
 		getbbbb_phoenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("bb", "bb.ule");
-		
-		
 		addToEnableGroup("bb", "bb.ule", getbbbb_uleenabled_widget(), "enabled");
-		
 		getbbbb_uleenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("bb", "bb.lp");
-		
-		
 		addToEnableGroup("bb", "bb.lp", getbbbb_lpenabled_widget(), "enabled");
-		
 		addToEnableGroup("bb", "bb.lp", getbbbb_lpunsplit_original_locals_widget(), "unsplit-original-locals");
-		
 		getbbbb_lpenabled_widget().getButton().addSelectionListener(this);
-		
 		getbbbb_lpunsplit_original_locals_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("bop");
-		
-		
 		addToEnableGroup("bop", getbopenabled_widget(), "enabled");
-		
-		
 		getbopenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("tag");
-		
-		
 		addToEnableGroup("tag", gettagenabled_widget(), "enabled");
-		
-		
 		gettagenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("tag", "tag.ln");
-		
-		
 		addToEnableGroup("tag", "tag.ln", gettagtag_lnenabled_widget(), "enabled");
-		
 		gettagtag_lnenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("tag", "tag.an");
-		
-		
 		addToEnableGroup("tag", "tag.an", gettagtag_anenabled_widget(), "enabled");
-		
 		gettagtag_anenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("tag", "tag.dep");
-		
-		
 		addToEnableGroup("tag", "tag.dep", gettagtag_depenabled_widget(), "enabled");
-		
 		gettagtag_depenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("tag", "tag.fieldrw");
-		
-		
 		addToEnableGroup("tag", "tag.fieldrw", gettagtag_fieldrwenabled_widget(), "enabled");
-		
 		gettagtag_fieldrwenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("db");
-		
-		
 		addToEnableGroup("db", getdbenabled_widget(), "enabled");
-		
-		
 		addToEnableGroup("db", getdbsource_is_javac_widget(), "source-is-javac");
-		
-		
 		getdbenabled_widget().getButton().addSelectionListener(this);
-		
 		getdbsource_is_javac_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("db", "db.transformations");
-		
-		
 		addToEnableGroup("db", "db.transformations", getdbdb_transformationsenabled_widget(), "enabled");
-		
 		getdbdb_transformationsenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("db", "db.renamer");
-		
-		
 		addToEnableGroup("db", "db.renamer", getdbdb_renamerenabled_widget(), "enabled");
-		
 		getdbdb_renamerenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("db", "db.deobfuscate");
-		
-		
 		addToEnableGroup("db", "db.deobfuscate", getdbdb_deobfuscateenabled_widget(), "enabled");
-		
 		getdbdb_deobfuscateenabled_widget().getButton().addSelectionListener(this);
-		
-		
+
 		makeNewEnableGroup("db", "db.force-recompile");
-		
-		
 		addToEnableGroup("db", "db.force-recompile", getdbdb_force_recompileenabled_widget(), "enabled");
-		
 		getdbdb_force_recompileenabled_widget().getButton().addSelectionListener(this);
-		
 
 		updateAllEnableGroups();
 	}
-	
-	public void widgetSelected(SelectionEvent e){
+
+	public void widgetSelected(SelectionEvent e) {
 		handleWidgetSelected(e);
 	}
 
-	public void widgetDefaultSelected(SelectionEvent e){
+	public void widgetDefaultSelected(SelectionEvent e) {
 	}
-	
+
 	/**
 	 * all options get saved as (alias, value) pair
 	 */ 
@@ -1942,3716 +959,2258 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 					" is no Java project or is closed.");
 		}
 	}
-	
+
 	private boolean createNewConfig() {
-	
+
 		setConfig(new HashMap());
-		
+
 		boolean boolRes = false;
 		String stringRes = "";
 		boolean defBoolRes = false;
 		String defStringRes = "";
 		StringTokenizer listOptTokens;
 		String nextListToken;
+
 	
-		
 		boolRes = getGeneral_Optionscoffi_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionscoffi_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionsasm_backend_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsasm_backend_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionshelp_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionshelp_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionsphase_list_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsphase_list_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionsversion_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsversion_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionsverbose_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsverbose_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionsinteractive_mode_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsinteractive_mode_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionsunfriendly_mode_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsunfriendly_mode_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionsapp_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsapp_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionswhole_program_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionswhole_program_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionswhole_shimple_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionswhole_shimple_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionson_the_fly_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionson_the_fly_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionsvalidate_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsvalidate_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionsdebug_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsdebug_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionsdebug_resolver_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsdebug_resolver_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getGeneral_Optionsignore_resolving_levels_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionsignore_resolving_levels_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getGeneral_Optionsphase_help_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getGeneral_Optionsphase_help_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getInput_Optionsprepend_classpath_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsprepend_classpath_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Optionsignore_classpath_errors_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsignore_classpath_errors_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Optionsprocess_multiple_dex_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsprocess_multiple_dex_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Optionssearch_dex_in_archives_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionssearch_dex_in_archives_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Optionsoaat_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsoaat_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Optionsast_metrics_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsast_metrics_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Optionsfull_resolver_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsfull_resolver_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Optionsallow_phantom_refs_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsallow_phantom_refs_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Optionsno_bodies_for_excluded_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsno_bodies_for_excluded_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Optionsj2me_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsj2me_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Optionspolyglot_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionspolyglot_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Optionspermissive_resolving_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionspermissive_resolving_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Optionsdrop_bodies_after_load_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Optionsdrop_bodies_after_load_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getInput_Optionssoot_classpath_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionssoot_classpath_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getInput_Optionsprocess_dir_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionsprocess_dir_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getInput_Optionsandroid_jars_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionsandroid_jars_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getInput_Optionsforce_android_jar_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionsforce_android_jar_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getInput_Optionsandroid_api_version_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionsandroid_api_version_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getInput_Optionsmain_class_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getInput_Optionsmain_class_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getInput_Optionssrc_prec_widget().getSelectedAlias();
-
-		
-		defStringRes = "c";
-		
+		defStringRes = "c class";
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getInput_Optionssrc_prec_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getOutput_Optionsoutput_jar_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Optionsoutput_jar_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getOutput_Optionsxml_attributes_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Optionsxml_attributes_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getOutput_Optionsprint_tags_in_output_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Optionsprint_tags_in_output_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getOutput_Optionsno_output_source_file_attribute_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Optionsno_output_source_file_attribute_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getOutput_Optionsno_output_inner_classes_attribute_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Optionsno_output_inner_classes_attribute_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getOutput_Optionsshow_exception_dests_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Optionsshow_exception_dests_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getOutput_Optionsgzip_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Optionsgzip_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getOutput_Optionsforce_overwrite_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Optionsforce_overwrite_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getOutput_Optionsoutput_dir_widget().getText().getText();
-		
 		defStringRes = "./sootOutput";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getOutput_Optionsoutput_dir_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getOutput_Optionsdump_body_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getOutput_Optionsdump_body_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getOutput_Optionsdump_cfg_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getOutput_Optionsdump_cfg_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getOutput_Optionsoutput_format_widget().getSelectedAlias();
-
-		
-		defStringRes = "c";
-		
+		defStringRes = "c class";
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getOutput_Optionsoutput_format_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getOutput_Optionsjava_version_widget().getSelectedAlias();
-
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getOutput_Optionsjava_version_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getProcessing_Optionsoptimize_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionsoptimize_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getProcessing_Optionswhole_optimize_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionswhole_optimize_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getProcessing_Optionsvia_grimp_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionsvia_grimp_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getProcessing_Optionsvia_shimple_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionsvia_shimple_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getProcessing_Optionsomit_excepting_unit_edges_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionsomit_excepting_unit_edges_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getProcessing_Optionstrim_cfgs_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionstrim_cfgs_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getProcessing_Optionsignore_resolution_errors_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getProcessing_Optionsignore_resolution_errors_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getProcessing_Optionsplugin_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getProcessing_Optionsplugin_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getProcessing_Optionswrong_staticness_widget().getSelectedAlias();
-
-		
 		defStringRes = "fix";
-		
 		defStringRes = "fixstrict";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getProcessing_Optionswrong_staticness_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getProcessing_Optionsfield_type_mismatches_widget().getSelectedAlias();
-
-		
 		defStringRes = "null";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getProcessing_Optionsfield_type_mismatches_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getProcessing_Optionsthrow_analysis_widget().getSelectedAlias();
-
-		
 		defStringRes = "unit";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getProcessing_Optionsthrow_analysis_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getProcessing_Optionscheck_init_throw_analysis_widget().getSelectedAlias();
-
-		
 		defStringRes = "auto";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getProcessing_Optionscheck_init_throw_analysis_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getjbenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbuse_original_names_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbuse_original_names_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbpreserve_source_annotations_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbpreserve_source_annotations_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbstabilize_local_names_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbstabilize_local_names_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_dtrenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_dtrenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_eseenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_eseenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_lsenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_lsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_aenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_aenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_aonly_stack_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_aonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_uleenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_uleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_trenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_trenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_truse_older_type_assigner_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_truse_older_type_assigner_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_trcompare_type_assigners_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_trcompare_type_assigners_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_trignore_nullpointer_dereferences_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_trignore_nullpointer_dereferences_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_ulpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_ulpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_ulpunsplit_original_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_ulpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_lnsenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_lnsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_lnsonly_stack_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_lnsonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_lnssort_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_lnssort_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_cpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_cpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_cponly_regular_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_cponly_regular_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_cponly_stack_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_cponly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_daeenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_daeenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_daeonly_stack_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_daeonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_cp_uleenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_cp_uleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_lpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_lpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_lpunsplit_original_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_lpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_neenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_neenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_uceenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_uceenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_uceremove_unreachable_traps_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_uceremove_unreachable_traps_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjbjb_ttenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjbjb_ttenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjuse_original_names_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjuse_original_names_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_lsenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_lsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_aenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_aenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_aonly_stack_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_aonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_uleenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_uleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_trenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_trenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_ulpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_ulpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_ulpunsplit_original_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_ulpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_lnsenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_lnsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_lnsonly_stack_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_lnsonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_cpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_cpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_cponly_regular_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_cponly_regular_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_cponly_stack_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_cponly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_daeenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_daeenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_daeonly_stack_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_daeonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_cp_uleenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_cp_uleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_lpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_lpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_lpunsplit_original_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_lpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_neenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_neenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjjjj_uceenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjjjj_uceenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjppenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjppenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjppwjpp_cimbtenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjppwjpp_cimbtenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjppwjpp_cimbtverbose_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjppwjpp_cimbtverbose_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwsppenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwsppenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgsafe_forname_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgsafe_forname_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgsafe_newinstance_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgsafe_newinstance_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgverbose_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgverbose_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgall_reachable_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgall_reachable_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgimplicit_entry_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgimplicit_entry_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgtrim_clinit_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgtrim_clinit_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgtypes_for_invoke_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgtypes_for_invoke_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getcgjdkver_widget().getText().getText();
-		
 		defStringRes = "3";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgjdkver_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getcgreflection_log_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgreflection_log_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getcgguards_widget().getText().getText();
-		
 		defStringRes = "ignore";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgguards_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcglibrary_widget().getSelectedAlias();
-
-		
 		defStringRes = "disabled";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcglibrary_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getcgcg_chaenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_chaenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_chaverbose_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_chaverbose_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_chaapponly_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_chaapponly_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkverbose_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkverbose_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkignore_types_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkignore_types_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkforce_gc_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkforce_gc_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkpre_jimplify_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkpre_jimplify_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkapponly_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkapponly_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkvta_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkvta_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkrta_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkrta_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkfield_based_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkfield_based_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparktypes_for_sites_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparktypes_for_sites_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkmerge_stringbuffer_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkmerge_stringbuffer_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkstring_constants_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkstring_constants_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparksimulate_natives_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparksimulate_natives_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkempties_as_allocs_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkempties_as_allocs_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparksimple_edges_bidirectional_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparksimple_edges_bidirectional_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkon_fly_cg_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkon_fly_cg_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparksimplify_offline_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparksimplify_offline_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparksimplify_sccs_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparksimplify_sccs_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkignore_types_for_sccs_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkignore_types_for_sccs_widget().getAlias(), new Boolean(boolRes));
 		}
-		 
 		stringRes = getcgcg_sparkpropagator_widget().getSelectedAlias();
-
-		
 		defStringRes = "worklist";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_sparkpropagator_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcgcg_sparkset_impl_widget().getSelectedAlias();
-
-		
 		defStringRes = "double";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_sparkset_impl_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcgcg_sparkdouble_set_old_widget().getSelectedAlias();
-
-		
 		defStringRes = "hybrid";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_sparkdouble_set_old_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcgcg_sparkdouble_set_new_widget().getSelectedAlias();
-
-		
 		defStringRes = "hybrid";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_sparkdouble_set_new_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getcgcg_sparkdump_html_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkdump_html_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkdump_pag_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkdump_pag_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkdump_solution_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkdump_solution_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparktopo_sort_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparktopo_sort_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkdump_types_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkdump_types_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkclass_method_var_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkclass_method_var_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkdump_answer_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkdump_answer_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkadd_tags_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkadd_tags_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkset_mass_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkset_mass_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkcs_demand_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkcs_demand_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparklazy_pts_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparklazy_pts_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getcgcg_sparktraversal_widget().getText().getText();
-		
 		defStringRes = "75000";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgcg_sparktraversal_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getcgcg_sparkpasses_widget().getText().getText();
-		
 		defStringRes = "10";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgcg_sparkpasses_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getcgcg_sparkgeom_pta_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkgeom_pta_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkgeom_trans_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkgeom_trans_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkgeom_blocking_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkgeom_blocking_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_sparkgeom_app_only_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_sparkgeom_app_only_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getcgcg_sparkgeom_dump_verbose_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgcg_sparkgeom_dump_verbose_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getcgcg_sparkgeom_verify_name_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgcg_sparkgeom_verify_name_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getcgcg_sparkgeom_eval_widget().getText().getText();
-		
 		defStringRes = "0";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgcg_sparkgeom_eval_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getcgcg_sparkgeom_frac_base_widget().getText().getText();
-		
 		defStringRes = "40";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgcg_sparkgeom_frac_base_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getcgcg_sparkgeom_runs_widget().getText().getText();
-		
 		defStringRes = "1";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgcg_sparkgeom_runs_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcgcg_sparkgeom_encoding_widget().getSelectedAlias();
-
-		
 		defStringRes = "Geom";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_sparkgeom_encoding_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcgcg_sparkgeom_worklist_widget().getSelectedAlias();
-
-		
 		defStringRes = "PQ";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_sparkgeom_worklist_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getcgcg_paddleenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddleverbose_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddleverbose_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddlebdd_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlebdd_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddledynamic_order_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddledynamic_order_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddleprofile_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddleprofile_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddleverbosegc_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddleverbosegc_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddleignore_types_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddleignore_types_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddlepre_jimplify_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlepre_jimplify_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getcgcg_paddleorder_widget().getText().getText();
-		
 		defStringRes = "32";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgcg_paddleorder_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getcgcg_paddlebdd_nodes_widget().getText().getText();
-		
 		defStringRes = "0";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgcg_paddlebdd_nodes_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcgcg_paddleconf_widget().getSelectedAlias();
-
-		
 		defStringRes = "ofcg";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_paddleconf_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcgcg_paddleq_widget().getSelectedAlias();
-
-		
 		defStringRes = "auto";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_paddleq_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcgcg_paddlebackend_widget().getSelectedAlias();
-
-		
 		defStringRes = "auto";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_paddlebackend_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getcgcg_paddlecontext_heap_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlecontext_heap_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getcgcg_paddlek_widget().getText().getText();
-		
 		defStringRes = "2";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getcgcg_paddlek_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcgcg_paddlecontext_widget().getSelectedAlias();
-
-		
 		defStringRes = "insens";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_paddlecontext_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getcgcg_paddlerta_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlerta_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddlefield_based_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlefield_based_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddletypes_for_sites_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddletypes_for_sites_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddlemerge_stringbuffer_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlemerge_stringbuffer_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddlestring_constants_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlestring_constants_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddlesimulate_natives_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlesimulate_natives_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddleglobal_nodes_in_natives_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddleglobal_nodes_in_natives_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddlesimple_edges_bidirectional_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlesimple_edges_bidirectional_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddlethis_edges_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlethis_edges_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddleprecise_newinstance_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddleprecise_newinstance_widget().getAlias(), new Boolean(boolRes));
 		}
-		 
 		stringRes = getcgcg_paddlepropagator_widget().getSelectedAlias();
-
-		
 		defStringRes = "auto";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_paddlepropagator_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcgcg_paddleset_impl_widget().getSelectedAlias();
-
-		
 		defStringRes = "double";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_paddleset_impl_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcgcg_paddledouble_set_old_widget().getSelectedAlias();
-
-		
 		defStringRes = "hybrid";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_paddledouble_set_old_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getcgcg_paddledouble_set_new_widget().getSelectedAlias();
-
-		
 		defStringRes = "hybrid";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getcgcg_paddledouble_set_new_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getcgcg_paddlecontext_counts_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlecontext_counts_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddletotal_context_counts_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddletotal_context_counts_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddlemethod_context_counts_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlemethod_context_counts_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddleset_mass_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddleset_mass_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getcgcg_paddlenumber_nodes_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getcgcg_paddlenumber_nodes_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwstpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwstpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwsopenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwsopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjtpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjtpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjtpwjtp_mhpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjtpwjtp_mhpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjtpwjtp_tnenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjtpwjtp_tnenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjtpwjtp_tnavoid_deadlock_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjtpwjtp_tnavoid_deadlock_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjtpwjtp_tnopen_nesting_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjtpwjtp_tnopen_nesting_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjtpwjtp_tndo_mhp_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjtpwjtp_tndo_mhp_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjtpwjtp_tndo_tlo_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjtpwjtp_tndo_tlo_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjtpwjtp_tnprint_graph_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjtpwjtp_tnprint_graph_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjtpwjtp_tnprint_table_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjtpwjtp_tnprint_table_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjtpwjtp_tnprint_debug_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjtpwjtp_tnprint_debug_widget().getAlias(), new Boolean(boolRes));
 		}
-		 
 		stringRes = getwjtpwjtp_tnlocking_scheme_widget().getSelectedAlias();
-
-		
 		defStringRes = "medium-grained";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getwjtpwjtp_tnlocking_scheme_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getwjtpwjtp_rdcenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjtpwjtp_rdcenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getwjtpwjtp_rdcfixed_class_names_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getwjtpwjtp_rdcfixed_class_names_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getwjopenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjopwjop_smbenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjopwjop_smbenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjopwjop_smbinsert_null_checks_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjopwjop_smbinsert_null_checks_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjopwjop_smbinsert_redundant_casts_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjopwjop_smbinsert_redundant_casts_widget().getAlias(), new Boolean(boolRes));
 		}
-		 
 		stringRes = getwjopwjop_smballowed_modifier_changes_widget().getSelectedAlias();
-
-		
 		defStringRes = "unsafe";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getwjopwjop_smballowed_modifier_changes_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getwjopwjop_sienabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjopwjop_sienabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjopwjop_sirerun_jb_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjopwjop_sirerun_jb_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjopwjop_siinsert_null_checks_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjopwjop_siinsert_null_checks_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjopwjop_siinsert_redundant_casts_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjopwjop_siinsert_redundant_casts_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getwjopwjop_siexpansion_factor_widget().getText().getText();
-		
 		defStringRes = "3";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getwjopwjop_siexpansion_factor_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getwjopwjop_simax_container_size_widget().getText().getText();
-		
 		defStringRes = "5000";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getwjopwjop_simax_container_size_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getwjopwjop_simax_inlinee_size_widget().getText().getText();
-		
 		defStringRes = "20";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getwjopwjop_simax_inlinee_size_widget().getAlias(), stringRes);
 		}
-		 
 		stringRes = getwjopwjop_siallowed_modifier_changes_widget().getSelectedAlias();
-
-		
 		defStringRes = "unsafe";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getwjopwjop_siallowed_modifier_changes_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getwjapenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_raenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_raenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_umtenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_umtenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_uftenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_uftenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_tqtenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_tqtenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_cggenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_cggenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_cggshow_lib_meths_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_cggshow_lib_meths_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_purityenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_purityenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_puritydump_summaries_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_puritydump_summaries_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_puritydump_cg_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_puritydump_cg_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_puritydump_intra_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_puritydump_intra_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_purityprint_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_purityprint_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_purityannotate_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_purityannotate_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getwjapwjap_purityverbose_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getwjapwjap_purityverbose_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getshimpleenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getshimpleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getshimplenode_elim_opt_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getshimplenode_elim_opt_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getshimplestandard_local_names_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getshimplestandard_local_names_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getshimpleextended_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getshimpleextended_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getshimpledebug_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getshimpledebug_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getstpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getstpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getsopenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getsopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getsopsop_cpfenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getsopsop_cpfenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getsopsop_cpfprune_cfg_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getsopsop_cpfprune_cfg_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjtpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjtpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_cseenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_cseenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_csenaive_side_effect_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_csenaive_side_effect_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_bcmenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_bcmenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_bcmnaive_side_effect_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_bcmnaive_side_effect_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_lcmenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_lcmenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_lcmunroll_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_lcmunroll_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_lcmnaive_side_effect_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_lcmnaive_side_effect_widget().getAlias(), new Boolean(boolRes));
 		}
-		 
 		stringRes = getjopjop_lcmsafety_widget().getSelectedAlias();
-
-		
 		defStringRes = "safe";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getjopjop_lcmsafety_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getjopjop_cpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_cpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_cponly_regular_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_cponly_regular_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_cponly_stack_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_cponly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_cpfenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_cpfenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_cbfenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_cbfenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_daeenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_daeenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_daeonly_tag_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_daeonly_tag_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_daeonly_stack_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_daeonly_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_nceenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_nceenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_uce1enabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_uce1enabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_uce1remove_unreachable_traps_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_uce1remove_unreachable_traps_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_ubf1enabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_ubf1enabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_uce2enabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_uce2enabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_uce2remove_unreachable_traps_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_uce2remove_unreachable_traps_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_ubf2enabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_ubf2enabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjopjop_uleenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjopjop_uleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_npcenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_npcenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_npconly_array_ref_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_npconly_array_ref_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_npcprofiling_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_npcprofiling_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_npcolorerenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_npcolorerenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_abcenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_abcenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_abcwith_all_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_abcwith_all_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_abcwith_cse_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_abcwith_cse_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_abcwith_arrayref_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_abcwith_arrayref_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_abcwith_fieldref_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_abcwith_fieldref_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_abcwith_classfield_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_abcwith_classfield_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_abcwith_rectarray_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_abcwith_rectarray_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_abcprofiling_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_abcprofiling_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_abcadd_color_tags_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_abcadd_color_tags_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_profilingenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_profilingenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_profilingnotmainentry_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_profilingnotmainentry_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_seaenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_seaenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_seanaive_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_seanaive_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_fieldrwenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_fieldrwenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getjapjap_fieldrwthreshold_widget().getText().getText();
-		
 		defStringRes = "100";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getjapjap_fieldrwthreshold_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getjapjap_cgtaggerenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_cgtaggerenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_parityenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_parityenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_patenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_patenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_lvtaggerenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_lvtaggerenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_rdtaggerenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_rdtaggerenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_cheenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_cheenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_umtenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_umtenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_litenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_litenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getjapjap_aetenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_aetenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		 
 		stringRes = getjapjap_aetkind_widget().getSelectedAlias();
-
-		
 		defStringRes = "optimistic";
-		
 
 		if (!stringRes.equals(defStringRes)) {
 			getConfig().put(getjapjap_aetkind_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getjapjap_dmtenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getjapjap_dmtenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getgbenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getgbenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getgbgb_a1enabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getgbgb_a1enabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getgbgb_a1only_stack_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getgbgb_a1only_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getgbgb_cfenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getgbgb_cfenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getgbgb_a2enabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getgbgb_a2enabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getgbgb_a2only_stack_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getgbgb_a2only_stack_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getgbgb_uleenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getgbgb_uleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getgopenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getgopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbbb_lsoenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_lsoenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbbb_lsodebug_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_lsodebug_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbbb_lsointer_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_lsointer_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbbb_lsosl_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_lsosl_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbbb_lsosl2_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_lsosl2_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbbb_lsosll_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_lsosll_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbbb_lsosll2_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_lsosll2_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbbb_scoenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_scoenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbbb_phoenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_phoenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbbb_uleenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_uleenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbbb_lpenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_lpenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbbbb_lpunsplit_original_locals_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbbbb_lpunsplit_original_locals_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getbopenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getbopenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = gettagenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(gettagenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = gettagtag_lnenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(gettagtag_lnenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = gettagtag_anenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(gettagtag_anenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = gettagtag_depenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(gettagtag_depenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = gettagtag_fieldrwenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(gettagtag_fieldrwenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getdbenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getdbenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getdbsource_is_javac_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getdbsource_is_javac_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getdbdb_transformationsenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getdbdb_transformationsenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getdbdb_renamerenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getdbdb_renamerenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getdbdb_deobfuscateenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getdbdb_deobfuscateenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getdbdb_force_recompileenabled_widget().getButton().getSelection();
-		
-		
 		defBoolRes = true;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getdbdb_force_recompileenabled_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getApplication_Mode_Optionsinclude_all_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getApplication_Mode_Optionsinclude_all_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		stringRes = getApplication_Mode_Optionsinclude_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getApplication_Mode_Optionsinclude_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getApplication_Mode_Optionsexclude_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getApplication_Mode_Optionsexclude_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getApplication_Mode_Optionsdynamic_class_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getApplication_Mode_Optionsdynamic_class_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getApplication_Mode_Optionsdynamic_dir_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getApplication_Mode_Optionsdynamic_dir_widget().getAlias(), stringRes);
 		}
-		
 		stringRes = getApplication_Mode_Optionsdynamic_package_widget().getText().getText();
-		
 		defStringRes = "";
-		
 
-	        if ( (!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
+		if ((!(stringRes.equals(defStringRes))) && (stringRes != null) && (stringRes.length() != 0)) {
 			getConfig().put(getApplication_Mode_Optionsdynamic_package_widget().getAlias(), stringRes);
 		}
-		
 		boolRes = getInput_Attribute_Optionskeep_line_number_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Attribute_Optionskeep_line_number_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getInput_Attribute_Optionskeep_offset_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getInput_Attribute_Optionskeep_offset_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getOutput_Attribute_Optionswrite_local_annotations_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getOutput_Attribute_Optionswrite_local_annotations_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getAnnotation_Optionsannot_purity_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getAnnotation_Optionsannot_purity_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getAnnotation_Optionsannot_nullpointer_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getAnnotation_Optionsannot_nullpointer_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getAnnotation_Optionsannot_arraybounds_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getAnnotation_Optionsannot_arraybounds_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getAnnotation_Optionsannot_side_effect_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getAnnotation_Optionsannot_side_effect_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getAnnotation_Optionsannot_fieldrw_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getAnnotation_Optionsannot_fieldrw_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getMiscellaneous_Optionstime_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getMiscellaneous_Optionstime_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getMiscellaneous_Optionssubtract_gc_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getMiscellaneous_Optionssubtract_gc_widget().getAlias(), new Boolean(boolRes));
 		}
-		
 		boolRes = getMiscellaneous_Optionsno_writeout_body_releasing_widget().getButton().getSelection();
-		
-		
 		defBoolRes = false;
-		
 
 		if (boolRes != defBoolRes) {
 			getConfig().put(getMiscellaneous_Optionsno_writeout_body_releasing_widget().getAlias(), new Boolean(boolRes));
 		}
-		
-		
+
 		setSootMainClass(getSootMainClassWidget().getText().getText());			
 		return setSootMainProject(getSootMainProjectWidget().getText().getText());
 	}
@@ -5659,10 +3218,10 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	protected HashMap savePressed() {
 
 		createNewConfig();
-		
+
 		return getConfig();
 	}
-	
+
 
 
 	/**
@@ -5694,7 +3253,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		root.addChild(Processing_Options_branch);
 		parent = Processing_Options_branch;		
 		
-		SootOption Phase_Options_branch = new SootOption("Phase Options", "p");
+		SootOption Phase_Options_branch = new SootOption("Phase Options", "p phase-option");
 		root.addChild(Phase_Options_branch);
 
 		parent = Phase_Options_branch;	
@@ -10699,279 +8258,196 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
+
 		defKey = ""+" "+""+" "+"coffi";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
 		setGeneral_Optionscoffi_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Coffi Frontend", "", "","coffi", "\n", defaultBool)));
-		
-		
-		
+
 		defKey = ""+" "+""+" "+"asm-backend";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
 		setGeneral_Optionsasm_backend_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("ASM Backend", "", "","asm-backend", "\n", defaultBool)));
-		
-		
-		
-		defKey = ""+" "+""+" "+"h";
+
+		defKey = ""+" "+""+" "+"h help";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionshelp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Help", "", "","h", "\nDisplay the textual help message and exit immediately without \nfurther processing. ", defaultBool)));
-		
-		
-		
-		defKey = ""+" "+""+" "+"pl";
+		setGeneral_Optionshelp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Help", "", "","h help", "\nDisplay the textual help message and exit immediately without \nfurther processing.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"pl phase-list";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionsphase_list_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase List", "", "","pl", "\nPrint a list of the available phases and sub-phases, then exit. \n", defaultBool)));
-		
-		
-		
+		setGeneral_Optionsphase_list_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase List", "", "","pl phase-list", "\nPrint a list of the available phases and sub-phases, then exit.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"version";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionsversion_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Version", "", "","version", "\nDisplay information about the version of Soot being run, then \nexit without further processing. ", defaultBool)));
-		
-		
-		
-		defKey = ""+" "+""+" "+"v";
+		setGeneral_Optionsversion_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Version", "", "","version", "\nDisplay information about the version of Soot being run, then \nexit without further processing.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"v verbose";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionsverbose_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Verbose", "", "","v", "\nProvide detailed information about what Soot is doing as it \nruns. ", defaultBool)));
-		
-		
-		
+		setGeneral_Optionsverbose_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Verbose", "", "","v verbose", "\nProvide detailed information about what Soot is doing as it \nruns.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"interactive-mode";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionsinteractive_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Interactive Mode", "", "","interactive-mode", "\nRuns interactively, with Soot providing detailed information as \nit iterates through intra-procedural analyses. ", defaultBool)));
-		
-		
-		
+		setGeneral_Optionsinteractive_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Interactive Mode", "", "","interactive-mode", "\nRuns interactively, with Soot providing detailed information as \nit iterates through intra-procedural analyses.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"unfriendly-mode";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionsunfriendly_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Unfriendly Mode", "", "","unfriendly-mode", "\nWith this option, Soot does not stop even if it received no \ncommand-line options. Useful when setting Soot options \nprogrammatically and then calling soot.Main.main() with an empty \nlist. ", defaultBool)));
-		
-		
-		
+		setGeneral_Optionsunfriendly_mode_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Unfriendly Mode", "", "","unfriendly-mode", "\nWith this option, Soot does not stop even if it received no \ncommand-line options. Useful when setting Soot options \nprogrammatically and then calling soot.Main.main() with an empty \nlist.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"app";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
 		setGeneral_Optionsapp_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Application Mode", "", "","app", "\nRun in application mode, processing all classes referenced by \nargument classes.", defaultBool)));
-		
-		
-		
-		defKey = ""+" "+""+" "+"w";
+
+		defKey = ""+" "+""+" "+"w whole-program";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionswhole_program_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Program Mode", "", "","w", "\nRun in whole program mode, taking into consideration the whole \nprogram when performing analyses and transformations. Soot uses \nthe Call Graph Constructor to build a call graph for the \nprogram, then applies enabled transformations in the \nWhole-Jimple Transformation, Whole-Jimple Optimization, and \nWhole-Jimple Annotation packs before applying enabled \nintraprocedural transformations. Note that the Whole-Jimple \nOptimization pack is normally disabled (and thus not applied by \nwhole program mode), unless you also specify the Whole Program \nOptimize option.", defaultBool)));
-		
-		
-		
-		defKey = ""+" "+""+" "+"ws";
+		setGeneral_Optionswhole_program_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Program Mode", "", "","w whole-program", "\nRun in whole program mode, taking into consideration the whole \nprogram when performing analyses and transformations. Soot uses \nthe Call Graph Constructor to build a call graph for the \nprogram, then applies enabled transformations in the \nWhole-Jimple Transformation, Whole-Jimple Optimization, and \nWhole-Jimple Annotation packs before applying enabled \nintraprocedural transformations. Note that the Whole-Jimple \nOptimization pack is normally disabled (and thus not applied by \nwhole program mode), unless you also specify the Whole Program \nOptimize option.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"ws whole-shimple";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionswhole_shimple_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Shimple Mode", "", "","ws", "\nRun in whole shimple mode, taking into consideration the whole \nprogram when performing Shimple analyses and transformations. \nSoot uses the Call Graph Constructor to build a call graph for \nthe program, then applies enabled transformations in the \nWhole-Shimple Transformation and Whole-Shimple Optimization \nbefore applying enabled intraprocedural transformations. Note \nthat the Whole-Shimple Optimization pack is normally disabled \n(and thus not applied by whole shimple mode), unless you also \nspecify the Whole Program Optimize option.", defaultBool)));
-		
-		
-		
-		defKey = ""+" "+""+" "+"fly";
+		setGeneral_Optionswhole_shimple_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Whole-Shimple Mode", "", "","ws whole-shimple", "\nRun in whole shimple mode, taking into consideration the whole \nprogram when performing Shimple analyses and transformations. \nSoot uses the Call Graph Constructor to build a call graph for \nthe program, then applies enabled transformations in the \nWhole-Shimple Transformation and Whole-Shimple Optimization \nbefore applying enabled intraprocedural transformations. Note \nthat the Whole-Shimple Optimization pack is normally disabled \n(and thus not applied by whole shimple mode), unless you also \nspecify the Whole Program Optimize option.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"fly on-the-fly";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionson_the_fly_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("On-the-fly Mode", "", "","fly", "\nThis enables whole-program mode but uses a less agressive class \nloading. By default, classes will be loaded without bodies \nunless otherwise requested. The cg pack is disabled in this \nmode. ", defaultBool)));
-		
-		
-		
+		setGeneral_Optionson_the_fly_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("On-the-fly Mode", "", "","fly on-the-fly", "\nThis enables whole-program mode but uses a less agressive class \nloading. By default, classes will be loaded without bodies \nunless otherwise requested. The cg pack is disabled in this \nmode.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"validate";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionsvalidate_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Validate", "", "","validate", "\nCauses internal checks to be done on bodies in the various Soot \nIRs, to make sure the transformations have not done something \nstrange. This option may degrade Soot's performance. ", defaultBool)));
-		
-		
-		
+		setGeneral_Optionsvalidate_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Validate", "", "","validate", "\nCauses internal checks to be done on bodies in the various Soot \nIRs, to make sure the transformations have not done something \nstrange. This option may degrade Soot's performance.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"debug";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionsdebug_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug", "", "","debug", "\nPrint various debugging information as Soot runs, particularly \nfrom the Baf Body Phase and the Jimple Annotation Pack Phase. ", defaultBool)));
-		
-		
-		
+		setGeneral_Optionsdebug_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug", "", "","debug", "\nPrint various debugging information as Soot runs, particularly \nfrom the Baf Body Phase and the Jimple Annotation Pack Phase.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"debug-resolver";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionsdebug_resolver_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug Resolver", "", "","debug-resolver", "\nPrint debugging information about class resolving. ", defaultBool)));
-		
-		
-		
+		setGeneral_Optionsdebug_resolver_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Debug Resolver", "", "","debug-resolver", "\nPrint debugging information about class resolving.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"ignore-resolving-levels";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setGeneral_Optionsignore_resolving_levels_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Ignore Resolving Levels", "", "","ignore-resolving-levels", "\nIf this option is set, Soot will not check whether the current \nclass' resolving level is sufficiently high for the operation \nattempted on the class. This allows you to perform any operation \non a class even if the class has not been fully loaded, which \ncan lead to inconsistencies between your Soot scene and the \noriginal classes you loaded. Use this option at your own risk. ", defaultBool)));
-		
-		
+		setGeneral_Optionsignore_resolving_levels_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Ignore Resolving Levels", "", "","ignore-resolving-levels", "\nIf this option is set, Soot will not check whether the current \nclass' resolving level is sufficiently high for the operation \nattempted on the class. This allows you to perform any operation \non a class even if the class has not been fully loaded, which \ncan lead to inconsistencies between your Soot scene and the \noriginal classes you loaded. Use this option at your own risk.", defaultBool)));
 
-		defKey = ""+" "+""+" "+"ph";
+		defKey = ""+" "+""+" "+"ph phase-help";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultString = getArrayDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setGeneral_Optionsphase_help_widget(new ListOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase Help",  "", "","ph", "\nPrint a help message about the phase or sub-phase named PHASE, \nthen exit. To see the help message of more than one phase, \nspecify multiple phase-help options. ", defaultString)));
+		setGeneral_Optionsphase_help_widget(new ListOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Phase Help",  "", "","ph phase-help", "\nPrint a help message about the phase or sub-phase named PHASE, \nthen exit. To see the help message of more than one phase, \nspecify multiple phase-help options.", defaultString)));
 		
 
-		
+
 		return editGroupGeneral_Options;
 	}
 
@@ -11000,360 +8476,263 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = ""+" "+""+" "+"pp";
+
+		defKey = ""+" "+""+" "+"pp prepend-classpath";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Optionsprepend_classpath_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Prepend classpath", "", "","pp", "\nInstead of replacing the default soot classpath with the \nclasspath given on the command line, prepent it with that \nclasspath. The default classpath holds whatever is set in the \nCLASSPATH environment variable, followed by rt.jar (resolved \nthrough the JAVA-UNDERSCORE-HOME environment variable). If \nwhole-program mode is enabled, jce.jar is also appended in the \nend. ", defaultBool)));
-		
-		
-		
-		defKey = ""+" "+""+" "+"ice";
+		setInput_Optionsprepend_classpath_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Prepend classpath", "", "","pp prepend-classpath", "\nInstead of replacing the default soot classpath with the \nclasspath given on the command line, prepent it with that \nclasspath. The default classpath holds whatever is set in the \nCLASSPATH environment variable, followed by rt.jar (resolved \nthrough the JAVA-UNDERSCORE-HOME environment variable). If \nwhole-program mode is enabled, jce.jar is also appended in the \nend.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"ice ignore-classpath-errors";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Optionsignore_classpath_errors_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Ignore classpath error", "", "","ice", "\nNormally, Soot throws an exception when an invalid classpath \nentry is detected. To instead silently ignore such errors, \nenable this option. ", defaultBool)));
-		
-		
-		
+		setInput_Optionsignore_classpath_errors_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Ignore classpath error", "", "","ice ignore-classpath-errors", "\nNormally, Soot throws an exception when an invalid classpath \nentry is detected. To instead silently ignore such errors, \nenable this option.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"process-multiple-dex";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Optionsprocess_multiple_dex_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process all DEX files in APK", "", "","process-multiple-dex", "\n				Android APKs can have more than one default classes.dex. By \ndefault Soot loads only classes from the default one. This \noption 				enables loading of all DEX files from an APK. 			", defaultBool)));
-		
-		
-		
+		setInput_Optionsprocess_multiple_dex_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process all DEX files in APK", "", "","process-multiple-dex", "\nAndroid APKs can have more than one default classes.dex. By \ndefault Soot loads only classes from the default one. This \noption enables loading of all DEX files from an APK.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"search-dex-in-archives";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Optionssearch_dex_in_archives_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Search DEX files in Jar and Zip files", "", "","search-dex-in-archives", "\n					By default, Soot searches for DEX files in APKs and \nfolders. This option instructs Soot to also search for DEX files \nin Zip and Jar files on the classpath. 				", defaultBool)));
-		
-		
-		
+		setInput_Optionssearch_dex_in_archives_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Search DEX files in Jar and Zip files", "", "","search-dex-in-archives", "\nBy default, Soot searches for DEX files in APKs and folders. \nThis option instructs Soot to also search for DEX files in Zip \nand Jar files on the classpath.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"oaat";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Optionsoaat_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("One at a time", "", "","oaat", "\nThis option is meant to keep memory consumption low. If \nenabled, the -process-dir option must be used as well. From the \nprocess-dir, Soot will process one class at a time. Only body \npacks are run, no whole-program packs. ", defaultBool)));
-		
-		
-		
+		setInput_Optionsoaat_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("One at a time", "", "","oaat", "\nThis option is meant to keep memory consumption low. If enabled, \nthe -process-dir option must be used as well. From the \nprocess-dir, Soot will process one class at a time. Only body \npacks are run, no whole-program packs.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"ast-metrics";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Optionsast_metrics_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Compute AST Metrics", "", "","ast-metrics", "\n			If this flag is set and soot converts java to jimple then \nAST metrics will be computed. 	", defaultBool)));
-		
-		
-		
+		setInput_Optionsast_metrics_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Compute AST Metrics", "", "","ast-metrics", "\nIf this flag is set and soot converts java to jimple then AST \nmetrics will be computed.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"full-resolver";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Optionsfull_resolver_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force complete resolver", "", "","full-resolver", "\nNormally, Soot resolves only that application classes and any \nclasses that they refer to, along with any classes it needs for \nthe Jimple typing, but it does not transitively resolve \nreferences in these additional classes that were resolved only \nbecause they were referenced. This switch forces full transitive \nresolution of all references found in all classes that are \nresolved, regardless of why they were resolved. In \nwhole-program mode, class resolution is always fully transitive. \nTherefore, in whole-program mode, this switch has no effect, and \nclass resolution is always performed as if it were turned on. ", defaultBool)));
-		
-		
-		
+		setInput_Optionsfull_resolver_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force complete resolver", "", "","full-resolver", "\nNormally, Soot resolves only that application classes and any \nclasses that they refer to, along with any classes it needs for \nthe Jimple typing, but it does not transitively resolve \nreferences in these additional classes that were resolved only \nbecause they were referenced. This switch forces full transitive \nresolution of all references found in all classes that are \nresolved, regardless of why they were resolved. In whole-program \nmode, class resolution is always fully transitive. Therefore, in \nwhole-program mode, this switch has no effect, and class \nresolution is always performed as if it were turned on.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"allow-phantom-refs";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Optionsallow_phantom_refs_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","allow-phantom-refs", "\nAllow Soot to process a class even if it cannot find all \nclasses referenced by that class. This may cause Soot to produce \nincorrect results. ", defaultBool)));
-		
-		
-		
+		setInput_Optionsallow_phantom_refs_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","allow-phantom-refs", "\nAllow Soot to process a class even if it cannot find all classes \nreferenced by that class. This may cause Soot to produce \nincorrect results.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"no-bodies-for-excluded";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Optionsno_bodies_for_excluded_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","no-bodies-for-excluded", "\nPrevents Soot from loading method bodies for all excluded \nclasses (see exclude option), even when running in whole-program \nmode. This is useful for computing a shallow points-to analysis \nthat does not, for instance, take into account the JDK. Of \ncourse, such analyses may be unsound. You get what you are \nasking for. ", defaultBool)));
-		
-		
-		
+		setInput_Optionsno_bodies_for_excluded_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Allow Phantom References", "", "","no-bodies-for-excluded", "\nPrevents Soot from loading method bodies for all excluded \nclasses (see exclude option), even when running in whole-program \nmode. This is useful for computing a shallow points-to analysis \nthat does not, for instance, take into account the JDK. Of \ncourse, such analyses may be unsound. You get what you are \nasking for.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"j2me";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Optionsj2me_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use J2ME mode", "", "","j2me", "\nUse J2ME mode. J2ME does not have class Cloneable nor \nSerializable, so we have to change type \nassignment to not refer to those classes. ", defaultBool)));
-		
-		
-		
+		setInput_Optionsj2me_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use J2ME mode", "", "","j2me", "\nUse J2ME mode. J2ME does not have class Cloneable nor \nSerializable, so we have to change type assignment to not refer \nto those classes.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"polyglot";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Optionspolyglot_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use Polyglot frontend", "", "","polyglot", "\nUse Java 1.4 Polyglot frontend instead of JastAdd, which \nsupports Java 5 syntax. ", defaultBool)));
-		
-		
-		
+		setInput_Optionspolyglot_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use Polyglot frontend", "", "","polyglot", "\nUse Java 1.4 Polyglot frontend instead of JastAdd, which \nsupports Java 5 syntax.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"permissive-resolving";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Optionspermissive_resolving_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use permissive resolving strategy", "", "","permissive-resolving", "\n			 When this option is enabled, Soot will try to resolve \nclasses using an alternative 			 strategy if the class cannot \nbe found using the default strategy. A class a.b.c 			 will, \nfor instance, also be loaded from a/b/c.jimple instead of only \na.b.c.jimple. 			", defaultBool)));
-		
-		
-		
+		setInput_Optionspermissive_resolving_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Use permissive resolving strategy", "", "","permissive-resolving", "\nWhen this option is enabled, Soot will try to resolve classes \nusing an alternative strategy if the class cannot be found using \nthe default strategy. A class a.b.c will, for instance, also be \nloaded from a/b/c.jimple instead of only a.b.c.jimple.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"drop-bodies-after-load";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setInput_Optionsdrop_bodies_after_load_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Drop method source after loading bodies", "", "","drop-bodies-after-load", "\n			 Each method is associated with a method source for \nloading its body. When this option is disabled, 			 a \nreference to this source is kept around even after the body has \nalready been loaded. This is a waste 			 of memory for most \nuse cases. When this option is enabled, the reference is \ndropped, allowing for garbage 			 collection of the method \nsource. On the other hand, if the body is ever released, it \ncannot easily be 			 recovered (i.e., loaded again) easily. \n			", defaultBool)));
-		
-		
-		
+		setInput_Optionsdrop_bodies_after_load_widget(new BooleanOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Drop method source after loading bodies", "", "","drop-bodies-after-load", "\nEach method is associated with a method source for loading its \nbody. When this option is disabled, a reference to this source \nis kept around even after the body has already been loaded. This \nis a waste of memory for most use cases. When this option is \nenabled, the reference is dropped, allowing for garbage \ncollection of the method source. On the other hand, if the body \nis ever released, it cannot easily be recovered (i.e., loaded \nagain) easily.", defaultBool)));
+
 		data = new OptionData [] {
 		
-		new OptionData("Class File",
-		"c",
-		"\nTry to resolve classes first from .class files found in the \nSoot classpath. Fall back to .jimple files only when unable to \nfind a .class file. ",
-		
-		true),
-		
-		new OptionData("Only Class File",
-		"only-class",
-		"\nTry to resolve classes first from .class files found in the \nSoot classpath. Do not try any other types of files even when \nunable to find a .class file. ",
-		
-		false),
-		
-		new OptionData("Jimple File",
-		"J",
-		"\nTry to resolve classes first from .jimple files found in the \nSoot classpath. Fall back to .class files only when unable to \nfind a .jimple file. ",
-		
-		false),
-		
-		new OptionData("Java File",
-		"java",
-		"\nTry to resolve classes first from .java files found in the Soot \nclasspath. Fall back to .class files only when unable to find a \n.java file. ",
-		
-		false),
-		
-		new OptionData("APK File",
-		"apk",
-		"\nTry to resolve classes first from .apk (Android Package) files \nfound in the Soot classpath. Fall back to .class, .java or \n.jimple files only when unable to find a class in .apk files. ",
-		
-		false),
-		
-		new OptionData("APK File",
-		"apk-class-jimple",
-		"\nTry to resolve classes first from .apk (Android Package) files \nfound in the Soot classpath. Fall back to .class, or .jimple \nfiles only when unable to find a class in .apk files. Never load \na .java file. ",
-		
-		false),
-		
+				new OptionData("Class File",
+						"c class",
+						"\nTry to resolve classes first from .class files found in the Soot \nclasspath. Fall back to .jimple files only when unable to find a \n.class file.",
+						true),
+				new OptionData("Only Class File",
+						"only-class",
+						"\nTry to resolve classes first from .class files found in the Soot \nclasspath. Do not try any other types of files even when unable \nto find a .class file.",
+						false),
+				new OptionData("Jimple File",
+						"J jimple",
+						"\nTry to resolve classes first from .jimple files found in the \nSoot classpath. Fall back to .class files only when unable to \nfind a .jimple file.",
+						false),
+				new OptionData("Java File",
+						"java",
+						"\nTry to resolve classes first from .java files found in the Soot \nclasspath. Fall back to .class files only when unable to find a \n.java file.",
+						false),
+				new OptionData("APK File",
+						"apk",
+						"\nTry to resolve classes first from .apk (Android Package) files \nfound in the Soot classpath. Fall back to .class, .java or \n.jimple files only when unable to find a class in .apk files.",
+						false),
+				new OptionData("APK File",
+						"apk-class-jimple apk-c-j",
+						"\nTry to resolve classes first from .apk (Android Package) files \nfound in the Soot classpath. Fall back to .class, or .jimple \nfiles only when unable to find a class in .apk files. Never load \na .java file.",
+						false),
 		};
-		
-										
-		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroupInput_Options, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "\nSets FORMAT as Soot's preference for the type of source files \nto read when it looks for a class. ")));
-		
+
+
+		setInput_Optionssrc_prec_widget(new MultiOptionWidget(editGroupInput_Options, SWT.NONE, data, new OptionData("Input Source Precedence", "", "","src-prec", "\nSets FORMAT as Soot's preference for the type of source files to \nread when it looks for a class.")));
+
 		defKey = ""+" "+""+" "+"src-prec";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getInput_Optionssrc_prec_widget().setDef(defaultString);
 		}
-		
-		
 
-		defKey = ""+" "+""+" "+"process-path";
+		defKey = ""+" "+""+" "+"process-path process-dir";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultString = getArrayDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setInput_Optionsprocess_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-path", "\nAdd all classes found in DIR to the set of argument classes \nwhich is analyzed and transformed by Soot. You can specify the \noption more than once, to add argument classes from multiple \ndirectories. You can also state JAR files. If subdirectories of \nDIR contain .class or .jimple files, Soot assumes that the \nsubdirectory names correspond to components of the classes' \npackage names. If DIR contains subA/subB/MyClass.class, for \ninstance, then Soot assumes MyClass is in package subA.subB.", defaultString)));
+		setInput_Optionsprocess_dir_widget(new ListOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Process Directories",  "", "","process-path process-dir", "\nAdd all classes found in DIR to the set of argument classes \nwhich is analyzed and transformed by Soot. You can specify the \noption more than once, to add argument classes from multiple \ndirectories. You can also state JAR files. If subdirectories of \nDIR contain .class or .jimple files, Soot assumes that the \nsubdirectory names correspond to components of the classes' \npackage names. If DIR contains subA/subB/MyClass.class, for \ninstance, then Soot assumes MyClass is in package subA.subB.", defaultString)));
 		
-		
-		defKey = ""+" "+""+" "+"cp";
+
+		defKey = ""+" "+""+" "+"cp soot-class-path soot-classpath";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp", "\nUse PATH as the list of directories in which Soot should search \nfor classes. PATH should be a series of directories, separated \nby the path separator character for your system. If no classpath \nis set on the command line, but the system property \nsoot.class.path has been set, Soot uses its value as the \nclasspath. If neither the command line nor the system properties \nspecify a Soot classpath, Soot falls back on a default classpath \nconsisting of the value of the system property java.class.path \nfollowed java.home/lib/rt.jar, where java.home stands for the \ncontents of the system property java.home and / stands for the \nsystem file separator.", defaultString)));
+		setInput_Optionssoot_classpath_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Soot Classpath",  "", "","cp soot-class-path soot-classpath", "\nUse PATH as the list of directories in which Soot should search \nfor classes. PATH should be a series of directories, separated \nby the path separator character for your system. If no classpath \nis set on the command line, but the system property \nsoot.class.path has been set, Soot uses its value as the \nclasspath. If neither the command line nor the system properties \nspecify a Soot classpath, Soot falls back on a default classpath \nconsisting of the value of the system property java.class.path \nfollowed java.home/lib/rt.jar, where java.home stands for the \ncontents of the system property java.home and / stands for the \nsystem file separator.", defaultString)));
 		
-		
+
 		defKey = ""+" "+""+" "+"android-jars";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setInput_Optionsandroid_jars_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Path to Android jar files",  "", "","android-jars", "\nUse PATH as the \ndirectory in which Soot should search for the appropriate \nandroid.jar file to use. The directory must contain \nsubdirectories named after the Android SDK version. Those \nsubdirectories must each contain one android.jar file. \nFor instance if the target directory is \n/home/user/androidSDK/platforms/ subdirectories \ncontaining android.jar for Android SDK 8 and 13 must be named \nandroid-8/ and android-13/ respectively. Note, that this \noptions requires that only one Android application is analyzed \nat a time. The Android application must contain the \nAndroidManifest.xml file. 			", defaultString)));
+		setInput_Optionsandroid_jars_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Path to Android jar files",  "", "","android-jars", "\nUse PATH as the directory in which Soot should search for the \nappropriate android.jar file to use. The directory must contain \nsubdirectories named after the Android SDK version. Those \nsubdirectories must each contain one android.jar file. For \ninstance if the target directory is \n/home/user/androidSDK/platforms/ subdirectories containing \nandroid.jar for Android SDK 8 and 13 must be named android-8/ \nand android-13/ respectively. Note, that this options requires \nthat only one Android application is analyzed at a time. The \nAndroid application must contain the AndroidManifest.xml file.", defaultString)));
 		
-		
+
 		defKey = ""+" "+""+" "+"force-android-jar";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setInput_Optionsforce_android_jar_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android jar file",  "", "","force-android-jar", "\nUse PATH as the path to the android.jar file Soot should use. \nThis option overrides the 'android-jars' option. If the \n'android-api-version' option is not specified, Soot will try to \nparse the API version from the given file path. If that fails, \nit will fall back to the default. If the 'android-api-version' \noption is specified, the API version used for parsing will be \ntaken from there. 			", defaultString)));
+		setInput_Optionsforce_android_jar_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android jar file",  "", "","force-android-jar", "\nUse PATH as the path to the android.jar file Soot should use. \nThis option overrides the 'android-jars' option. If the \n'android-api-version' option is not specified, Soot will try to \nparse the API version from the given file path. If that fails, \nit will fall back to the default. If the 'android-api-version' \noption is specified, the API version used for parsing will be \ntaken from there.", defaultString)));
 		
-		
+
 		defKey = ""+" "+""+" "+"android-api-version";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setInput_Optionsandroid_api_version_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android API version",  "", "","android-api-version", "\nUse VERSION as the Android API version that Soot should use \nwhen processing APK or DEX files. When combined with the \n'android-jars' option, this value will take precedence over the \nAPI version specified in the app's manifest file. When combined \nwith the 'force-android-jar' option, the JAR file will be the \none from the 'force-android-jar' option, but the API version \nused for parsing will be the explicitly given one. 			", defaultString)));
+		setInput_Optionsandroid_api_version_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Force specific Android API version",  "", "","android-api-version", "\nUse VERSION as the Android API version that Soot should use when \nprocessing APK or DEX files. When combined with the \n'android-jars' option, this value will take precedence over the \nAPI version specified in the app's manifest file. When combined \nwith the 'force-android-jar' option, the JAR file will be the \none from the 'force-android-jar' option, but the API version \nused for parsing will be the explicitly given one.", defaultString)));
 		
-		
+
 		defKey = ""+" "+""+" "+"main-class";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setInput_Optionsmain_class_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Main Class",  "", "","main-class", "\nBy default, the first class encountered with a main method is \ntreated as the main class (entry point) in whole-program \nanalysis. This option overrides this default. ", defaultString)));
+		setInput_Optionsmain_class_widget(new StringOptionWidget(editGroupInput_Options, SWT.NONE, new OptionData("Main Class",  "", "","main-class", "\nBy default, the first class encountered with a main method is \ntreated as the main class (entry point) in whole-program \nanalysis. This option overrides this default.", defaultString)));
 		
 
-		
+
 		return editGroupInput_Options;
 	}
 
@@ -11382,337 +8761,238 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = ""+" "+""+" "+"outjar";
+
+		defKey = ""+" "+""+" "+"outjar output-jar";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setOutput_Optionsoutput_jar_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Jar File", "", "","outjar", "\nSaves output files into a Jar file instead of a directory. The \noutput Jar file name should be specified using the Output \nDirectory (output-dir) option. Note that if the output Jar file \nexists before Soot runs, any files inside it will first be \nremoved. ", defaultBool)));
-		
-		
-		
+		setOutput_Optionsoutput_jar_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Jar File", "", "","outjar output-jar", "\nSaves output files into a Jar file instead of a directory. The \noutput Jar file name should be specified using the Output \nDirectory (output-dir) option. Note that if the output Jar file \nexists before Soot runs, any files inside it will first be \nremoved.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"xml-attributes";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setOutput_Optionsxml_attributes_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Save Tags to XML", "", "","xml-attributes", "\nSave in XML format a variety of tags which Soot has attached to \nits internal representations of the application classes. The XML \nfile can then be read by the Soot plug-in for the Eclipse IDE, \nwhich can display the annotations together with the program \nsource, to aid program understanding. ", defaultBool)));
-		
-		
-		
-		defKey = ""+" "+""+" "+"print-tags";
+		setOutput_Optionsxml_attributes_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Save Tags to XML", "", "","xml-attributes", "\nSave in XML format a variety of tags which Soot has attached to \nits internal representations of the application classes. The XML \nfile can then be read by the Soot plug-in for the Eclipse IDE, \nwhich can display the annotations together with the program \nsource, to aid program understanding.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"print-tags print-tags-in-output";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setOutput_Optionsprint_tags_in_output_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Print Tags in Output", "", "","print-tags", "\nPrint in output files (either in Jimple or Dave) a variety of \ntags which Soot has attached to its internal representations of \nthe application classes. The tags will be printed on the line \nsucceeding the stmt that they are attached to. ", defaultBool)));
-		
-		
-		
+		setOutput_Optionsprint_tags_in_output_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Print Tags in Output", "", "","print-tags print-tags-in-output", "\nPrint in output files (either in Jimple or Dave) a variety of \ntags which Soot has attached to its internal representations of \nthe application classes. The tags will be printed on the line \nsucceeding the stmt that they are attached to.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"no-output-source-file-attribute";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setOutput_Optionsno_output_source_file_attribute_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Don't Output Source File Attribute", "", "","no-output-source-file-attribute", "\nDon't output Source File Attribute when producing class files. ", defaultBool)));
-		
-		
-		
+		setOutput_Optionsno_output_source_file_attribute_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Don't Output Source File Attribute", "", "","no-output-source-file-attribute", "\nDon't output Source File Attribute when producing class files.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"no-output-inner-classes-attribute";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setOutput_Optionsno_output_inner_classes_attribute_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Don't Output Inner Classes Attribute", "", "","no-output-inner-classes-attribute", "\nDon't output inner classes attribute in class \nfiles. ", defaultBool)));
-		
-		
-		
+		setOutput_Optionsno_output_inner_classes_attribute_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Don't Output Inner Classes Attribute", "", "","no-output-inner-classes-attribute", "\nDon't output inner classes attribute in class files.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"show-exception-dests";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setOutput_Optionsshow_exception_dests_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Show Exception Destinations", "", "","show-exception-dests", "\nIndicate whether to show exception destination edges as well as \ncontrol flow edges in dumps of exceptional control flow graphs. ", defaultBool)));
-		
-		
-		
+		setOutput_Optionsshow_exception_dests_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Show Exception Destinations", "", "","show-exception-dests", "\nIndicate whether to show exception destination edges as well as \ncontrol flow edges in dumps of exceptional control flow graphs.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"gzip";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setOutput_Optionsgzip_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("GZipped IR output", "", "","gzip", "\nThis option causes Soot to compress output files of \nintermediate representations with GZip. It does not apply to \nclass files output by Soot. ", defaultBool)));
-		
-		
-		
+		setOutput_Optionsgzip_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("GZipped IR output", "", "","gzip", "\nThis option causes Soot to compress output files of intermediate \nrepresentations with GZip. It does not apply to class files \noutput by Soot.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"force-overwrite";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setOutput_Optionsforce_overwrite_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Force Overwrite Output Files", "", "","force-overwrite", "\n	 If this option is set to true, the output files will be \noverwritten 	 if they already exist and no further warning \nwill be issued. 		", defaultBool)));
-		
-		
-		
+		setOutput_Optionsforce_overwrite_widget(new BooleanOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Force Overwrite Output Files", "", "","force-overwrite", "\nIf this option is set to true, the output files will be \noverwritten if they already exist and no further warning will be \nissued.", defaultBool)));
+
 		data = new OptionData [] {
 		
-		new OptionData("Jimple File",
-		"J",
-		"\nProduce .jimple files, which contain a textual form of Soot's \nJimple internal representation. ",
-		
-		false),
-		
-		new OptionData("Jimp File",
-		"j",
-		"\nProduce .jimp files, which contain an abbreviated form of \nJimple. ",
-		
-		false),
-		
-		new OptionData("Shimple File",
-		"S",
-		"\nProduce .shimple files, containing a textual form of Soot's SSA \nShimple internal representation. Shimple adds Phi nodes to \nJimple. ",
-		
-		false),
-		
-		new OptionData("Shimp File",
-		"s",
-		"\nProduce .shimp files, which contain an abbreviated form of \nShimple. ",
-		
-		false),
-		
-		new OptionData("Baf File",
-		"B",
-		"\nProduce .baf files, which contain a textual form of Soot's Baf \ninternal representation. ",
-		
-		false),
-		
-		new OptionData("Abbreviated Baf File",
-		"b",
-		"\nProduce .b files, which contain an \nabbreviated form of Baf. ",
-		
-		false),
-		
-		new OptionData("Grimp File",
-		"G",
-		"\nProduce .grimple files, which contain a textual form of Soot's \nGrimp internal representation. ",
-		
-		false),
-		
-		new OptionData("Abbreviated Grimp File",
-		"g",
-		"\nProduce .grimp files, which contain an abbreviated form of \nGrimp. ",
-		
-		false),
-		
-		new OptionData("Xml File",
-		"X",
-		"\nProduce .xml files containing an annotated version of the \nSoot's Jimple internal representation. ",
-		
-		false),
-		
-		new OptionData("Dalvik Executable File",
-		"dex",
-		"\nProduce Dalvik Virtual Machine files. If input was an Android \nPackage (APK), a new APK is generated with it's classes.dex \nreplaced. If no input APK is found, only a classes.dex is \ngenerated.",
-		
-		false),
-		
-		new OptionData("Dalvik Executable File",
-		"force-dex",
-		"\nProduce Dalvik Virtual Machine files. This option always creates \na stand-alone DEX file, even if the input was read from an \nAndroid Package (APK). ",
-		
-		false),
-		
-		new OptionData("No Output File",
-		"n",
-		"\nProduce no output files. ",
-		
-		false),
-		
-		new OptionData("Jasmin File",
-		"jasmin",
-		"\nProduce .jasmin files, suitable as input to the jasmin bytecode \nassembler. ",
-		
-		false),
-		
-		new OptionData("Class File",
-		"c",
-		"\nProduce Java .class files, executable by any Java Virtual \nMachine. ",
-		
-		true),
-		
-		new OptionData("Dava Decompiled File",
-		"d",
-		"\nProduce .java files generated by the Dava decompiler. ",
-		
-		false),
-		
-		new OptionData("Jimle Template File",
-		"t",
-		"\nProduce .java files with Jimple templates. ",
-		
-		false),
-		
-		new OptionData("ASM File",
-		"a",
-		"\nProduce .asm files as textual bytecode representation generated \nwith the ASM back end. ",
-		
-		false),
-		
+				new OptionData("Jimple File",
+						"J jimple",
+						"\nProduce .jimple files, which contain a textual form of Soot's \nJimple internal representation.",
+						false),
+				new OptionData("Jimp File",
+						"j jimp",
+						"\nProduce .jimp files, which contain an abbreviated form of \nJimple.",
+						false),
+				new OptionData("Shimple File",
+						"S shimple",
+						"\nProduce .shimple files, containing a textual form of Soot's SSA \nShimple internal representation. Shimple adds Phi nodes to \nJimple.",
+						false),
+				new OptionData("Shimp File",
+						"s shimp",
+						"\nProduce .shimp files, which contain an abbreviated form of \nShimple.",
+						false),
+				new OptionData("Baf File",
+						"B baf",
+						"\nProduce .baf files, which contain a textual form of Soot's Baf \ninternal representation.",
+						false),
+				new OptionData("Abbreviated Baf File",
+						"b",
+						"\nProduce .b files, which contain an abbreviated form of Baf.",
+						false),
+				new OptionData("Grimp File",
+						"G grimple",
+						"\nProduce .grimple files, which contain a textual form of Soot's \nGrimp internal representation.",
+						false),
+				new OptionData("Abbreviated Grimp File",
+						"g grimp",
+						"\nProduce .grimp files, which contain an abbreviated form of \nGrimp.",
+						false),
+				new OptionData("Xml File",
+						"X xml",
+						"\nProduce .xml files containing an annotated version of the Soot's \nJimple internal representation.",
+						false),
+				new OptionData("Dalvik Executable File",
+						"dex",
+						"\nProduce Dalvik Virtual Machine files. If input was an Android \nPackage (APK), a new APK is generated with it's classes.dex \nreplaced. If no input APK is found, only a classes.dex is \ngenerated. If no input APK is found and outjar is set, generated \nclasses.dex are placed in out .jar.",
+						false),
+				new OptionData("Dalvik Executable File",
+						"force-dex",
+						"\nProduce Dalvik Virtual Machine files. This option always creates \na stand-alone DEX file, even if the input was read from an \nAndroid Package (APK).",
+						false),
+				new OptionData("No Output File",
+						"n none",
+						"\nProduce no output files.",
+						false),
+				new OptionData("Jasmin File",
+						"jasmin",
+						"\nProduce .jasmin files, suitable as input to the jasmin bytecode \nassembler.",
+						false),
+				new OptionData("Class File",
+						"c class",
+						"\nProduce Java .class files, executable by any Java Virtual \nMachine.",
+						true),
+				new OptionData("Dava Decompiled File",
+						"d dava",
+						"\nProduce .java files generated by the Dava decompiler.",
+						false),
+				new OptionData("Jimle Template File",
+						"t template",
+						"\nProduce .java files with Jimple templates.",
+						false),
+				new OptionData("ASM File",
+						"a asm",
+						"\nProduce .asm files as textual bytecode representation generated \nwith the ASM back end.",
+						false),
 		};
-		
-										
-		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Output Format", "", "","f", "\nSpecify the format of output files Soot should produce, if any. \nNote that while the abbreviated formats (jimp, shimp, b, and \ngrimp) are easier to read than their unabbreviated counterparts \n(jimple, shimple, baf, and grimple), they may contain \nambiguities. Method signatures in the abbreviated formats, for \ninstance, are not uniquely determined.")));
-		
-		defKey = ""+" "+""+" "+"f";
+
+
+		setOutput_Optionsoutput_format_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Output Format", "", "","f output-format", "\nSpecify the format of output files Soot should produce, if any. \nNote that while the abbreviated formats (jimp, shimp, b, and \ngrimp) are easier to read than their unabbreviated counterparts \n(jimple, shimple, baf, and grimple), they may contain \nambiguities. Method signatures in the abbreviated formats, for \ninstance, are not uniquely determined.")));
+
+		defKey = ""+" "+""+" "+"f output-format";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getOutput_Optionsoutput_format_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Default behavior",
-		"default",
-		"\nLet Soot determine Java version of generated bytecode. ",
-		
-		false),
-		
-		new OptionData("Java 1.1",
-		"1.1",
-		"\nForce Java 1.1 as output version. ",
-		
-		false),
-		
-		new OptionData("Java 1.2",
-		"1.2",
-		"\nForce Java 1.2 as output version. ",
-		
-		false),
-		
-		new OptionData("Java 1.3",
-		"1.3",
-		"\nForce Java 1.3 as output version. ",
-		
-		false),
-		
-		new OptionData("Java 1.4",
-		"1.4",
-		"\nForce Java 1.4 as output version. ",
-		
-		false),
-		
-		new OptionData("Java 1.5",
-		"1.5",
-		"\nForce Java 1.5 as output version. ",
-		
-		false),
-		
-		new OptionData("Java 1.6",
-		"1.6",
-		"\nForce Java 1.6 as output version. ",
-		
-		false),
-		
-		new OptionData("Java 1.7",
-		"1.7",
-		"\nForce Java 1.7 as output version. ",
-		
-		false),
-		
-		new OptionData("Java 1.8",
-		"1.8",
-		"\nForce Java 1.8 as output version. ",
-		
-		false),
-		
+				new OptionData("Default behavior",
+						"default",
+						"\nLet Soot determine Java version of generated bytecode.",
+						false),
+				new OptionData("Java 1.1",
+						"1.1 1",
+						"\nForce Java 1.1 as output version.",
+						false),
+				new OptionData("Java 1.2",
+						"1.2 2",
+						"\nForce Java 1.2 as output version.",
+						false),
+				new OptionData("Java 1.3",
+						"1.3 3",
+						"\nForce Java 1.3 as output version.",
+						false),
+				new OptionData("Java 1.4",
+						"1.4 4",
+						"\nForce Java 1.4 as output version.",
+						false),
+				new OptionData("Java 1.5",
+						"1.5 5",
+						"\nForce Java 1.5 as output version.",
+						false),
+				new OptionData("Java 1.6",
+						"1.6 6",
+						"\nForce Java 1.6 as output version.",
+						false),
+				new OptionData("Java 1.7",
+						"1.7 7",
+						"\nForce Java 1.7 as output version.",
+						false),
+				new OptionData("Java 1.8",
+						"1.8 8",
+						"\nForce Java 1.8 as output version.",
+						false),
 		};
-		
-										
-		setOutput_Optionsjava_version_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Java version", "", "","java-version", "\nForce Java version of bytecode generated by Soot. This \noption can only be set on output-format class and \nasm-backend set, or on output-format asm")));
-		
+
+
+		setOutput_Optionsjava_version_widget(new MultiOptionWidget(editGroupOutput_Options, SWT.NONE, data, new OptionData("Java version", "", "","java-version", "\nForce Java version of bytecode generated by Soot. This option \ncan only be set on output-format class and asm-backend set, or \non output-format asm")));
+
 		defKey = ""+" "+""+" "+"java-version";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getOutput_Optionsjava_version_widget().setDef(defaultString);
 		}
-		
-		
 
 		defKey = ""+" "+""+" "+"dump-body";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultString = getArrayDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
 		setOutput_Optionsdump_body_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Body Dumping Phases",  "", "","dump-body", "\nSpecify that PHASENAME is one of the phases to be dumped. For \nexample -dump-body jb -dump-body jb.a would dump each method \nbefore and after the jb and jb.a phases. The pseudo phase name \n``ALL'' causes all phases to be dumped. Output files appear in \nsubdirectories under the soot output directory, with names like \nclassName/methodSignature/phasename-graphType-number.in and \nclassName/methodSignature/phasename-graphType-number.out. The \n``in'' and ``out'' suffixes distinguish the internal \nrepresentations of the method before and after the phase \nexecuted.", defaultString)));
@@ -11723,32 +9003,26 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (isInDefList(defKey)) {
 			defaultString = getArrayDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setOutput_Optionsdump_cfg_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("CFG Dumping Phases",  "", "","dump-cfg", "\nSpecify that any control flow graphs constructed during the \nPHASENAME phases should be dumped. For example -dump-cfg jb \n-dump-cfg bb.lso would dump all CFGs constructed during the jb \nand bb.lso phases. The pseudo phase name ``ALL'' causes CFGs \nconstructed in all phases to be dumped.The control flow graphs \nare dumped in the form of a file containing input to dot graph \nvisualization tool. Output dot files are stored beneath the \nsoot output directory, in files with names like: \nclassName/methodSignature/phasename-graphType-number.dot, where \nnumber serves to distinguish graphs in phases that produce more \nthan one (for example, the Aggregator may produce multiple \nExceptionalUnitGraphs).", defaultString)));
+		setOutput_Optionsdump_cfg_widget(new ListOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("CFG Dumping Phases",  "", "","dump-cfg", "\nSpecify that any control flow graphs constructed during the \nPHASENAME phases should be dumped. For example -dump-cfg jb \n-dump-cfg bb.lso would dump all CFGs constructed during the jb \nand bb.lso phases. The pseudo phase name ``ALL'' causes CFGs \nconstructed in all phases to be dumped. The control flow graphs \nare dumped in the form of a file containing input to dot graph \nvisualization tool. Output dot files are stored beneath the soot \noutput directory, in files with names like: \nclassName/methodSignature/phasename-graphType-number.dot, where \nnumber serves to distinguish graphs in phases that produce more \nthan one (for example, the Aggregator may produce multiple \nExceptionalUnitGraphs).", defaultString)));
 		
-		
-		defKey = ""+" "+""+" "+"d";
+
+		defKey = ""+" "+""+" "+"d output-dir";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "./sootOutput";
-			
 		}
 
-		setOutput_Optionsoutput_dir_widget(new StringOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Directory",  "", "","d", "\nStore output files in DIR. DIR may be relative to the working \ndirectory. ", defaultString)));
+		setOutput_Optionsoutput_dir_widget(new StringOptionWidget(editGroupOutput_Options, SWT.NONE, new OptionData("Output Directory",  "", "","d output-dir", "\nStore output files inDIR. DIR may be relative to the working \ndirectory.", defaultString)));
 		
 
-		
+
 		return editGroupOutput_Options;
 	}
 
@@ -11777,291 +9051,217 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = ""+" "+""+" "+"O";
+
+		defKey = ""+" "+""+" "+"O optimize";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setProcessing_Optionsoptimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Optimize", "", "","O", "\nPerform intraprocedural optimizations on the application \nclasses. ", defaultBool)));
-		
-		
-		
-		defKey = ""+" "+""+" "+"W";
+		setProcessing_Optionsoptimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Optimize", "", "","O optimize", "\nPerform intraprocedural optimizations on the application \nclasses.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"W whole-optimize";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setProcessing_Optionswhole_optimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Whole Program Optimize", "", "","W", "\nPerform whole program optimizations on the application classes. \nThis enables the Whole-Jimple Optimization pack as well as whole \nprogram mode and intraprocedural optimizations. ", defaultBool)));
-		
-		
-		
+		setProcessing_Optionswhole_optimize_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Whole Program Optimize", "", "","W whole-optimize", "\nPerform whole program optimizations on the application classes. \nThis enables the Whole-Jimple Optimization pack as well as whole \nprogram mode and intraprocedural optimizations.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"via-grimp";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setProcessing_Optionsvia_grimp_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Grimp", "", "","via-grimp", "\nConvert Jimple to bytecode via the Grimp intermediate \nrepresentation instead of via the Baf intermediate \nrepresentation. ", defaultBool)));
-		
-		
-		
+		setProcessing_Optionsvia_grimp_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Grimp", "", "","via-grimp", "\nConvert Jimple to bytecode via the Grimp intermediate \nrepresentation instead of via the Baf intermediate \nrepresentation.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"via-shimple";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setProcessing_Optionsvia_shimple_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Shimple", "", "","via-shimple", "\nEnable Shimple, Soot's SSA representation. This generates \nShimple bodies for the application classes, optionally \ntransforms them with analyses that run on SSA form, then turns \nthem back into Jimple for processing by the rest of Soot. For \nmore information, see the documentation for the shimp, stp, and \nsop phases. ", defaultBool)));
-		
-		
-		
+		setProcessing_Optionsvia_shimple_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Via Shimple", "", "","via-shimple", "\nEnable Shimple, Soot's SSA representation. This generates \nShimple bodies for the application classes, optionally \ntransforms them with analyses that run on SSA form, then turns \nthem back into Jimple for processing by the rest of Soot. For \nmore information, see the documentation for the shimp, stp, and \nsop phases.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"omit-excepting-unit-edges";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
 		setProcessing_Optionsomit_excepting_unit_edges_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Omit Excepting Unit Edges", "", "","omit-excepting-unit-edges", "\nWhen constructing an ExceptionalUnitGraph or \nExceptionalBlockGraph, include edges to an exception handler \nonly from the predecessors of an instruction which may throw an \nexception to the handler, and not from the excepting instruction \nitself, unless the excepting instruction has potential side \neffects. Omitting edges from excepting units allows more \naccurate flow analyses (since if an instruction without side \neffects throws an exception, it has not changed the state of the \ncomputation). This accuracy, though, could lead optimizations to \ngenerate unverifiable code, since the dataflow analyses \nperformed by bytecode verifiers might include paths to exception \nhandlers from all protected instructions, regardless of whether \nthe instructions have side effects. (In practice, the pedantic \nthrow analysis suffices to pass verification in all VMs tested \nwith Soot to date, but the JVM specification does allow for less \ndiscriminating verifiers which would reject some code that might \nbe generated using the pedantic throw analysis without also \nadding edges from all excepting units.)", defaultBool)));
-		
-		
-		
+
 		defKey = ""+" "+""+" "+"trim-cfgs";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setProcessing_Optionstrim_cfgs_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Trim CFGs", "", "","trim-cfgs", "\nWhen constructing CFGs which include exceptional edges, \nminimize the number of edges leading to exception handlers by \nanalyzing which instructions might actually be executed before \nan exception is thrown, instead of assuming that every \ninstruction protected by a handler has the potential to throw an \nexception the handler catches. -trim-cfgs is shorthand for \n-throw-analysis unit -omit-excepting-unit-edges -p jb.tt \nenabled:true.", defaultBool)));
-		
-		
-		
-		defKey = ""+" "+""+" "+"ire";
+		setProcessing_Optionstrim_cfgs_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Trim CFGs", "", "","trim-cfgs", "\nWhen constructing CFGs which include exceptional edges, minimize \nthe number of edges leading to exception handlers by analyzing \nwhich instructions might actually be executed before an \nexception is thrown, instead of assuming that every instruction \nprotected by a handler has the potential to throw an exception \nthe handler catches. -trim-cfgs is shorthand for -throw-analysis \nunit -omit-excepting-unit-edges -p jb.tt enabled:true.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"ire ignore-resolution-errors";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setProcessing_Optionsignore_resolution_errors_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Ignore reolution errors", "", "","ire", "\nSome programs may contain dead code that references fields or \nmethods that do not exist. By default, Soot exists with an \nexception when this happens. If this option is enabled, Soot \nonly prints a warning but does not exit. ", defaultBool)));
-		
-		
-		
+		setProcessing_Optionsignore_resolution_errors_widget(new BooleanOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Ignore reolution errors", "", "","ire ignore-resolution-errors", "\nSome programs may contain dead code that references fields or \nmethods that do not exist. By default, Soot exists with an \nexception when this happens. If this option is enabled, Soot \nonly prints a warning but does not exit.", defaultBool)));
+
 		data = new OptionData [] {
 		
-		new OptionData("Fail",
-		"fail",
-		"\nWhen this value is used, the analysis raises an error when code \nthat accesses a static field using instance field operations is \ndetected. ",
-		
-		false),
-		
-		new OptionData("Ignore",
-		"ignore",
-		"\nWhen this option is enabled, Soot will accept field accesses \nwhen in the case of wrong staticness and will create the Jimple \ncode equivalent to the (broken) input code nevertheless. The \nJimple code will then be invalid, but will exactly resemble the \ninput code. ",
-		
-		false),
-		
-		new OptionData("Fix",
-		"fix",
-		"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. If a \nproblem cannot be fixed, an access to that method or field will \nnot throw an exception. ",
-		
-		true),
-		
-		new OptionData("FixStrict",
-		"fixstrict",
-		"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. If a \nproblem cannot be fixed, an access to that method or field will \nstill throw an exception. This makes sure that problems cannot \nsilently disappear and cause invalid Jimple code. ",
-		
-		true),
-		
+				new OptionData("Fail",
+						"fail",
+						"\nWhen this value is used, the analysis raises an error when code \nthat accesses a static field using instance field operations is \ndetected.",
+						false),
+				new OptionData("Ignore",
+						"ignore",
+						"\nWhen this option is enabled, Soot will accept field accesses \nwhen in the case of wrong staticness and will create the Jimple \ncode equivalent to the (broken) input code nevertheless. The \nJimple code will then be invalid, but will exactly resemble the \ninput code.",
+						false),
+				new OptionData("Fix",
+						"fix",
+						"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. If a \nproblem cannot be fixed, an access to that method or field will \nnot throw an exception.",
+						true),
+				new OptionData("FixStrict",
+						"fixstrict",
+						"\nWhen Soot detects a case in which a static field is accessed as \nif it were an instance field, Soot will transparently fix the \nerror and generate Jimple code for the fixed program. If a \nproblem cannot be fixed, an access to that method or field will \nstill throw an exception. This makes sure that problems cannot \nsilently disappear and cause invalid Jimple code.",
+						true),
 		};
-		
-										
-		setProcessing_Optionswrong_staticness_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Handling of Wrong Staticness", "", "","wrong-staticness", "\nSome projects have been shown to contain invalid bytecode that \ntries to access a static field or method in a non-static way or \nthe other way around. The VM's bytecode verifier will reject \nsuch bytecode when loaded into the VM. This option, depending on \nthen chosen value, either causes to create Jimple bodies in such \ncases nontheless, ignoring the error, or \nautomatically fixes the error when possible. ")));
-		
+
+
+		setProcessing_Optionswrong_staticness_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Handling of Wrong Staticness", "", "","wrong-staticness", "\nSome projects have been shown to contain invalid bytecode that \ntries to access a static field or method in a non-static way or \nthe other way around. The VM's bytecode verifier will reject \nsuch bytecode when loaded into the VM. This option, depending on \nthen chosen value, either causes to create Jimple bodies in such \ncases nontheless, ignoring the error, or automatically fixes the \nerror when possible.")));
+
 		defKey = ""+" "+""+" "+"wrong-staticness";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getProcessing_Optionswrong_staticness_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Fail",
-		"fail",
-		"\nWhen resolving a field reference and the expected type does not \nmatch the declared type of the actual field, an exception will \nbe thrown. ",
-		
-		false),
-		
-		new OptionData("Ignore",
-		"ignore",
-		"\nWith this option, Soot will not check whether there is a \nmismatch between the requested and the declared field type. \nInstead, it will return the declared field with a matching name \nregardless of the field's type. This means that field reference \nresolving will never fail because of mismatching types, but the \nreturned field might not be what the user code expects. ",
-		
-		false),
-		
-		new OptionData("ReturnNull",
-		"null",
-		"\nWhen resolving a field reference for which the declared field \ntype and the expected type from the reference do not match, Soot \nwill return null with this option. The user code that invokes \ngetField() is responsible for correctly handling these null \nreferences. ",
-		
-		true),
-		
+				new OptionData("Fail",
+						"fail",
+						"\nWhen resolving a field reference and the expected type does not \nmatch the declared type of the actual field, an exception will \nbe thrown.",
+						false),
+				new OptionData("Ignore",
+						"ignore",
+						"\nWith this option, Soot will not check whether there is a \nmismatch between the requested and the declared field type. \nInstead, it will return the declared field with a matching name \nregardless of the field's type. This means that field reference \nresolving will never fail because of mismatching types, but the \nreturned field might not be what the user code expects.",
+						false),
+				new OptionData("ReturnNull",
+						"null",
+						"\nWhen resolving a field reference for which the declared field \ntype and the expected type from the reference do not match, Soot \nwill return null with this option. The user code that invokes \ngetField() is responsible for correctly handling these null \nreferences.",
+						true),
 		};
-		
-										
-		setProcessing_Optionsfield_type_mismatches_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Handling of Field Type Mismatches", "", "","field-type-mismatches", "\nSome source files contain invalid bytecode. As a consequence, \nresolving field references may fail due to mismatching types. In \nother words, the expected type in the field reference does not \nmatch the type of the actually declared field. With this option, \nthe user can specify how Soot shall react to such issues. ")));
-		
+
+
+		setProcessing_Optionsfield_type_mismatches_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Handling of Field Type Mismatches", "", "","field-type-mismatches", "\nSome source files contain invalid bytecode. As a consequence, \nresolving field references may fail due to mismatching types. In \nother words, the expected type in the field reference does not \nmatch the type of the actually declared field. With this option, \nthe user can specify how Soot shall react to such issues.")));
+
 		defKey = ""+" "+""+" "+"field-type-mismatches";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getProcessing_Optionsfield_type_mismatches_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Pedantic",
-		"pedantic",
-		"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, since the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread. ",
-		
-		false),
-		
-		new OptionData("Unit",
-		"unit",
-		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. ",
-		
-		true),
-		
-		new OptionData("Dalvik",
-		"dalvik",
-		"\nSpecialized throw analysis implementation that covers the \nsemantics of the Dalvik IR used for Android apps",
-		
-		false),
-		
+				new OptionData("Pedantic",
+						"pedantic",
+						"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, since the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread.",
+						false),
+				new OptionData("Unit",
+						"unit",
+						"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program.",
+						true),
+				new OptionData("Dalvik",
+						"dalvik",
+						"\nSpecialized throw analysis implementation that covers the \nsemantics of the Dalvik IR used for Android apps",
+						false),
 		};
-		
-										
-		setProcessing_Optionsthrow_analysis_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Default ThrowAnalysis", "", "","throw-analysis", "\nThis option specifies how to estimate the exceptions which each \nstatement may throw when constructing exceptional CFGs. ")));
-		
+
+
+		setProcessing_Optionsthrow_analysis_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Default ThrowAnalysis", "", "","throw-analysis", "\nThis option specifies how to estimate the exceptions which each \nstatement may throw when constructing exceptional CFGs.")));
+
 		defKey = ""+" "+""+" "+"throw-analysis";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getProcessing_Optionsthrow_analysis_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Select Automatically",
-		"auto",
-		"\nSelects the throw analysis \nto use for local initialization checking based on \ninformation from other options. In \nparticular, it will use 'dalvik' when \nit detects it is analyzing an Android application (e.g. \nwhen --android-jars or --force-android-jar are set) and \n'pedantic' otherwise. This is the default. ",
-		
-		true),
-		
-		new OptionData("Pedantic",
-		"pedantic",
-		"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, since the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread. ",
-		
-		false),
-		
-		new OptionData("Unit",
-		"unit",
-		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. ",
-		
-		false),
-		
-		new OptionData("Dalvik",
-		"dalvik",
-		"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the Dalvik Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. \nThis is the equivalent of Unit above, but targeting the Dalvik \nVM semantics as opposed to those of the JVM. ",
-		
-		false),
-		
+				new OptionData("Select Automatically",
+						"auto",
+						"\nSelects the throw analysis to use for local initialization \nchecking based on information from other options. In particular, \nit will use 'dalvik' when it detects it is analyzing an Android \napplication (e.g. when --android-jars or --force-android-jar are \nset) and 'pedantic' otherwise. This is the default.",
+						true),
+				new OptionData("Pedantic",
+						"pedantic",
+						"\nSays that any instruction may throw any Throwable whatsoever. \nStrictly speaking this is correct, since the Java libraries \ninclude the Thread.stop(Throwable) method, which allows other \nthreads to cause arbitrary exceptions to occur at arbitrary \npoints in the execution of a victim thread.",
+						false),
+				new OptionData("Unit",
+						"unit",
+						"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the JVM Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program.",
+						false),
+				new OptionData("Dalvik",
+						"dalvik",
+						"\nSays that each statement in the intermediate representation may \nthrow those exception types associated with the corresponding \nJava bytecode instructions in the Dalvik Specification. The \nanalysis deals with each statement in isolation, without regard \nto the surrounding program. This is the equivalent of Unit \nabove, but targeting the Dalvik VM semantics as opposed to those \nof the JVM.",
+						false),
 		};
-		
-										
-		setProcessing_Optionscheck_init_throw_analysis_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Local Initialization ThrowAnalysis", "", "","check-init-ta", "\nThis option specifies which \nthrow analysis to use during local initialization checking \ninside soot.Body. ")));
-		
-		defKey = ""+" "+""+" "+"check-init-ta";
+
+
+		setProcessing_Optionscheck_init_throw_analysis_widget(new MultiOptionWidget(editGroupProcessing_Options, SWT.NONE, data, new OptionData("Local Initialization ThrowAnalysis", "", "","check-init-ta check-init-throw-analysis", "\nThis option specifies which throw analysis to use during local \ninitialization checking inside soot.Body.")));
+
+		defKey = ""+" "+""+" "+"check-init-ta check-init-throw-analysis";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getProcessing_Optionscheck_init_throw_analysis_widget().setDef(defaultString);
 		}
-		
-		
 
 		defKey = ""+" "+""+" "+"plugin";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultString = getArrayDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
 		setProcessing_Optionsplugin_widget(new ListOptionWidget(editGroupProcessing_Options, SWT.NONE, new OptionData("Plugin Configuration",  "", "","plugin", "\nLoads the plugin configuration FILE and registers all plugins. \nMake sure that the option is specified before you try to pass \noptions to the loaded plugins.", defaultString)));
 		
 
-		
+
 		return editGroupProcessing_Options;
 	}
 
@@ -12081,7 +9281,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	 	
 		editGroupjb.setData("id", "jb");
 		
-		String descjb = "Creates a JimpleBody for each method";	
+		String descjb = "Creates a JimpleBody for each method\n                ";	
 		if (descjb.length() > 0) {
 			Label descLabeljb = new Label(editGroupjb, SWT.WRAP);
 			descLabeljb.setText(descjb);
@@ -12090,72 +9290,52 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbenabled_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Enabled", "p", "jb","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb"+" "+"use-original-names";
+		setjbenabled_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb"+" "+"use-original-names";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjbuse_original_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Use Original Names", "p", "jb","use-original-names", "\nRetain the original names for local variables when the source \nincludes those names. Otherwise, Soot gives variables generic \nnames based on their types. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb"+" "+"preserve-source-annotations";
+		setjbuse_original_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Use Original Names", "p phase-option", "jb","use-original-names", "\nRetain the original names for local variables when the source \nincludes those names. Otherwise, Soot gives variables generic \nnames based on their types.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb"+" "+"preserve-source-annotations";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjbpreserve_source_annotations_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Preserve source-level annotations", "p", "jb","preserve-source-annotations", "\nPreserves annotations of retention type SOURCE. (for \neverything but package and local variable \nannotations) ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb"+" "+"stabilize-local-names";
+		setjbpreserve_source_annotations_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Preserve source-level annotations", "p phase-option", "jb","preserve-source-annotations", "\nPreserves annotations of retention type SOURCE. (for everything \nbut package and local variable annotations)", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb"+" "+"stabilize-local-names";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjbstabilize_local_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Stabilize local names", "p", "jb","stabilize-local-names", "\nMake sure that local names are stable between runs. This \nrequires re-normalizing all local names after the standard \ntransformations and then sorting them which can negatively \nimpact performance. This option automatically sets "sort-locals" \nin "jb.lns" during the second re-normalization pass. ", defaultBool)));
-		
-		
+		setjbstabilize_local_names_widget(new BooleanOptionWidget(editGroupjb, SWT.NONE, new OptionData("Stabilize local names", "p phase-option", "jb","stabilize-local-names", "\nMake sure that local names are stable between runs. This \nrequires re-normalizing all local names after the standard \ntransformations and then sorting them which can negatively \nimpact performance. This option automatically sets "sort-locals" \nin "jb.lns" during the second re-normalization pass.", defaultBool)));
 
-		
+
 		return editGroupjb;
 	}
 
@@ -12184,24 +9364,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.dtr"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.dtr"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_dtrenabled_widget(new BooleanOptionWidget(editGroupjbjb_dtr, SWT.NONE, new OptionData("Enabled", "p", "jb.dtr","enabled", "\n", defaultBool)));
-		
-		
+		setjbjb_dtrenabled_widget(new BooleanOptionWidget(editGroupjbjb_dtr, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.dtr","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjbjb_dtr;
 	}
 
@@ -12230,24 +9405,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.ese"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.ese"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_eseenabled_widget(new BooleanOptionWidget(editGroupjbjb_ese, SWT.NONE, new OptionData("Enabled", "p", "jb.ese","enabled", "\n", defaultBool)));
-		
-		
+		setjbjb_eseenabled_widget(new BooleanOptionWidget(editGroupjbjb_ese, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.ese","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjbjb_ese;
 	}
 
@@ -12276,24 +9446,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.ls"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.ls"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_lsenabled_widget(new BooleanOptionWidget(editGroupjbjb_ls, SWT.NONE, new OptionData("Enabled", "p", "jb.ls","enabled", "\n", defaultBool)));
-		
-		
+		setjbjb_lsenabled_widget(new BooleanOptionWidget(editGroupjbjb_ls, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.ls","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjbjb_ls;
 	}
 
@@ -12322,40 +9487,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.a"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.a"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_aenabled_widget(new BooleanOptionWidget(editGroupjbjb_a, SWT.NONE, new OptionData("Enabled", "p", "jb.a","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.a"+" "+"only-stack-locals";
+		setjbjb_aenabled_widget(new BooleanOptionWidget(editGroupjbjb_a, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.a","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.a"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_aonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_a, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.a","only-stack-locals", "\nOnly aggregate locals that represent stack locations in the \noriginal bytecode. (Stack locals can be distinguished in Jimple \nby the character with which their names begin.) ", defaultBool)));
-		
-		
+		setjbjb_aonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_a, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jb.a","only-stack-locals", "\nOnly aggregate locals that represent stack locations in the \noriginal bytecode. (Stack locals can be distinguished in Jimple \nby the character with which their names begin.)", defaultBool)));
 
-		
+
 		return editGroupjbjb_a;
 	}
 
@@ -12384,24 +9539,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.ule"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.ule"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_uleenabled_widget(new BooleanOptionWidget(editGroupjbjb_ule, SWT.NONE, new OptionData("Enabled", "p", "jb.ule","enabled", "\n", defaultBool)));
-		
-		
+		setjbjb_uleenabled_widget(new BooleanOptionWidget(editGroupjbjb_ule, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.ule","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjbjb_ule;
 	}
 
@@ -12430,72 +9580,52 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.tr"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.tr"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_trenabled_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Enabled", "p", "jb.tr","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.tr"+" "+"use-older-type-assigner";
+		setjbjb_trenabled_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.tr","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.tr"+" "+"use-older-type-assigner";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjbjb_truse_older_type_assigner_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Use older type assigner", "p", "jb.tr","use-older-type-assigner", "\nThis enables the older type assigner that was in use until May \n2008. The current type assigner is a reimplementation by Ben \nBellamy that uses an entirely new and faster algorithm which \nalways assigns the most narrow type possible. If \ncompare-type-assigners is on, this option causes the older type \nassigner to execute first. (Otherwise the newer one is executed \nfirst.) ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.tr"+" "+"compare-type-assigners";
+		setjbjb_truse_older_type_assigner_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Use older type assigner", "p phase-option", "jb.tr","use-older-type-assigner", "\nThis enables the older type assigner that was in use until May \n2008. The current type assigner is a reimplementation by Ben \nBellamy that uses an entirely new and faster algorithm which \nalways assigns the most narrow type possible. If \ncompare-type-assigners is on, this option causes the older type \nassigner to execute first. (Otherwise the newer one is executed \nfirst.)", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.tr"+" "+"compare-type-assigners";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjbjb_trcompare_type_assigners_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Compare type assigners", "p", "jb.tr","compare-type-assigners", "\nEnables comparison (both runtime and results) of Ben Bellamy's \ntype assigner with the older type assigner that was in Soot. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.tr"+" "+"ignore-nullpointer-dereferences";
+		setjbjb_trcompare_type_assigners_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Compare type assigners", "p phase-option", "jb.tr","compare-type-assigners", "\nEnables comparison (both runtime and results) of Ben Bellamy's \ntype assigner with the older type assigner that was in Soot.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.tr"+" "+"ignore-nullpointer-dereferences";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjbjb_trignore_nullpointer_dereferences_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Ignore Nullpointer Dereferences", "p", "jb.tr","ignore-nullpointer-dereferences", "\n					 If this option is enabled, Soot wiil not check whether \nthe base object of a virtual method 					 call can only be \nnull. This will lead to the null_type pseudo type being used in \nyour Jimple 					 code. ", defaultBool)));
-		
-		
+		setjbjb_trignore_nullpointer_dereferences_widget(new BooleanOptionWidget(editGroupjbjb_tr, SWT.NONE, new OptionData("Ignore Nullpointer Dereferences", "p phase-option", "jb.tr","ignore-nullpointer-dereferences", "\nIf this option is enabled, Soot wiil not check whether the base \nobject of a virtual method call can only be null. This will lead \nto the null_type pseudo type being used in your Jimple code.", defaultBool)));
 
-		
+
 		return editGroupjbjb_tr;
 	}
 
@@ -12524,40 +9654,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.ulp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.ulp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_ulpenabled_widget(new BooleanOptionWidget(editGroupjbjb_ulp, SWT.NONE, new OptionData("Enabled", "p", "jb.ulp","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.ulp"+" "+"unsplit-original-locals";
+		setjbjb_ulpenabled_widget(new BooleanOptionWidget(editGroupjbjb_ulp, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.ulp","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.ulp"+" "+"unsplit-original-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_ulpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_ulp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jb.ulp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables among non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
-		
-		
+		setjbjb_ulpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_ulp, SWT.NONE, new OptionData("Unsplit Original Locals", "p phase-option", "jb.ulp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables among non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter.", defaultBool)));
 
-		
+
 		return editGroupjbjb_ulp;
 	}
 
@@ -12586,56 +9706,41 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.lns"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.lns"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_lnsenabled_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Enabled", "p", "jb.lns","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.lns"+" "+"only-stack-locals";
+		setjbjb_lnsenabled_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.lns","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.lns"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjbjb_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.lns","only-stack-locals", "\nOnly standardizes the names of variables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option is specified for the `jb' \nphase. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.lns"+" "+"sort-locals";
+		setjbjb_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jb.lns","only-stack-locals", "\nOnly standardizes the names of variables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option is specified for the `jb' \nphase.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.lns"+" "+"sort-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjbjb_lnssort_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Sort Locals", "p", "jb.lns","sort-locals", "\n							First sorts the locals alphabetically by the string \nrepresentation of 							their type. Then if there are two \nlocals with the same type, it uses \nthe only other source of structurally stable information (i.e. \nthe 							instructions themselves) to produce an ordering for \nthe locals 							that remains consistent between different soot \ninstances. It achieves this by \ndetermining the position of a local's first occurrence in the \n							instruction's list of definition statements. This \nposition is then used 							to sort the locals with the same \ntype in an ascending order. 						", defaultBool)));
-		
-		
+		setjbjb_lnssort_locals_widget(new BooleanOptionWidget(editGroupjbjb_lns, SWT.NONE, new OptionData("Sort Locals", "p phase-option", "jb.lns","sort-locals", "\nFirst sorts the locals alphabetically by the string \nrepresentation of their type. Then if there are two locals with \nthe same type, it uses the only other source of structurally \nstable information (i.e. the instructions themselves) to produce \nan ordering for the locals that remains consistent between \ndifferent soot instances. It achieves this by determining the \nposition of a local's first occurrence in the instruction's list \nof definition statements. This position is then used to sort the \nlocals with the same type in an ascending order.", defaultBool)));
 
-		
+
 		return editGroupjbjb_lns;
 	}
 
@@ -12664,56 +9769,41 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.cp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.cp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_cpenabled_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Enabled", "p", "jb.cp","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.cp"+" "+"only-regular-locals";
+		setjbjb_cpenabled_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.cp","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.cp"+" "+"only-regular-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjbjb_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jb.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, \nthose declared in the source bytecode. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.cp"+" "+"only-stack-locals";
+		setjbjb_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Only Regular Locals", "p phase-option", "jb.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, those \ndeclared in the source bytecode.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.cp"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
-		
-		
+		setjbjb_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_cp, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jb.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode.", defaultBool)));
 
-		
+
 		return editGroupjbjb_cp;
 	}
 
@@ -12742,40 +9832,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.dae"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.dae"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_daeenabled_widget(new BooleanOptionWidget(editGroupjbjb_dae, SWT.NONE, new OptionData("Enabled", "p", "jb.dae","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.dae"+" "+"only-stack-locals";
+		setjbjb_daeenabled_widget(new BooleanOptionWidget(editGroupjbjb_dae, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.dae","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.dae"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jb.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
-		
-		
+		setjbjb_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjbjb_dae, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jb.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode.", defaultBool)));
 
-		
+
 		return editGroupjbjb_dae;
 	}
 
@@ -12804,24 +9884,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.cp-ule"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.cp-ule"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_cp_uleenabled_widget(new BooleanOptionWidget(editGroupjbjb_cp_ule, SWT.NONE, new OptionData("Enabled", "p", "jb.cp-ule","enabled", "\n", defaultBool)));
-		
-		
+		setjbjb_cp_uleenabled_widget(new BooleanOptionWidget(editGroupjbjb_cp_ule, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.cp-ule","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjbjb_cp_ule;
 	}
 
@@ -12850,40 +9925,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.lp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.lp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjbjb_lpenabled_widget(new BooleanOptionWidget(editGroupjbjb_lp, SWT.NONE, new OptionData("Enabled", "p", "jb.lp","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.lp"+" "+"unsplit-original-locals";
+		setjbjb_lpenabled_widget(new BooleanOptionWidget(editGroupjbjb_lp, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.lp","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.lp"+" "+"unsplit-original-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjbjb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jb.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
-		
-		
+		setjbjb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjbjb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p phase-option", "jb.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter.", defaultBool)));
 
-		
+
 		return editGroupjbjb_lp;
 	}
 
@@ -12912,24 +9977,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.ne"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.ne"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_neenabled_widget(new BooleanOptionWidget(editGroupjbjb_ne, SWT.NONE, new OptionData("Enabled", "p", "jb.ne","enabled", "\n", defaultBool)));
-		
-		
+		setjbjb_neenabled_widget(new BooleanOptionWidget(editGroupjbjb_ne, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.ne","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjbjb_ne;
 	}
 
@@ -12958,40 +10018,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.uce"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.uce"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_uceenabled_widget(new BooleanOptionWidget(editGroupjbjb_uce, SWT.NONE, new OptionData("Enabled", "p", "jb.uce","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jb.uce"+" "+"remove-unreachable-traps";
+		setjbjb_uceenabled_widget(new BooleanOptionWidget(editGroupjbjb_uce, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.uce","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jb.uce"+" "+"remove-unreachable-traps";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjbjb_uceremove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjbjb_uce, SWT.NONE, new OptionData("Remove unreachable traps", "p", "jb.uce","remove-unreachable-traps", "\nRemove exception table entries when none of the protected \ninstructions can throw the exception being caught. ", defaultBool)));
-		
-		
+		setjbjb_uceremove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjbjb_uce, SWT.NONE, new OptionData("Remove unreachable traps", "p phase-option", "jb.uce","remove-unreachable-traps", "\nRemove exception table entries when none of the protected \ninstructions can throw the exception being caught.", defaultBool)));
 
-		
+
 		return editGroupjbjb_uce;
 	}
 
@@ -13020,24 +10070,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jb.tt"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jb.tt"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjbjb_ttenabled_widget(new BooleanOptionWidget(editGroupjbjb_tt, SWT.NONE, new OptionData("Enabled", "p", "jb.tt","enabled", "\n", defaultBool)));
-		
-		
+		setjbjb_ttenabled_widget(new BooleanOptionWidget(editGroupjbjb_tt, SWT.NONE, new OptionData("Enabled", "p phase-option", "jb.tt","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjbjb_tt;
 	}
 
@@ -13057,7 +10102,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	 	
 		editGroupjj.setData("id", "jj");
 		
-		String descjj = "Creates a JimpleBody for each method directly from source";	
+		String descjj = "Creates a JimpleBody for each method directly from source\n                ";	
 		if (descjj.length() > 0) {
 			Label descLabeljj = new Label(editGroupjj, SWT.WRAP);
 			descLabeljj.setText(descjj);
@@ -13066,40 +10111,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjenabled_widget(new BooleanOptionWidget(editGroupjj, SWT.NONE, new OptionData("Enabled", "p", "jj","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jj"+" "+"use-original-names";
+		setjjenabled_widget(new BooleanOptionWidget(editGroupjj, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jj"+" "+"use-original-names";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjuse_original_names_widget(new BooleanOptionWidget(editGroupjj, SWT.NONE, new OptionData("Use Original Names", "p", "jj","use-original-names", "\nRetain the original names for local variables when the source \nincludes those names. Otherwise, Soot gives variables generic \nnames based on their types. ", defaultBool)));
-		
-		
+		setjjuse_original_names_widget(new BooleanOptionWidget(editGroupjj, SWT.NONE, new OptionData("Use Original Names", "p phase-option", "jj","use-original-names", "\nRetain the original names for local variables when the source \nincludes those names. Otherwise, Soot gives variables generic \nnames based on their types.", defaultBool)));
 
-		
+
 		return editGroupjj;
 	}
 
@@ -13128,24 +10163,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj.ls"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj.ls"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjjjj_lsenabled_widget(new BooleanOptionWidget(editGroupjjjj_ls, SWT.NONE, new OptionData("Enabled", "p", "jj.ls","enabled", "\n", defaultBool)));
-		
-		
+		setjjjj_lsenabled_widget(new BooleanOptionWidget(editGroupjjjj_ls, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.ls","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjjjj_ls;
 	}
 
@@ -13174,40 +10204,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj.a"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj.a"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjjj_aenabled_widget(new BooleanOptionWidget(editGroupjjjj_a, SWT.NONE, new OptionData("Enabled", "p", "jj.a","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jj.a"+" "+"only-stack-locals";
+		setjjjj_aenabled_widget(new BooleanOptionWidget(editGroupjjjj_a, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.a","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jj.a"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjjj_aonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_a, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.a","only-stack-locals", "\nOnly aggregate locals that represent stack locations in the \noriginal bytecode. (Stack locals can be distinguished in Jimple \nby the character with which their names begin.) ", defaultBool)));
-		
-		
+		setjjjj_aonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_a, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jj.a","only-stack-locals", "\nOnly aggregate locals that represent stack locations in the \noriginal bytecode. (Stack locals can be distinguished in Jimple \nby the character with which their names begin.)", defaultBool)));
 
-		
+
 		return editGroupjjjj_a;
 	}
 
@@ -13236,24 +10256,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj.ule"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj.ule"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjjj_uleenabled_widget(new BooleanOptionWidget(editGroupjjjj_ule, SWT.NONE, new OptionData("Enabled", "p", "jj.ule","enabled", "\n", defaultBool)));
-		
-		
+		setjjjj_uleenabled_widget(new BooleanOptionWidget(editGroupjjjj_ule, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.ule","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjjjj_ule;
 	}
 
@@ -13282,24 +10297,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj.tr"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj.tr"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjjjj_trenabled_widget(new BooleanOptionWidget(editGroupjjjj_tr, SWT.NONE, new OptionData("Enabled", "p", "jj.tr","enabled", "\n", defaultBool)));
-		
-		
+		setjjjj_trenabled_widget(new BooleanOptionWidget(editGroupjjjj_tr, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.tr","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjjjj_tr;
 	}
 
@@ -13328,40 +10338,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj.ulp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj.ulp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjjjj_ulpenabled_widget(new BooleanOptionWidget(editGroupjjjj_ulp, SWT.NONE, new OptionData("Enabled", "p", "jj.ulp","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jj.ulp"+" "+"unsplit-original-locals";
+		setjjjj_ulpenabled_widget(new BooleanOptionWidget(editGroupjjjj_ulp, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.ulp","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jj.ulp"+" "+"unsplit-original-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjjjj_ulpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjjjj_ulp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jj.ulp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables among non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
-		
-		
+		setjjjj_ulpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjjjj_ulp, SWT.NONE, new OptionData("Unsplit Original Locals", "p phase-option", "jj.ulp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables among non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter.", defaultBool)));
 
-		
+
 		return editGroupjjjj_ulp;
 	}
 
@@ -13390,40 +10390,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj.lns"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj.lns"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjjj_lnsenabled_widget(new BooleanOptionWidget(editGroupjjjj_lns, SWT.NONE, new OptionData("Enabled", "p", "jj.lns","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jj.lns"+" "+"only-stack-locals";
+		setjjjj_lnsenabled_widget(new BooleanOptionWidget(editGroupjjjj_lns, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.lns","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jj.lns"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjjjj_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_lns, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.lns","only-stack-locals", "\nOnly standardizes the names of variables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option is specified for the `jb' \nphase. ", defaultBool)));
-		
-		
+		setjjjj_lnsonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_lns, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jj.lns","only-stack-locals", "\nOnly standardizes the names of variables that represent stack \nlocations in the original bytecode. This becomes the default \nwhen the `use-original-names' option is specified for the `jb' \nphase.", defaultBool)));
 
-		
+
 		return editGroupjjjj_lns;
 	}
 
@@ -13452,56 +10442,41 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj.cp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj.cp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjjj_cpenabled_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Enabled", "p", "jj.cp","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jj.cp"+" "+"only-regular-locals";
+		setjjjj_cpenabled_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.cp","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jj.cp"+" "+"only-regular-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjjjj_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jj.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, \nthose declared in the source bytecode. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jj.cp"+" "+"only-stack-locals";
+		setjjjj_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Only Regular Locals", "p phase-option", "jj.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, those \ndeclared in the source bytecode.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jj.cp"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjjj_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
-		
-		
+		setjjjj_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_cp, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jj.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode.", defaultBool)));
 
-		
+
 		return editGroupjjjj_cp;
 	}
 
@@ -13530,40 +10505,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj.dae"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj.dae"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjjj_daeenabled_widget(new BooleanOptionWidget(editGroupjjjj_dae, SWT.NONE, new OptionData("Enabled", "p", "jj.dae","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jj.dae"+" "+"only-stack-locals";
+		setjjjj_daeenabled_widget(new BooleanOptionWidget(editGroupjjjj_dae, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.dae","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jj.dae"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjjj_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jj.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
-		
-		
+		setjjjj_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjjjj_dae, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jj.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode.", defaultBool)));
 
-		
+
 		return editGroupjjjj_dae;
 	}
 
@@ -13592,24 +10557,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj.cp-ule"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj.cp-ule"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjjj_cp_uleenabled_widget(new BooleanOptionWidget(editGroupjjjj_cp_ule, SWT.NONE, new OptionData("Enabled", "p", "jj.cp-ule","enabled", "\n", defaultBool)));
-		
-		
+		setjjjj_cp_uleenabled_widget(new BooleanOptionWidget(editGroupjjjj_cp_ule, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.cp-ule","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjjjj_cp_ule;
 	}
 
@@ -13638,40 +10598,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj.lp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj.lp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjjjj_lpenabled_widget(new BooleanOptionWidget(editGroupjjjj_lp, SWT.NONE, new OptionData("Enabled", "p", "jj.lp","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jj.lp"+" "+"unsplit-original-locals";
+		setjjjj_lpenabled_widget(new BooleanOptionWidget(editGroupjjjj_lp, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.lp","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jj.lp"+" "+"unsplit-original-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjjjj_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjjjj_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "jj.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
-		
-		
+		setjjjj_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupjjjj_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p phase-option", "jj.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter.", defaultBool)));
 
-		
+
 		return editGroupjjjj_lp;
 	}
 
@@ -13700,24 +10650,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj.ne"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj.ne"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjjj_neenabled_widget(new BooleanOptionWidget(editGroupjjjj_ne, SWT.NONE, new OptionData("Enabled", "p", "jj.ne","enabled", "\n", defaultBool)));
-		
-		
+		setjjjj_neenabled_widget(new BooleanOptionWidget(editGroupjjjj_ne, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.ne","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjjjj_ne;
 	}
 
@@ -13746,24 +10691,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jj.uce"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jj.uce"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjjjj_uceenabled_widget(new BooleanOptionWidget(editGroupjjjj_uce, SWT.NONE, new OptionData("Enabled", "p", "jj.uce","enabled", "\n", defaultBool)));
-		
-		
+		setjjjj_uceenabled_widget(new BooleanOptionWidget(editGroupjjjj_uce, SWT.NONE, new OptionData("Enabled", "p phase-option", "jj.uce","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjjjj_uce;
 	}
 
@@ -13792,24 +10732,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjpp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjpp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjppenabled_widget(new BooleanOptionWidget(editGroupwjpp, SWT.NONE, new OptionData("Enabled", "p", "wjpp","enabled", "\n", defaultBool)));
-		
-		
+		setwjppenabled_widget(new BooleanOptionWidget(editGroupwjpp, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjpp","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupwjpp;
 	}
 
@@ -13829,7 +10764,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	 	
 		editGroupwjppwjpp_cimbt.setData("id", "wjppwjpp_cimbt");
 		
-		String descwjppwjpp_cimbt = "Replaces base objects of calls to Method.invoke() that are string constants by locals";	
+		String descwjppwjpp_cimbt = "Replaces base objects of calls to Method.invoke() that are string constants by locals\n                    ";	
 		if (descwjppwjpp_cimbt.length() > 0) {
 			Label descLabelwjppwjpp_cimbt = new Label(editGroupwjppwjpp_cimbt, SWT.WRAP);
 			descLabelwjppwjpp_cimbt.setText(descwjppwjpp_cimbt);
@@ -13838,40 +10773,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjpp.cimbt"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjpp.cimbt"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjppwjpp_cimbtenabled_widget(new BooleanOptionWidget(editGroupwjppwjpp_cimbt, SWT.NONE, new OptionData("Enabled", "p", "wjpp.cimbt","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjpp.cimbt"+" "+"verbose";
+		setwjppwjpp_cimbtenabled_widget(new BooleanOptionWidget(editGroupwjppwjpp_cimbt, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjpp.cimbt","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjpp.cimbt"+" "+"verbose";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjppwjpp_cimbtverbose_widget(new BooleanOptionWidget(editGroupwjppwjpp_cimbt, SWT.NONE, new OptionData("Verbose", "p", "wjpp.cimbt","verbose", "\n", defaultBool)));
-		
-		
+		setwjppwjpp_cimbtverbose_widget(new BooleanOptionWidget(editGroupwjppwjpp_cimbt, SWT.NONE, new OptionData("Verbose", "p phase-option", "wjpp.cimbt","verbose", "\n", defaultBool)));
 
-		
+
 		return editGroupwjppwjpp_cimbt;
 	}
 
@@ -13900,24 +10825,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wspp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wspp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwsppenabled_widget(new BooleanOptionWidget(editGroupwspp, SWT.NONE, new OptionData("Enabled", "p", "wspp","enabled", "\n", defaultBool)));
-		
-		
+		setwsppenabled_widget(new BooleanOptionWidget(editGroupwspp, SWT.NONE, new OptionData("Enabled", "p phase-option", "wspp","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupwspp;
 	}
 
@@ -13946,217 +10866,160 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"cg"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgenabled_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Enabled", "p", "cg","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg"+" "+"safe-forname";
+		setcgenabled_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Enabled", "p phase-option", "cg","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg"+" "+"safe-forname";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgsafe_forname_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe forName", "p", "cg","safe-forname", "\nWhen a program calls Class.forName(), the named class is \nresolved, and its static initializer executed. In many cases, it \ncannot be determined statically which class will be loaded, and \nwhich static initializer executed. When this option is set to \ntrue, Soot will conservatively assume that any static \ninitializer could be executed. This may make the call graph very \nlarge. When this option is set to false, any calls to \nClass.forName() for which the class cannot be determined \nstatically are assumed to call no static initializers. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg"+" "+"safe-newinstance";
+		setcgsafe_forname_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe forName", "p phase-option", "cg","safe-forname", "\nWhen a program calls Class.forName(), the named class is \nresolved, and its static initializer executed. In many cases, it \ncannot be determined statically which class will be loaded, and \nwhich static initializer executed. When this option is set to \ntrue, Soot will conservatively assume that any static \ninitializer could be executed. This may make the call graph very \nlarge. When this option is set to false, any calls to \nClass.forName() for which the class cannot be determined \nstatically are assumed to call no static initializers.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg"+" "+"safe-newinstance";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgsafe_newinstance_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe newInstance", "p", "cg","safe-newinstance", "\nWhen a program calls Class.newInstance(), a new object is \ncreated and its constructor executed. Soot does not determine \nstatically which type of object will be created, and which \nconstructor executed. When this option is set to true, Soot will \nconservatively assume that any constructor could be executed. \nThis may make the call graph very large. When this option is set \nto false, any calls to Class.newInstance() are assumed not to \ncall the constructor of the created object. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg"+" "+"verbose";
+		setcgsafe_newinstance_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Safe newInstance", "p phase-option", "cg","safe-newinstance", "\nWhen a program calls Class.newInstance(), a new object is \ncreated and its constructor executed. Soot does not determine \nstatically which type of object will be created, and which \nconstructor executed. When this option is set to true, Soot will \nconservatively assume that any constructor could be executed. \nThis may make the call graph very large. When this option is set \nto false, any calls to Class.newInstance() are assumed not to \ncall the constructor of the created object.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg"+" "+"verbose";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgverbose_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Verbose", "p", "cg","verbose", "\nDue to the effects of native methods and reflection, it may not \nalways be possible to construct a fully conservative call graph. \nSetting this option to true causes Soot to point out the parts \nof the call graph that may be incomplete, so that they can be \nchecked by hand. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg"+" "+"all-reachable";
+		setcgverbose_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Verbose", "p phase-option", "cg","verbose", "\nDue to the effects of native methods and reflection, it may not \nalways be possible to construct a fully conservative call graph. \nSetting this option to true causes Soot to point out the parts \nof the call graph that may be incomplete, so that they can be \nchecked by hand.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg"+" "+"all-reachable";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgall_reachable_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("All Application Class Methods Reachable", "p", "cg","all-reachable", "\nWhen this option is false, the call graph is built starting at a \nset of entry points, and only methods reachable from those entry \npoints are processed. Unreachable methods will not have any call \ngraph edges generated out of them. Setting this option to true \nmakes Soot consider all methods of application classes to be \nreachable, so call edges are generated for all of them. This \nleads to a larger call graph. For program visualization \npurposes, it is sometimes desirable to include edges from \nunreachable methods; although these methods are unreachable in \nthe version being analyzed, they may become reachable if the \nprogram is modified.", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg"+" "+"implicit-entry";
+		setcgall_reachable_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("All Application Class Methods Reachable", "p phase-option", "cg","all-reachable", "\nWhen this option is false, the call graph is built starting at a \nset of entry points, and only methods reachable from those entry \npoints are processed. Unreachable methods will not have any call \ngraph edges generated out of them. Setting this option to true \nmakes Soot consider all methods of application classes to be \nreachable, so call edges are generated for all of them. This \nleads to a larger call graph. For program visualization \npurposes, it is sometimes desirable to include edges from \nunreachable methods; although these methods are unreachable in \nthe version being analyzed, they may become reachable if the \nprogram is modified.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg"+" "+"implicit-entry";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgimplicit_entry_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Implicit Entry Points", "p", "cg","implicit-entry", "\nWhen this option is true, methods that are called implicitly by \nthe VM are considered entry points of the call graph. When it is \nfalse, these methods are not considered entry points, leading to \na possibly incomplete call graph.", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg"+" "+"trim-clinit";
+		setcgimplicit_entry_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Implicit Entry Points", "p phase-option", "cg","implicit-entry", "\nWhen this option is true, methods that are called implicitly by \nthe VM are considered entry points of the call graph. When it is \nfalse, these methods are not considered entry points, leading to \na possibly incomplete call graph.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg"+" "+"trim-clinit";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgtrim_clinit_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Trim Static Initializer Edges", "p", "cg","trim-clinit", "\nThe call graph contains an edge from each statement that could \ntrigger execution of a static initializer to that static \ninitializer. However, each static initializer is triggered only \nonce. When this option is enabled, after the call graph is \nbuilt, an intra-procedural analysis is performed to detect \nstatic initializer edges leading to methods that must have \nalready been executed. Since these static initializers cannot be \nexecuted again, the corresponding call graph edges are removed \nfrom the call graph. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg"+" "+"types-for-invoke";
+		setcgtrim_clinit_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Trim Static Initializer Edges", "p phase-option", "cg","trim-clinit", "\nThe call graph contains an edge from each statement that could \ntrigger execution of a static initializer to that static \ninitializer. However, each static initializer is triggered only \nonce. When this option is enabled, after the call graph is \nbuilt, an intra-procedural analysis is performed to detect \nstatic initializer edges leading to methods that must have \nalready been executed. Since these static initializers cannot be \nexecuted again, the corresponding call graph edges are removed \nfrom the call graph.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg"+" "+"types-for-invoke";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgtypes_for_invoke_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Types for invoke", "p", "cg","types-for-invoke", "\nFor each call to Method.invoke(), use the possible types of the \nfirst receiver 								 argument and the possible types stored \nin the second argument array to resolve calls to 								 \nMethod.invoke(). This strategy makes no attempt to resolve \nreflectively invoked static methods. 								 Currently only \nworks for context insensitive pointer analyses. 								 ", defaultBool)));
-		
-		
-		
+		setcgtypes_for_invoke_widget(new BooleanOptionWidget(editGroupcg, SWT.NONE, new OptionData("Types for invoke", "p phase-option", "cg","types-for-invoke", "\nFor each call to Method.invoke(), use the possible types of the \nfirst receiver argument and the possible types stored in the \nsecond argument array to resolve calls to Method.invoke(). This \nstrategy makes no attempt to resolve reflectively invoked static \nmethods. Currently only works for context insensitive pointer \nanalyses.", defaultBool)));
+
 		data = new OptionData [] {
 		
-		new OptionData("Disabled",
-		"disabled",
-		"\n											Call(and pointer assignment) graph construction \ntreat the target classes as application starting from the entry \npoints. 										",
-		
-		true),
-		
-		new OptionData("Any Subtype",
-		"any-subtype",
-		"\nOn library analysis \nit has to be assumed, that a possible client can call \nany method or access any field, \n											to which he has the access rights (default \npublic/protected but can be set with \nsoot.Scene#setClientAccessibilityOracle). \nIn this mode types of any accessible field, \nmethod parameter, this local, or \ncaugth exception is set to any possible sub type \n											according to the class hierachy of the target \nlibrary. 											If simulate-natives is also set, the results \nof native methods are also set to any sub type of the declared \nreturn type. 										",
-		
-		false),
-		
-		new OptionData("By Signature resolution",
-		"signature-resolution",
-		"\nOn library analysis \nit has to be assumed, that a possible client can call \nany method or access any field, \n											to which he has the access rights (default \npublic/protected but can be set with \nsoot.Scene#setClientAccessibilityOracle). \nIn this mode types of any accessible field, \nmethod parameter, this local, or \ncaugth exception is set to any possible sub type \naccording to a possible \nextended class hierarchy of the target library. \nWhenever any sub type of a specific \ntype is considered as \nreceiver for a method to call and the base type is an \ninterface, calls to \nexisting methods with matching signature (possible \nimplementation of \nmethod to call) are also added. As Javas' subtyping allows \ncontra-variance for return \ntypes and co-variance for parameters when \noverriding 											a method, these cases \nare also considered here. 											Example: Classes A, B (B \nsub type of A), interface I with method public A foo(B b); and a \nclass C with method public B foo(A a) { ... }. 											The \nextended class hierachy will contain C as possible \nimplementation of I. 											If simulate-natives is also \nset, the results of native methods are also set to any possible \nsub type of the declared return type. 										",
-		
-		false),
-		
+				new OptionData("Disabled",
+						"disabled",
+						"\nCall(and pointer assignment) graph construction treat the target \nclasses as application starting from the entry points.",
+						true),
+				new OptionData("Any Subtype",
+						"any-subtype",
+						"\nOn library analysis it has to be assumed, that a possible client \ncan call any method or access any field, to which he has the \naccess rights (default public/protected but can be set with \nsoot.Scene#setClientAccessibilityOracle). In this mode types of \nany accessible field, method parameter, this local, or caugth \nexception is set to any possible sub type according to the class \nhierachy of the target library. If simulate-natives is also set, \nthe results of native methods are also set to any sub type of \nthe declared return type.",
+						false),
+				new OptionData("By Signature resolution",
+						"signature-resolution",
+						"\nOn library analysis it has to be assumed, that a possible client \ncan call any method or access any field, to which he has the \naccess rights (default public/protected but can be set with \nsoot.Scene#setClientAccessibilityOracle). In this mode types of \nany accessible field, method parameter, this local, or caugth \nexception is set to any possible sub type according to a \npossible extended class hierarchy of the target library. \nWhenever any sub type of a specific type is considered as \nreceiver for a method to call and the base type is an interface, \ncalls to existing methods with matching signature (possible \nimplementation of method to call) are also added. As Javas' \nsubtyping allows contra-variance for return types and \nco-variance for parameters when overriding a method, these cases \nare also considered here. Example: Classes A, B (B sub type of \nA), interface I with method public A foo(B b); and a class C \nwith method public B foo(A a) { ... }. The extended class \nhierachy will contain C as possible implementation of I. If \nsimulate-natives is also set, the results of native methods are \nalso set to any possible sub type of the declared return type.",
+						false),
 		};
-		
-										
-		setcglibrary_widget(new MultiOptionWidget(editGroupcg, SWT.NONE, data, new OptionData("Library mode", "p", "cg","library", "\n										Specifies whether the target classes should be \ntreated as an application or a library. \nIf library mode is disabled (default), the call \ngraph construction assumes that \nthe target is an application and \nstarts the construction from the specified entry \npoints (main method by \ndefault). 										Under the assumption that the target is a \nlibrary, possible call edges might be missing in the call graph. \nThe two different \nlibrary modes add theses missing calls to the call graph and \ndiffer only in the view of \nthe class hierachy 										(hierachy of target library or \npossible extended hierachy). 										If simulate-natives is \nalso set, the results of native methods are also set to any sub \ntype of the declared return type. 									")));
-		
-		defKey = "p"+" "+"cg"+" "+"library";
+
+
+		setcglibrary_widget(new MultiOptionWidget(editGroupcg, SWT.NONE, data, new OptionData("Library mode", "p phase-option", "cg","library", "\nSpecifies whether the target classes should be treated as an \napplication or a library. If library mode is disabled (default), \nthe call graph construction assumes that the target is an \napplication and starts the construction from the specified entry \npoints (main method by default). Under the assumption that the \ntarget is a library, possible call edges might be missing in the \ncall graph. The two different library modes add theses missing \ncalls to the call graph and differ only in the view of the class \nhierachy (hierachy of target library or possible extended \nhierachy). If simulate-natives is also set, the results of \nnative methods are also set to any sub type of the declared \nreturn type.")));
+
+		defKey = "p phase-option"+" "+"cg"+" "+"library";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcglibrary_widget().setDef(defaultString);
 		}
-		
-		
-		
-		defKey = "p"+" "+"cg"+" "+"jdkver";
+
+		defKey = "p phase-option"+" "+"cg"+" "+"jdkver";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "3";
-			
 		}
 
-		setcgjdkver_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("JDK version",  "p", "cg","jdkver", "\nThis option sets the JDK version of the standard library being \nanalyzed so that Soot can simulate the native methods in the \nspecific version of the library. The default, 3, refers to Java \n1.3.x.", defaultString)));
+		setcgjdkver_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("JDK version",  "p phase-option", "cg","jdkver", "\nThis option sets the JDK version of the standard library being \nanalyzed so that Soot can simulate the native methods in the \nspecific version of the library. The default, 3, refers to Java \n1.3.x.", defaultString)));
 		
-		
-		defKey = "p"+" "+"cg"+" "+"reflection-log";
+
+		defKey = "p phase-option"+" "+"cg"+" "+"reflection-log";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setcgreflection_log_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Reflection Log",  "p", "cg","reflection-log", "\nLoad a reflection log from the given file and use this log to \nresolve reflective call sites. Note that when a log is given, \nthe following other options have no effect: safe-forname, \nsafe-newinstance. ", defaultString)));
+		setcgreflection_log_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Reflection Log",  "p phase-option", "cg","reflection-log", "\nLoad a reflection log from the given file and use this log to \nresolve reflective call sites. Note that when a log is given, \nthe following other options have no effect: safe-forname, \nsafe-newinstance.", defaultString)));
 		
-		
-		defKey = "p"+" "+"cg"+" "+"guards";
+
+		defKey = "p phase-option"+" "+"cg"+" "+"guards";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "ignore";
-			
 		}
 
-		setcgguards_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Guarding strategy",  "p", "cg","guards", "\nUsing a reflection log is only sound for method executions that \nwere logged. Executing the program differently may be unsound. \nSoot can insert guards at program points for which the \nreflection log contains no information. When these points are \nreached (because the program is executed differently) then the \nfollwing will happen, depending on the value of this flag. \nignore: no guard is inserted, the program executes normally but \nunder unsound assumptions. print: the program prints a stack \ntrace when reaching a porgram location that was not traced but \ncontinues to run. throw (default): \nthe program throws an Error instead. ", defaultString)));
+		setcgguards_widget(new StringOptionWidget(editGroupcg, SWT.NONE, new OptionData("Guarding strategy",  "p phase-option", "cg","guards", "\nUsing a reflection log is only sound for method executions that \nwere logged. Executing the program differently may be unsound. \nSoot can insert guards at program points for which the \nreflection log contains no information. When these points are \nreached (because the program is executed differently) then the \nfollwing will happen, depending on the value of this flag. \nignore: no guard is inserted, the program executes normally but \nunder unsound assumptions. print: the program prints a stack \ntrace when reaching a porgram location that was not traced but \ncontinues to run. throw (default): the program throws an Error \ninstead.", defaultString)));
 		
 
-		
+
 		return editGroupcg;
 	}
 
@@ -14185,56 +11048,41 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.cha"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"cg.cha"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_chaenabled_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("Enabled", "p", "cg.cha","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.cha"+" "+"verbose";
+		setcgcg_chaenabled_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("Enabled", "p phase-option", "cg.cha","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.cha"+" "+"verbose";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_chaverbose_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("Verbose", "p", "cg.cha","verbose", "\nSetting this option to true causes Soot to print out statistics \nabout the call graph computed by this phase, such as the number \nof methods determined to be reachable.", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.cha"+" "+"apponly";
+		setcgcg_chaverbose_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("Verbose", "p phase-option", "cg.cha","verbose", "\nSetting this option to true causes Soot to print out statistics \nabout the call graph computed by this phase, such as the number \nof methods determined to be reachable.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.cha"+" "+"apponly";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_chaapponly_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("AppOnly", "p", "cg.cha","apponly", "\nSetting this option to true causes Soot to only consider \napplication classes when building the callgraph. The resulting \ncallgraph will be inherently unsound. Still, this option can \nmake sense if performance optimization and memory reduction are \nyour primary goal.", defaultBool)));
-		
-		
+		setcgcg_chaapponly_widget(new BooleanOptionWidget(editGroupcgcg_cha, SWT.NONE, new OptionData("AppOnly", "p phase-option", "cg.cha","apponly", "\nSetting this option to true causes Soot to only consider \napplication classes when building the callgraph. The resulting \ncallgraph will be inherently unsound. Still, this option can \nmake sense if performance optimization and memory reduction are \nyour primary goal.", defaultBool)));
 
-		
+
 		return editGroupcgcg_cha;
 	}
 
@@ -14263,24 +11111,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkenabled_widget(new BooleanOptionWidget(editGroupcgcg_spark, SWT.NONE, new OptionData("Enabled", "p", "cg.spark","enabled", "\n", defaultBool)));
-		
-		
+		setcgcg_sparkenabled_widget(new BooleanOptionWidget(editGroupcgcg_spark, SWT.NONE, new OptionData("Enabled", "p phase-option", "cg.spark","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupcgcg_spark;
 	}
 
@@ -14309,88 +11152,63 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"verbose";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"verbose";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkverbose_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Verbose", "p", "cg.spark","verbose", "\nWhen this option is set to true, Spark prints detailed \ninformation about its execution. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"ignore-types";
+		setcgcg_sparkverbose_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Verbose", "p phase-option", "cg.spark","verbose", "\nWhen this option is set to true, Spark prints detailed \ninformation about its execution.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"ignore-types";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkignore_types_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.spark","ignore-types", "\nWhen this option is set to true, all parts of Spark completely \nignore declared types of variables and casts. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"force-gc";
+		setcgcg_sparkignore_types_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p phase-option", "cg.spark","ignore-types", "\nWhen this option is set to true, all parts of Spark completely \nignore declared types of variables and casts.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"force-gc";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkforce_gc_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Force Garbage Collections", "p", "cg.spark","force-gc", "\nWhen this option is set to true, calls to System.gc() will be \nmade at various points to allow memory usage to be measured. \n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"pre-jimplify";
+		setcgcg_sparkforce_gc_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Force Garbage Collections", "p phase-option", "cg.spark","force-gc", "\nWhen this option is set to true, calls to System.gc() will be \nmade at various points to allow memory usage to be measured.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"pre-jimplify";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkpre_jimplify_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.spark","pre-jimplify", "\nWhen this option is set to true, Spark converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"apponly";
+		setcgcg_sparkpre_jimplify_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p phase-option", "cg.spark","pre-jimplify", "\nWhen this option is set to true, Spark converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"apponly";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkapponly_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("AppOnly", "p", "cg.spark","apponly", "\nSetting this option to true causes Soot to only consider \napplication classes when building the callgraph. The resulting \ncallgraph will be inherently unsound. Still, this option can \nmake sense if performance optimization and memory reduction are \nyour primary goal.", defaultBool)));
-		
-		
+		setcgcg_sparkapponly_widget(new BooleanOptionWidget(editGroupcgSpark_General_Options, SWT.NONE, new OptionData("AppOnly", "p phase-option", "cg.spark","apponly", "\nSetting this option to true causes Soot to only consider \napplication classes when building the callgraph. The resulting \ncallgraph will be inherently unsound. Still, this option can \nmake sense if performance optimization and memory reduction are \nyour primary goal.", defaultBool)));
 
-		
+
 		return editGroupcgSpark_General_Options;
 	}
 
@@ -14419,168 +11237,118 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"vta";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"vta";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkvta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("VTA", "p", "cg.spark","vta", "\nSetting VTA to true has the effect of setting field-based, \ntypes-for-sites, and simplify-sccs to true, and on-fly-cg to \nfalse, to simulate Variable Type Analysis, described in our \nOOPSLA 2000 paper. Note that the algorithm differs from the \noriginal VTA in that it handles array elements more precisely. \n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"rta";
+		setcgcg_sparkvta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("VTA", "p phase-option", "cg.spark","vta", "\nSetting VTA to true has the effect of setting field-based, \ntypes-for-sites, and simplify-sccs to true, and on-fly-cg to \nfalse, to simulate Variable Type Analysis, described in our \nOOPSLA 2000 paper. Note that the algorithm differs from the \noriginal VTA in that it handles array elements more precisely.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"rta";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkrta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p", "cg.spark","rta", "\nSetting RTA to true sets types-for-sites to true, and causes \nSpark to use a single points-to set for all variables, giving \nRapid Type Analysis. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"field-based";
+		setcgcg_sparkrta_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p phase-option", "cg.spark","rta", "\nSetting RTA to true sets types-for-sites to true, and causes \nSpark to use a single points-to set for all variables, giving \nRapid Type Analysis.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"field-based";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkfield_based_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p", "cg.spark","field-based", "\nWhen this option is set to true, fields are represented by \nvariable (Green) nodes, and the object that the field belongs to \nis ignored (all objects are lumped together), giving a \nfield-based analysis. Otherwise, fields are represented by field \nreference (Red) nodes, and the objects that they belong to are \ndistinguished, giving a field-sensitive analysis. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"types-for-sites";
+		setcgcg_sparkfield_based_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p phase-option", "cg.spark","field-based", "\nWhen this option is set to true, fields are represented by \nvariable (Green) nodes, and the object that the field belongs to \nis ignored (all objects are lumped together), giving a \nfield-based analysis. Otherwise, fields are represented by field \nreference (Red) nodes, and the objects that they belong to are \ndistinguished, giving a field-sensitive analysis.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"types-for-sites";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparktypes_for_sites_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p", "cg.spark","types-for-sites", "\nWhen this option is set to true, types rather than allocation \nsites are used as the elements of the points-to sets. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"merge-stringbuffer";
+		setcgcg_sparktypes_for_sites_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p phase-option", "cg.spark","types-for-sites", "\nWhen this option is set to true, types rather than allocation \nsites are used as the elements of the points-to sets.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"merge-stringbuffer";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_sparkmerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.spark","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"string-constants";
+		setcgcg_sparkmerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p phase-option", "cg.spark","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"string-constants";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkstring_constants_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Propagate All String Constants", "p", "cg.spark","string-constants", "\nWhen this option is set to false, Spark only distinguishes \nstring constants that may be the name of a class loaded \ndynamically using reflection, and all other string constants are \nlumped together into a single string constant node. Setting this \noption to true causes all string constants to be propagated \nindividually. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"simulate-natives";
+		setcgcg_sparkstring_constants_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Propagate All String Constants", "p phase-option", "cg.spark","string-constants", "\nWhen this option is set to false, Spark only distinguishes \nstring constants that may be the name of a class loaded \ndynamically using reflection, and all other string constants are \nlumped together into a single string constant node. Setting this \noption to true causes all string constants to be propagated \nindividually.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"simulate-natives";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_sparksimulate_natives_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.spark","simulate-natives", "\nWhen this option is set to true, the effects of native methods \nin the standard Java class library are simulated. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"empties-as-allocs";
+		setcgcg_sparksimulate_natives_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p phase-option", "cg.spark","simulate-natives", "\nWhen this option is set to true, the effects of native methods \nin the standard Java class library are simulated.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"empties-as-allocs";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkempties_as_allocs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Treat EMPTY as Alloc", "p", "cg.spark","empties-as-allocs", "\nWhen this option is set to \ntrue, Spark treats references to \nEMPTYSET, EMPTYMAP, and EMPTYLIST as allocation sites for \nHashSet, HashMap and LinkedList objects respectively, and \nreferences to Hashtable.emptyIterator as allocation sites for \nHashtable.EmptyIterator. This enables subsequent analyses to \ndifferentiate different uses of Java's immutable empty \ncollections. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"simple-edges-bidirectional";
+		setcgcg_sparkempties_as_allocs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Treat EMPTY as Alloc", "p phase-option", "cg.spark","empties-as-allocs", "\nWhen this option is set to true, Spark treats references to \nEMPTYSET, EMPTYMAP, and EMPTYLIST as allocation sites for \nHashSet, HashMap and LinkedList objects respectively, and \nreferences to Hashtable.emptyIterator as allocation sites for \nHashtable.EmptyIterator. This enables subsequent analyses to \ndifferentiate different uses of Java's immutable empty \ncollections.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"simple-edges-bidirectional";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparksimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.spark","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable \n(Green) nodes are made bidirectional, as in Steensgaard's \nanalysis. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"on-fly-cg";
+		setcgcg_sparksimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p phase-option", "cg.spark","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable \n(Green) nodes are made bidirectional, as in Steensgaard's \nanalysis.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"on-fly-cg";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_sparkon_fly_cg_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p", "cg.spark","on-fly-cg", "\nWhen this option is set to true, the call graph is computed \non-the-fly as points-to information is computed. Otherwise, an \ninitial CHA approximation to the call graph is used. ", defaultBool)));
-		
-		
+		setcgcg_sparkon_fly_cg_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("On Fly Call Graph", "p phase-option", "cg.spark","on-fly-cg", "\nWhen this option is set to true, the call graph is computed \non-the-fly as points-to information is computed. Otherwise, an \ninitial CHA approximation to the call graph is used.", defaultBool)));
 
-		
+
 		return editGroupcgSpark_Pointer_Assignment_Graph_Building_Options;
 	}
 
@@ -14609,56 +11377,41 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"simplify-offline";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"simplify-offline";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparksimplify_offline_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify Offline", "p", "cg.spark","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which \nform single-entry subgraphs (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"simplify-sccs";
+		setcgcg_sparksimplify_offline_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify Offline", "p phase-option", "cg.spark","simplify-offline", "\nWhen this option is set to true, variable (Green) nodes which \nform single-entry subgraphs (so they must have the same \npoints-to set) are merged before propagation begins.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"simplify-sccs";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparksimplify_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify SCCs", "p", "cg.spark","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which \nform strongly-connected components (so they must have the same \npoints-to set) are merged before propagation begins. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"ignore-types-for-sccs";
+		setcgcg_sparksimplify_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Simplify SCCs", "p phase-option", "cg.spark","simplify-sccs", "\nWhen this option is set to true, variable (Green) nodes which \nform strongly-connected components (so they must have the same \npoints-to set) are merged before propagation begins.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"ignore-types-for-sccs";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkignore_types_for_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Ignore Types For SCCs", "p", "cg.spark","ignore-types-for-sccs", "\nWhen this option is set to true, when collapsing \nstrongly-connected components, nodes forming SCCs are collapsed \nregardless of their declared type. The collapsed SCC is given \nthe most general type of all the nodes in the component. When \nthis option is set to false, only edges connecting nodes of the \nsame type are considered when detecting SCCs. This option has \nno effect unless simplify-sccs is true. ", defaultBool)));
-		
-		
+		setcgcg_sparkignore_types_for_sccs_widget(new BooleanOptionWidget(editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options, SWT.NONE, new OptionData("Ignore Types For SCCs", "p phase-option", "cg.spark","ignore-types-for-sccs", "\nWhen this option is set to true, when collapsing \nstrongly-connected components, nodes forming SCCs are collapsed \nregardless of their declared type. The collapsed SCC is given \nthe most general type of all the nodes in the component. When \nthis option is set to false, only edges connecting nodes of the \nsame type are considered when detecting SCCs. This option has no \neffect unless simplify-sccs is true.", defaultBool)));
 
-		
+
 		return editGroupcgSpark_Pointer_Assignment_Graph_Simplification_Options;
 	}
 
@@ -14687,230 +11440,172 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Iter",
-		"iter",
-		"\nIter is a simple, iterative algorithm, which propagates \neverything until the graph does not change. ",
-		
-		false),
-		
-		new OptionData("Worklist",
-		"worklist",
-		"\nWorklist is a worklist-based algorithm that tries to do as \nlittle work as possible. This is currently the fastest \nalgorithm. ",
-		
-		true),
-		
-		new OptionData("Cycle",
-		"cycle",
-		"\nThis algorithm finds cycles in the PAG on-the-fly. It is not yet \nfinished.",
-		
-		false),
-		
-		new OptionData("Merge",
-		"merge",
-		"\nMerge is an algorithm that merges all concrete field (yellow) \nnodes with their corresponding field reference (red) nodes. This \nalgorithm is not yet finished. ",
-		
-		false),
-		
-		new OptionData("Alias",
-		"alias",
-		"\nAlias is an alias-edge based algorithm. This algorithm tends to \ntake the least memory for very large problems, because it does \nnot represent explicitly points-to sets of fields of heap \nobjects. ",
-		
-		false),
-		
-		new OptionData("None",
-		"none",
-		"\nNone means that propagation is not done; the graph is only \nbuilt and simplified. This is useful if an external solver is \nbeing used to perform the propagation. ",
-		
-		false),
-		
+				new OptionData("Iter",
+						"iter",
+						"\nIter is a simple, iterative algorithm, which propagates \neverything until the graph does not change.",
+						false),
+				new OptionData("Worklist",
+						"worklist",
+						"\nWorklist is a worklist-based algorithm that tries to do as \nlittle work as possible. This is currently the fastest \nalgorithm.",
+						true),
+				new OptionData("Cycle",
+						"cycle",
+						"\nThis algorithm finds cycles in the PAG on-the-fly. It is not yet \nfinished.",
+						false),
+				new OptionData("Merge",
+						"merge",
+						"\nMerge is an algorithm that merges all concrete field (yellow) \nnodes with their corresponding field reference (red) nodes. This \nalgorithm is not yet finished.",
+						false),
+				new OptionData("Alias",
+						"alias",
+						"\nAlias is an alias-edge based algorithm. This algorithm tends to \ntake the least memory for very large problems, because it does \nnot represent explicitly points-to sets of fields of heap \nobjects.",
+						false),
+				new OptionData("None",
+						"none",
+						"\nNone means that propagation is not done; the graph is only built \nand simplified. This is useful if an external solver is being \nused to perform the propagation.",
+						false),
 		};
-		
-										
-		setcgcg_sparkpropagator_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Propagator", "p", "cg.spark","propagator", "\nThis option tells Spark which propagation algorithm to use. \n")));
-		
-		defKey = "p"+" "+"cg.spark"+" "+"propagator";
+
+
+		setcgcg_sparkpropagator_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Propagator", "p phase-option", "cg.spark","propagator", "\nThis option tells Spark which propagation algorithm to use.")));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"propagator";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_sparkpropagator_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Hash set",
-		"hash",
-		"\nHash is an implementation based on Java's built-in hash-set. ",
-		
-		false),
-		
-		new OptionData("Bit-vector",
-		"bit",
-		"\nBit is an implementation using a bit vector. ",
-		
-		false),
-		
-		new OptionData("Hybrid",
-		"hybrid",
-		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
-		
-		false),
-		
-		new OptionData("Sorted array",
-		"array",
-		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
-		
-		false),
-		
-		new OptionData("Heintze",
-		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
-		
-		false),
-		
-		new OptionData("Shared List",
-		"sharedlist",
-		"\nShared List stores its elements in a linked list, and might \nshare 									its tail with other similar points-to sets. \n								",
-		
-		false),
-		
-		new OptionData("Double",
-		"double",
-		"\nDouble is an implementation that itself uses a pair of sets for \neach points-to set. The first set in the pair stores new \npointed-to objects that have not yet been propagated, while the \nsecond set stores old pointed-to objects that have been \npropagated and need not be reconsidered. This allows the \npropagation algorithms to be incremental, often speeding them up \nsignificantly. ",
-		
-		true),
-		
+				new OptionData("Hash set",
+						"hash",
+						"\nHash is an implementation based on Java's built-in hash-set.",
+						false),
+				new OptionData("Bit-vector",
+						"bit",
+						"\nBit is an implementation using a bit vector.",
+						false),
+				new OptionData("Hybrid",
+						"hybrid",
+						"\nHybrid is an implementation that keeps an explicit list of up to \n16 elements, and switches to a bit-vector when the set gets \nlarger than this.",
+						false),
+				new OptionData("Sorted array",
+						"array",
+						"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort.",
+						false),
+				new OptionData("Heintze",
+						"heintze",
+						"\nHeintze's representation has elements represented by a \nbit-vector + a small 'overflow' list of some maximum number of \nelements. The bit-vectors can be shared by multiple points-to \nsets, while the overflow lists are not.",
+						false),
+				new OptionData("Shared List",
+						"sharedlist",
+						"\nShared List stores its elements in a linked list, and might \nshare its tail with other similar points-to sets.",
+						false),
+				new OptionData("Double",
+						"double",
+						"\nDouble is an implementation that itself uses a pair of sets for \neach points-to set. The first set in the pair stores new \npointed-to objects that have not yet been propagated, while the \nsecond set stores old pointed-to objects that have been \npropagated and need not be reconsidered. This allows the \npropagation algorithms to be incremental, often speeding them up \nsignificantly.",
+						true),
 		};
-		
-										
-		setcgcg_sparkset_impl_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.spark","set-impl", "\nSelect an implementation of points-to sets for Spark to use. ")));
-		
-		defKey = "p"+" "+"cg.spark"+" "+"set-impl";
+
+
+		setcgcg_sparkset_impl_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p phase-option", "cg.spark","set-impl", "\nSelect an implementation of points-to sets for Spark to use.")));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"set-impl";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_sparkset_impl_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Hash set",
-		"hash",
-		"\nHash is an implementation based on Java's built-in hash-set. ",
-		
-		false),
-		
-		new OptionData("Bit-vector",
-		"bit",
-		"\nBit is an implementation using a bit vector. ",
-		
-		false),
-		
-		new OptionData("Hybrid",
-		"hybrid",
-		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
-		
-		true),
-		
-		new OptionData("Sorted array",
-		"array",
-		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
-		
-		false),
-		
-		new OptionData("Heintze",
-		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
-		
-		false),
-		
-		new OptionData("Shared List",
-		"sharedlist",
-		"\nShared List stores its elements in a linked list, and might \nshare 									its tail with other similar points-to sets. \n								",
-		
-		false),
-		
+				new OptionData("Hash set",
+						"hash",
+						"\nHash is an implementation based on Java's built-in hash-set.",
+						false),
+				new OptionData("Bit-vector",
+						"bit",
+						"\nBit is an implementation using a bit vector.",
+						false),
+				new OptionData("Hybrid",
+						"hybrid",
+						"\nHybrid is an implementation that keeps an explicit list of up to \n16 elements, and switches to a bit-vector when the set gets \nlarger than this.",
+						true),
+				new OptionData("Sorted array",
+						"array",
+						"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort.",
+						false),
+				new OptionData("Heintze",
+						"heintze",
+						"\nHeintze's representation has elements represented by a \nbit-vector + a small 'overflow' list of some maximum number of \nelements. The bit-vectors can be shared by multiple points-to \nsets, while the overflow lists are not.",
+						false),
+				new OptionData("Shared List",
+						"sharedlist",
+						"\nShared List stores its elements in a linked list, and might \nshare its tail with other similar points-to sets.",
+						false),
 		};
-		
-										
-		setcgcg_sparkdouble_set_old_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.spark","double-set-old", "\nSelect an implementation for sets of old objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double. ")));
-		
-		defKey = "p"+" "+"cg.spark"+" "+"double-set-old";
+
+
+		setcgcg_sparkdouble_set_old_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p phase-option", "cg.spark","double-set-old", "\nSelect an implementation for sets of old objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double.")));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"double-set-old";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_sparkdouble_set_old_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Hash set",
-		"hash",
-		"\nHash is an implementation based on Java's built-in hash-set. ",
-		
-		false),
-		
-		new OptionData("Bit-vector",
-		"bit",
-		"\nBit is an implementation using a bit vector. ",
-		
-		false),
-		
-		new OptionData("Hybrid",
-		"hybrid",
-		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
-		
-		true),
-		
-		new OptionData("Sorted array",
-		"array",
-		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
-		
-		false),
-		
-		new OptionData("Heintze",
-		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
-		
-		false),
-		
-		new OptionData("Shared List",
-		"sharedlist",
-		"\nShared List stores its elements in a linked list, and might \nshare 									its tail with other similar points-to sets. \n								",
-		
-		false),
-		
+				new OptionData("Hash set",
+						"hash",
+						"\nHash is an implementation based on Java's built-in hash-set.",
+						false),
+				new OptionData("Bit-vector",
+						"bit",
+						"\nBit is an implementation using a bit vector.",
+						false),
+				new OptionData("Hybrid",
+						"hybrid",
+						"\nHybrid is an implementation that keeps an explicit list of up to \n16 elements, and switches to a bit-vector when the set gets \nlarger than this.",
+						true),
+				new OptionData("Sorted array",
+						"array",
+						"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort.",
+						false),
+				new OptionData("Heintze",
+						"heintze",
+						"\nHeintze's representation has elements represented by a \nbit-vector + a small 'overflow' list of some maximum number of \nelements. The bit-vectors can be shared by multiple points-to \nsets, while the overflow lists are not.",
+						false),
+				new OptionData("Shared List",
+						"sharedlist",
+						"\nShared List stores its elements in a linked list, and might \nshare its tail with other similar points-to sets.",
+						false),
 		};
-		
-										
-		setcgcg_sparkdouble_set_new_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.spark","double-set-new", "\nSelect an implementation for sets of new objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double. ")));
-		
-		defKey = "p"+" "+"cg.spark"+" "+"double-set-new";
+
+
+		setcgcg_sparkdouble_set_new_widget(new MultiOptionWidget(editGroupcgSpark_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p phase-option", "cg.spark","double-set-new", "\nSelect an implementation for sets of new objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double.")));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"double-set-new";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_sparkdouble_set_new_widget().setDef(defaultString);
 		}
-		
-		
 
-		
+
 		return editGroupcgSpark_Points_To_Set_Flowing_Options;
 	}
 
@@ -14939,152 +11634,107 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"dump-html";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"dump-html";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkdump_html_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump HTML", "p", "cg.spark","dump-html", "\nWhen this option is set to true, a browseable HTML \nrepresentation of the pointer assignment graph is output to a \nfile called pag.jar after the analysis completes. Note that this \nrepresentation is typically very large. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"dump-pag";
+		setcgcg_sparkdump_html_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump HTML", "p phase-option", "cg.spark","dump-html", "\nWhen this option is set to true, a browseable HTML \nrepresentation of the pointer assignment graph is output to a \nfile called pag.jar after the analysis completes. Note that this \nrepresentation is typically very large.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"dump-pag";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkdump_pag_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump PAG", "p", "cg.spark","dump-pag", "\nWhen this option is set to true, a representation of the \npointer assignment graph suitable for processing with other \nsolvers (such as the BDD-based solver) is output before the \nanalysis begins. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"dump-solution";
+		setcgcg_sparkdump_pag_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump PAG", "p phase-option", "cg.spark","dump-pag", "\nWhen this option is set to true, a representation of the pointer \nassignment graph suitable for processing with other solvers \n(such as the BDD-based solver) is output before the analysis \nbegins.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"dump-solution";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkdump_solution_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Solution", "p", "cg.spark","dump-solution", "\nWhen this option is set to true, a representation of the \nresulting points-to sets is dumped. The format is similar to \nthat of the Dump PAG option, and is therefore suitable for \ncomparison with the results of other solvers. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"topo-sort";
+		setcgcg_sparkdump_solution_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Solution", "p phase-option", "cg.spark","dump-solution", "\nWhen this option is set to true, a representation of the \nresulting points-to sets is dumped. The format is similar to \nthat of the Dump PAG option, and is therefore suitable for \ncomparison with the results of other solvers.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"topo-sort";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparktopo_sort_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Topological Sort", "p", "cg.spark","topo-sort", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option is dumped with the variable (green) nodes in \n(pseudo-)topological order. This option has no effect unless \nDump PAG is true. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"dump-types";
+		setcgcg_sparktopo_sort_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Topological Sort", "p phase-option", "cg.spark","topo-sort", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option is dumped with the variable (green) nodes in \n(pseudo-)topological order. This option has no effect unless \nDump PAG is true.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"dump-types";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_sparkdump_types_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Types", "p", "cg.spark","dump-types", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option includes type information for all nodes. \nThis option has no effect unless Dump PAG is true. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"class-method-var";
+		setcgcg_sparkdump_types_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Types", "p phase-option", "cg.spark","dump-types", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option includes type information for all nodes. \nThis option has no effect unless Dump PAG is true.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"class-method-var";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_sparkclass_method_var_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Class Method Var", "p", "cg.spark","class-method-var", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option represents nodes by numbering each class, \nmethod, and variable within the method separately, rather than \nassigning a single integer to each node. This option has no \neffect unless Dump PAG is true. Setting Class Method Var to \ntrue has the effect of setting Topological Sort to false. \n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"dump-answer";
+		setcgcg_sparkclass_method_var_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Class Method Var", "p phase-option", "cg.spark","class-method-var", "\nWhen this option is set to true, the representation dumped by \nthe Dump PAG option represents nodes by numbering each class, \nmethod, and variable within the method separately, rather than \nassigning a single integer to each node. This option has no \neffect unless Dump PAG is true. Setting Class Method Var to true \nhas the effect of setting Topological Sort to false.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"dump-answer";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkdump_answer_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Answer", "p", "cg.spark","dump-answer", "\nWhen this option is set to true, the computed reaching types \nfor each variable are dumped to a file, so that they can be \ncompared with the results of other analyses (such as the old \nVTA). ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"add-tags";
+		setcgcg_sparkdump_answer_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Dump Answer", "p phase-option", "cg.spark","dump-answer", "\nWhen this option is set to true, the computed reaching types for \neach variable are dumped to a file, so that they can be compared \nwith the results of other analyses (such as the old VTA).", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"add-tags";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkadd_tags_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Add Tags", "p", "cg.spark","add-tags", "\nWhen this option is set to true, the results of the \nanalysis are encoded within tags and printed with the resulting \nJimple code. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"set-mass";
+		setcgcg_sparkadd_tags_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Add Tags", "p phase-option", "cg.spark","add-tags", "\nWhen this option is set to true, the results of the analysis are \nencoded within tags and printed with the resulting Jimple code.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"set-mass";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkset_mass_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p", "cg.spark","set-mass", "\nWhen this option is set to true, Spark computes and prints \nvarious cryptic statistics about the size of the points-to sets \ncomputed. ", defaultBool)));
-		
-		
+		setcgcg_sparkset_mass_widget(new BooleanOptionWidget(editGroupcgSpark_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p phase-option", "cg.spark","set-mass", "\nWhen this option is set to true, Spark computes and prints \nvarious cryptic statistics about the size of the points-to sets \ncomputed.", defaultBool)));
 
-		
+
 		return editGroupcgSpark_Output_Options;
 	}
 
@@ -15113,70 +11763,54 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"cs-demand";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"cs-demand";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkcs_demand_widget(new BooleanOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Demand-driven refinement-based context-sensitive points-to analysis", "p", "cg.spark","cs-demand", "\nWhen this option is set to true, Manu Sridharan's \ndemand-driven, refinement-based points-to analysis (PLDI 06) is \napplied after Spark was run. 					", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"lazy-pts";
+		setcgcg_sparkcs_demand_widget(new BooleanOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Demand-driven refinement-based context-sensitive points-to analysis", "p phase-option", "cg.spark","cs-demand", "\nWhen this option is set to true, Manu Sridharan's demand-driven, \nrefinement-based points-to analysis (PLDI 06) is applied after \nSpark was run.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"lazy-pts";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_sparklazy_pts_widget(new BooleanOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Create lazy points-to sets", "p", "cg.spark","lazy-pts", "\nWhen this option is disabled, context information is computed \nfor every query to the reachingObjects method. When it is \nenabled, a call to reachingObjects returns a lazy wrapper object \nthat contains a context-insensitive points-to set. This set is \nthen automatically refined with context information when \nnecessary, i.e. when we try to determine the intersection with \nanother points-to set and this intersection seems to be \nnon-empty. 					", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"traversal";
+		setcgcg_sparklazy_pts_widget(new BooleanOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Create lazy points-to sets", "p phase-option", "cg.spark","lazy-pts", "\nWhen this option is disabled, context information is computed \nfor every query to the reachingObjects method. When it is \nenabled, a call to reachingObjects returns a lazy wrapper object \nthat contains a context-insensitive points-to set. This set is \nthen automatically refined with context information when \nnecessary, i.e. when we try to determine the intersection with \nanother points-to set and this intersection seems to be \nnon-empty.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"traversal";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "75000";
-			
 		}
 
-		setcgcg_sparktraversal_widget(new StringOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Maximal traversal",  "p", "cg.spark","traversal", "\nMake the analysis traverse at most this number of nodes per \nquery. This quota is evenly shared between multiple passes (see \nnext option). 					", defaultString)));
+		setcgcg_sparktraversal_widget(new StringOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Maximal traversal",  "p phase-option", "cg.spark","traversal", "\nMake the analysis traverse at most this number of nodes per \nquery. This quota is evenly shared between multiple passes (see \nnext option).", defaultString)));
 		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"passes";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"passes";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "10";
-			
 		}
 
-		setcgcg_sparkpasses_widget(new StringOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Maximal number of passes",  "p", "cg.spark","passes", "\nPerform at most this number of refinement iterations. Each \niteration traverses at most ( traverse / passes ) nodes. \n					", defaultString)));
+		setcgcg_sparkpasses_widget(new StringOptionWidget(editGroupcgContext_sensitive_refinement, SWT.NONE, new OptionData("Maximal number of passes",  "p phase-option", "cg.spark","passes", "\nPerform at most this number of refinement iterations. Each \niteration traverses at most ( traverse / passes ) nodes.", defaultString)));
 		
 
-		
+
 		return editGroupcgContext_sensitive_refinement;
 	}
 
@@ -15205,213 +11839,164 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"geom-pta";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"geom-pta";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkgeom_pta_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Geometric, context-sensitive points-to analysis", "p", "cg.spark","geom-pta", "\n						 This switch enables/disables the geometric analysis. \n						 ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"geom-trans";
+		setcgcg_sparkgeom_pta_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Geometric, context-sensitive points-to analysis", "p phase-option", "cg.spark","geom-pta", "\nThis switch enables/disables the geometric analysis.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"geom-trans";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_sparkgeom_trans_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Transform to context-insensitive result", "p", "cg.spark","geom-trans", "\n						 If you stick to working with SPARK, you can use this \noption to transform the context sensitive result to insensitive \nresult. After the transformation, the context sensitive \npoints-to quries cannot be answered. 						 ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"geom-blocking";
+		setcgcg_sparkgeom_trans_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Transform to context-insensitive result", "p phase-option", "cg.spark","geom-trans", "\nIf you stick to working with SPARK, you can use this option to \ntransform the context sensitive result to insensitive result. \nAfter the transformation, the context sensitive points-to quries \ncannot be answered.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"geom-blocking";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_sparkgeom_blocking_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Blocking strategy for recursive calls", "p", "cg.spark","geom-blocking", "\n						 Blocking strategy is a 1CFA model for recursive \ncalls. This model significantly improves the precision. 						 ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"geom-app-only";
+		setcgcg_sparkgeom_blocking_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Blocking strategy for recursive calls", "p phase-option", "cg.spark","geom-blocking", "\nBlocking strategy is a 1CFA model for recursive calls. This \nmodel significantly improves the precision.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"geom-app-only";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_sparkgeom_app_only_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Pointers processed by geomPTA", "p", "cg.spark","geom-app-only", "\n						 When this option is true, geomPTA only processes the \npointers in library functions ( java.*, sun.*, and etc.) that \npotentially impact the points-to information of pointers in \napplication code, the pointers in application code, and the base \npointers at virtual callsites. 						 ", defaultBool)));
-		
-		
-		
+		setcgcg_sparkgeom_app_only_widget(new BooleanOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Pointers processed by geomPTA", "p phase-option", "cg.spark","geom-app-only", "\nWhen this option is true, geomPTA only processes the pointers in \nlibrary functions ( java.*, sun.*, and etc.) that potentially \nimpact the points-to information of pointers in application \ncode, the pointers in application code, and the base pointers at \nvirtual callsites.", defaultBool)));
+
 		data = new OptionData [] {
 		
-		new OptionData("Geometric",
-		"Geom",
-		"\n						 Geometric Encoding. 						 ",
-		
-		true),
-		
-		new OptionData("Heap Insensitive",
-		"HeapIns",
-		"\n						 Heap Insensitive Encoding. Omit the heap context \nrange term in the encoded representation, and in turn, we assume \nall the contexts for this heap object are used. 						 ",
-		
-		false),
-		
-		new OptionData("Pointer Insensitive",
-		"PtIns",
-		"\n						 Pointer Insensitive Encoding. Similar to HeapIns, \nbut we omit the pointer context range term. 						 ",
-		
-		false),
-		
+				new OptionData("Geometric",
+						"Geom",
+						"\nGeometric Encoding.",
+						true),
+				new OptionData("Heap Insensitive",
+						"HeapIns",
+						"\nHeap Insensitive Encoding. Omit the heap context range term in \nthe encoded representation, and in turn, we assume all the \ncontexts for this heap object are used.",
+						false),
+				new OptionData("Pointer Insensitive",
+						"PtIns",
+						"\nPointer Insensitive Encoding. Similar to HeapIns, but we omit \nthe pointer context range term.",
+						false),
 		};
-		
-										
-		setcgcg_sparkgeom_encoding_widget(new MultiOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, data, new OptionData("Encoding methodology used", "p", "cg.spark","geom-encoding", "\nThis switch specifies the \nencoding methodology used in the analysis. 						 All \npossible options are: Geom, HeapIns, PtIns. The efficiency order \n						 is (from slow to fast) Geom - HeapIns - PtIns, but the \nprecision order is 						 the reverse. \n")));
-		
-		defKey = "p"+" "+"cg.spark"+" "+"geom-encoding";
+
+
+		setcgcg_sparkgeom_encoding_widget(new MultiOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, data, new OptionData("Encoding methodology used", "p phase-option", "cg.spark","geom-encoding", "\nThis switch specifies the encoding methodology used in the \nanalysis. All possible options are: Geom, HeapIns, PtIns. The \nefficiency order is (from slow to fast) Geom - HeapIns - PtIns, \nbut the precision order is the reverse.")));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"geom-encoding";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_sparkgeom_encoding_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Priority Queue",
-		"PQ",
-		"\n						 Priority Queue (sorted by the last fire time and \ntopology order) 						 ",
-		
-		true),
-		
-		new OptionData("FIFO Queue",
-		"FIFO",
-		"\n						 FIFO Queue 						 ",
-		
-		false),
-		
+				new OptionData("Priority Queue",
+						"PQ",
+						"\nPriority Queue (sorted by the last fire time and topology order)",
+						true),
+				new OptionData("FIFO Queue",
+						"FIFO",
+						"\nFIFO Queue",
+						false),
 		};
-		
-										
-		setcgcg_sparkgeom_worklist_widget(new MultiOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, data, new OptionData("Worklist type", "p", "cg.spark","geom-worklist", "\n						 Specifies the worklist used for selecting the next \npropagation pointer. All possible options are: PQ, FIFO. They \nstand for the priority queue (sorted by the last fire time and \ntopology order) and FIFO queue. ")));
-		
-		defKey = "p"+" "+"cg.spark"+" "+"geom-worklist";
+
+
+		setcgcg_sparkgeom_worklist_widget(new MultiOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, data, new OptionData("Worklist type", "p phase-option", "cg.spark","geom-worklist", "\nSpecifies the worklist used for selecting the next propagation \npointer. All possible options are: PQ, FIFO. They stand for the \npriority queue (sorted by the last fire time and topology order) \nand FIFO queue.")));
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"geom-worklist";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_sparkgeom_worklist_widget().setDef(defaultString);
 		}
-		
-		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"geom-dump-verbose";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"geom-dump-verbose";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setcgcg_sparkgeom_dump_verbose_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verbose dump file",  "p", "cg.spark","geom-dump-verbose", "\n						 If you want to save the geomPTA analysis information \nfor future analysis, please provide a file name. 						 ", defaultString)));
+		setcgcg_sparkgeom_dump_verbose_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verbose dump file",  "p phase-option", "cg.spark","geom-dump-verbose", "\nIf you want to save the geomPTA analysis information for future \nanalysis, please provide a file name.", defaultString)));
 		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"geom-verify-name";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"geom-verify-name";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setcgcg_sparkgeom_verify_name_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verification file",  "p", "cg.spark","geom-verify-name", "\n						 If you want to compare the precision of the points-to \nresults with other solvers (e.g. Paddle), you can use the \n'verify-file' to specify the list of methods (soot method \nsignature format) that are reachable by that solver. During the \ninternal evaluations (see the option geom-eval), we only \nconsider the methods that are common to both solvers. 						 ", defaultString)));
+		setcgcg_sparkgeom_verify_name_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Verification file",  "p phase-option", "cg.spark","geom-verify-name", "\nIf you want to compare the precision of the points-to results \nwith other solvers (e.g. Paddle), you can use the 'verify-file' \nto specify the list of methods (soot method signature format) \nthat are reachable by that solver. During the internal \nevaluations (see the option geom-eval), we only consider the \nmethods that are common to both solvers.", defaultString)));
 		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"geom-eval";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"geom-eval";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "0";
-			
 		}
 
-		setcgcg_sparkgeom_eval_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Precision evaluation methodologies",  "p", "cg.spark","geom-eval", "\n						 We internally provide some precision evaluation \nmethodologies and classify the evaluation strength into three \nlevels. If level is 0, we do nothing. If level is 1, we report \nthe statistical information about the points-to result. If level \nis 2, we perform the virtual callsite resolution, static cast \nsafety and all-pairs alias evaluations. 						 ", defaultString)));
+		setcgcg_sparkgeom_eval_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Precision evaluation methodologies",  "p phase-option", "cg.spark","geom-eval", "\nWe internally provide some precision evaluation methodologies \nand classify the evaluation strength into three levels. If level \nis 0, we do nothing. If level is 1, we report the statistical \ninformation about the points-to result. If level is 2, we \nperform the virtual callsite resolution, static cast safety and \nall-pairs alias evaluations.", defaultString)));
 		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"geom-frac-base";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"geom-frac-base";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "40";
-			
 		}
 
-		setcgcg_sparkgeom_frac_base_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Fractional parameter",  "p", "cg.spark","geom-frac-base", "\n						 This option specifies the fractional parameter, which \nmanually balances the precision and the performance. Smaller \nvalue means better performance and worse precision. 						 ", defaultString)));
+		setcgcg_sparkgeom_frac_base_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Fractional parameter",  "p phase-option", "cg.spark","geom-frac-base", "\nThis option specifies the fractional parameter, which manually \nbalances the precision and the performance. Smaller value means \nbetter performance and worse precision.", defaultString)));
 		
-		
-		defKey = "p"+" "+"cg.spark"+" "+"geom-runs";
+
+		defKey = "p phase-option"+" "+"cg.spark"+" "+"geom-runs";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "1";
-			
 		}
 
-		setcgcg_sparkgeom_runs_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Iterations",  "p", "cg.spark","geom-runs", "\n						 We can run multiple times of the geometric analysis \nto continuously improve the analysis precision. 						 ", defaultString)));
+		setcgcg_sparkgeom_runs_widget(new StringOptionWidget(editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011, SWT.NONE, new OptionData("Iterations",  "p phase-option", "cg.spark","geom-runs", "\nWe can run multiple times of the geometric analysis to \ncontinuously improve the analysis precision.", defaultString)));
 		
 
-		
+
 		return editGroupcgGeometric_context_sensitive_analysis_from_ISSTA_2011;
 	}
 
@@ -15440,24 +12025,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddleenabled_widget(new BooleanOptionWidget(editGroupcgcg_paddle, SWT.NONE, new OptionData("Enabled", "p", "cg.paddle","enabled", "\n", defaultBool)));
-		
-		
+		setcgcg_paddleenabled_widget(new BooleanOptionWidget(editGroupcgcg_paddle, SWT.NONE, new OptionData("Enabled", "p phase-option", "cg.paddle","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupcgcg_paddle;
 	}
 
@@ -15486,324 +12066,237 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"verbose";
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"verbose";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddleverbose_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Verbose", "p", "cg.paddle","verbose", "\nWhen this option is set to true, Paddle prints detailed \ninformation about its execution. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"bdd";
+		setcgcg_paddleverbose_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Verbose", "p phase-option", "cg.paddle","verbose", "\nWhen this option is set to true, Paddle prints detailed \ninformation about its execution.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"bdd";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddlebdd_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Use BDDs", "p", "cg.paddle","bdd", "\nCauses \nPaddle to use BDD versions of its components ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"dynamic-order";
+		setcgcg_paddlebdd_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Use BDDs", "p phase-option", "cg.paddle","bdd", "\nCauses Paddle to use BDD versions of its components", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"dynamic-order";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddledynamic_order_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Dynamic reordering", "p", "cg.paddle","dynamic-order", "\nAllows the BDD package \nto perform dynamic variable ordering. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"profile";
+		setcgcg_paddledynamic_order_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Dynamic reordering", "p phase-option", "cg.paddle","dynamic-order", "\nAllows the BDD package to perform dynamic variable ordering.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"profile";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddleprofile_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Profile", "p", "cg.paddle","profile", "\nTurns on JeddProfiler for profiling BDD operations. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"verbosegc";
+		setcgcg_paddleprofile_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Profile", "p phase-option", "cg.paddle","profile", "\nTurns on JeddProfiler for profiling BDD operations.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"verbosegc";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddleverbosegc_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Verbose GC", "p", "cg.paddle","verbosegc", "\nPrint memory usage at each BDD garbage collection. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"ignore-types";
+		setcgcg_paddleverbosegc_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Verbose GC", "p phase-option", "cg.paddle","verbosegc", "\nPrint memory usage at each BDD garbage collection.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"ignore-types";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddleignore_types_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p", "cg.paddle","ignore-types", "\nWhen this option is set to true, all parts of Paddle completely \nignore declared types of variables and casts. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"pre-jimplify";
+		setcgcg_paddleignore_types_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Ignore Types Entirely", "p phase-option", "cg.paddle","ignore-types", "\nWhen this option is set to true, all parts of Paddle completely \nignore declared types of variables and casts.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"pre-jimplify";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddlepre_jimplify_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p", "cg.paddle","pre-jimplify", "\nWhen this option is set to true, Paddle converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis. ", defaultBool)));
-		
-		
-		
+		setcgcg_paddlepre_jimplify_widget(new BooleanOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Pre Jimplify", "p phase-option", "cg.paddle","pre-jimplify", "\nWhen this option is set to true, Paddle converts all available \nmethods to Jimple before starting the points-to analysis. This \nallows the Jimplification time to be separated from the \npoints-to time. However, it increases the total time and memory \nrequirement, because all methods are Jimplified, rather than \nonly those deemed reachable by the points-to analysis.", defaultBool)));
+
 		data = new OptionData [] {
 		
-		new OptionData("On-the fly call graph",
-		"ofcg",
-		"\nPerforms points-to analysis and builds call graph together, \non-the-fly. ",
-		
-		true),
-		
-		new OptionData("CHA only",
-		"cha",
-		"\nBuilds only a call graph using Class Hieararchy Analysis, and \nperforms no points-to analysis. ",
-		
-		false),
-		
-		new OptionData("CHA ahead-of-time call graph",
-		"cha-aot",
-		"\nFirst builds a call graph using CHA, then uses the call graph \nin a fixed-call-graph points-to analysis. ",
-		
-		false),
-		
-		new OptionData("OFCG-AOT",
-		"ofcg-aot",
-		"\nFirst builds a call graph on-the-fly during a points-to \nanalysis, then uses the resulting call graph to perform a second \npoints-to analysis with a fixed call graph. ",
-		
-		false),
-		
-		new OptionData("CHA-Context-AOT call graph",
-		"cha-context-aot",
-		"\nFirst builds a call graph using CHA, then makes it \ncontext-sensitive using the technique described by Calman and \nZhu in PLDI 04, then uses the call graph in a fixed-call-graph \npoints-to analysis. ",
-		
-		false),
-		
-		new OptionData("OFCG-Context-AOT",
-		"ofcg-context-aot",
-		"\nFirst builds a call graph on-the-fly during a points-to \nanalysis, then makes it context-sensitive using the technique \ndescribed by Calman and Zhu in PLDI 04, then uses the resulting \ncall graph to perform a second points-to analysis with a fixed \ncall graph. ",
-		
-		false),
-		
-		new OptionData("CHA-Context call graph",
-		"cha-context",
-		"\nFirst builds a call graph using CHA, then makes it \ncontext-sensitive using the technique described by Calman and \nZhu in PLDI 04. Does not produce points-to information. ",
-		
-		false),
-		
-		new OptionData("OFCG-Context",
-		"ofcg-context",
-		"\nFirst builds a call graph on-the-fly during a points-to \nanalysis, then makes it context-sensitive using the technique \ndescribed by Calman and Zhu in PLDI 04. Does not perform a \nsubsequent points-to analysis. ",
-		
-		false),
-		
+				new OptionData("On-the fly call graph",
+						"ofcg",
+						"\nPerforms points-to analysis and builds call graph together, \non-the-fly.",
+						true),
+				new OptionData("CHA only",
+						"cha",
+						"\nBuilds only a call graph using Class Hieararchy Analysis, and \nperforms no points-to analysis.",
+						false),
+				new OptionData("CHA ahead-of-time call graph",
+						"cha-aot",
+						"\nFirst builds a call graph using CHA, then uses the call graph in \na fixed-call-graph points-to analysis.",
+						false),
+				new OptionData("OFCG-AOT",
+						"ofcg-aot",
+						"\nFirst builds a call graph on-the-fly during a points-to \nanalysis, then uses the resulting call graph to perform a second \npoints-to analysis with a fixed call graph.",
+						false),
+				new OptionData("CHA-Context-AOT call graph",
+						"cha-context-aot",
+						"\nFirst builds a call graph using CHA, then makes it \ncontext-sensitive using the technique described by Calman and \nZhu in PLDI 04, then uses the call graph in a fixed-call-graph \npoints-to analysis.",
+						false),
+				new OptionData("OFCG-Context-AOT",
+						"ofcg-context-aot",
+						"\nFirst builds a call graph on-the-fly during a points-to \nanalysis, then makes it context-sensitive using the technique \ndescribed by Calman and Zhu in PLDI 04, then uses the resulting \ncall graph to perform a second points-to analysis with a fixed \ncall graph.",
+						false),
+				new OptionData("CHA-Context call graph",
+						"cha-context",
+						"\nFirst builds a call graph using CHA, then makes it \ncontext-sensitive using the technique described by Calman and \nZhu in PLDI 04. Does not produce points-to information.",
+						false),
+				new OptionData("OFCG-Context",
+						"ofcg-context",
+						"\nFirst builds a call graph on-the-fly during a points-to \nanalysis, then makes it context-sensitive using the technique \ndescribed by Calman and Zhu in PLDI 04. Does not perform a \nsubsequent points-to analysis.",
+						false),
 		};
-		
-										
-		setcgcg_paddleconf_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Configuration", "p", "cg.paddle","conf", "\nSelects the configuration of points-to analysis and call graph \nconstruction to be used in Paddle. ")));
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"conf";
+
+
+		setcgcg_paddleconf_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Configuration", "p phase-option", "cg.paddle","conf", "\nSelects the configuration of points-to analysis and call graph \nconstruction to be used in Paddle.")));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"conf";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_paddleconf_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Select Automatically",
-		"auto",
-		"\nWhen the bdd option is true, the BDD-based worklist \nimplementation will be used. When the bdd option is false, the \nTraditional worklist implementation will be used. ",
-		
-		true),
-		
-		new OptionData("Traditional",
-		"trad",
-		"\nNormal worklist queue implementation ",
-		
-		false),
-		
-		new OptionData("BDD",
-		"bdd",
-		"\nBDD-based queue implementation ",
-		
-		false),
-		
-		new OptionData("Debug",
-		"debug",
-		"\nAn implementation of worklists that includes both traditional \nand BDD-based implementations, and signals an error whenever \ntheir contents differ. ",
-		
-		false),
-		
-		new OptionData("Trace",
-		"trace",
-		"\nA worklist implementation that prints out all tuples added to \nevery worklist. ",
-		
-		false),
-		
-		new OptionData("Number Trace",
-		"numtrace",
-		"\nA worklist implementation that prints out the number of tuples \nadded to each worklist after each operation. ",
-		
-		false),
-		
+				new OptionData("Select Automatically",
+						"auto",
+						"\nWhen the bdd option is true, the BDD-based worklist \nimplementation will be used. When the bdd option is false, the \nTraditional worklist implementation will be used.",
+						true),
+				new OptionData("Traditional",
+						"trad",
+						"\nNormal worklist queue implementation",
+						false),
+				new OptionData("BDD",
+						"bdd",
+						"\nBDD-based queue implementation",
+						false),
+				new OptionData("Debug",
+						"debug",
+						"\nAn implementation of worklists that includes both traditional \nand BDD-based implementations, and signals an error whenever \ntheir contents differ.",
+						false),
+				new OptionData("Trace",
+						"trace",
+						"\nA worklist implementation that prints out all tuples added to \nevery worklist.",
+						false),
+				new OptionData("Number Trace",
+						"numtrace",
+						"\nA worklist implementation that prints out the number of tuples \nadded to each worklist after each operation.",
+						false),
 		};
-		
-										
-		setcgcg_paddleq_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Worklist Implementation", "p", "cg.paddle","q", "\nSelect the implementation of worklists to be used in Paddle. \n")));
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"q";
+
+
+		setcgcg_paddleq_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Worklist Implementation", "p phase-option", "cg.paddle","q", "\nSelect the implementation of worklists to be used in Paddle.")));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"q";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_paddleq_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Select Automatically",
-		"auto",
-		"\nWhen the bdd option is true, the BuDDy backend will be used. \nWhen the bdd option is false, the backend will be set to none, \nto avoid loading any BDD backend. ",
-		
-		true),
-		
-		new OptionData("BuDDy",
-		"buddy",
-		"\nUse BuDDy implementation of BDDs. ",
-		
-		false),
-		
-		new OptionData("CUDD",
-		"cudd",
-		"\nUse CUDD implementation of BDDs. ",
-		
-		false),
-		
-		new OptionData("SableJBDD",
-		"sable",
-		"\nUse SableJBDD implementation of BDDs.",
-		
-		false),
-		
-		new OptionData("JavaBDD",
-		"javabdd",
-		"\nUse JavaBDD implementation of BDDs. ",
-		
-		false),
-		
-		new OptionData("None",
-		"none",
-		"\nDon't use any BDD backend. Any attempted use of BDDs will cause \nPaddle to crash. ",
-		
-		false),
-		
+				new OptionData("Select Automatically",
+						"auto",
+						"\nWhen the bdd option is true, the BuDDy backend will be used. \nWhen the bdd option is false, the backend will be set to none, \nto avoid loading any BDD backend.",
+						true),
+				new OptionData("BuDDy",
+						"buddy",
+						"\nUse BuDDy implementation of BDDs.",
+						false),
+				new OptionData("CUDD",
+						"cudd",
+						"\nUse CUDD implementation of BDDs.",
+						false),
+				new OptionData("SableJBDD",
+						"sable",
+						"\nUse SableJBDD implementation of BDDs.",
+						false),
+				new OptionData("JavaBDD",
+						"javabdd",
+						"\nUse JavaBDD implementation of BDDs.",
+						false),
+				new OptionData("None",
+						"none",
+						"\nDon't use any BDD backend. Any attempted use of BDDs will cause \nPaddle to crash.",
+						false),
 		};
-		
-										
-		setcgcg_paddlebackend_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Backend", "p", "cg.paddle","backend", "\nThis option tells Paddle which implementation of BDDs to use. \n")));
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"backend";
+
+
+		setcgcg_paddlebackend_widget(new MultiOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, data, new OptionData("Backend", "p phase-option", "cg.paddle","backend", "\nThis option tells Paddle which implementation of BDDs to use.")));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"backend";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_paddlebackend_widget().setDef(defaultString);
 		}
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"order";
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"order";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "32";
-			
 		}
 
-		setcgcg_paddleorder_widget(new StringOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Variable ordering",  "p", "cg.paddle","order", "\nSelects one of the BDD \nvariable orderings hard-coded in Paddle. ", defaultString)));
+		setcgcg_paddleorder_widget(new StringOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("Variable ordering",  "p phase-option", "cg.paddle","order", "\nSelects one of the BDD variable orderings hard-coded in Paddle.", defaultString)));
 		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"bdd-nodes";
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"bdd-nodes";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "0";
-			
 		}
 
-		setcgcg_paddlebdd_nodes_widget(new StringOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("BDD Nodes",  "p", "cg.paddle","bdd-nodes", "\nThis option specifies the number of BDD nodes to be used by the \nBDD backend. A value of 0 causes the backend to start with one \nmillion nodes, and allocate more as required. A value other than \nzero causes the backend to start with the specified size, and \nprevents it from ever allocating any more nodes. ", defaultString)));
+		setcgcg_paddlebdd_nodes_widget(new StringOptionWidget(editGroupcgPaddle_General_Options, SWT.NONE, new OptionData("BDD Nodes",  "p phase-option", "cg.paddle","bdd-nodes", "\nThis option specifies the number of BDD nodes to be used by the \nBDD backend. A value of 0 causes the backend to start with one \nmillion nodes, and allocate more as required. A value other than \nzero causes the backend to start with the specified size, and \nprevents it from ever allocating any more nodes.", defaultString)));
 		
 
-		
+
 		return editGroupcgPaddle_General_Options;
 	}
 
@@ -15832,99 +12325,75 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"context-heap";
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"context-heap";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddlecontext_heap_widget(new BooleanOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, new OptionData("Context-sensitive Heap Locations", "p", "cg.paddle","context-heap", "\nWhen this option is set to true, the context-sensitivity level \nthat is set for the context-sensitive call graph and for pointer \nvariables is also used to model heap locations \ncontext-sensitively. When this option is false, heap locations \nare modelled context-insensitively regardless of the \ncontext-sensitivity level. ", defaultBool)));
-		
-		
-		
+		setcgcg_paddlecontext_heap_widget(new BooleanOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, new OptionData("Context-sensitive Heap Locations", "p phase-option", "cg.paddle","context-heap", "\nWhen this option is set to true, the context-sensitivity level \nthat is set for the context-sensitive call graph and for pointer \nvariables is also used to model heap locations \ncontext-sensitively. When this option is false, heap locations \nare modelled context-insensitively regardless of the \ncontext-sensitivity level.", defaultBool)));
+
 		data = new OptionData [] {
 		
-		new OptionData("Context-insensitive",
-		"insens",
-		"\nBuilds a context-insensitive call graph. ",
-		
-		true),
-		
-		new OptionData("1-CFA",
-		"1cfa",
-		"\nBuilds a 1-CFA call graph. ",
-		
-		false),
-		
-		new OptionData("k-CFA",
-		"kcfa",
-		"\nBuilds a k-CFA call graph. ",
-		
-		false),
-		
-		new OptionData("Object Sensitive",
-		"objsens",
-		"\nBuilds an object-sensitive call graph. ",
-		
-		false),
-		
-		new OptionData("k-Object Sensitive",
-		"kobjsens",
-		"\nBuilds a context-sensitive call graph where the context is a \nstring of up to k receiver objects. ",
-		
-		false),
-		
-		new OptionData("Unique k-Object Sensitive",
-		"uniqkobjsens",
-		"\nBuilds a context-sensitive call graph where the context is a \nstring of up to k unique receiver objects. If the receiver of a \ncall already appears in the context string, the context string \nis just reused as is. ",
-		
-		false),
-		
-		new OptionData("Thread k-Object Sensitive",
-		"threadkobjsens",
-		"\nExperimental option for thread-entry-point sensitivity. ",
-		
-		false),
-		
+				new OptionData("Context-insensitive",
+						"insens",
+						"\nBuilds a context-insensitive call graph.",
+						true),
+				new OptionData("1-CFA",
+						"1cfa",
+						"\nBuilds a 1-CFA call graph.",
+						false),
+				new OptionData("k-CFA",
+						"kcfa",
+						"\nBuilds a k-CFA call graph.",
+						false),
+				new OptionData("Object Sensitive",
+						"objsens",
+						"\nBuilds an object-sensitive call graph.",
+						false),
+				new OptionData("k-Object Sensitive",
+						"kobjsens",
+						"\nBuilds a context-sensitive call graph where the context is a \nstring of up to k receiver objects.",
+						false),
+				new OptionData("Unique k-Object Sensitive",
+						"uniqkobjsens",
+						"\nBuilds a context-sensitive call graph where the context is a \nstring of up to k unique receiver objects. If the receiver of a \ncall already appears in the context string, the context string \nis just reused as is.",
+						false),
+				new OptionData("Thread k-Object Sensitive",
+						"threadkobjsens",
+						"\nExperimental option for thread-entry-point sensitivity.",
+						false),
 		};
-		
-										
-		setcgcg_paddlecontext_widget(new MultiOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, data, new OptionData("Context abstraction", "p", "cg.paddle","context", "\nThis option tells Paddle which level of context-sensitivity to \nuse in constructing the call graph. ")));
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"context";
+
+
+		setcgcg_paddlecontext_widget(new MultiOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, data, new OptionData("Context abstraction", "p phase-option", "cg.paddle","context", "\nThis option tells Paddle which level of context-sensitivity to \nuse in constructing the call graph.")));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"context";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_paddlecontext_widget().setDef(defaultString);
 		}
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"k";
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"k";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "2";
-			
 		}
 
-		setcgcg_paddlek_widget(new StringOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, new OptionData("Context length (k)",  "p", "cg.paddle","k", "\nThe maximum length of \ncall string or receiver object string used as context. \n", defaultString)));
+		setcgcg_paddlek_widget(new StringOptionWidget(editGroupcgPaddle_Context_Sensitivity_Options, SWT.NONE, new OptionData("Context length (k)",  "p phase-option", "cg.paddle","k", "\nThe maximum length of call string or receiver object string used \nas context.", defaultString)));
 		
 
-		
+
 		return editGroupcgPaddle_Context_Sensitivity_Options;
 	}
 
@@ -15953,168 +12422,118 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"rta";
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"rta";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddlerta_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p", "cg.paddle","rta", "\nSetting RTA to true sets types-for-sites to true, and causes \nPaddle to use a single points-to set for all variables, giving \nRapid Type Analysis. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"field-based";
+		setcgcg_paddlerta_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("RTA", "p phase-option", "cg.paddle","rta", "\nSetting RTA to true sets types-for-sites to true, and causes \nPaddle to use a single points-to set for all variables, giving \nRapid Type Analysis.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"field-based";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddlefield_based_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p", "cg.paddle","field-based", "\nWhen this option is set to true, fields are represented by \nvariable (Green) nodes, and the object that the field belongs to \nis ignored (all objects are lumped together), giving a \nfield-based analysis. Otherwise, fields are represented by field \nreference (Red) nodes, and the objects that they belong to are \ndistinguished, giving a field-sensitive analysis. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"types-for-sites";
+		setcgcg_paddlefield_based_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Field Based", "p phase-option", "cg.paddle","field-based", "\nWhen this option is set to true, fields are represented by \nvariable (Green) nodes, and the object that the field belongs to \nis ignored (all objects are lumped together), giving a \nfield-based analysis. Otherwise, fields are represented by field \nreference (Red) nodes, and the objects that they belong to are \ndistinguished, giving a field-sensitive analysis.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"types-for-sites";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddletypes_for_sites_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p", "cg.paddle","types-for-sites", "\nWhen this option is set to true, types rather than allocation \nsites are used as the elements of the points-to sets. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"merge-stringbuffer";
+		setcgcg_paddletypes_for_sites_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Types For Sites", "p phase-option", "cg.paddle","types-for-sites", "\nWhen this option is set to true, types rather than allocation \nsites are used as the elements of the points-to sets.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"merge-stringbuffer";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_paddlemerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p", "cg.paddle","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site. Allocation sites creating a \njava.lang.StringBuilder object are also grouped together as a \nsingle allocation site. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"string-constants";
+		setcgcg_paddlemerge_stringbuffer_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Merge String Buffer", "p phase-option", "cg.paddle","merge-stringbuffer", "\nWhen this option is set to true, all allocation sites creating \njava.lang.StringBuffer objects are grouped together as a single \nallocation site. Allocation sites creating a \njava.lang.StringBuilder object are also grouped together as a \nsingle allocation site.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"string-constants";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddlestring_constants_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Propagate All String Constants", "p", "cg.paddle","string-constants", "\nWhen this option is set to false, Paddle only distinguishes \nstring constants that may be the name of a class loaded \ndynamically using reflection, and all other string constants are \nlumped together into a single string constant node. Setting this \noption to true causes all string constants to be propagated \nindividually. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"simulate-natives";
+		setcgcg_paddlestring_constants_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Propagate All String Constants", "p phase-option", "cg.paddle","string-constants", "\nWhen this option is set to false, Paddle only distinguishes \nstring constants that may be the name of a class loaded \ndynamically using reflection, and all other string constants are \nlumped together into a single string constant node. Setting this \noption to true causes all string constants to be propagated \nindividually.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"simulate-natives";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_paddlesimulate_natives_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p", "cg.paddle","simulate-natives", "\nWhen this option is set to true, the effects of native methods \nin the standard Java class library are simulated. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"global-nodes-in-natives";
+		setcgcg_paddlesimulate_natives_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simulate Natives", "p phase-option", "cg.paddle","simulate-natives", "\nWhen this option is set to true, the effects of native methods \nin the standard Java class library are simulated.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"global-nodes-in-natives";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddleglobal_nodes_in_natives_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Global Nodes in Simulated Natives", "p", "cg.paddle","global-nodes-in-natives", "\nThe simulations of native methods such as System.arraycopy() \nuse temporary local variable nodes. Setting this switch to true \ncauses them to use global variable nodes instead, reducing \nprecision. The switch exists only to make it possible to measure \nthis effect on precision; there is no other practical reason to \nset it to true. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"simple-edges-bidirectional";
+		setcgcg_paddleglobal_nodes_in_natives_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Global Nodes in Simulated Natives", "p phase-option", "cg.paddle","global-nodes-in-natives", "\nThe simulations of native methods such as System.arraycopy() use \ntemporary local variable nodes. Setting this switch to true \ncauses them to use global variable nodes instead, reducing \nprecision. The switch exists only to make it possible to measure \nthis effect on precision; there is no other practical reason to \nset it to true.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"simple-edges-bidirectional";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddlesimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p", "cg.paddle","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable \n(Green) nodes are made bidirectional, as in Steensgaard's \nanalysis. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"this-edges";
+		setcgcg_paddlesimple_edges_bidirectional_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Simple Edges Bidirectional", "p phase-option", "cg.paddle","simple-edges-bidirectional", "\nWhen this option is set to true, all edges connecting variable \n(Green) nodes are made bidirectional, as in Steensgaard's \nanalysis.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"this-edges";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddlethis_edges_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("this Pointer Assignment Edge", "p", "cg.paddle","this-edges", "\nWhen constructing a call graph on-the-fly during points-to \nanalysis, Paddle normally propagates only those receivers that \ncause a method to be invoked to the this pointer of the method. \nWhen this option is set to true, however, Paddle instead models \nflow of receivers as an assignnment edge from the receiver at \nthe call site to the this pointer of the method, reducing \nprecision. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"precise-newinstance";
+		setcgcg_paddlethis_edges_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("this Pointer Assignment Edge", "p phase-option", "cg.paddle","this-edges", "\nWhen constructing a call graph on-the-fly during points-to \nanalysis, Paddle normally propagates only those receivers that \ncause a method to be invoked to the this pointer of the method. \nWhen this option is set to true, however, Paddle instead models \nflow of receivers as an assignnment edge from the receiver at \nthe call site to the this pointer of the method, reducing \nprecision.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"precise-newinstance";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_paddleprecise_newinstance_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Precise newInstance", "p", "cg.paddle","precise-newinstance", "\nNormally, newInstance() calls are treated as if they may \nreturn an object of any type. Setting this option to true \ncauses them to be treated as if they return only objects of \nthe type of some dynamic class. ", defaultBool)));
-		
-		
+		setcgcg_paddleprecise_newinstance_widget(new BooleanOptionWidget(editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options, SWT.NONE, new OptionData("Precise newInstance", "p phase-option", "cg.paddle","precise-newinstance", "\nNormally, newInstance() calls are treated as if they may return \nan object of any type. Setting this option to true causes them \nto be treated as if they return only objects of the type of some \ndynamic class.", defaultBool)));
 
-		
+
 		return editGroupcgPaddle_Pointer_Assignment_Graph_Building_Options;
 	}
 
@@ -16143,212 +12562,160 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Select Automatically",
-		"auto",
-		"\nWhen the bdd option is true, the Incremental BDD propagation \nalgorithm will be used. When the bdd option is false, the \nWorklist propagation algorithm will be used. ",
-		
-		true),
-		
-		new OptionData("Iter",
-		"iter",
-		"\nIter is a simple, iterative algorithm, which propagates \neverything until the graph does not change. ",
-		
-		false),
-		
-		new OptionData("Worklist",
-		"worklist",
-		"\nWorklist is a worklist-based algorithm that tries to do as \nlittle work as possible. This is currently the fastest \nalgorithm. ",
-		
-		false),
-		
-		new OptionData("Alias",
-		"alias",
-		"\nAlias is an alias-edge based algorithm. This algorithm tends to \ntake the least memory for very large problems, because it does \nnot represent explicitly points-to sets of fields of heap \nobjects. ",
-		
-		false),
-		
-		new OptionData("BDD",
-		"bdd",
-		"\nBDD is a propagator that stores points-to sets in binary \ndecision diagrams. ",
-		
-		false),
-		
-		new OptionData("Incrementalized BDD",
-		"incbdd",
-		"\nA propagator that stores points-to sets in binary decision \ndiagrams, and propagates them incrementally. ",
-		
-		false),
-		
+				new OptionData("Select Automatically",
+						"auto",
+						"\nWhen the bdd option is true, the Incremental BDD propagation \nalgorithm will be used. When the bdd option is false, the \nWorklist propagation algorithm will be used.",
+						true),
+				new OptionData("Iter",
+						"iter",
+						"\nIter is a simple, iterative algorithm, which propagates \neverything until the graph does not change.",
+						false),
+				new OptionData("Worklist",
+						"worklist",
+						"\nWorklist is a worklist-based algorithm that tries to do as \nlittle work as possible. This is currently the fastest \nalgorithm.",
+						false),
+				new OptionData("Alias",
+						"alias",
+						"\nAlias is an alias-edge based algorithm. This algorithm tends to \ntake the least memory for very large problems, because it does \nnot represent explicitly points-to sets of fields of heap \nobjects.",
+						false),
+				new OptionData("BDD",
+						"bdd",
+						"\nBDD is a propagator that stores points-to sets in binary \ndecision diagrams.",
+						false),
+				new OptionData("Incrementalized BDD",
+						"incbdd",
+						"\nA propagator that stores points-to sets in binary decision \ndiagrams, and propagates them incrementally.",
+						false),
 		};
-		
-										
-		setcgcg_paddlepropagator_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Propagator", "p", "cg.paddle","propagator", "\nThis option tells Paddle which propagation algorithm to use. \n")));
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"propagator";
+
+
+		setcgcg_paddlepropagator_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Propagator", "p phase-option", "cg.paddle","propagator", "\nThis option tells Paddle which propagation algorithm to use.")));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"propagator";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_paddlepropagator_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Hash set",
-		"hash",
-		"\nHash is an implementation based on Java's built-in hash-set. ",
-		
-		false),
-		
-		new OptionData("Bit-vector",
-		"bit",
-		"\nBit is an implementation using a bit vector. ",
-		
-		false),
-		
-		new OptionData("Hybrid",
-		"hybrid",
-		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
-		
-		false),
-		
-		new OptionData("Sorted array",
-		"array",
-		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
-		
-		false),
-		
-		new OptionData("Heintze",
-		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
-		
-		false),
-		
-		new OptionData("Double",
-		"double",
-		"\nDouble is an implementation that itself uses a pair of sets for \neach points-to set. The first set in the pair stores new \npointed-to objects that have not yet been propagated, while the \nsecond set stores old pointed-to objects that have been \npropagated and need not be reconsidered. This allows the \npropagation algorithms to be incremental, often speeding them up \nsignificantly. ",
-		
-		true),
-		
+				new OptionData("Hash set",
+						"hash",
+						"\nHash is an implementation based on Java's built-in hash-set.",
+						false),
+				new OptionData("Bit-vector",
+						"bit",
+						"\nBit is an implementation using a bit vector.",
+						false),
+				new OptionData("Hybrid",
+						"hybrid",
+						"\nHybrid is an implementation that keeps an explicit list of up to \n16 elements, and switches to a bit-vector when the set gets \nlarger than this.",
+						false),
+				new OptionData("Sorted array",
+						"array",
+						"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort.",
+						false),
+				new OptionData("Heintze",
+						"heintze",
+						"\nHeintze's representation has elements represented by a \nbit-vector + a small 'overflow' list of some maximum number of \nelements. The bit-vectors can be shared by multiple points-to \nsets, while the overflow lists are not.",
+						false),
+				new OptionData("Double",
+						"double",
+						"\nDouble is an implementation that itself uses a pair of sets for \neach points-to set. The first set in the pair stores new \npointed-to objects that have not yet been propagated, while the \nsecond set stores old pointed-to objects that have been \npropagated and need not be reconsidered. This allows the \npropagation algorithms to be incremental, often speeding them up \nsignificantly.",
+						true),
 		};
-		
-										
-		setcgcg_paddleset_impl_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p", "cg.paddle","set-impl", "\nSelect an implementation of points-to sets for Paddle to use. ")));
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"set-impl";
+
+
+		setcgcg_paddleset_impl_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Set Implementation", "p phase-option", "cg.paddle","set-impl", "\nSelect an implementation of points-to sets for Paddle to use.")));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"set-impl";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_paddleset_impl_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Hash set",
-		"hash",
-		"\nHash is an implementation based on Java's built-in hash-set. ",
-		
-		false),
-		
-		new OptionData("Bit-vector",
-		"bit",
-		"\nBit is an implementation using a bit vector. ",
-		
-		false),
-		
-		new OptionData("Hybrid",
-		"hybrid",
-		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
-		
-		true),
-		
-		new OptionData("Sorted array",
-		"array",
-		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
-		
-		false),
-		
-		new OptionData("Heintze",
-		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
-		
-		false),
-		
+				new OptionData("Hash set",
+						"hash",
+						"\nHash is an implementation based on Java's built-in hash-set.",
+						false),
+				new OptionData("Bit-vector",
+						"bit",
+						"\nBit is an implementation using a bit vector.",
+						false),
+				new OptionData("Hybrid",
+						"hybrid",
+						"\nHybrid is an implementation that keeps an explicit list of up to \n16 elements, and switches to a bit-vector when the set gets \nlarger than this.",
+						true),
+				new OptionData("Sorted array",
+						"array",
+						"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort.",
+						false),
+				new OptionData("Heintze",
+						"heintze",
+						"\nHeintze's representation has elements represented by a \nbit-vector + a small 'overflow' list of some maximum number of \nelements. The bit-vectors can be shared by multiple points-to \nsets, while the overflow lists are not.",
+						false),
 		};
-		
-										
-		setcgcg_paddledouble_set_old_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p", "cg.paddle","double-set-old", "\nSelect an implementation for sets of old objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double. ")));
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"double-set-old";
+
+
+		setcgcg_paddledouble_set_old_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set Old", "p phase-option", "cg.paddle","double-set-old", "\nSelect an implementation for sets of old objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double.")));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"double-set-old";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_paddledouble_set_old_widget().setDef(defaultString);
 		}
-		
-		
-		
+
 		data = new OptionData [] {
 		
-		new OptionData("Hash set",
-		"hash",
-		"\nHash is an implementation based on Java's built-in hash-set. ",
-		
-		false),
-		
-		new OptionData("Bit-vector",
-		"bit",
-		"\nBit is an implementation using a bit vector. ",
-		
-		false),
-		
-		new OptionData("Hybrid",
-		"hybrid",
-		"\nHybrid is an implementation that keeps an explicit list of up \nto 16 elements, and switches to a bit-vector when the set gets \nlarger than this. ",
-		
-		true),
-		
-		new OptionData("Sorted array",
-		"array",
-		"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort. ",
-		
-		false),
-		
-		new OptionData("Heintze",
-		"heintze",
-		"\nHeintze's representation has elements represented by a \nbit-vector + a small 									'overflow' list of some maximum \nnumber of elements. The bit-vectors can be shared 									by \nmultiple points-to sets, while the overflow lists are not. \n								",
-		
-		false),
-		
+				new OptionData("Hash set",
+						"hash",
+						"\nHash is an implementation based on Java's built-in hash-set.",
+						false),
+				new OptionData("Bit-vector",
+						"bit",
+						"\nBit is an implementation using a bit vector.",
+						false),
+				new OptionData("Hybrid",
+						"hybrid",
+						"\nHybrid is an implementation that keeps an explicit list of up to \n16 elements, and switches to a bit-vector when the set gets \nlarger than this.",
+						true),
+				new OptionData("Sorted array",
+						"array",
+						"\nArray is an implementation that keeps the elements of the \npoints-to set in a sorted array. Set membership is tested using \nbinary search, and set union and intersection are computed using \nan algorithm based on the merge step from merge sort.",
+						false),
+				new OptionData("Heintze",
+						"heintze",
+						"\nHeintze's representation has elements represented by a \nbit-vector + a small 'overflow' list of some maximum number of \nelements. The bit-vectors can be shared by multiple points-to \nsets, while the overflow lists are not.",
+						false),
 		};
-		
-										
-		setcgcg_paddledouble_set_new_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p", "cg.paddle","double-set-new", "\nSelect an implementation for sets of new objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double. ")));
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"double-set-new";
+
+
+		setcgcg_paddledouble_set_new_widget(new MultiOptionWidget(editGroupcgPaddle_Points_To_Set_Flowing_Options, SWT.NONE, data, new OptionData("Double Set New", "p phase-option", "cg.paddle","double-set-new", "\nSelect an implementation for sets of new objects in the double \npoints-to set implementation. This option has no effect unless \nSet Implementation is set to double.")));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"double-set-new";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getcgcg_paddledouble_set_new_widget().setDef(defaultString);
 		}
-		
-		
 
-		
+
 		return editGroupcgPaddle_Points_To_Set_Flowing_Options;
 	}
 
@@ -16377,88 +12744,63 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"context-counts";
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"context-counts";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddlecontext_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Print Context Counts", "p", "cg.paddle","context-counts", "\nCauses Paddle to print the number of contexts for each method \nand call edge, and the number of equivalence classes of contexts \nfor each variable node. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"total-context-counts";
+		setcgcg_paddlecontext_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Print Context Counts", "p phase-option", "cg.paddle","context-counts", "\nCauses Paddle to print the number of contexts for each method \nand call edge, and the number of equivalence classes of contexts \nfor each variable node.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"total-context-counts";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddletotal_context_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Print Context Counts (Totals only)", "p", "cg.paddle","total-context-counts", "\nCauses Paddle to print the number of contexts and number of \ncontext equivalence classes. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"method-context-counts";
+		setcgcg_paddletotal_context_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Print Context Counts (Totals only)", "p phase-option", "cg.paddle","total-context-counts", "\nCauses Paddle to print the number of contexts and number of \ncontext equivalence classes.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"method-context-counts";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddlemethod_context_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Method Context Counts (Totals only)", "p", "cg.paddle","method-context-counts", "\nCauses Paddle to print the number of contexts and number of \ncontext equivalence classes split out by method. Requires \ntotal-context-counts to also be turned on. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"set-mass";
+		setcgcg_paddlemethod_context_counts_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Method Context Counts (Totals only)", "p phase-option", "cg.paddle","method-context-counts", "\nCauses Paddle to print the number of contexts and number of \ncontext equivalence classes split out by method. Requires \ntotal-context-counts to also be turned on.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"set-mass";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setcgcg_paddleset_mass_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p", "cg.paddle","set-mass", "\nWhen this option is set to true, Paddle computes and prints \nvarious cryptic statistics about the size of the points-to sets \ncomputed. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"cg.paddle"+" "+"number-nodes";
+		setcgcg_paddleset_mass_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Calculate Set Mass", "p phase-option", "cg.paddle","set-mass", "\nWhen this option is set to true, Paddle computes and prints \nvarious cryptic statistics about the size of the points-to sets \ncomputed.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"cg.paddle"+" "+"number-nodes";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setcgcg_paddlenumber_nodes_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Number nodes", "p", "cg.paddle","number-nodes", "\nWhen printing debug information about nodes, this option causes \nthe node number of each node to be printed. ", defaultBool)));
-		
-		
+		setcgcg_paddlenumber_nodes_widget(new BooleanOptionWidget(editGroupcgPaddle_Output_Options, SWT.NONE, new OptionData("Number nodes", "p phase-option", "cg.paddle","number-nodes", "\nWhen printing debug information about nodes, this option causes \nthe node number of each node to be printed.", defaultBool)));
 
-		
+
 		return editGroupcgPaddle_Output_Options;
 	}
 
@@ -16487,24 +12829,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wstp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wstp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwstpenabled_widget(new BooleanOptionWidget(editGroupwstp, SWT.NONE, new OptionData("Enabled", "p", "wstp","enabled", "\n", defaultBool)));
-		
-		
+		setwstpenabled_widget(new BooleanOptionWidget(editGroupwstp, SWT.NONE, new OptionData("Enabled", "p phase-option", "wstp","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupwstp;
 	}
 
@@ -16533,24 +12870,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wsop"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wsop"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwsopenabled_widget(new BooleanOptionWidget(editGroupwsop, SWT.NONE, new OptionData("Enabled", "p", "wsop","enabled", "\n", defaultBool)));
-		
-		
+		setwsopenabled_widget(new BooleanOptionWidget(editGroupwsop, SWT.NONE, new OptionData("Enabled", "p phase-option", "wsop","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupwsop;
 	}
 
@@ -16579,24 +12911,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjtp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjtp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjtpenabled_widget(new BooleanOptionWidget(editGroupwjtp, SWT.NONE, new OptionData("Enabled", "p", "wjtp","enabled", "\n", defaultBool)));
-		
-		
+		setwjtpenabled_widget(new BooleanOptionWidget(editGroupwjtp, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjtp","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupwjtp;
 	}
 
@@ -16625,24 +12952,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjtp.mhp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjtp.mhp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjtpwjtp_mhpenabled_widget(new BooleanOptionWidget(editGroupwjtpwjtp_mhp, SWT.NONE, new OptionData("Enabled", "p", "wjtp.mhp","enabled", "\n", defaultBool)));
-		
-		
+		setwjtpwjtp_mhpenabled_widget(new BooleanOptionWidget(editGroupwjtpwjtp_mhp, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjtp.mhp","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupwjtpwjtp_mhp;
 	}
 
@@ -16671,178 +12993,128 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjtp.tn"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjtp.tn"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjtpwjtp_tnenabled_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Enabled", "p", "wjtp.tn","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjtp.tn"+" "+"avoid-deadlock";
+		setwjtpwjtp_tnenabled_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjtp.tn","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjtp.tn"+" "+"avoid-deadlock";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjtpwjtp_tnavoid_deadlock_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform Deadlock Avoidance", "p", "wjtp.tn","avoid-deadlock", "\nPerform Deadlock Avoidance by enforcing a lock ordering where \nnecessary. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjtp.tn"+" "+"open-nesting";
+		setwjtpwjtp_tnavoid_deadlock_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform Deadlock Avoidance", "p phase-option", "wjtp.tn","avoid-deadlock", "\nPerform Deadlock Avoidance by enforcing a lock ordering where \nnecessary.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjtp.tn"+" "+"open-nesting";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjtpwjtp_tnopen_nesting_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Use Open Nesting", "p", "wjtp.tn","open-nesting", "\nUse an open nesting model, where inner transactions are allowed \nto commit independently of any outer transaction. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjtp.tn"+" "+"do-mhp";
+		setwjtpwjtp_tnopen_nesting_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Use Open Nesting", "p phase-option", "wjtp.tn","open-nesting", "\nUse an open nesting model, where inner transactions are allowed \nto commit independently of any outer transaction.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjtp.tn"+" "+"do-mhp";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjtpwjtp_tndo_mhp_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform May-Happen-in-Parallel Analysis", "p", "wjtp.tn","do-mhp", "\nPerform a May-Happen-in-Parallel analysis to assist in \nallocating locks. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjtp.tn"+" "+"do-tlo";
+		setwjtpwjtp_tndo_mhp_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform May-Happen-in-Parallel Analysis", "p phase-option", "wjtp.tn","do-mhp", "\nPerform a May-Happen-in-Parallel analysis to assist in \nallocating locks.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjtp.tn"+" "+"do-tlo";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjtpwjtp_tndo_tlo_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform Local Objects Analysis", "p", "wjtp.tn","do-tlo", "\nPerform a Local-Objects analysis to assist in allocating locks. \n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjtp.tn"+" "+"print-graph";
+		setwjtpwjtp_tndo_tlo_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Perform Local Objects Analysis", "p phase-option", "wjtp.tn","do-tlo", "\nPerform a Local-Objects analysis to assist in allocating locks.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjtp.tn"+" "+"print-graph";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjtpwjtp_tnprint_graph_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Topological Graph", "p", "wjtp.tn","print-graph", "\nPrint a topological graph of the program's transactions in the \nformat used by the graphviz package. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjtp.tn"+" "+"print-table";
+		setwjtpwjtp_tnprint_graph_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Topological Graph", "p phase-option", "wjtp.tn","print-graph", "\nPrint a topological graph of the program's transactions in the \nformat used by the graphviz package.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjtp.tn"+" "+"print-table";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjtpwjtp_tnprint_table_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Table", "p", "wjtp.tn","print-table", "\nPrint a table of information about the program's transactions. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjtp.tn"+" "+"print-debug";
+		setwjtpwjtp_tnprint_table_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Table", "p phase-option", "wjtp.tn","print-table", "\nPrint a table of information about the program's transactions.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjtp.tn"+" "+"print-debug";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjtpwjtp_tnprint_debug_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Debugging Info", "p", "wjtp.tn","print-debug", "\nPrint debugging info, including every statement visited. ", defaultBool)));
-		
-		
-		
+		setwjtpwjtp_tnprint_debug_widget(new BooleanOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, new OptionData("Print Debugging Info", "p phase-option", "wjtp.tn","print-debug", "\nPrint debugging info, including every statement visited.", defaultBool)));
+
 		data = new OptionData [] {
 		
-		new OptionData("Medium Grained",
-		"medium-grained",
-		"\nTry to identify transactional regions that can employ a dynamic \nlock to increase parallelism. All side effects must be \nprotected by a single object. This locking scheme aims to \napproximate typical Java Monitor usage. ",
-		
-		true),
-		
-		new OptionData("Coarse Grained",
-		"coarse-grained",
-		"\nInsert static objects into the program for synchronization. \nOne object will be used for each group of conflicting \nsynchronized regions. This locking scheme achieves code-level \nlocking. ",
-		
-		false),
-		
-		new OptionData("Single Static Lock",
-		"single-static",
-		"\nInsert one static object into the program for synchronization \nfor all transactional regions. This locking scheme is for \nresearch purposes. ",
-		
-		false),
-		
-		new OptionData("Leave Original Locks",
-		"leave-original",
-		"\nAnalyse the existing lock structure of the program, but do not \nchange it. With one of the print options, this can be useful \nfor comparison between the original program and one of the \ngenerated locking schemes. ",
-		
-		false),
-		
+				new OptionData("Medium Grained",
+						"medium-grained",
+						"\nTry to identify transactional regions that can employ a dynamic \nlock to increase parallelism. All side effects must be protected \nby a single object. This locking scheme aims to approximate \ntypical Java Monitor usage.",
+						true),
+				new OptionData("Coarse Grained",
+						"coarse-grained",
+						"\nInsert static objects into the program for synchronization. One \nobject will be used for each group of conflicting synchronized \nregions. This locking scheme achieves code-level locking.",
+						false),
+				new OptionData("Single Static Lock",
+						"single-static",
+						"\nInsert one static object into the program for synchronization \nfor all transactional regions. This locking scheme is for \nresearch purposes.",
+						false),
+				new OptionData("Leave Original Locks",
+						"leave-original",
+						"\nAnalyse the existing lock structure of the program, but do not \nchange it. With one of the print options, this can be useful for \ncomparison between the original program and one of the generated \nlocking schemes.",
+						false),
 		};
-		
-										
-		setwjtpwjtp_tnlocking_scheme_widget(new MultiOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, data, new OptionData("Locking Scheme", "p", "wjtp.tn","locking-scheme", "\nSelects the granularity of the generated lock allocation")));
-		
-		defKey = "p"+" "+"wjtp.tn"+" "+"locking-scheme";
+
+
+		setwjtpwjtp_tnlocking_scheme_widget(new MultiOptionWidget(editGroupwjtpwjtp_tn, SWT.NONE, data, new OptionData("Locking Scheme", "p phase-option", "wjtp.tn","locking-scheme", "\nSelects the granularity of the generated lock allocation")));
+
+		defKey = "p phase-option"+" "+"wjtp.tn"+" "+"locking-scheme";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getwjtpwjtp_tnlocking_scheme_widget().setDef(defaultString);
 		}
-		
-		
 
-		
+
 		return editGroupwjtpwjtp_tn;
 	}
 
@@ -16871,39 +13143,31 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjtp.rdc"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjtp.rdc"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjtpwjtp_rdcenabled_widget(new BooleanOptionWidget(editGroupwjtpwjtp_rdc, SWT.NONE, new OptionData("Enabled", "p", "wjtp.rdc","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjtp.rdc"+" "+"fcn";
+		setwjtpwjtp_rdcenabled_widget(new BooleanOptionWidget(editGroupwjtpwjtp_rdc, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjtp.rdc","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjtp.rdc"+" "+"fcn fixed-class-names";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setwjtpwjtp_rdcfixed_class_names_widget(new StringOptionWidget(editGroupwjtpwjtp_rdc, SWT.NONE, new OptionData("FixedClassNames",  "p", "wjtp.rdc","fcn", "\n							Use this parameter to set some class names unchangable \neven they are duplicated. 							The fixed class name list \ncannot contain duplicated class names. 							Using '-' to split \nmultiple class names (e.g., fcn:a.b.c-a.b.d). 						", defaultString)));
+		setwjtpwjtp_rdcfixed_class_names_widget(new StringOptionWidget(editGroupwjtpwjtp_rdc, SWT.NONE, new OptionData("FixedClassNames",  "p phase-option", "wjtp.rdc","fcn fixed-class-names", "\nUse this parameter to set some class names unchangable even they \nare duplicated. The fixed class name list cannot contain \nduplicated class names. Using '-' to split multiple class names \n(e.g., fcn:a.b.c-a.b.d).", defaultString)));
 		
 
-		
+
 		return editGroupwjtpwjtp_rdc;
 	}
 
@@ -16932,24 +13196,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjop"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjop"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjopenabled_widget(new BooleanOptionWidget(editGroupwjop, SWT.NONE, new OptionData("Enabled", "p", "wjop","enabled", "\n", defaultBool)));
-		
-		
+		setwjopenabled_widget(new BooleanOptionWidget(editGroupwjop, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjop","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupwjop;
 	}
 
@@ -16978,92 +13237,69 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjop.smb"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjop.smb"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjopwjop_smbenabled_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Enabled", "p", "wjop.smb","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjop.smb"+" "+"insert-null-checks";
+		setwjopwjop_smbenabled_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjop.smb","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjop.smb"+" "+"insert-null-checks";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjopwjop_smbinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.smb","insert-null-checks", "\nInsert a check that, before invoking the static copy of the \ntarget method, throws a NullPointerException if the receiver \nobject is null. This ensures that static method binding does \nnot eliminate exceptions which would have occurred in its \nabsence. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjop.smb"+" "+"insert-redundant-casts";
+		setwjopwjop_smbinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Null Checks", "p phase-option", "wjop.smb","insert-null-checks", "\nInsert a check that, before invoking the static copy of the \ntarget method, throws a NullPointerException if the receiver \nobject is null. This ensures that static method binding does not \neliminate exceptions which would have occurred in its absence.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjop.smb"+" "+"insert-redundant-casts";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjopwjop_smbinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.smb","insert-redundant-casts", "\nInsert extra casts for the Java bytecode verifier. If the \ntarget method uses its this parameter, a reference to the \nreceiver object must be passed to the static copy of the target \nmethod. The verifier may complain if the declared type of the \nreceiver parameter does not match the type implementing the \ntarget method. Say, for example, that Singer is an interface \ndeclaring the sing() method and that the call graph shows all \nreceiver objects at a particular call site, singer.sing() (with \nsinger declared as a Singer) are in fact Bird objects (Bird \nbeing a class that implements Singer). The virtual call \nsinger.sing() is effectively replaced with the static call \nBird.staticsing(singer). Bird.staticsing() may perform \noperations on its parameter which are only allowed on Birds, \nrather than Singers. The Insert Redundant Casts option inserts \na cast of singer to the Bird type, to prevent complaints from \nthe verifier.", defaultBool)));
-		
-		
-		
+		setwjopwjop_smbinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_smb, SWT.NONE, new OptionData("Insert Redundant Casts", "p phase-option", "wjop.smb","insert-redundant-casts", "\nInsert extra casts for the Java bytecode verifier. If the target \nmethod uses its this parameter, a reference to the receiver \nobject must be passed to the static copy of the target method. \nThe verifier may complain if the declared type of the receiver \nparameter does not match the type implementing the target \nmethod. Say, for example, that Singer is an interface declaring \nthe sing() method and that the call graph shows all receiver \nobjects at a particular call site, singer.sing() (with singer \ndeclared as a Singer) are in fact Bird objects ( Bird being a \nclass that implements Singer). The virtual call singer.sing() is \neffectively replaced with the static call \nBird.staticsing(singer). Bird.staticsing() may perform \noperations on its parameter which are only allowed on Birds, \nrather than Singers. The Insert Redundant Casts option inserts a \ncast of singer to the Bird type, to prevent complaints from the \nverifier.", defaultBool)));
+
 		data = new OptionData [] {
 		
-		new OptionData("Unsafe",
-		"unsafe",
-		"\nModify the visibility on code so that all inlining is \npermitted. ",
-		
-		true),
-		
-		new OptionData("Safe",
-		"safe",
-		"\nPreserve the exact meaning of the analyzed program. ",
-		
-		false),
-		
-		new OptionData("None",
-		"none",
-		"\nChange no modifiers whatsoever. ",
-		
-		false),
-		
+				new OptionData("Unsafe",
+						"unsafe",
+						"\nModify the visibility on code so that all inlining is permitted.",
+						true),
+				new OptionData("Safe",
+						"safe",
+						"\nPreserve the exact meaning of the analyzed program.",
+						false),
+				new OptionData("None",
+						"none",
+						"\nChange no modifiers whatsoever.",
+						false),
 		};
-		
-										
-		setwjopwjop_smballowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_smb, SWT.NONE, data, new OptionData("Allowed Modifier Changes", "p", "wjop.smb","allowed-modifier-changes", "\nSpecify which changes in visibility modifiers \nare allowed. ")));
-		
-		defKey = "p"+" "+"wjop.smb"+" "+"allowed-modifier-changes";
+
+
+		setwjopwjop_smballowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_smb, SWT.NONE, data, new OptionData("Allowed Modifier Changes", "p phase-option", "wjop.smb","allowed-modifier-changes", "\nSpecify which changes in visibility modifiers are allowed.")));
+
+		defKey = "p phase-option"+" "+"wjop.smb"+" "+"allowed-modifier-changes";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getwjopwjop_smballowed_modifier_changes_widget().setDef(defaultString);
 		}
-		
-		
 
-		
+
 		return editGroupwjopwjop_smb;
 	}
 
@@ -17092,153 +13328,116 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjop.si"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjop.si"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjopwjop_sienabled_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Enabled", "p", "wjop.si","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjop.si"+" "+"rerun-jb";
+		setwjopwjop_sienabled_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjop.si","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjop.si"+" "+"rerun-jb";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjopwjop_sirerun_jb_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Reconstruct Jimple body after inlining", "p", "wjop.si","rerun-jb", "\nWhen a method with array parameters is inlined, its variables \nmay need to be assigned different types than they had in the \noriginal method to produce compilable code. When this option is \nset, Soot re-runs the Jimple Body pack on each method body which \nhas had another method inlined into it so that the typing \nalgorithm can reassign the types. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjop.si"+" "+"insert-null-checks";
+		setwjopwjop_sirerun_jb_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Reconstruct Jimple body after inlining", "p phase-option", "wjop.si","rerun-jb", "\nWhen a method with array parameters is inlined, its variables \nmay need to be assigned different types than they had in the \noriginal method to produce compilable code. When this option is \nset, Soot re-runs the Jimple Body pack on each method body which \nhas had another method inlined into it so that the typing \nalgorithm can reassign the types.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjop.si"+" "+"insert-null-checks";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjopwjop_siinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Null Checks", "p", "wjop.si","insert-null-checks", "\nInsert, before the inlined body of the target method, a check \nthat throws a NullPointerException if the receiver object is \nnull. This ensures that inlining will not eliminate exceptions \nwhich would have occurred in its absence. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjop.si"+" "+"insert-redundant-casts";
+		setwjopwjop_siinsert_null_checks_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Null Checks", "p phase-option", "wjop.si","insert-null-checks", "\nInsert, before the inlined body of the target method, a check \nthat throws a NullPointerException if the receiver object is \nnull. This ensures that inlining will not eliminate exceptions \nwhich would have occurred in its absence.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjop.si"+" "+"insert-redundant-casts";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjopwjop_siinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Redundant Casts", "p", "wjop.si","insert-redundant-casts", "\nInsert extra casts for the Java bytecode verifier. The \nverifier may complain if the inlined method uses this and the \ndeclared type of the receiver of the call being inlined is \ndifferent from the type implementing the target method being \ninlined. Say, for example, that Singer is an interface declaring \nthe sing() method and that the call graph shows that all \nreceiver objects at a particular call site, singer.sing() (with \nsinger declared as a Singer) are in fact Bird objects (Bird \nbeing a class that implements Singer). The implementation of \nBird.sing() may perform operations on this which are only \nallowed on Birds, rather than Singers. The Insert Redundant \nCasts option ensures that this cannot lead to verification \nerrors, by inserting a cast of bird to the Bird type before \ninlining the body of Bird.sing().", defaultBool)));
-		
-		
-		
+		setwjopwjop_siinsert_redundant_casts_widget(new BooleanOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Insert Redundant Casts", "p phase-option", "wjop.si","insert-redundant-casts", "\nInsert extra casts for the Java bytecode verifier. The verifier \nmay complain if the inlined method uses this and the declared \ntype of the receiver of the call being inlined is different from \nthe type implementing the target method being inlined. Say, for \nexample, that Singer is an interface declaring the sing() method \nand that the call graph shows that all receiver objects at a \nparticular call site, singer.sing() (with singer declared as a \nSinger) are in fact Bird objects ( Bird being a class that \nimplements Singer). The implementation of Bird.sing() may \nperform operations on this which are only allowed on Birds, \nrather than Singers. The Insert Redundant Casts option ensures \nthat this cannot lead to verification errors, by inserting a \ncast of bird to the Bird type before inlining the body of \nBird.sing().", defaultBool)));
+
 		data = new OptionData [] {
 		
-		new OptionData("Unsafe",
-		"unsafe",
-		"\nModify the visibility on code so that all inlining is \npermitted. ",
-		
-		true),
-		
-		new OptionData("Safe",
-		"safe",
-		"\nPreserve the exact meaning of the analyzed program. ",
-		
-		false),
-		
-		new OptionData("None",
-		"none",
-		"\nChange no modifiers whatsoever. ",
-		
-		false),
-		
+				new OptionData("Unsafe",
+						"unsafe",
+						"\nModify the visibility on code so that all inlining is permitted.",
+						true),
+				new OptionData("Safe",
+						"safe",
+						"\nPreserve the exact meaning of the analyzed program.",
+						false),
+				new OptionData("None",
+						"none",
+						"\nChange no modifiers whatsoever.",
+						false),
 		};
-		
-										
-		setwjopwjop_siallowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_si, SWT.NONE, data, new OptionData("Allowed Modifier Changes", "p", "wjop.si","allowed-modifier-changes", "\nSpecify which changes in visibility modifiers \nare allowed. ")));
-		
-		defKey = "p"+" "+"wjop.si"+" "+"allowed-modifier-changes";
+
+
+		setwjopwjop_siallowed_modifier_changes_widget(new MultiOptionWidget(editGroupwjopwjop_si, SWT.NONE, data, new OptionData("Allowed Modifier Changes", "p phase-option", "wjop.si","allowed-modifier-changes", "\nSpecify which changes in visibility modifiers are allowed.")));
+
+		defKey = "p phase-option"+" "+"wjop.si"+" "+"allowed-modifier-changes";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getwjopwjop_siallowed_modifier_changes_widget().setDef(defaultString);
 		}
-		
-		
-		
-		defKey = "p"+" "+"wjop.si"+" "+"expansion-factor";
+
+		defKey = "p phase-option"+" "+"wjop.si"+" "+"expansion-factor";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "3";
-			
 		}
 
-		setwjopwjop_siexpansion_factor_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Expansion Factor",  "p", "wjop.si","expansion-factor", "\nDetermines the maximum allowed expansion of a method. Inlining \nwill cause the method to grow by a factor of no more than the \nExpansion Factor. ", defaultString)));
+		setwjopwjop_siexpansion_factor_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Expansion Factor",  "p phase-option", "wjop.si","expansion-factor", "\nDetermines the maximum allowed expansion of a method. Inlining \nwill cause the method to grow by a factor of no more than the \nExpansion Factor.", defaultString)));
 		
-		
-		defKey = "p"+" "+"wjop.si"+" "+"max-container-size";
+
+		defKey = "p phase-option"+" "+"wjop.si"+" "+"max-container-size";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "5000";
-			
 		}
 
-		setwjopwjop_simax_container_size_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Max Container Size",  "p", "wjop.si","max-container-size", "\nDetermines the maximum number of Jimple statements for a \ncontainer method. If a method has more than this number of \nJimple statements, then no methods will be inlined into it. \n", defaultString)));
+		setwjopwjop_simax_container_size_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Max Container Size",  "p phase-option", "wjop.si","max-container-size", "\nDetermines the maximum number of Jimple statements for a \ncontainer method. If a method has more than this number of \nJimple statements, then no methods will be inlined into it.", defaultString)));
 		
-		
-		defKey = "p"+" "+"wjop.si"+" "+"max-inlinee-size";
+
+		defKey = "p phase-option"+" "+"wjop.si"+" "+"max-inlinee-size";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "20";
-			
 		}
 
-		setwjopwjop_simax_inlinee_size_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Max Inlinee Size",  "p", "wjop.si","max-inlinee-size", "\nDetermines the maximum number of Jimple statements for an \ninlinee method. If a method has more than this number of Jimple \nstatements, then it will not be inlined into other methods. \n", defaultString)));
+		setwjopwjop_simax_inlinee_size_widget(new StringOptionWidget(editGroupwjopwjop_si, SWT.NONE, new OptionData("Max Inlinee Size",  "p phase-option", "wjop.si","max-inlinee-size", "\nDetermines the maximum number of Jimple statements for an \ninlinee method. If a method has more than this number of Jimple \nstatements, then it will not be inlined into other methods.", defaultString)));
 		
 
-		
+
 		return editGroupwjopwjop_si;
 	}
 
@@ -17267,24 +13466,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjap"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjap"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjapenabled_widget(new BooleanOptionWidget(editGroupwjap, SWT.NONE, new OptionData("Enabled", "p", "wjap","enabled", "\n", defaultBool)));
-		
-		
+		setwjapenabled_widget(new BooleanOptionWidget(editGroupwjap, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjap","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupwjap;
 	}
 
@@ -17313,24 +13507,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjap.ra"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjap.ra"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjapwjap_raenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_ra, SWT.NONE, new OptionData("Enabled", "p", "wjap.ra","enabled", "\n", defaultBool)));
-		
-		
+		setwjapwjap_raenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_ra, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjap.ra","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupwjapwjap_ra;
 	}
 
@@ -17359,24 +13548,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjap.umt"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjap.umt"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjapwjap_umtenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_umt, SWT.NONE, new OptionData("Enabled", "p", "wjap.umt","enabled", "\n", defaultBool)));
-		
-		
+		setwjapwjap_umtenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_umt, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjap.umt","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupwjapwjap_umt;
 	}
 
@@ -17405,24 +13589,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjap.uft"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjap.uft"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjapwjap_uftenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_uft, SWT.NONE, new OptionData("Enabled", "p", "wjap.uft","enabled", "\n", defaultBool)));
-		
-		
+		setwjapwjap_uftenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_uft, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjap.uft","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupwjapwjap_uft;
 	}
 
@@ -17451,24 +13630,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjap.tqt"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjap.tqt"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjapwjap_tqtenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_tqt, SWT.NONE, new OptionData("Enabled", "p", "wjap.tqt","enabled", "\n", defaultBool)));
-		
-		
+		setwjapwjap_tqtenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_tqt, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjap.tqt","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupwjapwjap_tqt;
 	}
 
@@ -17497,40 +13671,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjap.cgg"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjap.cgg"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjapwjap_cggenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_cgg, SWT.NONE, new OptionData("Enabled", "p", "wjap.cgg","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjap.cgg"+" "+"show-lib-meths";
+		setwjapwjap_cggenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_cgg, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjap.cgg","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.cgg"+" "+"show-lib-meths";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjapwjap_cggshow_lib_meths_widget(new BooleanOptionWidget(editGroupwjapwjap_cgg, SWT.NONE, new OptionData("Show Library Methods", "p", "wjap.cgg","show-lib-meths", "\n", defaultBool)));
-		
-		
+		setwjapwjap_cggshow_lib_meths_widget(new BooleanOptionWidget(editGroupwjapwjap_cgg, SWT.NONE, new OptionData("Show Library Methods", "p phase-option", "wjap.cgg","show-lib-meths", "\n", defaultBool)));
 
-		
+
 		return editGroupwjapwjap_cgg;
 	}
 
@@ -17559,120 +13723,85 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"wjap.purity"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"wjap.purity"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjapwjap_purityenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Enabled", "p", "wjap.purity","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjap.purity"+" "+"dump-summaries";
+		setwjapwjap_purityenabled_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Enabled", "p phase-option", "wjap.purity","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.purity"+" "+"dump-summaries";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjapwjap_puritydump_summaries_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump one .dot files for each method summary", "p", "wjap.purity","dump-summaries", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjap.purity"+" "+"dump-cg";
+		setwjapwjap_puritydump_summaries_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump one .dot files for each method summary", "p phase-option", "wjap.purity","dump-summaries", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.purity"+" "+"dump-cg";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjapwjap_puritydump_cg_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump .dot call-graph annotated with method summaries (huge)", "p", "wjap.purity","dump-cg", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjap.purity"+" "+"dump-intra";
+		setwjapwjap_puritydump_cg_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump .dot call-graph annotated with method summaries (huge)", "p phase-option", "wjap.purity","dump-cg", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.purity"+" "+"dump-intra";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjapwjap_puritydump_intra_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump one .dot for each intra-procedural method analysis (long)", "p", "wjap.purity","dump-intra", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjap.purity"+" "+"print";
+		setwjapwjap_puritydump_intra_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Dump one .dot for each intra-procedural method analysis (long)", "p phase-option", "wjap.purity","dump-intra", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.purity"+" "+"print";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjapwjap_purityprint_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Print analysis results", "p", "wjap.purity","print", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjap.purity"+" "+"annotate";
+		setwjapwjap_purityprint_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Print analysis results", "p phase-option", "wjap.purity","print", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.purity"+" "+"annotate";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setwjapwjap_purityannotate_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Annotate class files", "p", "wjap.purity","annotate", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"wjap.purity"+" "+"verbose";
+		setwjapwjap_purityannotate_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Annotate class files", "p phase-option", "wjap.purity","annotate", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"wjap.purity"+" "+"verbose";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setwjapwjap_purityverbose_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Be (quite) verbose", "p", "wjap.purity","verbose", "\n", defaultBool)));
-		
-		
+		setwjapwjap_purityverbose_widget(new BooleanOptionWidget(editGroupwjapwjap_purity, SWT.NONE, new OptionData("Be (quite) verbose", "p phase-option", "wjap.purity","verbose", "\n", defaultBool)));
 
-		
+
 		return editGroupwjapwjap_purity;
 	}
 
@@ -17701,88 +13830,63 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"shimple"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"shimple"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setshimpleenabled_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Enabled", "p", "shimple","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"shimple"+" "+"node-elim-opt";
+		setshimpleenabled_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Enabled", "p phase-option", "shimple","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"shimple"+" "+"node-elim-opt";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setshimplenode_elim_opt_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Shimple Node Elimination Optimizations", "p", "shimple","node-elim-opt", "\nPerform some optimizations, such as dead code \nelimination and local aggregation, before/after \neliminating nodes. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"shimple"+" "+"standard-local-names";
+		setshimplenode_elim_opt_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Shimple Node Elimination Optimizations", "p phase-option", "shimple","node-elim-opt", "\nPerform some optimizations, such as dead code elimination and \nlocal aggregation, before/after eliminating nodes.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"shimple"+" "+"standard-local-names";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setshimplestandard_local_names_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Local Name Standardization", "p", "shimple","standard-local-names", "\nIf enabled, the Local Name Standardizer is applied \nwhenever Shimple creates new locals. Normally, \nShimple will retain the original local names as far \nas possible and use an underscore notation to denote \nSSA subscripts. This transformation does not \notherwise affect Shimple behaviour. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"shimple"+" "+"extended";
+		setshimplestandard_local_names_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Local Name Standardization", "p phase-option", "shimple","standard-local-names", "\nIf enabled, the Local Name Standardizer is applied whenever \nShimple creates new locals. Normally, Shimple will retain the \noriginal local names as far as possible and use an underscore \nnotation to denote SSA subscripts. This transformation does not \notherwise affect Shimple behaviour.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"shimple"+" "+"extended";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setshimpleextended_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Extended SSA (SSI)", "p", "shimple","extended", "\nIf enabled, Shimple will created extended SSA (SSI) \nform. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"shimple"+" "+"debug";
+		setshimpleextended_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Extended SSA (SSI)", "p phase-option", "shimple","extended", "\nIf enabled, Shimple will created extended SSA (SSI) form.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"shimple"+" "+"debug";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setshimpledebug_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Debugging Output", "p", "shimple","debug", "\nIf enabled, Soot may print out warnings and \nmessages useful for debugging the Shimple module. \nAutomatically enabled by the global debug switch. \n", defaultBool)));
-		
-		
+		setshimpledebug_widget(new BooleanOptionWidget(editGroupshimple, SWT.NONE, new OptionData("Debugging Output", "p phase-option", "shimple","debug", "\nIf enabled, Soot may print out warnings and messages useful for \ndebugging the Shimple module. Automatically enabled by the \nglobal debug switch.", defaultBool)));
 
-		
+
 		return editGroupshimple;
 	}
 
@@ -17811,24 +13915,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"stp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"stp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setstpenabled_widget(new BooleanOptionWidget(editGroupstp, SWT.NONE, new OptionData("Enabled", "p", "stp","enabled", "\n", defaultBool)));
-		
-		
+		setstpenabled_widget(new BooleanOptionWidget(editGroupstp, SWT.NONE, new OptionData("Enabled", "p phase-option", "stp","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupstp;
 	}
 
@@ -17857,24 +13956,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"sop"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"sop"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setsopenabled_widget(new BooleanOptionWidget(editGroupsop, SWT.NONE, new OptionData("Enabled", "p", "sop","enabled", "\n", defaultBool)));
-		
-		
+		setsopenabled_widget(new BooleanOptionWidget(editGroupsop, SWT.NONE, new OptionData("Enabled", "p phase-option", "sop","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupsop;
 	}
 
@@ -17903,40 +13997,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"sop.cpf"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"sop.cpf"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setsopsop_cpfenabled_widget(new BooleanOptionWidget(editGroupsopsop_cpf, SWT.NONE, new OptionData("Enabled", "p", "sop.cpf","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"sop.cpf"+" "+"prune-cfg";
+		setsopsop_cpfenabled_widget(new BooleanOptionWidget(editGroupsopsop_cpf, SWT.NONE, new OptionData("Enabled", "p phase-option", "sop.cpf","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"sop.cpf"+" "+"prune-cfg";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setsopsop_cpfprune_cfg_widget(new BooleanOptionWidget(editGroupsopsop_cpf, SWT.NONE, new OptionData("Prune Control Flow Graph", "p", "sop.cpf","prune-cfg", "\nConditional branching statements that are found \nto branch unconditionally (or fall through) are \nreplaced with unconditional branches (or \nremoved). This transformation exposes more \nopportunities for dead code removal. \n", defaultBool)));
-		
-		
+		setsopsop_cpfprune_cfg_widget(new BooleanOptionWidget(editGroupsopsop_cpf, SWT.NONE, new OptionData("Prune Control Flow Graph", "p phase-option", "sop.cpf","prune-cfg", "\nConditional branching statements that are found to branch \nunconditionally (or fall through) are replaced with \nunconditional branches (or removed). This transformation exposes \nmore opportunities for dead code removal.", defaultBool)));
 
-		
+
 		return editGroupsopsop_cpf;
 	}
 
@@ -17965,24 +14049,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jtp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jtp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjtpenabled_widget(new BooleanOptionWidget(editGroupjtp, SWT.NONE, new OptionData("Enabled", "p", "jtp","enabled", "\n", defaultBool)));
-		
-		
+		setjtpenabled_widget(new BooleanOptionWidget(editGroupjtp, SWT.NONE, new OptionData("Enabled", "p phase-option", "jtp","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjtp;
 	}
 
@@ -18011,24 +14090,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopenabled_widget(new BooleanOptionWidget(editGroupjop, SWT.NONE, new OptionData("Enabled", "p", "jop","enabled", "\n", defaultBool)));
-		
-		
+		setjopenabled_widget(new BooleanOptionWidget(editGroupjop, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjop;
 	}
 
@@ -18057,40 +14131,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.cse"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.cse"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_cseenabled_widget(new BooleanOptionWidget(editGroupjopjop_cse, SWT.NONE, new OptionData("Enabled", "p", "jop.cse","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jop.cse"+" "+"naive-side-effect";
+		setjopjop_cseenabled_widget(new BooleanOptionWidget(editGroupjopjop_cse, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.cse","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jop.cse"+" "+"naive-side-effect";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_csenaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_cse, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.cse","naive-side-effect", "\nIf Naive Side Effect Tester is true, the Common Subexpression \nEliminator uses the conservative side effect information \nprovided by the NaiveSideEffectTester class, even if \ninterprocedural information about side effects is available. The \nnaive side effect analysis is based solely on the information \navailable locally about a statement. It assumes, for example, \nthat any method call has the potential to write and read all \ninstance and static fields in the program. If Naive Side Effect \nTester is set to false and Soot is in whole program mode, then \nthe Common Subexpression Eliminator uses the side effect \ninformation provided by the PASideEffectTester class. \nPASideEffectTester uses a points-to analysis to determine which \nfields and statics may be written or read by a given statement. \nIf whole program analysis is not performed, naive side effect \ninformation is used regardless of the setting of Naive Side \nEffect Tester. ", defaultBool)));
-		
-		
+		setjopjop_csenaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_cse, SWT.NONE, new OptionData("Naive Side Effect Tester", "p phase-option", "jop.cse","naive-side-effect", "\nIf Naive Side Effect Tester is true, the Common Subexpression \nEliminator uses the conservative side effect information \nprovided by the NaiveSideEffectTester class, even if \ninterprocedural information about side effects is available. The \nnaive side effect analysis is based solely on the information \navailable locally about a statement. It assumes, for example, \nthat any method call has the potential to write and read all \ninstance and static fields in the program. If Naive Side Effect \nTester is set to false and Soot is in whole program mode, then \nthe Common Subexpression Eliminator uses the side effect \ninformation provided by the PASideEffectTester class. \nPASideEffectTester uses a points-to analysis to determine which \nfields and statics may be written or read by a given statement. \nIf whole program analysis is not performed, naive side effect \ninformation is used regardless of the setting of Naive Side \nEffect Tester.", defaultBool)));
 
-		
+
 		return editGroupjopjop_cse;
 	}
 
@@ -18119,40 +14183,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.bcm"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.bcm"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_bcmenabled_widget(new BooleanOptionWidget(editGroupjopjop_bcm, SWT.NONE, new OptionData("Enabled", "p", "jop.bcm","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jop.bcm"+" "+"naive-side-effect";
+		setjopjop_bcmenabled_widget(new BooleanOptionWidget(editGroupjopjop_bcm, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.bcm","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jop.bcm"+" "+"naive-side-effect";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_bcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_bcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.bcm","naive-side-effect", "\nIf Naive Side Effect Tester is set to true, Busy Code Motion \nuses the conservative side effect information provided by the \nNaiveSideEffectTester class, even if interprocedural information \nabout side effects is available. The naive side effect analysis \nis based solely on the information available locally about a \nstatement. It assumes, for example, that any method call has the \npotential to write and read all instance and static fields in \nthe program. If Naive Side Effect Tester is set to false and \nSoot is in whole program mode, then Busy Code Motion uses the \nside effect information provided by the PASideEffectTester \nclass. PASideEffectTester uses a points-to analysis to determine \nwhich fields and statics may be written or read by a given \nstatement. If whole program analysis is not performed, naive \nside effect information is used regardless of the setting of \nNaive Side Effect Tester. ", defaultBool)));
-		
-		
+		setjopjop_bcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_bcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p phase-option", "jop.bcm","naive-side-effect", "\nIf Naive Side Effect Tester is set to true, Busy Code Motion \nuses the conservative side effect information provided by the \nNaiveSideEffectTester class, even if interprocedural information \nabout side effects is available. The naive side effect analysis \nis based solely on the information available locally about a \nstatement. It assumes, for example, that any method call has the \npotential to write and read all instance and static fields in \nthe program. If Naive Side Effect Tester is set to false and \nSoot is in whole program mode, then Busy Code Motion uses the \nside effect information provided by the PASideEffectTester \nclass. PASideEffectTester uses a points-to analysis to determine \nwhich fields and statics may be written or read by a given \nstatement. If whole program analysis is not performed, naive \nside effect information is used regardless of the setting of \nNaive Side Effect Tester.", defaultBool)));
 
-		
+
 		return editGroupjopjop_bcm;
 	}
 
@@ -18181,92 +14235,69 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.lcm"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.lcm"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_lcmenabled_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Enabled", "p", "jop.lcm","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jop.lcm"+" "+"unroll";
+		setjopjop_lcmenabled_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.lcm","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jop.lcm"+" "+"unroll";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjopjop_lcmunroll_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Unroll", "p", "jop.lcm","unroll", "\nIf true, perform loop inversion before doing the \ntransformation. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jop.lcm"+" "+"naive-side-effect";
+		setjopjop_lcmunroll_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Unroll", "p phase-option", "jop.lcm","unroll", "\nIf true, perform loop inversion before doing the transformation.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jop.lcm"+" "+"naive-side-effect";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_lcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p", "jop.lcm","naive-side-effect", "\nIf Naive Side Effect Tester is set to true, Lazy Code Motion \nuses the conservative side effect information provided by the \nNaiveSideEffectTester class, even if interprocedural information \nabout side effects is available. The naive side effect analysis \nis based solely on the information available locally about a \nstatement. It assumes, for example, that any method call has the \npotential to write and read all instance and static fields in \nthe program. If Naive Side Effect Tester is set to false and \nSoot is in whole program mode, then Lazy Code Motion uses the \nside effect information provided by the PASideEffectTester \nclass. PASideEffectTester uses a points-to analysis to determine \nwhich fields and statics may be written or read by a given \nstatement. If whole program analysis is not performed, naive \nside effect information is used regardless of the setting of \nNaive Side Effect Tester. ", defaultBool)));
-		
-		
-		
+		setjopjop_lcmnaive_side_effect_widget(new BooleanOptionWidget(editGroupjopjop_lcm, SWT.NONE, new OptionData("Naive Side Effect Tester", "p phase-option", "jop.lcm","naive-side-effect", "\nIf Naive Side Effect Tester is set to true, Lazy Code Motion \nuses the conservative side effect information provided by the \nNaiveSideEffectTester class, even if interprocedural information \nabout side effects is available. The naive side effect analysis \nis based solely on the information available locally about a \nstatement. It assumes, for example, that any method call has the \npotential to write and read all instance and static fields in \nthe program. If Naive Side Effect Tester is set to false and \nSoot is in whole program mode, then Lazy Code Motion uses the \nside effect information provided by the PASideEffectTester \nclass. PASideEffectTester uses a points-to analysis to determine \nwhich fields and statics may be written or read by a given \nstatement. If whole program analysis is not performed, naive \nside effect information is used regardless of the setting of \nNaive Side Effect Tester.", defaultBool)));
+
 		data = new OptionData [] {
 		
-		new OptionData("Safe",
-		"safe",
-		"\nSafe, but only considers moving additions, subtractions and \nmultiplications. ",
-		
-		true),
-		
-		new OptionData("Medium",
-		"medium",
-		"\nUnsafe in multi-threaded programs, as it may reuse the values \nread from field accesses. ",
-		
-		false),
-		
-		new OptionData("Unsafe",
-		"unsafe",
-		"\nMay violate Java's exception semantics, as it may move or \nreorder exception-throwing statements, potentially outside of \ntry-catch blocks. ",
-		
-		false),
-		
+				new OptionData("Safe",
+						"safe",
+						"\nSafe, but only considers moving additions, subtractions and \nmultiplications.",
+						true),
+				new OptionData("Medium",
+						"medium",
+						"\nUnsafe in multi-threaded programs, as it may reuse the values \nread from field accesses.",
+						false),
+				new OptionData("Unsafe",
+						"unsafe",
+						"\nMay violate Java's exception semantics, as it may move or \nreorder exception-throwing statements, potentially outside of \ntry-catch blocks.",
+						false),
 		};
-		
-										
-		setjopjop_lcmsafety_widget(new MultiOptionWidget(editGroupjopjop_lcm, SWT.NONE, data, new OptionData("Safety", "p", "jop.lcm","safety", "\nThis option controls which fields and statements are candidates \nfor code motion. ")));
-		
-		defKey = "p"+" "+"jop.lcm"+" "+"safety";
+
+
+		setjopjop_lcmsafety_widget(new MultiOptionWidget(editGroupjopjop_lcm, SWT.NONE, data, new OptionData("Safety", "p phase-option", "jop.lcm","safety", "\nThis option controls which fields and statements are candidates \nfor code motion.")));
+
+		defKey = "p phase-option"+" "+"jop.lcm"+" "+"safety";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getjopjop_lcmsafety_widget().setDef(defaultString);
 		}
-		
-		
 
-		
+
 		return editGroupjopjop_lcm;
 	}
 
@@ -18295,56 +14326,41 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.cp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.cp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjopjop_cpenabled_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Enabled", "p", "jop.cp","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jop.cp"+" "+"only-regular-locals";
+		setjopjop_cpenabled_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.cp","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jop.cp"+" "+"only-regular-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Only Regular Locals", "p", "jop.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, \nthose declared in the source bytecode. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jop.cp"+" "+"only-stack-locals";
+		setjopjop_cponly_regular_locals_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Only Regular Locals", "p phase-option", "jop.cp","only-regular-locals", "\nOnly propagate copies through ``regular'' locals, that is, those \ndeclared in the source bytecode.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jop.cp"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Only Stack Locals", "p", "jop.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
-		
-		
+		setjopjop_cponly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_cp, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jop.cp","only-stack-locals", "\nOnly propagate copies through locals that represent stack \nlocations in the original bytecode.", defaultBool)));
 
-		
+
 		return editGroupjopjop_cp;
 	}
 
@@ -18373,24 +14389,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.cpf"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.cpf"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjopjop_cpfenabled_widget(new BooleanOptionWidget(editGroupjopjop_cpf, SWT.NONE, new OptionData("Enabled", "p", "jop.cpf","enabled", "\n", defaultBool)));
-		
-		
+		setjopjop_cpfenabled_widget(new BooleanOptionWidget(editGroupjopjop_cpf, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.cpf","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjopjop_cpf;
 	}
 
@@ -18419,24 +14430,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.cbf"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.cbf"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjopjop_cbfenabled_widget(new BooleanOptionWidget(editGroupjopjop_cbf, SWT.NONE, new OptionData("Enabled", "p", "jop.cbf","enabled", "\n", defaultBool)));
-		
-		
+		setjopjop_cbfenabled_widget(new BooleanOptionWidget(editGroupjopjop_cbf, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.cbf","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjopjop_cbf;
 	}
 
@@ -18465,56 +14471,41 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.dae"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.dae"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjopjop_daeenabled_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Enabled", "p", "jop.dae","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jop.dae"+" "+"only-tag";
+		setjopjop_daeenabled_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.dae","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jop.dae"+" "+"only-tag";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_daeonly_tag_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Tag Dead Code", "p", "jop.dae","only-tag", "\nOnly tag dead assignment statements instead of eliminaing them. \n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jop.dae"+" "+"only-stack-locals";
+		setjopjop_daeonly_tag_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Tag Dead Code", "p phase-option", "jop.dae","only-tag", "\nOnly tag dead assignment statements instead of eliminaing them.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jop.dae"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Stack Locals", "p", "jop.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode. ", defaultBool)));
-		
-		
+		setjopjop_daeonly_stack_locals_widget(new BooleanOptionWidget(editGroupjopjop_dae, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "jop.dae","only-stack-locals", "\nOnly eliminate dead assignments to locals that represent stack \nlocations in the original bytecode.", defaultBool)));
 
-		
+
 		return editGroupjopjop_dae;
 	}
 
@@ -18543,24 +14534,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.nce"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.nce"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_nceenabled_widget(new BooleanOptionWidget(editGroupjopjop_nce, SWT.NONE, new OptionData("Enabled", "p", "jop.nce","enabled", "\n", defaultBool)));
-		
-		
+		setjopjop_nceenabled_widget(new BooleanOptionWidget(editGroupjopjop_nce, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.nce","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjopjop_nce;
 	}
 
@@ -18589,40 +14575,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.uce1"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.uce1"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjopjop_uce1enabled_widget(new BooleanOptionWidget(editGroupjopjop_uce1, SWT.NONE, new OptionData("Enabled", "p", "jop.uce1","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jop.uce1"+" "+"remove-unreachable-traps";
+		setjopjop_uce1enabled_widget(new BooleanOptionWidget(editGroupjopjop_uce1, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.uce1","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jop.uce1"+" "+"remove-unreachable-traps";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_uce1remove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjopjop_uce1, SWT.NONE, new OptionData("Remove unreachable traps", "p", "jop.uce1","remove-unreachable-traps", "\nRemove exception table entries when none of the protected \ninstructions can throw the exception being caught. ", defaultBool)));
-		
-		
+		setjopjop_uce1remove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjopjop_uce1, SWT.NONE, new OptionData("Remove unreachable traps", "p phase-option", "jop.uce1","remove-unreachable-traps", "\nRemove exception table entries when none of the protected \ninstructions can throw the exception being caught.", defaultBool)));
 
-		
+
 		return editGroupjopjop_uce1;
 	}
 
@@ -18651,24 +14627,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.ubf1"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.ubf1"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjopjop_ubf1enabled_widget(new BooleanOptionWidget(editGroupjopjop_ubf1, SWT.NONE, new OptionData("Enabled", "p", "jop.ubf1","enabled", "\n", defaultBool)));
-		
-		
+		setjopjop_ubf1enabled_widget(new BooleanOptionWidget(editGroupjopjop_ubf1, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.ubf1","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjopjop_ubf1;
 	}
 
@@ -18697,40 +14668,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.uce2"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.uce2"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjopjop_uce2enabled_widget(new BooleanOptionWidget(editGroupjopjop_uce2, SWT.NONE, new OptionData("Enabled", "p", "jop.uce2","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jop.uce2"+" "+"remove-unreachable-traps";
+		setjopjop_uce2enabled_widget(new BooleanOptionWidget(editGroupjopjop_uce2, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.uce2","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jop.uce2"+" "+"remove-unreachable-traps";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjopjop_uce2remove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjopjop_uce2, SWT.NONE, new OptionData("Remove unreachable traps", "p", "jop.uce2","remove-unreachable-traps", "\nRemove exception table entries when none of the protected \ninstructions can throw the exception being caught. ", defaultBool)));
-		
-		
+		setjopjop_uce2remove_unreachable_traps_widget(new BooleanOptionWidget(editGroupjopjop_uce2, SWT.NONE, new OptionData("Remove unreachable traps", "p phase-option", "jop.uce2","remove-unreachable-traps", "\nRemove exception table entries when none of the protected \ninstructions can throw the exception being caught.", defaultBool)));
 
-		
+
 		return editGroupjopjop_uce2;
 	}
 
@@ -18759,24 +14720,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.ubf2"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.ubf2"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjopjop_ubf2enabled_widget(new BooleanOptionWidget(editGroupjopjop_ubf2, SWT.NONE, new OptionData("Enabled", "p", "jop.ubf2","enabled", "\n", defaultBool)));
-		
-		
+		setjopjop_ubf2enabled_widget(new BooleanOptionWidget(editGroupjopjop_ubf2, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.ubf2","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjopjop_ubf2;
 	}
 
@@ -18805,24 +14761,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jop.ule"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jop.ule"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjopjop_uleenabled_widget(new BooleanOptionWidget(editGroupjopjop_ule, SWT.NONE, new OptionData("Enabled", "p", "jop.ule","enabled", "\n", defaultBool)));
-		
-		
+		setjopjop_uleenabled_widget(new BooleanOptionWidget(editGroupjopjop_ule, SWT.NONE, new OptionData("Enabled", "p phase-option", "jop.ule","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjopjop_ule;
 	}
 
@@ -18851,24 +14802,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setjapenabled_widget(new BooleanOptionWidget(editGroupjap, SWT.NONE, new OptionData("Enabled", "p", "jap","enabled", "\n", defaultBool)));
-		
-		
+		setjapenabled_widget(new BooleanOptionWidget(editGroupjap, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjap;
 	}
 
@@ -18897,56 +14843,41 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.npc"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.npc"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_npcenabled_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Enabled", "p", "jap.npc","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.npc"+" "+"only-array-ref";
+		setjapjap_npcenabled_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.npc","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.npc"+" "+"only-array-ref";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_npconly_array_ref_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Only Array Ref", "p", "jap.npc","only-array-ref", "\nAnnotate only array-referencing instructions, instead of all \ninstructions that need null pointer checks. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.npc"+" "+"profiling";
+		setjapjap_npconly_array_ref_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Only Array Ref", "p phase-option", "jap.npc","only-array-ref", "\nAnnotate only array-referencing instructions, instead of all \ninstructions that need null pointer checks.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.npc"+" "+"profiling";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_npcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Profiling", "p", "jap.npc","profiling", "\nInsert profiling instructions that at runtime count the number \nof eliminated safe null pointer checks. The inserted profiling \ncode assumes the existence of a MultiCounter class implementing \nthe methods invoked. For details, see the NullPointerChecker \nsource code.", defaultBool)));
-		
-		
+		setjapjap_npcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_npc, SWT.NONE, new OptionData("Profiling", "p phase-option", "jap.npc","profiling", "\nInsert profiling instructions that at runtime count the number \nof eliminated safe null pointer checks. The inserted profiling \ncode assumes the existence of a MultiCounter class implementing \nthe methods invoked. For details, see the NullPointerChecker \nsource code.", defaultBool)));
 
-		
+
 		return editGroupjapjap_npc;
 	}
 
@@ -18975,24 +14906,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.npcolorer"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.npcolorer"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_npcolorerenabled_widget(new BooleanOptionWidget(editGroupjapjap_npcolorer, SWT.NONE, new OptionData("Enabled", "p", "jap.npcolorer","enabled", "\n", defaultBool)));
-		
-		
+		setjapjap_npcolorerenabled_widget(new BooleanOptionWidget(editGroupjapjap_npcolorer, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.npcolorer","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjapjap_npcolorer;
 	}
 
@@ -19021,152 +14947,107 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.abc"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.abc"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_abcenabled_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Enabled", "p", "jap.abc","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.abc"+" "+"with-all";
+		setjapjap_abcenabled_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.abc","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.abc"+" "+"with-all";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_abcwith_all_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With All", "p", "jap.abc","with-all", "\nSetting the With All option to true is equivalent to setting \neach of With CSE, With Array Ref, With Field Ref, With Class \nField, and With Rectangular Array to true.", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.abc"+" "+"with-cse";
+		setjapjap_abcwith_all_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With All", "p phase-option", "jap.abc","with-all", "\nSetting the With All option to true is equivalent to setting \neach of With CSE, With Array Ref, With Field Ref, With Class \nField, and With Rectangular Array to true.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.abc"+" "+"with-cse";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_abcwith_cse_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Common Sub-expressions", "p", "jap.abc","with-cse", "\nThe analysis will consider common subexpressions. For example, \nconsider the situation where r1 is assigned a*b; later, r2 is \nassigned a*b, where neither a nor b have changed between the two \nstatements. The analysis can conclude that r2 has the same value \nas r1. Experiments show that this option can improve the result \nslightly.", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.abc"+" "+"with-arrayref";
+		setjapjap_abcwith_cse_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Common Sub-expressions", "p phase-option", "jap.abc","with-cse", "\nThe analysis will consider common subexpressions. For example, \nconsider the situation where r1 is assigned a*b; later, r2 is \nassigned a*b, where neither a nor b have changed between the two \nstatements. The analysis can conclude that r2 has the same value \nas r1. Experiments show that this option can improve the result \nslightly.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.abc"+" "+"with-arrayref";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_abcwith_arrayref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Array References", "p", "jap.abc","with-arrayref", "\nWith this option enabled, array references can be considered as \ncommon subexpressions; however, we are more conservative when \nwriting into an array, because array objects may be aliased. We \nalso assume that the application is single-threaded or that the \narray references occur in a synchronized block. That is, we \nassume that an array element may not be changed by other threads \nbetween two array references.", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.abc"+" "+"with-fieldref";
+		setjapjap_abcwith_arrayref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Array References", "p phase-option", "jap.abc","with-arrayref", "\nWith this option enabled, array references can be considered as \ncommon subexpressions; however, we are more conservative when \nwriting into an array, because array objects may be aliased. We \nalso assume that the application is single-threaded or that the \narray references occur in a synchronized block. That is, we \nassume that an array element may not be changed by other threads \nbetween two array references.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.abc"+" "+"with-fieldref";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_abcwith_fieldref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Field References", "p", "jap.abc","with-fieldref", "\nThe analysis treats field references (static and instance) as \ncommon subexpressions; however, we are more conservative when \nwriting to a field, because the base of the field reference may \nbe aliased. We also assume that the application is \nsingle-threaded or that the field references occur in a \nsynchronized block. That is, we assume that a field may not be \nchanged by other threads between two field references.", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.abc"+" "+"with-classfield";
+		setjapjap_abcwith_fieldref_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Field References", "p phase-option", "jap.abc","with-fieldref", "\nThe analysis treats field references (static and instance) as \ncommon subexpressions; however, we are more conservative when \nwriting to a field, because the base of the field reference may \nbe aliased. We also assume that the application is \nsingle-threaded or that the field references occur in a \nsynchronized block. That is, we assume that a field may not be \nchanged by other threads between two field references.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.abc"+" "+"with-classfield";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_abcwith_classfield_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Class Field", "p", "jap.abc","with-classfield", "\nThis option makes the analysis work on the class level. The \nalgorithm analyzes final or private class fields first. It can \nrecognize the fields that hold array objects of constant length. \nIn an application using lots of array fields, this option can \nimprove the analysis results dramatically.", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.abc"+" "+"with-rectarray";
+		setjapjap_abcwith_classfield_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Class Field", "p phase-option", "jap.abc","with-classfield", "\nThis option makes the analysis work on the class level. The \nalgorithm analyzes final or private class fields first. It can \nrecognize the fields that hold array objects of constant length. \nIn an application using lots of array fields, this option can \nimprove the analysis results dramatically.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.abc"+" "+"with-rectarray";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_abcwith_rectarray_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Rectangular Array", "p", "jap.abc","with-rectarray", "\nThis option is used together with wjap.ra to make Soot run the \nwhole-program analysis for rectangular array objects. This \nanalysis is based on the call graph, and it usually takes a long \ntime. If the application uses rectangular arrays, these options \ncan improve the analysis result. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.abc"+" "+"profiling";
+		setjapjap_abcwith_rectarray_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("With Rectangular Array", "p phase-option", "jap.abc","with-rectarray", "\nThis option is used together with wjap.ra to make Soot run the \nwhole-program analysis for rectangular array objects. This \nanalysis is based on the call graph, and it usually takes a long \ntime. If the application uses rectangular arrays, these options \ncan improve the analysis result.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.abc"+" "+"profiling";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_abcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Profiling", "p", "jap.abc","profiling", "\nProfile the results of array bounds check analysis. The \ninserted profiling code assumes the existence of a MultiCounter \nclass implementing the methods invoked. For details, see the \nArrayBoundsChecker source code.", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.abc"+" "+"add-color-tags";
+		setjapjap_abcprofiling_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Profiling", "p phase-option", "jap.abc","profiling", "\nProfile the results of array bounds check analysis. The inserted \nprofiling code assumes the existence of a MultiCounter class \nimplementing the methods invoked. For details, see the \nArrayBoundsChecker source code.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.abc"+" "+"add-color-tags";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_abcadd_color_tags_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Add Color Tags", "p", "jap.abc","add-color-tags", "\nAdd color tags to the results of the array bounds check \nanalysis.", defaultBool)));
-		
-		
+		setjapjap_abcadd_color_tags_widget(new BooleanOptionWidget(editGroupjapjap_abc, SWT.NONE, new OptionData("Add Color Tags", "p phase-option", "jap.abc","add-color-tags", "\nAdd color tags to the results of the array bounds check \nanalysis.", defaultBool)));
 
-		
+
 		return editGroupjapjap_abc;
 	}
 
@@ -19195,40 +15076,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.profiling"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.profiling"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_profilingenabled_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Enabled", "p", "jap.profiling","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.profiling"+" "+"notmainentry";
+		setjapjap_profilingenabled_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.profiling","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.profiling"+" "+"notmainentry";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_profilingnotmainentry_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Not Main Entry", "p", "jap.profiling","notmainentry", "\nInsert the calls to the MultiCounter at the beginning and end \nof methods with the signature long \nrunBenchmark(java.lang.String[]) instead of the signature void \nmain(java.lang.String[]).", defaultBool)));
-		
-		
+		setjapjap_profilingnotmainentry_widget(new BooleanOptionWidget(editGroupjapjap_profiling, SWT.NONE, new OptionData("Not Main Entry", "p phase-option", "jap.profiling","notmainentry", "\nInsert the calls to the MultiCounter at the beginning and end of \nmethods with the signature long runBenchmark(java.lang.String[]) \ninstead of the signature void main(java.lang.String[]).", defaultBool)));
 
-		
+
 		return editGroupjapjap_profiling;
 	}
 
@@ -19257,40 +15128,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.sea"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.sea"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_seaenabled_widget(new BooleanOptionWidget(editGroupjapjap_sea, SWT.NONE, new OptionData("Enabled", "p", "jap.sea","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.sea"+" "+"naive";
+		setjapjap_seaenabled_widget(new BooleanOptionWidget(editGroupjapjap_sea, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.sea","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.sea"+" "+"naive";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_seanaive_widget(new BooleanOptionWidget(editGroupjapjap_sea, SWT.NONE, new OptionData("Build naive dependence graph", "p", "jap.sea","naive", "\nWhen set to true, the dependence graph is built with a node for \neach statement, without merging the nodes for equivalent \nstatements. This makes it possible to measure the effect of \nmerging nodes for equivalent statements on the size of the \ndependence graph.", defaultBool)));
-		
-		
+		setjapjap_seanaive_widget(new BooleanOptionWidget(editGroupjapjap_sea, SWT.NONE, new OptionData("Build naive dependence graph", "p phase-option", "jap.sea","naive", "\nWhen set to true, the dependence graph is built with a node for \neach statement, without merging the nodes for equivalent \nstatements. This makes it possible to measure the effect of \nmerging nodes for equivalent statements on the size of the \ndependence graph.", defaultBool)));
 
-		
+
 		return editGroupjapjap_sea;
 	}
 
@@ -19319,39 +15180,31 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.fieldrw"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.fieldrw"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_fieldrwenabled_widget(new BooleanOptionWidget(editGroupjapjap_fieldrw, SWT.NONE, new OptionData("Enabled", "p", "jap.fieldrw","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"jap.fieldrw"+" "+"threshold";
+		setjapjap_fieldrwenabled_widget(new BooleanOptionWidget(editGroupjapjap_fieldrw, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.fieldrw","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"jap.fieldrw"+" "+"threshold";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "100";
-			
 		}
 
-		setjapjap_fieldrwthreshold_widget(new StringOptionWidget(editGroupjapjap_fieldrw, SWT.NONE, new OptionData("Maximum number of fields",  "p", "jap.fieldrw","threshold", "\nIf a statement reads/writes more than this number of fields, no \ntag will be produced for it, in order to keep the size of the \ntags reasonable. ", defaultString)));
+		setjapjap_fieldrwthreshold_widget(new StringOptionWidget(editGroupjapjap_fieldrw, SWT.NONE, new OptionData("Maximum number of fields",  "p phase-option", "jap.fieldrw","threshold", "\nIf a statement reads/writes more than this number of fields, no \ntag will be produced for it, in order to keep the size of the \ntags reasonable.", defaultString)));
 		
 
-		
+
 		return editGroupjapjap_fieldrw;
 	}
 
@@ -19380,24 +15233,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.cgtagger"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.cgtagger"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_cgtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_cgtagger, SWT.NONE, new OptionData("Enabled", "p", "jap.cgtagger","enabled", "\n", defaultBool)));
-		
-		
+		setjapjap_cgtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_cgtagger, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.cgtagger","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjapjap_cgtagger;
 	}
 
@@ -19426,24 +15274,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.parity"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.parity"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_parityenabled_widget(new BooleanOptionWidget(editGroupjapjap_parity, SWT.NONE, new OptionData("Enabled", "p", "jap.parity","enabled", "\n", defaultBool)));
-		
-		
+		setjapjap_parityenabled_widget(new BooleanOptionWidget(editGroupjapjap_parity, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.parity","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjapjap_parity;
 	}
 
@@ -19472,24 +15315,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.pat"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.pat"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_patenabled_widget(new BooleanOptionWidget(editGroupjapjap_pat, SWT.NONE, new OptionData("Enabled", "p", "jap.pat","enabled", "\n", defaultBool)));
-		
-		
+		setjapjap_patenabled_widget(new BooleanOptionWidget(editGroupjapjap_pat, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.pat","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjapjap_pat;
 	}
 
@@ -19518,24 +15356,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.lvtagger"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.lvtagger"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_lvtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_lvtagger, SWT.NONE, new OptionData("Enabled", "p", "jap.lvtagger","enabled", "\n", defaultBool)));
-		
-		
+		setjapjap_lvtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_lvtagger, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.lvtagger","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjapjap_lvtagger;
 	}
 
@@ -19564,24 +15397,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.rdtagger"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.rdtagger"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_rdtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_rdtagger, SWT.NONE, new OptionData("Enabled", "p", "jap.rdtagger","enabled", "\n", defaultBool)));
-		
-		
+		setjapjap_rdtaggerenabled_widget(new BooleanOptionWidget(editGroupjapjap_rdtagger, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.rdtagger","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjapjap_rdtagger;
 	}
 
@@ -19610,24 +15438,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.che"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.che"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_cheenabled_widget(new BooleanOptionWidget(editGroupjapjap_che, SWT.NONE, new OptionData("Enabled", "p", "jap.che","enabled", "\n", defaultBool)));
-		
-		
+		setjapjap_cheenabled_widget(new BooleanOptionWidget(editGroupjapjap_che, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.che","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjapjap_che;
 	}
 
@@ -19656,24 +15479,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.umt"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.umt"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_umtenabled_widget(new BooleanOptionWidget(editGroupjapjap_umt, SWT.NONE, new OptionData("Enabled", "p", "jap.umt","enabled", "\n", defaultBool)));
-		
-		
+		setjapjap_umtenabled_widget(new BooleanOptionWidget(editGroupjapjap_umt, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.umt","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjapjap_umt;
 	}
 
@@ -19702,24 +15520,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.lit"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.lit"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_litenabled_widget(new BooleanOptionWidget(editGroupjapjap_lit, SWT.NONE, new OptionData("Enabled", "p", "jap.lit","enabled", "\n", defaultBool)));
-		
-		
+		setjapjap_litenabled_widget(new BooleanOptionWidget(editGroupjapjap_lit, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.lit","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjapjap_lit;
 	}
 
@@ -19748,54 +15561,43 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.aet"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.aet"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_aetenabled_widget(new BooleanOptionWidget(editGroupjapjap_aet, SWT.NONE, new OptionData("Enabled", "p", "jap.aet","enabled", "\n", defaultBool)));
-		
-		
-		
+		setjapjap_aetenabled_widget(new BooleanOptionWidget(editGroupjapjap_aet, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.aet","enabled", "\n", defaultBool)));
+
 		data = new OptionData [] {
 		
-		new OptionData("Optimistic",
-		"optimistic",
-		"\n",
-		
-		true),
-		
-		new OptionData("Pessimistic",
-		"pessimistic",
-		"\n",
-		
-		false),
-		
+				new OptionData("Optimistic",
+						"optimistic",
+						"\n",
+						true),
+				new OptionData("Pessimistic",
+						"pessimistic",
+						"\n",
+						false),
 		};
-		
-										
-		setjapjap_aetkind_widget(new MultiOptionWidget(editGroupjapjap_aet, SWT.NONE, data, new OptionData("Kind", "p", "jap.aet","kind", "\n")));
-		
-		defKey = "p"+" "+"jap.aet"+" "+"kind";
+
+
+		setjapjap_aetkind_widget(new MultiOptionWidget(editGroupjapjap_aet, SWT.NONE, data, new OptionData("Kind", "p phase-option", "jap.aet","kind", "\n")));
+
+		defKey = "p phase-option"+" "+"jap.aet"+" "+"kind";
 		defKey = defKey.trim();
-		
+
 		if (isInDefList(defKey)) {
 			defaultString = getStringDef(defKey);
-		
+
 			getjapjap_aetkind_widget().setDef(defaultString);
 		}
-		
-		
 
-		
+
 		return editGroupjapjap_aet;
 	}
 
@@ -19824,24 +15626,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"jap.dmt"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"jap.dmt"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setjapjap_dmtenabled_widget(new BooleanOptionWidget(editGroupjapjap_dmt, SWT.NONE, new OptionData("Enabled", "p", "jap.dmt","enabled", "\n", defaultBool)));
-		
-		
+		setjapjap_dmtenabled_widget(new BooleanOptionWidget(editGroupjapjap_dmt, SWT.NONE, new OptionData("Enabled", "p phase-option", "jap.dmt","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupjapjap_dmt;
 	}
 
@@ -19870,24 +15667,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"gb"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"gb"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setgbenabled_widget(new BooleanOptionWidget(editGroupgb, SWT.NONE, new OptionData("Enabled", "p", "gb","enabled", "\n", defaultBool)));
-		
-		
+		setgbenabled_widget(new BooleanOptionWidget(editGroupgb, SWT.NONE, new OptionData("Enabled", "p phase-option", "gb","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupgb;
 	}
 
@@ -19916,40 +15708,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"gb.a1"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"gb.a1"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setgbgb_a1enabled_widget(new BooleanOptionWidget(editGroupgbgb_a1, SWT.NONE, new OptionData("Enabled", "p", "gb.a1","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"gb.a1"+" "+"only-stack-locals";
+		setgbgb_a1enabled_widget(new BooleanOptionWidget(editGroupgbgb_a1, SWT.NONE, new OptionData("Enabled", "p phase-option", "gb.a1","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"gb.a1"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setgbgb_a1only_stack_locals_widget(new BooleanOptionWidget(editGroupgbgb_a1, SWT.NONE, new OptionData("Only Stack Locals", "p", "gb.a1","only-stack-locals", "\nAggregate only values stored in stack locals. ", defaultBool)));
-		
-		
+		setgbgb_a1only_stack_locals_widget(new BooleanOptionWidget(editGroupgbgb_a1, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "gb.a1","only-stack-locals", "\nAggregate only values stored in stack locals.", defaultBool)));
 
-		
+
 		return editGroupgbgb_a1;
 	}
 
@@ -19978,24 +15760,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"gb.cf"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"gb.cf"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setgbgb_cfenabled_widget(new BooleanOptionWidget(editGroupgbgb_cf, SWT.NONE, new OptionData("Enabled", "p", "gb.cf","enabled", "\n", defaultBool)));
-		
-		
+		setgbgb_cfenabled_widget(new BooleanOptionWidget(editGroupgbgb_cf, SWT.NONE, new OptionData("Enabled", "p phase-option", "gb.cf","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupgbgb_cf;
 	}
 
@@ -20024,40 +15801,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"gb.a2"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"gb.a2"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setgbgb_a2enabled_widget(new BooleanOptionWidget(editGroupgbgb_a2, SWT.NONE, new OptionData("Enabled", "p", "gb.a2","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"gb.a2"+" "+"only-stack-locals";
+		setgbgb_a2enabled_widget(new BooleanOptionWidget(editGroupgbgb_a2, SWT.NONE, new OptionData("Enabled", "p phase-option", "gb.a2","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"gb.a2"+" "+"only-stack-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setgbgb_a2only_stack_locals_widget(new BooleanOptionWidget(editGroupgbgb_a2, SWT.NONE, new OptionData("Only Stack Locals", "p", "gb.a2","only-stack-locals", "\nAggregate only values stored in stack locals. ", defaultBool)));
-		
-		
+		setgbgb_a2only_stack_locals_widget(new BooleanOptionWidget(editGroupgbgb_a2, SWT.NONE, new OptionData("Only Stack Locals", "p phase-option", "gb.a2","only-stack-locals", "\nAggregate only values stored in stack locals.", defaultBool)));
 
-		
+
 		return editGroupgbgb_a2;
 	}
 
@@ -20086,24 +15853,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"gb.ule"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"gb.ule"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setgbgb_uleenabled_widget(new BooleanOptionWidget(editGroupgbgb_ule, SWT.NONE, new OptionData("Enabled", "p", "gb.ule","enabled", "\n", defaultBool)));
-		
-		
+		setgbgb_uleenabled_widget(new BooleanOptionWidget(editGroupgbgb_ule, SWT.NONE, new OptionData("Enabled", "p phase-option", "gb.ule","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupgbgb_ule;
 	}
 
@@ -20132,24 +15894,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"gop"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"gop"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setgopenabled_widget(new BooleanOptionWidget(editGroupgop, SWT.NONE, new OptionData("Enabled", "p", "gop","enabled", "\n", defaultBool)));
-		
-		
+		setgopenabled_widget(new BooleanOptionWidget(editGroupgop, SWT.NONE, new OptionData("Enabled", "p phase-option", "gop","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupgop;
 	}
 
@@ -20178,24 +15935,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"bb"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"bb"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setbbenabled_widget(new BooleanOptionWidget(editGroupbb, SWT.NONE, new OptionData("Enabled", "p", "bb","enabled", "\n", defaultBool)));
-		
-		
+		setbbenabled_widget(new BooleanOptionWidget(editGroupbb, SWT.NONE, new OptionData("Enabled", "p phase-option", "bb","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupbb;
 	}
 
@@ -20224,120 +15976,85 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"bb.lso"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"bb.lso"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setbbbb_lsoenabled_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Enabled", "p", "bb.lso","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"bb.lso"+" "+"debug";
+		setbbbb_lsoenabled_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Enabled", "p phase-option", "bb.lso","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"bb.lso"+" "+"debug";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setbbbb_lsodebug_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Debug", "p", "bb.lso","debug", "\nProduces voluminous debugging output describing the progress of \nthe load store optimizer. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"bb.lso"+" "+"inter";
+		setbbbb_lsodebug_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Debug", "p phase-option", "bb.lso","debug", "\nProduces voluminous debugging output describing the progress of \nthe load store optimizer.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"bb.lso"+" "+"inter";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setbbbb_lsointer_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Inter", "p", "bb.lso","inter", "\nEnables two simple inter-block optimizations which attempt to \nkeep some variables on the stack between blocks. Both are \nintended to catch if-like constructions where control flow \nbranches temporarily into two paths that converge at a later \npoint. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"bb.lso"+" "+"sl";
+		setbbbb_lsointer_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("Inter", "p phase-option", "bb.lso","inter", "\nEnables two simple inter-block optimizations which attempt to \nkeep some variables on the stack between blocks. Both are \nintended to catch if-like constructions where control flow \nbranches temporarily into two paths that converge at a later \npoint.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"bb.lso"+" "+"sl";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setbbbb_lsosl_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sl", "p", "bb.lso","sl", "\nEnables an optimization which attempts to eliminate store/load \npairs. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"bb.lso"+" "+"sl2";
+		setbbbb_lsosl_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sl", "p phase-option", "bb.lso","sl", "\nEnables an optimization which attempts to eliminate store/load \npairs.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"bb.lso"+" "+"sl2";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setbbbb_lsosl2_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sl2", "p", "bb.lso","sl2", "\nEnables an a second pass of the optimization which attempts to \neliminate store/load pairs. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"bb.lso"+" "+"sll";
+		setbbbb_lsosl2_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sl2", "p phase-option", "bb.lso","sl2", "\nEnables an a second pass of the optimization which attempts to \neliminate store/load pairs.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"bb.lso"+" "+"sll";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setbbbb_lsosll_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sll", "p", "bb.lso","sll", "\nEnables an optimization which \nattempts to eliminate store/load/load trios with some variant of \ndup. ", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"bb.lso"+" "+"sll2";
+		setbbbb_lsosll_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sll", "p phase-option", "bb.lso","sll", "\nEnables an optimization which attempts to eliminate store/load/ \nload trios with some variant of dup.", defaultBool)));
+
+		defKey = "p phase-option"+" "+"bb.lso"+" "+"sll2";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setbbbb_lsosll2_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sll2", "p", "bb.lso","sll2", "\nEnables an a second pass of the optimization which attempts to \neliminate store/load/load trios with some variant of dup. ", defaultBool)));
-		
-		
+		setbbbb_lsosll2_widget(new BooleanOptionWidget(editGroupbbbb_lso, SWT.NONE, new OptionData("sll2", "p phase-option", "bb.lso","sll2", "\nEnables an a second pass of the optimization which attempts to \neliminate store/load/load trios with some variant of dup.", defaultBool)));
 
-		
+
 		return editGroupbbbb_lso;
 	}
 
@@ -20366,24 +16083,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"bb.sco"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"bb.sco"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setbbbb_scoenabled_widget(new BooleanOptionWidget(editGroupbbbb_sco, SWT.NONE, new OptionData("Enabled", "p", "bb.sco","enabled", "\n", defaultBool)));
-		
-		
+		setbbbb_scoenabled_widget(new BooleanOptionWidget(editGroupbbbb_sco, SWT.NONE, new OptionData("Enabled", "p phase-option", "bb.sco","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupbbbb_sco;
 	}
 
@@ -20412,24 +16124,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"bb.pho"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"bb.pho"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setbbbb_phoenabled_widget(new BooleanOptionWidget(editGroupbbbb_pho, SWT.NONE, new OptionData("Enabled", "p", "bb.pho","enabled", "\n", defaultBool)));
-		
-		
+		setbbbb_phoenabled_widget(new BooleanOptionWidget(editGroupbbbb_pho, SWT.NONE, new OptionData("Enabled", "p phase-option", "bb.pho","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupbbbb_pho;
 	}
 
@@ -20458,24 +16165,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"bb.ule"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"bb.ule"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setbbbb_uleenabled_widget(new BooleanOptionWidget(editGroupbbbb_ule, SWT.NONE, new OptionData("Enabled", "p", "bb.ule","enabled", "\n", defaultBool)));
-		
-		
+		setbbbb_uleenabled_widget(new BooleanOptionWidget(editGroupbbbb_ule, SWT.NONE, new OptionData("Enabled", "p phase-option", "bb.ule","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupbbbb_ule;
 	}
 
@@ -20504,40 +16206,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"bb.lp"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"bb.lp"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setbbbb_lpenabled_widget(new BooleanOptionWidget(editGroupbbbb_lp, SWT.NONE, new OptionData("Enabled", "p", "bb.lp","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"bb.lp"+" "+"unsplit-original-locals";
+		setbbbb_lpenabled_widget(new BooleanOptionWidget(editGroupbbbb_lp, SWT.NONE, new OptionData("Enabled", "p phase-option", "bb.lp","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"bb.lp"+" "+"unsplit-original-locals";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setbbbb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupbbbb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p", "bb.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter. ", defaultBool)));
-		
-		
+		setbbbb_lpunsplit_original_locals_widget(new BooleanOptionWidget(editGroupbbbb_lp, SWT.NONE, new OptionData("Unsplit Original Locals", "p phase-option", "bb.lp","unsplit-original-locals", "\nUse the variable names in the original source as a guide when \ndetermining how to share local variables across non-interfering \nvariable usages. This recombines named locals which were split \nby the Local Splitter.", defaultBool)));
 
-		
+
 		return editGroupbbbb_lp;
 	}
 
@@ -20566,24 +16258,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"bop"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"bop"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setbopenabled_widget(new BooleanOptionWidget(editGroupbop, SWT.NONE, new OptionData("Enabled", "p", "bop","enabled", "\n", defaultBool)));
-		
-		
+		setbopenabled_widget(new BooleanOptionWidget(editGroupbop, SWT.NONE, new OptionData("Enabled", "p phase-option", "bop","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupbop;
 	}
 
@@ -20612,24 +16299,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"tag"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"tag"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		settagenabled_widget(new BooleanOptionWidget(editGrouptag, SWT.NONE, new OptionData("Enabled", "p", "tag","enabled", "\n", defaultBool)));
-		
-		
+		settagenabled_widget(new BooleanOptionWidget(editGrouptag, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag","enabled", "\n", defaultBool)));
 
-		
+
 		return editGrouptag;
 	}
 
@@ -20658,24 +16340,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"tag.ln"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"tag.ln"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		settagtag_lnenabled_widget(new BooleanOptionWidget(editGrouptagtag_ln, SWT.NONE, new OptionData("Enabled", "p", "tag.ln","enabled", "\n", defaultBool)));
-		
-		
+		settagtag_lnenabled_widget(new BooleanOptionWidget(editGrouptagtag_ln, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag.ln","enabled", "\n", defaultBool)));
 
-		
+
 		return editGrouptagtag_ln;
 	}
 
@@ -20704,24 +16381,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"tag.an"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"tag.an"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		settagtag_anenabled_widget(new BooleanOptionWidget(editGrouptagtag_an, SWT.NONE, new OptionData("Enabled", "p", "tag.an","enabled", "\n", defaultBool)));
-		
-		
+		settagtag_anenabled_widget(new BooleanOptionWidget(editGrouptagtag_an, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag.an","enabled", "\n", defaultBool)));
 
-		
+
 		return editGrouptagtag_an;
 	}
 
@@ -20750,24 +16422,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"tag.dep"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"tag.dep"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		settagtag_depenabled_widget(new BooleanOptionWidget(editGrouptagtag_dep, SWT.NONE, new OptionData("Enabled", "p", "tag.dep","enabled", "\n", defaultBool)));
-		
-		
+		settagtag_depenabled_widget(new BooleanOptionWidget(editGrouptagtag_dep, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag.dep","enabled", "\n", defaultBool)));
 
-		
+
 		return editGrouptagtag_dep;
 	}
 
@@ -20796,24 +16463,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"tag.fieldrw"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"tag.fieldrw"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		settagtag_fieldrwenabled_widget(new BooleanOptionWidget(editGrouptagtag_fieldrw, SWT.NONE, new OptionData("Enabled", "p", "tag.fieldrw","enabled", "\n", defaultBool)));
-		
-		
+		settagtag_fieldrwenabled_widget(new BooleanOptionWidget(editGrouptagtag_fieldrw, SWT.NONE, new OptionData("Enabled", "p phase-option", "tag.fieldrw","enabled", "\n", defaultBool)));
 
-		
+
 		return editGrouptagtag_fieldrw;
 	}
 
@@ -20842,40 +16504,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"db"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"db"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setdbenabled_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Enabled", "p", "db","enabled", "\n", defaultBool)));
-		
-		
-		
-		defKey = "p"+" "+"db"+" "+"source-is-javac";
+		setdbenabled_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Enabled", "p phase-option", "db","enabled", "\n", defaultBool)));
+
+		defKey = "p phase-option"+" "+"db"+" "+"source-is-javac";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setdbsource_is_javac_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Source", "p", "db","source-is-javac", "\n					check out soot.dava.toolkits.base.misc.ThrowFinder \nIn short we want to ensure that if there are \nthrow exception info in the class file dava uses \nthis info. 					", defaultBool)));
-		
-		
+		setdbsource_is_javac_widget(new BooleanOptionWidget(editGroupdb, SWT.NONE, new OptionData("Source", "p phase-option", "db","source-is-javac", "\ncheck out soot.dava.toolkits.base.misc.ThrowFinder In short we \nwant to ensure that if there are throw exception info in the \nclass file dava uses this info.", defaultBool)));
 
-		
+
 		return editGroupdb;
 	}
 
@@ -20904,24 +16556,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"db.transformations"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"db.transformations"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setdbdb_transformationsenabled_widget(new BooleanOptionWidget(editGroupdbdb_transformations, SWT.NONE, new OptionData("Enabled", "p", "db.transformations","enabled", "\n", defaultBool)));
-		
-		
+		setdbdb_transformationsenabled_widget(new BooleanOptionWidget(editGroupdbdb_transformations, SWT.NONE, new OptionData("Enabled", "p phase-option", "db.transformations","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupdbdb_transformations;
 	}
 
@@ -20950,24 +16597,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"db.renamer"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"db.renamer"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setdbdb_renamerenabled_widget(new BooleanOptionWidget(editGroupdbdb_renamer, SWT.NONE, new OptionData("Enabled", "p", "db.renamer","enabled", "\n", defaultBool)));
-		
-		
+		setdbdb_renamerenabled_widget(new BooleanOptionWidget(editGroupdbdb_renamer, SWT.NONE, new OptionData("Enabled", "p phase-option", "db.renamer","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupdbdb_renamer;
 	}
 
@@ -20987,7 +16629,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	 	
 		editGroupdbdb_deobfuscate.setData("id", "dbdb_deobfuscate");
 		
-		String descdbdb_deobfuscate = " Apply de-obfuscation analyses";	
+		String descdbdb_deobfuscate = "Apply de-obfuscation analyses";	
 		if (descdbdb_deobfuscate.length() > 0) {
 			Label descLabeldbdb_deobfuscate = new Label(editGroupdbdb_deobfuscate, SWT.WRAP);
 			descLabeldbdb_deobfuscate.setText(descdbdb_deobfuscate);
@@ -20996,24 +16638,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"db.deobfuscate"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"db.deobfuscate"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setdbdb_deobfuscateenabled_widget(new BooleanOptionWidget(editGroupdbdb_deobfuscate, SWT.NONE, new OptionData("Enabled", "p", "db.deobfuscate","enabled", "\n", defaultBool)));
-		
-		
+		setdbdb_deobfuscateenabled_widget(new BooleanOptionWidget(editGroupdbdb_deobfuscate, SWT.NONE, new OptionData("Enabled", "p phase-option", "db.deobfuscate","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupdbdb_deobfuscate;
 	}
 
@@ -21033,7 +16670,7 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 	 	
 		editGroupdbdb_force_recompile.setData("id", "dbdb_force_recompile");
 		
-		String descdbdb_force_recompile = " Try to get recompilable code.";	
+		String descdbdb_force_recompile = "Try to get recompilable code.";	
 		if (descdbdb_force_recompile.length() > 0) {
 			Label descLabeldbdb_force_recompile = new Label(editGroupdbdb_force_recompile, SWT.WRAP);
 			descLabeldbdb_force_recompile.setText(descdbdb_force_recompile);
@@ -21042,24 +16679,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
-		defKey = "p"+" "+"db.force-recompile"+" "+"enabled";
+
+		defKey = "p phase-option"+" "+"db.force-recompile"+" "+"enabled";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = true;
-			
 		}
 
-		setdbdb_force_recompileenabled_widget(new BooleanOptionWidget(editGroupdbdb_force_recompile, SWT.NONE, new OptionData("Enabled", "p", "db.force-recompile","enabled", "\n", defaultBool)));
-		
-		
+		setdbdb_force_recompileenabled_widget(new BooleanOptionWidget(editGroupdbdb_force_recompile, SWT.NONE, new OptionData("Enabled", "p phase-option", "db.force-recompile","enabled", "\n", defaultBool)));
 
-		
+
 		return editGroupdbdb_force_recompile;
 	}
 
@@ -21088,51 +16720,40 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
+
 		defKey = ""+" "+""+" "+"include-all";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setApplication_Mode_Optionsinclude_all_widget(new BooleanOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include All Packages", "", "","include-all", "\nSoot uses a default list of packages (such as java.) which are \ndeemed to contain library classes. This switch removes the \ndefault packages from the list of packages containing library \nclasses. Individual packages can then be added using the exclude \noption. ", defaultBool)));
-		
-		
+		setApplication_Mode_Optionsinclude_all_widget(new BooleanOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include All Packages", "", "","include-all", "\nSoot uses a default list of packages (such as java.) which are \ndeemed to contain library classes. This switch removes the \ndefault packages from the list of packages containing library \nclasses. Individual packages can then be added using the exclude \noption.", defaultBool)));
 
-		defKey = ""+" "+""+" "+"i";
+		defKey = ""+" "+""+" "+"i include";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultString = getArrayDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setApplication_Mode_Optionsinclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include Package",  "", "","i", "\nDesignate classes in packages whose names begin with PKG (e.g. \njava.util.) as application classes which should be analyzed and \noutput. This option allows you to selectively analyze classes in \nsome packages that Soot normally treats as library classes. You \ncan use the include option multiple times, to designate the \nclasses of multiple packages as application classes. If you \nspecify both include and exclude options, first the classes from \nall excluded packages are marked as library classes, then the \nclasses from all included packages are marked as application \nclasses.", defaultString)));
+		setApplication_Mode_Optionsinclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Include Package",  "", "","i include", "\nDesignate classes in packages whose names begin with PKG (e.g. \njava.util.) as application classes which should be analyzed and \noutput. This option allows you to selectively analyze classes in \nsome packages that Soot normally treats as library classes. You \ncan use the include option multiple times, to designate the \nclasses of multiple packages as application classes. If you \nspecify both include and exclude options, first the classes from \nall excluded packages are marked as library classes, then the \nclasses from all included packages are marked as application \nclasses.", defaultString)));
 		
 
-		defKey = ""+" "+""+" "+"x";
+		defKey = ""+" "+""+" "+"x exclude";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultString = getArrayDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setApplication_Mode_Optionsexclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Exclude Package",  "", "","x", "\nExcludes any classes in packages whose names begin with PKG \nfrom the set of application classes which are analyzed and \noutput, treating them as library classes instead. This option \nallows you to selectively exclude classes which would normally \nbe treated as application classes You can use the exclude \noption multiple times, to designate the classes of multiple \npackages as library classes. If you specify both include and \nexclude options, first the classes from all excluded packages \nare marked as library classes, then the classes from all \nincluded packages are marked as application classes.", defaultString)));
+		setApplication_Mode_Optionsexclude_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Exclude Package",  "", "","x exclude", "\nExcludes any classes in packages whose names begin with PKG from \nthe set of application classes which are analyzed and output, \ntreating them as library classes instead. This option allows you \nto selectively exclude classes which would normally be treated \nas application classes You can use the exclude option multiple \ntimes, to designate the classes of multiple packages as library \nclasses. If you specify both include and exclude options, first \nthe classes from all excluded packages are marked as library \nclasses, then the classes from all included packages are marked \nas application classes.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dynamic-class";
@@ -21140,11 +16761,8 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (isInDefList(defKey)) {
 			defaultString = getArrayDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
 		setApplication_Mode_Optionsdynamic_class_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Classes",  "", "","dynamic-class", "\nMark CLASS as a class which the application may load \ndynamically. Soot will read it as a library class even if it is \nnot referenced from the argument classes. This permits whole \nprogram optimizations on programs which load classes dynamically \nif the set of classes that can be loaded is known at compile \ntime. You can use the dynamic class option multiple times to \nspecify more than one dynamic class.", defaultString)));
@@ -21155,14 +16773,11 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (isInDefList(defKey)) {
 			defaultString = getArrayDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setApplication_Mode_Optionsdynamic_dir_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Directories",  "", "","dynamic-dir", "\nMark all class files in DIR as classes that may be loaded \ndynamically. Soot will read them as library classes even if \nthey are not referenced from the argument classes. You can \nspecify more than one directory of potentially dynamic classes \nby specifying multiple dynamic directory options.", defaultString)));
+		setApplication_Mode_Optionsdynamic_dir_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Directories",  "", "","dynamic-dir", "\nMark all class files in DIR as classes that may be loaded \ndynamically. Soot will read them as library classes even if they \nare not referenced from the argument classes. You can specify \nmore than one directory of potentially dynamic classes by \nspecifying multiple dynamic directory options.", defaultString)));
 		
 
 		defKey = ""+" "+""+" "+"dynamic-package";
@@ -21170,17 +16785,14 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 
 		if (isInDefList(defKey)) {
 			defaultString = getArrayDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultString = "";
-			
 		}
 
-		setApplication_Mode_Optionsdynamic_package_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Package",  "", "","dynamic-package", "\nMarks all class files belonging to the package PKG or any of \nits subpackages as classes which the application may load \ndynamically. Soot will read all classes in PKG as library \nclasses, even if they are not referenced by any of the \nargument classes. To specify more than one dynamic package, use \nthe dynamic package option multiple times.", defaultString)));
+		setApplication_Mode_Optionsdynamic_package_widget(new ListOptionWidget(editGroupApplication_Mode_Options, SWT.NONE, new OptionData("Dynamic Package",  "", "","dynamic-package", "\nMarks all class files belonging to the package PKG or any of its \nsubpackages as classes which the application may load \ndynamically. Soot will read all classes in PKG as library \nclasses, even if they are not referenced by any of the argument \nclasses. To specify more than one dynamic package, use the \ndynamic package option multiple times.", defaultString)));
 		
 
-		
+
 		return editGroupApplication_Mode_Options;
 	}
 
@@ -21209,40 +16821,30 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
+
 		defKey = ""+" "+""+" "+"keep-line-number";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Attribute_Optionskeep_line_number_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Line Number", "", "","keep-line-number", "\nPreserve line number tables for class files throughout the \ntransformations. ", defaultBool)));
-		
-		
-		
-		defKey = ""+" "+""+" "+"keep-bytecode-offset";
+		setInput_Attribute_Optionskeep_line_number_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Line Number", "", "","keep-line-number", "\nPreserve line number tables for class files throughout the \ntransformations.", defaultBool)));
+
+		defKey = ""+" "+""+" "+"keep-bytecode-offset keep-offset";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setInput_Attribute_Optionskeep_offset_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Bytecode Offset", "", "","keep-bytecode-offset", "\nMaintain bytecode offset tables for class files throughout the \ntransformations.", defaultBool)));
-		
-		
+		setInput_Attribute_Optionskeep_offset_widget(new BooleanOptionWidget(editGroupInput_Attribute_Options, SWT.NONE, new OptionData("Keep Bytecode Offset", "", "","keep-bytecode-offset keep-offset", "\nMaintain bytecode offset tables for class files throughout the \ntransformations.", defaultBool)));
 
-		
+
 		return editGroupInput_Attribute_Options;
 	}
 
@@ -21271,24 +16873,19 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
+
 		defKey = ""+" "+""+" "+"write-local-annotations";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setOutput_Attribute_Optionswrite_local_annotations_widget(new BooleanOptionWidget(editGroupOutput_Attribute_Options, SWT.NONE, new OptionData("Write Out Local Annotations", "", "","write-local-annotations", "\nWrite out debug tables to indicate which register maps to which \nvariable in the Jimple code. ", defaultBool)));
-		
-		
+		setOutput_Attribute_Optionswrite_local_annotations_widget(new BooleanOptionWidget(editGroupOutput_Attribute_Options, SWT.NONE, new OptionData("Write Out Local Annotations", "", "","write-local-annotations", "\nWrite out debug tables to indicate which register maps to which \nvariable in the Jimple code.", defaultBool)));
 
-		
+
 		return editGroupOutput_Attribute_Options;
 	}
 
@@ -21317,88 +16914,63 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
+
 		defKey = ""+" "+""+" "+"annot-purity";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setAnnotation_Optionsannot_purity_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Purity Annotation [AM]", "", "","annot-purity", "\nPurity anaysis implemented by Antoine Mine and based on the \npaper A Combined Pointer and Purity Analysis Java Programs by \nAlexandru Salcianu and Martin Rinard. ", defaultBool)));
-		
-		
-		
+		setAnnotation_Optionsannot_purity_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Purity Annotation [AM]", "", "","annot-purity", "\nPurity anaysis implemented by Antoine Mine and based on the \npaper A Combined Pointer and Purity Analysis Java Programs by \nAlexandru Salcianu and Martin Rinard.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"annot-nullpointer";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setAnnotation_Optionsannot_nullpointer_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Null Pointer Annotation", "", "","annot-nullpointer", "\nPerform a static analysis of which dereferenced pointers may \nhave null values, and annotate class files with attributes \nencoding the results of the analysis. For details, see \nthe documentation for Null Pointer Annotation \nand for the Array Bounds and Null Pointer Check Tag Aggregator. ", defaultBool)));
-		
-		
-		
+		setAnnotation_Optionsannot_nullpointer_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Null Pointer Annotation", "", "","annot-nullpointer", "\nPerform a static analysis of which dereferenced pointers may \nhave null values, and annotate class files with attributes \nencoding the results of the analysis. For details, see the \ndocumentation for Null Pointer Annotation and for the Array \nBounds and Null Pointer Check Tag Aggregator.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"annot-arraybounds";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setAnnotation_Optionsannot_arraybounds_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Array Bounds Annotation", "", "","annot-arraybounds", "\nPerform a static analysis of which array bounds checks may \nsafely be eliminated and annotate output class files with \nattributes encoding the results of the analysis. For details, \nsee the documentation for Array Bounds Annotation and for the \nArray Bounds and Null Pointer Check Tag Aggregator. ", defaultBool)));
-		
-		
-		
+		setAnnotation_Optionsannot_arraybounds_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Array Bounds Annotation", "", "","annot-arraybounds", "\nPerform a static analysis of which array bounds checks may \nsafely be eliminated and annotate output class files with \nattributes encoding the results of the analysis. For details, \nsee the documentation for Array Bounds Annotation and for the \nArray Bounds and Null Pointer Check Tag Aggregator.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"annot-side-effect";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setAnnotation_Optionsannot_side_effect_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Side effect annotation", "", "","annot-side-effect", "\nEnable the generation of side-effect attributes. ", defaultBool)));
-		
-		
-		
+		setAnnotation_Optionsannot_side_effect_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Side effect annotation", "", "","annot-side-effect", "\nEnable the generation of side-effect attributes.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"annot-fieldrw";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
 		setAnnotation_Optionsannot_fieldrw_widget(new BooleanOptionWidget(editGroupAnnotation_Options, SWT.NONE, new OptionData("Field read/write annotation", "", "","annot-fieldrw", "\nEnable the generation of field read/write attributes.", defaultBool)));
-		
-		
 
-		
+
 		return editGroupAnnotation_Options;
 	}
 
@@ -21427,56 +16999,41 @@ Composite dbdb_force_recompileChild = dbdb_force_recompileCreate(getPageContaine
 		
 		
 		
-		
+
 		defKey = ""+" "+""+" "+"time";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setMiscellaneous_Optionstime_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Time", "", "","time", "\nReport the time required to perform some of Soot's \ntransformations. ", defaultBool)));
-		
-		
-		
+		setMiscellaneous_Optionstime_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Time", "", "","time", "\nReport the time required to perform some of Soot's \ntransformations.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"subtract-gc";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setMiscellaneous_Optionssubtract_gc_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Subtract Garbage Collection Time", "", "","subtract-gc", "\nAttempt to subtract time spent in garbage collection from the \nreports of times required for transformations. ", defaultBool)));
-		
-		
-		
+		setMiscellaneous_Optionssubtract_gc_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("Subtract Garbage Collection Time", "", "","subtract-gc", "\nAttempt to subtract time spent in garbage collection from the \nreports of times required for transformations.", defaultBool)));
+
 		defKey = ""+" "+""+" "+"no-writeout-body-releasing";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
 			defaultBool = getBoolDef(defKey);	
-		}
-		else {
-			
+		} else {
 			defaultBool = false;
-			
 		}
 
-		setMiscellaneous_Optionsno_writeout_body_releasing_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("No body releasing after writeout", "", "","no-writeout-body-releasing", "\nBy default soot releases the method bodies of all reachable \nclasses after the final writeout. This option deactivates this \nbehaviour. This flag should not affect end users at all. ", defaultBool)));
-		
-		
+		setMiscellaneous_Optionsno_writeout_body_releasing_widget(new BooleanOptionWidget(editGroupMiscellaneous_Options, SWT.NONE, new OptionData("No body releasing after writeout", "", "","no-writeout-body-releasing", "\nBy default soot releases the method bodies of all reachable \nclasses after the final writeout. This option deactivates this \nbehaviour. This flag should not affect end users at all.", defaultBool)));
 
-		
+
 		return editGroupMiscellaneous_Options;
 	}
 

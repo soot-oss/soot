@@ -22,17 +22,18 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot;
+
+import soot.*;
 import org.apache.tools.ant.*;
 import org.apache.tools.ant.taskdefs.*;
 import org.apache.tools.ant.types.*;
-import soot.*;
 import java.util.*;
-import java.io.*;
 
-/** Soot ant task.
+/**
+ * Soot ant task.
  * @author Ondrej Lhotak
  */
-
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-25T22:17:11.668+03:00", comments = "from soot_options.xml")
 public class AntTask extends MatchingTask {
     public static final boolean DEBUG = true;
     private void debug(String s) {
