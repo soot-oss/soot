@@ -2202,7 +2202,7 @@ public class Lexer
         {
             DataInputStream s = new DataInputStream(
                 new BufferedInputStream(
-                Lexer.class.getResourceAsStream("lexer.dat")));
+                Lexer.class.getResourceAsStream("/lexer.dat")));
 
             // read gotoTable
             int length = s.readInt();
