@@ -1,5 +1,37 @@
 package soot.toDex;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.LinkOption;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.StandardOpenOption;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.jar.Attributes;
+import java.util.jar.JarFile;
+import java.util.jar.Manifest;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
+import java.util.zip.ZipOutputStream;
+
 import org.jf.dexlib2.AnnotationVisibility;
 import org.jf.dexlib2.Opcode;
 import org.jf.dexlib2.Opcodes;
@@ -52,6 +84,7 @@ import org.jf.dexlib2.immutable.value.ImmutableTypeEncodedValue;
 import org.jf.dexlib2.writer.builder.BuilderEncodedValues;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -120,54 +153,36 @@ import soot.toDex.instructions.Insn30t;
 import soot.toDex.instructions.InsnWithOffset;
 import soot.util.Chain;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.nio.file.FileVisitResult;
-import java.nio.file.Files;
-import java.nio.file.LinkOption;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.SimpleFileVisitor;
-import java.nio.file.StandardOpenOption;
-import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.jar.Attributes;
-import java.util.jar.JarFile;
-import java.util.jar.Manifest;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipOutputStream;
-
 /**
- * <p>Creates {@code apk} or {@code jar} file with compiled {@code dex} classes.
- * Main entry point for the "dex" output format.</p>
- * <p>Use {@link #add(SootClass)} to add classes that should be printed as dex
- * output and {@link #print()} to finally print the classes.</p>
- * <p>If the printer has found the original {@code APK} of an added class (via
- * {@link SourceLocator#dexClassIndex()}), the files in the {@code APK} are copied to a
- * new one, replacing it's {@code classes.dex} and excluding the signature files. Note
- * that you have to sign and align the APK yourself, with jarsigner and zipalign, respectively.</p>
- * <p>If {@link Options#output_jar} flag is set, the printer produces {@code JAR} file.</p>
- * <p>If there is no original {@code APK} and {@link Options#output_jar} flag is not set
- * the printer just emits a {@code classes.dex}.</p>
+ * <p>
+ * Creates {@code apk} or {@code jar} file with compiled {@code dex} classes.
+ * Main entry point for the "dex" output format.
+ * </p>
+ * <p>
+ * Use {@link #add(SootClass)} to add classes that should be printed as dex
+ * output and {@link #print()} to finally print the classes.
+ * </p>
+ * <p>
+ * If the printer has found the original {@code APK} of an added class (via
+ * {@link SourceLocator#dexClassIndex()}), the files in the {@code APK} are
+ * copied to a new one, replacing it's {@code classes.dex} and excluding the
+ * signature files. Note that you have to sign and align the APK yourself, with
+ * jarsigner and zipalign, respectively.
+ * </p>
+ * <p>
+ * If {@link Options#output_jar} flag is set, the printer produces {@code JAR}
+ * file.
+ * </p>
+ * <p>
+ * If there is no original {@code APK} and {@link Options#output_jar} flag is
+ * not set the printer just emits a {@code classes.dex}.
+ * </p>
  *
- * @see <a href="https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jarsigner.html">jarsigner
- * documentation</a>
- * @see <a href="http://developer.android.com/tools/help/zipalign.html">zipalign documentation</a>
+ * @see <a href=
+ *      "https://docs.oracle.com/javase/8/docs/technotes/tools/windows/jarsigner.html">jarsigner
+ *      documentation</a>
+ * @see <a href="http://developer.android.com/tools/help/zipalign.html">zipalign
+ *      documentation</a>
  */
 public class DexPrinter {
 
@@ -175,8 +190,8 @@ public class DexPrinter {
 
 	public static final Pattern SIGNATURE_FILE_PATTERN = Pattern.compile("META-INF/[^/]+(\\.SF|\\.DSA|\\.RSA|\\.EC)$");
 
-	private MultiDexBuilder dexBuilder;
-	private File originalApk;
+	protected MultiDexBuilder dexBuilder;
+	protected File originalApk;
 
 	public DexPrinter() {
 		dexBuilder = createDexBuilder();
@@ -184,24 +199,25 @@ public class DexPrinter {
 
 	/**
 	 * Creates the {@link MultiDexBuilder} that shall be used for creating
-	 * potentially multiple dex files. This method makes sure that users of Soot
-	 * can overwrite the {@link MultiDexBuilder} with custom strategies.
+	 * potentially multiple dex files. This method makes sure that users of Soot can
+	 * overwrite the {@link MultiDexBuilder} with custom strategies.
 	 *
 	 * @return The new {@link MultiDexBuilder}
 	 */
-	private MultiDexBuilder createDexBuilder() {
+	protected MultiDexBuilder createDexBuilder() {
 		int api = Scene.v().getAndroidAPIVersion();
 		return new MultiDexBuilder(Opcodes.forApi(api));
 	}
 
-    private static boolean isSignatureFile(String fileName) {
-        return SIGNATURE_FILE_PATTERN.matcher(fileName).matches();
-    }
+	private static boolean isSignatureFile(String fileName) {
+		return SIGNATURE_FILE_PATTERN.matcher(fileName).matches();
+	}
 
 	/**
 	 * Converts Jimple visibility to Dexlib visibility
 	 *
-	 * @param visibility Jimple visibility
+	 * @param visibility
+	 *            Jimple visibility
 	 * @return Dexlib visibility
 	 */
 	private static int getVisibility(int visibility) {
@@ -315,8 +331,8 @@ public class DexPrinter {
 			try {
 				Files.delete(outputFile);
 			} catch (IOException exception) {
-				throw new IllegalStateException(
-						"Removing \"" + outputFile + "\" failed. Not writing out anything.", exception);
+				throw new IllegalStateException("Removing \"" + outputFile + "\" failed. Not writing out anything.",
+						exception);
 			}
 		}
 
@@ -747,8 +763,11 @@ public class DexPrinter {
 
 	/**
 	 * Returns all method parameter annotations (or null) for a specific parameter
-	 * @param m the method
-	 * @param paramIdx the parameter index
+	 * 
+	 * @param m
+	 *            the method
+	 * @param paramIdx
+	 *            the parameter index
 	 * @return the annotations (or null)
 	 */
 	private Set<Annotation> buildMethodParameterAnnotations(SootMethod m, final int paramIdx) {
@@ -758,8 +777,7 @@ public class DexPrinter {
 		for (Tag t : m.getTags()) {
 			if (t.getName().equals("VisibilityParameterAnnotationTag")) {
 				VisibilityParameterAnnotationTag vat = (VisibilityParameterAnnotationTag) t;
-				if (skipList == null)
-				{
+				if (skipList == null) {
 					skipList = new HashSet<String>();
 					annotations = new HashSet<Annotation>();
 				}
@@ -1113,15 +1131,14 @@ public class DexPrinter {
 		int registerCount = stmtV.getRegisterCount();
 		if (inWords > registerCount) {
 			/*
-			 * as the Dalvik VM moves the parameters into the last registers,
-			 * the "in" word count must be at least equal to the register count.
-			 * a smaller register count could occur if soot generated the method
-			 * body, see e.g. the handling of phantom refs in
-			 * SootMethodRefImpl.resolve(StringBuffer): the body has no locals
-			 * for the ParameterRefs, it just throws an error.
+			 * as the Dalvik VM moves the parameters into the last registers, the "in" word
+			 * count must be at least equal to the register count. a smaller register count
+			 * could occur if soot generated the method body, see e.g. the handling of
+			 * phantom refs in SootMethodRefImpl.resolve(StringBuffer): the body has no
+			 * locals for the ParameterRefs, it just throws an error.
 			 *
-			 * we satisfy the verifier by just increasing the register count,
-			 * since calling phantom refs will lead to an error anyway.
+			 * we satisfy the verifier by just increasing the register count, since calling
+			 * phantom refs will lead to an error anyway.
 			 */
 			registerCount = inWords;
 		}
@@ -1520,11 +1537,9 @@ public class DexPrinter {
 				// therefore hack it using java.lang.Throwable.
 				if ("Ljava/lang/Throwable;".equals(handler.getExceptionType())) {
 					/*
-					 * builder.addCatch(labelAssigner.getLabelAtAddress(range.
-					 * startAddress),
+					 * builder.addCatch(labelAssigner.getLabelAtAddress(range. startAddress),
 					 * labelAssigner.getLabelAtAddress(range.endAddress),
-					 * labelAssigner.getLabelAtAddress(handler.
-					 * getHandlerCodeAddress()));
+					 * labelAssigner.getLabelAtAddress(handler. getHandlerCodeAddress()));
 					 */
 					allCaughtForRange = true;
 				}
@@ -1584,13 +1599,12 @@ public class DexPrinter {
 		}
 
 		/**
-		 * Checks whether the given code range r is fully enclosed by this code
-		 * range.
+		 * Checks whether the given code range r is fully enclosed by this code range.
 		 *
 		 * @param r
 		 *            The other code range
-		 * @return True if the given code range r is fully enclosed by this code
-		 *         range, otherwise false.
+		 * @return True if the given code range r is fully enclosed by this code range,
+		 *         otherwise false.
 		 */
 		public boolean containsRange(CodeRange r) {
 			return (r.startAddress >= this.startAddress && r.endAddress <= this.endAddress);
@@ -1601,8 +1615,7 @@ public class DexPrinter {
 		 *
 		 * @param r
 		 *            The region to check for overlaps
-		 * @return True if this region has a non-empty overlap with the given
-		 *         one
+		 * @return True if this region has a non-empty overlap with the given one
 		 */
 		public boolean overlaps(CodeRange r) {
 			return (r.startAddress >= this.startAddress && r.startAddress < this.endAddress)
