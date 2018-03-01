@@ -19,19 +19,25 @@
 
 package soot.jimple.spark.builder;
 
-import soot.jimple.spark.pag.*;
-import soot.jimple.toolkits.callgraph.*;
-import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
-import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
-import soot.*;
+import java.util.ArrayList;
+import java.util.Iterator;
 
-import java.util.*;
-
+import soot.G;
+import soot.Scene;
+import soot.SootClass;
+import soot.SootMethod;
 import soot.jimple.spark.geom.geomPA.GeomPointsTo;
-import soot.jimple.spark.internal.*;
+import soot.jimple.spark.internal.SparkNativeHelper;
+import soot.jimple.spark.pag.MethodPAG;
+import soot.jimple.spark.pag.PAG;
 import soot.jimple.spark.solver.OnFlyCallGraph;
-import soot.util.queue.*;
-import soot.options.*;
+import soot.jimple.toolkits.callgraph.CallGraphBuilder;
+import soot.jimple.toolkits.callgraph.Edge;
+import soot.jimple.toolkits.callgraph.ReachableMethods;
+import soot.jimple.toolkits.pointer.DumbPointerAnalysis;
+import soot.jimple.toolkits.pointer.util.NativeMethodDriver;
+import soot.options.SparkOptions;
+import soot.util.queue.QueueReader;
 
 /**
  * A context insensitive pointer assignment graph builder.
@@ -43,8 +49,8 @@ public class ContextInsensitiveBuilder {
 		boolean change = true;
 		while (change) {
 			change = false;
-			for (Iterator<SootClass> cIt = new ArrayList<SootClass>(Scene.v()
-					.getClasses()).iterator(); cIt.hasNext();) {
+			for (Iterator<SootClass> cIt = new ArrayList<SootClass>(Scene.v().getClasses()).iterator(); cIt
+					.hasNext();) {
 				final SootClass c = cIt.next();
 				for (final SootMethod m : c.getMethods()) {
 					if (!m.isConcrete())
@@ -66,8 +72,7 @@ public class ContextInsensitiveBuilder {
 	public PAG setup(SparkOptions opts) {
 		pag = opts.geom_pta() ? new GeomPointsTo(opts) : new PAG(opts);
 		if (opts.simulate_natives()) {
-			pag.nativeMethodDriver = new NativeMethodDriver(
-					new SparkNativeHelper(pag));
+			pag.nativeMethodDriver = new NativeMethodDriver(new SparkNativeHelper(pag));
 		}
 		if (opts.on_fly_cg() && !opts.vta()) {
 			ofcg = new OnFlyCallGraph(pag, opts.apponly());
@@ -105,10 +110,8 @@ public class ContextInsensitiveBuilder {
 
 		if (pag.getOpts().verbose()) {
 			G.v().out.println("Total methods: " + totalMethods);
-			G.v().out
-					.println("Initially reachable methods: " + analyzedMethods);
-			G.v().out.println("Classes with at least one reachable method: "
-					+ classes);
+			G.v().out.println("Initially reachable methods: " + analyzedMethods);
+			G.v().out.println("Classes with at least one reachable method: " + classes);
 		}
 	}
 
@@ -134,10 +137,10 @@ public class ContextInsensitiveBuilder {
 			}
 	}
 
-	private PAG pag;
-	private CallGraphBuilder cgb;
-	private OnFlyCallGraph ofcg;
-	private ReachableMethods reachables;
+	protected PAG pag;
+	protected CallGraphBuilder cgb;
+	protected OnFlyCallGraph ofcg;
+	protected ReachableMethods reachables;
 	int classes = 0;
 	int totalMethods = 0;
 	int analyzedMethods = 0;

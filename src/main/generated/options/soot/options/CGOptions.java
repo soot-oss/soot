@@ -25,7 +25,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Call Graph Constructor. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-25T22:17:11.362+03:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-28T17:56:58.326+01:00", comments = "from soot_options.xml")
 public class CGOptions {
 
     private Map<String, String> options;
@@ -227,7 +227,9 @@ public class CGOptions {
      */
     public int library() {
         String s = soot.PhaseOptions.getString(options, "library");
-
+        if (s == null || s.isEmpty())
+        	return library_disabled;
+	
         if (s.equalsIgnoreCase("disabled"))
             return library_disabled;
         if (s.equalsIgnoreCase("any-subtype"))
@@ -235,7 +237,7 @@ public class CGOptions {
         if (s.equalsIgnoreCase("signature-resolution"))
             return library_signature_resolution;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option library");
+        throw new RuntimeException(String.format("Invalid value %s of phase option library", s));
     }
 
 }

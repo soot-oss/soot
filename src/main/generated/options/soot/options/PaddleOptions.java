@@ -25,7 +25,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Paddle. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-25T22:17:11.362+03:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-28T17:56:58.326+01:00", comments = "from soot_options.xml")
 public class PaddleOptions {
 
     private Map<String, String> options;
@@ -374,7 +374,9 @@ public class PaddleOptions {
      */
     public int conf() {
         String s = soot.PhaseOptions.getString(options, "conf");
-
+        if (s == null || s.isEmpty())
+        	return conf_ofcg;
+	
         if (s.equalsIgnoreCase("ofcg"))
             return conf_ofcg;
         if (s.equalsIgnoreCase("cha"))
@@ -392,7 +394,7 @@ public class PaddleOptions {
         if (s.equalsIgnoreCase("ofcg-context"))
             return conf_ofcg_context;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option conf");
+        throw new RuntimeException(String.format("Invalid value %s of phase option conf", s));
     }
 
     public static final int q_auto = 1;
@@ -410,7 +412,9 @@ public class PaddleOptions {
      */
     public int q() {
         String s = soot.PhaseOptions.getString(options, "q");
-
+        if (s == null || s.isEmpty())
+        	return q_auto;
+	
         if (s.equalsIgnoreCase("auto"))
             return q_auto;
         if (s.equalsIgnoreCase("trad"))
@@ -424,7 +428,7 @@ public class PaddleOptions {
         if (s.equalsIgnoreCase("numtrace"))
             return q_numtrace;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option q");
+        throw new RuntimeException(String.format("Invalid value %s of phase option q", s));
     }
 
     public static final int backend_auto = 1;
@@ -442,7 +446,9 @@ public class PaddleOptions {
      */
     public int backend() {
         String s = soot.PhaseOptions.getString(options, "backend");
-
+        if (s == null || s.isEmpty())
+        	return backend_auto;
+	
         if (s.equalsIgnoreCase("auto"))
             return backend_auto;
         if (s.equalsIgnoreCase("buddy"))
@@ -456,7 +462,7 @@ public class PaddleOptions {
         if (s.equalsIgnoreCase("none"))
             return backend_none;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option backend");
+        throw new RuntimeException(String.format("Invalid value %s of phase option backend", s));
     }
 
     public static final int context_insens = 1;
@@ -476,7 +482,9 @@ public class PaddleOptions {
      */
     public int context() {
         String s = soot.PhaseOptions.getString(options, "context");
-
+        if (s == null || s.isEmpty())
+        	return context_insens;
+	
         if (s.equalsIgnoreCase("insens"))
             return context_insens;
         if (s.equalsIgnoreCase("1cfa"))
@@ -492,7 +500,7 @@ public class PaddleOptions {
         if (s.equalsIgnoreCase("threadkobjsens"))
             return context_threadkobjsens;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option context");
+        throw new RuntimeException(String.format("Invalid value %s of phase option context", s));
     }
 
     public static final int propagator_auto = 1;
@@ -510,7 +518,9 @@ public class PaddleOptions {
      */
     public int propagator() {
         String s = soot.PhaseOptions.getString(options, "propagator");
-
+        if (s == null || s.isEmpty())
+        	return propagator_auto;
+	
         if (s.equalsIgnoreCase("auto"))
             return propagator_auto;
         if (s.equalsIgnoreCase("iter"))
@@ -524,7 +534,7 @@ public class PaddleOptions {
         if (s.equalsIgnoreCase("incbdd"))
             return propagator_incbdd;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option propagator");
+        throw new RuntimeException(String.format("Invalid value %s of phase option propagator", s));
     }
 
     public static final int set_impl_hash = 1;
@@ -542,7 +552,9 @@ public class PaddleOptions {
      */
     public int set_impl() {
         String s = soot.PhaseOptions.getString(options, "set-impl");
-
+        if (s == null || s.isEmpty())
+        	return set_impl_double;
+	
         if (s.equalsIgnoreCase("hash"))
             return set_impl_hash;
         if (s.equalsIgnoreCase("bit"))
@@ -556,7 +568,7 @@ public class PaddleOptions {
         if (s.equalsIgnoreCase("double"))
             return set_impl_double;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option set-impl");
+        throw new RuntimeException(String.format("Invalid value %s of phase option set-impl", s));
     }
 
     public static final int double_set_old_hash = 1;
@@ -576,7 +588,9 @@ public class PaddleOptions {
      */
     public int double_set_old() {
         String s = soot.PhaseOptions.getString(options, "double-set-old");
-
+        if (s == null || s.isEmpty())
+        	return double_set_old_hybrid;
+	
         if (s.equalsIgnoreCase("hash"))
             return double_set_old_hash;
         if (s.equalsIgnoreCase("bit"))
@@ -588,7 +602,7 @@ public class PaddleOptions {
         if (s.equalsIgnoreCase("heintze"))
             return double_set_old_heintze;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option double-set-old");
+        throw new RuntimeException(String.format("Invalid value %s of phase option double-set-old", s));
     }
 
     public static final int double_set_new_hash = 1;
@@ -608,7 +622,9 @@ public class PaddleOptions {
      */
     public int double_set_new() {
         String s = soot.PhaseOptions.getString(options, "double-set-new");
-
+        if (s == null || s.isEmpty())
+        	return double_set_new_hybrid;
+	
         if (s.equalsIgnoreCase("hash"))
             return double_set_new_hash;
         if (s.equalsIgnoreCase("bit"))
@@ -620,7 +636,7 @@ public class PaddleOptions {
         if (s.equalsIgnoreCase("heintze"))
             return double_set_new_heintze;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option double-set-new");
+        throw new RuntimeException(String.format("Invalid value %s of phase option double-set-new", s));
     }
 
 }

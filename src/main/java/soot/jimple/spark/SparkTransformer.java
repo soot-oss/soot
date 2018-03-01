@@ -193,7 +193,7 @@ public class SparkTransformer extends SceneTransformer {
 		}
 	}
 
-	private void propagatePAG(SparkOptions opts, final PAG pag) {
+	protected void propagatePAG(SparkOptions opts, final PAG pag) {
 		Propagator propagator = null;
 		switch (opts.propagator()) {
 		case SparkOptions.propagator_iter:

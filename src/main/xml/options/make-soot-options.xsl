@@ -190,7 +190,7 @@ public class Options extends OptionsBase {
                 }<xsl:text/>
         </xsl:for-each>
                 else {
-                    G.v().out.println("Invalid value " + value + " given for option -" + option);
+                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
                     return false;
                 }
             }<xsl:text/>
@@ -632,13 +632,16 @@ public class <xsl:copy-of select="$filename"/><xsl:if test="extends"> extends <x
      */
     public int <xsl:value-of select="translate(alias[last()],'-. ','___')"/>() {
         String s = soot.PhaseOptions.getString(options, "<xsl:value-of select="alias"/>");
-<xsl:text/>
+        if (s == null || s.isEmpty())
+        	<xsl:for-each select="value"> <xsl:if test="default">return <xsl:value-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>;<xsl:text/></xsl:if></xsl:for-each>
+	<xsl:text>
+	</xsl:text>
     <xsl:for-each select="value">
         if (s.equalsIgnoreCase("<xsl:value-of select="alias"/>"))
             return <xsl:value-of select="$name"/>_<xsl:value-of select="translate(alias[last()],'-. ','___')"/>;<xsl:text/>
         </xsl:for-each>
 
-        throw new RuntimeException("Invalid value " + s + " of phase option <xsl:value-of select="alias"/>");
+        throw new RuntimeException(String.format("Invalid value %s of phase option <xsl:value-of select="alias"/>", s));
     }
 <xsl:text/>
     </xsl:for-each>

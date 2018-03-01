@@ -25,7 +25,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Lock Allocator. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-25T22:17:11.362+03:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-28T17:56:58.326+01:00", comments = "from soot_options.xml")
 public class LockAllocator {
 
     private Map<String, String> options;
@@ -128,7 +128,9 @@ public class LockAllocator {
      */
     public int locking_scheme() {
         String s = soot.PhaseOptions.getString(options, "locking-scheme");
-
+        if (s == null || s.isEmpty())
+        	return locking_scheme_medium_grained;
+	
         if (s.equalsIgnoreCase("medium-grained"))
             return locking_scheme_medium_grained;
         if (s.equalsIgnoreCase("coarse-grained"))
@@ -138,7 +140,7 @@ public class LockAllocator {
         if (s.equalsIgnoreCase("leave-original"))
             return locking_scheme_leave_original;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option locking-scheme");
+        throw new RuntimeException(String.format("Invalid value %s of phase option locking-scheme", s));
     }
 
 }

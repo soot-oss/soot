@@ -25,7 +25,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Static Inliner. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-25T22:17:11.362+03:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-28T17:56:58.326+01:00", comments = "from soot_options.xml")
 public class SIOptions {
 
     private Map<String, String> options;
@@ -126,7 +126,9 @@ public class SIOptions {
      */
     public int allowed_modifier_changes() {
         String s = soot.PhaseOptions.getString(options, "allowed-modifier-changes");
-
+        if (s == null || s.isEmpty())
+        	return allowed_modifier_changes_unsafe;
+	
         if (s.equalsIgnoreCase("unsafe"))
             return allowed_modifier_changes_unsafe;
         if (s.equalsIgnoreCase("safe"))
@@ -134,7 +136,7 @@ public class SIOptions {
         if (s.equalsIgnoreCase("none"))
             return allowed_modifier_changes_none;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option allowed-modifier-changes");
+        throw new RuntimeException(String.format("Invalid value %s of phase option allowed-modifier-changes", s));
     }
 
 }

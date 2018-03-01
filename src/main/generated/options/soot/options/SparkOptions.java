@@ -25,7 +25,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Spark. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-25T22:17:11.362+03:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-28T17:56:58.326+01:00", comments = "from soot_options.xml")
 public class SparkOptions {
 
     private Map<String, String> options;
@@ -571,7 +571,9 @@ public class SparkOptions {
      */
     public int propagator() {
         String s = soot.PhaseOptions.getString(options, "propagator");
-
+        if (s == null || s.isEmpty())
+        	return propagator_worklist;
+	
         if (s.equalsIgnoreCase("iter"))
             return propagator_iter;
         if (s.equalsIgnoreCase("worklist"))
@@ -585,7 +587,7 @@ public class SparkOptions {
         if (s.equalsIgnoreCase("none"))
             return propagator_none;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option propagator");
+        throw new RuntimeException(String.format("Invalid value %s of phase option propagator", s));
     }
 
     public static final int set_impl_hash = 1;
@@ -604,7 +606,9 @@ public class SparkOptions {
      */
     public int set_impl() {
         String s = soot.PhaseOptions.getString(options, "set-impl");
-
+        if (s == null || s.isEmpty())
+        	return set_impl_double;
+	
         if (s.equalsIgnoreCase("hash"))
             return set_impl_hash;
         if (s.equalsIgnoreCase("bit"))
@@ -620,7 +624,7 @@ public class SparkOptions {
         if (s.equalsIgnoreCase("double"))
             return set_impl_double;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option set-impl");
+        throw new RuntimeException(String.format("Invalid value %s of phase option set-impl", s));
     }
 
     public static final int double_set_old_hash = 1;
@@ -641,7 +645,9 @@ public class SparkOptions {
      */
     public int double_set_old() {
         String s = soot.PhaseOptions.getString(options, "double-set-old");
-
+        if (s == null || s.isEmpty())
+        	return double_set_old_hybrid;
+	
         if (s.equalsIgnoreCase("hash"))
             return double_set_old_hash;
         if (s.equalsIgnoreCase("bit"))
@@ -655,7 +661,7 @@ public class SparkOptions {
         if (s.equalsIgnoreCase("sharedlist"))
             return double_set_old_sharedlist;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option double-set-old");
+        throw new RuntimeException(String.format("Invalid value %s of phase option double-set-old", s));
     }
 
     public static final int double_set_new_hash = 1;
@@ -676,7 +682,9 @@ public class SparkOptions {
      */
     public int double_set_new() {
         String s = soot.PhaseOptions.getString(options, "double-set-new");
-
+        if (s == null || s.isEmpty())
+        	return double_set_new_hybrid;
+	
         if (s.equalsIgnoreCase("hash"))
             return double_set_new_hash;
         if (s.equalsIgnoreCase("bit"))
@@ -690,7 +698,7 @@ public class SparkOptions {
         if (s.equalsIgnoreCase("sharedlist"))
             return double_set_new_sharedlist;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option double-set-new");
+        throw new RuntimeException(String.format("Invalid value %s of phase option double-set-new", s));
     }
 
     public static final int geom_encoding_Geom = 1;
@@ -708,7 +716,9 @@ public class SparkOptions {
      */
     public int geom_encoding() {
         String s = soot.PhaseOptions.getString(options, "geom-encoding");
-
+        if (s == null || s.isEmpty())
+        	return geom_encoding_Geom;
+	
         if (s.equalsIgnoreCase("Geom"))
             return geom_encoding_Geom;
         if (s.equalsIgnoreCase("HeapIns"))
@@ -716,7 +726,7 @@ public class SparkOptions {
         if (s.equalsIgnoreCase("PtIns"))
             return geom_encoding_PtIns;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option geom-encoding");
+        throw new RuntimeException(String.format("Invalid value %s of phase option geom-encoding", s));
     }
 
     public static final int geom_worklist_PQ = 1;
@@ -733,13 +743,15 @@ public class SparkOptions {
      */
     public int geom_worklist() {
         String s = soot.PhaseOptions.getString(options, "geom-worklist");
-
+        if (s == null || s.isEmpty())
+        	return geom_worklist_PQ;
+	
         if (s.equalsIgnoreCase("PQ"))
             return geom_worklist_PQ;
         if (s.equalsIgnoreCase("FIFO"))
             return geom_worklist_FIFO;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option geom-worklist");
+        throw new RuntimeException(String.format("Invalid value %s of phase option geom-worklist", s));
     }
 
 }

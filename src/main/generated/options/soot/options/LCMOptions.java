@@ -25,7 +25,7 @@ package soot.options;
 import java.util.*;
 
 /** Option parser for Lazy Code Motion. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-25T22:17:11.362+03:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-28T17:56:58.326+01:00", comments = "from soot_options.xml")
 public class LCMOptions {
 
     private Map<String, String> options;
@@ -85,7 +85,9 @@ public class LCMOptions {
      */
     public int safety() {
         String s = soot.PhaseOptions.getString(options, "safety");
-
+        if (s == null || s.isEmpty())
+        	return safety_safe;
+	
         if (s.equalsIgnoreCase("safe"))
             return safety_safe;
         if (s.equalsIgnoreCase("medium"))
@@ -93,7 +95,7 @@ public class LCMOptions {
         if (s.equalsIgnoreCase("unsafe"))
             return safety_unsafe;
 
-        throw new RuntimeException("Invalid value " + s + " of phase option safety");
+        throw new RuntimeException(String.format("Invalid value %s of phase option safety", s));
     }
 
 }
