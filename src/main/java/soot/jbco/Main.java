@@ -359,7 +359,7 @@ public class Main {
     if (name.equals("wjtp.jbco_bapibm"))
       return new BuildIntermediateAppClasses();
     if (name.equals("wjtp.jbco_cr"))
-      return new ClassRenamer();
+      return ClassRenamer.v();
     if (name.equals("bb.jbco_ful"))
       return new FixUndefinedLocals();
     if (name.equals("wjtp.jbco_fr"))
