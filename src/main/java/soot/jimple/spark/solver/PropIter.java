@@ -66,7 +66,7 @@ public final class PropIter extends Propagator {
 			change = false;
 			TreeSet<VarNode> simpleSources = new TreeSet<VarNode>(pag.simpleSources());
 			if (pag.getOpts().verbose()) {
-				G.v().out.println("Iteration " + (iteration++));
+				logger.debug("Iteration " + (iteration++));
 			}
 			for (VarNode object : simpleSources) {
 				change = handleSimples(object) | change;

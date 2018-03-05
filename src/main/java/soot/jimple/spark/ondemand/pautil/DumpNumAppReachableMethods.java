@@ -46,7 +46,7 @@ public class DumpNumAppReachableMethods extends SceneTransformer {
                 numAppMethods++;
             }
         }
-        G.v().out.println("Number of reachable methods in application: "
+        logger.debug("Number of reachable methods in application: "
                 + numAppMethods);
     }
 

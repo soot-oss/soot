@@ -96,16 +96,16 @@ public class DexClassProvider implements ClassProvider {
                         if (!index.containsKey(className))
                             index.put(className, container.getFilePath());
                         else if(Options.v().verbose())
-                            G.v().out.println(String.format("Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.",
+                            logger.debug(""+String.format("Warning: Duplicate of class '%s' found in dex file '%s' from source '%s'. Omitting class.",
                                     className, container.getDexName(), container.getFilePath().getCanonicalPath()));
                     }
                 }
             } catch (IOException e) {
                 logger.warn("IO error while processing dex file '" + path + "'");
-                G.v().out.println("Exception: " + e);
+                logger.debug("Exception: " + e);
             } catch (Exception e) {
                 logger.warn("exception while processing dex file '" + path + "'");
-                G.v().out.println("Exception: " + e);
+                logger.debug("Exception: " + e);
             }
         }
 

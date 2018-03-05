@@ -183,7 +183,7 @@ public class PluginLoader {
 			if(plugin instanceof PhasePluginDescription) {
 				handlePhasePlugin((PhasePluginDescription)plugin);
 			} else {
-				G.v().out.println("[Warning] Unhandled plugin of type '" + plugin.getClass() + "'");
+				logger.debug("[Warning] Unhandled plugin of type '" + plugin.getClass() + "'");
 			}
 		}
 	}

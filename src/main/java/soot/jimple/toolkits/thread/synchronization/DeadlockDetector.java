@@ -50,7 +50,7 @@ public class DeadlockDetector {
         int iteration = 0;
         do {
             iteration++;
-            G.v().out.println("[DeadlockDetector] Deadlock Iteration #" + iteration);
+            logger.debug("[DeadlockDetector] Deadlock Iteration #" + iteration);
             foundDeadlock = false;
             lockOrder = new HashMutableDirectedGraph<CriticalSectionGroup>(); // start each iteration with a fresh graph
 
@@ -99,7 +99,7 @@ public class DeadlockDetector {
                     if (tn1.transitiveTargets.contains(tn2.method)) {
                         // This implies the partial ordering tn1lock before tn2lock
                         if (optionPrintDebug) {
-                            G.v().out.println("group" + (tn1.setNumber) + " before group" + (tn2.setNumber) + ": "
+                            logger.debug("group" + (tn1.setNumber) + " before group" + (tn2.setNumber) + ": "
                                     + "outer: " + tn1.name + " inner: " + tn2.name);
                         }
 
@@ -116,23 +116,23 @@ public class DeadlockDetector {
 
                         if (afterTn2.contains(tn1.group)) {
                             if (!optionRepairDeadlock) {
-                                G.v().out.println("[DeadlockDetector]  DEADLOCK HAS BEEN DETECTED: not correcting");
+                                logger.debug("[DeadlockDetector]  DEADLOCK HAS BEEN DETECTED: not correcting");
                                 foundDeadlock = true;
                             } else {
-                                G.v().out.println("[DeadlockDetector]  DEADLOCK HAS BEEN DETECTED: merging group"
+                                logger.debug("[DeadlockDetector]  DEADLOCK HAS BEEN DETECTED: merging group"
                                         + (tn1.setNumber) + " and group" + (tn2.setNumber)
                                         + " and restarting deadlock detection");
 
                                 if (optionPrintDebug) {
-                                    G.v().out.println("tn1.setNumber was " + tn1.setNumber + " and tn2.setNumber was " + tn2.setNumber);
-                                    G.v().out.println("tn1.group.size was " + tn1.group.criticalSections.size()
+                                    logger.debug("tn1.setNumber was " + tn1.setNumber + " and tn2.setNumber was " + tn2.setNumber);
+                                    logger.debug("tn1.group.size was " + tn1.group.criticalSections.size()
                                             + " and tn2.group.size was " + tn2.group.criticalSections.size());
-                                    G.v().out.println("tn1.group.num was  " + tn1.group.num() + " and tn2.group.num was  " + tn2.group.num());
+                                    logger.debug("tn1.group.num was  " + tn1.group.num() + " and tn2.group.num was  " + tn2.group.num());
                                 }
                                 tn1.group.mergeGroups(tn2.group);
                                 if (optionPrintDebug) {
-                                    G.v().out.println("tn1.setNumber is  " + tn1.setNumber + " and tn2.setNumber is  " + tn2.setNumber);
-                                    G.v().out.println("tn1.group.size is  " + tn1.group.criticalSections.size()
+                                    logger.debug("tn1.setNumber is  " + tn1.setNumber + " and tn2.setNumber is  " + tn2.setNumber);
+                                    logger.debug("tn1.group.size is  " + tn1.group.criticalSections.size()
                                             + " and tn2.group.size is  " + tn2.group.criticalSections.size());
                                 }
 
@@ -156,7 +156,7 @@ public class DeadlockDetector {
         int iteration = 0;
         do {
             iteration++;
-            G.v().out.println("[DeadlockDetector] Deadlock Iteration #" + iteration);
+            logger.debug("[DeadlockDetector] Deadlock Iteration #" + iteration);
             foundDeadlock = false;
             lockOrder = permanentOrder.clone(); // start each iteration with a fresh copy of the permanent orders
 
@@ -213,7 +213,7 @@ public class DeadlockDetector {
                         // This implies the partial ordering (locks in tn1) before (locks in tn2)
                         if (true) //optionPrintDebug)
                         {
-                            G.v().out.println("[DeadlockDetector] locks in " + (tn1.name) + " before locks in " + (tn2.name) + ": "
+                            logger.debug("[DeadlockDetector] locks in " + (tn1.name) + " before locks in " + (tn2.name) + ": "
                                     + "outer: " + tn1.name + " inner: " + tn2.name);
                         }
 
@@ -274,10 +274,10 @@ public class DeadlockDetector {
                                 if ((!Objects.equals(lock1Num, lock2Num) || lock1Num > 0)
                                         && afterTn2.contains(lock1Num)) {
                                     if (!optionRepairDeadlock) {
-                                        G.v().out.println("[DeadlockDetector] DEADLOCK HAS BEEN DETECTED: not correcting");
+                                        logger.debug("[DeadlockDetector] DEADLOCK HAS BEEN DETECTED: not correcting");
                                         foundDeadlock = true;
                                     } else {
-                                        G.v().out.println("[DeadlockDetector] DEADLOCK HAS BEEN DETECTED while inspecting " + lock1Num + " (" + lock1 + ") and " + lock2Num + " (" + lock2 + ") ");
+                                        logger.debug("[DeadlockDetector] DEADLOCK HAS BEEN DETECTED while inspecting " + lock1Num + " (" + lock1 + ") and " + lock2Num + " (" + lock2 + ") ");
 
                                         // Create a deadlock avoidance edge
                                         DeadlockAvoidanceEdge dae = new DeadlockAvoidanceEdge(tn1.method.getDeclaringClass());
@@ -328,11 +328,11 @@ public class DeadlockDetector {
                                                         permanentOrder.addEdge(daeNum, lockNum, tn);
                                                     }
                                                     tn.lockset.add(daeEqVal);
-                                                    G.v().out.println("[DeadlockDetector]   Adding deadlock avoidance edge between "
+                                                    logger.debug("[DeadlockDetector]   Adding deadlock avoidance edge between "
                                                             + (tn1.name) + " and " + (tn.name));
                                                 }
                                             }
-                                            G.v().out.println("[DeadlockDetector]   Restarting deadlock detection");
+                                            logger.debug("[DeadlockDetector]   Restarting deadlock detection");
                                         }
 
                                         foundDeadlock = true;
@@ -397,7 +397,7 @@ public class DeadlockDetector {
                     }
                 }
 
-                G.v().out.println("VISIBLE ORDER FOR " + tn.name);
+                logger.debug("VISIBLE ORDER FOR " + tn.name);
                 visibleOrder.printGraph();
 
                 // Order locks in tn's lockset according to the visible order (insertion sort)
@@ -419,7 +419,7 @@ public class DeadlockDetector {
                     }
                     newLockset.add(i, lockEqVal);
                 }
-                G.v().out.println("reordered from " + LockAllocator.locksetToLockNumString(tn.lockset, lockToLockNum)
+                logger.debug("reordered from " + LockAllocator.locksetToLockNumString(tn.lockset, lockToLockNum)
                         + " to " + LockAllocator.locksetToLockNumString(newLockset, lockToLockNum));
 
                 tn.lockset = newLockset;

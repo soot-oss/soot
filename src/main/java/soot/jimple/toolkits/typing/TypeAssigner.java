@@ -92,7 +92,7 @@ public class TypeAssigner extends BodyTransformer {
 		Date start = new Date();
 
 		if (Options.v().verbose())
-			G.v().out.println("[TypeAssigner] typing system started on "
+			logger.debug("[TypeAssigner] typing system started on "
 					+ start);
 
 		JBTROptions opt = new JBTROptions(options);
@@ -134,7 +134,7 @@ public class TypeAssigner extends BodyTransformer {
 			long runtime = finish.getTime() - start.getTime();
 			long mins = runtime / 60000;
 			long secs = (runtime % 60000) / 1000;
-			G.v().out.println("[TypeAssigner] typing system ended. It took "
+			logger.debug("[TypeAssigner] typing system ended. It took "
 					+ mins + " mins and " + secs + " secs.");
 		}
 		
@@ -260,7 +260,7 @@ public class TypeAssigner extends BodyTransformer {
 		else
 			cmp = compareTypings(oldJb, newJb);
 
-		G.v().out.println("cmp;" + jb.getMethod() + ";" + size + ";"
+		logger.debug("cmp;" + jb.getMethod() + ";" + size + ";"
 				+ oldTime + ";" + newTime + ";" + cmp);
 	}
 

@@ -88,7 +88,7 @@ public class ShimpleBody extends StmtBody
             throw new RuntimeException("Cannot construct ShimpleBody from given Body type.");
 
         if(Options.v().verbose())
-            G.v().out.println("[" + getMethod().getName() + "] Constructing ShimpleBody...");
+            logger.debug("[" + getMethod().getName() + "] Constructing ShimpleBody...");
 
         // must happen before SPatchingChain gets created
         this.options = new ShimpleOptions(options);

@@ -221,7 +221,7 @@ public class PhaseDumper {
 	} catch (java.io.IOException e) {
 	    // Don't abort execution because of an I/O error, but report
 	    // the error.
-	    G.v().out.println("PhaseDumper.dumpBody() caught: " + e.toString());
+	    logger.debug("PhaseDumper.dumpBody() caught: " + e.toString());
 	    e.printStackTrace(G.v().out);
 	}
     }
@@ -248,7 +248,7 @@ public class PhaseDumper {
 	} catch (java.io.IOException e) {
 	    // Don't abort execution because of an I/O error, but let
 	    // the user know.
-	    G.v().out.println("PhaseDumper.dumpBody() caught: " + e.toString());
+	    logger.debug("PhaseDumper.dumpBody() caught: " + e.toString());
 	    e.printStackTrace(G.v().out);
 	} finally {
 	    alreadyDumping = false;
@@ -382,7 +382,7 @@ public class PhaseDumper {
 		} catch (java.io.IOException e) {
 		    // Don't abort execution because of an I/O error, but 
 		    // report the error.
-		    G.v().out.println("PhaseDumper.dumpBody() caught: " + 
+		    logger.debug("PhaseDumper.dumpBody() caught: " + 
 				      e.toString());
 		    e.printStackTrace(G.v().out);
 		}
@@ -419,7 +419,7 @@ public class PhaseDumper {
 		} catch (java.io.IOException e) {
 		    // Don't abort execution because of an I/O error, but 
 		    // report the error.
-		    G.v().out.println("PhaseDumper.dumpBody() caught: " + 
+		    logger.debug("PhaseDumper.dumpBody() caught: " + 
 				      e.toString());
 		    e.printStackTrace(G.v().out);
 		}

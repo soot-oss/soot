@@ -235,30 +235,30 @@ public class PurityInterproceduralAnalysis
         super(cg, new Filter(), heads, opts.dump_cg());
 
         if (opts.dump_cg()) {
-            G.v().out.println("[AM] Dumping empty .dot call-graph");
+            logger.debug("[AM] Dumping empty .dot call-graph");
             drawAsOneDot("EmptyCallGraph");
         }
 
         Date start = new Date();
-        G.v().out.println("[AM] Analysis began");
+        logger.debug("[AM] Analysis began");
         doAnalysis(opts.verbose());
-        G.v().out.println("[AM] Analysis finished");
+        logger.debug("[AM] Analysis finished");
         Date finish = new Date();
         long runtime = finish.getTime() - start.getTime();
-        G.v().out.println("[AM] run time: " + runtime / 1000. + " s");
+        logger.debug("[AM] run time: " + runtime / 1000. + " s");
 
         if (opts.dump_cg()) {
-            G.v().out.println("[AM] Dumping annotated .dot call-graph");
+            logger.debug("[AM] Dumping annotated .dot call-graph");
             drawAsOneDot("CallGraph");
         }
 
         if (opts.dump_summaries()) {
-            G.v().out.println("[AM] Dumping .dot summaries of analysed methods");
+            logger.debug("[AM] Dumping .dot summaries of analysed methods");
             drawAsManyDot("Summary_", false);
         }
 
         if (opts.dump_intra()) {
-            G.v().out.println("[AM] Dumping .dot full intra-procedural method analyses");
+            logger.debug("[AM] Dumping .dot full intra-procedural method analyses");
             // relaunch the interprocedural analysis once on each method
             // to get a purity graph at each statement, not only summaries
             for (Iterator<SootMethod> it = getAnalysedMethods(); it.hasNext();) {
@@ -266,7 +266,7 @@ public class PurityInterproceduralAnalysis
                 Body body = method.retrieveActiveBody();
                 ExceptionalUnitGraph graph = new ExceptionalUnitGraph(body);
                 if (opts.verbose()) {
-                    G.v().out.println("  |- " + method);
+                    logger.debug("  |- " + method);
                 }
                 PurityIntraproceduralAnalysis r = new PurityIntraproceduralAnalysis(graph, this);
                 r.drawAsOneDot("Intra_", method.toString());
@@ -276,7 +276,7 @@ public class PurityInterproceduralAnalysis
         }
 
         {
-            G.v().out.println("[AM] Annotate methods. ");
+            logger.debug("[AM] Annotate methods. ");
             for (Iterator<SootMethod> it = getAnalysedMethods(); it.hasNext();) {
                 SootMethod m = it.next();
                 PurityGraphBox b = getSummaryFor(m);
@@ -294,7 +294,7 @@ public class PurityInterproceduralAnalysis
                     m.addTag(new GenericAttribute("Pure", new byte[0]));
                 }
                 if (opts.print()) {
-                    G.v().out.println("  |- method " + m.toString() + " is " + (isPure ? "pure" : "impure"));
+                    logger.debug("  |- method " + m.toString() + " is " + (isPure ? "pure" : "impure"));
                 }
 
                 // param & this ro / safety
@@ -317,7 +317,7 @@ public class PurityInterproceduralAnalysis
                      */
                     m.addTag(new StringTag("this: " + s));
                     if (opts.print()) {
-                        G.v().out.println("  |   |- this is " + s);
+                        logger.debug("  |   |- this is " + s);
                     }
                 }
 
@@ -344,7 +344,7 @@ public class PurityInterproceduralAnalysis
                          */
                         m.addTag(new StringTag("param" + i + ": " + s));
                         if (opts.print()) {
-                            G.v().out.println("  |   |- param " + i + " is " + s);
+                            logger.debug("  |   |- param " + i + " is " + s);
                         }
                     }
                     i++;

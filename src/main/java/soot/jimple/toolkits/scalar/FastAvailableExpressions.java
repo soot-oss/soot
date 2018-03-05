@@ -50,7 +50,7 @@ public class FastAvailableExpressions implements AvailableExpressions
     public FastAvailableExpressions(Body b, SideEffectTester st)
     {
         if(Options.v().verbose())
-            G.v().out.println("[" + b.getMethod().getName() +
+            logger.debug("[" + b.getMethod().getName() +
                 "] Finding available expressions...");
 
         FastAvailableExpressionsAnalysis analysis = 
@@ -108,7 +108,7 @@ public class FastAvailableExpressions implements AvailableExpressions
         }
 
         if(Options.v().verbose())
-            G.v().out.println("[" + b.getMethod().getName() +
+            logger.debug("[" + b.getMethod().getName() +
                 "]     Found available expressions...");
     }
 

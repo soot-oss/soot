@@ -66,7 +66,7 @@ public class InteractionHandler {
 
     public void handleCfgEvent(DirectedGraph<?> g){
         if (currentPhaseEnabled()){
-            G.v().out.println("Analyzing: "+currentPhaseName());
+            logger.debug("Analyzing: "+currentPhaseName());
             doInteraction(new InteractionEvent(IInteractionConstants.NEW_ANALYSIS, currentPhaseName()));
         }
         if (isInteractThisAnalysis()){

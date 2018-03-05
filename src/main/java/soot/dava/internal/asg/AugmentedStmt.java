@@ -156,7 +156,7 @@ public class AugmentedStmt {
 	}
 
 	public void dump() {
-		G.v().out.println(toString());
+		logger.debug(""+toString());
 	}
 
 	public String toString() {

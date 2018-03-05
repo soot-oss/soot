@@ -41,7 +41,7 @@ public class ShimpleTransformer extends SceneTransformer
     protected void internalTransform(String phaseName, Map options)
     {
         if(Options.v().verbose())
-            G.v().out.println("Transforming all classes in the Scene to Shimple...");
+            logger.debug("Transforming all classes in the Scene to Shimple...");
 
         // *** FIXME: Add debug output to indicate which class/method is being shimplified.
         // *** FIXME: Is ShimpleTransformer the right solution?  The call graph may deem

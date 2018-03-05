@@ -57,7 +57,7 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>>{
 
     public DominatorTree(DominatorsFinder dominators) {
         // if(Options.v().verbose())
-        // G.v().out.println("[" + graph.getBody().getMethod().getName() +
+        // logger.debug("[" + graph.getBody().getMethod().getName() +
         // "]     Constructing DominatorTree...");
 
         this.dominators = dominators;

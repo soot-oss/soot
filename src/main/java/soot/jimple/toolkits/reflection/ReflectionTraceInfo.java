@@ -145,10 +145,10 @@ public class ReflectionTraceInfo {
 					lines++;
 				}
 				if(!ignoredKinds.isEmpty()) {
-					G.v().out.println("Encountered reflective calls entries of the following kinds that\n" +
+					logger.debug("Encountered reflective calls entries of the following kinds that\n" +
 							"cannot currently be handled:");
 					for (String kind : ignoredKinds) {
-						G.v().out.println(kind);
+						logger.debug(""+kind);
 					}
 				}
 			} catch (FileNotFoundException e) {

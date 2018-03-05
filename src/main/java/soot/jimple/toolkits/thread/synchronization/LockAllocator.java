@@ -118,7 +118,7 @@ public class LockAllocator extends SceneTransformer
 		MhpTester mhp = null;
 		if(optionDoMHP && Scene.v().getPointsToAnalysis() instanceof PAG)
 		{
-	    	G.v().out.println("[wjtp.tn] *** Build May-Happen-in-Parallel Info *** " + (new Date()));
+	    	logger.debug("[wjtp.tn] *** Build May-Happen-in-Parallel Info *** " + (new Date()));
 			mhp = new SynchObliviousMhpAnalysis();
 			if(optionPrintMhpSummary)
 			{
@@ -132,7 +132,7 @@ public class LockAllocator extends SceneTransformer
 		ThreadLocalObjectsAnalysis tlo = null;
     	if(optionDoTLO)
     	{
-	    	G.v().out.println("[wjtp.tn] *** Find Thread-Local Objects *** " + (new Date()));
+	    	logger.debug("[wjtp.tn] *** Find Thread-Local Objects *** " + (new Date()));
 	    	if(mhp != null)
 	    		tlo = new ThreadLocalObjectsAnalysis(mhp);
 			else
@@ -140,10 +140,10 @@ public class LockAllocator extends SceneTransformer
 	    	if(!optionOnFlyTLO)
 	    	{
 		    	tlo.precompute();
-	    		G.v().out.println("[wjtp.tn] TLO totals (#analyzed/#encountered): " + SmartMethodInfoFlowAnalysis.counter + "/" + ClassInfoFlowAnalysis.methodCount);
+	    		logger.debug("[wjtp.tn] TLO totals (#analyzed/#encountered): " + SmartMethodInfoFlowAnalysis.counter + "/" + ClassInfoFlowAnalysis.methodCount);
 		    }
 	    	else
-	    		G.v().out.println("[wjtp.tn] TLO so far (#analyzed/#encountered): " + SmartMethodInfoFlowAnalysis.counter + "/" + ClassInfoFlowAnalysis.methodCount);
+	    		logger.debug("[wjtp.tn] TLO so far (#analyzed/#encountered): " + SmartMethodInfoFlowAnalysis.counter + "/" + ClassInfoFlowAnalysis.methodCount);
     	}
 
 
@@ -154,7 +154,7 @@ public class LockAllocator extends SceneTransformer
     	// sets for each transaction.
     	// For all methods, run the intraprocedural analysis (TransactionAnalysis)
 		Date start = new Date();
-    	G.v().out.println("[wjtp.tn] *** Find and Name Transactions *** " + start);
+    	logger.debug("[wjtp.tn] *** Find and Name Transactions *** " + start);
     	Map<SootMethod, FlowSet> methodToFlowSet = new HashMap<SootMethod, FlowSet>();
     	Map<SootMethod, ExceptionalUnitGraph> methodToExcUnitGraph = new HashMap<SootMethod, ExceptionalUnitGraph>();
     	Iterator<SootClass> runAnalysisClassesIt = Scene.v().getApplicationClasses().iterator();
@@ -197,7 +197,7 @@ public class LockAllocator extends SceneTransformer
 
     	if(optionOnFlyTLO)
     	{
-    		G.v().out.println("[wjtp.tn] TLO so far (#analyzed/#encountered): " + SmartMethodInfoFlowAnalysis.counter + "/" + ClassInfoFlowAnalysis.methodCount);
+    		logger.debug("[wjtp.tn] TLO so far (#analyzed/#encountered): " + SmartMethodInfoFlowAnalysis.counter + "/" + ClassInfoFlowAnalysis.methodCount);
     	}
 
     	
@@ -205,7 +205,7 @@ public class LockAllocator extends SceneTransformer
     	// *** Find Transitive Read/Write Sets ***
     	// Finds the transitive read/write set for each transaction using a given
     	// nesting model.
-    	G.v().out.println("[wjtp.tn] *** Find Transitive Read/Write Sets *** " + (new Date()));
+    	logger.debug("[wjtp.tn] *** Find Transitive Read/Write Sets *** " + (new Date()));
     	PointsToAnalysis pta = Scene.v().getPointsToAnalysis();
     	CriticalSectionAwareSideEffectAnalysis tasea = null;
 		tasea = new CriticalSectionAwareSideEffectAnalysis(
@@ -232,8 +232,8 @@ public class LockAllocator extends SceneTransformer
     	float time = ((float) longTime) / 10.0f;
     	if(optionOnFlyTLO)
     	{
-    		G.v().out.println("[wjtp.tn] TLO totals (#analyzed/#encountered): " + SmartMethodInfoFlowAnalysis.counter + "/" + ClassInfoFlowAnalysis.methodCount);
-			G.v().out.println("[wjtp.tn] Time for stages utilizing on-fly TLO: " + time + "s");
+    		logger.debug("[wjtp.tn] TLO totals (#analyzed/#encountered): " + SmartMethodInfoFlowAnalysis.counter + "/" + ClassInfoFlowAnalysis.methodCount);
+			logger.debug("[wjtp.tn] Time for stages utilizing on-fly TLO: " + time + "s");
     	}
 
 
@@ -273,7 +273,7 @@ public class LockAllocator extends SceneTransformer
 
     	// *** Calculate Locking Groups ***
     	// Search for data dependencies between transactions, and split them into disjoint sets
-    	G.v().out.println("[wjtp.tn] *** Calculate Locking Groups *** " + (new Date()));
+    	logger.debug("[wjtp.tn] *** Calculate Locking Groups *** " + (new Date()));
     	CriticalSectionInterferenceGraph ig = 
     		new CriticalSectionInterferenceGraph(
     				criticalSections, mhp, optionOneGlobalLock,
@@ -283,7 +283,7 @@ public class LockAllocator extends SceneTransformer
     	
     	
 		// *** Detect the Possibility of Deadlock ***
-		G.v().out.println("[wjtp.tn] *** Detect the Possibility of Deadlock *** " + (new Date()));
+		logger.debug("[wjtp.tn] *** Detect the Possibility of Deadlock *** " + (new Date()));
 		DeadlockDetector dd = new DeadlockDetector(optionPrintDebug, optionAvoidDeadlock, true, criticalSections);
 		if(!optionUseLocksets) // deadlock detection for all single-lock-per-region allocations
 			deadlockGraph = dd.detectComponentBasedDeadlock();
@@ -292,7 +292,7 @@ public class LockAllocator extends SceneTransformer
 
 		// *** Calculate Locking Objects ***
     	// Get a list of all dependencies for each group
-    	G.v().out.println("[wjtp.tn] *** Calculate Locking Objects *** " + (new Date()));
+    	logger.debug("[wjtp.tn] *** Calculate Locking Objects *** " + (new Date()));
 		if(!optionStaticLocks)
 		{
 			// Calculate per-group contributing RWSet
@@ -335,7 +335,7 @@ public class LockAllocator extends SceneTransformer
 				{
 					if( tn.group != null )
 					{
-						G.v().out.println("[wjtp.tn] " + tn.name + " lockset: " + locksetToLockNumString(tn.lockset, lockToLockNum) + (tn.group.useLocksets ? "" : " (placeholder)"));
+						logger.debug("[wjtp.tn] " + tn.name + " lockset: " + locksetToLockNumString(tn.lockset, lockToLockNum) + (tn.group.useLocksets ? "" : " (placeholder)"));
 					}
 				}
 			}
@@ -346,17 +346,17 @@ public class LockAllocator extends SceneTransformer
 		// *** Detect the Possibility of Deadlock for Locksets ***
 		if(optionUseLocksets) // deadlock detection and lock ordering for lockset allocations
 		{
-			G.v().out.println("[wjtp.tn] *** Detect " + (optionAvoidDeadlock ? "and Correct " : "") + "the Possibility of Deadlock for Locksets *** " + (new Date()));
+			logger.debug("[wjtp.tn] *** Detect " + (optionAvoidDeadlock ? "and Correct " : "") + "the Possibility of Deadlock for Locksets *** " + (new Date()));
 			deadlockGraph = dd.detectLocksetDeadlock(lockToLockNum, lockPTSets);
 			if(optionPrintDebug)
 				((HashMutableEdgeLabelledDirectedGraph) deadlockGraph).printGraph();
 		
-			G.v().out.println("[wjtp.tn] *** Reorder Locksets to Avoid Deadlock *** " + (new Date()));
+			logger.debug("[wjtp.tn] *** Reorder Locksets to Avoid Deadlock *** " + (new Date()));
 			dd.reorderLocksets(lockToLockNum, (HashMutableEdgeLabelledDirectedGraph) deadlockGraph);
 		}
 		
 		// *** Print Output and Transform Program ***
-    	G.v().out.println("[wjtp.tn] *** Print Output and Transform Program *** " + (new Date()));
+    	logger.debug("[wjtp.tn] *** Print Output and Transform Program *** " + (new Date()));
 
 		// Print topological graph in graphviz format
 		if(optionPrintGraph)
@@ -415,7 +415,7 @@ public class LockAllocator extends SceneTransformer
 			{
 				
 				// Get list of objects (FieldRef or Local) to be locked (lockset analysis)
-				G.v().out.println("[wjtp.tn] * " + tn.name + " *");
+				logger.debug("[wjtp.tn] * " + tn.name + " *");
 				LockableReferenceAnalysis la = new LockableReferenceAnalysis(new BriefUnitGraph(tn.method.retrieveActiveBody()));
 				tn.lockset = la.getLocksetOf(tasea, tn.group.rwSet, tn);
 				
@@ -440,7 +440,7 @@ public class LockAllocator extends SceneTransformer
 
 						// Assign a lock number to the placeholder
 						Integer lockNum = new Integer(-lockPTSets.size()); // negative indicates a static lock
-						G.v().out.println("[wjtp.tn] Lock: num " + lockNum + " type " + newStaticLock.getType() + " obj " + newStaticLock);
+						logger.debug("[wjtp.tn] Lock: num " + lockNum + " type " + newStaticLock.getType() + " obj " + newStaticLock);
 						lockToLockNum.put(newStaticLockEqVal, lockNum);
 						lockToLockNum.put(newStaticLock, lockNum);
 						PointsToSetInternal dummyLockPT = new HashPointsToSet(newStaticLock.getType(), (PAG) pta); // KILLS CHA-BASED ANALYSIS (pointer exception)
@@ -482,7 +482,7 @@ public class LockAllocator extends SceneTransformer
 									PointsToSetInternal otherLockPT = lockPTSets.get(i);
 									if(lockPT.hasNonEmptyIntersection(otherLockPT)) // will never happen for empty, negative numbered sets
 									{
-										G.v().out.println("[wjtp.tn] Lock: num " + i + " type " + lock.getType() + " obj " + lock);
+										logger.debug("[wjtp.tn] Lock: num " + i + " type " + lock.getType() + " obj " + lock);
 										lockToLockNum.put(lock, new Integer(i));
 										otherLockPT.addAll(lockPT, null);
 										foundLock = true;
@@ -493,7 +493,7 @@ public class LockAllocator extends SceneTransformer
 								// Assign a brand new lock number otherwise
 								if(!foundLock)
 								{
-									G.v().out.println("[wjtp.tn] Lock: num " + lockPTSets.size() + " type " + lock.getType() + " obj " + lock);
+									logger.debug("[wjtp.tn] Lock: num " + lockPTSets.size() + " type " + lock.getType() + " obj " + lock);
 									lockToLockNum.put(lock, new Integer(lockPTSets.size()));
 									PointsToSetInternal otherLockPT = new HashPointsToSet(lockPT.getType(), (PAG) pta);
 									lockPTSets.add(otherLockPT);
@@ -506,13 +506,13 @@ public class LockAllocator extends SceneTransformer
 								if( lockToLockNum.get(lockEqVal) != null )
 								{
 									Integer lockNum = lockToLockNum.get(lockEqVal);
-									G.v().out.println("[wjtp.tn] Lock: num " + lockNum + " type " + lock.getType() + " obj " + lock);
+									logger.debug("[wjtp.tn] Lock: num " + lockNum + " type " + lock.getType() + " obj " + lock);
 									lockToLockNum.put(lock, lockNum);
 								}
 								else
 								{
 									Integer lockNum = new Integer(-lockPTSets.size()); // negative indicates a static lock
-									G.v().out.println("[wjtp.tn] Lock: num " + lockNum + " type " + lock.getType() + " obj " + lock);
+									logger.debug("[wjtp.tn] Lock: num " + lockNum + " type " + lock.getType() + " obj " + lock);
 									lockToLockNum.put(lockEqVal, lockNum);
 									lockToLockNum.put(lock, lockNum);
 									PointsToSetInternal dummyLockPT = new HashPointsToSet(lock.getType(), (PAG) pta);
@@ -751,7 +751,7 @@ public class LockAllocator extends SceneTransformer
 		int colorNum = 0;
 		HashSet<CriticalSection> visited = new HashSet<CriticalSection>();
 		
-		G.v().out.println("[transaction-graph]" + (optionUseLocksets ? "" : " strict") + " graph transactions {"); // "\n[transaction-graph] start=1;");
+		logger.debug("[transaction-graph]" + (optionUseLocksets ? "" : " strict") + " graph transactions {"); // "\n[transaction-graph] start=1;");
 
 		for(int group = 0; group < ig.groups().size(); group++)
 		{
@@ -776,11 +776,11 @@ public class LockAllocator extends SceneTransformer
 								typeString = ((RefType) tn.group.lockObject.getType()).getSootClass().getShortName();
 							else
 								typeString = tn.group.lockObject.getType().toString();
-							G.v().out.println("[transaction-graph] subgraph cluster_" + (group + 1) + " {\n[transaction-graph] color=blue;\n[transaction-graph] label=\"Lock: a \\n" + typeString + " object\";");
+							logger.debug("[transaction-graph] subgraph cluster_" + (group + 1) + " {\n[transaction-graph] color=blue;\n[transaction-graph] label=\"Lock: a \\n" + typeString + " object\";");
 						}
 						else if(tn.group.useLocksets)
 						{
-							G.v().out.println("[transaction-graph] subgraph cluster_" + (group + 1) + " {\n[transaction-graph] color=blue;\n[transaction-graph] label=\"Locksets\";");
+							logger.debug("[transaction-graph] subgraph cluster_" + (group + 1) + " {\n[transaction-graph] color=blue;\n[transaction-graph] label=\"Locksets\";");
 						}
 						else
 						{
@@ -800,14 +800,14 @@ public class LockAllocator extends SceneTransformer
 							else
 								objString = tn.group.lockObject.toString();
 //								objString = lockObject[group].toString();
-							G.v().out.println("[transaction-graph] subgraph cluster_" + (group + 1) + " {\n[transaction-graph] color=blue;\n[transaction-graph] label=\"Lock: \\n" + objString + "\";");
+							logger.debug("[transaction-graph] subgraph cluster_" + (group + 1) + " {\n[transaction-graph] color=blue;\n[transaction-graph] label=\"Lock: \\n" + objString + "\";");
 						}
 						printedHeading = true;
 					}
 					if(Scene.v().getReachableMethods().contains(tn.method))
-						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" style=\"setlinewidth(3)\"];");
+						logger.debug("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" style=\"setlinewidth(3)\"];");
 					else
-						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" color=cadetblue1 style=\"setlinewidth(1)\"];");
+						logger.debug("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" color=cadetblue1 style=\"setlinewidth(1)\"];");
 
 					if(tn.group.useLocksets) // print locks instead of dependence edges
 					{
@@ -832,7 +832,7 @@ public class LockAllocator extends SceneTransformer
 											String color = lockColors.get(lockNum);
 
 											// Draw an edge for this lock
-											G.v().out.println("[transaction-graph] " + tn.name + " -- " + tn2.name + " [color=" + color + " style=" + (lockNum >= 0 ? "dashed" : "solid") + " exactsize=1 style=\"setlinewidth(3)\"];");
+											logger.debug("[transaction-graph] " + tn.name + " -- " + tn2.name + " [color=" + color + " style=" + (lockNum >= 0 ? "dashed" : "solid") + " exactsize=1 style=\"setlinewidth(3)\"];");
 										}
 									}
 								}
@@ -848,14 +848,14 @@ public class LockAllocator extends SceneTransformer
 							CriticalSectionDataDependency edge = tnedgeit.next();
 							CriticalSection tnedge = edge.other;
 							if(tnedge.setNumber == group + 1)
-								G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + " style=\"setlinewidth(3)\"];");
+								logger.debug("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + " style=\"setlinewidth(3)\"];");
 						}
 					}
 				}
 				
 			}
 			if(printedHeading)
-				G.v().out.println("[transaction-graph] }");
+				logger.debug("[transaction-graph] }");
 		}
 		
 		// Print nodes with no group
@@ -870,13 +870,13 @@ public class LockAllocator extends SceneTransformer
 					if(!printedHeading)
 					{
 						// putting these nodes in a "source" ranked subgraph makes them appear above all the clusters
-						G.v().out.println("[transaction-graph] subgraph lone {\n[transaction-graph] rank=source;");
+						logger.debug("[transaction-graph] subgraph lone {\n[transaction-graph] rank=source;");
 						printedHeading = true;
 					}
 					if(Scene.v().getReachableMethods().contains(tn.method))
-						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" style=\"setlinewidth(3)\"];");
+						logger.debug("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" style=\"setlinewidth(3)\"];");
 					else
-						G.v().out.println("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" color=cadetblue1 style=\"setlinewidth(1)\"];");
+						logger.debug("[transaction-graph] " + tn.name + " [name=\"" + tn.method.toString() + "\" color=cadetblue1 style=\"setlinewidth(1)\"];");
 
 					Iterator<CriticalSectionDataDependency> tnedgeit = tn.edges.iterator();
 					while(tnedgeit.hasNext())
@@ -884,20 +884,20 @@ public class LockAllocator extends SceneTransformer
 						CriticalSectionDataDependency edge = tnedgeit.next();
 						CriticalSection tnedge = edge.other;
 						if(tnedge.setNumber != tn.setNumber || tnedge.setNumber == -1)
-							G.v().out.println("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + " style=\"setlinewidth(1)\"];");
+							logger.debug("[transaction-graph] " + tn.name + " -- " + tnedge.name + " [color=" + (edge.size > 0 ? "black" : "cadetblue1") + " style=" + (tn.setNumber > 0 && tn.group.useDynamicLock ? "dashed" : "solid") + " exactsize=" + edge.size + " style=\"setlinewidth(1)\"];");
 					}
 				}
 			}
 			if(printedHeading)
-				G.v().out.println("[transaction-graph] }");
+				logger.debug("[transaction-graph] }");
 		}
 
-		G.v().out.println("[transaction-graph] }");
+		logger.debug("[transaction-graph] }");
 	}	
 
 	public void printTable(Collection<CriticalSection> AllTransactions, MhpTester mhp)
 	{
-		G.v().out.println("[transaction-table] ");
+		logger.debug("[transaction-table] ");
 		Iterator<CriticalSection> tnIt7 = AllTransactions.iterator();
 		while(tnIt7.hasNext())
 		{
@@ -912,69 +912,69 @@ public class LockAllocator extends SceneTransformer
 		    	if(mhp != null)
 		    		mhpself = mhp.mayHappenInParallel(tn.method, tn.method);
 		    }
-			G.v().out.println("[transaction-table] Transaction " + tn.name + (reachable ? " reachable" : " dead") + (mhpself ? " [called from >= 2 threads]" : " [called from <= 1 thread]"));
-			G.v().out.println("[transaction-table] Where: " + tn.method.getDeclaringClass().toString() + ":" + tn.method.toString() + ":  ");
-			G.v().out.println("[transaction-table] Orig : " + tn.origLock);
-			G.v().out.println("[transaction-table] Prep : " + tn.prepStmt);
-			G.v().out.println("[transaction-table] Begin: " + tn.entermonitor);
-			G.v().out.print("[transaction-table] End  : early:" + tn.earlyEnds.toString() + " exc:" + tn.exceptionalEnd + " through:" + tn.end + " \n");
-			G.v().out.println("[transaction-table] Size : " + tn.units.size());
+			logger.debug("[transaction-table] Transaction " + tn.name + (reachable ? " reachable" : " dead") + (mhpself ? " [called from >= 2 threads]" : " [called from <= 1 thread]"));
+			logger.debug("[transaction-table] Where: " + tn.method.getDeclaringClass().toString() + ":" + tn.method.toString() + ":  ");
+			logger.debug("[transaction-table] Orig : " + tn.origLock);
+			logger.debug("[transaction-table] Prep : " + tn.prepStmt);
+			logger.debug("[transaction-table] Begin: " + tn.entermonitor);
+			logger.debug("[transaction-table] End  : early:" + tn.earlyEnds.toString() + " exc:" + tn.exceptionalEnd + " through:" + tn.end + " \n");
+			logger.debug("[transaction-table] Size : " + tn.units.size());
 			if(tn.read.size() < 100)
-				G.v().out.print("[transaction-table] Read : " + tn.read.size() + "\n[transaction-table] " + 
+				logger.debug("[transaction-table] Read : " + tn.read.size() + "\n[transaction-table] " + 
 					tn.read.toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-table] "));
 			else
-				G.v().out.print("[transaction-table] Read : " + tn.read.size() + "  \n[transaction-table] ");
+				logger.debug("[transaction-table] Read : " + tn.read.size() + "  \n[transaction-table] ");
 			if(tn.write.size() < 100)
-				G.v().out.print("Write: " + tn.write.size() + "\n[transaction-table] " + 
+				logger.debug("Write: " + tn.write.size() + "\n[transaction-table] " + 
 					tn.write.toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-table] ")); // label provided by previous print statement
 			else
-				G.v().out.print("Write: " + tn.write.size() + "\n[transaction-table] "); // label provided by previous print statement
-			G.v().out.print("Edges: (" + tn.edges.size() + ") "); // label provided by previous print statement
+				logger.debug("Write: " + tn.write.size() + "\n[transaction-table] "); // label provided by previous print statement
+			logger.debug("Edges: (" + tn.edges.size() + ") "); // label provided by previous print statement
 			Iterator<CriticalSectionDataDependency> tnedgeit = tn.edges.iterator();
 			while(tnedgeit.hasNext())
-				G.v().out.print(tnedgeit.next().other.name + " ");
+				logger.debug(""+tnedgeit.next().other.name + " ");
 			if(tn.group != null && tn.group.useLocksets)
 			{
-				G.v().out.println("\n[transaction-table] Locks: " + tn.lockset);
+				logger.debug("\n[transaction-table] Locks: " + tn.lockset);
 				
 			}
 			else
-				G.v().out.println("\n[transaction-table] Lock : " + (tn.setNumber == -1 ? "-" : (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) )));
-			G.v().out.println("[transaction-table] Group: " + tn.setNumber + "\n[transaction-table] ");
+				logger.debug("\n[transaction-table] Lock : " + (tn.setNumber == -1 ? "-" : (tn.lockObject == null ? "Global" : (tn.lockObject.toString() + (tn.lockObjectArrayIndex == null ? "" : "[" + tn.lockObjectArrayIndex + "]")) )));
+			logger.debug("[transaction-table] Group: " + tn.setNumber + "\n[transaction-table] ");
 		}
 	}
 	
 	public void printGroups(Collection<CriticalSection> AllTransactions, CriticalSectionInterferenceGraph ig)
 	{
-			G.v().out.print("[transaction-groups] Group Summaries\n[transaction-groups] ");
+			logger.debug("[transaction-groups] Group Summaries\n[transaction-groups] ");
 			for(int group = 0; group < ig.groupCount() - 1; group++)
     		{
     			CriticalSectionGroup tnGroup = ig.groups().get(group + 1);
     			if(tnGroup.size() > 0)
     			{
-	    			G.v().out.print("Group " + (group + 1) + " ");
-					G.v().out.print("Locking: " + (tnGroup.useLocksets ? "using " : (tnGroup.isDynamicLock && tnGroup.useDynamicLock ? "Dynamic on " : "Static on ")) + (tnGroup.useLocksets ? "locksets" : (tnGroup.lockObject == null ? "null" : tnGroup.lockObject.toString())) );
-					G.v().out.print("\n[transaction-groups]      : ");
+	    			logger.debug("Group " + (group + 1) + " ");
+					logger.debug("Locking: " + (tnGroup.useLocksets ? "using " : (tnGroup.isDynamicLock && tnGroup.useDynamicLock ? "Dynamic on " : "Static on ")) + (tnGroup.useLocksets ? "locksets" : (tnGroup.lockObject == null ? "null" : tnGroup.lockObject.toString())) );
+					logger.debug("\n[transaction-groups]      : ");
 					Iterator<CriticalSection> tnIt = AllTransactions.iterator();
 					while(tnIt.hasNext())
 					{
 						CriticalSection tn = tnIt.next();
 						if(tn.setNumber == group + 1)
-							G.v().out.print(tn.name + " ");
+							logger.debug(""+tn.name + " ");
 					}
-					G.v().out.print("\n[transaction-groups] " + 
+					logger.debug("\n[transaction-groups] " + 
 	    							tnGroup.rwSet.toString().replaceAll("\\[", "     : [").replaceAll("\n", "\n[transaction-groups] "));
 	    		}
 	    	}
-			G.v().out.print("Erasing \n[transaction-groups]      : ");
+			logger.debug("Erasing \n[transaction-groups]      : ");
 			Iterator<CriticalSection> tnIt = AllTransactions.iterator();
 			while(tnIt.hasNext())
 			{
 				CriticalSection tn = tnIt.next();
 				if(tn.setNumber == -1)
-					G.v().out.print(tn.name + " ");
+					logger.debug(""+tn.name + " ");
 			}
-			G.v().out.println("\n[transaction-groups] ");
+			logger.debug("\n[transaction-groups] ");
 	}
 	public CriticalSectionInterferenceGraph getInterferenceGraph() {
 		return interferenceGraph;

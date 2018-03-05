@@ -116,7 +116,7 @@ public class DexMethod {
 					dexBody.jimplify(b, m);
 				} catch (InvalidDalvikBytecodeException e) {
 					String msg = "Warning: Invalid bytecode in method " + m + ": " + e;
-					G.v().out.println(msg);
+					logger.debug(""+msg);
 					Util.emptyBody(b);
 					Util.addExceptionAfterUnit(b, "java.lang.RuntimeException", b.getUnits().getLast(),
 							"Soot has detected that this method contains invalid Dalvik bytecode which would have throw an exception at runtime. ["

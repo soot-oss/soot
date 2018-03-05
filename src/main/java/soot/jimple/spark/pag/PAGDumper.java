@@ -250,7 +250,7 @@ public class PAGDumper {
             ObjectNumberer vr = me.findOrAdd( vn );
             /*
             if( vr.num > 256 ) {
-                G.v().out.println( "Var with num: "+vr.num+" is "+vn+
+                logger.debug(""+ "Var with num: "+vr.num+" is "+vn+
                         " in method "+m+" in class "+c );
             }
             */

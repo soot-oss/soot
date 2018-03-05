@@ -142,25 +142,25 @@ public class BodyExtractorWalker extends Walker {
 								+ SootMethod.getSubSignature(name,
 										parameterList, type));
 		} else {
-			G.v().out.println("[!!! Couldn't parse !!] "
+			logger.debug("[!!! Couldn't parse !!] "
 					+ SootMethod.getSubSignature(name, parameterList, type));
 
-			G.v().out.println("[!] Methods in class are:");
+			logger.debug("[!] Methods in class are:");
 			for (SootMethod next : mSootClass.getMethods()) {
-				G.v().out.println(next.getSubSignature());
+				logger.debug(""+next.getSubSignature());
 			}
 
 		}
 
 		if (sm.isConcrete() && methodBody != null) {
 			if (Options.v().verbose())
-				G.v().out.println("[Parsed] " + sm.getDeclaration());
+				logger.debug("[Parsed] " + sm.getDeclaration());
 
 			methodBody.setMethod(sm);
 			methodToParsedBodyMap.put(sm, methodBody);
 		} else if (node.getMethodBody() instanceof AFullMethodBody) {
 			if (sm.isPhantom() && Options.v().verbose())
-				G.v().out.println("[jimple parser] phantom method!");
+				logger.debug("[jimple parser] phantom method!");
 			throw new RuntimeException("Impossible: !concrete => ! instanceof "
 					+ sm.getName());
 		}

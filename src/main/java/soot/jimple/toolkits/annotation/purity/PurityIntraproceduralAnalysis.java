@@ -86,7 +86,7 @@ public class PurityIntraproceduralAnalysis extends ForwardFlowAnalysis<Unit, Pur
         // I throw much "match failure" Errors to ease debugging...
         // => we could optimize the pattern matching a little bit
         
-        //G.v().out.println(" | |- exec "+stmt);
+        //logger.debug(" | |- exec "+stmt);
         
         ///////////
         // Calls //

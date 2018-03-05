@@ -102,7 +102,7 @@ public class DeadAssignmentEliminator extends BodyTransformer
 
 		final Options soptions = Options.v();
 		if (soptions.verbose()) {
-			G.v().out.println("[" + b.getMethod().getName() + "] Eliminating dead code...");
+			logger.debug("[" + b.getMethod().getName() + "] Eliminating dead code...");
 		}
 		
 		if (soptions.time()) {

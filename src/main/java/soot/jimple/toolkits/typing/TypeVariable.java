@@ -243,7 +243,7 @@ class TypeVariable implements Comparable<Object>
 		  {
 		    if(DEBUG)
 		      {
-			G.v().out.println(parent.type + " is not a parent of " + type);
+			logger.debug(""+parent.type + " is not a parent of " + type);
 		      }
 
 		    error("Type Error(2): Parent type is not a valid ancestor.");
@@ -260,7 +260,7 @@ class TypeVariable implements Comparable<Object>
 		  {
 		    if(DEBUG)
 		      {
-			G.v().out.println(child.type + "(" + child + ") is not a child of " + type + "(" + this + ")");
+			logger.debug(""+child.type + "(" + child + ") is not a child of " + type + "(" + this + ")");
 		      }
 
 		    error("Type Error(3): Child type is not a valid descendant.");
@@ -562,7 +562,7 @@ class TypeVariable implements Comparable<Object>
 	  {
 	    if(!approx.hasElement())
 	      {
-		G.v().out.println("*** " + this + " ***");
+		logger.debug("*** " + this + " ***");
 		
 		error("Type Error(4)");
 	      }

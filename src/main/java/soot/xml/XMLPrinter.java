@@ -169,7 +169,7 @@ public class XMLPrinter {
             }
         } catch (RuntimeException re) {
             // this will fail if the --analyze-context flag is not specified
-            // G.v().out.println( "JIL VTA FAILED: " + re );
+            // logger.debug(""+ "JIL VTA FAILED: " + re );
             igVTA = null;
         }
         */
@@ -358,7 +358,7 @@ public class XMLPrinter {
                                     cleanMethod(meth.getName())});
                         }
                     } catch (RuntimeException re) {
-                        //G.v().out.println( "XML: " + re + " (" + stmtCurrentStmt + ")" );
+                        //logger.debug(""+ "XML: " + re + " (" + stmtCurrentStmt + ")" );
                     }
                 }
 
@@ -388,7 +388,7 @@ public class XMLPrinter {
                                         cleanMethod(meth.getName())});
                             }
                         } catch (RuntimeException re) {
-                            //G.v().out.println( "XML: " + re + " (" + stmtCurrentStmt + ")" );
+                            //logger.debug(""+ "XML: " + re + " (" + stmtCurrentStmt + ")" );
                         }
                     }
                 }

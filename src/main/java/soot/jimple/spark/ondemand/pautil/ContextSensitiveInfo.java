@@ -272,7 +272,7 @@ public class ContextSensitiveInfo {
             for (AssignEdge edge : assigns) {
                 if (edge.isCallEdge()) {
                     if (edge.getCallSite() == null) {
-                    	G.v().out.println(edge + " is weird!!");
+                    	logger.debug(""+edge + " is weird!!");
                         return false;
                     }
                 }

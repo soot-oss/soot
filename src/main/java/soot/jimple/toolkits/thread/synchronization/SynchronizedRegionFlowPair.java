@@ -34,7 +34,7 @@ class SynchronizedRegionFlowPair
 	
     public boolean equals( Object other )
 	{
-//		G.v().out.print(".");
+//		logger.debug(".");
 		if(other instanceof SynchronizedRegionFlowPair)
 		{
 			SynchronizedRegionFlowPair tfp = (SynchronizedRegionFlowPair) other;

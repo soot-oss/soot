@@ -117,9 +117,9 @@ public class IdentifiersMetric extends ASTMetric {
     }
       
     if ((dictionarySize = dictionary.size()) == 0)
-      G.v().out.println("Error reading in dictionary file(s)");  
+      logger.debug("Error reading in dictionary file(s)");  
     else if (Options.v().verbose())
-      G.v().out.println("Read "+dictionarySize+" words in from dictionary file(s)");
+      logger.debug("Read "+dictionarySize+" words in from dictionary file(s)");
     
     try{
     	is.close();

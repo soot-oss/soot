@@ -72,7 +72,7 @@ public class ConstructorFolder extends BodyTransformer
         GrimpBody body = (GrimpBody)b;
 
         if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
+            logger.debug("[" + body.getMethod().getName() +
                 "] Folding constructors...");
 
       Chain units = body.getUnits();

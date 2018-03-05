@@ -205,7 +205,7 @@ public class SootResolver {
 		if (sc.resolvingLevel() >= SootClass.HIERARCHY)
 			return;
 		if (Options.v().debug_resolver())
-			G.v().out.println("bringing to HIERARCHY: " + sc);
+			logger.debug("bringing to HIERARCHY: " + sc);
 		sc.setResolvingLevel(SootClass.HIERARCHY);
 
 		bringToHierarchyUnchecked(sc);
@@ -271,7 +271,7 @@ public class SootResolver {
 			return;
 		bringToHierarchy(sc);
 		if (Options.v().debug_resolver())
-			G.v().out.println("bringing to SIGNATURES: " + sc);
+			logger.debug("bringing to SIGNATURES: " + sc);
 		sc.setResolvingLevel(SootClass.SIGNATURES);
 
 		bringToSignaturesUnchecked(sc);
@@ -317,7 +317,7 @@ public class SootResolver {
 			return;
 		bringToSignatures(sc);
 		if (Options.v().debug_resolver())
-			G.v().out.println("bringing to BODIES: " + sc);
+			logger.debug("bringing to BODIES: " + sc);
 		sc.setResolvingLevel(SootClass.BODIES);
 
 		bringToBodiesUnchecked(sc);

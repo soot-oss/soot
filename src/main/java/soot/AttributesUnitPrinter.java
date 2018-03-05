@@ -46,9 +46,9 @@ public class AttributesUnitPrinter {
 	}
 	public void endUnit( Unit u ) {
 		int endStmtOffset = output().length() - lastNewline;
-        //G.v().out.println("u: "+u.toString());
+        //logger.debug("u: "+u.toString());
 		if (hasTag(u)){
-            //G.v().out.println("u: "+u.toString()+" has tag");
+            //logger.debug("u: "+u.toString()+" has tag");
 			u.addTag( new JimpleLineNumberTag( startLn, currentLn ));
 		}
 		if (hasColorTag(u)) {

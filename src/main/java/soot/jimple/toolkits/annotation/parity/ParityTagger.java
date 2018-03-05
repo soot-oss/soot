@@ -89,7 +89,7 @@ public class ParityTagger extends BodyTransformer
 			while (valBoxIt.hasNext()){
 				ValueBox vb = (ValueBox)valBoxIt.next();
 				if (parityVarsUses.containsKey(vb.getValue())){
-					//G.v().out.println("Parity variable for: "+vb.getValue());
+					//logger.debug("Parity variable for: "+vb.getValue());
 					String type = (String)parityVarsUses.get(vb.getValue());
 					addColorTag(vb, type);
 				}
@@ -102,7 +102,7 @@ public class ParityTagger extends BodyTransformer
 			while (valBoxIt.hasNext()){
 				ValueBox vb = (ValueBox)valBoxIt.next();
 				if (parityVarsDefs.containsKey(vb.getValue())){
-					//G.v().out.println("Parity variable for: "+vb.getValue());
+					//logger.debug("Parity variable for: "+vb.getValue());
 					String type = (String)parityVarsDefs.get(vb.getValue());
 					addColorTag(vb, type);
 				}

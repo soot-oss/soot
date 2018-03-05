@@ -49,7 +49,7 @@ public class ConditionalBranchFolder  extends BodyTransformer
         int numTrue = 0, numFalse = 0;
 
         if (Options.v().verbose())
-            G.v().out.println("[" + stmtBody.getMethod().getName() +
+            logger.debug("[" + stmtBody.getMethod().getName() +
                                "] Folding conditional branches...");
 
         Chain<Unit> units = stmtBody.getUnits();
@@ -78,7 +78,7 @@ public class ConditionalBranchFolder  extends BodyTransformer
         }
 
        if (Options.v().verbose())
-            G.v().out.println("[" + stmtBody.getMethod().getName() +
+            logger.debug("[" + stmtBody.getMethod().getName() +
                 "]     Folded " + numTrue + " true, " + numFalse +
                                " conditional branches");
 

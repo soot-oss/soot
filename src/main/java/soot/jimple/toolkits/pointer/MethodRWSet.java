@@ -76,7 +76,7 @@ public class MethodRWSet extends RWSet {
         /*
 	count++;
 	if( 0 == (count % 1000) ) {
-	    G.v().out.println( "Created "+count+"th MethodRWSet" );
+	    logger.debug(""+ "Created "+count+"th MethodRWSet" );
 	}
         */
     }

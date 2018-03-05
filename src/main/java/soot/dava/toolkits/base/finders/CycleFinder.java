@@ -376,12 +376,12 @@ public class CycleFinder implements FactFinder {
 
 				/*
 				 * if (sas.get_Dominators().contains( asg_ep) == false) {
-				 * G.v().out.println( wsas + " not dominated by " + asg_ep);
-				 * G.v().out.println( "doms"); Iterator dit =
+				 * logger.debug(""+ wsas + " not dominated by " + asg_ep);
+				 * logger.debug(""+ "doms"); Iterator dit =
 				 * sas.get_Dominators().iterator(); while (dit.hasNext())
-				 * G.v().out.println( "    " + dit.next());
-				 * G.v().out.println("preds"); dit = sas.cpreds.iterator();
-				 * while (dit.hasNext()) G.v().out.println( "    " +
+				 * logger.debug(""+ "    " + dit.next());
+				 * logger.debug("preds"); dit = sas.cpreds.iterator();
+				 * while (dit.hasNext()) logger.debug(""+ "    " +
 				 * dit.next()); }
 				 */
 
@@ -393,7 +393,7 @@ public class CycleFinder implements FactFinder {
 
 						continue;
 
-					// G.v().out.println( sas);
+					// logger.debug(""+ sas);
 
 					worklist.add(wsas);
 					cycle_body.add(sas);

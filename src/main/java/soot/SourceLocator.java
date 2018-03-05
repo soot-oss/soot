@@ -132,7 +132,7 @@ public class SourceLocator {
             try {
                 dir.mkdirs();
             } catch (SecurityException se) {
-                G.v().out.println("Unable to create " + dir);
+                logger.debug("Unable to create " + dir);
                 throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
             }
         }

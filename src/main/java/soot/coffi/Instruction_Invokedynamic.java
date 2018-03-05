@@ -88,7 +88,7 @@ class Instruction_Invokedynamic extends Instruction_intindex {
 	      index += 2;
 	      reserved = getShort(bc, index);
 	      if(reserved>0) {
-	    	  G.v().out.println("reserved value in invokedynamic is "+reserved);
+	    	  logger.debug("reserved value in invokedynamic is "+reserved);
 	      }
 	      index += 2;
 	      return index;

@@ -76,7 +76,7 @@ abstract class Instruction_branch extends Instruction {
       target = bc.locateInst(arg_i+label);
       if (target==null) {
          logger.warn("can't locate target of instruction");
-         G.v().out.println(" which should be at byte address " + (label+arg_i));
+         logger.debug(" which should be at byte address " + (label+arg_i));
       } else
          target.labelled = true;
    }

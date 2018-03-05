@@ -280,7 +280,7 @@ public class Util {
 			method_info methodInfo = coffiClass.methods[i];
 
 			if ((coffiClass.constant_pool[methodInfo.name_index]) == null) {
-				G.v().out.println("method index: " + methodInfo.toName(coffiClass.constant_pool));
+				logger.debug("method index: " + methodInfo.toName(coffiClass.constant_pool));
 				throw new RuntimeException("method has no name");
 			}
 
@@ -405,7 +405,7 @@ public class Util {
 				String sourceFile = ((CONSTANT_Utf8_info) (coffiClass.constant_pool[attr.sourcefile_index])).convert();
 
 				if (sourceFile.indexOf(' ') >= 0) {
-					G.v().out.println(
+					logger.debug(""+
 							"Warning: Class " + className + " has invalid SourceFile attribute (will be ignored).");
 				} else {
 					bclass.addTag(new SourceFileTag(sourceFile, filePath));

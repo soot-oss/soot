@@ -56,10 +56,10 @@ public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit,Lockset
 	
 	public void printMsg(String msg)
 	{
-		G.v().out.print("[wjtp.tn] ");
+		logger.debug("[wjtp.tn] ");
 		for(int i = 0; i < analyzing.size() - 1; i++) 
-			G.v().out.print("  ");
-		G.v().out.println(msg);
+			logger.debug("  ");
+		logger.debug(""+msg);
 	}
 
 	public List<EquivalentValue> getLocksetOf(CriticalSectionAwareSideEffectAnalysis tasea, RWSet contributingRWSet, CriticalSection tn)

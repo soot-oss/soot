@@ -128,7 +128,7 @@ public class TypeResolver
 	
 	if(DEBUG)
 	  {
-	    G.v().out.println("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
+	    logger.debug("[LOCAL VARIABLE \"" + local + "\" -> " + id + "]");
 	  }
       }
     
@@ -198,7 +198,7 @@ public class TypeResolver
 
   public static void resolve(JimpleBody stmtBody, Scene scene) {
 		if (DEBUG) {
-			G.v().out.println(stmtBody.getMethod());
+			logger.debug(""+stmtBody.getMethod());
 		}
 
 		try {
@@ -207,7 +207,7 @@ public class TypeResolver
 		} catch (TypeException e1) {
 			if (DEBUG) {
 				logger.error(e1.getMessage(), e1);
-				G.v().out.println("Step 1 Exception-->" + e1.getMessage());
+				logger.debug("Step 1 Exception-->" + e1.getMessage());
 			}
 
 			try {
@@ -216,7 +216,7 @@ public class TypeResolver
 			} catch (TypeException e2) {
 				if (DEBUG) {
 					logger.error(e2.getMessage(), e2);
-					G.v().out.println("Step 2 Exception-->" + e2.getMessage());
+					logger.debug("Step 2 Exception-->" + e2.getMessage());
 				}
 
 				try {
@@ -239,11 +239,11 @@ public class TypeResolver
     if(DEBUG)
       {
 	int count = 0;
-	G.v().out.println("**** START:" + message);
+	logger.debug("**** START:" + message);
 	for (TypeVariable var : typeVariableList) {
-	    G.v().out.println(count++ + " " + var);
+	    logger.debug(""+count++ + " " + var);
 	  }
-	G.v().out.println("**** END:" + message);
+	logger.debug("**** END:" + message);
       }
   }
 
@@ -251,12 +251,12 @@ public class TypeResolver
   {
     if(DEBUG)
       {
-	G.v().out.println("-- Body Start --");
+	logger.debug("-- Body Start --");
 	for( Iterator<Unit> stmtIt = stmtBody.getUnits().iterator(); stmtIt.hasNext(); ) {
 	    final Stmt stmt = (Stmt) stmtIt.next();
-	    G.v().out.println(stmt);
+	    logger.debug(""+stmt);
 	  }
-	G.v().out.println("-- Body End --");
+	logger.debug("-- Body End --");
       }
   }
 
@@ -337,12 +337,12 @@ public class TypeResolver
         final Stmt stmt = (Stmt) stmtIt.next();
 	if(DEBUG)
 	  {
-	    G.v().out.print("stmt: ");
+	    logger.debug("stmt: ");
 	  }
 	collector.collect(stmt, stmtBody);
 	if(DEBUG)
 	  {
-	    G.v().out.println(stmt);
+	    logger.debug(""+stmt);
 	  }
       }
   }
@@ -356,12 +356,12 @@ public class TypeResolver
         final Stmt stmt = (Stmt) stmtIt.next();
 	if(DEBUG)
 	  {
-	    G.v().out.print("stmt: ");
+	    logger.debug("stmt: ");
 	  }
 	collector.collect(stmt, stmtBody);
 	if(DEBUG)
 	  {
-	    G.v().out.println(stmt);
+	    logger.debug(""+stmt);
 	  }
       }
   }
@@ -451,7 +451,7 @@ public class TypeResolver
 		    for (TypeVariable parent : parents) {
 			if(DEBUG)
 			  {
-			    G.v().out.print(".");
+			    logger.debug(".");
 			  }
 	
 			var = var.union(parent);
@@ -465,7 +465,7 @@ public class TypeResolver
 		    for (TypeVariable child : children) {
 			if(DEBUG)
 			  {
-			    G.v().out.print(".");
+			    logger.debug(".");
 			  }
 	
 			var = var.union(child);
@@ -754,7 +754,7 @@ public class TypeResolver
 	       (local.getType() != null) &&
 	       !local.getType().equals(var.approx().type()))
 	      {
-		G.v().out.println("local: " + local + ", type: " + local.getType() + ", approx: " + var.approx().type());
+		logger.debug("local: " + local + ", type: " + local.getType() + ", approx: " + var.approx().type());
 	      }
 	  }
       }
@@ -804,7 +804,7 @@ public class TypeResolver
 	  {
 	    if(DEBUG)
 	      {
-		G.v().out.println(s);
+		logger.debug(""+s);
 	      }
 	    throw e;
 	  }
@@ -837,7 +837,7 @@ public class TypeResolver
 	  {
 	    if(DEBUG)
 	      {
-		G.v().out.println(s);
+		logger.debug(""+s);
 	      }
 	    throw e;
 	  }
@@ -1030,7 +1030,7 @@ public class TypeResolver
 			    else if(assign.getRightOp() instanceof NewExpr)
 			      {			
 				// We split the local.
-				//G.v().out.println("split: [" + assign + "] and [" + stmt + "]");
+				//logger.debug("split: [" + assign + "] and [" + stmt + "]");
 				Local newlocal = Jimple.v().newLocal("tmp", null);
 				stmtBody.getLocals().add(newlocal);
 				

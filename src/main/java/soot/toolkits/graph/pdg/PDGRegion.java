@@ -82,7 +82,7 @@ public class PDGRegion implements IRegion, Iterable<PDGNode>{
 		this.m_corrspondingPDGNode = node;	
 		
 		if(Options.v().verbose())
-			G.v().out.println("New pdg region create: " + id);
+			logger.debug("New pdg region create: " + id);
 		
 	}
 	

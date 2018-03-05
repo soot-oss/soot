@@ -172,7 +172,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 					{
 						if((pd.getDominators(start)).contains(join)) // does join post-dominate start?
 						{
-//							G.v().out.println("START-JOIN PAIR: " + start + ", " + join);
+//							logger.debug("START-JOIN PAIR: " + start + ", " + join);
 							startToJoin.put(start, join); // then this join always joins this start's thread
 						}
 					}

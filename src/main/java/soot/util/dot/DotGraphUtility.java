@@ -79,8 +79,8 @@ public class DotGraphUtility {
         }
 
         /*
-        G.v().out.println("before "+original);
-        G.v().out.println("after  "+(new String(newsrc)));
+        logger.debug("before "+original);
+        logger.debug("after  "+(new String(newsrc)));
          */
         return new String(newsrc);
     }
@@ -116,8 +116,8 @@ public class DotGraphUtility {
         }
 
         /*
-        G.v().out.println("before "+original);
-        G.v().out.println("after  "+(new String(newsrc)));
+        logger.debug("before "+original);
+        logger.debug("after  "+(new String(newsrc)));
          */
         return new String(newsrc);
     }

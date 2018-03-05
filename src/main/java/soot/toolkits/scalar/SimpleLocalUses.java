@@ -91,7 +91,7 @@ public class SimpleLocalUses implements LocalUses
         }
         
         if(options.verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
+            logger.debug("[" + body.getMethod().getName() +
                 "]     Constructing SimpleLocalUses...");
         
         unitToUses = new HashMap<Unit, List<UnitValueBoxPair>>(body.getUnits().size() * 2 + 1, 0.7f);
@@ -136,7 +136,7 @@ public class SimpleLocalUses implements LocalUses
         }
 
         if(options.verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
+            logger.debug("[" + body.getMethod().getName() +
                 "]     finished SimpleLocalUses...");
     }
 

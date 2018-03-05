@@ -77,7 +77,7 @@ public class EscapedReader extends FilterReader
             mini.append((char)ch);
         }
 
-        //        G.v().out.println(mini.toString());
+        //        logger.debug(""+mini.toString());
         ch = Integer.parseInt(mini.substring(2).toString(), 16);
 
         return ch;

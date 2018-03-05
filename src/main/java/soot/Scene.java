@@ -608,7 +608,7 @@ public class Scene // extends AbstractHost
 		if (!f.exists())
 			throw new RuntimeException("file '" + jarPath + "' does not exist!");
 		else
-			G.v().out.println("Using '" + jarPath + "' as android.jar");
+			logger.debug("Using '" + jarPath + "' as android.jar");
 
 		return jarPath;
 	}
@@ -631,7 +631,7 @@ public class Scene // extends AbstractHost
 
 		File rtJar = new File(System.getProperty("java.home") + File.separator + "lib" + File.separator + "rt.jar");
 		if (rtJar.exists() && rtJar.isFile()) {
-			// G.v().out.println("Using JRE runtime: " +
+			// logger.debug("Using JRE runtime: " +
 			// rtJar.getAbsolutePath());
 			sb.append(rtJar.getAbsolutePath());
 		} else {
@@ -639,7 +639,7 @@ public class Scene // extends AbstractHost
 			rtJar = new File(System.getProperty("java.home") + File.separator + "jre" + File.separator + "lib"
 					+ File.separator + "rt.jar");
 			if (rtJar.exists() && rtJar.isFile()) {
-				// G.v().out.println("Using JDK runtime: " +
+				// logger.debug("Using JDK runtime: " +
 				// rtJar.getAbsolutePath());
 				sb.append(rtJar.getAbsolutePath());
 			} else {
@@ -1769,7 +1769,7 @@ public class Scene // extends AbstractHost
 				SootClass c = getSootClass(classIter.next());
 				if (c.declaresMethod("main",
 						Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v())) {
-					G.v().out.println("No main class given. Inferred '" + c.getName() + "' as main class.");
+					logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
 					setMainClass(c);
 					return;
 				}
@@ -1781,7 +1781,7 @@ public class Scene // extends AbstractHost
 				SootClass c = classIter.next();
 				if (c.declaresMethod("main",
 						Collections.<Type>singletonList(ArrayType.v(RefType.v("java.lang.String"), 1)), VoidType.v())) {
-					G.v().out.println("No main class given. Inferred '" + c.getName() + "' as main class.");
+					logger.debug("No main class given. Inferred '" + c.getName() + "' as main class.");
 					setMainClass(c);
 					return;
 				}

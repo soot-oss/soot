@@ -193,7 +193,7 @@ public class JimpleConstructorFolder extends BodyTransformer
         //PhaseDumper.v().dumpBody(body, "constructorfolder.in");
 
         if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
+            logger.debug("[" + body.getMethod().getName() +
                 "] Folding Jimple constructors...");
 
         Analysis analysis = new Analysis(new BriefUnitGraph(body));

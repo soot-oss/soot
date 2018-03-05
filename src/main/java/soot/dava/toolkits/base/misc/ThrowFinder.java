@@ -42,7 +42,6 @@ import soot.jimple.toolkits.callgraph.*;
  * 
  * Alls good until u try to decompile code like this
  *   try{
-    private static final Logger logger = LoggerFactory.getLogger(ThrowFinder.class);
  *    synchronized(bla){
  *      bla
  *      bla
@@ -64,6 +63,8 @@ import soot.jimple.toolkits.callgraph.*;
  */
 public class ThrowFinder
 {
+    private static final Logger logger = LoggerFactory.getLogger(ThrowFinder.class);
+    
     public ThrowFinder( Singletons.Global g ) {}
     public static ThrowFinder v() { return G.v().soot_dava_toolkits_base_misc_ThrowFinder(); }
 
@@ -74,7 +75,7 @@ public class ThrowFinder
     
     public void find()
     {
-	G.v().out.print( "Verifying exception handling.. ");
+	logger.debug(""+ "Verifying exception handling.. ");
 
 	registeredMethods = new HashSet<SootMethod>();
 	protectionSet = new HashMap<Stmt, HashSet<SootClass>>();
@@ -91,7 +92,7 @@ public class ThrowFinder
 
 	IterableSet worklist = new IterableSet();
 
-	G.v().out.print( "\b. ");
+	logger.debug(""+ "\b. ");
 	G.v().out.flush();
 
 
@@ -333,7 +334,7 @@ public class ThrowFinder
 	    }
 	}
 
-	G.v().out.println();
+	
 	G.v().out.flush();
     }
 

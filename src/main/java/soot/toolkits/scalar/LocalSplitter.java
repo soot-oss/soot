@@ -92,7 +92,7 @@ public class LocalSplitter extends BodyTransformer {
 	@Override
 	protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
 		if (Options.v().verbose())
-			G.v().out.println("[" + body.getMethod().getName() + "] Splitting locals...");
+			logger.debug("[" + body.getMethod().getName() + "] Splitting locals...");
 
 		if (Options.v().time())
 			Timers.v().splitTimer.start();

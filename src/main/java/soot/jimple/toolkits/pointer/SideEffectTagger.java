@@ -129,8 +129,8 @@ public class SideEffectTagger extends BodyTransformer
 	        final RWSet inner = innerIt.next();
 		if( inner == outer ) break;
 		if( outer.hasNonEmptyIntersection( inner ) ) {
-                    //G.v().out.println( "inner set is: "+inner );
-                    //G.v().out.println( "outer set is: "+outer );
+                    //logger.debug(""+ "inner set is: "+inner );
+                    //logger.debug(""+ "outer set is: "+outer );
 		    graph.addEdge( sets.indexOf( outer ), sets.indexOf( inner ) );
 		}
 	    }

@@ -267,7 +267,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
             oldToNewFieldNames.put(f.getName(), newName);
         }
         if (output) {
-            G.v().out.println("\t\tChanged " + f.getName() + " to " + newName);
+            logger.debug("\t\tChanged " + f.getName() + " to " + newName);
         }
         f.setName(newName);
         sootFieldsRenamed.add(f);

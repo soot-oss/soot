@@ -91,7 +91,7 @@ public class BusyCodeMotion extends BodyTransformer {
 		Chain<Unit> unitChain = b.getUnits();
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + b.getMethod().getName() + "]     performing Busy Code Motion...");
+			logger.debug("[" + b.getMethod().getName() + "]     performing Busy Code Motion...");
 
 		CriticalEdgeRemover.v().transform(b, phaseName + ".cer");
 
@@ -172,7 +172,7 @@ public class BusyCodeMotion extends BodyTransformer {
 			}
 		}
 		if (Options.v().verbose())
-			G.v().out.println("[" + b.getMethod().getName() + "]     Busy Code Motion done!");
+			logger.debug("[" + b.getMethod().getName() + "]     Busy Code Motion done!");
 	}
 
 	private Unit getFirstNonIdentityStmt(Body b) {

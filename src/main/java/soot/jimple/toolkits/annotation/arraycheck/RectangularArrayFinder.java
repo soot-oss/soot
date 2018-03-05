@@ -60,7 +60,7 @@ public class RectangularArrayFinder extends SceneTransformer
 
 	Date start = new Date();
 	if (Options.v().verbose())
-	    G.v().out.println("[ra] Finding rectangular arrays, start on "+start);
+	    logger.debug("[ra] Finding rectangular arrays, start on "+start);
 
 	Chain appClasses = sc.getApplicationClasses();
 
@@ -199,25 +199,25 @@ public class RectangularArrayFinder extends SceneTransformer
 	
 	if (Options.v().debug())
 	{
-	    G.v().out.println("Rectangular Array :");
+	    logger.debug("Rectangular Array :");
 	    {
 		Iterator<Object> nodeIt = trueSet.iterator();
 		while (nodeIt.hasNext())
 		{
 		    Object node = nodeIt.next();
 
-		    G.v().out.println(node);
+		    logger.debug(""+node);
 		}
 	    }
 
-	    G.v().out.println("\nNon-rectangular Array :");
+	    logger.debug("\nNon-rectangular Array :");
 	    {
 		Iterator nodeIt = falseSet.iterator();
 		while (nodeIt.hasNext())
 		{
 		    Object node = nodeIt.next();
 		    
-		    G.v().out.println(node);
+		    logger.debug(""+node);
 		}
 	    }
 	}
@@ -228,7 +228,7 @@ public class RectangularArrayFinder extends SceneTransformer
 	    long runtime = finish.getTime() - start.getTime();
 	    long mins = runtime/60000;
 	    long secs = (runtime%60000)/1000;
-	    G.v().out.println("[ra] Rectangular array finder finishes."
+	    logger.debug("[ra] Rectangular array finder finishes."
 			       +" It took "+mins+" mins and "+secs+" secs.");
 	}
     }
@@ -236,7 +236,7 @@ public class RectangularArrayFinder extends SceneTransformer
     private void addInfoFromMethod(SootMethod method)
     {
 	if (Options.v().verbose()) 
-	    G.v().out.println("[ra] Operating "+method.getSignature());
+	    logger.debug("[ra] Operating "+method.getSignature());
 
 	boolean needTransfer = true;
 

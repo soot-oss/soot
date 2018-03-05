@@ -63,7 +63,7 @@ public class GrimpBody extends StmtBody
         super(body.getMethod());
 
         if(Options.v().verbose())
-            G.v().out.println("[" + getMethod().getName() + "] Constructing GrimpBody...");
+            logger.debug("[" + getMethod().getName() + "] Constructing GrimpBody...");
         
         JimpleBody jBody = null;
 

@@ -209,7 +209,7 @@ public final class OnFlyCallGraphBuilder {
 		worklist = rm.listener();
 		options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
 		if (!options.verbose()) {
-			G.v().out.println(
+			logger.debug(""+
 					"[Call Graph] For information on where the call graph may be incomplete, use the verbose option to the cg phase.");
 		}
 
@@ -570,7 +570,7 @@ public final class OnFlyCallGraphBuilder {
 			final VirtualCallSite site = siteIt.next();
 			if (constant == null) {
 				if (options.verbose()) {
-					G.v().out.println(
+					logger.debug(""+
 							"Warning: Method " + site.container() + " is reachable, and calls Class.forName on a"
 									+ " non-constant String; graph will be incomplete!"
 									+ " Use safe-forname option for a conservative result.");
@@ -585,7 +585,7 @@ public final class OnFlyCallGraphBuilder {
 				}
 				if (!Scene.v().containsClass(constant)) {
 					if (options.verbose()) {
-						G.v().out.println(
+						logger.debug(""+
 								"Warning: Class " + constant + " is" + " a dynamic class, and you did not specify"
 										+ " it as such; graph will be incomplete!");
 					}
@@ -743,7 +743,7 @@ public final class OnFlyCallGraphBuilder {
 					}
 				} else if (ie instanceof DynamicInvokeExpr) {
 					if (options.verbose())
-						G.v().out.println(
+						logger.debug(""+
 								"WARNING: InvokeDynamic to " + ie + " not resolved during call-graph construction.");
 				} else {
 					SootMethod tgt = ie.getMethod();
@@ -1128,15 +1128,15 @@ public final class OnFlyCallGraphBuilder {
 			guards.add(new Guard(container, stmt, string));
 
 			if (options.verbose()) {
-				G.v().out.println("Incomplete trace file: Class.forName() is called in method '" + container
+				logger.debug("Incomplete trace file: Class.forName() is called in method '" + container
 						+ "' but trace contains no information about the receiver class of this call.");
 				if (options.guards().equals("ignore")) {
-					G.v().out.println("Guarding strategy is set to 'ignore'. Will ignore this problem.");
+					logger.debug("Guarding strategy is set to 'ignore'. Will ignore this problem.");
 				} else if (options.guards().equals("print")) {
-					G.v().out.println("Guarding strategy is set to 'print'. "
+					logger.debug("Guarding strategy is set to 'print'. "
 							+ "Program will print a stack trace if this location is reached during execution.");
 				} else if (options.guards().equals("throw")) {
-					G.v().out.println("Guarding strategy is set to 'throw'. Program will throw an "
+					logger.debug("Guarding strategy is set to 'throw'. Program will throw an "
 							+ "Error if this location is reached during execution.");
 				} else {
 					throw new RuntimeException("Invalid value for phase option (guarding): " + options.guards());

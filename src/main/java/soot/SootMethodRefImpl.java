@@ -225,7 +225,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 		if (trace == null) {
 			ClassResolutionFailedException e = new ClassResolutionFailedException();
 			if (Options.v().ignore_resolution_errors())
-				G.v().out.println(e.getMessage());
+				logger.debug(""+e.getMessage());
 			else
 				throw e;
 		}

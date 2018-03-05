@@ -518,10 +518,10 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
 
 	public InstanceFieldRef reconstruct(Body b, PatchingChain<Unit> units, InstanceFieldRef lock, Stmt insertBefore,
 			boolean redirect) {
-		G.v().out.println("Reconstructing " + lock);
+		logger.debug("Reconstructing " + lock);
 
 		if (!(lock.getBase() instanceof FakeJimpleLocal)) {
-			G.v().out.println("  base is not a FakeJimpleLocal");
+			logger.debug("  base is not a FakeJimpleLocal");
 			return lock;
 		}
 		FakeJimpleLocal fakeBase = (FakeJimpleLocal) lock.getBase();
@@ -555,7 +555,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
 							+ base.getType() + ": " + base);
 
 		InstanceFieldRef newLock = Jimple.v().newInstanceFieldRef(baseLocal, lock.getField().makeRef());
-		G.v().out.println("  as " + newLock);
+		logger.debug("  as " + newLock);
 		return newLock;
 	}
 

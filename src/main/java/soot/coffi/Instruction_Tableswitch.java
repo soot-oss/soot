@@ -147,7 +147,7 @@ class Instruction_Tableswitch extends Instruction {
       default_inst = bc.locateInst(default_offset+label);
       if (default_inst==null) {
          logger.warn("can't locate target of instruction");
-         G.v().out.println(" which should be at byte address " + (label+default_offset));
+         logger.debug(" which should be at byte address " + (label+default_offset));
       } else
          default_inst.labelled = true;
       if (high-low+1>0) {
@@ -156,7 +156,7 @@ class Instruction_Tableswitch extends Instruction {
             jump_insts[i] = bc.locateInst(jump_offsets[i]+label);
             if (jump_insts[i]==null) {
                logger.warn("can't locate target of instruction");
-               G.v().out.println(" which should be at byte address " +
+               logger.debug(" which should be at byte address " +
                                   (label+jump_offsets[i]));
             } else
                jump_insts[i].labelled = true;

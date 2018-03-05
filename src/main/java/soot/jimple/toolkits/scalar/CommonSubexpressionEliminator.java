@@ -79,7 +79,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
         sideEffect.newMethod( b.getMethod() );
 
         if(Options.v().verbose())
-            G.v().out.println("[" + b.getMethod().getName() +
+            logger.debug("[" + b.getMethod().getName() +
                 "]     Eliminating common subexpressions " +
 		(sideEffect instanceof NaiveSideEffectTester ? 
 		 "(naively)" : "") +
@@ -97,7 +97,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
             if (s instanceof AssignStmt)
             {
                 Chain availExprs = ae.getAvailableEquivsBefore(s);
-                //G.v().out.println("availExprs: "+availExprs);
+                //logger.debug("availExprs: "+availExprs);
                 Value v = ((AssignStmt)s).getRightOp();
                 EquivalentValue ev = new EquivalentValue(v);
 
@@ -105,7 +105,7 @@ public class CommonSubexpressionEliminator extends BodyTransformer
                 {
                     // now we need to track down the containing stmt.
                     List availPairs = ae.getAvailablePairsBefore(s);
-                    //G.v().out.println("availPairs: "+availPairs);
+                    //logger.debug("availPairs: "+availPairs);
                     Iterator availIt = availPairs.iterator();
                     while (availIt.hasNext())
                     {
@@ -139,15 +139,15 @@ public class CommonSubexpressionEliminator extends BodyTransformer
                             ((AssignStmt)s).setRightOp(l);
                             copier.addTag(new StringTag("Common sub-expression"));
                             s.addTag(new StringTag("Common sub-expression"));
-                            //G.v().out.println("added tag to : "+copier);
-                            //G.v().out.println("added tag to : "+s);
+                            //logger.debug("added tag to : "+copier);
+                            //logger.debug("added tag to : "+s);
                         }
                     }
                 }
             }
         }
         if(Options.v().verbose())
-            G.v().out.println("[" + b.getMethod().getName() +
+            logger.debug("[" + b.getMethod().getName() +
                      "]     Eliminating common subexpressions done!");
     }
 }

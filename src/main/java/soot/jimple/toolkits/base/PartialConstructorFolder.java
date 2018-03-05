@@ -63,7 +63,7 @@ public class PartialConstructorFolder extends BodyTransformer
         JimpleBody body = (JimpleBody)b;
 
         if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
+            logger.debug("[" + body.getMethod().getName() +
                 "] Folding Jimple constructors...");
 
         Chain<Unit> units = body.getUnits();

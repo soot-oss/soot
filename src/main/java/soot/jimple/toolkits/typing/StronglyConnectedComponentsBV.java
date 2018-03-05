@@ -114,7 +114,7 @@ class StronglyConnectedComponentsBV
 		  {
 		    if(DEBUG)
 		      {
-			G.v().out.println(s);
+			logger.debug(""+s);
 		      }
 		    throw e;
 		  }

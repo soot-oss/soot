@@ -234,9 +234,9 @@ public class JavaAttribute {
 		Iterator<Tag> it = h.getTags().iterator();
 		while (it.hasNext()){
 			Tag t = it.next();
-			//G.v().out.println(t.getClass().toString());
+			//logger.debug(""+t.getClass().toString());
 			if (t instanceof SourceLnPosTag) {
-				//G.v().out.println("t is LineNumberTag");
+				//logger.debug("t is LineNumberTag");
 				return ((SourceLnPosTag)t).startLn();
 			}
             else if (t instanceof LineNumberTag){

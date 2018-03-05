@@ -123,7 +123,7 @@ public class DexArrayInitReducer extends BodyTransformer {
 						if (u1val instanceof Local) {
 							b.getUnits().remove(u1);
 							if (Options.v().verbose()) {
-								G.v().out.println("[" + b.getMethod().getName() + "]    remove 1 " + u1);
+								logger.debug("[" + b.getMethod().getName() + "]    remove 1 " + u1);
 							}
 						}
 					}
@@ -132,7 +132,7 @@ public class DexArrayInitReducer extends BodyTransformer {
 						if (u2val instanceof Local) {
 							b.getUnits().remove(u2);
 							if (Options.v().verbose()) {
-								G.v().out.println("[" + b.getMethod().getName() + "]    remove 2 " + u2);
+								logger.debug("[" + b.getMethod().getName() + "]    remove 2 " + u2);
 							}
 						}
 					}

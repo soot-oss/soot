@@ -74,7 +74,7 @@ public class LoopConditionUnroller extends BodyTransformer {
 	protected void internalTransform(Body body, String phaseName,
 			Map<String, String> options) {
 		if (Options.v().verbose())
-			G.v().out.println("[" + body.getMethod().getName()
+			logger.debug("[" + body.getMethod().getName()
 					+ "]     Unrolling Loop Conditions...");
 
 		visitingSuccs = new HashSet<Block>();
@@ -87,7 +87,7 @@ public class LoopConditionUnroller extends BodyTransformer {
 			unrollConditions(b);
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + body.getMethod().getName()
+			logger.debug("[" + body.getMethod().getName()
 					+ "]     Unrolling Loop Conditions done.");
 	}
 

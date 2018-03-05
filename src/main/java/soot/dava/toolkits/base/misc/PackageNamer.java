@@ -337,12 +337,12 @@ public class PackageNamer
 
 	public void dump( String indentation)
 	{
-	    G.v().out.print( indentation + "\"" + originalName + "\", \"" + packageName + "\", \"" + className + "\" (");
+	    logger.debug(""+ indentation + "\"" + originalName + "\", \"" + packageName + "\", \"" + className + "\" (");
 	    if (is_Class())
-		G.v().out.print("c");
+		logger.debug("c");
 	    if (is_Package())
-		G.v().out.print("p");
-	    G.v().out.println( ")");
+		logger.debug("p");
+	    logger.debug(""+ ")");
 
 	    Iterator<NameHolder> it = children.iterator();
 	    while (it.hasNext())

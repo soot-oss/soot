@@ -44,15 +44,15 @@ public class RadioScenePack extends ScenePack
             enableds.add( t );
         }
         if( enableds.size() == 0 ) {
-            G.v().out.println( "Exactly one phase in the pack "+getPhaseName()+
+            logger.debug(""+ "Exactly one phase in the pack "+getPhaseName()+
                     " must be enabled. Currently, none of them are." );
             throw new CompilationDeathException( CompilationDeathException.COMPILATION_ABORTED );
         }
         if( enableds.size() > 1 ) {
-            G.v().out.println( "Only one phase in the pack "+getPhaseName()+
+            logger.debug(""+ "Only one phase in the pack "+getPhaseName()+
                     " may be enabled. The following are enabled currently: " );
             for (Transform t : enableds) {
-                G.v().out.println( "  "+t.getPhaseName() );
+                logger.debug(""+ "  "+t.getPhaseName() );
             }
             throw new CompilationDeathException( CompilationDeathException.COMPILATION_ABORTED );
         }

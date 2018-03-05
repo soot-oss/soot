@@ -37,13 +37,13 @@ public class EBBCollapser {
     public void collapse() {
         boolean verbose = pag.getOpts().verbose();
         if( verbose ) {
-            G.v().out.println( "Total VarNodes: "+pag.getVarNodeNumberer().size()+". Collapsing EBBs..." );
+            logger.debug(""+ "Total VarNodes: "+pag.getVarNodeNumberer().size()+". Collapsing EBBs..." );
         }
         collapseAlloc();
         collapseLoad();
         collapseSimple();
         if( verbose ) {
-            G.v().out.println( ""+numCollapsed+" nodes were collapsed." );
+            logger.debug(""+ ""+numCollapsed+" nodes were collapsed." );
         }
     }
     public EBBCollapser( PAG pag ) {

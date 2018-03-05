@@ -378,20 +378,20 @@ public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLa
 
     public void printGraph() {
         for (N node : this) {
-            G.v().out.println("Node = " + node);
+            logger.debug("Node = " + node);
 
-            G.v().out.println("Preds:");
+            logger.debug("Preds:");
             for (N pred : getPredsOf(node)) {
                 DGEdge<N> edge = new DGEdge<N>(pred, node);
                 List<L> labels = edgeToLabels.get(edge);
-                G.v().out.println("     " + pred + " [" + labels + "]");
+                logger.debug("     " + pred + " [" + labels + "]");
             }
 
-            G.v().out.println("Succs:");
+            logger.debug("Succs:");
             for (N succ : getSuccsOf(node)) {
                 DGEdge<N> edge = new DGEdge<N>(node, succ);
                 List<L> labels = edgeToLabels.get(edge);
-                G.v().out.println("     " + succ + " [" + labels + "]");
+                logger.debug("     " + succ + " [" + labels + "]");
             }
         }
     }

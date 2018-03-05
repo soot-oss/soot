@@ -89,7 +89,7 @@ public class CommonPrecedingEqualValueAnalysis extends BackwardFlowAnalysis
 			// to be smarter, we could also add the right side to the list of aliases...
 		}
 
-//		G.v().out.println(stmt + " HAS ALIASES in" + in + " out" + out);
+//		logger.debug(""+stmt + " HAS ALIASES in" + in + " out" + out);
 	}
 	
 	protected void copy(Object source, Object dest)

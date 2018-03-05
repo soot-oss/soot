@@ -74,7 +74,7 @@ public class Checker {
 		FastHierarchy fh = pag.getTypeManager().getFastHierarchy();
 		if (!p2set.contains(n)
 				&& (fh == null || container.getType() == null || fh.canStoreType(n.getType(), container.getType()))) {
-			G.v().out.println("Check failure: " + container + " does not have " + n + "; upstream is " + upstream);
+			logger.debug("Check failure: " + container + " does not have " + n + "; upstream is " + upstream);
 		}
 	}
 

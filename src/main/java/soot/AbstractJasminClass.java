@@ -439,7 +439,7 @@ public abstract class AbstractJasminClass
             Timers.v().buildJasminTimer.start();
         
         if(Options.v().verbose())
-            G.v().out.println("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
+            logger.debug("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
 
         code = new LinkedList<String>();
 
@@ -660,7 +660,7 @@ public abstract class AbstractJasminClass
     protected void assignColorsToLocals(Body body)
     {
         if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
+            logger.debug("[" + body.getMethod().getName() +
                 "] Assigning colors to locals...");
         
         if(Options.v().time())

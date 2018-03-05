@@ -189,7 +189,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
 			try {
 				left = hierarchy.typeNode(((Local) l).getType());
 			} catch (InternalTypingException e) {
-				G.v().out.println("untyped local: " + l);
+				logger.debug("untyped local: " + l);
 				throw e;
 			}
 		} else if (l instanceof InstanceFieldRef) {
@@ -368,7 +368,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
 						cast.lca(op);
 					}
 				} catch (TypeException e) {
-					G.v().out.println(r + "[" + op + "<->" + cast + "]");
+					logger.debug(""+r + "[" + op + "<->" + cast + "]");
 					error(e.getMessage());
 				}
 			}
@@ -384,7 +384,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
 			try {
 				op.lca(type);
 			} catch (TypeException e) {
-				G.v().out.println(r + "[" + op + "<->" + type + "]");
+				logger.debug(""+r + "[" + op + "<->" + type + "]");
 				error(e.getMessage());
 			}
 

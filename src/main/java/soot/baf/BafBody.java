@@ -81,7 +81,7 @@ public class BafBody extends Body
         super(body.getMethod());
 
         if(Options.v().verbose())
-            G.v().out.println("[" + getMethod().getName() + "] Constructing BafBody...");
+            logger.debug("[" + getMethod().getName() + "] Constructing BafBody...");
 
         if (!(body instanceof JimpleBody))
             throw new RuntimeException("Can only construct BafBody's directly"

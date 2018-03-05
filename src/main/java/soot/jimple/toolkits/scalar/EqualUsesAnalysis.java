@@ -81,7 +81,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit,FlowSet>
 		this.redefStmts = new ArrayList<Stmt>();
 		this.firstUseToAliasSet = new HashMap<Stmt, List>();
 
-//		G.v().out.println("Checking for Locals " + useLocals + " in these statements: " + useStmts);
+//		logger.debug("Checking for Locals " + useLocals + " in these statements: " + useStmts);
 
 		doAnalysis();
 
@@ -96,7 +96,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit,FlowSet>
 			{
 				if(fs.contains(redefIt.next()))
 				{
-//					G.v().out.print("LIF = false ");
+//					logger.debug("LIF = false ");
 					return false;
 				}
 			}
@@ -110,11 +110,11 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit,FlowSet>
 			}
 			if( aliases != null && !aliases.contains(new EquivalentValue(stmtToLocal.get(u))) )
 			{
-//				G.v().out.print("LIF = false ");
+//				logger.debug("LIF = false ");
 				return false;
 			}
 		}
-//		G.v().out.print("LIF = true ");
+//		logger.debug("LIF = true ");
 		return true;
 	}
 	
@@ -229,7 +229,7 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit,FlowSet>
 				List newAliasList = new ArrayList();
 				newAliasList.addAll(aliasList);
 				firstUseToAliasSet.put(stmt, newAliasList);
-//				G.v().out.println("Aliases of " + l + " at " + stmt + " are " + aliasList);
+//				logger.debug("Aliases of " + l + " at " + stmt + " are " + aliasList);
 				out.add(aliasList);
 			}
 			out.add(stmt);

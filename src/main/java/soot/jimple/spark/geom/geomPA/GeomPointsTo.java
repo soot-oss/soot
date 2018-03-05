@@ -279,10 +279,10 @@ public class GeomPointsTo extends PAG
 										"_log.txt" );
 			try {
 				ps = new PrintStream(log_file);
-				G.v().out.println( "[Geom] Analysis log can be found in: " + log_file.toString() );
+				logger.debug(""+ "[Geom] Analysis log can be found in: " + log_file.toString() );
 			} catch (FileNotFoundException e) {
 				String msg = "[Geom] The dump file: " + log_file.toString() + " cannot be created. Abort.";
-				G.v().out.println( msg );
+				logger.debug(""+ msg );
 				throw new RuntimeException(msg, e);
 			}
 		}
@@ -304,7 +304,7 @@ public class GeomPointsTo extends PAG
 				
 				fin.close();
 				fr.close();
-				G.v().out.println( "[Geom] Read in verification file successfully.\n" );
+				logger.debug(""+ "[Geom] Read in verification file successfully.\n" );
 			} catch (FileNotFoundException e) {
 				validMethods = null;
 			} catch (IOException e) {

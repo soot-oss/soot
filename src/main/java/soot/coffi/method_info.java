@@ -131,7 +131,7 @@ public class method_info {
     * @see ByteCode#showCode
     */
     void print(cp_info constant_pool[]) {
-      G.v().out.println(prototype(constant_pool));
+      logger.debug(""+prototype(constant_pool));
       ByteCode.showCode(instructions,constant_pool);
    }
 }

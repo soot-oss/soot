@@ -56,7 +56,7 @@ public class NopEliminator extends BodyTransformer {
     @Override
     protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
         if (Options.v().verbose()) {
-            G.v().out.println("[" + b.getMethod().getName() + "] Removing nops...");
+            logger.debug("[" + b.getMethod().getName() + "] Removing nops...");
         }
 
         Chain<Unit> units = b.getUnits();

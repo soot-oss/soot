@@ -231,7 +231,7 @@ public class ClassResolver {
 			} else if (next instanceof polyglot.ast.Initializer) {
 				createInitializer((polyglot.ast.Initializer) next);
 			} else if (Options.v().verbose()) {
-				G.v().out.println("Class Body Member not implemented for type " + next.getClass().getName());
+				logger.debug("Class Body Member not implemented for type " + next.getClass().getName());
 			}
 		}
 		handleInnerClassTags(classBody);
@@ -880,7 +880,7 @@ public class ClassResolver {
 	}
 
 	private void addConstValTag(polyglot.ast.FieldDecl field, soot.SootField sootField) {
-		// G.v().out.println("adding constantval tag to field: "+field);
+		// logger.debug("adding constantval tag to field: "+field);
 		if (field.fieldInstance().constantValue() instanceof Integer) {
 			sootField.addTag(new soot.tagkit.IntegerConstantValueTag(
 					((Integer) field.fieldInstance().constantValue()).intValue()));

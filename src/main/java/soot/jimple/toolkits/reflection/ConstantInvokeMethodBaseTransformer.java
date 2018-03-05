@@ -57,7 +57,7 @@ public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
                                 invokeExpr.setArg(0, newLocal);
 
                                 if (verbose)
-                                    G.v().out.println("Replaced constant base object of Method.invoke() by local in: " + sootMethod.toString());
+                                    logger.debug("Replaced constant base object of Method.invoke() by local in: " + sootMethod.toString());
                             }
                         }
                     }

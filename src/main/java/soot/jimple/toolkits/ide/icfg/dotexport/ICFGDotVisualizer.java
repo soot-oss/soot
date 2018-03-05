@@ -51,7 +51,7 @@ public class ICFGDotVisualizer {
 		if(this.startPoint!=null && this.icfg!=null && this.fileName!=null) {
 			graphTraverse(this.startPoint, this.icfg);
 			dotIcfg.plot(this.fileName);
-			G.v().out.println(fileName + DotGraph.DOT_EXTENSION);
+			logger.debug(""+fileName + DotGraph.DOT_EXTENSION);
 		}
 		else {
 			System.out.println("Parameters not properly initialized!");

@@ -53,7 +53,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
         StmtBody body = (StmtBody)b;
 
         if (Options.v().verbose()) 
-            G.v().out.println("[" + body.getMethod().getName() + "] Folding unconditional branches...");
+            logger.debug("[" + body.getMethod().getName() + "] Folding unconditional branches...");
 
 
         // allocate counters once only
@@ -115,7 +115,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
             }
         }
         if (Options.v().verbose()) 
-            G.v().out.println("[" + body.getMethod().getName() + "]     " + numFixed[0] + " of " + 
+            logger.debug("[" + body.getMethod().getName() + "]     " + numFixed[0] + " of " + 
                                 numFound[0] + " branches folded.");
              
                                

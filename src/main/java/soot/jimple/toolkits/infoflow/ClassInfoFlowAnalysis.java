@@ -64,7 +64,7 @@ public class ClassInfoFlowAnalysis
 				methodToInfoFlowSummary.remove(method);
 				methodToInfoFlowSummary.put(method, smdfa.getMethodInfoFlowSummary());
 				return smdfa;
-//				G.v().out.println(method + " has SMART infoFlowGraph: ");
+//				logger.debug(""+method + " has SMART infoFlowGraph: ");
 //				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
 			}
 		}
@@ -97,7 +97,7 @@ public class ClassInfoFlowAnalysis
 				methodToInfoFlowSummary.remove(method);
 				methodToInfoFlowSummary.put(method, smdfa.getMethodInfoFlowSummary());
 
-//				G.v().out.println(method + " has SMART infoFlowGraph: ");
+//				logger.debug(""+method + " has SMART infoFlowGraph: ");
 //				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
 			}
 		}
@@ -123,7 +123,7 @@ public class ClassInfoFlowAnalysis
 					methodCount++;
 				methodToInfoFlowSummary.put(method, smdfa.getMethodDataFlowSummary());
 
-//				G.v().out.println(method + " has FLOW SENSITIVE infoFlowGraph: ");
+//				logger.debug(""+method + " has FLOW SENSITIVE infoFlowGraph: ");
 //				printDataFlowGraph(mdfa.getMethodDataFlowGraph());
 			}
 			else
@@ -134,7 +134,7 @@ public class ClassInfoFlowAnalysis
 					methodCount++;
 				methodToInfoFlowSummary.put(method, triviallyConservativeDataFlowAnalysis(method));
 
-//				G.v().out.println(method + " has TRIVIALLY CONSERVATIVE infoFlowGraph: ");
+//				logger.debug(""+method + " has TRIVIALLY CONSERVATIVE infoFlowGraph: ");
 //				printDataFlowGraph((MutableDirectedGraph) methodToInfoFlowSummary.get(method));
 			}
 		}
@@ -154,7 +154,7 @@ public class ClassInfoFlowAnalysis
 				methodCount++;
 			methodToInfoFlowSummary.put(method, infoFlowGraph);
 
-//			G.v().out.println(method + " has infoFlowGraph: ");
+//			logger.debug(""+method + " has infoFlowGraph: ");
 //			printDataFlowGraph(infoFlowGraph);
 		}
 	}

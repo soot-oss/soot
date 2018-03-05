@@ -385,7 +385,7 @@ public abstract class SETNode {
 			Iterator bit = body.iterator();
 			while (bit.hasNext())
 				if ((bit.next() instanceof AugmentedStmt) == false)
-					G.v().out.println("Error in body: " + getClass());
+					logger.debug("Error in body: " + getClass());
 
 			Iterator cit = body2childChain.get(body).iterator();
 			while (cit.hasNext())

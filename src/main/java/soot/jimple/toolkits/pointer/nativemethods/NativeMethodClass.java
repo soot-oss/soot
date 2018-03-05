@@ -46,7 +46,7 @@ public abstract class NativeMethodClass {
 				   ReferenceVariable returnVar,
 				   ReferenceVariable params[]){
     if (DEBUG) {
-      G.v().out.println("No side effects : "+method.toString());
+      logger.debug("No side effects : "+method.toString());
     }
   }
 

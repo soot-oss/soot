@@ -60,7 +60,7 @@ public class SimpleLiveLocals implements LiveLocals {
 			Timers.v().liveTimer.start();
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + graph.getBody().getMethod().getName()
+			logger.debug("[" + graph.getBody().getMethod().getName()
 					+ "]     Constructing SimpleLiveLocals...");
 
 		analysis = new Analysis(graph);

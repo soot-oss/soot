@@ -74,7 +74,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
         debug |= sb.getOptions().debug();
         
         if (Options.v().verbose())
-            G.v().out.println("[" + sb.getMethod().getName() +
+            logger.debug("[" + sb.getMethod().getName() +
                               "] Propagating and folding constants (SSA)...");
 
         // *** FIXME: What happens when Shimple is built with another UnitGraph?

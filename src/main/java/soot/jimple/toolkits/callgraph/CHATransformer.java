@@ -48,7 +48,7 @@ public class CHATransformer extends SceneTransformer
         	new CallGraphBuilder( DumbPointerAnalysis.v() );
         cg.build();
         if( options.verbose() ) {
-            G.v().out.println( "Number of reachable methods: "
+            logger.debug(""+ "Number of reachable methods: "
                     +Scene.v().getReachableMethods().size() );
         }
     }

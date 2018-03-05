@@ -84,7 +84,7 @@ public class Transform implements HasPhaseOptions
         Map<String, String> options = PhaseOptions.v().getPhaseOptions( phaseName );
         if( PhaseOptions.getBoolean( options, "enabled" ) ) {
             if( Options.v().verbose()  ) {
-                G.v().out.println( "Applying phase "+phaseName+" to the scene." );
+                logger.debug(""+ "Applying phase "+phaseName+" to the scene." );
             }
         }
 	if (DEBUG)
@@ -99,7 +99,7 @@ public class Transform implements HasPhaseOptions
         Map<String, String> options = PhaseOptions.v().getPhaseOptions( phaseName );
         if( PhaseOptions.getBoolean( options, "enabled" ) ) {
             if( Options.v().verbose() ) {
-                G.v().out.println( "Applying phase "+phaseName+" to "+b.getMethod()+"." );
+                logger.debug(""+ "Applying phase "+phaseName+" to "+b.getMethod()+"." );
             }
         }
 	if (DEBUG)

@@ -137,13 +137,13 @@ public class SETBasicBlock implements Comparable
     public void dump()
     {
 	printSig();
-	G.v().out.println( "=== preds ===");
+	logger.debug(""+ "=== preds ===");
 
 	Iterator it = predecessors.iterator();
 	while (it.hasNext())
 	    ((SETBasicBlock) it.next()).printSig();
 
-	G.v().out.println( "=== succs ===");
+	logger.debug(""+ "=== succs ===");
 
 	it = successors.iterator();
 	while (it.hasNext())

@@ -117,7 +117,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
         rectarray = takeRectArray;
         
         if (Options.v().debug()) 
-            G.v().out.println("Enter ArrayIndexLivenessAnalysis");
+            logger.debug("Enter ArrayIndexLivenessAnalysis");
         
         eug = (ExceptionalUnitGraph)dg;
         retrieveAllArrayLocals(eug.getBody(), fullSet);
@@ -162,7 +162,7 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis
         doAnalysis();
 
         if (Options.v().debug()) 
-            G.v().out.println("Leave ArrayIndexLivenessAnalysis");
+            logger.debug("Leave ArrayIndexLivenessAnalysis");
     }
 
     public HashMap<Object, HashSet<Value>> getLocalToFieldRef()

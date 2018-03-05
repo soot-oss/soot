@@ -45,7 +45,7 @@ public class JavaClassSource extends ClassSource
     
     public Dependencies resolve( SootClass sc ) {
         if (Options.v().verbose())
-            G.v().out.println("resolving [from .java]: " + className);
+            logger.debug("resolving [from .java]: " + className);
                     
         IInitialResolver resolver;
         if(Options.v().polyglot())
@@ -69,7 +69,7 @@ public class JavaClassSource extends ClassSource
 			//System.out.println("CALLING COMPUTEASTMETRICS!!!!!!!");
 			Node ast = InitialResolver.v().getAst();
 			if(ast==null) {
-				G.v().out.println("No compatible AST available for AST metrics. Skipping. Try -polyglot option.");
+				logger.debug("No compatible AST available for AST metrics. Skipping. Try -polyglot option.");
 			} else {
 				ComputeASTMetrics metrics = new ComputeASTMetrics(ast);
 				metrics.apply();

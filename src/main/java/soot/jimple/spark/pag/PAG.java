@@ -268,7 +268,7 @@ public class PAG implements PointsToAnalysis {
 
 	public void cleanUpMerges() {
 		if (opts.verbose()) {
-			G.v().out.println("Cleaning up graph for merged nodes");
+			logger.debug("Cleaning up graph for merged nodes");
 		}
 		lookupInMap(simple);
 		lookupInMap(alloc);
@@ -281,7 +281,7 @@ public class PAG implements PointsToAnalysis {
 
 		somethingMerged = false;
 		if (opts.verbose()) {
-			G.v().out.println("Done cleaning up graph for merged nodes");
+			logger.debug("Done cleaning up graph for merged nodes");
 		}
 	}
 
@@ -393,7 +393,7 @@ public class PAG implements PointsToAnalysis {
 				m.put(key, valueList = ((Set) valueList).toArray(EMPTY_NODE_ARRAY));
 			} catch (Exception e) {
 				for (Iterator it = ((Set) valueList).iterator(); it.hasNext();) {
-					G.v().out.println("" + it.next());
+					logger.debug("" + it.next());
 				}
 				throw new RuntimeException("" + valueList + e);
 			}

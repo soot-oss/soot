@@ -279,11 +279,11 @@ public class SootUtil {
       public void visit(Node n) {
         // TODO Auto-generated method stub
         if (!intersection.contains(n)) {
-          G.v().out.println(n + " missing from intersection");
-          G.v().out.println(set1);
-          G.v().out.println(set2);
-          G.v().out.println(intersection);
-          G.v().out.println(ret);
+          logger.debug(""+n + " missing from intersection");
+          logger.debug(""+set1);
+          logger.debug(""+set2);
+          logger.debug(""+intersection);
+          logger.debug(""+ret);
           throw new RuntimeException("intersection too small");
         }
       }
@@ -295,11 +295,11 @@ public class SootUtil {
       public void visit(Node n) {
         // TODO Auto-generated method stub
         if (!ret.contains(n)) {
-          G.v().out.println(n + " missing from ret");
-          G.v().out.println(set1);
-          G.v().out.println(set2);
-          G.v().out.println(intersection);
-          G.v().out.println(ret);
+          logger.debug(""+n + " missing from ret");
+          logger.debug(""+set1);
+          logger.debug(""+set2);
+          logger.debug(""+intersection);
+          logger.debug(""+ret);
           throw new RuntimeException("old way too small???");
         }
       }
@@ -425,7 +425,7 @@ public class SootUtil {
           dir.mkdirs();
         }
       } catch (SecurityException se) {
-        G.v().out.println("Unable to create " + dirName);
+        logger.debug("Unable to create " + dirName);
         throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
       }
     }

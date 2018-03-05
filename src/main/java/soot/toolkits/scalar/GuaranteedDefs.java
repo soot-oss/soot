@@ -41,7 +41,7 @@ public class GuaranteedDefs
     public GuaranteedDefs(UnitGraph graph)
     {
         if(Options.v().verbose())
-            G.v().out.println("[" + graph.getBody().getMethod().getName() +
+            logger.debug("[" + graph.getBody().getMethod().getName() +
                                "]     Constructing GuaranteedDefs...");
 
         GuaranteedDefsAnalysis analysis = new GuaranteedDefsAnalysis(graph);

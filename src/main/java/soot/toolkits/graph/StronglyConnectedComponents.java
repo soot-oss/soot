@@ -109,9 +109,9 @@ public class StronglyConnectedComponents
 
         if (Options.v().verbose()) 
         {
-            G.v().out.println("Done computing scc components");
-            G.v().out.println("number of nodes in underlying graph: "+g.size());
-            G.v().out.println("number of components: "+sccGraph.size());
+            logger.debug("Done computing scc components");
+            logger.debug("number of nodes in underlying graph: "+g.size());
+            logger.debug("number of components: "+sccGraph.size());
         }
     }
 

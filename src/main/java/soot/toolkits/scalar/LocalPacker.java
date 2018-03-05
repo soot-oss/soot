@@ -64,7 +64,7 @@ public class LocalPacker extends BodyTransformer {
 		boolean isUnsplit = PhaseOptions.getBoolean(options, "unsplit-original-locals");
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + body.getMethod().getName() + "] Packing locals...");
+			logger.debug("[" + body.getMethod().getName() + "] Packing locals...");
 
 		Map<Local, Object> localToGroup = new DeterministicHashMap<Local, Object>(body.getLocalCount() * 2 + 1, 0.7f);
 		// A group represents a bunch of locals which may potentially interfere

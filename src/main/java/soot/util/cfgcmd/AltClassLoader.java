@@ -180,7 +180,7 @@ public class AltClassLoader extends ClassLoader {
   protected Class<?> findClass(String maybeMangledName)
     throws ClassNotFoundException {
     if (DEBUG) {
-      G.v().out.println("AltClassLoader.findClass(" + maybeMangledName + ')');
+      logger.debug("AltClassLoader.findClass(" + maybeMangledName + ')');
     }
 
     Class<?> result = alreadyFound.get(maybeMangledName);
@@ -234,7 +234,7 @@ public class AltClassLoader extends ClassLoader {
   public Class<?> loadClass(String name) 
   throws ClassNotFoundException {
     if (DEBUG) {
-      G.v().out.println("AltClassLoader.loadClass(" + name + ")");
+      logger.debug("AltClassLoader.loadClass(" + name + ")");
     }
 
     String nameForParent = nameToMangledName.get(name);
@@ -244,7 +244,7 @@ public class AltClassLoader extends ClassLoader {
     }
 
     if (DEBUG) {
-      G.v().out.println("AltClassLoader.loadClass asking parent for " + 
+      logger.debug("AltClassLoader.loadClass asking parent for " + 
 			nameForParent);
     }
     return super.loadClass(nameForParent, false);
@@ -380,7 +380,7 @@ public class AltClassLoader extends ClassLoader {
       AltClassLoader.v().setAltClasses(new String[] {
 	argv[i]
       });
-      G.v().out.println("main() loadClass(" + argv[i] + ")");
+      logger.debug("main() loadClass(" + argv[i] + ")");
       AltClassLoader.v().loadClass(argv[i]);
     }
   }

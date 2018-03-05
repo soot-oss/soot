@@ -61,7 +61,7 @@ public class PurityAnalysis extends SceneTransformer {
     protected void internalTransform(String phaseName, Map<String, String> options) {
         PurityOptions opts = new PurityOptions(options);
 
-        G.v().out.println("[AM] Analysing purity");
+        logger.debug("[AM] Analysing purity");
 
         CallGraph cg = Scene.v().getCallGraph();
 

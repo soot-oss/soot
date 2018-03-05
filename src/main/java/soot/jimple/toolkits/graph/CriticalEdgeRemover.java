@@ -58,11 +58,11 @@ public class CriticalEdgeRemover extends BodyTransformer {
    */
   protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
     if(Options.v().verbose())
-      G.v().out.println("[" + b.getMethod().getName() +
+      logger.debug("[" + b.getMethod().getName() +
                          "]     Removing Critical Edges...");
     removeCriticalEdges(b);
     if(Options.v().verbose())
-      G.v().out.println("[" + b.getMethod().getName() +
+      logger.debug("[" + b.getMethod().getName() +
                          "]     Removing Critical Edges done.");
 
   }

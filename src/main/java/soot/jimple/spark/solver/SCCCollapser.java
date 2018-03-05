@@ -37,7 +37,7 @@ public class SCCCollapser {
     public void collapse() {
         boolean verbose = pag.getOpts().verbose();
         if( verbose ) {
-            G.v().out.println( "Total VarNodes: "+pag.getVarNodeNumberer().size()+". Collapsing SCCs..." );
+            logger.debug(""+ "Total VarNodes: "+pag.getVarNodeNumberer().size()+". Collapsing SCCs..." );
         }
 
         new TopoSorter( pag, ignoreTypes ).sort();
@@ -50,7 +50,7 @@ public class SCCCollapser {
         }
 
         if( verbose ) {
-            G.v().out.println( ""+numCollapsed+" nodes were collapsed." );
+            logger.debug(""+ ""+numCollapsed+" nodes were collapsed." );
         }
         visited = null;
     }

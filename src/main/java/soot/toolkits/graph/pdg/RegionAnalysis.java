@@ -85,10 +85,10 @@ public class RegionAnalysis{
         this.m_class = c;
 
         if(Options.v().verbose())
-            G.v().out.println("[RegionAnalysis]~~~~~~~~~~~~~~~ Begin Region Analsis for method: " + m.getName() +" ~~~~~~~~~~~~~~~~~~~~");
+            logger.debug("[RegionAnalysis]~~~~~~~~~~~~~~~ Begin Region Analsis for method: " + m.getName() +" ~~~~~~~~~~~~~~~~~~~~");
         this.findWeakRegions();
         if(Options.v().verbose())
-            G.v().out.println("[RegionAnalysis]~~~~~~~~~~~~~~~ End:" + m.getName() +" ~~~~~~~~~~~~~~~~~~~~");
+            logger.debug("[RegionAnalysis]~~~~~~~~~~~~~~~ End:" + m.getName() +" ~~~~~~~~~~~~~~~~~~~~");
     }
 
 
@@ -120,7 +120,7 @@ public class RegionAnalysis{
             this.m_pdom = new MHGDominatorTree<Block>(new MHGPostDominatorsFinder<Block>(m_blockCFG));
 
             if(Options.v().verbose())
-                G.v().out.println("[RegionAnalysis] PostDominator tree: ");
+                logger.debug("[RegionAnalysis] PostDominator tree: ");
 
             this.m_regCount = -1;
 
@@ -172,7 +172,7 @@ public class RegionAnalysis{
         }
         catch(RuntimeException e)
         {
-            G.v().out.println("[RegionAnalysis] Exception in findWeakRegions: " + e);			
+            logger.debug("[RegionAnalysis] Exception in findWeakRegions: " + e);			
         }
 
 
@@ -218,8 +218,8 @@ public class RegionAnalysis{
         }
         catch(RuntimeException e)
         {
-            G.v().out.println("[RegionAnalysis] Exception in weakRegionDFS: " + e);
-            G.v().out.println("v is  " + v.toShortString() + " in region " + r);
+            logger.debug("[RegionAnalysis] Exception in weakRegionDFS: " + e);
+            logger.debug("v is  " + v.toShortString() + " in region " + r);
             G.v().out.flush();
         }
     }

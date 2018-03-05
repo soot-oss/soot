@@ -1001,7 +1001,7 @@ class ByteCode {
       default:
          //int j;
          //j = ((int)b)&0xff;
-         //G.v().out.println("Unknown instruction op=" + j +
+         //logger.debug("Unknown instruction op=" + j +
          //                   " at offset " + index);
          i = (Instruction)new Instruction_Unknown(b);
          break;
@@ -1084,8 +1084,8 @@ class ByteCode {
          else if (i>99) pref = " ";
          else if (i>9) pref = "  ";
          else pref = "   ";
-         G.v().out.print(pref + i + ": ");
-         G.v().out.println(j.toString(constant_pool));
+         logger.debug(""+pref + i + ": ");
+         logger.debug(""+j.toString(constant_pool));
          i = j.nextOffset(i);
          j = j.next;
       }

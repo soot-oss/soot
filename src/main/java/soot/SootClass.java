@@ -97,7 +97,7 @@ public class SootClass extends AbstractHost implements Numberable {
 		this.modifiers = modifiers;
 		initializeRefType(name);
 		if (Options.v().debug_resolver())
-			G.v().out.println("created " + name + " with modifiers " + modifiers);
+			logger.debug("created " + name + " with modifiers " + modifiers);
 		setResolvingLevel(BODIES);
 	}
 

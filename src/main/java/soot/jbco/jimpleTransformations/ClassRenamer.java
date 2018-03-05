@@ -83,7 +83,7 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
     protected void internalTransform(String phaseName, Map<String, String> options) {
         if (output) {
-            G.v().out.println("Transforming Class Names...");
+            logger.debug("Transforming Class Names...");
         }
 
         BodyBuilder.retrieveAllBodies();

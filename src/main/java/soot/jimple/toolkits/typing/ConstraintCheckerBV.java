@@ -307,7 +307,7 @@ private static class RuntimeTypeException extends RuntimeException
 	  }
 	catch(InternalTypingException e)
 	  {
-	    G.v().out.println("untyped local: " + l);
+	    logger.debug("untyped local: " + l);
 	    throw e;
 	  }
       }
@@ -598,7 +598,7 @@ private static class RuntimeTypeException extends RuntimeException
 	    }
 	  catch(TypeException e)
 	    {
-	      G.v().out.println(r + "[" + op + "<->" + cast + "]");
+	      logger.debug(""+r + "[" + op + "<->" + cast + "]");
 	      error(e.getMessage());
 	    }
 	}
@@ -620,7 +620,7 @@ private static class RuntimeTypeException extends RuntimeException
 	  }
 	catch(TypeException e)
 	  {
-	    G.v().out.println(r + "[" + op + "<->" + type + "]");
+	    logger.debug(""+r + "[" + op + "<->" + type + "]");
 	    error(e.getMessage());
 	  }
 	

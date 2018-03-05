@@ -394,8 +394,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         		break;
         	}
         	if (DEBUG) {
-        		G.v().out.println("PASS " + numPasses);
-        		G.v().out.println(fieldCheckHeuristic);
+        		logger.debug("PASS " + numPasses);
+        		logger.debug(""+fieldCheckHeuristic);
         	}
         	clearState();
         	pointsTo = new AllocAndContextSet();
@@ -509,8 +509,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 				return true;
 			}
 			if (DEBUG) {
-				G.v().out.println("PASS " + numPasses);
-				G.v().out.println(fieldCheckHeuristic);
+				logger.debug("PASS " + numPasses);
+				logger.debug(""+fieldCheckHeuristic);
 			}
 			clearState();
 			pointsTo = new AllocAndContextSet();
@@ -619,8 +619,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 				return smallest;
 			}
 			if (DEBUG) {
-				G.v().out.println("PASS " + numPasses);
-				G.v().out.println(fieldCheckHeuristic);
+				logger.debug("PASS " + numPasses);
+				logger.debug(""+fieldCheckHeuristic);
 			}
 			clearState();
 			Set<VarNode> result = null;
@@ -644,7 +644,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	protected void debugPrint(String str) {
 		if (nesting <= DEBUG_NESTING) {
 			if (DEBUG_PASS == -1 || DEBUG_PASS == numPasses) {
-				G.v().out.println(":" + nesting + " " + str);
+				logger.debug(":" + nesting + " " + str);
 			}
 		}
 	}
@@ -709,7 +709,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 		}
 		Helper h = new Helper();
 		h.handle(v);
-		// G.v().out.println(dotGraph.numEdges() + " edges on path");
+		// logger.debug(""+dotGraph.numEdges() + " edges on path");
 		dotGraph.dump("tmp/" + filePrefix + v.getNumber() + "_"
 				+ badLoc.getNumber() + ".dot");
 	}
@@ -1029,7 +1029,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 												trueAllocContext), intersection);
 								for (AllocAndContext allocAndContext : allocAndContexts) {
 									// if (DEBUG)
-									// G.v().out.println("alloc context "
+									// logger.debug("alloc context "
 									// + newAllocContext);
 									// CallingContextSet upContexts;
 									if (fieldCheckHeuristic
@@ -1547,7 +1547,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 			for (AssignEdge assignEdge : assigns) {
 				VarNode src = assignEdge.getSrc();
 				// if (DEBUG) {
-				// G.v().out.println("assign src " + src);
+				// logger.debug("assign src " + src);
 				// }
 				if (h.shouldHandleSrc(src)) {
 					ImmutableStack<Integer> newContext = callingContext;
@@ -1717,8 +1717,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 				return false;
 			}
 			if (DEBUG) {
-				G.v().out.println("PASS " + numPasses);
-				G.v().out.println(fieldCheckHeuristic);
+				logger.debug("PASS " + numPasses);
+				logger.debug(""+fieldCheckHeuristic);
 			}
 			clearState();
 			boolean success = false;
@@ -1740,7 +1740,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 				success = false;
 			}
 			if (success) {
-				G.v().out.println("took " + numPasses + " passes");
+				logger.debug("took " + numPasses + " passes");
 				return true;
 			} else {
 				if (!fieldCheckHeuristic.runNewPass()) {
@@ -1846,7 +1846,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 					}
 				} else if (assignEdge.isReturnEdge()) {
 					// if (DEBUG)
-					// G.v().out.println("entering call site "
+					// logger.debug("entering call site "
 					// + assignEdge.getCallSite());
 					// if (!isRecursive(curContext, assignEdge)) {
 					// newContext = curContext.push(assignEdge.getCallSite());
@@ -2043,7 +2043,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 	 */
 	protected boolean refineP2Set(VarNode v, PointsToSetInternal badLocs,
 			HeuristicType heuristic) {
-		// G.v().out.println(badLocs);
+		// logger.debug(""+badLocs);
 		this.doPointsTo = false;
 		this.fieldCheckHeuristic = HeuristicType.getHeuristic(heuristic, pag
 				.getTypeManager(), getMaxPasses());
@@ -2058,8 +2058,8 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
 					return false;
 				}
 				if (DEBUG) {
-					G.v().out.println("PASS " + numPasses);
-					G.v().out.println(fieldCheckHeuristic);
+					logger.debug("PASS " + numPasses);
+					logger.debug(""+fieldCheckHeuristic);
 				}
 				clearState();
 				boolean success = false;

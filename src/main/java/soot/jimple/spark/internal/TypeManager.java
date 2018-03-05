@@ -133,7 +133,7 @@ public final class TypeManager {
 
         int numTypes = Scene.v().getTypeNumberer().size();
         if( pag.getOpts().verbose() )
-            G.v().out.println( "Total types: "+numTypes );
+            logger.debug(""+ "Total types: "+numTypes );
         // **
         initClass2allocs();
         makeClassTypeMask(Scene.v().getSootClass("java.lang.Object"));

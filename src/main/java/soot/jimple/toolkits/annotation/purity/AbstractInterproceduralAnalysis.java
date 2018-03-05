@@ -380,7 +380,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
                 nb.put(m, 1);
             }
             if (verbose) {
-                G.v().out.println(" |- processing " + m.toString() + " (" + nb.get(m) + "-st time)");
+                logger.debug(" |- processing " + m.toString() + " (" + nb.get(m) + "-st time)");
             }
 
             analyseMethod(m, newSummary);
@@ -398,7 +398,7 @@ public abstract class AbstractInterproceduralAnalysis<S> {
                 S oldSummary = data.get(m);
                 analyseMethod(m, newSummary);
                 if (!oldSummary.equals(newSummary)) {
-                    G.v().out.println("inter-procedural fixpoint not reached for method " + m.toString());
+                    logger.debug("inter-procedural fixpoint not reached for method " + m.toString());
                     DotGraph gm = new DotGraph("false_fixpoint");
                     DotGraph gmm = new DotGraph("next_iterate");
                     gm.setGraphLabel("false fixpoint: " + m.toString());

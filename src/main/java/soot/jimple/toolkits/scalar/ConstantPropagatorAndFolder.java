@@ -52,7 +52,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
         int numPropagated = 0;
 
         if (Options.v().verbose())
-            G.v().out.println("[" + b.getMethod().getName() +
+            logger.debug("[" + b.getMethod().getName() +
                                "] Propagating and folding constants...");
 
         UnitGraph g = new ExceptionalUnitGraph(b);
@@ -110,7 +110,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
         }
 
        if (Options.v().verbose())
-            G.v().out.println("[" + b.getMethod().getName() +
+            logger.debug("[" + b.getMethod().getName() +
                 "]     Propagated: " + numPropagated + ", Folded:  " + numFolded);
 
     } // optimizeConstants

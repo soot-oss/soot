@@ -110,7 +110,7 @@ public class Aggregator extends BodyTransformer {
 
 		do {
 			if (Options.v().verbose())
-				G.v().out.println(
+				logger.debug(""+
 						"[" + body.getMethod().getName() + "] Aggregating iteration " + aggregateCount + "...");
 
 			// body.printTo(new java.io.PrintWriter(G.v().out, true));
@@ -311,11 +311,11 @@ public class Aggregator extends BodyTransformer {
 				}
 			} else {/*
 					 * if(Options.v().verbose()) {
-					 * G.v().out.println("[debug] failed aggregation");
-					 * G.v().out.println("[debug] tried to put "+aggregatee+
+					 * logger.debug("[debug] failed aggregation");
+					 * logger.debug("[debug] tried to put "+aggregatee+
 					 * " into "+usepair.stmt +
 					 * ": in particular, "+usepair.valueBox);
-					 * G.v().out.println("[debug] aggregatee instanceof Expr: "
+					 * logger.debug("[debug] aggregatee instanceof Expr: "
 					 * +(aggregatee instanceof Expr)); }
 					 */
 			}

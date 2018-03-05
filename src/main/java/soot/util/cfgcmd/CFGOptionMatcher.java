@@ -87,7 +87,7 @@ public class CFGOptionMatcher {
 		if (match == -1) {
 		    match = i;
 		} else {
-		    G.v().out.println(quarry + " is ambiguous; it matches " +
+		    logger.debug(""+quarry + " is ambiguous; it matches " +
 				      options[match].name() + " and " +
 				      options[i].name());
 		    throw new CompilationDeathException(
@@ -97,7 +97,7 @@ public class CFGOptionMatcher {
 	    }
 	}
 	if (match == -1) {
-	    G.v().out.println("\"" + quarry + "\"" + 
+	    logger.debug("\"" + quarry + "\"" + 
 			      " does not match any value.");
 	    throw new CompilationDeathException(
 		CompilationDeathException.COMPILATION_ABORTED,

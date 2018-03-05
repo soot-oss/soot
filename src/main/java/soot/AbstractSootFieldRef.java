@@ -196,7 +196,7 @@ public class AbstractSootFieldRef implements SootFieldRef {
 		if (trace == null) {
 			FieldResolutionFailedException e = new FieldResolutionFailedException();
 			if (Options.v().ignore_resolution_errors())
-				G.v().out.println(e.getMessage());
+				logger.debug(""+e.getMessage());
 			else
 				throw e;
 		}

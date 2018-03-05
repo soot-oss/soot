@@ -509,7 +509,7 @@ public class PackManager {
 						.println("Cannot run in interactive mode. No listeners available. Continuing in regular mode.");
 				Options.v().set_interactive_mode(false);
 			} else {
-				G.v().out.println("Running in interactive mode.");
+				logger.debug("Running in interactive mode.");
 			}
 		}
 		runBodyPacks();
@@ -532,7 +532,7 @@ public class PackManager {
 		if (hashVem.size() > 0)
 			aM /= hashVem.size();
 
-		G.v().out.println("Vertices, Edges, Avg Degree, Highest Deg:    " + tV + "  " + tE + "  " + aM + "  " + hM);
+		logger.debug("Vertices, Edges, Avg Degree, Highest Deg:    " + tV + "  " + tE + "  " + aM + "  " + hM);
 	}
 
 	public void runBodyPacks() {
@@ -634,7 +634,7 @@ public class PackManager {
 
 			PackageNamer.v().fixNames();
 
-			G.v().out.println();
+			
 		}
 	}
 
@@ -738,7 +738,7 @@ public class PackManager {
 
 	/* post process for DAVA */
 	private void postProcessDAVA() {
-		G.v().out.println();
+		
 
 		Chain<SootClass> appClasses = Scene.v().getApplicationClasses();
 
@@ -770,7 +770,7 @@ public class PackManager {
 
 			// debug("analyzeAST","Advanced Analyses ALL DISABLED");
 
-			G.v().out.println("Analyzing " + fileName + "... ");
+			logger.debug("Analyzing " + fileName + "... ");
 
 			/*
 			 * Nomair A. Naeem 29th Jan 2006 Added hook into going through each
@@ -851,13 +851,13 @@ public class PackManager {
 				throw new CompilationDeathException("Cannot output file " + fileName, e);
 			}
 
-			G.v().out.print("Generating " + fileName + "... ");
+			logger.debug("Generating " + fileName + "... ");
 
 			G.v().out.flush();
 
 			DavaPrinter.v().printTo(s, writerOut);
 
-			G.v().out.println();
+			
 			G.v().out.flush();
 
 			{
@@ -870,7 +870,7 @@ public class PackManager {
 				}
 			}
 		} // going through all classes
-		G.v().out.println();
+		
 
 		/*
 		 * Create the build.xml for Dava
@@ -899,15 +899,15 @@ public class PackManager {
 	private void runBodyPacks(SootClass c) {
 		final int format = Options.v().output_format();
 		if (format == Options.output_format_dava) {
-			G.v().out.print("Decompiling ");
+			logger.debug("Decompiling ");
 
 			// January 13th, 2006 SootMethodAddedByDava is set to false for
 			// SuperFirstStmtHandler
 			G.v().SootMethodAddedByDava = false;
 		} else {
-			G.v().out.print("Transforming ");
+			logger.debug("Transforming ");
 		}
-		G.v().out.println(c.getName() + "... ");
+		logger.debug(""+c.getName() + "... ");
 
 		boolean produceBaf = false, produceGrimp = false, produceDava = false, produceJimple = true,
 				produceShimple = false;
@@ -1121,7 +1121,7 @@ public class PackManager {
 				}
 			}
 			writerOut = new PrintWriter(new OutputStreamWriter(streamOut));
-			G.v().out.println("Writing to " + fileName);
+			logger.debug("Writing to " + fileName);
 		} catch (IOException e) {
 			throw new CompilationDeathException("Cannot output file " + fileName, e);
 		}

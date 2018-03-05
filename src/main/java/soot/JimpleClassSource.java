@@ -44,7 +44,7 @@ public class JimpleClassSource extends ClassSource {
     }
     public Dependencies resolve( SootClass sc ) {
         if(Options.v().verbose())
-            G.v().out.println("resolving [from .jimple]: " + className );
+            logger.debug("resolving [from .jimple]: " + className );
         
         InputStream classFile = null;
         try {

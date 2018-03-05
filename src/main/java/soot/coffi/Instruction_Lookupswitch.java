@@ -142,7 +142,7 @@ class Instruction_Lookupswitch extends Instruction {
       default_inst = bc.locateInst(default_offset+label);
       if (default_inst==null) {
          logger.warn("can't locate target of instruction");
-         G.v().out.println(" which should be at byte address " + (label+default_offset));
+         logger.debug(" which should be at byte address " + (label+default_offset));
       } else
          default_inst.labelled = true;
       if (npairs>0) {
@@ -151,7 +151,7 @@ class Instruction_Lookupswitch extends Instruction {
             match_insts[i] = bc.locateInst(match_offsets[i*2+1]+label);
             if (match_insts[i]==null) {
                logger.warn("can't locate target of instruction");
-               G.v().out.println(" which should be at byte address " +
+               logger.debug(" which should be at byte address " +
                                   (label+match_offsets[i*2+1]));
             } else
                match_insts[i].labelled = true;

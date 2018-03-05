@@ -264,18 +264,18 @@ public class ExceptionNode {
 	}
 
 	public void dump() {
-		G.v().out.println("try {");
+		logger.debug("try {");
 		for (AugmentedStmt au : get_TryBody())
-			G.v().out.println("\t" + au);
-		G.v().out.println("}");
+			logger.debug("\t" + au);
+		logger.debug("}");
 
 		for (IterableSet<AugmentedStmt> catchBody : get_CatchList()) {
-			G.v().out.println("catch " + get_ExceptionMap().get(catchBody)
+			logger.debug("catch " + get_ExceptionMap().get(catchBody)
 					+ " {");
 			
 			for (AugmentedStmt au : catchBody)
-				G.v().out.println("\t" + au);
-			G.v().out.println("}");
+				logger.debug("\t" + au);
+			logger.debug("}");
 
 		}
 	}

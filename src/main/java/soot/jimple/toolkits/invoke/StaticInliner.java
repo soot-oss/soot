@@ -45,7 +45,7 @@ public class StaticInliner extends SceneTransformer
     {
         Filter explicitInvokesFilter = new Filter( new ExplicitEdgesPred() );
         if(Options.v().verbose())
-            G.v().out.println("[] Inlining methods...");
+            logger.debug("[] Inlining methods...");
 
         boolean enableNullPointerCheckInsertion = PhaseOptions.getBoolean(options, "insert-null-checks");
         boolean enableRedundantCastInsertion = PhaseOptions.getBoolean(options, "insert-redundant-casts");

@@ -1800,7 +1800,7 @@ public class JasminClass extends AbstractJasminClass {
 			if (blockHeight > maxStackHeight) {
 				maxStackHeight = blockHeight;
 			}
-			// G.v().out.println(">>> " + nInst + " " + blockHeight);
+			// logger.debug(">>> " + nInst + " " + blockHeight);
 		}
 
 		for (Block b : aBlock.getSuccs()) {
@@ -1844,7 +1844,7 @@ public class JasminClass extends AbstractJasminClass {
 
 			blockHeight += nInst.getOutCount();
 
-			// G.v().out.println(">>> " + nInst + " " + blockHeight);
+			// logger.debug(">>> " + nInst + " " + blockHeight);
 		}
 
 		for (Block b : aBlock.getSuccs()) {

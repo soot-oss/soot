@@ -61,7 +61,7 @@ public class JastAddInitialResolver implements IInitialResolver {
 	          u.errorCheck(errors);
 	          if(!errors.isEmpty()) {
 	        	  for(soot.JastAddJ.Problem p : errors)
-	        		  G.v().out.println(p);
+	        		  logger.debug(""+p);
 	        	  //die
 	        	  throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED,
 	        			  "there were errors during parsing and/or type checking (JastAdd frontend)");

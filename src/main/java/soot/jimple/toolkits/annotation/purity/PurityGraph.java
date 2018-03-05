@@ -272,15 +272,15 @@ public class PurityGraph
 	    while (itt.hasNext()) {
 		PurityEdge e = (PurityEdge)itt.next();
 		if (!src.equals(e.getSource()))
-		    {G.v().out.println("invalid edge source "+e+", should be "+src);err=true;}
+		    {logger.debug("invalid edge source "+e+", should be "+src);err=true;}
 		if (!nodes.contains(e.getSource()))
-		    {G.v().out.println("nodes does not contain edge source "+e);err=true;}
+		    {logger.debug("nodes does not contain edge source "+e);err=true;}
 		if (!nodes.contains(e.getTarget()))
-		    {G.v().out.println("nodes does not contain edge target "+e);err=true;}
+		    {logger.debug("nodes does not contain edge target "+e);err=true;}
 		if (!backEdges.get(e.getTarget()).contains(e))
-		    {G.v().out.println("backEdges does not contain edge "+e);err=true;}
+		    {logger.debug("backEdges does not contain edge "+e);err=true;}
 		if (!e.isInside() && !e.getTarget().isLoad())
-		    {G.v().out.println("target of outside edge is not a load node "+e);err=true;}
+		    {logger.debug("target of outside edge is not a load node "+e);err=true;}
 	    }
 	}
 	it = backEdges.keySet().iterator();
@@ -290,30 +290,30 @@ public class PurityGraph
 	    while (itt.hasNext()) {
 		PurityEdge e = (PurityEdge)itt.next();
 		if (!dst.equals(e.getTarget()))
-		    {G.v().out.println("invalid backEdge dest "+e+", should be "+dst);err=true;}
+		    {logger.debug("invalid backEdge dest "+e+", should be "+dst);err=true;}
 		if (!edges.get(e.getSource()).contains(e))
-		    {G.v().out.println("backEdge not in edges "+e);err=true;}
+		    {logger.debug("backEdge not in edges "+e);err=true;}
 	    }
 	}
 	it = nodes.iterator();
 	while (it.hasNext()) {
 	    PurityNode n = (PurityNode)it.next();
 	    if (n.isParam() && !paramNodes.contains(n))
-		{G.v().out.println("paramNode not in paramNodes "+n);err=true;}
+		{logger.debug("paramNode not in paramNodes "+n);err=true;}
 	}
 	it = paramNodes.iterator();
 	while (it.hasNext()) {
 	    PurityNode n = (PurityNode)it.next();
 	    if (!n.isParam())
-		{G.v().out.println("paramNode contains a non-param node "+n);err=true;}
+		{logger.debug("paramNode contains a non-param node "+n);err=true;}
 	    if (!nodes.contains(n))
-		{G.v().out.println("paramNode not in nodes "+n);err=true;}
+		{logger.debug("paramNode not in nodes "+n);err=true;}
 	}
 	it = globEscape.iterator();
 	while (it.hasNext()) {
 	    PurityNode n = (PurityNode)it.next();
 	    if (!nodes.contains(n))
-		{G.v().out.println("globEscape not in nodes "+n);err=true;}
+		{logger.debug("globEscape not in nodes "+n);err=true;}
 	}
 	it = locals.keySet().iterator();
 	while (it.hasNext()) {
@@ -322,9 +322,9 @@ public class PurityGraph
 	    while (itt.hasNext()) {
 		PurityNode n = (PurityNode)itt.next();
 		if (!nodes.contains(n))
-		    {G.v().out.println("target of local node in nodes "+l+" / "+n);err=true;}
+		    {logger.debug("target of local node in nodes "+l+" / "+n);err=true;}
 		if (!backLocals.get(n).contains(l))
-		    {G.v().out.println("backLocals does contain local "+l+" / "+n);err=true;}
+		    {logger.debug("backLocals does contain local "+l+" / "+n);err=true;}
 	    }
 	}
 	it = backLocals.keySet().iterator();
@@ -334,22 +334,22 @@ public class PurityGraph
 	    while (itt.hasNext()) {
 		Local l = (Local)itt.next();
 		if (!nodes.contains(n))
-		    {G.v().out.println("backLocal node not in in nodes "+l+" / "+n);err=true;}
+		    {logger.debug("backLocal node not in in nodes "+l+" / "+n);err=true;}
 		if (!locals.get(l).contains(n))
-		    {G.v().out.println("locals does contain backLocal "+l+" / "+n);err=true;}
+		    {logger.debug("locals does contain backLocal "+l+" / "+n);err=true;}
 	    }
 	}
 	it = ret.iterator();
 	while (it.hasNext()) {
 	    PurityNode n = (PurityNode)it.next();
 	    if (!nodes.contains(n))
-		{G.v().out.println("target of ret not in nodes "+n);err=true;}
+		{logger.debug("target of ret not in nodes "+n);err=true;}
 	}
 	it = mutated.keySet().iterator();
 	while (it.hasNext()) {
 	    PurityNode n = (PurityNode)it.next();
 	    if (!nodes.contains(n))
-		{G.v().out.println("mutated node not in nodes "+n);err=true;}
+		{logger.debug("mutated node not in nodes "+n);err=true;}
 	}
 	if (err) {
 	    dump();
@@ -1192,20 +1192,20 @@ public class PurityGraph
     /** Debugging... */
 
     static private void dumpSet(String name, Set s) {
-	G.v().out.println(name);
+	logger.debug(""+name);
 	Iterator it = s.iterator();
-	while (it.hasNext()) G.v().out.println("  "+it.next().toString());
+	while (it.hasNext()) logger.debug("  "+it.next().toString());
     }
 
     static private void dumpMultiMap(String name, MultiMap s) {
-	G.v().out.println(name);
+	logger.debug(""+name);
 	Iterator it = s.keySet().iterator();
 	while (it.hasNext()) {
 	    Object o = it.next();
-	    G.v().out.println("  "+o.toString());
+	    logger.debug("  "+o.toString());
 	    Iterator itt = s.get(o).iterator();
 	    while (itt.hasNext()) 
-		G.v().out.println("    "+itt.next().toString());
+		logger.debug("    "+itt.next().toString());
 	}
     }
 
@@ -1220,7 +1220,7 @@ public class PurityGraph
 	dumpMultiMap("backEdges MultiMap:",backEdges);
 	dumpMultiMap("backLocals MultiMap:",backLocals);
 	dumpMultiMap("mutated MultiMap:",mutated);
-	G.v().out.println("");
+	logger.debug("");
     }
 
 
@@ -1234,7 +1234,7 @@ public class PurityGraph
 
     void dumpStat()
     {
-	G.v().out.println("Stat: "+
+	logger.debug("Stat: "+
 			  maxInsideNodes+" inNodes, "+
 			  maxLoadNodes+" loadNodes, "+
 			  maxInsideEdges+" inEdges, "+

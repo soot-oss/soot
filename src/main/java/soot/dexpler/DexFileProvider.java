@@ -165,7 +165,7 @@ public class DexFileProvider {
 
         if (dexFileCount < 1) {
             if (Options.v().verbose())
-                G.v().out.println(String.format("Warning: No dex file found in '%s'", dexSourceFile));
+                logger.debug(""+String.format("Warning: No dex file found in '%s'", dexSourceFile));
             return Collections.emptyMap();
         }
 
@@ -178,7 +178,7 @@ public class DexFileProvider {
             String entryName = entryNameIterator.previous();
             DexBackedDexFile entry = dexContainer.getEntry(entryName);
             entryName = deriveDexName(entryName);
-            G.v().out.println(String.format("Found dex file '%s' with %d classes in '%s'", entryName, entry.getClasses().size(), dexSourceFile.getCanonicalPath()));
+            logger.debug(""+String.format("Found dex file '%s' with %d classes in '%s'", entryName, entry.getClasses().size(), dexSourceFile.getCanonicalPath()));
 
             if (multiple_dex)
                 dexMap.put(entryName, new DexContainer(entry, entryName, dexSourceFile));

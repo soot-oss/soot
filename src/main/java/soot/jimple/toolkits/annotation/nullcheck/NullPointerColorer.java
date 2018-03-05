@@ -82,7 +82,7 @@ public class NullPointerColorer extends BodyTransformer {
 		
 		Value val = vBox.getValue();
 		if (val.getType() instanceof RefLikeType) {
-			//G.v().out.println(val+": "+val.getClass().toString());
+			//logger.debug(""+val+": "+val.getClass().toString());
 		
 			int vInfo = analysis.anyRefInfo(val, set);
 

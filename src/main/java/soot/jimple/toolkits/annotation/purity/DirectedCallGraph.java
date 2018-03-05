@@ -91,13 +91,13 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
         Set<SootMethod> remain = new HashSet<SootMethod>(filteredHeads);
         int nb = 0;
         if (verbose) {
-            G.v().out.println("[AM] dumping method dependencies");
+            logger.debug("[AM] dumping method dependencies");
         }
         while (!remain.isEmpty()) {
             Set<SootMethod> newRemain = new HashSet<SootMethod>();
             for (SootMethod m : remain) {
                 if (verbose) {
-                    G.v().out.println(" |- " + m.toString() + " calls");
+                    logger.debug(" |- " + m.toString() + " calls");
                 }
 
                 for (Iterator<Edge> itt = cg.edgesOutOf(m); itt.hasNext();) {
@@ -105,7 +105,7 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
                     SootMethod mm = edge.tgt();
                     boolean keep = mm.isConcrete() && filter.want(mm);
                     if (verbose) {
-                        G.v().out.println(" |  |- " + mm.toString() + (keep ? "" : " (filtered out)"));
+                        logger.debug(" |  |- " + mm.toString() + (keep ? "" : " (filtered out)"));
                     }
                     if (keep) {
                         if (this.nodes.add(mm)) {
@@ -119,7 +119,7 @@ public class DirectedCallGraph implements DirectedGraph<SootMethod> {
             }
             remain = newRemain;
         }
-        G.v().out.println("[AM] number of methods to be analysed: " + nb);
+        logger.debug("[AM] number of methods to be analysed: " + nb);
 
         // MultiMap -> Map of List
         this.succ = new HashMap<SootMethod, List<SootMethod>>();

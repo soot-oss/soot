@@ -158,7 +158,7 @@ public class Options extends OptionsBase {
                     || option.equals("phase-help")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -225,7 +225,7 @@ public class Options extends OptionsBase {
                     || option.equals("soot-classpath")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -233,7 +233,7 @@ public class Options extends OptionsBase {
                 if (soot_classpath.isEmpty())
                     soot_classpath = value;
                 else {
-                    G.v().out.println("Duplicate values " + soot_classpath + " and " + value + " for option -" + option);
+                    logger.debug("Duplicate values " + soot_classpath + " and " + value + " for option -" + option);
                     return false;
                 }
             }
@@ -260,7 +260,7 @@ public class Options extends OptionsBase {
                     || option.equals("process-dir")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -277,7 +277,7 @@ public class Options extends OptionsBase {
                     || option.equals("android-jars")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -285,7 +285,7 @@ public class Options extends OptionsBase {
                 if (android_jars.isEmpty())
                     android_jars = value;
                 else {
-                    G.v().out.println("Duplicate values " + android_jars + " and " + value + " for option -" + option);
+                    logger.debug("Duplicate values " + android_jars + " and " + value + " for option -" + option);
                     return false;
                 }
             }
@@ -293,7 +293,7 @@ public class Options extends OptionsBase {
                     || option.equals("force-android-jar")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -301,7 +301,7 @@ public class Options extends OptionsBase {
                 if (force_android_jar.isEmpty())
                     force_android_jar = value;
                 else {
-                    G.v().out.println("Duplicate values " + force_android_jar + " and " + value + " for option -" + option);
+                    logger.debug("Duplicate values " + force_android_jar + " and " + value + " for option -" + option);
                     return false;
                 }
             }
@@ -309,7 +309,7 @@ public class Options extends OptionsBase {
                 || option.equals("android-api-version")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -317,7 +317,7 @@ public class Options extends OptionsBase {
                 if(android_api_version == -1)
                     android_api_version = Integer.valueOf(value);
                 else {
-                    G.v().out.println("Duplicate values " + android_api_version + " and " + value + " for option -" + option);
+                    logger.debug("Duplicate values " + android_api_version + " and " + value + " for option -" + option);
                     return false;
                 }
             }
@@ -329,7 +329,7 @@ public class Options extends OptionsBase {
                     || option.equals("src-prec")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -341,7 +341,7 @@ public class Options extends OptionsBase {
                         || value.equals("class")
                 ) {
                     if (src_prec != 0 && src_prec != src_prec_class) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     src_prec = src_prec_class;
@@ -350,7 +350,7 @@ public class Options extends OptionsBase {
                         || value.equals("only-class")
                 ) {
                     if (src_prec != 0 && src_prec != src_prec_only_class) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     src_prec = src_prec_only_class;
@@ -360,7 +360,7 @@ public class Options extends OptionsBase {
                         || value.equals("jimple")
                 ) {
                     if (src_prec != 0 && src_prec != src_prec_jimple) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     src_prec = src_prec_jimple;
@@ -369,7 +369,7 @@ public class Options extends OptionsBase {
                         || value.equals("java")
                 ) {
                     if (src_prec != 0 && src_prec != src_prec_java) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     src_prec = src_prec_java;
@@ -378,7 +378,7 @@ public class Options extends OptionsBase {
                         || value.equals("apk")
                 ) {
                     if (src_prec != 0 && src_prec != src_prec_apk) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     src_prec = src_prec_apk;
@@ -388,13 +388,13 @@ public class Options extends OptionsBase {
                         || value.equals("apk-c-j")
                 ) {
                     if (src_prec != 0 && src_prec != src_prec_apk_c_j) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     src_prec = src_prec_apk_c_j;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    logger.debug(""+String.format("Invalid value %s given for option -%s", option, value));
                     return false;
                 }
             }
@@ -418,7 +418,7 @@ public class Options extends OptionsBase {
                     || option.equals("main-class")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -426,7 +426,7 @@ public class Options extends OptionsBase {
                 if (main_class.isEmpty())
                     main_class = value;
                 else {
-                    G.v().out.println("Duplicate values " + main_class + " and " + value + " for option -" + option);
+                    logger.debug("Duplicate values " + main_class + " and " + value + " for option -" + option);
                     return false;
                 }
             }
@@ -447,7 +447,7 @@ public class Options extends OptionsBase {
                     || option.equals("output-dir")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -455,7 +455,7 @@ public class Options extends OptionsBase {
                 if (output_dir.isEmpty())
                     output_dir = value;
                 else {
-                    G.v().out.println("Duplicate values " + output_dir + " and " + value + " for option -" + option);
+                    logger.debug("Duplicate values " + output_dir + " and " + value + " for option -" + option);
                     return false;
                 }
             }
@@ -464,7 +464,7 @@ public class Options extends OptionsBase {
                     || option.equals("output-format")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -476,7 +476,7 @@ public class Options extends OptionsBase {
                         || value.equals("jimple")
                 ) {
                     if (output_format != 0 && output_format != output_format_jimple) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_jimple;
@@ -486,7 +486,7 @@ public class Options extends OptionsBase {
                         || value.equals("jimp")
                 ) {
                     if (output_format != 0 && output_format != output_format_jimp) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_jimp;
@@ -496,7 +496,7 @@ public class Options extends OptionsBase {
                         || value.equals("shimple")
                 ) {
                     if (output_format != 0 && output_format != output_format_shimple) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_shimple;
@@ -506,7 +506,7 @@ public class Options extends OptionsBase {
                         || value.equals("shimp")
                 ) {
                     if (output_format != 0 && output_format != output_format_shimp) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_shimp;
@@ -516,7 +516,7 @@ public class Options extends OptionsBase {
                         || value.equals("baf")
                 ) {
                     if (output_format != 0 && output_format != output_format_baf) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_baf;
@@ -525,7 +525,7 @@ public class Options extends OptionsBase {
                         || value.equals("b")
                 ) {
                     if (output_format != 0 && output_format != output_format_b) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_b;
@@ -535,7 +535,7 @@ public class Options extends OptionsBase {
                         || value.equals("grimple")
                 ) {
                     if (output_format != 0 && output_format != output_format_grimple) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_grimple;
@@ -545,7 +545,7 @@ public class Options extends OptionsBase {
                         || value.equals("grimp")
                 ) {
                     if (output_format != 0 && output_format != output_format_grimp) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_grimp;
@@ -555,7 +555,7 @@ public class Options extends OptionsBase {
                         || value.equals("xml")
                 ) {
                     if (output_format != 0 && output_format != output_format_xml) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_xml;
@@ -564,7 +564,7 @@ public class Options extends OptionsBase {
                         || value.equals("dex")
                 ) {
                     if (output_format != 0 && output_format != output_format_dex) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_dex;
@@ -573,7 +573,7 @@ public class Options extends OptionsBase {
                         || value.equals("force-dex")
                 ) {
                     if (output_format != 0 && output_format != output_format_force_dex) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_force_dex;
@@ -583,7 +583,7 @@ public class Options extends OptionsBase {
                         || value.equals("none")
                 ) {
                     if (output_format != 0 && output_format != output_format_none) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_none;
@@ -592,7 +592,7 @@ public class Options extends OptionsBase {
                         || value.equals("jasmin")
                 ) {
                     if (output_format != 0 && output_format != output_format_jasmin) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_jasmin;
@@ -602,7 +602,7 @@ public class Options extends OptionsBase {
                         || value.equals("class")
                 ) {
                     if (output_format != 0 && output_format != output_format_class) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_class;
@@ -612,7 +612,7 @@ public class Options extends OptionsBase {
                         || value.equals("dava")
                 ) {
                     if (output_format != 0 && output_format != output_format_dava) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_dava;
@@ -622,7 +622,7 @@ public class Options extends OptionsBase {
                         || value.equals("template")
                 ) {
                     if (output_format != 0 && output_format != output_format_template) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_template;
@@ -632,13 +632,13 @@ public class Options extends OptionsBase {
                         || value.equals("asm")
                 ) {
                     if (output_format != 0 && output_format != output_format_asm) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     output_format = output_format_asm;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    logger.debug(""+String.format("Invalid value %s given for option -%s", option, value));
                     return false;
                 }
             }
@@ -646,7 +646,7 @@ public class Options extends OptionsBase {
                     || option.equals("java-version")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -657,7 +657,7 @@ public class Options extends OptionsBase {
                         || value.equals("default")
                 ) {
                     if (java_version != 0 && java_version != java_version_default) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     java_version = java_version_default;
@@ -667,7 +667,7 @@ public class Options extends OptionsBase {
                         || value.equals("1")
                 ) {
                     if (java_version != 0 && java_version != java_version_1) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     java_version = java_version_1;
@@ -677,7 +677,7 @@ public class Options extends OptionsBase {
                         || value.equals("2")
                 ) {
                     if (java_version != 0 && java_version != java_version_2) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     java_version = java_version_2;
@@ -687,7 +687,7 @@ public class Options extends OptionsBase {
                         || value.equals("3")
                 ) {
                     if (java_version != 0 && java_version != java_version_3) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     java_version = java_version_3;
@@ -697,7 +697,7 @@ public class Options extends OptionsBase {
                         || value.equals("4")
                 ) {
                     if (java_version != 0 && java_version != java_version_4) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     java_version = java_version_4;
@@ -707,7 +707,7 @@ public class Options extends OptionsBase {
                         || value.equals("5")
                 ) {
                     if (java_version != 0 && java_version != java_version_5) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     java_version = java_version_5;
@@ -717,7 +717,7 @@ public class Options extends OptionsBase {
                         || value.equals("6")
                 ) {
                     if (java_version != 0 && java_version != java_version_6) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     java_version = java_version_6;
@@ -727,7 +727,7 @@ public class Options extends OptionsBase {
                         || value.equals("7")
                 ) {
                     if (java_version != 0 && java_version != java_version_7) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     java_version = java_version_7;
@@ -737,13 +737,13 @@ public class Options extends OptionsBase {
                         || value.equals("8")
                 ) {
                     if (java_version != 0 && java_version != java_version_8) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     java_version = java_version_8;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    logger.debug(""+String.format("Invalid value %s given for option -%s", option, value));
                     return false;
                 }
             }
@@ -773,7 +773,7 @@ public class Options extends OptionsBase {
                     || option.equals("dump-body")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -786,7 +786,7 @@ public class Options extends OptionsBase {
                     || option.equals("dump-cfg")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -811,7 +811,7 @@ public class Options extends OptionsBase {
                     || option.equals("plugin")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -820,7 +820,7 @@ public class Options extends OptionsBase {
                     plugin = new LinkedList<>();
                 plugin.add(value);
                 if (!loadPluginConfiguration(value)) {
-                    G.v().out.println("Failed to load plugin " + value);
+                    logger.debug("Failed to load plugin " + value);
                     return false;
                 }
         
@@ -829,7 +829,7 @@ public class Options extends OptionsBase {
                     || option.equals("wrong-staticness")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -840,7 +840,7 @@ public class Options extends OptionsBase {
                         || value.equals("fail")
                 ) {
                     if (wrong_staticness != 0 && wrong_staticness != wrong_staticness_fail) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     wrong_staticness = wrong_staticness_fail;
@@ -849,7 +849,7 @@ public class Options extends OptionsBase {
                         || value.equals("ignore")
                 ) {
                     if (wrong_staticness != 0 && wrong_staticness != wrong_staticness_ignore) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     wrong_staticness = wrong_staticness_ignore;
@@ -858,7 +858,7 @@ public class Options extends OptionsBase {
                         || value.equals("fix")
                 ) {
                     if (wrong_staticness != 0 && wrong_staticness != wrong_staticness_fix) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     wrong_staticness = wrong_staticness_fix;
@@ -867,13 +867,13 @@ public class Options extends OptionsBase {
                         || value.equals("fixstrict")
                 ) {
                     if (wrong_staticness != 0 && wrong_staticness != wrong_staticness_fixstrict) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     wrong_staticness = wrong_staticness_fixstrict;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    logger.debug(""+String.format("Invalid value %s given for option -%s", option, value));
                     return false;
                 }
             }
@@ -881,7 +881,7 @@ public class Options extends OptionsBase {
                     || option.equals("field-type-mismatches")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -892,7 +892,7 @@ public class Options extends OptionsBase {
                         || value.equals("fail")
                 ) {
                     if (field_type_mismatches != 0 && field_type_mismatches != field_type_mismatches_fail) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     field_type_mismatches = field_type_mismatches_fail;
@@ -901,7 +901,7 @@ public class Options extends OptionsBase {
                         || value.equals("ignore")
                 ) {
                     if (field_type_mismatches != 0 && field_type_mismatches != field_type_mismatches_ignore) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     field_type_mismatches = field_type_mismatches_ignore;
@@ -910,13 +910,13 @@ public class Options extends OptionsBase {
                         || value.equals("null")
                 ) {
                     if (field_type_mismatches != 0 && field_type_mismatches != field_type_mismatches_null) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     field_type_mismatches = field_type_mismatches_null;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    logger.debug(""+String.format("Invalid value %s given for option -%s", option, value));
                     return false;
                 }
             }
@@ -925,12 +925,12 @@ public class Options extends OptionsBase {
                 || option.equals("phase-option")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No phase name given for option -" + option);
+                    logger.debug("No phase name given for option -" + option);
                     return false;
                 }
                 String phaseName = nextOption();
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No phase option given for option -" + option + " " + phaseName);
+                    logger.debug("No phase option given for option -" + option + " " + phaseName);
                     return false;
                 }
                 String phaseOption = nextOption();
@@ -986,7 +986,7 @@ public class Options extends OptionsBase {
                     || option.equals("throw-analysis")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -997,7 +997,7 @@ public class Options extends OptionsBase {
                         || value.equals("pedantic")
                 ) {
                     if (throw_analysis != 0 && throw_analysis != throw_analysis_pedantic) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     throw_analysis = throw_analysis_pedantic;
@@ -1006,7 +1006,7 @@ public class Options extends OptionsBase {
                         || value.equals("unit")
                 ) {
                     if (throw_analysis != 0 && throw_analysis != throw_analysis_unit) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     throw_analysis = throw_analysis_unit;
@@ -1015,13 +1015,13 @@ public class Options extends OptionsBase {
                         || value.equals("dalvik")
                 ) {
                     if (throw_analysis != 0 && throw_analysis != throw_analysis_dalvik) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     throw_analysis = throw_analysis_dalvik;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    logger.debug(""+String.format("Invalid value %s given for option -%s", option, value));
                     return false;
                 }
             }
@@ -1030,7 +1030,7 @@ public class Options extends OptionsBase {
                     || option.equals("check-init-throw-analysis")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -1041,7 +1041,7 @@ public class Options extends OptionsBase {
                         || value.equals("auto")
                 ) {
                     if (check_init_throw_analysis != 0 && check_init_throw_analysis != check_init_throw_analysis_auto) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     check_init_throw_analysis = check_init_throw_analysis_auto;
@@ -1050,7 +1050,7 @@ public class Options extends OptionsBase {
                         || value.equals("pedantic")
                 ) {
                     if (check_init_throw_analysis != 0 && check_init_throw_analysis != check_init_throw_analysis_pedantic) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     check_init_throw_analysis = check_init_throw_analysis_pedantic;
@@ -1059,7 +1059,7 @@ public class Options extends OptionsBase {
                         || value.equals("unit")
                 ) {
                     if (check_init_throw_analysis != 0 && check_init_throw_analysis != check_init_throw_analysis_unit) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     check_init_throw_analysis = check_init_throw_analysis_unit;
@@ -1068,13 +1068,13 @@ public class Options extends OptionsBase {
                         || value.equals("dalvik")
                 ) {
                     if (check_init_throw_analysis != 0 && check_init_throw_analysis != check_init_throw_analysis_dalvik) {
-                        G.v().out.println("Multiple values given for option " + option);
+                        logger.debug("Multiple values given for option " + option);
                         return false;
                     }
                     check_init_throw_analysis = check_init_throw_analysis_dalvik;
                 }
                 else {
-                    G.v().out.println(String.format("Invalid value %s given for option -%s", option, value));
+                    logger.debug(""+String.format("Invalid value %s given for option -%s", option, value));
                     return false;
                 }
             }
@@ -1102,7 +1102,7 @@ public class Options extends OptionsBase {
                     || option.equals("include")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -1116,7 +1116,7 @@ public class Options extends OptionsBase {
                     || option.equals("exclude")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -1133,7 +1133,7 @@ public class Options extends OptionsBase {
                     || option.equals("dynamic-class")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -1146,7 +1146,7 @@ public class Options extends OptionsBase {
                     || option.equals("dynamic-dir")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -1159,7 +1159,7 @@ public class Options extends OptionsBase {
                     || option.equals("dynamic-package")
             ) {
                 if (!hasMoreOptions()) {
-                    G.v().out.println("No value given for option -" + option);
+                    logger.debug("No value given for option -" + option);
                     return false;
                 }
 
@@ -1250,7 +1250,7 @@ public class Options extends OptionsBase {
             )
                 no_writeout_body_releasing = true;
             else {
-                G.v().out.println("Invalid option -" + option);
+                logger.debug("Invalid option -" + option);
                 return false;
             }
         }

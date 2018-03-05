@@ -138,7 +138,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
         		prepUnits.add(unit);
         		if(optionPrintDebug)
         		{
-        			G.v().out.println("prep: " + unit.toString());
+        			logger.debug("prep: " + unit.toString());
         		}
         		return;
         	}
@@ -196,14 +196,14 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 				        if(!tn.notifys.contains(unit))
 		            		tn.notifys.add(unit);
 	            		if(optionPrintDebug)
-	            			G.v().out.print("{x,x} ");
+	            			logger.debug("{x,x} ");
 	            	}
 	            	else if((InvokeSig.equals("void wait()") || InvokeSig.equals("void wait(long)") || InvokeSig.equals("void wait(long,int)")) && tn.nestLevel == nestLevel) // only applies to outermost txn
             		{
 				        if(!tn.waits.contains(unit))
 		            		tn.waits.add(unit);
 	            		if(optionPrintDebug)
-	            			G.v().out.print("{x,x} ");
+	            			logger.debug("{x,x} ");
 	            	}
 	            	
 	            	if(!tn.invokes.contains(unit))
@@ -217,23 +217,23 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 							stmtRead = tasea.readSet(tn.method, stmt, tn, new HashSet());
 							stmtWrite = tasea.writeSet(tn.method, stmt, tn, new HashSet());
 
-			           		G.v().out.print("{");
+			           		logger.debug("{");
 				           	if(stmtRead != null)
 				           	{
-					           	G.v().out.print( ( (stmtRead.getGlobals()  != null ? stmtRead.getGlobals().size()  : 0)   + 
+					           	logger.debug(""+ ( (stmtRead.getGlobals()  != null ? stmtRead.getGlobals().size()  : 0)   + 
 					           					   (stmtRead.getFields()   != null ? stmtRead.getFields().size()   : 0) ) );
 					        }
 					        else
-					        	G.v().out.print( "0" );
-					        G.v().out.print(",");
+					        	logger.debug(""+ "0" );
+					        logger.debug(",");
 					        if(stmtWrite != null)
 					        {
-					           	G.v().out.print( ( (stmtWrite.getGlobals() != null ? stmtWrite.getGlobals().size() : 0)   + 
+					           	logger.debug(""+ ( (stmtWrite.getGlobals() != null ? stmtWrite.getGlobals().size() : 0)   + 
 				           						   (stmtWrite.getFields()  != null ? stmtWrite.getFields().size()  : 0) ) );
 				        	}
 				        	else
-				        		G.v().out.print( "0" );
-				        	G.v().out.print("} ");
+				        		logger.debug(""+ "0" );
+				        	logger.debug("} ");
 						}
 		            }
             	}
@@ -267,7 +267,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
             			throw new RuntimeException("Unknown bytecode pattern: exitmonitor not followed by return, exitmonitor, goto, or throw");
 
 	            	if(optionPrintDebug)
-            			G.v().out.print("[0,0] ");
+            			logger.debug("[0,0] ");
             	}
 				else
             	{
@@ -282,23 +282,23 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 		           	// Debug Output
             		if(optionPrintDebug)
 			        {
-			           	G.v().out.print("[");
+			           	logger.debug("[");
 			           	if(stmtRead != null)
 			           	{
-				           	G.v().out.print( ( (stmtRead.getGlobals()  != null ? stmtRead.getGlobals().size()  : 0)   + 
+				           	logger.debug(""+ ( (stmtRead.getGlobals()  != null ? stmtRead.getGlobals().size()  : 0)   + 
 				           					   (stmtRead.getFields()   != null ? stmtRead.getFields().size()   : 0) ) );
 				        }
 				        else
-				        	G.v().out.print( "0" );
-				        G.v().out.print(",");
+				        	logger.debug(""+ "0" );
+				        logger.debug(",");
 				        if(stmtWrite != null)
 				        {
-				           	G.v().out.print( ( (stmtWrite.getGlobals() != null ? stmtWrite.getGlobals().size() : 0)   + 
+				           	logger.debug(""+ ( (stmtWrite.getGlobals() != null ? stmtWrite.getGlobals().size() : 0)   + 
 			           						   (stmtWrite.getFields()  != null ? stmtWrite.getFields().size()  : 0) ) );
 			        	}
 			        	else
-			        		G.v().out.print( "0" );
-			        	G.v().out.print("] ");
+			        		logger.debug(""+ "0" );
+			        	logger.debug("] ");
 					}
         		}
 			}
@@ -309,9 +309,9 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 		{
 			if(!printed)
 			{
-	        	G.v().out.print("[0,0] ");
+	        	logger.debug("[0,0] ");
 			}
-			G.v().out.println(unit.toString());
+			logger.debug(""+unit.toString());
 			
 			// If this unit is an invoke statement calling a library function and the R/W sets are huge, print out the targets
 			if(stmt.containsInvokeExpr() && 
@@ -320,9 +320,9 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 				{
 					if(stmtRead.size() < 25 && stmtWrite.size() < 25)
 					{
-						G.v().out.println("        Read/Write Set for LibInvoke:");
-						G.v().out.println("Read Set:(" + stmtRead.size() + ")" + stmtRead.toString().replaceAll("\n", "\n        "));
-						G.v().out.println("Write Set:(" + stmtWrite.size() + ")" + stmtWrite.toString().replaceAll("\n", "\n        "));
+						logger.debug("        Read/Write Set for LibInvoke:");
+						logger.debug("Read Set:(" + stmtRead.size() + ")" + stmtRead.toString().replaceAll("\n", "\n        "));
+						logger.debug("Write Set:(" + stmtWrite.size() + ")" + stmtWrite.toString().replaceAll("\n", "\n        "));
 					}
 				}
 		}
@@ -338,7 +338,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
 				newTn.origLock = ((EnterMonitorStmt) stmt).getOp();
 				
         	if(optionPrintDebug)
-        		G.v().out.println("Transaction found in method: " + newTn.method.toString());
+        		logger.debug("Transaction found in method: " + newTn.method.toString());
 			out.add(new SynchronizedRegionFlowPair(newTn, true));
 			
 			// This is a really stupid way to find out which prep applies to this txn.

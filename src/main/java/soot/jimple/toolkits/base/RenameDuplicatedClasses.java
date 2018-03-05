@@ -26,7 +26,6 @@ import soot.util.Chain;
  * The definition of duplicated class names.
  * 	if (className1.equalsIgnoreCase(className2)
  * 	{
-    private static final Logger logger = LoggerFactory.getLogger(RenameDuplicatedClasses.class);
  * 		//className1 and className2 are duplicated class names.
  * 	}
  * 
@@ -45,6 +44,8 @@ import soot.util.Chain;
  */
 public class RenameDuplicatedClasses extends SceneTransformer 
 {
+    private static final Logger logger = LoggerFactory.getLogger(RenameDuplicatedClasses.class);
+    
 	public RenameDuplicatedClasses(Singletons.Global g){}
     public static RenameDuplicatedClasses v() 
 	{ 
@@ -69,7 +70,7 @@ public class RenameDuplicatedClasses extends SceneTransformer
 		
 		if(Options.v().verbose())
 		{
-			 G.v().out.println("The fixed class names are: " + fixedClassNames);
+			 logger.debug("The fixed class names are: " + fixedClassNames);
 		}
 		
 		
@@ -96,7 +97,7 @@ public class RenameDuplicatedClasses extends SceneTransformer
 				
 				//if(Options.v().verbose())
 				//{
-					G.v().out.println("Rename duplicated class " + className + " to class " + newClassName);
+					logger.debug("Rename duplicated class " + className + " to class " + newClassName);
 				//}
 			}
 			else
