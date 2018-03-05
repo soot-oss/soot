@@ -1,4 +1,6 @@
 package soot.asm.backend;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static org.junit.Assert.fail;
 
@@ -25,6 +27,7 @@ import com.sun.org.apache.bcel.internal.classfile.ClassFormatException;
  *
  */
 public class ConstantPoolTest extends AbstractASMBackendTest {
+    private static final Logger logger = LoggerFactory.getLogger(ConstantPoolTest.class);
 
 	@Override
 	protected void generate(TraceClassVisitor cw) {

@@ -1,6 +1,9 @@
 package soot.toolkits.exceptions.targets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MethodThrowableSetClass {
+    private static final Logger logger = LoggerFactory.getLogger(MethodThrowableSetClass.class);
 	class target{
 		public target(){
 			

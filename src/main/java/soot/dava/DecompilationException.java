@@ -18,6 +18,8 @@
  */
 
 package soot.dava;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 //import java.util.*;
 //import soot.util.*;
@@ -25,6 +27,7 @@ package soot.dava;
 
 public class DecompilationException extends RuntimeException 
 {
+    private static final Logger logger = LoggerFactory.getLogger(DecompilationException.class);
 
     public DecompilationException(){
 	System.out.println("DECOMPILATION INCOMPLETE:");

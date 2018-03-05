@@ -24,6 +24,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
@@ -73,6 +75,7 @@ import soot.validation.ValueBoxesValidator;
 @SuppressWarnings("serial")
 public abstract class Body extends AbstractHost implements Serializable
 {
+    private static final Logger logger = LoggerFactory.getLogger(Body.class);
     /** The method associated with this Body. */
     protected transient SootMethod method = null;
 

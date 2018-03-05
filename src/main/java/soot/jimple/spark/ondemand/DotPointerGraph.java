@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.ondemand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -40,6 +42,7 @@ import soot.jimple.spark.pag.VarNode;
  * 
  */
 public class DotPointerGraph {
+    private static final Logger logger = LoggerFactory.getLogger(DotPointerGraph.class);
 
 	private final Set<String> edges = new HashSet<String>();
 

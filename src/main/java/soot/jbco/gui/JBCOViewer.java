@@ -1,4 +1,6 @@
 package soot.jbco.gui;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,6 +23,7 @@ import java.io.*;
 * LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
 */
 public class JBCOViewer extends javax.swing.JFrame {
+    private static final Logger logger = LoggerFactory.getLogger(JBCOViewer.class);
 
   private JMenuItem speedMenuItem;
   private JMenuItem sizeMenuItem;

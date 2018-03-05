@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.ondemand.genericutil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -37,6 +39,7 @@ import java.util.Set;
  * Miscellaneous utility functions.
  */
 public class Util {
+    private static final Logger logger = LoggerFactory.getLogger(Util.class);
 
   /** The empty {@link BitSet}. */
   public static final BitSet EMPTY_BITSET = new BitSet();
