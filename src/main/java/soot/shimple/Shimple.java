@@ -292,24 +292,24 @@ public class Shimple
         
         if(phis.size() == 0){
             if(debug)
-                G.v().out.println("Warning: Orphaned UnitBoxes to " + remove + "? Shimple.redirectToPreds is giving up.");
+                logger.warn("Orphaned UnitBoxes to " + remove + "? Shimple.redirectToPreds is giving up.");
             return;
         }
 
         if(preds.size() == 0){
             if(debug)
-                G.v().out.println("Warning: Shimple.redirectToPreds couldn't find any predecessors for " + remove + " in " + body.getMethod() + ".");
+                logger.warn("Shimple.redirectToPreds couldn't find any predecessors for " + remove + " in " + body.getMethod() + ".");
 
             if(!remove.equals(units.getFirst())){
                 Unit pred = (Unit) units.getPredOf(remove);
                 if(debug)
-                    G.v().out.println("Warning: Falling back to immediate chain predecessor: " + pred + ".");
+                    logger.warn("Falling back to immediate chain predecessor: " + pred + ".");
                 preds.add(pred);
             }
             else if(!remove.equals(units.getLast())){
                 Unit succ = (Unit) units.getSuccOf(remove);
                 if(debug)
-                    G.v().out.println("Warning: Falling back to immediate chain successor: " + succ + ".");
+                    logger.warn("Falling back to immediate chain successor: " + succ + ".");
                 preds.add(succ);
             }
             else

@@ -162,7 +162,7 @@ public void jimplify (DexBody body) {
 
     if(elementType==null) {
       //throw new InternalError("Unable to find array type to type array elements!");
-      G.v().out.println("Warning: Unable to find array type to type array elements! Array was not defined! (obfuscated bytecode?)");
+      logger.warn("Unable to find array type to type array elements! Array was not defined! (obfuscated bytecode?)");
       return null;
     }
 

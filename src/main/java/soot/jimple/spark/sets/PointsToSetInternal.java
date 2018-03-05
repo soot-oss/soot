@@ -45,7 +45,7 @@ public abstract class PointsToSetInternal implements PointsToSet, EqualsSupporti
             return addAll( other, null );
         }
         if( !G.v().PointsToSetInternal_warnedAlready ) {
-            G.v().out.println( "Warning: using default implementation of addAll. You should implement a faster specialized implementation." );
+            logger.warn("using default implementation of addAll. You should implement a faster specialized implementation." );
             G.v().out.println( "this is of type "+getClass().getName() );
             G.v().out.println( "other is of type "+other.getClass().getName() );
             if( exclude == null ) {

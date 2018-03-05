@@ -173,7 +173,7 @@ public class TypeAssigner extends BodyTransformer {
 		// force to propagate null constants
 		Map<String, String> opts = PhaseOptions.v().getPhaseOptions("jop.cpf");
 		if (!opts.containsKey("enabled") || !opts.get("enabled").equals("true")) {
-			G.v().out.println("Warning: Cannot run TypeAssigner.replaceNullType(Body). Try to enable jop.cfg.");
+			logger.warn("Cannot run TypeAssigner.replaceNullType(Body). Try to enable jop.cfg.");
 			return;
 		}
 		ConstantPropagatorAndFolder.v().transform(b);

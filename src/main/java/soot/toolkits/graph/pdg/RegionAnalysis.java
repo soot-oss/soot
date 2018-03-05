@@ -156,7 +156,7 @@ public class RegionAnalysis{
             else 
             {
                 if(Options.v().verbose())
-                    G.v().out.println("WARNING: RegionAnalysis: the CFG is multi-headed and tailed, so, the results of this analysis might not be reliable!");
+                    logger.warn("RegionAnalysis: the CFG is multi-headed and tailed, so, the results of this analysis might not be reliable!");
 
                 for(int i = 0; i < this.m_blockCFG.getTails().size(); i++)
                 {

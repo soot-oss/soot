@@ -4292,232 +4292,232 @@ public class Options extends OptionsBase {
                 || phaseName.equals("db.force-recompile")
         ) return;
 
-        G.v().out.println("Warning: Phase " + phaseName + " is not a standard Soot phase listed in XML files.");
+        logger.warn("Phase " + phaseName + " is not a standard Soot phase listed in XML files.");
     }
 
     public void warnNonexistentPhase() {
         if (!PackManager.v().hasPhase("jb"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb");
+            logger.warn("Options exist for non-existent phase jb");
         if (!PackManager.v().hasPhase("jb.dtr"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.dtr");
+            logger.warn("Options exist for non-existent phase jb.dtr");
         if (!PackManager.v().hasPhase("jb.ese"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.ese");
+            logger.warn("Options exist for non-existent phase jb.ese");
         if (!PackManager.v().hasPhase("jb.ls"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.ls");
+            logger.warn("Options exist for non-existent phase jb.ls");
         if (!PackManager.v().hasPhase("jb.a"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.a");
+            logger.warn("Options exist for non-existent phase jb.a");
         if (!PackManager.v().hasPhase("jb.ule"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.ule");
+            logger.warn("Options exist for non-existent phase jb.ule");
         if (!PackManager.v().hasPhase("jb.tr"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.tr");
+            logger.warn("Options exist for non-existent phase jb.tr");
         if (!PackManager.v().hasPhase("jb.ulp"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.ulp");
+            logger.warn("Options exist for non-existent phase jb.ulp");
         if (!PackManager.v().hasPhase("jb.lns"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.lns");
+            logger.warn("Options exist for non-existent phase jb.lns");
         if (!PackManager.v().hasPhase("jb.cp"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.cp");
+            logger.warn("Options exist for non-existent phase jb.cp");
         if (!PackManager.v().hasPhase("jb.dae"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.dae");
+            logger.warn("Options exist for non-existent phase jb.dae");
         if (!PackManager.v().hasPhase("jb.cp-ule"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.cp-ule");
+            logger.warn("Options exist for non-existent phase jb.cp-ule");
         if (!PackManager.v().hasPhase("jb.lp"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.lp");
+            logger.warn("Options exist for non-existent phase jb.lp");
         if (!PackManager.v().hasPhase("jb.ne"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.ne");
+            logger.warn("Options exist for non-existent phase jb.ne");
         if (!PackManager.v().hasPhase("jb.uce"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.uce");
+            logger.warn("Options exist for non-existent phase jb.uce");
         if (!PackManager.v().hasPhase("jb.tt"))
-            G.v().out.println("Warning: Options exist for non-existent phase jb.tt");
+            logger.warn("Options exist for non-existent phase jb.tt");
         if (!PackManager.v().hasPhase("jj"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj");
+            logger.warn("Options exist for non-existent phase jj");
         if (!PackManager.v().hasPhase("jj.ls"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.ls");
+            logger.warn("Options exist for non-existent phase jj.ls");
         if (!PackManager.v().hasPhase("jj.a"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.a");
+            logger.warn("Options exist for non-existent phase jj.a");
         if (!PackManager.v().hasPhase("jj.ule"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.ule");
+            logger.warn("Options exist for non-existent phase jj.ule");
         if (!PackManager.v().hasPhase("jj.tr"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.tr");
+            logger.warn("Options exist for non-existent phase jj.tr");
         if (!PackManager.v().hasPhase("jj.ulp"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.ulp");
+            logger.warn("Options exist for non-existent phase jj.ulp");
         if (!PackManager.v().hasPhase("jj.lns"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.lns");
+            logger.warn("Options exist for non-existent phase jj.lns");
         if (!PackManager.v().hasPhase("jj.cp"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.cp");
+            logger.warn("Options exist for non-existent phase jj.cp");
         if (!PackManager.v().hasPhase("jj.dae"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.dae");
+            logger.warn("Options exist for non-existent phase jj.dae");
         if (!PackManager.v().hasPhase("jj.cp-ule"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.cp-ule");
+            logger.warn("Options exist for non-existent phase jj.cp-ule");
         if (!PackManager.v().hasPhase("jj.lp"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.lp");
+            logger.warn("Options exist for non-existent phase jj.lp");
         if (!PackManager.v().hasPhase("jj.ne"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.ne");
+            logger.warn("Options exist for non-existent phase jj.ne");
         if (!PackManager.v().hasPhase("jj.uce"))
-            G.v().out.println("Warning: Options exist for non-existent phase jj.uce");
+            logger.warn("Options exist for non-existent phase jj.uce");
         if (!PackManager.v().hasPhase("wjpp"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjpp");
+            logger.warn("Options exist for non-existent phase wjpp");
         if (!PackManager.v().hasPhase("wjpp.cimbt"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjpp.cimbt");
+            logger.warn("Options exist for non-existent phase wjpp.cimbt");
         if (!PackManager.v().hasPhase("wspp"))
-            G.v().out.println("Warning: Options exist for non-existent phase wspp");
+            logger.warn("Options exist for non-existent phase wspp");
         if (!PackManager.v().hasPhase("cg"))
-            G.v().out.println("Warning: Options exist for non-existent phase cg");
+            logger.warn("Options exist for non-existent phase cg");
         if (!PackManager.v().hasPhase("cg.cha"))
-            G.v().out.println("Warning: Options exist for non-existent phase cg.cha");
+            logger.warn("Options exist for non-existent phase cg.cha");
         if (!PackManager.v().hasPhase("cg.spark"))
-            G.v().out.println("Warning: Options exist for non-existent phase cg.spark");
+            logger.warn("Options exist for non-existent phase cg.spark");
         if (!PackManager.v().hasPhase("cg.paddle"))
-            G.v().out.println("Warning: Options exist for non-existent phase cg.paddle");
+            logger.warn("Options exist for non-existent phase cg.paddle");
         if (!PackManager.v().hasPhase("wstp"))
-            G.v().out.println("Warning: Options exist for non-existent phase wstp");
+            logger.warn("Options exist for non-existent phase wstp");
         if (!PackManager.v().hasPhase("wsop"))
-            G.v().out.println("Warning: Options exist for non-existent phase wsop");
+            logger.warn("Options exist for non-existent phase wsop");
         if (!PackManager.v().hasPhase("wjtp"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjtp");
+            logger.warn("Options exist for non-existent phase wjtp");
         if (!PackManager.v().hasPhase("wjtp.mhp"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjtp.mhp");
+            logger.warn("Options exist for non-existent phase wjtp.mhp");
         if (!PackManager.v().hasPhase("wjtp.tn"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjtp.tn");
+            logger.warn("Options exist for non-existent phase wjtp.tn");
         if (!PackManager.v().hasPhase("wjtp.rdc"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjtp.rdc");
+            logger.warn("Options exist for non-existent phase wjtp.rdc");
         if (!PackManager.v().hasPhase("wjop"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjop");
+            logger.warn("Options exist for non-existent phase wjop");
         if (!PackManager.v().hasPhase("wjop.smb"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjop.smb");
+            logger.warn("Options exist for non-existent phase wjop.smb");
         if (!PackManager.v().hasPhase("wjop.si"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjop.si");
+            logger.warn("Options exist for non-existent phase wjop.si");
         if (!PackManager.v().hasPhase("wjap"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjap");
+            logger.warn("Options exist for non-existent phase wjap");
         if (!PackManager.v().hasPhase("wjap.ra"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjap.ra");
+            logger.warn("Options exist for non-existent phase wjap.ra");
         if (!PackManager.v().hasPhase("wjap.umt"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjap.umt");
+            logger.warn("Options exist for non-existent phase wjap.umt");
         if (!PackManager.v().hasPhase("wjap.uft"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjap.uft");
+            logger.warn("Options exist for non-existent phase wjap.uft");
         if (!PackManager.v().hasPhase("wjap.tqt"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjap.tqt");
+            logger.warn("Options exist for non-existent phase wjap.tqt");
         if (!PackManager.v().hasPhase("wjap.cgg"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjap.cgg");
+            logger.warn("Options exist for non-existent phase wjap.cgg");
         if (!PackManager.v().hasPhase("wjap.purity"))
-            G.v().out.println("Warning: Options exist for non-existent phase wjap.purity");
+            logger.warn("Options exist for non-existent phase wjap.purity");
         if (!PackManager.v().hasPhase("shimple"))
-            G.v().out.println("Warning: Options exist for non-existent phase shimple");
+            logger.warn("Options exist for non-existent phase shimple");
         if (!PackManager.v().hasPhase("stp"))
-            G.v().out.println("Warning: Options exist for non-existent phase stp");
+            logger.warn("Options exist for non-existent phase stp");
         if (!PackManager.v().hasPhase("sop"))
-            G.v().out.println("Warning: Options exist for non-existent phase sop");
+            logger.warn("Options exist for non-existent phase sop");
         if (!PackManager.v().hasPhase("sop.cpf"))
-            G.v().out.println("Warning: Options exist for non-existent phase sop.cpf");
+            logger.warn("Options exist for non-existent phase sop.cpf");
         if (!PackManager.v().hasPhase("jtp"))
-            G.v().out.println("Warning: Options exist for non-existent phase jtp");
+            logger.warn("Options exist for non-existent phase jtp");
         if (!PackManager.v().hasPhase("jop"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop");
+            logger.warn("Options exist for non-existent phase jop");
         if (!PackManager.v().hasPhase("jop.cse"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.cse");
+            logger.warn("Options exist for non-existent phase jop.cse");
         if (!PackManager.v().hasPhase("jop.bcm"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.bcm");
+            logger.warn("Options exist for non-existent phase jop.bcm");
         if (!PackManager.v().hasPhase("jop.lcm"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.lcm");
+            logger.warn("Options exist for non-existent phase jop.lcm");
         if (!PackManager.v().hasPhase("jop.cp"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.cp");
+            logger.warn("Options exist for non-existent phase jop.cp");
         if (!PackManager.v().hasPhase("jop.cpf"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.cpf");
+            logger.warn("Options exist for non-existent phase jop.cpf");
         if (!PackManager.v().hasPhase("jop.cbf"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.cbf");
+            logger.warn("Options exist for non-existent phase jop.cbf");
         if (!PackManager.v().hasPhase("jop.dae"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.dae");
+            logger.warn("Options exist for non-existent phase jop.dae");
         if (!PackManager.v().hasPhase("jop.nce"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.nce");
+            logger.warn("Options exist for non-existent phase jop.nce");
         if (!PackManager.v().hasPhase("jop.uce1"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.uce1");
+            logger.warn("Options exist for non-existent phase jop.uce1");
         if (!PackManager.v().hasPhase("jop.ubf1"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.ubf1");
+            logger.warn("Options exist for non-existent phase jop.ubf1");
         if (!PackManager.v().hasPhase("jop.uce2"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.uce2");
+            logger.warn("Options exist for non-existent phase jop.uce2");
         if (!PackManager.v().hasPhase("jop.ubf2"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.ubf2");
+            logger.warn("Options exist for non-existent phase jop.ubf2");
         if (!PackManager.v().hasPhase("jop.ule"))
-            G.v().out.println("Warning: Options exist for non-existent phase jop.ule");
+            logger.warn("Options exist for non-existent phase jop.ule");
         if (!PackManager.v().hasPhase("jap"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap");
+            logger.warn("Options exist for non-existent phase jap");
         if (!PackManager.v().hasPhase("jap.npc"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.npc");
+            logger.warn("Options exist for non-existent phase jap.npc");
         if (!PackManager.v().hasPhase("jap.npcolorer"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.npcolorer");
+            logger.warn("Options exist for non-existent phase jap.npcolorer");
         if (!PackManager.v().hasPhase("jap.abc"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.abc");
+            logger.warn("Options exist for non-existent phase jap.abc");
         if (!PackManager.v().hasPhase("jap.profiling"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.profiling");
+            logger.warn("Options exist for non-existent phase jap.profiling");
         if (!PackManager.v().hasPhase("jap.sea"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.sea");
+            logger.warn("Options exist for non-existent phase jap.sea");
         if (!PackManager.v().hasPhase("jap.fieldrw"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.fieldrw");
+            logger.warn("Options exist for non-existent phase jap.fieldrw");
         if (!PackManager.v().hasPhase("jap.cgtagger"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.cgtagger");
+            logger.warn("Options exist for non-existent phase jap.cgtagger");
         if (!PackManager.v().hasPhase("jap.parity"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.parity");
+            logger.warn("Options exist for non-existent phase jap.parity");
         if (!PackManager.v().hasPhase("jap.pat"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.pat");
+            logger.warn("Options exist for non-existent phase jap.pat");
         if (!PackManager.v().hasPhase("jap.lvtagger"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.lvtagger");
+            logger.warn("Options exist for non-existent phase jap.lvtagger");
         if (!PackManager.v().hasPhase("jap.rdtagger"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.rdtagger");
+            logger.warn("Options exist for non-existent phase jap.rdtagger");
         if (!PackManager.v().hasPhase("jap.che"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.che");
+            logger.warn("Options exist for non-existent phase jap.che");
         if (!PackManager.v().hasPhase("jap.umt"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.umt");
+            logger.warn("Options exist for non-existent phase jap.umt");
         if (!PackManager.v().hasPhase("jap.lit"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.lit");
+            logger.warn("Options exist for non-existent phase jap.lit");
         if (!PackManager.v().hasPhase("jap.aet"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.aet");
+            logger.warn("Options exist for non-existent phase jap.aet");
         if (!PackManager.v().hasPhase("jap.dmt"))
-            G.v().out.println("Warning: Options exist for non-existent phase jap.dmt");
+            logger.warn("Options exist for non-existent phase jap.dmt");
         if (!PackManager.v().hasPhase("gb"))
-            G.v().out.println("Warning: Options exist for non-existent phase gb");
+            logger.warn("Options exist for non-existent phase gb");
         if (!PackManager.v().hasPhase("gb.a1"))
-            G.v().out.println("Warning: Options exist for non-existent phase gb.a1");
+            logger.warn("Options exist for non-existent phase gb.a1");
         if (!PackManager.v().hasPhase("gb.cf"))
-            G.v().out.println("Warning: Options exist for non-existent phase gb.cf");
+            logger.warn("Options exist for non-existent phase gb.cf");
         if (!PackManager.v().hasPhase("gb.a2"))
-            G.v().out.println("Warning: Options exist for non-existent phase gb.a2");
+            logger.warn("Options exist for non-existent phase gb.a2");
         if (!PackManager.v().hasPhase("gb.ule"))
-            G.v().out.println("Warning: Options exist for non-existent phase gb.ule");
+            logger.warn("Options exist for non-existent phase gb.ule");
         if (!PackManager.v().hasPhase("gop"))
-            G.v().out.println("Warning: Options exist for non-existent phase gop");
+            logger.warn("Options exist for non-existent phase gop");
         if (!PackManager.v().hasPhase("bb"))
-            G.v().out.println("Warning: Options exist for non-existent phase bb");
+            logger.warn("Options exist for non-existent phase bb");
         if (!PackManager.v().hasPhase("bb.lso"))
-            G.v().out.println("Warning: Options exist for non-existent phase bb.lso");
+            logger.warn("Options exist for non-existent phase bb.lso");
         if (!PackManager.v().hasPhase("bb.sco"))
-            G.v().out.println("Warning: Options exist for non-existent phase bb.sco");
+            logger.warn("Options exist for non-existent phase bb.sco");
         if (!PackManager.v().hasPhase("bb.pho"))
-            G.v().out.println("Warning: Options exist for non-existent phase bb.pho");
+            logger.warn("Options exist for non-existent phase bb.pho");
         if (!PackManager.v().hasPhase("bb.ule"))
-            G.v().out.println("Warning: Options exist for non-existent phase bb.ule");
+            logger.warn("Options exist for non-existent phase bb.ule");
         if (!PackManager.v().hasPhase("bb.lp"))
-            G.v().out.println("Warning: Options exist for non-existent phase bb.lp");
+            logger.warn("Options exist for non-existent phase bb.lp");
         if (!PackManager.v().hasPhase("bop"))
-            G.v().out.println("Warning: Options exist for non-existent phase bop");
+            logger.warn("Options exist for non-existent phase bop");
         if (!PackManager.v().hasPhase("tag"))
-            G.v().out.println("Warning: Options exist for non-existent phase tag");
+            logger.warn("Options exist for non-existent phase tag");
         if (!PackManager.v().hasPhase("tag.ln"))
-            G.v().out.println("Warning: Options exist for non-existent phase tag.ln");
+            logger.warn("Options exist for non-existent phase tag.ln");
         if (!PackManager.v().hasPhase("tag.an"))
-            G.v().out.println("Warning: Options exist for non-existent phase tag.an");
+            logger.warn("Options exist for non-existent phase tag.an");
         if (!PackManager.v().hasPhase("tag.dep"))
-            G.v().out.println("Warning: Options exist for non-existent phase tag.dep");
+            logger.warn("Options exist for non-existent phase tag.dep");
         if (!PackManager.v().hasPhase("tag.fieldrw"))
-            G.v().out.println("Warning: Options exist for non-existent phase tag.fieldrw");
+            logger.warn("Options exist for non-existent phase tag.fieldrw");
         if (!PackManager.v().hasPhase("db"))
-            G.v().out.println("Warning: Options exist for non-existent phase db");
+            logger.warn("Options exist for non-existent phase db");
         if (!PackManager.v().hasPhase("db.transformations"))
-            G.v().out.println("Warning: Options exist for non-existent phase db.transformations");
+            logger.warn("Options exist for non-existent phase db.transformations");
         if (!PackManager.v().hasPhase("db.renamer"))
-            G.v().out.println("Warning: Options exist for non-existent phase db.renamer");
+            logger.warn("Options exist for non-existent phase db.renamer");
         if (!PackManager.v().hasPhase("db.deobfuscate"))
-            G.v().out.println("Warning: Options exist for non-existent phase db.deobfuscate");
+            logger.warn("Options exist for non-existent phase db.deobfuscate");
         if (!PackManager.v().hasPhase("db.force-recompile"))
-            G.v().out.println("Warning: Options exist for non-existent phase db.force-recompile");
+            logger.warn("Options exist for non-existent phase db.force-recompile");
         }
 
 }

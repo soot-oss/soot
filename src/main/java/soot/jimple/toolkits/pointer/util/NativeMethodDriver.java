@@ -139,7 +139,7 @@ public class NativeMethodDriver {
 
 //    G.v().out.println(method.toString());
     if (clsSim == null) {
-	  //G.v().out.println("WARNING: it is unsafe to simulate the method ");
+	  //logger.warn("it is unsafe to simulate the method ");
 	  //G.v().out.println("         "+method.toString());	
       //throw new NativeMethodNotSupportedException(method);
       return true;
@@ -152,7 +152,7 @@ public class NativeMethodDriver {
 			      params);
       } catch (NativeMethodNotSupportedException e) {
           if(DEBUG) {
-              G.v().out.println("WARNING: it is unsafe to simulate the method ");
+              logger.warn("it is unsafe to simulate the method ");
               G.v().out.println("         "+method.toString());	
           }
       }

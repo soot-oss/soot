@@ -284,7 +284,7 @@ public class CFG {
                  
 			    if (bb == null)
 			    {                 
-				G.v().out.println("Warning: "
+				logger.warn(""
 					       +"target of a branch is null");
 				G.v().out.println ( insn );
 			    }
@@ -314,7 +314,7 @@ public class CFG {
 					 ca.exception_table[i].handler_inst);
 	    if ( bb == null )
 	    {
-		G.v().out.println("Warning: No basic block found for" +
+		logger.warn("No basic block found for" +
 				   " start of exception handler code.");
 	    }
 	    else 

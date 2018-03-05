@@ -1342,7 +1342,7 @@ public class ClassFile {
          i = i.next;
       }
       if (codesize != bc.length)
-         G.v().out.println("Warning: code size doesn't match array length!");
+         logger.warn("code size doesn't match array length!");
 
       return bc;
    }
@@ -1458,7 +1458,7 @@ public class ClassFile {
             int j;
             j = desc.indexOf(';',i+1);
             if (j<0) {
-               G.v().out.println("Warning: Parse error -- can't find a ; in " +
+               logger.warn("Parse error -- can't find a ; in " +
                                   desc.substring(i+1));
                param = "<error>";
             } else {

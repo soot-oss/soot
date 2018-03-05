@@ -141,7 +141,7 @@ public class SPatchingChain extends PatchingChain<Unit>
                         // when removing a Phi node, or the user removed
                         // a Phi node and hasn't put it back yet
                         if(debug)
-                            G.v().out.println("Warning: Orphaned UnitBox to " + unit + "?  SPatchingChain will not move the pointer.");
+                            logger.warn("Orphaned UnitBox to " + unit + "?  SPatchingChain will not move the pointer.");
                         continue;
                     }
                 }

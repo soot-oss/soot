@@ -75,7 +75,7 @@ abstract class Instruction_branch extends Instruction {
    public void offsetToPointer(ByteCode bc) {
       target = bc.locateInst(arg_i+label);
       if (target==null) {
-         G.v().out.println("Warning: can't locate target of instruction");
+         logger.warn("can't locate target of instruction");
          G.v().out.println(" which should be at byte address " + (label+arg_i));
       } else
          target.labelled = true;

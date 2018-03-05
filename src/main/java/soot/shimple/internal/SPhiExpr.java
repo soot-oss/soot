@@ -249,8 +249,8 @@ public class SPhiExpr implements PhiExpr
 
         int other = getArgIndex(predTailUnit);
         if(other != -1){
-            G.v().out.println("WARNING: An argument with control flow predecessor " +  predTailUnit + " already exists in " + this + "!");
-            G.v().out.println("WARNING: setPred resulted in deletion of " + argPair + " from " + this + ".");
+            logger.warn("An argument with control flow predecessor " +  predTailUnit + " already exists in " + this + "!");
+            logger.warn("setPred resulted in deletion of " + argPair + " from " + this + ".");
             removeArg(argPair);
             return false;
         }

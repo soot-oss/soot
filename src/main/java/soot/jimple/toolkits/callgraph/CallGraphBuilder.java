@@ -88,7 +88,7 @@ public final class CallGraphBuilder {
 	 * constructor if you need a real call graph.
 	 */
 	public CallGraphBuilder() {
-		G.v().out.println("Warning: using incomplete callgraph containing "
+		logger.warn("using incomplete callgraph containing "
 				+ "only application classes.");
 		pa = soot.jimple.toolkits.pointer.DumbPointerAnalysis.v();
 		cg = new CallGraph();

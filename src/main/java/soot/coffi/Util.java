@@ -137,7 +137,7 @@ public class Util {
 				if (!Scene.v().allowsPhantomRefs())
 					throw new RuntimeException("Could not load classfile: " + bclass.getName());
 				else {
-					G.v().out.println("Warning: " + className + " is a phantom class!");
+					logger.warn("" + className + " is a phantom class!");
 					bclass.setPhantomClass();
 					return;
 				}

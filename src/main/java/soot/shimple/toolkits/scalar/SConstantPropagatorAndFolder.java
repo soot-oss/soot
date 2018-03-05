@@ -123,7 +123,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
                         ((UnitBoxOwner)defSrc).clearUnitBoxes();
                 }
                 else if(debug)
-                    G.v().out.println("Warning: Couldn't propagate constant " + constant + " to box " + defSrcBox.getValue() + " in unit " + stmt);
+                    logger.warn("Couldn't propagate constant " + constant + " to box " + defSrcBox.getValue() + " in unit " + stmt);
             }
             
             // update uses
@@ -137,7 +137,7 @@ public class SConstantPropagatorAndFolder extends BodyTransformer
                     if(useBox.canContainValue(constant))
                        useBox.setValue(constant);
                     else if(debug)
-                        G.v().out.println("Warning: Couldn't propagate constant " + constant + " to box " + useBox.getValue() + " in unit " + pair.getUnit());
+                        logger.warn("Couldn't propagate constant " + constant + " to box " + useBox.getValue() + " in unit " + pair.getUnit());
                 }
             }
         }

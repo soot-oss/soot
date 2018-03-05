@@ -484,7 +484,7 @@ public class Scene // extends AbstractHost
 			if (versionInfo.sdkTargetVersion != -1) {
 				if (versionInfo.sdkTargetVersion > maxAPI && versionInfo.minSdkVersion != -1
 						&& versionInfo.minSdkVersion <= maxAPI) {
-					G.v().out.println("warning: Android API version '" + versionInfo.sdkTargetVersion
+					logger.warn("Android API version '" + versionInfo.sdkTargetVersion
 							+ "' not available, using minApkVersion '" + versionInfo.minSdkVersion + "' instead");
 					APIVersion = versionInfo.minSdkVersion;
 				} else {
@@ -493,7 +493,7 @@ public class Scene // extends AbstractHost
 			} else if (versionInfo.platformBuildVersionCode != -1) {
 				if (versionInfo.platformBuildVersionCode > maxAPI && versionInfo.minSdkVersion != -1
 						&& versionInfo.minSdkVersion <= maxAPI) {
-					G.v().out.println("warning: Android API version '" + versionInfo.platformBuildVersionCode
+					logger.warn("Android API version '" + versionInfo.platformBuildVersionCode
 							+ "' not available, using minApkVersion '" + versionInfo.minSdkVersion + "' instead");
 					APIVersion = versionInfo.minSdkVersion;
 				} else {
@@ -1639,7 +1639,7 @@ public class Scene // extends AbstractHost
 			SootClass c = iterator.next();
 			if (!c.isConcrete()) {
 				if (Options.v().verbose()) {
-					G.v().out.println("Warning: dynamic class " + c.getName()
+					logger.warn("dynamic class " + c.getName()
 							+ " is abstract or an interface, and it will not be considered.");
 				}
 				iterator.remove();

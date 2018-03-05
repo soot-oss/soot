@@ -101,10 +101,10 @@ public class DexClassProvider implements ClassProvider {
                     }
                 }
             } catch (IOException e) {
-                G.v().out.println("Warning: IO error while processing dex file '" + path + "'");
+                logger.warn("IO error while processing dex file '" + path + "'");
                 G.v().out.println("Exception: " + e);
             } catch (Exception e) {
-                G.v().out.println("Warning: exception while processing dex file '" + path + "'");
+                logger.warn("exception while processing dex file '" + path + "'");
                 G.v().out.println("Exception: " + e);
             }
         }

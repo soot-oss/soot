@@ -866,7 +866,7 @@ public final class OnFlyCallGraphBuilder {
 		} else {
 			if (!Scene.v().containsClass(cls)) {
 				if (options.verbose()) {
-					G.v().out.println("Warning: Class " + cls + " is" + " a dynamic class, and you did not specify"
+					logger.warn("Class " + cls + " is" + " a dynamic class, and you did not specify"
 							+ " it as such; graph will be incomplete!");
 				}
 			} else {
@@ -954,7 +954,7 @@ public final class OnFlyCallGraphBuilder {
 				}
 
 				if (options.verbose()) {
-					G.v().out.println("Warning: Method " + source + " is reachable, and calls Class.newInstance;"
+					logger.warn("Method " + source + " is reachable, and calls Class.newInstance;"
 							+ " graph will be incomplete!" + " Use safe-newinstance option for a conservative result.");
 				}
 			}
@@ -975,7 +975,7 @@ public final class OnFlyCallGraphBuilder {
 					}
 				}
 				if (options.verbose()) {
-					G.v().out.println("Warning: Method " + source + " is reachable, and calls Constructor.newInstance;"
+					logger.warn("Method " + source + " is reachable, and calls Constructor.newInstance;"
 							+ " graph will be incomplete!" + " Use safe-newinstance option for a conservative result.");
 				}
 			}
@@ -985,7 +985,7 @@ public final class OnFlyCallGraphBuilder {
 		public void methodInvoke(SootMethod container, Stmt invokeStmt) {
 			if (!warnedAlready(container)) {
 				if (options.verbose()) {
-					G.v().out.println("Warning: call to " + "java.lang.reflect.Method: invoke() from " + container
+					logger.warn("call to " + "java.lang.reflect.Method: invoke() from " + container
 							+ "; graph will be incomplete!");
 				}
 				markWarned(container);
@@ -1165,7 +1165,7 @@ public final class OnFlyCallGraphBuilder {
 			SootMethod container = guard.container;
 			Stmt insertionPoint = guard.stmt;
 			if (!container.hasActiveBody()) {
-				G.v().out.println("WARNING: Tried to insert guard into " + container
+				logger.warn("Tried to insert guard into " + container
 						+ " but couldn't because method has no body.");
 			} else {
 				Body body = container.getActiveBody();

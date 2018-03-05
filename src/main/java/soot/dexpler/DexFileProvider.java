@@ -120,7 +120,7 @@ public class DexFileProvider {
             List<File> dexFiles = getAllDexFilesInDirectory(dexSource);
             if (dexFiles.size() > 1 && !Options.v().process_multiple_dex()) {
                 File file = dexFiles.get(0);
-                G.v().out.println("WARNING: Multiple dex files detected, only processing '" + file.getCanonicalPath() + "'. Use '-process-multiple-dex' option to process them all.");
+                logger.warn("Multiple dex files detected, only processing '" + file.getCanonicalPath() + "'. Use '-process-multiple-dex' option to process them all.");
                 return Collections.singletonList(file);
             } else
                 return dexFiles;
@@ -187,7 +187,7 @@ public class DexFileProvider {
                 // If we haven't found a classes.dex until the last element, take the last!
                 dexMap = Collections.singletonMap(entryName, new DexContainer(entry, entryName, dexSourceFile));
                 if (dexFileCount > 1)
-                    G.v().out.println("WARNING: Multiple dex files detected, only processing '" + entryName + "'. Use '-process-multiple-dex' option to process them all.");
+                    logger.warn("Multiple dex files detected, only processing '" + entryName + "'. Use '-process-multiple-dex' option to process them all.");
             }
         }
         return Collections.unmodifiableMap(dexMap);
