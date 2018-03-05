@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.thread.synchronization;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -18,6 +20,7 @@ import soot.toolkits.graph.*;
 
 public class LockAllocator extends SceneTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(LockAllocator.class);
     public LockAllocator(Singletons.Global g){}
     public static LockAllocator v() 
 	{ 

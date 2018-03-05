@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.thread.synchronization;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +40,7 @@ import soot.toolkits.scalar.Pair;
 import soot.util.Chain;
 
 public class LockAllocationBodyTransformer extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(LockAllocationBodyTransformer.class);
 	private static final LockAllocationBodyTransformer instance = new LockAllocationBodyTransformer();
 
 	private LockAllocationBodyTransformer() {

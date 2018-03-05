@@ -29,6 +29,8 @@
 
 
 package soot.jimple.toolkits.base;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 import soot.*;
 import soot.toolkits.scalar.*;
@@ -39,6 +41,7 @@ import java.util.*;
 
 public class PartialConstructorFolder extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(PartialConstructorFolder.class);
     //public JimpleConstructorFolder( Singletons.Global g ) {}
     //public static JimpleConstructorFolder v() { return G.v().JimpleConstructorFolder(); }
 

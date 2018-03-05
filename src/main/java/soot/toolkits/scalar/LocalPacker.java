@@ -24,6 +24,8 @@
  */
 
 package soot.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.options.*;
 
@@ -50,6 +52,7 @@ import soot.jimple.*;
  * @see LocalSplitter
  */
 public class LocalPacker extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(LocalPacker.class);
 	public LocalPacker(Singletons.Global g) {
 	}
 

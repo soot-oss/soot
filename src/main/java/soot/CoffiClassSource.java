@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.javaToJimple.IInitialResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.*;
@@ -29,6 +31,7 @@ import java.util.*;
  */
 public class CoffiClassSource extends ClassSource
 {
+    private static final Logger logger = LoggerFactory.getLogger(CoffiClassSource.class);
 	
 	private FoundFile foundFile;
     private InputStream classFile;

@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.toolkits.graph.pdg;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.util.ArrayList;
@@ -56,6 +58,7 @@ import soot.toolkits.graph.UnitGraph;
  */
 
 public class RegionAnalysis{
+    private static final Logger logger = LoggerFactory.getLogger(RegionAnalysis.class);
 
     protected SootClass m_class = null;
     protected SootMethod m_method = null;

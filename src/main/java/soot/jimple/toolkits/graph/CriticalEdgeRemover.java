@@ -25,6 +25,8 @@
 
 
 package soot.jimple.toolkits.graph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 
@@ -47,6 +49,7 @@ import soot.jimple.*;
  * Exceptions will be ignored.
  */
 public class CriticalEdgeRemover extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(CriticalEdgeRemover.class);
     public CriticalEdgeRemover( Singletons.Global g ) {}
     public static CriticalEdgeRemover v() { return G.v().soot_jimple_toolkits_graph_CriticalEdgeRemover(); }
 

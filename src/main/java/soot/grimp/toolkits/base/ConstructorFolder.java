@@ -29,6 +29,8 @@
 
 
 package soot.grimp.toolkits.base;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -60,6 +62,7 @@ import soot.util.Chain;
 
 public class ConstructorFolder extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(ConstructorFolder.class);
     public ConstructorFolder( Singletons.Global g ) {}
     public static ConstructorFolder v() { return G.v().soot_grimp_toolkits_base_ConstructorFolder(); }
 

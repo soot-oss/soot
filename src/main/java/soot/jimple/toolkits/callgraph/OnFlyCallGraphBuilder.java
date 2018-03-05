@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.callgraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -106,6 +108,7 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public final class OnFlyCallGraphBuilder {
+    private static final Logger logger = LoggerFactory.getLogger(OnFlyCallGraphBuilder.class);
 	private static final PrimType[] CHAR_NARROWINGS = new PrimType[] { CharType.v() };
 	private static final PrimType[] INT_NARROWINGS = new PrimType[] { IntType.v(), CharType.v(), ShortType.v(),
 			ByteType.v(), ShortType.v() };

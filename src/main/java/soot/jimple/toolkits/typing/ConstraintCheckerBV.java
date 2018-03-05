@@ -25,6 +25,8 @@
 
 
 package soot.jimple.toolkits.typing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.jimple.*;
@@ -38,6 +40,7 @@ import java.io.*;
 @Deprecated
 class ConstraintCheckerBV extends AbstractStmtSwitch
 {
+    private static final Logger logger = LoggerFactory.getLogger(ConstraintCheckerBV.class);
   private final ClassHierarchy hierarchy;
   private final boolean fix;  // if true, fix constraint violations
   

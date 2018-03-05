@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.options.*;
 
@@ -44,6 +46,7 @@ import java.util.*;
 /* Modified By Marc Berndl May 17th */
 
 public class BodyExtractorWalker extends Walker {
+    private static final Logger logger = LoggerFactory.getLogger(BodyExtractorWalker.class);
 	Map<SootMethod, JimpleBody> methodToParsedBodyMap;
 
 	/**

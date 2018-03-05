@@ -28,6 +28,8 @@
  */
 
 package soot.jimple.toolkits.annotation.nullcheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -54,6 +56,7 @@ import soot.toolkits.scalar.*;
 
 public class NullPointerChecker extends BodyTransformer 
 {
+    private static final Logger logger = LoggerFactory.getLogger(NullPointerChecker.class);
     public NullPointerChecker( Singletons.Global g ) {}
     public static NullPointerChecker v() { return G.v().soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker(); }
 

@@ -30,6 +30,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
@@ -60,6 +62,7 @@ import soot.*;
  * @see Instruction_Unknown
  */
 abstract class Instruction_branch extends Instruction {
+    private static final Logger logger = LoggerFactory.getLogger(Instruction_branch.class);
    public int arg_i;
    public Instruction target;         // pointer to target instruction
    public Instruction_branch(byte c) { super(c); branches = true; }

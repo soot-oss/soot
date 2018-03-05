@@ -18,6 +18,8 @@
  */
 
 package soot.shimple.internal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.options.Options;
@@ -33,6 +35,7 @@ import java.util.*;
  **/
 public class SPatchingChain extends PatchingChain<Unit>
 {
+    private static final Logger logger = LoggerFactory.getLogger(SPatchingChain.class);
     /**
      * Needed to find non-trapped Units of the body.
      **/

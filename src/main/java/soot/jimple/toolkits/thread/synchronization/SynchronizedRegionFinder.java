@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.thread.synchronization;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -18,6 +20,7 @@ import soot.toolkits.graph.*;
  */
 public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<SynchronizedRegionFlowPair>>
 {
+    private static final Logger logger = LoggerFactory.getLogger(SynchronizedRegionFinder.class);
     FlowSet<SynchronizedRegionFlowPair> emptySet = new ArraySparseSet<SynchronizedRegionFlowPair>();
 
     Map unitToGenerateSet;

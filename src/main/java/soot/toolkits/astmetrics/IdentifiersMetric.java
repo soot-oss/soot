@@ -18,6 +18,8 @@
  */
 
 package soot.toolkits.astmetrics;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.G;
 import soot.options.*;
@@ -33,6 +35,7 @@ import java.io.*;
  * Created on 5-Mar-2006 
  */
 public class IdentifiersMetric extends ASTMetric {
+    private static final Logger logger = LoggerFactory.getLogger(IdentifiersMetric.class);
 
   double nameComplexity = 0;
   double nameCount =0;

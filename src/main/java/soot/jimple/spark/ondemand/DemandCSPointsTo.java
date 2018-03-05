@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.ondemand;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -78,6 +80,7 @@ import soot.util.NumberedString;
  * 
  */
 public final class DemandCSPointsTo implements PointsToAnalysis {
+    private static final Logger logger = LoggerFactory.getLogger(DemandCSPointsTo.class);
 
 	@SuppressWarnings("serial")
 	protected static final class AllocAndContextCache extends

@@ -1,4 +1,6 @@
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
@@ -32,6 +34,7 @@ import java.util.*;
  * Looks for a dex file which includes the definition of a class.
  */
 public class DexClassProvider implements ClassProvider {
+    private static final Logger logger = LoggerFactory.getLogger(DexClassProvider.class);
 
     public static Set<String> classesOfDex(DexBackedDexFile dexFile) {
         Set<String> classes = new HashSet<String>();

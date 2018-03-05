@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.ondemand.pautil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -29,6 +31,7 @@ import soot.SootMethod;
 import soot.Transform;
 
 public class DumpNumAppReachableMethods extends SceneTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(DumpNumAppReachableMethods.class);
 
     protected void internalTransform(String phaseName, Map options) {
         int numAppMethods = 0;

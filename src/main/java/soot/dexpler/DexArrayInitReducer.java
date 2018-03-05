@@ -1,4 +1,6 @@
 package soot.dexpler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -37,6 +39,7 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  *
  */
 public class DexArrayInitReducer extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(DexArrayInitReducer.class);
 	
 	public static DexArrayInitReducer v() {
 		return new DexArrayInitReducer();

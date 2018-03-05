@@ -19,6 +19,8 @@
 
 
 package soot.jimple.toolkits.annotation.nullcheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.jimple.*;
@@ -72,6 +74,7 @@ import java.util.*;
 @Deprecated
 public class BranchedRefVarsAnalysis  extends ForwardBranchedFlowAnalysis
 {
+    private static final Logger logger = LoggerFactory.getLogger(BranchedRefVarsAnalysis.class);
     /*
         COMPILATION OPTIONS
     */

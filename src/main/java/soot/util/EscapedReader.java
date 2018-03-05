@@ -25,12 +25,15 @@
 
 
 package soot.util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.*;
 
 /** A FilterReader which catches escaped characters (<code>\\unnnn</code>) in the
  * input and de-escapes them.  Used in the Jimple Parser. */
 public class EscapedReader extends FilterReader
 {
+    private static final Logger logger = LoggerFactory.getLogger(EscapedReader.class);
     /** Constructs an EscapedReader around the given Reader. */
     public EscapedReader(Reader fos)
     {

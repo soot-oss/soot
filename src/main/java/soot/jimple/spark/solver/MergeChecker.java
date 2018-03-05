@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.solver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.FastHierarchy;
 import soot.G;
@@ -40,6 +42,7 @@ import soot.util.MultiMap;
  */
 
 public class MergeChecker {
+    private static final Logger logger = LoggerFactory.getLogger(MergeChecker.class);
 	public MergeChecker(PAG pag) {
 		this.pag = pag;
 	}

@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,6 +62,7 @@ import soot.toolkits.scalar.LocalDefs;
 import soot.util.Chain;
 
 public class CopyPropagator extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(CopyPropagator.class);
 
 	protected ThrowAnalysis throwAnalysis = null;
 	protected boolean forceOmitExceptingUnitEdges = false;

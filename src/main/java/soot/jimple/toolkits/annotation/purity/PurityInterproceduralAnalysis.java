@@ -26,6 +26,8 @@
  */
 
 package soot.jimple.toolkits.annotation.purity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -41,6 +43,7 @@ import soot.util.dot.DotGraph;
 
 public class PurityInterproceduralAnalysis
         extends AbstractInterproceduralAnalysis<PurityGraphBox> {
+    private static final Logger logger = LoggerFactory.getLogger(PurityInterproceduralAnalysis.class);
 
     // Note: these method lists are adapted to JDK-1.4.2.06 and may
     // not work for other versions

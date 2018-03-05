@@ -18,6 +18,8 @@
  */
 
 package soot.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.BitSet;
@@ -51,6 +53,7 @@ import soot.util.LocalBitSetPacker;
  * normally {@see SimpleLocalDefs} is much faster.
  */
 public class SmartLocalDefs implements LocalDefs {
+    private static final Logger logger = LoggerFactory.getLogger(SmartLocalDefs.class);
 	private final Map<Cons<Unit, Local>, List<Unit>> answer;
 
 	private final Map<Local, Set<Unit>> localToDefs; // for each local, set of units where it's defined

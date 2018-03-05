@@ -26,6 +26,8 @@
 /* Reference Version: $SootVersion: 1.2.5.dev.5 $ */
 
 package soot.jimple.toolkits.base;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -60,6 +62,7 @@ import soot.toolkits.scalar.UnitValueBoxPair;
 import soot.util.Chain;
 
 public class Aggregator extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(Aggregator.class);
 	public Aggregator(Singletons.Global g) {
 	}
 

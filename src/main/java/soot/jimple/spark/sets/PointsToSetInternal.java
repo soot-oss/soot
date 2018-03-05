@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.sets;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.ClassConstant;
 import soot.jimple.spark.internal.TypeManager;
 import soot.jimple.spark.pag.*;
@@ -29,6 +31,7 @@ import java.util.*;
  * @author Ondrej Lhotak
  */
 public abstract class PointsToSetInternal implements PointsToSet, EqualsSupportingPointsToSet {
+    private static final Logger logger = LoggerFactory.getLogger(PointsToSetInternal.class);
     /** Adds contents of other minus the contents of exclude into this set;
      * returns true if this set changed. */
     public boolean addAll( PointsToSetInternal other,

@@ -30,6 +30,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** A debugging attribute, this gives the names of local variables
  * within blocks of bytecode.
@@ -37,6 +39,7 @@ package soot.coffi;
  * @author Clark Verbrugge
  */
 class LocalVariableTable_attribute extends attribute_info {
+    private static final Logger logger = LoggerFactory.getLogger(LocalVariableTable_attribute.class);
    /** Length of the local variable table. */
    public int local_variable_table_length;
    /** Actual table of local variables. */

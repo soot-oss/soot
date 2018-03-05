@@ -26,6 +26,8 @@
 
 
 package soot.jimple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 import soot.*;
 import soot.jimple.internal.*;
@@ -46,6 +48,7 @@ import soot.grimp.*;
 /** Methods for producing Jasmin code from Jimple. */
 public class JasminClass extends AbstractJasminClass
 {
+    private static final Logger logger = LoggerFactory.getLogger(JasminClass.class);
     void emit(String s, int stackChange)
     {
         modifyStackHeight(stackChange);        

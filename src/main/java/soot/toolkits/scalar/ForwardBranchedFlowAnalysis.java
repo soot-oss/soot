@@ -40,6 +40,8 @@
  */
 
 package soot.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.toolkits.graph.*;
@@ -54,6 +56,7 @@ import soot.options.*;
  * WARNING: This does not handle exceptional flow as branches!
  * */
 public abstract class ForwardBranchedFlowAnalysis<A> extends BranchedFlowAnalysis<Unit, A> {
+    private static final Logger logger = LoggerFactory.getLogger(ForwardBranchedFlowAnalysis.class);
 	public ForwardBranchedFlowAnalysis(UnitGraph graph) {
 		super(graph);
 	}

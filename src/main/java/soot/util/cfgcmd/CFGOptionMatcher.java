@@ -18,6 +18,8 @@
  */
 
 package soot.util.cfgcmd;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.G;
 import soot.CompilationDeathException;
@@ -32,6 +34,7 @@ import soot.CompilationDeathException;
  */
 
 public class CFGOptionMatcher {
+    private static final Logger logger = LoggerFactory.getLogger(CFGOptionMatcher.class);
 
     /**
      * The type stored within a <code>CFGOptionMatcher</code>. Options to

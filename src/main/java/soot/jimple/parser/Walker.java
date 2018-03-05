@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,6 +84,7 @@ import soot.util.StringTools;
 /*Modified By Marc Berndl 17th May */
 
 public class Walker extends DepthFirstAdapter {
+    private static final Logger logger = LoggerFactory.getLogger(Walker.class);
 	boolean debug = false;
 	LinkedList mProductions = new LinkedList();
 	SootClass mSootClass = null;

@@ -1,4 +1,6 @@
 package soot.dexpler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import org.jf.dexlib2.DexFileFactory;
 import org.jf.dexlib2.Opcodes;
@@ -21,6 +23,7 @@ import java.util.*;
  * created on 16.10.17
  */
 public class DexFileProvider {
+    private static final Logger logger = LoggerFactory.getLogger(DexFileProvider.class);
 
     private final static Comparator<DexContainer> DEFAULT_PRIORITIZER = new Comparator<DexContainer>() {
 

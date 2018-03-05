@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -25,6 +27,7 @@ import java.util.*;
  * Provides chain-like operations, except that the key is the phase name. */
 public class RadioScenePack extends ScenePack
 {
+    private static final Logger logger = LoggerFactory.getLogger(RadioScenePack.class);
     public RadioScenePack(String name) {
         super(name);
     }

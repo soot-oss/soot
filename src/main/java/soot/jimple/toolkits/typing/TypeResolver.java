@@ -25,6 +25,8 @@
 
 
 package soot.jimple.toolkits.typing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -68,6 +70,7 @@ import soot.toolkits.scalar.LocalDefs;
  **/
 public class TypeResolver
 {
+    private static final Logger logger = LoggerFactory.getLogger(TypeResolver.class);
   /** Reference to the class hierarchy **/
   private final ClassHierarchy hierarchy;
 

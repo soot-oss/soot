@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -139,6 +141,7 @@ import soot.xml.XMLPrinter;
 
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
+    private static final Logger logger = LoggerFactory.getLogger(PackManager.class);
 	public static boolean DEBUG = false;
 	private final Map<String, Pack> packNameToPack = new HashMap<String, Pack>();
 	private final List<Pack> packList = new LinkedList<Pack>();

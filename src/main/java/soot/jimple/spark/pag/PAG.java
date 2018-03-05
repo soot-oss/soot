@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.pag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,6 +94,7 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public class PAG implements PointsToAnalysis {
+    private static final Logger logger = LoggerFactory.getLogger(PAG.class);
 	public PAG(final SparkOptions opts) {
 		this.opts = opts;
 		this.cgOpts = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));

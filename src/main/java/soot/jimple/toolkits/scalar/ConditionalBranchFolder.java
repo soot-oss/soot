@@ -26,6 +26,8 @@
 
 
 package soot.jimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.util.*;
@@ -36,6 +38,7 @@ import java.util.*;
 
 public class ConditionalBranchFolder  extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(ConditionalBranchFolder.class);
     public ConditionalBranchFolder ( Singletons.Global g ) {}
     public static ConditionalBranchFolder  v() { return G.v().soot_jimple_toolkits_scalar_ConditionalBranchFolder (); }
 

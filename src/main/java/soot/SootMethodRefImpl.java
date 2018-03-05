@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -43,6 +45,7 @@ import soot.util.NumberedString;
  */
 
 public class SootMethodRefImpl implements SootMethodRef {
+    private static final Logger logger = LoggerFactory.getLogger(SootMethodRefImpl.class);
 
 	public SootMethodRefImpl(SootClass declaringClass, String name, List<Type> parameterTypes, Type returnType,
 			boolean isStatic) {

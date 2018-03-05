@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.Map;
@@ -69,6 +71,7 @@ import soot.tagkit.Tag;
  * @author Ondrej Lhotak
  */
 public class SparkTransformer extends SceneTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(SparkTransformer.class);
 	public SparkTransformer(Singletons.Global g) {
 	}
 

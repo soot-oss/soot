@@ -25,6 +25,8 @@
 
 
 package soot.tagkit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import java.util.*;
@@ -38,6 +40,7 @@ import soot.*;
  */
 public class CodeAttribute extends JasminAttribute
 {
+    private static final Logger logger = LoggerFactory.getLogger(CodeAttribute.class);
     protected List<Unit> mUnits;
     protected List<Tag> mTags;
 

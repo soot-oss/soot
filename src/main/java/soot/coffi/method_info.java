@@ -30,6 +30,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 import java.util.*;
@@ -39,6 +41,7 @@ import java.util.*;
  * @author Clark Verbrugge
  */
 public class method_info {
+    private static final Logger logger = LoggerFactory.getLogger(method_info.class);
    /** Access flags for this field. */
     public int access_flags;
    /** Constant pool index of the name of this method.

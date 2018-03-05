@@ -25,6 +25,8 @@
 
 
 package soot.toolkits.graph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.util.*;
@@ -36,6 +38,7 @@ import soot.*;
  */
 
 public class HashMutableDirectedGraph<N> implements MutableDirectedGraph<N> {		
+    private static final Logger logger = LoggerFactory.getLogger(HashMutableDirectedGraph.class);
 
     protected Map<N,Set<N>> nodeToPreds;
     protected Map<N,Set<N>> nodeToSuccs;

@@ -25,6 +25,8 @@
 
 
 package soot.jimple.parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.jimple.JimpleBody;
 import soot.jimple.parser.parser.*;
@@ -40,6 +42,7 @@ import soot.*;
 @Deprecated
 public class Parse 
 {
+    private static final Logger logger = LoggerFactory.getLogger(Parse.class);
     private static final String EXT = ".jimple";
     
     private static final String USAGE = "usage: java Parse [options] " +

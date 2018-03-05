@@ -18,6 +18,8 @@
  */
 
 package soot.shimple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.options.Options;
@@ -32,6 +34,7 @@ import java.util.*;
  **/
 public class ShimpleTransformer extends SceneTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(ShimpleTransformer.class);
     public ShimpleTransformer( Singletons.Global g ) {}
     public static ShimpleTransformer v() { return G.v().soot_shimple_ShimpleTransformer(); }
 

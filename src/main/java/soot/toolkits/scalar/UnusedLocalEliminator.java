@@ -24,6 +24,8 @@
  */
 
 package soot.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +50,7 @@ import soot.util.Chain;
  * @see Body
  */
 public class UnusedLocalEliminator extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(UnusedLocalEliminator.class);
 	public UnusedLocalEliminator(Singletons.Global g) {
 	}
 

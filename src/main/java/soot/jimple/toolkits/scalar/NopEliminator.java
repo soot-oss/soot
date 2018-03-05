@@ -23,6 +23,8 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 package soot.jimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -38,6 +40,7 @@ import soot.options.Options;
 import soot.util.Chain;
 
 public class NopEliminator extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(NopEliminator.class);
 
     public NopEliminator(Singletons.Global g) {
     }

@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import soot.tagkit.*;
 
@@ -25,6 +27,7 @@ import soot.tagkit.*;
  * Adds PositionTags to ValueBoxes to identify their position in the output.
  */
 public class AttributesUnitPrinter {
+    private static final Logger logger = LoggerFactory.getLogger(AttributesUnitPrinter.class);
 
     private Stack<Integer> startOffsets;
 	private int endOffset;

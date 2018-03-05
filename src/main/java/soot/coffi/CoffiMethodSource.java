@@ -25,6 +25,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -33,6 +35,7 @@ import soot.jimple.*;
 
 public class CoffiMethodSource implements MethodSource
 {
+    private static final Logger logger = LoggerFactory.getLogger(CoffiMethodSource.class);
     public ClassFile coffiClass;
     public method_info coffiMethod;
 

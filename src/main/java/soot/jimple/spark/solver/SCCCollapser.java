@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.solver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.*;
 import soot.*;
 import java.util.*;
@@ -30,6 +32,7 @@ import soot.jimple.spark.internal.*;
  */
 
 public class SCCCollapser {
+    private static final Logger logger = LoggerFactory.getLogger(SCCCollapser.class);
     /** Actually collapse the SCCs in the PAG. */
     public void collapse() {
         boolean verbose = pag.getOpts().verbose();

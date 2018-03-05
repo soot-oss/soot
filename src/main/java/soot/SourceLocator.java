@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +50,7 @@ import soot.options.Options;
  * a classfile, or jimple or baf output files.
  */
 public class SourceLocator {
+    private static final Logger logger = LoggerFactory.getLogger(SourceLocator.class);
     protected Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
     protected List<ClassProvider> classProviders;
     protected List<String> classPath;

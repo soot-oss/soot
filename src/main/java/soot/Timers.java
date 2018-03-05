@@ -24,6 +24,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.DecimalFormat;
 
@@ -31,6 +33,7 @@ import soot.options.Options;
 
 public class Timers
 {
+    private static final Logger logger = LoggerFactory.getLogger(Timers.class);
     public Timers( Singletons.Global g ) {}
     public static Timers v() { return G.v().soot_Timers(); }
 

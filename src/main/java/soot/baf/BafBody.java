@@ -28,6 +28,8 @@
 
 
 package soot.baf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -54,6 +56,7 @@ import soot.options.Options;
 
 public class BafBody extends Body
 {
+    private static final Logger logger = LoggerFactory.getLogger(BafBody.class);
     private JimpleToBafContext jimpleToBafContext;
 
     public JimpleToBafContext getContext() {

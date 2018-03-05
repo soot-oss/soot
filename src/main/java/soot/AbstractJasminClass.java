@@ -31,6 +31,8 @@
 
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -79,6 +81,7 @@ import soot.toolkits.graph.Block;
 
 public abstract class AbstractJasminClass
 {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractJasminClass.class);
     protected Map<Unit, String> unitToLabel;
     protected Map<Local, Integer> localToSlot;
     protected Map<Unit, Integer> subroutineToReturnAddressSlot;

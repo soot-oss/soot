@@ -26,6 +26,8 @@
  */
 
 package soot.jimple.toolkits.annotation.purity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.*;
@@ -73,6 +75,7 @@ import soot.util.dot.DotGraphNode;
  * @param <S>
  */
 public abstract class AbstractInterproceduralAnalysis<S> {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractInterproceduralAnalysis.class);
 
     public static final boolean doCheck = false;
 

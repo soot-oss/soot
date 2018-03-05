@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.toolkits.scalar.pre;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.options.*;
 import soot.jimple.toolkits.graph.*;
@@ -56,6 +58,7 @@ import soot.options.LCMOptions;
  * @see soot.jimple.toolkits.graph.CriticalEdgeRemover
  */
 public class LazyCodeMotion extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(LazyCodeMotion.class);
 	public LazyCodeMotion(Singletons.Global g) {
 	}
 

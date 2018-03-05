@@ -25,6 +25,8 @@
 
 
 package soot.grimp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -35,6 +37,7 @@ import java.util.*;
 /** Implementation of the Body class for the Grimp IR. */
 public class GrimpBody extends StmtBody
 {
+    private static final Logger logger = LoggerFactory.getLogger(GrimpBody.class);
     /**
         Construct an empty GrimpBody 
      **/

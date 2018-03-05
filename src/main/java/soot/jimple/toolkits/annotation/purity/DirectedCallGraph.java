@@ -26,6 +26,8 @@
  */
 
 package soot.jimple.toolkits.annotation.purity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import soot.G;
@@ -47,6 +49,7 @@ import soot.util.MultiMap;
  * DirectedGraph!
  */
 public class DirectedCallGraph implements DirectedGraph<SootMethod> {
+    private static final Logger logger = LoggerFactory.getLogger(DirectedCallGraph.class);
 
     protected Set<SootMethod> nodes;
     protected Map<SootMethod, List<SootMethod>> succ;

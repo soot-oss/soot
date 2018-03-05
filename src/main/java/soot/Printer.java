@@ -24,6 +24,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 import java.io.*;
 import soot.tagkit.*;
@@ -36,6 +38,7 @@ import soot.toolkits.graph.*;
 * Prints out a class and all its methods.
 */
 public class Printer {
+    private static final Logger logger = LoggerFactory.getLogger(Printer.class);
     public Printer(Singletons.Global g) {
     }
     public static Printer v() {

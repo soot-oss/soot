@@ -21,6 +21,8 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot.options;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import java.util.*;
@@ -32,6 +34,7 @@ import java.util.*;
  */
 @javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-28T17:56:58.326+01:00", comments = "from soot_options.xml")
 public class Options extends OptionsBase {
+    private static final Logger logger = LoggerFactory.getLogger(Options.class);
 
     public Options(Singletons.Global g) {
     }

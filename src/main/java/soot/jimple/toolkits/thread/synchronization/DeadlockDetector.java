@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.thread.synchronization;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -26,6 +28,7 @@ import soot.toolkits.graph.MutableDirectedGraph;
 import soot.toolkits.graph.MutableEdgeLabelledDirectedGraph;
 
 public class DeadlockDetector {
+    private static final Logger logger = LoggerFactory.getLogger(DeadlockDetector.class);
 
     boolean optionPrintDebug;
     boolean optionRepairDeadlock;

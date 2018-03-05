@@ -4,6 +4,8 @@
  */
 
 package soot.toolkits.graph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ import soot.toolkits.graph.ExceptionalUnitGraph.ExceptionDest;
 import soot.util.Chain;
 
 public class GraphComparer {
+    private static final Logger logger = LoggerFactory.getLogger(GraphComparer.class);
 
     DirectedGraph g1;
     DirectedGraph g2;

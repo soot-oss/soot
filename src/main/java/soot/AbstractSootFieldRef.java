@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 
@@ -31,6 +33,7 @@ import soot.options.Options;
  */
 
 public class AbstractSootFieldRef implements SootFieldRef {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractSootFieldRef.class);
 	public AbstractSootFieldRef(SootClass declaringClass, String name, Type type, boolean isStatic) {
 		this.declaringClass = declaringClass;
 		this.name = name;

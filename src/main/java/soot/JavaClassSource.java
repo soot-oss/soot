@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.File;
 
 import polyglot.ast.Node;
@@ -32,6 +34,7 @@ import soot.toolkits.astmetrics.ComputeASTMetrics;
  */
 public class JavaClassSource extends ClassSource
 {
+    private static final Logger logger = LoggerFactory.getLogger(JavaClassSource.class);
     public JavaClassSource( String className, File fullPath ) {
         super( className );
         this.fullPath = fullPath;

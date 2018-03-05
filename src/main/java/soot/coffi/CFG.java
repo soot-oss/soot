@@ -30,6 +30,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -100,6 +102,7 @@ import soot.util.Chain;
  * @author Clark Verbrugge
  */
 public class CFG {
+    private static final Logger logger = LoggerFactory.getLogger(CFG.class);
 
     /** Method for which this is a control flow graph.
      * @see method_info

@@ -24,6 +24,8 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 package soot.toolkits.graph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -36,6 +38,7 @@ import soot.G;
  * @param <L>
  */
 public class HashMutableEdgeLabelledDirectedGraph<N, L> implements MutableEdgeLabelledDirectedGraph<N, L> {
+    private static final Logger logger = LoggerFactory.getLogger(HashMutableEdgeLabelledDirectedGraph.class);
 
     private static class DGEdge<N> {
 

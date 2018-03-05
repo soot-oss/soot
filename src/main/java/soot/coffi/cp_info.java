@@ -30,6 +30,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 import java.util.StringTokenizer;
@@ -39,6 +41,7 @@ import java.util.StringTokenizer;
  * @author Clark Verbrugge
  */
 abstract class cp_info {
+    private static final Logger logger = LoggerFactory.getLogger(cp_info.class);
 
    public static final byte CONSTANT_Utf8 = 1;
    public static final byte CONSTANT_Integer = 3;

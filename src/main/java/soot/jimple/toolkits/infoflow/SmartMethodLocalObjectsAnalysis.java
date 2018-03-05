@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.infoflow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 
@@ -12,6 +14,7 @@ import soot.jimple.*;
 
 public class SmartMethodLocalObjectsAnalysis
 {
+    private static final Logger logger = LoggerFactory.getLogger(SmartMethodLocalObjectsAnalysis.class);
 	public static int counter = 0;
 	static boolean printMessages;
 	

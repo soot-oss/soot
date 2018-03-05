@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.geom.geomPA;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -90,6 +92,7 @@ import soot.util.queue.QueueReader;
  */
 public class GeomPointsTo extends PAG 
 {
+    private static final Logger logger = LoggerFactory.getLogger(GeomPointsTo.class);
 	// Worklist, the core data structure for fixed point computation
 	// Other choice, FIFO_Worklist
 	protected IWorklist worklist = null;

@@ -18,12 +18,15 @@
  */
 
 package soot.tools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import java.util.*;
 import soot.jimple.*;
 import soot.jimple.toolkits.callgraph.*;
 
 public class BadFields extends SceneTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(BadFields.class);
     public static void main(String[] args) 
     {
 	PackManager.v().getPack("cg").add(

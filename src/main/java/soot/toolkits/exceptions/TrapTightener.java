@@ -18,6 +18,8 @@
  */
 
 package soot.toolkits.exceptions;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -53,6 +55,7 @@ import soot.util.Chain;
  */
 
 public final class TrapTightener extends TrapTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(TrapTightener.class);
 
 	protected ThrowAnalysis throwAnalysis = null;
 

@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.solver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
@@ -32,6 +34,7 @@ import java.util.*;
  */
 
 public final class PropMerge extends Propagator {
+    private static final Logger logger = LoggerFactory.getLogger(PropMerge.class);
 	protected final Set<Node> varNodeWorkList = new TreeSet<Node>();
 
 	public PropMerge(PAG pag) {

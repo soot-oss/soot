@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.infoflow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 
@@ -14,6 +16,7 @@ import soot.jimple.*;
 
 public class ClassLocalObjectsAnalysis
 {
+    private static final Logger logger = LoggerFactory.getLogger(ClassLocalObjectsAnalysis.class);
 	boolean printdfgs;
 
 	LocalObjectsAnalysis loa;

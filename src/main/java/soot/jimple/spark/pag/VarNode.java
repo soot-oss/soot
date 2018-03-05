@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.pag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ import soot.toolkits.scalar.Pair;
  * @author Ondrej Lhotak
  */
 public abstract class VarNode extends ValNode implements Comparable {
+    private static final Logger logger = LoggerFactory.getLogger(VarNode.class);
     public Context context() { return null; }
     /** Returns all field ref nodes having this node as their base. */
     public Collection<FieldRefNode> getAllFieldRefs() { 

@@ -24,12 +24,15 @@
  */
 
 package soot.jimple.toolkits.pointer.nativemethods;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.jimple.toolkits.pointer.representations.*;
 import soot.jimple.toolkits.pointer.util.*;
 
 public class JavaLangSystemNative extends NativeMethodClass {
+    private static final Logger logger = LoggerFactory.getLogger(JavaLangSystemNative.class);
     public JavaLangSystemNative( NativeHelper helper ) { super(helper); }
 
   /**

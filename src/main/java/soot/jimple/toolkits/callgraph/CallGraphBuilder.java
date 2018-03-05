@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.callgraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -48,6 +50,7 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public final class CallGraphBuilder {
+    private static final Logger logger = LoggerFactory.getLogger(CallGraphBuilder.class);
 	private PointsToAnalysis pa;
 	private final ReachableMethods reachables;
 	private final OnFlyCallGraphBuilder ofcgb;

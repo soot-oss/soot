@@ -25,6 +25,8 @@
 
 
 package soot.jimple.toolkits.typing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.options.Options;
@@ -37,6 +39,7 @@ import java.util.*;
 @Deprecated
 class TypeVariableBV implements Comparable<Object>
 {
+    private static final Logger logger = LoggerFactory.getLogger(TypeVariableBV.class);
   private static final boolean DEBUG = false;
 
   private final int id;

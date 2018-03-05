@@ -24,6 +24,8 @@
  */
 
 package soot.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.util.BitSet;
@@ -66,6 +68,7 @@ import soot.util.LocalBitSetPacker;
  * @see Body
  */
 public class LocalSplitter extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(LocalSplitter.class);
 
 	protected ThrowAnalysis throwAnalysis;
 	protected boolean omitExceptingUnitEdges;

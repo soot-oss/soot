@@ -1,7 +1,10 @@
 package soot.jimple.toolkits.thread.synchronization;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class SynchronizedRegionFlowPair
 {
+    private static final Logger logger = LoggerFactory.getLogger(SynchronizedRegionFlowPair.class);
 	// Information about the transactional region
 	public CriticalSection tn;
 	public boolean inside;

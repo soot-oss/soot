@@ -25,6 +25,8 @@
 
 
 package soot.baf.toolkits.base;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.util.*;
@@ -36,6 +38,7 @@ import soot.toolkits.graph.*;
 
 public class LoadStoreOptimizer extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(LoadStoreOptimizer.class);
     public LoadStoreOptimizer( Singletons.Global g ) {}
     public static LoadStoreOptimizer v() { return G.v().soot_baf_toolkits_base_LoadStoreOptimizer(); }
 

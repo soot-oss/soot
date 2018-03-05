@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -39,6 +41,7 @@ import java.util.*;
 
 public class RectangularArrayFinder extends SceneTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(RectangularArrayFinder.class);
     public RectangularArrayFinder( Singletons.Global g ) {}
     public static RectangularArrayFinder v() { return G.v().soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder(); }
 

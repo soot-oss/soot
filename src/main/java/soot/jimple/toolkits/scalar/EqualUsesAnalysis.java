@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import java.util.*;
@@ -20,6 +22,7 @@ import soot.jimple.*;
 @Deprecated
 public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit,FlowSet>
 {
+    private static final Logger logger = LoggerFactory.getLogger(EqualUsesAnalysis.class);
 	// Provided by client
 	Map<Stmt, Local> stmtToLocal;
 	Set<Stmt> useStmts;

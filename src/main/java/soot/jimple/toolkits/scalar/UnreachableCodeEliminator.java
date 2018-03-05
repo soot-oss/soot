@@ -26,6 +26,8 @@
 
 
 package soot.jimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -53,6 +55,7 @@ import soot.util.Chain;
 
 public class UnreachableCodeEliminator extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(UnreachableCodeEliminator.class);
 	protected ThrowAnalysis throwAnalysis = null;
 
 	public UnreachableCodeEliminator( Singletons.Global g ) {}

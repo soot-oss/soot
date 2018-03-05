@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.annotation.logic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.toolkits.graph.*;
@@ -29,6 +31,7 @@ import soot.toolkits.scalar.*;
 import soot.tagkit.*;
 
 public class LoopInvariantFinder extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(LoopInvariantFinder.class);
 
     private ArrayList constants; 
 

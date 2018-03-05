@@ -25,10 +25,13 @@
  * @author Feng Qian 
  */
 package soot.util.dot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.*;
 
 public class DotGraphUtility {
+    private static final Logger logger = LoggerFactory.getLogger(DotGraphUtility.class);
 
     /**
      * Replace any {@code "} with {@code \"}. If the {@code "} character was

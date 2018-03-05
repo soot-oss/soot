@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.infoflow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -21,6 +23,7 @@ import soot.jimple.*;
 
 public class InfoFlowAnalysis
 {
+    private static final Logger logger = LoggerFactory.getLogger(InfoFlowAnalysis.class);
 	boolean includePrimitiveInfoFlow;
 	boolean includeInnerFields;
 	boolean printDebug;

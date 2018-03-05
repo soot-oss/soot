@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.internal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -59,6 +61,7 @@ import soot.util.queue.QueueReader;
  * reversed-topological-order.
  */
 public final class TypeManager {
+    private static final Logger logger = LoggerFactory.getLogger(TypeManager.class);
     private Map<SootClass, List<AllocNode>> class2allocs = 
         new HashMap<SootClass, List<AllocNode>>(1024);
     private List<AllocNode> anySubtypeAllocs = new LinkedList<AllocNode>();

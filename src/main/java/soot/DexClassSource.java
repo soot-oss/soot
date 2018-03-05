@@ -1,4 +1,6 @@
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2011, 2012 Michael Markert
  *
@@ -30,6 +32,7 @@ import soot.options.Options;
  * Responsible for resolving a single class from a dex source format. 
  */
 public class DexClassSource extends ClassSource {
+    private static final Logger logger = LoggerFactory.getLogger(DexClassSource.class);
     protected File path;
     /**
      * @param className the class which dependencies are to be resolved.

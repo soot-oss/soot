@@ -25,6 +25,8 @@
 
 
 package soot.util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.PrintWriter;
@@ -57,6 +59,7 @@ import soot.util.dot.DotGraph;
  */
 
 public class PhaseDumper {
+    private static final Logger logger = LoggerFactory.getLogger(PhaseDumper.class);
     // As a minor optimization, we leave these lists null in the
     // case were no phases at all are to be dumped, which is the 
     // most likely case.

@@ -24,6 +24,8 @@
  */
 
 package soot.tools;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,6 +55,7 @@ import soot.util.dot.DotGraph;
  * @author Feng Qian
  */
 public class CFGViewer extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(CFGViewer.class);
 
 	private static final String packToJoin = "jtp";
 	private static final String phaseSubname = "printcfg";

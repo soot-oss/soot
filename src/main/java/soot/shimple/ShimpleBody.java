@@ -18,6 +18,8 @@
  */
 
 package soot.shimple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.options.*;
@@ -44,6 +46,7 @@ import java.util.*;
  **/
 public class ShimpleBody extends StmtBody
 {
+    private static final Logger logger = LoggerFactory.getLogger(ShimpleBody.class);
     /**
      * Holds our options map...
      **/

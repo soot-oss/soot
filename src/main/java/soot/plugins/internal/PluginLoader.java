@@ -19,6 +19,8 @@
  */
 
 package soot.plugins.internal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.security.InvalidParameterException;
@@ -41,6 +43,7 @@ import soot.plugins.model.Plugins;
  * @author Bernhard J. Berger
  */
 public class PluginLoader {
+    private static final Logger logger = LoggerFactory.getLogger(PluginLoader.class);
 
 	private static ClassLoadingStrategy loadStrategy = new ReflectionClassLoadingStrategy();
 

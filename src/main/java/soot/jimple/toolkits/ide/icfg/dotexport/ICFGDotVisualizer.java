@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.ide.icfg.dotexport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -10,6 +12,7 @@ import soot.Unit;
 import soot.util.dot.DotGraph;
 
 public class ICFGDotVisualizer {
+    private static final Logger logger = LoggerFactory.getLogger(ICFGDotVisualizer.class);
 	private DotGraph dotIcfg = new DotGraph("");
 	private ArrayList<Unit> visited = new ArrayList<Unit>();
 	String fileName;

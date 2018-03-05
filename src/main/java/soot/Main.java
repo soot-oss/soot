@@ -24,6 +24,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static java.net.URLEncoder.encode;
 
@@ -45,6 +47,7 @@ import com.google.common.base.Joiner;
 
 /** Main class for Soot; provides Soot's command-line user interface. */
 public class Main {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 	public Main(Singletons.Global g) {
 	}
 	public static Main v() {

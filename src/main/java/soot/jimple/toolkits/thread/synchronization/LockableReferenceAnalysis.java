@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.thread.synchronization;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import java.util.*;
@@ -20,6 +22,7 @@ import soot.jimple.toolkits.infoflow.*;
  */
 public class LockableReferenceAnalysis extends BackwardFlowAnalysis<Unit,LocksetFlowInfo>
 {
+    private static final Logger logger = LoggerFactory.getLogger(LockableReferenceAnalysis.class);
 	UnitGraph graph;
 	SootMethod method;
 	CriticalSectionAwareSideEffectAnalysis tasea;

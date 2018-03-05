@@ -19,6 +19,8 @@
  */
 
 package soot.dava;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.io.BufferedWriter;
@@ -44,6 +46,7 @@ import soot.util.IterableSet;
 
 public class Dava
 {
+    private static final Logger logger = LoggerFactory.getLogger(Dava.class);
     public Dava( Singletons.Global g ) {}
     public static Dava v() { return G.v().soot_dava_Dava(); }
     private static final String LOG_TO_FILE = null;

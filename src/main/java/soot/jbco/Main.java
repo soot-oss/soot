@@ -18,6 +18,8 @@
  */
 
 package soot.jbco;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +34,7 @@ import soot.jbco.jimpleTransformations.*;
  * Created on 24-Jan-2006 
  */
 public class Main {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
   public static boolean jbcoDebug = false;
   public static boolean jbcoSummary = true;

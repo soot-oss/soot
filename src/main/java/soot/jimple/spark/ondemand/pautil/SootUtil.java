@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.ondemand.pautil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -71,6 +73,7 @@ import soot.util.queue.ChunkedQueue;
  * 
  */
 public class SootUtil {
+    private static final Logger logger = LoggerFactory.getLogger(SootUtil.class);
 
   public final static class CallSiteAndContext extends Pair<Integer, ImmutableStack<Integer>> {
 

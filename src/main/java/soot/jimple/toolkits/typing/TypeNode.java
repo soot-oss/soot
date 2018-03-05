@@ -25,6 +25,8 @@
 
 
 package soot.jimple.toolkits.typing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -46,6 +48,7 @@ import soot.util.BitVector;
  **/
 class TypeNode
 {
+    private static final Logger logger = LoggerFactory.getLogger(TypeNode.class);
   private static final boolean DEBUG = false;
 
   private final int id;

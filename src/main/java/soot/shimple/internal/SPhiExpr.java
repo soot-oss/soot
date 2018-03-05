@@ -18,6 +18,8 @@
  */
 
 package soot.shimple.internal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.shimple.*;
@@ -36,6 +38,7 @@ import soot.toolkits.graph.*;
  **/
 public class SPhiExpr implements PhiExpr
 {
+    private static final Logger logger = LoggerFactory.getLogger(SPhiExpr.class);
     protected List<ValueUnitPair> argPairs = new ArrayList<ValueUnitPair>();
     protected Map<Unit, ValueUnitPair> predToPair = new HashMap<Unit, ValueUnitPair>();  // cache
     protected Type type;

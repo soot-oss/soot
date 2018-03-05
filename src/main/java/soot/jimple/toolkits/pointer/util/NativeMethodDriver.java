@@ -25,6 +25,8 @@
  * @author Feng Qian
  */
 package soot.jimple.toolkits.pointer.util;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.jimple.toolkits.pointer.representations.*;
@@ -32,6 +34,7 @@ import soot.jimple.toolkits.pointer.nativemethods.*;
 import java.util.*;
 
 public class NativeMethodDriver {
+    private static final Logger logger = LoggerFactory.getLogger(NativeMethodDriver.class);
     public NativeMethodDriver( NativeHelper helper ) {
         cnameToSim.put("java.lang.Object", new JavaLangObjectNative(helper));
         cnameToSim.put("java.lang.System", new JavaLangSystemNative(helper));

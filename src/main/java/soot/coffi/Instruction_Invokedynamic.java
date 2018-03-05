@@ -30,6 +30,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.G;
 
@@ -64,6 +66,7 @@ import soot.G;
 //INSERTED Instruction_Invokedynamic
 
 class Instruction_Invokedynamic extends Instruction_intindex {
+    private static final Logger logger = LoggerFactory.getLogger(Instruction_Invokedynamic.class);
    public Instruction_Invokedynamic() {
       super((byte)ByteCode.INVOKEDYNAMIC);
       name = "invokedynamic";

@@ -18,6 +18,8 @@
  */
 
 package soot.toolkits.graph.interaction;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.toolkits.graph.*;
@@ -26,6 +28,7 @@ import java.util.*;
 import soot.options.*;
 
 public class InteractionHandler {
+    private static final Logger logger = LoggerFactory.getLogger(InteractionHandler.class);
    
     public InteractionHandler(Singletons.Global g){}
     public static InteractionHandler v() { return G.v().soot_toolkits_graph_interaction_InteractionHandler();}

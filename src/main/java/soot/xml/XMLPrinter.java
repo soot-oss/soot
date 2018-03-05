@@ -24,6 +24,8 @@
  */
 
 package soot.xml;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.PrintWriter;
 import java.util.Collection;
 import java.util.Date;
@@ -55,6 +57,7 @@ import soot.util.Chain;
 
 /** XML printing routines all XML output comes through here */
 public class XMLPrinter {
+    private static final Logger logger = LoggerFactory.getLogger(XMLPrinter.class);
     // xml and dtd header
     public static final String xmlHeader = "<?xml version=\"1.0\" ?>\n";
     public static final String dtdHeader =

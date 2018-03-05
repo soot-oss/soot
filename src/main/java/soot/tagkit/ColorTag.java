@@ -25,9 +25,12 @@
 
 
 package soot.tagkit;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ColorTag implements Tag
 {
+    private static final Logger logger = LoggerFactory.getLogger(ColorTag.class);
     /* it is a value representing red. */
     private int red;
     /* it is a value representing green. */

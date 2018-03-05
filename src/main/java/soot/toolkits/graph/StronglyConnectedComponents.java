@@ -24,6 +24,8 @@
  */
 
 package soot.toolkits.graph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -42,6 +44,7 @@ import java.util.*;
 @Deprecated
 public class StronglyConnectedComponents
 {
+    private static final Logger logger = LoggerFactory.getLogger(StronglyConnectedComponents.class);
     private HashMap<Object, Object> nodeToColor;
     private static final Object Visited=new Object();
     private static final Object Black=new Object();

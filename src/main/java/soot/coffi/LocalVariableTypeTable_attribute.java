@@ -30,6 +30,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 /** A debugging attribute, this gives the types of local variables
@@ -39,6 +41,7 @@ import soot.*;
  * modified from LocalVariableTable_attribute
  */
 class LocalVariableTypeTable_attribute extends attribute_info {
+    private static final Logger logger = LoggerFactory.getLogger(LocalVariableTypeTable_attribute.class);
    /** Length of the local variable type table. */
    public int local_variable_type_table_length;
    /** Actual table of local variable types. */

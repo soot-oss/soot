@@ -24,6 +24,8 @@
  */
 
 package soot.baf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,6 +75,7 @@ import soot.util.ArraySet;
 import soot.util.Chain;
 
 public class JasminClass extends AbstractJasminClass {
+    private static final Logger logger = LoggerFactory.getLogger(JasminClass.class);
 
 	public JasminClass(SootClass sootClass) {
 		super(sootClass);

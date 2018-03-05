@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.solver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
@@ -31,6 +33,7 @@ import soot.*;
  */
 
 public class Checker {
+    private static final Logger logger = LoggerFactory.getLogger(Checker.class);
 	public Checker(PAG pag) {
 		this.pag = pag;
 	}

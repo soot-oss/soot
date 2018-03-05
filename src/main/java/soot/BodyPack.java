@@ -25,6 +25,8 @@
 
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import soot.toolkits.graph.interaction.*;
@@ -34,6 +36,7 @@ import soot.options.*;
  * Provides chain-like operations, except that the key is the phase name. */
 public class BodyPack extends Pack
 {
+    private static final Logger logger = LoggerFactory.getLogger(BodyPack.class);
     public BodyPack(String name) {
         super(name);
     }

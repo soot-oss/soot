@@ -1,5 +1,7 @@
 
 package soot.jimple.toolkits.thread.mhp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.toolkits.scalar.*;
@@ -33,6 +35,7 @@ import java.util.*;
 
 public class SynchObliviousMhpAnalysis implements MhpTester, Runnable
 {
+    private static final Logger logger = LoggerFactory.getLogger(SynchObliviousMhpAnalysis.class);
 	List<AbstractRuntimeThread> threadList;
 	boolean optionPrintDebug;
 	boolean optionThreaded = false; // DOESN'T WORK if set to true... ForwardFlowAnalysis uses a static field in a thread-unsafe way

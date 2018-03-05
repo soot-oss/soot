@@ -25,6 +25,8 @@
 
 
 package soot.jimple.toolkits.typing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -69,6 +71,7 @@ import soot.util.BitVector;
 @Deprecated
 public class TypeResolverBV
 {
+    private static final Logger logger = LoggerFactory.getLogger(TypeResolverBV.class);
   /** Reference to the class hierarchy **/
   private final ClassHierarchy hierarchy;
 

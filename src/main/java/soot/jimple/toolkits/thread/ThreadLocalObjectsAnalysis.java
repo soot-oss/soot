@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.thread;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 
@@ -13,6 +15,7 @@ import soot.jimple.*;
 
 public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements IThreadLocalObjectsAnalysis 
 {
+    private static final Logger logger = LoggerFactory.getLogger(ThreadLocalObjectsAnalysis.class);
 	MhpTester mhp;
 	List<AbstractRuntimeThread> threads;
 	InfoFlowAnalysis primitiveDfa;

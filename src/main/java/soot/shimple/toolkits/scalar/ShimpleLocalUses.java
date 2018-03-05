@@ -18,6 +18,8 @@
  */
 
 package soot.shimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.shimple.*;
@@ -43,6 +45,7 @@ import java.util.*;
  **/
 public class ShimpleLocalUses implements LocalUses
 {
+    private static final Logger logger = LoggerFactory.getLogger(ShimpleLocalUses.class);
     protected  Map<Local, ArrayList> localToUses;
 
     /**

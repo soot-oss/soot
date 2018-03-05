@@ -25,6 +25,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -78,6 +80,7 @@ import soot.util.StringNumberer;
 /** Manages the SootClasses of the application being analyzed. */
 public class Scene // extends AbstractHost
 {
+    private static final Logger logger = LoggerFactory.getLogger(Scene.class);
 
 	private final int defaultSdkVersion = 15;
 	private final Map<String, Integer> maxAPIs = new HashMap<String, Integer>();

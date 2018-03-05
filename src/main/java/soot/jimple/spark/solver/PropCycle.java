@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.solver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.sets.*;
@@ -33,6 +35,7 @@ import soot.util.*;
  */
 
 public final class PropCycle extends Propagator {
+    private static final Logger logger = LoggerFactory.getLogger(PropCycle.class);
 	public PropCycle(PAG pag) {
 		this.pag = pag;
 		varNodeToIteration = new LargeNumberedMap<VarNode, Integer>(pag.getVarNodeNumberer());

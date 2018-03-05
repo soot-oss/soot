@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.toolkits.annotation.arraycheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -36,6 +38,7 @@ import soot.options.ABCOptions;
 
 public class ArrayBoundsChecker extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(ArrayBoundsChecker.class);
     public ArrayBoundsChecker( Singletons.Global g ) {}
     public static ArrayBoundsChecker v() { return G.v().soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker(); }
 

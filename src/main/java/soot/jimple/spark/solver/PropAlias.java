@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.solver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -52,6 +54,7 @@ import soot.util.queue.QueueReader;
  */
 
 public final class PropAlias extends Propagator {
+    private static final Logger logger = LoggerFactory.getLogger(PropAlias.class);
 	protected final Set<VarNode> varNodeWorkList = new TreeSet<VarNode>();
 	protected Set<VarNode> aliasWorkList;
 	protected Set<FieldRefNode> fieldRefWorkList = new HashSet<FieldRefNode>();

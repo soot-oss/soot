@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.solver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.spark.pag.*;
 import soot.jimple.spark.internal.*;
 import soot.*;
@@ -30,6 +32,7 @@ import java.util.*;
  */
 
 public class EBBCollapser {
+    private static final Logger logger = LoggerFactory.getLogger(EBBCollapser.class);
     /** Actually collapse the EBBs in the PAG. */
     public void collapse() {
         boolean verbose = pag.getOpts().verbose();

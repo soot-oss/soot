@@ -25,6 +25,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +48,7 @@ import soot.util.MultiMap;
 
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver {
+    private static final Logger logger = LoggerFactory.getLogger(SootResolver.class);
 	/** Maps each resolved class to a list of all references in it. */
 	protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<SootClass, Type>();
 

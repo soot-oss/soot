@@ -24,6 +24,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,6 +68,7 @@ import soot.validation.ValidationException;
  * can also be constructed manually through the given constructors.
  */
 public class SootClass extends AbstractHost implements Numberable {
+    private static final Logger logger = LoggerFactory.getLogger(SootClass.class);
 	protected String name, shortName, fixedShortName, packageName, fixedPackageName;
 	protected int modifiers;
 	protected Chain<SootField> fields;

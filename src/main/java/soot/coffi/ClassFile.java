@@ -24,6 +24,8 @@
  */
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.G;
 import soot.Timers;
@@ -38,6 +40,7 @@ import java.io.*;
  * @author Clark Verbrugge
  */
 public class ClassFile {
+    private static final Logger logger = LoggerFactory.getLogger(ClassFile.class);
 
    /** Magic number. */
     static final long MAGIC = 0xCAFEBABEL;

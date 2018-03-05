@@ -18,6 +18,8 @@
  */
 
 package soot.jbco.jimpleTransformations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.ArrayType;
 import soot.Body;
@@ -51,6 +53,7 @@ import java.util.Map;
  * Created on 26-Jan-2006
  */
 public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
+    private static final Logger logger = LoggerFactory.getLogger(ClassRenamer.class);
 
     public static boolean removePackages = false;
     public static boolean renamePackages = false;

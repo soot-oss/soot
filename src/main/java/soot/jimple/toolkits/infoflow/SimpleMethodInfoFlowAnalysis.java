@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.infoflow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 
@@ -18,6 +20,7 @@ import soot.jimple.*;
 
 public class SimpleMethodInfoFlowAnalysis extends ForwardFlowAnalysis<Unit, FlowSet<Pair<EquivalentValue,EquivalentValue>>>
 {
+    private static final Logger logger = LoggerFactory.getLogger(SimpleMethodInfoFlowAnalysis.class);
 	SootMethod sm;
 	Value thisLocal;
 	InfoFlowAnalysis dfa;

@@ -18,11 +18,14 @@
  */
 
 package soot.jimple.toolkits.pointer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import java.util.*;
 
 /** Represents a set of (local,type) pairs using a bit-vector. */
 class LocalTypeSet extends java.util.BitSet {
+    private static final Logger logger = LoggerFactory.getLogger(LocalTypeSet.class);
     protected List<Local> locals;
     protected List<Type> types;
 

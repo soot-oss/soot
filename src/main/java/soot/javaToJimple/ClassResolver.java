@@ -18,6 +18,8 @@
  */
 
 package soot.javaToJimple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -40,6 +42,7 @@ import soot.SootMethod;
 import soot.options.Options;
 
 public class ClassResolver {
+    private static final Logger logger = LoggerFactory.getLogger(ClassResolver.class);
 
 	private ArrayList<FieldDecl> staticFieldInits;
 	private ArrayList<FieldDecl> fieldInits;

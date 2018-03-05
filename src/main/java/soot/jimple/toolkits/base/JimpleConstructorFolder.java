@@ -29,6 +29,8 @@
 
 
 package soot.jimple.toolkits.base;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -40,6 +42,7 @@ import java.util.*;
 
 public class JimpleConstructorFolder extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(JimpleConstructorFolder.class);
     static boolean isNew(Stmt s) {
         if(!(s instanceof AssignStmt)) return false;
         if(!(rhs(s) instanceof NewExpr)) return false;

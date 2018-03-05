@@ -25,6 +25,8 @@
 
 
 package soot.jimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 import soot.*;
 import soot.toolkits.scalar.*;
@@ -50,6 +52,7 @@ import soot.tagkit.*;
 
 public class CommonSubexpressionEliminator extends BodyTransformer
 { 
+    private static final Logger logger = LoggerFactory.getLogger(CommonSubexpressionEliminator.class);
     public CommonSubexpressionEliminator( Singletons.Global g ) {}
     public static CommonSubexpressionEliminator v() { return G.v().soot_jimple_toolkits_scalar_CommonSubexpressionEliminator(); }
 

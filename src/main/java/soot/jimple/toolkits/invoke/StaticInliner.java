@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.toolkits.invoke;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -35,6 +37,7 @@ import java.util.*;
 /** Uses the Scene's currently-active InvokeGraph to inline monomorphic call sites. */
 public class StaticInliner extends SceneTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(StaticInliner.class);
     public StaticInliner( Singletons.Global g ) {}
     public static StaticInliner v() { return G.v().soot_jimple_toolkits_invoke_StaticInliner(); }
 

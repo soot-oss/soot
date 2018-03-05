@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.pointer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import java.util.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -25,6 +27,7 @@ import soot.jimple.*;
 
 public class SideEffectTagger extends BodyTransformer
 { 
+    private static final Logger logger = LoggerFactory.getLogger(SideEffectTagger.class);
     public SideEffectTagger( Singletons.Global g ) {}
     public static SideEffectTagger v() { return G.v().soot_jimple_toolkits_pointer_SideEffectTagger(); }
 

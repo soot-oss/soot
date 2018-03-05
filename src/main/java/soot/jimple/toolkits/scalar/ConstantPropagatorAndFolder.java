@@ -26,6 +26,8 @@
 
 
 package soot.jimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 import soot.*;
 import soot.toolkits.scalar.*;
@@ -40,6 +42,7 @@ import soot.toolkits.graph.*;
  * expressions (i.e. 2 * 3). */
 public class ConstantPropagatorAndFolder extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(ConstantPropagatorAndFolder.class);
     public ConstantPropagatorAndFolder( Singletons.Global g ) {}
     public static ConstantPropagatorAndFolder v() { return G.v().soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder(); }
 

@@ -18,6 +18,8 @@
  */
 
 package soot.dava.toolkits.base.misc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import java.io.*;
@@ -28,6 +30,7 @@ import java.util.jar.*;
 
 public class PackageNamer
 {
+    private static final Logger logger = LoggerFactory.getLogger(PackageNamer.class);
     public PackageNamer( Singletons.Global g ) {}
     public static PackageNamer v() { return G.v().soot_dava_toolkits_base_misc_PackageNamer(); }
 

@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.annotation.callgraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import java.util.*;
@@ -29,6 +31,7 @@ import soot.options.*;
 /** A scene transformer that creates a graphical callgraph. */
 public class CallGraphGrapher extends SceneTransformer
 { 
+    private static final Logger logger = LoggerFactory.getLogger(CallGraphGrapher.class);
     public CallGraphGrapher(Singletons.Global g){}
     public static CallGraphGrapher v() { return G.v().soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher();}
 

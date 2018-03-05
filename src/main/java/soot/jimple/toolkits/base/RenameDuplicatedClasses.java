@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.base;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Arrays;
@@ -24,6 +26,7 @@ import soot.util.Chain;
  * The definition of duplicated class names.
  * 	if (className1.equalsIgnoreCase(className2)
  * 	{
+    private static final Logger logger = LoggerFactory.getLogger(RenameDuplicatedClasses.class);
  * 		//className1 and className2 are duplicated class names.
  * 	}
  * 

@@ -29,6 +29,8 @@
 
 
 package soot.jimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Deque;
@@ -82,6 +84,7 @@ import soot.util.Chain;
 
 public class DeadAssignmentEliminator extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(DeadAssignmentEliminator.class);
 	public DeadAssignmentEliminator( Singletons.Global g ) {}
 	public static DeadAssignmentEliminator v() { return G.v().soot_jimple_toolkits_scalar_DeadAssignmentEliminator(); }
 

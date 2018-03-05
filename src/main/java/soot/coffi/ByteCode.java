@@ -30,12 +30,15 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 
 /** Procedural code for parsing and otherwise handling bytecode.
  * @author Clark Verbrugge
  */
 class ByteCode {
+    private static final Logger logger = LoggerFactory.getLogger(ByteCode.class);
 
    public static final int NOP = 0;
    public static final int ACONST_NULL = 1;

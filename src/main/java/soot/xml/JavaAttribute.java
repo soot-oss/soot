@@ -18,6 +18,8 @@
  */
 
 package soot.xml;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -35,6 +37,7 @@ import soot.tagkit.StringTag;
 import soot.tagkit.Tag;
 
 public class JavaAttribute {
+    private static final Logger logger = LoggerFactory.getLogger(JavaAttribute.class);
 
     private int startLn;
     private ArrayList<Tag> tags;

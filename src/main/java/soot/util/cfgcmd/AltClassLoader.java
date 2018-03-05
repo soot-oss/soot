@@ -18,6 +18,8 @@
  */
 
 package soot.util.cfgcmd;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -40,6 +42,7 @@ import soot.G;
  * implementations of Soot's CFG representations.</p>
  */
 public class AltClassLoader extends ClassLoader {
+    private static final Logger logger = LoggerFactory.getLogger(AltClassLoader.class);
 
   private final static boolean DEBUG = false;
 

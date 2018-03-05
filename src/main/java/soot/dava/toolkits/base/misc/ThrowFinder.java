@@ -18,6 +18,8 @@
  */
 
 package soot.dava.toolkits.base.misc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.util.*;
@@ -40,6 +42,7 @@ import soot.jimple.toolkits.callgraph.*;
  * 
  * Alls good until u try to decompile code like this
  *   try{
+    private static final Logger logger = LoggerFactory.getLogger(ThrowFinder.class);
  *    synchronized(bla){
  *      bla
  *      bla

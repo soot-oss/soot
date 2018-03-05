@@ -18,12 +18,15 @@
  */
 
 package soot.javaToJimple.toolkits;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.jimple.*;
 import java.util.*;
 
 public class CondTransformer extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(CondTransformer.class);
     public CondTransformer (Singletons.Global g) {}
     public static CondTransformer v() { 
         return G.v().soot_javaToJimple_toolkits_CondTransformer();

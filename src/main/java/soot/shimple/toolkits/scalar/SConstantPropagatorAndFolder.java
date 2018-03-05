@@ -18,6 +18,8 @@
  */
 
 package soot.shimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.util.*;
@@ -48,6 +50,7 @@ import soot.shimple.toolkits.scalar.SEvaluator.BottomConstant;
  **/
 public class SConstantPropagatorAndFolder extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(SConstantPropagatorAndFolder.class);
     public SConstantPropagatorAndFolder(Singletons.Global g) {}
 
     public static SConstantPropagatorAndFolder v()

@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.solver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.TreeSet;
 
@@ -46,6 +48,7 @@ import soot.util.queue.QueueReader;
  */
 
 public final class PropIter extends Propagator {
+    private static final Logger logger = LoggerFactory.getLogger(PropIter.class);
 	public PropIter(PAG pag) {
 		this.pag = pag;
 	}

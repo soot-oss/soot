@@ -24,6 +24,8 @@
  */
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -88,6 +90,7 @@ import soot.tagkit.VisibilityAnnotationTag;
 import soot.tagkit.VisibilityParameterAnnotationTag;
 
 public class Util {
+    private static final Logger logger = LoggerFactory.getLogger(Util.class);
 	public Util(Singletons.Global g) {
 	}
 

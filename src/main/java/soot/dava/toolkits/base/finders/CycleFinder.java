@@ -24,6 +24,8 @@
  * 5-April -2006: Fixed bug in Fix_MultiEntryPoint read comment dated 5 th April 2005 
  */
 package soot.dava.toolkits.base.finders;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 
@@ -41,6 +43,7 @@ import soot.dava.internal.javaRep.*;
 import soot.dava.toolkits.base.misc.*;
 
 public class CycleFinder implements FactFinder {
+    private static final Logger logger = LoggerFactory.getLogger(CycleFinder.class);
 	public CycleFinder(Singletons.Global g) {
 	}
 

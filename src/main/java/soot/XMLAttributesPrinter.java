@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -26,6 +28,7 @@ import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 
 public class XMLAttributesPrinter {
+    private static final Logger logger = LoggerFactory.getLogger(XMLAttributesPrinter.class);
 
 	
 	private String useFilename;

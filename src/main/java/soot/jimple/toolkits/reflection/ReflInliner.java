@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.reflection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,6 +41,7 @@ import soot.rtlib.tamiflex.UnexpectedReflectiveCall;
 
 
 public class ReflInliner {
+    private static final Logger logger = LoggerFactory.getLogger(ReflInliner.class);
 	
 	public static void main(String[] args) {
 		PackManager.v().getPack("wjpp").add(new Transform("wjpp.inlineReflCalls", new ReflectiveCallsInliner()));		

@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.infoflow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 
@@ -13,6 +15,7 @@ import soot.toolkits.graph.*;
 
 public class SimpleMethodLocalObjectsAnalysis extends SimpleMethodInfoFlowAnalysis
 {
+    private static final Logger logger = LoggerFactory.getLogger(SimpleMethodLocalObjectsAnalysis.class);
 	public static int mlocounter = 0;
 
 	public SimpleMethodLocalObjectsAnalysis(UnitGraph g, ClassLocalObjectsAnalysis cloa, InfoFlowAnalysis dfa)

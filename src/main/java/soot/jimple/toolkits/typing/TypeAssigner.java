@@ -28,6 +28,8 @@
  */
 
 package soot.jimple.toolkits.typing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,6 +73,7 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  * @author Eric Bodden 
  */
 public class TypeAssigner extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(TypeAssigner.class);
 	
 	public TypeAssigner(Singletons.Global g) {
 	}

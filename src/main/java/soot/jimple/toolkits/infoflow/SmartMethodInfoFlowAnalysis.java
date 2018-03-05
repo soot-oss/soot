@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.infoflow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 
@@ -17,6 +19,7 @@ import soot.jimple.*;
 
 public class SmartMethodInfoFlowAnalysis
 {
+    private static final Logger logger = LoggerFactory.getLogger(SmartMethodInfoFlowAnalysis.class);
 	UnitGraph graph;
 	SootMethod sm;
 	Value thisLocal;

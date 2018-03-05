@@ -18,6 +18,8 @@
  */
 
 package soot.toolkits.graph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -42,6 +44,7 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
  **/
 public class SimpleDominatorsFinder<N> implements DominatorsFinder<N>
 {
+    private static final Logger logger = LoggerFactory.getLogger(SimpleDominatorsFinder.class);
     protected DirectedGraph<N> graph;
     protected Map<N, FlowSet<N>> nodeToDominators;
 

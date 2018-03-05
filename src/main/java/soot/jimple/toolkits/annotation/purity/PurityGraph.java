@@ -26,6 +26,8 @@
  */
 
 package soot.jimple.toolkits.annotation.purity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import soot.*;
 import soot.util.*;
@@ -85,6 +87,7 @@ import soot.jimple.*;
  */
 public class PurityGraph
 {
+    private static final Logger logger = LoggerFactory.getLogger(PurityGraph.class);
     public static final boolean doCheck = false;
 
     protected Set      nodes;      // all nodes

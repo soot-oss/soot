@@ -18,10 +18,13 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /** Manages the phase options of the various soot phases. */
 public class PhaseOptions {
+    private static final Logger logger = LoggerFactory.getLogger(PhaseOptions.class);
     /** Needed for preventing infinite recursion in constructor. 
      * Termination is assured: each constructor is called exactly once.
      * Here is a case analysis.
