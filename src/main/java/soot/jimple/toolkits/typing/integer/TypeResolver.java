@@ -141,7 +141,7 @@ public class TypeResolver {
 			} catch (TypeException e2) {
 				StringWriter st = new StringWriter();
 				PrintWriter pw = new PrintWriter(st);
-				e2.printStackTrace(pw);
+				logger.error(e2.getMessage(), e2);
 				pw.close();
 				throw new RuntimeException(st.toString());
 			}

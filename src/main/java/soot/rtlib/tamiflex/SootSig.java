@@ -40,7 +40,7 @@ public class SootSig {
 			} while(resolved==null && c!=null);
 			if(resolved==null) {
 				Error error = new Error("Method not found : "+m+" in class "+receiverClass+" and super classes.");
-				error.printStackTrace();
+				logger.error(error.getMessage(), error);
 			}
 			
 			String res = methodCache.get(resolved);

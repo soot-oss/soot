@@ -106,12 +106,12 @@ public class Dava
 		}
 		catch (FileNotFoundException fnfe) {
 		    G.v().out.println( "Unable to open " + LOG_TO_FILE);
-		    fnfe.printStackTrace();
+		    logger.error(fnfe.getMessage(), fnfe);
                     throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
 		}
 		catch (UnsupportedEncodingException uee) {
 		    G.v().out.println( "This system doesn't support US-ASCII encoding!!");
-		    uee.printStackTrace();
+		    logger.error(uee.getMessage(), uee);
                     throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
 		}
 
@@ -122,7 +122,7 @@ public class Dava
 	    }
 	    catch (IOException ioe) {
 		G.v().out.println( "Unable to write to " + LOG_TO_FILE);
-		ioe.printStackTrace();
+		logger.error(ioe.getMessage(), ioe);
                 throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
 	    }
 	}

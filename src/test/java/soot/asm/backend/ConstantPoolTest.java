@@ -220,11 +220,11 @@ public class ConstantPoolTest extends AbstractASMBackendTest {
 			return;
 
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (ClassNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		} catch (ClassFormatException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 
 		fail();

@@ -356,7 +356,7 @@ public class SootUtil {
     try {
       varNodeWriter = new PrintWriter(new BufferedWriter(new FileWriter("varNodeInfo")));
     } catch (IOException e) {
-      e.printStackTrace();
+      logger.error(e.getMessage(), e);
     }
 
     for (Iterator iter = pag.getVarNodeNumberer().iterator(); iter.hasNext();) {
@@ -451,7 +451,7 @@ public class SootUtil {
       pw.close();
     } catch (FileNotFoundException e) {
 
-      e.printStackTrace();
+      logger.error(e.getMessage(), e);
     }
 
   }

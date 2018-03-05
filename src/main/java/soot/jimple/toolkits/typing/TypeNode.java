@@ -343,7 +343,7 @@ public String toString()
 	      }
 	    catch(TypeException e)
 	      {
-                if(DEBUG) e.printStackTrace();
+                if(DEBUG) logger.error(e.getMessage(), e);
 		throw e;
 	      }
 	  }

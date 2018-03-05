@@ -83,7 +83,7 @@ public class JimpleIFDSSolver<D, I extends InterproceduralCFG<Unit, SootMethod>>
 			out.flush();
 			out.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 

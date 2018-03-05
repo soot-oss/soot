@@ -590,7 +590,7 @@ public abstract class Body extends AbstractHost implements Serializable
         try { 
             Printer.v().printTo(this, writerOut);
         } catch (RuntimeException e) {
-            e.printStackTrace(writerOut);
+            logger.error(e.getMessage(), e);
         }
         writerOut.flush();
         writerOut.close();

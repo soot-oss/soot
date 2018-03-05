@@ -136,7 +136,7 @@ public class Util {
     // create a memory buffer to which to dump the trace
     ByteArrayOutputStream traceDump = new ByteArrayOutputStream();
     PrintWriter w = new PrintWriter(traceDump);
-    thrown_.printStackTrace(w);
+    logger.error(thrown_.getMessage(), thrown_);
     w.close();
     return traceDump.toString();
   }
@@ -349,7 +349,7 @@ public class Util {
           buf = buf.append(" : ");
           buf = buf.append(FULLY_QUALIFIED_NAMES ? type.getName() : removePackageName(type.getName()));
         } catch (IllegalAccessException e) {
-          e.printStackTrace();
+          logger.error(e.getMessage(), e);
         }
 
         buf = buf.append(i + 1 >= fields.length ? ")" : ",");

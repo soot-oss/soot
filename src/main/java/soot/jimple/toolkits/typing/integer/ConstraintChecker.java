@@ -122,7 +122,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
 		} catch (RuntimeTypeException e) {
 			StringWriter st = new StringWriter();
 			PrintWriter pw = new PrintWriter(st);
-			e.printStackTrace(pw);
+			logger.error(e.getMessage(), e);
 			pw.close();
 			throw new TypeException(st.toString());
 		}

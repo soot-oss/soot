@@ -792,7 +792,7 @@ public class JBCOViewer extends javax.swing.JFrame {
         }*/
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      logger.error(e.getMessage(), e);
     }
   }
 }

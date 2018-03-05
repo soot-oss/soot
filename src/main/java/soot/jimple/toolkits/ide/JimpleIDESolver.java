@@ -81,7 +81,7 @@ public class JimpleIDESolver<D, V, I extends InterproceduralCFG<Unit,SootMethod>
 			out.flush();
 			out.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	

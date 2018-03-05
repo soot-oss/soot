@@ -364,7 +364,7 @@ class TypeVariable implements Comparable<Object>
       {
 	if(DEBUG)
 	  {
-	    e.printStackTrace();
+	    logger.error(e.getMessage(), e);
 	  }
 	throw e;
       }

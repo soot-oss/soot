@@ -696,7 +696,7 @@ public class GraphComparer {
 		    }
 			
 		} catch (RuntimeException e) {
-		    e.printStackTrace(System.err);
+		    logger.error(e.getMessage(), e);
 		    if (e.getMessage() != null && 
 			e.getMessage().startsWith("Invalid unit ")) {
 			if (Options.v().verbose()) 

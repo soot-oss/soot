@@ -25,7 +25,7 @@ public class AnonConstructorFinder extends polyglot.visit.ContextVisitor {
             }
             catch(polyglot.types.SemanticException e){
                 System.out.println(e.getMessage());
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
         return this;

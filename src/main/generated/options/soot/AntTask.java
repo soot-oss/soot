@@ -105,7 +105,7 @@ public class AntTask extends MatchingTask {
             soot.Main.main((String[]) args.toArray(new String[0]));
             soot.G.v().reset();
         } catch( Exception e ) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new BuildException(e);
         }
     }

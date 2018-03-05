@@ -477,7 +477,7 @@ public class Scene // extends AbstractHost
 
 				});
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 
 			int APIVersion = -1;

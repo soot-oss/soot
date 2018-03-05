@@ -14,7 +14,7 @@ public class MethodThrowableSetClass {
 				int c = b/a;
 				return a + b;
 			}catch(ArithmeticException e){
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 				return 0;
 			}
 		}
@@ -29,9 +29,9 @@ public class MethodThrowableSetClass {
 			recursion();
 			c = a/b;
 		}catch(ArithmeticException e){
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}catch(OutOfMemoryError e){
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	
@@ -43,10 +43,10 @@ public class MethodThrowableSetClass {
 			try{
 			     c = 3/b;
 			}catch(ArithmeticException e){
-				e.printStackTrace();
+				logger.error(e.getMessage(), e);
 			}
 		}catch(NegativeArraySizeException e){
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	
@@ -59,7 +59,7 @@ public class MethodThrowableSetClass {
 			int a0 = 0;
 			int b0 = 0; 
 			int c0 = a0/b0;
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	
@@ -67,9 +67,9 @@ public class MethodThrowableSetClass {
 		try{
 			bar();
 		}catch(StackOverflowError e){
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}catch(ThreadDeath e){
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		
 	}
@@ -78,7 +78,7 @@ public class MethodThrowableSetClass {
 		try{
 			tool();
 		}catch(ArrayIndexOutOfBoundsException e){
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		
 	}
@@ -89,7 +89,7 @@ public class MethodThrowableSetClass {
 			int d = 0;
 			int c = array[0]/d;
 		}catch(NegativeArraySizeException e){
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	
@@ -97,9 +97,9 @@ public class MethodThrowableSetClass {
 		try{
 			tool();
 		}catch(Error e){
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}catch(RuntimeException e){
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 	
@@ -107,7 +107,7 @@ public class MethodThrowableSetClass {
 		try{
 			throw new MyException();
 		}catch(MyException e){
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 }

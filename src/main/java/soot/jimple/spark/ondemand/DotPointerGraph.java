@@ -102,7 +102,7 @@ public class DotPointerGraph {
 		try {
 			pw = new PrintWriter(new FileOutputStream(filename));
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 		// pw.println("digraph G {\n\trankdir=LR;");
 		pw.println("digraph G {");

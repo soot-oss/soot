@@ -206,7 +206,7 @@ public class TypeResolver
 			resolver.resolve_step_1();
 		} catch (TypeException e1) {
 			if (DEBUG) {
-				e1.printStackTrace();
+				logger.error(e1.getMessage(), e1);
 				G.v().out.println("Step 1 Exception-->" + e1.getMessage());
 			}
 
@@ -215,7 +215,7 @@ public class TypeResolver
 				resolver.resolve_step_2();
 			} catch (TypeException e2) {
 				if (DEBUG) {
-					e2.printStackTrace();
+					logger.error(e2.getMessage(), e2);
 					G.v().out.println("Step 2 Exception-->" + e2.getMessage());
 				}
 
@@ -225,7 +225,7 @@ public class TypeResolver
 				} catch (TypeException e3) {
 					StringWriter st = new StringWriter();
 					PrintWriter pw = new PrintWriter(st);
-					e3.printStackTrace(pw);
+					logger.error(e3.getMessage(), e3);
 					pw.close();
 					throw new RuntimeException(st.toString());
 				}

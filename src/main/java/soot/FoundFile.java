@@ -146,7 +146,7 @@ public class FoundFile {
                     ps.print("Exception ");
                     ps.print(i++);
                     ps.print(": ");
-                    t.printStackTrace(ps);
+                    logger.error(t.getMessage(), t);
                 }
                 msg = new String(baos.toByteArray(), StandardCharsets.UTF_8);
             } catch (Exception e) {

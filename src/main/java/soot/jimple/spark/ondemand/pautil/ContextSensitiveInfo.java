@@ -180,7 +180,7 @@ public class ContextSensitiveInfo {
                 callSiteWriter = new PrintWriter(
                         new FileWriter("callSiteInfo"), true);
             } catch (IOException e) {
-                e.printStackTrace();
+                logger.error(e.getMessage(), e);
             }
         }
         for (Iterator iter = callAssigns.keySet().iterator(); iter.hasNext();) {

@@ -161,7 +161,7 @@ public class Main {
 			G.v().out.println( "For example (for 2GB): java -Xmx2g soot.Main ..." );
 			throw e;
 		} catch (RuntimeException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			e.printStackTrace(new PrintStream(bos));
