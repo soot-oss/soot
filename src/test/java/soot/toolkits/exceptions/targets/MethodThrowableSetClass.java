@@ -1,9 +1,6 @@
 package soot.toolkits.exceptions.targets;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class MethodThrowableSetClass {
-    private static final Logger logger = LoggerFactory.getLogger(MethodThrowableSetClass.class);
 	class target{
 		public target(){
 			
@@ -14,7 +11,7 @@ public class MethodThrowableSetClass {
 				int c = b/a;
 				return a + b;
 			}catch(ArithmeticException e){
-				logger.error(e.getMessage(), e);
+				e.printStackTrace();
 				return 0;
 			}
 		}
@@ -29,9 +26,9 @@ public class MethodThrowableSetClass {
 			recursion();
 			c = a/b;
 		}catch(ArithmeticException e){
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}catch(OutOfMemoryError e){
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}
 	}
 	
@@ -43,10 +40,10 @@ public class MethodThrowableSetClass {
 			try{
 			     c = 3/b;
 			}catch(ArithmeticException e){
-				logger.error(e.getMessage(), e);
+				e.printStackTrace();
 			}
 		}catch(NegativeArraySizeException e){
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}
 	}
 	
@@ -59,7 +56,7 @@ public class MethodThrowableSetClass {
 			int a0 = 0;
 			int b0 = 0; 
 			int c0 = a0/b0;
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}
 	}
 	
@@ -67,9 +64,9 @@ public class MethodThrowableSetClass {
 		try{
 			bar();
 		}catch(StackOverflowError e){
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}catch(ThreadDeath e){
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}
 		
 	}
@@ -78,7 +75,7 @@ public class MethodThrowableSetClass {
 		try{
 			tool();
 		}catch(ArrayIndexOutOfBoundsException e){
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}
 		
 	}
@@ -89,7 +86,7 @@ public class MethodThrowableSetClass {
 			int d = 0;
 			int c = array[0]/d;
 		}catch(NegativeArraySizeException e){
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}
 	}
 	
@@ -97,9 +94,9 @@ public class MethodThrowableSetClass {
 		try{
 			tool();
 		}catch(Error e){
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}catch(RuntimeException e){
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}
 	}
 	
@@ -107,7 +104,7 @@ public class MethodThrowableSetClass {
 		try{
 			throw new MyException();
 		}catch(MyException e){
-			logger.error(e.getMessage(), e);
+			e.printStackTrace();
 		}
 	}
 }
