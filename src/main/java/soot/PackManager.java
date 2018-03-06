@@ -505,8 +505,7 @@ public class PackManager {
 		preProcessDAVA();
 		if (Options.v().interactive_mode()) {
 			if (InteractionHandler.v().getInteractionListener() == null) {
-				G.v().out
-						.println("Cannot run in interactive mode. No listeners available. Continuing in regular mode.");
+				logger.debug("Cannot run in interactive mode. No listeners available. Continuing in regular mode.");
 				Options.v().set_interactive_mode(false);
 			} else {
 				logger.debug("Running in interactive mode.");

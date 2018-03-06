@@ -218,7 +218,7 @@ public class RegionAnalysis{
         }
         catch(RuntimeException e)
         {
-            logger.debug("[RegionAnalysis] Exception in weakRegionDFS: " + e);
+            logger.debug("[RegionAnalysis] Exception in weakRegionDFS: ", e);
             logger.debug("v is  " + v.toShortString() + " in region " + r);
             G.v().out.flush();
         }

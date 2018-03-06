@@ -437,8 +437,7 @@ public class Scene // extends AbstractHost
 			}
 
 			if (manifestIS == null) {
-				G.v().out
-						.println("Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
+				logger.debug("Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
 				return defaultSdkVersion;
 			}
 
@@ -502,8 +501,7 @@ public class Scene // extends AbstractHost
 			} else if (versionInfo.minSdkVersion != -1) {
 				APIVersion = versionInfo.minSdkVersion;
 			} else {
-				G.v().out
-						.println("Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
+				logger.debug("Could not find sdk version in Android manifest! Using default: " + defaultSdkVersion);
 				APIVersion = defaultSdkVersion;
 			}
 

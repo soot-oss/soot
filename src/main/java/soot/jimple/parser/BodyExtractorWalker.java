@@ -137,8 +137,7 @@ public class BodyExtractorWalker extends Walker {
 				name, parameterList, type));
 		if (sm != null) {
 			if (Options.v().verbose())
-				G.v().out
-						.println("[Jimple parser] "
+				logger.debug("[Jimple parser] "
 								+ SootMethod.getSubSignature(name,
 										parameterList, type));
 		} else {

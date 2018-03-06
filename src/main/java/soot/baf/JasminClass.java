@@ -100,8 +100,7 @@ public class JasminClass extends AbstractJasminClass {
 		if (!(activeBody instanceof BafBody)) {
 			if (activeBody instanceof JimpleBody) {
 				if (Options.v().verbose()) {
-					G.v().out
-							.println("Was expecting Baf body for "
+					logger.debug("Was expecting Baf body for "
 									+ method
 									+ " but found a Jimple body. Will convert body to Baf on the fly.");
 				}

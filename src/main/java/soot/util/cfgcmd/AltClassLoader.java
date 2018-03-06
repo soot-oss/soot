@@ -209,7 +209,7 @@ public class AltClassLoader extends ClassLoader {
 	// Try the next location.
       } catch (ClassFormatError e) {
 	if (DEBUG) {
-	  e.printStackTrace(G.v().out);
+	  logger.error(e.getMessage(), e);
 	}
 	// Try the next location.
       }

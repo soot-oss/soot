@@ -92,14 +92,13 @@ public class ThrowFinder
 
 	IterableSet worklist = new IterableSet();
 
-	logger.debug(""+ "\b. ");
-	G.v().out.flush();
+	logger.debug("\b. ");
 
 
 	// Get all the methods, and find protection for every statement.
-	Iterator classIt = Scene.v().getApplicationClasses().iterator();
+	Iterator<SootClass> classIt = Scene.v().getApplicationClasses().iterator();
 	while (classIt.hasNext()) {
-	    Iterator methodIt = ((SootClass) classIt.next()).methodIterator();
+	    Iterator<SootMethod> methodIt = classIt.next().methodIterator();
 	    while (methodIt.hasNext()) {
 		SootMethod m = (SootMethod) methodIt.next();
 
@@ -335,7 +334,6 @@ public class ThrowFinder
 	}
 
 	
-	G.v().out.flush();
     }
 
 

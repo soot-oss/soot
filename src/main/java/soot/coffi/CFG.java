@@ -284,9 +284,8 @@ public class CFG {
                  
 			    if (bb == null)
 			    {                 
-				logger.warn(""
-					       +"target of a branch is null");
-				G.v().out.println ( insn );
+				logger.warn("target of a branch is null");
+				logger.debug(""+ insn );
 			    }
 			    else 
 			    {

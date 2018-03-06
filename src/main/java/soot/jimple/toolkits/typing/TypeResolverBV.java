@@ -664,8 +664,7 @@ public class TypeResolverBV
 			  {
 			    if(DEBUG)
 			      {
-				G.v().out.println
-				  ("==++==" +
+				logger.debug("==++==" +
 				   stmtBody.getMethod().getDeclaringClass().getName() + "." + 
 				   stmtBody.getMethod().getName());
 			      }
