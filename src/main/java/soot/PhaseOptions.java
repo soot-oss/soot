@@ -18,10 +18,13 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 
 /** Manages the phase options of the various soot phases. */
 public class PhaseOptions {
+    private static final Logger logger = LoggerFactory.getLogger(PhaseOptions.class);
     /** Needed for preventing infinite recursion in constructor. 
      * Termination is assured: each constructor is called exactly once.
      * Here is a case analysis.
@@ -172,7 +175,7 @@ public class PhaseOptions {
             for( Iterator tIt = p.iterator(); tIt.hasNext(); ) {
                 final Transform t = (Transform) tIt.next();
                 if( t.getPhaseName().equals( phaseName ) ) {
-                    G.v().out.println( "Attempt to set option for phase "+phaseName+" of disabled pack "+p.getPhaseName() );
+                    logger.debug(""+ "Attempt to set option for phase "+phaseName+" of disabled pack "+p.getPhaseName() );
                     return false;
 
                 }
@@ -184,7 +187,7 @@ public class PhaseOptions {
     public boolean setPhaseOption( String phaseName, String option ) {    	
         HasPhaseOptions phase = getPM().getPhase( phaseName );
         if( phase == null ) {
-            G.v().out.println( "Option "+option+" given for nonexistent"
+            logger.debug(""+ "Option "+option+" given for nonexistent"
                     +" phase "+phaseName );
             return false;
         }
@@ -194,7 +197,7 @@ public class PhaseOptions {
         Map<String, String> optionMap = mapForPhase( phase );
         if( !checkParentEnabled( phase.getPhaseName() ) ) return false;
         if( optionMap == null ) {
-            G.v().out.println( "Option "+option+" given for nonexistent"
+            logger.debug(""+ "Option "+option+" given for nonexistent"
                     +" phase "+phase.getPhaseName() );
             return false;
         }
@@ -206,7 +209,7 @@ public class PhaseOptions {
             optionMap.put( key, getValue( option ) );
             return true;
         }
-        G.v().out.println( "Invalid option "+option+" for phase "+phase.getPhaseName() );
+        logger.debug(""+ "Invalid option "+option+" for phase "+phase.getPhaseName() );
         return false;
     }
 

@@ -18,6 +18,8 @@
  */
 
 package soot.dava.toolkits.base.finders;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -32,6 +34,7 @@ import soot.dava.internal.asg.AugmentedStmtGraph;
 import soot.util.IterableSet;
 
 public class ExceptionNode {
+    private static final Logger logger = LoggerFactory.getLogger(ExceptionNode.class);
 	private final IterableSet<AugmentedStmt> body;
 	private IterableSet<AugmentedStmt> tryBody, catchBody;
 	private boolean dirty;
@@ -261,18 +264,18 @@ public class ExceptionNode {
 	}
 
 	public void dump() {
-		G.v().out.println("try {");
+		logger.debug("try {");
 		for (AugmentedStmt au : get_TryBody())
-			G.v().out.println("\t" + au);
-		G.v().out.println("}");
+			logger.debug("\t" + au);
+		logger.debug("}");
 
 		for (IterableSet<AugmentedStmt> catchBody : get_CatchList()) {
-			G.v().out.println("catch " + get_ExceptionMap().get(catchBody)
+			logger.debug("catch " + get_ExceptionMap().get(catchBody)
 					+ " {");
 			
 			for (AugmentedStmt au : catchBody)
-				G.v().out.println("\t" + au);
-			G.v().out.println("}");
+				logger.debug("\t" + au);
+			logger.debug("}");
 
 		}
 	}

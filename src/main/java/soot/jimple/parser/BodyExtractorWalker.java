@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.options.*;
 
@@ -44,6 +46,7 @@ import java.util.*;
 /* Modified By Marc Berndl May 17th */
 
 public class BodyExtractorWalker extends Walker {
+    private static final Logger logger = LoggerFactory.getLogger(BodyExtractorWalker.class);
 	Map<SootMethod, JimpleBody> methodToParsedBodyMap;
 
 	/**
@@ -134,30 +137,29 @@ public class BodyExtractorWalker extends Walker {
 				name, parameterList, type));
 		if (sm != null) {
 			if (Options.v().verbose())
-				G.v().out
-						.println("[Jimple parser] "
+				logger.debug("[Jimple parser] "
 								+ SootMethod.getSubSignature(name,
 										parameterList, type));
 		} else {
-			G.v().out.println("[!!! Couldn't parse !!] "
+			logger.debug("[!!! Couldn't parse !!] "
 					+ SootMethod.getSubSignature(name, parameterList, type));
 
-			G.v().out.println("[!] Methods in class are:");
+			logger.debug("[!] Methods in class are:");
 			for (SootMethod next : mSootClass.getMethods()) {
-				G.v().out.println(next.getSubSignature());
+				logger.debug(""+next.getSubSignature());
 			}
 
 		}
 
 		if (sm.isConcrete() && methodBody != null) {
 			if (Options.v().verbose())
-				G.v().out.println("[Parsed] " + sm.getDeclaration());
+				logger.debug("[Parsed] " + sm.getDeclaration());
 
 			methodBody.setMethod(sm);
 			methodToParsedBodyMap.put(sm, methodBody);
 		} else if (node.getMethodBody() instanceof AFullMethodBody) {
 			if (sm.isPhantom() && Options.v().verbose())
-				G.v().out.println("[jimple parser] phantom method!");
+				logger.debug("[jimple parser] phantom method!");
 			throw new RuntimeException("Impossible: !concrete => ! instanceof "
 					+ sm.getName());
 		}

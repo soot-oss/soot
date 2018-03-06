@@ -1,4 +1,6 @@
 package soot.JastAddJ;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashSet;
 import java.io.File;
@@ -22,6 +24,7 @@ import soot.coffi.CoffiMethodSource;
  * 
  */
 public class Frontend extends java.lang.Object {
+    private static final Logger logger = LoggerFactory.getLogger(Frontend.class);
 
     protected Program program;
 
@@ -83,7 +86,7 @@ public class Frontend extends java.lang.Object {
               System.err.println("Errors:");
               System.err.println("Fatal exception while processing " +
                   unit.pathName() + ":");
-              t.printStackTrace(System.err);
+              logger.error(t.getMessage(), t);
               return false;
             }
           }
@@ -91,7 +94,7 @@ public class Frontend extends java.lang.Object {
       } catch (Throwable t) {
         System.err.println("Errors:");
         System.err.println("Fatal exception:");
-        t.printStackTrace(System.err);
+        logger.error(t.getMessage(), t);
         return false;
       }
       return true;

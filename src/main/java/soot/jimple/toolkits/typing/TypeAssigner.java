@@ -28,6 +28,8 @@
  */
 
 package soot.jimple.toolkits.typing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -71,6 +73,7 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  * @author Eric Bodden 
  */
 public class TypeAssigner extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(TypeAssigner.class);
 	
 	public TypeAssigner(Singletons.Global g) {
 	}
@@ -89,7 +92,7 @@ public class TypeAssigner extends BodyTransformer {
 		Date start = new Date();
 
 		if (Options.v().verbose())
-			G.v().out.println("[TypeAssigner] typing system started on "
+			logger.debug("[TypeAssigner] typing system started on "
 					+ start);
 
 		JBTROptions opt = new JBTROptions(options);
@@ -131,7 +134,7 @@ public class TypeAssigner extends BodyTransformer {
 			long runtime = finish.getTime() - start.getTime();
 			long mins = runtime / 60000;
 			long secs = (runtime % 60000) / 1000;
-			G.v().out.println("[TypeAssigner] typing system ended. It took "
+			logger.debug("[TypeAssigner] typing system ended. It took "
 					+ mins + " mins and " + secs + " secs.");
 		}
 		
@@ -170,7 +173,7 @@ public class TypeAssigner extends BodyTransformer {
 		// force to propagate null constants
 		Map<String, String> opts = PhaseOptions.v().getPhaseOptions("jop.cpf");
 		if (!opts.containsKey("enabled") || !opts.get("enabled").equals("true")) {
-			G.v().out.println("Warning: Cannot run TypeAssigner.replaceNullType(Body). Try to enable jop.cfg.");
+			logger.warn("Cannot run TypeAssigner.replaceNullType(Body). Try to enable jop.cfg.");
 			return;
 		}
 		ConstantPropagatorAndFolder.v().transform(b);
@@ -257,7 +260,7 @@ public class TypeAssigner extends BodyTransformer {
 		else
 			cmp = compareTypings(oldJb, newJb);
 
-		G.v().out.println("cmp;" + jb.getMethod() + ";" + size + ";"
+		logger.debug("cmp;" + jb.getMethod() + ";" + size + ";"
 				+ oldTime + ";" + newTime + ";" + cmp);
 	}
 

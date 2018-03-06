@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.infoflow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 
@@ -21,6 +23,7 @@ import soot.jimple.*;
 
 public class LocalObjectsAnalysis
 {
+    private static final Logger logger = LoggerFactory.getLogger(LocalObjectsAnalysis.class);
 	public InfoFlowAnalysis dfa;
 	UseFinder uf;
 	CallGraph cg;
@@ -80,10 +83,10 @@ public class LocalObjectsAnalysis
 		// Handle special case
 		if(sm == context)
 		{
-//			G.v().out.println("      Directly Reachable: ");
+//			logger.debug("      Directly Reachable: ");
 			boolean isLocal = isObjectLocalToParent(localOrRef, sm);
 			if(dfa.printDebug())
-				G.v().out.println("    " + (isLocal ? 
+				logger.debug("    " + (isLocal ? 
 					"LOCAL  (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")" :
 					"SHARED (Directly Reachable from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")"));
 			return isLocal;
@@ -93,7 +96,7 @@ public class LocalObjectsAnalysis
 		if( localOrRef instanceof StaticFieldRef )
 		{
 			if(dfa.printDebug())
-				G.v().out.println("    SHARED (Static             from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+				logger.debug("    SHARED (Static             from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
 			return false;
 		}
 
@@ -112,13 +115,13 @@ public class LocalObjectsAnalysis
 		if( mloaCache.containsKey(sm) )
 		{
 			mloa = (SmartMethodLocalObjectsAnalysis) mloaCache.get(sm);
-//			G.v().out.println("      Retrieved mloa From Cache: ");
+//			logger.debug("      Retrieved mloa From Cache: ");
 		}
 		else
 		{
 			UnitGraph g = new ExceptionalUnitGraph(b);
 			mloa = new SmartMethodLocalObjectsAnalysis(g, dfa);
-//			G.v().out.println("        Caching mloa (smdfa " + SmartMethodInfoFlowAnalysis.counter + 
+//			logger.debug("        Caching mloa (smdfa " + SmartMethodInfoFlowAnalysis.counter + 
 //				" smloa " + SmartMethodLocalObjectsAnalysis.counter + ") for " + sm.getName() + " on goal:");
 			mloaCache.put(sm, mloa);
 		}
@@ -128,7 +131,7 @@ public class LocalObjectsAnalysis
 		if(mergedContext == null)
 		{
 			if(dfa.printDebug())
-				G.v().out.println("      ------ (Unreachable        from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
+				logger.debug("      ------ (Unreachable        from " + context.getDeclaringClass().getShortName() + "." + context.getName() + ")");
 			return true; // it's not non-local...
 		}
 
@@ -149,12 +152,12 @@ public class LocalObjectsAnalysis
 				{
 					if(isLocal)
 					{
-						G.v().out.println("      LOCAL  (this  .localField  from " + context.getDeclaringClass().getShortName() + "."
+						logger.debug("      LOCAL  (this  .localField  from " + context.getDeclaringClass().getShortName() + "."
 																				   + context.getName() + ")");
 					}
 					else
 					{
-						G.v().out.println("      SHARED (this  .sharedField from " + context.getDeclaringClass().getShortName() + "." 
+						logger.debug("      SHARED (this  .sharedField from " + context.getDeclaringClass().getShortName() + "." 
 																				   + context.getName() + ")");
 					}
 				}
@@ -171,12 +174,12 @@ public class LocalObjectsAnalysis
 					{
 						if(isLocal)
 						{
-							G.v().out.println("      LOCAL  (local .localField  from " + context.getDeclaringClass().getShortName() + "."
+							logger.debug("      LOCAL  (local .localField  from " + context.getDeclaringClass().getShortName() + "."
 																					   + context.getName() + ")");
 						}
 						else
 						{
-							G.v().out.println("      SHARED (local .sharedField from " + context.getDeclaringClass().getShortName() + "."
+							logger.debug("      SHARED (local .sharedField from " + context.getDeclaringClass().getShortName() + "."
 																					   + context.getName() + ")");
 						}
 					}
@@ -185,7 +188,7 @@ public class LocalObjectsAnalysis
 				else
 				{
 					if(dfa.printDebug())
-						G.v().out.println("      SHARED (shared.someField   from " + context.getDeclaringClass().getShortName() + "."
+						logger.debug("      SHARED (shared.someField   from " + context.getDeclaringClass().getShortName() + "."
 																			   + context.getName() + ")");
 					return isLocal;
 				}
@@ -197,12 +200,12 @@ public class LocalObjectsAnalysis
 		{
 			if(isLocal)
 			{	
-				G.v().out.println("      LOCAL  ( local             from " + context.getDeclaringClass().getShortName() + "."
+				logger.debug("      LOCAL  ( local             from " + context.getDeclaringClass().getShortName() + "."
 																		   + context.getName() + ")");
 			}
 			else
 			{
-				G.v().out.println("      SHARED (shared             from " + context.getDeclaringClass().getShortName() + "."
+				logger.debug("      SHARED (shared             from " + context.getDeclaringClass().getShortName() + "."
 																		   + context.getName() + ")");
 			}
 		}
@@ -212,12 +215,12 @@ public class LocalObjectsAnalysis
 /*	BROKEN	
 	public boolean isFieldLocalToContext(SootField sf, SootMethod sm, SootClass context)
 	{
-		G.v().out.println("    Checking if " + sf + " in " + sm + " is local to " + context + ":");
+		logger.debug("    Checking if " + sf + " in " + sm + " is local to " + context + ":");
 
 		if(sm.getDeclaringClass() == context) // special case
 		{
 			boolean isLocal = isFieldLocalToParent(sf);
-			G.v().out.println("      Directly Reachable: " + (isLocal ? "LOCAL" : "SHARED"));
+			logger.debug("      Directly Reachable: " + (isLocal ? "LOCAL" : "SHARED"));
 			return isLocal;
 		}
 	
@@ -247,12 +250,12 @@ public class LocalObjectsAnalysis
 		
 		if(callChains.size() == 0)
 		{
-			G.v().out.println("      Unreachable: treat as local.");
+			logger.debug("      Unreachable: treat as local.");
 			return true; // it's not non-local...
 		}
-		G.v().out.println("      Found " + callChains.size() + " Call Chains...");
+		logger.debug("      Found " + callChains.size() + " Call Chains...");
 //		for(int i = 0; i < callChains.size(); i++)
-//			G.v().out.println("      " + callChains.get(i));
+//			logger.debug("      " + callChains.get(i));
 		
 		// Check Call Chains
 		for(int i = 0; i < callChains.size(); i++)
@@ -260,11 +263,11 @@ public class LocalObjectsAnalysis
 			List callChain = (List) callChains.get(i);
 			if(!isFieldLocalToContextViaCallChain(sf, sm, context, (SootMethod) startingMethods.get(i), callChain))
 			{
-				G.v().out.println("      SHARED");
+				logger.debug("      SHARED");
 				return false;
 			}
 		}
-		G.v().out.println("      LOCAL");
+		logger.debug("      LOCAL");
 		return true;
 	}
 */
@@ -306,7 +309,7 @@ public class LocalObjectsAnalysis
 		Pair cacheKey = new Pair(start, end);
 		if(callChainsCache.containsKey(cacheKey))
 		{
-//        	G.v().out.print("C");
+//        	logger.debug("C");
 			return null;
 //			return (CallChain) callChainsCache.get(cacheKey);
 		}
@@ -315,22 +318,22 @@ public class LocalObjectsAnalysis
 		{
 //			if(previouslyFound.contains(path)) // don't return a call chain that was already returned in a previous run
 //			{
-//				G.v().out.print("P");
+//				logger.debug("P");
 //				return null;
 //			}
 
-//			G.v().out.print("F");
+//			logger.debug("F");
 			return path;
 
 //			List ret = new ArrayList();
 //			ret.add(path);
-//			G.v().out.print("F");
+//			logger.debug("F");
 //			return ret;
         }
 
         if(!rm.contains(end))
         {
-//        	G.v().out.print("U");
+//        	logger.debug("U");
         	return null; // new ArrayList(); // no paths
         }
 
@@ -343,11 +346,11 @@ public class LocalObjectsAnalysis
 			SootMethod node = e.src();
 			if(!path.containsMethod(node) && e.isExplicit() && e.srcStmt().containsInvokeExpr())
 			{
-//	        	G.v().out.print("R");
+//	        	logger.debug("R");
 				CallChain newpath = getNextCallChainBetween(rm, start, node, e, path, previouslyFound); // node is supposed to be a method
 				if(newpath != null)
 				{
-//		        	G.v().out.print("|");
+//		        	logger.debug("|");
 					if(!previouslyFound.contains(newpath))
 						return newpath;
 				}
@@ -359,14 +362,14 @@ public class LocalObjectsAnalysis
 			}
 			else
 			{
-//	        	G.v().out.print("S");
+//	        	logger.debug("S");
 			}
 		}
-//		G.v().out.print("(" + paths.size() + ")");
+//		logger.debug("(" + paths.size() + ")");
 //		if(paths.size() < 100)
 		if(previouslyFound.size() == 0)
 			callChainsCache.put(cacheKey, null);
-//		G.v().out.print("|");
+//		logger.debug("|");
 		return null;
 	}
 
@@ -397,7 +400,7 @@ public class LocalObjectsAnalysis
 			
 			// We now have chains from start to goal
 			
-			G.v().out.print("C");
+			logger.debug("C");
 			return;
 		}
 
@@ -412,7 +415,7 @@ public class LocalObjectsAnalysis
 			// If the source of this edge is unreachable, ignore it
 			if( !rm.contains(currentCaller) )
 			{
-				G.v().out.print("U");
+				logger.debug("U");
 				continue;
 			}
 
@@ -431,7 +434,7 @@ public class LocalObjectsAnalysis
 				
 			if( ( currentCaller == goal ) || currentCallerIsAlreadyInAChain) // methodsInAnyChain.contains(goalCaller) )
 			{
-				G.v().out.print("S");
+				logger.debug("S");
 				continue; // if this goalCaller would be an SCC, ignore it
 			}
 
@@ -462,21 +465,21 @@ public class LocalObjectsAnalysis
 				// If the call chains don't now start from start, then get ones that do (recursively)
 				if(currentCaller != start)
 				{
-					G.v().out.print("R");
+					logger.debug("R");
 
 					// Call self to extend these new call chains all the way to start
 					getCallChainsBetween(start, currentCaller, goal, rm, newCallChains, methodsInAnyChain);
 				}
 				else
 				{
-					G.v().out.print("F");
+					logger.debug("F");
 				}
 				
 				// Add all the new call chains to our set
 				callChains.addAll(newCallChains);
 			}
 		}
-		G.v().out.print("(" + callChains.size() + ")");
+		logger.debug("(" + callChains.size() + ")");
 		if(callChains.size() > 0)
 			callChainsCache.put(new Pair(start, goal), callChains);
 	}
@@ -495,7 +498,7 @@ public class LocalObjectsAnalysis
 /*
 	public List getCallChainsBetween(SootMethod start, SootMethod goal)
 	{
-		G.v().out.print("Q");
+		logger.debug("Q");
 		List callChains = new ArrayList();
 		Iterator edgeIt = cg.edgesInto(goal);
 		while(edgeIt.hasNext())

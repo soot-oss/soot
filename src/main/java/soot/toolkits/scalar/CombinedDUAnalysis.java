@@ -18,6 +18,8 @@
  */
 
 package soot.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -47,6 +49,7 @@ import soot.util.MultiMap;
 public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<ValueBox>> 
 		implements CombinedAnalysis, LocalDefs, LocalUses, LiveLocals
 {
+    private static final Logger logger = LoggerFactory.getLogger(CombinedDUAnalysis.class);
     // Implementations of our interfaces...
     private final Map<Cons<Local, Unit>, List<Unit>> defsOfAt = new HashMap<Cons<Local, Unit>, List<Unit>>();
     
@@ -121,7 +124,7 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
     public CombinedDUAnalysis(UnitGraph graph) {
         super(graph);
         if(Options.v().verbose())
-            G.v().out.println("[" + graph.getBody().getMethod().getName() +
+            logger.debug("[" + graph.getBody().getMethod().getName() +
                                "]     Constructing CombinedDUAnalysis...");
  
         for( Unit u : graph ) {
@@ -152,7 +155,7 @@ public class CombinedDUAnalysis extends BackwardFlowAnalysis<Unit, FlowSet<Value
             }
         }
         if(Options.v().verbose())
-            G.v().out.println("[" + graph.getBody().getMethod().getName() +
+            logger.debug("[" + graph.getBody().getMethod().getName() +
                                "]     Finished CombinedDUAnalysis...");
  
     }

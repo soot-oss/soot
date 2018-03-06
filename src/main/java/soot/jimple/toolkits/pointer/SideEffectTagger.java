@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.pointer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import java.util.*;
 import soot.jimple.toolkits.callgraph.*;
@@ -25,6 +27,7 @@ import soot.jimple.*;
 
 public class SideEffectTagger extends BodyTransformer
 { 
+    private static final Logger logger = LoggerFactory.getLogger(SideEffectTagger.class);
     public SideEffectTagger( Singletons.Global g ) {}
     public static SideEffectTagger v() { return G.v().soot_jimple_toolkits_pointer_SideEffectTagger(); }
 
@@ -126,8 +129,8 @@ public class SideEffectTagger extends BodyTransformer
 	        final RWSet inner = innerIt.next();
 		if( inner == outer ) break;
 		if( outer.hasNonEmptyIntersection( inner ) ) {
-                    //G.v().out.println( "inner set is: "+inner );
-                    //G.v().out.println( "outer set is: "+outer );
+                    //logger.debug(""+ "inner set is: "+inner );
+                    //logger.debug(""+ "outer set is: "+outer );
 		    graph.addEdge( sets.indexOf( outer ), sets.indexOf( inner ) );
 		}
 	    }

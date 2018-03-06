@@ -18,6 +18,8 @@
  */
 
 package soot.dava.internal.SET;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintStream;
 import java.util.HashMap;
@@ -38,6 +40,7 @@ import soot.util.IterableSet;
 import soot.util.UnmodifiableIterableSet;
 
 public abstract class SETNode {
+    private static final Logger logger = LoggerFactory.getLogger(SETNode.class);
 	private IterableSet<AugmentedStmt> body;
 	private final SETNodeLabel label;
 
@@ -382,7 +385,7 @@ public abstract class SETNode {
 			Iterator bit = body.iterator();
 			while (bit.hasNext())
 				if ((bit.next() instanceof AugmentedStmt) == false)
-					G.v().out.println("Error in body: " + getClass());
+					logger.debug("Error in body: " + getClass());
 
 			Iterator cit = body2childChain.get(body).iterator();
 			while (cit.hasNext())

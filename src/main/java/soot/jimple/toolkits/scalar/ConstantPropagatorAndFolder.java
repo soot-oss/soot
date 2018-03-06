@@ -26,6 +26,8 @@
 
 
 package soot.jimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 import soot.*;
 import soot.toolkits.scalar.*;
@@ -40,6 +42,7 @@ import soot.toolkits.graph.*;
  * expressions (i.e. 2 * 3). */
 public class ConstantPropagatorAndFolder extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(ConstantPropagatorAndFolder.class);
     public ConstantPropagatorAndFolder( Singletons.Global g ) {}
     public static ConstantPropagatorAndFolder v() { return G.v().soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder(); }
 
@@ -49,7 +52,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
         int numPropagated = 0;
 
         if (Options.v().verbose())
-            G.v().out.println("[" + b.getMethod().getName() +
+            logger.debug("[" + b.getMethod().getName() +
                                "] Propagating and folding constants...");
 
         UnitGraph g = new ExceptionalUnitGraph(b);
@@ -107,7 +110,7 @@ public class ConstantPropagatorAndFolder extends BodyTransformer
         }
 
        if (Options.v().verbose())
-            G.v().out.println("[" + b.getMethod().getName() +
+            logger.debug("[" + b.getMethod().getName() +
                 "]     Propagated: " + numPropagated + ", Folded:  " + numFolded);
 
     } // optimizeConstants

@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.toolkits.scalar.pre;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.options.*;
 import soot.jimple.toolkits.graph.*;
@@ -56,6 +58,7 @@ import soot.options.LCMOptions;
  * @see soot.jimple.toolkits.graph.CriticalEdgeRemover
  */
 public class LazyCodeMotion extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(LazyCodeMotion.class);
 	public LazyCodeMotion(Singletons.Global g) {
 	}
 
@@ -74,7 +77,7 @@ public class LazyCodeMotion extends BodyTransformer {
 		Chain<Unit> unitChain = b.getUnits();
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + b.getMethod().getName() + "] Performing Lazy Code Motion...");
+			logger.debug("[" + b.getMethod().getName() + "] Performing Lazy Code Motion...");
 
 		if (options.unroll())
 			new LoopConditionUnroller().transform(b, phaseName + ".lcu");
@@ -149,7 +152,7 @@ public class LazyCodeMotion extends BodyTransformer {
 
 		/* debug */
 		/*
-		 * { G.v().out.println("========" + b.getMethod().getName()); Iterator
+		 * { logger.debug("========" + b.getMethod().getName()); Iterator
 		 * unitIt = unitChain.iterator(); while (unitIt.hasNext()) { Unit
 		 * currentUnit = (Unit) unitIt.next(); Value equiVal =
 		 * (Value)unitToEquivRhs.get(currentUnit); FlowSet latestSet =
@@ -159,11 +162,11 @@ public class LazyCodeMotion extends BodyTransformer {
 		 * ((FlowSet)earliest.getFlowBefore(currentUnit)); FlowSet upSet =
 		 * (FlowSet)upSafe.getFlowBefore(currentUnit); FlowSet downSet =
 		 * (FlowSet)downSafe.getFlowBefore(currentUnit);
-		 * G.v().out.println(currentUnit); G.v().out.println(" rh: " + equiVal);
-		 * G.v().out.println(" up: " + upSet); G.v().out.println(" do: " +
-		 * downSet); G.v().out.println(" is: " + notIsolatedSet);
-		 * G.v().out.println(" ea: " + earlySet); G.v().out.println(" db: " +
-		 * delaySet); G.v().out.println(" la: " + latestSet); } }
+		 * logger.debug(""+currentUnit); logger.debug(" rh: " + equiVal);
+		 * logger.debug(" up: " + upSet); logger.debug(" do: " +
+		 * downSet); logger.debug(" is: " + notIsolatedSet);
+		 * logger.debug(" ea: " + earlySet); logger.debug(" db: " +
+		 * delaySet); logger.debug(" la: " + latestSet); } }
 		 */
 
 		{ /* insert the computations */
@@ -205,12 +208,12 @@ public class LazyCodeMotion extends BodyTransformer {
 							if (helper != null)
 								((AssignStmt) currentUnit).setRightOp(helper);
 						} catch (RuntimeException e) {
-							G.v().out.println("Error on " + b.getMethod().getName());
-							G.v().out.println(currentUnit.toString());
+							logger.debug("Error on " + b.getMethod().getName());
+							logger.debug(""+currentUnit.toString());
 
-							G.v().out.println(latestSet);
+							logger.debug(""+latestSet);
 
-							G.v().out.println(notIsolatedSet);
+							logger.debug(""+notIsolatedSet);
 
 							throw e;
 						}
@@ -219,6 +222,6 @@ public class LazyCodeMotion extends BodyTransformer {
 			}
 		}
 		if (Options.v().verbose())
-			G.v().out.println("[" + b.getMethod().getName() + "]     Lazy Code Motion done.");
+			logger.debug("[" + b.getMethod().getName() + "]     Lazy Code Motion done.");
 	}
 }

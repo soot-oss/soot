@@ -30,6 +30,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -100,6 +102,7 @@ import soot.util.Chain;
  * @author Clark Verbrugge
  */
 public class CFG {
+    private static final Logger logger = LoggerFactory.getLogger(CFG.class);
 
     /** Method for which this is a control flow graph.
      * @see method_info
@@ -281,9 +284,8 @@ public class CFG {
                  
 			    if (bb == null)
 			    {                 
-				G.v().out.println("Warning: "
-					       +"target of a branch is null");
-				G.v().out.println ( insn );
+				logger.warn("target of a branch is null");
+				logger.debug(""+ insn );
 			    }
 			    else 
 			    {
@@ -311,7 +313,7 @@ public class CFG {
 					 ca.exception_table[i].handler_inst);
 	    if ( bb == null )
 	    {
-		G.v().out.println("Warning: No basic block found for" +
+		logger.warn("No basic block found for" +
 				   " start of exception handler code.");
 	    }
 	    else 
@@ -453,7 +455,7 @@ public class CFG {
 
 	if (unusual)
 	{
-	    G.v().out.println("Sorry, I cannot handle this method.");
+	    logger.debug("Sorry, I cannot handle this method.");
 	    return false;
 	}
 	
@@ -499,7 +501,7 @@ public class CFG {
 	    Instruction jsr    = (Instruction)jsrorder.get(i);
 	    Instruction astore = (Instruction)jsr2astore.get(jsr);
 	    Instruction ret    = (Instruction)astore2ret.get(astore);
-	    G.v().out.println("jsr"+jsr.label+"\t"
+	    logger.debug("jsr"+jsr.label+"\t"
 			       +"as"+astore.label+"\t"
 			       +"ret"+ret.label);
 	}
@@ -574,7 +576,7 @@ public class CFG {
 		insnmap.put(insn, newone);
 	    } catch (CloneNotSupportedException e)
 	    {
-		G.v().out.println("Error !");
+		logger.debug("Error !");
 	    }
 	    insn = insn.next;   
 	}
@@ -1184,10 +1186,10 @@ public class CFG {
                             visitedInstructions.add(s);
                             changedInstructions.add(s);
 
-                            // G.v().out.println("adding successor: " + s);
+                            // logger.debug("adding successor: " + s);
                         }
                         else {
-                            // G.v().out.println("considering successor: " + s);
+                            // logger.debug("considering successor: " + s);
                         
 							TypeStack newTypeStack,
                                 oldTypeStack = instructionToTypeStack.get(s);
@@ -1208,14 +1210,14 @@ public class CFG {
                                 	newTypeStack = ret.typeStack.merge(oldTypeStack);
 								} catch (RuntimeException re)
 								{
-									G.v().out.println("Considering "+s);
+									logger.debug("Considering "+s);
 									throw re;
 								}
 							}
                             if(!newTypeStack.equals(oldTypeStack))
                             {
                                 changedInstructions.add(s);
-                                // G.v().out.println("requires a revisit: " + s);
+                                // logger.debug("requires a revisit: " + s);
                             }
 
                             instructionToTypeStack.put(s, newTypeStack);
@@ -1225,7 +1227,7 @@ public class CFG {
             }
         }
 
-        // G.v().out.println("Producing Jimple code...");
+        // logger.debug("Producing Jimple code...");
 
         // Jimplify each statement
         {
@@ -1278,17 +1280,17 @@ public class CFG {
         {
             BasicBlock b = cfg;
 
-            G.v().out.println("Basic blocks for: " + jmethod.getName());
+            logger.debug("Basic blocks for: " + jmethod.getName());
 
             while(b != null)
             {
                 Instruction ins = b.head;
 
-                G.v().out.println();
+                
 
                 while(ins != null)
                 {
-                    G.v().out.println(ins.toString());
+                    logger.debug(""+ins.toString());
                     ins = ins.next;
                 }
 
@@ -2700,9 +2702,9 @@ public class CFG {
                     else
                         ((GotoStmt)s).setTarget(((BasicBlock) b.succ.firstElement()).getHeadJStmt());	
 		    */
-		    G.v().out.println("Error :");
+		    logger.debug("Error :");
 		    for (int i=0; i<b.statements.size(); i++)
-			G.v().out.println(b.statements.get(i));
+			logger.debug(""+b.statements.get(i));
 		    
 		    throw new RuntimeException(b +" has "+b.succ.size()+" successors.");		    
                 }
@@ -2710,7 +2712,7 @@ public class CFG {
             else if (s instanceof IfStmt)
             {
                if (b.succ.size()!=2)
-                  G.v().out.println("How can an if not have 2 successors?");
+                  logger.debug("How can an if not have 2 successors?");
 
                if((b.succ.firstElement())==b.next)
                {
@@ -2809,7 +2811,7 @@ public class CFG {
 		    bbq.push(b);
 		    processTargetFixup(bbq);
 		    if (!bbq.isEmpty()) {
-			G.v().out.println("Error 2nd processing exception block.");
+			logger.debug("Error 2nd processing exception block.");
 			break;
 		    }
 		}
@@ -4293,7 +4295,7 @@ public class CFG {
 
 				short[] bsmArgIndices = bootstrap_methods_attribute.arg_indices[iv_info.bootstrap_method_index];
 				if (bsmArgIndices.length > 0) {
-					// G.v().out.println("Soot does not currently support static arguments to bootstrap methods. They will be stripped.");
+					// logger.debug("Soot does not currently support static arguments to bootstrap methods. They will be stripped.");
 					for (short bsmArgIndex : bsmArgIndices) {
 					      cp_info cpEntry = constant_pool[bsmArgIndex];
 					      Value val = cpEntry.createJimpleConstantValue(constant_pool);
@@ -4455,10 +4457,10 @@ public class CFG {
                    params = new Value[args];
                 for (int j=args-1;j>=0;j--)
                 {
-                    /* G.v().out.println("BeforeTypeStack");
+                    /* logger.debug("BeforeTypeStack");
                     typeStack.print(G.v().out);
 
-                    G.v().out.println("AfterTypeStack");
+                    logger.debug("AfterTypeStack");
                     postTypeStack.print(G.v().out);
                     */
 

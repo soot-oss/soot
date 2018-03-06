@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Date;
 import java.util.Map;
@@ -69,6 +71,7 @@ import soot.tagkit.Tag;
  * @author Ondrej Lhotak
  */
 public class SparkTransformer extends SceneTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(SparkTransformer.class);
 	public SparkTransformer(Singletons.Global g) {
 	}
 
@@ -103,9 +106,9 @@ public class SparkTransformer extends SceneTransformer {
 			doGC();
 
 		if (opts.verbose()) {
-			G.v().out.println("VarNodes: " + pag.getVarNodeNumberer().size());
-			G.v().out.println("FieldRefNodes: " + pag.getFieldRefNodeNumberer().size());
-			G.v().out.println("AllocNodes: " + pag.getAllocNodeNumberer().size());
+			logger.debug("VarNodes: " + pag.getVarNodeNumberer().size());
+			logger.debug("FieldRefNodes: " + pag.getFieldRefNodeNumberer().size());
+			logger.debug("AllocNodes: " + pag.getAllocNodeNumberer().size());
 		}
 
 		// Simplify pag
@@ -152,7 +155,7 @@ public class SparkTransformer extends SceneTransformer {
 		}
 
 		if (opts.verbose()) {
-			G.v().out.println("[Spark] Number of reachable methods: " + Scene.v().getReachableMethods().size());
+			logger.debug("[Spark] Number of reachable methods: " + Scene.v().getReachableMethods().size());
 		}
 
 		if (opts.set_mass())
@@ -171,9 +174,9 @@ public class SparkTransformer extends SceneTransformer {
 
 		if (opts.geom_pta()) {
 			if (opts.simplify_offline() || opts.simplify_sccs()) {
-				G.v().out.println(
+				logger.debug(""+
 						"Please turn off the simplify-offline and simplify-sccs to run the geometric points-to analysis");
-				G.v().out.println("Now, we keep the SPARK result for querying.");
+				logger.debug("Now, we keep the SPARK result for querying.");
 			} else {
 				// We perform the geometric points-to analysis
 				GeomPointsTo geomPTA = (GeomPointsTo) pag;
@@ -268,7 +271,7 @@ public class SparkTransformer extends SceneTransformer {
 
 	protected static void reportTime(String desc, Date start, Date end) {
 		long time = end.getTime() - start.getTime();
-		G.v().out.println("[Spark] " + desc + " in " + time / 1000 + "." + (time / 100) % 10 + " seconds.");
+		logger.debug("[Spark] " + desc + " in " + time / 1000 + "." + (time / 100) % 10 + " seconds.");
 	}
 
 	protected static void doGC() {
@@ -312,10 +315,10 @@ public class SparkTransformer extends SceneTransformer {
 				}
 			}
 		}
-		G.v().out.println("Set mass: " + mass);
-		G.v().out.println("Variable mass: " + varMass);
-		G.v().out.println("Scalars: " + scalars);
-		G.v().out.println("adfs: " + adfs);
+		logger.debug("Set mass: " + mass);
+		logger.debug("Variable mass: " + varMass);
+		logger.debug("Scalars: " + scalars);
+		logger.debug("adfs: " + adfs);
 		// Compute points-to set sizes of dereference sites BEFORE
 		// trimming sets by declared type
 		int[] deRefCounts = new int[30001];
@@ -329,10 +332,10 @@ public class SparkTransformer extends SceneTransformer {
 		int total = 0;
 		for (int element : deRefCounts)
 			total += element;
-		G.v().out.println("Dereference counts BEFORE trimming (total = " + total + "):");
+		logger.debug("Dereference counts BEFORE trimming (total = " + total + "):");
 		for (int i = 0; i < deRefCounts.length; i++) {
 			if (deRefCounts[i] > 0) {
-				G.v().out.println("" + i + " " + deRefCounts[i] + " " + (deRefCounts[i] * 100.0 / total) + "%");
+				logger.debug("" + i + " " + deRefCounts[i] + " " + (deRefCounts[i] * 100.0 / total) + "%");
 			}
 		}
 	}

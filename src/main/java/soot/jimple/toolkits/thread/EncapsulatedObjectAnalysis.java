@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.thread;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import java.util.*;
@@ -10,6 +12,7 @@ import soot.toolkits.graph.*;
 
 public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
 {
+    private static final Logger logger = LoggerFactory.getLogger(EncapsulatedObjectAnalysis.class);
 	List cachedClasses;
 	List<SootMethod> objectPureMethods;
 	List<SootMethod> objectPureInitMethods;
@@ -58,14 +61,14 @@ public class EncapsulatedObjectAnalysis // extends ForwardFlowAnalysis
 	
 	public boolean isInitMethodPureOnObject(SootMethod sm)
 	{
-//		G.v().out.print("Testing Init Method Encapsulation: " + sm + " Encapsulated: ");
+//		logger.debug("Testing Init Method Encapsulation: " + sm + " Encapsulated: ");
 		if(isMethodPureOnObject(sm))
 		{
 			boolean ret = objectPureInitMethods.contains(sm);
-//			G.v().out.println(ret);
+//			logger.debug(""+ret);
 			return ret;
 		}
-//		G.v().out.println("false");
+//		logger.debug("false");
 		return false;
 	}
 	

@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.pointer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.List;
@@ -30,6 +32,7 @@ import soot.Type;
 
 /** Represents a set of (local,type) pairs using a bit-vector. */
 class LocalTypeSet extends java.util.BitSet {
+	private static final Logger logger = LoggerFactory.getLogger(LocalTypeSet.class);
 	protected List<Local> locals;
 	protected List<Type> types;
 
@@ -109,7 +112,7 @@ class LocalTypeSet extends java.util.BitSet {
 			while (typesIt.hasNext()) {
 				RefType t = (RefType) typesIt.next();
 				int index = indexOf(l, t);
-				// G.v().out.println("for: "+l+" and type: "+t+" at: "+index);
+				//logger.debug("for: "+l+" and type: "+t+" at: "+index);
 				if (get(index)) {
 					sb.append("((" + l + "," + t + ") -> elim cast check) ");
 				}

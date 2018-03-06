@@ -18,6 +18,8 @@
  */
 
 package soot.jbco;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -32,6 +34,7 @@ import soot.jbco.jimpleTransformations.*;
  * Created on 24-Jan-2006 
  */
 public class Main {
+    private static final Logger logger = LoggerFactory.getLogger(Main.class);
 
   public static boolean jbcoDebug = false;
   public static boolean jbcoSummary = true;
@@ -100,7 +103,7 @@ public class Main {
           try {
             tweight = Integer.parseInt(arg.substring(0,1));
           } catch (NumberFormatException nfe) {
-            G.v().out.println("Improperly formated transformation weight: "+argv[i]);
+            logger.debug("Improperly formated transformation weight: "+argv[i]);
             System.exit(1);
           }
           arg = arg.substring(arg.indexOf(':') + 1);
@@ -135,11 +138,11 @@ public class Main {
           try {
             tweight = Integer.parseInt(arg.substring(0,1));
           } catch (NumberFormatException nfe) {
-            G.v().out.println("Improperly formatted transformation weight: "+argv[i]);
+            logger.debug("Improperly formatted transformation weight: "+argv[i]);
             System.exit(1);
           }
           if (arg.indexOf(':') < 0) {
-            G.v().out.println("Illegally Formatted Option: "+argv[i]);
+            logger.debug("Illegally Formatted Option: "+argv[i]);
             System.exit(1);
           }
           arg = arg.substring(arg.indexOf(':') + 1);
@@ -147,7 +150,7 @@ public class Main {
         
         int index = arg.indexOf(':');
         if (index < 0) {
-          G.v().out.println("Illegally Formatted Option: "+argv[i]);
+          logger.debug("Illegally Formatted Option: "+argv[i]);
           System.exit(1);
         }
         
@@ -159,7 +162,7 @@ public class Main {
           try {
             o = java.util.regex.Pattern.compile(arg);
           } catch (java.util.regex.PatternSyntaxException pse) {
-            G.v().out.println("Illegal Regular Expression Pattern: "+arg);
+            logger.debug("Illegal Regular Expression Pattern: "+arg);
             System.exit(1);
           }
         } else {
@@ -196,7 +199,7 @@ public class Main {
     
     if (!metrics) {
       if (transformsToAdd.size() == 0) {
-        G.v().out.println("No Jbco tasks to complete.  Shutting Down...");
+        logger.debug("No Jbco tasks to complete.  Shutting Down...");
         System.exit(0);
       }
       
@@ -248,20 +251,20 @@ public class Main {
       if (jbcoSummary) {
         for (int i = 0; i < 3; i++) {
           Iterator<Transform> phases = i == 0 ? wjtp.iterator() : i == 1 ? jtp.iterator() : bb.iterator();
-          G.v().out.println(i == 0 ? "Whole Program Jimple Transformations:" 
+          logger.debug(i == 0 ? "Whole Program Jimple Transformations:" 
                           : i == 1 ? "Jimple Method Body Transformations:" 
                                    : "Baf Method Body Transformations:");
           while (phases.hasNext()) {
             Transform o = (Transform)phases.next();
             Transformer t = o.getTransformer();
             if (t instanceof IJbcoTransform) {
-              G.v().out.println("\t"+((IJbcoTransform)t).getName() + "  JBCO");
+              logger.debug("\t"+((IJbcoTransform)t).getName() + "  JBCO");
             } else {
-              G.v().out.println("\t"+o.getPhaseName()+"  default");
+              logger.debug("\t"+o.getPhaseName()+"  default");
             }
           }
         }
-        G.v().out.println();
+        
       }
       
       bb.add(new Transform("bb.jbco_bln",new BafLineNumberer()));
@@ -273,7 +276,7 @@ public class Main {
 	soot.Main.main(argv);
     
     if (jbcoSummary){
-      G.v().out.println("\n***** JBCO SUMMARY *****\n");
+      logger.debug("\n***** JBCO SUMMARY *****\n");
       Iterator<Transformer> tit = jbcotransforms.iterator();
       while (tit.hasNext()) {
         Object o = tit.next();
@@ -282,7 +285,7 @@ public class Main {
         }
       }
       
-      G.v().out.println("\n***** END SUMMARY *****\n");
+      logger.debug("\n***** END SUMMARY *****\n");
     }
   }
   
@@ -410,7 +413,7 @@ public class Main {
       result = getWeight(phasename);
     
     if (jbcoVerbose)
-      G.v().out.println("["+phasename+"] Processing "+method+" with weight: "+result);
+      logger.debug("["+phasename+"] Processing "+method+" with weight: "+result);
     return result;
   }
 }

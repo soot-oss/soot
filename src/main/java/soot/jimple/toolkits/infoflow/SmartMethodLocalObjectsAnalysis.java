@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.infoflow;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 
@@ -12,6 +14,7 @@ import soot.jimple.*;
 
 public class SmartMethodLocalObjectsAnalysis
 {
+    private static final Logger logger = LoggerFactory.getLogger(SmartMethodLocalObjectsAnalysis.class);
 	public static int counter = 0;
 	static boolean printMessages;
 	
@@ -58,17 +61,17 @@ public class SmartMethodLocalObjectsAnalysis
 				if(!context.isFieldLocal(source))
 				{
 					if(printMessages)
-						G.v().out.println("      Requested value " + local + " is SHARED in " + method + " ");
+						logger.debug("      Requested value " + local + " is SHARED in " + method + " ");
 					return false;
 				}
 			} else if(source.getValue() instanceof Constant) {
 				if(printMessages)
-					G.v().out.println("      Requested value " + local + " is SHARED in " + method + " ");
+					logger.debug("      Requested value " + local + " is SHARED in " + method + " ");
 				return false;
 			}
 		}
 		if(printMessages)
-			G.v().out.println("      Requested value " + local + " is LOCAL in " + method + " ");
+			logger.debug("      Requested value " + local + " is LOCAL in " + method + " ");
 		return true;
 	}
 	
@@ -92,13 +95,13 @@ public class SmartMethodLocalObjectsAnalysis
 				if(!context.isFieldLocal(source))
 				{
 					if(printMessages)
-						G.v().out.println("      Requested value " + local + " is LOCAL in " + method + " ");
+						logger.debug("      Requested value " + local + " is LOCAL in " + method + " ");
 					return false;
 				}
 			}
 		}
 		if(printMessages)
-			G.v().out.println("      Requested value " + local + " is SHARED in " + method + " ");
+			logger.debug("      Requested value " + local + " is SHARED in " + method + " ");
 		return true;
 	}
 }

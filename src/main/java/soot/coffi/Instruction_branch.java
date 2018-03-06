@@ -30,6 +30,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
@@ -60,6 +62,7 @@ import soot.*;
  * @see Instruction_Unknown
  */
 abstract class Instruction_branch extends Instruction {
+    private static final Logger logger = LoggerFactory.getLogger(Instruction_branch.class);
    public int arg_i;
    public Instruction target;         // pointer to target instruction
    public Instruction_branch(byte c) { super(c); branches = true; }
@@ -72,8 +75,8 @@ abstract class Instruction_branch extends Instruction {
    public void offsetToPointer(ByteCode bc) {
       target = bc.locateInst(arg_i+label);
       if (target==null) {
-         G.v().out.println("Warning: can't locate target of instruction");
-         G.v().out.println(" which should be at byte address " + (label+arg_i));
+         logger.warn("can't locate target of instruction");
+         logger.debug(" which should be at byte address " + (label+arg_i));
       } else
          target.labelled = true;
    }

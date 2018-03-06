@@ -18,6 +18,8 @@
  */
 
 package soot.toolkits.graph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -40,6 +42,7 @@ import java.util.*;
  * @author Navindra Umanee
  **/
 public class DominatorTree<N> implements Iterable<DominatorNode<N>>{
+    private static final Logger logger = LoggerFactory.getLogger(DominatorTree.class);
 
     protected DominatorsFinder<N> dominators;
     protected DirectedGraph<N> graph;
@@ -54,7 +57,7 @@ public class DominatorTree<N> implements Iterable<DominatorNode<N>>{
 
     public DominatorTree(DominatorsFinder dominators) {
         // if(Options.v().verbose())
-        // G.v().out.println("[" + graph.getBody().getMethod().getName() +
+        // logger.debug("[" + graph.getBody().getMethod().getName() +
         // "]     Constructing DominatorTree...");
 
         this.dominators = dominators;

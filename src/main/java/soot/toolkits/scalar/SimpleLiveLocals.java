@@ -24,6 +24,8 @@
  */
 
 package soot.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.options.Options;
 import soot.Timers;
@@ -41,6 +43,7 @@ import soot.toolkits.graph.UnitGraph;
  * Analysis that provides an implementation of the LiveLocals interface.
  */
 public class SimpleLiveLocals implements LiveLocals {
+    private static final Logger logger = LoggerFactory.getLogger(SimpleLiveLocals.class);
 	final FlowAnalysis<Unit, FlowSet<Local>> analysis;
 
 	/**
@@ -57,7 +60,7 @@ public class SimpleLiveLocals implements LiveLocals {
 			Timers.v().liveTimer.start();
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + graph.getBody().getMethod().getName()
+			logger.debug("[" + graph.getBody().getMethod().getName()
 					+ "]     Constructing SimpleLiveLocals...");
 
 		analysis = new Analysis(graph);

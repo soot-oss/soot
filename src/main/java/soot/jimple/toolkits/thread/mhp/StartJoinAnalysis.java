@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.thread.mhp;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +46,7 @@ import soot.toolkits.scalar.ForwardFlowAnalysis;
 
 public class StartJoinAnalysis extends ForwardFlowAnalysis
 {
+    private static final Logger logger = LoggerFactory.getLogger(StartJoinAnalysis.class);
 	Set<Stmt> startStatements;
 	Set<Stmt> joinStatements;
 	
@@ -169,7 +172,7 @@ public class StartJoinAnalysis extends ForwardFlowAnalysis
 					{
 						if((pd.getDominators(start)).contains(join)) // does join post-dominate start?
 						{
-//							G.v().out.println("START-JOIN PAIR: " + start + ", " + join);
+//							logger.debug("START-JOIN PAIR: " + start + ", " + join);
 							startToJoin.put(start, join); // then this join always joins this start's thread
 						}
 					}

@@ -24,6 +24,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 import java.io.*;
 import soot.tagkit.*;
@@ -36,6 +38,7 @@ import soot.toolkits.graph.*;
 * Prints out a class and all its methods.
 */
 public class Printer {
+    private static final Logger logger = LoggerFactory.getLogger(Printer.class);
     public Printer(Singletons.Global g) {
     }
     public static Printer v() {
@@ -73,7 +76,7 @@ public class Printer {
     }
     public void incJimpleLnNum() {
         jimpleLnNum++;
-	//G.v().out.println("jimple Ln Num: "+jimpleLnNum);
+	//logger.debug("jimple Ln Num: "+jimpleLnNum);
     }
 
     public void printTo(SootClass cl, PrintWriter out) {
@@ -279,7 +282,7 @@ public class Printer {
        
         if (addJimpleLn()) {
             setJimpleLnNum(addJimpleLnTags(getJimpleLnNum(), b.getMethod()));		
-            //G.v().out.println("added jimple ln tag for method: "+b.getMethod().toString()+" "+b.getMethod().getDeclaringClass().getName());
+            //logger.debug("added jimple ln tag for method: "+b.getMethod().toString()+" "+b.getMethod().getDeclaringClass().getName());
         }
 
         out.println("    {");

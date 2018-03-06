@@ -30,6 +30,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.G;
 
@@ -64,6 +66,7 @@ import soot.G;
 //INSERTED Instruction_Invokedynamic
 
 class Instruction_Invokedynamic extends Instruction_intindex {
+    private static final Logger logger = LoggerFactory.getLogger(Instruction_Invokedynamic.class);
    public Instruction_Invokedynamic() {
       super((byte)ByteCode.INVOKEDYNAMIC);
       name = "invokedynamic";
@@ -85,7 +88,7 @@ class Instruction_Invokedynamic extends Instruction_intindex {
 	      index += 2;
 	      reserved = getShort(bc, index);
 	      if(reserved>0) {
-	    	  G.v().out.println("reserved value in invokedynamic is "+reserved);
+	    	  logger.debug("reserved value in invokedynamic is "+reserved);
 	      }
 	      index += 2;
 	      return index;

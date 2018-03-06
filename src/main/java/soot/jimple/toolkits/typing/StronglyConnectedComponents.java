@@ -25,12 +25,15 @@
 
 
 package soot.jimple.toolkits.typing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import java.util.*;
 
 class StronglyConnectedComponents
 {
+    private static final Logger logger = LoggerFactory.getLogger(StronglyConnectedComponents.class);
   List<TypeVariable> variables;
   Set<TypeVariable> black;
   List<TypeVariable> finished;
@@ -105,7 +108,7 @@ class StronglyConnectedComponents
 		  {
 		    if(DEBUG)
 		      {
-			G.v().out.println(s);
+			logger.debug(""+s);
 		      }
 		    throw e;
 		  }

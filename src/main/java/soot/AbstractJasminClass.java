@@ -31,6 +31,8 @@
 
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.PrintWriter;
 import java.util.ArrayList;
@@ -79,6 +81,7 @@ import soot.toolkits.graph.Block;
 
 public abstract class AbstractJasminClass
 {
+    private static final Logger logger = LoggerFactory.getLogger(AbstractJasminClass.class);
     protected Map<Unit, String> unitToLabel;
     protected Map<Local, Integer> localToSlot;
     protected Map<Unit, Integer> subroutineToReturnAddressSlot;
@@ -436,7 +439,7 @@ public abstract class AbstractJasminClass
             Timers.v().buildJasminTimer.start();
         
         if(Options.v().verbose())
-            G.v().out.println("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
+            logger.debug("[" + sootClass.getName() + "] Constructing baf.JasminClass...");
 
         code = new LinkedList<String>();
 
@@ -657,7 +660,7 @@ public abstract class AbstractJasminClass
     protected void assignColorsToLocals(Body body)
     {
         if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
+            logger.debug("[" + body.getMethod().getName() +
                 "] Assigning colors to locals...");
         
         if(Options.v().time())

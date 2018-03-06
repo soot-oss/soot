@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.thread;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 
@@ -13,6 +15,7 @@ import soot.jimple.*;
 
 public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements IThreadLocalObjectsAnalysis 
 {
+    private static final Logger logger = LoggerFactory.getLogger(ThreadLocalObjectsAnalysis.class);
 	MhpTester mhp;
 	List<AbstractRuntimeThread> threads;
 	InfoFlowAnalysis primitiveDfa;
@@ -82,7 +85,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 //		}
 		
 		if(printDebug)
-			G.v().out.println("- " + localOrRef + " in " + sm + " is...");
+			logger.debug("- " + localOrRef + " in " + sm + " is...");
 		Collection<AbstractRuntimeThread> mhpThreads = mhp.getThreads();
 		if (mhpThreads != null)
 		    for(AbstractRuntimeThread thread : mhpThreads)
@@ -95,7 +98,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 						!isObjectLocalToContext(localOrRef, sm, runMethod))
 					{
 						if(printDebug)
-							G.v().out.println("  THREAD-SHARED (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
+							logger.debug("  THREAD-SHARED (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
 															" smartdfa " + SmartMethodInfoFlowAnalysis.counter + 
 															" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");
 	//					valueCache.put(cacheKey, Boolean.FALSE);
@@ -105,7 +108,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 				}
 			}
 		if(printDebug)
-			G.v().out.println("  THREAD-LOCAL (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
+			logger.debug("  THREAD-LOCAL (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
 							 " smartdfa " + SmartMethodInfoFlowAnalysis.counter + 
 							 " smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + localOrRef + " in " + sm + ")");
 //		valueCache.put(cacheKey, Boolean.TRUE);
@@ -115,18 +118,18 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 /*	
 	public boolean isFieldThreadLocal(SootField sf, SootMethod sm) // this is kind of meaningless..., if we're looking in a particular method, we'd use isObjectThreadLocal
 	{
-		G.v().out.println("- Checking if " + sf + " in " + sm + " is thread-local");
+		logger.debug("- Checking if " + sf + " in " + sm + " is thread-local");
 		Iterator threadClassesIt = threadClasses.iterator();
 		while(threadClassesIt.hasNext())
 		{
 			SootClass threadClass = (SootClass) threadClassesIt.next();
 			if(!isFieldLocalToContext(sf, sm, threadClass))
 			{
-				G.v().out.println("  THREAD-SHARED");
+				logger.debug("  THREAD-SHARED");
 				return false;
 			}
 		}
-		G.v().out.println("  THREAD-LOCAL");// (" + sf + " in " + sm + ")");
+		logger.debug("  THREAD-LOCAL");// (" + sf + " in " + sm + ")");
 		return true;
 	}
 */
@@ -143,7 +146,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 			return ((Boolean) invokeCache.get(cacheKey)).booleanValue();
 		}
 			
-		G.v().out.print("- " + ie + " in " + containingMethod + " has ");
+		logger.debug("- " + ie + " in " + containingMethod + " has ");
 		Iterator threadsIt = threads.iterator();
 		while(threadsIt.hasNext())
 		{
@@ -155,7 +158,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 				if( runMethod.getDeclaringClass().isApplicationClass() &&
 					hasNonLocalEffects(containingMethod, ie, runMethod))
 				{
-					G.v().out.println("THREAD-VISIBLE (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
+					logger.debug("THREAD-VISIBLE (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
 													" smartdfa " + SmartMethodInfoFlowAnalysis.counter + 
 													" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + ie + " in " + containingMethod + ")");
 					invokeCache.put(cacheKey, Boolean.TRUE);
@@ -163,7 +166,7 @@ public class ThreadLocalObjectsAnalysis extends LocalObjectsAnalysis implements 
 				}
 			}
 		}
-		G.v().out.println("THREAD-PRIVATE (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
+		logger.debug("THREAD-PRIVATE (simpledfa " + ClassInfoFlowAnalysis.methodCount + 
 												" smartdfa " + SmartMethodInfoFlowAnalysis.counter + 
 												" smartloa " + SmartMethodLocalObjectsAnalysis.counter + ")");// (" + ie + " in " + containingMethod + ")");
 		invokeCache.put(cacheKey, Boolean.FALSE);

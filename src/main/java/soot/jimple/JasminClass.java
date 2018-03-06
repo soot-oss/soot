@@ -26,6 +26,8 @@
 
 
 package soot.jimple;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 import soot.*;
 import soot.jimple.internal.*;
@@ -46,6 +48,7 @@ import soot.grimp.*;
 /** Methods for producing Jasmin code from Jimple. */
 public class JasminClass extends AbstractJasminClass
 {
+    private static final Logger logger = LoggerFactory.getLogger(JasminClass.class);
     void emit(String s, int stackChange)
     {
         modifyStackHeight(stackChange);        
@@ -115,7 +118,7 @@ public class JasminClass extends AbstractJasminClass
         // let's create a u-d web for the ++ peephole optimization.
 
         if(Options.v().verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
+            logger.debug("[" + body.getMethod().getName() +
                 "] Performing peephole optimizations...");
 
         //boolean disablePeephole = PhaseOptions.getBoolean(options, "no-peephole");
@@ -430,9 +433,9 @@ public class JasminClass extends AbstractJasminClass
 
                     /* emit dup slot */
 
-//                      G.v().out.println("found ++ instance:");
-//                      G.v().out.println(s); G.v().out.println(nextStmt);
-//                      G.v().out.println(nextNextStmt);
+//                      logger.debug("found ++ instance:");
+//                      logger.debug(""+s); logger.debug(""+nextStmt);
+//                      logger.debug(""+nextNextStmt);
 
                     /* this should be redundant, but we do it */
                     /* just in case. */
@@ -1543,9 +1546,9 @@ public class JasminClass extends AbstractJasminClass
                         // this time we have ppi of the form ppv = ppv + 1
                         plusPlusState = 11;
 
-//                          G.v().out.println("ppV "+plusPlusValue);
-//                          G.v().out.println("ppH "+plusPlusHolder);
-//                          G.v().out.println("ppI "+plusPlusIncrementer);
+//                          logger.debug("ppV "+plusPlusValue);
+//                          logger.debug("ppH "+plusPlusHolder);
+//                          logger.debug("ppI "+plusPlusIncrementer);
 
                         plusPlusHolder = (Local)plusPlusValue;
                         emitStmt(plusPlusIncrementer);

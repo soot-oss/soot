@@ -25,6 +25,8 @@
 
 
 package soot.toolkits.graph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.util.*;
 import java.util.*;
@@ -45,6 +47,7 @@ import soot.baf.*;
  */
 public class Block implements Iterable<Unit>
 {
+    private static final Logger logger = LoggerFactory.getLogger(Block.class);
     private Unit mHead, mTail;
     private final Body mBody;
     private List<Block> mPreds, mSuccessors;
@@ -348,7 +351,7 @@ public class Block implements Iterable<Unit>
         }
         // Or, it could be an empty block (e.g. Start or Stop Block) --NU
         // else 
-        // G.v().out.println("No basic blocks found; must be interface class.");
+        // logger.debug("No basic blocks found; must be interface class.");
 
         return strBuf.toString();
     }

@@ -19,6 +19,8 @@
  */
 
 package soot.plugins.internal;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.security.InvalidParameterException;
@@ -41,6 +43,7 @@ import soot.plugins.model.Plugins;
  * @author Bernhard J. Berger
  */
 public class PluginLoader {
+    private static final Logger logger = LoggerFactory.getLogger(PluginLoader.class);
 
 	private static ClassLoadingStrategy loadStrategy = new ReflectionClassLoadingStrategy();
 
@@ -158,11 +161,11 @@ public class PluginLoader {
 		   	loadPlugins((Plugins)root);
 		} catch(final RuntimeException e) {
    			System.err.println("Failed to load plugin correctly.");
-   			e.printStackTrace(System.err);
+   			logger.error(e.getMessage(), e);
    			return false;
    		} catch(final JAXBException e) {
 			System.err.println("An error occured while loading plugin configuration '" + file + "'.");
-			e.printStackTrace(System.err);
+			logger.error(e.getMessage(), e);
 			return false;
 		}
 		
@@ -180,7 +183,7 @@ public class PluginLoader {
 			if(plugin instanceof PhasePluginDescription) {
 				handlePhasePlugin((PhasePluginDescription)plugin);
 			} else {
-				G.v().out.println("[Warning] Unhandled plugin of type '" + plugin.getClass() + "'");
+				logger.debug("[Warning] Unhandled plugin of type '" + plugin.getClass() + "'");
 			}
 		}
 	}

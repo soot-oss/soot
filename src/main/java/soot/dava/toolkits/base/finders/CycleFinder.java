@@ -24,6 +24,8 @@
  * 5-April -2006: Fixed bug in Fix_MultiEntryPoint read comment dated 5 th April 2005 
  */
 package soot.dava.toolkits.base.finders;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 
@@ -41,6 +43,7 @@ import soot.dava.internal.javaRep.*;
 import soot.dava.toolkits.base.misc.*;
 
 public class CycleFinder implements FactFinder {
+    private static final Logger logger = LoggerFactory.getLogger(CycleFinder.class);
 	public CycleFinder(Singletons.Global g) {
 	}
 
@@ -373,12 +376,12 @@ public class CycleFinder implements FactFinder {
 
 				/*
 				 * if (sas.get_Dominators().contains( asg_ep) == false) {
-				 * G.v().out.println( wsas + " not dominated by " + asg_ep);
-				 * G.v().out.println( "doms"); Iterator dit =
+				 * logger.debug(""+ wsas + " not dominated by " + asg_ep);
+				 * logger.debug(""+ "doms"); Iterator dit =
 				 * sas.get_Dominators().iterator(); while (dit.hasNext())
-				 * G.v().out.println( "    " + dit.next());
-				 * G.v().out.println("preds"); dit = sas.cpreds.iterator();
-				 * while (dit.hasNext()) G.v().out.println( "    " +
+				 * logger.debug(""+ "    " + dit.next());
+				 * logger.debug("preds"); dit = sas.cpreds.iterator();
+				 * while (dit.hasNext()) logger.debug(""+ "    " +
 				 * dit.next()); }
 				 */
 
@@ -390,7 +393,7 @@ public class CycleFinder implements FactFinder {
 
 						continue;
 
-					// G.v().out.println( sas);
+					// logger.debug(""+ sas);
 
 					worklist.add(wsas);
 					cycle_body.add(sas);

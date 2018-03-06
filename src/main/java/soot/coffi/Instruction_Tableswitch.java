@@ -30,6 +30,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 /** Instruction subclasses are used to represent parsed bytecode; each
  * bytecode operation has a corresponding subclass of Instruction.
@@ -60,6 +62,7 @@ import soot.*;
  * @see Instruction_Unknown
  */
 class Instruction_Tableswitch extends Instruction {
+    private static final Logger logger = LoggerFactory.getLogger(Instruction_Tableswitch.class);
    public Instruction_Tableswitch() {
       super((byte)ByteCode.TABLESWITCH);
       name = "tableswitch";
@@ -143,8 +146,8 @@ class Instruction_Tableswitch extends Instruction {
       int i;
       default_inst = bc.locateInst(default_offset+label);
       if (default_inst==null) {
-         G.v().out.println("Warning: can't locate target of instruction");
-         G.v().out.println(" which should be at byte address " + (label+default_offset));
+         logger.warn("can't locate target of instruction");
+         logger.debug(" which should be at byte address " + (label+default_offset));
       } else
          default_inst.labelled = true;
       if (high-low+1>0) {
@@ -152,8 +155,8 @@ class Instruction_Tableswitch extends Instruction {
          for (i=0;i<high-low+1;i++) {
             jump_insts[i] = bc.locateInst(jump_offsets[i]+label);
             if (jump_insts[i]==null) {
-               G.v().out.println("Warning: can't locate target of instruction");
-               G.v().out.println(" which should be at byte address " +
+               logger.warn("can't locate target of instruction");
+               logger.debug(" which should be at byte address " +
                                   (label+jump_offsets[i]));
             } else
                jump_insts[i].labelled = true;

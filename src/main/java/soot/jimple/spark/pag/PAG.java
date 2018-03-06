@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.pag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,6 +94,7 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public class PAG implements PointsToAnalysis {
+    private static final Logger logger = LoggerFactory.getLogger(PAG.class);
 	public PAG(final SparkOptions opts) {
 		this.opts = opts;
 		this.cgOpts = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
@@ -265,7 +268,7 @@ public class PAG implements PointsToAnalysis {
 
 	public void cleanUpMerges() {
 		if (opts.verbose()) {
-			G.v().out.println("Cleaning up graph for merged nodes");
+			logger.debug("Cleaning up graph for merged nodes");
 		}
 		lookupInMap(simple);
 		lookupInMap(alloc);
@@ -278,7 +281,7 @@ public class PAG implements PointsToAnalysis {
 
 		somethingMerged = false;
 		if (opts.verbose()) {
-			G.v().out.println("Done cleaning up graph for merged nodes");
+			logger.debug("Done cleaning up graph for merged nodes");
 		}
 	}
 
@@ -390,7 +393,7 @@ public class PAG implements PointsToAnalysis {
 				m.put(key, valueList = ((Set) valueList).toArray(EMPTY_NODE_ARRAY));
 			} catch (Exception e) {
 				for (Iterator it = ((Set) valueList).iterator(); it.hasNext();) {
-					G.v().out.println("" + it.next());
+					logger.debug("" + it.next());
 				}
 				throw new RuntimeException("" + valueList + e);
 			}

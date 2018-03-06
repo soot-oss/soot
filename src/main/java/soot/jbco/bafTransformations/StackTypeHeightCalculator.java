@@ -18,6 +18,8 @@
  */
 
 package soot.jbco.bafTransformations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.*;
 
@@ -32,6 +34,7 @@ import soot.util.Chain;
  * Created on 3-May-2006 
  */
 public class StackTypeHeightCalculator {
+    private static final Logger logger = LoggerFactory.getLogger(StackTypeHeightCalculator.class);
 
   protected class StackEffectSwitch implements InstSwitch {
     
@@ -557,7 +560,7 @@ public class StackTypeHeightCalculator {
           if (sw.shouldThrow)
             throw new RuntimeException(exc);
           else
-            G.v().out.println(exc);
+            logger.debug(""+exc);
         }
 	    for (int i = sw.remove_types.length - 1; i >= 0; i--) {
 	      try {
@@ -626,7 +629,7 @@ public class StackTypeHeightCalculator {
       try {
         s = indexes.get(unit) + " " + unit + "  " + s + "   [";
       } catch (Exception e) {
-        G.v().out.println("Error in StackTypeHeightCalculator trying to find index of unit");
+        logger.debug("Error in StackTypeHeightCalculator trying to find index of unit");
       }
       Stack<Type> stack = stacks.get(unit);
       if (stack != null) {

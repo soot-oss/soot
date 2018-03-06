@@ -79,6 +79,10 @@ public class G extends Singletons
 		objectGetter = newGetter;
 	}
 
+	/**
+	 * Deprecated use logging via slf4j instead
+	 */
+	@Deprecated
     public PrintStream out = System.out;
 
     public class Global {

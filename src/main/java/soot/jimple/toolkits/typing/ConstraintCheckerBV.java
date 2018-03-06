@@ -25,6 +25,8 @@
 
 
 package soot.jimple.toolkits.typing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.jimple.*;
@@ -38,6 +40,7 @@ import java.io.*;
 @Deprecated
 class ConstraintCheckerBV extends AbstractStmtSwitch
 {
+    private static final Logger logger = LoggerFactory.getLogger(ConstraintCheckerBV.class);
   private final ClassHierarchy hierarchy;
   private final boolean fix;  // if true, fix constraint violations
   
@@ -61,7 +64,7 @@ class ConstraintCheckerBV extends AbstractStmtSwitch
       {
         StringWriter st = new StringWriter();
         PrintWriter pw = new PrintWriter(st);
-	e.printStackTrace(pw);
+	logger.error(e.getMessage(), e);
 	pw.close();
 	throw new TypeException(st.toString());
       }
@@ -304,7 +307,7 @@ private static class RuntimeTypeException extends RuntimeException
 	  }
 	catch(InternalTypingException e)
 	  {
-	    G.v().out.println("untyped local: " + l);
+	    logger.debug("untyped local: " + l);
 	    throw e;
 	  }
       }
@@ -595,7 +598,7 @@ private static class RuntimeTypeException extends RuntimeException
 	    }
 	  catch(TypeException e)
 	    {
-	      G.v().out.println(r + "[" + op + "<->" + cast + "]");
+	      logger.debug(""+r + "[" + op + "<->" + cast + "]");
 	      error(e.getMessage());
 	    }
 	}
@@ -617,7 +620,7 @@ private static class RuntimeTypeException extends RuntimeException
 	  }
 	catch(TypeException e)
 	  {
-	    G.v().out.println(r + "[" + op + "<->" + type + "]");
+	    logger.debug(""+r + "[" + op + "<->" + type + "]");
 	    error(e.getMessage());
 	  }
 	
