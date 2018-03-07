@@ -27,6 +27,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	/**
 	 * @apilevel low-level
 	 */
+	@Override
 	public void flushCache() {
 		super.flushCache();
 		accessibleFrom_TypeDecl_values = null;
@@ -54,6 +55,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	/**
 	 * @apilevel internal
 	 */
+	@Override
 	public void flushCollectionCache() {
 		super.flushCollectionCache();
 	}
@@ -61,6 +63,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	/**
 	 * @apilevel internal
 	 */
+	@Override
 	@SuppressWarnings({ "unchecked", "cast" })
 	public MethodDecl clone() throws CloneNotSupportedException {
 		MethodDecl node = (MethodDecl) super.clone();
@@ -92,13 +95,14 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	/**
 	 * @apilevel internal
 	 */
+	@Override
 	@SuppressWarnings({ "unchecked", "cast" })
 	public MethodDecl copy() {
 		try {
-			MethodDecl node = (MethodDecl) clone();
+			MethodDecl node = clone();
 			node.parent = null;
 			if (children != null)
-				node.children = (ASTNode[]) children.clone();
+				node.children = children.clone();
 			return node;
 		} catch (CloneNotSupportedException e) {
 			throw new Error("Error: clone not supported for " + getClass().getName());
@@ -112,12 +116,13 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @return dangling copy of the subtree at this node
 	 * @apilevel low-level
 	 */
+	@Override
 	@SuppressWarnings({ "unchecked", "cast" })
 	public MethodDecl fullCopy() {
-		MethodDecl tree = (MethodDecl) copy();
+		MethodDecl tree = copy();
 		if (children != null) {
 			for (int i = 0; i < children.length; ++i) {
-				ASTNode child = (ASTNode) children[i];
+				ASTNode child = children[i];
 				if (child != null) {
 					child = child.fullCopy();
 					tree.setChild(child, i);
@@ -144,6 +149,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect DataStructures
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:154
 	 */
+	@Override
 	public SimpleSet add(Object o) {
 		return new SimpleSetImpl().add(this).add(o);
 	}
@@ -153,6 +159,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect DataStructures
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:158
 	 */
+	@Override
 	public boolean isSingleton() {
 		return true;
 	}
@@ -162,6 +169,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect DataStructures
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:159
 	 */
+	@Override
 	public boolean isSingleton(Object o) {
 		return contains(o);
 	}
@@ -179,6 +187,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect DataStructures
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:163
 	 */
+	@Override
 	public Iterator iterator() {
 		iterElem = this;
 		return this;
@@ -189,6 +198,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect DataStructures
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:164
 	 */
+	@Override
 	public boolean hasNext() {
 		return iterElem != null;
 	}
@@ -198,6 +208,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect DataStructures
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:165
 	 */
+	@Override
 	public Object next() {
 		Object o = iterElem;
 		iterElem = null;
@@ -209,6 +220,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect DataStructures
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:166
 	 */
+	@Override
 	public void remove() {
 		throw new UnsupportedOperationException();
 	}
@@ -218,6 +230,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect NameCheck
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:101
 	 */
+	@Override
 	public void nameCheck() {
 		// 8.4
 		// 8.4.2
@@ -239,6 +252,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect PrettyPrint
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:176
 	 */
+	@Override
 	public void toString(StringBuffer s) {
 		s.append(indent());
 		getModifiers().toString(s);
@@ -273,6 +287,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect TypeCheck
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:386
 	 */
+	@Override
 	public void typeCheck() {
 		// Thrown vs super class method see MethodDecl.nameCheck
 		// 8.4.4
@@ -294,10 +309,11 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect LookupParTypeDecl
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1242
 	 */
+	@Override
 	public BodyDecl substitutedBodyDecl(Parameterization parTypeDecl) {
 		// System.out.println("Begin substituting " + signature() + " in " +
 		// hostType().typeName() + " with " + parTypeDecl.typeSignature());
-		MethodDecl m = new MethodDeclSubstituted((Modifiers) getModifiers().fullCopy(),
+		MethodDecl m = new MethodDeclSubstituted(getModifiers().fullCopy(),
 				getTypeAccess().type().substituteReturnType(parTypeDecl), getID(),
 				getParameterList().substitute(parTypeDecl), getExceptionList().substitute(parTypeDecl),
 				substituteBody(parTypeDecl), this);
@@ -340,7 +356,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 					getParameter(i).type().createQualifiedAccess(), getParameter(i).name()));
 		List exceptionList = new List();
 		for (int i = 0; i < getNumException(); i++)
-			exceptionList.add((Access) getException(i).fullCopy());
+			exceptionList.add(getException(i).fullCopy());
 
 		// add synthetic flag to modifiers
 		Modifiers modifiers = new Modifiers(new List());
@@ -406,13 +422,14 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect EmitJimple
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:210
 	 */
+	@Override
 	public void jimplify1phase2() {
 		String name = name();
 		ArrayList parameters = new ArrayList();
-		ArrayList paramnames = new ArrayList();
+		String[] paramnames = new String[getNumParameter()];
 		for (int i = 0; i < getNumParameter(); i++) {
 			parameters.add(getParameter(i).type().getSootType());
-			paramnames.add(getParameter(i).name());
+			paramnames[i] = getParameter(i).name();
 		}
 		soot.Type returnType = type().getSootType();
 		int modifiers = sootTypeModifiers();
@@ -444,6 +461,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect AnnotationsCodegen
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:43
 	 */
+	@Override
 	public void addAttributes() {
 		super.addAttributes();
 		ArrayList c = new ArrayList();
@@ -541,6 +559,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect GenericsCodegen
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/GenericsCodegen.jrag:342
 	 */
+	@Override
 	public void transformation() {
 		super.transformation();
 		HashSet processed = new HashSet();
@@ -580,7 +599,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 							modifiersList.add(new Modifier("private"));
 						MethodDecl bridge = new BridgeMethodDecl(new Modifiers(modifiersList),
 								erased.type().erasure().createBoundAccess(), erased.name(), parameters,
-								(List) getExceptionList().fullCopy(), new Opt(new Block(new List().add(stmt))));
+								getExceptionList().fullCopy(), new Opt(new Block(new List().add(stmt))));
 						hostType().addBodyDecl(bridge);
 					}
 				}
@@ -595,6 +614,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect SafeVarargs
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:151
 	 */
+	@Override
 	public void checkWarnings() {
 		// check for illegal use of @SafeVarargs
 		super.checkWarnings();
@@ -622,6 +642,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @ast method
 	 * 
 	 */
+	@Override
 	public void init$Children() {
 		children = new ASTNode[5];
 		setChild(new List(), 2);
@@ -662,6 +683,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @ast method
 	 * 
 	 */
+	@Override
 	protected int numChildren() {
 		return 5;
 	}
@@ -671,6 +693,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @ast method
 	 * 
 	 */
+	@Override
 	public boolean mayHaveRewrite() {
 		return false;
 	}
@@ -868,7 +891,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 */
 	@SuppressWarnings({ "unchecked", "cast" })
 	public ParameterDeclaration getParameter(int i) {
-		return (ParameterDeclaration) getParameterList().getChild(i);
+		return getParameterList().getChild(i);
 	}
 
 	/**
@@ -1021,7 +1044,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 */
 	@SuppressWarnings({ "unchecked", "cast" })
 	public Access getException(int i) {
-		return (Access) getExceptionList().getChild(i);
+		return getExceptionList().getChild(i);
 	}
 
 	/**
@@ -1161,7 +1184,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 */
 	@SuppressWarnings({ "unchecked", "cast" })
 	public Block getBlock() {
-		return (Block) getBlockOpt().getChild(0);
+		return getBlockOpt().getChild(0);
 	}
 
 	/**
@@ -1210,6 +1233,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:717
 	 */
 
+	@Override
 	public void checkModifiers() {
 		super.checkModifiers();
 		if (hostType().isClassDecl()) {
@@ -1257,6 +1281,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect EmitJimpleRefinements
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/SootJastAddJ/EmitJimpleRefinements.jrag:100
 	 */
+	@Override
 	public void jimplify2() {
 		if (!generate() || sootMethod().hasActiveBody() || (sootMethod().getSource() != null
 				&& (sootMethod().getSource() instanceof soot.coffi.CoffiMethodSource)))
@@ -1369,6 +1394,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect DataStructures
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:152
 	 */
+	@Override
 	public int size() {
 		ASTNode$State state = state();
 		try {
@@ -1382,6 +1408,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect DataStructures
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:153
 	 */
+	@Override
 	public boolean isEmpty() {
 		ASTNode$State state = state();
 		try {
@@ -1395,6 +1422,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect DataStructures
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DataStructures.jrag:157
 	 */
+	@Override
 	public boolean contains(Object o) {
 		ASTNode$State state = state();
 		try {
@@ -1408,6 +1436,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect ErrorCheck
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ErrorCheck.jrag:22
 	 */
+	@Override
 	public int lineNumber() {
 		ASTNode$State state = state();
 		try {
@@ -1656,7 +1685,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	private SimpleSet parameterDeclaration_compute(String name) {
 		for (int i = 0; i < getNumParameter(); i++)
 			if (getParameter(i).name().equals(name))
-				return (ParameterDeclaration) getParameter(i);
+				return getParameter(i);
 		return SimpleSet.emptySet;
 	}
 
@@ -1665,6 +1694,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect Modifiers
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:214
 	 */
+	@Override
 	public boolean isSynthetic() {
 		ASTNode$State state = state();
 		try {
@@ -1730,6 +1760,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect Modifiers
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:228
 	 */
+	@Override
 	public boolean isStatic() {
 		ASTNode$State state = state();
 		try {
@@ -1795,6 +1826,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect PrettyPrint
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:800
 	 */
+	@Override
 	public String dumpString() {
 		ASTNode$State state = state();
 		try {
@@ -1843,6 +1875,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect TypeAnalysis
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:271
 	 */
+	@Override
 	public boolean isVoid() {
 		ASTNode$State state = state();
 		try {
@@ -1889,6 +1922,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect Annotations
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:283
 	 */
+	@Override
 	public boolean hasAnnotationSuppressWarnings(String s) {
 		ASTNode$State state = state();
 		try {
@@ -1902,6 +1936,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect Annotations
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:323
 	 */
+	@Override
 	public boolean isDeprecated() {
 		ASTNode$State state = state();
 		try {
@@ -1924,6 +1959,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect LookupParTypeDecl
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1062
 	 */
+	@Override
 	@SuppressWarnings({ "unchecked", "cast" })
 	public boolean usesTypeVariable() {
 		if (usesTypeVariable_computed) {
@@ -1986,6 +2022,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect GenericsParTypeDecl
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/GenericsParTypeDecl.jrag:67
 	 */
+	@Override
 	public boolean visibleTypeParameters() {
 		ASTNode$State state = state();
 		try {
@@ -2226,6 +2263,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect SafeVarargs
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:20
 	 */
+	@Override
 	public boolean hasAnnotationSafeVarargs() {
 		ASTNode$State state = state();
 		try {
@@ -2242,6 +2280,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @aspect SafeVarargs
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:56
 	 */
+	@Override
 	public boolean hasIllegalAnnotationSafeVarargs() {
 		ASTNode$State state = state();
 		try {
@@ -2328,6 +2367,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:437
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
 		if (caller == getBlockOptNoTransform()) {
 			return v.isFinal() && (v.isClassVariable() || v.isInstanceVariable()) ? true : isDAbefore(v);
@@ -2340,6 +2380,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:868
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
 		if (caller == getBlockOptNoTransform()) {
 			return v.isFinal() && (v.isClassVariable() || v.isInstanceVariable()) ? false : true;
@@ -2352,6 +2393,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:143
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
 		if (caller == getBlockOptNoTransform()) {
 			return throwsException(exceptionType) || handlesException(exceptionType);
@@ -2364,6 +2406,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:46
 	 * @apilevel internal
 	 */
+	@Override
 	public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
 		if (caller == getParameterListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2385,6 +2428,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:271
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
 		if (caller == getModifiersNoTransform()) {
 			return true;
@@ -2397,6 +2441,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:272
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
 		if (caller == getModifiersNoTransform()) {
 			return true;
@@ -2409,6 +2454,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:273
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
 		if (caller == getModifiersNoTransform()) {
 			return true;
@@ -2421,6 +2467,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:274
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayBeAbstract(ASTNode caller, ASTNode child) {
 		if (caller == getModifiersNoTransform()) {
 			return true;
@@ -2433,6 +2480,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:275
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayBeStatic(ASTNode caller, ASTNode child) {
 		if (caller == getModifiersNoTransform()) {
 			return true;
@@ -2445,6 +2493,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:276
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayBeFinal(ASTNode caller, ASTNode child) {
 		if (caller == getModifiersNoTransform()) {
 			return true;
@@ -2457,6 +2506,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:277
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayBeSynchronized(ASTNode caller, ASTNode child) {
 		if (caller == getModifiersNoTransform()) {
 			return true;
@@ -2469,6 +2519,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:278
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayBeNative(ASTNode caller, ASTNode child) {
 		if (caller == getModifiersNoTransform()) {
 			return true;
@@ -2481,6 +2532,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:279
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayBeStrictfp(ASTNode caller, ASTNode child) {
 		if (caller == getModifiersNoTransform()) {
 			return true;
@@ -2493,6 +2545,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:246
 	 * @apilevel internal
 	 */
+	@Override
 	public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
 		if (caller == getBlockOptNoTransform()) {
 			return this;
@@ -2505,6 +2558,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:82
 	 * @apilevel internal
 	 */
+	@Override
 	public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
 		if (caller == getExceptionListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2523,6 +2577,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:405
 	 * @apilevel internal
 	 */
+	@Override
 	public TypeDecl Define_TypeDecl_returnType(ASTNode caller, ASTNode child) {
 		if (caller == getBlockOptNoTransform()) {
 			return type();
@@ -2535,6 +2590,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:142
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
 		if (caller == getBlockOptNoTransform()) {
 			return isStatic();
@@ -2547,6 +2603,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:33
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
 		if (caller == getBlockOptNoTransform()) {
 			return true;
@@ -2559,6 +2616,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:61
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
 		if (caller == getParameterListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2572,6 +2630,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:62
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
 		if (caller == getParameterListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2585,6 +2644,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:63
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
 		if (caller == getParameterListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2598,6 +2658,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:86
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
 		if (caller == getModifiersNoTransform()) {
 			return name.equals("METHOD");
@@ -2610,6 +2671,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.jrag:22
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
 		if (caller == getParameterListNoTransform()) {
 			int i = caller.getIndexOfChild(child);
@@ -2623,6 +2685,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/LocalNum.jrag:26
 	 * @apilevel internal
 	 */
+	@Override
 	public int Define_int_localNum(ASTNode caller, ASTNode child) {
 		if (caller == getParameterListNoTransform()) {
 			int index = caller.getIndexOfChild(child);
@@ -2640,6 +2703,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:351
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
 		if (caller == getBlockOptNoTransform()) {
 			return getNumException() != 0;
@@ -2652,6 +2716,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:50
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_inhModifiedInScope(ASTNode caller, ASTNode child, Variable var) {
 		if (caller == getParameterListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2665,6 +2730,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:124
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_isCatchParam(ASTNode caller, ASTNode child) {
 		if (caller == getParameterListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2677,6 +2743,7 @@ public class MethodDecl extends MemberDecl implements Cloneable, SimpleSet, Iter
 	/**
 	 * @apilevel internal
 	 */
+	@Override
 	public ASTNode rewriteTo() {
 		return super.rewriteTo();
 	}

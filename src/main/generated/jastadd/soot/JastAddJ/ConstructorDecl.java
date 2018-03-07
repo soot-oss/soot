@@ -28,6 +28,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	/**
 	 * @apilevel low-level
 	 */
+	@Override
 	public void flushCache() {
 		super.flushCache();
 		accessibleFrom_TypeDecl_values = null;
@@ -56,6 +57,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	/**
 	 * @apilevel internal
 	 */
+	@Override
 	public void flushCollectionCache() {
 		super.flushCollectionCache();
 	}
@@ -63,6 +65,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	/**
 	 * @apilevel internal
 	 */
+	@Override
 	@SuppressWarnings({ "unchecked", "cast" })
 	public ConstructorDecl clone() throws CloneNotSupportedException {
 		ConstructorDecl node = (ConstructorDecl) super.clone();
@@ -95,13 +98,14 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	/**
 	 * @apilevel internal
 	 */
+	@Override
 	@SuppressWarnings({ "unchecked", "cast" })
 	public ConstructorDecl copy() {
 		try {
-			ConstructorDecl node = (ConstructorDecl) clone();
+			ConstructorDecl node = clone();
 			node.parent = null;
 			if (children != null)
-				node.children = (ASTNode[]) children.clone();
+				node.children = children.clone();
 			return node;
 		} catch (CloneNotSupportedException e) {
 			throw new Error("Error: clone not supported for " + getClass().getName());
@@ -115,12 +119,13 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @return dangling copy of the subtree at this node
 	 * @apilevel low-level
 	 */
+	@Override
 	@SuppressWarnings({ "unchecked", "cast" })
 	public ConstructorDecl fullCopy() {
-		ConstructorDecl tree = (ConstructorDecl) copy();
+		ConstructorDecl tree = copy();
 		if (children != null) {
 			for (int i = 0; i < children.length; ++i) {
-				ASTNode child = (ASTNode) children[i];
+				ASTNode child = children[i];
 				if (child != null) {
 					child = child.fullCopy();
 					tree.setChild(child, i);
@@ -180,6 +185,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect Modifiers
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:110
 	 */
+	@Override
 	public void checkModifiers() {
 		super.checkModifiers();
 	}
@@ -189,6 +195,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect NameCheck
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:73
 	 */
+	@Override
 	public void nameCheck() {
 		super.nameCheck();
 		// 8.8
@@ -210,6 +217,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect PrettyPrint
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/PrettyPrint.jadd:119
 	 */
+	@Override
 	public void toString(StringBuffer s) {
 		if (isDefaultConstructor())
 			return;
@@ -249,6 +257,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect TypeCheck
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:424
 	 */
+	@Override
 	public void typeCheck() {
 		// 8.8.4 (8.4.4)
 		TypeDecl exceptionType = typeThrowable();
@@ -264,6 +273,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect Enums
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Enums.jrag:138
 	 */
+	@Override
 	protected void transformEnumConstructors() {
 		// make sure constructor is private
 		Modifiers newModifiers = new Modifiers(new List());
@@ -291,8 +301,9 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect LookupParTypeDecl
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Generics.jrag:1283
 	 */
+	@Override
 	public BodyDecl substitutedBodyDecl(Parameterization parTypeDecl) {
-		ConstructorDecl c = new ConstructorDeclSubstituted((Modifiers) getModifiers().fullCopy(), getID(),
+		ConstructorDecl c = new ConstructorDeclSubstituted(getModifiers().fullCopy(), getID(),
 				getParameterList().substitute(parTypeDecl), getExceptionList().substitute(parTypeDecl), new Opt(),
 				new Block(), this);
 		return c;
@@ -394,6 +405,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect Transformations
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Backend/Transformations.jrag:119
 	 */
+	@Override
 	public void transformation() {
 		// this$val as fields and constructor parameters
 		addEnclosingVariables();
@@ -405,10 +417,11 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect EmitJimple
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/EmitJimple.jrag:234
 	 */
+	@Override
 	public void jimplify1phase2() {
 		String name = "<init>";
 		ArrayList parameters = new ArrayList();
-		ArrayList paramnames = new ArrayList();
+		String[] paramnames = new String[getNumParameter()];
 		// this$0
 		TypeDecl typeDecl = hostType();
 		if (typeDecl.needsEnclosing())
@@ -420,7 +433,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 		// args
 		for (int i = 0; i < getNumParameter(); i++) {
 			parameters.add(getParameter(i).type().getSootType());
-			paramnames.add(getParameter(i).name());
+			paramnames[i] = getParameter(i).name();
 		}
 		soot.Type returnType = soot.VoidType.v();
 		int modifiers = sootTypeModifiers();
@@ -452,6 +465,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect AnnotationsCodegen
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/Jimple1.5Backend/AnnotationsCodegen.jrag:57
 	 */
+	@Override
 	public void addAttributes() {
 		super.addAttributes();
 		ArrayList c = new ArrayList();
@@ -562,6 +576,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @ast method
 	 * 
 	 */
+	@Override
 	public void init$Children() {
 		children = new ASTNode[5];
 		setChild(new List(), 1);
@@ -602,6 +617,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @ast method
 	 * 
 	 */
+	@Override
 	protected int numChildren() {
 		return 5;
 	}
@@ -611,6 +627,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @ast method
 	 * 
 	 */
+	@Override
 	public boolean mayHaveRewrite() {
 		return true;
 	}
@@ -768,7 +785,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 */
 	@SuppressWarnings({ "unchecked", "cast" })
 	public ParameterDeclaration getParameter(int i) {
-		return (ParameterDeclaration) getParameterList().getChild(i);
+		return getParameterList().getChild(i);
 	}
 
 	/**
@@ -921,7 +938,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 */
 	@SuppressWarnings({ "unchecked", "cast" })
 	public Access getException(int i) {
-		return (Access) getExceptionList().getChild(i);
+		return getExceptionList().getChild(i);
 	}
 
 	/**
@@ -1063,7 +1080,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 */
 	@SuppressWarnings({ "unchecked", "cast" })
 	public Stmt getConstructorInvocation() {
-		return (Stmt) getConstructorInvocationOpt().getChild(0);
+		return getConstructorInvocationOpt().getChild(0);
 	}
 
 	/**
@@ -1152,6 +1169,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect EmitJimpleRefinements
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/SootJastAddJ/EmitJimpleRefinements.jrag:121
 	 */
+	@Override
 	public void jimplify2() {
 		if (!generate() || sootMethod().hasActiveBody() || (sootMethod().getSource() != null
 				&& (sootMethod().getSource() instanceof soot.coffi.CoffiMethodSource)))
@@ -1277,6 +1295,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect DA
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:295
 	 */
+	@Override
 	@SuppressWarnings({ "unchecked", "cast" })
 	public boolean isDAafter(Variable v) {
 		Object _parameters = v;
@@ -1308,6 +1327,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect DU
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:752
 	 */
+	@Override
 	@SuppressWarnings({ "unchecked", "cast" })
 	public boolean isDUafter(Variable v) {
 		Object _parameters = v;
@@ -1569,7 +1589,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	private SimpleSet parameterDeclaration_compute(String name) {
 		for (int i = 0; i < getNumParameter(); i++)
 			if (getParameter(i).name().equals(name))
-				return (ParameterDeclaration) getParameter(i);
+				return getParameter(i);
 		return SimpleSet.emptySet;
 	}
 
@@ -1725,6 +1745,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect TypeAnalysis
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeAnalysis.jrag:271
 	 */
+	@Override
 	public boolean isVoid() {
 		ASTNode$State state = state();
 		try {
@@ -1738,6 +1759,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect Annotations
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:283
 	 */
+	@Override
 	public boolean hasAnnotationSuppressWarnings(String s) {
 		ASTNode$State state = state();
 		try {
@@ -1751,6 +1773,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect Annotations
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:324
 	 */
+	@Override
 	public boolean isDeprecated() {
 		ASTNode$State state = state();
 		try {
@@ -2174,6 +2197,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect SafeVarargs
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:20
 	 */
+	@Override
 	public boolean hasAnnotationSafeVarargs() {
 		ASTNode$State state = state();
 		try {
@@ -2190,6 +2214,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @aspect SafeVarargs
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/SafeVarargs.jrag:56
 	 */
+	@Override
 	public boolean hasIllegalAnnotationSafeVarargs() {
 		ASTNode$State state = state();
 		try {
@@ -2239,6 +2264,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:298
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_isDAbefore(ASTNode caller, ASTNode child, Variable v) {
 		if (caller == getBlockNoTransform()) {
 			return hasConstructorInvocation() ? getConstructorInvocation().isDAafter(v) : isDAbefore(v);
@@ -2251,6 +2277,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/DefiniteAssignment.jrag:755
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_isDUbefore(ASTNode caller, ASTNode child, Variable v) {
 		if (caller == getBlockNoTransform()) {
 			return hasConstructorInvocation() ? getConstructorInvocation().isDUafter(v) : isDUbefore(v);
@@ -2263,6 +2290,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/ExceptionHandling.jrag:156
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_handlesException(ASTNode caller, ASTNode child, TypeDecl exceptionType) {
 		if (caller == getConstructorInvocationOptNoTransform()) {
 			return throwsException(exceptionType) || handlesException(exceptionType);
@@ -2277,6 +2305,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupMethod.jrag:45
 	 * @apilevel internal
 	 */
+	@Override
 	public Collection Define_Collection_lookupMethod(ASTNode caller, ASTNode child, String name) {
 		if (caller == getConstructorInvocationOptNoTransform()) {
 			Collection c = new ArrayList();
@@ -2295,6 +2324,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupVariable.jrag:64
 	 * @apilevel internal
 	 */
+	@Override
 	public SimpleSet Define_SimpleSet_lookupVariable(ASTNode caller, ASTNode child, String name) {
 		if (caller == getParameterListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2323,6 +2353,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:282
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayBePublic(ASTNode caller, ASTNode child) {
 		if (caller == getModifiersNoTransform()) {
 			return true;
@@ -2335,6 +2366,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:283
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayBeProtected(ASTNode caller, ASTNode child) {
 		if (caller == getModifiersNoTransform()) {
 			return true;
@@ -2347,6 +2379,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/Modifiers.jrag:284
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayBePrivate(ASTNode caller, ASTNode child) {
 		if (caller == getModifiersNoTransform()) {
 			return true;
@@ -2359,6 +2392,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/NameCheck.jrag:247
 	 * @apilevel internal
 	 */
+	@Override
 	public ASTNode Define_ASTNode_enclosingBlock(ASTNode caller, ASTNode child) {
 		if (caller == getBlockNoTransform()) {
 			return this;
@@ -2371,6 +2405,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/SyntacticClassification.jrag:117
 	 * @apilevel internal
 	 */
+	@Override
 	public NameType Define_NameType_nameType(ASTNode caller, ASTNode child) {
 		if (caller == getConstructorInvocationOptNoTransform()) {
 			return NameType.EXPRESSION_NAME;
@@ -2389,6 +2424,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeCheck.jrag:517
 	 * @apilevel internal
 	 */
+	@Override
 	public TypeDecl Define_TypeDecl_enclosingInstance(ASTNode caller, ASTNode child) {
 		if (caller == getConstructorInvocationOptNoTransform()) {
 			return unknownType();
@@ -2401,6 +2437,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:132
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_inExplicitConstructorInvocation(ASTNode caller, ASTNode child) {
 		if (caller == getConstructorInvocationOptNoTransform()) {
 			return true;
@@ -2413,6 +2450,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/TypeHierarchyCheck.jrag:144
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_inStaticContext(ASTNode caller, ASTNode child) {
 		if (caller == getConstructorInvocationOptNoTransform()) {
 			return false;
@@ -2427,6 +2465,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/UnreachableStatements.jrag:32
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_reachable(ASTNode caller, ASTNode child) {
 		if (caller == getBlockNoTransform()) {
 			return !hasConstructorInvocation() ? true : getConstructorInvocation().canCompleteNormally();
@@ -2441,6 +2480,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:58
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_isMethodParameter(ASTNode caller, ASTNode child) {
 		if (caller == getParameterListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2454,6 +2494,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:59
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_isConstructorParameter(ASTNode caller, ASTNode child) {
 		if (caller == getParameterListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2467,6 +2508,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/VariableDeclaration.jrag:60
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_isExceptionHandlerParameter(ASTNode caller, ASTNode child) {
 		if (caller == getParameterListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2480,6 +2522,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/Annotations.jrag:89
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_mayUseAnnotationTarget(ASTNode caller, ASTNode child, String name) {
 		if (caller == getModifiersNoTransform()) {
 			return name.equals("CONSTRUCTOR");
@@ -2492,6 +2535,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.5Frontend/VariableArityParameters.jrag:21
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_variableArityValid(ASTNode caller, ASTNode child) {
 		if (caller == getParameterListNoTransform()) {
 			int i = caller.getIndexOfChild(child);
@@ -2505,6 +2549,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/LocalNum.jrag:45
 	 * @apilevel internal
 	 */
+	@Override
 	public int Define_int_localNum(ASTNode caller, ASTNode child) {
 		if (caller == getParameterListNoTransform()) {
 			int index = caller.getIndexOfChild(child);
@@ -2523,6 +2568,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddExtensions/JimpleBackend/Statements.jrag:352
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_enclosedByExceptionHandler(ASTNode caller, ASTNode child) {
 		if (caller == getBlockNoTransform()) {
 			return getNumException() != 0;
@@ -2535,6 +2581,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:48
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_inhModifiedInScope(ASTNode caller, ASTNode child, Variable var) {
 		if (caller == getParameterListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2548,6 +2595,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	 * @declaredat /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java7Frontend/PreciseRethrow.jrag:123
 	 * @apilevel internal
 	 */
+	@Override
 	public boolean Define_boolean_isCatchParam(ASTNode caller, ASTNode child) {
 		if (caller == getParameterListNoTransform()) {
 			int childIndex = caller.getIndexOfChild(child);
@@ -2560,6 +2608,7 @@ public class ConstructorDecl extends BodyDecl implements Cloneable {
 	/**
 	 * @apilevel internal
 	 */
+	@Override
 	public ASTNode rewriteTo() {
 		// Declared in
 		// /Users/eric/Documents/workspaces/clara-soot/JastAddJ/Java1.4Frontend/LookupConstructor.jrag

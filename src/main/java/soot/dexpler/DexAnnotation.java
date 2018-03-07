@@ -287,15 +287,18 @@ public class DexAnnotation {
 					}
 		}
 
-		ArrayList<String> parameterNames = new ArrayList<String>();
-		boolean addParameterNames = false;
+		String[] parameterNames = null;
+		int i = 0;
 		for (MethodParameter p : method.getParameters()) {
 			String name = p.getName();
-			parameterNames.add(name);
 			if (name != null)
-				addParameterNames = true;
+			{
+				parameterNames = new String[method.getParameters().size()];
+				parameterNames[i] = name;
+			}
+			i++;
 		}
-		if (addParameterNames) {
+		if (parameterNames != null) {
 			h.addTag(new ParamNamesTag(parameterNames));
 		}
 
