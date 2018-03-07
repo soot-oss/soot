@@ -231,8 +231,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 	}
 
 	/**
-	 * Creates a method body that throws an "unresolved compilation error"
-	 * message
+	 * Creates a method body that throws an "unresolved compilation error" message
 	 * 
 	 * @param declaringClass
 	 *            The class that was supposed to contain the method
@@ -251,16 +250,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 
 		// For producing valid Jimple code, we need to access all parameters.
 		// Otherwise, methods like "getThisLocal()" will fail.
-		if (!isStatic) {
-			RefType thisType = RefType.v(declaringClass);
-			Local lThis = lg.generateLocal(thisType);
-			body.getUnits().add(Jimple.v().newIdentityStmt(lThis, Jimple.v().newThisRef(thisType)));
-		}
-		for (int i = 0; i < m.getParameterCount(); i++) {
-			Type paramType = m.getParameterType(i);
-			Local lParam = lg.generateLocal(paramType);
-			body.getUnits().add(Jimple.v().newIdentityStmt(lParam, Jimple.v().newParameterRef(paramType, i)));
-		}
+		body.insertIdentityStmts();
 
 		// exc = new Error
 		RefType runtimeExceptionType = RefType.v("java.lang.Error");
