@@ -33,6 +33,16 @@ import java.util.List;
 public class ParamNamesTag implements  Tag
 {
     String[] names;
+    
+    
+    /**
+     * Backwards compatibility
+     * @param parameterNames
+     */
+    public ParamNamesTag(List<String> parameterNames){
+    	this(parameterNames.toArray(new String[parameterNames.size()]));
+    }
+    
     public ParamNamesTag(String[] parameterNames){
         names = parameterNames;
     }
