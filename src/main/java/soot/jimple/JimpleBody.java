@@ -31,7 +31,9 @@ import java.util.List;
 
 import soot.Body;
 import soot.Local;
+import soot.PatchingChain;
 import soot.RefType;
+import soot.SootClass;
 import soot.SootMethod;
 import soot.Type;
 import soot.Unit;
@@ -45,6 +47,7 @@ import soot.jimple.validation.NewValidator;
 import soot.jimple.validation.ReturnStatementsValidator;
 import soot.jimple.validation.TypesValidator;
 import soot.options.Options;
+import soot.util.Chain;
 import soot.validation.BodyValidator;
 import soot.validation.ValidationException;
 
@@ -83,6 +86,7 @@ public class JimpleBody extends StmtBody {
 	}
 
 	/** Clones the current body, making deep copies of the contents. */
+	@Override
 	public Object clone() {
 		Body b = new JimpleBody(getMethod());
 		b.importBodyContentsFrom(this);
@@ -93,6 +97,7 @@ public class JimpleBody extends StmtBody {
 	 * Make sure that the JimpleBody is well formed. If not, throw an exception.
 	 * Right now, performs only a handful of checks.
 	 */
+	@Override
 	public void validate() {
 		final List<ValidationException> exceptionList = new ArrayList<ValidationException>();
 		validate(exceptionList);
@@ -106,6 +111,7 @@ public class JimpleBody extends StmtBody {
 	 * @param exceptionList
 	 *            the list of validation errors
 	 */
+	@Override
 	public void validate(List<ValidationException> exceptionList) {
 		super.validate(exceptionList);
 		final boolean runAllValidators = Options.v().debug() || Options.v().validate();
@@ -122,28 +128,41 @@ public class JimpleBody extends StmtBody {
 
 	/** Inserts usual statements for handling this & parameters into body. */
 	public void insertIdentityStmts() {
-		Unit lastUnit = null;
+		insertIdentityStmts(getMethod().getDeclaringClass());
+	}
 
+	/**
+	 * Inserts usual statements for handling this & parameters into body.
+	 * @param declaringClass the class, which should be used for this references. Can be null for static methods 
+	 */
+	public void insertIdentityStmts(SootClass declaringClass) {
+		final Jimple jimple = Jimple.v();
+		final PatchingChain<Unit> unitChain = getUnits();
+		final Chain<Local> localChain = getLocals();
+		Unit lastUnit = null;
+		
 		// add this-ref before everything else
 		if (!getMethod().isStatic()) {
-			Local l = Jimple.v().newLocal("this", RefType.v(getMethod().getDeclaringClass()));
-			Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newThisRef((RefType) l.getType()));
+			if (declaringClass == null)
+				throw new IllegalArgumentException(String.format("No declaring class given for method %s", method.getSubSignature()));
+			Local l = jimple.newLocal("this", RefType.v(declaringClass));
+			Stmt s = jimple.newIdentityStmt(l, jimple.newThisRef((RefType) l.getType()));
 
-			getLocals().add(l);
-			getUnits().addFirst(s);
+			localChain.add(l);
+			unitChain.addFirst(s);
 			lastUnit = s;
 		}
 
 		int i = 0;
 		for (Type t : getMethod().getParameterTypes()) {
-			Local l = Jimple.v().newLocal("parameter" + i, t);
-			Stmt s = Jimple.v().newIdentityStmt(l, Jimple.v().newParameterRef(l.getType(), i));
+			Local l = jimple.newLocal("parameter" + i, t);
+			Stmt s = jimple.newIdentityStmt(l, jimple.newParameterRef(l.getType(), i));
 
-			getLocals().add(l);
+			localChain.add(l);
 			if (lastUnit == null)
-				getUnits().addFirst(s);
+				unitChain.addFirst(s);
 			else
-				getUnits().insertAfter(s, lastUnit);
+				unitChain.insertAfter(s, lastUnit);
 
 			lastUnit = s;
 			i++;

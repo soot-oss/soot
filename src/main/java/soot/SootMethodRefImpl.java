@@ -18,13 +18,13 @@
  */
 
 package soot;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.javaToJimple.LocalGenerator;
 import soot.jimple.AssignStmt;
@@ -253,7 +253,7 @@ public class SootMethodRefImpl implements SootMethodRef {
 
 		// For producing valid Jimple code, we need to access all parameters.
 		// Otherwise, methods like "getThisLocal()" will fail.
-		body.insertIdentityStmts();
+		body.insertIdentityStmts(declaringClass);
 
 		// exc = new Error
 		RefType runtimeExceptionType = RefType.v("java.lang.Error");
