@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.parser;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -82,6 +84,7 @@ import soot.util.StringTools;
 /*Modified By Marc Berndl 17th May */
 
 public class Walker extends DepthFirstAdapter {
+    private static final Logger logger = LoggerFactory.getLogger(Walker.class);
 	boolean debug = false;
 	LinkedList mProductions = new LinkedList();
 	SootClass mSootClass = null;
@@ -103,7 +106,7 @@ public class Walker extends DepthFirstAdapter {
 				public Object removeLast() {
 					Object o = super.removeLast();
 					if (debug)
-						G.v().out.println("popped: " + o);
+						logger.debug("popped: " + o);
 					return o;
 				}
 			};
@@ -132,7 +135,7 @@ public class Walker extends DepthFirstAdapter {
 	 */
 	public void inAFile(AFile node) {
 		if (debug)
-			G.v().out.println("reading class " + node.getClassName());
+			logger.debug("reading class " + node.getClassName());
 	}
 
 	public void caseAFile(AFile node) {
@@ -915,7 +918,7 @@ public class Walker extends DepthFirstAdapter {
 		 * try { String t = StringTools.getUnEscapedStringOf(s);
 		 * 
 		 * mProductions.push(StringConstant.v(t)); } catch(RuntimeException e) {
-		 * G.v().out.println(s); throw e; }
+		 * logger.debug(""+s); throw e; }
 		 */
 	}
 
@@ -1377,7 +1380,7 @@ public class Walker extends DepthFirstAdapter {
 
 		) {
 			if (debug)
-				G.v().out.println("Default case -pushing token:" + ((Token) node).getText());
+				logger.debug("Default case -pushing token:" + ((Token) node).getText());
 			String tokenString = ((Token) node).getText();
 			if (node instanceof TStringConstant || node instanceof TQuotedName) {
 				tokenString = tokenString.substring(1, tokenString.length() - 1);
@@ -1391,7 +1394,7 @@ public class Walker extends DepthFirstAdapter {
 					tokenString = StringTools.getUnEscapedStringOf(tokenString);
 
 				} catch (RuntimeException e) {
-					G.v().out.println("Invalid escaped string: " + tokenString);
+					logger.debug("Invalid escaped string: " + tokenString);
 					// just used the unescaped string, better than nothing
 				}
 			}

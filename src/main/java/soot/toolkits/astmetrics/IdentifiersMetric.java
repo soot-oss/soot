@@ -18,6 +18,8 @@
  */
 
 package soot.toolkits.astmetrics;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.G;
 import soot.options.*;
@@ -33,6 +35,7 @@ import java.io.*;
  * Created on 5-Mar-2006 
  */
 public class IdentifiersMetric extends ASTMetric {
+    private static final Logger logger = LoggerFactory.getLogger(IdentifiersMetric.class);
 
   double nameComplexity = 0;
   double nameCount =0;
@@ -114,9 +117,9 @@ public class IdentifiersMetric extends ASTMetric {
     }
       
     if ((dictionarySize = dictionary.size()) == 0)
-      G.v().out.println("Error reading in dictionary file(s)");  
+      logger.debug("Error reading in dictionary file(s)");  
     else if (Options.v().verbose())
-      G.v().out.println("Read "+dictionarySize+" words in from dictionary file(s)");
+      logger.debug("Read "+dictionarySize+" words in from dictionary file(s)");
     
     try{
     	is.close();

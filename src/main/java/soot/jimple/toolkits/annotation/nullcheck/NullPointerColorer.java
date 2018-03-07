@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.annotation.nullcheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.tagkit.*;
@@ -27,6 +29,7 @@ import soot.toolkits.scalar.*;
 import soot.jimple.*;
 
 public class NullPointerColorer extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(NullPointerColorer.class);
 
 	public NullPointerColorer( Singletons.Global g ) {}
     public static NullPointerColorer v() { return G.v().soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer(); }
@@ -79,7 +82,7 @@ public class NullPointerColorer extends BodyTransformer {
 		
 		Value val = vBox.getValue();
 		if (val.getType() instanceof RefLikeType) {
-			//G.v().out.println(val+": "+val.getClass().toString());
+			//logger.debug(""+val+": "+val.getClass().toString());
 		
 			int vInfo = analysis.anyRefInfo(val, set);
 

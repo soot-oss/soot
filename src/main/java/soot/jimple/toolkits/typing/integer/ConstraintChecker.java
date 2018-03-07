@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.toolkits.typing.integer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -102,6 +104,7 @@ import soot.jimple.XorExpr;
 import soot.jimple.toolkits.typing.Util;
 
 class ConstraintChecker extends AbstractStmtSwitch {
+    private static final Logger logger = LoggerFactory.getLogger(ConstraintChecker.class);
 	private final TypeResolver resolver;
 	private final boolean fix; // if true, fix constraint violations
 
@@ -119,7 +122,7 @@ class ConstraintChecker extends AbstractStmtSwitch {
 		} catch (RuntimeTypeException e) {
 			StringWriter st = new StringWriter();
 			PrintWriter pw = new PrintWriter(st);
-			e.printStackTrace(pw);
+			logger.error(e.getMessage(), e);
 			pw.close();
 			throw new TypeException(st.toString());
 		}

@@ -29,6 +29,8 @@
 
 
 package soot.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -56,6 +58,7 @@ import soot.toolkits.graph.UnitGraph;
  */
 public class SimpleLocalUses implements LocalUses
 {
+    private static final Logger logger = LoggerFactory.getLogger(SimpleLocalUses.class);
 	final Body body;
     private Map<Unit, List<UnitValueBoxPair>> unitToUses;
 
@@ -88,7 +91,7 @@ public class SimpleLocalUses implements LocalUses
         }
         
         if(options.verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
+            logger.debug("[" + body.getMethod().getName() +
                 "]     Constructing SimpleLocalUses...");
         
         unitToUses = new HashMap<Unit, List<UnitValueBoxPair>>(body.getUnits().size() * 2 + 1, 0.7f);
@@ -133,7 +136,7 @@ public class SimpleLocalUses implements LocalUses
         }
 
         if(options.verbose())
-            G.v().out.println("[" + body.getMethod().getName() +
+            logger.debug("[" + body.getMethod().getName() +
                 "]     finished SimpleLocalUses...");
     }
 

@@ -22,6 +22,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.dexpler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,6 +57,7 @@ import soot.options.Options;
  *
  */
 public class DexMethod {
+    private static final Logger logger = LoggerFactory.getLogger(DexMethod.class);
 
 	protected final DexFile dexFile;
 	protected final SootClass declaringClass;
@@ -113,7 +116,7 @@ public class DexMethod {
 					dexBody.jimplify(b, m);
 				} catch (InvalidDalvikBytecodeException e) {
 					String msg = "Warning: Invalid bytecode in method " + m + ": " + e;
-					G.v().out.println(msg);
+					logger.debug(""+msg);
 					Util.emptyBody(b);
 					Util.addExceptionAfterUnit(b, "java.lang.RuntimeException", b.getUnits().getLast(),
 							"Soot has detected that this method contains invalid Dalvik bytecode which would have throw an exception at runtime. ["

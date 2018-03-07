@@ -1,4 +1,6 @@
 package soot.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -44,6 +46,7 @@ import soot.tagkit.Tag;
  * @author Steven Arzt
  */
 public class ConstantInitializerToTagTransformer extends SceneTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(ConstantInitializerToTagTransformer.class);
 	private static final ConstantInitializerToTagTransformer INSTANCE = new ConstantInitializerToTagTransformer();
 
 	public static ConstantInitializerToTagTransformer v() {
@@ -113,7 +116,7 @@ public class ConstantInitializerToTagTransformer extends SceneTransformer {
 									if (removeAssignments)
 										itU.remove();
 								} else {
-									G.v().out.println(
+									logger.debug(""+
 											"WARNING: Constant value for field '" + field + "' mismatch between code ("
 													+ assign.getRightOp() + ") and constant table (" + t + ")");
 									removeTagList.add(field);

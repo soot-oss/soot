@@ -24,6 +24,8 @@
  */
 
 package soot.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.util.BitSet;
@@ -66,6 +68,7 @@ import soot.util.LocalBitSetPacker;
  * @see Body
  */
 public class LocalSplitter extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(LocalSplitter.class);
 
 	protected ThrowAnalysis throwAnalysis;
 	protected boolean omitExceptingUnitEdges;
@@ -89,7 +92,7 @@ public class LocalSplitter extends BodyTransformer {
 	@Override
 	protected void internalTransform(Body body, String phaseName, Map<String, String> options) {
 		if (Options.v().verbose())
-			G.v().out.println("[" + body.getMethod().getName() + "] Splitting locals...");
+			logger.debug("[" + body.getMethod().getName() + "] Splitting locals...");
 
 		if (Options.v().time())
 			Timers.v().splitTimer.start();

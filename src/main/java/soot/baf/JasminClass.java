@@ -24,6 +24,8 @@
  */
 
 package soot.baf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -73,6 +75,7 @@ import soot.util.ArraySet;
 import soot.util.Chain;
 
 public class JasminClass extends AbstractJasminClass {
+    private static final Logger logger = LoggerFactory.getLogger(JasminClass.class);
 
 	public JasminClass(SootClass sootClass) {
 		super(sootClass);
@@ -97,8 +100,7 @@ public class JasminClass extends AbstractJasminClass {
 		if (!(activeBody instanceof BafBody)) {
 			if (activeBody instanceof JimpleBody) {
 				if (Options.v().verbose()) {
-					G.v().out
-							.println("Was expecting Baf body for "
+					logger.debug("Was expecting Baf body for "
 									+ method
 									+ " but found a Jimple body. Will convert body to Baf on the fly.");
 				}
@@ -1797,7 +1799,7 @@ public class JasminClass extends AbstractJasminClass {
 			if (blockHeight > maxStackHeight) {
 				maxStackHeight = blockHeight;
 			}
-			// G.v().out.println(">>> " + nInst + " " + blockHeight);
+			// logger.debug(">>> " + nInst + " " + blockHeight);
 		}
 
 		for (Block b : aBlock.getSuccs()) {
@@ -1841,7 +1843,7 @@ public class JasminClass extends AbstractJasminClass {
 
 			blockHeight += nInst.getOutCount();
 
-			// G.v().out.println(">>> " + nInst + " " + blockHeight);
+			// logger.debug(">>> " + nInst + " " + blockHeight);
 		}
 
 		for (Block b : aBlock.getSuccs()) {

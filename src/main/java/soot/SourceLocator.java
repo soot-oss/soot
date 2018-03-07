@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,6 +50,7 @@ import soot.options.Options;
  * a classfile, or jimple or baf output files.
  */
 public class SourceLocator {
+    private static final Logger logger = LoggerFactory.getLogger(SourceLocator.class);
     protected Set<ClassLoader> additionalClassLoaders = new HashSet<ClassLoader>();
     protected List<ClassProvider> classProviders;
     protected List<String> classPath;
@@ -129,7 +132,7 @@ public class SourceLocator {
             try {
                 dir.mkdirs();
             } catch (SecurityException se) {
-                G.v().out.println("Unable to create " + dir);
+                logger.debug("Unable to create " + dir);
                 throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
             }
         }

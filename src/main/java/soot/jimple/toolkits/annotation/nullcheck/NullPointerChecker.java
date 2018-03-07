@@ -28,6 +28,8 @@
  */
 
 package soot.jimple.toolkits.annotation.nullcheck;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.*;
@@ -54,6 +56,7 @@ import soot.toolkits.scalar.*;
 
 public class NullPointerChecker extends BodyTransformer 
 {
+    private static final Logger logger = LoggerFactory.getLogger(NullPointerChecker.class);
     public NullPointerChecker( Singletons.Global g ) {}
     public static NullPointerChecker v() { return G.v().soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker(); }
 
@@ -70,7 +73,7 @@ public class NullPointerChecker extends BodyTransformer
 	    Date start = new Date();
 
 	    if (Options.v().verbose())
-		G.v().out.println("[npc] Null pointer check for "+body.getMethod().getName()
+		logger.debug("[npc] Null pointer check for "+body.getMethod().getName()
 				   +" started on "+start);
 		
 	    BranchedRefVarsAnalysis analysis = new BranchedRefVarsAnalysis(
@@ -210,7 +213,7 @@ public class NullPointerChecker extends BodyTransformer
 		long runtime = finish.getTime()-start.getTime();
 		long mins = runtime/60000;
 		long secs = (runtime%60000)/1000;
-		G.v().out.println("[npc] Null pointer checker finished. It took "
+		logger.debug("[npc] Null pointer checker finished. It took "
 				   +mins+" mins and "+secs+" secs.");
 	    }
 	}    

@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.annotation.callgraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import java.util.*;
@@ -29,6 +31,7 @@ import soot.options.*;
 /** A scene transformer that creates a graphical callgraph. */
 public class CallGraphGrapher extends SceneTransformer
 { 
+    private static final Logger logger = LoggerFactory.getLogger(CallGraphGrapher.class);
     public CallGraphGrapher(Singletons.Global g){}
     public static CallGraphGrapher v() { return G.v().soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher();}
 
@@ -37,7 +40,7 @@ public class CallGraphGrapher extends SceneTransformer
     private boolean showLibMeths;
     
     private ArrayList<MethInfo> getTgtMethods(SootMethod method, boolean recurse){
-        //G.v().out.println("meth for tgts: "+method);
+        //logger.debug("meth for tgts: "+method);
         if (!method.hasActiveBody()){
             return new ArrayList<MethInfo>();
         }
@@ -50,7 +53,7 @@ public class CallGraphGrapher extends SceneTransformer
             while (edges.hasNext()){
                 Edge e = (Edge)edges.next();
                 SootMethod sm = e.tgt();
-                //G.v().out.println("found target method: "+sm);
+                //logger.debug("found target method: "+sm);
                 
                 if (sm.getDeclaringClass().isLibraryClass()){
                     if (isShowLibMeths()){
@@ -88,7 +91,7 @@ public class CallGraphGrapher extends SceneTransformer
     }
     
     private ArrayList<MethInfo> getSrcMethods(SootMethod method, boolean recurse){
-        //G.v().out.println("meth for srcs: "+method);
+        //logger.debug("meth for srcs: "+method);
         ArrayList<MethInfo> list = new ArrayList<MethInfo>();
         
         for( Iterator momcIt = methodToContexts.get(method).iterator(); momcIt.hasNext(); ) {
@@ -140,13 +143,13 @@ public class CallGraphGrapher extends SceneTransformer
         if(Scene.v().hasCallGraph()) {
 	        SootClass sc = Scene.v().getMainClass();
 	        SootMethod sm = getFirstMethod(sc);
-	        //G.v().out.println("got first method");
+	        //logger.debug("got first method");
 	        ArrayList<MethInfo> tgts = getTgtMethods(sm, true);
-	        //G.v().out.println("got tgt methods");
+	        //logger.debug("got tgt methods");
 	        ArrayList<MethInfo> srcs = getSrcMethods(sm, true);
-	        //G.v().out.println("got src methods");
+	        //logger.debug("got src methods");
 	        CallGraphInfo info = new CallGraphInfo(sm, tgts, srcs);
-	        //G.v().out.println("will handle new call graph");
+	        //logger.debug("will handle new call graph");
 	        InteractionHandler.v().handleCallGraphStart(info, this);
         }
     }

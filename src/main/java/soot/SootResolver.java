@@ -25,6 +25,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -46,6 +48,7 @@ import soot.util.MultiMap;
 
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver {
+    private static final Logger logger = LoggerFactory.getLogger(SootResolver.class);
 	/** Maps each resolved class to a list of all references in it. */
 	protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<SootClass, Type>();
 
@@ -202,7 +205,7 @@ public class SootResolver {
 		if (sc.resolvingLevel() >= SootClass.HIERARCHY)
 			return;
 		if (Options.v().debug_resolver())
-			G.v().out.println("bringing to HIERARCHY: " + sc);
+			logger.debug("bringing to HIERARCHY: " + sc);
 		sc.setResolvingLevel(SootClass.HIERARCHY);
 
 		bringToHierarchyUnchecked(sc);
@@ -228,7 +231,7 @@ public class SootResolver {
 					throw new SootClassNotFoundException(
 							"couldn't find class: " + className + " (is your soot-class-path set properly?)" + suffix);
 				} else {
-					// G.v().out.println("Warning: " + className + " is a
+					// logger.warn("" + className + " is a
 					// phantom class!");
 					sc.setPhantomClass();
 				}
@@ -268,7 +271,7 @@ public class SootResolver {
 			return;
 		bringToHierarchy(sc);
 		if (Options.v().debug_resolver())
-			G.v().out.println("bringing to SIGNATURES: " + sc);
+			logger.debug("bringing to SIGNATURES: " + sc);
 		sc.setResolvingLevel(SootClass.SIGNATURES);
 
 		bringToSignaturesUnchecked(sc);
@@ -314,7 +317,7 @@ public class SootResolver {
 			return;
 		bringToSignatures(sc);
 		if (Options.v().debug_resolver())
-			G.v().out.println("bringing to BODIES: " + sc);
+			logger.debug("bringing to BODIES: " + sc);
 		sc.setResolvingLevel(SootClass.BODIES);
 
 		bringToBodiesUnchecked(sc);

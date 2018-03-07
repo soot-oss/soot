@@ -26,6 +26,8 @@
 
 
 package soot.jimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayDeque;
 import java.util.Collections;
@@ -53,6 +55,7 @@ import soot.util.Chain;
 
 public class UnreachableCodeEliminator extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(UnreachableCodeEliminator.class);
 	protected ThrowAnalysis throwAnalysis = null;
 
 	public UnreachableCodeEliminator( Singletons.Global g ) {}
@@ -65,7 +68,7 @@ public class UnreachableCodeEliminator extends BodyTransformer
 	protected void internalTransform(Body body, String phaseName, Map<String,String> options) 
 	{		
 		if (Options.v().verbose()) {
-			G.v().out.println("[" + body.getMethod().getName() + "] Eliminating unreachable code...");
+			logger.debug("[" + body.getMethod().getName() + "] Eliminating unreachable code...");
 		}
 		
 		// Force a conservative ExceptionalUnitGraph() which
@@ -125,9 +128,9 @@ public class UnreachableCodeEliminator extends BodyTransformer
 		numPruned -= units.size();
 		
 		if (Options.v().verbose()) {
-			G.v().out.println("[" + body.getMethod().getName() + "]	 Removed " + numPruned + " statements: ");
+			logger.debug("[" + body.getMethod().getName() + "]	 Removed " + numPruned + " statements: ");
 			for (Unit u : notReachable) {
-				G.v().out.println("[" + body.getMethod().getName() + "]	         " + u);
+				logger.debug("[" + body.getMethod().getName() + "]	         " + u);
 			}
 
 		}

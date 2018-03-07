@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.spark.ondemand.genericutil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
@@ -37,6 +39,7 @@ import java.util.Set;
  * Miscellaneous utility functions.
  */
 public class Util {
+    private static final Logger logger = LoggerFactory.getLogger(Util.class);
 
   /** The empty {@link BitSet}. */
   public static final BitSet EMPTY_BITSET = new BitSet();
@@ -133,7 +136,7 @@ public class Util {
     // create a memory buffer to which to dump the trace
     ByteArrayOutputStream traceDump = new ByteArrayOutputStream();
     PrintWriter w = new PrintWriter(traceDump);
-    thrown_.printStackTrace(w);
+    logger.error(thrown_.getMessage(), thrown_);
     w.close();
     return traceDump.toString();
   }
@@ -346,7 +349,7 @@ public class Util {
           buf = buf.append(" : ");
           buf = buf.append(FULLY_QUALIFIED_NAMES ? type.getName() : removePackageName(type.getName()));
         } catch (IllegalAccessException e) {
-          e.printStackTrace();
+          logger.error(e.getMessage(), e);
         }
 
         buf = buf.append(i + 1 >= fields.length ? ")" : ",");

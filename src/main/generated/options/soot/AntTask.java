@@ -22,6 +22,8 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import org.apache.tools.ant.*;
@@ -35,6 +37,7 @@ import java.util.*;
  */
 @javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-27T12:47:11.925+01:00", comments = "from soot_options.xml")
 public class AntTask extends MatchingTask {
+    private static final Logger logger = LoggerFactory.getLogger(AntTask.class);
     public static final boolean DEBUG = true;
     private void debug(String s) {
         if(DEBUG) System.err.println(s);
@@ -102,7 +105,7 @@ public class AntTask extends MatchingTask {
             soot.Main.main((String[]) args.toArray(new String[0]));
             soot.G.v().reset();
         } catch( Exception e ) {
-            e.printStackTrace();
+            logger.error(e.getMessage(), e);
             throw new BuildException(e);
         }
     }

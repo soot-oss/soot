@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.thread.synchronization;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -38,6 +40,7 @@ import soot.toolkits.scalar.Pair;
 import soot.util.Chain;
 
 public class LockAllocationBodyTransformer extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(LockAllocationBodyTransformer.class);
 	private static final LockAllocationBodyTransformer instance = new LockAllocationBodyTransformer();
 
 	private LockAllocationBodyTransformer() {
@@ -515,10 +518,10 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
 
 	public InstanceFieldRef reconstruct(Body b, PatchingChain<Unit> units, InstanceFieldRef lock, Stmt insertBefore,
 			boolean redirect) {
-		G.v().out.println("Reconstructing " + lock);
+		logger.debug("Reconstructing " + lock);
 
 		if (!(lock.getBase() instanceof FakeJimpleLocal)) {
-			G.v().out.println("  base is not a FakeJimpleLocal");
+			logger.debug("  base is not a FakeJimpleLocal");
 			return lock;
 		}
 		FakeJimpleLocal fakeBase = (FakeJimpleLocal) lock.getBase();
@@ -552,7 +555,7 @@ public class LockAllocationBodyTransformer extends BodyTransformer {
 							+ base.getType() + ": " + base);
 
 		InstanceFieldRef newLock = Jimple.v().newInstanceFieldRef(baseLocal, lock.getField().makeRef());
-		G.v().out.println("  as " + newLock);
+		logger.debug("  as " + newLock);
 		return newLock;
 	}
 

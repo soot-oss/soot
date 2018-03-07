@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.annotation.logic;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.toolkits.graph.*;
@@ -29,6 +31,7 @@ import soot.toolkits.scalar.*;
 import soot.tagkit.*;
 
 public class LoopInvariantFinder extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(LoopInvariantFinder.class);
 
     private ArrayList constants; 
 
@@ -92,7 +95,7 @@ public class LoopInvariantFinder extends BodyTransformer {
         // ignore invoke stmts
         if (s instanceof InvokeStmt) return; 
        
-        G.v().out.println("s : "+s+" use boxes: "+s.getUseBoxes()+" def boxes: "+s.getDefBoxes());
+        logger.debug("s : "+s+" use boxes: "+s.getUseBoxes()+" def boxes: "+s.getDefBoxes());
         // just use boxes here 
         Iterator useBoxesIt = s.getUseBoxes().iterator();
         boolean result = true;
@@ -104,25 +107,25 @@ public class LoopInvariantFinder extends BodyTransformer {
             // new's are not invariant
             if (v instanceof NewExpr) {
                 result = false;
-                G.v().out.println("break uses: due to new expr");
+                logger.debug("break uses: due to new expr");
                 break uses;
             }
             // invokes are not invariant
             if (v instanceof InvokeExpr) {
                 result = false;
-                G.v().out.println("break uses: due to invoke expr");
+                logger.debug("break uses: due to invoke expr");
                 break uses;
             }
             // side effect tester doesn't handle expr
             if (v instanceof Expr) continue;
             
-            G.v().out.println("test: "+v+" of kind: "+v.getClass());
+            logger.debug("test: "+v+" of kind: "+v.getClass());
             Iterator loopStmtsIt = loopStmts.iterator();
             while (loopStmtsIt.hasNext()){
                 Stmt next = (Stmt)loopStmtsIt.next();
                 if (nset.unitCanWriteTo(next, v)){
                     if (!isConstant(next)){
-                        G.v().out.println("result = false unit can be written to by: "+next);
+                        logger.debug("result = false unit can be written to by: "+next);
                         result = false;
                         break uses;
                     }
@@ -138,19 +141,19 @@ public class LoopInvariantFinder extends BodyTransformer {
             // new's are not invariant
             if (v instanceof NewExpr) {
                 result = false;
-                G.v().out.println("break defs due to new");
+                logger.debug("break defs due to new");
                 break defs;
             }
             // invokes are not invariant
             if (v instanceof InvokeExpr) {
                 result = false;
-                G.v().out.println("break defs due to invoke");
+                logger.debug("break defs due to invoke");
                 break defs;
             }
             // side effect tester doesn't handle expr
             if (v instanceof Expr) continue;
             
-            G.v().out.println("test: "+v+" of kind: "+v.getClass());
+            logger.debug("test: "+v+" of kind: "+v.getClass());
         
             Iterator loopStmtsIt = loopStmts.iterator();
             while (loopStmtsIt.hasNext()){
@@ -158,7 +161,7 @@ public class LoopInvariantFinder extends BodyTransformer {
                 if (next.equals(s)) continue;
                 if (nset.unitCanWriteTo(next, v)){
                     if (!isConstant(next)){
-                        G.v().out.println("result false: unit can be written to by: "+next);
+                        logger.debug("result false: unit can be written to by: "+next);
                         result = false;
                         break defs;
                     }
@@ -166,7 +169,7 @@ public class LoopInvariantFinder extends BodyTransformer {
             }
             
         }
-        G.v().out.println("stmt: "+s+" result: "+result);
+        logger.debug("stmt: "+s+" result: "+result);
         if (result){
             s.addTag(new LoopInvariantTag("is loop invariant"));
             s.addTag(new ColorTag(ColorTag.RED, "Loop Invariant Analysis"));

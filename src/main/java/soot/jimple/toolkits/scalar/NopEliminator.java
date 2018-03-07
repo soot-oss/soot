@@ -23,6 +23,8 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 package soot.jimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Iterator;
 import java.util.Map;
@@ -38,6 +40,7 @@ import soot.options.Options;
 import soot.util.Chain;
 
 public class NopEliminator extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(NopEliminator.class);
 
     public NopEliminator(Singletons.Global g) {
     }
@@ -53,7 +56,7 @@ public class NopEliminator extends BodyTransformer {
     @Override
     protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
         if (Options.v().verbose()) {
-            G.v().out.println("[" + b.getMethod().getName() + "] Removing nops...");
+            logger.debug("[" + b.getMethod().getName() + "] Removing nops...");
         }
 
         Chain<Unit> units = b.getUnits();

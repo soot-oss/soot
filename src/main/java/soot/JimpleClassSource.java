@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.jimple.parser.lexer.LexerException;
 import soot.jimple.parser.parser.ParserException;
 import soot.options.*;
@@ -30,6 +32,7 @@ import java.util.*;
 /** A class source for resolving from .jimple files using the Jimple parser.
  */
 public class JimpleClassSource extends ClassSource {
+    private static final Logger logger = LoggerFactory.getLogger(JimpleClassSource.class);
 	
 	private FoundFile foundFile;
 	
@@ -41,7 +44,7 @@ public class JimpleClassSource extends ClassSource {
     }
     public Dependencies resolve( SootClass sc ) {
         if(Options.v().verbose())
-            G.v().out.println("resolving [from .jimple]: " + className );
+            logger.debug("resolving [from .jimple]: " + className );
         
         InputStream classFile = null;
         try {

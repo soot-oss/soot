@@ -30,6 +30,8 @@
 
 
 package soot.coffi;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /** A debugging attribute, this gives the names of local variables
  * within blocks of bytecode.
@@ -37,6 +39,7 @@ package soot.coffi;
  * @author Clark Verbrugge
  */
 class LocalVariableTable_attribute extends attribute_info {
+    private static final Logger logger = LoggerFactory.getLogger(LocalVariableTable_attribute.class);
    /** Length of the local variable table. */
    public int local_variable_table_length;
    /** Actual table of local variables. */
@@ -63,7 +66,7 @@ class LocalVariableTable_attribute extends attribute_info {
       local_variable_table_entry e;
       int i;
 
-      // G.v().out.println("searching for name of local: " + idx + "at: " + code);
+      // logger.debug("searching for name of local: " + idx + "at: " + code);
       // now to find that variable
       for (i=0;i<local_variable_table_length;i++) {
          e = local_variable_table[i];
@@ -73,7 +76,7 @@ class LocalVariableTable_attribute extends attribute_info {
 	      //  (code>=e.start_pc && code<e.start_pc+e.length))) {
             // found the variable, now find its name.
             
-            //G.v().out.println("found entry: " + i);
+            //logger.debug("found entry: " + i);
 
             if (constant_pool[e.name_index] instanceof CONSTANT_Utf8_info)
 	    {

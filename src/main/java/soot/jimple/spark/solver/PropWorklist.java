@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.solver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -50,6 +52,7 @@ import soot.util.queue.QueueReader;
  */
 
 public final class PropWorklist extends Propagator {
+    private static final Logger logger = LoggerFactory.getLogger(PropWorklist.class);
 	protected final Set<VarNode> varNodeWorkList = new TreeSet<VarNode>();
 
 	public PropWorklist(PAG pag) {
@@ -67,7 +70,7 @@ public final class PropWorklist extends Propagator {
 		boolean verbose = pag.getOpts().verbose();
 		do {
 			if (verbose) {
-				G.v().out.println("Worklist has " + varNodeWorkList.size() + " nodes.");
+				logger.debug("Worklist has " + varNodeWorkList.size() + " nodes.");
 			}
 			while (!varNodeWorkList.isEmpty()) {
 				VarNode src = varNodeWorkList.iterator().next();
@@ -75,7 +78,7 @@ public final class PropWorklist extends Propagator {
 				handleVarNode(src);
 			}
 			if (verbose) {
-				G.v().out.println("Now handling field references");
+				logger.debug("Now handling field references");
 			}
 			for (Object object : pag.storeSources()) {
 				final VarNode src = (VarNode) object;

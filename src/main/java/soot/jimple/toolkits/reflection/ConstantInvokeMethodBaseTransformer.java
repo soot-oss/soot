@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.reflection;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import soot.jimple.InvokeExpr;
@@ -18,6 +20,7 @@ import java.util.Map;
  * created on 02.08.17
  */
 public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(ConstantInvokeMethodBaseTransformer.class);
 
     private final static String INVOKE_SIG = "<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>";
 
@@ -54,7 +57,7 @@ public class ConstantInvokeMethodBaseTransformer extends SceneTransformer {
                                 invokeExpr.setArg(0, newLocal);
 
                                 if (verbose)
-                                    G.v().out.println("Replaced constant base object of Method.invoke() by local in: " + sootMethod.toString());
+                                    logger.debug("Replaced constant base object of Method.invoke() by local in: " + sootMethod.toString());
                             }
                         }
                     }

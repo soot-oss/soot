@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.callgraph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -106,6 +108,7 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public final class OnFlyCallGraphBuilder {
+    private static final Logger logger = LoggerFactory.getLogger(OnFlyCallGraphBuilder.class);
 	private static final PrimType[] CHAR_NARROWINGS = new PrimType[] { CharType.v() };
 	private static final PrimType[] INT_NARROWINGS = new PrimType[] { IntType.v(), CharType.v(), ShortType.v(),
 			ByteType.v(), ShortType.v() };
@@ -206,7 +209,7 @@ public final class OnFlyCallGraphBuilder {
 		worklist = rm.listener();
 		options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
 		if (!options.verbose()) {
-			G.v().out.println(
+			logger.debug(""+
 					"[Call Graph] For information on where the call graph may be incomplete, use the verbose option to the cg phase.");
 		}
 
@@ -567,7 +570,7 @@ public final class OnFlyCallGraphBuilder {
 			final VirtualCallSite site = siteIt.next();
 			if (constant == null) {
 				if (options.verbose()) {
-					G.v().out.println(
+					logger.debug(""+
 							"Warning: Method " + site.container() + " is reachable, and calls Class.forName on a"
 									+ " non-constant String; graph will be incomplete!"
 									+ " Use safe-forname option for a conservative result.");
@@ -582,7 +585,7 @@ public final class OnFlyCallGraphBuilder {
 				}
 				if (!Scene.v().containsClass(constant)) {
 					if (options.verbose()) {
-						G.v().out.println(
+						logger.debug(""+
 								"Warning: Class " + constant + " is" + " a dynamic class, and you did not specify"
 										+ " it as such; graph will be incomplete!");
 					}
@@ -740,7 +743,7 @@ public final class OnFlyCallGraphBuilder {
 					}
 				} else if (ie instanceof DynamicInvokeExpr) {
 					if (options.verbose())
-						G.v().out.println(
+						logger.debug(""+
 								"WARNING: InvokeDynamic to " + ie + " not resolved during call-graph construction.");
 				} else {
 					SootMethod tgt = ie.getMethod();
@@ -863,7 +866,7 @@ public final class OnFlyCallGraphBuilder {
 		} else {
 			if (!Scene.v().containsClass(cls)) {
 				if (options.verbose()) {
-					G.v().out.println("Warning: Class " + cls + " is" + " a dynamic class, and you did not specify"
+					logger.warn("Class " + cls + " is" + " a dynamic class, and you did not specify"
 							+ " it as such; graph will be incomplete!");
 				}
 			} else {
@@ -951,7 +954,7 @@ public final class OnFlyCallGraphBuilder {
 				}
 
 				if (options.verbose()) {
-					G.v().out.println("Warning: Method " + source + " is reachable, and calls Class.newInstance;"
+					logger.warn("Method " + source + " is reachable, and calls Class.newInstance;"
 							+ " graph will be incomplete!" + " Use safe-newinstance option for a conservative result.");
 				}
 			}
@@ -972,7 +975,7 @@ public final class OnFlyCallGraphBuilder {
 					}
 				}
 				if (options.verbose()) {
-					G.v().out.println("Warning: Method " + source + " is reachable, and calls Constructor.newInstance;"
+					logger.warn("Method " + source + " is reachable, and calls Constructor.newInstance;"
 							+ " graph will be incomplete!" + " Use safe-newinstance option for a conservative result.");
 				}
 			}
@@ -982,7 +985,7 @@ public final class OnFlyCallGraphBuilder {
 		public void methodInvoke(SootMethod container, Stmt invokeStmt) {
 			if (!warnedAlready(container)) {
 				if (options.verbose()) {
-					G.v().out.println("Warning: call to " + "java.lang.reflect.Method: invoke() from " + container
+					logger.warn("call to " + "java.lang.reflect.Method: invoke() from " + container
 							+ "; graph will be incomplete!");
 				}
 				markWarned(container);
@@ -1125,15 +1128,15 @@ public final class OnFlyCallGraphBuilder {
 			guards.add(new Guard(container, stmt, string));
 
 			if (options.verbose()) {
-				G.v().out.println("Incomplete trace file: Class.forName() is called in method '" + container
+				logger.debug("Incomplete trace file: Class.forName() is called in method '" + container
 						+ "' but trace contains no information about the receiver class of this call.");
 				if (options.guards().equals("ignore")) {
-					G.v().out.println("Guarding strategy is set to 'ignore'. Will ignore this problem.");
+					logger.debug("Guarding strategy is set to 'ignore'. Will ignore this problem.");
 				} else if (options.guards().equals("print")) {
-					G.v().out.println("Guarding strategy is set to 'print'. "
+					logger.debug("Guarding strategy is set to 'print'. "
 							+ "Program will print a stack trace if this location is reached during execution.");
 				} else if (options.guards().equals("throw")) {
-					G.v().out.println("Guarding strategy is set to 'throw'. Program will throw an "
+					logger.debug("Guarding strategy is set to 'throw'. Program will throw an "
 							+ "Error if this location is reached during execution.");
 				} else {
 					throw new RuntimeException("Invalid value for phase option (guarding): " + options.guards());
@@ -1162,7 +1165,7 @@ public final class OnFlyCallGraphBuilder {
 			SootMethod container = guard.container;
 			Stmt insertionPoint = guard.stmt;
 			if (!container.hasActiveBody()) {
-				G.v().out.println("WARNING: Tried to insert guard into " + container
+				logger.warn("Tried to insert guard into " + container
 						+ " but couldn't because method has no body.");
 			} else {
 				Body body = container.getActiveBody();
@@ -1184,7 +1187,7 @@ public final class OnFlyCallGraphBuilder {
 				body.getUnits().insertAfter(initStmt, assignStmt);
 
 				if (options.guards().equals("print")) {
-					// exc.printStackTrace();
+					// logger.error(exc.getMessage(), exc);
 					VirtualInvokeExpr printStackTraceExpr = Jimple.v().newVirtualInvokeExpr(exceptionLocal,
 							Scene.v().getSootClass("java.lang.Throwable")
 									.getMethod("printStackTrace", Collections.<Type>emptyList()).makeRef());

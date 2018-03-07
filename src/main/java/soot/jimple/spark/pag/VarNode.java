@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.spark.pag;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,6 +36,7 @@ import soot.toolkits.scalar.Pair;
  * @author Ondrej Lhotak
  */
 public abstract class VarNode extends ValNode implements Comparable {
+    private static final Logger logger = LoggerFactory.getLogger(VarNode.class);
     public Context context() { return null; }
     /** Returns all field ref nodes having this node as their base. */
     public Collection<FieldRefNode> getAllFieldRefs() { 
@@ -47,8 +50,8 @@ public abstract class VarNode extends ValNode implements Comparable {
     public int compareTo( Object o ) {
 	VarNode other = (VarNode) o;
         if( other.finishingNumber == finishingNumber && other != this ) {
-            G.v().out.println( "This is: "+this+" with id "+getNumber()+" and number "+finishingNumber );
-            G.v().out.println( "Other is: "+other+" with id "+other.getNumber()+" and number "+other.finishingNumber );
+            logger.debug(""+ "This is: "+this+" with id "+getNumber()+" and number "+finishingNumber );
+            logger.debug(""+ "Other is: "+other+" with id "+other.getNumber()+" and number "+other.finishingNumber );
             throw new RuntimeException("Comparison error" );
         }
 	return other.finishingNumber - finishingNumber;

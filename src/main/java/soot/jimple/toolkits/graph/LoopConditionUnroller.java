@@ -24,6 +24,8 @@
  */
 
 package soot.jimple.toolkits.graph;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.options.*;
 
@@ -48,6 +50,7 @@ import soot.toolkits.graph.*;
  * <code>BriefBlockGraph</code>.
  */
 public class LoopConditionUnroller extends BodyTransformer {
+    private static final Logger logger = LoggerFactory.getLogger(LoopConditionUnroller.class);
 	/**
 	 * contained blocks are currently visiting successors. We need this to find
 	 * back-edges. The "visitedBlocks" is not enough, as Java Bytecodes might
@@ -71,7 +74,7 @@ public class LoopConditionUnroller extends BodyTransformer {
 	protected void internalTransform(Body body, String phaseName,
 			Map<String, String> options) {
 		if (Options.v().verbose())
-			G.v().out.println("[" + body.getMethod().getName()
+			logger.debug("[" + body.getMethod().getName()
 					+ "]     Unrolling Loop Conditions...");
 
 		visitingSuccs = new HashSet<Block>();
@@ -84,7 +87,7 @@ public class LoopConditionUnroller extends BodyTransformer {
 			unrollConditions(b);
 
 		if (Options.v().verbose())
-			G.v().out.println("[" + body.getMethod().getName()
+			logger.debug("[" + body.getMethod().getName()
 					+ "]     Unrolling Loop Conditions done.");
 	}
 

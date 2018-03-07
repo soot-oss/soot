@@ -18,6 +18,8 @@
  */
 
 package soot.dava.toolkits.base.misc;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.*;
 import java.io.*;
@@ -28,6 +30,7 @@ import java.util.jar.*;
 
 public class PackageNamer
 {
+    private static final Logger logger = LoggerFactory.getLogger(PackageNamer.class);
     public PackageNamer( Singletons.Global g ) {}
     public static PackageNamer v() { return G.v().soot_dava_toolkits_base_misc_PackageNamer(); }
 
@@ -334,12 +337,12 @@ public class PackageNamer
 
 	public void dump( String indentation)
 	{
-	    G.v().out.print( indentation + "\"" + originalName + "\", \"" + packageName + "\", \"" + className + "\" (");
+	    logger.debug(""+ indentation + "\"" + originalName + "\", \"" + packageName + "\", \"" + className + "\" (");
 	    if (is_Class())
-		G.v().out.print("c");
+		logger.debug("c");
 	    if (is_Package())
-		G.v().out.print("p");
-	    G.v().out.println( ")");
+		logger.debug("p");
+	    logger.debug(""+ ")");
 
 	    Iterator<NameHolder> it = children.iterator();
 	    while (it.hasNext())

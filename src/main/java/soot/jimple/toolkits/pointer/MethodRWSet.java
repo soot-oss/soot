@@ -18,11 +18,14 @@
  */
 
 package soot.jimple.toolkits.pointer;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import soot.*;
 
 /** Represents the read or write set of a statement. */
 public class MethodRWSet extends RWSet {
+    private static final Logger logger = LoggerFactory.getLogger(MethodRWSet.class);
     public Set globals;
     public Map<Object,PointsToSet> fields;
     protected boolean callsNative = false;
@@ -73,7 +76,7 @@ public class MethodRWSet extends RWSet {
         /*
 	count++;
 	if( 0 == (count % 1000) ) {
-	    G.v().out.println( "Created "+count+"th MethodRWSet" );
+	    logger.debug(""+ "Created "+count+"th MethodRWSet" );
 	}
         */
     }

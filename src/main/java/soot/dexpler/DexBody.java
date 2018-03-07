@@ -23,6 +23,8 @@
  */
 
 package soot.dexpler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import static soot.dexpler.instructions.InstructionFactory.fromInstruction;
 
@@ -121,6 +123,7 @@ import soot.toolkits.scalar.UnusedLocalEliminator;
  * @author Frank Hartmann
  */
 public class DexBody {
+    private static final Logger logger = LoggerFactory.getLogger(DexBody.class);
 	private List<DexlibAbstractInstruction> instructions;
 	// keeps track about the jimple locals that are associated with the dex
 	// registers
@@ -948,7 +951,7 @@ public class DexBody {
 					SootClass exception = ((RefType) t).getSootClass();
 					DexlibAbstractInstruction instruction = instructionAtAddress(handler.getHandlerCodeAddress());
 					if (!(instruction instanceof MoveExceptionInstruction))
-						G.v().out.println(
+						logger.debug(""+
 								String.format("First instruction of trap handler unit not MoveException but %s",
 										instruction.getClass().getName()));
 					else

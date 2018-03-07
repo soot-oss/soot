@@ -18,6 +18,8 @@
  */
 
 package soot.jbco.jimpleTransformations;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.Body;
 import soot.BooleanType;
@@ -58,6 +60,7 @@ import static java.util.Collections.emptyList;
  * Created on 26-Jan-2006
  */
 public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
+    private static final Logger logger = LoggerFactory.getLogger(FieldRenamer.class);
 
     public void outputSummary() {
     }
@@ -264,7 +267,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
             oldToNewFieldNames.put(f.getName(), newName);
         }
         if (output) {
-            G.v().out.println("\t\tChanged " + f.getName() + " to " + newName);
+            logger.debug("\t\tChanged " + f.getName() + " to " + newName);
         }
         f.setName(newName);
         sootFieldsRenamed.add(f);

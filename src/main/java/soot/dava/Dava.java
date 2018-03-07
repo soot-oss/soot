@@ -19,6 +19,8 @@
  */
 
 package soot.dava;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 import java.io.BufferedWriter;
@@ -44,6 +46,7 @@ import soot.util.IterableSet;
 
 public class Dava
 {
+    private static final Logger logger = LoggerFactory.getLogger(Dava.class);
     public Dava( Singletons.Global g ) {}
     public static Dava v() { return G.v().soot_dava_Dava(); }
     private static final String LOG_TO_FILE = null;
@@ -102,13 +105,13 @@ public class Dava
 		    iOut = new BufferedWriter( new OutputStreamWriter( new FileOutputStream( LOG_TO_FILE), "US-ASCII"));
 		}
 		catch (FileNotFoundException fnfe) {
-		    G.v().out.println( "Unable to open " + LOG_TO_FILE);
-		    fnfe.printStackTrace();
+		    logger.debug(""+ "Unable to open " + LOG_TO_FILE);
+		    logger.error(fnfe.getMessage(), fnfe);
                     throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
 		}
 		catch (UnsupportedEncodingException uee) {
-		    G.v().out.println( "This system doesn't support US-ASCII encoding!!");
-		    uee.printStackTrace();
+		    logger.debug(""+ "This system doesn't support US-ASCII encoding!!");
+		    logger.error(uee.getMessage(), uee);
                     throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
 		}
 
@@ -118,8 +121,8 @@ public class Dava
 		iOut.flush();
 	    }
 	    catch (IOException ioe) {
-		G.v().out.println( "Unable to write to " + LOG_TO_FILE);
-		ioe.printStackTrace();
+		logger.debug(""+ "Unable to write to " + LOG_TO_FILE);
+		logger.error(ioe.getMessage(), ioe);
                 throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
 	    }
 	}

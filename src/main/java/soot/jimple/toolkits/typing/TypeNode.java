@@ -25,6 +25,8 @@
 
 
 package soot.jimple.toolkits.typing;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -46,6 +48,7 @@ import soot.util.BitVector;
  **/
 class TypeNode
 {
+    private static final Logger logger = LoggerFactory.getLogger(TypeNode.class);
   private static final boolean DEBUG = false;
 
   private final int id;
@@ -70,7 +73,7 @@ class TypeNode
     if(!((type instanceof PrimType) || (type instanceof RefType) || 
 	 (type instanceof ArrayType) || (type instanceof NullType)))
       {
-	G.v().out.println("Unhandled type: " + type);
+	logger.debug("Unhandled type: " + type);
 	throw new InternalTypingException();
       }
 
@@ -80,7 +83,7 @@ class TypeNode
 
     if(DEBUG)
       {
-	G.v().out.println("creating node " + this);
+	logger.debug("creating node " + this);
       }
   }
   
@@ -340,7 +343,7 @@ public String toString()
 	      }
 	    catch(TypeException e)
 	      {
-                if(DEBUG) e.printStackTrace();
+                if(DEBUG) logger.error(e.getMessage(), e);
 		throw e;
 	      }
 	  }
@@ -384,10 +387,10 @@ public String toString()
 	  {
 	    if(DEBUG)
 	      {
-		G.v().out.println("lca " + initial + " (" + type + ") & " + this + " =");
+		logger.debug("lca " + initial + " (" + type + ") & " + this + " =");
 		for(Iterator<TypeNode> i = type.parents.iterator(); i.hasNext(); )
 		  {
-		    G.v().out.println("  " + i.next());
+		    logger.debug("  " + i.next());
 		  }
 	      }
 	    return null;

@@ -1,4 +1,6 @@
 package soot.jimple.toolkits.base;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.util.Arrays;
@@ -42,6 +44,8 @@ import soot.util.Chain;
  */
 public class RenameDuplicatedClasses extends SceneTransformer 
 {
+    private static final Logger logger = LoggerFactory.getLogger(RenameDuplicatedClasses.class);
+    
 	public RenameDuplicatedClasses(Singletons.Global g){}
     public static RenameDuplicatedClasses v() 
 	{ 
@@ -66,7 +70,7 @@ public class RenameDuplicatedClasses extends SceneTransformer
 		
 		if(Options.v().verbose())
 		{
-			 G.v().out.println("The fixed class names are: " + fixedClassNames);
+			 logger.debug("The fixed class names are: " + fixedClassNames);
 		}
 		
 		
@@ -93,7 +97,7 @@ public class RenameDuplicatedClasses extends SceneTransformer
 				
 				//if(Options.v().verbose())
 				//{
-					G.v().out.println("Rename duplicated class " + className + " to class " + newClassName);
+					logger.debug("Rename duplicated class " + className + " to class " + newClassName);
 				//}
 			}
 			else

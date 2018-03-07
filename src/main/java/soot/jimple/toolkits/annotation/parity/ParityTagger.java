@@ -18,6 +18,8 @@
  */
 
 package soot.jimple.toolkits.annotation.parity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.*;
 import java.util.*;
 import soot.toolkits.graph.*;
@@ -30,6 +32,7 @@ import soot.options.*;
  * information in tags. */
 public class ParityTagger extends BodyTransformer
 { 
+    private static final Logger logger = LoggerFactory.getLogger(ParityTagger.class);
 	public ParityTagger( Singletons.Global g ) {}
     public static ParityTagger v() { return G.v().soot_jimple_toolkits_annotation_parity_ParityTagger(); }
 
@@ -86,7 +89,7 @@ public class ParityTagger extends BodyTransformer
 			while (valBoxIt.hasNext()){
 				ValueBox vb = (ValueBox)valBoxIt.next();
 				if (parityVarsUses.containsKey(vb.getValue())){
-					//G.v().out.println("Parity variable for: "+vb.getValue());
+					//logger.debug("Parity variable for: "+vb.getValue());
 					String type = (String)parityVarsUses.get(vb.getValue());
 					addColorTag(vb, type);
 				}
@@ -99,7 +102,7 @@ public class ParityTagger extends BodyTransformer
 			while (valBoxIt.hasNext()){
 				ValueBox vb = (ValueBox)valBoxIt.next();
 				if (parityVarsDefs.containsKey(vb.getValue())){
-					//G.v().out.println("Parity variable for: "+vb.getValue());
+					//logger.debug("Parity variable for: "+vb.getValue());
 					String type = (String)parityVarsDefs.get(vb.getValue());
 					addColorTag(vb, type);
 				}

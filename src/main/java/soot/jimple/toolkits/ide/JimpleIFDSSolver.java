@@ -17,6 +17,8 @@
  * Boston, MA 02111-1307, USA.
  */
 package soot.jimple.toolkits.ide;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import heros.IFDSTabulationProblem;
 import heros.InterproceduralCFG;
@@ -37,6 +39,7 @@ import com.google.common.collect.Table.Cell;
 
 
 public class JimpleIFDSSolver<D, I extends InterproceduralCFG<Unit, SootMethod>> extends IFDSSolver<Unit, D, SootMethod, I> {
+    private static final Logger logger = LoggerFactory.getLogger(JimpleIFDSSolver.class);
 
 	private final boolean DUMP_RESULTS;
 
@@ -80,7 +83,7 @@ public class JimpleIFDSSolver<D, I extends InterproceduralCFG<Unit, SootMethod>>
 			out.flush();
 			out.close();
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			logger.error(e.getMessage(), e);
 		}
 	}
 

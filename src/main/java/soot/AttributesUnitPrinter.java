@@ -18,6 +18,8 @@
  */
 
 package soot;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.*;
 import soot.tagkit.*;
 
@@ -25,6 +27,7 @@ import soot.tagkit.*;
  * Adds PositionTags to ValueBoxes to identify their position in the output.
  */
 public class AttributesUnitPrinter {
+    private static final Logger logger = LoggerFactory.getLogger(AttributesUnitPrinter.class);
 
     private Stack<Integer> startOffsets;
 	private int endOffset;
@@ -43,9 +46,9 @@ public class AttributesUnitPrinter {
 	}
 	public void endUnit( Unit u ) {
 		int endStmtOffset = output().length() - lastNewline;
-        //G.v().out.println("u: "+u.toString());
+        //logger.debug("u: "+u.toString());
 		if (hasTag(u)){
-            //G.v().out.println("u: "+u.toString()+" has tag");
+            //logger.debug("u: "+u.toString()+" has tag");
 			u.addTag( new JimpleLineNumberTag( startLn, currentLn ));
 		}
 		if (hasColorTag(u)) {

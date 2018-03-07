@@ -26,6 +26,8 @@
 
 
 package soot.jimple.toolkits.scalar;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.options.*;
 
 import soot.util.*;
@@ -37,6 +39,7 @@ import java.util.*;
 
 public class UnconditionalBranchFolder extends BodyTransformer
 {
+    private static final Logger logger = LoggerFactory.getLogger(UnconditionalBranchFolder.class);
     public UnconditionalBranchFolder( Singletons.Global g ) {}
     public static UnconditionalBranchFolder v() { return G.v().soot_jimple_toolkits_scalar_UnconditionalBranchFolder(); }
 
@@ -50,7 +53,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
         StmtBody body = (StmtBody)b;
 
         if (Options.v().verbose()) 
-            G.v().out.println("[" + body.getMethod().getName() + "] Folding unconditional branches...");
+            logger.debug("[" + body.getMethod().getName() + "] Folding unconditional branches...");
 
 
         // allocate counters once only
@@ -112,7 +115,7 @@ public class UnconditionalBranchFolder extends BodyTransformer
             }
         }
         if (Options.v().verbose()) 
-            G.v().out.println("[" + body.getMethod().getName() + "]     " + numFixed[0] + " of " + 
+            logger.debug("[" + body.getMethod().getName() + "]     " + numFixed[0] + " of " + 
                                 numFound[0] + " branches folded.");
              
                                
