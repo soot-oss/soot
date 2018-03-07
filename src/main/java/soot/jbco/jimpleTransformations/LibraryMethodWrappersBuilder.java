@@ -19,6 +19,8 @@
 
 package soot.jbco.jimpleTransformations;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.Body;
 import soot.BooleanType;
 import soot.ByteType;
@@ -61,6 +63,7 @@ import soot.jimple.VirtualInvokeExpr;
 import soot.util.Chain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -73,33 +76,35 @@ import java.util.Map;
  */
 public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJbcoTransform {
 
-    public static String dependancies[] = new String[]{"wjtp.jbco_blbc"};
+    private static final Logger logger = LoggerFactory.getLogger(LibraryMethodWrappersBuilder.class);
 
-    public String[] getDependancies() {
-        return dependancies;
+    public static final String name = "wjtp.jbco_blbc";
+    public static final String dependencies[] = new String[]{"wjtp.jbco_blbc"};
+
+    private static final Map<SootClass, Map<SootMethod, SootMethodRef>> libClassesToMethods = new HashMap<>();
+    public static List<SootMethod> builtByMe = new ArrayList<>();
+
+    private int newmethods = 0;
+    private int methodcalls = 0;
+
+    @Override
+    public String[] getDependencies() {
+        return Arrays.copyOf(dependencies, dependencies.length);
     }
 
-    public static String name = "wjtp.jbco_blbc";
-
+    @Override
     public String getName() {
         return name;
     }
 
-    private static int newmethods = 0;
-    private static int methodcalls = 0;
-
+    @Override
     public void outputSummary() {
-        out.println("New Methods Created: " + newmethods);
-        out.println("Method Calls Replaced: " + methodcalls);
+        logger.info("Created {} new methods. Replaced {} method calls.", newmethods, methodcalls);
     }
 
-    private static final Map<SootClass, Map<SootMethod, SootMethodRef>> libClassesToMethods = new HashMap<>();
-
-    public static List<SootMethod> builtByMe = new ArrayList<>();
-
     protected void internalTransform(String phaseName, Map<String, String> options) {
-        if (output) {
-            out.println("Building Library Wrapper Methods...");
+        if (isVerbose()) {
+            logger.info("Building Library Wrapper Methods...");
         }
 
         BodyBuilder.retrieveAllBodies();
@@ -108,8 +113,8 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
         while (it.hasNext()) {
             SootClass sc = it.next();
 
-            if (output) {
-                out.println("\r\tProcessing " + sc.getName() + "\r");
+            if (isVerbose()) {
+                logger.info("\tProcessing class {}", sc.getName());
             }
 
             List<SootMethod> methods = sc.getMethods();
@@ -169,10 +174,6 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
                             continue;
                         }
 
-                        if (output) {
-                            out.print("\t\t\tChanging " + invokedMethod.getSignature());
-                        }
-
                         SootMethodRef invokedMethodRef = getNewMethodRef(invokedMethodClass, invokedMethod);
                         if (invokedMethodRef == null) {
                             try {
@@ -184,8 +185,9 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
                             }
                         }
 
-                        if (output) {
-                            out.println(" to " + invokedMethodRef.getSignature() + "\tUnit: " + unit);
+                        if (isVerbose()) {
+                            logger.info("\t\t\tChanging {} to {}\tUnit: ",
+                                    invokedMethod.getSignature(), invokedMethodRef.getSignature(), unit);
                         }
 
                         List<Value> args = invokeExpr.getArgs();
@@ -322,12 +324,12 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
             units.add(Jimple.v().newReturnStmt(assign));
         }
 
-        if (output) {
-            out.println("\r" + sm.getName() + " was replaced by \r\t" + newMethod.getName() + " which calls \r\t\t" + ie);
+        if (isVerbose()) {
+            logger.info("{} was replaced by {} which calls {}", sm.getName(), newMethod.getName(), ie);
         }
 
         if (units.size() < 2) {
-            out.println("\r\rTHERE AREN'T MANY UNITS IN THIS METHOD " + units);
+            logger.warn("THERE AREN'T MANY UNITS IN THIS METHOD {}", units);
         }
 
         builtByMe.add(newMethod);

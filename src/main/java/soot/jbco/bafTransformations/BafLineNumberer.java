@@ -30,7 +30,7 @@ public class BafLineNumberer extends BodyTransformer implements IJbcoTransform {
   public static String name = "bb.jbco_bln";
 
   public void outputSummary() {}
-  public String[] getDependancies() { return new String[]{name};}
+  public String[] getDependencies() { return new String[]{name};}
   public String getName() { return name;}
   protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
     int idx = 0;

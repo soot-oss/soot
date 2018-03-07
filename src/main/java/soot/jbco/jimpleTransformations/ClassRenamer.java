@@ -113,7 +113,7 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
     }
 
     @Override
-    public String[] getDependancies() {
+    public String[] getDependencies() {
         return dependancies;
     }
 

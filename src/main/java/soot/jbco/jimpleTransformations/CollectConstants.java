@@ -73,7 +73,7 @@ public class CollectConstants extends SceneTransformer implements IJbcoTransform
 
     public static String dependancies[] = new String[]{"wjtp.jbco_cc"};
 
-    public String[] getDependancies() {
+    public String[] getDependencies() {
         return dependancies;
     }
 

@@ -34,7 +34,7 @@ public class BAFCounter extends BodyTransformer implements IJbcoTransform {
 	static int count = 0;
 	public static String dependancies[] = new String[] { "bb.jbco_counter" };
 
-	public String[] getDependancies() {
+	public String[] getDependencies() {
 		return dependancies;
 	}
 

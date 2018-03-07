@@ -37,7 +37,7 @@ public class CollectJimpleLocals extends BodyTransformer implements
 
 	public static String dependancies[] = new String[] { "jtp.jbco_jl" };
 
-	public String[] getDependancies() {
+	public String[] getDependencies() {
 		return dependancies;
 	}
 

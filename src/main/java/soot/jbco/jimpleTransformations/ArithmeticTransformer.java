@@ -70,7 +70,7 @@ public class ArithmeticTransformer extends BodyTransformer implements IJbcoTrans
     public static String dependancies[] = new String[]{"jtp.jbco_cae2bo"};
     public static String name = "jtp.jbco_cae2bo";
 
-    public String[] getDependancies() {
+    public String[] getDependencies() {
         return dependancies;
     }
 
