@@ -70,6 +70,8 @@ import java.util.List;
 import java.util.Map;
 
 /**
+ * Creates methods that "wraps" library method calls.
+ *
  * @author Michael Batchelder
  * <p>
  * Created on 7-Feb-2006
@@ -109,80 +111,53 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
 
         BodyBuilder.retrieveAllBodies();
         // iterate through application classes to find library calls
-        Iterator<SootClass> it = Scene.v().getApplicationClasses().snapshotIterator();
-        while (it.hasNext()) {
-            SootClass sc = it.next();
+        final Iterator<SootClass> applicationClassesIterator = Scene.v().getApplicationClasses().snapshotIterator();
+        while (applicationClassesIterator.hasNext()) {
+            final SootClass applicationClass = applicationClassesIterator.next();
 
             if (isVerbose()) {
-                logger.info("\tProcessing class {}", sc.getName());
+                logger.info("\tProcessing class {}", applicationClass.getName());
             }
 
-            List<SootMethod> methods = sc.getMethods();
-            // do not replace with foreach loop as it will cause java.util.ConcurrentModificationException
-            for (int i = 0; i < methods.size(); i++) {
-                SootMethod method = methods.get(i);
+            // create local copy to prevent java.util.ConcurrentModificationException
+            final List<SootMethod> methods = new ArrayList<>(applicationClass.getMethods());
+            for (SootMethod method : methods) {
                 if (!method.isConcrete() || builtByMe.contains(method)) {
                     continue;
                 }
 
-                Body body;
-                try {
-                    body = method.getActiveBody();
-                } catch (Exception exc) {
-                    body = method.retrieveActiveBody();
-                }
+                final Body body = getBodySafely(method);
                 if (body == null) {
                     continue;
                 }
 
                 int localName = 0;
-                Chain<Local> locals = body.getLocals();
-                PatchingChain<Unit> units = body.getUnits();
 
-                Unit first = null;
-                Iterator<Unit> uIt = units.snapshotIterator();
-                while (uIt.hasNext()) {
-                    Unit unit = uIt.next();
-                    if (unit instanceof IdentityStmt) {
-                        continue;
-                    }
-                    first = unit;
-                    break;
-                }
+                final Unit first = getFirstNotIdentityStmt(body);
 
-                uIt = units.snapshotIterator();
-                while (uIt.hasNext()) {
-                    Unit unit = uIt.next();
-                    List<ValueBox> uses = unit.getUseBoxes();
-                    for (ValueBox valueBox : uses) {
-                        Value value = valueBox.getValue();
+                final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
+                while (unitIterator.hasNext()) {
+                    final Unit unit = unitIterator.next();
+
+                    for (ValueBox valueBox : unit.getUseBoxes()) {
+                        final Value value = valueBox.getValue();
                         // skip calls to 'super' as they cannot be called from static method and/or on object from the
                         // outside (this is prohibited on language level as that would violate encapsulation)
                         if (!(value instanceof InvokeExpr) || value instanceof SpecialInvokeExpr) {
                             continue;
                         }
 
-                        InvokeExpr invokeExpr = (InvokeExpr) value;
-                        SootMethod invokedMethod;
-                        try {
-                            invokedMethod = invokeExpr.getMethod();
-                        } catch (RuntimeException exc) {
-                            continue;
-                        }
-                        SootClass invokedMethodClass = invokedMethod.getDeclaringClass();
-                        if (invokedMethod.getName().endsWith("init>") || !invokedMethodClass.isLibraryClass()) {
+                        final InvokeExpr invokeExpr = (InvokeExpr) value;
+                        final SootMethod invokedMethod = getMethodSafely(invokeExpr);
+                        if (invokedMethod == null) {
                             continue;
                         }
 
-                        SootMethodRef invokedMethodRef = getNewMethodRef(invokedMethodClass, invokedMethod);
+                        SootMethodRef invokedMethodRef = getNewMethodRef(invokedMethod);
                         if (invokedMethodRef == null) {
-                            try {
-                                invokedMethodRef = buildNewMethod(sc, invokedMethodClass, invokedMethod, invokeExpr);
-                                setNewMethodRef(invokedMethodClass, invokedMethod, invokedMethodRef);
-                                newmethods++;
-                            } catch (Exception e) {
-                                continue;
-                            }
+                            invokedMethodRef = buildNewMethod(applicationClass, invokedMethod, invokeExpr);
+                            setNewMethodRef(invokedMethod, invokedMethodRef);
+                            newmethods++;
                         }
 
                         if (isVerbose()) {
@@ -204,9 +179,9 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
                             while (argsCount < paramCount) {
                                 Type pType = parameterTypes.get(argsCount);
                                 Local newLocal = Jimple.v().newLocal("newLocal" + localName++, pType);
-                                locals.add(newLocal);
-                                units.insertBeforeNoRedirect(Jimple.v().newAssignStmt(newLocal, getConstantType(pType)),
-                                        first);
+                                body.getLocals().add(newLocal);
+                                body.getUnits().insertBeforeNoRedirect(
+                                        Jimple.v().newAssignStmt(newLocal, getConstantType(pType)), first);
                                 args.add(newLocal);
                                 argsCount++;
                             }
@@ -219,65 +194,53 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
         }
 
         Scene.v().releaseActiveHierarchy();
-        Scene.v().getActiveHierarchy();
         Scene.v().setFastHierarchy(new FastHierarchy());
     }
 
-    private SootMethodRef getNewMethodRef(SootClass libClass, SootMethod sm) {
-        Map<SootMethod, SootMethodRef> methods = libClassesToMethods.computeIfAbsent(libClass, key -> new HashMap<>());
-        return methods.get(sm);
+    private SootMethodRef getNewMethodRef(SootMethod method) {
+        Map<SootMethod, SootMethodRef> methods = libClassesToMethods.computeIfAbsent(
+                method.getDeclaringClass(), key -> new HashMap<>());
+        return methods.get(method);
     }
 
-    private void setNewMethodRef(SootClass libClass, SootMethod sm, SootMethodRef smr) {
-        Map<SootMethod, SootMethodRef> methods = libClassesToMethods.computeIfAbsent(libClass, key -> new HashMap<>());
+    private void setNewMethodRef(SootMethod sm, SootMethodRef smr) {
+        Map<SootMethod, SootMethodRef> methods = libClassesToMethods.computeIfAbsent(
+                sm.getDeclaringClass(), key -> new HashMap<>());
         methods.put(sm, smr);
     }
 
-    private SootMethodRef buildNewMethod(SootClass fromC, SootClass libClass, SootMethod sm, InvokeExpr origIE) {
-        SootClass randClass;
-        List<SootMethod> methods;
-        SootMethod randMethod;
-        String newName;
+    private SootMethodRef buildNewMethod(SootClass fromC, SootMethod sm, InvokeExpr origIE) {
+        final List<SootClass> availableClasses = getVisibleApplicationClasses(sm);
 
-        List<SootClass> availableClasses = new ArrayList<>();
-        for (SootClass c : Scene.v().getApplicationClasses()) {
-            if (c.isConcrete() && !c.isInterface() && c.isPublic() && Scene.v().getActiveHierarchy().isVisible(c, sm)) {
-                availableClasses.add(c);
-            }
-        }
-
-        int classCount = availableClasses.size();
+        final int classCount = availableClasses.size();
         if (classCount == 0) {
             throw new RuntimeException("There appears to be no public non-interface Application classes!");
         }
 
+        SootClass randomClass;
+        String methodNewName;
         do {
             int index = Rand.getInt(classCount);
-            if ((randClass = availableClasses.get(index)) == fromC && classCount > 1) {
+            if ((randomClass = availableClasses.get(index)) == fromC && classCount > 1) {
                 index = Rand.getInt(classCount);
-                randClass = availableClasses.get(index);
+                randomClass = availableClasses.get(index);
             }
 
-            methods = randClass.getMethods();
+            final List<SootMethod> methods = randomClass.getMethods();
             index = Rand.getInt(methods.size());
-            randMethod = methods.get(index);
-            newName = randMethod.getName();
-        } while (newName.endsWith("init>"));
+            final SootMethod randMethod = methods.get(index);
+            methodNewName = randMethod.getName();
+        } while (methodNewName.equals(SootMethod.constructorName)
+                || methodNewName.equals(SootMethod.staticInitializerName));
 
-        List<Type> smParamTypes = sm.getParameterTypes();
-        List<Type> tmp = new ArrayList<>();
+        final List<Type> smParamTypes = new ArrayList<>(sm.getParameterTypes());
         if (!sm.isStatic()) {
-            tmp.addAll(smParamTypes);
-            tmp.add(libClass.getType());
-            smParamTypes = tmp;
-        } else {
-            tmp.addAll(smParamTypes);
-            smParamTypes = tmp;
+            smParamTypes.add(sm.getDeclaringClass().getType());
         }
 
         // add random class params until we don't match any other method
         int extraParams = 0;
-        if (randClass.declaresMethod(newName, smParamTypes)) {
+        if (randomClass.declaresMethod(methodNewName, smParamTypes)) {
             int rtmp = Rand.getInt(classCount + 7);
             if (rtmp >= classCount) {
                 rtmp -= classCount;
@@ -288,22 +251,22 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
             extraParams++;
         }
 
-        int mods = ((((sm.getModifiers() | Modifier.STATIC | Modifier.PUBLIC) & (Modifier.ABSTRACT ^ 0xFFFF))
+        final int mods = ((((sm.getModifiers() | Modifier.STATIC | Modifier.PUBLIC) & (Modifier.ABSTRACT ^ 0xFFFF))
                 & (Modifier.NATIVE ^ 0xFFFF)) & (Modifier.SYNCHRONIZED ^ 0xFFFF));
-        SootMethod newMethod = Scene.v().makeSootMethod(newName, smParamTypes, sm.getReturnType(), mods);
-        randClass.addMethod(newMethod);
+        SootMethod newMethod = Scene.v().makeSootMethod(methodNewName, smParamTypes, sm.getReturnType(), mods);
+        randomClass.addMethod(newMethod);
 
         JimpleBody body = Jimple.v().newBody(newMethod);
         newMethod.setActiveBody(body);
         Chain<Local> locals = body.getLocals();
         PatchingChain<Unit> units = body.getUnits();
 
-        InvokeExpr ie = null;
         List<Local> args = BodyBuilder.buildParameterLocals(units, locals, smParamTypes);
         while (extraParams-- > 0) {
             args.remove(args.size() - 1);
         }
 
+        InvokeExpr ie = null;
         if (sm.isStatic()) {
             ie = Jimple.v().newStaticInvokeExpr(sm.makeRef(), args);
         } else {
@@ -376,4 +339,80 @@ public class LibraryMethodWrappersBuilder extends SceneTransformer implements IJ
 
         return Jimple.v().newCastExpr(NullConstant.v(), t);
     }
+
+    private static Body getBodySafely(SootMethod method) {
+        try {
+            return method.getActiveBody();
+        } catch (Exception exception) {
+            logger.warn("Getting Body from SootMethod {} caused exception that was suppressed.", exception);
+
+            return method.retrieveActiveBody();
+        }
+    }
+
+    private static Unit getFirstNotIdentityStmt(Body body) {
+        final Iterator<Unit> unitIterator = body.getUnits().snapshotIterator();
+        while (unitIterator.hasNext()) {
+            final Unit unit = unitIterator.next();
+            if (unit instanceof IdentityStmt) {
+                continue;
+            }
+            return unit;
+        }
+
+        logger.debug("There are no non-identity units in the method body.");
+        return null;
+    }
+
+    private static SootMethod getMethodSafely(InvokeExpr invokeExpr) {
+        try {
+            final SootMethod invokedMethod = invokeExpr.getMethod();
+            if (invokedMethod == null) {
+                return null;
+            }
+
+            if (SootMethod.constructorName.equals(invokedMethod.getName())
+                    || SootMethod.staticInitializerName.equals(invokedMethod.getName())) {
+                logger.debug("Skipping wrapping method {} as it is constructor/initializer.", invokedMethod);
+                return null;
+            }
+
+            final SootClass invokedMethodClass = invokedMethod.getDeclaringClass();
+
+            if (!invokedMethodClass.isLibraryClass()) {
+                logger.debug("Skipping wrapping method {} as it is not library one.", invokedMethod);
+                return null;
+            }
+
+            if (invokeExpr.getMethodRef().declaringClass().isInterface()
+                    && !invokedMethodClass.isInterface()) {
+                logger.debug("Skipping wrapping method {} as original code suppose to execute it on interface {}"
+                                + " but resolved code trying to execute it on class {}", invokedMethod,
+                        invokeExpr.getMethodRef().declaringClass(), invokedMethodClass);
+                return null;
+            }
+
+            return invokedMethod;
+        } catch (RuntimeException exception) {
+            logger.debug("Cannot resolve method of InvokeExpr: " + invokeExpr.toString(), exception);
+            return null;
+        }
+    }
+
+    private static List<SootClass> getVisibleApplicationClasses(SootMethod visibleBy) {
+        final List<SootClass> result = new ArrayList<>();
+
+        final Iterator<SootClass> applicationClassesIterator = Scene.v().getApplicationClasses().snapshotIterator();
+        while (applicationClassesIterator.hasNext()) {
+            final SootClass applicationClass = applicationClassesIterator.next();
+
+            if (applicationClass.isConcrete() && !applicationClass.isInterface() && applicationClass.isPublic()
+                    && Scene.v().getActiveHierarchy().isVisible(applicationClass, visibleBy)) {
+                result.add(applicationClass);
+            }
+        }
+
+        return result;
+    }
+
 }
