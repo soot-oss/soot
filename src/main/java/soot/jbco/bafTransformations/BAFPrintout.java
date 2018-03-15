@@ -39,7 +39,7 @@ public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
   public static String name = "bb.printout";
   
   public void outputSummary() {}
-  public String[] getDependancies() {return new String[0];}
+  public String[] getDependencies() {return new String[0];}
   public String getName() { 
     return name;
   }

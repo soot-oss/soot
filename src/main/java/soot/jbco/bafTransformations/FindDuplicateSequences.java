@@ -39,7 +39,7 @@ public class FindDuplicateSequences extends BodyTransformer implements IJbcoTran
   
   public static String dependancies[] = new String[] {"bb.jbco_j2bl", "bb.jbco_rds", "bb.jbco_ful", "bb.lp" };
 
-  public String[] getDependancies() {
+  public String[] getDependencies() {
     return dependancies;
   }
   

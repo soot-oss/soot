@@ -35,7 +35,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
   
   public static String dependancies[] = new String[] {"bb.jbco_j2bl", "bb.jbco_ctbcb", "bb.jbco_ful", "bb.lp" };
 
-  public String[] getDependancies() {
+  public String[] getDependencies() {
     return dependancies;
   }
   

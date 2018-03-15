@@ -35,7 +35,7 @@ public class ConstructorConfuser extends BodyTransformer implements
   
   public static String dependancies[] = new String[] { "bb.jbco_dcc", "bb.jbco_ful", "bb.lp" };
 
-  public String[] getDependancies() {
+  public String[] getDependencies() {
     return dependancies;
   }
   

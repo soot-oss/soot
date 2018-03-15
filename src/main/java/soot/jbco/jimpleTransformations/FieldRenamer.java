@@ -67,7 +67,7 @@ public class FieldRenamer extends SceneTransformer implements IJbcoTransform {
 
     public static String dependancies[] = new String[]{"wjtp.jbco_fr"};
 
-    public String[] getDependancies() {
+    public String[] getDependencies() {
         return dependancies;
     }
 

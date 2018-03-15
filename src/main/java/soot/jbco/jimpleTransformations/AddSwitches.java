@@ -46,7 +46,7 @@ public class AddSwitches extends BodyTransformer implements IJbcoTransform {
 
   public static String dependancies[] = new String[] { "wjtp.jbco_fr", "jtp.jbco_adss", "bb.jbco_ful"};
 
-  public String[] getDependancies() {
+  public String[] getDependencies() {
     return dependancies;
   }
 

@@ -79,7 +79,7 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
 
     public static String dependancies[] = new String[]{"wjtp.jbco_bapibm"};
 
-    public String[] getDependancies() {
+    public String[] getDependencies() {
         return dependancies;
     }
 

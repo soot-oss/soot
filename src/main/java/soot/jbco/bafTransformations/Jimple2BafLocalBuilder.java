@@ -38,7 +38,7 @@ public class Jimple2BafLocalBuilder extends BodyTransformer implements IJbcoTran
 
   public static String dependancies[] = new String[] {"jtp.jbco_jl","bb.jbco_j2bl","bb.lp"};
 
-  public String[] getDependancies() {
+  public String[] getDependencies() {
     return dependancies;
   }
   
