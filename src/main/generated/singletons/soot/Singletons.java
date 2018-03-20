@@ -23,18 +23,21 @@
 package soot;
 
 /** A class to group together all the global variables in Soot. */
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-28T23:07:31.883+03:00", comments = "from singletons.xml")
 public class Singletons {
+
     public final class Global {
         private Global() {}
     }
+
     protected Global g = new Global();
 
     private soot.PhaseOptions instance_soot_PhaseOptions;
     public soot.PhaseOptions soot_PhaseOptions() {
-        if( instance_soot_PhaseOptions == null ) {
+        if (instance_soot_PhaseOptions == null) {
 	       	synchronized (this) {
-		        if( instance_soot_PhaseOptions == null )
-	        		instance_soot_PhaseOptions = new soot.PhaseOptions( g );
+		        if (instance_soot_PhaseOptions == null)
+	        		instance_soot_PhaseOptions = new soot.PhaseOptions(g);
 	       	}
        	}
         return instance_soot_PhaseOptions;
@@ -45,10 +48,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.callgraph.VirtualCalls instance_soot_jimple_toolkits_callgraph_VirtualCalls;
     public soot.jimple.toolkits.callgraph.VirtualCalls soot_jimple_toolkits_callgraph_VirtualCalls() {
-        if( instance_soot_jimple_toolkits_callgraph_VirtualCalls == null ) {
+        if (instance_soot_jimple_toolkits_callgraph_VirtualCalls == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_callgraph_VirtualCalls == null )
-	        		instance_soot_jimple_toolkits_callgraph_VirtualCalls = new soot.jimple.toolkits.callgraph.VirtualCalls( g );
+		        if (instance_soot_jimple_toolkits_callgraph_VirtualCalls == null)
+	        		instance_soot_jimple_toolkits_callgraph_VirtualCalls = new soot.jimple.toolkits.callgraph.VirtualCalls(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_callgraph_VirtualCalls;
@@ -59,10 +62,10 @@ public class Singletons {
 
     private soot.jimple.spark.fieldrw.FieldTagger instance_soot_jimple_spark_fieldrw_FieldTagger;
     public soot.jimple.spark.fieldrw.FieldTagger soot_jimple_spark_fieldrw_FieldTagger() {
-        if( instance_soot_jimple_spark_fieldrw_FieldTagger == null ) {
+        if (instance_soot_jimple_spark_fieldrw_FieldTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_spark_fieldrw_FieldTagger == null )
-	        		instance_soot_jimple_spark_fieldrw_FieldTagger = new soot.jimple.spark.fieldrw.FieldTagger( g );
+		        if (instance_soot_jimple_spark_fieldrw_FieldTagger == null)
+	        		instance_soot_jimple_spark_fieldrw_FieldTagger = new soot.jimple.spark.fieldrw.FieldTagger(g);
 	       	}
        	}
         return instance_soot_jimple_spark_fieldrw_FieldTagger;
@@ -73,10 +76,10 @@ public class Singletons {
 
     private soot.util.SharedBitSetCache instance_soot_util_SharedBitSetCache;
     public soot.util.SharedBitSetCache soot_util_SharedBitSetCache() {
-        if( instance_soot_util_SharedBitSetCache == null ) {
+        if (instance_soot_util_SharedBitSetCache == null) {
 	       	synchronized (this) {
-		        if( instance_soot_util_SharedBitSetCache == null )
-	        		instance_soot_util_SharedBitSetCache = new soot.util.SharedBitSetCache( g );
+		        if (instance_soot_util_SharedBitSetCache == null)
+	        		instance_soot_util_SharedBitSetCache = new soot.util.SharedBitSetCache(g);
 	       	}
        	}
         return instance_soot_util_SharedBitSetCache;
@@ -87,10 +90,10 @@ public class Singletons {
 
     private soot.options.Options instance_soot_options_Options;
     public soot.options.Options soot_options_Options() {
-        if( instance_soot_options_Options == null ) {
+        if (instance_soot_options_Options == null) {
 	       	synchronized (this) {
-		        if( instance_soot_options_Options == null )
-	        		instance_soot_options_Options = new soot.options.Options( g );
+		        if (instance_soot_options_Options == null)
+	        		instance_soot_options_Options = new soot.options.Options(g);
 	       	}
        	}
         return instance_soot_options_Options;
@@ -101,10 +104,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.callgraph.CHATransformer instance_soot_jimple_toolkits_callgraph_CHATransformer;
     public soot.jimple.toolkits.callgraph.CHATransformer soot_jimple_toolkits_callgraph_CHATransformer() {
-        if( instance_soot_jimple_toolkits_callgraph_CHATransformer == null ) {
+        if (instance_soot_jimple_toolkits_callgraph_CHATransformer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_callgraph_CHATransformer == null )
-	        		instance_soot_jimple_toolkits_callgraph_CHATransformer = new soot.jimple.toolkits.callgraph.CHATransformer( g );
+		        if (instance_soot_jimple_toolkits_callgraph_CHATransformer == null)
+	        		instance_soot_jimple_toolkits_callgraph_CHATransformer = new soot.jimple.toolkits.callgraph.CHATransformer(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_callgraph_CHATransformer;
@@ -115,10 +118,10 @@ public class Singletons {
 
     private soot.toolkits.graph.SlowPseudoTopologicalOrderer instance_soot_toolkits_graph_SlowPseudoTopologicalOrderer;
     public soot.toolkits.graph.SlowPseudoTopologicalOrderer soot_toolkits_graph_SlowPseudoTopologicalOrderer() {
-        if( instance_soot_toolkits_graph_SlowPseudoTopologicalOrderer == null ) {
+        if (instance_soot_toolkits_graph_SlowPseudoTopologicalOrderer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toolkits_graph_SlowPseudoTopologicalOrderer == null )
-	        		instance_soot_toolkits_graph_SlowPseudoTopologicalOrderer = new soot.toolkits.graph.SlowPseudoTopologicalOrderer( g );
+		        if (instance_soot_toolkits_graph_SlowPseudoTopologicalOrderer == null)
+	        		instance_soot_toolkits_graph_SlowPseudoTopologicalOrderer = new soot.toolkits.graph.SlowPseudoTopologicalOrderer(g);
 	       	}
        	}
         return instance_soot_toolkits_graph_SlowPseudoTopologicalOrderer;
@@ -129,10 +132,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.invoke.SynchronizerManager instance_soot_jimple_toolkits_invoke_SynchronizerManager;
     public soot.jimple.toolkits.invoke.SynchronizerManager soot_jimple_toolkits_invoke_SynchronizerManager() {
-        if( instance_soot_jimple_toolkits_invoke_SynchronizerManager == null ) {
+        if (instance_soot_jimple_toolkits_invoke_SynchronizerManager == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_invoke_SynchronizerManager == null )
-	        		instance_soot_jimple_toolkits_invoke_SynchronizerManager = new soot.jimple.toolkits.invoke.SynchronizerManager( g );
+		        if (instance_soot_jimple_toolkits_invoke_SynchronizerManager == null)
+	        		instance_soot_jimple_toolkits_invoke_SynchronizerManager = new soot.jimple.toolkits.invoke.SynchronizerManager(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_invoke_SynchronizerManager;
@@ -143,10 +146,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.typing.integer.ClassHierarchy instance_soot_jimple_toolkits_typing_integer_ClassHierarchy;
     public soot.jimple.toolkits.typing.integer.ClassHierarchy soot_jimple_toolkits_typing_integer_ClassHierarchy() {
-        if( instance_soot_jimple_toolkits_typing_integer_ClassHierarchy == null ) {
+        if (instance_soot_jimple_toolkits_typing_integer_ClassHierarchy == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_typing_integer_ClassHierarchy == null )
-	        		instance_soot_jimple_toolkits_typing_integer_ClassHierarchy = new soot.jimple.toolkits.typing.integer.ClassHierarchy( g );
+		        if (instance_soot_jimple_toolkits_typing_integer_ClassHierarchy == null)
+	        		instance_soot_jimple_toolkits_typing_integer_ClassHierarchy = new soot.jimple.toolkits.typing.integer.ClassHierarchy(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_typing_integer_ClassHierarchy;
@@ -157,10 +160,10 @@ public class Singletons {
 
     private soot.Main instance_soot_Main;
     public soot.Main soot_Main() {
-        if( instance_soot_Main == null ) {
+        if (instance_soot_Main == null) {
 	       	synchronized (this) {
-		        if( instance_soot_Main == null )
-	        		instance_soot_Main = new soot.Main( g );
+		        if (instance_soot_Main == null)
+	        		instance_soot_Main = new soot.Main(g);
 	       	}
        	}
         return instance_soot_Main;
@@ -171,10 +174,10 @@ public class Singletons {
 
     private soot.tagkit.TagManager instance_soot_tagkit_TagManager;
     public soot.tagkit.TagManager soot_tagkit_TagManager() {
-        if( instance_soot_tagkit_TagManager == null ) {
+        if (instance_soot_tagkit_TagManager == null) {
 	       	synchronized (this) {
-		        if( instance_soot_tagkit_TagManager == null )
-	        		instance_soot_tagkit_TagManager = new soot.tagkit.TagManager( g );
+		        if (instance_soot_tagkit_TagManager == null)
+	        		instance_soot_tagkit_TagManager = new soot.tagkit.TagManager(g);
 	       	}
        	}
         return instance_soot_tagkit_TagManager;
@@ -185,10 +188,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.pointer.representations.Environment instance_soot_jimple_toolkits_pointer_representations_Environment;
     public soot.jimple.toolkits.pointer.representations.Environment soot_jimple_toolkits_pointer_representations_Environment() {
-        if( instance_soot_jimple_toolkits_pointer_representations_Environment == null ) {
+        if (instance_soot_jimple_toolkits_pointer_representations_Environment == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_pointer_representations_Environment == null )
-	        		instance_soot_jimple_toolkits_pointer_representations_Environment = new soot.jimple.toolkits.pointer.representations.Environment( g );
+		        if (instance_soot_jimple_toolkits_pointer_representations_Environment == null)
+	        		instance_soot_jimple_toolkits_pointer_representations_Environment = new soot.jimple.toolkits.pointer.representations.Environment(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_pointer_representations_Environment;
@@ -199,10 +202,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.pointer.representations.TypeConstants instance_soot_jimple_toolkits_pointer_representations_TypeConstants;
     public soot.jimple.toolkits.pointer.representations.TypeConstants soot_jimple_toolkits_pointer_representations_TypeConstants() {
-        if( instance_soot_jimple_toolkits_pointer_representations_TypeConstants == null ) {
+        if (instance_soot_jimple_toolkits_pointer_representations_TypeConstants == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_pointer_representations_TypeConstants == null )
-	        		instance_soot_jimple_toolkits_pointer_representations_TypeConstants = new soot.jimple.toolkits.pointer.representations.TypeConstants( g );
+		        if (instance_soot_jimple_toolkits_pointer_representations_TypeConstants == null)
+	        		instance_soot_jimple_toolkits_pointer_representations_TypeConstants = new soot.jimple.toolkits.pointer.representations.TypeConstants(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_pointer_representations_TypeConstants;
@@ -213,10 +216,10 @@ public class Singletons {
 
     private soot.coffi.Util instance_soot_coffi_Util;
     public soot.coffi.Util soot_coffi_Util() {
-        if( instance_soot_coffi_Util == null ) {
+        if (instance_soot_coffi_Util == null) {
 	       	synchronized (this) {
-		        if( instance_soot_coffi_Util == null )
-	        		instance_soot_coffi_Util = new soot.coffi.Util( g );
+		        if (instance_soot_coffi_Util == null)
+	        		instance_soot_coffi_Util = new soot.coffi.Util(g);
 	       	}
        	}
         return instance_soot_coffi_Util;
@@ -227,10 +230,10 @@ public class Singletons {
 
     private soot.SourceLocator instance_soot_SourceLocator;
     public soot.SourceLocator soot_SourceLocator() {
-        if( instance_soot_SourceLocator == null ) {
+        if (instance_soot_SourceLocator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_SourceLocator == null )
-	        		instance_soot_SourceLocator = new soot.SourceLocator( g );
+		        if (instance_soot_SourceLocator == null)
+	        		instance_soot_SourceLocator = new soot.SourceLocator(g);
 	       	}
        	}
         return instance_soot_SourceLocator;
@@ -241,10 +244,10 @@ public class Singletons {
 
     private soot.coffi.CONSTANT_Utf8_collector instance_soot_coffi_CONSTANT_Utf8_collector;
     public soot.coffi.CONSTANT_Utf8_collector soot_coffi_CONSTANT_Utf8_collector() {
-        if( instance_soot_coffi_CONSTANT_Utf8_collector == null ) {
+        if (instance_soot_coffi_CONSTANT_Utf8_collector == null) {
 	       	synchronized (this) {
-		        if( instance_soot_coffi_CONSTANT_Utf8_collector == null )
-	        		instance_soot_coffi_CONSTANT_Utf8_collector = new soot.coffi.CONSTANT_Utf8_collector( g );
+		        if (instance_soot_coffi_CONSTANT_Utf8_collector == null)
+	        		instance_soot_coffi_CONSTANT_Utf8_collector = new soot.coffi.CONSTANT_Utf8_collector(g);
 	       	}
        	}
         return instance_soot_coffi_CONSTANT_Utf8_collector;
@@ -255,10 +258,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.finders.AbruptEdgeFinder instance_soot_dava_toolkits_base_finders_AbruptEdgeFinder;
     public soot.dava.toolkits.base.finders.AbruptEdgeFinder soot_dava_toolkits_base_finders_AbruptEdgeFinder() {
-        if( instance_soot_dava_toolkits_base_finders_AbruptEdgeFinder == null ) {
+        if (instance_soot_dava_toolkits_base_finders_AbruptEdgeFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_finders_AbruptEdgeFinder == null )
-	        		instance_soot_dava_toolkits_base_finders_AbruptEdgeFinder = new soot.dava.toolkits.base.finders.AbruptEdgeFinder( g );
+		        if (instance_soot_dava_toolkits_base_finders_AbruptEdgeFinder == null)
+	        		instance_soot_dava_toolkits_base_finders_AbruptEdgeFinder = new soot.dava.toolkits.base.finders.AbruptEdgeFinder(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_finders_AbruptEdgeFinder;
@@ -269,10 +272,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.base.Aggregator instance_soot_jimple_toolkits_base_Aggregator;
     public soot.jimple.toolkits.base.Aggregator soot_jimple_toolkits_base_Aggregator() {
-        if( instance_soot_jimple_toolkits_base_Aggregator == null ) {
+        if (instance_soot_jimple_toolkits_base_Aggregator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_base_Aggregator == null )
-	        		instance_soot_jimple_toolkits_base_Aggregator = new soot.jimple.toolkits.base.Aggregator( g );
+		        if (instance_soot_jimple_toolkits_base_Aggregator == null)
+	        		instance_soot_jimple_toolkits_base_Aggregator = new soot.jimple.toolkits.base.Aggregator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_base_Aggregator;
@@ -283,10 +286,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.arraycheck.ArrayBoundsChecker instance_soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker;
     public soot.jimple.toolkits.annotation.arraycheck.ArrayBoundsChecker soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker() {
-        if( instance_soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker == null ) {
+        if (instance_soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker == null )
-	        		instance_soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker = new soot.jimple.toolkits.annotation.arraycheck.ArrayBoundsChecker( g );
+		        if (instance_soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker == null)
+	        		instance_soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker = new soot.jimple.toolkits.annotation.arraycheck.ArrayBoundsChecker(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_arraycheck_ArrayBoundsChecker;
@@ -297,10 +300,10 @@ public class Singletons {
 
     private soot.jimple.spark.pag.ArrayElement instance_soot_jimple_spark_pag_ArrayElement;
     public soot.jimple.spark.pag.ArrayElement soot_jimple_spark_pag_ArrayElement() {
-        if( instance_soot_jimple_spark_pag_ArrayElement == null ) {
+        if (instance_soot_jimple_spark_pag_ArrayElement == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_spark_pag_ArrayElement == null )
-	        		instance_soot_jimple_spark_pag_ArrayElement = new soot.jimple.spark.pag.ArrayElement( g );
+		        if (instance_soot_jimple_spark_pag_ArrayElement == null)
+	        		instance_soot_jimple_spark_pag_ArrayElement = new soot.jimple.spark.pag.ArrayElement(g);
 	       	}
        	}
         return instance_soot_jimple_spark_pag_ArrayElement;
@@ -311,10 +314,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator instance_soot_jimple_toolkits_annotation_tags_ArrayNullTagAggregator;
     public soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator soot_jimple_toolkits_annotation_tags_ArrayNullTagAggregator() {
-        if( instance_soot_jimple_toolkits_annotation_tags_ArrayNullTagAggregator == null ) {
+        if (instance_soot_jimple_toolkits_annotation_tags_ArrayNullTagAggregator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_tags_ArrayNullTagAggregator == null )
-	        		instance_soot_jimple_toolkits_annotation_tags_ArrayNullTagAggregator = new soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator( g );
+		        if (instance_soot_jimple_toolkits_annotation_tags_ArrayNullTagAggregator == null)
+	        		instance_soot_jimple_toolkits_annotation_tags_ArrayNullTagAggregator = new soot.jimple.toolkits.annotation.tags.ArrayNullTagAggregator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_tags_ArrayNullTagAggregator;
@@ -325,10 +328,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.AST.ASTWalker instance_soot_dava_toolkits_base_AST_ASTWalker;
     public soot.dava.toolkits.base.AST.ASTWalker soot_dava_toolkits_base_AST_ASTWalker() {
-        if( instance_soot_dava_toolkits_base_AST_ASTWalker == null ) {
+        if (instance_soot_dava_toolkits_base_AST_ASTWalker == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_AST_ASTWalker == null )
-	        		instance_soot_dava_toolkits_base_AST_ASTWalker = new soot.dava.toolkits.base.AST.ASTWalker( g );
+		        if (instance_soot_dava_toolkits_base_AST_ASTWalker == null)
+	        		instance_soot_dava_toolkits_base_AST_ASTWalker = new soot.dava.toolkits.base.AST.ASTWalker(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_AST_ASTWalker;
@@ -339,10 +342,10 @@ public class Singletons {
 
     private soot.baf.Baf instance_soot_baf_Baf;
     public soot.baf.Baf soot_baf_Baf() {
-        if( instance_soot_baf_Baf == null ) {
+        if (instance_soot_baf_Baf == null) {
 	       	synchronized (this) {
-		        if( instance_soot_baf_Baf == null )
-	        		instance_soot_baf_Baf = new soot.baf.Baf( g );
+		        if (instance_soot_baf_Baf == null)
+	        		instance_soot_baf_Baf = new soot.baf.Baf(g);
 	       	}
        	}
         return instance_soot_baf_Baf;
@@ -353,10 +356,10 @@ public class Singletons {
 
     private soot.BooleanType instance_soot_BooleanType;
     public soot.BooleanType soot_BooleanType() {
-        if( instance_soot_BooleanType == null ) {
+        if (instance_soot_BooleanType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_BooleanType == null )
-	        		instance_soot_BooleanType = new soot.BooleanType( g );
+		        if (instance_soot_BooleanType == null)
+	        		instance_soot_BooleanType = new soot.BooleanType(g);
 	       	}
        	}
         return instance_soot_BooleanType;
@@ -367,10 +370,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.pre.BusyCodeMotion instance_soot_jimple_toolkits_scalar_pre_BusyCodeMotion;
     public soot.jimple.toolkits.scalar.pre.BusyCodeMotion soot_jimple_toolkits_scalar_pre_BusyCodeMotion() {
-        if( instance_soot_jimple_toolkits_scalar_pre_BusyCodeMotion == null ) {
+        if (instance_soot_jimple_toolkits_scalar_pre_BusyCodeMotion == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_pre_BusyCodeMotion == null )
-	        		instance_soot_jimple_toolkits_scalar_pre_BusyCodeMotion = new soot.jimple.toolkits.scalar.pre.BusyCodeMotion( g );
+		        if (instance_soot_jimple_toolkits_scalar_pre_BusyCodeMotion == null)
+	        		instance_soot_jimple_toolkits_scalar_pre_BusyCodeMotion = new soot.jimple.toolkits.scalar.pre.BusyCodeMotion(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_pre_BusyCodeMotion;
@@ -381,10 +384,10 @@ public class Singletons {
 
     private soot.ByteType instance_soot_ByteType;
     public soot.ByteType soot_ByteType() {
-        if( instance_soot_ByteType == null ) {
+        if (instance_soot_ByteType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_ByteType == null )
-	        		instance_soot_ByteType = new soot.ByteType( g );
+		        if (instance_soot_ByteType == null)
+	        		instance_soot_ByteType = new soot.ByteType(g);
 	       	}
        	}
         return instance_soot_ByteType;
@@ -395,10 +398,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.pointer.CastCheckEliminatorDumper instance_soot_jimple_toolkits_pointer_CastCheckEliminatorDumper;
     public soot.jimple.toolkits.pointer.CastCheckEliminatorDumper soot_jimple_toolkits_pointer_CastCheckEliminatorDumper() {
-        if( instance_soot_jimple_toolkits_pointer_CastCheckEliminatorDumper == null ) {
+        if (instance_soot_jimple_toolkits_pointer_CastCheckEliminatorDumper == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_pointer_CastCheckEliminatorDumper == null )
-	        		instance_soot_jimple_toolkits_pointer_CastCheckEliminatorDumper = new soot.jimple.toolkits.pointer.CastCheckEliminatorDumper( g );
+		        if (instance_soot_jimple_toolkits_pointer_CastCheckEliminatorDumper == null)
+	        		instance_soot_jimple_toolkits_pointer_CastCheckEliminatorDumper = new soot.jimple.toolkits.pointer.CastCheckEliminatorDumper(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_pointer_CastCheckEliminatorDumper;
@@ -409,10 +412,10 @@ public class Singletons {
 
     private soot.CharType instance_soot_CharType;
     public soot.CharType soot_CharType() {
-        if( instance_soot_CharType == null ) {
+        if (instance_soot_CharType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_CharType == null )
-	        		instance_soot_CharType = new soot.CharType( g );
+		        if (instance_soot_CharType == null)
+	        		instance_soot_CharType = new soot.CharType(g);
 	       	}
        	}
         return instance_soot_CharType;
@@ -423,10 +426,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.arraycheck.ClassFieldAnalysis instance_soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis;
     public soot.jimple.toolkits.annotation.arraycheck.ClassFieldAnalysis soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis() {
-        if( instance_soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis == null ) {
+        if (instance_soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis == null )
-	        		instance_soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis = new soot.jimple.toolkits.annotation.arraycheck.ClassFieldAnalysis( g );
+		        if (instance_soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis == null)
+	        		instance_soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis = new soot.jimple.toolkits.annotation.arraycheck.ClassFieldAnalysis(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_arraycheck_ClassFieldAnalysis;
@@ -437,10 +440,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.CommonSubexpressionEliminator instance_soot_jimple_toolkits_scalar_CommonSubexpressionEliminator;
     public soot.jimple.toolkits.scalar.CommonSubexpressionEliminator soot_jimple_toolkits_scalar_CommonSubexpressionEliminator() {
-        if( instance_soot_jimple_toolkits_scalar_CommonSubexpressionEliminator == null ) {
+        if (instance_soot_jimple_toolkits_scalar_CommonSubexpressionEliminator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_CommonSubexpressionEliminator == null )
-	        		instance_soot_jimple_toolkits_scalar_CommonSubexpressionEliminator = new soot.jimple.toolkits.scalar.CommonSubexpressionEliminator( g );
+		        if (instance_soot_jimple_toolkits_scalar_CommonSubexpressionEliminator == null)
+	        		instance_soot_jimple_toolkits_scalar_CommonSubexpressionEliminator = new soot.jimple.toolkits.scalar.CommonSubexpressionEliminator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_CommonSubexpressionEliminator;
@@ -451,10 +454,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.ConditionalBranchFolder instance_soot_jimple_toolkits_scalar_ConditionalBranchFolder;
     public soot.jimple.toolkits.scalar.ConditionalBranchFolder soot_jimple_toolkits_scalar_ConditionalBranchFolder() {
-        if( instance_soot_jimple_toolkits_scalar_ConditionalBranchFolder == null ) {
+        if (instance_soot_jimple_toolkits_scalar_ConditionalBranchFolder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_ConditionalBranchFolder == null )
-	        		instance_soot_jimple_toolkits_scalar_ConditionalBranchFolder = new soot.jimple.toolkits.scalar.ConditionalBranchFolder( g );
+		        if (instance_soot_jimple_toolkits_scalar_ConditionalBranchFolder == null)
+	        		instance_soot_jimple_toolkits_scalar_ConditionalBranchFolder = new soot.jimple.toolkits.scalar.ConditionalBranchFolder(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_ConditionalBranchFolder;
@@ -465,10 +468,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder instance_soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder;
     public soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder() {
-        if( instance_soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder == null ) {
+        if (instance_soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder == null )
-	        		instance_soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder = new soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder( g );
+		        if (instance_soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder == null)
+	        		instance_soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder = new soot.jimple.toolkits.scalar.ConstantPropagatorAndFolder(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_ConstantPropagatorAndFolder;
@@ -479,10 +482,10 @@ public class Singletons {
 
     private soot.grimp.toolkits.base.ConstructorFolder instance_soot_grimp_toolkits_base_ConstructorFolder;
     public soot.grimp.toolkits.base.ConstructorFolder soot_grimp_toolkits_base_ConstructorFolder() {
-        if( instance_soot_grimp_toolkits_base_ConstructorFolder == null ) {
+        if (instance_soot_grimp_toolkits_base_ConstructorFolder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_grimp_toolkits_base_ConstructorFolder == null )
-	        		instance_soot_grimp_toolkits_base_ConstructorFolder = new soot.grimp.toolkits.base.ConstructorFolder( g );
+		        if (instance_soot_grimp_toolkits_base_ConstructorFolder == null)
+	        		instance_soot_grimp_toolkits_base_ConstructorFolder = new soot.grimp.toolkits.base.ConstructorFolder(g);
 	       	}
        	}
         return instance_soot_grimp_toolkits_base_ConstructorFolder;
@@ -493,10 +496,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.CopyPropagator instance_soot_jimple_toolkits_scalar_CopyPropagator;
     public soot.jimple.toolkits.scalar.CopyPropagator soot_jimple_toolkits_scalar_CopyPropagator() {
-        if( instance_soot_jimple_toolkits_scalar_CopyPropagator == null ) {
+        if (instance_soot_jimple_toolkits_scalar_CopyPropagator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_CopyPropagator == null )
-	        		instance_soot_jimple_toolkits_scalar_CopyPropagator = new soot.jimple.toolkits.scalar.CopyPropagator( g );
+		        if (instance_soot_jimple_toolkits_scalar_CopyPropagator == null)
+	        		instance_soot_jimple_toolkits_scalar_CopyPropagator = new soot.jimple.toolkits.scalar.CopyPropagator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_CopyPropagator;
@@ -507,10 +510,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.graph.CriticalEdgeRemover instance_soot_jimple_toolkits_graph_CriticalEdgeRemover;
     public soot.jimple.toolkits.graph.CriticalEdgeRemover soot_jimple_toolkits_graph_CriticalEdgeRemover() {
-        if( instance_soot_jimple_toolkits_graph_CriticalEdgeRemover == null ) {
+        if (instance_soot_jimple_toolkits_graph_CriticalEdgeRemover == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_graph_CriticalEdgeRemover == null )
-	        		instance_soot_jimple_toolkits_graph_CriticalEdgeRemover = new soot.jimple.toolkits.graph.CriticalEdgeRemover( g );
+		        if (instance_soot_jimple_toolkits_graph_CriticalEdgeRemover == null)
+	        		instance_soot_jimple_toolkits_graph_CriticalEdgeRemover = new soot.jimple.toolkits.graph.CriticalEdgeRemover(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_graph_CriticalEdgeRemover;
@@ -521,10 +524,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.finders.CycleFinder instance_soot_dava_toolkits_base_finders_CycleFinder;
     public soot.dava.toolkits.base.finders.CycleFinder soot_dava_toolkits_base_finders_CycleFinder() {
-        if( instance_soot_dava_toolkits_base_finders_CycleFinder == null ) {
+        if (instance_soot_dava_toolkits_base_finders_CycleFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_finders_CycleFinder == null )
-	        		instance_soot_dava_toolkits_base_finders_CycleFinder = new soot.dava.toolkits.base.finders.CycleFinder( g );
+		        if (instance_soot_dava_toolkits_base_finders_CycleFinder == null)
+	        		instance_soot_dava_toolkits_base_finders_CycleFinder = new soot.dava.toolkits.base.finders.CycleFinder(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_finders_CycleFinder;
@@ -535,10 +538,10 @@ public class Singletons {
 
     private soot.dava.Dava instance_soot_dava_Dava;
     public soot.dava.Dava soot_dava_Dava() {
-        if( instance_soot_dava_Dava == null ) {
+        if (instance_soot_dava_Dava == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_Dava == null )
-	        		instance_soot_dava_Dava = new soot.dava.Dava( g );
+		        if (instance_soot_dava_Dava == null)
+	        		instance_soot_dava_Dava = new soot.dava.Dava(g);
 	       	}
        	}
         return instance_soot_dava_Dava;
@@ -549,10 +552,10 @@ public class Singletons {
 
     private soot.dava.DavaPrinter instance_soot_dava_DavaPrinter;
     public soot.dava.DavaPrinter soot_dava_DavaPrinter() {
-        if( instance_soot_dava_DavaPrinter == null ) {
+        if (instance_soot_dava_DavaPrinter == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_DavaPrinter == null )
-	        		instance_soot_dava_DavaPrinter = new soot.dava.DavaPrinter( g );
+		        if (instance_soot_dava_DavaPrinter == null)
+	        		instance_soot_dava_DavaPrinter = new soot.dava.DavaPrinter(g);
 	       	}
        	}
         return instance_soot_dava_DavaPrinter;
@@ -563,10 +566,10 @@ public class Singletons {
 
     private soot.xml.XMLPrinter instance_soot_xml_XMLPrinter;
     public soot.xml.XMLPrinter soot_xml_XMLPrinter() {
-        if( instance_soot_xml_XMLPrinter == null ) {
+        if (instance_soot_xml_XMLPrinter == null) {
 	       	synchronized (this) {
-		        if( instance_soot_xml_XMLPrinter == null )
-	        		instance_soot_xml_XMLPrinter = new soot.xml.XMLPrinter( g );
+		        if (instance_soot_xml_XMLPrinter == null)
+	        		instance_soot_xml_XMLPrinter = new soot.xml.XMLPrinter(g);
 	       	}
        	}
         return instance_soot_xml_XMLPrinter;
@@ -577,10 +580,10 @@ public class Singletons {
 
     private soot.Printer instance_soot_Printer;
     public soot.Printer soot_Printer() {
-        if( instance_soot_Printer == null ) {
+        if (instance_soot_Printer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_Printer == null )
-	        		instance_soot_Printer = new soot.Printer( g );
+		        if (instance_soot_Printer == null)
+	        		instance_soot_Printer = new soot.Printer(g);
 	       	}
        	}
         return instance_soot_Printer;
@@ -591,10 +594,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.DeadAssignmentEliminator instance_soot_jimple_toolkits_scalar_DeadAssignmentEliminator;
     public soot.jimple.toolkits.scalar.DeadAssignmentEliminator soot_jimple_toolkits_scalar_DeadAssignmentEliminator() {
-        if( instance_soot_jimple_toolkits_scalar_DeadAssignmentEliminator == null ) {
+        if (instance_soot_jimple_toolkits_scalar_DeadAssignmentEliminator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_DeadAssignmentEliminator == null )
-	        		instance_soot_jimple_toolkits_scalar_DeadAssignmentEliminator = new soot.jimple.toolkits.scalar.DeadAssignmentEliminator( g );
+		        if (instance_soot_jimple_toolkits_scalar_DeadAssignmentEliminator == null)
+	        		instance_soot_jimple_toolkits_scalar_DeadAssignmentEliminator = new soot.jimple.toolkits.scalar.DeadAssignmentEliminator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_DeadAssignmentEliminator;
@@ -605,10 +608,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.pointer.DependenceTagAggregator instance_soot_jimple_toolkits_pointer_DependenceTagAggregator;
     public soot.jimple.toolkits.pointer.DependenceTagAggregator soot_jimple_toolkits_pointer_DependenceTagAggregator() {
-        if( instance_soot_jimple_toolkits_pointer_DependenceTagAggregator == null ) {
+        if (instance_soot_jimple_toolkits_pointer_DependenceTagAggregator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_pointer_DependenceTagAggregator == null )
-	        		instance_soot_jimple_toolkits_pointer_DependenceTagAggregator = new soot.jimple.toolkits.pointer.DependenceTagAggregator( g );
+		        if (instance_soot_jimple_toolkits_pointer_DependenceTagAggregator == null)
+	        		instance_soot_jimple_toolkits_pointer_DependenceTagAggregator = new soot.jimple.toolkits.pointer.DependenceTagAggregator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_pointer_DependenceTagAggregator;
@@ -619,10 +622,10 @@ public class Singletons {
 
     private soot.coffi.Double2ndHalfType instance_soot_coffi_Double2ndHalfType;
     public soot.coffi.Double2ndHalfType soot_coffi_Double2ndHalfType() {
-        if( instance_soot_coffi_Double2ndHalfType == null ) {
+        if (instance_soot_coffi_Double2ndHalfType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_coffi_Double2ndHalfType == null )
-	        		instance_soot_coffi_Double2ndHalfType = new soot.coffi.Double2ndHalfType( g );
+		        if (instance_soot_coffi_Double2ndHalfType == null)
+	        		instance_soot_coffi_Double2ndHalfType = new soot.coffi.Double2ndHalfType(g);
 	       	}
        	}
         return instance_soot_coffi_Double2ndHalfType;
@@ -633,10 +636,10 @@ public class Singletons {
 
     private soot.DoubleType instance_soot_DoubleType;
     public soot.DoubleType soot_DoubleType() {
-        if( instance_soot_DoubleType == null ) {
+        if (instance_soot_DoubleType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_DoubleType == null )
-	        		instance_soot_DoubleType = new soot.DoubleType( g );
+		        if (instance_soot_DoubleType == null)
+	        		instance_soot_DoubleType = new soot.DoubleType(g);
 	       	}
        	}
         return instance_soot_DoubleType;
@@ -647,10 +650,10 @@ public class Singletons {
 
     private soot.baf.DoubleWordType instance_soot_baf_DoubleWordType;
     public soot.baf.DoubleWordType soot_baf_DoubleWordType() {
-        if( instance_soot_baf_DoubleWordType == null ) {
+        if (instance_soot_baf_DoubleWordType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_baf_DoubleWordType == null )
-	        		instance_soot_baf_DoubleWordType = new soot.baf.DoubleWordType( g );
+		        if (instance_soot_baf_DoubleWordType == null)
+	        		instance_soot_baf_DoubleWordType = new soot.baf.DoubleWordType(g);
 	       	}
        	}
         return instance_soot_baf_DoubleWordType;
@@ -661,10 +664,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.pointer.DumbPointerAnalysis instance_soot_jimple_toolkits_pointer_DumbPointerAnalysis;
     public soot.jimple.toolkits.pointer.DumbPointerAnalysis soot_jimple_toolkits_pointer_DumbPointerAnalysis() {
-        if( instance_soot_jimple_toolkits_pointer_DumbPointerAnalysis == null ) {
+        if (instance_soot_jimple_toolkits_pointer_DumbPointerAnalysis == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_pointer_DumbPointerAnalysis == null )
-	        		instance_soot_jimple_toolkits_pointer_DumbPointerAnalysis = new soot.jimple.toolkits.pointer.DumbPointerAnalysis( g );
+		        if (instance_soot_jimple_toolkits_pointer_DumbPointerAnalysis == null)
+	        		instance_soot_jimple_toolkits_pointer_DumbPointerAnalysis = new soot.jimple.toolkits.pointer.DumbPointerAnalysis(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_pointer_DumbPointerAnalysis;
@@ -675,10 +678,10 @@ public class Singletons {
 
     private soot.jimple.spark.sets.EmptyPointsToSet instance_soot_jimple_spark_sets_EmptyPointsToSet;
     public soot.jimple.spark.sets.EmptyPointsToSet soot_jimple_spark_sets_EmptyPointsToSet() {
-        if( instance_soot_jimple_spark_sets_EmptyPointsToSet == null ) {
+        if (instance_soot_jimple_spark_sets_EmptyPointsToSet == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_spark_sets_EmptyPointsToSet == null )
-	        		instance_soot_jimple_spark_sets_EmptyPointsToSet = new soot.jimple.spark.sets.EmptyPointsToSet( g );
+		        if (instance_soot_jimple_spark_sets_EmptyPointsToSet == null)
+	        		instance_soot_jimple_spark_sets_EmptyPointsToSet = new soot.jimple.spark.sets.EmptyPointsToSet(g);
 	       	}
        	}
         return instance_soot_jimple_spark_sets_EmptyPointsToSet;
@@ -689,10 +692,10 @@ public class Singletons {
 
     private soot.ErroneousType instance_soot_ErroneousType;
     public soot.ErroneousType soot_ErroneousType() {
-        if( instance_soot_ErroneousType == null ) {
+        if (instance_soot_ErroneousType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_ErroneousType == null )
-	        		instance_soot_ErroneousType = new soot.ErroneousType( g );
+		        if (instance_soot_ErroneousType == null)
+	        		instance_soot_ErroneousType = new soot.ErroneousType(g);
 	       	}
        	}
         return instance_soot_ErroneousType;
@@ -703,10 +706,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.finders.ExceptionFinder instance_soot_dava_toolkits_base_finders_ExceptionFinder;
     public soot.dava.toolkits.base.finders.ExceptionFinder soot_dava_toolkits_base_finders_ExceptionFinder() {
-        if( instance_soot_dava_toolkits_base_finders_ExceptionFinder == null ) {
+        if (instance_soot_dava_toolkits_base_finders_ExceptionFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_finders_ExceptionFinder == null )
-	        		instance_soot_dava_toolkits_base_finders_ExceptionFinder = new soot.dava.toolkits.base.finders.ExceptionFinder( g );
+		        if (instance_soot_dava_toolkits_base_finders_ExceptionFinder == null)
+	        		instance_soot_dava_toolkits_base_finders_ExceptionFinder = new soot.dava.toolkits.base.finders.ExceptionFinder(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_finders_ExceptionFinder;
@@ -717,10 +720,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.pointer.FieldRWTagger instance_soot_jimple_toolkits_pointer_FieldRWTagger;
     public soot.jimple.toolkits.pointer.FieldRWTagger soot_jimple_toolkits_pointer_FieldRWTagger() {
-        if( instance_soot_jimple_toolkits_pointer_FieldRWTagger == null ) {
+        if (instance_soot_jimple_toolkits_pointer_FieldRWTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_pointer_FieldRWTagger == null )
-	        		instance_soot_jimple_toolkits_pointer_FieldRWTagger = new soot.jimple.toolkits.pointer.FieldRWTagger( g );
+		        if (instance_soot_jimple_toolkits_pointer_FieldRWTagger == null)
+	        		instance_soot_jimple_toolkits_pointer_FieldRWTagger = new soot.jimple.toolkits.pointer.FieldRWTagger(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_pointer_FieldRWTagger;
@@ -731,10 +734,10 @@ public class Singletons {
 
     private soot.FloatType instance_soot_FloatType;
     public soot.FloatType soot_FloatType() {
-        if( instance_soot_FloatType == null ) {
+        if (instance_soot_FloatType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_FloatType == null )
-	        		instance_soot_FloatType = new soot.FloatType( g );
+		        if (instance_soot_FloatType == null)
+	        		instance_soot_FloatType = new soot.FloatType(g);
 	       	}
        	}
         return instance_soot_FloatType;
@@ -745,10 +748,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.pointer.FullObjectSet instance_soot_jimple_toolkits_pointer_FullObjectSet;
     public soot.jimple.toolkits.pointer.FullObjectSet soot_jimple_toolkits_pointer_FullObjectSet() {
-        if( instance_soot_jimple_toolkits_pointer_FullObjectSet == null ) {
+        if (instance_soot_jimple_toolkits_pointer_FullObjectSet == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_pointer_FullObjectSet == null )
-	        		instance_soot_jimple_toolkits_pointer_FullObjectSet = new soot.jimple.toolkits.pointer.FullObjectSet( g );
+		        if (instance_soot_jimple_toolkits_pointer_FullObjectSet == null)
+	        		instance_soot_jimple_toolkits_pointer_FullObjectSet = new soot.jimple.toolkits.pointer.FullObjectSet(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_pointer_FullObjectSet;
@@ -759,10 +762,10 @@ public class Singletons {
 
     private soot.grimp.Grimp instance_soot_grimp_Grimp;
     public soot.grimp.Grimp soot_grimp_Grimp() {
-        if( instance_soot_grimp_Grimp == null ) {
+        if (instance_soot_grimp_Grimp == null) {
 	       	synchronized (this) {
-		        if( instance_soot_grimp_Grimp == null )
-	        		instance_soot_grimp_Grimp = new soot.grimp.Grimp( g );
+		        if (instance_soot_grimp_Grimp == null)
+	        		instance_soot_grimp_Grimp = new soot.grimp.Grimp(g);
 	       	}
        	}
         return instance_soot_grimp_Grimp;
@@ -773,10 +776,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.finders.IfFinder instance_soot_dava_toolkits_base_finders_IfFinder;
     public soot.dava.toolkits.base.finders.IfFinder soot_dava_toolkits_base_finders_IfFinder() {
-        if( instance_soot_dava_toolkits_base_finders_IfFinder == null ) {
+        if (instance_soot_dava_toolkits_base_finders_IfFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_finders_IfFinder == null )
-	        		instance_soot_dava_toolkits_base_finders_IfFinder = new soot.dava.toolkits.base.finders.IfFinder( g );
+		        if (instance_soot_dava_toolkits_base_finders_IfFinder == null)
+	        		instance_soot_dava_toolkits_base_finders_IfFinder = new soot.dava.toolkits.base.finders.IfFinder(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_finders_IfFinder;
@@ -787,10 +790,10 @@ public class Singletons {
 
     private soot.IntType instance_soot_IntType;
     public soot.IntType soot_IntType() {
-        if( instance_soot_IntType == null ) {
+        if (instance_soot_IntType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_IntType == null )
-	        		instance_soot_IntType = new soot.IntType( g );
+		        if (instance_soot_IntType == null)
+	        		instance_soot_IntType = new soot.IntType(g);
 	       	}
        	}
         return instance_soot_IntType;
@@ -801,10 +804,10 @@ public class Singletons {
 
     private soot.jimple.Jimple instance_soot_jimple_Jimple;
     public soot.jimple.Jimple soot_jimple_Jimple() {
-        if( instance_soot_jimple_Jimple == null ) {
+        if (instance_soot_jimple_Jimple == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_Jimple == null )
-	        		instance_soot_jimple_Jimple = new soot.jimple.Jimple( g );
+		        if (instance_soot_jimple_Jimple == null)
+	        		instance_soot_jimple_Jimple = new soot.jimple.Jimple(g);
 	       	}
        	}
         return instance_soot_jimple_Jimple;
@@ -815,10 +818,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.finders.LabeledBlockFinder instance_soot_dava_toolkits_base_finders_LabeledBlockFinder;
     public soot.dava.toolkits.base.finders.LabeledBlockFinder soot_dava_toolkits_base_finders_LabeledBlockFinder() {
-        if( instance_soot_dava_toolkits_base_finders_LabeledBlockFinder == null ) {
+        if (instance_soot_dava_toolkits_base_finders_LabeledBlockFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_finders_LabeledBlockFinder == null )
-	        		instance_soot_dava_toolkits_base_finders_LabeledBlockFinder = new soot.dava.toolkits.base.finders.LabeledBlockFinder( g );
+		        if (instance_soot_dava_toolkits_base_finders_LabeledBlockFinder == null)
+	        		instance_soot_dava_toolkits_base_finders_LabeledBlockFinder = new soot.dava.toolkits.base.finders.LabeledBlockFinder(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_finders_LabeledBlockFinder;
@@ -829,10 +832,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.pre.LazyCodeMotion instance_soot_jimple_toolkits_scalar_pre_LazyCodeMotion;
     public soot.jimple.toolkits.scalar.pre.LazyCodeMotion soot_jimple_toolkits_scalar_pre_LazyCodeMotion() {
-        if( instance_soot_jimple_toolkits_scalar_pre_LazyCodeMotion == null ) {
+        if (instance_soot_jimple_toolkits_scalar_pre_LazyCodeMotion == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_pre_LazyCodeMotion == null )
-	        		instance_soot_jimple_toolkits_scalar_pre_LazyCodeMotion = new soot.jimple.toolkits.scalar.pre.LazyCodeMotion( g );
+		        if (instance_soot_jimple_toolkits_scalar_pre_LazyCodeMotion == null)
+	        		instance_soot_jimple_toolkits_scalar_pre_LazyCodeMotion = new soot.jimple.toolkits.scalar.pre.LazyCodeMotion(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_pre_LazyCodeMotion;
@@ -843,10 +846,10 @@ public class Singletons {
 
     private soot.tagkit.LineNumberTagAggregator instance_soot_tagkit_LineNumberTagAggregator;
     public soot.tagkit.LineNumberTagAggregator soot_tagkit_LineNumberTagAggregator() {
-        if( instance_soot_tagkit_LineNumberTagAggregator == null ) {
+        if (instance_soot_tagkit_LineNumberTagAggregator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_tagkit_LineNumberTagAggregator == null )
-	        		instance_soot_tagkit_LineNumberTagAggregator = new soot.tagkit.LineNumberTagAggregator( g );
+		        if (instance_soot_tagkit_LineNumberTagAggregator == null)
+	        		instance_soot_tagkit_LineNumberTagAggregator = new soot.tagkit.LineNumberTagAggregator(g);
 	       	}
        	}
         return instance_soot_tagkit_LineNumberTagAggregator;
@@ -857,10 +860,10 @@ public class Singletons {
 
     private soot.tagkit.InnerClassTagAggregator instance_soot_tagkit_InnerClassTagAggregator;
     public soot.tagkit.InnerClassTagAggregator soot_tagkit_InnerClassTagAggregator() {
-        if( instance_soot_tagkit_InnerClassTagAggregator == null ) {
+        if (instance_soot_tagkit_InnerClassTagAggregator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_tagkit_InnerClassTagAggregator == null )
-	        		instance_soot_tagkit_InnerClassTagAggregator = new soot.tagkit.InnerClassTagAggregator( g );
+		        if (instance_soot_tagkit_InnerClassTagAggregator == null)
+	        		instance_soot_tagkit_InnerClassTagAggregator = new soot.tagkit.InnerClassTagAggregator(g);
 	       	}
        	}
         return instance_soot_tagkit_InnerClassTagAggregator;
@@ -871,10 +874,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.LineNumberAdder instance_soot_jimple_toolkits_annotation_LineNumberAdder;
     public soot.jimple.toolkits.annotation.LineNumberAdder soot_jimple_toolkits_annotation_LineNumberAdder() {
-        if( instance_soot_jimple_toolkits_annotation_LineNumberAdder == null ) {
+        if (instance_soot_jimple_toolkits_annotation_LineNumberAdder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_LineNumberAdder == null )
-	        		instance_soot_jimple_toolkits_annotation_LineNumberAdder = new soot.jimple.toolkits.annotation.LineNumberAdder( g );
+		        if (instance_soot_jimple_toolkits_annotation_LineNumberAdder == null)
+	        		instance_soot_jimple_toolkits_annotation_LineNumberAdder = new soot.jimple.toolkits.annotation.LineNumberAdder(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_LineNumberAdder;
@@ -885,10 +888,10 @@ public class Singletons {
 
     private soot.baf.toolkits.base.LoadStoreOptimizer instance_soot_baf_toolkits_base_LoadStoreOptimizer;
     public soot.baf.toolkits.base.LoadStoreOptimizer soot_baf_toolkits_base_LoadStoreOptimizer() {
-        if( instance_soot_baf_toolkits_base_LoadStoreOptimizer == null ) {
+        if (instance_soot_baf_toolkits_base_LoadStoreOptimizer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_baf_toolkits_base_LoadStoreOptimizer == null )
-	        		instance_soot_baf_toolkits_base_LoadStoreOptimizer = new soot.baf.toolkits.base.LoadStoreOptimizer( g );
+		        if (instance_soot_baf_toolkits_base_LoadStoreOptimizer == null)
+	        		instance_soot_baf_toolkits_base_LoadStoreOptimizer = new soot.baf.toolkits.base.LoadStoreOptimizer(g);
 	       	}
        	}
         return instance_soot_baf_toolkits_base_LoadStoreOptimizer;
@@ -899,10 +902,10 @@ public class Singletons {
 
     private soot.baf.toolkits.base.StoreChainOptimizer instance_soot_baf_toolkits_base_StoreChainOptimizer;
     public soot.baf.toolkits.base.StoreChainOptimizer soot_baf_toolkits_base_StoreChainOptimizer() {
-        if( instance_soot_baf_toolkits_base_StoreChainOptimizer == null ) {
+        if (instance_soot_baf_toolkits_base_StoreChainOptimizer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_baf_toolkits_base_StoreChainOptimizer == null )
-	        		instance_soot_baf_toolkits_base_StoreChainOptimizer = new soot.baf.toolkits.base.StoreChainOptimizer( g );
+		        if (instance_soot_baf_toolkits_base_StoreChainOptimizer == null)
+	        		instance_soot_baf_toolkits_base_StoreChainOptimizer = new soot.baf.toolkits.base.StoreChainOptimizer(g);
 	       	}
        	}
         return instance_soot_baf_toolkits_base_StoreChainOptimizer;
@@ -913,10 +916,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.LocalNameStandardizer instance_soot_jimple_toolkits_scalar_LocalNameStandardizer;
     public soot.jimple.toolkits.scalar.LocalNameStandardizer soot_jimple_toolkits_scalar_LocalNameStandardizer() {
-        if( instance_soot_jimple_toolkits_scalar_LocalNameStandardizer == null ) {
+        if (instance_soot_jimple_toolkits_scalar_LocalNameStandardizer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_LocalNameStandardizer == null )
-	        		instance_soot_jimple_toolkits_scalar_LocalNameStandardizer = new soot.jimple.toolkits.scalar.LocalNameStandardizer( g );
+		        if (instance_soot_jimple_toolkits_scalar_LocalNameStandardizer == null)
+	        		instance_soot_jimple_toolkits_scalar_LocalNameStandardizer = new soot.jimple.toolkits.scalar.LocalNameStandardizer(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_LocalNameStandardizer;
@@ -927,10 +930,10 @@ public class Singletons {
 
     private soot.toolkits.scalar.LocalPacker instance_soot_toolkits_scalar_LocalPacker;
     public soot.toolkits.scalar.LocalPacker soot_toolkits_scalar_LocalPacker() {
-        if( instance_soot_toolkits_scalar_LocalPacker == null ) {
+        if (instance_soot_toolkits_scalar_LocalPacker == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toolkits_scalar_LocalPacker == null )
-	        		instance_soot_toolkits_scalar_LocalPacker = new soot.toolkits.scalar.LocalPacker( g );
+		        if (instance_soot_toolkits_scalar_LocalPacker == null)
+	        		instance_soot_toolkits_scalar_LocalPacker = new soot.toolkits.scalar.LocalPacker(g);
 	       	}
        	}
         return instance_soot_toolkits_scalar_LocalPacker;
@@ -941,10 +944,10 @@ public class Singletons {
 
     private soot.toolkits.scalar.LocalSplitter instance_soot_toolkits_scalar_LocalSplitter;
     public soot.toolkits.scalar.LocalSplitter soot_toolkits_scalar_LocalSplitter() {
-        if( instance_soot_toolkits_scalar_LocalSplitter == null ) {
+        if (instance_soot_toolkits_scalar_LocalSplitter == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toolkits_scalar_LocalSplitter == null )
-	        		instance_soot_toolkits_scalar_LocalSplitter = new soot.toolkits.scalar.LocalSplitter( g );
+		        if (instance_soot_toolkits_scalar_LocalSplitter == null)
+	        		instance_soot_toolkits_scalar_LocalSplitter = new soot.toolkits.scalar.LocalSplitter(g);
 	       	}
        	}
         return instance_soot_toolkits_scalar_LocalSplitter;
@@ -955,10 +958,10 @@ public class Singletons {
 
     private soot.coffi.Long2ndHalfType instance_soot_coffi_Long2ndHalfType;
     public soot.coffi.Long2ndHalfType soot_coffi_Long2ndHalfType() {
-        if( instance_soot_coffi_Long2ndHalfType == null ) {
+        if (instance_soot_coffi_Long2ndHalfType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_coffi_Long2ndHalfType == null )
-	        		instance_soot_coffi_Long2ndHalfType = new soot.coffi.Long2ndHalfType( g );
+		        if (instance_soot_coffi_Long2ndHalfType == null)
+	        		instance_soot_coffi_Long2ndHalfType = new soot.coffi.Long2ndHalfType(g);
 	       	}
        	}
         return instance_soot_coffi_Long2ndHalfType;
@@ -969,10 +972,10 @@ public class Singletons {
 
     private soot.LongType instance_soot_LongType;
     public soot.LongType soot_LongType() {
-        if( instance_soot_LongType == null ) {
+        if (instance_soot_LongType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_LongType == null )
-	        		instance_soot_LongType = new soot.LongType( g );
+		        if (instance_soot_LongType == null)
+	        		instance_soot_LongType = new soot.LongType(g);
 	       	}
        	}
         return instance_soot_LongType;
@@ -983,10 +986,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.misc.MonitorConverter instance_soot_dava_toolkits_base_misc_MonitorConverter;
     public soot.dava.toolkits.base.misc.MonitorConverter soot_dava_toolkits_base_misc_MonitorConverter() {
-        if( instance_soot_dava_toolkits_base_misc_MonitorConverter == null ) {
+        if (instance_soot_dava_toolkits_base_misc_MonitorConverter == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_misc_MonitorConverter == null )
-	        		instance_soot_dava_toolkits_base_misc_MonitorConverter = new soot.dava.toolkits.base.misc.MonitorConverter( g );
+		        if (instance_soot_dava_toolkits_base_misc_MonitorConverter == null)
+	        		instance_soot_dava_toolkits_base_misc_MonitorConverter = new soot.dava.toolkits.base.misc.MonitorConverter(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_misc_MonitorConverter;
@@ -997,10 +1000,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.NopEliminator instance_soot_jimple_toolkits_scalar_NopEliminator;
     public soot.jimple.toolkits.scalar.NopEliminator soot_jimple_toolkits_scalar_NopEliminator() {
-        if( instance_soot_jimple_toolkits_scalar_NopEliminator == null ) {
+        if (instance_soot_jimple_toolkits_scalar_NopEliminator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_NopEliminator == null )
-	        		instance_soot_jimple_toolkits_scalar_NopEliminator = new soot.jimple.toolkits.scalar.NopEliminator( g );
+		        if (instance_soot_jimple_toolkits_scalar_NopEliminator == null)
+	        		instance_soot_jimple_toolkits_scalar_NopEliminator = new soot.jimple.toolkits.scalar.NopEliminator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_NopEliminator;
@@ -1011,10 +1014,10 @@ public class Singletons {
 
     private soot.jimple.NullConstant instance_soot_jimple_NullConstant;
     public soot.jimple.NullConstant soot_jimple_NullConstant() {
-        if( instance_soot_jimple_NullConstant == null ) {
+        if (instance_soot_jimple_NullConstant == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_NullConstant == null )
-	        		instance_soot_jimple_NullConstant = new soot.jimple.NullConstant( g );
+		        if (instance_soot_jimple_NullConstant == null)
+	        		instance_soot_jimple_NullConstant = new soot.jimple.NullConstant(g);
 	       	}
        	}
         return instance_soot_jimple_NullConstant;
@@ -1025,10 +1028,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.nullcheck.NullPointerChecker instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker;
     public soot.jimple.toolkits.annotation.nullcheck.NullPointerChecker soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker() {
-        if( instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker == null ) {
+        if (instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker == null )
-	        		instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker = new soot.jimple.toolkits.annotation.nullcheck.NullPointerChecker( g );
+		        if (instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker == null)
+	        		instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker = new soot.jimple.toolkits.annotation.nullcheck.NullPointerChecker(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerChecker;
@@ -1039,10 +1042,10 @@ public class Singletons {
 
     private soot.NullType instance_soot_NullType;
     public soot.NullType soot_NullType() {
-        if( instance_soot_NullType == null ) {
+        if (instance_soot_NullType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_NullType == null )
-	        		instance_soot_NullType = new soot.NullType( g );
+		        if (instance_soot_NullType == null)
+	        		instance_soot_NullType = new soot.NullType(g);
 	       	}
        	}
         return instance_soot_NullType;
@@ -1053,10 +1056,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.misc.PackageNamer instance_soot_dava_toolkits_base_misc_PackageNamer;
     public soot.dava.toolkits.base.misc.PackageNamer soot_dava_toolkits_base_misc_PackageNamer() {
-        if( instance_soot_dava_toolkits_base_misc_PackageNamer == null ) {
+        if (instance_soot_dava_toolkits_base_misc_PackageNamer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_misc_PackageNamer == null )
-	        		instance_soot_dava_toolkits_base_misc_PackageNamer = new soot.dava.toolkits.base.misc.PackageNamer( g );
+		        if (instance_soot_dava_toolkits_base_misc_PackageNamer == null)
+	        		instance_soot_dava_toolkits_base_misc_PackageNamer = new soot.dava.toolkits.base.misc.PackageNamer(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_misc_PackageNamer;
@@ -1067,10 +1070,10 @@ public class Singletons {
 
     private soot.PackManager instance_soot_PackManager;
     public soot.PackManager soot_PackManager() {
-        if( instance_soot_PackManager == null ) {
+        if (instance_soot_PackManager == null) {
 	       	synchronized (this) {
-		        if( instance_soot_PackManager == null )
-	        		instance_soot_PackManager = new soot.PackManager( g );
+		        if (instance_soot_PackManager == null)
+	        		instance_soot_PackManager = new soot.PackManager(g);
 	       	}
        	}
         return instance_soot_PackManager;
@@ -1081,10 +1084,10 @@ public class Singletons {
 
     private soot.baf.toolkits.base.PeepholeOptimizer instance_soot_baf_toolkits_base_PeepholeOptimizer;
     public soot.baf.toolkits.base.PeepholeOptimizer soot_baf_toolkits_base_PeepholeOptimizer() {
-        if( instance_soot_baf_toolkits_base_PeepholeOptimizer == null ) {
+        if (instance_soot_baf_toolkits_base_PeepholeOptimizer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_baf_toolkits_base_PeepholeOptimizer == null )
-	        		instance_soot_baf_toolkits_base_PeepholeOptimizer = new soot.baf.toolkits.base.PeepholeOptimizer( g );
+		        if (instance_soot_baf_toolkits_base_PeepholeOptimizer == null)
+	        		instance_soot_baf_toolkits_base_PeepholeOptimizer = new soot.baf.toolkits.base.PeepholeOptimizer(g);
 	       	}
        	}
         return instance_soot_baf_toolkits_base_PeepholeOptimizer;
@@ -1095,10 +1098,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.profiling.ProfilingGenerator instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator;
     public soot.jimple.toolkits.annotation.profiling.ProfilingGenerator soot_jimple_toolkits_annotation_profiling_ProfilingGenerator() {
-        if( instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator == null ) {
+        if (instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator == null )
-	        		instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator = new soot.jimple.toolkits.annotation.profiling.ProfilingGenerator( g );
+		        if (instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator == null)
+	        		instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator = new soot.jimple.toolkits.annotation.profiling.ProfilingGenerator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_profiling_ProfilingGenerator;
@@ -1109,10 +1112,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder instance_soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder;
     public soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder() {
-        if( instance_soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder == null ) {
+        if (instance_soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder == null )
-	        		instance_soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder = new soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder( g );
+		        if (instance_soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder == null)
+	        		instance_soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder = new soot.jimple.toolkits.annotation.arraycheck.RectangularArrayFinder(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_arraycheck_RectangularArrayFinder;
@@ -1123,10 +1126,10 @@ public class Singletons {
 
     private soot.RefType instance_soot_RefType;
     public soot.RefType soot_RefType() {
-        if( instance_soot_RefType == null ) {
+        if (instance_soot_RefType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_RefType == null )
-	        		instance_soot_RefType = new soot.RefType( g );
+		        if (instance_soot_RefType == null)
+	        		instance_soot_RefType = new soot.RefType(g);
 	       	}
        	}
         return instance_soot_RefType;
@@ -1137,10 +1140,10 @@ public class Singletons {
 
     private soot.Scene instance_soot_Scene;
     public soot.Scene soot_Scene() {
-        if( instance_soot_Scene == null ) {
+        if (instance_soot_Scene == null) {
 	       	synchronized (this) {
-		        if( instance_soot_Scene == null )
-	        		instance_soot_Scene = new soot.Scene( g );
+		        if (instance_soot_Scene == null)
+	        		instance_soot_Scene = new soot.Scene(g);
 	       	}
        	}
         return instance_soot_Scene;
@@ -1151,10 +1154,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.finders.SequenceFinder instance_soot_dava_toolkits_base_finders_SequenceFinder;
     public soot.dava.toolkits.base.finders.SequenceFinder soot_dava_toolkits_base_finders_SequenceFinder() {
-        if( instance_soot_dava_toolkits_base_finders_SequenceFinder == null ) {
+        if (instance_soot_dava_toolkits_base_finders_SequenceFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_finders_SequenceFinder == null )
-	        		instance_soot_dava_toolkits_base_finders_SequenceFinder = new soot.dava.toolkits.base.finders.SequenceFinder( g );
+		        if (instance_soot_dava_toolkits_base_finders_SequenceFinder == null)
+	        		instance_soot_dava_toolkits_base_finders_SequenceFinder = new soot.dava.toolkits.base.finders.SequenceFinder(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_finders_SequenceFinder;
@@ -1165,10 +1168,10 @@ public class Singletons {
 
     private soot.shimple.Shimple instance_soot_shimple_Shimple;
     public soot.shimple.Shimple soot_shimple_Shimple() {
-        if( instance_soot_shimple_Shimple == null ) {
+        if (instance_soot_shimple_Shimple == null) {
 	       	synchronized (this) {
-		        if( instance_soot_shimple_Shimple == null )
-	        		instance_soot_shimple_Shimple = new soot.shimple.Shimple( g );
+		        if (instance_soot_shimple_Shimple == null)
+	        		instance_soot_shimple_Shimple = new soot.shimple.Shimple(g);
 	       	}
        	}
         return instance_soot_shimple_Shimple;
@@ -1179,10 +1182,10 @@ public class Singletons {
 
     private soot.shimple.ShimpleTransformer instance_soot_shimple_ShimpleTransformer;
     public soot.shimple.ShimpleTransformer soot_shimple_ShimpleTransformer() {
-        if( instance_soot_shimple_ShimpleTransformer == null ) {
+        if (instance_soot_shimple_ShimpleTransformer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_shimple_ShimpleTransformer == null )
-	        		instance_soot_shimple_ShimpleTransformer = new soot.shimple.ShimpleTransformer( g );
+		        if (instance_soot_shimple_ShimpleTransformer == null)
+	        		instance_soot_shimple_ShimpleTransformer = new soot.shimple.ShimpleTransformer(g);
 	       	}
        	}
         return instance_soot_shimple_ShimpleTransformer;
@@ -1193,10 +1196,10 @@ public class Singletons {
 
     private soot.shimple.toolkits.scalar.SConstantPropagatorAndFolder instance_soot_shimple_toolkits_scalar_SConstantPropagatorAndFolder;
     public soot.shimple.toolkits.scalar.SConstantPropagatorAndFolder soot_shimple_toolkits_scalar_SConstantPropagatorAndFolder() {
-        if( instance_soot_shimple_toolkits_scalar_SConstantPropagatorAndFolder == null ) {
+        if (instance_soot_shimple_toolkits_scalar_SConstantPropagatorAndFolder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_shimple_toolkits_scalar_SConstantPropagatorAndFolder == null )
-	        		instance_soot_shimple_toolkits_scalar_SConstantPropagatorAndFolder = new soot.shimple.toolkits.scalar.SConstantPropagatorAndFolder( g );
+		        if (instance_soot_shimple_toolkits_scalar_SConstantPropagatorAndFolder == null)
+	        		instance_soot_shimple_toolkits_scalar_SConstantPropagatorAndFolder = new soot.shimple.toolkits.scalar.SConstantPropagatorAndFolder(g);
 	       	}
        	}
         return instance_soot_shimple_toolkits_scalar_SConstantPropagatorAndFolder;
@@ -1207,10 +1210,10 @@ public class Singletons {
 
     private soot.ShortType instance_soot_ShortType;
     public soot.ShortType soot_ShortType() {
-        if( instance_soot_ShortType == null ) {
+        if (instance_soot_ShortType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_ShortType == null )
-	        		instance_soot_ShortType = new soot.ShortType( g );
+		        if (instance_soot_ShortType == null)
+	        		instance_soot_ShortType = new soot.ShortType(g);
 	       	}
        	}
         return instance_soot_ShortType;
@@ -1221,10 +1224,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.pointer.SideEffectTagger instance_soot_jimple_toolkits_pointer_SideEffectTagger;
     public soot.jimple.toolkits.pointer.SideEffectTagger soot_jimple_toolkits_pointer_SideEffectTagger() {
-        if( instance_soot_jimple_toolkits_pointer_SideEffectTagger == null ) {
+        if (instance_soot_jimple_toolkits_pointer_SideEffectTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_pointer_SideEffectTagger == null )
-	        		instance_soot_jimple_toolkits_pointer_SideEffectTagger = new soot.jimple.toolkits.pointer.SideEffectTagger( g );
+		        if (instance_soot_jimple_toolkits_pointer_SideEffectTagger == null)
+	        		instance_soot_jimple_toolkits_pointer_SideEffectTagger = new soot.jimple.toolkits.pointer.SideEffectTagger(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_pointer_SideEffectTagger;
@@ -1235,10 +1238,10 @@ public class Singletons {
 
     private soot.jimple.spark.SparkTransformer instance_soot_jimple_spark_SparkTransformer;
     public soot.jimple.spark.SparkTransformer soot_jimple_spark_SparkTransformer() {
-        if( instance_soot_jimple_spark_SparkTransformer == null ) {
+        if (instance_soot_jimple_spark_SparkTransformer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_spark_SparkTransformer == null )
-	        		instance_soot_jimple_spark_SparkTransformer = new soot.jimple.spark.SparkTransformer( g );
+		        if (instance_soot_jimple_spark_SparkTransformer == null)
+	        		instance_soot_jimple_spark_SparkTransformer = new soot.jimple.spark.SparkTransformer(g);
 	       	}
        	}
         return instance_soot_jimple_spark_SparkTransformer;
@@ -1249,10 +1252,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.invoke.StaticInliner instance_soot_jimple_toolkits_invoke_StaticInliner;
     public soot.jimple.toolkits.invoke.StaticInliner soot_jimple_toolkits_invoke_StaticInliner() {
-        if( instance_soot_jimple_toolkits_invoke_StaticInliner == null ) {
+        if (instance_soot_jimple_toolkits_invoke_StaticInliner == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_invoke_StaticInliner == null )
-	        		instance_soot_jimple_toolkits_invoke_StaticInliner = new soot.jimple.toolkits.invoke.StaticInliner( g );
+		        if (instance_soot_jimple_toolkits_invoke_StaticInliner == null)
+	        		instance_soot_jimple_toolkits_invoke_StaticInliner = new soot.jimple.toolkits.invoke.StaticInliner(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_invoke_StaticInliner;
@@ -1263,10 +1266,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.invoke.StaticMethodBinder instance_soot_jimple_toolkits_invoke_StaticMethodBinder;
     public soot.jimple.toolkits.invoke.StaticMethodBinder soot_jimple_toolkits_invoke_StaticMethodBinder() {
-        if( instance_soot_jimple_toolkits_invoke_StaticMethodBinder == null ) {
+        if (instance_soot_jimple_toolkits_invoke_StaticMethodBinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_invoke_StaticMethodBinder == null )
-	        		instance_soot_jimple_toolkits_invoke_StaticMethodBinder = new soot.jimple.toolkits.invoke.StaticMethodBinder( g );
+		        if (instance_soot_jimple_toolkits_invoke_StaticMethodBinder == null)
+	        		instance_soot_jimple_toolkits_invoke_StaticMethodBinder = new soot.jimple.toolkits.invoke.StaticMethodBinder(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_invoke_StaticMethodBinder;
@@ -1277,10 +1280,10 @@ public class Singletons {
 
     private soot.StmtAddressType instance_soot_StmtAddressType;
     public soot.StmtAddressType soot_StmtAddressType() {
-        if( instance_soot_StmtAddressType == null ) {
+        if (instance_soot_StmtAddressType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_StmtAddressType == null )
-	        		instance_soot_StmtAddressType = new soot.StmtAddressType( g );
+		        if (instance_soot_StmtAddressType == null)
+	        		instance_soot_StmtAddressType = new soot.StmtAddressType(g);
 	       	}
        	}
         return instance_soot_StmtAddressType;
@@ -1291,10 +1294,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.finders.SwitchFinder instance_soot_dava_toolkits_base_finders_SwitchFinder;
     public soot.dava.toolkits.base.finders.SwitchFinder soot_dava_toolkits_base_finders_SwitchFinder() {
-        if( instance_soot_dava_toolkits_base_finders_SwitchFinder == null ) {
+        if (instance_soot_dava_toolkits_base_finders_SwitchFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_finders_SwitchFinder == null )
-	        		instance_soot_dava_toolkits_base_finders_SwitchFinder = new soot.dava.toolkits.base.finders.SwitchFinder( g );
+		        if (instance_soot_dava_toolkits_base_finders_SwitchFinder == null)
+	        		instance_soot_dava_toolkits_base_finders_SwitchFinder = new soot.dava.toolkits.base.finders.SwitchFinder(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_finders_SwitchFinder;
@@ -1305,10 +1308,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.finders.SynchronizedBlockFinder instance_soot_dava_toolkits_base_finders_SynchronizedBlockFinder;
     public soot.dava.toolkits.base.finders.SynchronizedBlockFinder soot_dava_toolkits_base_finders_SynchronizedBlockFinder() {
-        if( instance_soot_dava_toolkits_base_finders_SynchronizedBlockFinder == null ) {
+        if (instance_soot_dava_toolkits_base_finders_SynchronizedBlockFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_finders_SynchronizedBlockFinder == null )
-	        		instance_soot_dava_toolkits_base_finders_SynchronizedBlockFinder = new soot.dava.toolkits.base.finders.SynchronizedBlockFinder( g );
+		        if (instance_soot_dava_toolkits_base_finders_SynchronizedBlockFinder == null)
+	        		instance_soot_dava_toolkits_base_finders_SynchronizedBlockFinder = new soot.dava.toolkits.base.finders.SynchronizedBlockFinder(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_finders_SynchronizedBlockFinder;
@@ -1319,10 +1322,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.misc.ThrowFinder instance_soot_dava_toolkits_base_misc_ThrowFinder;
     public soot.dava.toolkits.base.misc.ThrowFinder soot_dava_toolkits_base_misc_ThrowFinder() {
-        if( instance_soot_dava_toolkits_base_misc_ThrowFinder == null ) {
+        if (instance_soot_dava_toolkits_base_misc_ThrowFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_misc_ThrowFinder == null )
-	        		instance_soot_dava_toolkits_base_misc_ThrowFinder = new soot.dava.toolkits.base.misc.ThrowFinder( g );
+		        if (instance_soot_dava_toolkits_base_misc_ThrowFinder == null)
+	        		instance_soot_dava_toolkits_base_misc_ThrowFinder = new soot.dava.toolkits.base.misc.ThrowFinder(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_misc_ThrowFinder;
@@ -1333,10 +1336,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.misc.ThrowNullConverter instance_soot_dava_toolkits_base_misc_ThrowNullConverter;
     public soot.dava.toolkits.base.misc.ThrowNullConverter soot_dava_toolkits_base_misc_ThrowNullConverter() {
-        if( instance_soot_dava_toolkits_base_misc_ThrowNullConverter == null ) {
+        if (instance_soot_dava_toolkits_base_misc_ThrowNullConverter == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_misc_ThrowNullConverter == null )
-	        		instance_soot_dava_toolkits_base_misc_ThrowNullConverter = new soot.dava.toolkits.base.misc.ThrowNullConverter( g );
+		        if (instance_soot_dava_toolkits_base_misc_ThrowNullConverter == null)
+	        		instance_soot_dava_toolkits_base_misc_ThrowNullConverter = new soot.dava.toolkits.base.misc.ThrowNullConverter(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_misc_ThrowNullConverter;
@@ -1347,10 +1350,10 @@ public class Singletons {
 
     private soot.Timers instance_soot_Timers;
     public soot.Timers soot_Timers() {
-        if( instance_soot_Timers == null ) {
+        if (instance_soot_Timers == null) {
 	       	synchronized (this) {
-		        if( instance_soot_Timers == null )
-	        		instance_soot_Timers = new soot.Timers( g );
+		        if (instance_soot_Timers == null)
+	        		instance_soot_Timers = new soot.Timers(g);
 	       	}
        	}
         return instance_soot_Timers;
@@ -1361,10 +1364,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.AST.TryContentsFinder instance_soot_dava_toolkits_base_AST_TryContentsFinder;
     public soot.dava.toolkits.base.AST.TryContentsFinder soot_dava_toolkits_base_AST_TryContentsFinder() {
-        if( instance_soot_dava_toolkits_base_AST_TryContentsFinder == null ) {
+        if (instance_soot_dava_toolkits_base_AST_TryContentsFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_AST_TryContentsFinder == null )
-	        		instance_soot_dava_toolkits_base_AST_TryContentsFinder = new soot.dava.toolkits.base.AST.TryContentsFinder( g );
+		        if (instance_soot_dava_toolkits_base_AST_TryContentsFinder == null)
+	        		instance_soot_dava_toolkits_base_AST_TryContentsFinder = new soot.dava.toolkits.base.AST.TryContentsFinder(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_AST_TryContentsFinder;
@@ -1375,10 +1378,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.typing.TypeAssigner instance_soot_jimple_toolkits_typing_TypeAssigner;
     public soot.jimple.toolkits.typing.TypeAssigner soot_jimple_toolkits_typing_TypeAssigner() {
-        if( instance_soot_jimple_toolkits_typing_TypeAssigner == null ) {
+        if (instance_soot_jimple_toolkits_typing_TypeAssigner == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_typing_TypeAssigner == null )
-	        		instance_soot_jimple_toolkits_typing_TypeAssigner = new soot.jimple.toolkits.typing.TypeAssigner( g );
+		        if (instance_soot_jimple_toolkits_typing_TypeAssigner == null)
+	        		instance_soot_jimple_toolkits_typing_TypeAssigner = new soot.jimple.toolkits.typing.TypeAssigner(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_typing_TypeAssigner;
@@ -1389,10 +1392,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.UnconditionalBranchFolder instance_soot_jimple_toolkits_scalar_UnconditionalBranchFolder;
     public soot.jimple.toolkits.scalar.UnconditionalBranchFolder soot_jimple_toolkits_scalar_UnconditionalBranchFolder() {
-        if( instance_soot_jimple_toolkits_scalar_UnconditionalBranchFolder == null ) {
+        if (instance_soot_jimple_toolkits_scalar_UnconditionalBranchFolder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_UnconditionalBranchFolder == null )
-	        		instance_soot_jimple_toolkits_scalar_UnconditionalBranchFolder = new soot.jimple.toolkits.scalar.UnconditionalBranchFolder( g );
+		        if (instance_soot_jimple_toolkits_scalar_UnconditionalBranchFolder == null)
+	        		instance_soot_jimple_toolkits_scalar_UnconditionalBranchFolder = new soot.jimple.toolkits.scalar.UnconditionalBranchFolder(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_UnconditionalBranchFolder;
@@ -1403,10 +1406,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.ConstantCastEliminator instance_soot_jimple_toolkits_scalar_ConstantCastEliminator;
     public soot.jimple.toolkits.scalar.ConstantCastEliminator soot_jimple_toolkits_scalar_ConstantCastEliminator() {
-        if( instance_soot_jimple_toolkits_scalar_ConstantCastEliminator == null ) {
+        if (instance_soot_jimple_toolkits_scalar_ConstantCastEliminator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_ConstantCastEliminator == null )
-	        		instance_soot_jimple_toolkits_scalar_ConstantCastEliminator = new soot.jimple.toolkits.scalar.ConstantCastEliminator( g );
+		        if (instance_soot_jimple_toolkits_scalar_ConstantCastEliminator == null)
+	        		instance_soot_jimple_toolkits_scalar_ConstantCastEliminator = new soot.jimple.toolkits.scalar.ConstantCastEliminator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_ConstantCastEliminator;
@@ -1417,10 +1420,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.IdentityCastEliminator instance_soot_jimple_toolkits_scalar_IdentityCastEliminator;
     public soot.jimple.toolkits.scalar.IdentityCastEliminator soot_jimple_toolkits_scalar_IdentityCastEliminator() {
-        if( instance_soot_jimple_toolkits_scalar_IdentityCastEliminator == null ) {
+        if (instance_soot_jimple_toolkits_scalar_IdentityCastEliminator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_IdentityCastEliminator == null )
-	        		instance_soot_jimple_toolkits_scalar_IdentityCastEliminator = new soot.jimple.toolkits.scalar.IdentityCastEliminator( g );
+		        if (instance_soot_jimple_toolkits_scalar_IdentityCastEliminator == null)
+	        		instance_soot_jimple_toolkits_scalar_IdentityCastEliminator = new soot.jimple.toolkits.scalar.IdentityCastEliminator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_IdentityCastEliminator;
@@ -1431,10 +1434,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.FieldStaticnessCorrector instance_soot_jimple_toolkits_scalar_FieldStaticnessCorrector;
     public soot.jimple.toolkits.scalar.FieldStaticnessCorrector soot_jimple_toolkits_scalar_FieldStaticnessCorrector() {
-        if( instance_soot_jimple_toolkits_scalar_FieldStaticnessCorrector == null ) {
+        if (instance_soot_jimple_toolkits_scalar_FieldStaticnessCorrector == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_FieldStaticnessCorrector == null )
-	        		instance_soot_jimple_toolkits_scalar_FieldStaticnessCorrector = new soot.jimple.toolkits.scalar.FieldStaticnessCorrector( g );
+		        if (instance_soot_jimple_toolkits_scalar_FieldStaticnessCorrector == null)
+	        		instance_soot_jimple_toolkits_scalar_FieldStaticnessCorrector = new soot.jimple.toolkits.scalar.FieldStaticnessCorrector(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_FieldStaticnessCorrector;
@@ -1445,10 +1448,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.MethodStaticnessCorrector instance_soot_jimple_toolkits_scalar_MethodStaticnessCorrector;
     public soot.jimple.toolkits.scalar.MethodStaticnessCorrector soot_jimple_toolkits_scalar_MethodStaticnessCorrector() {
-        if( instance_soot_jimple_toolkits_scalar_MethodStaticnessCorrector == null ) {
+        if (instance_soot_jimple_toolkits_scalar_MethodStaticnessCorrector == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_MethodStaticnessCorrector == null )
-	        		instance_soot_jimple_toolkits_scalar_MethodStaticnessCorrector = new soot.jimple.toolkits.scalar.MethodStaticnessCorrector( g );
+		        if (instance_soot_jimple_toolkits_scalar_MethodStaticnessCorrector == null)
+	        		instance_soot_jimple_toolkits_scalar_MethodStaticnessCorrector = new soot.jimple.toolkits.scalar.MethodStaticnessCorrector(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_MethodStaticnessCorrector;
@@ -1459,10 +1462,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.IdentityOperationEliminator instance_soot_jimple_toolkits_scalar_IdentityOperationEliminator;
     public soot.jimple.toolkits.scalar.IdentityOperationEliminator soot_jimple_toolkits_scalar_IdentityOperationEliminator() {
-        if( instance_soot_jimple_toolkits_scalar_IdentityOperationEliminator == null ) {
+        if (instance_soot_jimple_toolkits_scalar_IdentityOperationEliminator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_IdentityOperationEliminator == null )
-	        		instance_soot_jimple_toolkits_scalar_IdentityOperationEliminator = new soot.jimple.toolkits.scalar.IdentityOperationEliminator( g );
+		        if (instance_soot_jimple_toolkits_scalar_IdentityOperationEliminator == null)
+	        		instance_soot_jimple_toolkits_scalar_IdentityOperationEliminator = new soot.jimple.toolkits.scalar.IdentityOperationEliminator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_IdentityOperationEliminator;
@@ -1473,10 +1476,10 @@ public class Singletons {
 
     private soot.UnknownType instance_soot_UnknownType;
     public soot.UnknownType soot_UnknownType() {
-        if( instance_soot_UnknownType == null ) {
+        if (instance_soot_UnknownType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_UnknownType == null )
-	        		instance_soot_UnknownType = new soot.UnknownType( g );
+		        if (instance_soot_UnknownType == null)
+	        		instance_soot_UnknownType = new soot.UnknownType(g);
 	       	}
        	}
         return instance_soot_UnknownType;
@@ -1487,10 +1490,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.UnreachableCodeEliminator instance_soot_jimple_toolkits_scalar_UnreachableCodeEliminator;
     public soot.jimple.toolkits.scalar.UnreachableCodeEliminator soot_jimple_toolkits_scalar_UnreachableCodeEliminator() {
-        if( instance_soot_jimple_toolkits_scalar_UnreachableCodeEliminator == null ) {
+        if (instance_soot_jimple_toolkits_scalar_UnreachableCodeEliminator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_UnreachableCodeEliminator == null )
-	        		instance_soot_jimple_toolkits_scalar_UnreachableCodeEliminator = new soot.jimple.toolkits.scalar.UnreachableCodeEliminator( g );
+		        if (instance_soot_jimple_toolkits_scalar_UnreachableCodeEliminator == null)
+	        		instance_soot_jimple_toolkits_scalar_UnreachableCodeEliminator = new soot.jimple.toolkits.scalar.UnreachableCodeEliminator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_UnreachableCodeEliminator;
@@ -1501,10 +1504,10 @@ public class Singletons {
 
     private soot.toolkits.scalar.UnusedLocalEliminator instance_soot_toolkits_scalar_UnusedLocalEliminator;
     public soot.toolkits.scalar.UnusedLocalEliminator soot_toolkits_scalar_UnusedLocalEliminator() {
-        if( instance_soot_toolkits_scalar_UnusedLocalEliminator == null ) {
+        if (instance_soot_toolkits_scalar_UnusedLocalEliminator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toolkits_scalar_UnusedLocalEliminator == null )
-	        		instance_soot_toolkits_scalar_UnusedLocalEliminator = new soot.toolkits.scalar.UnusedLocalEliminator( g );
+		        if (instance_soot_toolkits_scalar_UnusedLocalEliminator == null)
+	        		instance_soot_toolkits_scalar_UnusedLocalEliminator = new soot.toolkits.scalar.UnusedLocalEliminator(g);
 	       	}
        	}
         return instance_soot_toolkits_scalar_UnusedLocalEliminator;
@@ -1515,10 +1518,10 @@ public class Singletons {
 
     private soot.coffi.UnusuableType instance_soot_coffi_UnusuableType;
     public soot.coffi.UnusuableType soot_coffi_UnusuableType() {
-        if( instance_soot_coffi_UnusuableType == null ) {
+        if (instance_soot_coffi_UnusuableType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_coffi_UnusuableType == null )
-	        		instance_soot_coffi_UnusuableType = new soot.coffi.UnusuableType( g );
+		        if (instance_soot_coffi_UnusuableType == null)
+	        		instance_soot_coffi_UnusuableType = new soot.coffi.UnusuableType(g);
 	       	}
        	}
         return instance_soot_coffi_UnusuableType;
@@ -1529,10 +1532,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.AST.UselessTryRemover instance_soot_dava_toolkits_base_AST_UselessTryRemover;
     public soot.dava.toolkits.base.AST.UselessTryRemover soot_dava_toolkits_base_AST_UselessTryRemover() {
-        if( instance_soot_dava_toolkits_base_AST_UselessTryRemover == null ) {
+        if (instance_soot_dava_toolkits_base_AST_UselessTryRemover == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_AST_UselessTryRemover == null )
-	        		instance_soot_dava_toolkits_base_AST_UselessTryRemover = new soot.dava.toolkits.base.AST.UselessTryRemover( g );
+		        if (instance_soot_dava_toolkits_base_AST_UselessTryRemover == null)
+	        		instance_soot_dava_toolkits_base_AST_UselessTryRemover = new soot.dava.toolkits.base.AST.UselessTryRemover(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_AST_UselessTryRemover;
@@ -1543,10 +1546,10 @@ public class Singletons {
 
     private soot.VoidType instance_soot_VoidType;
     public soot.VoidType soot_VoidType() {
-        if( instance_soot_VoidType == null ) {
+        if (instance_soot_VoidType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_VoidType == null )
-	        		instance_soot_VoidType = new soot.VoidType( g );
+		        if (instance_soot_VoidType == null)
+	        		instance_soot_VoidType = new soot.VoidType(g);
 	       	}
        	}
         return instance_soot_VoidType;
@@ -1557,10 +1560,10 @@ public class Singletons {
 
     private soot.baf.WordType instance_soot_baf_WordType;
     public soot.baf.WordType soot_baf_WordType() {
-        if( instance_soot_baf_WordType == null ) {
+        if (instance_soot_baf_WordType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_baf_WordType == null )
-	        		instance_soot_baf_WordType = new soot.baf.WordType( g );
+		        if (instance_soot_baf_WordType == null)
+	        		instance_soot_baf_WordType = new soot.baf.WordType(g);
 	       	}
        	}
         return instance_soot_baf_WordType;
@@ -1571,10 +1574,10 @@ public class Singletons {
 
     private soot.jimple.spark.fieldrw.FieldReadTagAggregator instance_soot_jimple_spark_fieldrw_FieldReadTagAggregator;
     public soot.jimple.spark.fieldrw.FieldReadTagAggregator soot_jimple_spark_fieldrw_FieldReadTagAggregator() {
-        if( instance_soot_jimple_spark_fieldrw_FieldReadTagAggregator == null ) {
+        if (instance_soot_jimple_spark_fieldrw_FieldReadTagAggregator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_spark_fieldrw_FieldReadTagAggregator == null )
-	        		instance_soot_jimple_spark_fieldrw_FieldReadTagAggregator = new soot.jimple.spark.fieldrw.FieldReadTagAggregator( g );
+		        if (instance_soot_jimple_spark_fieldrw_FieldReadTagAggregator == null)
+	        		instance_soot_jimple_spark_fieldrw_FieldReadTagAggregator = new soot.jimple.spark.fieldrw.FieldReadTagAggregator(g);
 	       	}
        	}
         return instance_soot_jimple_spark_fieldrw_FieldReadTagAggregator;
@@ -1585,10 +1588,10 @@ public class Singletons {
 
     private soot.jimple.spark.fieldrw.FieldWriteTagAggregator instance_soot_jimple_spark_fieldrw_FieldWriteTagAggregator;
     public soot.jimple.spark.fieldrw.FieldWriteTagAggregator soot_jimple_spark_fieldrw_FieldWriteTagAggregator() {
-        if( instance_soot_jimple_spark_fieldrw_FieldWriteTagAggregator == null ) {
+        if (instance_soot_jimple_spark_fieldrw_FieldWriteTagAggregator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_spark_fieldrw_FieldWriteTagAggregator == null )
-	        		instance_soot_jimple_spark_fieldrw_FieldWriteTagAggregator = new soot.jimple.spark.fieldrw.FieldWriteTagAggregator( g );
+		        if (instance_soot_jimple_spark_fieldrw_FieldWriteTagAggregator == null)
+	        		instance_soot_jimple_spark_fieldrw_FieldWriteTagAggregator = new soot.jimple.spark.fieldrw.FieldWriteTagAggregator(g);
 	       	}
        	}
         return instance_soot_jimple_spark_fieldrw_FieldWriteTagAggregator;
@@ -1599,10 +1602,10 @@ public class Singletons {
 
     private soot.jimple.spark.fieldrw.FieldTagAggregator instance_soot_jimple_spark_fieldrw_FieldTagAggregator;
     public soot.jimple.spark.fieldrw.FieldTagAggregator soot_jimple_spark_fieldrw_FieldTagAggregator() {
-        if( instance_soot_jimple_spark_fieldrw_FieldTagAggregator == null ) {
+        if (instance_soot_jimple_spark_fieldrw_FieldTagAggregator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_spark_fieldrw_FieldTagAggregator == null )
-	        		instance_soot_jimple_spark_fieldrw_FieldTagAggregator = new soot.jimple.spark.fieldrw.FieldTagAggregator( g );
+		        if (instance_soot_jimple_spark_fieldrw_FieldTagAggregator == null)
+	        		instance_soot_jimple_spark_fieldrw_FieldTagAggregator = new soot.jimple.spark.fieldrw.FieldTagAggregator(g);
 	       	}
        	}
         return instance_soot_jimple_spark_fieldrw_FieldTagAggregator;
@@ -1613,10 +1616,10 @@ public class Singletons {
 
     private soot.EntryPoints instance_soot_EntryPoints;
     public soot.EntryPoints soot_EntryPoints() {
-        if( instance_soot_EntryPoints == null ) {
+        if (instance_soot_EntryPoints == null) {
 	       	synchronized (this) {
-		        if( instance_soot_EntryPoints == null )
-	        		instance_soot_EntryPoints = new soot.EntryPoints( g );
+		        if (instance_soot_EntryPoints == null)
+	        		instance_soot_EntryPoints = new soot.EntryPoints(g);
 	       	}
        	}
         return instance_soot_EntryPoints;
@@ -1627,10 +1630,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.callgraph.CallGraphTagger instance_soot_jimple_toolkits_annotation_callgraph_CallGraphTagger;
     public soot.jimple.toolkits.annotation.callgraph.CallGraphTagger soot_jimple_toolkits_annotation_callgraph_CallGraphTagger() {
-        if( instance_soot_jimple_toolkits_annotation_callgraph_CallGraphTagger == null ) {
+        if (instance_soot_jimple_toolkits_annotation_callgraph_CallGraphTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_callgraph_CallGraphTagger == null )
-	        		instance_soot_jimple_toolkits_annotation_callgraph_CallGraphTagger = new soot.jimple.toolkits.annotation.callgraph.CallGraphTagger( g );
+		        if (instance_soot_jimple_toolkits_annotation_callgraph_CallGraphTagger == null)
+	        		instance_soot_jimple_toolkits_annotation_callgraph_CallGraphTagger = new soot.jimple.toolkits.annotation.callgraph.CallGraphTagger(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_callgraph_CallGraphTagger;
@@ -1641,10 +1644,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.nullcheck.NullPointerColorer instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer;
     public soot.jimple.toolkits.annotation.nullcheck.NullPointerColorer soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer() {
-        if( instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer == null ) {
+        if (instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer == null )
-	        		instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer = new soot.jimple.toolkits.annotation.nullcheck.NullPointerColorer( g );
+		        if (instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer == null)
+	        		instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer = new soot.jimple.toolkits.annotation.nullcheck.NullPointerColorer(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_nullcheck_NullPointerColorer;
@@ -1655,10 +1658,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.parity.ParityTagger instance_soot_jimple_toolkits_annotation_parity_ParityTagger;
     public soot.jimple.toolkits.annotation.parity.ParityTagger soot_jimple_toolkits_annotation_parity_ParityTagger() {
-        if( instance_soot_jimple_toolkits_annotation_parity_ParityTagger == null ) {
+        if (instance_soot_jimple_toolkits_annotation_parity_ParityTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_parity_ParityTagger == null )
-	        		instance_soot_jimple_toolkits_annotation_parity_ParityTagger = new soot.jimple.toolkits.annotation.parity.ParityTagger( g );
+		        if (instance_soot_jimple_toolkits_annotation_parity_ParityTagger == null)
+	        		instance_soot_jimple_toolkits_annotation_parity_ParityTagger = new soot.jimple.toolkits.annotation.parity.ParityTagger(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_parity_ParityTagger;
@@ -1669,10 +1672,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.methods.UnreachableMethodsTagger instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger;
     public soot.jimple.toolkits.annotation.methods.UnreachableMethodsTagger soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger() {
-        if( instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger == null ) {
+        if (instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger == null )
-	        		instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger = new soot.jimple.toolkits.annotation.methods.UnreachableMethodsTagger( g );
+		        if (instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger == null)
+	        		instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger = new soot.jimple.toolkits.annotation.methods.UnreachableMethodsTagger(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_methods_UnreachableMethodsTagger;
@@ -1683,10 +1686,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.fields.UnreachableFieldsTagger instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger;
     public soot.jimple.toolkits.annotation.fields.UnreachableFieldsTagger soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger() {
-        if( instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger == null ) {
+        if (instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger == null )
-	        		instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger = new soot.jimple.toolkits.annotation.fields.UnreachableFieldsTagger( g );
+		        if (instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger == null)
+	        		instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger = new soot.jimple.toolkits.annotation.fields.UnreachableFieldsTagger(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_fields_UnreachableFieldsTagger;
@@ -1697,10 +1700,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger instance_soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger;
     public soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger() {
-        if( instance_soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger == null ) {
+        if (instance_soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger == null )
-	        		instance_soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger = new soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger( g );
+		        if (instance_soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger == null)
+	        		instance_soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger = new soot.jimple.toolkits.annotation.qualifiers.TightestQualifiersTagger(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_qualifiers_TightestQualifiersTagger;
@@ -1711,10 +1714,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.pointer.ParameterAliasTagger instance_soot_jimple_toolkits_pointer_ParameterAliasTagger;
     public soot.jimple.toolkits.pointer.ParameterAliasTagger soot_jimple_toolkits_pointer_ParameterAliasTagger() {
-        if( instance_soot_jimple_toolkits_pointer_ParameterAliasTagger == null ) {
+        if (instance_soot_jimple_toolkits_pointer_ParameterAliasTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_pointer_ParameterAliasTagger == null )
-	        		instance_soot_jimple_toolkits_pointer_ParameterAliasTagger = new soot.jimple.toolkits.pointer.ParameterAliasTagger( g );
+		        if (instance_soot_jimple_toolkits_pointer_ParameterAliasTagger == null)
+	        		instance_soot_jimple_toolkits_pointer_ParameterAliasTagger = new soot.jimple.toolkits.pointer.ParameterAliasTagger(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_pointer_ParameterAliasTagger;
@@ -1725,10 +1728,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.defs.ReachingDefsTagger instance_soot_jimple_toolkits_annotation_defs_ReachingDefsTagger;
     public soot.jimple.toolkits.annotation.defs.ReachingDefsTagger soot_jimple_toolkits_annotation_defs_ReachingDefsTagger() {
-        if( instance_soot_jimple_toolkits_annotation_defs_ReachingDefsTagger == null ) {
+        if (instance_soot_jimple_toolkits_annotation_defs_ReachingDefsTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_defs_ReachingDefsTagger == null )
-	        		instance_soot_jimple_toolkits_annotation_defs_ReachingDefsTagger = new soot.jimple.toolkits.annotation.defs.ReachingDefsTagger( g );
+		        if (instance_soot_jimple_toolkits_annotation_defs_ReachingDefsTagger == null)
+	        		instance_soot_jimple_toolkits_annotation_defs_ReachingDefsTagger = new soot.jimple.toolkits.annotation.defs.ReachingDefsTagger(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_defs_ReachingDefsTagger;
@@ -1739,10 +1742,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.liveness.LiveVarsTagger instance_soot_jimple_toolkits_annotation_liveness_LiveVarsTagger;
     public soot.jimple.toolkits.annotation.liveness.LiveVarsTagger soot_jimple_toolkits_annotation_liveness_LiveVarsTagger() {
-        if( instance_soot_jimple_toolkits_annotation_liveness_LiveVarsTagger == null ) {
+        if (instance_soot_jimple_toolkits_annotation_liveness_LiveVarsTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_liveness_LiveVarsTagger == null )
-	        		instance_soot_jimple_toolkits_annotation_liveness_LiveVarsTagger = new soot.jimple.toolkits.annotation.liveness.LiveVarsTagger( g );
+		        if (instance_soot_jimple_toolkits_annotation_liveness_LiveVarsTagger == null)
+	        		instance_soot_jimple_toolkits_annotation_liveness_LiveVarsTagger = new soot.jimple.toolkits.annotation.liveness.LiveVarsTagger(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_liveness_LiveVarsTagger;
@@ -1753,10 +1756,10 @@ public class Singletons {
 
     private soot.toolkits.graph.interaction.InteractionHandler instance_soot_toolkits_graph_interaction_InteractionHandler;
     public soot.toolkits.graph.interaction.InteractionHandler soot_toolkits_graph_interaction_InteractionHandler() {
-        if( instance_soot_toolkits_graph_interaction_InteractionHandler == null ) {
+        if (instance_soot_toolkits_graph_interaction_InteractionHandler == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toolkits_graph_interaction_InteractionHandler == null )
-	        		instance_soot_toolkits_graph_interaction_InteractionHandler = new soot.toolkits.graph.interaction.InteractionHandler( g );
+		        if (instance_soot_toolkits_graph_interaction_InteractionHandler == null)
+	        		instance_soot_toolkits_graph_interaction_InteractionHandler = new soot.toolkits.graph.interaction.InteractionHandler(g);
 	       	}
        	}
         return instance_soot_toolkits_graph_interaction_InteractionHandler;
@@ -1767,10 +1770,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.logic.LoopInvariantFinder instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder;
     public soot.jimple.toolkits.annotation.logic.LoopInvariantFinder soot_jimple_toolkits_annotation_logic_LoopInvariantFinder() {
-        if( instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder == null ) {
+        if (instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder == null )
-	        		instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder = new soot.jimple.toolkits.annotation.logic.LoopInvariantFinder( g );
+		        if (instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder == null)
+	        		instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder = new soot.jimple.toolkits.annotation.logic.LoopInvariantFinder(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_logic_LoopInvariantFinder;
@@ -1781,10 +1784,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.AvailExprTagger instance_soot_jimple_toolkits_annotation_AvailExprTagger;
     public soot.jimple.toolkits.annotation.AvailExprTagger soot_jimple_toolkits_annotation_AvailExprTagger() {
-        if( instance_soot_jimple_toolkits_annotation_AvailExprTagger == null ) {
+        if (instance_soot_jimple_toolkits_annotation_AvailExprTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_AvailExprTagger == null )
-	        		instance_soot_jimple_toolkits_annotation_AvailExprTagger = new soot.jimple.toolkits.annotation.AvailExprTagger( g );
+		        if (instance_soot_jimple_toolkits_annotation_AvailExprTagger == null)
+	        		instance_soot_jimple_toolkits_annotation_AvailExprTagger = new soot.jimple.toolkits.annotation.AvailExprTagger(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_AvailExprTagger;
@@ -1795,10 +1798,10 @@ public class Singletons {
 
     private soot.util.PhaseDumper instance_soot_util_PhaseDumper;
     public soot.util.PhaseDumper soot_util_PhaseDumper() {
-        if( instance_soot_util_PhaseDumper == null ) {
+        if (instance_soot_util_PhaseDumper == null) {
 	       	synchronized (this) {
-		        if( instance_soot_util_PhaseDumper == null )
-	        		instance_soot_util_PhaseDumper = new soot.util.PhaseDumper( g );
+		        if (instance_soot_util_PhaseDumper == null)
+	        		instance_soot_util_PhaseDumper = new soot.util.PhaseDumper(g);
 	       	}
        	}
         return instance_soot_util_PhaseDumper;
@@ -1809,10 +1812,10 @@ public class Singletons {
 
     private soot.util.cfgcmd.AltClassLoader instance_soot_util_cfgcmd_AltClassLoader;
     public soot.util.cfgcmd.AltClassLoader soot_util_cfgcmd_AltClassLoader() {
-        if( instance_soot_util_cfgcmd_AltClassLoader == null ) {
+        if (instance_soot_util_cfgcmd_AltClassLoader == null) {
 	       	synchronized (this) {
-		        if( instance_soot_util_cfgcmd_AltClassLoader == null )
-	        		instance_soot_util_cfgcmd_AltClassLoader = new soot.util.cfgcmd.AltClassLoader( g );
+		        if (instance_soot_util_cfgcmd_AltClassLoader == null)
+	        		instance_soot_util_cfgcmd_AltClassLoader = new soot.util.cfgcmd.AltClassLoader(g);
 	       	}
        	}
         return instance_soot_util_cfgcmd_AltClassLoader;
@@ -1823,10 +1826,10 @@ public class Singletons {
 
     private soot.toolkits.exceptions.ThrowableSet.Manager instance_soot_toolkits_exceptions_ThrowableSet_Manager;
     public soot.toolkits.exceptions.ThrowableSet.Manager soot_toolkits_exceptions_ThrowableSet_Manager() {
-        if( instance_soot_toolkits_exceptions_ThrowableSet_Manager == null ) {
+        if (instance_soot_toolkits_exceptions_ThrowableSet_Manager == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toolkits_exceptions_ThrowableSet_Manager == null )
-	        		instance_soot_toolkits_exceptions_ThrowableSet_Manager = new soot.toolkits.exceptions.ThrowableSet.Manager( g );
+		        if (instance_soot_toolkits_exceptions_ThrowableSet_Manager == null)
+	        		instance_soot_toolkits_exceptions_ThrowableSet_Manager = new soot.toolkits.exceptions.ThrowableSet.Manager(g);
 	       	}
        	}
         return instance_soot_toolkits_exceptions_ThrowableSet_Manager;
@@ -1837,10 +1840,10 @@ public class Singletons {
 
     private soot.toolkits.exceptions.UnitThrowAnalysis instance_soot_toolkits_exceptions_UnitThrowAnalysis;
     public soot.toolkits.exceptions.UnitThrowAnalysis soot_toolkits_exceptions_UnitThrowAnalysis() {
-        if( instance_soot_toolkits_exceptions_UnitThrowAnalysis == null ) {
+        if (instance_soot_toolkits_exceptions_UnitThrowAnalysis == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toolkits_exceptions_UnitThrowAnalysis == null )
-	        		instance_soot_toolkits_exceptions_UnitThrowAnalysis = new soot.toolkits.exceptions.UnitThrowAnalysis( g );
+		        if (instance_soot_toolkits_exceptions_UnitThrowAnalysis == null)
+	        		instance_soot_toolkits_exceptions_UnitThrowAnalysis = new soot.toolkits.exceptions.UnitThrowAnalysis(g);
 	       	}
        	}
         return instance_soot_toolkits_exceptions_UnitThrowAnalysis;
@@ -1851,10 +1854,10 @@ public class Singletons {
 
     private soot.dexpler.DalvikThrowAnalysis instance_soot_dexpler_DalvikThrowAnalysis;
     public soot.dexpler.DalvikThrowAnalysis soot_dexpler_DalvikThrowAnalysis() {
-        if( instance_soot_dexpler_DalvikThrowAnalysis == null ) {
+        if (instance_soot_dexpler_DalvikThrowAnalysis == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dexpler_DalvikThrowAnalysis == null )
-	        		instance_soot_dexpler_DalvikThrowAnalysis = new soot.dexpler.DalvikThrowAnalysis( g );
+		        if (instance_soot_dexpler_DalvikThrowAnalysis == null)
+	        		instance_soot_dexpler_DalvikThrowAnalysis = new soot.dexpler.DalvikThrowAnalysis(g);
 	       	}
        	}
         return instance_soot_dexpler_DalvikThrowAnalysis;
@@ -1865,10 +1868,10 @@ public class Singletons {
 
     private soot.dexpler.DexFileProvider instance_soot_dexpler_DexFileProvider;
     public soot.dexpler.DexFileProvider soot_dexpler_DexFileProvider() {
-        if( instance_soot_dexpler_DexFileProvider == null ) {
+        if (instance_soot_dexpler_DexFileProvider == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dexpler_DexFileProvider == null )
-	        		instance_soot_dexpler_DexFileProvider = new soot.dexpler.DexFileProvider( g );
+		        if (instance_soot_dexpler_DexFileProvider == null)
+	        		instance_soot_dexpler_DexFileProvider = new soot.dexpler.DexFileProvider(g);
 	       	}
        	}
         return instance_soot_dexpler_DexFileProvider;
@@ -1879,10 +1882,10 @@ public class Singletons {
 
     private soot.toolkits.exceptions.PedanticThrowAnalysis instance_soot_toolkits_exceptions_PedanticThrowAnalysis;
     public soot.toolkits.exceptions.PedanticThrowAnalysis soot_toolkits_exceptions_PedanticThrowAnalysis() {
-        if( instance_soot_toolkits_exceptions_PedanticThrowAnalysis == null ) {
+        if (instance_soot_toolkits_exceptions_PedanticThrowAnalysis == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toolkits_exceptions_PedanticThrowAnalysis == null )
-	        		instance_soot_toolkits_exceptions_PedanticThrowAnalysis = new soot.toolkits.exceptions.PedanticThrowAnalysis( g );
+		        if (instance_soot_toolkits_exceptions_PedanticThrowAnalysis == null)
+	        		instance_soot_toolkits_exceptions_PedanticThrowAnalysis = new soot.toolkits.exceptions.PedanticThrowAnalysis(g);
 	       	}
        	}
         return instance_soot_toolkits_exceptions_PedanticThrowAnalysis;
@@ -1893,10 +1896,10 @@ public class Singletons {
 
     private soot.toolkits.exceptions.TrapTightener instance_soot_toolkits_exceptions_TrapTightener;
     public soot.toolkits.exceptions.TrapTightener soot_toolkits_exceptions_TrapTightener() {
-        if( instance_soot_toolkits_exceptions_TrapTightener == null ) {
+        if (instance_soot_toolkits_exceptions_TrapTightener == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toolkits_exceptions_TrapTightener == null )
-	        		instance_soot_toolkits_exceptions_TrapTightener = new soot.toolkits.exceptions.TrapTightener( g );
+		        if (instance_soot_toolkits_exceptions_TrapTightener == null)
+	        		instance_soot_toolkits_exceptions_TrapTightener = new soot.toolkits.exceptions.TrapTightener(g);
 	       	}
        	}
         return instance_soot_toolkits_exceptions_TrapTightener;
@@ -1907,10 +1910,10 @@ public class Singletons {
 
     private soot.toolkits.exceptions.DuplicateCatchAllTrapRemover instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover;
     public soot.toolkits.exceptions.DuplicateCatchAllTrapRemover soot_toolkits_exceptions_DuplicateCatchAllTrapRemover() {
-        if( instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover == null ) {
+        if (instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover == null )
-	        		instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover = new soot.toolkits.exceptions.DuplicateCatchAllTrapRemover( g );
+		        if (instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover == null)
+	        		instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover = new soot.toolkits.exceptions.DuplicateCatchAllTrapRemover(g);
 	       	}
        	}
         return instance_soot_toolkits_exceptions_DuplicateCatchAllTrapRemover;
@@ -1921,10 +1924,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher;
     public soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher() {
-        if( instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher == null ) {
+        if (instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher == null )
-	        		instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher = new soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher( g );
+		        if (instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher == null)
+	        		instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher = new soot.jimple.toolkits.annotation.callgraph.CallGraphGrapher(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_callgraph_CallGraphGrapher;
@@ -1935,10 +1938,10 @@ public class Singletons {
 
     private soot.SootResolver instance_soot_SootResolver;
     public soot.SootResolver soot_SootResolver() {
-        if( instance_soot_SootResolver == null ) {
+        if (instance_soot_SootResolver == null) {
 	       	synchronized (this) {
-		        if( instance_soot_SootResolver == null )
-	        		instance_soot_SootResolver = new soot.SootResolver( g );
+		        if (instance_soot_SootResolver == null)
+	        		instance_soot_SootResolver = new soot.SootResolver(g);
 	       	}
        	}
         return instance_soot_SootResolver;
@@ -1949,10 +1952,10 @@ public class Singletons {
 
     private soot.javaToJimple.InitialResolver instance_soot_javaToJimple_InitialResolver;
     public soot.javaToJimple.InitialResolver soot_javaToJimple_InitialResolver() {
-        if( instance_soot_javaToJimple_InitialResolver == null ) {
+        if (instance_soot_javaToJimple_InitialResolver == null) {
 	       	synchronized (this) {
-		        if( instance_soot_javaToJimple_InitialResolver == null )
-	        		instance_soot_javaToJimple_InitialResolver = new soot.javaToJimple.InitialResolver( g );
+		        if (instance_soot_javaToJimple_InitialResolver == null)
+	        		instance_soot_javaToJimple_InitialResolver = new soot.javaToJimple.InitialResolver(g);
 	       	}
        	}
         return instance_soot_javaToJimple_InitialResolver;
@@ -1963,10 +1966,10 @@ public class Singletons {
 
     private soot.jimple.paddle.PaddleHook instance_soot_jimple_paddle_PaddleHook;
     public soot.jimple.paddle.PaddleHook soot_jimple_paddle_PaddleHook() {
-        if( instance_soot_jimple_paddle_PaddleHook == null ) {
+        if (instance_soot_jimple_paddle_PaddleHook == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_paddle_PaddleHook == null )
-	        		instance_soot_jimple_paddle_PaddleHook = new soot.jimple.paddle.PaddleHook( g );
+		        if (instance_soot_jimple_paddle_PaddleHook == null)
+	        		instance_soot_jimple_paddle_PaddleHook = new soot.jimple.paddle.PaddleHook(g);
 	       	}
        	}
         return instance_soot_jimple_paddle_PaddleHook;
@@ -1977,10 +1980,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.DominatorsTagger instance_soot_jimple_toolkits_annotation_DominatorsTagger;
     public soot.jimple.toolkits.annotation.DominatorsTagger soot_jimple_toolkits_annotation_DominatorsTagger() {
-        if( instance_soot_jimple_toolkits_annotation_DominatorsTagger == null ) {
+        if (instance_soot_jimple_toolkits_annotation_DominatorsTagger == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_DominatorsTagger == null )
-	        		instance_soot_jimple_toolkits_annotation_DominatorsTagger = new soot.jimple.toolkits.annotation.DominatorsTagger( g );
+		        if (instance_soot_jimple_toolkits_annotation_DominatorsTagger == null)
+	        		instance_soot_jimple_toolkits_annotation_DominatorsTagger = new soot.jimple.toolkits.annotation.DominatorsTagger(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_DominatorsTagger;
@@ -1991,10 +1994,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.purity.PurityAnalysis instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis;
     public soot.jimple.toolkits.annotation.purity.PurityAnalysis soot_jimple_toolkits_annotation_purity_PurityAnalysis() {
-        if( instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis == null ) {
+        if (instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis == null )
-	        		instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis = new soot.jimple.toolkits.annotation.purity.PurityAnalysis( g );
+		        if (instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis == null)
+	        		instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis = new soot.jimple.toolkits.annotation.purity.PurityAnalysis(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_purity_PurityAnalysis;
@@ -2005,10 +2008,10 @@ public class Singletons {
 
     private soot.javaToJimple.toolkits.CondTransformer instance_soot_javaToJimple_toolkits_CondTransformer;
     public soot.javaToJimple.toolkits.CondTransformer soot_javaToJimple_toolkits_CondTransformer() {
-        if( instance_soot_javaToJimple_toolkits_CondTransformer == null ) {
+        if (instance_soot_javaToJimple_toolkits_CondTransformer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_javaToJimple_toolkits_CondTransformer == null )
-	        		instance_soot_javaToJimple_toolkits_CondTransformer = new soot.javaToJimple.toolkits.CondTransformer( g );
+		        if (instance_soot_javaToJimple_toolkits_CondTransformer == null)
+	        		instance_soot_javaToJimple_toolkits_CondTransformer = new soot.javaToJimple.toolkits.CondTransformer(g);
 	       	}
        	}
         return instance_soot_javaToJimple_toolkits_CondTransformer;
@@ -2019,10 +2022,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.AST.transformations.UselessLabelFinder instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder;
     public soot.dava.toolkits.base.AST.transformations.UselessLabelFinder soot_dava_toolkits_base_AST_transformations_UselessLabelFinder() {
-        if( instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder == null ) {
+        if (instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder == null )
-	        		instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder = new soot.dava.toolkits.base.AST.transformations.UselessLabelFinder( g );
+		        if (instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder == null)
+	        		instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder = new soot.dava.toolkits.base.AST.transformations.UselessLabelFinder(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_AST_transformations_UselessLabelFinder;
@@ -2033,10 +2036,10 @@ public class Singletons {
 
     private soot.dava.DavaStaticBlockCleaner instance_soot_dava_DavaStaticBlockCleaner;
     public soot.dava.DavaStaticBlockCleaner soot_dava_DavaStaticBlockCleaner() {
-        if( instance_soot_dava_DavaStaticBlockCleaner == null ) {
+        if (instance_soot_dava_DavaStaticBlockCleaner == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_DavaStaticBlockCleaner == null )
-	        		instance_soot_dava_DavaStaticBlockCleaner = new soot.dava.DavaStaticBlockCleaner( g );
+		        if (instance_soot_dava_DavaStaticBlockCleaner == null)
+	        		instance_soot_dava_DavaStaticBlockCleaner = new soot.dava.DavaStaticBlockCleaner(g);
 	       	}
        	}
         return instance_soot_dava_DavaStaticBlockCleaner;
@@ -2047,10 +2050,10 @@ public class Singletons {
 
     private soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder;
     public soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder() {
-        if( instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder == null ) {
+        if (instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder == null )
-	        		instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder = new soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder( g );
+		        if (instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder == null)
+	        		instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder = new soot.dava.toolkits.base.AST.traversals.ClosestAbruptTargetFinder(g);
 	       	}
        	}
         return instance_soot_dava_toolkits_base_AST_traversals_ClosestAbruptTargetFinder;
@@ -2061,10 +2064,10 @@ public class Singletons {
 
     private soot.jimple.spark.sets.AllSharedListNodes instance_soot_jimple_spark_sets_AllSharedListNodes;
     public soot.jimple.spark.sets.AllSharedListNodes soot_jimple_spark_sets_AllSharedListNodes() {
-        if( instance_soot_jimple_spark_sets_AllSharedListNodes == null ) {
+        if (instance_soot_jimple_spark_sets_AllSharedListNodes == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_spark_sets_AllSharedListNodes == null )
-	        		instance_soot_jimple_spark_sets_AllSharedListNodes = new soot.jimple.spark.sets.AllSharedListNodes( g );
+		        if (instance_soot_jimple_spark_sets_AllSharedListNodes == null)
+	        		instance_soot_jimple_spark_sets_AllSharedListNodes = new soot.jimple.spark.sets.AllSharedListNodes(g);
 	       	}
        	}
         return instance_soot_jimple_spark_sets_AllSharedListNodes;
@@ -2075,10 +2078,10 @@ public class Singletons {
 
     private soot.jimple.spark.sets.AllSharedHybridNodes instance_soot_jimple_spark_sets_AllSharedHybridNodes;
     public soot.jimple.spark.sets.AllSharedHybridNodes soot_jimple_spark_sets_AllSharedHybridNodes() {
-        if( instance_soot_jimple_spark_sets_AllSharedHybridNodes == null ) {
+        if (instance_soot_jimple_spark_sets_AllSharedHybridNodes == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_spark_sets_AllSharedHybridNodes == null )
-	        		instance_soot_jimple_spark_sets_AllSharedHybridNodes = new soot.jimple.spark.sets.AllSharedHybridNodes( g );
+		        if (instance_soot_jimple_spark_sets_AllSharedHybridNodes == null)
+	        		instance_soot_jimple_spark_sets_AllSharedHybridNodes = new soot.jimple.spark.sets.AllSharedHybridNodes(g);
 	       	}
        	}
         return instance_soot_jimple_spark_sets_AllSharedHybridNodes;
@@ -2089,10 +2092,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.thread.synchronization.LockAllocator instance_soot_jimple_toolkits_thread_synchronization_LockAllocator;
     public soot.jimple.toolkits.thread.synchronization.LockAllocator soot_jimple_toolkits_thread_synchronization_LockAllocator() {
-        if( instance_soot_jimple_toolkits_thread_synchronization_LockAllocator == null ) {
+        if (instance_soot_jimple_toolkits_thread_synchronization_LockAllocator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_thread_synchronization_LockAllocator == null )
-	        		instance_soot_jimple_toolkits_thread_synchronization_LockAllocator = new soot.jimple.toolkits.thread.synchronization.LockAllocator( g );
+		        if (instance_soot_jimple_toolkits_thread_synchronization_LockAllocator == null)
+	        		instance_soot_jimple_toolkits_thread_synchronization_LockAllocator = new soot.jimple.toolkits.thread.synchronization.LockAllocator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_thread_synchronization_LockAllocator;
@@ -2103,10 +2106,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.thread.mhp.MhpTransformer instance_soot_jimple_toolkits_thread_mhp_MhpTransformer;
     public soot.jimple.toolkits.thread.mhp.MhpTransformer soot_jimple_toolkits_thread_mhp_MhpTransformer() {
-        if( instance_soot_jimple_toolkits_thread_mhp_MhpTransformer == null ) {
+        if (instance_soot_jimple_toolkits_thread_mhp_MhpTransformer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_thread_mhp_MhpTransformer == null )
-	        		instance_soot_jimple_toolkits_thread_mhp_MhpTransformer = new soot.jimple.toolkits.thread.mhp.MhpTransformer( g );
+		        if (instance_soot_jimple_toolkits_thread_mhp_MhpTransformer == null)
+	        		instance_soot_jimple_toolkits_thread_mhp_MhpTransformer = new soot.jimple.toolkits.thread.mhp.MhpTransformer(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_thread_mhp_MhpTransformer;
@@ -2117,10 +2120,10 @@ public class Singletons {
 
     private soot.JastAddInitialResolver instance_soot_JastAddInitialResolver;
     public soot.JastAddInitialResolver soot_JastAddInitialResolver() {
-        if( instance_soot_JastAddInitialResolver == null ) {
+        if (instance_soot_JastAddInitialResolver == null) {
 	       	synchronized (this) {
-		        if( instance_soot_JastAddInitialResolver == null )
-	        		instance_soot_JastAddInitialResolver = new soot.JastAddInitialResolver( g );
+		        if (instance_soot_JastAddInitialResolver == null)
+	        		instance_soot_JastAddInitialResolver = new soot.JastAddInitialResolver(g);
 	       	}
        	}
         return instance_soot_JastAddInitialResolver;
@@ -2131,10 +2134,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator;
     public soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator() {
-        if( instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator == null ) {
+        if (instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator == null )
-	        		instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator = new soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator( g );
+		        if (instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator == null)
+	        		instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator = new soot.jimple.toolkits.annotation.j5anno.AnnotationGenerator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_annotation_j5anno_AnnotationGenerator;
@@ -2145,10 +2148,10 @@ public class Singletons {
 
     private soot.sootify.TemplatePrinter instance_soot_sootify_TemplatePrinter;
     public soot.sootify.TemplatePrinter soot_sootify_TemplatePrinter() {
-        if( instance_soot_sootify_TemplatePrinter == null ) {
+        if (instance_soot_sootify_TemplatePrinter == null) {
 	       	synchronized (this) {
-		        if( instance_soot_sootify_TemplatePrinter == null )
-	        		instance_soot_sootify_TemplatePrinter = new soot.sootify.TemplatePrinter( g );
+		        if (instance_soot_sootify_TemplatePrinter == null)
+	        		instance_soot_sootify_TemplatePrinter = new soot.sootify.TemplatePrinter(g);
 	       	}
        	}
         return instance_soot_sootify_TemplatePrinter;
@@ -2159,10 +2162,10 @@ public class Singletons {
 
     private soot.dexpler.DexResolver instance_soot_dexpler_DexResolver;
     public soot.dexpler.DexResolver soot_dexpler_DexResolver() {
-        if( instance_soot_dexpler_DexResolver == null ) {
+        if (instance_soot_dexpler_DexResolver == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dexpler_DexResolver == null )
-	        		instance_soot_dexpler_DexResolver = new soot.dexpler.DexResolver( g );
+		        if (instance_soot_dexpler_DexResolver == null)
+	        		instance_soot_dexpler_DexResolver = new soot.dexpler.DexResolver(g);
 	       	}
        	}
         return instance_soot_dexpler_DexResolver;
@@ -2173,10 +2176,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.scalar.EmptySwitchEliminator instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator;
     public soot.jimple.toolkits.scalar.EmptySwitchEliminator soot_jimple_toolkits_scalar_EmptySwitchEliminator() {
-        if( instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator == null ) {
+        if (instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator == null )
-	        		instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator = new soot.jimple.toolkits.scalar.EmptySwitchEliminator( g );
+		        if (instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator == null)
+	        		instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator = new soot.jimple.toolkits.scalar.EmptySwitchEliminator(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_scalar_EmptySwitchEliminator;
@@ -2187,10 +2190,10 @@ public class Singletons {
 
     private soot.toDex.SynchronizedMethodTransformer instance_soot_toDex_SynchronizedMethodTransformer;
     public soot.toDex.SynchronizedMethodTransformer soot_toDex_SynchronizedMethodTransformer() {
-        if( instance_soot_toDex_SynchronizedMethodTransformer == null ) {
+        if (instance_soot_toDex_SynchronizedMethodTransformer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toDex_SynchronizedMethodTransformer == null )
-	        		instance_soot_toDex_SynchronizedMethodTransformer = new soot.toDex.SynchronizedMethodTransformer( g );
+		        if (instance_soot_toDex_SynchronizedMethodTransformer == null)
+	        		instance_soot_toDex_SynchronizedMethodTransformer = new soot.toDex.SynchronizedMethodTransformer(g);
 	       	}
        	}
         return instance_soot_toDex_SynchronizedMethodTransformer;
@@ -2201,10 +2204,10 @@ public class Singletons {
 
     private soot.toDex.TrapSplitter instance_soot_toDex_TrapSplitter;
     public soot.toDex.TrapSplitter soot_toDex_TrapSplitter() {
-        if( instance_soot_toDex_TrapSplitter == null ) {
+        if (instance_soot_toDex_TrapSplitter == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toDex_TrapSplitter == null )
-	        		instance_soot_toDex_TrapSplitter = new soot.toDex.TrapSplitter( g );
+		        if (instance_soot_toDex_TrapSplitter == null)
+	        		instance_soot_toDex_TrapSplitter = new soot.toDex.TrapSplitter(g);
 	       	}
        	}
         return instance_soot_toDex_TrapSplitter;
@@ -2215,10 +2218,10 @@ public class Singletons {
 
     private soot.toDex.FastDexTrapTightener instance_soot_toDex_FastDexTrapTightener;
     public soot.toDex.FastDexTrapTightener soot_toDex_FastDexTrapTightener() {
-        if( instance_soot_toDex_FastDexTrapTightener == null ) {
+        if (instance_soot_toDex_FastDexTrapTightener == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toDex_FastDexTrapTightener == null )
-	        		instance_soot_toDex_FastDexTrapTightener = new soot.toDex.FastDexTrapTightener( g );
+		        if (instance_soot_toDex_FastDexTrapTightener == null)
+	        		instance_soot_toDex_FastDexTrapTightener = new soot.toDex.FastDexTrapTightener(g);
 	       	}
        	}
         return instance_soot_toDex_FastDexTrapTightener;
@@ -2229,10 +2232,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.base.RenameDuplicatedClasses instance_soot_jimple_toolkits_base_RenameDuplicatedClasses;
     public soot.jimple.toolkits.base.RenameDuplicatedClasses soot_jimple_toolkits_base_RenameDuplicatedClasses() {
-        if( instance_soot_jimple_toolkits_base_RenameDuplicatedClasses == null ) {
+        if (instance_soot_jimple_toolkits_base_RenameDuplicatedClasses == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_base_RenameDuplicatedClasses == null )
-	        		instance_soot_jimple_toolkits_base_RenameDuplicatedClasses = new soot.jimple.toolkits.base.RenameDuplicatedClasses( g );
+		        if (instance_soot_jimple_toolkits_base_RenameDuplicatedClasses == null)
+	        		instance_soot_jimple_toolkits_base_RenameDuplicatedClasses = new soot.jimple.toolkits.base.RenameDuplicatedClasses(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_base_RenameDuplicatedClasses;
@@ -2243,10 +2246,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.typing.fast.Integer127Type instance_soot_jimple_toolkits_typing_fast_Integer127Type;
     public soot.jimple.toolkits.typing.fast.Integer127Type soot_jimple_toolkits_typing_fast_Integer127Type() {
-        if( instance_soot_jimple_toolkits_typing_fast_Integer127Type == null ) {
+        if (instance_soot_jimple_toolkits_typing_fast_Integer127Type == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_typing_fast_Integer127Type == null )
-	        		instance_soot_jimple_toolkits_typing_fast_Integer127Type = new soot.jimple.toolkits.typing.fast.Integer127Type( g );
+		        if (instance_soot_jimple_toolkits_typing_fast_Integer127Type == null)
+	        		instance_soot_jimple_toolkits_typing_fast_Integer127Type = new soot.jimple.toolkits.typing.fast.Integer127Type(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_typing_fast_Integer127Type;
@@ -2257,10 +2260,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.typing.fast.Integer1Type instance_soot_jimple_toolkits_typing_fast_Integer1Type;
     public soot.jimple.toolkits.typing.fast.Integer1Type soot_jimple_toolkits_typing_fast_Integer1Type() {
-        if( instance_soot_jimple_toolkits_typing_fast_Integer1Type == null ) {
+        if (instance_soot_jimple_toolkits_typing_fast_Integer1Type == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_typing_fast_Integer1Type == null )
-	        		instance_soot_jimple_toolkits_typing_fast_Integer1Type = new soot.jimple.toolkits.typing.fast.Integer1Type( g );
+		        if (instance_soot_jimple_toolkits_typing_fast_Integer1Type == null)
+	        		instance_soot_jimple_toolkits_typing_fast_Integer1Type = new soot.jimple.toolkits.typing.fast.Integer1Type(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_typing_fast_Integer1Type;
@@ -2271,10 +2274,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.typing.fast.Integer32767Type instance_soot_jimple_toolkits_typing_fast_Integer32767Type;
     public soot.jimple.toolkits.typing.fast.Integer32767Type soot_jimple_toolkits_typing_fast_Integer32767Type() {
-        if( instance_soot_jimple_toolkits_typing_fast_Integer32767Type == null ) {
+        if (instance_soot_jimple_toolkits_typing_fast_Integer32767Type == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_typing_fast_Integer32767Type == null )
-	        		instance_soot_jimple_toolkits_typing_fast_Integer32767Type = new soot.jimple.toolkits.typing.fast.Integer32767Type( g );
+		        if (instance_soot_jimple_toolkits_typing_fast_Integer32767Type == null)
+	        		instance_soot_jimple_toolkits_typing_fast_Integer32767Type = new soot.jimple.toolkits.typing.fast.Integer32767Type(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_typing_fast_Integer32767Type;
@@ -2285,10 +2288,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.typing.fast.BottomType instance_soot_jimple_toolkits_typing_fast_BottomType;
     public soot.jimple.toolkits.typing.fast.BottomType soot_jimple_toolkits_typing_fast_BottomType() {
-        if( instance_soot_jimple_toolkits_typing_fast_BottomType == null ) {
+        if (instance_soot_jimple_toolkits_typing_fast_BottomType == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_typing_fast_BottomType == null )
-	        		instance_soot_jimple_toolkits_typing_fast_BottomType = new soot.jimple.toolkits.typing.fast.BottomType( g );
+		        if (instance_soot_jimple_toolkits_typing_fast_BottomType == null)
+	        		instance_soot_jimple_toolkits_typing_fast_BottomType = new soot.jimple.toolkits.typing.fast.BottomType(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_typing_fast_BottomType;
@@ -2299,10 +2302,10 @@ public class Singletons {
 
     private soot.dexpler.TrapMinimizer instance_soot_dexpler_TrapMinimizer;
     public soot.dexpler.TrapMinimizer soot_dexpler_TrapMinimizer() {
-        if( instance_soot_dexpler_TrapMinimizer == null ) {
+        if (instance_soot_dexpler_TrapMinimizer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_dexpler_TrapMinimizer == null )
-	        		instance_soot_dexpler_TrapMinimizer = new soot.dexpler.TrapMinimizer( g );
+		        if (instance_soot_dexpler_TrapMinimizer == null)
+	        		instance_soot_dexpler_TrapMinimizer = new soot.dexpler.TrapMinimizer(g);
 	       	}
        	}
         return instance_soot_dexpler_TrapMinimizer;
@@ -2313,10 +2316,10 @@ public class Singletons {
 
     private soot.toolkits.scalar.SmartLocalDefsPool instance_soot_toolkits_scalar_SmartLocalDefsPool;
     public soot.toolkits.scalar.SmartLocalDefsPool soot_toolkits_scalar_SmartLocalDefsPool() {
-        if( instance_soot_toolkits_scalar_SmartLocalDefsPool == null ) {
+        if (instance_soot_toolkits_scalar_SmartLocalDefsPool == null) {
 	       	synchronized (this) {
-		        if( instance_soot_toolkits_scalar_SmartLocalDefsPool == null )
-	        		instance_soot_toolkits_scalar_SmartLocalDefsPool = new soot.toolkits.scalar.SmartLocalDefsPool( g );
+		        if (instance_soot_toolkits_scalar_SmartLocalDefsPool == null)
+	        		instance_soot_toolkits_scalar_SmartLocalDefsPool = new soot.toolkits.scalar.SmartLocalDefsPool(g);
 	       	}
        	}
         return instance_soot_toolkits_scalar_SmartLocalDefsPool;
@@ -2327,10 +2330,10 @@ public class Singletons {
 
     private soot.jimple.spark.internal.PublicAndProtectedAccessibility instance_soot_jimple_spark_internal_PublicAndProtectedAccessibility;
     public soot.jimple.spark.internal.PublicAndProtectedAccessibility soot_jimple_spark_internal_PublicAndProtectedAccessibility() {
-        if( instance_soot_jimple_spark_internal_PublicAndProtectedAccessibility == null ) {
+        if (instance_soot_jimple_spark_internal_PublicAndProtectedAccessibility == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_spark_internal_PublicAndProtectedAccessibility == null )
-	        		instance_soot_jimple_spark_internal_PublicAndProtectedAccessibility = new soot.jimple.spark.internal.PublicAndProtectedAccessibility( g );
+		        if (instance_soot_jimple_spark_internal_PublicAndProtectedAccessibility == null)
+	        		instance_soot_jimple_spark_internal_PublicAndProtectedAccessibility = new soot.jimple.spark.internal.PublicAndProtectedAccessibility(g);
 	       	}
        	}
         return instance_soot_jimple_spark_internal_PublicAndProtectedAccessibility;
@@ -2341,10 +2344,10 @@ public class Singletons {
 
     private soot.jimple.spark.internal.CompleteAccessibility instance_soot_jimple_spark_internal_CompleteAccessibility;
     public soot.jimple.spark.internal.CompleteAccessibility soot_jimple_spark_internal_CompleteAccessibility() {
-        if( instance_soot_jimple_spark_internal_CompleteAccessibility == null ) {
+        if (instance_soot_jimple_spark_internal_CompleteAccessibility == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_spark_internal_CompleteAccessibility == null )
-	        		instance_soot_jimple_spark_internal_CompleteAccessibility = new soot.jimple.spark.internal.CompleteAccessibility( g );
+		        if (instance_soot_jimple_spark_internal_CompleteAccessibility == null)
+	        		instance_soot_jimple_spark_internal_CompleteAccessibility = new soot.jimple.spark.internal.CompleteAccessibility(g);
 	       	}
        	}
         return instance_soot_jimple_spark_internal_CompleteAccessibility;
@@ -2355,10 +2358,10 @@ public class Singletons {
 
     private soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer;
     public soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer() {
-        if( instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer == null ) {
+        if (instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer == null) {
 	       	synchronized (this) {
-		        if( instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer == null )
-	        		instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer = new soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer( g );
+		        if (instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer == null)
+	        		instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer = new soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer(g);
 	       	}
        	}
         return instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer;
@@ -2367,4 +2370,17 @@ public class Singletons {
     	instance_soot_jimple_toolkits_reflection_ConstantInvokeMethodBaseTransformer = null;
     }
 
+    private soot.jbco.jimpleTransformations.ClassRenamer instance_soot_jbco_jimpleTransformations_ClassRenamer;
+    public soot.jbco.jimpleTransformations.ClassRenamer soot_jbco_jimpleTransformations_ClassRenamer() {
+        if (instance_soot_jbco_jimpleTransformations_ClassRenamer == null) {
+	       	synchronized (this) {
+		        if (instance_soot_jbco_jimpleTransformations_ClassRenamer == null)
+	        		instance_soot_jbco_jimpleTransformations_ClassRenamer = new soot.jbco.jimpleTransformations.ClassRenamer(g);
+	       	}
+       	}
+        return instance_soot_jbco_jimpleTransformations_ClassRenamer;
+    }
+    protected void release_soot_jbco_jimpleTransformations_ClassRenamer() {
+    	instance_soot_jbco_jimpleTransformations_ClassRenamer = null;
+    }
 }

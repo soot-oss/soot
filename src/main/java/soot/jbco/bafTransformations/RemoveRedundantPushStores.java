@@ -17,7 +17,7 @@ public class RemoveRedundantPushStores extends BodyTransformer implements IJbcoT
   
   public static String dependancies[] = new String[] {"bb.jbco_rrps"};
 
-  public String[] getDependancies() {
+  public String[] getDependencies() {
     return dependancies;
   }
   

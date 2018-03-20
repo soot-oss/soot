@@ -38,7 +38,7 @@ public class GotoInstrumenter extends BodyTransformer implements IJbcoTransform 
 
   public static String dependancies[] = new String[] { "jtp.jbco_gia" };
 
-  public String[] getDependancies() {
+  public String[] getDependencies() {
     return dependancies;
   }
   

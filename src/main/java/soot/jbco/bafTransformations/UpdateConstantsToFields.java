@@ -36,7 +36,7 @@ public class UpdateConstantsToFields extends BodyTransformer  implements IJbcoTr
 
   public static String dependancies[] = new String[] {"wjtp.jbco_cc","bb.jbco_ecvf", "bb.jbco_ful", "bb.lp"};
   
-  public String[] getDependancies() {
+  public String[] getDependencies() {
     return dependancies;
   }
   public static String name = "bb.jbco_ecvf";

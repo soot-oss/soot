@@ -64,7 +64,7 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
         return name;
     }
 
-    public String[] getDependancies() {
+    public String[] getDependencies() {
         return dependancies;
     }
 

@@ -43,7 +43,7 @@ public class FixUndefinedLocals extends BodyTransformer implements IJbcoTransfor
   
   public static String dependancies[] = new String[] {"bb.jbco_j2bl", "bb.jbco_ful", "bb.lp" };
 
-  public String[] getDependancies() {
+  public String[] getDependencies() {
     return dependancies;
   }
   
