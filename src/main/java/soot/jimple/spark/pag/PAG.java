@@ -18,8 +18,6 @@
  */
 
 package soot.jimple.spark.pag;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -29,12 +27,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 
 import soot.Context;
 import soot.FastHierarchy;
-import soot.G;
 import soot.Kind;
 import soot.Local;
 import soot.PhaseOptions;
@@ -94,7 +94,8 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public class PAG implements PointsToAnalysis {
-    private static final Logger logger = LoggerFactory.getLogger(PAG.class);
+	private static final Logger logger = LoggerFactory.getLogger(PAG.class);
+
 	public PAG(final SparkOptions opts) {
 		this.opts = opts;
 		this.cgOpts = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));

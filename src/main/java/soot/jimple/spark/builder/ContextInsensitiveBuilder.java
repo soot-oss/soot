@@ -18,13 +18,13 @@
  */
 
 package soot.jimple.spark.builder;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import soot.G;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Scene;
 import soot.SootClass;
 import soot.SootMethod;
@@ -47,7 +47,8 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public class ContextInsensitiveBuilder {
-    private static final Logger logger = LoggerFactory.getLogger(ContextInsensitiveBuilder.class);
+	private static final Logger logger = LoggerFactory.getLogger(ContextInsensitiveBuilder.class);
+
 	public void preJimplify() {
 		boolean change = true;
 		while (change) {
