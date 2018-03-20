@@ -18,8 +18,6 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -34,6 +32,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.ArrayType;
 import soot.Body;
 import soot.BooleanType;
@@ -44,7 +45,6 @@ import soot.DoubleType;
 import soot.EntryPoints;
 import soot.FastHierarchy;
 import soot.FloatType;
-import soot.G;
 import soot.IntType;
 import soot.Kind;
 import soot.Local;
@@ -108,7 +108,7 @@ import soot.util.queue.QueueReader;
  * @author Ondrej Lhotak
  */
 public final class OnFlyCallGraphBuilder {
-    private static final Logger logger = LoggerFactory.getLogger(OnFlyCallGraphBuilder.class);
+	private static final Logger logger = LoggerFactory.getLogger(OnFlyCallGraphBuilder.class);
 	private static final PrimType[] CHAR_NARROWINGS = new PrimType[] { CharType.v() };
 	private static final PrimType[] INT_NARROWINGS = new PrimType[] { IntType.v(), CharType.v(), ShortType.v(),
 			ByteType.v(), ShortType.v() };
@@ -166,7 +166,7 @@ public final class OnFlyCallGraphBuilder {
 	protected final RefType clAsyncTask = RefType.v("android.os.AsyncTask");
 	protected final RefType clHandler = RefType.v("android.os.Handler");
 	/** context-insensitive stuff */
-	private final CallGraph cicg = new CallGraph();
+	private final CallGraph cicg = Scene.v().internalMakeCallGraph();
 	private final HashSet<SootMethod> analyzedMethods = new HashSet<SootMethod>();
 
 	// end type based reflection resolution
@@ -209,8 +209,8 @@ public final class OnFlyCallGraphBuilder {
 		worklist = rm.listener();
 		options = new CGOptions(PhaseOptions.v().getPhaseOptions("cg"));
 		if (!options.verbose()) {
-			logger.debug(""+
-					"[Call Graph] For information on where the call graph may be incomplete, use the verbose option to the cg phase.");
+			logger.debug(""
+					+ "[Call Graph] For information on where the call graph may be incomplete, use the verbose option to the cg phase.");
 		}
 
 		if (options.reflection_log() == null || options.reflection_log().length() == 0) {
@@ -570,8 +570,8 @@ public final class OnFlyCallGraphBuilder {
 			final VirtualCallSite site = siteIt.next();
 			if (constant == null) {
 				if (options.verbose()) {
-					logger.debug(""+
-							"Warning: Method " + site.container() + " is reachable, and calls Class.forName on a"
+					logger.debug(
+							"" + "Warning: Method " + site.container() + " is reachable, and calls Class.forName on a"
 									+ " non-constant String; graph will be incomplete!"
 									+ " Use safe-forname option for a conservative result.");
 				}
@@ -585,8 +585,8 @@ public final class OnFlyCallGraphBuilder {
 				}
 				if (!Scene.v().containsClass(constant)) {
 					if (options.verbose()) {
-						logger.debug(""+
-								"Warning: Class " + constant + " is" + " a dynamic class, and you did not specify"
+						logger.debug(
+								"" + "Warning: Class " + constant + " is" + " a dynamic class, and you did not specify"
 										+ " it as such; graph will be incomplete!");
 					}
 				} else {
@@ -743,8 +743,8 @@ public final class OnFlyCallGraphBuilder {
 					}
 				} else if (ie instanceof DynamicInvokeExpr) {
 					if (options.verbose())
-						logger.debug(""+
-								"WARNING: InvokeDynamic to " + ie + " not resolved during call-graph construction.");
+						logger.debug("" + "WARNING: InvokeDynamic to " + ie
+								+ " not resolved during call-graph construction.");
 				} else {
 					SootMethod tgt = ie.getMethod();
 					if (tgt != null) {
@@ -1165,8 +1165,7 @@ public final class OnFlyCallGraphBuilder {
 			SootMethod container = guard.container;
 			Stmt insertionPoint = guard.stmt;
 			if (!container.hasActiveBody()) {
-				logger.warn("Tried to insert guard into " + container
-						+ " but couldn't because method has no body.");
+				logger.warn("Tried to insert guard into " + container + " but couldn't because method has no body.");
 			} else {
 				Body body = container.getActiveBody();
 

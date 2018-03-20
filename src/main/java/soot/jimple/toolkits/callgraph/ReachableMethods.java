@@ -61,12 +61,12 @@ public class ReachableMethods {
 		this(graph, entryPoints.iterator());
 	}
 
-	private void addMethods(Iterator<? extends MethodOrMethodContext> methods) {
+	protected void addMethods(Iterator<? extends MethodOrMethodContext> methods) {
 		while (methods.hasNext())
 			addMethod(methods.next());
 	}
 
-	private void addMethod(MethodOrMethodContext m) {
+	protected void addMethod(MethodOrMethodContext m) {
 		if (set.add(m)) {
 			reachables.add(m);
 		}

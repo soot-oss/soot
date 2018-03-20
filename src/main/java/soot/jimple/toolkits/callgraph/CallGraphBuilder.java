@@ -74,7 +74,7 @@ public final class CallGraphBuilder {
 	 */
 	public CallGraphBuilder(PointsToAnalysis pa) {
 		this.pa = pa;
-		cg = new CallGraph();
+		cg = Scene.v().internalMakeCallGraph();
 		Scene.v().setCallGraph(cg);
 		reachables = Scene.v().getReachableMethods();
 		ContextManager cm = makeContextManager(cg);

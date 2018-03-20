@@ -77,14 +77,6 @@ public class OnFlyCallGraph {
 		callEdges = cm.callGraph().listener();
 	}
 
-	/**
-	 * Creates the callgraph object. This is a separate method so that derived
-	 * classes can create other callgraph implementations.
-	 */
-	protected CallGraph createCallGraph() {
-		return new CallGraph();
-	}
-
 	public void build() {
 		ofcgb.processReachables();
 		processReachables();
