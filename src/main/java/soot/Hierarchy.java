@@ -25,6 +25,10 @@
 
 package soot;
 
+import soot.jimple.SpecialInvokeExpr;
+import soot.util.ArraySet;
+import soot.util.Chain;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -34,10 +38,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import soot.jimple.SpecialInvokeExpr;
-import soot.util.ArraySet;
-import soot.util.Chain;
 
 /**
  * Represents the class hierarchy. It is closely linked to a Scene, and must be
@@ -202,70 +202,103 @@ public class Hierarchy {
 		return l;
 	}
 
-	/** Returns a list of superclasses of c, including itself. */
-	public List<SootClass> getSuperclassesOfIncluding(SootClass c) {
-		c.checkLevel(SootClass.HIERARCHY);
-		List<SootClass> l = getSuperclassesOf(c);
-		ArrayList<SootClass> al = new ArrayList<SootClass>();
-		al.add(c);
-		al.addAll(l);
-		return Collections.unmodifiableList(al);
+	/**
+	 * Returns a list of superclasses of {@code sootClass}, including itself.
+	 *
+	 * @param sootClass the <strong>class</strong> of which superclasses will be taken. Must not be {@code null} or
+	 *                  interface
+	 * @return list of superclasses, including itself
+	 * @throws IllegalArgumentException when passed class is an interface
+	 * @throws NullPointerException     when passed argument is {@code null}
+	 */
+	public List<SootClass> getSuperclassesOfIncluding(SootClass sootClass) {
+		final List<SootClass> superclasses = getSuperclassesOf(sootClass);
+
+		final List<SootClass> result = new ArrayList<>(superclasses.size() + 1);
+		result.add(sootClass);
+		result.addAll(superclasses);
+
+		return Collections.unmodifiableList(result);
 	}
 
-	/** Returns a list of strict superclasses of c, starting with c's parent. */
-	public List<SootClass> getSuperclassesOf(SootClass c) {
-		c.checkLevel(SootClass.HIERARCHY);
-		if (c.isInterface())
-			throw new RuntimeException("class needed!");
+	/**
+	 * Returns a list of <strong>direct</strong> superclasses of passed class in reverse order,
+	 * starting with its parent.
+	 *
+	 * @param sootClass the <strong>class</strong> of which superclasses will be taken. Must not be {@code null} or
+	 *                  interface
+	 * @return list of superclasses
+	 * @throws IllegalArgumentException when passed class is an interface
+	 * @throws NullPointerException     when passed argument is {@code null}
+	 */
+	public List<SootClass> getSuperclassesOf(SootClass sootClass) {
+		sootClass.checkLevel(SootClass.HIERARCHY);
+		if (sootClass.isInterface()) {
+			throw new IllegalArgumentException(sootClass.getName() + " is an interface, but class is expected");
+		}
 
 		checkState();
 
-		ArrayList<SootClass> l = new ArrayList<SootClass>();
-		SootClass cl = c;
+		final List<SootClass> superclasses = new ArrayList<>();
 
-		while (cl.hasSuperclass()) {
-			l.add(cl.getSuperclass());
-			cl = cl.getSuperclass();
+		SootClass current = sootClass;
+		while (current.hasSuperclass()) {
+			superclasses.add(current.getSuperclass());
+			current = current.getSuperclass();
 		}
 
-		return Collections.unmodifiableList(l);
+		return Collections.unmodifiableList(superclasses);
 	}
 
-	/** Returns a list of subinterfaces of c, including itself. */
-	public List<SootClass> getSubinterfacesOfIncluding(SootClass c) {
-		c.checkLevel(SootClass.HIERARCHY);
-		if (!c.isInterface())
-			throw new RuntimeException("interface needed!");
+	/**
+	 * Returns a list of subinterfaces of sootClass, including itself.
+	 *
+	 * @param sootClass the <strong>interface</strong> of which subinterfaces will be taken. Must not be {@code null} or
+	 *                  class
+	 * @return list of subinterfaces, including passed one
+	 * @throws IllegalArgumentException when passed class is a class
+	 * @throws NullPointerException     when passed argument is {@code null}
+	 */
+	public List<SootClass> getSubinterfacesOfIncluding(SootClass sootClass) {
+		final List<SootClass> result = new ArrayList<>(getSubinterfacesOf(sootClass));
+		result.add(sootClass);
 
-		List<SootClass> l = new ArrayList<SootClass>();
-		l.addAll(getSubinterfacesOf(c));
-		l.add(c);
-
-		return Collections.unmodifiableList(l);
+		return Collections.unmodifiableList(result);
 	}
 
-	/** Returns a list of subinterfaces of c, excluding itself. */
-	public List<SootClass> getSubinterfacesOf(SootClass c) {
-		c.checkLevel(SootClass.HIERARCHY);
-		if (!c.isInterface())
-			throw new RuntimeException("interface needed!");
+	/**
+	 * Returns a list of subinterfaces of sootClass, excluding itself.
+	 *
+	 * @param sootClass the <strong>interface</strong> of which subinterfaces will be taken. Must not be {@code null} or
+	 *                  class
+	 * @return list of subinterfaces, including passed one
+	 * @throws IllegalArgumentException when passed sootClass is a class
+	 * @throws NullPointerException     when passed argument is {@code null}
+	 */
+	public List<SootClass> getSubinterfacesOf(SootClass sootClass) {
+		sootClass.checkLevel(SootClass.HIERARCHY);
+		if (!sootClass.isInterface()) {
+			throw new IllegalArgumentException(sootClass.getName() + " is a class, but interface is expected");
+		}
 
 		checkState();
 
 		// If already cached, return the value.
-		if (interfaceToSubinterfaces.get(c) != null)
-			return interfaceToSubinterfaces.get(c);
+		if (interfaceToSubinterfaces.get(sootClass) != null)
+			return interfaceToSubinterfaces.get(sootClass);
 
 		// Otherwise, build up the hashmap.
-		List<SootClass> l = new ArrayList<SootClass>();
+		final List<SootClass> result = new ArrayList<>();
 
-		for (SootClass si : interfaceToDirSubinterfaces.get(c)) {
-			l.addAll(getSubinterfacesOfIncluding(si));
+		for (SootClass si : interfaceToDirSubinterfaces.get(sootClass)) {
+			result.addAll(getSubinterfacesOfIncluding(si));
 		}
 
-		interfaceToSubinterfaces.put(c, Collections.unmodifiableList(l));
+		final List<SootClass> unmodifiableResult = Collections.unmodifiableList(result);
 
-		return Collections.unmodifiableList(l);
+		interfaceToSubinterfaces.put(sootClass, unmodifiableResult);
+
+		return unmodifiableResult;
 	}
 
 	/** Returns a list of superinterfaces of c, including itself. */
