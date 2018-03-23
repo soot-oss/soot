@@ -46,37 +46,74 @@ public class QueueReader<E> implements java.util.Iterator<E> {
 	 */
 	@SuppressWarnings("unchecked")
 	public E next() {
-		if (q[index] == null)
-			throw new NoSuchElementException();
-		if (index == q.length - 1) {
-			q = (E[]) q[index];
-			index = 0;
+		Object ret = null;
+		do {
 			if (q[index] == null)
 				throw new NoSuchElementException();
-		}
-		E ret = q[index];
-		if (ret == ChunkedQueue.NULL_CONST)
-			ret = null;
-		index++;
-		return ret;
+			if (index == q.length - 1) {
+				q = (E[]) q[index];
+				index = 0;
+				if (q[index] == null)
+					throw new NoSuchElementException();
+			}
+			ret = q[index];
+			if (ret == ChunkedQueue.NULL_CONST)
+				ret = null;
+			index++;
+		} while (ret == ChunkedQueue.DELETED_CONST);
+		return (E) ret;
 	}
 
 	/** Returns true iff there is currently another object in the queue. */
 	@SuppressWarnings("unchecked")
 	public boolean hasNext() {
-		if (q[index] == null)
-			return false;
-		if (index == q.length - 1) {
-			q = (E[]) q[index];
-			index = 0;
+		do {
 			if (q[index] == null)
 				return false;
-		}
+			if (index == q.length - 1) {
+				q = (E[]) q[index];
+				index = 0;
+				if (q[index] == null)
+					return false;
+			}
+			if (q[index] == ChunkedQueue.DELETED_CONST)
+				index++;
+			else
+				break;
+		} while (true);
 		return true;
 	}
 
+	/**
+	 * Removes an element from the underlying queue. This operation can only delete
+	 * elements that have not yet been consumed by this reader.
+	 * 
+	 * @param o
+	 *            The element to remove
+	 */
+	@SuppressWarnings("unchecked")
+	public void remove(E o) {
+		int idx = 0;
+		Object[] curQ = q;
+		while (curQ[idx] != null) {
+			// Do we need to switch to a new list?
+			if (index == curQ.length - 1) {
+				curQ = (E[]) q[idx];
+				idx = 0;
+			}
+
+			// Is this the element to delete?
+			if (o.equals(curQ[idx]))
+				curQ[idx] = ChunkedQueue.DELETED_CONST;
+
+			// Next element
+			idx++;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
 	public void remove() {
-		throw new UnsupportedOperationException();
+		q[index - 1] = (E) ChunkedQueue.DELETED_CONST;
 	}
 
 	public QueueReader<E> clone() {
