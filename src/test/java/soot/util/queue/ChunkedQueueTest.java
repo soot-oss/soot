@@ -108,4 +108,17 @@ public class ChunkedQueueTest {
 		Assert.assertFalse(rdr2.hasNext());
 	}
 
+	@Test
+	public void removeFromLargeQueueTest() {
+		ChunkedQueue<String> queue = new ChunkedQueue<>();
+		QueueReader<String> rdr = queue.reader();
+		for (int i = 0; i < 100; i++)
+			queue.add("Hello World " + i);
+		Assert.assertTrue(rdr.hasNext());
+		rdr.remove("Hello World 90");
+		Assert.assertTrue(rdr.hasNext());
+		Assert.assertEquals(rdr.next(), "Hello World 0");
+		Assert.assertTrue(rdr.hasNext());
+	}
+
 }

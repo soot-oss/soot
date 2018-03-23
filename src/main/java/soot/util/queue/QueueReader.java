@@ -98,7 +98,7 @@ public class QueueReader<E> implements java.util.Iterator<E> {
 		while (curQ[idx] != null) {
 			// Do we need to switch to a new list?
 			if (idx == curQ.length - 1) {
-				curQ = (E[]) q[idx];
+				curQ = (E[]) curQ[idx];
 				idx = 0;
 			}
 
