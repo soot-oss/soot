@@ -45,7 +45,6 @@ import soot.jbco.util.BodyBuilder;
 import soot.jbco.util.HierarchyUtils;
 import soot.jbco.util.Rand;
 import soot.jimple.InvokeExpr;
-import soot.options.Options;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -198,8 +197,6 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
 
     @Override
     protected void internalTransform(String phaseName, Map<String, String> options) {
-        Options.v().set_verbose(true);
-
         if (isVerbose()) {
             logger.info("Transforming method names...");
         }
@@ -351,8 +348,6 @@ public class MethodRenamer extends SceneTransformer implements IJbcoTransform {
                 }
             }
         }
-
-        Options.v().set_verbose(false);
 
         Scene.v().releaseActiveHierarchy();
         Scene.v().setFastHierarchy(new FastHierarchy());
