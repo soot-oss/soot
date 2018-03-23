@@ -28,6 +28,7 @@ package soot.jimple.toolkits.typing.integer;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -74,10 +75,11 @@ public class TypeResolver {
 	final TypeVariable R0_32767 = typeVariable(ClassHierarchy.v().R0_32767);
 
 	private static final boolean DEBUG = false;
+	private static final boolean IMPERFORMANT_TYPE_CHECK = false;
 
 	// categories for type variables (solved = hard, unsolved = soft)
-	private List<TypeVariable> unsolved;
-	private List<TypeVariable> solved;
+	private Collection<TypeVariable> unsolved;
+	private Collection<TypeVariable> solved;
 
 	/** Get type variable for the given local. **/
 	TypeVariable typeVariable(Local local) {
@@ -231,11 +233,15 @@ public class TypeResolver {
 
 	private void merge_connected_components() throws TypeException {
 		compute_solved();
-		List<TypeVariable> list = new LinkedList<TypeVariable>();
-		list.addAll(solved);
-		list.addAll(unsolved);
-
-		StronglyConnectedComponents.merge(list);
+		if (IMPERFORMANT_TYPE_CHECK) {
+			List<TypeVariable> list = new ArrayList<TypeVariable>(solved.size() + unsolved.size());
+			list.addAll(solved);
+			list.addAll(unsolved);
+			//MMI: This method does not perform any changing effect
+			//on the list, just a bit error checking, if
+			//I see this correctly.
+			StronglyConnectedComponents.merge(list);
+		}
 	}
 
 	private void merge_single_constraints() throws TypeException {
@@ -549,8 +555,8 @@ public class TypeResolver {
 			}
 		}
 
-		solved = new LinkedList<TypeVariable>(solved_set);
-		unsolved = new LinkedList<TypeVariable>(unsolved_set);
+		solved = solved_set;
+		unsolved = unsolved_set;
 	}
 
 	private void refresh_solved() throws TypeException {
@@ -566,7 +572,7 @@ public class TypeResolver {
 			}
 		}
 
-		solved = new LinkedList<TypeVariable>(solved_set);
-		unsolved = new LinkedList<TypeVariable>(unsolved_set);
+		solved = solved_set;
+		unsolved = unsolved_set;
 	}
 }
