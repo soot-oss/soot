@@ -365,7 +365,7 @@ public class Main {
     if (name.equals("wjtp.jbco_fr"))
       return new FieldRenamer();
     if (name.equals("wjtp.jbco_mr"))
-      return new MethodRenamer();
+      return MethodRenamer.v();
     if (name.equals("jtp.jbco_adss"))
       return new AddSwitches();
     if (name.equals("jtp.jbco_jl"))

@@ -163,7 +163,7 @@ public class BuildIntermediateAppClasses extends SceneTransformer implements IJb
                     int modifiers = originalSuperclassMethod.getModifiers() & ~Modifier.ABSTRACT & ~Modifier.NATIVE;
                     SootMethod newMethod;
                     { // build new junk method to call original method
-                        String newMethodName = MethodRenamer.getNewName();
+                        String newMethodName = MethodRenamer.v().getNewName();
                         newMethod = Scene.v().makeSootMethod(newMethodName, paramTypes, returnType,
                                 modifiers, exceptions);
                         mediatingClass.addMethod(newMethod);

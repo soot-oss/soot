@@ -36,8 +36,9 @@ import soot.Unit;
 import soot.Value;
 import soot.ValueBox;
 import soot.jbco.IJbcoTransform;
+import soot.jbco.name.JunkNameGenerator;
+import soot.jbco.name.NameGenerator;
 import soot.jbco.util.BodyBuilder;
-import soot.jbco.util.Rand;
 import soot.jimple.CastExpr;
 import soot.jimple.ClassConstant;
 import soot.jimple.Expr;
@@ -60,24 +61,11 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
     private static final Logger logger = LoggerFactory.getLogger(ClassRenamer.class);
 
-    /**
-     * In according to JVM specification, the name is limited to 65535 characters by the 16-bit unsigned length item of
-     * the CONSTANT_Utf8_info structure. As the limit is on the number of bytes and UTF-8 encodes some characters using
-     * two or three bytes, we assume that in worst case number or characters is 65535 / 3
-     */
-    private static final int nameMaxLength = 65_535 / 3;
-
     private boolean removePackages = false;
     private boolean renamePackages = false;
 
     public static final String name = "wjtp.jbco_cr";
-    private static final String dependancies[] = new String[]{ClassRenamer.name};
-
-    private static final char stringChars[][] = {
-            {'S', '5', '$'},
-            {'l', '1', 'I'},
-            {'_'}
-    };
+    private static final String dependencies[] = new String[]{ClassRenamer.name};
 
     private final Map<String, String> oldToNewPackageNames = new HashMap<>();
     private final Map<String, String> oldToNewClassNames = new HashMap<>();
@@ -85,6 +73,8 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
     private final Object classNamesMapLock = new Object();
     private final Object packageNamesMapLock = new Object();
+
+    private final NameGenerator nameGenerator;
 
     /**
      * Singleton constructor.
@@ -96,6 +86,8 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
         if (global == null) {
             throw new NullPointerException("Cannot instantiate ClassRenamer with null Singletons.Global");
         }
+
+        this.nameGenerator = new JunkNameGenerator();
     }
 
     /**
@@ -114,7 +106,7 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
     @Override
     public String[] getDependencies() {
-        return dependancies;
+        return dependencies;
     }
 
     @Override
@@ -197,7 +189,7 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
     @Override
     protected void internalTransform(String phaseName, Map<String, String> options) {
-        if (output) {
+        if (isVerbose()) {
             logger.debug("Transforming Class Names...");
         }
 
@@ -231,7 +223,7 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
 
             newNameToClass.put(newClassName, sootClass);
 
-            if (output) {
+            if (isVerbose()) {
                 logger.info("\tRenaming " + className + " to " + newClassName);
             }
         }
@@ -239,7 +231,7 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
         Scene.v().releaseActiveHierarchy();
         Scene.v().setFastHierarchy(new FastHierarchy());
 
-        if (output) {
+        if (isVerbose()) {
             logger.info("\r\tUpdating bytecode class references");
         }
 
@@ -249,7 +241,7 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
                     continue;
                 }
 
-                if (output) {
+                if (isVerbose()) {
                     logger.info("\t\t" + sootMethod.getSignature());
                 }
                 Body aBody;
@@ -317,11 +309,9 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
         int size = 5;
         int tries = 0;
 
-        String newClassName = "";
-        while (newClassName.length() < nameMaxLength) {
-
-            final String junkName = generateJunkName(size);
-            newClassName = removePackages
+        while (true) {
+            final String junkName = nameGenerator.generateName(size);
+            final String newClassName = removePackages
                     ? junkName
                     : (renamePackages ? getNewPackageName(packageName) : packageName) + junkName;
 
@@ -343,8 +333,6 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
                 tries = 0;
             }
         }
-
-        throw new IllegalStateException("Cannot generate unique name: too long for JVM.");
     }
 
     /**
@@ -396,9 +384,9 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
         int tries = 0;
 
         String newPackageNamePart = "";
-        while (newPackageNamePart.length() < nameMaxLength) {
+        while (newPackageNamePart.length() < NameGenerator.NAME_MAX_LENGTH) {
 
-            newPackageNamePart = generateJunkName(size);
+            newPackageNamePart = nameGenerator.generateName(size);
 
             synchronized (packageNamesMapLock) {
                 if (!oldToNewPackageNames.containsValue(newPackageNamePart)
@@ -422,20 +410,4 @@ public class ClassRenamer extends SceneTransformer implements IJbcoTransform {
         throw new IllegalStateException("Cannot generate unique package name part: too long for JVM.");
     }
 
-    private static String generateJunkName(int size) {
-        int index = Rand.getInt(stringChars.length);
-        int length = stringChars[index].length;
-
-        char newName[] = new char[size];
-        do {
-            newName[0] = stringChars[index][Rand.getInt(length)];
-        } while (!Character.isJavaIdentifierStart(newName[0]));
-
-        // generate random string
-        for (int i = 1; i < newName.length; i++) {
-            int rand = Rand.getInt(length);
-            newName[i] = stringChars[index][rand];
-        }
-        return String.copyValueOf(newName);
-    }
 }
