@@ -32,9 +32,9 @@ import soot.jimple.Stmt;
  * Utility class for the conversion from soot to dex.
  */
 public class SootToDexUtils {
-	
+
 	private static final Map<Class<? extends Type>, String> sootToDexTypeDescriptor;
-	
+
 	static {
 		sootToDexTypeDescriptor = new HashMap<Class<? extends Type>, String>();
 		sootToDexTypeDescriptor.put(BooleanType.class, "Z");
@@ -47,8 +47,11 @@ public class SootToDexUtils {
 		sootToDexTypeDescriptor.put(ShortType.class, "S");
 		sootToDexTypeDescriptor.put(VoidType.class, "V");
 	}
-	
+
 	public static String getDexTypeDescriptor(Type sootType) {
+		if (sootType == null)
+			throw new NullPointerException("Soot type was null");
+
 		final String typeDesc;
 		if (sootType instanceof RefType) {
 			typeDesc = getDexClassName(((RefType) sootType).getClassName());
@@ -57,17 +60,16 @@ public class SootToDexUtils {
 		} else {
 			typeDesc = sootToDexTypeDescriptor.get(sootType.getClass());
 		}
-		
+
 		if (typeDesc == null || typeDesc.isEmpty())
-			throw new RuntimeException("Could not create type descriptor for class "
-					+ sootType);
+			throw new RuntimeException("Could not create type descriptor for class " + sootType);
 		return typeDesc;
 	}
-	
+
 	public static String getDexClassName(String dottedClassName) {
 		if (dottedClassName == null || dottedClassName.isEmpty())
 			throw new RuntimeException("Empty class name detected");
-		
+
 		String slashedName = dottedClassName.replace('.', '/');
 		if (slashedName.startsWith("L") && slashedName.endsWith(";"))
 			return slashedName;
@@ -76,7 +78,8 @@ public class SootToDexUtils {
 
 	public static int getDexAccessFlags(SootMethod m) {
 		int dexAccessFlags = m.getModifiers();
-		// dex constructor flag is not included in the Soot modifiers, so add it if necessary
+		// dex constructor flag is not included in the Soot modifiers, so add it if
+		// necessary
 		if (m.isConstructor() || m.getName().equals(SootMethod.staticInitializerName)) {
 			dexAccessFlags |= Modifier.CONSTRUCTOR;
 		}
@@ -90,7 +93,7 @@ public class SootToDexUtils {
 		}
 		return dexAccessFlags;
 	}
-	
+
 	public static String getArrayTypeDescriptor(ArrayType type) {
 		Type baseType;
 		if (type.numDimensions > 1) {
@@ -100,40 +103,40 @@ public class SootToDexUtils {
 		}
 		return getDexTypeDescriptor(baseType);
 	}
-	
+
 	private static String getDexArrayTypeDescriptor(ArrayType sootArray) {
 		if (sootArray.numDimensions > 255) {
-			throw new RuntimeException("dex does not support more than 255 dimensions! " + sootArray + " has " + sootArray.numDimensions);
+			throw new RuntimeException(
+					"dex does not support more than 255 dimensions! " + sootArray + " has " + sootArray.numDimensions);
 		}
 		String baseTypeDescriptor = getDexTypeDescriptor(sootArray.baseType);
-		StringBuilder sb = new StringBuilder(sootArray.numDimensions
-				+ baseTypeDescriptor.length());
+		StringBuilder sb = new StringBuilder(sootArray.numDimensions + baseTypeDescriptor.length());
 		for (int i = 0; i < sootArray.numDimensions; i++) {
 			sb.append('[');
 		}
 		sb.append(baseTypeDescriptor);
 		return sb.toString();
 	}
-	
+
 	public static boolean isObject(String typeDescriptor) {
 		if (typeDescriptor.isEmpty())
 			return false;
 		char first = typeDescriptor.charAt(0);
 		return first == 'L' || first == '[';
 	}
-	
+
 	public static boolean isObject(Type sootType) {
 		return sootType instanceof RefLikeType;
 	}
-	
+
 	public static boolean isWide(String typeDescriptor) {
 		return typeDescriptor.equals("J") || typeDescriptor.equals("D");
 	}
-	
+
 	public static boolean isWide(Type sootType) {
 		return sootType instanceof LongType || sootType instanceof DoubleType;
 	}
-	
+
 	public static int getRealRegCount(List<Register> regs) {
 		int regCount = 0;
 		for (Register r : regs) {
@@ -142,11 +145,11 @@ public class SootToDexUtils {
 		}
 		return regCount;
 	}
-	
+
 	public static int getDexWords(Type sootType) {
 		return isWide(sootType) ? 2 : 1;
 	}
-	
+
 	public static int getDexWords(List<Type> sootTypes) {
 		int dexWords = 0;
 		for (Type t : sootTypes) {
@@ -154,7 +157,7 @@ public class SootToDexUtils {
 		}
 		return dexWords;
 	}
-	
+
 	public static int getOutWordCount(Collection<Unit> units) {
 		int outWords = 0;
 		for (Unit u : units) {
@@ -176,70 +179,67 @@ public class SootToDexUtils {
 		}
 		return outWords;
 	}
-	
+
 	// we could use some fancy shift operations...
-	
+
 	public static boolean fitsSigned4(long literal) {
 		return literal >= -8 && literal <= 7;
 	}
-	
+
 	public static boolean fitsSigned8(long literal) {
 		return literal >= -128 && literal <= 127;
 	}
-	
+
 	public static boolean fitsSigned16(long literal) {
 		return literal >= -32768 && literal <= 32767;
 	}
-	
+
 	public static boolean fitsSigned32(long literal) {
 		return literal >= -2147483648 && literal <= 2147483647;
 	}
-	
+
 	public static boolean isNormalMove(Opcode opc) {
 		return opc.name.startsWith("move") && !opc.name.startsWith("move-result");
 	}
-	
-    /**
-     * Split the signature string using the same algorithm as
-     * in method 'Annotation makeSignature(CstString signature)'
-     * in dx (dx/src/com/android/dx/dex/file/AnnotationUtils.java)
-     *
-     * Rules are:
-     * ""
-     * - scan to ';' or '<'. Consume ';' but not '<'.
-     * - scan to 'L' without consuming it.
-     * ""
-     *
-     * @param sig
-     * @return
-     */
-    public static List<String> splitSignature(String sig) {
-        List<String> split = new ArrayList<String>();
-        int len = sig.length();
-        int i = 0;
-        int j = 0;
-        while (i < len) {
-            char c = sig.charAt(i);
-            if (c == 'L') {
-                j = i + 1;
-                while (j < len) {
-                    c = sig.charAt(j);
-                    if (c == ';') {
-                        j++;
-                        break;
-                    } else if (c == '<') {
-                        break;
-                    }
-                    j++;
-                }
-            } else {
-                for (j = i + 1; j < len && sig.charAt(j) != 'L'; j++) {
-                }
-            }
-            split.add(sig.substring(i, j));
-            i = j;
-        }
-        return split;
-    }
+
+	/**
+	 * Split the signature string using the same algorithm as in method 'Annotation
+	 * makeSignature(CstString signature)' in dx
+	 * (dx/src/com/android/dx/dex/file/AnnotationUtils.java)
+	 *
+	 * Rules are: "" - scan to ';' or '<'. Consume ';' but not '<'. - scan to 'L'
+	 * without consuming it. ""
+	 *
+	 * @param sig
+	 * @return
+	 */
+	public static List<String> splitSignature(String sig) {
+		List<String> split = new ArrayList<String>();
+		int len = sig.length();
+		int i = 0;
+		int j = 0;
+		while (i < len) {
+			char c = sig.charAt(i);
+			if (c == 'L') {
+				j = i + 1;
+				while (j < len) {
+					c = sig.charAt(j);
+					if (c == ';') {
+						j++;
+						break;
+					} else if (c == '<') {
+						break;
+					}
+					j++;
+				}
+			} else {
+				for (j = i + 1; j < len && sig.charAt(j) != 'L'; j++) {
+				}
+			}
+			split.add(sig.substring(i, j));
+			i = j;
+		}
+		return split;
+	}
 
 }
