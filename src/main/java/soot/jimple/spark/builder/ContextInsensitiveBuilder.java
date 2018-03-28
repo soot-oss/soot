@@ -53,8 +53,7 @@ public class ContextInsensitiveBuilder {
 		boolean change = true;
 		while (change) {
 			change = false;
-			for (Iterator<SootClass> cIt = new ArrayList<SootClass>(Scene.v().getClasses()).iterator(); cIt
-					.hasNext();) {
+			for (Iterator<SootClass> cIt = new ArrayList<>(Scene.v().getClasses()).iterator(); cIt.hasNext();) {
 				final SootClass c = cIt.next();
 				for (final SootMethod m : c.getMethods()) {
 					if (!m.isConcrete())
