@@ -168,4 +168,5 @@
   <class>soot.jimple.spark.internal.CompleteAccessibility</class>
   <class>soot.jimple.toolkits.reflection.ConstantInvokeMethodBaseTransformer</class>
   <class>soot.jbco.jimpleTransformations.ClassRenamer</class>
+  <class>soot.jbco.jimpleTransformations.MethodRenamer</class>
 </singletons>

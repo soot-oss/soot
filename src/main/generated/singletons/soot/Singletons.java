@@ -23,7 +23,7 @@
 package soot;
 
 /** A class to group together all the global variables in Soot. */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-03-20T19:12:30.663+01:00", comments = "from singletons.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-03-23T12:42:25.891+03:00", comments = "from singletons.xml")
 public class Singletons {
 
     public final class Global {
@@ -2382,5 +2382,19 @@ public class Singletons {
     }
     protected void release_soot_jbco_jimpleTransformations_ClassRenamer() {
     	instance_soot_jbco_jimpleTransformations_ClassRenamer = null;
+    }
+
+    private soot.jbco.jimpleTransformations.MethodRenamer instance_soot_jbco_jimpleTransformations_MethodRenamer;
+    public soot.jbco.jimpleTransformations.MethodRenamer soot_jbco_jimpleTransformations_MethodRenamer() {
+        if (instance_soot_jbco_jimpleTransformations_MethodRenamer == null) {
+	       	synchronized (this) {
+		        if (instance_soot_jbco_jimpleTransformations_MethodRenamer == null)
+	        		instance_soot_jbco_jimpleTransformations_MethodRenamer = new soot.jbco.jimpleTransformations.MethodRenamer(g);
+	       	}
+       	}
+        return instance_soot_jbco_jimpleTransformations_MethodRenamer;
+    }
+    protected void release_soot_jbco_jimpleTransformations_MethodRenamer() {
+    	instance_soot_jbco_jimpleTransformations_MethodRenamer = null;
     }
 }
