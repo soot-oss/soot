@@ -145,14 +145,14 @@ public class Scene // extends AbstractHost
 	protected StringNumberer subSigNumberer = new StringNumberer();
 	protected ArrayNumberer<Local> localNumberer = new ArrayNumberer<Local>();
 
-	private Hierarchy activeHierarchy;
-	private FastHierarchy activeFastHierarchy;
-	private CallGraph activeCallGraph;
-	private ReachableMethods reachableMethods;
-	private PointsToAnalysis activePointsToAnalysis;
-	private SideEffectAnalysis activeSideEffectAnalysis;
-	private List<SootMethod> entryPoints;
-	private ClientAccessibilityOracle accessibilityOracle;
+	protected Hierarchy activeHierarchy;
+	protected FastHierarchy activeFastHierarchy;
+	protected CallGraph activeCallGraph;
+	protected ReachableMethods reachableMethods;
+	protected PointsToAnalysis activePointsToAnalysis;
+	protected SideEffectAnalysis activeSideEffectAnalysis;
+	protected List<SootMethod> entryPoints;
+	protected ClientAccessibilityOracle accessibilityOracle;
 
 	boolean allowsPhantomRefs = false;
 
