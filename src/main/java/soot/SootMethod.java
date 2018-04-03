@@ -355,7 +355,7 @@ public class SootMethod extends AbstractHost implements ClassMember, Numberable,
 			throw new RuntimeException("cannot get active body for phantom class: " + getSignature());
 
 		// ignore empty body exceptions if we are just computing coffi metrics
-		if (!soot.jbco.Main.metrics && !hasActiveBody())
+		if (!soot.jbco.Main.metrics)
 			throw new RuntimeException("no active body present for method " + getSignature());
 
 		return activeBody;

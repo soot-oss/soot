@@ -18,33 +18,10 @@
  */
 
 package soot;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
-import java.util.jar.JarEntry;
-import java.util.jar.JarOutputStream;
-import java.util.zip.GZIPOutputStream;
-import java.util.zip.ZipEntry;
-// [AM]
-//import soot.javaToJimple.toolkits.*;
 
 import heros.solver.CountingThreadPoolExecutor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import soot.baf.Baf;
 import soot.baf.BafASMBackend;
 import soot.baf.BafBody;
@@ -138,6 +115,27 @@ import soot.util.JasminOutputStream;
 import soot.util.PhaseDumper;
 import soot.xml.TagCollector;
 import soot.xml.XMLPrinter;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.TimeUnit;
+import java.util.jar.JarEntry;
+import java.util.jar.JarOutputStream;
+import java.util.zip.GZIPOutputStream;
+import java.util.zip.ZipEntry;
 
 /** Manages the Packs containing the various phases and their options. */
 public class PackManager {
@@ -898,15 +896,14 @@ public class PackManager {
 	private void runBodyPacks(SootClass c) {
 		final int format = Options.v().output_format();
 		if (format == Options.output_format_dava) {
-			logger.debug("Decompiling ");
+			logger.debug("Decompiling {}...", c.getName());
 
 			// January 13th, 2006 SootMethodAddedByDava is set to false for
 			// SuperFirstStmtHandler
 			G.v().SootMethodAddedByDava = false;
 		} else {
-			logger.debug("Transforming ");
+			logger.debug("Transforming {}...", c.getName());
 		}
-		logger.debug(""+c.getName() + "... ");
 
 		boolean produceBaf = false, produceGrimp = false, produceDava = false, produceJimple = true,
 				produceShimple = false;
