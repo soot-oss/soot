@@ -39,7 +39,7 @@ public class Loop {
     protected final Stmt backJump;
     protected final List<Stmt> loopStatements;
     protected final UnitGraph g;
-    protected Collection<Stmt> loopExists;
+    protected Collection<Stmt> loopExits;
 
     /**
      * Creates a new loop. Expects that the last statement in the list is the loop head
@@ -93,17 +93,17 @@ public class Loop {
      * A loop exit is a statement which has a successor that is not contained in the loop.
      */
     public Collection<Stmt> getLoopExits() {
-        if(loopExists==null) {
-            loopExists = new HashSet<Stmt>();
+        if(loopExits==null) {
+            loopExits = new HashSet<Stmt>();
             for (Stmt s : loopStatements) {
                 for (Unit succ : g.getSuccsOf(s)) {
                     if(!loopStatements.contains(succ)) {
-                        loopExists.add(s);
+                        loopExits.add(s);
                     }
                 }
             }
         }
-        return loopExists;
+        return loopExits;
     }
     
     /**
