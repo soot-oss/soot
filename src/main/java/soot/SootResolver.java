@@ -25,8 +25,6 @@
  */
 
 package soot;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -35,6 +33,9 @@ import java.util.Collection;
 import java.util.Deque;
 import java.util.Iterator;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import soot.JastAddJ.BytecodeParser;
 import soot.JastAddJ.CompilationUnit;
@@ -48,7 +49,7 @@ import soot.util.MultiMap;
 
 /** Loads symbols for SootClasses from either class files or jimple files. */
 public class SootResolver {
-    private static final Logger logger = LoggerFactory.getLogger(SootResolver.class);
+	private static final Logger logger = LoggerFactory.getLogger(SootResolver.class);
 	/** Maps each resolved class to a list of all references in it. */
 	protected MultiMap<SootClass, Type> classToTypesSignature = new ConcurrentHashMultiMap<SootClass, Type>();
 
@@ -107,8 +108,8 @@ public class SootResolver {
 	}
 
 	/**
-	 * Returns a (possibly not yet resolved) SootClass to be used in references
-	 * to a class. If/when the class is resolved, it will be resolved into this
+	 * Returns a (possibly not yet resolved) SootClass to be used in references to a
+	 * class. If/when the class is resolved, it will be resolved into this
 	 * SootClass.
 	 */
 	public SootClass makeClassRef(String className) {
@@ -124,9 +125,9 @@ public class SootResolver {
 	}
 
 	/**
-	 * Resolves the given class. Depending on the resolver settings, may decide
-	 * to resolve other classes as well. If the class has already been resolved,
-	 * just returns the class that was already resolved.
+	 * Resolves the given class. Depending on the resolver settings, may decide to
+	 * resolve other classes as well. If the class has already been resolved, just
+	 * returns the class that was already resolved.
 	 */
 	public SootClass resolveClass(String className, int desiredLevel) {
 		SootClass resolvedClass = null;
@@ -304,13 +305,12 @@ public class SootResolver {
 	}
 
 	/**
-	 * Bodies - we can now start loading the bodies of methods for all referred
-	 * to methods and fields in the bodies, requires signatures for the method
-	 * receiver and field container, and hierarchy for all other classes
-	 * referenced in method references. Current implementation does not
-	 * distinguish between the receiver and other references. Therefore, it is
-	 * conservative and brings all of them to signatures. But this could/should
-	 * be improved.
+	 * Bodies - we can now start loading the bodies of methods for all referred to
+	 * methods and fields in the bodies, requires signatures for the method receiver
+	 * and field container, and hierarchy for all other classes referenced in method
+	 * references. Current implementation does not distinguish between the receiver
+	 * and other references. Therefore, it is conservative and brings all of them to
+	 * signatures. But this could/should be improved.
 	 */
 	protected void bringToBodies(SootClass sc) {
 		if (sc.resolvingLevel() >= SootClass.BODIES)
@@ -371,7 +371,7 @@ public class SootResolver {
 		return program;
 	}
 
-	private class SootClassNotFoundException extends RuntimeException {
+	public class SootClassNotFoundException extends RuntimeException {
 		/**
 		 * 
 		 */
