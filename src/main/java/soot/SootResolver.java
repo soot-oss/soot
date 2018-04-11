@@ -296,12 +296,7 @@ public class SootResolver {
 		}
 
 		// Bring superclasses to signatures
-		SootClass s = sc.getSuperclassUnsafe();
-		if (s != null)
-			addToResolveWorklist(s, SootClass.SIGNATURES);
-		for (SootClass iface : sc.getInterfaces()) {
-			addToResolveWorklist(iface, SootClass.SIGNATURES);
-		}
+		reResolveHierarchy(sc);
 	}
 
 	/**
