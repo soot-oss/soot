@@ -74,7 +74,7 @@ public class StringTools {
   }
 
   /** Convenience field storing the system line separator. */
-  public final static String lineSeparator = System.getProperty("line.separator");;
+  public final static String lineSeparator = System.getProperty("line.separator");
 
   /**
    * Returns fromString, but with certain characters printed as if they were in a Java string literal. Used by StringConstant.toString()

@@ -42,7 +42,7 @@ import soot.toolkits.graph.UnitGraph;
 
 public class Region implements IRegion {
 
-  private SootClass m_class = null;;
+  private SootClass m_class = null;
   private SootMethod m_method = null;
   private List<Block> m_blocks = null;
   private List<Unit> m_units = null;

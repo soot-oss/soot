@@ -475,7 +475,7 @@ public class TypeResolver {
             if (!typesEqual(t, told)) {
               Typing tg_;
               BitSet wl_;
-              if ( /* (eval.size() == 1 && lcas.size() == 1) || */ isFirstType) {
+              if (/* (eval.size() == 1 && lcas.size() == 1) || */ isFirstType) {
                 // The types agree, we have a type we can directly use
                 tg_ = tg;
                 wl_ = wl;

@@ -56,7 +56,6 @@ public class SourceLocator {
   protected List<String> classPath;
   private List<String> sourcePath;
 
-  ;
   private LoadingCache<String, ClassSourceType> pathToSourceType = CacheBuilder.newBuilder().initialCapacity(60).maximumSize(500).softValues()
       .concurrencyLevel(Runtime.getRuntime().availableProcessors()).build(new CacheLoader<String, ClassSourceType>() {
         @Override

@@ -44,7 +44,7 @@ import soot.toolkits.graph.UnitGraph;
 public class PDGRegion implements IRegion, Iterable<PDGNode> {
   private static final Logger logger = LoggerFactory.getLogger(PDGRegion.class);
 
-  private SootClass m_class = null;;
+  private SootClass m_class = null;
   private SootMethod m_method = null;
   private List<PDGNode> m_nodes = null;
   private List<Unit> m_units = null;
