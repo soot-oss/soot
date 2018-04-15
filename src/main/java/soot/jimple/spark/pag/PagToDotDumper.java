@@ -294,6 +294,7 @@ public class PagToDotDumper {
     try {
       fos.close();
     } catch (IOException e) {
+      logger.error(e.getMessage(), e);
     }
     ps.close();
   }

@@ -37,9 +37,10 @@ import soot.UnitPrinter;
 import soot.UnknownType;
 import soot.Value;
 import soot.grimp.Grimp;
-//import soot.jimple.*;
 import soot.jimple.internal.AbstractUnopExpr;
 import soot.util.Switch;
+
+//import soot.jimple.*;
 
 public class DNotExpr extends AbstractUnopExpr {
   public DNotExpr(Value op) {

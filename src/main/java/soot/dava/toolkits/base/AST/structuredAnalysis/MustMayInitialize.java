@@ -37,11 +37,12 @@ import soot.Local;
 import soot.SootField;
 import soot.Value;
 import soot.dava.DavaFlowAnalysisException;
-//import soot.dava.internal.javaRep.*;
 import soot.dava.internal.AST.ASTUnaryBinaryCondition;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.FieldRef;
 import soot.jimple.Stmt;
+
+//import soot.dava.internal.javaRep.*;
 
 /*
  * The analysis stores all defs of Locals/SootField. The user can then ask whether a local or SootField

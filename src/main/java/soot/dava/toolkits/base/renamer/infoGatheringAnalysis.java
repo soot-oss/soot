@@ -32,7 +32,6 @@ import soot.SootMethod;
 import soot.SootMethodRef;
 import soot.Type;
 import soot.Value;
-//import soot.util.*;
 import soot.dava.DavaBody;
 import soot.dava.DecompilationException;
 import soot.dava.internal.AST.ASTBinaryCondition;
@@ -61,6 +60,8 @@ import soot.jimple.NeExpr;
 import soot.jimple.StaticFieldRef;
 import soot.jimple.Stmt;
 import soot.jimple.internal.AbstractInstanceFieldRef;
+
+//import soot.util.*;
 
 public class infoGatheringAnalysis extends DepthFirstAdapter {
 

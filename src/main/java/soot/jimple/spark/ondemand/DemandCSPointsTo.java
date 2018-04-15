@@ -387,6 +387,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
         refineP2Set(new VarAndContext(v, EMPTY_CALLSTACK), null);
         contextSensitiveResult = pointsTo;
       } catch (TerminateEarlyException e) {
+        logger.debug(e.getMessage(), e);
       }
       if (!fieldCheckHeuristic.runNewPass()) {
         break;
@@ -589,7 +590,7 @@ public final class DemandCSPointsTo implements PointsToAnalysis {
       try {
         result = getFlowsToHelper(new AllocAndContext(alloc, EMPTY_CALLSTACK));
       } catch (TerminateEarlyException e) {
-
+        logger.debug(e.getMessage(), e);
       }
       if (result != null) {
         if (smallest == null || result.size() < smallest.size()) {

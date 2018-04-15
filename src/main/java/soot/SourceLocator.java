@@ -334,6 +334,7 @@ public class SourceLocator {
             archive.close();
           }
         } catch (Throwable t) {
+          logger.debug("" + t.getMessage());
         }
       }
 
@@ -345,6 +346,7 @@ public class SourceLocator {
       } catch (CompilationDeathException e) { // There might be cases where there is no dex file within a JAR or ZIP file...
       } catch (IOException e) {
         /* Ignore unreadable files */
+        logger.debug("" + e.getMessage());
       }
     } else if (cst == ClassSourceType.directory) {
       File file = new File(aPath);
@@ -375,7 +377,9 @@ public class SourceLocator {
               for (DexFileProvider.DexContainer container : DexFileProvider.v().getDexFromSource(element)) {
                 classes.addAll(DexClassProvider.classesOfDex(container.getBase()));
               }
-            } catch (IOException e) { /* Ignore unreadable files */
+            } catch (IOException e) {
+              /* Ignore unreadable files */
+              logger.debug("" + e.getMessage());
             }
           }
         }

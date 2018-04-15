@@ -43,7 +43,11 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class DotGraph implements Renderable {
+  private static final Logger logger = LoggerFactory.getLogger(DotGraph.class);
 
   /*
    * allow a serialized drawing, following steps: 1. new DotGraph 2. draw(Directed)Edge / drawUndirectedEdge attachAttributes, addNode 3. plot
@@ -89,6 +93,7 @@ public class DotGraph implements Renderable {
       render(out, 0);
       out.close();
     } catch (IOException ioe) {
+      logger.debug("" + ioe.getMessage());
     }
   }
 

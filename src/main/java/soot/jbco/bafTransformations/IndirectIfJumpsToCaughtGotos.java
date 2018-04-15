@@ -24,6 +24,9 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Stack;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.ByteType;
@@ -58,6 +61,7 @@ import soot.util.Chain;
  */
 public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJbcoTransform {
 
+  private static final Logger logger = LoggerFactory.getLogger(IndirectIfJumpsToCaughtGotos.class);
   int count = 0;
 
   public static String dependancies[] = new String[] { "bb.jbco_iii", "bb.jbco_ful", "bb.lp" };
@@ -131,6 +135,7 @@ public class IndirectIfJumpsToCaughtGotos extends BodyTransformer implements IJb
     try {
       field = soot.jbco.jimpleTransformations.FieldRenamer.getRandomOpaques()[Rand.getInt(2)];
     } catch (NullPointerException npe) {
+      logger.debug(npe.getMessage(), npe);
     }
 
     if (field != null && Rand.getInt(3) > 0) {

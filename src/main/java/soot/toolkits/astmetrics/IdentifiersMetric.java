@@ -105,6 +105,7 @@ public class IdentifiersMetric extends ASTMetric {
           addWord(line);
         }
       } catch (IOException ioexc) {
+        logger.debug("" + ioexc.getMessage());
       }
     }
 
@@ -117,6 +118,7 @@ public class IdentifiersMetric extends ASTMetric {
           addWord(line.trim().toLowerCase());
         }
       } catch (IOException ioexc) {
+        logger.debug("" + ioexc.getMessage());
       }
     }
 
@@ -129,12 +131,14 @@ public class IdentifiersMetric extends ASTMetric {
     try {
       is.close();
     } catch (IOException e) {
+      logger.debug("" + e.getMessage());
     }
     try {
       if (br != null) {
         br.close();
       }
     } catch (IOException e) {
+      logger.debug("" + e.getMessage());
     }
 
   }

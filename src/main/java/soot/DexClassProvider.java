@@ -13,6 +13,11 @@ import org.jf.dexlib2.dexbacked.DexBackedDexFile;
 import org.jf.dexlib2.iface.ClassDef;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import soot.dexpler.DexFileProvider;
+import soot.dexpler.Util;
+import soot.options.Options;
+
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2012 Michael Markert, Frank Hartmann
  *
@@ -31,10 +36,6 @@ import org.slf4j.LoggerFactory;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
-import soot.dexpler.DexFileProvider;
-import soot.dexpler.Util;
-import soot.options.Options;
 
 /**
  * Looks for a dex file which includes the definition of a class.

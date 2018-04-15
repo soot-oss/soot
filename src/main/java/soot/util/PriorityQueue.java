@@ -14,6 +14,9 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * A fixed size priority queue based on bitsets. The elements of the priority queue are ordered according to a given universe. This priority queue
  * does not permit {@code null} elements. Inserting of elements that are not part of the universe is also permitted (doing so will result in a
@@ -24,6 +27,8 @@ import java.util.Set;
  *          the type of elements held in the universe
  */
 abstract public class PriorityQueue<E> extends AbstractQueue<E> {
+  private static final Logger logger = LoggerFactory.getLogger(PriorityQueue.class);
+
   abstract class Itr implements Iterator<E> {
     long expected = getExpected();
     int next = min;
@@ -167,6 +172,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
       }
       return remove(getOrdinal(o));
     } catch (NoSuchElementException e) {
+      logger.debug("" + e.getMessage());
     }
     return false;
   }
@@ -187,6 +193,7 @@ abstract public class PriorityQueue<E> extends AbstractQueue<E> {
 
       return contains(getOrdinal(o));
     } catch (NoSuchElementException e) {
+      logger.debug("" + e.getMessage());
     }
     return false;
   }

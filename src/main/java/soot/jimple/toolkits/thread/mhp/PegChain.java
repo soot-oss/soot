@@ -48,15 +48,16 @@ import soot.jimple.toolkits.thread.mhp.stmt.OtherStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.StartStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.WaitStmt;
 import soot.jimple.toolkits.thread.mhp.stmt.WaitingStmt;
-//add for add tag
 import soot.tagkit.StringTag;
 import soot.toolkits.graph.CompleteUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 import soot.toolkits.scalar.ArraySparseSet;
 import soot.toolkits.scalar.FlowSet;
-//import soot.util.cfgcmd.*;
 import soot.util.Chain;
 import soot.util.HashChain;
+
+//add for add tag
+//import soot.util.cfgcmd.*;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.

@@ -34,6 +34,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.G;
@@ -48,6 +51,8 @@ import soot.Singletons;
  */
 
 public class PeepholeOptimizer extends BodyTransformer {
+  private static final Logger logger = LoggerFactory.getLogger(PeepholeOptimizer.class);
+
   public PeepholeOptimizer(Singletons.Global g) {
   }
 
@@ -97,6 +102,7 @@ public class PeepholeOptimizer extends BodyTransformer {
             reader.close();
             peepholeListingStream.close();
           } catch (IOException e) {
+            logger.debug(e.getMessage(), e);
           }
 
           for (String peepholeName : peepholes) {

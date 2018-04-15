@@ -220,6 +220,7 @@ public class ClassFile {
       f = new ByteArrayInputStream(data);
 
     } catch (IOException e) {
+      logger.debug(e.getMessage(), e);
     }
 
     if (Options.v().time()) {

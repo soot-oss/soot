@@ -35,7 +35,6 @@ import java.util.List;
 
 import soot.Local;
 import soot.Value;
-//import soot.dava.internal.javaRep.*;
 import soot.dava.DavaBody;
 import soot.dava.DecompilationException;
 import soot.dava.internal.AST.ASTMethodNode;
@@ -43,12 +42,14 @@ import soot.dava.internal.AST.ASTNode;
 import soot.dava.internal.AST.ASTStatementSequenceNode;
 import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
-//import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 import soot.dava.toolkits.base.AST.traversals.ASTParentNodeFinder;
 import soot.dava.toolkits.base.AST.traversals.ASTUsesAndDefs;
 import soot.jimple.Constant;
 import soot.jimple.DefinitionStmt;
 import soot.jimple.Stmt;
+
+//import soot.dava.internal.javaRep.*;
+//import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 
 /**
  * The class is aimed to target cleaning up of unused local variables. Should be invoked after executing CopyPropagation

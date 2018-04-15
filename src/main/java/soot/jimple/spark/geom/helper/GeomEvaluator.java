@@ -28,6 +28,9 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.AnySubType;
 import soot.ArrayType;
 import soot.FastHierarchy;
@@ -68,7 +71,7 @@ import soot.jimple.toolkits.callgraph.Edge;
  * 
  */
 public class GeomEvaluator {
-
+  private static final Logger logger = LoggerFactory.getLogger(GeomEvaluator.class);
   private GeomPointsTo ptsProvider;
   private PrintStream outputer;
   private EvalResults evalRes;
@@ -238,7 +241,7 @@ public class GeomEvaluator {
         try {
           tgts.add(hierarchy.resolveConcreteDispatch(((RefType) t).getSootClass(), callee_signature));
         } catch (Exception e) {
-
+          logger.debug(e.getMessage(), e);
         }
       }
 

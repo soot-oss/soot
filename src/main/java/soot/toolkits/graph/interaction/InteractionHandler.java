@@ -193,6 +193,7 @@ public class InteractionHandler {
     try {
       this.wait();
     } catch (InterruptedException e) {
+      logger.debug("" + e.getMessage());
     }
 
   }

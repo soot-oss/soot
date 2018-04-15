@@ -11,6 +11,10 @@ import soot.Scene;
 import soot.SootMethod;
 import soot.jimple.toolkits.callgraph.CallGraph;
 import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
+import soot.toolkits.graph.CompleteUnitGraph;
+import soot.toolkits.graph.UnitGraph;
+import soot.toolkits.scalar.FlowSet;
+
 /*
  import soot.tagkit.*;
  import soot.toolkits.scalar.*;
@@ -25,9 +29,6 @@ import soot.jimple.toolkits.thread.mhp.pegcallgraph.PegCallGraph;
 // now used by the Transactions toolkit.
 //
 // -Richard L. Halpert, 2006-11-30
-import soot.toolkits.graph.CompleteUnitGraph;
-import soot.toolkits.graph.UnitGraph;
-import soot.toolkits.scalar.FlowSet;
 
 public class MultiCalledMethods {
 

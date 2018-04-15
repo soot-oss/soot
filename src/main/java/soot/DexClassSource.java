@@ -4,6 +4,11 @@ import java.io.File;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import soot.dexpler.DexResolver;
+import soot.javaToJimple.IInitialResolver.Dependencies;
+import soot.options.Options;
+
 /* Soot - a J*va Optimization Framework
  * Copyright (C) 2011, 2012 Michael Markert
  *
@@ -22,10 +27,6 @@ import org.slf4j.LoggerFactory;
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  */
-
-import soot.dexpler.DexResolver;
-import soot.javaToJimple.IInitialResolver.Dependencies;
-import soot.options.Options;
 
 /**
  * Responsible for resolving a single class from a dex source format.

@@ -33,10 +33,11 @@ import java.util.List;
 import java.util.Map;
 
 import soot.toolkits.graph.DirectedGraph;
-//import soot.toolkits.mhp.*;
 import soot.util.dot.DotGraph;
 import soot.util.dot.DotGraphConstants;
 import soot.util.dot.DotGraphNode;
+
+//import soot.toolkits.mhp.*;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.

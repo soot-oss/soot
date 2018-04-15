@@ -303,7 +303,7 @@ public class GeomPointsTo extends PAG {
       } catch (FileNotFoundException e) {
         validMethods = null;
       } catch (IOException e) {
-
+        logger.debug(e.getMessage(), e);
       }
     }
 

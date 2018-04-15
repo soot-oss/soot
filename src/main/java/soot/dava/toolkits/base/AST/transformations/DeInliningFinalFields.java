@@ -39,8 +39,6 @@ import soot.Type;
 import soot.Value;
 import soot.ValueBox;
 import soot.dava.DavaBody;
-//import soot.jimple.internal.*;
-//import soot.grimp.internal.*;
 import soot.dava.internal.AST.ASTAggregatedCondition;
 import soot.dava.internal.AST.ASTBinaryCondition;
 import soot.dava.internal.AST.ASTCondition;
@@ -56,8 +54,6 @@ import soot.dava.internal.AST.ASTSynchronizedBlockNode;
 import soot.dava.internal.AST.ASTWhileNode;
 import soot.dava.internal.asg.AugmentedStmt;
 import soot.dava.internal.javaRep.DStaticFieldRef;
-//import soot.dava.toolkits.base.AST.traversals.*;
-//import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 import soot.dava.toolkits.base.AST.analysis.DepthFirstAdapter;
 import soot.jimple.DoubleConstant;
 import soot.jimple.FloatConstant;
@@ -71,6 +67,11 @@ import soot.tagkit.IntegerConstantValueTag;
 import soot.tagkit.LongConstantValueTag;
 import soot.tagkit.StringConstantValueTag;
 import soot.util.Chain;
+
+//import soot.jimple.internal.*;
+//import soot.grimp.internal.*;
+//import soot.dava.toolkits.base.AST.traversals.*;
+//import soot.dava.toolkits.base.AST.structuredAnalysis.*;
 
 /**
  * Maintained by: Nomair A. Naeem

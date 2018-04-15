@@ -25,6 +25,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import soot.Body;
 import soot.BodyTransformer;
 import soot.BooleanType;
@@ -53,6 +56,7 @@ import soot.toolkits.graph.BriefUnitGraph;
 
 public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform {
 
+  private static final Logger logger = LoggerFactory.getLogger(TryCatchCombiner.class);
   int totalcount = 0;
   int changedcount = 0;
 
@@ -243,6 +247,7 @@ public class TryCatchCombiner extends BodyTransformer implements IJbcoTransform 
           units.insertBeforeNoRedirect(Baf.v().newIfCmpEqInst(BooleanType.v(), begUnit), begUnit);
         }
       } catch (NullPointerException npe) {
+        logger.debug(npe.getMessage(), npe);
       }
 
       // randomize the increment - sometimes store one, sometimes just set to 1
