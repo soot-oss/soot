@@ -23,34 +23,24 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.baf.toolkits.base;
 
-import soot.*;
-
-
-
+import soot.Body;
 
 /**
- *   Interface to be implemented by peepholes acting on the Baf IR. 
+ * Interface to be implemented by peepholes acting on the Baf IR.
  *
- *   @see PeepholeOptimizer
- *   @see ExamplePeephole
+ * @see PeepholeOptimizer
+ * @see ExamplePeephole
  */
 
-public interface Peephole
-{
-    /**
-     *   Entry point for a peephole. This method is 
-     *   repeatedly called by the peephole driver, until
-     *   a fixed-point is reached over all peepholes.
-     *
-     *   @param b  Body to apply peephole to.
-     *   @return   true if the peephole changed in any way the Body it
-     *             acted on. false otherwise.
-     */
-    boolean apply(Body b);
+public interface Peephole {
+  /**
+   * Entry point for a peephole. This method is repeatedly called by the peephole driver, until a fixed-point is reached over all peepholes.
+   *
+   * @param b
+   *          Body to apply peephole to.
+   * @return true if the peephole changed in any way the Body it acted on. false otherwise.
+   */
+  boolean apply(Body b);
 }
-
-
-

@@ -19,13 +19,12 @@
 
 package soot;
 
-/** A class provider looks for a file of a specific format for a specified
- * class, and returns a ClassSource for it if it finds it.
+/**
+ * A class provider looks for a file of a specific format for a specified class, and returns a ClassSource for it if it finds it.
  */
-public interface ClassProvider 
-{
-    /** Look for the specified class. Return a ClassSource for it if found,
-     * or null if it was not found. */
-    public abstract ClassSource find( String className );
+public interface ClassProvider {
+  /**
+   * Look for the specified class. Return a ClassSource for it if found, or null if it was not found.
+   */
+  public abstract ClassSource find(String className);
 }
-

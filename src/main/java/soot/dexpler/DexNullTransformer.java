@@ -69,453 +69,439 @@ import soot.jimple.internal.AbstractInstanceInvokeExpr;
 import soot.jimple.internal.AbstractInvokeExpr;
 
 /**
- * BodyTransformer to find and change IntConstant(0) to NullConstant where
- * locals are used as objects.
+ * BodyTransformer to find and change IntConstant(0) to NullConstant where locals are used as objects.
  *
  * @author Michael Markert
  */
 public class DexNullTransformer extends AbstractNullTransformer {
-	// Note: we need an instance variable for inner class access, treat this as
-	// a local variable (including initialization before use)
+  // Note: we need an instance variable for inner class access, treat this as
+  // a local variable (including initialization before use)
 
-	private boolean usedAsObject;
-	private boolean doBreak = false;
+  private boolean usedAsObject;
+  private boolean doBreak = false;
 
-	public static DexNullTransformer v() {
-		return new DexNullTransformer();
-	}
+  public static DexNullTransformer v() {
+    return new DexNullTransformer();
+  }
 
-	private Local l = null;
+  private Local l = null;
 
-	@Override
-	protected void internalTransform(final Body body, String phaseName, Map<String,String> options) {
-		final DexDefUseAnalysis localDefs = new DexDefUseAnalysis(body);
-		AbstractStmtSwitch checkDef = new AbstractStmtSwitch() { // Alex: should also end as
-			// soon as detected as not
-			// used as an object
-			@Override
-			public void caseAssignStmt(AssignStmt stmt) {
-				Value r = stmt.getRightOp();
-				if (r instanceof FieldRef) {
-					usedAsObject = isObject(((FieldRef) r)
-							.getFieldRef().type());
-					doBreak = true;
-					return;
-				} else if (r instanceof ArrayRef) {
-					ArrayRef ar = (ArrayRef) r;
-					if (ar.getType() instanceof UnknownType) {
-						usedAsObject = stmt.hasTag("ObjectOpTag"); // isObject
-						// (findArrayType
-						// (g,
-						// localDefs,
-						// localUses,
-						// stmt));
-					} else {
-						usedAsObject = isObject(ar.getType());
-					}
-					doBreak = true;
-					return;
-				} else if (r instanceof StringConstant
-						|| r instanceof NewExpr
-						|| r instanceof NewArrayExpr) {
-					usedAsObject = true;
-					doBreak = true;
-					return;
-				} else if (r instanceof CastExpr) {
-					usedAsObject = isObject(((CastExpr) r)
-							.getCastType());
-					doBreak = true;
-					return;
-				} else if (r instanceof InvokeExpr) {
-					usedAsObject = isObject(((InvokeExpr) r).getType());
-					doBreak = true;
-					return;
-				} else if (r instanceof LengthExpr) {
-					usedAsObject = false;
-					doBreak = true;
-					return;
-					// introduces alias
-				}
+  @Override
+  protected void internalTransform(final Body body, String phaseName, Map<String, String> options) {
+    final DexDefUseAnalysis localDefs = new DexDefUseAnalysis(body);
+    AbstractStmtSwitch checkDef = new AbstractStmtSwitch() { // Alex: should also end as
+      // soon as detected as not
+      // used as an object
+      @Override
+      public void caseAssignStmt(AssignStmt stmt) {
+        Value r = stmt.getRightOp();
+        if (r instanceof FieldRef) {
+          usedAsObject = isObject(((FieldRef) r).getFieldRef().type());
+          doBreak = true;
+          return;
+        } else if (r instanceof ArrayRef) {
+          ArrayRef ar = (ArrayRef) r;
+          if (ar.getType() instanceof UnknownType) {
+            usedAsObject = stmt.hasTag("ObjectOpTag"); // isObject
+            // (findArrayType
+            // (g,
+            // localDefs,
+            // localUses,
+            // stmt));
+          } else {
+            usedAsObject = isObject(ar.getType());
+          }
+          doBreak = true;
+          return;
+        } else if (r instanceof StringConstant || r instanceof NewExpr || r instanceof NewArrayExpr) {
+          usedAsObject = true;
+          doBreak = true;
+          return;
+        } else if (r instanceof CastExpr) {
+          usedAsObject = isObject(((CastExpr) r).getCastType());
+          doBreak = true;
+          return;
+        } else if (r instanceof InvokeExpr) {
+          usedAsObject = isObject(((InvokeExpr) r).getType());
+          doBreak = true;
+          return;
+        } else if (r instanceof LengthExpr) {
+          usedAsObject = false;
+          doBreak = true;
+          return;
+          // introduces alias
+        }
 
-			}
+      }
 
-			@Override
-			public void caseIdentityStmt(IdentityStmt stmt) {
-				if (stmt.getLeftOp() == l) {
-					usedAsObject = isObject(stmt.getRightOp().getType());
-					doBreak = true;
-					return;
-				}
-			}
-		};
-		AbstractStmtSwitch checkUse = new AbstractStmtSwitch() {
-			private boolean examineInvokeExpr(InvokeExpr e) {
-				List<Value> args = e.getArgs();
-				List<Type> argTypes = e.getMethodRef()
-						.parameterTypes();
-				assert args.size() == argTypes.size();
-				for (int i = 0; i < args.size(); i++) {
-					if (args.get(i) == l
-							&& isObject(argTypes.get(i))) {
-						return true;
-					}
-				}
-				// check for base
-				SootMethodRef sm = e.getMethodRef();
-				if (!sm.isStatic()) {
-					if (e instanceof AbstractInvokeExpr) {
-						AbstractInstanceInvokeExpr aiiexpr = (AbstractInstanceInvokeExpr) e;
-						Value b = aiiexpr.getBase();
-						if (b == l) {
-							return true;
-						}
-					}
-				}
-				return false;
-			}
+      @Override
+      public void caseIdentityStmt(IdentityStmt stmt) {
+        if (stmt.getLeftOp() == l) {
+          usedAsObject = isObject(stmt.getRightOp().getType());
+          doBreak = true;
+          return;
+        }
+      }
+    };
+    AbstractStmtSwitch checkUse = new AbstractStmtSwitch() {
+      private boolean examineInvokeExpr(InvokeExpr e) {
+        List<Value> args = e.getArgs();
+        List<Type> argTypes = e.getMethodRef().parameterTypes();
+        assert args.size() == argTypes.size();
+        for (int i = 0; i < args.size(); i++) {
+          if (args.get(i) == l && isObject(argTypes.get(i))) {
+            return true;
+          }
+        }
+        // check for base
+        SootMethodRef sm = e.getMethodRef();
+        if (!sm.isStatic()) {
+          if (e instanceof AbstractInvokeExpr) {
+            AbstractInstanceInvokeExpr aiiexpr = (AbstractInstanceInvokeExpr) e;
+            Value b = aiiexpr.getBase();
+            if (b == l) {
+              return true;
+            }
+          }
+        }
+        return false;
+      }
 
-			@Override
-			public void caseInvokeStmt(InvokeStmt stmt) {
-				InvokeExpr e = stmt.getInvokeExpr();
-				usedAsObject = examineInvokeExpr(e);
-				doBreak = true;
-				return;
-			}
+      @Override
+      public void caseInvokeStmt(InvokeStmt stmt) {
+        InvokeExpr e = stmt.getInvokeExpr();
+        usedAsObject = examineInvokeExpr(e);
+        doBreak = true;
+        return;
+      }
 
-			@Override
-			public void caseAssignStmt(AssignStmt stmt) {
-				Value left = stmt.getLeftOp();
-				Value r = stmt.getRightOp();
+      @Override
+      public void caseAssignStmt(AssignStmt stmt) {
+        Value left = stmt.getLeftOp();
+        Value r = stmt.getRightOp();
 
-				if (left instanceof ArrayRef) {
-					ArrayRef ar = (ArrayRef) left;
-					if (ar.getIndex() == l) {
-						doBreak = true;
-						return;
-					}
-					else if (ar.getBase() == l) {
-						usedAsObject = true;
-						doBreak = true;
-						return;
-					}
-				}
-				
-				if (left instanceof InstanceFieldRef) {
-					InstanceFieldRef ifr = (InstanceFieldRef) left;
-					if (ifr.getBase() == l) {
-						usedAsObject = true;
-						doBreak = true;
-						return;
-					}
-				}
-				
-				// used to assign
-				if (stmt.getRightOp() == l) {
-					Value l = stmt.getLeftOp();
-					if (l instanceof StaticFieldRef
-							&& isObject(((StaticFieldRef) l)
-									.getFieldRef().type())) {
-						usedAsObject = true;
-						doBreak = true;
-						return;
-					} else if (l instanceof InstanceFieldRef
-							&& isObject(((InstanceFieldRef) l)
-									.getFieldRef().type())) {
-						usedAsObject = true;
-						doBreak = true;
-						return;
-					} else if (l instanceof ArrayRef) {
-						Type aType = ((ArrayRef) l).getType();
-						if (aType instanceof UnknownType) {
-							usedAsObject = stmt
-									.hasTag("ObjectOpTag"); // isObject(
-															// findArrayType(g,
-															// localDefs,
-															// localUses,
-															// stmt));
-						} else {
-							usedAsObject = isObject(aType);
-						}
-						doBreak = true;
-						return;
-					}
-				}
+        if (left instanceof ArrayRef) {
+          ArrayRef ar = (ArrayRef) left;
+          if (ar.getIndex() == l) {
+            doBreak = true;
+            return;
+          } else if (ar.getBase() == l) {
+            usedAsObject = true;
+            doBreak = true;
+            return;
+          }
+        }
 
-				// is used as value (does not exclude assignment)
-				if (r instanceof FieldRef) {
-					usedAsObject = true; // isObject(((FieldRef)
-											// r).getFieldRef().type());
-					doBreak = true;
-					return;
-				} else if (r instanceof ArrayRef) {
-					ArrayRef ar = (ArrayRef) r;
-					if (ar.getBase() == l) {
-						usedAsObject = true;
-					} else { // used as index
-						usedAsObject = false;
-					}
-					doBreak = true;
-					return;
-				} else if (r instanceof StringConstant
-						|| r instanceof NewExpr) {
-					throw new RuntimeException(
-							"NOT POSSIBLE StringConstant or NewExpr at " + stmt);
-				} else if (r instanceof NewArrayExpr) {
-					usedAsObject = false;
-					doBreak = true;
-					return;
-				} else if (r instanceof CastExpr) {
-					usedAsObject = isObject(((CastExpr) r)
-							.getCastType());
-					doBreak = true;
-					return;
-				} else if (r instanceof InvokeExpr) {
-					usedAsObject = examineInvokeExpr((InvokeExpr) stmt
-							.getRightOp());
-					doBreak = true;
-					return;
-				} else if (r instanceof LengthExpr) {
-					usedAsObject = true;
-					doBreak = true;
-					return;
-				} else if (r instanceof BinopExpr) {
-					usedAsObject = false;
-					doBreak = true;
-					return;
-				}
-			}
+        if (left instanceof InstanceFieldRef) {
+          InstanceFieldRef ifr = (InstanceFieldRef) left;
+          if (ifr.getBase() == l) {
+            usedAsObject = true;
+            doBreak = true;
+            return;
+          }
+        }
 
-			@Override
-			public void caseIdentityStmt(IdentityStmt stmt) {
-				if (stmt.getLeftOp() == l)
-					throw new RuntimeException("IMPOSSIBLE 0");
-			}
+        // used to assign
+        if (stmt.getRightOp() == l) {
+          Value l = stmt.getLeftOp();
+          if (l instanceof StaticFieldRef && isObject(((StaticFieldRef) l).getFieldRef().type())) {
+            usedAsObject = true;
+            doBreak = true;
+            return;
+          } else if (l instanceof InstanceFieldRef && isObject(((InstanceFieldRef) l).getFieldRef().type())) {
+            usedAsObject = true;
+            doBreak = true;
+            return;
+          } else if (l instanceof ArrayRef) {
+            Type aType = ((ArrayRef) l).getType();
+            if (aType instanceof UnknownType) {
+              usedAsObject = stmt.hasTag("ObjectOpTag"); // isObject(
+              // findArrayType(g,
+              // localDefs,
+              // localUses,
+              // stmt));
+            } else {
+              usedAsObject = isObject(aType);
+            }
+            doBreak = true;
+            return;
+          }
+        }
 
-			@Override
-			public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
-				usedAsObject = stmt.getOp() == l;
-				doBreak = true;
-				return;
-			}
+        // is used as value (does not exclude assignment)
+        if (r instanceof FieldRef) {
+          usedAsObject = true; // isObject(((FieldRef)
+          // r).getFieldRef().type());
+          doBreak = true;
+          return;
+        } else if (r instanceof ArrayRef) {
+          ArrayRef ar = (ArrayRef) r;
+          if (ar.getBase() == l) {
+            usedAsObject = true;
+          } else { // used as index
+            usedAsObject = false;
+          }
+          doBreak = true;
+          return;
+        } else if (r instanceof StringConstant || r instanceof NewExpr) {
+          throw new RuntimeException("NOT POSSIBLE StringConstant or NewExpr at " + stmt);
+        } else if (r instanceof NewArrayExpr) {
+          usedAsObject = false;
+          doBreak = true;
+          return;
+        } else if (r instanceof CastExpr) {
+          usedAsObject = isObject(((CastExpr) r).getCastType());
+          doBreak = true;
+          return;
+        } else if (r instanceof InvokeExpr) {
+          usedAsObject = examineInvokeExpr((InvokeExpr) stmt.getRightOp());
+          doBreak = true;
+          return;
+        } else if (r instanceof LengthExpr) {
+          usedAsObject = true;
+          doBreak = true;
+          return;
+        } else if (r instanceof BinopExpr) {
+          usedAsObject = false;
+          doBreak = true;
+          return;
+        }
+      }
 
-			@Override
-			public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
-				usedAsObject = stmt.getOp() == l;
-				doBreak = true;
-				return;
-			}
+      @Override
+      public void caseIdentityStmt(IdentityStmt stmt) {
+        if (stmt.getLeftOp() == l) {
+          throw new RuntimeException("IMPOSSIBLE 0");
+        }
+      }
 
-			@Override
-			public void caseReturnStmt(ReturnStmt stmt) {
-				usedAsObject = stmt.getOp() == l
-						&& isObject(body.getMethod()
-								.getReturnType());
-				doBreak = true;
-				return;
-			}
+      @Override
+      public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
+        usedAsObject = stmt.getOp() == l;
+        doBreak = true;
+        return;
+      }
 
-			@Override
-			public void caseThrowStmt(ThrowStmt stmt) {
-				usedAsObject = stmt.getOp() == l;
-				doBreak = true;
-				return;
-			}
-		};
-		
-		for (Local loc : getNullCandidates(body)) {
-			usedAsObject = false;
-			Set<Unit> defs = localDefs.collectDefinitionsWithAliases(loc);
-			// process normally
-			doBreak = false;
-			for (Unit u : defs) {
-				// put correct local in l
-				if (u instanceof DefinitionStmt) {
-					l = (Local) ((DefinitionStmt) u).getLeftOp();
-				} else if (u instanceof IfStmt) {
-					throw new RuntimeException(
-							"ERROR: def can not be something else than Assign or Identity statement! (def: "
-									+ u + " class: " + u.getClass() + "");
-				}
+      @Override
+      public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
+        usedAsObject = stmt.getOp() == l;
+        doBreak = true;
+        return;
+      }
 
+      @Override
+      public void caseReturnStmt(ReturnStmt stmt) {
+        usedAsObject = stmt.getOp() == l && isObject(body.getMethod().getReturnType());
+        doBreak = true;
+        return;
+      }
 
-				// check defs
-				u.apply(checkDef);
-				if (doBreak)
-					break;
+      @Override
+      public void caseThrowStmt(ThrowStmt stmt) {
+        usedAsObject = stmt.getOp() == l;
+        doBreak = true;
+        return;
+      }
+    };
 
-				// check uses
-				for (Unit use : localDefs.getUsesOf(l)) {
-					use.apply(checkUse);
+    for (Local loc : getNullCandidates(body)) {
+      usedAsObject = false;
+      Set<Unit> defs = localDefs.collectDefinitionsWithAliases(loc);
+      // process normally
+      doBreak = false;
+      for (Unit u : defs) {
+        // put correct local in l
+        if (u instanceof DefinitionStmt) {
+          l = (Local) ((DefinitionStmt) u).getLeftOp();
+        } else if (u instanceof IfStmt) {
+          throw new RuntimeException(
+              "ERROR: def can not be something else than Assign or Identity statement! (def: " + u + " class: " + u.getClass() + "");
+        }
 
-					if (doBreak)
-						break;
+        // check defs
+        u.apply(checkDef);
+        if (doBreak) {
+          break;
+        }
 
-				} // for uses
-				if (doBreak)
-					break;
-			} // for defs
+        // check uses
+        for (Unit use : localDefs.getUsesOf(l)) {
+          use.apply(checkUse);
 
-			// change values
-			if (usedAsObject) {
-				for (Unit u : defs) {
-					replaceWithNull(u);
-					Set<Value> defLocals = new HashSet<Value>();
-					for (ValueBox vb : u.getDefBoxes())
-						defLocals.add(vb.getValue());
-					
-					Local l = (Local) ((DefinitionStmt) u).getLeftOp();
-					for (Unit uuse : localDefs.getUsesOf(l)) {
-						Stmt use = (Stmt) uuse;
-						// If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
-						if (!use.containsArrayRef()
-								|| !defLocals.contains(use.getArrayRef().getBase()))
-							replaceWithNull(use);
-					}
-				}
-			} // end if
-		}
+          if (doBreak) {
+            break;
+          }
 
-		// Check for inlined zero values
-		AbstractStmtSwitch inlinedZeroValues = new AbstractStmtSwitch() {
-			final NullConstant nullConstant = NullConstant.v();
+        } // for uses
+        if (doBreak) {
+          break;
+        }
+      } // for defs
 
-			@Override
-			public void caseAssignStmt(AssignStmt stmt) {
-				// Case a = 0 with a being an object
-				if (isObject(stmt.getLeftOp().getType())
-						&& isConstZero(stmt.getRightOp())) {
-					stmt.setRightOp(nullConstant);
-					return;
-				}
-				
-				// Case a = (Object) 0
-				if (stmt.getRightOp() instanceof CastExpr) {
-					CastExpr ce = (CastExpr) stmt.getRightOp();
-					if (isObject(ce.getCastType()) && isConstZero(ce.getOp())) {
-						stmt.setRightOp(nullConstant);
-					}
-				}
-				
-				// Case a[0] = 0
-				if (stmt.getLeftOp() instanceof ArrayRef
-						&& isConstZero(stmt.getRightOp())) {
-					ArrayRef ar = (ArrayRef) stmt.getLeftOp();
-					if (isObjectArray(ar.getBase(), body)
-							|| stmt.hasTag("ObjectOpTag")) {
-						stmt.setRightOp(nullConstant);
-					}
-				}
-			}
+      // change values
+      if (usedAsObject) {
+        for (Unit u : defs) {
+          replaceWithNull(u);
+          Set<Value> defLocals = new HashSet<Value>();
+          for (ValueBox vb : u.getDefBoxes()) {
+            defLocals.add(vb.getValue());
+          }
 
-			private boolean isConstZero(Value rightOp) {
-				if (rightOp instanceof IntConstant && ((IntConstant) rightOp).value == 0)
-					return true;
-				if (rightOp instanceof LongConstant && ((LongConstant) rightOp).value == 0)
-					return true;
-				return false;
-			}
+          Local l = (Local) ((DefinitionStmt) u).getLeftOp();
+          for (Unit uuse : localDefs.getUsesOf(l)) {
+            Stmt use = (Stmt) uuse;
+            // If we have a[x] = 0 and a is an object, we may not conclude 0 -> null
+            if (!use.containsArrayRef() || !defLocals.contains(use.getArrayRef().getBase())) {
+              replaceWithNull(use);
+            }
+          }
+        }
+      } // end if
+    }
 
-			@Override
-			public void caseReturnStmt(ReturnStmt stmt) {
-				if (stmt.getOp() instanceof IntConstant
-						&& isObject(body.getMethod().getReturnType())) {
-					IntConstant iconst = (IntConstant) stmt.getOp();
-					assert iconst.value == 0;
-					stmt.setOp(nullConstant);
-				}
-			}
-			
-			@Override
-			public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
-				if (stmt.getOp() instanceof IntConstant && ((IntConstant) stmt.getOp()).value == 0)
-					stmt.setOp(nullConstant);
-			}
-			
-			@Override
-			public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
-				if (stmt.getOp() instanceof IntConstant && ((IntConstant) stmt.getOp()).value == 0)
-					stmt.setOp(nullConstant);
-			}
-			
-		};
-		
-		final NullConstant nullConstant = NullConstant.v();
-		for (Unit u : body.getUnits()) {
-			u.apply(inlinedZeroValues);
-			if (u instanceof Stmt) {
-				Stmt stmt = (Stmt) u;
-				if (stmt.containsInvokeExpr()) {
-					InvokeExpr invExpr = stmt.getInvokeExpr();
-					for (int i = 0; i < invExpr.getArgCount(); i++)
-						if (isObject(invExpr.getMethodRef().parameterType(i)))
-							if (invExpr.getArg(i) instanceof IntConstant) {
-								IntConstant iconst = (IntConstant) invExpr
-										.getArg(i);
-								assert iconst.value == 0;
-								invExpr.setArg(i, nullConstant);
-							}
-				}
-			}
-		}
-	}
+    // Check for inlined zero values
+    AbstractStmtSwitch inlinedZeroValues = new AbstractStmtSwitch() {
+      final NullConstant nullConstant = NullConstant.v();
 
-	private boolean isObjectArray(Value v, Body body) {
-		for (Unit u : body.getUnits()) {
-			if (u instanceof AssignStmt) {
-				AssignStmt assign = (AssignStmt) u;
-				if (assign.getLeftOp() == v) {
-					if (assign.getRightOp() instanceof NewArrayExpr) {
-						NewArrayExpr nea = (NewArrayExpr) assign.getRightOp();
-						if (isObject(nea.getBaseType()))
-							return true;
-					}
-					else if (assign.getRightOp() instanceof FieldRef) {
-						FieldRef fr = (FieldRef) assign.getRightOp();
-						if (fr.getType() instanceof ArrayType)
-							if (isObject(((ArrayType) fr.getType())
-									.getArrayElementType()))
-								return true;
-					}
-				}
-			}
-		}
-		return false;
-	}
-	
-	/**
-	 * Collect all the locals which are assigned a IntConstant(0) or are used
-	 * within a zero comparison.
-	 *
-	 * @param body
-	 *            the body to analyze
-	 */
-	private Set<Local> getNullCandidates(Body body) {
-		Set<Local> candidates = null;
-		for (Unit u : body.getUnits()) {
-			if (u instanceof AssignStmt) {
-				AssignStmt a = (AssignStmt) u;
-				if (!(a.getLeftOp() instanceof Local))
-					continue;
-				Local l = (Local) a.getLeftOp();
-				Value r = a.getRightOp();
-				if ((r instanceof IntConstant && ((IntConstant) r).value == 0)
-						|| (r instanceof LongConstant && ((LongConstant) r).value == 0)) {
-					if (candidates == null)
-						candidates = new HashSet<Local>();
-					candidates.add(l);
-				}
-			} else if (u instanceof IfStmt) {
-				ConditionExpr expr = (ConditionExpr) ((IfStmt) u)
-						.getCondition();
-				if (isZeroComparison(expr) && expr.getOp1() instanceof Local) {
-					if (candidates == null)
-						candidates = new HashSet<Local>();
-					candidates.add((Local) expr.getOp1());
-				}
-			}
-		}
+      @Override
+      public void caseAssignStmt(AssignStmt stmt) {
+        // Case a = 0 with a being an object
+        if (isObject(stmt.getLeftOp().getType()) && isConstZero(stmt.getRightOp())) {
+          stmt.setRightOp(nullConstant);
+          return;
+        }
 
-		return candidates == null ? Collections.<Local>emptySet() : candidates;
-	}
-	
+        // Case a = (Object) 0
+        if (stmt.getRightOp() instanceof CastExpr) {
+          CastExpr ce = (CastExpr) stmt.getRightOp();
+          if (isObject(ce.getCastType()) && isConstZero(ce.getOp())) {
+            stmt.setRightOp(nullConstant);
+          }
+        }
+
+        // Case a[0] = 0
+        if (stmt.getLeftOp() instanceof ArrayRef && isConstZero(stmt.getRightOp())) {
+          ArrayRef ar = (ArrayRef) stmt.getLeftOp();
+          if (isObjectArray(ar.getBase(), body) || stmt.hasTag("ObjectOpTag")) {
+            stmt.setRightOp(nullConstant);
+          }
+        }
+      }
+
+      private boolean isConstZero(Value rightOp) {
+        if (rightOp instanceof IntConstant && ((IntConstant) rightOp).value == 0) {
+          return true;
+        }
+        if (rightOp instanceof LongConstant && ((LongConstant) rightOp).value == 0) {
+          return true;
+        }
+        return false;
+      }
+
+      @Override
+      public void caseReturnStmt(ReturnStmt stmt) {
+        if (stmt.getOp() instanceof IntConstant && isObject(body.getMethod().getReturnType())) {
+          IntConstant iconst = (IntConstant) stmt.getOp();
+          assert iconst.value == 0;
+          stmt.setOp(nullConstant);
+        }
+      }
+
+      @Override
+      public void caseEnterMonitorStmt(EnterMonitorStmt stmt) {
+        if (stmt.getOp() instanceof IntConstant && ((IntConstant) stmt.getOp()).value == 0) {
+          stmt.setOp(nullConstant);
+        }
+      }
+
+      @Override
+      public void caseExitMonitorStmt(ExitMonitorStmt stmt) {
+        if (stmt.getOp() instanceof IntConstant && ((IntConstant) stmt.getOp()).value == 0) {
+          stmt.setOp(nullConstant);
+        }
+      }
+
+    };
+
+    final NullConstant nullConstant = NullConstant.v();
+    for (Unit u : body.getUnits()) {
+      u.apply(inlinedZeroValues);
+      if (u instanceof Stmt) {
+        Stmt stmt = (Stmt) u;
+        if (stmt.containsInvokeExpr()) {
+          InvokeExpr invExpr = stmt.getInvokeExpr();
+          for (int i = 0; i < invExpr.getArgCount(); i++) {
+            if (isObject(invExpr.getMethodRef().parameterType(i))) {
+              if (invExpr.getArg(i) instanceof IntConstant) {
+                IntConstant iconst = (IntConstant) invExpr.getArg(i);
+                assert iconst.value == 0;
+                invExpr.setArg(i, nullConstant);
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+
+  private boolean isObjectArray(Value v, Body body) {
+    for (Unit u : body.getUnits()) {
+      if (u instanceof AssignStmt) {
+        AssignStmt assign = (AssignStmt) u;
+        if (assign.getLeftOp() == v) {
+          if (assign.getRightOp() instanceof NewArrayExpr) {
+            NewArrayExpr nea = (NewArrayExpr) assign.getRightOp();
+            if (isObject(nea.getBaseType())) {
+              return true;
+            }
+          } else if (assign.getRightOp() instanceof FieldRef) {
+            FieldRef fr = (FieldRef) assign.getRightOp();
+            if (fr.getType() instanceof ArrayType) {
+              if (isObject(((ArrayType) fr.getType()).getArrayElementType())) {
+                return true;
+              }
+            }
+          }
+        }
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Collect all the locals which are assigned a IntConstant(0) or are used within a zero comparison.
+   *
+   * @param body
+   *          the body to analyze
+   */
+  private Set<Local> getNullCandidates(Body body) {
+    Set<Local> candidates = null;
+    for (Unit u : body.getUnits()) {
+      if (u instanceof AssignStmt) {
+        AssignStmt a = (AssignStmt) u;
+        if (!(a.getLeftOp() instanceof Local)) {
+          continue;
+        }
+        Local l = (Local) a.getLeftOp();
+        Value r = a.getRightOp();
+        if ((r instanceof IntConstant && ((IntConstant) r).value == 0) || (r instanceof LongConstant && ((LongConstant) r).value == 0)) {
+          if (candidates == null) {
+            candidates = new HashSet<Local>();
+          }
+          candidates.add(l);
+        }
+      } else if (u instanceof IfStmt) {
+        ConditionExpr expr = (ConditionExpr) ((IfStmt) u).getCondition();
+        if (isZeroComparison(expr) && expr.getOp1() instanceof Local) {
+          if (candidates == null) {
+            candidates = new HashSet<Local>();
+          }
+          candidates.add((Local) expr.getOp1());
+        }
+      }
+    }
+
+    return candidates == null ? Collections.<Local>emptySet() : candidates;
+  }
+
 }

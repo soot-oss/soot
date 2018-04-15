@@ -18,14 +18,16 @@
  */
 
 package soot.jimple.spark.sets;
+
 import soot.Type;
 import soot.jimple.spark.pag.PAG;
 
-/** Abstract base class for points-to set factory.
+/**
+ * Abstract base class for points-to set factory.
+ * 
  * @author Ondrej Lhotak
  */
 public abstract class P2SetFactory {
-    /** Returns a newly-created set. */
-    public abstract PointsToSetInternal newSet( Type type, PAG pag );
+  /** Returns a newly-created set. */
+  public abstract PointsToSetInternal newSet(Type type, PAG pag);
 }
-

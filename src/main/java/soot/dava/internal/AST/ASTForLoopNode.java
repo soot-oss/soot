@@ -19,11 +19,15 @@
 
 package soot.dava.internal.AST;
 
-import java.util.*;
-import soot.*;
-import soot.dava.internal.SET.*;
-import soot.dava.internal.asg.*;
-import soot.dava.toolkits.base.AST.analysis.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.toolkits.base.AST.analysis.Analysis;
 
 /*
  Will contain the For loop Construct
@@ -52,130 +56,128 @@ import soot.dava.toolkits.base.AST.analysis.*;
 
  */
 public class ASTForLoopNode extends ASTControlFlowNode {
-	private List<AugmentedStmt> init; // list of values
-	// notice B is an ASTCondition and is stored in the parent
-	private List<AugmentedStmt> update; // list of values
+  private List<AugmentedStmt> init; // list of values
+  // notice B is an ASTCondition and is stored in the parent
+  private List<AugmentedStmt> update; // list of values
 
-	private List<Object> body;
+  private List<Object> body;
 
-	public ASTForLoopNode(SETNodeLabel label, List<AugmentedStmt> init,
-			ASTCondition condition, List<AugmentedStmt> update, List<Object> body) {
-		super(label, condition);
-		this.body = body;
-		this.init = init;
-		this.update = update;
+  public ASTForLoopNode(SETNodeLabel label, List<AugmentedStmt> init, ASTCondition condition, List<AugmentedStmt> update, List<Object> body) {
+    super(label, condition);
+    this.body = body;
+    this.init = init;
+    this.update = update;
 
-		subBodies.add(body);
-	}
+    subBodies.add(body);
+  }
 
-	public List<AugmentedStmt> getInit() {
-		return init;
-	}
+  public List<AugmentedStmt> getInit() {
+    return init;
+  }
 
-	public List<AugmentedStmt> getUpdate() {
-		return update;
-	}
+  public List<AugmentedStmt> getUpdate() {
+    return update;
+  }
 
-	public void replaceBody(List<Object> body) {
-		this.body = body;
-		subBodies = new ArrayList<Object>();
-		subBodies.add(body);
-	}
+  public void replaceBody(List<Object> body) {
+    this.body = body;
+    subBodies = new ArrayList<Object>();
+    subBodies.add(body);
+  }
 
-	public Object clone() {
-		return new ASTForLoopNode(get_Label(), init, get_Condition(), update,
-				body);
-	}
+  public Object clone() {
+    return new ASTForLoopNode(get_Label(), init, get_Condition(), update, body);
+  }
 
-	public void toString(UnitPrinter up) {
-		label_toString(up);
+  public void toString(UnitPrinter up) {
+    label_toString(up);
 
-		up.literal("for");
-		up.literal(" ");
-		up.literal("(");
+    up.literal("for");
+    up.literal(" ");
+    up.literal("(");
 
-		Iterator<AugmentedStmt> it = init.iterator();
-		while (it.hasNext()) {
-			AugmentedStmt as = it.next();
-			Unit u = as.get_Stmt();
-			u.toString(up);
-			if (it.hasNext()) {
-				up.literal(" , ");
-			}
-		}
+    Iterator<AugmentedStmt> it = init.iterator();
+    while (it.hasNext()) {
+      AugmentedStmt as = it.next();
+      Unit u = as.get_Stmt();
+      u.toString(up);
+      if (it.hasNext()) {
+        up.literal(" , ");
+      }
+    }
 
-		up.literal("; ");
+    up.literal("; ");
 
-		condition.toString(up);
-		up.literal("; ");
+    condition.toString(up);
+    up.literal("; ");
 
-		it = update.iterator();
-		while (it.hasNext()) {
-			AugmentedStmt as = it.next();
-			Unit u = as.get_Stmt();
-			u.toString(up);
-			if (it.hasNext()) {
-				up.literal(" , ");
-			}
-		}
+    it = update.iterator();
+    while (it.hasNext()) {
+      AugmentedStmt as = it.next();
+      Unit u = as.get_Stmt();
+      u.toString(up);
+      if (it.hasNext()) {
+        up.literal(" , ");
+      }
+    }
 
-		up.literal(")");
-		up.newline();
+    up.literal(")");
+    up.newline();
 
-		up.literal("{");
-		up.newline();
+    up.literal("{");
+    up.newline();
 
-		up.incIndent();
-		body_toString(up, body);
-		up.decIndent();
+    up.incIndent();
+    body_toString(up, body);
+    up.decIndent();
 
-		up.literal("}");
-		up.newline();
+    up.literal("}");
+    up.newline();
 
-	}
+  }
 
-	public String toString() {
-		StringBuffer b = new StringBuffer();
+  public String toString() {
+    StringBuffer b = new StringBuffer();
 
-		b.append(label_toString());
-		b.append("for (");
+    b.append(label_toString());
+    b.append("for (");
 
-		Iterator<AugmentedStmt> it = init.iterator();
-		while (it.hasNext()) {
-			b.append(it.next().get_Stmt().toString());
-			if (it.hasNext()) {
-				b.append(" , ");
-			}
-		}
-		b.append("; ");
+    Iterator<AugmentedStmt> it = init.iterator();
+    while (it.hasNext()) {
+      b.append(it.next().get_Stmt().toString());
+      if (it.hasNext()) {
+        b.append(" , ");
+      }
+    }
+    b.append("; ");
 
-		b.append(get_Condition().toString());
-		b.append("; ");
+    b.append(get_Condition().toString());
+    b.append("; ");
 
-		it = update.iterator();
-		while (it.hasNext()) {
-			b.append(it.next().get_Stmt().toString());
-			if (it.hasNext()) {
-				b.append(" , ");
-			}
-		}
+    it = update.iterator();
+    while (it.hasNext()) {
+      b.append(it.next().get_Stmt().toString());
+      if (it.hasNext()) {
+        b.append(" , ");
+      }
+    }
 
-		b.append(")");
-		b.append(NEWLINE);
+    b.append(")");
+    b.append(NEWLINE);
 
-		b.append("{");
-		b.append(NEWLINE);
+    b.append("{");
+    b.append(NEWLINE);
 
-		b.append(body_toString(body));
+    b.append(body_toString(body));
 
-		b.append("}");
-		b.append(NEWLINE);
+    b.append("}");
+    b.append(NEWLINE);
 
-		return b.toString();
-	}
+    return b.toString();
+  }
 
-	public void apply(Analysis a) {
-		a.caseASTForLoopNode(this);
-	}
+  public void apply(Analysis a) {
+    a.caseASTForLoopNode(this);
+  }
 
 }

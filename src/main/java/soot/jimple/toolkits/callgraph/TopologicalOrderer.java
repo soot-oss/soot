@@ -23,42 +23,48 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple.toolkits.callgraph;
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import soot.MethodOrMethodContext;
+import soot.Scene;
+import soot.SootMethod;
+import soot.util.NumberedSet;
 
-public class TopologicalOrderer
-{
-    CallGraph cg;
-    List<SootMethod> order = new ArrayList<SootMethod>();
-    NumberedSet<SootMethod> visited = new NumberedSet<SootMethod>( Scene.v().getMethodNumberer() );
-    
-    public TopologicalOrderer( CallGraph cg ) {
-        this.cg = cg;
+public class TopologicalOrderer {
+  CallGraph cg;
+  List<SootMethod> order = new ArrayList<SootMethod>();
+  NumberedSet<SootMethod> visited = new NumberedSet<SootMethod>(Scene.v().getMethodNumberer());
+
+  public TopologicalOrderer(CallGraph cg) {
+    this.cg = cg;
+  }
+
+  public void go() {
+    Iterator<MethodOrMethodContext> methods = cg.sourceMethods();
+    while (methods.hasNext()) {
+      SootMethod m = (SootMethod) methods.next();
+      dfsVisit(m);
     }
+  }
 
-    public void go() {
-        Iterator<MethodOrMethodContext> methods = cg.sourceMethods();
-        while( methods.hasNext() ) {
-            SootMethod m = (SootMethod) methods.next();
-            dfsVisit( m );
-        }
+  private void dfsVisit(SootMethod m) {
+    if (visited.contains(m)) {
+      return;
     }
-
-    private void dfsVisit( SootMethod m ) {
-        if( visited.contains( m ) ) return;
-        visited.add( m );
-        Iterator<MethodOrMethodContext> targets = new Targets( cg.edgesOutOf(m) );
-        while( targets.hasNext() ) {
-            SootMethod target = (SootMethod) targets.next();
-            dfsVisit( target );
-        }
-        order.add( m );
+    visited.add(m);
+    Iterator<MethodOrMethodContext> targets = new Targets(cg.edgesOutOf(m));
+    while (targets.hasNext()) {
+      SootMethod target = (SootMethod) targets.next();
+      dfsVisit(target);
     }
+    order.add(m);
+  }
 
-    public List<SootMethod> order() { return order; }
+  public List<SootMethod> order() {
+    return order;
+  }
 }

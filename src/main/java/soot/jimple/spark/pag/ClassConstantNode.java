@@ -18,25 +18,27 @@
  */
 
 package soot.jimple.spark.pag;
+
 import soot.RefType;
 import soot.jimple.ClassConstant;
 
-/** Represents an allocation site node the represents a known java.lang.Class
- * object.
+/**
+ * Represents an allocation site node the represents a known java.lang.Class object.
+ * 
  * @author Ondrej Lhotak
  */
 public class ClassConstantNode extends AllocNode {
-    public String toString() {
-	return "ClassConstantNode "+getNumber()+" "+newExpr;
-    }
-    public ClassConstant getClassConstant() {
-        return (ClassConstant) newExpr;
-    }
+  public String toString() {
+    return "ClassConstantNode " + getNumber() + " " + newExpr;
+  }
 
-    /* End of public methods. */
+  public ClassConstant getClassConstant() {
+    return (ClassConstant) newExpr;
+  }
 
-    ClassConstantNode( PAG pag, ClassConstant cc ) {
-        super( pag, cc, RefType.v( "java.lang.Class" ), null );
-    }
+  /* End of public methods. */
+
+  ClassConstantNode(PAG pag, ClassConstant cc) {
+    super(pag, cc, RefType.v("java.lang.Class"), null);
+  }
 }
-

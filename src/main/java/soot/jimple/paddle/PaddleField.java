@@ -18,9 +18,12 @@
  */
 
 package soot.jimple.paddle;
-import soot.util.*;
 
-/** Represents a field.
+import soot.util.Numberable;
+
+/**
+ * Represents a field.
+ * 
  * @author Ondrej Lhotak
  */
 public interface PaddleField extends Numberable {

@@ -23,63 +23,80 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
 import soot.Value;
 import soot.jimple.StringConstant;
 
-/** A constant pool entry of type CONSTANT_String.
+/**
+ * A constant pool entry of type CONSTANT_String.
+ * 
  * @see cp_info
  * @author Clark Verbrugge
  */
 class CONSTANT_String_info extends cp_info {
-   /** Constant pool index of the CONSTANT_Utf8 object for the actual string.
-    * @see CONSTANT_Utf8_info
-    */
-   public int string_index;
-   /** Returns the size of this cp_info object.
-    * @return number of bytes occupied by this object.
-    * @see cp_info#size
-    */
-   public int size() { return 3; }
-   /** Returns a String representation of this entry.
-    * @param constant_pool constant pool of ClassFile.
-    * @return String representation of this entry.
-    * @see cp_info#toString
-    */
-   public String toString(cp_info constant_pool[]) {
-      CONSTANT_Utf8_info ci = (CONSTANT_Utf8_info)(constant_pool[string_index]);
-      return "\"" + ci.convert() + "\"";
-   }
-   /** Returns a String description of what kind of entry this is.
-    * @return the String "string".
-    * @see cp_info#typeName
-    */
-   public String typeName() { return "string"; }
-   /** Compares this entry with another cp_info object (which may reside
-    * in a different constant pool).
-    * @param constant_pool constant pool of ClassFile for this.
-    * @param cp constant pool entry to compare against.
-    * @param cp_constant_pool constant pool of ClassFile for cp.
-    * @return a value <0, 0, or >0 indicating whether this is smaller,
-    * the same or larger than cp.
-    * @see cp_info#compareTo
-    */
-   public int compareTo(cp_info constant_pool[],cp_info cp,cp_info cp_constant_pool[]) {
-      if (tag!=cp.tag) return tag-cp.tag;
-      CONSTANT_String_info cu = (CONSTANT_String_info)cp;
-      return ((CONSTANT_Utf8_info)(constant_pool[string_index])).
-         compareTo(cp_constant_pool[cu.string_index]);
-   }
-   
-	public Value createJimpleConstantValue(cp_info[] constant_pool) {
-	    CONSTANT_Utf8_info ci = (CONSTANT_Utf8_info)(constant_pool[string_index]);
-		return StringConstant.v(ci.convert());
-	}
+  /**
+   * Constant pool index of the CONSTANT_Utf8 object for the actual string.
+   * 
+   * @see CONSTANT_Utf8_info
+   */
+  public int string_index;
+
+  /**
+   * Returns the size of this cp_info object.
+   * 
+   * @return number of bytes occupied by this object.
+   * @see cp_info#size
+   */
+  public int size() {
+    return 3;
+  }
+
+  /**
+   * Returns a String representation of this entry.
+   * 
+   * @param constant_pool
+   *          constant pool of ClassFile.
+   * @return String representation of this entry.
+   * @see cp_info#toString
+   */
+  public String toString(cp_info constant_pool[]) {
+    CONSTANT_Utf8_info ci = (CONSTANT_Utf8_info) (constant_pool[string_index]);
+    return "\"" + ci.convert() + "\"";
+  }
+
+  /**
+   * Returns a String description of what kind of entry this is.
+   * 
+   * @return the String "string".
+   * @see cp_info#typeName
+   */
+  public String typeName() {
+    return "string";
+  }
+
+  /**
+   * Compares this entry with another cp_info object (which may reside in a different constant pool).
+   * 
+   * @param constant_pool
+   *          constant pool of ClassFile for this.
+   * @param cp
+   *          constant pool entry to compare against.
+   * @param cp_constant_pool
+   *          constant pool of ClassFile for cp.
+   * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
+   * @see cp_info#compareTo
+   */
+  public int compareTo(cp_info constant_pool[], cp_info cp, cp_info cp_constant_pool[]) {
+    if (tag != cp.tag) {
+      return tag - cp.tag;
+    }
+    CONSTANT_String_info cu = (CONSTANT_String_info) cp;
+    return ((CONSTANT_Utf8_info) (constant_pool[string_index])).compareTo(cp_constant_pool[cu.string_index]);
+  }
+
+  public Value createJimpleConstantValue(cp_info[] constant_pool) {
+    CONSTANT_Utf8_info ci = (CONSTANT_Utf8_info) (constant_pool[string_index]);
+    return StringConstant.v(ci.convert());
+  }
 }

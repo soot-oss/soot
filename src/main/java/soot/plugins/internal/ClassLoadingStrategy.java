@@ -26,11 +26,12 @@ package soot.plugins.internal;
  */
 public interface ClassLoadingStrategy {
 
-	/**
-	 * Creates an instance of the given class name.
-	 *
-	 * @param className Name of the class.
-	 * @return The newly created instance.
-	 */
-	public Object create(final String className) throws ClassNotFoundException, InstantiationException;
+  /**
+   * Creates an instance of the given class name.
+   *
+   * @param className
+   *          Name of the class.
+   * @return The newly created instance.
+   */
+  public Object create(final String className) throws ClassNotFoundException, InstantiationException;
 }

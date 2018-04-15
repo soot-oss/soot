@@ -17,8 +17,6 @@
  * Boston, MA 02111-1307, USA.
  */
 
-
-
 /*
   Nomair A. Naeem
   Used to represent !value in Dava AST
@@ -26,81 +24,75 @@
 
 package soot.dava.internal.javaRep;
 
-import soot.*;
-import soot.util.*;
-import soot.grimp.*;
+import soot.BooleanType;
+import soot.ByteType;
+import soot.CharType;
+import soot.DoubleType;
+import soot.FloatType;
+import soot.IntType;
+import soot.LongType;
+import soot.ShortType;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.UnknownType;
+import soot.Value;
+import soot.grimp.Grimp;
 //import soot.jimple.*;
-import soot.jimple.internal.*;
+import soot.jimple.internal.AbstractUnopExpr;
+import soot.util.Switch;
 
-public class DNotExpr extends AbstractUnopExpr
-{
-    public DNotExpr(Value op)
-    {
-        super(Grimp.v().newExprBox(op));
+public class DNotExpr extends AbstractUnopExpr {
+  public DNotExpr(Value op) {
+    super(Grimp.v().newExprBox(op));
+  }
+
+  public Object clone() {
+    return new DNotExpr(Grimp.cloneIfNecessary(getOpBox().getValue()));
+  }
+
+  public void toString(UnitPrinter up) {
+    up.literal(" ! (");
+    getOpBox().toString(up);
+    up.literal(")");
+  }
+
+  public String toString() {
+    return " ! (" + (getOpBox().getValue()).toString() + ")";
+  }
+
+  public Type getType() {
+    Value op = getOpBox().getValue();
+
+    if (op.getType().equals(IntType.v()) || op.getType().equals(ByteType.v()) || op.getType().equals(ShortType.v())
+        || op.getType().equals(BooleanType.v()) || op.getType().equals(CharType.v())) {
+      return IntType.v();
+    } else if (op.getType().equals(LongType.v())) {
+      return LongType.v();
+    } else if (op.getType().equals(DoubleType.v())) {
+      return DoubleType.v();
+    } else if (op.getType().equals(FloatType.v())) {
+      return FloatType.v();
+    } else {
+      return UnknownType.v();
     }
-      
-    public Object clone() 
-    {
-        return new DNotExpr(Grimp.cloneIfNecessary(getOpBox().getValue()));
+  }
+
+  /*
+   * NOTE THIS IS AN EMPTY IMPLEMENTATION OF APPLY METHOD
+   */
+  public void apply(Switch sw) {
+  }
+
+  /** Compares the specified object with this one for structural equality. */
+  public boolean equivTo(Object o) {
+    if (o instanceof DNotExpr) {
+      return getOpBox().getValue().equivTo(((DNotExpr) o).getOpBox().getValue());
     }
+    return false;
+  }
 
-    public void toString( UnitPrinter up ) {
-        up.literal( " ! (" );
-        getOpBox().toString(up);
-        up.literal( ")" );
-    }
-
-    public String toString()
-    {
-	return " ! (" + ( getOpBox().getValue()).toString() +")"; 
-    }
-
-    
-    public Type getType(){
-	Value op = getOpBox().getValue();
-    
-	if(op.getType().equals(IntType.v()) || op.getType().equals(ByteType.v()) ||
-	   op.getType().equals(ShortType.v()) || op.getType().equals(BooleanType.v()) || 
-	   op.getType().equals(CharType.v()))
-            return IntType.v();
-        else if(op.getType().equals(LongType.v()))
-            return LongType.v();
-        else if(op.getType().equals(DoubleType.v()))
-            return DoubleType.v();
-        else if(op.getType().equals(FloatType.v()))
-            return FloatType.v();
-        else
-            return UnknownType.v();
-    }
-
-    /*
-      NOTE THIS IS AN EMPTY IMPLEMENTATION OF APPLY METHOD
-    */
-    public void apply(Switch sw){
-    }
-
-
-
-
-
-
-
-
-
-
-    /** Compares the specified object with this one for structural equality. */
-    public boolean equivTo(Object o)
-    {
-        if (o instanceof DNotExpr)
-        {
-            return getOpBox().getValue().equivTo(((DNotExpr)o).getOpBox().getValue());
-        }
-        return false;
-    }
-
-    /** Returns a hash code for this object, consistent with structural equality. */
-    public int equivHashCode() 
-    {
-        return getOpBox().getValue().equivHashCode();
-    }
+  /** Returns a hash code for this object, consistent with structural equality. */
+  public int equivHashCode() {
+    return getOpBox().getValue().equivHashCode();
+  }
 }

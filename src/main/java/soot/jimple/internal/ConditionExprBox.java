@@ -23,25 +23,18 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
+import soot.AbstractValueBox;
+import soot.Value;
+import soot.jimple.ConditionExpr;
 
-public class ConditionExprBox extends AbstractValueBox
-{
-    public ConditionExprBox(Value value)
-    {
-        setValue(value);
-    }
+public class ConditionExprBox extends AbstractValueBox {
+  public ConditionExprBox(Value value) {
+    setValue(value);
+  }
 
-    public boolean canContainValue(Value value)
-    {
-        return value instanceof ConditionExpr;
-    }
+  public boolean canContainValue(Value value) {
+    return value instanceof ConditionExpr;
+  }
 }

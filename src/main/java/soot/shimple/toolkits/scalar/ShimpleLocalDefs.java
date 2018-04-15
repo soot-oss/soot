@@ -19,121 +19,125 @@
 
 package soot.shimple.toolkits.scalar;
 
-import soot.*;
-import soot.util.*;
-import soot.shimple.*;
-import soot.toolkits.scalar.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
-import java.util.*;
+import soot.Local;
+import soot.Unit;
+import soot.Value;
+import soot.ValueBox;
+import soot.shimple.ShimpleBody;
+import soot.toolkits.scalar.LocalDefs;
+import soot.util.Chain;
 
 /**
- * This class implements the LocalDefs interface for Shimple.
- * ShimpleLocalDefs can be used in conjunction with SimpleLocalUses to
- * provide Definition/Use and Use/Definition chains in SSA.
+ * This class implements the LocalDefs interface for Shimple. ShimpleLocalDefs can be used in conjunction with SimpleLocalUses to provide
+ * Definition/Use and Use/Definition chains in SSA.
  *
- * <p> This implementation can be considered a small demo for how SSA
- * can be put to good use since it is much simpler than
- * soot.toolkits.scalar.SimpleLocalDefs. Shimple can often be treated
- * as Jimple with the added benefits of SSA assumptions.
+ * <p>
+ * This implementation can be considered a small demo for how SSA can be put to good use since it is much simpler than
+ * soot.toolkits.scalar.SimpleLocalDefs. Shimple can often be treated as Jimple with the added benefits of SSA assumptions.
  *
- * <p> In addition to the interface required by LocalDefs,
- * ShimpleLocalDefs also provides a method for obtaining the
- * definition Unit given only the Local.
+ * <p>
+ * In addition to the interface required by LocalDefs, ShimpleLocalDefs also provides a method for obtaining the definition Unit given only the Local.
  *
  * @author Navindra Umanee
  * @see ShimpleLocalUses
  * @see soot.toolkits.scalar.SimpleLocalDefs
  * @see soot.toolkits.scalar.SimpleLocalUses
  **/
-public class ShimpleLocalDefs implements LocalDefs
-{
-    protected  Map<Value, List<Unit>> localToDefs;
+public class ShimpleLocalDefs implements LocalDefs {
+  protected Map<Value, List<Unit>> localToDefs;
 
-    /**
-     * Build a LocalDefs interface from a ShimpleBody.  Proper SSA
-     * form is required, otherwise correct behaviour is not
-     * guaranteed.
-     **/
-    public ShimpleLocalDefs(ShimpleBody sb)
+  /**
+   * Build a LocalDefs interface from a ShimpleBody. Proper SSA form is required, otherwise correct behaviour is not guaranteed.
+   **/
+  public ShimpleLocalDefs(ShimpleBody sb) {
+    // Instead of rebuilding the ShimpleBody without the
+    // programmer's knowledge, throw a RuntimeException
+    if (!sb.isSSA()) {
+      throw new RuntimeException(
+          "ShimpleBody is not in proper SSA form as required by ShimpleLocalDefs.  You may need to rebuild it or use SimpleLocalDefs instead.");
+    }
+
+    // build localToDefs map simply by iterating through all the
+    // units in the body and saving the unique definition site for
+    // each local -- no need for fancy analysis
     {
-        // Instead of rebuilding the ShimpleBody without the
-        // programmer's knowledge, throw a RuntimeException
-        if(!sb.isSSA())
-            throw new RuntimeException("ShimpleBody is not in proper SSA form as required by ShimpleLocalDefs.  You may need to rebuild it or use SimpleLocalDefs instead.");
+      Chain<Unit> unitsChain = sb.getUnits();
+      Iterator<Unit> unitsIt = unitsChain.iterator();
+      localToDefs = new HashMap<Value, List<Unit>>(unitsChain.size() * 2 + 1, 0.7f);
 
-        // build localToDefs map simply by iterating through all the
-        // units in the body and saving the unique definition site for
-        // each local -- no need for fancy analysis 
-        {
-            Chain<Unit> unitsChain = sb.getUnits();
-            Iterator<Unit> unitsIt = unitsChain.iterator();
-            localToDefs = new HashMap<Value, List<Unit>>(unitsChain.size() * 2 + 1, 0.7f);
-        
-            while(unitsIt.hasNext()){
-                Unit unit = (Unit) unitsIt.next();
-                Iterator<ValueBox> defBoxesIt = unit.getDefBoxes().iterator();
-                while(defBoxesIt.hasNext()){
-                    Value value = ((ValueBox)defBoxesIt.next()).getValue();
+      while (unitsIt.hasNext()) {
+        Unit unit = (Unit) unitsIt.next();
+        Iterator<ValueBox> defBoxesIt = unit.getDefBoxes().iterator();
+        while (defBoxesIt.hasNext()) {
+          Value value = ((ValueBox) defBoxesIt.next()).getValue();
 
-                    // only map locals
-                    if(!(value instanceof Local))
-                        continue;
-                        
-                    localToDefs.put(value, Collections.<Unit>singletonList(unit));
-                }
-            }
+          // only map locals
+          if (!(value instanceof Local)) {
+            continue;
+          }
+
+          localToDefs.put(value, Collections.<Unit>singletonList(unit));
         }
+      }
+    }
+  }
+
+  /**
+   * Unconditionally returns the definition site of a local (as a singleton list).
+   *
+   * <p>
+   * This method is currently not required by the LocalDefs interface.
+   **/
+  @Override
+  public List<Unit> getDefsOf(Local l) {
+    List<Unit> defs = localToDefs.get(l);
+
+    if (defs == null) {
+      throw new RuntimeException("Local not found in Body.");
     }
 
-    /**
-     * Unconditionally returns the definition site of a local (as a
-     * singleton list).
-     *
-     * <p> This method is currently not required by the LocalDefs
-     * interface.
-     **/
-    @Override
-    public List<Unit> getDefsOf(Local l) {
-        List<Unit> defs = localToDefs.get(l);
+    return defs;
+  }
 
-        if(defs == null)
-            throw new RuntimeException("Local not found in Body.");
+  /**
+   * Returns the definition site for a Local at a certain point (Unit) in a method as a singleton list.
+   *
+   * @param l
+   *          the Local in question.
+   * @param s
+   *          a unit that specifies the method context (location) to query for the definitions of the Local.
+   * @return a singleton list containing the definition site.
+   **/
+  @Override
+  public List<Unit> getDefsOfAt(Local l, Unit s) {
+    // For consistency with SimpleLocalDefs, check that the local
+    // is indeed used in the given Unit. This neatly sidesteps
+    // the problem of checking whether the local is actually
+    // defined at the given point in the program.
+    {
+      Iterator<ValueBox> boxIt = s.getUseBoxes().iterator();
+      boolean defined = false;
 
-        return defs;
-    }
-
-    /**
-     * Returns the definition site for a Local at a certain point
-     * (Unit) in a method as a singleton list.
-     *
-     * @param l the Local in question.
-     * @param s a unit that specifies the method context (location) to
-     * query for the definitions of the Local.
-     * @return a singleton list containing the definition site.
-     **/
-    @Override
-    public List<Unit> getDefsOfAt(Local l, Unit s) {
-        // For consistency with SimpleLocalDefs, check that the local
-        // is indeed used in the given Unit.  This neatly sidesteps
-        // the problem of checking whether the local is actually
-        // defined at the given point in the program.
-        {
-            Iterator<ValueBox> boxIt = s.getUseBoxes().iterator();
-            boolean defined = false;
-
-            while(boxIt.hasNext()){
-                Value value = ((ValueBox) boxIt.next()).getValue();
-                if(value.equals(l)){
-                    defined = true;
-                    break;
-                }
-            }
-
-            if(!defined)
-                throw new RuntimeException("Illegal LocalDefs query; local " + l + " is not being used at " + s);
+      while (boxIt.hasNext()) {
+        Value value = ((ValueBox) boxIt.next()).getValue();
+        if (value.equals(l)) {
+          defined = true;
+          break;
         }
+      }
 
-        return getDefsOf(l);
+      if (!defined) {
+        throw new RuntimeException("Illegal LocalDefs query; local " + l + " is not being used at " + s);
+      }
     }
-    
+
+    return getDefsOf(l);
+  }
+
 }

@@ -25,10 +25,10 @@
 
 package soot.baf;
 
-import soot.*;
+import soot.Type;
 
-public interface InstanceCastInst extends Inst
-{
-    public Type getCastType();
-    public void setCastType(Type type);
+public interface InstanceCastInst extends Inst {
+  public Type getCastType();
+
+  public void setCastType(Type type);
 }

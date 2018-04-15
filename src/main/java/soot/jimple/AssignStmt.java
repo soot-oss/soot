@@ -23,16 +23,12 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
+import soot.Value;
 
-public interface AssignStmt extends DefinitionStmt
-{
-    public void setLeftOp(Value variable);
-    public void setRightOp(Value rvalue);
+public interface AssignStmt extends DefinitionStmt {
+  public void setLeftOp(Value variable);
+
+  public void setRightOp(Value rvalue);
 }

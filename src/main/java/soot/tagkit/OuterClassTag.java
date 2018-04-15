@@ -23,58 +23,50 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.tagkit;
 
 import java.io.UnsupportedEncodingException;
-import soot.*;
 
-public class OuterClassTag implements Tag
-{
-    SootClass outerClass;
-    String simpleName;
-    boolean anon;
-    
-    public OuterClassTag(SootClass outer, String simpleName, boolean anon)
-    {
-	    this.outerClass = outer;
-        this.simpleName = simpleName;
-        this.anon = anon;
-    }
+import soot.SootClass;
 
-    public String getName()
-    {
-	    return "OuterClassTag";
-    }
+public class OuterClassTag implements Tag {
+  SootClass outerClass;
+  String simpleName;
+  boolean anon;
 
-    /**
-     */
-    public byte[] getValue()
-    {
-	try {
-		return outerClass.getName().getBytes("UTF8");
-	} catch (UnsupportedEncodingException e) {
-		return new byte[0];
-	}
-    }
+  public OuterClassTag(SootClass outer, String simpleName, boolean anon) {
+    this.outerClass = outer;
+    this.simpleName = simpleName;
+    this.anon = anon;
+  }
 
+  public String getName() {
+    return "OuterClassTag";
+  }
 
-    public SootClass getOuterClass()
-    {
-	    return outerClass;
+  /**
+   */
+  public byte[] getValue() {
+    try {
+      return outerClass.getName().getBytes("UTF8");
+    } catch (UnsupportedEncodingException e) {
+      return new byte[0];
     }
+  }
 
-    public String getSimpleName(){
-        return simpleName;
-    }
-    
-    public boolean isAnon(){
-        return anon;
-    }
-    
-    public String toString()
-    {
-	return "[outer class="+outerClass.getName()+"]";
-    }
+  public SootClass getOuterClass() {
+    return outerClass;
+  }
+
+  public String getSimpleName() {
+    return simpleName;
+  }
+
+  public boolean isAnon() {
+    return anon;
+  }
+
+  public String toString() {
+    return "[outer class=" + outerClass.getName() + "]";
+  }
 }
-

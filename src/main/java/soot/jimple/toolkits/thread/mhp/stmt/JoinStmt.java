@@ -1,9 +1,9 @@
 
 package soot.jimple.toolkits.thread.mhp.stmt;
 
-
-import soot.*;
-import soot.toolkits.graph.*;
+import soot.SootMethod;
+import soot.Unit;
+import soot.toolkits.graph.UnitGraph;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -16,23 +16,17 @@ import soot.toolkits.graph.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
-
 public class JoinStmt extends JPegStmt
 
 {
-	
-	public JoinStmt(String obj, String ca, Unit un, UnitGraph ug, SootMethod sm)
-	{
-		this.object = obj;
-		this.name = "join";
-		this.caller = ca;
-		this.unit = un;
-		this.unitGraph = ug;
-		this.sootMethod = sm;
-	}
-	
-	
-	
-	
-	
+
+  public JoinStmt(String obj, String ca, Unit un, UnitGraph ug, SootMethod sm) {
+    this.object = obj;
+    this.name = "join";
+    this.caller = ca;
+    this.unit = un;
+    this.unitGraph = ug;
+    this.sootMethod = sm;
+  }
+
 }

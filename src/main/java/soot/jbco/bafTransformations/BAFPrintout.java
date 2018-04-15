@@ -22,54 +22,62 @@ package soot.jbco.bafTransformations;
 import java.util.Map;
 import java.util.Stack;
 
-import soot.jbco.*;
 import soot.Body;
 import soot.BodyTransformer;
 import soot.Local;
 import soot.Type;
 import soot.Unit;
+import soot.jbco.IJbcoTransform;
 
 /**
- * @author Michael Batchelder 
+ * @author Michael Batchelder
  * 
- * Created on 15-Jun-2006 
+ *         Created on 15-Jun-2006
  */
 public class BAFPrintout extends BodyTransformer implements IJbcoTransform {
-  
+
   public static String name = "bb.printout";
-  
-  public void outputSummary() {}
-  public String[] getDependencies() {return new String[0];}
-  public String getName() { 
+
+  public void outputSummary() {
+  }
+
+  public String[] getDependencies() {
+    return new String[0];
+  }
+
+  public String getName() {
     return name;
   }
+
   static boolean stack = false;
-  
-  public BAFPrintout() {}
-  
+
+  public BAFPrintout() {
+  }
+
   public BAFPrintout(String newname, boolean print_stack) {
     name = newname;
     stack = print_stack;
   }
-  
-  protected void internalTransform(Body b, String phaseName, Map<String,String> options) {
-    //if (b.getMethod().getSignature().indexOf("run")<0) return;
-    System.out.println("\n"+b.getMethod().getSignature());
-  
+
+  protected void internalTransform(Body b, String phaseName, Map<String, String> options) {
+    // if (b.getMethod().getSignature().indexOf("run")<0) return;
+    System.out.println("\n" + b.getMethod().getSignature());
+
     if (stack) {
-      Map<Unit,Stack<Type>> stacks = null;
-      Map<Local,Local> b2j = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());      
-      
+      Map<Unit, Stack<Type>> stacks = null;
+      Map<Local, Local> b2j = soot.jbco.Main.methods2Baf2JLocals.get(b.getMethod());
+
       try {
-        if (b2j == null)
+        if (b2j == null) {
           stacks = StackTypeHeightCalculator.calculateStackHeights(b);
-        else
-          stacks = StackTypeHeightCalculator.calculateStackHeights(b,b2j);
-      
+        } else {
+          stacks = StackTypeHeightCalculator.calculateStackHeights(b, b2j);
+        }
+
         StackTypeHeightCalculator.printStack(b.getUnits(), stacks, true);
       } catch (Exception exc) {
         System.out.println("\n**************Exception calculating height " + exc + ", printing plain bytecode now\n\n");
-        soot.jbco.util.Debugger.printUnits(b, "  FINAL");  
+        soot.jbco.util.Debugger.printUnits(b, "  FINAL");
       }
     } else {
       soot.jbco.util.Debugger.printUnits(b, "  FINAL");

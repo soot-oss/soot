@@ -23,127 +23,110 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot;
 
-import java.util.*;
-import java.io.*;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
-/** Partial implementation of trap (exception catcher), used within Body
- * classes.  */
+/**
+ * Partial implementation of trap (exception catcher), used within Body classes.
+ */
 @SuppressWarnings("serial")
-public class AbstractTrap implements Trap, Serializable
-{
-    /** The exception being caught. */
-    protected transient SootClass exception;
+public class AbstractTrap implements Trap, Serializable {
+  /** The exception being caught. */
+  protected transient SootClass exception;
 
-    /** The first unit being trapped. */
-    protected UnitBox beginUnitBox;
+  /** The first unit being trapped. */
+  protected UnitBox beginUnitBox;
 
-    /** The unit just before the last unit being trapped. */
-    protected UnitBox endUnitBox;
+  /** The unit just before the last unit being trapped. */
+  protected UnitBox endUnitBox;
 
-    /** The unit to which execution flows after the caught exception is triggered. */
-    protected UnitBox handlerUnitBox;
+  /** The unit to which execution flows after the caught exception is triggered. */
+  protected UnitBox handlerUnitBox;
 
-    /** The list of unitBoxes referred to in this Trap (begin, end and handler. */
-    protected List<UnitBox> unitBoxes;
+  /** The list of unitBoxes referred to in this Trap (begin, end and handler. */
+  protected List<UnitBox> unitBoxes;
 
-    private void readObject( ObjectInputStream in) throws IOException, ClassNotFoundException
-    {
-    	in.defaultReadObject();
-    	exception = Scene.v().getSootClass( (String) in.readObject());
+  private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+    in.defaultReadObject();
+    exception = Scene.v().getSootClass((String) in.readObject());
+  }
+
+  private void writeObject(ObjectOutputStream out) throws IOException {
+    out.defaultWriteObject();
+    out.writeObject(exception.getName());
+  }
+
+  /** Creates an AbstractTrap with the given exception, handler, begin and end units. */
+  protected AbstractTrap(SootClass exception, UnitBox beginUnitBox, UnitBox endUnitBox, UnitBox handlerUnitBox) {
+    this.exception = exception;
+    this.beginUnitBox = beginUnitBox;
+    this.endUnitBox = endUnitBox;
+    this.handlerUnitBox = handlerUnitBox;
+    this.unitBoxes = Collections.unmodifiableList(Arrays.asList(beginUnitBox, endUnitBox, handlerUnitBox));
+  }
+
+  public Unit getBeginUnit() {
+    return beginUnitBox.getUnit();
+  }
+
+  public Unit getEndUnit() {
+    return endUnitBox.getUnit();
+  }
+
+  public Unit getHandlerUnit() {
+    return handlerUnitBox.getUnit();
+  }
+
+  public UnitBox getHandlerUnitBox() {
+    return handlerUnitBox;
+  }
+
+  public UnitBox getBeginUnitBox() {
+    return beginUnitBox;
+  }
+
+  public UnitBox getEndUnitBox() {
+    return endUnitBox;
+  }
+
+  public List<UnitBox> getUnitBoxes() {
+    return unitBoxes;
+  }
+
+  public void clearUnitBoxes() {
+    for (UnitBox box : getUnitBoxes()) {
+      box.setUnit(null);
     }
+  }
 
-    private void writeObject( ObjectOutputStream out) throws IOException
-    {
-    	out.defaultWriteObject();
-    	out.writeObject(exception.getName());
-    }
+  public SootClass getException() {
+    return exception;
+  }
 
+  public void setBeginUnit(Unit beginUnit) {
+    beginUnitBox.setUnit(beginUnit);
+  }
 
-    /** Creates an AbstractTrap with the given exception, handler, begin and end units. */
-    protected AbstractTrap(SootClass exception, UnitBox beginUnitBox,
-                   UnitBox endUnitBox, UnitBox handlerUnitBox)
-    {
-        this.exception = exception; 
-        this.beginUnitBox = beginUnitBox;
-        this.endUnitBox = endUnitBox; 
-        this.handlerUnitBox = handlerUnitBox;
-        this.unitBoxes = Collections.unmodifiableList(Arrays.asList(
-        		beginUnitBox, endUnitBox, handlerUnitBox
-        	));
-    }
+  public void setEndUnit(Unit endUnit) {
+    endUnitBox.setUnit(endUnit);
+  }
 
-    public Unit getBeginUnit()
-    {
-        return  beginUnitBox.getUnit();
-    }
+  public void setHandlerUnit(Unit handlerUnit) {
+    handlerUnitBox.setUnit(handlerUnit);
+  }
 
-    public Unit getEndUnit()
-    {
-        return endUnitBox.getUnit();
-    }
+  public void setException(SootClass exception) {
+    this.exception = exception;
+  }
 
-    public Unit getHandlerUnit()
-    {
-        return handlerUnitBox.getUnit();
-    }
-
-    public UnitBox getHandlerUnitBox()
-    {
-        return handlerUnitBox;
-    }
-
-    public UnitBox getBeginUnitBox()
-    {
-        return beginUnitBox;
-    }
-
-    public UnitBox getEndUnitBox()
-    {
-        return endUnitBox;
-    }
-
-    public List<UnitBox> getUnitBoxes()
-    {
-        return unitBoxes;
-    }
-
-    public void clearUnitBoxes()
-    {
-    	for (UnitBox box : getUnitBoxes()) {
-    		box.setUnit(null);
-    	}
-    }
-    
-    public SootClass getException()
-    {
-        return exception;
-    }
-
-    public void setBeginUnit(Unit beginUnit)
-    {
-        beginUnitBox.setUnit(beginUnit);
-    }
-
-    public void setEndUnit(Unit endUnit)
-    {
-        endUnitBox.setUnit(endUnit);
-    }
-
-    public void setHandlerUnit(Unit handlerUnit)
-    {
-        handlerUnitBox.setUnit(handlerUnit);
-    }
-
-    public void setException(SootClass exception)
-    {
-        this.exception = exception;
-    }
-
-    public Object clone()
-    {
-        throw new RuntimeException();
-    }
+  public Object clone() {
+    throw new RuntimeException();
+  }
 }

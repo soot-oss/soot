@@ -27,44 +27,42 @@ import java.util.LinkedList;
  * @author xiao
  *
  */
-public class FIFO_Worklist implements IWorklist 
-{
-	Deque<IVarAbstraction> Q = null;
+public class FIFO_Worklist implements IWorklist {
+  Deque<IVarAbstraction> Q = null;
 
-	@Override
-	public void initialize( int size )
-	{
-		Q = new LinkedList<IVarAbstraction>();
-	}
-	
-	@Override
-	public boolean has_job() {
-		return Q.size() != 0;
-	}
+  @Override
+  public void initialize(int size) {
+    Q = new LinkedList<IVarAbstraction>();
+  }
 
-	@Override
-	public IVarAbstraction next() {
-		IVarAbstraction t = Q.getFirst();
-		Q.removeFirst();
-		t.Qpos = 0;
-		return t;
-	}
+  @Override
+  public boolean has_job() {
+    return Q.size() != 0;
+  }
 
-	@Override
-	public void push(IVarAbstraction pv) {
-		if (pv.Qpos == 0) {
-			Q.addLast(pv);
-			pv.Qpos = 1;
-		}
-	}
+  @Override
+  public IVarAbstraction next() {
+    IVarAbstraction t = Q.getFirst();
+    Q.removeFirst();
+    t.Qpos = 0;
+    return t;
+  }
 
-	@Override
-	public int size() {
-		return Q.size();
-	}
+  @Override
+  public void push(IVarAbstraction pv) {
+    if (pv.Qpos == 0) {
+      Q.addLast(pv);
+      pv.Qpos = 1;
+    }
+  }
 
-	@Override
-	public void clear() {
-		Q = null;
-	}
+  @Override
+  public int size() {
+    return Q.size();
+  }
+
+  @Override
+  public void clear() {
+    Q = null;
+  }
 }

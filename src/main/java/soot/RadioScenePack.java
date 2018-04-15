@@ -18,66 +18,72 @@
  */
 
 package soot;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+/**
+ * A wrapper object for a pack of optimizations. Provides chain-like operations, except that the key is the phase name.
+ */
+public class RadioScenePack extends ScenePack {
+  private static final Logger logger = LoggerFactory.getLogger(RadioScenePack.class);
 
-/** A wrapper object for a pack of optimizations.
- * Provides chain-like operations, except that the key is the phase name. */
-public class RadioScenePack extends ScenePack
-{
-    private static final Logger logger = LoggerFactory.getLogger(RadioScenePack.class);
-    public RadioScenePack(String name) {
-        super(name);
-    }
+  public RadioScenePack(String name) {
+    super(name);
+  }
 
-    protected void internalApply()
-    {
-        LinkedList<Transform> enableds = new LinkedList<Transform>();
+  protected void internalApply() {
+    LinkedList<Transform> enableds = new LinkedList<Transform>();
 
-        for( Iterator<Transform> tIt = this.iterator(); tIt.hasNext(); ) {
+    for (Iterator<Transform> tIt = this.iterator(); tIt.hasNext();) {
 
-            final Transform t = tIt.next();
-            Map<String,String> opts = PhaseOptions.v().getPhaseOptions( t );
-            if( !PhaseOptions.getBoolean( opts, "enabled" ) ) continue;
-            enableds.add( t );
-        }
-        if( enableds.size() == 0 ) {
-            logger.debug(""+ "Exactly one phase in the pack "+getPhaseName()+
-                    " must be enabled. Currently, none of them are." );
-            throw new CompilationDeathException( CompilationDeathException.COMPILATION_ABORTED );
-        }
-        if( enableds.size() > 1 ) {
-            logger.debug(""+ "Only one phase in the pack "+getPhaseName()+
-                    " may be enabled. The following are enabled currently: " );
-            for (Transform t : enableds) {
-                logger.debug(""+ "  "+t.getPhaseName() );
-            }
-            throw new CompilationDeathException( CompilationDeathException.COMPILATION_ABORTED );
-        }
-        for (Transform t : enableds) {
-            t.apply();
-        }
+      final Transform t = tIt.next();
+      Map<String, String> opts = PhaseOptions.v().getPhaseOptions(t);
+      if (!PhaseOptions.getBoolean(opts, "enabled")) {
+        continue;
+      }
+      enableds.add(t);
     }
+    if (enableds.size() == 0) {
+      logger.debug("" + "Exactly one phase in the pack " + getPhaseName() + " must be enabled. Currently, none of them are.");
+      throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+    }
+    if (enableds.size() > 1) {
+      logger.debug("" + "Only one phase in the pack " + getPhaseName() + " may be enabled. The following are enabled currently: ");
+      for (Transform t : enableds) {
+        logger.debug("" + "  " + t.getPhaseName());
+      }
+      throw new CompilationDeathException(CompilationDeathException.COMPILATION_ABORTED);
+    }
+    for (Transform t : enableds) {
+      t.apply();
+    }
+  }
 
-    public void add(Transform t) {
-        super.add(t);
-        checkEnabled(t);
+  public void add(Transform t) {
+    super.add(t);
+    checkEnabled(t);
+  }
+
+  public void insertAfter(Transform t, String phaseName) {
+    super.insertAfter(t, phaseName);
+    checkEnabled(t);
+  }
+
+  public void insertBefore(Transform t, String phaseName) {
+    super.insertBefore(t, phaseName);
+    checkEnabled(t);
+  }
+
+  private void checkEnabled(Transform t) {
+    Map<String, String> options = PhaseOptions.v().getPhaseOptions(t);
+    if (PhaseOptions.getBoolean(options, "enabled")) {
+      // Enabling this one will disable all the others
+      PhaseOptions.v().setPhaseOption(t, "enabled:true");
     }
-    public void insertAfter(Transform t, String phaseName) {
-        super.insertAfter(t, phaseName);
-        checkEnabled(t);
-    }
-    public void insertBefore(Transform t, String phaseName) {
-        super.insertBefore(t, phaseName);
-        checkEnabled(t);
-    }
-    private void checkEnabled(Transform t) {
-        Map<String,String> options = PhaseOptions.v().getPhaseOptions(t);
-        if( PhaseOptions.getBoolean( options, "enabled" ) ) {
-            // Enabling this one will disable all the others
-            PhaseOptions.v().setPhaseOption( t, "enabled:true" );
-        }
-    }
+  }
 }

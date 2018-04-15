@@ -21,26 +21,26 @@ package soot;
 
 import soot.options.Options;
 
-/** A class provider looks for a file of a specific format for a specified
- * class, and returns a ClassSource for it if it finds it.
+/**
+ * A class provider looks for a file of a specific format for a specified class, and returns a ClassSource for it if it finds it.
  */
-public class JimpleClassProvider implements ClassProvider
-{
-    /** Look for the specified class. Return a ClassSource for it if found,
-     * or null if it was not found. */
-    public ClassSource find( String className ) {
-        //String fileName = className.replace('.', '/') + ".jimple";
-        String fileName = className + ".jimple";
-        FoundFile file = 
-            SourceLocator.v().lookupInClassPath(fileName);
-        if( file == null ){
-        	if (Options.v().permissive_resolving()) {
-	        	fileName = className.replace('.', '/') + ".jimple";
-	        	file = SourceLocator.v().lookupInClassPath(fileName);
-        	}
-        	if( file == null ) return null;
-        }
-        return new JimpleClassSource(className, file);
+public class JimpleClassProvider implements ClassProvider {
+  /**
+   * Look for the specified class. Return a ClassSource for it if found, or null if it was not found.
+   */
+  public ClassSource find(String className) {
+    // String fileName = className.replace('.', '/') + ".jimple";
+    String fileName = className + ".jimple";
+    FoundFile file = SourceLocator.v().lookupInClassPath(fileName);
+    if (file == null) {
+      if (Options.v().permissive_resolving()) {
+        fileName = className.replace('.', '/') + ".jimple";
+        file = SourceLocator.v().lookupInClassPath(fileName);
+      }
+      if (file == null) {
+        return null;
+      }
     }
+    return new JimpleClassSource(className, file);
+  }
 }
-

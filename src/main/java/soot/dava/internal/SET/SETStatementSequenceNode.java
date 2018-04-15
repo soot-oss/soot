@@ -19,116 +19,133 @@
 
 package soot.dava.internal.SET;
 
-import soot.*;
-import soot.util.*;
-import java.util.*;
-import soot.dava.*;
-import soot.jimple.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.AST.*;
-import soot.dava.internal.javaRep.*;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
+import soot.SootMethod;
+import soot.Value;
+import soot.dava.DavaBody;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.AST.ASTStatementSequenceNode;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.internal.javaRep.DAbruptStmt;
+import soot.jimple.CaughtExceptionRef;
+import soot.jimple.GotoStmt;
+import soot.jimple.IdentityStmt;
+import soot.jimple.MonitorStmt;
+import soot.jimple.ParameterRef;
+import soot.jimple.ReturnVoidStmt;
+import soot.jimple.Stmt;
+import soot.util.IterableSet;
 
 public class SETStatementSequenceNode extends SETNode {
-	private DavaBody davaBody;
-	private boolean hasContinue;
+  private DavaBody davaBody;
+  private boolean hasContinue;
 
-	public SETStatementSequenceNode(IterableSet body, DavaBody davaBody) {
-		super(body);
-		add_SubBody(body);
+  public SETStatementSequenceNode(IterableSet body, DavaBody davaBody) {
+    super(body);
+    add_SubBody(body);
 
-		this.davaBody = davaBody;
+    this.davaBody = davaBody;
 
-		hasContinue = false;
-	}
+    hasContinue = false;
+  }
 
-	public SETStatementSequenceNode(IterableSet body) {
-		this(body, null);
-	}
+  public SETStatementSequenceNode(IterableSet body) {
+    this(body, null);
+  }
 
-	public boolean has_Continue() {
-		return hasContinue;
-	}
+  public boolean has_Continue() {
+    return hasContinue;
+  }
 
-	public IterableSet get_NaturalExits() {
-		IterableSet c = new IterableSet();
-		AugmentedStmt last = (AugmentedStmt) get_Body().getLast();
+  public IterableSet get_NaturalExits() {
+    IterableSet c = new IterableSet();
+    AugmentedStmt last = (AugmentedStmt) get_Body().getLast();
 
-		if ((last.csuccs != null) && (last.csuccs.isEmpty() == false))
-			c.add(last);
+    if ((last.csuccs != null) && (last.csuccs.isEmpty() == false)) {
+      c.add(last);
+    }
 
-		return c;
-	}
+    return c;
+  }
 
-	public ASTNode emit_AST() {
-		List<AugmentedStmt> l = new LinkedList<AugmentedStmt>();
+  public ASTNode emit_AST() {
+    List<AugmentedStmt> l = new LinkedList<AugmentedStmt>();
 
-		boolean isStaticInitializer = davaBody.getMethod().getName()
-				.equals(SootMethod.staticInitializerName);
+    boolean isStaticInitializer = davaBody.getMethod().getName().equals(SootMethod.staticInitializerName);
 
-		Iterator it = get_Body().iterator();
-		while (it.hasNext()) {
-			AugmentedStmt as = (AugmentedStmt) it.next();
-			Stmt s = as.get_Stmt();
+    Iterator it = get_Body().iterator();
+    while (it.hasNext()) {
+      AugmentedStmt as = (AugmentedStmt) it.next();
+      Stmt s = as.get_Stmt();
 
-			if (davaBody != null) {
+      if (davaBody != null) {
 
-				if ((s instanceof ReturnVoidStmt) && (isStaticInitializer))
-					continue;
+        if ((s instanceof ReturnVoidStmt) && (isStaticInitializer)) {
+          continue;
+        }
 
-				if (s instanceof GotoStmt)
-					continue;
+        if (s instanceof GotoStmt) {
+          continue;
+        }
 
-				if (s instanceof MonitorStmt)
-					continue;
+        if (s instanceof MonitorStmt) {
+          continue;
+        }
 
-				/*
-				 * January 12th 2006 Trying to fix the super problem we need to
-				 * not ignore constructor unit i.e. this or super
-				 */
-				if (s == davaBody.get_ConstructorUnit()) {
-					// System.out.println("ALLOWING this.init STMT TO GET ADDED..............SETStatementSequenceNode");
-					// continue;
-				}
+        /*
+         * January 12th 2006 Trying to fix the super problem we need to not ignore constructor unit i.e. this or super
+         */
+        if (s == davaBody.get_ConstructorUnit()) {
+          // System.out.println("ALLOWING this.init STMT TO GET ADDED..............SETStatementSequenceNode");
+          // continue;
+        }
 
-				if (s instanceof IdentityStmt) {
-					IdentityStmt ids = (IdentityStmt) s;
+        if (s instanceof IdentityStmt) {
+          IdentityStmt ids = (IdentityStmt) s;
 
-					Value rightOp = ids.getRightOp(), leftOp = ids.getLeftOp();
+          Value rightOp = ids.getRightOp(), leftOp = ids.getLeftOp();
 
-					if (davaBody.get_ThisLocals().contains(leftOp))
-						continue;
+          if (davaBody.get_ThisLocals().contains(leftOp)) {
+            continue;
+          }
 
-					if (rightOp instanceof ParameterRef)
-						continue;
+          if (rightOp instanceof ParameterRef) {
+            continue;
+          }
 
-					if (rightOp instanceof CaughtExceptionRef)
-						continue;
-				}
-			}
+          if (rightOp instanceof CaughtExceptionRef) {
+            continue;
+          }
+        }
+      }
 
-			l.add(as);
-		}
+      l.add(as);
+    }
 
-		if (l.isEmpty())
-			return null;
-		else
-			return new ASTStatementSequenceNode(l);
-	}
+    if (l.isEmpty()) {
+      return null;
+    } else {
+      return new ASTStatementSequenceNode(l);
+    }
+  }
 
-	public AugmentedStmt get_EntryStmt() {
-		return (AugmentedStmt) get_Body().getFirst();
-	}
+  public AugmentedStmt get_EntryStmt() {
+    return (AugmentedStmt) get_Body().getFirst();
+  }
 
-	public void insert_AbruptStmt(DAbruptStmt stmt) {
-		if (hasContinue)
-			return;
+  public void insert_AbruptStmt(DAbruptStmt stmt) {
+    if (hasContinue) {
+      return;
+    }
 
-		get_Body().addLast(new AugmentedStmt(stmt));
-		hasContinue = stmt.is_Continue();
-	}
+    get_Body().addLast(new AugmentedStmt(stmt));
+    hasContinue = stmt.is_Continue();
+  }
 
-	protected boolean resolve(SETNode parent) {
-		throw new RuntimeException(
-				"Attempting auto-nest a SETStatementSequenceNode.");
-	}
+  protected boolean resolve(SETNode parent) {
+    throw new RuntimeException("Attempting auto-nest a SETStatementSequenceNode.");
+  }
 }

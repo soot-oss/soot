@@ -18,49 +18,54 @@
  */
 
 package soot.jimple.spark.solver;
-import soot.jimple.spark.pag.*;
-import java.util.*;
 
-/** Performs a pseudo-topological sort on the VarNodes in a PAG.
+import java.util.HashSet;
+
+import soot.jimple.spark.pag.Node;
+import soot.jimple.spark.pag.PAG;
+import soot.jimple.spark.pag.VarNode;
+
+/**
+ * Performs a pseudo-topological sort on the VarNodes in a PAG.
+ * 
  * @author Ondrej Lhotak
  */
 
 public class TopoSorter {
-    /** Actually perform the topological sort on the PAG. */
-    public void sort() {
-        for( VarNode v : pag.getVarNodeNumberer() ) {
-            dfsVisit( v );
-        }
-        visited = null;
+  /** Actually perform the topological sort on the PAG. */
+  public void sort() {
+    for (VarNode v : pag.getVarNodeNumberer()) {
+      dfsVisit(v);
     }
-    public TopoSorter( PAG pag, boolean ignoreTypes ) {
-        this.pag = pag;
-        this.ignoreTypes = ignoreTypes;
-        //this.visited = new NumberedSet( pag.getVarNodeNumberer() );
-        this.visited = new HashSet<VarNode>();
-    }
-    
-    /* End of public methods. */
-    /* End of package methods. */
+    visited = null;
+  }
 
-    protected boolean ignoreTypes;
-    protected PAG pag;
-    protected int nextFinishNumber = 1;
-    protected HashSet<VarNode> visited;
-    protected void dfsVisit( VarNode n ) {
-        if( visited.contains( n ) ) return;
-        visited.add( n );
-        Node[] succs = pag.simpleLookup( n );
-        for (Node element : succs) {
-            if( ignoreTypes 
-            || pag.getTypeManager().castNeverFails(
-                    n.getType(), element.getType() ) ) {
-                dfsVisit( (VarNode) element );
-            }
-        }
-        n.setFinishingNumber( nextFinishNumber++ );
+  public TopoSorter(PAG pag, boolean ignoreTypes) {
+    this.pag = pag;
+    this.ignoreTypes = ignoreTypes;
+    // this.visited = new NumberedSet( pag.getVarNodeNumberer() );
+    this.visited = new HashSet<VarNode>();
+  }
+
+  /* End of public methods. */
+  /* End of package methods. */
+
+  protected boolean ignoreTypes;
+  protected PAG pag;
+  protected int nextFinishNumber = 1;
+  protected HashSet<VarNode> visited;
+
+  protected void dfsVisit(VarNode n) {
+    if (visited.contains(n)) {
+      return;
     }
+    visited.add(n);
+    Node[] succs = pag.simpleLookup(n);
+    for (Node element : succs) {
+      if (ignoreTypes || pag.getTypeManager().castNeverFails(n.getType(), element.getType())) {
+        dfsVisit((VarNode) element);
+      }
+    }
+    n.setFinishingNumber(nextFinishNumber++);
+  }
 }
-
-
-

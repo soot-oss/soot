@@ -25,9 +25,9 @@ import polyglot.main.Report;
  * Extension information for jj extension.
  */
 public class Topics {
-    public static final String jj = "jj";
+  public static final String jj = "jj";
 
-    static {
-        Report.topics.add(jj);
-    }
+  static {
+    Report.topics.add(jj);
+  }
 }

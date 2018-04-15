@@ -23,68 +23,58 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
+import soot.ArrayType;
+import soot.NullType;
+import soot.RefType;
+import soot.Type;
+import soot.UnitBox;
+import soot.UnitPrinter;
+import soot.baf.Baf;
 
-public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst
-{
-    protected Type opType;
+public abstract class AbstractOpTypeBranchInst extends AbstractBranchInst {
+  protected Type opType;
 
-  
-
-
-    AbstractOpTypeBranchInst(Type opType, UnitBox targetBox)
-    {
-        super(targetBox);
-        if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
-            opType = RefType.v();
-
-
-        this.opType = opType;
+  AbstractOpTypeBranchInst(Type opType, UnitBox targetBox) {
+    super(targetBox);
+    if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType) {
+      opType = RefType.v();
     }
 
-    public int getInCount()
-    {
-            return 2;
-    }
-    
-    public int getOutCount()
-    {
-            return 0;
-    }
+    this.opType = opType;
+  }
 
-    public Type getOpType()
-    {
-        return opType;
-    }
-    
-    public void setOpType(Type t)
-    {
-        opType = t;
-        if(opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType)
-            opType = RefType.v();
-    }
+  public int getInCount() {
+    return 2;
+  }
 
-   
-    public String toString()
-    {
-      // do stuff with opType later.
-        return getName() + "." + Baf.bafDescriptorOf(opType)+
-           " " + getTarget();
-          
-    }    
-    public void toString( UnitPrinter up ) {
-        up.literal( getName() );
-        up.literal( "." );
-        up.literal( Baf.bafDescriptorOf(opType) );
-        up.literal( " " );
-        targetBox.toString(up);
+  public int getOutCount() {
+    return 0;
+  }
+
+  public Type getOpType() {
+    return opType;
+  }
+
+  public void setOpType(Type t) {
+    opType = t;
+    if (opType instanceof NullType || opType instanceof ArrayType || opType instanceof RefType) {
+      opType = RefType.v();
     }
+  }
+
+  public String toString() {
+    // do stuff with opType later.
+    return getName() + "." + Baf.bafDescriptorOf(opType) + " " + getTarget();
+
+  }
+
+  public void toString(UnitPrinter up) {
+    up.literal(getName());
+    up.literal(".");
+    up.literal(Baf.bafDescriptorOf(opType));
+    up.literal(" ");
+    targetBox.toString(up);
+  }
 }
-

@@ -20,28 +20,23 @@ package soot.toolkits.graph.pdg;
 
 /**
  * 
- * This represents a PDGNode that has more than 1 dependent but is not 
- * a loop header. This includes a conditional node, or a potentially
- * exceptional node.
+ * This represents a PDGNode that has more than 1 dependent but is not a loop header. This includes a conditional node, or a potentially exceptional
+ * node.
  *
  */
 public class ConditionalPDGNode extends PDGNode {
-	
-	
-	public ConditionalPDGNode(Object obj, Type t)
-	{		
-		super(obj, t);
-	}
-	
-	public ConditionalPDGNode(PDGNode node)
-	{
-		this(node.getNode(), node.getType());
-		this.m_dependents.addAll(node.m_dependents);
-		this.m_backDependents.addAll(node.m_backDependents);
-		this.m_next = node.m_next;
-		this.m_prev = node.m_prev;
-		
-	}
-		
-	
+
+  public ConditionalPDGNode(Object obj, Type t) {
+    super(obj, t);
+  }
+
+  public ConditionalPDGNode(PDGNode node) {
+    this(node.getNode(), node.getType());
+    this.m_dependents.addAll(node.m_dependents);
+    this.m_backDependents.addAll(node.m_backDependents);
+    this.m_next = node.m_next;
+    this.m_prev = node.m_prev;
+
+  }
+
 }

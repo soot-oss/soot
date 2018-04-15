@@ -22,21 +22,22 @@ package soot.toolkits.graph;
 import java.util.List;
 
 /**
- * An orderer builds an order on a directed, not necessarily acyclic, graph. 
+ * An orderer builds an order on a directed, not necessarily acyclic, graph.
  *
  * @author Eric Bodden
  */
 public interface Orderer<N> {
 
-	/**
-	 *  Builds an order for a directed graph.
-	 *  The order is represented by the returned list, i.e. is a node
-	 *  was assigned number <i>i</i> in the order, it will be in the
-	 *  <i>i</i>th position of the returned list.
-	 *  @param g a DirectedGraph instance whose nodes we wish to order
-	 *  @param reverse <code>true</code> to compute the reverse order
-	 *  @return a somehow ordered list of the graph's nodes
-	 */
-	public abstract List<N> newList(DirectedGraph<N> g, boolean reverse);
+  /**
+   * Builds an order for a directed graph. The order is represented by the returned list, i.e. is a node was assigned number <i>i</i> in the order, it
+   * will be in the <i>i</i>th position of the returned list.
+   * 
+   * @param g
+   *          a DirectedGraph instance whose nodes we wish to order
+   * @param reverse
+   *          <code>true</code> to compute the reverse order
+   * @return a somehow ordered list of the graph's nodes
+   */
+  public abstract List<N> newList(DirectedGraph<N> g, boolean reverse);
 
 }

@@ -19,94 +19,105 @@
 
 package soot.javaToJimple;
 
-import soot.*;
+import soot.PackManager;
 
 public class AnonClassInitMethodSource extends soot.javaToJimple.PolyglotMethodSource {
 
-    private boolean hasOuterRef;
-    public void hasOuterRef(boolean b){
-        hasOuterRef = b;
-    }
-    public boolean hasOuterRef(){
-        return hasOuterRef;
-    }
-    
-    private boolean hasQualifier;
-    public void hasQualifier(boolean b){
-        hasQualifier = b;
-    }
-    public boolean hasQualifier(){
-        return hasQualifier;
-    }
-    
-    
-    private boolean inStaticMethod;
+  private boolean hasOuterRef;
 
-    public void inStaticMethod(boolean b){
-        inStaticMethod = b;
-    }
-    public boolean inStaticMethod(){
-        return inStaticMethod;
-    }
-    
+  public void hasOuterRef(boolean b) {
+    hasOuterRef = b;
+  }
 
-    private boolean isSubType = false;
-    public void isSubType(boolean b){
-        isSubType = b;
-    }
-    public boolean isSubType(){
-        return isSubType;
-    }
-    
-    private soot.Type superOuterType = null;
-    private soot.Type thisOuterType = null;
+  public boolean hasOuterRef() {
+    return hasOuterRef;
+  }
 
-    public void superOuterType(soot.Type t){
-        superOuterType = t;
-    }
-    public soot.Type superOuterType(){
-        return superOuterType;
-    }
+  private boolean hasQualifier;
 
-    public void thisOuterType(soot.Type t){
-        thisOuterType = t;
-    }
-    public soot.Type thisOuterType(){
-        return thisOuterType;
-    }
+  public void hasQualifier(boolean b) {
+    hasQualifier = b;
+  }
 
-    private polyglot.types.ClassType polyglotType;
-    public void polyglotType(polyglot.types.ClassType type){
-        polyglotType = type;
-    }
-    public polyglot.types.ClassType polyglotType() {
-        return polyglotType;
-    }
-    
-    private polyglot.types.ClassType anonType;
-    public void anonType(polyglot.types.ClassType type){
-        anonType = type;
-    }
-    public polyglot.types.ClassType anonType() {
-        return anonType;
-    }
-    
-    public soot.Body getBody(soot.SootMethod sootMethod, String phaseName){
-        AnonInitBodyBuilder aibb = new AnonInitBodyBuilder();
-        soot.jimple.JimpleBody body = aibb.createBody(sootMethod);
-        
-        PackManager.v().getPack("jj").apply(body);
-    
-        return body;
-    }
-    
-    private soot.Type outerClassType;
+  public boolean hasQualifier() {
+    return hasQualifier;
+  }
 
-    public soot.Type outerClassType(){
-        return outerClassType;
-    }
-    
-    public void outerClassType(soot.Type type){
-        outerClassType = type;
-    }
+  private boolean inStaticMethod;
+
+  public void inStaticMethod(boolean b) {
+    inStaticMethod = b;
+  }
+
+  public boolean inStaticMethod() {
+    return inStaticMethod;
+  }
+
+  private boolean isSubType = false;
+
+  public void isSubType(boolean b) {
+    isSubType = b;
+  }
+
+  public boolean isSubType() {
+    return isSubType;
+  }
+
+  private soot.Type superOuterType = null;
+  private soot.Type thisOuterType = null;
+
+  public void superOuterType(soot.Type t) {
+    superOuterType = t;
+  }
+
+  public soot.Type superOuterType() {
+    return superOuterType;
+  }
+
+  public void thisOuterType(soot.Type t) {
+    thisOuterType = t;
+  }
+
+  public soot.Type thisOuterType() {
+    return thisOuterType;
+  }
+
+  private polyglot.types.ClassType polyglotType;
+
+  public void polyglotType(polyglot.types.ClassType type) {
+    polyglotType = type;
+  }
+
+  public polyglot.types.ClassType polyglotType() {
+    return polyglotType;
+  }
+
+  private polyglot.types.ClassType anonType;
+
+  public void anonType(polyglot.types.ClassType type) {
+    anonType = type;
+  }
+
+  public polyglot.types.ClassType anonType() {
+    return anonType;
+  }
+
+  public soot.Body getBody(soot.SootMethod sootMethod, String phaseName) {
+    AnonInitBodyBuilder aibb = new AnonInitBodyBuilder();
+    soot.jimple.JimpleBody body = aibb.createBody(sootMethod);
+
+    PackManager.v().getPack("jj").apply(body);
+
+    return body;
+  }
+
+  private soot.Type outerClassType;
+
+  public soot.Type outerClassType() {
+    return outerClassType;
+  }
+
+  public void outerClassType(soot.Type type) {
+    outerClassType = type;
+  }
 }

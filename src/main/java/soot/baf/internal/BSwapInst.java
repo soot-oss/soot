@@ -23,93 +23,75 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.DoubleType;
+import soot.LongType;
+import soot.Type;
+import soot.baf.Baf;
+import soot.baf.InstSwitch;
+import soot.baf.SwapInst;
+import soot.util.Switch;
 
-public class BSwapInst extends AbstractInst implements SwapInst
-{
+public class BSwapInst extends AbstractInst implements SwapInst {
 
-    protected Type mFromType, mToType;
-    
+  protected Type mFromType, mToType;
 
-    public BSwapInst(Type fromType, Type toType)
-    {
+  public BSwapInst(Type fromType, Type toType) {
 
-        if(fromType instanceof LongType || fromType instanceof DoubleType)
-            throw  new RuntimeException("fromType is LongType or DoubleType !");
-        if(toType instanceof LongType || toType instanceof DoubleType)
-            throw  new RuntimeException("toType is LongType or DoubleType !");
-        
-        mFromType = Baf.getDescriptorTypeOf(fromType);
-        mToType = Baf.getDescriptorTypeOf(toType);
+    if (fromType instanceof LongType || fromType instanceof DoubleType) {
+      throw new RuntimeException("fromType is LongType or DoubleType !");
+    }
+    if (toType instanceof LongType || toType instanceof DoubleType) {
+      throw new RuntimeException("toType is LongType or DoubleType !");
     }
 
-    public Type getFromType()
-    {
-        return mFromType;
-    }
-    public void setFromType(Type fromType)
-    {
-        mFromType = fromType;
-    }
-    
-    public Type getToType()
-    {
-        return mToType;
-    }
-    
-    public void setToType(Type toType)
-    {
-        mToType = toType;
-    }
+    mFromType = Baf.getDescriptorTypeOf(fromType);
+    mToType = Baf.getDescriptorTypeOf(toType);
+  }
 
+  public Type getFromType() {
+    return mFromType;
+  }
 
+  public void setFromType(Type fromType) {
+    mFromType = fromType;
+  }
 
-    public int getInCount()
-    {
-        return 2;
-    }
+  public Type getToType() {
+    return mToType;
+  }
 
-    public int getInMachineCount()
-    {
-        return 2;
-    }
-    
-    public int getOutCount()
-    {
-        return 2;
-    }
+  public void setToType(Type toType) {
+    mToType = toType;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 2;
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseSwapInst(this);
-    }   
-    
-    public String toString()
-    {
-        return "swap." + Baf.bafDescriptorOf(mFromType)  + Baf.bafDescriptorOf(mToType);
-    }
-    
-    
-    public String getName() {return "swap";}
- 
-    
+  public int getInCount() {
+    return 2;
+  }
+
+  public int getInMachineCount() {
+    return 2;
+  }
+
+  public int getOutCount() {
+    return 2;
+  }
+
+  public int getOutMachineCount() {
+    return 2;
+  }
+
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseSwapInst(this);
+  }
+
+  public String toString() {
+    return "swap." + Baf.bafDescriptorOf(mFromType) + Baf.bafDescriptorOf(mToType);
+  }
+
+  public String getName() {
+    return "swap";
+  }
 
 }
-
-

@@ -20,68 +20,59 @@
 
 package soot.dava.internal.AST;
 
-import soot.jimple.*;
-import soot.dava.internal.SET.*;
-import soot.dava.toolkits.base.AST.*;
+import soot.dava.internal.SET.SETNodeLabel;
+import soot.dava.toolkits.base.AST.ASTAnalysis;
+import soot.dava.toolkits.base.AST.ASTWalker;
+import soot.dava.toolkits.base.AST.TryContentsFinder;
+import soot.jimple.ConditionExpr;
 
-public abstract class ASTControlFlowNode extends ASTLabeledNode
-{
-    //protected ValueBox conditionBox;
-    ASTCondition condition;
+public abstract class ASTControlFlowNode extends ASTLabeledNode {
+  // protected ValueBox conditionBox;
+  ASTCondition condition;
 
-    public ASTControlFlowNode( SETNodeLabel label, ConditionExpr condition)
-    {
-	super( label);
-        //this.conditionBox = Jimple.v().newConditionExprBox(condition);
-	this.condition = new ASTBinaryCondition(condition);
-    }
+  public ASTControlFlowNode(SETNodeLabel label, ConditionExpr condition) {
+    super(label);
+    // this.conditionBox = Jimple.v().newConditionExprBox(condition);
+    this.condition = new ASTBinaryCondition(condition);
+  }
 
+  /*
+   * Nomair A. Naeem 17-FEB-05 Needed because of change of grammar of condition being stored as a ASTCondition rather than the ConditionExpr which was
+   * the case before
+   */
+  public ASTControlFlowNode(SETNodeLabel label, ASTCondition condition) {
+    super(label);
+    this.condition = condition;
+  }
+
+  public ASTCondition get_Condition() {
+    return condition;
+  }
+
+  public void set_Condition(ASTCondition condition) {
+    this.condition = condition;
+  }
+
+  public void perform_Analysis(ASTAnalysis a) {
     /*
-      Nomair A. Naeem 17-FEB-05
-      Needed because of change of grammar of condition being stored as a ASTCondition rather 
-      than the ConditionExpr which was the case before
-    */
-    public ASTControlFlowNode( SETNodeLabel label, ASTCondition condition)
-    {
-	super( label);
-	this.condition = condition;
+     * Nomair A Naeem 17-FEB-05 Changed because the ASTControlFlowNode does not have a ConditionBox anymore
+     * 
+     * The if check is not an ideal way of implementation What should be done is to do a DepthFirst of the Complete Condition hierarcy and walk all
+     * values that are found
+     * 
+     * Notice this condition will always return true UNLESS transformations aggregating the control flow have been performed.
+     * 
+     * This method is deprecated do not use it. Use the DepthFirstAdapter class in dava.toolkits.base.AST.analysis.
+     */
+    if (condition instanceof ASTBinaryCondition) {
+      ConditionExpr condExpr = ((ASTBinaryCondition) condition).getConditionExpr();
+      ASTWalker.v().walk_value(a, condExpr);
     }
 
-
-    public ASTCondition get_Condition()
-    {
-	return condition;
+    if (a instanceof TryContentsFinder) {
+      TryContentsFinder.v().add_ExceptionSet(this, TryContentsFinder.v().remove_CurExceptionSet());
     }
 
-
-    public void set_Condition(ASTCondition condition){
-	this.condition=condition;
-    }
-
-    public void perform_Analysis( ASTAnalysis a)
-    {
-	/*
-	  Nomair A Naeem 17-FEB-05 
-	  Changed because the ASTControlFlowNode does not have a ConditionBox anymore
-
-	  The if check is not an ideal way of implementation
-	  What should be done is to do a DepthFirst of the Complete
-	  Condition hierarcy and walk all values that are found
-	  
-	  Notice this condition will always return true UNLESS transformations aggregating
-	  the control flow have been performed.
-
-	  This method is deprecated do not use it. Use the DepthFirstAdapter class in dava.toolkits.base.AST.analysis.
-	*/
-	if(condition instanceof ASTBinaryCondition){ 
-	    ConditionExpr condExpr = ((ASTBinaryCondition)condition).getConditionExpr();
-	    ASTWalker.v().walk_value( a, condExpr);
-	}
-
-	if (a instanceof TryContentsFinder) {
-	    TryContentsFinder.v().add_ExceptionSet( this, TryContentsFinder.v().remove_CurExceptionSet());
-	}
-
-	perform_AnalysisOnSubBodies( a);
-    }
+    perform_AnalysisOnSubBodies(a);
+  }
 }

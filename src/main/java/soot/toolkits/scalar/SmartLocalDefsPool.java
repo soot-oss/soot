@@ -18,6 +18,8 @@
  */
 package soot.toolkits.scalar;
 
+import com.google.common.collect.Maps;
+
 import java.util.Map;
 
 import soot.Body;
@@ -26,51 +28,50 @@ import soot.Singletons;
 import soot.toolkits.graph.ExceptionalUnitGraph;
 import soot.toolkits.graph.UnitGraph;
 
-import com.google.common.collect.Maps;
-
 /**
- * This class implements a pool for {@link SmartLocalDefs} instances. This is useful, as these analyses are expensive to compute.
- * A {@link SmartLocalDefs} instance requires a {@link UnitGraph} (usually a {@link ExceptionalUnitGraph}), and creating these repeatedly,
- * and applying the {@link SmartLocalDefs} analysis repeatedly costs time.
- * Therefore in this class we pool these instances in cases in which the respective body is still the same. 
+ * This class implements a pool for {@link SmartLocalDefs} instances. This is useful, as these analyses are expensive to compute. A
+ * {@link SmartLocalDefs} instance requires a {@link UnitGraph} (usually a {@link ExceptionalUnitGraph}), and creating these repeatedly, and applying
+ * the {@link SmartLocalDefs} analysis repeatedly costs time. Therefore in this class we pool these instances in cases in which the respective body is
+ * still the same.
+ * 
  * @author Eric Bodden
  */
 public class SmartLocalDefsPool {
 
-	protected Map<Body,Pair<Long,SmartLocalDefs>> pool = Maps.newHashMap();
-		
-	/**
-	 * This method returns a fresh instance of a {@link SmartLocalDefs} analysis, based
-	 * on a freshly created {@link ExceptionalUnitGraph} for b, with standard parameters.
-	 * If the body b's modification count has not changed since the last time such an analysis
-	 * was requested for b, then the previously created analysis is returned instead.
-	 * @see Body#getModificationCount()
-	 */
-	public SmartLocalDefs getSmartLocalDefsFor(Body b) {
-		Pair<Long, SmartLocalDefs> modCountAndSLD = pool.get(b);
-		if(modCountAndSLD!=null && modCountAndSLD.o1.longValue() == b.getModificationCount()) {
-			return modCountAndSLD.o2;
-		} else {
-			ExceptionalUnitGraph g = new ExceptionalUnitGraph(b);
-			SmartLocalDefs newSLD = new SmartLocalDefs(g, new SimpleLiveLocals( g ));
-			pool.put(b, new Pair<Long, SmartLocalDefs>(b.getModificationCount(), newSLD));
-			return newSLD;
-		}
-	}	
-	
-	public void clear() {
-		pool.clear();
-	}
-	
-    public static SmartLocalDefsPool v() {
-        return G.v().soot_toolkits_scalar_SmartLocalDefsPool();
-    }
+  protected Map<Body, Pair<Long, SmartLocalDefs>> pool = Maps.newHashMap();
 
-    public SmartLocalDefsPool(Singletons.Global g) {
+  /**
+   * This method returns a fresh instance of a {@link SmartLocalDefs} analysis, based on a freshly created {@link ExceptionalUnitGraph} for b, with
+   * standard parameters. If the body b's modification count has not changed since the last time such an analysis was requested for b, then the
+   * previously created analysis is returned instead.
+   * 
+   * @see Body#getModificationCount()
+   */
+  public SmartLocalDefs getSmartLocalDefsFor(Body b) {
+    Pair<Long, SmartLocalDefs> modCountAndSLD = pool.get(b);
+    if (modCountAndSLD != null && modCountAndSLD.o1.longValue() == b.getModificationCount()) {
+      return modCountAndSLD.o2;
+    } else {
+      ExceptionalUnitGraph g = new ExceptionalUnitGraph(b);
+      SmartLocalDefs newSLD = new SmartLocalDefs(g, new SimpleLiveLocals(g));
+      pool.put(b, new Pair<Long, SmartLocalDefs>(b.getModificationCount(), newSLD));
+      return newSLD;
     }
-    
-    public void invalidate(Body b) {
-    	pool.remove(b);
-    }
+  }
+
+  public void clear() {
+    pool.clear();
+  }
+
+  public static SmartLocalDefsPool v() {
+    return G.v().soot_toolkits_scalar_SmartLocalDefsPool();
+  }
+
+  public SmartLocalDefsPool(Singletons.Global g) {
+  }
+
+  public void invalidate(Body b) {
+    pool.remove(b);
+  }
 
 }

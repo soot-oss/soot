@@ -23,23 +23,17 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf;
 
-import soot.*;
+import soot.AbstractUnitBox;
+import soot.Unit;
 
-class InstBox extends AbstractUnitBox
-{
-    InstBox(Inst s)
-    {
-        setUnit(s);
-    }
-    
-    public boolean canContainUnit(Unit u)
-    {
-        return u instanceof Inst || u == null;
-    }
+class InstBox extends AbstractUnitBox {
+  InstBox(Inst s) {
+    setUnit(s);
+  }
+
+  public boolean canContainUnit(Unit u) {
+    return u instanceof Inst || u == null;
+  }
 }

@@ -23,20 +23,22 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.toolkits.scalar;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Vector;
 
 /**
- * gives an injection of Objects to ints. Different instances of
- * <code>ObjectIntMap</code> may map different ints to the same object.
+ * gives an injection of Objects to ints. Different instances of <code>ObjectIntMap</code> may map different ints to the same object.
  */
 public class ObjectIntMapper<E> {
   private Vector<E> intToObjects;
   private int counter;
   private Map<E, Integer> objectToInts;
-  
+
   public ObjectIntMapper() {
     intToObjects = new Vector<E>();
     objectToInts = new HashMap<E, Integer>();
@@ -55,13 +57,13 @@ public class ObjectIntMapper<E> {
     intToObjects = new Vector<E>(initSize);
     objectToInts = new HashMap<E, Integer>(initSize);
     counter = 0;
-    while (it.hasNext())
+    while (it.hasNext()) {
       add(it.next());
+    }
   }
 
   /**
-   * adds <code>o</code> into the map. no test are made, if it is already in the
-   * map.
+   * adds <code>o</code> into the map. no test are made, if it is already in the map.
    */
   public int add(E o) {
     objectToInts.put(o, counter);
@@ -70,16 +72,17 @@ public class ObjectIntMapper<E> {
   }
 
   /**
-   * returns the mapping of <code>o</code>. if there has been a call to
-   * <code>objectToInt</code> with the same <code>o</code> before, the same
-   * value will be returned.
+   * returns the mapping of <code>o</code>. if there has been a call to <code>objectToInt</code> with the same <code>o</code> before, the same value
+   * will be returned.
    *
    * @param o
    * @return <code>o</code>'s mapping
    */
   public int getInt(E o) {
     Integer i = objectToInts.get(o);
-    if (i != null) return i;
+    if (i != null) {
+      return i;
+    }
     return add(o);
   }
 

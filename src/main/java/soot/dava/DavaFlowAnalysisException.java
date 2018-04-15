@@ -23,17 +23,16 @@ package soot.dava;
 //import soot.util.*;
 //import soot.dava.toolkits.base.finders.*;
 
-public class DavaFlowAnalysisException extends DecompilationException 
-{
-    public DavaFlowAnalysisException(){
-	super();
-    }
+public class DavaFlowAnalysisException extends DecompilationException {
+  public DavaFlowAnalysisException() {
+    super();
+  }
 
-    public DavaFlowAnalysisException(String message){
-	super();
-	System.out.println("There was an Error During the Structural Flow Analysis in Dava");
-	System.out.println(message);
-	report();
-    }
+  public DavaFlowAnalysisException(String message) {
+    super();
+    System.out.println("There was an Error During the Structural Flow Analysis in Dava");
+    System.out.println(message);
+    report();
+  }
 
 }

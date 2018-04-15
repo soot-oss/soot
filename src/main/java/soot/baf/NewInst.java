@@ -25,10 +25,10 @@
 
 package soot.baf;
 
-import soot.*;
+import soot.RefType;
 
-public interface NewInst extends Inst
-{
-    public RefType getBaseType();
-    public void setBaseType(RefType type);
+public interface NewInst extends Inst {
+  public RefType getBaseType();
+
+  public void setBaseType(RefType type);
 }

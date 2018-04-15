@@ -20,6 +20,6 @@ package soot.jimple.spark.ondemand.genericutil;
 
 public interface ObjectVisitor<T> {
 
-    public void visit(T obj_);
+  public void visit(T obj_);
 
 }

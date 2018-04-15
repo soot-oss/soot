@@ -1,4 +1,7 @@
 package soot;
+
+import java.io.File;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 /* Soot - a J*va Optimization Framework
@@ -20,38 +23,39 @@ import org.slf4j.LoggerFactory;
  * Boston, MA 02111-1307, USA.
  */
 
-
-
-import java.io.File;
-
 import soot.dexpler.DexResolver;
 import soot.javaToJimple.IInitialResolver.Dependencies;
 import soot.options.Options;
 
 /**
- * Responsible for resolving a single class from a dex source format. 
+ * Responsible for resolving a single class from a dex source format.
  */
 public class DexClassSource extends ClassSource {
-    private static final Logger logger = LoggerFactory.getLogger(DexClassSource.class);
-    protected File path;
-    /**
-     * @param className the class which dependencies are to be resolved.
-     * @param path to the file that defines the class.
-     */
-    public DexClassSource(String className, File path) {
-        super(className);
-        this.path = path;
-    }
+  private static final Logger logger = LoggerFactory.getLogger(DexClassSource.class);
+  protected File path;
 
-    /**
-     * Resolve dependencies of class.
-     *
-     * @param sc The SootClass to resolve into.
-     * @return Dependencies of class (Strings or Types referenced).
-     */
-    public Dependencies resolve(SootClass sc) {
-        if(Options.v().verbose())
-            logger.debug("resolving " + className + " from file " + path.getPath());
-        return DexResolver.v().resolveFromFile(path, className, sc);
+  /**
+   * @param className
+   *          the class which dependencies are to be resolved.
+   * @param path
+   *          to the file that defines the class.
+   */
+  public DexClassSource(String className, File path) {
+    super(className);
+    this.path = path;
+  }
+
+  /**
+   * Resolve dependencies of class.
+   *
+   * @param sc
+   *          The SootClass to resolve into.
+   * @return Dependencies of class (Strings or Types referenced).
+   */
+  public Dependencies resolve(SootClass sc) {
+    if (Options.v().verbose()) {
+      logger.debug("resolving " + className + " from file " + path.getPath());
     }
+    return DexResolver.v().resolveFromFile(path, className, sc);
+  }
 }

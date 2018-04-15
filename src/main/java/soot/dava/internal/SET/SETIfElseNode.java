@@ -19,59 +19,63 @@
 
 package soot.dava.internal.SET;
 
-import java.util.*;
-import soot.util.*;
-import soot.jimple.*;
-import soot.dava.internal.asg.*;
-import soot.dava.internal.AST.*;
-import soot.dava.toolkits.base.misc.*;
+import java.util.List;
+
+import soot.dava.internal.AST.ASTIfElseNode;
+import soot.dava.internal.AST.ASTIfNode;
+import soot.dava.internal.AST.ASTNode;
+import soot.dava.internal.asg.AugmentedStmt;
+import soot.dava.toolkits.base.misc.ConditionFlipper;
+import soot.jimple.ConditionExpr;
+import soot.jimple.IfStmt;
+import soot.util.IterableSet;
 
 public class SETIfElseNode extends SETDagNode {
-	private IterableSet ifBody, elseBody;
+  private IterableSet ifBody, elseBody;
 
-	public SETIfElseNode(AugmentedStmt characterizingStmt, IterableSet body,
-			IterableSet ifBody, IterableSet elseBody) {
-		super(characterizingStmt, body);
+  public SETIfElseNode(AugmentedStmt characterizingStmt, IterableSet body, IterableSet ifBody, IterableSet elseBody) {
+    super(characterizingStmt, body);
 
-		this.ifBody = ifBody;
-		this.elseBody = elseBody;
+    this.ifBody = ifBody;
+    this.elseBody = elseBody;
 
-		add_SubBody(ifBody);
-		add_SubBody(elseBody);
-	}
+    add_SubBody(ifBody);
+    add_SubBody(elseBody);
+  }
 
-	public IterableSet get_NaturalExits() {
-		IterableSet c = new IterableSet();
+  public IterableSet get_NaturalExits() {
+    IterableSet c = new IterableSet();
 
-		IterableSet ifChain = body2childChain.get(ifBody);
-		if (ifChain.isEmpty() == false)
-			c.addAll(((SETNode) ifChain.getLast()).get_NaturalExits());
+    IterableSet ifChain = body2childChain.get(ifBody);
+    if (ifChain.isEmpty() == false) {
+      c.addAll(((SETNode) ifChain.getLast()).get_NaturalExits());
+    }
 
-		IterableSet elseChain = body2childChain.get(elseBody);
-		if (elseChain.isEmpty() == false)
-			c.addAll(((SETNode) elseChain.getLast()).get_NaturalExits());
+    IterableSet elseChain = body2childChain.get(elseBody);
+    if (elseChain.isEmpty() == false) {
+      c.addAll(((SETNode) elseChain.getLast()).get_NaturalExits());
+    }
 
-		return c;
-	}
+    return c;
+  }
 
-	public ASTNode emit_AST() {
-		List<Object> astBody0 = emit_ASTBody(body2childChain.get(ifBody)), astBody1 = emit_ASTBody(body2childChain
-				.get(elseBody));
+  public ASTNode emit_AST() {
+    List<Object> astBody0 = emit_ASTBody(body2childChain.get(ifBody)), astBody1 = emit_ASTBody(body2childChain.get(elseBody));
 
-		ConditionExpr ce = (ConditionExpr) ((IfStmt) get_CharacterizingStmt()
-				.get_Stmt()).getCondition();
+    ConditionExpr ce = (ConditionExpr) ((IfStmt) get_CharacterizingStmt().get_Stmt()).getCondition();
 
-		if (astBody0.isEmpty()) {
-			List<Object> tbody = astBody0;
-			astBody0 = astBody1;
-			astBody1 = tbody;
+    if (astBody0.isEmpty()) {
+      List<Object> tbody = astBody0;
+      astBody0 = astBody1;
+      astBody1 = tbody;
 
-			ce = ConditionFlipper.flip(ce);
-		}
+      ce = ConditionFlipper.flip(ce);
+    }
 
-		if (astBody1.isEmpty())
-			return new ASTIfNode(get_Label(), ce, astBody0);
-		else
-			return new ASTIfElseNode(get_Label(), ce, astBody0, astBody1);
-	}
+    if (astBody1.isEmpty()) {
+      return new ASTIfNode(get_Label(), ce, astBody0);
+    } else {
+      return new ASTIfElseNode(get_Label(), ce, astBody0, astBody1);
+    }
+  }
 }

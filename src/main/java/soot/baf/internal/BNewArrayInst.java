@@ -23,67 +23,57 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.Type;
+import soot.baf.InstSwitch;
+import soot.baf.NewArrayInst;
+import soot.util.Switch;
 
-public class BNewArrayInst extends AbstractInst implements NewArrayInst
-{
-    protected Type baseType;
-    
-    public BNewArrayInst(Type opType)
-    {
-        baseType = opType;
-    }
-    
-    public int getInCount()
-    {
-        return 1;
-    }
+public class BNewArrayInst extends AbstractInst implements NewArrayInst {
+  protected Type baseType;
 
-    public int getOutCount()
-    {
-        return 1;
-    }
+  public BNewArrayInst(Type opType) {
+    baseType = opType;
+  }
 
+  public int getInCount() {
+    return 1;
+  }
 
+  public int getOutCount() {
+    return 1;
+  }
 
+  public Object clone() {
+    return new BNewArrayInst(baseType);
+  }
 
-    public Object clone() 
-    {
-        return new  BNewArrayInst(baseType);
-    }
+  public int getInMachineCount() {
+    return 1;
+  }
 
-    public int getInMachineCount()
-    {
-        return 1;
-    }
+  public int getOutMachineCount() {
+    return 1;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 1;
-    }
-    
+  final public String getName() {
+    return "newarray";
+  }
 
-    final public String getName() { return "newarray"; }
+  public Type getBaseType() {
+    return baseType;
+  }
 
-    public Type getBaseType() { return baseType; }
-    public void setBaseType(Type type) { baseType = type; }
+  public void setBaseType(Type type) {
+    baseType = type;
+  }
 
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseNewArrayInst(this);
+  }
 
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseNewArrayInst(this);
-    }
-
-    public boolean containsNewExpr() {
-        return true;
-    }
+  public boolean containsNewExpr() {
+    return true;
+  }
 }
-

@@ -31,10 +31,12 @@
  */
 package soot.jimple.toolkits.pointer.representations;
 
-import soot.*;
+import soot.Type;
 
-public interface AbstractObject{
+public interface AbstractObject {
   public Type getType();
+
   public String toString();
+
   public String shortString();
 }

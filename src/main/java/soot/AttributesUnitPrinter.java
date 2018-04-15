@@ -18,90 +18,110 @@
  */
 
 package soot;
+
+import java.util.Iterator;
+import java.util.Stack;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.*;
-import soot.tagkit.*;
+
+import soot.tagkit.ColorTag;
+import soot.tagkit.Host;
+import soot.tagkit.JimpleLineNumberTag;
+import soot.tagkit.PositionTag;
+import soot.tagkit.Tag;
 
 /**
  * Adds PositionTags to ValueBoxes to identify their position in the output.
  */
 public class AttributesUnitPrinter {
-    private static final Logger logger = LoggerFactory.getLogger(AttributesUnitPrinter.class);
+  private static final Logger logger = LoggerFactory.getLogger(AttributesUnitPrinter.class);
 
-    private Stack<Integer> startOffsets;
-	private int endOffset;
-	private int startStmtOffset;
-    private int startLn;
-	private int currentLn;
-    private int lastNewline;
-    private UnitPrinter printer;
-    
-	public AttributesUnitPrinter( int currentLnNum ) {
-		this.currentLn = currentLnNum;
-	}
-	public void startUnit( Unit u ) {
-		startLn = currentLn;
-		startStmtOffset = output().length() - lastNewline;
-	}
-	public void endUnit( Unit u ) {
-		int endStmtOffset = output().length() - lastNewline;
-        //logger.debug("u: "+u.toString());
-		if (hasTag(u)){
-            //logger.debug("u: "+u.toString()+" has tag");
-			u.addTag( new JimpleLineNumberTag( startLn, currentLn ));
-		}
-		if (hasColorTag(u)) {
-			u.addTag( new PositionTag(startStmtOffset, endStmtOffset) );
-		}
-	}
-    public void startValueBox( ValueBox u ) {
-		if (startOffsets == null) {
-			startOffsets = new Stack<Integer>();
-		}
-        startOffsets.push(new Integer(output().length() - lastNewline));
-    }
-    public void endValueBox( ValueBox u ) {
-        endOffset = output().length() - lastNewline;
-        if (hasColorTag(u)) {
-			u.addTag(new PositionTag(startOffsets.pop().intValue(), endOffset));
-		}
-    }
+  private Stack<Integer> startOffsets;
+  private int endOffset;
+  private int startStmtOffset;
+  private int startLn;
+  private int currentLn;
+  private int lastNewline;
+  private UnitPrinter printer;
 
-	private boolean hasTag(Host h) {
-        if (h instanceof Unit) {
-            Iterator<ValueBox> usesAndDefsIt = ((Unit)h).getUseAndDefBoxes().iterator();
-            while (usesAndDefsIt.hasNext()){
-                if (hasTag(usesAndDefsIt.next())) return true;
-            }
+  public AttributesUnitPrinter(int currentLnNum) {
+    this.currentLn = currentLnNum;
+  }
+
+  public void startUnit(Unit u) {
+    startLn = currentLn;
+    startStmtOffset = output().length() - lastNewline;
+  }
+
+  public void endUnit(Unit u) {
+    int endStmtOffset = output().length() - lastNewline;
+    // logger.debug("u: "+u.toString());
+    if (hasTag(u)) {
+      // logger.debug("u: "+u.toString()+" has tag");
+      u.addTag(new JimpleLineNumberTag(startLn, currentLn));
+    }
+    if (hasColorTag(u)) {
+      u.addTag(new PositionTag(startStmtOffset, endStmtOffset));
+    }
+  }
+
+  public void startValueBox(ValueBox u) {
+    if (startOffsets == null) {
+      startOffsets = new Stack<Integer>();
+    }
+    startOffsets.push(new Integer(output().length() - lastNewline));
+  }
+
+  public void endValueBox(ValueBox u) {
+    endOffset = output().length() - lastNewline;
+    if (hasColorTag(u)) {
+      u.addTag(new PositionTag(startOffsets.pop().intValue(), endOffset));
+    }
+  }
+
+  private boolean hasTag(Host h) {
+    if (h instanceof Unit) {
+      Iterator<ValueBox> usesAndDefsIt = ((Unit) h).getUseAndDefBoxes().iterator();
+      while (usesAndDefsIt.hasNext()) {
+        if (hasTag(usesAndDefsIt.next())) {
+          return true;
         }
-		if (h.getTags().isEmpty()) return false;
-		return true;
-	}
-	
-	private boolean hasColorTag(Host h) {
-		for ( Tag t : h.getTags() ) {
-			if (t instanceof ColorTag) return true;
-		}
-		return false;
-	}
-	
-    public void setEndLn(int ln){
-        currentLn = ln;
+      }
     }
-    public int getEndLn() {
-        return currentLn;
+    if (h.getTags().isEmpty()) {
+      return false;
     }
-    public void newline() { 
-        currentLn++;
-        lastNewline = output().length();
+    return true;
+  }
+
+  private boolean hasColorTag(Host h) {
+    for (Tag t : h.getTags()) {
+      if (t instanceof ColorTag) {
+        return true;
+      }
     }
-    private StringBuffer output() {
-        return printer.output();
-    }
-    public void setUnitPrinter( UnitPrinter up ) {
-        printer = up;
-    }
+    return false;
+  }
+
+  public void setEndLn(int ln) {
+    currentLn = ln;
+  }
+
+  public int getEndLn() {
+    return currentLn;
+  }
+
+  public void newline() {
+    currentLn++;
+    lastNewline = output().length();
+  }
+
+  private StringBuffer output() {
+    return printer.output();
+  }
+
+  public void setUnitPrinter(UnitPrinter up) {
+    printer = up;
+  }
 }
-
-

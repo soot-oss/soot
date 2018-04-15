@@ -23,20 +23,20 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
-import java.util.*;
+import java.util.List;
 
-public interface TableSwitchStmt extends SwitchStmt
-{
-    public void setLowIndex(int lowIndex);
-    public void setHighIndex(int highIndex);
-    public int getLowIndex();
-    public int getHighIndex();
-    public void setTargets(List<? extends Unit> targets);
+import soot.Unit;
+
+public interface TableSwitchStmt extends SwitchStmt {
+  public void setLowIndex(int lowIndex);
+
+  public void setHighIndex(int highIndex);
+
+  public int getLowIndex();
+
+  public int getHighIndex();
+
+  public void setTargets(List<? extends Unit> targets);
 }

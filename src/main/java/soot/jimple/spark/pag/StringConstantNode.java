@@ -18,24 +18,26 @@
  */
 
 package soot.jimple.spark.pag;
+
 import soot.RefType;
 
-/** Represents an allocation site node the represents a constant string.
+/**
+ * Represents an allocation site node the represents a constant string.
+ * 
  * @author Ondrej Lhotak
  */
 public class StringConstantNode extends AllocNode {
-    public String toString() {
-	return "StringConstantNode "+getNumber()+" "+newExpr;
-    }
+  public String toString() {
+    return "StringConstantNode " + getNumber() + " " + newExpr;
+  }
 
-    public String getString() {
-        return (String) newExpr;
-    }
+  public String getString() {
+    return (String) newExpr;
+  }
 
-    /* End of public methods. */
+  /* End of public methods. */
 
-    StringConstantNode( PAG pag, String sc ) {
-        super( pag, sc, RefType.v( "java.lang.String" ), null );
-    }
+  StringConstantNode(PAG pag, String sc) {
+    super(pag, sc, RefType.v("java.lang.String"), null);
+  }
 }
-

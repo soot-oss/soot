@@ -23,12 +23,11 @@ package soot.dava;
 //import soot.util.*;
 //import soot.dava.toolkits.base.finders.*;
 
-public class CorruptASTException extends DecompilationException 
-{
-    public CorruptASTException(String message){
-	super();
-	System.out.println("The Abstract Syntax Tree is corrupt");
-	System.out.println(message);
-	report();
-    }
+public class CorruptASTException extends DecompilationException {
+  public CorruptASTException(String message) {
+    super();
+    System.out.println("The Abstract Syntax Tree is corrupt");
+    System.out.println(message);
+    report();
+  }
 }

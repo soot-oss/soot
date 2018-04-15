@@ -20,35 +20,32 @@
 
 package soot.dava.internal.javaRep;
 
-import soot.*;
-import soot.jimple.*;
+import soot.SootFieldRef;
+import soot.UnitPrinter;
+import soot.jimple.StaticFieldRef;
 
-public class DStaticFieldRef extends StaticFieldRef 
-{
-    private boolean supressDeclaringClass;
+public class DStaticFieldRef extends StaticFieldRef {
+  private boolean supressDeclaringClass;
 
-    public void toString( UnitPrinter up ) {
-        if( !supressDeclaringClass ) {
-            up.type( fieldRef.declaringClass().getType() );
-            up.literal( "." );
-        }
-        up.fieldRef( fieldRef );
+  public void toString(UnitPrinter up) {
+    if (!supressDeclaringClass) {
+      up.type(fieldRef.declaringClass().getType());
+      up.literal(".");
     }
+    up.fieldRef(fieldRef);
+  }
 
-    public DStaticFieldRef( SootFieldRef fieldRef, String myClassName)
-    {
-	super( fieldRef);
-	supressDeclaringClass = myClassName.equals( fieldRef.declaringClass().getName());
-    }
+  public DStaticFieldRef(SootFieldRef fieldRef, String myClassName) {
+    super(fieldRef);
+    supressDeclaringClass = myClassName.equals(fieldRef.declaringClass().getName());
+  }
 
-    public DStaticFieldRef( SootFieldRef fieldRef, boolean supressDeclaringClass)
-    {
-	super( fieldRef);
-	this.supressDeclaringClass = supressDeclaringClass;
-    }
+  public DStaticFieldRef(SootFieldRef fieldRef, boolean supressDeclaringClass) {
+    super(fieldRef);
+    this.supressDeclaringClass = supressDeclaringClass;
+  }
 
-    public Object clone()
-    {
-	return new DStaticFieldRef( fieldRef, supressDeclaringClass);
-    }
+  public Object clone() {
+    return new DStaticFieldRef(fieldRef, supressDeclaringClass);
+  }
 }

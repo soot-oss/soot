@@ -18,44 +18,50 @@
  */
 
 package soot.jimple.toolkits.callgraph;
-import java.util.*;
 
-/** Represents a subset of the edges in a call graph satisfying an EdgePredicate
- * predicate.
+import java.util.Iterator;
+
+/**
+ * Represents a subset of the edges in a call graph satisfying an EdgePredicate predicate.
+ * 
  * @author Ondrej Lhotak
  */
-public class Filter implements Iterator<Edge>
-{ 
-    private Iterator<Edge> source;
-    private EdgePredicate pred;
-    private Edge next = null;
-    public Filter( EdgePredicate pred ) {
-        this.pred = pred;
-    }
-    public Iterator<Edge> wrap( Iterator<Edge> source ) {
-        this.source = source;
-        advance();
-        return this;
-    }
-    private void advance() {
-        while( source.hasNext() ) {
-            next = (Edge) source.next();
-            if( pred.want( next ) ) {
-                return;
-            }
-        }
-        next = null;
-    }
-    public boolean hasNext() {
-        return next != null;
-    }
-    public Edge next() {
-        Edge ret = next;
-        advance();
-        return ret;
-    }
-    public void remove() {
-        throw new UnsupportedOperationException(); 
-    }
-}
+public class Filter implements Iterator<Edge> {
+  private Iterator<Edge> source;
+  private EdgePredicate pred;
+  private Edge next = null;
 
+  public Filter(EdgePredicate pred) {
+    this.pred = pred;
+  }
+
+  public Iterator<Edge> wrap(Iterator<Edge> source) {
+    this.source = source;
+    advance();
+    return this;
+  }
+
+  private void advance() {
+    while (source.hasNext()) {
+      next = (Edge) source.next();
+      if (pred.want(next)) {
+        return;
+      }
+    }
+    next = null;
+  }
+
+  public boolean hasNext() {
+    return next != null;
+  }
+
+  public Edge next() {
+    Edge ret = next;
+    advance();
+    return ret;
+  }
+
+  public void remove() {
+    throw new UnsupportedOperationException();
+  }
+}

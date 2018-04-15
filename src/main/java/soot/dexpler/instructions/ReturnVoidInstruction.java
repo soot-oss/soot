@@ -32,15 +32,15 @@ import soot.jimple.ReturnVoidStmt;
 
 public class ReturnVoidInstruction extends DexlibAbstractInstruction {
 
-    public ReturnVoidInstruction (Instruction instruction, int codeAdress) {
-        super(instruction, codeAdress);
-    }
+  public ReturnVoidInstruction(Instruction instruction, int codeAdress) {
+    super(instruction, codeAdress);
+  }
 
-    public void jimplify (DexBody body) {
-        ReturnVoidStmt returnStmt = Jimple.v().newReturnVoidStmt();
-        setUnit(returnStmt);
-        addTags(returnStmt);
-        body.add(returnStmt);
-    }
+  public void jimplify(DexBody body) {
+    ReturnVoidStmt returnStmt = Jimple.v().newReturnVoidStmt();
+    setUnit(returnStmt);
+    addTags(returnStmt);
+    body.add(returnStmt);
+  }
 
 }

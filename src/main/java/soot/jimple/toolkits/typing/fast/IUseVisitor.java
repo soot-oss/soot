@@ -20,14 +20,15 @@
  */
 package soot.jimple.toolkits.typing.fast;
 
-import soot.*;
-import soot.jimple.*;
+import soot.Type;
+import soot.Value;
+import soot.jimple.Stmt;
 
 /**
  * @author Ben Bellamy
  */
-public interface IUseVisitor
-{
-	Value visit(Value op, Type useType, Stmt stmt);
-	boolean finish();
+public interface IUseVisitor {
+  Value visit(Value op, Type useType, Stmt stmt);
+
+  boolean finish();
 }

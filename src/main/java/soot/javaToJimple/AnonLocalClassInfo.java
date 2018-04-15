@@ -19,45 +19,48 @@
 
 package soot.javaToJimple;
 
-import java.util.*;
+import java.util.ArrayList;
 
 import polyglot.util.IdentityKey;
 
-public class AnonLocalClassInfo{
+public class AnonLocalClassInfo {
 
-    private boolean inStaticMethod;
-    private ArrayList<IdentityKey> finalLocalsAvail;
-    private ArrayList<IdentityKey> finalLocalsUsed;
+  private boolean inStaticMethod;
+  private ArrayList<IdentityKey> finalLocalsAvail;
+  private ArrayList<IdentityKey> finalLocalsUsed;
 
-    public boolean inStaticMethod(){
-        return inStaticMethod;
-    }
-    public void inStaticMethod(boolean b){
-        inStaticMethod = b;
-    }
+  public boolean inStaticMethod() {
+    return inStaticMethod;
+  }
 
-    public ArrayList<IdentityKey> finalLocalsAvail(){
-        return finalLocalsAvail;
-    }
-    public void finalLocalsAvail(ArrayList<IdentityKey> list){
-        finalLocalsAvail = list;
-    }
+  public void inStaticMethod(boolean b) {
+    inStaticMethod = b;
+  }
 
-    public ArrayList<IdentityKey> finalLocalsUsed(){
-        return finalLocalsUsed;
-    }
-    public void finalLocalsUsed(ArrayList<IdentityKey> list){
-        finalLocalsUsed = list;
-    }
+  public ArrayList<IdentityKey> finalLocalsAvail() {
+    return finalLocalsAvail;
+  }
 
-    public String toString(){
-        StringBuffer sb = new StringBuffer();
-        sb.append("static: ");
-        sb.append(inStaticMethod);
-        sb.append(" finalLocalsAvail: ");
-        sb.append(finalLocalsAvail);
-        sb.append(" finalLocalsUsed: ");
-        sb.append(finalLocalsUsed);
-        return sb.toString();
-    }
+  public void finalLocalsAvail(ArrayList<IdentityKey> list) {
+    finalLocalsAvail = list;
+  }
+
+  public ArrayList<IdentityKey> finalLocalsUsed() {
+    return finalLocalsUsed;
+  }
+
+  public void finalLocalsUsed(ArrayList<IdentityKey> list) {
+    finalLocalsUsed = list;
+  }
+
+  public String toString() {
+    StringBuffer sb = new StringBuffer();
+    sb.append("static: ");
+    sb.append(inStaticMethod);
+    sb.append(" finalLocalsAvail: ");
+    sb.append(finalLocalsAvail);
+    sb.append(" finalLocalsUsed: ");
+    sb.append(finalLocalsUsed);
+    return sb.toString();
+  }
 }

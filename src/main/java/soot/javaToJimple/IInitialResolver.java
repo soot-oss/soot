@@ -26,17 +26,18 @@ import soot.SootClass;
 import soot.Type;
 
 public interface IInitialResolver {
-	
-	public void formAst(String fullPath, List<String> locations, String className);
-	
-	public Dependencies resolveFromJavaFile(SootClass sc);
-	
-	public class Dependencies {
-		public final Set<Type> typesToHierarchy, typesToSignature;
-		public Dependencies() {
-			typesToHierarchy = new HashSet<Type>();
-			typesToSignature = new HashSet<Type>();
-		}
-	}
+
+  public void formAst(String fullPath, List<String> locations, String className);
+
+  public Dependencies resolveFromJavaFile(SootClass sc);
+
+  public class Dependencies {
+    public final Set<Type> typesToHierarchy, typesToSignature;
+
+    public Dependencies() {
+      typesToHierarchy = new HashSet<Type>();
+      typesToSignature = new HashSet<Type>();
+    }
+  }
 
 }

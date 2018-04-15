@@ -23,45 +23,38 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.internal.*;
+import soot.Type;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.grimp.Precedence;
+import soot.jimple.internal.AbstractCastExpr;
 
-public class GCastExpr extends AbstractCastExpr implements Precedence
-{
-    public GCastExpr(Value op, Type type)
-    {
-        super(Grimp.v().newExprBox(op), type);
+public class GCastExpr extends AbstractCastExpr implements Precedence {
+  public GCastExpr(Value op, Type type) {
+    super(Grimp.v().newExprBox(op), type);
+  }
+
+  public int getPrecedence() {
+    return 850;
+  }
+
+  private String toString(String leftString, Value op, String opString) {
+    String rightOp = opString;
+
+    if (op instanceof Precedence && ((Precedence) op).getPrecedence() < getPrecedence()) {
+      rightOp = "(" + rightOp + ")";
     }
+    return leftString + rightOp;
+  }
 
-    public int getPrecedence() { return 850; }
+  public String toString() {
+    return toString("(" + getCastType().toString() + ") ", getOp(), getOp().toString());
+  }
 
-    private String toString(String leftString, Value op, String opString)
-    {
-        String rightOp = opString;
-
-        if (op instanceof Precedence && 
-            ((Precedence)op).getPrecedence() < getPrecedence()) 
-            rightOp = "(" + rightOp + ")";
-        return leftString + rightOp;
-    }
-
-    public String toString()
-    {
-        return toString("(" + getCastType().toString() + ") ", getOp(),
-                        getOp().toString());
-    }
-
-    public Object clone()
-    {
-        return new GCastExpr(Grimp.cloneIfNecessary(getOp()), getCastType());
-    }
+  public Object clone() {
+    return new GCastExpr(Grimp.cloneIfNecessary(getOp()), getCastType());
+  }
 
 }

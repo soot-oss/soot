@@ -23,83 +23,98 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
-
 package soot.coffi;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import soot.Scene;
-import soot.Type;
 import soot.Value;
-import soot.jimple.Jimple;
 
-/** A constant pool entry of type CONSTANT_InterfaceMethodref
+/**
+ * A constant pool entry of type CONSTANT_InterfaceMethodref
+ * 
  * @see cp_info
  * @author Clark Verbrugge
  */
 class CONSTANT_InterfaceMethodref_info extends cp_info implements ICONSTANT_Methodref_info {
-   /** Constant pool index of a CONSTANT_Class object.
-    * @see CONSTANT_Class_info
-    */
-   public int class_index;
-   /** Constant pool index of a CONSTANT_NameAndType object.
-    * @see CONSTANT_NameAndType_info
-    */
-   public int name_and_type_index;
-   /** Returns the size of this cp_info object.
-    * @return number of bytes occupied by this object.
-    * @see cp_info#size
-    */
-   public int size() { return 5; }
-   /** Returns a String representation of this entry.
-    * @param constant_pool constant pool of ClassFile.
-    * @return String representation of this entry.
-    * @see cp_info#toString
-    */
-   public String toString(cp_info constant_pool[]) {
-      CONSTANT_Class_info cc = (CONSTANT_Class_info)(constant_pool[class_index]);
-      CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info)(constant_pool[name_and_type_index]);
-      return cc.toString(constant_pool) + "." + cn.toString(constant_pool);
-   }
-   /** Returns a String description of what kind of entry this is.
-    * @return the String "interfacemethodref".
-    * @see cp_info#typeName
-    */
-   public String typeName() { return "interfacemethodref"; }
-   /** Compares this entry with another cp_info object (which may reside
-    * in a different constant pool).
-    * @param constant_pool constant pool of ClassFile for this.
-    * @param cp constant pool entry to compare against.
-    * @param cp_constant_pool constant pool of ClassFile for cp.
-    * @return a value <0, 0, or >0 indicating whether this is smaller,
-    * the same or larger than cp.
-    * @see cp_info#compareTo
-    */
-   public int compareTo(cp_info constant_pool[],cp_info cp,cp_info cp_constant_pool[]) {
-      int i;
-      if (tag!=cp.tag) return tag-cp.tag;
-      CONSTANT_InterfaceMethodref_info cu = (CONSTANT_InterfaceMethodref_info)cp;
-      i = constant_pool[class_index].
-         compareTo(constant_pool,cp_constant_pool[cu.class_index],cp_constant_pool);
-      if (i!=0) return i;
-      return constant_pool[name_and_type_index].
-         compareTo(constant_pool,cp_constant_pool[cu.name_and_type_index],
-                   cp_constant_pool);
-   }
+  /**
+   * Constant pool index of a CONSTANT_Class object.
+   * 
+   * @see CONSTANT_Class_info
+   */
+  public int class_index;
+  /**
+   * Constant pool index of a CONSTANT_NameAndType object.
+   * 
+   * @see CONSTANT_NameAndType_info
+   */
+  public int name_and_type_index;
 
-   public Value createJimpleConstantValue(cp_info[] constant_pool) {
-	   throw new UnsupportedOperationException("cannot convert to Jimple: "+typeName());
-   }
-	public int getClassIndex() {
-		return class_index;
-	}
-	public int getNameAndTypeIndex() {
-		return name_and_type_index;
-	}
+  /**
+   * Returns the size of this cp_info object.
+   * 
+   * @return number of bytes occupied by this object.
+   * @see cp_info#size
+   */
+  public int size() {
+    return 5;
+  }
+
+  /**
+   * Returns a String representation of this entry.
+   * 
+   * @param constant_pool
+   *          constant pool of ClassFile.
+   * @return String representation of this entry.
+   * @see cp_info#toString
+   */
+  public String toString(cp_info constant_pool[]) {
+    CONSTANT_Class_info cc = (CONSTANT_Class_info) (constant_pool[class_index]);
+    CONSTANT_NameAndType_info cn = (CONSTANT_NameAndType_info) (constant_pool[name_and_type_index]);
+    return cc.toString(constant_pool) + "." + cn.toString(constant_pool);
+  }
+
+  /**
+   * Returns a String description of what kind of entry this is.
+   * 
+   * @return the String "interfacemethodref".
+   * @see cp_info#typeName
+   */
+  public String typeName() {
+    return "interfacemethodref";
+  }
+
+  /**
+   * Compares this entry with another cp_info object (which may reside in a different constant pool).
+   * 
+   * @param constant_pool
+   *          constant pool of ClassFile for this.
+   * @param cp
+   *          constant pool entry to compare against.
+   * @param cp_constant_pool
+   *          constant pool of ClassFile for cp.
+   * @return a value <0, 0, or >0 indicating whether this is smaller, the same or larger than cp.
+   * @see cp_info#compareTo
+   */
+  public int compareTo(cp_info constant_pool[], cp_info cp, cp_info cp_constant_pool[]) {
+    int i;
+    if (tag != cp.tag) {
+      return tag - cp.tag;
+    }
+    CONSTANT_InterfaceMethodref_info cu = (CONSTANT_InterfaceMethodref_info) cp;
+    i = constant_pool[class_index].compareTo(constant_pool, cp_constant_pool[cu.class_index], cp_constant_pool);
+    if (i != 0) {
+      return i;
+    }
+    return constant_pool[name_and_type_index].compareTo(constant_pool, cp_constant_pool[cu.name_and_type_index], cp_constant_pool);
+  }
+
+  public Value createJimpleConstantValue(cp_info[] constant_pool) {
+    throw new UnsupportedOperationException("cannot convert to Jimple: " + typeName());
+  }
+
+  public int getClassIndex() {
+    return class_index;
+  }
+
+  public int getNameAndTypeIndex() {
+    return name_and_type_index;
+  }
 }

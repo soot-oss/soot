@@ -26,61 +26,66 @@ package soot.toolkits.scalar;
  * @author Manu Sridharan (genericized it)
  */
 public class IdentityPair<T, U> {
-    protected final T o1;
-    protected final U o2;
-    protected final int hashCode;
+  protected final T o1;
+  protected final U o2;
+  protected final int hashCode;
 
-    public IdentityPair(T o1, U o2) {
-        this.o1 = o1;
-        this.o2 = o2;
-        this.hashCode = computeHashCode();
-    }
+  public IdentityPair(T o1, U o2) {
+    this.o1 = o1;
+    this.o2 = o2;
+    this.hashCode = computeHashCode();
+  }
 
-    @Override
-    public int hashCode() {
-        return hashCode;
-    }
+  @Override
+  public int hashCode() {
+    return hashCode;
+  }
 
-    /**
-     * {@inheritDoc}
-     */
-    private int computeHashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + System.identityHashCode(o1);
-        result = prime * result + System.identityHashCode(o2);
-        return result;
-    }
-    
-    /**
-     * {@inheritDoc}
-     */
-    @SuppressWarnings("unchecked")
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final IdentityPair other = (IdentityPair) obj;
-        if (o1 != other.o1)
-            return false;
-        if (o2 != other.o2)
-            return false;
-        return true;
-    }
+  /**
+   * {@inheritDoc}
+   */
+  private int computeHashCode() {
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + System.identityHashCode(o1);
+    result = prime * result + System.identityHashCode(o2);
+    return result;
+  }
 
-    public T getO1() {
-        return o1;
+  /**
+   * {@inheritDoc}
+   */
+  @SuppressWarnings("unchecked")
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
     }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    final IdentityPair other = (IdentityPair) obj;
+    if (o1 != other.o1) {
+      return false;
+    }
+    if (o2 != other.o2) {
+      return false;
+    }
+    return true;
+  }
 
-    public U getO2() {
-        return o2;
-    }
+  public T getO1() {
+    return o1;
+  }
 
-    public String toString() {
-        return "IdentityPair " + o1 + "," + o2;
-    }
+  public U getO2() {
+    return o2;
+  }
+
+  public String toString() {
+    return "IdentityPair " + o1 + "," + o2;
+  }
 }

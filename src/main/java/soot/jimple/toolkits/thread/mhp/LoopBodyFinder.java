@@ -1,7 +1,12 @@
 package soot.jimple.toolkits.thread.mhp;
 
-import soot.toolkits.graph.*;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Set;
+import java.util.Stack;
+
+import soot.toolkits.graph.DirectedGraph;
 
 // *** USE AT YOUR OWN RISK ***
 // May Happen in Parallel (MHP) analysis by Lin Li.
@@ -14,51 +19,53 @@ import java.util.*;
 //
 // -Richard L. Halpert, 2006-11-30
 
-public class LoopBodyFinder{
-	
-	private final Stack<Object> stack = new Stack<Object>();   
-	private final Set<Set<Object>> loops = new HashSet<Set<Object>>();
-	LoopBodyFinder(Map<Object, Object> backEdges, DirectedGraph g){
-		findLoopBody(backEdges, g);
-	}
-	private void findLoopBody(Map<Object, Object> backEdges, DirectedGraph g){
-		Set maps = backEdges.entrySet();
-		for(Iterator iter=maps.iterator(); iter.hasNext();){
-			Map.Entry entry = (Map.Entry)iter.next();
-			Object tail = entry.getKey();
-			//Tag tag = (Tag)key.getTags().get(0);
-			// System.out.println("---key=  "+tag+" "+key);
-			Object  head  = entry.getValue();
-			Set<Object> loopBody = finder(tail, head, g); 
-			loops.add(loopBody);
-		}
-		
-	}
-	
-	
-	private Set<Object> finder(Object tail, Object head, DirectedGraph g){
-		Set<Object> loop = new HashSet<Object>();
-		stack.empty();
-		loop.add(head);
-		insert(tail, loop);
-		while (!stack.empty()){
-			Object p = stack.pop();
-			Iterator  predsListIt = g.getPredsOf(p).iterator();
-			while (predsListIt.hasNext()){
-				Object pred = predsListIt.next();
-				insert(pred, loop);
-			}
-		}
-		return loop;
-	}
-	
-	private void insert(Object m, Set<Object> loop){
-		if (!loop.contains(m)){
-			loop.add(m);
-			stack.push(m);
-		}
-	}
-	public Set<Set<Object>> getLoopBody(){
-		return loops;
-	}
+public class LoopBodyFinder {
+
+  private final Stack<Object> stack = new Stack<Object>();
+  private final Set<Set<Object>> loops = new HashSet<Set<Object>>();
+
+  LoopBodyFinder(Map<Object, Object> backEdges, DirectedGraph g) {
+    findLoopBody(backEdges, g);
+  }
+
+  private void findLoopBody(Map<Object, Object> backEdges, DirectedGraph g) {
+    Set maps = backEdges.entrySet();
+    for (Iterator iter = maps.iterator(); iter.hasNext();) {
+      Map.Entry entry = (Map.Entry) iter.next();
+      Object tail = entry.getKey();
+      // Tag tag = (Tag)key.getTags().get(0);
+      // System.out.println("---key= "+tag+" "+key);
+      Object head = entry.getValue();
+      Set<Object> loopBody = finder(tail, head, g);
+      loops.add(loopBody);
+    }
+
+  }
+
+  private Set<Object> finder(Object tail, Object head, DirectedGraph g) {
+    Set<Object> loop = new HashSet<Object>();
+    stack.empty();
+    loop.add(head);
+    insert(tail, loop);
+    while (!stack.empty()) {
+      Object p = stack.pop();
+      Iterator predsListIt = g.getPredsOf(p).iterator();
+      while (predsListIt.hasNext()) {
+        Object pred = predsListIt.next();
+        insert(pred, loop);
+      }
+    }
+    return loop;
+  }
+
+  private void insert(Object m, Set<Object> loop) {
+    if (!loop.contains(m)) {
+      loop.add(m);
+      stack.push(m);
+    }
+  }
+
+  public Set<Set<Object>> getLoopBody() {
+    return loops;
+  }
 }

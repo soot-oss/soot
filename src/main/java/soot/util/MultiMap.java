@@ -18,38 +18,59 @@
  */
 
 package soot.util;
-import java.util.*;
 
 import heros.solver.Pair;
 
-/** A map with sets as values.
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * A map with sets as values.
  *
  * @author Ondrej Lhotak
  */
 
-public interface MultiMap<K,V> extends Iterable<Pair<K, V>> {
-    public boolean isEmpty();
-    public int numKeys();
-    public boolean contains( K key, V value );
-    public boolean containsKey( K key );
-    public boolean containsValue( V value );
-    public boolean put( K key, V value );
-    public boolean putAll( K key, Set<V> values );
-    public boolean putAll( Map<K,Set<V>> m );
-    public boolean putAll( MultiMap<K,V> m );
-    public boolean remove( K key, V value );
-    public boolean remove( K key );
-    public boolean removeAll( K key, Set<V> values );
-    public Set<V> get( K o );
-    public Set<K> keySet();
-    public Set<V> values();
-    public boolean equals( Object o );
-    public int hashCode();
-    
-    /**
-     * Gets the number of keys in this MultiMap
-     * @return The number of keys in this MultiMap
-     */
-    public int size();
-	public void clear();
+public interface MultiMap<K, V> extends Iterable<Pair<K, V>> {
+  public boolean isEmpty();
+
+  public int numKeys();
+
+  public boolean contains(K key, V value);
+
+  public boolean containsKey(K key);
+
+  public boolean containsValue(V value);
+
+  public boolean put(K key, V value);
+
+  public boolean putAll(K key, Set<V> values);
+
+  public boolean putAll(Map<K, Set<V>> m);
+
+  public boolean putAll(MultiMap<K, V> m);
+
+  public boolean remove(K key, V value);
+
+  public boolean remove(K key);
+
+  public boolean removeAll(K key, Set<V> values);
+
+  public Set<V> get(K o);
+
+  public Set<K> keySet();
+
+  public Set<V> values();
+
+  public boolean equals(Object o);
+
+  public int hashCode();
+
+  /**
+   * Gets the number of keys in this MultiMap
+   * 
+   * @return The number of keys in this MultiMap
+   */
+  public int size();
+
+  public void clear();
 }

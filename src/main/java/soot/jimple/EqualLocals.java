@@ -23,19 +23,15 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.jimple;
 
-import soot.*;
-import java.util.*;
+import java.util.List;
 
-public interface EqualLocals
-{
-    public boolean isLocalEqualToAt(Local l1, Local l2, Stmt s);
-    public List getCopiesAt(Stmt s);
-    
-} 
+import soot.Local;
 
+public interface EqualLocals {
+  public boolean isLocalEqualToAt(Local l1, Local l2, Stmt s);
+
+  public List getCopiesAt(Stmt s);
+
+}

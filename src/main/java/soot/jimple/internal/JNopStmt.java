@@ -23,61 +23,51 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.baf.*;
+import java.util.List;
 
-import soot.tagkit.*;
-import soot.jimple.*;
-import soot.*;
-import soot.util.*;
-import java.util.*;
+import soot.Unit;
+import soot.UnitPrinter;
+import soot.baf.Baf;
+import soot.jimple.Jimple;
+import soot.jimple.JimpleToBafContext;
+import soot.jimple.NopStmt;
+import soot.jimple.StmtSwitch;
+import soot.util.Switch;
 
-public class JNopStmt extends AbstractStmt implements NopStmt
-{
-    public JNopStmt()
-    {
-    }
-    
+public class JNopStmt extends AbstractStmt implements NopStmt {
+  public JNopStmt() {
+  }
 
-    public Object clone() 
-    {
-        return new JNopStmt();
-    }
+  public Object clone() {
+    return new JNopStmt();
+  }
 
+  public String toString() {
+    return Jimple.NOP;
+  }
 
-    public String toString()
-    {
-        return Jimple.NOP;
-    }
-    
-    public void toString(UnitPrinter up) {
-        up.literal(Jimple.NOP);
-    }
-    
-    public void apply(Switch sw)
-    {
-        ((StmtSwitch) sw).caseNopStmt(this);
-    }    
-    
-    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
-    {
-    	Unit u = Baf.v().newNopInst();
-    	u.addAllTagsOf(this);
-        out.add(u);
-    }
+  public void toString(UnitPrinter up) {
+    up.literal(Jimple.NOP);
+  }
 
+  public void apply(Switch sw) {
+    ((StmtSwitch) sw).caseNopStmt(this);
+  }
 
-    public boolean fallsThrough(){return true;}        
-    public boolean branches(){return false;}
+  public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
+    Unit u = Baf.v().newNopInst();
+    u.addAllTagsOf(this);
+    out.add(u);
+  }
+
+  public boolean fallsThrough() {
+    return true;
+  }
+
+  public boolean branches() {
+    return false;
+  }
 
 }
-
-
-
-

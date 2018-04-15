@@ -30,16 +30,13 @@ import java.util.Map;
 
 import soot.Unit;
 
-
-
 /**
- *  This class  must be extended  by Attributes that can 
- *  be emitted in Jasmin. The attributes must format their data
- *  in Base64 and if Unit references they may contain must be emitted as
- *  labels embedded and
- *  escaped in the attribute's Base64 data stream at the location where the value
- *  of their pc is to occur. For example:
-<pre> 
+ * This class must be extended by Attributes that can be emitted in Jasmin. The attributes must format their data in Base64 and if Unit references
+ * they may contain must be emitted as labels embedded and escaped in the attribute's Base64 data stream at the location where the value of their pc
+ * is to occur. For example:
+ * 
+ * <pre>
+ *  
     aload_1
     iload_2
     label2:
@@ -55,15 +52,13 @@ import soot.Unit;
    if_icmplt label1
    return
  .code_attribute ArrayCheckAttribute "%label2%Aw==%label3%Ag==%label4%Ag=="
-
-</pre>
+ * 
+ * </pre>
  * 
  */
 
+public abstract class JasminAttribute implements Attribute {
+  abstract public byte[] decode(String attr, Hashtable<String, Integer> labelToPc);
 
-public abstract class JasminAttribute implements Attribute
-{
-    abstract public byte[] decode(String attr, Hashtable<String, Integer> labelToPc);
-    
-    abstract public String getJasminValue(Map<Unit, String> instToLabel);
+  abstract public String getJasminValue(Map<Unit, String> instToLabel);
 }

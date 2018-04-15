@@ -19,28 +19,28 @@
 package soot.jimple.spark.ondemand.genericutil;
 
 public class Averager {
-	
-	private double curAverage;
-	
-	private long numSamples;
-	
-	public void addSample(double sample) {
-		curAverage = ((curAverage * numSamples) + sample) / (numSamples + 1);
-		numSamples++;
-	}
-	
-    /**
-     * @return
-     */
-    public double getCurAverage() {
-        return curAverage;
-    }
 
-    /**
-     * @return
-     */
-    public long getNumSamples() {
-        return numSamples;
-    }
+  private double curAverage;
+
+  private long numSamples;
+
+  public void addSample(double sample) {
+    curAverage = ((curAverage * numSamples) + sample) / (numSamples + 1);
+    numSamples++;
+  }
+
+  /**
+   * @return
+   */
+  public double getCurAverage() {
+    return curAverage;
+  }
+
+  /**
+   * @return
+   */
+  public long getNumSamples() {
+    return numSamples;
+  }
 
 }

@@ -23,106 +23,96 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.jimple.internal;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import soot.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.BooleanType;
+import soot.Type;
+import soot.UnitPrinter;
+import soot.Value;
+import soot.ValueBox;
+import soot.jimple.ExprSwitch;
+import soot.jimple.InstanceOfExpr;
+import soot.jimple.Jimple;
+import soot.util.Switch;
 
 @SuppressWarnings("serial")
-public abstract class AbstractInstanceOfExpr implements InstanceOfExpr
-{
-    final ValueBox opBox;
-    Type checkType;
+public abstract class AbstractInstanceOfExpr implements InstanceOfExpr {
+  final ValueBox opBox;
+  Type checkType;
 
-    protected AbstractInstanceOfExpr(ValueBox opBox, Type checkType)
-    {
-        this.opBox = opBox; 
-        this.checkType = checkType;
-    }
-    
-    public boolean equivTo(Object o)
-    {
-        if (o instanceof AbstractInstanceOfExpr)
-        {
-            AbstractInstanceOfExpr aie = (AbstractInstanceOfExpr)o;
-            return opBox.getValue().equivTo(aie.opBox.getValue()) &&
-                checkType.equals(aie.checkType);
-        }
-        return false;
-    }
+  protected AbstractInstanceOfExpr(ValueBox opBox, Type checkType) {
+    this.opBox = opBox;
+    this.checkType = checkType;
+  }
 
-    /** Returns a hash code for this object, consistent with structural equality. */
-    public int equivHashCode() 
-    {
-        return opBox.getValue().equivHashCode() * 101 + checkType.hashCode() * 17;
+  public boolean equivTo(Object o) {
+    if (o instanceof AbstractInstanceOfExpr) {
+      AbstractInstanceOfExpr aie = (AbstractInstanceOfExpr) o;
+      return opBox.getValue().equivTo(aie.opBox.getValue()) && checkType.equals(aie.checkType);
     }
+    return false;
+  }
 
-    public abstract Object clone();
-    
-    public String toString()
-    {
-        return opBox.getValue().toString() + " " + Jimple.INSTANCEOF + " " + checkType.toString();
-    }
-    
-    public void toString( UnitPrinter up ) {
-        opBox.toString(up);
-        up.literal(" ");
-        up.literal(Jimple.INSTANCEOF);
-        up.literal(" ");
-        up.type(checkType);
-    }
-    
-    @Override
-    public Value getOp()
-    {
-        return opBox.getValue();
-    }
+  /** Returns a hash code for this object, consistent with structural equality. */
+  public int equivHashCode() {
+    return opBox.getValue().equivHashCode() * 101 + checkType.hashCode() * 17;
+  }
 
-    @Override
-    public void setOp(Value op)
-    {
-        opBox.setValue(op);
-    }
-    
-    @Override
-    public ValueBox getOpBox()
-    {
-        return opBox;
-    }
+  public abstract Object clone();
 
-    @Override
-    public final List<ValueBox> getUseBoxes()
-    {
-        List<ValueBox> list = new ArrayList<ValueBox>();
+  public String toString() {
+    return opBox.getValue().toString() + " " + Jimple.INSTANCEOF + " " + checkType.toString();
+  }
 
-        list.addAll(opBox.getValue().getUseBoxes());
-        list.add(opBox);
-    
-        return list;
-    }
-    
-    public Type getType()
-    {
-        return BooleanType.v();
-    }
+  public void toString(UnitPrinter up) {
+    opBox.toString(up);
+    up.literal(" ");
+    up.literal(Jimple.INSTANCEOF);
+    up.literal(" ");
+    up.type(checkType);
+  }
 
-    public Type getCheckType()
-    {
-        return checkType;
-    }
+  @Override
+  public Value getOp() {
+    return opBox.getValue();
+  }
 
-    public void setCheckType(Type checkType)
-    {
-        this.checkType = checkType;
-    }
+  @Override
+  public void setOp(Value op) {
+    opBox.setValue(op);
+  }
 
-    public void apply(Switch sw)
-    {
-        ((ExprSwitch) sw).caseInstanceOfExpr(this);
-    }
+  @Override
+  public ValueBox getOpBox() {
+    return opBox;
+  }
+
+  @Override
+  public final List<ValueBox> getUseBoxes() {
+    List<ValueBox> list = new ArrayList<ValueBox>();
+
+    list.addAll(opBox.getValue().getUseBoxes());
+    list.add(opBox);
+
+    return list;
+  }
+
+  public Type getType() {
+    return BooleanType.v();
+  }
+
+  public Type getCheckType() {
+    return checkType;
+  }
+
+  public void setCheckType(Type checkType) {
+    this.checkType = checkType;
+  }
+
+  public void apply(Switch sw) {
+    ((ExprSwitch) sw).caseInstanceOfExpr(this);
+  }
 }

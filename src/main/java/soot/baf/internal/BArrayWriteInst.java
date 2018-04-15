@@ -23,57 +23,48 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot.baf.internal;
 
-import soot.*;
-import soot.baf.*;
-import soot.util.*;
+import soot.AbstractJasminClass;
+import soot.Type;
+import soot.baf.ArrayWriteInst;
+import soot.baf.InstSwitch;
+import soot.util.Switch;
 
-public class BArrayWriteInst extends AbstractOpTypeInst 
-                             implements ArrayWriteInst
-{
-    public BArrayWriteInst(Type opType)
-    {
-        super(opType);
-    }
+public class BArrayWriteInst extends AbstractOpTypeInst implements ArrayWriteInst {
+  public BArrayWriteInst(Type opType) {
+    super(opType);
+  }
 
+  public int getInCount() {
+    return 3;
+  }
 
-    public int getInCount()
-    {
-        return 3;
-    }
+  public Object clone() {
+    return new BArrayWriteInst(getOpType());
+  }
 
+  public int getInMachineCount() {
+    return 2 + AbstractJasminClass.sizeOfType(getOpType());
+  }
 
+  public int getOutCount() {
+    return 0;
+  }
 
-    public Object clone()
-    {
-        return new BArrayWriteInst(getOpType());
-    }
-    
-    public int getInMachineCount()
-    {
-        return 2 +  AbstractJasminClass.sizeOfType(getOpType());          
-    }
-    
-    public int getOutCount()
-    {
-        return 0;
-    }
+  public int getOutMachineCount() {
+    return 0;
+  }
 
-    public int getOutMachineCount()
-    {
-        return 0;
-    }
+  final public String getName() {
+    return "arraywrite";
+  }
 
-    final public String getName() { return "arraywrite"; }
-    
-    public void apply(Switch sw)
-    {
-        ((InstSwitch) sw).caseArrayWriteInst(this);
-    }   
-    public boolean containsArrayRef() { return true; }
+  public void apply(Switch sw) {
+    ((InstSwitch) sw).caseArrayWriteInst(this);
+  }
+
+  public boolean containsArrayRef() {
+    return true;
+  }
 }

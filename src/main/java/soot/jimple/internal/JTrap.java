@@ -23,40 +23,29 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
+import soot.AbstractTrap;
+import soot.SootClass;
+import soot.Unit;
+import soot.UnitBox;
+import soot.jimple.Jimple;
 
-public class JTrap extends AbstractTrap
-{
+public class JTrap extends AbstractTrap {
 
-    public JTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt)
-    {
-        super(exception, Jimple.v().newStmtBox(beginStmt),
-              Jimple.v().newStmtBox(endStmt),
-              Jimple.v().newStmtBox(handlerStmt));
-    }
+  public JTrap(SootClass exception, Unit beginStmt, Unit endStmt, Unit handlerStmt) {
+    super(exception, Jimple.v().newStmtBox(beginStmt), Jimple.v().newStmtBox(endStmt), Jimple.v().newStmtBox(handlerStmt));
+  }
 
-    public JTrap(SootClass exception, UnitBox beginStmt, UnitBox endStmt, UnitBox handlerStmt)
-    {
-        super(exception, beginStmt,
-              endStmt,
-              handlerStmt);
-    }
+  public JTrap(SootClass exception, UnitBox beginStmt, UnitBox endStmt, UnitBox handlerStmt) {
+    super(exception, beginStmt, endStmt, handlerStmt);
+  }
 
-    public Object clone() 
-    {
-        return new JTrap(exception, getBeginUnit(), 
-                         getEndUnit(), getHandlerUnit());
-    }
+  public Object clone() {
+    return new JTrap(exception, getBeginUnit(), getEndUnit(), getHandlerUnit());
+  }
 
-  public String toString(){
+  public String toString() {
     StringBuffer buf = new StringBuffer("Trap :");
     buf.append("\nbegin  : ");
     buf.append(getBeginUnit());

@@ -27,128 +27,135 @@
  * 
  */
 package soot.tagkit;
-import java.util.*;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
 
-/** 
- * Represents the annotation attribute attached to a class, method, field,
- * method param - they could have many annotations each
- * for Java 1.5.
+/**
+ * Represents the annotation attribute attached to a class, method, field, method param - they could have many annotations each for Java 1.5.
  */
 
-public class AnnotationTag implements Tag
-{
-    
-    // type - the question here is the class of the type is potentially
-    // not loaded -- Does it need to be ??? - If it does then this may
-    // be something difficult (if just passing the attributes through
-    // then it maybe doesn't need to - but if they are runtime visible 
-    // attributes then won't the annotation class need to be created
-    // in the set of output classes for use by tools when using 
-    // reflection ??? 
+public class AnnotationTag implements Tag {
 
-    // number of elem value pairs
-    // a bunch of element value pairs
-        // a type B C D F I J S Z s e c @ [
-        // for B C D F I J S Z s elem is a constant value (entry to cp)
-            // in Soot rep as 
-        // for e elem is a type and the simple name of the enum class
-            // rep in Soot as a type and SootClass or as two strings
-        // for c elem is a descriptor of the class represented 
-            // rep in Soot as a SootClass ?? or a string ??
-        // for @ (nested annotation) 
-        // for [ elem is num values and array of values 
-    // should probably make a bunch of subclasses for all the 
-    // different kinds - with second level for the constant kinds
- 
-    /**
-     * The type
-     */
-    private String type;
-    
-    /**
-     * The annotations
-     */
-    private List<AnnotationElem> elems;
-    
-    public AnnotationTag(String type){
-        this.type = type;
-        this.elems = null;
-    }
-    
-    public AnnotationTag(String type, Collection<AnnotationElem> elements){
-      this.type = type;
-      
-      if (elements == null || elements.isEmpty())
-    	  this.elems = null;
-      else if (elements instanceof List<?>)
-    	  this.elems = (List<AnnotationElem>)elements;
-      else
-    	  this.elems = new ArrayList<AnnotationElem>(elements);
-    }
-    
-    @Deprecated
-    public AnnotationTag(String type, int numElem){
-      this.type = type;
-      this.elems = new ArrayList<AnnotationElem>(numElem);
-    }
-    
-    // should also print here number of annotations and perhaps the annotations themselves
-    public String toString() {
-        if (elems != null){
-        	StringBuffer sb = new StringBuffer("Annotation: type: "+type+" num elems: "+elems.size()+" elems: ");
-            Iterator<AnnotationElem> it = elems.iterator();
-            while (it.hasNext()){
-                sb.append("\n");
-                sb.append(it.next());
-            }
-            sb.append("\n");
-            return sb.toString();
-        } else return "Annotation type: "+type+" without elements";
-    }
+  // type - the question here is the class of the type is potentially
+  // not loaded -- Does it need to be ??? - If it does then this may
+  // be something difficult (if just passing the attributes through
+  // then it maybe doesn't need to - but if they are runtime visible
+  // attributes then won't the annotation class need to be created
+  // in the set of output classes for use by tools when using
+  // reflection ???
 
-    /** Returns the tag name. */
-    public String getName() {
-        return "AnnotationTag";
-    }
+  // number of elem value pairs
+  // a bunch of element value pairs
+  // a type B C D F I J S Z s e c @ [
+  // for B C D F I J S Z s elem is a constant value (entry to cp)
+  // in Soot rep as
+  // for e elem is a type and the simple name of the enum class
+  // rep in Soot as a type and SootClass or as two strings
+  // for c elem is a descriptor of the class represented
+  // rep in Soot as a SootClass ?? or a string ??
+  // for @ (nested annotation)
+  // for [ elem is num values and array of values
+  // should probably make a bunch of subclasses for all the
+  // different kinds - with second level for the constant kinds
 
-    public String getInfo(){
-        return "Annotation";
-    }
-   
-    public String getType(){
-        return type;
-    }
-    
-    /** Returns the tag raw data. */
-    public byte[] getValue() {
-        throw new RuntimeException( "AnnotationTag has no value for bytecode" );
-    }
+  /**
+   * The type
+   */
+  private String type;
 
-    /**
-     * Adds one element to the list
-     * @param elem the element
-     */
-    public void addElem(AnnotationElem elem){
-    	if (elems == null)
-    		elems = new ArrayList<AnnotationElem>();
-        elems.add(elem);
+  /**
+   * The annotations
+   */
+  private List<AnnotationElem> elems;
+
+  public AnnotationTag(String type) {
+    this.type = type;
+    this.elems = null;
+  }
+
+  public AnnotationTag(String type, Collection<AnnotationElem> elements) {
+    this.type = type;
+
+    if (elements == null || elements.isEmpty()) {
+      this.elems = null;
+    } else if (elements instanceof List<?>) {
+      this.elems = (List<AnnotationElem>) elements;
+    } else {
+      this.elems = new ArrayList<AnnotationElem>(elements);
     }
-    
-    /**
-     * Overwrites the elements stored previously
-     * @param list the new list of elements
-     */
-    public void setElems(List<AnnotationElem> list){
-        this.elems = list;
+  }
+
+  @Deprecated
+  public AnnotationTag(String type, int numElem) {
+    this.type = type;
+    this.elems = new ArrayList<AnnotationElem>(numElem);
+  }
+
+  // should also print here number of annotations and perhaps the annotations themselves
+  public String toString() {
+    if (elems != null) {
+      StringBuffer sb = new StringBuffer("Annotation: type: " + type + " num elems: " + elems.size() + " elems: ");
+      Iterator<AnnotationElem> it = elems.iterator();
+      while (it.hasNext()) {
+        sb.append("\n");
+        sb.append(it.next());
+      }
+      sb.append("\n");
+      return sb.toString();
+    } else {
+      return "Annotation type: " + type + " without elements";
     }
-    
-    /**
-     * @return an immutable collection of the elements
-     */
-    public Collection<AnnotationElem> getElems(){
-    	return elems == null ? Collections.<AnnotationElem>emptyList()
-    			: Collections.unmodifiableCollection(elems);
+  }
+
+  /** Returns the tag name. */
+  public String getName() {
+    return "AnnotationTag";
+  }
+
+  public String getInfo() {
+    return "Annotation";
+  }
+
+  public String getType() {
+    return type;
+  }
+
+  /** Returns the tag raw data. */
+  public byte[] getValue() {
+    throw new RuntimeException("AnnotationTag has no value for bytecode");
+  }
+
+  /**
+   * Adds one element to the list
+   * 
+   * @param elem
+   *          the element
+   */
+  public void addElem(AnnotationElem elem) {
+    if (elems == null) {
+      elems = new ArrayList<AnnotationElem>();
     }
+    elems.add(elem);
+  }
+
+  /**
+   * Overwrites the elements stored previously
+   * 
+   * @param list
+   *          the new list of elements
+   */
+  public void setElems(List<AnnotationElem> list) {
+    this.elems = list;
+  }
+
+  /**
+   * @return an immutable collection of the elements
+   */
+  public Collection<AnnotationElem> getElems() {
+    return elems == null ? Collections.<AnnotationElem>emptyList() : Collections.unmodifiableCollection(elems);
+  }
 }
-

@@ -23,36 +23,31 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.baf.toolkits.base;
 
-import java.util.*;
+import java.util.Iterator;
 
-import soot.*;
-import soot.baf.*;
+import soot.Body;
+import soot.Unit;
+import soot.baf.InstanceCastInst;
 
 /**
- *   Example peephole that remove all checkcast operations.
- *   Resulting class will likely not verify.
+ * Example peephole that remove all checkcast operations. Resulting class will likely not verify.
  */
 
-public class ExamplePeephole implements Peephole
-{
-    public boolean apply(Body b) 
-    {
-        boolean changed = false;
-                
-        Iterator<Unit> it = b.getUnits().iterator();
-        while(it.hasNext()) {
-            Unit u = it.next();
-            if (u instanceof InstanceCastInst) {
-                it.remove();
-                changed = true;
-            }                
-        }
+public class ExamplePeephole implements Peephole {
+  public boolean apply(Body b) {
+    boolean changed = false;
 
-        return changed;
+    Iterator<Unit> it = b.getUnits().iterator();
+    while (it.hasNext()) {
+      Unit u = it.next();
+      if (u instanceof InstanceCastInst) {
+        it.remove();
+        changed = true;
+      }
     }
+
+    return changed;
+  }
 }
-
-

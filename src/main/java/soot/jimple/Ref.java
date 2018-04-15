@@ -23,16 +23,9 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple;
 
-import soot.*;
+import soot.Value;
 
-public interface Ref extends Value
-{
+public interface Ref extends Value {
 }
-

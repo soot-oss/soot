@@ -23,10 +23,8 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.util;
 
 /** Basic interface used in the implementation of the Visitor design pattern. */
-public interface Switch
-{
+public interface Switch {
 }

@@ -23,45 +23,56 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.grimp.internal;
 
-import soot.*;
-import soot.grimp.*;
-import soot.jimple.*;
-import soot.util.*;
+import soot.IntType;
+import soot.LongType;
+import soot.Type;
+import soot.UnknownType;
+import soot.Value;
+import soot.grimp.Grimp;
+import soot.jimple.ExprSwitch;
+import soot.jimple.ShrExpr;
+import soot.util.Switch;
 
-public class GShrExpr extends AbstractGrimpIntLongBinopExpr implements ShrExpr
-{
-    public GShrExpr(Value op1, Value op2) { super(op1, op2); }
-    public String getSymbol() { return " >> "; }
-    public int getPrecedence() { return 650; }
-    public void apply(Switch sw) { ((ExprSwitch) sw).caseShrExpr(this); }
+public class GShrExpr extends AbstractGrimpIntLongBinopExpr implements ShrExpr {
+  public GShrExpr(Value op1, Value op2) {
+    super(op1, op2);
+  }
 
-    @Override
-    public Type getType()
-    {
-        Value op1 = op1Box.getValue();
-        Value op2 = op2Box.getValue();
+  public String getSymbol() {
+    return " >> ";
+  }
 
-        if (!isIntLikeType(op2.getType()))
-            return UnknownType.v();
+  public int getPrecedence() {
+    return 650;
+  }
 
-        if (isIntLikeType(op1.getType()))
-            return IntType.v();
-        if (op1.getType().equals(LongType.v()))
-            return LongType.v();
+  public void apply(Switch sw) {
+    ((ExprSwitch) sw).caseShrExpr(this);
+  }
 
-        return UnknownType.v();
+  @Override
+  public Type getType() {
+    Value op1 = op1Box.getValue();
+    Value op2 = op2Box.getValue();
+
+    if (!isIntLikeType(op2.getType())) {
+      return UnknownType.v();
     }
 
-    public Object clone() 
-    {
-        return new GShrExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
+    if (isIntLikeType(op1.getType())) {
+      return IntType.v();
     }
+    if (op1.getType().equals(LongType.v())) {
+      return LongType.v();
+    }
+
+    return UnknownType.v();
+  }
+
+  public Object clone() {
+    return new GShrExpr(Grimp.cloneIfNecessary(getOp1()), Grimp.cloneIfNecessary(getOp2()));
+  }
 
 }

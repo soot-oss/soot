@@ -17,116 +17,115 @@
  * Boston, MA 02111-1307, USA.
  */
 
- /*
- * Modified by the Sable Research Group and others 1997-1999.  
- * See the 'credits' file distributed with Soot for the complete list of
- * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
- *
- * @author Feng Qian 
- */
+/*
+* Modified by the Sable Research Group and others 1997-1999.  
+* See the 'credits' file distributed with Soot for the complete list of
+* contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
+*
+* @author Feng Qian 
+*/
 package soot.util.dot;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.*;
-
 public class DotGraphUtility {
-    private static final Logger logger = LoggerFactory.getLogger(DotGraphUtility.class);
+  private static final Logger logger = LoggerFactory.getLogger(DotGraphUtility.class);
 
-    /**
-     * Replace any {@code "} with {@code \"}. If the {@code "} character was
-     * already escaped (i.e. {@code \"}), then the escape character is also
-     * escaped (i.e. {@code \\\"}).
-     *
-     * @param original
-     *
-     * @return
+  /**
+   * Replace any {@code "} with {@code \"}. If the {@code "} character was already escaped (i.e. {@code \"}), then the escape character is also
+   * escaped (i.e. {@code \\\"}).
+   *
+   * @param original
+   *
+   * @return
+   */
+  public static String replaceQuotes(String original) {
+    byte[] ord = original.getBytes();
+    int quotes = 0;
+    boolean escapeActive = false;
+    for (byte element : ord) {
+      switch (element) {
+        case '\\':
+          escapeActive = true;
+          break;
+        case '\"':
+          quotes++;
+          if (escapeActive) {
+            quotes++;
+          }
+          // fallthrough
+        default:
+          escapeActive = false;
+          break;
+      }
+    }
+
+    if (quotes == 0) {
+      return original;
+    }
+
+    byte[] newsrc = new byte[ord.length + quotes];
+    for (int i = 0, j = 0, n = ord.length; i < n; i++, j++) {
+      if (ord[i] == '\"') {
+        if (i > 0 && ord[i - 1] == '\\') {
+          newsrc[j++] = (byte) '\\';
+        }
+        newsrc[j++] = (byte) '\\';
+      }
+      newsrc[j] = ord[i];
+    }
+
+    /*
+     * logger.debug("before "+original); logger.debug("after  "+(new String(newsrc)));
      */
-    public static String replaceQuotes(String original) {
-        byte[] ord = original.getBytes();
-        int quotes = 0;
-        boolean escapeActive = false;
-        for (byte element : ord) {
-            switch (element) {
-                case '\\':
-                    escapeActive = true;
-                    break;
-                case '\"':
-                    quotes++;
-                    if (escapeActive) {
-                        quotes++;
-                    }
-                //fallthrough
-                default:
-                    escapeActive = false;
-                    break;
-            }
-        }
+    return new String(newsrc);
+  }
 
-        if (quotes == 0) {
-            return original;
-        }
-
-        byte[] newsrc = new byte[ord.length + quotes];
-        for (int i = 0, j = 0, n = ord.length; i < n; i++, j++) {
-            if (ord[i] == '\"') {
-                if (i > 0 && ord[i - 1] == '\\') {
-                    newsrc[j++] = (byte) '\\';
-                }
-                newsrc[j++] = (byte) '\\';
-            }
-            newsrc[j] = ord[i];
-        }
-
-        /*
-        logger.debug("before "+original);
-        logger.debug("after  "+(new String(newsrc)));
-         */
-        return new String(newsrc);
+  /**
+   * Replace any return ({@code \n}) with {@code \\n}.
+   *
+   * @param original
+   *
+   * @return
+   */
+  public static String replaceReturns(String original) {
+    byte[] ord = original.getBytes();
+    int quotes = 0;
+    for (byte element : ord) {
+      if (element == '\n') {
+        quotes++;
+      }
     }
 
-    /**
-     * Replace any return ({@code \n}) with {@code \\n}.
-     *
-     * @param original
-     *
-     * @return
+    if (quotes == 0) {
+      return original;
+    }
+
+    byte[] newsrc = new byte[ord.length + quotes];
+    for (int i = 0, j = 0, n = ord.length; i < n; i++, j++) {
+      if (ord[i] == '\n') {
+        newsrc[j++] = (byte) '\\';
+        newsrc[j] = (byte) 'n';
+      } else {
+        newsrc[j] = ord[i];
+      }
+    }
+
+    /*
+     * logger.debug("before "+original); logger.debug("after  "+(new String(newsrc)));
      */
-    public static String replaceReturns(String original) {
-        byte[] ord = original.getBytes();
-        int quotes = 0;
-        for (byte element : ord) {
-            if (element == '\n') {
-                quotes++;
-            }
-        }
+    return new String(newsrc);
+  }
 
-        if (quotes == 0) {
-            return original;
-        }
-
-        byte[] newsrc = new byte[ord.length + quotes];
-        for (int i = 0, j = 0, n = ord.length; i < n; i++, j++) {
-            if (ord[i] == '\n') {
-                newsrc[j++] = (byte) '\\';
-                newsrc[j] = (byte) 'n';
-            } else {
-                newsrc[j] = ord[i];
-            }
-        }
-
-        /*
-        logger.debug("before "+original);
-        logger.debug("after  "+(new String(newsrc)));
-         */
-        return new String(newsrc);
+  public static void renderLine(OutputStream out, String content, int indent) throws IOException {
+    for (int i = 0; i < indent; i++) {
+      out.write(' ');
     }
-
-    public static void renderLine(OutputStream out, String content, int indent) throws IOException {
-        for (int i = 0; i < indent; i++) {
-            out.write(' ');
-        }
-        content += "\n";
-        out.write(content.getBytes());
-    }
+    content += "\n";
+    out.write(content.getBytes());
+  }
 }

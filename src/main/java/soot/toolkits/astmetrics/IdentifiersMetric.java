@@ -18,226 +18,239 @@
  */
 
 package soot.toolkits.astmetrics;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import soot.G;
-import soot.options.*;
-import polyglot.ast.*;
+import polyglot.ast.ClassDecl;
+import polyglot.ast.FieldDecl;
+import polyglot.ast.Formal;
+import polyglot.ast.LocalDecl;
+import polyglot.ast.MethodDecl;
+import polyglot.ast.Node;
 import polyglot.visit.NodeVisitor;
 
-import java.util.*;
-import java.io.*;
+import soot.options.Options;
 
 /**
- * @author Michael Batchelder 
+ * @author Michael Batchelder
  * 
- * Created on 5-Mar-2006 
+ *         Created on 5-Mar-2006
  */
 public class IdentifiersMetric extends ASTMetric {
-    private static final Logger logger = LoggerFactory.getLogger(IdentifiersMetric.class);
+  private static final Logger logger = LoggerFactory.getLogger(IdentifiersMetric.class);
 
   double nameComplexity = 0;
-  double nameCount =0;
-  
-  
-  
+  double nameCount = 0;
+
   int dictionarySize = 0;
   ArrayList<String> dictionary;
-  
-  //cache of names so no recomputation
+
+  // cache of names so no recomputation
   HashMap<String, Double> names;
+
   /**
    * @param astNode
    * 
-   * This metric will take a measure of the "complexity" of each identifier used
-   * within the program. An identifier's complexity is computed as follows:
+   *          This metric will take a measure of the "complexity" of each identifier used within the program. An identifier's complexity is computed
+   *          as follows:
    * 
-   * First the alpha tokens are parsed by splitting on non-alphas and capitals:
+   *          First the alpha tokens are parsed by splitting on non-alphas and capitals:
    * 
-   * 	example identifier: getASTNode		alpha tokens: get, AST, Node
-   * 	example identifier: ___Junk$$name	alpha tokens: Junk, name)
+   *          example identifier: getASTNode alpha tokens: get, AST, Node example identifier: ___Junk$$name alpha tokens: Junk, name)
    * 
-   * The alpha tokens are then counted and a 'token complexity' is formed by the ratio
-   * of total tokens to the number of tokens found in the dictionary:
+   *          The alpha tokens are then counted and a 'token complexity' is formed by the ratio of total tokens to the number of tokens found in the
+   *          dictionary:
    * 
-   * 	example identifier: getASTNode		Total: 3, Found: 2, Complexity: 1.5
+   *          example identifier: getASTNode Total: 3, Found: 2, Complexity: 1.5
    * 
-   * Then the 'character complexity' is computed, which is a ratio of total number of
-   * characters to the number of non-complex characters. Non-complex characters are 
-   * those which are NOT part of a multiple string of non-alphas.
+   *          Then the 'character complexity' is computed, which is a ratio of total number of characters to the number of non-complex characters.
+   *          Non-complex characters are those which are NOT part of a multiple string of non-alphas.
    * 
-   * 	example identifier: ___Junk$$name	complex char strings: '___', '$$'
-   * 		number of non-complex (Junk + name): 8, total: 13, Complexity: 1.625
+   *          example identifier: ___Junk$$name complex char strings: '___', '$$' number of non-complex (Junk + name): 8, total: 13, Complexity: 1.625
    * 
-   * Finally, the total identifier complexity is the sum of the token and character
-   * complexities multipled by the 'importance' of an identifier:
+   *          Finally, the total identifier complexity is the sum of the token and character complexities multipled by the 'importance' of an
+   *          identifier:
    * 
-   * Multipliers are as follows:
-   * 	     
-   * Class multiplier = 3;
-   * Method multiplier = 4;
-   * Field multiplier = 2;
-   * Formal multiplier = 1.5;
-   * Local multiplier = 1;
+   *          Multipliers are as follows:
+   * 
+   *          Class multiplier = 3; Method multiplier = 4; Field multiplier = 2; Formal multiplier = 1.5; Local multiplier = 1;
    * 
    */
   public IdentifiersMetric(Node astNode) {
     super(astNode);
-    
+
     initializeDictionary();
   }
-  
+
   private void initializeDictionary() {
     String line;
     BufferedReader br = null;
     dictionary = new ArrayList<String>();
     names = new HashMap<String, Double>();
-    
+
     InputStream is = ClassLoader.getSystemResourceAsStream("mydict.txt");
-    if (is != null)
-    {
+    if (is != null) {
       br = new BufferedReader(new InputStreamReader(is));
-      
+
       try {
-        while ((line = br.readLine()) != null)
+        while ((line = br.readLine()) != null) {
           addWord(line);
-      } catch (IOException ioexc) {}
+        }
+      } catch (IOException ioexc) {
+      }
     }
-    
+
     is = ClassLoader.getSystemResourceAsStream("soot/toolkits/astmetrics/dict.txt");
-    if (is != null)
-    {
+    if (is != null) {
       br = new BufferedReader(new InputStreamReader(is));
-    
+
       try {
-        while ((line = br.readLine()) != null)
+        while ((line = br.readLine()) != null) {
           addWord(line.trim().toLowerCase());
-      } catch (IOException ioexc) {}
+        }
+      } catch (IOException ioexc) {
+      }
     }
-      
-    if ((dictionarySize = dictionary.size()) == 0)
-      logger.debug("Error reading in dictionary file(s)");  
-    else if (Options.v().verbose())
-      logger.debug("Read "+dictionarySize+" words in from dictionary file(s)");
-    
-    try{
-    	is.close();
-    } catch(IOException e){}
-    try{
-    	if(br!=null) br.close();
-    } catch(IOException e){}
-    
+
+    if ((dictionarySize = dictionary.size()) == 0) {
+      logger.debug("Error reading in dictionary file(s)");
+    } else if (Options.v().verbose()) {
+      logger.debug("Read " + dictionarySize + " words in from dictionary file(s)");
+    }
+
+    try {
+      is.close();
+    } catch (IOException e) {
+    }
+    try {
+      if (br != null) {
+        br.close();
+      }
+    } catch (IOException e) {
+    }
+
   }
-  
+
   private void addWord(String word) {
     if (dictionarySize == 0 || word.compareTo(dictionary.get(dictionarySize - 1)) > 0) {
       dictionary.add(word);
     } else {
       int i = 0;
-	  while (i < dictionarySize && word.compareTo(dictionary.get(i)) > 0)
-	    i++;
-	  
-	  if (word.compareTo(dictionary.get(i)) == 0) 
-	    return;
-	  
-	  dictionary.add(i,word);
+      while (i < dictionarySize && word.compareTo(dictionary.get(i)) > 0) {
+        i++;
+      }
+
+      if (word.compareTo(dictionary.get(i)) == 0) {
+        return;
+      }
+
+      dictionary.add(i, word);
     }
-    
+
     dictionarySize++;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see soot.toolkits.astmetrics.ASTMetric#reset()
    */
   public void reset() {
     nameComplexity = 0;
-    nameCount=0;
+    nameCount = 0;
   }
 
-  /* (non-Javadoc)
+  /*
+   * (non-Javadoc)
+   * 
    * @see soot.toolkits.astmetrics.ASTMetric#addMetrics(soot.toolkits.astmetrics.ClassData)
    */
   public void addMetrics(ClassData data) {
-	    data.addMetric(new MetricData("NameComplexity",new Double(nameComplexity)));
-	    data.addMetric(new MetricData("NameCount",new Double(nameCount)));
+    data.addMetric(new MetricData("NameComplexity", new Double(nameComplexity)));
+    data.addMetric(new MetricData("NameCount", new Double(nameCount)));
   }
-  
-  public NodeVisitor enter(Node parent, Node n){
+
+  public NodeVisitor enter(Node parent, Node n) {
     double multiplier = 1;
     String name = null;
-    if(n instanceof ClassDecl){
-      name = ((ClassDecl)n).name();
+    if (n instanceof ClassDecl) {
+      name = ((ClassDecl) n).name();
       multiplier = 3;
       nameCount++;
     } else if (n instanceof MethodDecl) {
-      name = ((MethodDecl)n).name();
+      name = ((MethodDecl) n).name();
       multiplier = 4;
       nameCount++;
     } else if (n instanceof FieldDecl) {
-      name = ((FieldDecl)n).name();
+      name = ((FieldDecl) n).name();
       multiplier = 2;
       nameCount++;
-    } else if (n instanceof Formal) { 		// this is locals and formals
-      name = ((Formal)n).name();
+    } else if (n instanceof Formal) { // this is locals and formals
+      name = ((Formal) n).name();
       multiplier = 1.5;
       nameCount++;
-    } else if (n instanceof LocalDecl) { 		// this is locals and formals
-      name = ((LocalDecl)n).name();
+    } else if (n instanceof LocalDecl) { // this is locals and formals
+      name = ((LocalDecl) n).name();
       nameCount++;
     }
-    
-    if (name!=null)
-    {
+
+    if (name != null) {
       nameComplexity += (multiplier * computeNameComplexity(name));
     }
-	return enter(n);
+    return enter(n);
   }
 
   private double computeNameComplexity(String name) {
-    if (names.containsKey(name))
+    if (names.containsKey(name)) {
       return names.get(name).doubleValue();
-    
+    }
+
     ArrayList<String> strings = new ArrayList<String>();
-    
+
     // throw out non-alpha characters
     String tmp = "";
-    for (int i = 0; i < name.length(); i++)
-    {
+    for (int i = 0; i < name.length(); i++) {
       char c = name.charAt(i);
       if ((c > 64 && c < 91) || (c > 96 && c < 123)) {
-        tmp+=c;
+        tmp += c;
       } else if (tmp.length() > 0) {
         strings.add(tmp);
         tmp = "";
       }
     }
-    if (tmp.length()>0)
+    if (tmp.length() > 0) {
       strings.add(tmp);
-    
+    }
+
     ArrayList<String> tokens = new ArrayList<String>();
-    for (int i = 0; i < strings.size(); i++)
-    {
+    for (int i = 0; i < strings.size(); i++) {
       tmp = strings.get(i);
       while (tmp.length() > 0) {
         int caps = countCaps(tmp);
-        if (caps == 0)
-        {
+        if (caps == 0) {
           int idx = findCap(tmp);
           if (idx > 0) {
-            tokens.add(tmp.substring(0,idx));
-            tmp = tmp.substring(idx,tmp.length());
+            tokens.add(tmp.substring(0, idx));
+            tmp = tmp.substring(idx, tmp.length());
           } else {
-            tokens.add(tmp.substring(0,tmp.length()));
+            tokens.add(tmp.substring(0, tmp.length()));
             break;
           }
-        } else if (caps == 1){
+        } else if (caps == 1) {
           int idx = findCap(tmp.substring(1)) + 1;
           if (idx > 0) {
-            tokens.add(tmp.substring(0,idx));
-            tmp = tmp.substring(idx,tmp.length());
+            tokens.add(tmp.substring(0, idx));
+            tmp = tmp.substring(idx, tmp.length());
           } else {
-            tokens.add(tmp.substring(0,tmp.length()));
+            tokens.add(tmp.substring(0, tmp.length()));
             break;
           }
         } else {
@@ -252,82 +265,91 @@ public class IdentifiersMetric extends ASTMetric {
         }
       }
     }
-    
+
     double words = 0;
     double complexity = 0;
-    for (int i = 0; i < tokens.size(); i++)
-      if (dictionary.contains(tokens.get(i)))
+    for (int i = 0; i < tokens.size(); i++) {
+      if (dictionary.contains(tokens.get(i))) {
         words++;
-      
-    if (words>0)
+      }
+    }
+
+    if (words > 0) {
       complexity = (tokens.size()) / words;
-    
-    names.put(name,new Double(complexity + computeCharComplexity(name)));
-    
+    }
+
+    names.put(name, new Double(complexity + computeCharComplexity(name)));
+
     return complexity;
   }
-  
+
   private double computeCharComplexity(String name) {
     int count = 0, index = 0, last = 0, lng = name.length();
     while (index < lng) {
       char c = name.charAt(index);
-      if ((c < 65 || c > 90) && (c < 97 || c > 122)) { 
+      if ((c < 65 || c > 90) && (c < 97 || c > 122)) {
         last++;
       } else {
-        if (last>1)
+        if (last > 1) {
           count += last;
+        }
         last = 0;
       }
       index++;
     }
-    
+
     double complexity = lng - count;
-    
-    if (complexity > 0)
+
+    if (complexity > 0) {
       return ((lng) / complexity);
-    else return lng;
+    } else {
+      return lng;
+    }
   }
-  
-  
+
   /*
-   * @author Michael Batchelder 
+   * @author Michael Batchelder
    * 
    * Created on 6-Mar-2006
    * 
-   * @param	name	string to parse
-   * @return		number of leading capital letters
+   * @param name string to parse
+   * 
+   * @return number of leading capital letters
    */
   private int countCaps(String name) {
     int caps = 0;
     while (caps < name.length()) {
       char c = name.charAt(caps);
-      if (c > 64 && c < 91) 
+      if (c > 64 && c < 91) {
         caps++;
-      else 
+      } else {
         break;
+      }
     }
-    
+
     return caps;
   }
-  
+
   /*
-   * @author Michael Batchelder 
+   * @author Michael Batchelder
    * 
    * Created on 6-Mar-2006
    * 
-   * @param	name	string to parse
-   * @return		index of first capital letter
+   * @param name string to parse
+   * 
+   * @return index of first capital letter
    */
   private int findCap(String name) {
     int idx = 0;
     while (idx < name.length()) {
       char c = name.charAt(idx);
-      if (c > 64 && c < 91) 
+      if (c > 64 && c < 91) {
         return idx;
-      else 
+      } else {
         idx++;
+      }
     }
-    
+
     return -1;
   }
 }

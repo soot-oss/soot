@@ -26,10 +26,12 @@
  */
 
 package soot.jimple.toolkits.annotation.purity;
+
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Map;
 import soot.G;
 import soot.Scene;
 import soot.SceneTransformer;
@@ -40,32 +42,31 @@ import soot.options.PurityOptions;
 /**
  * Purity analysis phase.
  *
- * TODO: - test, test, and test (and correct the potentially infinite bugs) -
- * optimise PurityGraph, especially methodCall) - find a better abstraction for
- * exceptions (throw & catch) - output nicer graphs (especially clusters!)
+ * TODO: - test, test, and test (and correct the potentially infinite bugs) - optimise PurityGraph, especially methodCall) - find a better abstraction
+ * for exceptions (throw & catch) - output nicer graphs (especially clusters!)
  */
 public class PurityAnalysis extends SceneTransformer {
-    private static final Logger logger = LoggerFactory.getLogger(PurityAnalysis.class);
+  private static final Logger logger = LoggerFactory.getLogger(PurityAnalysis.class);
 
-    Singletons.Global g;
+  Singletons.Global g;
 
-    public PurityAnalysis(Singletons.Global g) {
-        this.g = g;
-    }
+  public PurityAnalysis(Singletons.Global g) {
+    this.g = g;
+  }
 
-    public static PurityAnalysis v() {
-        return G.v().soot_jimple_toolkits_annotation_purity_PurityAnalysis();
-    }
+  public static PurityAnalysis v() {
+    return G.v().soot_jimple_toolkits_annotation_purity_PurityAnalysis();
+  }
 
-    @Override
-    protected void internalTransform(String phaseName, Map<String, String> options) {
-        PurityOptions opts = new PurityOptions(options);
+  @Override
+  protected void internalTransform(String phaseName, Map<String, String> options) {
+    PurityOptions opts = new PurityOptions(options);
 
-        logger.debug("[AM] Analysing purity");
+    logger.debug("[AM] Analysing purity");
 
-        CallGraph cg = Scene.v().getCallGraph();
+    CallGraph cg = Scene.v().getCallGraph();
 
-        // launch the analysis
-        new PurityInterproceduralAnalysis(cg, Scene.v().getEntryPoints().iterator(), opts);
-    }
+    // launch the analysis
+    new PurityInterproceduralAnalysis(cg, Scene.v().getEntryPoints().iterator(), opts);
+  }
 }

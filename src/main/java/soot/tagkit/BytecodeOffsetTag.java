@@ -25,48 +25,57 @@
 
 package soot.tagkit;
 
-/** This class represents a tag for byte-code offset of
- * instructions that correspond to Jimple statements.
+/**
+ * This class represents a tag for byte-code offset of instructions that correspond to Jimple statements.
  *
  * @author Roman Manevich.
  * @since October 3 2002 Initial creation.
  */
 
 public class BytecodeOffsetTag implements Tag {
-  /** The index of the last byte-code instruction.
+  /**
+   * The index of the last byte-code instruction.
    */
   private int offset;
 
-  /** Constructs a tag from the index offset.
+  /**
+   * Constructs a tag from the index offset.
    */
   public BytecodeOffsetTag(int offset) {
     this.offset = offset;
   }
-	
-  /** Returns the name of this tag.
+
+  /**
+   * Returns the name of this tag.
    */
   public String getName() {
     return "BytecodeOffsetTag";
   }
 
-  /** Returns the offset in a four byte array.
+  /**
+   * Returns the offset in a four byte array.
    */
-  public byte [] getValue() {
-    byte [] v = new byte[4];
-    v[0] = (byte) ((offset >> 24) % 256);;
-    v[1] = (byte) ((offset >> 16) % 256);;
-    v[2] = (byte) ((offset >> 8) % 256);;
+  public byte[] getValue() {
+    byte[] v = new byte[4];
+    v[0] = (byte) ((offset >> 24) % 256);
+    ;
+    v[1] = (byte) ((offset >> 16) % 256);
+    ;
+    v[2] = (byte) ((offset >> 8) % 256);
+    ;
     v[3] = (byte) (offset % 256);
     return v;
   }
 
-  /** Returns the offset as an int.
+  /**
+   * Returns the offset as an int.
    */
   public int getBytecodeOffset() {
     return offset;
   }
 
-  /** Returns the offset in a string.
+  /**
+   * Returns the offset in a string.
    */
   public String toString() {
     return "" + offset;

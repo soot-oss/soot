@@ -25,11 +25,13 @@
 
 package soot.baf;
 
-import soot.*;
+import soot.Unit;
+import soot.UnitBox;
 
-public interface TargetArgInst extends Inst
-{
-    public Unit getTarget();
-    public UnitBox getTargetBox();
-    public void setTarget(Unit target);
+public interface TargetArgInst extends Inst {
+  public Unit getTarget();
+
+  public UnitBox getTargetBox();
+
+  public void setTarget(Unit target);
 }

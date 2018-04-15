@@ -23,46 +23,40 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
 package soot;
-import soot.util.*;
+
+import soot.util.Switch;
 
 /**
- *   Soot representation of the Java built-in type 'double'. Implemented as
- *   a singleton.
+ * Soot representation of the Java built-in type 'double'. Implemented as a singleton.
  */
 @SuppressWarnings("serial")
-public class DoubleType extends PrimType
-{
-    public DoubleType( Singletons.Global g ) {}
-    public static DoubleType v() { return G.v().soot_DoubleType(); }
+public class DoubleType extends PrimType {
+  public DoubleType(Singletons.Global g) {
+  }
 
-    public boolean equals(Object t)
-    {
-        return this == t;
-    }
+  public static DoubleType v() {
+    return G.v().soot_DoubleType();
+  }
 
-    
-    public int hashCode()
-    {
-        return 0x4B9D7242;
-    }
-    
-    public String toString()
-    {
-        return "double";
-    }
+  public boolean equals(Object t) {
+    return this == t;
+  }
 
-    public void apply(Switch sw)
-    {
-        ((TypeSwitch) sw).caseDoubleType(this);
-    }
+  public int hashCode() {
+    return 0x4B9D7242;
+  }
 
-    @Override
-    public RefType boxedType() {
-    	return RefType.v("java.lang.Double");
-    }
+  public String toString() {
+    return "double";
+  }
+
+  public void apply(Switch sw) {
+    ((TypeSwitch) sw).caseDoubleType(this);
+  }
+
+  @Override
+  public RefType boxedType() {
+    return RefType.v("java.lang.Double");
+  }
 }

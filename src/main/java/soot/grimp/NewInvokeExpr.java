@@ -23,18 +23,13 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot.grimp;
 
-import soot.*;
-import soot.jimple.*;
+import soot.RefType;
+import soot.jimple.StaticInvokeExpr;
 
-public interface NewInvokeExpr extends StaticInvokeExpr
-{
-    public RefType getBaseType();
-    public void setBaseType(RefType type);
+public interface NewInvokeExpr extends StaticInvokeExpr {
+  public RefType getBaseType();
+
+  public void setBaseType(RefType type);
 }
-
-
-
-

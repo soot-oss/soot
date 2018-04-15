@@ -18,24 +18,32 @@
  */
 
 package soot.util;
-import soot.*;
+
+import soot.G;
+import soot.Singletons;
 
 public final class SharedBitSetCache {
-    public SharedBitSetCache( Singletons.Global g ) {}
-    public static SharedBitSetCache v() { return G.v().soot_util_SharedBitSetCache(); }
+  public SharedBitSetCache(Singletons.Global g) {
+  }
 
-    public static final int size = 32749; // a nice prime about 32k
+  public static SharedBitSetCache v() {
+    return G.v().soot_util_SharedBitSetCache();
+  }
 
-    public BitVector[] cache = new BitVector[size];
-    public BitVector[] orAndAndNotCache = new BitVector[size];
+  public static final int size = 32749; // a nice prime about 32k
 
-    public BitVector canonicalize( BitVector set ) {
-        int hash = set.hashCode();
-        if( hash < 0 ) hash = -hash;
-        hash %= size;
-        if( cache[hash] == null || !cache[hash].equals(set) ) {
-            return cache[hash] = set;
-        }
-        return cache[hash];
+  public BitVector[] cache = new BitVector[size];
+  public BitVector[] orAndAndNotCache = new BitVector[size];
+
+  public BitVector canonicalize(BitVector set) {
+    int hash = set.hashCode();
+    if (hash < 0) {
+      hash = -hash;
     }
+    hash %= size;
+    if (cache[hash] == null || !cache[hash].equals(set)) {
+      return cache[hash] = set;
+    }
+    return cache[hash];
+  }
 }

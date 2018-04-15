@@ -23,38 +23,36 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
 package soot;
 
-/** A MethodSource for methods that don't know where to get Body's from. 
+/**
+ * A MethodSource for methods that don't know where to get Body's from.
+ * 
  * @see soot.jimple.JimpleMethodSource
- * @see soot.coffi.CoffiMethodSource */
-public class UnknownMethodSource implements MethodSource
-{
-    UnknownMethodSource()
-    {
-    }
+ * @see soot.coffi.CoffiMethodSource
+ */
+public class UnknownMethodSource implements MethodSource {
+  UnknownMethodSource() {
+  }
 
-    public Body getBody(SootMethod m, String phaseName)
-    {  
-        // we ignore options here.
-        // actually we should have default option verbatim,
-        // and apply phase options.
-        // in fact we probably want to allow different
-        // phase options depending on app vs. lib.
+  public Body getBody(SootMethod m, String phaseName) {
+    // we ignore options here.
+    // actually we should have default option verbatim,
+    // and apply phase options.
+    // in fact we probably want to allow different
+    // phase options depending on app vs. lib.
 
-        throw new RuntimeException("Can't get body for unknown source!");
+    throw new RuntimeException("Can't get body for unknown source!");
 
-//          InputStream classFileStream;
+    // InputStream classFileStream;
 
-//          try {
-//              classFileStream = SourceLocator.getInputStreamOf(m.getDeclaringClass().toString());
-//          } 
-//          catch(ClassNotFoundException e) {
-//              throw new RuntimeException("Can't find jimple file: " + e);                    
-//          }
-                
-//          Parser.parse(classFileStream,  m.getDeclaringClass());
-    }
+    // try {
+    // classFileStream = SourceLocator.getInputStreamOf(m.getDeclaringClass().toString());
+    // }
+    // catch(ClassNotFoundException e) {
+    // throw new RuntimeException("Can't find jimple file: " + e);
+    // }
+
+    // Parser.parse(classFileStream, m.getDeclaringClass());
+  }
 }
-

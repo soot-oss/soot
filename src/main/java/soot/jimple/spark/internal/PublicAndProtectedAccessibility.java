@@ -25,27 +25,29 @@ import soot.SootField;
 import soot.SootMethod;
 
 /**
- * Using this oracle one assumes, that a client of the target library can call
- * every public or protected method and access every public or protected field.
+ * Using this oracle one assumes, that a client of the target library can call every public or protected method and access every public or protected
+ * field.
  * 
  * @author Florian Kuebler
  *
  */
 public class PublicAndProtectedAccessibility implements ClientAccessibilityOracle {
-	
-    public PublicAndProtectedAccessibility( Singletons.Global g ) {	
-    }
-    
-    public static PublicAndProtectedAccessibility v() { return G.v().soot_jimple_spark_internal_PublicAndProtectedAccessibility(); }
 
-	@Override
-	public boolean isAccessible(SootMethod method) {
-		return method.isPublic() || method.isProtected();
-	}
+  public PublicAndProtectedAccessibility(Singletons.Global g) {
+  }
 
-	@Override
-	public boolean isAccessible(SootField field) {
-		return field.isPublic() || field.isProtected();
-	}
+  public static PublicAndProtectedAccessibility v() {
+    return G.v().soot_jimple_spark_internal_PublicAndProtectedAccessibility();
+  }
+
+  @Override
+  public boolean isAccessible(SootMethod method) {
+    return method.isPublic() || method.isProtected();
+  }
+
+  @Override
+  public boolean isAccessible(SootField field) {
+    return field.isPublic() || field.isProtected();
+  }
 
 }

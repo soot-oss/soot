@@ -25,6 +25,5 @@
 
 package soot.baf;
 
-public interface DivInst extends OpTypeArgInst
-{
+public interface DivInst extends OpTypeArgInst {
 }

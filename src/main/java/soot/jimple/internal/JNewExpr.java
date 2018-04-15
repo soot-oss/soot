@@ -23,32 +23,28 @@
  * contributors.  (Soot is distributed at http://www.sable.mcgill.ca/soot)
  */
 
-
-
-
-
-
 package soot.jimple.internal;
 
-import soot.*;
-import soot.jimple.*;
-import soot.baf.*;
-import java.util.*;
+import java.util.List;
 
-public class JNewExpr extends AbstractNewExpr implements ConvertToBaf
-{
-    public JNewExpr(RefType type) { this.type = type; }
+import soot.RefType;
+import soot.Unit;
+import soot.baf.Baf;
+import soot.jimple.ConvertToBaf;
+import soot.jimple.JimpleToBafContext;
 
-    public void convertToBaf(JimpleToBafContext context, List<Unit> out)
-    {
-    	Unit u = Baf.v().newNewInst(getBaseType());
-		u.addAllTagsOf(context.getCurrentUnit());
-        out.add(u);
-    }
+public class JNewExpr extends AbstractNewExpr implements ConvertToBaf {
+  public JNewExpr(RefType type) {
+    this.type = type;
+  }
 
+  public void convertToBaf(JimpleToBafContext context, List<Unit> out) {
+    Unit u = Baf.v().newNewInst(getBaseType());
+    u.addAllTagsOf(context.getCurrentUnit());
+    out.add(u);
+  }
 
-    public Object clone() 
-    {
-        return new JNewExpr(type);
-    }
+  public Object clone() {
+    return new JNewExpr(type);
+  }
 }

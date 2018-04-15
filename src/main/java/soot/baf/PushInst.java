@@ -25,10 +25,10 @@
 
 package soot.baf;
 
-import soot.jimple.*;
+import soot.jimple.Constant;
 
-public interface PushInst extends Inst
-{
-    public Constant getConstant();
-    public void setConstant(Constant c);
+public interface PushInst extends Inst {
+  public Constant getConstant();
+
+  public void setConstant(Constant c);
 }

@@ -20,20 +20,19 @@ package soot.jimple.spark.ondemand.genericutil;
 
 import java.util.Set;
 
-public class ArraySetDupesMultiMap<K,V> extends AbstractMultiMap<K,V> {
+public class ArraySetDupesMultiMap<K, V> extends AbstractMultiMap<K, V> {
 
-    public ArraySetDupesMultiMap(boolean create) {
-        super(create);
-    }
+  public ArraySetDupesMultiMap(boolean create) {
+    super(create);
+  }
 
-    public ArraySetDupesMultiMap() {
-        this(false);
-    }
-                                    
-    @Override
-    protected Set<V> createSet() {
-        return new ArraySet<V>(1,false);
-    }
+  public ArraySetDupesMultiMap() {
+    this(false);
+  }
 
-    
+  @Override
+  protected Set<V> createSet() {
+    return new ArraySet<V>(1, false);
+  }
+
 }
