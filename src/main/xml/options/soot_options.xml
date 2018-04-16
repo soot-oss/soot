@@ -226,9 +226,9 @@
             <short_desc>Use the good old Coffi front end for parsing Java bytecode (instead of using ASM).</short_desc>
         </boolopt>
         <boolopt>
-            <name>ASM Backend</name>
-            <alias>asm-backend</alias>
-            <short_desc>Use the ASM back end for generating Java bytecode (instead of using Jasmin).</short_desc>
+            <name>Jasmin Backend</name>
+            <alias>jasmin-backend</alias>
+            <short_desc>Use the Jasmin back end for generating Java bytecode (instead of using ASM).</short_desc>
         </boolopt>
         <boolopt>
             <name>Help</name>

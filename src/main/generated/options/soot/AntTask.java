@@ -22,8 +22,6 @@
 /* THIS FILE IS AUTO-GENERATED FROM soot_options.xml. DO NOT MODIFY. */
 
 package soot;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import soot.*;
 import org.apache.tools.ant.*;
@@ -35,9 +33,8 @@ import java.util.*;
  * Soot ant task.
  * @author Ondrej Lhotak
  */
-@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-02-27T12:47:11.925+01:00", comments = "from soot_options.xml")
+@javax.annotation.Generated(value = "Saxonica v3.0", date = "2018-04-16T19:15:43.476+02:00", comments = "from soot_options.xml")
 public class AntTask extends MatchingTask {
-    private static final Logger logger = LoggerFactory.getLogger(AntTask.class);
     public static final boolean DEBUG = true;
     private void debug(String s) {
         if(DEBUG) System.err.println(s);
@@ -105,7 +102,7 @@ public class AntTask extends MatchingTask {
             soot.Main.main((String[]) args.toArray(new String[0]));
             soot.G.v().reset();
         } catch( Exception e ) {
-            logger.error(e.getMessage(), e);
+            e.printStackTrace();
             throw new BuildException(e);
         }
     }
@@ -116,8 +113,8 @@ public class AntTask extends MatchingTask {
             if(arg) addArg("-coffi");
         }
   
-        public void setasm_backend(boolean arg) {
-            if(arg) addArg("-asm-backend");
+        public void setjasmin_backend(boolean arg) {
+            if(arg) addArg("-jasmin-backend");
         }
   
         public void sethelp(boolean arg) {

@@ -978,11 +978,11 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		if (boolRes != defBoolRes) {
 			getConfig().put(getGeneral_Optionscoffi_widget().getAlias(), new Boolean(boolRes));
 		}
-		boolRes = getGeneral_Optionsasm_backend_widget().getButton().getSelection();
+		boolRes = getGeneral_Optionsjasmin_backend_widget().getButton().getSelection();
 		defBoolRes = false;
 
 		if (boolRes != defBoolRes) {
-			getConfig().put(getGeneral_Optionsasm_backend_widget().getAlias(), new Boolean(boolRes));
+			getConfig().put(getGeneral_Optionsjasmin_backend_widget().getAlias(), new Boolean(boolRes));
 		}
 		boolRes = getGeneral_Optionshelp_widget().getButton().getSelection();
 		defBoolRes = false;
@@ -4392,14 +4392,14 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 		return General_Optionscoffi_widget;
 	}	
 	
-	private BooleanOptionWidget General_Optionsasm_backend_widget;
+	private BooleanOptionWidget General_Optionsjasmin_backend_widget;
 	
-	private void setGeneral_Optionsasm_backend_widget(BooleanOptionWidget widget) {
-		General_Optionsasm_backend_widget = widget;
+	private void setGeneral_Optionsjasmin_backend_widget(BooleanOptionWidget widget) {
+		General_Optionsjasmin_backend_widget = widget;
 	}
 	
-	public BooleanOptionWidget getGeneral_Optionsasm_backend_widget() {
-		return General_Optionsasm_backend_widget;
+	public BooleanOptionWidget getGeneral_Optionsjasmin_backend_widget() {
+		return General_Optionsjasmin_backend_widget;
 	}	
 	
 	private BooleanOptionWidget General_Optionshelp_widget;
@@ -8270,7 +8270,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 
 		setGeneral_Optionscoffi_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Coffi Frontend", "", "","coffi", "\n", defaultBool)));
 
-		defKey = ""+" "+""+" "+"asm-backend";
+		defKey = ""+" "+""+" "+"jasmin-backend";
 		defKey = defKey.trim();
 
 		if (isInDefList(defKey)) {
@@ -8279,7 +8279,7 @@ public class PhaseOptionsDialog extends AbstractOptionsDialog implements Selecti
 			defaultBool = false;
 		}
 
-		setGeneral_Optionsasm_backend_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("ASM Backend", "", "","asm-backend", "\n", defaultBool)));
+		setGeneral_Optionsjasmin_backend_widget(new BooleanOptionWidget(editGroupGeneral_Options, SWT.NONE, new OptionData("Jasmin Backend", "", "","jasmin-backend", "\n", defaultBool)));
 
 		defKey = ""+" "+""+" "+"h help";
 		defKey = defKey.trim();
