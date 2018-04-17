@@ -127,9 +127,8 @@ public class NullPointerChecker extends BodyTransformer {
             // Throw
             if (s instanceof ThrowStmt) {
               obj = ((ThrowStmt) s).getOp();
-            } else
-            // Monitor enter and exit
-            if (s instanceof MonitorStmt) {
+            } else if (s instanceof MonitorStmt) {
+              // Monitor enter and exit
               obj = ((MonitorStmt) s).getOp();
             } else {
               Iterator<ValueBox> boxIt;
@@ -142,14 +141,12 @@ public class NullPointerChecker extends BodyTransformer {
                 if (v instanceof InstanceFieldRef) {
                   obj = ((InstanceFieldRef) v).getBase();
                   break;
-                } else
-                // invokevirtual, invokespecial, invokeinterface
-                if (v instanceof InstanceInvokeExpr) {
+                } else if (v instanceof InstanceInvokeExpr) {
+                  // invokevirtual, invokespecial, invokeinterface
                   obj = ((InstanceInvokeExpr) v).getBase();
                   break;
-                } else
-                // arraylength
-                if (v instanceof LengthExpr) {
+                } else if (v instanceof LengthExpr) {
+                  // arraylength
                   obj = ((LengthExpr) v).getOp();
                   break;
                 }
@@ -163,14 +160,12 @@ public class NullPointerChecker extends BodyTransformer {
                 if (v instanceof InstanceFieldRef) {
                   obj = ((InstanceFieldRef) v).getBase();
                   break;
-                } else
-                // invokevirtual, invokespecial, invokeinterface
-                if (v instanceof InstanceInvokeExpr) {
+                } else if (v instanceof InstanceInvokeExpr) {
+                  // invokevirtual, invokespecial, invokeinterface
                   obj = ((InstanceInvokeExpr) v).getBase();
                   break;
-                } else
-                // arraylength
-                if (v instanceof LengthExpr) {
+                } else if (v instanceof LengthExpr) {
+                  // arraylength
                   obj = ((LengthExpr) v).getOp();
                   break;
                 }

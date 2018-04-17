@@ -609,9 +609,8 @@ class ArrayBoundsCheckerAnalysis {
               }
             }
           }
-        } else
-        /* kill all instance field reference. */
-        if (strictness == 1) {
+        } else if (strictness == 1) {
+          /* kill all instance field reference. */
           boolean killall = false;
           if (expr instanceof InstanceInvokeExpr) {
             killall = true;
@@ -746,9 +745,8 @@ class ArrayBoundsCheckerAnalysis {
             }
           }
         }
-      } else
-      /* kill all array references */
-      if (leftOp instanceof ArrayRef) {
+      } else if (leftOp instanceof ArrayRef) {
+        /* kill all array references */
         /*
          * Iterator allrefsIt = allArrayRefs.iterator(); while (allrefsIt.hasNext()) { Object ref = allrefsIt.next(); ingraph.killNode(ref); }
          */
@@ -1052,9 +1050,7 @@ class ArrayBoundsCheckerAnalysis {
       } else {
         ingraph.addMutualEdges(node1, node2, weight);
       }
-    } else
-    // i > j
-    if ((cmpcond instanceof GtExpr) ||
+    } else if ((cmpcond instanceof GtExpr) ||
     // i >= j
         (cmpcond instanceof GeExpr)) {
       Object node1 = op1, node2 = op2;
@@ -1081,9 +1077,8 @@ class ArrayBoundsCheckerAnalysis {
         targetgraph.addEdge(node1, node2, weight);
         ingraph.addEdge(node2, node1, -weight - 1);
       }
-    } else
-    // i < j
-    if ((cmpcond instanceof LtExpr) || (cmpcond instanceof LeExpr)) {
+    } else if ((cmpcond instanceof LtExpr) || (cmpcond instanceof LeExpr)) {
+      // i < j
       Object node1 = op1, node2 = op2;
       int weight = 0;
 

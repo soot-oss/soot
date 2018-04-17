@@ -257,34 +257,20 @@ public final class MethodPAG {
     final String signature = method.getSignature();
     if (method.getSubSignature().equals(mainSubSignature)) {
       addInEdge(pag().nodeFactory().caseArgv(), nodeFactory.caseParm(0));
-    } else
-
-    if (signature.equals("<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.String)>")) {
+    } else if (signature.equals("<java.lang.Thread: void <init>(java.lang.ThreadGroup,java.lang.String)>")) {
       addInEdge(pag().nodeFactory().caseMainThread(), nodeFactory.caseThis());
       addInEdge(pag().nodeFactory().caseMainThreadGroup(), nodeFactory.caseParm(0));
-    } else
-
-    if (signature.equals("<java.lang.ref.Finalizer: void <init>(java.lang.Object)>")) {
+    } else if (signature.equals("<java.lang.ref.Finalizer: void <init>(java.lang.Object)>")) {
       addInEdge(nodeFactory.caseThis(), pag().nodeFactory().caseFinalizeQueue());
-    } else
-
-    if (signature.equals("<java.lang.ref.Finalizer: void runFinalizer()>")) {
+    } else if (signature.equals("<java.lang.ref.Finalizer: void runFinalizer()>")) {
       addInEdge(pag.nodeFactory().caseFinalizeQueue(), nodeFactory.caseThis());
-    } else
-
-    if (signature.equals("<java.lang.ref.Finalizer: void access$100(java.lang.Object)>")) {
+    } else if (signature.equals("<java.lang.ref.Finalizer: void access$100(java.lang.Object)>")) {
       addInEdge(pag.nodeFactory().caseFinalizeQueue(), nodeFactory.caseParm(0));
-    } else
-
-    if (signature.equals("<java.lang.ClassLoader: void <init>()>")) {
+    } else if (signature.equals("<java.lang.ClassLoader: void <init>()>")) {
       addInEdge(pag.nodeFactory().caseDefaultClassLoader(), nodeFactory.caseThis());
-    } else
-
-    if (signature.equals("<java.lang.Thread: void exit()>")) {
+    } else if (signature.equals("<java.lang.Thread: void exit()>")) {
       addInEdge(pag.nodeFactory().caseMainThread(), nodeFactory.caseThis());
-    } else
-
-    if (signature.equals("<java.security.PrivilegedActionException: void <init>(java.lang.Exception)>")) {
+    } else if (signature.equals("<java.security.PrivilegedActionException: void <init>(java.lang.Exception)>")) {
       addInEdge(pag.nodeFactory().caseThrow(), nodeFactory.caseParm(0));
       addInEdge(pag.nodeFactory().casePrivilegedActionException(), nodeFactory.caseThis());
     }

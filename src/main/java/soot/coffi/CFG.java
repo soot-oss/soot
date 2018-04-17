@@ -443,9 +443,8 @@ public class CFG {
         if (astorenum == retnum) {
           return insn;
         }
-      } else
-      /* adjust the jsr inlining order. */
-      if (insn instanceof Instruction_Jsr || insn instanceof Instruction_Jsr_w) {
+      } else if (insn instanceof Instruction_Jsr || insn instanceof Instruction_Jsr_w) {
+        /* adjust the jsr inlining order. */
         innerJsrs.add(insn);
       }
 

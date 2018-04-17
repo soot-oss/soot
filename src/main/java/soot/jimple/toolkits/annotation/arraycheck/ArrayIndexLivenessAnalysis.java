@@ -372,9 +372,8 @@ class ArrayIndexLivenessAnalysis extends BackwardFlowAnalysis {
       // a = ... or i = ...
       if (lhs instanceof Local) {
         killarrayrelated = true;
-      } else
-      // a[i] = ...
-      if (lhs instanceof ArrayRef) {
+      } else if (lhs instanceof ArrayRef) {
+        // a[i] = ...
         killallarrayref = true;
         condset.add(lhs);
       }

@@ -436,9 +436,8 @@ public class RectangularArrayFinder extends SceneTransformer {
               ehmdg.addMutualEdge(new MethodReturn(target), to);
             }
           }
-        } else
-        /* For field reference, we can make conservative assumption that all instance fieldRef use the same node. */
-        if ((leftOp instanceof FieldRef) && (rightOp instanceof Local)) {
+        } else if ((leftOp instanceof FieldRef) && (rightOp instanceof Local)) {
+          /* For field reference, we can make conservative assumption that all instance fieldRef use the same node. */
           if (arrayLocal.contains(rightOp)) {
             Type ftype = ((FieldRef) leftOp).getType();
             Type ltype = ((Local) rightOp).getType();
@@ -679,9 +678,8 @@ public class RectangularArrayFinder extends SceneTransformer {
           /* curtmp[?] = ? */
           if (base.equals(curtmp)) {
             state = 2;
-          } else
-          /* local[?] = curtmp? */
-          if (base.equals(local)) {
+          } else if (base.equals(local)) {
+            /* local[?] = curtmp? */
             if (!(idx instanceof IntConstant)) {
               break;
             }
