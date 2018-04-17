@@ -496,13 +496,13 @@ public class LockAllocator extends SceneTransformer {
 
           }
         } else {
-          if (tn.lockset == null || tn.lockset.size() != 1) {// Found too few or too many locks
-                                                             // So use a static lock instead
+          if (tn.lockset == null || tn.lockset.size() != 1) { // Found too few or too many locks
+                                                              // So use a static lock instead
             tn.lockObject = null;
             tn.group.useDynamicLock = false;
             tn.group.lockObject = null;
-          } else {// Found exactly one lock
-                  // Use it!
+          } else { // Found exactly one lock
+                   // Use it!
             tn.lockObject = (Value) tn.lockset.get(0);
 
             // If it's the best lock we've found in the group yet, use it for display

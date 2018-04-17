@@ -317,11 +317,12 @@ public class Aggregator extends BodyTransformer {
           // usepair.unit.removeAllTags();
           usepair.unit.addAllTagsOf(s);
         }
-      } else {/*
-               * if(Options.v().verbose()) { logger.debug("[debug] failed aggregation"); logger.debug("[debug] tried to put "+aggregatee+
-               * " into "+usepair.stmt + ": in particular, "+usepair.valueBox); logger.debug("[debug] aggregatee instanceof Expr: " +(aggregatee
-               * instanceof Expr)); }
-               */
+      } else {
+        /*
+         * if(Options.v().verbose()) { logger.debug("[debug] failed aggregation"); logger.debug("[debug] tried to put "+aggregatee+
+         * " into "+usepair.stmt + ": in particular, "+usepair.valueBox); logger.debug("[debug] aggregatee instanceof Expr: " +(aggregatee instanceof
+         * Expr)); }
+         */
       }
     }
     return hadAggregation;

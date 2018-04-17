@@ -198,7 +198,8 @@ public class PushLabeledBlockIn extends DepthFirstAdapter {
           for (AugmentedStmt as : stmtSeq.getStatements()) {
             Stmt s = as.get_Stmt();
             String labelBroken = isAbrupt(s);
-            if (labelBroken != null) {// stmt breaks some label
+            if (labelBroken != null) {
+              // stmt breaks some label
               if (labelBroken.compareTo(toReplace) == 0) {
                 // we have found a break breaking this label
                 // replace the label with "replaceWith"
@@ -231,7 +232,8 @@ public class PushLabeledBlockIn extends DepthFirstAdapter {
         for (AugmentedStmt as : stmtSeq.getStatements()) {
           Stmt s = as.get_Stmt();
           String labelBroken = breaksLabel(s);
-          if (labelBroken != null && outerLabel != null) {// stmt
+          if (labelBroken != null && outerLabel != null) {
+            // stmt
             // breaks
             // some
             // label

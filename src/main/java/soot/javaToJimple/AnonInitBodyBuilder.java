@@ -128,7 +128,7 @@ public class AnonInitBodyBuilder extends JimpleBodyBuilder {
       invokeTypeList.add(0, superOuterType);
     }
     SootMethodRef callMethod = Scene.v().makeMethodRef(sootMethod.getDeclaringClass().getSuperclass(), "<init>", invokeTypeList, VoidType.v(), false);
-    if ((!hasQualifier) && (needsOuterClassRef(polyglotType))) {// && (needsRef.contains(superClass.getType()))){
+    if ((!hasQualifier) && (needsOuterClassRef(polyglotType))) { // && (needsRef.contains(superClass.getType()))){
       if (isSubType) {
         invokeList.add(0, outerLocal);
       } else {

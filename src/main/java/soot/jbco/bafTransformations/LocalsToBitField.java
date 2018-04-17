@@ -141,7 +141,7 @@ public class LocalsToBitField extends BodyTransformer implements IJbcoTransform 
           } else if (t instanceof ByteType) {
             bytes.add(bl);
             sizes.put(bl, 8);
-          } else if (t instanceof CharType) {// || t instanceof ShortType) {
+          } else if (t instanceof CharType) { // || t instanceof ShortType) {
             chars.add(bl);
             sizes.put(bl, 16);
           } else if (t instanceof IntType) {

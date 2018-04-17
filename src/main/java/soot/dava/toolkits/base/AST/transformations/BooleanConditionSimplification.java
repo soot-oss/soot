@@ -152,19 +152,24 @@ public class BooleanConditionSimplification extends DepthFirstAdapter {
     // decide and return
     if (notEqual && truthValue == 0) { // A != false -->A
       return A;
-    } else if (notEqual && truthValue == 1) {// A != true --> !A
-      if (A instanceof DNotExpr) {// A is actually !B
+    } else if (notEqual && truthValue == 1) {
+      // A != true --> !A
+      if (A instanceof DNotExpr) {
+        // A is actually !B
         return ((DNotExpr) A).getOp();
       } else {
         return (new DNotExpr(A));
       }
-    } else if (!notEqual && truthValue == 0) {// A == false --> !A
-      if (A instanceof DNotExpr) {// A is actually !B
+    } else if (!notEqual && truthValue == 0) {
+      // A == false --> !A
+      if (A instanceof DNotExpr) {
+        // A is actually !B
         return ((DNotExpr) A).getOp();
       } else {
         return new DNotExpr(A);
       }
-    } else if (!notEqual && truthValue == 1) {// A == true --> A
+    } else if (!notEqual && truthValue == 1) {
+      // A == true --> A
       return A;
     } else {
       throw new RuntimeException();

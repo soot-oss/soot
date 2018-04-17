@@ -803,7 +803,8 @@ public class DavaBody extends Body {
 
           String classPackageName = packageName;
 
-          if (className.lastIndexOf('.') > 0) {// 0 doesnt make sense
+          if (className.lastIndexOf('.') > 0) {
+            // 0 doesnt make sense
             classPackageName = className.substring(0, className.lastIndexOf('.'));
           }
           if (!packageName.equals(classPackageName)) {
@@ -982,7 +983,8 @@ public class DavaBody extends Body {
 
       String classPackageName = packageName;
 
-      if (className.lastIndexOf('.') > 0) {// 0 doesnt make sense
+      if (className.lastIndexOf('.') > 0) {
+        // 0 doesnt make sense
         classPackageName = className.substring(0, className.lastIndexOf('.'));
       }
       if (!packageName.equals(classPackageName)) {
@@ -1105,7 +1107,8 @@ public class DavaBody extends Body {
     String packageName = ie.getMethodRef().declaringClass().getJavaPackageName();
     String classPackageName = packageName;
 
-    if (className.lastIndexOf('.') > 0) {// 0 doesnt make sense
+    if (className.lastIndexOf('.') > 0) {
+      // 0 doesnt make sense
       classPackageName = className.substring(0, className.lastIndexOf('.'));
     }
     if (!packageName.equals(classPackageName)) {
@@ -1158,7 +1161,8 @@ public class DavaBody extends Body {
 
         classPackageName = packageName;
 
-        if (className.lastIndexOf('.') > 0) {// 0 doesnt make sense
+        if (className.lastIndexOf('.') > 0) {
+          // 0 doesnt make sense
           classPackageName = className.substring(0, className.lastIndexOf('.'));
         }
         if (!packageName.equals(classPackageName)) {
@@ -1174,7 +1178,8 @@ public class DavaBody extends Body {
 
         classPackageName = packageName;
 
-        if (className.lastIndexOf('.') > 0) {// 0 doesnt make sense
+        if (className.lastIndexOf('.') > 0) {
+          // 0 doesnt make sense
           classPackageName = className.substring(0, className.lastIndexOf('.'));
         }
         if (!packageName.equals(classPackageName)) {
@@ -1199,7 +1204,8 @@ public class DavaBody extends Body {
 
     String classPackageName = packageName;
 
-    if (className.lastIndexOf('.') > 0) {// 0 doesnt make sense
+    if (className.lastIndexOf('.') > 0) {
+      // 0 doesnt make sense
       classPackageName = className.substring(0, className.lastIndexOf('.'));
     }
     if (!packageName.equals(classPackageName)) {

@@ -169,7 +169,8 @@ public class ASTMethodNode extends ASTNode {
   public List getDeclaredLocals() {
     List toReturn = new ArrayList();
 
-    for (AugmentedStmt as : declarations.getStatements()) {// going through each stmt
+    for (AugmentedStmt as : declarations.getStatements()) {
+      // going through each stmt
       Stmt s = as.get_Stmt();
 
       if (!(s instanceof DVariableDeclarationStmt)) {
@@ -197,7 +198,8 @@ public class ASTMethodNode extends ASTNode {
    */
   public void removeDeclaredLocal(Local local) {
     Stmt s = null;
-    for (AugmentedStmt as : declarations.getStatements()) {// going through each stmt
+    for (AugmentedStmt as : declarations.getStatements()) {
+      // going through each stmt
       s = as.get_Stmt();
 
       if (!(s instanceof DVariableDeclarationStmt)) {

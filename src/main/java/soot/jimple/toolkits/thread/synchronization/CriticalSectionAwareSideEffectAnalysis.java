@@ -292,10 +292,11 @@ public class CriticalSectionAwareSideEffectAnalysis {
 
   private HashMap<Stmt, RWSet> RCache = new HashMap<Stmt, RWSet>();
 
-  public RWSet approximatedReadSet(SootMethod method, Stmt stmt, Value specialRead, boolean allFields) {// used for stmts with method calls where the
-                                                                                                        // effect of the method call should be
-                                                                                                        // approximated by 0 or 1 reads (plus reads of
-                                                                                                        // all args)
+  public RWSet approximatedReadSet(SootMethod method, Stmt stmt, Value specialRead, boolean allFields) { // used for stmts with method calls where the
+                                                                                                         // effect of the method call should be
+                                                                                                         // approximated by 0 or 1 reads (plus reads
+                                                                                                         // of
+                                                                                                         // all args)
     CodeBlockRWSet ret = new CodeBlockRWSet();
     if (specialRead != null) {
       if (specialRead instanceof Local) {
@@ -417,8 +418,8 @@ public class CriticalSectionAwareSideEffectAnalysis {
            * InvokeSig.equals("void wait(long,int)")) { ntr = approximatedReadSet(method, stmt, base, target, true); } else { ntr =
            * approximatedReadSet(method, stmt, base, target, false); } } else { ntr = approximatedReadSet(method, stmt, null, target, false); }
            * ret.union(ntr);
-           */ } else {// note that all library functions have already been filtered out (by name) via the filter
-                      // passed to the TransitiveTargets constructor.
+           */ } else { // note that all library functions have already been filtered out (by name) via the filter
+                       // passed to the TransitiveTargets constructor.
           RWSet ntr = nonTransitiveReadSet(target);
           if (ntr != null) {
             // uses.clear();
@@ -493,9 +494,10 @@ public class CriticalSectionAwareSideEffectAnalysis {
 
   private HashMap<Stmt, RWSet> WCache = new HashMap<Stmt, RWSet>();
 
-  public RWSet approximatedWriteSet(SootMethod method, Stmt stmt, Value v, boolean allFields) {// used for stmts with method calls where the effect of
-                                                                                               // the method call should be approximated by 0 or 1
-                                                                                               // writes
+  public RWSet approximatedWriteSet(SootMethod method, Stmt stmt, Value v, boolean allFields) { // used for stmts with method calls where the effect
+                                                                                                // of
+                                                                                                // the method call should be approximated by 0 or 1
+                                                                                                // writes
     CodeBlockRWSet ret = new CodeBlockRWSet();
     if (v != null) {
       if (v instanceof Local) {

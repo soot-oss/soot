@@ -3989,7 +3989,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
 
     polyglot.types.ClassType objType = (polyglot.types.ClassType) cInst.container();
     soot.Local qVal = null;
-    if (cCall.qualifier() != null) {// && (!(cCall.qualifier() instanceof
+    if (cCall.qualifier() != null) {
+      // && (!(cCall.qualifier() instanceof
       // polyglot.ast.Special &&
       // ((polyglot.ast.Special)cCall.qualifier()).kind()
       // == polyglot.ast.Special.THIS)) ){
@@ -4103,7 +4104,8 @@ public class JimpleBodyBuilder extends AbstractJimpleBodyBuilder {
     soot.Value qVal = null;
     // System.out.println("new qualifier: "+newExpr.qualifier());
     // if (newExpr.qualifier() != null) {
-    if (newExpr.qualifier() != null) {// && (!(newExpr.qualifier()
+    if (newExpr.qualifier() != null) {
+      // && (!(newExpr.qualifier()
       // instanceof polyglot.ast.Special
       // &&
       // ((polyglot.ast.Special)newExpr.qualifier()).kind()

@@ -1078,7 +1078,8 @@ public class SuperFirstStmtHandler extends DepthFirstAdapter {
     List methodList = originalSootClass.getMethods();
 
     boolean done = false; // havent found the name
-    while (!done) {// as long as name not found
+    while (!done) {
+      // as long as name not found
       done = true; // assume name found
       Iterator it = methodList.iterator();
       while (it.hasNext()) {

@@ -171,14 +171,16 @@ public class OrAggregatorFour extends DepthFirstAdapter {
     List subBody = (List) subBodies.get(0);
     Iterator it = subBody.iterator();
     int nodeNumber = 0;
-    while (it.hasNext()) {// going through the ASTNodes
+    while (it.hasNext()) {
+      // going through the ASTNodes
       // look for a labeledBlock
       ASTNode temp = (ASTNode) it.next();
       if (temp instanceof ASTLabeledBlockNode) {
         // see if the inner pattern matches
         ASTLabeledBlockNode labeledNode = (ASTLabeledBlockNode) temp;
         String innerLabel = labeledNode.get_Label().toString();
-        if (innerLabel == null) {// label better not be null
+        if (innerLabel == null) {
+          // label better not be null
           nodeNumber++;
           continue;
         }

@@ -78,7 +78,8 @@ import soot.jimple.internal.JimpleLocal;
  * This class makes sure there is an initialization of all final variables (static or non static). If we cant guarantee initialization (may be
  * initialized on multiple paths but not all) then we remove the final keyword
  */
-public class FinalFieldDefinition {// extends DepthFirstAdapter{
+public class FinalFieldDefinition {
+  // extends DepthFirstAdapter{
   SootClass sootClass;
 
   SootMethod sootMethod;

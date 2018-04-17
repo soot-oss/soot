@@ -260,7 +260,8 @@ public class DeInliningFinalFields extends DepthFirstAdapter {
 
         Integer myInt = null;
         try {
-          if (myString.charAt(0) == '\'') {// character
+          if (myString.charAt(0) == '\'') {
+            // character
             if (myString.length() < 2) {
               return null;
             }

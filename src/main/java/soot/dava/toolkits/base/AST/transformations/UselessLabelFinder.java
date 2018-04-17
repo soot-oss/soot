@@ -74,7 +74,8 @@ public class UselessLabelFinder {
         ASTTryNode.container subBody = (ASTTryNode.container) it.next();
         subBodyTemp = (List) subBody.o;
         // System.out.println("\ntryNode body");
-      } else {// not an astTryNode
+      } else {
+        // not an astTryNode
         // System.out.println("not try node in findAndkill");
         subBodyTemp = (List) it.next();
       }
@@ -111,7 +112,8 @@ public class UselessLabelFinder {
         for (AugmentedStmt as : stmtSeq.getStatements()) {
           Stmt s = as.get_Stmt();
           String labelBroken = breaksLabel(s);
-          if (labelBroken != null && outerLabel != null) {// stmt breaks some label
+          if (labelBroken != null && outerLabel != null) {
+            // stmt breaks some label
             if (labelBroken.compareTo(outerLabel) == 0) {
               // we have found a break breaking this label
               return true;

@@ -228,13 +228,13 @@ public class SmartLocalDefs implements LocalDefs {
       BitSet liveLocals = liveLocalsAfter.get(u);
       Local l = localDef(u);
 
-      if (l == null) {// add all units contained in mask
+      if (l == null) { // add all units contained in mask
         for (Unit inU : in) {
           if (liveLocals.get(localDef(inU).getNumber())) {
             out.add(inU);
           }
         }
-      } else {// check unit whether contained in allDefUnits before add
+      } else { // check unit whether contained in allDefUnits before add
         // into out set.
         Set<Unit> allDefUnits = defsOf(l);
 

@@ -194,7 +194,7 @@ public class StrengthenByIf {
       } // end of stmtSEq node
     } // end of else if
     return null;
-  }// end of method
+  } // end of method
 
   /*
    * Given a body of a node the method checks for the following: 1, the body has only one node 2, the node is a statementSequenceNode 3, There is only

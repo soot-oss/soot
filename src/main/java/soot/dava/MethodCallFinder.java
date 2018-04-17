@@ -95,7 +95,8 @@ public class MethodCallFinder extends DepthFirstAdapter {
     if (toInlineASTMethod == null) {
       // not to inline
       return;
-    } else {// yes we want to inline
+    } else {
+      // yes we want to inline
       // we know that the method to be inlined has no declarations.
       List<Object> subBodies = toInlineASTMethod.get_SubBodies();
       if (subBodies.size() != 1) {
@@ -335,7 +336,8 @@ public class MethodCallFinder extends DepthFirstAdapter {
       Map<Object, List<Object>> index2BodyList = ((ASTSwitchNode) node).getIndex2BodyList();
 
       Iterator<Object> it = indexList.iterator();
-      while (it.hasNext()) {// going through all the cases of the switch
+      while (it.hasNext()) {
+        // going through all the cases of the switch
         // statement
         Object currentIndex = it.next();
         List<Object> body = index2BodyList.get(currentIndex);

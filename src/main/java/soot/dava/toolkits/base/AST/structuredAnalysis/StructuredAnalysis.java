@@ -607,7 +607,8 @@ public abstract class StructuredAnalysis<E> {
 
     List<DavaFlowSet<E>> toMergeBreaks = new ArrayList<DavaFlowSet<E>>();
 
-    while (it.hasNext()) {// going through all the cases of the switch
+    while (it.hasNext()) {
+      // going through all the cases of the switch
       // statement
       Object currentIndex = it.next();
       List body = index2BodyList.get(currentIndex);
@@ -632,7 +633,8 @@ public abstract class StructuredAnalysis<E> {
 
     // have to handle the case when no case matches. The input is the output
     DavaFlowSet<E> output = null;
-    if (out != null) {// just to make sure that there were some cases
+    if (out != null) {
+      // just to make sure that there were some cases
       // present
 
       /*
@@ -786,7 +788,8 @@ public abstract class StructuredAnalysis<E> {
       out = in1.clone();
       out.copyInternalDataFrom(in2);
       return out; // meaning return NOPATH
-    } else {// both are not NOPATH
+    } else {
+      // both are not NOPATH
       out = emptyFlowSet();
       if (MERGETYPE == 1) {
         in1.union(in2, out);

@@ -134,7 +134,8 @@ public class CodeBlockRWSet extends MethodRWSet {
     return fields.containsKey(field);
   }
 
-  public CodeBlockRWSet intersection(MethodRWSet other) {// May run slowly... O(n^2)
+  public CodeBlockRWSet intersection(MethodRWSet other) {
+    // May run slowly... O(n^2)
     CodeBlockRWSet ret = new CodeBlockRWSet();
 
     if (isFull) {

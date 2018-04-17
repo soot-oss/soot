@@ -386,7 +386,8 @@ public class PegChain extends HashChain {
                   list.add(unit);
                   joinNeedReconsidered.add(list);
                   // throw new RuntimeException("allocNodeToThread does not contains key: "+allocNode);
-                } else {// If the mayAlias contains one 1 element, then use the threadName as
+                } else {
+                  // If the mayAlias contains one 1 element, then use the threadName as
                   // the Obj of the JPegStmt.
                   // String callerName = (String)allocNodeToCaller.get(allocNode);
                   Chain thread = pg.getAllocNodeToThread().get(allocNode);
@@ -700,7 +701,8 @@ public class PegChain extends HashChain {
       if (!pg.getAllocNodeToThread().containsKey(allocNode)) {
 
         throw new RuntimeException("allocNodeToThread does not contains key: " + allocNode);
-      } else {// If the mayAlias contains one 1 element, then use the threadName as
+      } else {
+        // If the mayAlias contains one 1 element, then use the threadName as
         // the Obj of the JPegStmt.
         // String callerName = (String)allocNodeToCaller.get(allocNode);
         Chain thread = pg.getAllocNodeToThread().get(allocNode);

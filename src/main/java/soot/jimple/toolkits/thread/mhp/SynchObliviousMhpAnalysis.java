@@ -216,7 +216,7 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
           Iterator succMethodsIt = pecg.getSuccsOf(containingMethodCalls.get(methodNum)).iterator();
           while (succMethodsIt.hasNext()) {
             SootMethod method = (SootMethod) succMethodsIt.next();
-            if (method == startStmtMethod) {// this method is reentrant
+            if (method == startStmtMethod) { // this method is reentrant
               mayBeRunMultipleTimes = true; // this time it's for sure
               thread.setStartMethodIsReentrant();
               thread.setRunsMany();
@@ -228,9 +228,9 @@ public class SynchObliviousMhpAnalysis implements MhpTester, Runnable {
           }
           methodNum++;
         }
-        if (!mayBeRunMultipleTimes) {// There's still one thing that might cause this to be run multiple times: if it can be run in parallel with
-                                     // itself
-                                     // but we can't find that out 'till we're done
+        if (!mayBeRunMultipleTimes) { // There's still one thing that might cause this to be run multiple times: if it can be run in parallel with
+                                      // itself
+                                      // but we can't find that out 'till we're done
           runAtOnceCandidates.add(thread);
         }
       }

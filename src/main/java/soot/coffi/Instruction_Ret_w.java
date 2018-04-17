@@ -60,5 +60,6 @@ class Instruction_Ret_w extends Instruction_intvar {
     super((byte) ByteCode.RET_W);
     name = "ret_w";
     branches = true;
-    /* returns = true; */}
+    /* returns = true; */
+  }
 }

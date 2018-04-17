@@ -340,10 +340,12 @@ public class SynchronizedBlockFinder implements FactFinder {
     if (s instanceof MonitorStmt) {
       Value local = ((MonitorStmt) s).getOp();
 
-      if (s instanceof EnterMonitorStmt) {// its an enter hence increase
+      if (s instanceof EnterMonitorStmt) {
+        // its an enter hence increase
         // level for this local
         local2level.put(local, new Integer(local2level.get(local).intValue() + 1));
-      } else {// its an exit stmt hence reduce level
+      } else {
+        // its an exit stmt hence reduce level
         local2level.put(local, new Integer(local2level.get(local).intValue() - 1));
       }
     }

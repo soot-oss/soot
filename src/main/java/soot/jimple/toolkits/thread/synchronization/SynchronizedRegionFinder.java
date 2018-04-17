@@ -342,7 +342,7 @@ public class SynchronizedRegionFinder extends ForwardFlowAnalysis<Unit, FlowSet<
         Iterator<UnitValueBoxPair> uses = slu.getUsesOf(prepUnit).iterator();
         while (uses.hasNext()) {
           UnitValueBoxPair use = (UnitValueBoxPair) uses.next();
-          if (use.getUnit() == (Unit) unit) {// if this transaction's monitorenter statement is one of the uses of this preparatory unit
+          if (use.getUnit() == (Unit) unit) { // if this transaction's monitorenter statement is one of the uses of this preparatory unit
             newTn.prepStmt = (Stmt) prepUnit;
           }
         }

@@ -122,8 +122,9 @@ public class OrAggregatorThree {
         // there is no other case something is wrong if we get here
         return;
       }
-    } else {// its an ASTIfElseNode
-            // if its an ASIfElseNode then check which Subbody has the labeledBlock
+    } else {
+      // its an ASTIfElseNode
+      // if its an ASIfElseNode then check which Subbody has the labeledBlock
       if (subBodyNumber != 0 && subBodyNumber != 1) {
         // something bad is happening dont do nothin
         // System.out.println("Error-------not modifying AST");

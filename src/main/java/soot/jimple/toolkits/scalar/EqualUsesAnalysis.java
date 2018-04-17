@@ -81,8 +81,8 @@ public class EqualUsesAnalysis extends ForwardFlowAnalysis<Unit, FlowSet> {
     return areEqualUses(stmtToLocal, new ArrayList());
   }
 
-  public boolean areEqualUses(Map<Stmt, Local> stmtToLocal, List boundaryStmts) {// You may optionally specify start and end statements... for if
-                                                                                 // you're interested only in a certain part of the method
+  public boolean areEqualUses(Map<Stmt, Local> stmtToLocal, List boundaryStmts) { // You may optionally specify start and end statements... for if
+                                                                                  // you're interested only in a certain part of the method
     this.stmtToLocal = stmtToLocal;
     this.useStmts = stmtToLocal.keySet();
     this.useLocals = stmtToLocal.values();

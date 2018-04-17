@@ -109,5 +109,6 @@ public class VoidReturnRemover {
       subBody.remove(subBody.size() - 1);
     }
 
-  }// end method
+  }
+  // end method
 }

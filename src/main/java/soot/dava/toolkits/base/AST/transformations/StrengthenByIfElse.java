@@ -110,7 +110,8 @@ public class StrengthenByIfElse {
           SETNodeLabel label = abStmt.getLabel();
           String labelBroken = label.toString();
           String loopLabel = ((ASTLabeledNode) loopNode).get_Label().toString();
-          if (labelBroken != null && loopLabel != null) {// stmt
+          if (labelBroken != null && loopLabel != null) {
+            // stmt
             // breaks
             // some
             // label
@@ -183,7 +184,7 @@ public class StrengthenByIfElse {
       } // if stmt was a return stmt
     } // going through the stmts
     return null;
-  }// end of method
+  } // end of method
 
   private static ASTWhileNode makeWhileNode(ASTIfElseNode ifElseNode, ASTNode loopNode) {
     ASTCondition outerCond = null;
@@ -206,4 +207,4 @@ public class StrengthenByIfElse {
     return new ASTWhileNode(newLabel, newCond, loopBody);
   }
 
-}// end class
+} // end class

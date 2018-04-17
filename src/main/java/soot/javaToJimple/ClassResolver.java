@@ -413,7 +413,8 @@ public class ClassResolver {
 
     AnonLocalClassInfo info = InitialResolver.v().finalLocalInfo().get(new polyglot.util.IdentityKey(aNew.anonType()));
 
-    if (aNew.qualifier() != null) {// && (!(aNew.qualifier() instanceof
+    if (aNew.qualifier() != null) {
+      // && (!(aNew.qualifier() instanceof
       // polyglot.ast.Special &&
       // ((polyglot.ast.Special)aNew.qualifier()).kind()
       // == polyglot.ast.Special.THIS)) ){
