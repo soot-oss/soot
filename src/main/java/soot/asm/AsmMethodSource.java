@@ -83,6 +83,7 @@ import soot.CharType;
 import soot.DoubleType;
 import soot.FloatType;
 import soot.IntType;
+import soot.LambdaMetaFactory;
 import soot.Local;
 import soot.LongType;
 import soot.MethodSource;
@@ -1274,13 +1275,28 @@ final class AsmMethodSource implements MethodSource {
 				Collections.reverse(parameterTypes);
 			}
 			returnType = types[types.length - 1];
+			
+			SootMethodRef bootstrap_model = null;
 
-			// we always model invokeDynamic method refs as static method references
-			// of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
-			SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);
 
-			DynamicInvokeExpr indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef,
-					bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
+			String bsmMethodRefStr = bsmMethodRef.toString();
+			if(bsmMethodRefStr.equals("<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite metafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.invoke.MethodType,java.lang.invoke.MethodHandle,java.lang.invoke.MethodType)>")
+			   || bsmMethodRefStr.equals("<java.lang.invoke.LambdaMetafactory: java.lang.invoke.CallSite altMetafactory(java.lang.invoke.MethodHandles$Lookup,java.lang.String,java.lang.invoke.MethodType,java.lang.Object[])>"))
+     			    bootstrap_model = LambdaMetaFactory.makeLambdaHelper(bsmMethodArgs, insn.bsm.getTag(), insn.name, types);
+
+			InvokeExpr indy;
+			
+			if(bootstrap_model != null) {
+			    indy = Jimple.v().newStaticInvokeExpr(bootstrap_model, methodArgs);
+			} else {
+                            // we always model invokeDynamic method refs as static method references
+                            // of methods on the type SootClass.INVOKEDYNAMIC_DUMMY_CLASS_NAME
+                            SootMethodRef methodRef = Scene.v().makeMethodRef(bclass, insn.name, parameterTypes, returnType, true);
+
+                            indy = Jimple.v().newDynamicInvokeExpr(bsmMethodRef,
+                                            bsmMethodArgs, methodRef, insn.bsm.getTag(), methodArgs);
+                        }
+                        
 			if (boxes != null) {
 				for (int i = 0; i < types.length - 1; i++) {
 					boxes[i] = indy.getArgBox(i);
