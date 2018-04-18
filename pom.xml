@@ -305,7 +305,7 @@
 		<dependency>
 			<groupId>heros</groupId>
 			<artifactId>heros</artifactId>
-			<version>1.0.0-SNAPSHOT</version>
+			<version>1.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Uploaded to http://soot-build.cs.uni-paderborn.de/nexus/repository/soot-snapshot/
@@ -313,7 +313,7 @@
 		<dependency>
 			<groupId>ca.mcgill.sable</groupId>
 			<artifactId>jasmin</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<version>3.0.1-SNAPSHOT</version>
 		</dependency>
 
 		<!-- Logging dependencies -->
