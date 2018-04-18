@@ -1440,6 +1440,8 @@ public class Scene // extends AbstractHost
 
 		addBasicClass("java.lang.String");
 		addBasicClass("java.lang.StringBuffer", SootClass.SIGNATURES);
+		addBasicClass("java.lang.Enum", SootClass.SIGNATURES);
+
 
 		addBasicClass("java.lang.Error");
 		addBasicClass("java.lang.AssertionError", SootClass.SIGNATURES);
