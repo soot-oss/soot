@@ -23,6 +23,7 @@
 		<checkstyle.version>8.7</checkstyle.version>
 		<checkstyle.dir.path>${basedir}/codingstyle</checkstyle.dir.path>
 		<checkstyle.file.path>${checkstyle.dir.path}/soot_checkstyle_checks.xml</checkstyle.file.path>
+		<checkstyle.failOnError>true</checkstyle.failOnError>
 	</properties>
 	<build>
 		<finalName>sootclasses-trunk</finalName>
@@ -270,7 +271,7 @@
 							<configLocation>${checkstyle.file.path}</configLocation>
 							<encoding>UTF-8</encoding>
 							<consoleOutput>true</consoleOutput>
-							<failsOnError>true</failsOnError>
+							<failsOnError>${checkstyle.failOnError}</failsOnError>
 							<violationSeverity>warning</violationSeverity>
 						</configuration>
 						<goals>
